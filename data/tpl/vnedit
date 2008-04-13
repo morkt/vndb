@@ -1,0 +1,94 @@
+[[= $d{id} ? ttabs('v', $d{vn}, 'edit') : '' ]]-
+<h2>[[: $p{PageTitle} ]]</h2>
+
+[[ if(!$d{id}) { ]]
+ <span class="msg">Please search the database before adding a new visual novel
+ in order to prevent duplicate entries.</span>
+[[ } else { ]]
+ <span class="msg">
+  It is currently not possible to delete visual novels from the database, please
+  use the <a href="http://forum.vndb.org/index.php?board=5.0">forums</a> to request
+  a deletion. Also refer to the forums for more serious edits or discussions about changes.
+ </span>
+[[ } if($d{id} && $d{vn}{cid} != $d{vn}{latest}) { ]] 
+ <span class="warning">
+  You are editing an old revision of this producer. If you save it, all changes made after
+  -[[= formatdate('%Y-%m-%d %R', $d{vn}{added}) ]]- will be removed!
+ </span>
+[[ } ]]
+
+
+-[[= cform([
+ { type => 'error' },
+ { type => 'startform', action => $d{id} ?( '/v'.$d{id}.'/edit') : '/v/new', upload => 1, fh => 1 },
+
+ { type => 'sub', title => 'General info', short => 'info' },
+ { type => 'input', name => 'Title', short => 'title', r=>1 },
+ { type => 'static', text => q|
+   Use official English title if available, use the romanized version of the official title otherwise.
+   Other titles can be added at a later time when specifying releases.<br /><br />| },
+
+ { type => 'textarea', name => 'Aliases', short => 'alias', rows => 2, cols => 60 },
+ { type => 'static', text => q|
+   Comma seperated list of alternative titles or abbreviations. Can include both official
+   (japanese/english) titles and unofficial titles used around net. <b>Titles that are listed in the releases do not have to be added here.</b><br /><br />| },
+
+ { type => 'textarea', name => 'Description', short => 'desc', rows => 7, cols => 70, r=>1 },
+ { type => 'static', text => q|
+   Short description of the main story. Please do not include spoilers, and don't forget to list the source
+   in case you didn't write the description yourself. ([url] BBCode tag is allowed)<br /><br />| },
+ 
+ { type => 'select', name => 'Length', short => 'length', class => 'longopts', options => [ map {
+   { short => $_,
+     name => !$_?$VNDB::VNLEN->[$_][0]:($VNDB::VNLEN->[$_][0].', '.$VNDB::VNLEN->[$_][1].' ('.$VNDB::VNLEN->[$_][2].')') } } 0..$#$VNDB::VNLEN
+ ] },
+ { type => 'static', text => '<br />' },
+ { type => 'input', name => 'External links', short => 'l_wp', pre => 'http://en.wikipedia.org/wiki/' },
+ { type => 'input', name => '&nbsp;', short => 'l_vnn', pre => 'http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=', class => 'shortopts' },
+ { type => 'input', name => '&nbsp;', short => 'l_cisv', pre => 'http://cisvisual.net/title/', class => 'shortopts' },
+
+ { type => 'sub', title => 'Categories', short => 'cat' },
+ { type => 'hidden', short => 'categories' },
+ { type => 'static', raw => 1, text => eval {
+    my $r = '<ul id="cat">';
+    for my $c (qw| e g p t l s |) {
+      $r .= ($c ne 'l' && $c ne 'p' ? '<li>' : '<br />').$VNDB::CAT->{$c}[0].'<ul>';
+      for (sort keys %{$VNDB::CAT->{$c}[1]}) {
+        $r .= sprintf '<li><a href="#" id="cat_%1$s"><b id="b_%1$s">-</b> %2$s</a></li>',
+          $c.$_, $VNDB::CAT->{$c}[1]{$_};
+      }
+      $r .= '</ul>'.($c ne 't' && $c ne 'g' ? '</li>' : '');
+    }
+    $r.'</ul>';
+  } }, 
+
+ { type => 'sub', title => 'Image', short => 'img' },
+ $d{id} ? (
+   { type => 'static', text => $d{vn}{image} ?
+    sprintf '<img src="%s/cv/%02d/%d.jpg" style="float: right" />', $p{st}, $d{vn}{image}%50, $d{vn}{image} :
+    'No image uploaded yet...' },
+ ) : (),
+ { type => 'upload', name => $d{vn}{image} ? 'Change' : 'Upload', short => 'img' },
+ { type => 'static', text => q|
+   Preferably the cover of the CD/DVD/package. Image must be in JPEG format and at most 256x400px and 50KB.<br /><br />| },
+ { type => 'check', short => 'img_nsfw', name => '<b>NSFW.</b> Please check this option if the image contains nudity, gore, or is otherwise not safe in a work-friendly environment.' },
+
+ { type => 'sub', title => 'Visual novel relations', short => 'rel' },
+ { type => 'jssel', name => 'Relations', short => 'relations', sh => 'rl' },
+ { type => 'static', text => q|
+   <b>Direct relations:</b> Please only add direct relations. E.g. the sequel of a sequel does not have to be listed
+    here because it's already listed on an other visual novel that is in turn listed here. VNDB will handle these
+    relations automatically.<br />
+   <b>Reverse relations:</b> If you add a relation with an other visual novel here, the same (or "reverse") relation
+    will automatically be added to the other visual novel. For example: if you add Tsukihime as a prequel of Kagetsu Tohya,
+    Kagetsu Tohya will automatically be added as a sequel for Tsukihime.
+ |},
+
+ { type => 'sub', title => 'Edit summary', short => 'com' },
+ { type => 'textarea', name => 'Edit summary', short => 'comm', rows => 3, cols => 60 },
+ { type => 'static', text => 'Please motivate your modifications and cite all sources.' },
+
+ { type => 'submit', text => $d{id} ? 'Edit' : 'Add' },
+ { type => 'endform' },
+
+], $d{form}) ]]

@@ -1,0 +1,70 @@
+[[= $d{id} ? ttabs('r', $d{rel}, 'edit') : ttabs('v', $d{vn}, 'edit') ]]-
+<h2>[[: $p{PageTitle} ]]</h2>
+
+[[ if($d{id}) { ]]
+ <span class="msg">
+  It is currently not possible to delete releases from the database, please
+  use the <a href="http://forum.vndb.org/index.php?board=5.0">forums</a> to request
+  a deletion. Also refer to the forums for more serious edits or discussions about changes.
+ </span>
+[[ } if($d{id} && $d{rel}{cid} != $d{rel}{latest}) { ]] 
+ <span class="warning">
+  You are editing an old revision of this producer. If you save it, all changes made after
+  -[[= formatdate('%Y-%m-%d %R', $d{rel}{added}) ]]- will be removed!
+ </span>
+[[ } ]]
+
+[[= cform( [
+ { type => 'error' },
+ { type => 'startform', action => $d{id} ? sprintf('/r%d/edit', $d{rel}{id}) : '/v'.$d{vn}{id}.'/add', fh => 1 },
+
+ { type => 'sub', title => 'General info', short => 'info' },
+ { type => 'select', name => 'Type', short => 'type', r=>1, options => [ map {
+   ({ short => $_, name => $VNDB::RTYP->[$_] }) } 0..$#{$VNDB::RTYP} ] },
+
+ { type => 'input', name => 'Title (romaji)', short => 'title', r=>1 },
+ { type => 'input', name => 'Original title', short => 'original' },
+ { type => 'static', text => q|
+   The original title of this release, leave blank if it already is in the Latin alphabet.<br /><br />| },
+
+ { type => 'select', name => 'Language', short => 'language', r=>1, options => [ map {
+   ({ short => $_, name => sprintf '%s (%s)', $_, $VNDB::LANG->{$_} }) } sort keys %{$VNDB::LANG} ] },
+
+ { type => 'input', name => 'Official website', short => 'website' },
+ { type => 'date', name => 'Release date', short => 'released' },
+ { type => 'static', text => 'Leave month or day blank if they are unknown<br /><br />' },
+ { type => 'select', name => 'Age rating', short => 'minage', options => [ map
+   { { name => $VNDB::VRAGES->{$_}, short => $_ } } sort { $a <=> $b } keys %$VNDB::VRAGES ] },
+ { type => 'textarea', name => 'Notes', short => 'notes', rows => 3, cols => 50 },
+ { type => 'static', text => 'Miscellaneous notes/comments, information that does not fit in the above fields. E.g.: Censored/uncensored or for which releases this patch applies. Max. 250 characters.' },
+
+ { type => 'sub', title => 'Platforms & Media', short => 'pnm' },
+ { type => 'static', raw => 1, text => '<label>Platforms</label><ul class="platforms">'.join('', map { my $p = $_;
+     '<li><input type="checkbox" name="platforms" value="'.$_.'" id="'.$_.'" '.
+     (($d{form}{platforms} && grep { $p eq $_ } @{$d{form}{platforms}}) ? 'checked="checked" ':'').'/>'.
+     '<acronym class="plat '.$_.'" title="'.$VNDB::PLAT->{$_}.'">'.$_.'</acronym>'.
+     '<label for="'.$_.'">'.$VNDB::PLAT->{$_}.'</label></li>'
+   } sort { $VNDB::PLAT->{$a} cmp $VNDB::PLAT->{$b} } keys %$VNDB::PLAT).'</ul>' },
+
+ { type => 'static', text => '<br />' },
+ { type => 'jssel', name => 'Media', sh => 'md', short => 'media' },
+
+ { type => 'sub', title => 'Producers', short => 'prod' },
+ { type => 'jssel', name => 'Producers', sh => 'pd', short => 'producers' },
+
+ { type => 'sub', title => 'Visual novel relations', short => 'rel'},
+ { type => 'jssel', name => 'Relations', sh => 'vn', short => 'vn', r=>1 },
+ { type => 'static', text => q|
+   Although a release usually contains only one visual novel, it is also possible
+   for one release to include several games. Use this field to specify which
+   visual novels are included in this release.| },
+
+
+ { type => 'sub', title => 'Edit summary', short => 'com' },
+ { type => 'textarea', name => 'Edit summary', short => 'comm', rows => 3, cols => 60 },
+ { type => 'static', text => 'Please motivate your modifications and cite all sources.' },
+
+ { type => 'submit', text => $d{id} ? 'Edit' : 'Add' },
+ { type => 'endform' },
+
+], $d{form}) ]]

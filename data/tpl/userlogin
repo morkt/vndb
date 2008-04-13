@@ -1,0 +1,14 @@
+<h2>[[: $p{PageTitle} ]]</h2>
+-[[= cform( [
+ { type => 'error' },
+ { type => 'startform', action => '/u/login' },
+ { type => 'input', short => 'username', name => 'Username' },
+ { type => 'pass',  short => 'userpass', name => 'Password' },
+ { type => 'submit', text => 'Login!' },
+ { type => 'endform' },
+], $d{log}) ]]-
+
+<p>
+ <br /><br />
+ <a href="/u/register">No account yet</a>, or <a href="/u/newpass">forgot your username or password?</a>
+</p>

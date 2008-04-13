@@ -1,0 +1,45 @@
+<head>
+ <title>
+  [[ if($X->{error}->{code} == 1) { ]]VNDB offline
+  [[ } else { ]] ERROR: [[= $X->{error}->{code} ]][[ } ]]
+ </title>
+  
+ <meta name="Robots" content="index, follow" />
+ <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon" />
+
+ <style type="text/css">
+   body { background-color: #e0e0e0; padding: 0px; text-align: center; font-family: "Arial", Sans-serif; font-size: 11px; line-height: 16px; font-weight: normal; color: #242424; }
+   #wrapper { margin: 0px auto; margin-bottom: 20px; background-color: #fff; text-align: center; width: 672px; border: 1px solid #b8b8b8; }
+   #pre { background-color: #fff; text-align: left; padding: 0px 10px 5px 10px; margin: 5px 5px 5px 5px; border: 1px solid #e9e9e9; }
+   p { font-size: 11px; color: #242424; text-align: justify; padding-left: 17px; padding-right: 17px; }
+   h1 { font-size: 16px; font-weight: bold; color: #242424; padding-left: 17px; }
+   a { color: #33659E; text-decoration: none; }
+   a:hover { text-decoration: underline; }
+   img { border: 0; margin: 0; padding: 0; }
+   [[ if($X->{error}->{code} == 500) { ]]
+   #wrapper { width: 530px; }
+   [[ } ]]
+ </style>
+</head>
+<body>
+ <div id="wrapper">
+  <div id="pre">
+   [[ if($X->{error}->{code} > 300 && $X->{error}->{code} < 310) { ]]
+    <h1>Moved</h1>
+    <p>
+     Check <a href="[[% $X->{error}->{url} ]]">[[: $X->{error}->{url} ]]</a> for the new location.
+    </p>
+   [[ } elsif($X->{error}->{code} == 401) { ]]
+    <h1>Login required</h1>
+    <p>
+     <a href="/">Please login</a>
+    </p>
+   [[ } elsif($X->{error}->{code} == 1) { ]]
+    <h1>VNDB offline</h1>
+    <p>
+     [[: $X->{error}->{msg} ]]
+    </p>
+   [[ } ]]
+  </div>
+ </div>
+</body>

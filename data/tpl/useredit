@@ -1,0 +1,34 @@
+<h2>[[: $p{PageTitle} ]]</h2>
+
+-[[ if($d{done}) { ]]
+<span class="msg">
+ Settings succesfully saved.
+</span>
+[[ } ]]
+-[[= cform( [
+ { type => 'error' },
+ { type => 'startform', action => '/u'.$d{user}.'/edit' },
+
+ { type => 'sub', title => 'General info', short => 'info' },
+ { type => 'static', name => 'Username', text => _hchar($d{form}{username}) },
+ { type => 'input', name => 'Email', short => 'mail' },
+
+ { type => 'sub', title => 'Change password', short => 'pass' },
+ { type => 'static', text => 'Leave blank to keep your current password.' },
+ { type => 'pass', name => 'Password', short => 'pass1' },
+ { type => 'pass', name => 'Confirm', short => 'pass2' },
+
+ { type => 'sub', title => 'Miscellaneous options', short => 'misc' },
+ { type => 'check', short => 'pvotes', name => sprintf 'Allow other people to see my votes (<a href="/u%d/votes">/u%1$d/votes</a>)', $d{user}  },
+ { type => 'check', short => 'plist',  name => sprintf 'Allow other people to see my visual novel list (<a href="/u%d/list">/u%1$d/list</a>)', $d{user}  },
+ { type => 'check', short => 'pign_nsfw', name => 'Disable warnings for images that are not safe for work.' },
+
+ $d{adm} ? (
+   { type => 'sub', title => 'Admin', short => 'adm' },
+   { type => 'select', name => 'Rank', short => 'rank', options => [
+     map { { name => $VNDB::VNDBopts{ranks}[0][0][$_], short => $_ } } 1..($#{$VNDB::VNDBopts{ranks}}-1) ] },
+ ) : (),
+
+ { type => 'submit', text => 'Save' },
+ { type => 'endform' },
+], $d{form}) ]]

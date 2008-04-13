@@ -1,0 +1,58 @@
+[[= ttabs('p', $d{prod}) ]]
+<h2>[[: $p{PageTitle} ]]</h2>
+
+[[ if($d{prod}{hidden}) { ]]-
+ <span class="warning">
+  This item has been deleted from the database. File a request on the
+  <a href="http://forum.vndb.org/index.php?board=5.0">forums</a>
+  to undelete this page.
+ </span>
+[[ } ]]
+[[ if(!$d{prod}{hidden} || $p{Authdel}) { ]]-
+
+
+
+[[ if($d{change}) { ]]
+[[= cdiff($d{prev}, $d{prod},
+       [ type     => 'Type',          sub { $VNDB::PROT->{$_[0]} }  ],
+       [ name     => 'Name (romaji)', 1 ],
+       [ original => 'Original name', 1 ],
+       [ lang     => 'Language',      sub { $VNDB::LANG->{$_[0]} } ],
+       [ website  => 'Website',       1 ],
+       [ desc     => 'Description',   1, 1 ],
+ ) ]]
+[[ } ]]
+
+<dl>
+ <dt>Name</dt><dd>[[ if($d{prod}{original}) { ]]
+   [[: $d{prod}{original} ]]- ([[: $d{prod}{name} ]])
+  [[ } else { ]][[: $d{prod}{name} ]][[ } ]]</dd>
+ <dt>Type</dt><dd>[[: $VNDB::PROT->{$d{prod}{type}} ]]</dd>
+ <dt>Primary lang.</dt><dd>[[: $VNDB::LANG->{$d{prod}{lang}} ]]</dd>
+[[ if($d{prod}{website}) { ]]-
+ <dt>Links</dt><dd><a href="[[: $d{prod}{website} ]]">Official homepage</a></dd>[[ } ]]-
+</dl>
+
+-[[ if($d{prod}{desc}) { ]]
+<p>[[= summary($d{prod}{desc}) ]]<br /><br /></p>
+[[ } ]]
+
+
+<h3>Visual novel relations</h3>
+[[ if($#{$d{vn}} < 0) { ]]-
+<p>
+ We have currently no visual novels related to this producer.
+</p>
+[[ } else { ]]-
+<ul>
+ [[ for (@{$d{vn}}) { ]]-
+ <li><a href="/v[[= $_->{id} ]]">[[: $_->{title} ]]</a>
+  [[ if($_->{date} ne "0000-00-00") { ]]- ([[= datestr($_->{date}) ]])[[ } ]]
+ </li>
+ [[ } ]]-
+</ul>
+[[ } ]]
+
+
+
+[[ } ]]

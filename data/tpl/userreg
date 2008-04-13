@@ -1,0 +1,38 @@
+<h2>[[: $p{PageTitle} ]]</h2>
+
+-[[ if($d{denied}) { ]]
+[[ } ]]-
+
+<br /><br />
+<h3>Why should I register?</h3>
+<p>
+ Registered users have access to special features on this site:
+</p>
+<ul>
+ <li>You can keep track of the visual novels you'd like to play or have
+  finnished playing,</li>
+ <li>Vote on visual novels,</li>
+ <li>And more importantly: you can add and edit all information on the
+  website!</li>
+</ul>
+<p>
+ <br />
+ And of course, registering an account is (and will always remain)
+ completely free!
+ <br /><br />
+</p>
+
+-[[= cform( [
+ { type => 'error' },
+ { type => 'startform', action => '/u/register' },
+ { type => 'input',  short => 'username', name => 'Username' },
+ { type => 'input',  short => 'mail', name => 'Email' },
+ { type => 'static', text => q|
+    Your email address will only be used in case you lose your password, at least for now.
+    We will never send spam or newsletters unless you explicitly ask us for it.
+  | },
+ { type => 'pass',   short => 'pass1', name => 'Password' },
+ { type => 'pass',   short => 'pass2', name => 'Confirm pass.' },
+ { type => 'submit', text => 'Register!' },
+ { type => 'endform' },
+], $d{reg}) ]]

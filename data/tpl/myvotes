@@ -1,0 +1,30 @@
+<h2>[[: $p{PageTitle} ]]</h2>
+[[ if($#{$d{votes}} < 0) { ]]-
+<p>
+[[ if($d{user}{username} eq $p{AuthUsername}) { ]]
+ You haven't voted on anything yet...
+[[ } else { ]]
+ [[: $d{user}{username} ]]- hasn't voted on anything yet...
+[[ } ]]
+</p>
+[[ } else {
+  my $url = sprintf '/u%d/votes', $d{user}{id}; 
+  my $surl = sprintf '%s?s=%s&amp;o=%s', $url, $d{order}[0], $d{order}[1];
+]]
+[[= pagebut($surl) ]]-
+<table id="tmv">
+ <thead><tr>
+  <td class="tc1">Title [[= sortbut($url, 'title') ]]</td>
+  <td class="tc2">Vote [[= sortbut($url, 'vote') ]]</td>
+  <td class="tc3">Date [[= sortbut($url, 'date') ]]</td>
+ </tr></thead>
+ [[ for (@{$d{votes}}) { ]]-
+ <tr>
+  <td class="tc1"><a href="/v[[= $_->{vid} ]]">[[: $_->{title} ]]</a></td>
+  <td class="tc2">[[: $_->{vote} ]]</td>
+  <td class="tc3">[[= formatdate('%Y-%m-%d', $_->{date}, 'dh') ]]</td>
+ </tr>
+ [[ } ]]-
+</table>
+-[[= pagebut($surl) ]]
+[[ } ]]

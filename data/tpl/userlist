@@ -1,0 +1,54 @@
+<h2>[[: $p{PageTitle} ]]</h2>
+<p class="chr">
+ -[[= $d{chr} ne 'all' ? '<a href="/u/list/all">all</a>' : 'all' ]]- |
+ [[ for('a'..'z', 0) { ]]-
+ -[[ if($d{chr} eq $_) { ]][[= $_?$_:'#' ]][[ } else { ]]<a href="/u/list/[[= $_ ]]">[[= $_?$_:'#' ]]</a>[[ } ]]
+ [[ } ]]-
+ <br /><br />
+</p>
+
+[[ if($#{$d{users}} < 0) { ]]-
+<p>
+ No users found...
+</p>
+[[ } else {
+  my $url = sprintf '/u/list/%s', $d{chr}; 
+  my $surl = sprintf '%s?s=%s&amp;o=%s', $url, $d{order}[0], $d{order}[1];
+]]
+[[= pagebut($surl) ]]-
+<table id="tul">
+ <thead><tr>
+  <td class="tc1">Username [[= sortbut($url, 'username') ]]</td>
+[[ if($p{Authuserlist}) { ]]-
+  <td class="tc2">Mail [[= sortbut($url, 'mail') ]]</td>
+  <td class="tc3">Rank [[= sortbut($url, 'rank') ]]</td>[[ } ]]-
+  <td class="tc4">Registered [[= sortbut($url, 'registered') ]]</td>
+  <td class="tc5">VN list</td>
+  <td class="tc6">Votes</td>
+  <td class="tc7">Changes</td>
+[[ if($p{Authuseredit}) { ]]-
+  <td class="tc8">&nbsp;</td>[[ } ]]-
+ </tr></thead>
+ [[ for (@{$d{users}}) { ]]-
+ <tr>
+  <td class="tc1"><a href="/u[[= $_->{id} ]]">[[: $_->{username} ]]</a></td>
+[[ if($p{Authuserlist}) { ]]-
+  <td class="tc2">[[: $_->{mail} ]]</td>
+  <td class="tc3">[[: $VNDB::VNDBopts{ranks}[0][0][$_->{rank}] ]]</td>[[ } ]]-
+  <td class="tc4">[[= formatdate('%Y-%m-%d', $_->{registered}, 'wd') ]]</td>
+  <td class="tc5">[[ if($_->{flags} & $VNDB::UFLAGS->{list} && $_->{vnlist}) { ]]
+   <a href="/u[[= $_->{id} ]]/list" title="[[: $_->{username} ]]'s visual novel list">[[= $_->{vnlist} ]]</a>
+   [[ } else { ]][[= $_->{flags} & $VNDB::UFLAGS->{list} ? 0 : '-' ]][[ } ]]</td>
+  <td class="tc6">[[ if($_->{flags} & $VNDB::UFLAGS->{votes} && $_->{votes}) { ]]
+   <a href="/u[[= $_->{id} ]]/votes" title="[[: $_->{username} ]]'s votes">[[= $_->{votes} ]]</a>
+   [[ } else { ]][[= $_->{flags} & $VNDB::UFLAGS->{votes} ? 0 : '-' ]][[ } ]]</td>
+  <td class="tc7">[[ if($_->{changes}) { ]]
+   <a href="/u[[= $_->{id} ]]/hist" title="Recent changes by -[[: $_->{username} ]]">[[= $_->{changes} ]]</a>
+   [[ } else { ]]0[[ } ]]</td>
+[[ if($p{Authuseredit}) { ]]-
+  <td class="tc8">( <a href="/u[[= $_->{id} ]]/edit">edit</a> )</td>[[ } ]]-
+ </tr>
+ [[ } ]]-
+</table>
+-[[= pagebut($surl) ]]-
+[[ } ]]

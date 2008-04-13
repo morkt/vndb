@@ -1,0 +1,51 @@
+<h3>Description</h3>
+<p class="desc">
+ [[= summary($d{vn}{desc}) ]]
+ <br /><br /><br />
+</p>
+
+
+
+[[ 
+  my @lang;
+  for (@{$d{rel}}) {
+    my $l = $_->{language};
+    next if grep { $_ eq $l } @lang;
+    push @lang, $l;
+  }
+
+]] 
+
+
+<h3>Releases
+[[ if((!$d{vn}{locked} && $p{Authedit}) || $p{Authlock}) { ]]- <p class="actions">(<a href="/v[[= $d{vn}{id} ]]/add">add release</a>)</p>[[ } ]]</h3>
+[[ if(@{$d{rel}}) { ]]-
+<table id="tre">
+[[ for(@lang) { my $l = $_; ]]-
+<tr class="lang">
+ <td colspan="6">[[: $VNDB::LANG->{$l} ]]</td>
+</tr>
+[[ for (@{$d{rel}}) { next if $l ne $_->{language}; ]]-
+ <tr>
+  <td class="tc1">[[= datestr($_->{released}) ]]</td>
+  <td class="tc2">[[= $_->{minage}<0 ? '' : $VNDB::VRAGES->{$_->{minage}} ]]</td>
+  <td class="tc3">[[= join('', map { $_ ne 'oth' ? '<acronym class="plat '.$_.'" title="'._hchar($VNDB::PLAT->{$_}).'">'.$_.'</acronym>' : () } sort @{$_->{platforms}}) ]]</td>
+  <td class="tc4"><acronym title="[[= $VNDB::RTYP->[$_->{type}] ]]- release">[[= lc substr($VNDB::RTYP->[$_->{type}],0,1) ]]</acronym></td>
+  <td class="tc5"><a href="/r[[= $_->{id} ]]" title="[[: $_->{original} || $_->{title} ]]">[[: shorten $_->{title},60 ]]</a></td>
+<!--  <td class="tc6">[[=
+    join(', ',
+      map {
+      sprintf('<a href="/p%d" title="%s">%s</a>', $_->{id}, _hchar($_->{name}), _hchar(shorten $_->{name},20)) } @{$_->{producers}}) ]]</td>-->
+  <td class="tc7">[[ if($_->{website}) { ]]<a href="[[: $_->{website} ]]"><acronym class="plat ext" title="WWW">www</acronym></a>[[ } ]]</td>
+ </tr>
+[[ } ]]-
+[[ } ]]-
+</table>
+[[ } else { ]]-
+<p>
+ This game has either not been released yet, or we just don't have information about
+ any releases.
+</p>
+[[ } ]]
+
+

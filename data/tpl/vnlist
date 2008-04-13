@@ -1,0 +1,74 @@
+<h2>[[: $p{PageTitle} ]]</h2>
+[[
+  my $url = sprintf '/u%d/list', $d{user}{id}; 
+  my $surl = sprintf '%s?s=%s;o=%s', $url, $d{order}[0], $d{order}[1];
+  my $purl = $surl . ';t='.$d{status};
+  my $sourl = $url . '?t='.$d{status};
+  my $furl = $purl . ';p='.$d{page};
+]]
+<p class="chr">
+ status: -[[ for (-1..$#$VNDB::LSTAT) { if($_ >= 0) { ]]- | -[[ }
+  if($d{status} == $_) { ]]<b>[[= $_ eq -1 ? 'all' : lc $VNDB::LSTAT->[$_] ]]</b>[[ }
+  else { ]]<a href="[[= $surl ]]&amp;t=[[= $_ ]]">[[= $_ eq -1 ? 'all' : lc $VNDB::LSTAT->[$_] ]]</a>[[ } } ]]
+ <br /><br />
+</p>
+
+
+[[ if($#{$d{list}} < 0) { ]]-
+<p>
+[[ if($d{status} >= 0) { ]]
+ No results found...
+[[ } elsif($d{user}{username} eq $p{AuthUsername}) { ]]
+ Your visual novel list is empty. You can keep track of all the visual novels
+ you'd like to play, you're currently playing, or you've finished. Just go to
+ a visual novel page and add it to your VN list!
+[[ } else { ]]
+ [[: $d{user}{username} ]]'s visual novel list is empty...
+[[ } ]]
+</p>
+
+[[ } else { ]]
+[[= pagebut($purl) ]]-
+[[ if($d{user}{username} eq $p{AuthUsername}) { ]]
+<form method="post" action="[[= $furl ]]" class="tblf">
+<input type="hidden" class="hidden" name="comments" id="comments" value="" />[[ } ]]
+<table id="tvl">
+ <thead><tr>
+  <td class="tc1">Title [[= sortbut($sourl, 'title') ]]</td>
+  <td class="tc2">Status</td>
+  <td class="tc3">Added [[= sortbut($sourl, 'date') ]]</td>
+ [[ if($d{user}{username} eq $p{AuthUsername}) { ]]-
+  <td class="tc4">Personal note</td>
+  <td class="tc5">&nbsp;</td>[[ } ]]-
+ </tr></thead>
+ [[ for (@{$d{list}}) { ]]-
+ <tr>
+  <td class="tc1"><a href="/v[[= $_->{vid} ]]" title="[[: $_->{title} ]]">[[: length($_->{title})>40 ? substr($_->{title},0, 37).'...' : $_->{title} ]]</a></td>
+  <td class="tc2">[[= $VNDB::LSTAT->[$_->{status}] ]]</td>
+  <td class="tc3">[[= formatdate('%Y-%m-%d', $_->{date}, 'dh') ]]</td>
+ [[ if($d{user}{username} eq $p{AuthUsername}) { ]]
+  <td class="tc4">[[: $_->{comments}||'-' ]]</td>
+  <td class="tc5"><input type="checkbox" name="sel" value="[[= $_->{vid} ]]" /></td>[[ } ]]
+ </tr>
+ [[ } ]]-
+</table>
+[[ if($d{user}{username} eq $p{AuthUsername}) { ]]
+<select id="vnlistchange" name="vnlistchange" class="right">
+ <option value="-3">- with selected -</option>
+ <option value="-1">Delete</option>
+ <option value="-2">Update personal note</option>
+ <optgroup label="Update status:">
+ [[ for (0..$#$VNDB::LSTAT) { ]]-
+  <option value="[[= $_ ]]">[[: $VNDB::LSTAT->[$_] ]]</option>
+ [[ } ]]
+ </optgroup>
+</select>
+</form>[[ } ]]
+-[[= pagebut($purl) ]]
+[[ } ]]-
+
+[[ if($d{user}{username} eq $p{AuthUsername}) { ]]-
+<p>
+ <br /><br />
+ NOTE: Your personal notes are only visible to you, other people can't see them.
+</p>[[ } ]]

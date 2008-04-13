@@ -1,0 +1,215 @@
+TODO:
+	+ Remove all references to an item when it's hidden
+
+1.14 - ?
+	- Removed the ID gap prevention method
+	- Moved static content to static.vndb.org (and rely on lighty for js/css
+	  compression)
+	- relation graphs and cover images now get an ID instead of MD5-sum
+	- Added Nintendo Wii to platforms
+	- Added 'hidden' flag, which should now be used instead of the delete option
+
+1.13 - 2008-04-04
+	- Fixed update_prev
+	- Split revision insert queries into a seperate function for code reuse
+	- Fixed wiki links
+	- Fixed search for VN's without releases
+	- Fixed bug with accepting zero-padded VNDB ID's
+	- Fixed bug with V-N.net link getting lost after reverse relation update
+	- Added .xml extension to AJAX requests
+	- Switched to ';' seperator instead of '&' for some URL's (=cleaner)
+	- Added language filter to category browser
+	- Stored release dates as integers and added NOT NULL constraint
+	- Used a newline to seperate multiple relations on a VN	page
+	- Multi will get credits for a reverse relation edit
+	- Going to an edit-page without logging in will redirect
+	- Added rankings to the categories
+	- Fixed automated relation graph updates
+	- Added /nospam page
+	- Changed vote treshold to 3
+
+1.12 - 2008-03-09
+	- Color coded diffs
+	- Added noindex on ?ref= pages
+	- Added TBA to release dates
+	- Possibility to change vote without revoking first
+	- Added VN/ADV categories
+	- Replaced the Release summary with Producers on VN pages
+	- Added foreign key constrains
+
+1.11 - 2008-02-29
+	- [bug] Home page layout got screwed up when line wrapping occurs
+	- [bug] Multiple revisions got counted at the category browser
+	- Added GBA platform
+	- Added Gameplay and Plot categories
+	- Added link to V-N.net review
+	- Added vote count to the global statistics in the main menu
+	- [hidden] Added language filter to category browser
+	- Created user pages
+	- Redirect to VN page if someone visits an rX page from google/yahoo
+	- Added link to latest revision in the diff-browser
+	- Renamed "comments" to "Personal note" at VN List
+
+1.10 - 2008-02-09
+	- [bug] Long revision summaries incorrectly chopped
+	- Added GD-ROM and Blu-ray disk to media
+	- Platform icons will be kept in a consistent order
+	- ?rev= pages now show information about the change + diffs + links to
+	  previous/next revisions
+	- Removed diff and revert links on history pages
+	- Added rel="nofollow" to edit links
+	- Changed lowest selectable year at releases to 1990
+	- Use Bayesian ratings and added extra char to c_votes
+	- A few small internal DB changes
+	- Allowed [url]-tag in edit summary, and used same function to parse vn/p/r
+	  descriptions
+	- Added line wrapping on long words at diff-viewer
+	- VN search matches on release titles again
+	- Added producer search
+	- [bug] Releases in the future don't count as new language
+	- Release dates in the future are now red
+	- multiple vns for releases
+	- Redirect to specific revision after editing
+	- Redirect to the page you were at after logging in
+	- Added "Other" status and "comments" field to VN lists
+
+1.9 - 2008-02-01
+	- Redirect to VN when changing VN List status
+	- [bug] All ages was not automatically selected
+	- [bug] Description field ignored when adding or requesting edit of producer
+	- Rewrote diff calculation
+	- Added wildcard support to URI-mappings
+	- Changed some URI's:
+	  /vn/*         -> /v/*
+	  /u/_*         -> /u/*
+	  /u/[username] -> /u[uid]
+	- id-gaps for producers and releases are now also filled automatically
+	- Switched producers name and romaji
+	- Added visitor as rank for non-logged in visitors, and losers for banned
+	  users
+	- Added history pages & feeds
+	- Removed everything related to "pending changes"
+	- Producers are lockable
+	- Combined DBGetVN and DBGetVNs
+	- Moved code for releases from VN.pm to Releases.pm
+	- Denormalized vn_categories
+	- Added "tabs" to visual novels, releases & producers
+	- Made several changes to the visual novel page layout
+	- Added mass-change/delete option to vnlists
+	- Renamed vnr* to releases*
+	- Fixed relation graphs generator to work with the new DB structure, and to
+	  delete graphs for VN's where the relation was deleted
+	- Removed option to hide a user from the userlist
+	- ResDenied will show the regiser-new-account-page
+	- Usernames linkified at history and vn-stats pages
+	- Added noindex tag on pages that include usernames
+	- Swapped title <-> romaji for releases
+	- Removed relation field and added type field for releases
+	- Also allow [url]-bbcode tag for the notes field for releases and producers
+	- [bug] Self-refering vn relations are not possible anymore
+	- Wrote update_vncache as a plpgsql function
+	- Updated homepage layout: added a few lists 
+	- Added filters to recent changes pages
+	- Added platform icons to releases
+	- Added user menu to vn pages
+	- De-JS'ed the platform select form, used checkboxes instead
+	- Updated FAQ
+
+1.8 - 2007-12-05
+	- Added [url]-tag to vn description field
+	- Changed category input to checkboxes
+	- Used image sprites for category browser icons
+	- Fixed bug with media-select-form
+	- Fixed bug with pending producer changes showing up in the producer search
+	- Added hack to exclude trial versions in the release dates
+	- Removed audience category and added age rating field to releases
+	- Fixed typo: "game hes either" -> "game has either"
+	- Added Wikipedia & CISVisual link
+	- Added small vertical padding between releases
+	- Added length of visual novel
+	- Renamed continues back to Sequel/Prequel
+
+1.7 - 2007-11-25
+	- Bugfix: The visual novel itself is now also listed at the Pending Changes
+	under the releases
+	- Bugfix: Comments and Moderation subforms cannot be automatically hidden
+	- Made release and vn-links in the edit-dropdown clickable, to edit all
+	- Added "show all pending changes" option for moderators
+	- Removed official (japanese) titles from producer list
+	- Added description field for producers
+	- Added a red asterisk for fields that are required
+	- Combined 4 flag-columns in the users table to one
+	- Added cronjob to delete unused relation graphs
+
+1.6 - 2007-11-11
+	- vnr.released accepts NULL
+	- vn.c_years renamed to vn.c_released, and only stores year+month of first
+	release
+	- Removed vn_releases.lastmod
+	- Fixed CSS bug in releases layout
+	- Renamed Sequel/Prequel to Continuation/continues...
+	- Added relation graphs (/vX/rg)
+
+1.5 - 2007-11-04
+	- Automatically hiding form parts is now done server-side
+	- Release id's are hidden for not logged in visitors
+	- Added cron job to compress images and remove Exif information
+	- Possibility to add planned releases to 5 years in the future
+	- Bugfix: When editing a VN that's waiting for moderation, the 'added'
+	column won't be updated
+	- Added NSFW-option to VN-images
+	- Added small edit-dropdown when clicked on release-id
+	- Pending changes tab for VN removed and contents moved to relations tab
+	- Added Visual Novel Relations
+
+1.4 - 2007-10-28
+	- 'Mina' category renamed to 'All Ages'
+	- Added 'Clear selection' button to the category browser
+	- New visual novels will get unused/lower ID's
+	- Added notes-field to releases
+	- Subforms can be dynamically hidden/shown
+	- Bugfix: user stats will always stay under the votes at /vX/stats
+	- Bugfix: syntax error in dyna.js in Opera
+	- Combined all the add/edit/del-buttons into one menu
+	- Changed VN page layout: description moved to relations page and categories
+	have their own sub-item
+
+1.3 - 2007-10-21
+	- Bugfix: checkbox at producer-search now works
+	- VN ratings don't count of only one user has voted
+	- Added VN list size and number of votes to user list
+	- Added categories 'Drama' & 'Mystery'
+	- Added exclude filters to the category browser
+	- Added a few statistics to the right bottom of the page
+
+1.2 - 2007-10-14
+	- Bugfix: vnr_producers rows weren't deleted when deleting a release
+	- Added number of pending changes at "Pending changes" menu item
+	- Long items (>30 chars) at the top 5's (right bottom) will be shortened
+	- Added visual novel descriptions to the RSS feed
+	- Bugfix: fixed msg when browsing votes of someone who hasn't voted yet
+	- Bugfix: Voting now also works when viewing the vote stats of a VN
+	- Added user VN lists
+	- Added profile option to hide VN list
+	- Changed 'votes' tab on VN page to 'stats' and added user stats.
+
+1.1 - 2007-10-07
+	- Bugfix: you can now empty columns of the vn table
+	- Japanese is automatically selected when adding a release or producer
+	- User list has been made public
+	- Possible to browse other people's votes
+	- Added two options to "my account" to hide in user list and votes
+	- Bugfix: username is now shown when accepting a producer
+	- Bugfix: variable typo in tpl->pedit
+	- Bugfix: c_*-update-function wasn't called correctly when changing/deleting
+	releases
+	- Bugfix: 'added' column in releases, vn and vnr is now updated at accepting
+	- Added "Most Popular" vns to every page, and added "More..."-links.
+	- Added RSS feed for recent additions
+	- Changes visual novel page layout
+	- Added vote graph + latest votes to the visual novel pages
+	- Added compression on javascript files
+	- Replaced relation-selection-box with an input field
+
+1.0 - 2007-09-30
+	- First release

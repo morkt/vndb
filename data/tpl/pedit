@@ -1,0 +1,45 @@
+[[= $d{id} ? ttabs('p', $d{prod}, 'edit') : '' ]]
+<h2>[[: $p{PageTitle} ]]</h2>
+-[[ if(!$d{id}) { ]]
+ <span class="msg">
+  Please search the database before adding a new producer in order to prevent duplicate entries.
+ </span>
+[[ } else { ]]
+ <span class="msg">
+  It is currently not possible to delete producers from the database, please
+  use the <a href="http://forum.vndb.org/index.php?board=5.0">forums</a> to request
+  a deletion. Also refer to the forums for more serious edits or discussions about changes.
+ </span>
+[[ } if($d{id} && $d{prod}{cid} != $d{prod}{latest}) { ]] 
+ <span class="warning">
+  You are editing an old revision of this producer. If you save it, all changes made after
+  -[[= formatdate('%Y-%m-%d %R', $d{prod}{added}) ]]- will be removed!
+ </span>
+[[ } ]]
+
+-[[= cform([
+ { type => 'error' },
+ { type => 'startform', action => $d{id} ? '/p'.$d{id}.'/edit' : '/p/add' },
+
+ { type => 'sub', title => 'General info', short => 'info' },
+ { type => 'select', name => 'Type', short => 'type', r=>1, options => [ map {
+   { short => $_, name => $VNDB::PROT->{$_} } } sort keys %$VNDB::PROT ] },
+ { type => 'input', name => 'Name (romaji)', short => 'name', r=>1 },
+ { type => 'input', name => 'Original name', short => 'original' },
+ { type => 'static', text => q|
+   The original name of the producer, leave blank if it is already in the Latin alphabet.<br /><br />| },
+
+ { type => 'select', name => 'Primary language', short => 'lang', r=>1, options => [ map {
+   ({ short => $_, name => sprintf '%s (%s)', $_, $VNDB::LANG->{$_} }) } sort keys %{$VNDB::LANG} ] },
+
+ { type => 'input', name => 'Website', short => 'website' },
+ { type => 'textarea', name => 'Description', short => 'desc', rows => 7, cols => 60  },
+
+ { type => 'sub', title => 'Edit summary', short => 'com' },
+ { type => 'textarea', name => 'Edit summary', short => 'comm', rows => 3, cols => 60 },
+ { type => 'static', text => 'Please motivate your modifications and cite all sources.' },
+
+ { type => 'submit', text => $d{id} ? 'Edit' : 'Add' },
+ { type => 'endform' },
+
+], $d{form}) ]]

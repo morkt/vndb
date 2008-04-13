@@ -1,0 +1,11 @@
+<h3>Relations</h3>
+[[ if(!$d{vn}{rgraph}) { ]]
+ <p>
+  Relation graph has not been generated yet...
+ </p>
+[[ } else { ]]
+ [[= $d{vn}{rmap} ]]
+ <p id="relations">
+ <img src="[[= sprintf "%s/rg/%02d/%d.gif", $p{st}, $d{vn}{rgraph}%50, $d{vn}{rgraph} ]]" usemap="#rgraph" />
+ </p>
+[[ } ]]

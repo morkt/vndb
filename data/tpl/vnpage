@@ -1,0 +1,171 @@
+[[= ttabs('v', $d{vn}) ]]
+<h2>[[: $d{vn}{title} ]]</h2>
+
+[[ if($d{vn}{hidden}) { ]]-
+ <span class="warning">
+  This item has been deleted from the database. File a request on the
+  <a href="http://forum.vndb.org/index.php?board=5.0">forums</a>
+  to undelete this page.
+ </span>
+[[ } ]]
+[[ if(!$d{vn}{hidden} || $p{Authdel}) { ]]-
+
+
+[[ if($d{change}) { ]]
+[[= cdiff($d{prev}, $d{vn},
+  [ title      => 'Title',          1 ],
+  [ alias      => 'Alias',          1 ],
+  [ desc       => 'Description',    1, 1 ],
+  [ length     => 'Length',         sub { $VNDB::VNLEN->[$_[0] ][0] } ],
+  [ l_wp       => 'Wikipedia link', sub { $_[0] ? '<a href="http://en.wikipedia.org/wiki/'.$_[0].'">'.$_[0].'</a>' : 'No link' } ],
+  [ l_vnn      => 'V-N.net link',   sub { $_[0] ? '<a href="http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id='.$_[0].'">'.$_[0].'</a>' : 'No link' } ], 
+  [ l_cisv     => 'CISVisual link', sub { $_[0] ? '<a href="http://cisvisual.net/title/'.$_[0].'">'.$_[0].'</a>' : 'No link' } ], 
+  [ categories => 'Categories',     sub { join(' ', map { $VNDB::CAT->{substr($_->[0],0,1)}[1]{substr($_->[0],1,2)}.'('.$_->[1].')' } sort { $a->[0] cmp $b->[0] } @{$_[0]}) || 'No categories selected' }, 1 ],
+  [ relations  => 'Relations',      sub { join("<br />\n", map { $VNDB::VREL->[$_->{relation}].': '._hchar($_->{title}) } sort { $a->{id} <=> $b->{id} } @{$_[0]}) } ],
+  [ image      => 'Image',          sub { $_[0] ? sprintf '<img src="%s/cv/%02d/%d.jpg" />', $p{st}, $_[0]%50, $_[0] : 'No image'; } ],
+  [ img_nsfw   => 'NSFW',           sub { $_[0] ? 'Not safe' : 'Safe' } ]
+ ) ]]
+[[ } ]]-
+
+[[ 
+  my @lang;
+  for (@{$d{rel}}) {
+    my $l = $_->{language};
+    next if grep { $_ eq $l } @lang;
+    push @lang, $l;
+  }
+
+]] 
+
+
+<div id="vnheader">
+<div>
+[[ if($d{vn}{image}) { ]]
+ [[ if($d{vn}{img_nsfw} && !$p{AuthNsfw}) { ]]
+  <img src="[[: $p{st} ]]/cv/nsfw.png" id="nsfw" class="[[: $p{st} ]]/cv/[[= sprintf '%02d/%d', $d{vn}{image}%50, $d{vn}{image} ]].jpg" />
+ [[ } else { ]]
+  <img src="[[: $p{st} ]]/cv/[[= sprintf '%02d/%d', $d{vn}{image}%50, $d{vn}{image} ]].jpg" alt="[[: $p{PageTitle} ]]" />
+ [[ } ]]
+[[ } else { ]]-
+ No image uploaded yet...
+[[ } ]]-
+</div>
+
+
+-[[ if($p{AuthLoggedin}) { ]]
+<p class="mod">&lt; user options - 
+  <a href="/u[[= $p{AuthId} ]]/votes" rel="voteDD" class="dropdown">[[= $d{vote}{vid} ? 'your vote: '.$d{vote}{vote} : 'vote' ]]</a>
+- <a href="/u[[= $p{AuthId} ]]/list" rel="listDD" class="dropdown">[[= !$d{list}{vid} ? 'add to vn list' : 'status: '.lc $VNDB::LSTAT->[$d{list}{status}] ]]</a>
+&gt;</p>
+[[ } ]]-
+
+-[[ 
+  $d{vn}{c_votes} =~ s#^([0-9]{2}.[0-9]{2})\|([0-9]{4})$#$2 == 0 ? 'No votes yet' : 
+    $1 == 0 ? sprintf 'N/A (%d vote%s)', $2, $2>1?'s':'' : sprintf '%.2f (%d vote%s)', $1, $2, $2>1?'s':''#e;
+
+  my @links = (
+   $d{vn}{l_wp} ?   [ 'Wikipedia', 'http://en.wikipedia.org/wiki/%s', $d{vn}{l_wp} ] : (),
+   $d{vn}{l_vnn}  ? [ 'V-N.net',   'http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=%d', $d{vn}{l_vnn} ] : (),
+   $d{vn}{l_cisv} ? [ 'CISVisual', 'http://cisvisual.net/title/%d', $d{vn}{l_cisv} ] : (),
+  );
+
+if($d{vn}{length} || $d{vn}{alias} || @links) { ]]
+ <h3>General info</h3>
+ <dl>
+ [[ if($d{vn}{length}) { ]]-
+  <dt>Length</dt><dd>[[: $VNDB::VNLEN->[$d{vn}{length}][0] ]]- ([[: $VNDB::VNLEN->[$d{vn}{length}][1] ]])</dd>[[ } ]]-
+ [[ if($d{vn}{alias}) { ]]-
+  <dt>Aliases</dt><dd>[[: $d{vn}{alias} ]]</dd>[[ } ]]-
+ [[ if(@links > 0) { ]]
+  <dt>Links</dt><dd>[[= join(', ', map { '<a href="'.sprintf($_->[1],$_->[2]).'">'.$_->[0].'</a>' } @links) ]]</dd>[[ } ]]-
+ </dl>
+[[ } ]]-
+
+ [[ if(@{$d{vn}{categories}}) { my %nolvl = (pli=>1,pbr=>1,gaa=>1,gab=>1); ]]-
+ <h3>Categories</h3>
+ <dl class="vncat">
+  [[ for (sort keys %$VNDB::CAT) {
+    my $c = $_;
+    my @c = map { my $s=$_;
+      my ($cs) = grep { $_->[0] eq $c.$s } @{$d{vn}{categories}};
+      $cs ? sprintf('<i class="crgn%d">%s</i>', $nolvl{$c.$_}?0:$cs->[1], $VNDB::CAT->{$c}[1]{$s})
+          : ()
+    } sort keys %{$VNDB::CAT->{$c}[1]};
+    if(@c) { ]]-
+   <dt>[[: $VNDB::CAT->{$c}[0] ]]</dt><dd>[[= join(', ', @c) ]]</dd>
+  [[ } } ]]
+ </dl>
+ [[ } ]]-
+
+ [[ if($#{$d{vn}{relations}} >= 0) { ]]-
+ <h3>[[= $d{page} eq 'rg' ? 'Relations' : '<a href="/v'.$d{vn}{id}.'/rg">Relations</a>' ]]</h3>
+ <dl class="vnrel">
+  [[ my $lrel = -1; my $i=0; for (sort { $a->{relation} <=> $b->{relation} } @{$d{vn}{relations}}) {
+    if($_->{relation} != $lrel) { $lrel=$_->{relation}; if($i) { ]]</dd>[[ } ]]-
+    <dt>[[: $VNDB::VREL->[$lrel] ]]</dt><dd><a href="/v[[= $_->{id} ]]">[[: $_->{title} ]]</a>
+   [[ } else { ]]<br /><a href="/v[[= $_->{id} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 40 ]]</a>[[ }
+  ++$i;} ]]
+ </dl>
+ [[ } ]]-
+
+ [[ if(@lang && grep { @{$_->{producers}} } @{$d{rel}}) { ]]-
+  <h3>Producers</h3>
+  <dl>
+   [[ for my $l (@lang) { my %l;
+     $_->{language} eq $l && (%l = ( %l, map {
+      sprintf('<a href="/p%d" title="%s">%s</a>',
+        $_->{id}, _hchar($_->{name}), _hchar shorten $_->{name}, 30) => 1
+     } @{$_->{producers}} )) for (@{$d{rel}});
+   if(keys %l) { ]]-
+    <dt>[[: $VNDB::LANG->{$l} ]]</dt><dd>[[= join(' &amp; ', keys %l) ]]</dd>
+   [[ } } ]]
+ </dl>
+ [[ } ]]-
+
+ <h3>[[= $d{page} eq 'stats' ? 'User stats' : '<a href="/v'.$d{vn}{id}.'/stats">User stats</a>' ]]</h3>
+ <dl>
+  <dt>Rating</dt><dd>[[: $d{vn}{c_votes} ]]</dd>
+ </dl>
+</div>
+
+-[[ 
+  my @lnks = (
+    !$d{page} ? '<b>description &amp; releases</b>' : '<a href="/v'.$d{vn}{id}.'">description &amp; releases</a>',
+    $d{page} eq 'stats' ? '<b>stats</b>' : '<a href="/v'.$d{vn}{id}.'/stats">stats</a>',
+    $d{vn}{rgraph} ? (
+      $d{page} eq 'rg' ? '<b>relations</b>' : '<a href="/v'.$d{vn}{id}.'/rg">relations</a>',
+    ) : (),
+  );
+]]
+<p class="opts">- -[[= join(' - ', @lnks) ]]- -</p>
+
+[[ if(!$d{page}) {           ]][[+ vnpage_rel   ]][[ } ]]
+[[ if($d{page} eq 'stats') { ]][[+ vnpage_stats ]][[ } ]]
+[[ if($d{page} eq 'rg') {    ]][[+ vnpage_rg    ]][[ } ]]
+
+[[ if($p{AuthLoggedin}) { ]]-
+
+<div class="dropdown" id="voteDD">
+ <ul>
+ [[ if($d{vote}{vid}) { ]]-
+  <li><a href="/v[[= $d{vn}{id} ]]/vote?v=-1">revoke</a></li>
+ [[ } for (reverse 1..10) { ]]-
+  <li class="center"><a href="/v[[= $d{vn}{id} ]]/vote?v=[[= $_ ]]">[[= $_ ]]</a></li>
+ [[ } ]]
+ </ul>
+</div>
+
+<div class="dropdown" id="listDD">
+ <ul>
+  [[ for (0..$#$VNDB::LSTAT) { ]]-
+  <li><a href="/v[[= $d{vn}{id} ]]/list?s=[[= $_ ]]" [[= $_ == 6 ? ' id="askcomment"' : '' ]]>[[: $VNDB::LSTAT->[$_] ]]</a></li>
+  [[ } if($d{list}{vid}) { ]]-
+  <li><a href="/v[[= $d{vn}{id} ]]/list?s=-1">Remove</a></li>
+  [[ } ]]-
+ </ul>
+</div>
+
+[[ } ]]
+
+
+[[ } ]]
