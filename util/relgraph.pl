@@ -7,6 +7,7 @@ $ENV{PATH} = '/usr/bin';  # required for GraphViz
 
 use strict;
 use warnings;
+no warnings 'once';
 use Text::Unidecode;
 #use Time::HiRes 'gettimeofday', 'tv_interval';
 #BEGIN { $S = [ gettimeofday ]; }
@@ -23,7 +24,6 @@ require '/www/vndb/lib/global.pl';
 
 my $font = 's'; #Comic Sans MSssss';
 my @fsize = ( 9, 7, 10 ); # nodes, edges, node_title
-my $tmpfile = '/tmp/vndb_graph.gif';
 my $destdir = '/www/vndb/static/rg';
 my $datdir = '/www/vndb/data/rg';
 my $DEBUG = 0;
@@ -67,8 +67,7 @@ my @edge_rel = map {
 
 
 
-my $sql = DBI->connect('dbi:Pg:dbname=vndb', 'vndb', 'passwd',
-  { RaiseError => 1, PrintError => 0, AutoCommit => 0, pg_enable_utf8 => 1 });
+my $sql = DBI->connect(@VNDB::DBLOGIN, { RaiseError => 1, PrintError => 0, AutoCommit => 0, pg_enable_utf8 => 1 });
 my %ids; my %nodes;
 my %rels; # "v1-v2" => 1
 my @done;
@@ -95,9 +94,9 @@ sub createGraph { # vid
     $sql->do(q|UPDATE vn SET rgraph = 0 WHERE id = ?|, undef, $id);
     return 0;
   }
-
+  
  # correct order!
-  for (sort { $a->[2] cmp $b->[2] } values %nodes) {
+  for (sort { $a->[2] <=> $b->[2] } values %nodes) {
     $DEBUG && printf "ADD: %d\n", $_->[0];
     $_->[2] =~ s#^([0-9]{4})([0-9]{2}).+#$1==0?'N/A':$1==9999?'TBA':(($2&&$2>0?($Time::CTime::MoY[$2-1].' '):'').$1)#e;
     $g->add_node($_->[0], %nodes_all, URL => '/v'.$_->[0], tooltip => $_->[1], label => sprintf
@@ -110,17 +109,17 @@ sub createGraph { # vid
 
  # make sure to sort the edges on node release dates
   my @rel = map { [ split(/-/, $_), $rels{$_} ] } keys %rels;
-  for (sort { ($ids{$a->[0]}gt$ids{$a->[1]}?$ids{$a->[1]}:$ids{$a->[0]})
-          cmp ($ids{$b->[0]}gt$ids{$b->[1]}?$ids{$b->[1]}:$ids{$b->[0]}) } @rel) {
+  for (sort { ($ids{$a->[0]} > $ids{$a->[1]} ? $ids{$a->[1]} : $ids{$a->[0]})
+          cmp ($ids{$b->[0]} > $ids{$b->[1]} ? $ids{$b->[1]} : $ids{$b->[0]}) } @rel) {
 
-    if($ids{$_->[1]} gt $ids{$_->[0]}) {
+   # [older game] -> [newer game]
+    if($ids{$_->[1]} > $ids{$_->[0]}) {
       ($_->[0], $_->[1]) = ($_->[1], $_->[0]);
       $_->[2] = reverseRel($_->[2]);
     }
     $g->add_edge($_->[1] => $_->[0], %{$edge_rel[$_->[2]]});
     $DEBUG && printf "ADD %d -> %d\n", $_->[1], $_->[0];
   }
-
 
   $DEBUG && print "IMAGE\n";
 
@@ -158,20 +157,21 @@ sub createGraph { # vid
 
 sub getRel { # gobj, vid
   my($g, $id) = @_;
-  $ids{$id} = 0; # false but defined
+  #$ids{$id} = 0; # false but defined
   $DEBUG && printf "GET: %d\n", $id;
   my $s = $sql->prepare(q|
     SELECT vr1.vid AS vid1, r.vid2, r.relation, vr1.title AS title1, vr2.title AS title2,
       v1.c_released AS date1, v2.c_released AS date2, v1.c_languages AS lang1, v2.c_languages AS lang2
     FROM vn_relations r
     JOIN vn_rev vr1 ON r.vid1 = vr1.id
-    JOIN vn v1 ON v1.id = vr1.vid
+    JOIN vn v1 ON v1.latest = vr1.id
     JOIN vn v2 ON r.vid2 = v2.id
-    JOIN vn_rev vr2 ON v2.id = vr2.vid
-    WHERE (r.vid2 = ? OR vr1.vid = ?) AND v1.latest = vr1.id|
+    JOIN vn_rev vr2 ON v2.latest = vr2.id
+    WHERE (r.vid2 = ? OR vr1.vid = ?)|
   );
   $s->execute($id, $id);
   for my $r (@{$s->fetchall_arrayref({})}) {
+    $DEBUG && printf "  %d: %d - %d\n", $id, $r->{vid1}, $r->{vid2};
     if($r->{vid1} < $r->{vid2}) {
       $rels{$r->{vid1}.'-'.$r->{vid2}} = reverseRel($r->{relation});
     } else {

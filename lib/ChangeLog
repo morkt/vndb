@@ -9,6 +9,13 @@ TODO:
 	- relation graphs and cover images now get an ID instead of MD5-sum
 	- Added Nintendo Wii to platforms
 	- Added 'hidden' flag, which should now be used instead of the delete option
+	- Fixed the ordering of nodes in the relation graphs
+	- Used global.pl as the central location of the PgSQL login info
+	- Wrote a daemon which handles several tasks:
+		- Generation of relation graphs
+		- Generation of the sitemap.xml.gz
+		- The IRC bot
+		+ TODO: scaling/compressing of cover images
 
 1.13 - 2008-04-04
 	- Fixed update_prev

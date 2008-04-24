@@ -34,7 +34,7 @@ sub VNPage {
   $v->{next} = $self->DBGetHist(type => 'v', id => $id, next => $v->{cid}, showhid => 1)->[0]{id} if $r->{rev};
 
   if($page eq 'rg' && $v->{rgraph}) {
-    open(my $F, '<', sprintf '%s/%02d/%d.cmap', $self->{mappath}, $v->{rgraph}%50, $v->{rgraph}) || die $!;
+    open(my $F, '<:utf8', sprintf '%s/%02d/%d.cmap', $self->{mappath}, $v->{rgraph}%50, $v->{rgraph}) || die $!;
     $v->{rmap} = join('', (<$F>));
     close($F);
   }
@@ -366,11 +366,8 @@ sub VNUpdReverse { # old, new, id, cid
 
 sub VNRecreateRel { # @ids
   my($s, @id) = @_;
-  $s->DBCommit; # creates deadlock otherwise
-  my $c = sprintf "%s %s", $s->{grapher}, join(' ', @id);
-  my $o = `$c`;
-  chomp $o;
-  warn "$$s{grapher}: $o\n" if $o;
+  $s->DBUndefRG(@id);
+  $s->RunCmd('relgraph '.join(' ',@id));
 }
 
 

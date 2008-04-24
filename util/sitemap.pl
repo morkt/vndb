@@ -8,13 +8,16 @@ my %chfr = qw( a always   h hourly  d daily  w weekly  m monthly  y yearly  n ne
 # the code
 use strict;
 use warnings;
+no warnings 'once';
 use DBI;
 use POSIX; # for ceil();
 use XML::Writer;
 use PerlIO::gzip;
 use DateTime;
 
-my $sql = DBI->connect('dbi:Pg:dbname=vndb', 'vndb', 'passwd',
+require '/www/vndb/lib/global.pl';
+
+my $sql = DBI->connect(@VNDB::DBLOGIN,
     { RaiseError => 1, PrintError => 0, AutoCommit => 1, pg_enable_utf8 => 1 });
 
 my $urls = 0;

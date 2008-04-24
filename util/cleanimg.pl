@@ -1,5 +1,12 @@
 #!/usr/bin/perl
 
+
+
+#
+#       O L D   -   D O   N O T   U S E !
+#
+
+
 use strict;
 use warnings;
 use Time::HiRes 'gettimeofday', 'tv_interval';
@@ -12,9 +19,11 @@ use Image::MetaData::JPEG;
 use File::Copy 'cp', 'mv';
 use Digest::MD5;
 
+require '/www/vndb/lib/global.pl';
+
 our $ST;
 
-my $sql = DBI->connect('dbi:Pg:dbname=vndb', 'vndb', 'passwd',
+my $sql = DBI->connect(@VNDB::DBLOGIN,
     { RaiseError => 1, PrintError => 0, AutoCommit => 1, pg_enable_utf8 => 1 });
 
 my $imgpath = '/www/vndb/static/img';

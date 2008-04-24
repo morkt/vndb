@@ -16,7 +16,7 @@ $VERSION = $VNDB::VERSION;
   DBGetUser DBAddUser DBUpdateUser
   DBGetVotes DBVoteStats DBAddVote DBDelVote
   DBGetVNList DBVNListStats DBAddVNList DBEditVNList DBDelVNList
-  DBGetVN DBAddVN DBEditVN DBDelVN DBHideVN
+  DBGetVN DBAddVN DBEditVN DBDelVN DBHideVN DBUndefRG
   DBGetRelease DBAddRelease DBEditRelease DBDelRelease DBHideRelease
   DBGetProducer DBGetProducerVN DBAddProducer DBEditProducer DBDelProducer DBHideProducer
   DBExec DBRow DBAll DBLastId
@@ -35,7 +35,7 @@ sub new {
   my $me = shift;
 
   my $type = ref($me) || $me;
-  $me = bless { @_ }, $type;
+  $me = bless { o => \@_ }, $type;
   
   $me->DBInit();
 
@@ -47,13 +47,7 @@ sub DBInit {
   my $self = shift;
   my $info = $self->{_DB} || $self;
   
-  my $settings;
-  $settings .= "host=$info->{host};" if $info->{host};
-  $settings .= "port=$info->{port};" if $info->{port};
-  $settings .= "dbname=$info->{database}";
-
-  $info->{sql} = DBI->connect("dbi:Pg:$settings",
-    $info->{user}, $info->{passwd}, {
+  $info->{sql} = DBI->connect(@{$self->{o}}, {
       PrintError => 0, RaiseError => 1,
       AutoCommit => 0, pg_enable_utf8 => 1,  
     }
@@ -802,6 +796,14 @@ sub DBHideVN { # id, hidden
 }
 
 
+sub DBUndefRG { # ids
+  my($s, @id) = @_;
+  $s->DBExec(q|
+    UPDATE vn
+      SET rgraph = 0
+      WHERE id IN(!l)|,
+    \@id);
+}
 
 
 #-----------------------------------------------------------------------------#

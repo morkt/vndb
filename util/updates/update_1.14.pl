@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+no warnings 'once';
 use File::Path;
 use DBI;
 
@@ -37,7 +38,7 @@ system('util/relgraph.pl');
 
 
 # rename cover images
-my $sql = DBI->connect('dbi:Pg:dbname=vndb', 'vndb', 'passwd',
+my $sql = DBI->connect(@VNDB::DBLOGIN,
     { RaiseError => 0, PrintError => 1, AutoCommit => 1, pg_enable_utf8 => 1 });
 $sql->do('CREATE SEQUENCE covers_seq');
 $sql->do('ALTER TABLE vn_rev ADD COLUMN image_id integer NOT NULL DEFAULT 0');

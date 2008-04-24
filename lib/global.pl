@@ -1,5 +1,8 @@
 package VNDB;
 
+our @DBLOGIN = ( 'dbi:Pg:dbname=vndb', 'vndb', 'passwd' );
+our $SHMKEY = 'VNDB';
+
 our $PLAT = {
   win => 'Windows',
   lin => 'Linux',

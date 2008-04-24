@@ -3,6 +3,8 @@ package VNDB;
 use strict;
 use warnings;
 
+require 'global.pl';
+
 our($VERSION, $DEBUG, %VNDBopts, @WARN);
 
 $DEBUG = 1;
@@ -12,11 +14,6 @@ $VERSION = '1.14';
   root_url      => $DEBUG ? 'http://beta.vndb.org' : 'http://vndb.org',
   static_url    => $DEBUG ? 'http://static.beta.vndb.org' : 'http://static.vndb.org',
   debug         => $DEBUG,
-  sqlopts       => {
-    user          => 'vndb',
-    passwd        => 'passwd',
-    database      => 'vndb',
-  },
   tplopts       => {
     filename      => 'main',
     searchdir     => '/www/vndb/data/tpl',
@@ -37,12 +34,8 @@ $VERSION = '1.14';
   ],
   imgpath => '/www/vndb/static/cv',
   mappath => '/www/vndb/data/rg',
-  grapher => '/www/vndb/util/relgraph.pl',
 );
 $VNDBopts{ranks}[0][1] = { (map{$_,1} map { keys %{$VNDBopts{ranks}[$_]} } 1..5) };
-
-
-require 'global.pl';
 
 require Time::HiRes if $DEBUG;
 require Data::Dumper if $DEBUG;
@@ -168,7 +161,7 @@ sub new {
 
   my $me = bless {
     %args,
-    _DB => VNDB::Util::DB->new(%{$args{sqlopts}}),
+    _DB => VNDB::Util::DB->new(@VNDB::DBLOGIN),
     _TPL => VNDB::Util::Template->new(%{$args{tplopts}}),
   }, $type;
   

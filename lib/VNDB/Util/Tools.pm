@@ -4,10 +4,12 @@ package VNDB::Util::Tools;
 use strict;
 use warnings;
 use Encode;
+use Storable 'freeze', 'thaw';
+use IPC::ShareLite ':lock';
 use Exporter 'import';
 
 our $VERSION = $VNDB::VERSION;
-our @EXPORT = qw| FormCheck AddHid SendMail AddDefaultStuff |;
+our @EXPORT = qw| FormCheck AddHid SendMail AddDefaultStuff RunCmd |;
 
 
 # Improved version of ParamsCheck
@@ -62,11 +64,13 @@ sub FormCheck {
   return \%hash;
 }
 
+
 sub AddHid {
   my $fh = $_[0]->FormCheck({ name => 'fh', required => 0, maxlength => 30 })->{fh};
   $_[1]->{_hid} = { map { $_ => 1 } 'com', 'mod', split /,/, $fh }
     if $fh;
 }
+
 
 sub _inarray { # errr... this is from when I didn't know about grep
   foreach (@{$_[1]}) {
@@ -104,6 +108,7 @@ sub SendMail {
   }
 }
 
+
 sub AddDefaultStuff {
   my $self = shift;
 
@@ -124,22 +129,16 @@ sub AddDefaultStuff {
   }
 }
 
-1;
 
-__END__
-# from HTTP::Date, small function, so why load an entire module?
-{
-  my @DoW = qw(Sun Mon Tue Wed Thu Fri Sat);
-  my @MoY = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
-  
-  sub time2str {
-    my $time = shift;
-    $time = time unless defined $time;
-    my($sec, $min, $hour, $mday, $mon, $year, $wday) = gmtime($time);
-    sprintf('%s, %02d %s %04d %02d:%02d:%02d GMT',
-      $DoW[$wday],
-      $mday, $MoY[$mon], $year+1900,
-      $hour, $min, $sec);
-  }
+sub RunCmd { # cmd
+  my $s = IPC::ShareLite->new(-key => $VNDB::SHMKEY, -create => 1, -destroy => 0);
+  $s->lock(LOCK_EX);
+  my $l = $s->fetch();
+  my @queue = ($l?@{thaw($l)}:(), $_[1]);
+  $s->store(freeze(\@queue));
+  $s->unlock();
 }
+
+
+1;
 
