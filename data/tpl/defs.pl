@@ -135,7 +135,7 @@ sub summary { # cmd, len, def
   my $len = 0;
   my $as = 0;
   for (split / /, $_[0]) {
-    next if !$_;
+    next if !defined $_ || $_ eq '';
     my $l = length;
     s/\&/&amp;/g;
     s/>/&gt;/g;

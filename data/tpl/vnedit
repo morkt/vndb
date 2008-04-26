@@ -65,7 +65,7 @@
  { type => 'sub', title => 'Image', short => 'img' },
  $d{id} ? (
    { type => 'static', text => $d{vn}{image} > 0 ?
-    sprintf '<img src="%s/cv/%02d/%d.jpg" style="float: right" />', $p{st}, $d{vn}{image}%50, $d{vn}{image} :
+    sprintf '<img src="%s/cv/%02d/%d.jpg" style="float: right" />', $p{st}, $d{vn}{image}%100, $d{vn}{image} :
     $d{vn}{image} < 0 ? '[processing]' : 'No image uploaded yet...' },
  ) : (),
  { type => 'upload', name => $d{vn}{image} ? 'Change' : 'Upload', short => 'img' },

@@ -10,6 +10,7 @@ use DBI;
 # /static has been created
 # /www/files has already been moved
 chdir '/www/vndb';
+require 'lib/global.pl';
 
 
 # run the usual SQL update script
@@ -24,7 +25,7 @@ mkdir 'static/cv';
 mkdir 'static/rg';
 chmod 0755, qw|data/rg static/cv static/rg|;
 
-for (0..49) {
+for (0..99) {
   $_ = sprintf "%02d",$_;
   mkdir "data/rg/$_";
   mkdir "static/rg/$_";
@@ -50,7 +51,7 @@ for (@{$q->fetchall_arrayref([])}) {
   my($id) = $q->fetchrow_array();
   rename 
     sprintf('www/img/%s/%s.jpg', substr($_->[0],0,1), $_->[0]),
-    sprintf('static/cv/%02d/%d.jpg', $id%50, $id);
+    sprintf('static/cv/%02d/%d.jpg', $id%100, $id);
   $sql->do('UPDATE vn_rev SET image_id = ? WHERE image = DECODE(\''.$_->[0].'\', \'hex\')', undef, $id);
 }
 $sql->do('ALTER TABLE vn_rev DROP COLUMN image');

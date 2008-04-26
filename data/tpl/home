@@ -13,13 +13,13 @@
  or to discuss about the database at our <a href="http://forum.vndb.org/">forums</a>.
 </p>
 
-<h3 class="home">VNDB 1.13!</h3>
+<h3 class="home">VNDB 1.14!</h3>
 <p class="desc">
- And it's time for an update again: This update makes it possible to specify how much
- a category applies to a visual novel, adds a language filter to the category browser,
- and fixes many, many bugs.
+ A large update technical-wise, but no major noticable changes: Large cover images will now automatically
+ get resized, all static content has been moved to a separate domain, the Nintento Wii has been
+ added to the platform list, and various other small changes and bug fixes.
  <br />
- <a href="http://forum.vndb.org/index.php?topic=43.0">Read more...</a> - <a href="http://forum.vndb.org/index.php?board=7.0">news archive</a>.
+ <a href="http://forum.vndb.org/index.php?topic=49.0">Read more...</a> - <a href="http://forum.vndb.org/index.php?board=7.0">news archive</a>.
 </p>
 
 <ul class="home">
