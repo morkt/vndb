@@ -7,19 +7,20 @@ package Multi::Core;
 
 use strict;
 use warnings;
-use POE;
+use POE 'Component::Cron';
 use Storable 'freeze', 'thaw';
 use IPC::ShareLite ':lock';
 use Time::HiRes 'time', 'gettimeofday', 'tv_interval'; # overload time()
+use DateTime::Event::Cron; # bug in PoCo::Cron
 
 
 sub spawn {
   my $p = shift;
   POE::Session->create(
     package_states => [
-      $p => [qw| _start register fetch queue execute finish log cmd_exit |],
+      $p => [qw| _start register addcron fetch queue execute finish log cmd_exit |],
     ],
-    heap => { queue => [], cmds => [], running => 0, starttime => 0 },
+    heap => { cron => [], queue => [], cmds => [], running => 0, starttime => 0 },
   );
 }
 
@@ -36,6 +37,13 @@ sub register { # regex, state
   push @{$_[HEAP]{cmds}}, [ $_[ARG0], $_[SENDER], $_[ARG1] ];
   (my $p = $_[SENDER][2]{$_[CALLER_STATE]}[0]) =~ s/^Multi:://; # NOT PORTABLE
   $_[KERNEL]->call(core => log => 3, "Command '%s' handled by %s::%s", $_[ARG0], $p, $_[ARG1]);
+}
+
+
+sub addcron { # cronline, cmd
+  return if $Multi::DAEMONIZE; # no cronjobs when we aren't a daemon!
+  push @{$_[HEAP]{cron}}, POE::Component::Cron->from_cron($_[ARG0], $_[SESSION], queue => $_[ARG1]);
+  $_[KERNEL]->call(core => log => 3, "Added cron: %s %s", $_[ARG0], $_[ARG1]);
 }
 
 
@@ -97,12 +105,18 @@ sub finish { # cmd [, stop ]
 
 sub log { # level, msg
   return if $_[ARG0] > $Multi::LOGLVL; 
-  #open(my $F, \&STDOUT); #'>>', $Multi::LOGDIR.'/multi.log');
+
   (my $p = $_[SENDER][2]{$_[CALLER_STATE]}[0]) =~ s/^Multi:://; # NOT PORTABLE
-  printf "[%s] (%s) %s::%s: %s\n", scalar localtime,
+  my $msg = sprintf '(%s) %s::%s: %s',
     (qw|WRN ACT DBG|)[$_[ARG0]-1], $p, $_[CALLER_STATE],
     $_[ARG2] ? sprintf($_[ARG1], @_[ARG2..$#_]) : $_[ARG1];
-  #close $F;
+    
+  open(my $F, '>>', $Multi::LOGDIR.'/multi.log');
+  printf $F "[%s] %s\n", scalar localtime, $msg;
+  close $F;
+
+ # (debug) log to stdout as well...
+ #printf "[%s] %s\n", scalar localtime, $msg;
 }
 
 
@@ -118,7 +132,8 @@ sub cmd_exit {
   $s->unlock();
   undef $s;
 
-  $_[KERNEL]->delay('fetch');                 # This'll make the current session stop
+  $_[KERNEL]->delay('fetch'); # stop fetching
+  $_->delete() for (@{$_[HEAP]{cron}}); # stop scheduling cron jobs
   $_[KERNEL]->signal($_[KERNEL], 'shutdown'); # Broadcast to other sessions
 }
 

@@ -8,7 +8,7 @@ use Digest::MD5;
 
 use vars ('$VERSION', '@EXPORT');
 $VERSION = $VNDB::VERSION;
-@EXPORT = qw| RPage REdit RLock RDel RHide |;
+@EXPORT = qw| RPage REdit RLock RDel RHide RVNCache |;
 
 
 sub RPage {
@@ -111,9 +111,12 @@ sub REdit {
         media     => $media,
         producers => $producers,
       );
-      my $cid;
+      my $cid; 
       $cid = $self->DBEditRelease($rid, %opts) if $rid;   # edit
       ($rid, $cid) = $self->DBAddRelease(%opts) if !$rid;  # add
+
+      $self->RVNCache(@$new_vn, (map { $_->{vid} } @$vn));
+
       return $self->ResRedirect('/r'.$rid.'?rev='.$cid, 'post');
     }
   }
@@ -157,7 +160,8 @@ sub RDel {
   return $self->ResDenied if !$self->AuthCan('del');
   my $r = $self->DBGetRelease(id => $id, what => 'vn')->[0];
   return $self->ResNotFound if !$r;
-  $self->DBDelRelease([ map { $_->{vid} } @{$r->{vn}} ], $id);
+  $self->DBDelRelease($id);
+  $self->RVNCache(map { $_->{vid} } @{$r->{vn}});
   return $self->ResRedirect('/v'.$r->{vn}[0]{id}, 'perm');
 }
 
@@ -169,10 +173,25 @@ sub RHide {
   return $self->ResDenied if !$self->AuthCan('del');
   my $r = $self->DBGetRelease(id => $id, what => 'vn')->[0];
   return $self->ResNotFound if !$r;
-  $self->DBHideRelease($id, $r->{hidden}?0:1, [ map { $_->{vid} } @{$r->{vn}} ]);
+  $self->DBHideRelease($id, $r->{hidden}?0:1);
+  $self->RVNCache(map { $_->{vid} } @{$r->{vn}});
   return $self->ResRedirect('/r'.$id, 'perm');
 }
 
+
+sub RVNCache { # @vids - calls update_vncache and regenerates relation graphs if needed
+  my($self, @vns) = @_;
+  my $before = $self->DBGetVN(id => \@vns, order => 'v.id');
+  $self->DBVNCache(@vns);
+  my $after = $self->DBGetVN(id => \@vns, order => 'v.id');
+  my @upd = map {
+    $before->[$_]{rgraph} && (
+         $before->[$_]{c_released} != $after->[$_]{c_released}
+      || $before->[$_]{c_languages} ne $after->[$_]{c_languages}
+    ) ? $before->[$_]{id} : ();
+  } 0..$#$before;
+  $self->RunCmd('relgraph '.join(' ', @upd)) if @upd;
+}
 
 1;
 

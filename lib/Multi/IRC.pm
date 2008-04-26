@@ -109,15 +109,15 @@ sub irc_msg {
 
   my $m = $_[ARG2];
   if($m =~ /^say (.+)$/) {
-    $_[KERNEL]->post(circ => privmsg => $_[HEAP]{o}{channel}, $1); }
-  elsif($m =~ /^me (.+)$/) {
-    $_[KERNEL]->post(circ => ctcp => $_[HEAP]{o}{channel}, "ACTION $1"); }
-  elsif($m =~ /^cmd (.+)$/) {
-    $_[KERNEL]->post(core => queue => $1); }
-  elsif($m =~ /^eval (.+)$/) {
+    $_[KERNEL]->post(circ => privmsg => $_[HEAP]{o}{channel}, $1);
+  } elsif($m =~ /^me (.+)$/) {
+    $_[KERNEL]->post(circ => ctcp => $_[HEAP]{o}{channel}, "ACTION $1");
+  } elsif($m =~ /^cmd (.+)$/) {
+    $_[KERNEL]->post(core => queue => $1);
+  } elsif($m =~ /^eval (.+)$/) {
     $_[KERNEL]->post(circ => privmsg => $nick, 'eval: '.$_)
-      for (split /\r?\n/, eval($1)||$@); }
-  else {
+      for (split /\r?\n/, eval($1)||$@);
+  } else {
     $_[KERNEL]->post(circ => privmsg => $nick, 'Unkown command'); }
 
   # TODO: add command to view the current queue, and a method to send log messages

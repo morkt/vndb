@@ -64,13 +64,13 @@
 
  { type => 'sub', title => 'Image', short => 'img' },
  $d{id} ? (
-   { type => 'static', text => $d{vn}{image} ?
+   { type => 'static', text => $d{vn}{image} > 0 ?
     sprintf '<img src="%s/cv/%02d/%d.jpg" style="float: right" />', $p{st}, $d{vn}{image}%50, $d{vn}{image} :
-    'No image uploaded yet...' },
+    $d{vn}{image} < 0 ? '[processing]' : 'No image uploaded yet...' },
  ) : (),
  { type => 'upload', name => $d{vn}{image} ? 'Change' : 'Upload', short => 'img' },
  { type => 'static', text => q|
-   Preferably the cover of the CD/DVD/package. Image must be in JPEG format and at most 256x400px and 50KB.<br /><br />| },
+   Preferably the cover of the CD/DVD/package. Image must be in JPEG or PNG format and at most 500kB. Images larger than 256x400 will automatically be resized.<br /><br />| },
  { type => 'check', short => 'img_nsfw', name => '<b>NSFW.</b> Please check this option if the image contains nudity, gore, or is otherwise not safe in a work-friendly environment.' },
 
  { type => 'sub', title => 'Visual novel relations', short => 'rel' },

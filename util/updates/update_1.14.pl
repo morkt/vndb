@@ -34,7 +34,7 @@ for (0..49) {
 
 
 # rename relation graphs
-system('util/relgraph.pl');
+system('util/multi.pl -c "relgraph all"');
 
 
 # rename cover images

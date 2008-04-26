@@ -15,7 +15,7 @@
 <div id="lfilter">
  <b>Languages</b> (none selected means all)<br />
 [[ for (sort keys %{$d{lang}}) { next if !$d{lang}{$_}; ]]-
- <input type="checkbox" name="lang_[[= $_ ]]" id="lang_[[= $_ ]]" value="1" -[[= $d{slang}=~/$_/?'checked="checked"':'' ]]>
+ <input type="checkbox" name="lang_[[= $_ ]]" id="lang_[[= $_ ]]" value="1" -[[= $d{slang}=~/$_/?'checked="checked"':'' ]] />
   <label for="lang_[[= $_ ]]">[[: $VNDB::LANG->{$_} ]]- ([[= $d{lang}{$_} ]])</label>
 [[ } ]]-
 </div>
@@ -70,7 +70,7 @@
   <td class="tc2">Released [[= sortbut($url, 'released') ]]</td>
   <td class="tc3">Languages</td>
   <td class="tc4">Rating [[= sortbut($url, 'votes') ]]</td>
- </thead></tr>
+ </tr></thead>
  [[ for (@{$d{vn}}) {
   $_->{c_votes} =~ s#^([0-9]{2}.[0-9]{2})\|([0-9]{4})$#$1 == 0 ? sprintf '- (%d)', $2 : sprintf '%.2f (%d)', $1, $2#e;
   $_->{c_released} =~ s#^([0-9]{4})([0-9]{2}).+#$1==0?'N/A':$1==9999?'TBA':(($2&&$2>0?($Time::CTime::MoY[$2-1].' '):'').$1)#e;

@@ -26,9 +26,6 @@
 #    -a  Don't do anything, just add the commands specified on
 #        the command line to the shared memory processing queue.
 
-
-# TODO: error handling
-
 #
 #  Multi  -  core namespace for initialisation and global variables
 #
@@ -46,7 +43,9 @@ use DBI;
 use lib '/www/vndb/lib';
 use Multi::Core;
 use Multi::RG;
+use Multi::Image;
 use Multi::Sitemap;
+use Multi::Maintenance;
 use Multi::IRC;
 
 BEGIN { require 'global.pl' }
@@ -79,7 +78,9 @@ our $SQL = DBI->connect(@VNDB::DBLOGIN,
 
 Multi::Core->spawn();
 Multi::RG->spawn();
+Multi::Image->spawn();
 Multi::Sitemap->spawn();
+Multi::Maintenance->spawn();
 Multi::IRC->spawn(
   server => 'irc.synirc.net',
   user => 'Multi_'.$$,

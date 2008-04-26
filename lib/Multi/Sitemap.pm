@@ -31,7 +31,9 @@ sub spawn {
 sub _start {
   $_[KERNEL]->alias_set('sitemap');
   $_[KERNEL]->call(core => register => qr/^sitemap$/, 'cmd_sitemap');
-  # TODO: add an event to run cmd_sitemap on a daily basis
+  
+ # Regenerate the sitemap every day on 0:00
+  $_[KERNEL]->post(core => addcron => '0 0 * * *', 'sitemap');
 }
 
 

@@ -16,7 +16,7 @@ $VERSION = $VNDB::VERSION;
   DBGetUser DBAddUser DBUpdateUser
   DBGetVotes DBVoteStats DBAddVote DBDelVote
   DBGetVNList DBVNListStats DBAddVNList DBEditVNList DBDelVNList
-  DBGetVN DBAddVN DBEditVN DBDelVN DBHideVN DBUndefRG
+  DBGetVN DBAddVN DBEditVN DBDelVN DBHideVN DBUndefRG DBVNCache
   DBGetRelease DBAddRelease DBEditRelease DBDelRelease DBHideRelease
   DBGetProducer DBGetProducerVN DBAddProducer DBEditProducer DBDelProducer DBHideProducer
   DBExec DBRow DBAll DBLastId
@@ -560,8 +560,10 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
   my %where = (
     !$o{id} && !$o{rev} ? ( # don't fetch hidden items unless we ask for an ID
       'v.hidden = 0' => 1 ) : (),
-    $o{id} ? (
+    $o{id} && !ref($o{id}) ? (
       'v.id = %d' => $o{id} ) : (),
+    $o{id} && ref($o{id}) ? (
+      'v.id IN(!l)' => $o{id} ) : (),
     $o{rev} ? (
       'vr.id = %d' => $o{rev} ) : (),
     $o{char} ? (
@@ -796,6 +798,12 @@ sub DBHideVN { # id, hidden
 }
 
 
+sub DBVNCache { # @vids
+  my($s,@vn) = @_;
+  $s->DBExec('SELECT update_vncache(%d)', $_) for (@vn);
+}
+
+
 sub DBUndefRG { # ids
   my($s, @id) = @_;
   $s->DBExec(q|
@@ -920,8 +928,6 @@ sub DBAddRelease { # options -> { columns in releases_rev table + comm + vn + pr
   my $rid = $s->DBLastId('releases');
 
   _insert_release_rev($s, $id, $rid, \%o);
-  
-  $s->DBExec('SELECT update_vncache(%d)', $_) for (@{$o{vn}});
   return ($rid, $id);
 }
 
@@ -946,8 +952,6 @@ sub DBEditRelease { # id, %opts->{ columns in releases_rev table + comm + vn + p
   _insert_release_rev($s, $id, $rid, \%o);
 
   $s->DBExec(q|UPDATE releases SET latest = %d WHERE id = %d|, $id, $rid);
-
-  $s->DBExec('SELECT update_vncache(%d)', $_) for (@{$o{vn}});
   return $id;
 }
 
@@ -986,8 +990,8 @@ sub _insert_release_rev {
 }
 
 
-sub DBDelRelease { # $vns, @ids
-  my($s, $vn, @rid) = @_;
+sub DBDelRelease { # $vns
+  my($s, @rid) = @_;
   return if !@rid;
   $s->DBExec($_, \@rid) for(
     q|DELETE FROM changes            WHERE id  IN(SELECT rr.id FROM releases_rev rr WHERE rr.rid IN(!l))|,
@@ -998,23 +1002,16 @@ sub DBDelRelease { # $vns, @ids
     q|DELETE FROM releases_vn        WHERE rid IN(!l)|,
     q|DELETE FROM releases           WHERE id  IN(!l)|,
   );
-
-  if($vn) {
-    $s->DBExec('SELECT update_vncache(%d)', $_) for (@$vn);
-  }
 }
 
 
-sub DBHideRelease { # id, hidden, vns
-  my($s, $id, $h, $vn) = @_;
+sub DBHideRelease { # id, hidden
+  my($s, $id, $h) = @_;
   $s->DBExec(q|
     UPDATE releases 
       SET hidden = %d
       WHERE id = %d|,
     $h, $id);
-  if(@$vn) {
-    $s->DBExec('SELECT update_vncache(%d)', $_) for (@$vn);
-  }
 }
 
 

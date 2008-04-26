@@ -1,6 +1,9 @@
 TODO:
-	+ Add a 'change' when hiding/unhiding an item
-	+ Remove all references to an item when it's hidden
+	+ The current implementation of the hidden flag *SUCKS*, seriously needs
+	  some revising:
+	  + Add a 'change' when hiding/unhiding an item
+	  + Remove all references to an item when it's hidden
+	    (preferably with the option to re-add them when unhiding)
 
 1.14 - ?
 	- Removed the ID gap prevention method
@@ -12,10 +15,15 @@ TODO:
 	- Fixed the ordering of nodes in the relation graphs
 	- Used global.pl as the central location of the PgSQL login info
 	- Wrote a daemon which handles several tasks:
-		- Generation of relation graphs
-		- Generation of the sitemap.xml.gz
-		- The IRC bot
-		+ TODO: scaling/compressing of cover images
+	  - Generation of relation graphs
+	  - Generation of the sitemap.xml.gz
+	  - The IRC bot
+	  - scaling/compressing of cover images
+	  - General maintenance
+	- Fixed bug with categories not being re-selected after an error submitting
+	  a new VN
+	- Relation graphs are now automatically updated when a change in a related
+	  release causes information in the graph to be outdated
 
 1.13 - 2008-04-04
 	- Fixed update_prev

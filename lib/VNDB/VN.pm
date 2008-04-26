@@ -9,7 +9,7 @@ require bytes;
 
 use vars ('$VERSION', '@EXPORT');
 $VERSION = $VNDB::VERSION;
-@EXPORT = qw| VNPage VNEdit VNLock VNDel VNHide VNBrowse VNXML VNUpdReverse VNRecreateRel |;
+@EXPORT = qw| VNPage VNEdit VNLock VNDel VNHide VNBrowse VNXML VNUpdReverse |;
 
 
 sub VNPage {
@@ -110,18 +110,12 @@ sub VNEdit {
       my $l;
       open(my $T, '<:raw:bytes', $tmp) || die $1;
       read $T, $l, 2;
-      seek $T, 0, 0;
-      my($x, $y) = jpegsize($T);
       close($T);
 
       $frm->{_err} = $frm->{_err} ? [ @{$frm->{_err}}, 'nojpeg' ] : [ 'nojpeg' ]
-        if $l ne pack('H*', 'ffd8');
-      if(!$frm->{_err}) {
-        $frm->{_err} = $frm->{_err} ? [ @{$frm->{_err}}, 'toolarge' ] : [ 'toolarge' ]
-          if -s $tmp > 51200; # 50 KB max.
-        $frm->{_err} = $frm->{_err} ? [ @{$frm->{_err}}, 'imgsize' ] : [ 'imgsize' ]
-          if $x > 256 || $y > 400; # 256x400 max
-      }
+        if $l ne pack('H*', 'ffd8') && $l ne pack('H*', '8950');
+      $frm->{_err} = $frm->{_err} ? [ @{$frm->{_err}}, 'toolarge' ] : [ 'toolarge' ]
+        if !$frm->{_err} && -s $tmp > 512*1024; # 500 KB max.
       
       if($frm->{_err}) {
         unlink $tmp;
@@ -130,6 +124,8 @@ sub VNEdit {
         my $new = sprintf '%s/%02d/%d.jpg', $self->{imgpath}, $imgid%50, $imgid;
         rename $tmp, $new or die $!;
         chmod 0666, $new;
+        $self->RunCmd(sprintf 'coverimage %d', $imgid);
+        $imgid = -1*$imgid;
       }
     } elsif($id) {
       $imgid = $v->{image};
@@ -151,7 +147,7 @@ sub VNEdit {
       if((!$oid && $#$relations >= 0) || ($oid && $frm->{relations} ne $b4{relations})) {
         my %old = $oid ? (map { $_->{id} => $_->{relation} } @{$v->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations; 
-        $self->VNRecreateRel($id, $self->VNUpdReverse(\%old, \%new, $id, $cid));
+        $self->VNUpdReverse(\%old, \%new, $id, $cid);
       }
 
       return $self->ResRedirect('/v'.$id.'?rev='.$cid, 'post');
@@ -161,9 +157,7 @@ sub VNEdit {
   if($id) {
     $frm->{$_} ||= $b4{$_} for (keys %b4);
     $frm->{comm} = sprintf 'Reverted to revision %d by %s.', $v->{cid}, $v->{username} if $v->{cid} != $v->{latest};
-  } else {
-    $frm->{categories} = 0;
-  }
+  } 
 
   $self->AddHid($frm);
   $frm->{_hid} = {map{$_=>1} qw| info cat img |}
@@ -210,8 +204,8 @@ sub VNHide {
   return $self->ResNotFound() if !$v;
   return $self->ResDenied if !$self->AuthCan('del');
   $self->DBHideVN($id, $v->{hidden}?0:1);
-  $self->VNRecreateRel($id, $self->VNUpdReverse({ map { $_->{id} => $_->{relation} } @{$v->{relations}} }, {}, $id, 0))
-    if @{$v->{relations}};
+  #$self->VNUpdReverse({ map { $_->{id} => $_->{relation} } @{$v->{relations}} }, {}, $id, 0)
+  #  if @{$v->{relations}};
   return $self->ResRedirect('/v'.$id, 'perm');
 }
 
@@ -293,44 +287,6 @@ sub VNXML {
 }
 
 
-
-sub jpegsize {
-  my $stream = shift;
-  
-  my $MARKER      = "\xFF";       # Section marker.
-  
-  my $SIZE_FIRST  = 0xC0;         # Range of segment identifier codes
-  my $SIZE_LAST   = 0xC3;         #  that hold size info.
-  
-  my ($x, $y, $id) = (undef, undef, "could not determine JPEG size");
-  
-  my ($marker, $code, $length, $data);
-  my $segheader;
-  
-  seek $stream, 2, 0;
-  while (1) {
-    $length = 4;
-    read $stream, $segheader, $length;
-    
-    ($marker, $code, $length) = unpack("a a n", $segheader);
-
-    if ($marker ne $MARKER) { 
-      $id = "JPEG marker not found";
-      last;
-    } elsif((ord($code) >= $SIZE_FIRST) && (ord($code) <= $SIZE_LAST)) {
-      $length = 5;
-      read $stream, $data, $length;
-      ($y, $x) = unpack("xnn", $data);
-      $id = 'JPG';
-      last;
-    } else {
-      seek $stream, ($length - 2), 1;
-   }
-  }
-  return ($x, $y, $id);
-}
-
-
 # Update reverse relations
 sub VNUpdReverse { # old, new, id, cid
   my($self, $old, $new, $id, $cid) = @_;
@@ -360,14 +316,7 @@ sub VNUpdReverse { # old, new, id, cid
     );
   }
 
-  return keys %upd;
-}
-
-
-sub VNRecreateRel { # @ids
-  my($s, @id) = @_;
-  $s->DBUndefRG(@id);
-  $s->RunCmd('relgraph '.join(' ',@id));
+  $self->RunCmd('relgraph '.join(' ', $id, keys %upd));
 }
 
 

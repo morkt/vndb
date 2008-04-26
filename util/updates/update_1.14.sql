@@ -17,6 +17,14 @@ DROP FUNCTION get_new_id(text);
 
 
 
+-- remove users.p* columns (Why haven't I done so earlier?)
+ALTER TABLE users DROP COLUMN pvotes;
+ALTER TABLE users DROP COLUMN pfind;
+ALTER TABLE users DROP COLUMN plist;
+ALTER TABLE users DROP COLUMN pign_nsfw;
+
+
+
 -- relation graphs get ID numbers
 CREATE SEQUENCE relgraph_seq;
 ALTER TABLE vn ALTER COLUMN rgraph DROP NOT NULL;

@@ -300,9 +300,8 @@ my %formerr_exeptions = (
   usrexists  => 'Username already exists, please choose an other one',
   mailexists => 'There already is a user with that email address, please request a new password if you forgot it',
   nomail     => 'No user found with that email address',
-  nojpeg     => 'Image is not in JPEG format!',
+  nojpeg     => 'Image is not in JPEG or PNG format!',
   toolarge   => 'Image is too large (in filesize), try to compress it a little',
-  imgsize    => 'Image is too large (in height/width), try to resize it a little',
 );
 sub formerr {
   my @err = ref $_[0] eq 'ARRAY' ? @{$_[0]} : ();
