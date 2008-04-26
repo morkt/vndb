@@ -34,7 +34,7 @@ sub VNPage {
   $v->{next} = $self->DBGetHist(type => 'v', id => $id, next => $v->{cid}, showhid => 1)->[0]{id} if $r->{rev};
 
   if($page eq 'rg' && $v->{rgraph}) {
-    open(my $F, '<:utf8', sprintf '%s/%02d/%d.cmap', $self->{mappath}, $v->{rgraph}%50, $v->{rgraph}) || die $!;
+    open(my $F, '<:utf8', sprintf '%s/%02d/%d.cmap', $self->{mappath}, $v->{rgraph}%100, $v->{rgraph}) || die $!;
     $v->{rmap} = join('', (<$F>));
     close($F);
   }
@@ -121,7 +121,7 @@ sub VNEdit {
         unlink $tmp;
       } else {
         $imgid = $self->DBIncId('covers_seq');
-        my $new = sprintf '%s/%02d/%d.jpg', $self->{imgpath}, $imgid%50, $imgid;
+        my $new = sprintf '%s/%02d/%d.jpg', $self->{imgpath}, $imgid%100, $imgid;
         rename $tmp, $new or die $!;
         chmod 0666, $new;
         $self->RunCmd(sprintf 'coverimage %d', $imgid);

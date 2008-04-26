@@ -56,7 +56,7 @@ sub cmd_coverimage {
 
 sub format { # imgid
   $_[HEAP]{imgid} = $_[ARG0];
-  $_[HEAP]{img} = sprintf '%s/%02d/%d.jpg', $_[HEAP]{imgpath}, $_[ARG0]%50, $_[ARG0];
+  $_[HEAP]{img} = sprintf '%s/%02d/%d.jpg', $_[HEAP]{imgpath}, $_[ARG0]%100, $_[ARG0];
   $_[KERNEL]->call(core => log => 3, 'Processing image %d', $_[HEAP]{imgid});
 
   $_[HEAP]{im} = Image::Magick->new;

@@ -198,8 +198,8 @@ sub buildgraph {
   my $gid = $Multi::SQL->prepare("SELECT nextval('relgraph_seq')");
   $gid->execute;
   $gid = $gid->fetchrow_arrayref->[0];
-  my $gif = sprintf '%s/%02d/%d.gif', $_[HEAP]{imgdir}, $gid % 50, $gid;
-  my $cmap = sprintf '%s/%02d/%d.cmap', $_[HEAP]{datdir}, $gid % 50, $gid;
+  my $gif = sprintf '%s/%02d/%d.gif', $_[HEAP]{imgdir}, $gid % 100, $gid;
+  my $cmap = sprintf '%s/%02d/%d.cmap', $_[HEAP]{datdir}, $gid % 100, $gid;
 
  # generate the graph
   $_[HEAP]{gv}->as_gif($gif);

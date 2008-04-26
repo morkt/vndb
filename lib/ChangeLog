@@ -4,8 +4,10 @@ TODO:
 	  + Add a 'change' when hiding/unhiding an item
 	  + Remove all references to an item when it's hidden
 	    (preferably with the option to re-add them when unhiding)
+	  + Add a link for the hidden 'h' option at /hist
+		+ The delete option should be removed
 
-1.14 - ?
+1.14 - 2008-04-26
 	- Removed the ID gap prevention method
 	- Moved static content to static.vndb.org (and rely on lighty for js/css
 	  compression)

@@ -233,16 +233,6 @@ sub DBLockItem { # table, id, locked
 }
 
 
-sub DBHideItem { # table, id, hidden
-  my($s, $tbl, $id, $h) = @_;
-  $s->DBExec(q|
-    UPDATE %s
-      SET hidden = %d
-      WHERE id = %d|,
-    $tbl, $h, $id);
-}
-
-
 sub DBIncId { # sequence (this is a rather low-level function... aww heck...)
   return $_[0]->DBRow(q|SELECT nextval(!s) AS ni|, $_[1])->{ni};
 }
