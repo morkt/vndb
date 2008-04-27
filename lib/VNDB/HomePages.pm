@@ -133,7 +133,7 @@ sub History { # type(p,v,r,u), id, [rss|/]
       $x->startTag('item');
       $x->dataElement(title => $_->{ititle});
       $x->dataElement(link => $url);
-      $x->dataElement(pubDate => VNDB::time2str($_->{requested}));
+      $x->dataElement(pubDate => NTL::time2str($_->{requested}));
       $x->dataElement(guid => $url);
       $x->dataElement(description => $_->{comments});
       $x->endTag('item');

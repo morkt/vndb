@@ -3,13 +3,9 @@ package VNDB;
 use strict;
 use warnings;
 
-require 'global.pl';
-
-our($VERSION, $DEBUG, %VNDBopts, @WARN);
-
-$DEBUG = 1;
-$VERSION = '1.14';
-%VNDBopts = (
+BEGIN { require 'global.pl'; }
+our $DEBUG;
+our %VNDBopts = (
   CookieDomain  => '.vndb.org',
   root_url      => $DEBUG ? 'http://beta.vndb.org' : 'http://vndb.org',
   static_url    => $DEBUG ? 'http://static.beta.vndb.org' : 'http://static.vndb.org',

@@ -34,10 +34,9 @@ package Multi;
 
 use strict;
 use warnings;
+use Tie::ShareLite ':lock';
 use Time::HiRes;
 use POE;
-use Storable 'freeze', 'thaw';
-use IPC::ShareLite ':lock';
 use DBI;
 
 use lib '/www/vndb/lib';
@@ -52,20 +51,18 @@ BEGIN { require 'global.pl' }
 
 
     $ENV{PATH} = '/usr/bin';
-our $VERSION = '0.9';
 our $LOGDIR = '/www/vndb/data/log';
 our $LOGLVL = 3; # 3:DEBUG, 2:ACTIONS, 1:WARN
-our $RESTART = 0;
+our $STOP = 0;
 our $DAEMONIZE = (grep /^-c$/, @ARGV) ? 1 : (grep /^-s$/, @ARGV) ? 2 : 0;
 our %MODULES = ();
 
 
 if(grep /^-a$/, @ARGV) {
-  my $s = IPC::ShareLite->new(-key => $VNDB::SHMKEY,-create => 1, -destroy => 0);
+  my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
   $s->lock(LOCK_EX);
-  my $l = $s->fetch();
-  my @queue = ($l?@{thaw($l)}:(), grep !/^-/, @ARGV);
-  $s->store(freeze(\@queue));
+  my @q = ( ($s{queue} ? @{$s{queue}} : ()), (grep !/^-/, @ARGV) );
+  $s{queue} = \@q;
   $s->unlock();
   exit;
 }
@@ -81,17 +78,13 @@ Multi::RG->spawn();
 Multi::Image->spawn();
 Multi::Sitemap->spawn();
 Multi::Maintenance->spawn();
-Multi::IRC->spawn(
-  server => 'irc.synirc.net',
-  user => 'Multi_'.$$,
-  channel => '#vndb_test'
-) if 0;
+Multi::IRC->spawn() if !$VNDB::DEBUG;
 
 
 $SIG{__WARN__} = sub {(local$_=shift)=~s/\r?\n//;$poe_kernel->call(core=>log=>1,'__WARN__: '.$_)};
 
 $poe_kernel->run();
-exec $0, grep /^-/, @ARGV if $RESTART;
+exec $0, grep /^-/, @ARGV if $STOP == 2;
 
 
 

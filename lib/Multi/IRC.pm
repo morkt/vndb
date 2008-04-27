@@ -85,7 +85,7 @@ sub irc_001 {
 sub irc_public {
   if($_[ARG2] =~ /^!info/) {
     $_[KERNEL]->post(circ => privmsg => $_[ARG1][0],
-      'Hello, I am HMX-12 Multi v'.$Multi::VERSION.' made by the great Yorhel! (Please ask Ayo for more info)');
+      'Hello, I am HMX-12 Multi v'.$VNDB::VERSION.' made by the great Yorhel! (Please ask Ayo for more info)');
   } else {
     $_[KERNEL]->call(irc => vndbid => $_[ARG1][0], $_[ARG2]);
   }

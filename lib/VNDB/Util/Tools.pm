@@ -4,8 +4,7 @@ package VNDB::Util::Tools;
 use strict;
 use warnings;
 use Encode;
-use Storable 'freeze', 'thaw';
-use IPC::ShareLite ':lock';
+use Tie::ShareLite ':lock';
 use Exporter 'import';
 
 our $VERSION = $VNDB::VERSION;
@@ -131,11 +130,10 @@ sub AddDefaultStuff {
 
 
 sub RunCmd { # cmd
-  my $s = IPC::ShareLite->new(-key => $VNDB::SHMKEY, -create => 1, -destroy => 0);
+  my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
   $s->lock(LOCK_EX);
-  my $l = $s->fetch();
-  my @queue = ($l?@{thaw($l)}:(), $_[1]);
-  $s->store(freeze(\@queue));
+  $s{queue} = [] if !$s{queue};
+  push(@{$s{queue}}, grep !/^-/, $_[1]);
   $s->unlock();
 }
 
