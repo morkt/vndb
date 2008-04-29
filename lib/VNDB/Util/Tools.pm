@@ -132,8 +132,8 @@ sub AddDefaultStuff {
 sub RunCmd { # cmd
   my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
   $s->lock(LOCK_EX);
-  $s{queue} = [] if !$s{queue};
-  push(@{$s{queue}}, grep !/^-/, $_[1]);
+  my @q = ( ($s{queue} ? @{$s{queue}} : ()), $_[1] );
+  $s{queue} = \@q;
   $s->unlock();
 }
 

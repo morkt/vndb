@@ -630,10 +630,11 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
   );
   $_->{c_released} = sprintf '%08d', $_->{c_released} for @$r;
 
-  if($o{what} =~ /(relations|categories)/ && $#$r >= 0) {
+  if($o{what} =~ /(?:relations|categories|anime)/ && $#$r >= 0) {
     my %r = map {
       $r->[$_]{relations} = [];
       $r->[$_]{categories} = [];
+      $r->[$_]{anime} = [];
       ($r->[$_]{cid}, $_)
     } 0..$#$r;
     
@@ -642,6 +643,16 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
         SELECT vid, cat, lvl
           FROM vn_categories
           WHERE vid IN(!l)|,
+        [ keys %r ]
+      )});
+    }
+
+    if($o{what} =~ /anime/) {
+      push(@{$r->[$r{$_->{vid}}]{anime}}, $_) && delete $_->{vid} for (@{$s->DBAll(q|
+        SELECT va.vid, a.*
+          FROM vn_anime va
+          JOIN anime a ON va.aid = a.id
+          WHERE va.vid IN(!l)|,
         [ keys %r ]
       )});
     }
@@ -669,7 +680,7 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
 }  
 
 
-sub DBAddVN { # %options->{ columns in vn_rev + comm + relations }
+sub DBAddVN { # %options->{ columns in vn_rev + comm + relations + categories + anime }
   my($s, %o) = @_;
 
   $s->DBExec(q|
@@ -690,7 +701,7 @@ sub DBAddVN { # %options->{ columns in vn_rev + comm + relations }
 }
 
 
-sub DBEditVN { # id, %options->( columns in vn_rev + comm + relations + categories + uid + causedby }
+sub DBEditVN { # id, %options->( columns in vn_rev + comm + relations + categories + anime + uid + causedby }
   my($s, $vid, %o) = @_;
 
   $s->DBExec(q|
@@ -733,6 +744,25 @@ sub _insert_vn_rev {
       VALUES (%d, %d, %d)|,
     $cid, $_->[1], $_->[0]
   ) for (@{$o->{relations}});
+
+  if(@{$o->{anime}}) {
+    $s->DBExec(q|
+      INSERT INTO vn_anime (vid, aid)
+        VALUES (%d, %d)|,
+      $cid, $_
+    ) for (@{$o->{anime}});
+
+    # insert unknown anime
+    my $a = $s->DBAll(q|
+      SELECT id FROM anime WHERE id IN(!l)|,
+      $o->{anime});
+    $s->DBExec(q|
+      INSERT INTO anime (id) VALUES (%d)|, $_
+    ) for (grep {
+      my $ia = $_;
+      !(scalar grep $ia == $_->{id}, @$a)
+    } @{$o->{anime}});
+  }
 }
 
 

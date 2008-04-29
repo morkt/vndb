@@ -24,13 +24,13 @@ sub VNPage {
   
   my $v = $self->DBGetVN(
     id => $id,
-    what => 'extended relations categories'.($r->{rev} ? ' changes' : ''),
+    what => 'extended relations categories anime'.($r->{rev} ? ' changes' : ''),
     $r->{rev} ? ( rev => $r->{rev} ) : ()
   )->[0];
   return $self->ResNotFound if !$v->{id};
 
   $r->{diff} ||= $v->{prev} if $r->{rev};
-  my $c = $r->{diff} && $self->DBGetVN(id => $id, rev => $r->{diff}, what => 'extended changes relations categories')->[0];
+  my $c = $r->{diff} && $self->DBGetVN(id => $id, rev => $r->{diff}, what => 'extended changes relations categories anime')->[0];
   $v->{next} = $self->DBGetHist(type => 'v', id => $id, next => $v->{cid}, showhid => 1)->[0]{id} if $r->{rev};
 
   if($page eq 'rg' && $v->{rgraph}) {
@@ -67,7 +67,7 @@ sub VNEdit {
 
   my $rev = $self->FormCheck({ name => 'rev',  required => 0, default => 0, template => 'int' })->{rev};
 
-  my $v = $self->DBGetVN(id => $id, what => 'extended changes relations categories', $rev ? ( rev => $rev ) : ())->[0] if $id;
+  my $v = $self->DBGetVN(id => $id, what => 'extended changes relations categories anime', $rev ? ( rev => $rev ) : ())->[0] if $id;
   return $self->ResNotFound() if $id && !$v;
 
   return $self->ResDenied if !$self->AuthCan('edit') || ($v->{locked} && !$self->AuthCan('lock'));
@@ -76,6 +76,7 @@ sub VNEdit {
     ( map { $_ => $v->{$_} } qw| title desc alias img_nsfw length l_wp l_cisv l_vnn | ),
     relations => join('|||', map { $_->{relation}.','.$_->{id}.','.$_->{title} } @{$v->{relations}}),
     categories => join(',', map { $_->[0].$_->[1] } sort { $a->[0] cmp $b->[0] } @{$v->{categories}}),
+    anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
   ) : ();
 
   my $frm = {};
@@ -88,18 +89,21 @@ sub VNEdit {
       { name => 'l_wp',  required => 0, default => '', maxlength => 150 },
       { name => 'l_cisv', required => 0, default => 0, template => 'int' },
       { name => 'l_vnn',  required => 0, default => 0, template => 'int' },
+      { name => 'anime', required => 0, default => '' },
       { name => 'img_nsfw', required => 0 },
       { name => 'categories', required => 0, default => '' },
       { name => 'relations', required => 0, default => 0 },
       { name => 'comm', required => 0, default => '' },
     );
     $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
+    $frm->{anime} = join(' ', sort { $a <=> $b } grep /^[0-9]+$/, split(/\s+/, $frm->{anime})); # re-sort
 
     return $self->ResRedirect('/v'.$id, 'post')
-      if $id && !$self->ReqParam('img') && 10 == scalar grep { $b4{$_} eq $frm->{$_} } keys %b4;
+      if $id && !$self->ReqParam('img') && 11 == scalar grep { $b4{$_} eq $frm->{$_} } keys %b4;
 
     my $relations = [ map { /^([0-9]+),([0-9]+)/ && $2 != $id ? ( [ $1, $2 ] ) : () } split /\|\|\|/, $frm->{relations} ];
     my $cat = [ map { [ substr($_,0,3), substr($_,3,1) ] } split /,/, $frm->{categories} ];
+    my $anime = [ split / /, $frm->{anime} ];
 
    # upload image
     my $imgid = '';
@@ -134,6 +138,7 @@ sub VNEdit {
     my %args = (
       ( map { $_ => $frm->{$_} } qw| title desc alias comm length l_wp l_cisv l_vnn img_nsfw| ),
       image => $imgid,
+      anime => $anime,
       relations => $relations,
       categories => $cat,
     );
@@ -149,6 +154,13 @@ sub VNEdit {
         my %new = map { $_->[1] => $_->[0] } @$relations; 
         $self->VNUpdReverse(\%old, \%new, $id, $cid);
       }
+     # also regenerate relation graph if the title changes
+      elsif($frm->{title} ne $b4{title}) {
+        $self->RunCmd('relraph '.$id);
+      }
+
+     # check for new anime data
+      $self->RunCmd('anime check') if $frm->{anime} ne $b4{anime};
 
       return $self->ResRedirect('/v'.$id.'?rev='.$cid, 'post');
     }
@@ -302,7 +314,7 @@ sub VNUpdReverse { # old, new, id, cid
   }
 
   for my $i (keys %upd) {
-    my $r = $self->DBGetVN(id => $i, what => 'extended relations categories')->[0];
+    my $r = $self->DBGetVN(id => $i, what => 'extended relations categories anime')->[0];
     my @newrel;
     $_->{id} != $id && push @newrel, [ $_->{relation}, $_->{id} ]
     for (@{$r->{relations}});
@@ -312,6 +324,7 @@ sub VNUpdReverse { # old, new, id, cid
       comm => 'Reverse relation update caused by revision '.$cid.' of v'.$id,
       causedby => $cid,
       uid => 1,         # Multi - hardcoded
+      anime => [ map $_->{id}, @{$r->{anime}} ],
       ( map { $_ => $r->{$_} } qw| title desc alias categories img_nsfw length l_wp l_cisv l_vnn image | )
     );
   }

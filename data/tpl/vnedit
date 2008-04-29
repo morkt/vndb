@@ -47,6 +47,14 @@
  { type => 'input', name => '&nbsp;', short => 'l_vnn', pre => 'http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=', class => 'shortopts' },
  { type => 'input', name => '&nbsp;', short => 'l_cisv', pre => 'http://cisvisual.net/title/', class => 'shortopts' },
 
+ { type => 'static', text => '<br />' },
+ { type => 'input', name => 'Related anime', short => 'anime' },
+ { type => 'static', text => q|
+   Whitespace seperated list of <a href="http://anidb.net/">AniDB</a> anime IDs.
+   E.g. "1015 3348" will add <a href="http://anidb.net/a1015">Shingetsutan Tsukihime</a>
+   and <a href="http://anidb.net/a3348">Fate/stay night</a> as related anime.<br />
+   <b>Note:</b> It can take a few minutes for the anime titles to appear on the VN page.| },
+
  { type => 'sub', title => 'Categories', short => 'cat' },
  { type => 'hidden', short => 'categories' },
  { type => 'static', raw => 1, text => eval {

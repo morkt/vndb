@@ -180,7 +180,7 @@ sub ttabs { # [vrp], obj, sel
       sprintf('<a href="/%%s/hide"%s>%s</a>', $t eq 'v' ? ' id="vhide"' : '', $$o{hidden} ? 'unhide' : 'hide')
     ) : (),
     !$$o{locked} || ($p{Authedit} && $p{Authlock}) ?
-      ($s eq 'edit' ? 'edit' : '<a href="/%s/edit" '.($t eq 'v' || $t eq 'r' ? 'class="dropdown" rel="editDD"':'').'>edit</a>') : (),
+      ($s eq 'edit' ? 'edit' : '<a href="/%s/edit" '.($t eq 'v' || $t eq 'r' ? 'class="dropdown" rel="nofollow editDD"':'').'>edit</a>') : (),
 
     $p{Authhist} ?
       ($s eq 'hist' ? 'history' : '<a href="/%s/hist">history</a>') : (),

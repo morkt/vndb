@@ -10,7 +10,7 @@ our $PLAT = {
   lin => 'Linux',
   mac => 'Mac OS',
   dvd => 'DVD Player',
-  gba => 'Game Boy Advanced',
+  gba => 'Game Boy Advance',
   nds => 'Nintendo DS',
   psp => 'Playstation Portable',
   ps  => 'Playstation',
@@ -20,6 +20,7 @@ our $PLAT = {
   wii => 'Nintendo Wii',
   oth => 'Other'
 };
+
 
 # NOTE: don't forget to update dyna.js
 our $MED = {
@@ -32,17 +33,20 @@ our $MED = {
   otc => 'Other (console)',
 };
 
+
 our $PROT = {
   co => 'Company',
   in => 'Individual',
   ng => 'Amateur group',
 };
 
+
 our $RTYP = [
   'Complete',
   'Partial',
   'Trial'
 ];
+
 
 # Yes, this is the category list. No, changing something here may
 # not change it on the entire site - many things are still hardcoded
@@ -104,6 +108,7 @@ our $LSTAT = [
   'Other', # XXX: hardcoded at 6
 ];
 
+
 our $VREL = [
   'Sequel',
   'Prequel',     # 1
@@ -146,6 +151,26 @@ our $VRAGES = {
 };
 
 
+our $ANITYPE = [
+  # VNDB          AniDB
+  [ 'unknown',    'unknown',    ],
+  [ 'TV',         'TV Series'   ],
+  [ 'OVA',        'OVA'         ],
+  [ 'Movie',      'Movie'       ],
+  [ 'unknown',    'Other'       ],
+  [ 'unknown',    'Web'         ],
+  [ 'TV Special', 'TV Special'  ],
+  [ 'unknown',    'Music Video' ],
+];
+# AniDB defines:
+#  id="1", name="unknown
+#  id="2", name="TV Series
+#  id="3", name="OVA
+#  id="4", name="Movie
+#  id="5", name="Other
+#  id="6", name="Web
+#  id="7", name="TV Special
+#  id="8", name="Music Video
 
 
 

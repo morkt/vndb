@@ -29,14 +29,10 @@
  <tr>
   <td class="tc1">[[= datestr($_->{released}) ]]</td>
   <td class="tc2">[[= $_->{minage}<0 ? '' : $VNDB::VRAGES->{$_->{minage}} ]]</td>
-  <td class="tc3">[[= join('', map { $_ ne 'oth' ? '<acronym class="plat '.$_.'" title="'._hchar($VNDB::PLAT->{$_}).'">'.$_.'</acronym>' : () } sort @{$_->{platforms}}) ]]</td>
+  <td class="tc3">[[= join('', map { $_ ne 'oth' ? '<acronym class="plat '.$_.'" title="'._hchar($VNDB::PLAT->{$_}).'">&nbsp;</acronym>' : () } sort @{$_->{platforms}}) ]]</td>
   <td class="tc4"><acronym title="[[= $VNDB::RTYP->[$_->{type}] ]]- release">[[= lc substr($VNDB::RTYP->[$_->{type}],0,1) ]]</acronym></td>
   <td class="tc5"><a href="/r[[= $_->{id} ]]" title="[[: $_->{original} || $_->{title} ]]">[[: shorten $_->{title},60 ]]</a></td>
-<!--  <td class="tc6">[[=
-    join(', ',
-      map {
-      sprintf('<a href="/p%d" title="%s">%s</a>', $_->{id}, _hchar($_->{name}), _hchar(shorten $_->{name},20)) } @{$_->{producers}}) ]]</td>-->
-  <td class="tc7">[[ if($_->{website}) { ]]<a href="[[: $_->{website} ]]"><acronym class="plat ext" title="WWW">www</acronym></a>[[ } ]]</td>
+  <td class="tc7">[[ if($_->{website}) { ]]<a href="[[: $_->{website} ]]" class="plat ext" title="WWW">&nbsp;</a>[[ } ]]</td>
  </tr>
 [[ } ]]-
 [[ } ]]-

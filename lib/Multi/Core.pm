@@ -123,7 +123,7 @@ sub log { # level, msg
   close $F;
 
  # (debug) log to stdout as well...
- #printf "[%s] %s\n", scalar localtime, $msg;
+  $VNDB::DEBUG && printf "[%s] %s\n", scalar localtime, $msg;
 }
 
 

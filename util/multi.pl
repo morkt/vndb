@@ -44,6 +44,7 @@ use Multi::Core;
 use Multi::RG;
 use Multi::Image;
 use Multi::Sitemap;
+use Multi::Anime;
 use Multi::Maintenance;
 use Multi::IRC;
 
@@ -77,6 +78,7 @@ Multi::Core->spawn();
 Multi::RG->spawn();
 Multi::Image->spawn();
 Multi::Sitemap->spawn();
+Multi::Anime->spawn();
 Multi::Maintenance->spawn();
 Multi::IRC->spawn() if !$VNDB::DEBUG;
 

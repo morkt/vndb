@@ -5,7 +5,19 @@ TODO:
 	  + Remove all references to an item when it's hidden
 	    (preferably with the option to re-add them when unhiding)
 	  + Add a link for the hidden 'h' option at /hist
-		+ The delete option should be removed
+	  + The delete option should be removed
+	+ AJAXified image upload system to avoid confusion about whether an image is
+	  uploaded or not
+	+ Use AniDB's daily title dump and implement a search feature to add
+	  anime relations without having to visit AniDB.
+
+1.15 - ?
+	- Relation graph now also updated on VN title change
+	- Anime relations
+	- [js] Position of the dropdown box is now relative to the link element, not
+	  the cursor
+	- Used inline-block instead of block for icon image sprites (to avoid stupid
+	  float hacks)
 
 1.14 - 2008-04-26
 	- Removed the ID gap prevention method

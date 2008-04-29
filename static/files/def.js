@@ -79,31 +79,41 @@ function formtoggle(n) {
 var ddx;var ddy;var dds=null;
 function dropDown(e) {
   e = e || window.event;
-  var tg = e.target || e.srcElement; // get target element
+  var tg = e.target || e.srcElement;
   if(tg.nodeType == 3)
     tg = tg.parentNode;
+
   if(!dds && (tg.nodeName.toLowerCase() != 'a' || !tg.rel || tg.className.indexOf('dropdown') < 0))
     return;
-  var mouseX = e.pageX || (e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
-  var mouseY = e.pageY || (e.clientY + document.body.scrollTop  + document.documentElement.scrollTop);
+  if(tg.rel)
+    tg.rel = tg.rel.replace(/ *nofollow */,"");
+  if(!dds && !tg.rel)
+    return;
+  
   if(!dds) {
-    var obj = x(tg.rel);
-    ddx = mouseX-20;
-    ddy = mouseY+10;
+    var obj=tg;
+    ddx = ddy = 0;
+    do {
+      ddx += obj.offsetLeft;
+      ddy += obj.offsetTop;
+    } while(obj = obj.offsetParent);
+    ddy += 16;
+    obj = x(tg.rel);
     obj.style.left = ddx+'px';
     obj.style.top = ddy+'px';
     dds = tg;
   }
+
   if(dds) {
+    var mouseX = e.pageX || (e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
+    var mouseY = e.pageY || (e.clientY + document.body.scrollTop  + document.documentElement.scrollTop);
     var obj = x(dds.rel);
-    if((mouseX < ddx || mouseX > ddx+obj.offsetWidth || mouseY < ddy-20 || mouseY > ddy + obj.offsetHeight)
+    if((mouseX < ddx-5 || mouseX > ddx+obj.offsetWidth+5 || mouseY < ddy-20 || mouseY > ddy + obj.offsetHeight)
         || (mouseY < ddy && tg.nodeName.toLowerCase() == 'a' && tg != dds)) {
       obj.style.left = '-500px';
       dds = null;
     }
-    return;
   }
-  return true;
 }
 
 

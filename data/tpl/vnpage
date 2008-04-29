@@ -20,6 +20,7 @@
   [ l_wp       => 'Wikipedia link', sub { $_[0] ? '<a href="http://en.wikipedia.org/wiki/'.$_[0].'">'.$_[0].'</a>' : 'No link' } ],
   [ l_vnn      => 'V-N.net link',   sub { $_[0] ? '<a href="http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id='.$_[0].'">'.$_[0].'</a>' : 'No link' } ], 
   [ l_cisv     => 'CISVisual link', sub { $_[0] ? '<a href="http://cisvisual.net/title/'.$_[0].'">'.$_[0].'</a>' : 'No link' } ], 
+  [ anime      => 'Related anime',  sub { join(' ', map qq|<a href="http://anidb.net/a$$_{id}">$$_{id}</a>|, sort { $a->{id} <=> $b->{id} } @{$_[0]}) } ],
   [ categories => 'Categories',     sub { join(' ', map { $VNDB::CAT->{substr($_->[0],0,1)}[1]{substr($_->[0],1,2)}.'('.$_->[1].')' } sort { $a->[0] cmp $b->[0] } @{$_[0]}) || 'No categories selected' }, 1 ],
   [ relations  => 'Relations',      sub { join("<br />\n", map { $VNDB::VREL->[$_->{relation}].': '._hchar($_->{title}) } sort { $a->{id} <=> $b->{id} } @{$_[0]}) } ],
   [ image      => 'Image',          sub { $_[0] > 0 ? sprintf '<img src="%s/cv/%02d/%d.jpg" />', $p{st}, $_[0]%100, $_[0] : $_[0] < 0 ? '[processing]' : 'No image'; } ],
@@ -78,14 +79,14 @@ if($d{vn}{length} || $d{vn}{alias} || @links) { ]]
   <dt>Length</dt><dd>[[: $VNDB::VNLEN->[$d{vn}{length}][0] ]]- ([[: $VNDB::VNLEN->[$d{vn}{length}][1] ]])</dd>[[ } ]]-
  [[ if($d{vn}{alias}) { ]]-
   <dt>Aliases</dt><dd>[[: $d{vn}{alias} ]]</dd>[[ } ]]-
- [[ if(@links > 0) { ]]
+ [[ if(@links > 0) { ]]-
   <dt>Links</dt><dd>[[= join(', ', map { '<a href="'.sprintf($_->[1],$_->[2]).'">'.$_->[0].'</a>' } @links) ]]</dd>[[ } ]]-
  </dl>
 [[ } ]]-
 
  [[ if(@{$d{vn}{categories}}) { my %nolvl = (pli=>1,pbr=>1,gaa=>1,gab=>1); ]]-
  <h3>Categories</h3>
- <dl class="vncat">
+ <dl>
   [[ for (sort keys %$VNDB::CAT) {
     my $c = $_;
     my @c = map { my $s=$_;
@@ -108,6 +109,25 @@ if($d{vn}{length} || $d{vn}{alias} || @links) { ]]
    [[ } else { ]]<br /><a href="/v[[= $_->{id} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 40 ]]</a>[[ }
   ++$i;} ]]
  </dl>
+ [[ } ]]-
+
+ [[ if(@{$d{vn}{anime}}) { ]]-
+  <h3>Related anime</h3>
+  <ul class="vnani">
+   [[ for (sort { $a->{year} < 1 ? 1 : $b->{year} < 1 ? -1 : $a->{year} <=> $b->{year} } @{$d{vn}{anime}}) { ]]-
+   <li>
+   -[[ if($_->{lastfetch} < 1) { ]]
+    <b>[[= $_->{lastfetch} < 0 ? '[unknown anidb id: ' : '[no information available at this time: ' ]]<a href="http://anidb.net/a[[= $_->{id} ]]">[[= $_->{id} ]]</a>]</b>
+   [[ } else { 
+    my $l = join '-', qq|<a href="http://anidb.net/a$_->{id}" title="AniDB">DB</a>|,
+      $_->{nfo_id} ? qq|<a href="http://animenfo.com/animetitle,$_->{nfo_id},vndb.html" title="AnimeNFO">NFO</a>| : (),
+      $_->{ann_id} ? qq|<a href="http://www.animenewsnetwork.com/encyclopedia/anime.php?id=$_->{ann_id}" title="Anime News Network">ANN</a>| : ();
+   ]]
+    <b>[-[[= $l ]]-]</b> <acronym title="[[: $_->{title_kanji} ]]">[[: shorten $_->{title_romaji}, 40 ]]</acronym> <b>([[: $VNDB::ANITYPE->[$_->{type}][0] ]], -[[= $_->{year} ]])</b>
+   [[ } ]]
+   </li>
+   [[ } ]]
+  </ul>
  [[ } ]]-
 
  [[ if(@lang && grep { @{$_->{producers}} } @{$d{rel}}) { ]]-
