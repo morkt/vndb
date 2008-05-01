@@ -34,8 +34,8 @@ sub _start {
   $_[KERNEL]->alias_set('rg');
   $_[KERNEL]->call(core => register => qr/^relgraph ((?:[0-9]+)(?:\s+[0-9]+)*|all)$/, 'cmd_relgraph');
 
- # regenerate all relation graphs twice a month (every 1st and 15nd day at 03:00)
-  $_[KERNEL]->post(core => addcron => '0 3 1,15 * *', 'relgraph all');
+ # regenerate all relation graphs once a month
+  $_[KERNEL]->post(core => addcron => '0 3 1 * *', 'relgraph all');
 }
 
 

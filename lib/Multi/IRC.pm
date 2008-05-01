@@ -157,23 +157,3 @@ sub shutdown {
 1;
 
 
-
-__END__
-
-# debug
-sub _default {
-  my($event,$args) = @_[ ARG0 .. $#_ ];
-  my $arg_number = 0;
-  for (@$args) {
-    print "  ARG$arg_number = ";
-    if ( ref($_) eq 'ARRAY' ) {
-      print "$_ = [", join ( ", ", @$_ ), "]\n";
-    }
-    else {
-      print "'".($_||'')."'\n";
-    }
-    $arg_number++;
-  }
-  return 0;
-}
-

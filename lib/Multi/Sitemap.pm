@@ -88,8 +88,8 @@ sub vnpages {
   |);
   $q->execute;
   while(local $_ = $q->fetchrow_arrayref) {
-    $_[KERNEL]->call(sitemap => addurl => 'v/'.$_->[0], 'w', $_->[1], 0.7);
-    $_[KERNEL]->call(sitemap => addurl => 'v/'.$_->[0].'/rg', 'w', $_->[1], 0.7) if $_->[2];
+    $_[KERNEL]->call(sitemap => addurl => 'v'.$_->[0], 'w', $_->[1], 0.7);
+    $_[KERNEL]->call(sitemap => addurl => 'v'.$_->[0].'/rg', 'w', $_->[1], 0.7) if $_->[2];
   }
 
   $_[KERNEL]->yield('releasepages');
@@ -107,7 +107,7 @@ sub releasepages {
   |);
   $q->execute;
   while(local $_ = $q->fetchrow_arrayref) {
-    $_[KERNEL]->call(sitemap => addurl => 'r/'.$_->[0], 'w', $_->[1], 0.3);
+    $_[KERNEL]->call(sitemap => addurl => 'r'.$_->[0], 'w', $_->[1], 0.3);
   }
 
   $_[KERNEL]->yield('producerpages');
@@ -125,7 +125,7 @@ sub producerpages {
   |); 
   $q->execute;
   while(local $_ = $q->fetchrow_arrayref) {
-    $_[KERNEL]->call(sitemap => addurl => 'p/'.$_->[0], 'w', $_->[1]);
+    $_[KERNEL]->call(sitemap => addurl => 'p'.$_->[0], 'w', $_->[1]);
   }
 
   $_[KERNEL]->yield('finish');

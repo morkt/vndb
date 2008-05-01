@@ -7,7 +7,7 @@ use Exporter 'import';
 
 use vars ('$VERSION', '@EXPORT');
 $VERSION = $VNDB::VERSION;
-@EXPORT = qw| HomePage FAQ DocPage History HistRevert HistDelete |;
+@EXPORT = qw| HomePage DocPage History HistRevert HistDelete |;
 
 
 sub HomePage {
@@ -31,12 +31,34 @@ sub HomePage {
 }
 
 
-sub FAQ {
-  shift->ResAddTpl(faq => {});
-}
-
 sub DocPage {
-  shift->ResAddTpl(docs => { p => shift });
+  my($s,$p) = @_;
+
+  open my $F, '<', sprintf('%s/%d', $s->{docpath}, $p) or return $s->ResNotFound();
+  my @c = <$F>;
+  close $F;
+
+  (my $title = shift @c) =~ s/^:TITLE://;
+  chomp $title;
+
+  my $sec = 0;
+  for (@c) {
+    s{^:SUB:(.+)\r?\n$}{
+      $sec++;
+      qq|<h3><a href="#$sec" name="$sec">$sec. $1</a></h3>\n|
+    }eg;
+    s{^:INC:(.+)\r?\n$}{
+      open $F, '<', sprintf('%s/%s', $s->{docpath}, $1) or die $!;
+      my $ii = join('', <$F>);
+      close $F;
+      $ii;
+    }eg;
+  }
+
+  $s->ResAddTpl(docs => {
+    title => $title,
+    content => join('', @c),
+  });
 }
 
 

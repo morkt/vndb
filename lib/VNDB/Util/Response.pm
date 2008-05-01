@@ -13,7 +13,7 @@ require bytes;
 
 use vars ('$VERSION', '@EXPORT');
 $VERSION = $NTL::VERSION;
-@EXPORT = qw| ResRedirect ResNotFound ResDown ResDenied ResFile
+@EXPORT = qw| ResRedirect ResNotFound ResDenied ResFile
   ResForceBody ResSetContentType ResAddHeader ResAddTpl ResAddDefaultStuff
   ResStartXML ResGetXML ResGetBody ResGet ResGetCGI ResSetModPerl |;
 
@@ -31,7 +31,6 @@ sub new {
     xmlobj => undef,
     xmldata => undef,
     whattouse => 1,
-    rc => 0,
   }, $type;
  
   return $me;
@@ -54,40 +53,23 @@ sub ResRedirect {
   my $code = !$type ? 301 :
     $type eq 'temp' ? 307 :
     $type eq 'post' ? 303 : 301;
+  $info->{body} = 'Redirecting...';
   $info->{code} = $code;
-  $info->{tpl} = { 
-    error => {
-      url => $url,
-      code => $code,
-    }
-  };
   $info->{headers} = [ 'Location', "$self->{root_url}$url" ];
   $info->{contenttype} = 'text/html; charset=UTF-8';
-  $info->{whattouse} = 2;
+  $info->{whattouse} = 1;
 }
 
 sub ResNotFound {
   my $s = shift;
   my $i = $s->{_Res};
   $i->{code} = 404;
-  $i->{whattouse} = 4;
-  push @{$i->{headers}}, 'X-Sendfile' => '/www/vndb/www/files/notfound.html';
-}
-
-sub ResDown {
-  my $self = shift;
-  my $msg = shift || '';
-  my $info = $self->{_Res} || $self;
-  
-  $info->{code} = 200;
-  $info->{tpl} = {
-    error => {
-      code => 1,
-      msg => $msg, # specifies which message should be displayed
-    }
+  $i->{whattouse} = 2;
+  $i->{tpl} = {
+    page => { error => {
+      err => 'notfound'
+    }},
   };
-  $info->{contenttype} = 'text/html; charset=UTF-8';
-  $info->{whattouse} = 2;
 }
 
 sub ResDenied {

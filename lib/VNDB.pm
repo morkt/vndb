@@ -30,6 +30,7 @@ our %VNDBopts = (
   ],
   imgpath => '/www/vndb/static/cv',
   mappath => '/www/vndb/data/rg',
+  docpath => '/www/vndb/data/docs',
 );
 $VNDBopts{ranks}[0][1] = { (map{$_,1} map { keys %{$VNDBopts{ranks}[$_]} } 1..5) };
 
@@ -52,9 +53,8 @@ use VNDB::VN;
 
 my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
   '/'           => sub { shift->HomePage },
-  faq           => sub { shift->FAQ },
   'd+'          => sub { shift->DocPage(shift) },
-  nospam        => sub { shift->DocPage(6) },
+  nospam        => sub { shift->ResAddTpl(error => { err => 'formerr' }) },
   hist =>   {'*'=> sub { shift->History(undef, undef, $_[1]) } },
  # users
   u => {
@@ -127,6 +127,7 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
 
 # provide redirects for old URIs
 my %OLDuris = (
+  faq           => sub { shift->ResRedirect('/d6', 'perm') },
   vn => {
     rss         => sub { shift->ResRedirect('/hist/rss?t=v&e=1', 'perm') },
     '*'         => sub { shift->ResRedirect('/v/'.$_[1], 'perm') },
@@ -194,7 +195,7 @@ sub checkuri {
   my @ouri = @uri; # items in @uri can be modified by uri2page
   $self->uri2page(\%VNDBuris, \@uri, 0);
   $self->uri2page(\%OLDuris, \@ouri, 0) # provide redirects for old uris
-    if $self->{_Res}->{whattouse} == 4 && $self->{_Res}->{rc} == 404;
+    if $self->{_Res}->{code} == 404;
 }
 
 

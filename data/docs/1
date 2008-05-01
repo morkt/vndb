@@ -1,0 +1,125 @@
+:TITLE:Categories
+:INC:index
+
+
+:SUB:Elements
+<p>
+ ...own interpretation for now... (Should be documented at some time, too)
+</p>
+
+
+:SUB:Gameplay
+<p>
+ This category is used to describe the gameplay or game engine.
+</p>
+<dl>
+ <dt>Visual Novel</dt><dd>
+  All games where the text is overlaid on the background and there is no special
+  dialog-box fall under this category. Can be abbreviated as VN or NVL.
+ </dd><dt>Adventure</dt><dd>
+  This is the opposite of the <i>Visual Novel</i> category: The text is presented
+  in a special window, usually at the bottom of the screen. In some (rare) cases
+  a game will switch between both styles, for these games both the <i>Visual Novel</i>
+  and <i>Adventure</i> categories should be selected. Can be abbreviated as ADV or AVG.
+ </dd><dt>Action</dt><dd>
+  This category indicates that the game includes a gameplay that challenges the
+  player's speed, dexterity and reaction time. Common examples are fighting games,
+  puzzles that should be solved within a short time limit, and shooter games.
+ </dd><dt>RPG</dt><dd>
+  Abbreviation for Role Playing Game. An RPG is a game in which you assume the
+  role of a character introduced to a vast world to be explored. Games typically
+  place emphasis on gaining equipment and experience points through fighting enemies
+  in order to advance through different levels.
+ </dd><dt>Strategy</dt><dd>
+  A strategy game is one that challenges the player to think critically in order
+  to achieve victory.
+ </dd><dt>Simulation</dt><dd>
+  A simulation game attempts to recreate aspects of reality and puts the player in
+  control.
+ </dd>
+</dl>
+
+
+:SUB:Plot
+<p>
+ Indicates the plot type of a game. There are only two options: <i>Branching</i> and
+ <i>Linear</i>.
+</p>
+<dl>
+ <dt>Linear</d><dd>
+  A game with a linear plot has a static story; it is not possible to get different paths
+  or endings. Many games in this category do not prompt the player with choices and simply
+  tell the story as it is. This is, however, not a rule: it is also possible for a game
+  to provide choises, but they have no influence on the story itself. (e.g.
+  <a href="/v3">Utawarerumono</a>)
+ </dd><dt>Branching</dt><dd>
+  A game with a branching plot has a story whose path is directly affected by choices
+  made by the player during the game. These different paths are sometimes referred to
+  as "arcs" when they pertain to the stories of different female characters within a game.
+ </dd>
+</dl>
+
+
+:SUB:Time
+<p>
+ Indicates the time period in which the story has been set.
+</p>
+<dl>
+ <dt>Future</dt><dd>
+  The game is set in a time beyond that of our own. Games may incorperate elements of
+  future technologies or events yet-to-come.
+ </dd><dt>Present</dt><dd>
+  The game is set in the current day.
+ </dd><dt>Past</dt><dd>
+  The game is set in a time before our own. Games may or may not adhere to historic fact.
+ </dd>
+</dl>
+
+
+:SUB:Place
+<p>
+ Indicates the place in which the story is told.
+</p>
+<dl>
+ <dt>Earth</dt><dd>
+  The game takes place on our own planet.
+ </dd><dt>Fantasy World</dt><dd>
+  The game takes place on another world. The game's environment could be similar
+  to that of our own with a few significant changes, but it could also be
+  radically different.
+ </dd><dt>Space</dt><dd>
+  The game takes place in the vacuum of space between celestial bodies. For example,
+  this category can be used to define games where the characters may inhabit
+  spaceships that journey across the universe.
+ </dd>
+</dl>
+
+
+:SUB:Sexual content
+<p>
+ Indicates the types of sexual content that the game contains.
+</p>
+<dl>
+ <dt>Sexual content</dt><dd>
+  This is a generic category to indicate the presence of any sexual content in the
+  game. If there is any such content, this category should be selected.
+ </dd><dt>Bestiality</dt><dd>
+  Sexual activity between characters and animals.<br />
+  <i>No catgirls, I guess?</i>
+ </dd><dt>Incest</dt><dd>
+  Sexual activity between members of the same family. Most of the time under the
+  justification of participants not blood related (step-sister etc.).
+ </dd><dt>Lolicon</dt><dd>
+  The usage of female characters with childlike features in sexual situations.
+ </dd><dt>Shotacon</dt><dd>
+  The usage of male characters with childlike features in sexual situations.
+ </dd><dt>Yaoi</dt><dd>
+  Sexual content depicting activity between males.
+ </dd><dt>Yuri</dt><dd>
+  Sexual content depicting activity between females.
+ </dd><dt>Rape</dt><dd>
+  Situation in which a character is made to engage in sexual activities against
+  their will.
+ </dd>
+</dl>
+

@@ -180,13 +180,21 @@ sub ttabs { # [vrp], obj, sel
       sprintf('<a href="/%%s/hide"%s>%s</a>', $t eq 'v' ? ' id="vhide"' : '', $$o{hidden} ? 'unhide' : 'hide')
     ) : (),
     !$$o{locked} || ($p{Authedit} && $p{Authlock}) ?
-      ($s eq 'edit' ? 'edit' : '<a href="/%s/edit" '.($t eq 'v' || $t eq 'r' ? 'class="dropdown" rel="nofollow editDD"':'').'>edit</a>') : (),
+      ($s eq 'edit' ? 'edit' : '<a href="'.($p{Authedit}?'/%s/edit':'/u/register?n=1').'" '.($t eq 'v' || $t eq 'r' ? 'class="dropdown" rel="nofollow editDD"':'').'>edit</a>') : (),
 
     $p{Authhist} ?
       ($s eq 'hist' ? 'history' : '<a href="/%s/hist">history</a>') : (),
   );
   return '<p class="mod">&lt; '.join(' - ', map { sprintf $_, $t.$$o{id} } @act).' &gt;</p>'.(
-    $t eq 'v' ? qq|
+    !$p{Authedit} ? qq|
+<div id="editDD" class="dropdown">
+ <ul>
+  <li><b>Not logged in</b></li>
+  <li><a href="/u/login">Login</a></li>
+  <li><a href="/u/register">Register</a></li>
+ </ul>
+</div>
+    | : $t eq 'v' ? qq|
 <div id="editDD" class="dropdown">
  <ul>
   <li><a href="/v$$o{id}/edit" rel="nofollow">Edit all</a></li>
@@ -250,11 +258,9 @@ my %pagetitles = (
   hist        => sub {
     return !$p{hist}{id} || !$p{hist}{type} ? 'Recent changes' :
      $p{hist}{type} eq 'u' ? 'Recent changes by '.$p{hist}{title} : 'Edit history of '.$p{hist}{title}; },
-  docs        => sub {
-    return (
-      'Categories',                'Adding/editing a visual novel', 'Adding/editing a release',
-      'Adding/editing a producer', 'General guidelines',            'Error parsing form',
-     )[$p{docs}{p}-1]||'' }
+  docs        => sub { $p{docs}{title} },
+  error       => sub {
+    $p{error}{err} eq 'notfound' ? '404 Page Not Found' : 'Error Parsing Form' },
 );
 sub gettitle{$p{$_}&&($p{PageTitle}=ref($pagetitles{$_}) eq 'CODE' ? &{$pagetitles{$_}} : $pagetitles{$_}) for (keys%pagetitles);}
 

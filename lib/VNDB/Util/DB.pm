@@ -1274,7 +1274,7 @@ sub qs { # ISO SQL2-quoting, with some PgSQL-specific stuff
   #       depends on the standard_conforming_strings configuration option of PgSQL,
   #       while E'' will always behave the same regardless of the server configuration.
   for (@r) {
-    (!defined $_ or $_ eq '_NULL_') && ($_ = 'NULL') && next;
+    (!defined $_ or $_ eq '_NULL_') && next;
     s/'/''/g;
     s/\\/\\\\/g;
     $_ = "E'$_'";

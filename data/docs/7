@@ -1,0 +1,37 @@
+:TITLE:About us
+:INC:index
+
+:SUB:Goal
+<p>
+ ..
+</p>
+
+
+:SUB:History
+<p>
+ yeah, interesting...
+</p>
+
+
+:SUB:Staff
+<dl>
+ <dt><a href="/u2">yorhel</a></dt><dd>
+  Also known as Ayo on IRC.
+ </dd><dt><a href="/u4" class="retired">hillie</a><dt><dd>
+  (retired)
+ </dd>
+</dl>
+
+
+:SUB:Thanks
+<p>
+ ..
+</p>
+<dl>
+ <dt><a href="/u18">rasqual</a></dt><dd>
+  ..
+ </dd><dt><a href="/u51">echomateria</a></dt><dd>
+  ..
+ </dd>
+</dl>
+

@@ -29,10 +29,12 @@
  <tr>
   <td class="tc1">[[= datestr($_->{released}) ]]</td>
   <td class="tc2">[[= $_->{minage}<0 ? '' : $VNDB::VRAGES->{$_->{minage}} ]]</td>
-  <td class="tc3">[[= join('', map { $_ ne 'oth' ? '<acronym class="plat '.$_.'" title="'._hchar($VNDB::PLAT->{$_}).'">&nbsp;</acronym>' : () } sort @{$_->{platforms}}) ]]</td>
-  <td class="tc4"><acronym title="[[= $VNDB::RTYP->[$_->{type}] ]]- release">[[= lc substr($VNDB::RTYP->[$_->{type}],0,1) ]]</acronym></td>
-  <td class="tc5"><a href="/r[[= $_->{id} ]]" title="[[: $_->{original} || $_->{title} ]]">[[: shorten $_->{title},60 ]]</a></td>
-  <td class="tc7">[[ if($_->{website}) { ]]<a href="[[: $_->{website} ]]" class="plat ext" title="WWW">&nbsp;</a>[[ } ]]</td>
+  <td class="tc3">
+    [[= join('', map { $_ ne 'oth' ? '<acronym class="plat '.$_.'" title="'._hchar($VNDB::PLAT->{$_}).'">&nbsp;</acronym>' : () } sort @{$_->{platforms}}) ]]
+    <acronym title="[[= $VNDB::RTYP->[$_->{type}] ]]- release" class="plat -[[= lc substr($VNDB::RTYP->[$_->{type}],0,3) ]]">&nbsp;</acronym>
+  </td>
+  <td class="tc4"><a href="/r[[= $_->{id} ]]" title="[[: $_->{original} || $_->{title} ]]">[[: shorten $_->{title},60 ]]</a></td>
+  <td class="tc5">[[ if($_->{website}) { ]]<a href="[[: $_->{website} ]]" class="plat ext" title="WWW">&nbsp;</a>[[ } ]]</td>
  </tr>
 [[ } ]]-
 [[ } ]]-

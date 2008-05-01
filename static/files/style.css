@@ -450,7 +450,9 @@ img.right {
   margin: 0;
 }
 
+
 /* producer search */
+
 form#psearch {
   display: block;
   margin: 10px 0 20px 210px;
@@ -471,6 +473,8 @@ h3.home {
   padding-top: 30px;
 }
 
+
+/* edit links and stuff */
 
 p.mod {
   float: right;
@@ -512,13 +516,13 @@ div.dropdown a:hover {
 }
 
 
+/* paragraph markups... */
+
 p#relations {
   margin: 20px 0 0 0;
   width: 100%;
   text-align: center;
 }
-
-
 p.desc {
   padding: 0 10px 0 10px;
 }
@@ -535,7 +539,9 @@ b.mod, a.mod {
   color: #f00;
 }
 
-/* CATEGORIES */
+
+/* categories */
+
 ul#cat {
   margin: 0;
   padding: 0;
@@ -577,6 +583,13 @@ form ul#cat li li b { width: 13px; font-weight: bold; }
 form ul#cat li li a { color: #000; text-decoration: none; display: block; width: 160px; }
 ul#cat li li.inc { background-position: 0px -16px; color: #090; }
 ul#cat li li.exc { background-position: 0px -33px; color: #900; }
+i.crgn0 { font-style: normal; }
+i.crgn1 { font-style: normal; color: #bbb; }
+i.crgn2 { font-style: normal; }
+i.crgn3 { font-style: normal; font-weight: bold; }
+
+
+/* language filter */
 
 div#lfilter {
   clear: left;
@@ -590,14 +603,15 @@ div#lfilter label {
   width: 90px;
 }
 
-i.crgn0 { font-style: normal; }
-i.crgn1 { font-style: normal; color: #bbb; }
-i.crgn2 { font-style: normal; }
-i.crgn3 { font-style: normal; font-weight: bold; }
 
 /* DOCUMENTATION PAGES */
-#dpage h3 {  margin-top: 20px;   }
+#dpage h3 { margin-top: 25px;  }
+#dpage h3 a { color: #203C36; text-decoration: none; }
 #dpage dd { padding-bottom: 5px; margin-left: 70px; }
+#dpage ul.index { display: block; float: right; width: 150px; padding: 2px; margin: 0 0 10px 5px; background-color: #f1f1f1; border: 1px solid #ccc; }
+#dpage ul.index li { list-style-type: none; }
+#dpage ul.index li a { margin: 0 0 0 10px; }
+#dpage .retired { text-decoration: line-through; }
 
 
 
@@ -638,16 +652,14 @@ acronym.date {
 }
 b.future { font-weight: normal; color: #900; }
 
-table td { vertical-align: top; }
-table { width: 100%; border-collapse: collapse; }
-thead tr td { font-weight: bold; }
-thead tr td a { text-decoration: none; }
+
+/*  16x14 image sprites */
 
 .plat {
-  background: url(/files/platforms.png) no-repeat;
+  background: url(/files/16x14.png) no-repeat;
   width: 16px;
   height: 14px;
-  margin: 0 5px 0 0;
+  margin: 0 2px 0 0;
   overflow: hidden;
   display:-moz-inline-stack;
   display: inline-block;
@@ -655,6 +667,7 @@ thead tr td a { text-decoration: none; }
   border: 0;
   text-decoration: none;
 }
+acronym.plat { cursor: default; }
 .plat.oth { background: none; }
 .plat.dc  { background-position:   0px   0px; }
 .plat.lin { background-position:   0px -14px; }
@@ -662,16 +675,25 @@ thead tr td a { text-decoration: none; }
 .plat.ps2 { background-position:   0px -42px; }
 .plat.sfc { background-position:   0px -56px; }
 .plat.gba { background-position:   0px -70px; }
-.plat.wii { background-position:   0px -84px; }
+.plat.ext { background-position:   0px -84px; }
+.plat.par { background-position:   0px -98px; }
 .plat.dvd { background-position: -16px   0px; }
 .plat.mac { background-position: -16px -14px; }
 .plat.ps  { background-position: -16px -28px; }
 .plat.psp { background-position: -16px -42px; }
 .plat.win { background-position: -16px -56px; }
-.plat.ext { background-position: -16px -70px; }
+.plat.wii { background-position: -16px -70px; }
+.plat.tri { background-position: -16px -84px; }
+.plat.com { background-position: -16px -98px; }
+.plat.par, .plat.tri, .plat.com { width: 11px; }
 
 
+/* tables */
 
+table td { vertical-align: top; }
+table { width: 100%; border-collapse: collapse; }
+thead tr td { font-weight: bold; }
+thead tr td a { text-decoration: none; }
 #content table input {
   width: 13px;
   height: 13px;
@@ -711,9 +733,8 @@ b.diff_del { font-weight: normal; background-color: #fcc; }
 
 #tre .tc1 { width: 75px; padding-left: 10px; }
 #tre .tc2 { width: 60px; text-align: center; }
-#tre .tc3 { width: 55px; margin: 0; padding: 0; white-space: nowrap; text-align: right }
-#tre .tc4 { width: 10px; text-align: right; padding-right:3px; }
-#tre .tc7 { width: 16px; margin: 0; padding: 0; white-space: nowrap; }
+#tre .tc3, #tre .tc5 { width: 16px; margin: 0; padding: 0; white-space: nowrap; text-align: right }
+#tre .tc3 { width: 60px; }
 
 #debug {
   border-top: 1px solid #ffb4b4;

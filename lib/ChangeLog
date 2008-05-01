@@ -10,14 +10,19 @@ TODO:
 	  uploaded or not
 	+ Use AniDB's daily title dump and implement a search feature to add
 	  anime relations without having to visit AniDB.
+	+ Clear up style.css (or wait until the new layout is ready...)
 
 1.15 - ?
 	- Relation graph now also updated on VN title change
 	- Anime relations
-	- [js] Position of the dropdown box is now relative to the link element, not
-	  the cursor
-	- Used inline-block instead of block for icon image sprites (to avoid stupid
-	  float hacks)
+	- [js] Position of the dropdown box is now relative to the link element
+	- Used inline-block for icon image sprites (to avoid stupid float hacks)
+	- Used icons to indicate the release status type on VN pages
+	- Give a 'not logged in' dropdown edit box when the user isn't logged in
+	- Fixed the redirects for old URLs
+	- Designed a better system to handle documentation
+	- Created a centralised system for site errors within the same layout
+	- Wrote some more documentation
 
 1.14 - 2008-04-26
 	- Removed the ID gap prevention method

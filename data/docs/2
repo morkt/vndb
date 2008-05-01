@@ -1,0 +1,108 @@
+:TITLE:Adding/Editing a Visual Novel
+:INC:notfinished
+:INC:index
+
+:SUB:General guidelines
+<p>
+ Blahblah about what we define as VN...
+</p>
+
+
+:SUB:General info
+<dl>
+ <dt>*Title</dt><dd>
+  The title of the visual novel as it is known to the English speaking audience. If
+  there is no English version of the game available, you should either specify the
+  romanized (recommended) or translated (not recommended) version of the original
+  title.
+ </dd><dt>Aliases</dt><dd>
+  Visual novels can be known under several names, use this field to add any aliases
+  and acronyms used around the net. Official titles of releases should not be added
+  here, as these are already listed in the releases.
+ </dd><dt>*Description</dt><dd>
+  Short description of the main story.
+ </dd><dt>Length</dt><dd>
+  Very rough estimate of the time required to finish all endings of the visual novel.
+  To determine the length of a game, it's often better to ignore this time indication
+  and instead compare it with other games you've played. It's all relative, after all.
+ </dd><dt>External links</dt><dd>
+  Links to external resources about this visual novel. To get the URLs, go to the
+  sites (<a href="http://en.wikipedia.org/">Wikipedia</a>, <a href="http://visual-novels.net/">
+  Visual-novels.net</a> and <a href="http://cisvisual.net/">CISVisual.net</a>),
+  search for a page about the game, and determine the ID or name of that page to fill
+  out in the text boxes. Do not specify the full URL, we only need a small part of
+  it!
+ </dd><dt>Related anime</dt><dd>
+  Some visual novels (e.g. <a href="/v4">Clannad</a> and <a href="/v3">Utawarerumono</a>)
+  have anime adaptions, and some visual novels were adapted from an anime series. Use
+  this field to specify these related anime for the visual novel.<br />
+  Anime should be specified using <a href="http://anidb.net/">AniDB</a> IDs. To add an
+  anime, just search for it on AniDB and add the numeric ID of the entry (found in the
+  <i>aid=xxx</i> part of the URL) to the edit field. Multiple IDs should be seperated
+  with a whitespace.<br />
+  If the visual novel already has a relation with an other visual novel, and both games
+  have an anime adaption, the same anime does not have to be added to both games. For
+  example, <a href="/v264">Da Capo</a> has two anime adaptions
+  (<a href="http://anidb.net/a837">837</a>, <a href="http://anidb.net/a2832">2832</a>),
+  and <a href="/v266">Da Capo II</a> as well. (<a href="http://anidb.net/a5419">5419</a>,
+  <a href="http://anidb.net/a5652">5652</a>) But the relations for Da Capo II do not
+  have to be added to Da Capo and vice versa - the internal visual novel relations will
+  take care of that.<br />
+  After submitting a new AniDB ID, VNDB will automatically fetch information about the
+  anime and will present that on the site. This action can take a few minuts to - in the
+  worst case - hours. In that time you will see the ID of the anime, but not the title
+  and links to AnimeNFO and Anime News Network. It is not possible to manually add this
+  information, this will be fetched automatically!
+ </dd>
+</dl>
+
+
+:SUB:Categories
+<p>
+ It is possible to select relevant categories for visual novels, where the relevance
+ can be ranked using a number from 0 to 3, where 0 indicates the category does not
+ apply at all, and 3 means that the category is very dominant in the game.<br />
+ See <a href="/d1">Categories</a> for descriptions about each category.<br />
+ Just as with the <i>Length</i> field, this information is very subjective. Just
+ use the category descriptions and common sense to determine which categories to
+ select and what relevance to apply.
+</p>
+
+
+:SUB:Image
+<p>
+ <i>General image guidelines and when to use the NSFW warning</i>
+</p>
+
+
+:SUB:Relations
+<p>
+ <i>When to add relation, and document direct and reverse relations</i><br />
+ <i>(Stolen from AniDB, needs some rewriting)</i>
+</p>
+<dl>
+ <dt>Sequel</dt><dd>
+  Continuation of the story. &lt;=&gt;<i>Prequel</i>.
+ </dd><dt>Prequel</dt><dd>
+  The story happens before the original story.&lt;=&gt;<i>Sequel</i>.
+ </dd><dt>Same setting</dt><dd>
+  Same universe/world/reality/timeline, completely different characters.
+ </dd><dt>Alternative setting</dt><dd>
+  Same characters, different universe/world/reality/timeline. 
+ </dd><dt>Alternative version</dt><dd>
+  Same setting, same characters, story is told differently.
+ </dd><dt>Same characters</dt><dd>
+  Shares one or more characters, story is unrelated.
+ </dd><dt>Side story</dt><dd>
+  Takes place sometime during the parent storyline. &lt;=&gt;<i>Parent story</i>
+ </dd><dt>Parent story</dt><dd>
+  .. &lt;=&gt;<i>Side story</i>.
+ </dd><dt>Summary</dt><dd>
+  Summarizes full story, may contain additional stuff. &lt;=&gt;<i>Full story</i>.
+ </dd><dt>Full story</dt><dd>
+  Full version of the summarized story. &lt;=&gt;<i>Summary</i>.
+ </dd><dt>Other</dt><dd>
+  ..
+ </dd>
+</dl>
+

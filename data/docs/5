@@ -1,0 +1,41 @@
+:TITLE:General guidelines
+:INC:notfinished
+:INC:index
+
+
+:SUB:Romanization
+<p>
+ The main audience of VNDB are the English speaking fans of visual novels. In
+ creating the database, we assume the intended audience can't read or recognise
+ anything not written in the roman script. Therefore, romanization is applied
+ to many fields in the database: The main title of visual novels, releases and
+ producers should all be properly romanized if they arent in roman script
+ already.<br />
+ To keep the database consistent, we have decided to use
+ <a href="http://en.wikipedia.org/wiki/Hepburn_romanization">Hepburn romanization</a>
+ for all fields. This is also consistent with
+ <a href="http://wiki.anidb.net/w/Romanisation">AniDBs romanization</a>.
+</p>
+
+
+:SUB:Capitalization
+<p>
+ Some Japanese producers use titles for their games that are already in the roman
+ alphabet. However - as the disctinction in uppercase and lowercase characters
+ does not exist in Japanese - these titles are often entirely in uppercase or
+ lowercase. If there is no real reason for this choise of capitalization, these
+ titles and names should be properly converted to normal English capitalization
+ (as described <a href="http://en.wikipedia.org/wiki/Capitalization">on
+ Wikipedia</a>) for titles and names before being entered in the database.
+</p>
+
+
+:SUB:...and more!
+<p>
+Misc documentation:<br />
+- Edit summary<br />
+- Quoting sources in descriptions<br />
+- Piracy<br />
+- Spoilers<br />
+</p>
+
