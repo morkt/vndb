@@ -23,6 +23,8 @@ TODO:
 	- Designed a better system to handle documentation
 	- Created a centralised system for site errors within the same layout
 	- Wrote some more documentation
+	- Multi::IRC now also handles d[0-9] IDs
+	- Multi::Maintenance automatically rotates Multi's logs
 
 1.14 - 2008-04-26
 	- Removed the ID gap prevention method

@@ -10,7 +10,7 @@ use warnings;
 use POE 'Component::Cron';
 use Tie::ShareLite ':lock';
 use Time::HiRes 'time', 'gettimeofday', 'tv_interval'; # overload time()
-use DateTime::Event::Cron; # bug in PoCo::Cron
+use DateTime::Event::Cron; # bug in PoCo::Cron (rt #35422, fixed in 0.019)
 
 
 sub spawn {

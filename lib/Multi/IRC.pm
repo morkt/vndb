@@ -56,7 +56,7 @@ sub _start {
   );
   $_[HEAP]{irc}->plugin_add(
     CTCP => POE::Component::IRC::Plugin::CTCP->new(
-      version => $_[HEAP]{o}{ircname}.' v'.$Multi::VERSION,
+      version => $_[HEAP]{o}{ircname}.' v'.$VNDB::VERSION,
       userinfo => $_[HEAP]{o}{ircname},
   ));
   $_[HEAP]{irc}->plugin_add(
@@ -127,24 +127,60 @@ sub irc_msg {
 sub vndbid { # dest, msg
   my $m = $_[ARG1];
   my @id;
-  push @id, [$1,$2,$3,$4] while $m =~ s/^(.*)([uvpr])([0-9]+)(.*)$/ $1 $4 /i;
+  push @id, [$1,$2,$3,$4] while $m =~ s/^(.*)([duvpr])([0-9]+)(.*)$/ $1 $4 /i;
   for (reverse @id) {
     next if $$_[0] =~ /(\.org\/|[a-z])$/i || $$_[3] =~ /^[a-z]/i;
-    my($t, $id) = (lc($$_[1]), $$_[2]);
-    my $s = $Multi::SQL->prepare(
-      $t eq 'v' ? 'SELECT vr.title FROM vn_rev vr JOIN vn v ON v.latest = vr.id WHERE v.id = ?' :
-      $t eq 'u' ? 'SELECT u.username AS title FROM users u WHERE u.id = ?' :
-      $t eq 'p' ? 'SELECT pr.name AS title FROM producers_rev pr JOIN producers p ON p.latest = pr.id WHERE p.id = ?' :
-                  'SELECT rr.title FROM releases_rev rr JOIN releases r ON r.latest = rr.id WHERE r.id = ?'
-    );
-    $s->execute($id);
-    my $r = $s->fetchrow_hashref;
-    $s->finish;
-    next if !$r || ref($r) ne 'HASH';
-    $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf
-      BOLD.RED.'['.RED.'%s%d'.RED.']'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' http://vndb.org/%s%d'.NORMAL,
-      $t, $id, $r->{title}, $t, $id
-    );
+    my($t, $id, $ext) = (lc($$_[1]), $$_[2], $$_[3]);
+
+    if($t ne 'd') {
+      my $s = $Multi::SQL->prepare(
+        $t eq 'v' ? 'SELECT vr.title FROM vn_rev vr JOIN vn v ON v.latest = vr.id WHERE v.id = ?' :
+        $t eq 'u' ? 'SELECT u.username AS title FROM users u WHERE u.id = ?' :
+        $t eq 'p' ? 'SELECT pr.name AS title FROM producers_rev pr JOIN producers p ON p.latest = pr.id WHERE p.id = ?' :
+                    'SELECT rr.title FROM releases_rev rr JOIN releases r ON r.latest = rr.id WHERE r.id = ?'
+      );
+      $s->execute($id);
+      my $r = $s->fetchrow_hashref;
+      $s->finish;
+      next if !$r || ref($r) ne 'HASH';
+      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf
+        BOLD.RED.'['.RED.'%s%d'.RED.']'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' http://vndb.org/%s%d'.NORMAL,
+        $t, $id, $r->{title}, $t, $id
+      );
+
+    } else {
+      my $f = sprintf '/www/vndb/data/docs/%d', $id;
+      open my $F, '<', $f or next;
+      (my $title = <$F>) =~ s/^:TITLE://;
+      chomp($title);
+
+      my($sub, $sec) = ('', 0);
+      if($ext && $ext =~ /^\.([0-9]+)/) {
+        my $fs = $1;
+        while(<$F>) {
+          next if !/^:SUB:/;
+          $sec++;
+          if($sec == $fs) {
+            chomp;
+            ($sub = $_) =~ s/^:SUB://;
+            last;
+          }
+        }
+      }
+      close $F;
+
+      if(!$sub) {
+        $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf
+          BOLD.RED.'['.RED.'d%d'.RED.']'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' http://vndb.org/d%d'.NORMAL,
+          $id, $title, $id
+        );
+      } else {
+        $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf
+          BOLD.RED.'['.RED.'d%d.%d'.RED.']'.NORMAL.' %s -> %s '.RED.'@'.NORMAL.LIGHT_GREY.' http://vndb.org/d%d#%d'.NORMAL,
+          $id, $sec, $title, $sub, $id, $sec
+        );
+      }
+    }
   }
 }
 

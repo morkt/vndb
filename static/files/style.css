@@ -612,6 +612,7 @@ div#lfilter label {
 #dpage ul.index li { list-style-type: none; }
 #dpage ul.index li a { margin: 0 0 0 10px; }
 #dpage .retired { text-decoration: line-through; }
+#dpage dt b { color: #999; font-weight: normal; font-style: normal; font-size: 12px; }
 
 
 

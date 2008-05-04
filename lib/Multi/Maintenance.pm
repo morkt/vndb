@@ -8,15 +8,17 @@ package Multi::Maintenance;
 use strict;
 use warnings;
 use POE;
+use PerlIO::gzip;
 
 
 sub spawn {
   # WARNING: these maintenance tasks can block the process for a few seconds
+  # 'maintenance all' doesn't include log rotation
 
   my $p = shift;
   POE::Session->create(
     package_states => [
-      $p => [qw| _start cmd_maintenance vncache ratings prevcache integrity unkanime |], 
+      $p => [qw| _start cmd_maintenance vncache ratings prevcache integrity unkanime logrotate |], 
     ],
   );
 }
@@ -24,10 +26,12 @@ sub spawn {
 
 sub _start {
   $_[KERNEL]->alias_set('maintenance');
-  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:all|vncache|ratings|prevcache|integrity|unkanime))+)$/, 'cmd_maintenance');
+  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:all|vncache|ratings|prevcache|integrity|unkanime|logrotate))+)$/, 'cmd_maintenance');
   
  # Perform all maintenance functions every day on 0:00
   $_[KERNEL]->post(core => addcron => '0 0 * * *', 'maintenance all');
+ # rotate logs every 1st day of the month at 0:05
+  $_[KERNEL]->post(core => addcron => '5 0 1 * *' => 'maintenance logrotate');
 }
 
 
@@ -39,6 +43,7 @@ sub cmd_maintenance {
   $_[KERNEL]->yield('prevcache') if /(?:prevcache|all)/;
   $_[KERNEL]->yield('integrity') if /(?:integrity|all)/;
   $_[KERNEL]->yield('unkanime')  if /(?:unkanime|all)/;
+  $_[KERNEL]->yield('logrotate') if /logrotate/;
 
   $_[KERNEL]->post(core => finish => $_[ARG0]);
 }
@@ -106,6 +111,29 @@ sub unkanime {
     );
   } else {
     $_[KERNEL]->call(core => log => 3, 'No problems found with the related anime');
+  }
+}
+
+
+sub logrotate {
+  my $dir = sprintf '%s/old', $Multi::LOGDIR;
+  mkdir $dir if !-d $dir;
+
+  for (glob sprintf '%s/*', $Multi::LOGDIR) {
+    next if /^\./ || /~$/ || !-f;
+    my $f = /([^\/]+)$/ ? $1 : $_;
+    my $n = sprintf '%s/%s.%04d-%02d-%02d.gz', $dir, $f, (localtime)[5]+1900, (localtime)[4]+1, (localtime)[3];
+    if(-f $n) {
+      $_[KERNEL]->call(core => log => 1, 'Logs already rotated earlier today!');
+      return;
+    }
+    open my $I, '<', sprintf '%s/%s', $Multi::LOGDIR, $f;
+    open my $O, '>:gzip', $n;
+    print $O $_ while <$I>;
+    close $O;
+    close $I;
+    open $I, '>', sprintf '%s/%s', $Multi::LOGDIR, $f;
+    close $I;
   }
 }
 

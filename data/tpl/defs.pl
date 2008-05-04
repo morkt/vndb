@@ -144,10 +144,10 @@ sub summary { # cmd, len, def
       $l -= length($1)+6;
       $as++;
     }
-    if(!$as && s/(http|https):\/\/(.+[0-9a-zA-Z\/])/<a href="$1:\/\/$2" rel="nofollow">link<\/a>/) {
+    if(!$as && s/(http|https):\/\/(.+[0-9a-zA-Z=\/])/<a href="$1:\/\/$2" rel="nofollow">link<\/a>/) {
       $l = 4;
     } elsif(!$as) {
-      s/^([uvpr][0-9]+)[^\w]*$/<a href="\/$1">$1<\/a>/;
+      s/^([duvpr][0-9]+)[^\w]*$/<a href="\/$1">$1<\/a>/;
     }
     while(s/\[\/url\]/<\/a>/) {
       $l -= 6;

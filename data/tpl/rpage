@@ -22,7 +22,7 @@
   [ website   => 'Website',      \&summary ],
   [ released  => 'Release date', \&datestr ],
   [ minage    => 'Age rating',   sub { $VNDB::VRAGES->{$_[0]} } ],
-  [ notes     => 'Notes',        1 ],
+  [ notes     => 'Notes',        1, 1 ],
   [ platforms => 'Platforms',    sub { join(', ', sort @{$_[0]}) } ],
   [ media     => 'Media',        \&mediastr ],
   [ producers => 'Producers',    sub { join(', ', map { _hchar($_->{name}) } sort { $a->{name} cmp $b->{name} } @{$_[0]}) } ],

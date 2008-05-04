@@ -49,7 +49,7 @@
   have to be added to Da Capo and vice versa - the internal visual novel relations will
   take care of that.<br />
   After submitting a new AniDB ID, VNDB will automatically fetch information about the
-  anime and will present that on the site. This action can take a few minuts to - in the
+  anime and will present that on the site. This action can take a few minutes to - in the
   worst case - hours. In that time you will see the ID of the anime, but not the title
   and links to AnimeNFO and Anime News Network. It is not possible to manually add this
   information, this will be fetched automatically!
@@ -71,14 +71,51 @@
 
 :SUB:Image
 <p>
- <i>General image guidelines and when to use the NSFW warning</i>
+ Every visual novel should have an image, preferably one of the official cover
+ art of one of the releases. In some cases, especially with doujin games, if there is
+ no official cover art available, a general image from the game's homepage or a
+ screenshot of the game itself could be used instead.<br />
+ Images can be uploaded in JPEG or PNG format, and should not be larger than 500kB.
+ All images larger than 256x400px will automatically be resized to fit on the page.
+ Keep in mind that this resizing is done in a seperate process, so you will not
+ immediately see the image after uploading. This processing often takes just a few
+ seconds, and the image should be available shortly after you've submitted the form.
+ <br /><br />
+ The NSFW warning should be used in cases where the cover art is not safe for work.
+ To determine what is safe for work and what is not, use the following guidelines:
+</p><ul>
+ <li>Nudity is only safe if the sexual characteristics are covered or hidden</li>
+ <li>Bikini, pantsu and other underwear are only safe if they contain no implicit
+  indication of sexual anatomy</li>
+ <li>If the characters pose is overly sexually suggestive, it's NSFW</li>
+ <li>If multiple characters are portrayed and they are engaged in physical contact
+  that may be considered as (a precursor to) sexual contact, then it's NSFW as well.
+ </li>
+</ul><p>
+ Even with these guidelines it may not always be easy to determine whether an image
+ is safe or not. When in doubt, it's often best to go for NSFW.
 </p>
 
 
 :SUB:Relations
 <p>
- <i>When to add relation, and document direct and reverse relations</i><br />
- <i>(Stolen from AniDB, needs some rewriting)</i>
+ Visual novel relations can be used to indicate what games are related to each
+ other.<br />
+ When adding a relation, the reverse relation will automatically be added to
+ the other visual novel. E.g. if you add game x as a sequel to game y, then game
+ y will automatically be added as a prequel to game x. You do not have to edit
+ both games.<br />
+ Only specify <b>direct</b> relations. If one game 1 is listed to have a relation
+ with game 2, and game 2 has a relation with game 3, then game 3 does not have
+ to be added as a relation to game 1. This may sound a bit confusing at first,
+ but you will understand when you look at the relation graphs. When editing relations,
+ always try to think about the relations between all related games - as shown in
+ the graph - instead of only looking at the specific visual novel you're editing.
+ <br />
+ There is a static list of relations to choose from (as described below). As with
+ many things, the relations between games can in reality be more complex than these
+ options could describe. Simply choose the option you think is closest to describing
+ the actual relation when you're not sure which one to choose.
 </p>
 <dl>
  <dt>Sequel</dt><dd>
@@ -86,23 +123,28 @@
  </dd><dt>Prequel</dt><dd>
   The story happens before the original story.&lt;=&gt;<i>Sequel</i>.
  </dd><dt>Same setting</dt><dd>
-  Same universe/world/reality/timeline, completely different characters.
+  Same universe, world, reality and timeline, but completely different characters.
+  The definition of "setting" is not always easy to define, but usually it
+  means that if places or items not existing in the real world described in one
+  game also exist in the other game, you could use this relation.
  </dd><dt>Alternative setting</dt><dd>
-  Same characters, different universe/world/reality/timeline. 
+  Same characters and (mostly) the same story, but set in a different universe,
+  world, reality or timeline.
  </dd><dt>Alternative version</dt><dd>
-  Same setting, same characters, story is told differently.
+  Same setting, same characters, but the story is told differently.
  </dd><dt>Same characters</dt><dd>
-  Shares one or more characters, story is unrelated.
+  Different story, but shares some characters.
  </dd><dt>Side story</dt><dd>
-  Takes place sometime during the parent storyline. &lt;=&gt;<i>Parent story</i>
+  The story takes place sometime during the parent storyline. &lt;=&gt;<i>Parent story</i>
  </dd><dt>Parent story</dt><dd>
-  .. &lt;=&gt;<i>Side story</i>.
+  Opposite of <i>Side story</i>.
  </dd><dt>Summary</dt><dd>
   Summarizes full story, may contain additional stuff. &lt;=&gt;<i>Full story</i>.
  </dd><dt>Full story</dt><dd>
   Full version of the summarized story. &lt;=&gt;<i>Summary</i>.
  </dd><dt>Other</dt><dd>
-  ..
+  There is a relation, but it's not possible to describe it using the other available
+  options. This is a relation that should rarely be used.
  </dd>
 </dl>
 
