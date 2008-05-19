@@ -75,7 +75,6 @@ function formtoggle(n) {
 
 /*  D R O P D O W N   M E N U S  */
 
-
 var ddx;var ddy;var dds=null;
 function dropDown(e) {
   e = e || window.event;
@@ -119,6 +118,92 @@ function dropDown(e) {
 
 
 
+/*  A D V A N C E D   S E A R C H  */
+
+var ad_cats = {};
+var ad_lang = {};
+var ad_plat = {};
+
+function adsearch() {
+  x('vsearch').onsubmit = ad_dosearch;
+  x('vsearch_sub').onclick = ad_dosearch;
+  x('q').onkeyup = ad_update;
+
+  x('adsearchclick').onclick = function() {
+    if(x('adsearch').style.display == 'none') {
+      x('adsearch').style.display = 'block';
+      x('adsearchclick').innerHTML = '&#9662; advanced options';
+    } else {
+      x('adsearch').style.display = 'none';
+      x('adsearchclick').innerHTML = '&#9656; advanced options';
+    }
+  };
+
+  var l = x('cat').getElementsByTagName('li');
+  for(i=0;i<l.length;i++)
+    if(l[i].id.indexOf('cat_') != -1) {
+      ad_cats[ l[i].id.substr(l[i].id.indexOf('cat_')+4, 3) ] = l[i].innerHTML.substring(0, l[i].innerHTML.indexOf('(')-1).toLowerCase();
+      l[i].onclick = function () {
+        try { document.selection.empty() } catch(e) { try { window.getSelection().collapse(this, 0) } catch(e) {} };
+        ad_update(1, this.innerHTML.substring(0, this.innerHTML.indexOf('(')-1));
+      };
+    }
+ 
+  l = x('lfilter').getElementsByTagName('input');
+  for(i=0;i<l.length;i++) {
+    ad_lang[ l[i].name.substring(5) ] = l[i].value.toLowerCase();
+    l[i].onclick = function() { ad_update(0, this.value) };
+  }
+
+  l = x('pfilter').getElementsByTagName('input');
+  for(i=0;i<l.length;i++) {
+    ad_plat[ l[i].name.substring(5) ] = l[i].value.toLowerCase();
+    l[i].onclick = function() { ad_update(0, this.value) };
+  }
+}
+
+function ad_update(add, term) {
+  var q = x('q').value;
+  var i;
+
+  if(add == 0 || add === 1) {
+    var qn = q;
+    if(!add)
+      eval('qn = qn.replace(/'+term+'/gi, "")');
+    else {
+      eval('qn = qn.replace(/(^|[^-])'+term+'/gi, "$1-'+term+'")');
+      if(qn == q)
+        eval('qn = qn.replace(/-'+term+'/gi, "")');
+    }
+    if(qn == q)
+      q += ' '+term;
+    else
+      q = qn;
+
+    q = q.replace(/^ +/, "");
+    q = q.replace(/ +$/, "");
+    q = q.replace(/  +/g, " ");
+
+    x('q').value = q;
+  }
+
+  q = q.toLowerCase();
+  for (i in ad_lang)
+    x('lang_'+i).checked = q.indexOf(ad_lang[i]) >= 0 || q.indexOf('l:'+i) >= 0 ? true : false;
+  for (i in ad_plat)
+    x('plat_'+i).checked = q.indexOf(ad_plat[i]) >= 0 || q.indexOf('p:'+i) >= 0 ? true : false;
+  for (i in ad_cats)
+    x('cat_'+i).className = q.indexOf('-'+ad_cats[i]) >= 0 || q.indexOf('-c:'+i) >= 0 ? 'exc' : q.indexOf(ad_cats[i]) >= 0 || q.indexOf('c:'+i) >= 0 ? 'inc' : '';
+}
+
+function ad_dosearch() {
+  location.href = '?q='+x('q').value;
+  return false;
+}
+
+
+
+
 /*  O N L O A D  */
 
 DOMLoad(function() {
@@ -134,41 +219,10 @@ DOMLoad(function() {
     if(this.value.length < 1) {
       this.value = 'search';
       this.style.color = '#999';} };
-
- // browse categories
-  if(x('catsearch')) {
-    x('catsearch').onclick = function () {
-      var u = { i:'',e:'',l:'' };
-      var l = x('cat').getElementsByTagName('li');
-      var y;var j;
-      for(y=0;y<l.length;y++)
-        if((j = l[y].className.indexOf('cat_')) != -1) {
-          var k = l[y].className.substr(j+4, 3);
-          if(l[y].className.indexOf(' inc') != -1)
-            u.i += (u.i?',':'')+k;
-          if(l[y].className.indexOf(' exc') != -1)
-            u.e += (u.e?',':'')+k;
-        }
-      l = x('lfilter').getElementsByTagName('input');
-      for(y=0;y<l.length;y++)
-        if(l[y].checked)
-          u.l+=(u.l!=''?',':'')+l[y].name.substr(5);
-      var url = '/v/cat';
-      for (y in u)
-        if(u[y])
-          url+=(url.indexOf('?')<0?'?':';')+y+'='+u[y];
-      location.href=url;
-      return false;
-    };
-    var l = x('cat').getElementsByTagName('li');
-    for(i=0;i<l.length;i++)
-      if(l[i].className.indexOf('cat_') != -1)
-        l[i].onclick = function () {
-          try { document.selection.empty() } catch(e) { try { window.getSelection().collapse(this, 0) } catch(e) {} };
-          var sel = this.className.substr(this.className.indexOf('cat_'), 7);
-          this.className = this.className.indexOf(' inc') != -1 ? (sel+' exc') : this.className.indexOf(' exc') != -1 ? sel : (sel + ' inc');
-        };
-  }
+ 
+ // advanced search
+  if(x('adsearch'))
+    adsearch();
 
  // vnlist
   cl('askcomment', function() {
@@ -197,22 +251,9 @@ DOMLoad(function() {
     }
   }
 
- // autocheck
-  cl('checkall', function () {
-    var l = document.getElementsByTagName('input');
-    var y;
-    for(y=0;y<l.length;y++)
-      if(l[y].type == 'checkbox' && l[y].name == this.name)
-        l[y].checked = this.checked;
-  });
-
- // a few confirm popups
+ // confirm popup
   cl('idel', function () {
     return confirm('Are you sure you want to delete this item?\n\nAll previous edits will be deleted, this action can not be reverted!') });
-//  cl('vhide', function () {
-//    return confirm('!WARNING!\nHiding a visual novel also DELETES the following information:\n - VN Relations of ALL revisions\n - VN lists\n - Votes\nThis is NOT recoverable!');  });
-  cl('massdel', function () {
-    return confirm('Are you sure you want to mass-delete all the selected changes?\n\nThis action can not be reverted!') });
 
  // NSFW
   cl('nsfw', function () {
@@ -238,7 +279,6 @@ DOMLoad(function() {
     formhid();
 
  // init dyna
-//  if(x('vn_select') || x('md_select') || x('pd_select') || x('rl_select'))
   if(window.dInit)
     dInit();
 
@@ -247,3 +287,13 @@ DOMLoad(function() {
   for(i=1; i<sub.length; i+=2)
     sub[i].style.backgroundColor = '#f5f5f5';
 });
+
+
+
+
+// small hack because the mozilla -moz-inline-stack display hack sucks
+//  (so we're counter-hacking a CSS hack using JS... right)
+if(navigator.userAgent.indexOf('Gecko') >= 0 && navigator.userAgent.indexOf('like Gecko') < 0 && navigator.userAgent.indexOf('fox/3') < 0)
+  document.write('<style type="text/css">.icons.lang { width: 15px; height: 13px; }</style>');
+
+

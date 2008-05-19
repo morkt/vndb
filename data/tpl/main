@@ -32,7 +32,7 @@
   <form id="search" method="get" action="/v/search">
     <fieldset>
     <legend>Search</legend>
-    <input id="searchfield" type="text" name="q" value="[[: $p{searchquery} || 'search' ]]"[[= !$p{searchquery} ? ' style="color: #999"': '' ]]- />
+    <input id="searchfield" type="text" name="sq" value="search" style="color: #999" />
     <input id="searchsubmit" type="submit" value="Search" />
     </fieldset>
   </form>
@@ -75,7 +75,7 @@
   <li><a href="/">Home</a></li>
   <li><a href="/v">Visual Novels</a></li>
   <li><a href="/p">Producers</a></li>
-  <li><a href="/v/cat">Categories</a></li>
+  <li><a href="/v/search">Search</a></li>
   <li><a href="/u/list">Users</a></li>
   <li><a href="/hist">Recent changes</a></li>
   <li><a href="/d6">FAQ</a></li>
@@ -134,6 +134,7 @@
 <div id="footer">
  <p>
   vndb v[[: $VNDB::VERSION ]]- |
+  <a href="/d7">about us</a> |
   <a href="mailto:contact@vndb.org">contact@vndb.org</a> |
   designed by <a href="http://www.freecsstemplates.org/">free css templates</a>.
  </p>

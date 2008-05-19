@@ -92,7 +92,7 @@ sub VNEdit {
       { name => 'anime', required => 0, default => '' },
       { name => 'img_nsfw', required => 0 },
       { name => 'categories', required => 0, default => '' },
-      { name => 'relations', required => 0, default => 0 },
+      { name => 'relations', required => 0, default => '' },
       { name => 'comm', required => 0, default => '' },
     );
     $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
@@ -155,8 +155,8 @@ sub VNEdit {
         $self->VNUpdReverse(\%old, \%new, $id, $cid);
       }
      # also regenerate relation graph if the title changes
-      elsif($frm->{title} ne $b4{title}) {
-        $self->RunCmd('relraph '.$id);
+      elsif(@$relations && $frm->{title} ne $b4{title}) {
+        $self->RunCmd('relgraph '.$id);
       }
 
      # check for new anime data
@@ -230,25 +230,49 @@ sub VNBrowse {
   my $f = $self->FormCheck(
     { name => 's', required => 0, default => 'title', enum => [ qw|title released votes| ] },
     { name => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
-    { name => 'i', required => 0, default => '' },
-    { name => 'e', required => 0, default => '' },
-    { name => 'l', required => 0, default => '' },
-    { name => 'q', required => 0},
+    { name => 'q', required => 0, default => '' },
+    { name => 'sq', required => 0, default => '' },
     { name => 'p', required => 0, template => 'int', default => 1},
   );
 
-  my($r, $np) = $chr ne 'cat' || $f->{e} || $f->{i} || $f->{l} ? ($self->DBGetVN(
-    $chr =~ /^[a-z0]$/ ? (
-      char => $chr ) : (),
-    $chr eq 'search' && $f->{q} ? (
-      search => $f->{q} ) : (),
-    page => $f->{p},
-    $chr eq 'cat' ? (
-      cati => [ split /,/, $f->{i} ],
-      cate => [ split /,/, $f->{e} ],
-      lang => [ grep { $VNDB::LANG->{$_} } split /,/, $f->{l} ],
-    ) : (),
+  $f->{q} ||= $f->{sq};
+
+  my(@cati, @cate, @plat, @lang);
+  my $q = $f->{q};
+  if($chr eq 'search') {
+   # VNDBID
+    return $self->ResRedirect('/'.$1, 'temp')
+      if $q =~ /^([vrpud][0-9]+)$/;
+    
+    if(!($q =~ s/^title://)) {
+     # categories
+      my %catl = map {
+        my $ic = $_;
+        map { $ic.$_ => $VNDB::CAT->{$ic}[1]{$_} } keys %{$VNDB::CAT->{$ic}[1]}
+      } keys %$VNDB::CAT;
+
+      $q =~ s/-(?:$catl{$_}|c:$_)//ig && push @cate, $_ for keys %catl;
+      $q =~ s/(?:$catl{$_}|c:$_)//ig && push @cati, $_ for keys %catl;
+
+     # platforms
+      $_ ne 'oth' && $q =~ s/(?:$VNDB::PLAT->{$_}|p:$_)//ig && push @plat, $_ for keys %$VNDB::PLAT;
+
+     # languages
+      $q =~ s/($VNDB::LANG->{$_}|l:$_)//ig && push @lang, $_ for keys %$VNDB::LANG;
+    }
+  }
+  $q =~ s/ +$//;
+  $q =~ s/^ +//;
+
+  my($r, $np) = $chr ne 'search' || $q || @lang || @plat || @cati || @cate ? ($self->DBGetVN(
+    $chr =~ /^[a-z0]$/ ? ( char => $chr ) : (),
+    $q ? ( search => $q ) : (),
+    @cati ? ( cati => \@cati ) : (),
+    @cate ? ( cate => \@cate ) : (),
+    @lang ? ( lang => \@lang ) : (),
+    @plat ? ( platform => \@plat ) : (),
     results => 50,
+    page => $f->{p},
     order => {title => 'vr.title', released => 'v.c_released', votes => 'v.c_votes'
       }->{$f->{s}}.{a=>' ASC',d=>' DESC'}->{$f->{o}},
   )) : ([], 0);
@@ -261,12 +285,13 @@ sub VNBrowse {
     npage => $np,
     page => $f->{p},
     chr => $chr,
-    $chr eq 'cat' ? (
-      incl => $f->{i},
-      excl => $f->{e},
+    $chr eq 'search' ? (
+      incl => \@cati,
+      excl => \@cate,
       cat => $self->DBCategoryCount,
-      lang => $self->DBLanguageCount,
-      slang => $f->{l},
+      langc => $self->DBLanguageCount,
+      lang => \@lang,
+      plat => \@plat,
     ) : (),
     order => [ $f->{s}, $f->{o} ],
   },
@@ -335,5 +360,4 @@ sub VNUpdReverse { # old, new, id, cid
 
 
 1;
-
 

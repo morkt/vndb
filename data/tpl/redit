@@ -42,7 +42,7 @@
  { type => 'static', raw => 1, text => '<label>Platforms</label><ul class="platforms">'.join('', map { my $p = $_;
      '<li><input type="checkbox" name="platforms" value="'.$_.'" id="'.$_.'" '.
      (($d{form}{platforms} && grep { $p eq $_ } @{$d{form}{platforms}}) ? 'checked="checked" ':'').'/>'.
-     '<label for="'.$_.'"><acronym class="plat '.$_.'" title="'.$VNDB::PLAT->{$_}.'">&nbsp;</acronym>'.$VNDB::PLAT->{$_}.'</label></li>'
+     '<label for="'.$_.'"><acronym class="icons '.$_.'" title="'.$VNDB::PLAT->{$_}.'">&nbsp;</acronym>'.$VNDB::PLAT->{$_}.'</label></li>'
    } sort { $VNDB::PLAT->{$a} cmp $VNDB::PLAT->{$b} } keys %$VNDB::PLAT).'</ul>' },
 
  { type => 'static', text => '<br />' },

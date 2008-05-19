@@ -3,7 +3,7 @@ package VNDB;
 our @DBLOGIN = ( 'dbi:Pg:dbname=vndb', 'vndb', 'passwd' );
 our @SHMOPTS = ( -key => 'VNDB', -create => 'yes', -destroy => 'no', -mode => 0666);
 our $DEBUG = 1;
-our $VERSION = '1.15';
+our $VERSION = '1.16';
 
 our $PLAT = {
   win => 'Windows',
@@ -13,9 +13,9 @@ our $PLAT = {
   gba => 'Game Boy Advance',
   nds => 'Nintendo DS',
   psp => 'Playstation Portable',
-  ps  => 'Playstation',
+  ps1 => 'Playstation 1',
   ps2 => 'Playstation 2',
-  dc  => 'Dreamcast',
+  drc => 'Dreamcast',
   sfc => 'Super Nintendo',
   wii => 'Nintendo Wii',
   oth => 'Other'
@@ -54,7 +54,7 @@ our $CAT = {
   g => [ 'Gameplay', {
     aa => 'Visual Novel', # 0..1
     ab => 'Adventure',    # 0..1
-    ac => 'Action',
+    ac => "Act\x{200B}ion",      # Ugliest. Hack. Ever.
     rp => 'RPG',
     st => 'Strategy',
     si => 'Simulation',
@@ -64,7 +64,7 @@ our $CAT = {
     br => 'Branching',    # 0..1
   } ],
   e => [ 'Elements', {
-    ac => 'Action', 
+    ac => 'Action',
     co => 'Comedy',
     dr => 'Drama',
     fa => 'Fantasy',
@@ -82,7 +82,7 @@ our $CAT = {
   } ],
   l => [ 'Place', {
     ea => 'Earth', 
-    fa => 'Fantasy World',
+    fa => "Fant\x{200B}asy world",
     sp => 'Space',
   } ],
   s => [ 'Sexual content', {
@@ -102,7 +102,6 @@ our $LSTAT = [
   'Wishlist',
   'Blacklist',
   'Playing',
-  'Finished',
   'Stalled',
   'Dropped',
   'Other', # XXX: hardcoded at 6
@@ -291,7 +290,7 @@ our $LANG = {
  'fr'         => q|French|,
 # 'fur'        => q|Friulian|,
 # 'fy'         => q|Frisian|,
- 'ga'         => q|Irish|,
+# 'ga'         => q|Irish|,
 # 'gaa'        => q|Ga|,
 # 'gay'        => q|Gayo|,
 # 'gba'        => q|Gbaya|,

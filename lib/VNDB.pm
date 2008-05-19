@@ -79,7 +79,8 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
   v => {
     '/'         => sub { shift->VNBrowse },
     new         => sub { shift->VNEdit(0); },
-    '*'         => sub { $_[2] =~ /^([a-z0]|all|search|cat)$/ ? shift->VNBrowse($_[1]) : shift->ResNotFound; },
+    #search      => sub { shift->VNSearch },
+    '*'         => sub { $_[2] =~ /^([a-z0]|all|search)$/ ? shift->VNBrowse($_[1]) : shift->ResNotFound; },
   },
   'v+' => {
     '/'         => sub { shift->VNPage(shift) },
@@ -128,9 +129,13 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
 # provide redirects for old URIs
 my %OLDuris = (
   faq           => sub { shift->ResRedirect('/d6', 'perm') },
+  notes         => sub { shift->ResRedirect('/d8', 'perm') },
   vn => {
     rss         => sub { shift->ResRedirect('/hist/rss?t=v&e=1', 'perm') },
     '*'         => sub { shift->ResRedirect('/v/'.$_[1], 'perm') },
+  },
+  v => {
+    cat         => sub { },
   },
   'v+' => {
     votes       => sub { shift->ResRedirect('/v'.(shift).'/stats', 'perm') },

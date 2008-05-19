@@ -87,7 +87,7 @@ sub REdit {
 
     my $released = !$frm->{released}[0] ? 0 :
             $frm->{released}[0] == 9999 ? 99999999 :
-                                          sprintf '%04d%02d%02d',  $frm->{released}[0]||0, $frm->{released}[1]||0, $frm->{released}[2]||0;
+                                          sprintf '%04d%02d%02d',  $frm->{released}[0], $frm->{released}[1]||99, $frm->{released}[2]||99;
     my $media = [ map { /_/ ? [ split /_/ ] : [ $_, 0 ] } split /,/, $frm->{media} ];
     my $producers = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{producers} ];
     my $new_vn = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];

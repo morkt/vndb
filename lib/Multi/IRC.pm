@@ -27,7 +27,7 @@ sub spawn {
   );
   POE::Session->create(
     package_states => [
-      $p => [qw| _start irc_001 irc_public irc_ctcp_action irc_msg vndbid shutdown |],
+      $p => [qw| _start irc_001 irc_public irc_ctcp_action irc_msg irccmd vndbid shutdown |],
     ],
     heap => { irc => $irc,
       o => {
@@ -36,7 +36,8 @@ sub spawn {
         ircname => 'VNDB.org Multi',
         channel => '#vndb',
         @_
-      }
+      },
+      log => {},
     }
   );
 }
@@ -83,9 +84,10 @@ sub irc_001 {
 
 
 sub irc_public {
-  if($_[ARG2] =~ /^!info/) {
-    $_[KERNEL]->post(circ => privmsg => $_[ARG1][0],
-      'Hello, I am HMX-12 Multi v'.$VNDB::VERSION.' made by the great Yorhel! (Please ask Ayo for more info)');
+  if($_[ARG2] =~ /^!/) {
+    (my $cmd = $_[ARG2]) =~ s/^!//;
+    my $nick = (split /!/, $_[ARG0])[0];
+    $_[KERNEL]->call(irc => irccmd => $_[ARG1][0], $cmd, $nick, $nick.', ');
   } else {
     $_[KERNEL]->call(irc => vndbid => $_[ARG1][0], $_[ARG2]);
   }
@@ -99,26 +101,39 @@ sub irc_ctcp_action {
 
 sub irc_msg {
   my $nick = ( split /!/, $_[ARG0] )[0];
+  $_[KERNEL]->call(irc => irccmd => $nick => $_[ARG2]);
+}
 
-  if(!$_[HEAP]{irc}->is_channel_operator($_[HEAP]{o}{channel}, $nick)
-   && !$_[HEAP]{irc}->is_channel_owner($_[HEAP]{o}{channel}, $nick)
-   && !$_[HEAP]{irc}->is_channel_admin($_[HEAP]{o}{channel}, $nick)) {
-    $_[KERNEL]->post(circ => privmsg => $nick, 'You are not my master');
-    return;
+
+sub irccmd { # dest, cmd, [nick], [prep]
+  my($dest, $cmd, $nick, $prep) = @_[ARG0..$#_];
+  $nick ||= $_[ARG0];
+  $prep ||= '';
+
+  if($cmd =~ /^info/) {
+    return $_[KERNEL]->post(circ => privmsg => $dest,
+      'Hello, I am HMX-12 Multi v'.$VNDB::VERSION.' made by the great Yorhel!');
   }
+  
+  return $_[KERNEL]->post(circ => privmsg => $dest,
+      $prep.'You are not my master!')
+    if !$_[HEAP]{irc}->is_channel_operator($_[HEAP]{o}{channel}, $nick)
+    && !$_[HEAP]{irc}->is_channel_owner($_[HEAP]{o}{channel}, $nick)
+    && !$_[HEAP]{irc}->is_channel_admin($_[HEAP]{o}{channel}, $nick);
 
-  my $m = $_[ARG2];
-  if($m =~ /^say (.+)$/) {
+  if($cmd =~ /^say (.+)$/) {
     $_[KERNEL]->post(circ => privmsg => $_[HEAP]{o}{channel}, $1);
-  } elsif($m =~ /^me (.+)$/) {
+  } elsif($cmd =~ /^me (.+)$/) {
     $_[KERNEL]->post(circ => ctcp => $_[HEAP]{o}{channel}, "ACTION $1");
-  } elsif($m =~ /^cmd (.+)$/) {
+  } elsif($cmd =~ /^cmd (.+)$/) {
     $_[KERNEL]->post(core => queue => $1);
-  } elsif($m =~ /^eval (.+)$/) {
-    $_[KERNEL]->post(circ => privmsg => $nick, 'eval: '.$_)
+    $_[KERNEL]->post(circ => privmsg => $dest => sprintf "%sExecuting command '%s'", $prep, $1);
+  } elsif($cmd =~ /^eval (.+)$/) {
+    $_[KERNEL]->post(circ => privmsg => $dest, $prep.'eval: '.$_)
       for (split /\r?\n/, eval($1)||$@);
   } else {
-    $_[KERNEL]->post(circ => privmsg => $nick, 'Unkown command'); }
+    $_[KERNEL]->post(circ => privmsg => $dest, $prep.'Unkown command');
+  }
 
   # TODO: add command to view the current queue, and a method to send log messages
 }
@@ -126,11 +141,18 @@ sub irc_msg {
 
 sub vndbid { # dest, msg
   my $m = $_[ARG1];
+
+  $_[HEAP]{log}{$_} < time-60 and delete $_[HEAP]{log}{$_}
+    for (keys %{$_[HEAP]{log}});
+
   my @id;
   push @id, [$1,$2,$3,$4] while $m =~ s/^(.*)([duvpr])([0-9]+)(.*)$/ $1 $4 /i;
   for (reverse @id) {
-    next if $$_[0] =~ /(\.org\/|[a-z])$/i || $$_[3] =~ /^[a-z]/i;
+    next if $$_[0] =~ /[a-z0-9%/]$/i || $$_[3] =~ /^[a-z]/i;
     my($t, $id, $ext) = (lc($$_[1]), $$_[2], $$_[3]);
+
+    next if $_[HEAP]{log}{$t.$id};
+    $_[HEAP]{log}{$t.$id} = time;
 
     if($t ne 'd') {
       my $s = $Multi::SQL->prepare(

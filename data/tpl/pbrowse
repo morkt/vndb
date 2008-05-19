@@ -6,8 +6,8 @@
  [[ } ]]-
  <form id="psearch" method="get" action="/p" accept-charset="UTF-8">
   <fieldset>
-   <input type="text" name="q" id="q" value="[[: $d{query} ]]" class="text" />
-   <input type="submit" value="Search!" />
+   <input type="text" name="q" id="q" value="[[: $d{query} ]]" class="text"
+   /><input type="submit" value="Search!" />
   </fieldset>
  </form>
 </p>
@@ -25,17 +25,17 @@
  <thead><tr>
   <td class="tc1">Name</td>
   <td class="tc2">Type</td>
-  <td class="tc3">Main language</td>
-  <td class="tc4">Website</td>
+  <td class="tc3">Website</td>
  </tr></thead>
 [[ for (@{$d{prods}}) { ]]-
  <tr>
-  <td class="tc1"><a href="/p[[= $_->{id} ]]">[[: $_->{name} ]]</a></td>
+  <td class="tc1">
+   <acronym class="icons lang -[[= $_->{lang} ]]" title="[[: $VNDB::LANG->{$_->{lang}} ]]">&nbsp;</acronym><a
+   href="/p[[= $_->{id} ]]" title="[[: $_->{original}||$_->{name} ]]">[[: $_->{name} ]]</a></td>
   <td class="tc2">[[: $VNDB::PROT->{$_->{type}} ]]</td>
-  <td class="tc3">[[: $VNDB::LANG->{$_->{lang}} ]]</td>
-  <td class="tc4">
+  <td class="tc3">
    [[ if($_->{website}) { ]]
-    <a href="[[: $_->{website} ]]">[[: length($_->{website}) > 30 ? substr($_->{website}, 0, 27).'...' : $_->{website} ]]
+    <a href="[[: $_->{website} ]]">[[: shorten $_->{website}, 50 ]]
    [[ } else { ]]---[[ } ]]
   </td>
  </tr>

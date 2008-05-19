@@ -538,7 +538,7 @@ sub DBDelVNList { # uid, @vid  # uid = 0 to delete all
 #-----------------------------------------------------------------------------#
 
 
-sub DBGetVN { # %options->{ id rev char search order results page what cati cate lang }
+sub DBGetVN { # %options->{ id rev char search order results page what cati cate lang platform }
   my $s = shift;
   my %o = (
     page => 1,
@@ -573,14 +573,10 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
         JOIN vn iv ON iv.latest = ivc.vid
         WHERE cat IN(!L)
         GROUP BY iv.id)| => $o{cate} ) : (),
-    $o{lang} && @{$o{lang}} ? ( q|
-      v.id IN(SELECT irv.vid
-        FROM releases_rev irr
-        JOIN releases ir ON irr.id = ir.latest
-        JOIN releases_vn irv ON irv.rid = irr.id
-        WHERE irr.language IN(!L)
-          AND irr.type <> 2
-          AND irr.released <= TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer)| => $o{lang} ) : (),
+    $o{lang} && @{$o{lang}} ? (
+      '('.join(' OR ', map "v.c_languages ILIKE '%%$_%%'", @{$o{lang}}).')' => 1 ) : (),
+    $o{platform} && @{$o{platform}} ? (
+      '('.join(' OR ', map "v.c_platforms ILIKE '%%$_%%'", @{$o{platform}}).')' => 1 ) : (),
   );
 
   if($o{search}) {
@@ -613,7 +609,7 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
       'JOIN users u ON u.id = c.requester' ) : (),
   );
 
-  my $sel = 'v.id, v.locked, v.hidden, v.c_released, v.c_languages, v.c_votes, vr.title, vr.id AS cid, v.rgraph';
+  my $sel = 'v.id, v.locked, v.hidden, v.c_released, v.c_languages, v.c_votes, v.c_platforms, vr.title, vr.id AS cid, v.rgraph';
   $sel .= ', vr.alias, vr.image AS image, vr.img_nsfw, vr.length, vr.desc, vr.l_wp, vr.l_cisv, vr.l_vnn' if $o{what} =~ /extended/;
   $sel .= ', c.added, c.requester, c.comments, v.latest, u.username, c.prev, c.causedby' if $o{what} =~ /changes/;
 
@@ -909,7 +905,7 @@ sub DBGetRelease { # %options->{ id vid results page rev }
       )});
     }
     if($o{what} =~ /platforms/) {
-      ($_->{platform}=~s/\s+//||1)&&push(@{$r->[$r{$_->{rid}}]{platforms}}, $_->{platform}) for (@{$s->DBAll(q|
+      push(@{$r->[$r{$_->{rid}}]{platforms}}, $_->{platform}) for (@{$s->DBAll(q|
         SELECT rid, platform
           FROM releases_platforms
           WHERE rid IN(!l)|,

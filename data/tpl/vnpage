@@ -69,18 +69,32 @@
   my @links = (
    $d{vn}{l_wp} ?   [ 'Wikipedia', 'http://en.wikipedia.org/wiki/%s', $d{vn}{l_wp} ] : (),
    $d{vn}{l_vnn}  ? [ 'V-N.net',   'http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=%d', $d{vn}{l_vnn} ] : (),
-   $d{vn}{l_cisv} ? [ 'CISVisual', 'http://cisvisual.net/title/%d', $d{vn}{l_cisv} ] : (),
+#   $d{vn}{l_cisv} ? [ 'CISVisual', 'http://cisvisual.net/title/%d', $d{vn}{l_cisv} ] : (),
   );
 
-if($d{vn}{length} || $d{vn}{alias} || @links) { ]]
+  my $prod = @lang && grep { @{$_->{producers}} } @{$d{rel}};
+
+if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
  <h3>General info</h3>
  <dl>
  [[ if($d{vn}{length}) { ]]-
   <dt>Length</dt><dd>[[: $VNDB::VNLEN->[$d{vn}{length}][0] ]]- ([[: $VNDB::VNLEN->[$d{vn}{length}][1] ]])</dd>[[ } ]]-
  [[ if($d{vn}{alias}) { ]]-
   <dt>Aliases</dt><dd>[[: $d{vn}{alias} ]]</dd>[[ } ]]-
+ [[ if($prod) { ]]-
+  <dt>Producers</dt><dd>
+   [[ for my $l (@lang) { my %l;
+     $_->{language} eq $l && (%l = ( %l, map {
+      sprintf('<a href="/p%d" title="%s">%s</a>',
+        $_->{id}, _hchar($_->{name}), _hchar shorten $_->{name}, 30) => 1
+     } @{$_->{producers}} )) for (@{$d{rel}});
+   if(keys %l) { ]]-
+    <acronym class="icons lang -[[= $l ]]" title="[[: $VNDB::LANG->{$l} ]]">&nbsp;</acronym>[[= join(' &amp; ', keys %l) ]]<br />
+   [[ } } ]]
+  </dd>[[ } ]]-
  [[ if(@links > 0) { ]]-
   <dt>Links</dt><dd>[[= join(', ', map { '<a href="'.sprintf($_->[1],$_->[2]).'">'.$_->[0].'</a>' } @links) ]]</dd>[[ } ]]-
+  <dt>Rating</dt><dd>[[: $d{vn}{c_votes} ]]</dd>
  </dl>
 [[ } ]]-
 
@@ -129,25 +143,6 @@ if($d{vn}{length} || $d{vn}{alias} || @links) { ]]
    [[ } ]]
   </ul>
  [[ } ]]-
-
- [[ if(@lang && grep { @{$_->{producers}} } @{$d{rel}}) { ]]-
-  <h3>Producers</h3>
-  <dl>
-   [[ for my $l (@lang) { my %l;
-     $_->{language} eq $l && (%l = ( %l, map {
-      sprintf('<a href="/p%d" title="%s">%s</a>',
-        $_->{id}, _hchar($_->{name}), _hchar shorten $_->{name}, 30) => 1
-     } @{$_->{producers}} )) for (@{$d{rel}});
-   if(keys %l) { ]]-
-    <dt>[[: $VNDB::LANG->{$l} ]]</dt><dd>[[= join(' &amp; ', keys %l) ]]</dd>
-   [[ } } ]]
- </dl>
- [[ } ]]-
-
- <h3>[[= $d{page} eq 'stats' ? 'User stats' : '<a href="/v'.$d{vn}{id}.'/stats">User stats</a>' ]]</h3>
- <dl>
-  <dt>Rating</dt><dd>[[: $d{vn}{c_votes} ]]</dd>
- </dl>
 </div>
 
 -[[ 

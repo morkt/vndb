@@ -130,7 +130,7 @@ sub relscomplete { # heap->nodes and heap->rels are now assumed to contain all n
  # insert all nodes, ordered by release date
   for (sort { $a->[2] <=> $b->[2] } values %{$_[HEAP]{nodes}}) {
     my $date = sprintf '%08d', $_->[2];
-    $date =~ s#^([0-9]{4})([0-9]{2}).+#$1==0?'N/A':$1==9999?'TBA':(($2&&$2>0?($_[HEAP]{moy}[$2-1].' '):'').$1)#e;
+    $date =~ s#^([0-9]{4})([0-9]{2}).+#$1==0?'N/A':$1==9999?'TBA':(($2&&$2<13?($_[HEAP]{moy}[$2-1].' '):'').$1)#e;
 
     my $title = unidecode($_->[1]);
     $title = substr($title, 0, 27).'...' if length($title) > 30;

@@ -10,9 +10,17 @@ TODO:
 	  uploaded or not
 	+ Use AniDB's daily title dump and implement a search feature to add
 	  anime relations without having to visit AniDB.
-	+ Clear up style.css (or wait until the new layout is ready...)
 
-1.15 - ?
+1.16 - ?
+	- Release dates in the current year or month without a specified day will
+	  be considered as not yet released
+	- Added platform and language icons to the VN browser
+	- Grouped producers, user stats and general information on the VN page
+	- Added language icons to producer browser
+	- A little CSS cleanup
+	- Grouped category browser into one advanced search
+
+1.15 - 2008-05-04
 	- Relation graph now also updated on VN title change
 	- Anime relations
 	- [js] Position of the dropdown box is now relative to the link element

@@ -54,12 +54,7 @@ h3 {
 p, ul, ol {
   margin: 0;
 }
-
-blockquote {
-  font-style: italic;
-}
 a {
-/*  color: #7AB9AB;*/
   color: #69A89A;
 }
 a:hover {
@@ -367,6 +362,7 @@ span.warning ul, span.msg ul {
   padding: 0 0 0 15px;
 }
 
+/* VN page header, general dl and list markup */
 dt {
   float: left;
   font-style: italic;
@@ -383,24 +379,12 @@ ul.vnani acronym { border: 0 }
 ul {
   padding: 0 0 0 17px;
 }
-p.actions, #vnheader p.actions, b.actions {
+p.actions {
   display: inline;
   margin: 0 0 0 5px;
   font-weight: normal;
   font-size: 12px;
   color: #999;
-}
-a.relch {
-  color: #900;
-}
-a.rss {
-  display: block;
-  height: 16px;
-  width: 16px;
-  background: url(/files/rss.png) no-repeat;
-  text-indent: -9999px;
-  overflow: hidden;
-  float: right;
 }
 #vnheader div {
   width: 256px;
@@ -413,15 +397,6 @@ a.rss {
 #vnheader #nsfw {
   cursor: pointer;
 }
-img.left {
-  float: left;
-  margin: 0 15px 0 0;
-}
-
-img.right {
-  float: left;
-  margin: 0 0 0 15px;
-}
 #vnheader dl, #vnheader ul {
   margin: 0 0 0 270px;
   padding: 0;
@@ -431,21 +406,6 @@ img.right {
   margin: 5px 0 0 260px;
   font-size: 13px;
 }
-#vnheader p {
-  margin: 0 0 0 270px;
-}
-#vnheader select {
-  width: 60px;
-  height: 16px;
-  display: inline;
-  float: none;
-  text-align: center;
-}
-#vnheader #vnlist {
-  width: 150px;
-  text-align: left;
-}
-
 #vnheader p.mod {
   margin: 0;
 }
@@ -453,11 +413,12 @@ img.right {
 
 /* producer search */
 
-form#psearch {
+form#psearch fieldset {
   display: block;
-  margin: 10px 0 20px 210px;
+  width: 700px;
+  text-align: center;
 }
-* html form#psearch { margin-left: 105px; }
+form#psearch input { margin: 0 auto; float: none; position: relative; display: inline }
 
 
 ul.home {
@@ -540,10 +501,28 @@ b.mod, a.mod {
 }
 
 
+/* vn search */
+
+form#vsearch fieldset {
+  display: block;
+  width: 700px;
+  text-align: center;
+}
+form#vsearch input { margin: 0 auto; float: none; position: relative; display: inline }
+form#vsearch input.text { width: 400px; }
+b#adsearchclick { cursor: pointer }
+
+ul.filter { margin: 0 0 0 15px; padding: 0; list-style-type: none }
+ul.filter li { float: left; padding: 4px 10px 0 0; }
+ul.filter label { width: auto; color: #666; font-size: 11px; margin: 0; padding: 0 0 0 1px;}
+ul.filter input { border: 0; margin: 0; }
+
+
+
 /* categories */
 
 ul#cat {
-  margin: 0;
+  margin: 0 0 0 15px;
   padding: 0;
 }
 ul#cat ul {
@@ -588,20 +567,6 @@ i.crgn1 { font-style: normal; color: #bbb; }
 i.crgn2 { font-style: normal; }
 i.crgn3 { font-style: normal; font-weight: bold; }
 
-
-/* language filter */
-
-div#lfilter {
-  clear: left;
-  padding: 10px 0 0 0;
-}
-div#lfilter input {
-  float: left; margin: 3px 3px 0 10px;
-}
-div#lfilter label {
-  float: left; margin-top: 3px;
-  width: 90px;
-}
 
 
 /* DOCUMENTATION PAGES */
@@ -654,10 +619,19 @@ acronym.date {
 b.future { font-weight: normal; color: #900; }
 
 
-/*  16x14 image sprites */
+/*  icon image sprites */
 
-.plat {
-  background: url(/files/16x14.png) no-repeat;
+a.rss {
+  display: block;
+  height: 16px;
+  width: 16px;
+  background: url(/files/rss.png) no-repeat;
+  text-indent: -9999px;
+  overflow: hidden;
+  float: right;
+}
+.icons {
+  background: url(/files/icons.png) no-repeat;
   width: 16px;
   height: 14px;
   margin: 0 2px 0 0;
@@ -668,25 +642,49 @@ b.future { font-weight: normal; color: #900; }
   border: 0;
   text-decoration: none;
 }
-acronym.plat { cursor: default; }
-.plat.oth { background: none; }
-.plat.dc  { background-position:   0px   0px; }
-.plat.lin { background-position:   0px -14px; }
-.plat.nds { background-position:   0px -28px; }
-.plat.ps2 { background-position:   0px -42px; }
-.plat.sfc { background-position:   0px -56px; }
-.plat.gba { background-position:   0px -70px; }
-.plat.ext { background-position:   0px -84px; }
-.plat.par { background-position:   0px -98px; }
-.plat.dvd { background-position: -16px   0px; }
-.plat.mac { background-position: -16px -14px; }
-.plat.ps  { background-position: -16px -28px; }
-.plat.psp { background-position: -16px -42px; }
-.plat.win { background-position: -16px -56px; }
-.plat.wii { background-position: -16px -70px; }
-.plat.tri { background-position: -16px -84px; }
-.plat.com { background-position: -16px -98px; }
-.plat.par, .plat.tri, .plat.com { width: 11px; }
+.icons.lang {
+  width: 13px;
+  height: 11px;
+  border: 1px solid #999;
+ /* see def.js for an ugly FF hack */
+}
+.icons.par, .icons.tri, .icons.com { width: 11px; }
+acronym.icons { cursor: default; }
+.icons.oth { background: none; }
+.icons.drc { background-position:   0px   0px; }
+.icons.lin { background-position:   0px -14px; }
+.icons.nds { background-position:   0px -28px; }
+.icons.ps2 { background-position:   0px -42px; }
+.icons.sfc { background-position:   0px -56px; }
+.icons.gba { background-position:   0px -70px; }
+.icons.ext { background-position:   0px -84px; }
+.icons.par { background-position:   0px -98px; }
+.icons.dvd { background-position: -16px   0px; }
+.icons.mac { background-position: -16px -14px; }
+.icons.ps1 { background-position: -16px -28px; }
+.icons.psp { background-position: -16px -42px; }
+.icons.win { background-position: -16px -56px; }
+.icons.wii { background-position: -16px -70px; }
+.icons.tri { background-position: -16px -84px; }
+.icons.com { background-position: -16px -98px; }
+.icons.cs  { background-position: -32px   0px; }
+.icons.da  { background-position: -32px -11px; }
+.icons.de  { background-position: -32px -22px; }
+.icons.en  { background-position: -32px -33px; }
+.icons.es  { background-position: -32px -44px; }
+.icons.fi  { background-position: -32px -55px; }
+.icons.fr  { background-position: -32px -66px; }
+.icons.it  { background-position: -32px -77px; }
+.icons.ja  { background-position: -32px -88px; }
+.icons.ko  { background-position: -32px -99px; }
+.icons.nl  { background-position: -45px   0px; }
+.icons.no  { background-position: -45px -11px; }
+.icons.pl  { background-position: -45px -22px; }
+.icons.pt  { background-position: -45px -33px; }
+.icons.ru  { background-position: -45px -44px; }
+.icons.sv  { background-position: -45px -55px; }
+.icons.tr  { background-position: -45px -66px; }
+.icons.zh  { background-position: -45px -77px; }
 
 
 /* tables */
@@ -733,9 +731,20 @@ b.diff_del { font-weight: normal; background-color: #fcc; }
 #tre tr.lang { background-color: #f5f5f5!important; font-style: italic; }
 
 #tre .tc1 { width: 75px; padding-left: 10px; }
-#tre .tc2 { width: 60px; text-align: center; }
+#tre .tc2 { width: 50px; text-align: center; white-space: nowrap; }
 #tre .tc3, #tre .tc5 { width: 16px; margin: 0; padding: 0; white-space: nowrap; text-align: right }
-#tre .tc3 { width: 60px; }
+#tre .tc3 { width: 70px; }
+
+#tbv .tc2 acronym, #tbv .tc3 acronym {
+  zoom: 1;
+  opacity: 0.7;
+  filter:alpha(opacity=70);
+  -moz-opacity: 0.7;
+}
+#tbv .tc2, #tbv .tc3 { margin: 0; padding: 0; white-space: nowrap }
+#tbv .tc2 { text-align: right; padding-right: 3px; }
+
+#tpd .tc1 { margin: 0; padding: 0; }
 
 #debug {
   border-top: 1px solid #ffb4b4;

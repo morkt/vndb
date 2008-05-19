@@ -257,7 +257,7 @@ sub updateanime { # aid, data|'notfound'
   # aid, ANN id, NFO id, year, type, romaji, kanji, lastfetch
   my @col = $_[ARG1] eq 'notfound'
     ? ($_[ARG0], 0, 0, 0, 0, '', '', -1)
-    : (split(/\|/, $_[ARG1]), int time);
+    : (split(/\|/, $_[ARG1], 7), int time);
 
   if($col[7] > 0) {
     for (@col) {
@@ -269,6 +269,7 @@ sub updateanime { # aid, data|'notfound'
       $col[4] = $_ if lc($VNDB::ANITYPE->[$_][1]) eq lc($col[4]);
     }
     $col[4] = 0 if $col[4] !~ /^[0-9]+$/;
+    $col[2] = '' if $col[2] =~ /^0,/;
   }
 
  # try to UPDATE first

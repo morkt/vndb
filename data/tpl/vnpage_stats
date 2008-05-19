@@ -8,8 +8,8 @@
   }
 ]]
 [[ if(!$d{user} || ($d{pv} && $d{user}{votes})) { ]]-
-<li><h3>Vote graph <b class="actions">[[= $total ]]- vote[[= $total==1?'':'s' ]]- total
-  [[= $total ? sprintf(', average: %.1f.', $sum/$total) : '' ]]</b></h3>
+<li><h3>Vote graph <p class="actions">[[= $total ]]- vote[[= $total==1?'':'s' ]]- total
+  [[= $total ? sprintf(', average: %.1f.', $sum/$total) : '' ]]</p></h3>
 <table id="tvg">
 [[ for (0..$#{$d{votes}{graph}}) { ]]-
  <tr>
@@ -39,7 +39,7 @@
 -[[ $max = 1; $total = 0;
   for (@{$d{lists}{graph}}) { $total += $_; $max = $_ if $_ > $max; } ]]
 [[ if(!$d{user} || ($d{pl} && $d{user}{vnlist})) { ]]-
-<li class="break"><h3>VN List stats <b class="actions">[[= $total ]]- -[[= $d{user}?'visual novel':'user' ]][[= $total==1?'':'s' ]]- total</b></h3>
+<li class="break"><h3>VN List stats <p class="actions">[[= $total ]]- -[[= $d{user}?'visual novel':'user' ]][[= $total==1?'':'s' ]]- total</p></h3>
 <table id="tus">
  [[ for (0..$#$VNDB::LSTAT) { ]]-
  <tr>

@@ -19,14 +19,14 @@ sub shorten    {local$_=shift||return'';return length>$_[0]?substr($_,0,$_[0]-3)
 # Date string format: yyyy-mm-dd
 #   y = 0    -> Unknown
 #   y = 9999 -> TBA (To Be Announced)
-#   m = 0    -> Month + day unknown, year known
-#   d = 0    -> Day unknown, month + year known
+#   m = 99   -> Month + day unknown, year known
+#   d = 99   -> Day unknown, month + year known
 sub datestr {
-  my $d = $_[0]||'00000000';
-  my @d = map { int } $1, $2, $3 if $d =~ /^([0-9]{4})([0-9]{2})([0-9]{2})$/;
+  my $d = sprintf '%08d', $_[0]||0;
+  my $b = $d > Time::CTime::strftime("%Y%m%d", gmtime());
+  my @d = map int, $1, $2, $3 if $d =~ /^([0-9]{4})([0-9]{2})([0-9]{2})$/;
   return 'unknown' if $d[0] == 0;
-  my $r = sprintf !$d[1] ? '%04d' : !$d[2] ? '%04d-%02d' : '%04d-%02d-%02d', @d;
-  my $b = $r gt Time::CTime::strftime("%Y-%m-%d", gmtime());
+  my $r = sprintf $d[1] == 99 ? '%04d' : $d[2] == 99 ? '%04d-%02d' : '%04d-%02d-%02d', @d;
   $r = 'TBA' if $d[0] == 9999;
   return ($b?'<b class="future">':'').$r.($b?'</b>':'');
 }
@@ -134,7 +134,8 @@ sub summary { # cmd, len, def
   my $res = '';
   my $len = 0;
   my $as = 0;
-  for (split / /, $_[0]) {
+  (my $txt = $_[0]) =~ s/\r?\n/\n /g;
+  for (split / /, $txt) {
     next if !defined $_ || $_ eq '';
     my $l = length;
     s/\&/&amp;/g;
@@ -146,7 +147,7 @@ sub summary { # cmd, len, def
     }
     if(!$as && s/(http|https):\/\/(.+[0-9a-zA-Z=\/])/<a href="$1:\/\/$2" rel="nofollow">link<\/a>/) {
       $l = 4;
-    } elsif(!$as) {
+    } elsif($as) {
       s/^([duvpr][0-9]+)[^\w]*$/<a href="\/$1">$1<\/a>/;
     }
     while(s/\[\/url\]/<\/a>/) {
@@ -157,8 +158,8 @@ sub summary { # cmd, len, def
     last if $_[1] && $len > $_[1];
     $res .= "$_ ";
   }
-  $res =~ y/\r\n/  / if $_[1];
-  $res =~ s/\r?\n/<br \/>/g if !$_[1];
+  $res =~ y/\n/ / if $_[1];
+  $res =~ s/\n/<br \/>/g if !$_[1];
   $res =~ s/ +$//;
   $res .= '</a>' x $as if $as;
   $res .= '...' if $_[1] && $len > $_[1];
@@ -179,7 +180,7 @@ sub ttabs { # [vrp], obj, sel
       '<a href="/%s/del" id="idel">del</a>',
       sprintf('<a href="/%%s/hide"%s>%s</a>', $t eq 'v' ? ' id="vhide"' : '', $$o{hidden} ? 'unhide' : 'hide')
     ) : (),
-    !$$o{locked} || ($p{Authedit} && $p{Authlock}) ?
+    (!$$o{locked} && !$$o{hidden}) || ($p{Authedit} && $p{Authlock}) ?
       ($s eq 'edit' ? 'edit' : '<a href="'.($p{Authedit}?'/%s/edit':'/u/register?n=1').'" '.($t eq 'v' || $t eq 'r' ? 'class="dropdown" rel="nofollow editDD"':'').'>edit</a>') : (),
 
     $p{Authhist} ?
@@ -247,8 +248,7 @@ my %pagetitles = (
   vnrg         => sub { return 'Relations for '.$p{vnrg}{vn}{title} },
   vnstats      => sub { return 'User statistics for '.$p{vnstats}{vn}{title} },
   vnbrowse     => sub {
-    return $p{vnbrowse}{chr} eq 'search' ? sprintf 'Search results for "%s"', $p{searchquery} :
-              $p{vnbrowse}{chr} eq 'cat' ? 'Browse categories' :
+    return $p{vnbrowse}{chr} eq 'search' ? 'Visual novel search' :
               $p{vnbrowse}{chr} eq 'mod' ? 'Visual Novels awaiting moderation' :
               $p{vnbrowse}{chr} eq 'all' ? 'Browse all visual novels' :
                 $p{vnbrowse}{chr} eq '0' ? 'Browse by char: Other' :

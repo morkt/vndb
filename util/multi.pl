@@ -80,7 +80,7 @@ Multi::Image->spawn();
 Multi::Sitemap->spawn();
 Multi::Anime->spawn();
 Multi::Maintenance->spawn();
-Multi::IRC->spawn() if !$VNDB::DEBUG;
+Multi::IRC->spawn(user => 'Multi_test', channel => '#vndb_test') if !$VNDB::DEBUG;
 
 
 $SIG{__WARN__} = sub {(local$_=shift)=~s/\r?\n//;$poe_kernel->call(core=>log=>1,'__WARN__: '.$_)};

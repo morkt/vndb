@@ -26,24 +26,18 @@ sub spawn {
 
 sub _start {
   $_[KERNEL]->alias_set('maintenance');
-  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:all|vncache|ratings|prevcache|integrity|unkanime|logrotate))+)$/, 'cmd_maintenance');
+  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:vncache|ratings|prevcache|integrity|unkanime|logrotate))+)$/, 'cmd_maintenance');
   
- # Perform all maintenance functions every day on 0:00
-  $_[KERNEL]->post(core => addcron => '0 0 * * *', 'maintenance all');
- # rotate logs every 1st day of the month at 0:05
-  $_[KERNEL]->post(core => addcron => '5 0 1 * *' => 'maintenance logrotate');
+ # Perform some maintenance functions every day on 0:00
+  $_[KERNEL]->post(core => addcron => '0 0 * * *', 'maintenance ratings integrity unkanime');
+ # update caches and rotate logs every 1st day of the month at 0:05
+  $_[KERNEL]->post(core => addcron => '5 0 1 * *' => 'maintenance vncache prevcache logrotate');
 }
 
 
 sub cmd_maintenance {
-  local $_ = $_[ARG1];
-
-  $_[KERNEL]->yield('vncache')   if /(?:vncache|all)/;
-  $_[KERNEL]->yield('ratings')   if /(?:ratings|all)/;
-  $_[KERNEL]->yield('prevcache') if /(?:prevcache|all)/;
-  $_[KERNEL]->yield('integrity') if /(?:integrity|all)/;
-  $_[KERNEL]->yield('unkanime')  if /(?:unkanime|all)/;
-  $_[KERNEL]->yield('logrotate') if /logrotate/;
+  $_[KERNEL]->yield($_)
+    for (split /\s+/, $_[ARG1]);
 
   $_[KERNEL]->post(core => finish => $_[ARG0]);
 }
