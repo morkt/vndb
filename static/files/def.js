@@ -160,6 +160,8 @@ function adsearch() {
     ad_plat[ l[i].name.substring(5) ] = l[i].value.toLowerCase();
     l[i].onclick = function() { ad_update(0, this.value) };
   }
+
+  ad_update();
 }
 
 function ad_update(add, term) {

@@ -62,13 +62,13 @@ sub DocPage {
 }
 
 
-sub History { # type(p,v,r,u), id, [rss|/]
+sub History { # type(p,v,r,u), id, [rss.xml|/]
   my($self, $type, $id, $fmt) = @_;
   $type ||= '';
   $id ||= 0;
 
   $fmt = undef if !$fmt || $fmt eq '/';
-  return $self->ResNotFound if $fmt && $fmt ne 'rss';
+  return $self->ResNotFound if $fmt && $fmt ne 'rss.xml';
 
   my $f = $self->FormCheck(
     { name =>  'p', required => 0, default => 1, template => 'int' },

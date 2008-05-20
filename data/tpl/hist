@@ -12,7 +12,7 @@
   my $furl = $url.'?e='.$d{sele}.';t=';
   my $eurl = $url.'?t='.$d{selt}.';e=';
   my $purl = !$d{type}?$eurl.$d{sele}:$d{type} eq 'v' && $d{seli} ? $url.'?i=1' : $url;
-  my $rurl = $url.'/rss'.(!$d{type}?'?t='.$d{selt}.';e='.$d{sele}:$d{type} eq 'v' && $d{seli} ? '?i=1' : '');
+  my $rurl = $url.'/rss.xml'.(!$d{type}?'?t='.$d{selt}.';e='.$d{sele}:$d{type} eq 'v' && $d{seli} ? '?i=1' : '');
   local $_ = $d{selt};
   my @fil = (
     /a/ ? 'all items' : '<a href="%sa">all items</a>',

@@ -286,12 +286,8 @@ sub VNBrowse {
     page => $f->{p},
     chr => $chr,
     $chr eq 'search' ? (
-      incl => \@cati,
-      excl => \@cate,
       cat => $self->DBCategoryCount,
       langc => $self->DBLanguageCount,
-      lang => \@lang,
-      plat => \@plat,
     ) : (),
     order => [ $f->{s}, $f->{o} ],
   },

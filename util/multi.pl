@@ -56,7 +56,6 @@ our $LOGDIR = '/www/vndb/data/log';
 our $LOGLVL = 3; # 3:DEBUG, 2:ACTIONS, 1:WARN
 our $STOP = 0;
 our $DAEMONIZE = (grep /^-c$/, @ARGV) ? 1 : (grep /^-s$/, @ARGV) ? 2 : 0;
-our %MODULES = ();
 
 
 if(grep /^-a$/, @ARGV) {
@@ -80,7 +79,7 @@ Multi::Image->spawn();
 Multi::Sitemap->spawn();
 Multi::Anime->spawn();
 Multi::Maintenance->spawn();
-Multi::IRC->spawn(user => 'Multi_test', channel => '#vndb_test') if !$VNDB::DEBUG;
+Multi::IRC->spawn() if !$VNDB::DEBUG;
 
 
 $SIG{__WARN__} = sub {(local$_=shift)=~s/\r?\n//;$poe_kernel->call(core=>log=>1,'__WARN__: '.$_)};

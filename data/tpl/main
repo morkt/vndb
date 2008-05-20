@@ -16,14 +16,15 @@
   <script src="[[: $p{st} ]]/files/def.js?[[= $VNDB::VERSION ]]" type="text/javascript"></script>
 [[ if($p{devshit}) { ]]-
   <meta name="robots" content="noindex, nofollow" />
-[[ } elsif($p{userlist} || $p{userpage} || $p{myvotes} || $p{vnlist} || $p{hist} || ($p{vnpage} && $p{vnpage}{page} eq 'stats')
+[[ } elsif($p{userlist} || $p{userpage} || $p{userlogin} || $p{userreg} || $p{userpass} || $p{myvotes}
+      || $p{vnlist} || $p{hist} || ($p{vnpage} && $p{vnpage}{page} eq 'stats')
       || grep { $p{$_} && $p{$_}{change} } qw|vnpage ppage rpage|) { ]]-
   <meta name="robots" content="noindex, follow" />
 [[ }]]-
 
 [[if($p{hist}){ ]]
   <link rel="alternate" type="application/rss+xml" title="Recent changes" href="
-   [[= (!$p{hist}{type}?'/hist':'/'.$p{hist}{type}.$p{hist}{id}.'/hist').'/rss'.(!$p{hist}{type}?'?t='.$p{hist}{selt}.';e='.$p{hist}{sele}:$p{hist}{type} eq 'v' && $p{hist}{seli} ? '?i=1':'') ]]" />
+   [[= (!$p{hist}{type}?'/hist':'/'.$p{hist}{type}.$p{hist}{id}.'/hist').'/rss.xml'.(!$p{hist}{type}?'?t='.$p{hist}{selt}.';e='.$p{hist}{sele}:$p{hist}{type} eq 'v' && $p{hist}{seli} ? '?i=1':'') ]]" />
 [[ } ]]-
 </head>
 
@@ -73,9 +74,8 @@
  <h2>Menu</h2>
  <ul>
   <li><a href="/">Home</a></li>
-  <li><a href="/v">Visual Novels</a></li>
+  <li><a href="/v">Browse</a> | <a href="/v/search">Search</a></li>
   <li><a href="/p">Producers</a></li>
-  <li><a href="/v/search">Search</a></li>
   <li><a href="/u/list">Users</a></li>
   <li><a href="/hist">Recent changes</a></li>
   <li><a href="/d6">FAQ</a></li>

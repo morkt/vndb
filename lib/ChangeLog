@@ -18,7 +18,10 @@ TODO:
 	- Grouped producers, user stats and general information on the VN page
 	- Added language icons to producer browser
 	- A little CSS cleanup
-	- Grouped category browser into one advanced search
+	- Grouped category browser and search into one advanced search
+	- Updated sitemap generator
+	- Pattern matching bug fixes in Multi::IRC, and better handling of commands
+	- Added .xml extention to all RSS URLs
 
 1.15 - 2008-05-04
 	- Relation graph now also updated on VN title change

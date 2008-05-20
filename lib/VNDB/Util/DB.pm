@@ -108,6 +108,7 @@ sub DBCategoryCount {
     SELECT cat, COUNT(vid) AS cnt
       FROM vn_categories vc
       JOIN vn v ON v.latest = vc.vid
+      WHERE v.hidden = 0
       GROUP BY cat
       ORDER BY cnt|
     )}
@@ -119,10 +120,15 @@ sub DBCategoryCount {
 sub DBLanguageCount {
   return { (map { $_ => 0 } keys %$VNDB::LANG ),
     map { $_->{language} => $_->{count} } @{shift->DBAll(q|
-    SELECT rr.language, COUNT(DISTINCT rv.vid) AS count
+    SELECT rr.language, COUNT(DISTINCT v.id) AS count
       FROM releases_rev rr
       JOIN releases r ON r.latest = rr.id
       JOIN releases_vn rv ON rv.rid = rr.id
+      JOIN vn v ON v.id = rv.vid
+      WHERE r.hidden = 0
+        AND v.hidden = 0
+        AND rr.type <> 2
+        AND rr.released <= TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer
       GROUP BY rr.language|)} };
 }
 

@@ -12,13 +12,13 @@
  </form>
 
  <div id="adsearch" [[= !$p{searchquery} ? '' : ' style="display: none"' ]]>
-  <b>Categories</b> (inclusive, selecting more gives less results)
+  <b>Categories</b> (boolean and, selecting more gives less results)
   <ul id="cat">
   [[ for my $c (qw| e g p t l s |) { ]]-
    -[[= $c ne 'l' && $c ne 'p' ? '<li>' : '<br />' ]][[: $VNDB::CAT->{$c}[0] ]]-
    <ul>
     [[ for (sort keys %{$VNDB::CAT->{$c}[1]}) { my $ca = $c.$_; ]]-
-    <li[[= (grep /$ca/, @{$d{incl}}) ? ' class="inc"' : (grep /$ca/, @{$d{excl}}) ? ' class="exc"' : '' ]]- id="cat_[[= $ca ]]">
+    <li id="cat_[[= $ca ]]">
      [[: $VNDB::CAT->{$c}[1]{$_} ]]- ([[= $d{cat}{$ca} || 0 ]])</li>
     [[ } ]]
    </ul>[[= $c ne 't' && $c ne 'g' ? '</li>' : '' ]]-
@@ -27,20 +27,20 @@
   <br style="clear: both" />
   <br />
  
-  <b>Languages</b> (exclusive, selecting more gives more results)<br />
+  <b>Languages</b> (boolean or, selecting more gives more results)<br />
   <ul class="filter" id="lfilter">
   [[ for (sort keys %{$d{langc}}) { next if !$d{langc}{$_}; my $l=$_; ]]-
-   <li><input type="checkbox" name="lang_[[= $l ]]" id="lang_[[= $l ]]" value="[[: $VNDB::LANG->{$l} ]]" [[= (grep /$l/, @{$d{lang}}) ? ' checked="checked"' : '' ]]- />
+   <li><input type="checkbox" name="lang_[[= $l ]]" id="lang_[[= $l ]]" value="[[: $VNDB::LANG->{$l} ]]" />
     <label for="lang_[[= $l ]]"><acronym class="icons lang -[[= $l ]]" title="[[: $VNDB::LANG->{$l} ]]">&nbsp;</acronym>([[= $d{langc}{$l} ]])</label></li>
   [[ } ]]-
   </ul>
   <br style="clear: both" />
   <br />
  
-  <b>Platforms</b> (exclusive, selecting more gives more results)<br />
+  <b>Platforms</b> (boolean or, selecting more gives more results)<br />
   <ul class="filter" id="pfilter">
   [[ for (sort keys %$VNDB::PLAT) { next if /oth/; my $l=$_; ]]-
-   <li><input type="checkbox" name="plat_[[= $l ]]" id="plat_[[= $l ]]" value="[[: $VNDB::PLAT->{$l} ]]" [[= (grep /$l/, @{$d{plat}}) ? ' checked="checked"' : '' ]]- />
+   <li><input type="checkbox" name="plat_[[= $l ]]" id="plat_[[= $l ]]" value="[[: $VNDB::PLAT->{$l} ]]" />
     <label for="plat_[[= $l ]]"><acronym class="icons -[[= $l ]]" title="[[: $VNDB::PLAT->{$l} ]]">&nbsp;</acronym></label></li>
   [[ } ]]-
   </ul>

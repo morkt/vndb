@@ -148,7 +148,7 @@ sub vndbid { # dest, msg
   my @id;
   push @id, [$1,$2,$3,$4] while $m =~ s/^(.*)([duvpr])([0-9]+)(.*)$/ $1 $4 /i;
   for (reverse @id) {
-    next if $$_[0] =~ /[a-z0-9%/]$/i || $$_[3] =~ /^[a-z]/i;
+    next if $$_[0] =~ /[a-z0-9%\/]$/i || $$_[3] =~ /^[a-z.]/i;
     my($t, $id, $ext) = (lc($$_[1]), $$_[2], $$_[3]);
 
     next if $_[HEAP]{log}{$t.$id};

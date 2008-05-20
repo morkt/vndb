@@ -102,6 +102,7 @@ our $LSTAT = [
   'Wishlist',
   'Blacklist',
   'Playing',
+  'Finished',
   'Stalled',
   'Dropped',
   'Other', # XXX: hardcoded at 6

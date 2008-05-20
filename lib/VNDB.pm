@@ -79,7 +79,6 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
   v => {
     '/'         => sub { shift->VNBrowse },
     new         => sub { shift->VNEdit(0); },
-    #search      => sub { shift->VNSearch },
     '*'         => sub { $_[2] =~ /^([a-z0]|all|search)$/ ? shift->VNBrowse($_[1]) : shift->ResNotFound; },
   },
   'v+' => {
@@ -135,10 +134,21 @@ my %OLDuris = (
     '*'         => sub { shift->ResRedirect('/v/'.$_[1], 'perm') },
   },
   v => {
-    cat         => sub { },
+    cat         => sub {
+      my $f = $_[0]->FormCheck({name=>'i',required=>0},{name=>'e',required=>0},{name=>'l',required=>0},
+                               {name=>'p',required=>0},{name=>'o',required=>0},{name=>'s',required=>0});
+      my %f;
+      $f{$_} = $f->{$_} for (qw|p o s|);
+      $f{q} = join ' ', (map $VNDB::CAT->{substr($_,0,1)}[1]{substr($_,1,2)}, split /,/, $f->{i}),
+                        (map '-'.$VNDB::CAT->{substr($_,0,1)}[1]{substr($_,1,2)}, split /,/, $f->{e}),
+                        (map $VNDB::LANG->{$_}, split /,/, $f->{l});
+      !$f{$_}&&delete $f{$_} for keys %f;
+      $_[0]->ResRedirect('/v/search'.(!(keys %f)?'':'?'.join(';', map $_.'='.$f{$_}, keys %f) ), 'perm');
+    },
   },
   'v+' => {
     votes       => sub { shift->ResRedirect('/v'.(shift).'/stats', 'perm') },
+    hist=>{rss  => sub { shift->ResRedirect('/v'.(shift).'/hist/rss.xml', 'perm') } },
   },
   u => {
     '*' => {
@@ -151,7 +161,14 @@ my %OLDuris = (
         }
       },
     }
-  }
+  },
+  'u+' => {
+    hist=>{rss  => sub { shift->ResRedirect('/u'.(shift).'/hist/rss.xml', 'perm') } },
+  },
+  'p+' => {
+    hist=>{rss  => sub { shift->ResRedirect('/p'.(shift).'/hist/rss.xml', 'perm') } },
+  },
+  hist=>{rss    => sub { shift->ResRedirect('/hist/rss.xml', 'perm') } },
 );
 
 

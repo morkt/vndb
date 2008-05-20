@@ -67,11 +67,13 @@ sub cmd_sitemap {
 sub staticpages {
   $_[KERNEL]->call(core => log => 3, 'Adding static pages');
 
-  $_[KERNEL]->call(sitemap => addurl => '', 'd');
-  $_[KERNEL]->call(sitemap => addurl => 'faq', 'm');
+  $_[KERNEL]->call(sitemap => addurl => '', 'daily');
 
-  $_[KERNEL]->call(sitemap => addurl => $_, 'w')
-    for ( (map { 'v/'.$_ } 'a'..'z'), 'v/all', 'v/cat', (map { 'p/'.$_ } 'a'..'z'), 'p/all');
+  /([0-9]+)$/ && $_[KERNEL]->call(sitemap => addurl => 'd'.$1, 'monthly')
+    for ( (</www/vndb/data/docs/*>) );
+
+  $_[KERNEL]->call(sitemap => addurl => $_, 'weekly')
+    for ( (map { 'v/'.$_ } 'a'..'z'), 'v/all', 'v/search', (map { 'p/'.$_ } 'a'..'z'), 'p/all');
 
   $_[KERNEL]->yield('vnpages');
 }
@@ -88,8 +90,8 @@ sub vnpages {
   |);
   $q->execute;
   while(local $_ = $q->fetchrow_arrayref) {
-    $_[KERNEL]->call(sitemap => addurl => 'v'.$_->[0], 'w', $_->[1], 0.7);
-    $_[KERNEL]->call(sitemap => addurl => 'v'.$_->[0].'/rg', 'w', $_->[1], 0.7) if $_->[2];
+    $_[KERNEL]->call(sitemap => addurl => 'v'.$_->[0], 'weekly', $_->[1], 0.7);
+    $_[KERNEL]->call(sitemap => addurl => 'v'.$_->[0].'/rg', 'weekly', $_->[1], 0.7) if $_->[2];
   }
 
   $_[KERNEL]->yield('releasepages');
@@ -107,7 +109,7 @@ sub releasepages {
   |);
   $q->execute;
   while(local $_ = $q->fetchrow_arrayref) {
-    $_[KERNEL]->call(sitemap => addurl => 'r'.$_->[0], 'w', $_->[1], 0.3);
+    $_[KERNEL]->call(sitemap => addurl => 'r'.$_->[0], 'weekly', $_->[1], 0.3);
   }
 
   $_[KERNEL]->yield('producerpages');
@@ -125,7 +127,7 @@ sub producerpages {
   |); 
   $q->execute;
   while(local $_ = $q->fetchrow_arrayref) {
-    $_[KERNEL]->call(sitemap => addurl => 'p'.$_->[0], 'w', $_->[1]);
+    $_[KERNEL]->call(sitemap => addurl => 'p'.$_->[0], 'weekly', $_->[1]);
   }
 
   $_[KERNEL]->yield('finish');
