@@ -81,6 +81,9 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
   <dt>Length</dt><dd>[[: $VNDB::VNLEN->[$d{vn}{length}][0] ]]- ([[: $VNDB::VNLEN->[$d{vn}{length}][1] ]])</dd>[[ } ]]-
  [[ if($d{vn}{alias}) { ]]-
   <dt>Aliases</dt><dd>[[: $d{vn}{alias} ]]</dd>[[ } ]]-
+ [[ if(@links > 0) { ]]-
+  <dt>Links</dt><dd>[[= join(', ', map { '<a href="'.sprintf($_->[1],$_->[2]).'">'.$_->[0].'</a>' } @links) ]]</dd>[[ } ]]-
+  <dt>Rating</dt><dd>[[: $d{vn}{c_votes} ]]</dd>
  [[ if($prod) { ]]-
   <dt>Producers</dt><dd>
    [[ for my $l (@lang) { my %l;
@@ -92,9 +95,6 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
     <acronym class="icons lang -[[= $l ]]" title="[[: $VNDB::LANG->{$l} ]]">&nbsp;</acronym>[[= join(' &amp; ', keys %l) ]]<br />
    [[ } } ]]
   </dd>[[ } ]]-
- [[ if(@links > 0) { ]]-
-  <dt>Links</dt><dd>[[= join(', ', map { '<a href="'.sprintf($_->[1],$_->[2]).'">'.$_->[0].'</a>' } @links) ]]</dd>[[ } ]]-
-  <dt>Rating</dt><dd>[[: $d{vn}{c_votes} ]]</dd>
  </dl>
 [[ } ]]-
 

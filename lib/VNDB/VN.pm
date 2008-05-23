@@ -95,6 +95,7 @@ sub VNEdit {
       { name => 'relations', required => 0, default => '' },
       { name => 'comm', required => 0, default => '' },
     );
+    $frm->{l_cisv} = $b4{l_cisv};
     $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
     $frm->{anime} = join(' ', sort { $a <=> $b } grep /^[0-9]+$/, split(/\s+/, $frm->{anime})); # re-sort
 
@@ -160,7 +161,7 @@ sub VNEdit {
       }
 
      # check for new anime data
-      $self->RunCmd('anime check') if $frm->{anime} ne $b4{anime};
+      $self->RunCmd('anime check') if $oid && $frm->{anime} ne $b4{anime} || !$oid && $frm->{anime};
 
       return $self->ResRedirect('/v'.$id.'?rev='.$cid, 'post');
     }

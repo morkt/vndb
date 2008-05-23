@@ -657,34 +657,39 @@ acronym.icons { cursor: default; }
 .icons.ps2 { background-position:   0px -42px; }
 .icons.sfc { background-position:   0px -56px; }
 .icons.gba { background-position:   0px -70px; }
-.icons.ext { background-position:   0px -84px; }
-.icons.par { background-position:   0px -98px; }
+.icons.ps3 { background-position:   0px -84px; }
+
 .icons.dvd { background-position: -16px   0px; }
 .icons.mac { background-position: -16px -14px; }
 .icons.ps1 { background-position: -16px -28px; }
 .icons.psp { background-position: -16px -42px; }
 .icons.win { background-position: -16px -56px; }
 .icons.wii { background-position: -16px -70px; }
-.icons.tri { background-position: -16px -84px; }
-.icons.com { background-position: -16px -98px; }
-.icons.cs  { background-position: -32px   0px; }
-.icons.da  { background-position: -32px -11px; }
-.icons.de  { background-position: -32px -22px; }
-.icons.en  { background-position: -32px -33px; }
-.icons.es  { background-position: -32px -44px; }
-.icons.fi  { background-position: -32px -55px; }
-.icons.fr  { background-position: -32px -66px; }
-.icons.it  { background-position: -32px -77px; }
-.icons.ja  { background-position: -32px -88px; }
-.icons.ko  { background-position: -32px -99px; }
-.icons.nl  { background-position: -45px   0px; }
-.icons.no  { background-position: -45px -11px; }
-.icons.pl  { background-position: -45px -22px; }
-.icons.pt  { background-position: -45px -33px; }
-.icons.ru  { background-position: -45px -44px; }
-.icons.sv  { background-position: -45px -55px; }
-.icons.tr  { background-position: -45px -66px; }
-.icons.zh  { background-position: -45px -77px; }
+
+.icons.com { background-position: -32px   0px; }
+.icons.par { background-position: -32px -14px; }
+.icons.tri { background-position: -32px -28px; }
+.icons.ext { background-position: -32px -42px; }
+
+.icons.cs  { background-position: -48px   0px; }
+.icons.da  { background-position: -48px -11px; }
+.icons.de  { background-position: -48px -22px; }
+.icons.en  { background-position: -48px -33px; }
+.icons.es  { background-position: -48px -44px; }
+.icons.fi  { background-position: -48px -55px; }
+.icons.fr  { background-position: -48px -66px; }
+.icons.it  { background-position: -48px -77px; }
+.icons.ja  { background-position: -48px -88px; }
+
+.icons.nl  { background-position: -61px   0px; }
+.icons.no  { background-position: -61px -11px; }
+.icons.pl  { background-position: -61px -22px; }
+.icons.pt  { background-position: -61px -33px; }
+.icons.ru  { background-position: -61px -44px; }
+.icons.sv  { background-position: -61px -55px; }
+.icons.tr  { background-position: -61px -66px; }
+.icons.zh  { background-position: -61px -77px; }
+.icons.ko  { background-position: -61px -88px; }
 
 
 /* tables */

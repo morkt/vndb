@@ -3,7 +3,7 @@ package VNDB;
 our @DBLOGIN = ( 'dbi:Pg:dbname=vndb', 'vndb', 'passwd' );
 our @SHMOPTS = ( -key => 'VNDB', -create => 'yes', -destroy => 'no', -mode => 0666);
 our $DEBUG = 1;
-our $VERSION = '1.16';
+our $VERSION = '1.17';
 
 our $PLAT = {
   win => 'Windows',
@@ -15,6 +15,7 @@ our $PLAT = {
   psp => 'Playstation Portable',
   ps1 => 'Playstation 1',
   ps2 => 'Playstation 2',
+  ps3 => 'Playstation 3',
   drc => 'Dreamcast',
   sfc => 'Super Nintendo',
   wii => 'Nintendo Wii',
