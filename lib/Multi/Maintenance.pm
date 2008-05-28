@@ -29,9 +29,9 @@ sub _start {
   $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:vncache|ratings|prevcache|integrity|unkanime|logrotate))+)$/, 'cmd_maintenance');
   
  # Perform some maintenance functions every day on 0:00
-  $_[KERNEL]->post(core => addcron => '0 0 * * *', 'maintenance ratings integrity unkanime');
+  $_[KERNEL]->post(core => addcron => '0 0 * * *', 'maintenance vncache ratings integrity unkanime');
  # update caches and rotate logs every 1st day of the month at 0:05
-  $_[KERNEL]->post(core => addcron => '5 0 1 * *' => 'maintenance vncache prevcache logrotate');
+  $_[KERNEL]->post(core => addcron => '5 0 1 * *' => 'maintenance prevcache logrotate');
 }
 
 
