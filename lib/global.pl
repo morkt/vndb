@@ -19,6 +19,7 @@ our $PLAT = {
   drc => 'Dreamcast',
   sfc => 'Super Nintendo',
   wii => 'Nintendo Wii',
+  xb3 => 'Xbox 360',
   oth => 'Other'
 };
 
