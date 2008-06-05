@@ -13,6 +13,7 @@ TODO:
 
 1.17 - 2008-05-23
 	- Added PS3 and Xbox 360 to platforms
+	- Relation graph generation improvements: Unicode, anti-aliassing, async
 
 1.16 - 2008-05-22
 	- Release dates in the current year or month without a specified day will

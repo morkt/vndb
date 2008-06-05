@@ -1,24 +1,8 @@
 #!/usr/bin/perl
 
-# This is just a small script to test and play around with a
-# processing queue for actions on VNDB that do not have a
-# strict time limit. i.e. resizing and optimizing cover images
-# and (re)generating the relation graphs. Because I'm using
-# the POE framework, it will also be possible to integrate
-# Multi the IRC bot in the same process.
-#
-# The queue is an array of commands, and should be executed
-# in chronological order. Commands are in the form of
-#  [cmd] [arguments]
-# where [cmd] is an internal command, and [arguments] a
-# whitespace seperated list of arguments.
-#
-# Commands can be added from the web interface using shared
-# memory, or from IRC if Multi is going to integrated in here.
-
 
 # Usage:
-#  ./multi.pl [-c] [-s] [cmd1] [cmd2] ..
+#  ./multi.pl [-c] [-s] [-a] [cmd1] [cmd2] ..
 #    -c  Do not daemonize, just execute the commands specified
 #        on the command line and exit.
 #    -s  Same as -c, but also execute commands in the shared
@@ -51,7 +35,6 @@ use Multi::IRC;
 BEGIN { require 'global.pl' }
 
 
-    $ENV{PATH} = '/usr/bin';
 our $LOGDIR = '/www/vndb/data/log';
 our $LOGLVL = 3; # 3:DEBUG, 2:ACTIONS, 1:WARN
 our $STOP = 0;
@@ -77,7 +60,7 @@ Multi::Core->spawn();
 Multi::RG->spawn();
 Multi::Image->spawn();
 Multi::Sitemap->spawn();
-Multi::Anime->spawn();
+Multi::Anime->spawn() if !$VNDB::DEBUG; # no need to update anime from the beta
 Multi::Maintenance->spawn();
 Multi::IRC->spawn() if !$VNDB::DEBUG;
 

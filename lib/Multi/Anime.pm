@@ -7,7 +7,7 @@ package Multi::Anime;
 
 use strict;
 use warnings;
-use POE 'Wheel::UDP';
+use POE 'Wheel::UDP', 'Filter::Stream';
 use Tie::ShareLite ':lock';
 use Socket 'inet_ntoa';
 use Time::HiRes 'time';

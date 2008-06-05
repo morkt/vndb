@@ -7,23 +7,34 @@ package Multi::RG;
 
 use strict;
 use warnings;
-use POE;
+use POE 'Wheel::Run', 'Filter::Stream';
+use Encode 'encode_utf8';
 use Text::Unidecode;
 use GraphViz;
+
+
+# GraphViz.pm is only used to create the layout, the actual
+#  'dot' command is manually run using POE::Wheel::Run
+# TODO: Get rid of GraphViz.pm altogether? (it does suck...)
 
 
 sub spawn {
   my $p = shift;
   POE::Session->create(
     package_states => [
-      $p => [qw| _start cmd_relgraph creategraph getrel relscomplete buildgraph graphcomplete |],
+      $p => [qw|
+        _start cmd_relgraph
+        creategraph getrel relscomplete buildgraph savegraph completegraph
+        proc_stdin proc_stdout proc_stderr proc_closed proc_child
+      |],
     ],
     heap => {
-      font => 's',
+      font => 'Arial',
       fsize => [ 9, 7, 10 ], # nodes, edges, node_title
       imgdir => '/www/vndb/static/rg',
       datdir => '/www/vndb/data/rg',
       moy => [qw| Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec |],
+      dot => '/usr/bin/dot',
       @_,
     }
   );
@@ -32,6 +43,7 @@ sub spawn {
 
 sub _start {
   $_[KERNEL]->alias_set('rg');
+  $_[KERNEL]->sig(CHLD => 'proc_child');
   $_[KERNEL]->call(core => register => qr/^relgraph ((?:[0-9]+)(?:\s+[0-9]+)*|all)$/, 'cmd_relgraph');
 
  # regenerate all relation graphs once a month
@@ -62,10 +74,11 @@ sub creategraph { # id
   #   getrel (recursive)
   #   relscomplete
   #   if !rels
-  #     graphcomplete
+  #     completegraph
   #   else
   #     buildgraph
-  #     graphcomplete
+  #     savegraph
+  #     completegraph
 
   $_[KERNEL]->call(core => log => 3, 'Processing graph for v%d', $_[ARG0]);
   $_[HEAP]{gv} = GraphViz->new(
@@ -97,11 +110,8 @@ sub getrel { # vid
   );
   $s->execute($_[ARG0], $_[ARG0]);
   while(my $r = $s->fetchrow_hashref) {
-    if($r->{vid1} < $r->{vid2}) {
-      $_[HEAP]{rels}{$r->{vid1}.'-'.$r->{vid2}} = reverserel($r->{relation});
-    } else { 
-      $_[HEAP]{rels}{$r->{vid2}.'-'.$r->{vid1}} = $r->{relation} if $r->{vid1} < $r->{vid2};
-    }
+    $_[HEAP]{rels}{$r->{vid1}.'-'.$r->{vid2}} = reverserel($r->{relation}) if $r->{vid1} < $r->{vid2};
+    $_[HEAP]{rels}{$r->{vid2}.'-'.$r->{vid1}} = $r->{relation}             if $r->{vid1} > $r->{vid2};
     
     for (1,2) {
       my($vid, $title, $date, $lang) = @$r{ "vid$_", "title$_", "date$_", "lang$_" };
@@ -122,7 +132,7 @@ sub relscomplete { # heap->nodes and heap->rels are now assumed to contain all n
     $_[KERNEL]->call(core => log => 3, 'No relation graph for v%d', $_[HEAP]{vid});
     $Multi::SQL->do('UPDATE vn SET rgraph = 0 WHERE id = ?', undef, $_[HEAP]{vid});
     $_[HEAP]{nodes}{$_[HEAP]{vid}} = [];
-    $_[KERNEL]->yield('graphcomplete');
+    $_[KERNEL]->yield('completegraph');
     return;
   }
   $_[KERNEL]->call(core => log => 3, 'Fetched all relation data');
@@ -132,7 +142,7 @@ sub relscomplete { # heap->nodes and heap->rels are now assumed to contain all n
     my $date = sprintf '%08d', $_->[2];
     $date =~ s#^([0-9]{4})([0-9]{2}).+#$1==0?'N/A':$1==9999?'TBA':(($2&&$2<13?($_[HEAP]{moy}[$2-1].' '):'').$1)#e;
 
-    my $title = unidecode($_->[1]);
+    my $title = $_->[1];
     $title = substr($title, 0, 27).'...' if length($title) > 30;
     $title =~ s/&/&amp;/g;
 
@@ -142,13 +152,13 @@ sub relscomplete { # heap->nodes and heap->rels are now assumed to contain all n
       fontsize => $_[HEAP]{fsize}[0],
       style => 'setlinewidth(0.5)',
       URL => '/v'.$_->[0],
-      tooltip => $title,
+      tooltip => encode_utf8($_->[1]),
       label => sprintf(
         '<<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" CELLBORDER="1" BGCOLOR="#f0f0f0">
-           <TR><TD COLSPAN="2" ALIGN="CENTER" CELLPADDING="3"><FONT POINT-SIZE="%d">  %s  </FONT></TD></TR>
+           <TR><TD COLSPAN="2" ALIGN="CENTER" CELLPADDING="2"><FONT POINT-SIZE="%d">  %s  </FONT></TD></TR>
            <TR><TD> %s </TD><TD> %s </TD></TR>
         </TABLE>>',
-        $_[HEAP]{fsize}[2], $title, $date, $_->[3]||'N/A'
+        $_[HEAP]{fsize}[2], encode_utf8($title), $date, $_->[3]||'N/A'
       ),
     );
   }
@@ -198,33 +208,53 @@ sub buildgraph {
   my $gid = $Multi::SQL->prepare("SELECT nextval('relgraph_seq')");
   $gid->execute;
   $gid = $gid->fetchrow_arrayref->[0];
-  my $gif = sprintf '%s/%02d/%d.gif', $_[HEAP]{imgdir}, $gid % 100, $gid;
-  my $cmap = sprintf '%s/%02d/%d.cmap', $_[HEAP]{datdir}, $gid % 100, $gid;
+  $_[HEAP]{gid} = [
+    $gid,
+    sprintf('%s/%02d/%d.gif', $_[HEAP]{imgdir}, $gid % 100, $gid),
+    sprintf('%s/%02d/%d.cmap', $_[HEAP]{datdir}, $gid % 100, $gid)
+  ];
 
- # generate the graph
-  $_[HEAP]{gv}->as_gif($gif);
-  chmod 0666, $gif;
+  # roughly equivalent to:
+  #  cat layout.txt | dot -Tgif -o graph.gif -Tcmap > graph.cmap
+  $_[HEAP]{proc} = POE::Wheel::Run->new(
+    Program => $_[HEAP]{dot},
+    ProgramArgs => [ '-Tgif', '-o', $_[HEAP]{gid}[1], '-Tcmap' ],
+    StdioFilter => POE::Filter::Stream->new(),
+    StdinEvent => 'proc_stdin',
+    StdoutEvent => 'proc_stdout',
+    StderrEvent => 'proc_stderr',
+    CloseEvent => 'proc_closed',
+  );
+  $_[HEAP]{proc}->put($_[HEAP]{gv}->as_debug);
+  $_[HEAP]{cmap} = '';
+}
 
- # generate the image map
-  open my $F, '>', $cmap or die $!;
+
+sub savegraph {
+ # save the image map
+  open my $F, '>', $_[HEAP]{gid}[2] or die $!;
   print $F '<!-- V:'.join(',',keys %{$_[HEAP]{nodes}})." -->\n";
-  (my $d = $_[HEAP]{gv}->as_cmapx) =~ s/(id|name)="[^"]+"/$1="rgraph"/g;
-  print $F $d;
+  print $F '<map id="rgraph" name="rgraph">'."\n";
+  print $F $_[HEAP]{cmap};
+  print $F '</map>';
   close $F;
-  chmod 0666, $cmap;
+
+ # proper chmod
+  chmod 0666, $_[HEAP]{gid}[2];
+  chmod 0666, $_[HEAP]{gid}[1];
 
  # update the VN table
   $Multi::SQL->do(sprintf q|
     UPDATE vn
       SET rgraph = %d
       WHERE id IN(%s)|,
-    $gid, join(',', keys %{$_[HEAP]{nodes}}));
+    $_[HEAP]{gid}[0], join(',', keys %{$_[HEAP]{nodes}}));
 
-  $_[KERNEL]->yield('graphcomplete');
+  $_[KERNEL]->yield('completegraph');
 }
 
 
-sub graphcomplete { # all actions to create the graph (after calling creategraph) are now done
+sub completegraph {
   $_[KERNEL]->call(core => log => 3, 'Generated the relation graph for v%d', $_[HEAP]{vid});
 
  # remove processed vns, and check for other graphs in the queue
@@ -233,10 +263,30 @@ sub graphcomplete { # all actions to create the graph (after calling creategraph
     $_[KERNEL]->yield(creategraph => $_[HEAP]{todo}[0]);
   } else {
     $_[KERNEL]->post(core => finish => $_[HEAP]{curcmd});
-    delete @{$_[HEAP]}{qw| vid nodes rels curcmd gv todo |};
+    delete @{$_[HEAP]}{qw| vid nodes rels curcmd gv todo gid cmap |};
   }
 }
 
+
+
+
+# POE handlers for communication with GraphViz
+sub proc_stdin {
+  $_[HEAP]{proc}->shutdown_stdin;
+}
+sub proc_stdout {
+  $_[HEAP]{cmap} .= $_[ARG0];
+}
+sub proc_stderr {
+  $_[KERNEL]->call(core => log => 1, 'GraphViz STDERR: %s', $_[ARG0]);
+}
+sub proc_closed {
+  $_[KERNEL]->yield('savegraph');
+  undef $_[HEAP]{proc};
+}
+sub proc_child {
+  1; # do nothing, just make sure SIGCHLD is handled to reap the process
+}
 
 
 
@@ -249,3 +299,16 @@ sub reverserel { # relation
 
 1;
 
+__END__
+
+
+ # generate the graph
+ #$_[HEAP]{gv}->as_gif($gif);
+ #chmod 0666, $gif;
+
+ #print $_[HEAP]{gv}->as_debug;
+
+ # postscript output (experimental)
+ #$_[HEAP]{gv}->as_svg('/tmp/test.svg');
+ # system('/usr/bin/inkscape --export-png '.$gif.' /tmp/test.svg');
+ # chmod 0666, $gif;
