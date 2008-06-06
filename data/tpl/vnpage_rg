@@ -6,6 +6,6 @@
 [[ } else { ]]
  [[= $d{vn}{rmap} ]]
  <p id="relations">
- <img src="[[= sprintf "%s/rg/%02d/%d.gif", $p{st}, $d{vn}{rgraph}%100, $d{vn}{rgraph} ]]" usemap="#rgraph" />
+ <img src="[[= sprintf "%s/rg/%02d/%d.gif", $p{st}, $d{vn}{rgraph}%100, $d{vn}{rgraph} ]]" usemap="#rgraph" alt="Relation graph for -[[: $d{vn}{title} ]]" />
  </p>
 [[ } ]]

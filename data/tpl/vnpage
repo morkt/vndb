@@ -121,7 +121,7 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
     if($_->{relation} != $lrel) { $lrel=$_->{relation}; if($i) { ]]</dd>[[ } ]]-
     <dt>[[: $VNDB::VREL->[$lrel] ]]</dt><dd><a href="/v[[= $_->{id} ]]">[[: $_->{title} ]]</a>
    [[ } else { ]]<br /><a href="/v[[= $_->{id} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 40 ]]</a>[[ }
-  ++$i;} ]]
+  ++$i;} ]]</dd>
  </dl>
  [[ } ]]-
 

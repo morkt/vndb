@@ -113,7 +113,7 @@ sub finish { # cmd
 sub log { # level, msg
   return if $_[ARG0] > $Multi::LOGLVL; 
 
-  (my $p = $_[SENDER][2]{$_[CALLER_STATE]}[0]) =~ s/^Multi:://; # NOT PORTABLE
+  (my $p = eval { $_[SENDER][2]{$_[CALLER_STATE]}[0] } || '') =~ s/^Multi:://;
   my $msg = sprintf '(%s) %s::%s: %s',
     (qw|WRN ACT DBG|)[$_[ARG0]-1], $p, $_[CALLER_STATE],
     $_[ARG2] ? sprintf($_[ARG1], @_[ARG2..$#_]) : $_[ARG1];

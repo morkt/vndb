@@ -9,13 +9,6 @@ use strict;
 use warnings;
 use POE 'Wheel::Run', 'Filter::Stream';
 use Encode 'encode_utf8';
-use Text::Unidecode;
-use GraphViz;
-
-
-# GraphViz.pm is only used to create the layout, the actual
-#  'dot' command is manually run using POE::Wheel::Run
-# TODO: Get rid of GraphViz.pm altogether? (it does suck...)
 
 
 sub spawn {
@@ -24,7 +17,7 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start cmd_relgraph
-        creategraph getrel relscomplete buildgraph savegraph completegraph
+        creategraph getrel builddot buildgraph savegraph completegraph
         proc_stdin proc_stdout proc_stderr proc_closed proc_child
       |],
     ],
@@ -70,22 +63,17 @@ sub cmd_relgraph {
 
 sub creategraph { # id
   # Function order:
-  #   creategraph
-  #   getrel (recursive)
-  #   relscomplete
+  #   creategraph      (inits vars and initates getrel)
+  #   getrel           (recursive - fetches relation and vn data)
   #   if !rels
-  #     completegraph
+  #     completegraph  (checks for other vids in the queue, exits otherwise)
   #   else
-  #     buildgraph
-  #     savegraph
+  #     builddot       (creates input for graphviz)
+  #     buildgraph     (fetches graph ID and calls grapviz)
+  #     savegraph      (writes cmap, chmods files, updates database entries)
   #     completegraph
 
   $_[KERNEL]->call(core => log => 3, 'Processing graph for v%d', $_[ARG0]);
-  $_[HEAP]{gv} = GraphViz->new(
-   #width => 700/96,
-    height => 2000/96,
-    ratio => 'compress',
-  );
 
   $_[HEAP]{rels} = {}; # relations (key=vid1-vid2, value=relation)
   $_[HEAP]{nodes} = {}; # nodes (key=vid, value=[ vid, title, date, lang, processed ])
@@ -95,7 +83,6 @@ sub creategraph { # id
 
 
 sub getrel { # vid
-  #return if $_[HEAP]{nodes}{$_[ARG0]} && $_[HEAP]{nodes}{$_[ARG0]}[4];
   $_[KERNEL]->call(core => log => 3, 'Fetching relations for v%d', $_[ARG0]);
 
   my $s = $Multi::SQL->prepare(q|
@@ -123,19 +110,28 @@ sub getrel { # vid
     $_[HEAP]{nodes}{$_[ARG0]}[4]++;
   }
 
-  $_[KERNEL]->yield('relscomplete') if !grep { !$_->[4] } values %{$_[HEAP]{nodes}};
+  if(!grep !$_->[4], values %{$_[HEAP]{nodes}}) {
+    if(!keys %{$_[HEAP]{nodes}}) {
+      $_[KERNEL]->call(core => log => 3, 'No relation graph for v%d', $_[HEAP]{vid});
+      $Multi::SQL->do('UPDATE vn SET rgraph = 0 WHERE id = ?', undef, $_[HEAP]{vid});
+      $_[HEAP]{nodes}{$_[HEAP]{vid}} = [];
+      $_[KERNEL]->yield('completegraph');
+      return;
+    }
+    $_[KERNEL]->call(core => log => 3, 'Fetched all relation data');
+    $_[KERNEL]->yield('builddot') 
+  }
 }
 
 
-sub relscomplete { # heap->nodes and heap->rels are now assumed to contain all necessary data 
-  if(!keys %{$_[HEAP]{nodes}}) {
-    $_[KERNEL]->call(core => log => 3, 'No relation graph for v%d', $_[HEAP]{vid});
-    $Multi::SQL->do('UPDATE vn SET rgraph = 0 WHERE id = ?', undef, $_[HEAP]{vid});
-    $_[HEAP]{nodes}{$_[HEAP]{vid}} = [];
-    $_[KERNEL]->yield('completegraph');
-    return;
-  }
-  $_[KERNEL]->call(core => log => 3, 'Fetched all relation data');
+sub builddot {
+  my $gv =
+    qq|graph {\n|.
+    qq|\tratio = "compress"\n|.
+    qq|\tnode [ fontname = "$_[HEAP]{font}", shape = "plaintext",|.
+      qq| fontsize = $_[HEAP]{fsize}[0], style = "setlinewidth(0.5)" ]\n|.
+    qq|\tedge [ labeldistance = 2.5, labelangle = -20, labeljust = 1, minlen = 2, dir = "both",|.
+      qq| fontname = $_[HEAP]{font}, fontsize = $_[HEAP]{fsize}[1], arrowsize = 0.7, color = "#69a89a"  ]\n|;
 
  # insert all nodes, ordered by release date
   for (sort { $a->[2] <=> $b->[2] } values %{$_[HEAP]{nodes}}) {
@@ -145,22 +141,20 @@ sub relscomplete { # heap->nodes and heap->rels are now assumed to contain all n
     my $title = $_->[1];
     $title = substr($title, 0, 27).'...' if length($title) > 30;
     $title =~ s/&/&amp;/g;
+    $title =~ s/>/&gt;/g;
+    $title =~ s/</&lt;/g;
 
-    $_[HEAP]{gv}->add_node($_->[0],
-      fontname => $_[HEAP]{font},
-      shape => 'plaintext',
-      fontsize => $_[HEAP]{fsize}[0],
-      style => 'setlinewidth(0.5)',
-      URL => '/v'.$_->[0],
-      tooltip => encode_utf8($_->[1]),
-      label => sprintf(
-        '<<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" CELLBORDER="1" BGCOLOR="#f0f0f0">
-           <TR><TD COLSPAN="2" ALIGN="CENTER" CELLPADDING="2"><FONT POINT-SIZE="%d">  %s  </FONT></TD></TR>
-           <TR><TD> %s </TD><TD> %s </TD></TR>
-        </TABLE>>',
-        $_[HEAP]{fsize}[2], encode_utf8($title), $date, $_->[3]||'N/A'
-      ),
-    );
+    my $tooltip = $_->[1];
+    $tooltip =~ s/\\/\\\\/g;
+    $tooltip =~ s/"/\\"/g;
+
+    $gv .= sprintf
+      qq|\tv%d [ URL = "/v%d", tooltip = "%s" label=<|.
+        q|<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" CELLBORDER="1" BGCOLOR="#f0f0f0">|.
+          q|<TR><TD COLSPAN="2" ALIGN="CENTER" CELLPADDING="2"><FONT POINT-SIZE="%d">  %s  </FONT></TD></TR>|.
+          q|<TR><TD> %s </TD><TD> %s </TD></TR>|.
+        qq|</TABLE>> ]\n|,
+      $_->[0], $_->[0], encode_utf8($tooltip), $_[HEAP]{fsize}[2], encode_utf8($title), $date, $_->[3]||'N/A';
   }
 
  # @rels = ([ vid1, vid2, relation, date1, date2 ], ..), for easier processing
@@ -176,29 +170,18 @@ sub relscomplete { # heap->nodes and heap->rels are now assumed to contain all n
       ($_->[0], $_->[1]) = ($_->[1], $_->[0]);
       $_->[2] = reverserel($_->[2]);
     }
-    $_[HEAP]{gv}->add_edge(
-      $_->[1] => $_->[0],
-      labeldistance => 2.5,
-      labelangle => -20,
-      labeljust => 'l',
-      dir => 'both',
-      minlen => 2,
-      fontname => $_[HEAP]{font},
-      fontsize => $_[HEAP]{fsize}[1],
-      arrowsize => 0.7,
-      color => '#69a89a',
-      $VNDB::VRELW->{$_->[2]} ? (
-        headlabel => $VNDB::VREL->[$_->[2]],
-        taillabel => $VNDB::VREL->[$_->[2]-1],
-      ) : $VNDB::VRELW->{$_->[2]+1} ? (
-        headlabel => $VNDB::VREL->[$_->[2]],
-        taillabel => $VNDB::VREL->[$_->[2]+1],
-      ) : (
-        label => ' '.$VNDB::VREL->[$_->[2]],
-      ),
-    );
+
+    my $label = 
+      $VNDB::VRELW->{$_->[2]}   ? qq|headlabel = "$VNDB::VREL->[$_->[2]]", taillabel = "$VNDB::VREL->[$_->[2]-1]"| :
+      $VNDB::VRELW->{$_->[2]+1} ? qq|headlabel = "$VNDB::VREL->[$_->[2]]", taillabel = "$VNDB::VREL->[$_->[2]+1]"|
+                                : qq|label = " $VNDB::VREL->[$_->[2]]"|;
+
+    $gv .= qq|\tv$$_[1] -- v$$_[0] [ $label ]\n|;
   }
- 
+
+  $gv .= "}\n";
+  #print $gv;
+  $_[HEAP]{gv} = \$gv;
   $_[KERNEL]->yield('buildgraph');
 }
 
@@ -225,13 +208,14 @@ sub buildgraph {
     StderrEvent => 'proc_stderr',
     CloseEvent => 'proc_closed',
   );
-  $_[HEAP]{proc}->put($_[HEAP]{gv}->as_debug);
+  $_[HEAP]{proc}->put(${$_[HEAP]{gv}});
   $_[HEAP]{cmap} = '';
 }
 
 
 sub savegraph {
  # save the image map
+  $_[HEAP]{cmap} =~ s{>\n}{ />\n}g; # make XML parsers happy
   open my $F, '>', $_[HEAP]{gid}[2] or die $!;
   print $F '<!-- V:'.join(',',keys %{$_[HEAP]{nodes}})." -->\n";
   print $F '<map id="rgraph" name="rgraph">'."\n";
@@ -299,16 +283,3 @@ sub reverserel { # relation
 
 1;
 
-__END__
-
-
- # generate the graph
- #$_[HEAP]{gv}->as_gif($gif);
- #chmod 0666, $gif;
-
- #print $_[HEAP]{gv}->as_debug;
-
- # postscript output (experimental)
- #$_[HEAP]{gv}->as_svg('/tmp/test.svg');
- # system('/usr/bin/inkscape --export-png '.$gif.' /tmp/test.svg');
- # chmod 0666, $gif;
