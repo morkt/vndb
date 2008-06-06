@@ -31,7 +31,7 @@ sub spawn {
     ],
     heap => { irc => $irc,
       o => {
-        user => 'Multi',
+        user => 'Multi_test'.$$,
         server => 'irc.synirc.net',
         ircname => 'VNDB.org Multi',
         channel => '#vndb',

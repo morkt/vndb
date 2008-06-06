@@ -58,8 +58,6 @@ sub spawn {
       },
       PeerPort => 9000,
      # AniDB UDP API options
-      user => 'vnmulti',
-      pass => '',
       client => 'multi',
       clientver => 1,
      # Misc settings

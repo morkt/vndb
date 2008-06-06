@@ -25,12 +25,6 @@ use DBI;
 
 use lib '/www/vndb/lib';
 use Multi::Core;
-use Multi::RG;
-use Multi::Image;
-use Multi::Sitemap;
-use Multi::Anime;
-use Multi::Maintenance;
-use Multi::IRC;
 
 BEGIN { require 'global.pl' }
 
@@ -50,20 +44,21 @@ if(grep /^-a$/, @ARGV) {
   exit;
 }
 
-
 # one shared pgsql connection for all sessions
 our $SQL = DBI->connect(@VNDB::DBLOGIN,
   { PrintError => 1, RaiseError => 0, AutoCommit => 1, pg_enable_utf8 => 1 });
 
 
 Multi::Core->spawn();
-Multi::RG->spawn();
-Multi::Image->spawn();
-Multi::Sitemap->spawn();
-Multi::Anime->spawn() if !$VNDB::DEBUG; # no need to update anime from the beta
-Multi::Maintenance->spawn();
-Multi::IRC->spawn() if !$VNDB::DEBUG;
 
+# dynamically load and spawn modules
+for (0..(@$VNDB::MULTI/2+1)) {
+  my($mod, $args) = @{$VNDB::MULTI}[$_*2, $_*2+1];
+  next if !$args || ref($args) ne 'HASH';
+  require "Multi/$mod.pm";
+  # I'm surprised the strict pagma isn't complaining about this
+  "Multi::$mod"->spawn(%$args);
+}
 
 $SIG{__WARN__} = sub {(local$_=shift)=~s/\r?\n//;$poe_kernel->call(core=>log=>1,'__WARN__: '.$_)};
 

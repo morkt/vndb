@@ -5,34 +5,6 @@ use warnings;
 
 BEGIN { require 'global.pl'; }
 our $DEBUG;
-our %VNDBopts = (
-  CookieDomain  => '.vndb.org',
-  root_url      => $DEBUG ? 'http://beta.vndb.org' : 'http://vndb.org',
-  static_url    => $DEBUG ? 'http://static.beta.vndb.org' : 'http://static.vndb.org',
-  debug         => $DEBUG,
-  tplopts       => {
-    filename      => 'main',
-    searchdir     => '/www/vndb/data/tpl',
-    compiled      => '/www/vndb/data/tplcompiled.pm',
-    namespace     => 'VNDB::Util::Template::tpl',
-    pre_chomp     => 1,
-    post_chomp    => 1,
-    rm_newlines   => 0,
-    deep_reload   => $DEBUG,
-  },
-  ranks => [
-    [ [ qw| visitor loser user mod admin | ], [] ],
-    {map{$_,1}qw| hist                                     |}, # 0 - visitor (not logged in)
-    {map{$_,1}qw| hist                                     |}, # 1 - loser
-    {map{$_,1}qw| hist edit                                |}, # 2 - user
-    {map{$_,1}qw| hist edit mod lock                       |}, # 3 - mod
-    {map{$_,1}qw| hist edit mod lock del userlist useredit |}, # 4 - admin
-  ],
-  imgpath => '/www/vndb/static/cv',
-  mappath => '/www/vndb/data/rg',
-  docpath => '/www/vndb/data/docs',
-);
-$VNDBopts{ranks}[0][1] = { (map{$_,1} map { keys %{$VNDBopts{ranks}[$_]} } 1..5) };
 
 require Time::HiRes if $DEBUG;
 require Data::Dumper if $DEBUG;
@@ -168,6 +140,9 @@ my %OLDuris = (
   'p+' => {
     hist=>{rss  => sub { shift->ResRedirect('/p'.(shift).'/hist/rss.xml', 'perm') } },
   },
+  'r+' => {
+    hist=>{rss  => sub { shift->ResRedirect('/r'.(shift).'/hist/rss.xml', 'perm') } },
+  },
   hist=>{rss    => sub { shift->ResRedirect('/hist/rss.xml', 'perm') } },
 );
 
@@ -240,111 +215,4 @@ sub uri2page {
 
 
 1;
-
-
-__END__
-
-#   O L D   C O D E   -   N O T   U S E D   A N Y M O R E
-
-
-# Apache 2 handler
-sub handler ($$) {
-  my $r = shift;
-
- # we don't handle internal redirects! (fixes ErrorDocument directives)
-  return Apache2::Const::DECLINED
-    if $r->prev || $r->next;
-
-  my $start = [Time::HiRes::gettimeofday()] if $DEBUG;
-  @WARN = ();
-  my($code, $res, $err);
-  $SIG{__WARN__} = sub { push(@VNDB::WARN, @_); warn @_; };
-  
-  $err = eval {
-
-    @Time::CTime::DoW = qw|Sun Mon Tue Wed Thu Fri Sat|;
-    @Time::CTime::DayOfWeek = qw|Sunday Monday Tuesday Wednesday Thursday Friday Saturday|;
-    @Time::CTime::MoY = qw|Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec|;
-    @Time::CTime::MonthOfYear = qw|January February March April May June July August September October November December|;
-
-    $VNDB = VNDB->new(%VNDBopts) if !$VNDB;
-    $VNDB->{r} = $r;
-
-   # let apache handle static files
-    (my $uri = lc($r->uri())) =~ s/\/+//;
-    if(index($uri, '..') == -1 && -f '/www/vndb/www/' . $uri) {
-      $code = Apache2::Const::DECLINED;
-      return $code;
-    }
-
-    $VNDB->DBCheck();
-    ($res, $code) = $VNDB->get_page($r);
-    if($DEBUG) {
-      my($sqlt, $sqlc) = (0, 0);
-      foreach (@{$res->{_DB}->{Queries}}) {
-        if($_->[0]) {
-          $sqlc++;
-          $sqlt += $_->[1];
-        }
-      }
-      my $time = Time::HiRes::tv_interval($start);
-      my $tpl = $res->{_Res}->{_tpltime} ? $res->{_Res}->{_tpltime}/$time*100 : 0;
-      my $gzip = 0;
-      $gzip = 100 - $res->{_Res}->{_gzip}->[1]/$res->{_Res}->{_gzip}->[0]*100
-        if($res->{_Res}->{_gzip} && ref($res->{_Res}->{_gzip}) eq 'ARRAY' && $res->{_Res}->{_gzip}->[0] > 0);
-      printf STDERR "Took %3dms (SQL/TPL/perl: %4.1f%% %4.1f%% %4.1f%%) (GZIP: %4.1f%%) to parse %s\n",
-        $time*1000, $sqlt/$time*100, $tpl, 100-($sqlt/$time*100)-$tpl, $gzip, $r->uri();
-    }
-
-  };
-
- # error occured, create a dump file
-  if(!defined $err && $@ && $DEBUG) {
-    undef $res->{_Res};
-    undef $res->{_Req};
-    die $@;
-  } elsif(!defined $err && $@) {
-    if(open(my $E, sprintf '>/www/vndb/data/errors/%04d-%02d-%02d-%d',
-        (localtime)[5]+1900, (localtime)[4]+1, (localtime)[3], time)) {
-      print $E 'Error @ ' . scalar localtime;
-
-      print $E "\n\nRequest:\n" . $r->the_request . "\n";
-      print $E "$_: " . $r->headers_in->{$_} . "\n"
-        for (keys %{$r->headers_in});
-
-      print $E "\nParams:\n";
-      my $re = Apache2::Request->new($r);
-      print $E "$_: " . $re->param($_) . "\n"
-        for ($re->param());
-
-      print $E "\nError:\n$@\n\n";
-      print $E "Warnings:\n".join('', @WARN)."\n";
-      close($E);
-    }
-    $VNDB->DBRollBack();
-    undef $res->{_Res};
-    undef $res->{_Req};
-    die "Error, check dumpfile!\n";
-  }
-
-  undef $res->{_Res};
-  undef $res->{_Req};
- # let apache handle 404's
-  $code = Apache2::Const::DECLINED if $code == 404;
-  return $code;
-}
-
-
-sub mod_perl_init {
-  require Apache2::RequestRec;
-  require Apache2::RequestIO;
-  $VNDB = __PACKAGE__->new(%VNDBopts);
-  return 0;
-}
-
-
-sub mod_perl_exit {
-  $VNDB->DBExit() if defined $VNDB && ref $VNDB eq __PACKAGE__;
-  return 0;
-}
 

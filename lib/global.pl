@@ -5,6 +5,45 @@ our @SHMOPTS = ( -key => 'VNDB', -create => 'yes', -destroy => 'no', -mode => 06
 our $DEBUG = 1;
 our $VERSION = '1.17';
 
+our $MULTI = [
+  RG => {},
+  Image => {},
+  Sitemap => {},
+  #Anime => { user => '', pass => ''  },
+  Maintenance => {},
+  #IRC => { user => 'Multi'},
+];
+
+our %VNDBopts = (
+  CookieDomain  => '.vndb.org',
+  root_url      => 'http://vndb.org',
+  static_url    => 'http://static.vndb.org',
+  debug         => $DEBUG,
+  tplopts       => {
+    filename      => 'main',
+    searchdir     => '/www/vndb/data/tpl',
+    compiled      => '/www/vndb/data/tplcompiled.pm',
+    namespace     => 'VNDB::Util::Template::tpl',
+    pre_chomp     => 1,
+    post_chomp    => 1,
+    rm_newlines   => 0,
+    deep_reload   => $DEBUG,
+  },
+  ranks  => [
+    [ [ qw| visitor loser user mod admin | ], [] ],
+    {map{$_,1}qw| hist                                     |}, # 0 - visitor (not logged in)
+    {map{$_,1}qw| hist                                     |}, # 1 - loser
+    {map{$_,1}qw| hist edit                                |}, # 2 - user
+    {map{$_,1}qw| hist edit mod lock                       |}, # 3 - mod
+    {map{$_,1}qw| hist edit mod lock del userlist useredit |}, # 4 - admin
+  ],
+  imgpath => '/www/vndb/static/cv',
+  mappath => '/www/vndb/data/rg',
+  docpath => '/www/vndb/data/docs',
+);
+$VNDBopts{ranks}[0][1] = { (map{$_,1} map { keys %{$VNDBopts{ranks}[$_]} } 1..5) };
+
+
 our $PLAT = {
   win => 'Windows',
   lin => 'Linux',
@@ -596,6 +635,11 @@ our $LANG = {
 # 'zu'         => q|Zulu|,
 # 'zun'        => q|Zuni|,
 };
+
+
+# override config vars
+require '/www/vndb/data/config.pl' if -e '/www/vndb/data/config.pl';
+
 
 1;
 

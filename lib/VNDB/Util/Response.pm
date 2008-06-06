@@ -12,7 +12,7 @@ use Exporter 'import';
 require bytes;
 
 use vars ('$VERSION', '@EXPORT');
-$VERSION = $NTL::VERSION;
+$VERSION = $VNDB::VERSION;
 @EXPORT = qw| ResRedirect ResNotFound ResDenied ResFile
   ResForceBody ResSetContentType ResAddHeader ResAddTpl ResAddDefaultStuff
   ResStartXML ResGetXML ResGetBody ResGet ResGetCGI ResSetModPerl |;
