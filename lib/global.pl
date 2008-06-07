@@ -113,6 +113,7 @@ our $CAT = {
     ho => 'Horror',
     my => 'Mystery',
     ro => 'Romance',
+    sc => 'School Life',
     sf => 'SciFi', 
     sj => 'Shoujo Ai',
     sn => 'Shounen Ai',

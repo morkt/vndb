@@ -10,21 +10,31 @@
 :SUB:General info
 <dl>
  <dt>*Type</dt><dd>
-  ..
+  Is the release complete, partial or a trial version?
+  Complete releases have everything.
+  Partial releases have most of the game, but there are things still waiting
+  to be released.
+  Trial versions are heavily cut down and free releases so that you can
+  experience a game before you buy it. Sometimes, trial versions are cut
+  down for web transmission and do not completely represent the finished product.
  </dd><dt>*Title (romaji)</dt><dd>
-  ..
+  The name of the release, in the Latin character set (using Romanisation or translation)
  </dd><dt>Original title</dt><dd>
-  ..
+  If the name is officially under a different title (usually because of different
+  character sets), put the original title here.
  </dd><dt>*Language</dt><dd>
-  ..
+  What language is this release? Use the language that the majority of the game is in.
  </dd><dt>Official website</dt><dd>
   ..
  </dd><dt>Release date</dt><dd>
-  ..
+  For commercial games, the sale date.
+  For all others, the date on which the release was first available.
+  If it was posted on a website, the date on which the post was public.
  </dd><dt>Age rating</dt><dd>
   ..
  </dd><dt>Notes</dt><dd>
-  ..
+  Anything miscellaneous and useful.
+  Generally, JAN codes, extras (but not preorder bonuses) and progress information go here.
  </dd>
 </dl>
 

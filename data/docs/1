@@ -3,10 +3,13 @@
 
 
 :SUB:Elements
+<p>
+ The contents of the story and the general feeling the characters give.
+</p>
 <dl>
  <dt>Action</dt><dd>
-  The story has fast paced action scenes, plenty of explosions or gun battles.
-  Or plenty of running.
+  The story has fast paced scenes and plenty of explosions or gun battles.
+  Or lots of running...
  </dd><dt>Comedy</dt><dd>
   The story is light-hearted and makes you laugh, either by the un-seriousness
   or by character design.
@@ -15,19 +18,25 @@
   in which you could relate to.
   A slice-of-life, with it's ups and downs.
  </dd><dt>Fantasy</dt><dd>
-  Is it actually possible? Plenty of <i>Mahou shojo</i> and transformations,
-  parallel universes and witches abound!
+  Is it actually possible? Plenty of <i>Mahou Shoujo</i> and transformations,
+  parallel universes and witches abound! Maybe pigs fly...
  </dd><dt>Horror</dt><dd>
   Plenty of blood and guts laying around. The guy with the knife looks
   suspicious.
  </dd><dt>Mystery</dt><dd>
   Suspense, tension and a little bit of morning dew makes a mystery game. 
-  Something has happened, so find out! or hide under a rock.
+  Something has happened, so work it out! Alternatively, hide under a rock.
  </dd><dt>Romance</dt><dd>
-  Get intimate with another character, and maybe have some fun?
+  Pull some heart-strings, get intimate with another character, and have some fun!
+  Plenty of dating or some fanservice.
+ </dd><dt>School Life</dt><dd>
+  Obviously, a school is needed.
+  It seems like a chore to us, but the characters like learning.
+  Maybe it's the people they meet? Or the lunch they share...
  </dd><dt>SciFi</dt><dd>
   Science Fiction. Using intelligence and building something not available
   today but certainly possible in real-life.
+  Lasers are ficticious...
  </dd><dt>Shoujo Ai</dt><dd>
   Romance between two (or more) female characters.
  </dd><dt>Shounen Ai</dt><dd>
@@ -45,10 +54,10 @@
   All games where the text is overlaid on the background and there is no special
   dialog-box fall under this category. Can be abbreviated as VN or NVL.
  </dd><dt>Adventure</dt><dd>
-  This is the opposite of the <i>Visual Novel</i> category: The text is presented
-  in a special window, usually at the bottom of the screen. In some (rare) cases
-  a game will switch between both styles, for these games both the <i>Visual Novel</i>
-  and <i>Adventure</i> categories should be selected. Can be abbreviated as ADV or AVG.
+  The text is presented in a special window, usually at the bottom of the screen.
+  Can be abbreviated as ADV or AVG.
+  In some (rare) cases a game will switch between both styles, for these games both
+  the <i>Visual Novel</i> and <i>Adventure</i> categories should be selected.
  </dd><dt>Action</dt><dd>
   This category indicates that the game includes a gameplay that challenges the
   player's speed, dexterity and reaction time. Common examples are fighting games,
@@ -78,7 +87,7 @@
   A game with a linear plot has a static story; it is not possible to get different paths
   or endings. Many games in this category do not prompt the player with choices and simply
   tell the story as it is. This is, however, not a rule: it is also possible for a game
-  to provide choises, but they have no influence on the story itself. (e.g.
+  to provide choices, but they have no influence on the story itself. (e.g.
   <a href="/v3">Utawarerumono</a>)
  </dd><dt>Branching</dt><dd>
   A game with a branching plot has a story whose path is directly affected by choices
@@ -133,7 +142,7 @@
   game. If there is any such content, this category should be selected.
  </dd><dt>Bestiality</dt><dd>
   Sexual activity between characters and animals.<br />
-  <i>No catgirls, I guess?</i>
+  Also includes tentacles.
  </dd><dt>Incest</dt><dd>
   Sexual activity between members of the same family. Most of the time under the
   justification of participants not blood related (step-sister etc.).
@@ -143,6 +152,7 @@
   The usage of male characters with childlike features in sexual situations.
  </dd><dt>Yaoi</dt><dd>
   Sexual content depicting activity between males.
+  Also known as: Boys' Love.
  </dd><dt>Yuri</dt><dd>
   Sexual content depicting activity between females.
  </dd><dt>Rape</dt><dd>

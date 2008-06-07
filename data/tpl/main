@@ -37,7 +37,7 @@
     <input id="searchsubmit" type="submit" value="Search" />
     </fieldset>
   </form>
-  <h1><a href="/">vndb.org</a> / #vndb @ irc.synirc.net <a href="http://vndb.org/">
+  <h1><a href="http://vndb.org/">vndb.org</a> / #vndb @ irc.synirc.net <a href="/">
    [[ if($p{devshit}) { ]]<b style="color: red">The VNDB.org Testing Grounds</b>[[ } else { ]]<b>The Visual Novel Database</b>[[ } ]]</a></h1>
 </div>
 
