@@ -3,9 +3,37 @@
 
 
 :SUB:Elements
-<p>
- ...own interpretation for now... (Should be documented at some time, too)
-</p>
+<dl>
+ <dt>Action</dt><dd>
+  The story has fast paced action scenes, plenty of explosions or gun battles.
+  Or plenty of running.
+ </dd><dt>Comedy</dt><dd>
+  The story is light-hearted and makes you laugh, either by the un-seriousness
+  or by character design.
+ </dd><dt>Drama</dt><dd>
+  The story takes a very serious path, often involving real-life scenarios
+  in which you could relate to.
+  A slice-of-life, with it's ups and downs.
+ </dd><dt>Fantasy</dt><dd>
+  Is it actually possible? Plenty of <i>Mahou shojo</i> and transformations,
+  parallel universes and witches abound!
+ </dd><dt>Horror</dt><dd>
+  Plenty of blood and guts laying around. The guy with the knife looks
+  suspicious.
+ </dd><dt>Mystery</dt><dd>
+  Suspense, tension and a little bit of morning dew makes a mystery game. 
+  Something has happened, so find out! or hide under a rock.
+ </dd><dt>Romance</dt><dd>
+  Get intimate with another character, and maybe have some fun?
+ </dd><dt>SciFi</dt><dd>
+  Science Fiction. Using intelligence and building something not available
+  today but certainly possible in real-life.
+ </dd><dt>Shoujo Ai</dt><dd>
+  Romance between two (or more) female characters.
+ </dd><dt>Shounen Ai</dt><dd>
+  Romance between two (or more) male characters. Love has no boundaries.
+ </dd>
+</dl>
 
 
 :SUB:Gameplay

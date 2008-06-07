@@ -29,6 +29,19 @@
  Wikipedia</a>) for titles and names before being entered in the database.
 </p>
 
+:SUB:Name order
+<p>
+ In most English speaking countries, names are given in a "given name, family name"
+ order. This is called "Western Order". In English, you call someone using their
+ given name if you know them well, otherwise use their title and family name.
+ In Japanese (and some other languages too), names are given in "family name, given name"
+ order. We call this "Japanese Order". In Japanese you can call someone using either
+ name with an appropriate suffix. To aid English speakers familiar, some resources
+ (e.g. wikipedia) switch round Japanese names. Here on vndb.org, we prefer to use the
+ order that the original game used. That is, if it was originally a Japanese game with
+ Japanese character names, use Japanese order. If the game is originally English, or
+ a character has a completely foreign name (Mary Smith), use Western order.
+</p> 
 
 :SUB:...and more!
 <p>
@@ -37,6 +50,5 @@ Misc documentation:<br />
 - Quoting sources in descriptions<br />
 - Piracy<br />
 - Spoilers<br />
-- Name order<br />
 </p>
 

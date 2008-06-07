@@ -4,6 +4,7 @@ our @DBLOGIN = ( 'dbi:Pg:dbname=vndb', 'vndb', 'passwd' );
 our @SHMOPTS = ( -key => 'VNDB', -create => 'yes', -destroy => 'no', -mode => 0666);
 our $DEBUG = 1;
 our $VERSION = '1.17';
+our $COOKEY = '73jkS39Sal2)'; # encryption key for cookies (not to worry, this one is fake)
 
 our $MULTI = [
   RG => {},

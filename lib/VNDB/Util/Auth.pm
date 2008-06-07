@@ -21,7 +21,7 @@ $VERSION = $VNDB::VERSION;
 
 { # local data for these 2 methods only
   my $crl = Crypt::Lite->new(debug => 0);
-  my $scrt = md5_hex("73jkS39Sal2)"); # just a random string, as long as it doesn't change
+  my $scrt = md5_hex($VNDB::COOKEY);
   
 sub AuthCheckCookie {
   my $self = shift;
