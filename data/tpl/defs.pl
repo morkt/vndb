@@ -141,7 +141,7 @@ sub summary { # cmd, len, def
     s/\&/&amp;/g;
     s/>/&gt;/g;
     s/</&lt;/g;
-    while(s/\[url=((https?:\/\/|\/)[^\]>]+)\]/<a href="$1" rel="nofollow">/) {
+    while(s/\[url=((https?:\/\/|\/)[^\]>]+)\]/<a href="$1" rel="nofollow">/i) {
       $l -= length($1)+6;
       $as++;
     }
@@ -150,7 +150,7 @@ sub summary { # cmd, len, def
     } elsif($as) {
       s/^([duvpr][0-9]+)[^\w]*$/<a href="\/$1">$1<\/a>/;
     }
-    while(s/\[\/url\]/<\/a>/) {
+    while(s/\[\/url\]/<\/a>/i) {
       $l -= 6;
       $as--;
     }

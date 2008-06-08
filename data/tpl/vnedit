@@ -12,7 +12,7 @@
  </span>
 [[ } if($d{id} && $d{vn}{cid} != $d{vn}{latest}) { ]] 
  <span class="warning">
-  You are editing an old revision of this producer. If you save it, all changes made after
+  You are editing an old revision of this visual novel. If you save it, all changes made after
   -[[= formatdate('%Y-%m-%d %R', $d{vn}{added}) ]]- will be removed!
  </span>
 [[ } ]]
