@@ -269,6 +269,7 @@ sub gettitle{$p{$_}&&($p{PageTitle}=ref($pagetitles{$_}) eq 'CODE' ? &{$pagetitl
 #  F O R M   E R R O R   H A N D L I N G
 #
 my %formerr_names = (
+ # this list is rather incomplete...
   mail        => 'Email',
   username    => 'Username',
   userpass    => 'Password',
@@ -285,6 +286,7 @@ my %formerr_names = (
   media       => 'Media',
   name        => 'Name',
   vn          => 'Visual novel relations',
+  l_vnn       => 'Visual-novels.net link',
 );
 my @formerr_msgs = (
   sub { return sprintf 'Field "%s" is required.', @_ },
@@ -295,7 +297,8 @@ my @formerr_msgs = (
     $_[1] eq 'url'  ? 'Invalid URL' :
     $_[1] eq 'pname' ? sprintf('%s can only contain alfanumeric characters!', $_[0]) :
     $_[1] eq 'asciiprint' ? sprintf('Only ASCII characters are allowed at %s', $_[0]) :
-    $_[1] eq 'int'  ? sprintf('%s should be a number!', $_[0]) : '';
+    $_[1] eq 'int'  ? sprintf('%s should be a number!', $_[0]) :
+    $_[1] eq 'gtin' ? 'Not a valid JAN, UPC or EAN code!' : '';
   },
   sub { return sprintf '%s: invalid item selected', @_ },
   sub { return 'Invalid unicode, are you sure your browser works fine?' },
@@ -316,7 +319,7 @@ sub formerr {
   my $ret = '<span class="warning">
    Error:<ul>';
   $ret .= sprintf " <li>%s</li>\n", 
-     /^([a-z0-9]+)_([0-9]+)_?(.*)$/ ? &{$formerr_msgs[$2-1]}($formerr_names{$1}, $3?$3:'') : $formerr_exeptions{$_}
+     /^([a-z0-9_]+)_([0-9]+)_?(.*)$/ ? &{$formerr_msgs[$2-1]}($formerr_names{$1}||$1, $3||'') : $formerr_exeptions{$_}
     foreach (@err);
   $ret .= "</ul>\n</span>\n";
 }

@@ -18,6 +18,7 @@
   [ type      => 'Type',         sub { $VNDB::RTYP->[$_[0] ] } ],
   [ title     => 'Title',        1 ],
   [ original  => 'Orig. title',  1 ],
+  [ gtin      => 'JAN/UPC/EAN',  1 ],
   [ language  => 'Language',     sub { $VNDB::LANG->{$_[0]} } ],
   [ website   => 'Website',      \&summary ],
   [ released  => 'Release date', \&datestr ],
@@ -37,6 +38,8 @@
  <dt>Original Title</dt><dd>[[: $d{rel}{original} ]]</dd>[[ } ]]-
  <dt>Language</dt><dd>[[: $VNDB::LANG->{$d{rel}{language}} ]]</dd>
  <dt>Release date</dt><dd>[[= datestr($d{rel}{released}) ]]</dd>
+[[ if($d{rel}{gtin}) { ]]-
+ <dt>[[: VNDB::GTINType($d{rel}{gtin}) ]]- code</dt><dd>[[= $d{rel}{gtin} ]]</dd>[[ } ]]-
 [[ if($d{rel}{minage} >= 0) { ]]-
  <dt>Age rating</dt><dd>[[: $VNDB::VRAGES->{$d{rel}{minage}} ]]</dd>[[ } ]]-
 [[ if($#{$d{rel}{producers}} >= 0) { ]]-

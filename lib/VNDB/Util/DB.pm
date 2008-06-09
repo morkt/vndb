@@ -865,7 +865,7 @@ sub DBGetRelease { # %options->{ id vid results page rev }
   push @join, 'JOIN users u ON u.id = c.requester' if $o{what} =~ /changes/;
   push @join, 'JOIN releases_vn rv ON rv.rid = rr.id' if $o{vid};
 
-  my $select = 'r.id, r.locked, r.hidden, rr.id AS cid, rr.title, rr.original, rr.language, rr.website, rr.released, rr.notes, rr.minage, rr.type';
+  my $select = 'r.id, r.locked, r.hidden, rr.id AS cid, rr.title, rr.original, rr.gtin, rr.language, rr.website, rr.released, rr.notes, rr.minage, rr.type';
   $select .= ', c.added, c.requester, c.comments, r.latest, u.username, c.prev' if $o{what} =~ /changes/;
 
   my $r = $s->DBAll(qq|
@@ -981,10 +981,11 @@ sub DBEditRelease { # id, %opts->{ columns in releases_rev table + comm + vn + p
 sub _insert_release_rev {
   my($s, $cid, $rid, $o) = @_;
 
+  # most GTIN numbers can't be represented in a 32bit integer, so make sure Perl doesn't interpret it as one (%s, not %d)
   $s->DBExec(q|
-    INSERT INTO releases_rev (id, rid, title, original, language, website, released, notes, minage, type)
-      VALUES (%d, %d, !s, !s, !s, !s, %d, !s, %d, %d)|,
-    $cid, $rid, @$o{qw| title original language website released notes minage type|});
+    INSERT INTO releases_rev (id, rid, title, original, gtin, language, website, released, notes, minage, type)
+      VALUES (%d, %d, !s, !s, %s, !s, !s, %d, !s, %d, %d)|,
+    $cid, $rid, @$o{qw| title original gtin language website released notes minage type|});
 
   $s->DBExec(q|
     INSERT INTO releases_producers (rid, pid)

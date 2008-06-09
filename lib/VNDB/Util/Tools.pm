@@ -8,12 +8,10 @@ use Tie::ShareLite ':lock';
 use Exporter 'import';
 
 our $VERSION = $VNDB::VERSION;
-our @EXPORT = qw| FormCheck AddHid SendMail AddDefaultStuff RunCmd |;
+our @EXPORT = qw| FormCheck AddHid GTINType SendMail AddDefaultStuff RunCmd |;
 
 
-# Improved version of ParamsCheck
-#  - hashref instead of hash
-#  - parameters don't start with form*
+# ...this function could use some serious rewriting
 sub FormCheck {
   my $self = shift;
   my @ps = @_;
@@ -39,20 +37,21 @@ sub FormCheck {
           || ($t eq 'pname' && $$val !~ /^[a-z0-9][a-z0-9\-]*$/)
           || ($t eq 'asciiprint' && $$val !~ /^[\x20-\x7E]*$/)
           || ($t eq 'int' && $$val !~ /^\-?[0-9]+$/)
-          || ($t eq 'date' && $$val !~ /^[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?$/);
+          || ($t eq 'date' && $$val !~ /^[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?$/)
+          || ($t eq 'gtin' && !GTINType($$val));
       }
       $e = 5 if !$e && $ps[$i]{enum} && ref($ps[$i]{enum}) eq "ARRAY" && !_inarray($$val, $ps[$i]{enum});
       if($e) {
-        if($ps[$i]{required}) {
+        if(!$ps[$i]{required} && !$$val && length($$val) < 1 && $$val ne '0') {
+          $hash{$k}[$j] = exists $ps[$i]{default} ? $ps[$i]{default} : undef;
+        } else {
           my $errc = $ps[$i]{name}.'_'.$e;
           $errc .= '_'.$ps[$i]{minlength} if $e == 2;
           $errc .= '_'.$ps[$i]{maxlength} if $e == 3;
           $errc .= '_'.$ps[$i]{template} if $e == 4;
           push(@err, $errc);
           last;
-        } else {
-          $hash{$k}[$j] = exists $ps[$i]{default} ? $ps[$i]{default} : undef;
-        }
+        } 
       }
       last if !$ps[$i]{multi};
     }
@@ -68,6 +67,30 @@ sub AddHid {
   my $fh = $_[0]->FormCheck({ name => 'fh', required => 0, maxlength => 30 })->{fh};
   $_[1]->{_hid} = { map { $_ => 1 } 'com', 'mod', split /,/, $fh }
     if $fh;
+}
+
+
+sub GTINType { # returns 'JAN', 'EAN', 'UPC' or undef
+  my $c = $_[0];
+  return undef if $c !~ /^[0-9]{12,14}$/; # only GTIN-12, 13 and 14 codes (for now...)
+  $c = ('0'x(14-length $c)) . $c; # pad with zeros
+
+ # calculate check digit according to
+ #  http://www.gs1.org/productssolutions/barcodes/support/check_digit_calculator.html#how
+  my @n = reverse split //, $c;
+  my $n=0;
+  $n += $n[$_] * ($_ % 2 == 0 ? 1 : 3) for (1..$#n);
+  $n = 10 - ($n % 10);
+  return undef if $n != $n[0];
+
+ # Do some rough guesses based on:
+ #  http://www.gs1.org/productssolutions/barcodes/support/prefix_list.html
+ #  and http://en.wikipedia.org/wiki/List_of_GS1_country_codes
+  local $_ = $c;
+  return 'JAN' if /^04[59]/; # prefix code 450-459 & 490-499
+  return 'UPC' if /^0(?:0[01]|0[6-9]|13|75[45])/; # prefix code 000-019 & 060-139 & 754-755
+  return  undef if /0(?:0[2-5]|2|97[789]|9[6-9])/; # some codes we don't want: 020–059 & 200-299 & 977-999
+  return 'EAN'; # let's just call everything else EAN :)
 }
 
 

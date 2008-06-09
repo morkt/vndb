@@ -60,7 +60,7 @@ sub REdit {
   return $self->ResDenied if !$self->AuthCan('edit') || ($r->{locked} && !$self->AuthCan('lock'));
 
   my %b4 = $rid ? (
-    (map { $_ => $r->{$_} } qw|title original language website notes minage type platforms|),
+    (map { $_ => $r->{$_} } qw|title original gtin language website notes minage type platforms|),
     released => $r->{released} =~ /^([0-9]{4})([0-9]{2})([0-9]{2})$/ ? [ $1, $2, $3 ] : [ 0, 0, 0 ],
     media => join(',', map { $_->{medium} =~ /^(cd|dvd|gdr|blr)$/ ? ($_->{medium}.'_'.$_->{qty}) : $_->{medium} } @{$r->{media}}),
     producers => join('|||', map { $_->{id}.','.$_->{name} } @{$r->{producers}}),
@@ -73,6 +73,7 @@ sub REdit {
       { name => 'type',      required => 1, enum => [ 0..$#{$VNDB::RTYP} ] },
       { name => 'title',     required => 1, maxlength => 250 },
       { name => 'original',  required => 0, maxlength => 250, default => '' },
+      { name => 'gtin',      required => 0, template => 'gtin', default => '0' },
       { name => 'language',  required => 1, enum => [ keys %{$VNDB::LANG} ] },
       { name => 'website',   required => 0, template => 'url', default => '' },
       { name => 'released',  required => 0, multi => 1, template => 'int', default => 0 },
@@ -101,12 +102,12 @@ sub REdit {
     return $self->ResRedirect('/r'.$rid, 'post')
       if $rid && $released == $r->{released} &&
         (join(',', sort @{$b4{platforms}}) eq join(',', sort @{$frm->{platforms}})) &&
-        10 == scalar grep { $_ ne 'comm' && $_ ne 'released' && $_ ne 'platforms' && $frm->{$_} eq $b4{$_} } keys %b4;
+        11 == scalar grep { $_ ne 'comm' && $_ ne 'released' && $_ ne 'platforms' && $frm->{$_} eq $b4{$_} } keys %b4;
 
     if(!$frm->{_err}) {
       my %opts = (
         vn        => $new_vn,
-        (map { $_ => $frm->{$_} } qw|title original language website notes minage type comm platforms|),
+        (map { $_ => $frm->{$_} } qw|title original gtin language website notes minage type comm platforms|),
         released  => $released,
         media     => $media,
         producers => $producers,

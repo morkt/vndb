@@ -24,6 +24,11 @@
   character sets), put the original title here.
  </dd><dt>*Language</dt><dd>
   What language is this release? Use the language that the majority of the game is in.
+ </dd><dt>JAN/UPC/EAN</dt><dd>
+  The <a href="http://en.wikipedia.org/wiki/Global_Trade_Item_Number">GTIN</a> code
+  of the product. Often called "JAN" for Japanese releases, "UPC" for USA and Canada
+  and "EAN" for Europe. The system will automatically detect the type from the code and 
+  use the appropriate term on the release page.
  </dd><dt>Official website</dt><dd>
   ..
  </dd><dt>Release date</dt><dd>

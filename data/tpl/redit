@@ -30,6 +30,7 @@
  { type => 'select', name => 'Language', short => 'language', r=>1, options => [ map {
    ({ short => $_, name => sprintf '%s (%s)', $_, $VNDB::LANG->{$_} }) } sort keys %{$VNDB::LANG} ] },
 
+ { type => 'input', name => 'JAN/UPC/EAN', short => 'gtin' },
  { type => 'input', name => 'Official website', short => 'website' },
  { type => 'date', name => 'Release date', short => 'released' },
  { type => 'static', text => 'Leave month or day blank if they are unknown<br /><br />' },
