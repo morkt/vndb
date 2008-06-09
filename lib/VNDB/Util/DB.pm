@@ -590,7 +590,8 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
     for (split /[ -,]/, $o{search}) {
       s/%//g;
       next if length($_) < 2;
-      $w{ sprintf '(ivr.title ILIKE %s OR ivr.alias ILIKE %1$s OR irr.title ILIKE %1$s OR irr.original ILIKE %1$s)',
+      my $gt = VNDB::GTINType($_) ? ' OR irr.gtin = '.$_ : '';
+      $w{ sprintf '(ivr.title ILIKE %s OR ivr.alias ILIKE %1$s OR irr.title ILIKE %1$s OR irr.original ILIKE %1$s'.$gt.')',
         qs('%%'.$_.'%%') } = 1;
     }
     $where{ q|
