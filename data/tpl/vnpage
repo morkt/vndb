@@ -19,7 +19,7 @@
   [ length     => 'Length',         sub { $VNDB::VNLEN->[$_[0] ][0] } ],
   [ l_wp       => 'Wikipedia link', sub { $_[0] ? '<a href="http://en.wikipedia.org/wiki/'.$_[0].'">'.$_[0].'</a>' : 'No link' } ],
   [ l_encubed  => 'Encubed tag',    sub { $_[0] ? '<a href="http://novelnews.net/tag/'._huri($_[0]).'/">'.$_[0].'</a>' : 'No link' } ],
-  [ l_renai    => 'Renai.us link',  sub { $_[0] ? '<a href="http://www.renai.us/game/'._huri($_[0]).'.shtml">'.$_[0].'</a>' : 'No link' } ],
+  [ l_renai    => 'Renai.us link',  sub { $_[0] ? '<a href="http://renai.us/game/'._huri($_[0]).'.shtml">'.$_[0].'</a>' : 'No link' } ],
   [ l_vnn      => 'V-N.net link',   sub { $_[0] ? '<a href="http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id='.$_[0].'">'.$_[0].'</a>' : 'No link' } ], 
   [ anime      => 'Related anime',  sub { join(' ', map qq|<a href="http://anidb.net/a$$_{id}">$$_{id}</a>|, sort { $a->{id} <=> $b->{id} } @{$_[0]}) } ],
   [ categories => 'Categories',     sub { join(' ', map { $VNDB::CAT->{substr($_->[0],0,1)}[1]{substr($_->[0],1,2)}.'('.$_->[1].')' } sort { $a->[0] cmp $b->[0] } @{$_[0]}) || 'No categories selected' }, 1 ],
@@ -70,7 +70,7 @@
   my @links = (
    $d{vn}{l_wp} ?      [ 'Wikipedia', 'http://en.wikipedia.org/wiki/%s', $d{vn}{l_wp} ] : (),
    $d{vn}{l_encubed} ? [ 'Encubed',   'http://novelnews.net/tag/%s/', _huri $d{vn}{l_encubed} ] : (),
-   $d{vn}{l_renai} ?   [ 'Renai.us',  'http://www.renai.us/game/%s.shtml', _huri $d{vn}{l_renai} ] : (),
+   $d{vn}{l_renai} ?   [ 'Renai.us',  'http://renai.us/game/%s.shtml', _huri $d{vn}{l_renai} ] : (),
    $d{vn}{l_vnn}  ?    [ 'V-N.net',   'http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=%d', $d{vn}{l_vnn} ] : (),
   );
 

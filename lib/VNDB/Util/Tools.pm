@@ -71,25 +71,24 @@ sub AddHid {
 
 
 sub GTINType { # returns 'JAN', 'EAN', 'UPC' or undef
-  my $c = $_[0];
-  return undef if $c !~ /^[0-9]{12,14}$/; # only GTIN-12, 13 and 14 codes (for now...)
-  $c = ('0'x(14-length $c)) . $c; # pad with zeros
+  (my $c = $_[0]) =~ s/^0+//;
+  return undef if $c !~ /^[0-9]{12,13}$/; # only gtin-12 and 13
+  $c = ('0'x(13-length $c)) . $c; # pad with zeros
 
  # calculate check digit according to
  #  http://www.gs1.org/productssolutions/barcodes/support/check_digit_calculator.html#how
   my @n = reverse split //, $c;
-  my $n=0;
-  $n += $n[$_] * ($_ % 2 == 0 ? 1 : 3) for (1..$#n);
-  $n = 10 - ($n % 10);
-  return undef if $n != $n[0];
+  my $n = shift @n;
+  $n += $n[$_] * ($_ % 2 != 0 ? 1 : 3) for (0..$#n);
+  return undef if $n % 10 != 0;
 
  # Do some rough guesses based on:
  #  http://www.gs1.org/productssolutions/barcodes/support/prefix_list.html
  #  and http://en.wikipedia.org/wiki/List_of_GS1_country_codes
   local $_ = $c;
-  return 'JAN' if /^04[59]/; # prefix code 450-459 & 490-499
-  return 'UPC' if /^0(?:0[01]|0[6-9]|13|75[45])/; # prefix code 000-019 & 060-139 & 754-755
-  return  undef if /0(?:0[2-5]|2|97[789]|9[6-9])/; # some codes we don't want: 020–059 & 200-299 & 977-999
+  return 'JAN' if /^4[59]/; # prefix code 450-459 & 490-499
+  return 'UPC' if /^(?:0[01]|0[6-9]|13|75[45])/; # prefix code 000-019 & 060-139 & 754-755
+  return  undef if /(?:0[2-5]|2|97[789]|9[6-9])/; # some codes we don't want: 020–059 & 200-299 & 977-999
   return 'EAN'; # let's just call everything else EAN :)
 }
 
