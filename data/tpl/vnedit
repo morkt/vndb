@@ -44,8 +44,9 @@
  ] },
  { type => 'static', text => '<br />' },
  { type => 'input', name => 'External links', short => 'l_wp', pre => 'http://en.wikipedia.org/wiki/' },
+ { type => 'input', name => '&nbsp;', short => 'l_encubed', pre => 'http://novelnews.net/tag/', post => '/' },
+ { type => 'input', name => '&nbsp;', short => 'l_renai', pre => 'http://www.renai.us/game/', post => '.shtml' },
  { type => 'input', name => '&nbsp;', short => 'l_vnn', pre => 'http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=', class => 'shortopts' },
-# { type => 'input', name => '&nbsp;', short => 'l_cisv', pre => 'http://cisvisual.net/title/', class => 'shortopts' },
 
  { type => 'static', text => '<br />' },
  { type => 'input', name => 'Related anime', short => 'anime' },

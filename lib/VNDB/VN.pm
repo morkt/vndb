@@ -73,7 +73,7 @@ sub VNEdit {
   return $self->ResDenied if !$self->AuthCan('edit') || ($v->{locked} && !$self->AuthCan('lock'));
   
   my %b4 = $id ? (
-    ( map { $_ => $v->{$_} } qw| title desc alias img_nsfw length l_wp l_cisv l_vnn | ),
+    ( map { $_ => $v->{$_} } qw| title desc alias img_nsfw length l_wp l_encubed l_renai l_vnn | ),
     relations => join('|||', map { $_->{relation}.','.$_->{id}.','.$_->{title} } @{$v->{relations}}),
     categories => join(',', map { $_->[0].$_->[1] } sort { $a->[0] cmp $b->[0] } @{$v->{categories}}),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
@@ -87,7 +87,8 @@ sub VNEdit {
       { name => 'desc', required => 1, maxlength => 10240 },
       { name => 'length', required => 0, enum => [ 0..($#$VNDB::VNLEN+1) ], default => 0 },
       { name => 'l_wp',  required => 0, default => '', maxlength => 150 },
-      { name => 'l_cisv', required => 0, default => 0, template => 'int' },
+      { name => 'l_encubed', required => 0, default => '', maxlength => 100 },
+      { name => 'l_renai', required => 0, default => '', maxlength => 100 },
       { name => 'l_vnn',  required => 0, default => 0, template => 'int' },
       { name => 'anime', required => 0, default => '' },
       { name => 'img_nsfw', required => 0 },
@@ -95,12 +96,11 @@ sub VNEdit {
       { name => 'relations', required => 0, default => '' },
       { name => 'comm', required => 0, default => '' },
     );
-    $frm->{l_cisv} = $b4{l_cisv};
     $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
     $frm->{anime} = join(' ', sort { $a <=> $b } grep /^[0-9]+$/, split(/\s+/, $frm->{anime})); # re-sort
 
     return $self->ResRedirect('/v'.$id, 'post')
-      if $id && !$self->ReqParam('img') && 11 == scalar grep { $b4{$_} eq $frm->{$_} } keys %b4;
+      if $id && !$self->ReqParam('img') && 12 == scalar grep { $b4{$_} eq $frm->{$_} } keys %b4;
 
     my $relations = [ map { /^([0-9]+),([0-9]+)/ && $2 != $id ? ( [ $1, $2 ] ) : () } split /\|\|\|/, $frm->{relations} ];
     my $cat = [ map { [ substr($_,0,3), substr($_,3,1) ] } split /,/, $frm->{categories} ];
@@ -137,7 +137,7 @@ sub VNEdit {
     }
 
     my %args = (
-      ( map { $_ => $frm->{$_} } qw| title desc alias comm length l_wp l_cisv l_vnn img_nsfw| ),
+      ( map { $_ => $frm->{$_} } qw| title desc alias comm length l_wp l_encubed l_renai l_vnn img_nsfw| ),
       image => $imgid,
       anime => $anime,
       relations => $relations,
@@ -347,7 +347,7 @@ sub VNUpdReverse { # old, new, id, cid
       causedby => $cid,
       uid => 1,         # Multi - hardcoded
       anime => [ map $_->{id}, @{$r->{anime}} ],
-      ( map { $_ => $r->{$_} } qw| title desc alias categories img_nsfw length l_wp l_cisv l_vnn image | )
+      ( map { $_ => $r->{$_} } qw| title desc alias categories img_nsfw length l_wp l_encubed l_renai l_vnn image | )
     );
   }
 

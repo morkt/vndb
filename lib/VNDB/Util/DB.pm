@@ -617,7 +617,7 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
   );
 
   my $sel = 'v.id, v.locked, v.hidden, v.c_released, v.c_languages, v.c_votes, v.c_platforms, vr.title, vr.id AS cid, v.rgraph';
-  $sel .= ', vr.alias, vr.image AS image, vr.img_nsfw, vr.length, vr.desc, vr.l_wp, vr.l_cisv, vr.l_vnn' if $o{what} =~ /extended/;
+  $sel .= ', vr.alias, vr.image AS image, vr.img_nsfw, vr.length, vr.desc, vr.l_wp, vr.l_encubed, vr.l_renai, vr.l_vnn' if $o{what} =~ /extended/;
   $sel .= ', c.added, c.requester, c.comments, v.latest, u.username, c.prev, c.causedby' if $o{what} =~ /changes/;
 
   my $r = $s->DBAll(qq|
@@ -732,9 +732,9 @@ sub _insert_vn_rev {
   my($s, $cid, $vid, $o) = @_;
 
   $s->DBExec(q|
-    INSERT INTO vn_rev (id, vid, title, "desc", alias, image, img_nsfw, length, l_wp, l_cisv, l_vnn)
-      VALUES (%d, %d, !s, !s, !s, %d, %d, %d, !s, %d, %d)|,
-    $cid, $vid, @$o{qw|title desc alias image img_nsfw length l_wp l_cisv l_vnn|});
+    INSERT INTO vn_rev (id, vid, title, "desc", alias, image, img_nsfw, length, l_wp, l_encubed, l_renai, l_vnn)
+      VALUES (%d, %d, !s, !s, !s, %d, %d, %d, !s, !s, !s, %d)|,
+    $cid, $vid, @$o{qw|title desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|});
 
   $s->DBExec(q|
     INSERT INTO vn_categories (vid, cat, lvl)

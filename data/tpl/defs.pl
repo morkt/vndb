@@ -147,8 +147,8 @@ sub summary { # cmd, len, def
     }
     if(!$as && s/(http|https):\/\/(.+[0-9a-zA-Z=\/])/<a href="$1:\/\/$2" rel="nofollow">link<\/a>/) {
       $l = 4;
-    } elsif($as) {
-      s/^([duvpr][0-9]+)[^\w]*$/<a href="\/$1">$1<\/a>/;
+    } elsif(!$as) {
+      s/^(.*[^\w]|)([duvpr][0-9]+)([^\w].*|)$/$1<a href="\/$2">$2<\/a>$3/;
     }
     while(s/\[\/url\]/<\/a>/i) {
       $l -= 6;
@@ -381,9 +381,9 @@ sub cform {
       $ret .= qq|</ul></form>\n|;
    # input
     } elsif($_->{type} eq 'input') {
-      $ret .= sprintf qq|<li%s>\n <label for="%s">%s</label>\n %s<input type="text" class="text" name="%2\$s" id="%2\$s" value="%s" />\n</li>\n|,
+      $ret .= sprintf qq|<li%s>\n <label for="%s">%s</label>\n %s<input type="text" class="text" name="%2\$s" id="%2\$s" value="%s" />%s\n</li>\n|,
         $_->{class} ? ' class="'.$_->{class}.'"' : '', $_->{short}, $_->{name}, $_->{pre} ? '<i>'.$_->{pre}.'</i>' : '',
-        _hchar($frm->{$_->{short}}?$frm->{$_->{short}}:$_->{default});
+        _hchar($frm->{$_->{short}}?$frm->{$_->{short}}:$_->{default}), $_->{post} ? '<i>'.$_->{post}.'</i>' : '';
    # pass
     } elsif($_->{type} eq 'pass') {
       $ret .= sprintf qq|<li%s>\n <label for="%s">%s</label>\n <input type="password" class="text" name="%2\$s" id="%2\$s" />\n</li>\n|,
