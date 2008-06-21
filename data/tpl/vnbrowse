@@ -14,14 +14,14 @@
  <div id="adsearch" [[= !$p{searchquery} ? '' : ' style="display: none"' ]]>
   <b>Categories</b> (boolean and, selecting more gives less results)
   <ul id="cat">
-  [[ for my $c (qw| e g p t l s |) { ]]-
-   -[[= $c ne 'l' && $c ne 'p' ? '<li>' : '<br />' ]][[: $VNDB::CAT->{$c}[0] ]]-
+  [[ for my $c (qw| e g t p h l s |) { ]]-
+   -[[= $c !~ /[thl]/ ? '<li>' : '<br />' ]][[: $VNDB::CAT->{$c}[0] ]]-
    <ul>
     [[ for (sort keys %{$VNDB::CAT->{$c}[1]}) { my $ca = $c.$_; ]]-
     <li id="cat_[[= $ca ]]">
      [[: $VNDB::CAT->{$c}[1]{$_} ]]- ([[= $d{cat}{$ca} || 0 ]])</li>
     [[ } ]]
-   </ul>[[= $c ne 't' && $c ne 'g' ? '</li>' : '' ]]-
+   </ul>[[= $c !~ /[gph]/ ? '</li>' : '' ]]-
   [[ } ]]-
   </ul>
   <br style="clear: both" />

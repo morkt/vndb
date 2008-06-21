@@ -22,7 +22,7 @@
   [ l_renai    => 'Renai.us link',  sub { $_[0] ? '<a href="http://renai.us/game/'._huri($_[0]).'.shtml">'.$_[0].'</a>' : 'No link' } ],
   [ l_vnn      => 'V-N.net link',   sub { $_[0] ? '<a href="http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id='.$_[0].'">'.$_[0].'</a>' : 'No link' } ], 
   [ anime      => 'Related anime',  sub { join(' ', map qq|<a href="http://anidb.net/a$$_{id}">$$_{id}</a>|, sort { $a->{id} <=> $b->{id} } @{$_[0]}) } ],
-  [ categories => 'Categories',     sub { join(' ', map { $VNDB::CAT->{substr($_->[0],0,1)}[1]{substr($_->[0],1,2)}.'('.$_->[1].')' } sort { $a->[0] cmp $b->[0] } @{$_[0]}) || 'No categories selected' }, 1 ],
+  [ categories => 'Categories',     sub { join(' ', map { my $l=$VNDB::CAT->{substr($_->[0],0,1)}[1]{substr($_->[0],1,2)}; $l?$l.'('.$_->[1].')':() } sort { $a->[0] cmp $b->[0] } @{$_[0]}) || 'No categories selected' }, 1 ],
   [ relations  => 'Relations',      sub { join("<br />\n", map { $VNDB::VREL->[$_->{relation}].': '._hchar($_->{title}) } sort { $a->{id} <=> $b->{id} } @{$_[0]}) } ],
   [ image      => 'Image',          sub { $_[0] > 0 ? sprintf '<img src="%s/cv/%02d/%d.jpg" />', $p{st}, $_[0]%100, $_[0] : $_[0] < 0 ? '[processing]' : 'No image'; } ],
   [ img_nsfw   => 'NSFW',           sub { $_[0] ? 'Not safe' : 'Safe' } ]
@@ -100,7 +100,7 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
  </dl>
 [[ } ]]-
 
- [[ if(@{$d{vn}{categories}}) { my %nolvl = (pli=>1,pbr=>1,gaa=>1,gab=>1); ]]-
+ [[ if(@{$d{vn}{categories}}) { my %nolvl = (map {$_=>1} qw| pli pbr gaa gab hfa hfe |); ]]-
  <h3>Categories</h3>
  <dl>
   [[ for (sort keys %$VNDB::CAT) {

@@ -101,9 +101,9 @@ our $CAT = {
     st => 'Strategy',
     si => 'Simulation',
   } ],
-  p => [ 'Plot', {
-    li => 'Linear',       # 0..1
-    br => 'Branching',    # 0..1
+  p => [ 'Plot', {        # 0..1
+    li => 'Linear',
+    br => 'Branching',
   } ],
   e => [ 'Elements', {
     ac => 'Action',
@@ -127,6 +127,10 @@ our $CAT = {
     ea => 'Earth', 
     fa => "Fant\x{200B}asy world",
     sp => 'Space',
+  } ],
+  h => [ 'Protagonist', {  # 0..1
+    fa => 'Male',
+    fe => "Fem\x{200B}ale",
   } ],
   s => [ 'Sexual content', {
     aa => 'Sexual content',

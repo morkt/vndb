@@ -60,13 +60,13 @@
  { type => 'hidden', short => 'categories' },
  { type => 'static', raw => 1, text => eval {
     my $r = '<ul id="cat">';
-    for my $c (qw| e g p t l s |) {
-      $r .= ($c ne 'l' && $c ne 'p' ? '<li>' : '<br />').$VNDB::CAT->{$c}[0].'<ul>';
+    for my $c (qw| e g t p h l s |) {
+      $r .= ($c !~ /[thl]/ ? '<li>' : '<br />').$VNDB::CAT->{$c}[0].'<ul>';
       for (sort keys %{$VNDB::CAT->{$c}[1]}) {
         $r .= sprintf '<li><a href="#" id="cat_%1$s"><b id="b_%1$s">-</b> %2$s</a></li>',
           $c.$_, $VNDB::CAT->{$c}[1]{$_};
       }
-      $r .= '</ul>'.($c ne 't' && $c ne 'g' ? '</li>' : '');
+      $r .= '</ul>'.($c !~ /[gph]/ ? '</li>' : '');
     }
     $r.'</ul>';
   } }, 

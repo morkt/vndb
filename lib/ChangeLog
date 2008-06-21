@@ -17,7 +17,7 @@ TODO:
 	- Removed all passwords from the main code, and created a seperate config
 	  file to override all options - not available on SVN
 	- Dynamic loading, several bugfixes, and code cleanup for Multi
-	- Added 'School Life' category
+	- Added 'School Life' and 'Protagonist' categories
 	- Added GTIN field to releases
 	- Added links to encubed and renai.us
 

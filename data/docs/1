@@ -132,6 +132,18 @@
 </dl>
 
 
+:SUB:Protagonist
+<p>
+ Indicates some information about the character the player takes control of.
+<dl>
+  <dt>Male</dt><dd>
+    The protagonist is male.
+  </dd><dt>Female</dt><dd>
+    The protagonist is female.
+  </dd>
+</dl>
+
+
 :SUB:Sexual content
 <p>
  Indicates the types of sexual content that the game contains.
