@@ -13,13 +13,13 @@
  or to discuss about the database at our <a href="http://forum.vndb.org/">forums</a>.
 </p>
 
-<h3 class="home">VNDB 1.16!</h3>
+<h3 class="home">VNDB 1.17!</h3>
 <p class="desc">
- Free updates for everyone! VNDB 1.16 adds an advanced database search, language and platform icons
- to the visual novel and producer browser, a small cleanup for visual novel pages, and release dates
- of the current month or year will now be considered as not yet released.
+ This update includes improvements in the relation graph generator, adds and changes
+ some categories, adds two new links to VN pages, a GTIN field to releases, and
+ two new platforms.
  <br />
- <a href="http://forum.vndb.org/index.php?topic=52.0">Read more...</a> - <a href="http://forum.vndb.org/index.php?board=7.0">news archive</a>.
+ <a href="http://forum.vndb.org/index.php?topic=54.0">Read more...</a> - <a href="http://forum.vndb.org/index.php?board=7.0">news archive</a>.
 </p>
 
 <ul class="home">

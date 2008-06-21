@@ -11,7 +11,7 @@ TODO:
 	+ Use AniDB's daily title dump and implement a search feature to add
 	  anime relations without having to visit AniDB.
 
-1.17 - ?
+1.17 - 2008-06-21
 	- Added PS3 and Xbox 360 to platforms
 	- Relation graph generation improvements: Unicode, anti-aliassing, async
 	- Removed all passwords from the main code, and created a seperate config
