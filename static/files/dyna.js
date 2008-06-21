@@ -545,7 +545,7 @@ function catLoad() {
     l[i].onclick = function() {
       var c = this.id.substr(4);
       if(!cats[c])       cats[c] = 0;
-      if(c.substr(0,1) == 'p' || c == 'gaa' || c == 'gab' || c.substr(0,1) == 'h') {
+      if(c.substr(0,1) == 'p' || c == 'gaa' || c == 'gab' || c.substr(0,1) == 'h' || c.substr(0,1) == 'l' || c.substr(0,1) == 't') {
         if(cats[c]++)
           cats[c] = 0;
       } else if(++cats[c] == 4)

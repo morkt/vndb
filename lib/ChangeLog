@@ -18,6 +18,7 @@ TODO:
 	  file to override all options - not available on SVN
 	- Dynamic loading, several bugfixes, and code cleanup for Multi
 	- Added 'School Life' and 'Protagonist' categories
+	- Time and Place categories are now boolean
 	- Added GTIN field to releases
 	- Added links to encubed and renai.us
 

@@ -403,7 +403,7 @@ p.actions {
 }
 #vnheader li { list-style-type: none; margin: 0; padding: 0; }
 #vnheader h3 {
-  margin: 5px 0 0 260px;
+  margin: 10px 0 0 260px;
   font-size: 13px;
 }
 #vnheader p.mod {

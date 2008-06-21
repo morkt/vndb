@@ -118,17 +118,17 @@ our $CAT = {
     sj => 'Shoujo Ai',
     sn => 'Shounen Ai',
   } ],
-  t => [ 'Time', {
+  t => [ 'Time', {        # 0..1
     fu => 'Future',
     pa => 'Past', 
     pr => 'Present',
   } ],
-  l => [ 'Place', {
+  l => [ 'Place', {       # 0..1
     ea => 'Earth', 
     fa => "Fant\x{200B}asy world",
     sp => 'Space',
   } ],
-  h => [ 'Protagonist', {  # 0..1
+  h => [ 'Protagonist', { # 0..1
     fa => 'Male',
     fe => "Fem\x{200B}ale",
   } ],
