@@ -319,7 +319,7 @@ sub formerr {
   my $ret = '<span class="warning">
    Error:<ul>';
   $ret .= sprintf " <li>%s</li>\n", 
-     /^([a-z0-9_]+)_([0-9]+)_?(.*)$/ ? &{$formerr_msgs[$2-1]}($formerr_names{$1}||$1, $3||'') : $formerr_exeptions{$_}
+     /^([a-z0-9_]+)-([0-9]+)(?:-(.+))?$/ ? &{$formerr_msgs[$2-1]}($formerr_names{$1}||$1, $3||'') : $formerr_exeptions{$_}
     foreach (@err);
   $ret .= "</ul>\n</span>\n";
 }

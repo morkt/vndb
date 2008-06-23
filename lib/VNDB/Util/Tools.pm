@@ -45,10 +45,10 @@ sub FormCheck {
         if(!$ps[$i]{required} && !$$val && length($$val) < 1 && $$val ne '0') {
           $hash{$k}[$j] = exists $ps[$i]{default} ? $ps[$i]{default} : undef;
         } else {
-          my $errc = $ps[$i]{name}.'_'.$e;
-          $errc .= '_'.$ps[$i]{minlength} if $e == 2;
-          $errc .= '_'.$ps[$i]{maxlength} if $e == 3;
-          $errc .= '_'.$ps[$i]{template} if $e == 4;
+          my $errc = $ps[$i]{name}.'-'.$e;
+          $errc .= '-'.$ps[$i]{minlength} if $e == 2;
+          $errc .= '-'.$ps[$i]{maxlength} if $e == 3;
+          $errc .= '-'.$ps[$i]{template} if $e == 4;
           push(@err, $errc);
           last;
         } 
