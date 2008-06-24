@@ -95,9 +95,15 @@ sub compress {
 
 
 sub update {
-  $Multi::SQL->do('UPDATE vn_rev SET image = ? WHERE image = ?', undef, $_[HEAP]{imgid}, -1*$_[HEAP]{imgid});
+  if($Multi::SQL->do('UPDATE vn_rev SET image = ? WHERE image = ?', undef, $_[HEAP]{imgid}, -1*$_[HEAP]{imgid})) {
+    $_[KERNEL]->yield('finish');
+  } elsif(!$_[ARG0]) {
+    $_[KERNEL]->delay(update => 1, 3);
+  } else {
+    $_[KERNEL]->call(core => log => 1, 'Image %d not present in the database!', $_[HEAP]{imgid});
+    $_[KERNEL]->yield('finish');
+  }
 
-  $_[KERNEL]->yield('finish');
 }
 
 
