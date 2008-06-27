@@ -8,7 +8,7 @@ use Digest::MD5;
 
 use vars ('$VERSION', '@EXPORT');
 $VERSION = $VNDB::VERSION;
-@EXPORT = qw| PPage PBrowse PEdit PDel PLock PHide PXML |;
+@EXPORT = qw| PPage PBrowse PEdit PLock PHide PXML |;
 
 
 sub PPage {
@@ -121,18 +121,6 @@ sub PEdit {
     id => $id,
     prod => $p,
   });
-}
-
-
-sub PDel {
-  my $self = shift;
-  my $id = shift;
-
-  my $p = $self->DBGetProducer(id => $id)->[0];
-  return $self->ResNotFound if !$p;
-  return $self->ResDenied if !$self->AuthCan('del');
-  $self->DBDelProducer($id);
-  return $self->ResRedirect('/p', 'perm');
 }
 
 

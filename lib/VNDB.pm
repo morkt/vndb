@@ -58,7 +58,6 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
     stats       => sub { shift->VNPage(shift, shift) },
     rg          => sub { shift->VNPage(shift, shift) },
     edit        => sub { shift->VNEdit(shift) },
-    del         => sub { shift->VNDel(shift)  },
     vote        => sub { shift->VNVote(shift) },
     list        => sub { shift->VNListMod(shift) },
     add         => sub { shift->REdit('v', shift) },
@@ -71,7 +70,6 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
     '/'         => sub { shift->RPage(shift) },
     edit        => sub { shift->REdit('r', shift) },
     lock        => sub { shift->RLock(shift) },
-    del         => sub { shift->RDel(shift)  },
     hide        => sub { shift->RHide(shift) },
     hist => {'*'=> sub { shift->History('r', shift, $_[1]) } },
   },
@@ -84,7 +82,6 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
   'p+' => {
     '/'         => sub { shift->PPage(shift) },
     edit        => sub { shift->PEdit(shift) },
-    del         => sub { shift->PDel(shift) },
     lock        => sub { shift->PLock(shift) },
     hide        => sub { shift->PHide(shift) },
     hist => {'*'=> sub { shift->History('p', shift, $_[1]) } },

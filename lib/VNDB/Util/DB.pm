@@ -16,9 +16,9 @@ $VERSION = $VNDB::VERSION;
   DBGetUser DBAddUser DBUpdateUser
   DBGetVotes DBVoteStats DBAddVote DBDelVote
   DBGetVNList DBVNListStats DBAddVNList DBEditVNList DBDelVNList
-  DBGetVN DBAddVN DBEditVN DBDelVN DBHideVN DBUndefRG DBVNCache
-  DBGetRelease DBAddRelease DBEditRelease DBDelRelease DBHideRelease
-  DBGetProducer DBGetProducerVN DBAddProducer DBEditProducer DBDelProducer DBHideProducer
+  DBGetVN DBAddVN DBEditVN DBHideVN DBUndefRG DBVNCache
+  DBGetRelease DBAddRelease DBEditRelease DBHideRelease
+  DBGetProducer DBGetProducerVN DBAddProducer DBEditProducer DBHideProducer
   DBExec DBRow DBAll DBLastId
 |;
 
@@ -769,40 +769,6 @@ sub _insert_vn_rev {
 }
 
 
-sub DBDelVN { # id
-  my($s, $vid) = @_;
-
- # delete or update relations
-  my $rels = $s->DBAll(q|
-    SELECT r.id, COUNT(rv2.vid) AS vids
-      FROM releases r
-      JOIN releases_vn rv ON rv.rid = r.latest
-      JOIN releases_vn rv2 ON rv2.rid = r.latest
-      WHERE rv.vid = %d
-      GROUP BY r.id|,
-    $vid
-  );
-  # delete if no other VN's were found
-  $s->DBDelRelease(0, map { $_->{vids} == 1 ? $_->{id} : () } @$rels);
-  # remove relation otherwise
-  $s->DBExec(q|
-    DELETE FROM releases_vn
-      WHERE vid = %d|,
-    $vid);
-
-  $s->DBExec($_, $vid) for(
-    q|DELETE FROM changes c     WHERE c.id IN(SELECT v.id FROM vn_rev v WHERE v.vid = %d)|,
-    q|DELETE FROM vn            WHERE id   = %d|,
-    q|DELETE FROM vn_categories WHERE vid  IN(SELECT v.id FROM vn_rev v WHERE v.vid = %d)|,
-    q|DELETE FROM vn_relations  WHERE vid1 IN(SELECT v.id FROM vn_rev v WHERE v.vid = %d)|,
-    q|DELETE FROM vn_rev        WHERE vid  = %d|,
-    q|DELETE FROM vn_relations  WHERE vid2 = %d|,
-    q|DELETE FROM votes         WHERE vid  = %d|,
-    q|DELETE FROM vnlists       WHERE vid  = %d|,
-  );
-}
-
-
 sub DBHideVN { # id, hidden
   my($s, $id, $h) = @_;
   $s->DBExec(q|
@@ -1014,21 +980,6 @@ sub _insert_release_rev {
 }
 
 
-sub DBDelRelease { # $vns
-  my($s, @rid) = @_;
-  return if !@rid;
-  $s->DBExec($_, \@rid) for(
-    q|DELETE FROM changes            WHERE id  IN(SELECT rr.id FROM releases_rev rr WHERE rr.rid IN(!l))|,
-    q|DELETE FROM releases_producers WHERE rid IN(SELECT rr.id FROM releases_rev rr WHERE rr.rid IN(!l))|,
-    q|DELETE FROM releases_platforms WHERE rid IN(SELECT rr.id FROM releases_rev rr WHERE rr.rid IN(!l))|,
-    q|DELETE FROM releases_media     WHERE rid IN(SELECT rr.id FROM releases_rev rr WHERE rr.rid IN(!l))|,
-    q|DELETE FROM releases_rev       WHERE rid IN(!l)|,
-    q|DELETE FROM releases_vn        WHERE rid IN(!l)|,
-    q|DELETE FROM releases           WHERE id  IN(!l)|,
-  );
-}
-
-
 sub DBHideRelease { # id, hidden
   my($s, $id, $h) = @_;
   $s->DBExec(q|
@@ -1163,17 +1114,6 @@ sub _insert_producer_rev {
     INSERT INTO producers_rev (id, pid, name, original, website, type, lang, "desc")
       VALUES (%d, %d, !s, !s, !s, !s, !s, !s)|,
     $cid, $pid, @$o{qw| name original website type lang desc|});
-}
-
-
-sub DBDelProducer { # id
-  my($s, $pid) = @_;
-   $s->DBExec($_, $pid) for (
-     q|DELETE FROM changes c          WHERE c.id IN(SELECT p.id FROM producers_rev p WHERE p.pid = %d)|,
-     q|DELETE FROM producers_rev      WHERE pid  = %d|,
-     q|DELETE FROM releases_producers WHERE pid  = %d|,
-     q|DELETE FROM producers          WHERE id   = %d|,
-   );
 }
 
 

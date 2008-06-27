@@ -9,7 +9,7 @@ require bytes;
 
 use vars ('$VERSION', '@EXPORT');
 $VERSION = $VNDB::VERSION;
-@EXPORT = qw| VNPage VNEdit VNLock VNDel VNHide VNBrowse VNXML VNUpdReverse |;
+@EXPORT = qw| VNPage VNEdit VNLock VNHide VNBrowse VNXML VNUpdReverse |;
 
 
 sub VNPage {
@@ -180,18 +180,6 @@ sub VNEdit {
     id => $id,
     vn => $v,
   });
-}
-
-
-sub VNDel {
-  my $self = shift;
-  my $id = shift;
-
-  my $v = $self->DBGetVN(id => $id)->[0];
-  return $self->ResNotFound if !$v;
-  return $self->ResDenied if !$self->AuthCan('del');
-  $self->DBDelVN($id);
-  return $self->ResRedirect('/v', 'perm');
 }
 
 

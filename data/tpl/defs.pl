@@ -177,7 +177,6 @@ sub ttabs { # [vrp], obj, sel
     $p{Authlock} ?
       sprintf('<a href="/%%s/lock">%s</a>', $$o{locked} ? 'unlock' : 'lock') : (),
     $p{Authdel} ? (
-      '<a href="/%s/del" id="idel">del</a>',
       sprintf('<a href="/%%s/hide"%s>%s</a>', $t eq 'v' ? ' id="vhide"' : '', $$o{hidden} ? 'unhide' : 'hide')
     ) : (),
     (!$$o{locked} && !$$o{hidden}) || ($p{Authedit} && $p{Authlock}) ?

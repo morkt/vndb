@@ -8,7 +8,7 @@ use Digest::MD5;
 
 use vars ('$VERSION', '@EXPORT');
 $VERSION = $VNDB::VERSION;
-@EXPORT = qw| RPage REdit RLock RDel RHide RVNCache |;
+@EXPORT = qw| RPage REdit RLock RHide RVNCache |;
 
 
 sub RPage {
@@ -151,19 +151,6 @@ sub RLock {
   return $self->ResDenied if !$self->AuthCan('lock');
   $self->DBLockItem('releases', $id, $r->{locked}?0:1);
   return $self->ResRedirect('/r'.$id, 'perm');
-}
-
-
-sub RDel {
-  my $self = shift;
-  my $id = shift;
-
-  return $self->ResDenied if !$self->AuthCan('del');
-  my $r = $self->DBGetRelease(id => $id, what => 'vn')->[0];
-  return $self->ResNotFound if !$r;
-  $self->DBDelRelease($id);
-  $self->RVNCache(map { $_->{vid} } @{$r->{vn}});
-  return $self->ResRedirect('/v'.$r->{vn}[0]{id}, 'perm');
 }
 
 
