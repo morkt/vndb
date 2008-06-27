@@ -107,7 +107,7 @@ sub VNEdit {
     my $anime = [ split / /, $frm->{anime} ];
 
    # upload image
-    my $imgid = '';
+    my $imgid = 0;
     if($self->ReqParam('img')) {
       my $tmp = sprintf '%s/00/tmp.%d.jpg', $self->{imgpath}, $$*int(rand(1000)+1);
       $self->ReqSaveUpload('img', $tmp);

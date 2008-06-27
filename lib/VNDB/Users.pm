@@ -49,8 +49,8 @@ sub UsrReg {
     $frm = $self->FormCheck(
       { name => 'username',    required => 1, minlength => 2, maxlength => 15, template => 'pname' },
       { name => 'mail',        required => 1, template => 'mail' },
-      { name => 'pass1',       required => 1, minlength => 4, maxlength => 15, template => 'asciprint' },
-      { name => 'pass2',       required => 1, minlength => 4, maxlength => 15, template => 'asciprint' },
+      { name => 'pass1',       required => 1, minlength => 4, maxlength => 15, template => 'asciiprint' },
+      { name => 'pass2',       required => 1, minlength => 4, maxlength => 15, template => 'asciiprint' },
     );
     $frm->{_err} = $frm->{_err} ? [ @{$frm->{_err}}, 'badpass' ] : [ 'badpass' ]
       if $frm->{pass1} ne $frm->{pass2};
