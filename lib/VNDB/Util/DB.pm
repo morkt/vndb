@@ -368,7 +368,7 @@ sub DBUpdateUser { # uid, %options->{ columns in users table }
 #-----------------------------------------------------------------------------#
 
 
-sub DBGetVotes { # %options->{ uid vid order results page }
+sub DBGetVotes { # %options->{ uid vid hide order results page }
   my($s, %o) = @_;
   $o{order} ||= 'n.date DESC';
   $o{results} ||= 50;
@@ -377,6 +377,7 @@ sub DBGetVotes { # %options->{ uid vid order results page }
   my %where = (
     $o{uid} ? ( 'n.uid = %d' => $o{uid} ) : (),
     $o{vid} ? ( 'n.vid = %d' => $o{vid} ) : (),
+    $o{hide} ? ( 'u.flags & %d = %1$d' => $VNDB::UFLAGS->{votes} ) : (),
   );
 
   my $where = scalar keys %where ? 'WHERE !W' : '';
@@ -450,7 +451,7 @@ sub DBDelVote { # uid, vid  # uid = 0 to delete all
 #-----------------------------------------------------------------------------#
 
 
-sub DBGetVNList { # %options->{ uid vid order results page status }
+sub DBGetVNList { # %options->{ uid vid hide order results page status }
   my($s, %o) = @_;
   $o{results} ||= 10;
   $o{page} ||= 1;
@@ -463,6 +464,7 @@ sub DBGetVNList { # %options->{ uid vid order results page status }
       'l.vid = %d' => $o{vid} ) : (),
     defined $o{status} ? (
       'l.status = %d' => $o{status} ) : (),
+    $o{hide} ? ( 'u.flags & %d = %1$d' => $VNDB::UFLAGS->{list} ) : (),
   );
 
   return wantarray ? ([], 0) : [] if !keys %where;

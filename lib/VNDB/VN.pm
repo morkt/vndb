@@ -49,11 +49,11 @@ sub VNPage {
     change => $r->{diff}||$r->{rev},
     $page eq 'stats' ? (
       lists => {
-        latest => scalar $self->DBGetVNList(vid => $id, results => 7),
+        latest => scalar $self->DBGetVNList(vid => $id, results => 7, hide => 1),
         graph => $self->DBVNListStats(vid => $id),
       },
       votes => {
-        latest => scalar $self->DBGetVotes(vid => $id, results => 10),
+        latest => scalar $self->DBGetVotes(vid => $id, results => 10, hide => 1),
         graph => $self->DBVoteStats(vid => $id),
       },
     ) : (),
