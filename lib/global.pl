@@ -19,7 +19,6 @@ our %VNDBopts = (
   CookieDomain  => '.vndb.org',
   root_url      => 'http://vndb.org',
   static_url    => 'http://static.vndb.org',
-  debug         => $DEBUG,
   tplopts       => {
     filename      => 'main',
     searchdir     => '/www/vndb/data/tpl',
@@ -28,7 +27,7 @@ our %VNDBopts = (
     pre_chomp     => 1,
     post_chomp    => 1,
     rm_newlines   => 0,
-    deep_reload   => $DEBUG,
+    deep_reload   => 1,
   },
   ranks  => [
     [ [ qw| visitor loser user mod admin | ], [] ],

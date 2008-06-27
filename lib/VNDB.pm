@@ -151,6 +151,7 @@ sub new {
   my %args = @_;
 
   my $me = bless {
+    debug => $VNDB::DEBUG,
     %args,
     _DB => VNDB::Util::DB->new(@VNDB::DBLOGIN),
     _TPL => VNDB::Util::Template->new(%{$args{tplopts}}),
