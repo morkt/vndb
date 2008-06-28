@@ -59,7 +59,7 @@
  { type => 'sub', title => 'Categories', short => 'cat' },
  { type => 'hidden', short => 'categories' },
  { type => 'static', raw => 1, text => eval {
-    my $r = 'Please read the <a href="/d1">category descriptions</a> before adding or modifying categories!<br /><br />'
+    my $r = 'Please read the <a href="/d1">category descriptions</a> before modifying categories!<br /><br />'
            .'<ul id="cat">';
     for my $c (qw| e g t p h l s |) {
       $r .= ($c !~ /[thl]/ ? '<li>' : '<br />').$VNDB::CAT->{$c}[0].'<a href="/d1#'.$VNDB::CAT->{$c}[2].'" class="help">?</a><ul>';
@@ -96,7 +96,7 @@
 
  { type => 'sub', title => 'Edit summary', short => 'com' },
  { type => 'textarea', name => 'Edit summary', short => 'comm', rows => 3, cols => 60 },
- { type => 'static', text => 'Please motivate your modifications and cite all sources.' },
+ { type => 'static', text => 'Please explain your modifications and cite all sources.' },
 
  { type => 'submit', text => $d{id} ? 'Edit' : 'Add' },
  { type => 'endform' },
