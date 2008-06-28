@@ -1,19 +1,29 @@
 :TITLE:The VNDB TODO list
-:INC:index
 
 
-:SUB:Eeehhh~~?
-..
+:SUB:Some notes
+This TODO list is just a place for Yorhel to write down his plans and ideas
+for the upcoming versions of VNDB. Keep in mind that probably not everything
+written down here will actually see the light of day.<br /><br />
+The full source code of the website is available through SVN: svn://yorhel.nl/vndb/,
+anonymous read access is allowed. The code is also available through HTTP using
+the <a href="http://svn.yorhel.nl/vndb/">Web SVN</a>.<br /><br />
+There is a <a href="http://beta.vndb.org/">beta version</a> of VNDB available
+for testing. New features will be implemented there and tested before getting
+uploaded to the actual website. Everyone is free to play around and use that
+beta version as a sandbox. Keep in mind, however, that all changes you make
+on the beta are not permanent, and will be reverted whenever I synchronise the
+beta with a more recent version of the database.<br /><br />
+Feel free to comment about the TODO list and to suggest new features on the
+<a href="http://forum.vndb.org/">forums</a> or on <a href="irc://irc.synirc.net/vndb">
+IRC</a>.
 <br /><br />
-<b>Last update: 2008-05-14</b><br /><br />
+<b>Last update: 2008-06-22</b><br /><br />
 
 
-:SUB:Next version (1.16)
+:SUB:Next version (1.18)
 <ul>
- <li>Release dates in the current year or month without a specified day should
-  be considered as not yet released</li>
- <li>Add platform (and possibly also language) icons to the VN browser</li>
- <li>Advanced search</li>
+ <li>Item-level revision numbers and extension for VNDBIDs(?)</li>
 </ul>
 
 
@@ -22,13 +32,12 @@
  (No particular order)
 </p>
 <ul>
- <li>VN Staff (<a href="http://forum.vndb.org/index.php?topic=12.0">topic</a>)</li>
+ <li>VN Staff and Character database (see below)</li>
  <li>Integrated discussions/messageboards</li>
- <li>Character database + descriptions</li>
  <li>Soundtrack listing<br />
   <i>Work together with <a href="http://vgmdb.net/">VGMdb</a>.</i></li>
  <li>Manga relations<br />
-  <i>Looking for a good and comprehensive manga database to work together with</i></li>
+  <i>Looking for a good and comprehensive manga database fetch info from</i></li>
  <li>Screenshots</li>
  <li>New layout</li>
  <li>Allow users to "subscribe" to stuff and provide notifies</li>
@@ -36,14 +45,11 @@
   <i>Requires way more users to vote on the VNs to give accurate lists</i></li>
  <li>Cover images for releases</li>
  <li>Split wishlist/blacklist and VNlist - VNlist should specify releases, not VNs</li>
-</ul>
-
-
-:SUB:New categories?
-<ul>
- <li>School life</li>
- <li>Tentacles</li>
- <li>Gore</li>
+ <li>Image quality/resolution field to releases</li>
+ <li>Some kind of recommendation or tagging system<br />
+  <i>I have no idea how to do this, input is more than welcome!</i></li>
+ <li>Reviews and walkthroughs/guides?<br />
+  <i>Will need an active userbase for that to work, will it really work?</i></li>
 </ul>
 
 
@@ -64,16 +70,10 @@
  <li>Add "characters" database</li>
  <li>Create a link between VN entries and characters, same as with persons<br />
   <i>Only for characters in the original release</i></li>
- <li>Add a "voiced by" link between characters and persons<br />
-  <i>Only the voice actresses of the first voiced release of the game
-   should be mentioned.</i></li>
+ <li>Add a "voiced by" link between characters and persons<ul>
+  <li>Only the voice actresses of the first voiced release of the game should be mentioned.</li>
+  <li>This won't work when a character is voiced more than one person (e.g. appears in
+   multiple games with different cast, or the child version is voiced by someone else)</li>
+   </ul></li>
 </ul>
-
-
-:SUB:Stalled
-<p>
- Recommendation systems have been stalled for now, I prefer to concentrate
- on the encyclopedic part of VNDB at this moment. A proper recommendation
- system may be implemented in the future, though.
-</p>
 
