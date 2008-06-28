@@ -59,9 +59,10 @@
  { type => 'sub', title => 'Categories', short => 'cat' },
  { type => 'hidden', short => 'categories' },
  { type => 'static', raw => 1, text => eval {
-    my $r = '<ul id="cat">';
+    my $r = 'Please read the <a href="/d1">category descriptions</a> before adding or modifying categories!<br /><br />'
+           .'<ul id="cat">';
     for my $c (qw| e g t p h l s |) {
-      $r .= ($c !~ /[thl]/ ? '<li>' : '<br />').$VNDB::CAT->{$c}[0].'<ul>';
+      $r .= ($c !~ /[thl]/ ? '<li>' : '<br />').$VNDB::CAT->{$c}[0].'<a href="/d1#'.$VNDB::CAT->{$c}[2].'" class="help">?</a><ul>';
       for (sort keys %{$VNDB::CAT->{$c}[1]}) {
         $r .= sprintf '<li><a href="#" id="cat_%1$s"><b id="b_%1$s">-</b> %2$s</a></li>',
           $c.$_, $VNDB::CAT->{$c}[1]{$_};

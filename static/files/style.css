@@ -361,6 +361,15 @@ span.msg {
 span.warning ul, span.msg ul {
   padding: 0 0 0 15px;
 }
+a.help {
+  vertical-align: super;
+  font-size: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  padding-left: 1px;
+  /*background: #eee;*/
+}
+
 
 /* VN page header, general dl and list markup */
 dt {

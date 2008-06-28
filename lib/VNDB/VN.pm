@@ -173,7 +173,7 @@ sub VNEdit {
   } 
 
   $self->AddHid($frm);
-  $frm->{_hid} = {map{$_=>1} qw| info cat img |}
+  $frm->{_hid} = {map{$_=>1} qw| info cat img com |}
     if !$frm->{_hid} && !$id;
   $self->ResAddTpl(vnedit => {
     form => $frm,

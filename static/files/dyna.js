@@ -541,10 +541,12 @@ function catLoad() {
 
   var l=x('cat').getElementsByTagName('a');
   for(i=0;i<l.length;i++) {
+    if(l[i].id.substr(0, 4) != 'cat_')
+      continue;
     catSet(l[i].id.substr(4), cats[l[i].id.substr(4)]||0);
     l[i].onclick = function() {
       var c = this.id.substr(4);
-      if(!cats[c])       cats[c] = 0;
+      if(!cats[c]) cats[c] = 0;
       if(c.substr(0,1) == 'p' || c == 'gaa' || c == 'gab' || c.substr(0,1) == 'h' || c.substr(0,1) == 'l' || c.substr(0,1) == 't') {
         if(cats[c]++)
           cats[c] = 0;

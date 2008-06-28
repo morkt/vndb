@@ -99,11 +99,11 @@ our $CAT = {
     rp => 'RPG',
     st => 'Strategy',
     si => 'Simulation',
-  } ],
+  }, 2 ],
   p => [ 'Plot', {        # 0..1
     li => 'Linear',
     br => 'Branching',
-  } ],
+  }, 3 ],
   e => [ 'Elements', {
     ac => 'Action',
     co => 'Comedy',
@@ -116,21 +116,21 @@ our $CAT = {
     sf => 'SciFi', 
     sj => 'Shoujo Ai',
     sn => 'Shounen Ai',
-  } ],
+  }, 1 ],
   t => [ 'Time', {        # 0..1
     fu => 'Future',
     pa => 'Past', 
     pr => 'Present',
-  } ],
+  }, 4 ],
   l => [ 'Place', {       # 0..1
     ea => 'Earth', 
     fa => "Fant\x{200B}asy world",
     sp => 'Space',
-  } ],
+  }, 5 ],
   h => [ 'Protagonist', { # 0..1
     fa => 'Male',
     fe => "Fem\x{200B}ale",
-  } ],
+  }, 6 ],
   s => [ 'Sexual content', {
     aa => 'Sexual content',
     be => 'Bestiality',
@@ -140,7 +140,7 @@ our $CAT = {
     ya => 'Yaoi',
     yu => 'Yuri',
     ra => 'Rape',
-  } ],
+  }, 7 ],
 };
 
 

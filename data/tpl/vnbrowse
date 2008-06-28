@@ -12,7 +12,7 @@
  </form>
 
  <div id="adsearch" [[= !$p{searchquery} ? '' : ' style="display: none"' ]]>
-  <b>Categories</b> (boolean and, selecting more gives less results)
+  <b>Categories</b> (boolean and, selecting more gives less results. The categories are explained on <a href="/d1">this page</a>)
   <ul id="cat">
   [[ for my $c (qw| e g t p h l s |) { ]]-
    -[[= $c !~ /[thl]/ ? '<li>' : '<br />' ]][[: $VNDB::CAT->{$c}[0] ]]-
