@@ -1,10 +1,12 @@
 <ul class="index">
- <li><b>Documentation index</b></li>
- <li><a href="/d6">FAQ</a></li>
- <li><a href="/d1">Categories</a></li>
+ <li><b>Guidelines</b></li>
  <li><a href="/d5">General guidelines</a></li>
+ <li><a href="/d1">Categories</a></li>
  <li><a href="/d2">Visual Novels</a></li>
  <li><a href="/d3">Releases</a></li>
  <li><a href="/d4">Producers</a></li>
+ <li><b>About VNDB</b></li>
+ <li><a href="/d6">FAQ</a></li>
  <li><a href="/d7">About us</a></li>
+ <li><a href="/d8">Development</a></li>
 </ul>

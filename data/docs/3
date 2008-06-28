@@ -2,14 +2,22 @@
 :INC:notfinished
 :INC:index
 
+
+:SUB:When to add a release
 <p>
- <i>When to add a release (stuff about NOT adding fandisks, OSTs, etc)</i>
+ A 'release' is a product - either physical or digital - containing (parts of) the
+ visual novel. This excludes soundtracks, drama CDs, fandisks, and other products
+ that do not contain the visual novel itself.<br />
+ All releases should be added seperately. For example, a limited and a regular edition
+ shouldn't be combined into one release, even if they share the release date and
+ contents. For commercial games, separate releases can be distinguished by their
+ JAN/UPC/EAN number.
 </p>
 
 
 :SUB:General info
 <dl>
- <dt>*Type</dt><dd>
+ <dt>Type</dt><dd>
   Is the release complete, partial or a trial version?
   Complete releases have everything.
   Partial releases have most of the game, but there are things still waiting
@@ -17,12 +25,12 @@
   Trial versions are heavily cut down and free releases so that you can
   experience a game before you buy it. Sometimes, trial versions are cut
   down for web transmission and do not completely represent the finished product.
- </dd><dt>*Title (romaji)</dt><dd>
+ </dd><dt>Title (romaji)</dt><dd>
   The name of the release, in the Latin character set (using Romanisation or translation)
  </dd><dt>Original title</dt><dd>
   If the name is officially under a different title (usually because of different
   character sets), put the original title here.
- </dd><dt>*Language</dt><dd>
+ </dd><dt>Language</dt><dd>
   What language is this release? Use the language that the majority of the game is in.
  </dd><dt>JAN/UPC/EAN</dt><dd>
   The <a href="http://en.wikipedia.org/wiki/Global_Trade_Item_Number">GTIN</a> code
@@ -30,7 +38,7 @@
   and "EAN" for Europe. The system will automatically detect the type from the code and 
   use the appropriate term on the release page.
  </dd><dt>Official website</dt><dd>
-  ..
+  URL of the official homepage for this product.
  </dd><dt>Release date</dt><dd>
   For commercial games, the sale date.
   For all others, the date on which the release was first available.
@@ -39,7 +47,7 @@
   ..
  </dd><dt>Notes</dt><dd>
   Anything miscellaneous and useful.
-  Generally, JAN codes, extras (but not preorder bonuses) and progress information go here.
+  Generally, extras (but not preorder bonuses) and progress information go here.
  </dd>
 </dl>
 

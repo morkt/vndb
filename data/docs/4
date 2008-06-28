@@ -2,20 +2,22 @@
 :INC:notfinished
 :INC:index
 
+
+:SUB:When to add a producer
 <p>
- <i>When to add a producer and what to do with producer relations...</i>
+ <i>TODO</i>
 </p>
 
 
 :SUB:General info
 <dl>
- <dt>*Type</dt><dd>
+ <dt>Type</dt><dd>
   The type of producer.
- </dd><dt>*Name (romaji)</dt><dd>
+ </dd><dt>Name (romaji)</dt><dd>
   The name of the producer in the Latin alphabet (using Romanisation or translation).
  </dd><dt>Original name</dt><dd>
   If the Name (above) has been Romanised or translated, place the original name here.
- </dd><dt>*Primary language</dt><dd>
+ </dd><dt>Primary language</dt><dd>
   The language the the producer works in most of the time. By default, it is Japanese.
  </dd><dt>Website</dt><dd>
   Official homepage of the producer.

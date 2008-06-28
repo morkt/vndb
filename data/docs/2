@@ -2,15 +2,15 @@
 :INC:notfinished
 :INC:index
 
-:SUB:General guidelines
+:SUB:When to add a visual novel
 <p>
- Blahblah about what we define as VN...
+ <i>TODO</i>
 </p>
 
 
 :SUB:General info
 <dl>
- <dt>*Title</dt><dd>
+ <dt>Title</dt><dd>
   The title of the visual novel as it is known to the English speaking audience. If
   there is no English version of the game available, you should either specify the
   romanized (recommended) or translated (not recommended) version of the original
@@ -19,7 +19,7 @@
   Visual novels can be known under several names, use this field to add any aliases
   and acronyms used around the net. Official titles of releases should not be added
   here, as these are already listed in the releases.
- </dd><dt>*Description</dt><dd>
+ </dd><dt>Description</dt><dd>
   Short description of the main story.
  </dd><dt>Length</dt><dd>
   Very rough estimate of the time required to finish all endings of the visual novel.
