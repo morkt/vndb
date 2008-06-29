@@ -286,6 +286,7 @@ my %formerr_names = (
   name        => 'Name',
   vn          => 'Visual novel relations',
   l_vnn       => 'Visual-novels.net link',
+  comm        => 'Edit summary',
 );
 my @formerr_msgs = (
   sub { return sprintf 'Field "%s" is required.', @_ },
