@@ -127,9 +127,9 @@ sub irccmd { # dest, cmd, [nick], [prep]
     $_[KERNEL]->post(circ => ctcp => $_[HEAP]{o}{channel}, "ACTION $1");
   } elsif($cmd =~ /^cmd (.+)$/) {
     $_[KERNEL]->post(core => queue => $1);
-    $_[KERNEL]->post(circ => privmsg => $dest => sprintf "%sExecuting command '%s'", $prep, $1);
+    $_[KERNEL]->post(circ => privmsg => $dest => sprintf "Executing command '%s'", $1);
   } elsif($cmd =~ /^eval (.+)$/) {
-    $_[KERNEL]->post(circ => privmsg => $dest, $prep.'eval: '.$_)
+    $_[KERNEL]->post(circ => privmsg => $dest, 'eval: '.$_)
       for (split /\r?\n/, eval($1)||$@);
   } else {
     $_[KERNEL]->post(circ => privmsg => $dest, $prep.'Unkown command');

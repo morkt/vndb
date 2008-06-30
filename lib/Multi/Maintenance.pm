@@ -18,7 +18,7 @@ sub spawn {
   my $p = shift;
   POE::Session->create(
     package_states => [
-      $p => [qw| _start cmd_maintenance vncache ratings prevcache integrity unkanime logrotate |], 
+      $p => [qw| _start cmd_maintenance vncache ratings revcache integrity unkanime logrotate |], 
     ],
   );
 }
@@ -26,12 +26,12 @@ sub spawn {
 
 sub _start {
   $_[KERNEL]->alias_set('maintenance');
-  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:vncache|ratings|prevcache|integrity|unkanime|logrotate))+)$/, 'cmd_maintenance');
+  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:vncache|ratings|revcache|integrity|unkanime|logrotate))+)$/, 'cmd_maintenance');
   
  # Perform some maintenance functions every day on 0:00
   $_[KERNEL]->post(core => addcron => '0 0 * * *', 'maintenance vncache ratings integrity unkanime');
  # update caches and rotate logs every 1st day of the month at 0:05
-  $_[KERNEL]->post(core => addcron => '5 0 1 * *' => 'maintenance prevcache logrotate');
+  $_[KERNEL]->post(core => addcron => '5 0 1 * *' => 'maintenance revcache logrotate');
 }
 
 
@@ -55,10 +55,11 @@ sub ratings {
 }
 
 
-sub prevcache {
-  $_[KERNEL]->call(core => log => 3 => 'Updating prev column in the changes table...');
+sub revcache {
+  $_[KERNEL]->call(core => log => 3 => 'Updating rev column in the changes table...');
   # this can take a while, maybe split these up in 3 queries?
-  $Multi::SQL->do(q|SELECT update_prev('vn', ''), update_prev('releases', ''), update_prev('producers', '')|);
+  # ...or better yet, use asynchronous communication with PgSQL
+  $Multi::SQL->do(q|SELECT update_rev('vn', ''), update_rev('releases', ''), update_rev('producers', '')|);
 }
 
 
