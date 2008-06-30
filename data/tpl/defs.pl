@@ -455,7 +455,7 @@ sub cform {
       $ret .= sprintf qq| <select name="%s" id="%s">\n%s</select>\n|,
         $_->{short}, $_->{short}, eval {
           my $r='';
-          for my $s (0, 1990..((localtime())[5]+1905), 9999) {
+          for my $s (0, 1980..((localtime())[5]+1905), 9999) {
             $r .= sprintf qq|  <option value="%s"%s>%s</option>\n|,
               $s, $frm->{$_->{short}} && ($frm->{$_->{short}}[0]||0) == $s ? ' selected="selected"' : '',
               !$s ? '-year-' : $s < 9999 ? $s : 'TBA';

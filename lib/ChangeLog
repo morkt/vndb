@@ -10,6 +10,8 @@ TODO:
 	- Releases, producers and visual novel items can't be fully deleted anymore
 	- Hidden vote and vnlist items from the 'recent' lists on VN stat pages for
 	  users who don't want that to be seen
+	- Edit summary field is required
+	- Changed earliest release date to 1980
 
 1.17 - 2008-06-21 (r33)
 	- Added PS3 and Xbox 360 to platforms
