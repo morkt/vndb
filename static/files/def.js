@@ -228,7 +228,7 @@ DOMLoad(function() {
 
  // vnlist
   cl('askcomment', function() {
-    this.href = this.href + '&amp;c=' + encodeURIComponent(prompt("Enter personal note (optional)", '')||'');
+    this.href = this.href + ';c=' + encodeURIComponent(prompt("Enter personal note (optional)", '')||'');
     return true;
   });
 
@@ -253,9 +253,16 @@ DOMLoad(function() {
     }
   }
 
- // confirm popup
-  cl('idel', function () {
-    return confirm('Are you sure you want to delete this item?\n\nAll previous edits will be deleted, this action can not be reverted!') });
+ // vote warnings
+  cl('dovote_10', function() { return confirm(
+     "You are about to give this visual novel a 10 out of 10. This is a rather extreme rating, "
+    +"meaning this is one of the best visual novels you've ever played and it's unlikely "
+    +"that any other game could ever be better than this one.\n"
+    +"It is generally a bad idea to have more than three games in your vote list with this rating, choose carefully!") });
+  cl('dovote_1',  function() { return confirm(
+     "You are about to give this visual novel a 1 out of 10. This is a rather extreme rating, "
+    +"meaning this game has absolutely nothing to offer, and that it's the worst game you have ever played.\n"
+    +"Are you really sure this visual novel matches that description?") });
 
  // NSFW
   cl('nsfw', function () {
@@ -277,8 +284,19 @@ DOMLoad(function() {
     }
 
  // form-stuff
-  if(document.forms.length > 1)
+  if(document.forms.length > 1) {
     formhid();
+   // edit summary warning
+    if(x('comm'))
+      document.forms[1].onsubmit = function () {
+        var z = x('comm');
+        if(z.value.length > 5) return true;
+        var y = prompt("Edit summary field is empty,\nPlease explain your edits and cite all sources!", z.value);
+        if(y == null) return false;
+        z.value = y;
+        return true;
+      };
+  }
 
  // init dyna
   if(window.dInit)

@@ -37,7 +37,7 @@
 
  { type => 'sub', title => 'Edit summary', short => 'com' },
  { type => 'textarea', name => 'Edit summary', short => 'comm', rows => 3, cols => 60 },
- { type => 'static', text => 'Please motivate your modifications and cite all sources.' },
+ { type => 'static', text => 'Please explain your modifications and cite all sources.' },
 
  { type => 'submit', text => $d{id} ? 'Edit' : 'Add' },
  { type => 'endform' },

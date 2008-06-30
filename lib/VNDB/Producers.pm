@@ -95,7 +95,7 @@ sub PEdit {
       { name => 'lang', required => 1, enum => [ keys %$VNDB::LANG ] },
       { name => 'website', required => 0, maxlength => 200, template => 'url', default => '' },
       { name => 'desc', required => 0, maxlength => 10240, default => '' },
-      { name => 'comm', required => 1, minlength => 10, maxlength => 1000 },
+      { name => 'comm', required => 0, default => '' },
     );
 
     return $self->ResRedirect('/p'.$id, 'post')

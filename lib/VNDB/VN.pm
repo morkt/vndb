@@ -94,7 +94,7 @@ sub VNEdit {
       { name => 'img_nsfw', required => 0 },
       { name => 'categories', required => 0, default => '' },
       { name => 'relations', required => 0, default => '' },
-      { name => 'comm', required => 1, minlength => 10, maxlength => 1000 },
+      { name => 'comm', required => 0, default => '' },
     );
     $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
     $frm->{anime} = join(' ', sort { $a <=> $b } grep /^[0-9]+$/, split(/\s+/, $frm->{anime})); # re-sort

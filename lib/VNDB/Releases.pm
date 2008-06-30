@@ -83,7 +83,7 @@ sub REdit {
       { name => 'media',     required => 0, default => '' },
       { name => 'producers', required => 0, default => '' },
       { name => 'vn',        required => 1, maxlength => 10240 },
-      { name => 'comm',      required => 1, minlength => 10, maxlength => 1000 },
+      { name => 'comm',      required => 0, default => '' },
     );
 
     my $released = !$frm->{released}[0] ? 0 :
