@@ -78,7 +78,7 @@
 
  [[ for (@{$d{hist}}) { my $t = (qw|v r p|)[$_->{type}]; ]]-
  <tr>
-  <td class="tc1_1"><a href="/[[= $t.$_->{iid}.'.'.$_->{rev} ]]">[[= $t.$_->{iid} ]]</td>
+  <td class="tc1_1"><a href="/[[= $t.$_->{iid}.'.'.$_->{rev} ]]">[[= $t.$_->{iid} ]]</a></td>
   <td class="tc1_2"><a href="/[[= $t.$_->{iid}.'.'.$_->{rev} ]]">.[[= $_->{rev} == 1 ? '<b>'.$_->{rev}.'</b>' : $_->{rev} ]]</a></td>
   <td class="tc2">[[= formatdate('%Y-%m-%d %R', $_->{added}, 'dh') ]]</td>
  [[ if($d{type} ne 'u' || $d{act}) { ]]-
