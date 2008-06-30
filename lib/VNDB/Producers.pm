@@ -14,28 +14,23 @@ $VERSION = $VNDB::VERSION;
 sub PPage {
   my $self = shift;
   my $id = shift;
+  my $rev = shift||0;
 
+  return $self->ResNotFound if $self->ReqParam('rev');
 
-  my $r = $self->FormCheck(
-    { name => 'rev',  required => 0, default => 0, template => 'int' },
-    { name => 'diff', required => 0, default => 0, template => 'int' },
-  );
-  
   my $p = $self->DBGetProducer(
     id => $id,
-    $r->{rev} ? ( what => 'changes' ) : (),
-    $r->{rev} ? ( rev => $r->{rev} ) : ()
+    $rev ? ( what => 'changes', rev => $rev ) : (),
   )->[0];
   return $self->ResNotFound if !$p->{id};
 
-  $r->{diff} ||= $p->{prev} if $r->{rev};
-  my $c = $r->{diff} && $self->DBGetProducer(id => $id, rev => $r->{diff}, what => 'changes')->[0];
-  $p->{next} = $self->DBGetHist(type => 'p', id => $id, next => $p->{cid}, showhid => 1)->[0]{id} if $r->{rev};
+  my $c = $rev && $rev > 1 && $self->DBGetProducer(id => $id, rev => $rev-1, what => 'changes')->[0];
+  $p->{next} = $rev && $p->{latest} > $p->{cid} ? $rev+1 : 0;
 
   return $self->ResAddTpl(ppage => {
     prod => $p,
     prev => $c,
-    change => $r->{diff} || $r->{rev},
+    change => $rev,
     vn => $self->DBGetProducerVN($id),
   });
 }
@@ -102,16 +97,16 @@ sub PEdit {
       if $id && 6 == scalar grep { $_ ne 'comm' && $b4{$_} eq $frm->{$_} } keys %b4;
 
     if(!$frm->{_err}) {
-      my $cid;
-      $cid = $self->DBEditProducer($id, %$frm) if $id;    # edit
-      ($id, $cid) = $self->DBAddProducer(%$frm) if !$id;   # add
-      return $self->ResRedirect('/p'.$id.'?rev='.$cid, 'post');
+      my $nrev = 1;
+      ($nrev) = $self->DBEditProducer($id, %$frm) if $id;  # edit
+      ($id) = $self->DBAddProducer(%$frm) if !$id;         # add
+      return $self->ResRedirect('/p'.$id.'.'.$nrev, 'post');
     }
   }
 
   if($id) {
     $frm->{$_} ||= $b4{$_} for (keys %b4);
-    $frm->{comm} = sprintf 'Reverted to revision %d by %s.', $p->{cid}, $p->{username} if $p->{cid} != $p->{latest};
+    $frm->{comm} = sprintf 'Reverted to revision p%d.%d', $p->{id}, $p->{rev} if $p->{cid} != $p->{latest};
   } else {
     $frm->{lang} ||= 'ja';
   }

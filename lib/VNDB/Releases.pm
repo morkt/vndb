@@ -14,22 +14,19 @@ $VERSION = $VNDB::VERSION;
 sub RPage {
   my $self = shift;
   my $id = shift;
+  my $rev = shift||0;
 
-  my $r = $self->FormCheck(
-    { name => 'rev',  required => 0, default => 0, template => 'int' },
-    { name => 'diff', required => 0, default => 0, template => 'int' },
-  );
-  
+  return $self->ResNotFound if $self->ReqParam('rev');
+
   my $v = $self->DBGetRelease(
     id => $id,
-    what => 'producers platforms media vn'.($r->{rev} ? ' changes':''),
-    $r->{rev} ? ( rev => $r->{rev} ) : ()
+    what => 'producers platforms media vn'.($rev ? ' changes':''),
+    $rev ? ( rev => $rev ) : ()
   )->[0];
   return $self->ResNotFound if !$v->{id};
 
-  $r->{diff} ||= $v->{prev} if $r->{rev};
-  my $c = $r->{diff} && $self->DBGetRelease(id => $id, rev => $r->{diff}, what => 'changes producers platforms media vn')->[0];
-  $v->{next} = $self->DBGetHist(type => 'r', id => $id, next => $v->{cid}, showhid => 1)->[0]{id} if $r->{rev};
+  my $c = $rev && $rev > 1 && $self->DBGetRelease(id => $id, rev => $rev-1, what => 'changes producers platforms media vn')->[0];
+  $v->{next} = $rev && $v->{latest} > $v->{cid} ? $rev+1 : 0;
 
   $self->ResRedirect('/v'.$v->{vn}[0]{vid})
     if ($self->ReqHeader('Referer')||'') =~ m{^http://[^/]*(yahoo|google)} && @{$v->{vn}} == 1;
@@ -37,7 +34,7 @@ sub RPage {
   return $self->ResAddTpl(rpage => {
     rel => $v,
     prev => $c,
-    change => $r->{diff}||$r->{rev},
+    change => $rev,
   });
 }
 
@@ -112,19 +109,19 @@ sub REdit {
         media     => $media,
         producers => $producers,
       );
-      my $cid; 
-      $cid = $self->DBEditRelease($rid, %opts) if $rid;   # edit
-      ($rid, $cid) = $self->DBAddRelease(%opts) if !$rid;  # add
+      my $nrev = 1; 
+      ($nrev) = $self->DBEditRelease($rid, %opts) if $rid;  # edit
+      ($rid) = $self->DBAddRelease(%opts) if !$rid;         # add
 
       $self->RVNCache(@$new_vn, (map { $_->{vid} } @$vn));
 
-      return $self->ResRedirect('/r'.$rid.'?rev='.$cid, 'post');
+      return $self->ResRedirect('/r'.$rid.'.'.$nrev, 'post');
     }
   }
 
   if($rid) {
     $frm->{$_} ||= $b4{$_} for (keys %b4);
-    $frm->{comm} = sprintf 'Reverted to revision %d by %s.', $r->{cid}, $r->{username} if $r->{cid} != $r->{latest};        
+    $frm->{comm} = sprintf 'Reverted to revision r%d.%d', $r->{id}, $r->{rev} if $r->{cid} != $r->{latest};        
   } else {
     $frm->{language} = 'ja';
     $frm->{vn} = $b4{vn};

@@ -741,7 +741,10 @@ b.diff_del { font-weight: normal; background-color: #fcc; }
 #tvl .tc1, #tvl .tc2, #tvl .tc3 { white-space: nowrap; padding-right: 10px; }
 
 #thi { clear: both }
-#thi .tc1 { width: 35px; }
+#thi .tc1_1 { text-align: right; padding-right: 0; width: 10px; }
+#thi .tc1_2 { padding-left: 0; padding-right: 10px; }
+#thi .tc1_1 a, #thi .tc1_2 a { text-decoration: none }
+#thi .tc1 { width: 10px }
 #thi .tc2 { width: 110px; }
 
 #tre tr { background-color: #fff!important; }

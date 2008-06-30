@@ -25,7 +25,7 @@
 <ul class="home">
  <li><b>Recent changes</b></li>
  [[ for (@{$d{recentedits}}) {  my $t = (qw|v r p|)[$_->{type}]; ]]-
- <li>[[= $t ]]:<a href="/[[= $t.$_->{iid}.'?rev='.$_->{id} ]]" title="[[: $_->{ititle} ]]">[[: shorten $_->{ititle}, 30 ]]</a></li>
+ <li>[[= $t ]]:<a href="/[[= $t.$_->{iid}.'.'.$_->{rev} ]]" title="[[: $_->{ititle} ]]">[[: shorten $_->{ititle}, 30 ]]</a></li>
  [[ } ]]-
 </ul>
 

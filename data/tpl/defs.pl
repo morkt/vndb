@@ -87,12 +87,12 @@ sub cdiff { # obj1, obj2, @items->[ short, name, serialise, diff, [parsed_x, par
 
   my $type = defined $$y{minage} ? 'r' : defined $$y{length} ? 'v' : 'p';
   my $pre = '<div id="revbrowse">'.
-    ($$y{next} ? qq|<a href="/$type$$y{id}?rev=$$y{next}" id="revnext">later revision -&gt;</a>| : '').
-    ($x ? qq|<a href="/$type$$y{id}?rev=$$x{cid}" id="revprev">&lt;- earlier revision</a>| : '').
+    ($$y{next} ? qq|<a href="/$type$$y{id}.$$y{next}" id="revnext">later revision -&gt;</a>| : '').
+    ($x ? qq|<a href="/$type$$y{id}.$$x{rev}" id="revprev">&lt;- earlier revision</a>| : '').
     qq|<a href="/$type$$y{id}" id="revmain">$type$$y{id}</a>&nbsp;</div>|;
 
   if(!$x) { # just show info about the revision if there is no previous edit
-    return $pre.qq|<div id="tmc"><b>Revision $$y{cid}</b> (<a href="/$type$$y{id}/edit?rev=$$y{cid}">edit</a>)<br />By <a href="/u$$y{requester}">$$y{username}</a> on |.
+    return $pre.qq|<div id="tmc"><b>Revision $$y{rev}</b> (<a href="/$type$$y{id}/edit?rev=$$y{rev}">edit</a>)<br />By <a href="/u$$y{requester}">$$y{username}</a> on |.
       formatdate('%Y-%m-%d at %R', $$y{added}).'<br /><b>Edit summary:</b><br /><br />'.
       summary($$y{comments}, 0, '[no summary]').'</div>';
   }
@@ -120,9 +120,9 @@ sub cdiff { # obj1, obj2, @items->[ short, name, serialise, diff, [parsed_x, par
     }
   }
   return $pre.'<table id="tmc"><thead><tr><td class="tc1">&nbsp;</td>'.
-    qq|<td class="tc2"><b>Revision $$x{cid}</b> (<a href="/$type$$y{id}/edit?rev=$$x{cid}">edit</a>)<br />By <a href="/u$$x{requester}">$$x{username}</a> on |.formatdate('%Y-%m-%d at %R', $$x{added}).'</td>'.
-    qq|<td class="tc3"><b>Revision $$y{cid}</b> (<a href="/$type$$y{id}/edit?rev=$$y{cid}">edit</a>)<br />By <a href="/u$$y{requester}">$$y{username}</a> on |.formatdate('%Y-%m-%d at %R', $$y{added}).'</td>'.
-    '</tr><tr></tr><tr><td>&nbsp;</td><td colspan="2"><b>Edit summary of revision '.$$y{cid}.'</b><br /><br />'.summary($$y{comments}, 0, '[no summary]').'<br /><br /></td></tr></thead>'.
+    qq|<td class="tc2"><b>Revision $$x{rev}</b> (<a href="/$type$$y{id}/edit?rev=$$x{rev}">edit</a>)<br />By <a href="/u$$x{requester}">$$x{username}</a> on |.formatdate('%Y-%m-%d at %R', $$x{added}).'</td>'.
+    qq|<td class="tc3"><b>Revision $$y{rev}</b> (<a href="/$type$$y{id}/edit?rev=$$y{rev}">edit</a>)<br />By <a href="/u$$y{requester}">$$y{username}</a> on |.formatdate('%Y-%m-%d at %R', $$y{added}).'</td>'.
+    '</tr><tr></tr><tr><td>&nbsp;</td><td colspan="2"><b>Edit summary of revision '.$$y{rev}.'</b><br /><br />'.summary($$y{comments}, 0, '[no summary]').'<br /><br /></td></tr></thead>'.
     join('',map{
       '<tr><td class="tc1">'.$_->[1].'</td><td class="tc2">'.$_->[4].'</td><td class="tc3">'.$_->[5].'</td></tr>'
     } @c).'</table>';
@@ -148,6 +148,7 @@ sub summary { # cmd, len, def
     if(!$as && s/(http|https):\/\/(.+[0-9a-zA-Z=\/])/<a href="$1:\/\/$2" rel="nofollow">link<\/a>/) {
       $l = 4;
     } elsif(!$as) {
+      s/^(.*[^\w]|)([dvpr][0-9]+)\.([0-9]+)([^\w].*|)$/$1<a href="\/$2.$3">$2.$3<\/a>$4/ ||
       s/^(.*[^\w]|)([duvpr][0-9]+)([^\w].*|)$/$1<a href="\/$2">$2<\/a>$3/;
     }
     while(s/\[\/url\]/<\/a>/i) {

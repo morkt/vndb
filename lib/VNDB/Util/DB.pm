@@ -171,16 +171,14 @@ sub DBGetHist { # %options->{ type, id, cid, caused, next, page, results, ip, ed
     $o{type} eq 'p' ? ( 'c.type = 2' => 1,
       $o{id} ? ( 'pr.pid = %d' => $o{id} ) : () ) : (),
 
-    $o{next} ? ( 
-      'c.id > %d' => $o{next} ) : (),
     $o{caused} ? (
       'c.causedby = %d' => $o{caused} ) : (),
     $o{ip} ? (
       'c.ip = !s' => $o{ip} ) : (),
     defined $o{edits} && !$o{edits} ? (
-      'c.prev = 0' => 1 ) : (),
+      'c.rev = 1' => 1 ) : (),
     $o{edits} ? (
-      'c.prev > 0' => 1 ) : (),
+      'c.rev > 1' => 1 ) : (),
 
    # get rid of 'hidden' items
     !$o{showhid} ? (
@@ -192,7 +190,7 @@ sub DBGetHist { # %options->{ type, id, cid, caused, next, page, results, ip, ed
 
   my $where = keys %where ? 'WHERE !W' : '';
 
-  my $select = 'c.id, c.type, c.added, c.requester, c.comments, c.prev, c.causedby';
+  my $select = 'c.id, c.type, c.added, c.requester, c.comments, c.rev, c.causedby';
   $select .= ', u.username' if $o{what} =~ /user/;
   $select .= ', COALESCE(vr.vid, rr.rid, pr.pid) AS iid' if $o{what} =~ /iid/;
   $select .= ', COALESCE(vr2.title, rr2.title, pr2.name) AS ititle' if $o{what} =~ /ititle/;
@@ -563,7 +561,7 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
     $o{id} && ref($o{id}) ? (
       'v.id IN(!l)' => $o{id} ) : (),
     $o{rev} ? (
-      'vr.id = %d' => $o{rev} ) : (),
+      'c.rev = %d' => $o{rev} ) : (),
     $o{char} ? (
       'LOWER(SUBSTR(vr.title, 1, 1)) = !s' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
@@ -613,14 +611,14 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
     $o{rev} ?
       'JOIN vn v ON v.id = vr.vid' :
       'JOIN vn v ON vr.id = v.latest',
-    $o{what} =~ /changes/ ? (
+    $o{what} =~ /changes/ || $o{rev} ? (
       'JOIN changes c ON c.id = vr.id',
       'JOIN users u ON u.id = c.requester' ) : (),
   );
 
   my $sel = 'v.id, v.locked, v.hidden, v.c_released, v.c_languages, v.c_votes, v.c_platforms, vr.title, vr.id AS cid, v.rgraph';
   $sel .= ', vr.alias, vr.image AS image, vr.img_nsfw, vr.length, vr.desc, vr.l_wp, vr.l_encubed, vr.l_renai, vr.l_vnn' if $o{what} =~ /extended/;
-  $sel .= ', c.added, c.requester, c.comments, v.latest, u.username, c.prev, c.causedby' if $o{what} =~ /changes/;
+  $sel .= ', c.added, c.requester, c.comments, v.latest, u.username, c.rev, c.causedby' if $o{what} =~ /changes/;
 
   my $r = $s->DBAll(qq|
     SELECT $sel
@@ -688,45 +686,45 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
 sub DBAddVN { # %options->{ columns in vn_rev + comm + relations + categories + anime }
   my($s, %o) = @_;
 
-  $s->DBExec(q|
+  my $id = $s->DBRow(q|
     INSERT INTO changes (type, requester, ip, comments)
-      VALUES (%d, %d, !s, !s)|,
-    0, $s->AuthInfo->{id}, $s->ReqIP, $o{comm});
+      VALUES (%d, %d, !s, !s)
+      RETURNING id|,
+    0, $s->AuthInfo->{id}, $s->ReqIP, $o{comm}
+  )->{id};
 
-  my $id = $s->DBLastId('changes');
-
-  $s->DBExec(q|
+  my $vid = $s->DBRow(q|
     INSERT INTO vn (latest)
-      VALUES (%d)|, $id);
-  my $vid = $s->DBLastId('vn');
+      VALUES (%d)
+      RETURNING id|, $id
+  )->{id};
 
   _insert_vn_rev($s, $id, $vid, \%o);
 
-  return ($vid, $id);
+  return ($vid, $id); # item id, global revision
 }
 
 
 sub DBEditVN { # id, %options->( columns in vn_rev + comm + relations + categories + anime + uid + causedby }
   my($s, $vid, %o) = @_;
 
-  $s->DBExec(q|
-    INSERT INTO changes (type, requester, ip, comments, prev, causedby)
+  my $c = $s->DBRow(q|
+    INSERT INTO changes (type, requester, ip, comments, rev, causedby)
       VALUES (%d, %d, !s, !s, (
-        SELECT c.id
+        SELECT c.rev+1
         FROM changes c
         JOIN vn_rev vr ON vr.id = c.id
         WHERE vr.vid = %d
         ORDER BY c.id DESC
         LIMIT 1
-      ), %d)|,
+      ), %d)
+      RETURNING id, rev|,
     0, $o{uid}||$s->AuthInfo->{id}, $s->ReqIP, $o{comm}, $vid, $o{causedby}||0);
 
-  my $id = $s->DBLastId('changes');
+  _insert_vn_rev($s, $c->{id}, $vid, \%o);
 
-  _insert_vn_rev($s, $id, $vid, \%o);
-
-  $s->DBExec(q|UPDATE vn SET latest = %d WHERE id = %d|, $id, $vid);
-  return $id;
+  $s->DBExec(q|UPDATE vn SET latest = %d WHERE id = %d|, $c->{id}, $vid);
+  return ($c->{rev}, $c->{id}); # local revision, global revision
 }
 
 
@@ -822,7 +820,7 @@ sub DBGetRelease { # %options->{ id vid results page rev }
     $o{id} ? (
       'r.id = %d' => $o{id} ) : (),
     $o{rev} ? (
-      'rr.id = %d' => $o{rev} ) : (),
+      'c.rev = %d' => $o{rev} ) : (),
     $o{vid} ? (
       'rv.vid = %d' => $o{vid} ) : (),
   );
@@ -830,12 +828,12 @@ sub DBGetRelease { # %options->{ id vid results page rev }
   my $where = scalar keys %where ? 'WHERE !W' : '';
   my @join;
   push @join, $o{rev} ? 'JOIN releases r ON r.id = rr.rid' : 'JOIN releases r ON rr.id = r.latest';
-  push @join, 'JOIN changes c ON c.id = rr.id' if $o{what} =~ /changes/;
+  push @join, 'JOIN changes c ON c.id = rr.id' if $o{what} =~ /changes/ || $o{rev};
   push @join, 'JOIN users u ON u.id = c.requester' if $o{what} =~ /changes/;
   push @join, 'JOIN releases_vn rv ON rv.rid = rr.id' if $o{vid};
 
   my $select = 'r.id, r.locked, r.hidden, rr.id AS cid, rr.title, rr.original, rr.gtin, rr.language, rr.website, rr.released, rr.notes, rr.minage, rr.type';
-  $select .= ', c.added, c.requester, c.comments, r.latest, u.username, c.prev' if $o{what} =~ /changes/;
+  $select .= ', c.added, c.requester, c.comments, r.latest, u.username, c.rev' if $o{what} =~ /changes/;
 
   my $r = $s->DBAll(qq|
     SELECT $select
@@ -907,43 +905,43 @@ sub DBGetRelease { # %options->{ id vid results page rev }
 sub DBAddRelease { # options -> { columns in releases_rev table + comm + vn + producers + media + platforms }
   my($s, %o) = @_;
 
-  $s->DBExec(q|
+  my $id = $s->DBRow(q|
     INSERT INTO changes (type, requester, ip, comments)
-      VALUES (%d, %d, !s, !s)|,
-    1, $s->AuthInfo->{id}, $s->ReqIP, $o{comm});
+      VALUES (%d, %d, !s, !s)
+      RETURNING id|,
+    1, $s->AuthInfo->{id}, $s->ReqIP, $o{comm}
+  )->{id};
 
-  my $id = $s->DBLastId('changes');
-  $s->DBExec(q|
+  my $rid = $s->DBRow(q|
     INSERT INTO releases (latest)
-      VALUES (%d)|, $id);
-  my $rid = $s->DBLastId('releases');
+      VALUES (%d)
+      RETURNING id|, $id)->{id};
 
   _insert_release_rev($s, $id, $rid, \%o);
-  return ($rid, $id);
+  return ($rid, $id); # item id, global revision
 }
 
 
 sub DBEditRelease { # id, %opts->{ columns in releases_rev table + comm + vn + producers + media + platforms }
   my($s, $rid, %o) = @_;
 
-  $s->DBExec(q|
-    INSERT INTO changes (type, requester, ip, comments, prev)
+  my $c = $s->DBRow(q|
+    INSERT INTO changes (type, requester, ip, comments, rev)
       VALUES (%d, %d, !s, !s, (
-        SELECT c.id
+        SELECT c.rev+1
         FROM changes c
         JOIN releases_rev rr ON rr.id = c.id
         WHERE rr.rid = %d
         ORDER BY c.id DESC
         LIMIT 1
-      ))|,
+      ))
+      RETURNING id, rev|,
     1, $s->AuthInfo->{id}, $s->ReqIP, $o{comm}, $rid);
 
-  my $id = $s->DBLastId('changes');
+  _insert_release_rev($s, $c->{id}, $rid, \%o);
 
-  _insert_release_rev($s, $id, $rid, \%o);
-
-  $s->DBExec(q|UPDATE releases SET latest = %d WHERE id = %d|, $id, $rid);
-  return $id;
+  $s->DBExec(q|UPDATE releases SET latest = %d WHERE id = %d|, $c->{id}, $rid);
+  return ($c->{rev}, $c->{id}); # local revision, global revision
 }
 
 
@@ -1018,17 +1016,17 @@ sub DBGetProducer { # %options->{ id search char results page rev }
     defined $o{char} && !$o{char} ? (
       '(ASCII(pr.name) < 97 OR ASCII(pr.name) > 122) AND (ASCII(pr.name) < 65 OR ASCII(pr.name) > 90)' => 1 ) : (),
     $o{rev} ? (
-      'pr.id = %d' => $o{rev} ) : (),
+      'c.rev = %d' => $o{rev} ) : (),
   );
 
   my $where = scalar keys %where ? 'WHERE !W' : '';
   my @join;
   push @join, $o{rev} ? 'JOIN producers p ON p.id = pr.pid' : 'JOIN producers p ON pr.id = p.latest';
-  push @join, 'JOIN changes c ON c.id = pr.id' if $o{what} =~ /changes/;
+  push @join, 'JOIN changes c ON c.id = pr.id' if $o{what} =~ /changes/ || $o{rev};
   push @join, 'JOIN users u ON u.id = c.requester' if $o{what} =~ /changes/;
 
   my $select = 'p.id, p.locked, p.hidden, pr.type, pr.name, pr.original, pr.website, pr.lang, pr.desc';
-  $select .= ', c.added, c.requester, c.comments, p.latest, pr.id AS cid, u.username, c.prev' if $o{what} =~ /changes/;
+  $select .= ', c.added, c.requester, c.comments, p.latest, pr.id AS cid, u.username, c.rev' if $o{what} =~ /changes/;
 
   my $r = $s->DBAll(qq|
     SELECT $select
@@ -1069,44 +1067,45 @@ sub DBGetProducerVN { # pid
 sub DBAddProducer { # %opts->{ columns in producers_rev + comm } 
   my($s, %o) = @_;
 
-  $s->DBExec(q|
+  my $id = $s->DBRow(q|
     INSERT INTO changes (type, requester, ip, comments)
-      VALUES (%d, %d, !s, !s)|,
-    2, $s->AuthInfo->{id}, $s->ReqIP, $o{comm});
+      VALUES (%d, %d, !s, !s)
+      RETURNING id|,
+    2, $s->AuthInfo->{id}, $s->ReqIP, $o{comm}
+  )->{id};
 
-  my $id = $s->DBLastId('changes');
-  $s->DBExec(q|
+  my $pid = $s->DBRow(q|
     INSERT INTO producers (latest)
-      VALUES (%d)|, $id);
-  my $pid = $s->DBLastId('producers');
+      VALUES (%d)
+      RETURNING id|, $id
+  )->{id};
 
   _insert_producer_rev($s, $id, $pid, \%o);
 
-  return ($pid, $id);
+  return ($pid, $id); # item id, global revision
 }
 
 
 sub DBEditProducer { # id, %opts->{ columns in producers_rev + comm }
   my($s, $pid, %o) = @_;
 
-  $s->DBExec(q|
-    INSERT INTO changes (type, requester, ip, comments, prev)
+  my $c = $s->DBRow(q|
+    INSERT INTO changes (type, requester, ip, comments, rev)
       VALUES (%d, %d, !s, !s, (
-        SELECT c.id
+        SELECT c.rev+1
         FROM changes c
         JOIN producers_rev pr ON pr.id = c.id
         WHERE pr.pid = %d
         ORDER BY c.id DESC
         LIMIT 1
-      ))|,
+      ))
+      RETURNING id, rev|,
     2, $s->AuthInfo->{id}, $s->ReqIP, $o{comm}, $pid);
 
-  my $id = $s->DBLastId('changes');
+  _insert_producer_rev($s, $c->{id}, $pid, \%o);
 
-  _insert_producer_rev($s, $id, $pid, \%o);
-
-  $s->DBExec(q|UPDATE producers SET latest = %d WHERE id = %d|, $id, $pid);
-  return $id;
+  $s->DBExec(q|UPDATE producers SET latest = %d WHERE id = %d|, $c->{id}, $pid);
+  return ($c->{rev}, $c->{id}); # local revision, global revision
 }
 
 

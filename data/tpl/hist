@@ -62,11 +62,11 @@
 [[ } ]]
 <table id="thi">
  <thead><tr>
-  <td class="tc1">Rev.</td>
+  <td class="tc1" colspan="2">Rev.</td>
   <td class="tc2">Date</td>
  [[ if($d{type} ne 'u' || $d{act}) { ]]-
   <td class="tc3">User</td>[[ } ]]-
- [[ if(!$d{type} || $d{type} eq 'u' || $d{act} || ($d{type} eq 'v' && $d{seli})) { ]]-
+ [[ if(!$d{type} || $d{type} eq 'u' || $d{act}) { ]]-
   <td class="tc4">Page</td>[[ } ]]-
  [[ if($d{type} && !$d{act}) { ]]-
   <td class="tc5">Summary</td>[[ } ]]-
@@ -78,14 +78,13 @@
 
  [[ for (@{$d{hist}}) { my $t = (qw|v r p|)[$_->{type}]; ]]-
  <tr>
-  <td class="tc1"><a href="/[[= $t.$_->{iid} ]]?rev=[[= $_->{id} ]]">[[= $_->{id} ]]</a></td>
+  <td class="tc1_1"><a href="/[[= $t.$_->{iid}.'.'.$_->{rev} ]]">[[= $t.$_->{iid} ]]</td>
+  <td class="tc1_2"><a href="/[[= $t.$_->{iid}.'.'.$_->{rev} ]]">.[[= $_->{rev} == 1 ? '<b>'.$_->{rev}.'</b>' : $_->{rev} ]]</a></td>
   <td class="tc2">[[= formatdate('%Y-%m-%d %R', $_->{added}, 'dh') ]]</td>
  [[ if($d{type} ne 'u' || $d{act}) { ]]-
   <td class="tc3"><a href="/u[[= $_->{requester} ]]">[[: $_->{username} ]]</a></td>[[ } ]]-
  [[ if(!$d{type} || $d{type} eq 'u' || $d{act}) { ]]-
-  <td class="tc4">[[= $_->{prev} ? $t.$_->{iid} : '<b>'.$t.$_->{iid}.'</b>' ]]:<a href="/[[= $t.$_->{iid} ]]?rev=[[= $_->{id} ]]" title="[[: $_->{ititle} ]]">[[: length($_->{ititle}) > 30 ? substr($_->{ititle},0,27).'...' : $_->{ititle} ]]</a></td>[[ } ]]-
- [[ if($d{type} eq 'v' && $d{seli}) { ]]-
-  <td class="tc4"><a href="/[[= $t.$_->{iid} ]]" title="[[: $_->{ititle} ]]">[[= $_->{prev} ? $t.$_->{iid} : '<b>'.$t.$_->{iid}.'</b>' ]]</a></td>[[ } ]]-
+  <td class="tc4"><a href="/[[= $t.$_->{iid} ]].[[= $_->{rev} ]]" title="[[: $_->{ititle} ]]">[[: shorten $_->{ititle}, 30 ]]</a></td>[[ } ]]-
  [[ if($d{type} && !$d{act}) { ]]-
   <td class="tc5">[[= summary($_->{comments}, $d{type} eq 'u' ? 40 : 60)||'[empty]' ]]</td>[[ } ]]-
  [[ if($d{act} eq 'r') { ]]-

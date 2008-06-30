@@ -65,6 +65,7 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
     hide        => sub { shift->VNHide(shift) },
     hist => {'*'=> sub { shift->History('v', shift, $_[1]) } },
   },
+  'v+.+'        => sub { shift->VNPage($_[0][0], '', $_[0][1]) },
  # releases
   'r+' => {
     '/'         => sub { shift->RPage(shift) },
@@ -73,6 +74,7 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
     hide        => sub { shift->RHide(shift) },
     hist => {'*'=> sub { shift->History('r', shift, $_[1]) } },
   },
+  'r+.+'        => sub { shift->RPage($_[0][0], $_[0][1]) },
  # producers
   p => {
     '/'         => sub { shift->PBrowse },
@@ -86,6 +88,7 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
     hide        => sub { shift->PHide(shift) },
     hist => {'*'=> sub { shift->History('p', shift, $_[1]) } },
   },
+  'p+.+'        => sub { shift->PPage($_[0][0], $_[0][1]) },
  # stuff (.xml extension to make sure they aren't counted as pageviews)
   xml => {
     'producers.xml'   => sub { shift->PXML },
@@ -118,6 +121,11 @@ my %OLDuris = (
   'v+' => {
     votes       => sub { shift->ResRedirect('/v'.(shift).'/stats', 'perm') },
     hist=>{rss  => sub { shift->ResRedirect('/v'.(shift).'/hist/rss.xml', 'perm') } },
+    '/'         => sub {
+      my $r=$_[0]->FormCheck({name=>'rev',required=>0,default=>0,template=>'int'})->{rev};
+      my $i=$_[0]->DBGetHist(cid => [$r])->[0];
+      $i && $i->{rev} ? $_[0]->ResRedirect('/'.((qw|v r p|)[$i->{type}]).$_[1].'.'.$i->{rev}, 'perm') : $_[0]->ResNotFound;
+    },
   },
   u => {
     '*' => {
@@ -142,6 +150,7 @@ my %OLDuris = (
   },
   hist=>{rss    => sub { shift->ResRedirect('/hist/rss.xml', 'perm') } },
 );
+$OLDuris{'r+'}{'/'} = $OLDuris{'p+'}{'/'} = $OLDuris{'v+'}{'/'};
 
 
 
@@ -199,9 +208,9 @@ sub uri2page {
   $u->[$i] = '/' if !defined $u->[$i];
   my $n = $o->{$u->[$i]} ? $u->[$i] : ((map { 
     if(/[\*\+]/) {
-      my $t = "^$_\$";
-      /\*/ ? ($t =~ s/\*/(.+)/) : ($t =~ s/\+/([1-9][0-9]*)/);
-      $u->[$i] =~ /$t/ ? ($u->[$i] = $1) && $_ : ();
+      (my $t = "^$_\$") =~ s/\./\\./g;
+      /\*/ ? ($t =~ s/\*/(.+)/g) : ($t =~ s/\+/([1-9][0-9]*)/g);
+      $u->[$i] =~ /$t/ ? ($u->[$i] = $2?[$1,$2]:$1) && $_ : ();
     } else { () } }
     sort { length($b) <=> length($a) } keys %$o)[0] || '*');
   ref($o->{$n}) eq 'HASH' && $n ne '/' ?

@@ -16,22 +16,19 @@ sub VNPage {
   my $self = shift;
   my $id = shift;
   my $page = shift || '';
+  my $rev = shift || 0;
 
-  my $r = $self->FormCheck(
-    { name => 'rev',  required => 0, default => 0, template => 'int' },
-    { name => 'diff', required => 0, default => 0, template => 'int' },
-  );
+  return $self->ResNotFound if $self->ReqParam('rev');
   
   my $v = $self->DBGetVN(
     id => $id,
-    what => 'extended relations categories anime'.($r->{rev} ? ' changes' : ''),
-    $r->{rev} ? ( rev => $r->{rev} ) : ()
+    what => 'extended relations categories anime'.($rev ? ' changes' : ''),
+    $rev ? ( rev => $rev ) : ()
   )->[0];
   return $self->ResNotFound if !$v->{id};
 
-  $r->{diff} ||= $v->{prev} if $r->{rev};
-  my $c = $r->{diff} && $self->DBGetVN(id => $id, rev => $r->{diff}, what => 'extended changes relations categories anime')->[0];
-  $v->{next} = $self->DBGetHist(type => 'v', id => $id, next => $v->{cid}, showhid => 1)->[0]{id} if $r->{rev};
+  my $c = $rev && $rev > 1 && $self->DBGetVN(id => $id, rev => $rev-1, what => 'extended changes relations categories anime')->[0];
+  $v->{next} = $rev && $v->{latest} > $v->{cid} ? $rev+1 : 0;
 
   if($page eq 'rg' && $v->{rgraph}) {
     open(my $F, '<:utf8', sprintf '%s/%02d/%d.cmap', $self->{mappath}, $v->{rgraph}%100, $v->{rgraph}) || die $!;
@@ -46,7 +43,7 @@ sub VNPage {
     vn => $v,
     prev => $c,
     page => $page,
-    change => $r->{diff}||$r->{rev},
+    change => $rev,
     $page eq 'stats' ? (
       lists => {
         latest => scalar $self->DBGetVNList(vid => $id, results => 7, hide => 1),
@@ -145,15 +142,15 @@ sub VNEdit {
     );
 
     if(!$frm->{_err}) {
-      my($oid, $cid) = ($id, 0);
-      $cid = $self->DBEditVN($id, %args)  if $id;    # edit
-      ($id, $cid) = $self->DBAddVN(%args) if !$id;   # add
+      my($oid, $nrev, $cid) = ($id, 1, 0);
+      ($nrev, $cid) = $self->DBEditVN($id, %args)  if $id;  # edit
+      ($id, $cid) = $self->DBAddVN(%args) if !$id;          # add
 
      # update reverse relations and relation graph
       if((!$oid && $#$relations >= 0) || ($oid && $frm->{relations} ne $b4{relations})) {
         my %old = $oid ? (map { $_->{id} => $_->{relation} } @{$v->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations; 
-        $self->VNUpdReverse(\%old, \%new, $id, $cid);
+        $self->VNUpdReverse(\%old, \%new, $id, $cid, $nrev);
       }
      # also regenerate relation graph if the title changes
       elsif(@$relations && $frm->{title} ne $b4{title}) {
@@ -163,13 +160,13 @@ sub VNEdit {
      # check for new anime data
       $self->RunCmd('anime check') if $oid && $frm->{anime} ne $b4{anime} || !$oid && $frm->{anime};
 
-      return $self->ResRedirect('/v'.$id.'?rev='.$cid, 'post');
+      return $self->ResRedirect('/v'.$id.'.'.$nrev, 'post');
     }
   }
 
   if($id) {
     $frm->{$_} ||= $b4{$_} for (keys %b4);
-    $frm->{comm} = sprintf 'Reverted to revision %d by %s.', $v->{cid}, $v->{username} if $v->{cid} != $v->{latest};
+    $frm->{comm} = sprintf 'Reverted to revision v%d.%d', $v->{id}, $v->{rev} if $v->{cid} != $v->{latest};
   } 
 
   $self->AddHid($frm);
@@ -205,8 +202,6 @@ sub VNHide {
   return $self->ResNotFound() if !$v;
   return $self->ResDenied if !$self->AuthCan('del');
   $self->DBHideVN($id, $v->{hidden}?0:1);
-  #$self->VNUpdReverse({ map { $_->{id} => $_->{relation} } @{$v->{relations}} }, {}, $id, 0)
-  #  if @{$v->{relations}};
   return $self->ResRedirect('/v'.$id, 'perm');
 }
 
@@ -230,8 +225,8 @@ sub VNBrowse {
   my $q = $f->{q};
   if($chr eq 'search') {
    # VNDBID
-    return $self->ResRedirect('/'.$1, 'temp')
-      if $q =~ /^([vrpud][0-9]+)$/;
+    return $self->ResRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')
+      if $q =~ /^([vrpud])([0-9]+)(?:\.([0-9]+))?$/;
     
     if(!($q =~ s/^title://)) {
      # categories
@@ -310,8 +305,8 @@ sub VNXML {
 
 
 # Update reverse relations
-sub VNUpdReverse { # old, new, id, cid
-  my($self, $old, $new, $id, $cid) = @_;
+sub VNUpdReverse { # old, new, id, cid, rev
+  my($self, $old, $new, $id, $cid, $rev) = @_;
   my %upd;
   for (keys %$old, keys %$new) {
     if(exists $$old{$_} and !exists $$new{$_}) {
@@ -331,7 +326,7 @@ sub VNUpdReverse { # old, new, id, cid
     push @newrel, [ $upd{$i}, $id ] if $upd{$i} != -1;
     $self->DBEditVN($i,
       relations => \@newrel,
-      comm => 'Reverse relation update caused by revision '.$cid.' of v'.$id,
+      comm => 'Reverse relation update caused by revision v'.$id.'.'.$rev,
       causedby => $cid,
       uid => 1,         # Multi - hardcoded
       anime => [ map $_->{id}, @{$r->{anime}} ],

@@ -145,16 +145,36 @@ sub vndbid { # dest, msg
   $_[HEAP]{log}{$_} < time-60 and delete $_[HEAP]{log}{$_}
     for (keys %{$_[HEAP]{log}});
 
-  my @id;
-  push @id, [$1,$2,$3,$4] while $m =~ s/^(.*)([duvpr])([0-9]+)(.*)$/ $1 $4 /i;
-  for (reverse @id) {
-    next if $$_[0] =~ /[a-z0-9%\/]$/i || $$_[3] =~ /^[a-z]/i || ($$_[1] eq 'v' && $$_[3] =~ /^\.[0-9]/);
-    my($t, $id, $ext) = (lc($$_[1]), $$_[2], $$_[3]);
+  # Four possible options:
+  #  1.  [vpru]+   -> item page
+  #  2.  [vpr]+.+  -> item revision
+  #  3.  d+        -> documentation page
+  #  4.  d+.+      -> documentation page # section
 
-    next if $_[HEAP]{log}{$t.$id};
-    $_[HEAP]{log}{$t.$id} = time;
+  my @formats = (
+    BOLD.RED.'['.NORMAL.BOLD.'%s%d'   .RED.']'.NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' %s/%1$s%2$d'.NORMAL,
+    BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'.NORMAL.' %s '.RED.'by'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' %s/%1$s%2$d.%3$d'.NORMAL,
+    BOLD.RED.'['.NORMAL.BOLD.'d%d'    .RED.']'.NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' %s/d%1$d'.NORMAL,
+    BOLD.RED.'['.NORMAL.BOLD.'d%d.%d' .RED.']'.NORMAL.' %s '.RED.'->'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' %s/d%1$d#%2$d'.NORMAL,
+  );
 
-    if($t ne 'd') {
+  # get a list of possible IDs (a la sub summary in defs.pl)
+  my @id; # [ type, id, ref ]
+  for (split /[, ]/, $m) {
+    next if length > 15 or m{[a-z]{3,6}://}i; # weed out URLs and too long things
+    push @id, /^(?:.*[^\w]|)([dvpr])([0-9]+)\.([0-9]+)(?:[^\w].*|)$/ ? [ $1, $2, $3 ]   # matches 2 and 4
+           :  /^(?:.*[^\w]|)([duvpr])([0-9]+)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();       # matches 1 and 3
+  }
+
+  # loop through the matched IDs and search the database
+  for (@id) {
+    my($t, $id, $rev) = (@$_);
+
+    next if $_[HEAP]{log}{$t.$id.'.'.$rev};
+    $_[HEAP]{log}{$t.$id.'.'.$rev} = time;
+
+   # option 1: item page
+    if($t =~ /[vpru]/ && !$rev) {
       my $s = $Multi::SQL->prepare(
         $t eq 'v' ? 'SELECT vr.title FROM vn_rev vr JOIN vn v ON v.latest = vr.id WHERE v.id = ?' :
         $t eq 'u' ? 'SELECT u.username AS title FROM users u WHERE u.id = ?' :
@@ -165,43 +185,52 @@ sub vndbid { # dest, msg
       my $r = $s->fetchrow_hashref;
       $s->finish;
       next if !$r || ref($r) ne 'HASH';
-      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf
-        BOLD.RED.'['.RED.'%s%d'.RED.']'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' http://vndb.org/%s%d'.NORMAL,
-        $t, $id, $r->{title}, $t, $id
-      );
+      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $formats[0],
+        $t, $id, $r->{title}, $VNDB::VNDBopts{root_url});
 
-    } else {
+   # option 2: item revision
+    } elsif($t =~ /[vpr]/) {
+      my $s = $Multi::SQL->prepare(sprintf q|
+        SELECT %s AS title, u.username
+        FROM changes c
+        JOIN %s_rev i ON c.id = i.id
+        JOIN users u ON u.id = c.requester
+        WHERE i.%sid = %d 
+          AND c.rev = %d|,
+        $t ne 'p' ? 'i.title' : 'i.name',
+        {qw|v vn r releases p producers|}->{$t},
+        $t, $id, $rev);
+      $s->execute;
+      my $r = $s->fetchrow_hashref;
+      next if !$r || ref($r) ne 'HASH';
+      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $formats[1],
+        $t, $id, $rev, $r->{title}, $r->{username}, $VNDB::VNDBopts{root_url});
+
+   # option 3: documentation page
+    } elsif($t eq 'd') {
       my $f = sprintf '/www/vndb/data/docs/%d', $id;
       open my $F, '<', $f or next;
       (my $title = <$F>) =~ s/^:TITLE://;
       chomp($title);
 
-      my($sub, $sec) = ('', 0);
-      if($ext && $ext =~ /^\.([0-9]+)/) {
-        my $fs = $1;
-        while(<$F>) {
-          next if !/^:SUB:/;
-          $sec++;
-          if($sec == $fs) {
-            chomp;
-            ($sub = $_) =~ s/^:SUB://;
-            last;
-          }
+      if(!$rev) {
+        $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $formats[2],
+          $id, $title, $VNDB::VNDBopts{root_url});
+        next;
+      }
+
+   # option 4: documentation page # section
+      my($sec, $sub);
+      while(<$F>) {
+        if(/^:SUB:/ && ++$sec == $rev) {
+          chomp;
+          ($sub = $_) =~ s/^:SUB://;
+          last;
         }
       }
-      close $F;
-
-      if(!$sub) {
-        $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf
-          BOLD.RED.'['.RED.'d%d'.RED.']'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' http://vndb.org/d%d'.NORMAL,
-          $id, $title, $id
-        );
-      } else {
-        $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf
-          BOLD.RED.'['.RED.'d%d.%d'.RED.']'.NORMAL.' %s -> %s '.RED.'@'.NORMAL.LIGHT_GREY.' http://vndb.org/d%d#%d'.NORMAL,
-          $id, $sec, $title, $sub, $id, $sec
-        );
-      }
+      next if !$sub;
+      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $formats[3],
+        $id, $rev, $title, $sub, $VNDB::VNDBopts{root_url});
     }
   }
 }
