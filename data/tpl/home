@@ -13,13 +13,13 @@
  or to discuss about the database at our <a href="http://forum.vndb.org/">forums</a>.
 </p>
 
-<h3 class="home">VNDB 1.17!</h3>
+<h3 class="home">VNDB 1.18!</h3>
 <p class="desc">
- This update includes improvements in the relation graph generator, adds and changes
- some categories, adds two new links to VN pages, a GTIN field to releases, and
- two new platforms.
+ Shortly after 1.17, I now present 1.18! This update includes a major change in how you refer
+ to specific revisions of an entry, adds the ability to select release dates back to 1980, NES
+ and MSX to the list of platforms, and a few warnings.
  <br />
- <a href="http://forum.vndb.org/index.php?topic=54.0">Read more...</a> - <a href="http://forum.vndb.org/index.php?board=7.0">news archive</a>.
+ <a href="http://forum.vndb.org/index.php?topic=55.0">Read more...</a> - <a href="http://forum.vndb.org/index.php?board=7.0">news archive</a>.
 </p>
 
 <ul class="home">

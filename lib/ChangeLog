@@ -6,7 +6,7 @@ TODO:
 	    (preferably with the option to re-add them when unhiding)
 	  + Add a link for the hidden 'h' option at /hist
 
-1.18 - ?
+1.18 - 2008-07-02 (r51)
 	- Releases, producers and visual novel items can't be fully deleted anymore
 	- Hidden vote and vnlist items from the 'recent' lists on VN stat pages for
 	  users who don't want that to be seen
