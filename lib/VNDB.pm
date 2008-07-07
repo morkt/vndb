@@ -26,6 +26,7 @@ use VNDB::VN;
 my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
   '/'           => sub { shift->HomePage },
   'd+'          => sub { shift->DocPage(shift) },
+  'd+.+'        => sub { shift->ResRedirect('/d'.$_[0][0].'#'.$_[0][1]) },
   nospam        => sub { shift->ResAddTpl(error => { err => 'formerr' }) },
   hist =>   {'*'=> sub { shift->History(undef, undef, $_[1]) } },
  # users
