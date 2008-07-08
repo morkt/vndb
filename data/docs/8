@@ -6,9 +6,9 @@
 This TODO list is just a place for Yorhel to write down his plans and ideas
 for the upcoming versions of VNDB. Keep in mind that probably not everything
 written down here will actually see the light of day.<br /><br />
-The full source code of the website is available through SVN: svn://yorhel.nl/vndb/,
+The full source code of the website is available through SVN: svn://blicky.net/vndb/,
 anonymous read access is allowed. The code is also available through HTTP using
-the <a href="http://svn.yorhel.nl/vndb/">Web SVN</a>.<br /><br />
+the <a href="http://svn.blicky.net/vndb/">Web SVN</a>.<br /><br />
 There is a <a href="http://beta.vndb.org/">beta version</a> of VNDB available
 for testing. New features will be implemented there and tested before getting
 uploaded to the actual website. Everyone is free to play around and use that
@@ -16,7 +16,7 @@ beta version as a sandbox. Keep in mind, however, that all changes you make
 on the beta are not permanent, and will be reverted whenever I synchronise the
 beta with a more recent version of the database.<br /><br />
 Feel free to comment about the TODO list and to suggest new features on the
-<a href="http://forum.vndb.org/">forums</a> or on <a href="irc://irc.synirc.net/vndb">
+<a href="/t/db">discussion board</a> or on <a href="irc://irc.synirc.net/vndb">
 IRC</a>.
 <br /><br />
 <b>Last update: 2008-06-22</b><br /><br />
