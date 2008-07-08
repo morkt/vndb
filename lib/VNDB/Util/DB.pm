@@ -19,6 +19,7 @@ $VERSION = $VNDB::VERSION;
   DBGetVN DBAddVN DBEditVN DBHideVN DBUndefRG DBVNCache
   DBGetRelease DBAddRelease DBEditRelease DBHideRelease
   DBGetProducer DBGetProducerVN DBAddProducer DBEditProducer DBHideProducer
+  DBGetThreads DBGetPosts DBAddPost DBEditPost DBEditThread DBAddThread
   DBExec DBRow DBAll DBLastId
 |;
 
@@ -1126,6 +1127,206 @@ sub DBHideProducer { # id, hidden
       WHERE id = %d|,
     $h, $id);
 }
+
+
+
+
+
+#-----------------------------------------------------------------------------#
+#                            D I S C U S S I O N S                            #
+#-----------------------------------------------------------------------------#
+
+
+sub DBGetThreads { # %options->{ id type iid results page what }
+  my($s, %o) = @_;
+
+  $o{results} ||= 50;
+  $o{page} ||= 1;
+  $o{what} ||= '';
+  $o{order} ||= 't.id DESC';
+
+  my %where = (
+    $o{id} ? (
+      't.id = %d' => $o{id} ) : (),
+    !$o{id} ? (
+      't.hidden = 0' => 1 ) : (),
+    $o{type} && !$o{iid} ? (
+      't.id IN(SELECT tid FROM threads_tags WHERE type = !s)' => $o{type} ) : (),
+    $o{type} && $o{iid} ? (
+      'tt.type = !s' => $o{type}, 'tt.iid = %d' => $o{iid} ) : (),
+  );
+  my $where = scalar keys %where ? 'WHERE !W' : '';
+
+  my $select = 't.id, t.title, t.count, t.locked, t.hidden';
+  $select .= ', tp.uid, tp.date, u.username' if $o{what} =~ /firstpost/;
+  $select .= ', tp2.uid AS luid, tp2.date AS ldate, u2.username AS lusername' if $o{what} =~ /lastpost/;
+
+  my @join;
+  push @join, 'JOIN threads_posts tp ON tp.tid = t.id AND tp.num = 1' if $o{what} =~ /firstpost/;
+  push @join, 'JOIN users u ON u.id = tp.uid' if $o{what} =~ /firstpost/;
+  push @join, 'JOIN threads_posts tp2 ON tp2.tid = t.id AND tp2.num = t.count' if $o{what} =~ /lastpost/;
+  push @join, 'JOIN users u2 ON u2.id = tp2.uid' if $o{what} =~ /lastpost/;
+  push @join, 'JOIN threads_tags tt ON tt.tid = t.id' if $o{type} && $o{iid};
+
+  my $r = $s->DBAll(qq|
+    SELECT $select
+      FROM threads t
+      @join
+      $where
+      ORDER BY %s
+      LIMIT %d OFFSET %d|,
+    $where ? \%where : (),
+    $o{order},
+    $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
+  );
+
+  if($o{what} =~ /(tags|tagtitles)/ && $#$r >= 0) {
+    my %r = map {
+      $r->[$_]{tags} = [];
+      ($r->[$_]{id}, $_)
+    } 0..$#$r;
+    
+    if($o{what} =~ /tags/) {
+      ($_->{type}=~s/ +//||1) && push(@{$r->[$r{$_->{tid}}]{tags}}, [ $_->{type}, $_->{iid} ]) for (@{$s->DBAll(q|
+        SELECT tid, type, iid
+          FROM threads_tags
+          WHERE tid IN(!l)|,
+        [ keys %r ]
+      )});
+    }
+    if($o{what} =~ /tagtitles/) {
+      ($_->{type}=~s/ +//||1) && push(@{$r->[$r{$_->{tid}}]{tags}}, [ $_->{type}, $_->{iid}, $_->{title} ]) for (@{$s->DBAll(q|
+        SELECT tt.tid, tt.type, tt.iid, COALESCE(u.username, vr.title, pr.name) AS title
+          FROM threads_tags tt
+          LEFT JOIN vn v ON tt.type = 'v' AND v.id = tt.iid
+          LEFT JOIN vn_rev vr ON vr.id = v.latest
+          LEFT JOIN producers p ON tt.type = 'p' AND p.id = tt.iid
+          LEFT JOIN producers_rev pr ON pr.id = p.latest
+          LEFT JOIN users u ON tt.type = 'u' AND u.id = tt.iid
+          WHERE tt.tid IN(!l)|,
+        [ keys %r ]
+      )});
+    }
+  }
+
+  return $r if !wantarray;
+  return ($r, 0) if $#$r < $o{results};
+  pop @$r;
+  return ($r, 1);
+}
+
+
+sub DBGetPosts { # %options->{ tid num page results }
+  my($s, %o) = @_;
+  
+  $o{results} ||= 50;
+  $o{page} ||= 1;
+
+  my %where = (
+    'tp.tid = %d' => $o{tid},
+    $o{num} ? (
+      'tp.num = %d' => $o{num} ) : (),
+  );
+
+  my $r = $s->DBAll(q|
+    SELECT tp.num, tp.date, tp.edited, tp.msg, tp.hidden, tp.uid, u.username
+      FROM threads_posts tp
+      JOIN users u ON u.id = tp.uid
+      WHERE !W
+      ORDER BY tp.num ASC
+      LIMIT %d OFFSET %d|,
+    \%where,
+    $o{results}, $o{results}*($o{page}-1)
+  );
+
+  return $r if !wantarray;
+}
+
+
+sub DBAddPost { # %options->{ tid uid msg num }
+  my($s, %o) = @_;
+
+  $o{num} ||= $s->DBRow('SELECT num FROM threads_posts WHERE tid = %d ORDER BY num DESC LIMIT 1', $o{tid})->{num}+1;
+  $o{uid} ||= $s->AuthInfo->{id};
+
+  $s->DBExec(q|
+    INSERT INTO threads_posts (tid, num, uid, msg)
+      VALUES(%d, %d, %d, !s)|,
+    @o{qw| tid num uid msg |}
+  );
+  $s->DBExec(q|
+    UPDATE threads
+      SET count = count+1
+      WHERE id = %d|,
+    $o{tid});
+
+  return $o{num};
+}
+
+
+sub DBEditPost { # %options->{ tid num msg hidden }
+  my($s, %o) = @_;
+
+  my %set = (
+    'msg = !s' => $o{msg},
+    'edited = %d' => time,
+    'hidden = %d' => $o{hidden}?1:0,
+  );
+
+  $s->DBExec(q|
+    UPDATE threads_posts
+      SET !H
+      WHERE tid = %d
+        AND num = %d|,
+     \%set, $o{tid}, $o{num}
+  );
+}
+
+
+sub DBEditThread { # %options->{ id title locked hidden tags }
+  my($s, %o) = @_;
+
+  my %set = (
+    'title = !s' => $o{title},
+    'locked = %d' => $o{locked}?1:0,
+    'hidden = %d' => $o{hidden}?1:0,
+  );
+
+  $s->DBExec(q|
+    UPDATE threads
+      SET !H
+      WHERE id = %d|,
+     \%set, $o{id});
+
+  if($o{tags}) {
+    $s->DBExec('DELETE FROM threads_tags WHERE tid = %d', $o{id});
+    $s->DBExec(q|
+      INSERT INTO threads_tags (tid, type, iid)
+        VALUES (%d, !s, %d)|,
+      $o{id}, $_->[0], $_->[1]||0
+    ) for (@{$o{tags}});
+  }
+}
+
+
+sub DBAddThread { # %options->{ title tags }
+  my($s, %o) = @_;
+
+  my $id = $s->DBRow(q|
+    INSERT INTO threads (title)
+      VALUES (!s)
+      RETURNING id|, $o{title}
+    )->{id};
+
+  $s->DBExec(q|
+    INSERT INTO threads_tags (tid, type, iid)
+      VALUES (%d, !s, %d)|,
+    $id, $_->[0], $_->[1]
+  ) for (@{$o{tags}});
+
+  return $id;
+}
+
 
 
 

@@ -1,3 +1,4 @@
+[[= ttabs('u', $d{user}) ]]
 [[
   ($d{pv}, $d{pl}) = ($d{user}{flags} & $VNDB::UFLAGS->{votes}, $d{user}{flags} & $VNDB::UFLAGS->{list}); 
 ]]

@@ -226,7 +226,7 @@ sub VNBrowse {
   if($chr eq 'search') {
    # VNDBID
     return $self->ResRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')
-      if $q =~ /^([vrpud])([0-9]+)(?:\.([0-9]+))?$/;
+      if $q =~ /^([vrptud])([0-9]+)(?:\.([0-9]+))?$/;
     
     if(!($q =~ s/^title://)) {
      # categories

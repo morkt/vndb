@@ -31,17 +31,29 @@ our %VNDBopts = (
   },
   ranks  => [
     [ [ qw| visitor loser user mod admin | ], [] ],
-    {map{$_,1}qw| hist                                     |}, # 0 - visitor (not logged in)
-    {map{$_,1}qw| hist                                     |}, # 1 - loser
-    {map{$_,1}qw| hist edit                                |}, # 2 - user
-    {map{$_,1}qw| hist edit mod lock                       |}, # 3 - mod
-    {map{$_,1}qw| hist edit mod lock del userlist useredit |}, # 4 - admin
+    {map{$_,1}qw| hist                                                    |}, # 0 - visitor (not logged in)
+    {map{$_,1}qw| hist                                                    |}, # 1 - loser
+    {map{$_,1}qw| hist board edit                                         |}, # 2 - user
+    {map{$_,1}qw| hist board boardmod edit mod lock                       |}, # 3 - mod
+    {map{$_,1}qw| hist board boardmod edit mod lock del userlist useredit |}, # 4 - admin
   ],
+  postsperpage => 25,
   imgpath => '/www/vndb/static/cv',
   mappath => '/www/vndb/data/rg',
   docpath => '/www/vndb/data/docs',
 );
 $VNDBopts{ranks}[0][1] = { (map{$_,1} map { keys %{$VNDBopts{ranks}[$_]} } 1..5) };
+
+
+# I wonder why I even made this hash, almost everything is still hardcoded anyway...
+our $DTAGS = {
+  an => 'Announcements',    # 0   - usage restricted to boardmods
+  db => 'VNDB Discussions', # 0
+  v  => 'Visual novels',    # vid
+  #r  => 'Releases',         # rid
+  p  => 'Producers',        # pid
+  u  => 'Users',            # uid
+};
 
 
 our $PLAT = {

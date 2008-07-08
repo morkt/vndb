@@ -1,0 +1,54 @@
+<h2>[[: $p{PageTitle} ]]</h2>
+
+[[ 
+  my %desc = (
+    an => 'Yorhel\'s place to make useless announcements...',
+    db => 'General discussions about VNDB.org. This is the place to be for feature requests and bug reports.',
+    v  => 'Discussions about the visual novels in the database',
+    p  => '...Producers',
+    r  => '...Releases',
+    u  => 'Messages to or discussions about other users on this site.'
+  );
+]]
+
+
+[[ for my $tag (qw|an db v p u|) { ]]-
+
+<br />
+<h3>[[: $VNDB::DTAGS->{$tag} ]]</h3>
+<!--<p class="desc">
+ <i>[[: $desc{$tag} ]]</i>
+</p>-->
+[[ if(@{$d{$tag}}) { ]]-
+<table id="tin">
+ <!--<thead><tr>
+  <td class="tc1">Topic</td>
+  <td class="tc2">Replies</td>
+  <td class="tc3">Starter</td>
+  <td class="tc4">Last post</td>
+ </tr></thead>-->
+[[ for (@{$d{$tag}}) { ]]-
+ <tr>
+  <td class="tc1">
+   <a href="/t[[= $_->{id} ]]" title="[[= join ', ', sort map $$_[1]?$$_[0].$$_[1]:$$_[0], @{$_->{tags}} ]]">[[: $_->{title} ]]</a>
+   [[ if($_->{locked}) { ]]- <b>[locked]</b>[[ } ]]
+  </td>
+  <td class="tc2">[[= $_->{count}-1 ]]</td>
+  <td class="tc3"><a href="/u[[= $_->{uid} ]]">[[= $_->{username} ]]</a></td>
+  <td class="tc4"><a href="/u[[= $_->{luid} ]]">[[= $_->{lusername} ]]</a> @
+   <a href="/t[[= $_->{id}.($_->{count}>$d{ppp}?'/'.ceil($_->{count}/$d{ppp}):'').'#'.$_->{count} ]]">
+    [[= age $_->{ldate} ]]</a></td>
+ </tr>
+[[ } ]]
+</table>
+<a class="right" href="/t/[[= $tag ]]">more...</a>
+[[ } else { ]]-
+ <p>No threads yet.
+ -[[ if($tag eq 'db') { ]]
+  <a href="/t/[[= $tag ]]/new">Start a new thread.</a>
+ [[ } ]]
+ </p>
+[[ } ]]
+<br />
+
+[[ } ]]

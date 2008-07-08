@@ -1,3 +1,4 @@
+[[= ttabs('u', $d{user}, 'list') ]]
 <h2>[[: $p{PageTitle} ]]</h2>
 [[
   my $url = sprintf '/u%d/list', $d{user}{id}; 

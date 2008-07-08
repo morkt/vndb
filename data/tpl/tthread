@@ -1,0 +1,81 @@
+<h2>[[: $p{PageTitle} ]]</h2>
+[[ if($d{t}{hidden}) { ]]
+<span class="warning">This thread has been deleted!</span>
+[[ } ]]
+
+<dl>
+ <dt>Posted in</dt>
+ <dd>
+  [[ for (sort { $$a[0].$$a[1] cmp $$b[0].$$b[1] } @{$d{t}{tags}}) { ]]-
+  <a href="/t/[[= $$_[0] ]]">[[: $VNDB::DTAGS->{$$_[0]} ]]</a>
+  [[ if($$_[1]) { ]]-
+   &gt; <b>[[= $$_[0].$$_[1] ]]</b>:<a href="/t/[[= $$_[0].$$_[1] ]]">[[: $$_[2] ]]</a>[[ } ]]-
+  <br />
+  [[ } ]]
+ </dd>
+</dl>
+
+<br />
+
+[[ 
+  my $pages='';
+  my $lp = ceil($d{t}{count}/$d{ppp});
+  if($d{t}{count} > $d{ppp}) {
+    my @pages = (
+      $d{page} == 1 ? '&lt;&lt;' : '<a href="/t%d">&lt;&lt;</a>',
+      $lp > 2 ? (map
+        $d{page} == $_ ? $_ : '<a href="/t%d/'.$_.'">'.$_.'</a>',
+        2..($lp-1) ) : (),
+      $d{page} == $lp ? '&gt;&gt;' : '<a href="/t%d/'.$lp.'">&gt;&gt;</a>'
+    );
+    $pages = '<p class="browse">'.join(' &nbsp;', map sprintf($_,$d{t}{id}), @pages).'</p>';
+  }
+]]
+
+[[= $pages ]]
+<table id="tth">
+ [[ for (@{$d{p}}) { ]]-
+  <tr>
+   <td class="tc1">
+    <a href="/t[[= $d{t}{id} ]].[[= $_->{num} ]]" name="[[= $_->{num} ]]">#[[= $_->{num} ]]</a>
+    [[ if(!$_->{hidden}) { ]]-
+     by <a href="/u[[= $_->{uid} ]]">[[: $_->{username} ]]</a><br />
+     <i>[[= formatdate('%Y-%m-%d %R', $_->{date}) ]]</i>
+    [[ } ]]
+   </td>
+   <td class="tc2">
+    [[ if($p{AuthId} == $_->{uid} && !$_->{hidden} || $p{Authboardmod}) { ]]-
+     <p class="mod">&lt; <a href="/t[[= $d{t}{id}.'.'.$_->{num} ]]/edit">edit</a> &gt;</p>
+    [[ } ]]
+    [[ if(!$_->{hidden}) { ]]-
+     [[= summary $_->{msg} ]]
+     [[ if($_->{edited}) { ]]<br />
+      <i>last modified -[[= formatdate('%Y-%m-%d %R', $_->{edited}) ]]</i>
+     [[ } ]]
+    [[ } else { ]]
+     <b class="hidden">Post deleted.</b>
+    [[ } ]]
+   </td>
+  </tr>
+ [[ } ]]-
+</table>
+[[= $pages ]]
+
+<br />
+[[ if($lp == $d{page}) { ]]
+ [[ if($d{t}{locked}) { ]]-
+  <p>
+   This thread has been locked, you can't reply anymore.
+  </p>
+ [[ } elsif(!$p{AuthLoggedin}) { ]]-
+  <p>
+   You need to be <a href="/u/login">logged in</a> to reply to this thread.
+  </p>
+ [[ } elsif($p{Authboard} && $lp == $d{page}) { ]]-
+ <form action="/nospam?/t[[= $d{t}{id} ]]/reply" method="post" accept-charset="utf-8" id="qreply">
+  <h3>Quick reply</h3>
+  <textarea name="msg" id="msg" rows="5" cols="70"></textarea>
+  <input type="submit" value="Post reply" />
+ </form>
+ [[ } ]]
+[[ } ]]

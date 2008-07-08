@@ -1,4 +1,4 @@
-[[= $d{type} && $d{type} ne 'u' ? ttabs($d{type}, $d{obj}, 'hist') : '' ]]-
+[[= $d{type} ? ttabs($d{type}, $d{obj}, 'hist') : '' ]]-
 <h2 class="rss">[[: $p{PageTitle} ]]</h2>
 [[ if($d{type} eq 'u' && $#{$d{hist}} < 0) { ]]
 <p>

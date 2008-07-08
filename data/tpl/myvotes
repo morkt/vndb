@@ -1,3 +1,4 @@
+[[= ttabs('u', $d{user}, 'vote') ]]
 <h2>[[: $p{PageTitle} ]]</h2>
 [[ if($#{$d{votes}} < 0) { ]]-
 <p>

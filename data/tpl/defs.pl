@@ -59,6 +59,17 @@ sub wraplong { # text, margin
   s/([^\s\r\n]{$m})([^\s\r\n])/$1 $2/g;
   return $_;
 }
+sub age {
+  my $a = time-$_[0];
+  return sprintf '%d %s', 
+    $a > 60*60*24*365*2       ? ( $a/60/60/24/365,      'years ago'  ) :
+    $a > 60*60*24*(365/12)*2  ? ( $a/60/60/24/(365/12), 'months ago' ) :
+    $a > 60*60*24*7*2         ? ( $a/60/60/24/7,        'weeks ago'  ) :
+    $a > 60*60*24*2           ? ( $a/60/60/24,          'days ago'   ) :
+    $a > 60*60*2              ? ( $a/60/60,             'hours ago'  ) :
+    $a > 60*2                 ? ( $a/60,                'min ago'    ) :
+                                ( $a,                   'sec ago'    ) ;
+}
 
  
 sub wordsplit { # split a string into an array of words, but make sure to not split HTML tags
@@ -134,6 +145,7 @@ sub summary { # cmd, len, def
   my $res = '';
   my $len = 0;
   my $as = 0;
+  my $raw = 0;
   (my $txt = $_[0]) =~ s/\r?\n/\n /g;
   for (split / /, $txt) {
     next if !defined $_ || $_ eq '';
@@ -141,19 +153,31 @@ sub summary { # cmd, len, def
     s/\&/&amp;/g;
     s/>/&gt;/g;
     s/</&lt;/g;
-    while(s/\[url=((https?:\/\/|\/)[^\]>]+)\]/<a href="$1" rel="nofollow">/i) {
-      $l -= length($1)+6;
-      $as++;
+    if(!$raw && s/^\[raw\]//) {
+      $l -= 5;
+      $raw++;
     }
-    if(!$as && s/(http|https):\/\/(.+[0-9a-zA-Z=\/])/<a href="$1:\/\/$2" rel="nofollow">link<\/a>/) {
-      $l = 4;
-    } elsif(!$as) {
-      s/^(.*[^\w]|)([dvpr][0-9]+)\.([0-9]+)([^\w].*|)$/$1<a href="\/$2.$3">$2.$3<\/a>$4/ ||
-      s/^(.*[^\w]|)([duvpr][0-9]+)([^\w].*|)$/$1<a href="\/$2">$2<\/a>$3/;
+    if(!$raw) {
+      $l -= 9 while(s/\[spoiler\]/<b class="spoiler">/i);
+      $l -= 10 while(s/\[\/spoiler\]/<\/b>/i);
+      while(s/\[url=((https?:\/\/|\/)[^\]>]+)\]/<a href="$1" rel="nofollow">/i) {
+        $l -= length($1)+6;
+        $as++;
+      }
+      if(!$as && s/(http|https):\/\/(.+[0-9a-zA-Z=\/])/<a href="$1:\/\/$2" rel="nofollow">link<\/a>/) {
+        $l = 4;
+      } elsif(!$as) {
+        s/^(.*[^\w]|)([tdvpr][0-9]+)\.([0-9]+)([^\w].*|)$/$1<a href="\/$2.$3">$2.$3<\/a>$4/ ||
+        s/^(.*[^\w]|)([tduvpr][0-9]+)([^\w].*|)$/$1<a href="\/$2">$2<\/a>$3/;
+      }
+      while(s/\[\/url\]/<\/a>/i) {
+        $l -= 6;
+        $as--;
+      }
     }
-    while(s/\[\/url\]/<\/a>/i) {
+    if(s/\[\/raw\]//) {
       $l -= 6;
-      $as--;
+      $raw=0;
     }
     $len += $l + 1;
     last if $_[1] && $len > $_[1];
@@ -168,20 +192,28 @@ sub summary { # cmd, len, def
 }
 
 
-sub ttabs { # [vrp], obj, sel
+sub ttabs { # [vrpu], obj, sel
   my($t, $o, $s) = @_;
   $s||='';
   my @act = (
     !$s?'%s':'<a href="/%s">%1$s</a>',
     $$o{locked} ?
       '<b>locked for editing</b>' : (),
-    $p{Authlock} ?
+    $p{Authlock} && $t ne 'u' ?
       sprintf('<a href="/%%s/lock">%s</a>', $$o{locked} ? 'unlock' : 'lock') : (),
-    $p{Authdel} ? (
+    $p{Authdel}  && $t ne 'u' ? (
       sprintf('<a href="/%%s/hide"%s>%s</a>', $t eq 'v' ? ' id="vhide"' : '', $$o{hidden} ? 'unhide' : 'hide')
     ) : (),
-    (!$$o{locked} && !$$o{hidden}) || ($p{Authedit} && $p{Authlock}) ?
+    ($t eq 'u' && $p{Authuseredit}) || ($t ne 'u' && (!$$o{locked} && !$$o{hidden}) || ($p{Authedit} && $p{Authlock})) ?
       ($s eq 'edit' ? 'edit' : '<a href="'.($p{Authedit}?'/%s/edit':'/u/register?n=1').'" '.($t eq 'v' || $t eq 'r' ? 'class="dropdown" rel="nofollow editDD"':'').'>edit</a>') : (),
+
+    $t eq 'u' ? (
+      $o->{flags} & $VNDB::UFLAGS->{votes} ? ( $s eq 'vote' ? 'votes' : '<a href="/%s/votes">votes</a>', ) : (),
+      $o->{flags} & $VNDB::UFLAGS->{list}  ? ( $s eq 'list' ? 'list' : '<a href="/%s/list">list</a>', ) : (),
+    ) : (),
+
+    $t ne 'r' ? (
+      $s eq 'disc' ? 'discussions' : '<a href="/t/%s">discussions</a>', ) : (),
 
     $p{Authhist} ?
       ($s eq 'hist' ? 'history' : '<a href="/%s/hist">history</a>') : (),
@@ -228,6 +260,14 @@ my %pagetitles = (
   home         => 'Visual Novel Database',
   pbrowse      => 'Browse producers',
   userlist     => 'Browse users',
+  tindex       => 'Discussion board index',
+  ttag         => sub {
+    return ($p{ttag}{obj} ? 'Related discussions for ' : '').$p{ttag}{title} },
+  tthread      => sub {
+    return $p{tthread}{t}{title} },
+  tedit        => sub {
+    return $p{tedit}{p} ? 'Edit post' :
+           $p{tedit}{t} ? 'Reply to thread' : 'Start a new thread' },
   myvotes      => sub {
     return $p{myvotes}{user}{username} eq $p{AuthUsername} ? 'My votes' : ('Votes by '.$p{myvotes}{user}{username}); },
   userpage     => sub {
@@ -288,6 +328,7 @@ my %formerr_names = (
   vn          => 'Visual novel relations',
   l_vnn       => 'Visual-novels.net link',
   comm        => 'Edit summary',
+  msg         => 'Message',
 );
 my @formerr_msgs = (
   sub { return sprintf 'Field "%s" is required.', @_ },
@@ -312,6 +353,7 @@ my %formerr_exeptions = (
   nomail     => 'No user found with that email address',
   nojpeg     => 'Image is not in JPEG or PNG format!',
   toolarge   => 'Image is too large (in filesize), try to compress it a little',
+  wrongtag   => 'Wrong tag selected!',
 );
 sub formerr {
   my @err = ref $_[0] eq 'ARRAY' ? @{$_[0]} : ();

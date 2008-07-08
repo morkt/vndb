@@ -6,9 +6,8 @@
  in order to prevent duplicate entries.</span>
 [[ } else { ]]
  <span class="msg">
-  It is currently not possible to delete visual novels from the database, please
-  use the <a href="http://forum.vndb.org/index.php?board=5.0">forums</a> to request
-  a deletion. Also refer to the forums for more serious edits or discussions about changes.
+  Please check the <a href="/t/v[[= $d{id} ]]">discussion board</a> <b>before</b> making
+  any changes!
  </span>
 [[ } if($d{id} && $d{vn}{cid} != $d{vn}{latest}) { ]] 
  <span class="warning">

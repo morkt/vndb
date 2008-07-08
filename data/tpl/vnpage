@@ -2,6 +2,15 @@
 
 <h2>[[: $d{vn}{title} ]]</h2>
 
+
+[[ if($d{vn}{hidden}) { ]]-
+ <span class="warning">
+  This item has been deleted from the database. File a request on the
+  <a href="/t/v[[= $d{vn}{id} ]]">discussion board</a> to undelete this page.
+ </span>
+[[ } ]]
+[[ if(!$d{vn}{hidden} || $p{Authdel}) { ]]-
+
 -[[ if($p{AuthLoggedin}) { ]]
 <p class="mod">&lt; user options - 
   <a href="/u[[= $p{AuthId} ]]/votes" rel="voteDD" class="dropdown">[[= $d{vote}{vid} ? 'your vote: '.$d{vote}{vote} : 'vote' ]]</a>
@@ -9,15 +18,6 @@
 &gt;</p>
 [[ } ]]-
 
-
-[[ if($d{vn}{hidden}) { ]]-
- <span class="warning">
-  This item has been deleted from the database. File a request on the
-  <a href="http://forum.vndb.org/index.php?board=5.0">forums</a>
-  to undelete this page.
- </span>
-[[ } ]]
-[[ if(!$d{vn}{hidden} || $p{Authdel}) { ]]-
 
 
 [[ if($d{change}) { ]]

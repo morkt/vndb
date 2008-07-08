@@ -766,6 +766,27 @@ b.diff_del { font-weight: normal; background-color: #fcc; }
 
 #tpd .tc1 { margin: 0; padding: 0; }
 
+
+/* message board */
+
+#tth tr { border-top: 1px solid #999 }
+#tth .tc1 { width: 150px; border-right: 1px solid #999; padding: 5px; }
+#tth .tc2 { padding: 5px }
+#tth p.mod { margin: -5px; font-size: 10px; }
+#tth .tc2 i { font-size: 10px; float: right; }
+#tth .tc2 b.hidden { font-size: 10px; color: #888; font-weight: normal; }
+#tin .tc1 { width: 400px; }
+#tin .tc2 { width: 25px; }
+#tin .tc4 { text-align: right }
+#tin .tc1 b { font-weight: normal; color: #888; }
+#qreply { display: block; width: 100%; text-align: center }
+#qreply textarea, #qreply input { float: none; margin: auto; }
+a.right { float: right }
+b.spoiler { font-weight: normal; color: #ccc; background-color: #ccc }
+b.spoiler:hover { color: #000; background-color: #eee }
+
+
+
 #debug {
   border-top: 1px solid #ffb4b4;
   background-color: #ffece3;

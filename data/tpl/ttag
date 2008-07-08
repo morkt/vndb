@@ -1,0 +1,57 @@
+[[= $d{obj} ? ttabs($d{type}, $d{obj}, 'disc') : '' ]]-
+<h2>[[: $p{PageTitle} ]]</h2>
+<p>
+ <a href="/t">Discussion board</a>
+ &gt; <a href="/t/[[= $d{type} ]]">[[: $VNDB::DTAGS->{$d{type}} ]]</a>
+ [[ if($d{obj}) { ]]-
+   &gt; <b>[[= $d{tag} ]]</b>:<a href="/t/[[= $d{tag} ]]">[[: $d{title} ]]</a>[[ } ]]-
+</p>
+
+[[ if(@{$d{t}}) { ]]-
+
+[[ if(!$d{obj} && $d{tag} !~ /(an|db)/) {
+ my @tags = grep $$_[0] eq $d{type}, map @{$_->{tags}}, @{$d{t}}; my %tags; my $i=0; ]]-
+<dl>
+ <dt>Recent tags</dt>
+ <dd>
+ [[ for (@tags) { next if $tags{$$_[1]}++; last if $i++ == 5; ]]-
+  <b>[[= $$_[0].$$_[1] ]]</b>:<a href="/t/[[= $$_[0].$$_[1] ]]">[[: $$_[2] ]]</a><br />[[ } ]]
+ </dd>
+</dl>
+[[ } else { ]]
+<br />
+[[ } ]]
+
+
+[[= pagebut('/t/'.$d{tag}) ]]
+<table id="tin">
+ <thead><tr>
+  <td class="tc1">Topic</td>
+  <td class="tc2">#</td>
+  <td class="tc3">Starter</td>
+  <td class="tc4">Last post</td>
+ </tr></thead>
+[[ for (@{$d{t}}) { ]]-
+ <tr>
+  <td class="tc1"><a href="/t[[= $_->{id} ]]" title="[[= join ', ', sort map $$_[1]?$$_[0].$$_[1]:$$_[0], @{$_->{tags}} ]]">[[: $_->{title} ]]</a></td>
+  <td class="tc2">[[= $_->{count}-1 ]]</td>
+  <td class="tc3"><a href="/u[[= $_->{uid} ]]">[[= $_->{username} ]]</a></td>
+  <td class="tc4"><a href="/u[[= $_->{luid} ]]">[[= $_->{lusername} ]]</a> @
+   <a href="/t[[= $_->{id}.($_->{count}>$d{ppp}?'/'.ceil($_->{count}/$d{ppp}):'').'#'.$_->{count} ]]">
+    [[= age $_->{ldate} ]]</a></td>
+ </tr>
+[[ } ]]
+</table>
+[[= pagebut('/t/'.$d{tag}) ]]
+
+[[ } else { ]]
+<p><br />
+ <b>No related threads found.</b>
+</p>
+[[ } ]]-
+
+-[[ if($p{Authboard} && $d{tag} =~ /^(?:db|[vpru][0-9]+)$/) { ]]-
+<br />
+<a class="right" href="/t/[[= $d{tag} ]]/new">create a new thread</a>
+[[ } ]]
+

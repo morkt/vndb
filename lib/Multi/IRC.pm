@@ -146,24 +146,26 @@ sub vndbid { # dest, msg
     for (keys %{$_[HEAP]{log}});
 
   # Four possible options:
-  #  1.  [vpru]+   -> item page
+  #  1.  [tvpru]+  -> item page
   #  2.  [vpr]+.+  -> item revision
   #  3.  d+        -> documentation page
   #  4.  d+.+      -> documentation page # section
+  #  5.  t+.+      -> reply to a thread
 
   my @formats = (
-    BOLD.RED.'['.NORMAL.BOLD.'%s%d'   .RED.']'.NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' %s/%1$s%2$d'.NORMAL,
-    BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'.NORMAL.' %s '.RED.'by'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' %s/%1$s%2$d.%3$d'.NORMAL,
-    BOLD.RED.'['.NORMAL.BOLD.'d%d'    .RED.']'.NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' %s/d%1$d'.NORMAL,
-    BOLD.RED.'['.NORMAL.BOLD.'d%d.%d' .RED.']'.NORMAL.' %s '.RED.'->'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' %s/d%1$d#%2$d'.NORMAL,
+    BOLD.RED.'['.NORMAL.BOLD.'%s%d'   .RED.']'                       .NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' %s/%1$s%2$d'.NORMAL,
+    BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'.NORMAL.RED.' Edit of' .NORMAL.' %s '.RED.'by'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' %s/%1$s%2$d.%3$d'.NORMAL,
+    BOLD.RED.'['.NORMAL.BOLD.'d%d'    .RED.']'                       .NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' %s/d%1$d'.NORMAL,
+    BOLD.RED.'['.NORMAL.BOLD.'d%d.%d' .RED.']'                       .NORMAL.' %s '.RED.'->'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' %s/d%1$d#%2$d'.NORMAL,
+    BOLD.RED.'['.NORMAL.BOLD.'t%d.%d' .RED.']'.NORMAL.RED.' Reply to'.NORMAL.' %s '.RED.'by'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' %s/t%1$d.%2$d'.NORMAL,
   );
 
   # get a list of possible IDs (a la sub summary in defs.pl)
   my @id; # [ type, id, ref ]
   for (split /[, ]/, $m) {
     next if length > 15 or m{[a-z]{3,6}://}i; # weed out URLs and too long things
-    push @id, /^(?:.*[^\w]|)([dvpr])([0-9]+)\.([0-9]+)(?:[^\w].*|)$/ ? [ $1, $2, $3 ]   # matches 2 and 4
-           :  /^(?:.*[^\w]|)([duvpr])([0-9]+)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();       # matches 1 and 3
+    push @id, /^(?:.*[^\w]|)([dvprt])([0-9]+)\.([0-9]+)(?:[^\w].*|)$/ ? [ $1, $2, $3 ]   # matches 2, 4 and 5
+           :  /^(?:.*[^\w]|)([dvprtu])([0-9]+)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();       # matches 1 and 3
   }
 
   # loop through the matched IDs and search the database
@@ -174,11 +176,12 @@ sub vndbid { # dest, msg
     $_[HEAP]{log}{$t.$id.'.'.$rev} = time;
 
    # option 1: item page
-    if($t =~ /[vpru]/ && !$rev) {
+    if($t =~ /[vprtu]/ && !$rev) {
       my $s = $Multi::SQL->prepare(
         $t eq 'v' ? 'SELECT vr.title FROM vn_rev vr JOIN vn v ON v.latest = vr.id WHERE v.id = ?' :
         $t eq 'u' ? 'SELECT u.username AS title FROM users u WHERE u.id = ?' :
         $t eq 'p' ? 'SELECT pr.name AS title FROM producers_rev pr JOIN producers p ON p.latest = pr.id WHERE p.id = ?' :
+        $t eq 't' ? 'SELECT title FROM threads WHERE id = ?' :
                     'SELECT rr.title FROM releases_rev rr JOIN releases r ON r.latest = rr.id WHERE r.id = ?'
       );
       $s->execute($id);
@@ -231,6 +234,22 @@ sub vndbid { # dest, msg
       next if !$sub;
       $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $formats[3],
         $id, $rev, $title, $sub, $VNDB::VNDBopts{root_url});
+
+   # option 5: reply to a thread
+    } elsif($t eq 't' && $rev) {
+      my $s = $Multi::SQL->prepare(q|
+        SELECT t.title, u.username
+          FROM threads t
+          JOIN threads_posts tp ON tp.tid = t.id
+          JOIN users u ON u.id = tp.uid
+          WHERE t.id = ?
+            AND tp.num = ?|);
+      $s->execute($id, $rev);
+      my $r = $s->fetchrow_hashref;
+      $s->finish;
+      next if !$r || ref($r) ne 'HASH';
+      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $formats[4],
+        $id, $rev, $r->{title}, $r->{username}, $VNDB::VNDBopts{root_url});
     }
   }
 }

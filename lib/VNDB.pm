@@ -14,6 +14,7 @@ use VNDB::Util::Response;
 use VNDB::Util::DB;
 use VNDB::Util::Tools;
 use VNDB::Util::Auth;
+use VNDB::Discussions;
 use VNDB::HomePages;
 use VNDB::Producers;
 use VNDB::Releases;
@@ -90,6 +91,24 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
     hist => {'*'=> sub { shift->History('p', shift, $_[1]) } },
   },
   'p+.+'        => sub { shift->PPage($_[0][0], $_[0][1]) },
+ # discussions
+  t => {
+    '/'         => sub { shift->TIndex },
+    search      => sub {}, # search?
+    '*' => {
+      '/'       => sub { shift->TTag($_[1]) },
+      new       => sub { shift->TEdit(0, 0, $_[1]) }, 
+    },
+  },
+  't+' => {
+    '/'         => sub { shift->TThread(shift) },
+    reply       => sub { shift->TEdit(shift) },
+    '+'         => sub { shift->TThread(shift, shift) },
+  },
+  't+.+' => {
+    edit        => sub { shift->TEdit($_[0][0], $_[0][1]) },
+    '/'         => sub { $_[0]->ResRedirect('/t'.$_[1][0].($_[1][1]>$_[0]->{postsperpage}?'/'.ceil($_[1][1]/$_[0]->{postsperpagee}):'').'#'.$_[1][1], 'perm') },
+  },
  # stuff (.xml extension to make sure they aren't counted as pageviews)
   xml => {
     'producers.xml'   => sub { shift->PXML },

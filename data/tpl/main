@@ -15,6 +15,7 @@
 [[ } ]]-
   <script src="[[: $p{st} ]]/files/def.js?[[= $VNDB::VERSION ]]" type="text/javascript"></script>
 [[ if($p{devshit}) { ]]-
+  <link rel="icon" href="/favicon.gif" type="image/gif" />
   <meta name="robots" content="noindex, nofollow" />
 [[ } elsif($p{userlist} || $p{userpage} || $p{userlogin} || $p{userreg} || $p{userpass} || $p{myvotes}
       || $p{vnlist} || $p{hist} || ($p{vnpage} && $p{vnpage}{page} eq 'stats')
@@ -65,6 +66,10 @@
 [[ if($p{hist})      { %d = %{$p{hist}};      ]] [[+ hist      ]][[ }# ]]
 [[ if($p{rpage})     { %d = %{$p{rpage}};     ]] [[+ rpage     ]][[ }  ]]
 [[ if($p{docs})      { %d = %{$p{docs}};      ]] [[+ docs      ]][[ }  ]]
+[[ if($p{tindex})    { %d = %{$p{tindex}};    ]] [[+ tindex    ]][[ }  ]]
+[[ if($p{ttag})      { %d = %{$p{ttag}};      ]] [[+ ttag      ]][[ }  ]]
+[[ if($p{tthread})   { %d = %{$p{tthread}};   ]] [[+ tthread   ]][[ }  ]]
+[[ if($p{tedit})     { %d = %{$p{tedit}};     ]] [[+ tedit     ]][[ }  ]]
 [[ if($p{error})     { %d = %{$p{error}};     ]] [[+ error     ]][[ }  ]]
 </div>
 
@@ -78,8 +83,8 @@
   <li><a href="/p">Producers</a></li>
   <li><a href="/u/list">Users</a></li>
   <li><a href="/hist">Recent changes</a></li>
+  <li><a href="/t">Discussion board</a></li>
   <li><a href="/d6">FAQ</a></li>
-  <li><a href="http://forum.vndb.org/">Forum</a></li>
  </ul>
 
 -[[ if(!$p{AuthLoggedin}) { ]]-
@@ -103,6 +108,7 @@
   <li><a href="/u[[= $p{AuthId} ]]/votes">My votes</a></li>
   <li><a href="/u[[= $p{AuthId} ]]/list">My visual novel list</a></li>
   <li><a href="/u[[= $p{AuthId} ]]/hist">My recent changes</a></li>
+  <li><a href="/t/u[[= $p{AuthId} ]]">My messages</a></li>
  [[ if($p{Authedit}) { ]]-
   <li>&nbsp;</li>
   <li><a href="/v/new">Add visual novel</a></li>

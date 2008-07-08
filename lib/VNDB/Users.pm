@@ -173,6 +173,7 @@ sub UsrEdit {
     done => $d,
     adm => $adm,
     user => $user,
+    u => $u
   });
 }
 

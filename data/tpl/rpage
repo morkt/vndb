@@ -4,8 +4,7 @@
 [[ if($d{rel}{hidden}) { ]]-
  <span class="warning">
   This item has been deleted from the database. File a request on the
-  <a href="http://forum.vndb.org/index.php?board=5.0">forums</a>
-  to undelete this page.
+  <a href="/t/v[[= $d{rel}{vn}[0]{vid} ]]">discussion board</a> to undelete this page.
  </span>
 [[ } ]]
 [[ if(!$d{rel}{hidden} || $p{Authdel}) { ]]-

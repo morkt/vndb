@@ -1,3 +1,4 @@
+[[= ttabs('u', $d{u}, 'edit') ]]
 <h2>[[: $p{PageTitle} ]]</h2>
 
 -[[ if($d{done}) { ]]

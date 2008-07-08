@@ -6,9 +6,8 @@
  </span>
 [[ } else { ]]
  <span class="msg">
-  It is currently not possible to delete producers from the database, please
-  use the <a href="http://forum.vndb.org/index.php?board=5.0">forums</a> to request
-  a deletion. Also refer to the forums for more serious edits or discussions about changes.
+  Please check the <a href="/t/p[[= $d{id} ]]">discussion board</a> <b>before</b> making
+  any changes!
  </span>
 [[ } if($d{id} && $d{prod}{cid} != $d{prod}{latest}) { ]] 
  <span class="warning">

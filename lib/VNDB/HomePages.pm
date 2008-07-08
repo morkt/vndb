@@ -13,14 +13,10 @@ $VERSION = $VNDB::VERSION;
 sub HomePage {
   my $self = shift;
 
-  # recent edits
-  # recently added visual novels
-  # recently added producers
-  # random visual novels
-  # recent votes
-  # popular visual novels
-
+  my $an = $self->DBGetThreads(type => 'an', order => 't.id DESC', results => 1)->[0];
   $self->ResAddTpl(home => {
+    an          => $an,
+    anpost      => $self->DBGetPosts(tid => $an->{id}, num => 1)->[0],
     recentedits => scalar $self->DBGetHist( results => 10, what => 'iid ititle'),
     recentvns   => scalar $self->DBGetHist( results => 10, what => 'iid ititle', edits => 0, type => 'v'),
     recentps    => scalar $self->DBGetHist( results => 10, what => 'iid ititle', edits => 0, type => 'p'),

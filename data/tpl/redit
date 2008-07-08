@@ -3,9 +3,8 @@
 
 [[ if($d{id}) { ]]
  <span class="msg">
-  It is currently not possible to delete releases from the database, please
-  use the <a href="http://forum.vndb.org/index.php?board=5.0">forums</a> to request
-  a deletion. Also refer to the forums for more serious edits or discussions about changes.
+  Please check the <a href="/t/v[[= $d{rel}{vn}[0]{vid} ]]">discussion board</a> <b>before</b> making
+  any changes!
  </span>
 [[ } if($d{id} && $d{rel}{cid} != $d{rel}{latest}) { ]] 
  <span class="warning">

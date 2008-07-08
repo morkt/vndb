@@ -10,16 +10,15 @@
  and they can vote on all visual novels.<br /><br />
  
  Feel free to <a href="/v">browse around</a>, <a href="/u/register">register an account</a>
- or to discuss about the database at our <a href="http://forum.vndb.org/">forums</a>.
+ or to participate in the discussions about visual novels or VNDB on our <a href="/t">discussion board</a>.
 </p>
 
-<h3 class="home">VNDB 1.18!</h3>
+<h3 class="home">[[: $d{an}{title} ]]-
+ <p class="actions">by <a href="/u[[= $d{anpost}{uid} ]]">[[: $d{anpost}{username} ]]</a>, -[[= age $d{anpost}{date} ]]</p></h3>
 <p class="desc">
- Shortly after 1.17, I now present 1.18! This update includes a major change in how you refer
- to specific revisions of an entry, adds the ability to select release dates back to 1980, NES
- and MSX to the list of platforms, and a few warnings.
+ [[= summary $d{anpost}{msg}, 200 ]]
  <br />
- <a href="http://forum.vndb.org/index.php?topic=55.0">Read more...</a> - <a href="http://forum.vndb.org/index.php?board=7.0">news archive</a>.
+ <a href="/t[[= $d{an}{id} ]]">Read more...</a> - <a href="/t/an">news archive</a>.
 </p>
 
 <ul class="home">

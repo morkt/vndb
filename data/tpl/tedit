@@ -1,0 +1,24 @@
+<h2>[[: $p{PageTitle} ]]</h2>
+
+
+-[[= cform( [
+ { type => 'error' },
+ { type => 'startform', action => $d{p} ? '/t'.$d{t}{id}.'.'.$d{p}{num}.'/edit' : $d{t} ? '/t'.$d{t}{id}.'/reply' : '/t/'.$d{tag}.'/new' },
+ { type => 'static', name => 'Username', text => '<a href="/u'.($d{p}?$d{p}{uid}:$p{AuthId}).'">'.($d{p}?$d{p}{username}:$p{AuthUsername}).'</a>' },
+ $d{t} && !($d{p} && $d{p}{num} == 1) ? (
+   { type => 'static', name => 'Topic', text => '<a href="/t'.$d{t}{id}.'">'.$d{t}{title}.'</a>.' }
+ ) : (
+   { type => 'input', short => 'title', name => 'Thread title' },
+   { type => 'input', short => 'tags', name => 'Tags' },
+   $p{Authboardmod} ? (
+     { type => 'check', short => 'lock', name => 'Locked' },
+   ) : (),
+ ),
+ $p{Authboardmod} ? (
+   { type => 'check', short => 'hide', name => 'Hidden' },
+ ) : (),
+ { type => 'textarea', short => 'msg', name => 'Message', rows => 10, cols => 60 },
+ { type => 'submit', text => 'Submit' },
+ { type => 'endform' },
+], $d{form}) ]]-
+
