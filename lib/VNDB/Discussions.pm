@@ -62,7 +62,7 @@ sub TEdit {
     );
     $frm->{msg} =~ s/[\r\s\n]$//g;
 
-    my @tags = !$frm->{tags} || $frm->{_err} ? () : map {
+    my %tags = !$frm->{tags} || $frm->{_err} ? () : map {
       $frm->{_err} = [ 'wrongtag' ] if
         !/^([a-z]{1,2})([0-9]*)$/ || !$VNDB::DTAGS->{$1}
         || $1 eq 'v'  && (!$2 || !$self->DBGetVN(id => $2)->[0])
@@ -70,8 +70,9 @@ sub TEdit {
         || $1 eq 'p'  && (!$2 || !$self->DBGetProducer(id => $2)->[0])
         || $1 eq 'u'  && (!$2 || !$self->DBGetUser(id => $2)->[0])
         || $1 eq 'an' && !$self->AuthCan('boardmod');
-      [ $1, $2||0 ]
+      $1.($2||0) => [ $1, $2||0 ]
     } split / /, $frm->{tags};
+    my @tags = values %tags;
 
     if(!$frm->{_err}) {
       my $otid = $tid;
