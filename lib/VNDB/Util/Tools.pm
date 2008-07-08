@@ -137,7 +137,7 @@ sub AddDefaultStuff {
   $self->ResAddTpl(st => $self->{static_url});
 
   $self->ResAddTpl('Stat'.$_, $self->DBTableCount($_))
-    for (qw|users producers vn releases votes|);
+    for (qw|users producers vn releases|);
 
  # development shit
   if($self->{debug}) {

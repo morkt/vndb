@@ -28,7 +28,8 @@ sub datestr {
   return 'unknown' if $d[0] == 0;
   my $r = sprintf $d[1] == 99 ? '%04d' : $d[2] == 99 ? '%04d-%02d' : '%04d-%02d-%02d', @d;
   $r = 'TBA' if $d[0] == 9999;
-  return ($b?'<b class="future">':'').$r.($b?'</b>':'');
+  $r =~ s/^[0-9]{4}-// if $_[1];
+  return ($b&&!$_[1]?'<b class="future">':'').$r.($b?'</b>':'');
 }
 sub mediastr {
   return join(', ', map { 

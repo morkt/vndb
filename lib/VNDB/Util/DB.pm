@@ -813,6 +813,7 @@ sub DBGetRelease { # %options->{ id vid results page rev }
   $o{results} ||= 50;
   $o{page} ||= 1;
   $o{what} ||= '';
+  $o{order} ||= 'rr.released ASC';
   my %where = (
     !$o{id} && !$o{rev} ? (
       'r.hidden = 0' => 1 ) : (),
@@ -822,6 +823,8 @@ sub DBGetRelease { # %options->{ id vid results page rev }
       'c.rev = %d' => $o{rev} ) : (),
     $o{vid} ? (
       'rv.vid = %d' => $o{vid} ) : (),
+    defined $o{unreleased} ? (
+      q|rr.released %s TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer| => $o{unreleased} ? '>' : '<=' ) : (),
   );
 
   my $where = scalar keys %where ? 'WHERE !W' : '';
@@ -839,9 +842,10 @@ sub DBGetRelease { # %options->{ id vid results page rev }
       FROM releases_rev rr
       @join
       $where
-      ORDER BY rr.released ASC
+      ORDER BY %s
       LIMIT %d OFFSET %d|,
     $where ? \%where : (),
+    $o{order},
     $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
   );
   $_->{released} = sprintf '%08d', $_->{released} for @$r;

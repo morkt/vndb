@@ -125,7 +125,6 @@
   <li><b>[[= $p{Statvn}||0 ]]</b> visual novels</li>
   <li><b>[[= $p{Statproducers}||0 ]]</b> producers</li>
   <li><b>[[= $p{Statreleases}||0 ]]</b> releases</li>
-  <li><b>[[= $p{Statvotes}||0 ]]</b> votes</li>
   <li><b>[[= $p{Statusers}||0 ]]</b> users</li>
  </ul>
 [[ if(0) { ]] <h2>Most popular</h2>
