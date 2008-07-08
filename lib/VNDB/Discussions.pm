@@ -50,7 +50,7 @@ sub TEdit {
   my $frm = {};
   if($self->ReqMethod eq 'POST') {
     $frm = $self->FormCheck(
-      { name => 'msg', required => 1, maxlength => 1024 },
+      { name => 'msg', required => 1, maxlength => 5000 },
       !$tid || $num == 1 ? (
         { name => 'title', required => 1, maxlength => 50 },
         { name => 'tags', required => 1, maxlength => 50 },
