@@ -40,7 +40,7 @@
 </p>
 <dl>
  <dt>X# or X#.#</dt><dd>
-  A 'VNDBID', as we call them. These are numbers starting with a character (d, p, r, s, u or v),
+  A 'VNDBID', as we call them. These are numbers starting with a character (d, p, r, u or v),
   and are optionally followed by a period and a second number. VNDBIDs will automatically be converted
   into links to the page on the website. For example, typing 'v4.4' will result in '<a href="/v4.4">v4.4</a>'.
  </dd><dt>URL</dt><dd>
