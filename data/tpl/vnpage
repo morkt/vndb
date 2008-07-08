@@ -65,9 +65,6 @@
 </div>
 
 -[[ 
-  $d{vn}{c_votes} =~ s#^([0-9]{2}.[0-9]{2})\|([0-9]{4})$#$2 == 0 ? 'No votes yet' : 
-    $1 == 0 ? sprintf 'N/A (%d vote%s)', $2, $2>1?'s':'' : sprintf '%.2f (%d vote%s)', $1, $2, $2>1?'s':''#e;
-
   my @links = (
    $d{vn}{l_wp} ?      [ 'Wikipedia', 'http://en.wikipedia.org/wiki/%s', $d{vn}{l_wp} ] : (),
    $d{vn}{l_encubed} ? [ 'Encubed',   'http://novelnews.net/tag/%s/', _huri $d{vn}{l_encubed} ] : (),
@@ -86,7 +83,6 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
   <dt>Aliases</dt><dd>[[: $d{vn}{alias} ]]</dd>[[ } ]]-
  [[ if(@links > 0) { ]]-
   <dt>Links</dt><dd>[[= join(', ', map { '<a href="'.sprintf($_->[1],$_->[2]).'">'.$_->[0].'</a>' } @links) ]]</dd>[[ } ]]-
-  <dt>Rating</dt><dd>[[: $d{vn}{c_votes} ]]</dd>
  [[ if($prod) { ]]-
   <dt>Producers</dt><dd>
    [[ for my $l (@lang) { my %l;

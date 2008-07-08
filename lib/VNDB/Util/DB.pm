@@ -428,7 +428,6 @@ sub DBAddVote { # vid, uid, vote
     $_[1], $_[2], $_[3], time
   );
   # XXX: performance improvement: let a cron job handle this
-  $_[0]->DBExec('SELECT calculate_rating()');
 }
 
 
@@ -438,7 +437,6 @@ sub DBDelVote { # uid, vid  # uid = 0 to delete all
     DELETE FROM votes
       WHERE %s vid = %d|,
     $uid, $_[2]);
-  $_[0]->DBExec('SELECT calculate_rating()');
 }
 
 
@@ -617,7 +615,7 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
       'JOIN users u ON u.id = c.requester' ) : (),
   );
 
-  my $sel = 'v.id, v.locked, v.hidden, v.c_released, v.c_languages, v.c_votes, v.c_platforms, vr.title, vr.id AS cid, v.rgraph';
+  my $sel = 'v.id, v.locked, v.hidden, v.c_released, v.c_languages, v.c_platforms, vr.title, vr.id AS cid, v.rgraph';
   $sel .= ', vr.alias, vr.image AS image, vr.img_nsfw, vr.length, vr.desc, vr.l_wp, vr.l_encubed, vr.l_renai, vr.l_vnn' if $o{what} =~ /extended/;
   $sel .= ', c.added, c.requester, c.comments, v.latest, u.username, c.rev, c.causedby' if $o{what} =~ /changes/;
 

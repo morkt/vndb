@@ -14,7 +14,7 @@
 </p>
 
 <h3 class="home">[[: $d{an}{title} ]]-
- <p class="actions">by <a href="/u[[= $d{anpost}{uid} ]]">[[: $d{anpost}{username} ]]</a>, -[[= age $d{anpost}{date} ]]</p></h3>
+ <p class="actions">[[= age $d{anpost}{date} ]]</p></h3>
 <p class="desc">
  [[= summary $d{anpost}{msg}, 200 ]]
  <br />
@@ -29,20 +29,6 @@
 </ul>
 
 <ul class="home">
- <li><b>Recent votes</b></li>
- [[ for (@{$d{recentvotes}}) { ]]-
- <li><a href="/v[[= $_->{vid} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 30 ]]</a> ([[= $_->{vote} ]])</li>
- [[ } ]]
-</ul>
-
-<ul class="home">
- <li><b>Most popular</b></li>
- [[ for (@{$d{popular}}) { $_->{c_votes} =~ s#^([0-9]{2}.[0-9]{2}).+$#sprintf '%.1f', $1#e; ]]-
- <li><a href="/v[[= $_->{id} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 30 ]]</a> ([[= $_->{c_votes} ]])</li>
- [[ } ]]
-</ul>
-
-<ul class="home break">
  <li><b>Recently added visual novels</b></li>
  [[ for (@{$d{recentvns}}) { ]]-
  <li><a href="/v[[= $_->{iid} ]]" title="[[: $_->{ititle} ]]">[[: shorten $_->{ititle}, 30 ]]</a></li>
@@ -55,12 +41,3 @@
  <li><a href="/p[[= $_->{iid} ]]" title="[[: $_->{ititle} ]]">[[: shorten $_->{ititle}, 30 ]]</a></li>
  [[ } ]]-
 </ul>
-
-<ul class="home">
- <li><b>Random visual novels</b></li>
- [[ for (@{$d{randomvns}}) { ]]-
- <li><a href="/v[[= $_->{id} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 30 ]]</a></li>
- [[ } ]]-
-</ul>
-
-

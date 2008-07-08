@@ -20,9 +20,6 @@ sub HomePage {
     recentedits => scalar $self->DBGetHist( results => 10, what => 'iid ititle'),
     recentvns   => scalar $self->DBGetHist( results => 10, what => 'iid ititle', edits => 0, type => 'v'),
     recentps    => scalar $self->DBGetHist( results => 10, what => 'iid ititle', edits => 0, type => 'p'),
-    randomvns   => scalar $self->DBGetVN(   results => 10, order => 'RANDOM()'),
-    recentvotes => scalar $self->DBGetVotes(results => 10, hide => 1),
-    popular     => scalar $self->DBGetVN(   results => 10, order => 'v.c_votes DESC'),
   });
 }
 

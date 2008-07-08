@@ -49,10 +49,10 @@ sub VNPage {
         latest => scalar $self->DBGetVNList(vid => $id, results => 7, hide => 1),
         graph => $self->DBVNListStats(vid => $id),
       },
-      votes => {
-        latest => scalar $self->DBGetVotes(vid => $id, results => 10, hide => 1),
-        graph => $self->DBVoteStats(vid => $id),
-      },
+      #votes => {
+      #  latest => scalar $self->DBGetVotes(vid => $id, results => 10, hide => 1),
+      #  graph => $self->DBVoteStats(vid => $id),
+      #},
     ) : (),
   });
 }
@@ -212,12 +212,13 @@ sub VNBrowse {
   $chr = 'all' if !defined $chr;
 
   my $f = $self->FormCheck(
-    { name => 's', required => 0, default => 'title', enum => [ qw|title released votes| ] },
+    { name => 's', required => 0, default => 'title', enum => [ qw|title released| ] },
     { name => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
     { name => 'q', required => 0, default => '' },
     { name => 'sq', required => 0, default => '' },
     { name => 'p', required => 0, template => 'int', default => 1},
   );
+  $f->{s} = 'title' if $f->{_err};
 
   $f->{q} ||= $f->{sq};
 
@@ -257,7 +258,7 @@ sub VNBrowse {
     @plat ? ( platform => \@plat ) : (),
     results => 50,
     page => $f->{p},
-    order => {title => 'vr.title', released => 'v.c_released', votes => 'v.c_votes'
+    order => {title => 'vr.title', released => 'v.c_released', 
       }->{$f->{s}}.{a=>' ASC',d=>' DESC'}->{$f->{o}},
   )) : ([], 0);
 

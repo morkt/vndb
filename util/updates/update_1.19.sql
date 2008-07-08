@@ -26,3 +26,9 @@ CREATE TABLE threads_posts (
   PRIMARY KEY(tid, num)
 ) WITHOUT OIDS;
 
+
+
+-- Remove the rating/ranking system
+ALTER TABLE vn DROP COLUMN c_votes;
+DROP FUNCTION calculate_rating();
+
