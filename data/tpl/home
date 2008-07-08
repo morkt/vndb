@@ -50,10 +50,10 @@
 </ul>
 
 <ul class="home">
- <li><b>Recently added producers</b></li>
- [[ for (@{$d{recentps}}) { ]]-
- <li><a href="/p[[= $_->{iid} ]]" title="[[: $_->{ititle} ]]">[[: shorten $_->{ititle}, 30 ]]</a></li>
- [[ } ]]-
+ <li><b>Random visual novels</b></li>
+ [[ for (@{$d{randomvns}}) { ]]-
+ <li><a href="/v[[= $_->{id} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 30 ]]</a></li>
+[[ } ]]-
 </ul>
 
 <ul class="home">

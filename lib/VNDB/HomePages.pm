@@ -19,7 +19,7 @@ sub HomePage {
     anpost      => $self->DBGetPosts(tid => $an->{id}, num => 1)->[0],
     recentedits => scalar $self->DBGetHist( results => 10, what => 'iid ititle'),
     recentvns   => scalar $self->DBGetHist( results => 10, what => 'iid ititle', edits => 0, type => 'v'),
-    recentps    => scalar $self->DBGetHist( results => 10, what => 'iid ititle', edits => 0, type => 'p'),
+    randomvns   => scalar $self->DBGetVN(   results => 10, order => 'RANDOM()'),
     recentposts => scalar $self->DBGetThreads(results => 10, what => 'lastpost', order => 'tp2.date DESC'),
    # cache this shit when performance is going to be problematic
     upcomingrel => scalar $self->DBGetRelease(results => 10, unreleased => 1),
