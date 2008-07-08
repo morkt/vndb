@@ -12,7 +12,8 @@ CREATE TABLE threads (
 CREATE TABLE threads_tags (
   tid integer NOT NULL DEFAULT 0 REFERENCES threads (id) DEFERRABLE INITIALLY DEFERRED,
   type char(2) NOT NULL DEFAULT 0,
-  iid integer NOT NULL DEFAULT 0 -- references to (vn|releases|producers|users).id
+  iid integer NOT NULL DEFAULT 0, -- references to (vn|releases|producers|users).id
+  PRIMARY KEY(tid, type, iid)
 ) WITHOUT OIDS;
 
 CREATE TABLE threads_posts (

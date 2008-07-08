@@ -34,7 +34,7 @@ our %VNDBopts = (
     {map{$_,1}qw| hist                                                    |}, # 0 - visitor (not logged in)
     {map{$_,1}qw| hist                                                    |}, # 1 - loser
     {map{$_,1}qw| hist board edit                                         |}, # 2 - user
-    {map{$_,1}qw| hist board boardmod edit mod lock                       |}, # 3 - mod
+    {map{$_,1}qw| hist board boardmod edit mod lock del                   |}, # 3 - mod
     {map{$_,1}qw| hist board boardmod edit mod lock del userlist useredit |}, # 4 - admin
   ],
   postsperpage => 25,

@@ -1,0 +1,65 @@
+:TITLE:Discussion board
+:INC:notfinished
+:INC:index
+
+
+:SUB:Introduction
+<p>
+ <i>todo...</i>
+</p>
+
+
+:SUB:Tags
+<p>
+ To make sure interested people can find your post, all threads have 'tags'
+ that define what the discussion is about. It's possible to add more than
+ one tag to a thread. The following tags can be used:
+</p>
+<dl>
+ <dt>db</dt><dd>
+  VNDB Discussions. This is a general tag for threads not about any specific
+  entry in the database.
+ </dd><dt>v#</dt><dd>
+  For discussions about a particular visual novel. The tag <i>v17</i>, for example,
+  is used for all threads related to <a href="/v17">v17</a>.
+ </dd><dt>p#</dt><dd>
+  Same as <i>v#</i>, but for producers.
+ </dd><dt>u#</dt><dd>
+  The <i>u#</i> tag can be used to notify a user on this site about something
+  he/she must see or to discuss about an edit he/she has made. This is similar
+  to the 'private message' feature of most sites, except it's not 'private'...
+ </dd><dt>an</dt><dd>
+  Used for site announcements. Limited to moderators.
+ </dd>
+</dl>
+
+
+:SUB:Formatting
+<p>
+ The following codes can be used to format your message:
+</p>
+<dl>
+ <dt>X# or X#.#</dt><dd>
+  A 'VNDBID', as we call them. These are numbers starting with a character (d, p, r, s, u or v),
+  and are optionally followed by a period and a second number. VNDBIDs will automatically be converted
+  into links to the page on the website. For example, typing 'v4.4' will result in '<a href="/v4.4">v4.4</a>'.
+ </dd><dt>URL</dt><dd>
+  Any URL (without the use of the [url]-tag, see below) will be converted into a link, similar to the
+  VNDBIDs. Example: 'http://vndb.org/' will be formatted as '<a href="http://vndb.org/">link</a>'.
+ </dd><dt>[url]</dt><dd>
+  The classic BBCode [url]-tag. Can only be used in the form of <i>[url=link]link title[/url]</i>.<br />
+  E.g. '[url=/v]List of visual novels[/url] and [url=http://blicky.net/]some external website[/url]'
+  will be displayed as '<a href="/v">List of visual novels</a> and <a href="http://blicky.net/">some external website</a>'
+ </dd><dt>[spoiler]</dt><dd>
+  The [spoiler]-tag should be used to hide information that could spoil the enjoyment of playing the
+  visual novel for people who haven't done so yet.
+ </dd>
+</dl>
+<p>
+ There is no [img]-tag and there won't likely ever be one, if you want to include
+ screenshots or other images, please upload them to an external hosting service
+ (e.g. <a href="http://tinypic.com/" rel="nofollow">TinyPic</a>) and link to them
+ in your post.
+</p>
+
+
