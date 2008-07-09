@@ -26,10 +26,10 @@ sub spawn {
 
 sub _start {
   $_[KERNEL]->alias_set('maintenance');
-  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:vncache|ratings|revcache|integrity|unkanime|logrotate))+)$/, 'cmd_maintenance');
+  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:vncache|revcache|integrity|unkanime|logrotate))+)$/, 'cmd_maintenance');
   
  # Perform some maintenance functions every day on 0:00
-  $_[KERNEL]->post(core => addcron => '0 0 * * *', 'maintenance vncache ratings integrity unkanime');
+  $_[KERNEL]->post(core => addcron => '0 0 * * *', 'maintenance vncache integrity unkanime');
  # update caches and rotate logs every 1st day of the month at 0:05
   $_[KERNEL]->post(core => addcron => '5 0 1 * *' => 'maintenance revcache logrotate');
 }
@@ -46,12 +46,6 @@ sub cmd_maintenance {
 sub vncache {
   $_[KERNEL]->call(core => log => 3 => 'Updating c_* columns in the vn table...');
   $Multi::SQL->do('SELECT update_vncache(0)');
-}
-
-
-sub ratings {
-  $_[KERNEL]->call(core => log => 3 => 'Recalculating VN ratings...');
-  $Multi::SQL->do('SELECT calculate_rating()');
 }
 
 

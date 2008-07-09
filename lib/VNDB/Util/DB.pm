@@ -1311,13 +1311,14 @@ sub DBEditThread { # %options->{ id title locked hidden tags }
 }
 
 
-sub DBAddThread { # %options->{ title tags }
+sub DBAddThread { # %options->{ title hidden locked tags }
   my($s, %o) = @_;
 
   my $id = $s->DBRow(q|
-    INSERT INTO threads (title)
-      VALUES (!s)
-      RETURNING id|, $o{title}
+    INSERT INTO threads (title, hidden, locked)
+      VALUES (!s, %d, %d)
+      RETURNING id|,
+      $o{title}, $o{hidden}?1:0, $o{locked}?1:0
     )->{id};
 
   $s->DBExec(q|
