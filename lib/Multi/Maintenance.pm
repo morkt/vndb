@@ -18,7 +18,7 @@ sub spawn {
   my $p = shift;
   POE::Session->create(
     package_states => [
-      $p => [qw| _start cmd_maintenance vncache ratings revcache integrity unkanime logrotate |], 
+      $p => [qw| _start cmd_maintenance vncache revcache integrity unkanime logrotate |], 
     ],
   );
 }
