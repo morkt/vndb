@@ -111,7 +111,8 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
    <dt>[[: $VNDB::CAT->{$c}[0] ]]</dt><dd>[[= join(', ', @c) ]]</dd>
   [[ } } ]]
   [[ if(grep $_->[0] =~ /^[tl]/, @{$d{vn}{categories}}) { ]]-
-   <dt>Place/Time</dt><dd>[[= join ', ', map $VNDB::CAT->{substr($_->[0],0,1)}[1]{substr($_->[0],1,2)}, sort grep $_->[0] =~ /^[tl]/, @{$d{vn}{categories}} ]]</dd>
+   <dt>Place/Time</dt><dd>[[= join ', ', map $VNDB::CAT->{substr($_->[0],0,1)}[1]{substr($_->[0],1,2)},
+     sort { $a->[0] cmp $b->[0] } grep $_->[0] =~ /^[tl]/, @{$d{vn}{categories}} ]]</dd>
   [[ } ]]-
  </dl>
  [[ } ]]-

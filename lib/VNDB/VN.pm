@@ -49,10 +49,10 @@ sub VNPage {
         latest => scalar $self->DBGetVNList(vid => $id, results => 7, hide => 1),
         graph => $self->DBVNListStats(vid => $id),
       },
-      #votes => {
-      #  latest => scalar $self->DBGetVotes(vid => $id, results => 10, hide => 1),
-      #  graph => $self->DBVoteStats(vid => $id),
-      #},
+      votes => {
+        latest => scalar $self->DBGetVotes(vid => $id, results => 10, hide => 1),
+        graph => $self->DBVoteStats(vid => $id),
+      },
     ) : (),
   });
 }

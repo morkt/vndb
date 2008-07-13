@@ -10,6 +10,9 @@ TODO:
 	- Admins can change someone's username
 	- Fixed the automatic relogin after changing password
 	- Added lock indicator when browsing threads on a tag
+	- Re-added the vote stats to VN pages
+	- Searching for 'Chinese' doesn't select 'NES'
+	- Place/time category order on VN pages is now consistent
 
 1.19 - 2008-07-08 (r62)
 	- Integrated discussion board
