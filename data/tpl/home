@@ -13,6 +13,7 @@
  or to participate in the discussions about visual novels or VNDB on our <a href="/t">discussion board</a>.
 </p>
 
+[[ if($d{an}{title}) { ]]-
 <h3 class="home">[[: $d{an}{title} ]]-
  <p class="actions">[[= age $d{anpost}{date} ]]</p></h3>
 <p class="desc">
@@ -20,6 +21,7 @@
  <br />
  <a href="/t[[= $d{an}{id} ]]">Read more...</a> - <a href="/t/an">news archive</a>.
 </p>
+[[ } ]]-
 
 <ul class="home">
  <li><b>Recent changes</b></li>

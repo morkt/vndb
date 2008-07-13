@@ -50,7 +50,6 @@ our $DTAGS = {
   an => 'Announcements',    # 0   - usage restricted to boardmods
   db => 'VNDB Discussions', # 0
   v  => 'Visual novels',    # vid
-  #r  => 'Releases',         # rid
   p  => 'Producers',        # pid
   u  => 'Users',            # uid
 };

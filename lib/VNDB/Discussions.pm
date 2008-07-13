@@ -145,6 +145,7 @@ sub TTag {
   my $self = shift;
   my $tag = shift;
   my($type, $iid) = ($1, $2||0) if $tag =~ /^([a-z]{1,2})([0-9]*)$/;
+  return $self->ResNotFound if !$type;
 
   my $f = $self->FormCheck(
     { name => 'p', required => 0, default => 1, template => 'int' },
