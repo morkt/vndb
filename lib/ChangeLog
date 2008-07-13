@@ -7,7 +7,9 @@ TODO:
 	  + Add a link for the hidden 'h' option at /hist
 
 1.20 - ?
-	- ?
+	- Admins can change someone's username
+	- Fixed the automatic relogin after changing password
+	- Added lock indicator when browsing threads on a tag
 
 1.19 - 2008-07-08 (r62)
 	- Integrated discussion board

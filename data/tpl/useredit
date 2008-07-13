@@ -26,6 +26,7 @@
 
  $d{adm} ? (
    { type => 'sub', title => 'Admin', short => 'adm' },
+   { type => 'input', name => 'Username', short => 'username' },
    { type => 'select', name => 'Rank', short => 'rank', options => [
      map { { name => $VNDB::VNDBopts{ranks}[0][0][$_], short => $_ } } 1..($#{$VNDB::VNDBopts{ranks}}-1) ] },
  ) : (),

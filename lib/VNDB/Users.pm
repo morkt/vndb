@@ -125,7 +125,7 @@ sub UsrEdit {
   my $u = $self->AuthInfo();
   return $self->ResDenied if !$u->{id};
   my $adm = $u->{id} != $user;
-  return $self->ResDenied if $adm && !$self->AuthCan('useredit');
+  return $self->ResDenied if $adm && !$self->AuthCan('usermod');
   $u = $self->DBGetUser(uid => $user)->[0] if $adm;
   return $self->ResNotFound if !$u->{id};
 
@@ -137,7 +137,10 @@ sub UsrEdit {
       { name => 'mail',  required => 1, template => 'mail' },
       { name => 'pass1', required => 0, template => 'asciiprint' },
       { name => 'pass2', required => 0, template => 'asciiprint' },
-      { name => 'rank',  required => $adm, enum => [ '1'..($#{$self->{ranks}}-1) ] },
+      $adm ? (
+        { name => 'username',required => 1, template => 'pname', minlength => 2, maxlength => 15 },
+        { name => 'rank',    required => 1, enum => [ '1'..($#{$self->{ranks}}-1) ] },
+      ) : (),
       { name => 'pvotes',required => 0 },
       { name => 'plist', required => 0 },
       { name => 'pign_nsfw', required => 0 },
@@ -149,16 +152,17 @@ sub UsrEdit {
     if(!$frm->{_err}) {
       my $pass = $frm->{pass1} ? md5_hex($frm->{pass1}) : '';
       my %opts = (
-        'mail'        => $frm->{mail},
+        username => $frm->{username}||undef,
+        rank     => $frm->{rank}||undef,
+        mail     => $frm->{mail},
       );
       $opts{passwd}    = $pass if $pass;
-      $opts{rank}      = $frm->{rank} if $adm;
       $opts{flags}     = $frm->{pvotes} ? $VNDB::UFLAGS->{votes} : 0;
       $opts{flags}    += $VNDB::UFLAGS->{list} if $frm->{plist};
       $opts{flags}    += $VNDB::UFLAGS->{nsfw} if $frm->{pign_nsfw};
       $self->DBUpdateUser($u->{id}, %opts);
       return $adm ? $self->ResRedirect('/u'.$user.'/edit?d=1', 'post') :
-            $pass ? $self->AuthLogin($user, $frm->{pass1}, 1, '/u'.$user.'/edit?d=1') :
+            $pass ? $self->AuthLogin($u->{username}, $frm->{pass1}, 1, '/u'.$user.'/edit?d=1') :
                     $self->ResRedirect('/u'.$user.'/edit?d=1', 'post');
     }
   }

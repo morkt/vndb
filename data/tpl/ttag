@@ -33,7 +33,10 @@
  </tr></thead>
 [[ for (@{$d{t}}) { ]]-
  <tr>
-  <td class="tc1"><a href="/t[[= $_->{id} ]]" title="[[= join ', ', sort map $$_[1]?$$_[0].$$_[1]:$$_[0], @{$_->{tags}} ]]">[[: $_->{title} ]]</a></td>
+  <td class="tc1">
+   <a href="/t[[= $_->{id} ]]" title="[[= join ', ', sort map $$_[1]?$$_[0].$$_[1]:$$_[0], @{$_->{tags}} ]]">[[: $_->{title} ]]</a>
+   [[ if($_->{locked}) { ]]- <b>[locked]</b>[[ } ]]
+  </td>
   <td class="tc2">[[= $_->{count}-1 ]]</td>
   <td class="tc3"><a href="/u[[= $_->{uid} ]]">[[= $_->{username} ]]</a></td>
   <td class="tc4"><a href="/u[[= $_->{luid} ]]">[[= $_->{lusername} ]]</a> @
