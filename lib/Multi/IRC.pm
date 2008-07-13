@@ -164,8 +164,8 @@ sub vndbid { # dest, msg
   my @id; # [ type, id, ref ]
   for (split /[, ]/, $m) {
     next if length > 15 or m{[a-z]{3,6}://}i; # weed out URLs and too long things
-    push @id, /^(?:.*[^\w]|)([dvprt])([0-9]+)\.([0-9]+)(?:[^\w].*|)$/ ? [ $1, $2, $3 ]   # matches 2, 4 and 5
-           :  /^(?:.*[^\w]|)([dvprtu])([0-9]+)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();       # matches 1 and 3
+    push @id, /^(?:.*[^\w]|)([dvprt])([1-9][0-9]*)\.([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, $3 ]   # matches 2, 4 and 5
+           :  /^(?:.*[^\w]|)([dvprtu])([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();       # matches 1 and 3
   }
 
   # loop through the matched IDs and search the database
