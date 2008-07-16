@@ -14,6 +14,7 @@ TODO:
 	- Searching for 'Chinese' doesn't select 'NES'
 	- Place/time category order on VN pages is now consistent
 	- Admins can delete users from the DB
+	- Added small NSFW indication for users who have disabled the warning
 
 1.19 - 2008-07-08 (r62)
 	- Integrated discussion board

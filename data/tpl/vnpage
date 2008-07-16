@@ -56,6 +56,9 @@
   <img src="[[: $p{st} ]]/cv/nsfw.png" id="nsfw" class="[[: $p{st} ]]/cv/[[= sprintf '%02d/%d', $d{vn}{image}%100, $d{vn}{image} ]].jpg" />
  [[ } else { ]]
   <img src="[[: $p{st} ]]/cv/[[= sprintf '%02d/%d', $d{vn}{image}%100, $d{vn}{image} ]].jpg" alt="[[: $p{PageTitle} ]]" />
+  [[ if($d{vn}{img_nsfw}) { ]]
+  <p class="nsfw">[ flagged as NSFW ]</p>
+  [[ } ]]
  [[ } ]]
 [[ } elsif($d{vn}{image} < 0) { ]]-
  [processing image, please return in a few minutes]
