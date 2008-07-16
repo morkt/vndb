@@ -253,6 +253,9 @@ DOMLoad(function() {
     }
   }
 
+ // userdel
+  cl('userdel', function() { return confirm("Completely remove this account from the site?") });
+
  // vote warnings
   cl('dovote_10', function() { return confirm(
      "You are about to give this visual novel a 10 out of 10. This is a rather extreme rating, "

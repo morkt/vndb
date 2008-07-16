@@ -33,7 +33,7 @@
 <ul class="home">
  <li><b>Recent posts</b></li>
  [[ for (@{$d{recentposts}}) { ]]-
- <li><a href="/t[[= $_->{id}.'.'.$_->{count} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 25 ]]</a> <i>[[: $_->{lusername} ]]</i></li>
+ <li><a href="/t[[= $_->{id}.'.'.$_->{count} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 25 ]]</a> <i>[[= age $_->{ldate}, 1 ]]</i></li>
  [[ } ]]-
 </ul>
 

@@ -7,7 +7,7 @@ use Exporter 'import';
 use Digest::MD5 'md5_hex';
 
 our $VERSION = $VNDB::VERSION;
-our @EXPORT = qw| UsrLogin UsrLogout UsrReg UsrPass UsrEdit UsrList UsrPage |;
+our @EXPORT = qw| UsrLogin UsrLogout UsrReg UsrPass UsrEdit UsrList UsrPage UsrDel |;
 
 
 sub UsrLogin {
@@ -230,6 +230,15 @@ sub UsrPage {
     },
   });
 }
+
+
+sub UsrDel {
+  my($s, $id) = @_;
+  return $s->ResDenied if !$s->AuthCan('usermod');
+  $s->DBDelUser($id);
+  $s->ResRedirect('/u/list', 'temp');
+}
+
 
 1;
 

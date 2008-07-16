@@ -62,14 +62,19 @@ sub wraplong { # text, margin
 }
 sub age {
   my $a = time-$_[0];
-  return sprintf '%d %s', 
-    $a > 60*60*24*365*2       ? ( $a/60/60/24/365,      'years ago'  ) :
-    $a > 60*60*24*(365/12)*2  ? ( $a/60/60/24/(365/12), 'months ago' ) :
-    $a > 60*60*24*7*2         ? ( $a/60/60/24/7,        'weeks ago'  ) :
-    $a > 60*60*24*2           ? ( $a/60/60/24,          'days ago'   ) :
-    $a > 60*60*2              ? ( $a/60/60,             'hours ago'  ) :
-    $a > 60*2                 ? ( $a/60,                'min ago'    ) :
-                                ( $a,                   'sec ago'    ) ;
+  return sprintf '%d %s%s', 
+    $a > 60*60*24*365*2       ? ( $a/60/60/24/365,      'years'  ) :
+    $a > 60*60*24*(365/12)*2  ? ( $a/60/60/24/(365/12), 'months' ) :
+    $a > 60*60*24*7*2         ? ( $a/60/60/24/7,        'weeks'  ) :
+    $a > 60*60*24*2           ? ( $a/60/60/24,          'days'   ) :
+    $a > 60*60*2              ? ( $a/60/60,             'hours'  ) :
+    $a > 60*2                 ? ( $a/60,                'min'    ) :
+                                ( $a,                   'sec'    ),
+    $_[1]?'':' ago';
+}
+sub userstr { # [ uid, username ] or a hashref containing those keys
+  my($id,$n) = ref($_[0])eq'HASH'?($_[0]{uid}||$_[0]{requester}, $_[0]{username}):@_;
+  return !$id ? '[deleted]' : '<a href="/u'.$id.'">'.$n.'</a>';
 }
 
  
@@ -104,7 +109,7 @@ sub cdiff { # obj1, obj2, @items->[ short, name, serialise, diff, [parsed_x, par
     qq|<a href="/$type$$y{id}" id="revmain">$type$$y{id}</a>&nbsp;</div>|;
 
   if(!$x) { # just show info about the revision if there is no previous edit
-    return $pre.qq|<div id="tmc"><b>Revision $$y{rev}</b> (<a href="/$type$$y{id}/edit?rev=$$y{rev}">edit</a>)<br />By <a href="/u$$y{requester}">$$y{username}</a> on |.
+    return $pre.qq|<div id="tmc"><b>Revision $$y{rev}</b> (<a href="/$type$$y{id}/edit?rev=$$y{rev}">edit</a>)<br />By |.userstr($y).q| on |.
       formatdate('%Y-%m-%d at %R', $$y{added}).'<br /><b>Edit summary:</b><br /><br />'.
       summary($$y{comments}, 0, '[no summary]').'</div>';
   }
@@ -132,8 +137,8 @@ sub cdiff { # obj1, obj2, @items->[ short, name, serialise, diff, [parsed_x, par
     }
   }
   return $pre.'<table id="tmc"><thead><tr><td class="tc1">&nbsp;</td>'.
-    qq|<td class="tc2"><b>Revision $$x{rev}</b> (<a href="/$type$$y{id}/edit?rev=$$x{rev}">edit</a>)<br />By <a href="/u$$x{requester}">$$x{username}</a> on |.formatdate('%Y-%m-%d at %R', $$x{added}).'</td>'.
-    qq|<td class="tc3"><b>Revision $$y{rev}</b> (<a href="/$type$$y{id}/edit?rev=$$y{rev}">edit</a>)<br />By <a href="/u$$y{requester}">$$y{username}</a> on |.formatdate('%Y-%m-%d at %R', $$y{added}).'</td>'.
+    qq|<td class="tc2"><b>Revision $$x{rev}</b> (<a href="/$type$$y{id}/edit?rev=$$x{rev}">edit</a>)<br />By |.userstr($x).' on '.formatdate('%Y-%m-%d at %R', $$x{added}).'</td>'.
+    qq|<td class="tc3"><b>Revision $$y{rev}</b> (<a href="/$type$$y{id}/edit?rev=$$y{rev}">edit</a>)<br />By |.userstr($y).' on '.formatdate('%Y-%m-%d at %R', $$y{added}).'</td>'.
     '</tr><tr></tr><tr><td>&nbsp;</td><td colspan="2"><b>Edit summary of revision '.$$y{rev}.'</b><br /><br />'.summary($$y{comments}, 0, '[no summary]').'<br /><br /></td></tr></thead>'.
     join('',map{
       '<tr><td class="tc1">'.$_->[1].'</td><td class="tc2">'.$_->[4].'</td><td class="tc3">'.$_->[5].'</td></tr>'
@@ -203,9 +208,10 @@ sub ttabs { # [vrpu], obj, sel
     $p{Authlock} && $t ne 'u' ?
       sprintf('<a href="/%%s/lock">%s</a>', $$o{locked} ? 'unlock' : 'lock') : (),
     $p{Authdel}  && $t ne 'u' ? (
-      sprintf('<a href="/%%s/hide"%s>%s</a>', $t eq 'v' ? ' id="vhide"' : '', $$o{hidden} ? 'unhide' : 'hide')
-    ) : (),
-    ($t eq 'u' && $p{Authuseredit}) || ($t ne 'u' && (!$$o{locked} && !$$o{hidden}) || ($p{Authedit} && $p{Authlock})) ?
+      sprintf('<a href="/%%s/hide"%s>%s</a>', $t eq 'v' ? ' id="vhide"' : '', $$o{hidden} ? 'unhide' : 'hide') ) : (),
+    $t eq 'u' && $p{Authusermod} ? (
+      '<a href="/%s/del" id="userdel">del</a>' ) : (),
+    ($t eq 'u' && $p{Authusermod}) || ($t ne 'u' && (!$$o{locked} && !$$o{hidden}) || ($p{Authedit} && $p{Authlock})) ?
       ($s eq 'edit' ? 'edit' : '<a href="'.($p{Authedit}?'/%s/edit':'/u/register?n=1').'" '.($t eq 'v' || $t eq 'r' ? 'class="dropdown" rel="nofollow editDD"':'').'>edit</a>') : (),
 
     $t eq 'u' ? (

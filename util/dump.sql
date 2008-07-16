@@ -361,7 +361,8 @@ $$ LANGUAGE plpgsql;
 CREATE SEQUENCE covers_seq;
 CREATE SEQUENCE relgraph_seq;
 
--- We can't live without multi
-INSERT INTO users (id, username, mail, rank, registered)
-  VALUES (1, 'multi', 'multi@vndb.org', 0, EXTRACT(EPOCH FROM NOW()));
+INSERT INTO users (id, username, mail, rank)
+  VALUES (0, 'deleted', 'del@vndb.org', 0);
+INSERT INTO users (username, mail, rank, registered)
+  VALUES ('multi', 'multi@vndb.org', 0, EXTRACT(EPOCH FROM NOW()));
 

@@ -13,7 +13,7 @@ $VERSION = $VNDB::VERSION;
 @EXPORT = qw|
   DBInit DBCheck DBCommit DBRollBack DBExit
   DBLanguageCount DBCategoryCount DBTableCount DBGetHist DBLockItem DBIncId
-  DBGetUser DBAddUser DBUpdateUser
+  DBGetUser DBAddUser DBUpdateUser DBDelUser
   DBGetVotes DBVoteStats DBAddVote DBDelVote
   DBGetVNList DBVNListStats DBAddVNList DBEditVNList DBDelVNList
   DBGetVN DBAddVN DBEditVN DBHideVN DBUndefRG DBVNCache
@@ -272,6 +272,8 @@ sub DBGetUser { # %options->{ username mail passwd order firstchar uid results p
       'ASCII(username) < 97 OR ASCII(username) > 122' => 1 ) : (),
     $o{uid} ? (
       'id = %d' => $o{uid} ) : (),
+    !$o{uid} && !$o{username} ? (
+      'id > 0' => 1 ) : (),
   );
 
   my $where = keys %where ? 'AND !W' : '';
@@ -355,6 +357,18 @@ sub DBUpdateUser { # uid, %options->{ columns in users table }
       SET !H
       WHERE id = %d|,
     \%h, $user);
+}
+
+
+sub DBDelUser { # uid
+  my($s, $id) = @_;
+  $s->DBExec($_, $id) for (
+    q|DELETE FROM vnlists WHERE uid = %d|,
+    q|DELETE FROM votes WHERE uid = %d|,
+    q|UPDATE changes SET requester = 0 WHERE requester = %d|,
+    q|UPDATE threads_posts SET uid = 0 WHERE uid = %d|,
+    q|DELETE FROM users WHERE id = %d|
+  );
 }
 
 

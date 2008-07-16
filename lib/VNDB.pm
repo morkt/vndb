@@ -45,7 +45,7 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
     '/'         => sub { shift->UsrPage(shift) },
     votes       => sub { shift->VNVotes(shift) },
     edit        => sub { shift->UsrEdit(shift) },
-    pending     => sub { shift->UsrPending(shift) },
+    del         => sub { shift->UsrDel(shift) },
     list        => sub { shift->VNMyList(shift) },
     hist => {'*'=> sub { shift->History('u', shift, $_[1]) } },
   },

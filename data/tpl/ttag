@@ -38,8 +38,8 @@
    [[ if($_->{locked}) { ]]- <b>[locked]</b>[[ } ]]
   </td>
   <td class="tc2">[[= $_->{count}-1 ]]</td>
-  <td class="tc3"><a href="/u[[= $_->{uid} ]]">[[= $_->{username} ]]</a></td>
-  <td class="tc4"><a href="/u[[= $_->{luid} ]]">[[= $_->{lusername} ]]</a> @
+  <td class="tc3">[[= userstr $_ ]]</td>
+  <td class="tc4">[[= userstr $_->{luid}, $_->{lusername} ]]- @
    <a href="/t[[= $_->{id}.($_->{count}>$d{ppp}?'/'.ceil($_->{count}/$d{ppp}):'').'#'.$_->{count} ]]">
     [[= age $_->{ldate} ]]</a></td>
  </tr>

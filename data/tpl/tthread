@@ -39,7 +39,7 @@
    <td class="tc1">
     <a href="/t[[= $d{t}{id} ]].[[= $_->{num} ]]" name="[[= $_->{num} ]]">#[[= $_->{num} ]]</a>
     [[ if(!$_->{hidden}) { ]]-
-     by <a href="/u[[= $_->{uid} ]]">[[: $_->{username} ]]</a><br />
+     by -[[= userstr $_ ]]<br />
      <i>[[= formatdate('%Y-%m-%d %R', $_->{date}) ]]</i>
     [[ } ]]
    </td>
