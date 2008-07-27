@@ -34,7 +34,7 @@ sub spawn {
         user => 'Multi_test'.$$,
         server => 'irc.synirc.net',
         ircname => 'VNDB.org Multi',
-        channel => '#vndb',
+        channel => [ '#vndb' ],
         @_
       },
       log => {},
@@ -78,7 +78,7 @@ sub _start {
 
 
 sub irc_001 { 
-  $_[KERNEL]->post(circ => join => $_[HEAP]{o}{channel});
+  $_[KERNEL]->post(circ => join => $_) for (@{$_[HEAP]{o}{channel}});
   $_[KERNEL]->call(core => log => 2, 'Connected to IRC!');
 }
 
@@ -114,17 +114,20 @@ sub irccmd { # dest, cmd, [nick], [prep]
     return $_[KERNEL]->post(circ => privmsg => $dest,
       'Hello, I am HMX-12 Multi v'.$VNDB::VERSION.' made by the great Yorhel!');
   }
+
+  return if $cmd !~ /^(?:say|me|cmd|eval) /;
   
   return $_[KERNEL]->post(circ => privmsg => $dest,
       $prep.'You are not my master!')
-    if !$_[HEAP]{irc}->is_channel_operator($_[HEAP]{o}{channel}, $nick)
-    && !$_[HEAP]{irc}->is_channel_owner($_[HEAP]{o}{channel}, $nick)
-    && !$_[HEAP]{irc}->is_channel_admin($_[HEAP]{o}{channel}, $nick);
+    if !$_[HEAP]{irc}->is_channel_operator($_[HEAP]{o}{channel}[0], $nick)
+    && !$_[HEAP]{irc}->is_channel_owner($_[HEAP]{o}{channel}[0], $nick)
+    && !$_[HEAP]{irc}->is_channel_admin($_[HEAP]{o}{channel}[0], $nick);
 
+ # TODO multi-channel !say and !me
   if($cmd =~ /^say (.+)$/) {
-    $_[KERNEL]->post(circ => privmsg => $_[HEAP]{o}{channel}, $1);
+    $_[KERNEL]->post(circ => privmsg => $_[HEAP]{o}{channel}[0], $1);
   } elsif($cmd =~ /^me (.+)$/) {
-    $_[KERNEL]->post(circ => ctcp => $_[HEAP]{o}{channel}, "ACTION $1");
+    $_[KERNEL]->post(circ => ctcp => $_[HEAP]{o}{channel}[0], "ACTION $1");
   } elsif($cmd =~ /^cmd (.+)$/) {
     $_[KERNEL]->post(core => queue => $1);
     $_[KERNEL]->post(circ => privmsg => $dest => sprintf "Executing command '%s'", $1);
