@@ -192,6 +192,7 @@ sub UsrList {
     { name => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
   );
+  return $self->ResNotFound if $f->{_err};
 
   my($unfo, $np) = $self->DBGetUser(
     order => $f->{s}.($f->{o} eq 'a' ? ' ASC' : ' DESC'),

@@ -45,6 +45,7 @@ sub PBrowse {
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'q', required => 0, default => '' }
   );
+  return $self->ResNotFound if $p->{_err};
 
   my($r, $np) = $self->DBGetProducer(
     $chr ne 'all' ? (
@@ -69,7 +70,9 @@ sub PEdit {
   my $self = shift;
   my $id = shift || 0; # 0 = new
 
-  my $rev = $self->FormCheck({ name => 'rev',  required => 0, default => 0, template => 'int' })->{rev};
+  my $rev = $self->FormCheck({ name => 'rev',  required => 0, default => 0, template => 'int' });
+  return $self->ResNotFound if $rev->{_err};
+  $rev = $rev->{rev};
 
   my $p = $self->DBGetProducer(id => $id, what => 'changes', $rev ? ( rev => $rev ) : ())->[0] if $id;
   return $self->ResNotFound() if $id && !$p;

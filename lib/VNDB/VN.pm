@@ -62,7 +62,9 @@ sub VNEdit {
   my $self = shift;
   my $id = shift; # 0 = new
 
-  my $rev = $self->FormCheck({ name => 'rev',  required => 0, default => 0, template => 'int' })->{rev};
+  my $rev = $self->FormCheck({ name => 'rev',  required => 0, default => 0, template => 'int' });
+  return $self->ResNotFound if $rev->{_err};
+  $rev = $rev->{rev};
 
   my $v = $self->DBGetVN(id => $id, what => 'extended changes relations categories anime', $rev ? ( rev => $rev ) : ())->[0] if $id;
   return $self->ResNotFound() if $id && !$v;
@@ -212,13 +214,14 @@ sub VNBrowse {
   $chr = 'all' if !defined $chr;
 
   my $f = $self->FormCheck(
-    { name => 's', required => 0, default => 'title', enum => [ qw|title released| ] },
+    { name => 's', required => 0, default => 'title', enum => [ qw|title released votes| ] },
     { name => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
     { name => 'q', required => 0, default => '' },
     { name => 'sq', required => 0, default => '' },
     { name => 'p', required => 0, template => 'int', default => 1},
   );
-  $f->{s} = 'title' if $f->{_err};
+  return $self->ResNotFound if $f->{_err};
+  $f->{s} = 'title' if $f->{s} eq 'votes';
 
   $f->{q} ||= $f->{sq};
 

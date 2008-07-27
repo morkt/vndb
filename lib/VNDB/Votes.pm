@@ -18,9 +18,9 @@ sub VNVote {
   return $self->ResDenied() if !$uid;
 
   my $f = $self->FormCheck(
-    { name => 'v', required => 0, default => 0, enum => [ '-1','1'..'10'] }
+    { name => 'v', required => 1, default => 0, enum => [ '-1','1'..'10'] }
   );
-  return $self->ResNotFound() if !$f->{v};
+  return $self->ResNotFound() if $f->{_err};
 
   
   $self->DBDelVote($uid, $id) if $f->{v} == -1 || $self->DBGetVotes(uid => $uid, vid => $id)->[0]{vid};
@@ -42,6 +42,7 @@ sub VNVotes {
     { name => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
   );
+  return $self->ResNotFound if $f->{_err};
 
   my $order = $f->{s} . ($f->{o} eq 'a' ? ' ASC' : ' DESC');
   my ($votes, $np) = $self->DBGetVotes(

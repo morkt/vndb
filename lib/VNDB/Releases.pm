@@ -46,7 +46,9 @@ sub REdit {
 
   my $rid = $act eq 'r' ? $id : 0;
 
-  my $rev = $self->FormCheck({ name => 'rev',  required => 0, default => 0, template => 'int' })->{rev};
+  my $rev = $self->FormCheck({ name => 'rev',  required => 0, default => 0, template => 'int' });
+  return $self->ResNotFound if $rev->{_err};
+  $rev = $rev->{rev};
 
   my $r = $self->DBGetRelease(id => $rid, what => 'changes producers platforms media vn', $rev ? ( rev => $rev ) : ())->[0] if $rid;
   my $ivn = $self->DBGetVN(id => $id)->[0] if !$rid;

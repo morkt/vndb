@@ -76,6 +76,7 @@ sub History { # type(p,v,r,u), id, [rss.xml|/]
     { name =>  'i', required => 0, default => 0, enum => [ 0..1 ] },
     { name =>  'h', required => 0, default => 0, enum => [ 0..2 ] }, # hidden option
   );
+  return $self->ResNotFound if $f->{_err};
 
   my $o =
     $type eq 'u' ? $self->DBGetUser(uid => $id)->[0] :

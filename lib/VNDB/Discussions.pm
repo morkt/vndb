@@ -150,6 +150,7 @@ sub TTag {
   my $f = $self->FormCheck(
     { name => 'p', required => 0, default => 1, template => 'int' },
   );
+  return $self->ResNotFound if $f->{_err};
 
   my $o = !$iid ? undef :
     $type eq 'u' ? $self->DBGetUser(uid => $iid)->[0] :

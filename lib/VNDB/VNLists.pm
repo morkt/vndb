@@ -49,6 +49,7 @@ sub VNMyList {
     { name => 'p', required => 0, template => 'int', default => 1 },
     { name => 't', required => 0, enum => [ -1..$#$VNDB::LSTAT ], default => -1 },
   );
+  return $self->ResNotFound if $f->{_err};
 
   if($self->ReqMethod eq 'POST') {
     my $frm = $self->FormCheck(
