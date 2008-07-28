@@ -110,10 +110,15 @@ sub irccmd { # dest, cmd, [nick], [prep]
   $nick ||= $_[ARG0];
   $prep ||= '';
 
-  if($cmd =~ /^info/) {
-    return $_[KERNEL]->post(circ => privmsg => $dest,
-      'Hello, I am HMX-12 Multi v'.$VNDB::VERSION.' made by the great Yorhel!');
-  }
+  return $_[KERNEL]->post(circ => privmsg => $dest,
+    'Hello, I am HMX-12 Multi v'.$VNDB::VERSION.' made by the great Yorhel!')
+    if $cmd =~ /^info/;
+  return $_[KERNEL]->post(circ => privmsg => $dest,
+    'VNDB ~ The Visual Novel Database ~ http://vndb.org/')
+    if $cmd =~ /^vndb/;
+  return $_[KERNEL]->post(circ => privmsg => $dest,
+    $prep.'this is not a warez channel!')
+    if $cmd =~ /^list/ && $dest eq $_[HEAP]{o}{channel}[0];
 
   return if $cmd !~ /^(?:say|me|cmd|eval) /;
   
