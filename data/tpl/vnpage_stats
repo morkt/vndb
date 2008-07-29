@@ -8,7 +8,7 @@
     $sum += ($_+1) * $d{votes}{graph}[$_];
   }
 ]]
-[[ if(!$d{user} || ($d{pv} && $d{user}{votes})) { ]]-
+[[ if(!$d{user} || ($d{pl} && $d{user}{votes})) { ]]-
 <li><h3>Vote graph <p class="actions">[[= $total ]]- vote[[= $total==1?'':'s' ]]- total
   [[= $total && $d{user} ? sprintf(', average: %.1f.', $sum/$total) : '' ]]</p></h3>
 <table id="tvg">

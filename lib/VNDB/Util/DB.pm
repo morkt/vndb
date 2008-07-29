@@ -15,7 +15,7 @@ $VERSION = $VNDB::VERSION;
   DBLanguageCount DBCategoryCount DBTableCount DBGetHist DBLockItem DBIncId
   DBGetUser DBAddUser DBUpdateUser DBDelUser
   DBGetVotes DBVoteStats DBAddVote DBDelVote
-  DBGetVNList DBVNListStats DBAddVNList DBEditVNList DBDelVNList
+  DBGetVNList DBDelVNList
   DBGetRList DBGetRLists DBEditRList DBDelRList
   DBGetVN DBAddVN DBEditVN DBHideVN DBUndefRG DBVNCache
   DBGetRelease DBAddRelease DBEditRelease DBHideRelease
@@ -357,6 +357,7 @@ sub DBDelUser { # uid
   my($s, $id) = @_;
   $s->DBExec($_, $id) for (
     q|DELETE FROM vnlists WHERE uid = %d|,
+    q|DELETE FROM rlists WHERE uid = %d|,
     q|DELETE FROM votes WHERE uid = %d|,
     q|UPDATE changes SET requester = 0 WHERE requester = %d|,
     q|UPDATE threads_posts SET uid = 0 WHERE uid = %d|,
@@ -490,44 +491,6 @@ sub DBGetVNList { # %options->{ uid vid hide order results page status }
   return ($r, 0) if $#$r < $o{results};
   pop @$r;
   return ($r, 1);
-}
-
-
-sub DBVNListStats { # uid|vid => id
-  my($s, $col, $id) = @_;
-  my $r = [ map 0, 0..$#$VNDB::LSTAT ],
-  my $where = $col ? 'WHERE '.$col.' = '.$id : '';
-  $r->[$_->{status}] = $_->{cnt} for (@{$s->DBAll(qq|
-    SELECT status, COUNT(uid) as cnt
-      FROM vnlists
-      $where
-      GROUP BY status|
-  )});
-  return $r;
-}
-
-
-sub DBAddVNList { # uid, vid, status, [comments]
-  $_[0]->DBExec(q|
-    INSERT INTO vnlists (uid, vid, status, date, comments)
-      VALUES (!l, !s)|,
-    [ @_[1..3], time ],  $_[4]||'');
-}
-
-
-sub DBEditVNList { # %options->{ uid status comments vid }
-  my($s, %o) = @_;
-  my %set;
-  $set{'status = %d'} = $o{status} if defined $o{status};
-  $set{'comments = !s'} = $o{comments} if defined $o{comments};
-  return if !keys %set;
-  $s->DBExec(q|
-    UPDATE vnlists
-      SET !H
-      WHERE uid = %d
-        AND vid IN(!l)|,
-    \%set, $o{uid}, $o{vid}
-  );
 }
 
 

@@ -89,6 +89,7 @@ sub _AuthCheck {
   return 4 if !defined $d->{id};
   return 5 if !$d->{rank};
 
+  $d->{oldvnlist} = $self->DBGetVNList(uid => $d->{id}, results => 1)->[0] ? 1 : 0;
   $info->{_auth} = $d;
 
   return 1;
@@ -110,6 +111,7 @@ sub AuthAddTpl {
       AuthMail => $info->{_auth}{mail},
       AuthId => $info->{_auth}{id},
       AuthNsfw => $info->{_auth}{flags} & $VNDB::UFLAGS->{nsfw},
+      AuthOldList => $info->{_auth}{oldvnlist},
     );
   } else {
     %tpl = (

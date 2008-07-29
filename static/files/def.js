@@ -97,7 +97,7 @@ function dropDown(e) {
       ddy += obj.offsetTop;
     } while(obj = obj.offsetParent);
     if(tg.className.indexOf('above') >= 0) {
-      ddx += 16;
+      ddx += 25;
       ddy -= x(tg.rel).offsetHeight - 20;
     }
     else
@@ -112,7 +112,7 @@ function dropDown(e) {
     var mouseX = e.pageX || (e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
     var mouseY = e.pageY || (e.clientY + document.body.scrollTop  + document.documentElement.scrollTop);
     var obj = x(dds.rel);
-    if((mouseX < ddx-15 || mouseX > ddx+obj.offsetWidth+5 || mouseY < ddy-20 || mouseY > ddy + obj.offsetHeight)
+    if((mouseX < ddx-25 || mouseX > ddx+obj.offsetWidth+5 || mouseY < ddy-20 || mouseY > ddy + obj.offsetHeight)
         || (tg.nodeName.toLowerCase() == 'a' && tg.className.indexOf('dropdown') >= 0 && tg != dds)) {
       obj.style.left = '-500px';
       dds = null;

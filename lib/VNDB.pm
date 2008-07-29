@@ -45,8 +45,7 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
     edit        => sub { shift->UsrEdit(shift) },
     del         => sub { shift->UsrDel(shift) },
     list        => sub { shift->RList(shift) },
-    #vlist       => sub { shift->VNMyList(shift) },
-    #votes       => sub { shift->VNVotes(shift) },
+    vlist       => sub { shift->VNMyList(shift) },
     hist => {'*'=> sub { shift->History('u', shift, $_[1]) } },
   },
  # visual novels
@@ -61,7 +60,6 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
     rg          => sub { shift->VNPage(shift, shift) },
     edit        => sub { shift->VNEdit(shift) },
     vote        => sub { shift->VNVote(shift) },
-    #list        => sub { shift->VNListMod(shift) },
     add         => sub { shift->REdit('v', shift) },
     lock        => sub { shift->VNLock(shift) },     
     hide        => sub { shift->VNHide(shift) },
@@ -95,7 +93,6 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
  # discussions
   t => {
     '/'         => sub { shift->TIndex },
-    search      => sub {}, # search?
     '*' => {
       '/'       => sub { shift->TTag($_[1]) },
       new       => sub { shift->TEdit(0, 0, $_[1]) }, 

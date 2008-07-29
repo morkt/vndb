@@ -167,7 +167,6 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
 [[ if($d{page} eq 'rg') {    ]][[+ vnpage_rg    ]][[ } ]]
 
 [[ if($p{AuthLoggedin}) { ]]-
-
 <div class="dropdown" id="voteDD">
  <ul>
  [[ if($d{vote}{vid}) { ]]-
@@ -177,19 +176,6 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
  [[ } ]]
  </ul>
 </div>
-
-[[ if(0) { ]]
-<div class="dropdown" id="listDD">
- <ul>
-  [[ for (0..$#$VNDB::LSTAT) { ]]-
-  <li><a href="/v[[= $d{vn}{id} ]]/list?s=[[= $_ ]]" [[= $_ == 6 ? ' id="askcomment"' : '' ]]>[[: $VNDB::LSTAT->[$_] ]]</a></li>
-  [[ } if($d{list}{vid}) { ]]-
-  <li><a href="/v[[= $d{vn}{id} ]]/list?s=-1">Remove</a></li>
-  [[ } ]]-
- </ul>
-</div>
-[[ } ]]
-
 [[ } ]]
 
 

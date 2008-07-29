@@ -109,6 +109,8 @@
   <li><a href="/u[[= $p{AuthId} ]]">[[: $p{AuthUsername} ]]</a> ([[: $p{AuthRankname} ]])</li>
   <!--<li><a href="/u[[= $p{AuthId} ]]/edit">My profile</a></li>-->
   <li><a href="/u[[= $p{AuthId} ]]/list">My visual novel list</a></li>
+  [[ if($p{AuthOldList}) { ]]-
+  <li><a href="/u[[= $p{AuthId} ]]/vlist">My visual novel list (old)</a></li>[[ } ]]-
   <li><a href="/t/u[[= $p{AuthId} ]]">My messages</a></li>
   <li><a href="/u[[= $p{AuthId} ]]/hist">My recent changes</a></li>
  [[ if($p{Authedit}) { ]]-

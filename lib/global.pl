@@ -158,14 +158,14 @@ our $CAT = {
 
 
 our $RSTAT = [
-  '[blank]',
+  'Unknown',
   'Pending',
   'Obtained',   # hardcoded
   'On loan',
   'Deleted',
 ];
 our $VSTAT = [
-  '[blank]',
+  'Unknown',
   'Playing',
   'Finished', # hardcoded
   'Stalled',
