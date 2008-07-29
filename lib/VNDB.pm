@@ -20,7 +20,6 @@ use VNDB::Producers;
 use VNDB::Releases;
 use VNDB::VNLists;
 use VNDB::Users;
-use VNDB::Votes;
 use VNDB::VN;
 
 
@@ -43,10 +42,11 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
   },
   'u+' => {
     '/'         => sub { shift->UsrPage(shift) },
-    votes       => sub { shift->VNVotes(shift) },
     edit        => sub { shift->UsrEdit(shift) },
     del         => sub { shift->UsrDel(shift) },
-    list        => sub { shift->VNMyList(shift) },
+    list        => sub { shift->RList(shift) },
+    #vlist       => sub { shift->VNMyList(shift) },
+    #votes       => sub { shift->VNVotes(shift) },
     hist => {'*'=> sub { shift->History('u', shift, $_[1]) } },
   },
  # visual novels
@@ -61,7 +61,7 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
     rg          => sub { shift->VNPage(shift, shift) },
     edit        => sub { shift->VNEdit(shift) },
     vote        => sub { shift->VNVote(shift) },
-    list        => sub { shift->VNListMod(shift) },
+    #list        => sub { shift->VNListMod(shift) },
     add         => sub { shift->REdit('v', shift) },
     lock        => sub { shift->VNLock(shift) },     
     hide        => sub { shift->VNHide(shift) },
@@ -74,6 +74,7 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
     edit        => sub { shift->REdit('r', shift) },
     lock        => sub { shift->RLock(shift) },
     hide        => sub { shift->RHide(shift) },
+    list        => sub { shift->RListMod(shift) },
     hist => {'*'=> sub { shift->History('r', shift, $_[1]) } },
   },
   'r+.+'        => sub { shift->RPage($_[0][0], $_[0][1]) },
@@ -160,6 +161,7 @@ my %OLDuris = (
     }
   },
   'u+' => {
+    votes       => sub { shift->ResRedirect('/u'.(shift).'/list', 'perm') },
     hist=>{rss  => sub { shift->ResRedirect('/u'.(shift).'/hist/rss.xml', 'perm') } },
   },
   'p+' => {

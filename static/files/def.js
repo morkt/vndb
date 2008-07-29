@@ -96,7 +96,12 @@ function dropDown(e) {
       ddx += obj.offsetLeft;
       ddy += obj.offsetTop;
     } while(obj = obj.offsetParent);
-    ddy += 16;
+    if(tg.className.indexOf('above') >= 0) {
+      ddx += 16;
+      ddy -= x(tg.rel).offsetHeight - 20;
+    }
+    else
+      ddy += 16;
     obj = x(tg.rel);
     obj.style.left = ddx+'px';
     obj.style.top = ddy+'px';
@@ -107,8 +112,8 @@ function dropDown(e) {
     var mouseX = e.pageX || (e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
     var mouseY = e.pageY || (e.clientY + document.body.scrollTop  + document.documentElement.scrollTop);
     var obj = x(dds.rel);
-    if((mouseX < ddx-5 || mouseX > ddx+obj.offsetWidth+5 || mouseY < ddy-20 || mouseY > ddy + obj.offsetHeight)
-        || (mouseY < ddy && tg.nodeName.toLowerCase() == 'a' && tg != dds)) {
+    if((mouseX < ddx-15 || mouseX > ddx+obj.offsetWidth+5 || mouseY < ddy-20 || mouseY > ddy + obj.offsetHeight)
+        || (tg.nodeName.toLowerCase() == 'a' && tg.className.indexOf('dropdown') >= 0 && tg != dds)) {
       obj.style.left = '-500px';
       dds = null;
     }
@@ -226,33 +231,6 @@ DOMLoad(function() {
   if(x('adsearch'))
     adsearch();
 
- // vnlist
-  cl('askcomment', function() {
-    this.href = this.href + ';c=' + encodeURIComponent(prompt("Enter personal note (optional)", '')||'');
-    return true;
-  });
-
- // mass-change vnlist status
-  if(x('vnlistchange')) {
-    x('vnlistchange').onchange = function() {
-      var val = this.options[this.selectedIndex].value;
-      if(val == '-3') 
-        return;
-      var l = document.getElementsByTagName('input');
-      var y; var ch=0;
-      for(y=0;y<l.length;y++)
-        if(l[y].type == 'checkbox' && l[y].checked)
-          ch++;
-      if(!ch)
-        return alert('Nothing selected...');
-      if(val == '-1' && !confirm('Are you sure you want to remove the selected items from your visual novel list?'))
-        return;
-      if(val == '-2')
-        x('comments').value = prompt('Enter personal note (leave blank to delete note)','')||'';
-      document.forms[1].submit();
-    }
-  }
-
  // userdel
   cl('userdel', function() { return confirm("Completely remove this account from the site?") });
 
@@ -272,6 +250,59 @@ DOMLoad(function() {
     this.src = this.className;
     this.id = '';
   });
+
+ // rlists
+  i = x('rli');
+  if(i) {
+    var l=i.getElementsByTagName('td');
+    for(i=0;i<l.length;i++)
+      if(l[i].className.indexOf('relhid')>=0)
+        l[i].onclick = function() {
+           var id=this.id.substr(2);
+           var j=0;var o;
+           var op=x('rr'+id+'-1').style.display == 'none' ? 1 : 0;
+           while((o=x('rr'+id+'-'+(++j))) != null)
+             o.style.display = op ? '' : 'none';
+           x('rhd'+id).innerHTML = op ? '&#9662;' : '&#9656;';
+        };
+    var l=x('rli').getElementsByTagName('tr');
+    for(i=0;i<l.length;i++)
+      if(l[i].className.indexOf('relhid')>=0)
+        l[i].style.display = 'none';
+    var allhid=1;
+    cl('relhidpar', function() {
+      allhid=!allhid;
+      l=x('rli').getElementsByTagName('tr');
+      for(i=0;i<l.length;i++)
+        if(l[i].className.indexOf('relhid')>=0)
+          l[i].style.display = allhid ? 'none' : '';
+      l=x('rli').getElementsByTagName('b');
+      for(i=0;i<l.length;i++)
+        if(l[i].id.substr(0,3) == 'rhd')
+          l[i].innerHTML = !allhid ? '&#9662;' : '&#9656;';
+      x('relhidparb').innerHTML = !allhid ? '&#9662;' : '&#9656;';
+    });
+  }
+
+ // mass-change rlist status
+  if(x('vnlistchange')) {
+    x('vnlistchange').onchange = function() {
+      var val = this.options[this.selectedIndex].value;
+      if(val == 'n') 
+        return;
+      var l = x('rli').getElementsByTagName('input');
+      var y; var ch=0;
+      for(y=0;y<l.length;y++)
+        if(l[y].type == 'checkbox' && l[y].checked)
+          ch++;
+      if(!ch)
+        return alert('Nothing selected...');
+      if(val == 'd' && !confirm('Are you sure you want to remove the selected items from your visual novel list?'))
+        return;
+      document.forms[1].submit();
+    }
+  }
+
 
  // spam protection on all forms
   if(document.forms.length > 1)
@@ -308,7 +339,8 @@ DOMLoad(function() {
  // zebra-striped tables (client side!? yes... client side :3)
   var sub = document.getElementsByTagName('tr');
   for(i=1; i<sub.length; i+=2)
-    sub[i].style.backgroundColor = '#f5f5f5';
+    if(!sub[i].style.backgroundColor)
+      sub[i].style.backgroundColor = '#f5f5f5';
 });
 
 
@@ -316,7 +348,7 @@ DOMLoad(function() {
 
 // small hack because the mozilla -moz-inline-stack display hack sucks
 //  (so we're counter-hacking a CSS hack using JS... right)
-if(navigator.userAgent.indexOf('Gecko') >= 0 && navigator.userAgent.indexOf('like Gecko') < 0 && navigator.userAgent.indexOf('fox/3') < 0)
+if(navigator.userAgent.indexOf('Gecko') >= 0 && navigator.userAgent.indexOf('like Gecko') < 0 && navigator.userAgent.indexOf('3.0') < 0)
   document.write('<style type="text/css">.icons.lang { width: 15px; height: 13px; }</style>');
 
 

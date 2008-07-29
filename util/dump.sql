@@ -113,6 +113,16 @@ CREATE TABLE releases_vn (
   PRIMARY KEY(rid, vid)
 );
 
+-- rlists
+CREATE TABLE rlists (
+  uid integer NOT NULL DEFAULT 0,
+  rid integer NOT NULL DEFAULT 0,
+  vstat smallint NOT NULL DEFAULT 0,
+  rstat smallint NOT NULL DEFAULT 0,
+  added bigint NOT NULL DEFAULT DATE_PART('epoch', NOW()),
+  PRIMARY KEY(uid, rid)
+);
+
 -- threads
 CREATE TABLE threads (
   id SERIAL NOT NULL PRIMARY KEY,
@@ -247,6 +257,8 @@ ALTER TABLE releases_rev       ADD FOREIGN KEY (id)        REFERENCES changes   
 ALTER TABLE releases_rev       ADD FOREIGN KEY (rid)       REFERENCES releases      (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE releases_vn        ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE releases_vn        ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE rlists             ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE rlists             ADD FOREIGN KEY (rid)       REFERENCES releases      (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE threads_posts      ADD FOREIGN KEY (tid)       REFERENCES threads       (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE threads_posts      ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE threads_tags       ADD FOREIGN KEY (tid)       REFERENCES threads       (id) DEFERRABLE INITIALLY DEFERRED;

@@ -36,34 +36,4 @@
 [[ } ]]-
 </table></li>
 [[ } } ]]-
-
--[[ $max = 1; $total = 0;
-  for (@{$d{lists}{graph}}) { $total += $_; $max = $_ if $_ > $max; } ]]
-[[ if(!$d{user} || ($d{pl} && $d{user}{vnlist})) { ]]-
-<li class="break"><h3>VN List stats <p class="actions">[[= $total ]]- -[[= $d{user}?'visual novel':'user' ]][[= $total==1?'':'s' ]]- total</p></h3>
-<table id="tus">
- [[ for (0..$#$VNDB::LSTAT) { ]]-
- <tr>
-  <td class="tc1">[[= $VNDB::LSTAT->[$_] ]]</td>
-  <td class="tc2"><div style="width: -[[= ($d{lists}{graph}[$_]/$max)*235 + 5 ]]px">&nbsp;</div>[[= $d{lists}{graph}[$_] ]]</td>
- </tr>
- [[ } ]]-
-</table></li>
-
-[[ if($#{$d{lists}{latest}} >= 0) { ]]
-<li><h3>Recent VN list additions</h3>
-<table id="tur">
-[[ for (@{$d{lists}{latest}}) { ]]-
- <tr>
- [[ if(!$d{user}) { ]]-
-  <td class="tc1">[[= userstr $_ ]]</td>
- [[ } else { ]]-
-  <td class="tc1"><a href="/v[[= $_->{vid} ]]">[[: length($_->{title})>25?substr($_->{title},0,23).'...':$_->{title} ]]</a></td>
- [[ } ]]-
-  <td class="tc2">[[= $VNDB::LSTAT->[$_->{status}] ]]</td>
-  <td class="tc3">[[= formatdate('%Y-%m-%d %R', $_->{date}, 'dh') ]]</td>
- </tr>
-[[ } ]]-
-</table></li>
-[[ } } ]]-
 </ul>

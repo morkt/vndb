@@ -215,7 +215,6 @@ sub ttabs { # [vrpu], obj, sel
       ($s eq 'edit' ? 'edit' : '<a href="'.($p{Authedit}?'/%s/edit':'/u/register?n=1').'" '.($t eq 'v' || $t eq 'r' ? 'class="dropdown" rel="nofollow editDD"':'').'>edit</a>') : (),
 
     $t eq 'u' ? (
-      $o->{flags} & $VNDB::UFLAGS->{votes} ? ( $s eq 'vote' ? 'votes' : '<a href="/%s/votes">votes</a>', ) : (),
       $o->{flags} & $VNDB::UFLAGS->{list}  ? ( $s eq 'list' ? 'list' : '<a href="/%s/list">list</a>', ) : (),
     ) : (),
 
@@ -258,6 +257,26 @@ sub ttabs { # [vrpu], obj, sel
 }
 
 
+# Uwaaaa~ ugly function!
+sub rlist_dd {
+  my $r = shift;
+  return
+    qq|<div class="dropdown rlistdd" id="rlistDD$$r{id}"><ul><li><b>Release status</b></li>|.
+    join('', map {
+      $r->{rlist} && $_ == $r->{rlist}{rstat} ? "<li><b>&nbsp;&nbsp;$$VNDB::RSTAT[$_]</b></li>"
+        : qq|<li><a href="/r$$r{id}/list?r=$_">&nbsp;&nbsp;$$VNDB::RSTAT[$_]</a></li>|
+    } 0..$#$VNDB::RSTAT).
+    qq|</ul><ul><li><b>Play status</b></li>|.
+    join('', map {
+      $r->{rlist} && $_ == $r->{rlist}{vstat} ? "<li><b>&nbsp;&nbsp;$$VNDB::VSTAT[$_]</b></li>"
+        : qq|<li><a href="/r$$r{id}/list?v=$_">&nbsp;&nbsp;$$VNDB::VSTAT[$_]</a></li>|
+    } 0..$#$VNDB::VSTAT).
+    qq|</ul><ul class="full">|.
+    ($r->{rlist} ? qq|<li class="center"><a href="/r$$r{id}/list?d=1">remove from my list</a></li>|
+      : qq|<li class="center"><b>not in your list</b></li>|).
+    qq|</ul></div>|;
+}
+
 
 my %pagetitles = (
   faq          => 'Frequently Asked Questions',
@@ -275,12 +294,12 @@ my %pagetitles = (
   tedit        => sub {
     return $p{tedit}{p} ? 'Edit post' :
            $p{tedit}{t} ? 'Reply to thread' : 'Start a new thread' },
-  myvotes      => sub {
-    return $p{myvotes}{user}{username} eq $p{AuthUsername} ? 'My votes' : ('Votes by '.$p{myvotes}{user}{username}); },
   userpage     => sub {
     return 'User: '.$p{userpage}{user}{username} },
   vnlist       => sub {
     return $p{vnlist}{user}{username} eq $p{AuthUsername} ? 'My visual novel list' : ($p{vnlist}{user}{username}.'\'s visual novel list'); },
+  rlist        => sub {
+    return $p{rlist}{user}{username} eq $p{AuthUsername} ? 'My visual novel list' : ($p{rlist}{user}{username}.'\'s visual novel list'); },
   useredit     => sub {
     return !$p{useredit}{adm} ? 'My account' : 'Edit '.$p{useredit}{form}{username}.'\'s account'; },
   ppage        => sub {

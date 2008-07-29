@@ -15,6 +15,12 @@ TODO:
 	- Place/time category order on VN pages is now consistent
 	- Admins can delete users from the DB
 	- Added small NSFW indication for users who have disabled the warning
+	- Added noindex tag to iid-ttag browser
+	- Replaced last poster with age of last post on home page
+	- Added release list feature and removed the old VNList
+	- Merged user vote list into the new release list (and removed 'hide my
+	  votes' option)
+	- Merged Votes.pm into VNLists.pm
 
 1.19 - 2008-07-08 (r62)
 	- Integrated discussion board

@@ -16,6 +16,7 @@ $VERSION = $VNDB::VERSION;
   DBGetUser DBAddUser DBUpdateUser DBDelUser
   DBGetVotes DBVoteStats DBAddVote DBDelVote
   DBGetVNList DBVNListStats DBAddVNList DBEditVNList DBDelVNList
+  DBGetRList DBGetRLists DBEditRList DBDelRList
   DBGetVN DBAddVN DBEditVN DBHideVN DBUndefRG DBVNCache
   DBGetRelease DBAddRelease DBEditRelease DBHideRelease
   DBGetProducer DBGetProducerVN DBAddProducer DBEditProducer DBHideProducer
@@ -141,7 +142,7 @@ sub DBTableCount { # table (users, producers, vn, releases, votes)
       %s|,
     $_[1],
     $_[1] =~ /producers|vn|releases/ ? 'WHERE hidden = 0' : '',
-  )->{cnt};
+  )->{cnt} - ($_[1] eq 'users' ? 1 : 0);
 }
 
 
@@ -304,14 +305,6 @@ sub DBGetUser { # %options->{ username mail passwd order firstchar uid results p
       [ keys %r ]
     )});
 
-    $r->[$r{$_->{uid}}]{vnlist} = $_->{cnt} for (@{$s->DBAll(q|
-      SELECT uid, COUNT(vid) AS cnt
-        FROM vnlists
-        WHERE uid IN(!l)
-        GROUP BY uid|,
-      [ keys %r ]
-    )});
-
     $r->[$r{$_->{requester}}]{changes} = $_->{cnt} for (@{$s->DBAll(q|
       SELECT requester, COUNT(id) AS cnt
         FROM changes
@@ -390,7 +383,7 @@ sub DBGetVotes { # %options->{ uid vid hide order results page }
   my %where = (
     $o{uid} ? ( 'n.uid = %d' => $o{uid} ) : (),
     $o{vid} ? ( 'n.vid = %d' => $o{vid} ) : (),
-    $o{hide} ? ( 'u.flags & %d = %1$d' => $VNDB::UFLAGS->{votes} ) : (),
+    $o{hide} ? ( 'u.flags & %d = %1$d' => $VNDB::UFLAGS->{list} ) : (),
   );
 
   my $where = scalar keys %where ? 'WHERE !W' : '';
@@ -546,6 +539,119 @@ sub DBDelVNList { # uid, @vid  # uid = 0 to delete all
       WHERE %s vid IN(!l)|,
     $uid, \@vid
   );
+}
+
+
+
+
+
+#-----------------------------------------------------------------------------#
+#                    U S E R   R E L E A S E   L I S T S                      #
+#-----------------------------------------------------------------------------#
+
+
+sub DBGetRList { # %options->{ uid rids }
+  my($s, %o) = @_;
+
+  my %where = (
+    'uid = %d' => $o{uid},
+    $o{rids} ? (
+      'rid IN(!l)' => $o{rids} ) : (),
+  );
+  
+  return $s->DBAll(q|
+    SELECT uid, rid, rstat, vstat
+      FROM rlists
+      WHERE !W|,
+    \%where);
+}
+
+
+# separate function, which also fetches VN info and votes
+sub DBGetRLists { # %options->{ uid order char rstat vstat voted page results }
+  my($s, %o) = @_;
+
+  $o{results} ||= 50;
+  $o{page} ||= 1;
+
+ # bit ugly...
+  my $where = !$o{rstat} && !$o{vstat} ? 'vo.vote IS NOT NULL' : '';
+  $where .= ($where?' OR ':'').q|v.id IN(
+      SELECT irv.vid
+      FROM rlists irl
+      JOIN releases ir ON ir.id = irl.rid
+      JOIN releases_vn irv ON irv.rid = ir.latest 
+      WHERE !W
+    )| if !$o{voted};
+  $where = '('.$where.') AND LOWER(SUBSTR(vr.title, 1, 1)) = \''.$o{char}.'\'' if $o{char};
+  $where = '('.$where.') AND (ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' if defined $o{char} && !$o{char};
+
+ # WHERE clause for the rlists subquery
+  my %where = (
+    'uid = %d' => $o{uid},
+    defined $o{rstat} ? ( 'rstat = %d' => $o{rstat} ) : (),
+    defined $o{vstat} ? ( 'vstat = %d' => $o{vstat} ) : (),
+  );
+
+  my $r = $s->DBAll(qq|
+    SELECT vr.vid, vr.title, v.c_released, v.c_languages, v.c_platforms, COALESCE(vo.vote, 0) AS vote
+      FROM vn v
+      JOIN vn_rev vr ON vr.id = v.latest
+      %s JOIN votes vo ON vo.vid = v.id AND vo.uid = %d
+      WHERE $where
+      ORDER BY %s
+      LIMIT %d OFFSET %d|,
+    $o{voted} ? '' : 'LEFT', $o{uid},   # JOIN if we only want votes, LEFT JOIN if we also want rlist items
+    $o{voted} ? () : \%where,
+    $o{order},
+    $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
+  );
+
+ # now fetch the releases and link them to VNs
+  if(@$r) {
+    my %vns = map { $_->{rels}=[]; $_->{vid}, $_->{rels} } @$r;
+    push @{$vns{$_->{vid}}}, $_ for (@{$s->DBAll(q|
+      SELECT rv.vid, rr.rid, rr.title, rr.original, rr.released, rr.type, rr.language, rr.minage, rl.rstat, rl.vstat
+        FROM rlists rl
+        JOIN releases r ON rl.rid = r.id
+        JOIN releases_rev rr ON rr.id = r.latest
+        JOIN releases_vn rv ON rv.rid = r.latest
+        WHERE rl.uid = %d
+          AND rv.vid IN(!l)
+        ORDER BY rr.released ASC|,
+      $o{uid}, [ keys %vns ]
+    )});
+  }
+
+  return $r if !wantarray;
+  return ($r, 0) if $#$r < $o{results};
+  pop @$r;
+  return ($r, 1);
+}
+
+
+sub DBEditRList { # %options->{ uid rid rstat vstat }
+ # rid can only be a arrayref with UPDATE
+  my($s, %o) = @_;
+  my %s = (
+    defined $o{rstat} ? ( 'rstat = %d', $o{rstat} ) : (),
+    defined $o{vstat} ? ( 'vstat = %d', $o{vstat} ) : (),
+  );
+  $o{rstat}||=0;
+  $o{vstat}||=0;
+
+    $s->DBExec(q|UPDATE rlists SET !H WHERE uid = %d AND rid IN(!l)|,
+      \%s, $o{uid}, ref($o{rid}) eq 'ARRAY' ? $o{rid} : [ $o{rid} ])
+  ||
+    $s->DBExec(q|INSERT INTO rlists (uid, rid, rstat, vstat)
+      VALUES(%d, %d, %d, %d)|,
+      @o{qw| uid rid rstat vstat |});
+}
+
+
+sub DBDelRList { # uid, \@rids
+  my($s, $uid, $rid) = @_;
+  $s->DBExec(q|DELETE FROM rlists WHERE uid = %d AND rid IN(!l)|, $uid, ref($rid) eq 'ARRAY' ? $rid : [ $rid ]);
 }
 
 
@@ -1374,7 +1480,7 @@ sub sqlhelper { # type, query, @list
   $sqlq =~ s/\r?\n/ /g;
   $sqlq =~ s/  +/ /g;
   $sqlq = sqlprint($sqlq, @_) if exists $_[0];
-#  warn "$sqlq\n";
+  #warn "$sqlq\n";
 
   my $q = $s->prepare($sqlq);
   $q->execute();

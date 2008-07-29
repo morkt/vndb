@@ -34,7 +34,10 @@
     <acronym title="[[= $VNDB::RTYP->[$_->{type}] ]]- release" class="icons -[[= lc substr($VNDB::RTYP->[$_->{type}],0,3) ]]">&nbsp;</acronym>
   </td>
   <td class="tc4"><a href="/r[[= $_->{id} ]]" title="[[: $_->{original} || $_->{title} ]]">[[: shorten $_->{title},60 ]]</a></td>
-  <td class="tc5">[[ if($_->{website}) { ]]<a href="[[: $_->{website} ]]" class="icons ext" title="WWW">&nbsp;</a>[[ } ]]</td>
+  <td class="tc5">[[ if($p{AuthId}) { ]]
+    [[= sprintf '<a href="/r%d/list?s=%d" class="dropdown above" rel="rlistDD%1$d">%s</a>', $_->{id}, $_->{rlist} ? (-1, 'x') : (1, '-') ]]
+   [[ } else { ]]&nbsp;[[ } ]]</td>
+  <td class="tc6">[[ if($_->{website}) { ]]<a href="[[: $_->{website} ]]" class="icons ext" title="WWW">&nbsp;</a>[[ } ]]</td>
  </tr>
 [[ } ]]-
 [[ } ]]-
@@ -47,3 +50,7 @@
 [[ } ]]
 
 
+[[ if($p{AuthId}) { ]]
+[[ for my $r (@{$d{rel}}) { ]]-
+-[[= rlist_dd($r) ]]
+[[ } } ]]

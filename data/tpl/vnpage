@@ -12,9 +12,8 @@
 [[ if(!$d{vn}{hidden} || $p{Authdel}) { ]]-
 
 -[[ if($p{AuthLoggedin}) { ]]
-<p class="mod">&lt; user options - 
-  <a href="/u[[= $p{AuthId} ]]/votes" rel="voteDD" class="dropdown">[[= $d{vote}{vid} ? 'your vote: '.$d{vote}{vote} : 'vote' ]]</a>
-- <a href="/u[[= $p{AuthId} ]]/list" rel="listDD" class="dropdown">[[= !$d{list}{vid} ? 'add to vn list' : 'status: '.lc $VNDB::LSTAT->[$d{list}{status}] ]]</a>
+<p class="mod">&lt; 
+  <a href="/u[[= $p{AuthId} ]]/list" rel="voteDD" class="dropdown">[[= $d{vote}{vid} ? 'your vote: '.$d{vote}{vote} : 'vote' ]]</a>
 &gt;</p>
 [[ } ]]-
 
@@ -179,6 +178,7 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
  </ul>
 </div>
 
+[[ if(0) { ]]
 <div class="dropdown" id="listDD">
  <ul>
   [[ for (0..$#$VNDB::LSTAT) { ]]-
@@ -188,6 +188,7 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
   [[ } ]]-
  </ul>
 </div>
+[[ } ]]
 
 [[ } ]]
 

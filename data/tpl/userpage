@@ -1,13 +1,12 @@
 [[= ttabs('u', $d{user}) ]]
 [[
-  ($d{pv}, $d{pl}) = ($d{user}{flags} & $VNDB::UFLAGS->{votes}, $d{user}{flags} & $VNDB::UFLAGS->{list}); 
+  $d{pl} = $d{user}{flags} & $VNDB::UFLAGS->{list};
 ]]
 <h2>[[: $p{PageTitle} ]]</h2>
 <dl>
  <dt>Username</dt><dd>[[: $d{user}{username} ]]- (<a href="/u[[= $d{user}{id} ]]">u[[= $d{user}{id} ]]</a>)</dd>
  <dt>Registered</dt><dd>[[= formatdate('%Y-%m-%d', $d{user}{registered}) ]]</dd>
- <dt>Votes</dt><dd>[[= $d{pv} ? $d{user}{votes}.' (<a href="/u'.$d{user}{id}.'/votes">view all</a>)' : '(hidden)' ]]</dd>
- <dt>VN List</dt><dd>[[= $d{pl} ? $d{user}{vnlist}.' (<a href="/u'.$d{user}{id}.'/list">view all</a>)' : '(hidden)' ]]</dd>
+ <dt>Votes</dt><dd>[[= $d{pl} ? $d{user}{list}.' (<a href="/u'.$d{user}{id}.'/list">view all</a>)' : '(hidden)' ]]</dd>
  <dt>Changes</dt><dd>[[= $d{user}{changes}.($d{user}{changes}>0?' (<a href="/u'.$d{user}{id}.'/hist">recent changes</a>)':'') ]]</dd>
 </dl>
 

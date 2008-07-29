@@ -141,7 +141,6 @@ sub UsrEdit {
         { name => 'username',required => 1, template => 'pname', minlength => 2, maxlength => 15 },
         { name => 'rank',    required => 1, enum => [ '1'..($#{$self->{ranks}}-1) ] },
       ) : (),
-      { name => 'pvotes',required => 0 },
       { name => 'plist', required => 0 },
       { name => 'pign_nsfw', required => 0 },
     );
@@ -157,8 +156,7 @@ sub UsrEdit {
         mail     => $frm->{mail},
       );
       $opts{passwd}    = $pass if $pass;
-      $opts{flags}     = $frm->{pvotes} ? $VNDB::UFLAGS->{votes} : 0;
-      $opts{flags}    += $VNDB::UFLAGS->{list} if $frm->{plist};
+      $opts{flags}     = $frm->{plist} ? $VNDB::UFLAGS->{list} : 0;
       $opts{flags}    += $VNDB::UFLAGS->{nsfw} if $frm->{pign_nsfw};
       $self->DBUpdateUser($u->{id}, %opts);
       return $adm ? $self->ResRedirect('/u'.$user.'/edit?d=1', 'post') :
@@ -169,7 +167,6 @@ sub UsrEdit {
 
   $frm->{$_} ||= $u->{$_}
     for (qw| username mail rank |);
-  $frm->{pvotes}    ||= $u->{flags} & $VNDB::UFLAGS->{votes};
   $frm->{plist}     ||= $u->{flags} & $VNDB::UFLAGS->{list};
   $frm->{pign_nsfw} ||= $u->{flags} & $VNDB::UFLAGS->{nsfw};
   $self->ResAddTpl(useredit => {
@@ -221,10 +218,6 @@ sub UsrPage {
 
   $self->ResAddTpl(userpage => {
     user => $u,
-    lists => {
-      latest => scalar $self->DBGetVNList(uid => $id, results => 7),
-      graph => $self->DBVNListStats(uid => $id),
-    },
     votes => {
       latest => scalar $self->DBGetVotes(uid => $id, results => 10),
       graph => $self->DBVoteStats(uid => $id),

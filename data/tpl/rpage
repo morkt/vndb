@@ -9,9 +9,16 @@
 [[ } ]]
 [[ if(!$d{rel}{hidden} || $p{Authdel}) { ]]-
 
+-[[ if($p{AuthLoggedin}) { ]]
+<p class="mod">&lt;
+<a href="/u[[= $p{AuthId} ]]/list" rel="rlistDD[[= $d{rel}{id} ]]" class="dropdown">
+[[= !$d{rel}{rlist} ? 'not in your list' : "$$VNDB::RSTAT[$d{rel}{rlist}{rstat}] / $$VNDB::VSTAT[$d{rel}{rlist}{vstat}]" ]]
+</a> &gt;</p>
+[[= rlist_dd($d{rel}) ]]
+[[ } ]]-
 
 
-[[ if($d{change}) { ]]
+-[[ if($d{change}) { ]]
 [[= cdiff($d{prev}, $d{rel}, 
   [ vn        => 'Relations',    sub { join("<br />\n", map { $_->{title} } @{$_[0]}) } ],
   [ type      => 'Type',         sub { $VNDB::RTYP->[$_[0] ] } ],

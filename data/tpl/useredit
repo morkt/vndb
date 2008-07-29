@@ -20,7 +20,6 @@
  { type => 'pass', name => 'Confirm', short => 'pass2' },
 
  { type => 'sub', title => 'Miscellaneous options', short => 'misc' },
- { type => 'check', short => 'pvotes', name => sprintf 'Allow other people to see my votes (<a href="/u%d/votes">/u%1$d/votes</a>)', $d{user}  },
  { type => 'check', short => 'plist',  name => sprintf 'Allow other people to see my visual novel list (<a href="/u%d/list">/u%1$d/list</a>)', $d{user}  },
  { type => 'check', short => 'pign_nsfw', name => 'Disable warnings for images that are not safe for work.' },
 

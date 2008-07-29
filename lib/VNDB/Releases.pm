@@ -31,6 +31,9 @@ sub RPage {
   $self->ResRedirect('/v'.$v->{vn}[0]{vid})
     if ($self->ReqHeader('Referer')||'') =~ m{^http://[^/]*(yahoo|google)} && @{$v->{vn}} == 1;
 
+  $v->{rlist} = $self->DBGetRList(rids => [ $id ], uid => $self->AuthInfo->{id})->[0]
+    if $self->AuthInfo->{id};
+
   return $self->ResAddTpl(rpage => {
     rel => $v,
     prev => $c,

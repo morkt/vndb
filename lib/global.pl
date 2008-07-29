@@ -157,6 +157,23 @@ our $CAT = {
 };
 
 
+our $RSTAT = [
+  '[blank]',
+  'Pending',
+  'Obtained',   # hardcoded
+  'On loan',
+  'Deleted',
+];
+our $VSTAT = [
+  '[blank]',
+  'Playing',
+  'Finished', # hardcoded
+  'Stalled',
+  'Dropped',
+];
+
+
+# OLD
 our $LSTAT = [
   'Wishlist',
   'Blacklist',
@@ -187,7 +204,6 @@ our $VRELW = {map{$_=>1}qw| 1 7 9 |};
 
 # users.flags
 our $UFLAGS = {
-  votes => 1,
   list => 4,
   nsfw => 8,
 };

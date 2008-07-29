@@ -30,7 +30,19 @@ sub VNPage {
   my $c = $rev && $rev > 1 && $self->DBGetVN(id => $id, rev => $rev-1, what => 'extended changes relations categories anime')->[0];
   $v->{next} = $rev && $v->{latest} > $v->{cid} ? $rev+1 : 0;
 
-  if($page eq 'rg' && $v->{rgraph}) {
+  my $rel = $self->DBGetRelease(vid => $id, what => 'producers platforms');
+
+  if(!$page && @$rel && $self->AuthInfo->{id}) {
+    my $rl = $self->DBGetRList(
+      rids => [ map $_->{id}, @$rel ],
+      uid => $self->AuthInfo->{id}
+    );
+    for my $i (@$rl) {
+      my $r = (grep $i->{rid} == $_->{id}, @$rel)[0];
+      $r->{rlist} = $i;
+    }
+
+  } elsif($page eq 'rg' && $v->{rgraph}) {
     open(my $F, '<:utf8', sprintf '%s/%02d/%d.cmap', $self->{mappath}, $v->{rgraph}%100, $v->{rgraph}) || die $!;
     $v->{rmap} = join('', (<$F>));
     close($F);
@@ -39,16 +51,12 @@ sub VNPage {
   $self->ResAddTpl(vnpage => {
     vote => $self->AuthInfo->{id} ? $self->DBGetVotes(uid => $self->AuthInfo->{id}, vid => $id)->[0] : {},
     list => $self->AuthInfo->{id} ? $self->DBGetVNList(uid => $self->AuthInfo->{id}, vid => $id)->[0] : {},
-    rel => scalar $self->DBGetRelease(vid => $id, what => 'producers platforms'),
     vn => $v,
+    rel => $rel,
     prev => $c,
     page => $page,
     change => $rev,
     $page eq 'stats' ? (
-      lists => {
-        latest => scalar $self->DBGetVNList(vid => $id, results => 7, hide => 1),
-        graph => $self->DBVNListStats(vid => $id),
-      },
       votes => {
         latest => scalar $self->DBGetVotes(vid => $id, results => 10, hide => 1),
         graph => $self->DBVoteStats(vid => $id),
