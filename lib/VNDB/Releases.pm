@@ -133,7 +133,7 @@ sub REdit {
   }
 
   $self->AddHid($frm);
-  $frm->{_hid} = {map{$_=>1} qw| info pnm prod |}
+  $frm->{_hid} = {map{$_=>1} qw| info pnm prod com |}
     if !$frm->{_hid} && !$rid;
   $self->ResAddTpl(redit => {
     form => $frm,

@@ -21,6 +21,7 @@ TODO:
 	- Merged user vote list into the new release list (and removed 'hide my
 	  votes' option)
 	- Merged Votes.pm into VNLists.pm
+	- Auto-expand edit summary form when adding a release
 
 1.19 - 2008-07-08 (r62)
 	- Integrated discussion board
