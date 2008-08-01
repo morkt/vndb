@@ -50,7 +50,7 @@ sub VNPage {
 
   $self->ResAddTpl(vnpage => {
     vote => $self->AuthInfo->{id} ? $self->DBGetVotes(uid => $self->AuthInfo->{id}, vid => $id)->[0] : {},
-    list => $self->AuthInfo->{id} ? $self->DBGetVNList(uid => $self->AuthInfo->{id}, vid => $id)->[0] : {},
+    wlist => $self->AuthInfo->{id} ? $self->DBGetWishList(uid => $self->AuthInfo->{id}, vid => $id)->[0] : {},
     vn => $v,
     rel => $rel,
     prev => $c,

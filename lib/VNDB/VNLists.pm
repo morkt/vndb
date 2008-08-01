@@ -7,7 +7,7 @@ use Exporter 'import';
 
 use vars ('$VERSION', '@EXPORT');
 $VERSION = $VNDB::VERSION;
-@EXPORT = qw| VNMyList VNVote RListMod RList |;
+@EXPORT = qw| VNMyList VNVote RListMod RList WListMod WList |;
 
 
 sub VNMyList {
@@ -148,6 +148,81 @@ sub RList {
     order => [ $f->{s}, $f->{o} ],
     page => $f->{p},
     npage => $np,
+  });
+}
+
+
+sub WListMod {
+  my $self = shift;
+  my $vid = shift;
+
+  my $f = $self->FormCheck(
+    { name => 'w', required => 1, enum => [ -1..$#$VNDB::RSTAT ] },
+  );
+
+  return $self->ResNotFound if $f->{_err};
+  return $self->ResDenied if !$self->AuthInfo->{id};
+
+  if($f->{w} == -1) {
+    $self->DBDelWishList($self->AuthInfo->{id}, [ $vid ]);
+  } else {
+    $self->DBEditWishList(
+      uid => $self->AuthInfo->{id},
+      vid => $vid,
+      wstat => $f->{w}
+    );
+  }
+
+  return $self->ResRedirect('/v'.$vid, 'temp');
+}
+
+
+sub WList {
+  my $self = shift;
+  my $uid = shift;
+
+  my $u = $self->DBGetUser(uid => $uid)->[0];
+  return $self->ResNotFound if !$uid || !$u || (($self->AuthInfo->{id}||0) != $uid && !($u->{flags} & $VNDB::UFLAGS->{list}));
+
+  my $f = $self->FormCheck(
+    { name => 's', required => 0, default => 'title', enum => [ qw|title wstat added| ] },
+    { name => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
+    { name => 'p', required => 0, template => 'int', default => 1 },
+  );
+  return $self->ResNotFound if $f->{_err};
+
+  if($self->ReqMethod eq 'POST') {
+    return $self->ResDenied if $uid != $self->AuthInfo->{id};
+    my $frm = $self->FormCheck(
+      { name => 'sel', required => 1, multi => 1, template => 'int' },
+      { name => 'vnlistchange', required => 1, enum => [ 'd', '0'.."$#$VNDB::WLIST" ] },
+    );
+    if(!$frm->{_err} && @{$frm->{sel}}) {
+      $self->DBDelWishList($uid, $frm->{sel}) if $frm->{vnlistchange} eq 'd';
+      $self->DBEditWishList(
+        uid => $uid,
+        vid => $frm->{sel},
+        wstat => $frm->{vnlistchange}
+      ) if $frm->{vnlistchange} ne 'd';
+    }
+  }
+
+  my $order = $f->{s} . ($f->{o} eq 'a' ? ' ASC' : ' DESC');
+  $order .= ', title' . ($f->{o} eq 'a' ? ' ASC' : ' DESC') if $f->{s} eq 'wstat';
+  my($list, $np) = $self->DBGetWishList(
+    uid => $u->{id},
+    order => $order,
+    results => 50,
+    what => 'vn',
+    page => $f->{p},
+  );
+
+  $self->ResAddTpl(wlist => {
+    npage => $np,
+    page => $f->{p},
+    list => $list,
+    order => [ $f->{s}, $f->{o} ],
+    user => $u,
   });
 }
 

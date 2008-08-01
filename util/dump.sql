@@ -233,6 +233,14 @@ CREATE TABLE votes (
   PRIMARY KEY(vid, uid)
 );
 
+-- wlists
+CREATE TABLE wlists (
+  uid integer NOT NULL DEFAULT 0,
+  vid integer NOT NULL DEFAULT 0,
+  wstat smallint NOT NULL DEFAULT 0,
+  added bigint NOT NULL DEFAULT DATE_PART('epoch', NOW()),
+  PRIMARY KEY(uid, vid)
+);
 
 
 
@@ -274,6 +282,8 @@ ALTER TABLE vnlists            ADD FOREIGN KEY (uid)       REFERENCES users     
 ALTER TABLE vnlists            ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE votes              ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE votes              ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE wlists             ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE wlists             ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 
 
 

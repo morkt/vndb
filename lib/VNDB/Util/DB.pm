@@ -16,6 +16,7 @@ $VERSION = $VNDB::VERSION;
   DBGetUser DBAddUser DBUpdateUser DBDelUser
   DBGetVotes DBVoteStats DBAddVote DBDelVote
   DBGetVNList DBDelVNList
+  DBGetWishList DBEditWishList DBDelWishList
   DBGetRList DBGetRLists DBEditRList DBDelRList
   DBGetVN DBAddVN DBEditVN DBHideVN DBUndefRG DBVNCache
   DBGetRelease DBAddRelease DBEditRelease DBHideRelease
@@ -358,6 +359,7 @@ sub DBDelUser { # uid
   $s->DBExec($_, $id) for (
     q|DELETE FROM vnlists WHERE uid = %d|,
     q|DELETE FROM rlists WHERE uid = %d|,
+    q|DELETE FROM wlists WHERE uid = %d|,
     q|DELETE FROM votes WHERE uid = %d|,
     q|UPDATE changes SET requester = 0 WHERE requester = %d|,
     q|UPDATE threads_posts SET uid = 0 WHERE uid = %d|,
@@ -503,6 +505,71 @@ sub DBDelVNList { # uid, @vid  # uid = 0 to delete all
     $uid, \@vid
   );
 }
+
+
+
+
+
+#-----------------------------------------------------------------------------#
+#                       U S E R   W I S H   L I S T S                         #
+#-----------------------------------------------------------------------------#
+
+
+sub DBGetWishList { # %options->{ uid vid what order page results }
+  my($s, %o) = @_;
+
+  $o{order} ||= 'wl.wstat ASC';
+  $o{page} ||= 1;
+  $o{results} ||= 50;
+  $o{what} ||= '';
+
+  my %where = (
+    'wl.uid = %d' => $o{uid},
+    $o{vid} ? ( 'wl.vid = %d' => $o{vid} ) : (),
+  );
+  
+  my $select = 'wl.vid, wl.wstat, wl.added';
+  my @join;
+  if($o{what} =~ /vn/) {
+    $select .= ', vr.title';
+    push @join, 'JOIN vn v ON v.id = wl.vid',
+                'JOIN vn_rev vr ON vr.id = v.latest';
+  }
+  
+  my $r = $s->DBAll(qq|
+    SELECT $select
+      FROM wlists wl
+      @join
+      WHERE !W
+      ORDER BY %s
+      LIMIT %d OFFSET %d|,
+    \%where,
+    $o{order},
+    $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
+  );
+  return $r if !wantarray;
+  return ($r, 0) if $#$r < $o{results};
+  pop @$r;
+  return ($r, 1);
+}
+
+
+sub DBEditWishList { # %options->{ uid vid wstat }
+  my($s, %o) = @_;
+    $s->DBExec(q|UPDATE wlists SET wstat = %d WHERE uid = %d AND vid IN(!l)|,
+      $o{wstat}, $o{uid}, ref($o{vid}) eq 'ARRAY' ? $o{vid} : [ $o{vid} ])
+  ||
+    $s->DBExec(q|INSERT INTO wlists (uid, vid, wstat)
+      VALUES(%d, %d, %d)|,
+      @o{qw| uid vid wstat |});
+}
+
+
+sub DBDelWishList { # uid, vids
+  my($s, $uid, $vid) = @_;
+  $s->DBExec(q|DELETE FROM wlists WHERE uid = %d AND vid IN(!l)|, $uid, $vid);
+}
+
 
 
 

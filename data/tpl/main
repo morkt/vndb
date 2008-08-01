@@ -18,7 +18,7 @@
   <link rel="icon" href="/favicon.gif" type="image/gif" />
   <meta name="robots" content="noindex, nofollow" />
 [[ } elsif(
-         grep($p{$_}, qw| userlist userpage userlogin userreg userpass vnlist rlist hist |)
+         grep($p{$_}, qw| userlist userpage userlogin userreg userpass vnlist rlist wlist hist |)
       || ($p{ttag} && $p{ttag}{iid})
       || ($p{vnpage} && $p{vnpage}{page} eq 'stats')
       || grep { $p{$_} && $p{$_}{change} } qw|vnpage ppage rpage|
@@ -66,6 +66,7 @@
 [[ if($p{ppage})     { %d = %{$p{ppage}};     ]] [[+ ppage     ]][[ }  ]]
 [[ if($p{vnlist})    { %d = %{$p{vnlist}};    ]] [[+ vnlist    ]][[ }# ]]
 [[ if($p{rlist})     { %d = %{$p{rlist}};     ]] [[+ rlist     ]][[ }# ]]
+[[ if($p{wlist})     { %d = %{$p{wlist}};     ]] [[+ wlist     ]][[ }# ]]
 [[ if($p{hist})      { %d = %{$p{hist}};      ]] [[+ hist      ]][[ }# ]]
 [[ if($p{rpage})     { %d = %{$p{rpage}};     ]] [[+ rpage     ]][[ }  ]]
 [[ if($p{docs})      { %d = %{$p{docs}};      ]] [[+ docs      ]][[ }  ]]
@@ -107,10 +108,11 @@
  <h2>User menu</h2>
  <ul>
   <li><a href="/u[[= $p{AuthId} ]]">[[: $p{AuthUsername} ]]</a> ([[: $p{AuthRankname} ]])</li>
-  <!--<li><a href="/u[[= $p{AuthId} ]]/edit">My profile</a></li>-->
+  <li><a href="/u[[= $p{AuthId} ]]/edit">My profile</a></li>
   <li><a href="/u[[= $p{AuthId} ]]/list">My visual novel list</a></li>
   [[ if($p{AuthOldList}) { ]]-
   <li><a href="/u[[= $p{AuthId} ]]/vlist">My visual novel list (old)</a></li>[[ } ]]-
+  <li><a href="/u[[= $p{AuthId} ]]/wish">My wishlist</a></li>
   <li><a href="/t/u[[= $p{AuthId} ]]">My messages</a></li>
   <li><a href="/u[[= $p{AuthId} ]]/hist">My recent changes</a></li>
  [[ if($p{Authedit}) { ]]-

@@ -5,6 +5,7 @@ TODO:
 	  + Remove all references to an item when it's hidden
 	    (preferably with the option to re-add them when unhiding)
 	  + Add a link for the hidden 'h' option at /hist
+	+ Add icons for the rlist, vlist and wlist statusses
 
 1.20 - ?
 	- Admins can change someone's username
@@ -22,6 +23,7 @@ TODO:
 	  votes' option)
 	- Merged Votes.pm into VNLists.pm
 	- Auto-expand edit summary form when adding a release
+	- Added wishlist
 
 1.19 - 2008-07-08 (r62)
 	- Integrated discussion board

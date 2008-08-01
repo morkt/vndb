@@ -216,6 +216,7 @@ sub ttabs { # [vrpu], obj, sel
 
     $t eq 'u' ? (
       $o->{flags} & $VNDB::UFLAGS->{list}  ? ( $s eq 'list' ? 'list' : '<a href="/%s/list">list</a>', ) : (),
+      $o->{flags} & $VNDB::UFLAGS->{list}  ? ( $s eq 'wish' ? 'wishlist' : '<a href="/%s/wish">wishlist</a>', ) : (),
     ) : (),
 
     $t ne 'r' ? (
@@ -296,8 +297,9 @@ my %pagetitles = (
            $p{tedit}{t} ? 'Reply to thread' : 'Start a new thread' },
   userpage     => sub {
     return 'User: '.$p{userpage}{user}{username} },
-  vnlist       => sub {
-    return $p{vnlist}{user}{username} eq $p{AuthUsername} ? 'My visual novel list' : ($p{vnlist}{user}{username}.'\'s visual novel list'); },
+  vnlist       => 'My visual novel list (old)',
+  wlist        => sub {
+    return $p{wlist}{user}{username} eq $p{AuthUsername} ? 'My wishlist' : ($p{wlist}{user}{username}.'\'s wishlist'); },
   rlist        => sub {
     return $p{rlist}{user}{username} eq $p{AuthUsername} ? 'My visual novel list' : ($p{rlist}{user}{username}.'\'s visual novel list'); },
   useredit     => sub {

@@ -172,6 +172,13 @@ our $VSTAT = [
   'Dropped',
 ];
 
+our $WSTAT = [
+  'High',
+  'Medium',
+  'Low',
+  'AVOID!',
+];
+
 
 # OLD
 our $LSTAT = [

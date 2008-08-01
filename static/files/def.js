@@ -284,20 +284,20 @@ DOMLoad(function() {
     });
   }
 
- // mass-change rlist status
+ // mass-change rlist or wlist status
   if(x('vnlistchange')) {
     x('vnlistchange').onchange = function() {
       var val = this.options[this.selectedIndex].value;
       if(val == 'n') 
         return;
-      var l = x('rli').getElementsByTagName('input');
+      var l = (x('rli')||x('twl')).getElementsByTagName('input');
       var y; var ch=0;
       for(y=0;y<l.length;y++)
         if(l[y].type == 'checkbox' && l[y].checked)
           ch++;
       if(!ch)
         return alert('Nothing selected...');
-      if(val == 'd' && !confirm('Are you sure you want to remove the selected items from your visual novel list?'))
+      if(val == 'd' && !confirm('Are you sure you want to remove the selected items from your list?'))
         return;
       document.forms[1].submit();
     }

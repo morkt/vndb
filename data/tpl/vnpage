@@ -13,7 +13,9 @@
 
 -[[ if($p{AuthLoggedin}) { ]]
 <p class="mod">&lt; 
+  user options -
   <a href="/u[[= $p{AuthId} ]]/list" rel="voteDD" class="dropdown">[[= $d{vote}{vid} ? 'your vote: '.$d{vote}{vote} : 'vote' ]]</a>
+  - <a href="/u[[= $p{AuthId} ]]/wish" rel="wishDD" class="dropdown">[[= $d{wlist}{vid} ? 'wishlist: '.lc($$VNDB::WSTAT[$d{wlist}{wstat}]) : 'wishlist' ]]</a>
 &gt;</p>
 [[ } ]]-
 
@@ -173,6 +175,19 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
   <li><a href="/v[[= $d{vn}{id} ]]/vote?v=-1">revoke</a></li>
  [[ } for (reverse 1..10) { ]]-
   <li class="center"><a href="/v[[= $d{vn}{id} ]]/vote?v=[[= $_ ]]" id="dovote_[[= $_ ]]">[[= $_ ]]</a></li>
+ [[ } ]]
+ </ul>
+</div>
+
+<div class="dropdown" id="wishDD">
+ <ul>
+ [[ for (0..$#$VNDB::WSTAT) {
+  if($d{wlist}{vid} && $d{wlist}{wstat} == $_) { ]]-
+  <li><b>[[: $$VNDB::WSTAT[$_] ]]</b></li>
+  [[ } else { ]]-
+  <li><a href="/v[[= $d{vn}{id} ]]/wish?w=[[= $_ ]]">[[: $$VNDB::WSTAT[$_] ]]</a></li>
+ [[ } } if($d{wlist}{vid}) { ]]-
+  <li><a href="/v[[= $d{vn}{id} ]]/wish?w=-1">remove</a></li>
  [[ } ]]
  </ul>
 </div>

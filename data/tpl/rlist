@@ -60,7 +60,6 @@
 <select id="vnlistchange" name="vnlistchange" class="right">
  <option value="n">- with selected -</option>
  <option value="d">Delete</option>
- <!--<option value="-2">Update personal note</option>-->
  <optgroup label="Update release status:">
  [[ for (0..$#$VNDB::RSTAT) { ]]-
   <option value="r[[= $_ ]]">[[: $VNDB::RSTAT->[$_] ]]</option>
