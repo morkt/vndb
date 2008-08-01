@@ -1,0 +1,55 @@
+[[= ttabs('u', $d{user}, 'wish') ]]
+<h2>[[: $p{PageTitle} ]]</h2>
+[[
+  my $url = sprintf '/u%d/wish', $d{user}{id}; 
+  my $surl = sprintf '%s?s=%s;o=%s', $url, $d{order}[0], $d{order}[1];
+  my $furl = $surl . ';p='.$d{page};
+]]
+
+
+[[ if($#{$d{list}} < 0) { ]]-
+<p>
+[[ if($d{user}{username} eq $p{AuthUsername}) { ]]
+ Your wishlist is empty. You can keep track of all the visual novels
+ you'd like to play. Just go to a visual novel page and add it to your wishlist!
+[[ } else { ]]
+ [[: $d{user}{username} ]]'s wishlist is empty...
+[[ } ]]
+</p>
+
+[[ } else { ]]
+[[= pagebut($surl) ]]-
+[[ if($d{user}{username} eq $p{AuthUsername}) { ]]
+<form method="post" action="[[= $furl ]]" class="tblf">
+[[ } ]]
+<table id="twl">
+ <thead><tr>
+  <td class="tc1">Title [[= sortbut($url, 'title') ]]</td>
+  <td class="tc2">Priority [[= sortbut($url, 'wstat') ]]</td>
+  <td class="tc3">Added [[= sortbut($url, 'added') ]]</td>
+  <td class="tc4">&nbsp;</td>
+ </tr></thead>
+ [[ for (@{$d{list}}) { ]]-
+ <tr>
+  <td class="tc1"><a href="/v[[= $_->{vid} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 40 ]]</a></td>
+  <td class="tc2">[[= $VNDB::WSTAT->[$_->{wstat}] ]]</td>
+  <td class="tc3">[[= formatdate('%Y-%m-%d', $_->{added}) ]]</td>
+  <td class="tc4">[[ if($d{user}{username} eq $p{AuthUsername}) { ]]<input type="checkbox" name="sel" value="[[= $_->{vid} ]]" />[[ } else { ]]&nbsp;[[ } ]]</td>
+ </tr>
+ [[ } ]]-
+</table>
+[[ if($d{user}{username} eq $p{AuthUsername}) { ]]
+<select id="vnlistchange" name="vnlistchange" class="right">
+ <option value="n">- with selected -</option>
+ <option value="d">Delete</option>
+ <optgroup label="Update priority:">
+ [[ for (0..$#$VNDB::WSTAT) { ]]-
+  <option value="[[= $_ ]]">[[: $VNDB::WSTAT->[$_] ]]</option>
+ [[ } ]]
+ </optgroup>
+</select>
+</form>
+[[ } ]]
+-[[= pagebut($surl) ]]
+[[ } ]]-
+
