@@ -176,7 +176,7 @@ our $WSTAT = [
   'High',
   'Medium',
   'Low',
-  'AVOID!',
+  'Blacklist',
 ];
 
 

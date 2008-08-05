@@ -79,14 +79,12 @@ var ddx;var ddy;var dds=null;
 function dropDown(e) {
   e = e || window.event;
   var tg = e.target || e.srcElement;
-  if(tg.nodeType == 3)
+  while(tg && (tg.nodeType == 3 || tg.nodeName.toLowerCase() != 'a'))
     tg = tg.parentNode;
 
-  if(!dds && (tg.nodeName.toLowerCase() != 'a' || !tg.rel || tg.className.indexOf('dropdown') < 0))
-    return;
-  if(tg.rel)
+  if(tg && tg.rel)
     tg.rel = tg.rel.replace(/ *nofollow */,"");
-  if(!dds && !tg.rel)
+  if(!dds && (!tg || !tg.rel || tg.className.indexOf('dropdown') < 0))
     return;
   
   if(!dds) {
@@ -97,7 +95,7 @@ function dropDown(e) {
       ddy += obj.offsetTop;
     } while(obj = obj.offsetParent);
     if(tg.className.indexOf('above') >= 0) {
-      ddx += 25;
+      ddx += 30;
       ddy -= x(tg.rel).offsetHeight - 20;
     }
     else
@@ -113,7 +111,7 @@ function dropDown(e) {
     var mouseY = e.pageY || (e.clientY + document.body.scrollTop  + document.documentElement.scrollTop);
     var obj = x(dds.rel);
     if((mouseX < ddx-25 || mouseX > ddx+obj.offsetWidth+5 || mouseY < ddy-20 || mouseY > ddy + obj.offsetHeight)
-        || (tg.nodeName.toLowerCase() == 'a' && tg.className.indexOf('dropdown') >= 0 && tg != dds)) {
+        || (tg && tg.className.indexOf('dropdown') >= 0 && tg != dds)) {
       obj.style.left = '-500px';
       dds = null;
     }

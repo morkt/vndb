@@ -264,13 +264,13 @@ sub rlist_dd {
   return
     qq|<div class="dropdown rlistdd" id="rlistDD$$r{id}"><ul><li><b>Release status</b></li>|.
     join('', map {
-      $r->{rlist} && $_ == $r->{rlist}{rstat} ? "<li><b>&nbsp;&nbsp;$$VNDB::RSTAT[$_]</b></li>"
-        : qq|<li><a href="/r$$r{id}/list?r=$_">&nbsp;&nbsp;$$VNDB::RSTAT[$_]</a></li>|
+      $r->{rlist} && $_ == $r->{rlist}{rstat} ? qq|<li><b><acronym class="uicons r$_">&nbsp;</acronym>&nbsp;$$VNDB::RSTAT[$_]</b></li>|
+        : qq|<li><a href="/r$$r{id}/list?r=$_"><acronym class="uicons r$_">&nbsp;</acronym>&nbsp;$$VNDB::RSTAT[$_]</a></li>|
     } 0..$#$VNDB::RSTAT).
     qq|</ul><ul><li><b>Play status</b></li>|.
     join('', map {
-      $r->{rlist} && $_ == $r->{rlist}{vstat} ? "<li><b>&nbsp;&nbsp;$$VNDB::VSTAT[$_]</b></li>"
-        : qq|<li><a href="/r$$r{id}/list?v=$_">&nbsp;&nbsp;$$VNDB::VSTAT[$_]</a></li>|
+      $r->{rlist} && $_ == $r->{rlist}{vstat} ? qq|<li><b><acronym class="uicons v$_">&nbsp;</acronym>&nbsp;$$VNDB::VSTAT[$_]</b></li>|
+        : qq|<li><a href="/r$$r{id}/list?v=$_"><acronym class="uicons v$_">&nbsp;</acronym>&nbsp;$$VNDB::VSTAT[$_]</a></li>|
     } 0..$#$VNDB::VSTAT).
     qq|</ul><ul class="full">|.
     ($r->{rlist} ? qq|<li class="center"><a href="/r$$r{id}/list?d=1">remove from my list</a></li>|

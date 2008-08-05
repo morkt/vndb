@@ -5,7 +5,6 @@ TODO:
 	  + Remove all references to an item when it's hidden
 	    (preferably with the option to re-add them when unhiding)
 	  + Add a link for the hidden 'h' option at /hist
-	+ Add icons for the rlist, vlist and wlist statusses
 
 1.20 - ?
 	- Admins can change someone's username

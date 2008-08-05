@@ -36,7 +36,9 @@
   <td class="tc4"><a href="/r[[= $_->{id} ]]" title="[[: $_->{original} || $_->{title} ]]">[[: shorten $_->{title},60 ]]</a></td>
   <td class="tc5">[[ if($p{AuthId}) { ]]
     [[= sprintf '<a href="/r%d" class="dropdown above" rel="rlistDD%1$d">%s</a>', $_->{id}, $_->{rlist} ?
-      (substr($$VNDB::RSTAT[$_->{rlist}{rstat}],0,1).'/'.substr($$VNDB::VSTAT[$_->{rlist}{vstat}],0,1)) : '---' ]]
+      ('<acronym title="'.$VNDB::RSTAT->[$_->{rlist}{rstat}].'" class="uicons r'.$_->{rlist}{rstat}.'">&nbsp;</acronym>'.
+       '<acronym title="'.$VNDB::VSTAT->[$_->{rlist}{vstat}].'" class="uicons v'.$_->{rlist}{vstat}.'">&nbsp;</acronym>')
+      : '<acronym title="Add to your visual novel list" class="uicons no">&nbsp;</acronym>' ]]
    [[ } else { ]]&nbsp;[[ } ]]</td>
   <td class="tc6">[[ if($_->{website}) { ]]<a href="[[: $_->{website} ]]" class="icons ext" title="WWW">&nbsp;</a>[[ } ]]</td>
  </tr>
