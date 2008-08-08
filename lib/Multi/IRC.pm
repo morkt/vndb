@@ -15,6 +15,14 @@ use POE qw|
   Component::IRC::Plugin::NickServID
 |;
 use POE::Component::IRC::Common ':ALL';
+use URI::Escape 'uri_escape_utf8';
+use Net::HTTP;
+
+use constant {
+  ARG  => ARG0,
+  DEST => ARG1,
+  NICK => ARG2
+};
 
 
 sub spawn {
@@ -27,7 +35,10 @@ sub spawn {
   );
   POE::Session->create(
     package_states => [
-      $p => [qw| _start irc_001 irc_public irc_ctcp_action irc_msg irccmd vndbid shutdown |],
+      $p => [qw|
+        _start irc_001 irc_public irc_ctcp_action irc_msg irccmd vndbid shutdown
+        cmd_info cmd_vndb cmd_list cmd_vn cmd_uptime cmd_me cmd_say cmd_cmd cmd_eval
+      |],
     ],
     heap => { irc => $irc,
       o => {
@@ -38,6 +49,7 @@ sub spawn {
         @_
       },
       log => {},
+      privpers => {},
     }
   );
 }
@@ -87,7 +99,7 @@ sub irc_public {
   if($_[ARG2] =~ /^!/) {
     (my $cmd = $_[ARG2]) =~ s/^!//;
     my $nick = (split /!/, $_[ARG0])[0];
-    $_[KERNEL]->call(irc => irccmd => $_[ARG1][0], $cmd, $nick, $nick.', ');
+    $_[KERNEL]->call(irc => irccmd => $_[ARG1][0], $cmd, $nick);
   } else {
     $_[KERNEL]->call(irc => vndbid => $_[ARG1][0], $_[ARG2]);
   }
@@ -101,53 +113,39 @@ sub irc_ctcp_action {
 
 sub irc_msg {
   my $nick = ( split /!/, $_[ARG0] )[0];
-  $_[KERNEL]->call(irc => irccmd => $nick => $_[ARG2]);
-}
-
-
-sub irccmd { # dest, cmd, [nick], [prep]
-  my($dest, $cmd, $nick, $prep) = @_[ARG0..$#_];
-  $nick ||= $_[ARG0];
-  $prep ||= '';
-
-  return $_[KERNEL]->post(circ => privmsg => $dest,
-    'Hello, I am HMX-12 Multi v'.$VNDB::VERSION.' made by the great Yorhel!')
-    if $cmd =~ /^info/;
-  return $_[KERNEL]->post(circ => privmsg => $dest,
-    'VNDB ~ The Visual Novel Database ~ http://vndb.org/')
-    if $cmd =~ /^vndb/;
-  return $_[KERNEL]->post(circ => privmsg => $dest,
-    $prep.'this is not a warez channel!')
-    if $cmd =~ /^list/ && $dest eq $_[HEAP]{o}{channel}[0];
-
-  return if $cmd !~ /^(?:say|me|cmd|eval) /;
-  
-  return $_[KERNEL]->post(circ => privmsg => $dest,
-      $prep.'You are not my master!')
-    if !$_[HEAP]{irc}->is_channel_operator($_[HEAP]{o}{channel}[0], $nick)
-    && !$_[HEAP]{irc}->is_channel_owner($_[HEAP]{o}{channel}[0], $nick)
-    && !$_[HEAP]{irc}->is_channel_admin($_[HEAP]{o}{channel}[0], $nick);
-
- # TODO multi-channel !say and !me
-  if($cmd =~ /^say (.+)$/) {
-    $_[KERNEL]->post(circ => privmsg => $_[HEAP]{o}{channel}[0], $1);
-  } elsif($cmd =~ /^me (.+)$/) {
-    $_[KERNEL]->post(circ => ctcp => $_[HEAP]{o}{channel}[0], "ACTION $1");
-  } elsif($cmd =~ /^cmd (.+)$/) {
-    $_[KERNEL]->post(core => queue => $1);
-    $_[KERNEL]->post(circ => privmsg => $dest => sprintf "Executing command '%s'", $1);
-  } elsif($cmd =~ /^eval (.+)$/) {
-    $_[KERNEL]->post(circ => privmsg => $dest, 'eval: '.$_)
-      for (split /\r?\n/, eval($1)||$@);
-  } else {
-    $_[KERNEL]->post(circ => privmsg => $dest, $prep.'Unkown command');
+  $_[ARG2] =~ s/^!//;
+  if(!$_[KERNEL]->call(irc => irccmd => $nick => $_[ARG2])) {
+    $_[HEAP]{privpers}{$_} < time-3600 and delete $_[HEAP]{privpers}{$_}
+      for (keys %{$_[HEAP]{privpers}});
+    $_[KERNEL]->post(circ => privmsg => $nick => 'I am not human, join #vndb or PM Yorhel if you need something.')
+      if !$_[HEAP]{privpers}{$nick};
+    $_[HEAP]{privpers}{$nick} ||= time;
   }
-
-  # TODO: add command to view the current queue, and a method to send log messages
 }
 
 
-sub vndbid { # dest, msg
+sub irccmd { # dest, cmd, [nick]
+  my($dest, $cmd, $nick) = @_[ARG0..$#_];
+  $nick ||= $_[ARG0];
+
+  return 0 if $cmd !~ /^([a-z0-9A-Z_]+)(?: (.+))?$/;
+  my($f, $a) = (lc $1, $2||'');
+
+  # check for a cmd_* function and call it (some scary magic, see perlmod)
+  my $sub;
+  {
+    no strict;
+    $sub = ${__PACKAGE__.'::'}{'cmd_'.$f};
+  }
+  return 0 if !defined $sub;
+  local *SUB = $sub;
+  return 0 if !defined *SUB{CODE};
+  $_[KERNEL]->yield('cmd_'.$f, $a, $dest, $nick);
+  return 1;
+}
+
+
+sub vndbid { # dest, msg, force
   my $m = $_[ARG1];
 
   $_[HEAP]{log}{$_} < time-60 and delete $_[HEAP]{log}{$_}
@@ -161,7 +159,7 @@ sub vndbid { # dest, msg
   #  5.  t+.+      -> reply to a thread
 
   my @formats = (
-    BOLD.RED.'['.NORMAL.BOLD.'%s%d'   .RED.']'                       .NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' %s/%1$s%2$d'.NORMAL,
+    BOLD.RED.'['.NORMAL.BOLD.'_%s%d'   .RED.']'                       .NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' %s/%1$s%2$d'.NORMAL,
     BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'.NORMAL.RED.' Edit of' .NORMAL.' %s '.RED.'by'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' %s/%1$s%2$d.%3$d'.NORMAL,
     BOLD.RED.'['.NORMAL.BOLD.'d%d'    .RED.']'                       .NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' %s/d%1$d'.NORMAL,
     BOLD.RED.'['.NORMAL.BOLD.'d%d.%d' .RED.']'                       .NORMAL.' %s '.RED.'->'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' %s/d%1$d#%2$d'.NORMAL,
@@ -180,7 +178,7 @@ sub vndbid { # dest, msg
   for (@id) {
     my($t, $id, $rev) = (@$_);
 
-    next if $_[HEAP]{log}{$t.$id.'.'.$rev};
+    next if $_[HEAP]{log}{$t.$id.'.'.$rev} && !$_[ARG2];
     $_[HEAP]{log}{$t.$id.'.'.$rev} = time;
 
    # option 1: item page
@@ -262,11 +260,139 @@ sub vndbid { # dest, msg
   }
 }
 
-
 sub shutdown {
   $_[KERNEL]->post(circ => shutdown => 'Byebye!');
 }
 
+
+
+# cmd_* commands: $arg, $dest, $nick
+
+sub cmd_info {
+  $_[KERNEL]->post(circ => privmsg => $_[DEST],
+    'Hello, I am HMX-12 Multi v'.$VNDB::VERSION.' made by the great Yorhel!');
+}
+
+
+sub cmd_vndb {
+  $_[KERNEL]->post(circ => privmsg => $_[DEST],
+    'VNDB ~ The Visual Novel Database ~ http://vndb.org/');
+}
+
+
+sub cmd_list {
+  return if $_[DEST] ne $_[HEAP]{o}{channel}[0];
+  $_[KERNEL]->post(circ => privmsg => $_[DEST],
+    $_[NICK].', this is not a warez channel!');
+}
+
+
+sub cmd_vn { # $arg = search string
+  $_[ARG] =~ s/%//g;
+  return $_[KERNEL]->post(circ => privmsg => $_[DEST], 'You forgot the search query, idiot~~!.') if !$_[ARG];
+  
+  my $q = $Multi::SQL->prepare(q|
+    SELECT v.id
+    FROM vn v
+    JOIN vn_rev vr ON vr.id = v.latest
+    WHERE vr.title ILIKE $1
+       OR vr.alias ILIKE $1
+       OR v.id IN(
+         SELECT rv.vid
+         FROM releases r
+         JOIN releases_rev rr ON rr.id = r.latest
+         JOIN releases_vn rv ON rv.rid = rr.id
+         WHERE rr.title ILIKE $1
+            OR rr.original ILIKE $1
+       )
+    ORDER BY vr.id
+    LIMIT 6|);
+  $q->execute('%'.$_[ARG].'%');
+
+  my $res = $q->fetchall_arrayref([]);
+  return $_[KERNEL]->post(circ => privmsg => $_[DEST],
+    sprintf 'No results found for %s', $_[ARG]) if !@$res;
+  return $_[KERNEL]->post(circ => privmsg => $_[DEST],
+    sprintf 'Too many results found, see %s/v/search?q=%s',
+      $VNDB::VNDBopts{root_url}, uri_escape_utf8($_[ARG])) if @$res > 5;
+  $_[KERNEL]->call(irc => vndbid => $_[DEST], join(' ', map 'v'.$_->[0], @$res), 1);
+}
+
+
+sub cmd_uptime {
+  my $age = sub {
+    return '..down!?' if !$_[0];
+    my $d = int $_[0] / 86400;
+    $_[0] %= 86400;
+    my $h = int $_[0] / 3600;
+    $_[0] %= 3600;
+    my $m = int $_[0] / 60;
+    $_[0] %= 60;
+    return sprintf '%s%02d:%02d:%02d', $d ? $d.' days, ' : '', $h, $m, int $_[0];
+  };
+
+  open my $R, '<', '/proc/uptime';
+  my $server = <$R> =~ /^\s*([0-9]+)/ ? $1 : 0;
+  close $R;
+
+  my $multi = time - $^T;
+
+  my $http=0;
+ # this should actually be done asynchronously... but I don't expect it to timeout
+  if(my $req = Net::HTTP->new(Host => 'localhost', Timeout => 1)) {
+    $req->write_request(GET => '/server-status?auto');
+    my $d;
+    $req->read_entity_body($d, 1024) if $req->read_response_headers;
+    $http = $1 if $d =~ /Uptime:\s*([0-9]+)/i;
+  }
+  
+  $_[KERNEL]->post(circ => privmsg => $_[DEST], $_) for (split /\n/, sprintf
+    "Uptimes:\n  Server: %s\n  Multi:  %s\n  HTTP:  Uptimes:  %s", map $age->($_), $server, $multi, $http);
+}
+
+
+sub cmd_say { # $arg = '[#chan ]text', no #chan = $dest
+  return unless &mymaster;
+  my $chan = $_[ARG] =~ s/^(#[a-zA-Z0-9-_.]+) // ? $1 : $_[DEST];
+  $_[KERNEL]->post(circ => privmsg => $chan, $_[ARG]);
+}
+
+
+sub cmd_me { # same as cmd_say, but CTCP ACTION
+  return unless &mymaster;
+  my $chan = $_[ARG] =~ s/^(#[a-zA-Z0-9-_.]+) // ? $1 : $_[DEST];
+  $_[KERNEL]->post(circ => ctcp => $chan, 'ACTION '.$_[ARG]);
+}
+
+
+sub cmd_cmd { # TODO: feedback?
+  return unless &mymaster;
+  $_[KERNEL]->post(core => queue => $_[ARG]);
+  $_[KERNEL]->post(circ => privmsg => $_[DEST] => sprintf "Executing %s", $_[ARG]);
+}
+
+
+sub cmd_eval { # the evil cmd
+  return unless &mymaster;
+  $_[KERNEL]->post(circ => privmsg => $_[DEST], 'eval: '.$_)
+    for (split /\r?\n/, eval($_[ARG])||$@);
+}
+
+
+
+
+# non-POE function, checks whether we should trust $nick
+sub mymaster { # same @_ as the cmd_ functions
+  if(!$_[HEAP]{irc}->is_channel_operator($_[HEAP]{o}{channel}[0], $_[ARG2])
+    && !$_[HEAP]{irc}->is_channel_owner($_[HEAP]{o}{channel}[0], $_[ARG2])
+    && !$_[HEAP]{irc}->is_channel_admin($_[HEAP]{o}{channel}[0], $_[ARG2])
+  ) {
+    $_[KERNEL]->post(circ => privmsg => $_[ARG1],
+      ($_[ARG1]=~/^#/?$_[ARG2].', ':'').'You are not my master!');
+    return 0;
+  }
+  return 1;
+}
 
 1;
 
