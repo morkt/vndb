@@ -12,7 +12,6 @@ use POE qw|
   Component::IRC::Plugin::Connector
   Component::IRC::Plugin::CTCP
   Component::IRC::Plugin::Logger
-  Component::IRC::Plugin::NickServID
 |;
 use POE::Component::IRC::Common ':ALL';
 use URI::Escape 'uri_escape_utf8';
@@ -50,7 +49,7 @@ sub spawn {
       },
       log => {},
       privpers => {},
-      notify => [], # this list should be stored on disk...
+      notify => [],
     }
   );
 }
@@ -74,10 +73,21 @@ sub _start {
       version => $_[HEAP]{o}{ircname}.' v'.$VNDB::VERSION,
       userinfo => $_[HEAP]{o}{ircname},
   ));
-  $_[HEAP]{irc}->plugin_add(
-    NickServID => POE::Component::IRC::Plugin::NickServID->new(
-      Password => $_[HEAP]{o}{pass}
-  )) if $_[HEAP]{o}{pass};
+  if($_[HEAP]{o}{pass}) {
+    require POE::Component::IRC::Plugin::NickServID;
+    $_[HEAP]{irc}->plugin_add(
+      NickServID => POE::Component::IRC::Plugin::NickServID->new(
+        Password => $_[HEAP]{o}{pass}
+    )) 
+  }
+  if($_[HEAP]{o}{console}) {
+    require POE::Component::IRC::Plugin::Console;
+    $_[HEAP]{irc}->plugin_add(
+      Console => POE::Component::IRC::Plugin::Console->new(
+        bindport => 3030,
+        password => $_[HEAP]{o}{console}
+    )) 
+  }
 
   $_[KERNEL]->post(circ => register => 'all');
   $_[KERNEL]->post(circ => connect => {
@@ -344,7 +354,7 @@ sub cmd_uptime {
 
 
 sub cmd_notifications { # $arg = '' or 'on' or 'off'
-  return if $_[DEST] =~ /^#/ && !&mymaster;
+  return unless &mymaster;
   if($_[ARG] =~ /^on$/i) {
     push @{$_[HEAP]{notify}}, $_[DEST] if !grep $_ eq $_[DEST], @{$_[HEAP]{notify}};
     $_[KERNEL]->post(circ => privmsg => $_[DEST], 'Notifications enabled.');
