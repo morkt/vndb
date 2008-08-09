@@ -36,8 +36,8 @@ sub spawn {
   POE::Session->create(
     package_states => [
       $p => [qw|
-        _start irc_001 irc_public irc_ctcp_action irc_msg irccmd vndbid shutdown
-        cmd_info cmd_vndb cmd_list cmd_vn cmd_uptime cmd_me cmd_say cmd_cmd cmd_eval
+        _start irc_001 irc_public irc_ctcp_action irc_msg irccmd vndbid ircnotify shutdown
+        cmd_info cmd_vndb cmd_list cmd_vn cmd_uptime cmd_notifications cmd_me cmd_say cmd_cmd cmd_eval
       |],
     ],
     heap => { irc => $irc,
@@ -50,6 +50,7 @@ sub spawn {
       },
       log => {},
       privpers => {},
+      notify => [], # this list should be stored on disk...
     }
   );
 }
@@ -57,6 +58,7 @@ sub spawn {
 
 sub _start {
   $_[KERNEL]->alias_set('irc');
+  $_[KERNEL]->call(core => register => qr/^ircnotify ([vrpt][0-9]+\.[0-9]+)$/, 'ircnotify');
 
   $_[HEAP]{irc}->plugin_add(
     Logger => POE::Component::IRC::Plugin::Logger->new(
@@ -84,6 +86,9 @@ sub _start {
     Ircname => $_[HEAP]{o}{ircname},
     Server => $_[HEAP]{o}{server},
   });
+
+ # notifications in the main channel enabled by default
+  push @{$_[HEAP]{notify}}, $_[HEAP]{o}{channel}[0];
 
   $_[KERNEL]->sig('shutdown' => 'shutdown');
 }
@@ -152,25 +157,23 @@ sub vndbid { # dest, msg, force
     for (keys %{$_[HEAP]{log}});
 
   # Four possible options:
-  #  1.  [tvpru]+  -> item page
-  #  2.  [vpr]+.+  -> item revision
-  #  3.  d+        -> documentation page
-  #  4.  d+.+      -> documentation page # section
-  #  5.  t+.+      -> reply to a thread
+  #  1.  [tvpru]+  -> item/user/thread (nf)
+  #  2.  [vprt]+.+ -> revision/reply (ef)
+  #  3.  d+        -> documentation page (nf)
+  #  4.  d+.+      -> documentation page # section (sf)
 
-  my @formats = (
-    BOLD.RED.'['.NORMAL.BOLD.'_%s%d'   .RED.']'                       .NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' %s/%1$s%2$d'.NORMAL,
-    BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'.NORMAL.RED.' Edit of' .NORMAL.' %s '.RED.'by'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' %s/%1$s%2$d.%3$d'.NORMAL,
-    BOLD.RED.'['.NORMAL.BOLD.'d%d'    .RED.']'                       .NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' %s/d%1$d'.NORMAL,
-    BOLD.RED.'['.NORMAL.BOLD.'d%d.%d' .RED.']'                       .NORMAL.' %s '.RED.'->'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' %s/d%1$d#%2$d'.NORMAL,
-    BOLD.RED.'['.NORMAL.BOLD.'t%d.%d' .RED.']'.NORMAL.RED.' Reply to'.NORMAL.' %s '.RED.'by'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' %s/t%1$d.%2$d'.NORMAL,
-  );
+  # nf (normal format):   x+     : x, id, title
+  # sf (sub format):      x+.+   : x, id, subid, title, action2, title2
+  # ef (extended format): x+.+   : x, id, subid, action, title, action2, title2
+  my $nf = BOLD.RED.'['.NORMAL.BOLD.'%s%d'   .RED.']'                 .NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' '.$VNDB::VNDBopts{root_url}.'/%1$s%2$d'.NORMAL;
+  my $sf = BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'                 .NORMAL.' %s '.RED.'%s'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' '.$VNDB::VNDBopts{root_url}.'/%1$s%2$d.%3$d'.NORMAL;
+  my $ef = BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'.NORMAL.RED.' %s'.NORMAL.' %s '.RED.'%s'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' '.$VNDB::VNDBopts{root_url}.'/%1$s%2$d.%3$d'.NORMAL;
 
   # get a list of possible IDs (a la sub summary in defs.pl)
   my @id; # [ type, id, ref ]
   for (split /[, ]/, $m) {
     next if length > 15 or m{[a-z]{3,6}://}i; # weed out URLs and too long things
-    push @id, /^(?:.*[^\w]|)([dvprt])([1-9][0-9]*)\.([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, $3 ]   # matches 2, 4 and 5
+    push @id, /^(?:.*[^\w]|)([dvprt])([1-9][0-9]*)\.([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, $3 ]   # matches 2 and 4
            :  /^(?:.*[^\w]|)([dvprtu])([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();       # matches 1 and 3
   }
 
@@ -181,7 +184,7 @@ sub vndbid { # dest, msg, force
     next if $_[HEAP]{log}{$t.$id.'.'.$rev} && !$_[ARG2];
     $_[HEAP]{log}{$t.$id.'.'.$rev} = time;
 
-   # option 1: item page
+   # option 1: item/user/thread
     if($t =~ /[vprtu]/ && !$rev) {
       my $s = $Multi::SQL->prepare(
         $t eq 'v' ? 'SELECT vr.title FROM vn_rev vr JOIN vn v ON v.latest = vr.id WHERE v.id = ?' :
@@ -194,26 +197,24 @@ sub vndbid { # dest, msg, force
       my $r = $s->fetchrow_hashref;
       $s->finish;
       next if !$r || ref($r) ne 'HASH';
-      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $formats[0],
-        $t, $id, $r->{title}, $VNDB::VNDBopts{root_url});
+      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $nf,
+        $t, $id, $r->{title});
 
-   # option 2: item revision
-    } elsif($t =~ /[vpr]/) {
-      my $s = $Multi::SQL->prepare(sprintf q|
-        SELECT %s AS title, u.username
-        FROM changes c
-        JOIN %s_rev i ON c.id = i.id
-        JOIN users u ON u.id = c.requester
-        WHERE i.%sid = %d 
-          AND c.rev = %d|,
-        $t ne 'p' ? 'i.title' : 'i.name',
-        {qw|v vn r releases p producers|}->{$t},
-        $t, $id, $rev);
-      $s->execute;
-      my $r = $s->fetchrow_hashref;
-      next if !$r || ref($r) ne 'HASH';
-      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $formats[1],
-        $t, $id, $rev, $r->{title}, $r->{username}, $VNDB::VNDBopts{root_url});
+   # option 2: revision/reply
+    } elsif($t =~ /[vprt]/) {
+      my $s = $Multi::SQL->prepare(
+        $t eq 'v' ? 'SELECT vr.title, u.username FROM changes c JOIN vn_rev vr ON c.id = vr.id JOIN users u ON u.id = c.requester WHERE vr.vid = ? AND c.rev = ?' :
+        $t eq 'r' ? 'SELECT rr.title, u.username FROM changes c JOIN releases_rev rr ON c.id = rr.id JOIN users u ON u.id = c.requester WHERE rr.rid = ? AND c.rev = ?' :
+        $t eq 'p' ? 'SELECT pr.name, u.username FROM changes c JOIN producers_rev pr ON c.id = pr.id JOIN users u ON u.id = c.requester WHERE pr.pid = ? AND c.rev = ?' :
+                    'SELECT t.title, u.username FROM threads t JOIN threads_posts tp ON tp.tid = t.id JOIN users u ON u.id = tp.uid WHERE t.id = ? AND tp.num = ?'
+      );
+      $s->execute($id, $rev);
+      my $r = $s->fetchrow_arrayref;
+      next if !$r || ref($r) ne 'ARRAY';
+      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $ef, $t, $id, $rev,
+        $rev == 1 ? 'New '.($t eq 'v' ? 'visual novel' : $t eq 'p' ? 'producer' : $t eq 'r' ? 'release': 'thread')
+                  : ($t eq 't' ? 'Reply to' : 'Edit of'), $r->[0], 'By', $r->[1]
+      );
 
    # option 3: documentation page
     } elsif($t eq 'd') {
@@ -223,8 +224,8 @@ sub vndbid { # dest, msg, force
       chomp($title);
 
       if(!$rev) {
-        $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $formats[2],
-          $id, $title, $VNDB::VNDBopts{root_url});
+        $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $nf,
+          'd', $id, $title);
         next;
       }
 
@@ -238,27 +239,18 @@ sub vndbid { # dest, msg, force
         }
       }
       next if !$sub;
-      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $formats[3],
-        $id, $rev, $title, $sub, $VNDB::VNDBopts{root_url});
-
-   # option 5: reply to a thread
-    } elsif($t eq 't' && $rev) {
-      my $s = $Multi::SQL->prepare(q|
-        SELECT t.title, u.username
-          FROM threads t
-          JOIN threads_posts tp ON tp.tid = t.id
-          JOIN users u ON u.id = tp.uid
-          WHERE t.id = ?
-            AND tp.num = ?|);
-      $s->execute($id, $rev);
-      my $r = $s->fetchrow_hashref;
-      $s->finish;
-      next if !$r || ref($r) ne 'HASH';
-      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $formats[4],
-        $id, $rev, $r->{title}, $r->{username}, $VNDB::VNDBopts{root_url});
+      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $sf,
+        'd', $id, $rev, $title, '->', $sub);
     }
   }
 }
+
+
+sub ircnotify { # command, VNDBID
+  $_[KERNEL]->yield(vndbid => $_ => $_[ARG1] => 1) for (@{$_[HEAP]{notify}});
+  $_[KERNEL]->post(core => finish => $_[ARG0]);
+}
+
 
 sub shutdown {
   $_[KERNEL]->post(circ => shutdown => 'Byebye!');
@@ -315,13 +307,13 @@ sub cmd_vn { # $arg = search string
   return $_[KERNEL]->post(circ => privmsg => $_[DEST],
     sprintf 'Too many results found, see %s/v/search?q=%s',
       $VNDB::VNDBopts{root_url}, uri_escape_utf8($_[ARG])) if @$res > 5;
-  $_[KERNEL]->call(irc => vndbid => $_[DEST], join(' ', map 'v'.$_->[0], @$res), 1);
+  $_[KERNEL]->yield(vndbid => $_[DEST], join(' ', map 'v'.$_->[0], @$res), 1);
 }
 
 
 sub cmd_uptime {
   my $age = sub {
-    return '..down!?' if !$_[0];
+    return '...down!?' if !$_[0];
     my $d = int $_[0] / 86400;
     $_[0] %= 86400;
     my $h = int $_[0] / 3600;
@@ -348,6 +340,21 @@ sub cmd_uptime {
   
   $_[KERNEL]->post(circ => privmsg => $_[DEST], $_) for (split /\n/, sprintf
     "Uptimes:\n  Server: %s\n  Multi:  %s\n  HTTP:  Uptimes:  %s", map $age->($_), $server, $multi, $http);
+}
+
+
+sub cmd_notifications { # $arg = '' or 'on' or 'off'
+  return if $_[DEST] =~ /^#/ && !&mymaster;
+  if($_[ARG] =~ /^on$/i) {
+    push @{$_[HEAP]{notify}}, $_[DEST] if !grep $_ eq $_[DEST], @{$_[HEAP]{notify}};
+    $_[KERNEL]->post(circ => privmsg => $_[DEST], 'Notifications enabled.');
+  } elsif($_[ARG] =~ /^off$/i) {
+    $_[HEAP]{notify} = [ grep $_ ne $_[DEST], @{$_[HEAP]{notify}} ];
+    $_[KERNEL]->post(circ => privmsg => $_[DEST], 'Notifications disabled.');
+  } else {
+    $_[KERNEL]->post(circ => privmsg => $_[DEST], sprintf 'Notifications %s, type !notifications %s to %s.',
+      (grep $_ eq $_[DEST], @{$_[HEAP]{notify}}) ? ('enabled', 'off', 'disable') : ('disabled', 'on', 'enable'));
+  }
 }
 
 

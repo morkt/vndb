@@ -120,6 +120,7 @@ sub REdit {
 
       $self->RVNCache(@$new_vn, (map { $_->{vid} } @$vn));
 
+      $self->RunCmd('ircnotify r'.$rid.'.'.$nrev);
       return $self->ResRedirect('/r'.$rid.'.'.$nrev, 'post');
     }
   }

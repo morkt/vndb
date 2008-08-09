@@ -8,6 +8,7 @@ TODO:
 
 1.21 - ?
 	- Added !vn and !uptime commands to Multi::IRC
+	- Added realtime IRC notifications for actions on the site
 
 1.20 - 2008-08-06 (r79)
 	- Admins can change someone's username

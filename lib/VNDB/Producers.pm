@@ -103,6 +103,8 @@ sub PEdit {
       my $nrev = 1;
       ($nrev) = $self->DBEditProducer($id, %$frm) if $id;  # edit
       ($id) = $self->DBAddProducer(%$frm) if !$id;         # add
+
+      $self->RunCmd('ircnotify p'.$id.'.'.$nrev);
       return $self->ResRedirect('/p'.$id.'.'.$nrev, 'post');
     }
   }

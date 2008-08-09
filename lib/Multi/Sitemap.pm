@@ -21,7 +21,7 @@ sub spawn {
     ],
     heap => {
       output => '/www/vndb/www/sitemap.xml.gz',
-      baseurl => 'http://vndb.org',
+      baseurl => $VNDB::VNDBopts{root_url},
       @_,
     }
   );

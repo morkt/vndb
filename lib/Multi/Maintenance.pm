@@ -13,7 +13,6 @@ use PerlIO::gzip;
 
 sub spawn {
   # WARNING: these maintenance tasks can block the process for a few seconds
-  # 'maintenance all' doesn't include log rotation
 
   my $p = shift;
   POE::Session->create(
@@ -45,6 +44,7 @@ sub cmd_maintenance {
 
 sub vncache {
   $_[KERNEL]->call(core => log => 3 => 'Updating c_* columns in the vn table...');
+ # takes ~5 seconds, better do this in the background...
   $Multi::SQL->do('SELECT update_vncache(0)');
 }
 
@@ -58,6 +58,11 @@ sub revcache {
 
 
 sub integrity {
+ # checks for database inconsistencies not handled by the foreign key constraints:
+ #   - releases without a VN relation
+ #   - changes without an entry in the (vn|releases|producers)_rev table
+ #   - threads without a tag or post
+
   my $q = $Multi::SQL->prepare(q|
    SELECT 'r', id FROM releases_rev rr
      WHERE NOT EXISTS(SELECT 1 FROM releases_vn rv WHERE rr.id = rv.rid)
@@ -65,7 +70,11 @@ sub integrity {
    SELECT c.type::varchar, id FROM changes c
      WHERE (c.type = 0 AND NOT EXISTS(SELECT 1 FROM vn_rev vr WHERE vr.id = c.id))
         OR (c.type = 1 AND NOT EXISTS(SELECT 1 FROM releases_rev rr WHERE rr.id = c.id))
-        OR (c.type = 2 AND NOT EXISTS(SELECT 1 FROM producers_rev pr WHERE pr.id = c.id))|);
+        OR (c.type = 2 AND NOT EXISTS(SELECT 1 FROM producers_rev pr WHERE pr.id = c.id))
+   UNION
+   SELECT 't', id FROM threads t
+     WHERE NOT EXISTS(SELECT 1 FROM threads_posts tp WHERE tp.tid = t.id)
+        OR NOT EXISTS(SELECT 1 FROM threads_tags tt WHERE tt.tid = t.id)|);
   $q->execute();
   my $r = $q->fetchall_arrayref([]);
   if(@$r) {

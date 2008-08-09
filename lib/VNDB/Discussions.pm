@@ -89,6 +89,7 @@ sub TEdit {
         $tid = $self->DBAddThread(%thread) if !$tid;  # create thread
       }
       
+      my $onum = $num;
       my %post = (
         tid => $tid,
         num => !$otid ? 1 : $num,
@@ -97,6 +98,8 @@ sub TEdit {
       );
       $self->DBEditPost(%post)       if $num;   # edit post
       $num = $self->DBAddPost(%post) if !$num;  # add post
+
+      $self->RunCmd('ircnotify t'.$tid.'.'.$num) if !$onum && !$frm->{hide};
 
       my $pagenum = ceil($num/$self->{postsperpage});
       $pagenum = $pagenum > 1 ? '/'.$pagenum : '';

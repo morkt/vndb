@@ -170,6 +170,7 @@ sub VNEdit {
      # check for new anime data
       $self->RunCmd('anime check') if $oid && $frm->{anime} ne $b4{anime} || !$oid && $frm->{anime};
 
+      $self->RunCmd('ircnotify v'.$id.'.'.$nrev);
       return $self->ResRedirect('/v'.$id.'.'.$nrev, 'post');
     }
   }
