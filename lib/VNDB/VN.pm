@@ -105,16 +105,17 @@ sub VNEdit {
       { name => 'screenshots', required => 0, default => '' },
       { name => 'comm', required => 0, default => '' },
     );
+    my $relations = [ map { /^([0-9]+),([0-9]+)/ && $2 != $id ? ( [ $1, $2 ] ) : () } split /\|\|\|/, $frm->{relations} ];
+    my $cat = [ map { [ substr($_,0,3), substr($_,3,1) ] } split /,/, $frm->{categories} ];
+    my $anime = [ grep /^[0-9]+$/, split / +/, $frm->{anime} ];
+    my $screenshots = [ map [split /,/], grep /^[0-9]+,[01]$/, split / +/, $frm->{screenshots} ];
+
     $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
-    $frm->{anime} = join(' ', sort { $a <=> $b } grep /^[0-9]+$/, split(/\s+/, $frm->{anime})); # re-sort
+    $frm->{anime} = join ' ', sort { $a <=> $b } @$anime; # re-sort
+    $frm->{screenshots} = join ' ', map "$$_[0],$$_[1]", sort { $$a[0] <=> $$b[0] } @$screenshots;
 
     return $self->ResRedirect('/v'.$id, 'post')
       if $id && !$self->ReqParam('img') && 13 == scalar grep { $b4{$_} eq $frm->{$_} } keys %b4;
-
-    my $relations = [ map { /^([0-9]+),([0-9]+)/ && $2 != $id ? ( [ $1, $2 ] ) : () } split /\|\|\|/, $frm->{relations} ];
-    my $cat = [ map { [ substr($_,0,3), substr($_,3,1) ] } split /,/, $frm->{categories} ];
-    my $anime = [ split / +/, $frm->{anime} ];
-    my $screenshots = [ map [split /,/], grep /^[0-9]+,[01]$/, split / +/, $frm->{screenshots} ];
 
    # upload image
     my $imgid = 0;
@@ -172,7 +173,7 @@ sub VNEdit {
       }
 
      # check for new anime data
-      $self->RunCmd('anime check') if $oid && $frm->{anime} ne $b4{anime} || !$oid && $frm->{anime};
+      $self->RunCmd('anime') if $oid && $frm->{anime} ne $b4{anime} || !$oid && $frm->{anime};
 
       $self->RunCmd('ircnotify v'.$id.'.'.$nrev);
       return $self->ResRedirect('/v'.$id.'.'.$nrev, 'post');

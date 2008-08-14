@@ -11,6 +11,7 @@ TODO:
 	- Added realtime IRC notifications for actions on the site
 	- Added screenshots to VNs
 	- Rewrote Multi::Image
+	- Renamed the 'anime check' command to 'anime' for consistency
 
 1.20 - 2008-08-06 (r79)
 	- Admins can change someone's username

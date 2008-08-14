@@ -14,6 +14,9 @@
 #  Multi  -  core namespace for initialisation and global variables
 #
 
+# NOTE: in case of errors, clearing the shared memory might work:
+#  $ ipcrm -S 0x42444e56 -M 0x42444e56
+
 package Multi;
 
 use strict;

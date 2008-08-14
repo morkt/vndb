@@ -36,7 +36,7 @@ sub spawn {
   # This module -only- fetches anime information in daemon mode!
   # Calling the anime command with an ID as argument will force
   #  the information to be refreshed. This is not recommended, 
-  #  just use 'anime check' for normal usage.
+  #  just use 'anime' for normal usage.
 
   my $p = shift;
   POE::Session->create(
@@ -81,10 +81,10 @@ sub spawn {
 
 sub _start {
   $_[KERNEL]->alias_set('anime');
-  $_[KERNEL]->call(core => register => qr/^anime ([0-9]+|check)$/, 'cmd_anime');
+  $_[KERNEL]->call(core => register => qr/^anime(?: ([0-9]+))?$/, 'cmd_anime');
   
  # check for anime twice a day
-  $_[KERNEL]->post(core => addcron => '0 0,12 * * *', 'anime check');
+  $_[KERNEL]->post(core => addcron => '0 0,12 * * *', 'anime');
   $_[KERNEL]->sig('shutdown' => 'shutdown');
  
   if(!$Multi::DAEMONIZE) {
@@ -110,7 +110,7 @@ sub shutdown {
 
 sub cmd_anime { # cmd, arg
   my @push;
-  if($_[ARG1] eq 'check') {
+  if(!$_[ARG1]) {
     # only animes we have never fetched, or haven't been updated for a month
     my $q = $Multi::SQL->prepare(q|
       SELECT id
