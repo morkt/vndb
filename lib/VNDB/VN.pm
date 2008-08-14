@@ -84,7 +84,7 @@ sub VNEdit {
     relations => join('|||', map { $_->{relation}.','.$_->{id}.','.$_->{title} } @{$v->{relations}}),
     categories => join(',', map { $_->[0].$_->[1] } sort { $a->[0] cmp $b->[0] } @{$v->{categories}}),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
-    screenshots => join(' ', map "$$_[0],$$_[1]", @{$v->{screenshots}}),
+    screenshots => join(' ', map "$$_{id},$$_{nsfw}", @{$v->{screenshots}}),
   ) : ();
 
   my $frm = {};
@@ -323,10 +323,25 @@ sub VNXML {
 
 sub VNScrXML {
   my $self = shift;
-
-  return $self->ResNotFound if $self->ReqMethod ne 'POST';
   return $self->ResDenied if !$self->AuthCan('edit');
 
+ # check the status of recently uploaded screenshots
+  if($self->ReqMethod ne 'POST') {
+    my $ids = $self->FormCheck(
+      { name => 'id', required => 1, template => 'int', multi => 1 }
+    );
+    return $self->ResNotFound if $ids->{_err};
+    my $r = $self->DBGetScreenshot($ids->{id});
+    return $self->ResNotFound if !@$r;
+    my $x = $self->ResStartXML;
+    $x->startTag('images');
+    $x->emptyTag('image', id => $_->{id}, status => $_->{status}, width => $_->{width}, height => $_->{height})
+      for (@$r);
+    $x->endTag('images');
+    return;
+  }
+
+ # upload new screenshot
   my $i = $self->FormCheck(
     { name => 'itemnumber', required => 1, template => 'int' }
   );
@@ -349,11 +364,11 @@ sub VNScrXML {
   if($id) {
     unlink $tmp;
   } else {
-    $id = $self->DBIncId('screenshots_seq');
+    $id = $self->DBAddScreenshot;
     my $new = sprintf '%s/%02d/%d.jpg', $self->{sfpath}, $id%100, $id;
     rename $tmp, $new or die $!;
     chmod 0666, $new;
-    $self->RunCmd(sprintf 'screenshot %d', $id);
+    $self->RunCmd('screenshot');
   }
 
   my $x = $self->ResStartXML;

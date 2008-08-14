@@ -651,7 +651,6 @@ div#scrView {
 #scrclose { float: right; padding-left: 10px; }
 #scrnext { padding-left: 5px; }
 #scrprev { padding-right: 5px; }
-#preload { visibility: hidden; position: absolute; left: -9000px; top: -9000px }
 
 
 

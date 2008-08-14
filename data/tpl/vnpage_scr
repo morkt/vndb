@@ -3,14 +3,15 @@
 
 [[ if(@{$d{vn}{screenshots}}) {
   my $tot = @{$d{vn}{screenshots}};
-  my $nsfw = grep $$_[1], @{$d{vn}{screenshots}};
+  my $nsfw = grep $$_{nsfw}, @{$d{vn}{screenshots}};
 ]]-
 
 <div id="screenshots">
 [[ for(@{$d{vn}{screenshots}}) { ]]
- <a href="[[= sprintf '%s/sf/%02d/%d.jpg', $p{st}, $$_[0]%100, $$_[0] ]]"[[= $$_[1] ? ' class="scr_nsfw"'.(!$p{AuthNsfw}?' style="display: none"':'') : '' ]]
- ><img src="[[= sprintf '%s/st/%02d/%d.jpg', $p{st}, $$_[0]%100, $$_[0] ]]"
- /><b>[[= $$_[1] ? 'x' : '&nbsp;' ]]</b></a>
+ <a href="[[= sprintf '%s/sf/%02d/%d.jpg', $p{st}, $$_{id}%100, $$_{id} ]]"
+  [[= $$_{nsfw} ? ' class="scr_nsfw"'.(!$p{AuthNsfw}?' style="display: none"':'') : '' ]]-
+  rel="[[= $$_{width}.'x'.$$_{height} ]]"><img src="[[= sprintf '%s/st/%02d/%d.jpg', $p{st}, $$_{id}%100, $$_{id} ]]"
+ /><b>[[= $$_{nsfw} ? 'x' : '&nbsp;' ]]</b></a>
 [[ } ]]-
 </div>
 [[ if($nsfw) { ]]-
@@ -25,7 +26,6 @@
 <a href="#" id="scrprev">&lt;- previous</a>
 <a href="#" id="scrnext">next -&gt;</a>
 </div>
-<img id="preload" onload="scrPosition()" />
 
 [[ } else { ]]-
 <p>

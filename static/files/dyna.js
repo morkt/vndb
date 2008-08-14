@@ -599,7 +599,7 @@ function scrLoad() {
   var l=x('screenshots').value.split(' ');
   for(var i=0;i<l.length;i++)
     if(l[i].length > 2)
-      scrL[i] = { load: 0, id: l[i].split(',')[0], nsfw: l[i].split(',')[1]>0?1:0 };
+      scrL[i] = { load: 2, id: l[i].split(',')[0], nsfw: l[i].split(',')[1]>0?1:0 };
 
  // <tbody> because IE can't operate on <table>
   x('scrfrm').innerHTML = '<table><tbody id="scrTbl"></tbody></table>';
@@ -608,6 +608,8 @@ function scrLoad() {
   scrGenerateTR(i);
 
   setTimeout(scrSetSubmit, 1000);
+  setInterval(scrCheckStatus, 1000);
+  scrCheckStatus();
 }
 
 // give an error when submitting the form while still uploading an image
@@ -657,7 +659,8 @@ function scrGenerateTR(i) {
     r += 'Screenshot #'+scrL[i].id+'</b>'
         +'<input type="checkbox" name="scrNSFW'+i+'" id="scrNSFW'+i+'"'+(scrL[i].nsfw?' checked="checked"':'')+' style="float: left" onclick="scrSer()" /> '
         +'<label for="scrNSFW'+i+'" class="checkbox">&nbsp;This screenshot is NSFW.</label>'
-        +'<input type="button" value="remove" onclick="scrDel('+i+')" style="float: right; width: auto; height: auto" />';
+        +'<input type="button" value="remove" onclick="scrDel('+i+')" style="float: right; width: auto; height: auto" />'
+        +'<br /><br />Full size: '+scrL[i].width+'x'+scrL[i].height+'px';
 
   if(scrL[i].obj) {
     x('scrTr'+i).getElementsByTagName('td')[1].innerHTML = r;
@@ -729,26 +732,32 @@ function scrUploadComplete(i) {
   }
 }
 
-function scrImageFail(i) {
-  if(scrL[i].timer)
-    clearTimeout(scrL[i].timer);
-  if(!scrL[i].load)
+function scrCheckStatus() {
+  var ids='';
+  for(var i=0;i<scrL.length;i++)
+    if(scrL[i] && scrL[i].load == 2)
+      ids+=(ids?';':'')+'id='+scrL[i].id;
+  if(!ids)
     return;
-  scrL[i].timer = setTimeout(function() {
-    if(!scrL[i].load)
+  ajax('/xml/screenshots.xml?'+ids+';r='+(Math.floor(Math.random()*999)+1), function () {
+    if(!hr || hr.readyState != 4 || !hr.responseText)
       return;
-    x('scrTr'+i).getElementsByTagName('td')[0].innerHTML =
-      '<img src="'+scrURL(scrL[i].id, 't')+'?'+(Math.floor(Math.random()*999)+1)+'" onload="scrImageSuccess('+i+')"'
-     +' onerror="scrImageFail('+i+')" style="visibility: hidden; width: 0px; height: 0px;" id="scrImage'+i+'" />';
-    setTimeout('scrImageFail('+i+')', 7000);
-  }, 2000);
-}
-
-function scrImageSuccess(i) {
-  scrL[i].load = 0;
-  x('scrImage'+i).style.cssText = 'margin: 0; padding: 0; border: 0;';
-  scrGenerateTR(i);
-  scrSer();
+    if(hr.status != 200)
+      return alert('Whoops, error! :(');
+    var l = hr.responseXML.getElementsByTagName('image');
+    for(var s=0;s<l.length;s++) {
+      for(i=0;i<scrL.length;i++)
+        if(scrL[i] && scrL[i].id == l[s].getAttribute('id') && l[s].getAttribute('status') > 0) {
+          scrL[i].load = 0;
+          scrL[i].width = l[s].getAttribute('width');
+          scrL[i].height = l[s].getAttribute('height');
+          x('scrTr'+i).getElementsByTagName('td')[0].innerHTML =
+            '<img src="'+scrURL(scrL[i].id, 't')+'" style="margin: 0; padding: 0; border: 0" />';
+          scrGenerateTR(i);
+          scrSer();
+        }
+    }
+  });
 }
 
 function scrDel(i) {

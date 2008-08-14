@@ -12,7 +12,7 @@ $VERSION = $VNDB::VERSION;
 
 @EXPORT = qw|
   DBInit DBCheck DBCommit DBRollBack DBExit
-  DBLanguageCount DBCategoryCount DBTableCount DBGetHist DBLockItem DBIncId
+  DBLanguageCount DBCategoryCount DBTableCount DBGetHist DBLockItem DBIncId DBAddScreenshot DBGetScreenshot
   DBGetUser DBAddUser DBUpdateUser DBDelUser
   DBGetVotes DBVoteStats DBAddVote DBDelVote
   DBGetVNList DBDelVNList
@@ -242,6 +242,16 @@ sub DBLockItem { # table, id, locked
 
 sub DBIncId { # sequence (this is a rather low-level function... aww heck...)
   return $_[0]->DBRow(q|SELECT nextval(!s) AS ni|, $_[1])->{ni};
+}
+
+
+sub DBAddScreenshot { # just returns an ID
+  return $_[0]->DBRow(q|INSERT INTO screenshots (status) VALUES(0) RETURNING id|)->{id};
+}
+
+
+sub DBGetScreenshot { # ids
+  return $_[0]->DBAll(q|SELECT * FROM screenshots WHERE id IN(!l)|, $_[1]);
 }
 
 
@@ -811,11 +821,12 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
     }
 
     if($o{what} =~ /screenshots/) {
-      push(@{$r->[$r{$_->{vid}}]{screenshots}}, [ $_->{scr}, $_->{nsfw} ]) for (@{$s->DBAll(q|
-        SELECT vid, scr, nsfw
-          FROM vn_screenshots
-          WHERE vid IN(!l)
-          ORDER BY scr|,
+      push(@{$r->[$r{$_->{vid}}]{screenshots}}, $_) && delete $_->{vid} for (@{$s->DBAll(q|
+        SELECT vs.vid, s.id, vs.nsfw, s.width, s.height
+          FROM vn_screenshots vs
+          JOIN screenshots s ON vs.scr = s.id
+          WHERE vs.vid IN(!l)
+          ORDER BY vs.scr|,
         [ keys %r ]
       )});
     }

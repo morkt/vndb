@@ -240,10 +240,11 @@ function scrNsfwHid() {
     +(scrNsfwEnabled ? '<a href="javascript:scrNsfwHid()">Show</a> / hide' : 'Show / <a href="javascript:scrNsfwHid()">hide</a>')
     +' nsfw.';
 }
-var scrInt;
 function scrView() {
   var u=this.href;
+  var r=this.rel;
   var ol=x('screenshots').getElementsByTagName('a');
+  d = x('scrView');
   var l=[];
 
  // remove NSFW
@@ -256,51 +257,41 @@ function scrView() {
     if(l[i].href == u) {
       x('scrnext').style.visibility = l[i+1] ? 'visible' : 'hidden';
       x('scrnext').href = l[i+1] ? l[i+1].href : '#';
+      x('scrnext').rel = l[i+1] ? l[i+1].rel : '';
       x('scrprev').style.visibility = l[i-1] ? 'visible' : 'hidden';
       x('scrprev').href = l[i-1] ? l[i-1].href : '#';
+      x('scrprev').rel = l[i-1] ? l[i-1].rel : '';
     }
 
- // show image
-  x('preload').src = u;
-  x('scrimg').innerHTML = 'Loading...';
-  x('scrView').style.display = 'block';
-  scrPosition(1);
-  return false;
-}
-function scrPosition(act) {
-  d = x('scrView');
-  m = x('preload');
-  // why don't all browsers use the same DOM...
+ // calculate dimensions
+  var w = Math.floor(r.split('x')[0]);
+  var h = Math.floor(r.split('x')[1]);
   var ww = typeof(window.innerWidth) == 'number' ? window.innerWidth : document.documentElement.clientWidth;
   var wh = typeof(window.innerHeight) == 'number' ? window.innerHeight : document.documentElement.clientHeight;
   var st = typeof(window.pageYOffset) == 'number' ? window.pageYOffset : document.body && document.body.scrollTop ? document.body.scrollTop : document.documentElement.scrollTop;
-  var h=20;var w=200;
-  if(act != 1) {
-    w = m.offsetWidth;
-    h = m.offsetHeight;
-    if(w+100 > ww || h+100 > wh) {
-      if(w/h > ww/wh) { // width++
-        h *= (ww-100)/w;
-        w = ww-100;
-      } else { // height++
-        w *= (wh-100)/h;
-        h = wh-100;
-      }
+  if(w+100 > ww || h+100 > wh) {
+    if(w/h > ww/wh) { // width++
+      h *= (ww-100)/w;
+      w = ww-100;
+    } else { // height++
+      w *= (wh-100)/h;
+      h = wh-100;
     }
   }
   var dw = w;
   var dh = h+20;
   dw = dw < 200 ? 200 : dw;
+
+ // update document
+  d.style.display = 'block';
+  x('scrimg').innerHTML = '<img src="'+u+'" onclick="scrClose()" style="width: '+w+'px; height: '+h+'px" />';
   d.style.width = dw+'px';
   d.style.height = dh+'px';
   d.style.left = ((ww - dw) / 2 - 10)+'px';
   d.style.top = ((wh - dh) / 2 + st)+'px';
-  if(act != 1)
-    x('scrimg').innerHTML = '<img src="'+x('preload').src+'" onclick="scrClose()" style="width: '+w+'px; height: '+h+'px" />';
+  return false;
 }
 function scrClose() {
-  clearInterval(scrInt);
-  scrInt = null;
   x('scrView').style.display = 'none';
   x('scrView').style.top = '-5000px';
   x('scrimg').innerHTML = '';

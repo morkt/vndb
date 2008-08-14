@@ -123,6 +123,14 @@ CREATE TABLE rlists (
   PRIMARY KEY(uid, rid)
 );
 
+-- screenshots
+CREATE TABLE screenshots (
+  id SERIAL NOT NULL PRIMARY KEY,
+  status smallint NOT NULL DEFAULT 0,
+  width smallint NOT NULL DEFAULT 0,
+  height smallint NOT NULL DEFAULT 0
+);
+
 -- threads
 CREATE TABLE threads (
   id SERIAL NOT NULL PRIMARY KEY,
@@ -286,7 +294,8 @@ ALTER TABLE vn_relations       ADD FOREIGN KEY (vid1)      REFERENCES vn_rev    
 ALTER TABLE vn_relations       ADD FOREIGN KEY (vid2)      REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn_rev             ADD FOREIGN KEY (id)        REFERENCES changes       (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn_rev             ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
-ALTER TABLE vn_screenshots     ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE vn_screenshots     ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE vn_screenshots     ADD FOREIGN KEY (scr)       REFERENCES screenshots   (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vnlists            ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vnlists            ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE votes              ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
@@ -388,10 +397,9 @@ $$ LANGUAGE plpgsql;
 ---------------------------------
 
 
--- Sequences used for cover, relation graph and screenshot ID numbers
+-- Sequences used for ID generation of items not in the DB
 CREATE SEQUENCE covers_seq;
 CREATE SEQUENCE relgraph_seq;
-CREATE SEQUENCE screenshots_seq;
 
 INSERT INTO users (id, username, mail, rank)
   VALUES (0, 'deleted', 'del@vndb.org', 0);

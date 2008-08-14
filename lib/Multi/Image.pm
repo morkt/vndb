@@ -19,7 +19,7 @@ sub spawn {
     package_states => [
       $p => [qw| _start
         cmd_coverimage cv_process cv_update cv_finish
-        cmd_screenshot scr_process scr_clean scr_finish
+        cmd_screenshot scr_process scr_update scr_clean scr_finish
       |],
     ],
     heap => {
@@ -34,10 +34,7 @@ sub _start {
   $_[KERNEL]->alias_set('image');
   $_[KERNEL]->sig(shutdown => 'shutdown');
   $_[KERNEL]->call(core => register => qr/^coverimage(?: ([0-9]+)|)$/, 'cmd_coverimage');
-  $_[KERNEL]->call(core => register => qr/^screenshot ([0-9]+|all|clean)$/, 'cmd_screenshot');
-
- # daily check for unprocessed cover images
-  $_[KERNEL]->post(core => addcron => '0 0 * * *', 'coverimage');
+  $_[KERNEL]->call(core => register => qr/^screenshot(?: ([0-9]+|all|clean))?$/, 'cmd_screenshot');
 }
 
 
@@ -96,10 +93,10 @@ sub cv_process { # id
 
 
 sub cv_update { # id
-  if($Multi::SQL->do('UPDATE vn_rev SET image = ? WHERE image = ?', undef, $_[ARG0], -1*$_[ARG0])) {
+  if($Multi::SQL->do('UPDATE vn_rev SET image = ? WHERE image = ?', undef, $_[ARG0], -1*$_[ARG0]) > 0) {
     $_[KERNEL]->yield(cv_finish => $_[ARG0]);
-  } elsif(!$_[ARG0]) {
-    $_[KERNEL]->delay(cv_update => 5 => $_[ARG0]);
+  } elsif(!$_[ARG1]) {
+    $_[KERNEL]->delay(cv_update => 3 => $_[ARG0], 1);
   } else {
     $_[KERNEL]->call(core => log => 1, 'Image %d not present in the database!', $_[ARG0]);
     $_[KERNEL]->yield(cv_finish => $_[ARG0]);
@@ -125,13 +122,25 @@ sub cmd_screenshot {
   my($cmd, $id) = @_[ARG0, ARG1];
   $_[HEAP]{curcmd} = $_[ARG0];
   $_[HEAP]{id} = $_[ARG1];
+  
+  if(!$id) {
+    my $q = $Multi::SQL->prepare('SELECT id FROM screenshots WHERE status = 0');
+    $q->execute();
+    $_[HEAP]{todo} = [ map { $_->[0]} @{$q->fetchall_arrayref([])} ];
+    if(!@{$_[HEAP]{todo}}) {
+      $_[KERNEL]->call(core => log => 2, 'No screenshots to process');
+      $_[KERNEL]->yield('scr_finish');
+      return;
+    }
 
-  if($id eq 'clean') {
+  } elsif($id eq 'clean') {
     return $_[KERNEL]->yield('scr_clean');
+
   } elsif($id eq 'all') {
     my $q = $Multi::SQL->prepare('SELECT DISTINCT scr FROM vn_screenshots');
     $q->execute();
     $_[HEAP]{todo} = [ map $_->[0], @{$q->fetchall_arrayref([])} ];
+
   } else {
     $_[HEAP]{todo} = [ $_[ARG1] ];
   }
@@ -180,39 +189,44 @@ sub scr_process { # id
 
   $_[KERNEL]->call(core => log => 2, 'Processed screenshot #%d in %.2fs: %.1fkB -> %.1fkB (%dx%d), thumb: %.1fkB (%dx%d)',
     $_[ARG0], time-$start, $os/1024, (-s $sf)/1024, $ow, $oh, (-s $st)/1024, $w, $h);
-  $_[KERNEL]->yield(scr_finish => $_[ARG0]);
+  $_[KERNEL]->yield(scr_update => $_[ARG0], $ow, $oh);
+}
+
+
+sub scr_update { # id, width, height
+  if($Multi::SQL->do('UPDATE screenshots SET status = 1, width = ?, height = ? WHERE id = ?', undef, $_[ARG1], $_[ARG2], $_[ARG0]) > 0) {
+    $_[KERNEL]->yield(scr_finish => $_[ARG0]);
+  } elsif(!$_[ARG3]) {
+    $_[KERNEL]->delay(scr_update => 3 => @_[ARG0..$#_], 1);
+  } else {
+    $_[KERNEL]->call(core => log => 1, 'Screenshot %d not present in the database!', $_[ARG0]);
+    $_[KERNEL]->yield(scr_finish => $_[ARG0]);
+  }
 }
 
 
 sub scr_clean {
- # not very efficient...
-  my $q = $Multi::SQL->prepare('SELECT DISTINCT scr FROM vn_screenshots');
+  my $sql = ' FROM screenshots s WHERE NOT EXISTS(SELECT 1 FROM vn_screenshots vs WHERE vs.scr = s.id)';
+  my $q = $Multi::SQL->prepare('SELECT s.id'.$sql);
   $q->execute();
-  my @exists = map $_->[0], @{$q->fetchall_arrayref([])};
 
- # not very efficient either...
-  my @files = map /\/([0-9]+)\.jpg$/?$1:(), glob "$VNDB::VNDBopts{sfpath}/*/*.jpg";
-
-  my($files, $thumbs, $bytes) = (0,0,0);
-  for my $id (@files) {
-    if(!grep $_==$id, @exists) {
-      my $f = sprintf '%s/%02d/%d.jpg', $VNDB::VNDBopts{stpath}, $id%100, $id;
-      my $t = sprintf '%s/%02d/%d.jpg', $VNDB::VNDBopts{stpath}, $id%100, $id;
-      $bytes += -s $f;
-      $files++;
-      unlink $f;
-      if(-f $t) {
-        $bytes += -s $t;
-        $thumbs++;
-        unlink $t;
-      }
-      $_[KERNEL]->call(core => log => 3, 'Removing screenshot #%d', $id);
-    }
+  my($bytes, $items, $id) = (0, 0, 0);
+  while(($id) = $q->fetchrow_array) {
+    my $f = sprintf '%s/%02d/%d.jpg', $VNDB::VNDBopts{stpath}, $id%100, $id;
+    my $t = sprintf '%s/%02d/%d.jpg', $VNDB::VNDBopts{stpath}, $id%100, $id;
+    $bytes += -s $f;
+    $bytes += -s $t;
+    $items++;
+    unlink $f;
+    unlink $t;
+    $_[KERNEL]->call(core => log => 3, 'Removing screenshot #%d', $id);
   }
 
-  $_[KERNEL]->call(core => log => 2, 'Removed %d + %d unused files, total of %.2fMB freed.',
-    $files, $thumbs, $bytes/1024/1024) if $files;
-  $_[KERNEL]->call(core => log => 2, 'No unused screenshots found') if !$files;
+  $Multi::SQL->do('DELETE'.$sql);
+
+  $_[KERNEL]->call(core => log => 2, 'Removed %d unused screenshots, total of %.2fMB freed.',
+    $items, $bytes/1024/1024) if $items;
+  $_[KERNEL]->call(core => log => 2, 'No unused screenshots found') if !$items;
   $_[KERNEL]->yield('scr_finish');
 }
 
