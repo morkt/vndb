@@ -241,7 +241,8 @@ sub ttabs { # [vrpu], obj, sel
   <li><a href="/v$$o{id}/edit?fh=info" rel="nofollow">General info</a></li>
   <li><a href="/v$$o{id}/edit?fh=cat" rel="nofollow">Categories</a></li>
   <li><a href="/v$$o{id}/edit?fh=rel" rel="nofollow">Relations</a></li>
-  <li><a href="/v$$o{id}/edit?fh=img" rel="nofollow">Upload image</a></li>
+  <li><a href="/v$$o{id}/edit?fh=img" rel="nofollow">Image</a></li>
+  <li><a href="/v$$o{id}/edit?fh=scr" rel="nofollow">Screenshots</a></li>
   <li><a href="/v$$o{id}/add" rel="nofollow">Add release</a></li>
  </ul>
 </div>| : $t eq 'r' ? qq|

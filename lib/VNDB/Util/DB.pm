@@ -782,11 +782,12 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
   );
   $_->{c_released} = sprintf '%08d', $_->{c_released} for @$r;
 
-  if($o{what} =~ /(?:relations|categories|anime)/ && $#$r >= 0) {
+  if($o{what} =~ /(?:relations|categories|anime|screenshots)/ && $#$r >= 0) {
     my %r = map {
       $r->[$_]{relations} = [];
       $r->[$_]{categories} = [];
       $r->[$_]{anime} = [];
+      $r->[$_]{screenshots} = [];
       ($r->[$_]{cid}, $_)
     } 0..$#$r;
     
@@ -805,6 +806,16 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
           FROM vn_anime va
           JOIN anime a ON va.aid = a.id
           WHERE va.vid IN(!l)|,
+        [ keys %r ]
+      )});
+    }
+
+    if($o{what} =~ /screenshots/) {
+      push(@{$r->[$r{$_->{vid}}]{screenshots}}, [ $_->{scr}, $_->{nsfw} ]) for (@{$s->DBAll(q|
+        SELECT vid, scr, nsfw
+          FROM vn_screenshots
+          WHERE vid IN(!l)
+          ORDER BY scr|,
         [ keys %r ]
       )});
     }
@@ -832,7 +843,7 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
 }  
 
 
-sub DBAddVN { # %options->{ columns in vn_rev + comm + relations + categories + anime }
+sub DBAddVN { # %options->{ columns in vn_rev + comm + relations + categories + anime + screenshots }
   my($s, %o) = @_;
 
   my $id = $s->DBRow(q|
@@ -854,7 +865,7 @@ sub DBAddVN { # %options->{ columns in vn_rev + comm + relations + categories + 
 }
 
 
-sub DBEditVN { # id, %options->( columns in vn_rev + comm + relations + categories + anime + uid + causedby }
+sub DBEditVN { # id, %options->( columns in vn_rev + comm + relations + categories + anime + screenshots + uid + causedby }
   my($s, $vid, %o) = @_;
 
   my $c = $s->DBRow(q|
@@ -890,6 +901,12 @@ sub _insert_vn_rev {
       VALUES (%d, !s, %d)|,
     $cid, $_->[0], $_->[1]
   ) for (@{$o->{categories}});
+
+  $s->DBExec(q|
+    INSERT INTO vn_screenshots (vid, scr, nsfw)
+      VALUES (%d, %d, %d)|,
+    $cid, $_->[0], $_->[1]?1:0
+  ) for (@{$o->{screenshots}});
 
   $s->DBExec(q|
     INSERT INTO vn_relations (vid1, vid2, relation)

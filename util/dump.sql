@@ -214,6 +214,14 @@ CREATE TABLE vn_rev (
   l_renai varchar(100) NOT NULL DEFAULT ''
 );
 
+-- vn_screenshots
+CREATE TABLE vn_screenshots (
+  vid integer NOT NULL DEFAULT 0,
+  scr integer NOT NULL DEFAULT 0,
+  nsfw smallint NOT NULL DEFAULT 0,
+  PRIMARY KEY(vid, scr)
+);
+
 -- vnlists
 CREATE TABLE vnlists (
   uid integer DEFAULT 0,
@@ -278,6 +286,7 @@ ALTER TABLE vn_relations       ADD FOREIGN KEY (vid1)      REFERENCES vn_rev    
 ALTER TABLE vn_relations       ADD FOREIGN KEY (vid2)      REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn_rev             ADD FOREIGN KEY (id)        REFERENCES changes       (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn_rev             ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE vn_screenshots     ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vnlists            ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vnlists            ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE votes              ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
@@ -379,9 +388,10 @@ $$ LANGUAGE plpgsql;
 ---------------------------------
 
 
--- Two sequences used for cover and relation graph ID numbers
+-- Sequences used for cover, relation graph and screenshot ID numbers
 CREATE SEQUENCE covers_seq;
 CREATE SEQUENCE relgraph_seq;
+CREATE SEQUENCE screenshots_seq;
 
 INSERT INTO users (id, username, mail, rank)
   VALUES (0, 'deleted', 'del@vndb.org', 0);

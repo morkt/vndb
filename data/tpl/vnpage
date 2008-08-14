@@ -23,19 +23,20 @@
 
 [[ if($d{change}) { ]]
 [[= cdiff($d{prev}, $d{vn},
-  [ title      => 'Title',          1 ],
-  [ alias      => 'Alias',          1, 1 ],
-  [ desc       => 'Description',    1, 1 ],
-  [ length     => 'Length',         sub { $VNDB::VNLEN->[$_[0] ][0] } ],
-  [ l_wp       => 'Wikipedia link', sub { $_[0] ? '<a href="http://en.wikipedia.org/wiki/'.$_[0].'">'.$_[0].'</a>' : 'No link' } ],
-  [ l_encubed  => 'Encubed tag',    sub { $_[0] ? '<a href="http://novelnews.net/tag/'._huri($_[0]).'/">'.$_[0].'</a>' : 'No link' } ],
-  [ l_renai    => 'Renai.us link',  sub { $_[0] ? '<a href="http://renai.us/game/'._huri($_[0]).'.shtml">'.$_[0].'</a>' : 'No link' } ],
-  [ l_vnn      => 'V-N.net link',   sub { $_[0] ? '<a href="http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id='.$_[0].'">'.$_[0].'</a>' : 'No link' } ], 
-  [ anime      => 'Related anime',  sub { join(' ', map qq|<a href="http://anidb.net/a$$_{id}">$$_{id}</a>|, sort { $a->{id} <=> $b->{id} } @{$_[0]}) } ],
-  [ categories => 'Categories',     sub { join(' ', map { my $l=$VNDB::CAT->{substr($_->[0],0,1)}[1]{substr($_->[0],1,2)}; $l?$l.'('.$_->[1].')':() } sort { $a->[0] cmp $b->[0] } @{$_[0]}) || 'No categories selected' }, 1 ],
-  [ relations  => 'Relations',      sub { join("<br />\n", map { $VNDB::VREL->[$_->{relation}].': '._hchar($_->{title}) } sort { $a->{id} <=> $b->{id} } @{$_[0]}) } ],
-  [ image      => 'Image',          sub { $_[0] > 0 ? sprintf '<img src="%s/cv/%02d/%d.jpg" />', $p{st}, $_[0]%100, $_[0] : $_[0] < 0 ? '[processing]' : 'No image'; } ],
-  [ img_nsfw   => 'NSFW',           sub { $_[0] ? 'Not safe' : 'Safe' } ]
+  [ title       => 'Title',          1 ],
+  [ alias       => 'Alias',          1, 1 ],
+  [ desc        => 'Description',    1, 1 ],
+  [ length      => 'Length',         sub { $VNDB::VNLEN->[$_[0] ][0] } ],
+  [ l_wp        => 'Wikipedia link', sub { $_[0] ? '<a href="http://en.wikipedia.org/wiki/'.$_[0].'">'.$_[0].'</a>' : 'No link' } ],
+  [ l_encubed   => 'Encubed tag',    sub { $_[0] ? '<a href="http://novelnews.net/tag/'._huri($_[0]).'/">'.$_[0].'</a>' : 'No link' } ],
+  [ l_renai     => 'Renai.us link',  sub { $_[0] ? '<a href="http://renai.us/game/'._huri($_[0]).'.shtml">'.$_[0].'</a>' : 'No link' } ],
+  [ l_vnn       => 'V-N.net link',   sub { $_[0] ? '<a href="http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id='.$_[0].'">'.$_[0].'</a>' : 'No link' } ], 
+  [ anime       => 'Related anime',  sub { join(' ', map qq|<a href="http://anidb.net/a$$_{id}">$$_{id}</a>|, sort { $a->{id} <=> $b->{id} } @{$_[0]}) } ],
+  [ categories  => 'Categories',     sub { join(' ', map { my $l=$VNDB::CAT->{substr($_->[0],0,1)}[1]{substr($_->[0],1,2)}; $l?$l.'('.$_->[1].')':() } sort { $a->[0] cmp $b->[0] } @{$_[0]}) || 'No categories selected' }, 1 ],
+  [ relations   => 'Relations',      sub { join("<br />\n", map { $VNDB::VREL->[$_->{relation}].': '._hchar($_->{title}) } sort { $a->{id} <=> $b->{id} } @{$_[0]}) } ],
+  [ image       => 'Image',          sub { $_[0] > 0 ? sprintf '<img src="%s/cv/%02d/%d.jpg" />', $p{st}, $_[0]%100, $_[0] : $_[0] < 0 ? '[processing]' : 'No image'; } ],
+  [ screenshots => 'Screenshots',    sub { join "<br />\n", map sprintf('<a href="%s/sf/%02d/%d.jpg">%2$d</a> (%s)',$p{st},$$_[0]%100,$$_[0],$$_[1]?'NSFW':'Safe'), @{$_[0]} } ],
+  [ img_nsfw    => 'NSFW',           sub { $_[0] ? 'Not safe' : 'Safe' } ]
  ) ]]
 [[ } ]]-
 
@@ -157,6 +158,9 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
   my @lnks = (
     !$d{page} ? '<b>description &amp; releases</b>' : '<a href="/v'.$d{vn}{id}.'">description &amp; releases</a>',
     $d{page} eq 'stats' ? '<b>stats</b>' : '<a href="/v'.$d{vn}{id}.'/stats">stats</a>',
+    @{$d{vn}{screenshots}} ? (
+      $d{page} eq 'scr' ? '<b>screenshots</b>' : '<a href="/v'.$d{vn}{id}.'/scr">screenshots</a>',
+    ) : (),
     $d{vn}{rgraph} ? (
       $d{page} eq 'rg' ? '<b>relations</b>' : '<a href="/v'.$d{vn}{id}.'/rg">relations</a>',
     ) : (),
@@ -167,6 +171,7 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
 [[ if(!$d{page}) {           ]][[+ vnpage_rel   ]][[ } ]]
 [[ if($d{page} eq 'stats') { ]][[+ vnpage_stats ]][[ } ]]
 [[ if($d{page} eq 'rg') {    ]][[+ vnpage_rg    ]][[ } ]]
+[[ if($d{page} eq 'scr') {   ]][[+ vnpage_scr   ]][[ } ]]
 
 [[ if($p{AuthLoggedin}) { ]]-
 <div class="dropdown" id="voteDD">

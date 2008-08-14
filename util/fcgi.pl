@@ -34,6 +34,7 @@ while($req->Accept() >= 0) {
   eval {
     CGI::Minimal::reset_globals;
     CGI::Minimal::allow_hybrid_post_get(1);
+    CGI::Minimal::max_read_size(5*1024*1024); # allow 5MB of POST data
     $c = CGI::Minimal->new();
   };
   if($@) {
@@ -116,7 +117,7 @@ while($req->Accept() >= 0) {
 }
 
 sub send500 {
-  print "HTTP/1.0 500 Internal Server Error\n";
+  print "Status: 500 Internal Server Error\n";
   print "Content-Type: text/html\n";
   print "X-Sendfile: /www/vndb/www/files/err.html\n\n";
 }

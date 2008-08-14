@@ -606,6 +606,53 @@ i.crgn3 { font-style: normal; font-weight: bold; }
 #dpage .retired { text-decoration: line-through; }
 #dpage dt b { color: #999; font-weight: normal; font-style: normal; font-size: 12px; }
 
+/* Screenshots */
+div#screenshots {
+  display: block;
+  width: 700px;
+  margin: 0;
+  padding: 0;
+}
+div#screenshots a {
+  display: block;
+  float: left;
+  width: 136px;
+  height: 102px;
+  margin: 0;
+  padding: 2px;
+  text-decoration: none;
+  text-align: center;
+}
+div#screenshots a:hover {
+  background-color: #ccc;
+}
+div#screenshots a b {
+  display: block;
+  margin: -16px 0 0 0;
+  padding: 0;
+  height: 14px;
+  width: 136px;
+  text-align: right;
+  font-size: 12px;
+  color: #f00;
+}
+div#screenshots img { border: 0; padding: 0; }
+div#scrView {
+  position: absolute;
+  display: none;
+  top: -5000px;
+  left: -5000px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+#scrView img { cursor: pointer }
+#scrclose { float: right; padding-left: 10px; }
+#scrnext { padding-left: 5px; }
+#scrprev { padding-right: 5px; }
+#preload { visibility: hidden; position: absolute; left: -9000px; top: -9000px }
+
 
 
 #content input.right, #content select.right {

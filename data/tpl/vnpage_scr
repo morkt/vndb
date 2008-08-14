@@ -1,0 +1,34 @@
+<h3>Screenshots
+[[ if((!$d{vn}{locked} && $p{Authedit}) || $p{Authlock}) { ]]- <p class="actions">(<a href="/v[[= $d{vn}{id} ]]/edit?fh=scr">manage screenshots</a>)</p>[[ } ]]</h3>
+
+[[ if(@{$d{vn}{screenshots}}) {
+  my $tot = @{$d{vn}{screenshots}};
+  my $nsfw = grep $$_[1], @{$d{vn}{screenshots}};
+]]-
+
+<div id="screenshots">
+[[ for(@{$d{vn}{screenshots}}) { ]]
+ <a href="[[= sprintf '%s/sf/%02d/%d.jpg', $p{st}, $$_[0]%100, $$_[0] ]]"[[= $$_[1] ? ' class="scr_nsfw"'.(!$p{AuthNsfw}?' style="display: none"':'') : '' ]]
+ ><img src="[[= sprintf '%s/st/%02d/%d.jpg', $p{st}, $$_[0]%100, $$_[0] ]]"
+ /><b>[[= $$_[1] ? 'x' : '&nbsp;' ]]</b></a>
+[[ } ]]-
+</div>
+[[ if($nsfw) { ]]-
+<br style="clear: left" /><br />
+<p id="scrNsfwHid">&nbsp;</p>
+<i style="font-size: 10px;">Items marked with a red X are flagged as NSFW.</i>
+[[ } ]]-
+
+<div id="scrView">
+<b id="scrimg"></b><br />
+<a href="#" onclick="return scrClose()" id="scrclose">close</a>
+<a href="#" id="scrprev">&lt;- previous</a>
+<a href="#" id="scrnext">next -&gt;</a>
+</div>
+<img id="preload" onload="scrPosition()" />
+
+[[ } else { ]]-
+<p>
+ No screenshots have been uploaded yet for this visual novel.
+</p>
+[[ } ]]

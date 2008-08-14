@@ -93,6 +93,10 @@
     Kagetsu Tohya will automatically be added as a sequel for Tsukihime.
  |},
 
+ { type => 'sub', title => 'Screenshots', short => 'scr' },
+ { type => 'hidden', short => 'screenshots' },
+ { type => 'static', raw => 1, text => '<div id="scrfrm" class="'.$p{st}.'">...make sure to enable Javascript...</div>' },
+
  { type => 'sub', title => 'Edit summary', short => 'com' },
  { type => 'textarea', name => 'Edit summary', short => 'comm', rows => 3, cols => 60 },
  { type => 'static', text => 'Please explain your modifications and cite all sources.' },

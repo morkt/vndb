@@ -59,6 +59,10 @@ function dInit() {
   ct = x('categories');
   if(ct)
     catLoad();
+
+/*  scrLoad() is called by the form sub functions in def.js
+  if(x('scrfrm'))
+    scrLoad();*/
 }
 
 function qq(v) {
@@ -577,5 +581,197 @@ function catSet(id, rnk) {
   x('cat_'+id).style.color = c;
   x('b_'+id).innerHTML = rnk;
 }
+
+
+
+
+
+
+
+   /***************************\
+   *   S C R E E N S H O T S   *
+   \***************************/
+
+
+var scrL = []; // id, load, nsfw, obj
+function scrLoad() {
+ // 'screenshots' format: id,nsfw id,nsfw ..
+  var l=x('screenshots').value.split(' ');
+  for(var i=0;i<l.length;i++)
+    if(l[i].length > 2)
+      scrL[i] = { load: 0, id: l[i].split(',')[0], nsfw: l[i].split(',')[1]>0?1:0 };
+
+ // <tbody> because IE can't operate on <table>
+  x('scrfrm').innerHTML = '<table><tbody id="scrTbl"></tbody></table>';
+  for(i=0;i<scrL.length;i++)
+    scrGenerateTR(i);
+  scrGenerateTR(i);
+
+  setTimeout(scrSetSubmit, 1000);
+}
+
+// give an error when submitting the form while still uploading an image
+function scrSetSubmit() {
+  var o=document.forms[1].onsubmit;
+  document.forms[1].onsubmit = function() {
+    var c=0;
+    for(var i=0;i<scrL.length;i++)
+      if(scrL[i] && scrL[i].load)
+        c=1;
+    if(!c)
+      return o();
+    alert('Please wait for the screenshots to be uploaded before submitting the form.');
+    return false;
+  };
+}
+
+function scrURL(id, t) {
+  return x('scrfrm').className+'/s'+t+'/'+(id%100<10?'0':'')+(id%100)+'/'+id+'.jpg';
+}
+
+function scrGenerateTR(i) {
+  if(!scrL[i])
+    scrL[i] = { id: 0, load: 0 };
+  var r = '<b style="width: auto; float: none;margin: 0; padding: 0; font-weight: bold">';
+  if(!scrL[i].id && !scrL[i].load) {
+    var c=0;
+    for(var j=0,c=0; j<scrL.length; j++)
+      if(scrL[j] && (scrL[j].load || scrL[j].id))
+        c++;
+    if(c >= 10)
+      r += 'Enough screenshots</b>'
+          +'The limit of 10 screenshots per visual novel has been reached. '
+          +'If you want to add a new screenshot, please remove an existing one first.';
+    else
+      r += 'Add screenshot</b>'
+          +'<input type="file" name="scrAddFile'+i+'" id="scrAddFile'+i+'" style="float: none; height: auto; width: auto;" />'
+          +'<input type="button" value="Upload!" style="float: none; height: auto; width: auto; display: inline;" onclick="scrUpload('+i+')" />';
+  }
+  if(scrL[i].load && scrL[i].load == 1)
+    r += 'Uploading...</b>This could take a while, depending on the file size and your upload speed.<br />'
+        +'<a href="javascript:scrDel('+i+')">cancel</a>';
+  if(scrL[i].load && scrL[i].load == 2)
+    r += 'Generating thumbnail...</b>Note: if this takes longer than 30 seconds, there\'s probably something wrong on our side.'
+        +'Please try again later or report a bug if that is the case.';
+  if(scrL[i].id && !scrL[i].load)
+    r += 'Screenshot #'+scrL[i].id+'</b>'
+        +'<input type="checkbox" name="scrNSFW'+i+'" id="scrNSFW'+i+'"'+(scrL[i].nsfw?' checked="checked"':'')+' style="float: left" onclick="scrSer()" /> '
+        +'<label for="scrNSFW'+i+'" class="checkbox">&nbsp;This screenshot is NSFW.</label>'
+        +'<input type="button" value="remove" onclick="scrDel('+i+')" style="float: right; width: auto; height: auto" />';
+
+  if(scrL[i].obj) {
+    x('scrTr'+i).getElementsByTagName('td')[1].innerHTML = r;
+    return;
+  }
+
+ // the slow and tedious way, because we need to use DOM functions to manipulate the table contents...
+  var o = document.createElement('tr');
+  o.setAttribute('id', 'scrTr'+i);
+  o.style.cssText = 'border-top: 1px solid #ccc';
+  var d = document.createElement('td');
+  d.style.cssText = 'width: 141px; height: 102px; padding: 0;';
+  d.innerHTML = scrL[i].id && !scrL[i].load ? '<img src="'+scrURL(scrL[i].id, 't')+'" style="margin: 0; padding: 0; border: 0" />' : '&nbsp;';
+  var e = document.createElement('td');
+  e.innerHTML = r;
+  o.appendChild(d);
+  o.appendChild(e);
+  x('scrTbl').appendChild(o);
+  scrL[i].obj = o;
+  scrStripe();
+}
+
+function scrUpload(i) {
+  scrL[i].load = 1;
+ // move the file selection box into a temporary form and post it into a temporary iframe
+  var d = document.createElement('div');
+  d.id = 'scrUpl'+i;
+  d.style.cssText = 'visibility: hidden; overflow: hidden; width: 1px; height: 1px; position: absolute; left: -500px; top: -500px';
+  d.innerHTML = '<iframe name="scrIframe'+i+'" id="scrIframe'+i+'" style="height: 0px; width: 0px; visibility: hidden"'
+    +' src="about:blank" onload="scrUploadComplete('+i+')"></iframe>'
+    +'<form method="post" action="/xml/screenshots.xml" target="scrIframe'+i+'" enctype="multipart/form-data" id="scrUplFrm'+i+'" name="scrUplFrm'+i+'">'
+    +'<input type="hidden" name="itemnumber" value="'+i+'" />'
+    +'</form>';
+  document.body.appendChild(d);
+  x('scrUplFrm'+i).appendChild(x('scrAddFile'+i));
+  x('scrUplFrm'+i).submit();
+  scrGenerateTR(i);
+  scrGenerateTR(i+1);
+  return false;
+}
+
+function scrStripe() {
+  var l = x('scrTbl').getElementsByTagName('tr');
+  for(var j=0; j<l.length; j++)
+    l[j].style.backgroundColor = j%2==0 ? '#fff' : '#f5f5f5';
+}
+
+function scrUploadComplete(i) {
+  if(window.frames['scrIframe'+i].location.href.indexOf('screenshots') > 0) {
+    try {
+      scrL[i].id = window.frames['scrIframe'+i].window.document.getElementsByTagName('image')[0].getAttribute('id');
+    } catch(e) {
+      scrL[i].id = -10;
+    }
+    if(scrL[i].id < 0) {
+      alert(
+        scrL[i].id == -10 ?
+          'Oops! Seems like something went wrong...\n'
+         +'Make sure the file you\'re uploading doesn\'t exceed 5MB in size.\n'
+         +'If that isn\'t the problem, then please report a bug.' :
+        scrL[i].id == -1 ?
+          'Upload failed!\nOnly JPEG or PNG images are accepted.' :
+          'Upload failed!\nNo file selected, or an empty file?');
+      return scrDel(i);
+    }
+    scrL[i].load = 2;
+    scrGenerateTR(i);
+    scrImageFail(i);
+  }
+}
+
+function scrImageFail(i) {
+  if(scrL[i].timer)
+    clearTimeout(scrL[i].timer);
+  if(!scrL[i].load)
+    return;
+  scrL[i].timer = setTimeout(function() {
+    if(!scrL[i].load)
+      return;
+    x('scrTr'+i).getElementsByTagName('td')[0].innerHTML =
+      '<img src="'+scrURL(scrL[i].id, 't')+'?'+(Math.floor(Math.random()*999)+1)+'" onload="scrImageSuccess('+i+')"'
+     +' onerror="scrImageFail('+i+')" style="visibility: hidden; width: 0px; height: 0px;" id="scrImage'+i+'" />';
+    setTimeout('scrImageFail('+i+')', 7000);
+  }, 2000);
+}
+
+function scrImageSuccess(i) {
+  scrL[i].load = 0;
+  x('scrImage'+i).style.cssText = 'margin: 0; padding: 0; border: 0;';
+  scrGenerateTR(i);
+  scrSer();
+}
+
+function scrDel(i) {
+  x('scrTbl').removeChild(x('scrTr'+i));
+  if(scrL[i].load)
+    document.body.removeChild(x('scrUpl'+i));
+  scrL[i]=null;
+  scrGenerateTR(scrL.length-1);
+  scrSer();
+  scrStripe();
+}
+
+function scrSer() {
+  var r='';
+  for(var i=0;i<scrL.length;i++) {
+    if(scrL[i] && scrL[i].id && !scrL[i].load) {
+      scrL[i].nsfw = x('scrNSFW'+i).checked ? '1' : '0';
+      r += ' '+scrL[i].id+','+scrL[i].nsfw;
+    }
+  }
+  x('screenshots').value = r;
+}
+
+
 
 

@@ -9,7 +9,7 @@ require bytes;
 
 use vars ('$VERSION', '@EXPORT');
 $VERSION = $VNDB::VERSION;
-@EXPORT = qw| VNPage VNEdit VNLock VNHide VNBrowse VNXML VNUpdReverse |;
+@EXPORT = qw| VNPage VNEdit VNLock VNHide VNBrowse VNXML VNScrXML VNUpdReverse |;
 
 
 sub VNPage {
@@ -22,12 +22,12 @@ sub VNPage {
   
   my $v = $self->DBGetVN(
     id => $id,
-    what => 'extended relations categories anime'.($rev ? ' changes' : ''),
+    what => 'extended relations categories anime screenshots'.($rev ? ' changes' : ''),
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return $self->ResNotFound if !$v->{id};
 
-  my $c = $rev && $rev > 1 && $self->DBGetVN(id => $id, rev => $rev-1, what => 'extended changes relations categories anime')->[0];
+  my $c = $rev && $rev > 1 && $self->DBGetVN(id => $id, rev => $rev-1, what => 'extended changes relations categories anime screenshots')->[0];
   $v->{next} = $rev && $v->{latest} > $v->{cid} ? $rev+1 : 0;
 
   my $rel = $self->DBGetRelease(vid => $id, what => 'producers platforms');
@@ -74,7 +74,7 @@ sub VNEdit {
   return $self->ResNotFound if $rev->{_err};
   $rev = $rev->{rev};
 
-  my $v = $self->DBGetVN(id => $id, what => 'extended changes relations categories anime', $rev ? ( rev => $rev ) : ())->[0] if $id;
+  my $v = $self->DBGetVN(id => $id, what => 'extended changes relations categories anime screenshots', $rev ? ( rev => $rev ) : ())->[0] if $id;
   return $self->ResNotFound() if $id && !$v;
 
   return $self->ResDenied if !$self->AuthCan('edit') || ($v->{locked} && !$self->AuthCan('lock'));
@@ -84,6 +84,7 @@ sub VNEdit {
     relations => join('|||', map { $_->{relation}.','.$_->{id}.','.$_->{title} } @{$v->{relations}}),
     categories => join(',', map { $_->[0].$_->[1] } sort { $a->[0] cmp $b->[0] } @{$v->{categories}}),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
+    screenshots => join(' ', map "$$_[0],$$_[1]", @{$v->{screenshots}}),
   ) : ();
 
   my $frm = {};
@@ -101,17 +102,19 @@ sub VNEdit {
       { name => 'img_nsfw', required => 0 },
       { name => 'categories', required => 0, default => '' },
       { name => 'relations', required => 0, default => '' },
+      { name => 'screenshots', required => 0, default => '' },
       { name => 'comm', required => 0, default => '' },
     );
     $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
     $frm->{anime} = join(' ', sort { $a <=> $b } grep /^[0-9]+$/, split(/\s+/, $frm->{anime})); # re-sort
 
     return $self->ResRedirect('/v'.$id, 'post')
-      if $id && !$self->ReqParam('img') && 12 == scalar grep { $b4{$_} eq $frm->{$_} } keys %b4;
+      if $id && !$self->ReqParam('img') && 13 == scalar grep { $b4{$_} eq $frm->{$_} } keys %b4;
 
     my $relations = [ map { /^([0-9]+),([0-9]+)/ && $2 != $id ? ( [ $1, $2 ] ) : () } split /\|\|\|/, $frm->{relations} ];
     my $cat = [ map { [ substr($_,0,3), substr($_,3,1) ] } split /,/, $frm->{categories} ];
-    my $anime = [ split / /, $frm->{anime} ];
+    my $anime = [ split / +/, $frm->{anime} ];
+    my $screenshots = [ map [split /,/], grep /^[0-9]+,[01]$/, split / +/, $frm->{screenshots} ];
 
    # upload image
     my $imgid = 0;
@@ -149,6 +152,7 @@ sub VNEdit {
       anime => $anime,
       relations => $relations,
       categories => $cat,
+      screenshots => $screenshots,
     );
 
     if(!$frm->{_err}) {
@@ -314,6 +318,47 @@ sub VNXML {
     $x->endTag('item');
   }
   $x->endTag('vn');
+}
+
+
+sub VNScrXML {
+  my $self = shift;
+
+  return $self->ResNotFound if $self->ReqMethod ne 'POST';
+  return $self->ResDenied if !$self->AuthCan('edit');
+
+  my $i = $self->FormCheck(
+    { name => 'itemnumber', required => 1, template => 'int' }
+  );
+  return $self->ResNotFound if $i->{_err};
+  $i = $i->{itemnumber};
+
+  my $tmp = sprintf '%s/00/tmp.%d.jpg', $self->{sfpath}, $$*int(rand(1000)+1);
+  $self->ReqSaveUpload('scrAddFile'.$i, $tmp);
+
+  my $id = 0;
+  $id = -2 if !-s $tmp;
+  if(!$id) {
+    my $l;
+    open(my $T, '<:raw:bytes', $tmp) || die $1;
+    read $T, $l, 2;
+    close($T);
+    $id = -1 if $l ne pack('H*', 'ffd8') && $l ne pack('H*', '8950');
+  }
+  
+  if($id) {
+    unlink $tmp;
+  } else {
+    $id = $self->DBIncId('screenshots_seq');
+    my $new = sprintf '%s/%02d/%d.jpg', $self->{sfpath}, $id%100, $id;
+    rename $tmp, $new or die $!;
+    chmod 0666, $new;
+    $self->RunCmd(sprintf 'screenshot %d', $id);
+  }
+
+  my $x = $self->ResStartXML;
+  $x->pi('xml-stylesheet', 'href="'.$self->{static_url}.'/files/blank.css" type="text/css"');
+  $x->emptyTag('image', id => $id);
 }
 
 

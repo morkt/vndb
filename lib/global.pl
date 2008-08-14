@@ -38,8 +38,10 @@ our %VNDBopts = (
     {map{$_,1}qw| hist board boardmod edit mod lock del usermod |}, # 4 - admin
   ],
   postsperpage => 25,
-  imgpath => '/www/vndb/static/cv',
-  mappath => '/www/vndb/data/rg',
+  imgpath => '/www/vndb/static/cv', # cover images
+  sfpath  => '/www/vndb/static/sf', # full-size screenshots
+  stpath  => '/www/vndb/static/st', # screenshot thumbnails
+  mappath => '/www/vndb/data/rg',   # image maps for the relation graphs
   docpath => '/www/vndb/data/docs',
 );
 $VNDBopts{ranks}[0][1] = { (map{$_,1} map { keys %{$VNDBopts{ranks}[$_]} } 1..5) };

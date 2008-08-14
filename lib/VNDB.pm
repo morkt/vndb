@@ -59,6 +59,7 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
     '/'         => sub { shift->VNPage(shift) },
     stats       => sub { shift->VNPage(shift, shift) },
     rg          => sub { shift->VNPage(shift, shift) },
+    scr         => sub { shift->VNPage(shift, shift) },
     edit        => sub { shift->VNEdit(shift) },
     vote        => sub { shift->VNVote(shift) },
     wish        => sub { shift->WListMod(shift) },
@@ -113,6 +114,7 @@ my %VNDBuris = ( # wildcards: * -> (.+), + -> ([0-9]+)
   xml => {
     'producers.xml'   => sub { shift->PXML },
     'vn.xml'          => sub { shift->VNXML },
+    'screenshots.xml' => sub { shift->VNScrXML },
   },
 );
 
