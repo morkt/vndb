@@ -51,7 +51,7 @@ sub cmd_relgraph {
   if($_[ARG1] ne 'all') {
     $_[HEAP]{todo} = [ split /\s/, $_[ARG1] ];
   } else {
-    my $q = $Multi::SQL->prepare('SELECT id FROM vn WHERE hidden = 0');
+    my $q = $Multi::SQL->prepare('SELECT id FROM vn WHERE hidden = FALSE');
     $q->execute;
     $_[HEAP]{todo} = [ map { $_->[0] } @{$q->fetchall_arrayref([])} ];
   }

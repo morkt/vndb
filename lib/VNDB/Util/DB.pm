@@ -111,7 +111,7 @@ sub DBCategoryCount {
     SELECT cat, COUNT(vid) AS cnt
       FROM vn_categories vc
       JOIN vn v ON v.latest = vc.vid
-      WHERE v.hidden = 0
+      WHERE v.hidden = FALSE
       GROUP BY cat
       ORDER BY cnt|
     )}
@@ -128,8 +128,8 @@ sub DBLanguageCount {
       JOIN releases r ON r.latest = rr.id
       JOIN releases_vn rv ON rv.rid = rr.id
       JOIN vn v ON v.id = rv.vid
-      WHERE r.hidden = 0
-        AND v.hidden = 0
+      WHERE r.hidden = FALSE
+        AND v.hidden = FALSE
         AND rr.type <> 2
         AND rr.released <= TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer
       GROUP BY rr.language|)} };
@@ -142,7 +142,7 @@ sub DBTableCount { # table (users, producers, vn, releases, votes)
       FROM %s
       %s|,
     $_[1],
-    $_[1] =~ /producers|vn|releases/ ? 'WHERE hidden = 0' : '',
+    $_[1] =~ /producers|vn|releases/ ? 'WHERE hidden = FALSE' : '',
   )->{cnt} - ($_[1] eq 'users' ? 1 : 0);
 }
 
@@ -185,9 +185,9 @@ sub DBGetHist { # %options->{ type, id, cid, caused, next, page, results, ip, ed
 
    # get rid of 'hidden' items
     !$o{showhid} ? (
-      '(v.hidden IS NOT NULL AND v.hidden = 0 OR r.hidden IS NOT NULL AND r.hidden = 0 OR p.hidden IS NOT NULL AND p.hidden = 0)' => 1,
+      '(v.hidden IS NOT NULL AND v.hidden = FALSE OR r.hidden IS NOT NULL AND r.hidden = FALSE OR p.hidden IS NOT NULL AND p.hidden = FALSE)' => 1,
     ) : $o{showhid} == 2 ? (
-      '(v.hidden IS NOT NULL AND v.hidden = 1 OR r.hidden IS NOT NULL AND r.hidden = 1 OR p.hidden IS NOT NULL AND p.hidden = 1)' => 1,
+      '(v.hidden IS NOT NULL AND v.hidden = TRUE OR r.hidden IS NOT NULL AND r.hidden = TRUE OR p.hidden IS NOT NULL AND p.hidden = TRUE)' => 1,
     ) : (),
   );
 
@@ -234,7 +234,7 @@ sub DBLockItem { # table, id, locked
   my($s, $tbl, $id, $l) = @_;
   $s->DBExec(q|
     UPDATE %s
-      SET locked = %d
+      SET locked = !b
       WHERE id = %d|,
     $tbl, $l, $id);
 }
@@ -714,7 +714,7 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
 
   my %where = (
     !$o{id} && !$o{rev} ? ( # don't fetch hidden items unless we ask for an ID
-      'v.hidden = 0' => 1 ) : (),
+      'v.hidden = FALSE' => 1 ) : (),
     $o{id} && !ref($o{id}) ? (
       'v.id = %d' => $o{id} ) : (),
     $o{id} && ref($o{id}) ? (
@@ -904,7 +904,7 @@ sub _insert_vn_rev {
 
   $s->DBExec(q|
     INSERT INTO vn_rev (id, vid, title, "desc", alias, image, img_nsfw, length, l_wp, l_encubed, l_renai, l_vnn)
-      VALUES (%d, %d, !s, !s, !s, %d, %d, %d, !s, !s, !s, %d)|,
+      VALUES (%d, %d, !s, !s, !s, %d, !b, %d, !s, !s, !s, %d)|,
     $cid, $vid, @$o{qw|title desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|});
 
   $s->DBExec(q|
@@ -915,8 +915,8 @@ sub _insert_vn_rev {
 
   $s->DBExec(q|
     INSERT INTO vn_screenshots (vid, scr, nsfw)
-      VALUES (%d, %d, %d)|,
-    $cid, $_->[0], $_->[1]?1:0
+      VALUES (%d, %d, !b)|,
+    $cid, $_->[0], $_->[1]
   ) for (@{$o->{screenshots}});
 
   $s->DBExec(q|
@@ -950,7 +950,7 @@ sub DBHideVN { # id, hidden
   my($s, $id, $h) = @_;
   $s->DBExec(q|
     UPDATE vn 
-      SET hidden = %d
+      SET hidden = !b
       WHERE id = %d|,
     $h, $id);
 
@@ -994,7 +994,7 @@ sub DBGetRelease { # %options->{ id vid results page rev }
   $o{order} ||= 'rr.released ASC';
   my %where = (
     !$o{id} && !$o{rev} ? (
-      'r.hidden = 0' => 1 ) : (),
+      'r.hidden = FALSE' => 1 ) : (),
     $o{id} ? (
       'r.id = %d' => $o{id} ) : (),
     $o{rev} ? (
@@ -1165,7 +1165,7 @@ sub DBHideRelease { # id, hidden
   my($s, $id, $h) = @_;
   $s->DBExec(q|
     UPDATE releases 
-      SET hidden = %d
+      SET hidden = !b
       WHERE id = %d|,
     $h, $id);
 }
@@ -1186,7 +1186,7 @@ sub DBGetProducer { # %options->{ id search char results page rev }
   $o{what} ||= '';
   my %where = (
     !$o{id} && !$o{rev} ? (
-      'p.hidden = 0' => 1 ) : (),
+      'p.hidden = FALSE' => 1 ) : (),
     $o{id} ? (
       'p.id = %d' => $o{id} ) : (),
     $o{search} ? (
@@ -1238,7 +1238,7 @@ sub DBGetProducerVN { # pid
       JOIN vn v ON v.id = rv.vid
       JOIN vn_rev vr ON vr.id = v.latest
       WHERE vp.pid = %d
-        AND v.hidden = 0
+        AND v.hidden = FALSE
       GROUP BY v.id
       ORDER BY date|,
     $_[1]);
@@ -1303,7 +1303,7 @@ sub DBHideProducer { # id, hidden
   my($s, $id, $h) = @_;
   $s->DBExec(q|
     UPDATE producers 
-      SET hidden = %d
+      SET hidden = !b
       WHERE id = %d|,
     $h, $id);
 }
@@ -1329,7 +1329,7 @@ sub DBGetThreads { # %options->{ id type iid results page what }
     $o{id} ? (
       't.id = %d' => $o{id} ) : (),
     !$o{id} ? (
-      't.hidden = 0' => 1 ) : (),
+      't.hidden = FALSE' => 1 ) : (),
     $o{type} && !$o{iid} ? (
       't.id IN(SELECT tid FROM threads_tags WHERE type = !s)' => $o{type} ) : (),
     $o{type} && $o{iid} ? (
@@ -1450,7 +1450,7 @@ sub DBEditPost { # %options->{ tid num msg hidden }
   my %set = (
     'msg = !s' => $o{msg},
     'edited = %d' => time,
-    'hidden = %d' => $o{hidden}?1:0,
+    'hidden = !b' => $o{hidden},
   );
 
   $s->DBExec(q|
@@ -1468,8 +1468,8 @@ sub DBEditThread { # %options->{ id title locked hidden tags }
 
   my %set = (
     'title = !s' => $o{title},
-    'locked = %d' => $o{locked}?1:0,
-    'hidden = %d' => $o{hidden}?1:0,
+    'locked = !b' => $o{locked},
+    'hidden = !b' => $o{hidden},
   );
 
   $s->DBExec(q|
@@ -1494,9 +1494,9 @@ sub DBAddThread { # %options->{ title hidden locked tags }
 
   my $id = $s->DBRow(q|
     INSERT INTO threads (title, hidden, locked)
-      VALUES (!s, %d, %d)
+      VALUES (!s, !b, !b)
       RETURNING id|,
-      $o{title}, $o{hidden}?1:0, $o{locked}?1:0
+      $o{title}, $o{hidden}, $o{locked}
     )->{id};
 
   $s->DBExec(q|
@@ -1559,6 +1559,7 @@ sub sqlhelper { # type, query, @list
 
 # Added features:
 #  !s    SQL-quote
+#  !b    boolean (anything perl considers true = 'TRUE', otherwise 'FALSE')
 #  !l    listify
 #  !L    SQL-quote-and-listify
 #  !H    list of SET-items: key = format, value = replacement
@@ -1577,10 +1578,11 @@ sub sqlprint {
       $arg[$i] = $_[$i];
       next;
     }
-    if($d !~ /[slLHW]/) {
+    if($d !~ /[sblLHW]/) {
       $i--; next
     }
     $arg[$i] = qs($_[$i]) if $d eq 's';
+    $arg[$i] = $_[$i] ? 'TRUE' : 'FALSE' if $d eq 'b';
     $arg[$i] = join(',', @{$_[$i]}) if $d eq 'l';
     $arg[$i] = join(',', (qs(@{$_[$i]}))) if $d eq 'L';
     if($d eq 'H' || $d eq 'W') {
@@ -1589,7 +1591,7 @@ sub sqlprint {
       $arg[$i] = join($d eq 'H' ? ', ' : ' AND ', @i);
     }
   }
-  $s =~ s/![sSlLHW]/%s/g;
+  $s =~ s/![sblLHW]/%s/g;
   $s =~ s/!!/!/g;
   return sprintf($s, @arg);
 }

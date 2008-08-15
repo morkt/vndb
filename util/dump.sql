@@ -45,8 +45,8 @@ CREATE TABLE changes (
 CREATE TABLE producers (
   id SERIAL NOT NULL PRIMARY KEY,
   latest integer NOT NULL DEFAULT 0,
-  locked smallint NOT NULL DEFAULT 0,
-  hidden smallint NOT NULL DEFAULT 0
+  locked boolean NOT NULL DEFAULT FALSE,
+  hidden boolean NOT NULL DEFAULT FALSE
 );
 
 -- producers_rev
@@ -65,8 +65,8 @@ CREATE TABLE producers_rev (
 CREATE TABLE releases (
   id SERIAL NOT NULL PRIMARY KEY,
   latest integer NOT NULL DEFAULT 0,
-  locked smallint NOT NULL DEFAULT 0,
-  hidden smallint NOT NULL DEFAULT 0
+  locked boolean NOT NULL DEFAULT FALSE,
+  hidden boolean NOT NULL DEFAULT FALSE
 );
 
 -- releases_media
@@ -135,8 +135,8 @@ CREATE TABLE screenshots (
 CREATE TABLE threads (
   id SERIAL NOT NULL PRIMARY KEY,
   title varchar(50) NOT NULL DEFAULT '',
-  locked smallint NOT NULL DEFAULT 0,
-  hidden smallint NOT NULL DEFAULT 0,
+  locked boolean NOT NULL DEFAULT FALSE,
+  hidden boolean NOT NULL DEFAULT FALSE,
   count smallint NOT NULL DEFAULT 0
 );
 
@@ -148,7 +148,7 @@ CREATE TABLE threads_posts (
   date bigint NOT NULL DEFAULT DATE_PART('epoch', NOW()),
   edited bigint NOT NULL DEFAULT 0,
   msg text NOT NULL DEFAULT '',
-  hidden smallint NOT NULL DEFAULT 0,
+  hidden boolean NOT NULL DEFAULT FALSE,
   PRIMARY KEY(tid, num)
 );
 
@@ -175,8 +175,8 @@ CREATE TABLE users (
 CREATE TABLE vn (
   id SERIAL NOT NULL PRIMARY KEY,
   latest integer NOT NULL DEFAULT 0,
-  locked smallint NOT NULL DEFAULT 0,
-  hidden smallint NOT NULL DEFAULT 0,
+  locked boolean NOT NULL DEFAULT FALSE,
+  hidden boolean NOT NULL DEFAULT FALSE,
   rgraph integer NOT NULL DEFAULT 0,
   c_released integer NOT NULL DEFAULT 0,
   c_languages varchar(32) NOT NULL DEFAULT '',
@@ -212,7 +212,7 @@ CREATE TABLE vn_rev (
   vid integer NOT NULL DEFAULT 0,
   title varchar(250) NOT NULL DEFAULT '',
   alias varchar(500) NOT NULL DEFAULT '',
-  img_nsfw smallint NOT NULL DEFAULT 0,
+  img_nsfw boolean NOT NULL DEFAULT FALSE,
   length smallint NOT NULL DEFAULT 0,
   "desc" text NOT NULL DEFAULT '',
   l_wp varchar(150) NOT NULL DEFAULT '',
@@ -226,7 +226,7 @@ CREATE TABLE vn_rev (
 CREATE TABLE vn_screenshots (
   vid integer NOT NULL DEFAULT 0,
   scr integer NOT NULL DEFAULT 0,
-  nsfw smallint NOT NULL DEFAULT 0,
+  nsfw boolean NOT NULL DEFAULT FALSE,
   PRIMARY KEY(vid, scr)
 );
 
@@ -354,7 +354,7 @@ BEGIN
       JOIN releases_vn rv1 ON rr1.id = rv1.rid
       WHERE rv1.vid = vn.id
       AND rr1.type <> 2
-      AND r1.hidden = 0
+      AND r1.hidden = FALSE
       AND rr1.released <> 0
       GROUP BY rv1.vid
     ), 0),
@@ -366,7 +366,7 @@ BEGIN
       WHERE rv2.vid = vn.id
       AND rr2.type <> 2
       AND rr2.released <= TO_CHAR(''today''::timestamp, ''YYYYMMDD'')::integer
-      AND r2.hidden = 0
+      AND r2.hidden = FALSE
       GROUP BY rr2.language
       ORDER BY rr2.language
     ), ''/''), ''''),
@@ -379,7 +379,7 @@ BEGIN
       WHERE rv3.vid = vn.id
       AND rr3.type <> 2
       AND rr3.released <= TO_CHAR(''today''::timestamp, ''YYYYMMDD'')::integer
-      AND r3.hidden = 0
+      AND r3.hidden = FALSE
       GROUP BY rp3.platform
       ORDER BY rp3.platform
     ), ''/''), '''')
