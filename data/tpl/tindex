@@ -16,17 +16,8 @@
 
 <br />
 <h3>[[: $VNDB::DTAGS->{$tag} ]]</h3>
-<!--<p class="desc">
- <i>[[: $desc{$tag} ]]</i>
-</p>-->
 [[ if(@{$d{$tag}}) { ]]-
 <table id="tin">
- <!--<thead><tr>
-  <td class="tc1">Topic</td>
-  <td class="tc2">Replies</td>
-  <td class="tc3">Starter</td>
-  <td class="tc4">Last post</td>
- </tr></thead>-->
 [[ for (@{$d{$tag}}) { ]]-
  <tr>
   <td class="tc1">
@@ -42,6 +33,10 @@
 [[ } ]]
 </table>
 <a class="right" href="/t/[[= $tag ]]">more...</a>
+[[ if($tag eq 'db') { ]]-
+  <a class="right" href="/t/[[= $tag ]]/new" style="padding-right: 10px">start new thread</a>
+[[ } ]]
+
 [[ } else { ]]-
  <p>No threads yet.
  -[[ if($tag eq 'db') { ]]
