@@ -647,7 +647,8 @@ function scrGenerateTR(i) {
     else
       r += 'Add screenshot</b>'
           +'<input type="file" name="scrAddFile'+i+'" id="scrAddFile'+i+'" style="float: none; height: auto; width: auto;" />'
-          +'<input type="button" value="Upload!" style="float: none; height: auto; width: auto; display: inline;" onclick="scrUpload('+i+')" />';
+          +'<input type="button" value="Upload!" style="float: none; height: auto; width: auto; display: inline;" onclick="scrUpload('+i+')" /><br />'
+          +'Image must be smaller than 5MB and in PNG or JPEG format.';
   }
   if(scrL[i].load && scrL[i].load == 1)
     r += 'Uploading...</b>This could take a while, depending on the file size and your upload speed.<br />'

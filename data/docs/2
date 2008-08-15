@@ -149,3 +149,32 @@
  </dd>
 </dl>
 
+
+:SUB:Screenshots
+Each visual novel entry can have at most 10 screenshots. Screenshots can be uploaded in JPEG
+and PNG format, and should always follow these guidelines:
+<ul>
+ <li>All images must be in the highest native resolution of the VN. The native resolution
+  is the resolution for which the bitmap images are made, this is 640x480 or 800x600 for most
+  entries. Any upscaling or downscaling, whether done by the game engine itself or by manually
+  using an image editor, is <b>not</b> allowed!</li>
+ <li>All images have to be screenshots of the <b>game itself</b>, this means that any window
+  borders will have to be removed before uploading. We are neither interested in your heavily
+  modified window borders nor in your awesome AGTH setup.</li>
+ <li>At least half of the images should be actual screenshots of the game. That is, they should
+  include character sprites or some form of dialog or user interface. Plain event CG images
+  without any text or interfaces are allowed to demonstrate the drawing style, but should
+  not dominate over the other screenshots.</li>
+ <li>Uploading screenshots with erotic content is allowed, as long as the ratio of erotic/non-erotic
+  screenshots is somewhat in line with the actual erotic/non-erotic ratio of the VN itself. For example,
+  if a 10 hour VN has only 2 H-scenes of 10 minutes, it wouldn't be appropriate to upload more than 2 or 3
+  erotic images. On the other hand, if a VN is mostly about sex, it wouldn't make sense to upload only one
+  erotic screenshot. It is advised - even for the sex-only games - to have at least one non-erotic screenshot.</li>
+ <li>Keep the spoilers to a minimum. It's impossible to upload screenshots that are completely devoid
+  of spoilers, but it is possible to keep this to a minimum. I.e. screenshots early in the beginning of
+  the VN are prefered, and shots later in the game are fine as long as they don't reveal any major information
+  about the plot.</li>
+ <li>Images that are NSFW should be flagged as such, see the <a href="#4">image</a> guidelines above.</li>
+ <li>Screenshots have to be unmarked: they shouldn't contain any copyright information, website URL,
+  or other text that's not present in the original screenshot.</li>
+</ul>
