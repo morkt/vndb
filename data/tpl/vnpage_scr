@@ -20,13 +20,6 @@
 <i style="font-size: 10px;">Items marked with a red X are flagged as NSFW.</i>
 [[ } ]]-
 
-<div id="scrView">
-<b id="scrimg"></b><br />
-<a href="#" onclick="return scrClose()" id="scrclose">close</a>
-<a href="#" id="scrprev">&lt;- previous</a>
-<a href="#" id="scrnext">next -&gt;</a>
-</div>
-
 [[ } else { ]]-
 <p>
  No screenshots have been uploaded yet for this visual novel.

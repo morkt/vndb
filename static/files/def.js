@@ -240,28 +240,35 @@ function scrNsfwHid() {
     +(scrNsfwEnabled ? '<a href="javascript:scrNsfwHid()">Show</a> / hide' : 'Show / <a href="javascript:scrNsfwHid()">hide</a>')
     +' nsfw.';
 }
-function scrView() {
-  var u=this.href;
-  var r=this.rel;
-  var ol=x('screenshots').getElementsByTagName('a');
+function scrView(what) {
+  what = what && what.rel ? what : this;
+  var u=what.href;
+  var r=what.rel;
   d = x('scrView');
-  var l=[];
 
- // remove NSFW
-  for(i=0;i<ol.length;i++)
-    if(!scrNsfwEnabled || ol[i].className.indexOf('scr_nsfw')<0)
-      l[l.length] = ol[i];
+ // fix prev/next links (if any)
+  var ol=x('screenshots').getElementsByTagName('a');
+  if(ol.length > 0) {
+    var l=[];
+    for(i=0;i<ol.length;i++)
+      if(!scrNsfwEnabled || ol[i].className.indexOf('scr_nsfw')<0)
+        l[l.length] = ol[i];
 
- // fix prev/next links
-  for(i=0;i<l.length;i++)
-    if(l[i].href == u) {
-      x('scrnext').style.visibility = l[i+1] ? 'visible' : 'hidden';
-      x('scrnext').href = l[i+1] ? l[i+1].href : '#';
-      x('scrnext').rel = l[i+1] ? l[i+1].rel : '';
-      x('scrprev').style.visibility = l[i-1] ? 'visible' : 'hidden';
-      x('scrprev').href = l[i-1] ? l[i-1].href : '#';
-      x('scrprev').rel = l[i-1] ? l[i-1].rel : '';
-    }
+    ol=0;
+    for(i=0;i<l.length;i++)
+      if(l[i].href == u) {
+        ol=1;
+        x('scrnext').style.visibility = l[i+1] ? 'visible' : 'hidden';
+        x('scrnext').href = l[i+1] ? l[i+1].href : '#';
+        x('scrnext').rel = l[i+1] ? l[i+1].rel : '';
+        x('scrprev').style.visibility = l[i-1] ? 'visible' : 'hidden';
+        x('scrprev').href = l[i-1] ? l[i-1].href : '#';
+        x('scrprev').rel = l[i-1] ? l[i-1].rel : '';
+      }
+  } else
+    ol=0;
+  if(!ol)
+    x('scrnext').style.visibility = x('scrprev').style.visibility = 'hidden';
 
  // calculate dimensions
   var w = Math.floor(r.split('x')[0]);
@@ -269,26 +276,32 @@ function scrView() {
   var ww = typeof(window.innerWidth) == 'number' ? window.innerWidth : document.documentElement.clientWidth;
   var wh = typeof(window.innerHeight) == 'number' ? window.innerHeight : document.documentElement.clientHeight;
   var st = typeof(window.pageYOffset) == 'number' ? window.pageYOffset : document.body && document.body.scrollTop ? document.body.scrollTop : document.documentElement.scrollTop;
-  if(w+100 > ww || h+100 > wh) {
+  if(w+100 > ww || h+70 > wh) {
+    x('scrfull').href = u;
+    x('scrfull').innerHTML = w+'x'+h;
+    x('scrfull').style.visibility = 'visible';
     if(w/h > ww/wh) { // width++
       h *= (ww-100)/w;
       w = ww-100;
     } else { // height++
-      w *= (wh-100)/h;
-      h = wh-100;
+      w *= (wh-70)/h;
+      h = wh-70;
     }
-  }
+  } else
+    x('scrfull').style.visibility = 'hidden';
   var dw = w;
   var dh = h+20;
   dw = dw < 200 ? 200 : dw;
 
  // update document
   d.style.display = 'block';
-  x('scrimg').innerHTML = '<img src="'+u+'" onclick="scrClose()" style="width: '+w+'px; height: '+h+'px" />';
+  x('scrimg').innerHTML = '<img src="'+u+'" onclick="scrClose()" onload="document.getElementById(\'scrimgload\').style.top=\'-400px\'" style="width: '+w+'px; height: '+h+'px" />';
   d.style.width = dw+'px';
   d.style.height = dh+'px';
   d.style.left = ((ww - dw) / 2 - 10)+'px';
-  d.style.top = ((wh - dh) / 2 + st)+'px';
+  d.style.top = ((wh - dh) / 2 + st - 20)+'px';
+  x('scrimgload').style.left = ((ww - 100) / 2 - 10)+'px';
+  x('scrimgload').style.top = ((wh - 20) / 2 + st)+'px';
   return false;
 }
 function scrClose() {
@@ -396,11 +409,22 @@ DOMLoad(function() {
  // screenshots
   if(x('scrNsfwHid'))
     scrNsfwHid();
-  if(x('scrView')) {
+  if(x('screenshots')) {
     l=x('screenshots').getElementsByTagName('a');
     for(i=0;i<l.length;i++)
       l[i].onclick=scrView;
-    x('scrnext').onclick = x('scrprev').onclick = scrView;
+    var d = document.createElement('div');
+    d.id = 'scrView';
+    d.innerHTML = '<b id="scrimg"></b><br />'
+      +'<a href="#" id="scrfull">&nbsp;</a>'
+      +'<a href="#" onclick="return scrClose()" id="scrclose">close</a>'
+      +'<a href="#" onclick="return scrView(this)" id="scrprev">&lt;- previous</a>'
+      +'<a href="#" onclick="return scrView(this)" id="scrnext">next -&gt;</a>';
+    document.body.appendChild(d);
+    d = document.createElement('b');
+    d.id = 'scrimgload';
+    d.innerHTML = 'Loading...';
+    document.body.appendChild(d);
   }
 
  // spam protection on all forms

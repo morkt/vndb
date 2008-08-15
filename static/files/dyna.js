@@ -752,7 +752,8 @@ function scrCheckStatus() {
           scrL[i].width = l[s].getAttribute('width');
           scrL[i].height = l[s].getAttribute('height');
           x('scrTr'+i).getElementsByTagName('td')[0].innerHTML =
-            '<img src="'+scrURL(scrL[i].id, 't')+'" style="margin: 0; padding: 0; border: 0" />';
+             '<a href="'+scrURL(scrL[i].id, 'f')+'" rel="'+scrL[i].width+'x'+scrL[i].height+'" onclick="return scrView(this)">'
+            +'<img src="'+scrURL(scrL[i].id, 't')+'" style="margin: 0; padding: 0; border: 0" /></a>';
           scrGenerateTR(i);
           scrSer();
         }
