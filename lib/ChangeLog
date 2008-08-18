@@ -6,12 +6,16 @@ TODO:
 	    (preferably with the option to re-add them when unhiding)
 	  + Add a link for the hidden 'h' option at /hist
 
-1.21 - ?
+1.22 - ?
+	- Inverted vote graph
+
+1.21 - 2008-08-16 (r90)
 	- Added !vn and !uptime commands to Multi::IRC
 	- Added realtime IRC notifications for actions on the site
 	- Added screenshots to VNs
 	- Rewrote Multi::Image
 	- Renamed the 'anime check' command to 'anime' for consistency
+	- Moved to PostgreSQL's boolean data type to store boolean data
 
 1.20 - 2008-08-06 (r79)
 	- Admins can change someone's username

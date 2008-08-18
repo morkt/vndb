@@ -12,7 +12,7 @@
 <li><h3>Vote graph <p class="actions">[[= $total ]]- vote[[= $total==1?'':'s' ]]- total
   [[= $total && $d{user} ? sprintf(', average: %.1f.', $sum/$total) : '' ]]</p></h3>
 <table id="tvg">
-[[ for (0..$#{$d{votes}{graph}}) { ]]-
+[[ for (reverse 0..$#{$d{votes}{graph}}) { ]]-
  <tr>
   <td class="tc1">[[= $_+1 ]]</td>
   <td class="tc2"><div style="width: -[[= ($d{votes}{graph}[$_]/$max)*270 + 5 ]]px">&nbsp;</div>[[= $d{votes}{graph}[$_] ]]</td>
