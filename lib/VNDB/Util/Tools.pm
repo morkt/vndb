@@ -156,7 +156,7 @@ sub RunCmd { # cmd
   my($self, $c) = @_;
   if($c) {
     push @{$self->{cmds}}, $c;
-  } else {
+  } elsif(@{$self->{cmds}}) {
     my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
     $s->lock(LOCK_EX);
     my @q = ( ($s{queue} ? @{$s{queue}} : ()), @{$self->{cmds}} );

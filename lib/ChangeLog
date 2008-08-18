@@ -9,6 +9,8 @@ TODO:
 1.22 - ?
 	- Inverted vote graph
 	- Relation graph image maps are now stored in the DB
+	- Properly fixed the command synchronisation issues with Multi
+	- Fixed display of wrong ID in the screenshot diff
 
 1.21 - 2008-08-16 (r90)
 	- Added !vn and !uptime commands to Multi::IRC
