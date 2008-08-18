@@ -330,7 +330,7 @@ sub cmd_uptime {
     $_[0] %= 3600;
     my $m = int $_[0] / 60;
     $_[0] %= 60;
-    return sprintf '%s%02d:%02d:%02d', $d ? $d.' days, ' : '', $h, $m, int $_[0];
+    return sprintf '%s%02d:%02d:%02d', $d ? $d.' day'.($d>1?'s':'').', ' : '', $h, $m, int $_[0];
   };
 
   open my $R, '<', '/proc/uptime';
@@ -349,7 +349,7 @@ sub cmd_uptime {
   }
   
   $_[KERNEL]->post(circ => privmsg => $_[DEST], $_) for (split /\n/, sprintf
-    "Uptimes:\n  Server: %s\n  Multi:  %s\n  HTTP:  Uptimes:  %s", map $age->($_), $server, $multi, $http);
+    "Uptimes:\n  Server: %s\n  Multi:  %s\n  HTTP:   %s", map $age->($_), $server, $multi, $http);
 }
 
 
