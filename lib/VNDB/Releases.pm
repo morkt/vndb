@@ -172,11 +172,11 @@ sub RHide {
 
 sub RVNCache { # @vids - calls update_vncache and regenerates relation graphs if needed
   my($self, @vns) = @_;
-  my $before = $self->DBGetVN(id => \@vns, order => 'v.id');
+  my $before = $self->DBGetVN(id => \@vns, order => 'v.id', what => 'relations');
   $self->DBVNCache(@vns);
   my $after = $self->DBGetVN(id => \@vns, order => 'v.id');
   my @upd = map {
-    $before->[$_]{rgraph} && (
+    @{$before->[$_]{relations}} && (
          $before->[$_]{c_released} != $after->[$_]{c_released}
       || $before->[$_]{c_languages} ne $after->[$_]{c_languages}
     ) ? $before->[$_]{id} : ();

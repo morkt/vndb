@@ -113,7 +113,7 @@ sub getrel { # vid
   if(!grep !$_->[4], values %{$_[HEAP]{nodes}}) {
     if(!keys %{$_[HEAP]{nodes}}) {
       $_[KERNEL]->call(core => log => 3, 'No relation graph for v%d', $_[HEAP]{vid});
-      $Multi::SQL->do('UPDATE vn SET rgraph = 0 WHERE id = ?', undef, $_[HEAP]{vid});
+      $Multi::SQL->do('UPDATE vn SET rgraph = NULL WHERE id = ?', undef, $_[HEAP]{vid});
       $_[HEAP]{nodes}{$_[HEAP]{vid}} = [];
       $_[KERNEL]->yield('completegraph');
       return;
@@ -126,7 +126,7 @@ sub getrel { # vid
 
 sub builddot {
   my $gv =
-    qq|graph {\n|.
+    qq|graph rgraph {\n|.
     qq|\tratio = "compress"\n|.
     qq|\tnode [ fontname = "$_[HEAP]{font}", shape = "plaintext",|.
       qq| fontsize = $_[HEAP]{fsize}[0], style = "setlinewidth(0.5)" ]\n|.
@@ -188,20 +188,19 @@ sub builddot {
 
 sub buildgraph {
  # get a new ID
-  my $gid = $Multi::SQL->prepare("SELECT nextval('relgraph_seq')");
+  my $gid = $Multi::SQL->prepare("INSERT INTO relgraph (cmap) VALUES ('') RETURNING id");
   $gid->execute;
   $gid = $gid->fetchrow_arrayref->[0];
   $_[HEAP]{gid} = [
     $gid,
     sprintf('%s/%02d/%d.gif', $_[HEAP]{imgdir}, $gid % 100, $gid),
-    sprintf('%s/%02d/%d.cmap', $_[HEAP]{datdir}, $gid % 100, $gid)
   ];
 
   # roughly equivalent to:
-  #  cat layout.txt | dot -Tgif -o graph.gif -Tcmap > graph.cmap
+  #  cat layout.txt | dot -Tgif -o graph.gif -Tcmapx
   $_[HEAP]{proc} = POE::Wheel::Run->new(
     Program => $_[HEAP]{dot},
-    ProgramArgs => [ '-Tgif', '-o', $_[HEAP]{gid}[1], '-Tcmap' ],
+    ProgramArgs => [ '-Tgif', '-o', $_[HEAP]{gid}[1], '-Tcmapx' ],
     StdioFilter => POE::Filter::Stream->new(),
     StdinEvent => 'proc_stdin',
     StdoutEvent => 'proc_stdout',
@@ -215,16 +214,10 @@ sub buildgraph {
 
 sub savegraph {
  # save the image map
-  $_[HEAP]{cmap} =~ s{>\n}{ />\n}g; # make XML parsers happy
-  open my $F, '>', $_[HEAP]{gid}[2] or die $!;
-  print $F '<!-- V:'.join(',',keys %{$_[HEAP]{nodes}})." -->\n";
-  print $F '<map id="rgraph" name="rgraph">'."\n";
-  print $F $_[HEAP]{cmap};
-  print $F '</map>';
-  close $F;
+  $Multi::SQL->do('UPDATE relgraph SET cmap = ? WHERE id = ?', undef,
+    '<!-- V:'.join(',',keys %{$_[HEAP]{nodes}})." -->\n$_[HEAP]{cmap}", $_[HEAP]{gid}[0]);
 
  # proper chmod
-  chmod 0666, $_[HEAP]{gid}[2];
   chmod 0666, $_[HEAP]{gid}[1];
 
  # update the VN table

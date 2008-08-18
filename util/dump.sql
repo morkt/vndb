@@ -113,6 +113,12 @@ CREATE TABLE releases_vn (
   PRIMARY KEY(rid, vid)
 );
 
+-- relgraph
+CREATE TABLE relgraph (
+  id SERIAL NOT NULL PRIMARY KEY,
+  cmap text NOT NULL DEFAULT ''
+);
+
 -- rlists
 CREATE TABLE rlists (
   uid integer NOT NULL DEFAULT 0,
@@ -177,7 +183,7 @@ CREATE TABLE vn (
   latest integer NOT NULL DEFAULT 0,
   locked boolean NOT NULL DEFAULT FALSE,
   hidden boolean NOT NULL DEFAULT FALSE,
-  rgraph integer NOT NULL DEFAULT 0,
+  rgraph integer,
   c_released integer NOT NULL DEFAULT 0,
   c_languages varchar(32) NOT NULL DEFAULT '',
   c_platforms varchar(32) NOT NULL DEFAULT ''
@@ -287,6 +293,7 @@ ALTER TABLE threads_posts      ADD FOREIGN KEY (tid)       REFERENCES threads   
 ALTER TABLE threads_posts      ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE threads_tags       ADD FOREIGN KEY (tid)       REFERENCES threads       (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn                 ADD FOREIGN KEY (latest)    REFERENCES vn_rev        (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE vn                 ADD FOREIGN KEY (rgraph)    REFERENCES relgraph      (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn_anime           ADD FOREIGN KEY (aid)       REFERENCES anime         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn_anime           ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn_categories      ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id) DEFERRABLE INITIALLY DEFERRED;
@@ -399,7 +406,6 @@ $$ LANGUAGE plpgsql;
 
 -- Sequences used for ID generation of items not in the DB
 CREATE SEQUENCE covers_seq;
-CREATE SEQUENCE relgraph_seq;
 
 INSERT INTO users (id, username, mail, rank)
   VALUES (0, 'deleted', 'del@vndb.org', 0);

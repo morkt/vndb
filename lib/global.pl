@@ -41,7 +41,6 @@ our %VNDBopts = (
   imgpath => '/www/vndb/static/cv', # cover images
   sfpath  => '/www/vndb/static/sf', # full-size screenshots
   stpath  => '/www/vndb/static/st', # screenshot thumbnails
-  mappath => '/www/vndb/data/rg',   # image maps for the relation graphs
   docpath => '/www/vndb/data/docs',
 );
 $VNDBopts{ranks}[0][1] = { (map{$_,1} map { keys %{$VNDBopts{ranks}[$_]} } 1..5) };

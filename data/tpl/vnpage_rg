@@ -4,7 +4,7 @@
   Relation graph has not been generated yet...
  </p>
 [[ } else { ]]
- [[= $d{vn}{rmap} ]]
+ [[= $d{vn}{cmap} ]]
  <p id="relations">
  <img src="[[= sprintf "%s/rg/%02d/%d.gif", $p{st}, $d{vn}{rgraph}%100, $d{vn}{rgraph} ]]" usemap="#rgraph" alt="Relation graph for -[[: $d{vn}{title} ]]" />
  </p>

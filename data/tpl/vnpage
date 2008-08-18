@@ -161,7 +161,7 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
     @{$d{vn}{screenshots}} ? (
       $d{page} eq 'scr' ? '<b>screenshots</b>' : '<a href="/v'.$d{vn}{id}.'/scr">screenshots</a>',
     ) : (),
-    $d{vn}{rgraph} ? (
+    @{$d{vn}{relations}} ? (
       $d{page} eq 'rg' ? '<b>relations</b>' : '<a href="/v'.$d{vn}{id}.'/rg">relations</a>',
     ) : (),
   );

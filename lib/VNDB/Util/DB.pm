@@ -18,7 +18,7 @@ $VERSION = $VNDB::VERSION;
   DBGetVNList DBDelVNList
   DBGetWishList DBEditWishList DBDelWishList
   DBGetRList DBGetRLists DBEditRList DBDelRList
-  DBGetVN DBAddVN DBEditVN DBHideVN DBUndefRG DBVNCache
+  DBGetVN DBAddVN DBEditVN DBHideVN DBVNCache
   DBGetRelease DBAddRelease DBEditRelease DBHideRelease
   DBGetProducer DBGetProducerVN DBAddProducer DBEditProducer DBHideProducer
   DBGetThreads DBGetPosts DBAddPost DBEditPost DBEditThread DBAddThread
@@ -773,11 +773,14 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
     $o{what} =~ /changes/ || $o{rev} ? (
       'JOIN changes c ON c.id = vr.id',
       'JOIN users u ON u.id = c.requester' ) : (),
+    $o{what} =~ /relgraph/ ? (
+      'LEFT JOIN relgraph rg ON rg.id = v.rgraph' ) : (),
   );
 
-  my $sel = 'v.id, v.locked, v.hidden, v.c_released, v.c_languages, v.c_platforms, vr.title, vr.id AS cid, v.rgraph';
+  my $sel = 'v.id, v.locked, v.hidden, v.c_released, v.c_languages, v.c_platforms, vr.title, vr.id AS cid';
   $sel .= ', vr.alias, vr.image AS image, vr.img_nsfw, vr.length, vr.desc, vr.l_wp, vr.l_encubed, vr.l_renai, vr.l_vnn' if $o{what} =~ /extended/;
   $sel .= ', c.added, c.requester, c.comments, v.latest, u.username, c.rev, c.causedby' if $o{what} =~ /changes/;
+  $sel .= ', v.rgraph, rg.cmap' if $o{what} =~ /relgraph/;
 
   my $r = $s->DBAll(qq|
     SELECT $sel
@@ -970,14 +973,7 @@ sub DBVNCache { # @vids
 }
 
 
-sub DBUndefRG { # ids
-  my($s, @id) = @_;
-  $s->DBExec(q|
-    UPDATE vn
-      SET rgraph = 0
-      WHERE id IN(!l)|,
-    \@id);
-}
+
 
 
 #-----------------------------------------------------------------------------#

@@ -20,14 +20,18 @@ sub VNPage {
 
   return $self->ResNotFound if $self->ReqParam('rev');
   
+  my $what = 'extended relations categories anime screenshots';
+  $what .= ' changes' if $rev;
+  $what .= ' relgraph' if $page eq 'rg';
+
   my $v = $self->DBGetVN(
     id => $id,
-    what => 'extended relations categories anime screenshots'.($rev ? ' changes' : ''),
+    what => $what,
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return $self->ResNotFound if !$v->{id};
 
-  my $c = $rev && $rev > 1 && $self->DBGetVN(id => $id, rev => $rev-1, what => 'extended changes relations categories anime screenshots')->[0];
+  my $c = $rev && $rev > 1 && $self->DBGetVN(id => $id, rev => $rev-1, what => $what)->[0];
   $v->{next} = $rev && $v->{latest} > $v->{cid} ? $rev+1 : 0;
 
   my $rel = $self->DBGetRelease(vid => $id, what => 'producers platforms');
@@ -41,12 +45,7 @@ sub VNPage {
       my $r = (grep $i->{rid} == $_->{id}, @$rel)[0];
       $r->{rlist} = $i;
     }
-
-  } elsif($page eq 'rg' && $v->{rgraph}) {
-    open(my $F, '<:utf8', sprintf '%s/%02d/%d.cmap', $self->{mappath}, $v->{rgraph}%100, $v->{rgraph}) || die $!;
-    $v->{rmap} = join('', (<$F>));
-    close($F);
-  }
+  } 
 
   $self->ResAddTpl(vnpage => {
     vote => $self->AuthInfo->{id} ? $self->DBGetVotes(uid => $self->AuthInfo->{id}, vid => $id)->[0] : {},
