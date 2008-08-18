@@ -257,7 +257,7 @@ sub vndbid { # dest, msg, force
 
 
 sub ircnotify { # command, VNDBID
-  $_[KERNEL]->delay(vndbid => 1 => $_ => $_[ARG1] => 1) for (@{$_[HEAP]{notify}});
+  $_[KERNEL]->yield(vndbid => $_ => $_[ARG1] => 1) for (@{$_[HEAP]{notify}});
   $_[KERNEL]->post(core => finish => $_[ARG0]);
 }
 

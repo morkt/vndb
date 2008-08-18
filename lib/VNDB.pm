@@ -187,6 +187,7 @@ sub new {
     %args,
     _DB => VNDB::Util::DB->new(@VNDB::DBLOGIN),
     _TPL => VNDB::Util::Template->new(%{$args{tplopts}}),
+    cmds => [],
   }, $type;
   
   return $me;
@@ -205,6 +206,10 @@ sub get_page {
 
   my $res = $self->ResSetModPerl($r);
   $self->DBCommit();
+
+ # commands have to be executed _after_ the call to DBCommit,
+ # otherwise Multi can't see the new additions
+  $self->RunCmd();
 
   return($self, $res);
 }

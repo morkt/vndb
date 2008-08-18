@@ -25,7 +25,6 @@ sub spawn {
       font => 'Arial',
       fsize => [ 9, 7, 10 ], # nodes, edges, node_title
       imgdir => '/www/vndb/static/rg',
-      datdir => '/www/vndb/data/rg',
       moy => [qw| Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec |],
       dot => '/usr/bin/dot',
       @_,

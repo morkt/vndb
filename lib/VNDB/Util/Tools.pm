@@ -151,12 +151,19 @@ sub AddDefaultStuff {
 }
 
 
+# commands aren't actually sent until the function is called without cmd parameter
 sub RunCmd { # cmd
-  my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
-  $s->lock(LOCK_EX);
-  my @q = ( ($s{queue} ? @{$s{queue}} : ()), $_[1] );
-  $s{queue} = \@q;
-  $s->unlock();
+  my($self, $c) = @_;
+  if($c) {
+    push @{$self->{cmds}}, $c;
+  } else {
+    my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
+    $s->lock(LOCK_EX);
+    my @q = ( ($s{queue} ? @{$s{queue}} : ()), @{$self->{cmds}} );
+    $s{queue} = \@q;
+    $s->unlock();
+    $self->{cmds} = [];
+  }
 }
 
 

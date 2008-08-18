@@ -95,8 +95,6 @@ sub cv_process { # id
 sub cv_update { # id
   if($Multi::SQL->do('UPDATE vn_rev SET image = ? WHERE image = ?', undef, $_[ARG0], -1*$_[ARG0]) > 0) {
     $_[KERNEL]->yield(cv_finish => $_[ARG0]);
-  } elsif(!$_[ARG1]) {
-    $_[KERNEL]->delay(cv_update => 3 => $_[ARG0], 1);
   } else {
     $_[KERNEL]->call(core => log => 1, 'Image %d not present in the database!', $_[ARG0]);
     $_[KERNEL]->yield(cv_finish => $_[ARG0]);
@@ -160,7 +158,7 @@ sub scr_process { # id
   my $im = Image::Magick->new;
   $im->Read($sf);
   $im->Set(magick => 'JPEG');
-  $im->Set(quality => 80);
+  $im->Set(quality => 90);
   $im->Write($sf);
 
  # create thumbnail
@@ -196,8 +194,6 @@ sub scr_process { # id
 sub scr_update { # id, width, height
   if($Multi::SQL->do('UPDATE screenshots SET status = 1, width = ?, height = ? WHERE id = ?', undef, $_[ARG1], $_[ARG2], $_[ARG0]) > 0) {
     $_[KERNEL]->yield(scr_finish => $_[ARG0]);
-  } elsif(!$_[ARG3]) {
-    $_[KERNEL]->delay(scr_update => 3 => @_[ARG0..$#_], 1);
   } else {
     $_[KERNEL]->call(core => log => 1, 'Screenshot %d not present in the database!', $_[ARG0]);
     $_[KERNEL]->yield(scr_finish => $_[ARG0]);
