@@ -608,7 +608,6 @@ function scrLoad() {
   scrGenerateTR(i);
 
   setTimeout(scrSetSubmit, 1000);
-  setInterval(scrCheckStatus, 1000);
   scrCheckStatus();
 }
 
@@ -739,7 +738,8 @@ function scrCheckStatus() {
     if(scrL[i] && scrL[i].load == 2)
       ids+=(ids?';':'')+'id='+scrL[i].id;
   if(!ids)
-    return;
+    return setTimeout(scrCheckStatus, 1000);
+  var ti = setTimeout(scrCheckStatus, 10000);
   ajax('/xml/screenshots.xml?'+ids+';r='+(Math.floor(Math.random()*999)+1), function () {
     if(!hr || hr.readyState != 4 || !hr.responseText)
       return;
@@ -759,6 +759,8 @@ function scrCheckStatus() {
           scrSer();
         }
     }
+    clearTimeout(ti);
+    setTimeout(scrCheckStatus, 1000);
   });
 }
 

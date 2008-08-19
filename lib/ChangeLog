@@ -11,6 +11,8 @@ TODO:
 	- Relation graph image maps are now stored in the DB
 	- Properly fixed the command synchronisation issues with Multi
 	- Fixed display of wrong ID in the screenshot diff
+	- Fixed bug with the infinite thumbnail generation message when the server
+	  doesn't respond within one second.
 
 1.21 - 2008-08-16 (r90)
 	- Added !vn and !uptime commands to Multi::IRC
