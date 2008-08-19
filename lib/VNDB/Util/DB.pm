@@ -5,7 +5,6 @@ use strict;
 use warnings;
 use DBI;
 use Exporter 'import';
-use Storable 'nfreeze', 'thaw';
 
 use vars ('$VERSION', '@EXPORT');
 $VERSION = $VNDB::VERSION;
@@ -22,7 +21,7 @@ $VERSION = $VNDB::VERSION;
   DBGetRelease DBAddRelease DBEditRelease DBHideRelease
   DBGetProducer DBGetProducerVN DBAddProducer DBEditProducer DBHideProducer
   DBGetThreads DBGetPosts DBAddPost DBEditPost DBEditThread DBAddThread
-  DBExec DBRow DBAll DBLastId
+  DBExec DBRow DBAll
 |;
 
 
@@ -139,10 +138,10 @@ sub DBLanguageCount {
 sub DBTableCount { # table (users, producers, vn, releases, votes)
   return $_[0]->DBRow(q|
     SELECT COUNT(*) as cnt
-      FROM %s
-      %s|,
+      FROM !s
+      !W|,
     $_[1],
-    $_[1] =~ /producers|vn|releases/ ? 'WHERE hidden = FALSE' : '',
+    $_[1] =~ /producers|vn|releases/ ? { 'hidden = ?' => 0 } : {},
   )->{cnt} - ($_[1] eq 'users' ? 1 : 0);
 }
 
@@ -160,28 +159,28 @@ sub DBGetHist { # %options->{ type, id, cid, caused, next, page, results, ip, ed
 
   my %where = (
     $o{cid} ? (
-      'c.id IN(!l)' => $o{cid} ) : (),
+      'c.id IN(!l)' => [$o{cid}] ) : (),
     $o{type} eq 'u' ? (
-      'c.requester = %d' => $o{id} ) : (),
+      'c.requester = ?' => $o{id} ) : (),
 
-    $o{type} eq 'v' && !$o{releases} ? ( 'c.type = 0' => 1,
-      $o{id} ? ( 'vr.vid = %d' => $o{id} ) : () ) : (),
+    $o{type} eq 'v' && !$o{releases} ? ( 'c.type = ?' => 0,
+      $o{id} ? ( 'vr.vid = ?' => $o{id} ) : () ) : (),
     $o{type} eq 'v' && $o{releases} ? (
-      '((c.type = 0 AND vr.vid = %d) OR (c.type = 1 AND rv.vid = %1$d))' => $o{id} ) : (),
+      '((c.type = ? AND vr.vid = ?) OR (c.type = ? AND rv.vid = ?))' => [0,$o{id},1,$o{id}] ) : (),
     
-    $o{type} eq 'r' ? ( 'c.type = 1' => 1,
-      $o{id} ? ( 'rr.rid = %d' => $o{id} ) : () ) : (),
-    $o{type} eq 'p' ? ( 'c.type = 2' => 1,
-      $o{id} ? ( 'pr.pid = %d' => $o{id} ) : () ) : (),
+    $o{type} eq 'r' ? ( 'c.type = ?' => 1,
+      $o{id} ? ( 'rr.rid = ?' => $o{id} ) : () ) : (),
+    $o{type} eq 'p' ? ( 'c.type = ?' => 2,
+      $o{id} ? ( 'pr.pid = ?' => $o{id} ) : () ) : (),
 
     $o{caused} ? (
-      'c.causedby = %d' => $o{caused} ) : (),
+      'c.causedby = ?' => $o{caused} ) : (),
     $o{ip} ? (
-      'c.ip = !s' => $o{ip} ) : (),
+      'c.ip = ?' => $o{ip} ) : (),
     defined $o{edits} && !$o{edits} ? (
-      'c.rev = 1' => 1 ) : (),
+      'c.rev = ?' => 1 ) : (),
     $o{edits} ? (
-      'c.rev > 1' => 1 ) : (),
+      'c.rev > ?' => 1 ) : (),
 
    # get rid of 'hidden' items
     !$o{showhid} ? (
@@ -190,8 +189,6 @@ sub DBGetHist { # %options->{ type, id, cid, caused, next, page, results, ip, ed
       '(v.hidden IS NOT NULL AND v.hidden = TRUE OR r.hidden IS NOT NULL AND r.hidden = TRUE OR p.hidden IS NOT NULL AND p.hidden = TRUE)' => 1,
     ) : (),
   );
-
-  my $where = keys %where ? 'WHERE !W' : '';
 
   my $select = 'c.id, c.type, c.added, c.requester, c.comments, c.rev, c.causedby';
   $select .= ', u.username' if $o{what} =~ /user/;
@@ -216,10 +213,10 @@ sub DBGetHist { # %options->{ type, id, cid, caused, next, page, results, ip, ed
     SELECT $select
       FROM changes c
       $join
-      $where
-      ORDER BY c.id %s
-      LIMIT %d OFFSET %d|,
-    $where ? \%where : (),
+      !W
+      ORDER BY c.id !s
+      LIMIT ? OFFSET ?|,
+    \%where,
     $o{next} ? 'ASC' : 'DESC',
     $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
   );
@@ -233,15 +230,15 @@ sub DBGetHist { # %options->{ type, id, cid, caused, next, page, results, ip, ed
 sub DBLockItem { # table, id, locked
   my($s, $tbl, $id, $l) = @_;
   $s->DBExec(q|
-    UPDATE %s
-      SET locked = !b
-      WHERE id = %d|,
+    UPDATE !s
+      SET locked = ?
+      WHERE id = ?|,
     $tbl, $l, $id);
 }
 
 
 sub DBIncId { # sequence (this is a rather low-level function... aww heck...)
-  return $_[0]->DBRow(q|SELECT nextval(!s) AS ni|, $_[1])->{ni};
+  return $_[0]->DBRow(q|SELECT nextval(?) AS ni|, $_[1])->{ni};
 }
 
 
@@ -272,38 +269,38 @@ sub DBGetUser { # %options->{ username mail passwd order firstchar uid results p
   );
 
   my %where = (
+    'id > 0' => 1,
     $o{username} ? (
-      'username = !s' => $o{username} ) : (),
+      'username = ?' => $o{username} ) : (),
     $o{mail} ? (
-      'mail = !s' => $o{mail} ) : (),
+      'mail = ?' => $o{mail} ) : (),
     $o{passwd} ? (
-      'passwd = decode(!s, \'hex\')' => $o{passwd} ) : (),
+      'passwd = decode(?, \'hex\')' => $o{passwd} ) : (),
     $o{firstchar} ? (
-      'SUBSTRING(username from 1 for 1) = !s' => $o{firstchar} ) : (),
+      'SUBSTRING(username from 1 for 1) = ?' => $o{firstchar} ) : (),
     !$o{firstchar} && defined $o{firstchar} ? (
       'ASCII(username) < 97 OR ASCII(username) > 122' => 1 ) : (),
     $o{uid} ? (
-      'id = %d' => $o{uid} ) : (),
+      'id = ?' => $o{uid} ) : (),
     !$o{uid} && !$o{username} ? (
       'id > 0' => 1 ) : (),
   );
 
-  my $where = keys %where ? 'AND !W' : '';
-  my $r = $s->DBAll(qq|
+  my $r = $s->DBAll(q|
     SELECT *
       FROM users u
-      WHERE id > 0 $where
-      ORDER BY %s
-      LIMIT %d OFFSET %d|,
-    $where ? \%where : (),
+      !W
+      ORDER BY !s
+      LIMIT ? OFFSET ?|,
+    \%where,
     $o{order},
     $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
   );
 
+ # XXX: easy to cache, good performance win
   if($o{what} =~ /list/ && $#$r >= 0) {
     my %r = map {
       $r->[$_]{votes} = 0;
-      $r->[$_]{vnlist} = 0;
       $r->[$_]{changes} = 0;
       ($r->[$_]{id}, $_)
     } 0..$#$r;
@@ -336,7 +333,7 @@ sub DBAddUser { # username, passwd, mail, rank
   return $_[0]->DBExec(q|
     INSERT INTO users
       (username, passwd, mail, rank, registered)
-      VALUES (!s, decode(!s, 'hex'), !s, %d, %d)|,
+      VALUES (?, decode(?, 'hex'), ?, ?, ?)|,
     lc($_[1]), $_[2], $_[3], $_[4], time
   );
 }
@@ -348,18 +345,16 @@ sub DBUpdateUser { # uid, %options->{ columns in users table }
   my %opt = @_;
   my %h;
 
-  defined $opt{$_} && ($h{$_.' = !s'} = $opt{$_})
-    for (qw| username mail |);
-  defined $opt{$_} && ($h{$_.' = %d'} = $opt{$_})
-    for (qw| rank flags |);
-  $h{'passwd = decode(!s, \'hex\')'} = $opt{passwd}
+  defined $opt{$_} && ($h{$_.' = ?'} = $opt{$_})
+    for (qw| username mail rank flags |);
+  $h{'passwd = decode(?, \'hex\')'} = $opt{passwd}
     if defined $opt{passwd};
 
   return 0 if scalar keys %h <= 0;
   return $s->DBExec(q|
     UPDATE users
-      SET !H
-      WHERE id = %d|,
+      !H
+      WHERE id = ?|,
     \%h, $user);
 }
 
@@ -367,13 +362,13 @@ sub DBUpdateUser { # uid, %options->{ columns in users table }
 sub DBDelUser { # uid
   my($s, $id) = @_;
   $s->DBExec($_, $id) for (
-    q|DELETE FROM vnlists WHERE uid = %d|,
-    q|DELETE FROM rlists WHERE uid = %d|,
-    q|DELETE FROM wlists WHERE uid = %d|,
-    q|DELETE FROM votes WHERE uid = %d|,
-    q|UPDATE changes SET requester = 0 WHERE requester = %d|,
-    q|UPDATE threads_posts SET uid = 0 WHERE uid = %d|,
-    q|DELETE FROM users WHERE id = %d|
+    q|DELETE FROM vnlists WHERE uid = ?|,
+    q|DELETE FROM rlists WHERE uid = ?|,
+    q|DELETE FROM wlists WHERE uid = ?|,
+    q|DELETE FROM votes WHERE uid = ?|,
+    q|UPDATE changes SET requester = 0 WHERE requester = ?|,
+    q|UPDATE threads_posts SET uid = 0 WHERE uid = ?|,
+    q|DELETE FROM users WHERE id = ?|
   );
 }
 
@@ -394,22 +389,21 @@ sub DBGetVotes { # %options->{ uid vid hide order results page }
   $o{page} ||= 1;
 
   my %where = (
-    $o{uid} ? ( 'n.uid = %d' => $o{uid} ) : (),
-    $o{vid} ? ( 'n.vid = %d' => $o{vid} ) : (),
-    $o{hide} ? ( 'u.flags & %d = %1$d' => $VNDB::UFLAGS->{list} ) : (),
+    $o{uid} ? ( 'n.uid = ?' => $o{uid} ) : (),
+    $o{vid} ? ( 'n.vid = ?' => $o{vid} ) : (),
+    $o{hide} ? ( 'u.flags & ? = ?' => [ $VNDB::UFLAGS->{list}, $VNDB::UFLAGS->{list} ] ) : (),
   );
 
-  my $where = scalar keys %where ? 'WHERE !W' : '';
-  my $r = $s->DBAll(qq|
+  my $r = $s->DBAll(q|
     SELECT n.vid, vr.title, n.vote, n.date, n.uid, u.username
       FROM votes n
       JOIN vn v ON v.id = n.vid
       JOIN vn_rev vr ON vr.id = v.latest
       JOIN users u ON u.id = n.uid
-      $where
-      ORDER BY %s
-      LIMIT %d OFFSET %d|,
-    $where ? \%where : (),
+      !W
+      ORDER BY !s
+      LIMIT ? OFFSET ?|,
+    \%where,
     $o{order},
     $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
   );
@@ -422,13 +416,13 @@ sub DBGetVotes { # %options->{ uid vid hide order results page }
 
 sub DBVoteStats { # uid|vid => id
   my($s, $col, $id) = @_;
-  my $r = [ qw| 0 0 0 0 0 0 0 0 0 0 | ],
-  my $where = $col ? 'WHERE '.$col.' = '.$id : '';
-  $r->[$_->{vote}-1] = $_->{votes} for (@{$s->DBAll(qq|
+  my $r = [ qw| 0 0 0 0 0 0 0 0 0 0 | ];
+  $r->[$_->{vote}-1] = $_->{votes} for (@{$s->DBAll(q|
     SELECT vote, COUNT(vote) as votes
       FROM votes
-      $where
+      !W
       GROUP BY vote|,
+    $col ? { '!s = ?' => [ $col, $id ] } : {},
   )});
   return $r;
 }
@@ -437,26 +431,27 @@ sub DBVoteStats { # uid|vid => id
 sub DBAddVote { # vid, uid, vote
   $_[0]->DBExec(q|
     UPDATE votes
-      SET vote = %d
-      WHERE vid = %d
-        AND uid = %d|,
+      SET vote = ?
+      WHERE vid = ? 
+        AND uid = ?|,
     $_[3], $_[1], $_[2]
   ) || $_[0]->DBExec(q|
     INSERT INTO votes
       (vid, uid, vote, date)
-      VALUES (%d, %d, %d, %d)|,
-    $_[1], $_[2], $_[3], time
+      VALUES (!l)|,
+    [ @_[1..3], time ]
   );
-  # XXX: performance improvement: let a cron job handle this
 }
 
 
 sub DBDelVote { # uid, vid  # uid = 0 to delete all
-  my $uid = $_[1] ? 'uid = '.$_[1].' AND' : '';
   $_[0]->DBExec(q|
     DELETE FROM votes
-      WHERE %s vid = %d|,
-    $uid, $_[2]);
+      !W|,
+    { 'vid = ?' => $_[2],
+      $_[1] ? ('uid = ?' => $_[1]) : ()
+    }
+  );
 }
 
 
@@ -476,12 +471,12 @@ sub DBGetVNList { # %options->{ uid vid hide order results page status }
 
   my %where = (
     $o{uid} ? (
-      'l.uid = %d' => $o{uid} ) : (),
+      'l.uid = ?' => $o{uid} ) : (),
     $o{vid} ? (
-      'l.vid = %d' => $o{vid} ) : (),
+      'l.vid = ?' => $o{vid} ) : (),
     defined $o{status} ? (
-      'l.status = %d' => $o{status} ) : (),
-    $o{hide} ? ( 'u.flags & %d = %1$d' => $VNDB::UFLAGS->{list} ) : (),
+      'l.status = ?' => $o{status} ) : (),
+    $o{hide} ? ( 'u.flags & ? = ?' => [ $VNDB::UFLAGS->{list}, $VNDB::UFLAGS->{list} ] ) : (),
   );
 
   return wantarray ? ([], 0) : [] if !keys %where;
@@ -492,9 +487,9 @@ sub DBGetVNList { # %options->{ uid vid hide order results page status }
       JOIN vn v ON l.vid = v.id
       JOIN vn_rev vr ON vr.id = v.latest
       JOIN users u ON l.uid = u.id
-      WHERE !W
-      ORDER BY %s
-      LIMIT %d OFFSET %d|,
+      !W
+      ORDER BY !s 
+      LIMIT ? OFFSET ?|,
     \%where,
     $o{order},
     $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
@@ -508,11 +503,12 @@ sub DBGetVNList { # %options->{ uid vid hide order results page status }
 
 sub DBDelVNList { # uid, @vid  # uid = 0 to delete all
   my($s, $uid, @vid) = @_;
-  $uid = $uid ? 'uid = '.$uid.' AND ' : '';
   $s->DBExec(q|
     DELETE FROM vnlists
-      WHERE %s vid IN(!l)|,
-    $uid, \@vid
+      !W|,
+    { 'vid IN (!l)' => [\@vid],
+      $uid ? ('uid = ?' => $uid) : ()
+    }
   );
 }
 
@@ -534,8 +530,8 @@ sub DBGetWishList { # %options->{ uid vid what order page results }
   $o{what} ||= '';
 
   my %where = (
-    'wl.uid = %d' => $o{uid},
-    $o{vid} ? ( 'wl.vid = %d' => $o{vid} ) : (),
+    'wl.uid = ?' => $o{uid},
+    $o{vid} ? ( 'wl.vid = ?' => $o{vid} ) : (),
   );
   
   my $select = 'wl.vid, wl.wstat, wl.added';
@@ -550,9 +546,9 @@ sub DBGetWishList { # %options->{ uid vid what order page results }
     SELECT $select
       FROM wlists wl
       @join
-      WHERE !W
-      ORDER BY %s
-      LIMIT %d OFFSET %d|,
+      !W
+      ORDER BY !s
+      LIMIT ? OFFSET ?|,
     \%where,
     $o{order},
     $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
@@ -566,18 +562,18 @@ sub DBGetWishList { # %options->{ uid vid what order page results }
 
 sub DBEditWishList { # %options->{ uid vid wstat }
   my($s, %o) = @_;
-    $s->DBExec(q|UPDATE wlists SET wstat = %d WHERE uid = %d AND vid IN(!l)|,
+    $s->DBExec(q|UPDATE wlists SET wstat = ? WHERE uid = ? AND vid IN(!l)|,
       $o{wstat}, $o{uid}, ref($o{vid}) eq 'ARRAY' ? $o{vid} : [ $o{vid} ])
   ||
     $s->DBExec(q|INSERT INTO wlists (uid, vid, wstat)
-      VALUES(%d, %d, %d)|,
-      @o{qw| uid vid wstat |});
+      VALUES(!l)|,
+      [@o{qw| uid vid wstat |}]);
 }
 
 
 sub DBDelWishList { # uid, vids
   my($s, $uid, $vid) = @_;
-  $s->DBExec(q|DELETE FROM wlists WHERE uid = %d AND vid IN(!l)|, $uid, $vid);
+  $s->DBExec(q|DELETE FROM wlists WHERE uid = ? AND vid IN(!l)|, $uid, $vid);
 }
 
 
@@ -594,15 +590,15 @@ sub DBGetRList { # %options->{ uid rids }
   my($s, %o) = @_;
 
   my %where = (
-    'uid = %d' => $o{uid},
+    'uid = ?' => $o{uid},
     $o{rids} ? (
-      'rid IN(!l)' => $o{rids} ) : (),
+      'rid IN(!l)' => [$o{rids}] ) : (),
   );
   
   return $s->DBAll(q|
     SELECT uid, rid, rstat, vstat
       FROM rlists
-      WHERE !W|,
+      !W|,
     \%where);
 }
 
@@ -621,26 +617,26 @@ sub DBGetRLists { # %options->{ uid order char rstat vstat voted page results }
       FROM rlists irl
       JOIN releases ir ON ir.id = irl.rid
       JOIN releases_vn irv ON irv.rid = ir.latest 
-      WHERE !W
+      !W
     )| if !$o{voted};
   $where = '('.$where.') AND LOWER(SUBSTR(vr.title, 1, 1)) = \''.$o{char}.'\'' if $o{char};
   $where = '('.$where.') AND (ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' if defined $o{char} && !$o{char};
 
  # WHERE clause for the rlists subquery
   my %where = (
-    'uid = %d' => $o{uid},
-    defined $o{rstat} ? ( 'rstat = %d' => $o{rstat} ) : (),
-    defined $o{vstat} ? ( 'vstat = %d' => $o{vstat} ) : (),
+    'uid = ?' => $o{uid},
+    defined $o{rstat} ? ( 'rstat = ?' => $o{rstat} ) : (),
+    defined $o{vstat} ? ( 'vstat = ?' => $o{vstat} ) : (),
   );
 
   my $r = $s->DBAll(qq|
     SELECT vr.vid, vr.title, v.c_released, v.c_languages, v.c_platforms, COALESCE(vo.vote, 0) AS vote
       FROM vn v
       JOIN vn_rev vr ON vr.id = v.latest
-      %s JOIN votes vo ON vo.vid = v.id AND vo.uid = %d
+      !s JOIN votes vo ON vo.vid = v.id AND vo.uid = ?
       WHERE $where
-      ORDER BY %s
-      LIMIT %d OFFSET %d|,
+      ORDER BY !s
+      LIMIT ? OFFSET ?|,
     $o{voted} ? '' : 'LEFT', $o{uid},   # JOIN if we only want votes, LEFT JOIN if we also want rlist items
     $o{voted} ? () : \%where,
     $o{order},
@@ -656,7 +652,7 @@ sub DBGetRLists { # %options->{ uid order char rstat vstat voted page results }
         JOIN releases r ON rl.rid = r.id
         JOIN releases_rev rr ON rr.id = r.latest
         JOIN releases_vn rv ON rv.rid = r.latest
-        WHERE rl.uid = %d
+        WHERE rl.uid = ? 
           AND rv.vid IN(!l)
         ORDER BY rr.released ASC|,
       $o{uid}, [ keys %vns ]
@@ -674,24 +670,24 @@ sub DBEditRList { # %options->{ uid rid rstat vstat }
  # rid can only be a arrayref with UPDATE
   my($s, %o) = @_;
   my %s = (
-    defined $o{rstat} ? ( 'rstat = %d', $o{rstat} ) : (),
-    defined $o{vstat} ? ( 'vstat = %d', $o{vstat} ) : (),
+    defined $o{rstat} ? ( 'rstat = ?', $o{rstat} ) : (),
+    defined $o{vstat} ? ( 'vstat = ?', $o{vstat} ) : (),
   );
   $o{rstat}||=0;
   $o{vstat}||=0;
 
-    $s->DBExec(q|UPDATE rlists SET !H WHERE uid = %d AND rid IN(!l)|,
+    $s->DBExec(q|UPDATE rlists !H WHERE uid = ? AND rid IN(!l)|,
       \%s, $o{uid}, ref($o{rid}) eq 'ARRAY' ? $o{rid} : [ $o{rid} ])
   ||
     $s->DBExec(q|INSERT INTO rlists (uid, rid, rstat, vstat)
-      VALUES(%d, %d, %d, %d)|,
-      @o{qw| uid rid rstat vstat |});
+      VALUES(!l)|,
+      [@o{qw| uid rid rstat vstat |}]);
 }
 
 
 sub DBDelRList { # uid, \@rids
   my($s, $uid, $rid) = @_;
-  $s->DBExec(q|DELETE FROM rlists WHERE uid = %d AND rid IN(!l)|, $uid, ref($rid) eq 'ARRAY' ? $rid : [ $rid ]);
+  $s->DBExec(q|DELETE FROM rlists WHERE uid = ? AND rid IN(!l)|, $uid, ref($rid) eq 'ARRAY' ? $rid : [ $rid ]);
 }
 
 
@@ -714,30 +710,31 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
 
   my %where = (
     !$o{id} && !$o{rev} ? ( # don't fetch hidden items unless we ask for an ID
-      'v.hidden = FALSE' => 1 ) : (),
+      'v.hidden = ?' => 0 ) : (),
     $o{id} && !ref($o{id}) ? (
-      'v.id = %d' => $o{id} ) : (),
+      'v.id = ?' => $o{id} ) : (),
     $o{id} && ref($o{id}) ? (
-      'v.id IN(!l)' => $o{id} ) : (),
+      'v.id IN(!l)' => [$o{id}] ) : (),
     $o{rev} ? (
-      'c.rev = %d' => $o{rev} ) : (),
+      'c.rev = ?' => $o{rev} ) : (),
     $o{char} ? (
-      'LOWER(SUBSTR(vr.title, 1, 1)) = !s' => $o{char} ) : (),
+      'LOWER(SUBSTR(vr.title, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
       '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
     $o{cati} && @{$o{cati}} ? ( q|
       v.id IN(SELECT iv.id
         FROM vn_categories ivc
         JOIN vn iv ON iv.latest = ivc.vid
-        WHERE cat IN(!L)
+        WHERE cat IN(!l)
         GROUP BY iv.id
-        HAVING COUNT(cat) = |.($#{$o{cati}}+1).')' => $o{cati} ) : (),
+        HAVING COUNT(cat) = ?)| => [ $o{cati}, $#{$o{cati}}+1 ] ) : (),
     $o{cate} && @{$o{cate}} ? ( q|
       v.id NOT IN(SELECT iv.id
         FROM vn_categories ivc
         JOIN vn iv ON iv.latest = ivc.vid
-        WHERE cat IN(!L)
-        GROUP BY iv.id)| => $o{cate} ) : (),
+        WHERE cat IN(!l)
+        GROUP BY iv.id)| => [ $o{cate} ] ) : (),
+   # this needs some proper handling...
     $o{lang} && @{$o{lang}} ? (
       '('.join(' OR ', map "v.c_languages ILIKE '%%$_%%'", @{$o{lang}}).')' => 1 ) : (),
     $o{platform} && @{$o{platform}} ? (
@@ -745,13 +742,17 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
   );
 
   if($o{search}) {
-    my %w;
+    my @w;
     for (split /[ -,]/, $o{search}) {
       s/%//g;
       next if length($_) < 2;
-      my $gt = VNDB::GTINType($_) ? ' OR irr.gtin = '.$_ : '';
-      $w{ sprintf '(ivr.title ILIKE %s OR ivr.alias ILIKE %1$s OR irr.title ILIKE %1$s OR irr.original ILIKE %1$s'.$gt.')',
-        qs('%%'.$_.'%%') } = 1;
+      if(VNDB::GTINType($_)) {
+        push @w, 'irr.gtin = ?', $_;
+      } else {
+        $_ = "%$_%";
+        push @w, '(ivr.title ILIKE ? OR ivr.alias ILIKE ? OR irr.title ILIKE ? OR irr.original ILIKE ?)',
+          [ $_, $_, $_, $_ ];
+      } 
     }
     $where{ q|
       v.id IN(SELECT iv.id
@@ -760,11 +761,9 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
         LEFT JOIN releases_vn irv ON irv.vid = iv.id
         LEFT JOIN releases_rev irr ON irr.id = irv.rid
         LEFT JOIN releases ir ON ir.latest = irr.id
-        WHERE !W
-        GROUP BY iv.id)| } = \%w if keys %w;
+        !W
+        GROUP BY iv.id)| } = [ \@w ] if @w;
   }
-
-  my $where = scalar keys %where ? 'WHERE !W' : '';
 
   my @join = (
     $o{rev} ?
@@ -786,10 +785,10 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
     SELECT $sel
       FROM vn_rev vr
       @join
-      $where
-      ORDER BY %s
-      LIMIT %d OFFSET %d|,
-    $where ? \%where : (),
+      !W
+      ORDER BY !s
+      LIMIT ? OFFSET ?|,
+    \%where,
     $o{order},
     $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
   );
@@ -857,19 +856,19 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
 }  
 
 
-sub DBAddVN { # %options->{ columns in vn_rev + comm + relations + categories + anime + screenshots }
+sub DBAddVN { # %options->{ comm + _insert_vn_rev }
   my($s, %o) = @_;
 
   my $id = $s->DBRow(q|
     INSERT INTO changes (type, requester, ip, comments)
-      VALUES (%d, %d, !s, !s)
+      VALUES (!l)
       RETURNING id|,
-    0, $s->AuthInfo->{id}, $s->ReqIP, $o{comm}
+    [ 0, $s->AuthInfo->{id}, $s->ReqIP, $o{comm} ]
   )->{id};
 
   my $vid = $s->DBRow(q|
     INSERT INTO vn (latest)
-      VALUES (%d)
+      VALUES (?)
       RETURNING id|, $id
   )->{id};
 
@@ -879,59 +878,59 @@ sub DBAddVN { # %options->{ columns in vn_rev + comm + relations + categories + 
 }
 
 
-sub DBEditVN { # id, %options->( columns in vn_rev + comm + relations + categories + anime + screenshots + uid + causedby }
+sub DBEditVN { # id, %options->( comm + _insert_vn_rev + uid + causedby }
   my($s, $vid, %o) = @_;
 
   my $c = $s->DBRow(q|
     INSERT INTO changes (type, requester, ip, comments, rev, causedby)
-      VALUES (%d, %d, !s, !s, (
+      VALUES (?, ?, ?, ?, (
         SELECT c.rev+1
         FROM changes c
         JOIN vn_rev vr ON vr.id = c.id
-        WHERE vr.vid = %d
+        WHERE vr.vid = ?
         ORDER BY c.id DESC
         LIMIT 1
-      ), %d)
+      ), ?)
       RETURNING id, rev|,
     0, $o{uid}||$s->AuthInfo->{id}, $s->ReqIP, $o{comm}, $vid, $o{causedby}||0);
 
   _insert_vn_rev($s, $c->{id}, $vid, \%o);
 
-  $s->DBExec(q|UPDATE vn SET latest = %d WHERE id = %d|, $c->{id}, $vid);
+  $s->DBExec(q|UPDATE vn SET latest = ? WHERE id = ?|, $c->{id}, $vid);
   return ($c->{rev}, $c->{id}); # local revision, global revision
 }
 
 
-sub _insert_vn_rev {
+sub _insert_vn_rev { # columns in vn_rev + categories + screenshots + relations
   my($s, $cid, $vid, $o) = @_;
 
   $s->DBExec(q|
     INSERT INTO vn_rev (id, vid, title, "desc", alias, image, img_nsfw, length, l_wp, l_encubed, l_renai, l_vnn)
-      VALUES (%d, %d, !s, !s, !s, %d, !b, %d, !s, !s, !s, %d)|,
-    $cid, $vid, @$o{qw|title desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|});
+      VALUES (!l)|,
+    [ $cid, $vid, @$o{qw|title desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|} ]);
 
   $s->DBExec(q|
     INSERT INTO vn_categories (vid, cat, lvl)
-      VALUES (%d, !s, %d)|,
+      VALUES (?, ?, ?)|,
     $cid, $_->[0], $_->[1]
   ) for (@{$o->{categories}});
 
   $s->DBExec(q|
     INSERT INTO vn_screenshots (vid, scr, nsfw)
-      VALUES (%d, %d, !b)|,
-    $cid, $_->[0], $_->[1]
+      VALUES (?, ?, ?)|,
+    $cid, $_->[0], $_->[1]?1:0
   ) for (@{$o->{screenshots}});
 
   $s->DBExec(q|
     INSERT INTO vn_relations (vid1, vid2, relation)
-      VALUES (%d, %d, %d)|,
+      VALUES (?, ?, ?)|,
     $cid, $_->[1], $_->[0]
   ) for (@{$o->{relations}});
 
   if(@{$o->{anime}}) {
     $s->DBExec(q|
       INSERT INTO vn_anime (vid, aid)
-        VALUES (%d, %d)|,
+        VALUES (?, ?)|,
       $cid, $_
     ) for (@{$o->{anime}});
 
@@ -940,7 +939,7 @@ sub _insert_vn_rev {
       SELECT id FROM anime WHERE id IN(!l)|,
       $o->{anime});
     $s->DBExec(q|
-      INSERT INTO anime (id) VALUES (%d)|, $_
+      INSERT INTO anime (id) VALUES (?)|, $_
     ) for (grep {
       my $ia = $_;
       !(scalar grep $ia == $_->{id}, @$a)
@@ -953,23 +952,15 @@ sub DBHideVN { # id, hidden
   my($s, $id, $h) = @_;
   $s->DBExec(q|
     UPDATE vn 
-      SET hidden = !b
-      WHERE id = %d|,
-    $h, $id);
-
-#  $s->DBExec(q|
-#    DELETE FROM vn_relations
-#      WHERE vid2 = %d
-#         OR vid1 IN(SELECT id FROM vn_rev WHERE vid = %d)|,
-#     $id, $id);
-#  $s->DBDelVNList(0, $id);
-#  $s->DBDelVote(0, $id);
+      SET hidden = ?
+      WHERE id = ?|,
+    $h?1:0, $id);
 }
 
 
 sub DBVNCache { # @vids
   my($s,@vn) = @_;
-  $s->DBExec('SELECT update_vncache(%d)', $_) for (@vn);
+  $s->DBExec('SELECT update_vncache(?)', $_) for (@vn);
 }
 
 
@@ -990,18 +981,17 @@ sub DBGetRelease { # %options->{ id vid results page rev }
   $o{order} ||= 'rr.released ASC';
   my %where = (
     !$o{id} && !$o{rev} ? (
-      'r.hidden = FALSE' => 1 ) : (),
+      'r.hidden = ?' => 0 ) : (),
     $o{id} ? (
-      'r.id = %d' => $o{id} ) : (),
+      'r.id = ?' => $o{id} ) : (),
     $o{rev} ? (
-      'c.rev = %d' => $o{rev} ) : (),
+      'c.rev = ?' => $o{rev} ) : (),
     $o{vid} ? (
-      'rv.vid = %d' => $o{vid} ) : (),
+      'rv.vid = ?' => $o{vid} ) : (),
     defined $o{unreleased} ? (
-      q|rr.released %s TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer| => $o{unreleased} ? '>' : '<=' ) : (),
+      q|rr.released !s TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer| => $o{unreleased} ? '>' : '<=' ) : (),
   );
 
-  my $where = scalar keys %where ? 'WHERE !W' : '';
   my @join;
   push @join, $o{rev} ? 'JOIN releases r ON r.id = rr.rid' : 'JOIN releases r ON rr.id = r.latest';
   push @join, 'JOIN changes c ON c.id = rr.id' if $o{what} =~ /changes/ || $o{rev};
@@ -1015,10 +1005,10 @@ sub DBGetRelease { # %options->{ id vid results page rev }
     SELECT $select
       FROM releases_rev rr
       @join
-      $where
-      ORDER BY %s
-      LIMIT %d OFFSET %d|,
-    $where ? \%where : (),
+      !W
+      ORDER BY !s
+      LIMIT ? OFFSET ?|,
+    \%where,
     $o{order},
     $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
   );
@@ -1079,19 +1069,19 @@ sub DBGetRelease { # %options->{ id vid results page rev }
 }
 
 
-sub DBAddRelease { # options -> { columns in releases_rev table + comm + vn + producers + media + platforms }
+sub DBAddRelease { # options -> { comm + _insert_release_rev }
   my($s, %o) = @_;
 
   my $id = $s->DBRow(q|
     INSERT INTO changes (type, requester, ip, comments)
-      VALUES (%d, %d, !s, !s)
+      VALUES (!l)
       RETURNING id|,
-    1, $s->AuthInfo->{id}, $s->ReqIP, $o{comm}
+    [ 1, $s->AuthInfo->{id}, $s->ReqIP, $o{comm} ]
   )->{id};
 
   my $rid = $s->DBRow(q|
     INSERT INTO releases (latest)
-      VALUES (%d)
+      VALUES (?)
       RETURNING id|, $id)->{id};
 
   _insert_release_rev($s, $id, $rid, \%o);
@@ -1099,16 +1089,16 @@ sub DBAddRelease { # options -> { columns in releases_rev table + comm + vn + pr
 }
 
 
-sub DBEditRelease { # id, %opts->{ columns in releases_rev table + comm + vn + producers + media + platforms }
+sub DBEditRelease { # id, %opts->{ comm + _insert_release_rev }
   my($s, $rid, %o) = @_;
 
   my $c = $s->DBRow(q|
     INSERT INTO changes (type, requester, ip, comments, rev)
-      VALUES (%d, %d, !s, !s, (
+      VALUES (?, ?, ?, ?, (
         SELECT c.rev+1
         FROM changes c
         JOIN releases_rev rr ON rr.id = c.id
-        WHERE rr.rid = %d
+        WHERE rr.rid = ?
         ORDER BY c.id DESC
         LIMIT 1
       ))
@@ -1117,41 +1107,40 @@ sub DBEditRelease { # id, %opts->{ columns in releases_rev table + comm + vn + p
 
   _insert_release_rev($s, $c->{id}, $rid, \%o);
 
-  $s->DBExec(q|UPDATE releases SET latest = %d WHERE id = %d|, $c->{id}, $rid);
+  $s->DBExec(q|UPDATE releases SET latest = ? WHERE id = ?|, $c->{id}, $rid);
   return ($c->{rev}, $c->{id}); # local revision, global revision
 }
 
 
-sub _insert_release_rev {
+sub _insert_release_rev { # %option->{ columns in releases_rev + producers + platforms + vn + media }
   my($s, $cid, $rid, $o) = @_;
 
-  # most GTIN numbers can't be represented in a 32bit integer, so make sure Perl doesn't interpret it as one (%s, not %d)
   $s->DBExec(q|
     INSERT INTO releases_rev (id, rid, title, original, gtin, language, website, released, notes, minage, type)
-      VALUES (%d, %d, !s, !s, %s, !s, !s, %d, !s, %d, %d)|,
-    $cid, $rid, @$o{qw| title original gtin language website released notes minage type|});
+      VALUES (!l)|,
+    [ $cid, $rid, @$o{qw| title original gtin language website released notes minage type|} ]);
 
   $s->DBExec(q|
     INSERT INTO releases_producers (rid, pid)
-      VALUES (%d, %d)|,
+      VALUES (?, ?)|,
     $cid, $_
   ) for (@{$o->{producers}});
 
   $s->DBExec(q|
     INSERT INTO releases_platforms (rid, platform)
-      VALUES (%d, !s)|,
+      VALUES (?, ?)|,
     $cid, $_
   ) for (@{$o->{platforms}});
 
   $s->DBExec(q|
     INSERT INTO releases_vn (rid, vid)
-      VALUES (%d, %d)|,
+      VALUES (?, ?)|,
     $cid, $_
   ) for (@{$o->{vn}});
 
   $s->DBExec(q|
     INSERT INTO releases_media (rid, medium, qty)
-      VALUES (%d, !s, %d)|,
+      VALUES (?, ?, ?)|,
     $cid, $_->[0], $_->[1]
   ) for (@{$o->{media}});
 }
@@ -1161,9 +1150,9 @@ sub DBHideRelease { # id, hidden
   my($s, $id, $h) = @_;
   $s->DBExec(q|
     UPDATE releases 
-      SET hidden = !b
-      WHERE id = %d|,
-    $h, $id);
+      SET hidden = ?
+      WHERE id = ?|,
+    $h?1:0, $id);
 }
 
 
@@ -1182,21 +1171,19 @@ sub DBGetProducer { # %options->{ id search char results page rev }
   $o{what} ||= '';
   my %where = (
     !$o{id} && !$o{rev} ? (
-      'p.hidden = FALSE' => 1 ) : (),
+      'p.hidden = ?' => 0 ) : (),
     $o{id} ? (
-      'p.id = %d' => $o{id} ) : (),
+      'p.id = ?' => $o{id} ) : (),
     $o{search} ? (
-      sprintf('(pr.name ILIKE %s OR pr.original ILIKE %1$s)', qs('%%'.$o{search}.'%%')), 1
-    ) : (),
+      '(pr.name ILIKE ? OR pr.original ILIKE ?)', [ '%%'.$o{search}.'%%', '%%'.$o{search}.'%%' ] ) : (),
     $o{char} ? (
-      'LOWER(SUBSTR(pr.name, 1, 1)) = !s' => $o{char} ) : (),
+      'LOWER(SUBSTR(pr.name, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
       '(ASCII(pr.name) < 97 OR ASCII(pr.name) > 122) AND (ASCII(pr.name) < 65 OR ASCII(pr.name) > 90)' => 1 ) : (),
     $o{rev} ? (
-      'c.rev = %d' => $o{rev} ) : (),
+      'c.rev = ?' => $o{rev} ) : (),
   );
 
-  my $where = scalar keys %where ? 'WHERE !W' : '';
   my @join;
   push @join, $o{rev} ? 'JOIN producers p ON p.id = pr.pid' : 'JOIN producers p ON pr.id = p.latest';
   push @join, 'JOIN changes c ON c.id = pr.id' if $o{what} =~ /changes/ || $o{rev};
@@ -1209,10 +1196,10 @@ sub DBGetProducer { # %options->{ id search char results page rev }
     SELECT $select
       FROM producers_rev pr
       @join
-      $where
+      !W
       ORDER BY pr.name ASC
-      LIMIT %d OFFSET %d|,
-    $where ? \%where : (),
+      LIMIT ? OFFSET ?|,
+    \%where,
     $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
   );
   
@@ -1223,7 +1210,6 @@ sub DBGetProducer { # %options->{ id search char results page rev }
 }
 
 
-# XXX: This query is killing me!
 sub DBGetProducerVN { # pid
   return $_[0]->DBAll(q|
     SELECT v.id, MAX(vr.title) AS title, MIN(rr.released) AS date
@@ -1233,27 +1219,27 @@ sub DBGetProducerVN { # pid
       JOIN releases_vn rv ON rv.rid = rr.id
       JOIN vn v ON v.id = rv.vid
       JOIN vn_rev vr ON vr.id = v.latest
-      WHERE vp.pid = %d
-        AND v.hidden = FALSE
+      WHERE vp.pid = ?
+        AND v.hidden = ?
       GROUP BY v.id
       ORDER BY date|,
-    $_[1]);
+    $_[1], 0);
 }
 
 
-sub DBAddProducer { # %opts->{ columns in producers_rev + comm } 
+sub DBAddProducer { # %opts->{ comm + _insert_producer_rev } 
   my($s, %o) = @_;
 
   my $id = $s->DBRow(q|
     INSERT INTO changes (type, requester, ip, comments)
-      VALUES (%d, %d, !s, !s)
+      VALUES (!l)
       RETURNING id|,
-    2, $s->AuthInfo->{id}, $s->ReqIP, $o{comm}
+    [ 2, $s->AuthInfo->{id}, $s->ReqIP, $o{comm} ]
   )->{id};
 
   my $pid = $s->DBRow(q|
     INSERT INTO producers (latest)
-      VALUES (%d)
+      VALUES (?)
       RETURNING id|, $id
   )->{id};
 
@@ -1263,16 +1249,16 @@ sub DBAddProducer { # %opts->{ columns in producers_rev + comm }
 }
 
 
-sub DBEditProducer { # id, %opts->{ columns in producers_rev + comm }
+sub DBEditProducer { # id, %opts->{ comm + _insert_producer_rev }
   my($s, $pid, %o) = @_;
 
   my $c = $s->DBRow(q|
     INSERT INTO changes (type, requester, ip, comments, rev)
-      VALUES (%d, %d, !s, !s, (
+      VALUES (?, ?, ?, ?, (
         SELECT c.rev+1
         FROM changes c
         JOIN producers_rev pr ON pr.id = c.id
-        WHERE pr.pid = %d
+        WHERE pr.pid = ?
         ORDER BY c.id DESC
         LIMIT 1
       ))
@@ -1281,17 +1267,17 @@ sub DBEditProducer { # id, %opts->{ columns in producers_rev + comm }
 
   _insert_producer_rev($s, $c->{id}, $pid, \%o);
 
-  $s->DBExec(q|UPDATE producers SET latest = %d WHERE id = %d|, $c->{id}, $pid);
+  $s->DBExec(q|UPDATE producers SET latest = ? WHERE id = ?|, $c->{id}, $pid);
   return ($c->{rev}, $c->{id}); # local revision, global revision
 }
 
 
-sub _insert_producer_rev {
+sub _insert_producer_rev { # %opts->{ columns in produces_rev }
   my($s, $cid, $pid, $o) = @_;
   $s->DBExec(q|
     INSERT INTO producers_rev (id, pid, name, original, website, type, lang, "desc")
-      VALUES (%d, %d, !s, !s, !s, !s, !s, !s)|,
-    $cid, $pid, @$o{qw| name original website type lang desc|});
+      VALUES (!l)|,
+    [ $cid, $pid, @$o{qw| name original website type lang desc|} ]);
 }
 
 
@@ -1299,9 +1285,9 @@ sub DBHideProducer { # id, hidden
   my($s, $id, $h) = @_;
   $s->DBExec(q|
     UPDATE producers 
-      SET hidden = !b
-      WHERE id = %d|,
-    $h, $id);
+      SET hidden = ?
+      WHERE id = ?|,
+    $h?1:0, $id);
 }
 
 
@@ -1323,15 +1309,14 @@ sub DBGetThreads { # %options->{ id type iid results page what }
 
   my %where = (
     $o{id} ? (
-      't.id = %d' => $o{id} ) : (),
+      't.id = ?' => $o{id} ) : (),
     !$o{id} ? (
-      't.hidden = FALSE' => 1 ) : (),
+      't.hidden = ?' => 0 ) : (),
     $o{type} && !$o{iid} ? (
-      't.id IN(SELECT tid FROM threads_tags WHERE type = !s)' => $o{type} ) : (),
+      't.id IN(SELECT tid FROM threads_tags WHERE type = ?)' => $o{type} ) : (),
     $o{type} && $o{iid} ? (
-      'tt.type = !s' => $o{type}, 'tt.iid = %d' => $o{iid} ) : (),
+      'tt.type = ?' => $o{type}, 'tt.iid = ?' => $o{iid} ) : (),
   );
-  my $where = scalar keys %where ? 'WHERE !W' : '';
 
   my $select = 't.id, t.title, t.count, t.locked, t.hidden';
   $select .= ', tp.uid, tp.date, u.username' if $o{what} =~ /firstpost/;
@@ -1348,10 +1333,10 @@ sub DBGetThreads { # %options->{ id type iid results page what }
     SELECT $select
       FROM threads t
       @join
-      $where
-      ORDER BY %s
-      LIMIT %d OFFSET %d|,
-    $where ? \%where : (),
+      !W
+      ORDER BY !s
+      LIMIT ? OFFSET ?|,
+    \%where,
     $o{order},
     $o{results}+(wantarray?1:0), $o{results}*($o{page}-1)
   );
@@ -1399,18 +1384,18 @@ sub DBGetPosts { # %options->{ tid num page results }
   $o{page} ||= 1;
 
   my %where = (
-    'tp.tid = %d' => $o{tid},
+    'tp.tid = ?' => $o{tid},
     $o{num} ? (
-      'tp.num = %d' => $o{num} ) : (),
+      'tp.num = ?' => $o{num} ) : (),
   );
 
   my $r = $s->DBAll(q|
     SELECT tp.num, tp.date, tp.edited, tp.msg, tp.hidden, tp.uid, u.username
       FROM threads_posts tp
       JOIN users u ON u.id = tp.uid
-      WHERE !W
+      !W
       ORDER BY tp.num ASC
-      LIMIT %d OFFSET %d|,
+      LIMIT ? OFFSET ?|,
     \%where,
     $o{results}, $o{results}*($o{page}-1)
   );
@@ -1422,18 +1407,18 @@ sub DBGetPosts { # %options->{ tid num page results }
 sub DBAddPost { # %options->{ tid uid msg num }
   my($s, %o) = @_;
 
-  $o{num} ||= $s->DBRow('SELECT num FROM threads_posts WHERE tid = %d ORDER BY num DESC LIMIT 1', $o{tid})->{num}+1;
+  $o{num} ||= $s->DBRow('SELECT num FROM threads_posts WHERE tid = ? ORDER BY num DESC LIMIT 1', $o{tid})->{num}+1;
   $o{uid} ||= $s->AuthInfo->{id};
 
   $s->DBExec(q|
     INSERT INTO threads_posts (tid, num, uid, msg)
-      VALUES(%d, %d, %d, !s)|,
+      VALUES(?, ?, ?, ?)|,
     @o{qw| tid num uid msg |}
   );
   $s->DBExec(q|
     UPDATE threads
       SET count = count+1
-      WHERE id = %d|,
+      WHERE id = ?|,
     $o{tid});
 
   return $o{num};
@@ -1444,16 +1429,16 @@ sub DBEditPost { # %options->{ tid num msg hidden }
   my($s, %o) = @_;
 
   my %set = (
-    'msg = !s' => $o{msg},
-    'edited = %d' => time,
-    'hidden = !b' => $o{hidden},
+    'msg = ?' => $o{msg},
+    'edited = ?' => time,
+    'hidden = ?' => $o{hidden}?1:0,
   );
 
   $s->DBExec(q|
     UPDATE threads_posts
-      SET !H
-      WHERE tid = %d
-        AND num = %d|,
+      !H
+      WHERE tid = ?
+        AND num = ?|,
      \%set, $o{tid}, $o{num}
   );
 }
@@ -1463,22 +1448,22 @@ sub DBEditThread { # %options->{ id title locked hidden tags }
   my($s, %o) = @_;
 
   my %set = (
-    'title = !s' => $o{title},
-    'locked = !b' => $o{locked},
-    'hidden = !b' => $o{hidden},
+    'title = ?' => $o{title},
+    'locked = ?' => $o{locked}?1:0,
+    'hidden = ?' => $o{hidden}?1:0,
   );
 
   $s->DBExec(q|
     UPDATE threads
-      SET !H
-      WHERE id = %d|,
+      !H
+      WHERE id = ?|,
      \%set, $o{id});
 
   if($o{tags}) {
-    $s->DBExec('DELETE FROM threads_tags WHERE tid = %d', $o{id});
+    $s->DBExec('DELETE FROM threads_tags WHERE tid = ?', $o{id});
     $s->DBExec(q|
       INSERT INTO threads_tags (tid, type, iid)
-        VALUES (%d, !s, %d)|,
+        VALUES (?, ?, ?)|,
       $o{id}, $_->[0], $_->[1]||0
     ) for (@{$o{tags}});
   }
@@ -1490,14 +1475,14 @@ sub DBAddThread { # %options->{ title hidden locked tags }
 
   my $id = $s->DBRow(q|
     INSERT INTO threads (title, hidden, locked)
-      VALUES (!s, !b, !b)
+      VALUES (?, ?, ?)
       RETURNING id|,
       $o{title}, $o{hidden}, $o{locked}
     )->{id};
 
   $s->DBExec(q|
     INSERT INTO threads_tags (tid, type, iid)
-      VALUES (%d, !s, %d)|,
+      VALUES (?, ?, ?)|,
     $id, $_->[0], $_->[1]
   ) for (@{$o{tags}});
 
@@ -1517,12 +1502,6 @@ sub DBExec { return sqlhelper(shift, 0, @_); }
 sub DBRow  { return sqlhelper(shift, 1, @_); }
 sub DBAll  { return sqlhelper(shift, 2, @_); }
 
-
-sub DBLastId { # table
-  return $_[0]->{_DB}->{sql}->last_insert_id(undef, undef, $_[1], undef);
-}
-
-
 sub sqlhelper { # type, query, @list
   my $self = shift;
   my $type = shift;
@@ -1533,17 +1512,17 @@ sub sqlhelper { # type, query, @list
 
   $sqlq =~ s/\r?\n/ /g;
   $sqlq =~ s/  +/ /g;
-  $sqlq = sqlprint($sqlq, @_) if exists $_[0];
-  #warn "$sqlq\n";
+  my(@q) = @_ ? sqlprint(0, $sqlq, @_) : ($sqlq);
+  #warn join(', ', map "'$_'", @q)."\n";
 
-  my $q = $s->prepare($sqlq);
-  $q->execute();
+  my $q = $s->prepare($q[0]);
+  $q->execute($#q ? @q[1..$#q] : ());
   my $r = $type == 1 ? $q->fetchrow_hashref :
           $type == 2 ? $q->fetchall_arrayref({}) :
                        $q->rows;
   $q->finish();
 
-  push(@{$self->{_DB}->{Queries}}, [ $sqlq, Time::HiRes::tv_interval($start) ]) if $self->{debug};
+  push(@{$self->{_DB}->{Queries}}, [ $q[0], Time::HiRes::tv_interval($start), @q[1..$#q] ]) if $self->{debug};
 
   $r = 0  if $type == 0 && !$r;
   $r = {} if $type == 1 && (!$r || ref($r) ne 'HASH');
@@ -1553,60 +1532,49 @@ sub sqlhelper { # type, query, @list
 }
 
 
-# Added features:
-#  !s    SQL-quote
-#  !b    boolean (anything perl considers true = 'TRUE', otherwise 'FALSE')
-#  !l    listify
-#  !L    SQL-quote-and-listify
-#  !H    list of SET-items: key = format, value = replacement
-#  !W    same as !H, but for WHERE clauses
-sub sqlprint {
-  my $i = -1;
+# sqlprint:
+#   ?    normal placeholder
+#   !l   list of placeholders, expects arrayref
+#   !H   list of SET-items, expects hashref or arrayref: format => (bind_value || \@bind_values)
+#   !W   same as !H, but for WHERE clauses (AND'ed together)
+#   !s   the classic sprintf %s, use with care
+# This isn't sprintf, so all other things won't work,
+# Only the ? placeholder is supported, so no dollar sign numbers or named placeholders
+# Indeed, this also means you can't use PgSQL operators containing a question mark
+
+sub sqlprint { # start, query, bind values. Returns new query + bind values
   my @arg;
-  my $sq = my $s = shift;
-  while($sq =~ s/([%!])(.)//) {
-    $i++;
-    my $t = $1; my $d = $2;
-    if($t eq '%') {
-      if($d eq '%') {
-        $i--; next 
+  my $q='';
+  my $s = shift;
+  for my $p (split /(\?|![lHWs])/, shift) {
+    next if !defined $p;
+    if($p eq '?') {
+      push @arg, shift;
+      $q .= '$'.(@arg+$s);
+    } elsif($p eq '!s') {
+      $q .= shift;
+    } elsif($p eq '!l') {
+      my $l = shift;
+      $q .= join ', ', map '$'.(@arg+$s+$_+1), 0..$#$l;
+      push @arg, @$l;
+    } elsif($p eq '!H' || $p eq '!W') {
+      my $h=shift;
+      my @h=ref $h eq 'HASH' ? %$h : @$h;
+      my @r;
+      while(my($k,$v) = (shift(@h), shift(@h))) {
+        last if !defined $k;
+        my($n,@l) = sqlprint($#arg+1, $k, ref $v eq 'ARRAY' ? @$v : $v);
+        push @r, $n;
+        push @arg, @l;
       }
-      $arg[$i] = $_[$i];
-      next;
-    }
-    if($d !~ /[sblLHW]/) {
-      $i--; next
-    }
-    $arg[$i] = qs($_[$i]) if $d eq 's';
-    $arg[$i] = $_[$i] ? 'TRUE' : 'FALSE' if $d eq 'b';
-    $arg[$i] = join(',', @{$_[$i]}) if $d eq 'l';
-    $arg[$i] = join(',', (qs(@{$_[$i]}))) if $d eq 'L';
-    if($d eq 'H' || $d eq 'W') {
-      my @i;
-      defined $_[$i]{$_} && push(@i, sqlprint($_, $_[$i]{$_})) for keys %{$_[$i]};
-      $arg[$i] = join($d eq 'H' ? ', ' : ' AND ', @i);
+      $q .= ($p eq '!W' ? 'WHERE ' : 'SET ').join $p eq '!W' ? ' AND ' : ', ', @r
+        if @r;
+    } else {
+      $q .= $p;
     }
   }
-  $s =~ s/![sblLHW]/%s/g;
-  $s =~ s/!!/!/g;
-  return sprintf($s, @arg);
+  return($q, @arg);
 }
-
-
-sub qs { # ISO SQL2-quoting, with some PgSQL-specific stuff
-  my @r = @_;
-  # NOTE: we use E''-style strings because backslash escaping in the normal ''-style
-  #       depends on the standard_conforming_strings configuration option of PgSQL,
-  #       while E'' will always behave the same regardless of the server configuration.
-  for (@r) {
-    (!defined $_ or $_ eq '_NULL_') && next;
-    s/'/''/g;
-    s/\\/\\\\/g;
-    $_ = "E'$_'";
-  }
-  return wantarray ? @r : $r[0];
-}
-
 
 1;
 

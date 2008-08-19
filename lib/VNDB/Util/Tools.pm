@@ -145,6 +145,7 @@ sub AddDefaultStuff {
     for (@{$self->{_DB}->{Queries}}) {
       $_->[0] =~ s/^\s//g;
       $sqls .= sprintf("[%6.2fms] %s\n", $_->[1]*1000, $_->[0] || '[undef]');
+      $sqls .= "            ".join(', ', map "'$_'", @{$_}[2..$#$_])."\n" if exists $$_[2];
     }
     $self->ResAddTpl(devshit => $sqls);
   }
