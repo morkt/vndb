@@ -1477,7 +1477,7 @@ sub DBAddThread { # %options->{ title hidden locked tags }
     INSERT INTO threads (title, hidden, locked)
       VALUES (?, ?, ?)
       RETURNING id|,
-      $o{title}, $o{hidden}, $o{locked}
+      $o{title}, $o{hidden}?1:0, $o{locked}?1:0
     )->{id};
 
   $s->DBExec(q|

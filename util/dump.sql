@@ -149,7 +149,7 @@ CREATE TABLE threads (
 -- threads_posts
 CREATE TABLE threads_posts (
   tid integer NOT NULL DEFAULT 0,
-  num integer NOT NULL DEFAULT 0,
+  num smallint NOT NULL DEFAULT 0,
   uid integer NOT NULL DEFAULT 0,
   date bigint NOT NULL DEFAULT DATE_PART('epoch', NOW()),
   edited bigint NOT NULL DEFAULT 0,
@@ -290,6 +290,7 @@ ALTER TABLE releases_vn        ADD FOREIGN KEY (rid)       REFERENCES releases_r
 ALTER TABLE releases_vn        ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE rlists             ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE rlists             ADD FOREIGN KEY (rid)       REFERENCES releases      (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE threads            ADD FOREIGN KEY (id, count) REFERENCES threads_posts (tid, num) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE threads_posts      ADD FOREIGN KEY (tid)       REFERENCES threads       (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE threads_posts      ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE threads_tags       ADD FOREIGN KEY (tid)       REFERENCES threads       (id) DEFERRABLE INITIALLY DEFERRED;
