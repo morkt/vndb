@@ -192,14 +192,14 @@ sub buildgraph {
   $gid = $gid->fetchrow_arrayref->[0];
   $_[HEAP]{gid} = [
     $gid,
-    sprintf('%s/%02d/%d.gif', $_[HEAP]{imgdir}, $gid % 100, $gid),
+    sprintf('%s/%02d/%d.png', $_[HEAP]{imgdir}, $gid % 100, $gid),
   ];
 
   # roughly equivalent to:
-  #  cat layout.txt | dot -Tgif -o graph.gif -Tcmapx
+  #  cat layout.txt | dot -Tpng -o graph.png -Tcmapx
   $_[HEAP]{proc} = POE::Wheel::Run->new(
     Program => $_[HEAP]{dot},
-    ProgramArgs => [ '-Tgif', '-o', $_[HEAP]{gid}[1], '-Tcmapx' ],
+    ProgramArgs => [ '-Tpng', '-o', $_[HEAP]{gid}[1], '-Tcmapx' ],
     StdioFilter => POE::Filter::Stream->new(),
     StdinEvent => 'proc_stdin',
     StdoutEvent => 'proc_stdout',

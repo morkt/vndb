@@ -14,6 +14,10 @@ TODO:
 	- Fixed bug with the infinite thumbnail generation message when the server
 	  doesn't respond within one second.
 	- Rewrote VNDB::Util::DB::sqlprint to use server-side prepared statements
+	- Added two new foreign key constraints:
+	    changes (causedby) -> changes (id)
+	    threads (id, count) -> threads_posts (tid, num)
+	- Converted relation graphs to PNG
 
 1.21 - 2008-08-16 (r90)
 	- Added !vn and !uptime commands to Multi::IRC

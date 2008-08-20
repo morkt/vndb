@@ -5,12 +5,11 @@ CREATE TABLE relgraph (
   cmap text NOT NULL DEFAULT ''
 ) WITHOUT OIDS;
 
-SELECT SETVAL('relgraph_id_seq', NEXTVAL('relgraph_seq'));
 DROP SEQUENCE relgraph_seq;
-
 ALTER TABLE vn ALTER COLUMN rgraph DROP NOT NULL;
 ALTER TABLE vn ALTER COLUMN rgraph SET DEFAULT NULL;
-UPDATE vn SET rgraph = NULL WHERE rgraph = 0;
+UPDATE vn SET rgraph = NULL;
+ALTER TABLE vn ADD FOREIGN KEY (rgraph) REFERENCES relgraph (id) DEFERRABLE INITIALLY DEFERRED;
 
 
 -- add foreign table constraint to changes.causedby
