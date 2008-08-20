@@ -233,7 +233,7 @@ sub DBLockItem { # table, id, locked
     UPDATE !s
       SET locked = ?
       WHERE id = ?|,
-    $tbl, $l, $id);
+    $tbl, $l?1:0, $id);
 }
 
 
@@ -904,6 +904,7 @@ sub DBEditVN { # id, %options->( comm + _insert_vn_rev + uid + causedby }
 sub _insert_vn_rev { # columns in vn_rev + categories + screenshots + relations
   my($s, $cid, $vid, $o) = @_;
 
+  $$o{img_nsfw} = $$o{img_nsfw}?1:0;
   $s->DBExec(q|
     INSERT INTO vn_rev (id, vid, title, "desc", alias, image, img_nsfw, length, l_wp, l_encubed, l_renai, l_vnn)
       VALUES (!l)|,
@@ -1543,29 +1544,29 @@ sub sqlhelper { # type, query, @list
 # Indeed, this also means you can't use PgSQL operators containing a question mark
 
 sub sqlprint { # start, query, bind values. Returns new query + bind values
-  my @arg;
+  my @a;
   my $q='';
   my $s = shift;
   for my $p (split /(\?|![lHWs])/, shift) {
     next if !defined $p;
     if($p eq '?') {
-      push @arg, shift;
-      $q .= '$'.(@arg+$s);
+      push @a, shift;
+      $q .= '$'.(@a+$s);
     } elsif($p eq '!s') {
       $q .= shift;
     } elsif($p eq '!l') {
       my $l = shift;
-      $q .= join ', ', map '$'.(@arg+$s+$_+1), 0..$#$l;
-      push @arg, @$l;
+      $q .= join ', ', map '$'.(@a+$s+$_+1), 0..$#$l;
+      push @a, @$l;
     } elsif($p eq '!H' || $p eq '!W') {
       my $h=shift;
       my @h=ref $h eq 'HASH' ? %$h : @$h;
       my @r;
       while(my($k,$v) = (shift(@h), shift(@h))) {
         last if !defined $k;
-        my($n,@l) = sqlprint($#arg+1, $k, ref $v eq 'ARRAY' ? @$v : $v);
+        my($n,@l) = sqlprint($#a+1, $k, ref $v eq 'ARRAY' ? @$v : $v);
         push @r, $n;
-        push @arg, @l;
+        push @a, @l;
       }
       $q .= ($p eq '!W' ? 'WHERE ' : 'SET ').join $p eq '!W' ? ' AND ' : ', ', @r
         if @r;
@@ -1573,7 +1574,7 @@ sub sqlprint { # start, query, bind values. Returns new query + bind values
       $q .= $p;
     }
   }
-  return($q, @arg);
+  return($q, @a);
 }
 
 1;
