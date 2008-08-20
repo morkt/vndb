@@ -38,7 +38,7 @@ CREATE TABLE changes (
   requester integer NOT NULL DEFAULT 0,
   ip inet NOT NULL DEFAULT '0.0.0.0',
   comments text NOT NULL DEFAULT '',
-  causedby integer NOT NULL DEFAULT 0
+  causedby integer
 );
 
 -- producers
@@ -275,6 +275,7 @@ CREATE TABLE wlists (
 
 
 ALTER TABLE changes            ADD FOREIGN KEY (requester) REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE changes            ADD FOREIGN KEY (causedby)  REFERENCES changes       (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE producers          ADD FOREIGN KEY (latest)    REFERENCES producers_rev (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE producers_rev      ADD FOREIGN KEY (id)        REFERENCES changes       (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE producers_rev      ADD FOREIGN KEY (pid)       REFERENCES producers     (id) DEFERRABLE INITIALLY DEFERRED;

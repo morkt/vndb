@@ -892,7 +892,7 @@ sub DBEditVN { # id, %options->( comm + _insert_vn_rev + uid + causedby }
         LIMIT 1
       ), ?)
       RETURNING id, rev|,
-    0, $o{uid}||$s->AuthInfo->{id}, $s->ReqIP, $o{comm}, $vid, $o{causedby}||0);
+    0, $o{uid}||$s->AuthInfo->{id}, $s->ReqIP, $o{comm}, $vid, $o{causedby}||undef);
 
   _insert_vn_rev($s, $c->{id}, $vid, \%o);
 
