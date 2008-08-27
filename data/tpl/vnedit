@@ -105,6 +105,9 @@
     <b style="float: none; display: inline; font-weight: bold">Make sure to submit the form after the upload has finished!</b>
    </span><br />
    <div id="scrfrm" class="$p{st}">...make sure to enable Javascript...</div>
+   <script type="text/javascript">
+    var scrRel = [|.join(', ', map { ($$_{title} = _hchar($$_{title})) =~ s/\\/\\\\/g; $$_{title}=~s/'/\\'/g; "[ $$_{id}, '$$_{language}', '$$_{title}' ]" } @{$d{rel}}).q|];
+   </script>
  |},
 
  { type => 'sub', title => 'Edit summary', short => 'com' },

@@ -230,6 +230,8 @@ function scrNsfwHid() {
 
   var t=0;var n=0;
   for(i=0;i<l.length;i++) {
+    if(l[i].className.indexOf('shot')<0)
+      continue;
     t++;
     if(l[i].className.indexOf('scr_nsfw')>=0)
       n++;
@@ -251,7 +253,7 @@ function scrView(what) {
   if(ol.length > 0) {
     var l=[];
     for(i=0;i<ol.length;i++)
-      if(!scrNsfwEnabled || ol[i].className.indexOf('scr_nsfw')<0)
+      if(ol[i].className.indexOf('shot')>=0 && (!scrNsfwEnabled || ol[i].className.indexOf('scr_nsfw')<0))
         l[l.length] = ol[i];
 
     ol=0;

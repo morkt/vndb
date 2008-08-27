@@ -593,13 +593,13 @@ function catSet(id, rnk) {
    \***************************/
 
 
-var scrL = []; // id, load, nsfw, obj
+var scrL = []; // id, load, nsfw, obj, rid
 function scrLoad() {
  // 'screenshots' format: id,nsfw id,nsfw ..
   var l=x('screenshots').value.split(' ');
   for(var i=0;i<l.length;i++)
     if(l[i].length > 2)
-      scrL[i] = { load: 2, id: l[i].split(',')[0], nsfw: l[i].split(',')[1]>0?1:0 };
+      scrL[i] = { load: 2, id: l[i].split(',')[0], nsfw: l[i].split(',')[1]>0?1:0, rid: l[i].split(',')[2] };
 
  // <tbody> because IE can't operate on <table>
   x('scrfrm').innerHTML = '<table><tbody id="scrTbl"></tbody></table>';
@@ -615,14 +615,21 @@ function scrLoad() {
 function scrSetSubmit() {
   var o=document.forms[1].onsubmit;
   document.forms[1].onsubmit = function() {
-    var c=0;
-    for(var i=0;i<scrL.length;i++)
+    var c=0;var r=0;
+    for(var i=0;i<scrL.length;i++) {
       if(scrL[i] && scrL[i].load)
         c=1;
-    if(!c)
+      if(scrL[i] && scrL[i].rid == 0)
+        r=1;
+    }
+    if(c) {
+      alert('Please wait for the screenshots to be uploaded before submitting the form.');
+      return false;
+    } else if(r) {
+      alert('Please select the appropriate release for every screenshot');
+      return false;
+    } else
       return o();
-    alert('Please wait for the screenshots to be uploaded before submitting the form.');
-    return false;
   };
 }
 
@@ -660,7 +667,9 @@ function scrGenerateTR(i) {
         +'<input type="checkbox" name="scrNSFW'+i+'" id="scrNSFW'+i+'"'+(scrL[i].nsfw?' checked="checked"':'')+' style="float: left" onclick="scrSer()" /> '
         +'<label for="scrNSFW'+i+'" class="checkbox">&nbsp;This screenshot is NSFW.</label>'
         +'<input type="button" value="remove" onclick="scrDel('+i+')" style="float: right; width: auto; height: auto" />'
-        +'<br /><br />Full size: '+scrL[i].width+'x'+scrL[i].height+'px';
+        +'<br /><b style="float: left; width: auto; margin-right: 5px">Release:</b>'
+        +'<select style="width: 350px; float: none; height: auto;" onchange="scrSer()" id="scrRel'+i+'">'+scrRelList(scrL[i].rid)+'</select>'
+        +'<br />Full size: '+scrL[i].width+'x'+scrL[i].height+'px';
 
   if(scrL[i].obj) {
     x('scrTr'+i).getElementsByTagName('td')[1].innerHTML = r;
@@ -706,6 +715,21 @@ function scrStripe() {
   var l = x('scrTbl').getElementsByTagName('tr');
   for(var j=0; j<l.length; j++)
     l[j].style.backgroundColor = j%2==0 ? '#fff' : '#f5f5f5';
+}
+
+function scrRelLine(rid, sel) {
+  var r;
+  for(var i=0;i<scrRel.length;i++)
+    if(scrRel[i][0] == rid)
+      r = scrRel[i];
+  return '<option value="'+r[0]+'"'+(sel?' selected="selected"':'')+'>['+r[1]+'] '+r[2]+'</option>';
+}
+
+function scrRelList(rid) {
+  var r='<option value="0">-- select release --</option>';
+  for(var i=0;i<scrRel.length;i++)
+    r += scrRelLine(scrRel[i][0], rid == scrRel[i][0] ? 1 : 0);
+  return r;
 }
 
 function scrUploadComplete(i) {
@@ -779,7 +803,8 @@ function scrSer() {
   for(var i=0;i<scrL.length;i++) {
     if(scrL[i] && scrL[i].id && !scrL[i].load) {
       scrL[i].nsfw = x('scrNSFW'+i).checked ? '1' : '0';
-      r += ' '+scrL[i].id+','+scrL[i].nsfw;
+      scrL[i].rid = x('scrRel'+i).options[x('scrRel'+i).selectedIndex].value;
+      r += ' '+scrL[i].id+','+scrL[i].nsfw+','+scrL[i].rid;
     }
   }
   x('screenshots').value = r;

@@ -824,7 +824,7 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
 
     if($o{what} =~ /screenshots/) {
       push(@{$r->[$r{$_->{vid}}]{screenshots}}, $_) && delete $_->{vid} for (@{$s->DBAll(q|
-        SELECT vs.vid, s.id, vs.nsfw, s.width, s.height
+        SELECT vs.vid, s.id, vs.nsfw, vs.rid, s.width, s.height
           FROM vn_screenshots vs
           JOIN screenshots s ON vs.scr = s.id
           WHERE vs.vid IN(!l)
@@ -917,9 +917,9 @@ sub _insert_vn_rev { # columns in vn_rev + categories + screenshots + relations
   ) for (@{$o->{categories}});
 
   $s->DBExec(q|
-    INSERT INTO vn_screenshots (vid, scr, nsfw)
-      VALUES (?, ?, ?)|,
-    $cid, $_->[0], $_->[1]?1:0
+    INSERT INTO vn_screenshots (vid, scr, nsfw, rid)
+      VALUES (?, ?, ?, ?)|,
+    $cid, $_->[0], $_->[1]?1:0, $_->[2]
   ) for (@{$o->{screenshots}});
 
   $s->DBExec(q|

@@ -7,15 +7,25 @@
 ]]-
 
 <div id="screenshots">
-[[ for(@{$d{vn}{screenshots}}) { ]]
+[[ for my $r (undef, @{$d{rel}}) {
+     my @s = grep { !$r && !$_->{rid} || $r && $_->{rid} && $_->{rid} == $r->{id} } @{$d{vn}{screenshots}};
+     next if !@s;
+]]-
+[[ if($r) { ]]
+<b><acronym class="icons lang -[[= $r->{language} ]]" title="[[: $VNDB::LANG->{$r->{language}} ]]">&nbsp;</acronym>
+[[: $r->{title} ]]</b>
+[[ } ]]
+[[ for(@s) { ]]
  <a href="[[= sprintf '%s/sf/%02d/%d.jpg', $p{st}, $$_{id}%100, $$_{id} ]]"
-  [[= $$_{nsfw} ? ' class="scr_nsfw"'.(!$p{AuthNsfw}?' style="display: none"':'') : '' ]]-
+  class="shot [[= $$_{nsfw} ? ' scr_nsfw':'' ]]" [[= !$p{AuthNsfw}&&$$_{nsfw}?' style="display: none"':'' ]]-
   rel="[[= $$_{width}.'x'.$$_{height} ]]"><img src="[[= sprintf '%s/st/%02d/%d.jpg', $p{st}, $$_{id}%100, $$_{id} ]]"
  /><b>[[= $$_{nsfw} ? 'x' : '&nbsp;' ]]</b></a>
 [[ } ]]-
+<br style="clear: left" /><br />
+[[ } ]]
+
 </div>
 [[ if($nsfw) { ]]-
-<br style="clear: left" /><br />
 <p id="scrNsfwHid">&nbsp;</p>
 <i style="font-size: 10px;">Items marked with a red X are flagged as NSFW.</i>
 [[ } ]]-

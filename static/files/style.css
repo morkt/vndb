@@ -613,7 +613,15 @@ div#screenshots {
   margin: 0;
   padding: 0;
 }
-div#screenshots a {
+div#screenshots b {
+  display: block;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: #f5f5f5;
+  font-weight: normal;
+}
+div#screenshots a.shot {
   display: block;
   float: left;
   width: 136px;
@@ -623,10 +631,10 @@ div#screenshots a {
   text-decoration: none;
   text-align: center;
 }
-div#screenshots a:hover {
+div#screenshots a.shot:hover {
   background-color: #ccc;
 }
-div#screenshots a b {
+div#screenshots a.shot b {
   display: block;
   margin: -16px 0 0 0;
   padding: 0;

@@ -83,7 +83,7 @@ sub VNEdit {
     relations => join('|||', map { $_->{relation}.','.$_->{id}.','.$_->{title} } @{$v->{relations}}),
     categories => join(',', map { $_->[0].$_->[1] } sort { $a->[0] cmp $b->[0] } @{$v->{categories}}),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
-    screenshots => join(' ', map "$$_{id},$$_{nsfw}", @{$v->{screenshots}}),
+    screenshots => join(' ', map sprintf('%d,%d,%d', $$_{id}, $$_{nsfw}?1:0, $$_{rid}||0), @{$v->{screenshots}}),
   ) : ();
 
   my $frm = {};
@@ -107,11 +107,11 @@ sub VNEdit {
     my $relations = [ map { /^([0-9]+),([0-9]+)/ && $2 != $id ? ( [ $1, $2 ] ) : () } split /\|\|\|/, $frm->{relations} ];
     my $cat = [ map { [ substr($_,0,3), substr($_,3,1) ] } split /,/, $frm->{categories} ];
     my $anime = [ grep /^[0-9]+$/, split / +/, $frm->{anime} ];
-    my $screenshots = [ map [split /,/], grep /^[0-9]+,[01]$/, split / +/, $frm->{screenshots} ];
+    my $screenshots = [ map { local $_=[split /,/];$$_[2]||=undef; $_ } grep /^[0-9]+,[01],[0-9]+$/, split / +/, $frm->{screenshots} ];
 
     $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
     $frm->{anime} = join ' ', sort { $a <=> $b } @$anime; # re-sort
-    $frm->{screenshots} = join ' ', map "$$_[0],$$_[1]", sort { $$a[0] <=> $$b[0] } @$screenshots;
+    $frm->{screenshots} = join ' ', map sprintf('%d,%d,%d', $$_[0], $$_[1]?1:0, $$_[2]||0), sort { $$a[0] <=> $$b[0] } @$screenshots;
 
     return $self->ResRedirect('/v'.$id, 'post')
       if $id && !$self->ReqParam('img') && 13 == scalar grep { $b4{$_} eq $frm->{$_} } keys %b4;
@@ -191,6 +191,7 @@ sub VNEdit {
     form => $frm,
     id => $id,
     vn => $v,
+    rel => scalar $self->DBGetRelease(vid => $id),
   });
 }
 

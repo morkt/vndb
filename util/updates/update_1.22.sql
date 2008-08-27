@@ -27,3 +27,8 @@ ALTER TABLE changes ADD FOREIGN KEY (causedby) REFERENCES changes (id) DEFERRABL
 ALTER TABLE threads_posts ALTER COLUMN num TYPE smallint;
 ALTER TABLE threads ADD FOREIGN KEY (id, count) REFERENCES threads_posts (tid, num) DEFERRABLE INITIALLY DEFERRED;
 
+
+-- screenshots now have a relation with releases
+ALTER TABLE vn_screenshots ADD COLUMN rid integer DEFAULT NULL REFERENCES releases (id) DEFERRABLE INITIALLY DEFERRED;
+
+

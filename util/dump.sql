@@ -233,6 +233,7 @@ CREATE TABLE vn_screenshots (
   vid integer NOT NULL DEFAULT 0,
   scr integer NOT NULL DEFAULT 0,
   nsfw boolean NOT NULL DEFAULT FALSE,
+  rid integer DEFAULT NULL,
   PRIMARY KEY(vid, scr)
 );
 
@@ -305,6 +306,7 @@ ALTER TABLE vn_rev             ADD FOREIGN KEY (id)        REFERENCES changes   
 ALTER TABLE vn_rev             ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn_screenshots     ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn_screenshots     ADD FOREIGN KEY (scr)       REFERENCES screenshots   (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE vn_screenshots     ADD FOREIGN KEY (rid)       REFERENCES releases      (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vnlists            ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vnlists            ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE votes              ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
