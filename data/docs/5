@@ -1,5 +1,4 @@
 :TITLE:Editing guidelines
-:INC:notfinished
 :INC:index
 
 
@@ -26,7 +25,10 @@
  lowercase. If there is no real reason for this choise of capitalization, these
  titles and names should be properly converted to normal English capitalization
  (as described <a href="http://en.wikipedia.org/wiki/Capitalization">on
- Wikipedia</a>) for titles and names before being entered in the database.
+ Wikipedia</a>) for titles and names before being entered in the database.<br />
+ This only applies to the romanized titles and the main title of a visual novel
+ entry, the 'Original title' field of producer and release entries should still
+ use the official capitalization.
 </p>
 
 
@@ -48,6 +50,7 @@
  If the game is originally English, or a character has a completely foreign name (Mary Smith), use Western order.
 </p> 
 
+
 :SUB:Edit Summaries
 <p>
  Every edit to any page has an optional "Edit summary" box.
@@ -60,8 +63,19 @@
  If you say so here, another contributor is bound to finish it off.
 </p>
 
-:SUB:Descriptions
+
+:SUB:Descriptions From External Sources
 <p>
- <i>TODO: Something about quoting sources in descriptions here</i>
+ It is possible to add a description or notes to visual novel, producer and release entries
+ in the database. While original descriptions are preferred, using descriptions from external
+ resources is allowed, provided the source is properly credited. The preferred form to credit
+ external resources is by adding the following template to the bottom of the description:<br />
+ [From [url=<b>URL</b>]<b>title or author</b>[/url]]<br />
+ This would result in, for example, '[From <a href="http://en.wikipedia.org/Wiki/Ever17">Wikipedia</a>]'
+ for descriptions taken from Wikipedia. If the description is not literally taken from the
+ source but has some modifications, the 'From' should be replaced with something similar,
+ indicating that it's modified, e.g. 'Edited from', 'Based on'.<br />
+ As it is not allowed to provide links to websites providing or promoting illigal downloads,
+ the URL part should be left out for such descriptions.
 </p>
 
