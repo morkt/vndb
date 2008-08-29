@@ -393,7 +393,7 @@ sub VNUpdReverse { # old, new, id, cid, rev
   }
 
   for my $i (keys %upd) {
-    my $r = $self->DBGetVN(id => $i, what => 'extended relations categories anime')->[0];
+    my $r = $self->DBGetVN(id => $i, what => 'extended relations categories anime screenshots')->[0];
     my @newrel;
     $_->{id} != $id && push @newrel, [ $_->{relation}, $_->{id} ]
     for (@{$r->{relations}});
@@ -404,6 +404,7 @@ sub VNUpdReverse { # old, new, id, cid, rev
       causedby => $cid,
       uid => 1,         # Multi - hardcoded
       anime => [ map $_->{id}, @{$r->{anime}} ],
+      screenshots => [ map [ $_->{id}, $_->{nsfw}, $_->{rid} ], @{$r->{screenshots}} ],
       ( map { $_ => $r->{$_} } qw| title desc alias categories img_nsfw length l_wp l_encubed l_renai l_vnn image | )
     );
   }
