@@ -19,13 +19,12 @@
 
 :SUB:Capitalization
 <p>
- Some Japanese producers use titles for their games that are already in the roman
- alphabet. However - as the disctinction in uppercase and lowercase characters
- does not exist in Japanese - these titles are often entirely in uppercase or
- lowercase. If there is no real reason for this choise of capitalization, these
- titles and names should be properly converted to normal English capitalization
- (as described <a href="http://en.wikipedia.org/wiki/Capitalization">on
- Wikipedia</a>) for titles and names before being entered in the database.<br />
+ It occasionally happens that official titles or names are either entirely in
+ uppercase or lowercase characters. If there is no real reason for this choise
+ of capitalization (e.g. it's not an acronym), these titles and names should be
+ properly converted to normal English capitalization (as described
+ <a href="http://en.wikipedia.org/wiki/Capitalization">on Wikipedia</a>) before
+ being entered in the database.<br />
  This only applies to the romanized titles and the main title of a visual novel
  entry, the 'Original title' field of producer and release entries should still
  use the official capitalization.
