@@ -10,7 +10,7 @@ use strict;
 use warnings;
 use FCGI;
 use CGI::Minimal ();
-use Cookie::XS;
+use CGI::Cookie::XS;
 use Time::HiRes;
 use VNDB;
 

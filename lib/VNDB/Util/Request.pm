@@ -26,7 +26,7 @@ sub ReqSaveUpload {
   close $F;
 }
 sub ReqCookie {
-  my $c = Cookie::XS->fetch;
+  my $c = CGI::Cookie::XS->fetch;
   return $c && ref($c) eq 'HASH' && $c->{$_[1]} ? $c->{$_[1]}[0] : '';
 }
 sub ReqMethod {
