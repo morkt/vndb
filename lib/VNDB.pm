@@ -143,11 +143,6 @@ my %OLDuris = (
   'v+' => {
     votes       => sub { shift->ResRedirect('/v'.(shift).'/stats', 'perm') },
     hist=>{rss  => sub { shift->ResRedirect('/v'.(shift).'/hist/rss.xml', 'perm') } },
-    '/'         => sub {
-      my $r=$_[0]->FormCheck({name=>'rev',required=>0,default=>0,template=>'int'})->{rev};
-      my $i=$_[0]->DBGetHist(cid => [$r])->[0];
-      $i && $i->{rev} ? $_[0]->ResRedirect('/'.((qw|v r p|)[$i->{type}]).$_[1].'.'.$i->{rev}, 'perm') : $_[0]->ResNotFound;
-    },
   },
   u => {
     '*' => {
@@ -173,7 +168,6 @@ my %OLDuris = (
   },
   hist=>{rss    => sub { shift->ResRedirect('/hist/rss.xml', 'perm') } },
 );
-$OLDuris{'r+'}{'/'} = $OLDuris{'p+'}{'/'} = $OLDuris{'v+'}{'/'};
 
 
 

@@ -207,7 +207,7 @@ function pdDoSearch(f) {
   else {
     if(f)
       d.innerHTML = '...searching...';
-    ajax('/xml/producers.xml?q='+escape(v)+'&r='+(Math.floor(Math.random()*999)+1), function () {
+    ajax('/xml/producers.xml?q='+encodeURIComponent(v)+'&r='+(Math.floor(Math.random()*999)+1), function () {
       if(!hr || hr.readyState != 4 || !hr.responseText)
         return;
       if(hr.status != 200)
@@ -323,7 +323,7 @@ function rlDoSearch(f) {
   else {
     if(f)
       d.innerHTML = '...searching...';
-    ajax('/xml/vn.xml?q='+escape(v)+'&r='+(Math.floor(Math.random()*999)+1), function () {
+    ajax('/xml/vn.xml?q='+encodeURIComponent(v)+'&r='+(Math.floor(Math.random()*999)+1), function () {
       if(!hr || hr.readyState != 4 || !hr.responseText)
         return;
       if(hr.status != 200)
@@ -464,7 +464,7 @@ function vnDoSearch(f) {
   else {
     if(f)
       d.innerHTML = '...searching...';
-    ajax('/xml/vn.xml?q='+escape(v)+'&r='+(Math.floor(Math.random()*999)+1), function () {
+    ajax('/xml/vn.xml?q='+encodeURIComponent(v)+'&r='+(Math.floor(Math.random()*999)+1), function () {
       if(!hr || hr.readyState != 4 || !hr.responseText)
         return;
       if(hr.status != 200)

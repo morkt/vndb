@@ -7,7 +7,11 @@ TODO:
 	  + Add a link for the hidden 'h' option at /hist
 	+ Rewrite the revision diff code, it's horrible...
 
-1.22 - ?
+1.23 - ?
+	- Removed redirects for old revision URLs (the code wasn't very secure...)
+	- Fixed bug when using unicode in the AJAX vn/producers/release search box
+
+1.22 - 2008-08-29 (r106)
 	- Inverted vote graph
 	- Relation graph image maps are now stored in the DB
 	- Properly fixed the command synchronisation issues with Multi
