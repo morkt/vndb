@@ -24,7 +24,7 @@
  { type => 'sub', title => 'General info', short => 'info' },
  { type => 'input', name => 'Title', short => 'title', r=>1 },
  { type => 'static', text => q|
-   Use official English title if available, use the romanized version of the official title otherwise.
+   Use the romanized version of the original title.
    Other titles can be added at a later time when specifying releases.<br /><br />| },
 
  { type => 'textarea', name => 'Aliases', short => 'alias', rows => 2, cols => 60 },
