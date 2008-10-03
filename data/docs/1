@@ -50,14 +50,14 @@
  This category is used to describe the gameplay or game engine.
 </p>
 <dl>
- <dt>Visual Novel</dt><dd>
+ <dt>NVL</dt><dd>
   All games where the text is overlaid on the background and there is no special
-  dialog-box fall under this category. Can be abbreviated as VN or NVL.
- </dd><dt>Adventure</dt><dd>
+  dialog-box fall under this category.
+ </dd><dt>ADV</dt><dd>
   The text is presented in a special window, usually at the bottom of the screen.
-  Can be abbreviated as ADV or AVG.
+  Also known as Adventure or AVG.
   In some (rare) cases a game will switch between both styles, for these games both
-  the <i>Visual Novel</i> and <i>Adventure</i> categories should be selected.
+  the <i>NVL</i> and <i>ADV</i> categories should be selected.
  </dd><dt>Action</dt><dd>
   This category indicates that the game includes a gameplay that challenges the
   player's speed, dexterity and reaction time. Common examples are fighting games,

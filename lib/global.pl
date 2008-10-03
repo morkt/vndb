@@ -107,8 +107,8 @@ our $RTYP = [
 # not change it on the entire site - many things are still hardcoded
 our $CAT = {
   g => [ 'Gameplay', {
-    aa => 'Visual Novel', # 0..1
-    ab => 'Adventure',    # 0..1
+    aa => 'NVL',     # 0..1
+    ab => 'ADV',     # 0..1
     ac => "Act\x{200B}ion",      # Ugliest. Hack. Ever.
     rp => 'RPG',
     st => 'Strategy',
