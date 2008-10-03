@@ -1,20 +1,21 @@
 :TITLE:Adding/Editing a Visual Novel
-:INC:notfinished
 :INC:index
 
 :SUB:When to add a visual novel
 <p>
- <i>TODO</i>
+ A visual novel should be added if the visual novel and/or adventure (VN/ADV)
+ parts play an important part of the game (more than one-third), or the VN/ADV
+ parts have great consequences on the outcome of the game.<br />
+ If a game is an official fandisk or sidedisk, it should also be added for
+ completeness.
 </p>
-
 
 :SUB:General info
 <dl>
  <dt>Title</dt><dd>
-  The title of the visual novel as it is known to the English speaking audience. If
-  there is no English version of the game available, you should either specify the
-  romanized (recommended) or translated (not recommended) version of the original
-  title.
+  The title should be based upon the title of the original release.<br />
+  If the title uses the Latin alphabet, use our <a href="/d5.2">capitalisation guidelines</a>.<br />
+  Otherwise, <a href="/d5.1">romanise</a> according to our guidelines.
  </dd><dt>Aliases</dt><dd>
   Visual novels can be known under several names, use this field to add any aliases
   and acronyms used around the net. Official titles of releases should not be added
