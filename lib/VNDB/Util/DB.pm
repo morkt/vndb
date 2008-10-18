@@ -776,7 +776,7 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
       'LEFT JOIN relgraph rg ON rg.id = v.rgraph' ) : (),
   );
 
-  my $sel = 'v.id, v.locked, v.hidden, v.c_released, v.c_languages, v.c_platforms, vr.title, vr.id AS cid';
+  my $sel = 'v.id, v.locked, v.hidden, v.c_released, v.c_languages, v.c_platforms, vr.title, vr.original, vr.id AS cid';
   $sel .= ', vr.alias, vr.image AS image, vr.img_nsfw, vr.length, vr.desc, vr.l_wp, vr.l_encubed, vr.l_renai, vr.l_vnn' if $o{what} =~ /extended/;
   $sel .= ', c.added, c.requester, c.comments, v.latest, u.username, c.rev, c.causedby' if $o{what} =~ /changes/;
   $sel .= ', v.rgraph, rg.cmap' if $o{what} =~ /relgraph/;
@@ -906,9 +906,9 @@ sub _insert_vn_rev { # columns in vn_rev + categories + screenshots + relations
 
   $$o{img_nsfw} = $$o{img_nsfw}?1:0;
   $s->DBExec(q|
-    INSERT INTO vn_rev (id, vid, title, "desc", alias, image, img_nsfw, length, l_wp, l_encubed, l_renai, l_vnn)
+    INSERT INTO vn_rev (id, vid, title, original, "desc", alias, image, img_nsfw, length, l_wp, l_encubed, l_renai, l_vnn)
       VALUES (!l)|,
-    [ $cid, $vid, @$o{qw|title desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|} ]);
+    [ $cid, $vid, @$o{qw|title original desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|} ]);
 
   $s->DBExec(q|
     INSERT INTO vn_categories (vid, cat, lvl)

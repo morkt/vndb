@@ -217,6 +217,7 @@ CREATE TABLE vn_rev (
   id integer NOT NULL PRIMARY KEY,
   vid integer NOT NULL DEFAULT 0,
   title varchar(250) NOT NULL DEFAULT '',
+  original varchar(250) NOT NULL DEFAULT '',
   alias varchar(500) NOT NULL DEFAULT '',
   img_nsfw boolean NOT NULL DEFAULT FALSE,
   length smallint NOT NULL DEFAULT 0,

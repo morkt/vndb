@@ -23,7 +23,8 @@
 
 [[ if($d{change}) { ]]
 [[= cdiff($d{prev}, $d{vn},
-  [ title       => 'Title',          1 ],
+  [ title       => 'Title (romaji)', 1 ],
+  [ original    => 'Original title', 1 ],
   [ alias       => 'Alias',          1, 1 ],
   [ desc        => 'Description',    1, 1 ],
   [ length      => 'Length',         sub { $VNDB::VNLEN->[$_[0] ][0] } ],

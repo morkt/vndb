@@ -22,10 +22,10 @@
  { type => 'startform', action => $d{id} ?( '/v'.$d{id}.'/edit') : '/v/new', upload => 1, fh => 1 },
 
  { type => 'sub', title => 'General info', short => 'info' },
- { type => 'input', name => 'Title', short => 'title', r=>1 },
+ { type => 'input', name => 'Title (romaji)', short => 'title', r=>1 },
+ { type => 'input', name => 'Original title', short => 'original' },
  { type => 'static', text => q|
-   Use the romanized version of the original title.
-   Other titles can be added at a later time when specifying releases.<br /><br />| },
+   The original title of this release, leave blank if it already is in the Latin alphabet.<br /><br />| },
 
  { type => 'textarea', name => 'Aliases', short => 'alias', rows => 2, cols => 60 },
  { type => 'static', text => q|
