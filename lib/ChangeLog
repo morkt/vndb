@@ -11,6 +11,7 @@ TODO:
 	- Removed redirects for old revision URLs (the code wasn't very secure...)
 	- Fixed bug when using unicode in the AJAX vn/producers/release search box
 	- Added original title field to VN entries
+	- Fixed incorrect quoting in producer select form
 
 1.22 - 2008-08-29 (r106)
 	- Inverted vote graph

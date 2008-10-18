@@ -186,7 +186,7 @@ function pdChangeSel() {
     pdDoSearch('');
   } else {
     o.innerHTML = 'Selected "' + sel.text + '"<br />'
-      + '<button type="button" onclick="pdAddRem(\'' + sel.value + '\')">remove</button>';
+      + '<button type="button" onclick="pdAddRem(\'' + qq(sel.value) + '\')">remove</button>';
   }
 }
 
