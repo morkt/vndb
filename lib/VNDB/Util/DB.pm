@@ -193,7 +193,7 @@ sub DBGetHist { # %options->{ type, id, cid, caused, next, page, results, ip, ed
   my $select = 'c.id, c.type, c.added, c.requester, c.comments, c.rev, c.causedby';
   $select .= ', u.username' if $o{what} =~ /user/;
   $select .= ', COALESCE(vr.vid, rr.rid, pr.pid) AS iid' if $o{what} =~ /iid/;
-  $select .= ', COALESCE(vr2.title, rr2.title, pr2.name) AS ititle' if $o{what} =~ /ititle/;
+  $select .= ', COALESCE(vr2.title, rr2.title, pr2.name) AS ititle, COALESCE(vr2.original, rr2.original, pr2.original) AS ioriginal' if $o{what} =~ /ititle/;
 
   my $join = '';
   $join .= ' JOIN users u ON u.id = c.requester' if $o{what} =~ /user/;
@@ -395,7 +395,7 @@ sub DBGetVotes { # %options->{ uid vid hide order results page }
   );
 
   my $r = $s->DBAll(q|
-    SELECT n.vid, vr.title, n.vote, n.date, n.uid, u.username
+    SELECT n.vid, vr.title, vr.original, n.vote, n.date, n.uid, u.username
       FROM votes n
       JOIN vn v ON v.id = n.vid
       JOIN vn_rev vr ON vr.id = v.latest
@@ -537,7 +537,7 @@ sub DBGetWishList { # %options->{ uid vid what order page results }
   my $select = 'wl.vid, wl.wstat, wl.added';
   my @join;
   if($o{what} =~ /vn/) {
-    $select .= ', vr.title';
+    $select .= ', vr.title, vr.original';
     push @join, 'JOIN vn v ON v.id = wl.vid',
                 'JOIN vn_rev vr ON vr.id = v.latest';
   }
@@ -630,7 +630,7 @@ sub DBGetRLists { # %options->{ uid order char rstat vstat voted page results }
   );
 
   my $r = $s->DBAll(qq|
-    SELECT vr.vid, vr.title, v.c_released, v.c_languages, v.c_platforms, COALESCE(vo.vote, 0) AS vote
+    SELECT vr.vid, vr.title, vr.original, v.c_released, v.c_languages, v.c_platforms, COALESCE(vo.vote, 0) AS vote
       FROM vn v
       JOIN vn_rev vr ON vr.id = v.latest
       !s JOIN votes vo ON vo.vid = v.id AND vo.uid = ?
@@ -835,7 +835,7 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
 
     if($o{what} =~ /relations/) {
       my $rel = $s->DBAll(q|
-        SELECT rel.vid1, rel.vid2, rel.relation, vr.title
+        SELECT rel.vid1, rel.vid2, rel.relation, vr.title, vr.original
           FROM vn_relations rel
           JOIN vn v ON rel.vid2 = v.id
           JOIN vn_rev vr ON v.latest = vr.id
@@ -844,7 +844,8 @@ sub DBGetVN { # %options->{ id rev char search order results page what cati cate
       push(@{$r->[$r{$_->{vid1}}]{relations}}, {
         relation => $_->{relation},
         id => $_->{vid2},
-        title => $_->{title}
+        title => $_->{title},
+        original => $_->{original}
       }) for (@$rel);
     }
   }
@@ -1026,7 +1027,7 @@ sub DBGetRelease { # %options->{ id vid results page rev }
 
     if($o{what} =~ /vn/) {
       push(@{$r->[$r{$_->{rid}}]{vn}}, $_) for (@{$s->DBAll(q|
-        SELECT rv.rid, vr.vid, vr.title
+        SELECT rv.rid, vr.vid, vr.title, vr.original
           FROM releases_vn rv
           JOIN vn v ON v.id = rv.vid
           JOIN vn_rev vr ON vr.id = v.latest
@@ -1037,7 +1038,7 @@ sub DBGetRelease { # %options->{ id vid results page rev }
 
     if($o{what} =~ /producers/) {
       push(@{$r->[$r{$_->{rid}}]{producers}}, $_) for (@{$s->DBAll(q|
-        SELECT rp.rid, p.id, pr.name, pr.type
+        SELECT rp.rid, p.id, pr.name, pr.original, pr.type
           FROM releases_producers rp
           JOIN producers p ON rp.pid = p.id
           JOIN producers_rev pr ON pr.id = p.latest
@@ -1213,7 +1214,7 @@ sub DBGetProducer { # %options->{ id search char results page rev }
 
 sub DBGetProducerVN { # pid
   return $_[0]->DBAll(q|
-    SELECT v.id, MAX(vr.title) AS title, MIN(rr.released) AS date
+    SELECT v.id, MAX(vr.title) AS title, MAX(vr.original) AS original, MIN(rr.released) AS date
       FROM releases_producers vp
       JOIN releases_rev rr ON rr.id = vp.rid
       JOIN releases r ON r.latest = rr.id
@@ -1357,8 +1358,8 @@ sub DBGetThreads { # %options->{ id type iid results page what }
       )});
     }
     if($o{what} =~ /tagtitles/) {
-      ($_->{type}=~s/ +//||1) && push(@{$r->[$r{$_->{tid}}]{tags}}, [ $_->{type}, $_->{iid}, $_->{title} ]) for (@{$s->DBAll(q|
-        SELECT tt.tid, tt.type, tt.iid, COALESCE(u.username, vr.title, pr.name) AS title
+      ($_->{type}=~s/ +//||1) && push(@{$r->[$r{$_->{tid}}]{tags}}, [ $_->{type}, $_->{iid}, $_->{title}, $_->{original} ]) for (@{$s->DBAll(q|
+        SELECT tt.tid, tt.type, tt.iid, COALESCE(u.username, vr.title, pr.name) AS title, COALESCE(u.username, vr.original, pr.original) AS original
           FROM threads_tags tt
           LEFT JOIN vn v ON tt.type = 'v' AND v.id = tt.iid
           LEFT JOIN vn_rev vr ON vr.id = v.latest

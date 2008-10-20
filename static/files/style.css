@@ -50,6 +50,9 @@ h3 {
   font-size: 1.1em;
   margin: 0;
 }
+h3.alttitle {
+  margin: 0 0 0 20px;
+}
 
 p, ul, ol {
   margin: 0;

@@ -12,6 +12,7 @@ TODO:
 	- Fixed bug when using unicode in the AJAX vn/producers/release search box
 	- Added original title field to VN entries
 	- Fixed incorrect quoting in producer select form
+	- Improved display of original titles
 
 1.22 - 2008-08-29 (r106)
 	- Inverted vote graph

@@ -1,5 +1,6 @@
 [[= ttabs('r', $d{rel}) ]]
 <h2>[[: $p{PageTitle} ]]</h2>
+[[ if($d{rel}{original}) { ]]<h3 class="alttitle">[[: $d{rel}{original} ]]</h3>[[ } ]]
 
 [[ if($d{rel}{hidden}) { ]]-
  <span class="warning">
@@ -37,11 +38,8 @@
 [[ } ]]
 
 <dl>
- <dt>Relation</dt><dd>[[= join('<br />', map { '<a href="/v'.$_->{vid}.'">'._hchar($_->{title}).'</a>' } @{$d{rel}{vn}}) ]]</dd>
+ <dt>Relation</dt><dd>[[= join('<br />', map { '<a href="/v'.$_->{vid}.'" title="'._hchar($_->{original}||$_->{title}).'">'._hchar($_->{title}).'</a>' } @{$d{rel}{vn}}) ]]</dd>
  <dt>Type</dt><dd>[[: $VNDB::RTYP->[$d{rel}{type}] ]]</dd>
- <dt>Title</dt><dd>[[: $d{rel}{title} ]]</dd>
-[[ if($d{rel}{original}) { ]]-
- <dt>Original Title</dt><dd>[[: $d{rel}{original} ]]</dd>[[ } ]]-
  <dt>Language</dt><dd>[[: $VNDB::LANG->{$d{rel}{language}} ]]</dd>
  <dt>Release date</dt><dd>[[= datestr($d{rel}{released}) ]]</dd>
 [[ if($d{rel}{gtin}) { ]]-
@@ -50,7 +48,7 @@
  <dt>Age rating</dt><dd>[[: $VNDB::VRAGES->{$d{rel}{minage}} ]]</dd>[[ } ]]-
 [[ if($#{$d{rel}{producers}} >= 0) { ]]-
  <dt>Producer[[: $#{$d{rel}{producers}} > 0 ? 's' : '' ]]</dt><dd>[[= join(', ', map {
-   sprintf('<a href="/p%d">%s</a>', $_->{id}, _hchar($_->{name})) } @{$d{rel}{producers}})
+   sprintf('<a href="/p%d" title="'._hchar($_->{original}||$_->{name}).'">%s</a>', $_->{id}, _hchar($_->{name})) } @{$d{rel}{producers}})
  ]]</dd>[[ } ]]-
 [[ if($#{$d{rel}{platforms}} >= 0) { ]]-
  <dt>Platform[[: $#{$d{rel}{platforms}} > 0 ? 's' : '' ]]</dt><dd>[[: join(', ', map {

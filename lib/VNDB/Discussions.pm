@@ -162,6 +162,7 @@ sub TTag {
                    $self->DBGetProducer(id => $iid)->[0];
   return $self->ResNotFound if $iid && !$o || !$VNDB::DTAGS->{$type};
   my $title = $o ? $o->{username} || $o->{romaji} || $o->{title} || $o->{name} : $VNDB::DTAGS->{$type};
+  my $original = $o ? $o->{username} || $o->{original} : $VNDB::DTAGS->{$type};
 
   my($t, $np) = $self->DBGetThreads(
     type => $type,
@@ -179,6 +180,7 @@ sub TTag {
     type => $type,
     iid => $iid,
     title => $title,
+    original => $original,
     tag => $tag,
     t => $t,
     ppp => $self->{postsperpage},

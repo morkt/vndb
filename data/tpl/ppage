@@ -1,5 +1,6 @@
 [[= ttabs('p', $d{prod}) ]]
 <h2>[[: $p{PageTitle} ]]</h2>
+[[ if($d{prod}{original}) { ]]<h3 class="alttitle">[[: $d{prod}{original} ]]</h3>[[ } ]]
 
 [[ if($d{prod}{hidden}) { ]]-
  <span class="warning">
@@ -23,9 +24,6 @@
 [[ } ]]
 
 <dl>
- <dt>Name</dt><dd>[[ if($d{prod}{original}) { ]]
-   [[: $d{prod}{original} ]]- ([[: $d{prod}{name} ]])
-  [[ } else { ]][[: $d{prod}{name} ]][[ } ]]</dd>
  <dt>Type</dt><dd>[[: $VNDB::PROT->{$d{prod}{type}} ]]</dd>
  <dt>Primary lang.</dt><dd>[[: $VNDB::LANG->{$d{prod}{lang}} ]]</dd>
 [[ if($d{prod}{website}) { ]]-

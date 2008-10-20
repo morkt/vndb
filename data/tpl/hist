@@ -84,7 +84,7 @@
  [[ if($d{type} ne 'u' || $d{act}) { ]]-
   <td class="tc3">[[= userstr $_ ]]</td>[[ } ]]-
  [[ if(!$d{type} || $d{type} eq 'u' || $d{act}) { ]]-
-  <td class="tc4"><a href="/[[= $t.$_->{iid} ]].[[= $_->{rev} ]]" title="[[: $_->{ititle} ]]">[[: shorten $_->{ititle}, 30 ]]</a></td>[[ } ]]-
+  <td class="tc4"><a href="/[[= $t.$_->{iid} ]].[[= $_->{rev} ]]" title="[[: $_->{ioriginal}||$_->{ititle} ]]">[[: shorten $_->{ititle}, 30 ]]</a></td>[[ } ]]-
  [[ if($d{type} && !$d{act}) { ]]-
   <td class="tc5">[[= summary($_->{comments}, $d{type} eq 'u' ? 40 : 60)||'[empty]' ]]</td>[[ } ]]-
  [[ if($d{act} eq 'r') { ]]-

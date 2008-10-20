@@ -97,7 +97,7 @@
   $_->{c_languages} = join '', map qq|<acronym class="icons lang $_" title="$$VNDB::LANG{$_}">&nbsp;</acronym>|, reverse sort split /\//, $_->{c_languages};
  ]]-
  <tr>
-  <td class="tc1"><a href="/v[[= $_->{id} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 50 ]]</a></td>
+  <td class="tc1"><a href="/v[[= $_->{id} ]]" title="[[: $_->{original}||$_->{title} ]]">[[: shorten $_->{title}, 50 ]]</a></td>
   <td class="tc2">[[= $_->{c_platforms} ]]</td>
   <td class="tc3">[[= $_->{c_languages} ]]</td>
   <td class="tc4">[[: $_->{c_released} ]]</td>

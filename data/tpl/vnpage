@@ -1,6 +1,7 @@
 [[= ttabs('v', $d{vn}) ]]
 
 <h2>[[: $d{vn}{title} ]]</h2>
+[[ if($d{vn}{original}) { ]]<h3 class="alttitle">[[: $d{vn}{original} ]]</h3>[[ } ]]
 
 
 [[ if($d{vn}{hidden}) { ]]-
@@ -94,7 +95,7 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
    [[ for my $l (@lang) { my %l;
      $_->{language} eq $l && (%l = ( %l, map {
       sprintf('<a href="/p%d" title="%s">%s</a>',
-        $_->{id}, _hchar($_->{name}), _hchar shorten $_->{name}, 30) => 1
+        $_->{id}, _hchar($_->{original}||$_->{name}), _hchar shorten $_->{name}, 30) => 1
      } @{$_->{producers}} )) for (@{$d{rel}});
    if(keys %l) { ]]-
     <acronym class="icons lang -[[= $l ]]" title="[[: $VNDB::LANG->{$l} ]]">&nbsp;</acronym>[[= join(' &amp; ', keys %l) ]]<br />
@@ -128,9 +129,9 @@ if($d{vn}{length} || $d{vn}{alias} || @links || $prod) { ]]
  <dl class="vnrel">
   [[ my $lrel = -1; my $i=0; for (sort { $a->{relation} <=> $b->{relation} } @{$d{vn}{relations}}) {
     if($_->{relation} != $lrel) { $lrel=$_->{relation}; if($i) { ]]</dd>[[ } ]]-
-    <dt>[[: $VNDB::VREL->[$lrel] ]]</dt><dd><a href="/v[[= $_->{id} ]]">[[: $_->{title} ]]</a>
-   [[ } else { ]]<br /><a href="/v[[= $_->{id} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 40 ]]</a>[[ }
-  ++$i;} ]]</dd>
+    <dt>[[: $VNDB::VREL->[$lrel] ]]</dt><dd>[[ } else { ]]<br />[[ } ]]
+    <a href="/v[[= $_->{id} ]]" title="[[: $_->{original}||$_->{title} ]]">[[: shorten $_->{title}, 40 ]]</a>
+  [[ ++$i;} ]]</dd>
  </dl>
  [[ } ]]-
 

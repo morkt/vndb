@@ -35,7 +35,7 @@
  </tr></thead>
 [[ for (@{$d{list}}) { $j=0; my $c = ' style="background-color: #'.($i++%2?'fff':'f5f5f5').'"'; ]]-
  <tr[[=$c]]>
-  <td colspan="3" class="tc1"><a href="/v[[= $_->{vid} ]]" title="[[: $_->{title} ]]">[[= shorten $_->{title}, 50 ]]</a></td>
+  <td colspan="3" class="tc1"><a href="/v[[= $_->{vid} ]]" title="[[: $_->{original}||$_->{title} ]]">[[= shorten $_->{title}, 50 ]]</a></td>
   <td class="tc2[[= @{$_->{rels}} ? ' relhid" id="rh'.$_->{vid}.'"' : ' relnone"' ]]><b[[= @{$_->{rels}} ? ' id="rhd'.$_->{vid}.'"' : '' ]]>&#9656;</b>
    [[= grep $_->{rstat}==2, @{$_->{rels}} ]]/[[= grep $_->{vstat}==2, @{$_->{rels}} ]]/[[= @{$_->{rels}} ]]
   </td>
@@ -48,7 +48,7 @@
    <acronym class="icons lang -[[= $_->{language} ]]" title="[[: $$VNDB::LANG{$_->{language}} ]]">&nbsp;</acronym><acronym
     title="[[= $VNDB::RTYP->[$_->{type}] ]]- release" class="icons -[[= lc substr($VNDB::RTYP->[$_->{type}],0,3) ]]">&nbsp;</acronym>
   </td>
-  <td class="tc1_3"><a href="/r[[= $_->{rid} ]]" title="[[: $_->{original} ]]">[[= shorten $_->{title}, 60 ]]</a></td>
+  <td class="tc1_3"><a href="/r[[= $_->{rid} ]]" title="[[: $_->{original}||$_->{title} ]]">[[= shorten $_->{title}, 60 ]]</a></td>
   <td class="tc1_4">
    <acronym title="[[: $VNDB::RSTAT->[$_->{rstat}] ]]" class="uicons r[[= $_->{rstat} ]]">&nbsp;</acronym><acronym
     title="[[: $VNDB::VSTAT->[$_->{vstat}] ]]" class="uicons v[[= $_->{vstat} ]]">&nbsp;</acronym>

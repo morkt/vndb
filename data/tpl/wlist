@@ -31,7 +31,7 @@
  </tr></thead>
  [[ for (@{$d{list}}) { ]]-
  <tr>
-  <td class="tc1"><a href="/v[[= $_->{vid} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 40 ]]</a></td>
+  <td class="tc1"><a href="/v[[= $_->{vid} ]]" title="[[: $_->{original}||$_->{title} ]]">[[: shorten $_->{title}, 40 ]]</a></td>
   <td class="tc2">[[= $VNDB::WSTAT->[$_->{wstat}] ]]</td>
   <td class="tc3">[[= formatdate('%Y-%m-%d', $_->{added}) ]]</td>
   <td class="tc4">[[ if($d{user}{username} eq $p{AuthUsername}) { ]]<input type="checkbox" name="sel" value="[[= $_->{vid} ]]" />[[ } else { ]]&nbsp;[[ } ]]</td>

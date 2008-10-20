@@ -26,41 +26,41 @@
 <ul class="home">
  <li><b>Recent changes</b></li>
  [[ for (@{$d{recentedits}}) {  my $t = (qw|v r p|)[$_->{type}]; ]]-
- <li>[[= $t ]]:<a href="/[[= $t.$_->{iid}.'.'.$_->{rev} ]]" title="[[: $_->{ititle} ]]">[[: shorten $_->{ititle}, 30 ]]</a></li>
+ <li>[[= $t ]]:<a href="/[[= $t.$_->{iid}.'.'.$_->{rev} ]]" title="[[: $_->{ioriginal}||$_->{ititle} ]]">[[: shorten $_->{ititle}, 30 ]]</a></li>
  [[ } ]]-
 </ul>
 
 <ul class="home">
  <li><b>Recent posts</b></li>
  [[ for (@{$d{recentposts}}) { ]]-
- <li><a href="/t[[= $_->{id}.'.'.$_->{count} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 25 ]]</a> <i>[[= age $_->{ldate}, 1 ]]</i></li>
+ <li><a href="/t[[= $_->{id}.'.'.$_->{count} ]]" title="[[: $_->{original}||$_->{title} ]]">[[: shorten $_->{title}, 25 ]]</a> <i>[[= age $_->{ldate}, 1 ]]</i></li>
  [[ } ]]-
 </ul>
 
 <ul class="home">
  <li><b>Upcoming releases</b></li>
  [[ for (@{$d{upcomingrel}}) { ]]-
- <li>[[= datestr $_->{released}, 1 ]]- <a href="/r[[= $_->{id} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 25 ]]</a></i></li>
+ <li>[[= datestr $_->{released}, 1 ]]- <a href="/r[[= $_->{id} ]]" title="[[: $_->{original}||$_->{title} ]]">[[: shorten $_->{title}, 25 ]]</a></i></li>
  [[ } ]]-
 </ul>
 
 <ul class="home break">
  <li><b>Recently added visual novels</b></li>
  [[ for (@{$d{recentvns}}) { ]]-
- <li><a href="/v[[= $_->{iid} ]]" title="[[: $_->{ititle} ]]">[[: shorten $_->{ititle}, 30 ]]</a></li>
+ <li><a href="/v[[= $_->{iid} ]]" title="[[: $_->{ioriginal}||$_->{ititle} ]]">[[: shorten $_->{ititle}, 30 ]]</a></li>
  [[ } ]]-
 </ul>
 
 <ul class="home">
  <li><b>Random visual novels</b></li>
  [[ for (@{$d{randomvns}}) { ]]-
- <li><a href="/v[[= $_->{id} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 30 ]]</a></li>
+ <li><a href="/v[[= $_->{id} ]]" title="[[: $_->{original}||$_->{title} ]]">[[: shorten $_->{title}, 30 ]]</a></li>
 [[ } ]]-
 </ul>
 
 <ul class="home">
  <li><b>Just released</b></li>
  [[ for (@{$d{justrel}}) { ]]-
- <li>[[= datestr $_->{released}, 1 ]]- <a href="/r[[= $_->{id} ]]" title="[[: $_->{title} ]]">[[: shorten $_->{title}, 25 ]]</a></i></li>
+ <li>[[= datestr $_->{released}, 1 ]]- <a href="/r[[= $_->{id} ]]" title="[[: $_->{original}||$_->{title} ]]">[[: shorten $_->{title}, 25 ]]</a></i></li>
  [[ } ]]-
 </ul>

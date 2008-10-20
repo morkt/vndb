@@ -4,7 +4,7 @@
  <a href="/t">Discussion board</a>
  &gt; <a href="/t/[[= $d{type} ]]">[[: $VNDB::DTAGS->{$d{type}} ]]</a>
  [[ if($d{obj}) { ]]-
-   &gt; <b>[[= $d{tag} ]]</b>:<a href="/t/[[= $d{tag} ]]">[[: $d{title} ]]</a>[[ } ]]-
+   &gt; <b>[[= $d{tag} ]]</b>:<a href="/t/[[= $d{tag} ]]" title="[[: $d{original}||$d{title} ]]">[[: $d{title} ]]</a>[[ } ]]-
 </p>
 
 [[ if(@{$d{t}}) { ]]-

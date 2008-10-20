@@ -28,7 +28,7 @@
  [[ if(!$d{user}) { ]]-
   <td class="tc1">[[= userstr $_ ]]</td>
  [[ } else { ]]-
-  <td class="tc1"><a href="/v[[= $_->{vid} ]]">[[: length($_->{title})>30?substr($_->{title},0,27).'...':$_->{title} ]]</a></td>
+  <td class="tc1"><a href="/v[[= $_->{vid} ]]" title="[[: $_->{original}||$_->{title} ]]">[[: shorten $_->{title}, 30 ]]</a></td>
  [[ } ]]-
   <td class="tc2">[[= $_->{vote} ]]</td>
   <td class="tc3">[[= formatdate('%Y-%m-%d %R', $_->{date}, 'dh') ]]</td>
