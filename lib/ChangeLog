@@ -7,7 +7,7 @@ TODO:
 	  + Add a link for the hidden 'h' option at /hist
 	+ Rewrite the revision diff code, it's horrible...
 
-1.23 - ?
+1.23 - 2008-10-22 (r117)
 	- Removed redirects for old revision URLs (the code wasn't very secure...)
 	- Fixed bug when using unicode in the AJAX vn/producers/release search box
 	- Added original title field to VN entries

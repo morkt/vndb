@@ -25,7 +25,7 @@
  { type => 'input', name => 'Title (romaji)', short => 'title', r=>1 },
  { type => 'input', name => 'Original title', short => 'original' },
  { type => 'static', text => q|
-   The original title of this release, leave blank if it already is in the Latin alphabet.<br /><br />| },
+   The original title of this visual novel, leave blank if it already is in the Latin alphabet.<br /><br />| },
 
  { type => 'textarea', name => 'Aliases', short => 'alias', rows => 2, cols => 60 },
  { type => 'static', text => q|
