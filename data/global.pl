@@ -14,10 +14,13 @@ our %O = (
 
 # VNDB-specific options (object_data)
 our %S = (
-  version => 'beta',
+  version         => 'beta',
+  url             => 'http://vndb.org',
+  url_static      => 'http://s.vndb.org',
 );
 
 
 # allow the settings to be overwritten in config.pl
 require $ROOT.'/data/config.pl' if -f $ROOT.'/data/config.pl';
 
+1;

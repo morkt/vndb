@@ -1,0 +1,200 @@
+
+
+* {
+  margin: 0;
+  padding: 0; 
+}
+
+body, td {
+  font: 8pt "Tahoma";
+}
+body {
+  background: #000 url(/f/bg.jpg) no-repeat;
+  color: #ccc;
+}
+a {
+  color: #fff;
+  text-decoration: none;
+}
+a:hover {
+  border-bottom: 1px dotted #fff;
+}
+table {
+  border-collapse: collapse;
+}
+table td {
+  vertical-align: top;
+  padding: 3px;
+}
+table tr.odd {
+  background-color: #112337;
+}
+
+#bgright {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 433px;
+  height: 140px;
+  background: url(/f/bgright.jpg) no-repeat;
+}
+
+#header {
+  position: absolute;
+  top: 80px;
+  left: 400px;
+}
+#header h1, #header h1 a {
+  font-family: "Futura", "Century New Gothic", "Arial", Serif;
+  font-size: 19pt;
+  font-style: italic;
+  color: #258;
+  color: #135;
+  border: none!important;
+}
+
+
+
+
+/***** main content *****/
+
+#maincontent {
+  position: absolute;
+  top: 169px;
+  left: 190px;
+  right: 30px;
+  margin: 0;
+}
+#maincontent h1, #maincontent h2 {
+  font-family: "Futura", "Century New Gothic", "Arial", Serif;
+  font-weight: normal;
+  font-size: 11pt;
+}
+#maincontent h1 {
+  color: #258;
+  font-size: 14pt;
+  margin: -5px 0 15px 0;
+}
+#maincontent h2.alttitle {
+  color: #fff;
+  margin: -17px 0 15px 15px;
+}
+#maincontent div.mainbox {
+  border: 1px solid #258;
+  margin: 21px 0 10px 0;
+  padding: 5px;
+  background: url(/f/boxbg.png) repeat;
+}
+#maincontent div.mainbox a {
+  color: #7bd;
+}
+
+
+
+
+/***** menu *****/
+
+#menulist {
+  position: absolute;
+  left: 30px;
+  top: 190px;
+  width: 150px;
+}
+#menulist div.menubox {
+  margin: 0 0 10px 0;
+  border: 1px solid #258;
+  background: url(boxbg.png) repeat;
+}
+#menulist div.menubox div {
+  padding: 2px 7px;
+}
+#menulist h2 {
+  border-bottom: 1px solid #258;
+  background-color: #234;
+  padding: 1px 3px;
+}
+#menulist h2, #menulist h2 a {
+  font-size: 8pt;
+  color: #fff;
+}
+#menulist dt {
+  display: block;
+  float: left;
+  width: 85px;
+  font-style: italic;
+}
+#menulist dd {
+  width: 40px;
+  float: left;
+  text-align: right;
+}
+
+
+
+
+/***** main tabs *****/
+
+#maincontent ul.maintabs {
+  display: inline;
+}
+#maincontent ul.maintabs li {
+  display: inline;
+  list-style-type: none;
+}
+#maincontent ul.maintabs li a {
+  float: right;
+  display: block;
+  height: 14px;
+  border: 1px solid #258;
+  border-bottom: none;
+  padding: 1px 7px 5px 7px;
+  margin: 0 0 0 10px;
+  background-color: #012;
+}
+ /* IE6 */
+#maincontent ul.maintabs li.tabselected a
+#maincontent ul.maintabs li a:hover {
+  background-color: #0c1925;
+}
+ /* All other browsers */
+html>body #maincontent ul.maintabs li.tabselected a,
+html>body #maincontent ul.maintabs li a:hover {
+  background-color: #0c1925;
+  padding-bottom: 6px;
+}
+
+
+
+
+/***** VN page *******/
+
+div.vndetails {
+  margin: 0 auto;
+  width: 700px;
+}
+div.vnimg {
+  float: left;
+  width: 250px;
+  margin: 0 10px;
+}
+div.vndetails table {
+  float: left;
+  width: 430px;
+}
+div.vndescription {
+  clear: left;
+  padding: 5px 0 0 0;
+}
+div.vndescription h2 {
+  margin: 0 30px;
+  border-top: 1px solid #258;
+  padding: 3px 70px;
+  font-weight: bold!important;
+}
+div.vndescription p {
+  margin: 0 100px;
+}
+
+
+
+
