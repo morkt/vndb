@@ -36,6 +36,8 @@ sub htmlHeader { # %options->{ title }
 
 
 sub _menu {
+  my $self = shift;
+
   div id => 'menulist';
 
    div class => 'menubox';
@@ -57,19 +59,23 @@ sub _menu {
 
    # show user or login menubox here
 
-   # these stats are fake, need to be fetched from the DB
+   my @stats = (
+     [ vn        => 'Visual Novels' ],
+     [ releases  => 'Releases'      ],
+     [ producers => 'Producers'     ],
+     [ users     => 'Users'         ],
+     [ threads   => 'Threads'       ],
+     [ posts     => 'Posts'         ],
+   );
+   my $stats = $self->dbStats(map $$_[0], @stats);
    div class => 'menubox';
     h2 'Database Statistics';
     div;
      dl;
-      dt 'Visual Novels';
-      dd 1232;
-      dt 'Releases';    
-      dd 3940;
-      dt 'Producers';
-      dd 643;
-      dt 'Users';
-      dd 769;
+      for (@stats) {
+        dt $$_[1];
+        dd $stats->{$$_[0]};
+      }
      end;
      br style => 'clear: left';
     end;
