@@ -190,7 +190,7 @@ input.submit {
   margin: 0 0 0 10px;
   background-color: #012;
 }
-#maincontent ul.maintabs li.tabselected a
+#maincontent ul.maintabs li.tabselected a,
 #maincontent ul.maintabs li a:hover {
   background-color: #0c1925;
   padding-bottom: 6px;

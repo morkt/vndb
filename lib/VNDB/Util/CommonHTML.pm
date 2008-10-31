@@ -7,7 +7,7 @@ use YAWF ':html';
 use Exporter 'import';
 
 our @EXPORT = qw|
-  htmlHeader htmlFooter
+  htmlHeader htmlFooter htmlMainTabs
 |;
 
 
@@ -128,5 +128,37 @@ sub htmlFooter {
    end; # /body
   end; # /html
 }
+
+
+# generates the "main tabs". These are the commonly used tabs for
+# 'objects', i.e. VN/producer/release entries and users
+# Arguments: u/v/r/p, object, currently selected item (empty=main)
+sub htmlMainTabs {
+  my($self, $type, $obj, $sel) = @_;
+  $sel ||= '';
+  my $id = $type.$obj->{id};
+
+  ul class => 'maintabs';
+   li $sel eq 'hist' ? (class => 'tabselected') : ();
+   a href => "/$id/hist", 'history';
+
+   if($type ne 'r') {
+     li $sel eq 'disc' ? (class => 'tabselected') : ();
+     a href => "/t/$id", 'discussions';
+   }
+   
+   if($type eq 'u') {
+     li $sel eq 'wish' ? (class => 'tabselected') : ();
+     a href => "/$id/wish", 'wishlist';
+
+     li $sel eq 'list' ? (class => 'tabselected') : ();
+     a href => "/$id/list", 'list';
+   }
+
+   li !$sel ? (class => 'tabselected') : ();
+   a href => "/$id", $id;
+  end;
+}
+
 
 1;
