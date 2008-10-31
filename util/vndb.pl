@@ -29,7 +29,13 @@ require $ROOT.'/data/global.pl';
 YAWF::init(
   %O,
   namespace => 'VNDB',
-  object_data => \%S
+  object_data => \%S,
+  pre_request_handler => \&reqinit,
 );
 
+
+sub reqinit {
+  my $self = shift;
+  $self->authInit;
+}
 

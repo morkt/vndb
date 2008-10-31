@@ -13,6 +13,7 @@ our @EXPORT = qw|
 # Arguments: array of elements to get stats from, options:
 #   vn, producers, releases, users, threads, posts
 # Returns: hashref, key = element, value = number of entries
+# TODO: caching, see http://www.varlena.com/GeneralBits/120.php
 sub dbStats { 
   my $s = shift;
   return { map {
