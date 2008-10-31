@@ -8,6 +8,7 @@ use YAWF ':html';
 
 YAWF::register(
   qr{u([1-9]\d*)}       => \&userpage,
+  qr{u/login}           => \&login,
   qr{u/logout}          => \&logout,
 );
 
@@ -22,6 +23,32 @@ sub userpage {
   $self->htmlMainTabs('u', $u);
   div class => 'mainbox';
    h1 ucfirst($u->{username})."'s Profile";
+  end;
+  $self->htmlFooter;
+}
+
+
+sub login {
+  my $self = shift;
+
+  return $self->resRedirect('/') if $self->authInfo->{id};
+
+  my $frm;
+  if($self->reqMethod eq 'POST') {
+    $frm = $self->formValidate(
+      { name => 'usrname', required => 1, minlength => 2, maxlength => 15, template => 'pname' },
+      { name => 'usrpass', required => 1, minlength => 4, maxlength => 15, template => 'asciiprint' },
+    );
+
+    (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$self->{url}//;
+    return if !$frm->{_err} && $self->authLogin($frm->{usrname}, $frm->{usrpass}, $ref);
+    $frm->{_err} = [ 'login_failed' ];
+  }
+
+  $self->htmlHeader(title => 'Login');
+  div class => 'mainbox';
+   h1 'Login';
+   # login form and error messages here
   end;
   $self->htmlFooter;
 }

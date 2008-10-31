@@ -82,7 +82,7 @@ sub _menu {
        txt " (doesn't work yet)";
       end;
       div;
-       form action => '/nospam?/u/login', id => 'loginform', method => 'post';
+       form action => '/u/login', id => 'loginform', method => 'post';
         fieldset;
          legend 'Login';
          input type => 'text', class => 'text', id => 'usrname', name => 'usrname';
