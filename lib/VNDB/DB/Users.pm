@@ -1,6 +1,8 @@
 
 package VNDB::DB::Users;
 
+use strict;
+use warnings;
 use Exporter 'import';
 
 our @EXPORT = 'dbUserGet';

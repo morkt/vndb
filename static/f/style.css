@@ -48,9 +48,37 @@ table tr.odd {
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
   font-size: 19pt;
   font-style: italic;
-  color: #258;
   color: #135;
   border: none!important;
+}
+
+
+
+
+
+/***** general form markup *****/
+
+form {
+  display: inline;
+  border: 0;
+}
+fieldset {
+  display: inline;
+  border: 0;
+}
+legend {
+  display: none;
+}
+input.text, input.submit {
+  background-color: #135;
+  color: #ccc;
+  border: 1px solid #36A;
+  font: 9pt "Tahoma";
+  margin: 1px;
+}
+input.submit {
+  background-color: #123;
+  padding: 1px;
 }
 
 
@@ -128,6 +156,17 @@ table tr.odd {
   float: left;
   text-align: right;
 }
+#menulist p {
+  text-align: center;
+}
+#menulist input.text {
+  width: 100px;
+  margin-left: 15px;
+}
+#menulist input.submit {
+  width: 40px;
+  margin-left: 45px;
+}
 
 
 
@@ -151,14 +190,8 @@ table tr.odd {
   margin: 0 0 0 10px;
   background-color: #012;
 }
- /* IE6 */
 #maincontent ul.maintabs li.tabselected a
 #maincontent ul.maintabs li a:hover {
-  background-color: #0c1925;
-}
- /* All other browsers */
-html>body #maincontent ul.maintabs li.tabselected a,
-html>body #maincontent ul.maintabs li a:hover {
   background-color: #0c1925;
   padding-bottom: 6px;
 }

@@ -53,7 +53,7 @@ sub authLogin {
 sub authLogout {
   my $self = shift;
   $self->resRedirect('/', 'temp');
-  $self->resAddHeader('Set-Cookie', "vndb_auth= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$self->{cookie_domain}");
+  $self->resHeader('Set-Cookie', "vndb_auth= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$self->{cookie_domain}");
 }
 
 

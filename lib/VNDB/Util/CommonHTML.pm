@@ -57,7 +57,46 @@ sub _menu {
     end;
    end;
 
-   # show user or login menubox here
+   div class => 'menubox';
+    if($self->authInfo->{id}) {
+      my $uid = sprintf '/u%d', $self->authInfo->{id};
+      h2;
+       a href => $uid, ucfirst $self->authInfo->{username};
+       txt ' ('.$self->{user_ranks}[$self->authInfo->{rank}][0].')';
+      end;
+      div;
+       a href => "$uid/edit", 'My Profile'; br;
+       a href => "$uid/list", 'My Visual Novel List'; br;
+       a href => "$uid/wish", 'My Wishlist'; br;
+       a href => "/t$uid",    'My Messages'; br;
+       a href => "$uid/hist", 'My Recent Changes'; br;
+       br;
+       a href => '/v/new',    'Add Visual Novel'; br;
+       a href => '/p/new',    'Add Producer'; br;
+       br;
+       a href => '/u/logout', 'Logout';
+      end;
+    } else {
+      h2;
+       a href => '/u/login', 'Login';
+       txt " (doesn't work yet)";
+      end;
+      div;
+       form action => '/nospam?/u/login', id => 'loginform', method => 'post';
+        fieldset;
+         legend 'Login';
+         input type => 'text', class => 'text', id => 'usrname', name => 'usrname';
+         input type => 'password', class => 'text', id => 'usrpass', name => 'usrpass';
+         input type => 'submit', class => 'submit', value => 'Login';
+        end;
+       end;
+       p;
+        lit 'Need to <a href="/u/register">register</a>,<br />';
+        lit 'or <a href="/u/newpass">forgot your password?</a>';
+       end;
+      end;
+    }
+   end;
 
    my @stats = (
      [ vn        => 'Visual Novels' ],
