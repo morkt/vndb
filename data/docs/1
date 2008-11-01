@@ -135,6 +135,10 @@
 :SUB:Protagonist
 <p>
  Indicates some information about the character the player takes control of.
+ A combination of male and female protagonists is possible, e.g. multiple
+ protagonists.
+ In cases of sex change or transsexuality, it is best too use the original
+ gender (the combination of X and Y chromosomes at the protagonist's birth).
 <dl>
   <dt>Male</dt><dd>
     The protagonist is male.
