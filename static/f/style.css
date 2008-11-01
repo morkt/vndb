@@ -231,3 +231,19 @@ div.vndescription p {
 
 
 
+/***** Form Error *****/
+
+div.formerr {
+  margin: 5px 10%;
+  padding: 15px;
+  background-color: #534;
+  border: 1px solid #C00;
+}
+div.formerr li {
+  margin-left: 20px;
+}
+#maincontent div.formerr h2 {
+  font-size: 9pt;
+}
+
+

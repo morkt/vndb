@@ -42,13 +42,14 @@ sub login {
 
     (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$self->{url}//;
     return if !$frm->{_err} && $self->authLogin($frm->{usrname}, $frm->{usrpass}, $ref);
-    $frm->{_err} = [ 'login_failed' ];
+    $frm->{_err} = [ 'login_failed' ] if !$frm->{_err};
   }
 
   $self->htmlHeader(title => 'Login');
   div class => 'mainbox';
    h1 'Login';
-   # login form and error messages here
+   $self->htmlFormError($frm);
+   # login form here
   end;
   $self->htmlFooter;
 }
