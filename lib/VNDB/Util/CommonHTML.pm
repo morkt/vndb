@@ -20,6 +20,9 @@ sub htmlHeader { # %options->{ title }
     title $o{title};
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
     Link rel => 'stylesheet', href => $self->{url_static}.'/f/style.css', type => 'text/css', media => 'all';
+    script type => 'text/javascript', src => $self->{url_static}.'/f/script.js';
+     # most browsers don't like a self-closing <script> tag...
+    end;
    end;
    body;
     div id => 'bgright', ' ';
@@ -79,10 +82,9 @@ sub _menu {
     } else {
       h2;
        a href => '/u/login', 'Login';
-       txt " (doesn't work yet)";
       end;
       div;
-       form action => '/u/login', id => 'loginform', method => 'post';
+       form action => '/nospam?/u/login', id => 'loginform', method => 'post';
         fieldset;
          legend 'Login';
          input type => 'text', class => 'text', id => 'usrname', name => 'usrname';

@@ -24,7 +24,7 @@ my %formerr_exeptions = (
 sub htmlFormError { # $frm
   my($self, $frm) = @_;
   return if !$frm->{_err};
-  div class => 'formerr';
+  div class => 'warning';
    h2 'Form could not be send:';
    ul;
     for my $e (@{$frm->{_err}}) {

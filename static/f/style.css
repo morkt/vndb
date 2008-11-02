@@ -231,19 +231,20 @@ div.vndescription p {
 
 
 
-/***** Form Error *****/
+/***** Warning Box *****/
 
-div.formerr {
+div.warning {
   margin: 5px 10%;
   padding: 15px;
   background-color: #534;
   border: 1px solid #C00;
 }
-div.formerr li {
+div.warning li {
   margin-left: 20px;
 }
-#maincontent div.formerr h2 {
+#maincontent div.warning h2 {
   font-size: 9pt;
+  font-weight: bold;
 }
 
 
