@@ -48,8 +48,9 @@ sub login {
   $self->htmlHeader(title => 'Login');
   div class => 'mainbox';
    h1 'Login';
-   $self->htmlFormError($frm);
-   # login form here
+    $self->htmlForm({ frm => $frm, action => '/u/login' }, frm => [
+      
+    ]);
   end;
   $self->htmlFooter;
 }
