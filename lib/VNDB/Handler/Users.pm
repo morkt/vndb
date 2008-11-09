@@ -48,9 +48,12 @@ sub login {
   $self->htmlHeader(title => 'Login');
   div class => 'mainbox';
    h1 'Login';
-    $self->htmlForm({ frm => $frm, action => '/u/login' }, frm => [
-      
-    ]);
+   $self->htmlForm({ frm => $frm, action => '/u/login' }, Login => [
+    [ input  => name => 'Username', short => 'usrname' ],
+    [ static => content => '<a href="/u/register">No account yet?</a>' ],
+    [ passwd => name => 'Password', short => 'usrpass' ],
+    [ static => content => '<a href="/u/newpass">Forgot your password?</a>' ],
+   ]);
   end;
   $self->htmlFooter;
 }

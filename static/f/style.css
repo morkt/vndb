@@ -58,13 +58,9 @@ table tr.odd {
 
 /***** general form markup *****/
 
-form {
-  display: inline;
+form, fieldset {
   border: 0;
-}
-fieldset {
-  display: inline;
-  border: 0;
+  display: block;
 }
 legend {
   display: none;
@@ -79,6 +75,32 @@ input.text, input.submit {
 input.submit {
   background-color: #123;
   padding: 1px;
+}
+input.text {
+  width: 200px;
+}
+fieldset.submit {
+  width: 100%;
+  text-align: center;
+  margin: 5px;
+}
+fieldset.submit input {
+  width: 200px;
+}
+table.formtable {
+  margin: 20px;
+}
+table.formtable td {
+  padding: 0;
+}
+table.formtable tr.newfield td {
+  padding-top: 5px;
+}
+td.label, td.label label {
+  width: 70px;
+}
+td.label label {
+  display: block;
 }
 
 
@@ -115,6 +137,9 @@ input.submit {
 }
 #maincontent div.mainbox a {
   color: #7bd;
+}
+p.center {
+  text-align: center;
 }
 
 

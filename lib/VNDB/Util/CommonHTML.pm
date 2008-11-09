@@ -87,8 +87,8 @@ sub _menu {
        form action => '/nospam?/u/login', id => 'loginform', method => 'post';
         fieldset;
          legend 'Login';
-         input type => 'text', class => 'text', id => 'usrname', name => 'usrname';
-         input type => 'password', class => 'text', id => 'usrpass', name => 'usrpass';
+         input type => 'text', class => 'text', id => 'username', name => 'usrname';
+         input type => 'password', class => 'text', id => 'userpass', name => 'usrpass';
          input type => 'submit', class => 'submit', value => 'Login';
         end;
        end;

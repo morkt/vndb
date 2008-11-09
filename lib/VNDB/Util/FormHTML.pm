@@ -51,7 +51,7 @@ sub htmlFormError {
           $rule eq 'url'        ? '%s: Invalid URL' :
           $rule eq 'asciiprint' ? '%s may only contain ASCII characters' :
           $rule eq 'int'        ? '%s: Not a valid number' :
-          $rule eq 'pname'      ? '%s can only contain alphanumberic characters and a hyphen, and must start with a character' : '',
+          $rule eq 'pname'      ? '%s can only contain lowercase alphanumberic characters and a hyphen, and must start with a character' : '',
           $field;
       }
     }
@@ -64,18 +64,45 @@ sub htmlFormError {
 }
 
 
-# Generates a form part...
+# Generates a form part.
+# A form part is a arrayref, with the first element being the type of the part,
+# and all other elements forming a hash with options specific to that type.
+# Type      Options
+#  input     short, name, width
+#  passwd    short, name
+#  static    content
 sub htmlFormPart {
-
+  my($self, $frm, $fp) = @_;
+  my($type, %o) = @$fp;
+  local $_ = $type;
+  Tr !/static/ ? (class => 'newfield') : ();
+   td class => 'label';
+    label for => $o{short}, $o{name} if $o{short} && $o{name};
+    lit '&nbsp;' if !$o{short} || !$o{name};
+   end;
+   td class => 'field';
+    if(/input/) {
+      input type => 'text', class => 'text', name => $o{short}, id => $o{short},
+        value => $frm->{$o{short}}||'', $o{width} ? (style => "width: $o{width}px") : ();
+    }
+    if(/passwd/) {
+      input type => 'password', class => 'text', name => $o{short}, id => $o{short},
+        value => $frm->{$o{short}}||'';
+    }
+    if(/static/) {
+      lit $o{content};
+    }
+   end;
+  end;
 }
 
 
 sub htmlFormSub {
-  my($self, $name, $parts) = @_;
+  my($self, $frm, $name, $parts) = @_;
   fieldset;
    legend $name;
    table class => 'formtable';
-    $self->htmlFormPart($_) for @$parts;
+    $self->htmlFormPart($frm, $_) for @$parts;
    end;
   end;
 }
@@ -97,20 +124,25 @@ sub htmlForm {
     $options->{upload} ? (enctype => 'multipart/form-data') : ();
   if(@subs == 2) {
     $self->htmlFormError($options->{frm});
-    $self->htmlFormSub(@subs);
-    input type => 'submit', value => 'Submit', class => 'submit';
+    $self->htmlFormSub($options->{frm}, @subs);
+    fieldset class => 'submit';
+     input type => 'submit', value => 'Submit', class => 'submit';
+    end;
   } else {
     $self->htmlFormError($options->{frm}, 1);
+    # tabs here...
     while(my($name, $parts) = (shift(@subs), shift(@subs))) {
       last if !$name || !$parts;
       (my $short = lc $name) =~ s/ /_/;
       div class => 'mainbox subform', id => 'subform_'.$short;
        h1 $name;
-       $self->htmlFormSub($name, $parts);
+       $self->htmlFormSub($options->{frm}, $name, $parts);
       end;
     }
     div class => 'mainbox';
-     input type => 'submit', value => 'Submit', class => 'submit';
+     fieldset class => 'submit';
+      input type => 'submit', value => 'Submit', class => 'submit';
+     end;
     end; 
   }
   end;
