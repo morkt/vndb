@@ -16,7 +16,7 @@ use lib $ROOT.'/yawf/lib';
 use lib $ROOT.'/lib';
 
 
-use YAWF;
+use YAWF ':html';
 
 
 our(%O, %S);
@@ -31,11 +31,27 @@ YAWF::init(
   namespace => 'VNDB',
   object_data => \%S,
   pre_request_handler => \&reqinit,
+  error_404_handler => \&handle404,
 );
 
 
 sub reqinit {
   my $self = shift;
   $self->authInit;
+}
+
+
+sub handle404 {
+  my $self = shift;
+  $self->htmlHeader;
+  div class => 'mainbox';
+   h1 'Page not found';
+   div class => 'warning';
+    h2 'Oops!';
+    p "It seems the page you were looking for does not exists,\n".
+      "you may want to try using the menu on your left to find what you are looking for.";
+   end;
+  end;
+  $self->htmlFooter;
 }
 
