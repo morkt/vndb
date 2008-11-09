@@ -43,7 +43,7 @@ sub reqinit {
 
 sub handle404 {
   my $self = shift;
-  $self->htmlHeader;
+  $self->htmlHeader(title => 'Page Not Found');
   div class => 'mainbox';
    h1 'Page not found';
    div class => 'warning';
