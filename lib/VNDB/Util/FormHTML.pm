@@ -13,9 +13,11 @@ our @EXPORT = qw| htmlFormError htmlFormPart htmlFormSub htmlForm |;
 my %formerr_names = (
   usrname       => 'Username',
   usrpass       => 'Password',
+  mail          => 'Email',
 );
 my %formerr_exeptions = (
   login_failed  => 'Invalid username or password',
+  nomail        => 'No user found with that email address',
 );
 
 

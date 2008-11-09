@@ -4,12 +4,15 @@ package VNDB::Handler::Users;
 use strict;
 use warnings;
 use YAWF ':html';
+use Digest::MD5 'md5_hex';
 
 
 YAWF::register(
   qr{u([1-9]\d*)}       => \&userpage,
   qr{u/login}           => \&login,
   qr{u/logout}          => \&logout,
+  qr{u/newpass}         => \&newpass,
+  qr{u/newpass/sent}    => \&newpass_sent,
 );
 
 
@@ -64,4 +67,80 @@ sub logout {
 }
 
 
+sub newpass {
+  my $self = shift;
+
+  return $self->resRedirect('/') if $self->authInfo->{id};
+  
+  my($frm, $u);
+  if($self->reqMethod eq 'POST') {
+    $frm = $self->formValidate(
+      { name => 'mail', required => 1, template => 'mail' },
+    );
+    if(!$frm->{_err}) {
+      $u = $self->dbUserGet(mail => $frm->{mail})->[0];
+      $frm->{_err} = [ 'nomail' ] if !$u || !$u->{id};
+    }
+    if(!$frm->{_err}) {
+      my @chars = ( 'A'..'Z', 'a'..'z', 0..9 );
+      my $pass = join '', map $chars[int rand $#chars+1], 0..8;
+      $self->dbUserEdit($u->{id}, passwd => md5_hex($pass)); 
+      $self->mail(
+        sprintf(join('', <DATA>), $u->{username}, $pass),
+        To => $u->{mail},
+        From => 'VNDB <noreply@vndb.org>',
+        Subject => 'New password for '.$u->{username}
+      );
+      return $self->resRedirect('/u/newpass/sent', 'post');
+    }
+  }
+
+  $self->htmlHeader(title => 'Forgot Password');
+  div class => 'mainbox';
+   h1 'Forgot Password';
+   p "Forgot your password and can't login to VNDB anymore?\n"
+    ."Don't worry! Just give us the email address you used to register on VNDB,\n"
+    ."and we'll send you a new password within a few minutes!";
+   $self->htmlForm({ frm => $frm, action => '/u/newpass' }, 'Reset Password' => [
+    [ input  => name => 'Email', short => 'mail' ],
+   ]);
+  end;
+  $self->htmlFooter;
+}
+
+
+sub newpass_sent {
+  my $self = shift;
+  return $self->resRedirect('/') if $self->authInfo->{id};
+  $self->htmlHeader(title => 'New Password');
+  div class => 'mainbox';
+   h1 'New Password';
+   div class => 'notice';
+    h2 'Password Reset';
+    p;
+     txt "Your password has been reset and your new password should reach your mailbox in a few minutes.\n"
+        ."You can always change your password again after logging in.\n\n";
+     lit '<a href="/u/login">Login</a> - <a href="/">Home</a>';
+    end;
+   end;
+  end;
+  $self->htmlFooter;
+}
+
+
 1;
+
+
+# Contents of the password-reset email
+__DATA__
+Hello %s,
+
+Your password has been reset, you can now login at http://vndb.org/ with the
+following information:
+
+Username: %1$s
+Password: %s
+
+Now don't forget your password again! :-)
+
+vndb.org

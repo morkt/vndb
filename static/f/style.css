@@ -138,6 +138,9 @@ td.label label {
 #maincontent div.mainbox a {
   color: #7bd;
 }
+#maincontent p {
+  margin: 0 20px;
+}
 p.center {
   text-align: center;
 }
@@ -256,18 +259,22 @@ div.vndescription p {
 
 
 
-/***** Warning Box *****/
+/***** Warning/Notice Box *****/
 
-div.warning {
+div.warning, div.notice {
   margin: 5px 10%;
   padding: 15px;
   background-color: #534;
   border: 1px solid #C00;
 }
-div.warning li {
+div.notice {
+  background-color: #354;
+  border: 1px solid #0C0;
+}
+div.warning li, div.notice li {
   margin-left: 20px;
 }
-#maincontent div.warning h2 {
+#maincontent div.warning h2, #maincontent div.notice h2 {
   font-size: 9pt;
   font-weight: bold;
 }
