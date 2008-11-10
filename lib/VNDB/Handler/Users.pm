@@ -163,7 +163,7 @@ sub register {
    p 'Anyway, having an account here has a few advantages over being just a regular visitor:';
    ul;
     li 'You can contribute to the database by editing any entries and adding new ones';
-    li 'Keep track of all visual novels and releases you have, you\'d like to play, or have finished playing';
+    li 'Keep track of all visual novels and releases you have, you\'d like to play, are playing, or have finished playing';
     li 'Vote on the visual novels you liked or disliked';
     li 'Contribute to the discussions on the boards';
     li 'And boast about the fact that you have an account on the best visual novel database in the world!';
