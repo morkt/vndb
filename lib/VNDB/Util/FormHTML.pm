@@ -21,7 +21,7 @@ my %formerr_exeptions = (
   nomail        => 'No user found with that email address',
   passmatch     => 'Passwords do not match',
   usrexists     => 'Someone already has this username, please choose something else',
-  mailexists    => 'Someone already registerd with that email address',
+  mailexists    => 'Someone already registered with that email address',
 );
 
 
