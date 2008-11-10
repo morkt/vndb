@@ -10,7 +10,7 @@ body, td {
 }
 body {
   background: #000 url(/f/bg.jpg) no-repeat;
-  color: #ccc;
+  color: #ddd;
 }
 a {
   color: #fff;
@@ -50,6 +50,9 @@ table tr.odd {
   font-style: italic;
   color: #135;
   border: none!important;
+}
+ul {
+  margin-left: 35px;
 }
 
 
@@ -97,7 +100,7 @@ table.formtable tr.newfield td {
   padding-top: 5px;
 }
 td.label, td.label label {
-  width: 70px;
+  width: 80px;
 }
 td.label label {
   display: block;
@@ -139,7 +142,15 @@ td.label label {
   color: #7bd;
 }
 #maincontent p {
-  margin: 0 20px;
+  margin: 3px 20px;
+}
+#maincontent div div p, #maincontent div table p {
+  margin: 0;
+}
+#maincontent h2 {
+  font-weight: bold;
+  font-size: 11pt;
+  margin: 10px 0 0 5px;
 }
 p.center {
   text-align: center;
@@ -273,9 +284,6 @@ div.notice {
 }
 div.warning li, div.notice li {
   margin-left: 20px;
-}
-#maincontent div.warning p, #maincontent div.notice p {
-  margin: 0;
 }
 #maincontent div.warning h2, #maincontent div.notice h2 {
   font-size: 9pt;

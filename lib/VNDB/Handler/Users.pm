@@ -13,6 +13,7 @@ YAWF::register(
   qr{u/logout}          => \&logout,
   qr{u/newpass}         => \&newpass,
   qr{u/newpass/sent}    => \&newpass_sent,
+  qr{u/register}        => \&register,
 );
 
 
@@ -123,6 +124,60 @@ sub newpass_sent {
      lit '<a href="/u/login">Login</a> - <a href="/">Home</a>';
     end;
    end;
+  end;
+  $self->htmlFooter;
+}
+
+
+sub register {
+  my $self = shift;
+  return $self->resRedirect('/') if $self->authInfo->{id};
+
+  my $frm;
+  if($self->reqMethod eq 'POST') {
+    $frm = $self->formValidate(
+      { name => 'usrname', template => 'pname', minlength => 2, maxlength => 15 },
+      { name => 'mail', template => 'mail' },
+      { name => 'usrpass',  minlength => 4, maxlength => 15, template => 'asciiprint' },
+      { name => 'usrpass2', minlength => 4, maxlength => 15, template => 'asciiprint' },
+    );
+    push @{$frm->{_err}}, 'passmatch'  if $frm->{usrpass} ne $frm->{usrpass2};
+    push @{$frm->{_err}}, 'usrexists'  if $frm->{usrname} eq 'anonymous' || !$frm->{_err} && $self->dbUserGet(username => $frm->{usrname})->[0]{id};
+    push @{$frm->{_err}}, 'mailexists' if !$frm->{_err} && $self->dbUserGet(mail => $frm->{mail})->[0]{id};
+
+    if(!$frm->{_err}) {
+      $self->dbUserAdd($frm->{usrname}, md5_hex($frm->{usrpass}), $frm->{mail});
+      return $self->authLogin($frm->{usrname}, $frm->{usrpass}, '/');
+    }
+  }
+
+  $self->htmlHeader(title => 'Create an Account');
+  div class => 'mainbox';
+   h1 'Create an Account';
+   h2 'Why should I register?';
+   p 'Creating an account is completely painless, the only thing we need to know is your prefered username '
+    .'and a password. You can just use any email address that isn\'t yours, as we don\'t even confirm '
+    .'that the address you gave us is really yours. Keep in mind, however, that you would probably '
+    .'want to remember your password if you do choose to give us an invalid email address...';
+
+   p 'Anyway, having an account here has a few advantages over being just a regular visitor:';
+   ul;
+    li 'You can contribute to the database by editing any entries and adding new ones';
+    li 'Keep track of all visual novels and releases you have, you\'d like to play, are or have finished playing';
+    li 'Vote on the visual novels you liked or disliked';
+    li 'Contribute to the discussions on the boards';
+    li 'And boast about the fact that you have an account on the best visual novel database in the world!';
+   end;
+
+   $self->htmlForm({ frm => $frm, action => '/u/register' }, 'New Account' => [
+     [ input  => short => 'usrname', name => 'Username' ],
+     [ static => content => 'Requested username. Must be lowercase and can only consist of alphanumeric characters.' ],
+     [ input  => short => 'mail', name => 'Email' ],
+     [ static => content => 'Your email address will only be used in case you lose your password. We will never send'
+        .' spam or newsletters unless you explicitly ask us for it.<br /><br />' ],
+     [ passwd => short => 'usrpass', name => 'Password' ],
+     [ passwd => short => 'usrpass2', name => 'Confirm pass.' ],
+   ]);
   end;
   $self->htmlFooter;
 }

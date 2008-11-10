@@ -13,11 +13,15 @@ our @EXPORT = qw| htmlFormError htmlFormPart htmlFormSub htmlForm |;
 my %formerr_names = (
   usrname       => 'Username',
   usrpass       => 'Password',
+  usrpass2      => 'Password (confirm)',
   mail          => 'Email',
 );
 my %formerr_exeptions = (
   login_failed  => 'Invalid username or password',
   nomail        => 'No user found with that email address',
+  passmatch     => 'Passwords do not match',
+  usrexists     => 'Someone already has this username, please choose something else',
+  mailexists    => 'Someone already registerd with that email address',
 );
 
 

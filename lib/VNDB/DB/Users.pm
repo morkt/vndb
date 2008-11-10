@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbUserGet dbUserEdit|;
+our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd|;
 
 
 # %options->{ username passwd mail order uid results page }
@@ -62,5 +62,13 @@ sub dbUserEdit {
     WHERE id = ?|,
   \%h, $uid);
 }
+
+
+# username, md5(pass), mail
+sub dbUserAdd {
+  my($s, @o) = @_;
+  $s->dbExec(q|INSERT INTO users (username, passwd, mail) VALUES(?, decode(?, 'hex'), ?)|, @o);
+}
+
 
 1;
