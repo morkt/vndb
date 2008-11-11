@@ -53,7 +53,7 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail rank flags |);
+    for (qw| username mail rank show_nsfw show_list |);
   $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
     if defined $o{passwd};
 

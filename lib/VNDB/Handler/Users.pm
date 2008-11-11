@@ -218,8 +218,8 @@ sub edit {
       $o{rank} = $frm->{rank} if $frm->{rank};
       $o{mail} = $frm->{mail};
       $o{passwd} = md5_hex($frm->{usrpass}) if $frm->{usrpass};
-      $o{flags} = $frm->{flags_list} ? $self->{user_flags}{list} : 0;
-      $o{flags} += $self->{user_flags}{nsfw} if $frm->{flags_nsfw};
+      $o{show_list} = $frm->{flags_list} ? 1 : 0;
+      $o{show_nsfw} = $frm->{flags_nsfw} ? 1 : 0;
       $self->dbUserEdit($uid, %o);
       return $self->resRedirect("/u$uid/edit?d=1", 'post') if $uid != $self->authInfo->{id} || !$frm->{usrpass};
       return $self->authLogin($frm->{usrname}||$u->{username}, $frm->{usrpass}, "/u$uid/edit?d=1");
@@ -230,8 +230,8 @@ sub edit {
   $frm->{usrname}    ||= $u->{username};
   $frm->{rank}       ||= $u->{rank};
   $frm->{mail}       ||= $u->{mail};
-  $frm->{flags_list} = $u->{flags} & $self->{user_flags}{list} if !defined $frm->{flags_list};
-  $frm->{flags_nsfw} = $u->{flags} & $self->{user_flags}{nsfw} if !defined $frm->{flags_nsfw};
+  $frm->{flags_list} = $u->{show_list} if !defined $frm->{flags_list};
+  $frm->{flags_nsfw} = $u->{show_nsfw} if !defined $frm->{flags_nsfw};
 
   # create the page
   my $title = $self->authInfo->{id} != $uid ? "Edit $u->{username}'s Account" : 'My Account';
@@ -388,7 +388,7 @@ sub list {
        end;
        td class => 'tc2', strftime '%Y-%m-%d', gmtime $l->{registered};
        td class => 'tc3';
-        lit !($l->{flags} & $self->{user_flags}{list}) ? '-' : !$l->{c_votes} ? 0 :
+        lit !$l->{show_list} ? '-' : !$l->{c_votes} ? 0 :
           qq|<a href="/u$l->{id}/list">$l->{c_votes}</a>|;
        end;
        td class => 'tc4';

@@ -44,3 +44,17 @@ $$ LANGUAGE 'plpgsql';
 CREATE TRIGGER users_changes_update AFTER INSERT OR DELETE ON changes FOR EACH ROW EXECUTE PROCEDURE update_users_cache();
 CREATE TRIGGER users_votes_update   AFTER INSERT OR DELETE ON votes   FOR EACH ROW EXECUTE PROCEDURE update_users_cache();
 
+
+
+
+-- users.flags -> users.(show_nsfw|show_list)
+ALTER TABLE users ADD COLUMN show_nsfw boolean NOT NULL DEFAULT FALSE;
+ALTER TABLE users ADD COLUMN show_list boolean NOT NULL DEFAULT TRUE;
+
+UPDATE users SET
+  show_nsfw = (flags & 8 = 8),
+  show_list = (flags & 4 = 4);
+
+ALTER TABLE users DROP COLUMN flags;
+
+
