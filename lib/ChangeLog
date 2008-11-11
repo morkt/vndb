@@ -7,6 +7,20 @@ TODO:
 	  + Add a link for the hidden 'h' option at /hist
 	+ Rewrite the revision diff code, it's horrible...
 
+2.0 - ?
+	- New layout
+	- Massive code rewrite:
+	  - Switched to YAWF
+	  - Removed template system
+	  - Split DB functions in several files
+	  - Converted absolute paths to be relative to the root directory
+	- Database changes:
+	  - Added caching of edit and vote counts in users.c_votes and .c_changes
+	  - Split users.flags into users.show_nsfw and .show_list (boolean type)
+	- Functionality changes:
+	  - Ability to sort the userlist on vote and change counts
+	  - Added threads and posts counts to the global statistics
+
 1.23 - 2008-10-22 (r117)
 	- Removed redirects for old revision URLs (the code wasn't very secure...)
 	- Fixed bug when using unicode in the AJAX vn/producers/release search box
