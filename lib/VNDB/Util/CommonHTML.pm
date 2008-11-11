@@ -7,7 +7,7 @@ use YAWF ':html';
 use Exporter 'import';
 
 our @EXPORT = qw|
-  htmlHeader htmlFooter htmlMainTabs
+  htmlHeader htmlFooter htmlMainTabs htmlDenied
 |;
 
 
@@ -142,24 +142,58 @@ sub htmlMainTabs {
 
   ul class => 'maintabs';
    li $sel eq 'hist' ? (class => 'tabselected') : ();
-   a href => "/$id/hist", 'history';
+    a href => "/$id/hist", 'history';
+   end;
 
    if($type ne 'r') {
      li $sel eq 'disc' ? (class => 'tabselected') : ();
-     a href => "/t/$id", 'discussions';
+      a href => "/t/$id", 'discussions';
+     end;
    }
    
    if($type eq 'u') {
      li $sel eq 'wish' ? (class => 'tabselected') : ();
-     a href => "/$id/wish", 'wishlist';
+      a href => "/$id/wish", 'wishlist';
+     end;
 
      li $sel eq 'list' ? (class => 'tabselected') : ();
-     a href => "/$id/list", 'list';
+      a href => "/$id/list", 'list';
+     end;
+   }
+
+   if($type eq 'u' && ($obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))) {
+     li $sel eq 'edit' ? (class => 'tabselected') : ();
+      a href => "/$id/edit", 'edit';
+     end;
    }
 
    li !$sel ? (class => 'tabselected') : ();
-   a href => "/$id", $id;
+    a href => "/$id", $id;
+   end;
   end;
+}
+
+
+# generates a full error page, including header and footer
+sub htmlDenied {
+  my $self = shift;
+  $self->htmlHeader(title => 'Access Denied');
+  div class => 'mainbox';
+   h1 'Access Denied';
+   div class => 'warning';
+    if(!$self->authInfo->{id}) {
+      h2 'You need to be logged in to perform this action.';
+      p;
+       lit 'Please <a href="/u/login">login</a>, or <a href="/u/register">create an account</a> '
+          .'if you don\'t have one yet.';
+      end;
+    } else {
+      h2 "You are not allowed to perform this action.";
+      p 'It seems you don\'t have the proper rights to perform the action you wanted to perform...';
+    }
+   end;
+  end;
+  $self->htmlFooter;
 }
 
 

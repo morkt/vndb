@@ -68,7 +68,7 @@ form, fieldset {
 legend {
   display: none;
 }
-input.text, input.submit {
+input.text, input.submit, select {
   background-color: #135;
   color: #ccc;
   border: 1px solid #36A;
@@ -79,7 +79,7 @@ input.submit {
   background-color: #123;
   padding: 1px;
 }
-input.text {
+input.text, select {
   width: 200px;
 }
 fieldset.submit {
@@ -99,11 +99,18 @@ table.formtable td {
 table.formtable tr.newfield td {
   padding-top: 5px;
 }
+table.formtable tr.newpart td {
+  padding-top: 20px;
+  font-weight: bold;
+}
 td.label, td.label label {
   width: 80px;
 }
 td.label label {
   display: block;
+}
+td.field label {
+  margin: 0 0 0 5px;
 }
 
 
@@ -214,6 +221,7 @@ p.center {
 
 #maincontent ul.maintabs {
   display: inline;
+  margin: 0;
 }
 #maincontent ul.maintabs li {
   display: inline;
@@ -288,6 +296,7 @@ div.warning li, div.notice li {
 #maincontent div.warning h2, #maincontent div.notice h2 {
   font-size: 9pt;
   font-weight: bold;
+  margin: 0;
 }
 
 

@@ -76,15 +76,48 @@ sub htmlFormError {
 # Type      Options
 #  input     short, name, width
 #  passwd    short, name
-#  static    content
+#  static    content, label
+#  check     name, short, (value)
+#  select    name, short, options
+#  part      title
+# TODO: Find a way to write this function in a readable way...
 sub htmlFormPart {
   my($self, $frm, $fp) = @_;
   my($type, %o) = @$fp;
   local $_ = $type;
-  Tr !/static/ ? (class => 'newfield') : ();
+
+  if(/part/) {
+    Tr class => 'newpart';
+     td colspan => 2, $o{title};
+    end;
+    return;
+  }
+
+  if(/check/) {
+    Tr class => 'newfield';
+     td class => 'label';
+      lit '&nbsp;';
+     end;
+     td class => 'field';
+      input type => 'checkbox', class => 'checkbox', name => $o{short}, id => $o{short},
+        value => $o{value}||'true', $frm->{$o{short}} ? ( checked => 'checked' ) : ();
+      label for => $o{short};
+       lit $o{name};
+      end;
+     end;
+    end;
+    return;
+  }
+
+  Tr $o{name}||$o{label} ? (class => 'newfield') : ();
    td class => 'label';
-    label for => $o{short}, $o{name} if $o{short} && $o{name};
-    lit '&nbsp;' if !$o{short} || !$o{name};
+    if($o{short} && $o{name}) {
+      label for => $o{short}, $o{name} ;
+    } elsif($o{label}) {
+      txt $o{label};
+    } else {
+      lit '&nbsp;';
+    }
    end;
    td class => 'field';
     if(/input/) {
@@ -97,6 +130,12 @@ sub htmlFormPart {
     }
     if(/static/) {
       lit $o{content};
+    }
+    if(/select/) {
+      Select name => $o{short}, id => $o{short};
+       option value => $_->[0], $frm->{$o{short}} eq $_->[0] ? (selected => 'selected') : (), $_->[1]
+         for @{$o{options}};
+      end;
     }
    end;
   end;

@@ -14,6 +14,7 @@ YAWF::register(
   qr{u/newpass}         => \&newpass,
   qr{u/newpass/sent}    => \&newpass_sent,
   qr{u/register}        => \&register,
+  qr{u([1-9]\d*)/edit}  => \&edit,
 );
 
 
@@ -177,6 +178,90 @@ sub register {
         .' spam or newsletters unless you explicitly ask us for it.<br /><br />' ],
      [ passwd => short => 'usrpass', name => 'Password' ],
      [ passwd => short => 'usrpass2', name => 'Confirm pass.' ],
+   ]);
+  end;
+  $self->htmlFooter;
+}
+
+
+sub edit {
+  my($self, $uid) = @_;
+
+  # are we allowed to edit this user?
+  return $self->htmlDenied if !$self->authInfo->{id} || $self->authInfo->{id} != $uid && !$self->authCan('usermod');
+
+  # fetch user info (cached if uid == loggedin uid)
+  my $u = $self->authInfo->{id} == $uid ? $self->authInfo : $self->dbUserGet(uid => $uid)->[0];
+  return 404 if !$u->{id};
+
+  # check POST data
+  my $frm;
+  if($self->reqMethod eq 'POST') {
+    $frm = $self->formValidate(
+      $self->authCan('usermod') ? (
+        { name => 'usrname', template => 'pname', minlength => 2, maxlength => 15 },
+        { name => 'rank', enum => [ 1..$#{$self->{user_ranks}} ] },
+      ) : (),
+      { name => 'mail', template => 'mail' },
+      { name => 'usrpass',  required => 0, minlength => 4, maxlength => 15, template => 'asciiprint' },
+      { name => 'usrpass2', required => 0, minlength => 4, maxlength => 15, template => 'asciiprint' },
+      { name => 'flags_list', required => 0, default => 0 },
+      { name => 'flags_nsfw', required => 0, default => 0 },
+    );
+    push @{$frm->{_err}}, 'passmatch' if ($frm->{usrpass} || $frm->{usrpass2}) && $frm->{usrpass} ne $frm->{usrpass2};
+    if(!$frm->{_err}) {
+      my %o;
+      $o{username} = $frm->{usrname} if $frm->{usrname};
+      $o{rank} = $frm->{rank} if $frm->{rank};
+      $o{mail} = $frm->{mail};
+      $o{passwd} = md5_hex($frm->{usrpass}) if $frm->{usrpass};
+      $o{flags} = $frm->{flags_list} ? $self->{user_flags}{list} : 0;
+      $o{flags} += $self->{user_flags}{nsfw} if $frm->{flags_nsfw};
+      $self->dbUserEdit($uid, %o);
+      return $self->resRedirect("/u$uid/edit?d=1", 'post') if $uid != $self->authInfo->{id} || !$frm->{usrpass};
+      return $self->authLogin($frm->{usrname}||$u->{username}, $frm->{usrpass}, "/u$uid/edit?d=1");
+    }
+  }
+
+  # fill out default values
+  $frm->{usrname}    ||= $u->{username};
+  $frm->{rank}       ||= $u->{rank};
+  $frm->{mail}       ||= $u->{mail};
+  $frm->{flags_list} = $u->{flags} & $self->{user_flags}{list} if !defined $frm->{flags_list};
+  $frm->{flags_nsfw} = $u->{flags} & $self->{user_flags}{nsfw} if !defined $frm->{flags_nsfw};
+
+  # create the page
+  my $title = $self->authInfo->{id} != $uid ? "Edit $u->{username}'s Account" : 'My Account';
+  $self->htmlHeader(title => $title);
+  $self->htmlMainTabs('u', $u, 'edit');
+  div class => 'mainbox';
+   h1 $title;
+   if($self->reqParam('d')) {
+     div class => 'notice';
+      p 'Settings successfully saved.';
+     end;
+   }
+   $self->htmlForm({ frm => $frm, action => "/u$uid/edit" }, 'Edit Account' => [
+     [ part   => title => 'General Info' ],
+     $self->authCan('usermod') ? (
+       [ input  => short => 'usrname', name => 'Username' ],
+       [ select => short => 'rank', name => 'Rank', options => [
+         map [ $_, $self->{user_ranks}[$_][0] ], 1..$#{$self->{user_ranks}} ] ],
+     ) : (
+       [ static => label => 'Username', content => $frm->{usrname} ],
+     ),
+     [ input  => short => 'mail', name => 'Email' ],
+
+     [ part   => title => 'Change Password' ],
+     [ static => content => 'Leave blank to keep your current password' ],
+     [ input  => short => 'usrpass', name => 'Password' ],
+     [ passwd => short => 'usrpass2', name => 'Confirm pass.' ],
+
+     [ part   => title => 'Options' ],
+     [ check  => short => 'flags_list', name =>
+        qq|Allow other people to see my visual novel list (<a href="/u$uid/list">/u$uid/list</a>) |.
+        qq|and wishlist (<a href="/u$uid/wish">/u$uid/wish</a>)| ],
+     [ check  => short => 'flags_nsfw', name => 'Disable warnings for images that are not safe for work.' ],
    ]);
   end;
   $self->htmlFooter;

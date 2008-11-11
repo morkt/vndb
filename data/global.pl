@@ -27,6 +27,10 @@ our %S = (
     [qw| mod        hist board boardmod edit mod lock del         |], # 3
     [qw| admin      hist board boardmod edit mod lock del usermod |], # 4
   ],
+  user_flags      => {
+    list  => 4,
+    nsfw  => 8
+  },
 );
 
 
