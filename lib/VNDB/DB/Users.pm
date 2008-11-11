@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd|;
+our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel|;
 
 
 # %options->{ username passwd mail order uid results page }
@@ -68,6 +68,21 @@ sub dbUserEdit {
 sub dbUserAdd {
   my($s, @o) = @_;
   $s->dbExec(q|INSERT INTO users (username, passwd, mail) VALUES(?, decode(?, 'hex'), ?)|, @o);
+}
+
+
+# uid
+sub dbUserDel {
+  my($s, $id) = @_;
+  $s->dbExec($_, $id) for (
+    q|DELETE FROM vnlists WHERE uid = ?|,
+    q|DELETE FROM rlists WHERE uid = ?|,
+    q|DELETE FROM wlists WHERE uid = ?|,
+    q|DELETE FROM votes WHERE uid = ?|,
+    q|UPDATE changes SET requester = 0 WHERE requester = ?|,
+    q|UPDATE threads_posts SET uid = 0 WHERE uid = ?|,
+    q|DELETE FROM users WHERE id = ?|
+  );
 }
 
 

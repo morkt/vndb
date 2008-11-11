@@ -8,13 +8,14 @@ use Digest::MD5 'md5_hex';
 
 
 YAWF::register(
-  qr{u([1-9]\d*)}       => \&userpage,
-  qr{u/login}           => \&login,
-  qr{u/logout}          => \&logout,
-  qr{u/newpass}         => \&newpass,
-  qr{u/newpass/sent}    => \&newpass_sent,
-  qr{u/register}        => \&register,
-  qr{u([1-9]\d*)/edit}  => \&edit,
+  qr{u([1-9]\d*)}             => \&userpage,
+  qr{u/login}                 => \&login,
+  qr{u/logout}                => \&logout,
+  qr{u/newpass}               => \&newpass,
+  qr{u/newpass/sent}          => \&newpass_sent,
+  qr{u/register}              => \&register,
+  qr{u([1-9]\d*)/edit}        => \&edit,
+  qr{u([1-9]\d*)/del(/[od])?} => \&delete,
 );
 
 
@@ -265,6 +266,45 @@ sub edit {
    ]);
   end;
   $self->htmlFooter;
+}
+
+
+sub delete {
+  my($self, $uid, $act) = @_;
+  return $self->htmlDenied if !$self->authCan('usermod');
+
+  # confirm
+  if(!$act) {
+    my $u = $self->dbUserGet(uid => $uid)->[0];
+    return 404 if !$u->{id};
+    $self->htmlHeader(title => 'Delete user');
+    $self->htmlMainTabs('u', $u, 'del');
+    div class => 'mainbox';
+     div class => 'warning';
+      h2 'Delete user';
+      p;
+       lit qq|Are you sure you want to remove <a href="/u$uid">$u->{username}</a>'s account?<br /><br />|
+          .qq|<a href="/u$uid/del/o">Yes, I'm not kidding!</a>|;
+      end;
+     end;
+    end;
+    $self->htmlFooter;
+  }
+  # delete
+  elsif($act eq '/o') {
+    $self->dbUserDel($uid);
+    $self->resRedirect("/u$uid/del/d", 'post');
+  }
+  # done
+  elsif($act eq '/d') {
+    $self->htmlHeader(title => 'Delete user');
+    div class => 'mainbox';
+     div class => 'notice';
+      p 'User deleted.';
+     end;
+    end;
+    $self->htmlFooter;
+  }
 }
 
 
