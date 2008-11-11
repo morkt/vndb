@@ -126,9 +126,22 @@ sub _menu {
 
 
 sub htmlFooter {
+  my $self = shift;
     end; # /div maincontent
    end; # /body
   end; # /html
+
+  # write the SQL queries as a HTML comment when debugging is enabled
+  if($self->debug) {
+    lit "\n<!--\n SQL Queries:\n";
+    for (@{$self->{_YAWF}{DB}{queries}}) {
+      my $q = !ref $_->[0] ? $_->[0] :
+      $_->[0][0].(exists $_->[0][1] ? ' | "'.join('", "', @{$_->[0]}[1..$#{$_->[0]}]).'"' : '');
+      $q =~ s/^\s//g;
+      lit sprintf "  [%6.2fms] %s\n", $_->[1]*1000, $q;
+    }
+    lit "-->\n";
+  }
 }
 
 
