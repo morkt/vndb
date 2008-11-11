@@ -27,7 +27,7 @@ table td {
   padding: 3px;
 }
 table tr.odd {
-  background-color: #112337;
+  background: url(/f/boxbg.png) repeat;
 }
 
 #bgright {
@@ -124,6 +124,7 @@ td.field label {
   left: 190px;
   right: 30px;
   margin: 0;
+  padding-bottom: 50px!important;
 }
 #maincontent h1, #maincontent h2 {
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
@@ -141,7 +142,7 @@ td.field label {
 }
 #maincontent div.mainbox {
   border: 1px solid #258;
-  margin: 21px 0 10px 0;
+  margin: 21px 0 -10px 0;
   padding: 5px;
   background: url(/f/boxbg.png) repeat;
 }
@@ -223,6 +224,10 @@ p.center {
   display: inline;
   margin: 0;
 }
+#maincontent ul.maintabs.notfirst {
+  display: block;
+  height: 20px;
+}
 #maincontent ul.maintabs li {
   display: inline;
   list-style-type: none;
@@ -237,10 +242,63 @@ p.center {
   margin: 0 0 0 10px;
   background-color: #012;
 }
+#maincontent ul.maintabs.notfirst li a {
+  margin-top: 20px;
+}
+#maincontent ul.maintabs.bottom li a {
+  margin-top: 10px;
+  border-bottom: 1px solid #258;
+  border-top: none;
+  padding: 4px 7px 2px 7px;
+}
+#maincontent ul.maintabs li.left a {
+  float: left;
+  margin-left: 0;
+  margin-right: 10px;
+}
 #maincontent ul.maintabs li.tabselected a,
 #maincontent ul.maintabs li a:hover {
   background-color: #0c1925;
   padding-bottom: 6px;
+}
+#maincontent ul.maintabs.bottom li.tabselected a,
+#maincontent ul.maintabs.bottom li a:hover {
+  padding-bottom: 2px;
+  padding-top: 5px;
+  margin-top: 9px;
+}
+
+
+
+
+/***** Browsing ******/
+
+p.browseopts {
+  text-align: center;
+}
+p.browseopts a {
+  padding: 1px 3px;
+  color: #fff!important;
+  border: 1px solid #258;
+  margin: 0 2px;
+}
+p.browseopts a.optselected, p.browseopts a:hover {
+  border: 0;
+  padding: 2px 4px;
+}
+#maincontent div.mainbox.browse {
+  padding: 0;
+}
+div.mainbox.browse table {
+  width: 100%;
+}
+div.mainbox.browse table td.tc1 {
+  padding-left: 25px;
+}
+table thead td {
+  font-weight: bold;
+  background-color: #135;
+  /*background-color: #112337;*/
 }
 
 

@@ -50,7 +50,7 @@ sub _menu {
        [ '/'   => 'Home'              ],
        [ '#'   => 'Visual Novels'     ],
        [ '#'   => 'Producers'         ],
-       [ '#'   => 'Users'             ],
+       [ '/u/list/all' => 'Users'     ],
        [ '#'   => 'Recent Changes'    ],
        [ '#'   => 'Discussion Board'  ],
        [ '#'   => 'FAQ'               ]) {

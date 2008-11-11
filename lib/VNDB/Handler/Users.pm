@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use YAWF ':html';
 use Digest::MD5 'md5_hex';
+use POSIX 'strftime';
 
 
 YAWF::register(
@@ -16,6 +17,7 @@ YAWF::register(
   qr{u/register}              => \&register,
   qr{u([1-9]\d*)/edit}        => \&edit,
   qr{u([1-9]\d*)/del(/[od])?} => \&delete,
+  qr{u/list/(all|[0a-z])}     => \&list,
 );
 
 
@@ -305,6 +307,107 @@ sub delete {
     end;
     $self->htmlFooter;
   }
+}
+
+
+sub list {
+  my($self, $char) = @_;
+
+  my $f = $self->formValidate(
+    { name => 's', required => 0, default => 'username', enum => [ qw|username registered| ] },
+    { name => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
+    { name => 'p', required => 0, default => 1, template => 'int' },
+  );
+  return 404 if $f->{_err};
+
+  $self->htmlHeader(title => 'Browse users');
+
+  div class => 'mainbox';
+   h1 'Browse users';
+   p class => 'browseopts';
+    for ('all', 'a'..'z', 0) {
+      a href => "/u/list/$_", $_ eq $char ? (class => 'optselected') : (), $_ ? uc $_ : '#';
+    }
+   end;
+  end;
+
+  my($list, $np) = $self->dbUserGet(
+    order => $f->{s}.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
+    $char ne 'all' ? (
+      firstchar => $char ) : (),
+    results => 50,
+    page => $f->{p},
+    what => 'list',
+  );
+
+  if($f->{p} > 1 || $np) {
+    ul class => 'maintabs notfirst';
+     if($f->{p} > 1) {
+       li class => 'left';
+        a href => "/u/list/$char?o=$f->{o}&s=$f->{s}&p=".($f->{p}-1), '<- previous';
+       end;
+     }
+     if($np) {
+       li;
+        a href => "/u/list/$char?o=$f->{o}&s=$f->{s}&p=".($f->{p}+1), 'next ->';
+       end;
+     }
+    end;
+  }
+
+  div class => 'mainbox browse';
+   table;
+    thead;
+     Tr;
+      td class => 'tc1';
+       txt 'Username ';
+       lit $f->{s} eq 'username' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u/list/$char?o=a&s=username">\x{25B4}</a>|;
+       lit $f->{s} eq 'username' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u/list/$char?o=d&s=username">\x{25BE}</a>|;
+      end;
+      td class => 'tc2';
+       txt 'Registered ';
+       lit $f->{s} eq 'registered' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u/list/$char?o=a&s=registered">\x{25B4}</a>|;
+       lit $f->{s} eq 'registered' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u/list/$char?o=d&s=registered">\x{25BE}</a>|;
+      end;
+      td class => 'tc3', 'Votes';
+      td class => 'tc4', 'Edits';
+     end;
+    end;
+    for(0..$#$list) {
+      my $l = $list->[$_];
+      Tr $_ % 2 ? (class => 'odd') : ();
+       td class => 'tc1';
+        a href => '/u'.$l->{id}, $l->{username};
+       end;
+       td class => 'tc2', strftime '%Y-%m-%d', gmtime $l->{registered};
+       td class => 'tc3';
+        lit !($l->{flags} & $self->{user_flags}{list}) ? '-' : !$l->{votes} ? 0 :
+          qq|<a href="/u$l->{id}/list">$l->{votes}</a>|;
+       end;
+       td class => 'tc4';
+        lit !$l->{changes} ? 0 : qq|<a href="/u$l->{id}/hist">$l->{changes}</a>|;
+       end;
+      end;
+    }
+   end;
+  end;
+
+  if($f->{p} > 1 || $np) {
+    ul class => 'maintabs bottom';
+     if($f->{p} > 1) {
+       li class => 'left';
+        a href => "/u/list/$char?o=$f->{o}&s=$f->{s}&p=".($f->{p}-1), '<- previous';
+       end;
+     }
+     if($np) {
+       li;
+        a href => "/u/list/$char?o=$f->{o}&s=$f->{s}&p=".($f->{p}+1), 'next ->';
+       end;
+     }
+    end;
+  }
+  
+  $self->htmlFooter;
 }
 
 
