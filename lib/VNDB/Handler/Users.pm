@@ -314,7 +314,7 @@ sub list {
   my($self, $char) = @_;
 
   my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'username', enum => [ qw|username registered| ] },
+    { name => 's', required => 0, default => 'username', enum => [ qw|username registered votes changes| ] },
     { name => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
   );
@@ -332,12 +332,11 @@ sub list {
   end;
 
   my($list, $np) = $self->dbUserGet(
-    order => $f->{s}.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
+    order => ($f->{s} =~ /(votes|changes)/ ? 'c_' : '').$f->{s}.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
     $char ne 'all' ? (
       firstchar => $char ) : (),
     results => 50,
     page => $f->{p},
-    what => 'list',
   );
 
   if($f->{p} > 1 || $np) {
@@ -369,8 +368,16 @@ sub list {
        lit $f->{s} eq 'registered' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u/list/$char?o=a&s=registered">\x{25B4}</a>|;
        lit $f->{s} eq 'registered' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u/list/$char?o=d&s=registered">\x{25BE}</a>|;
       end;
-      td class => 'tc3', 'Votes';
-      td class => 'tc4', 'Edits';
+      td class => 'tc3';
+       txt 'Votes ';
+       lit $f->{s} eq 'votes' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u/list/$char?o=a&s=votes">\x{25B4}</a>|;
+       lit $f->{s} eq 'votes' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u/list/$char?o=d&s=votes">\x{25BE}</a>|;
+      end;
+      td class => 'tc4';
+       txt 'Edits ';
+       lit $f->{s} eq 'changes' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u/list/$char?o=a&s=changes">\x{25B4}</a>|;
+       lit $f->{s} eq 'changes' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u/list/$char?o=d&s=changes">\x{25BE}</a>|;
+      end;
      end;
     end;
     for(0..$#$list) {
@@ -381,11 +388,11 @@ sub list {
        end;
        td class => 'tc2', strftime '%Y-%m-%d', gmtime $l->{registered};
        td class => 'tc3';
-        lit !($l->{flags} & $self->{user_flags}{list}) ? '-' : !$l->{votes} ? 0 :
-          qq|<a href="/u$l->{id}/list">$l->{votes}</a>|;
+        lit !($l->{flags} & $self->{user_flags}{list}) ? '-' : !$l->{c_votes} ? 0 :
+          qq|<a href="/u$l->{id}/list">$l->{c_votes}</a>|;
        end;
        td class => 'tc4';
-        lit !$l->{changes} ? 0 : qq|<a href="/u$l->{id}/hist">$l->{changes}</a>|;
+        lit !$l->{c_changes} ? 0 : qq|<a href="/u$l->{id}/hist">$l->{c_changes}</a>|;
        end;
       end;
     }

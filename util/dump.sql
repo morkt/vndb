@@ -174,7 +174,9 @@ CREATE TABLE users (
   rank smallint NOT NULL DEFAULT 2,
   passwd bytea NOT NULL DEFAULT '',
   registered bigint NOT NULL DEFAULT 0,
-  flags integer NOT NULL DEFAULT 7
+  flags integer NOT NULL DEFAULT 7,
+  c_votes integer NOT NULL DEFAULT 0,
+  c_changes integer NOT NULL DEFAULT 0
 );
 
 -- vn
@@ -400,6 +402,27 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+-- trigger function to keep the c_* columns in the users table up to date
+CREATE OR REPLACE FUNCTION update_users_cache() RETURNS TRIGGER AS $$
+BEGIN
+  IF TG_TABLE_NAME = 'votes' THEN
+    IF TG_OP = 'INSERT' THEN
+      UPDATE users SET c_votes = c_votes + 1 WHERE id = NEW.uid;
+    ELSE
+      UPDATE users SET c_votes = c_votes - 1 WHERE id = OLD.uid;
+    END IF;
+  ELSE
+    IF TG_OP = 'INSERT' THEN
+      UPDATE users SET c_changes = c_changes + 1 WHERE id = NEW.requester;
+    ELSE
+      UPDATE users SET c_changes = c_changes - 1 WHERE id = OLD.requester;
+    END IF;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE 'plpgsql';
+
+
 
 
 
@@ -407,6 +430,11 @@ $$ LANGUAGE plpgsql;
 ---------------------------------
 --  M I S C E L L A N E O U S  --
 ---------------------------------
+
+
+-- triggers
+CREATE TRIGGER users_changes_update AFTER INSERT OR DELETE ON changes FOR EACH ROW EXECUTE PROCEDURE update_users_cache();
+CREATE TRIGGER users_votes_update   AFTER INSERT OR DELETE ON votes   FOR EACH ROW EXECUTE PROCEDURE update_users_cache();
 
 
 -- Sequences used for ID generation of items not in the DB

@@ -8,14 +8,13 @@ use Exporter 'import';
 our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel|;
 
 
-# %options->{ username passwd mail order uid what results page }
+# %options->{ username passwd mail order uid results page }
 sub dbUserGet { 
   my $s = shift;
   my %o = (
     order => 'username ASC',
     page => 1,
     results => 10,
-    what => '',
     @_
   );
 
@@ -44,32 +43,6 @@ sub dbUserGet {
     \%where,
     $o{order}
   );
-
-  # XXX: cache please...
-  if($o{what} =~ /list/ && $#$r >= 0) {
-    my %r = map {
-      $r->[$_]{votes} = 0;
-      $r->[$_]{changes} = 0;
-      ($r->[$_]{id}, $_)
-    } 0..$#$r;
-
-    $r->[$r{$_->{uid}}]{votes} = $_->{cnt} for (@{$s->dbAll(q|
-      SELECT uid, COUNT(vid) AS cnt
-      FROM votes
-      WHERE uid IN(!l)
-      GROUP BY uid|,
-      [ keys %r ]
-    )});
-
-    $r->[$r{$_->{requester}}]{changes} = $_->{cnt} for (@{$s->dbAll(q|
-      SELECT requester, COUNT(id) AS cnt
-      FROM changes
-      WHERE requester IN(!l)
-      GROUP BY requester|,
-      [ keys %r ]
-    )});
-  }
-
   return wantarray ? ($r, $np) : $r;
 }
 
