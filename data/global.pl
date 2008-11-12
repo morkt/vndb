@@ -19,6 +19,7 @@ our %S = (
   url_static      => 'http://s.vndb.org',
   cookie_domain   => '.vndb.org',
   cookie_key      => 'any-private-string-here',
+  sharedmem_key   => 'VNDB',
   user_ranks      => [
        # rankname   allowed actions                                   # DB number
     [qw| visitor    hist                                          |], # 0
@@ -27,7 +28,31 @@ our %S = (
     [qw| mod        hist board boardmod edit mod lock del         |], # 3
     [qw| admin      hist board boardmod edit mod lock del usermod |], # 4
   ],
-  sharedmem_key   => 'VNDB',
+  languages       => {
+    cs  => q|Czech|,
+    da  => q|Danish|,
+    de  => q|German|,
+    en  => q|English|,
+    es  => q|Spanish|,
+    fi  => q|Finnish|,
+    fr  => q|French|,
+    it  => q|Italian|,
+    ja  => q|Japanese|,
+    ko  => q|Korean|,
+    nl  => q|Dutch|,
+    no  => q|Norwegian|,
+    pl  => q|Polish|,
+    pt  => q|Portuguese|,
+    ru  => q|Russian|,
+    sv  => q|Swedish|,
+    tr  => q|Turkish|,
+    zh  => q|Chinese|,
+  },
+  producer_types  => {
+    co => 'Company',
+    in => 'Individual',
+    ng => 'Amateur group',
+  },
 );
 
 
@@ -50,3 +75,5 @@ our %M = (
 require $ROOT.'/data/config.pl' if -f $ROOT.'/data/config.pl';
 
 1;
+
+

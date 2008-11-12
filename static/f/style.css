@@ -336,6 +336,25 @@ div.vndescription p {
 
 
 
+/***** Producer page *******/
+
+.producerpage p.description {
+  margin: 10px 100px!important;
+}
+.producerpage ul {
+  margin: 0 50px;
+}
+.producerpage li {
+  padding-top: 3px;
+  list-style-type: none;
+}
+.producerpage li a {
+  margin-left: 10px;
+}
+
+
+
+
 /***** Warning/Notice Box *****/
 
 div.warning, div.notice {
