@@ -61,7 +61,7 @@ sub _start {
 
   $_[HEAP]{irc}->plugin_add(
     Logger => POE::Component::IRC::Plugin::Logger->new(
-      Path => $Multi::LOGDIR,
+      Path => $VNDB::M{log_dir},
       Private => 0,
       Public => 1,
   ));
@@ -70,7 +70,7 @@ sub _start {
   );
   $_[HEAP]{irc}->plugin_add(
     CTCP => POE::Component::IRC::Plugin::CTCP->new(
-      version => $_[HEAP]{o}{ircname}.' v'.$VNDB::VERSION,
+      version => $_[HEAP]{o}{ircname}.' v'.$VNDB::S{version},
       userinfo => $_[HEAP]{o}{ircname},
   ));
   if($_[HEAP]{o}{pass}) {
@@ -175,9 +175,9 @@ sub vndbid { # dest, msg, force
   # nf (normal format):   x+     : x, id, title
   # sf (sub format):      x+.+   : x, id, subid, title, action2, title2
   # ef (extended format): x+.+   : x, id, subid, action, title, action2, title2
-  my $nf = BOLD.RED.'['.NORMAL.BOLD.'%s%d'   .RED.']'                 .NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' '.$VNDB::VNDBopts{root_url}.'/%1$s%2$d'.NORMAL;
-  my $sf = BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'                 .NORMAL.' %s '.RED.'%s'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' '.$VNDB::VNDBopts{root_url}.'/%1$s%2$d.%3$d'.NORMAL;
-  my $ef = BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'.NORMAL.RED.' %s'.NORMAL.' %s '.RED.'%s'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' '.$VNDB::VNDBopts{root_url}.'/%1$s%2$d.%3$d'.NORMAL;
+  my $nf = BOLD.RED.'['.NORMAL.BOLD.'%s%d'   .RED.']'                 .NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' '.$VNDB::S{url}.'/%1$s%2$d'.NORMAL;
+  my $sf = BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'                 .NORMAL.' %s '.RED.'%s'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' '.$VNDB::S{url}.'/%1$s%2$d.%3$d'.NORMAL;
+  my $ef = BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'.NORMAL.RED.' %s'.NORMAL.' %s '.RED.'%s'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' '.$VNDB::S{url}.'/%1$s%2$d.%3$d'.NORMAL;
 
   # get a list of possible IDs (a la sub summary in defs.pl)
   my @id; # [ type, id, ref ]
@@ -272,7 +272,7 @@ sub shutdown {
 
 sub cmd_info {
   $_[KERNEL]->post(circ => privmsg => $_[DEST],
-    'Hello, I am HMX-12 Multi v'.$VNDB::VERSION.' made by the great Yorhel!');
+    'Hello, I am HMX-12 Multi v'.$VNDB::S{version}.' made by the great Yorhel!');
 }
 
 
@@ -316,7 +316,7 @@ sub cmd_vn { # $arg = search string
     sprintf 'No results found for %s', $_[ARG]) if !@$res;
   return $_[KERNEL]->post(circ => privmsg => $_[DEST],
     sprintf 'Too many results found, see %s/v/search?q=%s',
-      $VNDB::VNDBopts{root_url}, uri_escape_utf8($_[ARG])) if @$res > 5;
+      $VNDB::S{url}, uri_escape_utf8($_[ARG])) if @$res > 5;
   $_[KERNEL]->yield(vndbid => $_[DEST], join(' ', map 'v'.$_->[0], @$res), 1);
 }
 

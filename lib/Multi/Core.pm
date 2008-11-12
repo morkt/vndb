@@ -56,7 +56,7 @@ sub heartbeat { # last beat
 
 
 sub queue { # cmd
-  my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
+  my $s = tie my %s, 'Tie::ShareLite', -key => $VNDB::S{sharedmem_key}, -create => 'yes', -destroy => 'no', -mode => 0666;
   $s->lock(LOCK_EX);
   my @q = ( ($s{queue} ? @{$s{queue}} : ()), $_[ARG0] );
   $s{queue} = \@q;
@@ -70,7 +70,7 @@ sub queue { # cmd
 sub prepare { # determines whether to execute a new cmd
   return if $Multi::STOP || $_[HEAP]{running};
 
-  my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
+  my $s = tie my %s, 'Tie::ShareLite', -key => $VNDB::S{sharedmem_key}, -create => 'yes', -destroy => 'no', -mode => 0666;
   $s->lock(LOCK_SH);
   if($s{queue} && @{$s{queue}}) {
     $_[KERNEL]->yield(execute => $s{queue}[0]);
@@ -100,7 +100,7 @@ sub finish { # cmd
   $_[KERNEL]->call(core => log => 2, "Unqueuing '%s' after %.2fs.",
     $_[ARG0], tv_interval($_[HEAP]{starttime}));
 
-  my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
+  my $s = tie my %s, 'Tie::ShareLite', -key => $VNDB::S{sharedmem_key}, -create => 'yes', -destroy => 'no', -mode => 0666;
   $s->lock(LOCK_EX);
   my @q = grep { $_ ne $_[ARG0] } $s{queue} ? @{$s{queue}} : ();
   $s{queue} = \@q;
@@ -111,19 +111,16 @@ sub finish { # cmd
 
 
 sub log { # level, msg
-  return if $_[ARG0] > $Multi::LOGLVL; 
+  return if $_[ARG0] > $VNDB::M{log_level};
 
   (my $p = eval { $_[SENDER][2]{$_[CALLER_STATE]}[0] } || '') =~ s/^Multi:://;
   my $msg = sprintf '(%s) %s::%s: %s',
     (qw|WRN ACT DBG|)[$_[ARG0]-1], $p, $_[CALLER_STATE],
     $_[ARG2] ? sprintf($_[ARG1], @_[ARG2..$#_]) : $_[ARG1];
     
-  open(my $F, '>>', $Multi::LOGDIR.'/multi.log');
+  open(my $F, '>>', $VNDB::M{log_dir}.'/multi.log');
   printf $F "[%s] %s\n", scalar localtime, $msg;
   close $F;
-
- # (debug) log to stdout as well...
-  $VNDB::DEBUG && printf "[%s] %s\n", scalar localtime, $msg;
 }
 
 

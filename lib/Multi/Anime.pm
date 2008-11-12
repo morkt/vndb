@@ -66,6 +66,17 @@ sub spawn {
       timeoutdelay => 0.4, # $delay = $msgdelay ^ (1 + $tm*$timeoutdelay)
       maxtimeoutdelay => 2*3600, # two hours
       cachetime => 30*24*3600,   # one month
+     # AniDB anime types:
+      types => [
+        [ 'unknown',    'unknown',    ],
+        [ 'TV',         'TV Series'   ],
+        [ 'OVA',        'OVA'         ],
+        [ 'Movie',      'Movie'       ],
+        [ 'unknown',    'Other'       ],
+        [ 'unknown',    'Web'         ],
+        [ 'TV Special', 'TV Special'  ],
+        [ 'unknown',    'Music Video' ],
+      ],
 
       @_,
       w => undef,
@@ -125,7 +136,7 @@ sub cmd_anime { # cmd, arg
   }
 
   if(@push) {
-    my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
+    my $s = tie my %s, 'Tie::ShareLite', -key => $VNDB::S{sharedmem_key}, -create => 'yes', -destroy => 'no', -mode => 0666;
     $s->lock(LOCK_EX);
     my @q = $s{anime} ? @{$s{anime}} : ();
     push @q, grep { 
@@ -143,7 +154,7 @@ sub cmd_anime { # cmd, arg
 sub nextcmd {
   return if $_[HEAP]{lm};
 
-  my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
+  my $s = tie my %s, 'Tie::ShareLite', -key => $VNDB::S{sharedmem_key}, -create => 'yes', -destroy => 'no', -mode => 0666;
   my @q = $s{anime} ? @{$s{anime}} : ();
   undef $s;
 
@@ -188,8 +199,8 @@ sub nextcmd {
     $_.'='.$cmd{$_}
   } keys %cmd);
   $_[HEAP]{w}->put({ payload => [ $cmd ]});
-  $VNDB::DEBUG && printf " > %s\n", $cmd;
- 
+
+  #$_[KERNEL]->call(core => log => 3, '> %s', $cmd);
   $_[KERNEL]->delay(receivepacket => $_[HEAP]{timeout}, { payload => [ $_[HEAP]{tag}.' 100 TIMEOUT' ] });
   $_[HEAP]{lm} = time;
 }
@@ -208,7 +219,6 @@ sub receivepacket { # input, wheelid
   } else {
     $_[KERNEL]->call(core => log => 3, 'Received from AniDB after %.2fs: %d %s',
       time-$_[HEAP]{lm}, $code, $msg);
-    $VNDB::DEBUG && print ' < '.join("\n < ", @r)."\n";
   }
 
  # just handle anime data, even if the tag is not correct
@@ -263,8 +273,8 @@ sub updateanime { # aid, data|'notfound'
       $_ =~ s/`/'/g;
     }
     $col[3] = $1 if $col[3] =~ /^([0-9]+)/; # remove multi-year stuff
-    for(0..$#$VNDB::ANITYPE) {
-      $col[4] = $_ if lc($VNDB::ANITYPE->[$_][1]) eq lc($col[4]);
+    for(0..$#{$_[HEAP]{types}}) {
+      $col[4] = $_ if lc($_[HEAP]{types}[$_][1]) eq lc($col[4]);
     }
     $col[4] = 0 if $col[4] !~ /^[0-9]+$/;
     $col[2] = '' if $col[2] =~ /^0,/;
@@ -286,7 +296,7 @@ sub updateanime { # aid, data|'notfound'
     undef, @col) if $r < 1;
 
  # remove from queue
-  my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
+  my $s = tie my %s, 'Tie::ShareLite', -key => $VNDB::S{sharedmem_key}, -create => 'yes', -destroy => 'no', -mode => 0666;
   $s->lock(LOCK_EX);
   my @q = grep $_ != $_[ARG0], ($s{anime} ? @{$s{anime}} : ());
   $s{anime} = \@q;

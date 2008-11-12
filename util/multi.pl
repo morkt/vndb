@@ -21,25 +21,32 @@ package Multi;
 
 use strict;
 use warnings;
+no warnings 'once';
 use Tie::ShareLite ':lock';
 use Time::HiRes;
 use POE;
 use DBI;
+use Cwd 'abs_path';
 
-use lib '/www/vndb/lib';
+
+# loading & initialization
+
+our $ROOT;
+BEGIN { ($ROOT = abs_path $0) =~ s{/util/multi\.pl$}{}; *VNDB::ROOT = \$ROOT }
+use lib $VNDB::ROOT.'/lib';
+
 use Multi::Core;
+require $VNDB::ROOT.'/data/global.pl';
 
-BEGIN { require 'global.pl' }
-
-
-our $LOGDIR = '/www/vndb/data/log';
-our $LOGLVL = 3; # 3:DEBUG, 2:ACTIONS, 1:WARN
 our $STOP = 0;
 our $DAEMONIZE = (grep /^-c$/, @ARGV) ? 1 : (grep /^-s$/, @ARGV) ? 2 : 0;
 
 
+
+# only add commands with the -a argument
+
 if(grep /^-a$/, @ARGV) {
-  my $s = tie my %s, 'Tie::ShareLite', @VNDB::SHMOPTS;
+  my $s = tie my %s, 'Tie::ShareLite', -key => $VNDB::S{sharedmem_key}, -create => 'yes', -destroy => 'no', -mode => 0666;
   $s->lock(LOCK_EX);
   my @q = ( ($s{queue} ? @{$s{queue}} : ()), (grep !/^-/, @ARGV) );
   $s{queue} = \@q;
@@ -48,15 +55,15 @@ if(grep /^-a$/, @ARGV) {
 }
 
 # one shared pgsql connection for all sessions
-our $SQL = DBI->connect(@VNDB::DBLOGIN,
+our $SQL = DBI->connect(@{$VNDB::O{db_login}},
   { PrintError => 1, RaiseError => 0, AutoCommit => 1, pg_enable_utf8 => 1 });
 
 
 Multi::Core->spawn();
 
 # dynamically load and spawn modules
-for (0..(@$VNDB::MULTI/2+1)) {
-  my($mod, $args) = @{$VNDB::MULTI}[$_*2, $_*2+1];
+for (keys %{$VNDB::M{modules}}) {
+  my($mod, $args) = ($_, $VNDB::M{modules}{$_});
   next if !$args || ref($args) ne 'HASH';
   require "Multi/$mod.pm";
   # I'm surprised the strict pagma isn't complaining about this

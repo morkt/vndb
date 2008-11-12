@@ -114,10 +114,10 @@ sub unkanime {
 
 
 sub logrotate {
-  my $dir = sprintf '%s/old', $Multi::LOGDIR;
+  my $dir = sprintf '%s/old', $VNDB::M{log_dir};
   mkdir $dir if !-d $dir;
 
-  for (glob sprintf '%s/*', $Multi::LOGDIR) {
+  for (glob sprintf '%s/*', $VNDB::M{log_dir}) {
     next if /^\./ || /~$/ || !-f;
     my $f = /([^\/]+)$/ ? $1 : $_;
     my $n = sprintf '%s/%s.%04d-%02d-%02d.gz', $dir, $f, (localtime)[5]+1900, (localtime)[4]+1, (localtime)[3];
@@ -125,12 +125,12 @@ sub logrotate {
       $_[KERNEL]->call(core => log => 1, 'Logs already rotated earlier today!');
       return;
     }
-    open my $I, '<', sprintf '%s/%s', $Multi::LOGDIR, $f;
+    open my $I, '<', sprintf '%s/%s', $VNDB::M{log_dir}, $f;
     open my $O, '>:gzip', $n;
     print $O $_ while <$I>;
     close $O;
     close $I;
-    open $I, '>', sprintf '%s/%s', $Multi::LOGDIR, $f;
+    open $I, '>', sprintf '%s/%s', $VNDB::M{log_dir}, $f;
     close $I;
   }
 }
