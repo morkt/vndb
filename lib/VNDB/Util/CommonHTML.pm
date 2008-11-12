@@ -6,143 +6,7 @@ use warnings;
 use YAWF ':html';
 use Exporter 'import';
 
-our @EXPORT = qw|
-  htmlHeader htmlFooter htmlMainTabs htmlDenied
-|;
-
-
-sub htmlHeader { # %options->{ title }
-  my($self, %o) = @_;
-
-  # heading
-  html;
-   head;
-    title $o{title};
-    Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
-    Link rel => 'stylesheet', href => $self->{url_static}.'/f/style.css', type => 'text/css', media => 'all';
-    script type => 'text/javascript', src => $self->{url_static}.'/f/script.js';
-     # most browsers don't like a self-closing <script> tag...
-    end;
-   end;
-   body;
-    div id => 'bgright', ' ';
-    div id => 'header';
-     h1;
-      a href => '/', 'the visual novel database';
-     end;
-    end;
-
-    _menu($self, %o);
-
-    div id => 'maincontent';
-}
-
-
-sub _menu {
-  my $self = shift;
-
-  div id => 'menulist';
-
-   div class => 'menubox';
-    h2 'Menu';
-    div;
-     for (
-       [ '/'   => 'Home'              ],
-       [ '#'   => 'Visual Novels'     ],
-       [ '#'   => 'Producers'         ],
-       [ '/u/list/all' => 'Users'     ],
-       [ '#'   => 'Recent Changes'    ],
-       [ '#'   => 'Discussion Board'  ],
-       [ '#'   => 'FAQ'               ]) {
-       a href => $$_[0], $$_[1];
-       br;
-     }
-    end;
-   end;
-
-   div class => 'menubox';
-    if($self->authInfo->{id}) {
-      my $uid = sprintf '/u%d', $self->authInfo->{id};
-      h2;
-       a href => $uid, ucfirst $self->authInfo->{username};
-       txt ' ('.$self->{user_ranks}[$self->authInfo->{rank}][0].')';
-      end;
-      div;
-       a href => "$uid/edit", 'My Profile'; br;
-       a href => "$uid/list", 'My Visual Novel List'; br;
-       a href => "$uid/wish", 'My Wishlist'; br;
-       a href => "/t$uid",    'My Messages'; br;
-       a href => "$uid/hist", 'My Recent Changes'; br;
-       br;
-       a href => '/v/new',    'Add Visual Novel'; br;
-       a href => '/p/new',    'Add Producer'; br;
-       br;
-       a href => '/u/logout', 'Logout';
-      end;
-    } else {
-      h2;
-       a href => '/u/login', 'Login';
-      end;
-      div;
-       form action => '/nospam?/u/login', id => 'loginform', method => 'post';
-        fieldset;
-         legend 'Login';
-         input type => 'text', class => 'text', id => 'username', name => 'usrname';
-         input type => 'password', class => 'text', id => 'userpass', name => 'usrpass';
-         input type => 'submit', class => 'submit', value => 'Login';
-        end;
-       end;
-       p;
-        lit 'Need to <a href="/u/register">register</a>,<br />';
-        lit 'or <a href="/u/newpass">forgot your password?</a>';
-       end;
-      end;
-    }
-   end;
-
-   my @stats = (
-     [ vn        => 'Visual Novels' ],
-     [ releases  => 'Releases'      ],
-     [ producers => 'Producers'     ],
-     [ users     => 'Users'         ],
-     [ threads   => 'Threads'       ],
-     [ posts     => 'Posts'         ],
-   );
-   my $stats = $self->dbStats(map $$_[0], @stats);
-   div class => 'menubox';
-    h2 'Database Statistics';
-    div;
-     dl;
-      for (@stats) {
-        dt $$_[1];
-        dd $stats->{$$_[0]};
-      }
-     end;
-     br style => 'clear: left';
-    end;
-   end;
-  end;
-}
-
-
-sub htmlFooter {
-  my $self = shift;
-    end; # /div maincontent
-   end; # /body
-  end; # /html
-
-  # write the SQL queries as a HTML comment when debugging is enabled
-  if($self->debug) {
-    lit "\n<!--\n SQL Queries:\n";
-    for (@{$self->{_YAWF}{DB}{queries}}) {
-      my $q = !ref $_->[0] ? $_->[0] :
-        $_->[0][0].(exists $_->[0][1] ? ' | "'.join('", "', @{$_->[0]}[1..$#{$_->[0]}]).'"' : '');
-      $q =~ s/^\s//g;
-      lit sprintf "  [%6.2fms] %s\n", $_->[1]*1000, $q;
-    }
-    lit "-->\n";
-  }
-}
+our @EXPORT = qw|htmlMainTabs htmlDenied htmlBrowse|;
 
 
 # generates the "main tabs". These are the commonly used tabs for
@@ -213,6 +77,95 @@ sub htmlDenied {
    end;
   end;
   $self->htmlFooter;
+}
+
+
+# generates a browse box, arguments:
+#  items    => arrayref with the list items
+#  options  => hashref containing at least the keys s (sort key), o (order) and p (page)
+#  nextpage => whether there's a next page or not
+#  sorturl  => base URL to append the sort options to
+#  pageurl  => base URL to append the page option to
+#  header   =>
+#   can be either an arrayref or subroutine reference,
+#   in the case of a subroutine, it will be called when the header should be written,
+#   in the case of an arrayref, the array should contain the header items. Each item
+#   can again be either an arrayref or subroutine ref. The arrayref would consist of
+#   two elements: the name of the header, and the name of the sorting column if it can
+#   be sorted
+#  row      => subroutine ref, which is called for each item in $list, arguments will be
+#   $self, $item_number (starting from 0), $item_value
+sub htmlBrowse {
+  my($self, %opt) = @_;
+
+  $opt{sorturl} .= $opt{sorturl} =~ /\?/ ? '&' : '?';
+  $opt{pageurl} .= $opt{pageurl} =~ /\?/ ? '&p=' : '?p=';
+
+  # top navigation
+  if($opt{options}{p} > 1 || $opt{nextpage}) {
+    ul class => 'maintabs notfirst';
+     if($opt{options}{p} > 1) {
+       li class => 'left';
+        a href => $opt{pageurl}.($opt{options}{p}-1), '<- previous';
+       end;
+     }
+     if($opt{nextpage}) {
+       li;
+        a href => $opt{pageurl}.($opt{options}{p}+1), 'next ->';
+       end;
+     }
+    end;
+  }
+
+  div class => 'mainbox browse';
+   table;
+
+   # header
+    thead;
+     Tr;
+      if(ref $opt{header} eq 'CODE') {
+        $opt{header}->($self);
+      } else {
+        for(0..$#{$opt{header}}) {
+          if(ref $opt{header}[$_] eq 'CODE') {
+            $opt{header}[$_]->($self, $_+1);
+          } else {
+            td class => 'tc'.($_+1);
+             lit $opt{header}[$_][0];
+             if($opt{header}[$_][1]) {
+               lit ' ';
+               lit $opt{options}{s} eq $opt{header}[$_][1] && $opt{options}{o} eq 'a' ? "\x{25B4}" : qq|<a href="$opt{sorturl}o=a&s=$opt{header}[$_][1]">\x{25B4}</a>|;
+               lit $opt{options}{s} eq $opt{header}[$_][1] && $opt{options}{o} eq 'd' ? "\x{25BE}" : qq|<a href="$opt{sorturl}o=d&s=$opt{header}[$_][1]">\x{25BE}</a>|;
+             }
+            end;
+          }
+        }
+      }
+     end;
+    end;
+
+   # rows
+    $opt{row}->($self, $_+1, $opt{items}[$_])
+      for 0..$#{$opt{items}};
+
+   end;
+  end;
+
+  # bottom navigation
+  if($opt{options}{p} > 1 || $opt{nextpage}) {
+    ul class => 'maintabs bottom';
+     if($opt{options}{p} > 1) {
+       li class => 'left';
+        a href => $opt{pageurl}.($opt{options}{p}-1), '<- previous';
+       end;
+     }
+     if($opt{nextpage}) {
+       li;
+        a href => $opt{pageurl}.($opt{options}{p}+1), 'next ->';
+       end;
+     }
+    end;
+  } 
 }
 
 

@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use YAWF ':html';
 use Digest::MD5 'md5_hex';
-use POSIX 'strftime';
+use VNDB::Func;
 
 
 YAWF::register(
@@ -339,54 +339,25 @@ sub list {
     page => $f->{p},
   );
 
-  if($f->{p} > 1 || $np) {
-    ul class => 'maintabs notfirst';
-     if($f->{p} > 1) {
-       li class => 'left';
-        a href => "/u/list/$char?o=$f->{o}&s=$f->{s}&p=".($f->{p}-1), '<- previous';
-       end;
-     }
-     if($np) {
-       li;
-        a href => "/u/list/$char?o=$f->{o}&s=$f->{s}&p=".($f->{p}+1), 'next ->';
-       end;
-     }
-    end;
-  }
-
-  div class => 'mainbox browse';
-   table;
-    thead;
-     Tr;
-      td class => 'tc1';
-       txt 'Username ';
-       lit $f->{s} eq 'username' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u/list/$char?o=a&s=username">\x{25B4}</a>|;
-       lit $f->{s} eq 'username' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u/list/$char?o=d&s=username">\x{25BE}</a>|;
-      end;
-      td class => 'tc2';
-       txt 'Registered ';
-       lit $f->{s} eq 'registered' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u/list/$char?o=a&s=registered">\x{25B4}</a>|;
-       lit $f->{s} eq 'registered' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u/list/$char?o=d&s=registered">\x{25BE}</a>|;
-      end;
-      td class => 'tc3';
-       txt 'Votes ';
-       lit $f->{s} eq 'votes' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u/list/$char?o=a&s=votes">\x{25B4}</a>|;
-       lit $f->{s} eq 'votes' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u/list/$char?o=d&s=votes">\x{25BE}</a>|;
-      end;
-      td class => 'tc4';
-       txt 'Edits ';
-       lit $f->{s} eq 'changes' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u/list/$char?o=a&s=changes">\x{25B4}</a>|;
-       lit $f->{s} eq 'changes' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u/list/$char?o=d&s=changes">\x{25BE}</a>|;
-      end;
-     end;
-    end;
-    for(0..$#$list) {
-      my $l = $list->[$_];
-      Tr $_ % 2 ? (class => 'odd') : ();
+  $self->htmlBrowse(
+    items    => $list,
+    options  => $f,
+    nextpage => $np,
+    pageurl  => "/u/list/$char?o=$f->{o}&s=$f->{s}",
+    sorturl  => "/u/list/$char",
+    header   => [
+      [ 'Username',   'username'   ],
+      [ 'Registered', 'registered' ],
+      [ 'Votes',      'votes'      ],
+      [ 'Edits',      'changes'    ],
+    ],
+    row     => sub {
+      my($s, $n, $l) = @_;
+      Tr $n % 2 ? (class => 'odd') : ();
        td class => 'tc1';
         a href => '/u'.$l->{id}, $l->{username};
        end;
-       td class => 'tc2', strftime '%Y-%m-%d', gmtime $l->{registered};
+       td class => 'tc2', date $l->{registered};
        td class => 'tc3';
         lit !$l->{show_list} ? '-' : !$l->{c_votes} ? 0 :
           qq|<a href="/u$l->{id}/list">$l->{c_votes}</a>|;
@@ -395,25 +366,8 @@ sub list {
         lit !$l->{c_changes} ? 0 : qq|<a href="/u$l->{id}/hist">$l->{c_changes}</a>|;
        end;
       end;
-    }
-   end;
-  end;
-
-  if($f->{p} > 1 || $np) {
-    ul class => 'maintabs bottom';
-     if($f->{p} > 1) {
-       li class => 'left';
-        a href => "/u/list/$char?o=$f->{o}&s=$f->{s}&p=".($f->{p}-1), '<- previous';
-       end;
-     }
-     if($np) {
-       li;
-        a href => "/u/list/$char?o=$f->{o}&s=$f->{s}&p=".($f->{p}+1), 'next ->';
-       end;
-     }
-    end;
-  }
-  
+    },
+  );
   $self->htmlFooter;
 }
 
