@@ -31,8 +31,11 @@ sub page {
     }
    end;
 
-   p class => 'description', $p->{desc}
-     if $p->{desc};
+   if($p->{desc}) {
+     p class => 'description';
+      lit bb2html $p->{desc};
+     end;
+   }
 
   end;
   div class => 'mainbox producerpage';
