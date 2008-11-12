@@ -4,6 +4,7 @@ package VNDB::Handler::Producers;
 use strict;
 use warnings;
 use YAWF ':html';
+use VNDB::Func;
 
 
 YAWF::register(
@@ -42,7 +43,9 @@ sub page {
      ul;
       for (@{$p->{vn}}) {
         li;
-         txt "$_->{date} ";
+         i;
+          lit datestr $_->{date};
+         end;
          a href => "/v$_->{id}", title => $_->{original}, $_->{title};
         end;
       }

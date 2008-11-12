@@ -163,6 +163,10 @@ td.field label {
 p.center {
   text-align: center;
 }
+b.future {
+  font-weight: normal;
+  color: #e44;
+}
 
 
 
@@ -348,8 +352,11 @@ div.vndescription p {
   padding-top: 3px;
   list-style-type: none;
 }
-.producerpage li a {
-  margin-left: 10px;
+.producerpage li i {
+  display: block;
+  font-style: normal;
+  float: left;
+  width: 80px;
 }
 
 
