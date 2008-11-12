@@ -38,9 +38,22 @@ sub htmlMainTabs {
      end;
    }
 
-   if($type eq 'u' && ($obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))) {
+   if($type eq 'u' && ($obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))
+    || $type ne 'u' && $self->authCan('edit')) {
      li $sel eq 'edit' ? (class => 'tabselected') : ();
       a href => "/$id/edit", 'edit';
+     end;
+   }
+
+   if($type ne 'u' && $self->authCan('del')) {
+     li;
+      a href => "/$id/hide", $obj->{hidden} ? 'unhide' : 'hide';
+     end;
+   }
+
+   if($type ne 'u' && $self->authCan('lock')) {
+     li;
+      a href => "/$id/lock", $obj->{locked} ? 'unlock' : 'lock';
      end;
    }
 
