@@ -374,6 +374,9 @@ div.notice {
   background-color: #354;
   border: 1px solid #0C0;
 }
+div.warning ul, div.notice ul {
+  margin-left: 0;
+}
 div.warning li, div.notice li {
   margin-left: 20px;
 }

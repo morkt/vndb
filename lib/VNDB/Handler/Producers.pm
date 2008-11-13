@@ -9,6 +9,7 @@ use VNDB::Func;
 
 YAWF::register(
   qr{p([1-9]\d*)}             => \&page,
+  qr{p([1-9]\d*)/edit}        => \&edit,
   qr{p([1-9]\d*)/(lock|hide)} => \&mod,
 );
 
@@ -55,6 +56,30 @@ sub page {
       }
      end;
    }
+  end;
+  $self->htmlFooter;
+}
+
+
+sub edit {
+  my($self, $pid) = @_;
+
+  my $p = $self->dbProducerGet(id => $pid)->[0];
+  return 404 if !$p->{id};
+
+  return $self->htmlDenied if !$self->authCan('edit') || $p->{locked} && !$self->authCan('lock');
+
+  $self->htmlHeader(title => 'Edit '.$p->{name});
+  $self->htmlMainTabs('p', $p, 'edit');
+  div class => 'mainbox';
+   h1 'Edit '.$p->{name};
+   div class => 'notice';
+    h2 'Before editing:';
+    ul;
+     li; lit 'Read the <a href="/d4">guidelines</a>!'; end;
+     li; lit qq|Check for any existing discussions on the <a href="/t/p$pid">discussion board</a>|; end;
+     li; lit qq|Browse the <a href="/p$pid/hist">edit history</a> for any recent changes related to what you want to change.|; end;
+   end;
   end;
   $self->htmlFooter;
 }
