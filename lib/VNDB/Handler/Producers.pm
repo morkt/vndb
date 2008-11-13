@@ -89,7 +89,7 @@ sub edit {
 
       my($rev) = $self->dbProducerEdit($pid, %$frm);
 
-      # TODO: message Multi with an ircnotify
+      $self->multiCmd("ircnotify p$pid.$rev");
 
       return $self->resRedirect("/p$pid.$rev", 'post');
     }

@@ -31,6 +31,7 @@ YAWF::init(
   namespace => 'VNDB',
   object_data => \%S,
   pre_request_handler => \&reqinit,
+  post_request_handler => \&reqdone,
   error_404_handler => \&handle404,
 );
 
@@ -38,6 +39,12 @@ YAWF::init(
 sub reqinit {
   my $self = shift;
   $self->authInit;
+}
+
+
+sub reqdone {
+  my $self = shift;
+  $self->multiCmd;
 }
 
 
@@ -54,4 +61,5 @@ sub handle404 {
   end;
   $self->htmlFooter;
 }
+
 
