@@ -69,10 +69,7 @@ sub htmlFormError {
     }
    end;
   end;
-  if($mainbox) {
-     end;
-    end;
-  }
+  end if $mainbox;
 }
 
 
