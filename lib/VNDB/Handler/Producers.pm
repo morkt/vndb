@@ -8,9 +8,9 @@ use VNDB::Func;
 
 
 YAWF::register(
-  qr{p([1-9]\d*)(?:\.([1-9]\d*))} => \&page,
-  qr{p([1-9]\d*)/edit}            => \&edit,
-  qr{p([1-9]\d*)/(lock|hide)}     => \&mod,
+  qr{p([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
+  qr{p([1-9]\d*)/edit}             => \&edit,
+  qr{p([1-9]\d*)/(lock|hide)}      => \&mod,
 );
 
 
