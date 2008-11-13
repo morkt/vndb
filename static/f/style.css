@@ -91,7 +91,7 @@ fieldset.submit input {
   width: 200px;
 }
 table.formtable {
-  margin: 20px;
+  margin: 0 20px 20px 20px;
 }
 table.formtable td {
   padding: 0;

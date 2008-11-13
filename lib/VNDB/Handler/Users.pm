@@ -54,15 +54,12 @@ sub login {
   }
 
   $self->htmlHeader(title => 'Login');
-  div class => 'mainbox';
-   h1 'Login';
-   $self->htmlForm({ frm => $frm, action => '/u/login' }, Login => [
+  $self->htmlForm({ frm => $frm, action => '/u/login' }, Login => [
     [ input  => name => 'Username', short => 'usrname' ],
     [ static => content => '<a href="/u/register">No account yet?</a>' ],
     [ passwd => name => 'Password', short => 'usrpass' ],
     [ static => content => '<a href="/u/newpass">Forgot your password?</a>' ],
-   ]);
-  end;
+  ]);
   $self->htmlFooter;
 }
 
@@ -106,10 +103,10 @@ sub newpass {
    p "Forgot your password and can't login to VNDB anymore?\n"
     ."Don't worry! Just give us the email address you used to register on VNDB,\n"
     ."and we'll send you a new password within a few minutes!";
-   $self->htmlForm({ frm => $frm, action => '/u/newpass' }, 'Reset Password' => [
-    [ input  => name => 'Email', short => 'mail' ],
-   ]);
   end;
+  $self->htmlForm({ frm => $frm, action => '/u/newpass' }, 'Reset Password' => [
+    [ input  => name => 'Email', short => 'mail' ],
+  ]);
   $self->htmlFooter;
 }
 
@@ -172,17 +169,17 @@ sub register {
     li 'Contribute to the discussions on the boards';
     li 'And boast about the fact that you have an account on the best visual novel database in the world!';
    end;
-
-   $self->htmlForm({ frm => $frm, action => '/u/register' }, 'New Account' => [
-     [ input  => short => 'usrname', name => 'Username' ],
-     [ static => content => 'Requested username. Must be lowercase and can only consist of alphanumeric characters.' ],
-     [ input  => short => 'mail', name => 'Email' ],
-     [ static => content => 'Your email address will only be used in case you lose your password. We will never send'
-        .' spam or newsletters unless you explicitly ask us for it.<br /><br />' ],
-     [ passwd => short => 'usrpass', name => 'Password' ],
-     [ passwd => short => 'usrpass2', name => 'Confirm pass.' ],
-   ]);
   end;
+
+  $self->htmlForm({ frm => $frm, action => '/u/register' }, 'New Account' => [
+    [ input  => short => 'usrname', name => 'Username' ],
+    [ static => content => 'Requested username. Must be lowercase and can only consist of alphanumeric characters.' ],
+    [ input  => short => 'mail', name => 'Email' ],
+    [ static => content => 'Your email address will only be used in case you lose your password. We will never send'
+        .' spam or newsletters unless you explicitly ask us for it.<br /><br />' ],
+    [ passwd => short => 'usrpass', name => 'Password' ],
+    [ passwd => short => 'usrpass2', name => 'Confirm pass.' ],
+  ]);
   $self->htmlFooter;
 }
 
@@ -237,36 +234,36 @@ sub edit {
   my $title = $self->authInfo->{id} != $uid ? "Edit $u->{username}'s Account" : 'My Account';
   $self->htmlHeader(title => $title);
   $self->htmlMainTabs('u', $u, 'edit');
-  div class => 'mainbox';
-   h1 $title;
-   if($self->reqParam('d')) {
+  if($self->reqParam('d')) {
+    div class => 'mainbox';
+     h1 'Settings saved';
      div class => 'notice';
       p 'Settings successfully saved.';
      end;
-   }
-   $self->htmlForm({ frm => $frm, action => "/u$uid/edit" }, 'Edit Account' => [
-     [ part   => title => 'General Info' ],
-     $self->authCan('usermod') ? (
-       [ input  => short => 'usrname', name => 'Username' ],
-       [ select => short => 'rank', name => 'Rank', options => [
-         map [ $_, $self->{user_ranks}[$_][0] ], 1..$#{$self->{user_ranks}} ] ],
-     ) : (
-       [ static => label => 'Username', content => $frm->{usrname} ],
-     ),
-     [ input  => short => 'mail', name => 'Email' ],
+    end
+  }
+  $self->htmlForm({ frm => $frm, action => "/u$uid/edit" }, $title => [
+    [ part   => title => 'General Info' ],
+    $self->authCan('usermod') ? (
+      [ input  => short => 'usrname', name => 'Username' ],
+      [ select => short => 'rank', name => 'Rank', options => [
+      map [ $_, $self->{user_ranks}[$_][0] ], 1..$#{$self->{user_ranks}} ] ],
+    ) : (
+      [ static => label => 'Username', content => $frm->{usrname} ],
+    ),
+    [ input  => short => 'mail', name => 'Email' ],
 
-     [ part   => title => 'Change Password' ],
-     [ static => content => 'Leave blank to keep your current password' ],
-     [ input  => short => 'usrpass', name => 'Password' ],
-     [ passwd => short => 'usrpass2', name => 'Confirm pass.' ],
+    [ part   => title => 'Change Password' ],
+    [ static => content => 'Leave blank to keep your current password' ],
+    [ input  => short => 'usrpass', name => 'Password' ],
+    [ passwd => short => 'usrpass2', name => 'Confirm pass.' ],
 
-     [ part   => title => 'Options' ],
-     [ check  => short => 'flags_list', name =>
+    [ part   => title => 'Options' ],
+    [ check  => short => 'flags_list', name =>
         qq|Allow other people to see my visual novel list (<a href="/u$uid/list">/u$uid/list</a>) |.
         qq|and wishlist (<a href="/u$uid/wish">/u$uid/wish</a>)| ],
-     [ check  => short => 'flags_nsfw', name => 'Disable warnings for images that are not safe for work.' ],
-   ]);
-  end;
+    [ check  => short => 'flags_nsfw', name => 'Disable warnings for images that are not safe for work.' ],
+  ]);
   $self->htmlFooter;
 }
 

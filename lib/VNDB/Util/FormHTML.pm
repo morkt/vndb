@@ -142,54 +142,42 @@ sub htmlFormPart {
 }
 
 
-sub htmlFormSub {
-  my($self, $frm, $name, $parts) = @_;
-  fieldset;
-   legend $name;
-   table class => 'formtable';
-    $self->htmlFormPart($frm, $_) for @$parts;
-   end;
-  end;
-}
-
-
 # Generates a form, first argument is a hashref with global options, keys:
 #   frm    => the $frm as returned by formValidate,
 #   action => The location the form should POST to
 #   upload => 1/0, adds an enctype.
 # The other arguments are a list of subforms in the form
 # of (subform-name => [form parts]). Each subform is shown as a
-# (JavaScript-powered) tab, if only one subform is specified, no tabs
-# are shown and no 'mainbox' is generated. Otherwise, each subform has
-# it's own 'mainbox'. This function automatically calls htmlFormError,
-# and creates a separate mainbox for that if multiple subforms are specified.
+# (JavaScript-powered) tab, and has it's own 'mainbox'. This function
+# automatically calls htmlFormError
 sub htmlForm {
   my($self, $options, @subs) = @_;
   form action => '/nospam?'.$options->{action}, method => 'post', 'accept-charset' => 'utf-8',
     $options->{upload} ? (enctype => 'multipart/form-data') : ();
-  if(@subs == 2) {
-    $self->htmlFormError($options->{frm});
-    $self->htmlFormSub($options->{frm}, @subs);
-    fieldset class => 'submit';
-     input type => 'submit', value => 'Submit', class => 'submit';
-    end;
-  } else {
-    $self->htmlFormError($options->{frm}, 1);
-    # tabs here...
-    while(my($name, $parts) = (shift(@subs), shift(@subs))) {
-      last if !$name || !$parts;
-      (my $short = lc $name) =~ s/ /_/;
-      div class => 'mainbox subform', id => 'subform_'.$short;
-       h1 $name;
-       $self->htmlFormSub($options->{frm}, $name, $parts);
+
+  $self->htmlFormError($options->{frm}, 1);
+
+  # tabs here (if @subs > 2)
+
+  while(my($name, $parts) = (shift(@subs), shift(@subs))) {
+    last if !$name || !$parts;
+    (my $short = lc $name) =~ s/ /_/;
+    div class => 'mainbox subform', id => 'subform_'.$short;
+     h1 $name;
+     fieldset;
+      legend $name;
+      table class => 'formtable';
+       $self->htmlFormPart($options->{frm}, $_) for @$parts;
       end;
-    }
+     end;
+    end;
     div class => 'mainbox';
      fieldset class => 'submit';
       input type => 'submit', value => 'Submit', class => 'submit';
      end;
     end; 
   }
+
   end;
 }
 
