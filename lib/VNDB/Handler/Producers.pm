@@ -8,7 +8,8 @@ use VNDB::Func;
 
 
 YAWF::register(
-  qr{p([1-9]\d*)}        => \&page,
+  qr{p([1-9]\d*)}             => \&page,
+  qr{p([1-9]\d*)/(lock|hide)} => \&mod,
 );
 
 
@@ -59,4 +60,16 @@ sub page {
 }
 
 
+# /hide and /lock
+sub mod {
+  my($self, $pid, $act) = @_;
+  return $self->htmlDenied if !$self->authCan($act eq 'hide' ? 'del' : 'lock');
+  my $p = $self->dbProducerGet(id => $pid)->[0];
+  return 404 if !$p->{id};
+  $self->dbProducerMod($pid, $act eq 'hide' ? (hidden => !$p->{hidden}) : (locked => !$p->{locked}));
+  $self->resRedirect("/p$pid", 'temp');
+}
+
+
 1;
+

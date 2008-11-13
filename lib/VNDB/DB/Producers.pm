@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbProducerGet|;
+our @EXPORT = qw|dbProducerGet dbProducerMod|;
 
 
 # options: results, page, id, search, char, rev
@@ -76,6 +76,15 @@ sub dbProducerGet {
   }
   
   return wantarray ? ($r, $np) : $r;
+}
+
+
+# arguments: id, %options ->( hidden, locked )
+sub dbProducerMod {
+  my($self, $id, %o) = @_;
+  $self->dbExec('UPDATE producers !H WHERE id = ?', {
+      map { ($_.' = ?', int $o{$_}) } keys %o
+    }, $id);
 }
 
 
