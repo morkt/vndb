@@ -8,14 +8,14 @@ use VNDB::Func;
 
 
 YAWF::register(
-  qr{p([1-9]\d*)}             => \&page,
-  qr{p([1-9]\d*)/edit}        => \&edit,
-  qr{p([1-9]\d*)/(lock|hide)} => \&mod,
+  qr{p([1-9]\d*)(?:\.([1-9]\d*))} => \&page,
+  qr{p([1-9]\d*)/edit}            => \&edit,
+  qr{p([1-9]\d*)/(lock|hide)}     => \&mod,
 );
 
 
 sub page {
-  my($self, $pid) = @_;
+  my($self, $pid, $rev) = @_;
 
   my $p = $self->dbProducerGet(id => $pid, what => 'vn')->[0];
   return 404 if !$p->{id};
@@ -72,6 +72,7 @@ sub edit {
 
   my %b4 = map { $_ => $p->{$_} } qw|type name original lang website desc|;
   my $frm;
+
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
       { name => 'type', enum => [ keys %{$self->{producer_types}} ] },
@@ -82,6 +83,16 @@ sub edit {
       { name => 'desc', required => 0, maxlength => 5000, default => '' },
       { name => 'editsum', maxlength => 5000 },
     );
+    if(!$frm->{_err}) {
+      return $self->resRedirect("/p$pid", 'post')
+        if !grep $frm->{$_} ne $b4{$_}, keys %b4;
+
+      my($rev) = $self->dbProducerEdit($pid, %$frm);
+
+      # TODO: message Multi with an ircnotify
+
+      return $self->resRedirect("/p$pid.$rev", 'post');
+    }
   }
 
   !defined $frm->{$_} && ($frm->{$_} = $b4{$_}) for keys %b4;

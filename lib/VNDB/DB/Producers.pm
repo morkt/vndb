@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbProducerGet dbProducerMod|;
+our @EXPORT = qw|dbProducerGet dbProducerMod dbProducerEdit|;
 
 
 # options: results, page, id, search, char, rev
@@ -85,6 +85,35 @@ sub dbProducerMod {
   $self->dbExec('UPDATE producers !H WHERE id = ?', {
       map { ($_.' = ?', int $o{$_}) } keys %o
     }, $id);
+}
+
+
+# arguments: id, %options ->( editsum + columns in producers_rev )
+# returns: ( local revision, global revision )
+sub dbProducerEdit {
+  my($self, $pid, %o) = @_;
+
+  my $c = $self->dbRow(q|
+    INSERT INTO changes (type, requester, ip, comments, rev)
+      VALUES (2, ?, ?, ?, (
+        SELECT c.rev+1
+        FROM changes c
+        JOIN producers_rev pr ON pr.id = c.id
+        WHERE pr.pid = ?
+        ORDER BY c.id DESC
+        LIMIT 1
+      ))
+      RETURNING id, rev|,
+    $self->authInfo->{id}, $self->reqIP, $o{editsum}, $pid);
+
+  $self->dbExec(q|
+    INSERT INTO producers_rev (id, pid, name, original, website, type, lang, "desc")
+      VALUES (!l)|,
+    [ $c->{id}, $pid, @o{qw| name original website type lang desc|} ]
+  );
+
+  $self->dbExec(q|UPDATE producers SET latest = ? WHERE id = ?|, $c->{id}, $pid);
+  return ($c->{rev}, $c->{id});
 }
 
 
