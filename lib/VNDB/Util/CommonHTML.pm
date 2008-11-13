@@ -39,7 +39,7 @@ sub htmlMainTabs {
    }
 
    if($type eq 'u' && ($obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))
-    || $type ne 'u' && $self->authCan('edit')) {
+    || $type ne 'u' && $self->authCan('edit') && (!$obj->{locked} || $self->authCan('lock')) && (!$obj->{hidden} || $self->authCan('del'))) {
      li $sel eq 'edit' ? (class => 'tabselected') : ();
       a href => "/$id/edit", 'edit';
      end;

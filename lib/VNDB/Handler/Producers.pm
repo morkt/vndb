@@ -23,6 +23,7 @@ sub page {
   $self->htmlHeader(title => $p->{name});
   $self->htmlMainTabs(p => $p);
   div class => 'mainbox producerpage';
+   p class => 'locked', 'Locked for editing' if $p->{locked};
    h1 $p->{name};
    h2 class => 'alttitle', $p->{original} if $p->{original};
    p class => 'center';
@@ -67,7 +68,7 @@ sub edit {
   my $p = $self->dbProducerGet(id => $pid)->[0];
   return 404 if !$p->{id};
 
-  return $self->htmlDenied if !$self->authCan('edit') || $p->{locked} && !$self->authCan('lock');
+  return $self->htmlDenied if !$self->authCan('edit') || $p->{locked} && !$self->authCan('lock') || $p->{hidden} && !$self->authCan('del'); 
 
   my $frm;
 

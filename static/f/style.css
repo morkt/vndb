@@ -54,6 +54,12 @@ table tr.odd {
 ul {
   margin-left: 35px;
 }
+p.locked {
+  float: right;
+  color: #e44;
+  font-style: italic;
+  margin: 0!important;
+}
 
 
 
