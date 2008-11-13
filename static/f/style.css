@@ -68,7 +68,7 @@ form, fieldset {
 legend {
   display: none;
 }
-input.text, input.submit, select {
+input.text, input.submit, select, textarea {
   background-color: #135;
   color: #ccc;
   border: 1px solid #36A;
@@ -90,6 +90,12 @@ fieldset.submit {
 fieldset.submit input {
   width: 200px;
 }
+fieldset.submit h2 {
+  font-size: 9pt!important;
+}
+fieldset.submit textarea {
+  margin: 0 20px 5px 20px;
+}
 table.formtable {
   margin: 0 20px 20px 20px;
 }
@@ -104,7 +110,7 @@ table.formtable tr.newpart td {
   font-weight: bold;
 }
 td.label, td.label label {
-  width: 80px;
+  width: 90px;
 }
 td.label label {
   display: block;

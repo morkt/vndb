@@ -6,7 +6,7 @@ use warnings;
 use YAWF ':html';
 use Exporter 'import';
 
-our @EXPORT = qw| htmlFormError htmlFormPart htmlFormSub htmlForm |;
+our @EXPORT = qw| htmlFormError htmlFormPart htmlForm |;
 
 
 # form error messages
@@ -79,6 +79,7 @@ sub htmlFormError {
 #  static    content, label
 #  check     name, short, (value)
 #  select    name, short, options
+#  text      name, short, (rows, cols)
 #  part      title
 # TODO: Find a way to write this function in a readable way...
 sub htmlFormPart {
@@ -133,8 +134,16 @@ sub htmlFormPart {
     }
     if(/select/) {
       Select name => $o{short}, id => $o{short};
-       option value => $_->[0], $frm->{$o{short}} eq $_->[0] ? (selected => 'selected') : (), $_->[1]
+       option value => $_->[0], $frm->{$o{short}}||'' eq $_->[0] ? (selected => 'selected') : (), $_->[1]
          for @{$o{options}};
+      end;
+    }
+    if(/text/) {
+      (my $txt = $frm->{$o{short}}||'') =~ s/&/&amp;/;
+      $txt =~ s/</&lt;/;
+      $txt =~ s/>/&gt;/;
+      textarea name => $o{short}, id => $o{short}, rows => $o{rows}||5, cols => $o{cols}||60;
+       lit $txt;
       end;
     }
    end;
@@ -143,9 +152,10 @@ sub htmlFormPart {
 
 
 # Generates a form, first argument is a hashref with global options, keys:
-#   frm    => the $frm as returned by formValidate,
-#   action => The location the form should POST to
-#   upload => 1/0, adds an enctype.
+#   frm     => the $frm as returned by formValidate,
+#   action  => The location the form should POST to
+#   upload  => 1/0, adds an enctype.
+#   editsum => 1/0, adds an edit summary field before the submit button
 # The other arguments are a list of subforms in the form
 # of (subform-name => [form parts]). Each subform is shown as a
 # (JavaScript-powered) tab, and has it's own 'mainbox'. This function
@@ -173,6 +183,16 @@ sub htmlForm {
     end;
     div class => 'mainbox';
      fieldset class => 'submit';
+      if($options->{editsum}) {
+        (my $txt = $options->{frm}{editsum}||'') =~ s/&/&amp;/;
+        $txt =~ s/</&lt;/;
+        $txt =~ s/>/&gt;/;
+        h2 'Edit summary';
+        textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50;
+         lit $txt;
+        end;
+        br;
+      }
       input type => 'submit', value => 'Submit', class => 'submit';
      end;
     end; 

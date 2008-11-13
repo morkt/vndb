@@ -69,6 +69,8 @@ sub edit {
 
   return $self->htmlDenied if !$self->authCan('edit') || $p->{locked} && !$self->authCan('lock');
 
+  my $frm;
+
   $self->htmlHeader(title => 'Edit '.$p->{name});
   $self->htmlMainTabs('p', $p, 'edit');
   div class => 'mainbox';
@@ -79,8 +81,20 @@ sub edit {
      li; lit 'Read the <a href="/d4">guidelines</a>!'; end;
      li; lit qq|Check for any existing discussions on the <a href="/t/p$pid">discussion board</a>|; end;
      li; lit qq|Browse the <a href="/p$pid/hist">edit history</a> for any recent changes related to what you want to change.|; end;
+    end;
    end;
   end;
+  $self->htmlForm({ frm => $frm, action => "/p$pid/edit", editsum => 1 }, "General info" => [
+    [ select => name => 'Type', short => 'type',
+      options => [ map [ $_, $self->{producer_types}{$_} ], sort keys %{$self->{producer_types}} ] ],
+    [ input  => name => 'Name (romaji)', short => 'name' ],
+    [ input  => name => 'Original name', short => 'original' ],
+    [ static => content => q|The original name of the producer, leave blank if it is already in the Latin alphabet.| ],
+    [ select => name => 'Primary language', short => 'lang',
+      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
+    [ input  => name => 'Website', short => 'website' ],
+    [ text   => name => 'Description', short => 'desc', rows => 6 ],
+  ]);
   $self->htmlFooter;
 }
 
