@@ -15,6 +15,12 @@ my %formerr_names = (
   usrpass       => 'Password',
   usrpass2      => 'Password (confirm)',
   mail          => 'Email',
+  type          => 'Type',
+  name          => 'Name',
+  original      => 'Original',
+  lang          => 'Language',
+  desc          => 'Description',
+  editsum       => 'Edit summary',
 );
 my %formerr_exeptions = (
   login_failed  => 'Invalid username or password',
@@ -134,7 +140,7 @@ sub htmlFormPart {
     }
     if(/select/) {
       Select name => $o{short}, id => $o{short};
-       option value => $_->[0], $frm->{$o{short}}||'' eq $_->[0] ? (selected => 'selected') : (), $_->[1]
+       option value => $_->[0], ($frm->{$o{short}}||'') eq $_->[0] ? (selected => 'selected') : (), $_->[1]
          for @{$o{options}};
       end;
     }

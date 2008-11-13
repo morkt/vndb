@@ -70,7 +70,21 @@ sub edit {
 
   return $self->htmlDenied if !$self->authCan('edit') || $p->{locked} && !$self->authCan('lock') || $p->{hidden} && !$self->authCan('del'); 
 
+  my %b4 = map { $_ => $p->{$_} } qw|type name original lang website desc|;
   my $frm;
+  if($self->reqMethod eq 'POST') {
+    $frm = $self->formValidate(
+      { name => 'type', enum => [ keys %{$self->{producer_types}} ] },
+      { name => 'name', maxlength => 200 },
+      { name => 'original', required => 0, maxlength => 200, default => '' },
+      { name => 'lang', enum => [ keys %{$self->{languages}} ] },
+      { name => 'website', required => 0, template => 'url', default => '' },
+      { name => 'desc', required => 0, maxlength => 5000, default => '' },
+      { name => 'editsum', maxlength => 5000 },
+    );
+  }
+
+  !defined $frm->{$_} && ($frm->{$_} = $b4{$_}) for keys %b4;
 
   $self->htmlHeader(title => 'Edit '.$p->{name});
   $self->htmlMainTabs('p', $p, 'edit');
