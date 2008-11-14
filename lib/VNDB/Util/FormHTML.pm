@@ -19,6 +19,7 @@ my %formerr_names = (
   name          => 'Name',
   original      => 'Original',
   lang          => 'Language',
+  website       => 'Website',
   desc          => 'Description',
   editsum       => 'Edit summary',
 );
