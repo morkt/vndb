@@ -44,6 +44,7 @@ sub reqinit {
 
 sub reqdone {
   my $self = shift;
+  $self->dbCommit;
   $self->multiCmd;
 }
 
