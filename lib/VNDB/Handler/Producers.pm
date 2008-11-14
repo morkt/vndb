@@ -134,7 +134,7 @@ sub edit {
        li; lit qq|Check for any existing discussions on the <a href="/t/p$pid">discussion board</a>|; end;
        li; lit qq|Browse the <a href="/p$pid/hist">edit history</a> for any recent changes related to what you want to change.|; end;
      } else {
-       li; lit qq|<a href="/p">Search the database</a> to see if we already have information about this producer|; end;
+       li; lit qq|<a href="/p/all">Search the database</a> to see if we already have information about this producer|; end;
      }
     end;
    end;
