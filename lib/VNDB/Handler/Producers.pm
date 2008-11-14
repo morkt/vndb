@@ -22,6 +22,21 @@ sub page {
 
   $self->htmlHeader(title => $p->{name});
   $self->htmlMainTabs(p => $p);
+
+  if($p->{hidden}) {
+    div class => 'mainbox';
+     h1 $p->{name};
+     div class => 'warning';
+      h2 'Item deleted';
+      p;
+       lit qq|This item has been deleted from the database, File a request on the|
+          .qq| <a href="/t/p$pid">discussion board</a> to undelete this page.|;
+      end;
+     end;
+    end;
+    return $self->htmlFooter if !$self->authCan('del');
+  }
+
   div class => 'mainbox producerpage';
    p class => 'locked', 'Locked for editing' if $p->{locked};
    h1 $p->{name};
