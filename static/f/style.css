@@ -316,6 +316,15 @@ table thead td {
   background-color: #135;
   /*background-color: #112337;*/
 }
+form.search {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin: 0 0 10px 0;
+}
+form.search .submit {
+  padding: 0 1px;
+}
 
 
 

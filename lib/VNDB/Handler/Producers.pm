@@ -11,6 +11,7 @@ YAWF::register(
   qr{p([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
   qr{p(?:([1-9]\d*)/edit|/new)}    => \&edit,
   qr{p([1-9]\d*)/(lock|hide)}      => \&mod,
+  qr{p/([a-z0]|all)}               => \&list,
 );
 
 
@@ -161,6 +162,50 @@ sub mod {
   return 404 if !$p->{id};
   $self->dbProducerMod($pid, $act eq 'hide' ? (hidden => !$p->{hidden}) : (locked => !$p->{locked}));
   $self->resRedirect("/p$pid", 'temp');
+}
+
+
+sub list {
+  my($self, $char) = @_;
+
+  my $f = $self->formValidate(
+    { name => 'p', required => 0, default => 1, template => 'int' },
+    { name => 'q', required => 0, default => '' },
+  );
+  return 404 if $f->{_err};
+
+  my($list, $np) = $self->dbProducerGet(
+    $char ne 'all' ? ( char => $char ) : (),
+    $f->{q} ? ( search => $f->{q} ) : (),
+    results => 50,
+    page => $f->{p}
+  );
+
+  $self->htmlHeader(title => 'Browse producers');
+
+  div class => 'mainbox';
+   h1 'Browse producers';
+   form class => 'search', action => '/p/all', 'accept-charset' => 'UTF-8', method => 'get';
+    fieldset;
+     input type => 'text', name => 'q', id => 'q', class => 'text';
+     input type => 'submit', class => 'submit', value => 'Search!';
+    end;
+   end;
+   p class => 'browseopts';
+    for ('all', 'a'..'z', 0) {
+      a href => "/p/$_", $_ eq $char ? (class => 'optselected') : (), $_ ? uc $_ : '#';
+    }
+   end;
+  end;
+  
+  my $pageurl = "/p/$char" . ($f->{q} ? "?q=$f->{q}" : '');
+  $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 't');
+  div class => 'mainbox producerbrowse';
+   h1 $f->{q} ? 'Search results' : 'Producer list';
+   p $_->{name} for (@$list);
+  end;
+  $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 'b');
+  $self->htmlFooter;
 }
 
 

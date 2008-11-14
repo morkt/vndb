@@ -47,7 +47,7 @@ sub _menu {
      for (
        [ '/'   => 'Home'              ],
        [ '#'   => 'Visual Novels'     ],
-       [ '#'   => 'Producers'         ],
+       [ '/p/all'  => 'Producers'     ],
        [ '/u/list/all' => 'Users'     ],
        [ '#'   => 'Recent Changes'    ],
        [ '#'   => 'Discussion Board'  ],

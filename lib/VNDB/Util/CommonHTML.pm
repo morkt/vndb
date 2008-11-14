@@ -6,7 +6,7 @@ use warnings;
 use YAWF ':html';
 use Exporter 'import';
 
-our @EXPORT = qw|htmlMainTabs htmlDenied htmlBrowse|;
+our @EXPORT = qw|htmlMainTabs htmlDenied htmlBrowse htmlBrowseNavigate|;
 
 
 # generates the "main tabs". These are the commonly used tabs for
@@ -112,23 +112,9 @@ sub htmlBrowse {
   my($self, %opt) = @_;
 
   $opt{sorturl} .= $opt{sorturl} =~ /\?/ ? '&' : '?';
-  $opt{pageurl} .= $opt{pageurl} =~ /\?/ ? '&p=' : '?p=';
 
   # top navigation
-  if($opt{options}{p} > 1 || $opt{nextpage}) {
-    ul class => 'maintabs notfirst';
-     if($opt{options}{p} > 1) {
-       li class => 'left';
-        a href => $opt{pageurl}.($opt{options}{p}-1), '<- previous';
-       end;
-     }
-     if($opt{nextpage}) {
-       li;
-        a href => $opt{pageurl}.($opt{options}{p}+1), 'next ->';
-       end;
-     }
-    end;
-  }
+  $self->htmlBrowseNavigate($opt{pageurl}, $opt{options}{p}, $opt{nextpage}, 't');
 
   div class => 'mainbox browse';
    table;
@@ -165,20 +151,29 @@ sub htmlBrowse {
   end;
 
   # bottom navigation
-  if($opt{options}{p} > 1 || $opt{nextpage}) {
-    ul class => 'maintabs bottom';
-     if($opt{options}{p} > 1) {
-       li class => 'left';
-        a href => $opt{pageurl}.($opt{options}{p}-1), '<- previous';
-       end;
-     }
-     if($opt{nextpage}) {
-       li;
-        a href => $opt{pageurl}.($opt{options}{p}+1), 'next ->';
-       end;
-     }
-    end;
-  } 
+  $self->htmlBrowseNavigate($opt{pageurl}, $opt{options}{p}, $opt{nextpage}, 'b');
+}
+
+
+# creates next/previous buttons (tabs), if needed
+# Arguments: page url, current page (1..n), nextpage (0/1), alignment (t/b)
+sub htmlBrowseNavigate {
+  my($self, $url, $p, $np, $al) = @_;
+  return if $p == 1 && !$np;
+
+  $url .= $url =~ /\?/ ? '&p=' : '?p=';
+  ul class => 'maintabs ' . ($al eq 't' ? 'notfirst' : 'bottom');
+   if($p > 1) {
+     li class => 'left';
+      a href => $url.($p-1), '<- previous';
+     end;
+   }
+   if($np) {
+     li;
+      a href => $url.($p+1), 'next ->';
+     end;
+   }
+  end;
 }
 
 
