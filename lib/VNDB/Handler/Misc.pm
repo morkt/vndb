@@ -38,7 +38,7 @@ sub history {
   return 404 if $f->{_err};
 
   # get item object and title
-  my $obj = $type eq 'u' ? $self->dbUserGet(id => $id)->[0] :
+  my $obj = $type eq 'u' ? $self->dbUserGet(uid => $id)->[0] :
             $type eq 'p' ? $self->dbProducerGet(id => $id)->[0] :
                            {};
   my $title = $type ? 'Edit history of '.($obj->{title} || $obj->{name} || $obj->{username}) : 'Recent changes';
