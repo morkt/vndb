@@ -97,8 +97,9 @@ sub htmlDenied {
 #  items    => arrayref with the list items
 #  options  => hashref containing at least the keys s (sort key), o (order) and p (page)
 #  nextpage => whether there's a next page or not
-#  sorturl  => base URL to append the sort options to
+#  sorturl  => base URL to append the sort options to (if there are any sortable columns)
 #  pageurl  => base URL to append the page option to
+#  class    => classname of the mainbox
 #  header   =>
 #   can be either an arrayref or subroutine reference,
 #   in the case of a subroutine, it will be called when the header should be written,
@@ -111,12 +112,12 @@ sub htmlDenied {
 sub htmlBrowse {
   my($self, %opt) = @_;
 
-  $opt{sorturl} .= $opt{sorturl} =~ /\?/ ? '&' : '?';
+  $opt{sorturl} .= $opt{sorturl} =~ /\?/ ? '&' : '?' if $opt{sorturl};
 
   # top navigation
   $self->htmlBrowseNavigate($opt{pageurl}, $opt{options}{p}, $opt{nextpage}, 't');
 
-  div class => 'mainbox browse';
+  div class => 'mainbox browse'.($opt{class} ? ' '.$opt{class} : '');
    table;
 
    # header

@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw|
-  dbStats dbRevisionInsert dbItemInsert
+  dbStats dbRevisionInsert dbItemInsert dbRevisionGet
 |;
 
 
@@ -79,6 +79,52 @@ sub dbItemInsert {
   )->{id};
 
   return ($iid, $cid);
+}
+
+
+# Options: type, iid, uid, page, results
+sub dbRevisionGet {
+  my($self, %o) = @_;
+  $o{results} ||= 10;
+  $o{page} ||= 1;
+
+  my %where = (
+    $o{type} ? (
+      'c.type = ?' => { v=>0, r=>1, p=>2 }->{$o{type}} ) : (),
+    $o{iid} ? (
+      '!sr.!sid = ?' => [ $o{type}, $o{type}, $o{iid} ] ) : (),
+    $o{uid} ? (
+      'c.requester = ?' => $o{uid} ) : (),
+  );
+
+  my @join = (
+    $o{iid} || $o{what} =~ /item/ ? (
+      'LEFT JOIN vn_rev vr ON c.type = 0 AND c.id = vr.id',
+      'LEFT JOIN releases_rev rr ON c.type = 1 AND c.id = rr.id',
+      'LEFT JOIN producers_rev pr ON c.type = 2 AND c.id = pr.id',
+    ) : (),
+    $o{what} =~ /user/ ? 'JOIN users u ON c.requester = u.id' : (),
+  );
+
+  my @select = (
+    qw|c.id c.type c.added c.requester c.comments c.rev c.causedby|,
+    $o{what} =~ /user/ ? 'u.username' : (),
+    $o{what} =~ /item/ ? (
+      'COALESCE(vr.vid, rr.rid, pr.pid) AS iid',
+      'COALESCE(vr.title, rr.title, pr.name) AS ititle',
+      'COALESCE(vr.original, rr.original, pr.original) AS ioriginal',
+    ) : (),
+  );
+
+  my($r, $np) = $self->dbPage(\%o, q|
+    SELECT !s
+      FROM changes c
+      !s
+      !W
+      ORDER BY c.id DESC|,
+    join(', ', @select), join(' ', @join), \%where
+  );
+  return wantarray ? ($r, $np) : $r;
 }
 
 

@@ -49,7 +49,7 @@ sub _menu {
        [ '#'   => 'Visual Novels'     ],
        [ '/p/all'  => 'Producers'     ],
        [ '/u/list/all' => 'Users'     ],
-       [ '#'   => 'Recent Changes'    ],
+       [ '/hist' => 'Recent Changes'    ],
        [ '#'   => 'Discussion Board'  ],
        [ '#'   => 'FAQ'               ]) {
        a href => $$_[0], $$_[1];
