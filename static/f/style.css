@@ -361,7 +361,7 @@ div.vndescription p {
 
 
 
-/***** Producer page *******/
+/***** Producer page/list *******/
 
 .producerpage p.description {
   margin: 10px 100px!important;
@@ -378,6 +378,15 @@ div.vndescription p {
   font-style: normal;
   float: left;
   width: 80px;
+}
+
+.producerbrowse ul {
+  float: left;
+  margin-top: -5px;
+  min-width: 170px;
+}
+.producerbrowse {
+  padding-bottom: 10px!important
 }
 
 

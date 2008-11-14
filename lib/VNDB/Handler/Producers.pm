@@ -177,7 +177,7 @@ sub list {
   my($list, $np) = $self->dbProducerGet(
     $char ne 'all' ? ( char => $char ) : (),
     $f->{q} ? ( search => $f->{q} ) : (),
-    results => 50,
+    results => 150,
     page => $f->{p}
   );
 
@@ -187,7 +187,7 @@ sub list {
    h1 'Browse producers';
    form class => 'search', action => '/p/all', 'accept-charset' => 'UTF-8', method => 'get';
     fieldset;
-     input type => 'text', name => 'q', id => 'q', class => 'text';
+     input type => 'text', name => 'q', id => 'q', class => 'text', value => $f->{q};
      input type => 'submit', class => 'submit', value => 'Search!';
     end;
    end;
@@ -202,7 +202,22 @@ sub list {
   $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 't');
   div class => 'mainbox producerbrowse';
    h1 $f->{q} ? 'Search results' : 'Producer list';
-   p $_->{name} for (@$list);
+   if(!@$list) {
+     p 'No results found';
+   } else {
+     # spread the results over 3 equivalent-sized lists
+     my $perlist = @$list/3 < 1 ? 1 : @$list/3;
+     for my $c (0..(@$list < 3 ? $#$list : 2)) {
+       ul;
+       for ($perlist*$c..($perlist*($c+1))-1) {
+         li;
+          a href => "/p$list->[$_]{id}", $list->[$_]{name};
+         end;
+       }
+       end;
+     }
+   }
+   br style => 'clear: left';
   end;
   $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 'b');
   $self->htmlFooter;
