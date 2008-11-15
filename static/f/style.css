@@ -315,7 +315,6 @@ div.mainbox.browse table td.tc1 {
 table thead td {
   font-weight: bold;
   background-color: #135;
-  /*background-color: #112337;*/
 }
 form.search {
   display: block;
@@ -361,6 +360,12 @@ div.thread td.tc1 {
 }
 div.thread td.tc2 {
   padding: 10px 20px 10px 10px;
+}
+div.thread i.lastmod {
+  float: right;
+  font-size: 7pt;
+  color: #258;
+  margin: -10px -10px -5px;
 }
 
 

@@ -59,6 +59,7 @@ sub thread {
        end;
        td class => 'tc2';
         lit bb2html $_->{msg};
+        i class => 'lastmod', 'Last modified on '.date($_->{edited}, 'full') if $_->{edited};
        end;
       end;
     }
