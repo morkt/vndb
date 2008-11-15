@@ -37,6 +37,7 @@ sub history {
     { name => 'm', required => 0, default => 0, enum => [ 0, 1 ] },
     { name => 'h', required => 0, default => 1, enum => [ -1..1 ] },
     { name => 't', required => 0, default => '', enum => [ 'v', 'r', 'p' ] },
+    { name => 'e', required => 0, default => 0, enum => [ -1..1 ] },
   );
   return 404 if $f->{_err};
 
@@ -57,11 +58,13 @@ sub history {
     results => 50,
     auto => $f->{m},
     hidden => $f->{h},
+    edit => $f->{e},
   );
 
   $self->htmlHeader(title => $title);
   $self->htmlMainTabs($type, $obj, 'hist') if $type;
 
+  # url generator
   my $u = sub {
     my($n, $v) = @_;
     $n ||= '';
@@ -69,8 +72,10 @@ sub history {
     $_ .= '?m='.($n eq 'm' ? $v : $f->{m});
     $_ .= '&h='.($n eq 'h' ? $v : $f->{h});
     $_ .= '&t='.($n eq 't' ? $v : $f->{t});
+    $_ .= '&e='.($n eq 'e' ? $v : $f->{e});
   };
 
+  # filters
   div class => 'mainbox';
    h1 $title;
    if($type ne 'u') {
@@ -79,22 +84,28 @@ sub history {
       a  $f->{m} ? (class => 'optselected') : (), href => $u->(m => 1), 'Hide automated edits';
      end;
    }
-   if($self->authCan('del')) {
-     p class => 'browseopts';
-      a $f->{h} == 1  ? (class => 'optselected') : (), href => $u->(h =>  1), 'Hide deleted items';
-      a $f->{h} == -1 ? (class => 'optselected') : (), href => $u->(h => -1), 'Show deleted items';
-     end;
-   }
    if(!$type || $type eq 'u') {
+     if($self->authCan('del')) {
+       p class => 'browseopts';
+        a $f->{h} == 1  ? (class => 'optselected') : (), href => $u->(h =>  1), 'Hide deleted items';
+        a $f->{h} == -1 ? (class => 'optselected') : (), href => $u->(h => -1), 'Show deleted items';
+       end;
+     }
      p class => 'browseopts';
       a !$f->{t}        ? (class => 'optselected') : (), href => $u->(t => ''),  'Show all items';
       a  $f->{t} eq 'v' ? (class => 'optselected') : (), href => $u->(t => 'v'), 'Only visual novels';
       a  $f->{t} eq 'r' ? (class => 'optselected') : (), href => $u->(t => 'r'), 'Only releases';
       a  $f->{t} eq 'p' ? (class => 'optselected') : (), href => $u->(t => 'p'), 'Only producers';
      end;
+     p class => 'browseopts';
+      a !$f->{e}       ? (class => 'optselected') : (), href => $u->(e =>  0), 'Show all changes';
+      a  $f->{e} == 1  ? (class => 'optselected') : (), href => $u->(e =>  1), 'Only edits';
+      a  $f->{e} == -1 ? (class => 'optselected') : (), href => $u->(e => -1), 'Only newly created pages';
+     end;
    }
   end;
 
+  # actual browse box
   $self->htmlBrowse(
     items    => $list,
     options  => $f,

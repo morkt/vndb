@@ -82,13 +82,14 @@ sub dbItemInsert {
 }
 
 
-# Options: type, iid, uid, auto, hidden, page, results
+# Options: type, iid, uid, auto, hidden, edit, page, results
 sub dbRevisionGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
   $o{page} ||= 1;
   $o{auto} ||= 0;   # 0:show, -1:only, 1:hide
   $o{hidden} ||= 0;
+  $o{edit} ||= 0;   # 0:both, -1:new, 1:edits
 
   my %where = (
     $o{type} ? (
@@ -104,6 +105,8 @@ sub dbRevisionGet {
     ) : $o{hidden} == -1 ? (
       '(v.hidden IS NOT NULL AND v.hidden = TRUE OR r.hidden IS NOT NULL AND r.hidden = TRUE OR p.hidden IS NOT NULL AND p.hidden = TRUE)' => 1,
     ) : (),
+    $o{edit} ? (
+      'c.rev !s 1' => $o{edit} < 0 ? '=' : '>' ) : (),
   );
 
   my @join = (
