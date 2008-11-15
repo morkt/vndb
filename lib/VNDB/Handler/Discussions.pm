@@ -125,6 +125,7 @@ sub tagbrowse {
 
   $self->htmlHeader(title => $title);
 
+  $self->htmlMainTabs($type, $obj, 'disc') if $iid && $type ne 'u';
   div class => 'mainbox';
    h1 $title;
    p;
