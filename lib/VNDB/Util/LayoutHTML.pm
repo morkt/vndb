@@ -50,7 +50,7 @@ sub _menu {
        [ '/p/all'  => 'Producers'     ],
        [ '/u/list/all' => 'Users'     ],
        [ '/hist' => 'Recent Changes'    ],
-       [ '#'   => 'Discussion Board'  ],
+       [ '/t'   => 'Discussion Board'  ],
        [ '#'   => 'FAQ'               ]) {
        a href => $$_[0], $$_[1];
        br;

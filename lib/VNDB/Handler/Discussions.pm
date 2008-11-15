@@ -9,9 +9,10 @@ use VNDB::Func;
 
 
 YAWF::register(
-  qr{t([1-9]\d*)(?:/([1-9]\d*))?}       => \&thread,
-  qr{t([1-9]\d*)\.([1-9]\d*)}           => \&redirect,
+  qr{t([1-9]\d*)(?:/([1-9]\d*))?} => \&thread,
+  qr{t([1-9]\d*)\.([1-9]\d*)}     => \&redirect,
   qr{t/(db|an|[vpu])([1-9]\d*)?}  => \&tagbrowse,
+  qr{t}                           => \&index,
 );
 
 
@@ -144,11 +145,43 @@ sub tagbrowse {
    end;
   end;
 
+  _threadlist($self, $list, $f, $np, "/t/$type$iid") if @$list;
+
+  $self->htmlFooter;
+}
+
+
+sub index {
+  my $self = shift;
+
+  $self->htmlHeader(title => 'Discussion board index');
+  div class => 'mainbox';
+   h1 'Discussion board index';
+   p class => 'browseopts';
+    a href => '/t/'.$_, $self->{discussion_tags}{$_}
+      for (qw|an db v p u|);
+   end;
+  end;
+
+  my $list = $self->dbThreadGet(
+    results => 50,
+    page => 1,
+    what => 'firstpost lastpost tagtitles',
+    order => 'tpl.date DESC',
+  );
+  _threadlist($self, $list, {p=>1}, 0, "/t");
+
+  $self->htmlFooter;
+}
+
+
+sub _threadlist {
+  my($self, $list, $f, $np, $url) = @_;
   $self->htmlBrowse(
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => "/t/$type$iid",
+    pageurl  => $url,
     class    => 'discussions',
     header   => [
       [ 'Topic' ], [ 'Replies' ], [ 'Starter' ], [ 'Last post' ]
@@ -165,7 +198,7 @@ sub tagbrowse {
        end;
        td class => 'tc4', rowspan => 2;
         lit userstr $o->{luid}, $o->{lusername};
-        lit '<br />@ ';
+        lit ' @ ';
         a href => "/t$o->{id}.$o->{count}";
          lit date $o->{ldate};
         end;
@@ -183,9 +216,7 @@ sub tagbrowse {
        end;
       end;
     }
-  ) if @$list;
-
-  $self->htmlFooter;
+  );
 }
 
 
