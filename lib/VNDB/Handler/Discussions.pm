@@ -53,6 +53,25 @@ sub thread {
   end;
   $self->htmlBrowseNavigate("/t$tid/", $page, $t->{count} > $page*25, 'b', 1);
 
+
+  if($t->{count} < $page*25 && $self->authCan('board')) {
+    form action => "/t$tid/reply", method => 'post', 'accept-charset' => 'UTF-8';
+     div class => 'mainbox';
+      fieldset class => 'submit';
+       h2 'Quick reply';
+       textarea name => 'msg', id => 'msg', rows => 4, cols => 50, '';
+       br;
+       input type => 'submit', value => 'Reply', class => 'submit';
+      end;
+     end; 
+    end;
+  } elsif(!$self->authCan('board')) {
+    div class => 'mainbox';
+     h1 'Reply';
+     p class => 'center', 'You must be logged in to reply to this thread.';
+    end;
+  }
+
   $self->htmlFooter;
 }
 
