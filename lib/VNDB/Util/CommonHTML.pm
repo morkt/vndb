@@ -241,7 +241,7 @@ sub revheader { # type, obj
   my($type, $obj) = @_;
   b 'Revision '.$obj->{rev};
   txt ' (';
-  a href => "/$type$obj->{id}?rev=1", 'edit';
+  a href => "/$type$obj->{id}.$obj->{rev}/edit", 'edit';
   txt ')';
   br;
   txt 'By ';

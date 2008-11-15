@@ -17,6 +17,9 @@ TODO:
 	- Database changes:
 	  - Added caching of edit and vote counts in users.c_votes and .c_changes
 	  - Split users.flags into users.show_nsfw and .show_list (boolean type)
+	- URL changes:
+	  - /p doesn't work anymore, use /p/all
+	  - Revert URL changed from /x99/edit?rev=1 to /x99.1/edit
 	- Functionality changes:
 	  - Ability to sort the userlist on vote and change counts
 	  - Added threads and posts counts to the global statistics

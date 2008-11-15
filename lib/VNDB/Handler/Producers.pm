@@ -9,7 +9,8 @@ use VNDB::Func;
 
 YAWF::register(
   qr{p([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
-  qr{p(?:([1-9]\d*)/edit|/new)}    => \&edit,
+  qr{p(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit|/new)}
+    => \&edit,
   qr{p([1-9]\d*)/(lock|hide)}      => \&mod,
   qr{p/([a-z0]|all)}               => \&list,
 );
@@ -97,10 +98,11 @@ sub page {
 # pid as argument = edit producer
 # no arguments = add new producer
 sub edit {
-  my($self, $pid) = @_;
+  my($self, $pid, $rev) = @_;
 
-  my $p = $pid && $self->dbProducerGet(id => $pid)->[0];
+  my $p = $pid && $self->dbProducerGet(id => $pid, what => 'changes', $rev ? (rev => $rev) : ())->[0];
   return 404 if $pid && !$p->{id};
+  $rev = undef if $p->{cid} == $p->{latest};
 
   return $self->htmlDenied if !$self->authCan('edit')
     || $pid && ($p->{locked} && !$self->authCan('lock') || $p->{hidden} && !$self->authCan('del'));
@@ -122,7 +124,7 @@ sub edit {
       return $self->resRedirect("/p$pid", 'post')
         if $pid && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
-      my $rev = 1;
+      $rev = 1;
       if($pid) {
         ($rev) = $self->dbProducerEdit($pid, %$frm);
       } else {
@@ -137,6 +139,7 @@ sub edit {
 
   !defined $frm->{$_} && ($frm->{$_} = $b4{$_}) for keys %b4;
   $frm->{lang} = 'ja' if !$pid && !defined $frm->{lang};
+  $frm->{editsum} = sprintf 'Reverted to revision p%d.%d', $pid, $rev if $rev && !defined $frm->{editsum};
 
   $self->htmlHeader(title => $pid ? 'Edit '.$p->{name} : 'Add new producer');
   $self->htmlMainTabs('p', $p, 'edit') if $pid;
@@ -154,6 +157,12 @@ sub edit {
      }
     end;
    end;
+   if($rev) {
+     div class => 'warning';
+      h2 'Reverting';
+      p 'You are editing an old revision of this producer. If you save it, all changes made after this revision will be reverted!';
+     end;
+   }
   end;
   $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 }, "General info" => [
     [ select => name => 'Type', short => 'type',
