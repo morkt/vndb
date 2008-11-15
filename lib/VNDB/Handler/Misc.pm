@@ -34,6 +34,7 @@ sub history {
 
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
+    { name => 'm', required => 0, default => 0, enum => [ 0, 1 ] },
   );
   return 404 if $f->{_err};
 
@@ -51,28 +52,33 @@ sub history {
     $type eq 'u' ? ( uid => $id ) : (),
     page => $f->{p},
     results => 50,
+    auto => $f->{m},
   );
 
   $self->htmlHeader(title => $title);
   $self->htmlMainTabs($type, $obj, 'hist') if $type;
 
+  my $baseurl = ($type ? "/$type$id" : '').'/hist';
+
   div class => 'mainbox';
    h1 $title;
-   p class => 'center', 'Some filter or search options here';
+   p class => 'browseopts';
+    a !$f->{m} ? (class => 'optselected') : (), href => "$baseurl?m=0", 'Show automated edits';
+    a  $f->{m} ? (class => 'optselected') : (), href => "$baseurl?m=1", 'Hide automated edits';
+   end;
   end;
 
   $self->htmlBrowse(
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => ($type ? "/$type$id" : '').'/hist',
+    pageurl  => "$baseurl?m=$f->{m}",
     class    => 'history',
     header   => [
       sub { td colspan => 2, class => 'tc1', 'Rev.' },
       [ 'Date' ],
       [ 'User' ],
       [ 'Page' ],
-      #[ 'Edit summary' ],
     ],
     row      => sub {
       my($s, $n, $i) = @_;
