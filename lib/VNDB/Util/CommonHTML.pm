@@ -159,12 +159,12 @@ sub htmlBrowse {
 
 
 # creates next/previous buttons (tabs), if needed
-# Arguments: page url, current page (1..n), nextpage (0/1), alignment (t/b)
+# Arguments: page url, current page (1..n), nextpage (0/1), alignment (t/b), noappend (0/1)
 sub htmlBrowseNavigate {
-  my($self, $url, $p, $np, $al) = @_;
+  my($self, $url, $p, $np, $al, $na) = @_;
   return if $p == 1 && !$np;
 
-  $url .= $url =~ /\?/ ? '&p=' : '?p=';
+  $url .= $url =~ /\?/ ? '&p=' : '?p=' unless $na;
   ul class => 'maintabs ' . ($al eq 't' ? 'notfirst' : 'bottom');
    if($p > 1) {
      li class => 'left';

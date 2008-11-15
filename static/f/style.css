@@ -346,6 +346,24 @@ div.mainbox.history td.editsum {
 
 
 
+/***** Discussions ******/
+
+#maincontent div.mainbox.thread {
+  padding: 0;
+}
+div.thread td {
+  border-bottom: 1px solid #258;
+}
+div.thread td.tc1 {
+  width: 150px;
+  padding: 5px 10px;
+  border-right: 1px solid #258;
+}
+div.thread td.tc2 {
+  padding: 10px 20px;
+}
+
+
 
 /***** VN page *******/
 
