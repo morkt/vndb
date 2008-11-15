@@ -444,6 +444,59 @@ div.warning li, div.notice li {
 
 
 
+/****** Revision information ******/
+
+div.revision {
+  padding-bottom: 10px!important;
+}
+div.revision div, div.revision table {
+  border: 1px solid #258;
+  margin: 0 auto;
+  width: 90%;
+  /*background: url(/f/boxbg.png) repeat;*/
+  background-color: #13273a;
+  clear: both;
+}
+div.revision table thead tr td {
+  background-color: transparent!important;
+  text-align: center;
+  font-weight: normal;
+}
+div.revision table td {
+  border-right: 1px solid #258;
+  padding: 5px;
+}
+div.revision div {
+  padding: 5px;
+  text-align: center;
+}
+.diff_add {
+  font-weight: normal;
+  background-color: #354;
+}
+.diff_del {
+  font-weight: normal;
+  background-color: #534;
+}
+div.revision .next {
+  float: right;
+  margin-right: 5%;
+}
+div.revision .prev {
+  float: left;
+  margin-left: 5%;
+}
+div.revision .item {
+  text-align: center;
+}
+div.revision .tcname {
+  width: 100px;
+}
+
+
+
+
+
 /****** Icons *******/
 
 .icons {

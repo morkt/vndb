@@ -15,11 +15,13 @@ sub shorten {
 }
 
 
-# argument: unix timestamp
+# argument: unix timestamp and optional format (compact/full)
 # return value: yyyy-mm-dd
 # (maybe an idea to use cgit-style ages for recent timestamps)
 sub date {
-  return strftime '%Y-%m-%d', gmtime shift;
+  my($t, $f) = @_;
+  return strftime '%Y-%m-%d', gmtime $t if !$f || $f eq 'compact';
+  return strftime '%Y-%m-%d at %R', gmtime $t;
 }
 
 
@@ -56,7 +58,7 @@ sub bb2html {
   my $raw = shift;
   my $maxlength = shift;
   $raw =~ s/\r//g;
-  return '' if !$raw && $raw != 0;
+  return '' if !$raw && $raw ne "0";
 
   my($result, $length, @open) = ('', 0, 'first');
 

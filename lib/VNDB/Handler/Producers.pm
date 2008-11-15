@@ -18,11 +18,27 @@ YAWF::register(
 sub page {
   my($self, $pid, $rev) = @_;
 
-  my $p = $self->dbProducerGet(id => $pid, what => 'vn')->[0];
+  my $p = $self->dbProducerGet(
+    id => $pid,
+    what => 'vn'.($rev ? ' changes' : ''),
+    $rev ? ( rev => $rev ) : ()
+  )->[0];
   return 404 if !$p->{id};
 
   $self->htmlHeader(title => $p->{name});
   $self->htmlMainTabs(p => $p);
+
+  if($rev) {
+    my $prev = $rev && $rev > 1 && $self->dbProducerGet(id => $pid, rev => $rev-1, what => 'changes')->[0];
+    $self->htmlRevision('p', $prev, $p,
+      [ type      => 'Type',          serialize => sub { $self->{producer_types}{$_[0]} } ],
+      [ name      => 'Name (romaji)', diff => 1 ],
+      [ original  => 'Original name', diff => 1 ],
+      [ lang      => 'Language',      serialize => sub { "$_[0] ($self->{languages}{$_[0]})" } ],
+      [ website   => 'Website',       diff => 1 ],
+      [ desc      => 'Description',   diff => 1 ],
+    );
+  }
 
   if($p->{hidden}) {
     div class => 'mainbox';

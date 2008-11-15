@@ -3,10 +3,12 @@ package VNDB::Util::CommonHTML;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use YAWF ':html', 'xml_escape';
 use Exporter 'import';
+use Algorithm::Diff 'sdiff';
+use VNDB::Func;
 
-our @EXPORT = qw|htmlMainTabs htmlDenied htmlBrowse htmlBrowseNavigate|;
+our @EXPORT = qw|htmlMainTabs htmlDenied htmlBrowse htmlBrowseNavigate htmlRevision|;
 
 
 # generates the "main tabs". These are the commonly used tabs for
@@ -174,6 +176,118 @@ sub htmlBrowseNavigate {
       a href => $url.($p+1), 'next ->';
      end;
    }
+  end;
+}
+
+
+# Shows a revision, including diff if there is a previous revision.
+# Arguments: v|p|r, old revision, new revision, @fields
+# Where @fields is a list of fields as arrayrefs with:
+#  [ shortname, displayname, %options ],
+#  Where %options:
+#   diff      => 1/0, whether do show a diff on this field
+#   serialize => coderef, should convert the field into a readable string, no HTML allowed
+sub htmlRevision {
+  my($self, $type, $old, $new, @fields) = @_;
+  div class => 'mainbox revision';
+   h1 'Revision '.$new->{rev};
+
+   # previous/next revision links
+   a class => 'prev', href => sprintf('/%s%d.%d', $type, $new->{id}, $new->{rev}-1), '<- earlier revision'
+     if $new->{rev} > 1;
+   a class => 'next', href => sprintf('/%s%d.%d', $type, $new->{id}, $new->{rev}+1), 'later revision ->'
+     if $new->{cid} != $new->{latest};
+   p class => 'center';
+    a href => "/$type$new->{id}", "$type$new->{id}";
+   end;
+
+   # no previous revision, just show info about the revision itself
+   if(!$old) {
+     div;
+      revheader($type, $new);
+      br;
+      b 'Edit summary:';
+      br; br;
+      lit bb2html($new->{comments})||'[no summary]';
+     end;
+   }
+
+   # otherwise, compare the two revisions
+   else {
+     table;
+      thead;
+       Tr;
+        td; lit '&nbsp;'; end;
+        td; revheader($type, $old); end;
+        td; revheader($type, $new); end;
+       end;
+       Tr;
+        td; lit '&nbsp;'; end;
+        td colspan => 2;
+         b 'Edit summary of revision '.$new->{rev}.':';
+         br; br;
+         lit bb2html($new->{comments})||'[no summary]';
+        end;
+       end;
+      end;
+      my $i = 1;
+      revdiff(\$i, $old, $new, @$_) for (@fields);
+     end;
+   }
+  end;
+}
+
+sub revheader { # type, obj
+  my($type, $obj) = @_;
+  b 'Revision '.$obj->{rev};
+  txt ' (';
+  a href => "/$type$obj->{id}?rev=1", 'edit';
+  txt ')';
+  br;
+  txt 'By ';
+  a href => "/u$obj->{requester}", $obj->{username};
+  txt ' on ';
+  lit date $obj->{added}, 'full';
+}
+
+sub revdiff {
+  my($i, $old, $new, $short, $name, %o) = @_;
+
+  my $ser1 = $o{serialize} ? $o{serialize}->($old->{$short}) : $old->{$short};
+  my $ser2 = $o{serialize} ? $o{serialize}->($new->{$short}) : $new->{$short};
+  return if $ser1 eq $ser2;
+
+  if($o{diff} && $ser1 && $ser2) {
+    my($r1,$r2,$ch) = ('','','u');
+    for (sdiff([ split //, $ser1 ], [ split //, $ser2 ])) {
+      if($ch ne $_->[0]) {
+        if($ch ne 'u') {
+          $r1 .= '</b>';
+          $r2 .= '</b>';
+        }
+        $r1 .= '<b class="diff_del">' if $_->[0] eq '-' || $_->[0] eq 'c';
+        $r2 .= '<b class="diff_add">' if $_->[0] eq '+' || $_->[0] eq 'c';
+      }
+      $ch = $_->[0];
+      $r1 .= xml_escape $_->[1] if $ch ne '+';
+      $r2 .= xml_escape $_->[2] if $ch ne '-';
+    }
+    $r1 .= '</b>' if $ch eq '-' || $ch eq 'c';
+    $r2 .= '</b>' if $ch eq '+' || $ch eq 'c';
+    $ser1 = $r1;
+    $ser2 = $r2;
+  } else {
+    $ser1 = xml_escape $ser1;
+    $ser2 = xml_escape $ser2;
+  }
+
+  $ser1 = '[empty]' if !$ser1 && $ser1 ne '0';
+  $ser2 = '[empty]' if !$ser2 && $ser2 ne '0';
+
+  Tr $$i++ % 2 ? (class => 'odd') : ();
+   td class => 'tcname', $name;
+   td; lit $ser1; end;
+   td; lit $ser2; end;
   end;
 }
 

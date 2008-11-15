@@ -20,6 +20,8 @@ TODO:
 	- Functionality changes:
 	  - Ability to sort the userlist on vote and change counts
 	  - Added threads and posts counts to the global statistics
+	  - Improved diff calculation
+	  - Whitespace around input fields are removed
 
 1.23 - 2008-10-22 (r117)
 	- Removed redirects for old revision URLs (the code wasn't very secure...)
