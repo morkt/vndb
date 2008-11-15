@@ -82,7 +82,7 @@ sub dbItemInsert {
 }
 
 
-# Options: type, iid, uid, auto, hidden page, results
+# Options: type, iid, uid, auto, hidden, page, results
 sub dbRevisionGet {
   my($self, %o) = @_;
   $o{results} ||= 10;

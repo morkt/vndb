@@ -25,6 +25,7 @@ TODO:
 	  - Added threads and posts counts to the global statistics
 	  - Improved diff calculation
 	  - Whitespace around input fields are removed
+	  - Automated edits filter to history browser
 
 1.23 - 2008-10-22 (r117)
 	- Removed redirects for old revision URLs (the code wasn't very secure...)

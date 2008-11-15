@@ -36,6 +36,7 @@ sub history {
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'm', required => 0, default => 0, enum => [ 0, 1 ] },
     { name => 'h', required => 0, default => 1, enum => [ -1..1 ] },
+    { name => 't', required => 0, default => '', enum => [ 'v', 'r', 'p' ] },
   );
   return 404 if $f->{_err};
 
@@ -51,6 +52,7 @@ sub history {
     what => 'item user',
     $type && $type ne 'u' ? ( type => $type, iid => $id ) : (),
     $type eq 'u' ? ( uid => $id ) : (),
+    $f->{t} ? ( type => $f->{t} ) : (),
     page => $f->{p},
     results => 50,
     auto => $f->{m},
@@ -66,18 +68,29 @@ sub history {
     local $_ = ($type ? "/$type$id" : '').'/hist';
     $_ .= '?m='.($n eq 'm' ? $v : $f->{m});
     $_ .= '&h='.($n eq 'h' ? $v : $f->{h});
+    $_ .= '&t='.($n eq 't' ? $v : $f->{t});
   };
 
   div class => 'mainbox';
    h1 $title;
-   p class => 'browseopts';
-    a !$f->{m} ? (class => 'optselected') : (), href => $u->(m => 0), 'Show automated edits';
-    a  $f->{m} ? (class => 'optselected') : (), href => $u->(m => 1), 'Hide automated edits';
-   end;
+   if($type ne 'u') {
+     p class => 'browseopts';
+      a !$f->{m} ? (class => 'optselected') : (), href => $u->(m => 0), 'Show automated edits';
+      a  $f->{m} ? (class => 'optselected') : (), href => $u->(m => 1), 'Hide automated edits';
+     end;
+   }
    if($self->authCan('del')) {
      p class => 'browseopts';
       a $f->{h} == 1  ? (class => 'optselected') : (), href => $u->(h =>  1), 'Hide deleted items';
       a $f->{h} == -1 ? (class => 'optselected') : (), href => $u->(h => -1), 'Show deleted items';
+     end;
+   }
+   if(!$type || $type eq 'u') {
+     p class => 'browseopts';
+      a !$f->{t}        ? (class => 'optselected') : (), href => $u->(t => ''),  'Show all items';
+      a  $f->{t} eq 'v' ? (class => 'optselected') : (), href => $u->(t => 'v'), 'Only visual novels';
+      a  $f->{t} eq 'r' ? (class => 'optselected') : (), href => $u->(t => 'r'), 'Only releases';
+      a  $f->{t} eq 'p' ? (class => 'optselected') : (), href => $u->(t => 'p'), 'Only producers';
      end;
    }
   end;
