@@ -18,7 +18,7 @@ sub thread {
   my($self, $tid, $page) = @_;
   $page ||= 1;
 
-  my $t = $self->dbThreadGet(id => $tid)->[0];
+  my $t = $self->dbThreadGet(id => $tid, what => 'tagtitles')->[0];
   return 404 if !$t->{id} || $t->{hidden} && !$self->authCan('boardmod');
 
   my $p = $self->dbPostGet(tid => $tid, results => 25, page => $page);
@@ -28,7 +28,20 @@ sub thread {
 
   div class => 'mainbox';
    h1 $t->{title};
-   p '[selected tags here]';
+   h2 'Posted in';
+   ul;
+    for (sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$t->{tags}}) {
+      li;
+       a href => "/t/$_->{type}", $self->{discussion_tags}{$_->{type}};
+       if($_->{iid}) {
+         txt ' > ';
+         a style => 'font-weight: bold', href => "/t/$_->{type}$_->{iid}", "$_->{type}$_->{iid}";
+         txt ':';
+         a href => "/$_->{type}$_->{iid}", title => $_->{original}, $_->{title};
+       }
+      end;
+    }
+   end;
   end;
 
   $self->htmlBrowseNavigate("/t$tid/", $page, $t->{count} > $page*25, 't', 1);
@@ -52,7 +65,6 @@ sub thread {
    end;
   end;
   $self->htmlBrowseNavigate("/t$tid/", $page, $t->{count} > $page*25, 'b', 1);
-
 
   if($t->{count} < $page*25 && $self->authCan('board')) {
     form action => "/t$tid/reply", method => 'post', 'accept-charset' => 'UTF-8';

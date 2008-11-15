@@ -53,6 +53,13 @@ our %S = (
     in => 'Individual',
     ng => 'Amateur group',
   },
+  discussion_tags => {
+    an => 'Announcements',    # 0   - usage restricted to boardmods
+    db => 'VNDB Discussions', # 0
+    v  => 'Visual novels',    # vid
+    p  => 'Producers',        # pid
+    u  => 'Users',            # uid
+  },
 );
 
 
