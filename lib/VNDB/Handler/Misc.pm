@@ -35,6 +35,7 @@ sub history {
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'm', required => 0, default => 0, enum => [ 0, 1 ] },
+    { name => 'h', required => 0, default => 1, enum => [ -1..1 ] },
   );
   return 404 if $f->{_err};
 
@@ -53,26 +54,39 @@ sub history {
     page => $f->{p},
     results => 50,
     auto => $f->{m},
+    hidden => $f->{h},
   );
 
   $self->htmlHeader(title => $title);
   $self->htmlMainTabs($type, $obj, 'hist') if $type;
 
-  my $baseurl = ($type ? "/$type$id" : '').'/hist';
+  my $u = sub {
+    my($n, $v) = @_;
+    $n ||= '';
+    local $_ = ($type ? "/$type$id" : '').'/hist';
+    $_ .= '?m='.($n eq 'm' ? $v : $f->{m});
+    $_ .= '&h='.($n eq 'h' ? $v : $f->{h});
+  };
 
   div class => 'mainbox';
    h1 $title;
    p class => 'browseopts';
-    a !$f->{m} ? (class => 'optselected') : (), href => "$baseurl?m=0", 'Show automated edits';
-    a  $f->{m} ? (class => 'optselected') : (), href => "$baseurl?m=1", 'Hide automated edits';
+    a !$f->{m} ? (class => 'optselected') : (), href => $u->(m => 0), 'Show automated edits';
+    a  $f->{m} ? (class => 'optselected') : (), href => $u->(m => 1), 'Hide automated edits';
    end;
+   if($self->authCan('del')) {
+     p class => 'browseopts';
+      a $f->{h} == 1  ? (class => 'optselected') : (), href => $u->(h =>  1), 'Hide deleted items';
+      a $f->{h} == -1 ? (class => 'optselected') : (), href => $u->(h => -1), 'Show deleted items';
+     end;
+   }
   end;
 
   $self->htmlBrowse(
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => "$baseurl?m=$f->{m}",
+    pageurl  => $u->(),
     class    => 'history',
     header   => [
       sub { td colspan => 2, class => 'tc1', 'Rev.' },
