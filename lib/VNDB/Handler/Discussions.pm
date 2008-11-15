@@ -4,11 +4,13 @@ package VNDB::Handler::Discussions;
 use strict;
 use warnings;
 use YAWF ':html';
+use POSIX 'ceil';
 use VNDB::Func;
 
 
 YAWF::register(
   qr{t([1-9]\d*)(?:/([1-9]\d*))?} => \&thread,
+  qr{t([1-9]\d*)\.([1-9]\d*)}     => \&redirect,
 );
 
 
@@ -52,6 +54,12 @@ sub thread {
   $self->htmlBrowseNavigate("/t$tid/", $page, $t->{count} > $page*25, 'b', 1);
 
   $self->htmlFooter;
+}
+
+
+sub redirect {
+  my($self, $tid, $num) = @_;
+  $self->resRedirect("/t$tid".($num > 25 ? '/'.ceil($num/25) : '').'#'.$num, 'perm');
 }
 
 
