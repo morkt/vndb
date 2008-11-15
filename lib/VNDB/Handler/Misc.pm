@@ -88,7 +88,7 @@ sub history {
        end;
        td date $i->{added};
        td;
-        a href => "/u$i->{requester}", $i->{username}; 
+        lit userstr($i);
        end;
        td;
         a href => $revurl, title => $i->{ioriginal}, shorten $i->{ititle}, 80;

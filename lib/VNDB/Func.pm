@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 use POSIX 'strftime';
-our @EXPORT = qw| shorten date datestr bb2html |;
+our @EXPORT = qw| shorten date datestr userstr bb2html |;
 
 
 # I would've done this as a #define if this was C...
@@ -44,6 +44,13 @@ sub datestr {
 
   return $str if !$future;
   return qq|<b class="future">$str</b>|;
+}
+
+
+# Arguments: (uid, username), or a hashref containing that info
+sub userstr {
+  my($id,$n) = ref($_[0])eq'HASH'?($_[0]{uid}||$_[0]{requester}, $_[0]{username}):@_;
+  return !$id ? '[deleted]' : '<a href="/u'.$id.'">'.$n.'</a>';
 }
 
 

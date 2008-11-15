@@ -245,7 +245,7 @@ sub revheader { # type, obj
   txt ')';
   br;
   txt 'By ';
-  a href => "/u$obj->{requester}", $obj->{username};
+  lit userstr($obj);
   txt ' on ';
   lit date $obj->{added}, 'full';
 }
