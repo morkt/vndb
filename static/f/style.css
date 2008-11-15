@@ -343,12 +343,26 @@ div.mainbox.history td.editsum {
   text-align: right;
 }
 
+/* threads browser */
+div.mainbox.discussions td.tc4 {
+  text-align: right;
+}
+div.mainbox.discussions td.tags {
+  padding-top: 0;
+  padding-left: 60px;
+}
+div.mainbox.discussions td.tags a {
+  color: #258!important
+}
 
 
 /***** Discussions ******/
 
 #maincontent div.mainbox.thread {
   padding: 0;
+}
+div.thread table {
+  width: 100%;
 }
 div.thread td {
   border-bottom: 1px solid #258;

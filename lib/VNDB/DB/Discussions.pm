@@ -8,23 +8,52 @@ use Exporter 'import';
 our @EXPORT = qw|dbThreadGet dbPostGet|;
 
 
-# Options: id, results, page, what
-# What: tags, tagtitles
+# Options: id, type, iid, results, page, what
+# What: tags, tagtitles, firstpost, lastpost
 sub dbThreadGet {
   my($self, %o) = @_;
   $o{results} ||= 50;
   $o{page} ||= 1;
+  $o{what} ||= '';
+  $o{order} ||= 't.id DESC';
 
   my %where = (
     $o{id} ? (
       't.id = ?' => $o{id} ) : (),
+    !$o{id} ? (
+      't.hidden = FALSE' => 0 ) : (),
+    $o{type} && !$o{iid} ? (
+      't.id IN(SELECT tid FROM threads_tags WHERE type = ?)' => $o{type} ) : (),
+    $o{type} && $o{iid} ? (
+      'tt.type = ?' => $o{type}, 'tt.iid = ?' => $o{iid} ) : (),
+  );
+
+  my @select = (
+    qw|t.id t.title t.count t.locked t.hidden|,
+    $o{what} =~ /firstpost/ ? ('tpf.uid AS fuid', 'tpf.date AS fdate', 'uf.username AS fusername') : (),
+    $o{what} =~ /lastpost/  ? ('tpl.uid AS luid', 'tpl.date AS ldate', 'ul.username AS lusername') : (),
+  );
+
+  my @join = (
+    $o{what} =~ /firstpost/ ? (
+      'JOIN threads_posts tpf ON tpf.tid = t.id AND tpf.num = 1',
+      'JOIN users uf ON uf.id = tpf.uid'
+    ) : (),
+    $o{what} =~ /lastpost/ ? (
+      'JOIN threads_posts tpl ON tpl.tid = t.id AND tpl.num = t.count',
+      'JOIN users ul ON ul.id = tpl.uid'
+    ) : (),
+    $o{type} && $o{iid} ?
+      'JOIN threads_tags tt ON tt.tid = t.id' : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
-    SELECT t.id, t.title, t.count, t.locked, t.hidden
+    SELECT !s
       FROM threads t
-      !W|,
-    \%where
+      !s
+      !W
+      ORDER BY !s|,
+    join(', ', @select), join(' ', @join), \%where, $o{order}
   );
 
   if($o{what} =~ /(tags|tagtitles)/ && $#$r >= 0) {
@@ -65,7 +94,6 @@ sub dbPostGet {
   my($self, %o) = @_;
   $o{results} ||= 50;
   $o{page} ||= 1;
-  $o{what} ||= '';
 
   my %where = (
     'tp.tid = ?' => $o{tid},

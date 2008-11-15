@@ -9,8 +9,9 @@ use VNDB::Func;
 
 
 YAWF::register(
-  qr{t([1-9]\d*)(?:/([1-9]\d*))?} => \&thread,
-  qr{t([1-9]\d*)\.([1-9]\d*)}     => \&redirect,
+  qr{t([1-9]\d*)(?:/([1-9]\d*))?}       => \&thread,
+  qr{t([1-9]\d*)\.([1-9]\d*)}           => \&redirect,
+  qr{t/(db|an|[vpu])([1-9]\d*)?}  => \&tagbrowse,
 );
 
 
@@ -92,6 +93,98 @@ sub thread {
 sub redirect {
   my($self, $tid, $num) = @_;
   $self->resRedirect("/t$tid".($num > 25 ? '/'.ceil($num/25) : '').'#'.$num, 'perm');
+}
+
+
+sub tagbrowse {
+  my($self, $type, $iid) = @_;
+  $iid ||= '';
+  return 404 if $type =~ /(db|an)/ && $iid;
+
+  my $f = $self->formValidate(
+    { name => 'p', required => 0, default => 1, template => 'int' },
+  );
+  return 404 if $f->{_err};
+
+  my $obj = !$iid ? undef :
+    $type eq 'u' ? $self->dbUserGet(uid => $iid)->[0] :
+    $type eq 'p' ? $self->dbProducerGet(id => $iid)->[0] :
+                   undef; # get VN obj here
+  return 404 if $iid && !$obj;
+  my $ititle = $obj && ($obj->{title}||$obj->{name}||$obj->{username});
+  my $title = !$obj ? $self->{discussion_tags}{$type} : 'Related discussions for '.$ititle;
+
+  my($list, $np) = $self->dbThreadGet(
+    type => $type,
+    $iid ? (iid => $iid) : (),
+    results => 50,
+    page => $f->{p},
+    what => 'firstpost lastpost tagtitles',
+    order => $type eq 'an' ? 't.id DESC' : 'tpl.date DESC',
+  );
+
+  $self->htmlHeader(title => $title);
+
+  div class => 'mainbox';
+   h1 $title;
+   p;
+    a href => '/t', 'Discussion board';
+    txt ' > ';
+    a href => "/t/$type", $self->{discussion_tags}{$type};
+    if($iid) {
+      txt ' > ';
+      a style => 'font-weight: bold', href => "/t/$type$iid", "$type$iid";
+      txt ':';
+      a href => "/$type$iid", $ititle;
+    }
+    if(!@$list) {
+      h2 'No related threads found';
+    }
+   end;
+  end;
+
+  $self->htmlBrowse(
+    items    => $list,
+    options  => $f,
+    nextpage => $np,
+    pageurl  => "/t/$type$iid",
+    class    => 'discussions',
+    header   => [
+      [ 'Topic' ], [ 'Replies' ], [ 'Starter' ], [ 'Last post' ]
+    ],
+    row      => sub {
+      my($self, $n, $o) = @_;
+      Tr $n % 2 ? ( class => 'odd' ) : ();
+       td class => 'tc1';
+        a href => "/t$o->{id}", shorten $o->{title}, 50;
+       end;
+       td class => 'tc2', $o->{count}-1;
+       td class => 'tc3';
+        lit userstr $o->{fuid}, $o->{fusername};
+       end;
+       td class => 'tc4', rowspan => 2;
+        lit userstr $o->{luid}, $o->{lusername};
+        lit '<br />@ ';
+        a href => "/t$o->{id}.$o->{count}";
+         lit date $o->{ldate};
+        end;
+       end;
+      end;
+      Tr $n % 2 ? ( class => 'odd' ) : ();
+       td colspan => 3, class => 'tags';
+        txt ' > ';
+        for(@{$o->{tags}}) {
+          a href => "/t/$_->{type}".($_->{iid}||''),
+            title => $_->{original}||$self->{discussion_tags}{$_->{type}},
+            shorten $_->{title}||$self->{discussion_tags}{$_->{type}}, 30;
+          txt ', ' if $_ != $o->{tags}[$#{$o->{tags}}];
+        }
+       end;
+      end;
+    }
+  ) if @$list;
+
+  $self->htmlFooter;
 }
 
 
