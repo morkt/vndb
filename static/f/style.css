@@ -291,6 +291,7 @@ b.future {
 
 p.browseopts {
   text-align: center;
+  padding: 2px;
 }
 p.browseopts a {
   padding: 1px 3px;
