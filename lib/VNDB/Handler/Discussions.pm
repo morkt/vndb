@@ -213,12 +213,15 @@ sub _threadlist {
       Tr $n % 2 ? ( class => 'odd' ) : ();
        td colspan => 3, class => 'tags';
         txt ' > ';
-        for(@{$o->{tags}}) {
+        my $i = 1;
+        for(sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$o->{tags}}) {
+          last if $i++ > 5;
+          txt ', ' if $i > 2;
           a href => "/t/$_->{type}".($_->{iid}||''),
             title => $_->{original}||$self->{discussion_tags}{$_->{type}},
             shorten $_->{title}||$self->{discussion_tags}{$_->{type}}, 30;
-          txt ', ' if $_ != $o->{tags}[$#{$o->{tags}}];
         }
+        txt ', ...' if @{$o->{tags}} > 5;
        end;
       end;
     }
