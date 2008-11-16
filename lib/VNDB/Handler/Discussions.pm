@@ -163,13 +163,19 @@ sub index {
    end;
   end;
 
-  my $list = $self->dbThreadGet(
-    results => 50,
-    page => 1,
-    what => 'firstpost lastpost tagtitles',
-    order => 'tpl.date DESC',
-  );
-  _threadlist($self, $list, {p=>1}, 0, "/t");
+  for (qw|an db v p u|) {
+    my $list = $self->dbThreadGet(
+      type => $_,
+      results => 5,
+      page => 1,
+      what => 'firstpost lastpost tagtitles',
+      order => 'tpl.date DESC',
+    );
+    h1 class => 'boxtitle';
+     a href => "/t/$_", $self->{discussion_tags}{$_};
+    end;
+    _threadlist($self, $list, {p=>1}, 0, "/t");
+  }
 
   $self->htmlFooter;
 }

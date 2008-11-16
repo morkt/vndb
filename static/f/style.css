@@ -343,21 +343,14 @@ div.mainbox.history td.editsum {
   text-align: right;
 }
 
-/* threads browser */
-div.mainbox.discussions td.tc4 {
-  text-align: right;
-}
-div.mainbox.discussions td.tags {
-  padding-top: 0;
-  padding-left: 60px;
-}
-div.mainbox.discussions td.tags a {
-  color: #258!important
-}
+
+
+
 
 
 /***** Discussions ******/
 
+/* threads page */
 #maincontent div.mainbox.thread {
   padding: 0;
 }
@@ -381,6 +374,31 @@ div.thread i.lastmod {
   color: #258;
   margin: -10px -10px -5px;
 }
+
+/* threads browser */
+div.mainbox.discussions td.tc4 {
+  text-align: right;
+}
+div.mainbox.discussions td.tags {
+  padding-top: 0;
+  padding-left: 60px;
+}
+div.mainbox.discussions td.tags a {
+  color: #258!important
+}
+div.discussions td.tc4 {  width: 170px;  }
+div.discussions td.tc3 {  width: 90px;  }
+div.discussions td.tc2 {  width: 50px;  }
+#maincontent h1.boxtitle, #maincontent h1.boxtitle a {
+  font-family: "Futura", "Century New Gothic", "Arial", Serif;
+  font-weight: bold;
+  font-style: italic;
+  color: #258;
+  font-size: 13pt;
+  margin: 20px 0 -20px 0;
+}
+
+
 
 
 
