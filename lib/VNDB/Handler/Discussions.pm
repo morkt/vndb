@@ -294,9 +294,15 @@ sub tagbrowse {
       txt ':';
       a href => "/$type$iid", $ititle;
     }
-    if(!@$list) {
-      h2 'No related threads found';
-    }
+    p class => 'center';
+     if(!@$list) {
+       b 'No related threads found';
+       br; br; 
+       a href => "/t/$type$iid/new", 'Why not create one yourself?';
+     } else {
+       a href => '/t/'.($iid ? $type.$iid : 'db').'/new', 'Start a new thread';
+     }
+    end;
    end;
   end;
 
