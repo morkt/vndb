@@ -54,17 +54,25 @@ sub thread {
    table;
     for my $i (0..$#$p) {
       local $_ = $p->[$i];
-      Tr $i % 2 == 0 ? (class => 'odd') : ();
+      my $class = $i % 2 == 0 ? 'odd ' : '';
+      $class .= 'deleted' if $_->{hidden};
+      Tr class => $class;
        td class => 'tc1';
         a href => "/t$tid.$_->{num}", name => $_->{num}, "#$_->{num}";
-        txt ' by ';
-        lit userstr $_;
-        br;
-        lit date $_->{date}, 'full';
+        if(!$_->{hidden}) {
+          txt ' by ';
+          lit userstr $_;
+          br;
+          lit date $_->{date}, 'full';
+        }
        end;
        td class => 'tc2';
-        lit bb2html $_->{msg};
-        i class => 'lastmod', 'Last modified on '.date($_->{edited}, 'full') if $_->{edited};
+        if($_->{hidden}) {
+          i class => 'deleted', 'Post deleted.';
+        } else {
+          lit bb2html $_->{msg};
+          i class => 'lastmod', 'Last modified on '.date($_->{edited}, 'full') if $_->{edited};
+        }
        end;
       end;
     }

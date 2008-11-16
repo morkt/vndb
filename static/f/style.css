@@ -368,6 +368,13 @@ div.thread td.tc1 {
 div.thread td.tc2 {
   padding: 10px 20px 10px 10px;
 }
+div.thread tr.deleted td {
+  padding: 1px 10px;
+}
+div.thread i.deleted {
+  font-style: normal;
+  color: #258;
+}
 div.thread i.lastmod {
   float: right;
   font-size: 7pt;
