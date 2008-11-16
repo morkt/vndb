@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbThreadGet dbPostGet|;
+our @EXPORT = qw|dbThreadGet dbThreadEdit dbThreadAdd dbPostGet dbPostEdit dbPostAdd|;
 
 
 # Options: id, type, iid, results, page, what
@@ -89,6 +89,54 @@ sub dbThreadGet {
 }
 
 
+# id, %options->( title locked hidden tags }
+sub dbThreadEdit {
+  my($self, $id, %o) = @_;
+
+  my %set = (
+    'title = ?' => $o{title},
+    'locked = ?' => $o{locked}?1:0,
+    'hidden = ?' => $o{hidden}?1:0,
+  );
+
+  $self->dbExec(q|
+    UPDATE threads
+      !H
+      WHERE id = ?|,
+    \%set, $id);
+
+  if($o{tags}) {
+    $self->dbExec('DELETE FROM threads_tags WHERE tid = ?', $id);
+    $self->dbExec(q|
+      INSERT INTO threads_tags (tid, type, iid)
+        VALUES (?, ?, ?)|,
+      $id, $_->[0], $_->[1]||0
+    ) for (@{$o{tags}});
+  }
+}
+
+
+# %options->{ title hidden locked tags }
+sub dbThreadAdd { 
+  my($self, %o) = @_;
+
+  my $id = $self->dbRow(q|
+    INSERT INTO threads (title, hidden, locked)
+      VALUES (?, ?, ?)
+      RETURNING id|,
+    $o{title}, $o{hidden}?1:0, $o{locked}?1:0
+  )->{id};
+
+  $self->dbExec(q|
+    INSERT INTO threads_tags (tid, type, iid)
+      VALUES (?, ?, ?)|,
+    $id, $_->[0], $_->[1]||0
+  ) for (@{$o{tags}});
+
+  return $id;
+}
+
+
 # Options: tid, num, what, page, results
 sub dbPostGet {
   my($self, %o) = @_;
@@ -111,6 +159,48 @@ sub dbPostGet {
   );
 
   return wantarray ? ($r, $np) : $r;
+}
+
+
+# tid, num, %options->{ num msg hidden lastmod }
+sub dbPostEdit { 
+  my($self, $tid, $num, %o) = @_;
+
+  my %set = (
+    'msg = ?' => $o{msg},
+    'edited = ?' => $o{lastmod},
+    'hidden = ?' => $o{hidden}?1:0,
+  );
+
+  $self->dbExec(q|
+    UPDATE threads_posts
+      !H
+      WHERE tid = ?
+      AND num = ?|,
+    \%set, $tid, $num
+  );
+}
+
+
+# tid, %options->{ uid msg }
+sub dbPostAdd {
+  my($self, $tid, %o) = @_;
+
+  my $num ||= $self->dbRow('SELECT num FROM threads_posts WHERE tid = ? ORDER BY num DESC LIMIT 1', $tid)->{num}+1;
+  $o{uid} ||= $self->authInfo->{id};
+
+  $self->dbExec(q|
+    INSERT INTO threads_posts (tid, num, uid, msg)
+      VALUES(?, ?, ?, ?)|,
+    $tid, $num, @o{qw| uid msg |}
+  );
+  $self->dbExec(q|
+    UPDATE threads
+      SET count = count+1
+      WHERE id = ?|,
+    $tid);
+
+  return $num;
 }
 
 

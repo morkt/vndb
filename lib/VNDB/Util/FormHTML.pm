@@ -22,6 +22,9 @@ my %formerr_names = (
   website       => 'Website',
   desc          => 'Description',
   editsum       => 'Edit summary',
+  msg           => 'Message',
+  title         => 'Title',
+  tags          => 'Tags'
 );
 my %formerr_exeptions = (
   login_failed  => 'Invalid username or password',
@@ -52,11 +55,12 @@ sub htmlFormError {
         next;
       }
       my($field, $type, $rule) = @$e;
-      $field = $formerr_names{$field};
+      $field = $formerr_names{$field}||$field;
       li sprintf '%s is a required field!', $field if $type eq 'required';
       li sprintf '%s should have at least %d characters', $field, $rule if $type eq 'minlength';
       li sprintf '%s: only %d characters allowed', $field, $rule if $type eq 'maxlength';
       li sprintf '%s must be one of the following: %s', $field, join ', ', @$rule if $type eq 'enum';
+      li sprintf 'Wrong tag: %s', $rule if $type eq 'wrongtag';
       li $rule->[1] if $type eq 'func' || $type eq 'regex';
       if($type eq 'template') {
         li sprintf

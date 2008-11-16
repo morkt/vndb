@@ -3,16 +3,19 @@ package VNDB::Handler::Discussions;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use YAWF ':html', 'xml_escape';
 use POSIX 'ceil';
 use VNDB::Func;
 
 
 YAWF::register(
-  qr{t([1-9]\d*)(?:/([1-9]\d*))?} => \&thread,
-  qr{t([1-9]\d*)\.([1-9]\d*)}     => \&redirect,
-  qr{t/(db|an|[vpu])([1-9]\d*)?}  => \&tagbrowse,
-  qr{t}                           => \&index,
+  qr{t([1-9]\d*)(?:/([1-9]\d*))?}    => \&thread,
+  qr{t([1-9]\d*)\.([1-9]\d*)}        => \&redirect,
+  qr{t/(db|an|[vpu])([1-9]\d*)?}     => \&tagbrowse,
+  qr{t([1-9]\d*)/reply}              => \&edit,
+  qr{t([1-9]\d*)\.([1-9]\d*)/edit}   => \&edit,
+  qr{t/(db|an|[vpu])([1-9]\d*)?/new} => \&edit,
+  qr{t}                              => \&index,
 );
 
 
@@ -94,6 +97,143 @@ sub thread {
 sub redirect {
   my($self, $tid, $num) = @_;
   $self->resRedirect("/t$tid".($num > 25 ? '/'.ceil($num/25) : '').'#'.$num, 'perm');
+}
+
+
+# Arguments, action
+#  tid          reply
+#  tid, 1       edit thread
+#  tid, num     edit post
+#  type, (iid)  start new thread
+sub edit {
+  my($self, $tid, $num) = @_;
+  $num ||= 0;
+
+  # in case we start a new thread, parse tag
+  my $tag = '';
+  if($tid !~ /^\d+$/) {
+    return 404 if $tid =~ /(db|an)/ && $num || $tid =~ /[vpu]/ && !$num;
+    $tag = $tid.($num||'');
+    $tid = 0;
+    $num = 0;
+  }
+
+  # get thread and post, if any
+  my $t = $tid && $self->dbThreadGet(id => $tid, what => 'tags')->[0];
+  return 404 if $tid && !$t->{id};
+
+  my $p = $num && $self->dbPostGet(tid => $tid, num => $num)->[0];
+  return 404 if $num && !$p->{num};
+
+  # are we allowed to perform this action?
+  return $self->htmlDenied if !$self->authCan('board')
+    || ($tid && ($t->{locked} || $t->{hidden}) && !$self->authCan('boardmod'))
+    || ($num && $p->{uid} != $self->authInfo->{id} && !$self->authCan('boardmod'));
+
+  # check form etc...
+  my $frm;
+  if($self->reqMethod eq 'POST') {
+    $frm = $self->formValidate(
+      !$tid || $num == 1 ? (
+        { name => 'title', maxlength => 50 },
+        { name => 'tags', maxlength => 50 },
+      ) : (),
+      $self->authCan('boardmod') ? (
+        { name => 'locked', required => 0 },
+        { name => 'hidden', required => 0 },
+        { name => 'nolastmod', required => 0 },
+      ) : (),
+      { name => 'msg', maxlenght => 5000 },
+    );
+
+    # parse and validate the tags
+    my @tags;
+    if(!$frm->{_err} && $frm->{tags}) {
+      for (split /[ ,]/, $frm->{tags}) {
+        my($ty, $id) = ($1, $2) if /^([a-z]{1,2})([0-9]*)$/;
+        push @tags, [ $ty, $id ];
+        push @{$frm->{_err}}, [ 'tags', 'wrongtag', $_ ] if
+             !$ty || !$self->{discussion_tags}{$ty}
+          || $ty eq 'an' && ($id || !$self->authCan('boardmod'))
+          || $ty eq 'db' && $id
+        # || $ty eq 'v'  && (!$id || !$self->db..)
+          || $ty eq 'p'  && (!$id || !$self->dbProducerGet(id => $id)->[0]{id})
+          || $ty eq 'u'  && (!$id || !$self->dbUserGet(uid => $id)->[0]{id});
+      }
+    }
+
+    if(!$frm->{_err}) {
+      my($ntid, $nnum) = ($tid, $num);
+
+      # create/edit thread
+      if(!$tid || $num == 1) {
+        my %thread = (
+          title => $frm->{title},
+          tags => \@tags,
+          hidden => $frm->{hidden},
+          locked => $frm->{locked},
+        );
+        $self->dbThreadEdit($tid, %thread)  if $tid;
+        $ntid = $self->dbThreadAdd(%thread) if !$tid;
+      }
+
+      # create/edit post
+      my %post = (
+        msg => $frm->{msg},
+        hidden => $num != 1 && $frm->{hidden},
+        lastmod => !$num || $frm->{nolastmod} ? 0 : time,
+      );
+      $self->dbPostEdit($tid, $num, %post)   if $num;
+      $nnum = $self->dbPostAdd($ntid, %post) if !$num;
+
+      $self->multiCmd("ircnotify t$ntid.$nnum") if !$num && !$frm->{hidden};
+
+      return $self->resRedirect("/t$ntid".($nnum > 25 ? '/'.ceil($nnum/25) : '').'#'.$nnum, 'post');
+    }
+  }
+
+  # fill out form if we have some data
+  if($p) {
+    $frm->{msg} ||= $p->{msg};
+    $frm->{hidden} = $p->{hidden} if $num != 1 && !exists $frm->{hidden};
+    if($num == 1) {
+      $frm->{tags} ||= join ' ', sort map $_->[1]?$_->[0].$_->[1]:$_->[0], @{$t->{tags}};
+      $frm->{title} ||= $t->{title};
+      $frm->{locked}  = $t->{locked} if !exists $frm->{locked};
+      $frm->{hidden}  = $t->{hidden} if !exists $frm->{locked};
+    }
+  }
+  $frm->{tags} ||= $tag;
+  $frm->{nolastmod} = 1 if $num && $self->authCan('boardmod') && !exists $frm->{nolastmod};
+
+  # generate html
+  my $title = !$tid ? 'Start new thread' :
+              !$num ? 'Reply to '.$t->{title} :
+                      'Edit post';
+  my $url = !$tid ? "/t/$tag/new" : !$num ? "/t$tid/reply" : "/t$tid.$num/edit";
+  $self->htmlHeader(title => $title);
+  $self->htmlForm({ frm => $frm, action => $url }, $title => [
+    [ static => label => 'Username', content => userstr($self->authInfo->{id}, $self->authInfo->{username}) ],
+    !$tid || $num == 1 ? (
+      [ input  => short => 'title', name => 'Thread title' ],
+      [ input  => short => 'tags',  name => 'Tags' ],
+      [ static => content => 'Read <a href="/d9.2">d9.2</a> for information about how to use tags' ],
+      $self->authCan('boardmod') ? (
+        [ check => name => 'Locked', short => 'locked' ],
+      ) : (),
+    ) : (
+      [ static => label => 'Topic', content => qq|<a href="/t$tid">|.xml_escape($t->{title}).'</a>' ],
+    ),
+    $self->authCan('boardmod') ? (
+      [ check => name => 'Hidden', short => 'hidden' ],
+      $num ? (
+        [ check => name => 'Don\'t update last modified field', short => 'nolastmod' ],
+      ) : (),
+    ) : (),
+    [ text   => name => 'Message', short => 'msg', rows => 10 ],
+    [ static => content => 'See <a href="/d9.3">d9.3</a> for the allowed formatting codes' ],
+  ]);
+  $self->htmlFooter;
 }
 
 
