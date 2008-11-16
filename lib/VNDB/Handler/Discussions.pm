@@ -87,7 +87,12 @@ sub thread {
   end;
   $self->htmlBrowseNavigate("/t$tid/", $page, $t->{count} > $page*25, 'b', 1);
 
-  if($t->{count} < $page*25 && $self->authCan('board')) {
+  if($t->{locked}) {
+    div class => 'mainbox';
+     h1 'Reply';
+     p class => 'center', 'This thread has been locked, you can\'t reply to it anymore.';
+    end;
+  } elsif($t->{count} < $page*25 && $self->authCan('board')) {
     form action => "/t$tid/reply", method => 'post', 'accept-charset' => 'UTF-8';
      div class => 'mainbox';
       fieldset class => 'submit';
@@ -357,7 +362,7 @@ sub _threadlist {
       my($self, $n, $o) = @_;
       Tr $n % 2 ? ( class => 'odd' ) : ();
        td class => 'tc1';
-        a href => "/t$o->{id}", shorten $o->{title}, 50;
+        a $o->{locked} ? ( class => 'locked' ) : (), href => "/t$o->{id}", shorten $o->{title}, 50;
        end;
        td class => 'tc2', $o->{count}-1;
        td class => 'tc3';

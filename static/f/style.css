@@ -392,6 +392,9 @@ div.thread i.edit {
 div.mainbox.discussions td.tc4 {
   text-align: right;
 }
+div.mainbox.discussions a.locked {
+  text-decoration: line-through;
+}
 div.mainbox.discussions td.tags {
   padding-top: 0;
   padding-left: 60px;
