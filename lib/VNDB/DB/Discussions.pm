@@ -186,7 +186,8 @@ sub dbPostEdit {
 sub dbPostAdd {
   my($self, $tid, %o) = @_;
 
-  my $num ||= $self->dbRow('SELECT num FROM threads_posts WHERE tid = ? ORDER BY num DESC LIMIT 1', $tid)->{num}+1;
+  my $num = $self->dbRow('SELECT num FROM threads_posts WHERE tid = ? ORDER BY num DESC LIMIT 1', $tid)->{num};
+  $num = $num ? $num+1 : 1;
   $o{uid} ||= $self->authInfo->{id};
 
   $self->dbExec(q|
