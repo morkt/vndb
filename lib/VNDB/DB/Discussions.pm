@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbThreadGet dbThreadEdit dbThreadAdd dbPostGet dbPostEdit dbPostAdd|;
+our @EXPORT = qw|dbThreadGet dbThreadEdit dbThreadAdd dbPostGet dbPostEdit dbPostAdd dbThreadCount|;
 
 
 # Options: id, type, iid, results, page, what
@@ -134,6 +134,18 @@ sub dbThreadAdd {
   ) for (@{$o{tags}});
 
   return $id;
+}
+
+
+# Returns thread count of a specific item tag
+# Arguments: type, iid
+sub dbThreadCount {
+  my($self, $type, $iid) = @_;
+  return $self->dbRow(q|
+    SELECT COUNT(*) AS cnt
+      FROM threads_tags
+      WHERE type = ? AND iid = ?|,
+    $type, $iid)->{cnt};
 }
 
 

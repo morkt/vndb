@@ -25,8 +25,9 @@ sub htmlMainTabs {
    end;
 
    if($type ne 'r') {
+     my $cnt = $self->dbThreadCount($type, $obj->{id});
      li $sel eq 'disc' ? (class => 'tabselected') : ();
-      a href => "/t/$id", 'discussions';
+      a href => "/t/$id", "discussions ($cnt)";
      end;
    }
    

@@ -26,6 +26,8 @@ TODO:
 	  - Improved diff calculation
 	  - Whitespace around input fields are removed
 	  - Automated edits filter to history browser
+	  - Number of threads is shown in the discussion tab for each item
+	  - Boardmods can edit threads without updating the last edited field
 
 1.23 - 2008-10-22 (r117)
 	- Removed redirects for old revision URLs (the code wasn't very secure...)
