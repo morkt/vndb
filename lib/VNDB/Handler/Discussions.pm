@@ -67,6 +67,13 @@ sub thread {
         }
        end;
        td class => 'tc2';
+        if($self->authCan('boardmod') || $_->{uid} == $self->authInfo->{id} && !$_->{hidden}) {
+          i class => 'edit';
+           txt '< ';
+           a href => "/t$tid.$_->{num}/edit", 'edit';
+           txt ' >';
+          end;
+        }
         if($_->{hidden}) {
           i class => 'deleted', 'Post deleted.';
         } else {

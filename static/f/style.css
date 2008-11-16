@@ -381,6 +381,12 @@ div.thread i.lastmod {
   color: #258;
   margin: -10px -10px -5px;
 }
+div.thread i.edit {
+  float: right;
+  color: #258;
+  font-style: normal;
+  margin: -10px -10px -5px;
+}
 
 /* threads browser */
 div.mainbox.discussions td.tc4 {
