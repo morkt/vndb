@@ -220,7 +220,7 @@ sub edit {
       $frm->{tags} ||= join ' ', sort map $_->[1]?$_->[0].$_->[1]:$_->[0], @{$t->{tags}};
       $frm->{title} ||= $t->{title};
       $frm->{locked}  = $t->{locked} if !exists $frm->{locked};
-      $frm->{hidden}  = $t->{hidden} if !exists $frm->{locked};
+      $frm->{hidden}  = $t->{hidden} if !exists $frm->{hidden};
     }
   }
   $frm->{tags} ||= $tag;
