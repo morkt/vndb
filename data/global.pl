@@ -60,6 +60,14 @@ our %S = (
     p  => 'Producers',        # pid
     u  => 'Users',            # uid
   },
+  vn_lengths      => [
+    [ 'Unkown',     '',              '' ],
+    [ 'Very short', '< 2 hours',     'OMGWTFOTL, A Dream of Summer' ],
+    [ 'Short',      '2 - 10 hours',  'Narcissu, Planetarian' ],
+    [ 'Medium',     '10 - 30 hours', 'Kana: Little Sister' ],
+    [ 'Long',       '30 - 50 hours', 'Tsukihime' ],
+    [ 'Very long',  '> 50 hours',    'Clannad' ],
+  ],
 );
 
 
