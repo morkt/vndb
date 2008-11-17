@@ -35,13 +35,13 @@ sub page {
     table;
      my $i = 0;
      if($v->{length}) {
-       Tr ++$i % 1 ? (class => 'odd') : ();
+       Tr ++$i % 2 ? (class => 'odd') : ();
         td 'Length';
         td "$self->{vn_lengths}[$v->{length}][0] ($self->{vn_lengths}[$v->{length}][1])";
        end;
      }
      if($v->{alias}) {
-       Tr ++$i % 1 ? (class => 'odd') : ();
+       Tr ++$i % 2 ? (class => 'odd') : ();
         td 'Aliases';
         td $v->{alias};
        end;
