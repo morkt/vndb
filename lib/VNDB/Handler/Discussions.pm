@@ -176,7 +176,7 @@ sub edit {
              !$ty || !$self->{discussion_tags}{$ty}
           || $ty eq 'an' && ($id || !$self->authCan('boardmod'))
           || $ty eq 'db' && $id
-        # || $ty eq 'v'  && (!$id || !$self->db..)
+          || $ty eq 'v'  && (!$id || !$self->dbVNGet(id => $id)->[0]{id})
           || $ty eq 'p'  && (!$id || !$self->dbProducerGet(id => $id)->[0]{id})
           || $ty eq 'u'  && (!$id || !$self->dbUserGet(uid => $id)->[0]{id});
       }
@@ -270,7 +270,7 @@ sub tagbrowse {
   my $obj = !$iid ? undef :
     $type eq 'u' ? $self->dbUserGet(uid => $iid)->[0] :
     $type eq 'p' ? $self->dbProducerGet(id => $iid)->[0] :
-                   undef; # get VN obj here
+                   $self->dbVNGet(id => $iid)->[0];
   return 404 if $iid && !$obj;
   my $ititle = $obj && ($obj->{title}||$obj->{name}||$obj->{username});
   my $title = !$obj ? $self->{discussion_tags}{$type} : 'Related discussions for '.$ititle;
