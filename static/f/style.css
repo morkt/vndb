@@ -151,6 +151,7 @@ td.field label {
 #maincontent h2.alttitle {
   color: #fff;
   margin: -17px 0 15px 15px;
+  font-weight: normal;
 }
 #maincontent div.mainbox {
   border: 1px solid #258;
@@ -438,13 +439,13 @@ div.vndescription {
   padding: 5px 0 0 0;
 }
 div.vndescription h2 {
-  margin: 0 30px;
+  margin: 0 30px!important;
   border-top: 1px solid #258;
   padding: 3px 70px;
   font-weight: bold!important;
 }
 div.vndescription p {
-  margin: 0 100px;
+  margin: 0 100px!important;
 }
 
 
