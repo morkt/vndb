@@ -51,6 +51,7 @@ sub dbVNGet {
     my %r = map {
       $r->[$_]{categories} = [];
       $r->[$_]{anime} = [];
+      $r->[$_]{relations} = [];
       ($r->[$_]{cid}, $_)
     } 0..$#$r;
 
