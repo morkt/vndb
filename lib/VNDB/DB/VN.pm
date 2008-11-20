@@ -15,6 +15,7 @@ sub dbVNGet {
   $o{results} ||= 10;
   $o{page}    ||= 1;
   $o{order}   ||= 'vr.title ASC';
+  $o{what}    ||= '';
 
   my %where = (
     $o{id} ? (
