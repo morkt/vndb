@@ -20,6 +20,8 @@ sub page {
   my $v = $self->dbVNGet(id => $vid, what => 'extended categories anime relations screenshots')->[0];
   return 404 if !$v->{id};
 
+  my $r = $self->dbReleaseGet(vid => $vid, what => 'producers platforms');
+
   $self->htmlHeader(title => $v->{title});
   $self->htmlMainTabs('v', $v);
   div class => 'mainbox';
@@ -93,9 +95,10 @@ sub page {
    end;
   end;
 
+  _releases($self, $v, $r);
   _screenshots($self, $v) if @{$v->{screenshots}};
 
-  # TODO: Releases, stats, relation graph
+  # TODO: stats, relation graph
 
   $self->htmlFooter;
 }
@@ -194,6 +197,59 @@ sub _anime {
         end;
         acronym title => $_->{title_kanji}, shorten $_->{title_romaji}, 50;
         b ' ('.($self->{anime_types}[$_->{type}][0] eq 'unknown' ? '' : $self->{anime_types}[$_->{type}][0].', ').$_->{year}.')';
+      }
+    }
+   end;
+  end;
+}
+
+
+sub _releases {
+  my($self, $v, $r) = @_;
+
+  div class => 'mainbox releases';
+   h1 'Releases';
+   if(!@$r) {
+     p 'We don\'t have any information about releases of this visual novel yet...';
+     end;
+     return;
+   }
+
+   my @lang;
+   for my $l (@$r) {
+     push @lang, $l->{language} if !grep $l->{language} eq $_, @lang;
+   }
+
+   table;
+    for my $l (@lang) {
+      Tr class => 'lang';
+       td colspan => 5;
+        acronym class => 'icons lang '.$l, title => $self->{languages}{$l}, ' ';
+        txt $self->{languages}{$l};
+       end;
+      end;
+      for my $rel (grep $l eq $_->{language}, @$r) {
+        Tr;
+         td class => 'tc1'; lit datestr $rel->{released}; end;
+         td class => 'tc2', $rel->{minage} < 0 ? '' : $self->{age_ratings}{$rel->{minage}};
+         td class => 'tc3';
+          for (sort @{$rel->{platforms}}) {
+            next if $_ eq 'oth';
+            acronym class => "icons $_", title => $self->{platforms}{$_}, ' ';
+          }
+          acronym class => 'icons '.lc(substr($self->{release_types}[$rel->{type}],0,3)), title => $self->{release_types}[$rel->{type}], ' ';
+         end;
+         td class => 'tc4';
+          a href => "/r$_->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
+         end;
+         td class => 'tc5';
+          if($rel->{website}) {
+            a href => $rel->{website}, rel => 'nofollow', class => 'icons ext', title => 'WWW', ' ';
+          } else {
+            txt ' ';
+          }
+         end;
+        end;
       }
     }
    end;

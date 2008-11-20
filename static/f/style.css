@@ -467,6 +467,32 @@ div.vndescription p {
   margin: 0 100px!important;
 }
 
+.releases table {
+  width: 100%;
+}
+.releases tr.lang td {
+  background: url(/f/boxbg.png) repeat;
+  font-weight: bold;
+}
+.releases td.tc1 {
+  padding-left: 30px;
+  width: 80px;
+}
+.releases td.tc2 {
+  text-align: center;
+  width: 50px;
+}
+.releases td.tc3 {
+  text-align: right;
+  padding: 0;
+  width: 90px;
+}
+.releases td.tc5 {
+  text-align: right;
+  width: 20px;
+  padding: 0;
+}
+
 
 
 
@@ -610,6 +636,7 @@ div.revision .tcname {
 }
 .icons.par, .icons.tri, .icons.com { width: 11px; }
 acronym.icons, acronym.uicons { cursor: default; }
+a.icons { border: none!important }
 .icons.oth { background: none; }
 .icons.drc { background-position:   0px   0px; }
 .icons.lin { background-position:   0px -14px; }

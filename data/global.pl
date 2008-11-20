@@ -144,6 +144,35 @@ our %S = (
     [ 'Full story',          1 ],
     [ 'Other',               0 ],
   ],
+  age_ratings     => {
+    -1 => 'Unknown',
+    0  => 'All ages',
+    map { $_ => $_.'+' } 6..18
+  },
+  release_types   => [
+    'Complete',
+    'Partial',
+    'Trial'
+  ],
+  platforms       => {
+    win => 'Windows',
+    lin => 'Linux',
+    mac => 'Mac OS',
+    dvd => 'DVD Player',
+    gba => 'Game Boy Advance',
+    msx => 'MSX',
+    nds => 'Nintendo DS',
+    nes => 'Famicom',
+    psp => 'Playstation Portable',
+    ps1 => 'Playstation 1',
+    ps2 => 'Playstation 2',
+    ps3 => 'Playstation 3',
+    drc => 'Dreamcast',
+    sfc => 'Super Nintendo',
+    wii => 'Nintendo Wii',
+    xb3 => 'Xbox 360',
+    oth => 'Other'
+  },
 );
 
 
