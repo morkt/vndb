@@ -17,7 +17,7 @@ sub page {
 
   # TODO: revision-awareness, hidden/locked flag check
 
-  my $v = $self->dbVNGet(id => $vid, what => 'extended')->[0];
+  my $v = $self->dbVNGet(id => $vid, what => 'extended categories')->[0];
   return 404 if !$v->{id};
 
   $self->htmlHeader(title => $v->{title});
@@ -71,7 +71,10 @@ sub page {
        end;
      }
 
-     # TODO: producers, categories, relations, anime
+     # categories
+     page_categories($self, \$i, $v) if @{$v->{categories}};
+
+     # TODO: producers, relations, anime
 
     end;
    end;
@@ -88,6 +91,42 @@ sub page {
   # TODO: Releases, stats, relation graph, screenshots
 
   $self->htmlFooter;
+}
+
+sub page_categories {
+  my($self, $i, $v) = @_;
+
+  # create an ordered list of selected categories in the form of: [ parent, [ p, sub, lvl ], .. ], ..
+  my @cat;
+  my %nolvl = (map {$_=>1} qw| pli pbr gaa gab hfa hfe |);
+  for my $cp (qw|e s g p h|) {
+    my $thisparent = 0;
+    my @sel = sort grep substr($_->[0], 0, 1) eq $cp, @{$v->{categories}};
+    if(@sel) {
+      push @cat, [ $self->{categories}{$cp}[0] ];
+      push @{$cat[$#cat]}, map [ $cp, substr($_->[0],1,2), $nolvl{$_->[0]} ? 0 : $_->[1] ], @sel;
+    }
+  }
+  my @placetime = grep $_->[0] =~ /^[tl]/, @{$v->{categories}};
+  if(@placetime) {
+    push @cat, [ 'Place/Time' ];
+    push @{$cat[$#cat]}, map [ substr($_->[0],0,1), substr($_->[0],1,2), 0], sort { $a->[0] cmp $b->[0] } @placetime;
+  }
+
+  # format & output categories
+  Tr ++$$i % 2 ? (class => 'odd') : ();
+   td 'Categories';
+   td;
+    dl;
+     for (@cat) {
+       dt shift(@$_).':';
+       dd;
+        lit join ', ', map qq|<i class="catlvl_$_->[2]">$self->{categories}{$_->[0]}[1]{$_->[1]}</i>|, @$_;
+       end;
+     }
+    end;
+   end;
+  end;
 }
 
 

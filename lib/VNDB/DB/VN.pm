@@ -9,7 +9,7 @@ our @EXPORT = qw|dbVNGet|;
 
 
 # Options: id, rev, results, page, order, what
-# What: extended
+# What: extended categories
 sub dbVNGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -33,7 +33,7 @@ sub dbVNGet {
   );
 
   my @select = (
-    qw|v.id v.locked v.hidden v.c_released v.c_languages v.c_platforms vr.title vr.original|,
+    qw|v.id v.locked v.hidden v.c_released v.c_languages v.c_platforms vr.title vr.original|, 'vr.id AS cid',
     $o{what} =~ /extended/ ? (
       qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai vr.l_vnn| ) : (),
   );
@@ -46,6 +46,20 @@ sub dbVNGet {
       ORDER BY !s|,
     join(', ', @select), join(' ', @join), \%where, $o{order},
   );
+
+  if(@$r && $o{what} =~ /categories/) {
+    my %r = map {
+      $r->[$_]{categories} = [];
+      ($r->[$_]{cid}, $_)
+    } 0..$#$r;
+
+    push(@{$r->[$r{$_->{vid}}]{categories}}, [ $_->{cat}, $_->{lvl} ]) for (@{$self->dbAll(q|
+      SELECT vid, cat, lvl
+        FROM vn_categories
+        WHERE vid IN(!l)|,
+      [ keys %r ]
+    )});
+  }
 
   return wantarray ? ($r, $np) : $r;
 }

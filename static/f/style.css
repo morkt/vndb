@@ -434,6 +434,20 @@ div.vndetails table {
   float: left;
   width: 430px;
 }
+div.vndetails table td {
+  padding-right: 10px;
+}
+div.vndetails table dt {
+  float: left;
+  font-style: italic;
+}
+div.vndetails table dd {
+  margin-left: 90px;
+}
+.catlvl_0, .catlvl_1, .catlvl_2, .catlvl_3 { font-style: normal; }
+.catlvl_1 { color: #444!important }
+.catlvl_2 { color: #777 }
+.catlvl_3 { color: #fff }
 div.vndescription {
   clear: left;
   padding: 5px 0 0 0;
