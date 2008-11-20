@@ -66,17 +66,6 @@ sub spawn {
       timeoutdelay => 0.4, # $delay = $msgdelay ^ (1 + $tm*$timeoutdelay)
       maxtimeoutdelay => 2*3600, # two hours
       cachetime => 30*24*3600,   # one month
-     # AniDB anime types:
-      types => [
-        [ 'unknown',    'unknown',    ],
-        [ 'TV',         'TV Series'   ],
-        [ 'OVA',        'OVA'         ],
-        [ 'Movie',      'Movie'       ],
-        [ 'unknown',    'Other'       ],
-        [ 'unknown',    'Web'         ],
-        [ 'TV Special', 'TV Special'  ],
-        [ 'unknown',    'Music Video' ],
-      ],
 
       @_,
       w => undef,
@@ -273,8 +262,8 @@ sub updateanime { # aid, data|'notfound'
       $_ =~ s/`/'/g;
     }
     $col[3] = $1 if $col[3] =~ /^([0-9]+)/; # remove multi-year stuff
-    for(0..$#{$_[HEAP]{types}}) {
-      $col[4] = $_ if lc($_[HEAP]{types}[$_][1]) eq lc($col[4]);
+    for(0..$#{$VNDB::S{anime_types}}) {
+      $col[4] = $_ if lc($VNDB::S{anime_types}[$_][1]) eq lc($col[4]);
     }
     $col[4] = 0 if $col[4] !~ /^[0-9]+$/;
     $col[2] = '' if $col[2] =~ /^0,/;

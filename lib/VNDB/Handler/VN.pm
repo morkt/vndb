@@ -17,7 +17,7 @@ sub page {
 
   # TODO: revision-awareness, hidden/locked flag check
 
-  my $v = $self->dbVNGet(id => $vid, what => 'extended categories')->[0];
+  my $v = $self->dbVNGet(id => $vid, what => 'extended categories anime')->[0];
   return 404 if !$v->{id};
 
   $self->htmlHeader(title => $v->{title});
@@ -40,6 +40,10 @@ sub page {
 
     # general info
     table;
+     Tr;
+      td class => 'key', ' ';
+      td ' ';
+     end;
      my $i = 0;
      if($v->{length}) {
        Tr ++$i % 2 ? (class => 'odd') : ();
@@ -71,10 +75,10 @@ sub page {
        end;
      }
 
-     # categories
      page_categories($self, \$i, $v) if @{$v->{categories}};
-
-     # TODO: producers, relations, anime
+     page_anime($self, \$i, $v) if @{$v->{anime}};
+     
+     # TODO: producers, relations
 
     end;
    end;
@@ -92,6 +96,7 @@ sub page {
 
   $self->htmlFooter;
 }
+
 
 sub page_categories {
   my($self, $i, $v) = @_;
@@ -128,6 +133,43 @@ sub page_categories {
    end;
   end;
 }
+
+
+sub page_anime {
+  my($self, $i, $v) = @_;
+
+  Tr ++$$i % 2 ? (class => 'odd') : ();
+   td 'Related anime';
+   td class => 'anime';
+    for (sort { ($a->{year}||9999) <=> ($b->{year}||9999) } @{$v->{anime}}) {
+      if($_->{lastfetch} < 1) {
+        b;
+         txt $_->{lastfetch} < 0 ? '[unknown anidb id: ' : '[no information available at this time: ';
+         a href => "http://anidb.net/a$_->{id}", $_->{id};
+         txt ']';
+        end;
+      } else {
+        b;
+         txt '[';
+         a href => "http://anidb.net/a$_->{id}", title => 'AniDB', 'DB';
+         if($_->{nfo_id}) {
+           txt '-';
+           a href => "http://animenfo.com/animetitle,$_->{nfo_id},a.html", title => 'AnimeNFO', 'NFO';
+         }
+         if($_->{ann_id}) {
+           txt '-';
+           a href => "http://www.animenewsnetwork.com/encyclopedia/anime.php?id=$_->{ann_id}", title => 'Anime News Network', 'ANN';
+         }
+         txt '] ';
+        end;
+        acronym title => $_->{title_kanji}, shorten $_->{title_romaji}, 50;
+        b ' ('.($self->{anime_types}[$_->{type}][0] eq 'unknown' ? '' : $self->{anime_types}[$_->{type}][0].', ').$_->{year}.')';
+      }
+    }
+   end;
+  end;
+}
+
 
 
 1;

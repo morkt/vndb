@@ -434,8 +434,8 @@ div.vndetails table {
   float: left;
   width: 430px;
 }
-div.vndetails table td {
-  padding-right: 10px;
+div.vndetails table td.key {
+  width: 80px;
 }
 div.vndetails table dt {
   float: left;
@@ -448,6 +448,11 @@ div.vndetails table dd {
 .catlvl_1 { color: #444!important }
 .catlvl_2 { color: #777 }
 .catlvl_3 { color: #fff }
+div.vndetails td.anime b {
+  font-size: 6pt;
+  font-weight: normal;
+  padding-right: 4px;
+}
 div.vndescription {
   clear: left;
   padding: 5px 0 0 0;

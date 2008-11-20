@@ -9,7 +9,7 @@ our @EXPORT = qw|dbVNGet|;
 
 
 # Options: id, rev, results, page, order, what
-# What: extended categories
+# What: extended categories anime
 sub dbVNGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -47,18 +47,31 @@ sub dbVNGet {
     join(', ', @select), join(' ', @join), \%where, $o{order},
   );
 
-  if(@$r && $o{what} =~ /categories/) {
+  if(@$r && $o{what} =~ /(categories|anime)/) {
     my %r = map {
       $r->[$_]{categories} = [];
+      $r->[$_]{anime} = [];
       ($r->[$_]{cid}, $_)
     } 0..$#$r;
 
-    push(@{$r->[$r{$_->{vid}}]{categories}}, [ $_->{cat}, $_->{lvl} ]) for (@{$self->dbAll(q|
-      SELECT vid, cat, lvl
-        FROM vn_categories
-        WHERE vid IN(!l)|,
-      [ keys %r ]
-    )});
+    if($o{what} =~ /categories/) {
+      push(@{$r->[$r{$_->{vid}}]{categories}}, [ $_->{cat}, $_->{lvl} ]) for (@{$self->dbAll(q|
+        SELECT vid, cat, lvl
+          FROM vn_categories
+          WHERE vid IN(!l)|,
+        [ keys %r ]
+      )});
+    }
+
+    if($o{what} =~ /anime/) {
+      push(@{$r->[$r{$_->{vid}}]{anime}}, $_) && delete $_->{vid} for (@{$self->dbAll(q|
+        SELECT va.vid, a.*
+          FROM vn_anime va
+          JOIN anime a ON va.aid = a.id
+          WHERE va.vid IN(!l)|,
+        [ keys %r ]
+      )});
+    }
   }
 
   return wantarray ? ($r, $np) : $r;

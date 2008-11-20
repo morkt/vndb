@@ -119,6 +119,17 @@ our %S = (
       ra => 'Rape',
     }, 7 ],
   },
+  anime_types     => [
+    # VNDB          AniDB
+    [ 'unknown',    'unknown',    ],
+    [ 'TV',         'TV Series'   ],
+    [ 'OVA',        'OVA'         ],
+    [ 'Movie',      'Movie'       ],
+    [ 'unknown',    'Other'       ],
+    [ 'unknown',    'Web'         ],
+    [ 'TV Special', 'TV Special'  ],
+    [ 'unknown',    'Music Video' ],
+  ],
 );
 
 
