@@ -19,6 +19,18 @@ clearInterval(t);f()}},10);window.onload=f;}
 
 DOMLoad(function() {
 
+  // show/hide NSFW VN image
+  cl('nsfw_show', function() {
+    x('nsfw_show').style.display = 'none';
+    x('nsfw_hid').style.display = 'block';
+    x('nsfw_hid').onclick = function() {
+      x('nsfw_show').style.display = 'block';
+      x('nsfw_hid').style.display = 'none';
+    };
+    return false
+  });
+
+
   // spam protection on all forms
   if(document.forms.length >= 1)
     for(i=0; i<document.forms.length; i++)

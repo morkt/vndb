@@ -430,6 +430,21 @@ div.vnimg {
   width: 250px;
   margin: 0 10px;
 }
+div.vnimg i {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 7pt;
+}
+div.vnimg p {
+  text-align: center;
+  padding: 0px;
+  margin: 0;
+}
+img#nsfw_hid {
+  display: none;
+  cursor: pointer;
+}
 div.vndetails table {
   float: left;
   width: 430px;
