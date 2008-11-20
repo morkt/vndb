@@ -17,7 +17,7 @@ sub page {
 
   # TODO: revision-awareness, hidden/locked flag check
 
-  my $v = $self->dbVNGet(id => $vid, what => 'extended categories anime relations')->[0];
+  my $v = $self->dbVNGet(id => $vid, what => 'extended categories anime relations screenshots')->[0];
   return 404 if !$v->{id};
 
   $self->htmlHeader(title => $v->{title});
@@ -93,7 +93,9 @@ sub page {
    end;
   end;
 
-  # TODO: Releases, stats, relation graph, screenshots
+  _screenshots($self, $v) if @{$v->{screenshots}};
+
+  # TODO: Releases, stats, relation graph
 
   $self->htmlFooter;
 }
@@ -198,6 +200,14 @@ sub _anime {
   end;
 }
 
+
+sub _screenshots {
+  my($self, $v) = @_;
+  div class => 'mainbox';
+   h1 'Screenshots';
+   p 'Here be screenshots';
+  end;
+}
 
 
 1;

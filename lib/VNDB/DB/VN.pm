@@ -9,7 +9,7 @@ our @EXPORT = qw|dbVNGet|;
 
 
 # Options: id, rev, results, page, order, what
-# What: extended categories anime relations
+# What: extended categories anime relations screenshots
 sub dbVNGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -47,11 +47,12 @@ sub dbVNGet {
     join(', ', @select), join(' ', @join), \%where, $o{order},
   );
 
-  if(@$r && $o{what} =~ /(categories|anime|relations)/) {
+  if(@$r && $o{what} =~ /(categories|anime|relations|screenshots)/) {
     my %r = map {
       $r->[$_]{categories} = [];
       $r->[$_]{anime} = [];
       $r->[$_]{relations} = [];
+      $r->[$_]{screenshots} = [];
       ($r->[$_]{cid}, $_)
     } 0..$#$r;
 
@@ -86,6 +87,17 @@ sub dbVNGet {
           JOIN vn v ON rel.vid2 = v.id
           JOIN vn_rev vr ON v.latest = vr.id
           WHERE rel.vid1 IN(!l)|,
+        [ keys %r ]
+      )});
+    }
+
+    if($o{what} =~ /screenshots/) {
+      push(@{$r->[$r{$_->{vid}}]{screenshots}}, $_) && delete $_->{vid} for (@{$self->dbAll(q|
+        SELECT vs.vid, s.id, vs.nsfw, vs.rid, s.width, s.height
+          FROM vn_screenshots vs
+          JOIN screenshots s ON vs.scr = s.id
+          WHERE vs.vid IN(!l)
+          ORDER BY vs.scr|,
         [ keys %r ]
       )});
     }
