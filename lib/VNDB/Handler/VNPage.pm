@@ -1,5 +1,5 @@
 
-package VNDB::Handler::VN;
+package VNDB::Handler::VNPage;
 
 use strict;
 use warnings;
@@ -75,8 +75,8 @@ sub page {
        end;
      }
 
-     page_categories($self, \$i, $v) if @{$v->{categories}};
-     page_anime($self, \$i, $v) if @{$v->{anime}};
+     _categories($self, \$i, $v) if @{$v->{categories}};
+     _anime($self, \$i, $v) if @{$v->{anime}};
      
      # TODO: producers, relations
 
@@ -98,7 +98,7 @@ sub page {
 }
 
 
-sub page_categories {
+sub _categories {
   my($self, $i, $v) = @_;
 
   # create an ordered list of selected categories in the form of: [ parent, [ p, sub, lvl ], .. ], ..
@@ -135,7 +135,7 @@ sub page_categories {
 }
 
 
-sub page_anime {
+sub _anime {
   my($self, $i, $v) = @_;
 
   Tr ++$$i % 2 ? (class => 'odd') : ();
