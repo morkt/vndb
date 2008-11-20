@@ -457,12 +457,19 @@ div.vndetails table dt {
   font-style: italic;
 }
 div.vndetails table dd {
-  margin-left: 100px;
+  margin-left: 90px;
 }
 .catlvl_0, .catlvl_1, .catlvl_2, .catlvl_3 { font-style: normal; }
 .catlvl_1 { color: #444!important }
 .catlvl_2 { color: #777 }
 .catlvl_3 { color: #fff }
+div.vndetails td.relations dt {
+  float: none;
+  font-style: normal;
+}
+div.vndetails td.relations dd {
+  margin-left: 15px;
+}
 div.vndetails td.anime b {
   font-size: 6pt;
   font-weight: normal;

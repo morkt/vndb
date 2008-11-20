@@ -160,10 +160,10 @@ sub _relations {
   
   Tr ++$$i % 2 ? (class => 'odd') : ();
    td 'Relations';
-   td;
+   td class => 'relations';
     dl;
      for(sort keys %rel) {
-       dt $self->{vn_relations}[$_][0].': ';
+       dt $self->{vn_relations}[$_][0];
        dd;
         for (@{$rel{$_}}) {
           a href => "/v$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 40;
