@@ -240,7 +240,7 @@ sub _releases {
           acronym class => 'icons '.lc(substr($self->{release_types}[$rel->{type}],0,3)), title => $self->{release_types}[$rel->{type}], ' ';
          end;
          td class => 'tc4';
-          a href => "/r$_->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
+          a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
          end;
          td class => 'tc5';
           if($rel->{website}) {
