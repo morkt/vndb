@@ -17,7 +17,7 @@ sub page {
 
   # TODO: revision-awareness, hidden/locked flag check
 
-  my $v = $self->dbVNGet(id => $vid, what => 'extended categories anime')->[0];
+  my $v = $self->dbVNGet(id => $vid, what => 'extended categories anime relations')->[0];
   return 404 if !$v->{id};
 
   $self->htmlHeader(title => $v->{title});
@@ -76,9 +76,10 @@ sub page {
      }
 
      _categories($self, \$i, $v) if @{$v->{categories}};
+     _relations($self, \$i, $v) if @{$v->{relations}};
      _anime($self, \$i, $v) if @{$v->{anime}};
      
-     # TODO: producers, relations
+     # TODO: producers
 
     end;
    end;
@@ -127,6 +128,33 @@ sub _categories {
        dt shift(@$_).':';
        dd;
         lit join ', ', map qq|<i class="catlvl_$_->[2]">$self->{categories}{$_->[0]}[1]{$_->[1]}</i>|, @$_;
+       end;
+     }
+    end;
+   end;
+  end;
+}
+
+
+sub _relations {
+  my($self, $i, $v) = @_;
+
+  my %rel;
+  push @{$rel{$_->{relation}}}, $_
+    for (sort { $a->{title} cmp $b->{title} } @{$v->{relations}});
+
+  
+  Tr ++$$i % 2 ? (class => 'odd') : ();
+   td 'Relations';
+   td;
+    dl;
+     for(sort keys %rel) {
+       dt $self->{vn_relations}[$_][0].': ';
+       dd;
+        for (@{$rel{$_}}) {
+          a href => "/v$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 40;
+          br;
+        }
        end;
      }
     end;

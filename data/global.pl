@@ -130,6 +130,20 @@ our %S = (
     [ 'TV Special', 'TV Special'  ],
     [ 'unknown',    'Music Video' ],
   ],
+  vn_relations    => [
+    # Name,           Reverse--
+    [ 'Sequel',              0 ],
+    [ 'Prequel',             1 ],
+    [ 'Same setting',        0 ],
+    [ 'Alternative setting', 0 ],
+    [ 'Alternative version', 0 ],
+    [ 'Same characters',     0 ],
+    [ 'Side story',          0 ],
+    [ 'Parent story',        1 ],
+    [ 'Summary',             0 ],
+    [ 'Full story',          1 ],
+    [ 'Other',               0 ],
+  ],
 );
 
 

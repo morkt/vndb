@@ -9,7 +9,7 @@ our @EXPORT = qw|dbVNGet|;
 
 
 # Options: id, rev, results, page, order, what
-# What: extended categories anime
+# What: extended categories anime relations
 sub dbVNGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -47,7 +47,7 @@ sub dbVNGet {
     join(', ', @select), join(' ', @join), \%where, $o{order},
   );
 
-  if(@$r && $o{what} =~ /(categories|anime)/) {
+  if(@$r && $o{what} =~ /(categories|anime|relations)/) {
     my %r = map {
       $r->[$_]{categories} = [];
       $r->[$_]{anime} = [];
@@ -69,6 +69,22 @@ sub dbVNGet {
           FROM vn_anime va
           JOIN anime a ON va.aid = a.id
           WHERE va.vid IN(!l)|,
+        [ keys %r ]
+      )});
+    }
+
+    if($o{what} =~ /relations/) {
+      push(@{$r->[$r{$_->{vid1}}]{relations}}, {
+        relation => $_->{relation},
+        id => $_->{vid2},
+        title => $_->{title},
+        original => $_->{original}
+      }) for(@{$self->dbAll(q|
+        SELECT rel.vid1, rel.vid2, rel.relation, vr.title, vr.original
+          FROM vn_relations rel
+          JOIN vn v ON rel.vid2 = v.id
+          JOIN vn_rev vr ON v.latest = vr.id
+          WHERE rel.vid1 IN(!l)|,
         [ keys %r ]
       )});
     }
