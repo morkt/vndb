@@ -3,7 +3,7 @@ package VNDB::Handler::VNPage;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use YAWF ':html', 'xml_escape';
 use VNDB::Func;
 
 
@@ -47,6 +47,8 @@ sub page {
   $self->htmlHeader(title => $v->{title});
   $self->htmlMainTabs('v', $v);
   return if $self->htmlHiddenMessage('v', $v);
+
+  _revision($self, $v, $rev);
 
   div class => 'mainbox';
    p class => 'locked', 'Locked for editing' if $v->{locked};
@@ -131,9 +133,64 @@ sub page {
   _releases($self, $v, $r);
   _screenshots($self, $v, $r) if @{$v->{screenshots}};
 
-  # TODO: stats, relation graph
+  # TODO: stats
 
   $self->htmlFooter;
+}
+
+
+sub _revision {
+  my($self, $v, $rev) = @_;
+  return if !$rev;
+
+  my $prev = $rev && $rev > 1 && $self->dbVNGet(
+    id => $v->{id}, rev => $rev-1, what => 'extended categories anime relations screenshots changes'
+  )->[0];
+
+  $self->htmlRevision('v', $prev, $v,
+    [ title       => 'Title (romaji)',   diff => 1 ],
+    [ original    => 'Original title',   diff => 1 ],
+    [ alias       => 'Alias',            diff => 1 ],
+    [ desc        => 'Description',      diff => 1 ],
+    [ length      => 'Length',           serialize => sub { $self->{vn_lengths}[$_[0]][0] } ],
+    [ l_wp        => 'Wikipedia link',   htmlize => sub {
+      $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : '[no link]'
+    }],
+    [ l_encubed   => 'Encubed tag',      htmlize => sub {
+      $_[0] ? sprintf '<a href="http://novelnews.net/tag/%s/">%1$s</a>', xml_escape $_[0] : '[no link]'
+    }],
+    [ l_renai     => 'Renai.us link',    htmlize => sub {
+      $_[0] ? sprintf '<a href="http://renai.us/game/%s.shtml">%1$s</a>', xml_escape $_[0] : '[no link]'
+    }],
+    [ l_vnn       => 'V-N.net link',     htmlize => sub {
+      $_[0] ? sprintf '<a href="http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=%d">%1$d</a>', xml_escape $_[0] : '[no link]'
+    }],
+    [ categories  => 'Categories',       join => ', ', split => sub {
+      my @r = map $self->{categories}{substr($_->[0],0,1)}[1]{substr($_->[0],1,2)}."($_->[1])", sort { $a->[0] cmp $b->[0] } @{$_[0]};
+      return @r ? @r : ('[no categories selected]');
+    }],
+    [ relations   => 'Relations',        join => '<br />', split => sub {
+      my @r = map sprintf('%s: <a href="/v%d" title="%s">%s</a>',
+        $self->{vn_relations}[$_->{relation}][0], $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
+      ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
+      return @r ? @r : ('[none]');
+    }],
+    [ anime       => 'Anime',            join => ', ', split => sub {
+      my @r = map sprintf('<a href="http://anidb.net/a%d">a%1$d</a>', $_->{id}), sort { $a->{id} <=> $b->{id} } @{$_[0]};
+      return @r ? @r : ('[none]');
+    }],
+    [ screenshots => 'Screenshots',      join => '<br />', split => sub {
+      my @r = map sprintf('[%s] <a href="%s/sf/%02d/%d.jpg" rel="iv:%dx%d">%4$d</a> (%s)',
+        $_->{rid} ? qq|<a href="/r$_->{rid}">r$_->{rid}</a>| : 'no release',
+        $self->{url_static}, $_->{id}%100, $_->{id}, $_->{width}, $_->{height}, $_->{nsfw} ? 'NSFW' : 'Safe'
+      ), @{$_[0]};
+      return @r ? @r : ('[no screenshots]');
+    }],
+    [ image       => 'Image',            htmlize => sub {
+      $_[0] > 0 ? sprintf '<img src="%s/cv/%02d/%d.jpg" />', $self->{url_static}, $_[0]%100, $_[0] : $_[0] < 0 ? '[processing]' : 'No image';
+    }],
+    [ img_nsfw    => 'Image NSFW',       serialize => sub { $_[0] ? 'Not safe' : 'Safe' } ],
+  );
 }
 
 
@@ -336,7 +393,7 @@ sub _screenshots {
    h1 'Screenshots';
    table;
     for my $rel (@$r) {
-      my @scr = grep $rel->{id} == $_->{rid}, @{$v->{screenshots}};
+      my @scr = grep $_->{rid} && $rel->{id} == $_->{rid}, @{$v->{screenshots}};
       next if !@scr;
       Tr class => 'rel';
        td colspan => 5;
