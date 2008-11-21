@@ -127,10 +127,11 @@ sub builddot {
   my $gv =
     qq|graph rgraph {\n|.
     qq|\tratio = "compress"\n|.
+    qq|\tgraph [ bgcolor="#ffffff00" ]\n|.
     qq|\tnode [ fontname = "$_[HEAP]{font}", shape = "plaintext",|.
-      qq| fontsize = $_[HEAP]{fsize}[0], style = "setlinewidth(0.5)" ]\n|.
+      qq| fontsize = $_[HEAP]{fsize}[0], style = "setlinewidth(0.5)", fontcolor = "#cccccc", color = "#225588" ]\n|.
     qq|\tedge [ labeldistance = 2.5, labelangle = -20, labeljust = 1, minlen = 2, dir = "both",|.
-      qq| fontname = $_[HEAP]{font}, fontsize = $_[HEAP]{fsize}[1], arrowsize = 0.7, color = "#69a89a"  ]\n|;
+      qq| fontname = $_[HEAP]{font}, fontsize = $_[HEAP]{fsize}[1], arrowsize = 0.7, color = "#225588", fontcolor = "#cccccc" ]\n|;
 
  # insert all nodes, ordered by release date
   for (sort { $a->[2] <=> $b->[2] } values %{$_[HEAP]{nodes}}) {
@@ -149,7 +150,7 @@ sub builddot {
 
     $gv .= sprintf
       qq|\tv%d [ URL = "/v%d", tooltip = "%s" label=<|.
-        q|<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" CELLBORDER="1" BGCOLOR="#f0f0f0">|.
+        q|<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" CELLBORDER="1" BGCOLOR="#00000033">|.
           q|<TR><TD COLSPAN="2" ALIGN="CENTER" CELLPADDING="2"><FONT POINT-SIZE="%d">  %s  </FONT></TD></TR>|.
           q|<TR><TD> %s </TD><TD> %s </TD></TR>|.
         qq|</TABLE>> ]\n|,
@@ -171,9 +172,9 @@ sub builddot {
     }
 
     my $label = 
-      $VNDB::VRELW->{$_->[2]}   ? qq|headlabel = "$VNDB::VREL->[$_->[2]]", taillabel = "$VNDB::VREL->[$_->[2]-1]"| :
-      $VNDB::VRELW->{$_->[2]+1} ? qq|headlabel = "$VNDB::VREL->[$_->[2]]", taillabel = "$VNDB::VREL->[$_->[2]+1]"|
-                                : qq|label = " $VNDB::VREL->[$_->[2]]"|;
+      $VNDB::S{vn_relations}[$_->[2]][1]   ? qq|headlabel = "$VNDB::S{vn_relations}[$_->[2]][0]", taillabel = "$VNDB::S{vn_relations}[$_->[2]-1][0]"| :
+      $VNDB::S{vn_relations}[$_->[2]+1][1] ? qq|headlabel = "$VNDB::S{vn_relations}[$_->[2]][0]", taillabel = "$VNDB::S{vn_relations}[$_->[2]+1][0]"|
+                                : qq|label = " $VNDB::S{vn_relations}[$_->[2]][0]"|;
 
     $gv .= qq|\tv$$_[1] -- v$$_[0] [ $label ]\n|;
   }
@@ -269,7 +270,7 @@ sub proc_child {
 
 # Not a POE handler, just a small macro
 sub reverserel { # relation
-  return $VNDB::VRELW->{$_[0]} ? $_[0]-1 : $VNDB::VRELW->{$_[0]+1} ? $_[0]+1 : $_[0];
+  return $VNDB::S{vn_relations}[$_[0]][1] ? $_[0]-1 : $VNDB::S{vn_relations}[$_[0]+1][1] ? $_[0]+1 : $_[0];
 }
 
 
