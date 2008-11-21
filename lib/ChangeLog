@@ -20,6 +20,7 @@ TODO:
 	- URL changes:
 	  - /p doesn't work anymore, use /p/all
 	  - Revert URL changed from /x99/edit?rev=1 to /x99.1/edit
+	  - /v+/stats and /v+/scr moved into /v+
 	- Functionality changes:
 	  - Ability to sort the userlist on vote and change counts
 	  - Added threads and posts counts to the global statistics
@@ -28,6 +29,8 @@ TODO:
 	  - Automated edits filter to history browser
 	  - Number of threads is shown in the discussion tab for each item
 	  - Boardmods can edit threads without updating the last edited field
+	  - No more RSS feeds for changes (will be replaced with a notification
+	    system in the future)
 
 1.23 - 2008-10-22 (r117)
 	- Removed redirects for old revision URLs (the code wasn't very secure...)
