@@ -5,8 +5,9 @@ use strict;
 use warnings;
 use YAWF ':html', 'xml_escape';
 use Exporter 'import';
-use Algorithm::Diff 'sdiff';
+use Algorithm::Diff::XS 'compact_diff';
 use VNDB::Func;
+use Encode 'encode_utf8', 'decode_utf8';
 
 our @EXPORT = qw|htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate htmlRevision|;
 
@@ -293,34 +294,22 @@ sub revdiff {
   return if $ser1 eq $ser2;
 
   if($o{diff} && $ser1 && $ser2) {
-    my @ser1 = $o{split} ? $o{split}->($ser1) : map xml_escape($_), split //, $ser1;
-    my @ser2 = $o{split} ? $o{split}->($ser2) : map xml_escape($_), split //, $ser2;
+    # compact_diff doesn't like utf8 encoded strings, so encode input, decode output
+    my @ser1 = map encode_utf8($_), $o{split} ? $o{split}->($ser1) : map xml_escape($_), split //, $ser1;
+    my @ser2 = map encode_utf8($_), $o{split} ? $o{split}->($ser2) : map xml_escape($_), split //, $ser2;
     return if $o{split} && $#ser1 == $#ser2 && !grep $ser1[$_] ne $ser2[$_], 0..$#ser1;
     
-    my($r1,$r2,$ch,$count,$changes) = ('','','u',0,0);
-    for (sdiff(\@ser1, \@ser2)) {
-      if($ch ne $_->[0]) {
-        if($ch ne 'u') {
-          $r1 .= '</b>';
-          $r2 .= '</b>';
-        }
-        $r1 .= $o{join} if $count && $ch ne '+';
-        $r2 .= $o{join} if $count && $ch ne '-';
-        $r1 .= '<b class="diff_del">' if $_->[0] eq '-' || $_->[0] eq 'c';
-        $r2 .= '<b class="diff_add">' if $_->[0] eq '+' || $_->[0] eq 'c';
-      } else {
-        $r1 .= $o{join} if $count && $ch ne '+';
-        $r2 .= $o{join} if $count && $ch ne '-';
-      }
-      $ch = $_->[0];
-      $r1 .= $_->[1] if $ch ne '+';
-      $r2 .= $_->[2] if $ch ne '-';
-      $count++;
+    $ser1 = $ser2 = '';
+    my @d = compact_diff(\@ser1, \@ser2);
+    for my $i (0..($#d-2)/2) {
+      # $i % 2 == 0  -> equal, otherwise it's different
+      my $a = join($o{join}, @ser1[ $d[$i*2]   .. $d[$i*2+2]-1 ]);
+      my $b = join($o{join}, @ser2[ $d[$i*2+1] .. $d[$i*2+3]-1 ]);
+      $ser1 .= ($ser1?$o{join}:'').($i % 2 ? qq|<b class="diff_del">$a</b>| : $a) if $a;
+      $ser2 .= ($ser2?$o{join}:'').($i % 2 ? qq|<b class="diff_add">$b</b>| : $b) if $b;
     }
-    $r1 .= '</b>' if $ch eq '-' || $ch eq 'c';
-    $r2 .= '</b>' if $ch eq '+' || $ch eq 'c';
-    $ser1 = $r1;
-    $ser2 = $r2;
+    $ser1 = decode_utf8($ser1);
+    $ser2 = decode_utf8($ser2);
   } elsif(!$o{htmlize}) {
     $ser1 = xml_escape $ser1;
     $ser2 = xml_escape $ser2;
