@@ -47,6 +47,7 @@ sub page {
   return if $self->htmlHiddenMessage('v', $v);
 
   div class => 'mainbox';
+   p class => 'locked', 'Locked for editing' if $v->{locked};
    h1 $v->{title};
    h2 class => 'alttitle', $v->{original} if $v->{original};
 
