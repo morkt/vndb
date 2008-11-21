@@ -8,8 +8,28 @@ use VNDB::Func;
 
 
 YAWF::register(
+  qr{v([1-9]\d*)/rg}    => \&rg,
   qr{v([1-9]\d*)}       => \&page,
 );
+
+
+sub rg {
+  my($self, $vid) = @_;
+
+  my $v = $self->dbVNGet(id => $vid, what => 'relgraph')->[0];
+  return 404 if !$v->{id} || !$v->{rgraph};
+
+  $self->htmlHeader(title => 'Relation graph for '.$v->{title});
+  $self->htmlMainTabs('v', $v, 'rg');
+  div class => 'mainbox';
+   h1 'Relation graph for '.$v->{title};
+   lit $v->{cmap};
+   p class => 'center';
+    img src => sprintf('%s/rg/%02d/%d.png', $self->{url_static}, $v->{rgraph}%50, $v->{rgraph}),
+      alt => 'Relation graph for '.$v->{title}, usemap => '#rgraph';
+   end;
+  end;
+}
 
 
 sub page {

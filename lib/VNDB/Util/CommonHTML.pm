@@ -66,6 +66,12 @@ sub htmlMainTabs {
      end;
    }
 
+   if($type eq 'v' && $obj->{rgraph}) {
+     li $sel eq 'rg' ? (class => 'tabselected') : ();
+      a href => "/$id/rg", 'relations';
+     end;
+   }
+
    li !$sel ? (class => 'tabselected') : ();
     a href => "/$id", $id;
    end;

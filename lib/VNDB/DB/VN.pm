@@ -9,7 +9,7 @@ our @EXPORT = qw|dbVNGet|;
 
 
 # Options: id, rev, results, page, order, what
-# What: extended categories anime relations screenshots
+# What: extended categories anime relations screenshots relgraph
 sub dbVNGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -31,12 +31,15 @@ sub dbVNGet {
     $o{rev} ?
       'JOIN vn v ON v.id = vr.vid' :
       'JOIN vn v ON vr.id = v.latest',
+    $o{what} =~ /relgraph/ ? 
+      'JOIN relgraph rg ON rg.id = v.rgraph' : (),
   );
 
   my @select = (
-    qw|v.id v.locked v.hidden v.c_released v.c_languages v.c_platforms vr.title vr.original|, 'vr.id AS cid',
+    qw|v.id v.locked v.hidden v.c_released v.c_languages v.c_platforms vr.title vr.original v.rgraph|, 'vr.id AS cid',
     $o{what} =~ /extended/ ? (
       qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai vr.l_vnn| ) : (),
+    $o{what} =~ /relgraph/ ? 'rg.cmap' : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|

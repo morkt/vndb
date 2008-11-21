@@ -29,6 +29,9 @@ table td {
 table tr.odd {
   background: url(/f/boxbg.png) repeat;
 }
+img {
+  border: none;
+}
 
 #bgright {
   position: absolute;
