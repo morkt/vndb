@@ -86,11 +86,10 @@ sub page {
        end;
      }
 
+     _producers($self, \$i, $r);
      _categories($self, \$i, $v) if @{$v->{categories}};
      _relations($self, \$i, $v) if @{$v->{relations}};
      _anime($self, \$i, $v) if @{$v->{anime}};
-     
-     # TODO: producers
 
     end;
    end;
@@ -110,6 +109,34 @@ sub page {
   # TODO: stats, relation graph
 
   $self->htmlFooter;
+}
+
+
+sub _producers {
+  my($self, $i, $r) = @_;
+  return if !grep @{$_->{producers}}, @$r;
+  
+  my @lang;
+  for my $l (@$r) {
+    push @lang, $l->{language} if !grep $l->{language} eq $_, @lang;
+  }
+
+  Tr ++$$i % 2 ? (class => 'odd') : ();
+   td 'Producers';
+   td;
+    for my $l (@lang) {
+      my %p = map { $_->{id} => $_ } map @{$_->{producers}}, grep $_->{language} eq $l, @$r;
+      my @p = values %p;
+      next if !@p;
+      acronym class => "icons lang $l", title => $self->{languages}{$l}, ' ';
+      for (@p) {
+        a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 30;
+        txt ' & ' if $_ != $p[$#p];
+      }
+      txt "\n";
+    }
+   end;
+  end;
 }
 
 
