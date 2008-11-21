@@ -104,7 +104,7 @@ sub page {
   end;
 
   _releases($self, $v, $r);
-  _screenshots($self, $v) if @{$v->{screenshots}};
+  _screenshots($self, $v, $r) if @{$v->{screenshots}};
 
   # TODO: stats, relation graph
 
@@ -295,10 +295,43 @@ sub _releases {
 
 
 sub _screenshots {
-  my($self, $v) = @_;
-  div class => 'mainbox';
+  my($self, $v, $r) = @_;
+  div class => 'mainbox', id => 'screenshots';
+
+   if(grep $_->{nsfw}, @{$v->{screenshots}}) {
+     p class => 'nsfwtoggle';
+      lit sprintf 'Showing <i id="nsfwshown">%d</i> out of %d screenshots, ',
+        $self->authInfo->{show_nsfw} ? scalar @{$v->{screenshots}} : scalar grep(!$_->{nsfw}, @{$v->{screenshots}}),
+        scalar @{$v->{screenshots}};
+      a href => '#', id => "nsfwhide", 'show/hide NSFW';
+      txt '.';
+     end;
+   }
+
    h1 'Screenshots';
-   p 'Here be screenshots';
+   table;
+    for my $rel (@$r) {
+      my @scr = grep $rel->{id} == $_->{rid}, @{$v->{screenshots}};
+      next if !@scr;
+      Tr class => 'rel';
+       td colspan => 5;
+        acronym class => 'icons lang '.$rel->{language}, title => $self->{languages}{$rel->{language}}, ' ';
+        txt $rel->{title};
+       end;
+      end;
+      Tr;
+       td class => 'scr';
+        for (@scr) {
+          div $_->{nsfw} ? (class => 'nsfw'.(!$self->authInfo->{show_nsfw} ? ' hidden' : '')) : ();
+           a href => sprintf('%s/sf/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id});
+            img src => sprintf('%s/st/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}), alt => "Screenshot #$_->{id}";
+           end;
+          end;
+        }
+       end;
+      end;
+    }
+   end;
   end;
 }
 

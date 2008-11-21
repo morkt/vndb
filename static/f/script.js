@@ -30,6 +30,25 @@ DOMLoad(function() {
     return false
   });
 
+  // NSFW toggle for screenshots
+  cl('nsfwhide', function() {
+    var s=0;
+    var l = x('screenshots').getElementsByTagName('div');
+    for(var i=0;i<l.length;i++) {
+      if(l[i].className.indexOf('nsfw') >= 0) {
+        if(l[i].className.indexOf('hidden') >= 0) {
+          s++;
+          l[i].className = 'nsfw';
+        } else {
+          l[i].className += ' hidden';
+        }
+      } else
+        s++;
+    }
+    x('nsfwshown').innerHTML = s;
+    return false;
+  });
+
 
   // spam protection on all forms
   if(document.forms.length >= 1)

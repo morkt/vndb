@@ -489,10 +489,10 @@ div.vndescription p {
   margin: 0 100px!important;
 }
 
-.releases table {
+.releases table, #screenshots table {
   width: 100%;
 }
-.releases tr.lang td {
+.releases tr.lang td, #screenshots tr.rel td {
   background: url(/f/boxbg.png) repeat;
   font-weight: bold;
 }
@@ -513,6 +513,27 @@ div.vndescription p {
   text-align: right;
   width: 20px;
   padding: 0;
+}
+#screenshots td.scr {
+  padding-left: 30px;
+}
+#screenshots td.scr div {
+  float: left;
+  width: 142px;
+  height: 108px;
+  margin: 2px;
+  text-align: center;
+}
+#screenshots td.scr div i        { font-size: 7pt; }
+#screenshots td.scr img          { border: 3px solid transparent; }
+#screenshots td.scr div.nsfw img { border: 3px solid #C00; }
+#screenshots td.scr a:hover img  { border: 3px solid #258; }
+#screenshots td.scr a            { border: none; }
+#screenshots div.hidden          { display: none }
+#screenshots #nsfwshown          { font-style: normal }
+#screenshots p.nsfwtoggle {
+  float: right;
+  margin: 0;
 }
 
 
