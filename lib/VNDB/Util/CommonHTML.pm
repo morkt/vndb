@@ -8,7 +8,7 @@ use Exporter 'import';
 use Algorithm::Diff 'sdiff';
 use VNDB::Func;
 
-our @EXPORT = qw|htmlMainTabs htmlDenied htmlBrowse htmlBrowseNavigate htmlRevision|;
+our @EXPORT = qw|htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate htmlRevision|;
 
 
 # generates the "main tabs". These are the commonly used tabs for
@@ -99,6 +99,27 @@ sub htmlDenied {
    end;
   end;
   $self->htmlFooter;
+}
+
+
+# Generates message saying that the current item has been deleted,
+# Arguments: [pvr], obj
+# Returns 1 if the use doesn't have access to the page, 0 otherwise
+sub htmlHiddenMessage {
+  my($self, $type, $obj) = @_;
+  return 0 if !$obj->{hidden};
+  div class => 'mainbox';
+   h1 $obj->{title}||$obj->{name};
+   div class => 'warning';
+    h2 'Item deleted';
+    p;
+     lit qq|This item has been deleted from the database, File a request on the|
+        .qq| <a href="/t/$type$obj->{id}">discussion board</a> to undelete this page.|;
+    end;
+   end;
+  end;
+  return $self->htmlFooter() || 1 if !$self->authCan('del');
+  return 0;
 }
 
 

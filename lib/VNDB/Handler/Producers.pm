@@ -28,6 +28,7 @@ sub page {
 
   $self->htmlHeader(title => $p->{name});
   $self->htmlMainTabs(p => $p);
+  return if $self->htmlHiddenMessage('p', $p);
 
   if($rev) {
     my $prev = $rev && $rev > 1 && $self->dbProducerGet(id => $pid, rev => $rev-1, what => 'changes')->[0];
@@ -39,20 +40,6 @@ sub page {
       [ website   => 'Website',       diff => 1 ],
       [ desc      => 'Description',   diff => 1 ],
     );
-  }
-
-  if($p->{hidden}) {
-    div class => 'mainbox';
-     h1 $p->{name};
-     div class => 'warning';
-      h2 'Item deleted';
-      p;
-       lit qq|This item has been deleted from the database, File a request on the|
-          .qq| <a href="/t/p$pid">discussion board</a> to undelete this page.|;
-      end;
-     end;
-    end;
-    return $self->htmlFooter if !$self->authCan('del');
   }
 
   div class => 'mainbox producerpage';

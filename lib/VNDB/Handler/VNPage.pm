@@ -44,6 +44,8 @@ sub page {
 
   $self->htmlHeader(title => $v->{title});
   $self->htmlMainTabs('v', $v);
+  return if $self->htmlHiddenMessage('v', $v);
+
   div class => 'mainbox';
    h1 $v->{title};
    h2 class => 'alttitle', $v->{original} if $v->{original};
