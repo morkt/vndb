@@ -25,7 +25,7 @@ sub rg {
    h1 'Relation graph for '.$v->{title};
    lit $v->{cmap};
    p class => 'center';
-    img src => sprintf('%s/rg/%02d/%d.png', $self->{url_static}, $v->{rgraph}%50, $v->{rgraph}),
+    img src => sprintf('%s/rg/%02d/%d.png', $self->{url_static}, $v->{rgraph}%100, $v->{rgraph}),
       alt => 'Relation graph for '.$v->{title}, usemap => '#rgraph';
    end;
   end;
