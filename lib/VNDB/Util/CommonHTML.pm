@@ -319,9 +319,9 @@ sub revdiff {
   $ser2 = '[empty]' if !$ser2 && $ser2 ne '0';
 
   Tr $$i++ % 2 ? (class => 'odd') : ();
-   td class => 'tcname', $name;
-   td; lit $ser1; end;
-   td; lit $ser2; end;
+   td $name;
+   td class => 'tcval'; lit $ser1; end;
+   td class => 'tcval'; lit $ser2; end;
   end;
 }
 

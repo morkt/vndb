@@ -630,6 +630,9 @@ div.revision table td {
   border-right: 1px solid #258;
   padding: 5px;
 }
+div.revision td.tcval {
+  width: 44%;
+}
 div.revision div {
   padding: 5px;
   text-align: center;
@@ -652,9 +655,6 @@ div.revision .prev {
 }
 div.revision .item {
   text-align: center;
-}
-div.revision .tcname {
-  width: 100px;
 }
 
 
