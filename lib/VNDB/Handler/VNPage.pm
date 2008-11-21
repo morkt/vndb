@@ -233,6 +233,7 @@ sub _anime {
         end;
         acronym title => $_->{title_kanji}, shorten $_->{title_romaji}, 50;
         b ' ('.($self->{anime_types}[$_->{type}][0] eq 'unknown' ? '' : $self->{anime_types}[$_->{type}][0].', ').$_->{year}.')';
+        txt "\n";
       }
     }
    end;
