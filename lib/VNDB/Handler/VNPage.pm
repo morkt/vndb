@@ -8,8 +8,8 @@ use VNDB::Func;
 
 
 YAWF::register(
-  qr{v([1-9]\d*)/rg}    => \&rg,
-  qr{v([1-9]\d*)}       => \&page,
+  qr{v([1-9]\d*)/rg}                => \&rg,
+  qr{v([1-9]\d*)(?:\.([1-9]\d*))?}  => \&page,
 );
 
 
@@ -33,11 +33,13 @@ sub rg {
 
 
 sub page {
-  my($self, $vid) = @_;
+  my($self, $vid, $rev) = @_;
 
-  # TODO: revision-awareness, hidden/locked flag check
-
-  my $v = $self->dbVNGet(id => $vid, what => 'extended categories anime relations screenshots')->[0];
+  my $v = $self->dbVNGet(
+    id => $vid,
+    what => 'extended categories anime relations screenshots'.($rev ? ' changes' : ''),
+    $rev ? (rev => $rev) : (),
+  )->[0];
   return 404 if !$v->{id};
 
   my $r = $self->dbReleaseGet(vid => $vid, what => 'producers platforms');

@@ -9,7 +9,7 @@ our @EXPORT = qw|dbVNGet|;
 
 
 # Options: id, rev, results, page, order, what
-# What: extended categories anime relations screenshots relgraph
+# What: extended categories anime relations screenshots relgraph changes
 sub dbVNGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -21,7 +21,7 @@ sub dbVNGet {
     $o{id} ? (
       'v.id = ?' => $o{id} ) : (),
     $o{rev} ? (
-      'vr.id = ?' => $o{rev} ) : (),
+      'c.rev = ?' => $o{rev} ) : (),
    # don't fetch hidden items unless we ask for an ID
     !$o{id} && !$o{rev} ? (
       'v.hidden = FALSE' => 0 ) : (),
@@ -31,6 +31,10 @@ sub dbVNGet {
     $o{rev} ?
       'JOIN vn v ON v.id = vr.vid' :
       'JOIN vn v ON vr.id = v.latest',
+    $o{rev} || $o{what} =~ /changes/ ? 
+      'JOIN changes c ON c.id = vr.id' : (),
+    $o{what} =~ /changes/ ?
+      'JOIN users u ON u.id = c.requester' : (),
     $o{what} =~ /relgraph/ ? 
       'JOIN relgraph rg ON rg.id = v.rgraph' : (),
   );
@@ -39,6 +43,8 @@ sub dbVNGet {
     qw|v.id v.locked v.hidden v.c_released v.c_languages v.c_platforms vr.title vr.original v.rgraph|, 'vr.id AS cid',
     $o{what} =~ /extended/ ? (
       qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai vr.l_vnn| ) : (),
+    $o{what} =~ /changes/ ? (
+      qw|c.added c.requester c.comments v.latest u.username c.rev c.causedby|) : (),
     $o{what} =~ /relgraph/ ? 'rg.cmap' : (),
   );
 
