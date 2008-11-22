@@ -7,15 +7,17 @@ use YAWF ':html';
 
 
 YAWF::register(
-  qr{v(?:([1-9]\d*)/edit|/new)},   \&edit,
+  qr{v(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit|/new)}
+    => \&edit,
 );
 
 
 sub edit {
-  my($self, $vid) = @_;
+  my($self, $vid, $rev) = @_;
 
-  my $v = $vid && $self->dbVNGet(id => $vid, what => 'extended screenshots relations anime categories changes')->[0];
+  my $v = $vid && $self->dbVNGet(id => $vid, what => 'extended screenshots relations anime categories changes', $rev ? (rev => $rev) : ())->[0];
   return 404 if $vid && !$v->{id};
+  $rev = undef if $v->{cid} == $v->{latest};
 
   return $self->htmlDenied if !$self->authCan('edit')
     || $vid && ($v->{locked} && !$self->authCan('lock') || $v->{hidden} && !$self->authCan('del'));
@@ -74,6 +76,7 @@ sub edit {
   }
 
   !exists $frm->{$_} && ($frm->{$_} = $b4{$_}) for (keys %b4);
+  $frm->{editsum} = sprintf 'Reverted to revision v%d.%d', $vid, $rev if $rev && !defined $frm->{editsum};
 
   $self->htmlHeader(title => $vid ? "Edit $v->{title}" : 'Add a new visual novel');
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
