@@ -9,7 +9,7 @@ use Algorithm::Diff::XS 'compact_diff';
 use VNDB::Func;
 use Encode 'encode_utf8', 'decode_utf8';
 
-our @EXPORT = qw|htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate htmlRevision|;
+our @EXPORT = qw|htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate htmlRevision htmlEditMessage|;
 
 
 # generates the "main tabs". These are the commonly used tabs for
@@ -322,6 +322,37 @@ sub revdiff {
    td $name;
    td class => 'tcval'; lit $ser1; end;
    td class => 'tcval'; lit $ser2; end;
+  end;
+}
+
+
+# Generates a generic message to show as the header of the edit forms
+# Arguments: v/r/p, obj
+sub htmlEditMessage {
+  my($self, $type, $obj) = @_;
+  my $full       = {v => 'visual novel', r => 'release', p => 'producer'}->{$type};
+  my $guidelines = {v => 2, r => 3, p => 4}->{$type};
+
+  div class => 'mainbox';
+   h1 $obj ? "Edit $obj->{name}" : "Add new $full";
+   div class => 'notice';
+    h2 'Before editing:';
+    ul;
+     li; lit qq|Read the <a href="/d$guidelines">guidelines</a>!|; end;
+     if($obj) {
+       li; lit qq|Check for any existing discussions on the <a href="/t/$type$obj->{id}">discussion board</a>|; end;
+       li; lit qq|Browse the <a href="/$type$obj->{id}/hist">edit history</a> for any recent changes related to what you want to change.|; end;
+     } elsif($type ne 'r') {
+       li; lit qq|<a href="/$type/all">Search the database</a> to see if we already have information about this $full|; end;
+     }
+    end;
+   end;
+   if($obj && $obj->{latest} != $obj->{cid}) {
+     div class => 'warning';
+      h2 'Reverting';
+      p qq|You are editing an old revision of this $full. If you save it, all changes made after this revision will be reverted!|;
+     end;
+   }
   end;
 }
 

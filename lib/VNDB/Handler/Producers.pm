@@ -129,27 +129,7 @@ sub edit {
 
   $self->htmlHeader(title => $pid ? 'Edit '.$p->{name} : 'Add new producer');
   $self->htmlMainTabs('p', $p, 'edit') if $pid;
-  div class => 'mainbox';
-   h1 $pid ? 'Edit '.$p->{name} : 'Add new producer';
-   div class => 'notice';
-    h2 'Before editing:';
-    ul;
-     li; lit 'Read the <a href="/d4">guidelines</a>!'; end;
-     if($pid) {
-       li; lit qq|Check for any existing discussions on the <a href="/t/p$pid">discussion board</a>|; end;
-       li; lit qq|Browse the <a href="/p$pid/hist">edit history</a> for any recent changes related to what you want to change.|; end;
-     } else {
-       li; lit qq|<a href="/p/all">Search the database</a> to see if we already have information about this producer|; end;
-     }
-    end;
-   end;
-   if($rev) {
-     div class => 'warning';
-      h2 'Reverting';
-      p 'You are editing an old revision of this producer. If you save it, all changes made after this revision will be reverted!';
-     end;
-   }
-  end;
+  $self->htmlEditMessage('p', $p);
   $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 }, "General info" => [
     [ select => name => 'Type', short => 'type',
       options => [ map [ $_, $self->{producer_types}{$_} ], sort keys %{$self->{producer_types}} ] ],
