@@ -82,11 +82,11 @@ sub htmlFormError {
 # A form part is a arrayref, with the first element being the type of the part,
 # and all other elements forming a hash with options specific to that type.
 # Type      Options
-#  input     short, name, width
+#  input     short, name, width, pre, post
 #  passwd    short, name
 #  static    content, label
 #  check     name, short, (value)
-#  select    name, short, options
+#  select    name, short, options, width
 #  text      name, short, (rows, cols)
 #  part      title
 # TODO: Find a way to write this function in a readable way...
@@ -130,8 +130,10 @@ sub htmlFormPart {
    end;
    td class => 'field';
     if(/input/) {
+      lit $o{pre} if $o{pre};
       input type => 'text', class => 'text', name => $o{short}, id => $o{short},
         value => $frm->{$o{short}}||'', $o{width} ? (style => "width: $o{width}px") : ();
+      lit $o{post} if $o{post};
     }
     if(/passwd/) {
       input type => 'password', class => 'text', name => $o{short}, id => $o{short},
@@ -141,7 +143,7 @@ sub htmlFormPart {
       lit $o{content};
     }
     if(/select/) {
-      Select name => $o{short}, id => $o{short};
+      Select name => $o{short}, id => $o{short}, $o{width} ? (style => "width: $o{width}px") : ();
        option value => $_->[0], ($frm->{$o{short}}||'') eq $_->[0] ? (selected => 'selected') : (), $_->[1]
          for @{$o{options}};
       end;
