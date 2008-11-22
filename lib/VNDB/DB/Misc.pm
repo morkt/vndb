@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw|
-  dbStats dbRevisionInsert dbItemInsert dbRevisionGet
+  dbStats dbRevisionInsert dbItemInsert dbRevisionGet dbItemMod
 |;
 
 
@@ -143,6 +143,18 @@ sub dbRevisionGet {
   );
   return wantarray ? ($r, $np) : $r;
 }
+
+
+# Lock or hide a DB item
+# arguments: v/r/p, id, %options ->( hidden, locked )
+sub dbItemMod {
+  my($self, $type, $id, %o) = @_;
+  $self->dbExec('UPDATE !s !H WHERE id = ?', 
+    {qw|v vn r releases p producers|}->{$type},
+    { map { ($_.' = ?', int $o{$_}) } keys %o }, $id
+  );
+}
+
 
 
 1;
