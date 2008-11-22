@@ -334,7 +334,7 @@ sub htmlEditMessage {
   my $guidelines = {v => 2, r => 3, p => 4}->{$type};
 
   div class => 'mainbox';
-   h1 $obj ? "Edit $obj->{name}" : "Add new $full";
+   h1 $obj ? 'Edit '.($obj->{name}||$obj->{title}) : "Add new $full";
    div class => 'notice';
     h2 'Before editing:';
     ul;
