@@ -18,6 +18,9 @@ sub htmlHeader { # %options->{ title }
     title $o{title};
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
     Link rel => 'stylesheet', href => $self->{url_static}.'/f/style.css', type => 'text/css', media => 'all';
+    if($o{js}) {
+      script type => 'text/javascript', src => $self->{url_static}.'/f/forms.js'; end;
+    }
     script type => 'text/javascript', src => $self->{url_static}.'/f/script.js';
      # most browsers don't like a self-closing <script> tag...
     end;

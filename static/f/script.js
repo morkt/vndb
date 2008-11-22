@@ -202,6 +202,10 @@ DOMLoad(function() {
   // Javascript tabs
   jtInit();
 
+  // forms.js
+  if(x('categories'))
+    catLoad();
+
   // spam protection on all forms
   if(document.forms.length >= 1)
     for(i=0; i<document.forms.length; i++)

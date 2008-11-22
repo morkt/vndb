@@ -89,11 +89,12 @@ sub htmlFormError {
 # A form part is a arrayref, with the first element being the type of the part,
 # and all other elements forming a hash with options specific to that type.
 # Type      Options
-#  input     short, name, width, pre, post
+#  hidden    short, (value)
+#  input     short, name, (width, pre, post)
 #  passwd    short, name
-#  static    content, label
+#  static    content, (label, nolabel)
 #  check     name, short, (value)
-#  select    name, short, options, width
+#  select    name, short, options, (width)
 #  text      name, short, (rows, cols)
 #  part      title
 # TODO: Find a way to write this function in a readable way...
@@ -101,6 +102,15 @@ sub htmlFormPart {
   my($self, $frm, $fp) = @_;
   my($type, %o) = @$fp;
   local $_ = $type;
+
+  if(/hidden/) {
+    Tr class => 'hidden';
+     td colspan => 2;
+      input type => 'hidden', id => $o{short}, name => $o{short}, value => $o{value}||$frm->{$o{short}};
+     end;
+    end;
+    return
+  }
 
   if(/part/) {
     Tr class => 'newpart';
@@ -126,16 +136,18 @@ sub htmlFormPart {
   }
 
   Tr $o{name}||$o{label} ? (class => 'newfield') : ();
-   td class => 'label';
-    if($o{short} && $o{name}) {
-      label for => $o{short}, $o{name} ;
-    } elsif($o{label}) {
-      txt $o{label};
-    } else {
-      lit '&nbsp;';
-    }
-   end;
-   td class => 'field';
+   if(!$o{nolabel}) {
+     td class => 'label';
+      if($o{short} && $o{name}) {
+        label for => $o{short}, $o{name} ;
+      } elsif($o{label}) {
+        txt $o{label};
+      } else {
+        lit '&nbsp;';
+      }
+     end;
+   }
+   td class => 'field', $o{nolabel} ? (colspan => 2) : ();
     if(/input/) {
       lit $o{pre} if $o{pre};
       input type => 'text', class => 'text', name => $o{short}, id => $o{short},

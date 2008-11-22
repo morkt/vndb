@@ -542,6 +542,49 @@ div.vndescription p {
 
 
 
+/***** VN edit *****/
+
+#jt_box_categories ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+#jt_box_categories li {
+  display: block;
+  width: 170px;
+  float: left;
+  clear: none;
+  font-weight: bold;
+}
+#jt_box_categories li li {
+  display: list-item;
+  width: auto;
+  float: none;
+  clear: left;
+  font-weight: normal;
+  padding: 0 0 0 20px;
+  margin: 0;
+  cursor: pointer;
+  list-style-type: none;
+  /*background: url(/f/select.png) no-repeat;*/
+}
+a.help {
+  vertical-align: super;
+  font-size: 6pt;
+  text-decoration: none;
+  font-weight: bold;
+  padding-left: 1px;
+}
+form #jt_box_categories li li   { padding: 0; background: none; }
+form #jt_box_categories li li b { width: 13px; font-weight: bold; }
+#maincontent form #jt_box_categories li li a { color: #ccc; text-decoration: none; display: block; width: 160px; border: none }
+#jt_box_categories li li.inc    { background-position: 0px -16px; color: #090; }
+#jt_box_categories li li.exc    { background-position: 0px -33px; color: #900; }
+
+
+
+
+
 /***** Producer page/list *******/
 
 .producerpage p.description {
