@@ -11,20 +11,27 @@ our @EXPORT = qw| htmlFormError htmlFormPart htmlForm |;
 
 # form error messages
 my %formerr_names = (
+  alias         => 'Aliases',
+  anime         => 'Anime',
+  desc          => 'Description',
+  editsum       => 'Edit summary',
+  lang          => 'Language',
+  length        => 'Length',
+  l_wp          => 'Wikipedia link',
+  l_encubed     => 'Novelnews link',
+  l_renai       => 'Renai.us link',
+  l_vnn         => 'V-N.net link',
+  mail          => 'Email',
+  msg           => 'Message',
+  name          => 'Name',
+  original      => 'Original',
+  tags          => 'Tags',
+  title         => 'Title',
+  type          => 'Type',
   usrname       => 'Username',
   usrpass       => 'Password',
   usrpass2      => 'Password (confirm)',
-  mail          => 'Email',
-  type          => 'Type',
-  name          => 'Name',
-  original      => 'Original',
-  lang          => 'Language',
   website       => 'Website',
-  desc          => 'Description',
-  editsum       => 'Edit summary',
-  msg           => 'Message',
-  title         => 'Title',
-  tags          => 'Tags'
 );
 my %formerr_exeptions = (
   login_failed  => 'Invalid username or password',
