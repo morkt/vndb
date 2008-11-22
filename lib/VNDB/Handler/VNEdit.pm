@@ -127,18 +127,26 @@ sub _form {
 
   'Categories' => [
     [ hidden   => short => 'categories' ],
-    [ static   => nolabel => 1, content => eval {
-       my $r = 'Please read the <a href="/d1">category descriptions</a> before modifying categories!<br /><br />'
-       .'<ul>';
+    [ static   => nolabel => 1, content => sub {
+      lit 'Please read the <a href="/d1">category descriptions</a> before modifying categories!<br /><br />';
+      ul;
        for my $c (qw| e g t p h l s |) {
-         $r .= ($c !~ /[thl]/ ? '<li>' : '<br />').$self->{categories}{$c}[0].'<a href="/d1#'.$self->{categories}{$c}[2].'" class="help">?</a><ul>';
-         for (sort keys %{$self->{categories}{$c}[1]}) {
-           $r .= sprintf '<li><a href="#" id="cat_%1$s"><b id="b_%1$s">-</b> %2$s</a></li>',
-           $c.$_, $self->{categories}{$c}[1]{$_};
-         }
-         $r .= '</ul>'.($c !~ /[gph]/ ? '</li>' : '');
+         $c !~ /[thl]/ ? li : br;
+          txt $self->{categories}{$c}[0];
+          a href => "/d1#$self->{categories}{$c}[2]", class => 'help', '?';
+          ul;
+           for (sort keys %{$self->{categories}{$c}[1]}) {
+             li;
+              a href => "#", id => "cat_$c$_";
+               b id => "b_$c$_", '-';
+               txt ' '.$self->{categories}{$c}[1]{$_};
+              end;
+             end;
+           }
+          end;
+         end if $c !~ /[gph]/;
        }
-       $r.'</ul>';
+      end;
     }],
   ],
 

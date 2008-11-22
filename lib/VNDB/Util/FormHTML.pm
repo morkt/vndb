@@ -159,7 +159,7 @@ sub htmlFormPart {
         value => $frm->{$o{short}}||'';
     }
     if(/static/) {
-      lit $o{content};
+      lit ref $o{content} eq 'CODE' ? $o{content}->($self, \%o) : $o{content};
     }
     if(/select/) {
       Select name => $o{short}, id => $o{short}, $o{width} ? (style => "width: $o{width}px") : ();
