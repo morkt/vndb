@@ -20,10 +20,17 @@ sub edit {
   return $self->htmlDenied if !$self->authCan('edit')
     || ($v->{locked} && !$self->authCan('lock') || $v->{hidden} && !$self->authCan('del'));
 
+  my $frm;
 
   $self->htmlHeader(title => 'Edit '.$v->{title});
   $self->htmlMainTabs('v', $v, 'edit');
   $self->htmlEditMessage('v', $v);
+  $self->htmlForm({ frm => $frm, action => "/v$vid/edit", editsum => 1 }, 'General info' => [
+  ], 'Categories' => [
+  ], 'Image' => [
+  ], 'Relations' => [
+  ], 'Screenshots' => [
+  ]);
   $self->htmlFooter;
 }
 

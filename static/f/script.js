@@ -112,6 +112,54 @@ function ivClose() {
 
 
 
+
+/*  J A V A S C R I P T   T A B S  */
+
+function jtInit() {
+  var sel = '';
+  var first = '';
+  var l = x('jt_select').getElementsByTagName('a');
+  for(var i=0;i<l.length;i++)
+    if(l[i].id.substr(0,7) == 'jt_sel_') {
+      l[i].onclick = jtSel;
+      if(!first)
+        first = l[i].id;
+      if(location.hash && l[i].id == 'jt_sel_'+location.hash.substr(1))
+        sel = l[i].id;
+    }
+  if(!first)
+    return;
+  if(!sel)
+    sel = first;
+  jtSel(sel, 1);
+}
+
+function jtSel(which, nolink) {
+  which = typeof(which) == 'string' ? which : which && which.id ? which.id : this.id;
+  which = which.substr(7);
+
+  var l = x('jt_select').getElementsByTagName('a');
+  for(var i=0;i<l.length;i++)
+    if(l[i].id.substr(0,7) == 'jt_sel_') {
+      var name = l[i].id.substr(7);
+      x('jt_box_'+name).style.display = name == which ? 'block' : 'none';
+      var o = x('jt_sel_'+name).parentNode;
+      if(o.className.indexOf('tabselected') >= 0) {
+        if(name != which)
+          o.className = o.className.replace(/tabselected/, '');
+      } else
+        if(name == which)
+          o.className += ' tabselected';
+    }
+
+  if(!nolink)
+    location.href = '#'+which;
+  return false;
+}
+
+
+
+
 /*  O N L O A D   E V E N T  */
 
 DOMLoad(function() {
@@ -150,6 +198,9 @@ DOMLoad(function() {
 
   // initialize image viewer
   ivInit();
+
+  // Javascript tabs
+  jtInit();
 
   // spam protection on all forms
   if(document.forms.length >= 1)

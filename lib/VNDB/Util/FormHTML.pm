@@ -175,12 +175,23 @@ sub htmlForm {
 
   $self->htmlFormError($options->{frm}, 1);
 
-  # tabs here (if @subs > 2)
+  # tabs
+  if(@subs > 2) {
+    ul class => 'maintabs notfirst', id => 'jt_select';
+     for (0..$#subs/2) {
+       (my $short = lc $subs[$_*2]) =~ s/ /_/;
+       li class => 'left';
+        a href => "#$short", id => "jt_sel_$short", $subs[$_*2];
+       end;
+     }
+    end;
+  }
 
+  # form subs
   while(my($name, $parts) = (shift(@subs), shift(@subs))) {
     last if !$name || !$parts;
     (my $short = lc $name) =~ s/ /_/;
-    div class => 'mainbox subform', id => 'subform_'.$short;
+    div class => 'mainbox', id => 'jt_box_'.$short;
      h1 $name;
      fieldset;
       legend $name;
@@ -189,22 +200,24 @@ sub htmlForm {
       end;
      end;
     end;
-    div class => 'mainbox';
-     fieldset class => 'submit';
-      if($options->{editsum}) {
-        (my $txt = $options->{frm}{editsum}||'') =~ s/&/&amp;/;
-        $txt =~ s/</&lt;/;
-        $txt =~ s/>/&gt;/;
-        h2 'Edit summary';
-        textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50;
-         lit $txt;
-        end;
-        br;
-      }
-      input type => 'submit', value => 'Submit', class => 'submit';
-     end;
-    end; 
   }
+
+  # edit summary / submit button
+  div class => 'mainbox';
+   fieldset class => 'submit';
+    if($options->{editsum}) {
+      (my $txt = $options->{frm}{editsum}||'') =~ s/&/&amp;/;
+      $txt =~ s/</&lt;/;
+      $txt =~ s/>/&gt;/;
+      h2 'Edit summary';
+      textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50;
+       lit $txt;
+      end;
+      br;
+    }
+    input type => 'submit', value => 'Submit', class => 'submit';
+   end;
+  end; 
 
   end;
 }
