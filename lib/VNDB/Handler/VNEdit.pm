@@ -24,8 +24,6 @@ sub edit {
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn |),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
   );
-  # NOTE: database still has many \r's, better to get rid of that entirely than doing it this way
-  $b4{$_} =~ s/\r+//g for (keys %b4);
 
   my $frm;
   if($self->reqMethod eq 'POST') {

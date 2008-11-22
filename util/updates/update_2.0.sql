@@ -58,3 +58,19 @@ UPDATE users SET
 ALTER TABLE users DROP COLUMN flags;
 
 
+
+
+-- get rid of \r
+UPDATE vn_rev
+  SET "desc"   = translate("desc",   E'\r', ''),
+      alias    = translate(alias,    E'\r', '');
+UPDATE releases_rev
+  SET notes    = translate(notes,    E'\r', '');
+UPDATE producers_rev
+  SET "desc"   = translate("desc",   E'\r', '');
+UPDATE changes
+  SET comments = translate(comments, E'\r', '');
+UPDATE threads_posts
+  SET msg      = translate(msg,      E'\r', '');
+
+
