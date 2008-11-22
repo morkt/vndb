@@ -31,7 +31,7 @@ sub edit {
       { name => 'title',     maxlength => 250 },
       { name => 'original',  required => 0, maxlength => 250, default => '' },
       { name => 'alias',     required => 0, maxlength => 500, default => '' },
-      { name => 'desc',      maxlength => 10240, whitespace => 1 },
+      { name => 'desc',      maxlength => 10240 },
       { name => 'length',    required => 0, default => 0,  enum => [ 0..$#{$self->{vn_lengths}} ] },
       { name => 'l_wp',      required => 0, default => '', maxlength => 150 },
       { name => 'l_encubed', required => 0, default => '', maxlength => 100 },
@@ -49,6 +49,25 @@ sub edit {
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post')
         if !grep $frm->{$_} ne $b4{$_}, keys %b4;
+
+      my %args = (
+        (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum|),
+        anime => $anime,
+
+        # copy these from $v, as we don't have a form interface for them yet
+        categories => $v->{categories},
+        image => $v->{image},
+        img_nsfw => $v->{img_nsfw},
+        screenshots => [ map [ $_->{id}, $_->{nsfw}, $_->{rid} ], @{$v->{screenshots}} ],
+        relations => [ map [ $_->{relation}, $_->{id} ], @{$v->{relations}} ],
+      );
+
+      my($rev) = $self->dbVNEdit($vid, %args);
+
+      $self->multiCmd("ircnotify v$vid.$rev");
+      $self->multiCmd('anime') if $frm->{anime} ne $b4{anime};
+
+      return $self->resRedirect("/v$vid.$rev", 'post');
     }
   }
 

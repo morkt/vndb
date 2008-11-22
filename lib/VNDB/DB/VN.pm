@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbVNGet|;
+our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit|;
 
 
 # Options: id, rev, results, page, order, what
@@ -114,6 +114,80 @@ sub dbVNGet {
   }
 
   return wantarray ? ($r, $np) : $r;
+}
+
+
+# arguments: id, %options ->( editsum + insert_rev )
+# returns: ( local revision, global revision )
+sub dbVNEdit {
+  my($self, $id, %o) = @_;
+  my($rev, $cid) = $self->dbRevisionInsert(0, $id, $o{editsum});
+  insert_rev($self, $cid, $id, \%o);
+  return ($rev, $cid);
+}
+
+
+# arguments: %options ->( editsum + insert_rev )
+# returns: ( item id, global revision )
+sub dbVNAdd {
+  my($self, %o) = @_;
+  my($id, $cid) = $self->dbItemInsert(0, $o{editsum});
+  insert_rev($self, $cid, $id, \%o);
+  return ($id, $cid);
+}
+
+
+# helper function, inserts a producer revision
+# Arguments: global revision, item id, { columns in producers_rev + categories + anime + relations + screenshots }
+#  categories  = [ [ catid, level ], .. ]
+#  screenshots = [ [ scrid, nsfw, rid ], .. ]
+#  relations   = [ [ rel, vid ], .. ]
+#  anime       = [ aid, .. ]
+sub insert_rev {
+  my($self, $cid, $vid, $o) = @_;
+
+  $o->{img_nsfw} = $o->{img_nsfw}?1:0;
+  $self->dbExec(q|
+    INSERT INTO vn_rev (id, vid, title, original, "desc", alias, image, img_nsfw, length, l_wp, l_encubed, l_renai, l_vnn)
+      VALUES (!l)|,
+    [ $cid, $vid, @$o{qw|title original desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|} ]);
+
+  $self->dbExec(q|
+    INSERT INTO vn_categories (vid, cat, lvl)
+      VALUES (?, ?, ?)|,
+    $cid, $_->[0], $_->[1]
+  ) for (@{$o->{categories}});
+
+  $self->dbExec(q|
+    INSERT INTO vn_screenshots (vid, scr, nsfw, rid)
+      VALUES (?, ?, ?, ?)|,
+    $cid, $_->[0], $_->[1]?1:0, $_->[2]
+  ) for (@{$o->{screenshots}});
+
+  $self->dbExec(q|
+    INSERT INTO vn_relations (vid1, vid2, relation)
+      VALUES (?, ?, ?)|,
+    $cid, $_->[1], $_->[0]
+  ) for (@{$o->{relations}});
+
+  if(@{$o->{anime}}) {
+    $self->dbExec(q|
+      INSERT INTO vn_anime (vid, aid)
+        VALUES (?, ?)|,
+      $cid, $_
+    ) for (@{$o->{anime}});
+
+    # insert unknown anime
+    my $a = $self->dbAll(q|
+      SELECT id FROM anime WHERE id IN(!l)|,
+      $o->{anime});
+    $self->dbExec(q|
+      INSERT INTO anime (id) VALUES (?)|, $_
+    ) for (grep {
+      my $ia = $_;
+      !(scalar grep $ia == $_->{id}, @$a)
+    } @{$o->{anime}});
+  }
 }
 
 
