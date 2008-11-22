@@ -7,20 +7,20 @@ use YAWF ':html';
 
 
 YAWF::register(
-  qr{v([1-9]\d*)/edit},   \&edit,
+  qr{v(?:([1-9]\d*)/edit|/new)},   \&edit,
 );
 
 
 sub edit {
   my($self, $vid) = @_;
 
-  my $v = $self->dbVNGet(id => $vid, what => 'extended screenshots relations anime categories changes')->[0];
-  return 404 if !$v->{id};
+  my $v = $vid && $self->dbVNGet(id => $vid, what => 'extended screenshots relations anime categories changes')->[0];
+  return 404 if $vid && !$v->{id};
 
   return $self->htmlDenied if !$self->authCan('edit')
-    || ($v->{locked} && !$self->authCan('lock') || $v->{hidden} && !$self->authCan('del'));
+    || $vid && ($v->{locked} && !$self->authCan('lock') || $v->{hidden} && !$self->authCan('del'));
 
-  my %b4 = (
+  my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn |),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
   );
@@ -48,24 +48,26 @@ sub edit {
 
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post')
-        if !grep $frm->{$_} ne $b4{$_}, keys %b4;
+        if $vid && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
       my %args = (
         (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum|),
         anime => $anime,
 
         # copy these from $v, as we don't have a form interface for them yet
-        categories => $v->{categories},
-        image => $v->{image},
+        categories => $v->{categories}||[],
+        image => $v->{image}||0,
         img_nsfw => $v->{img_nsfw},
         screenshots => [ map [ $_->{id}, $_->{nsfw}, $_->{rid} ], @{$v->{screenshots}} ],
         relations => [ map [ $_->{relation}, $_->{id} ], @{$v->{relations}} ],
       );
 
-      my($rev) = $self->dbVNEdit($vid, %args);
+      my $rev = 1;
+      ($rev) = $self->dbVNEdit($vid, %args) if $vid;
+      ($vid) = $self->dbVNAdd(%args) if !$vid;
 
       $self->multiCmd("ircnotify v$vid.$rev");
-      $self->multiCmd('anime') if $frm->{anime} ne $b4{anime};
+      $self->multiCmd('anime') if $vid && $frm->{anime} ne $b4{anime} || !$vid && $frm->{anime};
 
       return $self->resRedirect("/v$vid.$rev", 'post');
     }
@@ -73,8 +75,8 @@ sub edit {
 
   !exists $frm->{$_} && ($frm->{$_} = $b4{$_}) for (keys %b4);
 
-  $self->htmlHeader(title => 'Edit '.$v->{title});
-  $self->htmlMainTabs('v', $v, 'edit');
+  $self->htmlHeader(title => $vid ? "Edit $v->{title}" : 'Add a new visual novel');
+  $self->htmlMainTabs('v', $v, 'edit') if $vid;
   $self->htmlEditMessage('v', $v);
   _form($self, $v, $frm);
   $self->htmlFooter;
@@ -83,7 +85,7 @@ sub edit {
 
 sub _form {
   my($self, $v, $frm) = @_;
-  $self->htmlForm({ frm => $frm, action => "/v$v->{id}/edit", editsum => 1 },
+  $self->htmlForm({ frm => $frm, action => $v ? "/v$v->{id}/edit" : '/v/new', editsum => 1 },
   'General info' => [
     [ input    => short => 'title',     name => 'Title (romaji)' ],
     [ input    => short => 'original',  name => 'Original title' ],
