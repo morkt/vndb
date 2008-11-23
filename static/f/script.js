@@ -200,7 +200,8 @@ DOMLoad(function() {
   ivInit();
 
   // Javascript tabs
-  jtInit();
+  if(x('jt_select')) 
+    jtInit();
 
   // forms.js
   if(x('categories'))
