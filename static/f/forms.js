@@ -2,11 +2,32 @@
 // called by script.js
 
 function qq(v) {
-  return v.replace(/&/g,"&amp;").replace(/</,"&lt;").replace(/>/,"&gt;").replace(/'/g,/*'*/ "\\'").replace(/"/g,/*"*/'&quot;');
+  return v.replace(/&/g,"&amp;").replace(/</,"&lt;").replace(/>/,"&gt;").replace(/"/g,'&quot;');
 } 
 function shorten(v, l) {
   return qq(v.length > l ? v.substr(0, l-3)+'...' : v);
 }
+var http_request = false;
+function ajax(url, func) {
+  if(http_request)
+    http_request.abort();
+  http_request = (window.ActiveXObject) ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
+  if(http_request == null) {
+    alert("Your browse does not support the functionality this website requires.");
+    return;
+  }
+  http_request.onreadystatechange = function() {
+    if(!http_request || http_request.readyState != 4 || !http_request.responseText)
+      return;
+    if(http_request.status != 200)
+      return alert('Whoops, error! :(');
+    func(http_request);
+  };
+  url += (url.indexOf('?')>=0 ? '&' : '?')+(Math.floor(Math.random()*999)+1);
+  http_request.open('GET', url, true);
+  http_request.send(null);
+}
+
 
 
 
@@ -78,7 +99,7 @@ function relLoad() {
   var i;var l;var o;
 
   // fetch the relation types from the add new relation selectbox
-  l = x('relation_sel_new').options;
+  l = x('relation_new').getElementsByTagName('select')[0].options;
   for(i=0;i<l.length;i++)
     relTypes[Math.floor(l[i].value)] = l[i].text;
 
@@ -98,6 +119,16 @@ function relLoad() {
     for(i=0;i<l.length;i++)
       if(l[i].className == 'tc3')
         l[i].innerHTML = shorten(this.value, 40);
+  };
+
+  // bind the add-link
+  x('relation_new').getElementsByTagName('a')[0].onclick = relFormAdd;
+  // catch return key
+  x('relation_new').getElementsByTagName('input')[0].onkeydown = function(ev) {
+    var c = document.layers ? ev.which : document.all ? event.keyCode : ev.keyCode;
+    if(c == 13)
+      return relFormAdd();
+    return true;
   };
 }
 
@@ -166,6 +197,43 @@ function relDel(vid) {
   x('relation_tbl').removeChild(x('relation_tr_'+vid));
   relSerialize();
   relEmpty();
+  return false;
+}
+
+function relFormAdd() {
+  var txt = x('relation_new').getElementsByTagName('input')[0];
+  var sel = x('relation_new').getElementsByTagName('select')[0];
+  var lnk = x('relation_new').getElementsByTagName('a')[0];
+  var input = txt.value;
+
+  if(!input.match(/^v[0-9]+/)) {
+    alert('Visual novel textbox must start with an ID (e.g. v17)');
+    return false;
+  }
+
+  txt.disabled = true;
+  txt.value = 'loading...';
+  sel.disabled = true;
+  lnk.innerHTML = 'loading...';
+
+  ajax('/xml/vn.xml?q='+encodeURIComponent(input), function(hr) {
+    txt.disabled = false;
+    txt.value = '';
+    sel.disabled = false;
+    lnk.innerHTML = 'add';
+
+    var items = hr.responseXML.getElementsByTagName('vn');
+    if(items.length < 1)
+      return alert('Visual novel not found!');
+
+    var id = items[0].getAttribute('id');
+    if(x('relation_tr_'+id))
+      return alert('This visual novel has already been selected!');
+
+    relAdd(sel.selectedIndex, id, items[0].firstChild.nodeValue);
+    sel.selectedIndex = 0;
+    relSerialize();
+  });
   return false;
 }
 

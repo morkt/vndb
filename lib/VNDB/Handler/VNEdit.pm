@@ -3,12 +3,13 @@ package VNDB::Handler::VNEdit;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use YAWF ':html', ':xml';
 
 
 YAWF::register(
   qr{v(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit|/new)}
     => \&edit,
+  qr{xml/vn\.xml}   => \&vnxml,
 );
 
 
@@ -180,13 +181,13 @@ sub _form {
 
       h2 'Add relation';
       table;
-       Tr;
+       Tr id => 'relation_new';
         td class => 'tc1';
          input type => 'text', class => 'text';
         end;
         td class => 'tc2';
          txt ' is a ';
-         Select id => 'relation_sel_new';
+         Select;
           option value => $_, $self->{vn_relations}[$_][0] for (0..$#{$self->{vn_relations}});
          end;
          txt ' of';
@@ -246,6 +247,30 @@ sub _updreverse {
   }
 
   $self->multiCmd('relgraph '.join(' ', $vid, keys %upd));
+}
+
+
+# peforms a (simple) search and returns the results in XML format
+sub vnxml {
+  my $self = shift;
+
+  my $q = $self->formValidate({ name => 'q', maxlength => 500 });
+  return 404 if $q->{_err};
+  $q = $q->{q};
+
+  my($list, $np) = $self->dbVNGet(   #    / not implemented yet
+    $q =~ /^v([1-9]\d*)/ ? (id => $1) : (search => $q),
+    results => 10,
+    page => 1,
+  );
+
+  $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
+  xml;
+  tag 'vns', more => $np ? 'yes' : 'no', query => $q;
+   for(@$list) {
+     tag 'vn', id => $_->{id}, $_->{title};
+   }
+  end;
 }
 
 
