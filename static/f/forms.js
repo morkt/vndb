@@ -1,6 +1,14 @@
 // various form functions
 // called by script.js
 
+function qq(v) {
+  return v.replace(/&/g,"&amp;").replace(/</,"&lt;").replace(/>/,"&gt;").replace(/'/g,/*'*/ "\\'").replace(/"/g,/*"*/'&quot;');
+} 
+function shorten(v, l) {
+  return qq(v.length > l ? v.substr(0, l-3)+'...' : v);
+}
+
+
 
    /************************\
    *   C A T E G O R I E S  *
@@ -54,5 +62,112 @@ function catSet(id, rnk) {
   x('cat_'+id).style.color = c;
   x('b_'+id).innerHTML = rnk;
 }
+
+
+
+
+
+
+   /*****************************\
+   *   V N   R E L A T I O N S   *
+   \*****************************/
+
+
+var relTypes = [];
+function relLoad() {
+  var i;var l;var o;
+
+  // fetch the relation types from the add new relation selectbox
+  l = x('relation_sel_new').options;
+  for(i=0;i<l.length;i++)
+    relTypes[Math.floor(l[i].value)] = l[i].text;
+
+  // read the current relations
+  l = x('relations').value.split('|||');
+  if(l[0]) {
+    for(i=0;i<l.length;i++) {
+      var rel = l[i].split(',', 3);
+      relAdd(rel[0], rel[1], rel[2]);
+    }
+  }
+  relEmpty();
+
+  // make sure the title is up-to-date
+  x('title').onchange = function() {
+    l = x('jt_box_relations').getElementsByTagName('td');
+    for(i=0;i<l.length;i++)
+      if(l[i].className == 'tc3')
+        l[i].innerHTML = shorten(this.value, 40);
+  };
+}
+
+function relAdd(rel, vid, title) {
+  var o = document.createElement('tr');
+  o.setAttribute('id', 'relation_tr_'+vid);
+
+  var t = document.createElement('td');
+  t.className = 'tc1';
+  t.innerHTML = 'v'+vid+':<a href="/v'+vid+'">'+shorten(title, 40)+'</a>';
+  o.appendChild(t);
+
+  var options = '';
+  for(var i=0;i<relTypes.length;i++)
+    options += '<option value="'+i+'"'+(i == rel ? ' selected="selected"' : '')+'>'+qq(relTypes[i])+'</option>';
+  t = document.createElement('td');
+  t.className = 'tc2';
+  t.innerHTML = 'is a <select onchange="relSerialize()">'+options+'</select> of';
+  o.appendChild(t);
+
+  t = document.createElement('td');
+  t.className = 'tc3';
+  t.innerHTML = shorten(x('title').value, 40);
+  o.appendChild(t);
+
+  t = document.createElement('td');
+  t.className = 'tc4';
+  t.innerHTML = '<a href="#" onclick="return relDel('+vid+')">del</a>';
+  o.appendChild(t);
+
+  x('relation_tbl').appendChild(o);
+  relEmpty();
+}
+
+function relEmpty() {
+  if(x('relation_tbl').getElementsByTagName('tr').length > 0) {
+    if(x('relation_tr_none'))
+      x('relation_tbl').removeChild(x('relation_tr_none'));
+    return;
+  }
+  var o = document.createElement('tr');
+  o.setAttribute('id', 'relation_tr_none');
+  var t = document.createElement('td');
+  t.colspan = 4;
+  t.innerHTML = 'No relations selected.';
+  o.appendChild(t);
+  x('relation_tbl').appendChild(o);
+}
+
+function relSerialize() {
+  var r='';
+  var i;
+  var l = x('relation_tbl').getElementsByTagName('tr');
+  for(i=0;i<l.length;i++) {
+    var title = l[i].getElementsByTagName('td')[0];
+    title = title.innerText || title.textContent;
+    title = title.substr(title.indexOf(':')+1);
+    r += (r ? '|||' : '')
+        +l[i].getElementsByTagName('select')[0].selectedIndex
+        +','+l[i].id.substr(12)+','+title;
+  }
+  x('relations').value = r;
+}
+
+function relDel(vid) {
+  x('relation_tbl').removeChild(x('relation_tr_'+vid));
+  relSerialize();
+  relEmpty();
+  return false;
+}
+
 
 

@@ -168,7 +168,36 @@ sub _form {
   ],
 
   'Relations' => [
-    [ input    => short => 'relations', name => 'Relations' ],
+    [ input    => short => 'relations', nolabel => 1, width => 700 ],
+    [ static   => nolabel => 1, content => sub {
+      br;br;
+      h2 'Selected relations';
+      table;
+       tbody id => 'relation_tbl';
+        # to be filled using javascript
+       end;
+      end;
+
+      h2 'Add relation';
+      table;
+       Tr;
+        td class => 'tc1';
+         input type => 'text', class => 'text';
+        end;
+        td class => 'tc2';
+         txt ' is a ';
+         Select id => 'relation_sel_new';
+          option value => $_, $self->{vn_relations}[$_][0] for (0..$#{$self->{vn_relations}});
+         end;
+         txt ' of';
+        end;
+        td class => 'tc3', $v->{title};
+        td class => 'tc4';
+         a href => '#', 'add';
+        end;
+       end;
+      end;
+    }],
   ],
 
   'Screenshots' => [

@@ -205,6 +205,8 @@ DOMLoad(function() {
   // forms.js
   if(x('categories'))
     catLoad();
+  if(x('relations'))
+    relLoad();
 
   // spam protection on all forms
   if(document.forms.length >= 1)

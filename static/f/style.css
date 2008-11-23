@@ -581,6 +581,16 @@ form #jt_box_categories li li b { width: 13px; font-weight: bold; }
 #jt_box_categories li li.inc    { background-position: 0px -16px; color: #090; }
 #jt_box_categories li li.exc    { background-position: 0px -33px; color: #900; }
 
+#jt_box_relations table  { margin-bottom: 10px; }
+#jt_box_relations h2     { margin: 0 0 3px -10px; }
+#jt_box_relations td     { padding: 1px 2px; vertical-align: middle; }
+#jt_box_relations td.tc1 { width: 300px; text-align: right }
+#jt_box_relations td.tc2 { width: 10px;  white-space: nowrap }
+#jt_box_relations td.tc3 { width: 200px; }
+#jt_box_relations td.tc4 { width: 40px; text-align: right }
+#jt_box_relations td.tc1 input  { width: 280px; }
+#jt_box_relations td.tc2 select { width: 130px; }
+
 
 
 
