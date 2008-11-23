@@ -26,6 +26,7 @@ sub edit {
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn |),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
     categories => join(',', map $_->[0].$_->[1], sort { $a->[0] cmp $b->[0] } @{$v->{categories}}),
+    relations => join('|||', map $_->{relation}.','.$_->{id}.','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
   );
 
   my $frm;
@@ -42,6 +43,7 @@ sub edit {
       { name => 'l_vnn',     required => 0, default => 0,  template => 'int' },
       { name => 'anime',     required => 0, default => '' },
       { name => 'categories',required => 0, default => '', maxlength => 1000 },
+      { name => 'relations', required => 0, default => '', maxlength => 5000 },
       { name => 'editsum',   maxlength => 5000 },
     );
 
@@ -49,33 +51,45 @@ sub edit {
       # parse and re-sort fields that have multiple representations of the same information
       my $anime = [ grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} ];
       my $categories = [ map { [ substr($_,0,3), substr($_,3,1) ] } split /,/, $frm->{categories} ];
+      my $relations = [ map { /^([0-9]+),([0-9]+),(.+)$/ && $2 != $vid ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{relations} ];
 
       $frm->{anime} = join ' ', sort { $a <=> $b } @$anime;
+      $frm->{relations} = join '|||', map $_->[0].','.$_->[1].','.$_->[2], sort { $a->[1] <=> $b->[1]} @{$relations};
 
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post')
         if $vid && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
+      # execute the edit/add
       my %args = (
         (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum|),
         anime => $anime,
         categories => $categories,
+        relations => $relations,
 
         # copy these from $v, as we don't have a form interface for them yet
         image => $v->{image}||0,
         img_nsfw => $v->{img_nsfw},
         screenshots => [ map [ $_->{id}, $_->{nsfw}, $_->{rid} ], @{$v->{screenshots}} ],
-        relations => [ map [ $_->{relation}, $_->{id} ], @{$v->{relations}} ],
       );
 
-      $rev = 1;
-      ($rev) = $self->dbVNEdit($vid, %args) if $vid;
-      ($vid) = $self->dbVNAdd(%args) if !$vid;
+      my($nvid, $nrev, $cid) = ($vid, $rev);
+      ($nrev, $cid) = $self->dbVNEdit($vid, %args) if $vid;
+      ($nvid, $cid) = $self->dbVNAdd(%args) if !$vid;
 
-      $self->multiCmd("ircnotify v$vid.$rev");
+      # update reverse relations & relation graph
+      if(!$vid && $#$relations >= 0 || $vid && $frm->{relations} ne $b4{relations}) {
+        my %old = $vid ? (map { $_->{id} => $_->{relation} } @{$v->{relations}}) : ();
+        my %new = map { $_->[1] => $_->[0] } @$relations;
+        _updreverse($self, \%old, \%new, $nvid, $cid, $nrev);
+      } elsif($vid && @$relations && $frm->{title} ne $b4{title}) {
+        $self->multiCmd("relgraph $vid");
+      }
+
+      $self->multiCmd("ircnotify v$nvid.$nrev");
       $self->multiCmd('anime') if $vid && $frm->{anime} ne $b4{anime} || !$vid && $frm->{anime};
 
-      return $self->resRedirect("/v$vid.$rev", 'post');
+      return $self->resRedirect("/v$nvid.$nrev", 'post');
     }
   }
 
@@ -154,10 +168,55 @@ sub _form {
   ],
 
   'Relations' => [
+    [ input    => short => 'relations', name => 'Relations' ],
   ],
 
   'Screenshots' => [
   ]);
+}
+
+
+# Update reverse relations and regenerate relation graph
+# Arguments: %old. %new, vid, cid, rev
+#  %old,%new -> { vid2 => relation, .. }
+#    from the perspective of vid
+#  cid, rev are of the related edit
+# !IMPORTANT!: Don't forget to update this function when
+#   adding/removing fields to/from VN entries!
+sub _updreverse {
+  my($self, $old, $new, $vid, $cid, $rev) = @_;
+  my %upd;
+
+  # compare %old and %new
+  for (keys %$old, keys %$new) {
+    if(exists $$old{$_} and !exists $$new{$_}) {
+      $upd{$_} = -1;
+    } elsif((!exists $$old{$_} and exists $$new{$_}) || ($$old{$_} != $$new{$_})) {
+      $upd{$_} = $$new{$_};
+      if   ($self->{vn_relations}[$upd{$_}  ][1]) { $upd{$_}-- }
+      elsif($self->{vn_relations}[$upd{$_}+1][1]) { $upd{$_}++ }
+    }
+  }
+
+  return if !keys %upd;
+
+  # edit all related VNs
+  for my $i (keys %upd) {
+    my $r = $self->dbVNGet(id => $i, what => 'extended relations categories anime screenshots')->[0];
+    my @newrel = map $_->{id} != $vid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
+    push @newrel, [ $upd{$i}, $vid ] if $upd{$i} != -1;
+    $self->dbVNEdit($i,
+      relations => \@newrel,
+      editsum => "Reverse relation update caused by revision v$vid.$rev",
+      causedby => $cid,
+      uid => 1,         # Multi - hardcoded
+      anime => [ map $_->{id}, @{$r->{anime}} ],
+      screenshots => [ map [ $_->{id}, $_->{nsfw}, $_->{rid} ], @{$r->{screenshots}} ],
+      ( map { $_ => $r->{$_} } qw| title original desc alias categories img_nsfw length l_wp l_encubed l_renai l_vnn image | )
+    );
+  }
+
+  $self->multiCmd('relgraph '.join(' ', $vid, keys %upd));
 }
 
 
