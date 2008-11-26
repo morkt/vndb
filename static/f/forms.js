@@ -89,6 +89,150 @@ function catSet(id, rnk) {
 
 
 
+   /***********************************\
+   *   D R O P D O W N   S E A R C H   *
+   \***********************************/
+
+
+function dsInit(obj, url, trfunc, serfunc, retfunc) {
+  obj.onkeydown = dsKeyDown;
+  obj.onblur = function() {
+    if(x('ds_box'))
+      x('ds_box').style.top = '-500px';
+  };
+ // all local data is stored in the DOM input object
+  obj.returnFunc = retfunc;
+  obj.trFunc = trfunc;
+  obj.serFunc = serfunc;
+  obj.searchURL = url;
+  obj.selectedId = 0;
+}
+
+function dsKeyDown(ev) {
+  var c = document.layers ? ev.which : document.all ? event.keyCode : ev.keyCode;
+  var obj = this;
+
+  if(c == 9) // tab
+    return true;
+
+  // do some processing when the enter key has been pressed
+  if(c == 13) {
+    if(obj.selectedId != 0) {
+      obj.value = obj.serFunc(x('ds_box_'+obj.selectedId).itemData);
+      x('ds_box').style.top = '-500px';
+      obj.selectedId = 0;
+      return false;
+    } else if(obj.returnFunc) {
+      obj.returnFunc();
+      return false;
+    }
+    return true;
+  }
+ 
+  // process up/down keys
+  if(x('ds_box') && (c == 38 || c == 40)) {
+    var l = x('ds_box').getElementsByTagName('tr');
+    if(l.length < 1)
+      return true;
+
+    if(obj.selectedId == 0) {
+      if(c == 38) // up
+        obj.selectedId = l[l.length-1].id.substr(7);
+      else
+        obj.selectedId = l[0].id.substr(7);
+    } else {
+      var sel = null;
+      for(var i=0;i<l.length;i++)
+        if(l[i].id == 'ds_box_'+obj.selectedId) {
+          if(c == 38) // up
+            sel = i>0 ? l[i-1] : l[l.length-1];
+          else
+            sel = l[i+1] ? l[i+1] : l[0];
+        }
+      obj.selectedId = sel.id.substr(7);
+    }
+
+    for(var i=0;i<l.length;i++)
+      l[i].className = l[i].id == 'ds_box_'+obj.selectedId ? 'selected' : '';
+    return true;
+  }
+
+  // this.value isn't available in a keydown event
+  setTimeout(function() {
+    dsSearch(obj);
+  }, 10);
+  
+  return true;
+}
+
+function dsSearch(obj) {
+  var b = x('ds_box');
+  
+  // show/hide the ds_box div
+  if(obj.value.length < 2) {
+    if(b)
+      b.style.top = '-500px';
+    obj.selectedId = 0;
+    return;
+  }
+  if(!b) {
+    b = document.createElement('div');
+    b.setAttribute('id', 'ds_box');
+    b.innerHTML = '<b>Loading...</b>';
+    document.body.appendChild(b);
+  }
+
+  // position the div
+  var ddx=0;
+  var ddy=obj.offsetHeight;
+  var o = obj;
+  do {
+    ddx += o.offsetLeft;
+    ddy += o.offsetTop;
+  } while(o = o.offsetParent);
+
+  b.style.position = 'absolute';
+  b.style.left = ddx+'px';
+  b.style.top = ddy+'px';
+  b.style.width = obj.offsetWidth+'px';
+
+  // perform search
+  ajax(obj.searchURL + encodeURIComponent(obj.value), function(hr) {
+    dsResults(hr, obj);
+  });
+}
+
+function dsResults(hr, obj) {
+  var l = hr.responseXML.getElementsByTagName('item');
+  var b = x('ds_box');
+  if(l.length < 1) {
+    b.innerHTML = '<b>No results...</b>';
+    obj.selectedId = 0;
+    return;
+  }
+
+  b.innerHTML = '<table><tbody></tbody></table>';
+  tb = b.getElementsByTagName('tbody')[0];
+  for(var i=0;i<l.length;i++) {
+    var id = l[i].getAttribute('id');
+    var tr = document.createElement('tr');
+    tr.setAttribute('id', 'ds_box_'+id);
+    tr.itemData = l[i];
+    if(obj.selectedId == id)
+      tr.setAttribute('class', 'selected');
+    obj.trFunc(l[i], tr);
+    tb.appendChild(tr);
+  }
+
+  if(obj.selectedId != 0 && !x('ds_box_'+obj.selectedId))
+    obj.selectedId = 0;
+}
+
+
+
+
+
+
    /*****************************\
    *   V N   R E L A T I O N S   *
    \*****************************/
@@ -123,13 +267,20 @@ function relLoad() {
 
   // bind the add-link
   x('relation_new').getElementsByTagName('a')[0].onclick = relFormAdd;
-  // catch return key
-  x('relation_new').getElementsByTagName('input')[0].onkeydown = function(ev) {
-    var c = document.layers ? ev.which : document.all ? event.keyCode : ev.keyCode;
-    if(c == 13)
-      return relFormAdd();
-    return true;
-  };
+
+  // dropdown
+  dsInit(x('relation_new').getElementsByTagName('input')[0], '/xml/vn.xml?q=', function(item, tr) {
+    var td = document.createElement('td');
+    td.innerHTML = 'v'+item.getAttribute('id');
+    td.style.textAlign = 'right';
+    td.style.paddingRight = '5px';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    td.innerHTML = shorten(item.firstChild.nodeValue, 40);
+    tr.appendChild(td);
+  }, function(item) {
+    return 'v'+item.getAttribute('id')+':'+item.firstChild.nodeValue;
+  }, relFormAdd);
 }
 
 function relAdd(rel, vid, title) {
@@ -222,7 +373,7 @@ function relFormAdd() {
     sel.disabled = false;
     lnk.innerHTML = 'add';
 
-    var items = hr.responseXML.getElementsByTagName('vn');
+    var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
       return alert('Visual novel not found!');
 

@@ -169,7 +169,7 @@ sub _form {
   ],
 
   'Relations' => [
-    [ input    => short => 'relations', nolabel => 1, width => 700 ],
+    [ hidden   => short => 'relations' ],
     [ static   => nolabel => 1, content => sub {
       br;br;
       h2 'Selected relations';
@@ -258,7 +258,7 @@ sub vnxml {
   return 404 if $q->{_err};
   $q = $q->{q};
 
-  my($list, $np) = $self->dbVNGet(   #    / not implemented yet
+  my($list, $np) = $self->dbVNGet(
     $q =~ /^v([1-9]\d*)/ ? (id => $1) : (search => $q),
     results => 10,
     page => 1,
@@ -268,7 +268,7 @@ sub vnxml {
   xml;
   tag 'vns', more => $np ? 'yes' : 'no', query => $q;
    for(@$list) {
-     tag 'vn', id => $_->{id}, $_->{title};
+     tag 'item', id => $_->{id}, $_->{title};
    }
   end;
 }

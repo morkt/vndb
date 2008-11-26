@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit|;
 
 
-# Options: id, rev, results, page, order, what
+# Options: id, rev, search, results, page, order, what
 # What: extended categories anime relations screenshots relgraph changes
 sub dbVNGet {
   my($self, %o) = @_;
@@ -26,6 +26,31 @@ sub dbVNGet {
     !$o{id} && !$o{rev} ? (
       'v.hidden = FALSE' => 0 ) : (),
   );
+
+  if($o{search}) {
+    my @w;
+    for (split /[ -,]/, $o{search}) {
+      s/%//g;
+      next if length($_) < 2;
+#      if(VNDB::GTINType($_)) {
+#        push @w, 'irr.gtin = ?', $_;
+#      } else {
+        $_ = "%$_%";
+      push @w, '(ivr.title ILIKE ? OR ivr.alias ILIKE ? OR irr.title ILIKE ? OR irr.original ILIKE ?)',
+        [ $_, $_, $_, $_ ];
+#      }
+    }
+    $where{ q|
+      v.id IN(SELECT iv.id
+        FROM vn iv
+        JOIN vn_rev ivr ON iv.latest = ivr.id
+        LEFT JOIN releases_vn irv ON irv.vid = iv.id
+        LEFT JOIN releases_rev irr ON irr.id = irv.rid
+        LEFT JOIN releases ir ON ir.latest = irr.id
+        !W
+        GROUP BY iv.id)|
+    } = [ \@w ] if @w;
+  }
 
   my @join = (
     $o{rev} ?
