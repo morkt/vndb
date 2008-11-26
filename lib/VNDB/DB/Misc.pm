@@ -32,7 +32,7 @@ sub dbStats {
 # Arguments: type [0..2], item ID, edit summary
 # Returns: local revision, global revision
 sub dbRevisionInsert {
-  my($self, $type, $iid, $editsum) = @_;
+  my($self, $type, $iid, $editsum, $uid) = @_;
 
   my $table = [qw|vn releases producers|]->[$type];
 
@@ -47,7 +47,7 @@ sub dbRevisionInsert {
         LIMIT 1
       ))
       RETURNING id, rev|,
-    $type, $self->authInfo->{id}, $self->reqIP, $editsum,
+    $type, $uid||$self->authInfo->{id}, $self->reqIP, $editsum,
     $table, [qw|v r p|]->[$type], $iid
   );
 
@@ -59,16 +59,16 @@ sub dbRevisionInsert {
 
 # Comparable to RevisionInsert, but creates a new item with a corresponding
 #  change. Same things about inconsistent state, etc.
-# Argumments: type [0..2], edit summary
+# Argumments: type [0..2], edit summary, [uid]
 # Returns: item id, global revision
 sub dbItemInsert {
-  my($self, $type, $editsum) = @_;
+  my($self, $type, $editsum, $uid) = @_;
 
   my $cid = $self->dbRow(q|
     INSERT INTO changes (type, requester, ip, comments)
       VALUES (?, ?, ?, ?)
       RETURNING id|,
-    $type, $self->authInfo->{id}, $self->reqIP, $editsum
+    $type, $uid||$self->authInfo->{id}, $self->reqIP, $editsum
   )->{id};
 
   my $iid = $self->dbRow(q|

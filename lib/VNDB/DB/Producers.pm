@@ -79,21 +79,21 @@ sub dbProducerGet {
 }
 
 
-# arguments: id, %options ->( editsum + insert_rev )
+# arguments: id, %options ->( editsum uid + insert_rev )
 # returns: ( local revision, global revision )
 sub dbProducerEdit {
   my($self, $pid, %o) = @_;
-  my($rev, $cid) = $self->dbRevisionInsert(2, $pid, $o{editsum});
+  my($rev, $cid) = $self->dbRevisionInsert(2, $pid, $o{editsum}, $o{uid});
   insert_rev($self, $cid, $pid, \%o);
   return ($rev, $cid);
 }
 
 
-# arguments: %options ->( editsum + insert_rev )
+# arguments: %options ->( editsum uid + insert_rev )
 # returns: ( item id, global revision )
 sub dbProducerAdd {
   my($self, %o) = @_;
-  my($pid, $cid) = $self->dbItemInsert(2, $o{editsum});
+  my($pid, $cid) = $self->dbItemInsert(2, $o{editsum}, $o{uid});
   insert_rev($self, $cid, $pid, \%o);
   return ($pid, $cid);
 }

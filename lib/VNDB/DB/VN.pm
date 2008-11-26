@@ -142,21 +142,21 @@ sub dbVNGet {
 }
 
 
-# arguments: id, %options ->( editsum + insert_rev )
+# arguments: id, %options ->( editsum uid + insert_rev )
 # returns: ( local revision, global revision )
 sub dbVNEdit {
   my($self, $id, %o) = @_;
-  my($rev, $cid) = $self->dbRevisionInsert(0, $id, $o{editsum});
+  my($rev, $cid) = $self->dbRevisionInsert(0, $id, $o{editsum}, $o{uid});
   insert_rev($self, $cid, $id, \%o);
   return ($rev, $cid);
 }
 
 
-# arguments: %options ->( editsum + insert_rev )
+# arguments: %options ->( editsum uid + insert_rev )
 # returns: ( item id, global revision )
 sub dbVNAdd {
   my($self, %o) = @_;
-  my($id, $cid) = $self->dbItemInsert(0, $o{editsum});
+  my($id, $cid) = $self->dbItemInsert(0, $o{editsum}, $o{uid});
   insert_rev($self, $cid, $id, \%o);
   return ($id, $cid);
 }
