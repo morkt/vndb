@@ -31,6 +31,8 @@ TODO:
 	  - Boardmods can edit threads without updating the last edited field
 	  - No more RSS feeds for changes (will be replaced with a notification
 	    system in the future)
+	  - Improved formsub interface
+	  - Improved VN relation editor interface
 
 1.23 - 2008-10-22 (r117)
 	- Removed redirects for old revision URLs (the code wasn't very secure...)

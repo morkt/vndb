@@ -117,16 +117,25 @@ function dsKeyDown(ev) {
 
   // do some processing when the enter key has been pressed
   if(c == 13) {
-    if(obj.selectedId != 0) {
+    if(obj.selectedId != 0)
       obj.value = obj.serFunc(x('ds_box_'+obj.selectedId).itemData);
-      x('ds_box').style.top = '-500px';
-      obj.selectedId = 0;
-      return false;
-    } else if(obj.returnFunc) {
+    else if(obj.returnFunc)
       obj.returnFunc();
-      return false;
+    else
+      return true;
+    x('ds_box').style.top = '-500px';
+    obj.selectedId = 0;
+
+    // opera hack: make sure to not send the form on the return key
+    while(obj && obj.nodeName.toLowerCase() != 'form')
+      obj = obj.parentNode;
+    if(obj) {
+      var oldsubmit = obj.onsubmit;
+      obj.onsubmit = function() { return false };
+      setTimeout(function() { obj.onsubmit = oldsubmit }, 100);
     }
-    return true;
+
+    return false;
   }
  
   // process up/down keys
