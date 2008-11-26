@@ -44,7 +44,7 @@ sub history {
 
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
-    { name => 'm', required => 0, default => 0, enum => [ 0, 1 ] },
+    { name => 'm', required => 0, default => 1, enum => [ 0, 1 ] },
     { name => 'h', required => 0, default => 1, enum => [ -1..1 ] },
     { name => 't', required => 0, default => '', enum => [ 'v', 'r', 'p' ] },
     { name => 'e', required => 0, default => 0, enum => [ -1..1 ] },
