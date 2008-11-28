@@ -24,7 +24,7 @@ sub edit {
     || $vid && ($v->{locked} && !$self->authCan('lock') || $v->{hidden} && !$self->authCan('del'));
 
   my %b4 = !$vid ? () : (
-    (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn |),
+    (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn img_nsfw|),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
     categories => join(',', map $_->[0].$_->[1], sort { $a->[0] cmp $b->[0] } @{$v->{categories}}),
     relations => join('|||', map $_->{relation}.','.$_->{id}.','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
@@ -44,9 +44,13 @@ sub edit {
       { name => 'l_vnn',     required => 0, default => 0,  template => 'int' },
       { name => 'anime',     required => 0, default => '' },
       { name => 'categories',required => 0, default => '', maxlength => 1000 },
+      { name => 'img_nsfw',  required => 0, default => 0 },
       { name => 'relations', required => 0, default => '', maxlength => 5000 },
       { name => 'editsum',   maxlength => 5000 },
     );
+
+    # handle image upload
+    my $image = _uploadimage($self, $v, $frm);
 
     if(!$frm->{_err}) {
       # parse and re-sort fields that have multiple representations of the same information
@@ -56,21 +60,21 @@ sub edit {
 
       $frm->{anime} = join ' ', sort { $a <=> $b } @$anime;
       $frm->{relations} = join '|||', map $_->[0].','.$_->[1].','.$_->[2], sort { $a->[1] <=> $b->[1]} @{$relations};
+      $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
 
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post')
-        if $vid && !grep $frm->{$_} ne $b4{$_}, keys %b4;
+        if $vid && !$self->reqUploadFileName('image') && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
       # execute the edit/add
       my %args = (
-        (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum|),
+        (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum img_nsfw|),
         anime => $anime,
         categories => $categories,
         relations => $relations,
+        image => $image,
 
         # copy these from $v, as we don't have a form interface for them yet
-        image => $v->{image}||0,
-        img_nsfw => $v->{img_nsfw},
         screenshots => [ map [ $_->{id}, $_->{nsfw}, $_->{rid} ], @{$v->{screenshots}} ],
       );
 
@@ -105,9 +109,42 @@ sub edit {
 }
 
 
+sub _uploadimage {
+  my($self, $v, $frm) = @_;
+  return $v ? $v->{image} : 0 if $frm->{_err} || !$self->reqUploadFileName('image');
+
+  # save to temporary location
+  my $tmp = sprintf '%s/static/cv/00/tmp.%d.jpg', $VNDB::ROOT, $$*int(rand(1000)+1);
+  $self->reqSaveUpload('image', $tmp);
+
+  # perform some checks
+  my $l;
+  open(my $T, '<:raw:bytes', $tmp) || die $1;
+  read $T, $l, 2;
+  close($T);
+
+  $frm->{_err} = [ 'noimage' ] if $l ne pack('H*', 'ffd8') && $l ne pack('H*', '8950');
+  $frm->{_err} = [ 'toolarge' ] if -s $tmp > 512*1024;
+
+  if($frm->{_err}) {
+    unlink $tmp;
+    return undef;
+  } 
+
+  # store the file and let multi handle it
+  my $imgid = $self->dbVNImageId;
+  my $new = sprintf '%s/static/cv/%02d/%d.jpg', $VNDB::ROOT, $imgid%100, $imgid;
+  rename $tmp, $new or die $!;
+  chmod 0666, $new;
+  $self->multiCmd("coverimage $imgid");
+
+  return -1*$imgid;
+}
+
+
 sub _form {
   my($self, $v, $frm) = @_;
-  $self->htmlForm({ frm => $frm, action => $v ? "/v$v->{id}/edit" : '/v/new', editsum => 1 },
+  $self->htmlForm({ frm => $frm, action => $v ? "/v$v->{id}/edit" : '/v/new', editsum => 1, upload => 1 },
   'General info' => [
     [ input    => short => 'title',     name => 'Title (romaji)' ],
     [ input    => short => 'original',  name => 'Original title' ],
@@ -166,12 +203,31 @@ sub _form {
   ],
 
   'Image' => [
+    [ static => nolabel => 1, content => sub {
+      div class => 'img';
+       p 'No image uploaded yet' if !$v->{image};
+       p '[processing image, please return in a few minutes]' if $v->{image} < 0;
+       img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title} if $v->{image} > 0;
+      end;
+      div;
+
+       h2 'Upload new image';
+       input type => 'file', class => 'text', name => 'image', id => 'image';
+       p 'Preferably the cover of the CD/DVD/package. Image must be in JPEG or PNG format'
+        ." and at most 500kB. Images larger than 256x400 will automatically be resized.\n\n\n";
+
+       h2 'NSFW';
+       input type => 'checkbox', class => 'checkbox', id => 'img_nsfw', name => 'img_nsfw',
+         $frm->{img_nsfw} ? (checked => 'checked') : ();
+       label class => 'checkbox', for => 'img_nsfw', "Not Safe For Work.\n";
+       p 'Please check this option if the image contains nudity, gore, or is otherwise not safe in a work-friendly environment.';
+      end;
+    }],
   ],
 
   'Relations' => [
     [ hidden   => short => 'relations' ],
     [ static   => nolabel => 1, content => sub {
-      br;br;
       h2 'Selected relations';
       table;
        tbody id => 'relation_tbl';

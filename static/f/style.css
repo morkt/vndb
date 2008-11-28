@@ -606,6 +606,14 @@ form #jt_box_categories li li b { width: 13px; font-weight: bold; }
   width: 100%;
 }
 
+#jt_box_image div.img {
+  float: left;
+  height: 400px;
+  padding-right: 20px;
+}
+#jt_box_image h2 {
+  margin: 0;
+}
 
 
 

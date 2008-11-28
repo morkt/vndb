@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit|;
+our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId|;
 
 
 # Options: id, rev, search, results, page, order, what
@@ -213,6 +213,12 @@ sub insert_rev {
       !(scalar grep $ia == $_->{id}, @$a)
     } @{$o->{anime}});
   }
+}
+
+
+# fetches an ID for a new image
+sub dbVNImageId {
+  return shift->dbRow("SELECT nextval('covers_seq') AS ni")->{ni};
 }
 
 

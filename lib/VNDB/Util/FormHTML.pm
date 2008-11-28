@@ -39,6 +39,8 @@ my %formerr_exeptions = (
   passmatch     => 'Passwords do not match',
   usrexists     => 'Someone already has this username, please choose something else',
   mailexists    => 'Someone already registered with that email address',
+  noimage       => 'Image must be in JPEG or PNG format',
+  toolarge      => 'Image is too large, only 50kB allowed',
 );
 
 
