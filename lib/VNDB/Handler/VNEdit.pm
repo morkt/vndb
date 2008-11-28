@@ -64,7 +64,7 @@ sub edit {
 
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post')
-        if $vid && !$self->reqUploadFileName('image') && !grep $frm->{$_} ne $b4{$_}, keys %b4;
+        if $vid && !$self->reqUploadFileName('img') && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
       # execute the edit/add
       my %args = (
@@ -111,11 +111,11 @@ sub edit {
 
 sub _uploadimage {
   my($self, $v, $frm) = @_;
-  return $v ? $v->{image} : 0 if $frm->{_err} || !$self->reqUploadFileName('image');
+  return $v ? $v->{image} : 0 if $frm->{_err} || !$self->reqUploadFileName('img');
 
   # save to temporary location
   my $tmp = sprintf '%s/static/cv/00/tmp.%d.jpg', $VNDB::ROOT, $$*int(rand(1000)+1);
-  $self->reqSaveUpload('image', $tmp);
+  $self->reqSaveUpload('img', $tmp);
 
   # perform some checks
   my $l;
@@ -212,7 +212,7 @@ sub _form {
       div;
 
        h2 'Upload new image';
-       input type => 'file', class => 'text', name => 'image', id => 'image';
+       input type => 'file', class => 'text', name => 'img', id => 'img';
        p 'Preferably the cover of the CD/DVD/package. Image must be in JPEG or PNG format'
         ." and at most 500kB. Images larger than 256x400 will automatically be resized.\n\n\n";
 
