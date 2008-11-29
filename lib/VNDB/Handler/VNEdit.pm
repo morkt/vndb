@@ -81,7 +81,7 @@ sub edit {
         screenshots => $screenshots,
       );
 
-      my($nvid, $nrev, $cid) = ($vid, $rev);
+      my($nvid, $nrev, $cid) = ($vid, 1);
       ($nrev, $cid) = $self->dbVNEdit($vid, %args) if $vid;
       ($nvid, $cid) = $self->dbVNAdd(%args) if !$vid;
 
