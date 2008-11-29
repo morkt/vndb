@@ -88,7 +88,7 @@ sub edit {
 
   my $p = $pid && $self->dbProducerGet(id => $pid, what => 'changes', $rev ? (rev => $rev) : ())->[0];
   return 404 if $pid && !$p->{id};
-  $rev = undef if $p->{cid} == $p->{latest};
+  $rev = undef if !$p || $p->{cid} == $p->{latest};
 
   return $self->htmlDenied if !$self->authCan('edit')
     || $pid && ($p->{locked} && !$self->authCan('lock') || $p->{hidden} && !$self->authCan('del'));
