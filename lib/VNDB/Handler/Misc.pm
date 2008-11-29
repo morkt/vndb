@@ -80,9 +80,9 @@ sub history {
     $n ||= '';
     local $_ = ($type ? "/$type$id" : '').'/hist';
     $_ .= '?m='.($n eq 'm' ? $v : $f->{m});
-    $_ .= '&h='.($n eq 'h' ? $v : $f->{h});
-    $_ .= '&t='.($n eq 't' ? $v : $f->{t});
-    $_ .= '&e='.($n eq 'e' ? $v : $f->{e});
+    $_ .= ';h='.($n eq 'h' ? $v : $f->{h});
+    $_ .= ';t='.($n eq 't' ? $v : $f->{t});
+    $_ .= ';e='.($n eq 'e' ? $v : $f->{e});
   };
 
   # filters

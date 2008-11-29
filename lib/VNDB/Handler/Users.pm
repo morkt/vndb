@@ -340,7 +340,7 @@ sub list {
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => "/u/list/$char?o=$f->{o}&s=$f->{s}",
+    pageurl  => "/u/list/$char?o=$f->{o};s=$f->{s}",
     sorturl  => "/u/list/$char",
     header   => [
       [ 'Username',   'username'   ],

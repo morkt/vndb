@@ -143,7 +143,7 @@ sub htmlHiddenMessage {
 sub htmlBrowse {
   my($self, %opt) = @_;
 
-  $opt{sorturl} .= $opt{sorturl} =~ /\?/ ? '&' : '?' if $opt{sorturl};
+  $opt{sorturl} .= $opt{sorturl} =~ /\?/ ? ';' : '?' if $opt{sorturl};
 
   # top navigation
   $self->htmlBrowseNavigate($opt{pageurl}, $opt{options}{p}, $opt{nextpage}, 't');
@@ -165,8 +165,8 @@ sub htmlBrowse {
              lit $opt{header}[$_][0];
              if($opt{header}[$_][1]) {
                lit ' ';
-               lit $opt{options}{s} eq $opt{header}[$_][1] && $opt{options}{o} eq 'a' ? "\x{25B4}" : qq|<a href="$opt{sorturl}o=a&s=$opt{header}[$_][1]">\x{25B4}</a>|;
-               lit $opt{options}{s} eq $opt{header}[$_][1] && $opt{options}{o} eq 'd' ? "\x{25BE}" : qq|<a href="$opt{sorturl}o=d&s=$opt{header}[$_][1]">\x{25BE}</a>|;
+               lit $opt{options}{s} eq $opt{header}[$_][1] && $opt{options}{o} eq 'a' ? "\x{25B4}" : qq|<a href="$opt{sorturl}o=a;s=$opt{header}[$_][1]">\x{25B4}</a>|;
+               lit $opt{options}{s} eq $opt{header}[$_][1] && $opt{options}{o} eq 'd' ? "\x{25BE}" : qq|<a href="$opt{sorturl}o=d;s=$opt{header}[$_][1]">\x{25BE}</a>|;
              }
             end;
           }
@@ -193,7 +193,7 @@ sub htmlBrowseNavigate {
   my($self, $url, $p, $np, $al, $na) = @_;
   return if $p == 1 && !$np;
 
-  $url .= $url =~ /\?/ ? '&p=' : '?p=' unless $na;
+  $url .= $url =~ /\?/ ? ';p=' : '?p=' unless $na;
   ul class => 'maintabs ' . ($al eq 't' ? 'notfirst' : 'bottom');
    if($p > 1) {
      li class => 'left';
