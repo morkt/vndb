@@ -208,6 +208,8 @@ DOMLoad(function() {
     catLoad();
   if(x('relations'))
     relLoad();
+  if(x('jt_box_screenshots'))
+    scrLoad();
 
   // spam protection on all forms
   if(document.forms.length >= 1)

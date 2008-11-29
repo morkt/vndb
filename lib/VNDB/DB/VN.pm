@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId|;
+our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbScreenshotAdd dbScreenshotGet|;
 
 
 # Options: id, rev, search, results, page, order, what
@@ -220,6 +220,19 @@ sub insert_rev {
 sub dbVNImageId {
   return shift->dbRow("SELECT nextval('covers_seq') AS ni")->{ni};
 }
+
+
+# insert a new screenshot and return it's ID
+# (no arguments required, as Multi is responsible for filling the entry with information)
+sub dbScreenshotAdd {
+  return shift->dbRow(q|INSERT INTO screenshots (status) VALUES(0) RETURNING id|)->{id};
+}
+
+
+# arrayref of screenshot IDs as argument
+sub dbScreenshotGet {
+  return shift->dbAll(q|SELECT * FROM screenshots WHERE id IN(!l)|, shift);
+} 
 
 
 1;

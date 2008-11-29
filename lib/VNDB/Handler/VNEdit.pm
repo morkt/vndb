@@ -9,7 +9,8 @@ use YAWF ':html', ':xml';
 YAWF::register(
   qr{v(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit|/new)}
     => \&edit,
-  qr{xml/vn\.xml}   => \&vnxml,
+  qr{xml/vn\.xml}          => \&vnxml,
+  qr{xml/screenshots\.xml} => \&scrxml,
 );
 
 
@@ -18,7 +19,7 @@ sub edit {
 
   my $v = $vid && $self->dbVNGet(id => $vid, what => 'extended screenshots relations anime categories changes', $rev ? (rev => $rev) : ())->[0];
   return 404 if $vid && !$v->{id};
-  $rev = undef if $v->{cid} == $v->{latest};
+  $rev = undef if !$vid || $v->{cid} == $v->{latest};
 
   return $self->htmlDenied if !$self->authCan('edit')
     || $vid && ($v->{locked} && !$self->authCan('lock') || $v->{hidden} && !$self->authCan('del'));
@@ -146,6 +147,7 @@ sub _uploadimage {
 
 sub _form {
   my($self, $v, $frm) = @_;
+  my $r = $v ? $self->dbReleaseGet(vid => $v->{id}) : [];
   $self->htmlForm({ frm => $frm, action => $v ? "/v$v->{id}/edit" : '/v/new', editsum => 1, upload => 1 },
   'General info' => [
     [ input    => short => 'title',     name => 'Title (romaji)' ],
@@ -207,9 +209,9 @@ sub _form {
   'Image' => [
     [ static => nolabel => 1, content => sub {
       div class => 'img';
-       p 'No image uploaded yet' if !$v->{image};
-       p '[processing image, please return in a few minutes]' if $v->{image} < 0;
-       img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title} if $v->{image} > 0;
+       p 'No image uploaded yet' if !$v || !$v->{image};
+       p '[processing image, please return in a few minutes]' if $v && $v->{image} < 0;
+       img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title} if $v && $v->{image} > 0;
       end;
       div;
 
@@ -250,7 +252,7 @@ sub _form {
          end;
          txt ' of';
         end;
-        td class => 'tc3', $v->{title};
+        td class => 'tc3', $v ? $v->{title} : '';
         td class => 'tc4';
          a href => '#', 'add';
         end;
@@ -259,9 +261,31 @@ sub _form {
     }],
   ],
 
-  'Screenshots' => [
-    [ input  => nolabel => 1, short => 'screenshots', width => 700 ],
-  ]);
+  !@$r ? () : ( 'Screenshots' => [
+    [ hidden => short => 'screenshots' ],
+    [ static => nolabel => 1, content => sub {
+      div class => 'warning';
+       b 'Please keep the following in mind when uploading screenshots:';
+       ul;
+        li 'Screenshots have to be in the native resolution of the game,';
+        li 'Remove any window borders and make sure the image is unmarked,';
+        li 'Don\'t only upload event CGs.';
+       end;
+       lit 'Please read the <a href="/d2#6">guidelines</a> for more information.';
+       br;
+       b 'Make sure to submit the form after the upload has finished!';
+      end;
+      br;
+      table;
+       tbody id => 'scr_table', '';
+      end;
+      Select id => 'scr_rel', class => $self->{url_static};
+       option value => $_->{id}, sprintf '[%s] %s (r%d)', $_->{language}, $_->{title}, $_->{id} for (@$r);
+      end;
+    }],
+  ])
+
+  );
 }
 
 
@@ -330,6 +354,58 @@ sub vnxml {
      tag 'item', id => $_->{id}, $_->{title};
    }
   end;
+}
+
+
+# handles uploading screenshots and fetching information about them
+sub scrxml {
+  my $self = shift;
+  return $self->htmlDenied if !$self->authCan('edit');
+  $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
+
+  # fetch information about screenshots
+  if($self->reqMethod ne 'POST') {
+    my $ids = $self->formValidate(
+      { name => 'id', required => 1, template => 'int', multi => 1 }
+    );
+    return 404 if $ids->{_err};
+    my $r = $self->dbScreenshotGet($ids->{id});
+
+    xml;
+    tag 'screenshots';
+     tag 'item', %$_, undef for (@$r);
+    end;
+    return;
+  }
+
+  # upload new screenshot
+  my $tmp = sprintf '%s/static/sf/00/tmp.%d.jpg', $VNDB::ROOT, $$*int(rand(1000)+1);
+  $self->reqSaveUpload('scr_upload', $tmp);
+
+  my $id = 0;
+  $id = -2 if !-s $tmp;
+  if(!$id) {
+    my $l;
+    open(my $T, '<:raw:bytes', $tmp) || die $1;
+    read $T, $l, 2;
+    close($T);
+    $id = -1 if $l ne pack('H*', 'ffd8') && $l ne pack('H*', '8950');
+  }
+
+  if($id) {
+    unlink $tmp;
+  } else {
+    $id = $self->dbScreenshotAdd;
+    my $new = sprintf '%s/static/sf/%02d/%d.jpg', $VNDB::ROOT, $id%100, $id;
+    rename $tmp, $new or die $!;
+    chmod 0666, $new;
+    $self->multiCmd('screenshot');
+  }
+
+  xml;
+  # blank stylesheet because some browsers don't allow JS access otherwise
+  lit qq|<?xml-stylesheet href="$self->{url_static}/f/blank.css" type="text/css" ?>|;
+  tag 'image', id => $id, undef;
 }
 
 

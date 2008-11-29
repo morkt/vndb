@@ -615,6 +615,11 @@ form #jt_box_categories li li b { width: 13px; font-weight: bold; }
   margin: 0;
 }
 
+#jt_box_screenshots table { width: 95% }
+#scr_table td { height: 108px; border-top: 1px solid #258; padding: 0; padding-right: 5px }
+#scr_table td.thumb { width: 136px; vertical-align: middle }
+#scr_table select { width: 400px; }
+
 
 
 /***** Producer page/list *******/

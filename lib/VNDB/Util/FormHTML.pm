@@ -108,7 +108,7 @@ sub htmlFormPart {
   if(/hidden/) {
     Tr class => 'hidden';
      td colspan => 2;
-      input type => 'hidden', id => $o{short}, name => $o{short}, value => $o{value}||$frm->{$o{short}};
+      input type => 'hidden', id => $o{short}, name => $o{short}, value => $o{value}||$frm->{$o{short}}||'';
      end;
     end;
     return

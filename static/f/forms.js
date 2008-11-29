@@ -23,7 +23,7 @@ function ajax(url, func) {
       return alert('Whoops, error! :(');
     func(http_request);
   };
-  url += (url.indexOf('?')>=0 ? '&' : '?')+(Math.floor(Math.random()*999)+1);
+  url += (url.indexOf('?')>=0 ? ';' : '?')+(Math.floor(Math.random()*999)+1);
   http_request.open('GET', url, true);
   http_request.send(null);
 }
@@ -396,6 +396,261 @@ function relFormAdd() {
   });
   return false;
 }
+
+
+
+
+
+
+   /*********************************\
+   *   V N   S C R E E N S H O T S   *
+   \*********************************/
+
+
+var scrRel = [ [ 0, '-- select release --' ] ];
+var scrStaticURL;
+function scrLoad() {
+  // load the releases
+  scrStaticURL = x('scr_rel').className;
+  var l = x('scr_rel').options;
+  for(var i=0;i<l.length;i++)
+    scrRel[i+1] = [ l[i].value, l[i].text ];
+  x('scr_rel').parentNode.removeChild(x('scr_rel'));
+
+  // load the current screenshots
+  l = x('screenshots').value.split(' ');
+  for(i=0;i<l.length;i++)
+    if(l[i].length > 2) {
+      var r = l[i].split(',');
+      scrAdd(r[0], r[1], r[2]);
+    }
+  scrLast();
+  scrCheckStatus();
+
+  scrSetSubmit();
+}
+
+// give an error when submitting the form while still uploading an image
+function scrSetSubmit() {
+  var o=x('screenshots');
+  while(o.nodeName.toLowerCase() != 'form')
+    o = o.parentNode;
+  oldfunc = o.onsubmit;
+  o.onsubmit = function() {
+    var c=0;var r=0;
+    var l = x('scr_table').getElementsByTagName('tr');
+    for(var i=0;i<l.length-1;i++) {
+      if(l[i].scrStatus > 0)
+        c=1;
+      else if(l[i].getElementsByTagName('select')[0].selectedIndex == 0)
+        r=1;
+    }
+    if(c) {
+      alert('Please wait for the screenshots to be uploaded before submitting the form.');
+      return false;
+    } else if(r) {
+      alert('Please select the appropriate release for every screenshot');
+      return false;
+    } else if(oldfunc)
+      return oldfunc();
+  };
+}
+
+
+function scrURL(id, t) {
+  return scrStaticURL+'/s'+t+'/'+(id%100<10?'0':'')+(id%100)+'/'+id+'.jpg';
+}
+
+function scrAdd(id, nsfw, rel) {
+  var tr = document.createElement('tr');
+  tr.scrId = id;
+  tr.scrStatus = id ? 2 : 1; // 0: done, 1: uploading, 2: waiting for thumbnail
+  tr.scrRel = rel;
+  tr.scrNSFW = nsfw;
+  
+  var td = document.createElement('td');
+  td.className = 'thumb';
+  td.innerHTML = 'loading...';
+  tr.appendChild(td);
+
+  td = document.createElement('td');
+  if(id)
+    td.innerHTML = '<b>Generating thumbnail...</b><br />'
+      +'Note: if this takes longer than 30 seconds, there\'s probably something wrong on our side.'
+      +'Please try again later or report a bug if that is the case.';
+  else
+    td.innerHTML = '<b>Uploading screenshot...</b><br />'
+      +'This can take a while, depending on the file size and your upload speed.<br />'
+      +'<a href="#" onclick="return scrDel(this)">cancel</a>';
+  tr.appendChild(td);
+  
+  x('scr_table').appendChild(tr);
+  scrStripe();
+  return tr;
+}
+
+function scrLast() {
+  if(x('scr_last'))
+    x('scr_table').removeChild(x('scr_last'));
+  var full = x('scr_table').getElementsByTagName('tr').length >= 10;
+
+  var tr = document.createElement('tr');
+  tr.setAttribute('id', 'scr_last');
+
+  var td = document.createElement('td');
+  td.className = 'thumb';
+  tr.appendChild(td);
+
+  var td = document.createElement('td');
+  if(full)
+    td.innerHTML = '<b>Enough screenshots</b><br />'
+      +'The limit of 10 screenshots per visual novel has been reached. '
+      +'If you want to add a new screenshot, please remove an existing one first.';
+  else
+    td.innerHTML = '<b>Add screenshot</b><br />'
+      +'Image must be smaller than 5MB and in PNG or JPEG format.<br />'
+      +'<input name="scr_upload" id="scr_upload" type="file" class="text" /><br />'
+      +'<input type="button" value="Upload!" class="submit" onclick="scrUpload()" />';
+
+  tr.appendChild(td);
+  x('scr_table').appendChild(tr);
+  scrStripe();
+}
+
+function scrStripe() {
+  var l = x('scr_table').getElementsByTagName('tr');
+  for(var i=0;i<l.length;i++)
+    l[i].className = i%2==0 ? 'odd' : '';
+}
+
+function scrCheckStatus() {
+  var ids = '';
+  var l = x('scr_table').getElementsByTagName('tr');
+  for(var i=0;i<l.length-1;i++)
+    if(l[i].scrStatus == 2)
+      ids += (ids ? ';' : '?')+'id='+l[i].scrId;
+  if(!ids)
+    return setTimeout(scrCheckStatus, 1000);
+
+  var ti = setTimeout(scrCheckStatus, 10000);
+  ajax('/xml/screenshots.xml'+ids, function(hr) {
+    var ls = hr.responseXML.getElementsByTagName('item');
+    var l = x('scr_table').getElementsByTagName('tr');
+    var tr;
+    for(var s=0;s<ls.length;s++) {
+      for(i=0;i<l.length-1;i++)
+        if(l[i].scrId == ls[s].getAttribute('id') && ls[s].getAttribute('status') > 0)
+          tr = l[i];
+      if(!tr)
+        continue;
+
+      tr.scrStatus = 0;
+      tr.getElementsByTagName('td')[0].innerHTML = 
+         '<a href="'+scrURL(tr.scrId, 'f')+'" rel="iv:'+ls[s].getAttribute('width')+'x'+ls[s].getAttribute('height')+':edit">'
+        +'<img src="'+scrURL(tr.scrId, 't')+'" style="margin: 0; padding: 0; border: 0" /></a>';
+
+      var opt='';
+      for(var o=0;o<scrRel.length;o++)
+        opt += '<option value="'+scrRel[o][0]+'"'+(tr.scrRel && tr.scrRel == scrRel[o][0] ? ' selected="selected"' : '')+'>'+scrRel[o][1]+'</option>';
+
+      tr.getElementsByTagName('td')[1].innerHTML = '<b>Screenshot #'+tr.scrId+'</b>'
+        +' (<a href="#" onclick="return scrDel(this)">remove</a>)<br />'
+        +'Full size: '+ls[s].getAttribute('width')+'x'+ls[s].getAttribute('height')+'<br /><br />'
+        +'<input type="checkbox" onclick="scrSerialize()" id="scr_ser_'+tr.scrId+'" name="scr_ser_'+tr.scrId+'"'
+        +' '+(tr.scrNSFW > 0 ? 'checked = "checked"' : '')+' />'
+        +'<label for="scr_ser_'+tr.scrId+'">This screenshot is NSFW</label><br />'
+        +'<select onchange="scrSerialize()">'+opt+'</select>';
+    }
+    scrSerialize();
+    ivInit();
+    clearTimeout(ti);
+    setTimeout(scrCheckStatus, 1000);
+  });
+}
+
+function scrDel(what) {
+  while(what.nodeName.toLowerCase() != 'tr')
+    what = what.parentNode;
+  what.scrStatus = 3;
+  x('scr_table').removeChild(what);
+  scrSerialize();
+  scrLast();
+  return false;
+}
+
+var scrUplNr=0;
+function scrUpload() {
+  scrUplNr++;
+
+  // create temporary form
+  var d = document.createElement('div');
+  d.style.cssText = 'visibility: hidden; overflow: hidden; width: 1px; height: 1px; position: absolute; left: -500px; top: -500px';
+  d.innerHTML = '<iframe id="scr_upl_'+scrUplNr+'" name="scr_upl_'+scrUplNr+'" style="height: 0px; width: 0px; visibility: hidden"'
+    +' src="about:blank" onload="scrUploadComplete(this)"></iframe>'
+    +'<form method="post" action="/xml/screenshots.xml" target="scr_upl_'+scrUplNr+'" enctype="multipart/form-data" id="scr_frm_'+scrUplNr+'"></form>';
+  document.body.appendChild(d);
+
+  // submit form and delete it
+  d = x('scr_frm_'+scrUplNr);
+  d.appendChild(x('scr_upload'));
+  d.submit();
+  d.parentNode.removeChild(d);
+
+  d = scrAdd(0, 0, 0);
+  x('scr_upl_'+scrUplNr).theTR = d;
+  scrLast();
+
+  return false;
+}
+
+function scrUploadComplete(what) {
+  var f = window.frames[what.id];
+  if(f.location.href.indexOf('screenshots') < 0)
+    return;
+
+  var tr = what.theTR;
+  if(!tr || tr.scrStatus == 3)
+    return;
+
+  try {
+    tr.scrId = f.window.document.getElementsByTagName('image')[0].getAttribute('id');
+  } catch(e) {
+    tr.scrId = -10;
+  }
+  if(tr.scrId < 0) {
+    alert(
+      tr.scrId == -10 ?
+         'Oops! Seems like something went wrong...\n'
+        +'Make sure the file you\'re uploading doesn\'t exceed 5MB in size.\n'
+        +'If that isn\'t the problem, then please report a bug.' :
+      tr.scrId == -1 ?
+        'Upload failed!\nOnly JPEG or PNG images are accepted.' :
+        'Upload failed!\nNo file selected, or an empty file?'
+    );
+    return scrDel(tr);
+  }
+
+  tr.scrStatus = 2;
+  tr.getElementsByTagName('td')[1].innerHTML = 
+     '<b>Generating thumbnail...</b><br />'
+    +'Note: if this takes longer than 30 seconds, there\'s probably something wrong on our side.'
+    +'Please try again later or report a bug if that is the case.';
+
+  // remove the <div> in a timeout, otherwise some browsers think the page is still loading
+  setTimeout(function() { document.body.removeChild(what.parentNode) }, 100);
+}
+
+function scrSerialize() {
+  var r = '';
+  var l = x('scr_table').getElementsByTagName('tr');
+  for(var i=0;i<l.length-1;i++)
+    if(l[i].scrStatus == 0)
+      r += (r ? ' ' : '') + l[i].scrId + ','
+        + (l[i].getElementsByTagName('input')[0].checked ? 1 : 0) + ','
+        + scrRel[l[i].getElementsByTagName('select')[0].selectedIndex][0];
+  x('screenshots').value = r;
+}
+
 
 
 
