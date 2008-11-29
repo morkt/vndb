@@ -28,25 +28,27 @@ sub edit {
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
     categories => join(',', map $_->[0].$_->[1], sort { $a->[0] cmp $b->[0] } @{$v->{categories}}),
     relations => join('|||', map $_->{relation}.','.$_->{id}.','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
+    screenshots => join(' ', map sprintf('%d,%d,%d', $_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$v->{screenshots}}),
   );
 
   my $frm;
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
-      { name => 'title',     maxlength => 250 },
-      { name => 'original',  required => 0, maxlength => 250, default => '' },
-      { name => 'alias',     required => 0, maxlength => 500, default => '' },
-      { name => 'desc',      maxlength => 10240 },
-      { name => 'length',    required => 0, default => 0,  enum => [ 0..$#{$self->{vn_lengths}} ] },
-      { name => 'l_wp',      required => 0, default => '', maxlength => 150 },
-      { name => 'l_encubed', required => 0, default => '', maxlength => 100 },
-      { name => 'l_renai',   required => 0, default => '', maxlength => 100 },
-      { name => 'l_vnn',     required => 0, default => 0,  template => 'int' },
-      { name => 'anime',     required => 0, default => '' },
-      { name => 'categories',required => 0, default => '', maxlength => 1000 },
-      { name => 'img_nsfw',  required => 0, default => 0 },
-      { name => 'relations', required => 0, default => '', maxlength => 5000 },
-      { name => 'editsum',   maxlength => 5000 },
+      { name => 'title',       maxlength => 250 },
+      { name => 'original',    required => 0, maxlength => 250, default => '' },
+      { name => 'alias',       required => 0, maxlength => 500, default => '' },
+      { name => 'desc',        maxlength => 10240 },
+      { name => 'length',      required => 0, default => 0,  enum => [ 0..$#{$self->{vn_lengths}} ] },
+      { name => 'l_wp',        required => 0, default => '', maxlength => 150 },
+      { name => 'l_encubed',   required => 0, default => '', maxlength => 100 },
+      { name => 'l_renai',     required => 0, default => '', maxlength => 100 },
+      { name => 'l_vnn',       required => 0, default => 0,  template => 'int' },
+      { name => 'anime',       required => 0, default => '' },
+      { name => 'categories',  required => 0, default => '', maxlength => 1000 },
+      { name => 'img_nsfw',    required => 0, default => 0 },
+      { name => 'relations',   required => 0, default => '', maxlength => 5000 },
+      { name => 'screenshots', required => 0, default => '', maxlength => 1000 },
+      { name => 'editsum',     maxlength => 5000 },
     );
 
     # handle image upload
@@ -57,10 +59,12 @@ sub edit {
       my $anime = [ grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} ];
       my $categories = [ map { [ substr($_,0,3), substr($_,3,1) ] } split /,/, $frm->{categories} ];
       my $relations = [ map { /^([0-9]+),([0-9]+),(.+)$/ && $2 != $vid ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{relations} ];
+      my $screenshots = [ map /^[0-9]+,[01],[0-9]+$/ ? [split /,/] : (), split / +/, $frm->{screenshots} ];
 
       $frm->{anime} = join ' ', sort { $a <=> $b } @$anime;
       $frm->{relations} = join '|||', map $_->[0].','.$_->[1].','.$_->[2], sort { $a->[1] <=> $b->[1]} @{$relations};
       $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
+      $frm->{screenshots} = join ' ', map sprintf('%d,%d,%d', $_->[0], $_->[1]?1:0, $_->[2]), sort { $a->[0] <=> $b->[0] } @$screenshots;
 
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post')
@@ -73,9 +77,7 @@ sub edit {
         categories => $categories,
         relations => $relations,
         image => $image,
-
-        # copy these from $v, as we don't have a form interface for them yet
-        screenshots => [ map [ $_->{id}, $_->{nsfw}, $_->{rid} ], @{$v->{screenshots}} ],
+        screenshots => $screenshots,
       );
 
       my($nvid, $nrev, $cid) = ($vid, $rev);
@@ -258,6 +260,7 @@ sub _form {
   ],
 
   'Screenshots' => [
+    [ input  => nolabel => 1, short => 'screenshots', width => 700 ],
   ]);
 }
 
