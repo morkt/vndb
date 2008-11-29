@@ -109,7 +109,7 @@ sub _menu {
      [ threads   => 'Threads'       ],
      [ posts     => 'Posts'         ],
    );
-   my $stats = $self->dbStats(map $$_[0], @stats);
+   my $stats = $self->dbStats;
    div class => 'menubox';
     h2 'Database Statistics';
     div;
