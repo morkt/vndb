@@ -17,8 +17,9 @@ TODO:
 	- Database changes:
 	  - Added caching of edit and vote counts in users.c_votes and .c_changes
 	  - Split users.flags into users.show_nsfw and .show_list (boolean type)
+	  - Global statistics are cached in stats_cache
 	- URL changes:
-	  - /p doesn't work anymore, use /p/all
+	  - /p and /v don't work anymore, use /[pv]/all
 	  - /u/list/* -> /u/* and /u/list -> /u/list/all
 	  - Revert URL changed from /x99/edit?rev=1 to /x99.1/edit
 	  - /v+/stats and /v+/scr moved into /v+

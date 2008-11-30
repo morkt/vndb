@@ -621,6 +621,11 @@ form #jt_box_categories li li b { width: 13px; font-weight: bold; }
 #scr_table select { width: 400px; }
 
 
+/* VN browse */
+
+.vnbrowse .tc2 { text-align: right }
+
+
 
 /***** Producer page/list *******/
 

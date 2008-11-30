@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 use POSIX 'strftime';
-our @EXPORT = qw| shorten date datestr userstr bb2html |;
+our @EXPORT = qw| shorten date datestr monthstr userstr bb2html |;
 
 
 # I would've done this as a #define if this was C...
@@ -44,6 +44,17 @@ sub datestr {
 
   return $str if !$future;
   return qq|<b class="future">$str</b>|;
+}
+
+# same as datestr(), but different output format:
+#  e.g.: 'Jan 2009', '2009', 'unknown', 'TBA'
+sub monthstr {
+  my $date = sprintf '%08d', shift||0;
+  my($y, $m) = ($1, $2) if $date =~ /^([0-9]{4})([0-9]{2})/;
+  return 'TBA' if $y == 9999;
+  return 'unknown' if $y == 0;
+  return $y if $m == 99;
+  return strftime '%b %Y', 0, 0, 0, 0, $m-1, $y-1900, 0, 0, 0;
 }
 
 

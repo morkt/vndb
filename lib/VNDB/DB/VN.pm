@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbScreenshotAdd dbScreenshotGet|;
 
 
-# Options: id, rev, search, results, page, order, what
+# Options: id, rev, char, search, results, page, order, what
 # What: extended categories anime relations screenshots relgraph changes
 sub dbVNGet {
   my($self, %o) = @_;
@@ -22,6 +22,10 @@ sub dbVNGet {
       'v.id = ?' => $o{id} ) : (),
     $o{rev} ? (
       'c.rev = ?' => $o{rev} ) : (),
+    $o{char} ? (
+      'LOWER(SUBSTR(vr.title, 1, 1)) = ?' => $o{char} ) : (),
+    defined $o{char} && !$o{char} ? (
+      '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
    # don't fetch hidden items unless we ask for an ID
     !$o{id} && !$o{rev} ? (
       'v.hidden = FALSE' => 0 ) : (),

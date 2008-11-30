@@ -48,7 +48,7 @@ sub _menu {
     h2 'Menu';
     div;
      a href => '/',      'Home'; br;
-     a href => '#',      'Visual novels'; br;
+     a href => '/v/all', 'Visual novels'; br;
      a href => '/p/all', 'Producers'; br;
      a href => '/u/all', 'Users'; br;
      a href => '/hist',  'Recent changes'; br;
