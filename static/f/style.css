@@ -623,7 +623,8 @@ form #jt_box_categories li li b { width: 13px; font-weight: bold; }
 
 /* VN browse */
 
-.vnbrowse .tc2 { text-align: right }
+.vnbrowse .tc2 { text-align: right; padding: 0; }
+.vnbrowse .tc3 { padding: 0; }
 
 
 
