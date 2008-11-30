@@ -47,17 +47,13 @@ sub _menu {
    div class => 'menubox';
     h2 'Menu';
     div;
-     for (
-       [ '/'   => 'Home'              ],
-       [ '#'   => 'Visual Novels'     ],
-       [ '/p/all'  => 'Producers'     ],
-       [ '/u/list/all' => 'Users'     ],
-       [ '/hist' => 'Recent Changes'    ],
-       [ '/t'   => 'Discussion Board'  ],
-       [ '#'   => 'FAQ'               ]) {
-       a href => $$_[0], $$_[1];
-       br;
-     }
+     a href => '/',      'Home'; br;
+     a href => '#',      'Visual novels'; br;
+     a href => '/p/all', 'Producers'; br;
+     a href => '/u/all', 'Users'; br;
+     a href => '/hist',  'Recent changes'; br;
+     a href => '/t',     'Discussion board'; br;
+     a href => '#',      'FAQ'; br;
     end;
    end;
 

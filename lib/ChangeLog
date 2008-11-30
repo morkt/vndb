@@ -19,6 +19,7 @@ TODO:
 	  - Split users.flags into users.show_nsfw and .show_list (boolean type)
 	- URL changes:
 	  - /p doesn't work anymore, use /p/all
+	  - /u/list/* -> /u/* and /u/list -> /u/list/all
 	  - Revert URL changed from /x99/edit?rev=1 to /x99.1/edit
 	  - /v+/stats and /v+/scr moved into /v+
 	- Functionality changes:

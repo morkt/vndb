@@ -17,7 +17,7 @@ YAWF::register(
   qr{u/register}              => \&register,
   qr{u([1-9]\d*)/edit}        => \&edit,
   qr{u([1-9]\d*)/del(/[od])?} => \&delete,
-  qr{u/list/(all|[0a-z])}     => \&list,
+  qr{u/(all|[0a-z])}          => \&list,
 );
 
 
@@ -323,7 +323,7 @@ sub list {
    h1 'Browse users';
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => "/u/list/$_", $_ eq $char ? (class => 'optselected') : (), $_ ? uc $_ : '#';
+      a href => "/u/$_", $_ eq $char ? (class => 'optselected') : (), $_ ? uc $_ : '#';
     }
    end;
   end;
@@ -340,8 +340,8 @@ sub list {
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => "/u/list/$char?o=$f->{o};s=$f->{s}",
-    sorturl  => "/u/list/$char",
+    pageurl  => "/u/$char?o=$f->{o};s=$f->{s}",
+    sorturl  => "/u/$char",
     header   => [
       [ 'Username',   'username'   ],
       [ 'Registered', 'registered' ],

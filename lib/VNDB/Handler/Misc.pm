@@ -16,12 +16,13 @@ YAWF::register(
  
   # redirects for old URLs
   qr{(.*[^/]+)/+}, sub { $_[0]->resRedirect("/$_[1]", 'perm') },
-  qr{u/list},      sub { $_[0]->resRedirect('/u/list/all', 'perm') },
   qr{p},           sub { $_[0]->resRedirect('/p/all', 'perm') },
   qr{notes},       sub { $_[0]->resRedirect('/d8', 'perm') },
   qr{faq},         sub { $_[0]->resRedirect('/d6', 'perm') },
   qr{v([1-9]\d*)/(?:stats|scr|votes)},
     sub { $_[0]->resRedirect("/v$_[1]", 'perm') },
+  qr{u/list(/[a-z0]|/all)?},
+    sub { my $l = defined $_[1] ? $_[1] : '/all'; $_[0]->resRedirect("/u$l", 'perm') },
 );
 
 
