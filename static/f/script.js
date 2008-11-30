@@ -163,6 +163,20 @@ function jtSel(which, nolink) {
 /*  O N L O A D   E V E N T  */
 
 DOMLoad(function() {
+  var i = x('sq');
+  i.onfocus = function () {
+    if(this.value == 'search') {
+      this.value = '';
+      this.style.fontStyle = 'normal'
+    }
+  };
+  i.onblur = function () {
+    if(this.value.length < 1) {
+      this.value = 'search';
+      this.style.fontStyle = 'italic'
+    }
+  };
+
 
   // show/hide NSFW VN image
   cl('nsfw_show', function() {

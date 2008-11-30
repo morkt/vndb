@@ -20,8 +20,10 @@ sub list {
     { name => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'q', required => 0, default => '' },
+    { name => 'sq', required => 0, default => '' },
   );
   return 404 if $f->{_err};
+  $f->{q} ||= $f->{sq};
 
   # NOTE: this entire search thingy can also be done using a PgSQL fulltext search,
   #  which is faster and requires less code. It does require an extra database
@@ -69,7 +71,7 @@ sub list {
   $self->resRedirect('/v'.$list->[0]{id}, 'temp')
     if $q && @$list == 1;
 
-  $self->htmlHeader(title => 'Browse visual novels');
+  $self->htmlHeader(title => 'Browse visual novels', search => $f->{q});
 
   div class => 'mainbox';
    h1 'Browse visual novels';

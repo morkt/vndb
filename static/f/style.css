@@ -234,6 +234,14 @@ b.future {
   width: 40px;
   margin-left: 45px;
 }
+#menulist #search input.text {
+  width: 133px;
+  margin: 0 0 3px 7px;
+  font-style: italic;
+}
+#menulist #search input.submit {
+  display: none;
+}
 
 
 

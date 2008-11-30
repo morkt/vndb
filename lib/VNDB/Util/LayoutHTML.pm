@@ -9,7 +9,7 @@ use Exporter 'import';
 our @EXPORT = qw|htmlHeader htmlFooter|;
 
 
-sub htmlHeader { # %options->{ title }
+sub htmlHeader { # %options->{ title, js, search }
   my($self, %o) = @_;
 
   # heading
@@ -40,7 +40,7 @@ sub htmlHeader { # %options->{ title }
 
 
 sub _menu {
-  my $self = shift;
+  my($self, %o) = @_;
 
   div id => 'menulist';
 
@@ -54,6 +54,13 @@ sub _menu {
      a href => '/hist',  'Recent changes'; br;
      a href => '/t',     'Discussion board'; br;
      a href => '#',      'FAQ'; br;
+    end;
+    form action => '/v/all', method => 'get', id => 'search';
+     fieldset;
+      legend 'Search';
+      input type => 'text', class => 'text', id => 'sq', name => 'sq', value => $o{search}||'search';
+      input type => 'submit', class => 'submit', value => 'Seach';
+     end;
     end;
    end;
 
