@@ -15,6 +15,77 @@ clearInterval(t);f()}},10);window.onload=f;}
 
 
 
+function searchInit() {
+  cl('advselect', function() {
+    var e = x('advoptions');
+    e.className = e.className.indexOf('hidden')>=0 ? '' : 'hidden';
+    this.getElementsByTagName('i')[0].innerHTML = e.className.indexOf('hidden')>=0 ? '&#9656;' : '&#9662;';
+    return false;
+  });
+
+  var l = x('catselect').getElementsByTagName('li');
+  for(i=0;i<l.length;i++)
+    if(l[i].id.substr(0,4) == 'cat_')
+      l[i].onclick = function() {
+        searchParse(1, this.innerHTML);
+      };
+
+  l = x('advoptions').getElementsByTagName('input');
+  for(i=0;i<l.length;i++)
+    if(l[i].id.substr(0,5) == 'lang_' || l[i].id.substr(0,5) == 'plat_')
+      l[i].onclick = function() { 
+        searchParse(0, this.parentNode.getElementsByTagName('acronym')[0].title);
+      };
+
+  x('q').onkeyup = searchParse;
+  searchParse();
+}
+
+function searchParse(add, term) {
+  var q = x('q').value;
+  var i;
+
+  if(add == 0 || add === 1) {
+    var qn = q;
+    if(!add)
+      eval('qn = qn.replace(/'+term+'/gi, "")');
+    else {
+      eval('qn = qn.replace(/(^|[^-])'+term+'/gi, "$1-'+term+'")');
+      if(qn == q)
+        eval('qn = qn.replace(/-'+term+'/gi, "")');
+    }
+    if(qn == q)
+      q += ' '+term;
+    else
+      q = qn;
+
+    q = q.replace(/^ +/, "");
+    q = q.replace(/ +$/, "");
+    q = q.replace(/  +/g, " ");
+
+    x('q').value = q;
+  }
+
+  q = q.toLowerCase();
+  var l = x('catselect').getElementsByTagName('li');
+  for(i=0;i<l.length;i++)
+    if(l[i].id.substr(0,4) == 'cat_') {
+      var cat = l[i].innerHTML.toLowerCase();
+      l[i].className = q.indexOf('-'+cat) >= 0 ? 'exc' : q.indexOf(cat) >= 0 ? 'inc' : '';
+    }
+
+  l = x('advoptions').getElementsByTagName('input');
+  for(i=0;i<l.length;i++)
+    if(l[i].id.substr(0,5) == 'lang_' || l[i].id.substr(0,5) == 'plat_')
+      l[i].checked = q.indexOf(l[i].parentNode.getElementsByTagName('acronym')[0].title.toLowerCase()) >= 0 ? true : false;
+
+  return false;
+}
+
+
+
+
+
 /*  I M A G E   V I E W E R  */
 
 function ivInit() {
@@ -163,6 +234,8 @@ function jtSel(which, nolink) {
 /*  O N L O A D   E V E N T  */
 
 DOMLoad(function() {
+
+  // search box
   var i = x('sq');
   i.onfocus = function () {
     if(this.value == 'search') {
@@ -176,6 +249,11 @@ DOMLoad(function() {
       this.style.fontStyle = 'italic'
     }
   };
+
+
+  // Advanced VN search
+  if(x('advselect'))
+    searchInit();
 
 
   // show/hide NSFW VN image

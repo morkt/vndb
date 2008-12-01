@@ -72,22 +72,7 @@ sub list {
     if $q && @$list == 1;
 
   $self->htmlHeader(title => 'Browse visual novels', search => $f->{q});
-
-  div class => 'mainbox';
-   h1 'Browse visual novels';
-   form class => 'search', action => '/v/all', 'accept-charset' => 'UTF-8', method => 'get';
-    fieldset;
-     input type => 'text', name => 'q', id => 'q', class => 'text', value => $f->{q};
-     input type => 'submit', class => 'submit', value => 'Search!';
-    end;
-   end;
-   p class => 'browseopts';
-    for ('all', 'a'..'z', 0) {
-      a href => "/v/$_", $_ eq $char ? (class => 'optselected') : (), $_ ? uc $_ : '#';
-    }
-   end;
-  end;
-  
+  _filters($self, $f, $char);
   $self->htmlBrowse(
     class    => 'vnbrowse',
     items    => $list,
@@ -122,6 +107,75 @@ sub list {
     },
   );
   $self->htmlFooter;
+}
+
+
+sub _filters {
+  my($self, $f, $char) = @_;
+
+  div class => 'mainbox';
+   h1 'Browse visual novels';
+   form class => 'search', action => '/v/all', 'accept-charset' => 'UTF-8', method => 'get';
+    fieldset;
+     input type => 'text', name => 'q', id => 'q', class => 'text', value => $f->{q};
+     input type => 'submit', class => 'submit', value => 'Search!';
+    end;
+   end;
+   p class => 'browseopts';
+    for ('all', 'a'..'z', 0) {
+      a href => "/v/$_", $_ eq $char ? (class => 'optselected') : (), $_ ? uc $_ : '#';
+    }
+   end;
+   a id => 'advselect', href => '#';
+    lit '<i>&#9656;</i> advanced search';
+   end;
+   div id => 'advoptions', class => 'hidden';
+
+    h2;
+     lit 'Categories <p>(boolean and, selecting more gives less results. The categories are explained on <a href="/d1">this page</a>)</p>';
+    end;
+    ul id => 'catselect';
+     for my $c (qw| e g t p h l s |) {
+       $c !~ /[thl]/ ? li : br;
+        txt $self->{categories}{$c}[0];
+        ul;
+         li id => "cat_$c$_", $self->{categories}{$c}[1]{$_}
+           for (sort keys %{$self->{categories}{$c}[1]});
+        end;
+       end if $c !~ /[gph]/;
+     }
+
+     h2;
+      lit 'Languages <p>(boolean or, selecting more gives more results)</p>';
+     end;
+     for(sort @{$self->dbLanguages}) {
+       span;
+        input type => 'checkbox', id => "lang_$_";
+        label for => "lang_$_";
+         acronym class => "icons lang $_", title => $self->{languages}{$_}, ' ';
+         txt $self->{languages}{$_};
+        end;
+       end;
+     }
+
+     h2;
+      lit 'Platforms <p>(boolean or, selecting more gives more results)</p>';
+     end;
+     for(sort keys %{$self->{platforms}}) {
+       next if $_ eq 'oth';
+       span;
+        input type => 'checkbox', id => "plat_$_";
+        label for => "plat_$_";
+         acronym class => "icons $_", title => $self->{platforms}{$_}, ' ';
+         txt $self->{platforms}{$_};
+        end;
+       end;
+     }
+
+     br style => 'clear: left';
+    end;
+   end;
+  end;
 }
 
 

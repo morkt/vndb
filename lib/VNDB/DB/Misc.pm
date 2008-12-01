@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw|
-  dbStats dbRevisionInsert dbItemInsert dbRevisionGet dbItemMod
+  dbStats dbRevisionInsert dbItemInsert dbRevisionGet dbItemMod dbLanguages
 |;
 
 
@@ -149,6 +149,21 @@ sub dbItemMod {
     { map { ($_.' = ?', int $o{$_}) } keys %o }, $id
   );
 }
+
+
+# Returns a list of languages actually in use
+sub dbLanguages {
+  my $self = shift;
+  return [
+    map $_->{language}, @{$self->dbAll(q|
+      SELECT DISTINCT rr.language
+        FROM releases r
+        JOIN releases_rev rr ON rr.id = r.latest
+        WHERE r.hidden = FALSE|
+    )}
+  ];
+}
+
 
 
 

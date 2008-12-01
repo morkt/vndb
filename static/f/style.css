@@ -63,6 +63,11 @@ p.locked {
   font-style: italic;
   margin: 0!important;
 }
+h2 p {
+  font: 8pt "Tahoma";
+  font-weight: normal;
+  display: inline;
+}
 
 
 
@@ -574,7 +579,7 @@ div.vndescription p {
   margin: 0;
   cursor: pointer;
   list-style-type: none;
-  /*background: url(/f/select.png) no-repeat;*/
+  padding: 0;
 }
 a.help {
   vertical-align: super;
@@ -583,11 +588,13 @@ a.help {
   font-weight: bold;
   padding-left: 1px;
 }
-form #jt_box_categories li li   { padding: 0; background: none; }
-form #jt_box_categories li li b { width: 13px; font-weight: bold; }
-#maincontent form #jt_box_categories li li a { color: #ccc; text-decoration: none; display: block; width: 160px; border: none }
-#jt_box_categories li li.inc    { background-position: 0px -16px; color: #090; }
-#jt_box_categories li li.exc    { background-position: 0px -33px; color: #900; }
+#maincontent #jt_box_categories li li a {
+  color: #ccc;
+  text-decoration: none;
+  display: block;
+  width: 160px;
+  border: none
+}
 
 #jt_box_relations table  { margin-bottom: 10px; }
 #jt_box_relations h2     { margin: 0 0 3px -10px; }
@@ -629,10 +636,72 @@ form #jt_box_categories li li b { width: 13px; font-weight: bold; }
 #scr_table select { width: 400px; }
 
 
-/* VN browse */
+
+
+
+/****** VN browse ********/
 
 .vnbrowse .tc2 { text-align: right; padding: 0; }
 .vnbrowse .tc3 { padding: 0; }
+#q { width: 300px }
+#advselect {
+  text-align: center;
+  display: block;
+  margin: 10px auto 3px auto;
+  border: none;
+  outline: none;
+}
+#advoptions {
+  width: 90%;
+  padding: 0 30px 5px 30px;
+  margin: 0 auto;
+  border-top: 1px solid #258;
+}
+#advoptions.hidden { display: none }
+#advoptions h2 {
+  clear: left;
+  padding-top: 10px;
+  margin-left: -20px;
+  margin-top: 0;
+  margin-bottom: 3px;
+}
+#advoptions span {
+  display: block;
+  float: left;
+  width: 170px;
+}
+#advoptions span input {
+  margin-right: 3px;
+}
+
+ul#catselect, ul#catselect ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+ul#catselect li {
+  display: block;
+  width: 170px;
+  float: left;
+  clear: none;
+  font-weight: bold;
+}
+ul#catselect li li {
+  display: list-item;
+  width: auto;
+  float: none;
+  clear: left;
+  font-weight: normal;
+  padding: 0 0 0 18px;
+  margin: 0;
+  cursor: pointer;
+  list-style-type: none;
+  background: url(/f/select.png) no-repeat;
+}
+ul#catselect li li.inc { background-position: 0px -16px; color: #0c0; }
+ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
+
+
 
 
 
