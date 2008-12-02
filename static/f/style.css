@@ -68,6 +68,9 @@ h2 p {
   font-weight: normal;
   display: inline;
 }
+p.description {
+  margin: 10px 100px!important;
+}
 
 
 
@@ -707,9 +710,6 @@ ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
 
 /***** Producer page/list *******/
 
-.producerpage p.description {
-  margin: 10px 100px!important;
-}
 .producerpage ul {
   margin: 0 50px;
 }
@@ -739,6 +739,19 @@ ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
 }
 .producerbrowse {
   padding-bottom: 10px!important
+}
+
+
+
+
+/***** Release page *****/
+
+.release table {
+  width: 400px;
+  margin: 0 auto;
+}
+.release .key {
+  width: 70px;
 }
 
 

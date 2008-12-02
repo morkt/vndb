@@ -173,6 +173,16 @@ our %S = (
     xb3 => 'Xbox 360',
     oth => 'Other'
   },
+  media           => {
+   #DB       display            qty
+    cd  => [ 'CD',                1 ],
+    dvd => [ 'DVD',               1 ],
+    gdr => [ 'GD-ROM',            1 ],
+    blr => [ 'Blu-Ray disk',      1 ],
+    in  => [ 'Internet download', 0 ],
+    pa  => [ 'Patch',             0 ],
+    otc => [ 'Other (console)',   0 ],
+  },
 );
 
 
