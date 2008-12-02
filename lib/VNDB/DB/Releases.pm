@@ -23,7 +23,7 @@ sub dbReleaseGet {
     $o{id} ? (
       'r.id = ?' => $o{id} ) : (),
     $o{rev} ? (
-      'rv.id = ?' => $o{rev} ) : (),
+      'c.rev = ?' => $o{rev} ) : (),
     $o{vid} ? (
       'rv.vid = ?' => $o{vid} ) : (),
     defined $o{unreleased} ? (
@@ -33,7 +33,7 @@ sub dbReleaseGet {
   my @join = (
     $o{rev} ? 'JOIN releases r ON r.id = rr.rid' : 'JOIN releases r ON rr.id = r.latest',
     $o{vid} ? 'JOIN releases_vn rv ON rv.rid = rr.id' : (),
-    $o{what} =~ /changes/ ? (
+    $o{what} =~ /changes/ || $o{rev} ? (
       'JOIN changes c ON c.id = rr.id',
       'JOIN users u ON u.id = c.requester'
     ) : (),

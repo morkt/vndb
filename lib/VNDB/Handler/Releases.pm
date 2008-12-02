@@ -8,18 +8,55 @@ use VNDB::Func;
 
 
 YAWF::register(
-  qr{r([1-9]\d*)},  \&page,
+  qr{r([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
 );
 
 
 sub page {
-  my($self, $rid) = @_;
+  my($self, $rid, $rev) = @_;
 
-  my $r = $self->dbReleaseGet(id => $rid, what => 'vn producers platforms media')->[0];
+  my $r = $self->dbReleaseGet(
+    id => $rid,
+    what => 'vn producers platforms media'.($rev ? ' changes' : ''),
+    $rev ? (rev => $rev) : (),
+  )->[0];
   return 404 if !$r->{id};
 
   $self->htmlHeader(title => $r->{title});
   $self->htmlMainTabs('r', $r);
+  return if $self->htmlHiddenMessage('r', $r);
+
+  if($rev) {
+    my $prev = $rev && $rev > 1 && $self->dbReleaseGet(
+      id => $rid, rev => $rev-1,
+      what => 'vn producers platforms media changes'
+    )->[0];
+    $self->htmlRevision('r', $prev, $r,
+      [ vn        => 'Relations',      join => '<br />', split => sub {
+        map sprintf('<a href="/v%d" title="%s">%s</a>', $_->{vid}, $_->{original}||$_->{title}, shorten $_->{title}, 50), @{$_[0]};
+      } ],
+      [ type      => 'Type',           serialize => sub { $self->{release_types}[$_[0]] } ],
+      [ title     => 'Title (romaji)', diff => 1 ],
+      [ original  => 'Original title', diff => 1 ],
+      [ gtin      => 'JAN/UPC/EAN',    serialize => sub { $_[0]||'[none]' } ],
+      [ language  => 'Language',       serialize => sub { $self->{languages}{$_[0]} } ],
+      [ website   => 'Website',        ],
+      [ released  => 'Release date',   htmlize   => sub { datestr $_[0] } ],
+      [ minage    => 'Age rating',     serialize => sub { $self->{age_ratings}{$_[0]} } ],
+      [ notes     => 'Notes',          diff => 1 ],
+      [ platforms => 'Platforms',      join => ', ', split => sub { map $self->{platforms}{$_}, @{$_[0]} } ],
+      [ media     => 'Media',          join => ', ', split => sub {
+        map {
+          my $med = $self->{media}{$_->{medium}};
+          $med->[1] ? sprintf('%d %s%s', $_->{qty}, $med->[0], $_->{qty}>1?'s':'') : $med->[0]
+        } @{$_[0]};
+      } ],
+      [ producers => 'Producers',      join => '<br />', split => sub {
+        map sprintf('<a href="/p%d" title="%s">%s</a>', $_->{id}, $_->{original}||$_->{name}, shorten $_->{name}, 50), @{$_[0]};
+      } ],
+    );
+  }
+
   div class => 'mainbox release';
    h1 $r->{title};
    h2 class => 'alttitle', $r->{original} if $r->{original};
