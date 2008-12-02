@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbReleaseGet|;
+our @EXPORT = qw|dbReleaseGet dbReleaseAdd dbReleaseEdit|;
 
 
 # Options: id vid rev order unreleased page results what
@@ -104,6 +104,62 @@ sub dbReleaseGet {
   }
 
   return wantarray ? ($r, $np) : $r;
+}
+
+
+# arguments: id, %options ->( editsum uid + insert_rev )
+# returns: ( local revision, global revision )
+sub dbReleaseEdit {
+  my($self, $rid, %o) = @_;
+  my($rev, $cid) = $self->dbRevisionInsert(1, $rid, $o{editsum}, $o{uid});
+  insert_rev($self, $cid, $rid, \%o);
+  return ($rev, $cid);
+}
+
+
+# arguments: %options ->( editsum uid + insert_rev )
+# returns: ( item id, global revision )
+sub dbReleaseAdd {
+  my($self, %o) = @_;
+  my($rid, $cid) = $self->dbItemInsert(1, $o{editsum}, $o{uid});
+  insert_rev($self, $cid, $rid, \%o);
+  return ($rid, $cid);
+}
+
+
+# helper function, inserts a producer revision
+# Arguments: global revision, item id, { columns in releases_rev + vn + producers + media + platforms }
+sub insert_rev {
+  my($self, $cid, $rid, $o) = @_;
+
+  $self->dbExec(q|
+    INSERT INTO releases_rev (id, rid, title, original, gtin, language, website, released, notes, minage, type)
+      VALUES (!l)|,
+    [ $cid, $rid, @$o{qw| title original gtin language website released notes minage type|} ]);
+
+  $self->dbExec(q|
+    INSERT INTO releases_producers (rid, pid)
+      VALUES (?, ?)|,
+    $cid, $_
+  ) for (@{$o->{producers}});
+
+  $self->dbExec(q|
+    INSERT INTO releases_platforms (rid, platform)
+      VALUES (?, ?)|,
+    $cid, $_
+  ) for (@{$o->{platforms}});
+
+  $self->dbExec(q|
+    INSERT INTO releases_vn (rid, vid)
+      VALUES (?, ?)|,
+    $cid, $_
+  ) for (@{$o->{vn}});
+
+  $self->dbExec(q|
+    INSERT INTO releases_media (rid, medium, qty)
+      VALUES (?, ?, ?)|,
+    $cid, $_->[0], $_->[1]
+  ) for (@{$o->{media}});
 }
 
 

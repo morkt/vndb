@@ -754,6 +754,12 @@ ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
   width: 70px;
 }
 
+/* edit */
+#released, #released_d { width: 70px }
+#released_m { width: 100px }
+.platforms {  padding-left: 20px; }
+.platforms span { display: block; float: left; width: 150px; }
+
 
 
 

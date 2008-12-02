@@ -5,10 +5,14 @@ use strict;
 use warnings;
 use YAWF ':html';
 use VNDB::Func;
+use POSIX 'strftime';
 
 
 YAWF::register(
   qr{r([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
+  qr{(v)([1-9]\d*)/add}            => \&edit,
+  qr{r(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit)}
+    => \&edit,
 );
 
 
@@ -179,6 +183,171 @@ sub _infotable {
   end;
 }
 
+
+# rid = \d   -> edit release
+# rid = 'v'  -> add release to VN with id $rev
+sub edit {
+  my($self, $rid, $rev) = @_;
+
+  my $vid = 0;
+  if($rid eq 'v') {
+    $vid = $rev;
+    $rev = undef;
+    $rid = 0;
+  }
+
+  my $r = $rid && $self->dbReleaseGet(id => $rid, what => 'vn producers platforms media changes', $rev ? (rev => $rev) : ())->[0];
+  return 404 if $rid && !$r->{id};
+  $rev = undef if !$r || $r->{cid} == $r->{latest};
+
+  my $v = $vid && $self->dbVNGet(id => $vid)->[0];
+  return 404 if $vid && !$v->{id};
+
+  return $self->htmlDenied if !$self->authCan('edit')
+    || $rid && ($r->{locked} && !$self->authCan('lock') || $r->{hidden} && !$self->authCan('del'));
+
+  my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
+  my %b4 = !$rid ? () : (
+    (map { $_ => $r->{$_} } qw|type title original gtin language website notes minage platforms|),
+    released  => $r->{released} =~ /^([0-9]{4})([0-9]{2})([0-9]{2})$/ ? [ $1, $2, $3 ] : [ 0, 0, 0 ],
+    media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
+    producers => join('|||', map "$_->{id},$_->{name}", sort { $a->{id} <=> $b->{id} } @{$r->{producers}}),
+  );
+  $b4{vn} = join('|||', map "$_->{vid},$_->{title}", sort { $a->{vid} <=> $b->{vid} } @$vn);
+  my $frm;
+
+  if($self->reqMethod eq 'POST') {
+    $frm = $self->formValidate(
+      { name => 'type',      enum => [ 0..$#{$self->{release_types}} ] },
+      { name => 'title',     maxlength => 250 },
+      { name => 'original',  required => 0, default => '', maxlength => 250 },
+      { name => 'gtin',      required => 0, default => '0',
+        func => [ \&gtintype, 'Not a valid JAN/UPC/EAN code' ] },
+      { name => 'language',  enum => [ keys %{$self->{languages}} ] },
+      { name => 'website',   required => 0, default => '', template => 'url' },
+      { name => 'released',  required => 0, default => 0, multi => 1, template => 'int' },
+      { name => 'minage' ,   required => 0, default => -1, enum => [ keys %{$self->{age_ratings}} ] },
+      { name => 'notes',     required => 0, default => '', maxlength => 10240 },
+      { name => 'platforms', required => 0, default => '', multi => 1, enum => [ keys %{$self->{platforms}} ] },
+      { name => 'media',     required => 0, default => '' },
+      { name => 'producers', required => 0, default => '' },
+      { name => 'vn',        maxlength => 5000 },
+      { name => 'editsum',   maxlength => 5000 },
+    );
+    if(!$frm->{_err}) {
+      # de-serialize
+      my $released  = !$frm->{released}[0] ? 0 : $frm->{released}[0] == 9999 ? 99999999 :
+        sprintf '%04d%02d%02d',  $frm->{released}[0], $frm->{released}[1]||99, $frm->{released}[2]||99;
+      my $media     = [ map [ split / / ], split /,/, $frm->{media} ];
+      my $producers = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{producers} ];
+      my $new_vn    = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];
+      $frm->{platforms} = [ grep $_, @{$frm->{platforms}} ];
+
+      return $self->resRedirect("/r$rid", 'post')
+        if $rid && $released == $r->{released} &&
+          (join(',', sort @{$b4{platforms}}) eq join(',', sort @{$frm->{platforms}})) &&
+          (join(',', sort @$producers) eq join(',', sort map $_->{id}, @{$r->{producers}})) &&
+          (join(',', sort @$new_vn) eq join(',', sort map $_->{vid}, @$vn)) &&
+          !grep !/^(released|platforms|producers|vn)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
+
+      my %opts = (
+        (map { $_ => $frm->{$_} } qw| type title original gtin language website notes minage platforms editsum|),
+        vn        => $new_vn,
+        producers => $producers,
+        media     => $media,
+        released  => $released,
+      );
+
+      $rev = 1;
+      ($rev) = $self->dbReleaseEdit($rid, %opts) if $rid;
+      ($rid) = $self->dbReleaseAdd(%opts) if !$rid;
+
+      $self->multiCmd("ircnotify r$rid.$rev");
+
+      return $self->resRedirect("/r$rid.$rev", 'post');
+    }
+  }
+
+  !defined $frm->{$_} && ($frm->{$_} = $b4{$_}) for keys %b4;
+  $frm->{language} = 'ja' if !$rid && !defined $frm->{lang};
+  $frm->{editsum} = sprintf 'Reverted to revision p%d.%d', $rid, $rev if $rev && !defined $frm->{editsum};
+
+  $self->htmlHeader(title => $rid ? 'Edit '.$r->{title} : 'Add release to '.$v->{title});
+  $self->htmlMainTabs('r', $r, 'edit') if $rid;
+  $self->htmlMainTabs('v', $v, 'edit') if $vid;
+  $self->htmlEditMessage('r', $r);
+  _form($self, $r, $v, $frm);
+  $self->htmlFooter;
+}
+
+
+sub _form {
+  my($self, $r, $v, $frm) = @_;
+
+  $self->htmlForm({ frm => $frm, action => $r ? "/r$r->{id}/edit" : "/v$v->{id}/add", editsum => 1 },
+  "General info" => [
+    [ select => short => 'type',      name => 'Type',
+      options => [ map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ] ],
+    [ input  => short => 'title',     name => 'Title (romaji)', width => 300 ],
+    [ input  => short => 'original',  name => 'Original title', width => 300 ],
+    [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],
+    [ select => short => 'language',  name => 'Language', 
+      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
+    [ input  => short => 'gtin',      name => 'JAN/UPC/EAN' ],
+    [ input  => short => 'website',   name => 'Official website' ],
+    [ static => label => 'Release date', content => sub {
+      Select id => 'released', name => 'released';
+       option value => $_, $frm->{released} && $frm->{released}[0] == $_ ? (selected => 'selected') : (),
+          !$_ ? '-year-' : $_ < 9999 ? $_ : 'TBA'
+         for (0, 1980..((localtime())[5]+1905), 9999);
+      end;
+      Select id => 'released_m', name => 'released';
+       option value => $_, $frm->{released} && $frm->{released}[1] == $_ ? (selected => 'selected') : (),
+          !$_ ? '-month-' : strftime '%B', 0, 0, 0, 0, $_, 0, 0, 0
+         for(0..12);
+      end;
+      Select id => 'released_d', name => 'released';
+       option value => $_, $frm->{released} && $frm->{released}[2] == $_ ? (selected => 'selected') : (),
+          !$_ ? '-day-' : $_
+         for(0..31);
+      end;
+    }],
+    [ static => content => 'Leave month or day blank if they are unknown' ],
+    [ select => short => 'minage', name => 'Age rating',
+      options => [ map [ $_, $self->{age_ratings}{$_} ], sort { $a <=> $b } keys %{$self->{age_ratings}} ] ],
+    [ textarea => short => 'notes', name => 'Notes' ],
+    [ static => content => 'Miscellaneous notes/comments, information that does not fit in the above fields. '
+       .'E.g.: Censored/uncensored or for which releases this patch applies. Max. 250 characters.' ],
+  ],
+
+  'Platforms & Media' => [
+    [ static => nolabel => 1, content => sub {
+      h2 'Platforms';
+      div class => 'platforms';
+       for my $p (sort keys %{$self->{platforms}}) {
+         span;
+          input type => 'checkbox', name => 'platforms', value => $p, id => $p,
+            $frm->{platforms} && grep($_ eq $p, @{$frm->{platforms}}) ? (checked => 'checked') : ();
+          label for => $p;
+           acronym class => "icons $p", title => $self->{platforms}{$p}, ' ';
+           txt ' '.$self->{platforms}{$p};
+          end;
+         end;
+       }
+      end;
+    }],
+    [ input => short => 'media', name => 'Media' ],
+  ],
+
+  'Producers' => [
+    [ input => short => 'producers', name => 'Producers' ],
+  ],
+
+  'Visual novels' => [
+    [ input => short => 'vn', name => 'Relations' ],
+  ],
+  );
+}
 
 
 1;
