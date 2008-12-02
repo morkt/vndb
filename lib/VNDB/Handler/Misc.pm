@@ -186,7 +186,7 @@ sub itemmod {
   return $self->htmlDenied if !$self->authCan($act eq 'hide' ? 'del' : 'lock');
 
   my $obj = $type eq 'v' ? $self->dbVNGet(id => $iid)->[0] :
-            $type eq 'r' ? undef : # $self->dbReleaseGet(id => $iid)->[0] :
+            $type eq 'r' ? $self->dbReleaseGet(id => $iid)->[0] :
                            $self->dbProducerGet(id => $iid)->[0];
   return 404 if !$obj->{id};
 
