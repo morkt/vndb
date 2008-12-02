@@ -4,6 +4,7 @@ package VNDB::DB::VN;
 use strict;
 use warnings;
 use Exporter 'import';
+use VNDB::Func 'gtintype';
 
 our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbScreenshotAdd dbScreenshotGet|;
 
@@ -53,13 +54,13 @@ sub dbVNGet {
     for (split /[ -,]/, $o{search}) {
       s/%//g;
       next if length($_) < 2;
-#      if(VNDB::GTINType($_)) {
-#        push @w, 'irr.gtin = ?', $_;
-#      } else {
+      if(/^\d+$/ && gtintype($_)) {
+        push @w, 'irr.gtin = ?', $_;
+      } else {
         $_ = "%$_%";
-      push @w, '(ivr.title ILIKE ? OR ivr.alias ILIKE ? OR irr.title ILIKE ? OR irr.original ILIKE ?)',
-        [ $_, $_, $_, $_ ];
-#      }
+        push @w, '(ivr.title ILIKE ? OR ivr.alias ILIKE ? OR irr.title ILIKE ? OR irr.original ILIKE ?)',
+          [ $_, $_, $_, $_ ];
+      }
     }
     $where{ q|
       v.id IN(SELECT iv.id
