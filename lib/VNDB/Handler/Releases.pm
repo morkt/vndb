@@ -263,6 +263,7 @@ sub edit {
       ($rid) = $self->dbReleaseAdd(%opts) if !$rid;
 
       $self->multiCmd("ircnotify r$rid.$rev");
+      _update_vncache($self, @$new_vn, map $_->{vid}, @$vn);
 
       return $self->resRedirect("/r$rid.$rev", 'post');
     }
@@ -347,6 +348,24 @@ sub _form {
     [ input => short => 'vn', name => 'Relations' ],
   ],
   );
+}
+
+
+# Recalculates the vn.c_* columns and regenerates the related relation graphs on any change
+sub _update_vncache {
+  my($self, @vns) = @_;
+
+  my $before = $self->dbVNGet(id => \@vns, order => 'v.id', what => 'relations');
+  $self->dbVNCache(@vns);
+  my $after = $self->dbVNGet(id => \@vns, order => 'v.id');
+
+  my @upd = map {
+    @{$before->[$_]{relations}} && (
+      $before->[$_]{c_released} != $after->[$_]{c_released}
+      || $before->[$_]{c_languages} ne $after->[$_]{c_languages}
+    ) ? $before->[$_]{id} : ();
+  } 0..$#$before;
+  $self->multiCmd('relgraph '.join(' ', @upd)) if @upd;
 }
 
 
