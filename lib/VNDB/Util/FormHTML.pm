@@ -165,7 +165,7 @@ sub htmlFormPart {
     }
     if(/select/) {
       Select name => $o{short}, id => $o{short}, $o{width} ? (style => "width: $o{width}px") : ();
-       option value => $_->[0], ($frm->{$o{short}}||'') eq $_->[0] ? (selected => 'selected') : (), $_->[1]
+       option value => $_->[0], defined $frm->{$o{short}} && $frm->{$o{short}} eq $_->[0] ? (selected => 'selected') : (), $_->[1]
          for @{$o{options}};
       end;
     }

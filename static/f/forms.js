@@ -654,3 +654,88 @@ function scrSerialize() {
 
 
 
+
+
+   /***************\
+   *   M E D I A   *
+   \***************/
+
+
+var medTypes = [ [ '', '- medium -', false ] ];
+function medLoad() {
+  // load the medTypes and clear the div
+  var l = x('media_div').getElementsByTagName('select')[0].options;
+  for(var i=0;i<l.length;i++)
+    medTypes[medTypes.length] = [ l[i].value, l[i].text, l[i].className.indexOf('noqty') ? false : true ];
+  x('media_div').innerHTML = '';
+
+  // load the selected media
+  l = x('media').value.split(',');
+  for(var i=0;i<l.length;i++)
+    if(l[i].length > 2)
+      medAddNew(l[i].split(' ')[0], Math.floor(l[i].split(' ')[1]));
+
+  medAddNew('', 0);
+}
+
+function medAddNew(med, qty) {
+  var o = document.createElement('span');
+  var r = '<select class="qty" onchange="medSerialize()"><option value="0">- quantity -</option>';
+  for(var i=1;i<=10;i++)
+    r += '<option value="'+i+'"'+(qty == i ? ' selected="selected"' : '')+'>'+i+'</option>';
+  r += '</select><select class="medium" onchange="return medCheckNew(this)">';
+  for(i=0;i<medTypes.length;i++)
+    r += '<option value="'+medTypes[i][0]+'"'+(med == medTypes[i][0] ? ' selected="selected"' : '')+'>'+medTypes[i][1]+'</option>';
+  r += '</select>';
+  if(med != '')
+    r += '<input type="button" class="submit" onclick="return medDel(this)" value="remove" />';
+  o.innerHTML = r;
+  x('media_div').appendChild(o);
+}
+
+function medDel(what) {
+  what = what.nodeName ? what : this;
+  while(what.nodeName.toLowerCase() != 'span')
+    what = what.parentNode;
+  x('media_div').removeChild(what);
+  medSerialize();
+  return false;
+}
+
+function medCheckNew() {
+  // check for non-new items and add remove buttons
+  var l = x('media_div').getElementsByTagName('span');
+  var createnew=1;
+  for(var i=0;i<l.length;i++) {
+    var sel = l[i].getElementsByTagName('select')[1].selectedIndex;
+    if(sel == 0)
+      createnew = 0;
+    else if(l[i].getElementsByTagName('input').length < 1) {
+      var a = document.createElement('input');
+      a.type = 'button';
+      a.className = 'submit';
+      a.onclick = medDel;
+      a.value = 'remove';
+      l[i].appendChild(a);
+    }
+  }
+  if(createnew)
+    medAddNew('', 0);
+  medSerialize();
+    
+  return true;
+}
+
+function medSerialize() {
+  var r = '';
+  var l = x('media_div').getElementsByTagName('span');
+  for(var i=0;i<l.length;i++) {
+    var sel = l[i].getElementsByTagName('select');
+    if(sel[1].selectedIndex != 0)
+      r += (r ? ',' : '') + medTypes[sel[1].selectedIndex][0] + ' ' + (medTypes[sel[1].selectedIndex][2] ? 0 : sel[0].selectedIndex);
+  }
+  x('media').value = r;
+}
+
+
+

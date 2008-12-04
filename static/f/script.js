@@ -302,6 +302,8 @@ DOMLoad(function() {
     relLoad();
   if(x('jt_box_screenshots'))
     scrLoad();
+  if(x('media'))
+    medLoad();
 
   // spam protection on all forms
   if(document.forms.length >= 1)

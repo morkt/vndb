@@ -271,9 +271,9 @@ sub edit {
 
   !defined $frm->{$_} && ($frm->{$_} = $b4{$_}) for keys %b4;
   $frm->{language} = 'ja' if !$rid && !defined $frm->{lang};
-  $frm->{editsum} = sprintf 'Reverted to revision p%d.%d', $rid, $rev if $rev && !defined $frm->{editsum};
+  $frm->{editsum} = sprintf 'Reverted to revision r%d.%d', $rid, $rev if $rev && !defined $frm->{editsum};
 
-  $self->htmlHeader(title => $rid ? 'Edit '.$r->{title} : 'Add release to '.$v->{title});
+  $self->htmlHeader(js => 'forms', title => $rid ? 'Edit '.$r->{title} : 'Add release to '.$v->{title});
   $self->htmlMainTabs('r', $r, 'edit') if $rid;
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
   $self->htmlEditMessage('r', $r);
@@ -322,6 +322,7 @@ sub _form {
   ],
 
   'Platforms & Media' => [
+    [ hidden => short => 'media' ],
     [ static => nolabel => 1, content => sub {
       h2 'Platforms';
       div class => 'platforms';
@@ -336,8 +337,15 @@ sub _form {
          end;
        }
       end;
+
+      h2 'Media';
+      div id => 'media_div';
+       Select;
+        option value => $_, class => $self->{media}{$_}[1] ? 'qty' : 'noqty', $self->{media}{$_}[0]
+          for (sort keys %{$self->{media}});
+       end;
+      end;
     }],
-    [ input => short => 'media', name => 'Media' ],
   ],
 
   'Producers' => [
