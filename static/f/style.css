@@ -54,6 +54,9 @@ img {
   color: #135;
   border: none!important;
 }
+#header h1.debug a {
+  color: #c00;
+}
 ul {
   margin-left: 35px;
 }

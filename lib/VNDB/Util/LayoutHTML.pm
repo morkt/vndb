@@ -29,8 +29,8 @@ sub htmlHeader { # %options->{ title, js, noindex, search }
    body;
     div id => 'bgright', ' ';
     div id => 'header';
-     h1;
-      a href => '/', 'the visual novel database';
+     h1 $self->debug ? (class => 'debug') : ();
+      a href => '/', lc $self->{site_title};
      end;
     end;
 

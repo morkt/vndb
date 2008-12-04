@@ -28,10 +28,10 @@ YAWF::register(
 
 sub homepage {
   my $self = shift;
-  $self->htmlHeader(title => 'The Visual Novel Database');
+  $self->htmlHeader(title => $self->{site_title});
 
   div class => 'mainbox';
-   h1 'The Visual Novel Database';
+   h1 $self->{site_title};
   end;
 
   $self->htmlFooter;

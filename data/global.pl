@@ -17,6 +17,7 @@ our %S = (
   version         => 'beta',
   url             => 'http://vndb.org',
   url_static      => 'http://s.vndb.org',
+  site_title      => 'Yet another VNDB clone',
   cookie_domain   => '.vndb.org',
   cookie_key      => 'any-private-string-here',
   sharedmem_key   => 'VNDB',
