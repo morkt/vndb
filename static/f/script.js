@@ -305,7 +305,9 @@ DOMLoad(function() {
   if(x('media'))
     medLoad();
   if(x('jt_box_visual_novels'))
-    vnrLoad();
+    vnpLoad('vn');
+  if(x('jt_box_producers'))
+    vnpLoad('producers');
 
   // spam protection on all forms
   if(document.forms.length >= 1)

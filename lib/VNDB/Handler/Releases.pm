@@ -349,7 +349,17 @@ sub _form {
   ],
 
   'Producers' => [
-    [ input => short => 'producers', name => 'Producers' ],
+    [ hidden => short => 'producers' ],
+    [ static => nolabel => 1, content => sub {
+      h2 'Selected producers';
+      div id => 'producerssel';
+      end;
+      h2 'Add producer';
+      div;
+       input type => 'text', class => 'text';
+       a href => '#', 'add';
+      end;
+    }],
   ],
 
   'Visual novels' => [

@@ -3,7 +3,7 @@ package VNDB::Handler::Producers;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use YAWF ':html', ':xml';
 use VNDB::Func;
 
 
@@ -12,6 +12,7 @@ YAWF::register(
   qr{p(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit|/new)}
     => \&edit,
   qr{p/([a-z0]|all)}               => \&list,
+  qr{xml/producers\.xml}           => \&pxml,
 );
 
 
@@ -202,6 +203,30 @@ sub list {
   end;
   $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 'b');
   $self->htmlFooter;
+}
+
+
+# peforms a (simple) search and returns the results in XML format
+sub pxml {
+  my $self = shift;
+
+  my $q = $self->formValidate({ name => 'q', maxlength => 500 });
+  return 404 if $q->{_err};
+  $q = $q->{q};
+
+  my($list, $np) = $self->dbProducerGet(
+    $q =~ /^p([1-9]\d*)/ ? (id => $1) : (search => $q),
+    results => 10,
+    page => 1,
+  );
+
+  $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
+  xml;
+  tag 'producers', more => $np ? 'yes' : 'no', query => $q;
+   for(@$list) {
+     tag 'item', id => $_->{id}, $_->{name};
+   }
+  end;
 }
 
 
