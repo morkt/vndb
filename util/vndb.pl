@@ -51,6 +51,7 @@ sub reqdone {
 
 sub handle404 {
   my $self = shift;
+  $self->resStatus(404);
   $self->htmlHeader(title => 'Page Not Found');
   div class => 'mainbox';
    h1 'Page not found';
