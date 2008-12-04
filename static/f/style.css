@@ -57,6 +57,17 @@ img {
 #header h1.debug a {
   color: #c00;
 }
+
+#footer {
+  margin: 15px auto 0 auto;
+  text-align: center;
+  color: #135;
+}
+#footer a {
+  color: #135;
+  text-decoration: underline;
+}
+
 ul {
   margin-left: 35px;
 }

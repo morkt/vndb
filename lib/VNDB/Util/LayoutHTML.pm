@@ -132,6 +132,12 @@ sub _menu {
 
 sub htmlFooter {
   my $self = shift;
+     div id => 'footer';
+      txt "vndb $self->{version} | ";
+      a href => '/d7', 'about us';
+      txt ' | ';
+      a href => 'mailto:contact@vndb.org', 'contact@vndb.org';
+     end;
     end; # /div maincontent
    end; # /body
   end; # /html
