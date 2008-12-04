@@ -353,7 +353,17 @@ sub _form {
   ],
 
   'Visual novels' => [
-    [ input => short => 'vn', name => 'Relations' ],
+    [ hidden => short => 'vn' ],
+    [ static => nolabel => 1, content => sub {
+      h2 'Selected visual novels';
+      div id => 'vnsel';
+      end;
+      h2 'Add visual novel';
+      div;
+       input type => 'text', class => 'text';
+       a href => '#', 'add';
+      end;
+    }],
   ],
   );
 }

@@ -304,6 +304,8 @@ DOMLoad(function() {
     scrLoad();
   if(x('media'))
     medLoad();
+  if(x('jt_box_visual_novels'))
+    vnrLoad();
 
   // spam protection on all forms
   if(document.forms.length >= 1)

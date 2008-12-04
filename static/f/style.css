@@ -766,6 +766,13 @@ ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
 #media_div { padding-left: 20px; }
 #media_div span { display: block }
 
+#jt_box_visual_novels h2 { clear: left; padding-top: 10px; }
+#jt_box_visual_novels div { padding-left: 20px }
+#jt_box_visual_novels input { margin-right: 10px; width: 300px }
+#jt_box_visual_novels span { clear: left; display: block; padding: 2px; }
+#jt_box_visual_novels span.odd { background: url(/f/boxbg.png) repeat; }
+#jt_box_visual_novels i { font-style: normal; display: block; float: left; width: 310px }
+#jt_box_visual_novels b { font-weight: normal; }
 
 
 

@@ -739,3 +739,107 @@ function medSerialize() {
 
 
 
+
+
+
+   /*******************************\
+   *   V I S U A L   N O V E L S   *
+   \*******************************/
+
+
+function vnrLoad() {
+  // load currently selected VNs
+  var l = x('vn').value.split('|||');
+  for(var i=0;i<l.length;i++)
+    if(l[i].length > 2)
+      vnrAdd(l[i].split(',',2)[0], l[i].split(',',2)[1]);
+
+  // dropdown
+  var n = x('jt_box_visual_novels').getElementsByTagName('div')[1];
+  dsInit(n.getElementsByTagName('input')[0], '/xml/vn.xml?q=', function(item, tr) {
+    var td = document.createElement('td');
+    td.innerHTML = 'v'+item.getAttribute('id');
+    td.style.textAlign = 'right';
+    td.style.paddingRight = '5px';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    td.innerHTML = shorten(item.firstChild.nodeValue, 40);
+    tr.appendChild(td);
+  }, function(item) {
+    return 'v'+item.getAttribute('id')+':'+item.firstChild.nodeValue;
+  }, vnrFormAdd);
+}
+
+function vnrAdd(vid, title) {
+  var o = document.createElement('span');
+  o.innerHTML = '<i>v'+vid+':<a href="/v'+vid+'">'+shorten(title, 40)+'</a></i>'
+    +'<a href="#" onclick="return vnrDel(this)">remove</a>';
+  x('vnsel').appendChild(o);
+  vnrStripe();
+  vnrCheckEmpty();
+}
+
+function vnrDel(what) {
+  what = what.nodeName ? what : this;
+  while(what.nodeName.toLowerCase() != 'span')
+    what = what.parentNode;
+  x('vnsel').removeChild(what);
+  vnrCheckEmpty();
+  vnrSerialize();
+  return false;
+}
+
+function vnrCheckEmpty() {
+  if(x('vnsel').getElementsByTagName('span').length < 1) {
+    if(x('vnsel').getElementsByTagName('b').length < 1)
+      x('vnsel').innerHTML = '<b>Nothing selected...</b>';
+  } else if(x('vnsel').getElementsByTagName('b').length == 1)
+    x('vnsel').removeChild(x('vnsel').getElementsByTagName('b')[0]);
+}
+
+function vnrStripe() {
+  var l = x('vnsel').getElementsByTagName('span');
+  for(var i=0;i<l.length;i++)
+    l[i].className = i%2 ? 'odd' : '';
+}
+
+function vnrFormAdd() {
+  var n = x('jt_box_visual_novels').getElementsByTagName('div')[1];
+  var txt = n.getElementsByTagName('input')[0];
+  var lnk = n.getElementsByTagName('a')[0];
+  var input = txt.value;
+
+  if(!input.match(/^v[0-9]+/)) {
+    alert('Visual novel textbox must start with an ID (e.g. v17)');
+    return false;
+  }
+
+  txt.disabled = true;
+  txt.value = 'loading...';
+  lnk.innerHTML = 'loading...';
+
+  ajax('/xml/vn.xml?q='+encodeURIComponent(input), function(hr) {
+    txt.disabled = false;
+    txt.value = '';
+    lnk.innerHTML = 'add';
+
+    var items = hr.responseXML.getElementsByTagName('item');
+    if(items.length < 1)
+      return alert('Visual novel not found!');
+
+    vnrAdd(items[0].getAttribute('id'), items[0].firstChild.nodeValue);
+    vnrSerialize();
+  });
+  return false;
+}
+
+function vnrSerialize() {
+  var r = '';
+  var l = x('vnsel').getElementsByTagName('span');
+  for(var i=0;i<l.length;i++)
+    r += (r ? '|||' : '') + l[i].getElementsByTagName('i')[0].innerHTML.substr(1, l[i].getElementsByTagName('i')[0].innerHTML.indexOf(':')-1)
+      + ',' + l[i].getElementsByTagName('a')[0].innerHTML;
+  x('vn').value = r;
+}
+
+
