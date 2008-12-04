@@ -55,6 +55,8 @@ sub _menu {
      a href => '/hist',  'Recent changes'; br;
      a href => '/t',     'Discussion board'; br;
      a href => '#',      'FAQ'; br;
+     a href => 'irc://irc.synirc.net/vndb', '#vndb';
+      lit ' (<a href="http://cgiirc.synirc.net/?chan=%23vndb">webchat</a>)';
     end;
     form action => '/v/all', method => 'get', id => 'search';
      fieldset;
