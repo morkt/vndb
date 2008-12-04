@@ -327,6 +327,7 @@ sub _releases {
   my($self, $v, $r) = @_;
 
   div class => 'mainbox releases';
+   a class => 'addnew', href => "/v$v->{id}/add", 'add release';
    h1 'Releases';
    if(!@$r) {
      p 'We don\'t have any information about releases of this visual novel yet...';

@@ -533,6 +533,9 @@ div.vndescription p {
   width: 20px;
   padding: 0;
 }
+a.addnew {
+  float: right;
+}
 #screenshots td.scr {
   padding-left: 30px;
 }
