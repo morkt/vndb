@@ -26,7 +26,7 @@ sub page {
   )->[0];
   return 404 if !$p->{id};
 
-  $self->htmlHeader(title => $p->{name});
+  $self->htmlHeader(title => $p->{name}, noindex => $rev);
   $self->htmlMainTabs(p => $p);
   return if $self->htmlHiddenMessage('p', $p);
 
@@ -128,7 +128,7 @@ sub edit {
   $frm->{lang} = 'ja' if !$pid && !defined $frm->{lang};
   $frm->{editsum} = sprintf 'Reverted to revision p%d.%d', $pid, $rev if $rev && !defined $frm->{editsum};
 
-  $self->htmlHeader(title => $pid ? 'Edit '.$p->{name} : 'Add new producer');
+  $self->htmlHeader(title => $pid ? 'Edit '.$p->{name} : 'Add new producer', noindex => 1);
   $self->htmlMainTabs('p', $p, 'edit') if $pid;
   $self->htmlEditMessage('p', $p);
   $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 }, "General info" => [

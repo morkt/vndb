@@ -53,7 +53,7 @@ sub login {
     $frm->{_err} = [ 'login_failed' ] if !$frm->{_err};
   }
 
-  $self->htmlHeader(title => 'Login');
+  $self->htmlHeader(title => 'Login', noindex => 1);
   $self->htmlForm({ frm => $frm, action => '/u/login' }, Login => [
     [ input  => name => 'Username', short => 'usrname' ],
     [ static => content => '<a href="/u/register">No account yet?</a>' ],
@@ -97,7 +97,7 @@ sub newpass {
     }
   }
 
-  $self->htmlHeader(title => 'Forgot Password');
+  $self->htmlHeader(title => 'Forgot Password', noindex => 1);
   div class => 'mainbox';
    h1 'Forgot Password';
    p "Forgot your password and can't login to VNDB anymore?\n"
@@ -114,7 +114,7 @@ sub newpass {
 sub newpass_sent {
   my $self = shift;
   return $self->resRedirect('/') if $self->authInfo->{id};
-  $self->htmlHeader(title => 'New Password');
+  $self->htmlHeader(title => 'New Password', noindex => 1);
   div class => 'mainbox';
    h1 'New Password';
    div class => 'notice';
@@ -152,7 +152,7 @@ sub register {
     }
   }
 
-  $self->htmlHeader(title => 'Create an Account');
+  $self->htmlHeader(title => 'Create an Account', noindex => 1);
   div class => 'mainbox';
    h1 'Create an Account';
    h2 'Why should I register?';
@@ -232,7 +232,7 @@ sub edit {
 
   # create the page
   my $title = $self->authInfo->{id} != $uid ? "Edit $u->{username}'s Account" : 'My Account';
-  $self->htmlHeader(title => $title);
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('u', $u, 'edit');
   if($self->reqParam('d')) {
     div class => 'mainbox';
@@ -276,7 +276,7 @@ sub delete {
   if(!$act) {
     my $u = $self->dbUserGet(uid => $uid)->[0];
     return 404 if !$u->{id};
-    $self->htmlHeader(title => 'Delete user');
+    $self->htmlHeader(title => 'Delete user', noindex => 1);
     $self->htmlMainTabs('u', $u, 'del');
     div class => 'mainbox';
      div class => 'warning';
@@ -296,7 +296,7 @@ sub delete {
   }
   # done
   elsif($act eq '/d') {
-    $self->htmlHeader(title => 'Delete user');
+    $self->htmlHeader(title => 'Delete user', noindex => 1);
     div class => 'mainbox';
      div class => 'notice';
       p 'User deleted.';

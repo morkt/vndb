@@ -73,7 +73,7 @@ sub history {
     edit => $f->{e},
   );
 
-  $self->htmlHeader(title => $title);
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs($type, $obj, 'hist') if $type;
 
   # url generator
@@ -166,7 +166,7 @@ sub history {
 
 sub nospam {
   my $self = shift;
-  $self->htmlHeader(title => 'Could not send form');
+  $self->htmlHeader(title => 'Could not send form', noindex => 1);
 
   div class => 'mainbox';
    h1 'Could not send form';

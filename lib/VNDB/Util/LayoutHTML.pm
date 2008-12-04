@@ -9,7 +9,7 @@ use Exporter 'import';
 our @EXPORT = qw|htmlHeader htmlFooter|;
 
 
-sub htmlHeader { # %options->{ title, js, search }
+sub htmlHeader { # %options->{ title, js, noindex, search }
   my($self, %o) = @_;
 
   # heading
@@ -24,6 +24,7 @@ sub htmlHeader { # %options->{ title, js, search }
     script type => 'text/javascript', src => $self->{url_static}.'/f/script.js';
      # most browsers don't like a self-closing <script> tag...
     end;
+    meta name => 'robots', content => 'noindex, follow', undef if $o{noindex};
    end;
    body;
     div id => 'bgright', ' ';

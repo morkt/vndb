@@ -44,7 +44,7 @@ sub page {
 
   my $r = $self->dbReleaseGet(vid => $vid, what => 'producers platforms');
 
-  $self->htmlHeader(title => $v->{title});
+  $self->htmlHeader(title => $v->{title}, noindex => $rev);
   $self->htmlMainTabs('v', $v);
   return if $self->htmlHiddenMessage('v', $v);
 

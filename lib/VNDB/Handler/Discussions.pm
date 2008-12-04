@@ -231,7 +231,7 @@ sub edit {
               !$num ? 'Reply to '.$t->{title} :
                       'Edit post';
   my $url = !$tid ? "/t/$tag/new" : !$num ? "/t$tid/reply" : "/t$tid.$num/edit";
-  $self->htmlHeader(title => $title);
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlForm({ frm => $frm, action => $url }, $title => [
     [ static => label => 'Username', content => userstr($self->authInfo->{id}, $self->authInfo->{username}) ],
     !$tid || $num == 1 ? (
@@ -284,7 +284,7 @@ sub tagbrowse {
     order => $type eq 'an' ? 't.id DESC' : 'tpl.date DESC',
   );
 
-  $self->htmlHeader(title => $title);
+  $self->htmlHeader(title => $title, noindex => !@$list);
 
   $self->htmlMainTabs($type, $obj, 'disc') if $iid;
   div class => 'mainbox';

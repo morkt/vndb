@@ -104,7 +104,7 @@ sub edit {
   !exists $frm->{$_} && ($frm->{$_} = $b4{$_}) for (keys %b4);
   $frm->{editsum} = sprintf 'Reverted to revision v%d.%d', $vid, $rev if $rev && !defined $frm->{editsum};
 
-  $self->htmlHeader(js => 'forms', title => $vid ? "Edit $v->{title}" : 'Add a new visual novel');
+  $self->htmlHeader(js => 'forms', title => $vid ? "Edit $v->{title}" : 'Add a new visual novel', noindex => 1);
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
   $self->htmlEditMessage('v', $v);
   _form($self, $v, $frm);

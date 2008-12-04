@@ -26,7 +26,7 @@ sub page {
   )->[0];
   return 404 if !$r->{id};
 
-  $self->htmlHeader(title => $r->{title});
+  $self->htmlHeader(title => $r->{title}, noindex => $rev);
   $self->htmlMainTabs('r', $r);
   return if $self->htmlHiddenMessage('r', $r);
 
@@ -273,7 +273,7 @@ sub edit {
   $frm->{language} = 'ja' if !$rid && !defined $frm->{lang};
   $frm->{editsum} = sprintf 'Reverted to revision r%d.%d', $rid, $rev if $rev && !defined $frm->{editsum};
 
-  $self->htmlHeader(js => 'forms', title => $rid ? 'Edit '.$r->{title} : 'Add release to '.$v->{title});
+  $self->htmlHeader(js => 'forms', title => $rid ? 'Edit '.$r->{title} : 'Add release to '.$v->{title}, noindex => 1);
   $self->htmlMainTabs('r', $r, 'edit') if $rid;
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
   $self->htmlEditMessage('r', $r);
