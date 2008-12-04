@@ -43,7 +43,7 @@ sub page {
   }
 
   div class => 'mainbox producerpage';
-   p class => 'locked', 'Locked for editing' if $p->{locked};
+   $self->htmlItemMessage('p', $p);
    h1 $p->{name};
    h2 class => 'alttitle', $p->{original} if $p->{original};
    p class => 'center';

@@ -62,7 +62,7 @@ sub page {
   }
 
   div class => 'mainbox release';
-   p class => 'locked', 'Locked for editing' if $r->{locked};
+   $self->htmlItemMessage('r', $r);
    h1 $r->{title};
    h2 class => 'alttitle', $r->{original} if $r->{original};
 

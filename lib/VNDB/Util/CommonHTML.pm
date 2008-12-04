@@ -9,7 +9,7 @@ use Algorithm::Diff::XS 'compact_diff';
 use VNDB::Func;
 use Encode 'encode_utf8', 'decode_utf8';
 
-our @EXPORT = qw|htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate htmlRevision htmlEditMessage|;
+our @EXPORT = qw|htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate htmlRevision htmlEditMessage htmlItemMessage|;
 
 
 # generates the "main tabs". These are the commonly used tabs for
@@ -354,6 +354,24 @@ sub htmlEditMessage {
      end;
    }
   end;
+}
+
+
+# Generates a small message when the user can't edit the item,
+# or the item is locked.
+# Arguments: v/r/p, obj
+sub htmlItemMessage {
+  my($self, $type, $obj) = @_;
+
+  if($obj->{locked}) {
+    p class => 'locked', 'Locked for editing' 
+  } elsif(!$self->authInfo->{id}) {
+    p class => 'locked';
+     lit 'You need to be <a href="/u/login">logged in</a> to edit this page</a>';
+    end;
+  } elsif(!$self->authCan('edit')) {
+    p class => 'locked', "You're not allowed to edit this page";
+  }
 }
 
 

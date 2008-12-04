@@ -51,7 +51,7 @@ sub page {
   _revision($self, $v, $rev);
 
   div class => 'mainbox';
-   p class => 'locked', 'Locked for editing' if $v->{locked};
+   $self->htmlItemMessage('v', $v);
    h1 $v->{title};
    h2 class => 'alttitle', $v->{original} if $v->{original};
 
