@@ -676,6 +676,25 @@ function medLoad() {
       medAddNew(l[i].split(' ')[0], Math.floor(l[i].split(' ')[1]));
 
   medAddNew('', 0);
+  medSetSubmit();
+}
+
+function medSetSubmit() {
+  var o=x('media');
+  while(o.nodeName.toLowerCase() != 'form')
+    o = o.parentNode;
+  oldfunc = o.onsubmit;
+  o.onsubmit = function() {
+    var l = x('media_div').getElementsByTagName('span');
+    for(var i=0;i<l.length-1;i++) {
+      var s = l[i].getElementsByTagName('select');
+      if(!medTypes[s[1].selectedIndex][2] && s[0].selectedIndex == 0) {
+        alert('Media '+medTypes[s[1].selectedIndex][1]+' requires a quantity to be specified!');
+        return false;
+      }
+    }
+    return oldfunc ? oldfunc() : true;
+  };
 }
 
 function medAddNew(med, qty) {
