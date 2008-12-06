@@ -54,7 +54,7 @@ sub _menu {
      a href => '/u/all', 'Users'; br;
      a href => '/hist',  'Recent changes'; br;
      a href => '/t',     'Discussion board'; br;
-     a href => '#',      'FAQ'; br;
+     a href => '/d6',    'FAQ'; br;
      a href => 'irc://irc.synirc.net/vndb', '#vndb';
       lit ' (<a href="http://cgiirc.synirc.net/?chan=%23vndb">webchat</a>)';
     end;

@@ -11,6 +11,7 @@ use VNDB::Func;
 YAWF::register(
   qr{},                              \&homepage,
   qr{(?:([upvr])([1-9]\d*)/)?hist},  \&history,
+  qr{d([1-9]\d*)},                   \&docpage,
   qr{nospam},                        \&nospam,
   qr{([vrp])([1-9]\d*)/(lock|hide)}, \&itemmod,
  
@@ -23,6 +24,8 @@ YAWF::register(
     sub { $_[0]->resRedirect("/v$_[1]", 'perm') },
   qr{u/list(/[a-z0]|/all)?},
     sub { my $l = defined $_[1] ? $_[1] : '/all'; $_[0]->resRedirect("/u$l", 'perm') },
+  qr{d([1-9]\d*)\.([1-9]\d*)},
+    sub { $_[0]->resRedirect("/d$_[1]#$_[2]", 'perm') },
 );
 
 
@@ -161,6 +164,40 @@ sub history {
   );
 
   $self->htmlFooter;
+}
+
+
+sub docpage {
+  my($self, $did) = @_;
+
+  open my $F, '<', sprintf('%s/data/docs/%d', $VNDB::ROOT, $did) or return 404;
+  my @c = <$F>;
+  close $F;
+
+  (my $title = shift @c) =~ s/^:TITLE://;
+  chomp $title;
+
+  my $sec = 0;
+  for (@c) {
+    s{^:SUB:(.+)\r?\n$}{
+      $sec++;
+      qq|<h3><a href="#$sec" name="$sec">$sec. $1</a></h3>\n|
+    }eg;
+    s{^:INC:(.+)\r?\n$}{
+      open $F, '<', sprintf('%s/data/docs/%s', $VNDB::ROOT, $1) or die $!;
+      my $ii = join('', <$F>);
+      close $F;
+      $ii;
+    }eg;
+  }
+
+  $self->htmlHeader(title => $title);
+  div class => 'mainbox';
+   h1 $title;
+   div class => 'docs';
+    lit join '', @c;
+   end;
+  end;
 }
 
 
