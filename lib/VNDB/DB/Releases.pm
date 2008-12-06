@@ -79,7 +79,8 @@ sub dbReleaseGet {
           FROM releases_producers rp
           JOIN producers p ON rp.pid = p.id
           JOIN producers_rev pr ON pr.id = p.latest
-          WHERE rp.rid IN(!l)|,
+          WHERE rp.rid IN(!l)
+          ORDER BY pr.name|,
         [ keys %r ]
       )});
     }
