@@ -65,7 +65,7 @@ sub htmlFormError {
      h1 'Error';
   }
   div class => 'warning';
-   h2 'Form could not be send:';
+   h2 'Form could not be sent:';
    ul;
     for my $e (@{$frm->{_err}}) {
       if(!ref $e) {
