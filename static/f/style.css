@@ -572,6 +572,12 @@ a.addnew {
   margin: 0;
 }
 
+.votegraph td        { padding: 0 2px; }
+.votegraph td.number { text-align: right }
+.votegraph td div    { float: left; height: 14px; background-color: #258; margin-right: 2px; }
+.votegraph thead td  { background: transparent; text-align: center; }
+.votegraph tfoot td  { text-align: right }
+
 
 
 

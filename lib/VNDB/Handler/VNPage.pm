@@ -131,9 +131,8 @@ sub page {
   end;
 
   _releases($self, $v, $r);
+  _stats($self, $v);
   _screenshots($self, $v, $r) if @{$v->{screenshots}};
-
-  # TODO: stats
 
   $self->htmlFooter;
 }
@@ -416,6 +415,44 @@ sub _screenshots {
       end;
     }
    end;
+  end;
+}
+
+
+sub _stats {
+  my($self, $v) = @_;
+
+  my $stats = $self->dbVoteStats(vid => $v->{id});
+  my($max, $count, $total) = (0, 0);
+  for (0..$#$stats) {
+    $max = $stats->[$_] if $stats->[$_] > $max;
+    $count += $stats->[$_];
+    $total += $stats->[$_]*($_+1);
+  }
+
+  div class => 'mainbox';
+   h1 'User stats';
+   if(!$max) {
+     p "Nobody has voted on this visual novel yet...";
+   } else {
+     table class => 'votegraph';
+      thead; Tr;
+       td colspan => 2, 'Vote graph';
+      end; end;
+      for (reverse 0..$#$stats) {
+        Tr;
+         td class => 'number', $_+1;
+         td class => 'graph';
+          div style => 'width: '.($stats->[$_] ? $stats->[$_]/$max*250 : 0).'px', ' ';
+          txt $stats->[$_];
+         end;
+        end;
+      }
+      tfoot; Tr;
+       td colspan => 2, sprintf '%d votes total, average %.2f', $count, $total/$count;
+      end; end;
+     end;
+   }
   end;
 }
 
