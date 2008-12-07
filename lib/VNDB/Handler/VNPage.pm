@@ -465,7 +465,7 @@ sub _stats {
         end;
       }
       tfoot; Tr;
-       td colspan => 2, sprintf '%d votes total, average %.2f (%s)', $count, $total/$count, $self->{votes}[sprintf '%.0f', $total/$count];
+       td colspan => 2, sprintf '%d votes total, average %.2f (%s)', $count, $total/$count, $self->{votes}[sprintf '%.0f', $total/$count-1];
       end; end;
      end;
    }
