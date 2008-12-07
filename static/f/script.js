@@ -271,6 +271,14 @@ DOMLoad(function() {
         location.href = location.href+'/vote?v='+s;
     };
 
+  // VN Wishlist editing
+  i = x('wishsel');
+  if(i)
+    i.onchange = function() {
+      if(this.selectedIndex != 0)
+        location.href = location.href+'/wish?s='+this.options[this.selectedIndex].value;
+    };
+
 
   // Advanced VN search
   if(x('advselect'))

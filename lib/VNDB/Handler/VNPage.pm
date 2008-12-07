@@ -118,8 +118,10 @@ sub page {
      _relations($self, \$i, $v) if @{$v->{relations}};
      _anime($self, \$i, $v) if @{$v->{anime}};
 
+     # User options
      if($self->authInfo->{id}) {
        my $vote = $self->dbVoteGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
+       my $wish = $self->dbWishListGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
        Tr ++$i % 2 ? (class => 'odd') : ();
         td 'User options';
         td;
@@ -129,6 +131,14 @@ sub page {
            option value => $_, "$_ ($self->{votes}[$_-1])" for (reverse 1..10);
           end;
           option value => -1, 'revoke' if $vote;
+         end;
+         br;
+         Select id => 'wishsel';
+          option $wish ? "wishlist: $self->{wishlist_status}[$wish->{wstat}]" : 'not on your wishlist';
+          optgroup label => $wish ? 'Change status' : 'Add to wishlist';
+           option value => $_, $self->{wishlist_status}[$_] for (0..$#{$self->{wishlist_status}});
+          end;
+          option value => -1, 'remove from wishlist';
          end;
         end;
        end;

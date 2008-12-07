@@ -196,6 +196,12 @@ our %S = (
     'excellent',
     'masterpiece',
   ],
+  wishlist_status => [
+    'high',
+    'medium',
+    'low',
+    'blacklist',
+  ],
 );
 
 
