@@ -9,7 +9,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbWishListGet dbWishListAdd dbWishListDel|;
 
 
-# %options->{ uid vid what order page results }
+# %options->{ uid vid wstat what order page results }
 # what: vn
 sub dbWishListGet {
   my($self, %o) = @_;
@@ -22,6 +22,7 @@ sub dbWishListGet {
   my %where = (
     'wl.uid = ?' => $o{uid},
     $o{vid} ? ( 'wl.vid = ?' => $o{vid} ) : (),
+    defined $o{wstat} ? ( 'wl.wstat = ?' => $o{wstat} ) : (),
   );
 
   my $select = 'wl.vid, wl.wstat, wl.added';
