@@ -754,8 +754,8 @@ ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
 .producerbrowse ul {
   float: left;
   margin-top: -5px;
-  margin-left: 25px;
-  min-width: 170px;
+  margin-left: 3%;
+  width: 28%;
 }
 .producerbrowse ul li {
   list-style-type: none;
