@@ -819,6 +819,14 @@ ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
 
 
 
+/***** Wishlist browser ******/
+
+.wishlist .tc1 { padding-top: 0; padding-bottom: 0; }
+.wishlist tfoot td { padding: 0 0 0 25px }
+
+
+
+
 
 /***** Warning/Notice Box *****/
 

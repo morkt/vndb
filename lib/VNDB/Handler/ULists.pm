@@ -65,6 +65,17 @@ sub wishlist {
   );
   return 404 if $f->{_err};
 
+  if($own && $self->reqMethod eq 'POST') {
+    my $frm = $self->formValidate(
+      { name => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
+      { name => 'wishbatch', required => 1, enum => [ -1..$#{$self->{wishlist_status}} ] },
+    );
+    if(!$frm->{_err} && @{$frm->{sel}} && $frm->{sel}[0]) {
+      $self->dbWishListDel($uid, $frm->{sel}) if $frm->{wishbatch} == -1;
+      $self->dbWishListAdd($frm->{sel}, $uid, $frm->{wishbatch}) if $frm->{wishbatch} >= 0;
+    }
+  }
+
   my($list, $np) = $self->dbWishListGet(
     uid => $uid,
     order => $f->{s}.' '.($f->{o} eq 'a' ? 'ASC' : 'DESC'),
@@ -91,7 +102,11 @@ sub wishlist {
    end;
   end;
 
+  form action => "/u$uid/wish?f=$f->{f};o=$f->{o};s=$f->{s};p=$f->{p}", method => 'post'
+    if $own;
+
   $self->htmlBrowse(
+    class    => 'wishlist',
     items    => $list,
     nextpage => $np,
     options  => $f,
@@ -102,17 +117,35 @@ sub wishlist {
       [ Priority => ''      ],
       [ Added    => 'added' ],
     ],
-    row => sub {
+    row      => sub {
       my($s, $n, $i) = @_;
       Tr $n % 2 == 0 ? (class => 'odd') : ();
        td class => 'tc1';
-        a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, shorten $i->{title}, 70;
+        input type => 'checkbox', name => 'sel', value => $i->{vid}
+          if $own;
+        a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, ' '.shorten $i->{title}, 70;
        end;
        td class => 'tc2', ucfirst $self->{wishlist_status}[$i->{wstat}];
        td class => 'tc3', date $i->{added}, 'compact';
       end;
-    }
+    },
+    footer   => sub {
+      return if !$own;
+      Tr;
+       td colspan => 3;
+        Select name => 'wishbatch', id => 'wishbatch';
+         option '-- with selected --';
+         optgroup label => 'Change priority';
+          option value => $_, $self->{wishlist_status}[$_]
+            for (0..$#{$self->{wishlist_status}});
+         end;
+         option value => -1, 'remove from wishlist';
+        end;
+       end;
+      end;
+    },
   );
+  end if $own;
   $self->htmlFooter;
 }
 

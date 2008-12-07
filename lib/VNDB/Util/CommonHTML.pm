@@ -140,6 +140,7 @@ sub htmlHiddenMessage {
 #   be sorted
 #  row      => subroutine ref, which is called for each item in $list, arguments will be
 #   $self, $item_number (starting from 0), $item_value
+#  footer   => subroutine ref, called after all rows have been processed
 sub htmlBrowse {
   my($self, %opt) = @_;
 
@@ -178,6 +179,13 @@ sub htmlBrowse {
    # rows
     $opt{row}->($self, $_+1, $opt{items}[$_])
       for 0..$#{$opt{items}};
+
+   # footer
+    if($opt{footer}) {
+      tfoot;
+       $opt{footer}->($self);
+      end;
+    }
 
    end;
   end;

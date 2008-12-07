@@ -278,6 +278,16 @@ DOMLoad(function() {
       if(this.selectedIndex != 0)
         location.href = location.href+'/wish?s='+this.options[this.selectedIndex].value;
     };
+  // Batch Wishlist editing
+  i = x('wishbatch');
+  if(i)
+    i.onchange = function() {
+      var frm = this;
+      while(frm.nodeName.toLowerCase() != 'form')
+        frm = frm.parentNode;
+      if(this.selectedIndex != 0)
+        frm.submit();
+    };
 
 
   // Advanced VN search
