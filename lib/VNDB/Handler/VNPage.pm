@@ -118,6 +118,22 @@ sub page {
      _relations($self, \$i, $v) if @{$v->{relations}};
      _anime($self, \$i, $v) if @{$v->{anime}};
 
+     if($self->authInfo->{id}) {
+       my $vote = $self->dbVoteGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td 'User options';
+        td;
+         Select id => 'votesel';
+          option $vote ? "your vote: $vote->{vote}" : 'not voted yet';
+          optgroup label => $vote ? 'Change vote' : 'Vote';
+           option value => $_, $_ for (reverse 1..10);
+          end;
+          option value => -1, 'revoke' if $vote;
+         end;
+        end;
+       end;
+     }
+
     end;
    end;
 

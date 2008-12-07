@@ -251,6 +251,27 @@ DOMLoad(function() {
   };
 
 
+  // VN Voting
+  i = x('votesel');
+  if(i)
+    i.onchange = function() {
+      var s = this.options[this.selectedIndex].value;
+      if(s == 1 && !confirm(
+        "You are about to give this visual novel a 1 out of 10. This is a rather extreme rating, "
+        +"meaning this game has absolutely nothing to offer, and that it's the worst game you have ever played.\n"
+        +"Are you really sure this visual novel matches that description?"))
+        return;
+      if(s == 10 && !confirm(
+        "You are about to give this visual novel a 10 out of 10. This is a rather extreme rating, "
+        +"meaning this is one of the best visual novels you've ever played and it's unlikely "
+        +"that any other game could ever be better than this one.\n"
+        +"It is generally a bad idea to have more than three games in your vote list with this rating, choose carefully!"))
+        return;
+      if(s)
+        location.href = location.href+'/vote?v='+s;
+    };
+
+
   // Advanced VN search
   if(x('advselect'))
     searchInit();

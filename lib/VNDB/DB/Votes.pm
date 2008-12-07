@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 
 
-our @EXPORT = qw|dbVoteGet dbVoteStats|;
+our @EXPORT = qw|dbVoteGet dbVoteStats dbVoteAdd dbVoteDel|;
 
 
 # %options->{ uid vid hide order results page }
@@ -30,7 +30,7 @@ sub dbVoteGet {
       JOIN users u ON u.id = n.uid
       !W
       ORDER BY !s|,      
-    \%where
+    \%where, $o{order}
   );
 
   return wantarray ? ($r, $np) : $r;
@@ -50,6 +50,34 @@ sub dbVoteStats {
     $col ? { '!s = ?' => [ $col, $id ] } : {},
   )});
   return $r;
+}
+
+
+# Adds a new vote or updates an existing one
+# Arguments: vid, uid, vote
+sub dbVoteAdd {
+  my($self, $vid, $uid, $vote) = @_;
+  $self->dbExec(q|
+    UPDATE votes
+      SET vote = ?
+      WHERE vid = ?
+      AND uid = ?|,
+    $vote, $vid, $uid
+  ) || $self->dbExec(q|
+    INSERT INTO votes
+      (vid, uid, vote, date)
+      VALUES (!l)|,
+    [ $vid, $uid, $vote, time ]
+  );
+}
+
+
+# Arguments: uid, vid
+sub dbVoteDel {
+  my($self, $uid, $vid) = @_;
+  $self->dbExec('DELETE FROM votes !W',
+    { 'vid = ?' => $vid, 'uid = ?' => $uid }
+  );
 }
 
 
