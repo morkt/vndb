@@ -132,3 +132,8 @@ CREATE TRIGGER threads_posts_stats_update AFTER INSERT OR UPDATE ON threads_post
 CREATE TRIGGER users_stats_update         AFTER INSERT OR DELETE ON users         FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
 
 
+
+-- extra user rank
+UPDATE users SET rank = rank+1;
+
+

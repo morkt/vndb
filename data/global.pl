@@ -24,10 +24,11 @@ our %S = (
   user_ranks      => [
        # rankname   allowed actions                                   # DB number
     [qw| visitor    hist                                          |], # 0
-    [qw| loser      hist                                          |], # 1
-    [qw| user       hist board edit                               |], # 2
-    [qw| mod        hist board boardmod edit mod lock del         |], # 3
-    [qw| admin      hist board boardmod edit mod lock del usermod |], # 4
+    [qw| banned     hist                                          |], # 1
+    [qw| loser      hist board                                    |], # 2
+    [qw| user       hist board edit                               |], # 3
+    [qw| mod        hist board boardmod edit mod lock del         |], # 4
+    [qw| admin      hist board boardmod edit mod lock del usermod |], # 5
   ],
   languages       => {
     cs  => q|Czech|,
