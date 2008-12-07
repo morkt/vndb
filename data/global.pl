@@ -184,6 +184,18 @@ our %S = (
     pa  => [ 'Patch',             0 ],
     otc => [ 'Other (console)',   0 ],
   },
+  votes           => [
+    'worst ever',
+    'awful',
+    'bad',
+    'weak',
+    'so-so',
+    'decent',
+    'good',
+    'very good',
+    'excellent',
+    'masterpiece',
+  ],
 );
 
 

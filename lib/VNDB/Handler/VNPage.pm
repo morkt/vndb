@@ -126,7 +126,7 @@ sub page {
          Select id => 'votesel';
           option $vote ? "your vote: $vote->{vote}" : 'not voted yet';
           optgroup label => $vote ? 'Change vote' : 'Vote';
-           option value => $_, $_ for (reverse 1..10);
+           option value => $_, "$_ ($self->{votes}[$_-1])" for (reverse 1..10);
           end;
           option value => -1, 'revoke' if $vote;
          end;
@@ -465,7 +465,7 @@ sub _stats {
         end;
       }
       tfoot; Tr;
-       td colspan => 2, sprintf '%d votes total, average %.2f', $count, $total/$count;
+       td colspan => 2, sprintf '%d votes total, average %.2f (%s)', $count, $total/$count, $self->{votes}[sprintf '%.0f', $total/$count];
       end; end;
      end;
    }
