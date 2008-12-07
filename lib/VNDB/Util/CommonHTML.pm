@@ -32,7 +32,7 @@ sub htmlMainTabs {
      end;
    }
    
-   if($type eq 'u') {
+   if($type eq 'u' && $obj->{show_list}) {
      li $sel eq 'wish' ? (class => 'tabselected') : ();
       a href => "/$id/wish", 'wishlist';
      end;
