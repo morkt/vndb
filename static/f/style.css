@@ -826,6 +826,18 @@ ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
 
 
 
+/***** User VN list browser ******/
+
+.rlist .relhid { }
+.rlist .relhid_but, #relhidall { cursor: pointer }
+.browse.rlist .tc2 { width: 100px; }
+.browse.rlist .tc3 { width: 70px; }
+.browse.rlist .relhid .tc1 { padding-left: 40px; width: 70px; }
+.browse.rlist .relhid .tc2 { padding: 0; width: 60px; }
+.browse.rlist .relhid .tc3 { width: auto }
+.rlist .done { font-weight: normal; color: #0c0 }
+.rlist .todo { font-weight: normal; color: #c00 }
+
 
 
 /***** Warning/Notice Box *****/

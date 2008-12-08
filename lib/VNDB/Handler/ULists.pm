@@ -11,6 +11,7 @@ YAWF::register(
   qr{v([1-9]\d*)/vote},  \&vnvote,
   qr{v([1-9]\d*)/wish},  \&vnwish,
   qr{u([1-9]\d*)/wish},  \&wishlist,
+  qr{u([1-9]\d*)/list},  \&vnlist,
 );
 
 
@@ -146,6 +147,113 @@ sub wishlist {
     },
   );
   end if $own;
+  $self->htmlFooter;
+}
+
+
+sub vnlist {
+  my($self, $uid) = @_;
+
+  my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
+  my $u = $self->dbUserGet(uid => $uid)->[0];
+  return 404 if !$u || !$own && !$u->{show_list};
+
+  my $f = $self->formValidate(
+    { name => 'p',  required => 0, default => 1, template => 'int' },
+    { name => 'o',  required => 0, default => 'a', enum => [ 'a', 'd' ] },
+    { name => 's',  required => 0, default => 'title', enum => [ 'title', 'vote' ] },
+    { name => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
+    { name => 'v',  required => 0, default => 0, enum => [ -1..1  ] },
+  );
+  return 404 if $f->{_err};
+
+  my($list, $np) = $self->dbVNListGet(
+    uid => $uid,
+    results => 50,
+    page => $f->{p},
+    order => $f->{s}.' '.($f->{o} eq 'd' ? 'DESC' : 'ASC'),
+    voted => $f->{v},
+    $f->{c} ne 'all' ? (char => $f->{c}) : (),
+  );
+
+  my $title = $own ? 'My visual novel list' : "\u$u->{username}'s visual novel list";
+  $self->htmlHeader(title => $title);
+  $self->htmlMainTabs('u', $u, 'list');
+
+  # url generator
+  my $url = sub {
+    my($n, $v) = @_;
+    $n ||= '';
+    local $_ = "/u$uid/list";
+    $_ .= '?c='.($n eq 'c' ? $v : $f->{c});
+    $_ .= ';v='.($n eq 'v' ? $v : $f->{v});
+    if($n eq 'page') {
+      $_ .= ';o='.($n eq 'o' ? $v : $f->{o});
+      $_ .= ';s='.($n eq 's' ? $v : $f->{s});
+    }
+    return $_;
+  };
+
+  div class => 'mainbox';
+   h1 $title;
+   p class => 'browseopts';
+    for ('all', 'a'..'z', 0) {
+      a href => $url->(c => $_), $_ eq $f->{c} ? (class => 'optselected') : (), $_ ? uc $_ : '#';
+    }
+   end;
+   p class => 'browseopts';
+    a href => $url->(v =>  0),  0 == $f->{v} ? (class => 'optselected') : (), 'All';
+    a href => $url->(v =>  1),  1 == $f->{v} ? (class => 'optselected') : (), 'Only voted';
+    a href => $url->(v => -1), -1 == $f->{v} ? (class => 'optselected') : (), 'Hide voted';
+   end;
+  end;
+
+  $self->htmlBrowse(
+    class    => 'rlist',
+    items    => $list,
+    nextpage => $np,
+    options  => $f,
+    sorturl  => $url->(),
+    pageurl  => $url->('page'),
+    header   => [
+      [ Title    => 'title', 3 ],
+      sub { td class => 'tc2', id => 'relhidall'; lit '<i>&#9656;</i>Releases'; end; },
+      [ Vote     => 'vote'  ],
+    ],
+    row      => sub {
+      my($s, $n, $i) = @_;
+      Tr $n % 2 == 0 ? (class => 'odd') : ();
+       td class => 'tc1', colspan => 3;
+        a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, shorten $i->{title}, 70;
+       end;
+       td class => 'tc2'.(@{$i->{rels}} ? ' relhid_but' : ''), id => 'vid'.$i->{vid};
+        lit '<i>&#9656;</i>';
+        my $obtained = grep $_->{rstat}==2, @{$i->{rels}};
+        my $finished = grep $_->{vstat}==2, @{$i->{rels}};
+        my $txt = sprintf '%d/%d/%d', $obtained, $finished, scalar @{$i->{rels}};
+        $txt = qq|<b class="done">$txt</b>| if $finished > $obtained || $finished && $finished == $obtained;
+        $txt = qq|<b class="todo">$txt</b>| if $obtained > $finished;
+        lit $txt;
+       end;
+       td class => 'tc3', $i->{vote} || '-';
+      end;
+      for (@{$i->{rels}}) {
+        Tr class => "relhid vid$i->{vid} ";
+         td class => 'tc1';
+          lit datestr $_->{released};
+         end;
+         td class => 'tc2';
+          acronym class => "icons lang $_->{language}", title => $self->{languages}{$_->{language}}, ' ';
+          acronym class => 'icons '.substr(lc $self->{release_types}[$_->{type}], 0, 3), title => $self->{release_types}[$_->{type}].' release', ' ';
+          txt substr($self->{vn_rstat}[$_->{rstat}],0,2).'/'.substr($self->{vn_vstat}[$_->{vstat}],0,2);
+         end;
+         td class => 'tc3', colspan => 1;
+          a href => "/r$_->{rid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;
+         end;
+        end;
+      }
+    },
+  );
   $self->htmlFooter;
 }
 

@@ -290,6 +290,38 @@ DOMLoad(function() {
     };
 
 
+  // User VN list
+  i = x('relhidall');
+  if(i) {
+    var l = document.getElementsByTagName('tr');
+    for(var i=0;i<l.length;i++)
+      if(l[i].className.indexOf('relhid') >= 0)
+        l[i].style.display = 'none';
+    var l = document.getElementsByTagName('td');
+    for(var i=0;i<l.length;i++)
+      if(l[i].className.indexOf('relhid_but') >= 0)
+        l[i].onclick = function() {
+          var l = document.getElementsByTagName('tr');
+          for(var i=0;i<l.length;i++)
+            if(l[i].className.substr(7) == this.id) {
+              l[i].style.display = l[i].style.display == 'none' ? '' : 'none';
+              this.getElementsByTagName('i')[0].innerHTML = l[i].style.display == 'none' ? '&#9656;' : '&#9662;';
+            }
+        };
+    var allhid = 1;
+    x('relhidall').onclick = function() {
+      allhid = !allhid;
+      var l = document.getElementsByTagName('tr');
+      for(var i=0;i<l.length;i++)
+        if(l[i].className.indexOf('relhid') >= 0) {
+          l[i].style.display = allhid ? 'none' : '';
+          x(l[i].className.substr(7)).getElementsByTagName('i')[0].innerHTML = allhid ? '&#9656;' : '&#9662;';
+        }
+      this.getElementsByTagName('i')[0].innerHTML = allhid ? '&#9656;' : '&#9662;';
+    };
+  }
+
+
   // Advanced VN search
   if(x('advselect'))
     searchInit();

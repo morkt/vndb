@@ -203,6 +203,20 @@ our %S = (
     'low',
     'blacklist',
   ],
+  vn_rstat        => [
+    'Unknown',
+    'Pending',
+    'Obtained', # hardcoded
+    'On loan',
+    'Deleted',
+  ],
+  vn_vstat        => [
+    'Unknown',
+    'Playing',
+    'Finished', # hardcoded
+    'Stalled',
+    'Dropped',
+  ],
 );
 
 
