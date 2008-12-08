@@ -279,7 +279,7 @@ DOMLoad(function() {
         location.href = location.href+'/wish?s='+this.options[this.selectedIndex].value;
     };
   // Batch Wishlist editing
-  i = x('wishbatch');
+  i = x('batchedit');
   if(i)
     i.onchange = function() {
       var frm = this;

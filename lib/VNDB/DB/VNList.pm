@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 
 
-our @EXPORT = qw|dbVNListGet|;
+our @EXPORT = qw|dbVNListGet dbVNListAdd dbVNListDel|;
 
 
 # %options->{ uid order char voted page results }
@@ -65,6 +65,39 @@ sub dbVNListGet {
   }
 
   return wantarray ? ($r, $np) : $r;
+}
+
+
+# %options->{ uid rid rstat vstat }
+sub dbVNListAdd {
+  my($self, %o) = @_;
+
+  my %s = (
+    defined $o{rstat} ? ( 'rstat = ?', $o{rstat} ) : (),
+    defined $o{vstat} ? ( 'vstat = ?', $o{vstat} ) : (),
+  );
+  $o{rstat}||=0;
+  $o{vstat}||=0;
+
+    $self->dbExec(
+      'UPDATE rlists !H WHERE uid = ? AND rid IN(!l)',
+      \%s, $o{uid}, ref($o{rid}) eq 'ARRAY' ? $o{rid} : [ $o{rid} ]
+    )
+  ||
+    $self->dbExec(
+      'INSERT INTO rlists (uid, rid, rstat, vstat) VALUES(!l)',
+      [@o{qw| uid rid rstat vstat |}]
+    );
+}
+
+
+# Arguments: uid, rid
+sub dbVNListDel {
+  my($self, $uid, $rid) = @_;
+  $self->dbExec(
+    'DELETE FROM rlists WHERE uid = ? AND rid IN(!l)',
+    $uid, ref($rid) eq 'ARRAY' ? $rid : [ $rid ]
+  );
 }
 
 

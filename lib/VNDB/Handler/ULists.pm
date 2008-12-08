@@ -69,11 +69,11 @@ sub wishlist {
   if($own && $self->reqMethod eq 'POST') {
     my $frm = $self->formValidate(
       { name => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
-      { name => 'wishbatch', required => 1, enum => [ -1..$#{$self->{wishlist_status}} ] },
+      { name => 'batchedit', required => 1, enum => [ -1..$#{$self->{wishlist_status}} ] },
     );
     if(!$frm->{_err} && @{$frm->{sel}} && $frm->{sel}[0]) {
-      $self->dbWishListDel($uid, $frm->{sel}) if $frm->{wishbatch} == -1;
-      $self->dbWishListAdd($frm->{sel}, $uid, $frm->{wishbatch}) if $frm->{wishbatch} >= 0;
+      $self->dbWishListDel($uid, $frm->{sel}) if $frm->{batchedit} == -1;
+      $self->dbWishListAdd($frm->{sel}, $uid, $frm->{batchedit}) if $frm->{batchedit} >= 0;
     }
   }
 
@@ -134,7 +134,7 @@ sub wishlist {
       return if !$own;
       Tr;
        td colspan => 3;
-        Select name => 'wishbatch', id => 'wishbatch';
+        Select name => 'batchedit', id => 'batchedit';
          option '-- with selected --';
          optgroup label => 'Change priority';
           option value => $_, $self->{wishlist_status}[$_]
@@ -166,6 +166,22 @@ sub vnlist {
     { name => 'v',  required => 0, default => 0, enum => [ -1..1  ] },
   );
   return 404 if $f->{_err};
+
+  if($own && $self->reqMethod eq 'POST') {
+    my $frm = $self->formValidate(
+      { name => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
+      { name => 'batchedit', required => 1, enum => [ 'del', map("r$_", 0..$#{$self->{vn_rstat}}), map("v$_", 0..$#{$self->{vn_vstat}}) ] },
+    );
+    if(!$frm->{_err} && @{$frm->{sel}} && $frm->{sel}[0]) {
+      $self->dbVNListDel($uid, $frm->{sel}) if $frm->{batchedit} eq 'del';
+      $self->dbVNListAdd(
+        rid => $frm->{sel},
+        uid => $uid,
+        $frm->{batchedit} =~ /^([rv])(\d+)$/ && $1 eq 'r' ? (rstat => $2) : (vstat => $2)
+      ) if $frm->{batchedit} ne 'del';
+    }
+  }
+
 
   my($list, $np) = $self->dbVNListGet(
     uid => $uid,
@@ -208,6 +224,16 @@ sub vnlist {
    end;
   end;
 
+  _vnlist_browse($self, $own, $list, $np, $f, $url);
+  $self->htmlFooter;
+}
+
+sub _vnlist_browse {
+  my($self, $own, $list, $np, $f, $url) = @_;
+
+  form action => $url->(), method => 'post'
+    if $own;
+
   $self->htmlBrowse(
     class    => 'rlist',
     items    => $list,
@@ -221,6 +247,7 @@ sub vnlist {
       [ Vote     => 'vote'  ],
     ],
     row      => sub {
+
       my($s, $n, $i) = @_;
       Tr $n % 2 == 0 ? (class => 'odd') : ();
        td class => 'tc1', colspan => 3;
@@ -237,9 +264,12 @@ sub vnlist {
        end;
        td class => 'tc3', $i->{vote} || '-';
       end;
+
       for (@{$i->{rels}}) {
         Tr class => "relhid vid$i->{vid} ";
-         td class => 'tc1';
+         td class => 'tc1'.($own ? ' own' : '');
+          input type => 'checkbox', name => 'sel', value => $_->{rid}
+            if $own;
           lit datestr $_->{released};
          end;
          td class => 'tc2';
@@ -253,10 +283,29 @@ sub vnlist {
         end;
       }
     },
-  );
-  $self->htmlFooter;
-}
 
+    footer  => sub {
+      Tr;
+       td class => 'tc1', colspan => 3;
+        Select id => 'batchedit', name => 'batchedit';
+         option '- with selected -';
+         optgroup label => 'Change release status';
+          option value => "r$_", $self->{vn_rstat}[$_]
+            for (0..$#{$self->{vn_rstat}});
+         end;
+         optgroup label => 'Change play status';
+          option value => "v$_", $self->{vn_vstat}[$_]
+            for (0..$#{$self->{vn_vstat}});
+         end;
+         option value => 'del', 'remove from list';
+        end;
+       end;
+      end;
+    }
+  );
+
+  end if $own;
+}
 
 1;
 
