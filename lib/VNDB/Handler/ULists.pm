@@ -243,7 +243,7 @@ sub _vnlist_browse {
     pageurl  => $url->('page'),
     header   => [
       [ Title    => 'title', 3 ],
-      sub { td class => 'tc2', id => 'relhidall'; lit '<i>&#9656;</i>Releases'; end; },
+      sub { td class => 'tc2', id => 'relhidall'; lit '<i>&#9656;</i>Releases*'; end; },
       [ Vote     => 'vote'  ],
     ],
     row      => sub {
@@ -277,9 +277,10 @@ sub _vnlist_browse {
           acronym class => 'icons '.substr(lc $self->{release_types}[$_->{type}], 0, 3), title => $self->{release_types}[$_->{type}].' release', ' ';
           txt substr($self->{vn_rstat}[$_->{rstat}],0,2).'/'.substr($self->{vn_vstat}[$_->{vstat}],0,2);
          end;
-         td class => 'tc3', colspan => 1;
+         td class => 'tc3';
           a href => "/r$_->{rid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;
          end;
+         td colspan => 2, ' ';
         end;
       }
     },
@@ -301,6 +302,7 @@ sub _vnlist_browse {
          option value => 'del', 'remove from list';
         end;
        end;
+       td class => 'tc2', colspan => 2, '* Obtained/finished/total';
       end;
     }
   );
