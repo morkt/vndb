@@ -285,6 +285,7 @@ sub _vnlist_browse {
     },
 
     footer  => sub {
+      return if !$own;
       Tr;
        td class => 'tc1', colspan => 3;
         Select id => 'batchedit', name => 'batchedit';
