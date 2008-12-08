@@ -198,6 +198,7 @@ sub docpage {
     lit join '', @c;
    end;
   end;
+  $self->htmlFooter;
 }
 
 
