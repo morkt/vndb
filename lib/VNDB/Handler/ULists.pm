@@ -275,12 +275,21 @@ sub _vnlist_browse {
          td class => 'tc2';
           acronym class => "icons lang $_->{language}", title => $self->{languages}{$_->{language}}, ' ';
           acronym class => 'icons '.substr(lc $self->{release_types}[$_->{type}], 0, 3), title => $self->{release_types}[$_->{type}].' release', ' ';
-          txt substr($self->{vn_rstat}[$_->{rstat}],0,2).'/'.substr($self->{vn_vstat}[$_->{vstat}],0,2);
          end;
          td class => 'tc3';
           a href => "/r$_->{rid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;
          end;
-         td colspan => 2, ' ';
+         td colspan => 2, class => 'tc4';
+          my $rs = $self->{vn_rstat}[$_->{rstat}];
+          $rs = qq|<b class="done">$rs</b>| if $_->{rstat} == 2; # Obtained
+          $rs = qq|<b class="todo">$rs</b>| if $_->{rstat} < 2; # Unknown/pending
+          lit $rs;
+          txt ' / ';
+          my $vs = $self->{vn_vstat}[$_->{vstat}];
+          $vs = qq|<b class="done">$vs</b>| if $_->{vstat} == 2; # Finished
+          $vs = qq|<b class="todo">$vs</b>| if $_->{vstat} == 0 || $_->{vstat} == 4; # Unknown/dropped
+          lit $vs;
+         end;
         end;
       }
     },
