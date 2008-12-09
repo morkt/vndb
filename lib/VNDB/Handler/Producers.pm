@@ -178,7 +178,7 @@ sub list {
     }
    end;
   end;
-  
+
   my $pageurl = "/p/$char" . ($f->{q} ? "?q=$f->{q}" : '');
   $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 't');
   div class => 'mainbox producerbrowse';

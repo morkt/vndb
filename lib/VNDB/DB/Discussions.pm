@@ -117,7 +117,7 @@ sub dbThreadEdit {
 
 
 # %options->{ title hidden locked tags }
-sub dbThreadAdd { 
+sub dbThreadAdd {
   my($self, %o) = @_;
 
   my $id = $self->dbRow(q|
@@ -175,7 +175,7 @@ sub dbPostGet {
 
 
 # tid, num, %options->{ num msg hidden lastmod }
-sub dbPostEdit { 
+sub dbPostEdit {
   my($self, $tid, $num, %o) = @_;
 
   my %set = (

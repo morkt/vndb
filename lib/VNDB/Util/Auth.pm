@@ -15,7 +15,7 @@ use Crypt::Lite;
 
 our @EXPORT = qw| authInit authLogin authLogout authInfo authCan |;
 
- 
+
 # initializes authentication information and checks the vndb_auth cookie
 sub authInit {
   my $self = shift;
@@ -30,7 +30,7 @@ sub authInit {
   _authCheck($self, $user, $pass);
 }
 
- 
+
 # login, arguments: user, password, url-to-redirect-to-on-success
 # returns 1 on success (redirected), 0 otherwise (no reply sent)
 sub authLogin {

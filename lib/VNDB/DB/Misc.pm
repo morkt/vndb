@@ -12,7 +12,7 @@ our @EXPORT = qw|
 
 # Returns: hashref, key = section, value = number of (visible) entries
 # Sections: vn, producers, releases, users, threads, posts
-sub dbStats { 
+sub dbStats {
   my $s = shift;
   return { map {
     $_->{section} eq 'threads_posts' ? 'posts' : $_->{section}, $_->{count}
@@ -144,7 +144,7 @@ sub dbRevisionGet {
 # arguments: v/r/p, id, %options ->( hidden, locked )
 sub dbItemMod {
   my($self, $type, $id, %o) = @_;
-  $self->dbExec('UPDATE !s !H WHERE id = ?', 
+  $self->dbExec('UPDATE !s !H WHERE id = ?',
     {qw|v vn r releases p producers|}->{$type},
     { map { ($_.' = ?', int $o{$_}) } keys %o }, $id
   );

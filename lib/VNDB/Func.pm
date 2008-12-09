@@ -31,7 +31,7 @@ sub date {
 #  m = 99   -> month+day unkown
 #  d = 99   -> day unknown
 # return value: (unknown|TBA|yyyy|yyyy-mm|yyyy-mm-dd)
-#  if date > now: <b class="future">str</b> 
+#  if date > now: <b class="future">str</b>
 sub datestr {
   my $date = sprintf '%08d', shift||0;
   my $future = $date > strftime '%Y%m%d', gmtime;
@@ -72,7 +72,7 @@ sub userstr {
 #  [spoiler] .. [/spoiler]
 #  v+,  v+.+
 #  http://../
-sub bb2html { 
+sub bb2html {
   my $raw = shift;
   my $maxlength = shift;
   $raw =~ s/\r//g;
@@ -127,15 +127,15 @@ sub bb2html {
     } elsif($_ eq '[/raw]') {
       pop @open if $open[$#open] eq 'raw';
       next;
-    } 
-    
+    }
+
     # normal text processing
     $length += length $_;
     last if $maxlength && $length > $maxlength;
     $result .= $e->($_);
   }
 
-  $result .= '</a>' 
+  $result .= '</a>'
     while((local $_ = pop @open) ne 'first');
   $result .= '...' if $maxlength && $length > $maxlength;
 
@@ -146,7 +146,7 @@ sub bb2html {
 # GTIN code as argument,
 # Returns 'JAN', 'EAN', 'UPC' or undef,
 # Also 'normalizes' the first argument in place
-sub gtintype { 
+sub gtintype {
   $_[0] =~ s/[^\d]+//g;
   $_[0] =~ s/^0+//;
   my $c = shift;

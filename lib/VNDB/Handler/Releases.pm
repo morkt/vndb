@@ -313,7 +313,7 @@ sub _form {
     [ input  => short => 'title',     name => 'Title (romaji)', width => 300 ],
     [ input  => short => 'original',  name => 'Original title', width => 300 ],
     [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],
-    [ select => short => 'language',  name => 'Language', 
+    [ select => short => 'language',  name => 'Language',
       options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
     [ input  => short => 'gtin',      name => 'JAN/UPC/EAN' ],
     [ input  => short => 'website',   name => 'Official website' ],

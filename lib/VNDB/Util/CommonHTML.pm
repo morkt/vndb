@@ -31,7 +31,7 @@ sub htmlMainTabs {
       a href => "/t/$id", "discussions ($cnt)";
      end;
    }
-   
+
    if($type eq 'u' && $obj->{show_list}) {
      li $sel eq 'wish' ? (class => 'tabselected') : ();
       a href => "/$id/wish", 'wishlist';
@@ -306,7 +306,7 @@ sub revdiff {
     my @ser1 = map encode_utf8($_), $o{split} ? $o{split}->($ser1) : map xml_escape($_), split //, $ser1;
     my @ser2 = map encode_utf8($_), $o{split} ? $o{split}->($ser2) : map xml_escape($_), split //, $ser2;
     return if $o{split} && $#ser1 == $#ser2 && !grep $ser1[$_] ne $ser2[$_], 0..$#ser1;
-    
+
     $ser1 = $ser2 = '';
     my @d = compact_diff(\@ser1, \@ser2);
     for my $i (0..($#d-2)/2) {
@@ -372,7 +372,7 @@ sub htmlItemMessage {
   my($self, $type, $obj) = @_;
 
   if($obj->{locked}) {
-    p class => 'locked', 'Locked for editing' 
+    p class => 'locked', 'Locked for editing'
   } elsif(!$self->authInfo->{id}) {
     p class => 'locked';
      lit 'You need to be <a href="/u/login">logged in</a> to edit this page</a>';

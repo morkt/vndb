@@ -14,7 +14,7 @@ YAWF::register(
   qr{d([1-9]\d*)},                   \&docpage,
   qr{nospam},                        \&nospam,
   qr{([vrp])([1-9]\d*)/(lock|hide)}, \&itemmod,
- 
+
   # redirects for old URLs
   qr{(.*[^/]+)/+}, sub { $_[0]->resRedirect("/$_[1]", 'perm') },
   qr{p},           sub { $_[0]->resRedirect('/p/all', 'perm') },
@@ -139,11 +139,11 @@ sub history {
       my $revurl = "/$tc$i->{iid}.$i->{rev}";
 
       Tr $n % 2 ? ( class => 'odd' ) : ();
-       td class => 'tc1_1'; 
-        a href => $revurl, "$tc$i->{iid}";  
+       td class => 'tc1_1';
+        a href => $revurl, "$tc$i->{iid}";
        end;
-       td class => 'tc1_2'; 
-        a href => $revurl, ".$i->{rev}";   
+       td class => 'tc1_2';
+        a href => $revurl, ".$i->{rev}";
        end;
        td date $i->{added};
        td;

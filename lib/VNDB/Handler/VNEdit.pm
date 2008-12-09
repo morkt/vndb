@@ -132,7 +132,7 @@ sub _uploadimage {
   if($frm->{_err}) {
     unlink $tmp;
     return undef;
-  } 
+  }
 
   # store the file and let multi handle it
   my $imgid = $self->dbVNImageId;
@@ -171,7 +171,7 @@ sub _form {
     [ input    => short => 'l_encubed', pre => 'http://novelnews.net/tag/', post => '/' ],
     [ input    => short => 'l_renai',   pre => 'http://renai.us/game/', post => '.shtml' ],
     [ input    => short => 'l_vnn',     pre => 'http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=', width => 40 ],
-    
+
     [ input    => short => 'anime',     name => 'Anime' ],
     [ static   => content => q|
         Whitespace seperated list of <a href="http://anidb.net/">AniDB</a> anime IDs.

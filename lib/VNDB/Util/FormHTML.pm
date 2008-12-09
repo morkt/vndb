@@ -249,7 +249,7 @@ sub htmlForm {
     }
     input type => 'submit', value => 'Submit', class => 'submit';
    end;
-  end; 
+  end;
 
   end;
 }

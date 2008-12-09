@@ -9,7 +9,7 @@ our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel|;
 
 
 # %options->{ username passwd mail order uid results page }
-sub dbUserGet { 
+sub dbUserGet {
   my $s = shift;
   my %o = (
     order => 'username ASC',
@@ -48,7 +48,7 @@ sub dbUserGet {
 
 
 # uid, %options->{ columns in users table }
-sub dbUserEdit { 
+sub dbUserEdit {
   my($s, $uid, %o) = @_;
 
   my %h;

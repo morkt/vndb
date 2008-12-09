@@ -74,7 +74,7 @@ sub dbProducerGet {
       [ keys %r ]
     )});
   }
-  
+
   return wantarray ? ($r, $np) : $r;
 }
 

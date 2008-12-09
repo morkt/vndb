@@ -28,7 +28,7 @@ sub dbVNGet {
     defined $o{char} && !$o{char} ? (
       '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
     $o{cati} && @{$o{cati}} ? ( q|
-      v.id IN(SELECT iv.id 
+      v.id IN(SELECT iv.id
         FROM vn_categories ivc
         JOIN vn iv ON iv.latest = ivc.vid
         WHERE cat IN(!l)
@@ -37,8 +37,8 @@ sub dbVNGet {
     $o{cate} && @{$o{cate}} ? ( q|
       v.id NOT IN(SELECT iv.id
         FROM vn_categories ivc
-        JOIN vn iv ON iv.latest = ivc.vid 
-        WHERE cat IN(!l) 
+        JOIN vn iv ON iv.latest = ivc.vid
+        WHERE cat IN(!l)
         GROUP BY iv.id)| => [ $o{cate} ] ) : (),
     $o{lang} && @{$o{lang}} ? (
       '('.join(' OR ', map "v.c_languages ILIKE '%%$_%%'", @{$o{lang}}).')' => 1 ) : (),
@@ -78,11 +78,11 @@ sub dbVNGet {
     $o{rev} ?
       'JOIN vn v ON v.id = vr.vid' :
       'JOIN vn v ON vr.id = v.latest',
-    $o{rev} || $o{what} =~ /changes/ ? 
+    $o{rev} || $o{what} =~ /changes/ ?
       'JOIN changes c ON c.id = vr.id' : (),
     $o{what} =~ /changes/ ?
       'JOIN users u ON u.id = c.requester' : (),
-    $o{what} =~ /relgraph/ ? 
+    $o{what} =~ /relgraph/ ?
       'JOIN relgraph rg ON rg.id = v.rgraph' : (),
   );
 
@@ -261,7 +261,7 @@ sub dbScreenshotAdd {
 # arrayref of screenshot IDs as argument
 sub dbScreenshotGet {
   return shift->dbAll(q|SELECT * FROM screenshots WHERE id IN(!l)|, shift);
-} 
+}
 
 
 1;

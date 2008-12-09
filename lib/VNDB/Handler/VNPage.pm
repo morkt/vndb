@@ -57,7 +57,7 @@ sub page {
 
    div class => 'vndetails';
 
-    # image 
+    # image
     div class => 'vnimg';
      if(!$v->{image}) {
        p 'No image uploaded yet';
@@ -222,7 +222,7 @@ sub _revision {
 sub _producers {
   my($self, $i, $r) = @_;
   return if !grep @{$_->{producers}}, @$r;
-  
+
   my @lang;
   for my $l (@$r) {
     push @lang, $l->{language} if !grep $l->{language} eq $_, @lang;
@@ -291,7 +291,7 @@ sub _relations {
   push @{$rel{$_->{relation}}}, $_
     for (sort { $a->{title} cmp $b->{title} } @{$v->{relations}});
 
-  
+
   Tr ++$$i % 2 ? (class => 'odd') : ();
    td 'Relations';
    td class => 'relations';
