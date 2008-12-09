@@ -180,6 +180,27 @@ sub _infotable {
      end;
    }
 
+   if($self->authInfo->{id}) {
+     my $rl = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => $r->{id})->[0];
+     Tr ++$i % 2 ? (class => 'odd') : ();
+      td 'User options';
+      td;
+       Select id => 'listsel', name => 'listsel';
+        option !$rl ? 'not in your list' : "Status: $self->{vn_rstat}[$rl->{rstat}] / $self->{vn_vstat}[$rl->{vstat}]";
+        optgroup label => 'Set release status';
+         option value => "r$_", $self->{vn_rstat}[$_]
+           for (0..$#{$self->{vn_rstat}});
+        end;
+        optgroup label => 'Set play status';
+         option value => "v$_", $self->{vn_vstat}[$_]
+           for (0..$#{$self->{vn_vstat}});
+        end;
+        option value => 'del', 'remove from list' if $rl;
+       end;
+      end;
+     end;
+   }
+
   end;
 }
 

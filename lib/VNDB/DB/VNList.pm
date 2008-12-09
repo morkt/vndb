@@ -6,12 +6,32 @@ use warnings;
 use Exporter 'import';
 
 
-our @EXPORT = qw|dbVNListGet dbVNListAdd dbVNListDel|;
+our @EXPORT = qw|dbVNListGet dbVNListList dbVNListAdd dbVNListDel|;
+
+
+# Simpler and more efficient version of dbVNListList below
+# %options->{ uid rid }
+sub dbVNListGet {
+  my($self, %o) = @_;
+
+  my %where = (
+    'uid = ?' => $o{uid},
+    $o{rid} ? (
+      'rid = ?' => $o{rid} ) : (),
+  );
+
+  return $self->dbAll(q|
+    SELECT uid, rid, rstat, vstat
+      FROM rlists
+      !W|,
+    \%where
+  );
+}
 
 
 # %options->{ uid order char voted page results }
 # NOTE: this function is mostly copied from 1.x, may need some rewriting...
-sub dbVNListGet {
+sub dbVNListList {
   my($self, %o) = @_;
 
   $o{results} ||= 50;

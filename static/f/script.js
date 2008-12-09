@@ -290,6 +290,13 @@ DOMLoad(function() {
     };
 
 
+  // Release list editing
+  i = x('listsel');
+  if(i)
+    i.onchange = function() {
+      if(this.selectedIndex != 0)
+        location.href = location.href+'/list?e='+this.options[this.selectedIndex].value;
+    };
   // User VN list
   i = x('relhidall');
   if(i) {

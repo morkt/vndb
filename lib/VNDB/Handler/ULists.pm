@@ -10,6 +10,7 @@ use VNDB::Func;
 YAWF::register(
   qr{v([1-9]\d*)/vote},  \&vnvote,
   qr{v([1-9]\d*)/wish},  \&vnwish,
+  qr{r([1-9]\d*)/list},  \&rlist,
   qr{u([1-9]\d*)/wish},  \&wishlist,
   qr{u([1-9]\d*)/list},  \&vnlist,
 );
@@ -48,6 +49,28 @@ sub vnwish {
   $self->dbWishListAdd($id, $uid, $f->{s}) if $f->{s} != -1;
 
   $self->resRedirect('/v'.$id, 'temp');
+}
+
+
+sub rlist {
+  my($self, $id) = @_;
+
+  my $uid = $self->authInfo->{id};
+  return $self->htmlDenied() if !$uid;
+
+  my $f = $self->formValidate(
+    { name => 'e', required => 1, enum => [ 'del', map("r$_", 0..$#{$self->{vn_rstat}}), map("v$_", 0..$#{$self->{vn_vstat}}) ] },
+  );
+  return 404 if $f->{_err};
+
+  $self->dbVNListDel($uid, $id) if $f->{e} eq 'del';
+  $self->dbVNListAdd(
+    rid => $id,
+    uid => $uid,
+    $f->{e} =~ /^([rv])(\d+)$/ && $1 eq 'r' ? (rstat => $2) : (vstat => $2)
+  ) if $f->{e} ne 'del';
+
+  $self->resRedirect('/r'.$id, 'temp');
 }
 
 
@@ -183,7 +206,7 @@ sub vnlist {
   }
 
 
-  my($list, $np) = $self->dbVNListGet(
+  my($list, $np) = $self->dbVNListList(
     uid => $uid,
     results => 50,
     page => $f->{p},
