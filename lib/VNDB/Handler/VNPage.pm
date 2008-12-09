@@ -132,14 +132,16 @@ sub page {
           end;
           option value => -1, 'revoke' if $vote;
          end;
-         br;
-         Select id => 'wishsel';
-          option $wish ? "wishlist: $self->{wishlist_status}[$wish->{wstat}]" : 'not on your wishlist';
-          optgroup label => $wish ? 'Change status' : 'Add to wishlist';
-           option value => $_, $self->{wishlist_status}[$_] for (0..$#{$self->{wishlist_status}});
-          end;
-          option value => -1, 'remove from wishlist';
-         end;
+         if(!$vote || $wish) {
+           br;
+           Select id => 'wishsel';
+            option $wish ? "wishlist: $self->{wishlist_status}[$wish->{wstat}]" : 'not on your wishlist';
+            optgroup label => $wish ? 'Change status' : 'Add to wishlist';
+             option value => $_, $self->{wishlist_status}[$_] for (0..$#{$self->{wishlist_status}});
+            end;
+            option value => -1, 'remove from wishlist';
+           end;
+         }
         end;
        end;
      }
