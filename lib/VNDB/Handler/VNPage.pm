@@ -360,6 +360,13 @@ sub _releases {
      return;
    }
 
+   if($self->authInfo->{id}) {
+     my $l = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => [map $_->{id}, @$r]);
+     for my $i (@$l) {
+       (grep $i->{rid} == $_->{id}, @$r)[0]{ulist} = $i;
+     }
+   }
+
    my @lang;
    for my $l (@$r) {
      push @lang, $l->{language} if !grep $l->{language} eq $_, @lang;
@@ -368,7 +375,7 @@ sub _releases {
    table;
     for my $l (@lang) {
       Tr class => 'lang';
-       td colspan => 5;
+       td colspan => 6;
         acronym class => 'icons lang '.$l, title => $self->{languages}{$l}, ' ';
         txt $self->{languages}{$l};
        end;
@@ -388,6 +395,15 @@ sub _releases {
           a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
          end;
          td class => 'tc5';
+          if($rel->{ulist}) {
+            a href => "/r$rel->{id}";
+             lit liststat $rel->{ulist};
+            end;
+          } else {
+            txt ' ';
+          }
+         end;
+         td class => 'tc6';
           if($rel->{website}) {
             a href => $rel->{website}, rel => 'nofollow', class => 'icons ext', title => 'WWW', ' ';
           } else {

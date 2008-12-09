@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 use POSIX 'strftime';
-our @EXPORT = qw| shorten date datestr monthstr userstr bb2html gtintype |;
+our @EXPORT = qw| shorten date datestr monthstr userstr bb2html gtintype liststat |;
 
 
 # I would've done this as a #define if this was C...
@@ -168,6 +168,21 @@ sub gtintype {
   return 'UPC' if /^(?:0[01]|0[6-9]|13|75[45])/; # prefix code 000-019 & 060-139 & 754-755
   return  undef if /(?:0[2-5]|2|97[789]|9[6-9])/; # some codes we don't want: 020–059 & 200-299 & 977-999
   return 'EAN'; # let's just call everything else EAN :)
+}
+
+
+# Argument: hashref with rstat and vstat
+# Returns: empty string if not in list, otherwise colour-encoded list status
+sub liststat {
+  my $l = shift;
+  return '' if !$l;
+  my $rs = $YAWF::OBJ->{vn_rstat}[$l->{rstat}];
+  $rs = qq|<b class="done">$rs</b>| if $l->{rstat} == 2; # Obtained
+  $rs = qq|<b class="todo">$rs</b>| if $l->{rstat} < 2; # Unknown/pending
+  my $vs = $YAWF::OBJ->{vn_vstat}[$l->{vstat}];
+  $vs = qq|<b class="done">$vs</b>| if $l->{vstat} == 2; # Finished
+  $vs = qq|<b class="todo">$vs</b>| if $l->{vstat} == 0 || $l->{vstat} == 4; # Unknown/dropped
+  return "$rs / $vs";
 }
 
 

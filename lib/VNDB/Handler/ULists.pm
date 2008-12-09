@@ -303,15 +303,7 @@ sub _vnlist_browse {
           a href => "/r$_->{rid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;
          end;
          td colspan => 2, class => 'tc4';
-          my $rs = $self->{vn_rstat}[$_->{rstat}];
-          $rs = qq|<b class="done">$rs</b>| if $_->{rstat} == 2; # Obtained
-          $rs = qq|<b class="todo">$rs</b>| if $_->{rstat} < 2; # Unknown/pending
-          lit $rs;
-          txt ' / ';
-          my $vs = $self->{vn_vstat}[$_->{vstat}];
-          $vs = qq|<b class="done">$vs</b>| if $_->{vstat} == 2; # Finished
-          $vs = qq|<b class="todo">$vs</b>| if $_->{vstat} == 0 || $_->{vstat} == 4; # Unknown/dropped
-          lit $vs;
+          lit liststat($_);
          end;
         end;
       }

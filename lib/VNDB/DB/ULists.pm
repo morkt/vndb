@@ -20,8 +20,10 @@ sub dbVNListGet {
 
   my %where = (
     'uid = ?' => $o{uid},
-    $o{rid} ? (
+    $o{rid} && !ref $o{rid} ? (
       'rid = ?' => $o{rid} ) : (),
+    $o{rid} && ref $o{rid} ? (
+      'rid IN(!l)' => [$o{rid}] ) : (),
   );
 
   return $self->dbAll(q|

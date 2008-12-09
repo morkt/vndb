@@ -34,6 +34,8 @@ TODO:
 	    system in the future)
 	  - Improved formsub interface
 	  - Improved VN relation editor interface
+	  - Voted/non-voted filter to user's VNLists
+	  - VNList status can only be changed from release pages
 
 1.23 - 2008-10-22 (r117)
 	- Removed redirects for old revision URLs (the code wasn't very secure...)

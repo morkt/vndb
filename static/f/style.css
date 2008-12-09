@@ -85,6 +85,8 @@ h2 p {
 p.description {
   margin: 10px 100px!important;
 }
+b.done { font-weight: normal; color: #0c0 }
+b.todo { font-weight: normal; color: #c00 }
 
 
 
@@ -548,7 +550,14 @@ div.vndescription p {
 }
 .releases td.tc5 {
   text-align: right;
-  width: 20px;
+}
+.releases td.tc5 a {
+  color: #ddd!important;
+  border: 0;
+}
+.releases td.tc6 {
+  text-align: right;
+  width: 25px;
   padding: 0;
 }
 a.addnew {
@@ -838,8 +847,6 @@ ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
 .browse.rlist .relhid .tc2 { padding: 0; width: 30px; }
 .browse.rlist .relhid .tc3 { width: auto }
 .browse.rlist .relhid .tc4 { text-align: right }
-.rlist .done { font-weight: normal; color: #0c0 }
-.rlist .todo { font-weight: normal; color: #c00 }
 
 
 
