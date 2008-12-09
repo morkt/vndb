@@ -365,7 +365,7 @@ sub _releases {
    if($self->authInfo->{id}) {
      my $l = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => [map $_->{id}, @$r]);
      for my $i (@$l) {
-       (grep $i->{rid} == $_->{id}, @$r)[0]{ulist} = $i;
+       [grep $i->{rid} == $_->{id}, @$r]->[0]{ulist} = $i;
      }
    }
 
