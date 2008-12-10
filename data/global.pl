@@ -14,7 +14,7 @@ our %O = (
 
 # VNDB-specific options (object_data)
 our %S = (
-  version         => 'git-'.substr(`cd $VNDB::ROOT; git rev-parse HEAD`, 0, 12),
+  version         => `cd $VNDB::ROOT; git describe` =~ /^(.+)$/ && $1,
   url             => 'http://vndb.org',
   url_static      => 'http://s.vndb.org',
   site_title      => 'Yet another VNDB clone',
