@@ -127,12 +127,14 @@ sub dbVNListDel {
 }
 
 
-# %options->{ uid vid hide order results page }
+# %options->{ uid vid hide order results page what }
+# what: user, vn
 sub dbVoteGet {
   my($self, %o) = @_;
   $o{order} ||= 'n.date DESC';
   $o{results} ||= 50;
   $o{page} ||= 1;
+  $o{what} ||= '';
 
   my %where = (
     $o{uid} ? ( 'n.uid = ?' => $o{uid} ) : (),
@@ -140,15 +142,29 @@ sub dbVoteGet {
     $o{hide} ? ( 'u.show_list = TRUE' => 1 ) : (),
   );
 
+  my @select = (
+    qw|n.vid n.vote n.date n.uid|,
+    $o{what} =~ /user/ ? ('u.username') : (),
+    $o{what} =~ /vn/ ? (qw|vr.title vr.original|) : (),
+  );
+
+  my @join = (
+    $o{what} =~ /vn/ ? (
+      'JOIN vn v ON v.id = n.vid',
+      'JOIN vn_rev vr ON vr.id = v.latest'
+    ) : (),
+    $o{what} =~ /user/ || $o{hide} ? (
+      'JOIN users u ON u.id = n.uid'
+    ) : (),
+  );
+
   my($r, $np) = $self->dbPage(\%o, q|
-    SELECT n.vid, vr.title, vr.original, n.vote, n.date, n.uid, u.username
+    SELECT !s
       FROM votes n
-      JOIN vn v ON v.id = n.vid
-      JOIN vn_rev vr ON vr.id = v.latest
-      JOIN users u ON u.id = n.uid
+      !s
       !W
       ORDER BY !s|,
-    \%where, $o{order}
+    join(',', @select), join(' ', @join), \%where, $o{order}
   );
 
   return wantarray ? ($r, $np) : $r;
