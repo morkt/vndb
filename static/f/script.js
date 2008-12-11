@@ -268,7 +268,7 @@ DOMLoad(function() {
         +"It is generally a bad idea to have more than three games in your vote list with this rating, choose carefully!"))
         return;
       if(s)
-        location.href = location.href+'/vote?v='+s;
+        location.href = location.href.replace(/\.[0-9]+/, '')+'/vote?v='+s;
     };
 
   // VN Wishlist editing
@@ -276,7 +276,7 @@ DOMLoad(function() {
   if(i)
     i.onchange = function() {
       if(this.selectedIndex != 0)
-        location.href = location.href+'/wish?s='+this.options[this.selectedIndex].value;
+        location.href = location.href.replace(/\.[0-9]+/, '')+'/wish?s='+this.options[this.selectedIndex].value;
     };
   // Batch Wishlist editing
   i = x('batchedit');
@@ -295,7 +295,7 @@ DOMLoad(function() {
   if(i)
     i.onchange = function() {
       if(this.selectedIndex != 0)
-        location.href = location.href+'/list?e='+this.options[this.selectedIndex].value;
+        location.href = location.href.replace(/\.[0-9]+/, '')+'/list?e='+this.options[this.selectedIndex].value;
     };
   // User VN list
   i = x('relhidall');
