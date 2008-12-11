@@ -29,10 +29,10 @@ sub userpage {
 
   my $votes = $u->{c_votes} && $self->dbVoteStats(uid => $uid);
 
-  $self->htmlHeader(title => ucfirst($u->{username})."'s Profile");
+  $self->htmlHeader(title => ucfirst($u->{username})."'s profile");
   $self->htmlMainTabs('u', $u);
   div class => 'mainbox userpage';
-   h1 ucfirst($u->{username})."'s Profile";
+   h1 ucfirst($u->{username})."'s profile";
 
    table;
     Tr;
