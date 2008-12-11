@@ -199,7 +199,7 @@ sub list {
        end;
      }
    }
-   br style => 'clear: left';
+   clearfloat;
   end;
   $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 'b');
   $self->htmlFooter;

@@ -9,7 +9,10 @@ use Algorithm::Diff::XS 'compact_diff';
 use VNDB::Func;
 use Encode 'encode_utf8', 'decode_utf8';
 
-our @EXPORT = qw|htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate htmlRevision htmlEditMessage htmlItemMessage|;
+our @EXPORT = qw|
+  htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate
+  htmlRevision htmlEditMessage htmlItemMessage htmlVoteStats
+|;
 
 
 # generates the "main tabs". These are the commonly used tabs for
@@ -380,6 +383,62 @@ sub htmlItemMessage {
   } elsif(!$self->authCan('edit')) {
     p class => 'locked', "You're not allowed to edit this page";
   }
+}
+
+
+# generates two tables, one with a vote graph, other with recent votes
+sub htmlVoteStats {
+  my($self, $type, $obj, $stats) = @_;
+
+  my($max, $count, $total) = (0, 0);
+  for (0..$#$stats) {
+    $max = $stats->[$_] if $stats->[$_] > $max;
+    $count += $stats->[$_];
+    $total += $stats->[$_]*($_+1);
+  }
+  div class => 'votestats';
+   table class => 'votegraph';
+    thead; Tr;
+     td colspan => 2, 'Vote graph';
+    end; end;
+    for (reverse 0..$#$stats) {
+      Tr;
+      td class => 'number', $_+1;
+       td class => 'graph';
+        div style => 'width: '.($stats->[$_] ? $stats->[$_]/$max*250 : 0).'px', ' ';
+        txt $stats->[$_];
+       end;
+      end;
+    }
+    tfoot; Tr;
+     td colspan => 2, sprintf '%d votes total, average %.2f%s', $count, $total/$count,
+       $type eq 'v' ? ' ('.$self->{votes}[sprintf '%.0f', $total/$count-1].')' : '';
+    end; end;
+   end;
+
+   my $recent = $self->dbVoteGet(
+     $type.'id' => $obj->{id}, results => 8, order => 'date DESC', hide => 1,
+   );
+   table class => 'recentvotes';
+    thead; Tr;
+     td colspan => 3, 'Recent votes';
+    end; end;
+    for (0..$#$recent) {
+      Tr $_ % 2 == 0 ? (class => 'odd') : ();
+       td;
+        if($type eq 'u') {
+          a href => "/v$recent->[$_]{vid}", title => $recent->[$_]{original}||$recent->[$_]{title}, shorten $recent->[$_]{title}, 40;
+        } else {
+          a href => "/u$recent->[$_]{uid}", $recent->[$_]{username};
+        }
+       end;
+       td $recent->[$_]{vote};
+       td date $recent->[$_]{date};
+      end;
+    }
+   end;
+   clearfloat;
+  end;
 }
 
 

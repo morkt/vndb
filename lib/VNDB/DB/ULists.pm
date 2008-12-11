@@ -137,7 +137,7 @@ sub dbVoteGet {
   my %where = (
     $o{uid} ? ( 'n.uid = ?' => $o{uid} ) : (),
     $o{vid} ? ( 'n.vid = ?' => $o{vid} ) : (),
-    $o{hide} ? ( 'u.show_list = FALSE' => 1 ) : (),
+    $o{hide} ? ( 'u.show_list = TRUE' => 1 ) : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|

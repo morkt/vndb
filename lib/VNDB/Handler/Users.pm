@@ -27,11 +27,73 @@ sub userpage {
   my $u = $self->dbUserGet(uid => $uid)->[0];
   return 404 if !$u->{id};
 
+  my $votes = $u->{c_votes} && $self->dbVoteStats(uid => $uid);
+
   $self->htmlHeader(title => ucfirst($u->{username})."'s Profile");
   $self->htmlMainTabs('u', $u);
-  div class => 'mainbox';
+  div class => 'mainbox userpage';
    h1 ucfirst($u->{username})."'s Profile";
+
+   table;
+    Tr;
+     td class => 'key', ' ';
+     td ' ';
+    end;
+    my $i = 0;
+
+    Tr ++$i % 2 ? (class => 'odd') : ();
+     td 'Username';
+     td;
+      txt ucfirst($u->{username}).' (';
+      a href => "/u$uid", "u$uid";
+      txt ')';
+     end;
+    end;
+
+    Tr ++$i % 2 ? (class => 'odd') : ();
+     td 'Registered';
+     td date $u->{registered};
+    end;
+
+    Tr ++$i % 2 ? (class => 'odd') : ();
+     td 'Edits';
+     td;
+      if($u->{c_changes}) {
+        a href => "/u$uid/hist", $u->{c_changes};
+      } else {
+        txt '-';
+      }
+     end;
+    end;
+
+    Tr ++$i % 2 ? (class => 'odd') : ();
+     td 'Votes';
+     td;
+      if(!$u->{show_list}) {
+        txt 'hidden';
+      } elsif($votes) {
+        my($total, $count) = (0, 0);
+        for (1..@$votes) {
+          $total += $_*$votes->[$_-1];
+          $count += $votes->[$_-1];
+        }
+        a href => "/u$uid/list?v=1", $count;
+        txt sprintf ' (%.2f average)', $total/$count;
+      } else {
+        txt '-';
+      }
+     end;
+    end;
+
+   end;
   end;
+
+  if($u->{show_list} && $votes) {
+    div class => 'mainbox';
+     h1 'Vote statistics';
+     $self->htmlVoteStats(u => $u, $votes);
+    end;
+  }
   $self->htmlFooter;
 }
 

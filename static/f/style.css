@@ -88,6 +88,10 @@ p.description {
 b.done { font-weight: normal; color: #0c0 }
 b.todo { font-weight: normal; color: #c00 }
 
+.clearfloat {
+  clear: both;
+  height: 0;
+}
 
 
 
@@ -585,11 +589,21 @@ a.addnew {
   margin: 0;
 }
 
+
+
+
+
+/***** Vote stats ****/
+
+.votestats { width: 600px; margin: 0 auto; }
+.votegraph { float: left; margin-right: 20px }
 .votegraph td        { padding: 0 2px; }
 .votegraph td.number { text-align: right }
 .votegraph td div    { float: left; height: 14px; background-color: #258; margin-right: 2px; }
-.votegraph thead td  { background: transparent; text-align: center; }
-.votegraph tfoot td  { text-align: right }
+.votestats thead td { background: transparent; text-align: center; padding: 2px; }
+.votestats tfoot td  { text-align: right }
+
+.recentvotes { width: 300px }
 
 
 
@@ -847,6 +861,21 @@ ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
 .browse.rlist .relhid .tc2 { padding: 0; width: 30px; }
 .browse.rlist .relhid .tc3 { width: auto }
 .browse.rlist .relhid .tc4 { text-align: right }
+
+
+
+
+/***** Userpage *****/
+
+.userpage table {
+  width: 400px;
+  margin: 0 auto;
+}
+.userpage .key {
+  width: 70px;
+}
+
+
 
 
 

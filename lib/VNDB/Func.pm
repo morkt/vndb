@@ -3,9 +3,10 @@ package VNDB::Func;
 
 use strict;
 use warnings;
+use YAWF ':html';
 use Exporter 'import';
 use POSIX 'strftime';
-our @EXPORT = qw| shorten date datestr monthstr userstr bb2html gtintype liststat |;
+our @EXPORT = qw| shorten date datestr monthstr userstr bb2html gtintype liststat clearfloat |;
 
 
 # I would've done this as a #define if this was C...
@@ -183,6 +184,12 @@ sub liststat {
   $vs = qq|<b class="done">$vs</b>| if $l->{vstat} == 2; # Finished
   $vs = qq|<b class="todo">$vs</b>| if $l->{vstat} == 0 || $l->{vstat} == 4; # Unknown/dropped
   return "$rs / $vs";
+}
+
+
+# Clears a float, to make sure boxes always have the correct height
+sub clearfloat {
+  div class => 'clearfloat', '';
 }
 
 

@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use YAWF ':html';
 use Exporter 'import';
+use VNDB::Func;
 
 our @EXPORT = qw|htmlHeader htmlFooter|;
 
@@ -125,7 +126,7 @@ sub _menu {
         dd $stats->{$$_[0]};
       }
      end;
-     br style => 'clear: left';
+     clearfloat;
     end;
    end;
   end;

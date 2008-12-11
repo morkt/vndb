@@ -172,7 +172,7 @@ sub _filters {
        end;
      }
 
-     br style => 'clear: left';
+     clearfloat;
     end;
    end;
   end;
