@@ -8,13 +8,15 @@ use Exporter 'import';
 our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel|;
 
 
-# %options->{ username passwd mail order uid results page }
+# %options->{ username passwd mail order uid results page what }
+# what: stats
 sub dbUserGet {
   my $s = shift;
   my %o = (
     order => 'username ASC',
     page => 1,
     results => 10,
+    what => '',
     @_
   );
 
@@ -35,13 +37,22 @@ sub dbUserGet {
       'id > 0' => 1 ) : (),
   );
 
+  my @select = (
+    'u.*',
+    $o{what} =~ /stats/ ? (
+      '(SELECT COUNT(*) FROM rlists WHERE uid = u.id) AS releasecount',
+      '(SELECT COUNT(DISTINCT rv.vid) FROM rlists rl JOIN releases r ON rl.rid = r.id JOIN releases_vn rv ON rv.rid = r.latest WHERE uid = u.id) AS vncount',
+      '(SELECT COUNT(*) FROM threads_posts WHERE uid = u.id) AS postcount',
+      '(SELECT COUNT(*) FROM threads_posts WHERE uid = u.id AND num = 1) AS threadcount',
+    ) : (),
+  );
+
   my($r, $np) = $s->dbPage(\%o, q|
-    SELECT *
+    SELECT !s
       FROM users u
       !W
       ORDER BY !s|,
-    \%where,
-    $o{order}
+    join(', ', @select), \%where, $o{order}
   );
   return wantarray ? ($r, $np) : $r;
 }

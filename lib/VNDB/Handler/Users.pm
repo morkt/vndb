@@ -24,7 +24,7 @@ YAWF::register(
 sub userpage {
   my($self, $uid) = @_;
 
-  my $u = $self->dbUserGet(uid => $uid)->[0];
+  my $u = $self->dbUserGet(uid => $uid, what => 'stats')->[0];
   return 404 if !$u->{id};
 
   my $votes = $u->{c_votes} && $self->dbVoteStats(uid => $uid);
@@ -85,6 +85,17 @@ sub userpage {
      end;
     end;
 
+    Tr ++$i % 2 ? (class => 'odd') : ();
+     td 'List stats';
+     td !$u->{show_list} ? 'hidden' :
+       sprintf '%d releases of %d visual novels', $u->{releasecount}, $u->{vncount};
+    end;
+
+    Tr ++$i % 2 ? (class => 'odd') : ();
+     td 'Forum stats';
+     td !$u->{show_list} ? 'hidden' :
+       sprintf '%d posts, %d new threads', $u->{postcount}, $u->{threadcount};
+    end;
    end;
   end;
 
