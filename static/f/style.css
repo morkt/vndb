@@ -381,6 +381,8 @@ div.mainbox.history td.tc1_2 {
   padding-left: 0;
   width: 25px;
 }
+div.mainbox.history td.tc1_3 { width: 65px; }
+div.mainbox.history td.tc1_4 { width: 90px  }
 div.mainbox.history td.editsum {
   color: #258;
   padding-top: 0;

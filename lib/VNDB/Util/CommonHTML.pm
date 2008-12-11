@@ -472,8 +472,8 @@ sub htmlHistory {
        td class => 'tc1_2';
         a href => $revurl, ".$i->{rev}";
        end;
-       td date $i->{added};
-       td;
+       td class => 'tc1_3', date $i->{added};
+       td class => 'tc1_4';
         lit userstr($i);
        end;
        td;
