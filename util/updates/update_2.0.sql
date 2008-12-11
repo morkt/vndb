@@ -135,5 +135,6 @@ CREATE TRIGGER users_stats_update         AFTER INSERT OR DELETE ON users       
 
 -- extra user rank
 UPDATE users SET rank = rank+1;
+ALTER TABLE users ALTER COLUMN rank SET DEFAULT 3;
 
 

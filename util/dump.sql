@@ -177,7 +177,7 @@ CREATE TABLE users (
   id SERIAL NOT NULL PRIMARY KEY,
   username varchar(20) NOT NULL UNIQUE,
   mail varchar(100) NOT NULL,
-  rank smallint NOT NULL DEFAULT 2,
+  rank smallint NOT NULL DEFAULT 3,
   passwd bytea NOT NULL DEFAULT '',
   registered bigint NOT NULL DEFAULT 0,
   flags integer NOT NULL DEFAULT 7,

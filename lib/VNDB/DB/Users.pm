@@ -69,7 +69,7 @@ sub dbUserEdit {
 # username, md5(pass), mail
 sub dbUserAdd {
   my($s, @o) = @_;
-  $s->dbExec(q|INSERT INTO users (username, passwd, mail) VALUES(?, decode(?, 'hex'), ?)|, @o);
+  $s->dbExec(q|INSERT INTO users (username, passwd, mail, registered) VALUES(?, decode(?, 'hex'), ?, ?)|, @o, time);
 }
 
 
