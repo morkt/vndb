@@ -105,6 +105,14 @@ sub userpage {
      $self->htmlVoteStats(u => $u, $votes);
     end;
   }
+
+  if($u->{c_changes}) {
+    my $list = $self->dbRevisionGet(what => 'item user', uid => $uid, results => 5);
+    h1 class => 'boxtitle';
+     a href => "/u$uid/hist", 'Recent changes';
+    end;
+    $self->htmlHistory($list, { p => 1 }, 0, "/u$uid/hist");
+  }
   $self->htmlFooter;
 }
 

@@ -120,49 +120,7 @@ sub history {
    }
   end;
 
-  # actual browse box
-  $self->htmlBrowse(
-    items    => $list,
-    options  => $f,
-    nextpage => $np,
-    pageurl  => $u->(),
-    class    => 'history',
-    header   => [
-      sub { td colspan => 2, class => 'tc1', 'Rev.' },
-      [ 'Date' ],
-      [ 'User' ],
-      [ 'Page' ],
-    ],
-    row      => sub {
-      my($s, $n, $i) = @_;
-      my $tc = [qw|v r p|]->[$i->{type}];
-      my $revurl = "/$tc$i->{iid}.$i->{rev}";
-
-      Tr $n % 2 ? ( class => 'odd' ) : ();
-       td class => 'tc1_1';
-        a href => $revurl, "$tc$i->{iid}";
-       end;
-       td class => 'tc1_2';
-        a href => $revurl, ".$i->{rev}";
-       end;
-       td date $i->{added};
-       td;
-        lit userstr($i);
-       end;
-       td;
-        a href => $revurl, title => $i->{ioriginal}, shorten $i->{ititle}, 80;
-       end;
-      end;
-      if($i->{comments}) {
-        Tr $n % 2 ? ( class => 'odd' ) : ();
-         td colspan => 5, class => 'editsum';
-          lit bb2html $i->{comments}, 150;
-         end;
-        end;
-      }
-    },
-  );
-
+  $self->htmlHistory($list, $f, $np, $u->());
   $self->htmlFooter;
 }
 
