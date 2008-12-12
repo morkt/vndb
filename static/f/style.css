@@ -331,6 +331,44 @@ b.future {
 
 
 
+
+/***** Homepage ******/
+
+#maincontent .mainbox.threelayout {
+  float: left;
+  width: 31%;
+  height: 170px;
+  margin: 21px 10px -10px 0;
+  padding: 2px;
+  overflow: hidden;
+}
+#maincontent .mainbox.threelayout.last {
+  margin-right: 0;
+}
+#maincontent .mainbox.threelayout h1 {
+  margin: -3px 0 1px 0;
+  font-size: 12pt;
+  font-weight: bold;
+}
+#maincontent .mainbox.threelayout h2 {
+  font-size: 10pt;
+  margin-top: 3px;
+}
+#maincontent .mainbox.threelayout a.right {
+  float: right;
+}
+#maincontent .mainbox.threelayout ul {
+  list-style-type: none;
+  margin-left: 10px;
+}
+p.center img {
+  margin: 2px;
+}
+
+
+
+
+
 /***** Browsing ******/
 
 p.browseopts {

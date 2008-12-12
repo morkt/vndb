@@ -77,7 +77,8 @@ sub dbItemInsert {
 }
 
 
-# Options: type, iid, uid, auto, hidden, edit, page, results
+# Options: type, iid, uid, auto, hidden, edit, page, results, what
+# what: item user
 sub dbRevisionGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -85,6 +86,7 @@ sub dbRevisionGet {
   $o{auto} ||= 0;   # 0:show, -1:only, 1:hide
   $o{hidden} ||= 0;
   $o{edit} ||= 0;   # 0:both, -1:new, 1:edits
+  $o{what} ||= '';
 
   my %where = (
     $o{type} ? (

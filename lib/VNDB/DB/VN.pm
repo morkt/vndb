@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 use VNDB::Func 'gtintype';
 
-our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbVNCache dbScreenshotAdd dbScreenshotGet|;
+our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbVNCache dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
 
 
 # Options: id, rev, char, search, cati, cate, lang, platform, results, page, order, what
@@ -261,6 +261,20 @@ sub dbScreenshotAdd {
 # arrayref of screenshot IDs as argument
 sub dbScreenshotGet {
   return shift->dbAll(q|SELECT * FROM screenshots WHERE id IN(!l)|, shift);
+}
+
+
+# Fetch random VN + screenshots
+sub dbScreenshotRandom {
+  return shift->dbAll(q|
+    SELECT vs.scr, vr.vid, vr.title
+      FROM vn_screenshots vs
+      JOIN vn v ON v.latest = vs.vid
+      JOIN vn_rev vr ON vr.id = v.latest
+      WHERE vs.nsfw = FALSE
+      ORDER BY RANDOM()
+      LIMIT 5|
+  );
 }
 
 

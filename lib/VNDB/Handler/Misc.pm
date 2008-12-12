@@ -35,8 +35,125 @@ sub homepage {
 
   div class => 'mainbox';
    h1 $self->{site_title};
+   p class => 'description';
+    lit qq|
+     VNDB.org strives to be a comprehensive database for information about visual novels and
+     eroge.<br />
+     This website is built as a wiki, meaning that anyone can freely add and contribute information
+     to the database, allowing us to create the largest, most accurate and most up-to-date visual novel
+     database on the web.<br />
+     Registered users are also able to keep track of a personal list of games they want to play or have finished
+     and they can vote on all visual novels.<br />
+     <br />
+     Feel free to <a href="/v/all">browse around</a>, <a href="/u/register">register an account</a>
+     or to participate in the discussions about visual novels or VNDB on our <a href="/t">discussion board</a>.
+    |;
+   end;
+
+   my $scr = $self->dbScreenshotRandom;
+   p class => 'center';
+    br;
+    for (@$scr) {
+      a href => "/v$_->{vid}", title => $_->{title};
+       img src => sprintf("%s/st/%02d/%d.jpg", $self->{url_static}, $_->{scr}%100, $_->{scr}), alt => $_->{title};
+      end;
+    }
+   end;
   end;
 
+  # Recent changes
+  div class => 'mainbox threelayout';
+   h1 'Recent changes';
+   my $changes = $self->dbRevisionGet(what => 'item user', results => 10);
+   ul;
+    for (@$changes) {
+      my $t = (qw|v r p|)[$_->{type}];
+      li;
+       b "$t:";
+       a href => "/$t$_->{iid}.$_->{rev}", title => $_->{ioriginal}||$_->{ititle}, shorten $_->{ititle}, 30;
+       txt ' by ';
+       a href => "/u$_->{requester}", $_->{username};
+      end;
+    }
+   end;
+  end;
+
+  # Announcements
+  div class => 'mainbox threelayout';
+   my $an = $self->dbThreadGet(type => 'an', order => 't.id DESC', results => 2);
+   a class => 'right', href => '/t/an', 'News archive';
+   h1 'Announcements';
+   for (@$an) {
+     my $post = $self->dbPostGet(tid => $_->{id}, num => 1)->[0];
+     h2;
+      a href => "/t$_->{id}", $_->{title};
+     end;
+     p;
+      lit bb2html $post->{msg}, 150;
+     end;
+   }
+  end;
+
+  # Recent posts
+  div class => 'mainbox threelayout last';
+   h1 'Recent posts';
+   my $posts = $self->dbThreadGet(what => 'lastpost', results => 10, order => 'tpl.date DESC');
+   ul;
+    for (@$posts) {
+      li;
+       txt date($_->{ldate}).' ';
+       a href => "/t$_->{id}.$_->{count}", title => $_->{title}, shorten $_->{title}, 20;
+       txt ' by ';
+       a href => "/u$_->{luid}", $_->{lusername};
+      end;
+    }
+   end;
+  end;
+
+  # Random visual novels
+  div class => 'mainbox threelayout';
+   h1 'Random visual novels';
+   my $random = $self->dbVNGet(results => 10, order => 'RANDOM()');
+   ul;
+    for (@$random) {
+      li;
+       a href => "/v$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 40;
+      end;
+    }
+   end;
+  end;
+
+  # Upcoming releases
+  div class => 'mainbox threelayout';
+   h1 'Upcoming releases';
+   my $upcoming = $self->dbReleaseGet(results => 10, unreleased => 1);
+   ul;
+    for (@$upcoming) {
+      li;
+       lit datestr $_->{released};
+       txt ' ';
+       a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
+      end;
+    }
+   end;
+  end;
+
+  # Just released
+  div class => 'mainbox threelayout last';
+   h1 'Just released';
+   my $justrel = $self->dbReleaseGet(results => 10, order => 'rr.released DESC', unreleased => 0);
+   ul;
+    for (@$justrel) {
+      li;
+       lit datestr $_->{released};
+       txt ' ';
+       a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
+      end;
+    }
+   end;
+  end;
+
+  clearfloat;
   $self->htmlFooter;
 }
 
