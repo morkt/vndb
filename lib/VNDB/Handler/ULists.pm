@@ -216,7 +216,7 @@ sub vnlist {
   );
 
   my $title = $own ? 'My visual novel list' : "\u$u->{username}'s visual novel list";
-  $self->htmlHeader(title => $title);
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('u', $u, 'list');
 
   # url generator
