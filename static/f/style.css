@@ -361,7 +361,13 @@ b.future {
   list-style-type: none;
   margin-left: 10px;
 }
-p.center img {
+p.screenshots {
+  text-align: center;
+  margin-top: 10px;
+  padding: 0;
+  height: 105px;
+}
+p.screenshots img {
   margin: 2px;
 }
 
@@ -1045,6 +1051,9 @@ div#iv_view {
   border: 0;
   text-decoration: none;
 }
+.icons {
+  margin-top: 0px!important;
+}
 .icons.lang {
   width: 13px;
   height: 11px;
@@ -1052,7 +1061,7 @@ div#iv_view {
 }
 .icons.par, .icons.tri, .icons.com { width: 11px; }
 acronym.icons, acronym.uicons { cursor: default; }
-a.icons { border: none!important }
+a .icons { cursor: pointer }
 .icons.oth { background: none; }
 .icons.drc { background-position:   0px   0px; }
 .icons.lin { background-position:   0px -14px; }

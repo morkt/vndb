@@ -237,7 +237,7 @@ sub _producers {
       my %p = map { $_->{id} => $_ } map @{$_->{producers}}, grep $_->{language} eq $l, @$r;
       my @p = values %p;
       next if !@p;
-      acronym class => "icons lang $l", title => $self->{languages}{$l}, ' ';
+      cssicon "lang $l", $self->{languages}{$l};
       for (@p) {
         a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 30;
         txt ' & ' if $_ != $p[$#p];
@@ -378,7 +378,7 @@ sub _releases {
     for my $l (@lang) {
       Tr class => 'lang';
        td colspan => 6;
-        acronym class => 'icons lang '.$l, title => $self->{languages}{$l}, ' ';
+        cssicon "lang $l", $self->{languages}{$l};
         txt $self->{languages}{$l};
        end;
       end;
@@ -389,9 +389,9 @@ sub _releases {
          td class => 'tc3';
           for (sort @{$rel->{platforms}}) {
             next if $_ eq 'oth';
-            acronym class => "icons $_", title => $self->{platforms}{$_}, ' ';
+            cssicon $_, $self->{platforms}{$_};
           }
-          acronym class => 'icons '.lc(substr($self->{release_types}[$rel->{type}],0,3)), title => $self->{release_types}[$rel->{type}], ' ';
+          cssicon lc(substr($self->{release_types}[$rel->{type}],0,3)), $self->{release_types}[$rel->{type}];
          end;
          td class => 'tc4';
           a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
@@ -407,7 +407,9 @@ sub _releases {
          end;
          td class => 'tc6';
           if($rel->{website}) {
-            a href => $rel->{website}, rel => 'nofollow', class => 'icons ext', title => 'WWW', ' ';
+            a href => $rel->{website}, rel => 'nofollow';
+             cssicon 'ext', 'External link';
+            end;
           } else {
             txt ' ';
           }
@@ -441,7 +443,7 @@ sub _screenshots {
       next if !@scr;
       Tr class => 'rel';
        td colspan => 5;
-        acronym class => 'icons lang '.$rel->{language}, title => $self->{languages}{$rel->{language}}, ' ';
+        cssicon 'lang '.$rel->{language}, $self->{languages}{$rel->{language}};
         txt $rel->{title};
        end;
       end;

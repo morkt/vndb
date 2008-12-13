@@ -93,11 +93,11 @@ sub list {
         a href => '/v'.$l->{id}, title => $l->{original}||$l->{title}, shorten $l->{title}, 100;
        end;
        td class => 'tc2';
-        $_ ne 'oth' && acronym class => "icons $_", title => $self->{platforms}{$_}, ' '
+        $_ ne 'oth' && cssicon $_, $self->{platforms}{$_}
           for (sort split /\//, $l->{c_platforms});
        end;
        td class => 'tc3';
-        acronym class => "icons lang $_", title => $self->{languages}{$_}, ' '
+        cssicon "lang $_", $self->{languages}{$_}
           for (reverse sort split /\//, $l->{c_languages});
        end;
        td class => 'tc4';
@@ -152,7 +152,7 @@ sub _filters {
        span;
         input type => 'checkbox', id => "lang_$_";
         label for => "lang_$_";
-         acronym class => "icons lang $_", title => $self->{languages}{$_}, ' ';
+         cssicon "lang $_", $self->{languages}{$_};
          txt $self->{languages}{$_};
         end;
        end;
@@ -166,7 +166,7 @@ sub _filters {
        span;
         input type => 'checkbox', id => "plat_$_";
         label for => "plat_$_";
-         acronym class => "icons $_", title => $self->{platforms}{$_}, ' ';
+         cssicon $_, $self->{platforms}{$_};
          txt $self->{platforms}{$_};
         end;
        end;

@@ -192,7 +192,7 @@ sub list {
        ul;
        for ($perlist*$c..($perlist*($c+1))-1) {
          li;
-          acronym class => 'icons lang '.$list->[$_]{lang}, title => $self->{languages}{$list->[$_]{lang}}, ' ';
+          cssicon 'lang '.$list->[$_]{lang}, $self->{languages}{$list->[$_]{lang}};
           a href => "/p$list->[$_]{id}", $list->[$_]{name};
          end;
        }

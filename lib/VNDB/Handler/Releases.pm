@@ -102,7 +102,7 @@ sub _infotable {
     td 'Type';
     td;
      my $type = $self->{release_types}[$r->{type}];
-     acronym class => 'icons '.lc(substr $type, 0, 3), title => $type, ' ';
+     cssicon lc(substr $type, 0, 3), $type;
      txt ' '.$type;
     end;
    end;
@@ -110,7 +110,7 @@ sub _infotable {
    Tr ++$i % 2 ? (class => 'odd') : ();
     td 'Language';
     td;
-     acronym class => "icons lang $r->{language}", title => $self->{languages}{$r->{language}}, ' ';
+     cssicon "lang $r->{language}", $self->{languages}{$r->{language}};
      txt ' '.$self->{languages}{$r->{language}};
     end;
    end;
@@ -120,7 +120,7 @@ sub _infotable {
       td 'Platform'.($#{$r->{platforms}} ? 's' : '');
       td;
        for(@{$r->{platforms}}) {
-         acronym class => "icons $_", title => $self->{platforms}{$_}, ' ';
+         cssicon $_, $self->{platforms}{$_};
          txt ' '.$self->{platforms}{$_};
          br if $_ ne $r->{platforms}[$#{$r->{platforms}}];
        }
@@ -352,7 +352,7 @@ sub _form {
           input type => 'checkbox', name => 'platforms', value => $p, id => $p,
             $frm->{platforms} && grep($_ eq $p, @{$frm->{platforms}}) ? (checked => 'checked') : ();
           label for => $p;
-           acronym class => "icons $p", title => $self->{platforms}{$p}, ' ';
+           cssicon $p, $self->{platforms}{$p};
            txt ' '.$self->{platforms}{$p};
           end;
          end;

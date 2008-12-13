@@ -51,8 +51,7 @@ sub homepage {
    end;
 
    my $scr = $self->dbScreenshotRandom;
-   p class => 'center';
-    br;
+   p class => 'screenshots';
     for (@$scr) {
       a href => "/v$_->{vid}", title => $_->{title};
        img src => sprintf("%s/st/%02d/%d.jpg", $self->{url_static}, $_->{scr}%100, $_->{scr}), alt => $_->{title};

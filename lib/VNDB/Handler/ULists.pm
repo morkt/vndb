@@ -296,8 +296,8 @@ sub _vnlist_browse {
           lit datestr $_->{released};
          end;
          td class => 'tc2';
-          acronym class => "icons lang $_->{language}", title => $self->{languages}{$_->{language}}, ' ';
-          acronym class => 'icons '.substr(lc $self->{release_types}[$_->{type}], 0, 3), title => $self->{release_types}[$_->{type}].' release', ' ';
+          cssicon "lang $_->{language}", $self->{languages}{$_->{language}};
+          cssicon substr(lc $self->{release_types}[$_->{type}], 0, 3), $self->{release_types}[$_->{type}].' release';
          end;
          td class => 'tc3';
           a href => "/r$_->{rid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;

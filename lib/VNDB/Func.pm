@@ -6,7 +6,7 @@ use warnings;
 use YAWF ':html';
 use Exporter 'import';
 use POSIX 'strftime';
-our @EXPORT = qw| shorten date datestr monthstr userstr bb2html gtintype liststat clearfloat |;
+our @EXPORT = qw| shorten date datestr monthstr userstr bb2html gtintype liststat clearfloat cssicon |;
 
 
 # I would've done this as a #define if this was C...
@@ -190,6 +190,14 @@ sub liststat {
 # Clears a float, to make sure boxes always have the correct height
 sub clearfloat {
   div class => 'clearfloat', '';
+}
+
+
+# Draws a CSS icon, arguments: class, title
+sub cssicon {
+  acronym class => "icons $_[0]", title => $_[1];
+   lit '&nbsp;';
+  end;
 }
 
 
