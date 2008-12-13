@@ -93,8 +93,7 @@ sub userpage {
 
     Tr ++$i % 2 ? (class => 'odd') : ();
      td 'Forum stats';
-     td !$u->{show_list} ? 'hidden' :
-       sprintf '%d posts, %d new threads', $u->{postcount}, $u->{threadcount};
+     td sprintf '%d posts, %d new threads', $u->{postcount}, $u->{threadcount};
     end;
    end;
   end;
