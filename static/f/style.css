@@ -642,7 +642,7 @@ a.addnew {
 
 /***** Vote stats ****/
 
-.votestats { width: 600px; margin: 0 auto; }
+.votestats { width: 610px; margin: 0 auto; }
 .votegraph { float: left; margin-right: 20px }
 .votegraph td        { padding: 0 2px; }
 .votegraph td.number { text-align: right }
