@@ -168,6 +168,7 @@ sub history {
     { name => 'h', required => 0, default => 1, enum => [ -1..1 ] },
     { name => 't', required => 0, default => '', enum => [ 'v', 'r', 'p' ] },
     { name => 'e', required => 0, default => 0, enum => [ -1..1 ] },
+    { name => 'r', required => 0, default => 0, enum => [ 0, 1 ] },
   );
   return 404 if $f->{_err};
 
@@ -190,6 +191,7 @@ sub history {
     auto => $f->{m},
     hidden => $f->{h},
     edit => $f->{e},
+    releases => $f->{r},
   );
 
   $self->htmlHeader(title => $title, noindex => 1);
@@ -204,6 +206,7 @@ sub history {
     $_ .= ';h='.($n eq 'h' ? $v : $f->{h});
     $_ .= ';t='.($n eq 't' ? $v : $f->{t});
     $_ .= ';e='.($n eq 'e' ? $v : $f->{e});
+    $_ .= ';r='.($n eq 'r' ? $v : $f->{r});
   };
 
   # filters
@@ -232,6 +235,12 @@ sub history {
       a !$f->{e}       ? (class => 'optselected') : (), href => $u->(e =>  0), 'Show all changes';
       a  $f->{e} == 1  ? (class => 'optselected') : (), href => $u->(e =>  1), 'Only edits';
       a  $f->{e} == -1 ? (class => 'optselected') : (), href => $u->(e => -1), 'Only newly created pages';
+     end;
+   }
+   if($type eq 'v') {
+     p class => 'browseopts';
+      a !$f->{r} ? (class => 'optselected') : (), href => $u->(r => 0), 'Exclude';
+      a $f->{r}  ? (class => 'optselected') : (), href => $u->(r => 1), 'Include edits of releases';
      end;
    }
   end;

@@ -77,7 +77,7 @@ sub dbItemInsert {
 }
 
 
-# Options: type, iid, uid, auto, hidden, edit, page, results, what
+# Options: type, iid, uid, auto, hidden, edit, page, results, what, releases
 # what: item user
 sub dbRevisionGet {
   my($self, %o) = @_;
@@ -87,12 +87,17 @@ sub dbRevisionGet {
   $o{hidden} ||= 0;
   $o{edit} ||= 0;   # 0:both, -1:new, 1:edits
   $o{what} ||= '';
+  $o{releases} = 0 if !$o{type} || $o{type} ne 'v' || !$o{iid};
 
   my %where = (
-    $o{type} ? (
-      'c.type = ?' => { v=>0, r=>1, p=>2 }->{$o{type}} ) : (),
-    $o{iid} ? (
-      '!sr.!sid = ?' => [ $o{type}, $o{type}, $o{iid} ] ) : (),
+    $o{releases} ? (
+      '((c.type = ? AND vr.vid = ?) OR (c.type = ? AND rv.vid = ?))' => [0, $o{iid}, 1, $o{iid}],
+    ) : (
+      $o{type} ? (
+        'c.type = ?' => { v=>0, r=>1, p=>2 }->{$o{type}} ) : (),
+      $o{iid} ? (
+        '!sr.!sid = ?' => [ $o{type}, $o{type}, $o{iid} ] ) : (),
+    ),
     $o{uid} ? (
       'c.requester = ?' => $o{uid} ) : (),
     $o{auto} ? (
@@ -107,17 +112,18 @@ sub dbRevisionGet {
   );
 
   my @join = (
-    $o{iid} || $o{what} =~ /item/ || $o{hidden} ? (
+    $o{iid} || $o{what} =~ /item/ || $o{hidden} || $o{releases} ? (
       'LEFT JOIN vn_rev vr ON c.type = 0 AND c.id = vr.id',
       'LEFT JOIN releases_rev rr ON c.type = 1 AND c.id = rr.id',
       'LEFT JOIN producers_rev pr ON c.type = 2 AND c.id = pr.id',
     ) : (),
-    $o{hidden} ? (
+    $o{hidden} || $o{releases} ? (
       'LEFT JOIN vn v ON c.type = 0 AND vr.vid = v.id',
       'LEFT JOIN releases r ON c.type = 1 AND rr.rid = r.id',
       'LEFT JOIN producers p ON c.type = 2 AND pr.pid = p.id',
     ) : (),
     $o{what} =~ /user/ ? 'JOIN users u ON c.requester = u.id' : (),
+    $o{releases} ? 'LEFT JOIN releases_vn rv ON c.id = rv.rid' : (),
   );
 
   my @select = (
