@@ -144,36 +144,36 @@ sub _filters {
         end;
        end if $c !~ /[gph]/;
      }
-
-     h2;
-      lit 'Languages <p>(boolean or, selecting more gives more results)</p>';
-     end;
-     for(sort @{$self->dbLanguages}) {
-       span;
-        input type => 'checkbox', id => "lang_$_";
-        label for => "lang_$_";
-         cssicon "lang $_", $self->{languages}{$_};
-         txt $self->{languages}{$_};
-        end;
-       end;
-     }
-
-     h2;
-      lit 'Platforms <p>(boolean or, selecting more gives more results)</p>';
-     end;
-     for(sort keys %{$self->{platforms}}) {
-       next if $_ eq 'oth';
-       span;
-        input type => 'checkbox', id => "plat_$_";
-        label for => "plat_$_";
-         cssicon $_, $self->{platforms}{$_};
-         txt $self->{platforms}{$_};
-        end;
-       end;
-     }
-
-     clearfloat;
     end;
+
+    h2;
+     lit 'Languages <p>(boolean or, selecting more gives more results)</p>';
+    end;
+    for(sort @{$self->dbLanguages}) {
+      span;
+       input type => 'checkbox', id => "lang_$_";
+       label for => "lang_$_";
+        cssicon "lang $_", $self->{languages}{$_};
+        txt $self->{languages}{$_};
+       end;
+      end;
+    }
+
+    h2;
+     lit 'Platforms <p>(boolean or, selecting more gives more results)</p>';
+    end;
+    for(sort keys %{$self->{platforms}}) {
+      next if $_ eq 'oth';
+      span;
+       input type => 'checkbox', id => "plat_$_";
+       label for => "plat_$_";
+        cssicon $_, $self->{platforms}{$_};
+        txt $self->{platforms}{$_};
+       end;
+      end;
+    }
+
+    clearfloat;
    end;
   end;
 }
