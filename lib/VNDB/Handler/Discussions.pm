@@ -67,7 +67,7 @@ sub thread {
         }
        end;
        td class => 'tc2';
-        if($self->authCan('boardmod') || $_->{uid} == $self->authInfo->{id} && !$_->{hidden}) {
+        if($self->authCan('boardmod') || $self->authInfo->{id} && $_->{uid} == $self->authInfo->{id} && !$_->{hidden}) {
           i class => 'edit';
            txt '< ';
            a href => "/t$tid.$_->{num}/edit", 'edit';
