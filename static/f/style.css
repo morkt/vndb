@@ -416,17 +416,18 @@ form.search .submit {
 
 /* history browser */
 div.mainbox.history td.tc1_1 {
-  text-align: right;
-  padding-left: 15px;
+  padding-left: 0;
   padding-right: 0;
-  width: 40px;
+  text-align: right;
+  width: 60px;
+  *width: auto; /* IE7 sucks */
 }
 div.mainbox.history td.tc1_2 {
   padding-left: 0;
   width: 25px;
 }
-div.mainbox.history td.tc1_3 { width: 65px; }
-div.mainbox.history td.tc1_4 { width: 90px  }
+div.mainbox.history td.tc2 { width: 65px; }
+div.mainbox.history td.tc3 { width: 90px  }
 div.mainbox.history td.editsum {
   color: #258;
   padding-top: 0;
