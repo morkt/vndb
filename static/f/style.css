@@ -697,7 +697,7 @@ a.help {
 }
 
 #jt_box_relations table  { margin-bottom: 10px; }
-#jt_box_relations h2     { margin: 0 0 3px -10px; }
+#jt_box_relations h2     { margin: 0 0 3px 0px; }
 #jt_box_relations td     { padding: 1px 2px; vertical-align: middle; }
 #jt_box_relations td.tc1 { width: 300px; text-align: right }
 #jt_box_relations td.tc2 { width: 170px;  white-space: nowrap }
