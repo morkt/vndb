@@ -377,7 +377,7 @@ sub _threadlist {
        end;
       end;
       Tr $n % 2 ? ( class => 'odd' ) : ();
-       td colspan => 3, class => 'tags';
+       td colspan => 4, class => 'tags';
         txt ' > ';
         my $i = 1;
         for(sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$o->{tags}}) {

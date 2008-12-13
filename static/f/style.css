@@ -492,9 +492,9 @@ div.mainbox.discussions td.tags {
 div.mainbox.discussions td.tags a {
   color: #258!important
 }
-div.discussions td.tc4 {  width: 170px;  }
-div.discussions td.tc3 {  width: 90px;  }
-div.discussions td.tc2 {  width: 50px;  }
+div.discussions td.tc2 { width: 50px;  }
+div.discussions td.tc3 { width: 90px;  }
+div.discussions td.tc4 { width: 170px; }
 #maincontent h1.boxtitle, #maincontent h1.boxtitle a {
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
   font-weight: bold;
