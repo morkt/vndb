@@ -289,7 +289,7 @@ sub _vnlist_browse {
       end;
 
       for (@{$i->{rels}}) {
-        Tr class => "relhid vid$i->{vid} ";
+        Tr class => "relhid vid$i->{vid}";
          td class => 'tc1'.($own ? ' own' : '');
           input type => 'checkbox', name => 'sel', value => $_->{rid}
             if $own;
