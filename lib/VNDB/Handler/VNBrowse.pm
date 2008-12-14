@@ -132,7 +132,7 @@ sub _filters {
    div id => 'advoptions', class => 'hidden';
 
     h2;
-     lit 'Categories <p>(boolean and, selecting more gives less results. The categories are explained on <a href="/d1">this page</a>)</p>';
+     lit 'Categories <b>(boolean and, selecting more gives less results. The categories are explained on <a href="/d1">this page</a>)</b>';
     end;
     ul id => 'catselect';
      for my $c (qw| e g t p h l s |) {
@@ -147,7 +147,7 @@ sub _filters {
     end;
 
     h2;
-     lit 'Languages <p>(boolean or, selecting more gives more results)</p>';
+     lit 'Languages <b>(boolean or, selecting more gives more results)</b>';
     end;
     for(sort @{$self->dbLanguages}) {
       span;
@@ -160,7 +160,7 @@ sub _filters {
     }
 
     h2;
-     lit 'Platforms <p>(boolean or, selecting more gives more results)</p>';
+     lit 'Platforms <b>(boolean or, selecting more gives more results)</b>';
     end;
     for(sort keys %{$self->{platforms}}) {
       next if $_ eq 'oth';

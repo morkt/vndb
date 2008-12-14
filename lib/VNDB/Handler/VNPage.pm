@@ -67,7 +67,7 @@ sub page {
        img id => 'nsfw_hid', src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title};
        p id => 'nsfw_show';
         txt "This image has been flagged\nas Not Safe For Work.\n\n";
-        a href => '#', id => 'nsfw_show', 'Show me anyway';
+        a href => '#', 'Show me anyway';
         txt "\n\n(This warning can be disabled in your account)";
        end;
      } else {

@@ -83,7 +83,7 @@
  <i>Linear</i>.
 </p>
 <dl>
- <dt>Linear</d><dd>
+ <dt>Linear</dt><dd>
   A game with a linear plot has a static story; it is not possible to get different paths
   or endings. Many games in this category do not prompt the player with choices and simply
   tell the story as it is. This is, however, not a rule: it is also possible for a game
@@ -135,6 +135,7 @@
 :SUB:Protagonist
 <p>
  Indicates some information about the character the player takes control of.
+</p>
 <dl>
   <dt>Male</dt><dd>
     The protagonist is male.

@@ -211,7 +211,7 @@ sub htmlForm {
   if(@subs > 2) {
     ul class => 'maintabs notfirst', id => 'jt_select';
      for (0..$#subs/2) {
-       (my $short = lc $subs[$_*2]) =~ s/[^\w\d]+/_/;
+       (my $short = lc $subs[$_*2]) =~ s/[^\w\d]+/_/g;
        li class => 'left';
         a href => "#$short", id => "jt_sel_$short", $subs[$_*2];
        end;
@@ -222,7 +222,7 @@ sub htmlForm {
   # form subs
   while(my($name, $parts) = (shift(@subs), shift(@subs))) {
     last if !$name || !$parts;
-    (my $short = lc $name) =~ s/[^\w\d]+/_/;
+    (my $short = lc $name) =~ s/[^\w\d]+/_/g;
     div class => 'mainbox', id => 'jt_box_'.$short;
      h1 $name;
      fieldset;

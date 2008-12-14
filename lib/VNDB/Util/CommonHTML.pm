@@ -179,16 +179,16 @@ sub htmlBrowse {
      end;
     end;
 
-   # rows
-    $opt{row}->($self, $_+1, $opt{items}[$_])
-      for 0..$#{$opt{items}};
-
    # footer
     if($opt{footer}) {
       tfoot;
        $opt{footer}->($self);
       end;
     }
+
+   # rows
+    $opt{row}->($self, $_+1, $opt{items}[$_])
+      for 0..$#{$opt{items}};
 
    end;
   end;
@@ -378,7 +378,7 @@ sub htmlItemMessage {
     p class => 'locked', 'Locked for editing'
   } elsif(!$self->authInfo->{id}) {
     p class => 'locked';
-     lit 'You need to be <a href="/u/login">logged in</a> to edit this page</a>';
+     lit 'You need to be <a href="/u/login">logged in</a> to edit this page';
     end;
   } elsif(!$self->authCan('edit')) {
     p class => 'locked', "You're not allowed to edit this page";
@@ -401,6 +401,10 @@ sub htmlVoteStats {
     thead; Tr;
      td colspan => 2, 'Vote graph';
     end; end;
+    tfoot; Tr;
+     td colspan => 2, sprintf '%d votes total, average %.2f%s', $count, $total/$count,
+       $type eq 'v' ? ' ('.$self->{votes}[sprintf '%.0f', $total/$count-1].')' : '';
+    end; end;
     for (reverse 0..$#$stats) {
       Tr;
       td class => 'number', $_+1;
@@ -410,10 +414,6 @@ sub htmlVoteStats {
        end;
       end;
     }
-    tfoot; Tr;
-     td colspan => 2, sprintf '%d votes total, average %.2f%s', $count, $total/$count,
-       $type eq 'v' ? ' ('.$self->{votes}[sprintf '%.0f', $total/$count-1].')' : '';
-    end; end;
    end;
 
    my $recent = $self->dbVoteGet(

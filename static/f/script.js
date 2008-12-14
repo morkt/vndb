@@ -335,15 +335,16 @@ DOMLoad(function() {
 
 
   // show/hide NSFW VN image
-  cl('nsfw_show', function() {
-    x('nsfw_show').style.display = 'none';
-    x('nsfw_hid').style.display = 'block';
-    x('nsfw_hid').onclick = function() {
-      x('nsfw_show').style.display = 'block';
-      x('nsfw_hid').style.display = 'none';
+  if(x('nsfw_show'))
+    x('nsfw_show').getElementsByTagName('a')[0].onclick = function() {
+      x('nsfw_show').style.display = 'none';
+      x('nsfw_hid').style.display = 'block';
+      x('nsfw_hid').onclick = function() {
+        x('nsfw_show').style.display = 'block';
+        x('nsfw_hid').style.display = 'none';
+      };
+      return false
     };
-    return false
-  });
 
   // NSFW toggle for screenshots
   cl('nsfwhide', function() {

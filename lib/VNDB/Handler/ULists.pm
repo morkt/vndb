@@ -153,8 +153,7 @@ sub wishlist {
        td class => 'tc3', date $i->{added}, 'compact';
       end;
     },
-    footer   => sub {
-      return if !$own;
+    $own ? (footer => sub {
       Tr;
        td colspan => 3;
         Select name => 'batchedit', id => 'batchedit';
@@ -167,7 +166,7 @@ sub wishlist {
         end;
        end;
       end;
-    },
+    }) : (),
   );
   end if $own;
   $self->htmlFooter;
@@ -309,8 +308,7 @@ sub _vnlist_browse {
       }
     },
 
-    footer  => sub {
-      return if !$own;
+    $own ? (footer => sub {
       Tr;
        td class => 'tc1', colspan => 3;
         Select id => 'batchedit', name => 'batchedit';
@@ -328,7 +326,7 @@ sub _vnlist_browse {
        end;
        td class => 'tc2', colspan => 2, '* Obtained/finished/total';
       end;
-    }
+    }) : (),
   );
 
   end if $own;

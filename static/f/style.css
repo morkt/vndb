@@ -77,10 +77,9 @@ p.locked {
   font-style: italic;
   margin: 0!important;
 }
-h2 p {
+#maincontent h2 b {
   font: 8pt "Tahoma";
   font-weight: normal;
-  display: inline;
 }
 p.description {
   margin: 10px 100px!important;
