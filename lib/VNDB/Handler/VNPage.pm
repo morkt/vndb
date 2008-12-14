@@ -257,7 +257,7 @@ sub _categories {
   my %nolvl = (map {$_=>1} qw| pli pbr gaa gab hfa hfe |);
   for my $cp (qw|e s g p h|) {
     my $thisparent = 0;
-    my @sel = sort grep substr($_->[0], 0, 1) eq $cp, @{$v->{categories}};
+    my @sel = sort { $a->[0] cmp $b->[0] } grep substr($_->[0], 0, 1) eq $cp, @{$v->{categories}};
     if(@sel) {
       push @cat, [ $self->{categories}{$cp}[0] ];
       push @{$cat[$#cat]}, map [ $cp, substr($_->[0],1,2), $nolvl{$_->[0]} ? 0 : $_->[1] ], @sel;
