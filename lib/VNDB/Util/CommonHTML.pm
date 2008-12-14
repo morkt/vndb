@@ -423,24 +423,26 @@ sub htmlVoteStats {
      what => $type eq 'v' ? 'user' : 'vn',
      hide => $type eq 'v',
    );
-   table class => 'recentvotes';
-    thead; Tr;
-     td colspan => 3, 'Recent votes';
-    end; end;
-    for (0..$#$recent) {
-      Tr $_ % 2 == 0 ? (class => 'odd') : ();
-       td;
-        if($type eq 'u') {
-          a href => "/v$recent->[$_]{vid}", title => $recent->[$_]{original}||$recent->[$_]{title}, shorten $recent->[$_]{title}, 40;
-        } else {
-          a href => "/u$recent->[$_]{uid}", $recent->[$_]{username};
-        }
-       end;
-       td $recent->[$_]{vote};
-       td date $recent->[$_]{date};
-      end;
-    }
-   end;
+   if(@$recent) {
+     table class => 'recentvotes';
+      thead; Tr;
+       td colspan => 3, 'Recent votes';
+      end; end;
+      for (0..$#$recent) {
+        Tr $_ % 2 == 0 ? (class => 'odd') : ();
+         td;
+          if($type eq 'u') {
+            a href => "/v$recent->[$_]{vid}", title => $recent->[$_]{original}||$recent->[$_]{title}, shorten $recent->[$_]{title}, 40;
+          } else {
+            a href => "/u$recent->[$_]{uid}", $recent->[$_]{username};
+          }
+         end;
+         td $recent->[$_]{vote};
+         td date $recent->[$_]{date};
+        end;
+      }
+     end;
+   }
    clearfloat;
   end;
 }
