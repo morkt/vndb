@@ -60,18 +60,18 @@ ALTER TABLE users DROP COLUMN flags;
 
 
 
--- get rid of \r
+-- get rid of \r and leading and trailing whitespace
 UPDATE vn_rev
-  SET "desc"   = translate("desc",   E'\r', ''),
-      alias    = translate(alias,    E'\r', '');
+  SET "desc"   = trim(both E'\n ' from translate("desc",   E'\r', '')),
+      alias    = trim(both E'\n ' from translate(alias,    E'\r', ''));
 UPDATE releases_rev
-  SET notes    = translate(notes,    E'\r', '');
+  SET notes    = trim(both E'\n ' from translate(notes,    E'\r', ''));
 UPDATE producers_rev
-  SET "desc"   = translate("desc",   E'\r', '');
+  SET "desc"   = trim(both E'\n ' from translate("desc",   E'\r', ''));
 UPDATE changes
-  SET comments = translate(comments, E'\r', '');
+  SET comments = trim(both E'\n ' from translate(comments, E'\r', ''));
 UPDATE threads_posts
-  SET msg      = translate(msg,      E'\r', '');
+  SET msg      = trim(both E'\n ' from translate(msg,      E'\r', ''));
 
 
 
