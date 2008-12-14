@@ -68,8 +68,8 @@ sub staticpages {
 
   $_[KERNEL]->call(sitemap => addurl => '', 'daily');
 
-  /([0-9]+)$/ && $_[KERNEL]->call(sitemap => addurl => 'd'.$1, 'monthly')
-    for ( (</www/vndb/data/docs/*>) );
+  /([0-9]+)$/ && $_[KERNEL]->call(sitemap => addurl => 'd'.$1, 'monthly', [stat $_]->[9])
+    for (glob "$VNDB::ROOT/data/docs/*");
 
   $_[KERNEL]->call(sitemap => addurl => $_, 'weekly')
     for (map { 'v/'.$_, 'p/'.$_ } 'a'..'z', 0, 'all');
