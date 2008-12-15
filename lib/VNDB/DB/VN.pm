@@ -273,7 +273,7 @@ sub dbScreenshotRandom {
       JOIN vn_rev vr ON vr.id = v.latest
       WHERE vs.nsfw = FALSE
       ORDER BY RANDOM()
-      LIMIT 5|
+      LIMIT 4|
   );
 }
 
