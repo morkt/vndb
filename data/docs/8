@@ -1,80 +1,81 @@
-:TITLE:The VNDB TODO list
+:TITLE:Development roadmap
 :INC:index
 
 
 :SUB:Some notes
 This TODO list is just a place for Yorhel to write down his plans and ideas
 for the upcoming versions of VNDB. Keep in mind that probably not everything
-written down here will actually see the light of day.<br /><br />
-The full source code of the website is available through SVN: svn://blicky.net/vndb/,
-anonymous read access is allowed. The code is also available through HTTP using
-the <a href="http://svn.blicky.net/vndb/">Web SVN</a>.<br /><br />
+written down here will actually see the light of day.<br />
+<br />
+The full source code of the site is available on a
+<a href="http://git.blicky.net/vndb.git/">git repository</a>, you can use it
+to track changes to the code or even to run your own version of VNDB.<br />
+<br />
 There is a <a href="http://beta.vndb.org/">beta version</a> of VNDB available
 for testing. New features will be implemented there and tested before getting
 uploaded to the actual website. Everyone is free to play around and use that
 beta version as a sandbox. Keep in mind, however, that all changes you make
-on the beta are not permanent, and will be reverted whenever I synchronise the
-beta with a more recent version of the database.<br /><br />
+on the beta are not permanent, and will be reverted whenever the beta is
+synchronised with a more recent version of the database.<br /><br />
 Feel free to comment about the TODO list and to suggest new features on the
 <a href="/t/db">discussion board</a> or on <a href="irc://irc.synirc.net/vndb">
 IRC</a>.
 <br /><br />
-<b>Last update: 2008-06-22</b><br /><br />
+<b>Last update: 2008-12-14</b><br /><br />
 
 
-:SUB:Next version (1.18)
+:SUB:Next version (2.0)
+<ol>
+ <li>New layout</li>
+ <li>Complete code rewrite</li>
+</ol>
+<p>Progress: ~90%<br />
+TODO:</p>
 <ul>
- <li>Item-level revision numbers and extension for VNDBIDs(?)</li>
+ <li>IE6 bugfixing</li>
 </ul>
 
 
+:SUB:(Hopefully) soon
+<ol>
+ <li>Allow users to "subscribe" to stuff and provide notifies</li>
+ <li>Some kind of tagging system (<a href="/t42">t42</a>)</li>
+ <li>A proper ranking system</li>
+ <li>More VNList filters &amp; stats</li>
+ <li>Skin support</li>
+</ol>
+
+
 :SUB:Later
-<p>
- (No particular order)
-</p>
-<ul>
- <li>VN Staff and Character database (see below)</li>
- <li>Integrated discussions/messageboards</li>
+<ol>
+ <li>Release calendar</li>
+ <li>Producer relations</li>
+ <li><b style="font-weight: normal; text-decoration: line-through">VN Staff and Character database</b><br />
+  <i>Probably not going to make it into VNDB, unless someone wants to be in charge of this</i></li>
  <li>Soundtrack listing<br />
   <i>Work together with <a href="http://vgmdb.net/">VGMdb</a>.</i></li>
  <li>Manga relations<br />
   <i>Looking for a good and comprehensive manga database fetch info from</i></li>
- <li>Screenshots</li>
- <li>New layout</li>
- <li>Allow users to "subscribe" to stuff and provide notifies</li>
- <li>Yearly and monthly top 10 lists based on the votes<br />
-  <i>Requires way more users to vote on the VNs to give accurate lists</i></li>
- <li>Cover images for releases</li>
- <li>Split wishlist/blacklist and VNlist - VNlist should specify releases, not VNs</li>
+ <li>Reviews</li>
+ <li>Walkthroughs/guides?<br />
+  <i>Let each user maintain his own walkthrough, or just one collaboratively edited walkthough per VN?</i></li>
  <li>Image quality/resolution field to releases</li>
- <li>Some kind of recommendation or tagging system<br />
-  <i>I have no idea how to do this, input is more than welcome!</i></li>
- <li>Reviews and walkthroughs/guides?<br />
-  <i>Will need an active userbase for that to work, will it really work?</i></li>
-</ul>
+ <li>Some kind of minimal API for the hardcore VNDB fans (most likely using the JSON-RPC 1.0 Specification)</li>
+ <li>Automatic uploading of cover images from a URL</li>
+ <li>Scans of the packaging for releases</li>
+ <li>Store which fields have been changed for revisions using one-character-code indicators</li>
+</ol>
 
 
-:SUB:Staff &amp; character database implementation ideas
+:SUB:Technical things that need improvements
 <p>
- (These are still just ideas, feedback is most welcome)
+ (I'm not expecting anyone to understand this, just random notes for myself)
 </p>
-<ul>
- <li>Add "person" database</li>
- <li>Create a link between VN entries and persons<ul>
-  <li>Multiple persons per VN entry</li>
-  <li>Add a "role" to every person &lt;&gt; vn link (static/dynamic?)</li>
-  <li>Only add staff for the original release, and only the important roles:<br />
-   <i>Story, Art, Music<br />
-    I don't think we're interested in the people who wrote the engine
-    or translated the game.</i></li>
- </ul>
- <li>Add "characters" database</li>
- <li>Create a link between VN entries and characters, same as with persons<br />
-  <i>Only for characters in the original release</i></li>
- <li>Add a "voiced by" link between characters and persons<ul>
-  <li>Only the voice actresses of the first voiced release of the game should be mentioned.</li>
-  <li>This won't work when a character is voiced more than one person (e.g. appears in
-   multiple games with different cast, or the child version is voiced by someone else)</li>
-   </ul></li>
-</ul>
+<ol>
+ <li>Set PostgreSQL charset to UTF-8</li>
+ <li>Make use of PostgreSQL's fulltext search functionality to power the VN search</li>
+ <li>Proper implementation of the 'hidden' flag for v/r/p entries</li>
+ <li>Let VNDB and Multi communicate via SQL (and use schemas to separate the tables)</li>
+ <li>More secure login system</li>
+</ol>
 
