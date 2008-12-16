@@ -108,6 +108,8 @@
  <h2>User menu</h2>
  <ul>
   <li><a href="/u[[= $p{AuthId} ]]">[[: $p{AuthUsername} ]]</a> ([[: $p{AuthRankname} ]])</li>
+ [[ if($p{AuthId} && $p{AuthId} == 364) { ]]
+  <li><a href="/t61" style="color: red; font-size: 16px; font-weight: bold">READ THIS!</a></li>[[ } ]]
   <li><a href="/u[[= $p{AuthId} ]]/edit">My profile</a></li>
   <li><a href="/u[[= $p{AuthId} ]]/list">My visual novel list</a></li>
   [[ if($p{AuthOldList}) { ]]-
