@@ -21,7 +21,7 @@ Feel free to comment about the TODO list and to suggest new features on the
 <a href="/t/db">discussion board</a> or on <a href="irc://irc.synirc.net/vndb">
 IRC</a>.
 <br /><br />
-<b>Last update: 2008-12-14</b><br /><br />
+<b>Last update: 2008-12-17</b><br /><br />
 
 
 :SUB:Next version (2.0)
@@ -29,11 +29,10 @@ IRC</a>.
  <li>New layout</li>
  <li>Complete code rewrite</li>
 </ol>
-<p>Progress: ~90%<br />
-TODO:</p>
-<ul>
- <li>IE6 bugfixing</li>
-</ul>
+<p>
+ Progress: ~90%<br />
+ TODO: Testing &amp; bugfixing
+</p>
 
 
 :SUB:(Hopefully) soon
@@ -77,5 +76,6 @@ TODO:</p>
  <li>Proper implementation of the 'hidden' flag for v/r/p entries</li>
  <li>Let VNDB and Multi communicate via SQL (and use schemas to separate the tables)</li>
  <li>More secure login system</li>
+ <li>Use PostgreSQL stored procedures to insert revisions (using composite types, arrays, etc as arguments)</li>
 </ol>
 
