@@ -28,7 +28,10 @@
   Something has happened, so work it out! Alternatively, hide under a rock.
  </dd><dt>Romance</dt><dd>
   Pull some heart-strings, get intimate with another character, and have some fun!
-  Plenty of dating or some fanservice.
+  <br />
+  <b>Note</b>: Romance does not imply that sexual intercourse takes place. Likewise,
+  Sexual Content does not imply romantic intercourse takes place (for instance,
+  rape).
  </dd><dt>School Life</dt><dd>
   Obviously, a school is needed.
   It seems like a chore to us, but the characters like learning.
@@ -51,6 +54,7 @@
 </p>
 <dl>
  <dt>NVL</dt><dd>
+  Also known as Visual Novel or Novel Style.
   All games where the text is overlaid on the background and there is no special
   dialog-box fall under this category.
  </dd><dt>ADV</dt><dd>
@@ -120,6 +124,10 @@
 <dl>
  <dt>Earth</dt><dd>
   The game takes place on our own planet.
+  Most continents, countries and cities featured are portrayed as they are
+  or have been on Earth.
+  Stories set in ficticious cities based on real cities in recognised countries
+  take place on Earth.
  </dd><dt>Fantasy World</dt><dd>
   The game takes place on another world. The game's environment could be similar
   to that of our own with a few significant changes, but it could also be
@@ -135,6 +143,9 @@
 :SUB:Protagonist
 <p>
  Indicates some information about the character the player takes control of.
+ A combination of male and female protagonists is possible, e.g. multiple
+ protagonists.
+ In cases of sex change or transsexuality, use both.
 </p>
 <dl>
   <dt>Male</dt><dd>
@@ -165,9 +176,12 @@
   The usage of male characters with childlike features in sexual situations.
  </dd><dt>Yaoi</dt><dd>
   Sexual content depicting activity between males.
+  This does not imply Shounen Ai.
+  <br />
   Also known as: Boys' Love.
  </dd><dt>Yuri</dt><dd>
   Sexual content depicting activity between females.
+  This does not imply Shoujo Ai (for example, threesomes).
  </dd><dt>Rape</dt><dd>
   Situation in which a character is made to engage in sexual activities against
   their will.
