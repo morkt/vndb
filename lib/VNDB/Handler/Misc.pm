@@ -79,7 +79,7 @@ sub homepage {
   # Recent changes
   div class => 'mainbox threelayout';
    h1 'Recent changes';
-   my $changes = $self->dbRevisionGet(what => 'item user', results => 10, auto => 1);
+   my $changes = $self->dbRevisionGet(what => 'item user', results => 10, auto => 1, hidden => 1);
    ul;
     for (@$changes) {
       my $t = (qw|v r p|)[$_->{type}];
