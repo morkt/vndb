@@ -45,6 +45,18 @@ YAWF::register(
 
 );
 
+sub age {
+  my $a = time-$_[0];
+  return sprintf '%d %s%s', 
+    $a > 60*60*24*365*2       ? ( $a/60/60/24/365,      'years'  ) :
+    $a > 60*60*24*(365/12)*2  ? ( $a/60/60/24/(365/12), 'months' ) :
+    $a > 60*60*24*7*2         ? ( $a/60/60/24/7,        'weeks'  ) :
+    $a > 60*60*24*2           ? ( $a/60/60/24,          'days'   ) :
+    $a > 60*60*2              ? ( $a/60/60,             'hours'  ) :
+    $a > 60*2                 ? ( $a/60,                'min'    ) :
+                                ( $a,                   'sec'    ),
+    $_[1]?'':' ago';
+}
 
 sub homepage {
   my $self = shift;
@@ -117,7 +129,7 @@ sub homepage {
    ul;
     for (@$posts) {
       li;
-       txt date($_->{ldate}).' ';
+       txt age($_->{ldate}).' ';
        a href => "/t$_->{id}.$_->{count}", title => $_->{title}, shorten $_->{title}, 20;
        txt ' by ';
        a href => "/u$_->{luid}", $_->{lusername};
