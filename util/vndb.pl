@@ -39,6 +39,14 @@ YAWF::init(
 sub reqinit {
   my $self = shift;
   $self->authInit;
+
+  # check for IE6
+  if($self->reqHeader('User-Agent') && $self->reqHeader('User-Agent') =~ /MSIE 6/
+    && !$self->reqCookie('ie-sucks') && $self->reqPath ne 'we-dont-like-ie6') {
+    # act as if we're opening /we-dont-like-ie6 (ugly hack, until YAWF supports preventing URL handlers from firing)
+    $ENV{HTTP_REFERER} = $ENV{REQUEST_URI};
+    $ENV{REQUEST_URI} = '/we-dont-like-ie6';
+  }
 }
 
 

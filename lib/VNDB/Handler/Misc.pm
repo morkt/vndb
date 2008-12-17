@@ -14,6 +14,7 @@ YAWF::register(
   qr{d([1-9]\d*)},                   \&docpage,
   qr{nospam},                        \&nospam,
   qr{([vrp])([1-9]\d*)/(lock|hide)}, \&itemmod,
+  qr{we-dont-like-ie6},              \&ie6message,
 
   # redirects for old URLs
   qr{(.*[^/]+)/+}, sub { $_[0]->resRedirect("/$_[1]", 'perm') },
@@ -330,6 +331,48 @@ sub itemmod {
   $self->dbItemMod($type, $iid, $act eq 'hide' ? (hidden => !$obj->{hidden}) : (locked => !$obj->{locked}));
 
   $self->resRedirect("/$type$iid", 'temp');
+}
+
+
+sub ie6message {
+  my $self = shift;
+
+  if($self->reqParam('i-still-want-access')) {
+    (my $ref = $self->reqHeader('Referer') || '/') =~ s/^\Q$self->{url}//;
+    $ref = '/' if $ref eq '/we-dont-like-ie6';
+    $self->resRedirect($ref, 'temp');
+    $self->resHeader('Set-Cookie', "ie-sucks=1; path=/; domain=$self->{cookie_domain}");
+    return;
+  }
+
+  html;
+   head;
+    title 'Your browser sucks';
+    style type => 'text/css',
+      q|body { background: black }|
+     .q|div  { position: absolute; left: 50%; top: 50%; width: 500px; margin-left: -250px; height: 180px; margin-top: -90px; background-color: #012; border: 1px solid #258; text-align: center; }|
+     .q|p    { color: #ddd; margin: 10px; font: 9pt "Tahoma"; }|
+     .q|h1   { color: #258; font-size: 14pt; font-family: "Futura", "Century New Gothic", "Arial", Serif; font-weight: normal; margin: 10px 0 0 0; } |
+     .q|a    { color: #fff }|;
+   end;
+   body;
+    div;
+     h1 'Oops, we were too lazy support your browser!';
+     p;
+      lit qq|We decided to stop supporting Internet Explorer 6, as it's a royal pain in |
+         .qq|the ass to make our site look good in a browser that doesn't want to cooperate with us.<br />|
+         .qq|You can try one of the following free alternatives: |
+         .qq|<a href="http://www.mozilla.com/firefox/">Firefox</a>, |
+         .qq|<a href="http://www.opera.com/">Opera</a>, |
+         .qq|<a href="http://www.apple.com/safari/">Safari</a>, or |
+         .qq|<a href="http://www.google.com/chrome">Chrome</a>.<br /><br />|
+         .qq|If you're really stubborn about using Internet Explorer, upgrading to version 7 will also work.<br /><br />|
+         .qq|...and if you're mad, you can also choose to ignore this warning and |
+         .qq|<a href="/we-dont-like-ie6?i-still-want-access=1">open the site anyway</a>.|;
+     end;
+    end;
+   end;
+  end;
 }
 
 
