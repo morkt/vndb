@@ -6,13 +6,28 @@ use warnings;
 use YAWF ':html';
 use Exporter 'import';
 use POSIX 'strftime';
-our @EXPORT = qw| shorten date datestr monthstr userstr bb2html gtintype liststat clearfloat cssicon |;
+our @EXPORT = qw| shorten age date datestr monthstr userstr bb2html gtintype liststat clearfloat cssicon |;
 
 
 # I would've done this as a #define if this was C...
 sub shorten {
   my($str, $len) = @_;
   return length($str) > $len ? substr($str, 0, $len-3).'...' : $str;
+}
+
+
+# Argument: unix timestamp
+# Returns: age
+sub age {
+  my $a = time-$_[0];
+  return sprintf '%d %s ago',
+    $a > 60*60*24*365*2       ? ( $a/60/60/24/365,      'years'  ) :
+    $a > 60*60*24*(365/12)*2  ? ( $a/60/60/24/(365/12), 'months' ) :
+    $a > 60*60*24*7*2         ? ( $a/60/60/24/7,        'weeks'  ) :
+    $a > 60*60*24*2           ? ( $a/60/60/24,          'days'   ) :
+    $a > 60*60*2              ? ( $a/60/60,             'hours'  ) :
+    $a > 60*2                 ? ( $a/60,                'min'    ) :
+                                ( $a,                   'sec'    );
 }
 
 
