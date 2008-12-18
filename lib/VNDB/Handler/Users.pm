@@ -409,7 +409,7 @@ sub list {
   end;
 
   my($list, $np) = $self->dbUserGet(
-    order => ($f->{s} =~ /(votes|changes)/ ? 'c_' : '').$f->{s}.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
+    order => ($f->{s} eq 'changes' ? 'c_' : $f->{s} eq 'votes' ? 'NOT show_list, c_' : '').$f->{s}.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
     $char ne 'all' ? (
       firstchar => $char ) : (),
     results => 50,
