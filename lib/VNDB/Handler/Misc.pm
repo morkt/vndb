@@ -28,6 +28,8 @@ YAWF::register(
     sub { my $l = defined $_[1] ? $_[1] : '/all'; $_[0]->resRedirect("/u$l", 'perm') },
   qr{d([1-9]\d*)\.([1-9]\d*)},
     sub { $_[0]->resRedirect("/d$_[1]#$_[2]", 'perm') },
+  qr{u([1-9]\d*)/votes},
+    sub { $_[0]->resRedirect("/u$_[1]/list?v=1", 'perm') },
 
   # rewrite the old category browser to the new-ish search function
   qr{v/cat}, sub {
