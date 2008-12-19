@@ -21,7 +21,7 @@ Feel free to comment about the TODO list and to suggest new features on the
 <a href="/t/db">discussion board</a> or on <a href="irc://irc.synirc.net/vndb">
 IRC</a>.
 <br /><br />
-<b>Last update: 2008-12-17</b><br /><br />
+<b>Last update: 2008-12-19</b><br /><br />
 
 
 :SUB:Next version (2.0)
@@ -30,8 +30,9 @@ IRC</a>.
  <li>Complete code rewrite</li>
 </ol>
 <p>
- Progress: ~90%<br />
- TODO: Testing &amp; bugfixing
+ Progress: ~100%<br />
+ TODO: Uploading.<br />
+ ETA: 2008-12-20.
 </p>
 
 
@@ -48,6 +49,7 @@ IRC</a>.
 :SUB:Later
 <ol>
  <li>Release calendar</li>
+ <li>Catalog numbers for releases</li>
  <li>Producer relations</li>
  <li><b style="font-weight: normal; text-decoration: line-through">VN Staff and Character database</b><br />
   <i>Probably not going to make it into VNDB, unless someone wants to be in charge of this</i></li>
