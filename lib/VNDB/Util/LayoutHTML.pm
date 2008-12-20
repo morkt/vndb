@@ -63,7 +63,7 @@ sub _menu {
      fieldset;
       legend 'Search';
       input type => 'text', class => 'text', id => 'sq', name => 'sq', value => $o{search}||'search';
-      input type => 'submit', class => 'submit', value => 'Seach';
+      input type => 'submit', class => 'submit', value => 'Search';
      end;
     end;
    end;
