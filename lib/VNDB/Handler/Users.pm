@@ -125,7 +125,7 @@ sub login {
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
       { name => 'usrname', required => 1, minlength => 2, maxlength => 15, template => 'pname' },
-      { name => 'usrpass', required => 1, minlength => 4, maxlength => 15, template => 'asciiprint' },
+      { name => 'usrpass', required => 1, minlength => 4, maxlength => 64, template => 'asciiprint' },
     );
 
     (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$self->{url}//;
@@ -219,8 +219,8 @@ sub register {
     $frm = $self->formValidate(
       { name => 'usrname', template => 'pname', minlength => 2, maxlength => 15 },
       { name => 'mail', template => 'mail' },
-      { name => 'usrpass',  minlength => 4, maxlength => 15, template => 'asciiprint' },
-      { name => 'usrpass2', minlength => 4, maxlength => 15, template => 'asciiprint' },
+      { name => 'usrpass',  minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { name => 'usrpass2', minlength => 4, maxlength => 64, template => 'asciiprint' },
     );
     push @{$frm->{_err}}, 'passmatch'  if $frm->{usrpass} ne $frm->{usrpass2};
     push @{$frm->{_err}}, 'usrexists'  if $frm->{usrname} eq 'anonymous' || !$frm->{_err} && $self->dbUserGet(username => $frm->{usrname})->[0]{id};
@@ -283,8 +283,8 @@ sub edit {
         { name => 'rank', enum => [ 1..$#{$self->{user_ranks}} ] },
       ) : (),
       { name => 'mail', template => 'mail' },
-      { name => 'usrpass',  required => 0, minlength => 4, maxlength => 15, template => 'asciiprint' },
-      { name => 'usrpass2', required => 0, minlength => 4, maxlength => 15, template => 'asciiprint' },
+      { name => 'usrpass',  required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { name => 'usrpass2', required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
       { name => 'flags_list', required => 0, default => 0 },
       { name => 'flags_nsfw', required => 0, default => 0 },
     );
