@@ -6,7 +6,7 @@ TODO:
 	    (preferably with the option to re-add them when unhiding)
 	  + Add a link for the hidden 'h' option at /hist
 
-2.0 - ?
+2.0 - 2008-12-20
 	- New layout
 	- Massive code rewrite:
 	  - Switched to YAWF

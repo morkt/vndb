@@ -123,7 +123,8 @@ function dsKeyDown(ev) {
       obj.returnFunc();
     else
       return true;
-    x('ds_box').style.top = '-500px';
+    if(x('ds_box'))
+      x('ds_box').style.top = '-500px';
     obj.selectedId = 0;
 
     // opera hack: make sure to not send the form on the return key
