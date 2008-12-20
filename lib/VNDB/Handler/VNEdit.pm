@@ -59,7 +59,7 @@ sub edit {
       # parse and re-sort fields that have multiple representations of the same information
       my $anime = [ grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} ];
       my $categories = [ map { [ substr($_,0,3), substr($_,3,1) ] } split /,/, $frm->{categories} ];
-      my $relations = [ map { /^([0-9]+),([0-9]+),(.+)$/ && $2 != $vid ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{relations} ];
+      my $relations = [ map { /^([0-9]+),([0-9]+),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{relations} ];
       my $screenshots = [ map /^[0-9]+,[01],[0-9]+$/ ? [split /,/] : (), split / +/, $frm->{screenshots} ];
 
       $frm->{anime} = join ' ', sort { $a <=> $b } @$anime;
