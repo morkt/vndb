@@ -25,6 +25,9 @@ sub spawn {
     heap => {
       cvsize  => [ 256, 400 ],
       scrsize => [ 136, 102 ],
+      cvpath  => $VNDB::ROOT.'/static/cv',
+      sfpath  => $VNDB::ROOT.'/static/sf',
+      stpath  => $VNDB::ROOT.'/static/st',
     },
   );
 }
@@ -60,7 +63,7 @@ sub cmd_coverimage {
 sub cv_process { # id
   my $start = time;
 
-  my $img = sprintf '%s/%02d/%d.jpg', $VNDB::VNDBopts{imgpath}, $_[ARG0]%100, $_[ARG0];
+  my $img = sprintf '%s/%02d/%d.jpg', $_[HEAP]{cvpath}, $_[ARG0]%100, $_[ARG0];
 
   my $os = -s $img;
   my $im = Image::Magick->new;
@@ -150,8 +153,8 @@ sub cmd_screenshot {
 sub scr_process { # id
   my $start = time;
 
-  my $sf  = sprintf '%s/%02d/%d.jpg', $VNDB::VNDBopts{sfpath}, $_[ARG0]%100, $_[ARG0];
-  my $st  = sprintf '%s/%02d/%d.jpg', $VNDB::VNDBopts{stpath}, $_[ARG0]%100, $_[ARG0];
+  my $sf  = sprintf '%s/%02d/%d.jpg', $_[HEAP]{sfpath}, $_[ARG0]%100, $_[ARG0];
+  my $st  = sprintf '%s/%02d/%d.jpg', $_[HEAP]{stpath}, $_[ARG0]%100, $_[ARG0];
 
  # convert/compress full-size image
   my $os = -s $sf;
@@ -208,8 +211,8 @@ sub scr_clean {
 
   my($bytes, $items, $id) = (0, 0, 0);
   while(($id) = $q->fetchrow_array) {
-    my $f = sprintf '%s/%02d/%d.jpg', $VNDB::VNDBopts{stpath}, $id%100, $id;
-    my $t = sprintf '%s/%02d/%d.jpg', $VNDB::VNDBopts{stpath}, $id%100, $id;
+    my $f = sprintf '%s/%02d/%d.jpg', $_[HEAP]{sfpath}, $id%100, $id;
+    my $t = sprintf '%s/%02d/%d.jpg', $_[HEAP]{stpath}, $id%100, $id;
     $bytes += -s $f;
     $bytes += -s $t;
     $items++;

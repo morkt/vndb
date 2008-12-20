@@ -17,7 +17,7 @@ sub spawn {
   my $p = shift;
   POE::Session->create(
     package_states => [
-      $p => [qw| _start cmd_maintenance vncache revcache integrity unkanime logrotate |], 
+      $p => [qw| _start cmd_maintenance vncache usercache statscache revcache integrity unkanime logrotate |], 
     ],
   );
 }
@@ -25,12 +25,12 @@ sub spawn {
 
 sub _start {
   $_[KERNEL]->alias_set('maintenance');
-  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:vncache|revcache|integrity|unkanime|logrotate))+)$/, 'cmd_maintenance');
+  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:vncache|revcache|usercache|statscache|integrity|unkanime|logrotate))+)$/, 'cmd_maintenance');
   
  # Perform some maintenance functions every day on 0:00
   $_[KERNEL]->post(core => addcron => '0 0 * * *', 'maintenance vncache integrity unkanime');
  # update caches and rotate logs every 1st day of the month at 0:05
-  $_[KERNEL]->post(core => addcron => '5 0 1 * *' => 'maintenance revcache logrotate');
+  $_[KERNEL]->post(core => addcron => '5 0 1 * *' => 'maintenance usercache statscache revcache logrotate');
 }
 
 
@@ -46,6 +46,39 @@ sub vncache {
   $_[KERNEL]->call(core => log => 3 => 'Updating c_* columns in the vn table...');
  # takes ~5 seconds, better do this in the background...
   $Multi::SQL->do('SELECT update_vncache(0)');
+}
+
+
+sub usercache {
+  $_[KERNEL]->call(core => log => 3 => 'Updating c_* columns in the users table...');
+  $Multi::SQL->do(q|UPDATE users SET
+    c_votes = COALESCE(
+      (SELECT COUNT(vid)
+      FROM votes
+      WHERE uid = users.id
+      GROUP BY uid
+    ), 0),
+    c_changes = COALESCE(
+      (SELECT COUNT(id)
+      FROM changes
+      WHERE requester = users.id
+      GROUP BY requester
+    ), 0)
+  |);
+}
+
+
+sub statscache {
+  $_[KERNEL]->call(core => log => 3 => 'Updating the stats_cache table...');
+  $Multi::SQL->do($_) for(
+    q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM users)-1 WHERE section = 'users'|,
+    q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM vn        WHERE hidden = FALSE) WHERE section = 'vn'|,
+    q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM releases  WHERE hidden = FALSE) WHERE section = 'releases'|,
+    q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM producers WHERE hidden = FALSE) WHERE section = 'producers'|,
+    q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM threads   WHERE hidden = FALSE) WHERE section = 'threads'|,
+    q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM threads_posts WHERE hidden = FALSE
+        AND EXISTS(SELECT 1 FROM threads WHERE threads.id = tid AND threads.hidden = FALSE)) WHERE section = 'threads_posts'|
+  );
 }
 
 
@@ -114,10 +147,10 @@ sub unkanime {
 
 
 sub logrotate {
-  my $dir = sprintf '%s/old', $Multi::LOGDIR;
+  my $dir = sprintf '%s/old', $VNDB::M{log_dir};
   mkdir $dir if !-d $dir;
 
-  for (glob sprintf '%s/*', $Multi::LOGDIR) {
+  for (glob sprintf '%s/*', $VNDB::M{log_dir}) {
     next if /^\./ || /~$/ || !-f;
     my $f = /([^\/]+)$/ ? $1 : $_;
     my $n = sprintf '%s/%s.%04d-%02d-%02d.gz', $dir, $f, (localtime)[5]+1900, (localtime)[4]+1, (localtime)[3];
@@ -125,12 +158,12 @@ sub logrotate {
       $_[KERNEL]->call(core => log => 1, 'Logs already rotated earlier today!');
       return;
     }
-    open my $I, '<', sprintf '%s/%s', $Multi::LOGDIR, $f;
+    open my $I, '<', sprintf '%s/%s', $VNDB::M{log_dir}, $f;
     open my $O, '>:gzip', $n;
     print $O $_ while <$I>;
     close $O;
     close $I;
-    open $I, '>', sprintf '%s/%s', $Multi::LOGDIR, $f;
+    open $I, '>', sprintf '%s/%s', $VNDB::M{log_dir}, $f;
     close $I;
   }
 }

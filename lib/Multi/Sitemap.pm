@@ -20,8 +20,7 @@ sub spawn {
       $p => [qw| _start cmd_sitemap staticpages vnpages releasepages producerpages finish addurl |],
     ],
     heap => {
-      output => '/www/vndb/www/sitemap.xml.gz',
-      baseurl => $VNDB::VNDBopts{root_url},
+      output => $VNDB::ROOT.'/www/sitemap.xml.gz',
       @_,
     }
   );
@@ -69,11 +68,11 @@ sub staticpages {
 
   $_[KERNEL]->call(sitemap => addurl => '', 'daily');
 
-  /([0-9]+)$/ && $_[KERNEL]->call(sitemap => addurl => 'd'.$1, 'monthly')
-    for ( (</www/vndb/data/docs/*>) );
+  /([0-9]+)$/ && $_[KERNEL]->call(sitemap => addurl => 'd'.$1, 'monthly', [stat $_]->[9])
+    for (glob "$VNDB::ROOT/data/docs/*");
 
   $_[KERNEL]->call(sitemap => addurl => $_, 'weekly')
-    for ( (map { 'v/'.$_ } 'a'..'z'), 'v/all', 'v/search', (map { 'p/'.$_ } 'a'..'z'), 'p/all');
+    for (map { 'v/'.$_, 'p/'.$_ } 'a'..'z', 0, 'all');
 
   $_[KERNEL]->yield('vnpages');
 }
@@ -89,10 +88,8 @@ sub vnpages {
     JOIN changes c ON vr.id = c.id
   |);
   $q->execute;
-  while(local $_ = $q->fetchrow_arrayref) {
-    $_[KERNEL]->call(sitemap => addurl => 'v'.$_->[0], 'weekly', $_->[1], 0.7);
-    $_[KERNEL]->call(sitemap => addurl => 'v'.$_->[0].'/rg', 'weekly', $_->[1], 0.7) if $_->[2];
-  }
+  $_[KERNEL]->call(sitemap => addurl => 'v'.$_->[0], 'weekly', $_->[1], 0.7)
+    while(local $_ = $q->fetchrow_arrayref);
 
   $_[KERNEL]->yield('releasepages');
 }
@@ -108,9 +105,8 @@ sub releasepages {
     JOIN changes c ON c.id = rr.id
   |);
   $q->execute;
-  while(local $_ = $q->fetchrow_arrayref) {
-    $_[KERNEL]->call(sitemap => addurl => 'r'.$_->[0], 'weekly', $_->[1], 0.3);
-  }
+  $_[KERNEL]->call(sitemap => addurl => 'r'.$_->[0], 'weekly', $_->[1], 0.3)
+    while(local $_ = $q->fetchrow_arrayref);
 
   $_[KERNEL]->yield('producerpages');
 }
@@ -126,9 +122,8 @@ sub producerpages {
     JOIN changes c ON c.id = pr.id
   |); 
   $q->execute;
-  while(local $_ = $q->fetchrow_arrayref) {
-    $_[KERNEL]->call(sitemap => addurl => 'p'.$_->[0], 'weekly', $_->[1]);
-  }
+  $_[KERNEL]->call(sitemap => addurl => 'p'.$_->[0], 'weekly', $_->[1])
+    while(local $_ = $q->fetchrow_arrayref);
 
   $_[KERNEL]->yield('finish');
 }
@@ -146,7 +141,7 @@ sub finish {
 
 sub addurl { # loc, changefreq, lastmod, priority
   $_[HEAP]{xml}->startTag('url');
-   $_[HEAP]{xml}->dataElement(loc => $_[HEAP]{baseurl}.'/'.$_[ARG0]);
+   $_[HEAP]{xml}->dataElement(loc => $VNDB::S{url}.'/'.$_[ARG0]);
    $_[HEAP]{xml}->dataElement(changefreq => $_[ARG1]) if defined $_[ARG1];
    $_[HEAP]{xml}->dataElement(lastmod => DateTime->from_epoch(epoch => $_[ARG2])->ymd) if defined $_[ARG2];
    $_[HEAP]{xml}->dataElement(priority => $_[ARG3]) if defined $_[ARG3];

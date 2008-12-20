@@ -137,6 +137,12 @@ CREATE TABLE screenshots (
   height smallint NOT NULL DEFAULT 0
 );
 
+-- stats_cache
+CREATE TABLE stats_cache (
+  section varchar(25) NOT NULL PRIMARY KEY,
+  count integer NOT NULL DEFAULT 0
+);
+
 -- threads
 CREATE TABLE threads (
   id SERIAL NOT NULL PRIMARY KEY,
@@ -171,10 +177,14 @@ CREATE TABLE users (
   id SERIAL NOT NULL PRIMARY KEY,
   username varchar(20) NOT NULL UNIQUE,
   mail varchar(100) NOT NULL,
-  rank smallint NOT NULL DEFAULT 2,
+  rank smallint NOT NULL DEFAULT 3,
   passwd bytea NOT NULL DEFAULT '',
   registered bigint NOT NULL DEFAULT 0,
-  flags integer NOT NULL DEFAULT 7
+  flags integer NOT NULL DEFAULT 7,
+  show_nsfw boolean NOT NULL DEFAULT FALSE,
+  show_list boolean NOT NULL DEFAULT TRUE,
+  c_votes integer NOT NULL DEFAULT 0,
+  c_changes integer NOT NULL DEFAULT 0
 );
 
 -- vn
@@ -404,6 +414,84 @@ $$ LANGUAGE plpgsql;
 
 
 
+
+-----------------------
+--  T R I G G E R S  --
+-----------------------
+
+
+-- keep the c_* columns in the users table up to date
+CREATE OR REPLACE FUNCTION update_users_cache() RETURNS TRIGGER AS $$
+BEGIN
+  IF TG_TABLE_NAME = 'votes' THEN
+    IF TG_OP = 'INSERT' THEN
+      UPDATE users SET c_votes = c_votes + 1 WHERE id = NEW.uid;
+    ELSE
+      UPDATE users SET c_votes = c_votes - 1 WHERE id = OLD.uid;
+    END IF;
+  ELSE
+    IF TG_OP = 'INSERT' THEN
+      UPDATE users SET c_changes = c_changes + 1 WHERE id = NEW.requester;
+    ELSE
+      UPDATE users SET c_changes = c_changes - 1 WHERE id = OLD.requester;
+    END IF;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER users_changes_update AFTER INSERT OR DELETE ON changes FOR EACH ROW EXECUTE PROCEDURE update_users_cache();
+CREATE TRIGGER users_votes_update   AFTER INSERT OR DELETE ON votes   FOR EACH ROW EXECUTE PROCEDURE update_users_cache();
+
+
+-- the stats_cache table
+CREATE OR REPLACE FUNCTION update_stats_cache() RETURNS TRIGGER AS $$
+BEGIN
+  IF TG_OP = 'INSERT' THEN
+    IF TG_TABLE_NAME = 'users' THEN
+      UPDATE stats_cache SET count = count+1 WHERE section = TG_TABLE_NAME;
+    ELSIF NEW.hidden = FALSE THEN
+      IF TG_TABLE_NAME = 'threads_posts' THEN
+        IF EXISTS(SELECT 1 FROM threads WHERE id = NEW.tid AND hidden = FALSE) THEN
+          UPDATE stats_cache SET count = count+1 WHERE section = TG_TABLE_NAME;
+        END IF;
+      ELSE
+        UPDATE stats_cache SET count = count+1 WHERE section = TG_TABLE_NAME;
+      END IF;
+    END IF;
+
+  ELSIF TG_OP = 'UPDATE' AND TG_TABLE_NAME <> 'users' THEN
+    IF OLD.hidden = TRUE AND NEW.hidden = FALSE THEN
+      IF TG_TABLE_NAME = 'threads' THEN
+        UPDATE stats_cache SET count = count+NEW.count WHERE section = 'threads_posts';
+      END IF;
+      UPDATE stats_cache SET count = count+1 WHERE section = TG_TABLE_NAME;
+    ELSIF OLD.hidden = FALSE AND NEW.hidden = TRUE THEN
+      IF TG_TABLE_NAME = 'threads' THEN
+        UPDATE stats_cache SET count = count-NEW.count WHERE section = 'threads_posts';
+      END IF;
+      UPDATE stats_cache SET count = count-1 WHERE section = TG_TABLE_NAME;
+    END IF;
+
+  ELSIF TG_OP = 'DELETE' AND TG_TABLE_NAME = 'users' THEN
+    UPDATE stats_cache SET count = count-1 WHERE section = TG_TABLE_NAME;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER vn_stats_update            AFTER INSERT OR UPDATE ON vn            FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER producers_stats_update     AFTER INSERT OR UPDATE ON producers     FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER releases_stats_update      AFTER INSERT OR UPDATE ON releases      FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER threads_stats_update       AFTER INSERT OR UPDATE ON threads       FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER threads_posts_stats_update AFTER INSERT OR UPDATE ON threads_posts FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER users_stats_update         AFTER INSERT OR DELETE ON users         FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
+
+
+
+
+
+
 ---------------------------------
 --  M I S C E L L A N E O U S  --
 ---------------------------------
@@ -412,8 +500,18 @@ $$ LANGUAGE plpgsql;
 -- Sequences used for ID generation of items not in the DB
 CREATE SEQUENCE covers_seq;
 
+
+-- Rows that are assumed to be available
 INSERT INTO users (id, username, mail, rank)
   VALUES (0, 'deleted', 'del@vndb.org', 0);
 INSERT INTO users (username, mail, rank, registered)
   VALUES ('multi', 'multi@vndb.org', 0, EXTRACT(EPOCH FROM NOW()));
+
+INSERT INTO stats_cache (section, count) VALUES
+  ('users',         1),
+  ('vn',            0),
+  ('producers',     0),
+  ('releases',      0),
+  ('threads',       0),
+  ('threads_posts', 0);
 

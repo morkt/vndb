@@ -5,7 +5,38 @@ TODO:
 	  + Remove all references to an item when it's hidden
 	    (preferably with the option to re-add them when unhiding)
 	  + Add a link for the hidden 'h' option at /hist
-	+ Rewrite the revision diff code, it's horrible...
+
+2.0 - ?
+	- New layout
+	- Massive code rewrite:
+	  - Switched to YAWF
+	  - Removed template system
+	  - Split DB functions in several files
+	  - Converted absolute paths to be relative to the root directory
+	- Database changes:
+	  - Added caching of edit and vote counts in users.c_votes and .c_changes
+	  - Split users.flags into users.show_nsfw and .show_list (boolean type)
+	  - Global statistics are cached in stats_cache
+	- URL changes:
+	  - /p and /v don't work anymore, use /[pv]/all
+	  - /u/list/* -> /u/* and /u/list -> /u/list/all
+	  - Revert URL changed from /x99/edit?rev=1 to /x99.1/edit
+	  - /v+/stats and /v+/scr moved into /v+
+	- Functionality changes:
+	  - Ability to sort the userlist on vote and change counts
+	  - Added threads and posts counts to the global statistics
+	  - Improved diff calculation
+	  - Whitespace around input fields are removed
+	  - Automated edits filter to history browser
+	  - Number of threads is shown in the discussion tab for each item
+	  - Boardmods can edit threads without updating the last edited field
+	  - No more RSS feeds for changes (will be replaced with a notification
+	    system in the future)
+	  - Improved formsub interface
+	  - Improved VN relation editor interface
+	  - Voted/non-voted filter to user's VNLists
+	  - VNList status can only be changed from release pages
+	  - More stats + recent changes on user pages
 
 1.23 - 2008-10-22 (r117)
 	- Removed redirects for old revision URLs (the code wasn't very secure...)
