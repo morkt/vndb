@@ -68,7 +68,7 @@ img {
   text-decoration: underline;
 }
 
-ul {
+ul, ol {
   margin-left: 35px;
 }
 p.locked {
