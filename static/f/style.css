@@ -469,13 +469,13 @@ div.thread i.lastmod {
   float: right;
   font-size: 7pt;
   color: #258;
-  margin: -10px -10px -5px;
+  margin: 0 -10px -5px 0;
 }
 div.thread i.edit {
   float: right;
   color: #258;
   font-style: normal;
-  margin: -10px -10px -5px;
+  margin: -10px -10px 0 0;
 }
 
 /* threads browser */
