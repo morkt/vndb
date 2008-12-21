@@ -693,6 +693,9 @@ a.help {
   width: 160px;
   border: none
 }
+.catsel_1 { color: #0c0!important }
+.catsel_2 { color: #cc0!important }
+.catsel_3 { color: #c00!important }
 
 #jt_box_relations table  { margin-bottom: 10px; }
 #jt_box_relations h2     { margin: 0 0 3px 0px; }

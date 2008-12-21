@@ -75,12 +75,7 @@ function catLoad() {
 }
 
 function catSet(id, rnk) {
-  // doesn't work very nice with skins...
-  var c = rnk == 0 ? '' :
-          rnk == 1 ? '#0c0' :
-          rnk == 2 ? '#cc0' : '#c00';
-  x('b_'+id).style.color = c;
-  x('cat_'+id).style.color = c;
+  x('cat_'+id).className = 'catsel_'+rnk;
   x('b_'+id).innerHTML = rnk;
 }
 

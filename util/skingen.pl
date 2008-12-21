@@ -262,3 +262,8 @@ div.notice {
 .diff_del { background-color: #534; }
 
 
+/* category colors on vn edit */
+.catsel_1 { color: #0c0!important }
+.catsel_2 { color: #cc0!important }
+.catsel_3 { color: #c00!important }
+
