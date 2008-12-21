@@ -116,7 +116,7 @@ optgroup option {
   font-style: normal;
 }
 input.submit {
-  background-color: #123;
+  background: url(/f/boxbg.png) repeat;
   padding: 1px;
 }
 input.text, select {
@@ -229,14 +229,14 @@ b.future {
 #menulist div.menubox {
   margin: 0 0 10px 0;
   border: 1px solid #258;
-  background: url(boxbg.png) repeat;
+  background: url(/f/boxbg.png) repeat;
 }
 #menulist div.menubox div {
   padding: 2px 7px;
 }
 #menulist h2 {
   border-bottom: 1px solid #258;
-  background-color: #234;
+  background: url(/f/boxbg.png) repeat;
   padding: 1px 3px;
 }
 #menulist h2, #menulist h2 a {
@@ -549,7 +549,7 @@ div.vndetails table dd {
   margin-left: 90px;
 }
 .catlvl_0, .catlvl_1, .catlvl_2, .catlvl_3 { font-style: normal; }
-.catlvl_1 { color: #444!important }
+.catlvl_1 { color: #444 }
 .catlvl_2 { color: #777 }
 .catlvl_3 { color: #fff }
 div.vndetails td.relations dt {
@@ -688,7 +688,6 @@ a.help {
   padding-left: 1px;
 }
 #maincontent #jt_box_categories li li a {
-  color: #ccc;
   text-decoration: none;
   display: block;
   width: 160px;
@@ -961,7 +960,6 @@ div.revision div, div.revision table {
   border: 1px solid #258;
   margin: 0 auto;
   width: 90%;
-  /*background: url(/f/boxbg.png) repeat;*/
   background-color: #13273a;
   clear: both;
 }
