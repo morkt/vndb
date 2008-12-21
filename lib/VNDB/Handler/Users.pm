@@ -348,7 +348,7 @@ sub edit {
 
     [ part   => title => 'Change Password' ],
     [ static => content => 'Leave blank to keep your current password' ],
-    [ input  => short => 'usrpass', name => 'Password' ],
+    [ passwd => short => 'usrpass', name => 'Password' ],
     [ passwd => short => 'usrpass2', name => 'Confirm pass.' ],
 
     [ part   => title => 'Options' ],
