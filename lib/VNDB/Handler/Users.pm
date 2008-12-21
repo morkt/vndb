@@ -167,8 +167,21 @@ sub newpass {
       my @chars = ( 'A'..'Z', 'a'..'z', 0..9 );
       my $pass = join '', map $chars[int rand $#chars+1], 0..8;
       $self->dbUserEdit($u->{id}, passwd => md5_hex($pass));
+      my $body = <<'__';
+Hello %s,
+
+Your password has been reset, you can now login at http://vndb.org/ with the
+following information:
+
+Username: %1$s
+Password: %s
+
+Now don't forget your password again! :-)
+
+vndb.org
+__
       $self->mail(
-        sprintf(join('', <DATA>), $u->{username}, $pass),
+        sprintf($body, $u->{username}, $pass),
         To => $u->{mail},
         From => 'VNDB <noreply@vndb.org>',
         Subject => 'New password for '.$u->{username}
@@ -451,17 +464,3 @@ sub list {
 
 1;
 
-
-# Contents of the password-reset email
-__DATA__
-Hello %s,
-
-Your password has been reset, you can now login at http://vndb.org/ with the
-following information:
-
-Username: %1$s
-Password: %s
-
-Now don't forget your password again! :-)
-
-vndb.org
