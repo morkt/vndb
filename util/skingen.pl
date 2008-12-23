@@ -67,7 +67,7 @@ sub writeskin { # $obj
   $img = Image::Magick->new(size => '1x1');
   $img->Read('xc:'.$o->{bodybg}, 'xc:'.$o->{boxbg});
   $img = $img->Flatten();
-  $o->{_blendbg} = '#'.join '', map sprintf('%02x', $_*256), $img->GetPixel(x=>1,y=>1);
+  $o->{_blendbg} = '#'.join '', map sprintf('%02x', $_*255), $img->GetPixel(x=>1,y=>1);
 
   my $d = join '', (<DATA>);
   $d =~ s/\$$_\$/$o->{$_}/g for (keys %$o);
@@ -187,7 +187,7 @@ b.future, p.locked {
 #menulist h2,
 #maincontent ul.maintabs li a,
 #maincontent ul.maintabs.bottom li a,
-p.browseopts a,
+#maincontent p.browseopts a,
 div.thread td,
 div.thread td.tc1,
 div.vndescription h2,

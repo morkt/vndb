@@ -1,18 +1,18 @@
 name        test
 fullname    Testlayout
-bodybg      #000  // main background color
-maintext    #ddd  // primary text color
-alttitle    #fff  // alternative title + menu link color
-link        #7bd  // primary link color
-tabbg       #012  // background color of inactive tabs
-maintitle   #123  // text color of the site title
-footer      #123  // text color of the footer
-border      #258  // primary border color
-standout    #e44  // color of 'stand-out' text
-secbg       #135  // secondary background color (used on input fields and table headers)
-secborder   #35A  // secondary border color (used on input fields)
-statok      #0c0  // generic 'ok' text color (used for vnlist statuses & category browser)
-statnok     #c00  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
-boxbg       #112233BC   // RGBA, background color of the boxes.
-imglefttop  0 // bg.jpg
-imgrighttop 0 // bgright.jpg
+bodybg      #fff  // main background color
+maintext    #333  // primary text color
+alttitle    #000  // alternative title + menu link color
+link        #000  // primary link color
+tabbg       #ddd  // background color of inactive tabs
+maintitle   #ccc  // text color of the site title
+footer      #bbb  // text color of the footer
+border      #666  // primary border color
+standout    #c00  // color of 'stand-out' text
+secbg       #666  // secondary background color (used on input fields and table headers)
+secborder   #000  // secondary border color (used on input fields)
+statok      #050  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok     #500  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+boxbg       #ccccccbb   // RGBA, background color of the boxes.
+imglefttop  bg.jpg
+imgrighttop bgright.jpg

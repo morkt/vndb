@@ -380,13 +380,14 @@ p.browseopts {
   text-align: center;
   padding: 2px;
 }
-p.browseopts a {
+#maincontent p.browseopts a {
   padding: 1px 3px;
-  color: #fff!important;
+  color: #fff;
   border: 1px solid #258;
   margin: 0 2px;
 }
-p.browseopts a.optselected, p.browseopts a:hover {
+#maincontent p.browseopts a.optselected,
+#maincontent p.browseopts a:hover {
   border: 0;
   padding: 2px 4px;
 }
