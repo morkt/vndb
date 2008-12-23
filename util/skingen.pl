@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+package VNDB;
+
 use strict;
 use warnings;
 use Cwd 'abs_path';
@@ -7,8 +9,9 @@ use Data::Dumper 'Dumper';
 use Image::Magick;
 
 
-our $ROOT;
+our($ROOT, %O);
 BEGIN { ($ROOT = abs_path $0) =~ s{/util/skingen\.pl$}{}; }
+require $ROOT.'/data/global.pl';
 
 
 if(@ARGV) {
@@ -74,6 +77,12 @@ sub writeskin { # $obj
   open my $CSS, '<', "$ROOT/data/skingen/style.css" or die $!;
   open my $SKIN, '>', "$ROOT/static/s/$o->{_name}/style.css" or die $!;
   while((my $d = <$CSS>)) {
+    if($O{debug}) {
+      chomp $d;
+      $d =~ s/^\s*/ /;
+      $d =~ s{/\*.+\*/}{}; # NOTE: multiline comments or multiple comments per line won't work
+      next if $d !~ /[^\s\t]/;
+    }
     $d =~ s/\$$_\$/$o->{$_}/g for (keys %$o);
     print $SKIN $d;
   }
