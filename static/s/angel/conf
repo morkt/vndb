@@ -10,7 +10,7 @@ statnok      #c00  // generoc 'not ok' text color (used for above, and as border
 footer       #123  // text color of the footer
 
 // titles
-maintitle    #123  // text color of the site title
+maintitle    #135  // text color of the site title
 boxtitle     #258  // box titles
 alttitle     #fff  // alternative title
 

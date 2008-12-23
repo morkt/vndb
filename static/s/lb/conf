@@ -1,0 +1,39 @@
+name         Little Busters!
+
+// text
+maintext     #408
+grayedout    #670159
+standout     #e44
+link         #a2d
+statok       #0c0
+statnok      #c00
+footer       #f78de7
+
+// titles
+maintitle    #f78de7
+boxtitle     #670159
+alttitle     #5328a7
+
+// bg colors
+bodybg       #fff
+tabbg        #f78de7
+secbg        #f78de7
+secborder    #670159
+border       #f76ee2
+boxbg        #f7b6edcc
+
+// images (0 = no image)
+imglefttop   bg.jpg
+imgrighttop  0
+
+// misc colors
+catlevel1    #444
+catlevel2    #d28
+catlevel3    #999
+diffadd      #cfc
+diffdel      #fcc
+warnbg       #fff
+warnborder   #c00
+noticebg     #f7b6ed
+noticeborder #670159
+
