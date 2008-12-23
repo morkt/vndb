@@ -102,8 +102,8 @@ function ivInit() {
     d.innerHTML = '<b id="ivimg"></b><br />'
       +'<a href="#" id="ivfull">&nbsp;</a>'
       +'<a href="#" onclick="return ivClose()" id="ivclose">close</a>'
-      +'<a href="#" onclick="return ivView(this)" id="ivprev">&lt;- previous</a>'
-      +'<a href="#" onclick="return ivView(this)" id="ivnext">next -&gt;</a>';
+      +'<a href="#" onclick="return ivView(this)" id="ivprev">&laquo; previous</a>'
+      +'<a href="#" onclick="return ivView(this)" id="ivnext">next &raquo;</a>';
     document.body.appendChild(d);
     d = document.createElement('b');
     d.id = 'ivimgload';
