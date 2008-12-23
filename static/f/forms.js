@@ -75,7 +75,7 @@ function catLoad() {
 }
 
 function catSet(id, rnk) {
-  x('cat_'+id).className = 'catsel_'+rnk;
+  x('cat_'+id).className = 'catlvl_'+rnk;
   x('b_'+id).innerHTML = rnk;
 }
 

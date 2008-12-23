@@ -1,17 +1,39 @@
-name        Angelic Serenade
-bodybg      #000  // main background color
-maintext    #ddd  // primary text color
-alttitle    #fff  // alternative title + menu link color
-link        #7bd  // primary link color
-tabbg       #012  // background color of inactive tabs
-maintitle   #123  // text color of the site title
-footer      #123  // text color of the footer
-border      #258  // primary border color
-standout    #e44  // color of 'stand-out' text
-secbg       #135  // secondary background color (used on input fields and table headers)
-secborder   #35A  // secondary border color (used on input fields)
-statok      #0c0  // generic 'ok' text color (used for vnlist statuses & category browser)
-statnok     #c00  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
-boxbg       #112233BC   // RGBA, background color of the boxes.
-imglefttop  bg.jpg
-imgrighttop bgright.jpg
+name         Angelic Serenade
+
+// text
+maintext     #ddd  // primary text color (also used for the menu links)
+grayedout    #258  // color used for grayed-out/non-important things
+standout     #e44  // color of 'stand-out' text
+link         #7bd  // primary link color (not used for the menu links)
+statok       #0c0  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok      #c00  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+footer       #123  // text color of the footer
+
+// titles
+maintitle    #123  // text color of the site title
+boxtitle     #258  // box titles
+alttitle     #fff  // alternative title
+
+// bg colors
+bodybg       #000  // main background color
+tabbg        #012  // background color of inactive tabs
+secbg        #135  // secondary background color (used on input fields and table headers)
+secborder    #35A  // secondary border color (used on input fields)
+border       #258  // primary border color
+boxbg        #112233BC  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
+
+// images (0 = no image)
+imglefttop   bg.jpg
+imgrighttop  bgright.jpg
+
+// misc colors
+catlevel1    #444  // category levels
+catlevel2    #777
+catlevel3    #fff
+diffadd      #354  // background color of changes in the diff viewer
+diffdel      #534
+warnbg       #534  // background color of a warning box
+warnborder   #c00  // ..border
+noticebg     #354  // notice box
+noticeborder #0c0  // ...and border
+

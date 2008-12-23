@@ -13,11 +13,11 @@ body {
   color: $maintext$
 }
 a {
-  color: $alttitle$;
+  color: $maintext$;
   text-decoration: none;
 }
 a:hover {
-  border-bottom: 1px dotted $alttitle$;
+  border-bottom: 1px dotted $maintext$;
 }
 table {
   border-collapse: collapse;
@@ -104,7 +104,7 @@ legend {
 }
 input.text, input.submit, select, textarea {
   background-color: $secbg$;
-  color: $maintext$; /* this doesn't work very well in every case */
+  color: $maintext$;
   border: 1px solid $secborder$;
   font: 9pt "Tahoma";
   margin: 1px;
@@ -176,7 +176,7 @@ td.field label {
   font-size: 11pt;
 }
 #maincontent h1 {
-  color: $border$;
+  color: $boxtitle$;
   font-size: 14pt;
   margin: -5px 0 15px 0;
 }
@@ -239,7 +239,7 @@ b.future {
 }
 #menulist h2, #menulist h2 a {
   font-size: 8pt;
-  color: $alttitle$;
+  color: $maintext$;
 }
 #menulist dt {
   display: block;
@@ -380,7 +380,7 @@ p.browseopts {
 }
 #maincontent p.browseopts a {
   padding: 1px 3px;
-  color: $alttitle$;
+  color: $maintext$;
   border: 1px solid $border$;
   margin: 0 2px;
 }
@@ -427,7 +427,7 @@ div.mainbox.history td.tc1_2 {
 div.mainbox.history td.tc2 { width: 65px; }
 div.mainbox.history td.tc3 { width: 90px  }
 div.mainbox.history td.editsum {
-  color: $border$;
+  color: $grayedout$;
   padding-top: 0;
   text-align: right;
 }
@@ -462,17 +462,17 @@ div.thread tr.deleted td {
 }
 div.thread i.deleted {
   font-style: normal;
-  color: $border$;
+  color: $grayedout$;
 }
 div.thread i.lastmod {
   float: right;
   font-size: 7pt;
-  color: $border$;
+  color: $grayedout$;
   margin: 0 -10px -5px 0;
 }
 div.thread i.edit {
   float: right;
-  color: $border$;
+  color: $grayedout$;
   font-style: normal;
   margin: -10px -10px 0 0;
 }
@@ -489,7 +489,7 @@ div.mainbox.discussions td.tags {
   padding-left: 60px;
 }
 div.mainbox.discussions td.tags a {
-  color: $border$!important
+  color: $grayedout$!important
 }
 div.discussions td.tc2 { width: 50px;  }
 div.discussions td.tc3 { width: 90px;  }
@@ -498,7 +498,7 @@ div.discussions td.tc4 { width: 170px; }
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
   font-weight: bold;
   font-style: italic;
-  color: $border$;
+  color: $grayedout$;
   font-size: 13pt;
   margin: 20px 0 -20px 0;
 }
@@ -548,9 +548,10 @@ div.vndetails table dd {
   margin-left: 90px;
 }
 .catlvl_0, .catlvl_1, .catlvl_2, .catlvl_3 { font-style: normal; }
-.catlvl_1 { color: #444 } /* TO SKIN */
-.catlvl_2 { color: #777 }
-.catlvl_3 { color: #fff }
+.catlvl_1 { color: $catlevel1$!important }
+.catlvl_2 { color: $catlevel2$!important }
+.catlvl_3 { color: $catlevel3$!important }
+
 div.vndetails td.relations dt {
   float: none;
   font-style: normal;
@@ -644,7 +645,7 @@ a.addnew {
 .votegraph { float: left; margin-right: 20px }
 .votegraph td        { padding: 0 2px; }
 .votegraph td.number { text-align: right }
-.votegraph td div    { float: left; height: 14px; background-color: #258; margin-right: 2px; }
+.votegraph td div    { float: left; height: 14px; background-color: $border$; margin-right: 2px; }
 .votestats thead td { background: transparent; text-align: center; padding: 2px; }
 .votestats tfoot td  { text-align: right }
 
@@ -679,6 +680,9 @@ a.addnew {
   list-style-type: none;
   padding: 0;
 }
+#maincontent #jt_box_categories li li a {
+  color: $grayedout$;
+}
 a.help {
   vertical-align: super;
   font-size: 6pt;
@@ -692,9 +696,6 @@ a.help {
   width: 160px;
   border: none
 }
-.catsel_1 { color: #0c0!important } /* TO SKIN */
-.catsel_2 { color: #cc0!important }
-.catsel_3 { color: #c00!important }
 
 #jt_box_relations table  { margin-bottom: 10px; }
 #jt_box_relations h2     { margin: 0 0 3px 0px; }
@@ -709,7 +710,7 @@ a.help {
 #ds_box {
   border: 1px solid $border$;
   border-top: none;
-  background-color: #13273a; /* TO SKIN */
+  background-color: $secbg$;
 }
 #ds_box b {
   padding: 2px 0 0 10px; 
@@ -884,7 +885,7 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 .docs ul.index li { list-style-type: none; }
 .docs ul.index li a { margin: 0 0 0 10px; }
 .docs .retired { text-decoration: line-through; }
-.docs dt b { color: $border$; font-weight: normal; font-style: normal; font-size: 12px; }
+.docs dt b { color: $grayedout$; font-weight: normal; font-style: normal; font-size: 12px; }
 
 
 
@@ -931,12 +932,12 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 div.warning, div.notice {
   margin: 5px 10%;
   padding: 15px;
-  background-color: #534; /* TO SKIN */
-  border: 1px solid #C00;
+  background-color: $warnbg$;
+  border: 1px solid $warnborder$;
 }
 div.notice {
-  background-color: #354; /* TO SKIN */
-  border: 1px solid #0C0;
+  background-color: $noticebg$;
+  border: 1px solid $noticeborder$;
 }
 div.warning ul, div.notice ul {
   margin-left: 0;
@@ -962,7 +963,7 @@ div.revision div, div.revision table {
   border: 1px solid $border$;
   margin: 0 auto;
   width: 90%;
-  background-color: #13273a; /* TO SKIN */
+  background-color: $secbg$;
   clear: both;
 }
 div.revision table thead tr td {
@@ -983,11 +984,11 @@ div.revision div {
 }
 .diff_add {
   font-weight: normal;
-  background-color: #354; /* TO SKIN */
+  background-color: $diffadd$;
 }
 .diff_del {
   font-weight: normal;
-  background-color: #534; /* TO SKIN */
+  background-color: $diffdel$;
 }
 div.revision .next {
   float: right;

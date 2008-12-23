@@ -54,7 +54,7 @@ sub thread {
    table;
     for my $i (0..$#$p) {
       local $_ = $p->[$i];
-      my $class = $i % 2 == 0 ? 'odd ' : '';
+      my $class = $i % 2 ? 'odd ' : '';
       $class .= 'deleted' if $_->{hidden};
       Tr class => $class;
        td class => 'tc1';
