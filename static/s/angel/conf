@@ -1,0 +1,18 @@
+name        angel
+fullname    Angelic Serenade
+bodybg      #000  // main background color
+maintext    #ddd  // primary text color
+alttitle    #fff  // alternative title + menu link color
+link        #7bd  // primary link color
+tabbg       #012  // background color of inactive tabs
+maintitle   #123  // text color of the site title
+footer      #123  // text color of the footer
+border      #258  // primary border color
+standout    #e44  // color of 'stand-out' text
+secbg       #135  // secondary background color (used on input fields and table headers)
+secborder   #35A  // secondary border color (used on input fields)
+statok      #0c0  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok     #c00  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+boxbg       #112233BC   // RGBA, background color of the boxes.
+imglefttop  bg.jpg
+imgrighttop bgright.jpg

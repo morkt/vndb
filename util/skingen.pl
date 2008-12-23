@@ -35,7 +35,6 @@ sub readskin { # skin name
 
 sub writeskin { # $obj
   my $o = shift;
-  open my $F, '>', $ROOT.'/static/s/'.$o->{name}.'/style.css' or die $!;
 
   # fix image locations
   $o->{$_} && ($o->{$_} = '/s/'.$o->{name}.'/'.$o->{$_}) for (qw|imglefttop imgrighttop|);
@@ -52,10 +51,11 @@ sub writeskin { # $obj
 
   # body background
   if(!$o->{imglefttop}) {
-    $o->{_bodybg} = "background-image: none; background-color: $o->{bodybg}";
+    $o->{_bodybg} = "background-color: $o->{bodybg}";
   } else {
     $o->{_bodybg} = "background: $o->{bodybg} url($o->{imglefttop}) no-repeat";
   }
+
 
   # create boxbg.png
   my $img = Image::Magick->new(size => '1x1');
@@ -69,201 +69,15 @@ sub writeskin { # $obj
   $img = $img->Flatten();
   $o->{_blendbg} = '#'.join '', map sprintf('%02x', $_*255), $img->GetPixel(x=>1,y=>1);
 
-  my $d = join '', (<DATA>);
-  $d =~ s/\$$_\$/$o->{$_}/g for (keys %$o);
-  print $F $d;
-  close $F;
+  # write the CSS
+  open my $CSS, '<', "$ROOT/data/skingen/style.css" or die $!;
+  open my $SKIN, '>', "$ROOT/static/s/$o->{name}/style.css" or die $!;
+  while((my $d = <$CSS>)) {
+    $d =~ s/\$$_\$/$o->{$_}/g for (keys %$o);
+    print $SKIN $d;
+  }
+  close $SKIN;
+  close $CSS;
 }
 
-
-1;
-
-
-__DATA__
-/* main background image and color */
-body {
-  $_bodybg$
-}
-
-
-/* main text color */
-body,
-#maincontent .releases td.tc5 a,
-#maincontent #jt_box_categories li li a {
-  color: $maintext$; /* maintext */
-}
-
-
-/* menu link and secondary title color  */
-a,
-#maincontent p.browseopts a,
-#maincontent h2.alttitle,
-#menulist h2,
-#menulist h2 a,
-#maincontent p.browseopts a {
-  color: $alttitle$; /* alttitle */
-}
-a:hover {
-  border-bottom: 1px dotted $alttitle$; /* alttitle */
-}
-
-
-/* main link color */
-#maincontent div.mainbox a {
-  color: $link$; /* link */
-}
-
-
-/* transparent image (used in multiple layers, so has to be transparent) */
-div#iv_view,
-#jt_box_visual_novels span.odd,
-#jt_box_producers span.odd,
-#ds_box tr.selected,
-.releases tr.lang td,
-#screenshots tr.rel td,
-#menulist div.menubox,
-#maincontent div.mainbox,
-table tr.odd,
-.docs ul.index,
-input.submit,
-#menulist h2 {
-  background: url($_boxbg$) repeat; /* Box BG */
-}
-
-
-/* bg color of the tabs */
-#maincontent ul.maintabs li a {
-  background-color: $tabbg$; /* tabbg */
-}
-
-/* the color you get when blending the transparent image on the body bg */
-#maincontent ul.maintabs li.tabselected a,
-#maincontent ul.maintabs li a:hover {
-  background-color: $_blendbg$; /* blendbg */
-}
-
-
-/* the small image on the top-right (make sure to update the image size) */
-#bgright {
-  $_bgright$
-}
-
-
-/* site title */
-#header h1, #header h1 a {
-  color: $maintitle$; /* maintitle */
-}
-
-
-/* footer text color */
-#footer, #footer a {
-  color: $footer$; /* footer */
-}
-
-
-/* darkened/grayed-out text color */
-#maincontent h1.boxtitle,
-#maincontent h1.boxtitle a,
-div.mainbox.discussions td.tags a,
-div.thread i.edit,
-div.thread i.lastmod,
-div.thread i.deleted,
-div.mainbox.history td.editsum,
-#maincontent h1,
-.docs dt b {
-  color: $border$!important; /* border */
-}
-
-
-/* stand-out text color */
-b.future, p.locked {
-  color: $standout$; /* standout */
-}
-
-
-/* primary border color (usually the same as above) */
-#maincontent div.mainbox,
-#menulist div.menubox,
-#menulist h2,
-#maincontent ul.maintabs li a,
-#maincontent ul.maintabs.bottom li a,
-#maincontent p.browseopts a,
-div.thread td,
-div.thread td.tc1,
-div.vndescription h2,
-#screenshots td.scr a:hover img,
-#ds_box,
-#scr_table td,
-#advoptions,
-.docs ul.index,
-div.revision div,
-div.revision table,
-div.revision table td,
-div#iv_view {
-  border-color: $border$; /* border */
-}
-
-/* same color is also used for the vote graph */
-.votegraph td div {
-  background-color: $border$; /* border */
-}
-
-
-
-/* secondary bg color */
-table thead td, input.text, input.submit, select, textarea {
-  background-color: $secbg$; /* secbg */
-}
-
-/* secondary border color */
-input.text, input.submit, select, textarea {
-  border: 1px solid $secborder$; /* secborder */
-}
-
-
-/* status colors */
-b.done, ul#catselect li li.inc { color: $statok$ }  /* statok */
-b.todo, ul#catselect li li.exc { color: $statnok$ }  /* statnok */
-#screenshots td.scr div.nsfw img { border-color: $statnok$ } /* statnok */
-
-
-
-
-
-/****** Not too sure what to do with these *******/
-
-
-
-/* category levels - calculate from maintext? */
-.catlvl_1 { color: #444 }
-.catlvl_2 { color: #777 }
-.catlvl_3 { color: #fff }
-
-
-/* bg color of the dropdown search and revision tables (use an other already existing color?) */
-#ds_box, div.revision div, div.revision table {
-  background-color: #13273a;
-}
-
-
-/* warning and notice boxes - the maintext color must be readable on these... */
-div.warning {
-  background-color: #534;
-  border: 1px solid #C00;
-}
-div.notice {
-  background-color: #354;
-  border: 1px solid #0C0;
-}
-
-
-/* diff colors - calculate from maintext? */
-.diff_add { background-color: #354; }
-.diff_del { background-color: #534; }
-
-
-/* category colors on vn edit */
-.catsel_1 { color: #0c0!important }
-.catsel_2 { color: #cc0!important }
-.catsel_3 { color: #c00!important }
 
