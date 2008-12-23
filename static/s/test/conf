@@ -1,5 +1,4 @@
-name        test
-fullname    Testlayout
+name        Testlayout
 bodybg      #fff  // main background color
 maintext    #333  // primary text color
 alttitle    #000  // alternative title + menu link color

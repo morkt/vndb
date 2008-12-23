@@ -29,6 +29,7 @@ sub readskin { # skin name
     $o{$1} = $2;
   }
   close $F;
+  $o{_name} = $name;
   return \%o;
 }
 
@@ -37,7 +38,7 @@ sub writeskin { # $obj
   my $o = shift;
 
   # fix image locations
-  $o->{$_} && ($o->{$_} = '/s/'.$o->{name}.'/'.$o->{$_}) for (qw|imglefttop imgrighttop|);
+  $o->{$_} && ($o->{$_} = '/s/'.$o->{_name}.'/'.$o->{$_}) for (qw|imglefttop imgrighttop|);
 
   # get the right top image
   if($o->{imgrighttop}) {
@@ -60,8 +61,8 @@ sub writeskin { # $obj
   # create boxbg.png
   my $img = Image::Magick->new(size => '1x1');
   $img->Read('xc:'.$o->{boxbg});
-  $img->Write(filename => $ROOT.'/static/s/'.$o->{name}.'/boxbg.png');
-  $o->{_boxbg} = '/s/'.$o->{name}.'/boxbg.png';
+  $img->Write(filename => $ROOT.'/static/s/'.$o->{_name}.'/boxbg.png');
+  $o->{_boxbg} = '/s/'.$o->{_name}.'/boxbg.png';
 
   # get the blend color
   $img = Image::Magick->new(size => '1x1');
@@ -71,7 +72,7 @@ sub writeskin { # $obj
 
   # write the CSS
   open my $CSS, '<', "$ROOT/data/skingen/style.css" or die $!;
-  open my $SKIN, '>', "$ROOT/static/s/$o->{name}/style.css" or die $!;
+  open my $SKIN, '>', "$ROOT/static/s/$o->{_name}/style.css" or die $!;
   while((my $d = <$CSS>)) {
     $d =~ s/\$$_\$/$o->{$_}/g for (keys %$o);
     print $SKIN $d;

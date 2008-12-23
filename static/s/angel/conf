@@ -1,5 +1,4 @@
-name        angel
-fullname    Angelic Serenade
+name        Angelic Serenade
 bodybg      #000  // main background color
 maintext    #ddd  // primary text color
 alttitle    #fff  // alternative title + menu link color
