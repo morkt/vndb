@@ -711,6 +711,7 @@ a.help {
   border: 1px solid $border$;
   border-top: none;
   background-color: $secbg$;
+  cursor: pointer;
 }
 #ds_box b {
   padding: 2px 0 0 10px; 
