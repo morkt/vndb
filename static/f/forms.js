@@ -96,7 +96,7 @@ function dsInit(obj, url, trfunc, serfunc, retfunc) {
     setTimeout(function () {
       if(x('ds_box'))
         x('ds_box').style.top = '-500px';
-    }, 100)
+    }, 500)
   };
  // all local data is stored in the DOM input object
   obj.returnFunc = retfunc;
