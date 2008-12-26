@@ -216,6 +216,9 @@ sub htmlForm {
         a href => "#$short", id => "jt_sel_$short", $subs[$_*2];
        end;
      }
+     li class => 'left';
+      a href => '#all', id => 'jt_sel_all', 'All items';
+     end;
     end;
   }
 

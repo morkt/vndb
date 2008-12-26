@@ -213,7 +213,8 @@ function jtSel(which, nolink) {
   for(var i=0;i<l.length;i++)
     if(l[i].id.substr(0,7) == 'jt_sel_') {
       var name = l[i].id.substr(7);
-      x('jt_box_'+name).style.display = name == which ? 'block' : 'none';
+      if(name != 'all')
+        x('jt_box_'+name).style.display = name == which || which == 'all' ? 'block' : 'none';
       var o = x('jt_sel_'+name).parentNode;
       if(o.className.indexOf('tabselected') >= 0) {
         if(name != which)
