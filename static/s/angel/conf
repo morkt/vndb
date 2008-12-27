@@ -17,7 +17,7 @@ alttitle     #fff  // alternative title
 // bg colors
 bodybg       #000  // main background color
 tabbg        #012  // background color of inactive tabs
-secbg        #135  // secondary background color (used on input fields and table headers)
+secbg        #0d2741  // secondary background color (used on input fields and table headers)
 secborder    #35A  // secondary border color (used on input fields)
 border       #258  // primary border color
 boxbg        #112233BC  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
