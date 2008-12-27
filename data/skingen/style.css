@@ -90,6 +90,13 @@ b.todo { font-weight: normal; color: $statnok$ }
   height: 0;
 }
 
+b.spoiler, b.spoiler a {
+  color: #000;
+  background-color: #000;
+  font-weight: normal;
+}
+b.spoiler_shown { font-weight: normal }
+
 
 
 

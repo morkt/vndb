@@ -375,6 +375,14 @@ DOMLoad(function() {
   if(x('jt_select')) 
     jtInit();
 
+  // spoiler tags
+  l = document.getElementsByTagName('b');
+  for(i=0;i<l.length;i++)
+    if(l[i].className == 'spoiler') {
+      l[i].onmouseover = function() { this.className = 'spoiler_shown' };
+      l[i].onmouseout = function() { this.className = 'spoiler' };
+    }
+
   // forms.js
   if(x('categories'))
     catLoad();

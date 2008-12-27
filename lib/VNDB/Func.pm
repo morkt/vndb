@@ -98,7 +98,6 @@ sub bb2html {
 
   my $e = sub {
     local $_ = shift;
-    tr/A-Za-z/N-ZA-Mn-za-m/ if !@_ && grep /spoiler/, @open;
     s/&/&amp;/g;
     s/>/&gt;/g;
     s/</&lt;/g;
@@ -113,9 +112,14 @@ sub bb2html {
     my $lit = $_;
     if($open[$#open] ne 'raw') {
       if    ($_ eq '[raw]')      { push @open, 'raw'; next }
-      elsif ($_ eq '[spoiler]')  { push @open, 'spoiler'; next }
-      elsif ($_ eq '[/spoiler]') { pop @open if $open[$#open] eq 'spoiler'; next }
-      elsif ($_ eq '[/url]')     {
+      elsif ($_ eq '[spoiler]')  { push @open, 'spoiler'; $result .= '<b class="spoiler">'; next }
+      elsif ($_ eq '[/spoiler]') {
+        if($open[$#open] eq 'spoiler') {
+          $result .= '</b>';
+          pop @open;
+        }
+        next;
+      } elsif($_ eq '[/url]') {
         if($open[$#open] eq 'url') {
           $result .= '</a>';
           pop @open;
