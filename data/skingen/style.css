@@ -606,7 +606,7 @@ div.vndescription p {
   width: 90px;
 }
 .releases td.tc5 {
-  text-align: right;
+  width: 110px;
 }
 .releases td.tc5 a {
   color: $maintext$!important;
@@ -642,6 +642,14 @@ a.addnew {
   margin: 0;
 }
 
+#vldd { position: absolute; left: -500px; border: 1px solid $border$; background-color: $secbg$; width: 180px; }
+#vldd ul { float: left; width: 90px; list-style-type: none; margin: 0; padding: 0 }
+#vldd li b { display: block; font-weight: normal; padding-left: 5px; }
+#vldd li i { display: block; font-style: normal; padding-left: 10px; }
+#vldd li a { display: block; padding-left: 10px; color: $link$; border: 0; }
+#vldd li a:hover { background: url($_boxbg$) repeat }
+#vldd ul.full { width: 180px; text-align: center; }
+#vldd ul.full li a { padding: 0 }
 
 
 

@@ -6,6 +6,14 @@ TODO:
 	    (preferably with the option to re-add them when unhiding)
 	  + Add a link for the hidden 'h' option at /hist
 
+2.1 - ?
+	- Skin support
+	- 'show all items' tab to large forms
+	- Allow items to be selected using the mouse on the dropdown search
+	- [spoiler] tag produces mouseover-style spoilers instead of ROT13
+	- Fixed tiny timezone-related bug
+	- Re-added release list dropdown on VN pages
+
 2.0 - 2008-12-20
 	- New layout
 	- Massive code rewrite:

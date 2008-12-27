@@ -397,9 +397,9 @@ sub _releases {
           a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
          end;
          td class => 'tc5';
-          if($rel->{ulist}) {
-            a href => "/r$rel->{id}";
-             lit liststat $rel->{ulist};
+          if($self->authInfo->{id}) {
+            a href => "/r$rel->{id}", id => "rlsel_$rel->{id}";
+             lit $rel->{ulist} ? liststat $rel->{ulist} : '--';
             end;
           } else {
             txt ' ';

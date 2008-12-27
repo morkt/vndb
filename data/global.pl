@@ -204,6 +204,7 @@ our %S = (%S,
     'low',
     'blacklist',
   ],
+  # note: keep these synchronised in script.js
   vn_rstat        => [
     'Unknown',
     'Pending',
