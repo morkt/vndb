@@ -357,7 +357,7 @@ sub edit {
 
     [ part   => title => 'Options' ],
     [ select => short => 'skin', name => 'Prefered skin', options => [
-      map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_} ], sort keys %{$self->{skins}} ] ],
+      map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_} ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
     [ check  => short => 'flags_list', name =>
         qq|Allow other people to see my visual novel list (<a href="/u$uid/list">/u$uid/list</a>) |.
         qq|and wishlist (<a href="/u$uid/wish">/u$uid/wish</a>)| ],
