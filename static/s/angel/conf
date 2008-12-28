@@ -1,4 +1,4 @@
-name         Angelic Serenade
+name         Angelic Serenade (dark blue)
 
 // text
 maintext     #ddd  // primary text color (also used for the menu links)
@@ -7,7 +7,7 @@ standout     #e44  // color of 'stand-out' text
 link         #7bd  // primary link color (not used for the menu links)
 statok       #0c0  // generic 'ok' text color (used for vnlist statuses & category browser)
 statnok      #c00  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
-footer       #123  // text color of the footer
+footer       #135  // text color of the footer
 
 // titles
 maintitle    #135  // text color of the site title
