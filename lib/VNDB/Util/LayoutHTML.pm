@@ -27,6 +27,10 @@ sub htmlHeader { # %options->{ title, js, noindex, search }
     script type => 'text/javascript', src => $self->{url_static}.'/f/script.js?'.$self->{version};
      # most browsers don't like a self-closing <script> tag...
     end;
+    if($self->authInfo->{customcss}) {
+      (my $css = $self->authInfo->{customcss}) =~ s/\n/ /g;
+      style type => 'text/css', $css;
+    }
     meta name => 'robots', content => 'noindex, follow', undef if $o{noindex};
    end;
    body;

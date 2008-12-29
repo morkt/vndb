@@ -299,9 +299,10 @@ sub edit {
       { name => 'mail', template => 'mail' },
       { name => 'usrpass',  required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
       { name => 'usrpass2', required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
-      { name => 'skin',     enum => [ '', keys %{$self->{skins}} ], required => 0, default => '' },
       { name => 'flags_list', required => 0, default => 0 },
       { name => 'flags_nsfw', required => 0, default => 0 },
+      { name => 'skin',     enum => [ '', keys %{$self->{skins}} ], required => 0, default => '' },
+      { name => 'customcss', required => 0, maxlength => 2000, default => '' },
     );
     push @{$frm->{_err}}, 'passmatch' if ($frm->{usrpass} || $frm->{usrpass2}) && $frm->{usrpass} ne $frm->{usrpass2};
     if(!$frm->{_err}) {
@@ -310,6 +311,7 @@ sub edit {
       $o{rank} = $frm->{rank} if $frm->{rank};
       $o{mail} = $frm->{mail};
       $o{skin} = $frm->{skin};
+      $o{customcss} = $frm->{customcss};
       $o{passwd} = md5_hex($frm->{usrpass}) if $frm->{usrpass};
       $o{show_list} = $frm->{flags_list} ? 1 : 0;
       $o{show_nsfw} = $frm->{flags_nsfw} ? 1 : 0;
@@ -321,9 +323,7 @@ sub edit {
 
   # fill out default values
   $frm->{usrname}    ||= $u->{username};
-  $frm->{rank}       ||= $u->{rank};
-  $frm->{mail}       ||= $u->{mail};
-  $frm->{skin}       ||= $u->{skin};
+  $frm->{$_} ||= $u->{$_} for(qw|rank mail skin customcss|);
   $frm->{flags_list} = $u->{show_list} if !defined $frm->{flags_list};
   $frm->{flags_nsfw} = $u->{show_nsfw} if !defined $frm->{flags_nsfw};
 
@@ -356,12 +356,13 @@ sub edit {
     [ passwd => short => 'usrpass2', name => 'Confirm pass.' ],
 
     [ part   => title => 'Options' ],
-    [ select => short => 'skin', name => 'Prefered skin', options => [
-      map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_} ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
     [ check  => short => 'flags_list', name =>
         qq|Allow other people to see my visual novel list (<a href="/u$uid/list">/u$uid/list</a>) |.
         qq|and wishlist (<a href="/u$uid/wish">/u$uid/wish</a>)| ],
     [ check  => short => 'flags_nsfw', name => 'Disable warnings for images that are not safe for work.' ],
+    [ select => short => 'skin', name => 'Prefered skin', options => [
+      map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_} ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
+    [ textarea => short => 'customcss', name => 'Additional CSS' ],
   ]);
   $self->htmlFooter;
 }
