@@ -13,6 +13,8 @@ TODO:
 	- [spoiler] tag produces mouseover-style spoilers instead of ROT13
 	- Fixed tiny timezone-related bug
 	- Re-added release list dropdown on VN pages
+	- Added [quote] tag to bb2html
+	- fixed URL parser in bb2html
 
 2.0 - 2008-12-20
 	- New layout

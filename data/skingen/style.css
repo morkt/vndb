@@ -96,6 +96,12 @@ b.spoiler, b.spoiler a {
   font-weight: normal;
 }
 b.spoiler_shown { font-weight: normal }
+div.quote {
+  padding: 1px 5px;
+  margin: 0px 10px;
+  color: $grayedout$;
+  border-left: 1px dotted $border$;
+}
 
 
 
