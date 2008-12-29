@@ -20,11 +20,11 @@ sub htmlHeader { # %options->{ title, js, noindex, search }
    head;
     title $o{title};
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
-    Link rel => 'stylesheet', href => $self->{url_static}.'/s/'.$skin.'/style.css', type => 'text/css', media => 'all';
+    Link rel => 'stylesheet', href => $self->{url_static}.'/s/'.$skin.'/style.css?'.$self->{version}, type => 'text/css', media => 'all';
     if($o{js}) {
-      script type => 'text/javascript', src => $self->{url_static}.'/f/forms.js'; end;
+      script type => 'text/javascript', src => $self->{url_static}.'/f/forms.js?'.$self->{version}; end;
     }
-    script type => 'text/javascript', src => $self->{url_static}.'/f/script.js';
+    script type => 'text/javascript', src => $self->{url_static}.'/f/script.js?'.$self->{version};
      # most browsers don't like a self-closing <script> tag...
     end;
     meta name => 'robots', content => 'noindex, follow', undef if $o{noindex};
