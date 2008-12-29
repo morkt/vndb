@@ -21,28 +21,21 @@ Feel free to comment about the TODO list and to suggest new features on the
 <a href="/t/db">discussion board</a> or on <a href="irc://irc.synirc.net/vndb">
 IRC</a>.
 <br /><br />
-<b>Last update: 2008-12-19</b><br /><br />
+<b>Last update: 2008-12-29</b><br /><br />
 
 
-:SUB:Next version (2.0)
+:SUB:Next version (2.2)
 <ol>
- <li>New layout</li>
- <li>Complete code rewrite</li>
+ <li>Custom aditional CSS field to user pages</li>
 </ol>
-<p>
- Progress: ~100%<br />
- TODO: Uploading.<br />
- ETA: 2008-12-20.
-</p>
 
 
 :SUB:(Hopefully) soon
 <ol>
- <li>Allow users to "subscribe" to stuff and provide notifies</li>
+ <li>Advanced notification system</li>
  <li>Some kind of tagging system (<a href="/t42">t42</a>)</li>
  <li>A proper ranking system</li>
  <li>More VNList filters &amp; stats</li>
- <li>Skin support</li>
 </ol>
 
 
