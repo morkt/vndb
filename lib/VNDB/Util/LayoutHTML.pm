@@ -32,7 +32,7 @@ sub htmlHeader { # %options->{ title, js, noindex, search }
    body;
     div id => 'bgright', ' ';
     div id => 'header';
-     h1 $self->debug ? (class => 'debug') : ();
+     h1;
       a href => '/', lc $self->{site_title};
      end;
     end;
@@ -144,6 +144,14 @@ sub htmlFooter {
       a href => 'mailto:contact@vndb.org', 'contact@vndb.org';
      end;
     end; # /div maincontent
+    if($self->debug) {
+      div id => 'debug';
+       h2 'This is not VNDB!';
+       txt 'The real VNDB is ';
+       a href => 'http://vndb.org/', 'here';
+       txt '.';
+      end;
+    }
    end; # /body
   end; # /html
 
