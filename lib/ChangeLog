@@ -1,12 +1,4 @@
-TODO:
-	+ The current implementation of the hidden flag *SUCKS*, seriously needs
-	  some revising:
-	  + Add a 'change' when hiding/unhiding an item
-	  + Remove all references to an item when it's hidden
-	    (preferably with the option to re-add them when unhiding)
-	  + Add a link for the hidden 'h' option at /hist
-
-2.1 - ?
+2.1 - 2008-12-29
 	- Skin support
 	- 'show all items' tab to large forms
 	- Allow items to be selected using the mouse on the dropdown search
