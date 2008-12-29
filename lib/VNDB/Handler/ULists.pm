@@ -70,7 +70,8 @@ sub rlist {
     $f->{e} =~ /^([rv])(\d+)$/ && $1 eq 'r' ? (rstat => $2) : (vstat => $2)
   ) if $f->{e} ne 'del';
 
-  $self->resRedirect('/r'.$id, 'temp');
+  (my $ref = $self->reqHeader('Referer')||"/r$id") =~ s/^\Q$self->{url}//;
+  $self->resRedirect($ref, 'temp');
 }
 
 

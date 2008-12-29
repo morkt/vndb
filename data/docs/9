@@ -1,11 +1,13 @@
 :TITLE:Discussion board
-:INC:notfinished
 :INC:index
 
 
 :SUB:Introduction
 <p>
- <i>todo...</i>
+ VNDB has a nicely integrated discussion board which can be used for, well,
+ discussions. As we're not using any popular and freely available forum software
+ and have instead written something by ourselves, this discussion board has a
+ few slight differences with the popular boards you're used to.
 </p>
 
 
@@ -53,6 +55,12 @@
  </dd><dt>[spoiler]</dt><dd>
   The [spoiler]-tag should be used to hide information that could spoil the enjoyment of playing the
   visual novel for people who haven't done so yet.
+ </dd><dt>[quote]</dt><dd>
+  When quoting other people, put the quoted message inside a [quote] .. [/quote] block. Please
+  note that the popular [quote=source]-syntax doesn't work on VNDB. (yet)
+ </dd><dt>[raw]</dt><dd>
+  Show off your formatting code skills by putting anything you don't want to have formatted in a [raw]
+  tag. Any of the formatting codes mentioned above are ignored within a [raw] .. [/raw] block.
  </dd>
 </dl>
 <p>

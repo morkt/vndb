@@ -75,12 +75,7 @@ function catLoad() {
 }
 
 function catSet(id, rnk) {
-  // doesn't work very nice with skins...
-  var c = rnk == 0 ? '' :
-          rnk == 1 ? '#0c0' :
-          rnk == 2 ? '#cc0' : '#c00';
-  x('b_'+id).style.color = c;
-  x('cat_'+id).style.color = c;
+  x('cat_'+id).className = 'catlvl_'+rnk;
   x('b_'+id).innerHTML = rnk;
 }
 
@@ -97,8 +92,11 @@ function catSet(id, rnk) {
 function dsInit(obj, url, trfunc, serfunc, retfunc) {
   obj.onkeydown = dsKeyDown;
   obj.onblur = function() {
-    if(x('ds_box'))
-      x('ds_box').style.top = '-500px';
+    // timeout to make sure the tr.onclick event is called before we've hidden the object
+    setTimeout(function () {
+      if(x('ds_box'))
+        x('ds_box').style.top = '-500px';
+    }, 500)
   };
  // all local data is stored in the DOM input object
   obj.returnFunc = retfunc;
@@ -228,6 +226,18 @@ function dsResults(hr, obj) {
     tr.itemData = l[i];
     if(obj.selectedId == id)
       tr.setAttribute('class', 'selected');
+    tr.onmouseover = function() {
+      obj.selectedId = this.id.substr(7);
+      var l = x('ds_box').getElementsByTagName('tr');
+      for(var i=0;i<l.length;i++)
+        l[i].className = l[i].id == 'ds_box_'+obj.selectedId ? 'selected' : '';
+    };
+    tr.onclick = function() {
+      obj.value = obj.serFunc(this.itemData);
+      if(x('ds_box'))
+        x('ds_box').style.top = '-500px';
+      obj.selectedId = 0;
+    };
     obj.trFunc(l[i], tr);
     tb.appendChild(tr);
   }

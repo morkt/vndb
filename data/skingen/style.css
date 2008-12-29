@@ -9,15 +9,15 @@ body, td {
   font: 8pt "Tahoma";
 }
 body {
-  background: #000 url(/f/bg.jpg) no-repeat;
-  color: #ddd;
+  $_bodybg$;
+  color: $maintext$
 }
 a {
-  color: #fff;
+  color: $maintext$;
   text-decoration: none;
 }
 a:hover {
-  border-bottom: 1px dotted #fff;
+  border-bottom: 1px dotted $maintext$;
 }
 table {
   border-collapse: collapse;
@@ -27,7 +27,7 @@ table td {
   padding: 3px;
 }
 table tr.odd {
-  background: url(/f/boxbg.png) repeat;
+  background: url($_boxbg$) repeat;
 }
 img {
   border: none;
@@ -37,9 +37,7 @@ img {
   position: absolute;
   top: 0px;
   right: 0px;
-  width: 433px;
-  height: 140px;
-  background: url(/f/bgright.jpg) no-repeat;
+  $_bgright$
 }
 
 #header {
@@ -51,7 +49,7 @@ img {
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
   font-size: 19pt;
   font-style: italic;
-  color: #135;
+  color: $maintitle$;
   border: none!important;
 }
 #header h1.debug a {
@@ -61,10 +59,10 @@ img {
 #footer {
   margin: 15px auto 0 auto;
   text-align: center;
-  color: #135;
+  color: $footer$;
 }
 #footer a {
-  color: #135;
+  color: $footer$;
   text-decoration: underline;
 }
 
@@ -73,7 +71,7 @@ ul, ol {
 }
 p.locked {
   float: right;
-  color: #e44;
+  color: $standout$;
   font-style: italic;
   margin: 0!important;
 }
@@ -84,12 +82,25 @@ p.locked {
 p.description {
   margin: 10px 100px!important;
 }
-b.done { font-weight: normal; color: #0c0 }
-b.todo { font-weight: normal; color: #c00 }
+b.done { font-weight: normal; color: $statok$ }
+b.todo { font-weight: normal; color: $statnok$ }
 
 .clearfloat {
   clear: both;
   height: 0;
+}
+
+b.spoiler, b.spoiler a {
+  color: #000;
+  background-color: #000;
+  font-weight: normal;
+}
+b.spoiler_shown { font-weight: normal }
+div.quote {
+  padding: 1px 5px;
+  margin: 0px 10px;
+  color: $grayedout$;
+  border-left: 1px dotted $border$;
 }
 
 
@@ -105,9 +116,9 @@ legend {
   display: none;
 }
 input.text, input.submit, select, textarea {
-  background-color: #135;
-  color: #ccc;
-  border: 1px solid #36A;
+  background-color: $secbg$;
+  color: $maintext$;
+  border: 1px solid $secborder$;
   font: 9pt "Tahoma";
   margin: 1px;
 }
@@ -116,7 +127,7 @@ optgroup option {
   font-style: normal;
 }
 input.submit {
-  background-color: #123;
+  background: url($_boxbg$) repeat;
   padding: 1px;
 }
 input.text, select {
@@ -178,23 +189,23 @@ td.field label {
   font-size: 11pt;
 }
 #maincontent h1 {
-  color: #258;
+  color: $boxtitle$;
   font-size: 14pt;
   margin: -5px 0 15px 0;
 }
 #maincontent h2.alttitle {
-  color: #fff;
+  color: $alttitle$;
   margin: -17px 0 15px 15px;
   font-weight: normal;
 }
 #maincontent div.mainbox {
-  border: 1px solid #258;
+  border: 1px solid $border$;
   margin: 21px 0 -10px 0;
   padding: 5px;
-  background: url(/f/boxbg.png) repeat;
+  background: url($_boxbg$) repeat;
 }
 #maincontent div.mainbox a {
-  color: #7bd;
+  color: $link$;
 }
 #maincontent p {
   margin: 3px 20px;
@@ -212,7 +223,7 @@ p.center {
 }
 b.future {
   font-weight: normal;
-  color: #e44;
+  color: $standout$;
 }
 
 
@@ -228,20 +239,20 @@ b.future {
 }
 #menulist div.menubox {
   margin: 0 0 10px 0;
-  border: 1px solid #258;
-  background: url(boxbg.png) repeat;
+  border: 1px solid $border$;
+  background: url($_boxbg$) repeat;
 }
 #menulist div.menubox div {
   padding: 2px 7px;
 }
 #menulist h2 {
-  border-bottom: 1px solid #258;
-  background-color: #234;
+  border-bottom: 1px solid $border$;
+  background: url($_boxbg$) repeat;
   padding: 1px 3px;
 }
 #menulist h2, #menulist h2 a {
   font-size: 8pt;
-  color: #fff;
+  color: $maintext$;
 }
 #menulist dt {
   display: block;
@@ -295,18 +306,18 @@ b.future {
   float: right;
   display: block;
   height: 14px;
-  border: 1px solid #258;
+  border: 1px solid $border$;
   border-bottom: none;
   padding: 1px 7px 5px 7px;
   margin: 0 0 0 10px;
-  background-color: #012;
+  background-color: $tabbg$;
 }
 #maincontent ul.maintabs.notfirst li a {
   margin-top: 20px;
 }
 #maincontent ul.maintabs.bottom li a {
   margin-top: 10px;
-  border-bottom: 1px solid #258;
+  border-bottom: 1px solid $border$;
   border-top: none;
   padding: 4px 7px 2px 7px;
 }
@@ -317,7 +328,7 @@ b.future {
 }
 #maincontent ul.maintabs li.tabselected a,
 #maincontent ul.maintabs li a:hover {
-  background-color: #0c1925;
+  background-color: $_blendbg$;
   padding-bottom: 6px;
 }
 #maincontent ul.maintabs.bottom li.tabselected a,
@@ -380,13 +391,14 @@ p.browseopts {
   text-align: center;
   padding: 2px;
 }
-p.browseopts a {
+#maincontent p.browseopts a {
   padding: 1px 3px;
-  color: #fff!important;
-  border: 1px solid #258;
+  color: $maintext$;
+  border: 1px solid $border$;
   margin: 0 2px;
 }
-p.browseopts a.optselected, p.browseopts a:hover {
+#maincontent p.browseopts a.optselected,
+#maincontent p.browseopts a:hover {
   border: 0;
   padding: 2px 4px;
 }
@@ -401,7 +413,7 @@ div.mainbox.browse table td.tc1 {
 }
 table thead td {
   font-weight: bold;
-  background-color: #135;
+  background-color: $secbg$;
 }
 form.search {
   display: block;
@@ -428,7 +440,7 @@ div.mainbox.history td.tc1_2 {
 div.mainbox.history td.tc2 { width: 65px; }
 div.mainbox.history td.tc3 { width: 90px  }
 div.mainbox.history td.editsum {
-  color: #258;
+  color: $grayedout$;
   padding-top: 0;
   text-align: right;
 }
@@ -448,12 +460,12 @@ div.thread table {
   width: 100%;
 }
 div.thread td {
-  border-bottom: 1px solid #258;
+  border-bottom: 1px solid $border$;
 }
 div.thread td.tc1 {
   width: 150px;
   padding: 5px 10px;
-  border-right: 1px solid #258;
+  border-right: 1px solid $border$;
 }
 div.thread td.tc2 {
   padding: 10px 20px 10px 10px;
@@ -463,17 +475,17 @@ div.thread tr.deleted td {
 }
 div.thread i.deleted {
   font-style: normal;
-  color: #258;
+  color: $grayedout$;
 }
 div.thread i.lastmod {
   float: right;
   font-size: 7pt;
-  color: #258;
+  color: $grayedout$;
   margin: 0 -10px -5px 0;
 }
 div.thread i.edit {
   float: right;
-  color: #258;
+  color: $grayedout$;
   font-style: normal;
   margin: -10px -10px 0 0;
 }
@@ -490,7 +502,7 @@ div.mainbox.discussions td.tags {
   padding-left: 60px;
 }
 div.mainbox.discussions td.tags a {
-  color: #258!important
+  color: $grayedout$!important
 }
 div.discussions td.tc2 { width: 50px;  }
 div.discussions td.tc3 { width: 90px;  }
@@ -499,7 +511,7 @@ div.discussions td.tc4 { width: 170px; }
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
   font-weight: bold;
   font-style: italic;
-  color: #258;
+  color: $grayedout$;
   font-size: 13pt;
   margin: 20px 0 -20px 0;
 }
@@ -549,9 +561,10 @@ div.vndetails table dd {
   margin-left: 90px;
 }
 .catlvl_0, .catlvl_1, .catlvl_2, .catlvl_3 { font-style: normal; }
-.catlvl_1 { color: #444!important }
-.catlvl_2 { color: #777 }
-.catlvl_3 { color: #fff }
+.catlvl_1 { color: $catlevel1$!important }
+.catlvl_2 { color: $catlevel2$!important }
+.catlvl_3 { color: $catlevel3$!important }
+
 div.vndetails td.relations dt {
   float: none;
   font-style: normal;
@@ -570,7 +583,7 @@ div.vndescription {
 }
 div.vndescription h2 {
   margin: 0 30px!important;
-  border-top: 1px solid #258;
+  border-top: 1px solid $border$;
   padding: 3px 70px;
   font-weight: bold!important;
 }
@@ -582,7 +595,7 @@ div.vndescription p {
   width: 100%;
 }
 .releases tr.lang td, #screenshots tr.rel td {
-  background: url(/f/boxbg.png) repeat;
+  background: url($_boxbg$) repeat;
   font-weight: bold;
 }
 .releases td.tc1 {
@@ -599,10 +612,10 @@ div.vndescription p {
   width: 90px;
 }
 .releases td.tc5 {
-  text-align: right;
+  width: 140px;
 }
 .releases td.tc5 a {
-  color: #ddd!important;
+  color: $maintext$!important;
   border: 0;
 }
 .releases td.tc6 {
@@ -625,8 +638,8 @@ a.addnew {
 }
 #screenshots td.scr div i        { font-size: 7pt; }
 #screenshots td.scr img          { border: 3px solid transparent; }
-#screenshots td.scr div.nsfw img { border: 3px solid #C00; }
-#screenshots td.scr a:hover img  { border: 3px solid #258; }
+#screenshots td.scr div.nsfw img { border: 3px solid $statnok$; }
+#screenshots td.scr a:hover img  { border: 3px solid $border$; }
 #screenshots td.scr a            { border: none; }
 #screenshots div.hidden          { display: none }
 #screenshots #nsfwshown          { font-style: normal }
@@ -635,6 +648,14 @@ a.addnew {
   margin: 0;
 }
 
+#vldd { position: absolute; left: -500px; border: 1px solid $border$; background-color: $secbg$; width: 180px; }
+#vldd ul { float: left; width: 90px; list-style-type: none; margin: 0; padding: 0 }
+#vldd li b { display: block; font-weight: normal; padding-left: 5px; }
+#vldd li i { display: block; font-style: normal; padding-left: 10px; }
+#vldd li a { display: block; padding-left: 10px; color: $link$; border: 0; }
+#vldd li a:hover { background: url($_boxbg$) repeat }
+#vldd ul.full { width: 180px; text-align: center; }
+#vldd ul.full li a { padding: 0 }
 
 
 
@@ -645,7 +666,7 @@ a.addnew {
 .votegraph { float: left; margin-right: 20px }
 .votegraph td        { padding: 0 2px; }
 .votegraph td.number { text-align: right }
-.votegraph td div    { float: left; height: 14px; background-color: #258; margin-right: 2px; }
+.votegraph td div    { float: left; height: 14px; background-color: $border$; margin-right: 2px; }
 .votestats thead td { background: transparent; text-align: center; padding: 2px; }
 .votestats tfoot td  { text-align: right }
 
@@ -680,6 +701,9 @@ a.addnew {
   list-style-type: none;
   padding: 0;
 }
+#maincontent #jt_box_categories li li a {
+  color: $grayedout$;
+}
 a.help {
   vertical-align: super;
   font-size: 6pt;
@@ -688,7 +712,6 @@ a.help {
   padding-left: 1px;
 }
 #maincontent #jt_box_categories li li a {
-  color: #ccc;
   text-decoration: none;
   display: block;
   width: 160px;
@@ -706,15 +729,16 @@ a.help {
 #jt_box_relations td.tc2 select { width: 130px; }
 
 #ds_box {
-  border: 1px solid #258;
+  border: 1px solid $border$;
   border-top: none;
-  background-color: #13273a;
+  background-color: $secbg$;
+  cursor: pointer;
 }
 #ds_box b {
   padding: 2px 0 0 10px; 
 }
 #ds_box tr.selected {
-  background: url(/f/boxbg.png) repeat;
+  background: url($_boxbg$) repeat;
 }
 #ds_box table {
   width: 100%;
@@ -754,7 +778,7 @@ a.help {
   width: 90%;
   padding: 0 30px 5px 30px;
   margin: 0 auto;
-  border-top: 1px solid #258;
+  border-top: 1px solid $border$;
 }
 #advoptions.hidden { display: none }
 #advoptions h2 {
@@ -797,8 +821,8 @@ ul#catselect li li {
   list-style-type: none;
   background: url(/f/select.png) no-repeat;
 }
-ul#catselect li li.inc { background-position: 0px -16px; color: #0c0; }
-ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
+ul#catselect li li.inc { background-position: 0px -16px; color: $statok$; }
+ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 
 
 
@@ -866,7 +890,7 @@ ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
 #jt_box_visual_novels div,      #jt_box_producers div { padding-left: 20px }
 #jt_box_visual_novels input,    #jt_box_producers input { margin-right: 10px; width: 300px }
 #jt_box_visual_novels span,     #jt_box_producers span { clear: left; display: block; padding: 2px; }
-#jt_box_visual_novels span.odd, #jt_box_producers span.odd { background: url(/f/boxbg.png) repeat; }
+#jt_box_visual_novels span.odd, #jt_box_producers span.odd { background: url($_boxbg$) repeat; }
 #jt_box_visual_novels i,        #jt_box_producers i { font-style: normal; display: block; float: left; width: 310px }
 #jt_box_visual_novels b,        #jt_box_producers b { font-weight: normal; }
 
@@ -879,11 +903,11 @@ ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
 .docs h3 { margin-top: 25px;  }
 .docs dd { padding-bottom: 5px; margin-left: 120px; }
 .docs dt { float: left }
-.docs ul.index { display: block; float: right; width: 150px; padding: 2px; margin: 0 0 10px 5px; background: url(/f/boxbg.png) repeat; border: 1px solid #258; }
+.docs ul.index { display: block; float: right; width: 150px; padding: 2px; margin: 0 0 10px 5px; background: url($_boxbg$) repeat; border: 1px solid $border$; }
 .docs ul.index li { list-style-type: none; }
 .docs ul.index li a { margin: 0 0 0 10px; }
 .docs .retired { text-decoration: line-through; }
-.docs dt b { color: #258; font-weight: normal; font-style: normal; font-size: 12px; }
+.docs dt b { color: $grayedout$; font-weight: normal; font-style: normal; font-size: 12px; }
 
 
 
@@ -930,12 +954,12 @@ ul#catselect li li.exc { background-position: 0px -33px; color: #c00; }
 div.warning, div.notice {
   margin: 5px 10%;
   padding: 15px;
-  background-color: #534;
-  border: 1px solid #C00;
+  background-color: $warnbg$;
+  border: 1px solid $warnborder$;
 }
 div.notice {
-  background-color: #354;
-  border: 1px solid #0C0;
+  background-color: $noticebg$;
+  border: 1px solid $noticeborder$;
 }
 div.warning ul, div.notice ul {
   margin-left: 0;
@@ -958,11 +982,10 @@ div.revision {
   padding-bottom: 10px!important;
 }
 div.revision div, div.revision table {
-  border: 1px solid #258;
+  border: 1px solid $border$;
   margin: 0 auto;
   width: 90%;
-  /*background: url(/f/boxbg.png) repeat;*/
-  background-color: #13273a;
+  background-color: $secbg$;
   clear: both;
 }
 div.revision table thead tr td {
@@ -971,7 +994,7 @@ div.revision table thead tr td {
   font-weight: normal;
 }
 div.revision table td {
-  border-right: 1px solid #258;
+  border-right: 1px solid $border$;
   padding: 5px;
 }
 div.revision td.tcval {
@@ -983,11 +1006,11 @@ div.revision div {
 }
 .diff_add {
   font-weight: normal;
-  background-color: #354;
+  background-color: $diffadd$;
 }
 .diff_del {
   font-weight: normal;
-  background-color: #534;
+  background-color: $diffdel$;
 }
 div.revision .next {
   float: right;
@@ -1010,8 +1033,8 @@ div#iv_view {
   display: none;
   top: -5000px;
   left: -5000px;
-  background: url(/f/boxbg.png) repeat;
-  border: 1px solid #258;
+  background: url($_boxbg$) repeat;
+  border: 1px solid $border$;
   padding: 5px;
   text-align: center;
 }
@@ -1028,7 +1051,7 @@ div#iv_view {
   top: -50px;
   width: 100px;
   padding: 3px;
-  background-color: #f5f5f5;
+  background-color: #f5f5f5; /* no real need to skin this */
   text-align: center;
   border: 1px solid #ccc;
   color: #000;

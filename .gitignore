@@ -1,5 +1,7 @@
 /data/config.pl
 /data/log/
+/static/s/*/style.css
+/static/s/*/boxbg.png
 /static/cv/
 /static/rg/
 /static/sf/

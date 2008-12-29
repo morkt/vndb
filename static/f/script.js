@@ -15,6 +15,10 @@ clearInterval(t);f()}},10);window.onload=f;}
 
 
 
+
+
+/*  A D V A N C E D  S E A R C H  */
+
 function searchInit() {
   cl('advselect', function() {
     var e = x('advoptions');
@@ -184,6 +188,66 @@ function ivClose() {
 
 
 
+
+/*  V N L I S T   D R O P D O W N  */
+
+var rstat = [ 'Unknown', 'Pending', 'Obtained', 'On loan', 'Deleted' ];
+var vstat = [ 'Unknown', 'Playing', 'Finished', 'Stalled', 'Dropped' ];
+function vlDropDown(e) {
+  e = e || window.event;
+  var tg = e.target || e.srcElement;
+  while(tg && (tg.nodeType == 3 || tg.nodeName.toLowerCase() != 'a'))
+    tg = tg.parentNode;
+
+  var o = x('vldd');
+  if(!o && (!tg || tg.id.substr(0,6) != 'rlsel_'))
+    return;
+
+  if(o) {
+    var mouseX = e.pageX || (e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
+    var mouseY = e.pageY || (e.clientY + document.body.scrollTop  + document.documentElement.scrollTop);
+    if((mouseX < ddx-5 || mouseX > ddx+o.offsetWidth+100 || mouseY < ddy-5 || mouseY > ddy+o.offsetHeight+5)
+        || (tg && tg.id.substr(0,6) == 'rlsel_' && tg.id != 'rlsel_'+o.relId)) {
+      document.body.removeChild(o);
+      o = null;
+    }
+  }
+  if(!o && tg) {
+    o = tg;
+    ddx = ddy = 0;
+    do {
+      ddx += o.offsetLeft;
+      ddy += o.offsetTop;
+    } while(o = o.offsetParent);
+    ddx -= 185;
+
+    var cu = '/r'+tg.id.substr(6)+'/list?e=';
+    var st = tg.innerHTML.split(' / ');
+    var r = '<ul><li><b>Release status</b></li>';
+    for(var i=0;i<rstat.length;i++)
+      r += st[0] && st[0].indexOf(rstat[i]) >= 0 ? '<li><i>'+rstat[i]+'</i></li>' : '<li><a href="'+cu+'r'+i+'">'+rstat[i]+'</a></li>';
+    r += '</ul><ul><li><b>Play status</b></li>';
+    for(var i=0;i<vstat.length;i++)
+      r += st[1] && st[1].indexOf(vstat[i]) >= 0 ? '<li><i>'+vstat[i]+'</i></li>' : '<li><a href="'+cu+'v'+i+'">'+vstat[i]+'</a></li>';
+    r += '</ul>';
+    if(tg.innerHTML != '--')
+      r += '<ul class="full"><li><a href="'+cu+'del">Remove from VN list</a></li></ul>';
+
+    o = document.createElement('div');
+    o.id = 'vldd';
+    o.relId = tg.id.substr(6);
+    o.style.left = ddx+'px';
+    o.style.top = ddy+'px';
+    o.innerHTML = r;
+    document.body.appendChild(o);
+  }
+}
+
+
+
+
+
+
 /*  J A V A S C R I P T   T A B S  */
 
 function jtInit() {
@@ -213,7 +277,8 @@ function jtSel(which, nolink) {
   for(var i=0;i<l.length;i++)
     if(l[i].id.substr(0,7) == 'jt_sel_') {
       var name = l[i].id.substr(7);
-      x('jt_box_'+name).style.display = name == which ? 'block' : 'none';
+      if(name != 'all')
+        x('jt_box_'+name).style.display = name == which || which == 'all' ? 'block' : 'none';
       var o = x('jt_sel_'+name).parentNode;
       if(o.className.indexOf('tabselected') >= 0) {
         if(name != which)
@@ -370,9 +435,25 @@ DOMLoad(function() {
   // initialize image viewer
   ivInit();
 
+  // vnlist dropdown
+  var l = document.getElementsByTagName('a');
+  for(var i=0;i<l.length;i++)
+    if(l[i].id.substr(0,6) == 'rlsel_') {
+      document.onmousemove = vlDropDown;
+      break;
+    }
+
   // Javascript tabs
   if(x('jt_select')) 
     jtInit();
+
+  // spoiler tags
+  l = document.getElementsByTagName('b');
+  for(i=0;i<l.length;i++)
+    if(l[i].className == 'spoiler') {
+      l[i].onmouseover = function() { this.className = 'spoiler_shown' };
+      l[i].onmouseout = function() { this.className = 'spoiler' };
+    }
 
   // forms.js
   if(x('categories'))

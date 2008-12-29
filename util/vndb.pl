@@ -22,6 +22,11 @@ use YAWF ':html';
 our(%O, %S);
 
 
+# load and (if required) regenerate the skins
+# NOTE: $S{skins} can be modified in data/config.pl, allowing deletion of skins or forcing only one skin
+$S{skins} = readskins();
+
+
 # load settings from global.pl
 require $ROOT.'/data/global.pl';
 
@@ -72,4 +77,29 @@ sub handle404 {
   $self->htmlFooter;
 }
 
+
+sub readskins {
+  my %skins; # dirname => skin name
+  my $regen = 0;
+  my $lasttemplate = [stat "$ROOT/data/skingen/style.css"]->[9];
+  for my $f (glob "$ROOT/static/s/*") {
+    my $n = $1 if $f =~ m{([^/]+)$};
+    open my $F, '<', "$f/conf" or die $!;
+    while(<$F>) {
+      chomp;
+      s{[\t\s]*//.*$}{};
+      next if !/^name[\t\s]+(.+)$/;
+      $skins{$n} = $1;
+      last;
+    }
+    close $F;
+
+    my $lastgen = [stat "$f/style.css"]->[9];
+    $regen = 1 if (!-f "$f/style.css" && -x $f)
+      || ([stat "$f/conf"]->[9] > $lastgen || $lasttemplate > $lastgen) && -w "$f/style.css";
+  }
+  # note: this only works if the current process has write access to the skins
+  `$ROOT/util/skingen.pl` if $regen;
+  return \%skins;
+}
 

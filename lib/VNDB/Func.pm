@@ -86,6 +86,7 @@ sub userstr {
 #  [url=..] [/url]
 #  [raw] .. [/raw]
 #  [spoiler] .. [/spoiler]
+#  [quote] .. [/quote]
 #  v+,  v+.+
 #  http://../
 sub bb2html {
@@ -94,11 +95,10 @@ sub bb2html {
   $raw =~ s/\r//g;
   return '' if !$raw && $raw ne "0";
 
-  my($result, $length, @open) = ('', 0, 'first');
+  my($result, $length, $rmnewline, @open) = ('', 0, 0, 'first');
 
   my $e = sub {
     local $_ = shift;
-    tr/A-Za-z/N-ZA-Mn-za-m/ if !@_ && grep /spoiler/, @open;
     s/&/&amp;/g;
     s/>/&gt;/g;
     s/</&lt;/g;
@@ -109,13 +109,34 @@ sub bb2html {
 
   for (split /(\s|\n|\[[^\]]+\])/, $raw) {
     next if !defined $_;
+    next if $_ eq '';
+
+    $rmnewline = s/\n//g if $rmnewline;
+    next if $_ eq '';
 
     my $lit = $_;
     if($open[$#open] ne 'raw') {
       if    ($_ eq '[raw]')      { push @open, 'raw'; next }
-      elsif ($_ eq '[spoiler]')  { push @open, 'spoiler'; next }
-      elsif ($_ eq '[/spoiler]') { pop @open if $open[$#open] eq 'spoiler'; next }
-      elsif ($_ eq '[/url]')     {
+      elsif ($_ eq '[spoiler]')  { push @open, 'spoiler'; $result .= '<b class="spoiler">'; next }
+      elsif ($_ eq '[quote]')    {
+        push @open, 'quote';
+        $result .= '<div class="quote">' if !$maxlength;
+        $rmnewline++;
+        next
+      } elsif ($_ eq '[/spoiler]') {
+        if($open[$#open] eq 'spoiler') {
+          $result .= '</b>';
+          pop @open;
+        }
+        next;
+      } elsif ($_ eq '[/quote]') {
+        if($open[$#open] eq 'quote') {
+          $result .= '</div>' if !$maxlength;
+          $rmnewline++;
+          pop @open;
+        }
+        next;
+      } elsif($_ eq '[/url]') {
         if($open[$#open] eq 'url') {
           $result .= '</a>';
           pop @open;
@@ -126,7 +147,7 @@ sub bb2html {
         push @open, 'url';
         next;
       } elsif(!grep(/url/, @open) &&
-           s{(.*)(http|https)://(.+[0-9a-zA-Z=/])(.*)}
+           s{(.*)(http|https)://(.+[\d\w=/-])(.*)}
             {$e->($1).qq|<a href="$2://|.$e->($3, 1).'" rel="nofollow">'.$e->('link').'</a>'.$e->($4)}e) {
         $length += 4;
         last if $maxlength && $length > $maxlength;
@@ -151,7 +172,7 @@ sub bb2html {
     $result .= $e->($_);
   }
 
-  $result .= '</a>'
+  $result .= $_ eq 'url' ? '</a>' : $_ eq 'quote' ? '</div>' : '</b>'
     while((local $_ = pop @open) ne 'first');
   $result .= '...' if $maxlength && $length > $maxlength;
 

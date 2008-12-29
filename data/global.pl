@@ -13,11 +13,12 @@ our %O = (
 
 
 # VNDB-specific options (object_data)
-our %S = (
+our %S = (%S,
   version         => `cd $VNDB::ROOT; git describe` =~ /^(.+)$/ && $1,
   url             => 'http://vndb.org',
   url_static      => 'http://s.vndb.org',
   site_title      => 'Yet another VNDB clone',
+  skin_default    => 'test',
   cookie_domain   => '.vndb.org',
   cookie_key      => 'any-private-string-here',
   sharedmem_key   => 'VNDB',
@@ -203,6 +204,7 @@ our %S = (
     'low',
     'blacklist',
   ],
+  # note: keep these synchronised in script.js
   vn_rstat        => [
     'Unknown',
     'Pending',

@@ -12,13 +12,15 @@ our @EXPORT = qw|htmlHeader htmlFooter|;
 
 sub htmlHeader { # %options->{ title, js, noindex, search }
   my($self, %o) = @_;
+  my $skin = $self->authInfo->{skin} || $self->{skin_default};
+  $skin = $self->{skin_default} if !-d "$VNDB::ROOT/static/s/$skin";
 
   # heading
   html;
    head;
     title $o{title};
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
-    Link rel => 'stylesheet', href => $self->{url_static}.'/f/style.css', type => 'text/css', media => 'all';
+    Link rel => 'stylesheet', href => $self->{url_static}.'/s/'.$skin.'/style.css', type => 'text/css', media => 'all';
     if($o{js}) {
       script type => 'text/javascript', src => $self->{url_static}.'/f/forms.js'; end;
     }

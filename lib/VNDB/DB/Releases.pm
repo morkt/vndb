@@ -3,6 +3,7 @@ package VNDB::DB::Releases;
 
 use strict;
 use warnings;
+use POSIX 'strftime';
 use Exporter 'import';
 
 our @EXPORT = qw|dbReleaseGet dbReleaseAdd dbReleaseEdit|;
@@ -27,7 +28,7 @@ sub dbReleaseGet {
     $o{vid} ? (
       'rv.vid = ?' => $o{vid} ) : (),
     defined $o{unreleased} ? (
-      q|rr.released !s TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer| => $o{unreleased} ? '>' : '<=' ) : (),
+      q|rr.released !s ?| => [ $o{unreleased} ? '>' : '<=', strftime('%Y%m%d', gmtime) ] ) : (),
   );
 
   my @join = (

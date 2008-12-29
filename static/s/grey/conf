@@ -1,0 +1,39 @@
+name         Touhou (grey)
+
+// text
+maintext     #222
+grayedout    #666
+standout     #500
+link         #005
+statok       #050
+statnok      #500
+footer       #bbb
+
+// titles
+maintitle    #ccc
+boxtitle     #444
+alttitle     #000
+
+// bg colors
+bodybg       #fff
+tabbg        #ddd
+secbg        #bbb
+secborder    #000
+border       #666
+boxbg        #dddddddd
+
+// images (0 = no image)
+imglefttop   bg.jpg
+imgrighttop  bgright.jpg
+
+// misc colors
+catlevel1    #555
+catlevel2    #333
+catlevel3    #000
+diffadd      #cfc
+diffdel      #fcc
+warnbg       #fcc
+warnborder   #c00
+noticebg     #cfc
+noticeborder #0c0
+
