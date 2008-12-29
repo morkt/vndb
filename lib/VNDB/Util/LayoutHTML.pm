@@ -12,8 +12,8 @@ our @EXPORT = qw|htmlHeader htmlFooter|;
 
 sub htmlHeader { # %options->{ title, js, noindex, search }
   my($self, %o) = @_;
-  my $skin = $self->authInfo->{skin} || $self->{skin_default};
-  $skin = $self->{skin_default} if !-d "$VNDB::ROOT/static/s/$skin";
+  my $skin = $self->reqParam('skin') || $self->authInfo->{skin} || $self->{skin_default};
+  $skin = $self->{skin_default} if !$self->{skins}{$skin} || !-d "$VNDB::ROOT/static/s/$skin";
 
   # heading
   html;
