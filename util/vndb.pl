@@ -80,9 +80,10 @@ sub handle404 {
 
 sub readskins {
   my %skins; # dirname => skin name
-  my $regen = 0;
+  my @regen;
   my $lasttemplate = [stat "$ROOT/data/skingen/style.css"]->[9];
   for my $f (glob "$ROOT/static/s/*") {
+    next if !-e "$f/conf";
     my $n = $1 if $f =~ m{([^/]+)$};
     open my $F, '<', "$f/conf" or die $!;
     while(<$F>) {
@@ -93,13 +94,15 @@ sub readskins {
       last;
     }
     close $F;
+    next if !$skins{$n};
 
-    my $lastgen = [stat "$f/style.css"]->[9];
-    $regen = 1 if (!-f "$f/style.css" && -x $f)
-      || ([stat "$f/conf"]->[9] > $lastgen || $lasttemplate > $lastgen) && -w "$f/style.css";
+    my $css = -f "$f/style.css" && [stat "$f/style.css"]->[9];
+    my $boxbg = -f "$f/boxbg.png" && [stat "$f/boxbg.png"]->[9];
+    my $lastgen = $css < $boxbg ? $css : $boxbg;
+    push @regen, $n if (!$lastgen && -x $f && ($css && -w "$f/style.css" || $boxbg && -w "$f/boxbg.png"))
+      || ([stat "$f/conf"]->[9] > $lastgen || $lasttemplate > $lastgen) && -w "$f/style.css" && -w "$f/boxbg.png";
   }
-  # note: this only works if the current process has write access to the skins
-  `$ROOT/util/skingen.pl` if $regen;
+  system "$ROOT/util/skingen.pl", @regen if @regen;
   return \%skins;
 }
 
