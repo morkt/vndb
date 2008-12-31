@@ -27,6 +27,7 @@ sub readskin { # skin name
   open my $F, '<', $ROOT.'/static/s/'.$name.'/conf' or die $!;
   while(<$F>) {
     chomp;
+    s/\r//g;
     s{[\t\s]*//.+$}{};
     next if !/^([a-z0-9]+)[\t\s]+(.+)$/;
     $o{$1} = $2;
