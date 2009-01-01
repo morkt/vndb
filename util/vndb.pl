@@ -88,6 +88,7 @@ sub readskins {
     open my $F, '<', "$f/conf" or die $!;
     while(<$F>) {
       chomp;
+      s/\r//;
       s{[\t\s]*//.*$}{};
       next if !/^name[\t\s]+(.+)$/;
       $skins{$n} = $1;
