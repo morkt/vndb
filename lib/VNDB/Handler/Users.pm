@@ -304,7 +304,8 @@ sub edit {
       { name => 'skin',     enum => [ '', keys %{$self->{skins}} ], required => 0, default => '' },
       { name => 'customcss', required => 0, maxlength => 2000, default => '' },
     );
-    push @{$frm->{_err}}, 'passmatch' if ($frm->{usrpass} || $frm->{usrpass2}) && $frm->{usrpass} ne $frm->{usrpass2};
+    push @{$frm->{_err}}, 'passmatch'
+      if ($frm->{usrpass} || $frm->{usrpass2}) && (!$frm->{usrpass} || !$frm->{usrpass2} || $frm->{usrpass} ne $frm->{usrpass2});
     if(!$frm->{_err}) {
       my %o;
       $o{username} = $frm->{usrname} if $frm->{usrname};
