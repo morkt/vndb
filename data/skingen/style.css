@@ -49,8 +49,8 @@ img {
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
   font-size: 19pt;
   font-style: italic;
-  color: $maintitle$;
   border: none!important;
+  $_maintitle$
 }
 
 #footer {

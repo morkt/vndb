@@ -61,6 +61,8 @@ sub writeskin { # $obj
     $o->{_bodybg} = "background: $o->{bodybg} url($o->{imglefttop}) no-repeat";
   }
 
+  # main title
+  $o->{_maintitle} = $o->{maintitle} ? "color: $o->{maintitle}" : 'display: none';
 
   # create boxbg.png
   my $img = Image::Magick->new(size => '1x1');
