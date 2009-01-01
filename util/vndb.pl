@@ -96,10 +96,10 @@ sub readskins {
     close $F;
     next if !$skins{$n};
 
-    my $css = -f "$f/style.css" && [stat "$f/style.css"]->[9];
-    my $boxbg = -f "$f/boxbg.png" && [stat "$f/boxbg.png"]->[9];
+    my $css = -f "$f/style.css" && [stat "$f/style.css"]->[9] || 0;
+    my $boxbg = -f "$f/boxbg.png" && [stat "$f/boxbg.png"]->[9] || 0;
     my $lastgen = $css < $boxbg ? $css : $boxbg;
-    push @regen, $n if (!$lastgen && -x $f && ($css && -w "$f/style.css" || $boxbg && -w "$f/boxbg.png"))
+    push @regen, $n if (!$lastgen && -x $f && (!$css && !$boxbg || $css && -w "$f/style.css" || $boxbg && -w "$f/boxbg.png"))
       || ([stat "$f/conf"]->[9] > $lastgen || $lasttemplate > $lastgen) && -w "$f/style.css" && -w "$f/boxbg.png";
   }
   system "$ROOT/util/skingen.pl", @regen if @regen;
