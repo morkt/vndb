@@ -1,0 +1,41 @@
+name         Fate/stay night (red)
+
+// FSN skin made using a popular fanart
+// created: 01/01/2009 by echomateria
+
+// text
+maintext     #fcfbfb  // primary text color (also used for the menu links)
+grayedout    #ff9d82  // color used for grayed-out/non-important things
+standout     #ffc98f  // color of 'stand-out' text
+link         #48b2c1  // primary link color (not used for the menu links)
+statok       #ff7682 //#db6570  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok      #9f72ff //#7330ff  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+footer       #fffed5  // text color of the footer
+
+// titles
+maintitle    #ffffff  // text color of the site title
+boxtitle     #ffffff  // box titles
+alttitle     #c4a9a7 //#7b6a69  // alternative title
+
+// bg colors
+bodybg       #ac4b47  // main background color
+tabbg        #723033  // background color of inactive tabs
+secbg        #792447  // secondary background color (used on input fields and table headers)
+secborder    #a68483  // secondary border color (used on input fields)
+border       #452d2c  // primary border color
+boxbg        #c6093366  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
+
+// images (0 = no image)
+imglefttop   bg.jpg
+
+// misc colors
+catlevel1    #ab928d  // category levels
+catlevel2    #fcfbfb
+catlevel3    #48b2c1
+diffadd      #48b2c1  // background color of changes in the diff viewer
+diffdel      #7b6a69
+warnbg       #772446  // background color of a warning box
+warnborder   #35152d  // ..border
+noticebg     #5c151f  // notice box
+noticeborder #460015  // ...and border
+

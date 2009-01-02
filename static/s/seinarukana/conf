@@ -1,0 +1,40 @@
+name         Seinarukana (white)
+
+// Seinarukana skin made using a callendar image
+// created: 12/31/2008 by echomateria
+
+// text
+maintext     #131838  // primary text color (also used for the menu links)
+grayedout    #fc8e77 //#fcdfd9  // color used for grayed-out/non-important things
+standout     #a5e2f2  // color of 'stand-out' text
+link         #5a5fc7 //#9fa1c7  // primary link color (not used for the menu links)
+statok       #424d81  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok      #a43462  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+footer       #a69cbd  // text color of the footer
+
+// titles
+maintitle    #99c9dd  // text color of the site title
+boxtitle     #e93d71  // box titles
+alttitle     #983666  // alternative title
+
+// bg colors
+bodybg       #ffffff  // main background color
+tabbg        #bfd2e3  // background color of inactive tabs
+secbg        #bcd1e4  // secondary background color (used on input fields and table headers)
+secborder    #7a88a5  // secondary border color (used on input fields)
+border       #324978  // primary border color
+boxbg        #fde9e688  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
+
+// images (0 = no image)
+imglefttop   bg.jpg
+
+// misc colors
+catlevel1    #a69497  // category levels
+catlevel2    #131838
+catlevel3    #f288a4
+diffadd      #3689b5  // background color of changes in the diff viewer
+diffdel      #b7adc6
+warnbg       #ee3970  // background color of a warning box
+warnborder   #451f4b  // ...border
+noticebg     #fdf1e8 // notice box
+noticeborder #d4aba2  // ...and border

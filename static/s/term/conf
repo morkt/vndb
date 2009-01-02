@@ -1,0 +1,39 @@
+name         Neon (black)
+
+// text
+maintext     #0f0
+grayedout    #444
+standout     #f00
+link         #ff0
+statok       #0c0
+statnok      #c00
+footer       #fff
+
+// titles
+maintitle    #0f0
+boxtitle     #0f0
+alttitle     #0f0
+
+// bg colors
+bodybg       #000
+tabbg        #000
+secbg        #000
+secborder    #0f0
+border       #fff
+boxbg        #000
+
+// images (0 = no image)
+imglefttop   0
+imgrighttop  0
+
+// misc colors
+catlevel1    #444
+catlevel2    #777
+catlevel3    #999
+diffadd      #cfc
+diffdel      #fcc
+warnbg       #000
+warnborder   #c00
+noticebg     #000
+noticeborder #0f0
+
