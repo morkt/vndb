@@ -361,7 +361,7 @@ sub edit {
         qq|Allow other people to see my visual novel list (<a href="/u$uid/list">/u$uid/list</a>) |.
         qq|and wishlist (<a href="/u$uid/wish">/u$uid/wish</a>)| ],
     [ check  => short => 'flags_nsfw', name => 'Disable warnings for images that are not safe for work.' ],
-    [ select => short => 'skin', name => 'Prefered skin', options => [
+    [ select => short => 'skin', name => 'Prefered skin', width => 300, options => [
       map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_} ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
     [ textarea => short => 'customcss', name => 'Additional CSS' ],
   ]);
