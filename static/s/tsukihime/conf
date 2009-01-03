@@ -33,8 +33,8 @@ imgrighttop  bgright.jpg
 catlevel1    #240f21  // category levels
 catlevel2    #ffffff
 catlevel3    #dd0b48
-diffadd      #0cdae5  // background color of changes in the diff viewer
-diffdel      #348278
+diffadd      #87705c  // background color of changes in the diff viewer
+diffdel      #374d77
 warnbg       #76a1cd  // background color of a warning box
 warnborder   #decdcd  // ...border
 noticebg     #b50439 // notice box

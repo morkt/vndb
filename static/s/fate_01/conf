@@ -32,8 +32,8 @@ imglefttop   bg.jpg
 catlevel1    #200b0c  // category levels
 catlevel2    #ab928d
 catlevel3    #d56243
-diffadd      #f6e2db  // background color of changes in the diff viewer
-diffdel      #7c352f
+diffadd      #4d2c25  // background color of changes in the diff viewer
+diffdel      #6f5347
 warnbg       #882f27  // background color of a warning box
 warnborder   #fbf1e0  // ..border
 noticebg     #882f27  // notice box
