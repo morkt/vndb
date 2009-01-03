@@ -1,5 +1,6 @@
 2.2 - ?
 	- Additional custom CSS field to user profile
+	- Search dropdown calls the return function automatically on select
 
 2.1 - 2008-12-29
 	- Skin support

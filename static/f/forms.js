@@ -126,7 +126,7 @@ function dsKeyDown(ev) {
 
     if(obj.selectedId != 0)
       obj.value = obj.serFunc(x('ds_box_'+obj.selectedId).itemData);
-    else if(obj.returnFunc)
+    if(obj.returnFunc)
       obj.returnFunc();
     if(x('ds_box'))
       x('ds_box').style.top = '-500px';
@@ -234,6 +234,8 @@ function dsResults(hr, obj) {
     };
     tr.onclick = function() {
       obj.value = obj.serFunc(this.itemData);
+      if(obj.returnFunc)
+        obj.returnFunc();
       if(x('ds_box'))
         x('ds_box').style.top = '-500px';
       obj.selectedId = 0;
