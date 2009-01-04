@@ -40,6 +40,7 @@ sub page {
         map sprintf('<a href="/v%d" title="%s">%s</a>', $_->{vid}, $_->{original}||$_->{title}, shorten $_->{title}, 50), @{$_[0]};
       } ],
       [ type      => 'Type',           serialize => sub { $self->{release_types}[$_[0]] } ],
+      [ patch     => 'Patch',          serialize => sub { $_[0] ? 'Patch' : 'Not a patch' } ],
       [ title     => 'Title (romaji)', diff => 1 ],
       [ original  => 'Original title', diff => 1 ],
       [ gtin      => 'JAN/UPC/EAN',    serialize => sub { $_[0]||'[none]' } ],
@@ -104,6 +105,7 @@ sub _infotable {
      my $type = $self->{release_types}[$r->{type}];
      cssicon lc(substr $type, 0, 3), $type;
      txt ' '.$type;
+     txt ' patch' if $r->{patch};
     end;
    end;
 
@@ -229,7 +231,7 @@ sub edit {
 
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (
-    (map { $_ => $r->{$_} } qw|type title original gtin language website notes minage platforms|),
+    (map { $_ => $r->{$_} } qw|type title original gtin language website notes minage platforms patch|),
     released  => $r->{released} =~ /^([0-9]{4})([0-9]{2})([0-9]{2})$/ ? [ $1, $2, $3 ] : [ 0, 0, 0 ],
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map "$_->{id},$_->{name}", sort { $a->{id} <=> $b->{id} } @{$r->{producers}}),
@@ -240,6 +242,7 @@ sub edit {
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
       { name => 'type',      enum => [ 0..$#{$self->{release_types}} ] },
+      { name => 'patch',     required => 0, default => 0 },
       { name => 'title',     maxlength => 250 },
       { name => 'original',  required => 0, default => '', maxlength => 250 },
       { name => 'gtin',      required => 0, default => '0',
@@ -263,6 +266,7 @@ sub edit {
       my $producers = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{producers} ];
       my $new_vn    = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];
       $frm->{platforms} = [ grep $_, @{$frm->{platforms}} ];
+      $frm->{patch} = $frm->{patch} ? 1 : 0;
 
       return $self->resRedirect("/r$rid", 'post')
         if $rid && $released == $r->{released} &&
@@ -272,7 +276,7 @@ sub edit {
           !grep !/^(released|platforms|producers|vn)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
 
       my %opts = (
-        (map { $_ => $frm->{$_} } qw| type title original gtin language website notes minage platforms editsum|),
+        (map { $_ => $frm->{$_} } qw| type title original gtin language website notes minage platforms editsum patch|),
         vn        => $new_vn,
         producers => $producers,
         media     => $media,
@@ -310,6 +314,7 @@ sub _form {
   "General info" => [
     [ select => short => 'type',      name => 'Type',
       options => [ map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ] ],
+    [ check  => short => 'patch',     name => 'This release is a patch to an other release.' ],
     [ input  => short => 'title',     name => 'Title (romaji)', width => 300 ],
     [ input  => short => 'original',  name => 'Original title', width => 300 ],
     [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],

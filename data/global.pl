@@ -188,7 +188,6 @@ our %S = (%S,
     umd => [ 'UMD',               1 ],
     nod => [ 'Nintendo Optical Disk', 1 ],
     in  => [ 'Internet download', 0 ],
-    pa  => [ 'Patch',             0 ],
     otc => [ 'Other',             0 ],
   },
   votes           => [

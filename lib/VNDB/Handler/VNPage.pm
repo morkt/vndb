@@ -395,6 +395,7 @@ sub _releases {
          end;
          td class => 'tc4';
           a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
+          b class => 'patch', ' (patch)' if $rel->{patch};
          end;
          td class => 'tc5';
           if($self->authInfo->{id}) {

@@ -602,6 +602,7 @@ div.vndescription p {
   margin: 0 100px!important;
 }
 
+b.patch { font-weight: normal; color: $grayedout$ }
 .releases table, #screenshots table {
   width: 100%;
 }

@@ -103,7 +103,8 @@ CREATE TABLE releases_rev (
   released integer NOT NULL,
   notes text NOT NULL DEFAULT '',
   minage smallint NOT NULL DEFAULT -1,
-  gtin bigint NOT NULL DEFAULT 0
+  gtin bigint NOT NULL DEFAULT 0,
+  patch boolean NOT NULL DEFAULT FALSE
 );
 
 -- releases_vn
@@ -185,7 +186,8 @@ CREATE TABLE users (
   show_list boolean NOT NULL DEFAULT TRUE,
   c_votes integer NOT NULL DEFAULT 0,
   c_changes integer NOT NULL DEFAULT 0,
-  skin varchar(128) NOT NULL DEFAULT ''
+  skin varchar(128) NOT NULL DEFAULT '',
+  customcss text NOT NULL DEFAULT ''
 );
 
 -- vn
