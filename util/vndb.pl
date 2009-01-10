@@ -52,6 +52,9 @@ sub reqinit {
     $ENV{HTTP_REFERER} = $ENV{REQUEST_URI};
     $ENV{REQUEST_URI} = '/we-dont-like-ie6';
   }
+
+  # load some stats (used for about all pageviews, anyway)
+  $self->{stats} = $self->dbStats;
 }
 
 

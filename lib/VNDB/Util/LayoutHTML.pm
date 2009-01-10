@@ -122,14 +122,13 @@ sub _menu {
      [ threads   => 'Threads'       ],
      [ posts     => 'Posts'         ],
    );
-   my $stats = $self->dbStats;
    div class => 'menubox';
     h2 'Database Statistics';
     div;
      dl;
       for (@stats) {
         dt $$_[1];
-        dd $stats->{$$_[0]};
+        dd $self->{stats}{$$_[0]};
       }
      end;
      clearfloat;

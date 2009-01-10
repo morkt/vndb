@@ -10,7 +10,7 @@ our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbVNCache dbScreenshotAdd 
 
 
 # Options: id, rev, char, search, cati, cate, lang, platform, results, page, order, what
-# What: extended categories anime relations screenshots relgraph changes
+# What: extended categories anime relations screenshots relgraph ranking changes
 sub dbVNGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -93,6 +93,7 @@ sub dbVNGet {
     $o{what} =~ /changes/ ? (
       qw|c.added c.requester c.comments v.latest u.username c.rev c.causedby|) : (),
     $o{what} =~ /relgraph/ ? 'rg.cmap' : (),
+    $o{what} =~ /ranking/ ? '(SELECT COUNT(*) FROM vn iv WHERE iv.c_popularity >= v.c_popularity) AS ranking' : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|

@@ -678,9 +678,10 @@ a.addnew {
 .votegraph { float: left; margin-right: 20px }
 .votegraph td        { padding: 0 2px; }
 .votegraph td.number { text-align: right }
-.votegraph td div    { float: left; height: 14px; background-color: $border$; margin-right: 2px; }
+.votegraph td div    { float: left; height: 14px; background-color: $border$; margin-right: 2px; padding: 0; }
 .votestats thead td { background: transparent; text-align: center; padding: 2px; }
 .votestats tfoot td  { text-align: right }
+.votestats div { text-align: center; padding-top: 5px; }
 
 .recentvotes { width: 300px }
 

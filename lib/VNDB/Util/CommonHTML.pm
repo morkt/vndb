@@ -443,7 +443,14 @@ sub htmlVoteStats {
       }
      end;
    }
+
    clearfloat;
+   if($type eq 'v') {
+     div;
+      h3 'Popularity';
+      p sprintf 'Ranked #%d out of %d with a score of %.2f.', $obj->{ranking}, $self->{stats}{vn}, $obj->{c_popularity}*100;
+     end;
+   }
   end;
 }
 
