@@ -187,7 +187,8 @@ CREATE TABLE users (
   c_votes integer NOT NULL DEFAULT 0,
   c_changes integer NOT NULL DEFAULT 0,
   skin varchar(128) NOT NULL DEFAULT '',
-  customcss text NOT NULL DEFAULT ''
+  customcss text NOT NULL DEFAULT '',
+  ip inet NOT NULL DEFAULT '0.0.0.0'
 );
 
 -- vn

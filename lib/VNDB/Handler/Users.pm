@@ -239,6 +239,7 @@ sub register {
     push @{$frm->{_err}}, 'passmatch'  if $frm->{usrpass} ne $frm->{usrpass2};
     push @{$frm->{_err}}, 'usrexists'  if $frm->{usrname} eq 'anonymous' || !$frm->{_err} && $self->dbUserGet(username => $frm->{usrname})->[0]{id};
     push @{$frm->{_err}}, 'mailexists' if !$frm->{_err} && $self->dbUserGet(mail => $frm->{mail})->[0]{id};
+    push @{$frm->{_err}}, 'oneaday'    if !$frm->{_err} && $self->dbUserGet(ip => $self->reqIP, registered => time-24*3600)->[0]{id};
 
     if(!$frm->{_err}) {
       $self->dbUserAdd($frm->{usrname}, md5_hex($frm->{usrpass}), $frm->{mail});

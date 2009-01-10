@@ -50,6 +50,7 @@ my %formerr_exeptions = (
   mailexists    => 'Someone already registered with that email address',
   noimage       => 'Image must be in JPEG or PNG format',
   toolarge      => 'Image is too large, only 50kB allowed',
+  oneaday       => 'You can only register one account from the same IP within 24 hours',
 );
 
 

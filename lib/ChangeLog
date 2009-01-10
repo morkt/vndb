@@ -4,6 +4,7 @@
 	- Revised the media list
 	- Added a checkbox to releases to indicate a patch
 	- VN popularity ranking
+	- Limit account creation to one account in 24 hours per IP address
 
 2.1 - 2008-12-29
 	- Skin support

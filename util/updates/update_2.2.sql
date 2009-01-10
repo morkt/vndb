@@ -28,3 +28,9 @@ $$ LANGUAGE plpgsql;
 
 SELECT update_vnpopularity();
 
+
+
+-- store the IP address used to register
+ALTER TABLE users ADD COLUMN ip inet NOT NULL DEFAULT '0.0.0.0';
+
+
