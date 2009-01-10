@@ -88,12 +88,16 @@ sub userpage {
     Tr ++$i % 2 ? (class => 'odd') : ();
      td 'List stats';
      td !$u->{show_list} ? 'hidden' :
-       sprintf '%d releases of %d visual novels', $u->{releasecount}, $u->{vncount};
+       sprintf '%d release%s of %d visual novel%s',
+         $u->{releasecount}, $u->{releasecount} != 1 ? 's' : '',
+         $u->{vncount}, $u->{vncount} != 1 ? 's' : '';
     end;
 
     Tr ++$i % 2 ? (class => 'odd') : ();
      td 'Forum stats';
-     td sprintf '%d posts, %d new threads', $u->{postcount}, $u->{threadcount};
+     td sprintf '%d post%s, %d new thread%s',
+       $u->{postcount}, $u->{postcount} != 1 ? 's' : '',
+       $u->{threadcount}, $u->{threadcount} != 1 ? 's' : '';
     end;
    end;
   end;

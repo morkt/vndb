@@ -402,7 +402,7 @@ sub htmlVoteStats {
      td colspan => 2, 'Vote graph';
     end; end;
     tfoot; Tr;
-     td colspan => 2, sprintf '%d votes total, average %.2f%s', $count, $total/$count,
+     td colspan => 2, sprintf '%d vote%s total, average %.2f%s', $count, $count != 1 ? 's' : '', $total/$count,
        $type eq 'v' ? ' ('.$self->{votes}[sprintf '%.0f', $total/$count-1].')' : '';
     end; end;
     for (reverse 0..$#$stats) {

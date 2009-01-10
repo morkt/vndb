@@ -5,6 +5,8 @@
 	- Added a checkbox to releases to indicate a patch
 	- VN popularity ranking
 	- Limit account creation to one account in 24 hours per IP address
+	- Fixed error message when uploading VN images larger than 500kB
+	- Fixed 3 grammar mistakes related to singular/plural
 
 2.1 - 2008-12-29
 	- Skin support
