@@ -78,11 +78,17 @@ sub page {
 
     # general info
     table;
-     Tr;
-      td class => 'key', ' ';
-      td ' ';
-     end;
      my $i = 0;
+     Tr ++$i % 2 ? (class => 'odd') : ();
+      td class => 'key', 'Title';
+      td $v->{title};
+     end;
+     if($v->{original}) {
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td 'Original title';
+        td $v->{original};
+       end;
+     }
      if($v->{length}) {
        Tr ++$i % 2 ? (class => 'odd') : ();
         td 'Length';

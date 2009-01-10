@@ -83,11 +83,19 @@ sub page {
 sub _infotable {
   my($self, $r) = @_;
   table;
-   Tr;
-    td class => 'key', ' ';
-    td ' ';
-   end;
    my $i = 0;
+
+   Tr ++$i % 2 ? (class => 'odd') : ();
+    td class => 'key', 'Title';
+    td $r->{title};
+   end;
+
+   if($r->{original}) {
+     Tr ++$i % 2 ? (class => 'odd') : ();
+      td 'Original title';
+      td $r->{original};
+     end;
+   }
 
    Tr ++$i % 2 ? (class => 'odd') : ();
     td 'Relation';
