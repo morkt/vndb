@@ -7,6 +7,7 @@
 	- Limit account creation to one account in 24 hours per IP address
 	- Fixed error message when uploading VN images larger than 500kB
 	- Fixed 3 grammar mistakes related to singular/plural
+	- Don't show hidden release relations on producer pages
 
 2.1 - 2008-12-29
 	- Skin support
