@@ -21,6 +21,8 @@ our %S = (%S,
   skin_default    => 'angel',
   cookie_domain   => '.vndb.org',
   cookie_key      => 'any-private-string-here',
+  source_url      => 'http://git.blicky.net/vndb.git/?h=master',
+  admin_email     => 'contact@vndb.org',
   sharedmem_key   => 'VNDB',
   user_ranks      => [
        # rankname   allowed actions                                   # DB number

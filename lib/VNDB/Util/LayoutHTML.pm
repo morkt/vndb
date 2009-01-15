@@ -144,7 +144,9 @@ sub htmlFooter {
       txt "vndb $self->{version} | ";
       a href => '/d7', 'about us';
       txt ' | ';
-      a href => 'mailto:contact@vndb.org', 'contact@vndb.org';
+      a href => "mailto:$self->{admin_email}", $self->{admin_email};
+      txt ' | ';
+      a href => $self->{source_url}, 'source';
      end;
     end; # /div maincontent
     if($self->debug) {
