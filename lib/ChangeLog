@@ -9,6 +9,7 @@
 	- Fixed 3 grammar mistakes related to singular/plural
 	- Don't show hidden release relations on producer pages
 	- Hide the vote dropdown on v+ pages when the VN is already on the wishlist
+	- Don't search for the ADV category when searching for the Game Boy Advance
 
 2.1 - 2008-12-29
 	- Skin support
