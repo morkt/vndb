@@ -326,11 +326,15 @@ sub itemmod {
   return $self->htmlDenied if !$self->authCan($act eq 'hide' ? 'del' : 'lock');
 
   my $obj = $type eq 'v' ? $self->dbVNGet(id => $iid)->[0] :
-            $type eq 'r' ? $self->dbReleaseGet(id => $iid)->[0] :
+            $type eq 'r' ? $self->dbReleaseGet(id => $iid, what => 'vn')->[0] :
                            $self->dbProducerGet(id => $iid)->[0];
   return 404 if !$obj->{id};
 
   $self->dbItemMod($type, $iid, $act eq 'hide' ? (hidden => !$obj->{hidden}) : (locked => !$obj->{locked}));
+
+  # update cached vn info when hiding an r+ page
+  $self->vnCacheUpdate(map $_->{vid}, @{$obj->{vn}})
+    if $type eq 'r' && $act eq 'hide';
 
   $self->resRedirect("/$type$iid", 'temp');
 }

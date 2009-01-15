@@ -12,6 +12,7 @@
 	- Don't search for the ADV category when searching for the Game Boy Advance
 	- Keep VN relations on r+ pages ordered by title
 	- VN search doesn't match on titles of older release revisions anymore
+	- Don't forget to update the vn.c_* columns when hiding/unhiding a release
 
 2.1 - 2008-12-29
 	- Skin support
