@@ -84,7 +84,7 @@ sub handle404 {
 sub readskins {
   my %skins; # dirname => skin name
   my @regen;
-  my $lasttemplate = [stat "$ROOT/data/skingen/style.css"]->[9];
+  my $lasttemplate = [stat "$ROOT/data/style.css"]->[9];
   for my $f (glob "$ROOT/static/s/*") {
     next if !-e "$f/conf";
     my $n = $1 if $f =~ m{([^/]+)$};

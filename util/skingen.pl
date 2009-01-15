@@ -77,7 +77,7 @@ sub writeskin { # $obj
   $o->{_blendbg} = '#'.join '', map sprintf('%02x', $_*255), $img->GetPixel(x=>1,y=>1);
 
   # write the CSS
-  open my $CSS, '<', "$ROOT/data/skingen/style.css" or die $!;
+  open my $CSS, '<', "$ROOT/data/style.css" or die $!;
   open my $SKIN, '>', "$ROOT/static/s/$o->{_name}/style.css" or die $!;
   while((my $d = <$CSS>)) {
     if($O{debug}) {
