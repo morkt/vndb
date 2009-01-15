@@ -50,7 +50,9 @@ sub dbVNGet {
   );
 
   if($o{search}) {
-    my @w;
+    my @w = (
+      '(irr.id IS NULL OR ir.latest = irr.id)' => 1
+    );
     for (split /[ -,]/, $o{search}) {
       s/%//g;
       next if length($_) < 2;

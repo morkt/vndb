@@ -11,6 +11,7 @@
 	- Hide the vote dropdown on v+ pages when the VN is already on the wishlist
 	- Don't search for the ADV category when searching for the Game Boy Advance
 	- Keep VN relations on r+ pages ordered by title
+	- VN search doesn't match on titles of older release revisions anymore
 
 2.1 - 2008-12-29
 	- Skin support
