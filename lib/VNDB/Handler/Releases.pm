@@ -244,7 +244,7 @@ sub edit {
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map "$_->{id},$_->{name}", sort { $a->{id} <=> $b->{id} } @{$r->{producers}}),
   );
-  $b4{vn} = join('|||', map "$_->{vid},$_->{title}", sort { $a->{vid} <=> $b->{vid} } @$vn);
+  $b4{vn} = join('|||', map "$_->{vid},$_->{title}", @$vn);
   my $frm;
 
   if($self->reqMethod eq 'POST') {

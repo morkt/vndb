@@ -69,7 +69,8 @@ sub dbReleaseGet {
           FROM releases_vn rv
           JOIN vn v ON v.id = rv.vid
           JOIN vn_rev vr ON vr.id = v.latest
-          WHERE rv.rid IN(!l)|,
+          WHERE rv.rid IN(!l)
+          ORDER BY vr.title|,
         [ keys %r ]
       )});
     }
