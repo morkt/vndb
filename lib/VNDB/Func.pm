@@ -70,7 +70,7 @@ sub monthstr {
   return 'TBA' if $y == 9999;
   return 'unknown' if $y == 0;
   return $y if $m == 99;
-  return strftime '%b %Y', 0, 0, 0, 0, $m-1, $y-1900, 0, 0, 0;
+  return sprintf '%s %d', [qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)]->[$m-1], $y;
 }
 
 
