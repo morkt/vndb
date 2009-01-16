@@ -16,7 +16,7 @@ sub list {
   my($self, $char) = @_;
 
   my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'title', enum => [ qw|title rel| ] },
+    { name => 's', required => 0, default => 'title', enum => [ qw|title rel pop| ] },
     { name => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'q', required => 0, default => '' },
@@ -61,7 +61,7 @@ sub list {
     $q ? ( search => $q ) : (),
     results => 50,
     page => $f->{p},
-    order => ($f->{s} eq 'rel' ? 'c_released' : 'title').($f->{o} eq 'a' ? ' ASC' : ' DESC'),
+    order => ($f->{s} eq 'rel' ? 'c_released' : $f->{s} eq 'pop' ? 'c_popularity' : 'title').($f->{o} eq 'a' ? ' ASC' : ' DESC'),
     @cati ? ( cati => \@cati ) : (),
     @cate ? ( cate => \@cate ) : (),
     @lang ? ( lang => \@lang ) : (),
@@ -85,6 +85,7 @@ sub list {
       [ '',         0       ],
       [ '',         0       ],
       [ 'Released', 'rel'   ],
+      [ 'Popularity', 'pop' ],
     ],
     row     => sub {
       my($s, $n, $l) = @_;
@@ -103,6 +104,7 @@ sub list {
        td class => 'tc4';
         lit monthstr $l->{c_released};
        end;
+       td class => 'tc5', sprintf '%.2f', $l->{c_popularity}*100;
       end;
     },
   );

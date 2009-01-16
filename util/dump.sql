@@ -103,7 +103,8 @@ CREATE TABLE releases_rev (
   released integer NOT NULL,
   notes text NOT NULL DEFAULT '',
   minage smallint NOT NULL DEFAULT -1,
-  gtin bigint NOT NULL DEFAULT 0
+  gtin bigint NOT NULL DEFAULT 0,
+  patch boolean NOT NULL DEFAULT FALSE
 );
 
 -- releases_vn
@@ -185,7 +186,9 @@ CREATE TABLE users (
   show_list boolean NOT NULL DEFAULT TRUE,
   c_votes integer NOT NULL DEFAULT 0,
   c_changes integer NOT NULL DEFAULT 0,
-  skin varchar(128) NOT NULL DEFAULT ''
+  skin varchar(128) NOT NULL DEFAULT '',
+  customcss text NOT NULL DEFAULT '',
+  ip inet NOT NULL DEFAULT '0.0.0.0'
 );
 
 -- vn
@@ -197,7 +200,8 @@ CREATE TABLE vn (
   rgraph integer,
   c_released integer NOT NULL DEFAULT 0,
   c_languages varchar(32) NOT NULL DEFAULT '',
-  c_platforms varchar(32) NOT NULL DEFAULT ''
+  c_platforms varchar(32) NOT NULL DEFAULT '',
+  c_popularity real NOT NULL DEFAULT 0
 );
 
 -- vn_anime
@@ -410,6 +414,18 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+-- recalculate vn.c_popularity
+CREATE OR REPLACE FUNCTION update_vnpopularity() RETURNS void AS $$
+BEGIN
+  CREATE OR REPLACE TEMP VIEW tmp_pop1 (uid, vid, rank) AS
+    SELECT v.uid, v.vid, sqrt(count(*))::real FROM votes v JOIN votes v2 ON v.uid = v2.uid AND v2.vote < v.vote GROUP BY v.vid, v.uid;
+  CREATE OR REPLACE TEMP VIEW tmp_pop2 (vid, win) AS
+    SELECT vid, sum(rank) FROM tmp_pop1 GROUP BY vid;
+  UPDATE vn SET c_popularity = COALESCE((SELECT win/(SELECT MAX(win) FROM tmp_pop2) FROM tmp_pop2 WHERE vid = id), 0);
+  RETURN;
+END;
+$$ LANGUAGE plpgsql;
 
 
 

@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 use Tie::ShareLite ':lock';
 
-our @EXPORT = qw|multiCmd|;
+our @EXPORT = qw|multiCmd vnCacheUpdate|;
 
 
 # Sends a command to Multi
@@ -26,3 +26,25 @@ sub multiCmd {
   $s->unlock();
   $self->{_multiCmd} = [];
 }
+
+
+# Recalculates the vn.c_* columns and regenerates the related relation graphs on any change
+# Arguments: list of vids to be updated
+sub vnCacheUpdate {
+  my($self, @vns) = @_;
+
+  my $before = $self->dbVNGet(id => \@vns, order => 'v.id', what => 'relations');
+  $self->dbVNCache(@vns);
+  my $after = $self->dbVNGet(id => \@vns, order => 'v.id');
+
+  my @upd = map {
+    @{$before->[$_]{relations}} && (
+      $before->[$_]{c_released} != $after->[$_]{c_released}
+      || $before->[$_]{c_languages} ne $after->[$_]{c_languages}
+    ) ? $before->[$_]{id} : ();
+  } 0..$#$before;
+  $self->multiCmd('relgraph '.join(' ', @upd)) if @upd;
+}
+
+
+1;

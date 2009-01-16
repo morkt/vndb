@@ -37,7 +37,7 @@ sub page {
 
   my $v = $self->dbVNGet(
     id => $vid,
-    what => 'extended categories anime relations screenshots'.($rev ? ' changes' : ''),
+    what => 'extended categories anime relations screenshots ranking'.($rev ? ' changes' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
   return 404 if !$v->{id};
@@ -78,21 +78,27 @@ sub page {
 
     # general info
     table;
-     Tr;
-      td class => 'key', ' ';
-      td ' ';
-     end;
      my $i = 0;
-     if($v->{length}) {
+     Tr ++$i % 2 ? (class => 'odd') : ();
+      td class => 'key', 'Title';
+      td $v->{title};
+     end;
+     if($v->{original}) {
        Tr ++$i % 2 ? (class => 'odd') : ();
-        td 'Length';
-        td "$self->{vn_lengths}[$v->{length}][0] ($self->{vn_lengths}[$v->{length}][1])";
+        td 'Original title';
+        td $v->{original};
        end;
      }
      if($v->{alias}) {
        Tr ++$i % 2 ? (class => 'odd') : ();
         td 'Aliases';
         td $v->{alias};
+       end;
+     }
+     if($v->{length}) {
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td 'Length';
+        td "$self->{vn_lengths}[$v->{length}][0] ($self->{vn_lengths}[$v->{length}][1])";
        end;
      }
      my @links = (
@@ -117,34 +123,7 @@ sub page {
      _categories($self, \$i, $v) if @{$v->{categories}};
      _relations($self, \$i, $v) if @{$v->{relations}};
      _anime($self, \$i, $v) if @{$v->{anime}};
-
-     # User options
-     if($self->authInfo->{id}) {
-       my $vote = $self->dbVoteGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
-       my $wish = $self->dbWishListGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
-       Tr ++$i % 2 ? (class => 'odd') : ();
-        td 'User options';
-        td;
-         Select id => 'votesel';
-          option $vote ? "your vote: $vote->{vote}" : 'not voted yet';
-          optgroup label => $vote ? 'Change vote' : 'Vote';
-           option value => $_, "$_ ($self->{votes}[$_-1])" for (reverse 1..10);
-          end;
-          option value => -1, 'revoke' if $vote;
-         end;
-         if(!$vote || $wish) {
-           br;
-           Select id => 'wishsel';
-            option $wish ? "wishlist: $self->{wishlist_status}[$wish->{wstat}]" : 'not on your wishlist';
-            optgroup label => $wish ? 'Change status' : 'Add to wishlist';
-             option value => $_, $self->{wishlist_status}[$_] for (0..$#{$self->{wishlist_status}});
-            end;
-            option value => -1, 'remove from wishlist';
-           end;
-         }
-        end;
-       end;
-     }
+     _useroptions($self, \$i, $v) if $self->authInfo->{id};
 
     end;
    end;
@@ -350,6 +329,39 @@ sub _anime {
 }
 
 
+sub _useroptions {
+  my($self, $i, $v) = @_;
+
+  my $vote = $self->dbVoteGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
+  my $wish = $self->dbWishListGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
+
+  Tr ++$$i % 2 ? (class => 'odd') : ();
+   td 'User options';
+   td;
+    if($vote || !$wish) {
+      Select id => 'votesel';
+       option $vote ? "your vote: $vote->{vote}" : 'not voted yet';
+       optgroup label => $vote ? 'Change vote' : 'Vote';
+        option value => $_, "$_ ($self->{votes}[$_-1])" for (reverse 1..10);
+       end;
+       option value => -1, 'revoke' if $vote;
+      end;
+      br;
+    }
+    if(!$vote || $wish) {
+      Select id => 'wishsel';
+       option $wish ? "wishlist: $self->{wishlist_status}[$wish->{wstat}]" : 'not on your wishlist';
+       optgroup label => $wish ? 'Change status' : 'Add to wishlist';
+        option value => $_, $self->{wishlist_status}[$_] for (0..$#{$self->{wishlist_status}});
+       end;
+       option value => -1, 'remove from wishlist';
+      end;
+    }
+   end;
+  end;
+}
+
+
 sub _releases {
   my($self, $v, $r) = @_;
 
@@ -395,6 +407,7 @@ sub _releases {
          end;
          td class => 'tc4';
           a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
+          b class => 'patch', ' (patch)' if $rel->{patch};
          end;
          td class => 'tc5';
           if($self->authInfo->{id}) {

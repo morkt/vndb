@@ -12,8 +12,8 @@ our @EXPORT = qw|htmlHeader htmlFooter|;
 
 sub htmlHeader { # %options->{ title, js, noindex, search }
   my($self, %o) = @_;
-  my $skin = $self->authInfo->{skin} || $self->{skin_default};
-  $skin = $self->{skin_default} if !-d "$VNDB::ROOT/static/s/$skin";
+  my $skin = $self->reqParam('skin') || $self->authInfo->{skin} || $self->{skin_default};
+  $skin = $self->{skin_default} if !$self->{skins}{$skin} || !-d "$VNDB::ROOT/static/s/$skin";
 
   # heading
   html;
@@ -27,12 +27,16 @@ sub htmlHeader { # %options->{ title, js, noindex, search }
     script type => 'text/javascript', src => $self->{url_static}.'/f/script.js?'.$self->{version};
      # most browsers don't like a self-closing <script> tag...
     end;
+    if($self->authInfo->{customcss}) {
+      (my $css = $self->authInfo->{customcss}) =~ s/\n/ /g;
+      style type => 'text/css', $css;
+    }
     meta name => 'robots', content => 'noindex, follow', undef if $o{noindex};
    end;
    body;
     div id => 'bgright', ' ';
     div id => 'header';
-     h1 $self->debug ? (class => 'debug') : ();
+     h1;
       a href => '/', lc $self->{site_title};
      end;
     end;
@@ -118,14 +122,13 @@ sub _menu {
      [ threads   => 'Threads'       ],
      [ posts     => 'Posts'         ],
    );
-   my $stats = $self->dbStats;
    div class => 'menubox';
     h2 'Database Statistics';
     div;
      dl;
       for (@stats) {
         dt $$_[1];
-        dd $stats->{$$_[0]};
+        dd $self->{stats}{$$_[0]};
       }
      end;
      clearfloat;
@@ -141,9 +144,19 @@ sub htmlFooter {
       txt "vndb $self->{version} | ";
       a href => '/d7', 'about us';
       txt ' | ';
-      a href => 'mailto:contact@vndb.org', 'contact@vndb.org';
+      a href => "mailto:$self->{admin_email}", $self->{admin_email};
+      txt ' | ';
+      a href => $self->{source_url}, 'source';
      end;
     end; # /div maincontent
+    if($self->debug) {
+      div id => 'debug';
+       h2 'This is not VNDB!';
+       txt 'The real VNDB is ';
+       a href => 'http://vndb.org/', 'here';
+       txt '.';
+      end;
+    }
    end; # /body
   end; # /html
 

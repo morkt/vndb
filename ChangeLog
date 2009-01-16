@@ -1,3 +1,21 @@
+2.2 - ?
+	- Additional custom CSS field to user profile
+	- Search dropdown calls the return function automatically on select
+	- Revised the media list
+	- Added a checkbox to releases to indicate a patch
+	- VN popularity ranking
+	- Limit account creation to one account in 24 hours per IP address
+	- Fixed error message when uploading VN images larger than 500kB
+	- Fixed 3 grammar mistakes related to singular/plural
+	- Don't show hidden release relations on producer pages
+	- Hide the vote dropdown on v+ pages when the VN is already on the wishlist
+	- Don't search for the ADV category when searching for the Game Boy Advance
+	- Keep VN relations on r+ pages ordered by title
+	- VN search doesn't match on titles of older release revisions anymore
+	- Don't forget to update the vn.c_* columns when hiding/unhiding a release
+	- Fixed month display on VNBrowse
+	- VN search also matches on original title field of the vn entry
+
 2.1 - 2008-12-29
 	- Skin support
 	- 'show all items' tab to large forms

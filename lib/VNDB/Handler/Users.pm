@@ -88,12 +88,16 @@ sub userpage {
     Tr ++$i % 2 ? (class => 'odd') : ();
      td 'List stats';
      td !$u->{show_list} ? 'hidden' :
-       sprintf '%d releases of %d visual novels', $u->{releasecount}, $u->{vncount};
+       sprintf '%d release%s of %d visual novel%s',
+         $u->{releasecount}, $u->{releasecount} != 1 ? 's' : '',
+         $u->{vncount}, $u->{vncount} != 1 ? 's' : '';
     end;
 
     Tr ++$i % 2 ? (class => 'odd') : ();
      td 'Forum stats';
-     td sprintf '%d posts, %d new threads', $u->{postcount}, $u->{threadcount};
+     td sprintf '%d post%s, %d new thread%s',
+       $u->{postcount}, $u->{postcount} != 1 ? 's' : '',
+       $u->{threadcount}, $u->{threadcount} != 1 ? 's' : '';
     end;
    end;
   end;
@@ -239,6 +243,7 @@ sub register {
     push @{$frm->{_err}}, 'passmatch'  if $frm->{usrpass} ne $frm->{usrpass2};
     push @{$frm->{_err}}, 'usrexists'  if $frm->{usrname} eq 'anonymous' || !$frm->{_err} && $self->dbUserGet(username => $frm->{usrname})->[0]{id};
     push @{$frm->{_err}}, 'mailexists' if !$frm->{_err} && $self->dbUserGet(mail => $frm->{mail})->[0]{id};
+    push @{$frm->{_err}}, 'oneaday'    if !$frm->{_err} && $self->dbUserGet(ip => $self->reqIP, registered => time-24*3600)->[0]{id};
 
     if(!$frm->{_err}) {
       $self->dbUserAdd($frm->{usrname}, md5_hex($frm->{usrpass}), $frm->{mail});
@@ -299,17 +304,20 @@ sub edit {
       { name => 'mail', template => 'mail' },
       { name => 'usrpass',  required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
       { name => 'usrpass2', required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
-      { name => 'skin',     enum => [ '', keys %{$self->{skins}} ], required => 0, default => '' },
       { name => 'flags_list', required => 0, default => 0 },
       { name => 'flags_nsfw', required => 0, default => 0 },
+      { name => 'skin',     enum => [ '', keys %{$self->{skins}} ], required => 0, default => '' },
+      { name => 'customcss', required => 0, maxlength => 2000, default => '' },
     );
-    push @{$frm->{_err}}, 'passmatch' if ($frm->{usrpass} || $frm->{usrpass2}) && $frm->{usrpass} ne $frm->{usrpass2};
+    push @{$frm->{_err}}, 'passmatch'
+      if ($frm->{usrpass} || $frm->{usrpass2}) && (!$frm->{usrpass} || !$frm->{usrpass2} || $frm->{usrpass} ne $frm->{usrpass2});
     if(!$frm->{_err}) {
       my %o;
       $o{username} = $frm->{usrname} if $frm->{usrname};
       $o{rank} = $frm->{rank} if $frm->{rank};
       $o{mail} = $frm->{mail};
       $o{skin} = $frm->{skin};
+      $o{customcss} = $frm->{customcss};
       $o{passwd} = md5_hex($frm->{usrpass}) if $frm->{usrpass};
       $o{show_list} = $frm->{flags_list} ? 1 : 0;
       $o{show_nsfw} = $frm->{flags_nsfw} ? 1 : 0;
@@ -321,9 +329,7 @@ sub edit {
 
   # fill out default values
   $frm->{usrname}    ||= $u->{username};
-  $frm->{rank}       ||= $u->{rank};
-  $frm->{mail}       ||= $u->{mail};
-  $frm->{skin}       ||= $u->{skin};
+  $frm->{$_} ||= $u->{$_} for(qw|rank mail skin customcss|);
   $frm->{flags_list} = $u->{show_list} if !defined $frm->{flags_list};
   $frm->{flags_nsfw} = $u->{show_nsfw} if !defined $frm->{flags_nsfw};
 
@@ -356,12 +362,13 @@ sub edit {
     [ passwd => short => 'usrpass2', name => 'Confirm pass.' ],
 
     [ part   => title => 'Options' ],
-    [ select => short => 'skin', name => 'Prefered skin', options => [
-      map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_} ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
     [ check  => short => 'flags_list', name =>
         qq|Allow other people to see my visual novel list (<a href="/u$uid/list">/u$uid/list</a>) |.
         qq|and wishlist (<a href="/u$uid/wish">/u$uid/wish</a>)| ],
     [ check  => short => 'flags_nsfw', name => 'Disable warnings for images that are not safe for work.' ],
+    [ select => short => 'skin', name => 'Prefered skin', width => 300, options => [
+      map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_} ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
+    [ textarea => short => 'customcss', name => 'Additional CSS' ],
   ]);
   $self->htmlFooter;
 }

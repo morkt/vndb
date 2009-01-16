@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel|;
 
 
-# %options->{ username passwd mail order uid results page what }
+# %options->{ username passwd mail order uid ip registered results page what }
 # what: stats
 sub dbUserGet {
   my $s = shift;
@@ -35,6 +35,10 @@ sub dbUserGet {
       'id = ?' => $o{uid} ) : (),
     !$o{uid} && !$o{username} ? (
       'id > 0' => 1 ) : (),
+    $o{ip} ? (
+      'ip = ?' => $o{ip} ) : (),
+    $o{registered} ? (
+      'registered > ?' => $o{registered} ) : (),
   );
 
   my @select = (
@@ -64,7 +68,7 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail rank show_nsfw show_list skin |);
+    for (qw| username mail rank show_nsfw show_list skin customcss |);
   $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
     if defined $o{passwd};
 
@@ -77,10 +81,11 @@ sub dbUserEdit {
 }
 
 
-# username, md5(pass), mail
+# username, md5(pass), mail, [ip]
 sub dbUserAdd {
   my($s, @o) = @_;
-  $s->dbExec(q|INSERT INTO users (username, passwd, mail, registered) VALUES(?, decode(?, 'hex'), ?, ?)|, @o, time);
+  $s->dbExec(q|INSERT INTO users (username, passwd, mail, ip, registered) VALUES(?, decode(?, 'hex'), ?, ?, ?)|,
+    @o[0..2], $o[3]||$s->reqIP, time);
 }
 
 

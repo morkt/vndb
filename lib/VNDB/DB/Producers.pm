@@ -69,6 +69,7 @@ sub dbProducerGet {
         JOIN vn_rev vr ON vr.id = v.latest
         WHERE vp.pid IN(!l)
           AND v.hidden = FALSE
+          AND r.hidden = FALSE
         GROUP BY v.id
         ORDER BY date|,
       [ keys %r ]

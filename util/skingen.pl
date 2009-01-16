@@ -27,6 +27,7 @@ sub readskin { # skin name
   open my $F, '<', $ROOT.'/static/s/'.$name.'/conf' or die $!;
   while(<$F>) {
     chomp;
+    s/\r//g;
     s{[\t\s]*//.+$}{};
     next if !/^([a-z0-9]+)[\t\s]+(.+)$/;
     $o{$1} = $2;
@@ -60,6 +61,8 @@ sub writeskin { # $obj
     $o->{_bodybg} = "background: $o->{bodybg} url($o->{imglefttop}) no-repeat";
   }
 
+  # main title
+  $o->{_maintitle} = $o->{maintitle} ? "color: $o->{maintitle}" : 'display: none';
 
   # create boxbg.png
   my $img = Image::Magick->new(size => '1x1');
@@ -74,7 +77,7 @@ sub writeskin { # $obj
   $o->{_blendbg} = '#'.join '', map sprintf('%02x', $_*255), $img->GetPixel(x=>1,y=>1);
 
   # write the CSS
-  open my $CSS, '<', "$ROOT/data/skingen/style.css" or die $!;
+  open my $CSS, '<', "$ROOT/data/style.css" or die $!;
   open my $SKIN, '>', "$ROOT/static/s/$o->{_name}/style.css" or die $!;
   while((my $d = <$CSS>)) {
     if($O{debug}) {

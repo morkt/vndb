@@ -10,7 +10,7 @@ our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbVNCache dbScreenshotAdd 
 
 
 # Options: id, rev, char, search, cati, cate, lang, platform, results, page, order, what
-# What: extended categories anime relations screenshots relgraph changes
+# What: extended categories anime relations screenshots relgraph ranking changes
 sub dbVNGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -50,16 +50,18 @@ sub dbVNGet {
   );
 
   if($o{search}) {
-    my @w;
-    for (split /[ -,]/, $o{search}) {
+    my @w = (
+      '(irr.id IS NULL OR ir.latest = irr.id)' => 1
+    );
+    for (split /[ -,._]/, $o{search}) {
       s/%//g;
       next if length($_) < 2;
       if(/^\d+$/ && gtintype($_)) {
         push @w, 'irr.gtin = ?', $_;
       } else {
         $_ = "%$_%";
-        push @w, '(ivr.title ILIKE ? OR ivr.alias ILIKE ? OR irr.title ILIKE ? OR irr.original ILIKE ?)',
-          [ $_, $_, $_, $_ ];
+        push @w, '(ivr.title ILIKE ? OR ivr.original ILIKE ? OR ivr.alias ILIKE ? OR irr.title ILIKE ? OR irr.original ILIKE ?)',
+          [ $_, $_, $_, $_, $_ ];
       }
     }
     $where{ q|
@@ -87,12 +89,13 @@ sub dbVNGet {
   );
 
   my @select = (
-    qw|v.id v.locked v.hidden v.c_released v.c_languages v.c_platforms vr.title vr.original v.rgraph|, 'vr.id AS cid',
+    qw|v.id v.locked v.hidden v.c_released v.c_languages v.c_platforms vr.title vr.original v.rgraph v.c_popularity|, 'vr.id AS cid',
     $o{what} =~ /extended/ ? (
       qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai vr.l_vnn| ) : (),
     $o{what} =~ /changes/ ? (
       qw|c.added c.requester c.comments v.latest u.username c.rev c.causedby|) : (),
     $o{what} =~ /relgraph/ ? 'rg.cmap' : (),
+    $o{what} =~ /ranking/ ? '(SELECT COUNT(*) FROM vn iv WHERE iv.c_popularity >= v.c_popularity) AS ranking' : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
