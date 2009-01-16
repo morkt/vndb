@@ -53,15 +53,15 @@ sub dbVNGet {
     my @w = (
       '(irr.id IS NULL OR ir.latest = irr.id)' => 1
     );
-    for (split /[ -,]/, $o{search}) {
+    for (split /[ -,._]/, $o{search}) {
       s/%//g;
       next if length($_) < 2;
       if(/^\d+$/ && gtintype($_)) {
         push @w, 'irr.gtin = ?', $_;
       } else {
         $_ = "%$_%";
-        push @w, '(ivr.title ILIKE ? OR ivr.alias ILIKE ? OR irr.title ILIKE ? OR irr.original ILIKE ?)',
-          [ $_, $_, $_, $_ ];
+        push @w, '(ivr.title ILIKE ? OR ivr.original ILIKE ? OR ivr.alias ILIKE ? OR irr.title ILIKE ? OR irr.original ILIKE ?)',
+          [ $_, $_, $_, $_, $_ ];
       }
     }
     $where{ q|

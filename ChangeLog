@@ -14,6 +14,7 @@
 	- VN search doesn't match on titles of older release revisions anymore
 	- Don't forget to update the vn.c_* columns when hiding/unhiding a release
 	- Fixed month display on VNBrowse
+	- VN search also matches on original title field of the vn entry
 
 2.1 - 2008-12-29
 	- Skin support
