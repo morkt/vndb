@@ -86,7 +86,17 @@ sub _infotable {
    my $i = 0;
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td class => 'key', 'Title';
+    td class => 'key', 'Relation';
+    td;
+     for (@{$r->{vn}}) {
+       a href => "/v$_->{vid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 60;
+       br if $_ != $r->{vn}[$#{$r->{vn}}];
+     }
+    end;
+   end;
+
+   Tr ++$i % 2 ? (class => 'odd') : ();
+    td 'Title';
     td $r->{title};
    end;
 
@@ -96,16 +106,6 @@ sub _infotable {
       td $r->{original};
      end;
    }
-
-   Tr ++$i % 2 ? (class => 'odd') : ();
-    td 'Relation';
-    td;
-     for (@{$r->{vn}}) {
-       a href => "/v$_->{vid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 60;
-       br if $_ != $r->{vn}[$#{$r->{vn}}];
-     }
-    end;
-   end;
 
    Tr ++$i % 2 ? (class => 'odd') : ();
     td 'Type';
