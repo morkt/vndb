@@ -12,6 +12,27 @@ if(document.addEventListener)document.addEventListener("DOMCont"
 function(){if(/loaded|complete/.test(document.readyState)){
 clearInterval(t);f()}},10);window.onload=f;}
 
+var http_request = false;
+function ajax(url, func) {
+  if(http_request)
+    http_request.abort();
+  http_request = (window.ActiveXObject) ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
+  if(http_request == null) {
+    alert("Your browse does not support the functionality this website requires.");
+    return;
+  }
+  http_request.onreadystatechange = function() {
+    if(!http_request || http_request.readyState != 4 || !http_request.responseText)
+      return;
+    if(http_request.status != 200)
+      return alert('Whoops, error! :(');
+    func(http_request);
+  };
+  url += (url.indexOf('?')>=0 ? ';' : '?')+(Math.floor(Math.random()*999)+1);
+  http_request.open('GET', url, true);
+  http_request.send(null);
+}
+
 
 
 
@@ -221,17 +242,19 @@ function vlDropDown(e) {
     } while(o = o.offsetParent);
     ddx -= 185;
 
-    var cu = '/r'+tg.id.substr(6)+'/list?e=';
+    var cu = tg.id.substr(6);
     var st = tg.innerHTML.split(' / ');
+    if(st[0].indexOf('loading') >= 0)
+      return;
     var r = '<ul><li><b>Release status</b></li>';
     for(var i=0;i<rstat.length;i++)
-      r += st[0] && st[0].indexOf(rstat[i]) >= 0 ? '<li><i>'+rstat[i]+'</i></li>' : '<li><a href="'+cu+'r'+i+'">'+rstat[i]+'</a></li>';
+      r += st[0] && st[0].indexOf(rstat[i]) >= 0 ? '<li><i>'+rstat[i]+'</i></li>' : '<li><a href="#" onclick="return vlMod('+cu+',\'r'+i+'\')">'+rstat[i]+'</a></li>';
     r += '</ul><ul><li><b>Play status</b></li>';
     for(var i=0;i<vstat.length;i++)
-      r += st[1] && st[1].indexOf(vstat[i]) >= 0 ? '<li><i>'+vstat[i]+'</i></li>' : '<li><a href="'+cu+'v'+i+'">'+vstat[i]+'</a></li>';
+      r += st[1] && st[1].indexOf(vstat[i]) >= 0 ? '<li><i>'+vstat[i]+'</i></li>' : '<li><a href="#" onclick="return vlMod('+cu+',\'v'+i+'\')">'+vstat[i]+'</a></li>';
     r += '</ul>';
     if(tg.innerHTML != '--')
-      r += '<ul class="full"><li><a href="'+cu+'del">Remove from VN list</a></li></ul>';
+      r += '<ul class="full"><li><a href="#" onclick="return vlMod('+cu+',\'del\')">Remove from VN list</a></li></ul>';
 
     o = document.createElement('div');
     o.id = 'vldd';
@@ -241,6 +264,15 @@ function vlDropDown(e) {
     o.innerHTML = r;
     document.body.appendChild(o);
   }
+}
+
+function vlMod(rid, act) {
+  document.body.removeChild(x('vldd'));
+  x('rlsel_'+rid).innerHTML = '<b class="patch">loading...</b>';
+  ajax('/xml/rlist.xml?id='+rid+';e='+act, function(hr) {
+    x('rlsel_'+rid).innerHTML = hr.responseXML.getElementsByTagName('rlist')[0].firstChild.nodeValue;
+  });
+  return false;
 }
 
 

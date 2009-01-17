@@ -1,4 +1,7 @@
-2.2 - ?
+2.3 - ?
+	- No page reload needed when changing rlist status from vn page
+
+2.2 - 2009-01-16
 	- Additional custom CSS field to user profile
 	- Search dropdown calls the return function automatically on select
 	- Revised the media list

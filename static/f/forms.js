@@ -7,26 +7,6 @@ function qq(v) {
 function shorten(v, l) {
   return qq(v.length > l ? v.substr(0, l-3)+'...' : v);
 }
-var http_request = false;
-function ajax(url, func) {
-  if(http_request)
-    http_request.abort();
-  http_request = (window.ActiveXObject) ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
-  if(http_request == null) {
-    alert("Your browse does not support the functionality this website requires.");
-    return;
-  }
-  http_request.onreadystatechange = function() {
-    if(!http_request || http_request.readyState != 4 || !http_request.responseText)
-      return;
-    if(http_request.status != 200)
-      return alert('Whoops, error! :(');
-    func(http_request);
-  };
-  url += (url.indexOf('?')>=0 ? ';' : '?')+(Math.floor(Math.random()*999)+1);
-  http_request.open('GET', url, true);
-  http_request.send(null);
-}
 
 
 
