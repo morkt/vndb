@@ -322,7 +322,7 @@ sub _form {
   "General info" => [
     [ select => short => 'type',      name => 'Type',
       options => [ map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ] ],
-    [ check  => short => 'patch',     name => 'This release is a patch to an other release.' ],
+    [ check  => short => 'patch',     name => 'This release is a patch to another release.' ],
     [ input  => short => 'title',     name => 'Title (romaji)', width => 300 ],
     [ input  => short => 'original',  name => 'Original title', width => 300 ],
     [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],
