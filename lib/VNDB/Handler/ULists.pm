@@ -104,7 +104,7 @@ sub wishlist {
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'o', required => 0, default => 'a', enum => [ 'a', 'd' ] },
-    { name => 's', required => 0, default => 'title', enum => [qw|title added|] },
+    { name => 's', required => 0, default => 'title', enum => [qw|title added wstat|] },
     { name => 'f', required => 0, default => -1, enum => [ -1..$#{$self->{wishlist_status}} ] },
   );
   return 404 if $f->{_err};
@@ -158,7 +158,7 @@ sub wishlist {
     sorturl  => "/u$uid/wish?f=$f->{f}",
     header   => [
       [ Title    => 'title' ],
-      [ Priority => ''      ],
+      [ Priority => 'wstat' ],
       [ Added    => 'added' ],
     ],
     row      => sub {
