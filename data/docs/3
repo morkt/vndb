@@ -24,12 +24,12 @@
   to be released.
   Trial versions are heavily cut down and free releases so that you can
   experience a game before you buy it. Sometimes, trial versions are cut
-  down for web transmission and do not completely represent the finished product.
-  <br />
-  A release may be a patch (most likely, a translation patch against another (fully released)
-  release). If this is the case, check the box. The type of a patch should reflect how different
-  it is to the original (in terms of translation, the difference of readability, as most
-  translations do not affect things like BGM or visuals but are considered "complete").
+  down for web transmission and do not completely represent the finished product.<br />
+  In the case of a translation patch, the type should indicate whether it translates
+  the full game (Complete), or just parts of it (Partial).
+ </dd><dt>Patch</dt><dd>
+  Use this checkbox to indicate that the release is a (translation) patch, used to
+  patch an other release.
  </dd><dt>Title (romaji)</dt><dd>
   The name of the release, in the Latin character set (using Romanisation or translation)
  </dd><dt>Original title</dt><dd>
@@ -50,13 +50,7 @@
   If it was posted on a website, the date on which the post was public.
  </dd><dt>Age rating</dt><dd>
   The minimum age rating for the release. On most releases, this is specified on the
-  packaging or on product web pages.<br />
-  Generally:
-  <ul>
-   <li>an "adult" product is 18+; any game with sexual content is 18+.</li>
-   <li>a product with mild levels of violence and swearing is 15+.</li>
-   <li>all others are "All Ages".</li>
-  </ul>
+  packaging or on product web pages.
  </dd><dt>Notes</dt><dd>
   Anything miscellaneous and useful.
   Generally, extras (but not preorder bonuses) and progress information go here.
@@ -65,50 +59,41 @@
 
 
 :SUB:Platforms &amp; Media
+<p>
+ The platforms that the product was released for. Does not include emulated platforms
+ (e.g. Playstation 2 games on Playstation 3) or WINE. DVD Player refers to games playable
+ as a normal DVD Video (DVDPG) and should not be confused with the DVD as a medium.
+ <br /><br />
+ The following media can be selected:
+</p>
 <dl>
- <dt>Platforms</dt><dd>
-  The platforms that the product was released for.
-  Do not include emulated platforms (e.g. Playstation 2 games on Playstation 3) or
-  WINE.
-  Note: DVD Player (in most cases) refers to DVDPG, but never a DVD Drive.
- </dd><dt>Media</dt><dd>
-  <dt>Blu-ray</dt><dd>
-   Blu-ray Disk, typically 30-60GB+. Requires a Blu-ray Drive. Playstation 3 are
-   normally Blu-ray.
-  </dd>
-  <dt>CD</dt><dd>
-   CD-ROM, typically 700MB
-  </dd>
-  <dt>DVD</dt><dd>
-   DVD5, typically 4.5GB, or DVD9, typically 9GB. DVDPG games are DVD.
-  </dd>
-  <dt>Floppy</dt><dd>
-   5 1/4" or 3 3/4", no greater than 1.44MB.
-  </dd>
-  <dt>GD</dt><dd>
-   Dreamcast games are normally GD disks.
-  </dd>
-  <dt>Internet Download</dt><dd>
-  </dd>
-  <dt>Memory Card</dt><dd>
-   Any SD (Secure Digital) Card variant or MMC variant, Compact Flash or "USB Sticks".
-   The Main difference between this and Cartridge (below) is that Memory Cards are
-   re-writable (RW).
-  </dd>
-  <dt>Cartridge</dt><dd>
-   Compare with Memory Cards (above). Read-only. Famicom (NES), Super Nintendo (SNES),
-   Game Boy Advanced (GBA) and Nintendo DS use cartridges.
-  </dd>
-  <dt>Nintendo Optical Disk</dt><dd>
-   ...
-  </dd>
-  <dt>Other</dt><dd>
-   Any format not considered to be any of these mentioned should take this media.
-   However, it should not be used liberally, and it's inclusion may need to be justified.
-  </dd>
-  <dt>UMD</dt><dd>
-   Universal Media Disk, typically 2.2GB. Playstation Portable uses this format.
-  </dd>
+ <dt>Blu-ray</dt><dd>
+  Blu-ray Disk, typically 30-60GB+. Requires a Blu-ray Drive. Playstation 3 are
+  normally Blu-ray.
+ </dd><dt>CD</dt><dd>
+  CD-ROM, typically 700MB.
+ </dd><dt>DVD</dt><dd>
+  DVD5, typically 4.5GB, or DVD9, typically 9GB. DVDPG games are DVD.
+ </dd><dt>Floppy</dt><dd>
+  5 1/4" or 3 3/4", no greater than 1.44MB.
+ </dd><dt>GD</dt><dd>
+  Dreamcast games are normally GD disks.
+ </dd><dt>Internet Download</dt><dd>
+  Anything without a physical box, i.e. obtained by downloading it over a network.
+ </dd><dt>Memory Card</dt><dd>
+  Any SD (Secure Digital) Card variant or MMC variant, Compact Flash or "USB Sticks".
+  The Main difference between this and Cartridge (below) is that Memory Cards are
+  re-writable (RW).
+ </dd><dt>Cartridge</dt><dd>
+  Compare with Memory Cards (above). Read-only. Famicom (NES), Super Nintendo (SNES),
+  Game Boy Advanced (GBA) and Nintendo DS use cartridges.
+ </dd><dt>Nintendo Optical Disk</dt><dd>
+  Non-CD or DVD optical disks used by various Nintendo consoles.
+ </dd><dt>Other</dt><dd>
+  Any format not considered to be any of these mentioned should take this media.
+  However, it should not be used liberally, and it's inclusion may need to be justified.
+ </dd><dt>UMD</dt><dd>
+  Universal Media Disk, typically 2.2GB. Playstation Portable uses this format.
  </dd>
 </dl>
 
