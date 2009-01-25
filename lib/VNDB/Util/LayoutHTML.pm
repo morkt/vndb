@@ -141,6 +141,14 @@ sub _menu {
 sub htmlFooter {
   my $self = shift;
      div id => 'footer';
+
+      my $q = $self->dbRandomQuote;
+      if($q && $q->{vid}) {
+        lit '"';
+        a href => "/v$q->{vid}", style => 'text-decoration: none', $q->{quote};
+        txt qq|"\n|;
+      }
+
       txt "vndb $self->{version} | ";
       a href => '/d7', 'about us';
       txt ' | ';

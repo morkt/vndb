@@ -61,6 +61,15 @@ CREATE TABLE producers_rev (
   "desc" text NOT NULL DEFAULT ''
 );
 
+
+-- quotes
+CREATE TABLE quotes (
+  vid integer NOT NULL,
+  quote varchar(250) NOT NULL,
+  PRIMARY KEY(vid, quote)
+);
+
+
 -- releases
 CREATE TABLE releases (
   id SERIAL NOT NULL PRIMARY KEY,
@@ -296,6 +305,7 @@ ALTER TABLE changes            ADD FOREIGN KEY (causedby)  REFERENCES changes   
 ALTER TABLE producers          ADD FOREIGN KEY (latest)    REFERENCES producers_rev (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE producers_rev      ADD FOREIGN KEY (id)        REFERENCES changes       (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE producers_rev      ADD FOREIGN KEY (pid)       REFERENCES producers     (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE quotes             ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE releases           ADD FOREIGN KEY (latest)    REFERENCES releases_rev  (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE releases_media     ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE releases_platforms ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id) DEFERRABLE INITIALLY DEFERRED;

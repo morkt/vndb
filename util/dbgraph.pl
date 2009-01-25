@@ -21,7 +21,7 @@ my %subgraphs = (
   'Visual Novels'    => [qw| FFE6BE vn vn_rev vn_relations vn_categories vn_anime vn_screenshots |],
   'Users'            => [qw| CCFFFF users votes vnlists rlists wlists |],
   'Discussion board' => [qw| FFDCDC threads threads_tags threads_posts |],
-  'Misc'             => [qw| F5F5F5 changes anime screenshots relgraph stats_cache |],
+  'Misc'             => [qw| F5F5F5 changes anime screenshots relgraph stats_cache quotes |],
 );
 
 my %tables; # table_name => [ [ col1, pri ], ... ]

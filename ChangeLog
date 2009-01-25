@@ -1,5 +1,6 @@
 2.3 - ?
 	- No page reload needed when changing rlist status from vn page
+	- Random VN quotes to the footer of every page
 
 2.2 - 2009-01-16
 	- Additional custom CSS field to user profile
@@ -42,7 +43,7 @@
 	  - Global statistics are cached in stats_cache
 	- URL changes:
 	  - /p and /v don't work anymore, use /[pv]/all
-	  - /u/list/* -> /u/* and /u/list -> /u/list/all
+	  - /u/list/* -> /u/* and /u/list -> /u/all
 	  - Revert URL changed from /x99/edit?rev=1 to /x99.1/edit
 	  - /v+/stats and /v+/scr moved into /v+
 	- Functionality changes:

@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw|
-  dbStats dbRevisionInsert dbItemInsert dbRevisionGet dbItemMod dbLanguages
+  dbStats dbRevisionInsert dbItemInsert dbRevisionGet dbItemMod dbLanguages dbRandomQuote
 |;
 
 
@@ -170,6 +170,16 @@ sub dbLanguages {
         WHERE r.hidden = FALSE|
     )}
   ];
+}
+
+
+# Returns a random quote (hashref with keys = vid, quote)
+sub dbRandomQuote {
+  return $_[0]->dbRow(q|
+    SELECT vid, quote
+      FROM quotes
+      ORDER BY RANDOM()
+      LIMIT 1|);
 }
 
 
