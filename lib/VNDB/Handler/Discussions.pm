@@ -92,7 +92,7 @@ sub thread {
      h1 'Reply';
      p class => 'center', 'This thread has been locked, you can\'t reply to it anymore.';
     end;
-  } elsif($t->{count} < $page*25 && $self->authCan('board')) {
+  } elsif($t->{count} <= $page*25 && $self->authCan('board')) {
     form action => "/t$tid/reply", method => 'post', 'accept-charset' => 'UTF-8';
      div class => 'mainbox';
       fieldset class => 'submit';
