@@ -144,11 +144,13 @@ sub homepage {
   # Upcoming releases
   div class => 'mainbox threelayout';
    h1 'Upcoming releases';
-   my $upcoming = $self->dbReleaseGet(results => 10, unreleased => 1);
+   my $upcoming = $self->dbReleaseGet(results => 10, unreleased => 1, what => 'platforms');
    ul;
     for (@$upcoming) {
       li;
        lit datestr $_->{released};
+       txt ' ';
+       cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
        txt ' ';
        a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
       end;
@@ -159,11 +161,13 @@ sub homepage {
   # Just released
   div class => 'mainbox threelayout last';
    h1 'Just released';
-   my $justrel = $self->dbReleaseGet(results => 10, order => 'rr.released DESC', unreleased => 0);
+   my $justrel = $self->dbReleaseGet(results => 10, order => 'rr.released DESC', unreleased => 0, what => 'platforms');
    ul;
     for (@$justrel) {
       li;
        lit datestr $_->{released};
+       txt ' ';
+       cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
        txt ' ';
        a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
       end;
