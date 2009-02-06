@@ -116,27 +116,27 @@ sub bb2html {
 
     my $lit = $_;
     if($open[$#open] ne 'raw') {
-      if    ($_ eq '[raw]')      { push @open, 'raw'; next }
-      elsif ($_ eq '[spoiler]')  { push @open, 'spoiler'; $result .= '<b class="spoiler">'; next }
-      elsif ($_ eq '[quote]')    {
+      if    (lc$_ eq '[raw]')      { push @open, 'raw'; next }
+      elsif (lc$_ eq '[spoiler]')  { push @open, 'spoiler'; $result .= '<b class="spoiler">'; next }
+      elsif (lc$_ eq '[quote]')    {
         push @open, 'quote';
         $result .= '<div class="quote">' if !$maxlength;
         $rmnewline++;
         next
-      } elsif ($_ eq '[/spoiler]') {
+      } elsif (lc$_ eq '[/spoiler]') {
         if($open[$#open] eq 'spoiler') {
           $result .= '</b>';
           pop @open;
         }
         next;
-      } elsif ($_ eq '[/quote]') {
+      } elsif (lc$_ eq '[/quote]') {
         if($open[$#open] eq 'quote') {
           $result .= '</div>' if !$maxlength;
           $rmnewline++;
           pop @open;
         }
         next;
-      } elsif($_ eq '[/url]') {
+      } elsif(lc$_ eq '[/url]') {
         if($open[$#open] eq 'url') {
           $result .= '</a>';
           pop @open;
@@ -161,7 +161,7 @@ sub bb2html {
         $result .= $_;
         next;
       }
-    } elsif($_ eq '[/raw]') {
+    } elsif(lc$_ eq '[/raw]') {
       pop @open if $open[$#open] eq 'raw';
       next;
     }

@@ -1,6 +1,8 @@
 2.3 - ?
 	- No page reload needed when changing rlist status from vn page
 	- Random VN quotes to the footer of every page
+	- Fixed case-sensitivity for BBCode
+	- Homepage shows platform icons for releases
 
 2.2 - 2009-01-16
 	- Additional custom CSS field to user profile
