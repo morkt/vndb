@@ -110,7 +110,7 @@ sub userpage {
   }
 
   if($u->{c_changes}) {
-    my $list = $self->dbRevisionGet(what => 'item user', uid => $uid, results => 5);
+    my $list = $self->dbRevisionGet(what => 'item user', uid => $uid, results => 5, hidden => 1);
     h1 class => 'boxtitle';
      a href => "/u$uid/hist", 'Recent changes';
     end;
