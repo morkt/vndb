@@ -41,7 +41,8 @@ sub dbReleaseGet {
   );
 
   my @select = (
-    qw|r.id r.locked r.hidden rr.title rr.original rr.gtin rr.language rr.website rr.released rr.notes rr.minage rr.type rr.patch|, 'rr.id AS cid',
+    qw|r.id r.locked r.hidden rr.title rr.original rr.gtin rr.catalog rr.language|,
+    qw|rr.website rr.released rr.notes rr.minage rr.type rr.patch|, 'rr.id AS cid',
     $o{what} =~ /changes/ ? qw|c.added c.requester c.comments r.latest u.username c.rev| : (),
   );
 
@@ -136,9 +137,9 @@ sub insert_rev {
   my($self, $cid, $rid, $o) = @_;
 
   $self->dbExec(q|
-    INSERT INTO releases_rev (id, rid, title, original, gtin, language, website, released, notes, minage, type, patch)
+    INSERT INTO releases_rev (id, rid, title, original, gtin, catalog, language, website, released, notes, minage, type, patch)
       VALUES (!l)|,
-    [ $cid, $rid, @$o{qw| title original gtin language website released notes minage type patch|} ]);
+    [ $cid, $rid, @$o{qw| title original gtin catalog language website released notes minage type patch|} ]);
 
   $self->dbExec(q|
     INSERT INTO releases_producers (rid, pid)

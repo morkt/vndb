@@ -44,6 +44,7 @@ sub page {
       [ title     => 'Title (romaji)', diff => 1 ],
       [ original  => 'Original title', diff => 1 ],
       [ gtin      => 'JAN/UPC/EAN',    serialize => sub { $_[0]||'[none]' } ],
+      [ catalog   => 'Catalog number', serialize => sub { $_[0]||'[none]' } ],
       [ language  => 'Language',       serialize => sub { $self->{languages}{$_[0]} } ],
       [ website   => 'Website',        ],
       [ released  => 'Release date',   htmlize   => sub { datestr $_[0] } ],
@@ -181,6 +182,13 @@ sub _infotable {
      end;
    }
 
+   if($r->{catalog}) {
+     Tr ++$i % 2 ? (class => 'odd') : ();
+      td 'Catalog no.';
+      td $r->{catalog};
+     end;
+   }
+
    if($r->{website}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
       td 'Links';
@@ -239,7 +247,7 @@ sub edit {
 
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (
-    (map { $_ => $r->{$_} } qw|type title original gtin language website notes minage platforms patch|),
+    (map { $_ => $r->{$_} } qw|type title original gtin catalog language website notes minage platforms patch|),
     released  => $r->{released} =~ /^([0-9]{4})([0-9]{2})([0-9]{2})$/ ? [ $1, $2, $3 ] : [ 0, 0, 0 ],
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map "$_->{id},$_->{name}", sort { $a->{id} <=> $b->{id} } @{$r->{producers}}),
@@ -255,6 +263,7 @@ sub edit {
       { name => 'original',  required => 0, default => '', maxlength => 250 },
       { name => 'gtin',      required => 0, default => '0',
         func => [ \&gtintype, 'Not a valid JAN/UPC/EAN code' ] },
+      { name => 'catalog',   required => 0, default => '', maxlength => 50 },
       { name => 'language',  enum => [ keys %{$self->{languages}} ] },
       { name => 'website',   required => 0, default => '', template => 'url' },
       { name => 'released',  required => 0, default => 0, multi => 1, template => 'int' },
@@ -284,7 +293,7 @@ sub edit {
           !grep !/^(released|platforms|producers|vn)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
 
       my %opts = (
-        (map { $_ => $frm->{$_} } qw| type title original gtin language website notes minage platforms editsum patch|),
+        (map { $_ => $frm->{$_} } qw| type title original gtin catalog language website notes minage platforms editsum patch|),
         vn        => $new_vn,
         producers => $producers,
         media     => $media,
@@ -329,6 +338,7 @@ sub _form {
     [ select => short => 'language',  name => 'Language',
       options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
     [ input  => short => 'gtin',      name => 'JAN/UPC/EAN' ],
+    [ input  => short => 'catalog',   name => 'Catalog number' ],
     [ input  => short => 'website',   name => 'Official website' ],
     [ static => label => 'Release date', content => sub {
       Select id => 'released', name => 'released';

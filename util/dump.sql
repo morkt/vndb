@@ -113,7 +113,8 @@ CREATE TABLE releases_rev (
   notes text NOT NULL DEFAULT '',
   minage smallint NOT NULL DEFAULT -1,
   gtin bigint NOT NULL DEFAULT 0,
-  patch boolean NOT NULL DEFAULT FALSE
+  patch boolean NOT NULL DEFAULT FALSE,
+  catalog varchar(50) NOT NULL DEFAULT ''
 );
 
 -- releases_vn
