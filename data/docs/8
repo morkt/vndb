@@ -21,28 +21,30 @@ Feel free to comment about the TODO list and to suggest new features on the
 <a href="/t/db">discussion board</a> or on <a href="irc://irc.synirc.net/vndb">
 IRC</a>.
 <br /><br />
-<b>Last update: 2008-12-29</b><br /><br />
+<b>Last update: 2009-02-12</b><br /><br />
 
 
-:SUB:Next version (2.2)
+:SUB:Next version (2.3)
 <ol>
- <li>Custom aditional CSS field to user pages</li>
+ <li>Catalog numbers for releases (done)</li>
+ <li>Changing release statusses from VN page using AJAX (done)</li>
+ <li>Random VN quotes on footer of every page (done)</li>
+ <li>Platform icons on homepage (done)</li>
+ <li>Tagging system (...will take a while)</li>
 </ol>
 
 
 :SUB:(Hopefully) soon
 <ol>
  <li>Advanced notification system</li>
- <li>Some kind of tagging system (<a href="/t42">t42</a>)</li>
- <li>A proper ranking system</li>
  <li>More VNList filters &amp; stats</li>
+ <li>Release calendar</li>
 </ol>
 
 
 :SUB:Later
 <ol>
- <li>Release calendar</li>
- <li>Catalog numbers for releases</li>
+ <li>Filters on /v/* to exclude blacklisted and/or VNs on a users list from the results</li>
  <li>Producer relations</li>
  <li><b style="font-weight: normal; text-decoration: line-through">VN Staff and Character database</b><br />
   <i>Probably not going to make it into VNDB, unless someone wants to be in charge of this</i></li>
@@ -58,6 +60,8 @@ IRC</a>.
  <li>Automatic uploading of cover images from a URL</li>
  <li>Scans of the packaging for releases</li>
  <li>Store which fields have been changed for revisions using one-character-code indicators</li>
+ <li>Improved platform for fan translations (separated from releases)</li>
+ <li>'currently down/offline' flag for official website links</li>
 </ol>
 
 
@@ -72,5 +76,6 @@ IRC</a>.
  <li>Let VNDB and Multi communicate via SQL (and use schemas to separate the tables)</li>
  <li>More secure login system</li>
  <li>Use PostgreSQL stored procedures to insert revisions (using composite types, arrays, etc as arguments)</li>
+ <li>Update the users.c_changes column on hiding/unhiding an item</li>
 </ol>
 
