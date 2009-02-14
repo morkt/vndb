@@ -963,6 +963,14 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 
 
 
+/***** Tag page *****/
+
+.tagtree { margin-left: 20px; list-style-type: none }
+.tagtree ul { margin-left: 10px; list-style-type: none }
+
+
+
+
 /***** Warning/Notice Box *****/
 
 div.warning, div.notice {
