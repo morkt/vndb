@@ -76,8 +76,10 @@ sub tagedit {
 
   return $self->htmlDenied if !$self->authCan('tagmod');
 
-  my $frm;
+  my($frm, $par);
   if($act && $act eq 'add') {
+    $par = $self->dbTagGet(id => $tag)->[0];
+    return 404 if !$par;
     $frm->{parents} = $tag;
     $tag = 0;
   }
@@ -111,9 +113,10 @@ sub tagedit {
     $frm->{parents} ||= join ' ', map $_->{tag}, @{$t->{parents}};
   }
 
-  $self->htmlHeader(title => $tag ? "Editing tag: $t->{name}" : 'Adding new tag');
-  $self->htmlMainTabs('g', $t, 'edit') if $t;
-  $self->htmlForm({ frm => $frm, action => $tag ? "/g$tag/edit" : '/g/new' }, 'General info' => [
+  my $title = $par ? "Add child tag to $par->{name}" : $tag ? "Edit tag: $t->{name}" : 'Add new tag';
+  $self->htmlHeader(title => $title);
+  $self->htmlMainTabs('g', $par || $t, 'edit') if $t || $par;
+  $self->htmlForm({ frm => $frm, action => $par ? "/g$par->{id}/add" : $tag ? "/g$tag/edit" : '/g/new' }, $title => [
     [ input    => short => 'name',     name => 'Primary name' ],
     [ checkbox => short => 'meta',     name => 'This is a meta-tag (only to be used as parent for other tags, not for linking to VN entries)' ],
     $tag ?
