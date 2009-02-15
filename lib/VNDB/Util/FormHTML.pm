@@ -12,8 +12,10 @@ our @EXPORT = qw| htmlFormError htmlFormPart htmlForm |;
 # form error messages
 my %formerr_names = (
   alias         => 'Aliases',
+  aliases       => 'Aliases',
   anime         => 'Anime',
   desc          => 'Description',
+  description   => 'Description',
   editsum       => 'Edit summary',
   gtin          => 'JAN/EAN/UPC',
   lang          => 'Language',
@@ -51,6 +53,7 @@ my %formerr_exeptions = (
   noimage       => 'Image must be in JPEG or PNG format',
   toolarge      => 'Image is too large, only 500kB allowed',
   oneaday       => 'You can only register one account from the same IP within 24 hours',
+  tagexists     => 'A tag with the same name already exists in the database!',
 );
 
 

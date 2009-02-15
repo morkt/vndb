@@ -85,6 +85,10 @@ sub tagedit {
       { name => 'parents',     required => 0, regex => [ qr/^(\d+)(\s\d+)*$/, 'Parents must be a list of tag IDs' ], default => '' }
     );
     if(!$frm->{_err}) {
+      my $c = $self->dbTagGet(name => $frm->{name});
+      $frm->{_err} = [ 'tagexists' ] if !$t && @$c || $t && (@$c > 1 || @$c && $c->[0]{id} != $tag);
+    }
+    if(!$frm->{_err}) {
       $frm->{meta} = $frm->{meta} ? 1 : 0;
       $frm->{parents} = [ split / /, $frm->{parents} ];
       $self->dbTagEdit($tag, %$frm) if $tag;

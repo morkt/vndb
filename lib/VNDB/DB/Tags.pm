@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbTagGet dbTagEdit dbTagAdd|;
 
 
-# %options->{ id page results order what }
+# %options->{ id name page results order what }
 # what: parents childs(n)
 sub dbTagGet {
   my $self = shift;
@@ -23,6 +23,8 @@ sub dbTagGet {
   my %where = (
     $o{id} ? (
       't.id = ?' => $o{id} ) : (),
+    $o{name} ? (
+      'lower(t.name) = ?' => lc $o{name} ) : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
