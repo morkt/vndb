@@ -9,11 +9,12 @@ use VNDB::Func;
 
 
 YAWF::register(
-  qr{g([1-9]\d*)},        \&tagpage,
-  qr{g([1-9]\d*)/(edit)}, \&tagedit,
-  qr{g([1-9]\d*)/(add)},  \&tagedit,
-  qr{g/new},              \&tagedit,
-  qr{g},                  \&tagtree,
+  qr{g([1-9]\d*)},          \&tagpage,
+  qr{g([1-9]\d*)/(edit)},   \&tagedit,
+  qr{g([1-9]\d*)/(add)},    \&tagedit,
+  qr{g([1-9]\d*)/del(/o)?}, \&tagdel,
+  qr{g/new},                \&tagedit,
+  qr{g},                    \&tagtree,
 );
 
 
@@ -81,7 +82,7 @@ sub tagedit {
     $par = $self->dbTagGet(id => $tag)->[0];
     return 404 if !$par;
     $frm->{parents} = $tag;
-    $tag = 0;
+    $tag = undef;
   }
 
   my $t = $tag && $self->dbTagGet(id => $tag, what => 'parents(1)')->[0];
@@ -114,7 +115,7 @@ sub tagedit {
   }
 
   my $title = $par ? "Add child tag to $par->{name}" : $tag ? "Edit tag: $t->{name}" : 'Add new tag';
-  $self->htmlHeader(title => $title);
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('g', $par || $t, 'edit') if $t || $par;
   $self->htmlForm({ frm => $frm, action => $par ? "/g$par->{id}/add" : $tag ? "/g$tag/edit" : '/g/new' }, $title => [
     [ input    => short => 'name',     name => 'Primary name' ],
@@ -128,6 +129,36 @@ sub tagedit {
     [ static   => content => "Space separated list of tag IDs to be used as parent for this tag. A proper user interface will come in the future...<br /><br />...probably." ],
   ]);
   $self->htmlFooter;
+}
+
+
+sub tagdel {
+  my($self, $tag, $act) = @_;
+  return $self->htmlDenied if !$self->authCan('tagmod');
+
+  # confirm
+  if(!$act || $act ne '/o') {
+    my $t = $self->dbTagGet(id => $tag)->[0];
+    return 404 if !$t->{id};
+    $self->htmlHeader(title => 'Delete tag', noindex => 1);
+    $self->htmlMainTabs('g', $t, 'del');
+    div class => 'mainbox';
+     div class => 'warning';
+      h2 'Delete tag';
+      p;
+       lit qq|Are you sure you want to delete the <a href="/g$tag">$t->{name}</a> tag? |
+          .qq|All VN relations will be permanently deleted as well!<br /><br />|
+          .qq|<a href="/g$tag/del/o">Yes, I'm not kidding!</a>|;
+      end;
+     end;
+    end;
+    $self->htmlFooter;
+  }
+  # delete
+  else {
+    $self->dbTagDel($tag);
+    $self->resRedirect('/g', 'post');
+  }
 }
 
 

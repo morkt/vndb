@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbTagGet dbTagEdit dbTagAdd|;
+our @EXPORT = qw|dbTagGet dbTagEdit dbTagAdd dbTagDel|;
 
 
 # %options->{ id name page results order what }
@@ -74,6 +74,14 @@ sub dbTagAdd {
   )->{id};
   $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
   return $id;
+}
+
+
+sub dbTagDel {
+  my($self, $id) = @_;
+  $self->dbExec('DELETE FROM tags_parents WHERE tag = ? OR parent = ?', $id, $id);
+  $self->dbExec('DELETE FROM tags_vn WHERE tag = ?', $id);
+  $self->dbExec('DELETE FROM tags WHERE id = ?', $id);
 }
 
 
