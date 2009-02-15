@@ -10,6 +10,8 @@ use VNDB::Func;
 
 YAWF::register(
   qr{g([1-9]\d*)},      \&tagpage,
+  qr{g([1-9]\d*)/edit}, \&tagedit,
+  qr{g/new},            \&tagedit,
   qr{g},                \&tagtree,
 );
 
@@ -17,12 +19,12 @@ YAWF::register(
 sub tagpage {
   my($self, $tag) = @_;
 
-  # fetch tag
-  my $t = $self->dbTagGet(id => $tag, what => 'parents childs(2)')->[0];
+  my $t = $self->dbTagGet(id => $tag, what => 'parents(0) childs(2)')->[0];
   return 404 if !$t;
- 
+
   my $title = ($t->{meta} ? 'Meta tag: ' : 'Tag: ').$t->{name};
   $self->htmlHeader(title => $title);
+  $self->htmlMainTabs('g', $t);
   div class => 'mainbox';
    h1 $title;
    h2 class => 'alttitle', 'a.k.a. '.join(', ', split /\n/, $t->{aliases}) if $t->{aliases};
@@ -61,6 +63,54 @@ sub tagpage {
    }
 
   end;
+  $self->htmlFooter;
+}
+
+
+sub tagedit {
+  my($self, $tag) = @_;
+
+  return $self->htmlDenied if !$self->authCan('tagmod');
+
+  my $t = $tag && $self->dbTagGet(id => $tag, what => 'parents(1)')->[0];
+  return 404 if $tag && !$t;
+
+  my $frm;
+  if($self->reqMethod eq 'POST') {
+    $frm = $self->formValidate(
+      { name => 'name',        required => 1, maxlength => 250 },
+      { name => 'meta',        required => 0, default => 0 },
+      { name => 'aliases',     required => 0, maxlength => 1024, default => '' },
+      { name => 'description', required => 0, maxlength => 1024, default => '' },
+      { name => 'parents',     required => 0, regex => [ qr/^(\d+)(\s\d+)*$/, 'Parents must be a list of tag IDs' ], default => '' }
+    );
+    if(!$frm->{_err}) {
+      $frm->{meta} = $frm->{meta} ? 1 : 0;
+      $frm->{parents} = [ split / /, $frm->{parents} ];
+      $self->dbTagEdit($tag, %$frm) if $tag;
+      $tag = $self->dbTagAdd(%$frm) if !$tag;
+      $self->resRedirect("/g$tag", 'post');
+    }
+  }
+
+  if($tag) {
+    $frm->{$_} ||= $t->{$_} for (qw|name meta aliases description|);
+    $frm->{parents} ||= join ' ', map $_->{tag}, @{$t->{parents}};
+  }
+
+  $self->htmlHeader(title => $tag ? "Editing tag: $t->{name}" : 'Adding new tag');
+  $self->htmlMainTabs('g', $t, 'edit') if $t;
+  $self->htmlForm({ frm => $frm, action => $tag ? "/g$tag/edit" : '/g/new' }, 'General info' => [
+    [ input    => short => 'name',     name => 'Primary name' ],
+    [ checkbox => short => 'meta',     name => 'This is a meta-tag (only to be used as parent for other tags, not for linking to VN entries)' ],
+    $tag ?
+      [ static => content => 'WARNING: Checking this option will permanently delete all existing VN relations!' ] : (),
+    [ textarea => short => 'aliases',  name => "Aliases\n(separated by newlines)", cols => 30, rows => 4 ],
+    [ textarea => short => 'description', name => 'Description' ],
+    [ static   => content => 'What should the tag be used for? Having a good description helps users choose which tags to link to a VN.' ],
+    [ input    => short => 'parents',  name => 'Parent tags' ],
+    [ static   => content => "Space separated list of tag IDs to be used as parent for this tag. A proper user interface will come in the future...<br /><br />...probably." ],
+  ]);
   $self->htmlFooter;
 }
 

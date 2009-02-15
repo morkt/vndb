@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbTagGet|;
+our @EXPORT = qw|dbTagGet dbTagEdit dbTagAdd|;
 
 
 # %options->{ id page results order what }
@@ -33,8 +33,8 @@ sub dbTagGet {
     \%where, $o{order}
   );
 
-  if($o{what} =~ /parents/) {
-    $_->{parents} = $self->dbAll(q|SELECT lvl, tag, name FROM tag_tree(?, -1, false)|, $_->{id}) for (@$r);
+  if($o{what} =~ /parents\((\d+)\)/) {
+    $_->{parents} = $self->dbAll(q|SELECT lvl, tag, name FROM tag_tree(?, ?, false)|, $_->{id}, $1) for (@$r);
   }
 
   if($o{what} =~ /childs\((\d+)\)/) {
@@ -48,6 +48,30 @@ sub dbTagGet {
   #}
 
   return wantarray ? ($r, $np) : $r;
+}
+
+
+# args: tag id, %options->{ columns in the tags table + parents }
+sub dbTagEdit {
+  my($self, $id, %o) = @_;
+
+  $self->dbExec('UPDATE tags !H WHERE id = ?',
+    { map { +"$_ = ?" => $o{$_} } qw|name meta aliases description| }, $id);
+  $self->dbExec('DELETE FROM tags_parents WHERE tag = ?', $id);
+  $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
+  $self->dbExec('DELETE FROM tags_vn WHERE tag = ?', $id) if $o{meta};
+}
+
+
+# same args as dbTagEdit, without the first tag id
+# returns the id of the new tag
+sub dbTagAdd {
+  my($self, %o) = @_;
+  my $id = $self->dbRow('INSERT INTO tags (name, meta, aliases, description) VALUES (!l) RETURNING id',
+    [ map $o{$_}, qw|name meta aliases description| ]
+  )->{id};
+  $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
+  return $id;
 }
 
 
