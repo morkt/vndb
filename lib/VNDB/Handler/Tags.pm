@@ -9,10 +9,11 @@ use VNDB::Func;
 
 
 YAWF::register(
-  qr{g([1-9]\d*)},      \&tagpage,
-  qr{g([1-9]\d*)/edit}, \&tagedit,
-  qr{g/new},            \&tagedit,
-  qr{g},                \&tagtree,
+  qr{g([1-9]\d*)},        \&tagpage,
+  qr{g([1-9]\d*)/(edit)}, \&tagedit,
+  qr{g([1-9]\d*)/(add)},  \&tagedit,
+  qr{g/new},              \&tagedit,
+  qr{g},                  \&tagtree,
 );
 
 
@@ -26,6 +27,7 @@ sub tagpage {
   $self->htmlHeader(title => $title);
   $self->htmlMainTabs('g', $t);
   div class => 'mainbox';
+   a class => 'addnew', href => "/g$tag/add", 'Create child tag' if $self->authCan('tagmod');
    h1 $title;
    h2 class => 'alttitle', 'a.k.a. '.join(', ', split /\n/, $t->{aliases}) if $t->{aliases};
 
@@ -40,17 +42,20 @@ sub tagpage {
    end;
 
    if($t->{description}) {
-     p;
+     p class => 'center';
       lit bb2html $t->{description};
      end;
    }
+  end;
 
-   if(@{$t->{childs}}) {
+  if(@{$t->{childs}}) {
+    div class => 'mainbox';
+     h1 'Child tags';
      ul class => 'tagtree';
       li 'Child tags';
       my $lvl = $t->{childs}[0]{lvl} + 1;
       for (@{$t->{childs}}) {
-        map ul,  1..($lvl-$_->{lvl}) if $lvl > $_->{lvl};
+       map ul,  1..($lvl-$_->{lvl}) if $lvl > $_->{lvl};
         map end, 1..($_->{lvl}-$lvl) if $lvl < $_->{lvl};
         $lvl = $_->{lvl};
         li;
@@ -60,22 +65,26 @@ sub tagpage {
       }
       map end, 0..($t->{childs}[0]{lvl}-$lvl);
      end;
-   }
-
-  end;
+    end;
+  }
   $self->htmlFooter;
 }
 
 
 sub tagedit {
-  my($self, $tag) = @_;
+  my($self, $tag, $act) = @_;
 
   return $self->htmlDenied if !$self->authCan('tagmod');
+
+  my $frm;
+  if($act && $act eq 'add') {
+    $frm->{parents} = $tag;
+    $tag = 0;
+  }
 
   my $t = $tag && $self->dbTagGet(id => $tag, what => 'parents(1)')->[0];
   return 404 if $tag && !$t;
 
-  my $frm;
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
       { name => 'name',        required => 1, maxlength => 250 },
