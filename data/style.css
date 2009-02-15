@@ -86,6 +86,7 @@ p.locked {
   font-style: italic;
   margin: 0!important;
 }
+b.grayedout { font-weight: normal; color: $grayedout$ }
 #maincontent h2 b {
   font: 8pt "Tahoma";
   font-weight: normal;
@@ -602,7 +603,6 @@ div.vndescription p {
   margin: 0 100px!important;
 }
 
-b.patch { font-weight: normal; color: $grayedout$ }
 .releases table, #screenshots table {
   width: 100%;
 }
@@ -965,8 +965,10 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 
 /***** Tag page *****/
 
-.tagtree { margin-left: 20px; list-style-type: none }
-.tagtree ul { margin-left: 10px; list-style-type: none }
+.tagtree { margin-left: 20px; margin-top: -20px; list-style-type: none; }
+.tagtree li { float: left; width: 200px; margin-top: 10px; }
+.tagtree li li { float: none; width: auto; margin-top: 0; }
+.tagtree ul { margin-left: 10px; list-style-type: none; }
 
 
 

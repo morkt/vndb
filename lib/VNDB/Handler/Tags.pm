@@ -49,26 +49,55 @@ sub tagpage {
    }
   end;
 
-  if(@{$t->{childs}}) {
-    div class => 'mainbox';
-     h1 'Child tags';
-     ul class => 'tagtree';
-      li 'Child tags';
-      my $lvl = $t->{childs}[0]{lvl} + 1;
-      for (@{$t->{childs}}) {
-       map ul,  1..($lvl-$_->{lvl}) if $lvl > $_->{lvl};
-        map end, 1..($_->{lvl}-$lvl) if $lvl < $_->{lvl};
-        $lvl = $_->{lvl};
-        li;
-         txt ' > ';
-         a href => "/g$_->{tag}", $_->{name};
-        end;
-      }
-      map end, 0..($t->{childs}[0]{lvl}-$lvl);
-     end;
-    end;
-  }
+  _childtags($self, $t) if @{$t->{childs}};
+
   $self->htmlFooter;
+}
+
+sub _childtags {
+  my($self, $t) = @_;
+
+  my @l = @{$t->{childs}};
+  my @tags;
+  for (0..$#l) {
+    if($l[$_]{lvl} == $l[0]{lvl}) {
+      $l[$_]{childs} = [];
+      push @tags, $l[$_];
+    } else {
+      push @{$tags[$#tags]{childs}}, $l[$_];
+    }
+  }
+
+  div class => 'mainbox';
+   h1 'Child tags';
+   ul class => 'tagtree';
+    for my $p (sort { @{$b->{childs}} <=> @{$a->{childs}} } @tags) {
+      li;
+       a href => "/g$p->{tag}", $p->{name};
+       b class => 'grayedout', ' ('.(int(rand()*100)).')';
+       end, next if !@{$p->{childs}};
+       ul;
+        for (0..$#{$p->{childs}}) {
+          last if $_ >= 5 && @{$p->{childs}} > 6;
+          li;
+           txt '> ';
+           a href => "/g$p->{childs}[$_]{tag}", $p->{childs}[$_]{name};
+           b class => 'grayedout', ' ('.(int(rand()*50)).')';
+          end;
+        }
+        if(@{$p->{childs}} > 6) {
+          li;
+           txt '> ';
+           a href => "/g$p->{tag}", style => 'font-style: italic', sprintf '%d more tags...', @{$p->{childs}}-5;
+          end;
+        }
+       end;
+      end;
+    }
+   end;
+   clearfloat;
+   br;
+  end;
 }
 
 
@@ -168,17 +197,17 @@ sub tagtree {
   $self->htmlHeader(title => '[DEBUG] The complete tag tree');
   div class => 'mainbox';
    h1 '[DEBUG] The complete tag tree';
+   p "This page won't make it to the final version. (At least, not in this form)\n\n";
 
-   my $t = $self->dbAll('SELECT * FROM tag_tree(0, -1, true)');
-   ul class => 'tagtree';
-    li "This page won't make it to the final version. (At least, not in this form)\n\n";
+   div style => 'margin-left: 10px';
+    my $t = $self->dbAll('SELECT * FROM tag_tree(0, -1, true)');
     my $lvl = $t->[0]{lvl} + 1;
     for (@$t) {
-      map ul,  1..($lvl-$_->{lvl}) if $lvl > $_->{lvl};
+      map ul(style => 'margin-left: 15px; list-style-type: none'),  1..($lvl-$_->{lvl}) if $lvl > $_->{lvl};
       map end, 1..($_->{lvl}-$lvl) if $lvl < $_->{lvl};
       $lvl = $_->{lvl};
       li;
-       txt ' > ';
+       txt '> ';
        a href => "/g$_->{tag}", $_->{name};
       end;
     }
