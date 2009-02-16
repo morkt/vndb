@@ -368,7 +368,7 @@ sub _threadlist {
        td class => 'tc3';
         lit userstr $o->{fuid}, $o->{fusername};
        end;
-       td class => 'tc4', rowspan => 2;
+       td class => 'tc4';
         lit userstr $o->{luid}, $o->{lusername};
         lit ' @ ';
         a href => "/t$o->{id}.$o->{count}";
