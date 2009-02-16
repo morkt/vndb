@@ -93,6 +93,7 @@ sub bb2html {
   my $raw = shift;
   my $maxlength = shift;
   $raw =~ s/\r//g;
+  $raw =~ s/\n{5,}/\n\n/g;
   return '' if !$raw && $raw ne "0";
 
   my($result, $length, $rmnewline, @open) = ('', 0, 0, 'first');
@@ -111,8 +112,8 @@ sub bb2html {
     next if !defined $_;
     next if $_ eq '';
 
-    $rmnewline = s/\n//g if $rmnewline;
-    next if $_ eq '';
+    # (note to self: stop using unreadable hacks like these!)
+    $rmnewline-- && $_ eq "\n" && next if $rmnewline;
 
     my $lit = $_;
     if($open[$#open] ne 'raw') {
@@ -121,7 +122,7 @@ sub bb2html {
       elsif (lc$_ eq '[quote]')    {
         push @open, 'quote';
         $result .= '<div class="quote">' if !$maxlength;
-        $rmnewline++;
+        $rmnewline = 1;
         next
       } elsif (lc$_ eq '[/spoiler]') {
         if($open[$#open] eq 'spoiler') {
@@ -132,7 +133,7 @@ sub bb2html {
       } elsif (lc$_ eq '[/quote]') {
         if($open[$#open] eq 'quote') {
           $result .= '</div>' if !$maxlength;
-          $rmnewline++;
+          $rmnewline = 1;
           pop @open;
         }
         next;
