@@ -143,8 +143,10 @@ sub dbThreadCount {
   my($self, $type, $iid) = @_;
   return $self->dbRow(q|
     SELECT COUNT(*) AS cnt
-      FROM threads_tags
-      WHERE type = ? AND iid = ?|,
+      FROM threads_tags tt
+      JOIN threads t ON t.id = tt.tid
+      WHERE tt.type = ? AND tt.iid = ?
+        AND t.hidden = FALSE|,
     $type, $iid)->{cnt};
 }
 
