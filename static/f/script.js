@@ -487,6 +487,14 @@ DOMLoad(function() {
       l[i].onmouseout = function() { this.className = 'spoiler' };
     }
 
+  // Are we really vndb?
+  if(location.hostname != 'vndb.org') {
+    var d = document.createElement('div');
+    d.setAttribute('id', 'debug');
+    d.innerHTML = '<h2>This is not VNDB!</h2>The real VNDB is <a href="http://vndb.org/">here</a>.';
+    document.body.appendChild(d);
+  }
+
   // forms.js
   if(x('categories'))
     catLoad();

@@ -157,14 +157,6 @@ sub htmlFooter {
       a href => $self->{source_url}, 'source';
      end;
     end; # /div maincontent
-    if($self->debug) {
-      div id => 'debug';
-       h2 'This is not VNDB!';
-       txt 'The real VNDB is ';
-       a href => 'http://vndb.org/', 'here';
-       txt '.';
-      end;
-    }
    end; # /body
   end; # /html
 
