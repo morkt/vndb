@@ -14,6 +14,7 @@ YAWF::register(
   qr{g([1-9]\d*)/(add)},    \&tagedit,
   qr{g([1-9]\d*)/del(/o)?}, \&tagdel,
   qr{g/new},                \&tagedit,
+  qr{v([1-9]\d*)/tagmod},   \&vntagmod,
   qr{g},                    \&tagtree,
 );
 
@@ -202,6 +203,23 @@ sub tagdel {
     $self->dbTagDel($tag);
     $self->resRedirect('/g', 'post');
   }
+}
+
+
+sub vntagmod {
+  my($self, $vid) = @_;
+
+  my $v = $self->dbVNGet(id => $vid)->[0];
+  return 404 if !$v;
+
+  return $self->htmlDenied if !$self->authCan('tag');
+
+  $self->htmlHeader(title => "Add/remove tags for $v->{title}", noindex => 1, js => 'forms');
+  $self->htmlMainTabs('v', $v, 'tagmod');
+  div class => 'mainbox';
+   h1 "Add/remove tags for $v->{title}";
+  end;
+  $self->htmlFooter;
 }
 
 

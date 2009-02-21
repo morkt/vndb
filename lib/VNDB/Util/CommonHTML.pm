@@ -49,6 +49,12 @@ sub htmlMainTabs {
      end;
    }
 
+   if($type eq 'v' && $self->authCan('tag')) {
+     li $sel eq 'tagmod' ? (class => 'tabselected') : ();
+      a href => "/$id/tagmod", 'modify tags';
+     end;
+   }
+
    if(   $type eq 'u'     && ($self->authInfo->{id} && $obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))
       || $type =~ /[vrp]/ && $self->authCan('edit') && (!$obj->{locked} || $self->authCan('lock')) && (!$obj->{hidden} || $self->authCan('del'))
       || $type eq 'g'     && $self->authCan('tagmod')
