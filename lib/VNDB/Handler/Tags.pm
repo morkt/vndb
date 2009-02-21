@@ -32,14 +32,24 @@ sub tagpage {
    h1 $title;
    h2 class => 'alttitle', 'a.k.a. '.join(', ', split /\n/, $t->{aliases}) if $t->{aliases};
 
-   # TODO: handle multiple parents here
    p;
-    a href => '/g', 'Tags';
-    for (sort { $a->{lvl} <=> $b->{lvl} } @{$t->{parents}}) {
-      txt ' > ';
-      a href => "/g$_->{tag}", $_->{name};
+    my @p = @{$t->{parents}};
+    my @r;
+    for (0..$#p) {
+      if($_ && $p[$_-1]{lvl} < $p[$_]{lvl}) {
+        pop @r for (1..($p[$_]{lvl}-$p[$_-1]{lvl}));
+      }
+      if($_ < $#p && $p[$_+1]{lvl} < $p[$_]{lvl}) {
+        push @r, $p[$_];
+      } elsif($#p == $_ || $p[$_+1]{lvl} >= $p[$_]{lvl}) {
+        a href => '/g', 'Tags';
+        for ($p[$_], reverse @r) {
+          txt ' > ';
+          a href => "/g$_->{tag}", $_->{name};
+        }
+        txt " > $t->{name}\n";
+      }
     }
-    txt ' > '.$t->{name};
    end;
 
    if($t->{description}) {
