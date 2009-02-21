@@ -151,7 +151,9 @@ sub htmlFormPart {
    if(!$o{nolabel}) {
      td class => 'label';
       if($o{short} && $o{name}) {
-        label for => $o{short}, $o{name} ;
+        label for => $o{short};
+         lit $o{name};
+        end;
       } elsif($o{label}) {
         txt $o{label};
       } else {
