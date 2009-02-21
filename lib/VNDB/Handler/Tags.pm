@@ -50,6 +50,10 @@ sub tagpage {
         txt " > $t->{name}\n";
       }
     }
+    if(!@p) {
+      a href => '/g', 'Tags';
+      txt " > $t->{name}\n";
+    }
    end;
 
    if($t->{description}) {
