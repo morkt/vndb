@@ -41,7 +41,8 @@ sub dbProducerGet {
   push @join, 'JOIN changes c ON c.id = pr.id' if $o{what} =~ /changes/ || $o{rev};
   push @join, 'JOIN users u ON u.id = c.requester' if $o{what} =~ /changes/;
 
-  my $select = 'p.id, p.locked, p.hidden, pr.type, pr.name, pr.original, pr.website, pr.lang, pr.desc, pr.alias';
+  my $select = 'p.id, pr.type, pr.name, pr.original, pr.lang';
+  $select .= ', pr.desc, pr.alias, pr.website, p.hidden, p.locked' if $o{what} =~ /extended/;
   $select .= ', c.added, c.requester, c.comments, p.latest, pr.id AS cid, u.username, c.rev' if $o{what} =~ /changes/;
 
   my($r, $np) = $self->dbPage(\%o, q|

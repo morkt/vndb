@@ -21,7 +21,7 @@ sub page {
 
   my $p = $self->dbProducerGet(
     id => $pid,
-    what => 'vn'.($rev ? ' changes' : ''),
+    what => 'vn extended'.($rev ? ' changes' : ''),
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return 404 if !$p->{id};
@@ -31,7 +31,7 @@ sub page {
   return if $self->htmlHiddenMessage('p', $p);
 
   if($rev) {
-    my $prev = $rev && $rev > 1 && $self->dbProducerGet(id => $pid, rev => $rev-1, what => 'changes')->[0];
+    my $prev = $rev && $rev > 1 && $self->dbProducerGet(id => $pid, rev => $rev-1, what => 'changes extended')->[0];
     $self->htmlRevision('p', $prev, $p,
       [ type      => 'Type',          serialize => sub { $self->{producer_types}{$_[0]} } ],
       [ name      => 'Name (romaji)', diff => 1 ],
@@ -89,7 +89,7 @@ sub page {
 sub edit {
   my($self, $pid, $rev) = @_;
 
-  my $p = $pid && $self->dbProducerGet(id => $pid, what => 'changes', $rev ? (rev => $rev) : ())->[0];
+  my $p = $pid && $self->dbProducerGet(id => $pid, what => 'changes extended', $rev ? (rev => $rev) : ())->[0];
   return 404 if $pid && !$p->{id};
   $rev = undef if !$p || $p->{cid} == $p->{latest};
 
@@ -198,7 +198,7 @@ sub list {
        for ($perlist*$c..($perlist*($c+1))-1) {
          li;
           cssicon 'lang '.$list->[$_]{lang}, $self->{languages}{$list->[$_]{lang}};
-          a href => "/p$list->[$_]{id}", $list->[$_]{name};
+          a href => "/p$list->[$_]{id}", title => $list->[$_]{original}, $list->[$_]{name};
          end;
        }
        end;
