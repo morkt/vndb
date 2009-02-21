@@ -21,7 +21,7 @@ sub page {
 
   my $r = $self->dbReleaseGet(
     id => $rid,
-    what => 'vn producers platforms media'.($rev ? ' changes' : ''),
+    what => 'vn extended producers platforms media'.($rev ? ' changes' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
   return 404 if !$r->{id};
@@ -33,7 +33,7 @@ sub page {
   if($rev) {
     my $prev = $rev && $rev > 1 && $self->dbReleaseGet(
       id => $rid, rev => $rev-1,
-      what => 'vn producers platforms media changes'
+      what => 'vn extended producers platforms media changes'
     )->[0];
     $self->htmlRevision('r', $prev, $r,
       [ vn        => 'Relations',      join => '<br />', split => sub {
@@ -235,7 +235,7 @@ sub edit {
     $rid = 0;
   }
 
-  my $r = $rid && $self->dbReleaseGet(id => $rid, what => 'vn producers platforms media changes', $rev ? (rev => $rev) : ())->[0];
+  my $r = $rid && $self->dbReleaseGet(id => $rid, what => 'vn extended producers platforms media changes', $rev ? (rev => $rev) : ())->[0];
   return 404 if $rid && !$r->{id};
   $rev = undef if !$r || $r->{cid} == $r->{latest};
 

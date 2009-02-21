@@ -9,7 +9,7 @@ our @EXPORT = qw|dbProducerGet dbProducerEdit dbProducerAdd|;
 
 
 # options: results, page, id, search, char, rev
-# what: changes, vn
+# what: extended, changes, vn
 sub dbProducerGet {
   my $self = shift;
   my %o = (
