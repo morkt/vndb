@@ -58,7 +58,8 @@ CREATE TABLE producers_rev (
   original varchar(200) NOT NULL DEFAULT '',
   website varchar(250) NOT NULL DEFAULT '',
   lang varchar NOT NULL DEFAULT 'ja',
-  "desc" text NOT NULL DEFAULT ''
+  "desc" text NOT NULL DEFAULT '',
+  alias varchar(500) NOT NULL DEFAULT ''
 );
 
 

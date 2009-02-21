@@ -27,7 +27,7 @@ sub dbProducerGet {
     $o{id} ? (
       'p.id = ?' => $o{id} ) : (),
     $o{search} ? (
-      '(pr.name ILIKE ? OR pr.original ILIKE ?)', [ '%%'.$o{search}.'%%', '%%'.$o{search}.'%%' ] ) : (),
+      '(pr.name ILIKE ? OR pr.original ILIKE ? OR pr.alias ILIKE ?)', [ map '%%'.$o{search}.'%%', 1..3 ] ) : (),
     $o{char} ? (
       'LOWER(SUBSTR(pr.name, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
@@ -41,7 +41,7 @@ sub dbProducerGet {
   push @join, 'JOIN changes c ON c.id = pr.id' if $o{what} =~ /changes/ || $o{rev};
   push @join, 'JOIN users u ON u.id = c.requester' if $o{what} =~ /changes/;
 
-  my $select = 'p.id, p.locked, p.hidden, pr.type, pr.name, pr.original, pr.website, pr.lang, pr.desc';
+  my $select = 'p.id, p.locked, p.hidden, pr.type, pr.name, pr.original, pr.website, pr.lang, pr.desc, pr.alias';
   $select .= ', c.added, c.requester, c.comments, p.latest, pr.id AS cid, u.username, c.rev' if $o{what} =~ /changes/;
 
   my($r, $np) = $self->dbPage(\%o, q|
@@ -105,9 +105,9 @@ sub dbProducerAdd {
 sub insert_rev {
   my($self, $cid, $pid, $o) = @_;
   $self->dbExec(q|
-    INSERT INTO producers_rev (id, pid, name, original, website, type, lang, "desc")
+    INSERT INTO producers_rev (id, pid, name, original, website, type, lang, "desc", alias)
       VALUES (!l)|,
-    [ $cid, $pid, @$o{qw| name original website type lang desc|} ]
+    [ $cid, $pid, @$o{qw| name original website type lang desc alias|} ]
   );
 }
 

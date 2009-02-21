@@ -5,6 +5,9 @@
 	- Homepage shows platform icons for releases
 	- Don't show deleted items on /u+ recent changes
 	- Catalog number field to release entries
+	- Aliases field to producers
+	- Various small improvements to the BBcode
+	- Various bugfixes
 
 2.2 - 2009-01-16
 	- Additional custom CSS field to user profile

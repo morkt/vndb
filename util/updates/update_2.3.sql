@@ -9,3 +9,8 @@ CREATE TABLE quotes (
 
 -- catalog numbers for releases
 ALTER TABLE releases_rev ADD COLUMN catalog varchar(50) NOT NULL DEFAULT '';
+
+
+-- aliases field for producers
+ALTER TABLE producers_rev ADD COLUMN alias varchar(500) NOT NULL DEFAULT '';
+

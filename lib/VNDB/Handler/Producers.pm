@@ -36,6 +36,7 @@ sub page {
       [ type      => 'Type',          serialize => sub { $self->{producer_types}{$_[0]} } ],
       [ name      => 'Name (romaji)', diff => 1 ],
       [ original  => 'Original name', diff => 1 ],
+      [ alias     => 'Aliases',       diff => 1 ],
       [ lang      => 'Language',      serialize => sub { "$_[0] ($self->{languages}{$_[0]})" } ],
       [ website   => 'Website',       diff => 1 ],
       [ desc      => 'Description',   diff => 1 ],
@@ -48,6 +49,7 @@ sub page {
    h2 class => 'alttitle', $p->{original} if $p->{original};
    p class => 'center';
     txt "$self->{languages}{$p->{lang}} \L$self->{producer_types}{$p->{type}}";
+    txt "\na.k.a. $p->{alias}" if $p->{alias};
     if($p->{website}) {
       txt "\n";
       a href => $p->{website}, $p->{website};
@@ -94,7 +96,7 @@ sub edit {
   return $self->htmlDenied if !$self->authCan('edit')
     || $pid && ($p->{locked} && !$self->authCan('lock') || $p->{hidden} && !$self->authCan('del'));
 
-  my %b4 = !$pid ? () : map { $_ => $p->{$_} } qw|type name original lang website desc|;
+  my %b4 = !$pid ? () : map { $_ => $p->{$_} } qw|type name original lang website desc alias|;
   my $frm;
 
   if($self->reqMethod eq 'POST') {
@@ -102,6 +104,7 @@ sub edit {
       { name => 'type', enum => [ keys %{$self->{producer_types}} ] },
       { name => 'name', maxlength => 200 },
       { name => 'original', required => 0, maxlength => 200, default => '' },
+      { name => 'alias', required => 0, maxlength => 500, default => '' },
       { name => 'lang', enum => [ keys %{$self->{languages}} ] },
       { name => 'website', required => 0, template => 'url', default => '' },
       { name => 'desc', required => 0, maxlength => 5000, default => '' },
@@ -137,6 +140,8 @@ sub edit {
     [ input  => name => 'Name (romaji)', short => 'name' ],
     [ input  => name => 'Original name', short => 'original' ],
     [ static => content => q|The original name of the producer, leave blank if it is already in the Latin alphabet.| ],
+    [ input  => name => 'Aliases', short => 'alias', width => 400 ],
+    [ static => content => q|(Un)official aliases, separated by a comma.| ],
     [ select => name => 'Primary language', short => 'lang',
       options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
     [ input  => name => 'Website', short => 'website' ],

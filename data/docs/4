@@ -17,6 +17,8 @@
   The name of the producer in the Latin alphabet (using Romanisation or translation).
  </dd><dt>Original name</dt><dd>
   If the Name (above) has been Romanised or translated, place the original name here.
+ </dd><dt>Aliases</dt><dd>
+  Other names the producer is known as. Multiple aliases should be separated by a comma.
  </dd><dt>Primary language</dt><dd>
   The language the the producer works in most of the time. By default, it is Japanese.
  </dd><dt>Website</dt><dd>
