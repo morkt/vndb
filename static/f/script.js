@@ -500,6 +500,8 @@ DOMLoad(function() {
     vnpLoad('vn');
   if(x('jt_box_producers'))
     vnpLoad('producers');
+  if(x('taglinks'))
+    tglLoad();
 
   // spam protection on all forms
   if(document.forms.length >= 1)

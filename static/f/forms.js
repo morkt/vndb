@@ -860,3 +860,74 @@ function vnpSerialize(type) {
 }
 
 
+
+
+
+
+   /****************************************************\
+   *   V I S U A L   N O V E L   T A G   L I N K I N G  *
+   \****************************************************/
+
+
+function tglLoad() {
+  var n = x('tagtable').getElementsByTagName('tfoot')[0].getElementsByTagName('input');
+  dsInit(n[0], '/xml/tags.xml?q=', function(item, tr) {
+    var td = document.createElement('td');
+    td.innerHTML = shorten(item.firstChild.nodeValue, 40);
+    if(item.getAttribute('meta') == 'yes')
+      td.innerHTML = '<b class="grayedout">'+td.innerHTML+'</b> (meta)';
+    tr.appendChild(td);
+  }, function(item) {
+    return item.firstChild.nodeValue;
+  }, tglAdd);
+  n[1].onclick = tglAdd;
+  tglStripe();
+}
+
+function tglAdd() {
+  var n = x('tagtable').getElementsByTagName('tfoot')[0].getElementsByTagName('input');
+  n[0].disabled = n[1].disabled = true;
+  n[1].value = 'loading...';
+  ajax('/xml/tags.xml?q=name:'+encodeURIComponent(n[0].value), function(hr) {
+    n[0].disabled = n[1].disabled = false;
+    n[1].value = 'Add tag';
+
+    var items = hr.responseXML.getElementsByTagName('item');
+    if(items.length < 1)
+      return alert('Item not found!');
+    if(items[0].getAttribute('meta') == 'yes')
+      return alert('Can\'t use meta tags here!');
+    var name = items[0].firstChild.nodeValue;
+    var l = x('tagtable').getElementsByTagName('a');
+    for(var i=0; i<l.length; i++)
+      if(l[i].innerHTML == shorten(name, 40))
+        return alert('Tag is already present!');
+
+    var tr = document.createElement('tr');
+    var td = document.createElement('td');
+    td.innerHTML = '<a href="/g'+items[0].getAttribute('id')+'">'+name+'</a>';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    td.innerHTML = '1';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    td.innerHTML = '2.00';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    td.innerHTML = '0';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    td.setAttribute('colspan', 2);
+    td.innerHTML = '-TODO-';
+    tr.appendChild(td);
+    x('tagtable').getElementsByTagName('tbody')[0].appendChild(tr);
+    tglStripe();
+  });
+}
+
+function tglStripe() {
+  var l = x('tagtable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  for(var i=0;i<l.length;i++)
+    l[i].className = i%2 ? 'odd' : '';
+}
+

@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbTagGet dbTagEdit dbTagAdd dbTagDel dbTagLinks dbVNTags|;
 
 
-# %options->{ id name page results order what }
+# %options->{ id name search page results order what }
 # what: parents childs(n)
 sub dbTagGet {
   my $self = shift;
@@ -20,11 +20,15 @@ sub dbTagGet {
     @_
   );
 
+  $o{search} =~ s/%//g if $o{search};
+
   my %where = (
     $o{id} ? (
       't.id = ?' => $o{id} ) : (),
     $o{name} ? (
       'lower(t.name) = ?' => lc $o{name} ) : (),
+    $o{search} ? (
+      '(t.name ILIKE ? OR t.alias ILIKE ?)' => [ "%$o{search}%", "%$o{search}%" ] ) : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|

@@ -4,7 +4,7 @@ package VNDB::Handler::Tags;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use YAWF ':html', ':xml';
 use VNDB::Func;
 
 
@@ -16,6 +16,7 @@ YAWF::register(
   qr{g/new},                \&tagedit,
   qr{v([1-9]\d*)/tagmod},   \&vntagmod,
   qr{g},                    \&tagtree,
+  qr{xml/tags\.xml},        \&tagxml,
 );
 
 
@@ -239,24 +240,31 @@ sub vntagmod {
        thead; Tr;
         td $_ for('Tag', 'Users', 'Rating', 'Spoiler', 'Your vote', 'Your spoiler');
        end; end;
-       my $cnt = 0;
-       for my $t (sort { $a->{name} cmp $b->{name} } @$tags) {
-         Tr ++$cnt % 2 == 0 ? (class => 'odd') : ();
-          td;
-           a href => "/g$t->{id}", $t->{name};
+       tfoot; Tr;
+        td colspan => 6;
+         input type => 'text', class => 'text', name => 'addtag', value => '';
+         input type => 'button', class => 'submit', value => 'Add tag';
+        end;
+       end; end;
+       tbody;
+        for my $t (sort { $a->{name} cmp $b->{name} } @$tags) {
+          Tr;
+           td;
+            a href => "/g$t->{id}", $t->{name};
+           end;
+           td $t->{users};
+           td sprintf '%.2f', $t->{rating};
+           td $t->{spoiler};
+           my $m = (grep $_->{tag} == $t->{id}, @$my)[0] || {};
+           td;
+            input type => 'text', class => 'text', name => "tagvote_$t->{id}", value => $m->{vote}||'0', style => 'width: 15px; height: 14px';
+           end;
+           td;
+            input type => 'text', class => 'text', name => "tagspoil_$t->{id}", value => $m->{spoiler}||'-', style => 'width: 15px; height: 14px';
+           end;
           end;
-          td $t->{users};
-          td sprintf '%.2f', $t->{rating};
-          td $t->{spoiler};
-          my $m = (grep $_->{tag} == $t->{id}, @$my)[0] || {};
-          td;
-           input type => 'text', class => 'text', name => "tagvote_$t->{id}", value => $m->{vote}||'0', style => 'width: 15px; height: 14px';
-          end;
-          td;
-           input type => 'text', class => 'text', name => "tagspoil_$t->{id}", value => $m->{spoiler}||'-', style => 'width: 15px; height: 14px';
-          end;
-         end;
-       }
+        }
+       end;
       end;
     } ],
   ]);
@@ -290,5 +298,27 @@ sub tagtree {
   $self->htmlFooter;
 }
 
+
+sub tagxml {
+  my $self = shift;
+
+  my $q = $self->formValidate({ name => 'q', maxlength => 500 });
+  return 404 if $q->{_err};
+  $q = $q->{q};
+
+  my($list, $np) = $self->dbTagGet(
+    $q =~ /^g([1-9]\d*)/ ? (id => $1) : $q =~ /^name:(.+)$/ ? (name => $1) : (search => $q),
+    results => 10,
+    page => 1,
+  );
+
+  $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
+  xml;
+  tag 'tags', more => $np ? 'yes' : 'no', query => $q;
+   for(@$list) {
+     tag 'item', id => $_->{id}, meta => $_->{meta} ? 'yes' : 'no', $_->{name};
+   }
+  end;
+}
 
 1;
