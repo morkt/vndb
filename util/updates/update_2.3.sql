@@ -18,7 +18,7 @@ ALTER TABLE releases_rev ADD COLUMN catalog varchar(50) NOT NULL DEFAULT '';
 CREATE TABLE tags (
   id          SERIAL       NOT NULL PRIMARY KEY,
   name        varchar(250) NOT NULL UNIQUE,
-  aliases     text         NOT NULL DEFAULT '',
+  alias       text         NOT NULL DEFAULT '',
   description text         NOT NULL DEFAULT '',
   meta        boolean      NOT NULL DEFAULT FALSE
 ) WITHOUT OIDS;

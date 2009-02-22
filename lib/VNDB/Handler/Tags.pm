@@ -31,7 +31,7 @@ sub tagpage {
   div class => 'mainbox';
    a class => 'addnew', href => "/g$tag/add", 'Create child tag' if $self->authCan('tagmod');
    h1 $title;
-   h2 class => 'alttitle', 'a.k.a. '.join(', ', split /\n/, $t->{aliases}) if $t->{aliases};
+   h2 class => 'alttitle', 'a.k.a. '.join(', ', split /\n/, $t->{alias}) if $t->{alias};
 
    p;
     my @p = @{$t->{parents}};
@@ -136,7 +136,7 @@ sub tagedit {
     $frm = $self->formValidate(
       { name => 'name',        required => 1, maxlength => 250 },
       { name => 'meta',        required => 0, default => 0 },
-      { name => 'aliases',     required => 0, maxlength => 1024, default => '' },
+      { name => 'alias',       required => 0, maxlength => 1024, default => '' },
       { name => 'description', required => 0, maxlength => 1024, default => '' },
       { name => 'parents',     required => 0, regex => [ qr/^(\d+)(\s\d+)*$/, 'Parents must be a list of tag IDs' ], default => '' }
     );
@@ -154,7 +154,7 @@ sub tagedit {
   }
 
   if($tag) {
-    $frm->{$_} ||= $t->{$_} for (qw|name meta aliases description|);
+    $frm->{$_} ||= $t->{$_} for (qw|name meta alias description|);
     $frm->{parents} ||= join ' ', map $_->{tag}, @{$t->{parents}};
   }
 
@@ -166,7 +166,7 @@ sub tagedit {
     [ checkbox => short => 'meta',     name => 'This is a meta-tag (only to be used as parent for other tags, not for linking to VN entries)' ],
     $tag ?
       [ static => content => 'WARNING: Checking this option will permanently delete all existing VN relations!' ] : (),
-    [ textarea => short => 'aliases',  name => "Aliases\n(separated by newlines)", cols => 30, rows => 4 ],
+    [ textarea => short => 'alias',    name => "Aliases\n(separated by newlines)", cols => 30, rows => 4 ],
     [ textarea => short => 'description', name => 'Description' ],
     [ static   => content => 'What should the tag be used for? Having a good description helps users choose which tags to link to a VN.' ],
     [ input    => short => 'parents',  name => 'Parent tags' ],

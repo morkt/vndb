@@ -12,7 +12,6 @@ our @EXPORT = qw| htmlFormError htmlFormPart htmlForm |;
 # form error messages
 my %formerr_names = (
   alias         => 'Aliases',
-  aliases       => 'Aliases',
   anime         => 'Anime',
   desc          => 'Description',
   description   => 'Description',

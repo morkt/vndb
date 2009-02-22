@@ -28,7 +28,7 @@ sub dbTagGet {
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
-    SELECT t.id, t.meta, t.name, t.aliases, t.description
+    SELECT t.id, t.meta, t.name, t.alias, t.description
       FROM tags t
       !W
       ORDER BY !s|,
@@ -58,7 +58,7 @@ sub dbTagEdit {
   my($self, $id, %o) = @_;
 
   $self->dbExec('UPDATE tags !H WHERE id = ?',
-    { map { +"$_ = ?" => $o{$_} } qw|name meta aliases description| }, $id);
+    { map { +"$_ = ?" => $o{$_} } qw|name meta alias description| }, $id);
   $self->dbExec('DELETE FROM tags_parents WHERE tag = ?', $id);
   $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
   $self->dbExec('DELETE FROM tags_vn WHERE tag = ?', $id) if $o{meta};
@@ -69,8 +69,8 @@ sub dbTagEdit {
 # returns the id of the new tag
 sub dbTagAdd {
   my($self, %o) = @_;
-  my $id = $self->dbRow('INSERT INTO tags (name, meta, aliases, description) VALUES (!l) RETURNING id',
-    [ map $o{$_}, qw|name meta aliases description| ]
+  my $id = $self->dbRow('INSERT INTO tags (name, meta, alias, description) VALUES (!l) RETURNING id',
+    [ map $o{$_}, qw|name meta alias description| ]
   )->{id};
   $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
   return $id;
