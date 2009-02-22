@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbTagGet dbTagEdit dbTagAdd dbTagDel|;
+our @EXPORT = qw|dbTagGet dbTagEdit dbTagAdd dbTagDel dbTagLinks dbVNTags|;
 
 
 # %options->{ id name page results order what }
@@ -82,6 +82,32 @@ sub dbTagDel {
   $self->dbExec('DELETE FROM tags_parents WHERE tag = ? OR parent = ?', $id, $id);
   $self->dbExec('DELETE FROM tags_vn WHERE tag = ?', $id);
   $self->dbExec('DELETE FROM tags WHERE id = ?', $id);
+}
+
+
+# Directly fetch rows from tags_vn
+# Arguments: %options->{ vid uid tag }
+sub dbTagLinks {
+  my($self, %o) = @_;
+  return $self->dbAll(
+    'SELECT tag, vid, uid, vote, spoiler FROM tags_vn !W',
+    { map { +"$_ = ?" => $o{$_} } keys %o }
+  );
+}
+
+
+# Fetch all tags related to a VN
+# Argument: vid
+sub dbVNTags {
+  my($self, $vid) = @_;
+  return $self->dbAll(q|
+    SELECT t.id, t.name, count(tv.uid) as users, avg(tv.vote) as rating, COALESCE(avg(tv.spoiler), 0) as spoiler
+      FROM tags t
+      JOIN tags_vn tv ON tv.tag = t.id
+      WHERE tv.vid = ?
+      GROUP BY t.id, t.name|,
+    $vid
+  );
 }
 
 

@@ -214,11 +214,52 @@ sub vntagmod {
 
   return $self->htmlDenied if !$self->authCan('tag');
 
+  my $my = $self->dbTagLinks(vid => $vid, uid => $self->authInfo->{id});
+  my $tags = $self->dbVNTags($vid);
+
+  my $frm;
+
   $self->htmlHeader(title => "Add/remove tags for $v->{title}", noindex => 1, js => 'forms');
   $self->htmlMainTabs('v', $v, 'tagmod');
   div class => 'mainbox';
    h1 "Add/remove tags for $v->{title}";
+   div class => 'warning';
+    h2 'Tagging';
+    ul;
+     li "Don't forget to hit the submit button on the bottom of the page after changing anything here!";
+     li 'Tag guidelines?';
+     li '!IMPORTANT! The current user interface is just for testing, and likely doesn\'t reflect the final form!';
+    end;
+   end;
   end;
+  $self->htmlForm({ frm => $frm, action => "/v$vid/tagmod" }, 'Tags' => [
+    [ hidden => short => 'taglinks', value => '' ],
+    [ static => nolabel => 1, content => sub {
+      table id => 'tagtable';
+       thead; Tr;
+        td $_ for('Tag', 'Users', 'Rating', 'Spoiler', 'Your vote', 'Your spoiler');
+       end; end;
+       my $cnt = 0;
+       for my $t (sort { $a->{name} cmp $b->{name} } @$tags) {
+         Tr ++$cnt % 2 == 0 ? (class => 'odd') : ();
+          td;
+           a href => "/g$t->{id}", $t->{name};
+          end;
+          td $t->{users};
+          td sprintf '%.2f', $t->{rating};
+          td $t->{spoiler};
+          my $m = (grep $_->{tag} == $t->{id}, @$my)[0] || {};
+          td;
+           input type => 'text', class => 'text', name => "tagvote_$t->{id}", value => $m->{vote}||'0', style => 'width: 15px; height: 14px';
+          end;
+          td;
+           input type => 'text', class => 'text', name => "tagspoil_$t->{id}", value => $m->{spoiler}||'-', style => 'width: 15px; height: 14px';
+          end;
+         end;
+       }
+      end;
+    } ],
+  ]);
   $self->htmlFooter;
 }
 

@@ -971,6 +971,11 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 .tagtree ul { margin-left: 10px; list-style-type: none; }
 
 
+/***** VN tagmod *****/
+
+#jt_box_tags .formtable table td { padding: 1px 3px }
+
+
 
 
 /***** Warning/Notice Box *****/

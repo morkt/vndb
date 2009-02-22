@@ -33,8 +33,8 @@ CREATE TABLE tags_vn (
   tag     integer  NOT NULL REFERENCES tags  (id) DEFERRABLE INITIALLY DEFERRED,
   vid     integer  NOT NULL REFERENCES vn    (id) DEFERRABLE INITIALLY DEFERRED,
   uid     integer  NOT NULL REFERENCES users (id) DEFERRABLE INITIALLY DEFERRED,
-  vote    smallint NOT NULL DEFAULT 3,     -- -3..3 (0 isn't actually used...)
-  spoiler boolean  NOT NULL DEFAULT FALSE,
+  vote    smallint NOT NULL DEFAULT 3 CHECK (vote >= -3 AND vote <= 3 AND vote <> 0),
+  spoiler smallint CHECK(spoiler >= 0 AND spoiler <= 2),
   PRIMARY KEY(tag, vid, uid)
 ) WITHOUT OIDS;
 
