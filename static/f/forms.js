@@ -885,22 +885,19 @@ function tglLoad() {
   tglStripe();
   var l = x('tagtable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
   for(var i=0; i<l.length;i++) {
-    var o = l[i].getElementsByTagName('td')[4];
+    var o = l[i].getElementsByTagName('td')[3];
     tglVoteBar(o, o.innerHTML);
   }
 }
 
 function tglVoteBar(obj, vote) {
   var r = '';
-  for(i=-3;i<=3;i++) {
-    if(i)
-      r += '<a href="#" class="taglvl taglvl'+i+'" onmouseover="tglVoteBarSel(this, '+i+')"'
-         + ' onmouseout="tglVoteBarSel(this, '+vote+')" onclick="return tglVoteBar(this.parentNode, '+i+')">&nbsp;</a>';
-    else
-      r += '<div class="taglvl taglvl0">'+(vote?vote:'-')+'</div>';
-  }
+  for(i=-3;i<=3;i++)
+    r += '<a href="#" class="taglvl taglvl'+i+'" onmouseover="tglVoteBarSel(this, '+i+')"'
+       + ' onmouseout="tglVoteBarSel(this, '+vote+')" onclick="return tglVoteBar(this.parentNode, '+i+')">&nbsp;</a>';
   obj.innerHTML = r;
   tglVoteBarSel(obj, vote);
+  tglSerialize();
   return false;
 }
 
@@ -908,20 +905,19 @@ function tglVoteBarSel(obj, vote) {
   if(obj.className.indexOf('taglvl') >= 0)
     obj = obj.parentNode;
   var l = obj.getElementsByTagName('a');
+  var num;
   for(var i=0; i<l.length; i++) {
-    var num = l[i].className.replace(/^.*taglvl(-?[1-3]).*$/, "$1");
-    if(!num || num == l[i].className) continue;
-    if(num<0&&vote<=num || num>0&&vote>=num) {
+    if((num = l[i].className.replace(/^.*taglvl(-?[0-3]).*$/, "$1")) == l[i].className)
+      continue;
+    if(num == 0)
+      l[i].innerHTML = vote == 0 ? '-' : vote;
+    else if(num<0&&vote<=num || num>0&&vote>=num) {
       if(l[i].className.indexOf('taglvlsel') < 0)
         l[i].className += ' taglvlsel';
     } else
       if(l[i].className.indexOf('taglvlsel') >= 0)
         l[i].className = l[i].className.replace(/taglvlsel/, '');
   }
-  l = obj.getElementsByTagName('div');
-  for(var i=0; i<l.length; i++)
-    if(l[i].className.indexOf('taglvl0') >= 0)
-      l[i].innerHTML = vote;
 }
 
 function tglAdd() {
@@ -948,19 +944,16 @@ function tglAdd() {
     td.innerHTML = '<a href="/g'+items[0].getAttribute('id')+'">'+name+'</a>';
     tr.appendChild(td);
     td = document.createElement('td');
-    td.innerHTML = '1';
-    tr.appendChild(td);
-    td = document.createElement('td');
-    td.innerHTML = '2.00';
+    td.innerHTML = '0.00 (0)';
     tr.appendChild(td);
     td = document.createElement('td');
     td.innerHTML = '0';
     tr.appendChild(td);
     td = document.createElement('td');
-    tglVoteBar(td, 1);
+    tglVoteBar(td, 2);
     tr.appendChild(td);
     td = document.createElement('td');
-    td.innerHTML = '-TODO-';
+    td.innerHTML = '-';
     tr.appendChild(td);
     x('tagtable').getElementsByTagName('tbody')[0].appendChild(tr);
     tglStripe();
@@ -972,4 +965,18 @@ function tglStripe() {
   for(var i=0;i<l.length;i++)
     l[i].className = i%2 ? 'odd' : '';
 }
+
+function tglSerialize() {
+  var r = '';
+  var l = x('tagtable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  for(var i=0; i<l.length;i++) {
+    var lnk = l[i].getElementsByTagName('a')[0].href;
+    var vt = l[i].getElementsByTagName('td')[3].getElementsByTagName('a');
+    var id;
+    if((id = lnk.replace(/^.*g([1-9][0-9]*)$/, "$1")) != lnk && vt.length > 3 && vt[3].innerHTML != '-')
+      r += (r?' ':'')+id+','+vt[3].innerHTML;
+  }
+  x('taglinks').value = r;
+}
+
 

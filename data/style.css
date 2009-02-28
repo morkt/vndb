@@ -973,10 +973,11 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 
 /***** VN tagmod *****/
 
-#jt_box_tags .formtable table td { padding: 1px 3px }
-.taglvl { display: block; float: left; width: 8px; height: 12px; border: 1px solid $border$; font-size: 1px; }
-.taglvl0 { width: 15px; border: none!important; font-size: 11px; text-align: center; }
-a.taglvl:hover { border-bottom: 1px solid!important }
+#jt_box_tags .formtable table td { padding: 1px 5px }
+#tagtable tfoot { text-align: right }
+a.taglvl { display: block; float: left; width: 8px; height: 12px; border: 1px solid $border$; font-size: 1px; color: $maintext$!important }
+a.taglvl0 { width: 15px; border: none!important; font-size: 10px; text-align: center; }
+a.taglvl:hover { border-bottom: 1px solid transparent!important }
 .taglvlsel.taglvl-3 { background-color: #f00; border-color: #f00 }
 .taglvlsel.taglvl-2 { background-color: #f40; border-color: #f40 }
 .taglvlsel.taglvl-1 { background-color: #f80; border-color: #f80 }

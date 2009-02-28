@@ -238,10 +238,10 @@ sub vntagmod {
     [ static => nolabel => 1, content => sub {
       table id => 'tagtable';
        thead; Tr;
-        td $_ for('Tag', 'Users', 'Rating', 'Spoiler', 'Your vote', 'Your spoiler');
+        td $_ for('Tag', 'Rating', 'Spoiler', 'Your vote', 'Your spoiler');
        end; end;
        tfoot; Tr;
-        td colspan => 6;
+        td colspan => 5;
          input type => 'text', class => 'text', name => 'addtag', value => '';
          input type => 'button', class => 'submit', value => 'Add tag';
         end;
@@ -253,8 +253,8 @@ sub vntagmod {
            td;
             a href => "/g$t->{id}", $t->{name};
            end;
-           td $t->{users} - ($m ? 1 : 0);
-           td sprintf '%.2f', $m ? ($t->{rating}/$t->{users} - $m->{vote}) * ($t->{users}-1) : $t->{rating};
+           td sprintf '%.2f (%d)',
+             $m->{vote} ? ($t->{rating}/$t->{users} - $m->{vote}) * ($t->{users}-1) : $t->{rating}, $t->{users} - ($m->{vote} ? 1 : 0);
            td $t->{spoiler};
            td $m->{vote}||0;
            td $m->{spoiler}||'-';
