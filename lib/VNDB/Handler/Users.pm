@@ -367,7 +367,7 @@ sub edit {
         qq|and wishlist (<a href="/u$uid/wish">/u$uid/wish</a>)| ],
     [ check  => short => 'flags_nsfw', name => 'Disable warnings for images that are not safe for work.' ],
     [ select => short => 'skin', name => 'Prefered skin', width => 300, options => [
-      map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_} ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
+      map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_}.($self->debug?" [$_]":'') ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
     [ textarea => short => 'customcss', name => 'Additional <a href="http://en.wikipedia.org/wiki/Cascading_Style_Sheets">CSS</a>' ],
   ]);
   $self->htmlFooter;
