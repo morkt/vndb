@@ -217,9 +217,8 @@ sub vntagmod {
 
   if($self->reqMethod eq 'POST') {
     my $frm = $self->formValidate(
-      { name => 'taglinks', required => 0, default => '', maxlength => 10240, regex => [ qr/^[1-9][0-9]*,-?[1-3]( [1-9][0-9]*,-?[1-3])*$/, 'meh' ] }
+      { name => 'taglinks', required => 0, default => '', maxlength => 10240, regex => [ qr/^[1-9][0-9]*,-?[1-3],-?[0-2]( [1-9][0-9]*,-?[1-3],-?[0-2])*$/, 'meh' ] }
     );
-    use Data::Dumper; warn Dumper $frm;
     return 404 if $frm->{_err};
     $self->dbTagLinkEdit($self->authInfo->{id}, $vid, [ map [ split /,/ ], split / /, $frm->{taglinks}]);
   }
@@ -273,9 +272,9 @@ sub vntagmod {
            td class => 'tc2', sprintf '%.2f (%d)',
              !$m->{vote} ? $t->{rating} : $t->{users} == 1 ? 0 : ($t->{rating}*$t->{users} - $m->{vote}) / ($t->{users}-1),
              $t->{users} - ($m->{vote} ? 1 : 0);
-           td class => 'tc3', $t->{spoiler};
+           td class => 'tc3', sprintf '%.2f', $t->{spoiler};
            td class => 'tc4', $m->{vote}||0;
-           td class => 'tc5', $m->{spoiler}||'-';
+           td class => 'tc5', defined $m->{spoiler} ? $m->{spoiler} : -1;
           end;
         }
        end;

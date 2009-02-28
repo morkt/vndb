@@ -979,6 +979,7 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 #tagtable .tc3_1 { border-left: 1px solid $border$; width: 150px; text-align: center }
 #tagtable .tc1 { min-width: 200px; border-right: 1px solid $border$ }
 #tagtable .tc3 { border-right: 1px solid $border$ }
+#tagtable .tc5 { text-align: right }
 a.taglvl { display: block; float: left; width: 8px; height: 12px; border: 1px solid $border$; font-size: 1px; color: $maintext$!important }
 a.taglvl0 { width: 15px; border: none!important; font-size: 10px; text-align: center; }
 a.taglvl:hover { border-bottom: 1px solid transparent!important }
@@ -988,6 +989,9 @@ a.taglvl:hover { border-bottom: 1px solid transparent!important }
 .taglvlsel.taglvl1 { background-color: #cf0; border-color: #cf0 }
 .taglvlsel.taglvl2 { background-color: #8f0; border-color: #8f0 }
 .taglvlsel.taglvl3 { background-color: #0f0; border-color: #0f0 }
+#jt_box_tags #tagtable .tc5 { padding: 0 }
+#tagtable .tc5 select { width: 90px; height: 15px; border: 0; margin: 0; font-size: 11px; background-color: $_blendbg$; text-align: right }
+#tagtable .odd .tc5 select { background-color: $secbg$ }
 
 
 

@@ -101,11 +101,13 @@ sub dbTagLinks {
 
 
 # Change a user's tags for a VN entry
-# Arguments: uid, vid, [ [ tag, vote ], .. ]
+# Arguments: uid, vid, [ [ tag, vote, spoiler ], .. ]
 sub dbTagLinkEdit {
   my($self, $uid, $vid, $tags) = @_;
   $self->dbExec('DELETE FROM tags_vn WHERE vid = ? AND uid = ?', $vid, $uid);
-  $self->dbExec('INSERT INTO tags_vn (tag, vid, uid, vote) VALUES (?, ?, ?, ?)', $_->[0], $vid, $uid, $_->[1]) for (@$tags);
+  $self->dbExec('INSERT INTO tags_vn (tag, vid, uid, vote, spoiler) VALUES (?, ?, ?, ?, ?)',
+    $_->[0], $vid, $uid, $_->[1], $_->[2] == -1 ? undef : $_->[2]
+  ) for (@$tags);
 }
 
 
