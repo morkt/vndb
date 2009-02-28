@@ -215,6 +215,15 @@ sub vntagmod {
 
   return $self->htmlDenied if !$self->authCan('tag');
 
+  if($self->reqMethod eq 'POST') {
+    my $frm = $self->formValidate(
+      { name => 'taglinks', required => 0, default => '', maxlength => 10240, regex => [ qr/^[1-9][0-9]*,-?[1-3]( [1-9][0-9]*,-?[1-3])*$/, 'meh' ] }
+    );
+    use Data::Dumper; warn Dumper $frm;
+    return 404 if $frm->{_err};
+    $self->dbTagLinkEdit($self->authInfo->{id}, $vid, [ map [ split /,/ ], split / /, $frm->{taglinks}]);
+  }
+
   my $my = $self->dbTagLinks(vid => $vid, uid => $self->authInfo->{id});
   my $tags = $self->dbVNTags($vid);
 
@@ -233,13 +242,21 @@ sub vntagmod {
     end;
    end;
   end;
-  $self->htmlForm({ frm => $frm, action => "/v$vid/tagmod" }, 'Tags' => [
+  $self->htmlForm({ frm => $frm, action => "/v$vid/tagmod", hitsubmit => 1 }, 'Tags' => [
     [ hidden => short => 'taglinks', value => '' ],
     [ static => nolabel => 1, content => sub {
       table id => 'tagtable';
-       thead; Tr;
-        td $_ for('Tag', 'Rating', 'Spoiler', 'Your vote', 'Your spoiler');
-       end; end;
+       thead;
+        Tr;
+         td '';
+         td colspan => 2, class => 'tc2_1', 'Others';
+         td colspan => 2, class => 'tc3_1', 'You';
+        end;
+        Tr;
+         my $i=0;
+         td class => 'tc'.++$i, $_ for(qw|Tag Rating Spoiler Rating Spoiler|);
+        end;
+       end;
        tfoot; Tr;
         td colspan => 5;
          input type => 'text', class => 'text', name => 'addtag', value => '';
@@ -250,14 +267,15 @@ sub vntagmod {
         for my $t (sort { $a->{name} cmp $b->{name} } @$tags) {
           my $m = (grep $_->{tag} == $t->{id}, @$my)[0] || {};
           Tr;
-           td;
+           td class => 'tc1';
             a href => "/g$t->{id}", $t->{name};
            end;
-           td sprintf '%.2f (%d)',
-             $m->{vote} ? ($t->{rating}/$t->{users} - $m->{vote}) * ($t->{users}-1) : $t->{rating}, $t->{users} - ($m->{vote} ? 1 : 0);
-           td $t->{spoiler};
-           td $m->{vote}||0;
-           td $m->{spoiler}||'-';
+           td class => 'tc2', sprintf '%.2f (%d)',
+             !$m->{vote} ? $t->{rating} : $t->{users} == 1 ? 0 : ($t->{rating}*$t->{users} - $m->{vote}) / ($t->{users}-1),
+             $t->{users} - ($m->{vote} ? 1 : 0);
+           td class => 'tc3', $t->{spoiler};
+           td class => 'tc4', $m->{vote}||0;
+           td class => 'tc5', $m->{spoiler}||'-';
           end;
         }
        end;

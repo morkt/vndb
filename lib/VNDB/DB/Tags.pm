@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbTagGet dbTagEdit dbTagAdd dbTagDel dbTagLinks dbVNTags|;
+our @EXPORT = qw|dbTagGet dbTagEdit dbTagAdd dbTagDel dbTagLinks dbTagLinkEdit dbVNTags|;
 
 
 # %options->{ id name search page results order what }
@@ -100,6 +100,15 @@ sub dbTagLinks {
 }
 
 
+# Change a user's tags for a VN entry
+# Arguments: uid, vid, [ [ tag, vote ], .. ]
+sub dbTagLinkEdit {
+  my($self, $uid, $vid, $tags) = @_;
+  $self->dbExec('DELETE FROM tags_vn WHERE vid = ? AND uid = ?', $vid, $uid);
+  $self->dbExec('INSERT INTO tags_vn (tag, vid, uid, vote) VALUES (?, ?, ?, ?)', $_->[0], $vid, $uid, $_->[1]) for (@$tags);
+}
+
+
 # Fetch all tags related to a VN
 # Argument: vid
 sub dbVNTags {
@@ -113,7 +122,6 @@ sub dbVNTags {
     $vid
   );
 }
-
 
 1;
 

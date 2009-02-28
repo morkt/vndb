@@ -253,7 +253,9 @@ sub htmlForm {
       end;
       br;
     }
+    b "Don't forget! -> " if $options->{hitsubmit};
     input type => 'submit', value => 'Submit', class => 'submit';
+    b ' <-' if $options->{hitsubmit};
    end;
   end;
 

@@ -974,7 +974,11 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 /***** VN tagmod *****/
 
 #jt_box_tags .formtable table td { padding: 1px 5px }
-#tagtable tfoot { text-align: right }
+#tagtable tfoot td { padding-top: 20px!important; }
+#tagtable .tc2_1 { border-right: 1px solid $border$; border-left: 1px solid $border$; width: 150px; text-align: center }
+#tagtable .tc3_1 { border-left: 1px solid $border$; width: 150px; text-align: center }
+#tagtable .tc1 { min-width: 200px; border-right: 1px solid $border$ }
+#tagtable .tc3 { border-right: 1px solid $border$ }
 a.taglvl { display: block; float: left; width: 8px; height: 12px; border: 1px solid $border$; font-size: 1px; color: $maintext$!important }
 a.taglvl0 { width: 15px; border: none!important; font-size: 10px; text-align: center; }
 a.taglvl:hover { border-bottom: 1px solid transparent!important }

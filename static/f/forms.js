@@ -886,7 +886,7 @@ function tglLoad() {
   var l = x('tagtable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
   for(var i=0; i<l.length;i++) {
     var o = l[i].getElementsByTagName('td')[3];
-    tglVoteBar(o, o.innerHTML);
+    tglVoteBar(o, parseInt(o.innerHTML));
   }
 }
 
@@ -927,6 +927,7 @@ function tglAdd() {
   ajax('/xml/tags.xml?q=name:'+encodeURIComponent(n[0].value), function(hr) {
     n[0].disabled = n[1].disabled = false;
     n[1].value = 'Add tag';
+    n[0].value = '';
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
@@ -942,21 +943,27 @@ function tglAdd() {
     var tr = document.createElement('tr');
     var td = document.createElement('td');
     td.innerHTML = '<a href="/g'+items[0].getAttribute('id')+'">'+name+'</a>';
+    td.className = 'tc1';
     tr.appendChild(td);
     td = document.createElement('td');
+    td.className = 'tc2';
     td.innerHTML = '0.00 (0)';
     tr.appendChild(td);
     td = document.createElement('td');
     td.innerHTML = '0';
+    td.className = 'tc3';
     tr.appendChild(td);
     td = document.createElement('td');
     tglVoteBar(td, 2);
+    td.className = 'tc4';
     tr.appendChild(td);
     td = document.createElement('td');
     td.innerHTML = '-';
+    td.className = 'tc5';
     tr.appendChild(td);
     x('tagtable').getElementsByTagName('tbody')[0].appendChild(tr);
     tglStripe();
+    tglSerialize();
   });
 }
 
