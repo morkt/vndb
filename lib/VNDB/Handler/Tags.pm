@@ -248,20 +248,16 @@ sub vntagmod {
        end; end;
        tbody;
         for my $t (sort { $a->{name} cmp $b->{name} } @$tags) {
+          my $m = (grep $_->{tag} == $t->{id}, @$my)[0] || {};
           Tr;
            td;
             a href => "/g$t->{id}", $t->{name};
            end;
-           td $t->{users};
-           td sprintf '%.2f', $t->{rating};
+           td $t->{users} - ($m ? 1 : 0);
+           td sprintf '%.2f', $m ? ($t->{rating}/$t->{users} - $m->{vote}) * ($t->{users}-1) : $t->{rating};
            td $t->{spoiler};
-           my $m = (grep $_->{tag} == $t->{id}, @$my)[0] || {};
-           td;
-            input type => 'text', class => 'text', name => "tagvote_$t->{id}", value => $m->{vote}||'0', style => 'width: 15px; height: 14px';
-           end;
-           td;
-            input type => 'text', class => 'text', name => "tagspoil_$t->{id}", value => $m->{spoiler}||'-', style => 'width: 15px; height: 14px';
-           end;
+           td $m->{vote}||0;
+           td $m->{spoiler}||'-';
           end;
         }
        end;

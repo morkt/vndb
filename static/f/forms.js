@@ -881,7 +881,47 @@ function tglLoad() {
     return item.firstChild.nodeValue;
   }, tglAdd);
   n[1].onclick = tglAdd;
+
   tglStripe();
+  var l = x('tagtable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  for(var i=0; i<l.length;i++) {
+    var o = l[i].getElementsByTagName('td')[4];
+    tglVoteBar(o, o.innerHTML);
+  }
+}
+
+function tglVoteBar(obj, vote) {
+  var r = '';
+  for(i=-3;i<=3;i++) {
+    if(i)
+      r += '<a href="#" class="taglvl taglvl'+i+'" onmouseover="tglVoteBarSel(this, '+i+')"'
+         + ' onmouseout="tglVoteBarSel(this, '+vote+')" onclick="return tglVoteBar(this.parentNode, '+i+')">&nbsp;</a>';
+    else
+      r += '<div class="taglvl taglvl0">'+(vote?vote:'-')+'</div>';
+  }
+  obj.innerHTML = r;
+  tglVoteBarSel(obj, vote);
+  return false;
+}
+
+function tglVoteBarSel(obj, vote) {
+  if(obj.className.indexOf('taglvl') >= 0)
+    obj = obj.parentNode;
+  var l = obj.getElementsByTagName('a');
+  for(var i=0; i<l.length; i++) {
+    var num = l[i].className.replace(/^.*taglvl(-?[1-3]).*$/, "$1");
+    if(!num || num == l[i].className) continue;
+    if(num<0&&vote<=num || num>0&&vote>=num) {
+      if(l[i].className.indexOf('taglvlsel') < 0)
+        l[i].className += ' taglvlsel';
+    } else
+      if(l[i].className.indexOf('taglvlsel') >= 0)
+        l[i].className = l[i].className.replace(/taglvlsel/, '');
+  }
+  l = obj.getElementsByTagName('div');
+  for(var i=0; i<l.length; i++)
+    if(l[i].className.indexOf('taglvl0') >= 0)
+      l[i].innerHTML = vote;
 }
 
 function tglAdd() {
@@ -917,7 +957,9 @@ function tglAdd() {
     td.innerHTML = '0';
     tr.appendChild(td);
     td = document.createElement('td');
-    td.setAttribute('colspan', 2);
+    tglVoteBar(td, 1);
+    tr.appendChild(td);
+    td = document.createElement('td');
     td.innerHTML = '-TODO-';
     tr.appendChild(td);
     x('tagtable').getElementsByTagName('tbody')[0].appendChild(tr);
