@@ -1,0 +1,41 @@
+name         Tsukihime (black)
+
+// Tsukihime skin made with an awesome Akiha artwork from Tsukihime PLUS disc
+// created: 23/01/2009 by echomateria
+
+// text
+maintext     #fa4347  // primary text color (also used for the menu links)
+grayedout    #54459a  // color used for grayed-out/non-important things
+standout     #fd3fa9  // color of 'stand-out' text
+link         #b768aa  // primary link color (not used for the menu links)
+statok       #d79a7e //#fc3f46  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok      #412651 //#2e1340  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+footer       #fa4347  // text color of the footer
+
+// titles
+maintitle    #fa4347  // text color of the site title
+boxtitle     #d79a7e  // box titles
+alttitle     #c17e61 //#a45548  // alternative title
+
+// bg colors
+bodybg       #000000  // main background color
+tabbg        #2e0106  // background color of inactive tabs
+secbg        #2e0106  // secondary background color (used on input fields and table headers)
+secborder    #b768aa // secondary border color (used on input fields)
+border       #000000  // primary border color
+boxbg        #35020990  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
+
+// images (0 = no image)
+imglefttop   bg.jpg
+
+// misc colors
+catlevel1    #412651  // category levels
+catlevel2    #e25e52
+catlevel3    #d79a7e
+diffadd      #d79a7e  // background color of changes in the diff viewer
+diffdel      #412651
+warnbg       #46285a  // background color of a warning box
+warnborder   #c0959f  // ..border
+noticebg     #4f3246  // notice box
+noticeborder #94769a  // ...and border
+

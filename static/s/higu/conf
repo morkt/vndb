@@ -1,0 +1,41 @@
+name         Higurashi no Naku Koro ni (orange)
+
+// Higurashi no Naku Koro ni skin made using an image I found in MiniTokyo
+// created: 22/01/2009 by echomateria
+
+// text
+maintext     #2c1a18  // primary text color (also used for the menu links)
+grayedout    #8c5b3b  // color used for grayed-out/non-important things
+standout     #c24857  // color of 'stand-out' text
+link         #3c549c  // primary link color (not used for the menu links)
+statok       #8c6290 //#735d8b  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok      #824e52 //#522e38  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+footer       #2e2536  // text color of the footer
+
+// titles
+maintitle    #e5d3e1  // text color of the site title
+boxtitle     #1b1b51  // box titles
+alttitle     #35346d //#423a73  // alternative title
+
+// bg colors
+bodybg       #f89e7e  // main background color
+tabbg        #9b8587  // background color of inactive tabs
+secbg        #f7c7bb  // secondary background color (used on input fields and table headers)
+secborder    #3c549c  // secondary border color (used on input fields)
+border       #2c1a18  // primary border color
+boxbg        #f7c7bb80  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
+
+// images (0 = no image)
+imglefttop   bg.jpg
+
+// misc colors
+catlevel1    #8c5b3b  // category levels
+catlevel2    #2c1a18
+catlevel3    #c24857
+diffadd      #c2bcc6  // background color of changes in the diff viewer
+diffdel      #8c5b3b
+warnbg       #ae6866  // background color of a warning box
+warnborder   #612028  // ..border
+noticebg     #9b8587  // notice box
+noticeborder #dc9b7f  // ...and border
+

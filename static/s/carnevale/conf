@@ -1,0 +1,42 @@
+name         Gekkou no Carnevale (black)
+
+// Gekkou no Carnevale skin made using a wallpaper comes with the game
+// created: 22/01/2009 by echomateria
+
+// text
+maintext     #b9c7ae  // primary text color (also used for the menu links)
+grayedout    #cfdbc7  // color used for grayed-out/non-important things
+standout     #eff5f5  // color of 'stand-out' text
+link         #ffffff  // primary link color (not used for the menu links)
+statok       #dab0fc  //# // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok      #768b78  //#  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+footer       #b9c7ae  // text color of the footer
+
+// titles
+maintitle    #b9c7ae  // text color of the site title
+boxtitle     #c7d3bf  // box titles
+alttitle     #6f8578  //#  // alternative title
+
+// bg colors
+bodybg       #030708  // main background color
+tabbg        #1f272a  // background color of inactive tabs
+secbg        #121622  // secondary background color (used on input fields and table headers)
+secborder    #ffffff  // secondary border color (used on input fields)
+border       #b9c7ae  // primary border color
+boxbg        #12162290  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
+
+// images (0 = no image)
+imglefttop   0
+imgrighttop  bgright.jpg
+
+// misc colors
+catlevel1    #677c6d  // category levels
+catlevel2    #b9c7ae
+catlevel3    #dab0fc
+diffadd      #76a3b8  // background color of changes in the diff viewer
+diffdel      #354554
+warnbg       #5d182b  // background color of a warning box
+warnborder   #829076  // ..border
+noticebg     #263a45  // notice box
+noticeborder #21343a  // ...and border
+

@@ -10,7 +10,7 @@ standout     #a5e2f2  // color of 'stand-out' text
 link         #5a5fc7 //#9fa1c7  // primary link color (not used for the menu links)
 statok       #424d81  // generic 'ok' text color (used for vnlist statuses & category browser)
 statnok      #a43462  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
-footer       #a69cbd  // text color of the footer
+footer       #324978  // text color of the footer
 
 // titles
 maintitle    #99c9dd  // text color of the site title

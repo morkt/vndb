@@ -7,7 +7,7 @@ standout     #500
 link         #005
 statok       #050
 statnok      #500
-footer       #bbb
+footer       #999
 
 // titles
 maintitle    #ccc
@@ -17,10 +17,10 @@ alttitle     #000
 // bg colors
 bodybg       #fff
 tabbg        #ddd
-secbg        #bbb
+secbg        #ccc
 secborder    #000
-border       #666
-boxbg        #dddddddd
+border       #999
+boxbg        #ddddddcc
 
 // images (0 = no image)
 imglefttop   bg.jpg

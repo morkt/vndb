@@ -1,0 +1,43 @@
+name         My Perfect Day (turquoise)
+
+// A skin based on a wallpaper named My Perfect Day that I encountered on minitokyo which is based on a Tony Taka drawing.
+// So it's not related to any games in the database then? -Well it's probably related to one of the games TT drawn for...
+// created: 23/01/2009 by echomateria
+
+// text
+maintext     #fefefc  // primary text color (also used for the menu links)
+grayedout    #ffaa88  // color used for grayed-out/non-important things
+standout     #ffaa88  // color of 'stand-out' text
+link         #f4d926  // primary link color (not used for the menu links)
+statok       #f8a022  //#  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok      #4b2427  //#  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+footer       #f6ffff  // text color of the footer
+
+// titles
+maintitle    #f6ffff  // text color of the site title
+boxtitle     #943048  // box titles
+alttitle     #a93f56  //#  // alternative title
+
+// bg colors
+bodybg       #4bb3ae  // main background color
+tabbg        #3c6d69  // background color of inactive tabs
+secbg        #48878c  // secondary background color (used on input fields and table headers)
+secborder    #f4d926  // secondary border color (used on input fields)
+border       #48878c  // primary border color
+boxbg        #48878c92  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
+
+// images (0 = no image)
+imglefttop   0
+imgrighttop  bgright.jpg
+
+// misc colors
+catlevel1    #4b2427  // category levels
+catlevel2    #fefefc
+catlevel3    #ffaa88
+diffadd      #5ed8e5 // background color of changes in the diff viewer
+diffdel      #4b2427
+warnbg       #008278  // background color of a warning box
+warnborder   #fcfefd  // ..border
+noticebg     #5bdebe  // notice box
+noticeborder #a9fdc1  // ...and border
+
