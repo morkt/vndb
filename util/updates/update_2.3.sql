@@ -97,4 +97,67 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- returns all votes inherited by childs
+-- UNION this with tags_vn and you have all votes for all tags
+CREATE OR REPLACE FUNCTION tag_vn_childs() RETURNS SETOF tags_vn AS $$
+DECLARE
+  r tags_vn%rowtype;
+  i RECORD;
+  l RECORD;
+BEGIN
+  FOR l IN SElECT id FROM tags WHERE EXISTS(SELECT 1 FROM tags_parents WHERE parent = id) LOOP
+    FOR i IN SELECT tag FROM tag_tree(l.id, 0, true) LOOP
+      FOR r IN SELECT l.id, vid, uid, vote, spoiler FROM tags_vn WHERE tag = i.tag LOOP
+        RETURN NEXT r;
+      END LOOP;
+    END LOOP;
+  END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- all votes for all tags
+CREATE OR REPLACE VIEW tags_vn_all AS
+    SELECT *
+      FROM tags_vn
+  UNION
+    SELECT *
+      FROM tag_vn_childs();
+
+-- grouped by (tag, vid, uid), so only one user votes on one parent tag per VN entry
+CREATE OR REPLACE VIEW tags_vn_grouped AS
+    SELECT tag, vid, uid, AVG(vote)::real AS vote, COALESCE(AVG(spoiler), 0)::real AS spoiler
+      FROM tags_vn_all
+  GROUP BY tag, vid, uid;
+
+-- grouped by (tag, vid), so we now finally have a list of VN entries for a tag (including inherited tags)
+CREATE OR REPLACE VIEW tags_vn_inherited AS
+    SELECT tag, vid, COUNT(uid)::real AS users, AVG(vote)::real AS rating, AVG(spoiler)::real AS spoiler
+      FROM tags_vn_grouped
+  GROUP BY tag, vid;
+
+-- bayesian average on the above view, to provide better rankings as to how much a tag applies to a VN
+-- details of the calculation @ http://www.thebroth.com/blog/118/bayesian-rating
+CREATE OR REPLACE VIEW tags_vn_bayesian AS
+  SELECT tag, vid, users,
+      ( (SELECT AVG(users)::real * AVG(rating)::real FROM tags_vn_inherited WHERE tag = tvi.tag) + users*rating )
+      / ( (SELECT AVG(users)::real FROM tags_vn_inherited WHERE tag = tvi.tag) + users )::real AS rating,
+      spoiler  -- <- some kind of bayesian average for the spoiler status? or is AVG() good enough?
+    FROM tags_vn_inherited tvi;
+
+
+-- creates/updates a table eqvuivalent to tags_vn_bayesian
+CREATE OR REPLACE FUNCTION tag_vn_calc() RETURNS void AS $$
+BEGIN
+  DROP TABLE IF EXISTS tags_vn_stored;
+  CREATE TABLE tags_vn_stored AS SELECT * FROM tags_vn_inherited;
+  CREATE INDEX tags_vn_stored_tag ON tags_vn_stored (tag);
+  -- The following method may be faster on larger DBs, because tag_vn_childs() only has to be called once
+  --UPDATE tags_vn_stored tvs SET rating =
+  --    ((SELECT AVG(users)::real * AVG(rating)::real FROM tags_vn_stored WHERE tag = tvs.tag) + users*rating)
+  --  / ((SELECT AVG(users)::real FROM tags_vn_inherited WHERE tag = tvs.tag) + users)::real;
+  RETURN;
+END;
+$$ LANGUAGE plpgsql;
+SELECT tag_vn_calc();
+
 
