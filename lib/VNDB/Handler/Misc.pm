@@ -199,7 +199,7 @@ sub history {
   my $obj = $type eq 'u' ? $self->dbUserGet(uid => $id)->[0] :
             $type eq 'p' ? $self->dbProducerGet(id => $id)->[0] :
             $type eq 'r' ? $self->dbReleaseGet(id => $id)->[0] :
-                           $self->dbVNGet(id => $id)->[0];
+            $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : undef;
   my $title = $type ? 'Edit history of '.($obj->{title} || $obj->{name} || $obj->{username}) : 'Recent changes';
   return 404 if $type && !$obj->{id};
 
