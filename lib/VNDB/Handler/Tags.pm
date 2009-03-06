@@ -26,6 +26,21 @@ sub tagpage {
   my $t = $self->dbTagGet(id => $tag, what => 'parents(0) childs(2)')->[0];
   return 404 if !$t;
 
+  my $f = $self->formValidate(
+    { name => 's', required => 0, default => 'score', enum => [ qw|score title rel pop| ] },
+    { name => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
+    { name => 'p', required => 0, default => 1, template => 'int' },
+    # TODO: hiding spoilers
+  );
+  return 404 if $f->{_err};
+
+  my($list, $np) = $t->{meta} ? ([],0) : $self->dbTagVNs(
+    tag => $tag,
+    order => {score=>'tb.rating',title=>'vr.title',rel=>'v.c_released',pop=>'v.c_popularity'}->{$f->{s}}.($f->{o}eq'a'?' ASC':' DESC'),
+    page => $f->{p},
+    results => 50,
+  );
+
   my $title = ($t->{meta} ? 'Meta tag: ' : 'Tag: ').$t->{name};
   $self->htmlHeader(title => $title);
   $self->htmlMainTabs('g', $t);
@@ -66,6 +81,49 @@ sub tagpage {
   end;
 
   _childtags($self, $t) if @{$t->{childs}};
+
+  if(@$list) {
+    $self->htmlBrowse(
+      class    => 'tagvnlist',
+      items    => $list,
+      options  => $f,
+      nextpage => $np,
+      pageurl  => "/g$tag?o=$f->{o};s=$f->{s}",
+      sorturl  => "/g$tag",
+      header   => [
+        [ 'Score',    'score' ],
+        [ 'Title',    'title' ],
+        [ '',         0       ],
+        [ '',         0       ],
+        [ 'Released', 'rel'   ],
+        [ 'Popularity', 'pop' ],
+      ],
+      row     => sub {
+        my($s, $n, $l) = @_;
+        Tr $n % 2 ? (class => 'odd') : ();
+         td class => 'tc1';
+          txt sprintf '%.2f ', $l->{rating};
+          i sprintf '(%d)', $l->{users};
+         end;
+         td class => 'tc2';
+          a href => '/v'.$l->{vid}, title => $l->{original}||$l->{title}, shorten $l->{title}, 100;
+         end;
+         td class => 'tc3';
+          $_ ne 'oth' && cssicon $_, $self->{platforms}{$_}
+            for (sort split /\//, $l->{c_platforms});
+         end;
+         td class => 'tc4';
+          cssicon "lang $_", $self->{languages}{$_}
+            for (reverse sort split /\//, $l->{c_languages});
+         end;
+         td class => 'tc5';
+          lit monthstr $l->{c_released};
+         end;
+         td class => 'tc6', sprintf '%.2f', $l->{c_popularity}*100;
+        end;
+      }
+    );
+  }
 
   $self->htmlFooter;
 }

@@ -969,6 +969,11 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 .tagtree li { float: left; width: 200px; margin-top: 10px; }
 .tagtree li li { float: none; width: auto; margin-top: 0; }
 .tagtree ul { margin-left: 10px; list-style-type: none; }
+.tagvnlist .tc1 { text-align: right; width: 60px; }
+.tagvnlist .tc1 i { font-style: normal; font-size: 8px }
+.tagvnlist .tc3 { text-align: right; padding: 0; }
+.tagvnlist .tc4 { padding: 0; }
+.tagvnlist .tc6 { text-align: right; padding-right: 10px; }
 
 
 /***** VN tagmod *****/
