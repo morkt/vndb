@@ -30,7 +30,7 @@ sub tagpage {
     { name => 's', required => 0, default => 'score', enum => [ qw|score title rel pop| ] },
     { name => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
-    # TODO: hiding spoilers
+    { name => 'm', required => 0, default => 1, enum => [qw|0 1 2|] },
   );
   return 404 if $f->{_err};
 
@@ -39,6 +39,7 @@ sub tagpage {
     order => {score=>'tb.rating',title=>'vr.title',rel=>'v.c_released',pop=>'v.c_popularity'}->{$f->{s}}.($f->{o}eq'a'?' ASC':' DESC'),
     page => $f->{p},
     results => 50,
+    maxspoil => $f->{m},
   );
 
   my $title = ($t->{meta} ? 'Meta tag: ' : 'Tag: ').$t->{name};
@@ -81,49 +82,7 @@ sub tagpage {
   end;
 
   _childtags($self, $t) if @{$t->{childs}};
-
-  if(@$list) {
-    $self->htmlBrowse(
-      class    => 'tagvnlist',
-      items    => $list,
-      options  => $f,
-      nextpage => $np,
-      pageurl  => "/g$tag?o=$f->{o};s=$f->{s}",
-      sorturl  => "/g$tag",
-      header   => [
-        [ 'Score',    'score' ],
-        [ 'Title',    'title' ],
-        [ '',         0       ],
-        [ '',         0       ],
-        [ 'Released', 'rel'   ],
-        [ 'Popularity', 'pop' ],
-      ],
-      row     => sub {
-        my($s, $n, $l) = @_;
-        Tr $n % 2 ? (class => 'odd') : ();
-         td class => 'tc1';
-          tagscore $l->{rating};
-          i sprintf '(%d)', $l->{users};
-         end;
-         td class => 'tc2';
-          a href => '/v'.$l->{vid}, title => $l->{original}||$l->{title}, shorten $l->{title}, 100;
-         end;
-         td class => 'tc3';
-          $_ ne 'oth' && cssicon $_, $self->{platforms}{$_}
-            for (sort split /\//, $l->{c_platforms});
-         end;
-         td class => 'tc4';
-          cssicon "lang $_", $self->{languages}{$_}
-            for (reverse sort split /\//, $l->{c_languages});
-         end;
-         td class => 'tc5';
-          lit monthstr $l->{c_released};
-         end;
-         td class => 'tc6', sprintf '%.2f', $l->{c_popularity}*100;
-        end;
-      }
-    );
-  }
+  _vnlist($self, $t, $f, $list, $np) if !$t->{meta};
 
   $self->htmlFooter;
 }
@@ -172,6 +131,62 @@ sub _childtags {
    clearfloat;
    br;
   end;
+}
+
+sub _vnlist {
+  my($self, $t, $f, $list, $np) = @_;
+  div class => 'mainbox';
+   h1 'Visual novels';
+   p class => 'browseopts';
+    a href => "/g$t->{id}?m=0", $f->{m} == 0 ? (class => 'optselected') : (), 'Hide spoilers';
+    a href => "/g$t->{id}?m=1", $f->{m} == 1 ? (class => 'optselected') : (), 'Show minor spoilers';
+    a href => "/g$t->{id}?m=2", $f->{m} == 2 ? (class => 'optselected') : (), 'Show major spoilers';
+   end;
+   if(!@$list) {
+     p "\n\nThis tag has not been linked to any visual novels yet, or they were hidden because of the spoiler settings.";
+   }
+  end;
+  return if !@$list;
+  $self->htmlBrowse(
+    class    => 'tagvnlist',
+    items    => $list,
+    options  => $f,
+    nextpage => $np,
+    pageurl  => "/g$t->{id}?m=$f->{m};o=$f->{o};s=$f->{s}",
+    sorturl  => "/g$t->{id}?m=$f->{m}",
+    header   => [
+      [ 'Score',    'score' ],
+      [ 'Title',    'title' ],
+      [ '',         0       ],
+      [ '',         0       ],
+      [ 'Released', 'rel'   ],
+      [ 'Popularity', 'pop' ],
+    ],
+    row     => sub {
+      my($s, $n, $l) = @_;
+      Tr $n % 2 ? (class => 'odd') : ();
+       td class => 'tc1';
+        tagscore $l->{rating};
+        i sprintf '(%d)', $l->{users};
+       end;
+       td class => 'tc2';
+        a href => '/v'.$l->{vid}, title => $l->{original}||$l->{title}, shorten $l->{title}, 100;
+       end;
+       td class => 'tc3';
+        $_ ne 'oth' && cssicon $_, $self->{platforms}{$_}
+          for (sort split /\//, $l->{c_platforms});
+       end;
+       td class => 'tc4';
+        cssicon "lang $_", $self->{languages}{$_}
+          for (reverse sort split /\//, $l->{c_languages});
+       end;
+       td class => 'tc5';
+        lit monthstr $l->{c_released};
+       end;
+       td class => 'tc6', sprintf '%.2f', $l->{c_popularity}*100;
+      end;
+    }
+  );
 }
 
 

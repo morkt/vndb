@@ -141,7 +141,7 @@ CREATE OR REPLACE VIEW tags_vn_bayesian AS
   SELECT tag, vid, users,
       ( (SELECT AVG(users)::real * AVG(rating)::real FROM tags_vn_inherited WHERE tag = tvi.tag) + users*rating )
       / ( (SELECT AVG(users)::real FROM tags_vn_inherited WHERE tag = tvi.tag) + users )::real AS rating,
-      spoiler  -- <- some kind of bayesian average for the spoiler status? or is AVG() good enough?
+      (CASE WHEN spoiler < 0.7 THEN 0 WHEN spoiler > 1.3 THEN 2 ELSE 1 END)::smallint AS spoiler
     FROM tags_vn_inherited tvi;
 
 

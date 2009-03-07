@@ -130,21 +130,27 @@ sub dbVNTags {
 
 
 # Fetch all VNs from a tag, including VNs from child tags, and provide ratings for them.
-# Argument: %options->{ tag order page results }
+# Argument: %options->{ tag order page results maxspoil }
 sub dbTagVNs {
   my($self, %o) = @_;
   $o{order} ||= 'tb.rating DESC';
   $o{page} ||= 1;
   $o{results} ||= 10;
 
+  my %where = (
+    'tag = ?' => $o{tag},
+    defined $o{maxspoil} ? (
+      'tb.spoiler <= ?' => $o{maxspoil} ) : (),
+  );
+
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT tb.tag, tb.vid, tb.users, tb.rating, tb.spoiler, vr.title, vr.original, v.c_languages, v.c_released, v.c_platforms, v.c_popularity
       FROM tags_vn_bayesian tb
       JOIN vn v ON v.id = tb.vid
       JOIN vn_rev vr ON vr.id = v.latest
-      WHERE tag = ?
+      !W
       ORDER BY !s|,
-    $o{tag}, $o{order});
+    \%where, $o{order});
   return wantarray ? ($r, $np) : $r;
 }
 
