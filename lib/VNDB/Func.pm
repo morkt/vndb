@@ -5,8 +5,8 @@ use strict;
 use warnings;
 use YAWF ':html';
 use Exporter 'import';
-use POSIX 'strftime';
-our @EXPORT = qw| shorten age date datestr monthstr userstr bb2html gtintype liststat clearfloat cssicon |;
+use POSIX 'strftime', 'ceil', 'floor';
+our @EXPORT = qw| shorten age date datestr monthstr userstr bb2html gtintype liststat clearfloat cssicon tagscore|;
 
 
 # I would've done this as a #define if this was C...
@@ -234,6 +234,34 @@ sub cssicon {
   acronym class => "icons $_[0]", title => $_[1];
    lit '&nbsp;';
   end;
+}
+
+
+# Tag score in html tags, argument: score, users
+sub tagscore {
+  my $s = shift;
+  div class => 'taglvl', style => sprintf('width: %.0fpx', ($s-floor($s))*10), ' ' if $s < 0 && $s-floor($s) > 0;
+  for(-3..3) {
+    div(class => "taglvl taglvl0", sprintf '%.1f', $s), next if !$_;
+    if($_ < 0) {
+      if($s > 0 || floor($s) > $_) {
+        div class => "taglvl taglvl$_", ' ';
+      } elsif(floor($s) != $_) {
+        div class => "taglvl taglvl$_ taglvlsel", ' ';
+      } else {
+        div class => "taglvl taglvl$_ taglvlsel", style => sprintf('width: %.0fpx', 10-($s-$_)*10), ' ';
+      }
+    } else {
+      if($s < 0 || ceil($s) < $_) {
+        div class => "taglvl taglvl$_", ' ';
+      } elsif(ceil($s) != $_) {
+        div class => "taglvl taglvl$_ taglvlsel", ' ';
+      } else {
+        div class => "taglvl taglvl$_ taglvlsel", style => sprintf('width: %.0fpx', 10-($_-$s)*10), ' ';
+      }
+    }
+  }
+  div class => 'taglvl', style => sprintf('width: %.0fpx', (ceil($s)-$s)*10), ' ' if $s > 0 && ceil($s)-$s > 0;
 }
 
 

@@ -102,7 +102,7 @@ sub tagpage {
         my($s, $n, $l) = @_;
         Tr $n % 2 ? (class => 'odd') : ();
          td class => 'tc1';
-          txt sprintf '%.2f ', $l->{rating};
+          tagscore $l->{rating};
           i sprintf '(%d)', $l->{users};
          end;
          td class => 'tc2';
@@ -327,9 +327,10 @@ sub vntagmod {
            td class => 'tc1';
             a href => "/g$t->{id}", $t->{name};
            end;
-           td class => 'tc2', sprintf '%.2f (%d)',
-             !$m->{vote} ? $t->{rating} : $t->{users} == 1 ? 0 : ($t->{rating}*$t->{users} - $m->{vote}) / ($t->{users}-1),
-             $t->{users} - ($m->{vote} ? 1 : 0);
+           td class => 'tc2';
+            tagscore !$m->{vote} ? $t->{rating} : $t->{users} == 1 ? 0 : ($t->{rating}*$t->{users} - $m->{vote}) / ($t->{users}-1);
+            i ' ('.($t->{users} - ($m->{vote} ? 1 : 0)).')';
+           end;
            td class => 'tc3', sprintf '%.2f', $t->{spoiler};
            td class => 'tc4', $m->{vote}||0;
            td class => 'tc5', defined $m->{spoiler} ? $m->{spoiler} : -1;
