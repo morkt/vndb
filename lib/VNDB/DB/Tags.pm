@@ -44,7 +44,10 @@ sub dbTagGet {
   }
 
   if($o{what} =~ /childs\((\d+)\)/) {
-    $_->{childs} = $self->dbAll(q|SELECT lvl, tag, name FROM tag_tree(?, ?, true)|, $_->{id}, $1) for (@$r);
+    $_->{childs} = $self->dbAll(
+      q|SELECT lvl, tag, name, COALESCE((SELECT COUNT(*) FROM tags_vn_bayesian tb WHERE tb.tag = tt.tag), 0) AS vns FROM tag_tree(?, ?, true) tt|,
+      $_->{id}, $1
+    ) for (@$r);
   }
 
   #if(@$r && $o{what} =~ /(?:parents)/) {

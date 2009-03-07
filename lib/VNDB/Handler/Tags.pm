@@ -148,7 +148,7 @@ sub _childtags {
     for my $p (sort { @{$b->{childs}} <=> @{$a->{childs}} } @tags) {
       li;
        a href => "/g$p->{tag}", $p->{name};
-       b class => 'grayedout', ' ('.(int(rand()*100)).')';
+       b class => 'grayedout', " ($p->{vns})";
        end, next if !@{$p->{childs}};
        ul;
         for (0..$#{$p->{childs}}) {
@@ -156,7 +156,7 @@ sub _childtags {
           li;
            txt '> ';
            a href => "/g$p->{childs}[$_]{tag}", $p->{childs}[$_]{name};
-           b class => 'grayedout', ' ('.(int(rand()*50)).')';
+           b class => 'grayedout', " ($p->{childs}[$_]{vns})";
           end;
         }
         if(@{$p->{childs}} > 6) {
