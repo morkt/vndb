@@ -161,3 +161,35 @@ $$ LANGUAGE plpgsql;
 SELECT tag_vn_calc();
 
 
+
+-- Cache users tag vote count
+ALTER TABLE users ADD COLUMN c_tags integer NOT NULL DEFAULT 0;
+UPDATE users SET c_tags = (SELECT COUNT(*) FROM tags_vn WHERE uid = id);
+
+CREATE OR REPLACE FUNCTION update_users_cache() RETURNS TRIGGER AS $$
+BEGIN
+  IF TG_TABLE_NAME = 'votes' THEN
+    IF TG_OP = 'INSERT' THEN
+      UPDATE users SET c_votes = c_votes + 1 WHERE id = NEW.uid;
+    ELSE
+      UPDATE users SET c_votes = c_votes - 1 WHERE id = OLD.uid;
+    END IF;
+  ELSIF TG_TABLE_NAME = 'changes' THEN
+    IF TG_OP = 'INSERT' THEN
+      UPDATE users SET c_changes = c_changes + 1 WHERE id = NEW.requester;
+    ELSE
+      UPDATE users SET c_changes = c_changes - 1 WHERE id = OLD.requester;
+    END IF;
+  ELSIF TG_TABLE_NAME = 'tags_vn' THEN
+    IF TG_OP = 'INSERT' THEN
+      UPDATE users SET c_tags = c_tags + 1 WHERE id = NEW.uid;
+    ELSE
+      UPDATE users SET c_tags = c_tags - 1 WHERE id = OLD.uid;
+    END IF;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER users_tags_update AFTER INSERT OR DELETE ON tags_vn FOR EACH ROW EXECUTE PROCEDURE update_users_cache();
+
