@@ -381,7 +381,7 @@ sub usertags {
     what => 'vns',
   );
 
-  $self->htmlHeader(title => "Tags by $u->{username}");
+  $self->htmlHeader(title => "Tags by $u->{username}", noindex => 1);
   $self->htmlMainTabs('u', $u, 'tags');
   div class => 'mainbox';
    h1 "Tags by $u->{username}";
