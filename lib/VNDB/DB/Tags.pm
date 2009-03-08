@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbTagGet dbTagEdit dbTagAdd dbTagDel dbTagLinks dbTagLinkEdit dbVNTags dbTagVNs|;
+our @EXPORT = qw|dbTagGet dbTagEdit dbTagAdd dbTagDel dbTagLinks dbTagLinkEdit dbTagStats dbTagVNs|;
 
 
 # %options->{ id name search page results order what }
@@ -114,18 +114,51 @@ sub dbTagLinkEdit {
 }
 
 
-# Fetch all tags related to a VN
-# Argument: vid
-sub dbVNTags {
-  my($self, $vid) = @_;
-  return $self->dbAll(q|
-    SELECT t.id, t.name, count(tv.uid) as users, avg(tv.vote) as rating, COALESCE(avg(tv.spoiler), 0) as spoiler
+# Fetch all tags related to a VN or User
+# Argument: %options->{ uid vid results what page order }
+# what: vns
+sub dbTagStats {
+  my($self, %o) = @_;
+  $o{results} ||= 10;
+  $o{page}  ||= 1;
+  $o{order} ||= 't.name ASC';
+  $o{what}  ||= '';
+
+  my %where = (
+    $o{uid} ? (
+      'tv.uid = ?' => $o{uid} ) : (),
+    $o{vid} ? (
+      'tv.vid = ?' => $o{vid} ) : (),
+  );
+  my($r, $np) = $self->dbPage(\%o, q|
+    SELECT t.id, t.name, count(*) as cnt, avg(tv.vote) as rating, COALESCE(avg(tv.spoiler), 0) as spoiler
       FROM tags t
       JOIN tags_vn tv ON tv.tag = t.id
-      WHERE tv.vid = ?
-      GROUP BY t.id, t.name|,
-    $vid
+      !W
+      GROUP BY t.id, t.name
+      ORDER BY !s|,
+    \%where, $o{order}
   );
+
+  if(@$r && $o{what} =~ /vns/ && $o{uid}) {
+    my %r = map {
+      $_->{vns} = [];
+      ($_->{id}, $_->{vns})
+    } @$r;
+
+    push @{$r{$_->{tag}}}, $_ for (@{$self->dbAll(q|
+      SELECT tv.tag, tv.vote, tv.spoiler, vr.vid, vr.title, vr.original
+        FROM tags_vn tv
+        JOIN vn v ON v.id = tv.vid
+        JOIN vn_rev vr ON vr.id = v.latest
+        WHERE tv.uid = ?
+          AND tv.tag IN(!l)
+        ORDER BY vr.title ASC|,
+      $o{uid}, [ keys %r ]
+    )});
+  }
+
+  return wantarray ? ($r, $np) : $r;
 }
 
 

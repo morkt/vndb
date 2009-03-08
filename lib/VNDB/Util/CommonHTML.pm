@@ -47,6 +47,10 @@ sub htmlMainTabs {
      li $sel eq 'list' ? (class => 'tabselected') : ();
       a href => "/$id/list", 'list';
      end;
+
+     li $sel eq 'tags' ? (class => 'tabselected') : ();
+      a href => "/$id/tags", 'tags';
+     end;
    }
 
    if($type eq 'v' && $self->authCan('tag')) {

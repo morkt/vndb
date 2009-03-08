@@ -394,7 +394,9 @@ DOMLoad(function() {
       if(this.selectedIndex != 0)
         location.href = location.href.replace(/\.[0-9]+/, '')+'/list?e='+this.options[this.selectedIndex].value;
     };
+
   // User VN list
+  // (might want to make this a bit more generic, as it's now also used for the user tag list)
   i = x('relhidall');
   if(i) {
     var l = document.getElementsByTagName('tr');

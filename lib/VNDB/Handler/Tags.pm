@@ -15,6 +15,7 @@ YAWF::register(
   qr{g([1-9]\d*)/del(/o)?}, \&tagdel,
   qr{g/new},                \&tagedit,
   qr{v([1-9]\d*)/tagmod},   \&vntagmod,
+  qr{u([1-9]\d*)/tags},     \&usertags,
   qr{g},                    \&tagtree,
   qr{xml/tags\.xml},        \&tagxml,
 );
@@ -297,7 +298,7 @@ sub vntagmod {
   }
 
   my $my = $self->dbTagLinks(vid => $vid, uid => $self->authInfo->{id});
-  my $tags = $self->dbVNTags($vid);
+  my $tags = $self->dbTagStats(vid => $vid, result => 9999);
 
   my $frm;
 
@@ -343,8 +344,8 @@ sub vntagmod {
             a href => "/g$t->{id}", $t->{name};
            end;
            td class => 'tc2';
-            tagscore !$m->{vote} ? $t->{rating} : $t->{users} == 1 ? 0 : ($t->{rating}*$t->{users} - $m->{vote}) / ($t->{users}-1);
-            i ' ('.($t->{users} - ($m->{vote} ? 1 : 0)).')';
+            tagscore !$m->{vote} ? $t->{rating} : $t->{cnt} == 1 ? 0 : ($t->{rating}*$t->{cnt} - $m->{vote}) / ($t->{cnt}-1);
+            i ' ('.($t->{cnt} - ($m->{vote} ? 1 : 0)).')';
            end;
            td class => 'tc3', sprintf '%.2f', $t->{spoiler};
            td class => 'tc4', $m->{vote}||0;
@@ -355,6 +356,87 @@ sub vntagmod {
       end;
     } ],
   ]);
+  $self->htmlFooter;
+}
+
+
+sub usertags {
+  my($self, $uid) = @_;
+
+  my $u = $self->dbUserGet(uid => $uid)->[0];
+  return 404 if !$u;
+
+  my $f = $self->formValidate(
+    { name => 's', required => 0, default => 'cnt', enum => [ qw|cnt name| ] },
+    { name => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
+    { name => 'p', required => 0, default => 1, template => 'int' },
+  );
+  return 404 if $f->{_err};
+
+  # TODO: might want to use AJAX to load the VN list on request
+  my($list, $np) = $self->dbTagStats(
+    uid => $uid,
+    page => $f->{p},
+    order => ($f->{s}eq'cnt'?'COUNT(*)':'name').($f->{o}eq'a'?' ASC':' DESC'),
+    what => 'vns',
+  );
+
+  $self->htmlHeader(title => "Tags by $u->{username}");
+  $self->htmlMainTabs('u', $u, 'tags');
+  div class => 'mainbox';
+   h1 "Tags by $u->{username}";
+   if(@$list) {
+     p 'Warning: spoilery tags are not hidden in this list!';
+   } else {
+     p "$u->{username} doesn't seem to have used the tagging system yet...";
+   }
+  end;
+
+  if(@$list) {
+    $self->htmlBrowse(
+      class    => 'tagstats',
+      options  => $f,
+      nextpage => $np,
+      items    => $list,
+      pageurl  => "/u$u->{id}/tags?s=$f->{s};o=$f->{o}",
+      sorturl  => "/u$u->{id}/tags",
+      header   => [
+        sub {
+          td class => 'tc1';
+           b id => 'relhidall';
+            lit '<i>&#9656;</i> #VNs ';
+           end;
+           lit $f->{s} eq 'cnt' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u$u->{id}/tags?o=a;s=cnt">\x{25B4}</a>|;
+           lit $f->{s} eq 'cnt' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u$u->{id}/tags?o=d;s=cnt">\x{25BE}</a>|;
+          end;
+        },
+        [ 'Tag',  'name' ],
+        [ ' ', '' ],
+      ],
+      row     => sub {
+        my($s, $n, $l) = @_;
+        Tr $n % 2 ? (class => 'odd') : ();
+         td class => 'tc1 relhid_but', id => "tag$l->{id}";
+          lit "<i>&#9656;</i> $l->{cnt}";
+         end;
+         td class => 'tc2', colspan => 2;
+          a href => "/g$l->{id}", $l->{name};
+         end;
+        end;
+        for(@{$l->{vns}}) {
+          Tr class => "relhid tag$l->{id}";
+           td class => 'tc1_1';
+            tagscore $_->{vote};
+           end;
+           td class => 'tc1_2';
+            a href => "/v$_->{vid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;
+           end;
+           td class => 'tc1_3', !defined $_->{spoiler} ? ' ' : ['No spoiler', 'Minor spoiler', 'Major spoiler']->[$_->{spoiler}];
+          end;
+        }
+      },
+    );
+  }
   $self->htmlFooter;
 }
 
