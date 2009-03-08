@@ -88,8 +88,9 @@ sub tagpage {
   $self->htmlFooter;
 }
 
+# used for on both /g and /g+
 sub _childtags {
-  my($self, $t) = @_;
+  my($self, $t, $index) = @_;
 
   my @l = @{$t->{childs}};
   my @tags;
@@ -103,12 +104,16 @@ sub _childtags {
   }
 
   div class => 'mainbox';
-   h1 'Child tags';
+   if(!$index) {
+     h1 'Child tags';
+   } else {
+     h1 'Browse tags';
+   }
    ul class => 'tagtree';
     for my $p (sort { @{$b->{childs}} <=> @{$a->{childs}} } @tags) {
       li;
        a href => "/g$p->{tag}", $p->{name};
-       b class => 'grayedout', " ($p->{c_vns})";
+       b class => 'grayedout', " ($p->{c_vns})" if $p->{c_vns};
        end, next if !@{$p->{childs}};
        ul;
         for (0..$#{$p->{childs}}) {
@@ -116,7 +121,7 @@ sub _childtags {
           li;
            txt '> ';
            a href => "/g$p->{childs}[$_]{tag}", $p->{childs}[$_]{name};
-           b class => 'grayedout', " ($p->{childs}[$_]{c_vns})";
+           b class => 'grayedout', " ($p->{childs}[$_]{c_vns})" if $p->{childs}[$_]{c_vns};
           end;
         }
         if(@{$p->{childs}} > 6) {
@@ -444,26 +449,9 @@ sub usertags {
 sub tagtree {
   my $self = shift;
 
-  $self->htmlHeader(title => '[DEBUG] The complete tag tree');
-  div class => 'mainbox';
-   h1 '[DEBUG] The complete tag tree';
-   p "This page won't make it to the final version. (At least, not in this form)\n\n";
-
-   div style => 'margin-left: 10px';
-    my $t = $self->dbAll('SELECT * FROM tag_tree(0, -1, true)');
-    my $lvl = $t->[0]{lvl} + 1;
-    for (@$t) {
-      map ul(style => 'margin-left: 15px; list-style-type: none'),  1..($lvl-$_->{lvl}) if $lvl > $_->{lvl};
-      map end, 1..($_->{lvl}-$lvl) if $lvl < $_->{lvl};
-      $lvl = $_->{lvl};
-      li;
-       txt '> ';
-       a href => "/g$_->{tag}", $_->{name};
-      end;
-    }
-    map end, 0..($t->[0]{lvl}-$lvl);
-   end;
-  end;
+  $self->htmlHeader(title => 'Browse tags');
+  my $t = $self->dbTagTree(0, 2, 1);
+  _childtags($self, {childs => $t}, 1);
   $self->htmlFooter;
 }
 

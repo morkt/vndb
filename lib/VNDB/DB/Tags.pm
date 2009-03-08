@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbTagGet dbTagEdit dbTagAdd dbTagDel dbTagLinks dbTagLinkEdit dbTagStats dbTagVNs|;
+our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagDel dbTagLinks dbTagLinkEdit dbTagStats dbTagVNs|;
 
 
 # %options->{ id name search page results order what }
@@ -40,14 +40,21 @@ sub dbTagGet {
   );
 
   if($o{what} =~ /parents\((\d+)\)/) {
-    $_->{parents} = $self->dbAll(q|SELECT lvl, tag, name, c_vns FROM tag_tree(?, ?, false)|, $_->{id}, $1) for (@$r);
+    $_->{parents} = $self->dbTagTree($_->{id}, $1, 0) for(@$r);
   }
 
   if($o{what} =~ /childs\((\d+)\)/) {
-    $_->{childs} = $self->dbAll(q|SELECT lvl, tag, name, c_vns FROM tag_tree(?, ?, true)|, $_->{id}, $1) for (@$r);
+    $_->{childs} = $self->dbTagTree($_->{id}, $1, 1) for(@$r);
   }
 
   return wantarray ? ($r, $np) : $r;
+}
+
+
+# plain interface to the tag_tree() stored procedure in pgsql
+sub dbTagTree {
+  my($self, $id, $lvl, $dir) = @_;
+  return $self->dbAll('SELECT * FROM tag_tree(?, ?, ?)', $id, $lvl||0, $dir?1:0);
 }
 
 
