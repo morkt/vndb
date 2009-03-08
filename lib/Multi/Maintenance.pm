@@ -18,7 +18,7 @@ sub spawn {
   my $p = shift;
   POE::Session->create(
     package_states => [
-      $p => [qw| _start cmd_maintenance vncache usercache statscache revcache integrity unkanime logrotate vnpopularity |], 
+      $p => [qw| _start cmd_maintenance vncache usercache statscache revcache integrity unkanime logrotate vnpopularity tagcache |],
     ],
   );
 }
@@ -26,8 +26,10 @@ sub spawn {
 
 sub _start {
   $_[KERNEL]->alias_set('maintenance');
-  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:vncache|revcache|usercache|statscache|integrity|unkanime|logrotate|vnpopularity))+)$/, 'cmd_maintenance');
-  
+  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:vncache|revcache|usercache|statscache|integrity|unkanime|logrotate|vnpopularity|tagcache))+)$/, 'cmd_maintenance');
+
+ # recalculate tag<->vn cache each hour (better do this once every 24 hours when the DB grows)
+  $_[KERNEL]->post(core => addcron => '0 * * * *', 'maintenance tagcache');
  # Perform some maintenance functions every day on 0:00
   $_[KERNEL]->post(core => addcron => '0 0 * * *', 'maintenance vncache integrity unkanime vnpopularity');
  # update caches and rotate logs every 1st day of the month at 0:05
@@ -132,7 +134,7 @@ sub unkanime {
     WHERE a.lastfetch < 0|);
   $q->execute();
   my $r = $q->fetchall_arrayref([]);
-  my %aid = map { 
+  my %aid = map {
     my $a=$_;
     $a->[1] => join(',', map { $a->[1] == $_->[1] ? $_->[0] : () } @$r)
   } @$r;
@@ -174,6 +176,13 @@ sub vnpopularity {
   my $S = [gettimeofday];
   $Multi::SQL->do(q|SELECT update_vnpopularity()|);
   $_[KERNEL]->call(core => log => 3 => '(Re)calculated vn.c_popularity in %.2fs', tv_interval($S));
+}
+
+
+sub tagcache {
+  my $S = [gettimeofday];
+  $Multi::SQL->do(q|SELECT tag_vn_calc()|);
+  $_[KERNEL]->call(core => log => 3 => '(Re)calculated tags_vn_stored in %.2fs', tv_interval($S));
 }
 
 

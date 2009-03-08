@@ -32,7 +32,7 @@ sub dbTagGet {
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
-    SELECT t.id, t.meta, t.name, t.alias, t.description
+    SELECT t.id, t.meta, t.name, t.alias, t.description, t.c_vns
       FROM tags t
       !W
       ORDER BY !s|,
@@ -40,21 +40,12 @@ sub dbTagGet {
   );
 
   if($o{what} =~ /parents\((\d+)\)/) {
-    $_->{parents} = $self->dbAll(q|SELECT lvl, tag, name FROM tag_tree(?, ?, false)|, $_->{id}, $1) for (@$r);
+    $_->{parents} = $self->dbAll(q|SELECT lvl, tag, name, c_vns FROM tag_tree(?, ?, false)|, $_->{id}, $1) for (@$r);
   }
 
   if($o{what} =~ /childs\((\d+)\)/) {
-    $_->{childs} = $self->dbAll(
-      q|SELECT lvl, tag, name, COALESCE((SELECT COUNT(*) FROM tags_vn_bayesian tb WHERE tb.tag = tt.tag), 0) AS vns FROM tag_tree(?, ?, true) tt|,
-      $_->{id}, $1
-    ) for (@$r);
+    $_->{childs} = $self->dbAll(q|SELECT lvl, tag, name, c_vns FROM tag_tree(?, ?, true)|, $_->{id}, $1) for (@$r);
   }
-
-  #if(@$r && $o{what} =~ /(?:parents)/) {
-    #my %r = map {
-    #  ($r->[$_]{id}, $_)
-    #} 0..$#$r;
-  #}
 
   return wantarray ? ($r, $np) : $r;
 }
@@ -178,7 +169,7 @@ sub dbTagVNs {
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT tb.tag, tb.vid, tb.users, tb.rating, tb.spoiler, vr.title, vr.original, v.c_languages, v.c_released, v.c_platforms, v.c_popularity
-      FROM tags_vn_bayesian tb
+      FROM tags_vn_stored tb
       JOIN vn v ON v.id = tb.vid
       JOIN vn_rev vr ON vr.id = v.latest
       !W

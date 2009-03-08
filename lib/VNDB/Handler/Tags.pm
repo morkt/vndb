@@ -108,7 +108,7 @@ sub _childtags {
     for my $p (sort { @{$b->{childs}} <=> @{$a->{childs}} } @tags) {
       li;
        a href => "/g$p->{tag}", $p->{name};
-       b class => 'grayedout', " ($p->{vns})";
+       b class => 'grayedout', " ($p->{c_vns})";
        end, next if !@{$p->{childs}};
        ul;
         for (0..$#{$p->{childs}}) {
@@ -116,7 +116,7 @@ sub _childtags {
           li;
            txt '> ';
            a href => "/g$p->{childs}[$_]{tag}", $p->{childs}[$_]{name};
-           b class => 'grayedout', " ($p->{childs}[$_]{vns})";
+           b class => 'grayedout', " ($p->{childs}[$_]{c_vns})";
           end;
         }
         if(@{$p->{childs}} > 6) {
@@ -311,7 +311,7 @@ sub vntagmod {
     ul;
      li "Don't forget to hit the submit button on the bottom of the page after changing anything here!";
      li 'Tag guidelines?';
-     li '!IMPORTANT! The current user interface is just for testing, and likely doesn\'t reflect the final form!';
+     li 'Some tag information on the site is cached, it can take up to an hour for your changes to be visible everywhere.';
     end;
    end;
   end;

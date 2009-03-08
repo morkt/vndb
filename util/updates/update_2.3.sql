@@ -20,7 +20,8 @@ CREATE TABLE tags (
   name        varchar(250) NOT NULL UNIQUE,
   alias       text         NOT NULL DEFAULT '',
   description text         NOT NULL DEFAULT '',
-  meta        boolean      NOT NULL DEFAULT FALSE
+  meta        boolean      NOT NULL DEFAULT FALSE,
+  c_vns       integer      NOT NULL DEFAULT 0
 ) WITHOUT OIDS;
 
 CREATE TABLE tags_parents (
@@ -39,7 +40,7 @@ CREATE TABLE tags_vn (
 ) WITHOUT OIDS;
 
 
-CREATE TYPE tag_tree_item AS (lvl smallint, tag integer, name text);
+CREATE TYPE tag_tree_item AS (lvl smallint, tag integer, name text, c_vns integer);
 
 -- tag: tag to start with,
 -- lvl: recursion level
@@ -51,7 +52,7 @@ DECLARE
 BEGIN
   IF dir AND tag = 0 THEN
     FOR r IN
-      SELECT lvl, t.id, t.name
+      SELECT lvl, t.id, t.name, t.c_vns
         FROM tags t
         WHERE NOT EXISTS(SELECT 1 FROM tags_parents tp WHERE tp.tag = t.id)
         ORDER BY t.name
@@ -65,7 +66,7 @@ BEGIN
     END LOOP;
   ELSIF dir THEN
     FOR r IN
-      SELECT lvl, tp.tag, t.name
+      SELECT lvl, tp.tag, t.name, t.c_vns
         FROM tags_parents tp
         JOIN tags t ON t.id = tp.tag
         WHERE tp.parent = tag
@@ -80,7 +81,7 @@ BEGIN
     END LOOP;
   ELSE
     FOR r IN
-      SELECT lvl, tp.parent, t.name
+      SELECT lvl, tp.parent, t.name, t.c_vns
         FROM tags_parents tp
         JOIN tags t ON t.id = tp.parent
         WHERE tp.tag = tag
@@ -131,18 +132,19 @@ CREATE OR REPLACE VIEW tags_vn_grouped AS
 
 -- grouped by (tag, vid), so we now finally have a list of VN entries for a tag (including inherited tags)
 CREATE OR REPLACE VIEW tags_vn_inherited AS
-    SELECT tag, vid, COUNT(uid)::real AS users, AVG(vote)::real AS rating, AVG(spoiler)::real AS spoiler
+    SELECT tag, vid, COUNT(uid)::real AS users, AVG(vote)::real AS rating,
+        (CASE WHEN AVG(spoiler) < 0.7 THEN 0 WHEN AVG(spoiler) > 1.3 THEN 2 ELSE 1 END)::smallint AS spoiler
       FROM tags_vn_grouped
   GROUP BY tag, vid;
 
 -- bayesian average on the above view, to provide better rankings as to how much a tag applies to a VN
 -- details of the calculation @ http://www.thebroth.com/blog/118/bayesian-rating
-CREATE OR REPLACE VIEW tags_vn_bayesian AS
-  SELECT tag, vid, users,
-      ( (SELECT AVG(users)::real * AVG(rating)::real FROM tags_vn_inherited WHERE tag = tvi.tag) + users*rating )
-      / ( (SELECT AVG(users)::real FROM tags_vn_inherited WHERE tag = tvi.tag) + users )::real AS rating,
-      (CASE WHEN spoiler < 0.7 THEN 0 WHEN spoiler > 1.3 THEN 2 ELSE 1 END)::smallint AS spoiler
-    FROM tags_vn_inherited tvi;
+--CREATE OR REPLACE VIEW tags_vn_bayesian AS
+--  SELECT tag, vid, users,
+--      ( (SELECT AVG(users)::real * AVG(rating)::real FROM tags_vn_inherited WHERE tag = tvi.tag) + users*rating )
+--      / ( (SELECT AVG(users)::real FROM tags_vn_inherited WHERE tag = tvi.tag) + users )::real AS rating,
+--      spoiler
+--    FROM tags_vn_inherited tvi;
 
 
 -- creates/updates a table eqvuivalent to tags_vn_bayesian
@@ -151,10 +153,12 @@ BEGIN
   DROP TABLE IF EXISTS tags_vn_stored;
   CREATE TABLE tags_vn_stored AS SELECT * FROM tags_vn_inherited;
   CREATE INDEX tags_vn_stored_tag ON tags_vn_stored (tag);
-  -- The following method may be faster on larger DBs, because tag_vn_childs() only has to be called once
-  --UPDATE tags_vn_stored tvs SET rating =
-  --    ((SELECT AVG(users)::real * AVG(rating)::real FROM tags_vn_stored WHERE tag = tvs.tag) + users*rating)
-  --  / ((SELECT AVG(users)::real FROM tags_vn_inherited WHERE tag = tvs.tag) + users)::real;
+
+  UPDATE tags_vn_stored tvs SET rating =
+      ((SELECT AVG(users)::real * AVG(rating)::real FROM tags_vn_stored WHERE tag = tvs.tag) + users*rating)
+    / ((SELECT AVG(users)::real FROM tags_vn_inherited WHERE tag = tvs.tag) + users)::real;
+
+  UPDATE tags SET c_vns = (SELECT COUNT(*) FROM tags_vn_stored WHERE tag = id);
   RETURN;
 END;
 $$ LANGUAGE plpgsql;
