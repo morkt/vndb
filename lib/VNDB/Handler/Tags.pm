@@ -35,7 +35,7 @@ sub tagpage {
   );
   return 404 if $f->{_err};
 
-  my($list, $np) = $t->{meta} ? ([],0) : $self->dbTagVNs(
+  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbTagVNs(
     tag => $tag,
     order => {score=>'tb.rating',title=>'vr.title',rel=>'v.c_released',pop=>'v.c_popularity'}->{$f->{s}}.($f->{o}eq'a'?' ASC':' DESC'),
     page => $f->{p},
@@ -46,6 +46,28 @@ sub tagpage {
   my $title = ($t->{meta} ? 'Meta tag: ' : 'Tag: ').$t->{name};
   $self->htmlHeader(title => $title);
   $self->htmlMainTabs('g', $t);
+
+  if($t->{state} != 2) {
+    div class => 'mainbox';
+     h1 "Tag: $t->{name}";
+     if($t->{state} == 1) {
+       div class => 'warning';
+        h2 'Tag deleted';
+        p;
+         lit qq|This tag has been removed from the database, and cannot be used or re-added.|.
+             qq| File a request on the <a href="/t/db">discussion board</a> if you disagree with this.|;
+        end;
+       end;
+     } else {
+       div class => 'notice';
+        h2 'Waiting for approval';
+        p 'This tag is waiting for a moderator to approve it. You can still use it to tag VNs as you would with a normal tag.';
+       end;
+     }
+    end;
+    return $self->htmlFooter if $t->{state} == 1 && !$self->authCan('tagmod');
+  }
+
   div class => 'mainbox';
    a class => 'addnew', href => "/g$tag/add", 'Create child tag' if $self->authCan('tagmod');
    h1 $title;
@@ -83,7 +105,7 @@ sub tagpage {
   end;
 
   _childtags($self, $t) if @{$t->{childs}};
-  _vnlist($self, $t, $f, $list, $np) if !$t->{meta};
+  _vnlist($self, $t, $f, $list, $np) if !$t->{meta} && $t->{state} == 2;
 
   $self->htmlFooter;
 }
@@ -215,6 +237,7 @@ sub tagedit {
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
       { name => 'name',        required => 1, maxlength => 250 },
+      { name => 'state',       required => 1, enum => [ 0..2 ] },
       { name => 'meta',        required => 0, default => 0 },
       { name => 'alias',       required => 0, maxlength => 1024, default => '' },
       { name => 'description', required => 0, maxlength => 1024, default => '' },
@@ -227,14 +250,14 @@ sub tagedit {
     if(!$frm->{_err}) {
       $frm->{meta} = $frm->{meta} ? 1 : 0;
       $frm->{parents} = [ split / /, $frm->{parents} ];
-      $self->dbTagEdit($tag, %$frm) if $tag;
+      $self->dbTagEdit($tag, %$frm, upddate => $frm->{state} == 2 && $t->{state} != 2) if $tag;
       $tag = $self->dbTagAdd(%$frm) if !$tag;
       $self->resRedirect("/g$tag", 'post');
     }
   }
 
   if($tag) {
-    $frm->{$_} ||= $t->{$_} for (qw|name meta alias description|);
+    $frm->{$_} ||= $t->{$_} for (qw|name meta alias description state|);
     $frm->{parents} ||= join ' ', map $_->{tag}, @{$t->{parents}};
   }
 
@@ -243,9 +266,11 @@ sub tagedit {
   $self->htmlMainTabs('g', $par || $t, 'edit') if $t || $par;
   $self->htmlForm({ frm => $frm, action => $par ? "/g$par->{id}/add" : $tag ? "/g$tag/edit" : '/g/new' }, $title => [
     [ input    => short => 'name',     name => 'Primary name' ],
+    [ select   => short => 'state',    name => 'State', options => [
+      [ 0, 'Awaiting moderation' ], [ 1, 'Deleted/hidden' ], [ 2, 'Approved' ] ] ],
     [ checkbox => short => 'meta',     name => 'This is a meta-tag (only to be used as parent for other tags, not for linking to VN entries)' ],
     $tag ?
-      [ static => content => 'WARNING: Checking this option will permanently delete all existing VN relations!' ] : (),
+      [ static => content => 'WARNING: Checking this option or selecting "Deleted" as state will permanently delete all existing VN relations!' ] : (),
     [ textarea => short => 'alias',    name => "Aliases\n(separated by newlines)", cols => 30, rows => 4 ],
     [ textarea => short => 'description', name => 'Description' ],
     [ static   => content => 'What should the tag be used for? Having a good description helps users choose which tags to link to a VN.' ],
@@ -473,7 +498,7 @@ sub tagxml {
   xml;
   tag 'tags', more => $np ? 'yes' : 'no', query => $q;
    for(@$list) {
-     tag 'item', id => $_->{id}, meta => $_->{meta} ? 'yes' : 'no', $_->{name};
+     tag 'item', id => $_->{id}, meta => $_->{meta} ? 'yes' : 'no', state => $_->{state}, $_->{name};
    }
   end;
 }

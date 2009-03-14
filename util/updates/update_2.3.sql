@@ -21,6 +21,8 @@ CREATE TABLE tags (
   alias       text         NOT NULL DEFAULT '',
   description text         NOT NULL DEFAULT '',
   meta        boolean      NOT NULL DEFAULT FALSE,
+  added       bigint       NOT NULL DEFAULT DATE_PART('epoch'::text, NOW()),
+  state       smallint     NOT NULL DEFAULT 0, -- 0: awaiting moderation, 1: deleted, 2: accepted
   c_vns       integer      NOT NULL DEFAULT 0
 ) WITHOUT OIDS;
 
@@ -54,7 +56,7 @@ BEGIN
     FOR r IN
       SELECT lvl, t.id, t.name, t.c_vns
         FROM tags t
-        WHERE NOT EXISTS(SELECT 1 FROM tags_parents tp WHERE tp.tag = t.id)
+        WHERE state = 2 AND NOT EXISTS(SELECT 1 FROM tags_parents tp WHERE tp.tag = t.id)
         ORDER BY t.name
     LOOP
       RETURN NEXT r;
@@ -70,6 +72,7 @@ BEGIN
         FROM tags_parents tp
         JOIN tags t ON t.id = tp.tag
         WHERE tp.parent = tag
+          AND state = 2
         ORDER BY t.name
     LOOP
       RETURN NEXT r;
@@ -85,6 +88,7 @@ BEGIN
         FROM tags_parents tp
         JOIN tags t ON t.id = tp.parent
         WHERE tp.tag = tag
+          AND state = 2
         ORDER BY t.name
     LOOP
       RETURN NEXT r;
@@ -106,7 +110,7 @@ DECLARE
   i RECORD;
   l RECORD;
 BEGIN
-  FOR l IN SElECT id FROM tags WHERE meta = FALSE AND EXISTS(SELECT 1 FROM tags_parents WHERE parent = id) LOOP
+  FOR l IN SElECT id FROM tags WHERE meta = FALSE AND AND state = 2 EXISTS(SELECT 1 FROM tags_parents WHERE parent = id) LOOP
     FOR i IN SELECT tag FROM tag_tree(l.id, 0, true) LOOP
       FOR r IN SELECT l.id, vid, uid, vote, spoiler FROM tags_vn WHERE tag = i.tag LOOP
         RETURN NEXT r;
@@ -137,17 +141,7 @@ CREATE OR REPLACE VIEW tags_vn_inherited AS
       FROM tags_vn_grouped
   GROUP BY tag, vid;
 
--- bayesian average on the above view, to provide better rankings as to how much a tag applies to a VN
--- details of the calculation @ http://www.thebroth.com/blog/118/bayesian-rating
---CREATE OR REPLACE VIEW tags_vn_bayesian AS
---  SELECT tag, vid, users,
---      ( (SELECT AVG(users)::real * AVG(rating)::real FROM tags_vn_inherited WHERE tag = tvi.tag) + users*rating )
---      / ( (SELECT AVG(users)::real FROM tags_vn_inherited WHERE tag = tvi.tag) + users )::real AS rating,
---      spoiler
---    FROM tags_vn_inherited tvi;
-
-
--- creates/updates a table eqvuivalent to tags_vn_bayesian
+-- creates/updates a table with bayesian rankings of tags
 CREATE OR REPLACE FUNCTION tag_vn_calc() RETURNS void AS $$
 BEGIN
   DROP TABLE IF EXISTS tags_vn_stored;

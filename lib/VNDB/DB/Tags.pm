@@ -24,7 +24,10 @@ sub dbTagGet {
 
   my %where = (
     $o{id} ? (
-      't.id = ?' => $o{id} ) : (),
+      't.id = ?' => $o{id}
+    ) : (
+      't.state <> 1' => 1
+    ),
     $o{name} ? (
       'lower(t.name) = ?' => lc $o{name} ) : (),
     $o{search} ? (
@@ -32,7 +35,7 @@ sub dbTagGet {
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
-    SELECT t.id, t.meta, t.name, t.alias, t.description, t.c_vns
+    SELECT t.id, t.meta, t.name, t.alias, t.description, t.added, t.state, t.c_vns
       FROM tags t
       !W
       ORDER BY !s|,
@@ -62,11 +65,13 @@ sub dbTagTree {
 sub dbTagEdit {
   my($self, $id, %o) = @_;
 
-  $self->dbExec('UPDATE tags !H WHERE id = ?',
-    { map { +"$_ = ?" => $o{$_} } qw|name meta alias description| }, $id);
+  $self->dbExec('UPDATE tags !H WHERE id = ?', {
+    $o{upddate} ? ('added = ?' => time) : (),
+    map { +"$_ = ?" => $o{$_} } qw|name meta alias description state|
+  }, $id);
   $self->dbExec('DELETE FROM tags_parents WHERE tag = ?', $id);
   $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
-  $self->dbExec('DELETE FROM tags_vn WHERE tag = ?', $id) if $o{meta};
+  $self->dbExec('DELETE FROM tags_vn WHERE tag = ?', $id) if $o{meta} || $o{state} == 1;
 }
 
 

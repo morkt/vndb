@@ -29,7 +29,7 @@ our %S = (%S,
     [qw| visitor    hist                                                     |], # 0
     [qw| banned     hist                                                     |], # 1
     [qw| loser      hist board                                               |], # 2
-    [qw| user       hist board edit tag tagmod                               |], # 3
+    [qw| user       hist board edit tag                                      |], # 3
     [qw| mod        hist board boardmod edit tag mod lock del tagmod         |], # 4
     [qw| admin      hist board boardmod edit tag mod lock del tagmod usermod |], # 5
   ],

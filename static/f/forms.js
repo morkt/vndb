@@ -876,6 +876,8 @@ function tglLoad() {
     td.innerHTML = shorten(item.firstChild.nodeValue, 40);
     if(item.getAttribute('meta') == 'yes')
       td.innerHTML = '<b class="grayedout">'+td.innerHTML+'</b> (meta)';
+    else if(item.getAttribute('state') == 0)
+      td.innerHTML += ' <b class="grayedout">awaiting moderation</b>';
     tr.appendChild(td);
   }, function(item) {
     return item.firstChild.nodeValue;
@@ -957,10 +959,10 @@ function tglAdd() {
     tr.appendChild(td);
     td = document.createElement('td');
     td.className = 'tc2';
-    td.innerHTML = '0.00 (0)';
+    td.innerHTML = '-';
     tr.appendChild(td);
     td = document.createElement('td');
-    td.innerHTML = '0';
+    td.innerHTML = '-';
     td.className = 'tc3';
     tr.appendChild(td);
     td = document.createElement('td');
