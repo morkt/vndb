@@ -877,7 +877,7 @@ function tglLoad() {
     var td = document.createElement('td');
     td.innerHTML = shorten(item.firstChild.nodeValue, 40);
     if(item.getAttribute('meta') == 'yes')
-      td.innerHTML = '<b class="grayedout">'+td.innerHTML+'</b> (meta)';
+      td.innerHTML += ' <b class="grayedout">meta</b>';
     else if(item.getAttribute('state') == 0)
       td.innerHTML += ' <b class="grayedout">awaiting moderation</b>';
     tr.appendChild(td);
