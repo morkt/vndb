@@ -135,7 +135,7 @@ sub _childtags {
    if(!$index) {
      h1 'Child tags';
    } else {
-     h1 'Browse tags';
+     h1 'Tag tree';
    }
    ul class => 'tagtree';
     for my $p (sort { @{$b->{childs}} <=> @{$a->{childs}} } @tags) {
@@ -321,32 +321,41 @@ sub taglist {
   my $self = shift;
 
   my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'added', enum => ['added', 'name'] },
-    { name => 'o', required => 0, default => 'd', enum => ['a', 'd'] },
+    { name => 's', required => 0, default => 'name', enum => ['added', 'name'] },
+    { name => 'o', required => 0, default => 'a', enum => ['a', 'd'] },
     { name => 'p', required => 0, default => 1, template => 'int' },
-    { name => 't', required => 0, default => 0, enum => [ 0..2 ] },
+    { name => 't', required => 0, default => -1, enum => [ -1..2 ] },
+    { name => 'q', required => 0, default => '' },
   );
-  $f->{t} = 0 if !$self->authCan('tagmod');
+  $f->{t} = 0 if !$self->authCan('tagmod') && $f->{t} == 1;
   return 404 if $f->{_err};
 
   my($t, $np) = $self->dbTagGet(
     order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
     page => $f->{p},
     results => 50,
-    state => $f->{t},
+    $f->{t} != -1 || $self->authCan('tagmod') ? (
+      state => $f->{t} ) : (),
+    search => $f->{q},
   );
 
-  my $title = $f->{t} == 0 ? 'Tags awaiting moderation' : $f->{t} == 1 ? 'Deleted tags' : 'All visible tags';
+  my $title = $f->{t} == -1 ? 'Browse tags' : $f->{t} == 0 ? 'Tags awaiting moderation' : $f->{t} == 1 ? 'Deleted tags' : 'All visible tags';
   $self->htmlHeader(title => $title);
   div class => 'mainbox';
    h1 $title;
-   if($self->authCan('tagmod')) {
-     p class => 'browseopts';
-      a href => "/g/list?t=0", $f->{t} == 0 ? (class => 'optselected') : (), 'Awaiting moderation';
-      a href => "/g/list?t=1", $f->{t} == 1 ? (class => 'optselected') : (), 'Deleted';
-      a href => "/g/list?t=2", $f->{t} == 2 ? (class => 'optselected') : (), 'Visible';
-     end;
-   }
+   form class => 'search', action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
+    fieldset;
+     input type => 'hidden', name => 't', value => $f->{t};
+     input type => 'text', name => 'q', id => 'q', class => 'text', value => $f->{q};
+     input type => 'submit', class => 'submit', value => 'Search!';
+    end;
+   end;
+   p class => 'browseopts';
+    a href => "/g/list?q=$f->{q};t=-1", $f->{t} == -1 ? (class => 'optselected') : (), 'All';
+    a href => "/g/list?q=$f->{q};t=0", $f->{t} == 0 ? (class => 'optselected') : (), 'Awaiting moderation';
+    a href => "/g/list?q=$f->{q};t=1", $f->{t} == 1 ? (class => 'optselected') : (), 'Deleted' if $self->authCan('tagmod');
+    a href => "/g/list?q=$f->{q};t=2", $f->{t} == 2 ? (class => 'optselected') : (), 'Accepted';
+   end;
    if(!@$t) {
      p 'No results found';
    }
@@ -357,18 +366,22 @@ sub taglist {
       options  => $f,
       nextpage => $np,
       items    => $t,
-      pageurl  => "/g/list?t=$f->{t};s=$f->{s};o=$f->{o}",
-      sorturl  => "/g/list?t=$f->{t}",
+      pageurl  => "/g/list?t=$f->{t};q=$f->{q};s=$f->{s};o=$f->{o}",
+      sorturl  => "/g/list?t=$f->{t};q=$f->{q}",
       header   => [
         [ 'Created', 'added' ],
-        [ 'Tag',     'name' ],
+        [ 'Tag',     'name'  ],
       ],
       row => sub {
         my($s, $n, $l) = @_;
         Tr $n % 2 ? (class => 'odd') : ();
          td class => 'tc1', age $l->{added};
-         td class => 'tc2';
+         td class => 'tc3';
           a href => "/g$l->{id}", $l->{name};
+          if($f->{t} == -1) {
+            b class => 'grayedout', ' awaiting moderation' if $l->{state} == 0;
+            b class => 'grayedout', ' deleted' if $l->{state} == 1;
+          }
          end;
         end;
       }
@@ -577,6 +590,16 @@ sub tagtree {
   my $self = shift;
 
   $self->htmlHeader(title => 'Browse tags');
+  div class => 'mainbox';
+   h1 'Search tags';
+   form class => 'search', action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
+    fieldset;
+     input type => 'text', name => 'q', id => 'q', class => 'text';
+     input type => 'submit', class => 'submit', value => 'Search!';
+    end;
+   end;
+  end;
+
   my $t = $self->dbTagTree(0, 2, 1);
   _childtags($self, {childs => $t}, 1);
   $self->htmlFooter;
