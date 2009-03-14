@@ -156,8 +156,10 @@ function dsSearch(obj) {
   
   // show/hide the ds_box div
   if(obj.value.length < 2) {
-    if(b)
+    if(b) {
       b.style.top = '-500px';
+      b.innerHTML = '<b>Loading...</b>';
+    }
     obj.selectedId = 0;
     return;
   }
