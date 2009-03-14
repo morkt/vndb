@@ -57,7 +57,7 @@ sub spawn {
 
 sub _start {
   $_[KERNEL]->alias_set('irc');
-  $_[KERNEL]->call(core => register => qr/^ircnotify ([vrpt][0-9]+\.[0-9]+)$/, 'ircnotify');
+  $_[KERNEL]->call(core => register => qr/^ircnotify ([vrptg][0-9]+\.[0-9]+)$/, 'ircnotify');
 
   $_[HEAP]{irc}->plugin_add(
     Logger => POE::Component::IRC::Plugin::Logger->new(
@@ -167,7 +167,7 @@ sub vndbid { # dest, msg, force
     for (keys %{$_[HEAP]{log}});
 
   # Four possible options:
-  #  1.  [tvpru]+  -> item/user/thread (nf)
+  #  1.  [tvprug]+ -> item/user/thread/tag (nf)
   #  2.  [vprt]+.+ -> revision/reply (ef)
   #  3.  d+        -> documentation page (nf)
   #  4.  d+.+      -> documentation page # section (sf)
@@ -184,7 +184,7 @@ sub vndbid { # dest, msg, force
   for (split /[, ]/, $m) {
     next if length > 15 or m{[a-z]{3,6}://}i; # weed out URLs and too long things
     push @id, /^(?:.*[^\w]|)([dvprt])([1-9][0-9]*)\.([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, $3 ]   # matches 2 and 4
-           :  /^(?:.*[^\w]|)([dvprtu])([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();       # matches 1 and 3
+           :  /^(?:.*[^\w]|)([dvprtug])([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();       # matches 1 and 3
   }
 
   # loop through the matched IDs and search the database
@@ -194,13 +194,14 @@ sub vndbid { # dest, msg, force
     next if $_[HEAP]{log}{$t.$id.'.'.$rev} && !$_[ARG2];
     $_[HEAP]{log}{$t.$id.'.'.$rev} = time;
 
-   # option 1: item/user/thread
-    if($t =~ /[vprtu]/ && !$rev) {
+   # option 1: item/user/thread/tag
+    if($t =~ /[vprtug]/ && !$rev) {
       my $s = $Multi::SQL->prepare(
         $t eq 'v' ? 'SELECT vr.title FROM vn_rev vr JOIN vn v ON v.latest = vr.id WHERE v.id = ?' :
         $t eq 'u' ? 'SELECT u.username AS title FROM users u WHERE u.id = ?' :
         $t eq 'p' ? 'SELECT pr.name AS title FROM producers_rev pr JOIN producers p ON p.latest = pr.id WHERE p.id = ?' :
         $t eq 't' ? 'SELECT title FROM threads WHERE id = ?' :
+        $t eq 'g' ? 'SELECT name AS title FROM tags WHERE id = ?' :
                     'SELECT rr.title FROM releases_rev rr JOIN releases r ON r.latest = rr.id WHERE r.id = ?'
       );
       $s->execute($id);

@@ -250,8 +250,12 @@ sub tagedit {
     if(!$frm->{_err}) {
       $frm->{meta} = $frm->{meta} ? 1 : 0;
       $frm->{parents} = [ split / /, $frm->{parents} ];
-      $self->dbTagEdit($tag, %$frm, upddate => $frm->{state} == 2 && $t->{state} != 2) if $tag;
-      $tag = $self->dbTagAdd(%$frm) if !$tag;
+      if(!$tag) {
+        $tag = $self->dbTagAdd(%$frm);
+        $self->multiCmd("ircnotify g$tag");
+      } else {
+        $self->dbTagEdit($tag, %$frm, upddate => $frm->{state} == 2 && $t->{state} != 2);
+      }
       $self->resRedirect("/g$tag", 'post');
     }
   }

@@ -155,7 +155,7 @@ sub bb2html {
         next;
       } elsif(!grep(/url/, @open) && (
           s{^(.*[^\w]|)([tdvpr][1-9][0-9]*)\.([1-9][0-9]*)([^\w].*|)$}{$e->($1).qq|<a href="/$2.$3">$2.$3</a>|.$e->($4)}e ||
-          s{^(.*[^\w]|)([tduvpr][1-9][0-9]*)([^\w].*|)$}{$e->($1).qq|<a href="/$2">$2</a>|.$e->($3)}e)) {
+          s{^(.*[^\w]|)([tdvprug][1-9][0-9]*)([^\w].*|)$}{$e->($1).qq|<a href="/$2">$2</a>|.$e->($3)}e)) {
         $length += length $lit;
         last if $maxlength && $length > $maxlength;
         $result .= $_;
