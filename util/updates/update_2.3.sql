@@ -18,12 +18,16 @@ ALTER TABLE releases_rev ADD COLUMN catalog varchar(50) NOT NULL DEFAULT '';
 CREATE TABLE tags (
   id          SERIAL       NOT NULL PRIMARY KEY,
   name        varchar(250) NOT NULL UNIQUE,
-  alias       text         NOT NULL DEFAULT '',
   description text         NOT NULL DEFAULT '',
   meta        boolean      NOT NULL DEFAULT FALSE,
   added       bigint       NOT NULL DEFAULT DATE_PART('epoch'::text, NOW()),
   state       smallint     NOT NULL DEFAULT 0, -- 0: awaiting moderation, 1: deleted, 2: accepted
   c_vns       integer      NOT NULL DEFAULT 0
+) WITHOUT OIDS;
+
+CREATE TABLE tags_aliases (
+  alias  varchar(250) NOT NULL PRIMARY KEY,
+  tag    integer      NOT NULL REFERENCES tags (id) DEFERRABLE INITIALLY DEFERRED
 ) WITHOUT OIDS;
 
 CREATE TABLE tags_parents (

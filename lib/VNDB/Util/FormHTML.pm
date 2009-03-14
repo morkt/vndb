@@ -52,7 +52,6 @@ my %formerr_exeptions = (
   noimage       => 'Image must be in JPEG or PNG format',
   toolarge      => 'Image is too large, only 500kB allowed',
   oneaday       => 'You can only register one account from the same IP within 24 hours',
-  tagexists     => 'A tag with the same name already exists in the database!',
 );
 
 
@@ -82,6 +81,13 @@ sub htmlFormError {
       li sprintf '%s: only %d characters allowed', $field, $rule if $type eq 'maxlength';
       li sprintf '%s must be one of the following: %s', $field, join ', ', @$rule if $type eq 'enum';
       li sprintf 'Wrong tag: %s', $rule if $type eq 'wrongtag';
+      if($type eq 'tagexists') {
+        li;
+         lit $rule->{state} != 1 ? qq|Tag <a href="/g$rule->{id}">$rule->{name}</a> already exists!|
+          : qq|A tag <a href="/g$rule->{id}">with the same name</a> has been deleted in the past,|
+           .qq| please use <a href="/t/db">the discussion board</a> if you want it to be re-added.|;
+        end;
+      }
       li $rule->[1] if $type eq 'func' || $type eq 'regex';
       if($type eq 'template') {
         li sprintf

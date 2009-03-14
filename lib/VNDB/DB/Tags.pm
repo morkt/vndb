@@ -8,8 +8,8 @@ use Exporter 'import';
 our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagDel dbTagLinks dbTagLinkEdit dbTagStats dbTagVNs|;
 
 
-# %options->{ id name search page results order what }
-# what: parents childs(n)
+# %options->{ id noid name search page results order what }
+# what: parents childs(n) aliases
 sub dbTagGet {
   my $self = shift;
   my %o = (
@@ -24,23 +24,35 @@ sub dbTagGet {
 
   my %where = (
     $o{id} ? (
-      't.id = ?' => $o{id}
-    ) : (
-      't.state <> 1' => 1
-    ),
+      't.id = ?' => $o{id} ) : (),
+    $o{noid} ? (
+      't.id <> ?' => $o{noid} ) : (),
     $o{name} ? (
-      'lower(t.name) = ?' => lc $o{name} ) : (),
+      't.id = (SELECT id FROM tags LEFT JOIN tags_aliases ON id = tag WHERE lower(name) = ? OR lower(alias) = ? LIMIT 1)' => [ lc $o{name}, lc $o{name} ]) : (),
+    !$o{id} && !$o{name} ? (
+      't.state <> 1' => 1 ) : (),
     $o{search} ? (
-      '(t.name ILIKE ? OR t.alias ILIKE ?)' => [ "%$o{search}%", "%$o{search}%" ] ) : (),
+      't.id IN (SELECT id FROM tags LEFT JOIN tags_aliases ON id = tag WHERE name ILIKE ? OR alias ILIKE ?)' => [ "%$o{search}%", "%$o{search}%" ] ) : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
-    SELECT t.id, t.meta, t.name, t.alias, t.description, t.added, t.state, t.c_vns
+    SELECT t.id, t.meta, t.name, t.description, t.added, t.state, t.c_vns
       FROM tags t
       !W
       ORDER BY !s|,
     \%where, $o{order}
   );
+
+  if(@$r && $o{what} =~ /aliases/) {
+    my %r = map {
+      $_->{aliases} = [];
+      ($_->{id}, $_->{aliases})
+    } @$r;
+
+    push @{$r{$_->{tag}}}, $_->{alias} for (@{$self->dbAll(q|
+      SELECT tag, alias FROM tags_aliases WHERE tag IN(!l)|, [ keys %r ]
+    )});
+  }
 
   if($o{what} =~ /parents\((\d+)\)/) {
     $_->{parents} = $self->dbTagTree($_->{id}, $1, 0) for(@$r);
@@ -61,14 +73,16 @@ sub dbTagTree {
 }
 
 
-# args: tag id, %options->{ columns in the tags table + parents }
+# args: tag id, %options->{ columns in the tags table + parents + aliases }
 sub dbTagEdit {
   my($self, $id, %o) = @_;
 
   $self->dbExec('UPDATE tags !H WHERE id = ?', {
     $o{upddate} ? ('added = ?' => time) : (),
-    map { +"$_ = ?" => $o{$_} } qw|name meta alias description state|
+    map { +"$_ = ?" => $o{$_} } qw|name meta description state|
   }, $id);
+  $self->dbExec('DELETE FROM tags_aliases WHERE tag = ?', $id);
+  $self->dbExec('INSERT INTO tags_aliases (tag, alias) VALUES (?, ?)', $id, $_) for (@{$o{aliases}});
   $self->dbExec('DELETE FROM tags_parents WHERE tag = ?', $id);
   $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
   $self->dbExec('DELETE FROM tags_vn WHERE tag = ?', $id) if $o{meta} || $o{state} == 1;
@@ -79,10 +93,11 @@ sub dbTagEdit {
 # returns the id of the new tag
 sub dbTagAdd {
   my($self, %o) = @_;
-  my $id = $self->dbRow('INSERT INTO tags (name, meta, alias, description) VALUES (!l) RETURNING id',
-    [ map $o{$_}, qw|name meta alias description| ]
+  my $id = $self->dbRow('INSERT INTO tags (name, meta, description, state) VALUES (!l) RETURNING id',
+    [ map $o{$_}, qw|name meta description state| ]
   )->{id};
   $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
+  $self->dbExec('INSERT INTO tags_aliases (tag, alias) VALUES (?, ?)', $id, $_) for (@{$o{aliases}});
   return $id;
 }
 

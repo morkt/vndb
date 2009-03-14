@@ -24,7 +24,7 @@ YAWF::register(
 sub tagpage {
   my($self, $tag) = @_;
 
-  my $t = $self->dbTagGet(id => $tag, what => 'parents(0) childs(2)')->[0];
+  my $t = $self->dbTagGet(id => $tag, what => 'parents(0) childs(2) aliases')->[0];
   return 404 if !$t;
 
   my $f = $self->formValidate(
@@ -71,7 +71,6 @@ sub tagpage {
   div class => 'mainbox';
    a class => 'addnew', href => "/g$tag/add", ($self->authCan('tagmod')?'Create':'Request').' child tag' if $self->authCan('tag');
    h1 $title;
-   h2 class => 'alttitle', 'a.k.a. '.join(', ', split /\n/, $t->{alias}) if $t->{alias};
 
    p;
     my @p = @{$t->{parents}};
@@ -100,6 +99,12 @@ sub tagpage {
    if($t->{description}) {
      p class => 'center';
       lit bb2html $t->{description};
+     end;
+   }
+   if(@{$t->{aliases}}) {
+     p class => 'center';
+      b "Aliases:\n";
+      txt "$_\n" for (@{$t->{aliases}});
      end;
    }
   end;
@@ -231,7 +236,7 @@ sub tagedit {
 
   return $self->htmlDenied if !$self->authCan('tag') || $tag && !$self->authCan('tagmod');
 
-  my $t = $tag && $self->dbTagGet(id => $tag, what => 'parents(1)')->[0];
+  my $t = $tag && $self->dbTagGet(id => $tag, what => 'parents(1) aliases')->[0];
   return 404 if $tag && !$t;
 
   if($self->reqMethod eq 'POST') {
@@ -243,9 +248,17 @@ sub tagedit {
       { name => 'description', required => 0, maxlength => 1024, default => '' },
       { name => 'parents',     required => 0, regex => [ qr/^(\d+)(\s\d+)*$/, 'Parents must be a list of tag IDs' ], default => '' }
     );
+    $frm->{aliases} = [ split /\n/, $frm->{alias} ];
     if(!$frm->{_err}) {
-      my $c = $self->dbTagGet(name => $frm->{name});
-      $frm->{_err} = [ 'tagexists' ] if !$t && @$c || $t && (@$c > 1 || @$c && $c->[0]{id} != $tag);
+      my $c = $self->dbTagGet(name => $frm->{name}, noid => $tag);
+      $frm->{_err} = [[ 'name', 'tagexists', $c->[0] ]] if @$c;
+      for (@{$frm->{aliases}}) {
+        $c = $self->dbTagGet(name => $_, noid => $tag);
+        if(@$c) {
+          $frm->{_err} = [[ 'alias', 'tagexists', $c->[0] ]] if @$c;
+          last;
+        };
+      }
     }
     if(!$frm->{_err}) {
       $frm->{meta} = $frm->{meta} ? 1 : 0;
@@ -263,7 +276,8 @@ sub tagedit {
   }
 
   if($tag) {
-    $frm->{$_} ||= $t->{$_} for (qw|name meta alias description state|);
+    $frm->{$_} ||= $t->{$_} for (qw|name meta description state|);
+    $frm->{alias} ||= join "\n", @{$t->{aliases}};
     $frm->{parents} ||= join ' ', map $_->{tag}, @{$t->{parents}};
   }
 
