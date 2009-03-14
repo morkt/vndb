@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagDel dbTagLinks dbTagLinkEdit dbTagStats dbTagVNs|;
 
 
-# %options->{ id noid name search page results order what }
+# %options->{ id noid name search state page results order what }
 # what: parents childs(n) aliases
 sub dbTagGet {
   my $self = shift;
@@ -21,6 +21,7 @@ sub dbTagGet {
   );
 
   $o{search} =~ s/%//g if $o{search};
+  $o{state} = 1 if !defined $o{state} && !$o{id} && !$o{name};
 
   my %where = (
     $o{id} ? (
@@ -29,8 +30,8 @@ sub dbTagGet {
       't.id <> ?' => $o{noid} ) : (),
     $o{name} ? (
       't.id = (SELECT id FROM tags LEFT JOIN tags_aliases ON id = tag WHERE lower(name) = ? OR lower(alias) = ? LIMIT 1)' => [ lc $o{name}, lc $o{name} ]) : (),
-    !$o{id} && !$o{name} ? (
-      't.state <> 1' => 1 ) : (),
+    defined $o{state} ? (
+      't.state = ?' => $o{state} ) : (),
     $o{search} ? (
       't.id IN (SELECT id FROM tags LEFT JOIN tags_aliases ON id = tag WHERE name ILIKE ? OR alias ILIKE ?)' => [ "%$o{search}%", "%$o{search}%" ] ) : (),
   );

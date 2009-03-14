@@ -14,6 +14,7 @@ YAWF::register(
   qr{g([1-9]\d*)/(add)},    \&tagedit,
   qr{g([1-9]\d*)/del(/o)?}, \&tagdel,
   qr{g/new},                \&tagedit,
+  qr{g/list},               \&taglist,
   qr{v([1-9]\d*)/tagmod},   \&vntagmod,
   qr{u([1-9]\d*)/tags},     \&usertags,
   qr{g},                    \&tagtree,
@@ -316,6 +317,67 @@ sub tagedit {
 }
 
 
+sub taglist {
+  my $self = shift;
+
+  my $f = $self->formValidate(
+    { name => 's', required => 0, default => 'added', enum => ['added', 'name'] },
+    { name => 'o', required => 0, default => 'd', enum => ['a', 'd'] },
+    { name => 'p', required => 0, default => 1, template => 'int' },
+    { name => 't', required => 0, default => 0, enum => [ 0..2 ] },
+  );
+  $f->{t} = 0 if !$self->authCan('tagmod');
+  return 404 if $f->{_err};
+
+  my($t, $np) = $self->dbTagGet(
+    order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
+    page => $f->{p},
+    results => 50,
+    state => $f->{t},
+  );
+
+  my $title = $f->{t} == 0 ? 'Tags awaiting moderation' : $f->{t} == 1 ? 'Deleted tags' : 'All visible tags';
+  $self->htmlHeader(title => $title);
+  div class => 'mainbox';
+   h1 $title;
+   if($self->authCan('tagmod')) {
+     p class => 'browseopts';
+      a href => "/g/list?t=0", $f->{t} == 0 ? (class => 'optselected') : (), 'Awaiting moderation';
+      a href => "/g/list?t=1", $f->{t} == 1 ? (class => 'optselected') : (), 'Deleted';
+      a href => "/g/list?t=2", $f->{t} == 2 ? (class => 'optselected') : (), 'Visible';
+     end;
+   }
+   if(!@$t) {
+     p 'No results found';
+   }
+  end;
+  if(@$t) {
+    $self->htmlBrowse(
+      class    => 'taglist',
+      options  => $f,
+      nextpage => $np,
+      items    => $t,
+      pageurl  => "/g/list?t=$f->{t};s=$f->{s};o=$f->{o}",
+      sorturl  => "/g/list?t=$f->{t}",
+      header   => [
+        [ 'Created', 'added' ],
+        [ 'Tag',     'name' ],
+      ],
+      row => sub {
+        my($s, $n, $l) = @_;
+        Tr $n % 2 ? (class => 'odd') : ();
+         td class => 'tc1', age $l->{added};
+         td class => 'tc2';
+          a href => "/g$l->{id}", $l->{name};
+         end;
+        end;
+      }
+    );
+  }
+  $self->htmlFooter;
+}
+
+
 sub tagdel {
   my($self, $tag, $act) = @_;
   return $self->htmlDenied if !$self->authCan('tagmod');
@@ -371,7 +433,7 @@ sub vntagmod {
   $self->htmlMainTabs('v', $v, 'tagmod');
   div class => 'mainbox';
    h1 "Add/remove tags for $v->{title}";
-   div class => 'warning';
+   div class => 'notice';
     h2 'Tagging';
     ul;
      li "Don't forget to hit the submit button on the bottom of the page after changing anything here!";

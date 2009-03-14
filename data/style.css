@@ -975,6 +975,10 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 .tagvnlist .tc4 { padding: 0; }
 .tagvnlist .tc6 { text-align: right; padding-right: 10px; }
 
+/***** Tag list *****/
+
+.browse.taglist .tc1 { width: 80px }
+
 /***** User tag list *****/
 .browse.tagstats .tc1 { width: 80px }
 .browse.tagstats .tc1_2 { padding-left: 15px }
