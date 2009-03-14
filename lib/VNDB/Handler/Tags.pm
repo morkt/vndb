@@ -69,7 +69,7 @@ sub tagpage {
   }
 
   div class => 'mainbox';
-   a class => 'addnew', href => "/g$tag/add", 'Create child tag' if $self->authCan('tagmod');
+   a class => 'addnew', href => "/g$tag/add", ($self->authCan('tagmod')?'Create':'Request').' child tag' if $self->authCan('tag');
    h1 $title;
    h2 class => 'alttitle', 'a.k.a. '.join(', ', split /\n/, $t->{alias}) if $t->{alias};
 
@@ -221,8 +221,6 @@ sub _vnlist {
 sub tagedit {
   my($self, $tag, $act) = @_;
 
-  return $self->htmlDenied if !$self->authCan('tagmod');
-
   my($frm, $par);
   if($act && $act eq 'add') {
     $par = $self->dbTagGet(id => $tag)->[0];
@@ -231,13 +229,15 @@ sub tagedit {
     $tag = undef;
   }
 
+  return $self->htmlDenied if !$self->authCan('tag') || $tag && !$self->authCan('tagmod');
+
   my $t = $tag && $self->dbTagGet(id => $tag, what => 'parents(1)')->[0];
   return 404 if $tag && !$t;
 
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
       { name => 'name',        required => 1, maxlength => 250 },
-      { name => 'state',       required => 1, enum => [ 0..2 ] },
+      { name => 'state',       required => 0, default => 0,  enum => [ 0..2 ] },
       { name => 'meta',        required => 0, default => 0 },
       { name => 'alias',       required => 0, maxlength => 1024, default => '' },
       { name => 'description', required => 0, maxlength => 1024, default => '' },
@@ -249,6 +249,7 @@ sub tagedit {
     }
     if(!$frm->{_err}) {
       $frm->{meta} = $frm->{meta} ? 1 : 0;
+      $frm->{state} = $frm->{meta} = 0 if !$self->authCan('tagmod');
       $frm->{parents} = [ split / /, $frm->{parents} ];
       if(!$tag) {
         $tag = $self->dbTagAdd(%$frm);
@@ -257,6 +258,7 @@ sub tagedit {
         $self->dbTagEdit($tag, %$frm, upddate => $frm->{state} == 2 && $t->{state} != 2);
       }
       $self->resRedirect("/g$tag", 'post');
+      return;
     }
   }
 
@@ -268,13 +270,28 @@ sub tagedit {
   my $title = $par ? "Add child tag to $par->{name}" : $tag ? "Edit tag: $t->{name}" : 'Add new tag';
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('g', $par || $t, 'edit') if $t || $par;
+
+  if(!$self->authCan('tagmod')) {
+    div class => 'mainbox';
+     h1 'Requesting new tag';
+     div class => 'notice';
+      h2 'Your tag must be approved';
+      p 'Because all tags have to be approved by moderators, it can take a while before it '.
+        'will show up in the tag list or on visual novel pages. You can still vote on tag even if '.
+        'it has not been approved yet, though.';
+     end;
+    end;
+  }
+
   $self->htmlForm({ frm => $frm, action => $par ? "/g$par->{id}/add" : $tag ? "/g$tag/edit" : '/g/new' }, $title => [
     [ input    => short => 'name',     name => 'Primary name' ],
-    [ select   => short => 'state',    name => 'State', options => [
-      [ 0, 'Awaiting moderation' ], [ 1, 'Deleted/hidden' ], [ 2, 'Approved' ] ] ],
-    [ checkbox => short => 'meta',     name => 'This is a meta-tag (only to be used as parent for other tags, not for linking to VN entries)' ],
-    $tag ?
-      [ static => content => 'WARNING: Checking this option or selecting "Deleted" as state will permanently delete all existing VN relations!' ] : (),
+    $self->authCan('tagmod') ? (
+      [ select   => short => 'state',    name => 'State', options => [
+        [ 0, 'Awaiting moderation' ], [ 1, 'Deleted/hidden' ], [ 2, 'Approved' ] ] ],
+      [ checkbox => short => 'meta',     name => 'This is a meta-tag (only to be used as parent for other tags, not for linking to VN entries)' ],
+      $tag ?
+        [ static => content => 'WARNING: Checking this option or selecting "Deleted" as state will permanently delete all existing VN relations!' ] : (),
+    ) : (),
     [ textarea => short => 'alias',    name => "Aliases\n(separated by newlines)", cols => 30, rows => 4 ],
     [ textarea => short => 'description', name => 'Description' ],
     [ static   => content => 'What should the tag be used for? Having a good description helps users choose which tags to link to a VN.' ],
@@ -368,6 +385,11 @@ sub vntagmod {
         td colspan => 5;
          input type => 'text', class => 'text', name => 'addtag', value => '';
          input type => 'button', class => 'submit', value => 'Add tag';
+         br;
+         p;
+          lit 'Check the <a href="/g">tag list</a> to browse all available tags.'.
+              '<br />Can\'t find what you\'re looking for? <a href="/g/new">Request a new tag</a>.';
+         end;
         end;
        end; end;
        tbody;
