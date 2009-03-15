@@ -80,7 +80,7 @@ sub htmlMainTabs {
      end;
    }
 
-   if($type eq 'u' && $self->authCan('usermod') || $type eq 'g' && $self->authCan('tagmod')) {
+   if($type eq 'u' && $self->authCan('usermod')) {
      li $sel eq 'del' ? (class => 'tabselected') : ();
       a href => "/$id/del", 'del';
      end;
