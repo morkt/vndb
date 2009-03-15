@@ -262,7 +262,7 @@ sub history {
    }
    if($type eq 'v') {
      p class => 'browseopts';
-      a !$f->{r} ? (class => 'optselected') : (), href => $u->(r => 0), 'Exclude';
+      a !$f->{r} ? (class => 'optselected') : (), href => $u->(r => 0), 'Exclude edits of releases';
       a $f->{r}  ? (class => 'optselected') : (), href => $u->(r => 1), 'Include edits of releases';
      end;
    }
