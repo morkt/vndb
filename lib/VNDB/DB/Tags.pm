@@ -108,6 +108,8 @@ sub dbTagMerge {
   my($self, $id, @merge) = @_;
   $self->dbExec('UPDATE tags_vn SET tag = ? WHERE tag IN(!l)', $id, \@merge);
   $self->dbExec('UPDATE tags_aliases SET tag = ? WHERE tag IN(!l)', $id, \@merge);
+  $self->dbExec('INSERT INTO tags_aliases (tag, alias) VALUES (?, ?)', $id, $_->{name})
+    for (@{$self->dbAll('SELECT name FROM tags WHERE id IN(!l)', \@merge)});
   $self->dbExec('DELETE FROM tags_parents WHERE tag IN(!l)', \@merge);
   $self->dbExec('DELETE FROM tags WHERE id IN(!l)', \@merge);
 }
