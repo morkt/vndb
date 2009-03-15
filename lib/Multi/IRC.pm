@@ -57,7 +57,7 @@ sub spawn {
 
 sub _start {
   $_[KERNEL]->alias_set('irc');
-  $_[KERNEL]->call(core => register => qr/^ircnotify ([vrptg][0-9]+\.[0-9]+)$/, 'ircnotify');
+  $_[KERNEL]->call(core => register => qr/^ircnotify ([vrptg][0-9]+(?:\.[0-9]+)?)$/, 'ircnotify');
 
   $_[HEAP]{irc}->plugin_add(
     Logger => POE::Component::IRC::Plugin::Logger->new(
