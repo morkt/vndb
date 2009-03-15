@@ -247,10 +247,12 @@ sub tagedit {
       { name => 'meta',        required => 0, default => 0 },
       { name => 'alias',       required => 0, maxlength => 1024, default => '' },
       { name => 'description', required => 0, maxlength => 1024, default => '' },
-      { name => 'parents',     required => 0, default => '' }
+      { name => 'parents',     required => 0, default => '' },
+      { name => 'merge',       required => 0, default => '' },
     );
     my @aliases = split /[\t\s]*\n[\t\s]*/, $frm->{alias};
     my @parents = split /[\t\s]*,[\t\s]*/, $frm->{parents};
+    my @merge = split /[\t\s]*,[\t\s]*/, $frm->{merge};
     if(!$frm->{_err}) {
       my $c = $self->dbTagGet(name => $frm->{name}, noid => $tag);
       push @{$frm->{_err}}, [ 'name', 'tagexists', $c->[0] ] if @$c;
@@ -258,7 +260,7 @@ sub tagedit {
         $c = $self->dbTagGet(name => $_, noid => $tag);
         push @{$frm->{_err}}, [ 'alias', 'tagexists', $c->[0] ] if @$c;
       }
-      for(@parents) {
+      for(@parents, @merge) {
         my $c = $self->dbTagGet(name => $_, noid => $tag);
         push @{$frm->{_err}}, [ 'parents', 'func', [ 0, "Tag '$_' not found." ]] if !@$c;
         $_ = $c->[0]{id};
@@ -280,6 +282,7 @@ sub tagedit {
       } else {
         $self->dbTagEdit($tag, %opts, upddate => $frm->{state} == 2 && $t->{state} != 2);
       }
+      $self->dbTagMerge($tag, @merge) if $self->authCan('tagmod') && @merge;
       $self->resRedirect("/g$tag", 'post');
       return;
     }
@@ -321,6 +324,14 @@ sub tagedit {
     [ static   => content => 'What should the tag be used for? Having a good description helps users choose which tags to link to a VN.' ],
     [ input    => short => 'parents',  name => 'Parent tags' ],
     [ static   => content => "Comma separated list of tag names to be used as parent for this tag." ],
+    $self->authCan('tagmod') ? (
+      [ part   => title => 'Merge tags' ],
+      [ input  => short => 'merge', name => 'Tags to merge' ],
+      [ static => content => 'Comma separated list of tag names to merge into this one.'
+         .' All votes and aliases/names will be moved over to this tag, and the old tags will be deleted.'
+         .' Just leave this field empty if you don\'t intend to do a merge.'
+         .'<br />WARNING: this action cannot be undone!' ],
+    ) : (),
   ]);
   $self->htmlFooter;
 }

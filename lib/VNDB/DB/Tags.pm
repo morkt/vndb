@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagDel dbTagLinks dbTagLinkEdit dbTagStats dbTagVNs|;
+our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagDel dbTagMerge dbTagLinks dbTagLinkEdit dbTagStats dbTagVNs|;
 
 
 # %options->{ id noid name search state page results order what }
@@ -109,6 +109,15 @@ sub dbTagDel {
   $self->dbExec('DELETE FROM tags_parents WHERE tag = ? OR parent = ?', $id, $id);
   $self->dbExec('DELETE FROM tags_vn WHERE tag = ?', $id);
   $self->dbExec('DELETE FROM tags WHERE id = ?', $id);
+}
+
+
+sub dbTagMerge {
+  my($self, $id, @merge) = @_;
+  $self->dbExec('UPDATE tags_vn SET tag = ? WHERE tag IN(!l)', $id, \@merge);
+  $self->dbExec('UPDATE tags_aliases SET tag = ? WHERE tag IN(!l)', $id, \@merge);
+  $self->dbExec('DELETE FROM tags_parents WHERE tag IN(!l)', \@merge);
+  $self->dbExec('DELETE FROM tags WHERE id IN(!l)', \@merge);
 }
 
 
