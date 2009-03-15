@@ -16,7 +16,7 @@ YAWF::register(
   qr{g/list},               \&taglist,
   qr{v([1-9]\d*)/tagmod},   \&vntagmod,
   qr{u([1-9]\d*)/tags},     \&usertags,
-  qr{g},                    \&tagtree,
+  qr{g},                    \&tagindex,
   qr{xml/tags\.xml},        \&tagxml,
 );
 
@@ -575,7 +575,7 @@ sub usertags {
 }
 
 
-sub tagtree {
+sub tagindex {
   my $self = shift;
 
   $self->htmlHeader(title => 'Browse tags');
@@ -591,6 +591,57 @@ sub tagtree {
 
   my $t = $self->dbTagTree(0, 2, 1);
   _childtags($self, {childs => $t}, 1);
+
+  # Recently added
+  div class => 'mainbox threelayout';
+   a class => 'right', href => '/g/list', 'Browse all tags';
+   my $r = $self->dbTagGet(order => 'added DESC', results => 10);
+   h1 'Recently added';
+   ul;
+    for (@$r) {
+      li;
+       txt age $_->{added};
+       txt ' ';
+       a href => "/g$_->{id}", $_->{name};
+      end;
+    }
+   end;
+  end;
+
+  # Popular
+  div class => 'mainbox threelayout';
+   my $r = $self->dbTagGet(order => 'c_vns DESC', meta => 0, results => 10);
+   h1 'Popular tags';
+   ul;
+    for (@$r) {
+      li;
+       a href => "/g$_->{id}", $_->{name};
+       txt " ($_->{c_vns})";
+      end;
+    }
+   end;
+  end;
+
+  # Moderation queue
+  div class => 'mainbox threelayout last';
+   a class => 'right', href => '/g/list?t=0;o=d;s=added', 'Moderation queue';
+   h1 'Awaiting moderation';
+   my $r = $self->dbTagGet(state => 0, order => 'added DESC', results => 10);
+   if(@$r) {
+     ul;
+      for (@$r) {
+        li;
+         txt age $_->{added};
+         txt ' ';
+         a href => "/g$_->{id}", $_->{name};
+        end;
+      }
+     end;
+   } else {
+     p 'Moderation queue empty! yay!';
+   }
+  end;
+  clearfloat;
   $self->htmlFooter;
 }
 

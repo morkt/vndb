@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagMerge dbTagLinks dbTagLinkEdit dbTagStats dbTagVNs|;
 
 
-# %options->{ id noid name search state page results order what }
+# %options->{ id noid name search state meta page results order what }
 # what: parents childs(n) aliases
 sub dbTagGet {
   my $self = shift;
@@ -35,6 +35,8 @@ sub dbTagGet {
       't.state <> 1' => 1 ) : (),
     $o{search} ? (
       't.id IN (SELECT id FROM tags LEFT JOIN tags_aliases ON id = tag WHERE name ILIKE ? OR alias ILIKE ?)' => [ "%$o{search}%", "%$o{search}%" ] ) : (),
+    defined $o{meta} ? (
+      't.meta = ?' => $o{meta}?1:0 ) : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
