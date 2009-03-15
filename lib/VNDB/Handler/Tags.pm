@@ -247,29 +247,38 @@ sub tagedit {
       { name => 'meta',        required => 0, default => 0 },
       { name => 'alias',       required => 0, maxlength => 1024, default => '' },
       { name => 'description', required => 0, maxlength => 1024, default => '' },
-      { name => 'parents',     required => 0, regex => [ qr/^(\d+)(\s\d+)*$/, 'Parents must be a list of tag IDs' ], default => '' }
+      { name => 'parents',     required => 0, default => '' }
     );
-    $frm->{aliases} = [ split /\n/, $frm->{alias} ];
+    my @aliases = split /[\t\s]*\n[\t\s]*/, $frm->{alias};
+    my @parents = split /[\t\s]*,[\t\s]*/, $frm->{parents};
     if(!$frm->{_err}) {
       my $c = $self->dbTagGet(name => $frm->{name}, noid => $tag);
-      $frm->{_err} = [[ 'name', 'tagexists', $c->[0] ]] if @$c;
-      for (@{$frm->{aliases}}) {
+      push @{$frm->{_err}}, [ 'name', 'tagexists', $c->[0] ] if @$c;
+      for (@aliases) {
         $c = $self->dbTagGet(name => $_, noid => $tag);
-        if(@$c) {
-          $frm->{_err} = [[ 'alias', 'tagexists', $c->[0] ]] if @$c;
-          last;
-        };
+        push @{$frm->{_err}}, [ 'alias', 'tagexists', $c->[0] ] if @$c;
+      }
+      for(@parents) {
+        my $c = $self->dbTagGet(name => $_, noid => $tag);
+        push @{$frm->{_err}}, [ 'parents', 'func', [ 0, "Tag '$_' not found." ]] if !@$c;
+        $_ = $c->[0]{id};
       }
     }
     if(!$frm->{_err}) {
-      $frm->{meta} = $frm->{meta} ? 1 : 0;
       $frm->{state} = $frm->{meta} = 0 if !$self->authCan('tagmod');
-      $frm->{parents} = [ split / /, $frm->{parents} ];
+      my %opts = (
+        name => $frm->{name},
+        state => $frm->{state},
+        description => $frm->{description},
+        meta => $frm->{meta}?1:0,
+        aliases => \@aliases,
+        parents => \@parents,
+      );
       if(!$tag) {
-        $tag = $self->dbTagAdd(%$frm);
+        $tag = $self->dbTagAdd(%opts);
         $self->multiCmd("ircnotify g$tag");
       } else {
-        $self->dbTagEdit($tag, %$frm, upddate => $frm->{state} == 2 && $t->{state} != 2);
+        $self->dbTagEdit($tag, %opts, upddate => $frm->{state} == 2 && $t->{state} != 2);
       }
       $self->resRedirect("/g$tag", 'post');
       return;
@@ -279,7 +288,7 @@ sub tagedit {
   if($tag) {
     $frm->{$_} ||= $t->{$_} for (qw|name meta description state|);
     $frm->{alias} ||= join "\n", @{$t->{aliases}};
-    $frm->{parents} ||= join ' ', map $_->{tag}, @{$t->{parents}};
+    $frm->{parents} ||= join ', ', map $_->{name}, @{$t->{parents}};
   }
 
   my $title = $par ? "Add child tag to $par->{name}" : $tag ? "Edit tag: $t->{name}" : 'Add new tag';
@@ -311,7 +320,7 @@ sub tagedit {
     [ textarea => short => 'description', name => 'Description' ],
     [ static   => content => 'What should the tag be used for? Having a good description helps users choose which tags to link to a VN.' ],
     [ input    => short => 'parents',  name => 'Parent tags' ],
-    [ static   => content => "Space separated list of tag IDs to be used as parent for this tag. A proper user interface will come in the future...<br /><br />...probably." ],
+    [ static   => content => "Comma separated list of tag names to be used as parent for this tag." ],
   ]);
   $self->htmlFooter;
 }
