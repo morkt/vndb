@@ -66,6 +66,12 @@ sub usercache {
       FROM changes
       WHERE requester = users.id
       GROUP BY requester
+    ), 0),
+    c_tags = COALESCE(
+      (SELECT COUNT(tag)
+      FROM tags_vn
+      WHERE uid = users.id
+      GROUP BY uid
     ), 0)
   |);
 }

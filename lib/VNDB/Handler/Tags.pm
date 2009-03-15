@@ -610,7 +610,7 @@ sub tagindex {
 
   # Popular
   div class => 'mainbox threelayout';
-   my $r = $self->dbTagGet(order => 'c_vns DESC', meta => 0, results => 10);
+   $r = $self->dbTagGet(order => 'c_vns DESC', meta => 0, results => 10);
    h1 'Popular tags';
    ul;
     for (@$r) {
@@ -626,7 +626,7 @@ sub tagindex {
   div class => 'mainbox threelayout last';
    a class => 'right', href => '/g/list?t=0;o=d;s=added', 'Moderation queue';
    h1 'Awaiting moderation';
-   my $r = $self->dbTagGet(state => 0, order => 'added DESC', results => 10);
+   $r = $self->dbTagGet(state => 0, order => 'added DESC', results => 10);
    if(@$r) {
      ul;
       for (@$r) {
