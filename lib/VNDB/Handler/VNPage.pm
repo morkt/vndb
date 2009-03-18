@@ -120,21 +120,35 @@ sub page {
      }
 
      _producers($self, \$i, $r);
-     _categories($self, \$i, $v) if @{$v->{categories}};
+     #_categories($self, \$i, $v) if @{$v->{categories}};
      _relations($self, \$i, $v) if @{$v->{relations}};
      _anime($self, \$i, $v) if @{$v->{anime}};
      _useroptions($self, \$i, $v) if $self->authInfo->{id};
 
+     Tr;
+      td class => 'vndesc', colspan => 2;
+       h2 'Description';
+       p;
+        lit bb2html $v->{desc};
+       end;
+      end;
+     end;
+
     end;
    end;
+   clearfloat;
 
    # description
-   div class => 'vndescription';
-    h2 'Description';
-    p;
-     lit bb2html $v->{desc};
-    end;
-   end;
+   my $t = $self->dbTagStats(vid => $v->{id}, order => 'avg(tv.vote) DESC', minrating => 0);
+   if(@$t) {
+     div class => 'vntags';
+      for (@$t) {
+        a href => "/g$_->{id}", style => sprintf('font-size: %dpx', $_->{rating}*3.5+6), $_->{name};
+        b class => 'grayedout', style => 'font-size: 8px', sprintf ' %.1f', $_->{rating};
+        lit '&nbsp;&nbsp;&nbsp; ';
+      }
+     end;
+   }
   end;
 
   _releases($self, $v, $r);

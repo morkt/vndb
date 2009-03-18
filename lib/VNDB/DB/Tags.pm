@@ -140,7 +140,7 @@ sub dbTagLinkEdit {
 
 
 # Fetch all tags related to a VN or User
-# Argument: %options->{ uid vid results what page order }
+# Argument: %options->{ uid vid minrating results what page order }
 # what: vns
 sub dbTagStats {
   my($self, %o) = @_;
@@ -161,8 +161,10 @@ sub dbTagStats {
       JOIN tags_vn tv ON tv.tag = t.id
       !W
       GROUP BY t.id, t.name
+      !s
       ORDER BY !s|,
-    \%where, $o{order}
+    \%where, defined $o{minrating} ? "HAVING avg(tv.vote) > $o{minrating}" : '',
+    $o{order}
   );
 
   if(@$r && $o{what} =~ /vns/ && $o{uid}) {

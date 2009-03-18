@@ -536,7 +536,7 @@ div.discussions td.tc4 { width: 170px; }
 
 div.vndetails {
   margin: 0 auto;
-  width: 700px;
+  width: 800px;
 }
 div.vnimg {
   float: left;
@@ -554,13 +554,19 @@ div.vnimg p {
   padding: 0px;
   margin: 0;
 }
+.vndesc h2 {
+  margin: 5px 0 0 0!important;
+}
+.vndesc p {
+  padding: 0 0 0 5px;
+}
 img#nsfw_hid {
   display: none;
   cursor: pointer;
 }
 div.vndetails table {
   float: left;
-  width: 430px;
+  width: 530px;
 }
 div.vndetails table td.key {
   width: 80px;
@@ -572,11 +578,12 @@ div.vndetails table dt {
 div.vndetails table dd {
   margin-left: 90px;
 }
+/*
 .catlvl_0, .catlvl_1, .catlvl_2, .catlvl_3 { font-style: normal; }
 .catlvl_1 { color: $catlevel1$!important }
 .catlvl_2 { color: $catlevel2$!important }
 .catlvl_3 { color: $catlevel3$!important }
-
+*/
 div.vndetails td.relations dt {
   float: none;
   font-style: normal;
@@ -589,10 +596,14 @@ div.vndetails td.anime b {
   font-weight: normal;
   padding-right: 4px;
 }
-div.vndescription {
+div.vntags {
   clear: left;
+  margin: 15px 30px 0 30px;
+  border-top: 1px solid $border$;
   padding: 5px 0 0 0;
+  text-align: center;
 }
+/*
 div.vndescription h2 {
   margin: 0 30px!important;
   border-top: 1px solid $border$;
@@ -601,7 +612,7 @@ div.vndescription h2 {
 }
 div.vndescription p {
   margin: 0 100px!important;
-}
+}*/
 
 .releases table, #screenshots table {
   width: 100%;
