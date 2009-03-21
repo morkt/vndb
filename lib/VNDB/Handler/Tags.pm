@@ -31,9 +31,11 @@ sub tagpage {
     { name => 's', required => 0, default => 'score', enum => [ qw|score title rel pop| ] },
     { name => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
-    { name => 'm', required => 0, default => 1, enum => [qw|0 1 2|] },
+    { name => 'm', required => 0, default => -1, enum => [qw|0 1 2|] },
   );
   return 404 if $f->{_err};
+  my $tagspoil = $self->reqCookie('tagspoil');
+  $f->{m} = defined $tagspoil ? $tagspoil : 1 if $f->{m} == -1;
 
   my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbTagVNs(
     tag => $tag,
@@ -171,9 +173,9 @@ sub _vnlist {
   div class => 'mainbox';
    h1 'Visual novels';
    p class => 'browseopts';
-    a href => "/g$t->{id}?m=0", $f->{m} == 0 ? (class => 'optselected') : (), 'Hide spoilers';
-    a href => "/g$t->{id}?m=1", $f->{m} == 1 ? (class => 'optselected') : (), 'Show minor spoilers';
-    a href => "/g$t->{id}?m=2", $f->{m} == 2 ? (class => 'optselected') : (), 'Show major spoilers';
+    a href => "/g$t->{id}?m=0", $f->{m} == 0 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 0);return true;", 'Hide spoilers';
+    a href => "/g$t->{id}?m=1", $f->{m} == 1 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 1);return true;", 'Show minor spoilers';
+    a href => "/g$t->{id}?m=2", $f->{m} == 2 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 2);return true;", 'Show major spoilers';
    end;
    if(!@$list) {
      p "\n\nThis tag has not been linked to any visual novels yet, or they were hidden because of the spoiler settings.";

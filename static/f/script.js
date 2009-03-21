@@ -33,6 +33,24 @@ function ajax(url, func) {
   http_request.send(null);
 }
 
+function setCookie(n,v) {
+  var date = new Date();
+  date.setTime(date.getTime()+(365*24*60*60*1000));
+  document.cookie = n+'='+v+'; expires='+date.toGMTString()+'; path=/';
+}
+function readCookie(n) {
+  var l = document.cookie.split(';');
+  for(var i=0; i<l.length; i++) {
+    var c = l[i];
+    while(c.charAt(0) == ' ')
+      c = c.substring(1,c.length);
+    if(c.indexOf(n+'=') == 0)
+      return c.substring(n.length+1,c.length);
+  }
+  return null;
+}
+
+
 
 
 
@@ -328,6 +346,28 @@ function jtSel(which, nolink) {
 
 
 
+/* Tag VN spoilers */
+function tvsSet(lvl) {
+  var l = x('tagops').getElementsByTagName('a');
+  for(var i=0;i<l.length;i++) {
+    if(i == lvl && l[i].className.indexOf('tsel') < 0)
+      l[i].className += ' tsel';
+    else if(i != lvl && l[i].className.indexOf('tsel') >= 0)
+      l[i].className = l[i].className.replace(/tsel/, '');
+  }
+  l = x('vntags').getElementsByTagName('span');
+  for(i=0;i<l.length;i++) {
+    if(lvl < l[i].className.substr(6, 1) && l[i].className.indexOf('hidden') < 0)
+      l[i].className += ' hidden';
+    else if(lvl >= l[i].className.substr(6, 1) && l[i].className.indexOf('hidden') >= 0)
+      l[i].className = l[i].className.replace(/hidden/, '');
+  }
+  return false;
+}
+
+
+
+
 /*  O N L O A D   E V E N T  */
 
 DOMLoad(function() {
@@ -482,25 +522,15 @@ DOMLoad(function() {
     l = x('tagops').getElementsByTagName('a');
     for(i=0;i<l.length;i++)
       l[i].onclick = function() {
-        l = x('tagops').getElementsByTagName('a');
-        var lvl;
-        for(var i=0;i<l.length;i++) {
-          if(l[i] == this)
-            lvl = i;
-          if(l[i] == this && l[i].className.indexOf('tsel') < 0)
-            l[i].className += ' tsel';
-          else if(l[i] != this && l[i].className.indexOf('tsel') >= 0)
-            l[i].className = l[i].className.replace(/tsel/, '');
-        }
-        l = x('vntags').getElementsByTagName('span');
-        for(i=0;i<l.length;i++) {
-          if(lvl < l[i].className.substr(6, 1) && l[i].className.indexOf('hidden') < 0)
-            l[i].className += ' hidden';
-          else if(lvl >= l[i].className.substr(6, 1) && l[i].className.indexOf('hidden') >= 0)
-            l[i].className = l[i].className.replace(/hidden/, '');
-        }
+        var l = x('tagops').getElementsByTagName('a');
+        for(var i=0;i<l.length;i++)
+          if(l[i] == this) {
+            tvsSet(i);
+            setCookie('tagspoil', i);
+          }
         return false;
       };
+    tvsSet(readCookie('tagspoil')||0);
   }
 
   // Javascript tabs
