@@ -120,7 +120,7 @@ sub page {
      }
 
      _producers($self, \$i, $r);
-     #_categories($self, \$i, $v) if @{$v->{categories}};
+     _categories($self, \$i, $v) if @{$v->{categories}};
      _relations($self, \$i, $v) if @{$v->{relations}};
      _anime($self, \$i, $v) if @{$v->{anime}};
      _useroptions($self, \$i, $v) if $self->authInfo->{id};
@@ -272,7 +272,8 @@ sub _categories {
   Tr ++$$i % 2 ? (class => 'odd') : ();
    td 'Categories';
    td;
-    dl;
+    dl id => 'vncats', style => 'display: none';
+     dt 'Note:'; dd "The category system is outdated, please use tags instead.\n\n";
      for (@cat) {
        dt shift(@$_).':';
        dd;
@@ -280,6 +281,7 @@ sub _categories {
        end;
      }
     end;
+    a href => '#', onclick => "document.getElementById('vncats').style.display='';this.style.display='none';return false", 'Show categories';
    end;
   end;
 }

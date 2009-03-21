@@ -27,7 +27,6 @@ sub edit {
   my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn img_nsfw|),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
-    categories => join(',', map $_->[0].$_->[1], sort { $a->[0] cmp $b->[0] } @{$v->{categories}}),
     relations => join('|||', map $_->{relation}.','.$_->{id}.','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
     screenshots => join(' ', map sprintf('%d,%d,%d', $_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$v->{screenshots}}),
   );
@@ -45,7 +44,6 @@ sub edit {
       { name => 'l_renai',     required => 0, default => '', maxlength => 100 },
       { name => 'l_vnn',       required => 0, default => 0,  template => 'int' },
       { name => 'anime',       required => 0, default => '' },
-      { name => 'categories',  required => 0, default => '', maxlength => 1000 },
       { name => 'img_nsfw',    required => 0, default => 0 },
       { name => 'relations',   required => 0, default => '', maxlength => 5000 },
       { name => 'screenshots', required => 0, default => '', maxlength => 1000 },
@@ -58,7 +56,6 @@ sub edit {
     if(!$frm->{_err}) {
       # parse and re-sort fields that have multiple representations of the same information
       my $anime = [ grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} ];
-      my $categories = [ map { [ substr($_,0,3), substr($_,3,1) ] } split /,/, $frm->{categories} ];
       my $relations = [ map { /^([0-9]+),([0-9]+),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{relations} ];
       my $screenshots = [ map /^[0-9]+,[01],[0-9]+$/ ? [split /,/] : (), split / +/, $frm->{screenshots} ];
 
@@ -75,7 +72,7 @@ sub edit {
       my %args = (
         (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum img_nsfw|),
         anime => $anime,
-        categories => $categories,
+        categories => $v->{categories},
         relations => $relations,
         image => $image,
         screenshots => $screenshots,
@@ -179,31 +176,6 @@ sub _form {
         and <a href="http://anidb.net/a3348">Fate/stay night</a> as related anime.<br />
         <b>Note:</b> It can take a few minutes for the anime titles to appear on the VN page.
       |],
-  ],
-
-  'Categories' => [
-    [ hidden   => short => 'categories' ],
-    [ static   => nolabel => 1, content => sub {
-      lit 'Please read the <a href="/d1">category descriptions</a> before modifying categories!<br /><br />';
-      ul;
-       for my $c (qw| e g t p h l s |) {
-         $c !~ /[thl]/ ? li : br;
-          txt $self->{categories}{$c}[0];
-          a href => "/d1#$self->{categories}{$c}[2]", class => 'help', '?';
-          ul;
-           for (sort keys %{$self->{categories}{$c}[1]}) {
-             li;
-              a href => "#", id => "cat_$c$_";
-               b id => "b_$c$_", '-';
-               txt ' '.$self->{categories}{$c}[1]{$_};
-              end;
-             end;
-           }
-          end;
-         end if $c !~ /[gph]/;
-       }
-      end;
-    }],
   ],
 
   'Image' => [

@@ -578,12 +578,12 @@ div.vndetails table dt {
 div.vndetails table dd {
   margin-left: 90px;
 }
-/*
+
 .catlvl_0, .catlvl_1, .catlvl_2, .catlvl_3 { font-style: normal; }
 .catlvl_1 { color: $catlevel1$!important }
 .catlvl_2 { color: $catlevel2$!important }
 .catlvl_3 { color: $catlevel3$!important }
-*/
+
 div.vndetails td.relations dt {
   float: none;
   font-style: normal;

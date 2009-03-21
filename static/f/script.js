@@ -516,8 +516,6 @@ DOMLoad(function() {
     }
 
   // forms.js
-  if(x('categories'))
-    catLoad();
   if(x('relations'))
     relLoad();
   if(x('jt_box_screenshots'))
