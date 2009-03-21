@@ -195,3 +195,8 @@ $$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER users_tags_update AFTER INSERT OR DELETE ON tags_vn FOR EACH ROW EXECUTE PROCEDURE update_users_cache();
 
+
+
+-- rename threads tags to boards
+ALTER TABLE threads_tags RENAME TO threads_boards;
+

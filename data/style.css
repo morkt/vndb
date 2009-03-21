@@ -509,11 +509,11 @@ div.mainbox.discussions td.tc4 {
 div.mainbox.discussions a.locked {
   text-decoration: line-through;
 }
-div.mainbox.discussions td.tags {
+div.mainbox.discussions td.boards {
   padding-top: 0;
   padding-left: 60px;
 }
-div.mainbox.discussions td.tags a {
+div.mainbox.discussions td.boards a {
   color: $grayedout$!important
 }
 div.discussions td.tc2 { width: 50px;  }

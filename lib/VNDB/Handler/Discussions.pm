@@ -11,7 +11,7 @@ use VNDB::Func;
 YAWF::register(
   qr{t([1-9]\d*)(?:/([1-9]\d*))?}    => \&thread,
   qr{t([1-9]\d*)\.([1-9]\d*)}        => \&redirect,
-  qr{t/(db|an|[vpu])([1-9]\d*)?}     => \&tagbrowse,
+  qr{t/(db|an|[vpu])([1-9]\d*)?}     => \&board,
   qr{t([1-9]\d*)/reply}              => \&edit,
   qr{t([1-9]\d*)\.([1-9]\d*)/edit}   => \&edit,
   qr{t/(db|an|[vpu])([1-9]\d*)?/new} => \&edit,
@@ -23,7 +23,7 @@ sub thread {
   my($self, $tid, $page) = @_;
   $page ||= 1;
 
-  my $t = $self->dbThreadGet(id => $tid, what => 'tagtitles')->[0];
+  my $t = $self->dbThreadGet(id => $tid, what => 'boardtitles')->[0];
   return 404 if !$t->{id} || $t->{hidden} && !$self->authCan('boardmod');
 
   my $p = $self->dbPostGet(tid => $tid, results => 25, page => $page);
@@ -35,9 +35,9 @@ sub thread {
    h1 $t->{title};
    h2 'Posted in';
    ul;
-    for (sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$t->{tags}}) {
+    for (sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$t->{boards}}) {
       li;
-       a href => "/t/$_->{type}", $self->{discussion_tags}{$_->{type}};
+       a href => "/t/$_->{type}", $self->{discussion_boards}{$_->{type}};
        if($_->{iid}) {
          txt ' > ';
          a style => 'font-weight: bold', href => "/t/$_->{type}$_->{iid}", "$_->{type}$_->{iid}";
@@ -129,17 +129,17 @@ sub edit {
   my($self, $tid, $num) = @_;
   $num ||= 0;
 
-  # in case we start a new thread, parse tag
-  my $tag = '';
+  # in case we start a new thread, parse boards
+  my $board = '';
   if($tid !~ /^\d+$/) {
     return 404 if $tid =~ /(db|an)/ && $num || $tid =~ /[vpu]/ && !$num;
-    $tag = $tid.($num||'');
+    $board = $tid.($num||'');
     $tid = 0;
     $num = 0;
   }
 
   # get thread and post, if any
-  my $t = $tid && $self->dbThreadGet(id => $tid, what => 'tags')->[0];
+  my $t = $tid && $self->dbThreadGet(id => $tid, what => 'boards')->[0];
   return 404 if $tid && !$t->{id};
 
   my $p = $num && $self->dbPostGet(tid => $tid, num => $num)->[0];
@@ -156,7 +156,7 @@ sub edit {
     $frm = $self->formValidate(
       !$tid || $num == 1 ? (
         { name => 'title', maxlength => 50 },
-        { name => 'tags', maxlength => 50 },
+        { name => 'boards', maxlength => 50 },
       ) : (),
       $self->authCan('boardmod') ? (
         { name => 'locked', required => 0 },
@@ -166,14 +166,14 @@ sub edit {
       { name => 'msg', maxlenght => 5000 },
     );
 
-    # parse and validate the tags
-    my @tags;
-    if(!$frm->{_err} && $frm->{tags}) {
-      for (split /[ ,]/, $frm->{tags}) {
+    # parse and validate the boards
+    my @boards;
+    if(!$frm->{_err} && $frm->{boards}) {
+      for (split /[ ,]/, $frm->{boards}) {
         my($ty, $id) = ($1, $2) if /^([a-z]{1,2})([0-9]*)$/;
-        push @tags, [ $ty, $id ];
-        push @{$frm->{_err}}, [ 'tags', 'wrongtag', $_ ] if
-             !$ty || !$self->{discussion_tags}{$ty}
+        push @boards, [ $ty, $id ];
+        push @{$frm->{_err}}, [ 'boards', 'wrongboard', $_ ] if
+             !$ty || !$self->{discussion_boards}{$ty}
           || $ty eq 'an' && ($id || !$self->authCan('boardmod'))
           || $ty eq 'db' && $id
           || $ty eq 'v'  && (!$id || !$self->dbVNGet(id => $id)->[0]{id})
@@ -189,7 +189,7 @@ sub edit {
       if(!$tid || $num == 1) {
         my %thread = (
           title => $frm->{title},
-          tags => \@tags,
+          boards => \@boards,
           hidden => $frm->{hidden},
           locked => $frm->{locked},
         );
@@ -217,27 +217,27 @@ sub edit {
     $frm->{msg} ||= $p->{msg};
     $frm->{hidden} = $p->{hidden} if $num != 1 && !exists $frm->{hidden};
     if($num == 1) {
-      $frm->{tags} ||= join ' ', sort map $_->[1]?$_->[0].$_->[1]:$_->[0], @{$t->{tags}};
+      $frm->{boards} ||= join ' ', sort map $_->[1]?$_->[0].$_->[1]:$_->[0], @{$t->{boards}};
       $frm->{title} ||= $t->{title};
       $frm->{locked}  = $t->{locked} if !exists $frm->{locked};
       $frm->{hidden}  = $t->{hidden} if !exists $frm->{hidden};
     }
   }
-  $frm->{tags} ||= $tag;
+  $frm->{boards} ||= $board;
   $frm->{nolastmod} = 1 if $num && $self->authCan('boardmod') && !exists $frm->{nolastmod};
 
   # generate html
   my $title = !$tid ? 'Start new thread' :
               !$num ? 'Reply to '.$t->{title} :
                       'Edit post';
-  my $url = !$tid ? "/t/$tag/new" : !$num ? "/t$tid/reply" : "/t$tid.$num/edit";
+  my $url = !$tid ? "/t/$board/new" : !$num ? "/t$tid/reply" : "/t$tid.$num/edit";
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlForm({ frm => $frm, action => $url }, $title => [
     [ static => label => 'Username', content => userstr($self->authInfo->{id}, $self->authInfo->{username}) ],
     !$tid || $num == 1 ? (
       [ input  => short => 'title', name => 'Thread title' ],
-      [ input  => short => 'tags',  name => 'Tags' ],
-      [ static => content => 'Read <a href="/d9.2">d9.2</a> for information about how to use tags' ],
+      [ input  => short => 'boards',  name => 'Board(s)' ],
+      [ static => content => 'Read <a href="/d9.2">d9.2</a> for information about how to specify boards' ],
       $self->authCan('boardmod') ? (
         [ check => name => 'Locked', short => 'locked' ],
       ) : (),
@@ -257,7 +257,7 @@ sub edit {
 }
 
 
-sub tagbrowse {
+sub board {
   my($self, $type, $iid) = @_;
   $iid ||= '';
   return 404 if $type =~ /(db|an)/ && $iid;
@@ -273,14 +273,14 @@ sub tagbrowse {
                    $self->dbVNGet(id => $iid)->[0];
   return 404 if $iid && !$obj;
   my $ititle = $obj && ($obj->{title}||$obj->{name}||$obj->{username});
-  my $title = !$obj ? $self->{discussion_tags}{$type} : 'Related discussions for '.$ititle;
+  my $title = !$obj ? $self->{discussion_boards}{$type} : 'Related discussions for '.$ititle;
 
   my($list, $np) = $self->dbThreadGet(
     type => $type,
     $iid ? (iid => $iid) : (),
     results => 50,
     page => $f->{p},
-    what => 'firstpost lastpost tagtitles',
+    what => 'firstpost lastpost boardtitles',
     order => $type eq 'an' ? 't.id DESC' : 'tpl.date DESC',
   );
 
@@ -292,7 +292,7 @@ sub tagbrowse {
    p;
     a href => '/t', 'Discussion board';
     txt ' > ';
-    a href => "/t/$type", $self->{discussion_tags}{$type};
+    a href => "/t/$type", $self->{discussion_boards}{$type};
     if($iid) {
       txt ' > ';
       a style => 'font-weight: bold', href => "/t/$type$iid", "$type$iid";
@@ -324,7 +324,7 @@ sub index {
   div class => 'mainbox';
    h1 'Discussion board index';
    p class => 'browseopts';
-    a href => '/t/'.$_, $self->{discussion_tags}{$_}
+    a href => '/t/'.$_, $self->{discussion_boards}{$_}
       for (qw|an db v p u|);
    end;
   end;
@@ -334,11 +334,11 @@ sub index {
       type => $_,
       results => 5,
       page => 1,
-      what => 'firstpost lastpost tagtitles',
+      what => 'firstpost lastpost boardtitles',
       order => 'tpl.date DESC',
     );
     h1 class => 'boxtitle';
-     a href => "/t/$_", $self->{discussion_tags}{$_};
+     a href => "/t/$_", $self->{discussion_boards}{$_};
     end;
     _threadlist($self, $list, {p=>1}, 0, "/t");
   }
@@ -377,17 +377,17 @@ sub _threadlist {
        end;
       end;
       Tr $n % 2 ? ( class => 'odd' ) : ();
-       td colspan => 4, class => 'tags';
+       td colspan => 4, class => 'boards';
         txt ' > ';
         my $i = 1;
-        for(sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$o->{tags}}) {
+        for(sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$o->{boards}}) {
           last if $i++ > 5;
           txt ', ' if $i > 2;
           a href => "/t/$_->{type}".($_->{iid}||''),
-            title => $_->{original}||$self->{discussion_tags}{$_->{type}},
-            shorten $_->{title}||$self->{discussion_tags}{$_->{type}}, 30;
+            title => $_->{original}||$self->{discussion_boards}{$_->{type}},
+            shorten $_->{title}||$self->{discussion_boards}{$_->{type}}, 30;
         }
-        txt ', ...' if @{$o->{tags}} > 5;
+        txt ', ...' if @{$o->{boards}} > 5;
        end;
       end;
     }
