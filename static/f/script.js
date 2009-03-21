@@ -477,6 +477,32 @@ DOMLoad(function() {
       break;
     }
 
+  // VN tag spoiler options
+  if(x('tagops')) {
+    l = x('tagops').getElementsByTagName('a');
+    for(i=0;i<l.length;i++)
+      l[i].onclick = function() {
+        l = x('tagops').getElementsByTagName('a');
+        var lvl;
+        for(var i=0;i<l.length;i++) {
+          if(l[i] == this)
+            lvl = i;
+          if(l[i] == this && l[i].className.indexOf('tsel') < 0)
+            l[i].className += ' tsel';
+          else if(l[i] != this && l[i].className.indexOf('tsel') >= 0)
+            l[i].className = l[i].className.replace(/tsel/, '');
+        }
+        l = x('vntags').getElementsByTagName('span');
+        for(i=0;i<l.length;i++) {
+          if(lvl < l[i].className.substr(6, 1) && l[i].className.indexOf('hidden') < 0)
+            l[i].className += ' hidden';
+          else if(lvl >= l[i].className.substr(6, 1) && l[i].className.indexOf('hidden') >= 0)
+            l[i].className = l[i].className.replace(/hidden/, '');
+        }
+        return false;
+      };
+  }
+
   // Javascript tabs
   if(x('jt_select')) 
     jtInit();

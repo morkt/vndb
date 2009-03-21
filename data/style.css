@@ -596,23 +596,23 @@ div.vndetails td.anime b {
   font-weight: normal;
   padding-right: 4px;
 }
-div.vntags {
-  clear: left;
+div#vntags {
   margin: 15px 30px 0 30px;
   border-top: 1px solid $border$;
-  padding: 5px 0 0 0;
+  padding: 1px 5% 0 5%;
   text-align: center;
 }
-/*
-div.vndescription h2 {
-  margin: 0 30px!important;
-  border-top: 1px solid $border$;
-  padding: 3px 70px;
-  font-weight: bold!important;
+#vntags span { white-space: nowrap; margin-left: 15px; }
+#vntags span.hidden { display: none }
+#vntags b { color: $grayedout$; font-weight: normal; font-size: 8px }
+#tagops {
+  float: right;
+  text-align: right;
+  width: auto;
+  margin: 0 30px;
 }
-div.vndescription p {
-  margin: 0 100px!important;
-}*/
+#tagops a { margin: 0 0 0 10px;  border: 0; outline: none }
+#maincontent #tagops a.tsel { color: $maintext$; }
 
 .releases table, #screenshots table {
   width: 100%;

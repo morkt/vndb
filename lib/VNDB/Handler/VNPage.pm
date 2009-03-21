@@ -138,14 +138,20 @@ sub page {
    end;
    clearfloat;
 
-   # description
+   # tags
    my $t = $self->dbTagStats(vid => $v->{id}, order => 'avg(tv.vote) DESC', minrating => 0);
    if(@$t) {
-     div class => 'vntags';
+     div id => 'tagops';
+      a href => '#', 'hide spoilers';
+      a href => '#', class => 'tsel', 'show minor spoilers';
+      a href => '#', 'all tags';
+     end;
+     div id => 'vntags';
       for (@$t) {
-        a href => "/g$_->{id}", style => sprintf('font-size: %dpx', $_->{rating}*3.5+6), $_->{name};
-        b class => 'grayedout', style => 'font-size: 8px', sprintf ' %.1f', $_->{rating};
-        lit '&nbsp;&nbsp;&nbsp; ';
+        span class => sprintf 'tagspl%.0f %s', $_->{spoiler}, $_->{spoiler} > 1 ? 'hidden' : '';
+         a href => "/g$_->{id}", style => sprintf('font-size: %dpx', $_->{rating}*3.5+6), $_->{name};
+         b class => 'grayedout', sprintf ' %.1f', $_->{rating};
+        end;
       }
      end;
    }
