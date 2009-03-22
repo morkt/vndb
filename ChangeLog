@@ -8,6 +8,9 @@
 	- Aliases field to producers
 	- Various small improvements to the BBcode
 	- Various bugfixes
+	- Experimental tagging system
+	- Renamed thread tags to boards
+	- Tiny skin fixes
 
 2.2 - 2009-01-16
 	- Additional custom CSS field to user profile
