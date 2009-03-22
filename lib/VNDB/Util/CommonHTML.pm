@@ -17,18 +17,22 @@ our @EXPORT = qw|
 
 # generates the "main tabs". These are the commonly used tabs for
 # 'objects', i.e. VN/producer/release entries and users
-# Arguments: u/v/r/p, object, currently selected item (empty=main)
+# Arguments: u/v/r/p/g, object, currently selected item (empty=main)
 sub htmlMainTabs {
   my($self, $type, $obj, $sel) = @_;
   $sel ||= '';
   my $id = $type.$obj->{id};
 
-  ul class => 'maintabs';
-   li $sel eq 'hist' ? (class => 'tabselected') : ();
-    a href => "/$id/hist", 'history';
-   end;
+  return if $type eq 'g' && !$self->authCan('tagmod');
 
-   if($type ne 'r') {
+  ul class => 'maintabs';
+   if($type =~ /[uvrp]/) {
+     li $sel eq 'hist' ? (class => 'tabselected') : ();
+      a href => "/$id/hist", 'history';
+     end;
+   }
+
+   if($type =~ /[uvp]/) {
      my $cnt = $self->dbThreadCount($type, $obj->{id});
      li $sel eq 'disc' ? (class => 'tabselected') : ();
       a href => "/t/$id", "discussions ($cnt)";
@@ -43,22 +47,34 @@ sub htmlMainTabs {
      li $sel eq 'list' ? (class => 'tabselected') : ();
       a href => "/$id/list", 'list';
      end;
+
+     li $sel eq 'tags' ? (class => 'tabselected') : ();
+      a href => "/$id/tags", 'tags';
+     end;
    }
 
-   if($type eq 'u' && ($self->authInfo->{id} && $obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))
-    || $type ne 'u' && $self->authCan('edit') && (!$obj->{locked} || $self->authCan('lock')) && (!$obj->{hidden} || $self->authCan('del'))) {
+   if($type eq 'v' && $self->authCan('tag')) {
+     li $sel eq 'tagmod' ? (class => 'tabselected') : ();
+      a href => "/$id/tagmod", 'modify tags';
+     end;
+   }
+
+   if(   $type eq 'u'     && ($self->authInfo->{id} && $obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))
+      || $type =~ /[vrp]/ && $self->authCan('edit') && (!$obj->{locked} || $self->authCan('lock')) && (!$obj->{hidden} || $self->authCan('del'))
+      || $type eq 'g'     && $self->authCan('tagmod')
+   ) {
      li $sel eq 'edit' ? (class => 'tabselected') : ();
       a href => "/$id/edit", 'edit';
      end;
    }
 
-   if($type ne 'u' && $self->authCan('del')) {
+   if($type =~ /[vrp]/ && $self->authCan('del')) {
      li;
       a href => "/$id/hide", $obj->{hidden} ? 'unhide' : 'hide';
      end;
    }
 
-   if($type ne 'u' && $self->authCan('lock')) {
+   if($type =~ /[vrp]/ && $self->authCan('lock')) {
      li;
       a href => "/$id/lock", $obj->{locked} ? 'unlock' : 'lock';
      end;

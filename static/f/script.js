@@ -33,6 +33,24 @@ function ajax(url, func) {
   http_request.send(null);
 }
 
+function setCookie(n,v) {
+  var date = new Date();
+  date.setTime(date.getTime()+(365*24*60*60*1000));
+  document.cookie = n+'='+v+'; expires='+date.toGMTString()+'; path=/';
+}
+function readCookie(n) {
+  var l = document.cookie.split(';');
+  for(var i=0; i<l.length; i++) {
+    var c = l[i];
+    while(c.charAt(0) == ' ')
+      c = c.substring(1,c.length);
+    if(c.indexOf(n+'=') == 0)
+      return c.substring(n.length+1,c.length);
+  }
+  return null;
+}
+
+
 
 
 
@@ -328,6 +346,28 @@ function jtSel(which, nolink) {
 
 
 
+/* Tag VN spoilers */
+function tvsSet(lvl) {
+  var l = x('tagops').getElementsByTagName('a');
+  for(var i=0;i<l.length;i++) {
+    if(i == lvl && l[i].className.indexOf('tsel') < 0)
+      l[i].className += ' tsel';
+    else if(i != lvl && l[i].className.indexOf('tsel') >= 0)
+      l[i].className = l[i].className.replace(/tsel/, '');
+  }
+  l = x('vntags').getElementsByTagName('span');
+  for(i=0;i<l.length;i++) {
+    if(lvl < l[i].className.substr(6, 1) && l[i].className.indexOf('hidden') < 0)
+      l[i].className += ' hidden';
+    else if(lvl >= l[i].className.substr(6, 1) && l[i].className.indexOf('hidden') >= 0)
+      l[i].className = l[i].className.replace(/hidden/, '');
+  }
+  return false;
+}
+
+
+
+
 /*  O N L O A D   E V E N T  */
 
 DOMLoad(function() {
@@ -394,7 +434,9 @@ DOMLoad(function() {
       if(this.selectedIndex != 0)
         location.href = location.href.replace(/\.[0-9]+/, '')+'/list?e='+this.options[this.selectedIndex].value;
     };
+
   // User VN list
+  // (might want to make this a bit more generic, as it's now also used for the user tag list)
   i = x('relhidall');
   if(i) {
     var l = document.getElementsByTagName('tr');
@@ -475,6 +517,22 @@ DOMLoad(function() {
       break;
     }
 
+  // VN tag spoiler options
+  if(x('tagops')) {
+    l = x('tagops').getElementsByTagName('a');
+    for(i=0;i<l.length;i++)
+      l[i].onclick = function() {
+        var l = x('tagops').getElementsByTagName('a');
+        for(var i=0;i<l.length;i++)
+          if(l[i] == this) {
+            tvsSet(i);
+            setCookie('tagspoil', i);
+          }
+        return false;
+      };
+    tvsSet(readCookie('tagspoil')||0);
+  }
+
   // Javascript tabs
   if(x('jt_select')) 
     jtInit();
@@ -496,8 +554,6 @@ DOMLoad(function() {
   }
 
   // forms.js
-  if(x('categories'))
-    catLoad();
   if(x('relations'))
     relLoad();
   if(x('jt_box_screenshots'))
@@ -508,6 +564,8 @@ DOMLoad(function() {
     vnpLoad('vn');
   if(x('jt_box_producers'))
     vnpLoad('producers');
+  if(x('taglinks'))
+    tglLoad();
 
   // spam protection on all forms
   if(document.forms.length >= 1)

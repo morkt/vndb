@@ -26,12 +26,12 @@ our %S = (%S,
   sharedmem_key   => 'VNDB',
   user_ranks      => [
        # rankname   allowed actions                                   # DB number
-    [qw| visitor    hist                                          |], # 0
-    [qw| banned     hist                                          |], # 1
-    [qw| loser      hist board                                    |], # 2
-    [qw| user       hist board edit                               |], # 3
-    [qw| mod        hist board boardmod edit mod lock del         |], # 4
-    [qw| admin      hist board boardmod edit mod lock del usermod |], # 5
+    [qw| visitor    hist                                                     |], # 0
+    [qw| banned     hist                                                     |], # 1
+    [qw| loser      hist board                                               |], # 2
+    [qw| user       hist board edit tag                                      |], # 3
+    [qw| mod        hist board boardmod edit tag mod lock del tagmod         |], # 4
+    [qw| admin      hist board boardmod edit tag mod lock del tagmod usermod |], # 5
   ],
   languages       => {
     cs  => q|Czech|,
@@ -58,7 +58,7 @@ our %S = (%S,
     in => 'Individual',
     ng => 'Amateur group',
   },
-  discussion_tags => {
+  discussion_boards => {
     an => 'Announcements',    # 0   - usage restricted to boardmods
     db => 'VNDB Discussions', # 0
     v  => 'Visual novels',    # vid

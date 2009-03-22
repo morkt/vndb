@@ -5,29 +5,30 @@
 :SUB:Introduction
 <p>
  VNDB has a nicely integrated discussion board which can be used for, well,
- discussions. As we're not using any popular and freely available forum software
+ discussions. As we're not using any popular or freely available forum software
  and have instead written something by ourselves, this discussion board has a
  few slight differences with the popular boards you're used to.
 </p>
 
 
-:SUB:Tags
+:SUB:Boards
 <p>
- To make sure interested people can find your post, all threads have 'tags'
- that define what the discussion is about. It's possible to add more than
- one tag to a thread. The following tags can be used:
+ To make sure interested people can find your post, all threads have relations
+ to one or more 'boards' that define what the discussion is about. This is similar
+ to boards on other forums, but here every item in the DB has its own board, and
+ it's possible to link a thread to more than one board. The following boards can be used:
 </p>
 <dl>
  <dt>db</dt><dd>
-  VNDB Discussions. This is a general tag for threads not about any specific
+  VNDB Discussions. This is a general board for threads not about any specific
   entry in the database.
  </dd><dt>v#</dt><dd>
-  For discussions about a particular visual novel. The tag <i>v17</i>, for example,
+  For discussions about a particular visual novel. The board <i>v17</i>, for example,
   is used for all threads related to <a href="/v17">v17</a>.
  </dd><dt>p#</dt><dd>
   Same as <i>v#</i>, but for producers.
  </dd><dt>u#</dt><dd>
-  The <i>u#</i> tag can be used to notify a user on this site about something
+  The <i>u#</i> board can be used to notify a user on this site about something
   he/she must see or to discuss about an edit he/she has made. This is similar
   to the 'private message' feature of most sites, except it's not 'private'...
  </dd><dt>an</dt><dd>

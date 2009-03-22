@@ -57,6 +57,7 @@ sub _menu {
     div;
      a href => '/',      'Home'; br;
      a href => '/v/all', 'Visual novels'; br;
+     a href => '/g',     'Tags'; br;
      a href => '/p/all', 'Producers'; br;
      a href => '/u/all', 'Users'; br;
      a href => '/hist',  'Recent changes'; br;
@@ -87,9 +88,12 @@ sub _menu {
        a href => "$uid/wish", 'My Wishlist'; br;
        a href => "/t$uid",    'My Messages'; br;
        a href => "$uid/hist", 'My Recent Changes'; br;
+       a href => "$uid/tags", 'My Tags'; br;
        br;
        a href => '/v/new',    'Add Visual Novel'; br;
        a href => '/p/new',    'Add Producer'; br;
+       if($self->authCan('tagmod')) {
+         a href => '/g/new',  'Add Tag'; br; }
        br;
        a href => '/u/logout', 'Logout';
       end;

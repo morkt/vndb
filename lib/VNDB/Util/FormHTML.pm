@@ -14,6 +14,7 @@ my %formerr_names = (
   alias         => 'Aliases',
   anime         => 'Anime',
   desc          => 'Description',
+  description   => 'Description',
   editsum       => 'Edit summary',
   gtin          => 'JAN/EAN/UPC',
   lang          => 'Language',
@@ -33,7 +34,7 @@ my %formerr_names = (
   platforms     => 'Platforms',
   producers     => 'Producers',
   released      => 'Release date',
-  tags          => 'Tags',
+  boards        => 'Boards',
   title         => 'Title',
   type          => 'Type',
   usrname       => 'Username',
@@ -79,7 +80,14 @@ sub htmlFormError {
       li sprintf '%s should have at least %d characters', $field, $rule if $type eq 'minlength';
       li sprintf '%s: only %d characters allowed', $field, $rule if $type eq 'maxlength';
       li sprintf '%s must be one of the following: %s', $field, join ', ', @$rule if $type eq 'enum';
-      li sprintf 'Wrong tag: %s', $rule if $type eq 'wrongtag';
+      li sprintf 'Wrong board: %s', $rule if $type eq 'wrongboard';
+      if($type eq 'tagexists') {
+        li;
+         lit $rule->{state} != 1 ? qq|Tag <a href="/g$rule->{id}">$rule->{name}</a> already exists!|
+          : qq|A tag <a href="/g$rule->{id}">with the same name</a> has been deleted in the past,|
+           .qq| please use <a href="/t/db">the discussion board</a> if you want it to be re-added.|;
+        end;
+      }
       li $rule->[1] if $type eq 'func' || $type eq 'regex';
       if($type eq 'template') {
         li sprintf
@@ -253,7 +261,9 @@ sub htmlForm {
       end;
       br;
     }
+    b "Don't forget! -> " if $options->{hitsubmit};
     input type => 'submit', value => 'Submit', class => 'submit';
+    b ' <-' if $options->{hitsubmit};
    end;
   end;
 
