@@ -575,7 +575,7 @@ DECLARE
   i RECORD;
   l RECORD;
 BEGIN
-  FOR l IN SElECT id FROM tags WHERE meta = FALSE AND AND state = 2 EXISTS(SELECT 1 FROM tags_parents WHERE parent = id) LOOP
+  FOR l IN SElECT id FROM tags WHERE meta = FALSE AND state = 2 AND EXISTS(SELECT 1 FROM tags_parents WHERE parent = id) LOOP
     FOR i IN SELECT tag FROM tag_tree(l.id, 0, true) LOOP
       FOR r IN SELECT l.id, vid, uid, vote, spoiler FROM tags_vn WHERE tag = i.tag LOOP
         RETURN NEXT r;
