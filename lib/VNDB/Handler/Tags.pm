@@ -597,7 +597,7 @@ sub tagindex {
   # Recently added
   div class => 'mainbox threelayout';
    a class => 'right', href => '/g/list', 'Browse all tags';
-   my $r = $self->dbTagGet(order => 'added DESC', results => 10);
+   my $r = $self->dbTagGet(order => 'added DESC', results => 10, state => 2);
    h1 'Recently added';
    ul;
     for (@$r) {
