@@ -243,10 +243,10 @@ sub tagedit {
 
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
-      { name => 'name',        required => 1, maxlength => 250 },
+      { name => 'name',        required => 1, maxlength => 250, regex => [ qr/^[^,]+$/, 'A comma is not allowed in tag names' ] },
       { name => 'state',       required => 0, default => 0,  enum => [ 0..2 ] },
       { name => 'meta',        required => 0, default => 0 },
-      { name => 'alias',       required => 0, maxlength => 1024, default => '' },
+      { name => 'alias',       required => 0, maxlength => 1024, default => '', regex => [ qr/^[^,]+$/s, 'No comma allowed in aliases' ]  },
       { name => 'description', required => 0, maxlength => 1024, default => '' },
       { name => 'parents',     required => 0, default => '' },
       { name => 'merge',       required => 0, default => '' },
