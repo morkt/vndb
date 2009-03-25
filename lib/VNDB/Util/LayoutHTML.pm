@@ -92,8 +92,6 @@ sub _menu {
        br;
        a href => '/v/new',    'Add Visual Novel'; br;
        a href => '/p/new',    'Add Producer'; br;
-       if($self->authCan('tagmod')) {
-         a href => '/g/new',  'Add Tag'; br; }
        br;
        a href => '/u/logout', 'Logout';
       end;

@@ -582,6 +582,7 @@ sub tagindex {
 
   $self->htmlHeader(title => 'Browse tags');
   div class => 'mainbox';
+   a class => 'addnew', href => "/g/new", ($self->authCan('tagmod')?'Create':'Request').' new tag' if $self->authCan('tag');
    h1 'Search tags';
    form class => 'search', action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
     fieldset;
