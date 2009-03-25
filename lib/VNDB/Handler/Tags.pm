@@ -232,7 +232,7 @@ sub tagedit {
   if($act && $act eq 'add') {
     $par = $self->dbTagGet(id => $tag)->[0];
     return 404 if !$par;
-    $frm->{parents} = $tag;
+    $frm->{parents} = $par->{name};
     $tag = undef;
   }
 
