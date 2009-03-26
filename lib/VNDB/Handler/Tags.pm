@@ -18,6 +18,7 @@ YAWF::register(
   qr{u([1-9]\d*)/tags},     \&usertags,
   qr{g},                    \&tagindex,
   qr{xml/tags\.xml},        \&tagxml,
+  qr{g/debug},              \&tagtree,
 );
 
 
@@ -670,5 +671,34 @@ sub tagxml {
    }
   end;
 }
+
+
+sub tagtree {
+  my $self = shift;
+
+  return 404 if !$self->authCan('tagmod');
+
+  $self->htmlHeader(title => '[DEBUG] The complete tag tree');
+  div class => 'mainbox';
+   h1 '[DEBUG] The complete tag tree';
+
+   div style => 'margin-left: 10px';
+    my $t = $self->dbTagTree(0, -1, 1);
+    my $lvl = $t->[0]{lvl} + 1;
+    for (@$t) {
+      map ul(style => 'margin-left: 15px; list-style-type: none'),  1..($lvl-$_->{lvl}) if $lvl > $_->{lvl};
+      map end, 1..($_->{lvl}-$lvl) if $lvl < $_->{lvl};
+      $lvl = $_->{lvl};
+      li;
+       txt '> ';
+       a href => "/g$_->{tag}", $_->{name};
+      end;
+    }
+    map end, 0..($t->[0]{lvl}-$lvl);
+   end;
+  end;
+  $self->htmlFooter;
+}
+
 
 1;
