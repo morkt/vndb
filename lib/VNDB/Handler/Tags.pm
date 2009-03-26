@@ -430,7 +430,7 @@ sub vntagmod {
   }
 
   my $my = $self->dbTagLinks(vid => $vid, uid => $self->authInfo->{id});
-  my $tags = $self->dbTagStats(vid => $vid, result => 9999);
+  my $tags = $self->dbTagStats(vid => $vid, results => 9999);
 
   my $frm;
 
