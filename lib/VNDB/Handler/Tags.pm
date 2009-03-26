@@ -454,8 +454,8 @@ sub vntagmod {
        thead;
         Tr;
          td '';
-         td colspan => 2, class => 'tc2_1', 'Others';
-         td colspan => 2, class => 'tc3_1', 'You';
+         td colspan => 2, class => 'tc2_1', 'You';
+         td colspan => 2, class => 'tc3_1', 'Others';
         end;
         Tr;
          my $i=0;
@@ -480,13 +480,13 @@ sub vntagmod {
            td class => 'tc1';
             a href => "/g$t->{id}", $t->{name};
            end;
-           td class => 'tc2';
+           td class => 'tc2', $m->{vote}||0;
+           td class => 'tc3', defined $m->{spoiler} ? $m->{spoiler} : -1;
+           td class => 'tc4';
             tagscore !$m->{vote} ? $t->{rating} : $t->{cnt} == 1 ? 0 : ($t->{rating}*$t->{cnt} - $m->{vote}) / ($t->{cnt}-1);
             i ' ('.($t->{cnt} - ($m->{vote} ? 1 : 0)).')';
            end;
-           td class => 'tc3', sprintf '%.2f', $t->{spoiler};
-           td class => 'tc4', $m->{vote}||0;
-           td class => 'tc5', defined $m->{spoiler} ? $m->{spoiler} : -1;
+           td class => 'tc5', sprintf '%.2f', $t->{spoiler};
           end;
         }
        end;

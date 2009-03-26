@@ -1003,11 +1003,11 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 #tagtable .tc2_1 { border-right: 1px solid $border$; border-left: 1px solid $border$; width: 150px; text-align: center }
 #tagtable .tc3_1 { border-left: 1px solid $border$; width: 150px; text-align: center }
 #tagtable .tc1 { min-width: 200px; border-right: 1px solid $border$ }
-#tagtable .tc2 i { font-style: normal; font-size: 8px }
 #tagtable .tc2 { padding-left: 30px!important }
-#tagtable .tc3 { border-right: 1px solid $border$; padding-right: 30px!important; text-align: right }
+#tagtable .tc3 { border-right: 1px solid $border$; padding-right: 30px!important; text-align: right; padding-left: 10px!important  }
 #tagtable .tc4 { padding-left: 30px!important; }
-#tagtable .tc5 { text-align: right; padding-right: 30px!important; padding-left: 10px!important }
+#tagtable .tc4 i { font-style: normal; font-size: 8px }
+#tagtable .tc5 { text-align: right; padding-right: 30px!important; }
 .taglvl { display: block; float: left; width: 8px; height: 12px; border: 1px solid $border$; font-size: 1px; color: $maintext$!important }
 .taglvl0 { width: 15px; border: none!important; font-size: 10px; text-align: center; }
 div.taglvl0 { font-size: 8px; width: 20px!important }
@@ -1019,9 +1019,9 @@ a.taglvl:hover { border-bottom: 1px solid transparent!important }
 .taglvlsel.taglvl1 { background-color: #cf0; border-color: #cf0 }
 .taglvlsel.taglvl2 { background-color: #8f0; border-color: #8f0 }
 .taglvlsel.taglvl3 { background-color: #0f0; border-color: #0f0 }
-#jt_box_tags #tagtable .tc5 { padding: 0 }
-#tagtable .tc5 select { width: 90px; height: 15px; border: 0; margin: 0; font-size: 11px; background-color: $_blendbg$; text-align: right }
-#tagtable .odd .tc5 select { background-color: $secbg$ }
+#jt_box_tags #tagtable .tc3 { padding: 0 }
+#tagtable .tc3 select { width: 90px; height: 15px; border: 0; margin: 0; font-size: 11px; background-color: $_blendbg$; text-align: right }
+#tagtable .odd .tc3 select { background-color: $secbg$ }
 
 
 

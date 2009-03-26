@@ -139,7 +139,7 @@ sub page {
    clearfloat;
 
    # tags
-   my $t = $self->dbTagStats(vid => $v->{id}, order => 'avg(tv.vote) DESC', minrating => 0);
+   my $t = $self->dbTagStats(vid => $v->{id}, order => 'avg(tv.vote) DESC', minrating => 0, results => 30);
    if(@$t) {
      div id => 'tagops';
       a href => '#', 'hide spoilers';

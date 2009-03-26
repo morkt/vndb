@@ -839,8 +839,8 @@ function tglLoad() {
   var l = x('tagtable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
   for(var i=0; i<l.length;i++) {
     var o = l[i].getElementsByTagName('td');
-    tglSpoiler(o[4], parseInt(o[4].innerHTML));
-    tglVoteBar(o[3], parseInt(o[3].innerHTML));
+    tglSpoiler(o[2], parseInt(o[2].innerHTML));
+    tglVoteBar(o[1], parseInt(o[1].innerHTML));
   }
 }
 
@@ -909,19 +909,19 @@ function tglAdd() {
     td.className = 'tc1';
     tr.appendChild(td);
     td = document.createElement('td');
-    td.className = 'tc2';
-    td.innerHTML = '-';
-    tr.appendChild(td);
-    td = document.createElement('td');
-    td.innerHTML = '-';
-    td.className = 'tc3';
-    tr.appendChild(td);
-    td = document.createElement('td');
     tglVoteBar(td, 2);
-    td.className = 'tc4';
+    td.className = 'tc2';
     tr.appendChild(td);
     td = document.createElement('td');
     tglSpoiler(td, -1);
+    td.className = 'tc3';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    td.className = 'tc4';
+    td.innerHTML = '-';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    td.innerHTML = '-';
     td.className = 'tc5';
     tr.appendChild(td);
     x('tagtable').getElementsByTagName('tbody')[0].appendChild(tr);
