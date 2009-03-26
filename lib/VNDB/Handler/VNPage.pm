@@ -152,6 +152,7 @@ sub page {
          a href => "/g$_->{id}", style => sprintf('font-size: %dpx', $_->{rating}*3.5+6), $_->{name};
          b class => 'grayedout', sprintf ' %.1f', $_->{rating};
         end;
+        txt ' ';
       }
      end;
    }
