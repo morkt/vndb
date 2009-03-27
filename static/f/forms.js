@@ -941,7 +941,7 @@ function tglSerialize() {
   var l = x('tagtable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
   for(var i=0; i<l.length;i++) {
     var lnk = l[i].getElementsByTagName('a')[0].href;
-    var vt = l[i].getElementsByTagName('td')[3].getElementsByTagName('a');
+    var vt = l[i].getElementsByTagName('td')[1].getElementsByTagName('a');
     var id;
     if((id = lnk.replace(/^.*g([1-9][0-9]*)$/, "$1")) != lnk && vt.length > 3 && vt[3].innerHTML != '-')
       r += (r?' ':'')+id+','+vt[3].innerHTML+','+(l[i].getElementsByTagName('select')[0].selectedIndex-1);
