@@ -614,6 +614,7 @@ div#vntags {
   margin: 0 30px;
 }
 #tagops a { margin: 0 0 0 10px;  border: 0; outline: none }
+#tagops a.sec { border-left: 1px solid $border$; padding-left: 10px }
 #maincontent #tagops a.tsel { color: $maintext$; }
 
 .releases table, #screenshots table {

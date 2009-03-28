@@ -76,7 +76,7 @@ function searchInit() {
   l = x('advoptions').getElementsByTagName('input');
   for(i=0;i<l.length;i++)
     if(l[i].id.substr(0,5) == 'lang_' || l[i].id.substr(0,5) == 'plat_')
-      l[i].onclick = function() { 
+      l[i].onclick = function() {
         searchParse(0, this.parentNode.getElementsByTagName('acronym')[0].title);
       };
 
@@ -347,19 +347,40 @@ function jtSel(which, nolink) {
 
 
 /* Tag VN spoilers */
-function tvsSet(lvl) {
+/* lvl = null to not change lvl, lim = null to not change limit */
+function tvsSet(lvl, lim) {
   var l = x('tagops').getElementsByTagName('a');
   for(var i=0;i<l.length;i++) {
-    if(i == lvl && l[i].className.indexOf('tsel') < 0)
-      l[i].className += ' tsel';
-    else if(i != lvl && l[i].className.indexOf('tsel') >= 0)
-      l[i].className = l[i].className.replace(/tsel/, '');
+    if(i < 3) {
+      if(lvl == null) { /* determine level */
+        if(l[i].className.indexOf('tsel') >= 0)
+         lvl = i;
+      } else { /* set level */
+        if(i == lvl && l[i].className.indexOf('tsel') < 0)
+          l[i].className += ' tsel';
+        else if(i != lvl && l[i].className.indexOf('tsel') >= 0)
+          l[i].className = l[i].className.replace(/tsel/, '');
+      }
+    } else {
+      if(lim == null) { /* determine limit */
+        if(l[i].className.indexOf('tsel') >= 0)
+          lim = i == 3;
+      } else { /* set limit */
+        if((i == 3) == lim && l[i].className.indexOf('tsel') < 0)
+          l[i].className += ' tsel';
+        else if((i == 3) != lim && l[i].className.indexOf('tsel') >= 0)
+          l[i].className = l[i].className.replace(/tsel/, '');
+      }
+    }
   }
+
   l = x('vntags').getElementsByTagName('span');
+  lim = lim ? 15 : 999;
+  var s=0;
   for(i=0;i<l.length;i++) {
-    if(lvl < l[i].className.substr(6, 1) && l[i].className.indexOf('hidden') < 0)
+    if((lvl < l[i].className.substr(6, 1) || s>=lim) && l[i].className.indexOf('hidden') < 0)
       l[i].className += ' hidden';
-    else if(lvl >= l[i].className.substr(6, 1) && l[i].className.indexOf('hidden') >= 0)
+    if(lvl >= l[i].className.substr(6, 1) && ++s<=lim && l[i].className.indexOf('hidden') >= 0)
       l[i].className = l[i].className.replace(/hidden/, '');
   }
   return false;
@@ -523,18 +544,22 @@ DOMLoad(function() {
     for(i=0;i<l.length;i++)
       l[i].onclick = function() {
         var l = x('tagops').getElementsByTagName('a');
+        var sel = 0;
         for(var i=0;i<l.length;i++)
           if(l[i] == this) {
-            tvsSet(i);
-            setCookie('tagspoil', i);
+            if(i < 3) {
+              tvsSet(i, null);
+              setCookie('tagspoil', i);
+            } else
+              tvsSet(null, i==3?true:false);
           }
         return false;
       };
-    tvsSet(readCookie('tagspoil')||0);
+    tvsSet(readCookie('tagspoil'), true);
   }
 
   // Javascript tabs
-  if(x('jt_select')) 
+  if(x('jt_select'))
     jtInit();
 
   // spoiler tags
