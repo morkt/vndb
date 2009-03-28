@@ -100,7 +100,7 @@ sub tagpage {
    end;
 
    if($t->{description}) {
-     p class => 'center';
+     p class => 'description';
       lit bb2html $t->{description};
      end;
    }
