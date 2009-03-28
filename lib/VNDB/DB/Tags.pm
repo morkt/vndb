@@ -205,7 +205,7 @@ sub dbTagVNs {
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT tb.tag, tb.vid, tb.users, tb.rating, tb.spoiler, vr.title, vr.original, v.c_languages, v.c_released, v.c_platforms, v.c_popularity
-      FROM tags_vn_stored tb
+      FROM tags_vn_bayesian tb
       JOIN vn v ON v.id = tb.vid
       JOIN vn_rev vr ON vr.id = v.latest
       !W

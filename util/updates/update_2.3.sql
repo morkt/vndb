@@ -48,6 +48,14 @@ CREATE TABLE tags_vn (
   PRIMARY KEY(tag, vid, uid)
 ) WITHOUT OIDS;
 
+CREATE TABLE tags_vn_bayesian (
+  tag     integer  NOT NULL,
+  vid     integer  NOT NULL,
+  users   integer  NOT NULL,
+  rating  real     NOT NULL,
+  spoiler smallint NOT NULL
+) WITHOUT OIDS;
+
 
 CREATE TYPE tag_tree_item AS (lvl smallint, tag integer, name text, c_vns integer);
 
@@ -127,39 +135,31 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- all votes for all tags
-CREATE OR REPLACE VIEW tags_vn_all AS
-    SELECT *
-      FROM tags_vn
-  UNION
-    SELECT *
-      FROM tag_vn_childs();
-
--- grouped by (tag, vid, uid), so only one user votes on one parent tag per VN entry
-CREATE OR REPLACE VIEW tags_vn_grouped AS
-    SELECT tag, vid, uid, AVG(vote)::real AS vote, COALESCE(AVG(spoiler), 0)::real AS spoiler
-      FROM tags_vn_all
-  GROUP BY tag, vid, uid;
-
--- grouped by (tag, vid), so we now finally have a list of VN entries for a tag (including inherited tags)
-CREATE OR REPLACE VIEW tags_vn_inherited AS
-    SELECT tag, vid, COUNT(uid)::real AS users, AVG(vote)::real AS rating,
-        (CASE WHEN AVG(spoiler) < 0.7 THEN 0 WHEN AVG(spoiler) > 1.3 THEN 2 ELSE 1 END)::smallint AS spoiler
-      FROM tags_vn_grouped
-  GROUP BY tag, vid;
-
--- creates/updates a table with bayesian rankings of tags
+-- updates tags_vn_bayesian with rankings of tags
 CREATE OR REPLACE FUNCTION tag_vn_calc() RETURNS void AS $$
 BEGIN
-  DROP TABLE IF EXISTS tags_vn_stored;
-  CREATE TABLE tags_vn_stored AS SELECT * FROM tags_vn_inherited;
-  CREATE INDEX tags_vn_stored_tag ON tags_vn_stored (tag);
-
-  UPDATE tags_vn_stored tvs SET rating =
-      ((SELECT AVG(users)::real * AVG(rating)::real FROM tags_vn_stored WHERE tag = tvs.tag) + users*rating)
-    / ((SELECT AVG(users)::real FROM tags_vn_inherited WHERE tag = tvs.tag) + users)::real;
-
-  UPDATE tags SET c_vns = (SELECT COUNT(*) FROM tags_vn_stored WHERE tag = id);
+  -- all votes for all tags
+  CREATE OR REPLACE TEMPORARY VIEW tags_vn_all AS
+    SELECT * FROM tags_vn UNION SELECT * FROM tag_vn_childs();
+  -- grouped by (tag, vid, uid), so only one user votes on one parent tag per VN entry
+  CREATE OR REPLACE TEMPORARY VIEW tags_vn_grouped AS
+    SELECT tag, vid, uid, AVG(vote)::real AS vote, COALESCE(AVG(spoiler), 0)::real AS spoiler
+    FROM tags_vn_all GROUP BY tag, vid, uid;
+  -- grouped by (tag, vid) and serialized into a table
+  DROP INDEX IF EXISTS tags_vn_bayesian_tag;
+  TRUNCATE tags_vn_bayesian;
+  INSERT INTO tags_vn_bayesian
+      SELECT tag, vid, COUNT(uid) AS users, AVG(vote)::real AS rating,
+          (CASE WHEN AVG(spoiler) < 0.7 THEN 0 WHEN AVG(spoiler) > 1.3 THEN 2 ELSE 1 END)::smallint AS spoiler
+        FROM tags_vn_grouped
+    GROUP BY tag, vid;
+  CREATE INDEX tags_vn_bayesian_tag ON tags_vn_bayesian (tag);
+  -- now perform the bayesian ranking calculation
+  UPDATE tags_vn_bayesian tvs SET rating =
+      ((SELECT AVG(users)::real * AVG(rating)::real FROM tags_vn_bayesian WHERE tag = tvs.tag) + users*rating)
+    / ((SELECT AVG(users)::real FROM tags_vn_bayesian WHERE tag = tvs.tag) + users)::real;
+  -- and update the VN count in the tags table as well
+  UPDATE tags SET c_vns = (SELECT COUNT(*) FROM tags_vn_bayesian WHERE tag = id);
   RETURN;
 END;
 $$ LANGUAGE plpgsql;
