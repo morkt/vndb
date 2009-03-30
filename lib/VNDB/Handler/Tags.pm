@@ -441,8 +441,10 @@ sub vntagmod {
    div class => 'notice';
     h2 'Tagging';
     ul;
-     li "Don't forget to hit the submit button on the bottom of the page after changing anything here!";
-     li 'Tag guidelines?';
+     li;
+      lit 'Make sure you have read the <a href="/g10">guidelines</a>!';
+     end;
+     li "Don't forget to hit the submit button on the bottom of the page to make your changes permanent.";
      li 'Some tag information on the site is cached, it can take up to an hour for your changes to be visible everywhere.';
     end;
    end;
