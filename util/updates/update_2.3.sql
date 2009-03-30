@@ -143,7 +143,7 @@ BEGIN
     SELECT * FROM tags_vn UNION SELECT * FROM tag_vn_childs();
   -- grouped by (tag, vid, uid), so only one user votes on one parent tag per VN entry
   CREATE OR REPLACE TEMPORARY VIEW tags_vn_grouped AS
-    SELECT tag, vid, uid, AVG(vote)::real AS vote, COALESCE(AVG(spoiler), 0)::real AS spoiler
+    SELECT tag, vid, uid, MAX(vote)::real AS vote, COALESCE(AVG(spoiler), 0)::real AS spoiler
     FROM tags_vn_all GROUP BY tag, vid, uid;
   -- grouped by (tag, vid) and serialized into a table
   DROP INDEX IF EXISTS tags_vn_bayesian_tag;
