@@ -34,7 +34,7 @@ sub list {
   if($q) {
    # VNDBID
     return $self->resRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')
-      if $q =~ /^([vrptud])([0-9]+)(?:\.([0-9]+))?$/;
+      if $q =~ /^([gvrptud])([0-9]+)(?:\.([0-9]+))?$/;
 
     if(!($q =~ s/^title://)) {
      # categories

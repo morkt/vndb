@@ -21,7 +21,7 @@ sub page {
 
   my $r = $self->dbReleaseGet(
     id => $rid,
-    what => 'vn producers platforms media'.($rev ? ' changes' : ''),
+    what => 'vn extended producers platforms media'.($rev ? ' changes' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
   return 404 if !$r->{id};
@@ -33,7 +33,7 @@ sub page {
   if($rev) {
     my $prev = $rev && $rev > 1 && $self->dbReleaseGet(
       id => $rid, rev => $rev-1,
-      what => 'vn producers platforms media changes'
+      what => 'vn extended producers platforms media changes'
     )->[0];
     $self->htmlRevision('r', $prev, $r,
       [ vn        => 'Relations',      join => '<br />', split => sub {
@@ -44,6 +44,7 @@ sub page {
       [ title     => 'Title (romaji)', diff => 1 ],
       [ original  => 'Original title', diff => 1 ],
       [ gtin      => 'JAN/UPC/EAN',    serialize => sub { $_[0]||'[none]' } ],
+      [ catalog   => 'Catalog number', serialize => sub { $_[0]||'[none]' } ],
       [ language  => 'Language',       serialize => sub { $self->{languages}{$_[0]} } ],
       [ website   => 'Website',        ],
       [ released  => 'Release date',   htmlize   => sub { datestr $_[0] } ],
@@ -86,7 +87,17 @@ sub _infotable {
    my $i = 0;
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td class => 'key', 'Title';
+    td class => 'key', 'Relation';
+    td;
+     for (@{$r->{vn}}) {
+       a href => "/v$_->{vid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 60;
+       br if $_ != $r->{vn}[$#{$r->{vn}}];
+     }
+    end;
+   end;
+
+   Tr ++$i % 2 ? (class => 'odd') : ();
+    td 'Title';
     td $r->{title};
    end;
 
@@ -96,16 +107,6 @@ sub _infotable {
       td $r->{original};
      end;
    }
-
-   Tr ++$i % 2 ? (class => 'odd') : ();
-    td 'Relation';
-    td;
-     for (@{$r->{vn}}) {
-       a href => "/v$_->{vid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 60;
-       br if $_ != $r->{vn}[$#{$r->{vn}}];
-     }
-    end;
-   end;
 
    Tr ++$i % 2 ? (class => 'odd') : ();
     td 'Type';
@@ -181,6 +182,13 @@ sub _infotable {
      end;
    }
 
+   if($r->{catalog}) {
+     Tr ++$i % 2 ? (class => 'odd') : ();
+      td 'Catalog no.';
+      td $r->{catalog};
+     end;
+   }
+
    if($r->{website}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
       td 'Links';
@@ -227,7 +235,7 @@ sub edit {
     $rid = 0;
   }
 
-  my $r = $rid && $self->dbReleaseGet(id => $rid, what => 'vn producers platforms media changes', $rev ? (rev => $rev) : ())->[0];
+  my $r = $rid && $self->dbReleaseGet(id => $rid, what => 'vn extended producers platforms media changes', $rev ? (rev => $rev) : ())->[0];
   return 404 if $rid && !$r->{id};
   $rev = undef if !$r || $r->{cid} == $r->{latest};
 
@@ -239,7 +247,7 @@ sub edit {
 
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (
-    (map { $_ => $r->{$_} } qw|type title original gtin language website notes minage platforms patch|),
+    (map { $_ => $r->{$_} } qw|type title original gtin catalog language website notes minage platforms patch|),
     released  => $r->{released} =~ /^([0-9]{4})([0-9]{2})([0-9]{2})$/ ? [ $1, $2, $3 ] : [ 0, 0, 0 ],
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map "$_->{id},$_->{name}", sort { $a->{id} <=> $b->{id} } @{$r->{producers}}),
@@ -255,6 +263,7 @@ sub edit {
       { name => 'original',  required => 0, default => '', maxlength => 250 },
       { name => 'gtin',      required => 0, default => '0',
         func => [ \&gtintype, 'Not a valid JAN/UPC/EAN code' ] },
+      { name => 'catalog',   required => 0, default => '', maxlength => 50 },
       { name => 'language',  enum => [ keys %{$self->{languages}} ] },
       { name => 'website',   required => 0, default => '', template => 'url' },
       { name => 'released',  required => 0, default => 0, multi => 1, template => 'int' },
@@ -284,7 +293,7 @@ sub edit {
           !grep !/^(released|platforms|producers|vn)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
 
       my %opts = (
-        (map { $_ => $frm->{$_} } qw| type title original gtin language website notes minage platforms editsum patch|),
+        (map { $_ => $frm->{$_} } qw| type title original gtin catalog language website notes minage platforms editsum patch|),
         vn        => $new_vn,
         producers => $producers,
         media     => $media,
@@ -322,13 +331,14 @@ sub _form {
   "General info" => [
     [ select => short => 'type',      name => 'Type',
       options => [ map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ] ],
-    [ check  => short => 'patch',     name => 'This release is a patch to an other release.' ],
+    [ check  => short => 'patch',     name => 'This release is a patch to another release.' ],
     [ input  => short => 'title',     name => 'Title (romaji)', width => 300 ],
     [ input  => short => 'original',  name => 'Original title', width => 300 ],
     [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],
     [ select => short => 'language',  name => 'Language',
       options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
     [ input  => short => 'gtin',      name => 'JAN/UPC/EAN' ],
+    [ input  => short => 'catalog',   name => 'Catalog number' ],
     [ input  => short => 'website',   name => 'Official website' ],
     [ static => label => 'Release date', content => sub {
       Select id => 'released', name => 'released';

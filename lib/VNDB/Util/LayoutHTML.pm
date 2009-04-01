@@ -57,6 +57,7 @@ sub _menu {
     div;
      a href => '/',      'Home'; br;
      a href => '/v/all', 'Visual novels'; br;
+     a href => '/g',     'Tags'; br;
      a href => '/p/all', 'Producers'; br;
      a href => '/u/all', 'Users'; br;
      a href => '/hist',  'Recent changes'; br;
@@ -87,6 +88,7 @@ sub _menu {
        a href => "$uid/wish", 'My Wishlist'; br;
        a href => "/t$uid",    'My Messages'; br;
        a href => "$uid/hist", 'My Recent Changes'; br;
+       a href => "$uid/tags", 'My Tags'; br;
        br;
        a href => '/v/new',    'Add Visual Novel'; br;
        a href => '/p/new',    'Add Producer'; br;
@@ -141,6 +143,14 @@ sub _menu {
 sub htmlFooter {
   my $self = shift;
      div id => 'footer';
+
+      my $q = $self->dbRandomQuote;
+      if($q && $q->{vid}) {
+        lit '"';
+        a href => "/v$q->{vid}", style => 'text-decoration: none', $q->{quote};
+        txt qq|"\n|;
+      }
+
       txt "vndb $self->{version} | ";
       a href => '/d7', 'about us';
       txt ' | ';
@@ -149,14 +159,6 @@ sub htmlFooter {
       a href => $self->{source_url}, 'source';
      end;
     end; # /div maincontent
-    if($self->debug) {
-      div id => 'debug';
-       h2 'This is not VNDB!';
-       txt 'The real VNDB is ';
-       a href => 'http://vndb.org/', 'here';
-       txt '.';
-      end;
-    }
    end; # /body
   end; # /html
 
@@ -165,7 +167,7 @@ sub htmlFooter {
     lit "\n<!--\n SQL Queries:\n";
     for (@{$self->{_YAWF}{DB}{queries}}) {
       my $q = !ref $_->[0] ? $_->[0] :
-        $_->[0][0].(exists $_->[0][1] ? ' | "'.join('", "', @{$_->[0]}[1..$#{$_->[0]}]).'"' : '');
+        $_->[0][0].(exists $_->[0][1] ? ' | "'.join('", "', map defined()?$_:'NULL', @{$_->[0]}[1..$#{$_->[0]}]).'"' : '');
       $q =~ s/^\s//g;
       lit sprintf "  [%6.2fms] %s\n", $_->[1]*1000, $q;
     }

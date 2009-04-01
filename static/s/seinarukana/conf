@@ -6,7 +6,7 @@ name         Seinarukana (white)
 // text
 maintext     #131838  // primary text color (also used for the menu links)
 grayedout    #fc8e77 //#fcdfd9  // color used for grayed-out/non-important things
-standout     #a5e2f2  // color of 'stand-out' text
+standout     #e93d71 //#a5e2f2  // color of 'stand-out' text
 link         #5a5fc7 //#9fa1c7  // primary link color (not used for the menu links)
 statok       #424d81  // generic 'ok' text color (used for vnlist statuses & category browser)
 statnok      #a43462  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)

@@ -10,7 +10,7 @@ our @EXPORT = qw|dbReleaseGet dbReleaseAdd dbReleaseEdit|;
 
 
 # Options: id vid rev order unreleased page results what
-# What: changes vn producers platforms media
+# What: extended changes vn producers platforms media
 sub dbReleaseGet {
   my($self, %o) = @_;
   $o{results} ||= 50;
@@ -41,7 +41,9 @@ sub dbReleaseGet {
   );
 
   my @select = (
-    qw|r.id r.locked r.hidden rr.title rr.original rr.gtin rr.language rr.website rr.released rr.notes rr.minage rr.type rr.patch|, 'rr.id AS cid',
+    qw|r.id rr.title rr.original rr.language rr.website rr.released rr.minage rr.type rr.patch|,
+    'rr.id AS cid',
+    $o{what} =~ /extended/ ? qw|rr.notes rr.catalog rr.gtin r.hidden r.locked| : (),
     $o{what} =~ /changes/ ? qw|c.added c.requester c.comments r.latest u.username c.rev| : (),
   );
 
@@ -136,9 +138,9 @@ sub insert_rev {
   my($self, $cid, $rid, $o) = @_;
 
   $self->dbExec(q|
-    INSERT INTO releases_rev (id, rid, title, original, gtin, language, website, released, notes, minage, type, patch)
+    INSERT INTO releases_rev (id, rid, title, original, gtin, catalog, language, website, released, notes, minage, type, patch)
       VALUES (!l)|,
-    [ $cid, $rid, @$o{qw| title original gtin language website released notes minage type patch|} ]);
+    [ $cid, $rid, @$o{qw| title original gtin catalog language website released notes minage type patch|} ]);
 
   $self->dbExec(q|
     INSERT INTO releases_producers (rid, pid)

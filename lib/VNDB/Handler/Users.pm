@@ -86,6 +86,12 @@ sub userpage {
     end;
 
     Tr ++$i % 2 ? (class => 'odd') : ();
+     td 'Tags';
+     td !$u->{c_tags} ? '-' : sprintf '%d votes on %d distinct tags and %d visual novels',
+       $u->{c_tags}, $u->{tagcount}, $u->{tagvncount};
+    end;
+
+    Tr ++$i % 2 ? (class => 'odd') : ();
      td 'List stats';
      td !$u->{show_list} ? 'hidden' :
        sprintf '%d release%s of %d visual novel%s',
@@ -110,7 +116,7 @@ sub userpage {
   }
 
   if($u->{c_changes}) {
-    my $list = $self->dbRevisionGet(what => 'item user', uid => $uid, results => 5);
+    my $list = $self->dbRevisionGet(what => 'item user', uid => $uid, results => 5, hidden => 1);
     h1 class => 'boxtitle';
      a href => "/u$uid/hist", 'Recent changes';
     end;
@@ -367,8 +373,8 @@ sub edit {
         qq|and wishlist (<a href="/u$uid/wish">/u$uid/wish</a>)| ],
     [ check  => short => 'flags_nsfw', name => 'Disable warnings for images that are not safe for work.' ],
     [ select => short => 'skin', name => 'Prefered skin', width => 300, options => [
-      map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_} ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
-    [ textarea => short => 'customcss', name => 'Additional CSS' ],
+      map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_}.($self->debug?" [$_]":'') ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
+    [ textarea => short => 'customcss', name => 'Additional <a href="http://en.wikipedia.org/wiki/Cascading_Style_Sheets">CSS</a>' ],
   ]);
   $self->htmlFooter;
 }
@@ -417,7 +423,7 @@ sub list {
   my($self, $char) = @_;
 
   my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'username', enum => [ qw|username registered votes changes| ] },
+    { name => 's', required => 0, default => 'username', enum => [ qw|username registered votes changes tags| ] },
     { name => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
   );
@@ -435,7 +441,7 @@ sub list {
   end;
 
   my($list, $np) = $self->dbUserGet(
-    order => ($f->{s} eq 'changes' ? 'c_' : $f->{s} eq 'votes' ? 'NOT show_list, c_' : '').$f->{s}.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
+    order => ($f->{s} eq 'changes' || $f->{s} eq 'tags' ? 'c_' : $f->{s} eq 'votes' ? 'NOT show_list, c_' : '').$f->{s}.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
     $char ne 'all' ? (
       firstchar => $char ) : (),
     results => 50,
@@ -453,6 +459,7 @@ sub list {
       [ 'Registered', 'registered' ],
       [ 'Votes',      'votes'      ],
       [ 'Edits',      'changes'    ],
+      [ 'Tags',       'tags'       ],
     ],
     row     => sub {
       my($s, $n, $l) = @_;
@@ -467,6 +474,9 @@ sub list {
        end;
        td class => 'tc4';
         lit !$l->{c_changes} ? 0 : qq|<a href="/u$l->{id}/hist">$l->{c_changes}</a>|;
+       end;
+       td class => 'tc5';
+        lit !$l->{c_tags} ? 0 : qq|<a href="/u$l->{id}/tags">$l->{c_tags}</a>|;
        end;
       end;
     },

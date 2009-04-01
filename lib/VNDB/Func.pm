@@ -5,8 +5,8 @@ use strict;
 use warnings;
 use YAWF ':html';
 use Exporter 'import';
-use POSIX 'strftime';
-our @EXPORT = qw| shorten age date datestr monthstr userstr bb2html gtintype liststat clearfloat cssicon |;
+use POSIX 'strftime', 'ceil', 'floor';
+our @EXPORT = qw| shorten age date datestr monthstr userstr bb2html gtintype liststat clearfloat cssicon tagscore|;
 
 
 # I would've done this as a #define if this was C...
@@ -93,6 +93,7 @@ sub bb2html {
   my $raw = shift;
   my $maxlength = shift;
   $raw =~ s/\r//g;
+  $raw =~ s/\n{5,}/\n\n/g;
   return '' if !$raw && $raw ne "0";
 
   my($result, $length, $rmnewline, @open) = ('', 0, 0, 'first');
@@ -111,32 +112,32 @@ sub bb2html {
     next if !defined $_;
     next if $_ eq '';
 
-    $rmnewline = s/\n//g if $rmnewline;
-    next if $_ eq '';
+    # (note to self: stop using unreadable hacks like these!)
+    $rmnewline-- && $_ eq "\n" && next if $rmnewline;
 
     my $lit = $_;
     if($open[$#open] ne 'raw') {
-      if    ($_ eq '[raw]')      { push @open, 'raw'; next }
-      elsif ($_ eq '[spoiler]')  { push @open, 'spoiler'; $result .= '<b class="spoiler">'; next }
-      elsif ($_ eq '[quote]')    {
+      if    (lc$_ eq '[raw]')      { push @open, 'raw'; next }
+      elsif (lc$_ eq '[spoiler]')  { push @open, 'spoiler'; $result .= '<b class="spoiler">'; next }
+      elsif (lc$_ eq '[quote]')    {
         push @open, 'quote';
         $result .= '<div class="quote">' if !$maxlength;
-        $rmnewline++;
+        $rmnewline = 1;
         next
-      } elsif ($_ eq '[/spoiler]') {
+      } elsif (lc$_ eq '[/spoiler]') {
         if($open[$#open] eq 'spoiler') {
           $result .= '</b>';
           pop @open;
         }
         next;
-      } elsif ($_ eq '[/quote]') {
+      } elsif (lc$_ eq '[/quote]') {
         if($open[$#open] eq 'quote') {
           $result .= '</div>' if !$maxlength;
-          $rmnewline++;
+          $rmnewline = 1;
           pop @open;
         }
         next;
-      } elsif($_ eq '[/url]') {
+      } elsif(lc$_ eq '[/url]') {
         if($open[$#open] eq 'url') {
           $result .= '</a>';
           pop @open;
@@ -155,13 +156,13 @@ sub bb2html {
         next;
       } elsif(!grep(/url/, @open) && (
           s{^(.*[^\w]|)([tdvpr][1-9][0-9]*)\.([1-9][0-9]*)([^\w].*|)$}{$e->($1).qq|<a href="/$2.$3">$2.$3</a>|.$e->($4)}e ||
-          s{^(.*[^\w]|)([tduvpr][1-9][0-9]*)([^\w].*|)$}{$e->($1).qq|<a href="/$2">$2</a>|.$e->($3)}e)) {
+          s{^(.*[^\w]|)([tdvprug][1-9][0-9]*)([^\w].*|)$}{$e->($1).qq|<a href="/$2">$2</a>|.$e->($3)}e)) {
         $length += length $lit;
         last if $maxlength && $length > $maxlength;
         $result .= $_;
         next;
       }
-    } elsif($_ eq '[/raw]') {
+    } elsif(lc$_ eq '[/raw]') {
       pop @open if $open[$#open] eq 'raw';
       next;
     }
@@ -234,6 +235,34 @@ sub cssicon {
   acronym class => "icons $_[0]", title => $_[1];
    lit '&nbsp;';
   end;
+}
+
+
+# Tag score in html tags, argument: score, users
+sub tagscore {
+  my $s = shift;
+  div class => 'taglvl', style => sprintf('width: %.0fpx', ($s-floor($s))*10), ' ' if $s < 0 && $s-floor($s) > 0;
+  for(-3..3) {
+    div(class => "taglvl taglvl0", sprintf '%.1f', $s), next if !$_;
+    if($_ < 0) {
+      if($s > 0 || floor($s) > $_) {
+        div class => "taglvl taglvl$_", ' ';
+      } elsif(floor($s) != $_) {
+        div class => "taglvl taglvl$_ taglvlsel", ' ';
+      } else {
+        div class => "taglvl taglvl$_ taglvlsel", style => sprintf('width: %.0fpx', 10-($s-$_)*10), ' ';
+      }
+    } else {
+      if($s < 0 || ceil($s) < $_) {
+        div class => "taglvl taglvl$_", ' ';
+      } elsif(ceil($s) != $_) {
+        div class => "taglvl taglvl$_ taglvlsel", ' ';
+      } else {
+        div class => "taglvl taglvl$_ taglvlsel", style => sprintf('width: %.0fpx', 10-($_-$s)*10), ' ';
+      }
+    }
+  }
+  div class => 'taglvl', style => sprintf('width: %.0fpx', (ceil($s)-$s)*10), ' ' if $s > 0 && ceil($s)-$s > 0;
 }
 
 

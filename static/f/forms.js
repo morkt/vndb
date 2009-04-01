@@ -7,77 +7,6 @@ function qq(v) {
 function shorten(v, l) {
   return qq(v.length > l ? v.substr(0, l-3)+'...' : v);
 }
-var http_request = false;
-function ajax(url, func) {
-  if(http_request)
-    http_request.abort();
-  http_request = (window.ActiveXObject) ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
-  if(http_request == null) {
-    alert("Your browse does not support the functionality this website requires.");
-    return;
-  }
-  http_request.onreadystatechange = function() {
-    if(!http_request || http_request.readyState != 4 || !http_request.responseText)
-      return;
-    if(http_request.status != 200)
-      return alert('Whoops, error! :(');
-    func(http_request);
-  };
-  url += (url.indexOf('?')>=0 ? ';' : '?')+(Math.floor(Math.random()*999)+1);
-  http_request.open('GET', url, true);
-  http_request.send(null);
-}
-
-
-
-
-   /************************\
-   *   C A T E G O R I E S  *
-   \************************/
-
-
-function catLoad() {
-  var i;
-  var cats=[];
-  var ct = x('categories');
-  var l = ct.value.split(',');
-  for(i=0;i<l.length;i++)
-    cats[l[i].substr(0,3)] = Math.floor(l[i].substr(3,1));
-
-  l = x('jt_box_categories').getElementsByTagName('a');
-  for(i=0;i<l.length;i++) {
-    if(l[i].id.substr(0, 4) != 'cat_')
-      continue;
-    catSet(l[i].id.substr(4), cats[l[i].id.substr(4)]||0);
-    l[i].onclick = function() {
-      var c = this.id.substr(4);
-      if(!cats[c]) cats[c] = 0;
-      if(c.substr(0,1) == 'p' || c == 'gaa' || c == 'gab' || c.substr(0,1) == 'h' || c.substr(0,1) == 'l' || c.substr(0,1) == 't') {
-        if(cats[c]++)
-          cats[c] = 0;
-      } else if(++cats[c] == 4)
-        cats[c] = 0;
-      catSet(c, cats[c]);
-
-     // has to be ordered before serializing!
-      var r;l=[];i=0;
-      for(r in cats)
-        l[i++] = r;
-      l = l.sort();
-      r='';
-      for(i=0;i<l.length;i++)
-        if(cats[l[i]] > 0)
-          r+=(r?',':'')+l[i]+cats[l[i]];
-      ct.value = r;
-      return false;
-    };
-  }
-}
-
-function catSet(id, rnk) {
-  x('cat_'+id).className = 'catlvl_'+rnk;
-  x('b_'+id).innerHTML = rnk;
-}
 
 
 
@@ -176,8 +105,10 @@ function dsSearch(obj) {
   
   // show/hide the ds_box div
   if(obj.value.length < 2) {
-    if(b)
+    if(b) {
       b.style.top = '-500px';
+      b.innerHTML = '<b>Loading...</b>';
+    }
     obj.selectedId = 0;
     return;
   }
@@ -877,6 +808,145 @@ function vnpSerialize(type) {
     r += (r ? '|||' : '') + l[i].getElementsByTagName('i')[0].innerHTML.substr(1, l[i].getElementsByTagName('i')[0].innerHTML.indexOf(':')-1)
       + ',' + l[i].getElementsByTagName('a')[0].innerHTML;
   x(type).value = r;
+}
+
+
+
+
+
+
+   /****************************************************\
+   *   V I S U A L   N O V E L   T A G   L I N K I N G  *
+   \****************************************************/
+
+
+function tglLoad() {
+  var n = x('tagtable').getElementsByTagName('tfoot')[0].getElementsByTagName('input');
+  dsInit(n[0], '/xml/tags.xml?q=', function(item, tr) {
+    var td = document.createElement('td');
+    td.innerHTML = shorten(item.firstChild.nodeValue, 40);
+    if(item.getAttribute('meta') == 'yes')
+      td.innerHTML += ' <b class="grayedout">meta</b>';
+    else if(item.getAttribute('state') == 0)
+      td.innerHTML += ' <b class="grayedout">awaiting moderation</b>';
+    tr.appendChild(td);
+  }, function(item) {
+    return item.firstChild.nodeValue;
+  }, tglAdd);
+  n[1].onclick = tglAdd;
+
+  tglStripe();
+  var l = x('tagtable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  for(var i=0; i<l.length;i++) {
+    var o = l[i].getElementsByTagName('td');
+    tglSpoiler(o[2], parseInt(o[2].innerHTML));
+    tglVoteBar(o[1], parseInt(o[1].innerHTML));
+  }
+}
+
+function tglSpoiler(obj, spoil) {
+  var r = '<select onchange="tglSerialize()">';
+  for(var i=-1; i<=2; i++)
+    r += '<option value="'+i+'"'+(spoil==i?' selected="selected"':'')+'>'
+      +(i == -1 ? 'neutral' : i == 0 ? 'no spoiler' : i == 1 ? 'minor spoiler' : 'major spoiler')
+      +'&nbsp;</option>';
+  obj.innerHTML = r+'</select>';
+}
+
+function tglVoteBar(obj, vote) {
+  var r = '';
+  for(var i=-3;i<=3;i++)
+    r += '<a href="#" class="taglvl taglvl'+i+'" onmouseover="tglVoteBarSel(this, '+i+')"'
+       + ' onmouseout="tglVoteBarSel(this, '+vote+')" onclick="return tglVoteBar(this.parentNode, '+i+')">&nbsp;</a>';
+  obj.innerHTML = r;
+  tglVoteBarSel(obj, vote);
+  tglSerialize();
+  return false;
+}
+
+function tglVoteBarSel(obj, vote) {
+  if(obj.className.indexOf('taglvl') >= 0)
+    obj = obj.parentNode;
+  var l = obj.getElementsByTagName('a');
+  var num;
+  for(var i=0; i<l.length; i++) {
+    if((num = l[i].className.replace(/^.*taglvl(-?[0-3]).*$/, "$1")) == l[i].className)
+      continue;
+    if(num == 0)
+      l[i].innerHTML = vote == 0 ? '-' : vote;
+    else if(num<0&&vote<=num || num>0&&vote>=num) {
+      if(l[i].className.indexOf('taglvlsel') < 0)
+        l[i].className += ' taglvlsel';
+    } else
+      if(l[i].className.indexOf('taglvlsel') >= 0)
+        l[i].className = l[i].className.replace(/taglvlsel/, '');
+  }
+}
+
+function tglAdd() {
+  var n = x('tagtable').getElementsByTagName('tfoot')[0].getElementsByTagName('input');
+  n[0].disabled = n[1].disabled = true;
+  n[1].value = 'loading...';
+  ajax('/xml/tags.xml?q=name:'+encodeURIComponent(n[0].value), function(hr) {
+    n[0].disabled = n[1].disabled = false;
+    n[1].value = 'Add tag';
+    n[0].value = '';
+
+    var items = hr.responseXML.getElementsByTagName('item');
+    if(items.length < 1)
+      return alert('Item not found!');
+    if(items[0].getAttribute('meta') == 'yes')
+      return alert('Can\'t use meta tags here!');
+    var name = items[0].firstChild.nodeValue;
+    var l = x('tagtable').getElementsByTagName('a');
+    for(var i=0; i<l.length; i++)
+      if(l[i].innerHTML == shorten(name, 40))
+        return alert('Tag is already present!');
+
+    var tr = document.createElement('tr');
+    var td = document.createElement('td');
+    td.innerHTML = '<a href="/g'+items[0].getAttribute('id')+'">'+name+'</a>';
+    td.className = 'tc1';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    tglVoteBar(td, 2);
+    td.className = 'tc2';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    tglSpoiler(td, -1);
+    td.className = 'tc3';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    td.className = 'tc4';
+    td.innerHTML = '-';
+    tr.appendChild(td);
+    td = document.createElement('td');
+    td.innerHTML = '-';
+    td.className = 'tc5';
+    tr.appendChild(td);
+    x('tagtable').getElementsByTagName('tbody')[0].appendChild(tr);
+    tglStripe();
+    tglSerialize();
+  });
+}
+
+function tglStripe() {
+  var l = x('tagtable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  for(var i=0;i<l.length;i++)
+    l[i].className = i%2 ? 'odd' : '';
+}
+
+function tglSerialize() {
+  var r = '';
+  var l = x('tagtable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  for(var i=0; i<l.length;i++) {
+    var lnk = l[i].getElementsByTagName('a')[0].href;
+    var vt = l[i].getElementsByTagName('td')[1].getElementsByTagName('a');
+    var id;
+    if((id = lnk.replace(/^.*g([1-9][0-9]*)$/, "$1")) != lnk && vt.length > 3 && vt[3].innerHTML != '-')
+      r += (r?' ':'')+id+','+vt[3].innerHTML+','+(l[i].getElementsByTagName('select')[0].selectedIndex-1);
+  }
+  x('taglinks').value = r;
 }
 
 

@@ -125,16 +125,39 @@ sub page {
      _anime($self, \$i, $v) if @{$v->{anime}};
      _useroptions($self, \$i, $v) if $self->authInfo->{id};
 
-    end;
-   end;
+     Tr;
+      td class => 'vndesc', colspan => 2;
+       h2 'Description';
+       p;
+        lit bb2html $v->{desc};
+       end;
+      end;
+     end;
 
-   # description
-   div class => 'vndescription';
-    h2 'Description';
-    p;
-     lit bb2html $v->{desc};
     end;
    end;
+   clearfloat;
+
+   # tags
+   my $t = $self->dbTagStats(vid => $v->{id}, order => 'avg(tv.vote) DESC', minrating => 0, results => 999);
+   if(@$t) {
+     div id => 'tagops';
+      a href => '#', 'hide spoilers';
+      a href => '#', class => 'tsel', 'show minor spoilers';
+      a href => '#', 'spoil me!';
+      a href => '#', class => 'sec', 'summary';
+      a href => '#', 'all';
+     end;
+     div id => 'vntags';
+      for (@$t) {
+        span class => sprintf 'tagspl%.0f %s', $_->{spoiler}, $_->{spoiler} > 1 ? 'hidden' : '';
+         a href => "/g$_->{id}", style => sprintf('font-size: %dpx', $_->{rating}*3.5+6), $_->{name};
+         b class => 'grayedout', sprintf ' %.1f', $_->{rating};
+        end;
+        txt ' ';
+      }
+     end;
+   }
   end;
 
   _releases($self, $v, $r);
@@ -252,7 +275,8 @@ sub _categories {
   Tr ++$$i % 2 ? (class => 'odd') : ();
    td 'Categories';
    td;
-    dl;
+    dl id => 'vncats', style => 'display: none';
+     dt 'Note:'; dd "The category system is outdated, please use tags instead.\n\n";
      for (@cat) {
        dt shift(@$_).':';
        dd;
@@ -260,6 +284,7 @@ sub _categories {
        end;
      }
     end;
+    a href => '#', onclick => "document.getElementById('vncats').style.display='';this.style.display='none';return false", 'Show categories';
    end;
   end;
 }
@@ -407,7 +432,7 @@ sub _releases {
          end;
          td class => 'tc4';
           a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
-          b class => 'patch', ' (patch)' if $rel->{patch};
+          b class => 'grayedout', ' (patch)' if $rel->{patch};
          end;
          td class => 'tc5';
           if($self->authInfo->{id}) {

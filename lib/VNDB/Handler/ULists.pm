@@ -3,7 +3,7 @@ package VNDB::Handler::ULists;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use YAWF ':html', ':xml';
 use VNDB::Func;
 
 
@@ -11,6 +11,7 @@ YAWF::register(
   qr{v([1-9]\d*)/vote},  \&vnvote,
   qr{v([1-9]\d*)/wish},  \&vnwish,
   qr{r([1-9]\d*)/list},  \&rlist,
+  qr{xml/rlist.xml},     \&rlist,
   qr{u([1-9]\d*)/wish},  \&wishlist,
   qr{u([1-9]\d*)/list},  \&vnlist,
 );
@@ -55,6 +56,15 @@ sub vnwish {
 sub rlist {
   my($self, $id) = @_;
 
+  my $rid = $id;
+  if(!$rid) {
+    my $f = $self->formValidate(
+      { name => 'id', required => 1, template => 'int' }
+    );
+    return 404 if $f->{_err};
+    $rid = $f->{id};
+  }
+
   my $uid = $self->authInfo->{id};
   return $self->htmlDenied() if !$uid;
 
@@ -63,15 +73,24 @@ sub rlist {
   );
   return 404 if $f->{_err};
 
-  $self->dbVNListDel($uid, $id) if $f->{e} eq 'del';
+  $self->dbVNListDel($uid, $rid) if $f->{e} eq 'del';
   $self->dbVNListAdd(
-    rid => $id,
+    rid => $rid,
     uid => $uid,
     $f->{e} =~ /^([rv])(\d+)$/ && $1 eq 'r' ? (rstat => $2) : (vstat => $2)
   ) if $f->{e} ne 'del';
 
-  (my $ref = $self->reqHeader('Referer')||"/r$id") =~ s/^\Q$self->{url}//;
-  $self->resRedirect($ref, 'temp');
+  if($id) {
+    (my $ref = $self->reqHeader('Referer')||"/r$id") =~ s/^\Q$self->{url}//;
+    $self->resRedirect($ref, 'temp');
+  } else {
+    $self->resHeader('Content-type' => 'text/xml');
+    my $st = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => [$rid])->[0];
+    xml;
+    tag 'rlist', uid => $self->authInfo->{id}, rid => $rid;
+     txt $st ? liststat $st : '--';
+    end;
+  }
 }
 
 
@@ -85,7 +104,7 @@ sub wishlist {
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'o', required => 0, default => 'a', enum => [ 'a', 'd' ] },
-    { name => 's', required => 0, default => 'title', enum => [qw|title added|] },
+    { name => 's', required => 0, default => 'title', enum => [qw|title added wstat|] },
     { name => 'f', required => 0, default => -1, enum => [ -1..$#{$self->{wishlist_status}} ] },
   );
   return 404 if $f->{_err};
@@ -139,7 +158,7 @@ sub wishlist {
     sorturl  => "/u$uid/wish?f=$f->{f}",
     header   => [
       [ Title    => 'title' ],
-      [ Priority => ''      ],
+      [ Priority => 'wstat' ],
       [ Added    => 'added' ],
     ],
     row      => sub {

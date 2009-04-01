@@ -1,4 +1,19 @@
-2.2 - ?
+2.3 - 2009-04-01
+	- No page reload needed when changing rlist status from vn page
+	- Random VN quotes to the footer of every page
+	- Fixed case-sensitivity for BBCode
+	- Homepage shows platform icons for releases
+	- Don't show deleted items on /u+ recent changes
+	- Catalog number field to release entries
+	- Aliases field to producers
+	- Various small improvements to the BBcode
+	- Various bugfixes
+	- Experimental tagging system
+	- Renamed thread tags to boards
+	- Tiny skin fixes
+	- Tagging system
+
+2.2 - 2009-01-16
 	- Additional custom CSS field to user profile
 	- Search dropdown calls the return function automatically on select
 	- Revised the media list
@@ -39,7 +54,7 @@
 	  - Global statistics are cached in stats_cache
 	- URL changes:
 	  - /p and /v don't work anymore, use /[pv]/all
-	  - /u/list/* -> /u/* and /u/list -> /u/list/all
+	  - /u/list/* -> /u/* and /u/list -> /u/all
 	  - Revert URL changed from /x99/edit?rev=1 to /x99.1/edit
 	  - /v+/stats and /v+/scr moved into /v+
 	- Functionality changes:

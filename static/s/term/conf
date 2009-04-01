@@ -2,7 +2,7 @@ name         Neon (black)
 
 // text
 maintext     #0f0
-grayedout    #444
+grayedout    #aaa
 standout     #f00
 link         #ff0
 statok       #0c0

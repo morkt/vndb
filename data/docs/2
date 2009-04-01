@@ -63,15 +63,10 @@
 
 
 :SUB:Categories
-<p>
- It is possible to select relevant categories for visual novels, where the relevance
- can be ranked using a number from 0 to 3, where 0 indicates the category does not
- apply at all, and 3 means that the category is very dominant in the game.<br />
- See <a href="/d1">Categories</a> for descriptions about each category.<br />
- Just as with the <i>Length</i> field, this information is very subjective. Just
- use the category descriptions and common sense to determine which categories to
- select and what relevance to apply.
-</p>
+<i>
+ The category system has been replaced with tags. This section is a placeholder to preserve
+ numbering.
+</i>
 
 
 :SUB:Image

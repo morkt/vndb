@@ -86,6 +86,7 @@ p.locked {
   font-style: italic;
   margin: 0!important;
 }
+b.grayedout { font-weight: normal; color: $grayedout$ }
 #maincontent h2 b {
   font: 8pt "Tahoma";
   font-weight: normal;
@@ -107,11 +108,13 @@ b.spoiler, b.spoiler a {
   font-weight: normal;
 }
 b.spoiler_shown { font-weight: normal }
-div.quote {
+#maincontent div.quote {
   padding: 1px 5px;
   margin: 0px 10px;
   color: $grayedout$;
+  border: none;
   border-left: 1px dotted $border$;
+  text-align: left;
 }
 
 
@@ -358,7 +361,7 @@ b.future {
 #maincontent .mainbox.threelayout {
   float: left;
   width: 31%;
-  height: 170px;
+  height: 200px;
   margin: 21px 10px -10px 0;
   padding: 2px;
   overflow: hidden;
@@ -508,11 +511,11 @@ div.mainbox.discussions td.tc4 {
 div.mainbox.discussions a.locked {
   text-decoration: line-through;
 }
-div.mainbox.discussions td.tags {
+div.mainbox.discussions td.boards {
   padding-top: 0;
   padding-left: 60px;
 }
-div.mainbox.discussions td.tags a {
+div.mainbox.discussions td.boards a {
   color: $grayedout$!important
 }
 div.discussions td.tc2 { width: 50px;  }
@@ -535,7 +538,7 @@ div.discussions td.tc4 { width: 170px; }
 
 div.vndetails {
   margin: 0 auto;
-  width: 700px;
+  width: 800px;
 }
 div.vnimg {
   float: left;
@@ -553,13 +556,19 @@ div.vnimg p {
   padding: 0px;
   margin: 0;
 }
+.vndesc h2 {
+  margin: 5px 0 0 0!important;
+}
+.vndesc p {
+  padding: 0 0 0 5px;
+}
 img#nsfw_hid {
   display: none;
   cursor: pointer;
 }
 div.vndetails table {
   float: left;
-  width: 430px;
+  width: 530px;
 }
 div.vndetails table td.key {
   width: 80px;
@@ -571,6 +580,7 @@ div.vndetails table dt {
 div.vndetails table dd {
   margin-left: 90px;
 }
+
 .catlvl_0, .catlvl_1, .catlvl_2, .catlvl_3 { font-style: normal; }
 .catlvl_1 { color: $catlevel1$!important }
 .catlvl_2 { color: $catlevel2$!important }
@@ -588,21 +598,25 @@ div.vndetails td.anime b {
   font-weight: normal;
   padding-right: 4px;
 }
-div.vndescription {
-  clear: left;
-  padding: 5px 0 0 0;
-}
-div.vndescription h2 {
-  margin: 0 30px!important;
+div#vntags {
+  margin: 15px 30px 0 30px;
   border-top: 1px solid $border$;
-  padding: 3px 70px;
-  font-weight: bold!important;
+  padding: 1px 5% 0 5%;
+  text-align: center;
 }
-div.vndescription p {
-  margin: 0 100px!important;
+#vntags span { white-space: nowrap; margin-left: 15px; }
+#vntags span.hidden { display: none }
+#vntags b { color: $grayedout$; font-weight: normal; font-size: 8px }
+#tagops {
+  float: right;
+  text-align: right;
+  width: auto;
+  margin: 0 30px;
 }
+#tagops a { margin: 0 0 0 10px;  border: 0; outline: none }
+#tagops a.sec { border-left: 1px solid $border$; padding-left: 10px }
+#maincontent #tagops a.tsel { color: $maintext$; }
 
-b.patch { font-weight: normal; color: $grayedout$ }
 .releases table, #screenshots table {
   width: 100%;
 }
@@ -935,8 +949,8 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 
 /***** User VN list browser ******/
 
-.rlist .relhid { }
-.rlist .relhid_but, #relhidall { cursor: pointer }
+.relhid_but, #relhidall { cursor: pointer }
+.relhid_but i, #relhidall i { font-style: normal }
 .browse.rlist .tc2 { width: 100px; }
 .browse.rlist .tc3 { width: 70px; }
 .browse.rlist .relhid .tc1 { padding-left: 40px; width: 70px; }
@@ -959,6 +973,56 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
   width: 70px;
 }
 
+
+
+
+
+/***** Tag page *****/
+
+.tagtree { margin-left: 20px; margin-top: -20px; list-style-type: none; }
+.tagtree li { float: left; width: 200px; margin-top: 10px; }
+.tagtree li li { float: none; width: auto; margin-top: 0; }
+.tagtree ul { margin-left: 10px; list-style-type: none; }
+.tagvnlist .tc1 { width: 105px; }
+.tagvnlist .tc1 i { font-style: normal; font-size: 8px }
+.tagvnlist .tc3 { text-align: right; padding: 0; }
+.tagvnlist .tc4 { padding: 0; }
+.tagvnlist .tc6 { text-align: right; padding-right: 10px; }
+
+/***** Tag list *****/
+
+.browse.taglist .tc1 { width: 80px }
+
+/***** User tag list *****/
+.browse.tagstats .tc1 { width: 80px }
+.browse.tagstats .tc1_2 { padding-left: 15px }
+
+/***** VN tagmod *****/
+
+#jt_box_tags .formtable table td { padding: 1px 5px }
+#tagtable tfoot td { padding-top: 20px!important; }
+#tagtable .tc2_1 { border-right: 1px solid $border$; border-left: 1px solid $border$; width: 150px; text-align: center }
+#tagtable .tc3_1 { border-left: 1px solid $border$; width: 150px; text-align: center }
+#tagtable .tc1 { min-width: 200px; border-right: 1px solid $border$ }
+#tagtable .tc2 { padding-left: 30px!important }
+#tagtable .tc3 { border-right: 1px solid $border$; padding-right: 30px!important; text-align: right; padding-left: 10px!important  }
+#tagtable .tc4 { padding-left: 30px!important; }
+#tagtable .tc4 i { font-style: normal; font-size: 8px }
+#tagtable .tc5 { text-align: right; padding-right: 30px!important; }
+.taglvl { display: block; float: left; width: 8px; height: 12px; border: 1px solid $border$; font-size: 1px; color: $maintext$!important }
+.taglvl0 { width: 15px; border: none!important; font-size: 10px; text-align: center; }
+div.taglvl0 { font-size: 8px; width: 20px!important }
+div.taglvl { border: none!important; width: 10px; height: 14px }
+a.taglvl:hover { border-bottom: 1px solid transparent!important }
+.taglvlsel.taglvl-3 { background-color: #f00; border-color: #f00 }
+.taglvlsel.taglvl-2 { background-color: #f40; border-color: #f40 }
+.taglvlsel.taglvl-1 { background-color: #f80; border-color: #f80 }
+.taglvlsel.taglvl1 { background-color: #cf0; border-color: #cf0 }
+.taglvlsel.taglvl2 { background-color: #8f0; border-color: #8f0 }
+.taglvlsel.taglvl3 { background-color: #0f0; border-color: #0f0 }
+#jt_box_tags #tagtable .tc3 { padding: 0 }
+#tagtable .tc3 select { width: 90px; height: 15px; border: 0; margin: 0; font-size: 11px; background-color: $_blendbg$; text-align: right }
+#tagtable .odd .tc3 select { background-color: $secbg$ }
 
 
 

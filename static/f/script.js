@@ -12,6 +12,45 @@ if(document.addEventListener)document.addEventListener("DOMCont"
 function(){if(/loaded|complete/.test(document.readyState)){
 clearInterval(t);f()}},10);window.onload=f;}
 
+var http_request = false;
+function ajax(url, func) {
+  if(http_request)
+    http_request.abort();
+  http_request = (window.ActiveXObject) ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
+  if(http_request == null) {
+    alert("Your browse does not support the functionality this website requires.");
+    return;
+  }
+  http_request.onreadystatechange = function() {
+    if(!http_request || http_request.readyState != 4 || !http_request.responseText)
+      return;
+    if(http_request.status != 200)
+      return alert('Whoops, error! :(');
+    func(http_request);
+  };
+  url += (url.indexOf('?')>=0 ? ';' : '?')+(Math.floor(Math.random()*999)+1);
+  http_request.open('GET', url, true);
+  http_request.send(null);
+}
+
+function setCookie(n,v) {
+  var date = new Date();
+  date.setTime(date.getTime()+(365*24*60*60*1000));
+  document.cookie = n+'='+v+'; expires='+date.toGMTString()+'; path=/';
+}
+function readCookie(n) {
+  var l = document.cookie.split(';');
+  for(var i=0; i<l.length; i++) {
+    var c = l[i];
+    while(c.charAt(0) == ' ')
+      c = c.substring(1,c.length);
+    if(c.indexOf(n+'=') == 0)
+      return c.substring(n.length+1,c.length);
+  }
+  return null;
+}
+
+
 
 
 
@@ -37,7 +76,7 @@ function searchInit() {
   l = x('advoptions').getElementsByTagName('input');
   for(i=0;i<l.length;i++)
     if(l[i].id.substr(0,5) == 'lang_' || l[i].id.substr(0,5) == 'plat_')
-      l[i].onclick = function() { 
+      l[i].onclick = function() {
         searchParse(0, this.parentNode.getElementsByTagName('acronym')[0].title);
       };
 
@@ -221,17 +260,19 @@ function vlDropDown(e) {
     } while(o = o.offsetParent);
     ddx -= 185;
 
-    var cu = '/r'+tg.id.substr(6)+'/list?e=';
+    var cu = tg.id.substr(6);
     var st = tg.innerHTML.split(' / ');
+    if(st[0].indexOf('loading') >= 0)
+      return;
     var r = '<ul><li><b>Release status</b></li>';
     for(var i=0;i<rstat.length;i++)
-      r += st[0] && st[0].indexOf(rstat[i]) >= 0 ? '<li><i>'+rstat[i]+'</i></li>' : '<li><a href="'+cu+'r'+i+'">'+rstat[i]+'</a></li>';
+      r += st[0] && st[0].indexOf(rstat[i]) >= 0 ? '<li><i>'+rstat[i]+'</i></li>' : '<li><a href="#" onclick="return vlMod('+cu+',\'r'+i+'\')">'+rstat[i]+'</a></li>';
     r += '</ul><ul><li><b>Play status</b></li>';
     for(var i=0;i<vstat.length;i++)
-      r += st[1] && st[1].indexOf(vstat[i]) >= 0 ? '<li><i>'+vstat[i]+'</i></li>' : '<li><a href="'+cu+'v'+i+'">'+vstat[i]+'</a></li>';
+      r += st[1] && st[1].indexOf(vstat[i]) >= 0 ? '<li><i>'+vstat[i]+'</i></li>' : '<li><a href="#" onclick="return vlMod('+cu+',\'v'+i+'\')">'+vstat[i]+'</a></li>';
     r += '</ul>';
     if(tg.innerHTML != '--')
-      r += '<ul class="full"><li><a href="'+cu+'del">Remove from VN list</a></li></ul>';
+      r += '<ul class="full"><li><a href="#" onclick="return vlMod('+cu+',\'del\')">Remove from VN list</a></li></ul>';
 
     o = document.createElement('div');
     o.id = 'vldd';
@@ -241,6 +282,15 @@ function vlDropDown(e) {
     o.innerHTML = r;
     document.body.appendChild(o);
   }
+}
+
+function vlMod(rid, act) {
+  document.body.removeChild(x('vldd'));
+  x('rlsel_'+rid).innerHTML = '<b class="patch">loading...</b>';
+  ajax('/xml/rlist.xml?id='+rid+';e='+act, function(hr) {
+    x('rlsel_'+rid).innerHTML = hr.responseXML.getElementsByTagName('rlist')[0].firstChild.nodeValue;
+  });
+  return false;
 }
 
 
@@ -290,6 +340,49 @@ function jtSel(which, nolink) {
 
   if(!nolink)
     location.href = '#'+which;
+  return false;
+}
+
+
+
+
+/* Tag VN spoilers */
+/* lvl = null to not change lvl, lim = null to not change limit */
+function tvsSet(lvl, lim) {
+  var l = x('tagops').getElementsByTagName('a');
+  for(var i=0;i<l.length;i++) {
+    if(i < 3) {
+      if(lvl == null) { /* determine level */
+        if(l[i].className.indexOf('tsel') >= 0)
+         lvl = i;
+      } else { /* set level */
+        if(i == lvl && l[i].className.indexOf('tsel') < 0)
+          l[i].className += ' tsel';
+        else if(i != lvl && l[i].className.indexOf('tsel') >= 0)
+          l[i].className = l[i].className.replace(/tsel/, '');
+      }
+    } else {
+      if(lim == null) { /* determine limit */
+        if(l[i].className.indexOf('tsel') >= 0)
+          lim = i == 3;
+      } else { /* set limit */
+        if((i == 3) == lim && l[i].className.indexOf('tsel') < 0)
+          l[i].className += ' tsel';
+        else if((i == 3) != lim && l[i].className.indexOf('tsel') >= 0)
+          l[i].className = l[i].className.replace(/tsel/, '');
+      }
+    }
+  }
+
+  l = x('vntags').getElementsByTagName('span');
+  lim = lim ? 15 : 999;
+  var s=0;
+  for(i=0;i<l.length;i++) {
+    if((lvl < l[i].className.substr(6, 1) || s>=lim) && l[i].className.indexOf('hidden') < 0)
+      l[i].className += ' hidden';
+    if(lvl >= l[i].className.substr(6, 1) && ++s<=lim && l[i].className.indexOf('hidden') >= 0)
+      l[i].className = l[i].className.replace(/hidden/, '');
+  }
   return false;
 }
 
@@ -362,7 +455,9 @@ DOMLoad(function() {
       if(this.selectedIndex != 0)
         location.href = location.href.replace(/\.[0-9]+/, '')+'/list?e='+this.options[this.selectedIndex].value;
     };
+
   // User VN list
+  // (might want to make this a bit more generic, as it's now also used for the user tag list)
   i = x('relhidall');
   if(i) {
     var l = document.getElementsByTagName('tr');
@@ -443,8 +538,28 @@ DOMLoad(function() {
       break;
     }
 
+  // VN tag spoiler options
+  if(x('tagops')) {
+    l = x('tagops').getElementsByTagName('a');
+    for(i=0;i<l.length;i++)
+      l[i].onclick = function() {
+        var l = x('tagops').getElementsByTagName('a');
+        var sel = 0;
+        for(var i=0;i<l.length;i++)
+          if(l[i] == this) {
+            if(i < 3) {
+              tvsSet(i, null);
+              setCookie('tagspoil', i);
+            } else
+              tvsSet(null, i==3?true:false);
+          }
+        return false;
+      };
+    tvsSet(readCookie('tagspoil'), true);
+  }
+
   // Javascript tabs
-  if(x('jt_select')) 
+  if(x('jt_select'))
     jtInit();
 
   // spoiler tags
@@ -455,9 +570,15 @@ DOMLoad(function() {
       l[i].onmouseout = function() { this.className = 'spoiler' };
     }
 
+  // Are we really vndb?
+  if(location.hostname != 'vndb.org') {
+    var d = document.createElement('div');
+    d.setAttribute('id', 'debug');
+    d.innerHTML = '<h2>This is not VNDB!</h2>The real VNDB is <a href="http://vndb.org/">here</a>.';
+    document.body.appendChild(d);
+  }
+
   // forms.js
-  if(x('categories'))
-    catLoad();
   if(x('relations'))
     relLoad();
   if(x('jt_box_screenshots'))
@@ -468,6 +589,8 @@ DOMLoad(function() {
     vnpLoad('vn');
   if(x('jt_box_producers'))
     vnpLoad('producers');
+  if(x('taglinks'))
+    tglLoad();
 
   // spam protection on all forms
   if(document.forms.length >= 1)
