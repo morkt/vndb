@@ -1,4 +1,4 @@
-2.3 - ?
+2.3 - 2009-04-01
 	- No page reload needed when changing rlist status from vn page
 	- Random VN quotes to the footer of every page
 	- Fixed case-sensitivity for BBCode
@@ -11,6 +11,7 @@
 	- Experimental tagging system
 	- Renamed thread tags to boards
 	- Tiny skin fixes
+	- Tagging system
 
 2.2 - 2009-01-16
 	- Additional custom CSS field to user profile
