@@ -122,7 +122,7 @@ sub wishlist {
 
   my($list, $np) = $self->dbWishListGet(
     uid => $uid,
-    order => $f->{s}.' '.($f->{o} eq 'a' ? 'ASC' : 'DESC'),
+    order => $f->{s}.' '.($f->{o} eq 'a' ? ($f->{s} eq 'wstat' ? 'DESC' : 'ASC' ) : ($f->{s} eq 'wstat' ? 'ASC' : 'DESC')),
     $f->{f} != -1 ? (wstat => $f->{f}) : (),
     what => 'vn',
     results => 50,
