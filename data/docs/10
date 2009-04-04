@@ -41,5 +41,9 @@
   even if its parent tag is "Characters &gt; Protagonist".</li>
  <li>Tags should be used to describe objective information about a VN. Subjective tags like
   "Awesome protagonist", which would have a different meaning for each individual, are not allowed.</li>
+ <li>Tags should only cover information that VNDB itself doesn't cover already. So tags about release
+  information or the length of a VN are not allowed.</li>
+ <li>The above rule also holds true for any other information about the VN itself which is (not yet)
+  covered by VNDB, like staff or licensed state in a country.</li>
 </ul>
 
