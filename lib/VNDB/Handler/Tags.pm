@@ -442,7 +442,7 @@ sub vntagmod {
     h2 'Tagging';
     ul;
      li;
-      lit 'Make sure you have read the <a href="/g10">guidelines</a>!';
+      lit 'Make sure you have read the <a href="/d10">guidelines</a>!';
      end;
      li "Don't forget to hit the submit button on the bottom of the page to make your changes permanent.";
      li 'Some tag information on the site is cached, it can take up to an hour for your changes to be visible everywhere.';
