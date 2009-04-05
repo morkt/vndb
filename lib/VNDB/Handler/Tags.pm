@@ -348,16 +348,14 @@ sub taglist {
     { name => 't', required => 0, default => -1, enum => [ -1..2 ] },
     { name => 'q', required => 0, default => '' },
   );
-  $f->{t} = 0 if !$self->authCan('tagmod') && $f->{t} == 1;
   return 404 if $f->{_err};
 
   my($t, $np) = $self->dbTagGet(
     order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
     page => $f->{p},
     results => 50,
-    $f->{t} != -1 || $self->authCan('tagmod') ? (
-      state => $f->{t} ) : (),
-    search => $f->{q},
+    state => $f->{t},
+    search => $f->{q}
   );
 
   my $title = $f->{t} == -1 ? 'Browse tags' : $f->{t} == 0 ? 'Tags awaiting moderation' : $f->{t} == 1 ? 'Deleted tags' : 'All visible tags';
