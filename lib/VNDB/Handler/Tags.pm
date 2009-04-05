@@ -304,9 +304,14 @@ sub tagedit {
      h1 'Requesting new tag';
      div class => 'notice';
       h2 'Your tag must be approved';
-      p 'Because all tags have to be approved by moderators, it can take a while before it '.
-        'will show up in the tag list or on visual novel pages. You can still vote on tag even if '.
-        'it has not been approved yet, though.';
+      p;
+       txt 'Because all tags have to be approved by moderators, it can take a while before it '.
+           'will show up in the tag list or on visual novel pages. You can still vote on tag even if '.
+           'it has not been approved yet, though.'.
+           "\n\n";
+       lit 'Also, make sure you\'ve read the <a href="/d10">guidelines</a>, so you can predict whether '.
+           'your tag will be accepted or not.';
+      end;
      end;
     end;
   }
