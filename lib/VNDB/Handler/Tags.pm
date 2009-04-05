@@ -47,7 +47,7 @@ sub tagpage {
   );
 
   my $title = ($t->{meta} ? 'Meta tag: ' : 'Tag: ').$t->{name};
-  $self->htmlHeader(title => $title);
+  $self->htmlHeader(title => $title, noindex => $t->{state} != 2);
   $self->htmlMainTabs('g', $t);
 
   if($t->{state} != 2) {
@@ -68,7 +68,6 @@ sub tagpage {
        end;
      }
     end;
-    return $self->htmlFooter if $t->{state} == 1 && !$self->authCan('tagmod');
   }
 
   div class => 'mainbox';
