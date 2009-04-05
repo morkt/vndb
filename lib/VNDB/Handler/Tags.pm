@@ -632,22 +632,24 @@ sub tagindex {
 
   # Moderation queue
   div class => 'mainbox threelayout last';
-   a class => 'right', href => '/g/list?t=0;o=d;s=added', 'Moderation queue';
    h1 'Awaiting moderation';
    $r = $self->dbTagGet(state => 0, order => 'added DESC', results => 10);
-   if(@$r) {
-     ul;
-      for (@$r) {
-        li;
-         txt age $_->{added};
-         txt ' ';
-         a href => "/g$_->{id}", $_->{name};
-        end;
-      }
-     end;
-   } else {
-     p 'Moderation queue empty! yay!';
-   }
+   ul;
+    li "Moderation queue empty! yay!" if !@$r;
+    for (@$r) {
+      li;
+       txt age $_->{added};
+       txt ' ';
+       a href => "/g$_->{id}", $_->{name};
+      end;
+    }
+    li;
+     txt "\n";
+     a href => '/g/list?t=0;o=d;s=added', 'Moderation queue';
+     txt ' - ';
+     a href => '/g/list?t=1;o=d;s=added', 'Denied tags';
+    end;
+   end;
   end;
   clearfloat;
   $self->htmlFooter;
