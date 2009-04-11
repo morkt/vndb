@@ -116,7 +116,7 @@ sub integrity {
    UNION
    SELECT 't', id FROM threads t
      WHERE NOT EXISTS(SELECT 1 FROM threads_posts tp WHERE tp.tid = t.id)
-        OR NOT EXISTS(SELECT 1 FROM threads_tags tt WHERE tt.tid = t.id)|);
+        OR NOT EXISTS(SELECT 1 FROM threads_boards tb WHERE tb.tid = t.id)|);
   $q->execute();
   my $r = $q->fetchall_arrayref([]);
   if(@$r) {
