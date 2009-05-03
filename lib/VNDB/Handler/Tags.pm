@@ -419,7 +419,7 @@ sub vntagmod {
   my($self, $vid) = @_;
 
   my $v = $self->dbVNGet(id => $vid)->[0];
-  return 404 if !$v;
+  return 404 if !$v || $v->{hidden};
 
   return $self->htmlDenied if !$self->authCan('tag');
 

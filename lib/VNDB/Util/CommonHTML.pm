@@ -53,7 +53,7 @@ sub htmlMainTabs {
      end;
    }
 
-   if($type eq 'v' && $self->authCan('tag')) {
+   if($type eq 'v' && $self->authCan('tag') && !$obj->{hidden}) {
      li $sel eq 'tagmod' ? (class => 'tabselected') : ();
       a href => "/$id/tagmod", 'modify tags';
      end;
