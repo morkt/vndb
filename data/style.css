@@ -924,6 +924,13 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 
 
 
+/***** Release browser *****/
+
+.relbrowse .tc1 { width: 80px }
+.relbrowse .tc2 { width: 50px; text-align: center; }
+.relbrowse .tc3 { width: 85px; text-align: right; }
+
+
 
 /***** Documentation pages *****/
 

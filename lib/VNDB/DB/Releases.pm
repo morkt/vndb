@@ -9,7 +9,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbReleaseGet dbReleaseAdd dbReleaseEdit|;
 
 
-# Options: id vid rev order unreleased page results what
+# Options: id vid rev order unreleased page results what date
 # What: extended changes vn producers platforms media
 sub dbReleaseGet {
   my($self, %o) = @_;
@@ -29,6 +29,8 @@ sub dbReleaseGet {
       'rv.vid = ?' => $o{vid} ) : (),
     defined $o{unreleased} ? (
       q|rr.released !s ?| => [ $o{unreleased} ? '>' : '<=', strftime('%Y%m%d', gmtime) ] ) : (),
+    $o{date} ? (
+      '(rr.released > ? AND rr.released < ?)' => [ $o{date}*100, $o{date}*100+99 ] ) : (),
   );
 
   my @join = (

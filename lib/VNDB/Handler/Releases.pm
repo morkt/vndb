@@ -11,6 +11,7 @@ use POSIX 'strftime';
 YAWF::register(
   qr{r([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
   qr{(v)([1-9]\d*)/add}            => \&edit,
+  qr{r}                            => \&browse,
   qr{r(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit)}
     => \&edit,
 );
@@ -420,6 +421,67 @@ sub _form {
     }],
   ],
   );
+}
+
+
+sub browse {
+  my $self = shift;
+
+  my $f = $self->formValidate(
+    { name => 'p', required => 0, default => 1, template => 'int' },
+    { name => 't', required => 0, default => ((gmtime)[5]+1900)*100+(gmtime)[4]+1, template => 'int' },
+  );
+  return 404 if $f->{_err};
+
+
+  my($list, $np) = $self->dbReleaseGet(
+    page => $f->{p},
+    results => 100,
+    date => $f->{t},
+    what => 'platforms',
+  );
+
+  $self->htmlHeader(title => 'Browse releases');
+  div class => 'mainbox';
+   h1 'Browse releases';
+   p class => 'center';
+    # you know, date calculation on strangely formatted integers really isn't so bad :-)
+    my $t = $f->{t};
+    $t = $t-100+12 if (--$t % 100) == 0;
+    a href => "/r?t=$t", '<- previous month';
+    txt ' | ';
+    $t = $f->{t};
+    $t = $t+100-12 if (++$t % 100) == 13;
+    a href => "/r?t=$t", 'next month ->';
+   end;
+  end;
+
+  $self->htmlBrowse(
+    class    => 'relbrowse',
+    items    => $list,
+    options  => $f,
+    nextpage => $np,
+    pageurl  => "/r?t=$f->{t}",
+    row     => sub {
+      my($s, $n, $l) = @_;
+      Tr $n % 2 ? (class => 'odd') : ();
+       td class => 'tc1';
+        lit datestr $l->{released};
+       end;
+       td class => 'tc2', $l->{minage} > -1 ? $self->{age_ratings}{$l->{minage}} : '';
+       td class => 'tc3';
+        $_ ne 'oth' && cssicon $_, $self->{platforms}{$_} for (@{$l->{platforms}});
+        cssicon "lang $l->{language}", $self->{languages}{$l->{language}};
+        cssicon lc(substr($self->{release_types}[$l->{type}],0,3)), $self->{release_types}[$l->{type}];
+       end;
+       td class => 'tc4';
+        a href => "/r$l->{id}", title => $l->{original}||$l->{title}, shorten $l->{title}, 90;
+        b class => 'grayedout', ' (patch)' if $l->{patch};
+       end;
+      end;
+    },
+  );
+  $self->htmlFooter;
 }
 
 
