@@ -95,7 +95,7 @@ sub dbVNGet {
     $o{what} =~ /changes/ ? (
       qw|c.added c.requester c.comments v.latest u.username c.rev c.causedby|) : (),
     $o{what} =~ /relgraph/ ? 'rg.cmap' : (),
-    $o{what} =~ /ranking/ ? '(SELECT COUNT(*) FROM vn iv WHERE iv.hidden = false AND iv.c_popularity > v.c_popularity) AS ranking' : (),
+    $o{what} =~ /ranking/ ? '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_popularity > v.c_popularity) AS ranking' : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
