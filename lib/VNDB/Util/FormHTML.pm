@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use YAWF ':html';
 use Exporter 'import';
+use POSIX 'strftime';
 
 our @EXPORT = qw| htmlFormError htmlFormPart htmlForm |;
 
@@ -116,6 +117,7 @@ sub htmlFormError {
 #  check     name, short, (value)
 #  select    name, short, options, (width)
 #  text      name, short, (rows, cols)
+#  date      name, short
 #  part      title
 # TODO: Find a way to write this function in a readable way...
 sub htmlFormPart {
@@ -187,6 +189,23 @@ sub htmlFormPart {
       Select name => $o{short}, id => $o{short}, $o{width} ? (style => "width: $o{width}px") : ();
        option value => $_->[0], defined $frm->{$o{short}} && $frm->{$o{short}} eq $_->[0] ? (selected => 'selected') : (), $_->[1]
          for @{$o{options}};
+      end;
+    }
+    if(/date/) {
+      Select name => $o{short}, id => $o{short}, style => 'width: 70px';
+       option value => $_, $frm->{$o{short}} && $frm->{$o{short}}[0] == $_ ? (selected => 'selected') : (),
+          !$_ ? '-year-' : $_ < 9999 ? $_ : 'TBA'
+         for (0, 1980..((localtime())[5]+1905), 9999);
+      end;
+      Select id => "$o{short}_m", name => $o{short}, style => 'width: 100px';
+       option value => $_, $frm->{$o{short}} && $frm->{$o{short}}[1] == $_ ? (selected => 'selected') : (),
+          !$_ ? '-month-' : strftime '%B', 0, 0, 0, 0, $_, 0, 0, 0
+         for(0..12);
+      end;
+      Select id => "$o{short}_d", name => $o{short}, style => 'width: 70px';
+       option value => $_, $frm->{$o{short}} && $frm->{$o{short}}[2] == $_ ? (selected => 'selected') : (),
+          !$_ ? '-day-' : $_
+         for(0..31);
       end;
     }
     if(/text/) {

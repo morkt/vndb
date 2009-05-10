@@ -5,7 +5,6 @@ use strict;
 use warnings;
 use YAWF ':html';
 use VNDB::Func;
-use POSIX 'strftime';
 
 
 YAWF::register(
@@ -341,23 +340,7 @@ sub _form {
     [ input  => short => 'gtin',      name => 'JAN/UPC/EAN' ],
     [ input  => short => 'catalog',   name => 'Catalog number' ],
     [ input  => short => 'website',   name => 'Official website' ],
-    [ static => label => 'Release date', content => sub {
-      Select id => 'released', name => 'released';
-       option value => $_, $frm->{released} && $frm->{released}[0] == $_ ? (selected => 'selected') : (),
-          !$_ ? '-year-' : $_ < 9999 ? $_ : 'TBA'
-         for (0, 1980..((localtime())[5]+1905), 9999);
-      end;
-      Select id => 'released_m', name => 'released';
-       option value => $_, $frm->{released} && $frm->{released}[1] == $_ ? (selected => 'selected') : (),
-          !$_ ? '-month-' : strftime '%B', 0, 0, 0, 0, $_, 0, 0, 0
-         for(0..12);
-      end;
-      Select id => 'released_d', name => 'released';
-       option value => $_, $frm->{released} && $frm->{released}[2] == $_ ? (selected => 'selected') : (),
-          !$_ ? '-day-' : $_
-         for(0..31);
-      end;
-    }],
+    [ date   => short => 'released',  name => 'Release date' ],
     [ static => content => 'Leave month or day blank if they are unknown' ],
     [ select => short => 'minage', name => 'Age rating',
       options => [ map [ $_, $self->{age_ratings}{$_} ], sort { $a <=> $b } keys %{$self->{age_ratings}} ] ],

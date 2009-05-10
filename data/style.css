@@ -903,8 +903,6 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 }
 
 /* edit */
-#released, #released_d { width: 70px }
-#released_m { width: 100px }
 .platforms {  padding-left: 20px; }
 .platforms span { display: block; float: left; width: 150px; }
 
