@@ -117,8 +117,8 @@ sub _filters {
 
   div class => 'mainbox';
    h1 'Browse visual novels';
-   form class => 'search', action => '/v/all', 'accept-charset' => 'UTF-8', method => 'get';
-    fieldset;
+   form action => '/v/all', 'accept-charset' => 'UTF-8', method => 'get';
+    fieldset class => 'search';
      input type => 'text', name => 'q', id => 'q', class => 'text', value => $f->{q};
      input type => 'submit', class => 'submit', value => 'Search!';
     end;

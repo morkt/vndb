@@ -429,13 +429,13 @@ table thead td {
   font-weight: bold;
   background-color: $secbg$;
 }
-form.search {
+fieldset.search {
   display: block;
   width: 100%;
   text-align: center;
   margin: 0 0 10px 0;
 }
-form.search .submit {
+fieldset.search .submit {
   padding: 0 1px;
 }
 

@@ -431,6 +431,7 @@ sub browse {
     { name => 'p',  required => 0, default => 1, template => 'int' },
     { name => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
     { name => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
+    { name => 'q',  required => 0, default => '', maxlength => 500 },
     #{ name => 't',  required => 0, default => ((gmtime)[5]+1900)*100+(gmtime)[4]+1, template => 'int' },
     { name => 'ln', required => 0, multi => 1, default => '', enum => [ keys %{$self->{languages}} ] },
     { name => 'pl', required => 0, multi => 1, default => '', enum => [ keys %{$self->{platforms}} ] },
@@ -447,6 +448,7 @@ sub browse {
     page => $f->{p},
     results => 50,
     #date => $f->{t},
+    $f->{q} ? (search => $f->{q}) : (),
     $f->{pl}[0] ? (platforms => $f->{pl}) : (),
     $f->{ln}[0] ? (languages => $f->{ln}) : (),
     $f->{tp} >= 0 ? (type => $f->{tp}) : (),
@@ -455,7 +457,7 @@ sub browse {
     what => 'platforms',
   );
 
-  my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a}";
+  my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a};q=$f->{q}";
   $_&&($url .= ";ln=$_") for @{$f->{ln}};
   $_&&($url .= ";pl=$_") for @{$f->{pl}};
 
@@ -500,9 +502,14 @@ sub browse {
 sub _filters {
   my($self, $f) = @_;
 
-  form method => 'get', action => '/r';
+  form method => 'get', action => '/r', 'accept-charset' => 'UTF-8';
   div class => 'mainbox';
    h1 'Browse releases';
+
+   fieldset class => 'search';
+    input type => 'text', name => 'q', id => 'q', class => 'text', value => $f->{q};
+    input type => 'submit', class => 'submit', value => 'Search!';
+   end;
 
    #p class => 'center';
    # # you know, date calculation on strangely formatted integers really isn't so bad :-)

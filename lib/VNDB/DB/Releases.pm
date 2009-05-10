@@ -9,7 +9,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbReleaseGet dbReleaseAdd dbReleaseEdit|;
 
 
-# Options: id vid rev order unreleased page results what date platforms languages type minage
+# Options: id vid rev order unreleased page results what date platforms languages type minage search
 # What: extended changes vn producers platforms media
 sub dbReleaseGet {
   my($self, %o) = @_;
@@ -18,7 +18,7 @@ sub dbReleaseGet {
   $o{what} ||= '';
   $o{order} ||= 'rr.released ASC';
 
-  my %where = (
+  my @where = (
     !$o{id} && !$o{rev} ? (
       'r.hidden = FALSE' => 0 ) : (),
     $o{id} ? (
@@ -44,6 +44,20 @@ sub dbReleaseGet {
       'rr.patch = ?', $o{patch} == 1 ? 1 : 0) : (),
   );
 
+  if($o{search}) {
+    for (split /[ -,._]/, $o{search}) {
+      s/%//g;
+      next if length($_) < 2;
+      if(/^\d+$/ && gtintype($_)) {
+        push @where, 'rr.gtin = ?', $_;
+      } else {
+        $_ = "%$_%";
+        push @where, '(rr.title ILIKE ? OR rr.original ILIKE ? OR rr.catalog = ?)',
+          [ $_, $_, $_ ];
+      }
+    }
+  }
+
   my @join = (
     $o{rev} ? 'JOIN releases r ON r.id = rr.rid' : 'JOIN releases r ON rr.id = r.latest',
     $o{vid} ? 'JOIN releases_vn rv ON rv.rid = rr.id' : (),
@@ -66,7 +80,7 @@ sub dbReleaseGet {
       !s
       !W
       ORDER BY !s|,
-    join(', ', @select), join(' ', @join), \%where,  $o{order}
+    join(', ', @select), join(' ', @join), \@where, $o{order}
   );
 
   if(@$r && $o{what} =~ /(vn|producers|platforms|media)/) {

@@ -367,8 +367,8 @@ sub taglist {
   $self->htmlHeader(title => $title);
   div class => 'mainbox';
    h1 $title;
-   form class => 'search', action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
-    fieldset;
+   form action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
+    fieldset class => 'search';
      input type => 'hidden', name => 't', value => $f->{t};
      input type => 'text', name => 'q', id => 'q', class => 'text', value => $f->{q};
      input type => 'submit', class => 'submit', value => 'Search!';
@@ -589,8 +589,8 @@ sub tagindex {
   div class => 'mainbox';
    a class => 'addnew', href => "/g/new", ($self->authCan('tagmod')?'Create':'Request').' new tag' if $self->authCan('tag');
    h1 'Search tags';
-   form class => 'search', action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
-    fieldset;
+   form action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
+    fieldset class => 'search';
      input type => 'text', name => 'q', id => 'q', class => 'text';
      input type => 'submit', class => 'submit', value => 'Search!';
     end;
