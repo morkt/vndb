@@ -30,7 +30,7 @@ sub dbReleaseGet {
     defined $o{unreleased} ? (
       q|rr.released !s ?| => [ $o{unreleased} ? '>' : '<=', strftime('%Y%m%d', gmtime) ] ) : (),
     $o{date} ? (
-      '(rr.released > ? AND rr.released < ?)' => [ $o{date}*100, $o{date}*100+99 ] ) : (),
+      '(rr.released >= ? AND rr.released <= ?)' => [ $o{date}[0], $o{date}[1] ] ) : (),
     $o{languages} ? (
       'rr.language IN(!l)', => [ $o{languages} ] ) : (),
     $o{platforms} ? (

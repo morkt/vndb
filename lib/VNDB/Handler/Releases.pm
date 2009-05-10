@@ -415,22 +415,29 @@ sub browse {
     { name => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
     { name => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
     { name => 'q',  required => 0, default => '', maxlength => 500 },
-    #{ name => 't',  required => 0, default => ((gmtime)[5]+1900)*100+(gmtime)[4]+1, template => 'int' },
     { name => 'ln', required => 0, multi => 1, default => '', enum => [ keys %{$self->{languages}} ] },
     { name => 'pl', required => 0, multi => 1, default => '', enum => [ keys %{$self->{platforms}} ] },
     { name => 'tp', required => 0, default => -1, enum => [ -1..$#{$self->{release_types}} ] },
     { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
     { name => 'ma_a', required => 0, default => 0, enum => [ keys %{$self->{age_ratings}} ] },
+    { name => 'mi', required => 0, default => 0, multi => 1, template => 'int' },
+    { name => 'ma', required => 0, default => 9999, multi => 1, template => 'int' },
   );
   return 404 if $f->{_err};
 
+  $f->{mi}[1] ||= 0; $f->{mi}[2] ||= 0;
+  $f->{ma}[1] ||= 0; $f->{ma}[2] ||= 0;
+  my $mindate  = !$f->{mi}[0] ? 0 : $f->{mi}[0] == 9999 ? 99999999 :
+    sprintf '%04d%02d%02d',  $f->{mi}[0], $f->{mi}[1]||99, $f->{mi}[2]||99;
+  my $maxdate  = !$f->{ma}[0] ? 0 : $f->{ma}[0] == 9999 ? 99999999 :
+    sprintf '%04d%02d%02d',  $f->{ma}[0], $f->{ma}[1]||99, $f->{ma}[2]||99;
 
   my($list, $np) = $self->dbReleaseGet(
     order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
     page => $f->{p},
     results => 50,
-    #date => $f->{t},
+    date => [ $mindate, $maxdate ],
     $f->{q} ? (search => $f->{q}) : (),
     $f->{pl}[0] ? (platforms => $f->{pl}) : (),
     $f->{ln}[0] ? (languages => $f->{ln}) : (),
@@ -440,7 +447,8 @@ sub browse {
     what => 'platforms',
   );
 
-  my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a};q=$f->{q}";
+  my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a};q=$f->{q}"
+    .";mi=$f->{mi}[0];mi=$f->{mi}[1];mi=$f->{mi}[2];ma=$f->{ma}[0];ma=$f->{ma}[1];ma=$f->{ma}[2]";
   $_&&($url .= ";ln=$_") for @{$f->{ln}};
   $_&&($url .= ";pl=$_") for @{$f->{pl}};
 
@@ -494,17 +502,6 @@ sub _filters {
     input type => 'submit', class => 'submit', value => 'Search!';
    end;
 
-   #p class => 'center';
-   # # you know, date calculation on strangely formatted integers really isn't so bad :-)
-   # my $t = $f->{t};
-   # $t = $t-100+12 if (--$t % 100) == 0;
-   # a href => "/r?t=$t", '<- previous month';
-   # txt ' | ';
-   # $t = $f->{t};
-   # $t = $t+100-12 if (++$t % 100) == 13;
-   # a href => "/r?t=$t", 'next month ->';
-   #end;
-
    a id => 'advselect', href => '#';
     lit '<i>&#9656;</i> filters';
    end;
@@ -530,6 +527,8 @@ sub _filters {
        end;
       end;
      end;
+     $self->htmlFormPart($f, [ date => short => 'mi', name => 'Released after' ]);
+     $self->htmlFormPart($f, [ date => short => 'ma', name => 'Released before' ]);
     end;
 
     h2;
