@@ -428,41 +428,53 @@ sub browse {
   my $self = shift;
 
   my $f = $self->formValidate(
-    { name => 'p', required => 0, default => 1, template => 'int' },
-    { name => 't', required => 0, default => ((gmtime)[5]+1900)*100+(gmtime)[4]+1, template => 'int' },
+    { name => 'p',  required => 0, default => 1, template => 'int' },
+    { name => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
+    { name => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
+    #{ name => 't',  required => 0, default => ((gmtime)[5]+1900)*100+(gmtime)[4]+1, template => 'int' },
+    { name => 'ln', required => 0, multi => 1, default => '', enum => [ keys %{$self->{languages}} ] },
+    { name => 'pl', required => 0, multi => 1, default => '', enum => [ keys %{$self->{platforms}} ] },
+    { name => 'tp', required => 0, default => -1, enum => [ -1..$#{$self->{release_types}} ] },
+    { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
+    { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
+    { name => 'ma_a', required => 0, default => 0, enum => [ keys %{$self->{age_ratings}} ] },
   );
   return 404 if $f->{_err};
 
 
   my($list, $np) = $self->dbReleaseGet(
+    order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
     page => $f->{p},
-    results => 100,
-    date => $f->{t},
+    results => 50,
+    #date => $f->{t},
+    $f->{pl}[0] ? (platforms => $f->{pl}) : (),
+    $f->{ln}[0] ? (languages => $f->{ln}) : (),
+    $f->{tp} >= 0 ? (type => $f->{tp}) : (),
+    $f->{ma_a} || $f->{ma_m} ? (minage => [$f->{ma_m}, $f->{ma_a}]) : (),
+    $f->{pa} ? (patch => $f->{pa}) : (),
     what => 'platforms',
   );
 
-  $self->htmlHeader(title => 'Browse releases');
-  div class => 'mainbox';
-   h1 'Browse releases';
-   p class => 'center';
-    # you know, date calculation on strangely formatted integers really isn't so bad :-)
-    my $t = $f->{t};
-    $t = $t-100+12 if (--$t % 100) == 0;
-    a href => "/r?t=$t", '<- previous month';
-    txt ' | ';
-    $t = $f->{t};
-    $t = $t+100-12 if (++$t % 100) == 13;
-    a href => "/r?t=$t", 'next month ->';
-   end;
-  end;
+  my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a}";
+  $_&&($url .= ";ln=$_") for @{$f->{ln}};
+  $_&&($url .= ";pl=$_") for @{$f->{pl}};
 
+  $self->htmlHeader(title => 'Browse releases');
+  _filters($self, $f);
   $self->htmlBrowse(
     class    => 'relbrowse',
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => "/r?t=$f->{t}",
-    row     => sub {
+    pageurl  => "$url;s=$f->{s};o=$f->{o}",
+    sorturl  => $url,
+    header   => [
+      [ 'Released', 'released' ],
+      [ 'Rating',   'minage' ],
+      [ '',         '' ],
+      [ 'Title',    'title' ],
+    ],
+    row      => sub {
       my($s, $n, $l) = @_;
       Tr $n % 2 ? (class => 'odd') : ();
        td class => 'tc1';
@@ -482,6 +494,87 @@ sub browse {
     },
   );
   $self->htmlFooter;
+}
+
+
+sub _filters {
+  my($self, $f) = @_;
+
+  form method => 'get', action => '/r';
+  div class => 'mainbox';
+   h1 'Browse releases';
+
+   #p class => 'center';
+   # # you know, date calculation on strangely formatted integers really isn't so bad :-)
+   # my $t = $f->{t};
+   # $t = $t-100+12 if (--$t % 100) == 0;
+   # a href => "/r?t=$t", '<- previous month';
+   # txt ' | ';
+   # $t = $f->{t};
+   # $t = $t+100-12 if (++$t % 100) == 13;
+   # a href => "/r?t=$t", 'next month ->';
+   #end;
+
+   a id => 'advselect', href => '#';
+    lit '<i>&#9656;</i> filters';
+   end;
+   div id => 'advoptions', class => 'hidden';
+
+    h2 'Filters';
+    table class => 'formtable', style => 'margin-left: 0';
+     $self->htmlFormPart($f, [ select => short => 'tp', name => 'Release type',
+       options => [ [-1, 'All'], map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ]]);
+     $self->htmlFormPart($f, [ select => short => 'pa', name => 'Patch status',
+       options => [ [0, 'All'], [1, 'Only patches'], [2, 'Only standalone releases']]]);
+     Tr class => 'newfield';
+      td class => 'label'; label for => 'ma_m', 'Age rating'; end;
+      td class => 'field';
+       Select id => 'ma_m', name => 'ma_m', style => 'width: 70px';
+        option value => 0, $f->{ma_m} == 0 ? ('selected' => 'selected') : (), 'greater';
+        option value => 1, $f->{ma_m} == 1 ? ('selected' => 'selected') : (), 'smaller';
+       end;
+       txt ' than or equal to ';
+       Select id => 'ma_a', name => 'ma_a', style => 'width: 80px; text-align: center';
+        $_>=0 && option value => $_, $f->{ma_a} == $_ ? ('selected' => 'selected') : (), $self->{age_ratings}{$_}
+          for (sort { $a <=> $b } keys %{$self->{age_ratings}});
+       end;
+      end;
+     end;
+    end;
+
+    h2;
+     lit 'Languages <b>(boolean or, selecting more gives more results)</b>';
+    end;
+    for my $i (sort @{$self->dbLanguages}) {
+      span;
+       input type => 'checkbox', name => 'ln', value => $i, id => "lang_$i", grep($_ eq $i, @{$f->{ln}}) ? (checked => 'checked') : ();
+       label for => "lang_$i";
+        cssicon "lang $i", $self->{languages}{$i};
+        txt $self->{languages}{$i};
+       end;
+      end;
+    }
+
+    h2;
+     lit 'Platforms <b>(boolean or, selecting more gives more results)</b>';
+    end;
+    for my $i (sort keys %{$self->{platforms}}) {
+      next if $i eq 'oth';
+      span;
+       input type => 'checkbox', name => 'pl', value => $i, id => "plat_$i", grep($_ eq $i, @{$f->{pl}}) ? (checked => 'checked') : ();
+       label for => "plat_$i";
+        cssicon $i, $self->{platforms}{$i};
+        txt $self->{platforms}{$i};
+       end;
+      end;
+    }
+
+    div style => 'text-align: center; clear: left;';
+     input type => 'submit', value => 'Apply', class => 'submit';
+    end;
+   end;
+  end;
+  end;
 }
 
 

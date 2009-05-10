@@ -9,7 +9,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbReleaseGet dbReleaseAdd dbReleaseEdit|;
 
 
-# Options: id vid rev order unreleased page results what date
+# Options: id vid rev order unreleased page results what date platforms languages type minage
 # What: extended changes vn producers platforms media
 sub dbReleaseGet {
   my($self, %o) = @_;
@@ -31,6 +31,17 @@ sub dbReleaseGet {
       q|rr.released !s ?| => [ $o{unreleased} ? '>' : '<=', strftime('%Y%m%d', gmtime) ] ) : (),
     $o{date} ? (
       '(rr.released > ? AND rr.released < ?)' => [ $o{date}*100, $o{date}*100+99 ] ) : (),
+    $o{languages} ? (
+      'rr.language IN(!l)', => [ $o{languages} ] ) : (),
+    $o{platforms} ? (
+      #'EXISTS(SELECT 1 FROM releases_platforms rp WHERE rp.rid = rr.id AND rp.platform IN(!l))' => [ $o{platforms} ] ) : (),
+      'rr.id IN(SELECT irp.rid FROM releases_platforms irp JOIN releases ir ON ir.latest = irp.rid WHERE irp.platform IN(!l))' => [ $o{platforms} ] ) : (),
+    defined $o{type} ? (
+      'rr.type = ?' => $o{type} ) : (),
+    $o{minage} ? (
+      '(rr.minage !s ? AND rr.minage <> -1)' => [ $o{minage}[0] ? '<=' : '>=', $o{minage}[1] ] ) : (),
+    $o{patch} ? (
+      'rr.patch = ?', $o{patch} == 1 ? 1 : 0) : (),
   );
 
   my @join = (
