@@ -437,7 +437,7 @@ sub browse {
     order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
     page => $f->{p},
     results => 50,
-    date => [ $mindate, $maxdate ],
+    $mindate > 0 || $maxdate < 99990000 ? (date => [ $mindate, $maxdate ]) : (),
     $f->{q} ? (search => $f->{q}) : (),
     $f->{pl}[0] ? (platforms => $f->{pl}) : (),
     $f->{ln}[0] ? (languages => $f->{ln}) : (),
