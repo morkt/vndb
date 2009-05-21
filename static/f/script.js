@@ -66,6 +66,8 @@ function searchInit() {
     return false;
   });
 
+  if(!x('catselect'))
+    return;
   var l = x('catselect').getElementsByTagName('li');
   for(i=0;i<l.length;i++)
     if(l[i].id.substr(0,4) == 'cat_')
