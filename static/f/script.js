@@ -391,6 +391,40 @@ function tvsSet(lvl, lim) {
 
 
 
+/* date input */
+var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function dtLoad(obj) {
+  var r = Math.floor(obj.value) || 0;
+  var v = [ Math.floor(r/10000), Math.floor(r/100)%100, r%100 ];
+  var i;
+  r = '<select onchange="dtSerialize(this)" style="width: 70px"><option value="0">-year-</option>';
+  for(i=1980; i<=(new Date()).getFullYear()+5; i++)
+    r += '<option value="'+i+'"'+(i == v[0] ? ' selected="selected"':'')+'>'+i+'</option>';
+  r += '<option value="9999"'+(v[0] == 9999 ? ' selected="selected"':'')+'>TBA</option>';
+  r += '</select><select onchange="dtSerialize(this)" style="width: 100px"><option value="99">-month-</option>';
+  for(i=1; i<=12; i++)
+    r += '<option value="'+i+'"'+(i == v[1] ? ' selected="selected"':'')+'>'+months[i-1]+'</option>';
+  r += '</select><select onchange="dtSerialize(this)" style="width: 70px"><option value="99">-day-</option>';
+  for(i=1; i<=31; i++)
+    r += '<option value="'+i+'"'+(i == v[2] ? ' selected="selected"':'')+'>'+i+'</option>';
+  r += '</select>';
+  v = document.createElement('div');
+  v.obj = obj;
+  v.innerHTML = r;
+  obj.parentNode.insertBefore(v, obj);
+}
+function dtSerialize(obj) {
+  obj = obj.parentNode;
+  var l = obj.getElementsByTagName('select');
+  var v = [ l[0].options[l[0].selectedIndex].value*1, l[1].options[l[1].selectedIndex].value*1, l[2].options[l[2].selectedIndex].value*1 ];
+  obj = obj.obj;
+  if(v[0] == 0) obj.value = 0;
+  else if(v[0] == 9999) obj.value = 99999999;
+  else obj.value = v[0]*10000 + v[1]*100 + (v[1]==99?99:v[2]);
+}
+
+
+
 /*  O N L O A D   E V E N T  */
 
 DOMLoad(function() {
@@ -579,6 +613,12 @@ DOMLoad(function() {
     d.innerHTML = '<h2>This is not VNDB!</h2>The real VNDB is <a href="http://vndb.org/">here</a>.';
     document.body.appendChild(d);
   }
+
+  // date selector
+  l = document.getElementsByTagName('input');
+  for(i=0;i<l.length;i++)
+    if(l[i].className == 'dateinput')
+      dtLoad(l[i]);
 
   // forms.js
   if(x('relations'))

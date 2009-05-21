@@ -192,21 +192,7 @@ sub htmlFormPart {
       end;
     }
     if(/date/) {
-      Select name => $o{short}, id => $o{short}, style => 'width: 70px';
-       option value => $_, $frm->{$o{short}} && $frm->{$o{short}}[0] == $_ ? (selected => 'selected') : (),
-          !$_ ? '-year-' : $_ < 9999 ? $_ : 'TBA'
-         for (0, 1980..((localtime())[5]+1905), 9999);
-      end;
-      Select id => "$o{short}_m", name => $o{short}, style => 'width: 100px';
-       option value => $_, $frm->{$o{short}} && $frm->{$o{short}}[1] == $_ ? (selected => 'selected') : (),
-          !$_ ? '-month-' : strftime '%B', 0, 0, 0, 0, $_, 0, 0, 0
-         for(0..12);
-      end;
-      Select id => "$o{short}_d", name => $o{short}, style => 'width: 70px';
-       option value => $_, $frm->{$o{short}} && $frm->{$o{short}}[2] == $_ ? (selected => 'selected') : (),
-          !$_ ? '-day-' : $_
-         for(0..31);
-      end;
+      input type => 'hidden', id => $o{short}, name => $o{short}, value => $frm->{$o{short}}||'', class => 'dateinput';
     }
     if(/text/) {
       (my $txt = $frm->{$o{short}}||'') =~ s/&/&amp;/;

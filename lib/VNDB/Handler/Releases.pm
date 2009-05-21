@@ -247,8 +247,7 @@ sub edit {
 
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (
-    (map { $_ => $r->{$_} } qw|type title original gtin catalog language website notes minage platforms patch|),
-    released  => $r->{released} =~ /^([0-9]{4})([0-9]{2})([0-9]{2})$/ ? [ $1, $2, $3 ] : [ 0, 0, 0 ],
+    (map { $_ => $r->{$_} } qw|type title original gtin catalog language website released notes minage platforms patch|),
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map "$_->{id},$_->{name}", sort { $a->{id} <=> $b->{id} } @{$r->{producers}}),
   );
@@ -266,7 +265,7 @@ sub edit {
       { name => 'catalog',   required => 0, default => '', maxlength => 50 },
       { name => 'language',  enum => [ keys %{$self->{languages}} ] },
       { name => 'website',   required => 0, default => '', template => 'url' },
-      { name => 'released',  required => 0, default => 0, multi => 1, template => 'int' },
+      { name => 'released',  required => 0, default => 0, template => 'int' },
       { name => 'minage' ,   required => 0, default => -1, enum => [ keys %{$self->{age_ratings}} ] },
       { name => 'notes',     required => 0, default => '', maxlength => 10240 },
       { name => 'platforms', required => 0, default => '', multi => 1, enum => [ keys %{$self->{platforms}} ] },
@@ -277,8 +276,6 @@ sub edit {
     );
     if(!$frm->{_err}) {
       # de-serialize
-      my $released  = !$frm->{released}[0] ? 0 : $frm->{released}[0] == 9999 ? 99999999 :
-        sprintf '%04d%02d%02d',  $frm->{released}[0], $frm->{released}[1]||99, $frm->{released}[2]||99;
       my $media     = [ map [ split / / ], split /,/, $frm->{media} ];
       my $producers = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{producers} ];
       my $new_vn    = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];
@@ -286,18 +283,17 @@ sub edit {
       $frm->{patch} = $frm->{patch} ? 1 : 0;
 
       return $self->resRedirect("/r$rid", 'post')
-        if $rid && $released == $r->{released} &&
+        if $rid &&
           (join(',', sort @{$b4{platforms}}) eq join(',', sort @{$frm->{platforms}})) &&
           (join(',', sort @$producers) eq join(',', sort map $_->{id}, @{$r->{producers}})) &&
           (join(',', sort @$new_vn) eq join(',', sort map $_->{vid}, @$vn)) &&
-          !grep !/^(released|platforms|producers|vn)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
+          !grep !/^(platforms|producers|vn)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
 
       my %opts = (
-        (map { $_ => $frm->{$_} } qw| type title original gtin catalog language website notes minage platforms editsum patch|),
+        (map { $_ => $frm->{$_} } qw| type title original gtin catalog language website released notes minage platforms editsum patch |),
         vn        => $new_vn,
         producers => $producers,
         media     => $media,
-        released  => $released,
       );
 
       $rev = 1;
@@ -421,23 +417,16 @@ sub browse {
     { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
     { name => 'ma_a', required => 0, default => 0, enum => [ keys %{$self->{age_ratings}} ] },
-    { name => 'mi', required => 0, default => 0, multi => 1, template => 'int' },
-    { name => 'ma', required => 0, default => 9999, multi => 1, template => 'int' },
+    { name => 'mi', required => 0, default => 0, template => 'int' },
+    { name => 'ma', required => 0, default => 99999999, template => 'int' },
   );
   return 404 if $f->{_err};
-
-  $f->{mi}[1] ||= 0; $f->{mi}[2] ||= 0;
-  $f->{ma}[1] ||= 0; $f->{ma}[2] ||= 0;
-  my $mindate  = !$f->{mi}[0] ? 0 : $f->{mi}[0] == 9999 ? 99999999 :
-    sprintf '%04d%02d%02d',  $f->{mi}[0], $f->{mi}[1]||99, $f->{mi}[2]||99;
-  my $maxdate  = !$f->{ma}[0] ? 0 : $f->{ma}[0] == 9999 ? 99999999 :
-    sprintf '%04d%02d%02d',  $f->{ma}[0], $f->{ma}[1]||99, $f->{ma}[2]||99;
 
   my($list, $np) = $self->dbReleaseGet(
     order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
     page => $f->{p},
     results => 50,
-    $mindate > 0 || $maxdate < 99990000 ? (date => [ $mindate, $maxdate ]) : (),
+    $f->{mi} > 0 || $f->{ma} < 99990000 ? (date => [ $f->{mi}, $f->{ma} ]) : (),
     $f->{q} ? (search => $f->{q}) : (),
     $f->{pl}[0] ? (platforms => $f->{pl}) : (),
     $f->{ln}[0] ? (languages => $f->{ln}) : (),
@@ -447,8 +436,7 @@ sub browse {
     what => 'platforms',
   );
 
-  my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a};q=$f->{q}"
-    .";mi=$f->{mi}[0];mi=$f->{mi}[1];mi=$f->{mi}[2];ma=$f->{ma}[0];ma=$f->{ma}[1];ma=$f->{ma}[2]";
+  my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a};q=$f->{q};mi=$f->{mi};ma=$f->{ma}";
   $_&&($url .= ";ln=$_") for @{$f->{ln}};
   $_&&($url .= ";pl=$_") for @{$f->{pl}};
 
