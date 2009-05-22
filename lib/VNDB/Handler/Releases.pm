@@ -175,7 +175,7 @@ sub _infotable {
    if($r->{minage} >= 0) {
      Tr ++$i % 2 ? (class => 'odd') : ();
       td 'Age rating';
-      td $self->{age_ratings}{$r->{minage}};
+      td $self->{age_ratings}{$r->{minage}}[0];
      end;
    }
 
@@ -357,7 +357,8 @@ sub _form {
     [ date   => short => 'released',  name => 'Release date' ],
     [ static => content => 'Leave month or day blank if they are unknown' ],
     [ select => short => 'minage', name => 'Age rating',
-      options => [ map [ $_, $self->{age_ratings}{$_} ], sort { $a <=> $b } keys %{$self->{age_ratings}} ] ],
+      options => [ map [ $_, $self->{age_ratings}{$_}[0].($self->{age_ratings}{$_}[1]?" (e.g. $self->{age_ratings}{$_}[1])":'') ],
+        sort { $a <=> $b } keys %{$self->{age_ratings}} ] ],
     [ select => short => 'resolution', name => 'Resolution', options => [
       map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
     [ select => short => 'voiced',    name => 'Voiced', options => [
@@ -485,7 +486,7 @@ sub browse {
        td class => 'tc1';
         lit datestr $l->{released};
        end;
-       td class => 'tc2', $l->{minage} > -1 ? $self->{age_ratings}{$l->{minage}} : '';
+       td class => 'tc2', $l->{minage} > -1 ? $self->{age_ratings}{$l->{minage}}[0] : '';
        td class => 'tc3';
         $_ ne 'oth' && cssicon $_, $self->{platforms}{$_} for (@{$l->{platforms}});
         cssicon "lang $l->{language}", $self->{languages}{$l->{language}};
@@ -534,7 +535,7 @@ sub _filters {
        end;
        txt ' than or equal to ';
        Select id => 'ma_a', name => 'ma_a', style => 'width: 80px; text-align: center';
-        $_>=0 && option value => $_, $f->{ma_a} == $_ ? ('selected' => 'selected') : (), $self->{age_ratings}{$_}
+        $_>=0 && option value => $_, $f->{ma_a} == $_ ? ('selected' => 'selected') : (), $self->{age_ratings}{$_}[0]
           for (sort { $a <=> $b } keys %{$self->{age_ratings}});
        end;
       end;
