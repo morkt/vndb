@@ -42,6 +42,9 @@
   of the product. Often called "JAN" for Japanese releases, "UPC" for USA and Canada
   and "EAN" for Europe. The system will automatically detect the type from the code and 
   use the appropriate term on the release page.
+ </dd><dt>Catalog number</dt><dd>
+  Catalog number as assigned by the producer. Often used to identify releases on
+  webshops, and can usually be found somewhere on the packaging of the product.
  </dd><dt>Official website</dt><dd>
   URL of the official homepage for this product.
  </dd><dt>Release date</dt><dd>
@@ -51,6 +54,8 @@
  </dd><dt>Age rating</dt><dd>
   The minimum age rating for the release. On most releases, this is specified on the
   packaging or on product web pages.
+ </dd><dt>Resolution</dt><dd>
+  Primary/native screen resolution of the game.
  </dd><dt>Notes</dt><dd>
   Anything miscellaneous and useful.
   Generally, extras (but not preorder bonuses) and progress information go here.
