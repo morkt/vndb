@@ -220,8 +220,8 @@ our %S = (%S,
   voiced          => [
     'Unknown',
     'Unvoiced',
-    'Partially voiced',
     'Only ero scenes voiced',
+    'Partially voiced',
     'Fully voiced',
   ],
   votes           => [
