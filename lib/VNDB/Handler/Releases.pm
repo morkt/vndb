@@ -278,7 +278,7 @@ sub edit {
       { name => 'notes',     required => 0, default => '', maxlength => 10240 },
       { name => 'platforms', required => 0, default => '', multi => 1, enum => [ keys %{$self->{platforms}} ] },
       { name => 'media',     required => 0, default => '' },
-      { name => 'resolution',required => 0, default => 0 },
+      { name => 'resolution',required => 0, default => 0, enum => [ 0..$#{$self->{resolutions}} ] },
       { name => 'producers', required => 0, default => '' },
       { name => 'vn',        maxlength => 5000 },
       { name => 'editsum',   maxlength => 5000 },
