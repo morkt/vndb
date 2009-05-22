@@ -413,6 +413,7 @@ sub browse {
     { name => 'q',  required => 0, default => '', maxlength => 500 },
     { name => 'ln', required => 0, multi => 1, default => '', enum => [ keys %{$self->{languages}} ] },
     { name => 'pl', required => 0, multi => 1, default => '', enum => [ keys %{$self->{platforms}} ] },
+    { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
     { name => 'tp', required => 0, default => -1, enum => [ -1..$#{$self->{release_types}} ] },
     { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
@@ -430,6 +431,7 @@ sub browse {
     $f->{q} ? (search => $f->{q}) : (),
     $f->{pl}[0] ? (platforms => $f->{pl}) : (),
     $f->{ln}[0] ? (languages => $f->{ln}) : (),
+    $f->{me}[0] ? (media => $f->{me}) : (),
     $f->{tp} >= 0 ? (type => $f->{tp}) : (),
     $f->{ma_a} || $f->{ma_m} ? (minage => [$f->{ma_m}, $f->{ma_a}]) : (),
     $f->{pa} ? (patch => $f->{pa}) : (),
@@ -543,6 +545,17 @@ sub _filters {
         cssicon $i, $self->{platforms}{$i};
         txt $self->{platforms}{$i};
        end;
+      end;
+    }
+
+    h2;
+     lit 'Media <b>(boolean or, selecting more gives more results)</b>';
+    end;
+    for my $i (sort keys %{$self->{media}}) {
+      next if $i eq 'otc';
+      span;
+       input type => 'checkbox', name => 'me', value => $i, id => "med_$i", grep($_ eq $i, @{$f->{me}}) ? (checked => 'checked') : ();
+       label for => "med_$i", $self->{media}{$i}[0];
       end;
     }
 
