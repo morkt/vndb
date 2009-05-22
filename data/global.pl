@@ -200,9 +200,10 @@ our %S = (%S,
     [ '640x400',         'widescreen' ],
     [ '1024x640',        'widescreen' ],
     [ '1280x720',        'widescreen' ],
-    [ '480x272 (PSP)',   'console' ],
-    [ '2x256x192 (NDS)', 'console' ],
-    [ '640x448 (TV)',    'console' ], # really?
+    [ '480x272 (PSP)',   'other' ],
+    [ '2x256x192 (NDS)', 'other' ],
+    [ '640x448 (TV)',    'other' ], # really?
+    [ 'Custom',          'other' ],
   ],
   voiced          => [
     'Unknown',
