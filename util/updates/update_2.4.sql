@@ -33,7 +33,8 @@ SELECT tag_vn_calc();
 
 
 
--- resolution field to releases
-
+-- resolution field
 ALTER TABLE releases_rev ADD COLUMN resolution smallint NOT NULL DEFAULT 0;
+-- voiced
+ALTER TABLE releases_rev ADD COLUMN voiced smallint NOT NULL DEFAULT 0;
 

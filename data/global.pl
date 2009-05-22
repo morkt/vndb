@@ -204,6 +204,13 @@ our %S = (%S,
     [ '2x256x192 (NDS)', 'console' ],
     [ '640x448 (TV)',    'console' ], # really?
   ],
+  voiced          => [
+    'Unknown',
+    'Unvoiced',
+    'Partially voiced',
+    'Only ero scenes voiced',
+    'Fully voiced',
+  ],
   votes           => [
     'worst ever',
     'awful',

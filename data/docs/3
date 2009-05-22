@@ -56,6 +56,12 @@
   packaging or on product web pages.
  </dd><dt>Resolution</dt><dd>
   Primary/native screen resolution of the game.
+ </dd><dt>Voiced</dt><dd>
+  Indicates whether this release includes voice acting. <i>Fully voiced</i> indicates
+  that all characters (maybe with the exeption of a few minor characters) are voiced in
+  all scenes. <i>Only ero scenes voiced</i> speaks for itself, and <i>Partially voiced</i>
+  should be used when there is some voice acting, but only for the main characters or only
+  in some scenes.
  </dd><dt>Notes</dt><dd>
   Anything miscellaneous and useful.
   Generally, extras (but not preorder bonuses) and progress information go here.
