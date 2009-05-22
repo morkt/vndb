@@ -115,7 +115,8 @@ CREATE TABLE releases_rev (
   minage smallint NOT NULL DEFAULT -1,
   gtin bigint NOT NULL DEFAULT 0,
   patch boolean NOT NULL DEFAULT FALSE,
-  catalog varchar(50) NOT NULL DEFAULT ''
+  catalog varchar(50) NOT NULL DEFAULT '',
+  resolution smallint NOT NULL DEFAULT 0
 );
 
 -- releases_vn

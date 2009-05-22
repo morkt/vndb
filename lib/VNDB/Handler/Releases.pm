@@ -57,6 +57,7 @@ sub page {
           $med->[1] ? sprintf('%d %s%s', $_->{qty}, $med->[0], $_->{qty}>1?'s':'') : $med->[0]
         } @{$_[0]};
       } ],
+      [ resolution => 'Resolution',    serialize => sub { $self->{resolutions}[$_[0]][0] } ],
       [ producers => 'Producers',      join => '<br />', split => sub {
         map sprintf('<a href="/p%d" title="%s">%s</a>', $_->{id}, $_->{original}||$_->{name}, shorten $_->{name}, 50), @{$_[0]};
       } ],
@@ -146,6 +147,13 @@ sub _infotable {
         my $med = $self->{media}{$_->{medium}};
         $med->[1] ? sprintf('%d %s%s', $_->{qty}, $med->[0], $_->{qty}>1?'s':'') : $med->[0]
       } @{$r->{media}};
+     end;
+   }
+
+   if($r->{resolution}) {
+     Tr ++$i % 2 ? (class => 'odd') : ();
+      td 'Resolution';
+      td $self->{resolutions}[$r->{resolution}][0];
      end;
    }
 
@@ -247,7 +255,7 @@ sub edit {
 
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (
-    (map { $_ => $r->{$_} } qw|type title original gtin catalog language website released notes minage platforms patch|),
+    (map { $_ => $r->{$_} } qw|type title original gtin catalog language website released notes minage platforms patch resolution|),
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map "$_->{id},$_->{name}", sort { $a->{id} <=> $b->{id} } @{$r->{producers}}),
   );
@@ -270,6 +278,7 @@ sub edit {
       { name => 'notes',     required => 0, default => '', maxlength => 10240 },
       { name => 'platforms', required => 0, default => '', multi => 1, enum => [ keys %{$self->{platforms}} ] },
       { name => 'media',     required => 0, default => '' },
+      { name => 'resolution',required => 0, default => 0 },
       { name => 'producers', required => 0, default => '' },
       { name => 'vn',        maxlength => 5000 },
       { name => 'editsum',   maxlength => 5000 },
@@ -290,7 +299,7 @@ sub edit {
           !grep !/^(platforms|producers|vn)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
 
       my %opts = (
-        (map { $_ => $frm->{$_} } qw| type title original gtin catalog language website released notes minage platforms editsum patch |),
+        (map { $_ => $frm->{$_} } qw| type title original gtin catalog language website released notes minage platforms resolution editsum patch |),
         vn        => $new_vn,
         producers => $producers,
         media     => $media,
@@ -340,6 +349,8 @@ sub _form {
     [ static => content => 'Leave month or day blank if they are unknown' ],
     [ select => short => 'minage', name => 'Age rating',
       options => [ map [ $_, $self->{age_ratings}{$_} ], sort { $a <=> $b } keys %{$self->{age_ratings}} ] ],
+    [ select => short => 'resolution', name => 'Resolution', options => [
+      map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
     [ textarea => short => 'notes', name => 'Notes' ],
     [ static => content => 'Miscellaneous notes/comments, information that does not fit in the above fields. '
        .'E.g.: Censored/uncensored or for which releases this patch applies. Max. 250 characters.' ],

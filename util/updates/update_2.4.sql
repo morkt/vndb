@@ -31,3 +31,9 @@ END;
 $$ LANGUAGE plpgsql;
 SELECT tag_vn_calc();
 
+
+
+-- resolution field to releases
+
+ALTER TABLE releases_rev ADD COLUMN resolution smallint NOT NULL DEFAULT 0;
+

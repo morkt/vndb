@@ -192,6 +192,18 @@ our %S = (%S,
     in  => [ 'Internet download', 0 ],
     otc => [ 'Other',             0 ],
   },
+  resolutions     => [
+    [ 'Unknown',         '' ],
+    [ '640x480',         '4:3' ],
+    [ '800x600',         '4:3' ],
+    [ '1024x768',        '4:3' ],
+    [ '640x400',         'widescreen' ],
+    [ '1024x640',        'widescreen' ],
+    [ '1280x720',        'widescreen' ],
+    [ '480x272 (PSP)',   'console' ],
+    [ '2x256x192 (NDS)', 'console' ],
+    [ '640x448 (TV)',    'console' ], # really?
+  ],
   votes           => [
     'worst ever',
     'awful',
