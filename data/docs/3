@@ -74,7 +74,18 @@
   that all characters (maybe with the exeption of a few minor characters) are voiced in
   all scenes. <i>Only ero scenes voiced</i> speaks for itself, and <i>Partially voiced</i>
   should be used when there is some voice acting, but only for the main characters or only
-  in some scenes.</dd>
+  in some scenes.
+ </dd><dt>Animation</dt><dd>
+  Whether the game has any animation can be specified with two seperate options: one for
+  the normal story mode and one for the ero scenes, if the game has any. With <i>Simple
+  animations</i>, we refer to (usually looping) effects like falling leaves or snow in the
+  background or animated facial expressions like blinking eyes and a moving mouth.
+  <i>Fully animated scenes</i> refers to non-looping anime-like scenes. Some games are
+  entirely like this, others only have a few scenes that are fully animated. Effects like
+  moving sprites around the screen, basic zooming and shaking background images are not
+  considered as "animations". Minigames or other gameplay elements are excluded as well,
+  only the (ADV/VN-like) story parts and ero scenes should be considered.
+ </dd>
 </dl>
 <p>
  <b>Platform</b><br />

@@ -1,9 +1,11 @@
 2.4 - ?
 	- Release search + browser + filters
 	- Javascript date input
-	- Resolution field for release entries
-	- Voiced field for release entries
-	- Freeware/doujin fields for release entries
+	- More release information:
+	  - Screen resolution
+	  - Voiced
+	  - Freeware/doujin
+	  - Animated
 	- Show comparable CERO ratings on /r+/edit input field
 
 2.3 - 2009-04-01

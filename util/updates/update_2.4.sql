@@ -40,4 +40,7 @@ ALTER TABLE releases_rev ADD COLUMN voiced smallint NOT NULL DEFAULT 0;
 -- freeware / doujin
 ALTER TABLE releases_rev ADD COLUMN freeware boolean NOT NULL DEFAULT FALSE;
 ALTER TABLE releases_rev ADD COLUMN doujin boolean NOT NULL DEFAULT FALSE;
+-- animated
+ALTER TABLE releases_rev ADD COLUMN ani_story smallint NOT NULL DEFAULT 0;
+ALTER TABLE releases_rev ADD COLUMN ani_ero smallint NOT NULL DEFAULT 0;
 

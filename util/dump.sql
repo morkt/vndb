@@ -119,7 +119,9 @@ CREATE TABLE releases_rev (
   resolution smallint NOT NULL DEFAULT 0,
   voiced smallint NOT NULL DEFAULT 0,
   freeware boolean NOT NULL DEFAULT FALSE,
-  doujin boolean NOT NULL DEFAULT FALSE
+  doujin boolean NOT NULL DEFAULT FALSE,
+  ani_story smallint NOT NULL DEFAULT 0,
+  ani_ero smallint NOT NULL DEFAULT 0
 );
 
 -- releases_vn

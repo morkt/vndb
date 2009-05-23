@@ -61,6 +61,8 @@ sub page {
       } ],
       [ resolution => 'Resolution',    serialize => sub { $self->{resolutions}[$_[0]][0] } ],
       [ voiced    => 'Voiced',         serialize => sub { $self->{voiced}[$_[0]] } ],
+      [ ani_story => 'Story animation',serialize => sub { $self->{animated}[$_[0]] } ],
+      [ ani_ero   => 'Ero animation',  serialize => sub { $self->{animated}[$_[0]] } ],
       [ producers => 'Producers',      join => '<br />', split => sub {
         map sprintf('<a href="/p%d" title="%s">%s</a>', $_->{id}, $_->{original}||$_->{name}, shorten $_->{name}, 50), @{$_[0]};
       } ],
@@ -172,6 +174,15 @@ sub _infotable {
      end;
    }
 
+   if($r->{ani_story} || $r->{ani_ero}) {
+     Tr ++$i % 2 ? (class => 'odd') : ();
+      td 'Animation';
+      td join ', ',
+        $r->{ani_story} ? ('Story: '     .$self->{animated}[$r->{ani_story}]):(),
+        $r->{ani_ero}   ? ('Ero scenes: '.$self->{animated}[$r->{ani_ero}  ]):();
+     end;
+   }
+
    Tr ++$i % 2 ? (class => 'odd') : ();
     td 'Released';
     td;
@@ -271,7 +282,7 @@ sub edit {
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (
     (map { $_ => $r->{$_} } qw|type title original gtin catalog language website released
-      notes minage platforms patch resolution voiced freeware doujin|),
+      notes minage platforms patch resolution voiced freeware doujin ani_story ani_ero|),
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map "$_->{id},$_->{name}", sort { $a->{id} <=> $b->{id} } @{$r->{producers}}),
   );
@@ -298,6 +309,8 @@ sub edit {
       { name => 'media',     required => 0, default => '' },
       { name => 'resolution',required => 0, default => 0, enum => [ 0..$#{$self->{resolutions}} ] },
       { name => 'voiced',    required => 0, default => 0, enum => [ 0..$#{$self->{voiced}} ] },
+      { name => 'ani_story', required => 0, default => 0, enum => [ 0..$#{$self->{animated}} ] },
+      { name => 'ani_ero',   required => 0, default => 0, enum => [ 0..$#{$self->{animated}} ] },
       { name => 'producers', required => 0, default => '' },
       { name => 'vn',        maxlength => 5000 },
       { name => 'editsum',   maxlength => 5000 },
@@ -319,7 +332,7 @@ sub edit {
 
       my %opts = (
         (map { $_ => $frm->{$_} } qw| type title original gtin catalog language website released
-          notes minage platforms resolution editsum patch voiced freeware doujin|),
+          notes minage platforms resolution editsum patch voiced freeware doujin ani_story ani_ero|),
         vn        => $new_vn,
         producers => $producers,
         media     => $media,
@@ -380,8 +393,13 @@ sub _form {
   'Format' => [
     [ select => short => 'resolution', name => 'Resolution', options => [
       map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
-    [ select => short => 'voiced',    name => 'Voiced', options => [
+    [ select => short => 'voiced',     name => 'Voiced', options => [
       map [ $_, $self->{voiced}[$_] ], 0..$#{$self->{voiced}} ] ],
+    [ select => short => 'ani_story',  name => 'Story animation', options => [
+      map [ $_, $self->{animated}[$_] ], 0..$#{$self->{animated}} ] ],
+    [ select => short => 'ani_ero',  name => 'Ero animation', options => [
+      map [ $_, $self->{animated}[$_] ], 0..$#{$self->{animated}} ] ],
+    [ static => content => 'Animation in erotic scenes, leave to unkown if there are no ero scenes.' ],
     [ hidden => short => 'media' ],
     [ static => nolabel => 1, content => sub {
       h2 'Platforms';

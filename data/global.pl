@@ -224,6 +224,13 @@ our %S = (%S,
     'Partially voiced',
     'Fully voiced',
   ],
+  animated        => [
+    'Unkown',
+    'No animations',
+    'Simple animations',
+    'Some fully animated scenes',
+    'All scenes fully animated',
+  ],
   votes           => [
     'worst ever',
     'awful',
