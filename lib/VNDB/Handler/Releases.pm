@@ -41,6 +41,8 @@ sub page {
       } ],
       [ type      => 'Type',           serialize => sub { $self->{release_types}[$_[0]] } ],
       [ patch     => 'Patch',          serialize => sub { $_[0] ? 'Patch' : 'Not a patch' } ],
+      [ freeware  => 'Freeware',       serialize => sub { $_[0] ? 'yes' : 'nope' } ],
+      [ doujin    => 'Non-commercial', serialize => sub { $_[0] ? 'yups' : 'nope' } ],
       [ title     => 'Title (romaji)', diff => 1 ],
       [ original  => 'Original title', diff => 1 ],
       [ gtin      => 'JAN/UPC/EAN',    serialize => sub { $_[0]||'[none]' } ],
@@ -126,6 +128,11 @@ sub _infotable {
      cssicon "lang $r->{language}", $self->{languages}{$r->{language}};
      txt ' '.$self->{languages}{$r->{language}};
     end;
+   end;
+
+   Tr ++$i % 2 ? (class => 'odd') : ();
+    td 'Publication';
+    td ''.($r->{freeware} ? 'Freeware' : 'Non-free').', '.($r->{doujin} ? 'non-commercial' : 'commercial');
    end;
 
    if(@{$r->{platforms}}) {
@@ -263,7 +270,8 @@ sub edit {
 
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (
-    (map { $_ => $r->{$_} } qw|type title original gtin catalog language website released notes minage platforms patch resolution voiced|),
+    (map { $_ => $r->{$_} } qw|type title original gtin catalog language website released
+      notes minage platforms patch resolution voiced freeware doujin|),
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map "$_->{id},$_->{name}", sort { $a->{id} <=> $b->{id} } @{$r->{producers}}),
   );
@@ -274,6 +282,8 @@ sub edit {
     $frm = $self->formValidate(
       { name => 'type',      enum => [ 0..$#{$self->{release_types}} ] },
       { name => 'patch',     required => 0, default => 0 },
+      { name => 'freeware',  required => 0, default => 0 },
+      { name => 'doujin',    required => 0, default => 0 },
       { name => 'title',     maxlength => 250 },
       { name => 'original',  required => 0, default => '', maxlength => 250 },
       { name => 'gtin',      required => 0, default => '0',
@@ -298,7 +308,7 @@ sub edit {
       my $producers = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{producers} ];
       my $new_vn    = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];
       $frm->{platforms} = [ grep $_, @{$frm->{platforms}} ];
-      $frm->{patch} = $frm->{patch} ? 1 : 0;
+      $frm->{$_} = $frm->{$_} ? 1 : 0 for (qw|patch freeware doujin|);
 
       return $self->resRedirect("/r$rid", 'post')
         if $rid &&
@@ -308,7 +318,8 @@ sub edit {
           !grep !/^(platforms|producers|vn)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
 
       my %opts = (
-        (map { $_ => $frm->{$_} } qw| type title original gtin catalog language website released notes minage platforms resolution editsum patch voiced |),
+        (map { $_ => $frm->{$_} } qw| type title original gtin catalog language website released
+          notes minage platforms resolution editsum patch voiced freeware doujin|),
         vn        => $new_vn,
         producers => $producers,
         media     => $media,
@@ -346,6 +357,8 @@ sub _form {
     [ select => short => 'type',      name => 'Type',
       options => [ map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ] ],
     [ check  => short => 'patch',     name => 'This release is a patch to another release.' ],
+    [ check  => short => 'freeware',  name => 'Freeware (i.e. available at no cost)' ],
+    [ check  => short => 'doujin',    name => 'Non-commercial (released without the intent of making money. e.g. as a doujin group)' ],
     [ input  => short => 'title',     name => 'Title (romaji)', width => 300 ],
     [ input  => short => 'original',  name => 'Original title', width => 300 ],
     [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],

@@ -37,4 +37,7 @@ SELECT tag_vn_calc();
 ALTER TABLE releases_rev ADD COLUMN resolution smallint NOT NULL DEFAULT 0;
 -- voiced
 ALTER TABLE releases_rev ADD COLUMN voiced smallint NOT NULL DEFAULT 0;
+-- freeware / doujin
+ALTER TABLE releases_rev ADD COLUMN freeware boolean NOT NULL DEFAULT FALSE;
+ALTER TABLE releases_rev ADD COLUMN doujin boolean NOT NULL DEFAULT FALSE;
 

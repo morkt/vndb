@@ -117,7 +117,9 @@ CREATE TABLE releases_rev (
   patch boolean NOT NULL DEFAULT FALSE,
   catalog varchar(50) NOT NULL DEFAULT '',
   resolution smallint NOT NULL DEFAULT 0,
-  voiced smallint NOT NULL DEFAULT 0
+  voiced smallint NOT NULL DEFAULT 0,
+  freeware boolean NOT NULL DEFAULT FALSE,
+  doujin boolean NOT NULL DEFAULT FALSE
 );
 
 -- releases_vn
