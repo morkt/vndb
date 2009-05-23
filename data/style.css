@@ -906,7 +906,7 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 .platforms {  padding-left: 20px; }
 .platforms span { display: block; float: left; width: 150px; }
 
-#jt_box_platforms_media h2 { clear: left; padding-top: 10px; }
+#jt_box_format h2 { clear: left; padding-top: 10px; }
 #media_div select.qty { width: 90px; }
 #media_div select.medium { width: 150px }
 #media_div { padding-left: 20px; }

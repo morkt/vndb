@@ -372,16 +372,16 @@ sub _form {
     [ select => short => 'minage', name => 'Age rating',
       options => [ map [ $_, $self->{age_ratings}{$_}[0].($self->{age_ratings}{$_}[1]?" (e.g. $self->{age_ratings}{$_}[1])":'') ],
         sort { $a <=> $b } keys %{$self->{age_ratings}} ] ],
-    [ select => short => 'resolution', name => 'Resolution', options => [
-      map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
-    [ select => short => 'voiced',    name => 'Voiced', options => [
-      map [ $_, $self->{voiced}[$_] ], 0..$#{$self->{voiced}} ] ],
     [ textarea => short => 'notes', name => 'Notes' ],
     [ static => content => 'Miscellaneous notes/comments, information that does not fit in the above fields. '
        .'E.g.: Censored/uncensored or for which releases this patch applies. Max. 250 characters.' ],
   ],
 
-  'Platforms & Media' => [
+  'Format' => [
+    [ select => short => 'resolution', name => 'Resolution', options => [
+      map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
+    [ select => short => 'voiced',    name => 'Voiced', options => [
+      map [ $_, $self->{voiced}[$_] ], 0..$#{$self->{voiced}} ] ],
     [ hidden => short => 'media' ],
     [ static => nolabel => 1, content => sub {
       h2 'Platforms';
