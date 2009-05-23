@@ -1,5 +1,4 @@
 :TITLE:Adding/Editing a Release
-:INC:notfinished
 :INC:index
 
 
@@ -30,6 +29,11 @@
  </dd><dt>Patch</dt><dd>
   Use this checkbox to indicate that the release is a (translation) patch, used to
   patch an other release.
+ </dd><dt>Freeware</dt><dd>
+  Check if this box if the game is downloadable (or otherwise distributed) at no cost.
+ </dd><dt>Doujin</dt><dd>
+  Published by a doujin circle, amateur group or individual, as opposed to a legal
+  entity such as a company.
  </dd><dt>Title (romaji)</dt><dd>
   The name of the release, in the Latin character set (using Romanisation or translation)
  </dd><dt>Original title</dt><dd>
@@ -54,14 +58,6 @@
  </dd><dt>Age rating</dt><dd>
   The minimum age rating for the release. On most releases, this is specified on the
   packaging or on product web pages.
- </dd><dt>Resolution</dt><dd>
-  Primary/native screen resolution of the game.
- </dd><dt>Voiced</dt><dd>
-  Indicates whether this release includes voice acting. <i>Fully voiced</i> indicates
-  that all characters (maybe with the exeption of a few minor characters) are voiced in
-  all scenes. <i>Only ero scenes voiced</i> speaks for itself, and <i>Partially voiced</i>
-  should be used when there is some voice acting, but only for the main characters or only
-  in some scenes.
  </dd><dt>Notes</dt><dd>
   Anything miscellaneous and useful.
   Generally, extras (but not preorder bonuses) and progress information go here.
@@ -69,13 +65,24 @@
 </dl>
 
 
-:SUB:Platforms &amp; Media
+:SUB:Format
+<dl>
+ <dt>Resolution</dt><dd>
+  Primary/native screen resolution of the game.
+ </dd><dt>Voiced</dt><dd>
+  Indicates whether this release includes voice acting. <i>Fully voiced</i> indicates
+  that all characters (maybe with the exeption of a few minor characters) are voiced in
+  all scenes. <i>Only ero scenes voiced</i> speaks for itself, and <i>Partially voiced</i>
+  should be used when there is some voice acting, but only for the main characters or only
+  in some scenes.</dd>
+</dl>
 <p>
+ <b>Platform</b><br />
  The platforms that the product was released for. Does not include emulated platforms
  (e.g. Playstation 2 games on Playstation 3) or WINE. DVD Player refers to games playable
  as a normal DVD Video (DVDPG) and should not be confused with the DVD as a medium.
  <br /><br />
- The following media can be selected:
+ <b>Media</b>
 </p>
 <dl>
  <dt>Blu-ray</dt><dd>
@@ -110,9 +117,14 @@
 
 
 :SUB:Producers
-..
+<p>
+ The companies/groups/individuals involved in the creation, development or translation
+ of this release. Does not include distributors.
+</p>
 
 
 :SUB:Visual novel relations
-..
+<p>
+ The visual novels that this release (either partially or fully) covers.
+</p>
 

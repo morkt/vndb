@@ -42,7 +42,7 @@ sub page {
       [ type      => 'Type',           serialize => sub { $self->{release_types}[$_[0]] } ],
       [ patch     => 'Patch',          serialize => sub { $_[0] ? 'Patch' : 'Not a patch' } ],
       [ freeware  => 'Freeware',       serialize => sub { $_[0] ? 'yes' : 'nope' } ],
-      [ doujin    => 'Non-commercial', serialize => sub { $_[0] ? 'yups' : 'nope' } ],
+      [ doujin    => 'Doujin',         serialize => sub { $_[0] ? 'yups' : 'nope' } ],
       [ title     => 'Title (romaji)', diff => 1 ],
       [ original  => 'Original title', diff => 1 ],
       [ gtin      => 'JAN/UPC/EAN',    serialize => sub { $_[0]||'[none]' } ],
@@ -132,7 +132,7 @@ sub _infotable {
 
    Tr ++$i % 2 ? (class => 'odd') : ();
     td 'Publication';
-    td ''.($r->{freeware} ? 'Freeware' : 'Non-free').', '.($r->{doujin} ? 'non-commercial' : 'commercial');
+    td ''.($r->{freeware} ? 'Freeware' : 'Non-free').', '.($r->{doujin} ? 'doujin' : 'commercial');
    end;
 
    if(@{$r->{platforms}}) {
@@ -358,7 +358,7 @@ sub _form {
       options => [ map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ] ],
     [ check  => short => 'patch',     name => 'This release is a patch to another release.' ],
     [ check  => short => 'freeware',  name => 'Freeware (i.e. available at no cost)' ],
-    [ check  => short => 'doujin',    name => 'Non-commercial (released without the intent of making money. e.g. as a doujin circle)' ],
+    [ check  => short => 'doujin',    name => 'Doujin (self-published / not by a commercial company)' ],
     [ input  => short => 'title',     name => 'Title (romaji)', width => 300 ],
     [ input  => short => 'original',  name => 'Original title', width => 300 ],
     [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],
