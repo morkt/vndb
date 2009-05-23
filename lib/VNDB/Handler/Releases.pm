@@ -358,7 +358,7 @@ sub _form {
       options => [ map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ] ],
     [ check  => short => 'patch',     name => 'This release is a patch to another release.' ],
     [ check  => short => 'freeware',  name => 'Freeware (i.e. available at no cost)' ],
-    [ check  => short => 'doujin',    name => 'Non-commercial (released without the intent of making money. e.g. as a doujin group)' ],
+    [ check  => short => 'doujin',    name => 'Non-commercial (released without the intent of making money. e.g. as a doujin circle)' ],
     [ input  => short => 'title',     name => 'Title (romaji)', width => 300 ],
     [ input  => short => 'original',  name => 'Original title', width => 300 ],
     [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],
