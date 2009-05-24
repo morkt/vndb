@@ -477,10 +477,7 @@ sub browse {
   );
   return 404 if $f->{_err};
 
-  my($list, $np) = $self->dbReleaseGet(
-    order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
-    page => $f->{p},
-    results => 50,
+  my @filters = (
     $f->{mi} > 0 || $f->{ma} < 99990000 ? (date => [ $f->{mi}, $f->{ma} ]) : (),
     $f->{q} ? (search => $f->{q}) : (),
     $f->{pl}[0] ? (platforms => $f->{pl}) : (),
@@ -489,7 +486,13 @@ sub browse {
     $f->{tp} >= 0 ? (type => $f->{tp}) : (),
     $f->{ma_a} || $f->{ma_m} ? (minage => [$f->{ma_m}, $f->{ma_a}]) : (),
     $f->{pa} ? (patch => $f->{pa}) : (),
+  );
+  my($list, $np) = !@filters ? (undef, 0) : $self->dbReleaseGet(
+    order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
+    page => $f->{p},
+    results => 50,
     what => 'platforms',
+    @filters,
   );
 
   my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a};q=$f->{q};mi=$f->{mi};ma=$f->{ma}";
@@ -497,7 +500,7 @@ sub browse {
   $_&&($url .= ";pl=$_") for @{$f->{pl}};
 
   $self->htmlHeader(title => 'Browse releases');
-  _filters($self, $f);
+  _filters($self, $f, !@filters || !$list);
   $self->htmlBrowse(
     class    => 'relbrowse',
     items    => $list,
@@ -529,13 +532,13 @@ sub browse {
        end;
       end;
     },
-  );
+  ) if $list;
   $self->htmlFooter;
 }
 
 
 sub _filters {
-  my($self, $f) = @_;
+  my($self, $f, $shown) = @_;
 
   form method => 'get', action => '/r', 'accept-charset' => 'UTF-8';
   div class => 'mainbox';
@@ -547,9 +550,9 @@ sub _filters {
    end;
 
    a id => 'advselect', href => '#';
-    lit '<i>&#9656;</i> filters';
+    lit '<i>'.($shown?'&#9662;':'&#9656;').'</i> filters';
    end;
-   div id => 'advoptions', class => 'hidden';
+   div id => 'advoptions', !$shown ? (class => 'hidden') : ();
 
     h2 'Filters';
     table class => 'formtable', style => 'margin-left: 0';
