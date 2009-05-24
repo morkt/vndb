@@ -50,19 +50,18 @@ sub dbVNGet {
   );
 
   if($o{search}) {
-    my @w = (
-      '(irr.id IS NULL OR ir.latest = irr.id)' => 1
-    );
+    my @w;
     for (split /[ -,._]/, $o{search}) {
       s/%//g;
       if(/^\d+$/ && gtintype($_)) {
         push @w, 'irr.gtin = ?', $_;
-      } else {
+      } elsif(length($_) > 0) {
         $_ = "%$_%";
         push @w, '(ivr.title ILIKE ? OR ivr.original ILIKE ? OR ivr.alias ILIKE ? OR irr.title ILIKE ? OR irr.original ILIKE ?)',
           [ $_, $_, $_, $_, $_ ];
       }
     }
+    push @w, '(irr.id IS NULL OR ir.latest = irr.id)' => 1 if @w;
     $where{ q|
       v.id IN(SELECT iv.id
         FROM vn iv

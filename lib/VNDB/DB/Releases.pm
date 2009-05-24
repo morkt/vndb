@@ -51,7 +51,7 @@ sub dbReleaseGet {
       s/%//g;
       if(/^\d+$/ && gtintype($_)) {
         push @where, 'rr.gtin = ?', $_;
-      } else {
+      } elsif(length($_) > 0) {
         $_ = "%$_%";
         push @where, '(rr.title ILIKE ? OR rr.original ILIKE ? OR rr.catalog = ?)',
           [ $_, $_, $_ ];
