@@ -49,7 +49,6 @@ sub dbReleaseGet {
   if($o{search}) {
     for (split /[ -,._]/, $o{search}) {
       s/%//g;
-      next if length($_) < 2;
       if(/^\d+$/ && gtintype($_)) {
         push @where, 'rr.gtin = ?', $_;
       } else {

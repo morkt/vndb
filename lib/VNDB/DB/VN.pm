@@ -55,7 +55,6 @@ sub dbVNGet {
     );
     for (split /[ -,._]/, $o{search}) {
       s/%//g;
-      next if length($_) < 2;
       if(/^\d+$/ && gtintype($_)) {
         push @w, 'irr.gtin = ?', $_;
       } else {
