@@ -25,11 +25,7 @@ sub list {
   return 404 if $f->{_err};
   $f->{q} ||= $f->{sq};
 
-  # NOTE: this entire search thingy can also be done using a PgSQL fulltext search,
-  #  which is faster and requires less code. It does require an extra database
-  #  column, index and some triggers, though
-
-  my(@cati, @cate, @plat, @lang);
+  my(@plat, @lang);
   my $q = $f->{q};
   if($q) {
    # VNDBID
@@ -37,15 +33,6 @@ sub list {
       if $q =~ /^([gvrptud])([0-9]+)(?:\.([0-9]+))?$/;
 
     if(!($q =~ s/^title://)) {
-     # categories
-      my %catl = map {
-        my $ic = $_;
-        map { $ic.$_ => $self->{categories}{$ic}[1]{$_} } keys %{$self->{categories}{$ic}[1]}
-      } keys %{$self->{categories}};
-
-      $q =~ s/-(?:$catl{$_}|c:$_)//ig && push @cate, $_ for keys %catl;
-      $q =~ s/(?:$catl{$_}|c:$_)//ig && push @cati, $_ for keys %catl;
-
      # platforms
       $_ ne 'oth' && $q =~ s/(?:$self->{platforms}{$_}|p:$_)//ig && push @plat, $_ for keys %{$self->{platforms}};
 
@@ -62,8 +49,6 @@ sub list {
     results => 50,
     page => $f->{p},
     order => ($f->{s} eq 'rel' ? 'c_released' : $f->{s} eq 'pop' ? 'c_popularity' : 'title').($f->{o} eq 'a' ? ' ASC' : ' DESC'),
-    @cati ? ( cati => \@cati ) : (),
-    @cate ? ( cate => \@cate ) : (),
     @lang ? ( lang => \@lang ) : (),
     @plat ? ( platform => \@plat ) : (),
   );
@@ -132,22 +117,6 @@ sub _filters {
     lit '<i>&#9656;</i> advanced search';
    end;
    div id => 'advoptions', class => 'hidden';
-
-    h2;
-     lit 'Categories <b>(boolean and, selecting more gives less results. The categories are explained on <a href="/d1">this page</a>)</b>';
-    end;
-    ul id => 'catselect';
-     for my $c (qw| e g t p h l s |) {
-       $c !~ /[thl]/ ? li : br;
-        txt $self->{categories}{$c}[0];
-        ul;
-         li id => "cat_$c$_", $self->{categories}{$c}[1]{$_}
-           for (sort keys %{$self->{categories}{$c}[1]});
-        end;
-       end if $c !~ /[gph]/;
-     }
-    end;
-
     h2;
      lit 'Languages <b>(boolean or, selecting more gives more results)</b>';
     end;
