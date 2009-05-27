@@ -73,7 +73,7 @@ sub handle404 {
    h1 'Page not found';
    div class => 'warning';
     h2 'Oops!';
-    p "It seems the page you were looking for does not exists,\n".
+    p "It seems the page you were looking for does not exist,\n".
       "you may want to try using the menu on your left to find what you are looking for.";
    end;
   end;
