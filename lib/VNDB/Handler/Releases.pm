@@ -474,6 +474,7 @@ sub browse {
     { name => 'ma_a', required => 0, default => 0, enum => [ keys %{$self->{age_ratings}} ] },
     { name => 'mi', required => 0, default => 0, template => 'int' },
     { name => 'ma', required => 0, default => 99999999, template => 'int' },
+    { name => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
   );
   return 404 if $f->{_err};
 
@@ -483,6 +484,7 @@ sub browse {
     $f->{pl}[0] ? (platforms => $f->{pl}) : (),
     $f->{ln}[0] ? (languages => $f->{ln}) : (),
     $f->{me}[0] ? (media => $f->{me}) : (),
+    $f->{re}[0] ? (resolutions => $f->{re} ) : (),
     $f->{tp} >= 0 ? (type => $f->{tp}) : (),
     $f->{ma_a} || $f->{ma_m} ? (minage => [$f->{ma_m}, $f->{ma_a}]) : (),
     $f->{pa} ? (patch => $f->{pa}) : (),
@@ -498,6 +500,8 @@ sub browse {
   my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a};q=$f->{q};mi=$f->{mi};ma=$f->{ma}";
   $_&&($url .= ";ln=$_") for @{$f->{ln}};
   $_&&($url .= ";pl=$_") for @{$f->{pl}};
+  $_&&($url .= ";re=$_") for @{$f->{re}};
+  $_&&($url .= ";me=$_") for @{$f->{me}};
 
   $self->htmlHeader(title => 'Browse releases');
   _filters($self, $f, !@filters || !$list);
@@ -556,10 +560,6 @@ sub _filters {
 
     h2 'Filters';
     table class => 'formtable', style => 'margin-left: 0';
-     $self->htmlFormPart($f, [ select => short => 'tp', name => 'Release type',
-       options => [ [-1, 'All'], map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ]]);
-     $self->htmlFormPart($f, [ select => short => 'pa', name => 'Patch status',
-       options => [ [0, 'All'], [1, 'Only patches'], [2, 'Only standalone releases']]]);
      Tr class => 'newfield';
       td class => 'label'; label for => 'ma_m', 'Age rating'; end;
       td class => 'field';
@@ -573,7 +573,26 @@ sub _filters {
           for (sort { $a <=> $b } keys %{$self->{age_ratings}});
        end;
       end;
+      td rowspan => 5, style => 'padding-left: 40px';
+       label for => 're', 'Screen resolution'; br;
+       Select id => 're', name => 're', multiple => 'multiple', size => 8;
+        my $l='';
+        for my $i (1..$#{$self->{resolutions}}) {
+          if($l ne $self->{resolutions}[$i][1]) {
+            end if $l;
+            $l = $self->{resolutions}[$i][1];
+            optgroup label => $l;
+          }
+          option value => $i, scalar grep($i==$_, @{$f->{re}}) ? (selected => 'selected') : (), $self->{resolutions}[$i][0];
+        }
+        end if $l;
+       end;
+      end;
      end;
+     $self->htmlFormPart($f, [ select => short => 'tp', name => 'Release type',
+       options => [ [-1, 'All'], map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ]]);
+     $self->htmlFormPart($f, [ select => short => 'pa', name => 'Patch status',
+       options => [ [0, 'All'], [1, 'Only patches'], [2, 'Only standalone releases']]]);
      $self->htmlFormPart($f, [ date => short => 'mi', name => 'Released after' ]);
      $self->htmlFormPart($f, [ date => short => 'ma', name => 'Released before' ]);
     end;

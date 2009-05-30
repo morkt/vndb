@@ -9,7 +9,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbReleaseGet dbReleaseAdd dbReleaseEdit|;
 
 
-# Options: id vid rev order unreleased page results what date media platforms languages type minage search
+# Options: id vid rev order unreleased page results what date media platforms languages type minage search resolutions
 # What: extended changes vn producers platforms media
 sub dbReleaseGet {
   my($self, %o) = @_;
@@ -44,6 +44,8 @@ sub dbReleaseGet {
       'rr.patch = ?', $o{patch} == 1 ? 1 : 0) : (),
     $o{media} ? (
       'rr.id IN(SELECT irm.rid FROM releases_media irm JOIN releases ir ON ir.latest = irm.rid WHERE irm.medium IN(!l))' => [ $o{media} ] ) : (),
+    $o{resolutions} ? (
+      'rr.resolution IN(!l)' => [ $o{resolutions} ] ) : (),
   );
 
   if($o{search}) {
