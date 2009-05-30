@@ -9,7 +9,8 @@ use Exporter 'import';
 our @EXPORT = qw|dbReleaseGet dbReleaseAdd dbReleaseEdit|;
 
 
-# Options: id vid rev order unreleased page results what date media platforms languages type minage search resolutions
+# Options: id vid rev order unreleased page results what date media
+#   platforms languages type minage search resolutions freeware doujin
 # What: extended changes vn producers platforms media
 sub dbReleaseGet {
   my($self, %o) = @_;
@@ -19,14 +20,13 @@ sub dbReleaseGet {
   $o{order} ||= 'rr.released ASC';
 
   my @where = (
-    !$o{id} && !$o{rev} ? (
-      'r.hidden = FALSE' => 0 ) : (),
-    $o{id} ? (
-      'r.id = ?' => $o{id} ) : (),
-    $o{rev} ? (
-      'c.rev = ?' => $o{rev} ) : (),
-    $o{vid} ? (
-      'rv.vid = ?' => $o{vid} ) : (),
+    !$o{id} && !$o{rev} ? ( 'r.hidden = FALSE' => 0       ) : (),
+    $o{id}              ? ( 'r.id = ?'         => $o{id}  ) : (),
+    $o{rev}             ? ( 'c.rev = ?'        => $o{rev} ) : (),
+    $o{vid}             ? ( 'rv.vid = ?'       => $o{vid} ) : (),
+    $o{patch}           ? ( 'rr.patch = ?'     => $o{patch}    == 1 ? 1 : 0) : (),
+    $o{freeware}        ? ( 'rr.freeware = ?'  => $o{freeware} == 1 ? 1 : 0) : (),
+    $o{doujin}          ? ( 'rr.doujin = ?'    => $o{doujin}   == 1 ? 1 : 0) : (),
     defined $o{unreleased} ? (
       q|rr.released !s ?| => [ $o{unreleased} ? '>' : '<=', strftime('%Y%m%d', gmtime) ] ) : (),
     $o{date} ? (
@@ -40,8 +40,6 @@ sub dbReleaseGet {
       'rr.type = ?' => $o{type} ) : (),
     $o{minage} ? (
       '(rr.minage !s ? AND rr.minage <> -1)' => [ $o{minage}[0] ? '<=' : '>=', $o{minage}[1] ] ) : (),
-    $o{patch} ? (
-      'rr.patch = ?', $o{patch} == 1 ? 1 : 0) : (),
     $o{media} ? (
       'rr.id IN(SELECT irm.rid FROM releases_media irm JOIN releases ir ON ir.latest = irm.rid WHERE irm.medium IN(!l))' => [ $o{media} ] ) : (),
     $o{resolutions} ? (

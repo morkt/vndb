@@ -470,6 +470,8 @@ sub browse {
     { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
     { name => 'tp', required => 0, default => -1, enum => [ -1..$#{$self->{release_types}} ] },
     { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
+    { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
+    { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
     { name => 'ma_a', required => 0, default => 0, enum => [ keys %{$self->{age_ratings}} ] },
     { name => 'mi', required => 0, default => 0, template => 'int' },
@@ -488,6 +490,8 @@ sub browse {
     $f->{tp} >= 0 ? (type => $f->{tp}) : (),
     $f->{ma_a} || $f->{ma_m} ? (minage => [$f->{ma_m}, $f->{ma_a}]) : (),
     $f->{pa} ? (patch => $f->{pa}) : (),
+    $f->{fw} ? (freeware => $f->{fw}) : (),
+    $f->{do} ? (doujin => $f->{do}) : (),
   );
   my($list, $np) = !@filters ? (undef, 0) : $self->dbReleaseGet(
     order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
@@ -593,6 +597,10 @@ sub _filters {
        options => [ [-1, 'All'], map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ]]);
      $self->htmlFormPart($f, [ select => short => 'pa', name => 'Patch status',
        options => [ [0, 'All'], [1, 'Only patches'], [2, 'Only standalone releases']]]);
+     $self->htmlFormPart($f, [ select => short => 'fw', name => 'Freeware',
+       options => [ [0, 'All'], [1, 'Freeware only'], [2, 'Only non-free releases']]]);
+     $self->htmlFormPart($f, [ select => short => 'do', name => 'Doujin',
+       options => [ [0, 'All'], [1, 'Only doujin releases'], [2, 'Only commercial releases']]]);
      $self->htmlFormPart($f, [ date => short => 'mi', name => 'Released after' ]);
      $self->htmlFormPart($f, [ date => short => 'ma', name => 'Released before' ]);
     end;
