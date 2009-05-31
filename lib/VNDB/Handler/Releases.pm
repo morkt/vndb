@@ -494,7 +494,7 @@ sub browse {
     $f->{fw} ? (freeware => $f->{fw}) : (),
     $f->{do} ? (doujin => $f->{do}) : (),
   );
-  my($list, $np) = !@filters ? (undef, 0) : $self->dbReleaseGet(
+  my($list, $np) = !@filters ? ([], 0) : $self->dbReleaseGet(
     order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
     page => $f->{p},
     results => 50,
@@ -509,7 +509,7 @@ sub browse {
   $_&&($url .= ";me=$_") for @{$f->{me}};
 
   $self->htmlHeader(title => 'Browse releases');
-  _filters($self, $f, !@filters || !$list);
+  _filters($self, $f, !@filters || !@$list);
   $self->htmlBrowse(
     class    => 'relbrowse',
     items    => $list,
@@ -541,7 +541,17 @@ sub browse {
        end;
       end;
     },
-  ) if $list;
+  ) if @$list;
+  if(@filters && !@$list) {
+    div class => 'mainbox';
+     h1 'No results found';
+     div class => 'notice';
+      p qq|Sorry, couldn't find anything that comes through your filters. You might want to disable a few filters to get more results.\n\n|
+       .qq|Also, keep in mind that we don't have all information about all releases. So e.g. filtering on screen resolution will exclude |
+       .qq|all releases of which we don't know it's resolution, even though it might in fact be in the resolution you're looking for.|;
+     end;
+    end;
+  }
   $self->htmlFooter;
 }
 
