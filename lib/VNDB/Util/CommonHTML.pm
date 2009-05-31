@@ -12,7 +12,7 @@ use POSIX 'ceil';
 
 our @EXPORT = qw|
   htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate
-  htmlRevision htmlEditMessage htmlItemMessage htmlVoteStats htmlHistory
+  htmlRevision htmlEditMessage htmlItemMessage htmlVoteStats htmlHistory htmlSearchBox
 |;
 
 
@@ -516,6 +516,23 @@ sub htmlHistory {
     },
   );
 }
+
+
+sub htmlSearchBox {
+  my($self, $sel, $v) = @_;
+
+  p class => 'searchtabs';
+   a href => '/v/all', $sel eq 'v' ? (class => 'sel') : (), 'Visual novels';
+   a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), 'Releases';
+   a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), 'Producers';
+   a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), 'Tags';
+  end;
+  fieldset class => 'search';
+   input type => 'text', name => 'q', id => 'q', class => 'text', value => $v;
+   input type => 'submit', class => 'submit', value => 'Search!';
+  end;
+}
+
 
 
 1;

@@ -441,6 +441,24 @@ fieldset.search {
 fieldset.search .submit {
   padding: 0 1px;
 }
+p.searchtabs {
+  width: 84%;
+  padding-right: 15%;
+  text-align: center;
+  height: 12px;
+}
+p.searchtabs a {
+  padding: 2px 6px 2px 6px;
+  margin: 0 2px;
+  color: $maintext$!important;
+}
+p.searchtabs a:hover, p.searchtabs a.sel {
+  border: 1px solid $secborder$;
+  border-bottom: none;
+  padding: 1px 5px 2px 5px;
+  background: $secbg$ url($_boxbg$) repeat;
+}
+#q { width: 350px }
 
 /* history browser */
 div.mainbox.history td.tc1_1 {
@@ -797,7 +815,6 @@ a.help {
 .vnbrowse .tc2 { text-align: right; padding: 0; }
 .vnbrowse .tc3 { padding: 0; }
 .vnbrowse .tc5 { text-align: right; padding-right: 10px; }
-#q { width: 300px }
 #advselect {
   text-align: center;
   display: block;

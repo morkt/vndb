@@ -563,10 +563,7 @@ sub _filters {
   div class => 'mainbox';
    h1 'Browse releases';
 
-   fieldset class => 'search';
-    input type => 'text', name => 'q', id => 'q', class => 'text', value => $f->{q};
-    input type => 'submit', class => 'submit', value => 'Search!';
-   end;
+   $self->htmlSearchBox('r', $f->{q});
 
    a id => 'advselect', href => '#';
     lit '<i>'.($shown?'&#9662;':'&#9656;').'</i> filters';
