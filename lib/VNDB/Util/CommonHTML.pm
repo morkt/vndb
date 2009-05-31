@@ -484,7 +484,7 @@ sub htmlHistory {
       sub { td colspan => 2, class => 'tc1', 'Rev.' },
       [ 'Date' ],
       [ 'User' ],
-      [ 'Page' ],
+      sub { td; a href => '#', id => 'history_comments', 'expand'; txt 'Page'; end; }
     ],
     row      => sub {
       my($s, $n, $i) = @_;
@@ -507,8 +507,8 @@ sub htmlHistory {
        end;
       end;
       if($i->{comments}) {
-        Tr $n % 2 ? ( class => 'odd' ) : ();
-         td colspan => 5, class => 'editsum';
+        Tr class => $n % 2 ? 'editsum odd hidden' : 'editsum hidden';
+         td colspan => 5;
           lit bb2html $i->{comments}, 150;
          end;
         end;

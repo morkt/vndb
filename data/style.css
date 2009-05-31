@@ -101,6 +101,9 @@ b.todo { font-weight: normal; color: $statnok$ }
   clear: both;
   height: 0;
 }
+.hidden {
+  display: none
+}
 
 b.spoiler, b.spoiler a {
   color: #000;
@@ -453,11 +456,13 @@ div.mainbox.history td.tc1_2 {
 }
 div.mainbox.history td.tc2 { width: 65px; }
 div.mainbox.history td.tc3 { width: 90px  }
-div.mainbox.history td.editsum {
+div.mainbox.history tr.editsum td {
   color: $grayedout$;
   padding-top: 0;
   text-align: right;
 }
+a#history_comments { float: right }
+a#history_comments:hover { border-bottom: none }
 
 
 
@@ -605,7 +610,6 @@ div#vntags {
   text-align: center;
 }
 #vntags span { white-space: nowrap; margin-left: 15px; }
-#vntags span.hidden { display: none }
 #vntags b { color: $grayedout$; font-weight: normal; font-size: 8px }
 #tagops {
   float: right;
@@ -667,7 +671,6 @@ a.addnew {
 #screenshots td.scr div.nsfw img { border: 3px solid $statnok$; }
 #screenshots td.scr a:hover img  { border: 3px solid $border$; }
 #screenshots td.scr a            { border: none; }
-#screenshots div.hidden          { display: none }
 #screenshots #nsfwshown          { font-style: normal }
 #screenshots p.nsfwtoggle {
   float: right;
@@ -808,7 +811,6 @@ a.help {
   margin: 0 auto;
   border-top: 1px solid $border$;
 }
-#advoptions.hidden { display: none }
 #advoptions h2 {
   clear: left;
   padding-top: 10px;

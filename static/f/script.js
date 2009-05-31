@@ -606,6 +606,32 @@ DOMLoad(function() {
       l[i].onmouseout = function() { this.className = 'spoiler' };
     }
 
+  // expand/collapse edit summaries on */hist
+  if(x('history_comments')) {
+    setcomment = function() {
+      var e = readCookie('histexpand') == 1;
+      var l = x('history_comments');
+      l.innerHTML = e ? 'collapse' : 'expand';
+      while(l.nodeName.toLowerCase() != 'table')
+        l = l.parentNode;
+      l = l.getElementsByTagName('tr');
+      for(var i=0;i<l.length;i++)
+        //alert(l[i].className);
+        if(l[i].className.indexOf('editsum') >= 0) {
+          if(!e && l[i].className.indexOf('hidden') < 0)
+            l[i].className += ' hidden';
+          if(e && l[i].className.indexOf('hidden') >= 0)
+            l[i].className = l[i].className.replace(/hidden/, '');
+        }
+    };
+    setcomment();
+    x('history_comments').onclick = function () {
+      setCookie('histexpand', readCookie('histexpand') == 1 ? 0 : 1);
+      setcomment();
+      return false;
+    };
+  }
+
   // Are we really vndb?
   if(location.hostname != 'vndb.org') {
     var d = document.createElement('div');
