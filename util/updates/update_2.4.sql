@@ -33,6 +33,7 @@ SELECT tag_vn_calc();
 
 
 
+
 -- resolution field
 ALTER TABLE releases_rev ADD COLUMN resolution smallint NOT NULL DEFAULT 0;
 -- voiced
@@ -43,4 +44,56 @@ ALTER TABLE releases_rev ADD COLUMN doujin boolean NOT NULL DEFAULT FALSE;
 -- animated
 ALTER TABLE releases_rev ADD COLUMN ani_story smallint NOT NULL DEFAULT 0;
 ALTER TABLE releases_rev ADD COLUMN ani_ero smallint NOT NULL DEFAULT 0;
+
+
+
+
+-- set doujin flag for all non-patch releases which have an "amateur group" as producer
+-- set freeware flag for all patches
+-- (the revision system makes this slightly more complex than doing a simple UPDATE)
+
+CREATE FUNCTION tmp_edit_release(iid integer) RETURNS void AS $$
+DECLARE
+  cid integer;
+  oid integer;
+  fw boolean;
+  do boolean;
+  comm text;
+BEGIN
+  SELECT INTO oid latest FROM releases WHERE id = iid;
+  SELECT INTO fw EXISTS(SELECT 1 FROM releases_rev WHERE id = oid AND patch);
+  SELECT INTO do EXISTS(SELECT 1 FROM releases_producers rp JOIN releases_rev rr ON rp.rid = rr.id
+    JOIN producers p ON p.id = rp.pid JOIN producers_rev pr ON pr.id = p.latest WHERE rp.rid = oid AND pr.type = 'ng' AND rr.patch = false);
+  IF NOT do AND NOT fw THEN
+    RETURN;
+  END IF;
+  comm := E'Automated edit with the update to VNDB 2.4.\n\n';
+  IF fw THEN
+    comm := comm || E'This release is a patch, freeware flag is assumed\n';
+  END IF;
+  IF do THEN
+    comm := comm || E'This release has an \'amateur group\' as producer and as such is likely to be a doujin release.\n';
+  END IF;
+  comm := comm || E'Feel free to revert if this assumption happens to be incorrect for this entry.';
+  INSERT INTO changes (type, requester, ip, comments, rev)
+    VALUES (1, 1, '0.0.0.0', comm, (SELECT rev+1 FROM changes WHERE id = oid))
+    RETURNING id INTO cid;
+  INSERT INTO releases_media (rid, medium, qty) SELECT cid, medium, qty FROM releases_media WHERE rid = oid;
+  INSERT INTO releases_platforms (rid, platform) SELECT cid, platform FROM releases_platforms WHERE rid = oid;
+  INSERT INTO releases_producers (rid, pid) SELECT cid, pid FROM releases_producers WHERE rid = oid;
+  INSERT INTO releases_rev (id, rid, title, original, type, language, website, released, notes,
+      minage, gtin, patch, catalog, resolution, voiced, freeware, doujin, ani_story, ani_ero)
+    SELECT cid, rid, title, original, type, language, website, released, notes,
+        minage, gtin, patch, catalog, resolution, voiced, fw, do, ani_story, ani_ero
+      FROM releases_rev WHERE id = oid;
+  INSERT INTO releases_vn (rid, vid) SELECT cid, vid FROM releases_vn WHERE rid = oid;
+  UPDATE releases SET latest = cid WHERE id = iid;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this can be done a lot more efficiently, but this method is just easier :-)
+SELECT tmp_edit_release(id) FROM releases WHERE hidden = FALSE;
+
+DROP FUNCTION tmp_edit_release(integer);
+
 
