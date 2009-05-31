@@ -134,7 +134,7 @@ sub _infotable {
 
    Tr ++$i % 2 ? (class => 'odd') : ();
     td 'Publication';
-    td ''.($r->{freeware} ? 'Freeware' : 'Non-free').', '.($r->{doujin} ? 'doujin' : 'commercial');
+    td join ', ', $r->{freeware} ? 'Freeware' : 'Non-free', $r->{patch} ? () : $r->{doujin} ? 'doujin' : 'commercial';
    end;
 
    if(@{$r->{platforms}}) {
@@ -322,6 +322,7 @@ sub edit {
       my $new_vn    = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];
       $frm->{platforms} = [ grep $_, @{$frm->{platforms}} ];
       $frm->{$_} = $frm->{$_} ? 1 : 0 for (qw|patch freeware doujin|);
+      $frm->{doujin} = 0 if $frm->{patch};
 
       return $self->resRedirect("/r$rid", 'post')
         if $rid &&

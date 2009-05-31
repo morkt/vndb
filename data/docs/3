@@ -33,7 +33,7 @@
   Check if this box if the game is downloadable (or otherwise distributed) at no cost.
  </dd><dt>Doujin</dt><dd>
   Published by a doujin circle, amateur group or individual, as opposed to a legal
-  entity such as a company.
+  entity such as a company. This field is ignored when the release type is set to patch.
  </dd><dt>Title (romaji)</dt><dd>
   The name of the release, in the Latin character set (using Romanisation or translation)
  </dd><dt>Original title</dt><dd>
