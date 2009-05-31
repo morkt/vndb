@@ -646,6 +646,7 @@ sub _filters {
 
     div style => 'text-align: center; clear: left;';
      input type => 'submit', value => 'Apply', class => 'submit';
+     input type => 'reset', value => 'Clear', class => 'submit', onclick => 'location.href="/r"';
     end;
    end;
   end;
