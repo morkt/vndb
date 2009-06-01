@@ -212,7 +212,7 @@ sub history {
     page => $f->{p},
     results => 50,
     auto => $f->{m},
-    hidden => $f->{h},
+    hidden => $type && $type ne 'u' ? 0 : $f->{h},
     edit => $f->{e},
     releases => $f->{r},
   );
