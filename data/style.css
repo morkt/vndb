@@ -6,7 +6,7 @@
 }
 
 body, td {
-  font: 8pt "Tahoma";
+  font: 12px "Lucida Grande", "Arial", "Helvetica", sans-serif;
 }
 body {
   $_bodybg$;
@@ -918,7 +918,7 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
   margin: 0 auto;
 }
 .release .key {
-  width: 70px;
+  width: 80px;
 }
 
 /* edit */
