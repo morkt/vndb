@@ -6,7 +6,7 @@
 }
 
 body, td {
-  font: 12px "Lucida Grande", "Arial", "Helvetica", sans-serif;
+  font: 8pt "Tahoma";
 }
 body {
   $_bodybg$;
@@ -178,7 +178,7 @@ table.formtable tr.newpart td {
   font-weight: bold;
 }
 td.label, td.label label {
-  width: 100px;
+  width: 90px;
 }
 td.label label {
   display: block;
@@ -648,7 +648,7 @@ div#vntags {
 }
 .releases td.tc1 {
   padding-left: 30px;
-  width: 85px;
+  width: 80px;
 }
 .releases td.tc2 {
   text-align: center;
@@ -838,7 +838,7 @@ a.help {
 #advoptions span {
   display: block;
   float: left;
-  width: 180px;
+  width: 170px;
 }
 #advoptions span input {
   margin-right: 3px;
@@ -918,12 +918,12 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
   margin: 0 auto;
 }
 .release .key {
-  width: 80px;
+  width: 70px;
 }
 
 /* edit */
 .platforms {  padding-left: 20px; }
-.platforms span { display: block; float: left; width: 170px; }
+.platforms span { display: block; float: left; width: 150px; }
 
 #jt_box_format h2 { clear: left; padding-top: 10px; }
 #media_div select.qty { width: 90px; }
@@ -943,7 +943,7 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 
 /***** Release browser *****/
 
-.relbrowse .tc1 { width: 85px }
+.relbrowse .tc1 { width: 80px }
 .relbrowse .tc2 { width: 60px; text-align: center; }
 .relbrowse .tc3 { width: 85px; text-align: right; padding: 0; }
 
@@ -977,8 +977,8 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 .relhid_but i, #relhidall i { font-style: normal }
 .browse.rlist .tc2 { width: 100px; }
 .browse.rlist .tc3 { width: 70px; }
-.browse.rlist .relhid .tc1 { padding-left: 40px; width: 80px; }
-.browse.rlist .relhid .tc1.own { padding: 0 0 0 25px; width: 100px }
+.browse.rlist .relhid .tc1 { padding-left: 40px; width: 70px; }
+.browse.rlist .relhid .tc1.own { padding: 0 0 0 25px; width: 95px }
 .browse.rlist .relhid input { margin-right: 5px }
 .browse.rlist .relhid .tc2 { padding: 0; width: 30px; }
 .browse.rlist .relhid .tc3 { width: auto }
