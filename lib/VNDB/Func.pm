@@ -42,9 +42,9 @@ sub date {
 
 
 # argument: database release date format (yyyymmdd)
-#  y = 0000 -> unkown
+#  y = 0000 -> unknown
 #  y = 9999 -> TBA
-#  m = 99   -> month+day unkown
+#  m = 99   -> month+day unknown
 #  d = 99   -> day unknown
 # return value: (unknown|TBA|yyyy|yyyy-mm|yyyy-mm-dd)
 #  if date > now: <b class="future">str</b>

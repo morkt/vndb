@@ -399,8 +399,8 @@ sub _form {
     [ select => short => 'ani_story',  name => 'Story animation', options => [
       map [ $_, $self->{animated}[$_] ], 0..$#{$self->{animated}} ] ],
     [ select => short => 'ani_ero',  name => 'Ero animation', options => [
-      map [ $_, $self->{animated}[$_] ], 0..$#{$self->{animated}} ] ],
-    [ static => content => 'Animation in erotic scenes, leave to unkown if there are no ero scenes.' ],
+      map [ $_, $_ ? $self->{animated}[$_] : 'Unknown / no ero scenes' ], 0..$#{$self->{animated}} ] ],
+    [ static => content => 'Animation in erotic scenes, leave to unknown if there are no ero scenes.' ],
     [ hidden => short => 'media' ],
     [ static => nolabel => 1, content => sub {
       h2 'Platforms';
