@@ -66,16 +66,9 @@ function searchInit() {
     return false;
   });
 
-  if(!x('catselect'))
+  if(x('advoptions').className.indexOf('vnoptions') < 0)
     return;
-  var l = x('catselect').getElementsByTagName('li');
-  for(i=0;i<l.length;i++)
-    if(l[i].id.substr(0,4) == 'cat_')
-      l[i].onclick = function() {
-        searchParse(1, this.innerHTML);
-      };
-
-  l = x('advoptions').getElementsByTagName('input');
+  var l = x('advoptions').getElementsByTagName('input');
   for(i=0;i<l.length;i++)
     if(l[i].id.substr(0,5) == 'lang_' || l[i].id.substr(0,5) == 'plat_')
       l[i].onclick = function() {
@@ -112,14 +105,7 @@ function searchParse(add, term) {
   }
 
   q = q.toLowerCase();
-  var l = x('catselect').getElementsByTagName('li');
-  for(i=0;i<l.length;i++)
-    if(l[i].id.substr(0,4) == 'cat_') {
-      var cat = l[i].innerHTML.toLowerCase();
-      l[i].className = q.indexOf('-'+cat) >= 0 ? 'exc' : q.indexOf(cat) >= 0 ? 'inc' : '';
-    }
-
-  l = x('advoptions').getElementsByTagName('input');
+  var l = x('advoptions').getElementsByTagName('input');
   for(i=0;i<l.length;i++)
     if(l[i].id.substr(0,5) == 'lang_' || l[i].id.substr(0,5) == 'plat_')
       l[i].checked = q.indexOf(l[i].parentNode.getElementsByTagName('acronym')[0].title.toLowerCase()) >= 0 ? true : false;

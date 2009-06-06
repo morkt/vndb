@@ -113,7 +113,7 @@ sub _filters {
    a id => 'advselect', href => '#';
     lit '<i>&#9656;</i> advanced search';
    end;
-   div id => 'advoptions', class => 'hidden';
+   div id => 'advoptions', class => 'hidden vnoptions';
     h2;
      lit 'Languages <b>(boolean or, selecting more gives more results)</b>';
     end;
