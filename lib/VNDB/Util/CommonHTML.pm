@@ -8,10 +8,11 @@ use Exporter 'import';
 use Algorithm::Diff::XS 'compact_diff';
 use VNDB::Func;
 use Encode 'encode_utf8', 'decode_utf8';
+use POSIX 'ceil';
 
 our @EXPORT = qw|
   htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate
-  htmlRevision htmlEditMessage htmlItemMessage htmlVoteStats htmlHistory
+  htmlRevision htmlEditMessage htmlItemMessage htmlVoteStats htmlHistory htmlSearchBox
 |;
 
 
@@ -419,7 +420,7 @@ sub htmlVoteStats {
     end; end;
     tfoot; Tr;
      td colspan => 2, sprintf '%d vote%s total, average %.2f%s', $count, $count != 1 ? 's' : '', $total/$count,
-       $type eq 'v' ? ' ('.$self->{votes}[sprintf '%.0f', $total/$count-1].')' : '';
+       $type eq 'v' ? ' ('.$self->{votes}[ceil($total/$count-1)].')' : '';
     end; end;
     for (reverse 0..$#$stats) {
       Tr;
@@ -483,7 +484,7 @@ sub htmlHistory {
       sub { td colspan => 2, class => 'tc1', 'Rev.' },
       [ 'Date' ],
       [ 'User' ],
-      [ 'Page' ],
+      sub { td; a href => '#', id => 'history_comments', 'expand'; txt 'Page'; end; }
     ],
     row      => sub {
       my($s, $n, $i) = @_;
@@ -506,8 +507,8 @@ sub htmlHistory {
        end;
       end;
       if($i->{comments}) {
-        Tr $n % 2 ? ( class => 'odd' ) : ();
-         td colspan => 5, class => 'editsum';
+        Tr class => $n % 2 ? 'editsum odd hidden' : 'editsum hidden';
+         td colspan => 5;
           lit bb2html $i->{comments}, 150;
          end;
         end;
@@ -515,6 +516,23 @@ sub htmlHistory {
     },
   );
 }
+
+
+sub htmlSearchBox {
+  my($self, $sel, $v) = @_;
+
+  p class => 'searchtabs';
+   a href => '/v/all', $sel eq 'v' ? (class => 'sel') : (), 'Visual novels';
+   a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), 'Releases';
+   a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), 'Producers';
+   a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), 'Tags';
+  end;
+  fieldset class => 'search';
+   input type => 'text', name => 'q', id => 'q', class => 'text', value => $v;
+   input type => 'submit', class => 'submit', value => 'Search!';
+  end;
+}
+
 
 
 1;

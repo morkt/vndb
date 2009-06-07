@@ -115,7 +115,13 @@ CREATE TABLE releases_rev (
   minage smallint NOT NULL DEFAULT -1,
   gtin bigint NOT NULL DEFAULT 0,
   patch boolean NOT NULL DEFAULT FALSE,
-  catalog varchar(50) NOT NULL DEFAULT ''
+  catalog varchar(50) NOT NULL DEFAULT '',
+  resolution smallint NOT NULL DEFAULT 0,
+  voiced smallint NOT NULL DEFAULT 0,
+  freeware boolean NOT NULL DEFAULT FALSE,
+  doujin boolean NOT NULL DEFAULT FALSE,
+  ani_story smallint NOT NULL DEFAULT 0,
+  ani_ero smallint NOT NULL DEFAULT 0
 );
 
 -- releases_vn
@@ -576,8 +582,8 @@ BEGIN
     SELECT * FROM tags_vn UNION SELECT * FROM tag_vn_childs();
   -- grouped by (tag, vid, uid), so only one user votes on one parent tag per VN entry
   CREATE OR REPLACE TEMPORARY VIEW tags_vn_grouped AS
-    SELECT tag, vid, uid, AVG(vote)::real AS vote, COALESCE(AVG(spoiler), 0)::real AS spoiler
-    FROM tags_vn_all GROUP BY tag, vid, uid;
+    SELECT tag, vid, uid, MAX(vote)::real AS vote, COALESCE(AVG(spoiler), 0)::real AS spoiler
+    FROM tags_vn_all WHERE vote > 0 GROUP BY tag, vid, uid;
   -- grouped by (tag, vid) and serialized into a table
   DROP INDEX IF EXISTS tags_vn_bayesian_tag;
   TRUNCATE tags_vn_bayesian;

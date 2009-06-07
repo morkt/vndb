@@ -57,8 +57,9 @@ sub _menu {
     div;
      a href => '/',      'Home'; br;
      a href => '/v/all', 'Visual novels'; br;
-     a href => '/g',     'Tags'; br;
+     a href => '/r',     'Releases'; br;
      a href => '/p/all', 'Producers'; br;
+     a href => '/g',     'Tags'; br;
      a href => '/u/all', 'Users'; br;
      a href => '/hist',  'Recent changes'; br;
      a href => '/t',     'Discussion board'; br;

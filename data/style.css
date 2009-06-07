@@ -101,6 +101,9 @@ b.todo { font-weight: normal; color: $statnok$ }
   clear: both;
   height: 0;
 }
+.hidden {
+  display: none
+}
 
 b.spoiler, b.spoiler a {
   color: #000;
@@ -429,15 +432,33 @@ table thead td {
   font-weight: bold;
   background-color: $secbg$;
 }
-form.search {
+fieldset.search {
   display: block;
   width: 100%;
   text-align: center;
   margin: 0 0 10px 0;
 }
-form.search .submit {
+fieldset.search .submit {
   padding: 0 1px;
 }
+p.searchtabs {
+  width: 84%;
+  padding-right: 15%;
+  text-align: center;
+  height: 12px;
+}
+p.searchtabs a {
+  padding: 2px 6px 2px 6px;
+  margin: 0 2px;
+  color: $maintext$!important;
+}
+p.searchtabs a:hover, p.searchtabs a.sel {
+  border: 1px solid $secborder$;
+  border-bottom: none;
+  padding: 1px 5px 2px 5px;
+  background: $secbg$ url($_boxbg$) repeat;
+}
+#q { width: 350px }
 
 /* history browser */
 div.mainbox.history td.tc1_1 {
@@ -453,11 +474,13 @@ div.mainbox.history td.tc1_2 {
 }
 div.mainbox.history td.tc2 { width: 65px; }
 div.mainbox.history td.tc3 { width: 90px  }
-div.mainbox.history td.editsum {
+div.mainbox.history tr.editsum td {
   color: $grayedout$;
   padding-top: 0;
   text-align: right;
 }
+a#history_comments { float: right }
+a#history_comments:hover { border-bottom: none }
 
 
 
@@ -605,7 +628,6 @@ div#vntags {
   text-align: center;
 }
 #vntags span { white-space: nowrap; margin-left: 15px; }
-#vntags span.hidden { display: none }
 #vntags b { color: $grayedout$; font-weight: normal; font-size: 8px }
 #tagops {
   float: right;
@@ -667,7 +689,6 @@ a.addnew {
 #screenshots td.scr div.nsfw img { border: 3px solid $statnok$; }
 #screenshots td.scr a:hover img  { border: 3px solid $border$; }
 #screenshots td.scr a            { border: none; }
-#screenshots div.hidden          { display: none }
 #screenshots #nsfwshown          { font-style: normal }
 #screenshots p.nsfwtoggle {
   float: right;
@@ -794,7 +815,6 @@ a.help {
 .vnbrowse .tc2 { text-align: right; padding: 0; }
 .vnbrowse .tc3 { padding: 0; }
 .vnbrowse .tc5 { text-align: right; padding-right: 10px; }
-#q { width: 300px }
 #advselect {
   text-align: center;
   display: block;
@@ -808,7 +828,6 @@ a.help {
   margin: 0 auto;
   border-top: 1px solid $border$;
 }
-#advoptions.hidden { display: none }
 #advoptions h2 {
   clear: left;
   padding-top: 10px;
@@ -903,12 +922,10 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 }
 
 /* edit */
-#released, #released_d { width: 70px }
-#released_m { width: 100px }
 .platforms {  padding-left: 20px; }
 .platforms span { display: block; float: left; width: 150px; }
 
-#jt_box_platforms_media h2 { clear: left; padding-top: 10px; }
+#jt_box_format h2 { clear: left; padding-top: 10px; }
 #media_div select.qty { width: 90px; }
 #media_div select.medium { width: 150px }
 #media_div { padding-left: 20px; }
@@ -922,6 +939,13 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 #jt_box_visual_novels i,        #jt_box_producers i { font-style: normal; display: block; float: left; width: 310px }
 #jt_box_visual_novels b,        #jt_box_producers b { font-weight: normal; }
 
+
+
+/***** Release browser *****/
+
+.relbrowse .tc1 { width: 80px }
+.relbrowse .tc2 { width: 60px; text-align: center; }
+.relbrowse .tc3 { width: 85px; text-align: right; padding: 0; }
 
 
 

@@ -55,11 +55,11 @@ sub edit {
 
     if(!$frm->{_err}) {
       # parse and re-sort fields that have multiple representations of the same information
-      my $anime = [ grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} ];
+      my $anime = { map +($_=>1), grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} };
       my $relations = [ map { /^([0-9]+),([0-9]+),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{relations} ];
       my $screenshots = [ map /^[0-9]+,[01],[0-9]+$/ ? [split /,/] : (), split / +/, $frm->{screenshots} ];
 
-      $frm->{anime} = join ' ', sort { $a <=> $b } @$anime;
+      $frm->{anime} = join ' ', sort { $a <=> $b } keys %$anime;
       $frm->{relations} = join '|||', map $_->[0].','.$_->[1].','.$_->[2], sort { $a->[1] <=> $b->[1]} @{$relations};
       $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
       $frm->{screenshots} = join ' ', map sprintf('%d,%d,%d', $_->[0], $_->[1]?1:0, $_->[2]), sort { $a->[0] <=> $b->[0] } @$screenshots;
@@ -71,7 +71,7 @@ sub edit {
       # execute the edit/add
       my %args = (
         (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum img_nsfw|),
-        anime => $anime,
+        anime => [ keys %$anime ],
         categories => $v->{categories},
         relations => $relations,
         image => $image,

@@ -367,12 +367,9 @@ sub taglist {
   $self->htmlHeader(title => $title);
   div class => 'mainbox';
    h1 $title;
-   form class => 'search', action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
-    fieldset;
-     input type => 'hidden', name => 't', value => $f->{t};
-     input type => 'text', name => 'q', id => 'q', class => 'text', value => $f->{q};
-     input type => 'submit', class => 'submit', value => 'Search!';
-    end;
+   form action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
+    input type => 'hidden', name => 't', value => $f->{t};
+    $self->htmlSearchBox('g', $f->{q});
    end;
    p class => 'browseopts';
     a href => "/g/list?q=$f->{q};t=-1", $f->{t} == -1 ? (class => 'optselected') : (), 'All';
@@ -589,11 +586,8 @@ sub tagindex {
   div class => 'mainbox';
    a class => 'addnew', href => "/g/new", ($self->authCan('tagmod')?'Create':'Request').' new tag' if $self->authCan('tag');
    h1 'Search tags';
-   form class => 'search', action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
-    fieldset;
-     input type => 'text', name => 'q', id => 'q', class => 'text';
-     input type => 'submit', class => 'submit', value => 'Search!';
-    end;
+   form action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
+    $self->htmlSearchBox('g', '');
    end;
   end;
 

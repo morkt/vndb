@@ -42,9 +42,9 @@ sub date {
 
 
 # argument: database release date format (yyyymmdd)
-#  y = 0000 -> unkown
+#  y = 0000 -> unknown
 #  y = 9999 -> TBA
-#  m = 99   -> month+day unkown
+#  m = 99   -> month+day unknown
 #  d = 99   -> day unknown
 # return value: (unknown|TBA|yyyy|yyyy-mm|yyyy-mm-dd)
 #  if date > now: <b class="future">str</b>
@@ -66,11 +66,12 @@ sub datestr {
 #  e.g.: 'Jan 2009', '2009', 'unknown', 'TBA'
 sub monthstr {
   my $date = sprintf '%08d', shift||0;
-  my($y, $m) = ($1, $2) if $date =~ /^([0-9]{4})([0-9]{2})/;
+  my($y, $m, $d) = ($1, $2, $3) if $date =~ /^([0-9]{4})([0-9]{2})([0-9]{2})/;
   return 'TBA' if $y == 9999;
   return 'unknown' if $y == 0;
   return $y if $m == 99;
-  return sprintf '%s %d', [qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)]->[$m-1], $y;
+  my $r = sprintf '%s %d', [qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)]->[$m-1], $y;
+  return $d == 99 ? "<i>$r</i>" : $r;
 }
 
 

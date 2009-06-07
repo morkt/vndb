@@ -9,7 +9,8 @@ use Exporter 'import';
 our @EXPORT = qw|dbReleaseGet dbReleaseAdd dbReleaseEdit|;
 
 
-# Options: id vid rev order unreleased page results what
+# Options: id vid rev order unreleased page results what date media
+#   platforms languages type minage search resolutions freeware doujin
 # What: extended changes vn producers platforms media
 sub dbReleaseGet {
   my($self, %o) = @_;
@@ -18,18 +19,45 @@ sub dbReleaseGet {
   $o{what} ||= '';
   $o{order} ||= 'rr.released ASC';
 
-  my %where = (
-    !$o{id} && !$o{rev} ? (
-      'r.hidden = FALSE' => 0 ) : (),
-    $o{id} ? (
-      'r.id = ?' => $o{id} ) : (),
-    $o{rev} ? (
-      'c.rev = ?' => $o{rev} ) : (),
-    $o{vid} ? (
-      'rv.vid = ?' => $o{vid} ) : (),
+  my @where = (
+    !$o{id} && !$o{rev} ? ( 'r.hidden = FALSE' => 0       ) : (),
+    $o{id}              ? ( 'r.id = ?'         => $o{id}  ) : (),
+    $o{rev}             ? ( 'c.rev = ?'        => $o{rev} ) : (),
+    $o{vid}             ? ( 'rv.vid = ?'       => $o{vid} ) : (),
+    $o{patch}           ? ( 'rr.patch = ?'     => $o{patch}    == 1 ? 1 : 0) : (),
+    $o{freeware}        ? ( 'rr.freeware = ?'  => $o{freeware} == 1 ? 1 : 0) : (),
+    $o{doujin}          ? ( 'rr.doujin = ?'    => $o{doujin}   == 1 ? 1 : 0) : (),
     defined $o{unreleased} ? (
       q|rr.released !s ?| => [ $o{unreleased} ? '>' : '<=', strftime('%Y%m%d', gmtime) ] ) : (),
+    $o{date} ? (
+      '(rr.released >= ? AND rr.released <= ?)' => [ $o{date}[0], $o{date}[1] ] ) : (),
+    $o{languages} ? (
+      'rr.language IN(!l)', => [ $o{languages} ] ) : (),
+    $o{platforms} ? (
+      #'EXISTS(SELECT 1 FROM releases_platforms rp WHERE rp.rid = rr.id AND rp.platform IN(!l))' => [ $o{platforms} ] ) : (),
+      'rr.id IN(SELECT irp.rid FROM releases_platforms irp JOIN releases ir ON ir.latest = irp.rid WHERE irp.platform IN(!l))' => [ $o{platforms} ] ) : (),
+    defined $o{type} ? (
+      'rr.type = ?' => $o{type} ) : (),
+    $o{minage} ? (
+      '(rr.minage !s ? AND rr.minage <> -1)' => [ $o{minage}[0] ? '<=' : '>=', $o{minage}[1] ] ) : (),
+    $o{media} ? (
+      'rr.id IN(SELECT irm.rid FROM releases_media irm JOIN releases ir ON ir.latest = irm.rid WHERE irm.medium IN(!l))' => [ $o{media} ] ) : (),
+    $o{resolutions} ? (
+      'rr.resolution IN(!l)' => [ $o{resolutions} ] ) : (),
   );
+
+  if($o{search}) {
+    for (split /[ -,._]/, $o{search}) {
+      s/%//g;
+      if(/^\d+$/ && gtintype($_)) {
+        push @where, 'rr.gtin = ?', $_;
+      } elsif(length($_) > 0) {
+        $_ = "%$_%";
+        push @where, '(rr.title ILIKE ? OR rr.original ILIKE ? OR rr.catalog = ?)',
+          [ $_, $_, $_ ];
+      }
+    }
+  }
 
   my @join = (
     $o{rev} ? 'JOIN releases r ON r.id = rr.rid' : 'JOIN releases r ON rr.id = r.latest',
@@ -43,7 +71,7 @@ sub dbReleaseGet {
   my @select = (
     qw|r.id rr.title rr.original rr.language rr.website rr.released rr.minage rr.type rr.patch|,
     'rr.id AS cid',
-    $o{what} =~ /extended/ ? qw|rr.notes rr.catalog rr.gtin r.hidden r.locked| : (),
+    $o{what} =~ /extended/ ? qw|rr.notes rr.catalog rr.gtin rr.resolution rr.voiced rr.freeware rr.doujin rr.ani_story rr.ani_ero r.hidden r.locked| : (),
     $o{what} =~ /changes/ ? qw|c.added c.requester c.comments r.latest u.username c.rev| : (),
   );
 
@@ -53,7 +81,7 @@ sub dbReleaseGet {
       !s
       !W
       ORDER BY !s|,
-    join(', ', @select), join(' ', @join), \%where,  $o{order}
+    join(', ', @select), join(' ', @join), \@where, $o{order}
   );
 
   if(@$r && $o{what} =~ /(vn|producers|platforms|media)/) {
@@ -138,9 +166,11 @@ sub insert_rev {
   my($self, $cid, $rid, $o) = @_;
 
   $self->dbExec(q|
-    INSERT INTO releases_rev (id, rid, title, original, gtin, catalog, language, website, released, notes, minage, type, patch)
+    INSERT INTO releases_rev (id, rid, title, original, gtin, catalog, language, website, released,
+        notes, minage, type, patch, resolution, voiced, freeware, doujin, ani_story, ani_ero)
       VALUES (!l)|,
-    [ $cid, $rid, @$o{qw| title original gtin catalog language website released notes minage type patch|} ]);
+    [ $cid, $rid, @$o{qw| title original gtin catalog language website released
+        notes minage type patch resolution voiced freeware doujin ani_story ani_ero|} ]);
 
   $self->dbExec(q|
     INSERT INTO releases_producers (rid, pid)

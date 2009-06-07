@@ -1,5 +1,4 @@
 :TITLE:Adding/Editing a Release
-:INC:notfinished
 :INC:index
 
 
@@ -30,6 +29,11 @@
  </dd><dt>Patch</dt><dd>
   Use this checkbox to indicate that the release is a (translation) patch, used to
   patch an other release.
+ </dd><dt>Freeware</dt><dd>
+  Check if this box if the game is downloadable (or otherwise distributed) at no cost.
+ </dd><dt>Doujin</dt><dd>
+  Published by a doujin circle, amateur group or individual, as opposed to a legal
+  entity such as a company. This field is ignored when the release type is set to patch.
  </dd><dt>Title (romaji)</dt><dd>
   The name of the release, in the Latin character set (using Romanisation or translation)
  </dd><dt>Original title</dt><dd>
@@ -42,6 +46,9 @@
   of the product. Often called "JAN" for Japanese releases, "UPC" for USA and Canada
   and "EAN" for Europe. The system will automatically detect the type from the code and 
   use the appropriate term on the release page.
+ </dd><dt>Catalog number</dt><dd>
+  Catalog number as assigned by the producer. Often used to identify releases on
+  webshops, and can usually be found somewhere on the packaging of the product.
  </dd><dt>Official website</dt><dd>
   URL of the official homepage for this product.
  </dd><dt>Release date</dt><dd>
@@ -58,13 +65,35 @@
 </dl>
 
 
-:SUB:Platforms &amp; Media
+:SUB:Format
+<dl>
+ <dt>Resolution</dt><dd>
+  Primary/native screen resolution of the game.
+ </dd><dt>Voiced</dt><dd>
+  Indicates whether this release includes voice acting. <i>Fully voiced</i> indicates
+  that all characters (maybe with the exeption of a few minor characters) are voiced in
+  all scenes. <i>Only ero scenes voiced</i> speaks for itself, and <i>Partially voiced</i>
+  should be used when there is some voice acting, but only for the main characters or only
+  in some scenes.
+ </dd><dt>Animation</dt><dd>
+  Whether the game has any animation can be specified with two seperate options: one for
+  the normal story mode and one for the ero scenes, if the game has any. With <i>Simple
+  animations</i>, we refer to (usually looping) effects like falling leaves or snow in the
+  background or animated facial expressions like blinking eyes and a moving mouth.
+  <i>Fully animated scenes</i> refers to non-looping anime-like scenes. Some games are
+  entirely like this, others only have a few scenes that are fully animated. Effects like
+  moving sprites around the screen, basic zooming and shaking background images are not
+  considered as "animations". Minigames or other gameplay elements are excluded as well,
+  only the (ADV/VN-like) story parts and ero scenes should be considered.
+ </dd>
+</dl>
 <p>
+ <b>Platform</b><br />
  The platforms that the product was released for. Does not include emulated platforms
  (e.g. Playstation 2 games on Playstation 3) or WINE. DVD Player refers to games playable
  as a normal DVD Video (DVDPG) and should not be confused with the DVD as a medium.
  <br /><br />
- The following media can be selected:
+ <b>Media</b>
 </p>
 <dl>
  <dt>Blu-ray</dt><dd>
@@ -99,9 +128,14 @@
 
 
 :SUB:Producers
-..
+<p>
+ The companies/groups/individuals involved in the creation, development or translation
+ of this release. Does not include distributors.
+</p>
 
 
 :SUB:Visual novel relations
-..
+<p>
+ The visual novels that this release (either partially or fully) covers.
+</p>
 

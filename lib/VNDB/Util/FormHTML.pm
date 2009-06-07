@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use YAWF ':html';
 use Exporter 'import';
+use POSIX 'strftime';
 
 our @EXPORT = qw| htmlFormError htmlFormPart htmlForm |;
 
@@ -116,6 +117,7 @@ sub htmlFormError {
 #  check     name, short, (value)
 #  select    name, short, options, (width)
 #  text      name, short, (rows, cols)
+#  date      name, short
 #  part      title
 # TODO: Find a way to write this function in a readable way...
 sub htmlFormPart {
@@ -184,10 +186,21 @@ sub htmlFormPart {
       lit ref $o{content} eq 'CODE' ? $o{content}->($self, \%o) : $o{content};
     }
     if(/select/) {
+      my $l='';
       Select name => $o{short}, id => $o{short}, $o{width} ? (style => "width: $o{width}px") : ();
-       option value => $_->[0], defined $frm->{$o{short}} && $frm->{$o{short}} eq $_->[0] ? (selected => 'selected') : (), $_->[1]
-         for @{$o{options}};
+       for (@{$o{options}}) {
+         if($_->[2] && $l ne $_->[2]) {
+           end if $l;
+           $l = $_->[2];
+           optgroup label => $l;
+         }
+         option value => $_->[0], defined $frm->{$o{short}} && $frm->{$o{short}} eq $_->[0] ? (selected => 'selected') : (), $_->[1];
+       }
+       end if $l;
       end;
+    }
+    if(/date/) {
+      input type => 'hidden', id => $o{short}, name => $o{short}, value => $frm->{$o{short}}||'', class => 'dateinput';
     }
     if(/text/) {
       (my $txt = $frm->{$o{short}}||'') =~ s/&/&amp;/;

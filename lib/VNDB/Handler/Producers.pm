@@ -171,11 +171,8 @@ sub list {
 
   div class => 'mainbox';
    h1 'Browse producers';
-   form class => 'search', action => '/p/all', 'accept-charset' => 'UTF-8', method => 'get';
-    fieldset;
-     input type => 'text', name => 'q', id => 'q', class => 'text', value => $f->{q};
-     input type => 'submit', class => 'submit', value => 'Search!';
-    end;
+   form action => '/p/all', 'accept-charset' => 'UTF-8', method => 'get';
+    $self->htmlSearchBox('p', $f->{q});
    end;
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {

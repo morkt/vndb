@@ -1,3 +1,17 @@
+2.4 - 2009-06-07
+	- Release search + browser + filters
+	- Javascript date input
+	- More release information:
+	  - Screen resolution
+	  - Voiced
+	  - Freeware/doujin
+	  - Animated
+	- Show comparable CERO ratings on /r+/edit input field
+	- Allow search queries with only one character
+	- Removed category filter from /v/all
+	- Added expand/collapse feature to the history browser
+	- Added tabs on v/r/p/g search fields
+
 2.3 - 2009-04-01
 	- No page reload needed when changing rlist status from vn page
 	- Random VN quotes to the footer of every page
