@@ -70,11 +70,11 @@
  <dt>Resolution</dt><dd>
   Primary/native screen resolution of the game.
  </dd><dt>Voiced</dt><dd>
-  Indicates whether this release includes voice acting. <i>Fully voiced</i> indicates
-  that all characters (maybe with the exeption of a few minor characters) are voiced in
-  all scenes. <i>Only ero scenes voiced</i> speaks for itself, and <i>Partially voiced</i>
-  should be used when there is some voice acting, but only for the main characters or only
-  in some scenes.
+  Indicates whether this release includes voice acting in the VN/ADV parts of the game.
+  <i>Fully voiced</i> indicates that all characters (usually excluding the protagonist
+  and some minor characters) are voiced in all scenes. <i>Only ero scenes voiced</i>
+  speaks for itself, and <i>Partially voiced</i> should be used when there is some voice
+  acting, but only for the main characters or only in some scenes.
  </dd><dt>Animation</dt><dd>
   Whether the game has any animation can be specified with two seperate options: one for
   the normal story mode and one for the ero scenes, if the game has any. With <i>Simple
@@ -88,6 +88,9 @@
  </dd>
 </dl>
 <p>
+ <b>NOTE</b>: The resolution, voiced and animation fields have no meaning for patches, and
+ should be left empty for those releases.
+ <br /><br />
  <b>Platform</b><br />
  The platforms that the product was released for. Does not include emulated platforms
  (e.g. Playstation 2 games on Playstation 3) or WINE. DVD Player refers to games playable
