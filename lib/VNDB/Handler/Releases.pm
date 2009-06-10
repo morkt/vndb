@@ -50,7 +50,7 @@ sub page {
       [ language  => 'Language',       serialize => sub { $self->{languages}{$_[0]} } ],
       [ website   => 'Website',        ],
       [ released  => 'Release date',   htmlize   => sub { datestr $_[0] } ],
-      [ minage    => 'Age rating',     serialize => sub { $self->{age_ratings}{$_[0]} } ],
+      [ minage    => 'Age rating',     serialize => sub { $self->{age_ratings}{$_[0]}[0] } ],
       [ notes     => 'Notes',          diff => 1 ],
       [ platforms => 'Platforms',      join => ', ', split => sub { map $self->{platforms}{$_}, @{$_[0]} } ],
       [ media     => 'Media',          join => ', ', split => sub {
