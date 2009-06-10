@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use POSIX 'strftime';
 use Exporter 'import';
+use VNDB::Func 'gtintype';
 
 our @EXPORT = qw|dbReleaseGet dbReleaseAdd dbReleaseEdit|;
 
