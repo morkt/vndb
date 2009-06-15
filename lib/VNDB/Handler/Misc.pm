@@ -115,12 +115,13 @@ sub homepage {
   # Recent posts
   div class => 'mainbox threelayout last';
    h1 'Recent posts';
-   my $posts = $self->dbThreadGet(what => 'lastpost', results => 10, order => 'tpl.date DESC');
+   my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, order => 'tpl.date DESC');
    ul;
     for (@$posts) {
+      my $boards = join ', ', map $self->{discussion_boards}{$_->{type}}.($_->{iid}?' > '.$_->{title}:''), @{$_->{boards}};
       li;
        txt age($_->{ldate}).' ';
-       a href => "/t$_->{id}.$_->{count}", title => $_->{title}, shorten $_->{title}, 20;
+       a href => "/t$_->{id}.$_->{count}", title => "Posted in $boards", shorten $_->{title}, 20;
        txt ' by ';
        a href => "/u$_->{luid}", $_->{lusername};
       end;
