@@ -317,8 +317,8 @@ sub revdiff {
   $o{diff}++ if $o{split};
   $o{join} ||= '';
 
-  my $ser1 = $o{serialize} ? $o{serialize}->($old->{$short}) : $old->{$short};
-  my $ser2 = $o{serialize} ? $o{serialize}->($new->{$short}) : $new->{$short};
+  my $ser1 = $o{serialize} ? $o{serialize}->($old->{$short}, $old) : $old->{$short};
+  my $ser2 = $o{serialize} ? $o{serialize}->($new->{$short}, $new) : $new->{$short};
   return if $ser1 eq $ser2;
 
   if($o{diff} && $ser1 && $ser2) {

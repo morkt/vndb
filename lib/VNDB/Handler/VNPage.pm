@@ -216,7 +216,12 @@ sub _revision {
       return @r ? @r : ('[no screenshots]');
     }],
     [ image       => 'Image',            htmlize => sub {
-      $_[0] > 0 ? sprintf '<img src="%s/cv/%02d/%d.jpg" />', $self->{url_static}, $_[0]%100, $_[0] : $_[0] < 0 ? '[processing]' : 'No image';
+      my $url = sprintf "%s/cv/%02d/%d.jpg", $self->{url_static}, $_[0]%100, $_[0];
+      if($_[0] > 0) {
+        return $_[1]->{img_nsfw} && !$self->authInfo->{show_nsfw} ? "<a href=\"$url\">(NSFW)</a>" : "<img src=\"$url\" />";
+      } else {
+        return $_[0] < 0 ? '[processing]' : 'No image';
+      }
     }],
     [ img_nsfw    => 'Image NSFW',       serialize => sub { $_[0] ? 'Not safe' : 'Safe' } ],
   );
