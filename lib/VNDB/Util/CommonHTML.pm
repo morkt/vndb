@@ -129,13 +129,14 @@ sub htmlDenied {
 sub htmlHiddenMessage {
   my($self, $type, $obj) = @_;
   return 0 if !$obj->{hidden};
+  my $board = $type eq 'r' ? 'v'.$obj->{vn}[0]{vid} : $type.$obj->{id};
   div class => 'mainbox';
    h1 $obj->{title}||$obj->{name};
    div class => 'warning';
     h2 'Item deleted';
     p;
      lit qq|This item has been deleted from the database, File a request on the|
-        .qq| <a href="/t/$type$obj->{id}">discussion board</a> to undelete this page.|;
+        .qq| <a href="/t/$board">discussion board</a> to undelete this page.|;
     end;
    end;
   end;
