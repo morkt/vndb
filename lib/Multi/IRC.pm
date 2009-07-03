@@ -404,6 +404,7 @@ sub mymaster { # same @_ as the cmd_ functions
   if(!$_[HEAP]{irc}->is_channel_operator($_[HEAP]{o}{channel}[0], $_[ARG2])
     && !$_[HEAP]{irc}->is_channel_owner($_[HEAP]{o}{channel}[0], $_[ARG2])
     && !$_[HEAP]{irc}->is_channel_admin($_[HEAP]{o}{channel}[0], $_[ARG2])
+    || ($_[HEAP]{o}{master_users} && !grep lc($_) eq lc($_[ARG2]), @{$_[HEAP]{o}{master_users}})
   ) {
     $_[KERNEL]->post(circ => privmsg => $_[ARG1],
       ($_[ARG1]=~/^#/?$_[ARG2].', ':'').'You are not my master!');
