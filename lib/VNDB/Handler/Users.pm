@@ -426,6 +426,7 @@ sub list {
     { name => 's', required => 0, default => 'username', enum => [ qw|username registered votes changes tags| ] },
     { name => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
+    { name => 'q', required => 0, default => '', maxlength => 50 },
   );
   return 404 if $f->{_err};
 
@@ -433,6 +434,9 @@ sub list {
 
   div class => 'mainbox';
    h1 'Browse users';
+   form action => '/u/all', 'accept-charset' => 'UTF-8', method => 'get';
+    $self->htmlSearchBox('u', $f->{q});
+   end;
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
       a href => "/u/$_", $_ eq $char ? (class => 'optselected') : (), $_ ? uc $_ : '#';
@@ -446,14 +450,15 @@ sub list {
       firstchar => $char ) : (),
     results => 50,
     page => $f->{p},
+    search => $f->{q},
   );
 
   $self->htmlBrowse(
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => "/u/$char?o=$f->{o};s=$f->{s}",
-    sorturl  => "/u/$char",
+    pageurl  => "/u/$char?o=$f->{o};s=$f->{s};q=$f->{q}",
+    sorturl  => "/u/$char?q=$f->{q}",
     header   => [
       [ 'Username',   'username'   ],
       [ 'Registered', 'registered' ],

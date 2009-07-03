@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel|;
 
 
-# %options->{ username passwd mail order uid ip registered results page what }
+# %options->{ username passwd mail order uid ip registered search results page what }
 # what: stats
 sub dbUserGet {
   my $s = shift;
@@ -20,6 +20,7 @@ sub dbUserGet {
     @_
   );
 
+  $o{search} =~ s/%// if $o{search};
   my %where = (
     $o{username} ? (
       'username = ?' => $o{username} ) : (),
@@ -39,6 +40,8 @@ sub dbUserGet {
       'ip = ?' => $o{ip} ) : (),
     $o{registered} ? (
       'registered > ?' => $o{registered} ) : (),
+    $o{search} ? (
+      'username ILIKE ?' => "%$o{search}%") : (),
   );
 
   my @select = (
