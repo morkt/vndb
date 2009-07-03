@@ -522,14 +522,14 @@ sub htmlHistory {
 sub htmlSearchBox {
   my($self, $sel, $v) = @_;
 
-  p class => 'searchtabs';
-   a href => '/v/all', $sel eq 'v' ? (class => 'sel') : (), 'Visual novels';
-   a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), 'Releases';
-   a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), 'Producers';
-   a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), 'Tags';
-   a href => '/u/all', $sel eq 'u' ? (class => 'sel') : (), 'Users';
-  end;
   fieldset class => 'search';
+   p class => 'searchtabs';
+    a href => '/v/all', $sel eq 'v' ? (class => 'sel') : (), 'Visual novels';
+    a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), 'Releases';
+    a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), 'Producers';
+    a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), 'Tags';
+    a href => '/u/all', $sel eq 'u' ? (class => 'sel') : (), 'Users';
+   end;
    input type => 'text', name => 'q', id => 'q', class => 'text', value => $v;
    input type => 'submit', class => 'submit', value => 'Search!';
   end;

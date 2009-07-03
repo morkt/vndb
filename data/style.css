@@ -442,10 +442,8 @@ fieldset.search .submit {
   padding: 0 1px;
 }
 p.searchtabs {
-  width: 84%;
-  padding-right: 15%;
-  text-align: center;
   height: 12px;
+  padding-right: 70px;
 }
 p.searchtabs a {
   padding: 2px 6px 2px 6px;
