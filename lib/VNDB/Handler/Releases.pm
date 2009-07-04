@@ -332,7 +332,8 @@ sub edit {
           (join(',', sort @{$b4{platforms}}) eq join(',', sort @{$frm->{platforms}})) &&
           (join(',', sort @$producers) eq join(',', sort map $_->{id}, @{$r->{producers}})) &&
           (join(',', sort @$new_vn) eq join(',', sort map $_->{vid}, @$vn)) &&
-          !grep !/^(platforms|producers|vn)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
+          (join(',', sort @{$b4{languages}}) eq join(',', sort @{$frm->{languages}})) &&
+          !grep !/^(platforms|producers|vn|languages)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
 
       my %opts = (
         (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released
