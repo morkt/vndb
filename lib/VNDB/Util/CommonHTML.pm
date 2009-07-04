@@ -69,6 +69,12 @@ sub htmlMainTabs {
      end;
    }
 
+   if($type eq 'r' && $self->authCan('edit')) {
+     li $sel eq 'copy' ? (class => 'tabselected') : ();
+      a href => "/$id/copy", 'copy';
+     end;
+   }
+
    if($type =~ /[vrp]/ && $self->authCan('del')) {
      li;
       a href => "/$id/hide", $obj->{hidden} ? 'unhide' : 'hide';
@@ -358,12 +364,22 @@ sub revdiff {
 # Generates a generic message to show as the header of the edit forms
 # Arguments: v/r/p, obj
 sub htmlEditMessage {
-  my($self, $type, $obj) = @_;
+  my($self, $type, $obj, $copy) = @_;
   my $full       = {v => 'visual novel', r => 'release', p => 'producer'}->{$type};
   my $guidelines = {v => 2, r => 3, p => 4}->{$type};
 
   div class => 'mainbox';
-   h1 $obj ? 'Edit '.($obj->{name}||$obj->{title}) : "Add new $full";
+   h1 $obj ? ''.($copy ? 'Copy ':'Edit ').($obj->{name}||$obj->{title}) : "Add new $full";
+   if($copy) {
+     div class => 'warning';
+      h2 "You're not editing a release!";
+      p;
+       txt "You're about to insert a new release into the database with information based on ";
+       a href => "/$type$obj->{id}", $obj->{title};
+       txt ". Hit the 'edit' tab on the right-top if you intended to edit the release instead of creating a new one.";
+      end;
+     end;
+   }
    div class => 'notice';
     h2 'Before editing:';
     ul;

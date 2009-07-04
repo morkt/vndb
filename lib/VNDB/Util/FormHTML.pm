@@ -53,6 +53,7 @@ my %formerr_exeptions = (
   noimage       => 'Image must be in JPEG or PNG format',
   toolarge      => 'Image is too large, only 500kB allowed',
   oneaday       => 'You can only register one account from the same IP within 24 hours',
+  nochanges     => 'No changes, please don\'t create an entry that is fully -identical- to another',
 );
 
 

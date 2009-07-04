@@ -11,7 +11,7 @@ YAWF::register(
   qr{r([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
   qr{(v)([1-9]\d*)/add}            => \&edit,
   qr{r}                            => \&browse,
-  qr{r(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit)}
+  qr{r(?:([1-9]\d*)(?:\.([1-9]\d*))?/(edit|copy))}
     => \&edit,
 );
 
@@ -260,12 +260,14 @@ sub _infotable {
 }
 
 
-# rid = \d   -> edit release
+# rid = \d   -> edit/copy release
 # rid = 'v'  -> add release to VN with id $rev
 sub edit {
-  my($self, $rid, $rev) = @_;
+  my($self, $rid, $rev, $copy) = @_;
 
   my $vid = 0;
+  $copy = $rev && $rev eq 'copy' || $copy && $copy eq 'copy';
+  $rev = undef if defined $rev && $rev !~ /^\d+$/;
   if($rid eq 'v') {
     $vid = $rev;
     $rev = undef;
@@ -318,23 +320,28 @@ sub edit {
       { name => 'vn',        maxlength => 5000 },
       { name => 'editsum',   maxlength => 5000 },
     );
+
+    my($media, $producers, $new_vn);
     if(!$frm->{_err}) {
       # de-serialize
-      my $media     = [ map [ split / / ], split /,/, $frm->{media} ];
-      my $producers = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{producers} ];
-      my $new_vn    = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];
+      $media     = [ map [ split / / ], split /,/, $frm->{media} ];
+      $producers = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{producers} ];
+      $new_vn    = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];
       $frm->{platforms} = [ grep $_, @{$frm->{platforms}} ];
       $frm->{$_} = $frm->{$_} ? 1 : 0 for (qw|patch freeware doujin|);
       $frm->{doujin} = 0 if $frm->{patch};
 
-      return $self->resRedirect("/r$rid", 'post')
-        if $rid &&
+      my $same = $rid &&
           (join(',', sort @{$b4{platforms}}) eq join(',', sort @{$frm->{platforms}})) &&
           (join(',', sort @$producers) eq join(',', sort map $_->{id}, @{$r->{producers}})) &&
           (join(',', sort @$new_vn) eq join(',', sort map $_->{vid}, @$vn)) &&
           (join(',', sort @{$b4{languages}}) eq join(',', sort @{$frm->{languages}})) &&
           !grep !/^(platforms|producers|vn|languages)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
+      return $self->resRedirect("/r$rid", 'post') if !$copy && $same;
+      $frm->{_err} = [ 'nochanges' ] if $copy && $same;
+    }
 
+    if(!$frm->{_err}) {
       my %opts = (
         (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released
           notes minage platforms resolution editsum patch voiced freeware doujin ani_story ani_ero|),
@@ -344,8 +351,8 @@ sub edit {
       );
 
       $rev = 1;
-      ($rev) = $self->dbReleaseEdit($rid, %opts) if $rid;
-      ($rid) = $self->dbReleaseAdd(%opts) if !$rid;
+      ($rev) = $self->dbReleaseEdit($rid, %opts) if !$copy && $rid;
+      ($rid) = $self->dbReleaseAdd(%opts) if $copy || !$rid;
 
       $self->multiCmd("ircnotify r$rid.$rev");
       $self->vnCacheUpdate(@$new_vn, map $_->{vid}, @$vn);
@@ -356,21 +363,22 @@ sub edit {
 
   !defined $frm->{$_} && ($frm->{$_} = $b4{$_}) for keys %b4;
   $frm->{languages} = ['ja'] if !$rid && !defined $frm->{languages};
-  $frm->{editsum} = sprintf 'Reverted to revision r%d.%d', $rid, $rev if $rev && !defined $frm->{editsum};
+  $frm->{editsum} = sprintf 'Reverted to revision r%d.%d', $rid, $rev if !$copy && $rev && !defined $frm->{editsum};
+  $frm->{editsum} = sprintf 'New release based on r%d.%d', $rid, $r->{rev} if $copy && !defined $frm->{editsum};
 
-  $self->htmlHeader(js => 'forms', title => $rid ? 'Edit '.$r->{title} : 'Add release to '.$v->{title}, noindex => 1);
-  $self->htmlMainTabs('r', $r, 'edit') if $rid;
+  $self->htmlHeader(js => 'forms', title => $rid ? ''.($copy ? 'Copy ':'Edit ').$r->{title} : 'Add release to '.$v->{title}, noindex => 1);
+  $self->htmlMainTabs('r', $r, $copy ? 'copy' : 'edit') if $rid;
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
-  $self->htmlEditMessage('r', $r);
-  _form($self, $r, $v, $frm);
+  $self->htmlEditMessage('r', $r, $copy);
+  _form($self, $r, $v, $frm, $copy);
   $self->htmlFooter;
 }
 
 
 sub _form {
-  my($self, $r, $v, $frm) = @_;
+  my($self, $r, $v, $frm, $copy) = @_;
 
-  $self->htmlForm({ frm => $frm, action => $r ? "/r$r->{id}/edit" : "/v$v->{id}/add", editsum => 1 },
+  $self->htmlForm({ frm => $frm, action => $r ? "/r$r->{id}/".($copy ? 'copy' : 'edit') : "/v$v->{id}/add", editsum => 1 },
   "General info" => [
     [ select => short => 'type',      name => 'Type',
       options => [ map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ] ],
