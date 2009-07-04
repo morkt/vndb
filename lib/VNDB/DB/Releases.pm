@@ -33,7 +33,7 @@ sub dbReleaseGet {
     $o{date} ? (
       '(rr.released >= ? AND rr.released <= ?)' => [ $o{date}[0], $o{date}[1] ] ) : (),
     $o{languages} ? (
-      'rr.language IN(!l)', => [ $o{languages} ] ) : (),
+      'rr.id IN(SELECT irl.rid FROM releases_lang irl JOIN releases ir ON ir.latest = irl.rid WHERE irl.lang IN(!l))', => [ $o{languages} ] ) : (),
     $o{platforms} ? (
       #'EXISTS(SELECT 1 FROM releases_platforms rp WHERE rp.rid = rr.id AND rp.platform IN(!l))' => [ $o{platforms} ] ) : (),
       'rr.id IN(SELECT irp.rid FROM releases_platforms irp JOIN releases ir ON ir.latest = irp.rid WHERE irp.platform IN(!l))' => [ $o{platforms} ] ) : (),
@@ -70,7 +70,7 @@ sub dbReleaseGet {
   );
 
   my @select = (
-    qw|r.id rr.title rr.original rr.language rr.website rr.released rr.minage rr.type rr.patch|,
+    qw|r.id rr.title rr.original rr.website rr.released rr.minage rr.type rr.patch|,
     'rr.id AS cid',
     $o{what} =~ /extended/ ? qw|rr.notes rr.catalog rr.gtin rr.resolution rr.voiced rr.freeware rr.doujin rr.ani_story rr.ani_ero r.hidden r.locked| : (),
     $o{what} =~ /changes/ ? qw|c.added c.requester c.comments r.latest u.username c.rev| : (),
@@ -85,14 +85,22 @@ sub dbReleaseGet {
     join(', ', @select), join(' ', @join), \@where, $o{order}
   );
 
-  if(@$r && $o{what} =~ /(vn|producers|platforms|media)/) {
+  if(@$r) {
     my %r = map {
       $r->[$_]{producers} = [];
       $r->[$_]{platforms} = [];
       $r->[$_]{media} = [];
       $r->[$_]{vn} = [];
+      $r->[$_]{languages} = [];
       ($r->[$_]{cid}, $_)
     } 0..$#$r;
+
+    push(@{$r->[$r{$_->{rid}}]{languages}}, $_->{lang}) for (@{$self->dbAll(q|
+      SELECT rid, lang
+        FROM releases_lang
+        WHERE rid IN(!l)|,
+      [ keys %r ]
+    )});
 
     if($o{what} =~ /vn/) {
       push(@{$r->[$r{$_->{rid}}]{vn}}, $_) for (@{$self->dbAll(q|
@@ -162,16 +170,22 @@ sub dbReleaseAdd {
 
 
 # helper function, inserts a producer revision
-# Arguments: global revision, item id, { columns in releases_rev + vn + producers + media + platforms }
+# Arguments: global revision, item id, { columns in releases_rev + languages + vn + producers + media + platforms }
 sub insert_rev {
   my($self, $cid, $rid, $o) = @_;
 
   $self->dbExec(q|
-    INSERT INTO releases_rev (id, rid, title, original, gtin, catalog, language, website, released,
+    INSERT INTO releases_rev (id, rid, title, original, gtin, catalog, website, released,
         notes, minage, type, patch, resolution, voiced, freeware, doujin, ani_story, ani_ero)
       VALUES (!l)|,
-    [ $cid, $rid, @$o{qw| title original gtin catalog language website released
+    [ $cid, $rid, @$o{qw| title original gtin catalog website released
         notes minage type patch resolution voiced freeware doujin ani_story ani_ero|} ]);
+
+  $self->dbExec(q|
+    INSERT INTO releases_lang (rid, lang)
+      VALUES (?, ?)|,
+    $cid, $_
+  ) for (@{$o->{languages}});
 
   $self->dbExec(q|
     INSERT INTO releases_producers (rid, pid)

@@ -79,6 +79,13 @@ CREATE TABLE releases (
   hidden boolean NOT NULL DEFAULT FALSE
 );
 
+-- releases_lang
+CREATE TABLE releases_lang (
+  rid integer NOT NULL,
+  lang varchar NOT NULL,
+  PRIMARY KEY(rid, lang)
+);
+
 -- releases_media
 CREATE TABLE releases_media (
   rid integer NOT NULL DEFAULT 0,
@@ -108,7 +115,6 @@ CREATE TABLE releases_rev (
   title varchar(250) NOT NULL DEFAULT '',
   original varchar(250) NOT NULL DEFAULT '',
   type smallint NOT NULL DEFAULT 0,
-  language varchar NOT NULL DEFAULT 'ja',
   website varchar(250) NOT NULL DEFAULT '',
   released integer NOT NULL,
   notes text NOT NULL DEFAULT '',
@@ -358,6 +364,7 @@ ALTER TABLE producers_rev      ADD FOREIGN KEY (id)        REFERENCES changes   
 ALTER TABLE producers_rev      ADD FOREIGN KEY (pid)       REFERENCES producers     (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE quotes             ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE releases           ADD FOREIGN KEY (latest)    REFERENCES releases_rev  (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE releases_lang      ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE releases_media     ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE releases_platforms ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE releases_producers ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id) DEFERRABLE INITIALLY DEFERRED;
@@ -453,16 +460,17 @@ BEGIN
       GROUP BY rv1.vid
     ), 0),
     c_languages = COALESCE(ARRAY_TO_STRING(ARRAY(
-      SELECT language
+      SELECT rl2.lang
       FROM releases_rev rr2
+      JOIN releases_lang rl2 ON rl2.rid = rr2.id
       JOIN releases r2 ON rr2.id = r2.latest
       JOIN releases_vn rv2 ON rr2.id = rv2.rid
       WHERE rv2.vid = vn.id
       AND rr2.type <> 2
       AND rr2.released <= TO_CHAR(''today''::timestamp, ''YYYYMMDD'')::integer
       AND r2.hidden = FALSE
-      GROUP BY rr2.language
-      ORDER BY rr2.language
+      GROUP BY rl2.lang
+      ORDER BY rl2.lang
     ), ''/''), ''''),
     c_platforms = COALESCE(ARRAY_TO_STRING(ARRAY(
       SELECT rp3.platform

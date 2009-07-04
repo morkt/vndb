@@ -232,16 +232,14 @@ sub _producers {
   my($self, $i, $r) = @_;
   return if !grep @{$_->{producers}}, @$r;
 
-  my @lang;
-  for my $l (@$r) {
-    push @lang, $l->{language} if !grep $l->{language} eq $_, @lang;
-  }
+  my %lang;
+  my @lang = grep !$lang{$_}++, map @{$_->{languages}}, @$r;
 
   Tr ++$$i % 2 ? (class => 'odd') : ();
    td 'Producers';
    td;
     for my $l (@lang) {
-      my %p = map { $_->{id} => $_ } map @{$_->{producers}}, grep $_->{language} eq $l, @$r;
+      my %p = map { $_->{id} => $_ } map @{$_->{producers}}, grep grep($_ eq $l, @{$_->{languages}}), @$r;
       my @p = values %p;
       next if !@p;
       cssicon "lang $l", $self->{languages}{$l};
@@ -411,10 +409,8 @@ sub _releases {
      }
    }
 
-   my @lang;
-   for my $l (@$r) {
-     push @lang, $l->{language} if !grep $l->{language} eq $_, @lang;
-   }
+   my %lang;
+   my @lang = grep !$lang{$_}++, map @{$_->{languages}}, @$r;
 
    table;
     for my $l (@lang) {
@@ -424,7 +420,7 @@ sub _releases {
         txt $self->{languages}{$l};
        end;
       end;
-      for my $rel (grep $l eq $_->{language}, @$r) {
+      for my $rel (grep grep($_ eq $l, @{$_->{languages}}), @$r) {
         Tr;
          td class => 'tc1'; lit datestr $rel->{released}; end;
          td class => 'tc2', $rel->{minage} < 0 ? '' : $self->{age_ratings}{$rel->{minage}}[0];
@@ -486,7 +482,7 @@ sub _screenshots {
       next if !@scr;
       Tr class => 'rel';
        td colspan => 5;
-        cssicon 'lang '.$rel->{language}, $self->{languages}{$rel->{language}};
+        cssicon "lang $_", $self->{languages}{$_} for (@{$rel->{languages}});
         txt $rel->{title};
        end;
       end;

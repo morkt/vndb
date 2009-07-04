@@ -47,7 +47,7 @@ sub page {
       [ original  => 'Original title', diff => 1 ],
       [ gtin      => 'JAN/UPC/EAN',    serialize => sub { $_[0]||'[none]' } ],
       [ catalog   => 'Catalog number', serialize => sub { $_[0]||'[none]' } ],
-      [ language  => 'Language',       serialize => sub { $self->{languages}{$_[0]} } ],
+      [ languages => 'Language',       join => ', ', split => sub { map $self->{languages}{$_}, @{$_[0]} } ],
       [ website   => 'Website',        ],
       [ released  => 'Release date',   htmlize   => sub { datestr $_[0] } ],
       [ minage    => 'Age rating',     serialize => sub { $self->{age_ratings}{$_[0]}[0] } ],
@@ -127,8 +127,11 @@ sub _infotable {
    Tr ++$i % 2 ? (class => 'odd') : ();
     td 'Language';
     td;
-     cssicon "lang $r->{language}", $self->{languages}{$r->{language}};
-     txt ' '.$self->{languages}{$r->{language}};
+     for (@{$r->{languages}}) {
+       cssicon "lang $_", $self->{languages}{$_};
+       txt ' '.$self->{languages}{$_};
+       br if $_ ne $r->{languages}[$#{$r->{languages}}];
+     }
     end;
    end;
 
@@ -281,7 +284,7 @@ sub edit {
 
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (
-    (map { $_ => $r->{$_} } qw|type title original gtin catalog language website released
+    (map { $_ => $r->{$_} } qw|type title original gtin catalog languages website released
       notes minage platforms patch resolution voiced freeware doujin ani_story ani_ero|),
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map "$_->{id},$_->{name}", sort { $a->{id} <=> $b->{id} } @{$r->{producers}}),
@@ -300,7 +303,7 @@ sub edit {
       { name => 'gtin',      required => 0, default => '0',
         func => [ \&gtintype, 'Not a valid JAN/UPC/EAN code' ] },
       { name => 'catalog',   required => 0, default => '', maxlength => 50 },
-      { name => 'language',  enum => [ keys %{$self->{languages}} ] },
+      { name => 'languages', multi => 1, enum => [ keys %{$self->{languages}} ] },
       { name => 'website',   required => 0, default => '', template => 'url' },
       { name => 'released',  required => 0, default => 0, template => 'int' },
       { name => 'minage' ,   required => 0, default => -1, enum => [ keys %{$self->{age_ratings}} ] },
@@ -332,7 +335,7 @@ sub edit {
           !grep !/^(platforms|producers|vn)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
 
       my %opts = (
-        (map { $_ => $frm->{$_} } qw| type title original gtin catalog language website released
+        (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released
           notes minage platforms resolution editsum patch voiced freeware doujin ani_story ani_ero|),
         vn        => $new_vn,
         producers => $producers,
@@ -351,7 +354,7 @@ sub edit {
   }
 
   !defined $frm->{$_} && ($frm->{$_} = $b4{$_}) for keys %b4;
-  $frm->{language} = 'ja' if !$rid && !defined $frm->{lang};
+  $frm->{languages} = ['ja'] if !$rid && !defined $frm->{languages};
   $frm->{editsum} = sprintf 'Reverted to revision r%d.%d', $rid, $rev if $rev && !defined $frm->{editsum};
 
   $self->htmlHeader(js => 'forms', title => $rid ? 'Edit '.$r->{title} : 'Add release to '.$v->{title}, noindex => 1);
@@ -376,7 +379,7 @@ sub _form {
     [ input  => short => 'title',     name => 'Title (romaji)', width => 300 ],
     [ input  => short => 'original',  name => 'Original title', width => 300 ],
     [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],
-    [ select => short => 'language',  name => 'Language',
+    [ select => short => 'languages', name => 'Language(s)', multi => 1,
       options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
     [ input  => short => 'gtin',      name => 'JAN/UPC/EAN' ],
     [ input  => short => 'catalog',   name => 'Catalog number' ],
@@ -532,7 +535,7 @@ sub browse {
        td class => 'tc2', $l->{minage} > -1 ? $self->{age_ratings}{$l->{minage}}[0] : '';
        td class => 'tc3';
         $_ ne 'oth' && cssicon $_, $self->{platforms}{$_} for (@{$l->{platforms}});
-        cssicon "lang $l->{language}", $self->{languages}{$l->{language}};
+        cssicon "lang $_", $self->{languages}{$_} for (@{$l->{languages}});
         cssicon lc(substr($self->{release_types}[$l->{type}],0,3)), $self->{release_types}[$l->{type}];
        end;
        td class => 'tc4';

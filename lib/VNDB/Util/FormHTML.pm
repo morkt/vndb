@@ -187,14 +187,15 @@ sub htmlFormPart {
     }
     if(/select/) {
       my $l='';
-      Select name => $o{short}, id => $o{short}, $o{width} ? (style => "width: $o{width}px") : ();
-       for (@{$o{options}}) {
-         if($_->[2] && $l ne $_->[2]) {
+      Select name => $o{short}, id => $o{short}, $o{width} ? (style => "width: $o{width}px") : (), $o{multi} ? (multiple => 'multiple', size => $o{size}||5) : ();
+       for my $p (@{$o{options}}) {
+         if($p->[2] && $l ne $p->[2]) {
            end if $l;
-           $l = $_->[2];
+           $l = $p->[2];
            optgroup label => $l;
          }
-         option value => $_->[0], defined $frm->{$o{short}} && $frm->{$o{short}} eq $_->[0] ? (selected => 'selected') : (), $_->[1];
+         my $sel = defined $frm->{$o{short}} && ($frm->{$o{short}} eq $p->[0] || ref($frm->{$o{short}}) eq 'ARRAY' && grep $_ eq $p->[0], @{$frm->{$o{short}}});
+         option value => $p->[0], $sel ? (selected => 'selected') : (), $p->[1];
        }
        end if $l;
       end;

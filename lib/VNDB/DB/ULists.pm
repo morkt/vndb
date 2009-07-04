@@ -77,8 +77,8 @@ sub dbVNListList {
       $_->{vid}, $_->{rels}
     } @$r;
 
-    push @{$vns{$_->{vid}}}, $_ for (@{$self->dbAll(q|
-      SELECT rv.vid, rr.rid, rr.title, rr.original, rr.released, rr.type, rr.language, rr.minage, rl.rstat, rl.vstat
+    my $rel = $self->dbAll(q|
+      SELECT rv.vid, rr.rid, r.latest, rr.title, rr.original, rr.released, rr.type, rr.minage, rl.rstat, rl.vstat
         FROM rlists rl
         JOIN releases r ON rl.rid = r.id
         JOIN releases_rev rr ON rr.id = r.latest
@@ -87,7 +87,22 @@ sub dbVNListList {
           AND rv.vid IN(!l)
         ORDER BY rr.released ASC|,
       $o{uid}, [ keys %vns ]
-    )});
+    );
+
+    if(@$rel) {
+      my %rel = map {
+        $_->{languages}=[];
+        $_->{latest}, $_->{languages}
+      } @$rel;
+
+      push(@{$rel{$_->{rid}}}, $_->{lang}) for (@{$self->dbAll(q|
+        SELECT rid, lang
+          FROM releases_lang
+          WHERE rid IN(!l)|,
+        [ keys %rel ]
+      )});
+      push @{$vns{$_->{vid}}}, $_ for @$rel;
+    }
   }
 
   return wantarray ? ($r, $np) : $r;

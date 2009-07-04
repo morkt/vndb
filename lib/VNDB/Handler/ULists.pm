@@ -315,7 +315,7 @@ sub _vnlist_browse {
           lit datestr $_->{released};
          end;
          td class => 'tc2';
-          cssicon "lang $_->{language}", $self->{languages}{$_->{language}};
+          cssicon "lang $_", $self->{languages}{$_} for @{$_->{languages}};
           cssicon substr(lc $self->{release_types}[$_->{type}], 0, 3), $self->{release_types}[$_->{type}].' release';
          end;
          td class => 'tc3';

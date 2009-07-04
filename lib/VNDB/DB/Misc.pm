@@ -163,10 +163,10 @@ sub dbItemMod {
 sub dbLanguages {
   my $self = shift;
   return [
-    map $_->{language}, @{$self->dbAll(q|
-      SELECT DISTINCT rr.language
+    map $_->{lang}, @{$self->dbAll(q|
+      SELECT DISTINCT rl.lang
         FROM releases r
-        JOIN releases_rev rr ON rr.id = r.latest
+        JOIN releases_lang rl ON rl.rid = r.latest
         WHERE r.hidden = FALSE|
     )}
   ];
