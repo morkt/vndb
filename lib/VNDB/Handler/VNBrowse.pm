@@ -21,40 +21,27 @@ sub list {
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'q', required => 0, default => '' },
     { name => 'sq', required => 0, default => '' },
+    { name => 'ln', required => 0, multi => 1, enum => [ keys %{$self->{languages}} ], default => '' },
+    { name => 'pl', required => 0, multi => 1, enum => [ keys %{$self->{platforms}} ], default => '' },
   );
   return 404 if $f->{_err};
   $f->{q} ||= $f->{sq};
 
-  my(@plat, @lang);
-  my $q = $f->{q};
-  if($q) {
-   # VNDBID
-    return $self->resRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')
-      if $q =~ /^([gvrptud])([0-9]+)(?:\.([0-9]+))?$/;
-
-    if(!($q =~ s/^title://)) {
-     # platforms
-      $_ ne 'oth' && $q =~ s/(?:$self->{platforms}{$_}|p:$_)//ig && push @plat, $_ for keys %{$self->{platforms}};
-
-     # languages
-      $q =~ s/($self->{languages}{$_}|l:$_)//ig && push @lang, $_ for keys %{$self->{languages}};
-    }
-  }
-  $q =~ s/ +$//;
-  $q =~ s/^ +//;
+  return $self->resRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')
+    if $f->{q} && $f->{q} =~ /^([gvrptud])([0-9]+)(?:\.([0-9]+))?$/;
 
   my($list, $np) = $self->dbVNGet(
     $char ne 'all' ? ( char => $char ) : (),
-    $q ? ( search => $q ) : (),
+    $f->{q} ? ( search => $f->{q} ) : (),
     results => 50,
     page => $f->{p},
     order => ($f->{s} eq 'rel' ? 'c_released' : $f->{s} eq 'pop' ? 'c_popularity' : 'title').($f->{o} eq 'a' ? ' ASC' : ' DESC'),
-    @lang ? ( lang => \@lang ) : (),
-    @plat ? ( platform => \@plat ) : (),
+    $f->{pl}[0] ? ( platform => $f->{pl} ) : (),
+    $f->{ln}[0] ? ( lang => $f->{ln} ) : (),
   );
 
   $self->resRedirect('/v'.$list->[0]{id}, 'temp')
-    if $q && @$list == 1;
+    if $f->{q} && @$list == 1;
 
   $self->htmlHeader(title => 'Browse visual novels', search => $f->{q});
   _filters($self, $f, $char);
@@ -100,11 +87,10 @@ sub list {
 sub _filters {
   my($self, $f, $char) = @_;
 
+  form action => '/v/all', 'accept-charset' => 'UTF-8', method => 'get';
   div class => 'mainbox';
    h1 'Browse visual novels';
-   form action => '/v/all', 'accept-charset' => 'UTF-8', method => 'get';
-    $self->htmlSearchBox('v', $f->{q});
-   end;
+   $self->htmlSearchBox('v', $f->{q});
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
       a href => "/v/$_", $_ eq $char ? (class => 'optselected') : (), $_ ? uc $_ : '#';
@@ -117,12 +103,13 @@ sub _filters {
     h2;
      lit 'Languages <b>(boolean or, selecting more gives more results)</b>';
     end;
-    for(sort @{$self->dbLanguages}) {
+    for my $i (sort @{$self->dbLanguages}) {
       span;
-       input type => 'checkbox', id => "lang_$_";
-       label for => "lang_$_";
-        cssicon "lang $_", $self->{languages}{$_};
-        txt $self->{languages}{$_};
+       input type => 'checkbox', name => 'ln', value => $i, id => "lang_$i",
+         (scalar grep $_ eq $i, @{$f->{ln}}) ? (checked => 'checked') : ();
+       label for => "lang_$i";
+        cssicon "lang $i", $self->{languages}{$i};
+        txt $self->{languages}{$i};
        end;
       end;
     }
@@ -130,19 +117,21 @@ sub _filters {
     h2;
      lit 'Platforms <b>(boolean or, selecting more gives more results)</b>';
     end;
-    for(sort keys %{$self->{platforms}}) {
-      next if $_ eq 'oth';
+    for my $i (sort keys %{$self->{platforms}}) {
+      next if $i eq 'oth';
       span;
-       input type => 'checkbox', id => "plat_$_";
-       label for => "plat_$_";
-        cssicon $_, $self->{platforms}{$_};
-        txt $self->{platforms}{$_};
+       input type => 'checkbox', id => "plat_$i", name => 'pl', value => $i,
+         (scalar grep $_ eq $i, @{$f->{pl}}) ? (checked => 'checked') : ();
+       label for => "plat_$i";
+        cssicon $i, $self->{platforms}{$i};
+        txt $self->{platforms}{$i};
        end;
       end;
     }
 
     clearfloat;
    end;
+  end;
   end;
 }
 
