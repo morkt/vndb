@@ -77,7 +77,7 @@ our %S = (%S,
     g => [ 'Gameplay', {
       aa => 'NVL',     # 0..1
       ab => 'ADV',     # 0..1
-      ac => "Act\x{200B}ion",      # Ugliest. Hack. Ever.
+      ac => "Action",
       rp => 'RPG',
       st => 'Strategy',
       si => 'Simulation',
@@ -106,12 +106,12 @@ our %S = (%S,
     }, 4 ],
     l => [ 'Place', {       # 0..1
       ea => 'Earth', 
-      fa => "Fant\x{200B}asy world",
+      fa => "Fantasy world",
       sp => 'Space',
     }, 5 ],
     h => [ 'Protagonist', { # 0..1
       fa => 'Male',
-      fe => "Fem\x{200B}ale",
+      fe => "Female",
     }, 6 ],
     s => [ 'Sexual content', {
       aa => 'Sexual content',
@@ -176,7 +176,7 @@ our %S = (%S,
     lin => 'Linux',
     mac => 'Mac OS',
     dvd => 'DVD Player',
-    gba => "Game Boy Ad\x{200B}vance",
+    gba => "Game Boy Advance",
     msx => 'MSX',
     nds => 'Nintendo DS',
     nes => 'Famicom',
