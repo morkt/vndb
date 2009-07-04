@@ -30,21 +30,6 @@ YAWF::register(
     sub { $_[0]->resRedirect("/d$_[1]#$_[2]", 'perm') },
   qr{u([1-9]\d*)/votes},
     sub { $_[0]->resRedirect("/u$_[1]/list?v=1", 'perm') },
-
-  # rewrite the old category browser to the new-ish search function
-  qr{v/cat}, sub {
-    my $f = $_[0]->formValidate(
-      {name=>'i',required=>0,default=>''},{name=>'e',required=>0,default=>''},{name=>'l',required=>0,default=>''},
-      {name=>'p',required=>0},{name=>'o',required=>0},{name=>'s',required=>0});
-    my %f;
-    $f{$_} = $f->{$_} for (qw|p o s|);
-    $f{q} = join ' ', (map $_[0]{categories}{substr($_,0,1)}[1]{substr($_,1,2)}, split /,/, $f->{i}),
-                      (map '-'.$_[0]{categories}{substr($_,0,1)}[1]{substr($_,1,2)}, split /,/, $f->{e}),
-                      (map $_[0]{languages}{$_}, split /,/, $f->{l});
-    !$f{$_} && delete $f{$_} for keys %f;
-    $_[0]->resRedirect('/v/all'.(!(keys %f)?'':'?'.join(';', map $_.'='.$f{$_}, keys %f) ), 'perm');
-  },
-
 );
 
 
