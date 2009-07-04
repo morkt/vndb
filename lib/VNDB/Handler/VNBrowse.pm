@@ -27,8 +27,15 @@ sub list {
   return 404 if $f->{_err};
   $f->{q} ||= $f->{sq};
 
-  return $self->resRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')
-    if $f->{q} && $f->{q} =~ /^([gvrptud])([0-9]+)(?:\.([0-9]+))?$/;
+  if($f->{q}) {
+    return $self->resRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')
+      if $f->{q} =~ /^([gvrptud])([0-9]+)(?:\.([0-9]+))?$/;
+
+    # for URL compatibilty with older versions
+    my @lang;
+    $f->{q} =~ s/\s*$self->{languages}{$_}\s*//&&push @lang, $_ for (keys %{$self->{languages}});
+    $f->{ln} = $f->{ln}[0] ? [ @{$f->{ln}}, @lang ] : \@lang;
+  }
 
   my($list, $np) = $self->dbVNGet(
     $char ne 'all' ? ( char => $char ) : (),
