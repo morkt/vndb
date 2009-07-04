@@ -365,6 +365,8 @@ sub edit {
   $frm->{languages} = ['ja'] if !$rid && !defined $frm->{languages};
   $frm->{editsum} = sprintf 'Reverted to revision r%d.%d', $rid, $rev if !$copy && $rev && !defined $frm->{editsum};
   $frm->{editsum} = sprintf 'New release based on r%d.%d', $rid, $r->{rev} if $copy && !defined $frm->{editsum};
+  $frm->{title} = $v->{title} if !defined $frm->{title} && !$r;
+  $frm->{original} = $v->{original} if !defined $frm->{original} && !$r;
 
   $self->htmlHeader(js => 'forms', title => $rid ? ''.($copy ? 'Copy ':'Edit ').$r->{title} : 'Add release to '.$v->{title}, noindex => 1);
   $self->htmlMainTabs('r', $r, $copy ? 'copy' : 'edit') if $rid;
