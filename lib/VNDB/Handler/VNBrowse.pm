@@ -62,7 +62,7 @@ sub list {
   $self->resRedirect('/v'.$list->[0]{id}, 'temp')
     if $f->{q} && @$list == 1;
 
-  $self->htmlHeader(title => 'Browse visual novels', search => $f->{q});
+  $self->htmlHeader(title => 'Browse visual novels', search => $f->{q}, js => 'forms');
   _filters($self, $f, $char, \@ignored);
 
   my $url = "/v/$char?q=$f->{q};ti=$f->{ti}";

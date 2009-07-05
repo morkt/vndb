@@ -446,7 +446,6 @@ DOMLoad(function() {
     };
   }
 
-
   // Advanced search
   cl('advselect', function() {
     var e = x('advoptions');
@@ -455,7 +454,27 @@ DOMLoad(function() {
     return false;
   });
 
-
+  // auto-complete tag search
+  if(x('advselect') && x('ti')) {
+    dsInit(x('ti'), '/xml/tags.xml?q=',
+      function(item, tr) {
+        var td = document.createElement('td');
+        td.innerHTML = shorten(item.firstChild.nodeValue, 40);
+        if(item.getAttribute('meta') == 'yes')
+          td.innerHTML += ' <b class="grayedout">meta</b>';
+        else if(item.getAttribute('state') == 0)
+          td.innerHTML += ' <b class="grayedout">awaiting moderation</b>';
+        tr.appendChild(td);
+      },
+      function(item) {
+        var tags = x('ti').value.split(/ *, */);
+        tags[tags.length-1] = item.firstChild.nodeValue;
+        return tags.join(', ');
+      },
+      function() { false; },
+      function(val) { return (val.split(/, */))[val.split(/, */).length-1]; }
+    );
+  }
 
   // show/hide NSFW VN image
   if(x('nsfw_show'))

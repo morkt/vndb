@@ -18,7 +18,8 @@ function shorten(v, l) {
    \***********************************/
 
 
-function dsInit(obj, url, trfunc, serfunc, retfunc) {
+function dsInit(obj, url, trfunc, serfunc, retfunc, parfunc) {
+  obj.setAttribute('autocomplete', 'off');
   obj.onkeydown = dsKeyDown;
   obj.onblur = function() {
     // timeout to make sure the tr.onclick event is called before we've hidden the object
@@ -31,6 +32,7 @@ function dsInit(obj, url, trfunc, serfunc, retfunc) {
   obj.returnFunc = retfunc;
   obj.trFunc = trfunc;
   obj.serFunc = serfunc;
+  obj.parFunc = parfunc;
   obj.searchURL = url;
   obj.selectedId = 0;
 }
@@ -102,9 +104,10 @@ function dsKeyDown(ev) {
 
 function dsSearch(obj) {
   var b = x('ds_box');
+  var v = obj.parFunc ? obj.parFunc(obj.value) : obj.value;
   
   // show/hide the ds_box div
-  if(obj.value.length < 2) {
+  if(v.length < 2) {
     if(b) {
       b.style.top = '-500px';
       b.innerHTML = '<b>Loading...</b>';
@@ -134,7 +137,7 @@ function dsSearch(obj) {
   b.style.width = obj.offsetWidth+'px';
 
   // perform search
-  ajax(obj.searchURL + encodeURIComponent(obj.value), function(hr) {
+  ajax(obj.searchURL + encodeURIComponent(v), function(hr) {
     dsResults(hr, obj);
   });
 }
