@@ -116,7 +116,8 @@ sub htmlFormError {
 #  passwd    short, name
 #  static    content, (label, nolabel)
 #  check     name, short, (value)
-#  select    name, short, options, (width)
+#  select    name, short, options, (width, multi, size)
+#  radio     name, short, options
 #  text      name, short, (rows, cols)
 #  date      name, short
 #  part      title
@@ -148,7 +149,7 @@ sub htmlFormPart {
       lit '&nbsp;';
      end;
      td class => 'field';
-      input type => 'checkbox', class => 'checkbox', name => $o{short}, id => $o{short},
+      input type => 'checkbox', name => $o{short}, id => $o{short},
         value => $o{value}||'true', $frm->{$o{short}} ? ( checked => 'checked' ) : ();
       label for => $o{short};
        lit $o{name};
@@ -200,6 +201,13 @@ sub htmlFormPart {
        }
        end if $l;
       end;
+    }
+    if(/radio/) {
+      for my $p (@{$o{options}}) {
+        input type => 'radio', id => "$o{short}_$p->[0]", name => $o{short}, value => $p->[0],
+          defined $frm->{$o{short}} && $frm->{$o{short}} eq $p->[0] ? (checked => 'checked') : ();
+        label for => "$o{short}_$p->[0]", $p->[1];
+      }
     }
     if(/date/) {
       input type => 'hidden', id => $o{short}, name => $o{short}, value => $frm->{$o{short}}||'', class => 'dateinput';

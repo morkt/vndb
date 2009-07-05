@@ -24,6 +24,7 @@ sub list {
     { name => 'ln', required => 0, multi => 1, enum => [ keys %{$self->{languages}} ], default => '' },
     { name => 'pl', required => 0, multi => 1, enum => [ keys %{$self->{platforms}} ], default => '' },
     { name => 'ti', required => 0, default => '', maxlength => 200 },
+    { name => 'sp', required => 0, default => $self->reqCookie('tagspoil') =~ /^([0-2])$/ ? $1 : 1, enum => [0..2] },
   );
   return 404 if $f->{_err};
   $f->{q} ||= $f->{sq};
@@ -56,7 +57,7 @@ sub list {
     order => ($f->{s} eq 'rel' ? 'c_released' : $f->{s} eq 'pop' ? 'c_popularity' : $f->{s}).($f->{o} eq 'a' ? ' ASC' : ' DESC'),
     $f->{pl}[0] ? ( platform => $f->{pl} ) : (),
     $f->{ln}[0] ? ( lang => $f->{ln} ) : (),
-    tags_include => \@ti,
+    @ti ? (tags_include => [ $f->{sp}, \@ti ]) : (),
   );
 
   $self->resRedirect('/v'.$list->[0]{id}, 'temp')
@@ -145,6 +146,7 @@ sub _filters {
     end;
     table class => 'formtable', style => 'margin-left: 0';
      $self->htmlFormPart($f, [ input => short => 'ti', name => 'Tags to include', width => 350 ]);
+     $self->htmlFormPart($f, [ radio => short => 'sp', name => '', options => [[0,'Hide spoilers'],[1,'Show minor spoilers'],[2,'Show major spoilers']]]);
     end;
 
     h2;

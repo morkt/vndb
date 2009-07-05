@@ -476,6 +476,16 @@ DOMLoad(function() {
     );
   }
 
+  // update spoiler cookie on VN search radio button
+  if(x('sp_0')) {
+    cl('sp_0', function(){setCookie('tagspoil',0)});
+    cl('sp_1', function(){setCookie('tagspoil',1)});
+    cl('sp_2', function(){setCookie('tagspoil',2)});
+    if((i = readCookie('tagspoil')) == null)
+      i = 1;
+    x('sp_'+i).checked = true;
+  }
+
   // show/hide NSFW VN image
   if(x('nsfw_show'))
     x('nsfw_show').getElementsByTagName('a')[0].onclick = function() {
