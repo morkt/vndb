@@ -252,7 +252,7 @@ sub _form {
        tbody id => 'scr_table', '';
       end;
       Select id => 'scr_rel', class => $self->{url_static};
-       option value => $_->{id}, sprintf '[%s] %s (r%d)', $_->{language}, $_->{title}, $_->{id} for (@$r);
+       option value => $_->{id}, sprintf '[%s] %s (r%d)', join(',', @{$_->{languages}}), $_->{title}, $_->{id} for (@$r);
       end;
     }],
   ])
