@@ -140,7 +140,9 @@ sub _filters {
    end;
    div id => 'advoptions', class => 'hidden vnoptions';
 
-    h2 'Tag filters';
+    h2;
+     lit 'Tag filters <b>(boolean and, selecting more gives less results)</b>';
+    end;
     table class => 'formtable', style => 'margin-left: 0';
      $self->htmlFormPart($f, [ input => short => 'ti', name => 'Tags to include', width => 350 ]);
     end;
@@ -174,7 +176,10 @@ sub _filters {
       end;
     }
 
-    clearfloat;
+    div style => 'text-align: center; clear: left;';
+     input type => 'submit', value => 'Apply', class => 'submit';
+     input type => 'reset', value => 'Clear', class => 'submit', onclick => 'location.href="/v/all"';
+    end;
    end;
   end;
   end;
