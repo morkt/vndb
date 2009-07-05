@@ -9,7 +9,7 @@ use VNDB::Func 'gtintype';
 our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbVNCache dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
 
 
-# Options: id, rev, char, search, lang, platform, tags_include, results, page, order, what
+# Options: id, rev, char, search, lang, platform, tags_include, tags_exclude, results, page, order, what
 # What: extended categories anime relations screenshots relgraph ranking changes
 sub dbVNGet {
   my($self, %o) = @_;
@@ -35,6 +35,8 @@ sub dbVNGet {
       'v.id IN(SELECT vid FROM tags_vn_bayesian WHERE tag IN(!l) AND spoiler <= ? GROUP BY vid HAVING COUNT(tag) = ?)',
       [ $o{tags_include}[1], $o{tags_include}[0], $#{$o{tags_include}[1]}+1 ]
     ) : (),
+    $o{tags_exclude} && @{$o{tags_exclude}} ? (
+      'v.id NOT IN(SELECT vid FROM tags_vn_bayesian WHERE tag IN(!l))' => [ $o{tags_exclude} ] ) : (),
    # don't fetch hidden items unless we ask for an ID
     !$o{id} && !$o{rev} ? (
       'v.hidden = FALSE' => 0 ) : (),

@@ -56,7 +56,7 @@ function dsKeyDown(ev) {
     }
 
     if(obj.selectedId != 0)
-      obj.value = obj.serFunc(x('ds_box_'+obj.selectedId).itemData);
+      obj.value = obj.serFunc(x('ds_box_'+obj.selectedId).itemData, obj);
     if(obj.returnFunc)
       obj.returnFunc();
     if(x('ds_box'))
@@ -167,7 +167,7 @@ function dsResults(hr, obj) {
         l[i].className = l[i].id == 'ds_box_'+obj.selectedId ? 'selected' : '';
     };
     tr.onclick = function() {
-      obj.value = obj.serFunc(this.itemData);
+      obj.value = obj.serFunc(this.itemData, obj);
       if(obj.returnFunc)
         obj.returnFunc();
       if(x('ds_box'))

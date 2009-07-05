@@ -24,6 +24,7 @@ sub list {
     { name => 'ln', required => 0, multi => 1, enum => [ keys %{$self->{languages}} ], default => '' },
     { name => 'pl', required => 0, multi => 1, enum => [ keys %{$self->{platforms}} ], default => '' },
     { name => 'ti', required => 0, default => '', maxlength => 200 },
+    { name => 'te', required => 0, default => '', maxlength => 200 },
     { name => 'sp', required => 0, default => $self->reqCookie('tagspoil') =~ /^([0-2])$/ ? $1 : 1, enum => [0..2] },
   );
   return 404 if $f->{_err};
@@ -40,12 +41,17 @@ sub list {
   }
 
   my @ignored;
-  my @ti = map {
-    my $i = $self->dbTagGet(name => $_)->[0];
-    push @ignored, [$_, 0] if !$i;
-    push @ignored, [$_, 1] if $i && $i->{meta};
-    $i && !$i->{meta} ? $i->{id} : ();
-  } grep $_, split /\s*,\s*/, $f->{ti};
+  my $tagfind = sub {
+    return map {
+      my $i = $self->dbTagGet(name => $_)->[0];
+      push @ignored, [$_, 0] if !$i;
+      push @ignored, [$_, 1] if $i && $i->{meta};
+      $i && !$i->{meta} ? $i->{id} : ();
+    } grep $_, split /\s*,\s*/, $_[0];
+  };
+  my @ti = $tagfind->($f->{ti});
+  my @te = $tagfind->($f->{te});
+
   $f->{s} = 'title' if !@ti && $f->{s} eq 'tagscore';
   $f->{o} = $f->{s} eq 'tagscore' ? 'd' : 'a' if !$f->{o};
 
@@ -58,6 +64,7 @@ sub list {
     $f->{pl}[0] ? ( platform => $f->{pl} ) : (),
     $f->{ln}[0] ? ( lang => $f->{ln} ) : (),
     @ti ? (tags_include => [ $f->{sp}, \@ti ]) : (),
+    @te ? (tags_exclude => \@te) : (),
   );
 
   $self->resRedirect('/v'.$list->[0]{id}, 'temp')
@@ -66,7 +73,7 @@ sub list {
   $self->htmlHeader(title => 'Browse visual novels', search => $f->{q}, js => 'forms');
   _filters($self, $f, $char, \@ignored);
 
-  my $url = "/v/$char?q=$f->{q};ti=$f->{ti}";
+  my $url = "/v/$char?q=$f->{q};ti=$f->{ti};te=$f->{te}";
   $_ and $url .= ";pl=$_" for @{$f->{pl}};
   $_ and $url .= ";ln=$_" for @{$f->{ln}};
   $self->htmlBrowse(
@@ -147,6 +154,7 @@ sub _filters {
     table class => 'formtable', style => 'margin-left: 0';
      $self->htmlFormPart($f, [ input => short => 'ti', name => 'Tags to include', width => 350 ]);
      $self->htmlFormPart($f, [ radio => short => 'sp', name => '', options => [[0,'Hide spoilers'],[1,'Show minor spoilers'],[2,'Show major spoilers']]]);
+     $self->htmlFormPart($f, [ input => short => 'te', name => 'Tags to exclude', width => 350 ]);
     end;
 
     h2;
