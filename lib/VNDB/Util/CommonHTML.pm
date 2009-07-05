@@ -189,7 +189,7 @@ sub htmlBrowse {
           if(ref $opt{header}[$_] eq 'CODE') {
             $opt{header}[$_]->($self, $_+1);
           } else {
-            td class => 'tc'.($_+1), $opt{header}[$_][2] ? (colspan => $opt{header}[$_][2]) : ();
+            td class => $opt{header}[$_][3]||'tc'.($_+1), $opt{header}[$_][2] ? (colspan => $opt{header}[$_][2]) : ();
              lit $opt{header}[$_][0];
              if($opt{header}[$_][1]) {
                lit ' ';
