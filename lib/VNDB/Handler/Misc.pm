@@ -100,7 +100,7 @@ sub homepage {
   # Recent posts
   div class => 'mainbox threelayout last';
    h1 'Recent posts';
-   my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, order => 'tpl.date DESC');
+   my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, order => 'tpl.date DESC', notusers => 1);
    ul;
     for (@$posts) {
       my $boards = join ', ', map $self->{discussion_boards}{$_->{type}}.($_->{iid}?' > '.$_->{title}:''), @{$_->{boards}};

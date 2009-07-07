@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbThreadGet dbThreadEdit dbThreadAdd dbPostGet dbPostEdit dbPostAdd dbThreadCount|;
 
 
-# Options: id, type, iid, results, page, what
+# Options: id, type, iid, results, page, what, notusers
 # What: boards, boardtitles, firstpost, lastpost
 sub dbThreadGet {
   my($self, %o) = @_;
@@ -26,6 +26,8 @@ sub dbThreadGet {
       't.id IN(SELECT tid FROM threads_boards WHERE type = ?)' => $o{type} ) : (),
     $o{type} && $o{iid} ? (
       'tb.type = ?' => $o{type}, 'tb.iid = ?' => $o{iid} ) : (),
+    $o{notusers} ? (
+      't.id NOT IN(SELECT tid FROM threads_boards WHERE type = \'u\')' => 1) : (),
   );
 
   my @select = (
