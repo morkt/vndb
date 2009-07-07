@@ -84,7 +84,7 @@ sub _authCheck {
        !$user || length($user) > 15 || length($user) < 2
     || !$pass || length($pass) != 32;
 
-  my $d = $self->dbUserGet(username => $user, passwd => $pass)->[0];
+  my $d = $self->dbUserGet(username => $user, passwd => $pass, what => 'mymessages')->[0];
   return 0 if !defined $d->{id} || !$d->{rank};
 
   $self->{_auth} = $d;

@@ -9,7 +9,7 @@ our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel|;
 
 
 # %options->{ username passwd mail order uid ip registered search results page what }
-# what: stats
+# what: stats mymessages
 sub dbUserGet {
   my $s = shift;
   my %o = (
@@ -54,6 +54,8 @@ sub dbUserGet {
       '(SELECT COUNT(DISTINCT tag) FROM tags_vn WHERE uid = u.id) AS tagcount',
       '(SELECT COUNT(DISTINCT vid) FROM tags_vn WHERE uid = u.id) AS tagvncount',
     ) : (),
+    $o{what} =~ /mymessages/ ?
+      '(SELECT COUNT(*) FROM threads_boards tb JOIN threads t ON t.id = tb.tid WHERE tb.type = \'u\' AND tb.iid = u.id AND t.hidden = FALSE) AS mymessages' : (),
   );
 
   my($r, $np) = $s->dbPage(\%o, q|

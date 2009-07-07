@@ -87,7 +87,7 @@ sub _menu {
        a href => "$uid/edit", 'My Profile'; br;
        a href => "$uid/list", 'My Visual Novel List'; br;
        a href => "$uid/wish", 'My Wishlist'; br;
-       a href => "/t$uid",    'My Messages'; br;
+       a href => "/t$uid",    sprintf 'My Messages (%d)', $self->authInfo->{mymessages}; br;
        a href => "$uid/hist", 'My Recent Changes'; br;
        a href => "$uid/tags", 'My Tags'; br;
        br;
