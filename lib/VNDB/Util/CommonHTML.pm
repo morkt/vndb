@@ -48,9 +48,15 @@ sub htmlMainTabs {
      li $sel eq 'list' ? (class => 'tabselected') : ();
       a href => "/$id/list", 'list';
      end;
+   }
 
+   if($type eq 'u') {
      li $sel eq 'tags' ? (class => 'tabselected') : ();
       a href => "/$id/tags", 'tags';
+     end;
+
+     li $sel eq 'posts' ? (class => 'tabselected') : ();
+      a href => "/$id/posts", 'posts';
      end;
    }
 

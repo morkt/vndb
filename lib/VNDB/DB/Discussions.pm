@@ -153,25 +153,45 @@ sub dbThreadCount {
 }
 
 
-# Options: tid, num, what, page, results
+# Options: tid, num, what, order, uid, hide, page, results
+# what: user thread
 sub dbPostGet {
   my($self, %o) = @_;
   $o{results} ||= 50;
   $o{page} ||= 1;
+  $o{what} ||= '';
+  $o{order} ||= 'tp.num ASC';
 
   my %where = (
-    'tp.tid = ?' => $o{tid},
+    $o{tid} ? (
+      'tp.tid = ?' => $o{tid} ) : (),
     $o{num} ? (
       'tp.num = ?' => $o{num} ) : (),
+    $o{uid} ? (
+      'tp.uid = ?' => $o{uid} ) : (),
+    $o{hide} ? (
+      'tp.hidden = FALSE' => 1 ) : (),
+    $o{hide} && $o{what} =~ /thread/ ? (
+      't.hidden = FALSE' => 1 ) : (),
+  );
+
+  my @select = (
+    qw|tp.num tp.date tp.edited tp.msg tp.hidden|,
+    $o{what} =~ /user/ ? qw|tp.uid u.username| : (),
+    $o{what} =~ /thread/ ? (qw|tp.tid t.title|, 't.hidden AS thread_hidden') : (),
+  );
+  my @join = (
+    $o{what} =~ /user/ ? 'JOIN users u ON u.id = tp.uid' : (),
+    $o{what} =~ /thread/ ? 'JOIN threads t ON t.id = tp.tid' : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
-    SELECT tp.num, tp.date, tp.edited, tp.msg, tp.hidden, tp.uid, u.username
+    SELECT !s
       FROM threads_posts tp
-      JOIN users u ON u.id = tp.uid
+      !s
       !W
-      ORDER BY tp.num ASC|,
-    \%where,
+      ORDER BY !s|,
+    join(', ', @select), join(' ', @join), \%where, $o{order}
   );
 
   return wantarray ? ($r, $np) : $r;

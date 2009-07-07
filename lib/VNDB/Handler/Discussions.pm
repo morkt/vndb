@@ -26,7 +26,7 @@ sub thread {
   my $t = $self->dbThreadGet(id => $tid, what => 'boardtitles')->[0];
   return 404 if !$t->{id} || $t->{hidden} && !$self->authCan('boardmod');
 
-  my $p = $self->dbPostGet(tid => $tid, results => 25, page => $page);
+  my $p = $self->dbPostGet(tid => $tid, results => 25, page => $page, what => 'user');
   return 404 if !$p->[0];
 
   $self->htmlHeader(title => $t->{title});
@@ -142,7 +142,7 @@ sub edit {
   my $t = $tid && $self->dbThreadGet(id => $tid, what => 'boards')->[0];
   return 404 if $tid && !$t->{id};
 
-  my $p = $num && $self->dbPostGet(tid => $tid, num => $num)->[0];
+  my $p = $num && $self->dbPostGet(tid => $tid, num => $num, what => 'user')->[0];
   return 404 if $num && !$p->{num};
 
   # are we allowed to perform this action?

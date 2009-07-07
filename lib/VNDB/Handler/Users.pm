@@ -16,6 +16,7 @@ YAWF::register(
   qr{u/newpass/sent}          => \&newpass_sent,
   qr{u/register}              => \&register,
   qr{u([1-9]\d*)/edit}        => \&edit,
+  qr{u([1-9]\d*)/posts}       => \&posts,
   qr{u([1-9]\d*)/del(/[od])?} => \&delete,
   qr{u/(all|[0a-z])}          => \&list,
 );
@@ -101,9 +102,14 @@ sub userpage {
 
     Tr ++$i % 2 ? (class => 'odd') : ();
      td 'Forum stats';
-     td sprintf '%d post%s, %d new thread%s',
+     td;
+      txt sprintf '%d post%s, %d new thread%s. ',
        $u->{postcount}, $u->{postcount} != 1 ? 's' : '',
        $u->{threadcount}, $u->{threadcount} != 1 ? 's' : '';
+      if($u->{postcount}) {
+        a href => "/u$uid/posts"; lit 'Browse posts &raquo;'; end;
+      }
+     end;
     end;
    end;
   end;
@@ -376,6 +382,59 @@ sub edit {
       map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_}.($self->debug?" [$_]":'') ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
     [ textarea => short => 'customcss', name => 'Additional <a href="http://en.wikipedia.org/wiki/Cascading_Style_Sheets">CSS</a>' ],
   ]);
+  $self->htmlFooter;
+}
+
+
+sub posts {
+  my($self, $uid) = @_;
+
+  # fetch user info (cached if uid == loggedin uid)
+  my $u = $self->authInfo->{id} && $self->authInfo->{id} == $uid ? $self->authInfo : $self->dbUserGet(uid => $uid)->[0];
+  return 404 if !$u->{id};
+
+  my $f = $self->formValidate(
+    { name => 'p', required => 0, default => 1, template => 'int' }
+  );
+
+  my($posts, $np) = $self->dbPostGet(uid => $uid, hide => 1, what => 'thread', page => $f->{p}, order => 'tp.date DESC');
+
+  $self->htmlHeader(title => "Posts made by $u->{username}");
+  $self->htmlMainTabs(u => $u, 'posts');
+  div class => 'mainbox';
+   h1 "Posts made by $u->{username}";
+   if(!@$posts) {
+     p "\u$u->{username} hasn't made any posts yet.";
+   }
+  end;
+
+  $self->htmlBrowse(
+    items    => $posts,
+    class    => 'uposts',
+    options  => $f,
+    nextpage => $np,
+    pageurl  => "/u$uid/posts",
+    header   => [
+      [ '' ],
+      [ '' ],
+      [ 'Date' ],
+      sub { td; a href => '#', id => 'history_comments', 'expand'; txt 'Title'; end; }
+    ],
+    row     => sub {
+      my($s, $n, $l) = @_;
+      Tr $n % 2 ? (class => 'odd') : ();
+       td class => 'tc1'; a href => "/t$l->{tid}.$l->{num}", 't'.$l->{tid}; end;
+       td class => 'tc2'; a href => "/t$l->{tid}.$l->{num}", '.'.$l->{num}; end;
+       td class => 'tc3', date $l->{date};
+       td class => 'tc4'; a href => "/t$l->{tid}.$l->{num}", $l->{title}; end;
+      end;
+      Tr class => $n % 2 ? 'editsum odd hidden' : 'editsum hidden';
+       td colspan => 4;
+        lit bb2html $l->{msg}, 150;
+       end;
+      end;
+    },
+  ) if @$posts;
   $self->htmlFooter;
 }
 

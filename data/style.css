@@ -472,7 +472,7 @@ div.mainbox.history td.tc1_2 {
 }
 div.mainbox.history td.tc2 { width: 65px; }
 div.mainbox.history td.tc3 { width: 90px  }
-div.mainbox.history tr.editsum td {
+tr.editsum td {
   color: $grayedout$;
   padding-top: 0;
   text-align: right;
@@ -996,6 +996,21 @@ ul#catselect li li.exc { background-position: 0px -33px; color: $statnok$; }
 .userpage .key {
   width: 70px;
 }
+
+
+/***** User posts browser ****/
+div.browse.uposts td.tc1 {
+  padding-left: 0!important;
+  padding-right: 0;
+  text-align: right;
+  width: 60px;
+  *width: auto; /* IE7 sucks */
+}
+.uposts td.tc2 {
+  padding-left: 0;
+  width: 25px;
+}
+.uposts td.tc3 { width: 65px; }
 
 
 
