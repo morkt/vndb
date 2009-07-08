@@ -9,7 +9,7 @@ our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagMerge dbTagLinks dbT
 
 
 # %options->{ id noid name search state meta page results order what }
-# what: parents childs(n) aliases
+# what: parents childs(n) aliases addedby
 sub dbTagGet {
   my $self = shift;
   my %o = (
@@ -38,13 +38,19 @@ sub dbTagGet {
     defined $o{meta} ? (
       't.meta = ?' => $o{meta}?1:0 ) : (),
   );
+  my @select = (
+    qw|t.id t.meta t.name t.description t.added t.state t.c_vns|,
+    $o{what} =~ /addedby/ ? ('t.addedby', 'u.username') : (),
+  );
+  my @join = $o{what} =~ /addedby/ ? 'JOIN users u ON u.id = t.addedby' : ();
 
   my($r, $np) = $self->dbPage(\%o, q|
-    SELECT t.id, t.meta, t.name, t.description, t.added, t.state, t.c_vns
+    SELECT !s
       FROM tags t
+      !s
       !W
       ORDER BY !s|,
-    \%where, $o{order}
+    join(', ', @select), join(' ', @join), \%where, $o{order}
   );
 
   if(@$r && $o{what} =~ /aliases/) {
@@ -97,8 +103,8 @@ sub dbTagEdit {
 # returns the id of the new tag
 sub dbTagAdd {
   my($self, %o) = @_;
-  my $id = $self->dbRow('INSERT INTO tags (name, meta, description, state) VALUES (!l) RETURNING id',
-    [ map $o{$_}, qw|name meta description state| ]
+  my $id = $self->dbRow('INSERT INTO tags (name, meta, description, state, addedby) VALUES (!l, ?) RETURNING id',
+    [ map $o{$_}, qw|name meta description state| ], $o{addedby}||$self->authInfo->{id}
   )->{id};
   $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
   $self->dbExec('INSERT INTO tags_aliases (tag, alias) VALUES (?, ?)', $id, $_) for (@{$o{aliases}});

@@ -175,7 +175,8 @@ CREATE TABLE tags (
   meta boolean NOT NULL DEFAULT FALSE,
   added bigint NOT NULL DEFAULT DATE_PART('epoch'::text, NOW()),
   state smallint NOT NULL DEFAULT 0,
-  c_vns integer NOT NULL DEFAULT 0
+  c_vns integer NOT NULL DEFAULT 0,
+  addedby integer NOT NULL DEFAULT 1
 );
 
 -- tags_aliases
@@ -375,6 +376,7 @@ ALTER TABLE releases_vn        ADD FOREIGN KEY (rid)       REFERENCES releases_r
 ALTER TABLE releases_vn        ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE rlists             ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE rlists             ADD FOREIGN KEY (rid)       REFERENCES releases      (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE tags               ADD FOREIGN KEY (addedby)   REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE tags_aliases       ADD FOREIGN KEY (tag)       REFERENCES tags          (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE tags_parents       ADD FOREIGN KEY (tag)       REFERENCES tags          (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE tags_parents       ADD FOREIGN KEY (parent)    REFERENCES tags          (id) DEFERRABLE INITIALLY DEFERRED;

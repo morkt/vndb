@@ -59,3 +59,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+
+-- added by field for tags
+
+ALTER TABLE tags ADD COLUMN addedby integer NOT NULL DEFAULT 1 REFERENCES users (id) DEFERRABLE INITIALLY DEFERRED;
+

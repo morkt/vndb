@@ -238,7 +238,7 @@ sub tagedit {
 
   return $self->htmlDenied if !$self->authCan('tag') || $tag && !$self->authCan('tagmod');
 
-  my $t = $tag && $self->dbTagGet(id => $tag, what => 'parents(1) aliases')->[0];
+  my $t = $tag && $self->dbTagGet(id => $tag, what => 'parents(1) aliases addedby')->[0];
   return 404 if $tag && !$t;
 
   if($self->reqMethod eq 'POST') {
@@ -319,6 +319,8 @@ sub tagedit {
   $self->htmlForm({ frm => $frm, action => $par ? "/g$par->{id}/add" : $tag ? "/g$tag/edit" : '/g/new' }, $title => [
     [ input    => short => 'name',     name => 'Primary name' ],
     $self->authCan('tagmod') ? (
+      $tag ?
+        [ static   => label => 'Added by', content => sub { a href => "/u$t->{addedby}", $t->{username}; } ] : (),
       [ select   => short => 'state',    name => 'State', options => [
         [ 0, 'Awaiting moderation' ], [ 1, 'Deleted/hidden' ], [ 2, 'Approved' ] ] ],
       [ checkbox => short => 'meta',     name => 'This is a meta-tag (only to be used as parent for other tags, not for linking to VN entries)' ],
