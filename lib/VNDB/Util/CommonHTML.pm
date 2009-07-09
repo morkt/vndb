@@ -40,6 +40,12 @@ sub htmlMainTabs {
      end;
    }
 
+   if($type eq 'u') {
+     li $sel eq 'posts' ? (class => 'tabselected') : ();
+      a href => "/$id/posts", 'posts';
+     end;
+   }
+
    if($type eq 'u' && $obj->{show_list}) {
      li $sel eq 'wish' ? (class => 'tabselected') : ();
       a href => "/$id/wish", 'wishlist';
@@ -54,15 +60,17 @@ sub htmlMainTabs {
      li $sel eq 'tags' ? (class => 'tabselected') : ();
       a href => "/$id/tags", 'tags';
      end;
-
-     li $sel eq 'posts' ? (class => 'tabselected') : ();
-      a href => "/$id/posts", 'posts';
-     end;
    }
 
    if($type eq 'v' && $self->authCan('tag') && !$obj->{hidden}) {
      li $sel eq 'tagmod' ? (class => 'tabselected') : ();
       a href => "/$id/tagmod", 'modify tags';
+     end;
+   }
+
+   if($type eq 'r' && $self->authCan('edit')) {
+     li $sel eq 'copy' ? (class => 'tabselected') : ();
+      a href => "/$id/copy", 'copy';
      end;
    }
 
@@ -72,12 +80,6 @@ sub htmlMainTabs {
    ) {
      li $sel eq 'edit' ? (class => 'tabselected') : ();
       a href => "/$id/edit", 'edit';
-     end;
-   }
-
-   if($type eq 'r' && $self->authCan('edit')) {
-     li $sel eq 'copy' ? (class => 'tabselected') : ();
-      a href => "/$id/copy", 'copy';
      end;
    }
 
