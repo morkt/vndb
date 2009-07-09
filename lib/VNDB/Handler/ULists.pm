@@ -103,8 +103,8 @@ sub wishlist {
 
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
-    { name => 'o', required => 0, default => 'a', enum => [ 'a', 'd' ] },
-    { name => 's', required => 0, default => 'title', enum => [qw|title added wstat|] },
+    { name => 'o', required => 0, default => 'd', enum => [ 'a', 'd' ] },
+    { name => 's', required => 0, default => 'wstat', enum => [qw|title added wstat|] },
     { name => 'f', required => 0, default => -1, enum => [ -1..$#{$self->{wishlist_status}} ] },
   );
   return 404 if $f->{_err};
@@ -122,7 +122,7 @@ sub wishlist {
 
   my($list, $np) = $self->dbWishListGet(
     uid => $uid,
-    order => $f->{s}.' '.($f->{o} eq 'a' ? ($f->{s} eq 'wstat' ? 'DESC' : 'ASC' ) : ($f->{s} eq 'wstat' ? 'ASC' : 'DESC')),
+    order => $f->{s}.' '.($f->{o} eq 'a' ? ($f->{s} eq 'wstat' ? 'DESC' : 'ASC' ) : ($f->{s} eq 'wstat' ? 'ASC' : 'DESC')).($f->{s} eq 'wstat' ? ', title ASC' : ''),
     $f->{f} != -1 ? (wstat => $f->{f}) : (),
     what => 'vn',
     results => 50,
