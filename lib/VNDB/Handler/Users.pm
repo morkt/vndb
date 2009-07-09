@@ -399,7 +399,7 @@ sub posts {
 
   my($posts, $np) = $self->dbPostGet(uid => $uid, hide => 1, what => 'thread', page => $f->{p}, order => 'tp.date DESC');
 
-  $self->htmlHeader(title => "Posts made by $u->{username}");
+  $self->htmlHeader(title => "Posts made by $u->{username}", noindex => 1);
   $self->htmlMainTabs(u => $u, 'posts');
   div class => 'mainbox';
    h1 "Posts made by $u->{username}";
