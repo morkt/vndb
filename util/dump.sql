@@ -248,7 +248,6 @@ CREATE TABLE users (
   rank smallint NOT NULL DEFAULT 3,
   passwd bytea NOT NULL DEFAULT '',
   registered bigint NOT NULL DEFAULT 0,
-  flags integer NOT NULL DEFAULT 7,
   show_nsfw boolean NOT NULL DEFAULT FALSE,
   show_list boolean NOT NULL DEFAULT TRUE,
   c_votes integer NOT NULL DEFAULT 0,
@@ -319,16 +318,6 @@ CREATE TABLE vn_screenshots (
   nsfw boolean NOT NULL DEFAULT FALSE,
   rid integer DEFAULT NULL,
   PRIMARY KEY(vid, scr)
-);
-
--- vnlists
-CREATE TABLE vnlists (
-  uid integer DEFAULT 0,
-  vid integer NOT NULL DEFAULT 0,
-  status smallint NOT NULL DEFAULT 0,
-  date bigint NOT NULL DEFAULT 0,
-  comments varchar(500) NOT NULL DEFAULT '',
-  PRIMARY KEY(uid, vid)
 );
 
 -- votes
