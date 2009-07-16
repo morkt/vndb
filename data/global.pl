@@ -268,7 +268,6 @@ our %S = (%S,
 # Multi-specific options (Multi also uses some options in %S and %O)
 our %M = (
   log_dir   => $ROOT.'/data/log',
-  log_level => 3,        # 3: dbg, 2: wrn, 1: err
   modules   => {
     RG          => {},
     Image       => {},
