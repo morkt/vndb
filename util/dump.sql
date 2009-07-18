@@ -713,6 +713,19 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER anime_fetch_notify AFTER INSERT OR UPDATE ON anime FOR EACH ROW EXECUTE PROCEDURE anime_fetch_notify();
 
 
+-- Send a notify when a new cover image is uploaded
+CREATE OR REPLACE FUNCTION vn_rev_image_notify() RETURNS trigger AS $$
+BEGIN
+  IF NEW.image < 0 THEN
+    NOTIFY coverimage;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER vn_rev_image_notify AFTER INSERT OR UPDATE ON vn_rev FOR EACH ROW EXECUTE PROCEDURE vn_rev_image_notify();
+
+
 
 
 

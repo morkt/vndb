@@ -130,12 +130,11 @@ sub _uploadimage {
     return undef;
   }
 
-  # store the file and let multi handle it
+  # get image ID and move it to the correct location
   my $imgid = $self->dbVNImageId;
   my $new = sprintf '%s/static/cv/%02d/%d.jpg', $VNDB::ROOT, $imgid%100, $imgid;
   rename $tmp, $new or die $!;
   chmod 0666, $new;
-  $self->multiCmd("coverimage $imgid");
 
   return -1*$imgid;
 }
