@@ -687,6 +687,18 @@ CREATE TRIGGER threads_posts_stats_update AFTER INSERT OR UPDATE ON threads_post
 CREATE TRIGGER users_stats_update         AFTER INSERT OR DELETE ON users         FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
 
 
+-- insert rows into anime for new vn_anime.aid items
+CREATE OR REPLACE FUNCTION vn_anime_aid() RETURNS trigger AS $$
+BEGIN
+  IF NOT EXISTS(SELECT 1 FROM anime WHERE id = NEW.aid) THEN
+    INSERT INTO anime (id) VALUES (NEW.aid);
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER vn_anime_aid BEFORE INSERT OR UPDATE ON vn_anime FOR EACH ROW EXECUTE PROCEDURE vn_anime_aid();
+
 
 
 

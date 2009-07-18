@@ -33,3 +33,18 @@ ALTER TABLE anime ALTER COLUMN year DROP NOT NULL;
 ALTER TABLE anime ALTER COLUMN year DROP DEFAULT;
 UPDATE anime SET year = NULL WHERE year = 0;
 
+
+-- automatically insert rows into the anime table for unknown aids
+--  when inserted into vn_anime
+CREATE OR REPLACE FUNCTION vn_anime_aid() RETURNS trigger AS $$
+BEGIN
+  IF NOT EXISTS(SELECT 1 FROM anime WHERE id = NEW.aid) THEN
+    INSERT INTO anime (id) VALUES (NEW.aid);
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER vn_anime_aid BEFORE INSERT OR UPDATE ON vn_anime FOR EACH ROW EXECUTE PROCEDURE vn_anime_aid();
+
+

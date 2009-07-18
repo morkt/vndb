@@ -214,24 +214,11 @@ sub insert_rev {
     $cid, $_->[1], $_->[0]
   ) for (@{$o->{relations}});
 
-  if(@{$o->{anime}}) {
-    $self->dbExec(q|
-      INSERT INTO vn_anime (vid, aid)
-        VALUES (?, ?)|,
-      $cid, $_
-    ) for (@{$o->{anime}});
-
-    # insert unknown anime
-    my $a = $self->dbAll(q|
-      SELECT id FROM anime WHERE id IN(!l)|,
-      $o->{anime});
-    $self->dbExec(q|
-      INSERT INTO anime (id) VALUES (?)|, $_
-    ) for (grep {
-      my $ia = $_;
-      !(scalar grep $ia == $_->{id}, @$a)
-    } @{$o->{anime}});
-  }
+  $self->dbExec(q|
+    INSERT INTO vn_anime (vid, aid)
+      VALUES (?, ?)|,
+    $cid, $_
+  ) for (@{$o->{anime}});
 }
 
 
