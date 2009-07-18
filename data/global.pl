@@ -125,15 +125,15 @@ our %S = (%S,
     }, 7 ],
   },
   anime_types     => [
-    # VNDB          AniDB
-    [ 'unknown',    'unknown',    ],
-    [ 'TV',         'TV Series'   ],
-    [ 'OVA',        'OVA'         ],
-    [ 'Movie',      'Movie'       ],
-    [ 'unknown',    'Other'       ],
-    [ 'unknown',    'Web'         ],
-    [ 'TV Special', 'TV Special'  ],
-    [ 'unknown',    'Music Video' ],
+    # AniDB anime type starts counting at 1, 0 = unknown
+    #   we start counting at 0, with NULL being unknown
+    'TV Series',
+    'OVA',
+    'Movie',
+    'Other',
+    'Web',
+    'TV Special',
+    'Music Video',
   ],
   vn_relations    => [
     # Name,           Reverse--

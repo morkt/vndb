@@ -20,13 +20,13 @@ SET default_with_oids = false;
 -- anime
 CREATE TABLE anime (
   id integer NOT NULL PRIMARY KEY,
-  year smallint NOT NULL DEFAULT 0,
-  ann_id integer NOT NULL DEFAULT 0,
-  nfo_id varchar(200) NOT NULL DEFAULT '',
-  type smallint NOT NULL DEFAULT 0,
-  title_romaji varchar(200) NOT NULL DEFAULT '',
-  title_kanji varchar(200) NOT NULL DEFAULT '',
-  lastfetch bigint NOT NULL DEFAULT 0
+  year smallint,
+  ann_id integer,
+  nfo_id varchar(200),
+  type smallint,
+  title_romaji,
+  title_kanji,
+  lastfetch timestamp
 );
 
 -- changes

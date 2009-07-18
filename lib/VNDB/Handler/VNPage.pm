@@ -327,9 +327,9 @@ sub _anime {
    td 'Related anime';
    td class => 'anime';
     for (sort { ($a->{year}||9999) <=> ($b->{year}||9999) } @{$v->{anime}}) {
-      if($_->{lastfetch} < 1) {
+      if(!$_->{lastfetch} || !$_->{year} || !$_->{title_romaji}) {
         b;
-         txt $_->{lastfetch} < 0 ? '[unknown anidb id: ' : '[no information available at this time: ';
+         txt '[no information available at this time: ';
          a href => "http://anidb.net/a$_->{id}", $_->{id};
          txt ']';
         end;
@@ -347,8 +347,8 @@ sub _anime {
          }
          txt '] ';
         end;
-        acronym title => $_->{title_kanji}, shorten $_->{title_romaji}, 50;
-        b ' ('.($self->{anime_types}[$_->{type}][0] eq 'unknown' ? '' : $self->{anime_types}[$_->{type}][0].', ').$_->{year}.')';
+        acronym title => $_->{title_kanji}||$_->{title_romaji}, shorten $_->{title_romaji}, 50;
+        b ' ('.(defined $_->{type} ? $self->{anime_types}[$_->{type}].', ' : '').$_->{year}.')';
         txt "\n";
       }
     }
