@@ -79,6 +79,9 @@ sub _start {
   $_[KERNEL]->alias_set('anime');
   $_[KERNEL]->sig(shutdown => 'shutdown');
 
+  # listen for 'anime' notifies
+  $_[KERNEL]->post(pg => listen => anime => 'check_anime');
+
   # init the UDP 'connection'
   $_[HEAP]{w} = POE::Wheel::UDP->new(
     (map { $_ => $_[HEAP]{$_} } qw| LocalAddr LocalPort PeerAddr PeerPort |),
@@ -93,6 +96,7 @@ sub _start {
 
 sub shutdown {
   undef $_[HEAP]{w};
+  $_[KERNEL]->post(pg => unlisten => 'anime');
   $_[KERNEL]->delay('check_anime');
   $_[KERNEL]->delay('nextcmd');
   $_[KERNEL]->delay('receivepacket');
@@ -109,7 +113,7 @@ sub check_anime {
 
 sub fetch_anime { # num, res
   # nothing to do, check again later
-  return $_[KERNEL]->delay('check_anime', $_[HEAP]{check_delay}) if !$_[ARG0] == 0;
+  return $_[KERNEL]->delay('check_anime', $_[HEAP]{check_delay}) if $_[ARG0] == 0;
 
   # otherwise, fetch info (if we aren't doing so already)
   return if $_[HEAP]{aid};

@@ -92,7 +92,6 @@ sub edit {
       }
 
       $self->multiCmd("ircnotify v$nvid.$nrev");
-      $self->multiCmd('anime') if $vid && $frm->{anime} ne $b4{anime} || !$vid && $frm->{anime};
 
       return $self->resRedirect("/v$nvid.$nrev", 'post');
     }

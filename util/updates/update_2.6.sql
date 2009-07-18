@@ -48,3 +48,16 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER vn_anime_aid BEFORE INSERT OR UPDATE ON vn_anime FOR EACH ROW EXECUTE PROCEDURE vn_anime_aid();
 
 
+-- Send a notify whenever anime info should be fetched
+CREATE OR REPLACE FUNCTION anime_fetch_notify() RETURNS trigger AS $$
+BEGIN
+  IF NEW.lastfetch IS NULL THEN
+    NOTIFY anime;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER anime_fetch_notify AFTER INSERT OR UPDATE ON anime FOR EACH ROW EXECUTE PROCEDURE anime_fetch_notify();
+
+
