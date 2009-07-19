@@ -43,6 +43,12 @@ ALTER TABLE screenshots ALTER COLUMN processed SET DEFAULT FALSE;
 
 
 
+-- two new resolutions have been added, array indexes have changed
+UPDATE releases_rev SET resolution = resolution + 1 WHERE resolution >= 5;
+UPDATE releases_rev SET resolution = resolution + 1 WHERE resolution >= 7;
+
+
+
 -- automatically insert rows into the anime table for unknown aids
 --  when inserted into vn_anime
 CREATE OR REPLACE FUNCTION vn_anime_aid() RETURNS trigger AS $$
@@ -68,7 +74,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER anime_fetch_notify AFTER INSERT OR UPDATE ON anime FOR EACH ROW EXECUTE PROCEDURE anime_fetch_notify();
-
 
 
 -- Send a notify when a new cover image is uploaded
