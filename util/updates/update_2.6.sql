@@ -49,6 +49,95 @@ UPDATE releases_rev SET resolution = resolution + 1 WHERE resolution >= 7;
 
 
 
+-- remove the DEFERRED attribute on all foreign key checks on which it isn't necessary
+-- (note: these queries all assume the foreign keys have their default names, as given
+--  by PostgreSQL. This shouldn't be a problem, provided if you haven't touched them.)
+ALTER TABLE changes            DROP CONSTRAINT changes_requester_fkey;
+ALTER TABLE changes            DROP CONSTRAINT changes_causedby_fkey;
+ALTER TABLE producers_rev      DROP CONSTRAINT producers_rev_id_fkey;
+ALTER TABLE producers_rev      DROP CONSTRAINT producers_rev_pid_fkey;
+ALTER TABLE quotes             DROP CONSTRAINT quotes_vid_fkey;
+ALTER TABLE releases_lang      DROP CONSTRAINT releases_lang_rid_fkey;
+ALTER TABLE releases_media     DROP CONSTRAINT releases_media_rid_fkey;
+ALTER TABLE releases_platforms DROP CONSTRAINT releases_platforms_rid_fkey;
+ALTER TABLE releases_producers DROP CONSTRAINT releases_producers_rid_fkey;
+ALTER TABLE releases_producers DROP CONSTRAINT releases_producers_pid_fkey;
+ALTER TABLE releases_rev       DROP CONSTRAINT releases_rev_id_fkey;
+ALTER TABLE releases_rev       DROP CONSTRAINT releases_rev_rid_fkey;
+ALTER TABLE releases_vn        DROP CONSTRAINT releases_vn_rid_fkey;
+ALTER TABLE releases_vn        DROP CONSTRAINT releases_vn_vid_fkey;
+ALTER TABLE rlists             DROP CONSTRAINT rlists_uid_fkey;
+ALTER TABLE rlists             DROP CONSTRAINT rlists_rid_fkey;
+ALTER TABLE tags               DROP CONSTRAINT tags_addedby_fkey;
+ALTER TABLE tags_aliases       DROP CONSTRAINT tags_aliases_tag_fkey;
+ALTER TABLE tags_parents       DROP CONSTRAINT tags_parents_tag_fkey;
+ALTER TABLE tags_parents       DROP CONSTRAINT tags_parents_parent_fkey;
+ALTER TABLE tags_vn            DROP CONSTRAINT tags_vn_tag_fkey;
+ALTER TABLE tags_vn            DROP CONSTRAINT tags_vn_vid_fkey;
+ALTER TABLE tags_vn            DROP CONSTRAINT tags_vn_uid_fkey;
+ALTER TABLE threads_posts      DROP CONSTRAINT threads_posts_tid_fkey;
+ALTER TABLE threads_posts      DROP CONSTRAINT threads_posts_uid_fkey;
+ALTER TABLE threads_boards     DROP CONSTRAINT threads_tags_tid_fkey; -- threads_boards used to be called threads_tags
+ALTER TABLE vn                 DROP CONSTRAINT vn_rgraph_fkey;
+ALTER TABLE vn_anime           DROP CONSTRAINT vn_anime_aid_fkey;
+ALTER TABLE vn_anime           DROP CONSTRAINT vn_anime_vid_fkey;
+ALTER TABLE vn_categories      DROP CONSTRAINT vn_categories_vid_fkey;
+ALTER TABLE vn_relations       DROP CONSTRAINT vn_relations_vid1_fkey;
+ALTER TABLE vn_relations       DROP CONSTRAINT vn_relations_vid2_fkey;
+ALTER TABLE vn_rev             DROP CONSTRAINT vn_rev_id_fkey;
+ALTER TABLE vn_rev             DROP CONSTRAINT vn_rev_vid_fkey;
+ALTER TABLE vn_screenshots     DROP CONSTRAINT vn_screenshots_vid_fkey;
+ALTER TABLE vn_screenshots     DROP CONSTRAINT vn_screenshots_scr_fkey;
+ALTER TABLE vn_screenshots     DROP CONSTRAINT vn_screenshots_rid_fkey;
+ALTER TABLE votes              DROP CONSTRAINT votes_uid_fkey;
+ALTER TABLE votes              DROP CONSTRAINT votes_vid_fkey;
+ALTER TABLE wlists             DROP CONSTRAINT wlists_uid_fkey;
+ALTER TABLE wlists             DROP CONSTRAINT wlists_vid_fkey;
+
+ALTER TABLE changes            ADD FOREIGN KEY (requester) REFERENCES users         (id);
+ALTER TABLE changes            ADD FOREIGN KEY (causedby)  REFERENCES changes       (id);
+ALTER TABLE producers_rev      ADD FOREIGN KEY (id)        REFERENCES changes       (id);
+ALTER TABLE producers_rev      ADD FOREIGN KEY (pid)       REFERENCES producers     (id);
+ALTER TABLE quotes             ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
+ALTER TABLE releases_lang      ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id);
+ALTER TABLE releases_media     ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id);
+ALTER TABLE releases_platforms ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id);
+ALTER TABLE releases_producers ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id);
+ALTER TABLE releases_producers ADD FOREIGN KEY (pid)       REFERENCES producers     (id);
+ALTER TABLE releases_rev       ADD FOREIGN KEY (id)        REFERENCES changes       (id);
+ALTER TABLE releases_rev       ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
+ALTER TABLE releases_vn        ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id);
+ALTER TABLE releases_vn        ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
+ALTER TABLE rlists             ADD FOREIGN KEY (uid)       REFERENCES users         (id);
+ALTER TABLE rlists             ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
+ALTER TABLE tags               ADD FOREIGN KEY (addedby)   REFERENCES users         (id);
+ALTER TABLE tags_aliases       ADD FOREIGN KEY (tag)       REFERENCES tags          (id);
+ALTER TABLE tags_parents       ADD FOREIGN KEY (tag)       REFERENCES tags          (id);
+ALTER TABLE tags_parents       ADD FOREIGN KEY (parent)    REFERENCES tags          (id);
+ALTER TABLE tags_vn            ADD FOREIGN KEY (tag)       REFERENCES tags          (id);
+ALTER TABLE tags_vn            ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
+ALTER TABLE tags_vn            ADD FOREIGN KEY (uid)       REFERENCES users         (id);
+ALTER TABLE threads_posts      ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
+ALTER TABLE threads_posts      ADD FOREIGN KEY (uid)       REFERENCES users         (id);
+ALTER TABLE threads_boards     ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
+ALTER TABLE vn                 ADD FOREIGN KEY (rgraph)    REFERENCES relgraph      (id);
+ALTER TABLE vn_anime           ADD FOREIGN KEY (aid)       REFERENCES anime         (id);
+ALTER TABLE vn_anime           ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
+ALTER TABLE vn_categories      ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
+ALTER TABLE vn_relations       ADD FOREIGN KEY (vid1)      REFERENCES vn_rev        (id);
+ALTER TABLE vn_relations       ADD FOREIGN KEY (vid2)      REFERENCES vn            (id);
+ALTER TABLE vn_rev             ADD FOREIGN KEY (id)        REFERENCES changes       (id);
+ALTER TABLE vn_rev             ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
+ALTER TABLE vn_screenshots     ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
+ALTER TABLE vn_screenshots     ADD FOREIGN KEY (scr)       REFERENCES screenshots   (id);
+ALTER TABLE vn_screenshots     ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
+ALTER TABLE votes              ADD FOREIGN KEY (uid)       REFERENCES users         (id);
+ALTER TABLE votes              ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
+ALTER TABLE wlists             ADD FOREIGN KEY (uid)       REFERENCES users         (id);
+ALTER TABLE wlists             ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
+
+
+
 -- automatically insert rows into the anime table for unknown aids
 --  when inserted into vn_anime
 CREATE OR REPLACE FUNCTION vn_anime_aid() RETURNS trigger AS $$
