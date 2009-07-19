@@ -369,7 +369,6 @@ sub scrxml {
     my $new = sprintf '%s/static/sf/%02d/%d.jpg', $VNDB::ROOT, $id%100, $id;
     rename $tmp, $new or die $!;
     chmod 0666, $new;
-    $self->multiCmd('screenshot');
   }
 
   xml;

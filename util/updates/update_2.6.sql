@@ -83,3 +83,17 @@ $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER vn_rev_image_notify AFTER INSERT OR UPDATE ON vn_rev FOR EACH ROW EXECUTE PROCEDURE vn_rev_image_notify();
 
+
+-- Send a notify when a screenshot needs to be processed
+CREATE OR REPLACE FUNCTION screenshot_process_notify() RETURNS trigger AS $$
+BEGIN
+  IF NEW.processed = FALSE THEN
+    NOTIFY screenshot;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER screenshot_process_notify AFTER INSERT OR UPDATE ON screenshots FOR EACH ROW EXECUTE PROCEDURE screenshot_process_notify();
+
+

@@ -36,14 +36,14 @@ sub spawn {
 sub _start {
   $_[KERNEL]->alias_set('image');
   $_[KERNEL]->sig(shutdown => 'shutdown');
-  $_[KERNEL]->post(pg => listen => coverimage => 'cv_check');
+  $_[KERNEL]->post(pg => listen => coverimage => 'cv_check', screenshot => 'scr_check');
   $_[KERNEL]->yield('cv_check');
   $_[KERNEL]->yield('scr_check');
 }
 
 
 sub shutdown {
-  $_[KERNEL]->post(pg => unlisten => 'coverimage');
+  $_[KERNEL]->post(pg => unlisten => 'coverimage', 'screenshot');
   $_[KERNEL]->delay('cv_check');
   $_[KERNEL]->delay('scr_check');
 }
