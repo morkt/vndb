@@ -34,6 +34,15 @@ ALTER TABLE anime ALTER COLUMN year DROP DEFAULT;
 UPDATE anime SET year = NULL WHERE year = 0;
 
 
+
+-- screenshots.status (smallint) -> screenshots.processed (boolean)
+ALTER TABLE screenshots RENAME COLUMN status TO processed;
+ALTER TABLE screenshots ALTER COLUMN processed DROP DEFAULT;
+ALTER TABLE screenshots ALTER COLUMN processed TYPE boolean USING processed::int::boolean;
+ALTER TABLE screenshots ALTER COLUMN processed SET DEFAULT FALSE;
+
+
+
 -- automatically insert rows into the anime table for unknown aids
 --  when inserted into vn_anime
 CREATE OR REPLACE FUNCTION vn_anime_aid() RETURNS trigger AS $$

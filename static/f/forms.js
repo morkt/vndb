@@ -484,7 +484,7 @@ function scrCheckStatus() {
     var tr;
     for(var s=0;s<ls.length;s++) {
       for(i=0;i<l.length-1;i++)
-        if(l[i].scrId == ls[s].getAttribute('id') && ls[s].getAttribute('status') > 0)
+        if(l[i].scrId == ls[s].getAttribute('id') && ls[s].getAttribute('processed') == "1")
           tr = l[i];
       if(!tr)
         continue;

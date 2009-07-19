@@ -238,7 +238,7 @@ sub dbVNCache {
 # insert a new screenshot and return it's ID
 # (no arguments required, as Multi is responsible for filling the entry with information)
 sub dbScreenshotAdd {
-  return shift->dbRow(q|INSERT INTO screenshots (status) VALUES(0) RETURNING id|)->{id};
+  return shift->dbRow(q|INSERT INTO screenshots (processed) VALUES(false) RETURNING id|)->{id};
 }
 
 

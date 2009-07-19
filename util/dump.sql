@@ -156,7 +156,7 @@ CREATE TABLE rlists (
 -- screenshots
 CREATE TABLE screenshots (
   id SERIAL NOT NULL PRIMARY KEY,
-  status smallint NOT NULL DEFAULT 0,
+  processed boolean NOT NULL DEFAULT FALSE,
   width smallint NOT NULL DEFAULT 0,
   height smallint NOT NULL DEFAULT 0
 );

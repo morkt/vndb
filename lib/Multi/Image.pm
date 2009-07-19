@@ -80,7 +80,7 @@ sub cv_process { # num, res
 
 sub scr_check {
   $_[KERNEL]->delay('scr_check');
-  $_[KERNEL]->post(pg => query => 'SELECT id FROM screenshots WHERE status = 0 LIMIT 1', undef, 'scr_process');
+  $_[KERNEL]->post(pg => query => 'SELECT id FROM screenshots WHERE processed = false LIMIT 1', undef, 'scr_process');
 }
 
 
@@ -106,12 +106,12 @@ sub scr_process { # num, res
   $im->Write($st);
 
   $_[KERNEL]->post(pg => do =>
-    'UPDATE screenshots SET status = 1, width = ?, height = ? WHERE id = ?',
+    'UPDATE screenshots SET processed = true, width = ?, height = ? WHERE id = ?',
     [ $$old[0], $$old[1], $id ]
   );
   $_[KERNEL]->call(core => log =>
     'Processed screenshot #%d in %.2fs: %.1fkB -> %.1fkB (%dx%d), thumb: %.1fkB (%dx%d)',
-    $_[ARG0], time-$start, $os/1024, (-s $sf)/1024, $$old[0], $$old[1], (-s $st)/1024, $$new[0], $$new[1]
+    $id, time-$start, $os/1024, (-s $sf)/1024, $$old[0], $$old[1], (-s $st)/1024, $$new[0], $$new[1]
   );
 
   $_[KERNEL]->yield('scr_check');
