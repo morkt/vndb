@@ -18,7 +18,7 @@ sub run {
   # spawn our SQL handling session
   my @db = @{$VNDB::O{db_login}};
   my(@dsn) = DBI->parse_dsn($db[0]);
-  $dsn[2] = ($dsn[2]?',':'').'pg_enable_utf8=>1';
+  $dsn[2] = ($dsn[2]?$dsn[2].',':'').'pg_enable_utf8=>1';
   $db[0] = "$dsn[0]:$dsn[1]($dsn[2]):$dsn[4]";
   POE::Component::Pg->spawn(alias => 'pg', dsn => $db[0], user => $db[1], password => $db[2]);
 
