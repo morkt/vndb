@@ -17,9 +17,9 @@ use warnings;
 
 my %subgraphs = (
   'Producers'        => [qw| FFFFCC producers producers_rev |],
-  'Releases'         => [qw| C8FFC8 releases releases_rev releases_media releases_platforms releases_producers releases_vn |],
+  'Releases'         => [qw| C8FFC8 releases releases_rev releases_media releases_platforms releases_producers releases_lang releases_vn |],
   'Visual Novels'    => [qw| FFE6BE vn vn_rev vn_relations vn_categories vn_anime vn_screenshots |],
-  'Users'            => [qw| CCFFFF users votes vnlists rlists wlists |],
+  'Users'            => [qw| CCFFFF users votes rlists wlists |],
   'Discussion board' => [qw| FFDCDC threads threads_boards threads_posts |],
   'Tags'             => [qw| FFC8C8 tags tags_aliases tags_parents tags_vn |],
   'Misc'             => [qw| F5F5F5 changes anime screenshots relgraph stats_cache quotes |],
@@ -76,7 +76,7 @@ print
   qq|graph G {\n|.
   #qq|  ratio = "compress"\n|.
   #qq|  overlap = "false"\n|.
-  qq|  rankdir = "LR"\n|.
+  #qq|  rankdir = "LR"\n|.
   qq|  node [ shape="plaintext" ]\n|.
   #qq|  edge [ color="#cccccc" ]\n|.
   qq|  labelloc="t"\n|.
