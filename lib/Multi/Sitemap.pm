@@ -39,6 +39,7 @@ sub _start {
 
 sub shutdown {
   $_[KERNEL]->delay('check_age');
+  $_[KERNEL]->alias_remove('sitemap');
 }
 
 

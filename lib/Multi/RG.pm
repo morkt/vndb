@@ -46,6 +46,7 @@ sub _start {
 sub shutdown {
   $_[KERNEL]->delay('check_rg');
   $_[KERNEL]->post(pg => unlisten => 'relgraph');
+  $_[KERNEL]->alias_remove('rg');
 }
 
 

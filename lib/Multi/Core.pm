@@ -86,6 +86,7 @@ sub sig_shutdown {
 sub shutdown {
   $_[KERNEL]->call(core => log => 'Shutting down (%s)', $_[ARG1]);
   $_[KERNEL]->post(pg => 'shutdown');
+  $_[KERNEL]->alias_remove('core');
 }
 
 

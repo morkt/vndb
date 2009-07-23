@@ -100,6 +100,7 @@ sub shutdown {
   $_[KERNEL]->delay('check_anime');
   $_[KERNEL]->delay('nextcmd');
   $_[KERNEL]->delay('receivepacket');
+  $_[KERNEL]->alias_remove('anime');
 }
 
 

@@ -46,6 +46,7 @@ sub shutdown {
   $_[KERNEL]->post(pg => unlisten => 'coverimage', 'screenshot');
   $_[KERNEL]->delay('cv_check');
   $_[KERNEL]->delay('scr_check');
+  $_[KERNEL]->alias_remove('image');
 }
 
 
