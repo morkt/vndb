@@ -10,6 +10,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 use Digest::MD5 'md5_hex';
+use Digest::SHA;
 use Crypt::Lite;
 
 
@@ -91,6 +92,16 @@ sub _authCheck {
   return 1;
 }
 
+
+# Generates a 9 character salt
+# Returns salt as a string
+sub _generateSalt {
+  my $s;
+  for ($i = 0; $i < 9; $i++) {
+    $s .= chr(rand(93) + 33);
+  }
+  return $s;
+}
 
 1;
 
