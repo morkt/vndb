@@ -38,12 +38,14 @@ sub _start {
   $_[KERNEL]->alias_set('rg');
   $_[KERNEL]->sig(CHLD => 'proc_child');
   $_[KERNEL]->sig(shutdown => 'shutdown');
+  $_[KERNEL]->post(pg => listen => relgraph => 'check_rg');
   $_[KERNEL]->yield('check_rg');
 }
 
 
 sub shutdown {
   $_[KERNEL]->delay('check_rg');
+  $_[KERNEL]->post(pg => unlisten => 'relgraph');
 }
 
 

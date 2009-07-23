@@ -191,3 +191,39 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER screenshot_process_notify AFTER INSERT OR UPDATE ON screenshots FOR EACH ROW EXECUTE PROCEDURE screenshot_process_notify();
 
 
+-- Update vn.rgraph column and send notify when a relation graph needs to be regenerated
+-- 1. NOTIFY is sent on an UPDATE or INSERT on vn with rgraph = NULL and with entries in vn_relations (deferred)
+-- vn.rgraph is set to NULL when:
+-- 2. UPDATE on vn where c_released or c_languages has changed (deferred, but doesn't have to be)
+-- 3. New VN revision of which the title differs from previous revision (deferred)
+-- 4. New VN revision with items in vn_relations that differ from previous revision (deferred)
+CREATE OR REPLACE FUNCTION vn_relgraph_notify() RETURNS trigger AS $$
+BEGIN
+  -- 1.
+  IF TG_TABLE_NAME = 'vn' THEN
+    IF NEW.rgraph IS NULL AND EXISTS(SELECT 1 FROM vn_relations WHERE vid1 = NEW.latest) THEN
+      NOTIFY relgraph;
+    END IF;
+  END IF;
+  IF TG_TABLE_NAME = 'vn' AND TG_OP = 'UPDATE' THEN
+    IF NEW.rgraph IS NOT NULL AND OLD.latest > 0 THEN
+      -- 2.
+      IF OLD.c_released <> NEW.c_released OR OLD.c_languages <> NEW.c_languages THEN
+        UPDATE vn SET rgraph = NULL WHERE id = NEW.id;
+      END IF;
+      -- 3 & 4
+      IF OLD.latest <> NEW.latest AND (
+           EXISTS(SELECT 1 FROM vn_rev v1, vn_rev v2 WHERE v2.title <> v1.title AND v1.id = OLD.latest AND v2.id = NEW.latest)
+        OR EXISTS(SELECT v1.vid2, v1.relation FROM vn_relations v1 WHERE v1.vid1 = OLD.latest EXCEPT SELECT v2.vid2, v2.relation FROM vn_relations v2 WHERE v2.vid1 = NEW.latest)
+        OR EXISTS(SELECT v1.vid2, v1.relation FROM vn_relations v1 WHERE v1.vid1 = NEW.latest EXCEPT SELECT v2.vid2, v2.relation FROM vn_relations v2 WHERE v2.vid1 = OLD.latest)
+      ) THEN
+        UPDATE vn SET rgraph = NULL WHERE id = NEW.id;
+      END IF;
+    END IF;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER vn_relgraph_notify AFTER INSERT OR UPDATE ON vn DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE PROCEDURE vn_relgraph_notify();
+

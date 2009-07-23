@@ -323,7 +323,7 @@ sub itemmod {
   $self->dbItemMod($type, $iid, $act eq 'hide' ? (hidden => !$obj->{hidden}) : (locked => !$obj->{locked}));
 
   # update cached vn info when hiding an r+ page
-  $self->vnCacheUpdate(map $_->{vid}, @{$obj->{vn}})
+  $self->dbVNCache(map $_->{vid}, @{$obj->{vn}})
     if $type eq 'r' && $act eq 'hide';
 
   $self->resRedirect("/$type$iid", 'temp');
