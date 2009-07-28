@@ -2,7 +2,7 @@
 -- Create table for session data storage
 
 CREATE TABLE sessions (
-    uid integer NOT NULL REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    uid integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token character(40) NOT NULL,
     expiration bigint DEFAULT 0 NOT NULL,
     PRIMARY KEY (uid, token)
