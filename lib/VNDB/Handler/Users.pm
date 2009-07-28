@@ -4,7 +4,6 @@ package VNDB::Handler::Users;
 use strict;
 use warnings;
 use YAWF ':html';
-use Digest::MD5 'md5_hex';
 use VNDB::Func;
 
 
@@ -183,7 +182,9 @@ sub newpass {
     if(!$frm->{_err}) {
       my @chars = ( 'A'..'Z', 'a'..'z', 0..9 );
       my $pass = join '', map $chars[int rand $#chars+1], 0..8;
-      $self->dbUserEdit($u->{id}, passwd => md5_hex($pass));
+      my %o;
+      ($o{passwd}, $o{salt}) = $self->authPreparePass($pass);
+      $self->dbUserEdit($u->{id}, %o);
       my $body = <<'__';
 Hello %s,
 
@@ -258,7 +259,8 @@ sub register {
     push @{$frm->{_err}}, 'oneaday'    if !$frm->{_err} && $self->dbUserGet(ip => $self->reqIP, registered => time-24*3600)->[0]{id};
 
     if(!$frm->{_err}) {
-      $self->dbUserAdd($frm->{usrname}, md5_hex($frm->{usrpass}), $frm->{mail});
+      my ($pass, $salt) = $self->authPreparePass($frm->{usrpass});
+      $self->dbUserAdd($frm->{usrname}, $pass, $salt, $frm->{mail});
       return $self->authLogin($frm->{usrname}, $frm->{usrpass}, '/');
     }
   }
@@ -330,7 +332,7 @@ sub edit {
       $o{mail} = $frm->{mail};
       $o{skin} = $frm->{skin};
       $o{customcss} = $frm->{customcss};
-      $o{passwd} = md5_hex($frm->{usrpass}) if $frm->{usrpass};
+      ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->usrpass) if $frm->{usrpass};
       $o{show_list} = $frm->{flags_list} ? 1 : 0;
       $o{show_nsfw} = $frm->{flags_nsfw} ? 1 : 0;
       $self->dbUserEdit($uid, %o);

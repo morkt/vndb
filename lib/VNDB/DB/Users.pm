@@ -75,7 +75,7 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail rank show_nsfw show_list skin customcss |);
+    for (qw| username mail rank show_nsfw show_list skin customcss salt |);
   $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
     if defined $o{passwd};
 
@@ -88,11 +88,11 @@ sub dbUserEdit {
 }
 
 
-# username, md5(pass), mail, [ip]
+# username, pass(ecrypted), salt, mail, [ip]
 sub dbUserAdd {
   my($s, @o) = @_;
-  $s->dbExec(q|INSERT INTO users (username, passwd, mail, ip, registered) VALUES(?, decode(?, 'hex'), ?, ?, ?)|,
-    @o[0..2], $o[3]||$s->reqIP, time);
+  $s->dbExec(q|INSERT INTO users (username, passwd, salt, mail, ip, registered) VALUES(?, decode(?, 'hex'), ?, ?, ?, ?)|,
+    @o[0..3], $o[4]||$s->reqIP, time);
 }
 
 
