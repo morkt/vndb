@@ -25,10 +25,7 @@ sub authInit {
   return 0 if length($str) < 44;
   my $token = substr($str, 4, 40);
   my $uid  = substr($str, 44);
-
-  if ($self->dbSessionCheck($uid, $token)) {
-    $self ($self->dbSessionCheck($uid, $token))f->{_auth} = $self->dbUserGet(uid => $uid, what => 'mymessages')->[0];
-  }
+  $self->{_auth} = $self->dbUserGet(uid => $uid, what => 'mymessages')->[0] if $self->dbSessionCheck($uid, $token);
 }
 
 
@@ -56,6 +53,7 @@ sub authLogin {
     $self->resHeader('Set-Cookie', "vndb_auth=$cookie; expires=$expString; path=/; domain=$self->{cookie_domain}");
     return 1;
   }
+
   return 0;
 }
 
@@ -103,8 +101,7 @@ sub _authCheck {
   my($self, $user, $pass) = @_;
 
   return 0 if
-       !$user || length($user) > 15 || length($user) < 2
-    || !$pass;
+       !$user || length($user) > 15 || length($user) < 2 || !$pass;
 
   my $d = $self->dbUserGet(username => $user, what => 'mymessages')->[0];
   return 0 if !defined $d->{id} || !$d->{rank};
@@ -135,26 +132,15 @@ sub _authEncryptPass{
 
 # Prepares a plaintext password for database storage
 # Arguments: pass
-# Returns: hashref of the encrypted pass and salt ready for database insertion
+# Returns: list (pass, salt)
 sub authPreparePass{
   my($self, $pass) = @_;
 
-  my %o;
-  $o{salt}   = _authGenerateSalt();
-  $o{passwd} = authEncryptPass($pass, $o{salt});
-  return %o;
+  my $salt = join '', map chr(rand(93)+33), 1..9;
+  my $hash = authEncryptPass($pass, $salt);
+  return ($hash, $salt);
 }
 
-
-# Generates a 9 character salt
-# Returns salt as a string
-sub _authGenerateSalt {
-  my $s;
-  for (my $i = 0; $i < 9; $i++) {
-    $s .= chr(rand(93) + 33);
-  }
-  return $s;
-}
 
 1;
 
