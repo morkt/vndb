@@ -39,7 +39,7 @@ sub authLogin {
     my $token = sha1_hex(join('', Time::HiRes::gettimeofday()) . join('', map chr(rand(93)+33), 1..9));
     my $expiration = time + 31536000;  # 1yr
     my $cookie = $token . $self->{_auth}{id};
-    $self->dbSessionAdd($self->{_auth}{id}, $token, $expiration);
+    $self->dbSessionAdd($self->{_auth}{id}, $token);
 
     my $expstr = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime($expiration));
     $self->resRedirect($to, 'post');

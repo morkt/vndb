@@ -165,7 +165,7 @@ CREATE TABLE screenshots (
 CREATE TABLE sessions (
     uid integer NOT NULL,
     token character(40) NOT NULL,
-    expiration bigint DEFAULT 0 NOT NULL,
+    expiration timestamp without time zone NOT NULL DEFAULT (now() + '1 year'::interval),
     PRIMARY KEY (uid, token)
 );
 
@@ -385,7 +385,7 @@ ALTER TABLE releases_vn        ADD FOREIGN KEY (rid)       REFERENCES releases_r
 ALTER TABLE releases_vn        ADD FOREIGN KEY (vid)       REFERENCES vn            (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE rlists             ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE rlists             ADD FOREIGN KEY (rid)       REFERENCES releases      (id) DEFERRABLE INITIALLY DEFERRED;
-ALTER TABLE sessions           ADD FOREIGN KEY (uid)       REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE sessions           ADD FOREIGN KEY (uid)       REFERENCES users         (id);
 ALTER TABLE tags               ADD FOREIGN KEY (addedby)   REFERENCES users         (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE tags_aliases       ADD FOREIGN KEY (tag)       REFERENCES tags          (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE tags_parents       ADD FOREIGN KEY (tag)       REFERENCES tags          (id) DEFERRABLE INITIALLY DEFERRED;

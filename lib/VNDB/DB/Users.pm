@@ -112,11 +112,18 @@ sub dbUserDel {
 }
 
 
-# uid, 40 character session token, expiration time (int)
+# Adds a session to the database
+# If no expiration is supplied the database default is used
+# uid, 40 character session token, expiration time (timestamp)
 sub dbSessionAdd {
   my($s, @o) = @_;
-  $s->dbExec(q|INSERT INTO sessions (uid, token, expiration) VALUES(?, ?, ?)|,
-    @o[0..2]);
+  if (defined $o[2]) {
+    $s->dbExec(q|INSERT INTO sessions (uid, token, expiration) VALUES(?, ?, ?)|,
+      @o);
+  } else {
+    $s->dbExec(q|INSERT INTO sessions (uid, token) VALUES(?, ?)|,
+      @o);
+  }
 }
 
 
