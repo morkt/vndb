@@ -3,58 +3,128 @@
 #  Multi::Maintenance  -  General maintenance functions
 #
 
+# TODO: more logging?
+
 package Multi::Maintenance;
 
 use strict;
 use warnings;
 use POE;
 use PerlIO::gzip;
-use Time::HiRes 'gettimeofday', 'tv_interval';
 
 
 sub spawn {
-  # WARNING: these maintenance tasks can block the process for a few seconds
-
   my $p = shift;
   POE::Session->create(
     package_states => [
-      $p => [qw| _start cmd_maintenance vncache usercache statscache revcache integrity unkanime logrotate vnpopularity tagcache |],
+      $p => [qw|
+        _start shutdown set_daily daily set_monthly monthly
+        vncache tagcache vnpopularity
+        usercache statscache revcache logrotate
+      |],
     ],
+    heap => {
+      daily => [qw|vncache tagcache vnpopularity|],
+      monthly => [qw|usercache statscache revcache logrotate|],
+      @_,
+    },
   );
 }
 
 
 sub _start {
   $_[KERNEL]->alias_set('maintenance');
-  $_[KERNEL]->call(core => register => qr/^maintenance((?: (?:vncache|revcache|usercache|statscache|integrity|unkanime|logrotate|vnpopularity|tagcache))+)$/, 'cmd_maintenance');
-
- # recalculate tag<->vn cache each hour (better do this once every 24 hours when the DB grows)
-  $_[KERNEL]->post(core => addcron => '0 * * * *', 'maintenance tagcache');
- # Perform some maintenance functions every day on 0:00
-  $_[KERNEL]->post(core => addcron => '0 0 * * *', 'maintenance vncache integrity unkanime vnpopularity');
- # update caches and rotate logs every 1st day of the month at 0:05
-  $_[KERNEL]->post(core => addcron => '5 0 1 * *' => 'maintenance usercache statscache revcache logrotate');
+  $_[KERNEL]->sig(shutdown => 'shutdown');
+  $_[KERNEL]->yield('set_daily');
+  $_[KERNEL]->yield('set_monthly');
 }
 
 
-sub cmd_maintenance {
-  $_[KERNEL]->yield($_)
-    for (split /\s+/, $_[ARG1]);
-
-  $_[KERNEL]->post(core => finish => $_[ARG0]);
+sub shutdown {
+  $_[KERNEL]->delay('daily');
+  $_[KERNEL]->delay('monthly');
+  $_[KERNEL]->alias_remove('maintenance');
 }
+
+
+sub set_daily {
+  # run daily each day at 0:00 GMT
+  # (GMT because we're calculating on the UNIX timestamp, I can easily add an
+  #  offset if necessary, but it doesn't really matter what time this cron
+  #  runs, as long as it's run on a daily basis)
+  $_[KERNEL]->alarm(daily => int(time/86400+1)*86400);
+}
+
+
+sub daily {
+  $_[KERNEL]->call(core => log => 'Running daily cron: %s', join ', ', @{$_[HEAP]{daily}});
+
+  # dispatch events that need to be run on a daily basis
+  $_[KERNEL]->call($_[SESSION], $_) for (@{$_[HEAP]{daily}});
+
+  # re-activate timer
+  $_[KERNEL]->call($_[SESSION], 'set_daily');
+}
+
+
+sub set_monthly {
+  # Calculate the UNIX timestamp of 0:00 GMT of the first day of the next month.
+  # We do this by simply incrementing the timestamp with one day and checking gmtime()
+  # for a month change. This might not be very reliable, but should be enough for
+  # our purposes.
+  my $nextday = int(time/86400+1)*86400;
+  my $thismonth = (gmtime)[5]*100+(gmtime)[4]; # year*100 + month, for easy comparing
+  $nextday += 86400 while (gmtime $nextday)[5]*100+(gmtime $nextday)[4] <= $thismonth;
+  $_[KERNEL]->alarm(monthly => $nextday);
+}
+
+
+sub monthly {
+  $_[KERNEL]->call(core => log => 'Running monthly cron: %s', join ', ', @{$_[HEAP]{monthly}});
+
+  # dispatch events that need to be run on a monthly basis
+  $_[KERNEL]->call($_[SESSION], $_) for (@{$_[HEAP]{monthly}});
+
+  # re-activate timer
+  $_[KERNEL]->call($_[SESSION], 'set_monthly');
+}
+
+
+
+#
+#  D A I L Y   J O B S
+#
 
 
 sub vncache {
-  $_[KERNEL]->call(core => log => 3 => 'Updating c_* columns in the vn table...');
- # takes ~5 seconds, better do this in the background...
-  $Multi::SQL->do('SELECT update_vncache(0)');
+  # this takes about 30s to complete. We really need to search for an alternative
+  # method of keeping the c_* columns in the vn table up-to-date.
+  $_[KERNEL]->post(pg => do => 'SELECT update_vncache(0)');
 }
 
 
+sub tagcache {
+  # this still takes "only" about 3 seconds max. Let's hope that doesn't increase too much.
+  $_[KERNEL]->post(pg => do => 'SELECT tag_vn_calc()');
+}
+
+
+sub vnpopularity {
+  # still takes at most 2 seconds. Againt, let's hope that doesn't increase...
+  $_[KERNEL]->post(pg => do => 'SELECT update_vnpopularity()');
+}
+
+
+
+#
+#  M O N T H L Y   J O B S
+#
+
+
 sub usercache {
-  $_[KERNEL]->call(core => log => 3 => 'Updating c_* columns in the users table...');
-  $Multi::SQL->do(q|UPDATE users SET
+  # Shouldn't really be necessary, except c_changes could be slightly off when hiding/unhiding DB items
+  # Currently takes about 25 seconds to complete.
+  $_[KERNEL]->post(pg => do => q|UPDATE users SET
     c_votes = COALESCE(
       (SELECT COUNT(vid)
       FROM votes
@@ -78,8 +148,9 @@ sub usercache {
 
 
 sub statscache {
-  $_[KERNEL]->call(core => log => 3 => 'Updating the stats_cache table...');
-  $Multi::SQL->do($_) for(
+  # Shouldn't really be necessary, the triggers in PgSQL should keep these up-to-date nicely.
+  # But it takes less than 100ms to complete, anyway
+  $_[KERNEL]->post(pg => do => $_) for(
     q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM users)-1 WHERE section = 'users'|,
     q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM vn        WHERE hidden = FALSE) WHERE section = 'vn'|,
     q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM releases  WHERE hidden = FALSE) WHERE section = 'releases'|,
@@ -92,66 +163,9 @@ sub statscache {
 
 
 sub revcache {
-  $_[KERNEL]->call(core => log => 3 => 'Updating rev column in the changes table...');
-  # this can take a while, maybe split these up in 3 queries?
-  # ...or better yet, use asynchronous communication with PgSQL
-  $Multi::SQL->do(q|SELECT update_rev('vn', ''), update_rev('releases', ''), update_rev('producers', '')|);
-}
-
-
-sub integrity {
- # checks for database inconsistencies not handled by the foreign key constraints:
- #   - releases without a VN relation
- #   - changes without an entry in the (vn|releases|producers)_rev table
- #   - threads without a tag or post
-
-  my $q = $Multi::SQL->prepare(q|
-   SELECT 'r', id FROM releases_rev rr
-     WHERE NOT EXISTS(SELECT 1 FROM releases_vn rv WHERE rr.id = rv.rid)
-   UNION
-   SELECT c.type::varchar, id FROM changes c
-     WHERE (c.type = 0 AND NOT EXISTS(SELECT 1 FROM vn_rev vr WHERE vr.id = c.id))
-        OR (c.type = 1 AND NOT EXISTS(SELECT 1 FROM releases_rev rr WHERE rr.id = c.id))
-        OR (c.type = 2 AND NOT EXISTS(SELECT 1 FROM producers_rev pr WHERE pr.id = c.id))
-   UNION
-   SELECT 't', id FROM threads t
-     WHERE NOT EXISTS(SELECT 1 FROM threads_posts tp WHERE tp.tid = t.id)
-        OR NOT EXISTS(SELECT 1 FROM threads_boards tb WHERE tb.tid = t.id)|);
-  $q->execute();
-  my $r = $q->fetchall_arrayref([]);
-  if(@$r) {
-    $_[KERNEL]->call(core => log => 1, '!DATABASE INCONSISTENCIES FOUND!: %s',
-      join(', ', map { $_->[0].':'.$_->[1] } @$r));
-  } else {
-    $_[KERNEL]->call(core => log => 3, 'No database inconsistencies found');
-  }
-}
-
-
-sub unkanime {
- # warn for VNs with a non-existing anidb id
- # (maybe do an automated edit or something in the future)
-
-  my $q = $Multi::SQL->prepare(q|
-    SELECT v.id, va.aid
-    FROM vn_anime va
-    JOIN vn v ON va.vid = v.latest
-    JOIN anime a ON va.aid = a.id
-    WHERE a.lastfetch < 0|);
-  $q->execute();
-  my $r = $q->fetchall_arrayref([]);
-  my %aid = map {
-    my $a=$_;
-    $a->[1] => join(',', map { $a->[1] == $_->[1] ? $_->[0] : () } @$r)
-  } @$r;
-
-  if(keys %aid) {
-    $_[KERNEL]->call(core => log => 1, '!NON-EXISTING RELATED ANIME FOUND!: %s',
-      join('; ', map { 'a'.$_.':v'.$aid{$_} } keys %aid)
-    );
-  } else {
-    $_[KERNEL]->call(core => log => 3, 'No problems found with the related anime');
-  }
+  # This -really- shouldn't be necessary...
+  # Currently takes about 25 seconds to complete
+  $_[KERNEL]->post(pg => do => q|SELECT update_rev('vn', ''), update_rev('releases', ''), update_rev('producers', '')|);
 }
 
 
@@ -164,7 +178,7 @@ sub logrotate {
     my $f = /([^\/]+)$/ ? $1 : $_;
     my $n = sprintf '%s/%s.%04d-%02d-%02d.gz', $dir, $f, (localtime)[5]+1900, (localtime)[4]+1, (localtime)[3];
     if(-f $n) {
-      $_[KERNEL]->call(core => log => 1, 'Logs already rotated earlier today!');
+      $_[KERNEL]->call(core => log => 'Logs already rotated earlier today!');
       return;
     }
     open my $I, '<', sprintf '%s/%s', $VNDB::M{log_dir}, $f;
@@ -175,23 +189,9 @@ sub logrotate {
     open $I, '>', sprintf '%s/%s', $VNDB::M{log_dir}, $f;
     close $I;
   }
-}
-
-
-sub vnpopularity {
-  my $S = [gettimeofday];
-  $Multi::SQL->do(q|SELECT update_vnpopularity()|);
-  $_[KERNEL]->call(core => log => 3 => '(Re)calculated vn.c_popularity in %.2fs', tv_interval($S));
-}
-
-
-sub tagcache {
-  my $S = [gettimeofday];
-  $Multi::SQL->do(q|SELECT tag_vn_calc()|);
-  $_[KERNEL]->call(core => log => 3 => '(Re)calculated tags_vn_stored in %.2fs', tv_interval($S));
+  $_[KERNEL]->call(core => log => 'Logs rotated.');
 }
 
 
 1;
-
 
