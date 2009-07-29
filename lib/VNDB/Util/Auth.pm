@@ -20,8 +20,7 @@ sub authInit {
   $self->{_auth} = undef;
 
   my $cookie = $self->reqCookie('vndb_auth');
-  return 0 if !$cookie;
-  return 0 if length($cookie) < 41;
+  return 0 if !$cookie || length($cookie) < 41;
   my $token = substr($cookie, 0, 40);
   my $uid  = substr($cookie, 40);
   $self->{_auth} = $self->dbUserGet(uid => $uid, what => 'mymessages')->[0] if $self->dbSessionCheck($uid, $token);
@@ -37,14 +36,12 @@ sub authLogin {
   my $to = shift;
 
   if(_authCheck($self, $user, $pass)) {
-    my $token = sha1_hex(Time::HiRes::time . 'VNDB');
+    my $token = sha1_hex(join('', Time::HiRes::gettimeofday()) . join('', map chr(rand(93)+33), 1..9));
     my $expiration = time + 31536000;  # 1yr
     my $cookie = $token . $self->{_auth}{id};
     $self->dbSessionAdd($self->{_auth}{id}, $token, $expiration);
 
-    my @time = gmtime($expiration);
     my $expstr = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime($expiration));
-
     $self->resRedirect($to, 'post');
     $self->resHeader('Set-Cookie', "vndb_auth=$cookie; expires=$expstr; path=/; domain=$self->{cookie_domain}");
     return 1;
@@ -59,12 +56,10 @@ sub authLogout {
   my $self = shift;
 
   my $cookie = $self->reqCookie('vndb_auth');
-  if ($cookie) {
-    if (length($cookie) >= 41) {
-      my $token = substr($cookie, 0, 40);
-      my $uid  = substr($cookie, 40);
-      $self->dbSessionDel($uid, $token);
-    }
+  if ($cookie && length($cookie) >= 41) {
+    my $token = substr($cookie, 0, 40);
+    my $uid  = substr($cookie, 40);
+    $self->dbSessionDel($uid, $token);
   }
 
   $self->resRedirect('/', 'temp');
@@ -95,8 +90,7 @@ sub authCan {
 sub _authCheck {
   my($self, $user, $pass) = @_;
 
-  return 0 if
-       !$user || length($user) > 15 || length($user) < 2 || !$pass;
+  return 0 if !$user || length($user) > 15 || length($user) < 2 || !$pass;
 
   my $d = $self->dbUserGet(username => $user, what => 'mymessages')->[0];
   return 0 if !defined $d->{id} || !$d->{rank};
