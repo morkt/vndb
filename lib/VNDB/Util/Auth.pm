@@ -8,7 +8,6 @@ use Exporter 'import';
 use Digest::MD5 'md5';
 use Digest::SHA qw|sha1_hex sha256 sha256_hex|;
 use Time::HiRes;
-use Crypt::Lite;
 
 
 our @EXPORT = qw| authInit authLogin authLogout authInfo authCan authPreparePass |;
@@ -21,10 +20,9 @@ sub authInit {
 
   my $cookie = $self->reqCookie('vndb_auth');
   return 0 if !$cookie;
-  my $str = Crypt::Lite->new()->decrypt($cookie, sha1_hex($self->{cookie_key}));
-  return 0 if length($str) < 44;
-  my $token = substr($str, 4, 40);
-  my $uid  = substr($str, 44);
+  return 0 if length($cookie) < 41;
+  my $token = substr($cookie, 0, 40);
+  my $uid  = substr($cookie, 40);
   $self->{_auth} = $self->dbUserGet(uid => $uid, what => 'mymessages')->[0] if $self->dbSessionCheck($uid, $token);
 }
 
@@ -38,9 +36,9 @@ sub authLogin {
   my $to = shift;
 
   if(_authCheck($self, $user, $pass)) {
-    my $token = sha1_hex(Time::HiRes::time . $self->{cookie_key});
+    my $token = sha1_hex(Time::HiRes::time . 'VNDB');
     my $expiration = time + 31536000;  # 1yr
-    (my $cookie = Crypt::Lite->new()->encrypt("VNDB$token$self->{_auth}{id}", sha1_hex($self->{cookie_key}))) =~ s/\r?\n//g;
+    my $cookie = $token . $self->{_auth}{id};
     $self->dbSessionAdd($self->{_auth}{id}, $token, $expiration);
 
     my @time = gmtime($expiration);
@@ -64,10 +62,9 @@ sub authLogout {
 
   my $cookie = $self->reqCookie('vndb_auth');
   if ($cookie) {
-    my $str = Crypt::Lite->new()->decrypt($cookie, sha1_hex($self->{cookie_key}));
-    if (length($str) >= 44) {
-      my $token = substr($str, 4, 40);
-      my $uid  = substr($str, 44);
+    if (length($cookie) >= 41) {
+      my $token = substr($cookie, 0, 40);
+      my $uid  = substr($cookie, 40);
       $self->dbSessionDel($uid, $token);
     }
   }
