@@ -8,6 +8,7 @@ use Exporter 'import';
 use Digest::MD5 'md5';
 use Digest::SHA qw|sha1_hex sha256 sha256_hex|;
 use Time::HiRes;
+use POSIX 'strftime';
 
 
 our @EXPORT = qw| authInit authLogin authLogout authInfo authCan authPreparePass |;
@@ -42,13 +43,10 @@ sub authLogin {
     $self->dbSessionAdd($self->{_auth}{id}, $token, $expiration);
 
     my @time = gmtime($expiration);
-    $time[5] += 1900;
-    my @days = qw|Sun Mon Tues Wed Thurs Fri Sat|;
-    my @months = qw|Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec|;
-    my $expString = "$days[$time[6]], $time[3]-$months[$time[4]]-$time[5] 00:00:00 GMT";
+    my $expstr = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime($expiration));
 
     $self->resRedirect($to, 'post');
-    $self->resHeader('Set-Cookie', "vndb_auth=$cookie; expires=$expString; path=/; domain=$self->{cookie_domain}");
+    $self->resHeader('Set-Cookie', "vndb_auth=$cookie; expires=$expstr; path=/; domain=$self->{cookie_domain}");
     return 1;
   }
 
