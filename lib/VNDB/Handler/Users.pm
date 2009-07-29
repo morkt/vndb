@@ -336,6 +336,7 @@ sub edit {
       $o{show_list} = $frm->{flags_list} ? 1 : 0;
       $o{show_nsfw} = $frm->{flags_nsfw} ? 1 : 0;
       $self->dbUserEdit($uid, %o);
+      $self->dbSessionDel($uid) if $frm->{usrpass};
       return $self->resRedirect("/u$uid/edit?d=1", 'post') if $uid != $self->authInfo->{id} || !$frm->{usrpass};
       return $self->authLogin($frm->{usrname}||$u->{username}, $frm->{usrpass}, "/u$uid/edit?d=1");
     }

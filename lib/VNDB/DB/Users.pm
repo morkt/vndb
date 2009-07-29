@@ -104,6 +104,7 @@ sub dbUserDel {
     q|DELETE FROM rlists WHERE uid = ?|,
     q|DELETE FROM wlists WHERE uid = ?|,
     q|DELETE FROM votes WHERE uid = ?|,
+    q|DELETE FROM sessions WHERE uid = ?|,
     q|UPDATE changes SET requester = 0 WHERE requester = ?|,
     q|UPDATE threads_posts SET uid = 0 WHERE uid = ?|,
     q|DELETE FROM users WHERE id = ?|
