@@ -332,7 +332,7 @@ sub edit {
       $o{mail} = $frm->{mail};
       $o{skin} = $frm->{skin};
       $o{customcss} = $frm->{customcss};
-      ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->usrpass) if $frm->{usrpass};
+      ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->{usrpass}) if $frm->{usrpass};
       $o{show_list} = $frm->{flags_list} ? 1 : 0;
       $o{show_nsfw} = $frm->{flags_nsfw} ? 1 : 0;
       $self->dbUserEdit($uid, %o);

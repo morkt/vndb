@@ -5,8 +5,8 @@ package VNDB::Util::Auth;
 use strict;
 use warnings;
 use Exporter 'import';
-use Digest::MD5 'md5_hex';
-use Digest::SHA qw|sha1_hex sha256|;
+use Digest::MD5 'md5';
+use Digest::SHA qw|sha1_hex sha256 sha256_hex|;
 use Time::HiRes;
 use Crypt::Lite;
 
@@ -106,13 +106,14 @@ sub _authCheck {
   my $d = $self->dbUserGet(username => $user, what => 'mymessages')->[0];
   return 0 if !defined $d->{id} || !$d->{rank};
   
-  if (_authEncryptPass($pass, $d->{salt}) == $d->{passwd}) {
+  if (_authEncryptPass($self, $pass, $d->{salt}, 1) eq $d->{passwd}) {
     $self->{_auth} = $d;
     return 1;
   }
-  if ($d->{salt} eq '0' && md5_hex($pass) == $d->{passwd}) {
+  if (md5($pass) eq $d->{passwd}) {
     $self->{_auth} = $d;
-    my %o = authPreparePass($d->{id}, $pass);
+    my %o;
+    ($o{passwd}, $o{salt}) = authPreparePass($self, $pass);
     $self->dbUserEdit($d->{id}, %o);
     return 1;
   }
@@ -122,11 +123,12 @@ sub _authCheck {
 
 
 # Encryption algorithm for user passwords
-# Arguments: pass, salt
-# Returns: encrypted password as a binary string
+# Arguments: self, pass, salt, binary mode
+# Returns: encrypted password
 sub _authEncryptPass{
-  my ($self, $pass, $salt) = @_;
-  return sha256($self->{global_salt} . $pass . $salt);
+  my ($self, $pass, $salt, $bin) = @_;
+  return sha256($self->{global_salt} . $pass . $salt) if $bin;
+  return sha256_hex($self->{global_salt} . $pass . $salt);
 }
 
 
@@ -135,9 +137,8 @@ sub _authEncryptPass{
 # Returns: list (pass, salt)
 sub authPreparePass{
   my($self, $pass) = @_;
-
   my $salt = join '', map chr(rand(93)+33), 1..9;
-  my $hash = authEncryptPass($pass, $salt);
+  my $hash = _authEncryptPass($self, $pass, $salt);
   return ($hash, $salt);
 }
 
