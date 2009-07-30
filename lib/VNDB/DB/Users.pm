@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel|;
+our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel dbSessionAdd dbSessionDel dbSessionCheck|;
 
 
 # %options->{ username passwd mail order uid ip registered search results page what }
@@ -75,7 +75,7 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail rank show_nsfw show_list skin customcss |);
+    for (qw| username mail rank show_nsfw show_list skin customcss salt |);
   $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
     if defined $o{passwd};
 
@@ -88,11 +88,11 @@ sub dbUserEdit {
 }
 
 
-# username, md5(pass), mail, [ip]
+# username, pass(ecrypted), salt, mail, [ip]
 sub dbUserAdd {
   my($s, @o) = @_;
-  $s->dbExec(q|INSERT INTO users (username, passwd, mail, ip, registered) VALUES(?, decode(?, 'hex'), ?, ?, ?)|,
-    @o[0..2], $o[3]||$s->reqIP, time);
+  $s->dbExec(q|INSERT INTO users (username, passwd, salt, mail, ip, registered) VALUES(?, decode(?, 'hex'), ?, ?, ?, ?)|,
+    @o[0..3], $o[4]||$s->reqIP, time);
 }
 
 
@@ -104,10 +104,50 @@ sub dbUserDel {
     q|DELETE FROM rlists WHERE uid = ?|,
     q|DELETE FROM wlists WHERE uid = ?|,
     q|DELETE FROM votes WHERE uid = ?|,
+    q|DELETE FROM sessions WHERE uid = ?|,
     q|UPDATE changes SET requester = 0 WHERE requester = ?|,
     q|UPDATE threads_posts SET uid = 0 WHERE uid = ?|,
     q|DELETE FROM users WHERE id = ?|
   );
+}
+
+
+# Adds a session to the database
+# If no expiration is supplied the database default is used
+# uid, 40 character session token, expiration time (timestamp)
+sub dbSessionAdd {
+  my($s, @o) = @_;
+  if (defined $o[2]) {
+    $s->dbExec(q|INSERT INTO sessions (uid, token, expiration) VALUES(?, ?, ?)|,
+      @o);
+  } else {
+    $s->dbExec(q|INSERT INTO sessions (uid, token) VALUES(?, ?)|,
+      @o);
+  }
+}
+
+
+# Deletes session(s) from the database
+# If no token is supplied, all sessions for the uid are destroyed
+# uid, token (optional)
+sub dbSessionDel {
+  my($s, @o) = @_;
+  if (defined $o[1]) {
+    $s->dbExec(q|DELETE FROM sessions WHERE uid = ? AND token = ?|,
+      @o[0..1]);
+  } else {
+    $s->dbExec(q|DELETE FROM sessions WHERE uid = ?|,
+      $o[0]);
+  }
+}
+
+
+# Queries the database for the validity of a session
+# Returns 1 if corresponding session found, 0 if not
+# uid, token
+sub dbSessionCheck {
+  my($s, @o) = @_;
+  return $s->dbRow(q|SELECT count(uid) AS count FROM sessions WHERE uid = ? AND token = ? LIMIT 1|, @o)->{count}||0;
 }
 
 

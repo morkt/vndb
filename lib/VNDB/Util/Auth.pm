@@ -1,19 +1,17 @@
 
 package VNDB::Util::Auth;
 
-# This module is just a small improvement of the 1.x equivalent
-# and is designed to work with the cookies and database of VNDB 1.x
-# without modifications. A proper and more secure (incompatible)
-# implementation should be written at some point.
 
 use strict;
 use warnings;
 use Exporter 'import';
-use Digest::MD5 'md5_hex';
-use Crypt::Lite;
+use Digest::MD5 'md5';
+use Digest::SHA qw|sha1_hex sha256 sha256_hex|;
+use Time::HiRes;
+use POSIX 'strftime';
 
 
-our @EXPORT = qw| authInit authLogin authLogout authInfo authCan |;
+our @EXPORT = qw| authInit authLogin authLogout authInfo authCan authPreparePass |;
 
 
 # initializes authentication information and checks the vndb_auth cookie
@@ -22,12 +20,10 @@ sub authInit {
   $self->{_auth} = undef;
 
   my $cookie = $self->reqCookie('vndb_auth');
-  return 0 if !$cookie;
-  my $str = Crypt::Lite->new()->decrypt($cookie, md5_hex($self->{cookie_key}));
-  return 0 if length($str) < 36;
-  my $pass = substr($str, 4, 32);
-  my $user = substr($str, 36);
-  _authCheck($self, $user, $pass);
+  return 0 if !$cookie || length($cookie) < 41;
+  my $token = substr($cookie, 0, 40);
+  my $uid  = substr($cookie, 40);
+  $self->{_auth} = $self->dbUserGet(uid => $uid, what => 'mymessages')->[0] if $self->dbSessionCheck($uid, $token);
 }
 
 
@@ -36,15 +32,21 @@ sub authInit {
 sub authLogin {
   my $self = shift;
   my $user = lc(scalar shift);
-  my $pass = md5_hex(shift);
+  my $pass = shift;
   my $to = shift;
 
   if(_authCheck($self, $user, $pass)) {
-    (my $cookie = Crypt::Lite->new()->encrypt("VNDB$pass$user", md5_hex($self->{cookie_key}))) =~ s/\r?\n//g;
+    my $token = sha1_hex(join('', Time::HiRes::gettimeofday()) . join('', map chr(rand(93)+33), 1..9));
+    my $expiration = time + 31536000;  # 1yr
+    my $cookie = $token . $self->{_auth}{id};
+    $self->dbSessionAdd($self->{_auth}{id}, $token);
+
+    my $expstr = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime($expiration));
     $self->resRedirect($to, 'post');
-    $self->resHeader('Set-Cookie', "vndb_auth=$cookie; expires=Sat, 01-Jan-2030 00:00:00 GMT; path=/; domain=$self->{cookie_domain}");
+    $self->resHeader('Set-Cookie', "vndb_auth=$cookie; expires=$expstr; path=/; domain=$self->{cookie_domain}");
     return 1;
   }
+
   return 0;
 }
 
@@ -52,6 +54,14 @@ sub authLogin {
 # clears authentication cookie and redirects to /
 sub authLogout {
   my $self = shift;
+
+  my $cookie = $self->reqCookie('vndb_auth');
+  if ($cookie && length($cookie) >= 41) {
+    my $token = substr($cookie, 0, 40);
+    my $uid  = substr($cookie, 40);
+    $self->dbSessionDel($uid, $token);
+  }
+
   $self->resRedirect('/', 'temp');
   $self->resHeader('Set-Cookie', "vndb_auth= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$self->{cookie_domain}");
 }
@@ -75,20 +85,50 @@ sub authCan {
 
 
 # Checks for a valid login and writes information in _auth
-# Arguments: user, md5_hex(pass)
+# Arguments: user, pass
 # Returns: 1 if login is valid, 0 otherwise
 sub _authCheck {
   my($self, $user, $pass) = @_;
 
-  return 0 if
-       !$user || length($user) > 15 || length($user) < 2
-    || !$pass || length($pass) != 32;
+  return 0 if !$user || length($user) > 15 || length($user) < 2 || !$pass;
 
-  my $d = $self->dbUserGet(username => $user, passwd => $pass, what => 'mymessages')->[0];
+  my $d = $self->dbUserGet(username => $user, what => 'mymessages')->[0];
   return 0 if !defined $d->{id} || !$d->{rank};
 
-  $self->{_auth} = $d;
-  return 1;
+  if (_authEncryptPass($self, $pass, $d->{salt}, 1) eq $d->{passwd}) {
+    $self->{_auth} = $d;
+    return 1;
+  }
+  if (md5($pass) eq $d->{passwd}) {
+    $self->{_auth} = $d;
+    my %o;
+    ($o{passwd}, $o{salt}) = authPreparePass($self, $pass);
+    $self->dbUserEdit($d->{id}, %o);
+    return 1;
+  }
+
+  return 0;
+}
+
+
+# Encryption algorithm for user passwords
+# Arguments: self, pass, salt, binary mode
+# Returns: encrypted password
+sub _authEncryptPass{
+  my ($self, $pass, $salt, $bin) = @_;
+  return sha256($self->{global_salt} . $pass . $salt) if $bin;
+  return sha256_hex($self->{global_salt} . $pass . $salt);
+}
+
+
+# Prepares a plaintext password for database storage
+# Arguments: pass
+# Returns: list (pass, salt)
+sub authPreparePass{
+  my($self, $pass) = @_;
+  my $salt = join '', map chr(rand(93)+33), 1..9;
+  my $hash = _authEncryptPass($self, $pass, $salt);
+  return ($hash, $salt);
 }
 
 

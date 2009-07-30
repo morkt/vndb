@@ -161,6 +161,14 @@ CREATE TABLE screenshots (
   height smallint NOT NULL DEFAULT 0
 );
 
+-- sessions
+CREATE TABLE sessions (
+  uid integer NOT NULL,
+  token character(40) NOT NULL,
+  expiration timestamp NOT NULL DEFAULT (now() + '1 year'::interval),
+  PRIMARY KEY (uid, token)
+);
+
 -- stats_cache
 CREATE TABLE stats_cache (
   section varchar(25) NOT NULL PRIMARY KEY,
@@ -255,7 +263,8 @@ CREATE TABLE users (
   skin varchar(128) NOT NULL DEFAULT '',
   customcss text NOT NULL DEFAULT '',
   ip inet NOT NULL DEFAULT '0.0.0.0',
-  c_tags integer NOT NULL DEFAULT 0
+  c_tags integer NOT NULL DEFAULT 0,
+  salt character(9) NOT NULL DEFAULT ''
 );
 
 -- vn
@@ -365,6 +374,7 @@ ALTER TABLE releases_vn        ADD FOREIGN KEY (rid)       REFERENCES releases_r
 ALTER TABLE releases_vn        ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
 ALTER TABLE rlists             ADD FOREIGN KEY (uid)       REFERENCES users         (id);
 ALTER TABLE rlists             ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
+ALTER TABLE sessions           ADD FOREIGN KEY (uid)       REFERENCES users         (id);
 ALTER TABLE tags               ADD FOREIGN KEY (addedby)   REFERENCES users         (id);
 ALTER TABLE tags_aliases       ADD FOREIGN KEY (tag)       REFERENCES tags          (id);
 ALTER TABLE tags_parents       ADD FOREIGN KEY (tag)       REFERENCES tags          (id);
