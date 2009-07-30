@@ -22,7 +22,7 @@ my %subgraphs = (
   'Users'            => [qw| CCFFFF users votes rlists wlists |],
   'Discussion board' => [qw| FFDCDC threads threads_boards threads_posts |],
   'Tags'             => [qw| FFC8C8 tags tags_aliases tags_parents tags_vn |],
-  'Misc'             => [qw| F5F5F5 changes anime screenshots relgraph stats_cache quotes |],
+  'Misc'             => [qw| F5F5F5 changes anime screenshots relgraph stats_cache quotes sessions |],
 );
 
 my %tables; # table_name => [ [ col1, pri ], ... ]
