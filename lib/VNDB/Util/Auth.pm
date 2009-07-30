@@ -20,10 +20,12 @@ sub authInit {
   $self->{_auth} = undef;
 
   my $cookie = $self->reqCookie('vndb_auth');
-  return 0 if !$cookie || length($cookie) < 41;
+  return 0 if !$cookie;
+  return _rmcookie($self) if length($cookie) < 41;
   my $token = substr($cookie, 0, 40);
   my $uid  = substr($cookie, 40);
-  $self->{_auth} = $self->dbUserGet(uid => $uid, what => 'mymessages')->[0] if $self->dbSessionCheck($uid, $token);
+  return _rmcookie($self) if $uid !~ /^\d+$/ || !$self->dbSessionCheck($uid, $token);
+  $self->{_auth} = $self->dbUserGet(uid => $uid, what => 'mymessages')->[0];
 }
 
 
@@ -63,7 +65,7 @@ sub authLogout {
   }
 
   $self->resRedirect('/', 'temp');
-  $self->resHeader('Set-Cookie', "vndb_auth= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$self->{cookie_domain}");
+  _rmcookie($self);
 }
 
 
@@ -95,11 +97,11 @@ sub _authCheck {
   my $d = $self->dbUserGet(username => $user, what => 'mymessages')->[0];
   return 0 if !defined $d->{id} || !$d->{rank};
 
-  if (_authEncryptPass($self, $pass, $d->{salt}, 1) eq $d->{passwd}) {
+  if(_authEncryptPass($self, $pass, $d->{salt}, 1) eq $d->{passwd}) {
     $self->{_auth} = $d;
     return 1;
   }
-  if (md5($pass) eq $d->{passwd}) {
+  if(md5($pass) eq $d->{passwd}) {
     $self->{_auth} = $d;
     my %o;
     ($o{passwd}, $o{salt}) = authPreparePass($self, $pass);
@@ -129,6 +131,13 @@ sub authPreparePass{
   my $salt = join '', map chr(rand(93)+33), 1..9;
   my $hash = _authEncryptPass($self, $pass, $salt);
   return ($hash, $salt);
+}
+
+
+# removes the vndb_auth cookie
+sub _rmcookie {
+  $_[0]->resHeader('Set-Cookie',
+    "vndb_auth= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$_[0]->{cookie_domain}");
 }
 
 
