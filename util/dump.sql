@@ -412,7 +412,7 @@ ALTER TABLE wlists             ADD FOREIGN KEY (vid)       REFERENCES vn        
 --  F U N C T I O N S  --
 -------------------------
 
- 
+
 -- update_rev(table, ids) - updates the rev column in the changes table
 CREATE FUNCTION update_rev(tbl text, ids text) RETURNS void AS $$
 DECLARE
@@ -446,7 +446,7 @@ BEGIN
   IF id > 0 THEN
     w := ' WHERE id = '||id;
   END IF;
-  EXECUTE 'UPDATE vn SET 
+  EXECUTE 'UPDATE vn SET
     c_released = COALESCE((SELECT
       MIN(rr1.released)
       FROM releases_rev rr1
