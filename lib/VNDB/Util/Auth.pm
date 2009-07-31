@@ -8,6 +8,7 @@ use Exporter 'import';
 use Digest::MD5 'md5';
 use Digest::SHA qw|sha1_hex sha256 sha256_hex|;
 use Time::HiRes;
+use Encode 'encode_utf8';
 use POSIX 'strftime';
 
 
@@ -117,9 +118,10 @@ sub _authCheck {
 # Arguments: self, pass, salt, binary mode
 # Returns: encrypted password
 sub _authEncryptPass{
-  my ($self, $pass, $salt, $bin) = @_;
-  return sha256($self->{global_salt} . $pass . $salt) if $bin;
-  return sha256_hex($self->{global_salt} . $pass . $salt);
+  my($self, $pass, $salt, $bin) = @_;
+  my $str = $self->{global_salt} . encode_utf8($pass) . encode_utf8($salt);
+  return sha256($str) if $bin;
+  return sha256_hex($str);
 }
 
 
