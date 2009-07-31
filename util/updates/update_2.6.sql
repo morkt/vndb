@@ -3,7 +3,7 @@
 -- Create table for session data storage
 CREATE TABLE sessions (
   uid integer NOT NULL REFERENCES users(id),
-  token character(40) NOT NULL,
+  token bytea NOT NULL,
   expiration timestamp NOT NULL DEFAULT (NOW() + '1 year'::interval),
   PRIMARY KEY (uid, token)
 );

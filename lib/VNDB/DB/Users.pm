@@ -117,10 +117,10 @@ sub dbUserDel {
 sub dbSessionAdd {
   my($s, @o) = @_;
   if (defined $o[2]) {
-    $s->dbExec(q|INSERT INTO sessions (uid, token, expiration) VALUES(?, ?, ?)|,
+    $s->dbExec(q|INSERT INTO sessions (uid, token, expiration) VALUES(?, decode(?, 'hex'), ?)|,
       @o);
   } else {
-    $s->dbExec(q|INSERT INTO sessions (uid, token) VALUES(?, ?)|,
+    $s->dbExec(q|INSERT INTO sessions (uid, token) VALUES(?, decode(?, 'hex'))|,
       @o);
   }
 }
@@ -131,13 +131,9 @@ sub dbSessionAdd {
 # uid, token (optional)
 sub dbSessionDel {
   my($s, @o) = @_;
-  if (defined $o[1]) {
-    $s->dbExec(q|DELETE FROM sessions WHERE uid = ? AND token = ?|,
-      @o[0..1]);
-  } else {
-    $s->dbExec(q|DELETE FROM sessions WHERE uid = ?|,
-      $o[0]);
-  }
+  my %where = ('uid = ?' => $o[0]);
+  $where{"token = decode(?, 'hex')"} = $o[1] if $o[1];
+  $s->dbExec('DELETE FROM sessions !W', \%where);
 }
 
 
@@ -146,7 +142,9 @@ sub dbSessionDel {
 # uid, token
 sub dbSessionCheck {
   my($s, @o) = @_;
-  return $s->dbRow(q|SELECT count(uid) AS count FROM sessions WHERE uid = ? AND token = ? LIMIT 1|, @o)->{count}||0;
+  return $s->dbRow(
+    q|SELECT count(uid) AS count FROM sessions WHERE uid = ? AND token = decode(?, 'hex') LIMIT 1|, @o
+  )->{count}||0;
 }
 
 
