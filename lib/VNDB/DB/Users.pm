@@ -24,8 +24,6 @@ sub dbUserGet {
   my %where = (
     $o{username} ? (
       'username = ?' => $o{username} ) : (),
-    $o{passwd} ? (
-      'passwd = decode(?, \'hex\')' => $o{passwd} ) : (),
     $o{firstchar} ? (
       'SUBSTRING(username from 1 for 1) = ?' => $o{firstchar} ) : (),
     !$o{firstchar} && defined $o{firstchar} ? (
@@ -45,7 +43,8 @@ sub dbUserGet {
   );
 
   my @select = (
-    'u.*',
+    qw|id username mail rank salt registered c_votes c_changes show_nsfw show_list skin customcss ip c_tags|,
+    q|encode(passwd, 'hex') AS passwd|,
     $o{what} =~ /stats/ ? (
       '(SELECT COUNT(*) FROM rlists WHERE uid = u.id) AS releasecount',
       '(SELECT COUNT(DISTINCT rv.vid) FROM rlists rl JOIN releases r ON rl.rid = r.id JOIN releases_vn rv ON rv.rid = r.latest WHERE uid = u.id) AS vncount',
