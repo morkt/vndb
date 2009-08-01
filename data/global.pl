@@ -51,6 +51,7 @@ our %S = (%S,
     ru  => q|Russian|,
     sv  => q|Swedish|,
     tr  => q|Turkish|,
+    vi  => q|Vietnamese|,
     zh  => q|Chinese|,
   },
   producer_types  => {

@@ -1,6 +1,7 @@
 2.6 - ?
 	- New screen resolutions: 1024x600 and 1600x1200
 	- Rewritten authentication system
+	- New language: Vietnamese
 
 2.5 - 2009-07-09
 	- Hide NSFW images in diff viewer (unless NSFW warnings are disabled)

@@ -1226,6 +1226,8 @@ a .icons { cursor: pointer }
 .icons.msx { background-position: -32px -56px; }
 .icons.nes { background-position: -32px -70px; }
 
+.icons.vi  { background-position: -34px -88px; }
+
 .icons.cs  { background-position: -48px   0px; }
 .icons.da  { background-position: -48px -11px; }
 .icons.de  { background-position: -48px -22px; }
