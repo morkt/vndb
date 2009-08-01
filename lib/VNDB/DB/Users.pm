@@ -99,7 +99,6 @@ sub dbUserAdd {
 sub dbUserDel {
   my($s, $id) = @_;
   $s->dbExec($_, $id) for (
-    q|DELETE FROM vnlists WHERE uid = ?|,
     q|DELETE FROM rlists WHERE uid = ?|,
     q|DELETE FROM wlists WHERE uid = ?|,
     q|DELETE FROM votes WHERE uid = ?|,
