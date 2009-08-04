@@ -15,41 +15,51 @@ use POE qw|
 |;
 use POE::Component::IRC::Common ':ALL';
 use URI::Escape 'uri_escape_utf8';
-use Net::HTTP;
 
 use constant {
-  ARG  => ARG0,
+  USER => ARG0,
   DEST => ARG1,
-  NICK => ARG2
+  ARG  => ARG2,
+  MASK => ARG3,
 };
+
+my $irc;
 
 
 sub spawn {
-  return if $Multi::DAEMONIZE != 0; # we don't provide any commands, after all
-
   my $p = shift;
-  my $irc = POE::Component::IRC::State->spawn(
+  $irc = POE::Component::IRC::State->spawn(
     alias => 'circ',
     NoDNS => 1,
   );
   POE::Session->create(
     package_states => [
       $p => [qw|
-        _start irc_001 irc_public irc_ctcp_action irc_msg irccmd vndbid ircnotify shutdown
-        cmd_info cmd_vndb cmd_list cmd_vn cmd_uptime cmd_notifications cmd_me cmd_say cmd_cmd cmd_eval
+        _start shutdown irc_001 irc_public irc_ctcp_action irc_msg command reply
+        cmd_info cmd_list cmd_uptime cmd_uptime cmd_say cmd_me
+        cmd_eval cmd_die cmd_post vndbid formatid
       |],
     ],
-    heap => { irc => $irc,
-      o => {
-        user => 'Multi_test'.$$,
-        server => 'irc.synirc.net',
-        ircname => 'VNDB.org Multi',
-        channel => [ '#vndb' ],
-        @_
-      },
+    heap => {
+      nick => 'Multi_test'.$$,
+      server => 'irc.synirc.net',
+      ircname => 'VNDB.org Multi',
+      channels => [ '#vndb' ],
+      masters => [ 'yorhel!*@*' ],
+      @_,
       log => {},
       privpers => {},
       notify => [],
+      commands => {
+        info     => 0, # argument = authentication level.
+        list     => 0, #   0: everyone,
+        uptime   => 0, #   1: only OPs in the first channel listed in @channels
+        say      => 1, #   2: only users matching the mask in @masters
+        me       => 1,
+        eval     => 2,
+        die      => 2,
+        post     => 2,
+      },
     }
   );
 }
@@ -57,243 +67,304 @@ sub spawn {
 
 sub _start {
   $_[KERNEL]->alias_set('irc');
-  $_[KERNEL]->call(core => register => qr/^ircnotify ([vrptg][0-9]+(?:\.[0-9]+)?)$/, 'ircnotify');
 
-  $_[HEAP]{irc}->plugin_add(
+  $irc->plugin_add(
     Logger => POE::Component::IRC::Plugin::Logger->new(
       Path => $VNDB::M{log_dir},
       Private => 0,
       Public => 1,
   ));
-  $_[HEAP]{irc}->plugin_add(
+  $irc->plugin_add(
     Connector => POE::Component::IRC::Plugin::Connector->new()
   );
-  $_[HEAP]{irc}->plugin_add(
+  $irc->plugin_add(
     CTCP => POE::Component::IRC::Plugin::CTCP->new(
-      version => $_[HEAP]{o}{ircname}.' v'.$VNDB::S{version},
-      userinfo => $_[HEAP]{o}{ircname},
+      version => $_[HEAP]{ircname}.' v'.$VNDB::S{version},
+      userinfo => $_[HEAP]{ircname},
   ));
-  if($_[HEAP]{o}{pass}) {
+  if($_[HEAP]{pass}) {
     require POE::Component::IRC::Plugin::NickServID;
-    $_[HEAP]{irc}->plugin_add(
+    $irc->plugin_add(
       NickServID => POE::Component::IRC::Plugin::NickServID->new(
-        Password => $_[HEAP]{o}{pass}
-    )) 
+        Password => $_[HEAP]{pass}
+    ))
   }
-  if($_[HEAP]{o}{console}) {
+  if($_[HEAP]{console}) {
     require POE::Component::IRC::Plugin::Console;
-    $_[HEAP]{irc}->plugin_add(
+    $irc->plugin_add(
       Console => POE::Component::IRC::Plugin::Console->new(
         bindport => 3030,
-        password => $_[HEAP]{o}{console}
-    )) 
+        password => $_[HEAP]{console}
+    ))
   }
 
-  $_[KERNEL]->post(circ => register => 'all');
-  $_[KERNEL]->post(circ => connect => {
-    Nick  => $_[HEAP]{o}{user},
+  $irc->yield(register => 'all');
+  $irc->yield(connect => {
+    Nick  => $_[HEAP]{nick},
     Username => 'u1',
-    Ircname => $_[HEAP]{o}{ircname},
-    Server => $_[HEAP]{o}{server},
+    Ircname => $_[HEAP]{ircname},
+    Server => $_[HEAP]{server},
   });
 
- # notifications in the main channel enabled by default
-  push @{$_[HEAP]{notify}}, $_[HEAP]{o}{channel}[0];
-
-  $_[KERNEL]->sig('shutdown' => 'shutdown');
+  $_[KERNEL]->sig(shutdown => 'shutdown');
 }
 
 
-sub irc_001 { 
-  $_[KERNEL]->post(circ => join => $_) for (@{$_[HEAP]{o}{channel}});
-  $_[KERNEL]->call(core => log => 2, 'Connected to IRC!');
+sub shutdown {
+  $irc->yield(shutdown => $_[ARG1]);
+  $_[KERNEL]->alias_remove('irc');
 }
 
 
-sub irc_public {
-  if($_[ARG2] =~ /^!/) {
-    (my $cmd = $_[ARG2]) =~ s/^!//;
-    my $nick = (split /!/, $_[ARG0])[0];
-    $_[KERNEL]->call(irc => irccmd => $_[ARG1][0], $cmd, $nick);
-  } else {
-    $_[KERNEL]->call(irc => vndbid => $_[ARG1][0], $_[ARG2]);
-  }
+sub irc_001 {
+  $irc->yield(join => $_) for (@{$_[HEAP]{channels}});
+  $_[KERNEL]->call(core => log => 'Connected to IRC');
 }
 
 
-sub irc_ctcp_action {
-  $_[KERNEL]->call(irc => vndbid => $_[ARG1][0], $_[ARG2]);
+sub irc_public { # mask, dest, msg
+  return if $_[ARG2] =~ /^\s*!/ && $_[KERNEL]->call($_[SESSION] => command => @_[ARG0..$#_]);
+  $_[KERNEL]->call($_[SESSION] => vndbid => $_[ARG1], $_[ARG2]);
 }
 
 
-sub irc_msg {
-  my $nick = ( split /!/, $_[ARG0] )[0];
-  $_[ARG2] =~ s/^!//;
-  if(!$_[KERNEL]->call(irc => irccmd => $nick => $_[ARG2])) {
-    $_[HEAP]{privpers}{$_} < time-3600 and delete $_[HEAP]{privpers}{$_}
-      for (keys %{$_[HEAP]{privpers}});
-    $_[KERNEL]->post(circ => privmsg => $nick => 'I am not human, join #vndb or PM Yorhel if you need something.')
-      if !$_[HEAP]{privpers}{$nick};
-    $_[HEAP]{privpers}{$nick} ||= time;
-  }
+sub irc_ctcp_action { # mask, dest, msg
+  $_[KERNEL]->call($_[SESSION] => vndbid => $_[ARG1], $_[ARG2]);
 }
 
 
-sub irccmd { # dest, cmd, [nick]
-  my($dest, $cmd, $nick) = @_[ARG0..$#_];
-  $nick ||= $_[ARG0];
+sub irc_msg { # mask, dest, msg
+  return if $_[KERNEL]->call($_[SESSION] => command => $_[ARG0], [scalar parse_user($_[ARG0])], $_[ARG2]);
 
-  return 0 if $cmd !~ /^([a-z0-9A-Z_]+)(?: (.+))?$/;
-  my($f, $a) = (lc $1, $2||'');
-
-  # check for a cmd_* function and call it (some scary magic, see perlmod)
-  my $sub;
-  {
-    no strict;
-    $sub = ${__PACKAGE__.'::'}{'cmd_'.$f};
-  }
-  return 0 if !defined $sub;
-  local *SUB = $sub;
-  return 0 if !defined *SUB{CODE};
-  $_[KERNEL]->yield('cmd_'.$f, $a, $dest, $nick);
-  return 1;
+  my $usr = parse_user($_[ARG0]);
+  return if ($_[HEAP]{privpers}{$usr}||0) > time-300;
+  $irc->yield(notice => $usr, 'I am not human, join #vndb or PM Yorhel if you need something.');
+  $_[HEAP]{privpers}{$usr} = time;
 }
 
 
-sub vndbid { # dest, msg, force
-  my $m = $_[ARG1];
+sub command { # mask, dest, msg
+  my($mask, $dest, $msg) = @_[ARG0..$#_];
+
+  my $usr = parse_user($mask);
+  $msg =~ s/\s*!//;
+  return 0 if $msg !~ /^([a-z]+)(?:\s+(.+))?$/;
+  my($cmd, $arg) = ($1, $2);
+  return 0 if !exists $_[HEAP]{commands}{$cmd};
+
+  return $_[KERNEL]->yield(reply => $dest,
+      $dest eq $_[HEAP]{channels}[0] ? 'Only OPs can do that!' : "Only $_[HEAP]{channel}[0] OPs can do that!", $usr) || 1
+    if $_[HEAP]{commands}{$cmd} == 1 && !$irc->is_channel_operator($_[HEAP]{channels}[0], $usr);
+  return $_[KERNEL]->yield(reply => $dest, 'You are not my master!', $usr) || 1
+    if $_[HEAP]{commands}{$cmd} == 2 && !grep matches_mask($_, $mask), @{$_[HEAP]{masters}};
+
+  return $_[KERNEL]->yield('cmd_'.$cmd, $usr, $dest, $arg, $mask) || 1;
+}
+
+
+# convenience function
+sub reply { # target, msg [, mask/user]
+  my $usr = $_[ARG0][0] =~ /^#/ && parse_user($_[ARG2]);
+  $irc->yield($_[ARG0][0] =~ /^#/ ? 'privmsg' : 'notice', $_[ARG0], ($usr ? "$usr, " : '').$_[ARG1]);
+}
+
+
+
+
+#
+#  I R C   C O M M A N D S
+#
+
+
+sub cmd_info {
+  $_[KERNEL]->yield(reply => $_[DEST],
+    'Hi! I am HMX-12 Multi '.$VNDB::S{version}.', the IRC bot of '.$VNDB::S{url}.'/, written by the great Yorhel!');
+}
+
+
+sub cmd_list {
+  $_[KERNEL]->yield(reply => $_[DEST],
+    $_[DEST][0] =~ /^#/ ? 'This is not a warez channel!' : 'I am not a warez bot!', $_[USER]);
+}
+
+
+sub cmd_uptime {
+  my $age = sub {
+    return '...down!?' if !$_[0];
+    my $d = int $_[0] / 86400;
+    $_[0] %= 86400;
+    my $h = int $_[0] / 3600;
+    $_[0] %= 3600;
+    my $m = int $_[0] / 60;
+    $_[0] %= 60;
+    return sprintf '%s%02d:%02d:%02d', $d ? $d.' day'.($d>1?'s':'').', ' : '', $h, $m, int $_[0];
+  };
+
+  open my $R, '<', '/proc/uptime';
+  my $server = <$R> =~ /^\s*([0-9]+)/ ? $1 : 0;
+  close $R;
+  my $multi = time - $^T;
+
+  $_[KERNEL]->yield(reply => $_[DEST], sprintf 'Server uptime: %s -- mine: %s', $age->($server), $age->($multi));
+}
+
+
+sub cmd_say {
+  my $chan = $_[ARG] =~ s/^(#[a-zA-Z0-9-_.]+) // ? $1 : $_[DEST];
+  $irc->yield(privmsg => $chan, $_[ARG]);
+}
+
+
+sub cmd_me {
+  my $chan = $_[ARG] =~ s/^(#[a-zA-Z0-9-_.]+) // ? $1 : $_[DEST];
+  $irc->yield(ctcp => $chan, 'ACTION '.$_[ARG]);
+}
+
+
+sub cmd_eval {
+  $_[KERNEL]->yield(reply => $_[DEST], 'eval: '.$_)
+    for (split /\r?\n/, eval($_[ARG])||$@);
+}
+
+
+sub cmd_die {
+  $irc->yield(ctcp => $_[DEST] => 'ACTION dies');
+  $_[KERNEL]->signal(core => shutdown => "Killed on IRC by $_[USER]");
+}
+
+
+sub cmd_post {
+  $_[KERNEL]->yield(reply => $_[DEST], $_[KERNEL]->post(split /\s+/, $_[ARG])
+    ? 'Sent your message to the post office, it will be processed shortly!'
+    : "Oh no! The post office wouldn't accept your message! Wrong destination address?", $_[USER]);
+}
+
+
+
+
+#
+#  D B   I T E M   L I N K S
+#
+
+
+sub vndbid { # dest, msg
+  my($dest, $msg) = @_[ARG0, ARG1];
 
   $_[HEAP]{log}{$_} < time-60 and delete $_[HEAP]{log}{$_}
     for (keys %{$_[HEAP]{log}});
 
-  # Four possible options:
-  #  1.  [tvprug]+ -> item/user/thread/tag (nf)
-  #  2.  [vprt]+.+ -> revision/reply (ef)
-  #  3.  d+        -> documentation page (nf)
-  #  4.  d+.+      -> documentation page # section (sf)
-
-  # nf (normal format):   x+     : x, id, title
-  # sf (sub format):      x+.+   : x, id, subid, title, action2, title2
-  # ef (extended format): x+.+   : x, id, subid, action, title, action2, title2
-  my $nf = BOLD.RED.'['.NORMAL.BOLD.'%s%d'   .RED.']'                 .NORMAL.' %s '                       .RED.'@'.NORMAL.LIGHT_GREY.' '.$VNDB::S{url}.'/%1$s%2$d'.NORMAL;
-  my $sf = BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'                 .NORMAL.' %s '.RED.'%s'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' '.$VNDB::S{url}.'/%1$s%2$d.%3$d'.NORMAL;
-  my $ef = BOLD.RED.'['.NORMAL.BOLD.'%s%d.%d'.RED.']'.NORMAL.RED.' %s'.NORMAL.' %s '.RED.'%s'.NORMAL.' %s '.RED.'@'.NORMAL.LIGHT_GREY.' '.$VNDB::S{url}.'/%1$s%2$d.%3$d'.NORMAL;
-
-  # get a list of possible IDs (a la sub summary in defs.pl)
   my @id; # [ type, id, ref ]
-  for (split /[, ]/, $m) {
+  for (split /[, ]/, $msg) {
     next if length > 15 or m{[a-z]{3,6}://}i; # weed out URLs and too long things
-    push @id, /^(?:.*[^\w]|)([dvprt])([1-9][0-9]*)\.([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, $3 ]   # matches 2 and 4
-           :  /^(?:.*[^\w]|)([dvprtug])([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();       # matches 1 and 3
+    push @id, /^(?:.*[^\w]|)([dvprt])([1-9][0-9]*)\.([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, $3 ] # x+.+
+           :  /^(?:.*[^\w]|)([dvprtug])([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();         # x+
   }
 
-  # loop through the matched IDs and search the database
   for (@id) {
-    my($t, $id, $rev) = (@$_);
+    my($t, $id, $rev) = @$_;
 
-    next if $_[HEAP]{log}{$t.$id.'.'.$rev} && !$_[ARG2];
+    next if $_[HEAP]{log}{$t.$id.'.'.$rev};
     $_[HEAP]{log}{$t.$id.'.'.$rev} = time;
 
-   # option 1: item/user/thread/tag
-    if($t =~ /[vprtug]/ && !$rev) {
-      my $s = $Multi::SQL->prepare(
-        $t eq 'v' ? 'SELECT vr.title FROM vn_rev vr JOIN vn v ON v.latest = vr.id WHERE v.id = ?' :
-        $t eq 'u' ? 'SELECT u.username AS title FROM users u WHERE u.id = ?' :
-        $t eq 'p' ? 'SELECT pr.name AS title FROM producers_rev pr JOIN producers p ON p.latest = pr.id WHERE p.id = ?' :
-        $t eq 't' ? 'SELECT title FROM threads WHERE id = ?' :
-        $t eq 'g' ? 'SELECT name AS title FROM tags WHERE id = ?' :
-                    'SELECT rr.title FROM releases_rev rr JOIN releases r ON r.latest = rr.id WHERE r.id = ?'
-      );
-      $s->execute($id);
-      my $r = $s->fetchrow_hashref;
-      $s->finish;
-      next if !$r || ref($r) ne 'HASH';
-      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $nf,
-        $t, $id, $r->{title});
+    # plain vn/user/producer/thread/tag/release
+    $_[KERNEL]->post(pg => query => 'SELECT ?::text AS type, ?::integer AS id, '.(
+      $t eq 'v' ? 'vr.title FROM vn_rev vr JOIN vn v ON v.latest = vr.id WHERE v.id = ?' :
+      $t eq 'u' ? 'u.username AS title FROM users u WHERE u.id = ?' :
+      $t eq 'p' ? 'pr.name AS title FROM producers_rev pr JOIN producers p ON p.latest = pr.id WHERE p.id = ?' :
+      $t eq 't' ? 'title FROM threads WHERE id = ?' :
+      $t eq 'g' ? 'name AS title FROM tags WHERE id = ?' :
+                  'rr.title FROM releases_rev rr JOIN releases r ON r.latest = rr.id WHERE r.id = ?'),
+      [ $t, $id, $id ], 'formatid', $dest
+    ) if !$rev && $t =~ /[vprtug]/;
 
-   # option 2: revision/reply
-    } elsif($t =~ /[vprt]/) {
-      my $s = $Multi::SQL->prepare(
-        $t eq 'v' ? 'SELECT vr.title, u.username FROM changes c JOIN vn_rev vr ON c.id = vr.id JOIN users u ON u.id = c.requester WHERE vr.vid = ? AND c.rev = ?' :
-        $t eq 'r' ? 'SELECT rr.title, u.username FROM changes c JOIN releases_rev rr ON c.id = rr.id JOIN users u ON u.id = c.requester WHERE rr.rid = ? AND c.rev = ?' :
-        $t eq 'p' ? 'SELECT pr.name, u.username FROM changes c JOIN producers_rev pr ON c.id = pr.id JOIN users u ON u.id = c.requester WHERE pr.pid = ? AND c.rev = ?' :
-                    'SELECT t.title, u.username FROM threads t JOIN threads_posts tp ON tp.tid = t.id JOIN users u ON u.id = tp.uid WHERE t.id = ? AND tp.num = ?'
-      );
-      $s->execute($id, $rev);
-      my $r = $s->fetchrow_arrayref;
-      next if !$r || ref($r) ne 'ARRAY';
-      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $ef, $t, $id, $rev,
-        $rev == 1 ? 'New '.($t eq 'v' ? 'visual novel' : $t eq 'p' ? 'producer' : $t eq 'r' ? 'release': 'thread')
-                  : ($t eq 't' ? 'Reply to' : 'Edit of'), $r->[0], 'By', $r->[1]
-      );
+    # edit/insert of vn/release/producer or discussion board post
+    $_[KERNEL]->post(pg => query => 'SELECT ?::text AS type, ?::integer AS id, ?::integer AS rev, '.(
+      $t eq 'v' ? 'vr.title, u.username FROM changes c JOIN vn_rev vr ON c.id = vr.id JOIN users u ON u.id = c.requester WHERE vr.vid = ? AND c.rev = ?' :
+      $t eq 'r' ? 'rr.title, u.username FROM changes c JOIN releases_rev rr ON c.id = rr.id JOIN users u ON u.id = c.requester WHERE rr.rid = ? AND c.rev = ?' :
+      $t eq 'p' ? 'pr.name AS title, u.username FROM changes c JOIN producers_rev pr ON c.id = pr.id JOIN users u ON u.id = c.requester WHERE pr.pid = ? AND c.rev = ?' :
+                  't.title, u.username FROM threads t JOIN threads_posts tp ON tp.tid = t.id JOIN users u ON u.id = tp.uid WHERE t.id = ? AND tp.num = ?'),
+      [ $t, $id, $rev, $id, $rev], 'formatid', $dest
+    ) if $rev && $t =~ /[vprt]/;
 
-   # option 3: documentation page
-    } elsif($t eq 'd') {
-      my $f = sprintf '/www/vndb/data/docs/%d', $id;
+    # documentation page (need to parse the doc pages manually here)
+    if($t eq 'd') {
+      my $f = sprintf $VNDB::ROOT.'/data/docs/%d', $id;
+      my($title, $sec, $sub) = (undef, 0);
       open my $F, '<', $f or next;
-      (my $title = <$F>) =~ s/^:TITLE://;
-      chomp($title);
-
-      if(!$rev) {
-        $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $nf,
-          'd', $id, $title);
-        next;
-      }
-
-   # option 4: documentation page # section
-      my($sec, $sub);
       while(<$F>) {
-        if(/^:SUB:/ && ++$sec == $rev) {
-          chomp;
-          ($sub = $_) =~ s/^:SUB://;
-          last;
-        }
+        chomp;
+        $title = $1 if /^:TITLE:(.+)$/;
+        $sub = $1 if $rev && /^:SUB:(.+)$/ && ++$sec == $rev;
       }
-      next if !$sub;
-      $_[KERNEL]->post(circ => privmsg => $_[ARG0], sprintf $sf,
-        'd', $id, $rev, $title, '->', $sub);
+      close $F;
+      next if $rev && !$sub;
+      $_[KERNEL]->yield(formatid => 1, [{type => 'd', id => $id, title => $title, rev => $rev, section => $sub}], $dest);
     }
   }
 }
 
 
-sub ircnotify { # command, VNDBID
-  $_[KERNEL]->yield(vndbid => $_ => $_[ARG1] => 1) for (@{$_[HEAP]{notify}});
-  $_[KERNEL]->post(core => finish => $_[ARG0]);
+# formats and posts database items listed in @res, where each item is a hashref with:
+#   type      database item in [dvprtug]
+#   id        database id
+#   title     main name or title of the DB entry
+#   rev       (optional) revision, post number or section number
+#   username  (optional) relevant username
+#   section   (optional, for d+.+) section title
+sub formatid {
+  my($num, $res, $dest) = @_[ARG0..$#_];
+
+  # only the types for which creation/edit announcements matter
+  my %types = (
+    v => 'visual novel',
+    p => 'producer',
+    r => 'release',
+    g => 'tag',
+    t => 'thread',
+  );
+
+  for (@$res) {
+    my $id = $_->{type}.$_->{id} . ($_->{rev} ? '.'.$_->{rev} : '');
+
+    # (always) [x+.+]
+    my @msg = (
+      BOLD.RED.'['.NORMAL.BOLD.$id.RED.']'.NORMAL
+    );
+
+    # (only if username key is present) Edit of / New item / reply to / whatever
+    push @msg, RED.(
+      ($_->{rev}||1) == 1 ? 'New '.$types{$_->{type}} :
+      $_->{type} eq 't' ? 'Reply to' : 'Edit of'
+    ).NORMAL if $_->{username};
+
+    # (always) main title
+    push @msg, $_->{title};
+
+    # (only if username key is present) By [username]
+    push @msg, RED.'By'.NORMAL.' '.$_->{username} if $_->{username};
+
+    # (for d+.+) -> section title
+    push @msg, RED.'->'.NORMAL.' '.$_->{section} if $_->{section};
+
+    # (always) @ URL
+    push @msg, RED.'@ '.NORMAL.LIGHT_GREY.$VNDB::S{url}.'/'.$id.NORMAL;
+
+    # now post it
+    $_[KERNEL]->yield(reply => $dest, join ' ',  @msg);
+  }
 }
 
 
-sub shutdown {
-  $_[KERNEL]->post(circ => shutdown => 'Byebye!');
-}
+1;
 
 
-
-# cmd_* commands: $arg, $dest, $nick
-
-sub cmd_info {
-  $_[KERNEL]->post(circ => privmsg => $_[DEST],
-    'Hello, I am HMX-12 Multi v'.$VNDB::S{version}.' made by the great Yorhel!');
-}
-
-
-sub cmd_vndb {
-  $_[KERNEL]->post(circ => privmsg => $_[DEST],
-    'VNDB ~ The Visual Novel Database ~ http://vndb.org/');
-}
-
-
-sub cmd_list {
-  return if $_[DEST] ne $_[HEAP]{o}{channel}[0];
-  $_[KERNEL]->post(circ => privmsg => $_[DEST],
-    $_[NICK].', this is not a warez channel!');
-}
+__END__
 
 
 sub cmd_vn { # $arg = search string
   $_[ARG] =~ s/%//g;
   return $_[KERNEL]->post(circ => privmsg => $_[DEST], 'You forgot the search query, idiot~~!.') if !$_[ARG];
-  
+
   my $q = $Multi::SQL->prepare(q|
     SELECT v.id
     FROM vn v
@@ -322,38 +393,6 @@ sub cmd_vn { # $arg = search string
 }
 
 
-sub cmd_uptime {
-  my $age = sub {
-    return '...down!?' if !$_[0];
-    my $d = int $_[0] / 86400;
-    $_[0] %= 86400;
-    my $h = int $_[0] / 3600;
-    $_[0] %= 3600;
-    my $m = int $_[0] / 60;
-    $_[0] %= 60;
-    return sprintf '%s%02d:%02d:%02d', $d ? $d.' day'.($d>1?'s':'').', ' : '', $h, $m, int $_[0];
-  };
-
-  open my $R, '<', '/proc/uptime';
-  my $server = <$R> =~ /^\s*([0-9]+)/ ? $1 : 0;
-  close $R;
-
-  my $multi = time - $^T;
-
-  my $http=0;
- # this should actually be done asynchronously... but I don't expect it to timeout
-  if(my $req = Net::HTTP->new(Host => 'localhost', Timeout => 1)) {
-    $req->write_request(GET => '/server-status?auto');
-    my $d;
-    $req->read_entity_body($d, 1024) if $req->read_response_headers;
-    $http = $1 if $d =~ /Uptime:\s*([0-9]+)/i;
-  }
-  
-  $_[KERNEL]->post(circ => privmsg => $_[DEST], $_) for (split /\n/, sprintf
-    "Uptimes:\n  Server: %s\n  Multi:  %s\n  HTTP:   %s", map $age->($_), $server, $multi, $http);
-}
-
-
 sub cmd_notifications { # $arg = '' or 'on' or 'off'
   return unless &mymaster;
   if($_[ARG] =~ /^on$/i) {
@@ -367,52 +406,5 @@ sub cmd_notifications { # $arg = '' or 'on' or 'off'
       (grep $_ eq $_[DEST], @{$_[HEAP]{notify}}) ? ('enabled', 'off', 'disable') : ('disabled', 'on', 'enable'));
   }
 }
-
-
-sub cmd_say { # $arg = '[#chan ]text', no #chan = $dest
-  return unless &mymaster;
-  my $chan = $_[ARG] =~ s/^(#[a-zA-Z0-9-_.]+) // ? $1 : $_[DEST];
-  $_[KERNEL]->post(circ => privmsg => $chan, $_[ARG]);
-}
-
-
-sub cmd_me { # same as cmd_say, but CTCP ACTION
-  return unless &mymaster;
-  my $chan = $_[ARG] =~ s/^(#[a-zA-Z0-9-_.]+) // ? $1 : $_[DEST];
-  $_[KERNEL]->post(circ => ctcp => $chan, 'ACTION '.$_[ARG]);
-}
-
-
-sub cmd_cmd { # TODO: feedback?
-  return unless &mymaster;
-  $_[KERNEL]->post(core => queue => $_[ARG]);
-  $_[KERNEL]->post(circ => privmsg => $_[DEST] => sprintf "Executing %s", $_[ARG]);
-}
-
-
-sub cmd_eval { # the evil cmd
-  return unless &mymaster;
-  $_[KERNEL]->post(circ => privmsg => $_[DEST], 'eval: '.$_)
-    for (split /\r?\n/, eval($_[ARG])||$@);
-}
-
-
-
-
-# non-POE function, checks whether we should trust $nick
-sub mymaster { # same @_ as the cmd_ functions
-  if(!$_[HEAP]{irc}->is_channel_operator($_[HEAP]{o}{channel}[0], $_[ARG2])
-    && !$_[HEAP]{irc}->is_channel_owner($_[HEAP]{o}{channel}[0], $_[ARG2])
-    && !$_[HEAP]{irc}->is_channel_admin($_[HEAP]{o}{channel}[0], $_[ARG2])
-    || ($_[HEAP]{o}{master_users} && !grep lc($_) eq lc($_[ARG2]), @{$_[HEAP]{o}{master_users}})
-  ) {
-    $_[KERNEL]->post(circ => privmsg => $_[ARG1],
-      ($_[ARG1]=~/^#/?$_[ARG2].', ':'').'You are not my master!');
-    return 0;
-  }
-  return 1;
-}
-
-1;
 
 
