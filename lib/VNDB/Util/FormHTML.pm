@@ -54,6 +54,7 @@ my %formerr_exeptions = (
   toolarge      => 'Image is too large, only 500kB allowed',
   oneaday       => 'You can only register one account from the same IP within 24 hours',
   nochanges     => 'No changes, please don\'t create an entry that is fully -identical- to another',
+  doublepost	=> 'Please wait 30 seconds before making another post',
 );
 
 

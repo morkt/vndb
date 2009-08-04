@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbThreadGet dbThreadEdit dbThreadAdd dbPostGet dbPostEdit dbPostAdd dbThreadCount|;
+our @EXPORT = qw|dbThreadGet dbThreadEdit dbThreadAdd dbPostGet dbPostEdit dbPostAdd dbThreadCount dbPostCheckDouble|;
 
 
 # Options: id, type, iid, results, page, what, notusers
@@ -238,6 +238,26 @@ sub dbPostAdd {
     $tid);
 
   return $num;
+}
+
+
+# Checks if a user has recently made a post in a particular thread
+# If tid is omitted or equal to zero, check if user has made a recent post at all
+# uid, tid (optional)
+sub dbPostCheckDouble {
+  my($self, @o) = @_;
+
+  my $time = time - 30; # 30 Seconds
+  my $r;
+  if (defined $o[1] && $o[1] ne 0) {
+    $r = $self->dbRow('SELECT COUNT(num) FROM threads_posts WHERE uid = ? AND tid = ? AND date > ? LIMIT 1',
+      @o, $time);
+  } else {
+    $r = $self->dbRow('SELECT COUNT(num) FROM threads_posts WHERE uid = ? AND date > ? LIMIT 1',
+      $o[0], $time);
+  }
+
+  return $r->{count}||0;
 }
 
 
