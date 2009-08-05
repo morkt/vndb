@@ -49,7 +49,7 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown irc_001 irc_public irc_ctcp_action irc_msg command reply
-        cmd_info cmd_list cmd_uptime cmd_vn cmd_vn_results cmd_say cmd_me
+        cmd_info cmd_list cmd_uptime cmd_vn cmd_vn_results cmd_quote cmd_quote_result cmd_say cmd_me
         cmd_eval cmd_die cmd_post vndbid formatid
       |],
     ],
@@ -68,7 +68,8 @@ sub spawn {
         list     => 0,   #   0: everyone,
         uptime   => 0,   #   1: only OPs in the first channel listed in @channels
         vn       => 0,   #   2: only users matching the mask in @masters
-        say      => 1|8, #  |8: has to be addressed to the bot (e.g. 'Multi: eval' instead of '!eval')
+        quote    => 0,   #  |8: has to be addressed to the bot (e.g. 'Multi: eval' instead of '!eval')
+        say      => 1|8,
         me       => 1|8,
         eval     => 2|8,
         die      => 2|8,
@@ -255,6 +256,16 @@ sub cmd_vn_results { # num, res, \@_
       'Too many results found, see %s/v/all?q=%s', $VNDB::S{url}, uri_escape_utf8($_[ARG2][ARG])
     ), $_[ARG2][USER]) if $_[ARG0] > 5;
   $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], $_[ARG2][DEST]);
+}
+
+
+sub cmd_quote {
+  $_[KERNEL]->post(pg => query => q|SELECT quote FROM quotes ORDER BY random() LIMIT 1|, undef, 'cmd_quote_result', $_[DEST]);
+}
+
+
+sub cmd_quote_result { # 1, res, dest
+  $_[KERNEL]->yield(reply => $_[ARG2] => $_[ARG1][0]{quote}) if $_[ARG0] > 0;
 }
 
 
