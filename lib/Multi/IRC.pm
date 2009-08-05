@@ -49,7 +49,7 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown irc_001 irc_public irc_ctcp_action irc_msg command reply
-        cmd_info cmd_list cmd_uptime cmd_uptime cmd_say cmd_me
+        cmd_info cmd_list cmd_uptime cmd_vn cmd_vn_results cmd_say cmd_me
         cmd_eval cmd_die cmd_post vndbid formatid
       |],
     ],
@@ -67,8 +67,9 @@ sub spawn {
         info     => 0,   # argument = authentication level/flags,
         list     => 0,   #   0: everyone,
         uptime   => 0,   #   1: only OPs in the first channel listed in @channels
-        say      => 1|8, #   2: only users matching the mask in @masters
-        me       => 1|8, #  |8: has to be addressed to the bot (e.g. 'Multi: eval' instead of '!eval')
+        vn       => 0,   #   2: only users matching the mask in @masters
+        say      => 1|8, #  |8: has to be addressed to the bot (e.g. 'Multi: eval' instead of '!eval')
+        me       => 1|8,
         eval     => 2|8,
         die      => 2|8,
         post     => 2|8,
@@ -222,6 +223,38 @@ sub cmd_uptime {
   my $multi = time - $^T;
 
   $_[KERNEL]->yield(reply => $_[DEST], sprintf 'Server uptime: %s -- mine: %s', $age->($server), $age->($multi));
+}
+
+
+sub cmd_vn {
+  (my $q = $_[ARG]||'') =~ s/%//g;
+  return $_[KERNEL]->yield(reply => $_[DEST], 'You forgot the search query, dummy~~!', $_[USER]) if !$q;
+
+  $_[KERNEL]->post(pg => query => q|
+    SELECT 'v'::text AS type, v.id, vr.title
+    FROM vn v
+    JOIN vn_rev vr ON vr.id = v.latest
+    WHERE vr.title ILIKE $1
+       OR vr.alias ILIKE $1
+       OR v.id IN(
+         SELECT rv.vid
+         FROM releases r
+         JOIN releases_rev rr ON rr.id = r.latest
+         JOIN releases_vn rv ON rv.rid = rr.id
+         WHERE rr.title ILIKE $1
+            OR rr.original ILIKE $1
+       )
+    ORDER BY vr.title
+    LIMIT 6|, [ "%$q%" ], 'cmd_vn_results', \@_);
+}
+
+
+sub cmd_vn_results { # num, res, \@_
+  return $_[KERNEL]->yield(reply => $_[ARG2][DEST], 'No results found', $_[ARG2][USER]) if $_[ARG0] < 1;
+  return $_[KERNEL]->yield(reply => $_[ARG2][DEST], sprintf(
+      'Too many results found, see %s/v/all?q=%s', $VNDB::S{url}, uri_escape_utf8($_[ARG2][ARG])
+    ), $_[ARG2][USER]) if $_[ARG0] > 5;
+  $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], $_[ARG2][DEST]);
 }
 
 
@@ -385,39 +418,6 @@ sub formatid {
 
 
 __END__
-
-
-sub cmd_vn { # $arg = search string
-  $_[ARG] =~ s/%//g;
-  return $_[KERNEL]->post(circ => privmsg => $_[DEST], 'You forgot the search query, idiot~~!.') if !$_[ARG];
-
-  my $q = $Multi::SQL->prepare(q|
-    SELECT v.id
-    FROM vn v
-    JOIN vn_rev vr ON vr.id = v.latest
-    WHERE vr.title ILIKE $1
-       OR vr.alias ILIKE $1
-       OR v.id IN(
-         SELECT rv.vid
-         FROM releases r
-         JOIN releases_rev rr ON rr.id = r.latest
-         JOIN releases_vn rv ON rv.rid = rr.id
-         WHERE rr.title ILIKE $1
-            OR rr.original ILIKE $1
-       )
-    ORDER BY vr.id
-    LIMIT 6|);
-  $q->execute('%'.$_[ARG].'%');
-
-  my $res = $q->fetchall_arrayref([]);
-  return $_[KERNEL]->post(circ => privmsg => $_[DEST],
-    sprintf 'No results found for %s', $_[ARG]) if !@$res;
-  return $_[KERNEL]->post(circ => privmsg => $_[DEST],
-    sprintf 'Too many results found, see %s/v/search?q=%s',
-      $VNDB::S{url}, uri_escape_utf8($_[ARG])) if @$res > 5;
-  $_[KERNEL]->yield(vndbid => $_[DEST], join(' ', map 'v'.$_->[0], @$res), 1);
-}
-
 
 sub cmd_notifications { # $arg = '' or 'on' or 'off'
   return unless &mymaster;
