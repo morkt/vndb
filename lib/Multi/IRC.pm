@@ -48,7 +48,7 @@ sub spawn {
   POE::Session->create(
     package_states => [
       $p => [qw|
-        _start shutdown irc_001 irc_public irc_ctcp_action irc_msg command reply
+        _start shutdown throttle_gc irc_001 irc_public irc_ctcp_action irc_msg command reply
         cmd_info cmd_list cmd_uptime cmd_vn cmd_vn_results cmd_quote cmd_quote_result cmd_say cmd_me
         cmd_eval cmd_die cmd_post vndbid formatid
       |],
@@ -60,8 +60,7 @@ sub spawn {
       channels => [ '#vndb' ],
       masters => [ 'yorhel!*@*' ],
       @_,
-      log => {},
-      privpers => {},
+      throttle => {},
       notify => [],
       commands => {
         info     => 0,   # argument = authentication level/flags,
@@ -77,6 +76,31 @@ sub spawn {
       },
     }
   );
+}
+
+
+# non-POE helper function
+# Arguments: $_[HEAP], key, timeout, (optional) num
+#  no key = remove all keys with no activity in the last hour
+# returns false if throttling isn't necessary for that key
+sub throttle {
+  my($heap, $key, $tm, $num) = @_;
+
+  # garbage collect
+  return ($heap->{throttle} = {
+    map $_->[$#$_] > time-3600 ? ($_, $heap->{throttle}{$_}) : (), keys %{$heap->{throttle}}
+  }) if !$key;
+
+  $num ||= 1;
+  my $dat = $heap->{throttle};
+  if(!$dat->{$key}) {
+    $dat->{$key} = [ time ];
+    return 0;
+  }
+  $dat->{$key} = [ grep $_ > time-$tm, @{$dat->{$key}} ];
+  return 1 if @{$dat->{$key}} >= $num;
+  push @{$dat->{$key}}, time;
+  return 0;
 }
 
 
@@ -122,12 +146,20 @@ sub _start {
   });
 
   $_[KERNEL]->sig(shutdown => 'shutdown');
+  $_[KERNEL]->delay(throttle_gc => 1800);
 }
 
 
 sub shutdown {
   $irc->yield(shutdown => $_[ARG1]);
+  $_[KERNEL]->delay('throttle_gc');
   $_[KERNEL]->alias_remove('irc');
+}
+
+
+sub throttle_gc {
+  throttle $_[HEAP];
+  $_[KERNEL]->delay(throttle_gc => 1800);
 }
 
 
@@ -152,9 +184,8 @@ sub irc_msg { # mask, dest, msg
   return if $_[KERNEL]->call($_[SESSION] => command => $_[ARG0], [scalar parse_user($_[ARG0])], $_[ARG2]);
 
   my $usr = parse_user($_[ARG0]);
-  return if ($_[HEAP]{privpers}{$usr}||0) > time-300;
-  $irc->yield(notice => $usr, 'I am not human, join #vndb or PM Yorhel if you need something.');
-  $_[HEAP]{privpers}{$usr} = time;
+  $irc->yield(notice => $usr, 'I am not human, join #vndb or PM Yorhel if you need something.')
+    unless throttle $_[HEAP], "pm-$usr", 30;
 }
 
 
@@ -230,6 +261,8 @@ sub cmd_uptime {
 sub cmd_vn {
   (my $q = $_[ARG]||'') =~ s/%//g;
   return $_[KERNEL]->yield(reply => $_[DEST], 'You forgot the search query, dummy~~!', $_[USER]) if !$q;
+  return $_[KERNEL]->yield(reply => $_[DEST], 'Stop abusing me, it\'s not like I enjoy spamming this channel!', $_[USER])
+    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 5;
 
   $_[KERNEL]->post(pg => query => q|
     SELECT 'v'::text AS type, v.id, vr.title
@@ -310,9 +343,6 @@ sub cmd_post {
 sub vndbid { # dest, msg
   my($dest, $msg) = @_[ARG0, ARG1];
 
-  $_[HEAP]{log}{$_} < time-60 and delete $_[HEAP]{log}{$_}
-    for (keys %{$_[HEAP]{log}});
-
   my @id; # [ type, id, ref ]
   for (split /[, ]/, $msg) {
     next if length > 15 or m{[a-z]{3,6}://}i; # weed out URLs and too long things
@@ -322,9 +352,7 @@ sub vndbid { # dest, msg
 
   for (@id) {
     my($t, $id, $rev) = @$_;
-
-    next if $_[HEAP]{log}{$t.$id.'.'.$rev};
-    $_[HEAP]{log}{$t.$id.'.'.$rev} = time;
+    next if throttle $_[HEAP], "$dest->[0].$t$id.$rev", 60;
 
     # plain vn/user/producer/thread/tag/release
     $_[KERNEL]->post(pg => query => 'SELECT ?::text AS type, ?::integer AS id, '.(
