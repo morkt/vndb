@@ -240,3 +240,22 @@ $$ LANGUAGE plpgsql;
 
 CREATE CONSTRAINT TRIGGER vn_relgraph_notify AFTER INSERT OR UPDATE ON vn DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE PROCEDURE vn_relgraph_notify();
 
+
+-- NOTIFY on insert into changes/posts/tags
+CREATE OR REPLACE FUNCTION insert_notify() RETURNS trigger AS $$
+BEGIN
+  IF TG_TABLE_NAME = 'changes' THEN
+    NOTIFY newrevision;
+  ELSIF TG_TABLE_NAME = 'threads_posts' THEN
+    NOTIFY newpost;
+  ELSIF TG_TABLE_NAME = 'tags' THEN
+    NOTIFY newtag;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER insert_notify AFTER INSERT ON changes FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
+CREATE TRIGGER insert_notify AFTER INSERT ON threads_posts FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
+CREATE TRIGGER insert_notify AFTER INSERT ON tags FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
+

@@ -48,9 +48,10 @@ sub spawn {
   POE::Session->create(
     package_states => [
       $p => [qw|
-        _start shutdown throttle_gc irc_001 irc_public irc_ctcp_action irc_msg command idlequote reply
-        cmd_info cmd_list cmd_uptime cmd_vn cmd_vn_results cmd_quote cmd_quote_result cmd_say cmd_me
-        cmd_eval cmd_die cmd_post vndbid formatid
+        _start shutdown throttle_gc irc_001 irc_public irc_ctcp_action irc_msg
+        command idlequote reply notify
+        cmd_info cmd_list cmd_uptime cmd_vn cmd_vn_results cmd_quote cmd_quote_result
+        cmd_say cmd_me cmd_notifications cmd_eval cmd_die cmd_post vndbid formatid
       |],
     ],
     heap => {
@@ -62,7 +63,10 @@ sub spawn {
       @_,
       throttle => {},
       idlequotes => {},
-      notify => [],
+      notify => {},
+      lastrev => time,  # using Multi's time for comparing to the DB time can fail
+      lastpost => time, # in some rare cases, but I doubt it'll be a problem.
+      lasttag => time,
       commands => {
         info     => 0,   # argument = authentication level/flags,
         list     => 0,   #   0: everyone,
@@ -71,6 +75,7 @@ sub spawn {
         quote    => 0,   #  |8: has to be addressed to the bot (e.g. 'Multi: eval' instead of '!eval')
         say      => 1|8,
         me       => 1|8,
+        notifications => 1,
         eval     => 2|8,
         die      => 2|8,
         post     => 2|8,
@@ -146,6 +151,13 @@ sub _start {
     Server => $_[HEAP]{server},
   });
 
+  $_[KERNEL]->post(pg => listen =>
+    newrevision => 'notify',
+    newpost     => 'notify',
+    newtag      => 'notify',
+  );
+  $_[HEAP]{notify}{$_[HEAP]{channels}[0]} = 1;
+
   $_[KERNEL]->sig(shutdown => 'shutdown');
   $_[KERNEL]->delay(throttle_gc => 1800);
   $_[KERNEL]->delay(idlequote => 300);
@@ -154,6 +166,7 @@ sub _start {
 
 sub shutdown {
   $irc->yield(shutdown => $_[ARG1]);
+  $_[KERNEL]->post(pg => unlisten => qw|newrevision newpost newtag|);
   $_[KERNEL]->delay('throttle_gc');
   $_[KERNEL]->delay('idlequote');
   $_[KERNEL]->alias_remove('irc');
@@ -229,6 +242,41 @@ sub idlequote {
 sub reply { # target, msg [, mask/user]
   my $usr = $_[ARG0][0] =~ /^#/ && parse_user($_[ARG2]);
   $irc->yield($_[ARG0][0] =~ /^#/ ? 'privmsg' : 'notice', $_[ARG0], ($usr ? "$usr, " : '').$_[ARG1]);
+}
+
+
+sub notify { # name, pid, payload
+  my $k = $_[ARG0] eq 'newrevision' ? 'lastrev' : $_[ARG0] eq 'newpost' ? 'lastpost' : 'lasttag';
+  my $t = $_[HEAP]{$k};
+  $_[HEAP]{$k} = time;
+
+  return if !keys %{$_[HEAP]{notify}};
+
+  my $q = $_[ARG0] eq 'newrevision' ? q|SELECT
+      CASE WHEN c.type = 0 THEN 'v' WHEN c.type = 1 THEN 'r' ELSE 'p' END AS type, c.rev, c.comments,
+      COALESCE(vr.vid, rr.rid, pr.pid) AS id, COALESCE(vr.title, rr.title, pr.name) AS title, u.username
+    FROM changes c
+    LEFT JOIN vn_rev vr ON c.type = 0 AND c.id = vr.id
+    LEFT JOIN releases_rev rr ON c.type = 1 AND c.id = rr.id
+    LEFT JOIN producers_rev pr ON c.type = 2 AND c.id = pr.id
+    JOIN users u ON u.id = c.requester
+    WHERE c.added > ?
+    ORDER BY c.added|
+  : $_[ARG0] eq 'newpost' ? q|SELECT
+      't' AS type, tp.tid AS id, tp.num AS rev, t.title, u.username, |.GETBOARDS.q|
+    FROM threads_posts tp
+    JOIN threads t ON t.id = tp.tid
+    JOIN users u ON u.id = tp.uid
+    WHERE tp.date > ?
+    ORDER BY tp.date|
+  : q|SELECT
+      'g' AS type, t.id, t.name AS title, u.username
+    FROM tags t
+    JOIN users u ON u.id = t.addedby
+    WHERE t.added > ?
+    ORDER BY t.added|;
+
+  $_[KERNEL]->post(pg => query => $q, [ $t ], 'formatid', [ keys %{$_[HEAP]{notify}} ]);
 }
 
 
@@ -325,6 +373,20 @@ sub cmd_say {
 sub cmd_me {
   my $chan = $_[ARG] =~ s/^(#[a-zA-Z0-9-_.]+) // ? $1 : $_[DEST];
   $irc->yield(ctcp => $chan, 'ACTION '.$_[ARG]);
+}
+
+
+sub cmd_notifications { # $arg = '' or 'on' or 'off'
+  if($_[ARG] && $_[ARG] =~ /^on$/i) {
+    $_[HEAP]{notify}{$_[DEST][0]} = 1;
+    $_[KERNEL]->yield(reply => $_[DEST], 'Notifications enabled.');
+  } elsif($_[ARG] && $_[ARG] =~ /^off$/i) {
+    delete $_[HEAP]{notify}{$_[DEST][0]};
+    $_[KERNEL]->yield(reply => $_[DEST], 'Notifications disabled.');
+  } else {
+    $_[KERNEL]->yield(reply => $_[DEST], sprintf 'Notifications %s, type !notifications %s to %s.',
+      $_[HEAP]{notify}{$_[DEST][0]} ? ('enabled', 'off', 'disable') : ('disabled', 'on', 'enable'));
+  }
 }
 
 
@@ -468,22 +530,4 @@ sub formatid {
 
 
 1;
-
-
-__END__
-
-sub cmd_notifications { # $arg = '' or 'on' or 'off'
-  return unless &mymaster;
-  if($_[ARG] =~ /^on$/i) {
-    push @{$_[HEAP]{notify}}, $_[DEST] if !grep $_ eq $_[DEST], @{$_[HEAP]{notify}};
-    $_[KERNEL]->post(circ => privmsg => $_[DEST], 'Notifications enabled.');
-  } elsif($_[ARG] =~ /^off$/i) {
-    $_[HEAP]{notify} = [ grep $_ ne $_[DEST], @{$_[HEAP]{notify}} ];
-    $_[KERNEL]->post(circ => privmsg => $_[DEST], 'Notifications disabled.');
-  } else {
-    $_[KERNEL]->post(circ => privmsg => $_[DEST], sprintf 'Notifications %s, type !notifications %s to %s.',
-      (grep $_ eq $_[DEST], @{$_[HEAP]{notify}}) ? ('enabled', 'off', 'disable') : ('disabled', 'on', 'enable'));
-  }
-}
-
 
