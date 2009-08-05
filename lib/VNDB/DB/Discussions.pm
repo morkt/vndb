@@ -153,7 +153,7 @@ sub dbThreadCount {
 }
 
 
-# Options: tid, num, what, order, uid, hide, page, results
+# Options: tid, num, what, order, uid, date >, hide, page, results
 # what: user thread
 sub dbPostGet {
   my($self, %o) = @_;
@@ -169,6 +169,8 @@ sub dbPostGet {
       'tp.num = ?' => $o{num} ) : (),
     $o{uid} ? (
       'tp.uid = ?' => $o{uid} ) : (),
+    $o{date} ? (
+      'tp.date > ?' => $o{date} ) : (),
     $o{hide} ? (
       'tp.hidden = FALSE' => 1 ) : (),
     $o{hide} && $o{what} =~ /thread/ ? (
@@ -238,26 +240,6 @@ sub dbPostAdd {
     $tid);
 
   return $num;
-}
-
-
-# Checks if a user has recently made a post in a particular thread
-# If tid is omitted or equal to zero, check if user has made a recent post at all
-# uid, tid (optional)
-sub dbPostCheckDouble {
-  my($self, @o) = @_;
-
-  my $time = time - 30; # 30 Seconds
-  my $r;
-  if (defined $o[1] && $o[1] ne 0) {
-    $r = $self->dbRow('SELECT COUNT(num) FROM threads_posts WHERE uid = ? AND tid = ? AND date > ? LIMIT 1',
-      @o, $time);
-  } else {
-    $r = $self->dbRow('SELECT COUNT(num) FROM threads_posts WHERE uid = ? AND date > ? LIMIT 1',
-      $o[0], $time);
-  }
-
-  return $r->{count}||0;
 }
 
 
