@@ -64,14 +64,14 @@ sub spawn {
       privpers => {},
       notify => [],
       commands => {
-        info     => 0, # argument = authentication level.
-        list     => 0, #   0: everyone,
-        uptime   => 0, #   1: only OPs in the first channel listed in @channels
-        say      => 1, #   2: only users matching the mask in @masters
-        me       => 1,
-        eval     => 2,
-        die      => 2,
-        post     => 2,
+        info     => 0,   # argument = authentication level/flags,
+        list     => 0,   #   0: everyone,
+        uptime   => 0,   #   1: only OPs in the first channel listed in @channels
+        say      => 1|8, #   2: only users matching the mask in @masters
+        me       => 1|8, #  |8: has to be addressed to the bot (e.g. 'Multi: eval' instead of '!eval')
+        eval     => 2|8,
+        die      => 2|8,
+        post     => 2|8,
       },
     }
   );
@@ -136,7 +136,7 @@ sub irc_001 {
 
 
 sub irc_public { # mask, dest, msg
-  return if $_[ARG2] =~ /^\s*!/ && $_[KERNEL]->call($_[SESSION] => command => @_[ARG0..$#_]);
+  return if $_[KERNEL]->call($_[SESSION] => command => @_[ARG0..$#_]);
   $_[KERNEL]->call($_[SESSION] => vndbid => $_[ARG1], $_[ARG2]);
 }
 
@@ -159,11 +159,14 @@ sub irc_msg { # mask, dest, msg
 sub command { # mask, dest, msg
   my($mask, $dest, $msg) = @_[ARG0..$#_];
 
+  my $me = $irc->nick_name();
+  my $addressed = $dest->[0] !~ /^#/ || $msg =~ s/^\s*\Q$me\E[:,;.!?~]?\s*//;
+
   my $usr = parse_user($mask);
   $msg =~ s/\s*!//;
   return 0 if $msg !~ /^([a-z]+)(?:\s+(.+))?$/;
   my($cmd, $arg) = ($1, $2);
-  return 0 if !exists $_[HEAP]{commands}{$cmd};
+  return 0 if !exists $_[HEAP]{commands}{$cmd} || ($_[HEAP]{commands}{$cmd} & 8) && !$addressed;
 
   return $_[KERNEL]->yield(reply => $dest,
       $dest eq $_[HEAP]{channels}[0] ? 'Only OPs can do that!' : "Only $_[HEAP]{channel}[0] OPs can do that!", $usr) || 1
