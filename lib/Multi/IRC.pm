@@ -21,6 +21,19 @@ use constant {
   DEST => ARG1,
   ARG  => ARG2,
   MASK => ARG3,
+
+  # long subquery used in several places
+  GETBOARDS => q{array_to_string(array(
+      SELECT tb.type||COALESCE(':'||COALESCE(u.username, vr.title, pr.name), '')
+      FROM threads_boards tb
+      LEFT JOIN vn v ON tb.type = 'v' AND v.id = tb.iid
+      LEFT JOIN vn_rev vr ON vr.id = v.latest
+      LEFT JOIN producers p ON tb.type = 'p' AND p.id = tb.iid
+      LEFT JOIN producers_rev pr ON pr.id = p.latest
+      LEFT JOIN users u ON tb.type = 'u' AND u.id = tb.iid
+      WHERE tb.tid = t.id
+      ORDER BY tb.type, tb.iid
+    ), ', ') AS boards},
 };
 
 my $irc;
@@ -271,7 +284,7 @@ sub vndbid { # dest, msg
       $t eq 'v' ? 'vr.title FROM vn_rev vr JOIN vn v ON v.latest = vr.id WHERE v.id = ?' :
       $t eq 'u' ? 'u.username AS title FROM users u WHERE u.id = ?' :
       $t eq 'p' ? 'pr.name AS title FROM producers_rev pr JOIN producers p ON p.latest = pr.id WHERE p.id = ?' :
-      $t eq 't' ? 'title FROM threads WHERE id = ?' :
+      $t eq 't' ? 'title, '.GETBOARDS.' FROM threads t WHERE id = ?' :
       $t eq 'g' ? 'name AS title FROM tags WHERE id = ?' :
                   'rr.title FROM releases_rev rr JOIN releases r ON r.latest = rr.id WHERE r.id = ?'),
       [ $t, $id, $id ], 'formatid', $dest
@@ -282,7 +295,7 @@ sub vndbid { # dest, msg
       $t eq 'v' ? 'vr.title, u.username FROM changes c JOIN vn_rev vr ON c.id = vr.id JOIN users u ON u.id = c.requester WHERE vr.vid = ? AND c.rev = ?' :
       $t eq 'r' ? 'rr.title, u.username FROM changes c JOIN releases_rev rr ON c.id = rr.id JOIN users u ON u.id = c.requester WHERE rr.rid = ? AND c.rev = ?' :
       $t eq 'p' ? 'pr.name AS title, u.username FROM changes c JOIN producers_rev pr ON c.id = pr.id JOIN users u ON u.id = c.requester WHERE pr.pid = ? AND c.rev = ?' :
-                  't.title, u.username FROM threads t JOIN threads_posts tp ON tp.tid = t.id JOIN users u ON u.id = tp.uid WHERE t.id = ? AND tp.num = ?'),
+                  't.title, u.username, '.GETBOARDS.' FROM threads t JOIN threads_posts tp ON tp.tid = t.id JOIN users u ON u.id = tp.uid WHERE t.id = ? AND tp.num = ?'),
       [ $t, $id, $rev, $id, $rev], 'formatid', $dest
     ) if $rev && $t =~ /[vprt]/;
 
@@ -311,6 +324,7 @@ sub vndbid { # dest, msg
 #   rev       (optional) revision, post number or section number
 #   username  (optional) relevant username
 #   section   (optional, for d+.+) section title
+#   boards    (optional) board titles the thread has been posted in
 sub formatid {
   my($num, $res, $dest) = @_[ARG0..$#_];
 
@@ -339,6 +353,9 @@ sub formatid {
 
     # (always) main title
     push @msg, $_->{title};
+
+    # (only if boards key is present) Posted in [boards]
+    push @msg, RED.'Posted in'.NORMAL.' '.$_->{boards} if $_->{boards};
 
     # (only if username key is present) By [username]
     push @msg, RED.'By'.NORMAL.' '.$_->{username} if $_->{username};
