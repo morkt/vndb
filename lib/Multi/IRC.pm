@@ -48,7 +48,7 @@ sub spawn {
   POE::Session->create(
     package_states => [
       $p => [qw|
-        _start shutdown throttle_gc irc_001 irc_public irc_ctcp_action irc_msg command reply
+        _start shutdown throttle_gc irc_001 irc_public irc_ctcp_action irc_msg command idlequote reply
         cmd_info cmd_list cmd_uptime cmd_vn cmd_vn_results cmd_quote cmd_quote_result cmd_say cmd_me
         cmd_eval cmd_die cmd_post vndbid formatid
       |],
@@ -61,6 +61,7 @@ sub spawn {
       masters => [ 'yorhel!*@*' ],
       @_,
       throttle => {},
+      idlequotes => {},
       notify => [],
       commands => {
         info     => 0,   # argument = authentication level/flags,
@@ -147,12 +148,14 @@ sub _start {
 
   $_[KERNEL]->sig(shutdown => 'shutdown');
   $_[KERNEL]->delay(throttle_gc => 1800);
+  $_[KERNEL]->delay(idlequote => 300);
 }
 
 
 sub shutdown {
   $irc->yield(shutdown => $_[ARG1]);
   $_[KERNEL]->delay('throttle_gc');
+  $_[KERNEL]->delay('idlequote');
   $_[KERNEL]->alias_remove('irc');
 }
 
@@ -170,6 +173,7 @@ sub irc_001 {
 
 
 sub irc_public { # mask, dest, msg
+  $_[HEAP]{idlequotes}{$_[ARG1][0]} = 0;
   return if $_[KERNEL]->call($_[SESSION] => command => @_[ARG0..$#_]);
   $_[KERNEL]->call($_[SESSION] => vndbid => $_[ARG1], $_[ARG2]);
 }
@@ -208,6 +212,16 @@ sub command { # mask, dest, msg
     if $_[HEAP]{commands}{$cmd} == 2 && !grep matches_mask($_, $mask), @{$_[HEAP]{masters}};
 
   return $_[KERNEL]->yield('cmd_'.$cmd, $usr, $dest, $arg, $mask) || 1;
+}
+
+
+sub idlequote {
+  for (keys %{$_[HEAP]{idlequotes}}) {
+    next if --$_[HEAP]{idlequotes}{$_} > 0;
+    $_[KERNEL]->yield(cmd_quote => '', [$_]) if $_[HEAP]{idlequotes}{$_} == 0;
+    $_[HEAP]{idlequotes}{$_} = int(60+rand(300));
+  }
+  $_[KERNEL]->delay(idlequote => 60);
 }
 
 
