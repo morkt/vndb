@@ -121,8 +121,6 @@ sub edit {
         ($pid) = $self->dbProducerAdd(%$frm);
       }
 
-      $self->multiCmd("ircnotify p$pid.$rev");
-
       return $self->resRedirect("/p$pid.$rev", 'post');
     }
   }

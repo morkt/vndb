@@ -206,8 +206,6 @@ sub edit {
       $self->dbPostEdit($tid, $num, %post)   if $num;
       $nnum = $self->dbPostAdd($ntid, %post) if !$num;
 
-      $self->multiCmd("ircnotify t$ntid.$nnum") if !$num && !$frm->{hidden};
-
       return $self->resRedirect("/t$ntid".($nnum > 25 ? '/'.ceil($nnum/25) : '').'#'.$nnum, 'post');
     }
   }

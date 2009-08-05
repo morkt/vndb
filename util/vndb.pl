@@ -36,7 +36,6 @@ YAWF::init(
   namespace => 'VNDB',
   object_data => \%S,
   pre_request_handler => \&reqinit,
-  post_request_handler => \&reqdone,
   error_404_handler => \&handle404,
 );
 
@@ -55,13 +54,6 @@ sub reqinit {
 
   # load some stats (used for about all pageviews, anyway)
   $self->{stats} = $self->dbStats;
-}
-
-
-sub reqdone {
-  my $self = shift;
-  $self->dbCommit;
-  $self->multiCmd;
 }
 
 

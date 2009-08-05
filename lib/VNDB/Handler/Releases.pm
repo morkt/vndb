@@ -354,7 +354,6 @@ sub edit {
       ($rev) = $self->dbReleaseEdit($rid, %opts) if !$copy && $rid;
       ($rid) = $self->dbReleaseAdd(%opts) if $copy || !$rid;
 
-      $self->multiCmd("ircnotify r$rid.$rev");
       $self->dbVNCache(@$new_vn, map $_->{vid}, @$vn);
 
       return $self->resRedirect("/r$rid.$rev", 'post');

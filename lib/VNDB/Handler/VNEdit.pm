@@ -87,11 +87,7 @@ sub edit {
         my %old = $vid ? (map { $_->{id} => $_->{relation} } @{$v->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations;
         _updreverse($self, \%old, \%new, $nvid, $cid, $nrev);
-      } elsif($vid && @$relations && $frm->{title} ne $b4{title}) {
-        $self->multiCmd("relgraph $vid");
       }
-
-      $self->multiCmd("ircnotify v$nvid.$nrev");
 
       return $self->resRedirect("/v$nvid.$nrev", 'post');
     }
@@ -298,8 +294,6 @@ sub _updreverse {
       ( map { $_ => $r->{$_} } qw| title original desc alias categories img_nsfw length l_wp l_encubed l_renai l_vnn image | )
     );
   }
-
-  $self->multiCmd('relgraph '.join(' ', $vid, keys %upd));
 }
 
 

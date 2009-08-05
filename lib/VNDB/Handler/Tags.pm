@@ -279,7 +279,6 @@ sub tagedit {
       );
       if(!$tag) {
         $tag = $self->dbTagAdd(%opts);
-        $self->multiCmd("ircnotify g$tag");
       } else {
         $self->dbTagEdit($tag, %opts, upddate => $frm->{state} == 2 && $t->{state} != 2);
       }
