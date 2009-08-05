@@ -292,9 +292,9 @@ sub vndbid { # dest, msg
 
     # edit/insert of vn/release/producer or discussion board post
     $_[KERNEL]->post(pg => query => 'SELECT ?::text AS type, ?::integer AS id, ?::integer AS rev, '.(
-      $t eq 'v' ? 'vr.title, u.username FROM changes c JOIN vn_rev vr ON c.id = vr.id JOIN users u ON u.id = c.requester WHERE vr.vid = ? AND c.rev = ?' :
-      $t eq 'r' ? 'rr.title, u.username FROM changes c JOIN releases_rev rr ON c.id = rr.id JOIN users u ON u.id = c.requester WHERE rr.rid = ? AND c.rev = ?' :
-      $t eq 'p' ? 'pr.name AS title, u.username FROM changes c JOIN producers_rev pr ON c.id = pr.id JOIN users u ON u.id = c.requester WHERE pr.pid = ? AND c.rev = ?' :
+      $t eq 'v' ? 'vr.title, u.username, c.comments FROM changes c JOIN vn_rev vr ON c.id = vr.id JOIN users u ON u.id = c.requester WHERE vr.vid = ? AND c.rev = ?' :
+      $t eq 'r' ? 'rr.title, u.username, c.comments FROM changes c JOIN releases_rev rr ON c.id = rr.id JOIN users u ON u.id = c.requester WHERE rr.rid = ? AND c.rev = ?' :
+      $t eq 'p' ? 'pr.name AS title, u.username, c.comments FROM changes c JOIN producers_rev pr ON c.id = pr.id JOIN users u ON u.id = c.requester WHERE pr.pid = ? AND c.rev = ?' :
                   't.title, u.username, '.GETBOARDS.' FROM threads t JOIN threads_posts tp ON tp.tid = t.id JOIN users u ON u.id = tp.uid WHERE t.id = ? AND tp.num = ?'),
       [ $t, $id, $rev, $id, $rev], 'formatid', $dest
     ) if $rev && $t =~ /[vprt]/;
@@ -325,6 +325,7 @@ sub vndbid { # dest, msg
 #   username  (optional) relevant username
 #   section   (optional, for d+.+) section title
 #   boards    (optional) board titles the thread has been posted in
+#   comments  (optional) edit summary
 sub formatid {
   my($num, $res, $dest) = @_[ARG0..$#_];
 
@@ -359,6 +360,11 @@ sub formatid {
 
     # (only if username key is present) By [username]
     push @msg, RED.'By'.NORMAL.' '.$_->{username} if $_->{username};
+
+    # (only if comments key is present) Summary:
+    push @msg, RED.'Summary:'.NORMAL.' '.(
+      length $_->{comments} > 40 ? substr($_->{comments}, 0, 37).'...' : $_->{comments}
+    ) if defined $_->{comments};
 
     # (for d+.+) -> section title
     push @msg, RED.'->'.NORMAL.' '.$_->{section} if $_->{section};
