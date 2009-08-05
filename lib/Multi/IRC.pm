@@ -50,7 +50,7 @@ sub spawn {
       $p => [qw|
         _start shutdown throttle_gc irc_001 irc_public irc_ctcp_action irc_msg
         command idlequote reply notify
-        cmd_info cmd_list cmd_uptime cmd_vn cmd_vn_results cmd_quote cmd_quote_result
+        cmd_info cmd_list cmd_uptime cmd_vn cmd_vn_results cmd_p cmd_p_results cmd_quote cmd_quote_result
         cmd_say cmd_me cmd_notifications cmd_eval cmd_die cmd_post vndbid formatid
       |],
     ],
@@ -72,7 +72,8 @@ sub spawn {
         list     => 0,   #   0: everyone,
         uptime   => 0,   #   1: only OPs in the first channel listed in @channels
         vn       => 0,   #   2: only users matching the mask in @masters
-        quote    => 0,   #  |8: has to be addressed to the bot (e.g. 'Multi: eval' instead of '!eval')
+        p        => 0,   #  |8: has to be addressed to the bot (e.g. 'Multi: eval' instead of '!eval')
+        quote    => 0,
         say      => 1|8,
         me       => 1|8,
         notifications => 1,
@@ -330,7 +331,7 @@ sub cmd_vn {
     SELECT 'v'::text AS type, v.id, vr.title
     FROM vn v
     JOIN vn_rev vr ON vr.id = v.latest
-    WHERE vr.title ILIKE $1
+    WHERE v.hidden = FALSE AND (vr.title ILIKE $1
        OR vr.alias ILIKE $1
        OR v.id IN(
          SELECT rv.vid
@@ -339,16 +340,41 @@ sub cmd_vn {
          JOIN releases_vn rv ON rv.rid = rr.id
          WHERE rr.title ILIKE $1
             OR rr.original ILIKE $1
-       )
+       ))
     ORDER BY vr.title
     LIMIT 6|, [ "%$q%" ], 'cmd_vn_results', \@_);
 }
 
 
 sub cmd_vn_results { # num, res, \@_
-  return $_[KERNEL]->yield(reply => $_[ARG2][DEST], 'No results found', $_[ARG2][USER]) if $_[ARG0] < 1;
+  return $_[KERNEL]->yield(reply => $_[ARG2][DEST], 'No visual novels found', $_[ARG2][USER]) if $_[ARG0] < 1;
   return $_[KERNEL]->yield(reply => $_[ARG2][DEST], sprintf(
       'Too many results found, see %s/v/all?q=%s', $VNDB::S{url}, uri_escape_utf8($_[ARG2][ARG])
+    ), $_[ARG2][USER]) if $_[ARG0] > 5;
+  $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], $_[ARG2][DEST]);
+}
+
+
+sub cmd_p {
+  (my $q = $_[ARG]||'') =~ s/%//g;
+  return $_[KERNEL]->yield(reply => $_[DEST], 'You forgot the search query, dummy~~!', $_[USER]) if !$q;
+  return $_[KERNEL]->yield(reply => $_[DEST], 'Stop abusing me, it\'s not like I enjoy spamming this channel!', $_[USER])
+    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 5;
+
+  $_[KERNEL]->post(pg => query => q|
+    SELECT 'p'::text AS type, p.id, pr.name AS title
+    FROM producers p
+    JOIN producers_rev pr ON pr.id = p.latest
+    WHERE p.hidden = FALSE AND (pr.name ILIKE $1 OR pr.original ILIKE $1 OR pr.alias ILIKE $1)
+    ORDER BY pr.name
+    LIMIT 6|, [ "%$q%" ], "cmd_p_results", \@_);
+}
+
+
+sub cmd_p_results { # num, res, \@_
+  return $_[KERNEL]->yield(reply => $_[ARG2][DEST], 'No producers found', $_[ARG2][USER]) if $_[ARG0] < 1;
+  return $_[KERNEL]->yield(reply => $_[ARG2][DEST], sprintf(
+      'Too many results found, see %s/p/all?q=%s', $VNDB::S{url}, uri_escape_utf8($_[ARG2][ARG])
     ), $_[ARG2][USER]) if $_[ARG0] > 5;
   $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], $_[ARG2][DEST]);
 }
