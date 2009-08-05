@@ -161,13 +161,13 @@ sub command { # mask, dest, msg
 
   my $me = $irc->nick_name();
   my $addressed = $dest->[0] !~ /^#/ || $msg =~ s/^\s*\Q$me\E[:,;.!?~]?\s*//;
+  return 0 if !$addressed && !($msg =~ s/^\s*!//);
 
-  my $usr = parse_user($mask);
-  $msg =~ s/\s*!//;
   return 0 if $msg !~ /^([a-z]+)(?:\s+(.+))?$/;
   my($cmd, $arg) = ($1, $2);
   return 0 if !exists $_[HEAP]{commands}{$cmd} || ($_[HEAP]{commands}{$cmd} & 8) && !$addressed;
 
+  my $usr = parse_user($mask);
   return $_[KERNEL]->yield(reply => $dest,
       $dest eq $_[HEAP]{channels}[0] ? 'Only OPs can do that!' : "Only $_[HEAP]{channel}[0] OPs can do that!", $usr) || 1
     if $_[HEAP]{commands}{$cmd} == 1 && !$irc->is_channel_operator($_[HEAP]{channels}[0], $usr);
