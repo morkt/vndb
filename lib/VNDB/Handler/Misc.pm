@@ -4,7 +4,7 @@ package VNDB::Handler::Misc;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use YAWF ':html', ':xml';
 use VNDB::Func;
 
 
@@ -15,6 +15,7 @@ YAWF::register(
   qr{nospam},                        \&nospam,
   qr{([vrp])([1-9]\d*)/(lock|hide)}, \&itemmod,
   qr{we-dont-like-ie6},              \&ie6message,
+  qr{opensearch\.xml},               \&opensearch,
 
   # redirects for old URLs
   qr{(.*[^/]+)/+}, sub { $_[0]->resRedirect("/$_[1]", 'perm') },
@@ -368,6 +369,25 @@ sub ie6message {
      end;
     end;
    end;
+  end;
+}
+
+
+sub opensearch {
+  my $self = shift;
+  $self->resHeader('Content-Type' => 'application/opensearchdescription+xml');
+  xml;
+  tag 'OpenSearchDescription',
+    xmlns => 'http://a9.com/-/spec/opensearch/1.1/', 'xmlns:moz' => 'http://www.mozilla.org/2006/browser/search/';
+   tag 'ShortName', 'VNDB';
+   tag 'LongName', 'VNDB.org visual novel search';
+   tag 'Description', 'Search visual vovels on VNDB.org';
+   tag 'Image', width => 16, height => 16, type => 'image/x-icon', $self->{url}.'/favicon.ico'
+     if -s "$VNDB::ROOT/www/favicon.ico";
+   tag 'Url', type => 'text/html', method => 'get', template => $self->{url}.'/v/all?q={searchTerms}', undef;
+   tag 'Url', type => 'application/opensearchdescription+xml', rel => 'self', template => $self->{url}.'/opensearch.xml', undef;
+   tag 'Query', role => 'example', searchTerms => 'Tsukihime', undef;
+   tag 'moz:SearchForm', $self->{url}.'/v/all';
   end;
 }
 

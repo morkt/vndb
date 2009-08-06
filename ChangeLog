@@ -8,6 +8,7 @@
 	  - No more $self->multiCmd in the VNDB code
 	  - Extended IRC bot functionality
 	  - Tag cache regenerated daily rather than hourly
+	- Added OpenSearch plugin + autodetection
 
 2.5 - 2009-07-09
 	- Hide NSFW images in diff viewer (unless NSFW warnings are disabled)
