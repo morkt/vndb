@@ -26,7 +26,7 @@ CREATE TABLE anime (
   type smallint,
   title_romaji,
   title_kanji,
-  lastfetch timestamp
+  lastfetch timestamptz
 );
 
 -- changes
@@ -165,7 +165,7 @@ CREATE TABLE screenshots (
 CREATE TABLE sessions (
   uid integer NOT NULL,
   token bytea NOT NULL,
-  expiration timestamp NOT NULL DEFAULT (now() + '1 year'::interval),
+  expiration timestamptz NOT NULL DEFAULT (now() + '1 year'::interval),
   PRIMARY KEY (uid, token)
 );
 

@@ -4,7 +4,7 @@
 CREATE TABLE sessions (
   uid integer NOT NULL REFERENCES users(id),
   token bytea NOT NULL,
-  expiration timestamp NOT NULL DEFAULT (NOW() + '1 year'::interval),
+  expiration timestamptz NOT NULL DEFAULT (NOW() + '1 year'::interval),
   PRIMARY KEY (uid, token)
 );
 
@@ -19,7 +19,7 @@ ALTER TABLE users ADD COLUMN salt character(9) NOT NULL DEFAULT ''::bpchar;
 ALTER TABLE anime ALTER COLUMN lastfetch DROP NOT NULL;
 ALTER TABLE anime ALTER COLUMN lastfetch DROP DEFAULT;
 UPDATE anime SET lastfetch = NULL WHERE lastfetch <= 0;
-ALTER TABLE anime ALTER COLUMN lastfetch TYPE timestamp USING timestamp 'epoch' + lastfetch * interval '1 second';
+ALTER TABLE anime ALTER COLUMN lastfetch TYPE timestamptz USING 'epoch'::timestamptz + lastfetch * interval '1 second';
 
 ALTER TABLE anime ALTER COLUMN ann_id DROP NOT NULL;
 ALTER TABLE anime ALTER COLUMN ann_id DROP DEFAULT;
