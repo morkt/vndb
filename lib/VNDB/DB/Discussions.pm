@@ -153,7 +153,7 @@ sub dbThreadCount {
 }
 
 
-# Options: tid, num, what, order, uid, date >, hide, page, results
+# Options: tid, num, what, order, uid, mindate, hide, page, results
 # what: user thread
 sub dbPostGet {
   my($self, %o) = @_;
@@ -169,8 +169,8 @@ sub dbPostGet {
       'tp.num = ?' => $o{num} ) : (),
     $o{uid} ? (
       'tp.uid = ?' => $o{uid} ) : (),
-    $o{date} ? (
-      'tp.date > ?' => $o{date} ) : (),
+    $o{mindate} ? (
+      'tp.date > ?' => $o{mindate} ) : (),
     $o{hide} ? (
       'tp.hidden = FALSE' => 1 ) : (),
     $o{hide} && $o{what} =~ /thread/ ? (
