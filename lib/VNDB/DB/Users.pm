@@ -115,13 +115,8 @@ sub dbUserDel {
 # uid, 40 character session token, expiration time (timestamp)
 sub dbSessionAdd {
   my($s, @o) = @_;
-  if (defined $o[2]) {
-    $s->dbExec(q|INSERT INTO sessions (uid, token, expiration) VALUES(?, decode(?, 'hex'), ?)|,
-      @o);
-  } else {
-    $s->dbExec(q|INSERT INTO sessions (uid, token) VALUES(?, decode(?, 'hex'))|,
-      @o);
-  }
+  $s->dbExec(q|INSERT INTO sessions (uid, token, expiration) VALUES(?, decode(?, 'hex'), to_timestamp(?))|,
+    @o[0,1], $o[2]||(time+31536000));
 }
 
 

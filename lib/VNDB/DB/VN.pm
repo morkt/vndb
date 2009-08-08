@@ -111,7 +111,7 @@ sub dbVNGet {
 
     if($o{what} =~ /anime/) {
       push(@{$r->[$r{$_->{vid}}]{anime}}, $_) && delete $_->{vid} for (@{$self->dbAll(q|
-        SELECT va.vid, a.*
+        SELECT va.vid, a.id, a.year, a.ann_id, a.nfo_id, a.type, a.title_romaji, a.title_kanji, extract('epoch' from a.lastfetch) AS lastfetch
           FROM vn_anime va
           JOIN anime a ON va.aid = a.id
           WHERE va.vid IN(!l)|,
