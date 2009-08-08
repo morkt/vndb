@@ -59,6 +59,17 @@ ALTER TABLE wlists ALTER COLUMN added TYPE timestamptz USING to_timestamp(added)
 ALTER TABLE wlists ALTER COLUMN added SET DEFAULT NOW();
 
 
+-- threads_posts.date -> timestamptz
+ALTER TABLE threads_posts ALTER COLUMN date DROP DEFAULT;
+ALTER TABLE threads_posts ALTER COLUMN date TYPE timestamptz USING to_timestamp(date);
+ALTER TABLE threads_posts ALTER COLUMN date SET DEFAULT NOW();
+
+-- threads_posts.edited -> timestamptz + allow NULL
+ALTER TABLE threads_posts ALTER COLUMN edited DROP NOT NULL;
+ALTER TABLE threads_posts ALTER COLUMN edited DROP DEFAULT;
+ALTER TABLE threads_posts ALTER COLUMN edited TYPE timestamptz USING CASE WHEN edited = 0 THEN NULL ELSE to_timestamp(edited) END;
+
+
 -- screenshots.status (smallint) -> screenshots.processed (boolean)
 ALTER TABLE screenshots RENAME COLUMN status TO processed;
 ALTER TABLE screenshots ALTER COLUMN processed DROP DEFAULT;

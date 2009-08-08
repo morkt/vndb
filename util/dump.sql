@@ -233,8 +233,8 @@ CREATE TABLE threads_posts (
   tid integer NOT NULL DEFAULT 0,
   num smallint NOT NULL DEFAULT 0,
   uid integer NOT NULL DEFAULT 0,
-  date bigint NOT NULL DEFAULT DATE_PART('epoch', NOW()),
-  edited bigint NOT NULL DEFAULT 0,
+  date timestamptz NOT NULL DEFAULT NOW(),
+  edited timestamptz NOT NULL,
   msg text NOT NULL DEFAULT '',
   hidden boolean NOT NULL DEFAULT FALSE,
   PRIMARY KEY(tid, num)

@@ -32,8 +32,8 @@ sub dbThreadGet {
 
   my @select = (
     qw|t.id t.title t.count t.locked t.hidden|,
-    $o{what} =~ /firstpost/ ? ('tpf.uid AS fuid', 'tpf.date AS fdate', 'uf.username AS fusername') : (),
-    $o{what} =~ /lastpost/  ? ('tpl.uid AS luid', 'tpl.date AS ldate', 'ul.username AS lusername') : (),
+    $o{what} =~ /firstpost/ ? ('tpf.uid AS fuid', q|EXTRACT('epoch' from tpf.date) AS fdate|, 'uf.username AS fusername') : (),
+    $o{what} =~ /lastpost/  ? ('tpl.uid AS luid', q|EXTRACT('epoch' from tpl.date) AS ldate|, 'ul.username AS lusername') : (),
   );
 
   my @join = (
@@ -170,7 +170,7 @@ sub dbPostGet {
     $o{uid} ? (
       'tp.uid = ?' => $o{uid} ) : (),
     $o{mindate} ? (
-      'tp.date > ?' => $o{mindate} ) : (),
+      'tp.date > to_timestamp(?)' => $o{mindate} ) : (),
     $o{hide} ? (
       'tp.hidden = FALSE' => 1 ) : (),
     $o{hide} && $o{what} =~ /thread/ ? (
@@ -178,7 +178,7 @@ sub dbPostGet {
   );
 
   my @select = (
-    qw|tp.num tp.date tp.edited tp.msg tp.hidden|,
+    qw|tp.num tp.msg tp.hidden|, q|extract('epoch' from tp.date) as date|, q|extract('epoch' from tp.edited) as edited|,
     $o{what} =~ /user/ ? qw|tp.uid u.username| : (),
     $o{what} =~ /thread/ ? (qw|tp.tid t.title|, 't.hidden AS thread_hidden') : (),
   );
@@ -206,7 +206,7 @@ sub dbPostEdit {
 
   my %set = (
     'msg = ?' => $o{msg},
-    'edited = ?' => $o{lastmod},
+    'edited = to_timestamp(?)' => $o{lastmod},
     'hidden = ?' => $o{hidden}?1:0,
   );
 
