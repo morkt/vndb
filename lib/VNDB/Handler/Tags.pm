@@ -180,6 +180,7 @@ sub _vnlist {
    if(!@$list) {
      p "\n\nThis tag has not been linked to any visual novels yet, or they were hidden because of the spoiler settings.";
    }
+   p "\nNOTE: This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.";
   end;
   return if !@$list;
   $self->htmlBrowse(
