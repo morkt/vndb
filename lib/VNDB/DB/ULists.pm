@@ -246,7 +246,7 @@ sub dbWishListGet {
     defined $o{wstat} ? ( 'wl.wstat = ?' => $o{wstat} ) : (),
   );
 
-  my $select = 'wl.vid, wl.wstat, wl.added';
+  my $select = q|wl.vid, wl.wstat, extract('epoch' from wl.added) AS added|;
   my @join;
   if($o{what} =~ /vn/) {
     $select .= ', vr.title, vr.original';

@@ -19,7 +19,7 @@ ALTER TABLE users ADD COLUMN salt character(9) NOT NULL DEFAULT ''::bpchar;
 ALTER TABLE anime ALTER COLUMN lastfetch DROP NOT NULL;
 ALTER TABLE anime ALTER COLUMN lastfetch DROP DEFAULT;
 UPDATE anime SET lastfetch = NULL WHERE lastfetch <= 0;
-ALTER TABLE anime ALTER COLUMN lastfetch TYPE timestamptz USING 'epoch'::timestamptz + lastfetch * interval '1 second';
+ALTER TABLE anime ALTER COLUMN lastfetch TYPE timestamptz USING to_timestamp(lastfetch);
 
 ALTER TABLE anime ALTER COLUMN ann_id DROP NOT NULL;
 ALTER TABLE anime ALTER COLUMN ann_id DROP DEFAULT;
@@ -46,6 +46,17 @@ ALTER TABLE anime ALTER COLUMN year DROP NOT NULL;
 ALTER TABLE anime ALTER COLUMN year DROP DEFAULT;
 UPDATE anime SET year = NULL WHERE year = 0;
 
+
+-- rlists.added -> timestamptz
+ALTER TABLE rlists ALTER COLUMN added DROP DEFAULT;
+ALTER TABLE rlists ALTER COLUMN added TYPE timestamptz USING to_timestamp(added);
+ALTER TABLE rlists ALTER COLUMN added SET DEFAULT NOW();
+
+
+-- wlists.added -> timestamptz
+ALTER TABLE wlists ALTER COLUMN added DROP DEFAULT;
+ALTER TABLE wlists ALTER COLUMN added TYPE timestamptz USING to_timestamp(added);
+ALTER TABLE wlists ALTER COLUMN added SET DEFAULT NOW();
 
 
 -- screenshots.status (smallint) -> screenshots.processed (boolean)

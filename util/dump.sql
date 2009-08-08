@@ -149,7 +149,7 @@ CREATE TABLE rlists (
   rid integer NOT NULL DEFAULT 0,
   vstat smallint NOT NULL DEFAULT 0,
   rstat smallint NOT NULL DEFAULT 0,
-  added bigint NOT NULL DEFAULT DATE_PART('epoch', NOW()),
+  added timestamptz NOT NULL DEFAULT NOW(),
   PRIMARY KEY(uid, rid)
 );
 
@@ -335,7 +335,7 @@ CREATE TABLE wlists (
   uid integer NOT NULL DEFAULT 0,
   vid integer NOT NULL DEFAULT 0,
   wstat smallint NOT NULL DEFAULT 0,
-  added bigint NOT NULL DEFAULT DATE_PART('epoch', NOW()),
+  added timestamptz NOT NULL DEFAULT NOW(),
   PRIMARY KEY(uid, vid)
 );
 
