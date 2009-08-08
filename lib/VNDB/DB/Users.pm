@@ -37,14 +37,14 @@ sub dbUserGet {
     $o{ip} ? (
       'ip = ?' => $o{ip} ) : (),
     $o{registered} ? (
-      'registered > ?' => $o{registered} ) : (),
+      'registered > to_timestamp(?)' => $o{registered} ) : (),
     $o{search} ? (
       'username ILIKE ?' => "%$o{search}%") : (),
   );
 
   my @select = (
-    qw|id username mail rank salt registered c_votes c_changes show_nsfw show_list skin customcss ip c_tags|,
-    q|encode(passwd, 'hex') AS passwd|,
+    qw|id username mail rank salt c_votes c_changes show_nsfw show_list skin customcss ip c_tags|,
+    q|encode(passwd, 'hex') AS passwd|, q|extract('epoch' from registered) as registered|,
     $o{what} =~ /stats/ ? (
       '(SELECT COUNT(*) FROM rlists WHERE uid = u.id) AS releasecount',
       '(SELECT COUNT(DISTINCT rv.vid) FROM rlists rl JOIN releases r ON rl.rid = r.id JOIN releases_vn rv ON rv.rid = r.latest WHERE uid = u.id) AS vncount',
@@ -90,8 +90,8 @@ sub dbUserEdit {
 # username, pass(ecrypted), salt, mail, [ip]
 sub dbUserAdd {
   my($s, @o) = @_;
-  $s->dbExec(q|INSERT INTO users (username, passwd, salt, mail, ip, registered) VALUES(?, decode(?, 'hex'), ?, ?, ?, ?)|,
-    @o[0..3], $o[4]||$s->reqIP, time);
+  $s->dbExec(q|INSERT INTO users (username, passwd, salt, mail, ip) VALUES(?, decode(?, 'hex'), ?, ?, ?)|,
+    @o[0..3], $o[4]||$s->reqIP);
 }
 
 

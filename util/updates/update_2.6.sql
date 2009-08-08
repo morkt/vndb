@@ -76,6 +76,12 @@ ALTER TABLE votes ALTER COLUMN date TYPE timestamptz USING to_timestamp(date);
 ALTER TABLE votes ALTER COLUMN date SET DEFAULT NOW();
 
 
+-- users.registered -> timestamptz
+ALTER TABLE users ALTER COLUMN registered DROP DEFAULT;
+ALTER TABLE users ALTER COLUMN registered TYPE timestamptz USING to_timestamp(registered);
+ALTER TABLE users ALTER COLUMN registered SET DEFAULT NOW();
+
+
 -- screenshots.status (smallint) -> screenshots.processed (boolean)
 ALTER TABLE screenshots RENAME COLUMN status TO processed;
 ALTER TABLE screenshots ALTER COLUMN processed DROP DEFAULT;
