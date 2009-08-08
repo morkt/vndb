@@ -166,6 +166,10 @@ sub edit {
       { name => 'msg', maxlenght => 5000 },
     );
 
+    # check for double-posting
+    push @{$frm->{_err}}, 'doublepost' if $self->dbPostGet(
+      uid => $self->authInfo->{id}, tid => $tid, mindate => time - 30, results => 1, $tid ? () : (num => 1))->[0]{num};
+
     # parse and validate the boards
     my @boards;
     if(!$frm->{_err} && $frm->{boards}) {
