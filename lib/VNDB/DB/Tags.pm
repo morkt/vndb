@@ -208,6 +208,7 @@ sub dbTagVNs {
     'tag = ?' => $o{tag},
     defined $o{maxspoil} ? (
       'tb.spoiler <= ?' => $o{maxspoil} ) : (),
+    'v.hidden = FALSE' => 1,
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
