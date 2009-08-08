@@ -17,7 +17,7 @@ YAWF::register(
 sub edit {
   my($self, $vid, $rev) = @_;
 
-  my $v = $vid && $self->dbVNGet(id => $vid, what => 'extended screenshots relations anime categories changes', $rev ? (rev => $rev) : ())->[0];
+  my $v = $vid && $self->dbVNGet(id => $vid, what => 'extended screenshots relations anime changes', $rev ? (rev => $rev) : ())->[0];
   return 404 if $vid && !$v->{id};
   $rev = undef if !$vid || $v->{cid} == $v->{latest};
 
@@ -72,7 +72,6 @@ sub edit {
       my %args = (
         (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum img_nsfw|),
         anime => [ keys %$anime ],
-        categories => $v->{categories},
         relations => $relations,
         image => $image,
         screenshots => $screenshots,
@@ -281,7 +280,7 @@ sub _updreverse {
 
   # edit all related VNs
   for my $i (keys %upd) {
-    my $r = $self->dbVNGet(id => $i, what => 'extended relations categories anime screenshots')->[0];
+    my $r = $self->dbVNGet(id => $i, what => 'extended relations anime screenshots')->[0];
     my @newrel = map $_->{id} != $vid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
     push @newrel, [ $upd{$i}, $vid ] if $upd{$i} != -1;
     $self->dbVNEdit($i,
@@ -291,7 +290,7 @@ sub _updreverse {
       uid => 1,         # Multi - hardcoded
       anime => [ map $_->{id}, @{$r->{anime}} ],
       screenshots => [ map [ $_->{id}, $_->{nsfw}, $_->{rid} ], @{$r->{screenshots}} ],
-      ( map { $_ => $r->{$_} } qw| title original desc alias categories img_nsfw length l_wp l_encubed l_renai l_vnn image | )
+      ( map { $_ => $r->{$_} } qw| title original desc alias img_nsfw length l_wp l_encubed l_renai l_vnn image | )
     );
   }
 }

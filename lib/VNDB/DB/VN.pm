@@ -10,7 +10,7 @@ our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbVNCache dbScreenshotAdd 
 
 
 # Options: id, rev, char, search, lang, platform, tags_include, tags_exclude, results, page, order, what
-# What: extended categories anime relations screenshots relgraph ranking changes
+# What: extended anime relations screenshots relgraph ranking changes
 sub dbVNGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -101,23 +101,13 @@ sub dbVNGet {
     join(', ', @select), join(' ', @join), \%where, $o{order},
   );
 
-  if(@$r && $o{what} =~ /(categories|anime|relations|screenshots)/) {
+  if(@$r && $o{what} =~ /(anime|relations|screenshots)/) {
     my %r = map {
-      $r->[$_]{categories} = [];
       $r->[$_]{anime} = [];
       $r->[$_]{relations} = [];
       $r->[$_]{screenshots} = [];
       ($r->[$_]{cid}, $_)
     } 0..$#$r;
-
-    if($o{what} =~ /categories/) {
-      push(@{$r->[$r{$_->{vid}}]{categories}}, [ $_->{cat}, $_->{lvl} ]) for (@{$self->dbAll(q|
-        SELECT vid, cat, lvl
-          FROM vn_categories
-          WHERE vid IN(!l)|,
-        [ keys %r ]
-      )});
-    }
 
     if($o{what} =~ /anime/) {
       push(@{$r->[$r{$_->{vid}}]{anime}}, $_) && delete $_->{vid} for (@{$self->dbAll(q|
@@ -182,8 +172,7 @@ sub dbVNAdd {
 
 
 # helper function, inserts a producer revision
-# Arguments: global revision, item id, { columns in producers_rev + categories + anime + relations + screenshots }
-#  categories  = [ [ catid, level ], .. ]
+# Arguments: global revision, item id, { columns in producers_rev + anime + relations + screenshots }
 #  screenshots = [ [ scrid, nsfw, rid ], .. ]
 #  relations   = [ [ rel, vid ], .. ]
 #  anime       = [ aid, .. ]
@@ -195,12 +184,6 @@ sub insert_rev {
     INSERT INTO vn_rev (id, vid, title, original, "desc", alias, image, img_nsfw, length, l_wp, l_encubed, l_renai, l_vnn)
       VALUES (!l)|,
     [ $cid, $vid, @$o{qw|title original desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|} ]);
-
-  $self->dbExec(q|
-    INSERT INTO vn_categories (vid, cat, lvl)
-      VALUES (?, ?, ?)|,
-    $cid, $_->[0], $_->[1]
-  ) for (@{$o->{categories}});
 
   $self->dbExec(q|
     INSERT INTO vn_screenshots (vid, scr, nsfw, rid)

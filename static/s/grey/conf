@@ -27,9 +27,6 @@ imglefttop   bg.jpg
 imgrighttop  bgright.jpg
 
 // misc colors
-catlevel1    #555
-catlevel2    #333
-catlevel3    #000
 diffadd      #cfc
 diffdel      #fcc
 warnbg       #fcc

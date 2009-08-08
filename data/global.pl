@@ -74,57 +74,6 @@ our %S = (%S,
     [ 'Long',       '30 - 50 hours', 'Tsukihime' ],
     [ 'Very long',  '> 50 hours',    'Clannad' ],
   ],
-  categories      => {
-    g => [ 'Gameplay', {
-      aa => 'NVL',     # 0..1
-      ab => 'ADV',     # 0..1
-      ac => "Action",
-      rp => 'RPG',
-      st => 'Strategy',
-      si => 'Simulation',
-    }, 2 ],
-    p => [ 'Plot', {        # 0..1
-      li => 'Linear',
-      br => 'Branching',
-    }, 3 ],
-    e => [ 'Elements', {
-      ac => 'Action',
-      co => 'Comedy',
-      dr => 'Drama',
-      fa => 'Fantasy',
-      ho => 'Horror',
-      my => 'Mystery',
-      ro => 'Romance',
-      sc => 'School Life',
-      sf => 'SciFi', 
-      sj => 'Shoujo Ai',
-      sn => 'Shounen Ai',
-    }, 1 ],
-    t => [ 'Time', {        # 0..1
-      fu => 'Future',
-      pa => 'Past', 
-      pr => 'Present',
-    }, 4 ],
-    l => [ 'Place', {       # 0..1
-      ea => 'Earth', 
-      fa => "Fantasy world",
-      sp => 'Space',
-    }, 5 ],
-    h => [ 'Protagonist', { # 0..1
-      fa => 'Male',
-      fe => "Female",
-    }, 6 ],
-    s => [ 'Sexual content', {
-      aa => 'Sexual content',
-      be => 'Bestiality',
-      in => 'Incest',
-      lo => 'Lolicon',
-      sh => 'Shotacon',
-      ya => 'Yaoi',
-      yu => 'Yuri',
-      ra => 'Rape',
-    }, 7 ],
-  },
   anime_types     => [
     # AniDB anime type starts counting at 1, 0 = unknown
     #   we start counting at 0, with NULL being unknown

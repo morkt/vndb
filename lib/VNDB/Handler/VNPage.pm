@@ -37,7 +37,7 @@ sub page {
 
   my $v = $self->dbVNGet(
     id => $vid,
-    what => 'extended categories anime relations screenshots ranking'.($rev ? ' changes' : ''),
+    what => 'extended anime relations screenshots ranking'.($rev ? ' changes' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
   return 404 if !$v->{id};
@@ -120,7 +120,6 @@ sub page {
      }
 
      _producers($self, \$i, $r);
-     _categories($self, \$i, $v) if @{$v->{categories}};
      _relations($self, \$i, $v) if @{$v->{relations}};
      _anime($self, \$i, $v) if @{$v->{anime}};
      _useroptions($self, \$i, $v) if $self->authInfo->{id};
@@ -173,7 +172,7 @@ sub _revision {
   return if !$rev;
 
   my $prev = $rev && $rev > 1 && $self->dbVNGet(
-    id => $v->{id}, rev => $rev-1, what => 'extended categories anime relations screenshots changes'
+    id => $v->{id}, rev => $rev-1, what => 'extended anime relations screenshots changes'
   )->[0];
 
   $self->htmlRevision('v', $prev, $v,
@@ -193,10 +192,6 @@ sub _revision {
     }],
     [ l_vnn       => 'V-N.net link',     htmlize => sub {
       $_[0] ? sprintf '<a href="http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=%d">%1$d</a>', xml_escape $_[0] : '[no link]'
-    }],
-    [ categories  => 'Categories',       join => ', ', split => sub {
-      my @r = map $self->{categories}{substr($_->[0],0,1)}[1]{substr($_->[0],1,2)}."($_->[1])", sort { $a->[0] cmp $b->[0] } @{$_[0]};
-      return @r ? @r : ('[no categories selected]');
     }],
     [ relations   => 'Relations',        join => '<br />', split => sub {
       my @r = map sprintf('%s: <a href="/v%d" title="%s">%s</a>',
@@ -249,45 +244,6 @@ sub _producers {
       }
       txt "\n";
     }
-   end;
-  end;
-}
-
-
-sub _categories {
-  my($self, $i, $v) = @_;
-
-  # create an ordered list of selected categories in the form of: [ parent, [ p, sub, lvl ], .. ], ..
-  my @cat;
-  my %nolvl = (map {$_=>1} qw| pli pbr gaa gab hfa hfe |);
-  for my $cp (qw|e s g p h|) {
-    my $thisparent = 0;
-    my @sel = sort { $a->[0] cmp $b->[0] } grep substr($_->[0], 0, 1) eq $cp, @{$v->{categories}};
-    if(@sel) {
-      push @cat, [ $self->{categories}{$cp}[0] ];
-      push @{$cat[$#cat]}, map [ $cp, substr($_->[0],1,2), $nolvl{$_->[0]} ? 0 : $_->[1] ], @sel;
-    }
-  }
-  my @placetime = grep $_->[0] =~ /^[tl]/, @{$v->{categories}};
-  if(@placetime) {
-    push @cat, [ 'Place/Time' ];
-    push @{$cat[$#cat]}, map [ substr($_->[0],0,1), substr($_->[0],1,2), 0], sort { $a->[0] cmp $b->[0] } @placetime;
-  }
-
-  # format & output categories
-  Tr ++$$i % 2 ? (class => 'odd') : ();
-   td 'Categories';
-   td;
-    dl id => 'vncats', style => 'display: none';
-     dt 'Note:'; dd "The category system is outdated, please use tags instead.\n\n";
-     for (@cat) {
-       dt shift(@$_).':';
-       dd;
-        lit join ', ', map qq|<i class="catlvl_$_->[2]">$self->{categories}{$_->[0]}[1]{$_->[1]}</i>|, @$_;
-       end;
-     }
-    end;
-    a href => '#', onclick => "document.getElementById('vncats').style.display='';this.style.display='none';return false", 'Show categories';
    end;
   end;
 }

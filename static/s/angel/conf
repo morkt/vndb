@@ -27,9 +27,6 @@ imglefttop   bg.jpg
 imgrighttop  bgright.jpg
 
 // misc colors
-catlevel1    #444  // category levels
-catlevel2    #777
-catlevel3    #fff
 diffadd      #354  // background color of changes in the diff viewer
 diffdel      #534
 warnbg       #534  // background color of a warning box

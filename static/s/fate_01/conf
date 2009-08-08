@@ -29,9 +29,6 @@ boxbg        #4d3c3abc  // RGBA, background color of the boxes, stacked for menu
 imglefttop   bg.jpg
 
 // misc colors
-catlevel1    #200b0c  // category levels
-catlevel2    #ab928d
-catlevel3    #d56243
 diffadd      #4d2c25  // background color of changes in the diff viewer
 diffdel      #6f5347
 warnbg       #882f27  // background color of a warning box
