@@ -326,7 +326,7 @@ CREATE TABLE votes (
   vid integer NOT NULL DEFAULT 0,
   uid integer NOT NULL DEFAULT 0,
   vote integer NOT NULL DEFAULT 0,
-  date bigint NOT NULL DEFAULT 0,
+  date timestamptz NOT NULL DEFAULT NOW(),
   PRIMARY KEY(vid, uid)
 );
 

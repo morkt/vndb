@@ -158,7 +158,7 @@ sub dbVoteGet {
   );
 
   my @select = (
-    qw|n.vid n.vote n.date n.uid|,
+    qw|n.vid n.vote n.uid|, q|extract('epoch' from n.date) as date|,
     $o{what} =~ /user/ ? ('u.username') : (),
     $o{what} =~ /vn/ ? (qw|vr.title vr.original|) : (),
   );
@@ -214,9 +214,9 @@ sub dbVoteAdd {
     $vote, $vid, $uid
   ) || $self->dbExec(q|
     INSERT INTO votes
-      (vid, uid, vote, date)
+      (vid, uid, vote)
       VALUES (!l)|,
-    [ $vid, $uid, $vote, time ]
+    [ $vid, $uid, $vote ]
   );
 }
 
