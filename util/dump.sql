@@ -287,14 +287,6 @@ CREATE TABLE vn_anime (
   PRIMARY KEY(vid, aid)
 );
 
--- vn_categories
-CREATE TABLE vn_categories (
-  vid integer NOT NULL DEFAULT 0,
-  cat character(3) NOT NULL DEFAULT '',
-  lvl smallint NOT NULL DEFAULT 3,
-  PRIMARY KEY(vid, cat)
-);
-
 -- vn_relations
 CREATE TABLE vn_relations (
   vid1 integer NOT NULL DEFAULT 0,
@@ -390,7 +382,6 @@ ALTER TABLE vn                 ADD FOREIGN KEY (latest)    REFERENCES vn_rev    
 ALTER TABLE vn                 ADD FOREIGN KEY (rgraph)    REFERENCES relgraph      (id);
 ALTER TABLE vn_anime           ADD FOREIGN KEY (aid)       REFERENCES anime         (id);
 ALTER TABLE vn_anime           ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
-ALTER TABLE vn_categories      ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
 ALTER TABLE vn_relations       ADD FOREIGN KEY (vid1)      REFERENCES vn_rev        (id);
 ALTER TABLE vn_relations       ADD FOREIGN KEY (vid2)      REFERENCES vn            (id);
 ALTER TABLE vn_rev             ADD FOREIGN KEY (id)        REFERENCES changes       (id);

@@ -94,7 +94,6 @@ ALTER TABLE threads_boards     DROP CONSTRAINT threads_tags_tid_fkey; -- threads
 ALTER TABLE vn                 DROP CONSTRAINT vn_rgraph_fkey;
 ALTER TABLE vn_anime           DROP CONSTRAINT vn_anime_aid_fkey;
 ALTER TABLE vn_anime           DROP CONSTRAINT vn_anime_vid_fkey;
-ALTER TABLE vn_categories      DROP CONSTRAINT vn_categories_vid_fkey;
 ALTER TABLE vn_relations       DROP CONSTRAINT vn_relations_vid1_fkey;
 ALTER TABLE vn_relations       DROP CONSTRAINT vn_relations_vid2_fkey;
 ALTER TABLE vn_rev             DROP CONSTRAINT vn_rev_id_fkey;
@@ -136,7 +135,6 @@ ALTER TABLE threads_boards     ADD FOREIGN KEY (tid)       REFERENCES threads   
 ALTER TABLE vn                 ADD FOREIGN KEY (rgraph)    REFERENCES relgraph      (id);
 ALTER TABLE vn_anime           ADD FOREIGN KEY (aid)       REFERENCES anime         (id);
 ALTER TABLE vn_anime           ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
-ALTER TABLE vn_categories      ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
 ALTER TABLE vn_relations       ADD FOREIGN KEY (vid1)      REFERENCES vn_rev        (id);
 ALTER TABLE vn_relations       ADD FOREIGN KEY (vid2)      REFERENCES vn            (id);
 ALTER TABLE vn_rev             ADD FOREIGN KEY (id)        REFERENCES changes       (id);
@@ -258,4 +256,56 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER insert_notify AFTER INSERT ON changes FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
 CREATE TRIGGER insert_notify AFTER INSERT ON threads_posts FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
 CREATE TRIGGER insert_notify AFTER INSERT ON tags FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
+
+
+
+-- convert the old categories to the related tags for VNs that didn't have tags already
+INSERT INTO tags_vn (uid, spoiler, vid, vote, tag)
+  SELECT 1, 0, v.id,
+    CASE
+      WHEN vc.cat IN('gaa', 'gab', 'pli', 'pbr', 'tfu', 'tpa', 'tpr', 'lea', 'lfa', 'lsp', 'hfa', 'hfe') THEN 2
+      ELSE vc.lvl
+    END,
+    CASE
+      WHEN vc.cat = 'gaa' THEN  43 -- NVL
+      WHEN vc.cat = 'gab' THEN  32 -- ADV
+      WHEN vc.cat = 'gac' THEN  31 -- Action game
+      WHEN vc.cat = 'grp' THEN  35 -- RPG
+      WHEN vc.cat = 'gst' THEN  33 -- Strategy game
+      WHEN vc.cat = 'gsi' THEN  34 -- Simulation game
+      WHEN vc.cat = 'pli' THEN 145 -- Linear plot
+      WHEN vc.cat = 'pbr' THEN 606 -- Branching plot
+      WHEN vc.cat = 'eac' THEN  12 -- Action
+      WHEN vc.cat = 'eco' THEN 104 -- Comedy
+      WHEN vc.cat = 'edr' THEN 147 -- Drama
+      WHEN vc.cat = 'efa' THEN   2 -- Fantasy
+      WHEN vc.cat = 'eho' THEN   7 -- Horror
+      WHEN vc.cat = 'emy' THEN  19 -- Mystery
+      WHEN vc.cat = 'ero' THEN  96 -- Romance
+      WHEN vc.cat = 'esc' THEN  47 -- School life
+      WHEN vc.cat = 'esf' THEN 105 -- Sci-Fi
+      WHEN vc.cat = 'esj' THEN  97 -- Shoujo ai
+      WHEN vc.cat = 'esn' THEN  98 -- Shounen ai
+      WHEN vc.cat = 'tfu' THEN 140 -- Future
+      WHEN vc.cat = 'tpa' THEN 141 -- Past
+      WHEN vc.cat = 'tpr' THEN 143 -- Present
+      WHEN vc.cat = 'lea' THEN  52 -- Earth
+      WHEN vc.cat = 'lfa' THEN 259 -- Fantasy world
+      WHEN vc.cat = 'lsp' THEN  53 -- Space
+      WHEN vc.cat = 'hfa' THEN 133 -- Male protag
+      WHEN vc.cat = 'hfe' THEN 134 -- Female protag
+      WHEN vc.cat = 'saa' THEN  23 -- Sexual content
+      WHEN vc.cat = 'sbe' THEN 183 -- Bestiality
+      WHEN vc.cat = 'sin' THEN  86 -- Insect
+      WHEN vc.cat = 'slo' THEN 156 -- Lolicon
+      WHEN vc.cat = 'ssh' THEN 184 -- Shotacon
+      WHEN vc.cat = 'sya' THEN  83 -- Yaoi
+      WHEN vc.cat = 'syu' THEN  82 -- Yuri
+      WHEN vc.cat = 'sra' THEN  84 -- Rape
+      ELSE 11 -- the deleted 'Awesome' tag, this shouldn't happen
+    END
+  FROM vn v
+  JOIN vn_categories vc ON vc.vid = v.latest
+  WHERE NOT EXISTS(SELECT 1 FROM tags_vn tv WHERE tv.vid = v.id);
+DROP TABLE vn_categories;
 
