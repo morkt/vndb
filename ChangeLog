@@ -9,6 +9,7 @@
 	  - Extended IRC bot functionality
 	  - Tag cache regenerated daily rather than hourly
 	- Added OpenSearch plugin + autodetection
+	- Converted font size units to px in the css
 
 2.5 - 2009-07-09
 	- Hide NSFW images in diff viewer (unless NSFW warnings are disabled)

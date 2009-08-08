@@ -6,7 +6,7 @@
 }
 
 body, td {
-  font: 8pt "Tahoma";
+  font: 11px "Tahoma";
 }
 body {
   $_bodybg$;
@@ -47,7 +47,7 @@ img {
 }
 #header h1, #header h1 a {
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
-  font-size: 19pt;
+  font-size: 23px;
   font-style: italic;
   border: none!important;
   $_maintitle$
@@ -88,7 +88,7 @@ p.locked {
 }
 b.grayedout { font-weight: normal; color: $grayedout$ }
 #maincontent h2 b {
-  font: 8pt "Tahoma";
+  font: 10px "Tahoma";
   font-weight: normal;
 }
 p.description {
@@ -136,7 +136,7 @@ input.text, input.submit, select, textarea {
   background-color: $secbg$;
   color: $maintext$;
   border: 1px solid $secborder$;
-  font: 9pt "Tahoma";
+  font: 11px "Tahoma";
   margin: 1px;
 }
 optgroup option {
@@ -159,7 +159,7 @@ fieldset.submit input {
   width: 200px;
 }
 fieldset.submit h2 {
-  font-size: 9pt!important;
+  font-size: 11px!important;
 }
 fieldset.submit textarea {
   margin: 0 20px 5px 20px;
@@ -203,11 +203,11 @@ td.field label {
 #maincontent h1, #maincontent h2 {
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
   font-weight: normal;
-  font-size: 11pt;
+  font-size: 13px;
 }
 #maincontent h1 {
   color: $boxtitle$;
-  font-size: 14pt;
+  font-size: 16px;
   margin: -5px 0 15px 0;
 }
 #maincontent h2.alttitle {
@@ -232,7 +232,7 @@ td.field label {
 }
 #maincontent h2 {
   font-weight: bold;
-  font-size: 11pt;
+  font-size: 13px;
   margin: 10px 0 0 5px;
 }
 p.center {
@@ -268,7 +268,7 @@ b.future {
   padding: 1px 3px;
 }
 #menulist h2, #menulist h2 a {
-  font-size: 8pt;
+  font-size: 11px;
   color: $maintext$;
 }
 #menulist dt {
@@ -374,11 +374,11 @@ b.future {
 }
 #maincontent .mainbox.threelayout h1 {
   margin: -3px 0 1px 0;
-  font-size: 12pt;
+  font-size: 14px;
   font-weight: bold;
 }
 #maincontent .mainbox.threelayout h2 {
-  font-size: 10pt;
+  font-size: 12px;
   margin-top: 3px;
 }
 #maincontent .mainbox.threelayout a.right {
@@ -514,7 +514,7 @@ div.thread i.deleted {
 }
 div.thread i.lastmod {
   float: right;
-  font-size: 7pt;
+  font-size: 10px;
   color: $grayedout$;
   margin: 0 -10px -5px 0;
 }
@@ -547,7 +547,7 @@ div.discussions td.tc4 { width: 170px; }
   font-weight: bold;
   font-style: italic;
   color: $grayedout$;
-  font-size: 13pt;
+  font-size: 17px;
   margin: 20px 0 -20px 0;
 }
 
@@ -570,7 +570,7 @@ div.vnimg i {
   display: block;
   width: 100%;
   text-align: center;
-  font-size: 7pt;
+  font-size: 10px;
 }
 div.vnimg p {
   text-align: center;
@@ -615,7 +615,7 @@ div.vndetails td.relations dd {
   margin-left: 15px;
 }
 div.vndetails td.anime b {
-  font-size: 6pt;
+  font-size: 8px;
   font-weight: normal;
   padding-right: 4px;
 }
@@ -682,7 +682,6 @@ a.addnew {
   margin: 2px;
   text-align: center;
 }
-#screenshots td.scr div i        { font-size: 7pt; }
 #screenshots td.scr img          { border: 3px solid transparent; }
 #screenshots td.scr div.nsfw img { border: 3px solid $statnok$; }
 #screenshots td.scr a:hover img  { border: 3px solid $border$; }
@@ -722,47 +721,6 @@ a.addnew {
 
 
 /***** VN edit *****/
-
-#jt_box_categories ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-#jt_box_categories li {
-  display: block;
-  width: 170px;
-  float: left;
-  clear: none;
-  font-weight: bold;
-}
-#jt_box_categories li li {
-  display: list-item;
-  width: auto;
-  float: none;
-  clear: left;
-  font-weight: normal;
-  padding: 0 0 0 20px;
-  margin: 0;
-  cursor: pointer;
-  list-style-type: none;
-  padding: 0;
-}
-#maincontent #jt_box_categories li li a {
-  color: $grayedout$;
-}
-a.help {
-  vertical-align: super;
-  font-size: 6pt;
-  text-decoration: none;
-  font-weight: bold;
-  padding-left: 1px;
-}
-#maincontent #jt_box_categories li li a {
-  text-decoration: none;
-  display: block;
-  width: 160px;
-  border: none
-}
 
 #jt_box_relations table  { margin-bottom: 10px; }
 #jt_box_relations h2     { margin: 0 0 3px 0px; }
@@ -1085,7 +1043,7 @@ div.warning li, div.notice li {
   margin-left: 20px;
 }
 #maincontent div.warning h2, #maincontent div.notice h2 {
-  font-size: 9pt;
+  font-size: 11px;
   font-weight: bold;
   margin: 0;
 }
@@ -1155,7 +1113,7 @@ div#iv_view {
   padding: 5px;
   text-align: center;
 }
-#iv_view a { border: 0; font-weight: bold; font-size: 10pt; }
+#iv_view a { border: 0; font-weight: bold; font-size: 12px }
 #iv_view img { cursor: pointer }
 #ivclose { float: right; padding-left: 10px }
 #ivnext { padding-left: 5px; }
