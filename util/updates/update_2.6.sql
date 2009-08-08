@@ -82,6 +82,12 @@ ALTER TABLE users ALTER COLUMN registered TYPE timestamptz USING to_timestamp(re
 ALTER TABLE users ALTER COLUMN registered SET DEFAULT NOW();
 
 
+-- tags.added -> timestamptz
+ALTER TABLE tags ALTER COLUMN added DROP DEFAULT;
+ALTER TABLE tags ALTER COLUMN added TYPE timestamptz USING to_timestamp(added);
+ALTER TABLE tags ALTER COLUMN added SET DEFAULT NOW();
+
+
 -- screenshots.status (smallint) -> screenshots.processed (boolean)
 ALTER TABLE screenshots RENAME COLUMN status TO processed;
 ALTER TABLE screenshots ALTER COLUMN processed DROP DEFAULT;

@@ -181,7 +181,7 @@ CREATE TABLE tags (
   name varchar(250) NOT NULL UNIQUE,
   description text NOT NULL DEFAULT '',
   meta boolean NOT NULL DEFAULT FALSE,
-  added bigint NOT NULL DEFAULT DATE_PART('epoch'::text, NOW()),
+  added timestamptz NOT NULL DEFAULT NOW(),
   state smallint NOT NULL DEFAULT 0,
   c_vns integer NOT NULL DEFAULT 0,
   addedby integer NOT NULL DEFAULT 1

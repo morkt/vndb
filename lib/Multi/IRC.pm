@@ -274,7 +274,7 @@ sub notify { # name, pid, payload
       'g' AS type, t.id, t.name AS title, u.username
     FROM tags t
     JOIN users u ON u.id = t.addedby
-    WHERE t.added > ?
+    WHERE t.added > to_timestamp(?)
     ORDER BY t.added|;
 
   $_[KERNEL]->post(pg => query => $q, [ $t ], 'formatid', [ keys %{$_[HEAP]{notify}} ]);

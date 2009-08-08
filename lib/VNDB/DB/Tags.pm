@@ -39,7 +39,8 @@ sub dbTagGet {
       't.meta = ?' => $o{meta}?1:0 ) : (),
   );
   my @select = (
-    qw|t.id t.meta t.name t.description t.added t.state t.c_vns|,
+    qw|t.id t.meta t.name t.description t.state t.c_vns|,
+    q|extract('epoch' from t.added) as added|,
     $o{what} =~ /addedby/ ? ('t.addedby', 'u.username') : (),
   );
   my @join = $o{what} =~ /addedby/ ? 'JOIN users u ON u.id = t.addedby' : ();
@@ -88,7 +89,7 @@ sub dbTagEdit {
   my($self, $id, %o) = @_;
 
   $self->dbExec('UPDATE tags !H WHERE id = ?', {
-    $o{upddate} ? ('added = ?' => time) : (),
+    $o{upddate} ? ('added = NOW()' => 1) : (),
     map { +"$_ = ?" => $o{$_} } qw|name meta description state|
   }, $id);
   $self->dbExec('DELETE FROM tags_aliases WHERE tag = ?', $id);
