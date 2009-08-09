@@ -62,7 +62,7 @@ sub log { # level, msg
     $_[ARG1] ? sprintf($_[ARG0], @_[ARG1..$#_]) : $_[ARG0];
 
   open(my $F, '>>', $VNDB::M{log_dir}.'/multi.log');
-  printf "[%s] %s\n", scalar localtime, $msg;
+  printf $F "[%s] %s\n", scalar localtime, $msg;
   close $F;
 }
 
