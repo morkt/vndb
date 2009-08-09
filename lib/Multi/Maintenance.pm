@@ -3,8 +3,6 @@
 #  Multi::Maintenance  -  General maintenance functions
 #
 
-# TODO: more logging?
-
 package Multi::Maintenance;
 
 use strict;
@@ -18,7 +16,7 @@ sub spawn {
   POE::Session->create(
     package_states => [
       $p => [qw|
-        _start shutdown set_daily daily set_monthly monthly
+        _start shutdown set_daily daily set_monthly monthly log_stats
         vncache tagcache vnpopularity
         usercache statscache revcache logrotate
       |],
@@ -90,6 +88,10 @@ sub monthly {
 }
 
 
+sub log_stats { # num, res, action, time
+  $_[KERNEL]->call(core => log => sprintf 'Finished %s in %.3fs (%d rows)', $_[ARG2], $_[ARG3], $_[ARG0]);
+}
+
 
 #
 #  D A I L Y   J O B S
@@ -99,19 +101,19 @@ sub monthly {
 sub vncache {
   # this takes about 30s to complete. We really need to search for an alternative
   # method of keeping the c_* columns in the vn table up-to-date.
-  $_[KERNEL]->post(pg => do => 'SELECT update_vncache(0)');
+  $_[KERNEL]->post(pg => do => 'SELECT update_vncache(0)', undef, 'log_stats', 'vncache');
 }
 
 
 sub tagcache {
   # this still takes "only" about 3 seconds max. Let's hope that doesn't increase too much.
-  $_[KERNEL]->post(pg => do => 'SELECT tag_vn_calc()');
+  $_[KERNEL]->post(pg => do => 'SELECT tag_vn_calc()', undef, 'log_stats', 'tagcache');
 }
 
 
 sub vnpopularity {
   # still takes at most 2 seconds. Againt, let's hope that doesn't increase...
-  $_[KERNEL]->post(pg => do => 'SELECT update_vnpopularity()');
+  $_[KERNEL]->post(pg => do => 'SELECT update_vnpopularity()', undef, 'log_stats', 'vnpopularity');
 }
 
 
@@ -143,7 +145,7 @@ sub usercache {
       WHERE uid = users.id
       GROUP BY uid
     ), 0)
-  |);
+  |, undef, 'log_stats', 'usercache');
 }
 
 
@@ -165,7 +167,8 @@ sub statscache {
 sub revcache {
   # This -really- shouldn't be necessary...
   # Currently takes about 25 seconds to complete
-  $_[KERNEL]->post(pg => do => q|SELECT update_rev('vn', ''), update_rev('releases', ''), update_rev('producers', '')|);
+  $_[KERNEL]->post(pg => do => q|SELECT update_rev('vn', ''), update_rev('releases', ''), update_rev('producers', '')|,
+    undef, 'log_stats', 'revcache');
 }
 
 
