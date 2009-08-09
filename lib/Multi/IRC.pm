@@ -218,12 +218,13 @@ sub command { # mask, dest, msg
   my($cmd, $arg) = ($1, $2);
   return 0 if !exists $_[HEAP]{commands}{$cmd} || ($_[HEAP]{commands}{$cmd} & 8) && !$addressed;
 
+  my $lvl = $_[HEAP]{commands}{$cmd} & ~8;
   my $usr = parse_user($mask);
   return $_[KERNEL]->yield(reply => $dest,
-      $dest eq $_[HEAP]{channels}[0] ? 'Only OPs can do that!' : "Only $_[HEAP]{channel}[0] OPs can do that!", $usr) || 1
-    if $_[HEAP]{commands}{$cmd} == 1 && !$irc->is_channel_operator($_[HEAP]{channels}[0], $usr);
+      $dest->[0] eq $_[HEAP]{channels}[0] ? 'Only OPs can do that!' : "Only $_[HEAP]{channel}[0] OPs can do that!", $usr) || 1
+    if $lvl == 1 && !$irc->is_channel_operator($_[HEAP]{channels}[0], $usr);
   return $_[KERNEL]->yield(reply => $dest, 'You are not my master!', $usr) || 1
-    if $_[HEAP]{commands}{$cmd} == 2 && !grep matches_mask($_, $mask), @{$_[HEAP]{masters}};
+    if $lvl == 2 && !grep matches_mask($_, $mask), @{$_[HEAP]{masters}};
 
   return $_[KERNEL]->yield('cmd_'.$cmd, $usr, $dest, $arg, $mask) || 1;
 }
