@@ -167,7 +167,7 @@ sub edit {
     );
 
     # check for double-posting
-    push @{$frm->{_err}}, 'doublepost' if $self->dbPostGet(
+    push @{$frm->{_err}}, 'doublepost' if !$num && $self->dbPostGet(
       uid => $self->authInfo->{id}, tid => $tid, mindate => time - 30, results => 1, $tid ? () : (num => 1))->[0]{num};
 
     # parse and validate the boards
