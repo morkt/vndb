@@ -47,7 +47,7 @@ img {
 }
 #header h1, #header h1 a {
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
-  font-size: 23px;
+  font-size: 24px;
   font-style: italic;
   border: none!important;
   $_maintitle$
@@ -88,7 +88,7 @@ p.locked {
 }
 b.grayedout { font-weight: normal; color: $grayedout$ }
 #maincontent h2 b {
-  font: 10px "Tahoma";
+  font: 11px "Tahoma";
   font-weight: normal;
 }
 p.description {
@@ -136,7 +136,7 @@ input.text, input.submit, select, textarea {
   background-color: $secbg$;
   color: $maintext$;
   border: 1px solid $secborder$;
-  font: 11px "Tahoma";
+  font: 12px "Tahoma";
   margin: 1px;
 }
 optgroup option {
@@ -207,7 +207,7 @@ td.field label {
 }
 #maincontent h1 {
   color: $boxtitle$;
-  font-size: 16px;
+  font-size: 19px;
   margin: -5px 0 15px 0;
 }
 #maincontent h2.alttitle {
@@ -232,7 +232,7 @@ td.field label {
 }
 #maincontent h2 {
   font-weight: bold;
-  font-size: 13px;
+  font-size: 14px;
   margin: 10px 0 0 5px;
 }
 p.center {
