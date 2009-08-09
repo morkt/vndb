@@ -15,7 +15,6 @@ use POE qw|
 |;
 use POE::Component::IRC::Common ':ALL';
 use URI::Escape 'uri_escape_utf8';
-use Time::HiRes 'time';
 
 use constant {
   USER => ARG0,
@@ -50,7 +49,7 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown throttle_gc irc_001 irc_public irc_ctcp_action irc_msg
-        command idlequote reply notify
+        command idlequote reply notify_init notify notify_result
         cmd_info cmd_list cmd_uptime cmd_vn cmd_vn_results cmd_p cmd_p_results cmd_quote cmd_quote_result
         cmd_say cmd_me cmd_notifications cmd_eval cmd_die cmd_post vndbid formatid
       |],
@@ -65,9 +64,6 @@ sub spawn {
       throttle => {},
       idlequotes => {},
       notify => {},
-      lastrev => time,  # using Multi's time for comparing to the DB time can fail
-      lastpost => time, # in some rare cases, but I doubt it'll be a problem.
-      lasttag => time,
       commands => {
         info     => 0,   # argument = authentication level/flags,
         list     => 0,   #   0: everyone,
@@ -159,6 +155,12 @@ sub _start {
     newtag      => 'notify',
   );
   $_[HEAP]{notify}{$_[HEAP]{channels}[0]} = 1;
+  # get last id/time for each notify item
+  $_[KERNEL]->post(pg => query => q|SELECT
+    (SELECT id FROM changes ORDER BY id DESC LIMIT 1) AS rev,
+    (SELECT id FROM tags ORDER BY id DESC LIMIT 1) AS tag,
+    (SELECT date FROM threads_posts ORDER BY date DESC LIMIT 1) AS post|,
+    undef, 'notify_init');
 
   $_[KERNEL]->sig(shutdown => 'shutdown');
   $_[KERNEL]->delay(throttle_gc => 1800);
@@ -248,40 +250,55 @@ sub reply { # target, msg [, mask/user]
 }
 
 
+sub notify_init { # num, res
+  my $r = $_[ARG1][0];
+  $_[HEAP]{lastrev} = $r->{rev};
+  $_[HEAP]{lasttag} = $r->{tag};
+  $_[HEAP]{lastpost} = $r->{post};
+}
+
+
 sub notify { # name, pid, payload
   my $k = $_[ARG0] eq 'newrevision' ? 'lastrev' : $_[ARG0] eq 'newpost' ? 'lastpost' : 'lasttag';
-  my $t = $_[HEAP]{$k};
-  $_[HEAP]{$k} = time;
-
-  return if !keys %{$_[HEAP]{notify}};
+  return if !$_[HEAP]{$k};
 
   my $q = $_[ARG0] eq 'newrevision' ? q|SELECT
-      CASE WHEN c.type = 0 THEN 'v' WHEN c.type = 1 THEN 'r' ELSE 'p' END AS type, c.rev, c.comments,
+      CASE WHEN c.type = 0 THEN 'v' WHEN c.type = 1 THEN 'r' ELSE 'p' END AS type, c.rev, c.comments, c.id AS lastrev,
       COALESCE(vr.vid, rr.rid, pr.pid) AS id, COALESCE(vr.title, rr.title, pr.name) AS title, u.username
     FROM changes c
     LEFT JOIN vn_rev vr ON c.type = 0 AND c.id = vr.id
     LEFT JOIN releases_rev rr ON c.type = 1 AND c.id = rr.id
     LEFT JOIN producers_rev pr ON c.type = 2 AND c.id = pr.id
     JOIN users u ON u.id = c.requester
-    WHERE c.added > to_timestamp(?)
+    WHERE c.id > ?
     ORDER BY c.added|
   : $_[ARG0] eq 'newpost' ? q|SELECT
-      't' AS type, tp.tid AS id, tp.num AS rev, t.title, u.username, |.GETBOARDS.q|
+      't' AS type, tp.tid AS id, tp.num AS rev, t.title, u.username, tp.date AS lastpost, |.GETBOARDS.q|
     FROM threads_posts tp
     JOIN threads t ON t.id = tp.tid
     JOIN users u ON u.id = tp.uid
-    WHERE tp.date > to_timestamp(?)
+    WHERE tp.date > ?
     ORDER BY tp.date|
   : q|SELECT
-      'g' AS type, t.id, t.name AS title, u.username
+      'g' AS type, t.id, t.name AS title, u.username, t.id AS lasttag
     FROM tags t
     JOIN users u ON u.id = t.addedby
-    WHERE t.added > to_timestamp(?)
+    WHERE t.id > ?
     ORDER BY t.added|;
 
-  $_[KERNEL]->post(pg => query => $q, [ $t ], 'formatid', [ keys %{$_[HEAP]{notify}} ]);
+  $_[KERNEL]->post(pg => query => $q, [ $_[HEAP]{$k} ], 'notify_result');
 }
 
+
+sub notify_result { # num, res
+  return if $_[ARG0] < 1;
+  my $r = $_[ARG1][0];
+  $_[HEAP]{lastrev} = $r->{lastrev} if $r->{lastrev};
+  $_[HEAP]{lastpost} = $r->{lastpost} if $r->{lastpost};
+  $_[HEAP]{lasttag} = $r->{lasttag} if $r->{lasttag};
+  return if !keys %{$_[HEAP]{notify}};
+  $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], [ keys %{$_[HEAP]{notify}} ]);
+}
 
 
 
