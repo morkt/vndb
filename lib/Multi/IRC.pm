@@ -96,7 +96,7 @@ sub throttle {
 
   # garbage collect
   return ($heap->{throttle} = {
-    map $_->[$#$_] > time-3600 ? ($_, $heap->{throttle}{$_}) : (), keys %{$heap->{throttle}}
+    map $heap->{throttle}{$_}[$#{$heap->{throttle}{$_}}] > time-3600 ? ($_, $heap->{throttle}{$_}) : (), keys %{$heap->{throttle}}
   }) if !$key;
 
   $num ||= 1;
