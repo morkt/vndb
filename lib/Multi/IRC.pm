@@ -15,6 +15,7 @@ use POE qw|
 |;
 use POE::Component::IRC::Common ':ALL';
 use URI::Escape 'uri_escape_utf8';
+use Time::HiRes 'time';
 
 use constant {
   USER => ARG0,
