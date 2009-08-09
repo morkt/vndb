@@ -34,7 +34,7 @@ CREATE TABLE changes (
   id SERIAL NOT NULL PRIMARY KEY,
   type smallint NOT NULL DEFAULT 0,
   rev integer NOT NULL DEFAULT 1,
-  added bigint NOT NULL DEFAULT DATE_PART('epoch', NOW()),
+  added timestamptz NOT NULL DEFAULT NOW(),
   requester integer NOT NULL DEFAULT 0,
   ip inet NOT NULL DEFAULT '0.0.0.0',
   comments text NOT NULL DEFAULT '',
@@ -809,8 +809,8 @@ CREATE SEQUENCE covers_seq;
 -- Rows that are assumed to be available
 INSERT INTO users (id, username, mail, rank)
   VALUES (0, 'deleted', 'del@vndb.org', 0);
-INSERT INTO users (username, mail, rank, registered)
-  VALUES ('multi', 'multi@vndb.org', 0, EXTRACT(EPOCH FROM NOW()));
+INSERT INTO users (username, mail, rank)
+  VALUES ('multi', 'multi@vndb.org', 0);
 
 INSERT INTO stats_cache (section, count) VALUES
   ('users',         1),

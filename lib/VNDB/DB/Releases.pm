@@ -73,7 +73,8 @@ sub dbReleaseGet {
     qw|r.id rr.title rr.original rr.website rr.released rr.minage rr.type rr.patch|,
     'rr.id AS cid',
     $o{what} =~ /extended/ ? qw|rr.notes rr.catalog rr.gtin rr.resolution rr.voiced rr.freeware rr.doujin rr.ani_story rr.ani_ero r.hidden r.locked| : (),
-    $o{what} =~ /changes/ ? qw|c.added c.requester c.comments r.latest u.username c.rev| : (),
+    $o{what} =~ /changes/ ?
+      (qw|c.requester c.comments r.latest u.username c.rev|, q|extract('epoch' from c.added) as added|) : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|

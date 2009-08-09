@@ -43,7 +43,7 @@ sub dbProducerGet {
 
   my $select = 'p.id, pr.type, pr.name, pr.original, pr.lang';
   $select .= ', pr.desc, pr.alias, pr.website, p.hidden, p.locked' if $o{what} =~ /extended/;
-  $select .= ', c.added, c.requester, c.comments, p.latest, pr.id AS cid, u.username, c.rev' if $o{what} =~ /changes/;
+  $select .= q|, extract('epoch' from c.added) as added, c.requester, c.comments, p.latest, pr.id AS cid, u.username, c.rev| if $o{what} =~ /changes/;
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s

@@ -85,7 +85,7 @@ sub dbVNGet {
     $o{what} =~ /extended/ ? (
       qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai vr.l_vnn| ) : (),
     $o{what} =~ /changes/ ? (
-      qw|c.added c.requester c.comments v.latest u.username c.rev c.causedby|) : (),
+      qw|c.requester c.comments v.latest u.username c.rev c.causedby|, q|extract('epoch' from c.added) as added|) : (),
     $o{what} =~ /relgraph/ ? 'rg.cmap' : (),
     $o{what} =~ /ranking/ ? '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_popularity > v.c_popularity) AS ranking' : (),
     $tag_ids ?

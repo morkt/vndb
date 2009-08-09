@@ -261,7 +261,7 @@ sub notify { # name, pid, payload
     LEFT JOIN releases_rev rr ON c.type = 1 AND c.id = rr.id
     LEFT JOIN producers_rev pr ON c.type = 2 AND c.id = pr.id
     JOIN users u ON u.id = c.requester
-    WHERE c.added > ?
+    WHERE c.added > to_timestamp(?)
     ORDER BY c.added|
   : $_[ARG0] eq 'newpost' ? q|SELECT
       't' AS type, tp.tid AS id, tp.num AS rev, t.title, u.username, |.GETBOARDS.q|

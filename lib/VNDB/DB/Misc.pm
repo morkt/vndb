@@ -127,7 +127,8 @@ sub dbRevisionGet {
   );
 
   my @select = (
-    qw|c.id c.type c.added c.requester c.comments c.rev c.causedby|,
+    qw|c.id c.type c.requester c.comments c.rev c.causedby|,
+    q|extract('epoch' from c.added) as added|,
     $o{what} =~ /user/ ? 'u.username' : (),
     $o{what} =~ /item/ ? (
       'COALESCE(vr.vid, rr.rid, pr.pid) AS iid',

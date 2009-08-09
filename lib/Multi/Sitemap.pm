@@ -80,41 +80,41 @@ sub generate {
     for (map { 'v/'.$_, 'p/'.$_ } 'a'..'z', 0, 'all');
 
   # /v+
-  $_[KERNEL]->post(pg => query => '
-    SELECT v.id, c.added
+  $_[KERNEL]->post(pg => query => q|
+    SELECT v.id, extract('epoch' from c.added) as added
       FROM vn v
       JOIN vn_rev vr ON vr.id = v.latest
       JOIN changes c ON vr.id = c.id
       WHERE v.hidden = FALSE
-      ORDER BY v.id',
+      ORDER BY v.id|,
     undef, 'addquery', [ 'v', 0.7 ]);
 
   # /r+
-  $_[KERNEL]->post(pg => query => '
-    SELECT r.id, c.added
+  $_[KERNEL]->post(pg => query => q|
+    SELECT r.id, extract('epoch' from c.added) as added
       FROM releases r
       JOIN releases_rev rr ON rr.id = r.latest
       JOIN changes c ON c.id = rr.id
       WHERE r.hidden = FALSE
-      ORDER BY r.id',
+      ORDER BY r.id|,
     undef, 'addquery', [ 'r', 0.5 ]);
 
   # /p+
-  $_[KERNEL]->post(pg => query => '
-    SELECT p.id, c.added
+  $_[KERNEL]->post(pg => query => q|
+    SELECT p.id, extract('epoch' from c.added) as added
       FROM producers p
       JOIN producers_rev pr ON pr.id = p.latest
       JOIN changes c ON c.id = pr.id
       WHERE p.hidden = FALSE
-      ORDER BY p.id',
+      ORDER BY p.id|,
     undef, 'addquery', [ 'p', 0.3 ]);
 
   # /g+
-  $_[KERNEL]->post(pg => query => '
-    SELECT t.id, t.added
+  $_[KERNEL]->post(pg => query => q|
+    SELECT t.id, extract('epoch' from t.added) as added
       FROM tags t
       WHERE state = 2
-      ORDER BY t.id',
+      ORDER BY t.id|,
     undef, 'addquery', [ 'g', 0.3, 1 ]);
 }
 

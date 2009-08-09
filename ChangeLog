@@ -12,6 +12,7 @@
 	- Converted font size units to px in the css
 	- Added double-post prevention
 	- Converted old categories to tags and removed last traces of the category system
+	- Converted all date/time columns to timestamptz
 
 2.5 - 2009-07-09
 	- Hide NSFW images in diff viewer (unless NSFW warnings are disabled)

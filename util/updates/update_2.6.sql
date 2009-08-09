@@ -88,6 +88,12 @@ ALTER TABLE tags ALTER COLUMN added TYPE timestamptz USING to_timestamp(added);
 ALTER TABLE tags ALTER COLUMN added SET DEFAULT NOW();
 
 
+-- changes.added -> timestamptz
+ALTER TABLE changes ALTER COLUMN added DROP DEFAULT;
+ALTER TABLE changes ALTER COLUMN added TYPE timestamptz USING to_timestamp(added);
+ALTER TABLE changes ALTER COLUMN added SET DEFAULT NOW();
+
+
 -- screenshots.status (smallint) -> screenshots.processed (boolean)
 ALTER TABLE screenshots RENAME COLUMN status TO processed;
 ALTER TABLE screenshots ALTER COLUMN processed DROP DEFAULT;
