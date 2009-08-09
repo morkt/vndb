@@ -139,7 +139,7 @@ sub login {
   my $frm;
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
-      { name => 'usrname', required => 1, minlength => 2, maxlength => 15, template => 'pname' },
+      { name => 'usrname', required => 1, minlength => 2, maxlength => 15 },
       { name => 'usrpass', required => 1, minlength => 4, maxlength => 64, template => 'asciiprint' },
     );
 
