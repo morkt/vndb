@@ -223,11 +223,14 @@ sub command { # mask, dest, msg
 
   my $lvl = $_[HEAP]{commands}{$cmd} & ~8;
   my $usr = parse_user($mask);
+  my $ulvl = grep(matches_mask($_, $mask), @{$_[HEAP]{masters}}) ? 2 :
+    ($irc->is_channel_operator($_[HEAP]{channels}[0], $usr) || $irc->is_channel_owner($_[HEAP]{channels}[0], $usr)) ? 1 : 0;
+
   return $_[KERNEL]->yield(reply => $dest,
       $dest->[0] eq $_[HEAP]{channels}[0] ? 'Only OPs can do that!' : "Only $_[HEAP]{channel}[0] OPs can do that!", $usr) || 1
-    if $lvl == 1 && !$irc->is_channel_operator($_[HEAP]{channels}[0], $usr);
+    if $lvl == 1 && $ulvl < 1;
   return $_[KERNEL]->yield(reply => $dest, 'You are not my master!', $usr) || 1
-    if $lvl == 2 && !grep matches_mask($_, $mask), @{$_[HEAP]{masters}};
+    if $lvl == 2 && $ulvl < 2;
 
   return $_[KERNEL]->yield('cmd_'.$cmd, $usr, $dest, $arg, $mask) || 1;
 }
@@ -237,7 +240,7 @@ sub idlequote {
   for (keys %{$_[HEAP]{idlequotes}}) {
     next if --$_[HEAP]{idlequotes}{$_} > 0;
     $_[KERNEL]->yield(cmd_quote => '', [$_]) if $_[HEAP]{idlequotes}{$_} == 0;
-    $_[HEAP]{idlequotes}{$_} = int(60+rand(300));
+    $_[HEAP]{idlequotes}{$_} = int(120+rand(600));
   }
   $_[KERNEL]->delay(idlequote => 60);
 }
@@ -270,7 +273,7 @@ sub notify { # name, pid, payload
     LEFT JOIN releases_rev rr ON c.type = 1 AND c.id = rr.id
     LEFT JOIN producers_rev pr ON c.type = 2 AND c.id = pr.id
     JOIN users u ON u.id = c.requester
-    WHERE c.id > ?
+    WHERE c.id > ? AND c.requester <> 1
     ORDER BY c.added|
   : $_[ARG0] eq 'newpost' ? q|SELECT
       't' AS type, tp.tid AS id, tp.num AS rev, t.title, u.username, tp.date AS lastpost, |.GETBOARDS.q|
@@ -292,7 +295,7 @@ sub notify { # name, pid, payload
 
 sub notify_result { # num, res
   return if $_[ARG0] < 1;
-  my $r = $_[ARG1][0];
+  my $r = $_[ARG1][$#{$_[ARG1]}];
   $_[HEAP]{lastrev} = $r->{lastrev} if $r->{lastrev};
   $_[HEAP]{lastpost} = $r->{lastpost} if $r->{lastpost};
   $_[HEAP]{lasttag} = $r->{lasttag} if $r->{lasttag};
