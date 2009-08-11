@@ -65,104 +65,112 @@ sub homepage {
    end;
   end;
 
-  # Recent changes
-  div class => 'mainbox threelayout';
-   h1 'Recent changes';
-   my $changes = $self->dbRevisionGet(what => 'item user', results => 10, auto => 1, hidden => 1);
-   ul;
-    for (@$changes) {
-      my $t = (qw|v r p|)[$_->{type}];
-      li;
-       b "$t:";
-       a href => "/$t$_->{iid}.$_->{rev}", title => $_->{ioriginal}||$_->{ititle}, shorten $_->{ititle}, 30;
-       txt ' by ';
-       a href => "/u$_->{requester}", $_->{username};
-      end;
-    }
-   end;
-  end;
+  table class => 'mainbox threelayout';
+   Tr;
 
-  # Announcements
-  div class => 'mainbox threelayout';
-   my $an = $self->dbThreadGet(type => 'an', order => 't.id DESC', results => 2);
-   a class => 'right', href => '/t/an', 'News archive';
-   h1 'Announcements';
-   for (@$an) {
-     my $post = $self->dbPostGet(tid => $_->{id}, num => 1)->[0];
-     h2;
-      a href => "/t$_->{id}", $_->{title};
+    # Recent changes
+    td;
+     h1 'Recent changes';
+     my $changes = $self->dbRevisionGet(what => 'item user', results => 10, auto => 1, hidden => 1);
+     ul;
+      for (@$changes) {
+        my $t = (qw|v r p|)[$_->{type}];
+        li;
+         b "$t:";
+         a href => "/$t$_->{iid}.$_->{rev}", title => $_->{ioriginal}||$_->{ititle}, shorten $_->{ititle}, 30;
+         txt ' by ';
+         a href => "/u$_->{requester}", $_->{username};
+        end;
+      }
      end;
-     p;
-      lit bb2html $post->{msg}, 150;
+    end;
+
+    # Announcements
+    td;
+     my $an = $self->dbThreadGet(type => 'an', order => 't.id DESC', results => 2);
+     a class => 'right', href => '/t/an', 'News archive';
+     h1 'Announcements';
+     for (@$an) {
+       my $post = $self->dbPostGet(tid => $_->{id}, num => 1)->[0];
+       h2;
+        a href => "/t$_->{id}", $_->{title};
+       end;
+       p;
+        lit bb2html $post->{msg}, 150;
+       end;
+     }
+    end;
+
+    # Recent posts
+    td;
+     h1 'Recent posts';
+     my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, order => 'tpl.date DESC', notusers => 1);
+     ul;
+      for (@$posts) {
+        my $boards = join ', ', map $self->{discussion_boards}{$_->{type}}.($_->{iid}?' > '.$_->{title}:''), @{$_->{boards}};
+        li;
+         txt age($_->{ldate}).' ';
+         a href => "/t$_->{id}.$_->{count}", title => "Posted in $boards", shorten $_->{title}, 20;
+         txt ' by ';
+         a href => "/u$_->{luid}", $_->{lusername};
+        end;
+      }
      end;
-   }
-  end;
+    end;
 
-  # Recent posts
-  div class => 'mainbox threelayout last';
-   h1 'Recent posts';
-   my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, order => 'tpl.date DESC', notusers => 1);
-   ul;
-    for (@$posts) {
-      my $boards = join ', ', map $self->{discussion_boards}{$_->{type}}.($_->{iid}?' > '.$_->{title}:''), @{$_->{boards}};
-      li;
-       txt age($_->{ldate}).' ';
-       a href => "/t$_->{id}.$_->{count}", title => "Posted in $boards", shorten $_->{title}, 20;
-       txt ' by ';
-       a href => "/u$_->{luid}", $_->{lusername};
-      end;
-    }
    end;
-  end;
+   Tr;
 
-  # Random visual novels
-  div class => 'mainbox threelayout';
-   h1 'Random visual novels';
-   my $random = $self->dbVNGet(results => 10, order => 'RANDOM()');
-   ul;
-    for (@$random) {
-      li;
-       a href => "/v$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 40;
-      end;
-    }
-   end;
-  end;
+    # Random visual novels
+    td;
+     h1 'Random visual novels';
+     my $random = $self->dbVNGet(results => 10, order => 'RANDOM()');
+     ul;
+      for (@$random) {
+        li;
+         a href => "/v$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 40;
+        end;
+      }
+     end;
+    end;
 
-  # Upcoming releases
-  div class => 'mainbox threelayout';
-   h1 'Upcoming releases';
-   my $upcoming = $self->dbReleaseGet(results => 10, unreleased => 1, what => 'platforms');
-   ul;
-    for (@$upcoming) {
-      li;
-       lit datestr $_->{released};
-       txt ' ';
-       cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
-       txt ' ';
-       a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
-      end;
-    }
-   end;
-  end;
+    # Upcoming releases
+    td;
+     h1 'Upcoming releases';
+     my $upcoming = $self->dbReleaseGet(results => 10, unreleased => 1, what => 'platforms');
+     ul;
+      for (@$upcoming) {
+        li;
+         lit datestr $_->{released};
+         txt ' ';
+         cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
+         txt ' ';
+         a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
+        end;
+      }
+     end;
+    end;
 
-  # Just released
-  div class => 'mainbox threelayout last';
-   h1 'Just released';
-   my $justrel = $self->dbReleaseGet(results => 10, order => 'rr.released DESC', unreleased => 0, what => 'platforms');
-   ul;
-    for (@$justrel) {
-      li;
-       lit datestr $_->{released};
-       txt ' ';
-       cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
-       txt ' ';
-       a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
-      end;
-    }
-   end;
-  end;
+    # Just released
+    td;
+     h1 'Just released';
+     my $justrel = $self->dbReleaseGet(results => 10, order => 'rr.released DESC', unreleased => 0, what => 'platforms');
+     ul;
+      for (@$justrel) {
+        li;
+         lit datestr $_->{released};
+         txt ' ';
+         cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
+         txt ' ';
+         a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
+        end;
+      }
+     end;
+    end;
 
-  clearfloat;
+   end; # /tr
+  end; # /table
+
   $self->htmlFooter;
 }
 

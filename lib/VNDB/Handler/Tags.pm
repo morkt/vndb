@@ -596,58 +596,63 @@ sub tagindex {
   my $t = $self->dbTagTree(0, 2, 1);
   _childtags($self, {childs => $t}, 1);
 
-  # Recently added
-  div class => 'mainbox threelayout';
-   a class => 'right', href => '/g/list', 'Browse all tags';
-   my $r = $self->dbTagGet(order => 'added DESC', results => 10, state => 2);
-   h1 'Recently added';
-   ul;
-    for (@$r) {
-      li;
-       txt age $_->{added};
-       txt ' ';
-       a href => "/g$_->{id}", $_->{name};
-      end;
-    }
-   end;
-  end;
+  table class => 'mainbox threelayout';
+   Tr;
 
-  # Popular
-  div class => 'mainbox threelayout';
-   $r = $self->dbTagGet(order => 'c_vns DESC', meta => 0, results => 10);
-   h1 'Popular tags';
-   ul;
-    for (@$r) {
-      li;
-       a href => "/g$_->{id}", $_->{name};
-       txt " ($_->{c_vns})";
-      end;
-    }
-   end;
-  end;
-
-  # Moderation queue
-  div class => 'mainbox threelayout last';
-   h1 'Awaiting moderation';
-   $r = $self->dbTagGet(state => 0, order => 'added DESC', results => 10);
-   ul;
-    li "Moderation queue empty! yay!" if !@$r;
-    for (@$r) {
-      li;
-       txt age $_->{added};
-       txt ' ';
-       a href => "/g$_->{id}", $_->{name};
-      end;
-    }
-    li;
-     txt "\n";
-     a href => '/g/list?t=0;o=d;s=added', 'Moderation queue';
-     txt ' - ';
-     a href => '/g/list?t=1;o=d;s=added', 'Denied tags';
+    # Recently added
+    td;
+     a class => 'right', href => '/g/list', 'Browse all tags';
+     my $r = $self->dbTagGet(order => 'added DESC', results => 10, state => 2);
+     h1 'Recently added';
+     ul;
+      for (@$r) {
+        li;
+         txt age $_->{added};
+         txt ' ';
+         a href => "/g$_->{id}", $_->{name};
+        end;
+      }
+     end;
     end;
-   end;
-  end;
-  clearfloat;
+
+    # Popular
+    td;
+     $r = $self->dbTagGet(order => 'c_vns DESC', meta => 0, results => 10);
+     h1 'Popular tags';
+     ul;
+      for (@$r) {
+        li;
+         a href => "/g$_->{id}", $_->{name};
+         txt " ($_->{c_vns})";
+        end;
+      }
+     end;
+    end;
+
+    # Moderation queue
+    td;
+     h1 'Awaiting moderation';
+     $r = $self->dbTagGet(state => 0, order => 'added DESC', results => 10);
+     ul;
+      li "Moderation queue empty! yay!" if !@$r;
+      for (@$r) {
+        li;
+         txt age $_->{added};
+         txt ' ';
+         a href => "/g$_->{id}", $_->{name};
+        end;
+      }
+      li;
+       txt "\n";
+       a href => '/g/list?t=0;o=d;s=added', 'Moderation queue';
+       txt ' - ';
+       a href => '/g/list?t=1;o=d;s=added', 'Denied tags';
+      end;
+     end;
+    end;
+
+   end; # /tr
+  end; # /table
   $self->htmlFooter;
 }
 
