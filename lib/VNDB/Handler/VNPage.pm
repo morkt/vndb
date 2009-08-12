@@ -463,7 +463,7 @@ sub _screenshots {
 sub _stats {
   my($self, $v) = @_;
 
-  my $stats = $self->dbVoteStats(vid => $v->{id});
+  my $stats = $self->dbVoteStats(vid => $v->{id}, 1);
   div class => 'mainbox';
    h1 'User stats';
    if(!grep $_ > 0, @$stats) {

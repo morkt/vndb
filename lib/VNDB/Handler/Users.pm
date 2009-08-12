@@ -314,6 +314,7 @@ sub edit {
       $self->authCan('usermod') ? (
         { name => 'usrname', template => 'pname', minlength => 2, maxlength => 15 },
         { name => 'rank', enum => [ 1..$#{$self->{user_ranks}} ] },
+        { name => 'ign_votes', required => 0, default => 0 },
       ) : (),
       { name => 'mail', template => 'mail' },
       { name => 'usrpass',  required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
@@ -335,6 +336,7 @@ sub edit {
       ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->{usrpass}) if $frm->{usrpass};
       $o{show_list} = $frm->{flags_list} ? 1 : 0;
       $o{show_nsfw} = $frm->{flags_nsfw} ? 1 : 0;
+      $o{ign_votes} = $frm->{ign_votes} ? 1 : 0 if $self->authCan('usermod');
       $self->dbUserEdit($uid, %o);
       $self->dbSessionDel($uid) if $frm->{usrpass};
       return $self->resRedirect("/u$uid/edit?d=1", 'post') if $uid != $self->authInfo->{id} || !$frm->{usrpass};
@@ -347,6 +349,7 @@ sub edit {
   $frm->{$_} ||= $u->{$_} for(qw|rank mail skin customcss|);
   $frm->{flags_list} = $u->{show_list} if !defined $frm->{flags_list};
   $frm->{flags_nsfw} = $u->{show_nsfw} if !defined $frm->{flags_nsfw};
+  $frm->{ign_votes} = $u->{ign_votes} if !defined $frm->{ign_votes};
 
   # create the page
   my $title = $self->authInfo->{id} != $uid ? "Edit $u->{username}'s Account" : 'My Account';
@@ -366,6 +369,7 @@ sub edit {
       [ input  => short => 'usrname', name => 'Username' ],
       [ select => short => 'rank', name => 'Rank', options => [
         map [ $_, $self->{user_ranks}[$_][0] ], 1..$#{$self->{user_ranks}} ] ],
+      [ check  => short => 'ign_votes', name => 'Ignore votes in VN statistics' ],
     ) : (
       [ static => label => 'Username', content => $frm->{usrname} ],
     ),

@@ -264,7 +264,8 @@ CREATE TABLE users (
   customcss text NOT NULL DEFAULT '',
   ip inet NOT NULL DEFAULT '0.0.0.0',
   c_tags integer NOT NULL DEFAULT 0,
-  salt character(9) NOT NULL DEFAULT ''
+  salt character(9) NOT NULL DEFAULT '',
+  ign_votes voolean NOT NULL DEFAULT FALSE
 );
 
 -- vn
@@ -484,7 +485,11 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION update_vnpopularity() RETURNS void AS $$
 BEGIN
   CREATE OR REPLACE TEMP VIEW tmp_pop1 (uid, vid, rank) AS
-    SELECT v.uid, v.vid, sqrt(count(*))::real FROM votes v JOIN votes v2 ON v.uid = v2.uid AND v2.vote < v.vote GROUP BY v.vid, v.uid;
+      SELECT v.uid, v.vid, sqrt(count(*))::real
+        FROM votes v
+        JOIN votes v2 ON v.uid = v2.uid AND v2.vote < v.vote
+        WHERE v.uid NOT IN(SELECT id FROM users WHERE ign_votes)
+    GROUP BY v.vid, v.uid;
   CREATE OR REPLACE TEMP VIEW tmp_pop2 (vid, win) AS
     SELECT vid, sum(rank) FROM tmp_pop1 GROUP BY vid;
   UPDATE vn SET c_popularity = COALESCE((SELECT win/(SELECT MAX(win) FROM tmp_pop2) FROM tmp_pop2 WHERE vid = id), 0);

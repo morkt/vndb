@@ -155,6 +155,7 @@ sub dbVoteGet {
     $o{uid} ? ( 'n.uid = ?' => $o{uid} ) : (),
     $o{vid} ? ( 'n.vid = ?' => $o{vid} ) : (),
     $o{hide} ? ( 'u.show_list = TRUE' => 1 ) : (),
+    $o{hide_ign} ? ( '(NOT u.ign_votes OR u.id = ?)' => $self->authInfo->{id}||0 ) : (),
   );
 
   my @select = (
@@ -186,16 +187,19 @@ sub dbVoteGet {
 }
 
 
-# Arguments: (uid|vid), id
+# Arguments: (uid|vid), id, use_ignore_list
 # Returns an arrayref with 10 elements containing the number of votes for index+1
 sub dbVoteStats {
-  my($self, $col, $id) = @_;
+  my($self, $col, $id, $ign) = @_;
+  my $u = $self->authInfo->{id};
   my $r = [ qw| 0 0 0 0 0 0 0 0 0 0 | ];
   $r->[$_->{vote}-1] = $_->{votes} for (@{$self->dbAll(q|
     SELECT vote, COUNT(vote) as votes
       FROM votes
+      !s
       !W
       GROUP BY vote|,
+    $ign ? 'JOIN users ON id = uid AND (NOT ign_votes'.($u?sprintf(' OR id = %d'.$u):'').')' : '',
     $col ? { '!s = ?' => [ $col, $id ] } : {},
   )});
   return $r;

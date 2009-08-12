@@ -464,6 +464,7 @@ sub htmlVoteStats {
      order => 'date DESC',
      what => $type eq 'v' ? 'user' : 'vn',
      hide => $type eq 'v',
+     hide_ign => $type eq 'v',
    );
    if(@$recent) {
      table class => 'recentvotes';
