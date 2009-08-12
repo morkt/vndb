@@ -234,7 +234,7 @@ CREATE TABLE threads_posts (
   num smallint NOT NULL DEFAULT 0,
   uid integer NOT NULL DEFAULT 0,
   date timestamptz NOT NULL DEFAULT NOW(),
-  edited timestamptz NOT NULL,
+  edited timestamptz,
   msg text NOT NULL DEFAULT '',
   hidden boolean NOT NULL DEFAULT FALSE,
   PRIMARY KEY(tid, num)
