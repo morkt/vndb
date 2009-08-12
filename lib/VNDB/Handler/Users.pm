@@ -539,8 +539,8 @@ sub list {
         a href => '/u'.$l->{id}, $l->{username};
        end;
        td class => 'tc2', date $l->{registered};
-       td class => 'tc3';
-        lit !$l->{show_list} ? '-' : !$l->{c_votes} ? 0 :
+       td class => 'tc3'.(!$l->{show_list} && $self->authCan('usermod') ? ' linethrough' : '');
+        lit !$l->{show_list} && !$self->authCan('usermod') ? '-' : !$l->{c_votes} ? 0 :
           qq|<a href="/u$l->{id}/list">$l->{c_votes}</a>|;
        end;
        td class => 'tc4';

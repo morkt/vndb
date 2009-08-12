@@ -119,6 +119,7 @@ b.spoiler_shown { font-weight: normal }
   border-left: 1px dotted $border$;
   text-align: left;
 }
+.linethrough { text-decoration: line-through }
 
 
 

@@ -46,7 +46,7 @@ sub htmlMainTabs {
      end;
    }
 
-   if($type eq 'u' && $obj->{show_list}) {
+   if($type eq 'u' && ($obj->{show_list} || $self->authCan('usermod'))) {
      li $sel eq 'wish' ? (class => 'tabselected') : ();
       a href => "/$id/wish", 'wishlist';
      end;

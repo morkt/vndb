@@ -99,7 +99,7 @@ sub wishlist {
 
   my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
   my $u = $self->dbUserGet(uid => $uid)->[0];
-  return 404 if !$u || !$own && !$u->{show_list};
+  return 404 if !$u || !$own && !($u->{show_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
@@ -198,7 +198,7 @@ sub vnlist {
 
   my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
   my $u = $self->dbUserGet(uid => $uid)->[0];
-  return 404 if !$u || !$own && !$u->{show_list};
+  return 404 if !$u || !$own && !($u->{show_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p',  required => 0, default => 1, template => 'int' },
