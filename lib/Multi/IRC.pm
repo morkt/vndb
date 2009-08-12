@@ -561,6 +561,7 @@ sub formatid {
     push @msg, RED.'By'.NORMAL.' '.$_->{username} if $_->{username};
 
     # (only if comments key is present) Summary:
+    $_->{comments} =~ s/\n/ /g if $_->{comments};
     push @msg, RED.'Summary:'.NORMAL.' '.(
       length $_->{comments} > 40 ? substr($_->{comments}, 0, 37).'...' : $_->{comments}
     ) if defined $_->{comments};
