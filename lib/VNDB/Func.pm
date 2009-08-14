@@ -6,7 +6,7 @@ use warnings;
 use YAWF ':html';
 use Exporter 'import';
 use POSIX 'strftime', 'ceil', 'floor';
-our @EXPORT = qw| shorten age date datestr monthstr userstr bb2html gtintype liststat clearfloat cssicon tagscore|;
+our @EXPORT = qw| shorten age date datestr monthstr userstr bb2html gtintype liststat clearfloat cssicon tagscore mt |;
 
 
 # I would've done this as a #define if this was C...
@@ -264,6 +264,13 @@ sub tagscore {
     }
   }
   div class => 'taglvl', style => sprintf('width: %.0fpx', (ceil($s)-$s)*10), ' ' if $s > 0 && ceil($s)-$s > 0;
+}
+
+
+# short wrapper around maketext()
+# (not thread-safe, in the same sense as YAWF::XML. But who cares about threads, anyway?)
+sub mt {
+  return $YAWF::OBJ->{l10n}->maketext(@_);
 }
 
 

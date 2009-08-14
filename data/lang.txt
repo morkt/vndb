@@ -1,0 +1,54 @@
+This file contains all the translatable text of the VNDB interface.
+
+IMPORTANT: This file is encoded in UTF-8 and uses UNIX-style line endings,
+           make sure your text editor is configured to correctly handle this!
+
+The syntax of this file is as follows: empty lines, or lines beginning with a
+'#' are ignored by the parser. Each translatable piece of text is identified by
+a 'key', this is usually the English text, but can also be a short identifier
+starting with an underscore. A key line starts with a colon ':' and is directly
+followed by the key itself. The lines following such a key line specify which
+text to use for each language. A language text starts with the language tag,
+followed by a space or asterisk, followed by a colon, another space, and the
+text for that language. Here's an example of a line:
+
+  # this is a comment
+  :Age rating
+  en : Age rating
+  nl*: Minimum leeftijd
+
+In this example, "Age rating" is the 'key', and the lines following are the
+translations.  If a line does not have a translation for a particular language,
+the system will fall back to the English version (i.e. the string that starts
+with 'en:'). If there is no English version, either, it will use the key
+itself. The key and the English translation are the same in the above example,
+so in that case the translation can be left out entirely:
+
+  # this has the same effect as the previous example
+  :Age rating
+  nl*: Minimum leeftijd
+
+Because VNDB is in constant development, changes to the interface text are
+inevitable, and the translations will get out of sync with the English text
+very quickly. To indicate which lines should be synchronised to their English
+counterparts, and asterisk is used between the language tag and the colon, as
+used in the above examples. As soon as a line is retranslated or synchronised
+again by the translator, (s)he should replace the asterick with a space to
+indicate that it has been checked.
+
+(Actual processing of this file begins after the following line)
+/intro
+
+
+:test
+en : (en test)
+ru : (ru test)
+
+:multiline
+en : en multi
+     en line
+
+ru : ru multi
+     ru line
+
+

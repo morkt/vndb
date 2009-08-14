@@ -17,6 +17,7 @@ use lib $ROOT.'/lib';
 
 
 use YAWF ':html';
+use VNDB::L10N;
 
 
 our(%O, %S);
@@ -31,6 +32,10 @@ $S{skins} = readskins();
 require $ROOT.'/data/global.pl';
 
 
+# load lang.dat
+VNDB::L10N::loadfile();
+
+
 YAWF::init(
   %O,
   namespace => 'VNDB',
@@ -42,6 +47,10 @@ YAWF::init(
 
 sub reqinit {
   my $self = shift;
+
+  # TODO: get language from user setting (cookie, query string, whatever)
+  $self->{l10n} = VNDB::L10N->get_handle();
+
   $self->authInit;
 
   # check for IE6
