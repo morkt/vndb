@@ -40,6 +40,45 @@ indicate that it has been checked.
 /intro
 
 
+
+# Main title of the site, used on header of each page and as title on the homepage
+:The Visual Novel Database
+ru : База Данных Интерактивных Новелл
+
+
+# Main menu
+
 :Menu
-ru : ~[Menu in russian~]
+ru : Меню
+
+:Home
+ru : Домой
+
+:Visual novels
+ru : Интерактивные новеллы
+
+:Releases
+ru : Выпуски
+
+:Producers
+ru : Издатели
+
+:Tags
+ru : Тэги
+
+:Users
+ru : Пользователи
+
+:Recent changes
+ru : Последние изменения
+
+:Discussion board
+ru : Форум
+
+:FAQ
+ru : ЧаВо
+
+:webchat
+ru : Веб-чат
+
 

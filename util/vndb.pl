@@ -28,12 +28,12 @@ our(%O, %S);
 $S{skins} = readskins();
 
 
-# load settings from global.pl
-require $ROOT.'/data/global.pl';
-
-
 # load lang.dat
 VNDB::L10N::loadfile();
+
+
+# load settings from global.pl
+require $ROOT.'/data/global.pl';
 
 
 YAWF::init(

@@ -12,6 +12,13 @@ use warnings;
   # be the same as in the languages hash in global.pl
   sub languages { ('en', 'ru') }
 
+  sub maketext {
+    my $r = eval { shift->SUPER::maketext(@_) };
+    return $r if defined $r;
+    warn "maketext failed for '@_': $@\n";
+    return $_[0]||''; # not quite sure we want this
+  }
+
   # can be called as either a subroutine or a method
   sub loadfile {
     my %lang = (
@@ -60,7 +67,7 @@ use warnings;
         next;
       }
       # something we didn't expect
-      die "Don't know what to do with line $line\n";
+      die "Don't know what to do with line $line\n" unless /^([a-z_-]{2,7})[ *]:/;
     }
     close $F;
 

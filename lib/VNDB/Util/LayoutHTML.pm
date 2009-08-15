@@ -38,7 +38,7 @@ sub htmlHeader { # %options->{ title, js, noindex, search }
     div id => 'bgright', ' ';
     div id => 'header';
      h1;
-      a href => '/', lc $self->{site_title};
+      a href => '/', lc mt 'The Visual Novel Database';
      end;
     end;
 
@@ -65,17 +65,17 @@ sub _menu {
      txt mt 'Menu';
     end;
     div;
-     a href => '/',      'Home'; br;
-     a href => '/v/all', 'Visual novels'; br;
-     a href => '/r',     'Releases'; br;
-     a href => '/p/all', 'Producers'; br;
-     a href => '/g',     'Tags'; br;
-     a href => '/u/all', 'Users'; br;
-     a href => '/hist',  'Recent changes'; br;
-     a href => '/t',     'Discussion board'; br;
-     a href => '/d6',    'FAQ'; br;
+     a href => '/',      mt 'Home'; br;
+     a href => '/v/all', mt 'Visual novels'; br;
+     a href => '/r',     mt 'Releases'; br;
+     a href => '/p/all', mt 'Producers'; br;
+     a href => '/g',     mt 'Tags'; br;
+     a href => '/u/all', mt 'Users'; br;
+     a href => '/hist',  mt 'Recent changes'; br;
+     a href => '/t',     mt 'Discussion board'; br;
+     a href => '/d6',    mt 'FAQ'; br;
      a href => 'irc://irc.synirc.net/vndb', '#vndb';
-      lit ' (<a href="http://cgiirc.synirc.net/?chan=%23vndb">webchat</a>)';
+      lit ' (<a href="http://cgiirc.synirc.net/?chan=%23vndb">'.mt('webchat').'</a>)';
     end;
     form action => '/v/all', method => 'get', id => 'search';
      fieldset;

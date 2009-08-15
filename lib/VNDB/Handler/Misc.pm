@@ -36,10 +36,10 @@ YAWF::register(
 
 sub homepage {
   my $self = shift;
-  $self->htmlHeader(title => $self->{site_title});
+  $self->htmlHeader(title => mt 'The Visual Novel Database');
 
   div class => 'mainbox';
-   h1 $self->{site_title};
+   h1 mt 'The Visual Novel Database';
    p class => 'description';
     lit qq|
      VNDB.org strives to be a comprehensive database for information about visual novels and
