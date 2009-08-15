@@ -48,8 +48,10 @@ YAWF::init(
 sub reqinit {
   my $self = shift;
 
-  # TODO: get language from user setting (cookie, query string, whatever)
-  $self->{l10n} = VNDB::L10N->get_handle();
+  $self->{l10n} = VNDB::L10N->get_handle($self->reqParam('l10n') || $self->reqCookie('l10n') || ());
+  my $lang = $self->{l10n}->language_tag();
+  $self->resHeader('Set-Cookie', "l10n=$lang; expires=Sat, 01-Jan-2030 00:00:00 GMT; path=/; domain=$self->{cookie_domain}")
+    if $lang ne ($self->reqCookie('l10n')||'');
 
   $self->authInit;
 

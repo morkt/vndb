@@ -54,7 +54,16 @@ sub _menu {
   div id => 'menulist';
 
    div class => 'menubox';
-    h2 'Menu';
+    h2;
+     span;
+      for (grep $self->{l10n}->language_tag() ne $_, $self->{l10n}->languages()) {
+        a href => "?l10n=$_";
+         cssicon "lang $_", $self->{languages}{$_};
+        end;
+      }
+     end;
+     txt mt 'Menu';
+    end;
     div;
      a href => '/',      'Home'; br;
      a href => '/v/all', 'Visual novels'; br;

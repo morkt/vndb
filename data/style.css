@@ -272,6 +272,10 @@ b.future {
   font-size: 11px;
   color: $maintext$;
 }
+#menulist h2 span {
+  float: right;
+  padding-top: 1px;
+}
 #menulist dt {
   display: block;
   float: left;

@@ -40,15 +40,6 @@ indicate that it has been checked.
 /intro
 
 
-:test
-en : (en test)
-ru : (ru test)
-
-:multiline
-en : en multi
-     en line
-
-ru : ru multi
-     ru line
-
+:Menu
+ru : ~[Menu in russian~]
 

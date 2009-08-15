@@ -8,6 +8,10 @@ use warnings;
 
   sub fallback_languages { ('en') };
 
+  # used for the language switch interface, language tags must
+  # be the same as in the languages hash in global.pl
+  sub languages { ('en', 'ru') }
+
   # can be called as either a subroutine or a method
   sub loadfile {
     my %lang = (
