@@ -19,3 +19,15 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+
+-- VN relations cleanup
+
+UPDATE vn_relations SET relation = relation + 50 WHERE relation IN(8, 9, 10);
+UPDATE vn_relations SET relation = relation - 1  WHERE relation > 3 AND relation < 50;
+UPDATE vn_relations SET relation = 7 WHERE relation = 60;
+DELETE FROM vn_relations WHERE relation > 50;
+
+-- Be sure to execute the following query after restarting Multi, to regenerate the relation graphs:
+--   UPDATE vn SET rgraph = NULL;
+

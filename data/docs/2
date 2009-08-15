@@ -127,24 +127,20 @@
   The definition of "setting" is not always easy to define, but usually it
   means that if places or items not existing in the real world described in one
   game also exist in the other game, you could use this relation.
- </dd><dt>Alternative setting</dt><dd>
-  Same characters and (mostly) the same story, but set in a different universe,
-  world, reality or timeline.
  </dd><dt>Alternative version</dt><dd>
   Same setting, same characters, but the story is told differently.
- </dd><dt>Same characters</dt><dd>
+ </dd><dt>Shares characters</dt><dd>
   Different story, but shares some characters.
  </dd><dt>Side story</dt><dd>
   The story takes place sometime during the parent storyline. &lt;=&gt;<i>Parent story</i>
  </dd><dt>Parent story</dt><dd>
   Opposite of <i>Side story</i>.
- </dd><dt>Summary</dt><dd>
-  Summarizes full story, may contain additional stuff. &lt;=&gt;<i>Full story</i>.
- </dd><dt>Full story</dt><dd>
-  Full version of the summarized story. &lt;=&gt;<i>Summary</i>.
- </dd><dt>Other</dt><dd>
-  There is a relation, but it's not possible to describe it using the other available
-  options. This is a relation that should rarely be used.
+ </dd><dt>Same series</dt><dd>
+  The games are part of the same series.
+ </dd><dt>Fandisc</dt><dd>
+  <a href="http://en.wikipedia.org/wiki/Fan_disc">Fandisc</a>.
+ </dd><dt>Original game</dt><dd>
+  The opposite of fandisc.
  </dd>
 </dl>
 
