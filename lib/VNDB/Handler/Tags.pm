@@ -450,7 +450,7 @@ sub vntagmod {
     end;
    end;
   end;
-  $self->htmlForm({ frm => $frm, action => "/v$vid/tagmod", hitsubmit => 1 }, 'Tags' => [
+  $self->htmlForm({ frm => $frm, action => "/v$vid/tagmod", nosubmit => 1 }, 'Tags' => [
     [ hidden => short => 'taglinks', value => '' ],
     [ static => nolabel => 1, content => sub {
       table id => 'tagtable';
@@ -467,6 +467,7 @@ sub vntagmod {
        end;
        tfoot; Tr;
         td colspan => 5;
+         input type => 'submit', class => 'submit', value => 'Save changes', style => 'float: right';
          input type => 'text', class => 'text', name => 'addtag', value => '';
          input type => 'button', class => 'submit', value => 'Add tag';
          br;

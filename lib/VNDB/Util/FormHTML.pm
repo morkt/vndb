@@ -273,23 +273,23 @@ sub htmlForm {
   }
 
   # edit summary / submit button
-  div class => 'mainbox';
-   fieldset class => 'submit';
-    if($options->{editsum}) {
-      (my $txt = $options->{frm}{editsum}||'') =~ s/&/&amp;/;
-      $txt =~ s/</&lt;/;
-      $txt =~ s/>/&gt;/;
-      h2 'Edit summary';
-      textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50;
-       lit $txt;
-      end;
-      br;
-    }
-    b "Don't forget! -> " if $options->{hitsubmit};
-    input type => 'submit', value => 'Submit', class => 'submit';
-    b ' <-' if $options->{hitsubmit};
-   end;
-  end;
+  if(!$options->{nosubmit}) {
+    div class => 'mainbox';
+     fieldset class => 'submit';
+      if($options->{editsum}) {
+        (my $txt = $options->{frm}{editsum}||'') =~ s/&/&amp;/;
+        $txt =~ s/</&lt;/;
+        $txt =~ s/>/&gt;/;
+        h2 'Edit summary';
+        textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50;
+         lit $txt;
+        end;
+        br;
+      }
+      input type => 'submit', value => 'Submit', class => 'submit';
+     end;
+    end;
+  }
 
   end;
 }

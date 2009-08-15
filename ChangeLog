@@ -2,6 +2,7 @@ git - ?
 	- Improved styling of the threeboxes layout
 	- Blacklist a users' votes from the VN vote statistics
 	- usermods can browse a users' votes and list even when they are hidden
+	- More sensible placing of the submit button on /v+/tagmod
 
 2.6 - 2009-08-09
 	- New screen resolutions: 1024x600 and 1600x1200
