@@ -62,25 +62,25 @@ sub _menu {
         end;
       }
      end;
-     txt mt 'Menu';
+     txt mt '_menu';
     end;
     div;
-     a href => '/',      mt 'Home'; br;
-     a href => '/v/all', mt 'Visual novels'; br;
-     a href => '/r',     mt 'Releases'; br;
-     a href => '/p/all', mt 'Producers'; br;
-     a href => '/g',     mt 'Tags'; br;
-     a href => '/u/all', mt 'Users'; br;
-     a href => '/hist',  mt 'Recent changes'; br;
-     a href => '/t',     mt 'Discussion board'; br;
-     a href => '/d6',    mt 'FAQ'; br;
+     a href => '/',      mt '_menu_home'; br;
+     a href => '/v/all', mt '_menu_vn'; br;
+     a href => '/r',     mt '_menu_releases'; br;
+     a href => '/p/all', mt '_menu_producers'; br;
+     a href => '/g',     mt '_menu_tags'; br;
+     a href => '/u/all', mt '_menu_users'; br;
+     a href => '/hist',  mt '_menu_recent_changes'; br;
+     a href => '/t',     mt '_menu_discussion_board'; br;
+     a href => '/d6',    mt '_menu_faq'; br;
      a href => 'irc://irc.synirc.net/vndb', '#vndb';
-      lit ' (<a href="http://cgiirc.synirc.net/?chan=%23vndb">'.mt('webchat').'</a>)';
+      lit ' (<a href="http://cgiirc.synirc.net/?chan=%23vndb">'.mt('_menu_webchat').'</a>)';
     end;
     form action => '/v/all', method => 'get', id => 'search';
      fieldset;
       legend 'Search';
-      input type => 'text', class => 'text', id => 'sq', name => 'sq', value => $o{search}||'search';
+      input type => 'text', class => 'text', id => 'sq', name => 'sq', value => $o{search}||mt('_menu_emptysearch');
       input type => 'submit', class => 'submit', value => 'Search';
      end;
     end;
@@ -91,24 +91,25 @@ sub _menu {
       my $uid = sprintf '/u%d', $self->authInfo->{id};
       h2;
        a href => $uid, ucfirst $self->authInfo->{username};
+       # note: user ranks aren't TL'ed (but might be in the future, hmm)
        txt ' ('.$self->{user_ranks}[$self->authInfo->{rank}][0].')';
       end;
       div;
-       a href => "$uid/edit", 'My Profile'; br;
-       a href => "$uid/list", 'My Visual Novel List'; br;
-       a href => "$uid/wish", 'My Wishlist'; br;
-       a href => "/t$uid",    sprintf 'My Messages (%d)', $self->authInfo->{mymessages}; br;
-       a href => "$uid/hist", 'My Recent Changes'; br;
-       a href => "$uid/tags", 'My Tags'; br;
+       a href => "$uid/edit", mt '_menu_myprofile'; br;
+       a href => "$uid/list", mt '_menu_myvnlist'; br;
+       a href => "$uid/wish", mt '_menu_mywishlist'; br;
+       a href => "/t$uid",    mt '_menu_mymessages', $self->authInfo->{mymessages}; br;
+       a href => "$uid/hist", mt '_menu_mychanges'; br;
+       a href => "$uid/tags", mt '_menu_mytags'; br;
        br;
-       a href => '/v/new',    'Add Visual Novel'; br;
-       a href => '/p/new',    'Add Producer'; br;
+       a href => '/v/new',    mt '_menu_addvn'; br;
+       a href => '/p/new',    mt '_menu_addproducer'; br;
        br;
-       a href => '/u/logout', 'Logout';
+       a href => '/u/logout', mt '_menu_logout';
       end;
     } else {
       h2;
-       a href => '/u/login', 'Login';
+       a href => '/u/login', mt '_menu_login';
       end;
       div;
        form action => '/nospam?/u/login', id => 'loginform', method => 'post';
@@ -116,32 +117,23 @@ sub _menu {
          legend 'Login';
          input type => 'text', class => 'text', id => 'username', name => 'usrname';
          input type => 'password', class => 'text', id => 'userpass', name => 'usrpass';
-         input type => 'submit', class => 'submit', value => 'Login';
+         input type => 'submit', class => 'submit', value => mt '_menu_login';
         end;
        end;
        p;
-        lit 'Need to <a href="/u/register">register</a>,<br />';
-        lit 'or <a href="/u/newpass">forgot your password?</a>';
+        lit mt '_menu_loginmsg', '/u/register', '/u/newpass';
        end;
       end;
     }
    end;
 
-   my @stats = (
-     [ vn        => 'Visual Novels' ],
-     [ releases  => 'Releases'      ],
-     [ producers => 'Producers'     ],
-     [ users     => 'Users'         ],
-     [ threads   => 'Threads'       ],
-     [ posts     => 'Posts'         ],
-   );
    div class => 'menubox';
-    h2 'Database Statistics';
+    h2 mt '_menu_dbstats';
     div;
      dl;
-      for (@stats) {
-        dt $$_[1];
-        dd $self->{stats}{$$_[0]};
+      for (qw|vn releases producers users threads posts|) {
+        dt mt "_menu_stat_$_";
+        dd $self->{stats}{$_};
       }
      end;
      clearfloat;

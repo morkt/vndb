@@ -40,6 +40,10 @@ indicate that it has been checked.
 /intro
 
 
+#############################################################################
+##                         Main website layout                             ##
+#############################################################################
+
 
 # Main title of the site, used on header of each page and as title on the homepage
 :The Visual Novel Database
@@ -48,37 +52,146 @@ ru : База Данных Интерактивных Новелл
 
 # Main menu
 
-:Menu
+:_menu
+en : Menu
 ru : Меню
 
-:Home
+:_menu_home
+en : Home
 ru : Домой
 
-:Visual novels
+:_menu_vn
+en : Visual novels
 ru : Интерактивные новеллы
 
-:Releases
+:_menu_releases
+en : Releases
 ru : Выпуски
 
-:Producers
+:_menu_producers
+en : Producers
 ru : Издатели
 
-:Tags
+:_menu_tags
+en : Tags
 ru : Тэги
 
-:Users
+:_menu_users
+en : Users
 ru : Пользователи
 
-:Recent changes
+:_menu_recent_changes
+en : Recent changes
 ru : Последние изменения
 
-:Discussion board
+:_menu_discussion_board
+en : Discussion board
 ru : Форум
 
-:FAQ
+:_menu_faq
+en : FAQ
 ru : ЧаВо
 
-:webchat
+:_menu_webchat
+en : webchat
 ru : Веб-чат
+
+:_menu_emptysearch
+en : search
+ru*:
+
+
+
+# User menu
+
+:_menu_myprofile
+en : My Profile
+ru*:
+
+:_menu_myvnlist
+en : My Visual Novel List
+ru*:
+
+:_menu_mywishlist
+en : My Wishlist
+ru*:
+
+# [_1] = number of messages
+:_menu_mymessages
+en : My Messages ([_1])
+ru*:
+
+:_menu_mychanges
+en : My Recent Changes
+ru*:
+
+:_menu_mytags
+en : My Tags
+ru*:
+
+:_menu_addvn
+en : Add Visual Novel
+ru*:
+
+:_menu_addproducer
+en : Add Producer
+ru*:
+
+:_menu_logout
+en : Logout
+ru*:
+
+# used for both the box title and submit button
+:_menu_login
+en : Login
+ru*:
+
+# HTML
+:_menu_loginmsg
+en : Need to <a href="[_1]">register</a>,<br />
+     or <a href="[_2]">forgot your password</a>?
+ru*:
+
+
+# database statistics
+
+:_menu_dbstats
+en : Database Statistics
+ru*:
+
+:_menu_stat_vn
+en : Visual Novels
+ru*:
+
+:_menu_stat_releases
+en : Releases
+ru*:
+
+:_menu_stat_producers
+en : Producers
+ru*:
+
+:_menu_stat_users
+en : Users
+ru*:
+
+:_menu_stat_threads
+en : Threads
+ru*:
+
+:_menu_stat_posts
+en : Posts
+ru*:
+
+
+# Footer
+
+:_footer_aboutus
+en : abous us
+ru*:
+
+:_footer_source
+en : source
+ru*:
 
 
