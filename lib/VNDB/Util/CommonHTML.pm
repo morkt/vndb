@@ -117,19 +117,16 @@ sub htmlMainTabs {
 # generates a full error page, including header and footer
 sub htmlDenied {
   my $self = shift;
-  $self->htmlHeader(title => 'Access Denied');
+  $self->htmlHeader(title => mt '_denied_title');
   div class => 'mainbox';
-   h1 'Access Denied';
+   h1 mt '_denied_title';
    div class => 'warning';
     if(!$self->authInfo->{id}) {
-      h2 'You need to be logged in to perform this action.';
-      p;
-       lit 'Please <a href="/u/login">login</a>, or <a href="/u/register">create an account</a> '
-          .'if you don\'t have one yet.';
-      end;
+      h2 mt '_denied_needlogin_title';
+      p; lit mt '_denied_needlogin_msg'; end;
     } else {
-      h2 "You are not allowed to perform this action.";
-      p 'It seems you don\'t have the proper rights to perform the action you wanted to perform...';
+      h2 mt '_denied_noaccess_title';
+      p mt '_denied_noaccess_msg';
     }
    end;
   end;
@@ -147,10 +144,9 @@ sub htmlHiddenMessage {
   div class => 'mainbox';
    h1 $obj->{title}||$obj->{name};
    div class => 'warning';
-    h2 'Item deleted';
+    h2 mt '_hiddenmsg_title';
     p;
-     lit qq|This item has been deleted from the database, File a request on the|
-        .qq| <a href="/t/$board">discussion board</a> to undelete this page.|;
+     lit mt '_hiddenmsg_msg', "/t/$board";
     end;
    end;
   end;

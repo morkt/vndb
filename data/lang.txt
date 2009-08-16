@@ -626,3 +626,49 @@ en : Page
 ru*:
 
 
+
+
+#############################################################################
+##                            Misc. messages                               ##
+#############################################################################
+# Util::CommonHTML::htmlDenied and htmlHiddenMessage
+
+
+# Generic "Access denied!" page
+
+:_denied_title
+en : Access Denied
+ru*:
+
+# not logged in
+:_denied_needlogin_title
+en : You need to be logged in to perform this action.
+ru*:
+
+# HTML
+:_denied_needlogin_msg
+en : Please <a href="/u/login">login</a>, or <a href="/u/register">create an account</a> if you don't have one yet.
+ru*:
+
+# logged in, but simply no access
+:_denied_noaccess_title
+en : You are not allowed to perform this action.
+ru*:
+
+:_denied_noaccess_msg
+en : It seems you don't have the proper rights to perform the action you wanted to perform...
+ru*:
+
+
+# "DB Item has been deleted" page
+
+:_hiddenmsg_title
+en : Item deleted
+ru*:
+
+# HTML
+:_hiddenmsg_msg
+en : This item has been deleted from the database, File a request on the
+     <a href="[_1]">discussion board</a> to undelete this page.
+ru*:
+
