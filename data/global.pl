@@ -23,7 +23,6 @@ our %S = (%S,
   global_salt     => 'any-private-string-here',
   source_url      => 'http://git.blicky.net/vndb.git/?h=master',
   admin_email     => 'contact@vndb.org',
-  sharedmem_key   => 'VNDB',
   user_ranks      => [
        # rankname   allowed actions                                   # DB number
     [qw| visitor    hist                                                     |], # 0
