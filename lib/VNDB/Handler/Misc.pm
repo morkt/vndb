@@ -41,18 +41,7 @@ sub homepage {
   div class => 'mainbox';
    h1 mt 'The Visual Novel Database';
    p class => 'description';
-    lit qq|
-     VNDB.org strives to be a comprehensive database for information about visual novels and
-     eroge.<br />
-     This website is built as a wiki, meaning that anyone can freely add and contribute information
-     to the database, allowing us to create the largest, most accurate and most up-to-date visual novel
-     database on the web.<br />
-     Registered users are also able to keep track of a personal list of games they want to play or have finished
-     and they can vote on all visual novels.<br />
-     <br />
-     Feel free to <a href="/v/all">browse around</a>, <a href="/u/register">register an account</a>
-     or to participate in the discussions about visual novels or VNDB on our <a href="/t">discussion board</a>.
-    |;
+    lit mt '_home_intro';
    end;
 
    my $scr = $self->dbScreenshotRandom;
@@ -69,8 +58,9 @@ sub homepage {
    Tr;
 
     # Recent changes
+    # TODO: localized item format
     td;
-     h1 'Recent changes';
+     h1 mt '_home_recentchanges';
      my $changes = $self->dbRevisionGet(what => 'item user', results => 10, auto => 1, hidden => 1);
      ul;
       for (@$changes) {
@@ -88,8 +78,8 @@ sub homepage {
     # Announcements
     td;
      my $an = $self->dbThreadGet(type => 'an', order => 't.id DESC', results => 2);
-     a class => 'right', href => '/t/an', 'News archive';
-     h1 'Announcements';
+     a class => 'right', href => '/t/an', mt '_home_newsarchive';
+     h1 mt '_home_announcements';
      for (@$an) {
        my $post = $self->dbPostGet(tid => $_->{id}, num => 1)->[0];
        h2;
@@ -102,8 +92,9 @@ sub homepage {
     end;
 
     # Recent posts
+    # TODO: localized item format
     td;
-     h1 'Recent posts';
+     h1 mt '_home_recentposts';
      my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, order => 'tpl.date DESC', notusers => 1);
      ul;
       for (@$posts) {
@@ -123,7 +114,7 @@ sub homepage {
 
     # Random visual novels
     td;
-     h1 'Random visual novels';
+     h1 mt '_home_randomvn';
      my $random = $self->dbVNGet(results => 10, order => 'RANDOM()');
      ul;
       for (@$random) {
@@ -136,7 +127,7 @@ sub homepage {
 
     # Upcoming releases
     td;
-     h1 'Upcoming releases';
+     h1 mt '_home_upcoming';
      my $upcoming = $self->dbReleaseGet(results => 10, unreleased => 1, what => 'platforms');
      ul;
       for (@$upcoming) {
@@ -153,7 +144,7 @@ sub homepage {
 
     # Just released
     td;
-     h1 'Just released';
+     h1 mt '_home_justreleased';
      my $justrel = $self->dbReleaseGet(results => 10, order => 'rr.released DESC', unreleased => 0, what => 'platforms');
      ul;
       for (@$justrel) {
@@ -195,7 +186,7 @@ sub history {
             $type eq 'p' ? $self->dbProducerGet(id => $id)->[0] :
             $type eq 'r' ? $self->dbReleaseGet(id => $id)->[0] :
             $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : undef;
-  my $title = $type ? 'Edit history of '.($obj->{title} || $obj->{name} || $obj->{username}) : 'Recent changes';
+  my $title = mt $type ? ('_hist_title_item', $obj->{title} || $obj->{name} || $obj->{username}) : '_hist_title';
   return 404 if $type && !$obj->{id};
 
   # get the edit history
@@ -232,33 +223,33 @@ sub history {
    h1 $title;
    if($type ne 'u') {
      p class => 'browseopts';
-      a !$f->{m} ? (class => 'optselected') : (), href => $u->(m => 0), 'Show automated edits';
-      a  $f->{m} ? (class => 'optselected') : (), href => $u->(m => 1), 'Hide automated edits';
+      a !$f->{m} ? (class => 'optselected') : (), href => $u->(m => 0), mt '_hist_filter_showauto';
+      a  $f->{m} ? (class => 'optselected') : (), href => $u->(m => 1), mt '_hist_filter_hideauto';
      end;
    }
    if(!$type || $type eq 'u') {
      if($self->authCan('del')) {
        p class => 'browseopts';
-        a $f->{h} == 1  ? (class => 'optselected') : (), href => $u->(h =>  1), 'Hide deleted items';
-        a $f->{h} == -1 ? (class => 'optselected') : (), href => $u->(h => -1), 'Show deleted items';
+        a $f->{h} == 1  ? (class => 'optselected') : (), href => $u->(h =>  1), mt '_hist_filter_hidedel';
+        a $f->{h} == -1 ? (class => 'optselected') : (), href => $u->(h => -1), mt '_hist_filter_showdel';
        end;
      }
      p class => 'browseopts';
-      a !$f->{t}        ? (class => 'optselected') : (), href => $u->(t => ''),  'Show all items';
-      a  $f->{t} eq 'v' ? (class => 'optselected') : (), href => $u->(t => 'v'), 'Only visual novels';
-      a  $f->{t} eq 'r' ? (class => 'optselected') : (), href => $u->(t => 'r'), 'Only releases';
-      a  $f->{t} eq 'p' ? (class => 'optselected') : (), href => $u->(t => 'p'), 'Only producers';
+      a !$f->{t}        ? (class => 'optselected') : (), href => $u->(t => ''),  mt '_hist_filter_alltypes';
+      a  $f->{t} eq 'v' ? (class => 'optselected') : (), href => $u->(t => 'v'), mt '_hist_filter_onlyvn';
+      a  $f->{t} eq 'r' ? (class => 'optselected') : (), href => $u->(t => 'r'), mt '_hist_filter_onlyreleases';
+      a  $f->{t} eq 'p' ? (class => 'optselected') : (), href => $u->(t => 'p'), mt '_hist_filter_onlyproducers';
      end;
      p class => 'browseopts';
-      a !$f->{e}       ? (class => 'optselected') : (), href => $u->(e =>  0), 'Show all changes';
-      a  $f->{e} == 1  ? (class => 'optselected') : (), href => $u->(e =>  1), 'Only edits';
-      a  $f->{e} == -1 ? (class => 'optselected') : (), href => $u->(e => -1), 'Only newly created pages';
+      a !$f->{e}       ? (class => 'optselected') : (), href => $u->(e =>  0), mt '_hist_filter_allactions';
+      a  $f->{e} == 1  ? (class => 'optselected') : (), href => $u->(e =>  1), mt '_hist_filter_onlyedits';
+      a  $f->{e} == -1 ? (class => 'optselected') : (), href => $u->(e => -1), mt '_hist_filter_onlynew';
      end;
    }
    if($type eq 'v') {
      p class => 'browseopts';
-      a !$f->{r} ? (class => 'optselected') : (), href => $u->(r => 0), 'Exclude edits of releases';
-      a $f->{r}  ? (class => 'optselected') : (), href => $u->(r => 1), 'Include edits of releases';
+      a !$f->{r} ? (class => 'optselected') : (), href => $u->(r => 0), mt '_hist_filter_exrel';
+      a $f->{r}  ? (class => 'optselected') : (), href => $u->(r => 1), mt '_hist_filter_increl';
      end;
    }
   end;

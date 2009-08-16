@@ -40,9 +40,12 @@ indicate that it has been checked.
 /intro
 
 
+
+
 #############################################################################
 ##                         Main website layout                             ##
 #############################################################################
+# Util::LayoutHTML
 
 
 # Main title of the site, used on header of each page and as title on the homepage
@@ -99,7 +102,6 @@ ru : Веб-чат
 :_menu_emptysearch
 en : search
 ru*:
-
 
 
 # User menu
@@ -192,6 +194,148 @@ ru*:
 
 :_footer_source
 en : source
+ru*:
+
+
+
+
+#############################################################################
+##                              Home page (/)                              ##
+#############################################################################
+# Handler::Misc::home
+
+
+# HTML
+:_home_intro
+en : VNDB.org strives to be a comprehensive database for information about visual novels and eroge.<br />
+     This website is built as a wiki, meaning that anyone can freely add and contribute information
+     to the database, allowing us to create the largest, most accurate and most up-to-date visual novel
+     database on the web.<br />
+     Registered users are also able to keep track of a personal list of games they want to play or have finished
+     and they can vote on all visual novels.<br /><br />
+     Feel free to <a href="/v/all">browse around</a>, <a href="/u/register">register an account</a>
+     or to participate in the discussions about visual novels or VNDB on our <a href="/t">discussion board</a>.
+ru*:
+
+
+:_home_recentchanges
+en : Recent Changes
+ru*:
+
+:_home_announcements
+en : Announcements
+ru*:
+
+:_home_newsarchive
+en : News Archive
+ru*:
+
+:_home_recentposts
+en : Recent Posts
+ru*:
+
+:_home_randomvn
+en : Random vsual novels
+ru*:
+
+:_home_upcoming
+en : Upcoming releases
+ru*:
+
+:_home_justreleased
+en : Just released
+ru*:
+
+
+
+
+#############################################################################
+##                     History browser (/*/hist)                           ##
+#############################################################################
+# Handler::Misc::history and Util::CommonHTML::htmlHistory
+
+
+:_hist_title
+en : Recent changes
+ru*:
+
+:_hist_title_item
+en : Edit history of [_1]
+ru*:
+
+
+# the filter buttons
+
+:_hist_filter_showauto
+en : Show automated edits
+ru*:
+
+:_hist_filter_hideauto
+en : Hide automated edits
+ru*:
+
+:_hist_filter_hidedel
+en : Hide deleted items
+ru*:
+
+:_hist_filter_showdel
+en : Show deleted items
+ru*:
+
+:_hist_filter_alltypes
+en : Show all items
+ru*:
+
+:_hist_filter_onlyvn
+en : Only visual novels
+ru*:
+
+:_hist_filter_onlyreleases
+en : Only releases
+ru*:
+
+:_hist_filter_onlyproducers
+en : Only producers
+ru*:
+
+:_hist_filter_allactions
+en : Show all changes
+ru*:
+
+:_hist_filter_onlyedits
+en : Only edits
+ru*:
+
+:_hist_filter_onlynew
+en : Only newly created pages
+ru*:
+
+:_hist_filter_exrel
+en : Exclude edits of releases
+ru*:
+
+:_hist_filter_increl
+en : Include edits of releases
+ru*:
+
+
+# column headers
+
+# Short version of 'Revision'
+:_hist_col_rev
+en : Rev.
+ru*:
+
+:_hist_col_date
+en : Date
+ru*:
+
+:_hist_col_user
+en : User
+ru*:
+
+:_hist_col_page
+en : Page
 ru*:
 
 

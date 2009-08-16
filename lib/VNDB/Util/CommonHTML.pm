@@ -507,10 +507,10 @@ sub htmlHistory {
     pageurl  => $url,
     class    => 'history',
     header   => [
-      sub { td colspan => 2, class => 'tc1', 'Rev.' },
-      [ 'Date' ],
-      [ 'User' ],
-      sub { td; a href => '#', id => 'history_comments', 'expand'; txt 'Page'; end; }
+      sub { td colspan => 2, class => 'tc1', mt '_hist_col_rev' },
+      [ mt '_hist_col_date' ],
+      [ mt '_hist_col_user' ],
+      sub { td; a href => '#', id => 'history_comments', 'expand'; txt mt '_hist_col_page'; end; }
     ],
     row      => sub {
       my($s, $n, $i) = @_;
