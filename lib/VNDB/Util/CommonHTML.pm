@@ -236,12 +236,12 @@ sub htmlBrowseNavigate {
   ul class => 'maintabs ' . ($al eq 't' ? 'notfirst' : 'bottom');
    if($p > 1) {
      li class => 'left';
-      a href => $url.($p-1), '<- previous';
+      a href => $url.($p-1), '<- '.mt '_browse_previous';
      end;
    }
    if($np) {
      li;
-      a href => $url.($p+1), 'next ->';
+      a href => $url.($p+1), mt('_browse_next').' ->';
      end;
    }
   end;
@@ -261,12 +261,12 @@ sub htmlBrowseNavigate {
 sub htmlRevision {
   my($self, $type, $old, $new, @fields) = @_;
   div class => 'mainbox revision';
-   h1 'Revision '.$new->{rev};
+   h1 mt '_revision_title', $new->{rev};
 
    # previous/next revision links
-   a class => 'prev', href => sprintf('/%s%d.%d', $type, $new->{id}, $new->{rev}-1), '<- earlier revision'
+   a class => 'prev', href => sprintf('/%s%d.%d', $type, $new->{id}, $new->{rev}-1), '<- '.mt '_revision_previous'
      if $new->{rev} > 1;
-   a class => 'next', href => sprintf('/%s%d.%d', $type, $new->{id}, $new->{rev}+1), 'later revision ->'
+   a class => 'next', href => sprintf('/%s%d.%d', $type, $new->{id}, $new->{rev}+1), mt('_revision_next').' ->'
      if $new->{cid} != $new->{latest};
    p class => 'center';
     a href => "/$type$new->{id}", "$type$new->{id}";
@@ -277,9 +277,9 @@ sub htmlRevision {
      div;
       revheader($self, $type, $new);
       br;
-      b 'Edit summary:';
+      b mt '_revision_summary';
       br; br;
-      lit bb2html($new->{comments})||'[no summary]';
+      lit bb2html($new->{comments})||'-';
      end;
    }
 
@@ -295,9 +295,9 @@ sub htmlRevision {
        Tr;
         td; lit '&nbsp;'; end;
         td colspan => 2;
-         b 'Edit summary of revision '.$new->{rev}.':';
+         b mt '_revision_edit_summary', $new->{rev};
          br; br;
-         lit bb2html($new->{comments})||'[no summary]';
+         lit bb2html($new->{comments})||'-';
         end;
        end;
       end;
@@ -310,15 +310,12 @@ sub htmlRevision {
 
 sub revheader { # type, obj
   my($self, $type, $obj) = @_;
-  b 'Revision '.$obj->{rev};
+  b mt '_revision_title', $obj->{rev};
   txt ' (';
-  a href => "/$type$obj->{id}.$obj->{rev}/edit", 'edit';
+  a href => "/$type$obj->{id}.$obj->{rev}/edit", mt '_mtabs_edit';
   txt ')';
   br;
-  txt 'By ';
-  lit $self->{l10n}->userstr($obj);
-  txt ' on ';
-  lit $self->{l10n}->date($obj->{added}, 'full');
+  lit mt '_revision_user_date', $obj, $obj->{added};
 }
 
 sub revdiff {
@@ -354,8 +351,8 @@ sub revdiff {
     $ser2 = xml_escape $ser2;
   }
 
-  $ser1 = '[empty]' if !$ser1 && $ser1 ne '0';
-  $ser2 = '[empty]' if !$ser2 && $ser2 ne '0';
+  $ser1 = mt '_revision_emptyfield' if !$ser1 && $ser1 ne '0';
+  $ser2 = mt '_revision_emptyfield' if !$ser2 && $ser2 ne '0';
 
   Tr $$i++ % 2 ? (class => 'odd') : ();
    td $name;

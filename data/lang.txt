@@ -262,7 +262,8 @@ ru*:
 #############################################################################
 ##                         Main website layout                             ##
 #############################################################################
-# Util::LayoutHTML and Util::CommonHTML::htmlMainTabs
+# Util::LayoutHTML
+# Util::CommonHTML::htmlMainTabs, htmlBrowseNavigate, htmlRevision
 
 
 # Main title of the site, used on header of each page and as title on the homepage
@@ -451,6 +452,7 @@ ru*:
 en : copy
 ru*:
 
+# following line is also used on revision pages (it's the same action, anyway)
 :_mtabs_edit
 en : edit
 ru*:
@@ -481,6 +483,49 @@ ru*:
 # VN relations
 :_mtabs_relations
 en : relations
+ru*:
+
+
+# Navigation buttons on the browse pages
+
+:_browse_previous
+en : previous
+ru*:
+
+:_browse_next
+en : next
+ru*:
+
+
+# Revision pages
+
+:_revision_previous
+en : earlier revision
+ru*:
+
+:_revision_next
+en : later revision
+ru*:
+
+:_revision_title
+en : Revision [_1]
+ru*:
+
+# it's the summary of the edit, "edit" is not a verb here.
+:_revision_new_summary
+en : Edit summary
+ru*:
+
+:_revision_edit_summary
+en : Edit summary of revision [_1]:
+ru*:
+
+:_revision_user_date
+en : By [userstr,_1] on [date,_2,full]
+ru*:
+
+:_revision_emptyfield
+en : ~[empty~]
 ru*:
 
 
