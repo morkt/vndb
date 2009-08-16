@@ -98,25 +98,7 @@ our %S = (%S,
     'Partial',
     'Trial'
   ],
-  platforms       => {
-    win => 'Windows',
-    lin => 'Linux',
-    mac => 'Mac OS',
-    dvd => 'DVD Player',
-    gba => "Game Boy Advance",
-    msx => 'MSX',
-    nds => 'Nintendo DS',
-    nes => 'Famicom',
-    psp => 'Playstation Portable',
-    ps1 => 'Playstation 1',
-    ps2 => 'Playstation 2',
-    ps3 => 'Playstation 3',
-    drc => 'Dreamcast',
-    sfc => 'Super Nintendo',
-    wii => 'Nintendo Wii',
-    xb3 => 'Xbox 360',
-    oth => 'Other'
-  },
+  platforms       => [qw|win lin mac dvd gba msx nds nes psp ps1 ps2 ps3 drc sfc wii xb3 oth|],
   media           => {
    #DB       display            qty
     cd  => [ 'CD',                1 ],

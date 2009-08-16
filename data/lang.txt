@@ -154,6 +154,79 @@ en : Chinese
 ru*:
 
 
+# platforms
+#  most of these probably don't need TL in most languages, but some
+#  languages (i.e. Japanese) do use different names for products
+
+:_plat_win
+en : Windows
+ru*:
+
+:_plat_lin
+en : Linux
+ru*:
+
+:_plat_mac
+en : Mac OS
+ru*:
+
+:_plat_dvd
+en : DVD Player
+ru*:
+
+:_plat_gba
+en : Game Boy Advance
+ru*:
+
+:_plat_msx
+en : MSX
+ru*:
+
+:_plat_nds
+en : Nintendo DS
+ru*:
+
+:_plat_nes
+en : Famicom
+ru*:
+
+:_plat_psp
+en : Playstation Portable
+ru*:
+
+:_plat_ps1
+en : Playstation 1
+ru*:
+
+:_plat_ps2
+en : Playstation 2
+ru*:
+
+:_plat_ps3
+en : Playstation 3
+ru*:
+
+:_plat_drc
+en : Dreamcast
+ru*:
+
+:_plat_sfc
+en : Super Nintendo
+ru*:
+
+:_plat_wii
+en : Nintendo Wii
+ru*:
+
+:_plat_xb3
+en : Xbox 360
+ru*:
+
+:_plat_oth
+en : Other
+ru*:
+
+
 
 
 #############################################################################

@@ -209,7 +209,7 @@ sub _vnlist {
         a href => '/v'.$l->{vid}, title => $l->{original}||$l->{title}, shorten $l->{title}, 100;
        end;
        td class => 'tc3';
-        $_ ne 'oth' && cssicon $_, $self->{platforms}{$_}
+        $_ ne 'oth' && cssicon $_, mt "_plat_$_"
           for (sort split /\//, $l->{c_platforms});
        end;
        td class => 'tc4';

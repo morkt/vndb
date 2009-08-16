@@ -22,7 +22,7 @@ sub list {
     { name => 'q', required => 0, default => '' },
     { name => 'sq', required => 0, default => '' },
     { name => 'ln', required => 0, multi => 1, enum => $self->{languages}, default => '' },
-    { name => 'pl', required => 0, multi => 1, enum => [ keys %{$self->{platforms}} ], default => '' },
+    { name => 'pl', required => 0, multi => 1, enum => $self->{platforms}, default => '' },
     { name => 'ti', required => 0, default => '', maxlength => 200 },
     { name => 'te', required => 0, default => '', maxlength => 200 },
     { name => 'sp', required => 0, default => $self->reqCookie('tagspoil') =~ /^([0-2])$/ ? $1 : 1, enum => [0..2] },
@@ -103,7 +103,7 @@ sub list {
         a href => '/v'.$l->{id}, title => $l->{original}||$l->{title}, shorten $l->{title}, 100;
        end;
        td class => 'tc2';
-        $_ ne 'oth' && cssicon $_, $self->{platforms}{$_}
+        $_ ne 'oth' && cssicon $_, mt "_plat_$_"
           for (sort split /\//, $l->{c_platforms});
        end;
        td class => 'tc3';
@@ -174,14 +174,14 @@ sub _filters {
     h2;
      lit 'Platforms <b>(boolean or, selecting more gives more results)</b>';
     end;
-    for my $i (sort keys %{$self->{platforms}}) {
+    for my $i (sort @{$self->{platforms}}) {
       next if $i eq 'oth';
       span;
        input type => 'checkbox', id => "plat_$i", name => 'pl', value => $i,
          (scalar grep $_ eq $i, @{$f->{pl}}) ? (checked => 'checked') : ();
        label for => "plat_$i";
-        cssicon $i, $self->{platforms}{$i};
-        txt $self->{platforms}{$i};
+        cssicon $i, mt "_plat_$i";
+        txt mt "_plat_$i";
        end;
       end;
     }

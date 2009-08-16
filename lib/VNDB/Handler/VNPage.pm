@@ -383,7 +383,7 @@ sub _releases {
          td class => 'tc3';
           for (sort @{$rel->{platforms}}) {
             next if $_ eq 'oth';
-            cssicon $_, $self->{platforms}{$_};
+            cssicon $_, mt "_plat_$_";
           }
           cssicon lc(substr($self->{release_types}[$rel->{type}],0,3)), $self->{release_types}[$rel->{type}];
          end;

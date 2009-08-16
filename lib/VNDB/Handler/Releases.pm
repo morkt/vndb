@@ -52,7 +52,7 @@ sub page {
       [ released  => 'Release date',   htmlize   => sub { datestr $_[0] } ],
       [ minage    => 'Age rating',     serialize => sub { $self->{age_ratings}{$_[0]}[0] } ],
       [ notes     => 'Notes',          diff => 1 ],
-      [ platforms => 'Platforms',      join => ', ', split => sub { map $self->{platforms}{$_}, @{$_[0]} } ],
+      [ platforms => 'Platforms',      join => ', ', split => sub { map mt("_plat_$_"), @{$_[0]} } ],
       [ media     => 'Media',          join => ', ', split => sub {
         map {
           my $med = $self->{media}{$_->{medium}};
@@ -145,8 +145,8 @@ sub _infotable {
       td 'Platform'.($#{$r->{platforms}} ? 's' : '');
       td;
        for(@{$r->{platforms}}) {
-         cssicon $_, $self->{platforms}{$_};
-         txt ' '.$self->{platforms}{$_};
+         cssicon $_, mt "_plat_$_";
+         txt ' '.mt("_plat_$_");
          br if $_ ne $r->{platforms}[$#{$r->{platforms}}];
        }
       end;
@@ -310,7 +310,7 @@ sub edit {
       { name => 'released',  required => 0, default => 0, template => 'int' },
       { name => 'minage' ,   required => 0, default => -1, enum => [ keys %{$self->{age_ratings}} ] },
       { name => 'notes',     required => 0, default => '', maxlength => 10240 },
-      { name => 'platforms', required => 0, default => '', multi => 1, enum => [ keys %{$self->{platforms}} ] },
+      { name => 'platforms', required => 0, default => '', multi => 1, enum => $self->{platforms} },
       { name => 'media',     required => 0, default => '' },
       { name => 'resolution',required => 0, default => 0, enum => [ 0..$#{$self->{resolutions}} ] },
       { name => 'voiced',    required => 0, default => 0, enum => [ 0..$#{$self->{voiced}} ] },
@@ -418,13 +418,13 @@ sub _form {
     [ static => nolabel => 1, content => sub {
       h2 'Platforms';
       div class => 'platforms';
-       for my $p (sort keys %{$self->{platforms}}) {
+       for my $p (sort @{$self->{platforms}}) {
          span;
           input type => 'checkbox', name => 'platforms', value => $p, id => $p,
             $frm->{platforms} && grep($_ eq $p, @{$frm->{platforms}}) ? (checked => 'checked') : ();
           label for => $p;
-           cssicon $p, $self->{platforms}{$p};
-           txt ' '.$self->{platforms}{$p};
+           cssicon $p, mt "_plat_$p";
+           txt ' '.mt("_plat_$p");
           end;
          end;
        }
@@ -480,7 +480,7 @@ sub browse {
     { name => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
     { name => 'q',  required => 0, default => '', maxlength => 500 },
     { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
-    { name => 'pl', required => 0, multi => 1, default => '', enum => [ keys %{$self->{platforms}} ] },
+    { name => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
     { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
     { name => 'tp', required => 0, default => -1, enum => [ -1..$#{$self->{release_types}} ] },
     { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
@@ -544,7 +544,7 @@ sub browse {
        end;
        td class => 'tc2', $l->{minage} > -1 ? $self->{age_ratings}{$l->{minage}}[0] : '';
        td class => 'tc3';
-        $_ ne 'oth' && cssicon $_, $self->{platforms}{$_} for (@{$l->{platforms}});
+        $_ ne 'oth' && cssicon $_, mt "_plat_$_" for (@{$l->{platforms}});
         cssicon "lang $_", mt "_lang_$_" for (@{$l->{languages}});
         cssicon lc(substr($self->{release_types}[$l->{type}],0,3)), $self->{release_types}[$l->{type}];
        end;
@@ -642,13 +642,13 @@ sub _filters {
     h2;
      lit 'Platforms <b>(boolean or, selecting more gives more results)</b>';
     end;
-    for my $i (sort keys %{$self->{platforms}}) {
+    for my $i (sort @{$self->{platforms}}) {
       next if $i eq 'oth';
       span;
        input type => 'checkbox', name => 'pl', value => $i, id => "plat_$i", grep($_ eq $i, @{$f->{pl}}) ? (checked => 'checked') : ();
        label for => "plat_$i";
-        cssicon $i, $self->{platforms}{$i};
-        txt $self->{platforms}{$i};
+        cssicon $i, mt "_plat_$i";
+        txt mt "_plat_$i";
        end;
       end;
     }

@@ -134,7 +134,7 @@ sub homepage {
         li;
          lit datestr $_->{released};
          txt ' ';
-         cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
+         cssicon $_, mt "_plat_$_" for (@{$_->{platforms}});
          txt ' ';
          a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
         end;
@@ -151,7 +151,7 @@ sub homepage {
         li;
          lit datestr $_->{released};
          txt ' ';
-         cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
+         cssicon $_, mt "_plat_$_" for (@{$_->{platforms}});
          txt ' ';
          a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
         end;
