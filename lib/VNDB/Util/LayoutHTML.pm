@@ -58,7 +58,7 @@ sub _menu {
      span;
       for (grep $self->{l10n}->language_tag() ne $_, $self->{l10n}->languages()) {
         a href => "?l10n=$_";
-         cssicon "lang $_", $self->{languages}{$_};
+         cssicon "lang $_", mt "_lang_$_"; # NOTE: should actually be in the destination language...
         end;
       }
      end;
@@ -92,7 +92,7 @@ sub _menu {
       h2;
        a href => $uid, ucfirst $self->authInfo->{username};
        # note: user ranks aren't TL'ed (but might be in the future, hmm)
-       txt ' ('.$self->{user_ranks}[$self->authInfo->{rank}][0].')';
+       txt ' ('.mt('_urank_'.$self->authInfo->{rank}).')';
       end;
       div;
        a href => "$uid/edit", mt '_menu_myprofile'; br;

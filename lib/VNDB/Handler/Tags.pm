@@ -213,7 +213,7 @@ sub _vnlist {
           for (sort split /\//, $l->{c_platforms});
        end;
        td class => 'tc4';
-        cssicon "lang $_", $self->{languages}{$_}
+        cssicon "lang $_", mt "_lang_$_"
           for (reverse sort split /\//, $l->{c_languages});
        end;
        td class => 'tc5';

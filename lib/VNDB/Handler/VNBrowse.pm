@@ -21,7 +21,7 @@ sub list {
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'q', required => 0, default => '' },
     { name => 'sq', required => 0, default => '' },
-    { name => 'ln', required => 0, multi => 1, enum => [ keys %{$self->{languages}} ], default => '' },
+    { name => 'ln', required => 0, multi => 1, enum => $self->{languages}, default => '' },
     { name => 'pl', required => 0, multi => 1, enum => [ keys %{$self->{platforms}} ], default => '' },
     { name => 'ti', required => 0, default => '', maxlength => 200 },
     { name => 'te', required => 0, default => '', maxlength => 200 },
@@ -34,9 +34,9 @@ sub list {
     return $self->resRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')
       if $f->{q} =~ /^([gvrptud])([0-9]+)(?:\.([0-9]+))?$/;
 
-    # for URL compatibilty with older versions
+    # for URL compatibilty with older versions (ugly hack to get English strings)
     my @lang;
-    $f->{q} =~ s/\s*$self->{languages}{$_}\s*//&&push @lang, $_ for (keys %{$self->{languages}});
+    $f->{q} =~ s/\s*$VNDB::L10N::en::Lexicon{"_lang_$_"}\s*//&&push @lang, $_ for (@{$self->{languages}});
     $f->{ln} = $f->{ln}[0] ? [ @{$f->{ln}}, @lang ] : \@lang;
   }
 
@@ -107,7 +107,7 @@ sub list {
           for (sort split /\//, $l->{c_platforms});
        end;
        td class => 'tc3';
-        cssicon "lang $_", $self->{languages}{$_}
+        cssicon "lang $_", mt "_lang_$_"
           for (reverse sort split /\//, $l->{c_languages});
        end;
        td class => 'tc4';
@@ -165,8 +165,8 @@ sub _filters {
        input type => 'checkbox', name => 'ln', value => $i, id => "lang_$i",
          (scalar grep $_ eq $i, @{$f->{ln}}) ? (checked => 'checked') : ();
        label for => "lang_$i";
-        cssicon "lang $i", $self->{languages}{$i};
-        txt $self->{languages}{$i};
+        cssicon "lang $i", mt "_lang_$i";
+        txt mt "_lang_$i";
        end;
       end;
     }

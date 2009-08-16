@@ -23,35 +23,15 @@ our %S = (%S,
   source_url      => 'http://git.blicky.net/vndb.git/?h=master',
   admin_email     => 'contact@vndb.org',
   user_ranks      => [
-       # rankname   allowed actions                                   # DB number
-    [qw| visitor    hist                                                     |], # 0
-    [qw| banned     hist                                                     |], # 1
-    [qw| loser      hist board                                               |], # 2
-    [qw| user       hist board edit tag                                      |], # 3
-    [qw| mod        hist board boardmod edit tag mod lock del tagmod         |], # 4
-    [qw| admin      hist board boardmod edit tag mod lock del tagmod usermod |], # 5
+       # allowed actions                                              # DB number
+    [qw| hist                                                     |], # 0
+    [qw| hist                                                     |], # 1
+    [qw| hist board                                               |], # 2
+    [qw| hist board edit tag                                      |], # 3
+    [qw| hist board boardmod edit tag mod lock del tagmod         |], # 4
+    [qw| hist board boardmod edit tag mod lock del tagmod usermod |], # 5
   ],
-  languages       => {
-    cs  => q|Czech|,
-    da  => q|Danish|,
-    de  => q|German|,
-    en  => q|English|,
-    es  => q|Spanish|,
-    fi  => q|Finnish|,
-    fr  => q|French|,
-    it  => q|Italian|,
-    ja  => q|Japanese|,
-    ko  => q|Korean|,
-    nl  => q|Dutch|,
-    no  => q|Norwegian|,
-    pl  => q|Polish|,
-    pt  => q|Portuguese|,
-    ru  => q|Russian|,
-    sv  => q|Swedish|,
-    tr  => q|Turkish|,
-    vi  => q|Vietnamese|,
-    zh  => q|Chinese|,
-  },
+  languages       => [qw|cs da de en es fi fr it ja ko nl no pl pt ru sv tr vi zh|],
   producer_types  => {
     co => 'Company',
     in => 'Individual',

@@ -237,7 +237,7 @@ sub _producers {
       my %p = map { $_->{id} => $_ } map @{$_->{producers}}, grep grep($_ eq $l, @{$_->{languages}}), @$r;
       my @p = values %p;
       next if !@p;
-      cssicon "lang $l", $self->{languages}{$l};
+      cssicon "lang $l", mt "_lang_$l";
       for (@p) {
         a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 30;
         txt ' & ' if $_ != $p[$#p];
@@ -372,8 +372,8 @@ sub _releases {
     for my $l (@lang) {
       Tr class => 'lang';
        td colspan => 6;
-        cssicon "lang $l", $self->{languages}{$l};
-        txt $self->{languages}{$l};
+        cssicon "lang $l", mt "_lang_$l";
+        txt mt "_lang_$l";
        end;
       end;
       for my $rel (grep grep($_ eq $l, @{$_->{languages}}), @$r) {
@@ -438,7 +438,7 @@ sub _screenshots {
       next if !@scr;
       Tr class => 'rel';
        td colspan => 5;
-        cssicon "lang $_", $self->{languages}{$_} for (@{$rel->{languages}});
+        cssicon "lang $_", mt "_lang_$_" for (@{$rel->{languages}});
         txt $rel->{title};
        end;
       end;

@@ -47,7 +47,7 @@ sub page {
       [ original  => 'Original title', diff => 1 ],
       [ gtin      => 'JAN/UPC/EAN',    serialize => sub { $_[0]||'[none]' } ],
       [ catalog   => 'Catalog number', serialize => sub { $_[0]||'[none]' } ],
-      [ languages => 'Language',       join => ', ', split => sub { map $self->{languages}{$_}, @{$_[0]} } ],
+      [ languages => 'Language',       join => ', ', split => sub { map mt("_lang_$_"), @{$_[0]} } ],
       [ website   => 'Website',        ],
       [ released  => 'Release date',   htmlize   => sub { datestr $_[0] } ],
       [ minage    => 'Age rating',     serialize => sub { $self->{age_ratings}{$_[0]}[0] } ],
@@ -128,8 +128,8 @@ sub _infotable {
     td 'Language';
     td;
      for (@{$r->{languages}}) {
-       cssicon "lang $_", $self->{languages}{$_};
-       txt ' '.$self->{languages}{$_};
+       cssicon "lang $_", mt "_lang_$_";
+       txt ' '.mt("_lang_$_");
        br if $_ ne $r->{languages}[$#{$r->{languages}}];
      }
     end;
@@ -305,7 +305,7 @@ sub edit {
       { name => 'gtin',      required => 0, default => '0',
         func => [ \&gtintype, 'Not a valid JAN/UPC/EAN code' ] },
       { name => 'catalog',   required => 0, default => '', maxlength => 50 },
-      { name => 'languages', multi => 1, enum => [ keys %{$self->{languages}} ] },
+      { name => 'languages', multi => 1, enum => $self->{languages} },
       { name => 'website',   required => 0, default => '', template => 'url' },
       { name => 'released',  required => 0, default => 0, template => 'int' },
       { name => 'minage' ,   required => 0, default => -1, enum => [ keys %{$self->{age_ratings}} ] },
@@ -390,7 +390,7 @@ sub _form {
     [ input  => short => 'original',  name => 'Original title', width => 300 ],
     [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],
     [ select => short => 'languages', name => 'Language(s)', multi => 1,
-      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
+      options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
     [ input  => short => 'gtin',      name => 'JAN/UPC/EAN' ],
     [ input  => short => 'catalog',   name => 'Catalog number' ],
     [ input  => short => 'website',   name => 'Official website' ],
@@ -479,7 +479,7 @@ sub browse {
     { name => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
     { name => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
     { name => 'q',  required => 0, default => '', maxlength => 500 },
-    { name => 'ln', required => 0, multi => 1, default => '', enum => [ keys %{$self->{languages}} ] },
+    { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
     { name => 'pl', required => 0, multi => 1, default => '', enum => [ keys %{$self->{platforms}} ] },
     { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
     { name => 'tp', required => 0, default => -1, enum => [ -1..$#{$self->{release_types}} ] },
@@ -545,7 +545,7 @@ sub browse {
        td class => 'tc2', $l->{minage} > -1 ? $self->{age_ratings}{$l->{minage}}[0] : '';
        td class => 'tc3';
         $_ ne 'oth' && cssicon $_, $self->{platforms}{$_} for (@{$l->{platforms}});
-        cssicon "lang $_", $self->{languages}{$_} for (@{$l->{languages}});
+        cssicon "lang $_", mt "_lang_$_" for (@{$l->{languages}});
         cssicon lc(substr($self->{release_types}[$l->{type}],0,3)), $self->{release_types}[$l->{type}];
        end;
        td class => 'tc4';
@@ -633,8 +633,8 @@ sub _filters {
       span;
        input type => 'checkbox', name => 'ln', value => $i, id => "lang_$i", grep($_ eq $i, @{$f->{ln}}) ? (checked => 'checked') : ();
        label for => "lang_$i";
-        cssicon "lang $i", $self->{languages}{$i};
-        txt $self->{languages}{$i};
+        cssicon "lang $i", mt "_lang_$i";
+        txt mt "_lang_$i";
        end;
       end;
     }

@@ -37,7 +37,7 @@ sub page {
       [ name      => 'Name (romaji)', diff => 1 ],
       [ original  => 'Original name', diff => 1 ],
       [ alias     => 'Aliases',       diff => 1 ],
-      [ lang      => 'Language',      serialize => sub { "$_[0] ($self->{languages}{$_[0]})" } ],
+      [ lang      => 'Language',      serialize => sub { "$_[0] (".mt("_lang_$_[0]").')' } ],
       [ website   => 'Website',       diff => 1 ],
       [ desc      => 'Description',   diff => 1 ],
     );
@@ -48,7 +48,7 @@ sub page {
    h1 $p->{name};
    h2 class => 'alttitle', $p->{original} if $p->{original};
    p class => 'center';
-    txt "$self->{languages}{$p->{lang}} \L$self->{producer_types}{$p->{type}}";
+    txt mt("_lang_$p->{lang}")." \L$self->{producer_types}{$p->{type}}";
     txt "\na.k.a. $p->{alias}" if $p->{alias};
     if($p->{website}) {
       txt "\n";
@@ -105,7 +105,7 @@ sub edit {
       { name => 'name', maxlength => 200 },
       { name => 'original', required => 0, maxlength => 200, default => '' },
       { name => 'alias', required => 0, maxlength => 500, default => '' },
-      { name => 'lang', enum => [ keys %{$self->{languages}} ] },
+      { name => 'lang', enum => $self->{languages} },
       { name => 'website', required => 0, template => 'url', default => '' },
       { name => 'desc', required => 0, maxlength => 5000, default => '' },
       { name => 'editsum', maxlength => 5000 },
@@ -141,7 +141,7 @@ sub edit {
     [ input  => name => 'Aliases', short => 'alias', width => 400 ],
     [ static => content => q|(Un)official aliases, separated by a comma.| ],
     [ select => name => 'Primary language', short => 'lang',
-      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
+      options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
     [ input  => name => 'Website', short => 'website' ],
     [ text   => name => 'Description', short => 'desc', rows => 6 ],
   ]);
@@ -192,7 +192,7 @@ sub list {
        ul;
        for ($perlist*$c..($perlist*($c+1))-1) {
          li;
-          cssicon 'lang '.$list->[$_]{lang}, $self->{languages}{$list->[$_]{lang}};
+          cssicon 'lang '.$list->[$_]{lang}, mt "_lang_$list->[$_]{lang}";
           a href => "/p$list->[$_]{id}", title => $list->[$_]{original}, $list->[$_]{name};
          end;
        }

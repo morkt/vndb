@@ -43,6 +43,120 @@ indicate that it has been checked.
 
 
 #############################################################################
+##                           Global strings                                ##
+#############################################################################
+# data/global.pl - used in many places
+
+
+# user ranks
+
+:_urank_0
+en : visitor
+ru*:
+
+:_urank_1
+en : banned
+ru*:
+
+:_urank_2
+en : loser
+ru*:
+
+:_urank_3
+en : user
+ru*:
+
+:_urank_4
+en : mod
+ru*:
+
+:_urank_5
+en : admin
+ru*:
+
+
+# languages
+
+:_lang_cs
+en : Czech
+ru*:
+
+:_lang_da
+en : Danish
+ru*:
+
+:_lang_de
+en : German
+ru*:
+
+:_lang_en
+en : English
+ru*:
+
+:_lang_es
+en : Spanish
+ru*:
+
+:_lang_fi
+en : Finnish
+ru*:
+
+:_lang_fr
+en : French
+ru*:
+
+:_lang_it
+en : Italian
+ru*:
+
+:_lang_ja
+en : Japanese
+ru*:
+
+:_lang_ko
+en : Korean
+ru*:
+
+:_lang_nl
+en : Dutch
+ru*:
+
+:_lang_no
+en : Norwegian
+ru*:
+
+:_lang_pl
+en : Polish
+ru*:
+
+:_lang_pt
+en : Portuguese
+ru*:
+
+:_lang_ru
+en : Russian
+ru*:
+
+:_lang_sv
+en : Swedish
+ru*:
+
+:_lang_tr
+en : Turkish
+ru*:
+
+:_lang_vi
+en : Vietnamese
+ru*:
+
+:_lang_zh
+en : Chinese
+ru*:
+
+
+
+
+#############################################################################
 ##                         Main website layout                             ##
 #############################################################################
 # Util::LayoutHTML

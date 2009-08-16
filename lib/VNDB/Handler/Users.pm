@@ -368,7 +368,7 @@ sub edit {
     $self->authCan('usermod') ? (
       [ input  => short => 'usrname', name => 'Username' ],
       [ select => short => 'rank', name => 'Rank', options => [
-        map [ $_, $self->{user_ranks}[$_][0] ], 1..$#{$self->{user_ranks}} ] ],
+        map [ $_, mt '_urank_'.$_ ], 1..$#{$self->{user_ranks}} ] ],
       [ check  => short => 'ign_votes', name => 'Ignore votes in VN statistics' ],
     ) : (
       [ static => label => 'Username', content => $frm->{usrname} ],
