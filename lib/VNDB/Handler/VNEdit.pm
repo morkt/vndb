@@ -37,7 +37,7 @@ sub edit {
       { name => 'title',       maxlength => 250 },
       { name => 'original',    required => 0, maxlength => 250, default => '' },
       { name => 'alias',       required => 0, maxlength => 500, default => '' },
-      { name => 'desc',        maxlength => 10240 },
+      { name => 'desc',        required => 0, default => '', maxlength => 10240 },
       { name => 'length',      required => 0, default => 0,  enum => [ 0..$#{$self->{vn_lengths}} ] },
       { name => 'l_wp',        required => 0, default => '', maxlength => 150 },
       { name => 'l_encubed',   required => 0, default => '', maxlength => 100 },

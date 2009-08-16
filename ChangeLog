@@ -8,6 +8,7 @@ git - ?
 	  - Added: same series, fandisc, original game
 	  - Renamed: same characters to shares characters
 	  - Merged: alternative setting into alternative version, and other into same series
+	- Allow empty VN descriptions
 
 2.6 - 2009-08-09
 	- New screen resolutions: 1024x600 and 1600x1200
