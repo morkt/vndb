@@ -29,48 +29,48 @@ sub htmlMainTabs {
   ul class => 'maintabs';
    if($type =~ /[uvrp]/) {
      li $sel eq 'hist' ? (class => 'tabselected') : ();
-      a href => "/$id/hist", 'history';
+      a href => "/$id/hist", mt '_mtabs_hist';
      end;
    }
 
    if($type =~ /[uvp]/) {
      my $cnt = $self->dbThreadCount($type, $obj->{id});
      li $sel eq 'disc' ? (class => 'tabselected') : ();
-      a href => "/t/$id", "discussions ($cnt)";
+      a href => "/t/$id", mt '_mtabs_discuss', $cnt;
      end;
    }
 
    if($type eq 'u') {
      li $sel eq 'posts' ? (class => 'tabselected') : ();
-      a href => "/$id/posts", 'posts';
+      a href => "/$id/posts", mt '_mtabs_posts';
      end;
    }
 
    if($type eq 'u' && ($obj->{show_list} || $self->authCan('usermod'))) {
      li $sel eq 'wish' ? (class => 'tabselected') : ();
-      a href => "/$id/wish", 'wishlist';
+      a href => "/$id/wish", mt '_mtabs_wishlist';
      end;
 
      li $sel eq 'list' ? (class => 'tabselected') : ();
-      a href => "/$id/list", 'list';
+      a href => "/$id/list", mt '_mtabs_list';
      end;
    }
 
    if($type eq 'u') {
      li $sel eq 'tags' ? (class => 'tabselected') : ();
-      a href => "/$id/tags", 'tags';
+      a href => "/$id/tags", mt '_mtabs_tags';
      end;
    }
 
    if($type eq 'v' && $self->authCan('tag') && !$obj->{hidden}) {
      li $sel eq 'tagmod' ? (class => 'tabselected') : ();
-      a href => "/$id/tagmod", 'modify tags';
+      a href => "/$id/tagmod", mt '_mtabs_tagmod';
      end;
    }
 
    if($type eq 'r' && $self->authCan('edit')) {
      li $sel eq 'copy' ? (class => 'tabselected') : ();
-      a href => "/$id/copy", 'copy';
+      a href => "/$id/copy", mt '_mtabs_copy';
      end;
    }
 
@@ -79,31 +79,31 @@ sub htmlMainTabs {
       || $type eq 'g'     && $self->authCan('tagmod')
    ) {
      li $sel eq 'edit' ? (class => 'tabselected') : ();
-      a href => "/$id/edit", 'edit';
+      a href => "/$id/edit", mt '_mtabs_edit';
      end;
    }
 
    if($type =~ /[vrp]/ && $self->authCan('del')) {
      li;
-      a href => "/$id/hide", $obj->{hidden} ? 'unhide' : 'hide';
+      a href => "/$id/hide", mt $obj->{hidden} ? '_mtabs_unhide' : '_mtabs_hide';
      end;
    }
 
    if($type =~ /[vrp]/ && $self->authCan('lock')) {
      li;
-      a href => "/$id/lock", $obj->{locked} ? 'unlock' : 'lock';
+      a href => "/$id/lock", mt $obj->{locked} ? '_mtabs_unlock' : '_mtabs_lock';
      end;
    }
 
    if($type eq 'u' && $self->authCan('usermod')) {
      li $sel eq 'del' ? (class => 'tabselected') : ();
-      a href => "/$id/del", 'del';
+      a href => "/$id/del", mt '_mtabs_del';
      end;
    }
 
    if($type eq 'v' && $obj->{rgraph}) {
      li $sel eq 'rg' ? (class => 'tabselected') : ();
-      a href => "/$id/rg", 'relations';
+      a href => "/$id/rg", mt '_mtabs_relations';
      end;
    }
 

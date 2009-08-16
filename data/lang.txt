@@ -262,7 +262,7 @@ ru*:
 #############################################################################
 ##                         Main website layout                             ##
 #############################################################################
-# Util::LayoutHTML
+# Util::LayoutHTML and Util::CommonHTML::htmlMainTabs
 
 
 # Main title of the site, used on header of each page and as title on the homepage
@@ -411,6 +411,76 @@ ru*:
 
 :_footer_source
 en : source
+ru*:
+
+
+# Main tabs (those on the right top of the highest box)
+
+:_mtabs_hist
+en : history
+ru*:
+
+:_mtabs_discuss
+en : discussions ([_1])
+ru*:
+
+# the following 4 tabs are only present on user pages
+:_mtabs_posts
+en : posts
+ru*:
+
+:_mtabs_wishlist
+en : wishlist
+ru*:
+
+:_mtabs_list
+en : list
+ru*:
+
+:_mtabs_tags
+en : tags
+ru*:
+
+# modify tags on VN pages
+:_mtabs_tagmod
+en : modify tags
+ru*:
+
+# copy a release
+:_mtabs_copy
+en : copy
+ru*:
+
+:_mtabs_edit
+en : edit
+ru*:
+
+# hide/unhide a DB item
+:_mtabs_hide
+en : hide
+ru*:
+
+:_mtabs_unhide
+en : unhide
+ru*:
+
+# lock/unlock for editing
+:_mtabs_lock
+en : lock
+ru*:
+
+:_mtabs_unlock
+en : unlock
+ru*:
+
+# delete
+:_mtabs_del
+en : del
+ru*:
+
+# VN relations
+:_mtabs_relations
+en : relations
 ru*:
 
 
