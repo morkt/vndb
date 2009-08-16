@@ -227,6 +227,36 @@ en : Other
 ru*:
 
 
+# producer types
+
+:_ptype_co
+en : Company
+ru*:
+
+:_ptype_in
+en : Individual
+ru*:
+
+:_ptype_ng
+en : Amateur group
+ru*:
+
+
+# release types
+
+:_rtype_0
+en : Complete
+ru*:
+
+:_rtype_1
+en : Partial
+ru*:
+
+:_rtype_2
+en : Trial
+ru*:
+
+
 
 
 #############################################################################

@@ -33,7 +33,7 @@ sub page {
   if($rev) {
     my $prev = $rev && $rev > 1 && $self->dbProducerGet(id => $pid, rev => $rev-1, what => 'changes extended')->[0];
     $self->htmlRevision('p', $prev, $p,
-      [ type      => 'Type',          serialize => sub { $self->{producer_types}{$_[0]} } ],
+      [ type      => 'Type',          serialize => sub { mt "_ptype_$_[0]" } ],
       [ name      => 'Name (romaji)', diff => 1 ],
       [ original  => 'Original name', diff => 1 ],
       [ alias     => 'Aliases',       diff => 1 ],
@@ -48,7 +48,7 @@ sub page {
    h1 $p->{name};
    h2 class => 'alttitle', $p->{original} if $p->{original};
    p class => 'center';
-    txt mt("_lang_$p->{lang}")." \L$self->{producer_types}{$p->{type}}";
+    txt mt("_lang_$p->{lang}")." ".lc(mt "_ptype_$p->{type}");
     txt "\na.k.a. $p->{alias}" if $p->{alias};
     if($p->{website}) {
       txt "\n";
@@ -101,7 +101,7 @@ sub edit {
 
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
-      { name => 'type', enum => [ keys %{$self->{producer_types}} ] },
+      { name => 'type', enum => $self->{producer_types} },
       { name => 'name', maxlength => 200 },
       { name => 'original', required => 0, maxlength => 200, default => '' },
       { name => 'alias', required => 0, maxlength => 500, default => '' },
@@ -134,7 +134,7 @@ sub edit {
   $self->htmlEditMessage('p', $p);
   $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 }, "General info" => [
     [ select => name => 'Type', short => 'type',
-      options => [ map [ $_, $self->{producer_types}{$_} ], sort keys %{$self->{producer_types}} ] ],
+      options => [ map [ $_, mt "_ptype_$_" ], sort @{$self->{producer_types}} ] ],
     [ input  => name => 'Name (romaji)', short => 'name' ],
     [ input  => name => 'Original name', short => 'original' ],
     [ static => content => q|The original name of the producer, leave blank if it is already in the Latin alphabet.| ],

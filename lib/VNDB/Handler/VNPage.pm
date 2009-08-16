@@ -385,7 +385,7 @@ sub _releases {
             next if $_ eq 'oth';
             cssicon $_, mt "_plat_$_";
           }
-          cssicon lc(substr($self->{release_types}[$rel->{type}],0,3)), $self->{release_types}[$rel->{type}];
+          cssicon "rt$rel->{type}", mt "_rtype_$rel->{type}";
          end;
          td class => 'tc4';
           a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};

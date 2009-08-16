@@ -39,7 +39,7 @@ sub page {
       [ vn        => 'Relations',      join => '<br />', split => sub {
         map sprintf('<a href="/v%d" title="%s">%s</a>', $_->{vid}, $_->{original}||$_->{title}, shorten $_->{title}, 50), @{$_[0]};
       } ],
-      [ type      => 'Type',           serialize => sub { $self->{release_types}[$_[0]] } ],
+      [ type      => 'Type',           serialize => sub { mt "_rtype_$_[0]" } ],
       [ patch     => 'Patch',          serialize => sub { $_[0] ? 'Patch' : 'Not a patch' } ],
       [ freeware  => 'Freeware',       serialize => sub { $_[0] ? 'yes' : 'nope' } ],
       [ doujin    => 'Doujin',         serialize => sub { $_[0] ? 'yups' : 'nope' } ],
@@ -117,9 +117,8 @@ sub _infotable {
    Tr ++$i % 2 ? (class => 'odd') : ();
     td 'Type';
     td;
-     my $type = $self->{release_types}[$r->{type}];
-     cssicon lc(substr $type, 0, 3), $type;
-     txt ' '.$type;
+     cssicon "rt$r->{type}", mt "_rtype_$r->{type}";
+     txt ' '.mt "_rtype_$r->{type}";
      txt ' patch' if $r->{patch};
     end;
    end;
@@ -296,7 +295,7 @@ sub edit {
 
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
-      { name => 'type',      enum => [ 0..$#{$self->{release_types}} ] },
+      { name => 'type',      enum => $self->{release_types} },
       { name => 'patch',     required => 0, default => 0 },
       { name => 'freeware',  required => 0, default => 0 },
       { name => 'doujin',    required => 0, default => 0 },
@@ -382,7 +381,7 @@ sub _form {
   $self->htmlForm({ frm => $frm, action => $r ? "/r$r->{id}/".($copy ? 'copy' : 'edit') : "/v$v->{id}/add", editsum => 1 },
   "General info" => [
     [ select => short => 'type',      name => 'Type',
-      options => [ map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ] ],
+      options => [ map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ] ],
     [ check  => short => 'patch',     name => 'This release is a patch to another release.' ],
     [ check  => short => 'freeware',  name => 'Freeware (i.e. available at no cost)' ],
     [ check  => short => 'doujin',    name => 'Doujin (self-published / not by a commercial company)' ],
@@ -482,7 +481,7 @@ sub browse {
     { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
     { name => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
     { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
-    { name => 'tp', required => 0, default => -1, enum => [ -1..$#{$self->{release_types}} ] },
+    { name => 'tp', required => 0, default => -1, enum => [ -1, @{$self->{release_types}} ] },
     { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
@@ -546,7 +545,7 @@ sub browse {
        td class => 'tc3';
         $_ ne 'oth' && cssicon $_, mt "_plat_$_" for (@{$l->{platforms}});
         cssicon "lang $_", mt "_lang_$_" for (@{$l->{languages}});
-        cssicon lc(substr($self->{release_types}[$l->{type}],0,3)), $self->{release_types}[$l->{type}];
+        cssicon "rt$l->{type}", mt "_rtype_$l->{type}";
        end;
        td class => 'tc4';
         a href => "/r$l->{id}", title => $l->{original}||$l->{title}, shorten $l->{title}, 90;
@@ -615,7 +614,7 @@ sub _filters {
       end;
      end;
      $self->htmlFormPart($f, [ select => short => 'tp', name => 'Release type',
-       options => [ [-1, 'All'], map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ]]);
+       options => [ [-1, 'All'], map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ]]);
      $self->htmlFormPart($f, [ select => short => 'pa', name => 'Patch status',
        options => [ [0, 'All'], [1, 'Only patches'], [2, 'Only standalone releases']]]);
      $self->htmlFormPart($f, [ select => short => 'fw', name => 'Freeware',

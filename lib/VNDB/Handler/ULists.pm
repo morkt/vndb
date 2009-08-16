@@ -316,7 +316,7 @@ sub _vnlist_browse {
          end;
          td class => 'tc2';
           cssicon "lang $_", mt "_lang_$_" for @{$_->{languages}};
-          cssicon substr(lc $self->{release_types}[$_->{type}], 0, 3), $self->{release_types}[$_->{type}].' release';
+          cssicon "rt$_->{type}", mt("_rtype_$_->{type}").' release';
          end;
          td class => 'tc3';
           a href => "/r$_->{rid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;

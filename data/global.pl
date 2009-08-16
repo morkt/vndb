@@ -32,11 +32,7 @@ our %S = (%S,
     [qw| hist board boardmod edit tag mod lock del tagmod usermod |], # 5
   ],
   languages       => [qw|cs da de en es fi fr it ja ko nl no pl pt ru sv tr vi zh|],
-  producer_types  => {
-    co => 'Company',
-    in => 'Individual',
-    ng => 'Amateur group',
-  },
+  producer_types  => [qw|co in ng|],
   discussion_boards => {
     an => 'Announcements',    # 0   - usage restricted to boardmods
     db => 'VNDB Discussions', # 0
@@ -93,11 +89,7 @@ our %S = (%S,
     17 => [ '17+', 'CERO D' ],
     18 => [ '18+', 'CERO Z' ],
   },
-  release_types   => [
-    'Complete',
-    'Partial',
-    'Trial'
-  ],
+  release_types   => [0..2],
   platforms       => [qw|win lin mac dvd gba msx nds nes psp ps1 ps2 ps3 drc sfc wii xb3 oth|],
   media           => {
    #DB       display            qty
