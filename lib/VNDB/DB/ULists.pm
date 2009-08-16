@@ -199,7 +199,7 @@ sub dbVoteStats {
       !s
       !W
       GROUP BY vote|,
-    $ign ? 'JOIN users ON id = uid AND (NOT ign_votes'.($u?sprintf(' OR id = %d'.$u):'').')' : '',
+    $ign ? 'JOIN users ON id = uid AND (NOT ign_votes'.($u?sprintf(' OR id = %d',$u):'').')' : '',
     $col ? { '!s = ?' => [ $col, $id ] } : {},
   )});
   return $r;
