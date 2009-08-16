@@ -275,7 +275,7 @@ sub htmlRevision {
    # no previous revision, just show info about the revision itself
    if(!$old) {
      div;
-      revheader($type, $new);
+      revheader($self, $type, $new);
       br;
       b 'Edit summary:';
       br; br;
@@ -289,8 +289,8 @@ sub htmlRevision {
       thead;
        Tr;
         td; lit '&nbsp;'; end;
-        td; revheader($type, $old); end;
-        td; revheader($type, $new); end;
+        td; revheader($self, $type, $old); end;
+        td; revheader($self, $type, $new); end;
        end;
        Tr;
         td; lit '&nbsp;'; end;
@@ -309,16 +309,16 @@ sub htmlRevision {
 }
 
 sub revheader { # type, obj
-  my($type, $obj) = @_;
+  my($self, $type, $obj) = @_;
   b 'Revision '.$obj->{rev};
   txt ' (';
   a href => "/$type$obj->{id}.$obj->{rev}/edit", 'edit';
   txt ')';
   br;
   txt 'By ';
-  lit userstr($obj);
+  lit $self->{l10n}->userstr($obj);
   txt ' on ';
-  lit date $obj->{added}, 'full';
+  lit $self->{l10n}->date($obj->{added}, 'full');
 }
 
 sub revdiff {
@@ -477,7 +477,7 @@ sub htmlVoteStats {
           }
          end;
          td $recent->[$_]{vote};
-         td date $recent->[$_]{date};
+         td $self->{l10n}->date($recent->[$_]{date});
         end;
       }
      end;
@@ -520,9 +520,9 @@ sub htmlHistory {
        td class => 'tc1_2';
         a href => $revurl, ".$i->{rev}";
        end;
-       td class => 'tc2', date $i->{added};
+       td class => 'tc2', $self->{l10n}->date($i->{added});
        td class => 'tc3';
-        lit userstr($i);
+        lit $self->{l10n}->userstr($i);
        end;
        td;
         a href => $revurl, title => $i->{ioriginal}, shorten $i->{ititle}, 80;

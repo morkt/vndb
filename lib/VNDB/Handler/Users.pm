@@ -52,7 +52,7 @@ sub userpage {
 
     Tr ++$i % 2 ? (class => 'odd') : ();
      td 'Registered';
-     td date $u->{registered};
+     td $self->{l10n}->date($u->{registered});
     end;
 
     Tr ++$i % 2 ? (class => 'odd') : ();
@@ -432,7 +432,7 @@ sub posts {
       Tr $n % 2 ? (class => 'odd') : ();
        td class => 'tc1'; a href => "/t$l->{tid}.$l->{num}", 't'.$l->{tid}; end;
        td class => 'tc2'; a href => "/t$l->{tid}.$l->{num}", '.'.$l->{num}; end;
-       td class => 'tc3', date $l->{date};
+       td class => 'tc3', $self->{l10n}->date($l->{date});
        td class => 'tc4'; a href => "/t$l->{tid}.$l->{num}", $l->{title}; end;
       end;
       Tr class => $n % 2 ? 'editsum odd hidden' : 'editsum hidden';
@@ -538,7 +538,7 @@ sub list {
        td class => 'tc1';
         a href => '/u'.$l->{id}, $l->{username};
        end;
-       td class => 'tc2', date $l->{registered};
+       td class => 'tc2', $self->{l10n}->date($l->{registered});
        td class => 'tc3'.(!$l->{show_list} && $self->authCan('usermod') ? ' linethrough' : '');
         lit !$l->{show_list} && !$self->authCan('usermod') ? '-' : !$l->{c_votes} ? 0 :
           qq|<a href="/u$l->{id}/list">$l->{c_votes}</a>|;

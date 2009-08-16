@@ -72,7 +72,7 @@ sub page {
       for (@{$p->{vn}}) {
         li;
          i;
-          lit datestr $_->{date};
+          lit $self->{l10n}->datestr($_->{date});
          end;
          a href => "/v$_->{id}", title => $_->{original}, $_->{title};
         end;

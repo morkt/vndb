@@ -170,7 +170,7 @@ sub wishlist {
         a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, ' '.shorten $i->{title}, 70;
        end;
        td class => 'tc2', ucfirst $self->{wishlist_status}[$i->{wstat}];
-       td class => 'tc3', date $i->{added}, 'compact';
+       td class => 'tc3', $self->{l10n}->date($i->{added}, 'compact');
       end;
     },
     $own ? (footer => sub {
@@ -312,7 +312,7 @@ sub _vnlist_browse {
          td class => 'tc1'.($own ? ' own' : '');
           input type => 'checkbox', name => 'sel', value => $_->{rid}
             if $own;
-          lit datestr $_->{released};
+          lit $self->{l10n}->datestr($_->{released});
          end;
          td class => 'tc2';
           cssicon "lang $_", mt "_lang_$_" for @{$_->{languages}};

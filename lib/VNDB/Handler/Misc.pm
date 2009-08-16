@@ -100,7 +100,7 @@ sub homepage {
       for (@$posts) {
         my $boards = join ', ', map $self->{discussion_boards}{$_->{type}}.($_->{iid}?' > '.$_->{title}:''), @{$_->{boards}};
         li;
-         txt age($_->{ldate}).' ';
+         txt $self->{l10n}->age($_->{ldate}).' ';
          a href => "/t$_->{id}.$_->{count}", title => "Posted in $boards", shorten $_->{title}, 20;
          txt ' by ';
          a href => "/u$_->{luid}", $_->{lusername};
@@ -132,7 +132,7 @@ sub homepage {
      ul;
       for (@$upcoming) {
         li;
-         lit datestr $_->{released};
+         lit $self->{l10n}->datestr($_->{released});
          txt ' ';
          cssicon $_, mt "_plat_$_" for (@{$_->{platforms}});
          txt ' ';
@@ -149,7 +149,7 @@ sub homepage {
      ul;
       for (@$justrel) {
         li;
-         lit datestr $_->{released};
+         lit $self->{l10n}->datestr($_->{released});
          txt ' ';
          cssicon $_, mt "_plat_$_" for (@{$_->{platforms}});
          txt ' ';

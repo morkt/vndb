@@ -217,7 +217,7 @@ sub _vnlist {
           for (reverse sort split /\//, $l->{c_languages});
        end;
        td class => 'tc5';
-        lit monthstr $l->{c_released};
+        lit $self->{l10n}->monthstr($l->{c_released});
        end;
        td class => 'tc6', sprintf '%.2f', $l->{c_popularity}*100;
       end;
@@ -398,7 +398,7 @@ sub taglist {
       row => sub {
         my($s, $n, $l) = @_;
         Tr $n % 2 ? (class => 'odd') : ();
-         td class => 'tc1', age $l->{added};
+         td class => 'tc1', $self->{l10n}->age($l->{added});
          td class => 'tc3';
           a href => "/g$l->{id}", $l->{name};
           if($f->{t} == -1) {
@@ -608,7 +608,7 @@ sub tagindex {
      ul;
       for (@$r) {
         li;
-         txt age $_->{added};
+         txt $self->{l10n}->age($_->{added});
          txt ' ';
          a href => "/g$_->{id}", $_->{name};
         end;
@@ -638,7 +638,7 @@ sub tagindex {
       li "Moderation queue empty! yay!" if !@$r;
       for (@$r) {
         li;
-         txt age $_->{added};
+         txt $self->{l10n}->age($_->{added});
          txt ' ';
          a href => "/g$_->{id}", $_->{name};
         end;

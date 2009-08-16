@@ -49,7 +49,7 @@ sub page {
       [ catalog   => 'Catalog number', serialize => sub { $_[0]||'[none]' } ],
       [ languages => 'Language',       join => ', ', split => sub { map mt("_lang_$_"), @{$_[0]} } ],
       [ website   => 'Website',        ],
-      [ released  => 'Release date',   htmlize   => sub { datestr $_[0] } ],
+      [ released  => 'Release date',   htmlize   => sub { $self->{l10n}->datestr($_[0]) } ],
       [ minage    => 'Age rating',     serialize => sub { $self->{age_ratings}{$_[0]}[0] } ],
       [ notes     => 'Notes',          diff => 1 ],
       [ platforms => 'Platforms',      join => ', ', split => sub { map mt("_plat_$_"), @{$_[0]} } ],
@@ -188,7 +188,7 @@ sub _infotable {
    Tr ++$i % 2 ? (class => 'odd') : ();
     td 'Released';
     td;
-     lit datestr $r->{released};
+     lit $self->{l10n}->datestr($r->{released});
     end;
    end;
 
@@ -539,7 +539,7 @@ sub browse {
       my($s, $n, $l) = @_;
       Tr $n % 2 ? (class => 'odd') : ();
        td class => 'tc1';
-        lit datestr $l->{released};
+        lit $self->{l10n}->datestr($l->{released});
        end;
        td class => 'tc2', $l->{minage} > -1 ? $self->{age_ratings}{$l->{minage}}[0] : '';
        td class => 'tc3';

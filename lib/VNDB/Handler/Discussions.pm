@@ -61,9 +61,9 @@ sub thread {
         a href => "/t$tid.$_->{num}", name => $_->{num}, "#$_->{num}";
         if(!$_->{hidden}) {
           txt ' by ';
-          lit userstr $_;
+          lit $self->{l10n}->userstr($_);
           br;
-          lit date $_->{date}, 'full';
+          lit $self->{l10n}->date($_->{date}, 'full');
         }
        end;
        td class => 'tc2';
@@ -78,7 +78,7 @@ sub thread {
           i class => 'deleted', 'Post deleted.';
         } else {
           lit bb2html $_->{msg};
-          i class => 'lastmod', 'Last modified on '.date($_->{edited}, 'full') if $_->{edited};
+          i class => 'lastmod', 'Last modified on '.$self->{l10n}->date($_->{edited}, 'full') if $_->{edited};
         }
        end;
       end;
@@ -235,7 +235,7 @@ sub edit {
   my $url = !$tid ? "/t/$board/new" : !$num ? "/t$tid/reply" : "/t$tid.$num/edit";
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlForm({ frm => $frm, action => $url }, $title => [
-    [ static => label => 'Username', content => userstr($self->authInfo->{id}, $self->authInfo->{username}) ],
+    [ static => label => 'Username', content => $self->{l10n}->userstr($self->authInfo->{id}, $self->authInfo->{username}) ],
     !$tid || $num == 1 ? (
       [ input  => short => 'title', name => 'Thread title' ],
       [ input  => short => 'boards',  name => 'Board(s)' ],
@@ -368,13 +368,13 @@ sub _threadlist {
        end;
        td class => 'tc2', $o->{count}-1;
        td class => 'tc3';
-        lit userstr $o->{fuid}, $o->{fusername};
+        lit $self->{l10n}->userstr($o->{fuid}, $o->{fusername});
        end;
        td class => 'tc4';
-        lit userstr $o->{luid}, $o->{lusername};
+        lit $self->{l10n}->userstr($o->{luid}, $o->{lusername});
         lit ' @ ';
         a href => "/t$o->{id}.$o->{count}";
-         lit date $o->{ldate};
+         lit $self->{l10n}->date($o->{ldate});
         end;
        end;
       end;
