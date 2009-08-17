@@ -36,6 +36,64 @@ used in the above examples. As soon as a line is retranslated or synchronised
 again by the translator, (s)he should replace the asterick with a space to
 indicate that it has been checked.
 
+The text strings can contain some special formatting and text expansion codes.
+Such a code starts with '[', followed by a list of comma-separated options, and
+ends with ']'. The following options are supported:
+
+  [_x]
+    Insert argument x in here. The arguments differ for each string, and come
+    from the VNDB code. The English line would give an indication of the
+    supported arguments.
+
+  [age,{arg}]
+    Formats the date/time '{arg}' into an age string, e.g. '3 days ago'. Commonly
+    used as '[age,_1]'.
+
+  [br]
+    The classic HTML <br>, used to force a line break into the text.
+
+  [date,{arg}]
+    Formats the date '{arg}' into a readable date. Usually used as: [date,_1].
+
+  [date,{arg},full]
+    Formats the date and time '{arg}' into something readable. Usually used as:
+      [date,_1,full]
+
+  [datestr,{arg}]
+    Similar to [date], but used for release dates. (These are slightly different
+    from normal dates, as the month or year can be unknown).
+
+  [index,{idx},{list},..]
+    Displays the item in {list} numbered by {idx}. Often used when the same
+    sentence is used for different types of information. E.g.:
+      [index,_1,visual novel,release,producer]
+
+  [monthstr,{arg}]
+    Similar to [datestr], but doesn't display the day, only month+year.
+
+  [quant,{num},{singular},{plural}] (English)
+    Takes the correct form of a word depending on the quantity specified by {num}.
+    E.g.:
+      2 [quant,2,room,rooms]
+    Will be displayed as:
+      2 rooms
+    {num} is usually an argument (which is variable), otherwise it wouldn't
+    make much sense to use this format.
+
+  [quant,{num},{singular},{multi},{many}] (Russian)
+    Same as the english [quant] as above, but has three forms for a word
+    instead of two.
+
+  [url,{url},{title}]
+    Formats a link to another page, where {url} is the location of the page
+    and {title} the link title. {url} is usually an argument, e.g.:
+      [url,_1,discussion board]
+
+  [user,{arg}]
+    Formats a username+id into a link to the userpage.
+
+
+
 (Actual processing of this file begins after the following line)
 /intro
 
@@ -366,10 +424,9 @@ ru*:
 en : Login
 ru*:
 
-# HTML
 :_menu_loginmsg
-en : Need to <a href="[_1]">register</a>,<br />
-     or <a href="[_2]">forgot your password</a>?
+en : Need to [url,_1,register],[br]
+     or [url,_2,forgot your password]?
 ru*:
 
 
@@ -565,16 +622,15 @@ ru*:
 # Handler::Misc::home
 
 
-# HTML
 :_home_intro
-en : VNDB.org strives to be a comprehensive database for information about visual novels and eroge.<br />
+en : VNDB.org strives to be a comprehensive database for information about visual novels and eroge.[br]
      This website is built as a wiki, meaning that anyone can freely add and contribute information
      to the database, allowing us to create the largest, most accurate and most up-to-date visual novel
-     database on the web.<br />
+     database on the web.[br]
      Registered users are also able to keep track of a personal list of games they want to play or have finished
-     and they can vote on all visual novels.<br /><br />
-     Feel free to <a href="/v/all">browse around</a>, <a href="/u/register">register an account</a>
-     or to participate in the discussions about visual novels or VNDB on our <a href="/t">discussion board</a>.
+     and they can vote on all visual novels.[br][br]
+     Feel free to [url,/v/all,browse around], [url,/u/register,register an account]
+     or to participate in the discussions about visual novels or VNDB on our [url,/t,discussion board].
 ru*:
 
 
@@ -719,9 +775,8 @@ ru*:
 en : You need to be logged in to perform this action.
 ru*:
 
-# HTML
 :_denied_needlogin_msg
-en : Please <a href="/u/login">login</a>, or <a href="/u/register">create an account</a> if you don't have one yet.
+en : Please [url,/u/login,login], or [url,/u/register,create an account] if you don't have one yet.
 ru*:
 
 # logged in, but simply no access
@@ -740,10 +795,9 @@ ru*:
 en : Item deleted
 ru*:
 
-# HTML
 :_hiddenmsg_msg
 en : This item has been deleted from the database, File a request on the
-     <a href="[_1]">discussion board</a> to undelete this page.
+     [url,_1,discussion board] to undelete this page.
 ru*:
 
 
@@ -754,7 +808,7 @@ en : You're not editing a release!
 ru*:
 
 :_editmsg_copy_msg
-en : You're about to insert a new release into the database with information based on [_1].<br />
+en : You're about to insert a new release into the database with information based on [_1].[br]
      Hit the 'edit' tab on the right-top if you intended to edit the release instead of creating a new one.
 ru*:
 
@@ -763,19 +817,19 @@ en : Before editing:
 ru*:
 
 :_editmsg_msg_guidelines
-en : Read the <a href="[_1]">guidelines</a>!
+en : Read the [url,_1,guidelines]!
 ru*:
 
 :_editmsg_msg_discuss
-en : Check for any existing discussions on the <a href="[_1]">discussion board</a>
+en : Check for any existing discussions on the [url,_1,discussion board]
 ru*:
 
 :_editmsg_msg_history
-en : Browse the <a href="[_1]">edit history</a> for any recent changes related to what you want to change.
+en : Browse the [url,_1,edit history] for any recent changes related to what you want to change.
 ru*:
 
 :_editmsg_msg_search
-en : <a href="[_1]">Search the database</a> to see if we already have information about this [index,_2,visual novel,release,producer].
+en : [url,_1,Search the database] to see if we already have information about this [index,_2,visual novel,release,producer].
 ru*:
 
 :_editmsg_revert_title
@@ -795,7 +849,7 @@ en : Locked for editing
 ru*:
 
 :_itemmsg_login
-en : You need to be <a href="[_1]>logged in</a> to edit this page
+en : You need to be [url,_1,logged in] to edit this page
 ru*:
 
 :_itemmsg_denied

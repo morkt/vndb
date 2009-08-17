@@ -82,6 +82,7 @@ use warnings;
   package VNDB::L10N::en;
   use base 'VNDB::L10N';
   use POSIX 'strftime';
+  use YAWF 'xml_escape';
   our %Lexicon;
 
   # Argument: unix timestamp
@@ -154,6 +155,14 @@ use warnings;
     shift;
     return $_[shift];
   }
+
+  # Shortcut for <a href="arg1">arg2</a>
+  sub url {
+    return sprintf '<a href="%s">%s</a>', xml_escape($_[1]), xml_escape($_[2]);
+  }
+
+  # <br />
+  sub br { return '<br />' }
 }
 
 
