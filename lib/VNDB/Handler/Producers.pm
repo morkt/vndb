@@ -48,8 +48,8 @@ sub page {
    h1 $p->{name};
    h2 class => 'alttitle', $p->{original} if $p->{original};
    p class => 'center';
-    txt mt("_lang_$p->{lang}")." ".lc(mt "_ptype_$p->{type}");
-    txt "\na.k.a. $p->{alias}" if $p->{alias};
+    txt mt '_prodpage_langtype', mt("_lang_$p->{lang}"), mt "_ptype_$p->{type}";
+    txt "\n".mt '_progpage_aliases', $p->{alias} if $p->{alias};
     if($p->{website}) {
       txt "\n";
       a href => $p->{website}, $p->{website};
@@ -64,9 +64,9 @@ sub page {
 
   end;
   div class => 'mainbox producerpage';
-   h1 'Visual Novel Relations';
+   h1 mt '_prodpage_vnrel';
    if(!@{$p->{vn}}) {
-     p 'We have currently no visual novels related to this producer.';
+     p mt '_prodpage_norel';
    } else {
      ul;
       for (@{$p->{vn}}) {
@@ -129,22 +129,22 @@ sub edit {
   $frm->{lang} = 'ja' if !$pid && !defined $frm->{lang};
   $frm->{editsum} = sprintf 'Reverted to revision p%d.%d', $pid, $rev if $rev && !defined $frm->{editsum};
 
-  my $title = $pid ? 'Edit '.$p->{name} : 'Add new producer';
+  my $title = mt $pid ? ('_pedit_title_edit', $p->{name}) : '_pedit_title_add';
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('p', $p, 'edit') if $pid;
   $self->htmlEditMessage('p', $p, $title);
-  $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 }, "General info" => [
-    [ select => name => 'Type', short => 'type',
+  $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 }, mt('_pedit_form_generalinfo') => [
+    [ select => name => mt('_pedit_form_type'), short => 'type',
       options => [ map [ $_, mt "_ptype_$_" ], sort @{$self->{producer_types}} ] ],
-    [ input  => name => 'Name (romaji)', short => 'name' ],
-    [ input  => name => 'Original name', short => 'original' ],
-    [ static => content => q|The original name of the producer, leave blank if it is already in the Latin alphabet.| ],
-    [ input  => name => 'Aliases', short => 'alias', width => 400 ],
-    [ static => content => q|(Un)official aliases, separated by a comma.| ],
-    [ select => name => 'Primary language', short => 'lang',
+    [ input  => name => mt('_pedit_form_name'), short => 'name' ],
+    [ input  => name => mt('_pedit_form_original'), short => 'original' ],
+    [ static => content => mt('_pedit_form_original_note') ],
+    [ input  => name => mt('_pedit_form_alias'), short => 'alias', width => 400 ],
+    [ static => content => mt('_pedit_form_alias_note') ],
+    [ select => name => mt('_pedit_form_lang'), short => 'lang',
       options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
-    [ input  => name => 'Website', short => 'website' ],
-    [ text   => name => 'Description', short => 'desc', rows => 6 ],
+    [ input  => name => mt('_pedit_form_website'), short => 'website' ],
+    [ text   => name => mt('_pedit_form_desc'), short => 'desc', rows => 6 ],
   ]);
   $self->htmlFooter;
 }
@@ -166,10 +166,10 @@ sub list {
     page => $f->{p}
   );
 
-  $self->htmlHeader(title => 'Browse producers');
+  $self->htmlHeader(title => mt '_pbrowse_title');
 
   div class => 'mainbox';
-   h1 'Browse producers';
+   h1 mt '_pbrowse_title';
    form action => '/p/all', 'accept-charset' => 'UTF-8', method => 'get';
     $self->htmlSearchBox('p', $f->{q});
    end;
@@ -183,9 +183,9 @@ sub list {
   my $pageurl = "/p/$char" . ($f->{q} ? "?q=$f->{q}" : '');
   $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 't');
   div class => 'mainbox producerbrowse';
-   h1 $f->{q} ? 'Search results' : 'Producer list';
+   h1 mt $f->{q} ? '_pbrowse_searchres' : '_pbrowse_list';
    if(!@$list) {
-     p 'No results found';
+     p mt '_pbrowse_noresults';
    } else {
      # spread the results over 3 equivalent-sized lists
      my $perlist = @$list/3 < 1 ? 1 : @$list/3;

@@ -302,7 +302,7 @@ sub htmlRevision {
        end;
       end;
       my $i = 1;
-      revdiff(\$i, $old, $new, @$_) for (@fields);
+      revdiff(\$i, $type, $old, $new, @$_) for (@fields);
      end;
    }
   end;
@@ -319,7 +319,8 @@ sub revheader { # type, obj
 }
 
 sub revdiff {
-  my($i, $old, $new, $short, $name, %o) = @_;
+  my($i, $type, $old, $new, $short, $name, %o) = @_;
+  # TODO: remove $name, it won't be used
 
   $o{serialize} ||= $o{htmlize};
   $o{diff}++ if $o{split};
@@ -355,7 +356,7 @@ sub revdiff {
   $ser2 = mt '_revision_emptyfield' if !$ser2 && $ser2 ne '0';
 
   Tr $$i++ % 2 ? (class => 'odd') : ();
-   td $name;
+   td mt "_revfield_${type}_$short";
    td class => 'tcval'; lit $ser1; end;
    td class => 'tcval'; lit $ser2; end;
   end;

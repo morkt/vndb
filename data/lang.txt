@@ -945,6 +945,135 @@ ru*:
 
 
 
+#############################################################################
+##                          Producer pages (/p/*)                          ##
+#############################################################################
+# Handler::Producers
+
+
+# Producer page (/p+)
+
+# 1 = Language, 2 = Type, so '[_1] [_2]' => 'Japanese company'
+# if this doesn't work in other languages, be creative :-)
+:_prodpage_langtype
+en : [_1] [_2]
+ru*:
+
+:_prodpage_aliases
+en : a.k.a. [_1]
+ru*:
+
+:_prodpage_vnrel
+en : Visual Novel Relations
+ru*:
+
+:_prodpage_norel
+en : We have currently no visual novels by this producer.
+ru*:
+
+
+# producer diff fields
+
+:_revfield_p_type
+en : Type
+ru*:
+
+:_revfield_p_name
+en : Name (romaji)
+ru*:
+
+:_revfield_p_original
+en : Original name
+ru*:
+
+:_revfield_p_alias
+en : Aliases
+ru*:
+
+:_revfield_p_lang
+en : Language
+ru*:
+
+:_revfield_p_website
+en : Website
+ru*:
+
+:_revfield_p_desc
+en : Description
+ru*:
+
+
+# Add/Edit producer
+
+:_pedit_title_edit
+en : Edit [_1]
+ru*:
+
+:_pedit_title_add
+en : Add new producer
+ru*:
+
+:_pedit_form_generalinfo
+en : General info
+ru*:
+
+:_pedit_form_type
+en : Type
+ru*:
+
+:_pedit_form_name
+en : Name (romaji)
+ru*:
+
+:_pedit_form_original
+en : Original name
+ru*:
+
+:_pedit_form_original_note
+en : The original name of the producer, leave blank if it is already in the Latin alphabet.
+ru*:
+
+:_pedit_form_alias
+en : Aliases
+ru*:
+
+:_pedit_form_alias_note
+en : (Un)official aliases, separated by a comma.
+ru*:
+
+:_pedit_form_lang
+en : Primary language
+ru*:
+
+:_pedit_form_website
+en : Website
+ru*:
+
+:_pedit_form_desc
+en : Description
+ru*:
+
+
+# Browse/search producers
+
+:_pbrowse_title
+en : Browse producers
+ru*:
+
+:_pbrowse_searchres
+en : Search results
+ru*:
+
+:_pbrowse_list
+en : Producer list
+ru*:
+
+:_pbrowse_noresults
+en : No results found
+ru*:
+
+
+
 
 #############################################################################
 ##                            Misc. messages                               ##
