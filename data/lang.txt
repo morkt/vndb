@@ -263,7 +263,7 @@ ru*:
 ##                         Main website layout                             ##
 #############################################################################
 # Util::LayoutHTML
-# Util::CommonHTML::htmlMainTabs, htmlBrowseNavigate, htmlRevision
+# Util::CommonHTML::htmlMainTabs, htmlBrowseNavigate, htmlRevision, htmlSearchBox
 
 
 # Main title of the site, used on header of each page and as title on the homepage
@@ -529,6 +529,34 @@ en : ~[empty~]
 ru*:
 
 
+# tabs above the search boxes
+
+:_searchbox_vn
+en : Visual novels
+ru*:
+
+:_searchbox_releases
+en : Releases
+ru*:
+
+:_searchbox_producers
+en : Producers
+ru*:
+
+:_searchbox_tags
+en : Tags
+ru*:
+
+:_searchbox_users
+en : Users
+ru*:
+
+# text on the search button
+:_searchbox_submit
+en : Search!
+ru*:
+
+
 
 
 #############################################################################
@@ -676,7 +704,8 @@ ru*:
 #############################################################################
 ##                            Misc. messages                               ##
 #############################################################################
-# Util::CommonHTML::htmlDenied and htmlHiddenMessage
+# Util::CommonHTML::htmlDenied,
+#  htmlHiddenMessage, htmlEditMessage and htmlItemMessage
 
 
 # Generic "Access denied!" page
@@ -715,5 +744,61 @@ ru*:
 :_hiddenmsg_msg
 en : This item has been deleted from the database, File a request on the
      <a href="[_1]">discussion board</a> to undelete this page.
+ru*:
+
+
+# The warning/notice messages on edit pages
+
+:_editmsg_copy_title
+en : You're not editing a release!
+ru*:
+
+:_editmsg_copy_msg
+en : You're about to insert a new release into the database with information based on [_1].<br />
+     Hit the 'edit' tab on the right-top if you intended to edit the release instead of creating a new one.
+ru*:
+
+:_editmsg_msg_title
+en : Before editing:
+ru*:
+
+:_editmsg_msg_guidelines
+en : Read the <a href="[_1]">guidelines</a>!
+ru*:
+
+:_editmsg_msg_discuss
+en : Check for any existing discussions on the <a href="[_1]">discussion board</a>
+ru*:
+
+:_editmsg_msg_history
+en : Browse the <a href="[_1]">edit history</a> for any recent changes related to what you want to change.
+ru*:
+
+:_editmsg_msg_search
+en : <a href="[_1]">Search the database</a> to see if we already have information about this [index,_2,visual novel,release,producer].
+ru*:
+
+:_editmsg_revert_title
+en : Reverting
+ru*:
+
+:_editmsg_revert_msg
+en : You are editing an old revision of this [index,_1,visual novel,release,producer].
+     If you save it, all changes made after this revision will be reverted!
+ru*:
+
+
+# Messages about editing on the VN/Release/Producer pages (right beneath the tabs)
+
+:_itemmsg_locked
+en : Locked for editing
+ru*:
+
+:_itemmsg_login
+en : You need to be <a href="[_1]>logged in</a> to edit this page
+ru*:
+
+:_itemmsg_denied
+en : You are not allowed to edit this page
 ru*:
 

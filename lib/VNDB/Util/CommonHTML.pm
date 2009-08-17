@@ -277,7 +277,7 @@ sub htmlRevision {
      div;
       revheader($self, $type, $new);
       br;
-      b mt '_revision_summary';
+      b mt '_revision_new_summary';
       br; br;
       lit bb2html($new->{comments})||'-';
      end;
@@ -365,38 +365,36 @@ sub revdiff {
 # Generates a generic message to show as the header of the edit forms
 # Arguments: v/r/p, obj
 sub htmlEditMessage {
-  my($self, $type, $obj, $copy) = @_;
-  my $full       = {v => 'visual novel', r => 'release', p => 'producer'}->{$type};
+  my($self, $type, $obj, $title, $copy) = @_;
+  my $num        = {v => 0, r => 1, p => 2}->{$type};
   my $guidelines = {v => 2, r => 3, p => 4}->{$type};
 
   div class => 'mainbox';
-   h1 $obj ? ''.($copy ? 'Copy ':'Edit ').($obj->{name}||$obj->{title}) : "Add new $full";
+   h1 $title;
    if($copy) {
      div class => 'warning';
-      h2 "You're not editing a release!";
+      h2 mt '_editmsg_copy_title';
       p;
-       txt "You're about to insert a new release into the database with information based on ";
-       a href => "/$type$obj->{id}", $obj->{title};
-       txt ". Hit the 'edit' tab on the right-top if you intended to edit the release instead of creating a new one.";
+       lit mt '_editmsg_copy_msg', sprintf '<a href="/%s%d">%s</a>', $type, $obj->{id}, xml_escape $obj->{title}, 
       end;
      end;
    }
    div class => 'notice';
-    h2 'Before editing:';
+    h2 mt '_editmsg_msg_title';
     ul;
-     li; lit qq|Read the <a href="/d$guidelines">guidelines</a>!|; end;
+     li; lit mt '_editmsg_msg_guidelines', "/d$guidelines"; end;
      if($obj) {
-       li; lit qq|Check for any existing discussions on the <a href="/t/$type$obj->{id}">discussion board</a>|; end;
-       li; lit qq|Browse the <a href="/$type$obj->{id}/hist">edit history</a> for any recent changes related to what you want to change.|; end;
+       li; lit mt '_editmsg_msg_discuss', $type eq 'r' ? "/t/v$obj->{vn}[0]{vid}" : "/t/$type$obj->{id}"; end;
+       li; lit mt '_editmsg_msg_history', "/$type$obj->{id}/hist"; end;
      } elsif($type ne 'r') {
-       li; lit qq|<a href="/$type/all">Search the database</a> to see if we already have information about this $full|; end;
+       li; lit mt '_editmsg_msg_search', "/$type/all", $num; end;
      }
     end;
    end;
    if($obj && $obj->{latest} != $obj->{cid}) {
      div class => 'warning';
-      h2 'Reverting';
-      p qq|You are editing an old revision of this $full. If you save it, all changes made after this revision will be reverted!|;
+      h2 mt '_editmsg_revert_title';
+      p mt '_editmsg_revert_msg', $num;
      end;
    }
   end;
@@ -410,13 +408,13 @@ sub htmlItemMessage {
   my($self, $type, $obj) = @_;
 
   if($obj->{locked}) {
-    p class => 'locked', 'Locked for editing'
+    p class => 'locked', mt '_itemmsg_locked';
   } elsif(!$self->authInfo->{id}) {
     p class => 'locked';
-     lit 'You need to be <a href="/u/login">logged in</a> to edit this page';
+     lit mt '_itemmsg_login', '/u/login';
     end;
   } elsif(!$self->authCan('edit')) {
-    p class => 'locked', "You're not allowed to edit this page";
+    p class => 'locked', mt '_itemmsg_denied';
   }
 }
 
@@ -542,14 +540,14 @@ sub htmlSearchBox {
 
   fieldset class => 'search';
    p class => 'searchtabs';
-    a href => '/v/all', $sel eq 'v' ? (class => 'sel') : (), 'Visual novels';
-    a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), 'Releases';
-    a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), 'Producers';
-    a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), 'Tags';
-    a href => '/u/all', $sel eq 'u' ? (class => 'sel') : (), 'Users';
+    a href => '/v/all', $sel eq 'v' ? (class => 'sel') : (), mt '_searchbox_vn';
+    a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), mt '_searchbox_releases';
+    a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), mt '_searchbox_producers';
+    a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), mt '_searchbox_tags';
+    a href => '/u/all', $sel eq 'u' ? (class => 'sel') : (), mt '_searchbox_users';
    end;
    input type => 'text', name => 'q', id => 'q', class => 'text', value => $v;
-   input type => 'submit', class => 'submit', value => 'Search!';
+   input type => 'submit', class => 'submit', value => mt '_searchbox_submit';
   end;
 }
 

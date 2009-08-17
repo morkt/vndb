@@ -366,10 +366,11 @@ sub edit {
   $frm->{title} = $v->{title} if !defined $frm->{title} && !$r;
   $frm->{original} = $v->{original} if !defined $frm->{original} && !$r;
 
-  $self->htmlHeader(js => 'forms', title => $rid ? ''.($copy ? 'Copy ':'Edit ').$r->{title} : 'Add release to '.$v->{title}, noindex => 1);
+  my $title = $rid ? ''.($copy ? 'Copy ':'Edit ').$r->{title} : 'Add release to '.$v->{title};
+  $self->htmlHeader(js => 'forms', title => $title, noindex => 1);
   $self->htmlMainTabs('r', $r, $copy ? 'copy' : 'edit') if $rid;
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
-  $self->htmlEditMessage('r', $r, $copy);
+  $self->htmlEditMessage('r', $r, $title, $copy);
   _form($self, $r, $v, $frm, $copy);
   $self->htmlFooter;
 }

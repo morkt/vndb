@@ -148,6 +148,12 @@ use warnings;
     my($id,$n) = ref($_[0])eq'HASH'?($_[0]{uid}||$_[0]{requester}, $_[0]{username}):@_;
     return !$id ? '[deleted]' : '<a href="/u'.$id.'">'.$n.'</a>';
   }
+
+  # Arguments: index, @list. returns $list[index]
+  sub index {
+    shift;
+    return $_[shift];
+  }
 }
 
 

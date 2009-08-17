@@ -129,9 +129,10 @@ sub edit {
   $frm->{lang} = 'ja' if !$pid && !defined $frm->{lang};
   $frm->{editsum} = sprintf 'Reverted to revision p%d.%d', $pid, $rev if $rev && !defined $frm->{editsum};
 
-  $self->htmlHeader(title => $pid ? 'Edit '.$p->{name} : 'Add new producer', noindex => 1);
+  my $title = $pid ? 'Edit '.$p->{name} : 'Add new producer';
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('p', $p, 'edit') if $pid;
-  $self->htmlEditMessage('p', $p);
+  $self->htmlEditMessage('p', $p, $title);
   $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 }, "General info" => [
     [ select => name => 'Type', short => 'type',
       options => [ map [ $_, mt "_ptype_$_" ], sort @{$self->{producer_types}} ] ],
