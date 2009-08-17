@@ -96,7 +96,7 @@ sub homepage {
      my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, order => 'tpl.date DESC', notusers => 1);
      ul;
       for (@$posts) {
-        my $boards = join ', ', map $self->{discussion_boards}{$_->{type}}.($_->{iid}?' > '.$_->{title}:''), @{$_->{boards}};
+        my $boards = join ', ', map mt("_dboard_$_->{type}").($_->{iid}?' > '.$_->{title}:''), @{$_->{boards}};
         li;
          lit mt '_home_recentposts_item', $_->{ldate},
           sprintf('<a href="%s" title="%s">%s</a>', "/t$_->{id}.$_->{count}",

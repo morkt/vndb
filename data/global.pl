@@ -33,13 +33,7 @@ our %S = (%S,
   ],
   languages       => [qw|cs da de en es fi fr it ja ko nl no pl pt ru sv tr vi zh|],
   producer_types  => [qw|co in ng|],
-  discussion_boards => {
-    an => 'Announcements',    # 0   - usage restricted to boardmods
-    db => 'VNDB Discussions', # 0
-    v  => 'Visual novels',    # vid
-    p  => 'Producers',        # pid
-    u  => 'Users',            # uid
-  },
+  discussion_boards => [qw|an db v p u|],
   vn_lengths      => [
     [ 'Unknown',    '',              '' ],
     [ 'Very short', '< 2 hours',     'OMGWTFOTL, A Dream of Summer' ],

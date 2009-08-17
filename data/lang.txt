@@ -315,6 +315,29 @@ en : Trial
 ru*:
 
 
+# Discussion board types
+
+:_dboard_an
+en : Announcements
+ru*:
+
+:_dboard_db
+en : VNDB Discussions
+ru*:
+
+:_dboard_v
+en : Visual novels
+ru*:
+
+:_dboard_p
+en : Producers
+ru*:
+
+:_dboard_u
+en : Users
+ru*:
+
+
 
 
 #############################################################################
@@ -763,6 +786,162 @@ ru*:
 :_hist_col_page
 en : Page
 ru*:
+
+
+
+
+#############################################################################
+##                     Discussion board (/t/*)                             ##
+#############################################################################
+# Handler::Discussions
+
+
+# thread page (/t+)
+
+:_thread_postedin
+en : Posted in
+ru*:
+
+:_thread_byuser
+en : by [userstr,_1]
+ru*:
+
+:_thread_editpost
+en : edit
+ru*:
+
+:_thread_deletedpost
+en : Post deleted.
+ru*:
+
+:_thread_lastmodified
+en : Last modified on [date,_1,full]
+ru*:
+
+:_thread_noreply_title
+en : Reply
+ru*:
+
+:_thread_noreply_locked
+en : This thread has been locked, you can't reply to it anymore
+ru*:
+
+:_thread_noreply_login
+en : You must be logged in to reply to this thread.
+ru*:
+
+:_thread_quickreply_title
+en : Quick reply
+ru*:
+
+:_thread_quickreply_submit
+en : Reply
+ru*:
+
+
+# Post edit/reply/new thread form
+
+:_postedit_newthread
+en : Start new thread
+ru*:
+
+:_postedit_replyto
+en : Reply to [_1]
+ru*:
+
+:_postedit_edit
+en : Edit post
+ru*:
+
+:_postedit_form_username
+en : Username
+ru*:
+
+:_postedit_form_title
+en : Thread title
+ru*:
+
+:_postedit_form_boards
+en : Board(s)
+ru*:
+
+:_postedit_form_boards_info
+en : Read [url,/d9.2,d9.2] for information about how to specify boards.
+ru*:
+
+:_postedit_form_locked
+en : Locked
+ru*:
+
+:_postedit_form_topic
+en : Topic
+ru*:
+
+:_postedit_form_hidden
+en : Hidden
+ru*:
+
+:_postedit_form_nolastmod
+en : Don't update last modified field
+ru*:
+
+:_postedit_form_msg
+en : Message
+ru*:
+
+:_postedit_form_msg_format
+en : See [url,/d9.3,d9.3] for the allowed formatting codes
+ru*:
+
+
+# Browsing threads by board (/t/{board_id})
+
+:_disboard_item_title
+en : Related discussions for [_1]
+ru*:
+
+:_disboard_rootlink
+en : Discussion board
+ru*:
+
+:_disboard_nothreads
+en : No related threads found
+ru*:
+
+:_disboard_createyourown
+en : Why not create one yourself?
+ru*:
+
+:_disboard_startnew
+en : Start a new thread
+ru*:
+
+
+# The discussion board index (/t)
+
+:_disindex_title
+en : Discussion board index
+ru*:
+
+
+# Thread list (on discussion board index and board browser)
+
+:_threadlist_col_topic
+en : Topic
+ru*:
+
+:_threadlist_col_replies
+en : Replies
+ru*:
+
+:_threadlist_col_starter
+en : Starter
+ru*:
+
+:_threadlist_col_lastpost
+en : Last post
+ru*:
+
 
 
 

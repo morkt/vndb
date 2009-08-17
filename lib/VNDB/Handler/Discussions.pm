@@ -33,11 +33,11 @@ sub thread {
 
   div class => 'mainbox';
    h1 $t->{title};
-   h2 'Posted in';
+   h2 mt '_thread_postedin';
    ul;
     for (sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$t->{boards}}) {
       li;
-       a href => "/t/$_->{type}", $self->{discussion_boards}{$_->{type}};
+       a href => "/t/$_->{type}", mt "_dboard_$_->{type}";
        if($_->{iid}) {
          txt ' > ';
          a style => 'font-weight: bold', href => "/t/$_->{type}$_->{iid}", "$_->{type}$_->{iid}";
@@ -60,8 +60,7 @@ sub thread {
        td class => 'tc1';
         a href => "/t$tid.$_->{num}", name => $_->{num}, "#$_->{num}";
         if(!$_->{hidden}) {
-          txt ' by ';
-          lit $self->{l10n}->userstr($_);
+          lit ' '.mt "_thread_byuser", $_;
           br;
           lit $self->{l10n}->date($_->{date}, 'full');
         }
@@ -70,15 +69,15 @@ sub thread {
         if($self->authCan('boardmod') || $self->authInfo->{id} && $_->{uid} == $self->authInfo->{id} && !$_->{hidden}) {
           i class => 'edit';
            txt '< ';
-           a href => "/t$tid.$_->{num}/edit", 'edit';
+           a href => "/t$tid.$_->{num}/edit", mt '_thread_editpost';
            txt ' >';
           end;
         }
         if($_->{hidden}) {
-          i class => 'deleted', 'Post deleted.';
+          i class => 'deleted', mt '_thread_deletedpost';
         } else {
           lit bb2html $_->{msg};
-          i class => 'lastmod', 'Last modified on '.$self->{l10n}->date($_->{edited}, 'full') if $_->{edited};
+          i class => 'lastmod', mt '_thread_lastmodified', $_->{edited} if $_->{edited};
         }
        end;
       end;
@@ -89,24 +88,24 @@ sub thread {
 
   if($t->{locked}) {
     div class => 'mainbox';
-     h1 'Reply';
-     p class => 'center', 'This thread has been locked, you can\'t reply to it anymore.';
+     h1 mt '_thread_noreply_title';
+     p class => 'center', mt '_thread_noreply_locked';
     end;
   } elsif($t->{count} <= $page*25 && $self->authCan('board')) {
     form action => "/t$tid/reply", method => 'post', 'accept-charset' => 'UTF-8';
      div class => 'mainbox';
       fieldset class => 'submit';
-       h2 'Quick reply';
+       h2 mt '_thread_quickreply_title';
        textarea name => 'msg', id => 'msg', rows => 4, cols => 50, '';
        br;
-       input type => 'submit', value => 'Reply', class => 'submit';
+       input type => 'submit', value => mt('_thread_quickreply_submit'), class => 'submit';
       end;
      end;
     end;
   } elsif(!$self->authCan('board')) {
     div class => 'mainbox';
-     h1 'Reply';
-     p class => 'center', 'You must be logged in to reply to this thread.';
+     h1 mt '_thread_noreply_title';
+     p class => 'center', mt '_thread_noreply_login';
     end;
   }
 
@@ -177,7 +176,7 @@ sub edit {
         my($ty, $id) = ($1, $2) if /^([a-z]{1,2})([0-9]*)$/;
         push @boards, [ $ty, $id ];
         push @{$frm->{_err}}, [ 'boards', 'wrongboard', $_ ] if
-             !$ty || !$self->{discussion_boards}{$ty}
+             !$ty || !grep($_ eq $ty, @{$self->{discussion_boards}})
           || $ty eq 'an' && ($id || !$self->authCan('boardmod'))
           || $ty eq 'db' && $id
           || $ty eq 'v'  && (!$id || !$self->dbVNGet(id => $id)->[0]{id})
@@ -229,31 +228,31 @@ sub edit {
   $frm->{nolastmod} = 1 if $num && $self->authCan('boardmod') && !exists $frm->{nolastmod};
 
   # generate html
-  my $title = !$tid ? 'Start new thread' :
-              !$num ? 'Reply to '.$t->{title} :
-                      'Edit post';
+  my $title = mt !$tid ? '_postedit_newthread' :
+                 !$num ? ('_postedit_replyto', $t->{title}) :
+                         '_postedit_edit';
   my $url = !$tid ? "/t/$board/new" : !$num ? "/t$tid/reply" : "/t$tid.$num/edit";
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlForm({ frm => $frm, action => $url }, $title => [
-    [ static => label => 'Username', content => $self->{l10n}->userstr($self->authInfo->{id}, $self->authInfo->{username}) ],
+    [ static => label => mt('_postedit_form_username'), content => $self->{l10n}->userstr($self->authInfo->{id}, $self->authInfo->{username}) ],
     !$tid || $num == 1 ? (
-      [ input  => short => 'title', name => 'Thread title' ],
-      [ input  => short => 'boards',  name => 'Board(s)' ],
-      [ static => content => 'Read <a href="/d9.2">d9.2</a> for information about how to specify boards' ],
+      [ input  => short => 'title', name => mt('_postedit_form_title') ],
+      [ input  => short => 'boards',  name => mt('_postedit_form_boards') ],
+      [ static => content => mt('_postedit_form_boards_info') ],
       $self->authCan('boardmod') ? (
-        [ check => name => 'Locked', short => 'locked' ],
+        [ check => name => mt('_postedit_form_locked'), short => 'locked' ],
       ) : (),
     ) : (
-      [ static => label => 'Topic', content => qq|<a href="/t$tid">|.xml_escape($t->{title}).'</a>' ],
+      [ static => label => mt('_postedit_form_topic'), content => qq|<a href="/t$tid">|.xml_escape($t->{title}).'</a>' ],
     ),
     $self->authCan('boardmod') ? (
-      [ check => name => 'Hidden', short => 'hidden' ],
+      [ check => name => mt('_postedit_form_hidden'), short => 'hidden' ],
       $num ? (
-        [ check => name => 'Don\'t update last modified field', short => 'nolastmod' ],
+        [ check => name => mt('_postedit_form_nolastmod'), short => 'nolastmod' ],
       ) : (),
     ) : (),
-    [ text   => name => 'Message', short => 'msg', rows => 10 ],
-    [ static => content => 'See <a href="/d9.3">d9.3</a> for the allowed formatting codes' ],
+    [ text   => name => mt('_postedit_form_msg'), short => 'msg', rows => 10 ],
+    [ static => content => mt('_postedit_form_msg_format') ],
   ]);
   $self->htmlFooter;
 }
@@ -275,7 +274,7 @@ sub board {
                    $self->dbVNGet(id => $iid)->[0];
   return 404 if $iid && !$obj;
   my $ititle = $obj && ($obj->{title}||$obj->{name}||$obj->{username});
-  my $title = !$obj ? $self->{discussion_boards}{$type} : 'Related discussions for '.$ititle;
+  my $title = !$obj ? mt("_dboard_$type") : mt '_disboard_item_title', $ititle;
 
   my($list, $np) = $self->dbThreadGet(
     type => $type,
@@ -292,9 +291,9 @@ sub board {
   div class => 'mainbox';
    h1 $title;
    p;
-    a href => '/t', 'Discussion board';
+    a href => '/t', mt '_disboard_rootlink';
     txt ' > ';
-    a href => "/t/$type", $self->{discussion_boards}{$type};
+    a href => "/t/$type", mt "_dboard_$type";
     if($iid) {
       txt ' > ';
       a style => 'font-weight: bold', href => "/t/$type$iid", "$type$iid";
@@ -304,11 +303,11 @@ sub board {
    end;
    p class => 'center';
     if(!@$list) {
-      b 'No related threads found';
+      b mt '_disboard_nothreads';
       br; br;
-      a href => "/t/$type$iid/new", 'Why not create one yourself?';
+      a href => "/t/$type$iid/new", mt '_disboard_createyourown';
     } else {
-      a href => '/t/'.($iid ? $type.$iid : 'db').'/new', 'Start a new thread';
+      a href => '/t/'.($iid ? $type.$iid : 'db').'/new', mt '_disboard_startnew';
     }
    end;
   end;
@@ -322,11 +321,11 @@ sub board {
 sub index {
   my $self = shift;
 
-  $self->htmlHeader(title => 'Discussion board index');
+  $self->htmlHeader(title => mt '_disindex_title');
   div class => 'mainbox';
-   h1 'Discussion board index';
+   h1 mt '_disindex_title';
    p class => 'browseopts';
-    a href => '/t/'.$_, $self->{discussion_boards}{$_}
+    a href => '/t/'.$_, mt "_dboard_$_"
       for (qw|an db v p u|);
    end;
   end;
@@ -340,7 +339,7 @@ sub index {
       order => 'tpl.date DESC',
     );
     h1 class => 'boxtitle';
-     a href => "/t/$_", $self->{discussion_boards}{$_};
+     a href => "/t/$_", mt "_dboard_$_";
     end;
     _threadlist($self, $list, {p=>1}, 0, "/t");
   }
@@ -358,7 +357,10 @@ sub _threadlist {
     pageurl  => $url,
     class    => 'discussions',
     header   => [
-      [ 'Topic' ], [ 'Replies' ], [ 'Starter' ], [ 'Last post' ]
+      [ mt '_threadlist_col_topic'    ],
+      [ mt '_threadlist_col_replies'  ],
+      [ mt '_threadlist_col_starter'  ],
+      [ mt '_threadlist_col_lastpost' ],
     ],
     row      => sub {
       my($self, $n, $o) = @_;
@@ -386,8 +388,8 @@ sub _threadlist {
           last if $i++ > 5;
           txt ', ' if $i > 2;
           a href => "/t/$_->{type}".($_->{iid}||''),
-            title => $_->{original}||$self->{discussion_boards}{$_->{type}},
-            shorten $_->{title}||$self->{discussion_boards}{$_->{type}}, 30;
+            title => $_->{original}||mt("_dboard_$_->{type}"),
+            shorten $_->{title}||mt("_dboard_$_->{type}"), 30;
         }
         txt ', ...' if @{$o->{boards}} > 5;
        end;
