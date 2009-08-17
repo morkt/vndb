@@ -322,6 +322,7 @@ ru*:
 #############################################################################
 # Util::LayoutHTML
 # Util::CommonHTML::htmlMainTabs, htmlBrowseNavigate, htmlRevision, htmlSearchBox
+# Handler::Misc::nospam
 
 
 # Main title of the site, used on header of each page and as title on the homepage
@@ -864,4 +865,20 @@ ru*:
 :_itemmsg_denied
 en : You are not allowed to edit this page
 ru*:
+
+
+# User didn't pass the spam protection
+
+:_nospam_title
+en : Could not send form
+ru*:
+
+:_nospam_subtitle
+en : Error
+ru*:
+
+:_nospam_msg
+en : The form could not be sent, please make sure you have Javascript enabled in your browser.
+ru*:
+
 

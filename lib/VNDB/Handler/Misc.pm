@@ -294,13 +294,13 @@ sub docpage {
 
 sub nospam {
   my $self = shift;
-  $self->htmlHeader(title => 'Could not send form', noindex => 1);
+  $self->htmlHeader(title => mt '_nospam_title', noindex => 1);
 
   div class => 'mainbox';
-   h1 'Could not send form';
+   h1 mt '_nospam_title';
    div class => 'warning';
-    h2 'Error';
-    p 'The form could not be sent, please make sure you have Javascript enabled in your browser.';
+    h2 mt '_nospam_subtitle';
+    p mt '_nospam_msg';
    end;
   end;
 
