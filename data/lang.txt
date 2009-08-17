@@ -325,7 +325,8 @@ ru*:
 
 
 # Main title of the site, used on header of each page and as title on the homepage
-:The Visual Novel Database
+:_site_title
+en : The Visual Novel Database
 ru : База Данных Интерактивных Новелл
 
 
@@ -638,6 +639,10 @@ ru*:
 en : Recent Changes
 ru*:
 
+:_home_recentchanges_item
+en : [_1]:[_2] by [userstr,_3]
+ru*:
+
 :_home_announcements
 en : Announcements
 ru*:
@@ -648,6 +653,10 @@ ru*:
 
 :_home_recentposts
 en : Recent Posts
+ru*:
+
+:_home_recentposts_item
+en : [age,_1] [_2] by [userstr,_3]
 ru*:
 
 :_home_randomvn

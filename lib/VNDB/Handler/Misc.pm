@@ -4,7 +4,7 @@ package VNDB::Handler::Misc;
 
 use strict;
 use warnings;
-use YAWF ':html', ':xml';
+use YAWF ':html', ':xml', 'xml_escape';
 use VNDB::Func;
 
 
@@ -36,10 +36,10 @@ YAWF::register(
 
 sub homepage {
   my $self = shift;
-  $self->htmlHeader(title => mt 'The Visual Novel Database');
+  $self->htmlHeader(title => mt '_site_title');
 
   div class => 'mainbox';
-   h1 mt 'The Visual Novel Database';
+   h1 mt '_site_title';
    p class => 'description';
     lit mt '_home_intro';
    end;
@@ -58,7 +58,6 @@ sub homepage {
    Tr;
 
     # Recent changes
-    # TODO: localized item format
     td;
      h1 mt '_home_recentchanges';
      my $changes = $self->dbRevisionGet(what => 'item user', results => 10, auto => 1, hidden => 1);
@@ -66,10 +65,10 @@ sub homepage {
       for (@$changes) {
         my $t = (qw|v r p|)[$_->{type}];
         li;
-         b "$t:";
-         a href => "/$t$_->{iid}.$_->{rev}", title => $_->{ioriginal}||$_->{ititle}, shorten $_->{ititle}, 30;
-         txt ' by ';
-         a href => "/u$_->{requester}", $_->{username};
+         lit mt '_home_recentchanges_item', $t,
+          sprintf('<a href="%s" title="%s">%s</a>', "/$t$_->{iid}.$_->{rev}",
+            xml_escape($_->{ioriginal}||$_->{ititle}), xml_escape shorten $_->{ititle}, 33),
+          $_;
         end;
       }
      end;
@@ -92,7 +91,6 @@ sub homepage {
     end;
 
     # Recent posts
-    # TODO: localized item format
     td;
      h1 mt '_home_recentposts';
      my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, order => 'tpl.date DESC', notusers => 1);
@@ -100,10 +98,10 @@ sub homepage {
       for (@$posts) {
         my $boards = join ', ', map $self->{discussion_boards}{$_->{type}}.($_->{iid}?' > '.$_->{title}:''), @{$_->{boards}};
         li;
-         txt $self->{l10n}->age($_->{ldate}).' ';
-         a href => "/t$_->{id}.$_->{count}", title => "Posted in $boards", shorten $_->{title}, 20;
-         txt ' by ';
-         a href => "/u$_->{luid}", $_->{lusername};
+         lit mt '_home_recentposts_item', $_->{ldate},
+          sprintf('<a href="%s" title="%s">%s</a>', "/t$_->{id}.$_->{count}",
+            xml_escape("Posted in $boards"), xml_escape shorten $_->{title}, 25),
+          {uid => $_->{luid}, username => $_->{lusername}};
         end;
       }
      end;

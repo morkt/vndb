@@ -38,7 +38,7 @@ sub htmlHeader { # %options->{ title, js, noindex, search }
     div id => 'bgright', ' ';
     div id => 'header';
      h1;
-      a href => '/', lc mt 'The Visual Novel Database';
+      a href => '/', lc mt '_site_title';
      end;
     end;
 
