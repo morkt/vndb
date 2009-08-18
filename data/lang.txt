@@ -1076,6 +1076,216 @@ ru*:
 
 
 #############################################################################
+##                           Release pages (/r/*)                          ##
+#############################################################################
+# Handler::Releases
+
+
+# Release diff viewer (/r+.+)
+
+:_revfield_r_vn
+en : Relations
+ru*:
+
+:_revfield_r_type
+en : Type
+ru*:
+
+:_revfield_r_patch
+en : Patch
+ru*:
+
+:_revfield_r_freeware
+en : Freeware
+ru*:
+
+:_revfield_r_doujijn
+en : Doujin
+ru*:
+
+:_revfield_r_title
+en : Title (romaji)
+ru*:
+
+:_revfield_r_original
+en : Original title
+ru*:
+
+:_revfield_r_gtin
+en : JAN/UPC/EAN
+ru*:
+
+:_revfield_r_catalog
+en : Catalog number
+ru*:
+
+:_revfield_r_languages
+en : Language
+ru*:
+
+:_revfield_r_website
+en : Website
+ru*:
+
+:_revfield_r_released
+en : Release date
+ru*:
+
+:_revfield_r_minage
+en : Age rating
+ru*:
+
+:_revfield_r_notes
+en : Notes
+ru*:
+
+:_revfield_r_platforms
+en : Platforms
+ru*:
+
+:_revfield_r_media
+en : Media
+ru*:
+
+:_revfield_r_resolution
+en : Resolution
+ru*:
+
+:_revfield_r_voiced
+en : Voiced
+ru*:
+
+:_revfield_r_ani_story
+en : Story animation
+ru*:
+
+:_revfield_r_ani_ero
+en : Ero animation
+ru*:
+
+:_revfield_r_producers
+en : Producers
+ru*:
+
+
+# Information table (on every release page)
+
+:_relinfo_vnrel
+en : Relation
+ru*:
+
+:_relinfo_title
+en : Title
+ru*:
+
+:_relinfo_original
+en : Original title
+ru*:
+
+:_relinfo_type
+en : Type
+ru*:
+
+:_relinfo_type_format
+en : [_1][index,_2,, patch]
+ru*:
+
+:_relinfo_lang
+en : Language
+ru*:
+
+:_relinfo_publication
+en : Publication
+ru*:
+
+:_relinfo_pub_nopatch
+en : [index,_1,Freeware,Non-free], [index,_2,doujin,commercial]
+ru*:
+
+:_relinfo_pub_patch
+en : [index,_1,Freeware,Non-free]
+ru*:
+
+:_relinfo_platform
+en : [quant,_1,Platform,Platforms]
+ru*:
+
+:_relinfo_media
+en : [quant,_1,Medium,Media]
+ru*:
+
+:_relinfo_resolution
+en : Resolution
+ru*:
+
+:_relinfo_voiced
+en : Voiced
+ru*:
+
+:_relinfo_ani
+en : Animation
+ru*:
+
+:_relinfo_ani_story
+en : Story: [_1]
+ru*:
+
+:_relinfo_ani_ero
+en : Ero scenes: [_1]
+ru*:
+
+:_relinfo_released
+en : Released
+ru*:
+
+:_relinfo_minage
+en : Age rating
+ru*:
+
+:_relinfo_producer
+en : [quant,_1,Producer,Producers]
+ru*:
+
+:_relinfo_catalog
+en : Catalog no.
+ru*:
+
+:_relinfo_links
+en : Links
+ru*:
+
+:_relinfo_website
+en : Official website
+ru*:
+
+:_relinfo_user
+en : User options
+ru*:
+
+:_relinfo_user_notlist
+en : not in your list
+ru*:
+
+:_relinfo_user_inlist
+en : Status: [_1] / [_2]
+ru*:
+
+:_relinfo_user_setr
+en : Set release status
+ru*:
+
+:_relinfo_user_setv
+en : Set play status
+ru*:
+
+:_relinfo_user_del
+en : remove from list
+ru*:
+
+
+
+
+#############################################################################
 ##                            Misc. messages                               ##
 #############################################################################
 # Util::CommonHTML::htmlDenied,

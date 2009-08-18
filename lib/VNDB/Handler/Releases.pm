@@ -93,7 +93,7 @@ sub _infotable {
    my $i = 0;
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td class => 'key', 'Relation';
+    td class => 'key', mt '_relinfo_vnrel';
     td;
      for (@{$r->{vn}}) {
        a href => "/v$_->{vid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 60;
@@ -103,28 +103,27 @@ sub _infotable {
    end;
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td 'Title';
+    td mt '_relinfo_title';
     td $r->{title};
    end;
 
    if($r->{original}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Original title';
+      td mt '_relinfo_original';
       td $r->{original};
      end;
    }
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td 'Type';
+    td mt '_relinfo_type';
     td;
      cssicon "rt$r->{type}", mt "_rtype_$r->{type}";
-     txt ' '.mt "_rtype_$r->{type}";
-     txt ' patch' if $r->{patch};
+     txt ' '.mt '_relinfo_type_format', mt("_rtype_$r->{type}"), $r->{patch}?1:0;
     end;
    end;
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td 'Language';
+    td mt '_relinfo_lang';
     td;
      for (@{$r->{languages}}) {
        cssicon "lang $_", mt "_lang_$_";
@@ -135,13 +134,13 @@ sub _infotable {
    end;
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td 'Publication';
-    td join ', ', $r->{freeware} ? 'Freeware' : 'Non-free', $r->{patch} ? () : $r->{doujin} ? 'doujin' : 'commercial';
+    td mt '_relinfo_publication';
+    td mt $r->{patch} ? '_relinfo_pub_patch' : '_relinfo_pub_nopatch', $r->{freeware}?1:0, $r->{doujin}?1:0;
    end;
 
    if(@{$r->{platforms}}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Platform'.($#{$r->{platforms}} ? 's' : '');
+      td mt '_relinfo_platform', scalar @{$r->{platforms}};
       td;
        for(@{$r->{platforms}}) {
          cssicon $_, mt "_plat_$_";
@@ -154,7 +153,8 @@ sub _infotable {
 
    if(@{$r->{media}}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Medi'.($#{$r->{media}} ? 'a' : 'um');
+      td mt '_relinfo_media', scalar @{$r->{media}};
+      # TODO: TL the media
       td join ', ', map {
         my $med = $self->{media}{$_->{medium}};
         $med->[1] ? sprintf('%d %s%s', $_->{qty}, $med->[0], $_->{qty}>1?'s':'') : $med->[0]
@@ -164,29 +164,29 @@ sub _infotable {
 
    if($r->{resolution}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Resolution';
+      td mt '_relinfo_resolution';
       td $self->{resolutions}[$r->{resolution}][0];
      end;
    }
 
    if($r->{voiced}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Voiced';
+      td mt '_relinfo_voiced';
       td $self->{voiced}[$r->{voiced}];
      end;
    }
 
    if($r->{ani_story} || $r->{ani_ero}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Animation';
+      td mt '_relinfo_ani';
       td join ', ',
-        $r->{ani_story} ? ('Story: '     .$self->{animated}[$r->{ani_story}]):(),
-        $r->{ani_ero}   ? ('Ero scenes: '.$self->{animated}[$r->{ani_ero}  ]):();
+        $r->{ani_story} ? mt('_relinfo_ani_story', $self->{animated}[$r->{ani_story}]):(),
+        $r->{ani_ero}   ? mt('_relinfo_ani_ero',   $self->{animated}[$r->{ani_ero}  ]):();
      end;
    }
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td 'Released';
+    td mt '_relinfo_released';
     td;
      lit $self->{l10n}->datestr($r->{released});
     end;
@@ -194,14 +194,14 @@ sub _infotable {
 
    if($r->{minage} >= 0) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Age rating';
+      td mt '_relinfo_minage';
       td $self->{age_ratings}{$r->{minage}}[0];
      end;
    }
 
    if(@{$r->{producers}}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Producer'.($#{$r->{producers}} ? 's' : '');
+      td mt '_relinfo_producer', scalar @{$r->{producers}};
       td;
        for (@{$r->{producers}}) {
          a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 60;
@@ -220,16 +220,16 @@ sub _infotable {
 
    if($r->{catalog}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Catalog no.';
+      td mt '_relinfo_catalog';
       td $r->{catalog};
      end;
    }
 
    if($r->{website}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Links';
+      td mt '_relinfo_links';
       td;
-       a href => $r->{website}, rel => 'nofollow', 'Official website';
+       a href => $r->{website}, rel => 'nofollow', mt '_relinfo_website';
       end;
      end;
    }
@@ -237,19 +237,20 @@ sub _infotable {
    if($self->authInfo->{id}) {
      my $rl = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => $r->{id})->[0];
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'User options';
+      td mt '_relinfo_user';
       td;
        Select id => 'listsel', name => 'listsel';
-        option !$rl ? 'not in your list' : "Status: $self->{vn_rstat}[$rl->{rstat}] / $self->{vn_vstat}[$rl->{vstat}]";
-        optgroup label => 'Set release status';
+        option mt !$rl ? '_relinfo_user_notlist' :
+          ('_relinfo_user_inlist', $self->{vn_rstat}[$rl->{rstat}], $self->{vn_vstat}[$rl->{vstat}]);
+        optgroup label => mt '_relinfo_user_setr';
          option value => "r$_", $self->{vn_rstat}[$_]
            for (0..$#{$self->{vn_rstat}});
         end;
-        optgroup label => 'Set play status';
+        optgroup label => mt '_relinfo_user_setv';
          option value => "v$_", $self->{vn_vstat}[$_]
            for (0..$#{$self->{vn_vstat}});
         end;
-        option value => 'del', 'remove from list' if $rl;
+        option value => 'del', mt '_relinfo_user_del' if $rl;
        end;
       end;
      end;
