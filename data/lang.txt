@@ -1283,6 +1283,150 @@ en : remove from list
 ru*:
 
 
+# Editing a release
+
+:_redit_title_edit
+en : Edit [_1]
+ru*:
+
+:_redit_title_copy
+en : Copy [_1]
+ru*:
+
+:_redit_title_add
+en : Add release to [_1]
+ru*:
+
+:_redit_form_geninfo
+en : General info
+ru*:
+
+:_redit_form_type
+en : Type
+ru*:
+
+:_redit_form_patch
+en : This release is a patch to another release.
+ru*:
+
+:_redit_form_freeware
+en : Freeware (i.e. available at no cost)
+ru*:
+
+:_redit_form_doujin
+en : Doujin (self-published, not by a company)
+ru*:
+
+:_redit_form_title
+en : Title (romaji)
+ru*:
+
+:_redit_form_original
+en : Original title
+ru*:
+
+:_redit_form_original_note
+en : The original title of this release, leave blank if it already is in the Latin alphabet.
+ru*:
+
+:_redit_form_languages
+en : Language(s)
+ru*:
+
+:_redit_form_gtin
+en : JAN/UPC/EAN
+ru*:
+
+:_redit_form_catalog
+en : Catalog number
+ru*:
+
+:_redit_form_website
+en : Official website
+ru*:
+
+:_redit_form_released
+en : Release date
+ru*:
+
+:_redit_form_released_note
+en : Leave month or day blank if they are unknown
+ru*:
+
+:_redit_form_minage
+en : Age rating
+ru*:
+
+:_redit_form_notes
+en : Notes
+ru*:
+
+:_redit_form_notes_note
+en : Miscellaneous notes/comments, information that does not fit in the above fields.
+     E.g.: Censored/uncensored or for which releases this patch applies.
+ru*:
+
+:_redit_form_format
+en : Format
+ru*:
+
+:_redit_form_resolution
+en : Resolution
+ru*:
+
+:_redit_form_voiced
+en : Voiced
+ru*:
+
+:_redit_form_ani_story
+en : Story animation
+ru*:
+
+:_redit_form_ani_ero
+en : Ero animation
+ru*:
+
+:_redit_form_ani_ero_none
+en : Unknown / no ero scenes
+ru*:
+
+:_redit_form_ani_ero_note
+en : Animation in erotic scenes, leave to unknown if there are no ero scenes.
+ru*:
+
+:_redit_form_platforms
+en : Platforms
+ru*:
+
+:_redit_form_media
+en : Media
+ru*:
+
+:_redit_form_prod
+en : Producers
+ru*:
+
+:_redit_form_prod_sel
+en : Selected producers
+ru*:
+
+:_redit_form_prod_add
+en : Add producer
+ru*:
+
+:_redit_form_vn
+en : Visual novels
+ru*:
+
+:_redit_form_vn_sel
+en : Selected visual novels
+ru*:
+
+:_redit_form_vn_add
+en : Add visual novel
+ru*:
+
+
 
 
 #############################################################################

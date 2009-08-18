@@ -367,7 +367,7 @@ sub edit {
   $frm->{title} = $v->{title} if !defined $frm->{title} && !$r;
   $frm->{original} = $v->{original} if !defined $frm->{original} && !$r;
 
-  my $title = $rid ? ''.($copy ? 'Copy ':'Edit ').$r->{title} : 'Add release to '.$v->{title};
+  my $title = mt $rid ? ($copy ? '_redit_title_copy' : '_redit_title_edit', $r->{title}) : ('_redit_title_add', $v->{title});
   $self->htmlHeader(js => 'forms', title => $title, noindex => 1);
   $self->htmlMainTabs('r', $r, $copy ? 'copy' : 'edit') if $rid;
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
@@ -381,43 +381,42 @@ sub _form {
   my($self, $r, $v, $frm, $copy) = @_;
 
   $self->htmlForm({ frm => $frm, action => $r ? "/r$r->{id}/".($copy ? 'copy' : 'edit') : "/v$v->{id}/add", editsum => 1 },
-  rel_geninfo => [ "General info",
-    [ select => short => 'type',      name => 'Type',
+  rel_geninfo => [ mt('_redit_form_geninfo'),
+    [ select => short => 'type',      name => mt('_redit_form_type'),
       options => [ map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ] ],
-    [ check  => short => 'patch',     name => 'This release is a patch to another release.' ],
-    [ check  => short => 'freeware',  name => 'Freeware (i.e. available at no cost)' ],
-    [ check  => short => 'doujin',    name => 'Doujin (self-published / not by a commercial company)' ],
-    [ input  => short => 'title',     name => 'Title (romaji)', width => 300 ],
-    [ input  => short => 'original',  name => 'Original title', width => 300 ],
-    [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],
-    [ select => short => 'languages', name => 'Language(s)', multi => 1,
+    [ check  => short => 'patch',     name => mt('_redit_form_patch') ],
+    [ check  => short => 'freeware',  name => mt('_redit_form_freeware') ],
+    [ check  => short => 'doujin',    name => mt('_redit_form_doujin') ],
+    [ input  => short => 'title',     name => mt('_redit_form_title'),    width => 300 ],
+    [ input  => short => 'original',  name => mt('_redit_form_original'), width => 300 ],
+    [ static => content => mt '_redit_form_original_note' ],
+    [ select => short => 'languages', name => mt('_redit_form_languages'), multi => 1,
       options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
-    [ input  => short => 'gtin',      name => 'JAN/UPC/EAN' ],
-    [ input  => short => 'catalog',   name => 'Catalog number' ],
-    [ input  => short => 'website',   name => 'Official website' ],
-    [ date   => short => 'released',  name => 'Release date' ],
-    [ static => content => 'Leave month or day blank if they are unknown' ],
-    [ select => short => 'minage', name => 'Age rating',
+    [ input  => short => 'gtin',      name => mt('_redit_form_gtin') ],
+    [ input  => short => 'catalog',   name => mt('_redit_form_catalog') ],
+    [ input  => short => 'website',   name => mt('_redit_form_website') ],
+    [ date   => short => 'released',  name => mt('_redit_form_released') ],
+    [ static => content => mt('_redit_form_released_note') ],
+    [ select => short => 'minage', name => mt('_redit_form_minage'),
       options => [ map [ $_, $self->{age_ratings}{$_}[0].($self->{age_ratings}{$_}[1]?" (e.g. $self->{age_ratings}{$_}[1])":'') ],
         sort { $a <=> $b } keys %{$self->{age_ratings}} ] ],
-    [ textarea => short => 'notes', name => 'Notes' ],
-    [ static => content => 'Miscellaneous notes/comments, information that does not fit in the above fields. '
-       .'E.g.: Censored/uncensored or for which releases this patch applies. Max. 250 characters.' ],
+    [ textarea => short => 'notes', name => mt('_redit_form_notes') ],
+    [ static => content => mt('_redit_form_notes_note') ],
   ],
 
-  rel_format => [ 'Format',
-    [ select => short => 'resolution', name => 'Resolution', options => [
+  rel_format => [ mt('_redit_form_format'),
+    [ select => short => 'resolution', name => mt('_redit_form_resolution'), options => [
       map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
-    [ select => short => 'voiced',     name => 'Voiced', options => [
+    [ select => short => 'voiced',     name => mt('_redit_form_voiced'), options => [
       map [ $_, $self->{voiced}[$_] ], 0..$#{$self->{voiced}} ] ],
-    [ select => short => 'ani_story',  name => 'Story animation', options => [
+    [ select => short => 'ani_story',  name => mt('_redit_form_ani_story'), options => [
       map [ $_, $self->{animated}[$_] ], 0..$#{$self->{animated}} ] ],
-    [ select => short => 'ani_ero',  name => 'Ero animation', options => [
-      map [ $_, $_ ? $self->{animated}[$_] : 'Unknown / no ero scenes' ], 0..$#{$self->{animated}} ] ],
-    [ static => content => 'Animation in erotic scenes, leave to unknown if there are no ero scenes.' ],
+    [ select => short => 'ani_ero',  name => mt('_redit_form_ani_ero'), options => [
+      map [ $_, $_ ? $self->{animated}[$_] : mt('_redit_form_ani_ero_none') ], 0..$#{$self->{animated}} ] ],
+    [ static => content => mt('_redit_form_ani_ero_note') ],
     [ hidden => short => 'media' ],
     [ static => nolabel => 1, content => sub {
-      h2 'Platforms';
+      h2 mt '_redit_form_platforms';
       div class => 'platforms';
        for my $p (sort @{$self->{platforms}}) {
          span;
@@ -431,7 +430,7 @@ sub _form {
        }
       end;
 
-      h2 'Media';
+      h2 mt '_redit_form_media';
       div id => 'media_div';
        Select;
         option value => $_, class => $self->{media}{$_}[1] ? 'qty' : 'noqty', $self->{media}{$_}[0]
@@ -441,13 +440,13 @@ sub _form {
     }],
   ],
 
-  rel_prod => [ 'Producers',
+  rel_prod => [ mt('_redit_form_prod'),
     [ hidden => short => 'producers' ],
     [ static => nolabel => 1, content => sub {
-      h2 'Selected producers';
+      h2 mt('_redit_form_prod_sel');
       div id => 'producerssel';
       end;
-      h2 'Add producer';
+      h2 mt('_redit_form_prod_add');
       div;
        input type => 'text', class => 'text';
        a href => '#', 'add';
@@ -455,13 +454,13 @@ sub _form {
     }],
   ],
 
-  rel_vn => [ 'Visual novels',
+  rel_vn => [ mt('_redit_form_vn'),
     [ hidden => short => 'vn' ],
     [ static => nolabel => 1, content => sub {
-      h2 'Selected visual novels';
+      h2 mt('_redit_form_vn_sel');
       div id => 'vnsel';
       end;
-      h2 'Add visual novel';
+      h2 mt('_redit_form_vn_add');
       div;
        input type => 'text', class => 'text';
        a href => '#', 'add';
