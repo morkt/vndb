@@ -133,7 +133,7 @@ sub edit {
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('p', $p, 'edit') if $pid;
   $self->htmlEditMessage('p', $p, $title);
-  $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 }, mt('_pedit_form_generalinfo') => [
+  $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 }, 'pedit_geninfo' => [mt('_pedit_form_generalinfo'),
     [ select => name => mt('_pedit_form_type'), short => 'type',
       options => [ map [ $_, mt "_ptype_$_" ], sort @{$self->{producer_types}} ] ],
     [ input  => name => mt('_pedit_form_name'), short => 'name' ],

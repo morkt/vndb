@@ -213,7 +213,7 @@ function relLoad() {
 
   // make sure the title is up-to-date
   x('title').onchange = function() {
-    l = x('jt_box_relations').getElementsByTagName('td');
+    l = x('jt_box_vn_rel').getElementsByTagName('td');
     for(i=0;i<l.length;i++)
       if(l[i].className == 'tc3')
         l[i].innerHTML = shorten(this.value, 40);
@@ -720,7 +720,7 @@ function vnpLoad(type) {
   vnpCheckEmpty(type);
 
   // dropdown
-  var n = x('jt_box_'+(type == 'vn' ? 'visual_novels' : type)).getElementsByTagName('div')[1];
+  var n = x('jt_box_'+(type == 'vn' ? 'rel_vn' : 'rel_prod')).getElementsByTagName('div')[1];
   dsInit(n.getElementsByTagName('input')[0], '/xml/'+type+'.xml?q=', function(item, tr) {
     var td = document.createElement('td');
     td.innerHTML = type.substr(0,1)+item.getAttribute('id');
@@ -771,7 +771,7 @@ function vnpStripe(type) {
 }
 
 function vnpFormAdd(type) {
-  var n = x('jt_box_'+(type == 'vn' ? 'visual_novels' : type)).getElementsByTagName('div')[1];
+  var n = x('jt_box_'+(type == 'vn' ? 'rel_vn' : 'rel_prod')).getElementsByTagName('div')[1];
   var txt = n.getElementsByTagName('input')[0];
   var lnk = n.getElementsByTagName('a')[0];
   var input = txt.value;

@@ -316,7 +316,7 @@ sub tagedit {
     end;
   }
 
-  $self->htmlForm({ frm => $frm, action => $par ? "/g$par->{id}/add" : $tag ? "/g$tag/edit" : '/g/new' }, $title => [
+  $self->htmlForm({ frm => $frm, action => $par ? "/g$par->{id}/add" : $tag ? "/g$tag/edit" : '/g/new' }, 'tagedit' => [ $title,
     [ input    => short => 'name',     name => 'Primary name' ],
     $self->authCan('tagmod') ? (
       $tag ?
@@ -450,7 +450,7 @@ sub vntagmod {
     end;
    end;
   end;
-  $self->htmlForm({ frm => $frm, action => "/v$vid/tagmod", nosubmit => 1 }, 'Tags' => [
+  $self->htmlForm({ frm => $frm, action => "/v$vid/tagmod", nosubmit => 1 }, tagmod => [ 'Tags',
     [ hidden => short => 'taglinks', value => '' ],
     [ static => nolabel => 1, content => sub {
       table id => 'tagtable';

@@ -150,7 +150,7 @@ sub login {
   }
 
   $self->htmlHeader(title => 'Login', noindex => 1);
-  $self->htmlForm({ frm => $frm, action => '/u/login' }, Login => [
+  $self->htmlForm({ frm => $frm, action => '/u/login' }, login => [ 'Login',
     [ input  => name => 'Username', short => 'usrname' ],
     [ static => content => '<a href="/u/register">No account yet?</a>' ],
     [ passwd => name => 'Password', short => 'usrpass' ],
@@ -215,7 +215,7 @@ __
     ."Don't worry! Just give us the email address you used to register on VNDB,\n"
     ."and we'll send you a new password within a few minutes!";
   end;
-  $self->htmlForm({ frm => $frm, action => '/u/newpass' }, 'Reset Password' => [
+  $self->htmlForm({ frm => $frm, action => '/u/newpass' }, newpass => [ 'Reset Password',
     [ input  => name => 'Email', short => 'mail' ],
   ]);
   $self->htmlFooter;
@@ -284,7 +284,7 @@ sub register {
    end;
   end;
 
-  $self->htmlForm({ frm => $frm, action => '/u/register' }, 'New Account' => [
+  $self->htmlForm({ frm => $frm, action => '/u/register' }, register => [ 'New Account',
     [ input  => short => 'usrname', name => 'Username' ],
     [ static => content => 'Requested username. Must be lowercase and can only consist of alphanumeric characters.' ],
     [ input  => short => 'mail', name => 'Email' ],
@@ -363,7 +363,7 @@ sub edit {
      end;
     end
   }
-  $self->htmlForm({ frm => $frm, action => "/u$uid/edit" }, $title => [
+  $self->htmlForm({ frm => $frm, action => "/u$uid/edit" }, useredit => [ $title,
     [ part   => title => 'General Info' ],
     $self->authCan('usermod') ? (
       [ input  => short => 'usrname', name => 'Username' ],

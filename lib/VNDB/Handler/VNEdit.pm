@@ -140,7 +140,7 @@ sub _form {
   my($self, $v, $frm) = @_;
   my $r = $v ? $self->dbReleaseGet(vid => $v->{id}) : [];
   $self->htmlForm({ frm => $frm, action => $v ? "/v$v->{id}/edit" : '/v/new', editsum => 1, upload => 1 },
-  'General info' => [
+  vn_geninfo => [ 'General info',
     [ input    => short => 'title',     name => 'Title (romaji)' ],
     [ input    => short => 'original',  name => 'Original title' ],
     [ static   => content => 'The original title of this visual novel, leave blank if it already is in the Latin alphabet.' ],
@@ -172,7 +172,7 @@ sub _form {
       |],
   ],
 
-  'Image' => [
+  vn_img => [ 'Image',
     [ static => nolabel => 1, content => sub {
       div class => 'img';
        p 'No image uploaded yet' if !$v || !$v->{image};
@@ -195,7 +195,7 @@ sub _form {
     }],
   ],
 
-  'Relations' => [
+  vn_rel => [ 'Relations',
     [ hidden   => short => 'relations' ],
     [ static   => nolabel => 1, content => sub {
       h2 'Selected relations';
@@ -227,7 +227,7 @@ sub _form {
     }],
   ],
 
-  !@$r ? () : ( 'Screenshots' => [
+  !@$r ? () : ( vn_scr => [ 'Screenshots',
     [ hidden => short => 'screenshots' ],
     [ static => nolabel => 1, content => sub {
       div class => 'warning';

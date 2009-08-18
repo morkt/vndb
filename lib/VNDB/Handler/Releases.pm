@@ -380,7 +380,7 @@ sub _form {
   my($self, $r, $v, $frm, $copy) = @_;
 
   $self->htmlForm({ frm => $frm, action => $r ? "/r$r->{id}/".($copy ? 'copy' : 'edit') : "/v$v->{id}/add", editsum => 1 },
-  "General info" => [
+  rel_geninfo => [ "General info",
     [ select => short => 'type',      name => 'Type',
       options => [ map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ] ],
     [ check  => short => 'patch',     name => 'This release is a patch to another release.' ],
@@ -404,7 +404,7 @@ sub _form {
        .'E.g.: Censored/uncensored or for which releases this patch applies. Max. 250 characters.' ],
   ],
 
-  'Format' => [
+  rel_format => [ 'Format',
     [ select => short => 'resolution', name => 'Resolution', options => [
       map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
     [ select => short => 'voiced',     name => 'Voiced', options => [
@@ -440,7 +440,7 @@ sub _form {
     }],
   ],
 
-  'Producers' => [
+  rel_prod => [ 'Producers',
     [ hidden => short => 'producers' ],
     [ static => nolabel => 1, content => sub {
       h2 'Selected producers';
@@ -454,7 +454,7 @@ sub _form {
     }],
   ],
 
-  'Visual novels' => [
+  rel_vn => [ 'Visual novels',
     [ hidden => short => 'vn' ],
     [ static => nolabel => 1, content => sub {
       h2 'Selected visual novels';
