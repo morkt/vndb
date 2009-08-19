@@ -521,7 +521,7 @@ sub browse {
   $_&&($url .= ";re=$_") for @{$f->{re}};
   $_&&($url .= ";me=$_") for @{$f->{me}};
 
-  $self->htmlHeader(title => 'Browse releases');
+  $self->htmlHeader(title => mt('_rbrowse_title'));
   _filters($self, $f, !@filters || !@$list);
   $self->htmlBrowse(
     class    => 'relbrowse',
@@ -531,10 +531,10 @@ sub browse {
     pageurl  => "$url;s=$f->{s};o=$f->{o}",
     sorturl  => $url,
     header   => [
-      [ 'Released', 'released' ],
-      [ 'Rating',   'minage' ],
+      [ mt('_rbrowse_col_minage'), 'released' ],
+      [ mt('_rbrowse_col_rating'), 'minage' ],
       [ '',         '' ],
-      [ 'Title',    'title' ],
+      [ mt('_rbrowse_col_title'),  'title' ],
     ],
     row      => sub {
       my($s, $n, $l) = @_;
@@ -557,11 +557,9 @@ sub browse {
   ) if @$list;
   if(@filters && !@$list) {
     div class => 'mainbox';
-     h1 'No results found';
+     h1 mt '_rbrowse_noresults_title';
      div class => 'notice';
-      p qq|Sorry, couldn't find anything that comes through your filters. You might want to disable a few filters to get more results.\n\n|
-       .qq|Also, keep in mind that we don't have all information about all releases. So e.g. filtering on screen resolution will exclude |
-       .qq|all releases of which we don't know it's resolution, even though it might in fact be in the resolution you're looking for.|;
+      p mt '_rbrowse_noresults_msg';
      end;
     end;
   }
@@ -574,32 +572,31 @@ sub _filters {
 
   form method => 'get', action => '/r', 'accept-charset' => 'UTF-8';
   div class => 'mainbox';
-   h1 'Browse releases';
+   h1 mt '_rbrowse_title';
 
    $self->htmlSearchBox('r', $f->{q});
 
    a id => 'advselect', href => '#';
-    lit '<i>'.($shown?'&#9662;':'&#9656;').'</i> filters';
+    lit '<i>'.($shown?'&#9662;':'&#9656;').'</i> '.mt('_rbrowse_filters');
    end;
    div id => 'advoptions', !$shown ? (class => 'hidden') : ();
 
-    h2 'Filters';
+    h2 mt '_rbrowse_filters';
     table class => 'formtable', style => 'margin-left: 0';
      Tr class => 'newfield';
-      td class => 'label'; label for => 'ma_m', 'Age rating'; end;
+      td class => 'label'; label for => 'ma_m', mt '_rbrowse_minage'; end;
       td class => 'field';
-       Select id => 'ma_m', name => 'ma_m', style => 'width: 70px';
-        option value => 0, $f->{ma_m} == 0 ? ('selected' => 'selected') : (), 'greater';
-        option value => 1, $f->{ma_m} == 1 ? ('selected' => 'selected') : (), 'smaller';
+       Select id => 'ma_m', name => 'ma_m', style => 'width: 160px';
+        option value => 0, $f->{ma_m} == 0 ? ('selected' => 'selected') : (), mt '_rbrowse_ge';
+        option value => 1, $f->{ma_m} == 1 ? ('selected' => 'selected') : (), mt '_rbrowse_le';
        end;
-       txt ' than or equal to ';
        Select id => 'ma_a', name => 'ma_a', style => 'width: 80px; text-align: center';
         $_>=0 && option value => $_, $f->{ma_a} == $_ ? ('selected' => 'selected') : (), $self->{age_ratings}{$_}[0]
           for (sort { $a <=> $b } keys %{$self->{age_ratings}});
        end;
       end;
       td rowspan => 5, style => 'padding-left: 40px';
-       label for => 're', 'Screen resolution'; br;
+       label for => 're', mt '_rbrowse_resolution'; br;
        Select id => 're', name => 're', multiple => 'multiple', size => 8;
         my $l='';
         for my $i (1..$#{$self->{resolutions}}) {
@@ -614,20 +611,21 @@ sub _filters {
        end;
       end;
      end;
-     $self->htmlFormPart($f, [ select => short => 'tp', name => 'Release type',
-       options => [ [-1, 'All'], map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ]]);
-     $self->htmlFormPart($f, [ select => short => 'pa', name => 'Patch status',
-       options => [ [0, 'All'], [1, 'Only patches'], [2, 'Only standalone releases']]]);
-     $self->htmlFormPart($f, [ select => short => 'fw', name => 'Freeware',
-       options => [ [0, 'All'], [1, 'Freeware only'], [2, 'Only non-free releases']]]);
-     $self->htmlFormPart($f, [ select => short => 'do', name => 'Doujin',
-       options => [ [0, 'All'], [1, 'Only doujin releases'], [2, 'Only commercial releases']]]);
-     $self->htmlFormPart($f, [ date => short => 'mi', name => 'Released after' ]);
-     $self->htmlFormPart($f, [ date => short => 'ma', name => 'Released before' ]);
+     $self->htmlFormPart($f, [ select => short => 'tp', name => mt('_rbrowse_type'),
+       options => [ [-1, mt '_rbrowse_all'], map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ]]);
+     $self->htmlFormPart($f, [ select => short => 'pa', name => mt('_rbrowse_patch'),
+       options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_patchonly'], [2, mt '_rbrowse_patchnone']]]);
+     $self->htmlFormPart($f, [ select => short => 'fw', name => mt('_rbrowse_freeware'),
+       options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_freewareonly'], [2, mt '_rbrowse_freewarenone']]]);
+     $self->htmlFormPart($f, [ select => short => 'do', name => mt('_rbrowse_doujin'),
+       options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_doujinonly'], [2, mt '_rbrowse_doujinnone']]]);
+     $self->htmlFormPart($f, [ date => short => 'mi', name => mt '_rbrowse_dateafter' ]);
+     $self->htmlFormPart($f, [ date => short => 'ma', name => mt '_rbrowse_datebefore' ]);
     end;
 
     h2;
-     lit 'Languages <b>(boolean or, selecting more gives more results)</b>';
+     txt mt '_rbrowse_languages';
+     b ' ('.mt('_rbrowse_boolor').')';
     end;
     for my $i (sort @{$self->dbLanguages}) {
       span;
@@ -640,7 +638,8 @@ sub _filters {
     }
 
     h2;
-     lit 'Platforms <b>(boolean or, selecting more gives more results)</b>';
+     txt mt '_rbrowse_platforms';
+     b ' ('.mt('_rbrowse_boolor').')';
     end;
     for my $i (sort @{$self->{platforms}}) {
       next if $i eq 'oth';
@@ -654,7 +653,8 @@ sub _filters {
     }
 
     h2;
-     lit 'Media <b>(boolean or, selecting more gives more results)</b>';
+     txt mt '_rbrowse_media';
+     b ' ('.mt('_rbrowse_boolor').')';
     end;
     for my $i (sort keys %{$self->{media}}) {
       next if $i eq 'otc';
@@ -665,8 +665,8 @@ sub _filters {
     }
 
     div style => 'text-align: center; clear: left;';
-     input type => 'submit', value => 'Apply', class => 'submit';
-     input type => 'reset', value => 'Clear', class => 'submit', onclick => 'location.href="/r"';
+     input type => 'submit', value => mt('_rbrowse_apply'), class => 'submit';
+     input type => 'reset', value => mt('_rbrowse_clear'), class => 'submit', onclick => 'location.href="/r"';
     end;
    end;
   end;

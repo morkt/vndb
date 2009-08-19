@@ -1427,6 +1427,131 @@ en : Add visual novel
 ru*:
 
 
+# Release browser
+
+:_rbrowse_title
+en : Browse releases
+ru*:
+
+:_rbrowse_col_released
+en : Released
+ru*:
+
+:_rbrowse_col_minage
+en : Rating
+ru*:
+
+:_rbrowse_col_title
+en : Title
+ru*:
+
+:_rbrowse_noresults_title
+en : No results found
+ru*:
+
+:_rbrowse_noresults_msg
+en : Sorry, couldn't find anything that comes through your filters. You might want to disable a few filters to get more results.
+
+     Also, keep in mind that we don't have all information about all releases. So e.g. filtering on screen resolution will exclude all releases of which we don't know it's resolution, even though it might in fact be in the resolution you're looking for.
+ru*:
+
+:_rbrowse_filters
+en : Filters
+ru*:
+
+:_rbrowse_minage
+en : Age rating
+ru*:
+
+:_rbrowse_ge
+en : Greater than or equal to
+ru*:
+
+:_rbrowse_le
+en : Less than or equal to
+ru*:
+
+:_rbrowse_resolution
+en : Screen resolution
+ru*:
+
+:_rbrowse_type
+en : Release type
+ru*:
+
+:_rbrowse_all
+en : All
+ru*:
+
+:_rbrowse_patch
+en : Patch status
+ru*:
+
+:_rbrowse_patchonly
+en : Only patches
+ru*:
+
+:_rbrowse_patchnone
+en : Only standalone releases
+ru*:
+
+:_rbrowse_freeware
+en : Freeware
+ru*:
+
+:_rbrowse_freewareonly
+en : Freeware only
+ru*:
+
+:_rbrowse_freewarenone
+en : Only non-free releases
+ru*:
+
+:_rbrowse_doujin
+en : Doujin
+ru*:
+
+:_rbrowse_doujinonly
+en : Only doujin releases
+ru*:
+
+:_rbrowse_doujinnone
+en : Only commercial releases
+ru*:
+
+:_rbrowse_dateafter
+en : Released after
+ru*:
+
+:_rbrowse_datebefore
+en : Released before
+ru*:
+
+:_rbrowse_languages
+en : Languages
+ru*:
+
+:_rbrowse_boolor
+en : boolean or, selecting more gives more results
+ru*:
+
+:_rbrowse_platforms
+en : Platforms
+ru*:
+
+:_rbrowse_media
+en : Media
+ru*:
+
+:_rbrowse_apply
+en : Apply
+ru*:
+
+:_rbrowse_clear
+en : Clear
+ru*:
+
+
 
 
 #############################################################################
