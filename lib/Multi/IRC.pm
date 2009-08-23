@@ -190,7 +190,7 @@ sub irc_001 {
 
 
 sub irc_public { # mask, dest, msg
-  $_[HEAP]{idlequotes}{$_[ARG1][0]} = 0;
+  $_[HEAP]{idlequotes}{ lc($_[ARG1][0]) } = 0;
   return if $_[KERNEL]->call($_[SESSION] => command => @_[ARG0..$#_]);
   $_[KERNEL]->call($_[SESSION] => vndbid => $_[ARG1], $_[ARG2]);
 }
