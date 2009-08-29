@@ -214,6 +214,10 @@ ru : Китайский
 en : Windows
 ru : Windows
 
+:_plat_dos
+en : DOS
+ru*:
+
 :_plat_lin
 en : Linux
 ru : Linux
@@ -242,6 +246,10 @@ ru : Nintendo DS
 en : Famicom
 ru : Famicom (Dendy)
 
+:_plat_p98
+en : PC-98
+ru*:
+
 :_plat_psp
 en : Playstation Portable
 ru : Playstation Portable
@@ -261,6 +269,10 @@ ru : Playstation 3
 :_plat_drc
 en : Dreamcast
 ru : Dreamcast
+
+:_plat_sat
+en : Sega Saturn
+ru*:
 
 :_plat_sfc
 en : Super Nintendo

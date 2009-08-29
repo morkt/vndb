@@ -84,7 +84,7 @@ our %S = (%S,
     18 => [ '18+', 'CERO Z' ],
   },
   release_types   => [0..2],
-  platforms       => [qw|win lin mac dvd gba msx nds nes psp ps1 ps2 ps3 drc sfc wii xb3 oth|],
+  platforms       => [qw|win dos lin mac dvd gba msx nds nes p98 psp ps1 ps2 ps3 drc sat sfc wii xb3 oth|],
   media           => {
    #DB       display            qty
     cd  => [ 'CD',                1 ],
