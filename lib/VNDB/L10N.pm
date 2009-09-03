@@ -85,6 +85,10 @@ use warnings;
   use YAWF 'xml_escape';
   our %Lexicon;
 
+  sub quant {
+    return $_[1]==1 ? $_[2] : $_[3];
+  }
+
   # Argument: unix timestamp
   # Returns: age
   sub age {

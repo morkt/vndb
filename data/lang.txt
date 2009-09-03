@@ -1555,6 +1555,384 @@ ru*:
 
 
 #############################################################################
+##                            Tag pages (/g/*)                             ##
+#############################################################################
+# Handler::Tags
+
+
+# Tag page (/g+)
+
+:_tagp_title
+en : [index,_1,Meta tag,Tag]: [_2]
+ru*:
+
+:_tagp_del_title
+en : Tag deleted
+ru*:
+
+:_tagp_del_msg
+en : This tag has been removed from the database, and cannot be used or re-added.
+     File a request on the [url,/t/db,discussion board] if you disagree with this.
+ru*:
+
+:_tagp_pending_title
+en : Waiting for approval
+ru*:
+
+:_tagp_pending_msg
+en : This tag is waiting for a moderator to approve it. You can still use it to tag VNs as you would with a normal tag.
+ru*:
+
+:_tagp_addchild
+en : Create child tag
+ru*:
+
+:_tagp_indexlink
+en : Tags
+ru*:
+
+:_tagp_aliases
+en : Aliases
+ru*:
+
+:_tagp_childs
+en : Child tags
+ru*:
+
+:_tagp_tree
+en : Tag tree
+ru*:
+
+:_tagp_moretags
+en : [_1] more [quant,_1,tag,tags]
+ru*:
+
+:_tagp_vnlist
+en : Visual novels
+ru*:
+
+:_tagp_spoil0
+en : Hide spoilers
+ru*:
+
+:_tagp_spoil1
+en : Show minor spoilers
+ru*:
+
+:_tagp_spoil2
+en : Show major spoilers
+ru*:
+
+:_tagp_novn
+en : This tag has not been linked to any visual novels yet, or they were hidden because of the spoiler settings.
+ru*:
+
+:_tagp_cached
+en : NOTE: This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.
+ru*:
+
+:_tagp_vncol_score
+en : Score
+ru*:
+
+:_tagp_vncol_title
+en : Title
+ru*:
+
+:_tagp_vncol_rel
+en : Released
+ru*:
+
+:_tagp_vncol_pop
+en : Popularity
+ru*:
+
+
+# Tag add/edit form (/g+/edit, /g+/add, /g/add)
+
+:_tagedit_err_notfound
+en : Tag '[_1]' not found
+ru*:
+
+:_tagedit_title_add
+en : Add child tag to [_1]
+ru*:
+
+:_tagedit_title_edit
+en : Edit tag: [_1]
+ru*:
+
+:_tagedit_title_new
+en : Add new tag
+ru*:
+
+:_tagedit_req_title
+en : Requesting new tag
+ru*:
+
+:_tagedit_req_subtitle
+en : Your tag must be approved
+ru*:
+
+:_tagedit_req_msg
+en : Because all tags have to be approved by moderators, it can take a while before it will show up in the tag list
+     or on visual novel pages. You can still vote on tag even if it has not been approved yet, though.
+     [br][br]
+     Also, make sure you've read the [url,/d10,guidelines], so you can predict whether your tag will be accepted or not.
+ru*:
+
+:_tagedit_frm_name
+en : Primary name
+ru*:
+
+:_tagedit_frm_by
+en : Added by
+ru*:
+
+:_tagedit_frm_state
+en : State
+ru*:
+
+:_tagedit_frm_state0
+en : Awaiting moderation
+ru*:
+
+:_tagedit_frm_state1
+en : Deleted/hidden
+ru*:
+
+:_tagedit_frm_state2
+en : Approved
+ru*:
+
+:_tagedit_frm_meta
+en : This is a meta-tag (only to be used as parent for other tags, not for linking to VN entries)
+ru*:
+
+:_tagedit_frm_meta_warn
+en : WARNING: Checking this option or selecting "Deleted" as state will permanently delete all existing VN relations!
+ru*:
+
+:_tagedit_frm_alias
+en : Aliases
+     (separated by newlines)
+ru*:
+
+:_tagedit_frm_desc
+en : Description
+ru*:
+
+:_tagedit_frm_desc_msg
+en : What should the tag be used for? Having a good description helps users choose which tags to link to a VN.
+ru*:
+
+:_tagedit_frm_parents
+en : Parent tags
+ru*:
+
+:_tagedit_frm_parents_msg
+en : Comma separated list of tag names to be used as parent for this tag.
+ru*:
+
+:_tagedit_frm_merge
+en : Merge tags
+ru*:
+
+:_tagedit_frm_merge_tags
+en : Tags to merge
+ru*:
+
+:_tagedit_frm_merge_msg
+en : Comma separated list of tag names to merge into this one. All votes and aliases/names will be moved over
+     to this tag, and the old tags will be deleted. Just leave this field empty if you don't intend to do a merge.
+     [br]WARNING: this action cannot be undone!
+ru*:
+
+
+# Plain tag browser (/g/list)
+
+:_tagb_title
+en : Browse tags
+ru*:
+
+:_tagb_state-1
+en : All
+ru*:
+
+:_tagb_state0
+en : Awaiting moderation
+ru*:
+
+:_tagb_state1
+en : Deleted
+ru*:
+
+:_tagb_state2
+en : Accepted
+ru*:
+
+:_tagb_noresults
+en : No results found
+ru*:
+
+:_tagb_col_added
+en : Created
+ru*:
+
+:_tagb_col_name
+en : Tag
+ru*:
+
+:_tagb_note_awaiting
+en : awaiting moderation
+ru*:
+
+:_tagb_note_del
+en : deleted
+ru*:
+
+
+# VN<->Tag voting (/v+/tagmod)
+
+:_tagv_title
+en : Add/remove tags for [_1]
+ru*:
+
+:_tagv_msg_title
+en : Tagging
+ru*:
+
+:_tagv_msg_guidelines
+en : Make sure you have read the [url,/d10,guidelines]!
+ru*:
+
+:_tagv_msg_submit
+en : Don't forget to hit the submit button on the bottom of the page to make your changes permanent.
+ru*:
+
+:_tagv_msg_cache
+en : Some tag information on the site is cached, it can take up to an hour for your changes to be visible everywhere.
+ru*:
+
+:_tagv_frm_title
+en : Tags
+ru*:
+
+:_tagv_col_you
+en : You
+ru*:
+
+:_tagv_col_others
+en : Others
+ru*:
+
+:_tagv_col_tag
+en : Tag
+ru*:
+
+:_tagv_col_rating
+en : Rating
+ru*:
+
+:_tagv_col_spoiler
+en : Spoiler
+ru*:
+
+:_tagv_save
+en : Save changes
+ru*:
+
+:_tagv_add
+en : Add tag
+ru*:
+
+:_tagv_addmsg
+en : Check the [url,/g,tag list] to browse all available tags.[br]
+     Can't find what you're looking for? [url,/g/new,Request a new tag].
+ru*:
+
+
+# User tag list (/u+/tags)
+
+:_tagu_title
+en : Tags by [_1]
+ru*:
+
+:_tagu_spoilerwarn
+en : Warning: spoilery tags are not hidden in this list!
+ru*:
+
+:_tagu_notags
+en : [_1] doesn't seem to have used the tagging system yet...
+ru*:
+
+:_tagu_col_num
+en : #VNs
+ru*:
+
+:_tagu_col_name
+en : Tag
+ru*:
+
+:_tagu_spoil0
+en : No spoiler
+ru*:
+
+:_tagu_spoil1
+en : Minor spoiler
+ru*:
+
+:_tagu_spoil2
+en : Major spoiler
+ru*:
+
+
+# Tag index (/g)
+
+:_tagidx_title
+en : Tag index
+ru*:
+
+:_tagidx_create
+en : Create new tag
+ru*:
+
+:_tagidx_search
+en : Search tags
+ru*:
+
+:_tagidx_browseall
+en : Browse all tags
+ru*:
+
+:_tagidx_recent
+en : Recently added
+ru*:
+
+:_tagidx_popular
+en : Popular tags
+ru*:
+
+:_tagidx_queue
+en : Awaiting moderation
+ru*:
+
+:_tagidx_queue_empty
+en : Moderation queue empty! yay!
+ru*:
+
+:_tagidx_queue_link
+en : Moderation queue
+ru*:
+
+:_tagidx_denied
+en : Denied tags
+ru*:
+
+
+
+
+#############################################################################
 ##                            Misc. messages                               ##
 #############################################################################
 # Util::CommonHTML::htmlDenied,
