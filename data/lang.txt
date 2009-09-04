@@ -2058,6 +2058,328 @@ ru*:
 
 
 #############################################################################
+##                            User pages                                   ##
+#############################################################################
+# Util::Users
+
+
+# User page (/u+)
+
+:_userpage_title
+en : [_1]'s profile
+ru*:
+
+:_userpage_username
+en : Username
+ru*:
+
+:_userpage_registered
+en : Registered
+ru*:
+
+:_userpage_edits
+en : Edits
+ru*:
+
+:_userpage_votes
+en : Votes
+ru*:
+
+:_userpage_votes_item
+en : [url,_1,_2] ([_3] average)
+ru*:
+
+:_userpage_hidden
+en : hidden
+ru*:
+
+:_userpage_tags
+en : Tags
+ru*:
+
+:_userpage_tags_item
+en : [_1] [quant,_1,vote,votes] on [_2] distinct [quant,_2,tag,tags] and [_3] visual [quant,_3,novel,novels]
+ru*:
+
+:_userpage_list
+en : List stats
+ru*:
+
+:_userpage_list_item
+en : [_1] [quant,_1,release,releases] of [_2] visual [quant,_2,novel,novels]
+ru*:
+
+:_userpage_forum
+en : Forum stats
+ru*:
+
+:_userpage_forum_item
+en : [_1] [quant,_1,post,posts], [_2] new [quant,_2,thead,threads].
+ru*:
+
+:_userpage_forum_browse
+en : Browse posts
+ru*:
+
+:_userpage_votestats
+en : Vote statistics
+ru*:
+
+:_userpage_changes
+en : Recent changes
+ru*:
+
+
+# Login form (/u/login)
+
+:_login_title
+en : Login
+ru*:
+
+:_login_username
+en : Username
+ru*:
+
+:_login_register
+en : No account yet?
+ru*:
+
+:_login_password
+en : Password
+ru*:
+
+:_login_forgotpass
+en : Forgot your password?
+ru*:
+
+
+# Reset password (/u/newpass)
+
+:_newpass_mail_body
+en : Hello [_1]
+
+     Your password has been reset, you can now login at http://vndb.org/ with the
+     following information:
+
+     Username: [_1]
+     Password: [_2]
+
+     Now don't forget your password again! :-)
+
+     vndb.org
+ru*:
+
+:_newpass_mail_subject
+en : New password for [_1]
+ru*:
+
+:_newpass_title
+en : Forgot password
+ru*:
+
+:_newpass_msg
+en : Forgot your password and can't login to VNDB anymore?
+     Don't worry! Just give us the email address you used to register on VNDB,
+     and we'll send you a new password within a few minutes!
+ru*:
+
+:_newpass_reset_title
+en : Reset password
+ru*:
+
+:_newpass_mail
+en : Email
+ru*:
+
+:_newpass_sent_title
+en : New password
+ru*:
+
+:_newpass_sent_subtitle
+en : Password reset
+ru*:
+
+:_newpass_sent_msg
+en : Your password has been reset and your new password should reach your mailbox in a few minutes.[br]
+     You can always change your password again after logging in.[br]
+     [br]
+     [url,/u/login,Login] - [url,/,Home]
+ru*:
+
+
+# Register new account (/u/register)
+
+:_register_title
+en : Create an account
+ru*:
+
+:_register_why
+en : Why should I register?
+ru*:
+
+:_register_why_msg
+en : Creating an account is completely painless, the only thing we need to know is your prefered username
+     and a password. You can just use any email address that isn't yours, as we don't even confirm
+     that the address you gave us is really yours. Keep in mind, however, that you would probably
+     want to remember your password if you do choose to give us an invalid email address...[br]
+     [br]
+     Anyway, having an account here has a few advantages over being just a regular visitor[br]
+     - You can contribute to the database by editing any entries and adding new ones[br]
+     - Keep track of all visual novels and releases you have, you'd like to play, are playing, or have finished playing[br]
+     - Vote on the visual novels you liked or disliked[br]
+     - Contribute to the discussions on the boards
+ru*:
+
+:_register_form_title
+en : New account
+ru*:
+
+:_register_username
+en : Username
+ru*:
+
+:_register_username_msg
+en : Requested username. Must be lowercase and can only consist of alphanumeric characters.
+ru*:
+
+:_register_mail
+en : Email
+ru*:
+
+:_register_mail_msg
+en : Your email address will only be used in case you lose your password. We will never send
+     spam or newsletters unless you explicitly ask us for it.
+ru*:
+
+:_register_password
+en : Password
+ru*:
+
+:_register_confirm
+en : Confirm password
+ru*:
+
+
+# User edit (/u+/edit)
+
+:_usere_title
+en : My account
+ru*:
+
+:_usere_saved_title
+en : Settings saved
+ru*:
+
+:_usere_saved_msg
+en : Settings successfully saved.
+ru*:
+
+:_usere_geninfo
+en : General info
+ru*:
+
+:_usere_username
+en : Username
+ru*:
+
+:_usere_rank
+en : Rank
+ru*:
+
+:_usere_ignvotes
+en : Ignore votes in VN statistics
+ru*:
+
+:_usere_mail
+en : Email
+ru*:
+
+:_usere_changepass
+en : Change password
+ru*:
+
+:_usere_changepass_msg
+en : Leave blank to keep your current password
+ru*:
+
+:_usere_password
+en : Password
+ru*:
+
+:_usere_confirm
+en : Confirm password
+ru*:
+
+:_usere_options
+en : Options
+ru*:
+
+:_usere_flist
+en : Allow other people to see my visual novel list ([url,_1,_1]) and wishlist ([url,_2,_2])
+ru*:
+
+:_usere_fnsfw
+en : Disable warnings for images that are not safe for work.
+ru*:
+
+:_usere_skin
+en : Prefered skin
+ru*:
+
+:_usere_css
+en : Additional [url,http://en.wikipedia.org/wiki/Cascading_Style_Sheets,CSS]
+ru*:
+
+
+# Users posts (/u+/posts)
+
+:_uposts_title
+en : Posts made by [_1]
+ru*:
+
+:_uposts_noresults
+en : [_1] hasn't made any posts yet.
+ru*:
+
+:_uposts_col_date
+en : Date
+ru*:
+
+:_uposts_col_title
+en : Title
+ru*:
+
+
+# User list (/u/all)
+
+:_ulist_title
+en : Browse users
+ru*:
+
+:_ulist_col_username
+en : Username
+ru*:
+
+:_ulist_col_registered
+en : Registered
+ru*:
+
+:_ulist_col_votes
+en : Votes
+ru*:
+
+:_ulist_col_edits
+en : Edits
+ru*:
+
+:_ulist_col_tags
+en : Tags
+ru*:
+
+
+
+
+#############################################################################
 ##                            Misc. messages                               ##
 #############################################################################
 # Util::CommonHTML::htmlDenied,
