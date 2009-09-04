@@ -260,7 +260,10 @@ sub history {
 sub docpage {
   my($self, $did) = @_;
 
-  open my $F, '<', sprintf('%s/data/docs/%d', $VNDB::ROOT, $did) or return 404;
+  my $l = '.'.$self->{l10n}->language_tag();
+  my $f = sprintf('%s/data/docs/%d', $VNDB::ROOT, $did);
+  my $F;
+  open($F, '<:utf8', $f.$l) or open($F, '<:utf8', $f) or return 404;
   my @c = <$F>;
   close $F;
 
@@ -274,7 +277,8 @@ sub docpage {
       qq|<h3><a href="#$sec" name="$sec">$sec. $1</a></h3>\n|
     }eg;
     s{^:INC:(.+)\r?\n$}{
-      open $F, '<', sprintf('%s/data/docs/%s', $VNDB::ROOT, $1) or die $!;
+      $f = sprintf('%s/data/docs/%s', $VNDB::ROOT, $1);
+      open($F, '<:utf8', $f.$l) or open($F, '<:utf8', $f) or die $!;
       my $ii = join('', <$F>);
       close $F;
       $ii;
