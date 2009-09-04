@@ -1944,6 +1944,112 @@ ru*:
 
 
 #############################################################################
+##                          Personal User Lists                            ##
+#############################################################################
+# Handler::ULists
+
+
+# Wishlist (/u+/wish)
+
+:_wishlist_title_my
+en : My wishlist
+ru*:
+
+:_wishlist_title_other
+en : [_1]'s wishlist
+ru*:
+
+:_wishlist_noresults
+en : Wishlist empty...
+ru*:
+
+:_wishlist_prio_all
+en : All priorities
+ru*:
+
+:_wishlist_col_title
+en : Title
+ru*:
+
+:_wishlist_col_prio
+en : Priority
+ru*:
+
+:_wishlist_col_added
+en : Added
+ru*:
+
+:_wishlist_select
+en : -- with selected --
+ru*:
+
+:_wishlist_changeprio
+en : Change priority
+ru*:
+
+:_wishlist_remove
+en : remove from wishlist
+ru*:
+
+
+# VN list (/u+/list)
+
+:_rlist_title_my
+en : My visual novel list
+ru*:
+
+:_rlist_title_other
+en : [_1]'s visual novel list
+ru*:
+
+:_rlist_voted_all
+en : All
+ru*:
+
+:_rlist_voted_only
+en : Only voted
+ru*:
+
+:_rlist_voted_none
+en : Hide voted
+ru*:
+
+:_rlist_col_title
+en : Title
+ru*:
+
+:_rlist_col_releases
+en : Releases
+ru*:
+
+:_rlist_col_vote
+en : Vote
+ru*:
+
+:_rlist_selection
+en : -- with selected --
+ru*:
+
+:_rlist_changerel
+en : Change release status
+ru*:
+
+:_rlist_changeplay
+en : Change play status
+ru*:
+
+:_rlist_del
+en : remove from list
+ru*:
+
+:_rlist_releasenote
+en : * Obtained/finished/total
+ru*:
+
+
+
+
+#############################################################################
 ##                            Misc. messages                               ##
 #############################################################################
 # Util::CommonHTML::htmlDenied,
