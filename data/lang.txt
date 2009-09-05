@@ -2380,6 +2380,225 @@ ru*:
 
 
 #############################################################################
+##                        Visual novel pages                               ##
+#############################################################################
+# Handler::VNBrowse
+# Handler::VNEdit
+
+
+# VN browser (/v/all)
+
+:_vnbrowse_title
+en : Browse visual novels
+ru*:
+
+:_vnbrowse_col_score
+en : Score
+ru*:
+
+:_vnbrowse_col_title
+en : Title
+ru*:
+
+:_vnbrowse_col_released
+en : Released
+ru*:
+
+:_vnbrowse_col_popularity
+en : Popularity
+ru*:
+
+:_vnbrowse_tagign_title
+en : The following tags were ignored:
+ru*:
+
+:_vnbrowse_tagign_meta
+en : can't filter on meta tags
+ru*:
+
+:_vnbrowse_tagign_notfound
+en : no such tag found
+ru*:
+
+:_vnbrowse_advsearch
+en : advanced search
+ru*:
+
+:_vnbrowse_tags
+en : Tag filters
+ru*:
+
+:_vnbrowse_booland
+en : boolean and, selecting more gives less results
+ru*:
+
+:_vnbrowse_taginc
+en : Tags to include
+ru*:
+
+:_vnbrowse_tagexc
+en : Tags to exclude
+ru*:
+
+:_vnbrowse_spoil0
+en : Hide spoilers
+ru*:
+
+:_vnbrowse_spoil1
+en : Show minor spoilers
+ru*:
+
+:_vnbrowse_spoil2
+en : Show major spoilers
+ru*:
+
+:_vnbrowse_lang
+en : Languages
+ru*:
+
+:_vnbrowse_boolor
+en : boolean or, selecting more gives more results
+ru*:
+
+:_vnbrowse_plat
+en : Platforms
+ru*:
+
+:_vnbrowse_apply
+en : Apply
+ru*:
+
+:_vnbrowse_clear
+en : Clear
+ru*:
+
+
+# VN add/edit form (/v+/edit)
+
+:_vnedit_title_edit
+en : Edit [_1]
+ru*:
+
+:_vnedit_title_add
+en : Add a new visual novel
+ru*:
+
+:_vnedit_geninfo
+en : General info
+ru*:
+
+:_vnedit_frm_title
+en : Title (romaji)
+ru*:
+
+:_vnedit_original
+en : Original title
+ru*:
+
+:_vnedit_original_msg
+en : The original title of this visual novel, leave blank if it already is in the Latin alphabet.
+ru*:
+
+:_vnedit_alias
+en : Aliases
+ru*:
+
+:_vnedit_alias_msg
+en : Comma seperated list of alternative titles or abbreviations. Can include both official
+     (japanese/english) titles and unofficial titles used around net.[br]
+     Titles that are listed in the releases should not be added here!
+ru*:
+
+:_vnedit_desc
+en : Description
+ru*:
+
+:_vnedit_desc_msg
+en : Short description of the main story. Please do not include spoilers, and don't forget to list
+     the source in case you didn't write the description yourself. (formatting codes are allowed)
+ru*:
+
+:_vnedit_length
+en : Length
+ru*:
+
+:_vnedit_links
+en : External links
+ru*:
+
+:_vnedit_anime
+en : Anime
+ru*:
+
+:_vnedit_anime_msg
+en : Whitespace seperated list of [url,http://anidb.net/,AniDB] anime IDs.
+     E.g. "1015 3348" will add [url,http://anidb.net/a1015,Shingetsutan Tsukihime]
+     and [url,http://anidb.net/a3348,Fate/stay night] as related anime.[br]
+     Note: It can take a few minutes for the anime titles to appear on the VN page.
+ru*:
+
+:_vnedit_image
+en : Image
+ru*:
+
+:_vnedit_image_none
+en : No image uploaded yet
+ru*:
+
+:_vnedit_image_processing
+en : ~[processing image, please return in a few minutes~]
+ru*:
+
+:_vnedit_image_upload
+en : Upload new image
+ru*:
+
+:_vnedit_image_upload_msg
+en : Preferably the cover of the CD/DVD/package. Image must be in JPEG or PNG format
+     and at most 500kB. Images larger than 256x400 will automatically be resized.
+ru*:
+
+:_vnedit_image_nsfw
+en : NSFW
+ru*:
+
+:_vnedit_image_nsfw_check
+en : Not Safe For Work
+ru*:
+
+:_vnedit_image_nsfw_msg
+en : Please check this option if the image contains nudity, gore, or is otherwise not safe in a work-friendly environment.
+ru*:
+
+:_vnedit_rel
+en : Relations
+ru*:
+
+:_vnedit_rel_sel
+en : Selected relations
+ru*:
+
+:_vnedit_rel_add
+en : Add relation
+ru*:
+
+:_vnedit_scr
+en : Screenshots
+ru*:
+
+:_vnedit_scr_msg
+en : Please keep the following in mind when uploading screenshots:[br]
+     - Screenshots have to be in the native resolution of the game,[br]
+     - Remove any window borders and make sure the image is unmarked,[br]
+     - Don't only upload event CGs.[br]
+     Please read the [url,/d2#6,guidelines] for more information.[br]
+     Make sure to submit the form after the upload has finished!
+ru*:
+
+
+
+
+#############################################################################
 ##                            Misc. messages                               ##
 #############################################################################
 # Util::CommonHTML::htmlDenied,

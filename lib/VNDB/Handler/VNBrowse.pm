@@ -70,7 +70,7 @@ sub list {
   $self->resRedirect('/v'.$list->[0]{id}, 'temp')
     if $f->{q} && @$list == 1;
 
-  $self->htmlHeader(title => 'Browse visual novels', search => $f->{q}, js => 'forms');
+  $self->htmlHeader(title => mt('_vnbrowse_title'), search => $f->{q}, js => 'forms');
   _filters($self, $f, $char, \@ignored);
 
   my $url = "/v/$char?q=$f->{q};ti=$f->{ti};te=$f->{te}";
@@ -84,12 +84,12 @@ sub list {
     pageurl  => "$url;o=$f->{o};s=$f->{s}",
     sorturl  => $url,
     header   => [
-      @ti ? [ 'Score', 'tagscore', undef, 'tc_s' ] : (),
-      [ 'Title',      'title', undef, @ti ? 'tc_t' : 'tc1' ],
-      [ '',           0,       undef, 'tc2' ],
-      [ '',           0,       undef, 'tc3' ],
-      [ 'Released',   'rel',   undef, 'tc4' ],
-      [ 'Popularity', 'pop',   undef, 'tc5' ],
+      @ti ? [ mt('_vnbrowse_col_score'), 'tagscore', undef, 'tc_s' ] : (),
+      [ mt('_vnbrowse_col_title'),       'title', undef, @ti ? 'tc_t' : 'tc1' ],
+      [ '',                              0,       undef, 'tc2' ],
+      [ '',                              0,       undef, 'tc3' ],
+      [ mt('_vnbrowse_col_released'),    'rel',   undef, 'tc4' ],
+      [ mt('_vnbrowse_col_popularity'),  'pop',   undef, 'tc5' ],
     ],
     row     => sub {
       my($s, $n, $l) = @_;
@@ -126,7 +126,7 @@ sub _filters {
 
   form action => '/v/all', 'accept-charset' => 'UTF-8', method => 'get';
   div class => 'mainbox';
-   h1 'Browse visual novels';
+   h1 mt '_vnbrowse_title';
    $self->htmlSearchBox('v', $f->{q});
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
@@ -136,29 +136,31 @@ sub _filters {
 
    if(@$ign) {
      div class => 'warning';
-      h2 'The following tags were ignored:';
+      h2 mt '_vnbrowse_tagign_title';
       ul;
-       li $_->[0].' ('.($_->[1]?"can't filter on meta tags":"no such tag found").')' for @$ign;
+       li $_->[0].' ('.mt('_vnbrowse_tagign_'.($_->[1]?'meta':'notfound')).')' for @$ign;
       end;
      end;
    }
 
    a id => 'advselect', href => '#';
-    lit '<i>&#9656;</i> advanced search';
+    lit '<i>&#9656;</i> '.mt('_vnbrowse_advsearch');
    end;
    div id => 'advoptions', class => 'hidden vnoptions';
 
     h2;
-     lit 'Tag filters <b>(boolean and, selecting more gives less results)</b>';
+     txt mt '_vnbrowse_tags';
+     b ' ('.mt('_vnbrowse_booland').')';
     end;
     table class => 'formtable', style => 'margin-left: 0';
-     $self->htmlFormPart($f, [ input => short => 'ti', name => 'Tags to include', width => 350 ]);
-     $self->htmlFormPart($f, [ radio => short => 'sp', name => '', options => [[0,'Hide spoilers'],[1,'Show minor spoilers'],[2,'Show major spoilers']]]);
-     $self->htmlFormPart($f, [ input => short => 'te', name => 'Tags to exclude', width => 350 ]);
+     $self->htmlFormPart($f, [ input => short => 'ti', name => mt('_vnbrowse_taginc'), width => 350 ]);
+     $self->htmlFormPart($f, [ radio => short => 'sp', name => '', options => [map [$_, mt '_vnbrowse_spoil'.$_], 0..2]]);
+     $self->htmlFormPart($f, [ input => short => 'te', name => mt('_vnbrowse_tagexc'), width => 350 ]);
     end;
 
     h2;
-     lit 'Languages <b>(boolean or, selecting more gives more results)</b>';
+     txt mt '_vnbrowse_lang';
+     b ' ('.mt('_vnbrowse_boolor').')';
     end;
     for my $i (sort @{$self->dbLanguages}) {
       span;
@@ -172,7 +174,8 @@ sub _filters {
     }
 
     h2;
-     lit 'Platforms <b>(boolean or, selecting more gives more results)</b>';
+     txt mt '_vnbrowse_plat';
+     b ' ('.mt('_vnbrowse_boolor').')';
     end;
     for my $i (sort @{$self->{platforms}}) {
       next if $i eq 'oth';
@@ -187,8 +190,8 @@ sub _filters {
     }
 
     div style => 'text-align: center; clear: left;';
-     input type => 'submit', value => 'Apply', class => 'submit';
-     input type => 'reset', value => 'Clear', class => 'submit', onclick => 'location.href="/v/all"';
+     input type => 'submit', value => mt('_vnbrowse_apply'), class => 'submit';
+     input type => 'reset', value => mt('_vnbrowse_clear'), class => 'submit', onclick => 'location.href="/v/all"';
     end;
    end;
   end;

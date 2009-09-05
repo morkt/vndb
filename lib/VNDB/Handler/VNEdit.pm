@@ -4,6 +4,7 @@ package VNDB::Handler::VNEdit;
 use strict;
 use warnings;
 use YAWF ':html', ':xml';
+use VNDB::Func;
 
 
 YAWF::register(
@@ -95,7 +96,7 @@ sub edit {
   !exists $frm->{$_} && ($frm->{$_} = $b4{$_}) for (keys %b4);
   $frm->{editsum} = sprintf 'Reverted to revision v%d.%d', $vid, $rev if $rev && !defined $frm->{editsum};
 
-  my $title = $vid ? "Edit $v->{title}" : 'Add a new visual novel';
+  my $title = $vid ? mt('_vnedit_title_edit', $v->{title}) : mt '_vnedit_title_add';
   $self->htmlHeader(js => 'forms', title => $title, noindex => 1);
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
   $self->htmlEditMessage('v', $v, $title);
@@ -140,72 +141,60 @@ sub _form {
   my($self, $v, $frm) = @_;
   my $r = $v ? $self->dbReleaseGet(vid => $v->{id}) : [];
   $self->htmlForm({ frm => $frm, action => $v ? "/v$v->{id}/edit" : '/v/new', editsum => 1, upload => 1 },
-  vn_geninfo => [ 'General info',
-    [ input    => short => 'title',     name => 'Title (romaji)' ],
-    [ input    => short => 'original',  name => 'Original title' ],
-    [ static   => content => 'The original title of this visual novel, leave blank if it already is in the Latin alphabet.' ],
-    [ textarea => short => 'alias',     name => 'Aliases', rows => 4 ],
-    [ static   => content => q|
-        Comma seperated list of alternative titles or abbreviations. Can include both official
-        (japanese/english) titles and unofficial titles used around net.<br />
-        <b>Titles that are listed in the releases do not have to be added here.</b>
-      |],
-    [ textarea => short => 'desc',      name => 'Description', rows => 10 ],
-    [ static   => content => q|
-        Short description of the main story. Please do not include spoilers, and don't forget to list
-        the source in case you didn't write the description yourself. (formatting codes are allowed)
-      |],
-    [ select   => short => 'length',    name => 'Length', width => 300, options =>
+  vn_geninfo => [ mt('_vnedit_geninfo'),
+    [ input    => short => 'title',     name => mt '_vnedit_frm_title' ],
+    [ input    => short => 'original',  name => mt '_vnedit_original' ],
+    [ static   => content => mt '_vnedit_original_msg' ],
+    [ textarea => short => 'alias',     name => mt('_vnedit_alias'), rows => 4 ],
+    [ static   => content => mt '_vnedit_alias_msg' ],
+    [ textarea => short => 'desc',      name => mt('_vnedit_desc'), rows => 10 ],
+    [ static   => content => mt '_vnedit_desc_msg' ],
+    [ select   => short => 'length',    name => mt('_vnedit_length'), width => 300, options =>
       [ map [ $_ => $self->{vn_lengths}[$_][0].($_ ? " ($self->{vn_lengths}[$_][2])" : '') ], 0..$#{$self->{vn_lengths}} ] ],
 
-    [ input    => short => 'l_wp',      name => 'External links', pre => 'http://en.wikipedia.org/wiki/' ],
+    [ input    => short => 'l_wp',      name => mt('_vnedit_links'), pre => 'http://en.wikipedia.org/wiki/' ],
     [ input    => short => 'l_encubed', pre => 'http://novelnews.net/tag/', post => '/' ],
     [ input    => short => 'l_renai',   pre => 'http://renai.us/game/', post => '.shtml' ],
     [ input    => short => 'l_vnn',     pre => 'http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=', width => 40 ],
 
-    [ input    => short => 'anime',     name => 'Anime' ],
-    [ static   => content => q|
-        Whitespace seperated list of <a href="http://anidb.net/">AniDB</a> anime IDs.
-        E.g. "1015 3348" will add <a href="http://anidb.net/a1015">Shingetsutan Tsukihime</a>
-        and <a href="http://anidb.net/a3348">Fate/stay night</a> as related anime.<br />
-        <b>Note:</b> It can take a few minutes for the anime titles to appear on the VN page.
-      |],
+    [ input    => short => 'anime',     name => mt '_vnedit_anime' ],
+    [ static   => content => mt '_vnedit_anime_msg' ],
   ],
 
-  vn_img => [ 'Image',
+  vn_img => [ mt('_vnedit_image'),
     [ static => nolabel => 1, content => sub {
       div class => 'img';
-       p 'No image uploaded yet' if !$v || !$v->{image};
-       p '[processing image, please return in a few minutes]' if $v && $v->{image} < 0;
+       p mt '_vnedit_image_none' if !$v || !$v->{image};
+       p mt '_vnedit_image_processing' if $v && $v->{image} < 0;
        img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title} if $v && $v->{image} > 0;
       end;
       div;
 
-       h2 'Upload new image';
+       h2 mt '_vnedit_image_upload';
        input type => 'file', class => 'text', name => 'img', id => 'img';
-       p 'Preferably the cover of the CD/DVD/package. Image must be in JPEG or PNG format'
-        ." and at most 500kB. Images larger than 256x400 will automatically be resized.\n\n\n";
+       p mt('_vnedit_image_upload_msg')."\n\n\n";
 
-       h2 'NSFW';
+       h2 mt '_vnedit_image_nsfw';
        input type => 'checkbox', class => 'checkbox', id => 'img_nsfw', name => 'img_nsfw',
          $frm->{img_nsfw} ? (checked => 'checked') : ();
-       label class => 'checkbox', for => 'img_nsfw', "Not Safe For Work.\n";
-       p 'Please check this option if the image contains nudity, gore, or is otherwise not safe in a work-friendly environment.';
+       label class => 'checkbox', for => 'img_nsfw', mt '_vnedit_image_nsfw_check';
+       p "\n".mt '_vnedit_image_nsfw_msg';
       end;
     }],
   ],
 
-  vn_rel => [ 'Relations',
+  vn_rel => [ mt('_vnedit_rel'),
     [ hidden   => short => 'relations' ],
     [ static   => nolabel => 1, content => sub {
-      h2 'Selected relations';
+      h2 mt '_vnedit_rel_sel';
       table;
        tbody id => 'relation_tbl';
         # to be filled using javascript
        end;
       end;
 
-      h2 'Add relation';
+      h2 mt '_vnedit_rel_add';
+      # TODO: localize JS relartion selector
       table;
        Tr id => 'relation_new';
         td class => 'tc1';
@@ -227,21 +216,14 @@ sub _form {
     }],
   ],
 
-  !@$r ? () : ( vn_scr => [ 'Screenshots',
+  !@$r ? () : ( vn_scr => [ mt('_vnedit_scr'),
     [ hidden => short => 'screenshots' ],
     [ static => nolabel => 1, content => sub {
       div class => 'warning';
-       b 'Please keep the following in mind when uploading screenshots:';
-       ul;
-        li 'Screenshots have to be in the native resolution of the game,';
-        li 'Remove any window borders and make sure the image is unmarked,';
-        li 'Don\'t only upload event CGs.';
-       end;
-       lit 'Please read the <a href="/d2#6">guidelines</a> for more information.';
-       br;
-       b 'Make sure to submit the form after the upload has finished!';
+       lit mt '_vnedit_scr_msg';
       end;
       br;
+      # TODO: localize screenshot uploader
       table;
        tbody id => 'scr_table', '';
       end;
