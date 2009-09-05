@@ -70,10 +70,6 @@ use warnings;
       die "Don't know what to do with line $line\n" unless /^([a-z_-]{2,7})[ *]:/;
     }
     close $F;
-
-    # dev.
-    use Data::Dumper 'Dumper';
-    warn Dumper \%lang;
   }
 }
 
