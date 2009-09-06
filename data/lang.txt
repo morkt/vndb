@@ -427,6 +427,113 @@ en : masterpiece
 ru*:
 
 
+# Form messages
+
+:_formerr_e_login_failed
+en : Invalid username or password
+ru*:
+
+:_formerr_e_nomail
+en : No user found with that email address
+ru*:
+
+:_formerr_e_passmatch
+en : Passwords do not match
+ru*:
+
+:_formerr_e_usrexists
+en : Someone already has this username, please choose something else
+ru*:
+
+:_formerr_e_mailexists
+en : Someone already registered with that email address
+ru*:
+
+:_formerr_e_noimage
+en : Image must be in JPEG or PNG format
+ru*:
+
+:_formerr_e_toolarge
+en : Image is too large, only 500kB allowed
+ru*:
+
+:_formerr_e_oneaday
+en : You can only register one account from the same IP within 24 hours
+ru*:
+
+:_formerr_e_nochanges
+en : No changes, please don't create an entry that is fully identical to another
+ru*:
+
+:_formerr_e_doublepost
+en : Please wait 30 seconds before making another post
+ru*:
+
+:_formerr_title
+en : Error
+ru*:
+
+:_formerr_subtitle
+en : Form could not be sent:
+ru*:
+
+:_formerr_required
+en : [_1] is a required field!
+ru*:
+
+:_formerr_minlength
+en : [_1]: should have at least [_2] characters
+ru*:
+
+:_formerr_maxlength
+en : [_1]: only [_2] characters allowed
+ru*:
+
+:_formerr_enum
+en : [_1] must be one of the following: [_2]
+ru*:
+
+:_formerr_wrongboard
+en : Wrong board: [_1]
+ru*:
+
+:_formerr_tagexists
+en : Tag [url,_1,_2] already exists!
+ru*:
+
+:_formerr_tpl_mail
+en : Invalid email address
+ru*:
+
+:_formerr_tpl_url
+en : [_1]: Invalid URL
+ru*:
+
+:_formerr_tpl_asciiprint
+en : [_1] may only contain ASCII characters
+ru*:
+
+:_formerr_tpl_int
+en : [_1]: Not a valid number
+ru*:
+
+:_formerr_tpl_pname
+en : [_1] can only contain lowercase alphanumberic characters and a hyphen, and must start with a character
+ru*:
+
+:_form_tab_all
+en : All items
+ru*:
+
+:_form_editsum
+en : Edit summary
+ru*:
+
+:_form_submit
+en : Submit
+ru*:
+
+
 
 
 #############################################################################
