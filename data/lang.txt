@@ -338,6 +338,25 @@ en : Users
 ru : Пользователи
 
 
+# Wishlist statuses
+
+:_wish_0
+en : high
+ru*:
+
+:_wish_1
+en : medium
+ru*:
+
+:_wish_2
+en : low
+ru*:
+
+:_wish_3
+en : blacklist
+ru*:
+
+
 # 'Voiced' information for releases
 
 :_voiced_0

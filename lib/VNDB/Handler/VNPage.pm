@@ -333,9 +333,9 @@ sub _useroptions {
     }
     if(!$vote || $wish) {
       Select id => 'wishsel';
-       option $wish ? mt '_vnpage_uopt_wishlisted', $self->{wishlist_status}[$wish->{wstat}] : mt '_vnpage_uopt_nowish';
+       option $wish ? mt '_vnpage_uopt_wishlisted', mt '_wish_'.$wish->{wstat} : mt '_vnpage_uopt_nowish';
        optgroup label => $wish ? mt '_vnpage_uopt_changewish' : mt '_vnpage_uopt_addwish';
-        option value => $_, $self->{wishlist_status}[$_] for (0..$#{$self->{wishlist_status}});
+        option value => $_, mt "_wish_$_" for (@{$self->{wishlist_status}});
        end;
        option value => -1, mt '_vnpage_uopt_delwish';
       end;

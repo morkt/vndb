@@ -42,7 +42,7 @@ sub vnwish {
   return $self->htmlDenied() if !$uid;
 
   my $f = $self->formValidate(
-    { name => 's', enum => [ -1..$#{$self->{wishlist_status}} ] }
+    { name => 's', enum => [ -1, @{$self->{wishlist_status}} ] }
   );
   return 404 if $f->{_err};
 
@@ -105,14 +105,14 @@ sub wishlist {
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'o', required => 0, default => 'd', enum => [ 'a', 'd' ] },
     { name => 's', required => 0, default => 'wstat', enum => [qw|title added wstat|] },
-    { name => 'f', required => 0, default => -1, enum => [ -1..$#{$self->{wishlist_status}} ] },
+    { name => 'f', required => 0, default => -1, enum => [ -1, @{$self->{wishlist_status}} ] },
   );
   return 404 if $f->{_err};
 
   if($own && $self->reqMethod eq 'POST') {
     my $frm = $self->formValidate(
       { name => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
-      { name => 'batchedit', required => 1, enum => [ -1..$#{$self->{wishlist_status}} ] },
+      { name => 'batchedit', required => 1, enum => [ -1, @{$self->{wishlist_status}} ] },
     );
     if(!$frm->{_err} && @{$frm->{sel}} && $frm->{sel}[0]) {
       $self->dbWishListDel($uid, $frm->{sel}) if $frm->{batchedit} == -1;
@@ -141,8 +141,8 @@ sub wishlist {
    }
    p class => 'browseopts';
     a $f->{f} == $_ ? (class => 'optselected') : (), href => "/u$uid/wish?f=$_",
-        $_ == -1 ? mt '_wishlist_prio_all' : ucfirst $self->{wishlist_status}[$_]
-      for (-1..$#{$self->{wishlist_status}});
+        $_ == -1 ? mt '_wishlist_prio_all' : mt "_wish_$_"
+      for (-1, @{$self->{wishlist_status}});
    end;
   end;
 
@@ -169,7 +169,7 @@ sub wishlist {
           if $own;
         a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, ' '.shorten $i->{title}, 70;
        end;
-       td class => 'tc2', ucfirst $self->{wishlist_status}[$i->{wstat}];
+       td class => 'tc2', mt "_wish_$i->{wstat}";
        td class => 'tc3', $self->{l10n}->date($i->{added}, 'compact');
       end;
     },
@@ -179,8 +179,8 @@ sub wishlist {
         Select name => 'batchedit', id => 'batchedit';
          option mt '_wishlist_select';
          optgroup label => mt '_wishlist_changeprio';
-          option value => $_, $self->{wishlist_status}[$_]
-            for (0..$#{$self->{wishlist_status}});
+          option value => $_, mt "_wish_$_"
+            for (@{$self->{wishlist_status}});
          end;
          option value => -1, mt '_wishlist_remove';
         end;

@@ -114,12 +114,7 @@ our %S = (%S,
   ],
   voiced          => [ 0..4 ],
   animated        => [ 0..4 ],
-  wishlist_status => [
-    'high',
-    'medium',
-    'low',
-    'blacklist',
-  ],
+  wishlist_status => [ 0..3 ],
   # note: keep these synchronised in script.js
   vn_rstat        => [
     'Unknown',
