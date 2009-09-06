@@ -2596,6 +2596,275 @@ en : Please keep the following in mind when uploading screenshots:[br]
 ru*:
 
 
+# VN Relation graph page (/v+/rg)
+
+:_vnrg_title
+en : Relation graph for [_1]
+ru*:
+
+
+# VN Diff viewer (/v+.+)
+
+:_revfield_v_title
+en : Title (romaji)
+ru*:
+
+:_revfield_v_original
+en : Original title
+ru*:
+
+:_revfield_v_alias
+en : Alias
+ru*:
+
+:_revfield_v_desc
+en : Description
+ru*:
+
+:_revfield_v_length
+en : Length
+ru*:
+
+:_vndiff_nolink
+en : ~[no link~]
+ru*:
+
+:_vndiff_none
+en : ~[none~]
+ru*:
+
+:_revfield_v_l_wp
+en : Wikipedia link
+ru*:
+
+:_revfield_v_l_encubed
+en : Encubed tag
+ru*:
+
+:_revfield_v_l_renai
+en : Renai.us link
+ru*:
+
+:_revfield_v_l_vnn
+en : V-N.net link
+ru*:
+
+:_revfield_v_relations
+en : Relations
+ru*:
+
+:_revfield_v_anime
+en : Anime
+ru*:
+
+:_revfield_v_screenshots
+en : Screenshots
+ru*:
+
+:_revfield_v_image
+en : Image
+ru*:
+
+:_vndiff_image_nsfw
+en : (NSFW)
+ru*:
+
+:_vndiff_image_proc
+en : ~[processing~]
+ru*:
+
+:_vndiff_image_none
+en : No image
+ru*:
+
+:_revfield_v_img_nsfw
+en : Image NSFW
+ru*:
+
+:_vndiff_nsfw_safe
+en : Safe
+ru*:
+
+:_vndiff_nsfw_notsafe
+en : Not safe
+ru*:
+
+
+# VN page (/v+)
+
+:_vnpage_noimg
+en : No image uploaded yet
+ru*:
+
+:_vnpage_imgproc
+en : ~[processing image, please return in a few minutes~]
+ru*:
+
+:_vnpage_imgnsfw_msg
+en : This image has been flagged as Not Safe For Work.
+ru*:
+
+:_vnpage_imgnsfw_show
+en : Show me anyway
+ru*:
+
+:_vnpage_imgnsfw_note
+en : (This warning can be disabled in your account)
+ru*:
+
+:_vnpage_imgnsfw_foot
+en : Flagged as NSFW
+ru*:
+
+:_vnpage_vntitle
+en : Title
+ru*:
+
+:_vnpage_original
+en : Original title
+ru*:
+
+:_vnpage_alias
+en : Aliases
+ru*:
+
+:_vnpage_length
+en : Length
+ru*:
+
+:_vnpage_links
+en : Links
+ru*:
+
+:_vnpage_description
+en : Description
+ru*:
+
+:_vnpage_tags_spoil0
+en : hide spoilers
+ru*:
+
+:_vnpage_tags_spoil1
+en : show minor spoilers
+ru*:
+
+:_vnpage_tags_spoil2
+en : spoil me!
+ru*:
+
+:_vnpage_tags_summary
+en : summary
+ru*:
+
+:_vnpage_tags_all
+en : all
+ru*:
+
+:_vnpage_producers
+en : Producers
+ru*:
+
+:_vnpage_relations
+en : Relations
+ru*:
+
+:_vnpage_anime
+en : Related anime
+ru*:
+
+:_vnpage_anime_noinfo
+en : ~[no information available at this time: [url,_2,_1]~]
+ru*:
+
+:_vnpage_uopt
+en : User options
+ru*:
+
+:_vnpage_uopt_voted
+en : your vote: [_1]
+ru*:
+
+:_vnpage_uopt_novote
+en : not voted yet
+ru*:
+
+:_vnpage_uopt_changevote
+en : Change vote
+ru*:
+
+:_vnpage_uopt_dovote
+en : Vote
+ru*:
+
+:_vnpage_uopt_delvote
+en : revoke
+ru*:
+
+:_vnpage_uopt_wishlisted
+en : wishlist: [_1]
+ru*:
+
+:_vnpage_uopt_nowish
+en : not on your wishlist
+ru*:
+
+:_vnpage_uopt_changewish
+en : Change status
+ru*:
+
+:_vnpage_uopt_addwish
+en : Add to wishlist
+ru*:
+
+:_vnpage_uopt_delwish
+en : remove from wishlist
+ru*:
+
+:_vnpage_rel
+en : Releases
+ru*:
+
+:_vnpage_rel_none
+en : We don't have any information about releases of this visual novel yet...
+ru*:
+
+:_vnpage_rel_add
+en : add release
+ru*:
+
+:_vnpage_rel_patch
+en : (patch)
+ru*:
+
+:_vnpage_rel_extlink
+en : External link
+ru*:
+
+:_vnpage_scr
+en : Screenshots
+ru*:
+
+:_vnpage_scr_showing
+en : Showing [_1] out of [_2] [quant,_2,screenshot,screenshots].
+ru*:
+
+:_vnpage_scr_nsfwhide
+en : show/hide NSFW
+ru*:
+
+:_vnpage_scr_num
+en : Screenshot #[_1]
+ru*:
+
+:_vnpage_stats
+en : User stats
+ru*:
+
+:_vnpage_stats_none
+en : Nobody has voted on this visual novel yet...
+ru*:
+
+
 
 
 #############################################################################

@@ -36,10 +36,10 @@ sub userpage {
    h1 $title;
 
    table;
-    my $i = 1;
+    my $i = 0;
 
-    Tr class => 'key odd';
-     td mt '_userpage_username';
+    Tr ++$i % 2 ? (class => 'odd') : ();
+     td class => 'key', mt '_userpage_username';
      td;
       txt ucfirst($u->{username}).' (';
       a href => "/u$uid", "u$uid";

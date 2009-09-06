@@ -19,14 +19,15 @@ sub rg {
   my $v = $self->dbVNGet(id => $vid, what => 'relgraph')->[0];
   return 404 if !$v->{id} || !$v->{rgraph};
 
-  $self->htmlHeader(title => 'Relation graph for '.$v->{title});
+  my $title = mt '_vnrg_title', $v->{title};
+  $self->htmlHeader(title => $title);
   $self->htmlMainTabs('v', $v, 'rg');
   div class => 'mainbox';
-   h1 'Relation graph for '.$v->{title};
+   h1 $title;
    lit $v->{cmap};
    p class => 'center';
     img src => sprintf('%s/rg/%02d/%d.png', $self->{url_static}, $v->{rgraph}%100, $v->{rgraph}),
-      alt => 'Relation graph for '.$v->{title}, usemap => '#rgraph';
+      alt => $title, usemap => '#rgraph';
    end;
   end;
 }
@@ -60,19 +61,19 @@ sub page {
     # image
     div class => 'vnimg';
      if(!$v->{image}) {
-       p 'No image uploaded yet';
+       p mt '_vnpage_noimg';
      } elsif($v->{image} < 0) {
-       p '[processing image, please return in a few minutes]';
+       p mt '_vnpage_imgproc';
      } elsif($v->{img_nsfw} && !$self->authInfo->{show_nsfw}) {
        img id => 'nsfw_hid', src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title};
        p id => 'nsfw_show';
-        txt "This image has been flagged\nas Not Safe For Work.\n\n";
-        a href => '#', 'Show me anyway';
-        txt "\n\n(This warning can be disabled in your account)";
+        txt mt('_vnpage_imgnsfw_msg')."\n\n";
+        a href => '#', mt '_vnpage_imgnsfw_show';
+        txt "\n\n".mt '_vnpage_imgnsfw_note';
        end;
      } else {
        img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title};
-       i 'Flagged as NSFW' if $v->{img_nsfw} && $self->authInfo->{show_nsfw};
+       i mt '_vnpage_imgnsfw_foot' if $v->{img_nsfw} && $self->authInfo->{show_nsfw};
      }
     end;
 
@@ -80,24 +81,24 @@ sub page {
     table;
      my $i = 0;
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td class => 'key', 'Title';
+      td class => 'key', mt '_vnpage_vntitle';
       td $v->{title};
      end;
      if($v->{original}) {
        Tr ++$i % 2 ? (class => 'odd') : ();
-        td 'Original title';
+        td mt '_vnpage_original';
         td $v->{original};
        end;
      }
      if($v->{alias}) {
        Tr ++$i % 2 ? (class => 'odd') : ();
-        td 'Aliases';
+        td mt '_vnpage_alias';
         td $v->{alias};
        end;
      }
      if($v->{length}) {
        Tr ++$i % 2 ? (class => 'odd') : ();
-        td 'Length';
+        td mt '_vnpage_length';
         td "$self->{vn_lengths}[$v->{length}][0] ($self->{vn_lengths}[$v->{length}][1])";
        end;
      }
@@ -109,7 +110,7 @@ sub page {
      );
      if(@links) {
        Tr ++$i % 2 ? (class => 'odd') : ();
-        td 'Links';
+        td mt '_vnpage_links';
         td;
          for(@links) {
            a href => sprintf($_->[1], $_->[2]), $_->[0];
@@ -126,7 +127,7 @@ sub page {
 
      Tr;
       td class => 'vndesc', colspan => 2;
-       h2 'Description';
+       h2 mt '_vnpage_description';
        p;
         lit bb2html $v->{desc};
        end;
@@ -141,11 +142,11 @@ sub page {
    my $t = $self->dbTagStats(vid => $v->{id}, order => 'avg(tv.vote) DESC', minrating => 0, results => 999);
    if(@$t) {
      div id => 'tagops';
-      a href => '#', 'hide spoilers';
-      a href => '#', class => 'tsel', 'show minor spoilers';
-      a href => '#', 'spoil me!';
-      a href => '#', class => 'sec', 'summary';
-      a href => '#', 'all';
+      a href => '#', mt '_vnpage_tags_spoil0';
+      a href => '#', class => 'tsel', mt '_vnpage_tags_spoil1';
+      a href => '#', mt '_vnpage_tags_spoil2';
+      a href => '#', class => 'sec', mt '_vnpage_tags_summary';
+      a href => '#', mt '_vnpage_tags_all';
      end;
      div id => 'vntags';
       for (@$t) {
@@ -182,33 +183,33 @@ sub _revision {
     [ desc        => 'Description',      diff => 1 ],
     [ length      => 'Length',           serialize => sub { $self->{vn_lengths}[$_[0]][0] } ],
     [ l_wp        => 'Wikipedia link',   htmlize => sub {
-      $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : '[no link]'
+      $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink'
     }],
     [ l_encubed   => 'Encubed tag',      htmlize => sub {
-      $_[0] ? sprintf '<a href="http://novelnews.net/tag/%s/">%1$s</a>', xml_escape $_[0] : '[no link]'
+      $_[0] ? sprintf '<a href="http://novelnews.net/tag/%s/">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink'
     }],
     [ l_renai     => 'Renai.us link',    htmlize => sub {
-      $_[0] ? sprintf '<a href="http://renai.us/game/%s.shtml">%1$s</a>', xml_escape $_[0] : '[no link]'
+      $_[0] ? sprintf '<a href="http://renai.us/game/%s.shtml">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink'
     }],
     [ l_vnn       => 'V-N.net link',     htmlize => sub {
-      $_[0] ? sprintf '<a href="http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=%d">%1$d</a>', xml_escape $_[0] : '[no link]'
+      $_[0] ? sprintf '<a href="http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=%d">%1$d</a>', xml_escape $_[0] : mt '_vndiff_nolink'
     }],
     [ relations   => 'Relations',        join => '<br />', split => sub {
       my @r = map sprintf('%s: <a href="/v%d" title="%s">%s</a>',
         $self->{vn_relations}[$_->{relation}][0], $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
       ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
-      return @r ? @r : ('[none]');
+      return @r ? @r : (mt '_vndiff_none');
     }],
     [ anime       => 'Anime',            join => ', ', split => sub {
       my @r = map sprintf('<a href="http://anidb.net/a%d">a%1$d</a>', $_->{id}), sort { $a->{id} <=> $b->{id} } @{$_[0]};
-      return @r ? @r : ('[none]');
+      return @r ? @r : (mt '_vndiff_none');
     }],
     [ screenshots => 'Screenshots',      join => '<br />', split => sub {
       my @r = map sprintf('[%s] <a href="%s/sf/%02d/%d.jpg" rel="iv:%dx%d">%4$d</a> (%s)',
         $_->{rid} ? qq|<a href="/r$_->{rid}">r$_->{rid}</a>| : 'no release',
         $self->{url_static}, $_->{id}%100, $_->{id}, $_->{width}, $_->{height}, $_->{nsfw} ? 'NSFW' : 'Safe'
       ), @{$_[0]};
-      return @r ? @r : ('[no screenshots]');
+      return @r ? @r : (mt '_vndiff_none');
     }],
     [ image       => 'Image',            htmlize => sub {
       my $url = sprintf "%s/cv/%02d/%d.jpg", $self->{url_static}, $_[0]%100, $_[0];
@@ -231,7 +232,7 @@ sub _producers {
   my @lang = grep !$lang{$_}++, map @{$_->{languages}}, @$r;
 
   Tr ++$$i % 2 ? (class => 'odd') : ();
-   td 'Producers';
+   td mt '_vnpage_producers';
    td;
     for my $l (@lang) {
       my %p = map { $_->{id} => $_ } map @{$_->{producers}}, grep grep($_ eq $l, @{$_->{languages}}), @$r;
@@ -258,7 +259,7 @@ sub _relations {
 
 
   Tr ++$$i % 2 ? (class => 'odd') : ();
-   td 'Relations';
+   td mt '_vnpage_relations';
    td class => 'relations';
     dl;
      for(sort keys %rel) {
@@ -280,14 +281,12 @@ sub _anime {
   my($self, $i, $v) = @_;
 
   Tr ++$$i % 2 ? (class => 'odd') : ();
-   td 'Related anime';
+   td mt '_vnpage_anime';
    td class => 'anime';
     for (sort { ($a->{year}||9999) <=> ($b->{year}||9999) } @{$v->{anime}}) {
       if(!$_->{lastfetch} || !$_->{year} || !$_->{title_romaji}) {
         b;
-         txt '[no information available at this time: ';
-         a href => "http://anidb.net/a$_->{id}", $_->{id};
-         txt ']';
+         lit mt '_vnpage_anime_noinfo', $_->{id}, "http://anidb.net/a$_->{id}";
         end;
       } else {
         b;
@@ -320,25 +319,25 @@ sub _useroptions {
   my $wish = $self->dbWishListGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
 
   Tr ++$$i % 2 ? (class => 'odd') : ();
-   td 'User options';
+   td mt '_vnpage_uopt';
    td;
     if($vote || !$wish) {
       Select id => 'votesel';
-       option $vote ? "your vote: $vote->{vote}" : 'not voted yet';
-       optgroup label => $vote ? 'Change vote' : 'Vote';
+       option $vote ? mt '_vnpage_uopt_voted', $vote->{vote} : mt '_vnpage_uopt_novote';
+       optgroup label => $vote ? mt '_vnpage_uopt_changevote' : mt '_vnpage_uopt_dovote';
         option value => $_, "$_ ($self->{votes}[$_-1])" for (reverse 1..10);
        end;
-       option value => -1, 'revoke' if $vote;
+       option value => -1, mt '_vnpage_uopt_delvote' if $vote;
       end;
       br;
     }
     if(!$vote || $wish) {
       Select id => 'wishsel';
-       option $wish ? "wishlist: $self->{wishlist_status}[$wish->{wstat}]" : 'not on your wishlist';
-       optgroup label => $wish ? 'Change status' : 'Add to wishlist';
+       option $wish ? mt '_vnpage_uopt_wishlisted', $self->{wishlist_status}[$wish->{wstat}] : mt '_vnpage_uopt_nowish';
+       optgroup label => $wish ? mt '_vnpage_uopt_changewish' : mt '_vnpage_uopt_addwish';
         option value => $_, $self->{wishlist_status}[$_] for (0..$#{$self->{wishlist_status}});
        end;
-       option value => -1, 'remove from wishlist';
+       option value => -1, mt '_vnpage_uopt_delwish';
       end;
     }
    end;
@@ -350,10 +349,10 @@ sub _releases {
   my($self, $v, $r) = @_;
 
   div class => 'mainbox releases';
-   a class => 'addnew', href => "/v$v->{id}/add", 'add release';
-   h1 'Releases';
+   a class => 'addnew', href => "/v$v->{id}/add", mt '_vnpage_rel_add';
+   h1 mt '_vnpage_rel';
    if(!@$r) {
-     p 'We don\'t have any information about releases of this visual novel yet...';
+     p mt '_vnpage_rel_none';
      end;
      return;
    }
@@ -389,7 +388,7 @@ sub _releases {
          end;
          td class => 'tc4';
           a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
-          b class => 'grayedout', ' (patch)' if $rel->{patch};
+          b class => 'grayedout', ' '.mt '_vnpage_rel_patch' if $rel->{patch};
          end;
          td class => 'tc5';
           if($self->authInfo->{id}) {
@@ -403,7 +402,7 @@ sub _releases {
          td class => 'tc6';
           if($rel->{website}) {
             a href => $rel->{website}, rel => 'nofollow';
-             cssicon 'ext', 'External link';
+             cssicon 'ext', mt '_vnpage_rel_extlink';
             end;
           } else {
             txt ' ';
@@ -423,15 +422,15 @@ sub _screenshots {
 
    if(grep $_->{nsfw}, @{$v->{screenshots}}) {
      p class => 'nsfwtoggle';
-      lit sprintf 'Showing <i id="nsfwshown">%d</i> out of %d screenshots, ',
-        $self->authInfo->{show_nsfw} ? scalar @{$v->{screenshots}} : scalar grep(!$_->{nsfw}, @{$v->{screenshots}}),
+      lit mt '_vnpage_scr_showing',
+        sprintf('<i id="nsfwshown">%d</i>', $self->authInfo->{show_nsfw} ? scalar @{$v->{screenshots}} : scalar grep(!$_->{nsfw}, @{$v->{screenshots}})),
         scalar @{$v->{screenshots}};
-      a href => '#', id => "nsfwhide", 'show/hide NSFW';
-      txt '.';
+      txt " ";
+      a href => '#', id => "nsfwhide", mt '_vnpage_scr_nsfwhide';
      end;
    }
 
-   h1 'Screenshots';
+   h1 mt '_vnpage_scr';
    table;
     for my $rel (@$r) {
       my @scr = grep $_->{rid} && $rel->{id} == $_->{rid}, @{$v->{screenshots}};
@@ -448,7 +447,7 @@ sub _screenshots {
           div $_->{nsfw} ? (class => 'nsfw'.(!$self->authInfo->{show_nsfw} ? ' hidden' : '')) : ();
            a href => sprintf('%s/sf/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}),
              rel => "iv:$_->{width}x$_->{height}:scr", $_->{nsfw} && !$self->authInfo->{show_nsfw} ? (class => 'hidden') : ();
-            img src => sprintf('%s/st/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}), alt => "Screenshot #$_->{id}";
+            img src => sprintf('%s/st/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}), alt => mt '_vnpage_scr_num', $_->{id};
            end;
           end;
         }
@@ -465,9 +464,9 @@ sub _stats {
 
   my $stats = $self->dbVoteStats(vid => $v->{id}, 1);
   div class => 'mainbox';
-   h1 'User stats';
+   h1 mt '_vnpage_stats';
    if(!grep $_ > 0, @$stats) {
-     p "Nobody has voted on this visual novel yet...";
+     p mt '_vnpage_stats_none';
    } else {
      $self->htmlVoteStats(v => $v, $stats);
    }
