@@ -36,34 +36,34 @@ sub page {
       what => 'vn extended producers platforms media changes'
     )->[0];
     $self->htmlRevision('r', $prev, $r,
-      [ vn        => 'Relations',      join => '<br />', split => sub {
+      [ vn         => join => '<br />', split => sub {
         map sprintf('<a href="/v%d" title="%s">%s</a>', $_->{vid}, $_->{original}||$_->{title}, shorten $_->{title}, 50), @{$_[0]};
       } ],
-      [ type      => 'Type',           serialize => sub { mt "_rtype_$_[0]" } ],
-      [ patch     => 'Patch',          serialize => sub { $_[0] ? 'Patch' : 'Not a patch' } ],
-      [ freeware  => 'Freeware',       serialize => sub { $_[0] ? 'yes' : 'nope' } ],
-      [ doujin    => 'Doujin',         serialize => sub { $_[0] ? 'yups' : 'nope' } ],
-      [ title     => 'Title (romaji)', diff => 1 ],
-      [ original  => 'Original title', diff => 1 ],
-      [ gtin      => 'JAN/UPC/EAN',    serialize => sub { $_[0]||'[none]' } ],
-      [ catalog   => 'Catalog number', serialize => sub { $_[0]||'[none]' } ],
-      [ languages => 'Language',       join => ', ', split => sub { map mt("_lang_$_"), @{$_[0]} } ],
-      [ website   => 'Website',        ],
-      [ released  => 'Release date',   htmlize   => sub { $self->{l10n}->datestr($_[0]) } ],
-      [ minage    => 'Age rating',     serialize => sub { $self->{age_ratings}{$_[0]}[0] } ],
-      [ notes     => 'Notes',          diff => 1 ],
-      [ platforms => 'Platforms',      join => ', ', split => sub { map mt("_plat_$_"), @{$_[0]} } ],
-      [ media     => 'Media',          join => ', ', split => sub {
+      [ type       => serialize => sub { mt "_rtype_$_[0]" } ],
+      [ patch      => serialize => sub { $_[0] ? 'Patch' : 'Not a patch' } ],
+      [ freeware   => serialize => sub { $_[0] ? 'yes' : 'nope' } ],
+      [ doujin     => serialize => sub { $_[0] ? 'yups' : 'nope' } ],
+      [ title      => diff => 1 ],
+      [ original   => diff => 1 ],
+      [ gtin       => serialize => sub { $_[0]||'[none]' } ],
+      [ catalog    => serialize => sub { $_[0]||'[none]' } ],
+      [ languages  => join => ', ', split => sub { map mt("_lang_$_"), @{$_[0]} } ],
+      [ 'website' ],
+      [ released   => htmlize   => sub { $self->{l10n}->datestr($_[0]) } ],
+      [ minage     => serialize => sub { $self->{age_ratings}{$_[0]}[0] } ],
+      [ notes      => diff => 1 ],
+      [ platforms  => join => ', ', split => sub { map mt("_plat_$_"), @{$_[0]} } ],
+      [ media      => join => ', ', split => sub {
         map {
           my $med = $self->{media}{$_->{medium}};
           $med->[1] ? sprintf('%d %s%s', $_->{qty}, $med->[0], $_->{qty}>1?'s':'') : $med->[0]
         } @{$_[0]};
       } ],
-      [ resolution => 'Resolution',    serialize => sub { $self->{resolutions}[$_[0]][0] } ],
-      [ voiced    => 'Voiced',         serialize => sub { $self->{voiced}[$_[0]] } ],
-      [ ani_story => 'Story animation',serialize => sub { $self->{animated}[$_[0]] } ],
-      [ ani_ero   => 'Ero animation',  serialize => sub { $self->{animated}[$_[0]] } ],
-      [ producers => 'Producers',      join => '<br />', split => sub {
+      [ resolution => serialize => sub { $self->{resolutions}[$_[0]][0] } ],
+      [ voiced     => serialize => sub { $self->{voiced}[$_[0]] } ],
+      [ ani_story  => serialize => sub { $self->{animated}[$_[0]] } ],
+      [ ani_ero    => serialize => sub { $self->{animated}[$_[0]] } ],
+      [ producers  => join => '<br />', split => sub {
         map sprintf('<a href="/p%d" title="%s">%s</a>', $_->{id}, $_->{original}||$_->{name}, shorten $_->{name}, 50), @{$_[0]};
       } ],
     );

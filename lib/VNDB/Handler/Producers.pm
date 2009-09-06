@@ -33,13 +33,13 @@ sub page {
   if($rev) {
     my $prev = $rev && $rev > 1 && $self->dbProducerGet(id => $pid, rev => $rev-1, what => 'changes extended')->[0];
     $self->htmlRevision('p', $prev, $p,
-      [ type      => 'Type',          serialize => sub { mt "_ptype_$_[0]" } ],
-      [ name      => 'Name (romaji)', diff => 1 ],
-      [ original  => 'Original name', diff => 1 ],
-      [ alias     => 'Aliases',       diff => 1 ],
-      [ lang      => 'Language',      serialize => sub { "$_[0] (".mt("_lang_$_[0]").')' } ],
-      [ website   => 'Website',       diff => 1 ],
-      [ desc      => 'Description',   diff => 1 ],
+      [ type      => serialize => sub { mt "_ptype_$_[0]" } ],
+      [ name      => diff => 1 ],
+      [ original  => diff => 1 ],
+      [ alias     => diff => 1 ],
+      [ lang      => serialize => sub { "$_[0] (".mt("_lang_$_[0]").')' } ],
+      [ website   => diff => 1 ],
+      [ desc      => diff => 1 ],
     );
   }
 

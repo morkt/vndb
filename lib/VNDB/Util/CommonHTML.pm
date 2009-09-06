@@ -319,8 +319,7 @@ sub revheader { # type, obj
 }
 
 sub revdiff {
-  my($i, $type, $old, $new, $short, $name, %o) = @_;
-  # TODO: remove $name, it won't be used
+  my($i, $type, $old, $new, $short, %o) = @_;
 
   $o{serialize} ||= $o{htmlize};
   $o{diff}++ if $o{split};

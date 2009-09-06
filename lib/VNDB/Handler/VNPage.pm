@@ -177,41 +177,41 @@ sub _revision {
   )->[0];
 
   $self->htmlRevision('v', $prev, $v,
-    [ title       => 'Title (romaji)',   diff => 1 ],
-    [ original    => 'Original title',   diff => 1 ],
-    [ alias       => 'Alias',            diff => 1 ],
-    [ desc        => 'Description',      diff => 1 ],
-    [ length      => 'Length',           serialize => sub { $self->{vn_lengths}[$_[0]][0] } ],
-    [ l_wp        => 'Wikipedia link',   htmlize => sub {
+    [ title       => diff => 1 ],
+    [ original    => diff => 1 ],
+    [ alias       => diff => 1 ],
+    [ desc        => diff => 1 ],
+    [ length      => serialize => sub { $self->{vn_lengths}[$_[0]][0] } ],
+    [ l_wp        => htmlize => sub {
       $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink'
     }],
-    [ l_encubed   => 'Encubed tag',      htmlize => sub {
+    [ l_encubed   => htmlize => sub {
       $_[0] ? sprintf '<a href="http://novelnews.net/tag/%s/">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink'
     }],
-    [ l_renai     => 'Renai.us link',    htmlize => sub {
+    [ l_renai     => htmlize => sub {
       $_[0] ? sprintf '<a href="http://renai.us/game/%s.shtml">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink'
     }],
-    [ l_vnn       => 'V-N.net link',     htmlize => sub {
+    [ l_vnn       => htmlize => sub {
       $_[0] ? sprintf '<a href="http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=%d">%1$d</a>', xml_escape $_[0] : mt '_vndiff_nolink'
     }],
-    [ relations   => 'Relations',        join => '<br />', split => sub {
+    [ relations   => join => '<br />', split => sub {
       my @r = map sprintf('%s: <a href="/v%d" title="%s">%s</a>',
         $self->{vn_relations}[$_->{relation}][0], $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
       ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
       return @r ? @r : (mt '_vndiff_none');
     }],
-    [ anime       => 'Anime',            join => ', ', split => sub {
+    [ anime       => join => ', ', split => sub {
       my @r = map sprintf('<a href="http://anidb.net/a%d">a%1$d</a>', $_->{id}), sort { $a->{id} <=> $b->{id} } @{$_[0]};
       return @r ? @r : (mt '_vndiff_none');
     }],
-    [ screenshots => 'Screenshots',      join => '<br />', split => sub {
+    [ screenshots => join => '<br />', split => sub {
       my @r = map sprintf('[%s] <a href="%s/sf/%02d/%d.jpg" rel="iv:%dx%d">%4$d</a> (%s)',
         $_->{rid} ? qq|<a href="/r$_->{rid}">r$_->{rid}</a>| : 'no release',
         $self->{url_static}, $_->{id}%100, $_->{id}, $_->{width}, $_->{height}, $_->{nsfw} ? 'NSFW' : 'Safe'
       ), @{$_[0]};
       return @r ? @r : (mt '_vndiff_none');
     }],
-    [ image       => 'Image',            htmlize => sub {
+    [ image       => htmlize => sub {
       my $url = sprintf "%s/cv/%02d/%d.jpg", $self->{url_static}, $_[0]%100, $_[0];
       if($_[0] > 0) {
         return $_[1]->{img_nsfw} && !$self->authInfo->{show_nsfw} ? "<a href=\"$url\">(NSFW)</a>" : "<img src=\"$url\" />";
@@ -219,7 +219,7 @@ sub _revision {
         return $_[0] < 0 ? '[processing]' : 'No image';
       }
     }],
-    [ img_nsfw    => 'Image NSFW',       serialize => sub { $_[0] ? 'Not safe' : 'Safe' } ],
+    [ img_nsfw    => serialize => sub { $_[0] ? 'Not safe' : 'Safe' } ],
   );
 }
 
