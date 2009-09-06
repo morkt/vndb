@@ -60,9 +60,9 @@ sub page {
         } @{$_[0]};
       } ],
       [ resolution => serialize => sub { $self->{resolutions}[$_[0]][0] } ],
-      [ voiced     => serialize => sub { $self->{voiced}[$_[0]] } ],
-      [ ani_story  => serialize => sub { $self->{animated}[$_[0]] } ],
-      [ ani_ero    => serialize => sub { $self->{animated}[$_[0]] } ],
+      [ voiced     => serialize => sub { mt '_voiced_'.$_[0] } ],
+      [ ani_story  => serialize => sub { mt '_animated_'.$_[0] } ],
+      [ ani_ero    => serialize => sub { mt '_animated_'.$_[0] } ],
       [ producers  => join => '<br />', split => sub {
         map sprintf('<a href="/p%d" title="%s">%s</a>', $_->{id}, $_->{original}||$_->{name}, shorten $_->{name}, 50), @{$_[0]};
       } ],
@@ -172,7 +172,7 @@ sub _infotable {
    if($r->{voiced}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
       td mt '_relinfo_voiced';
-      td $self->{voiced}[$r->{voiced}];
+      td mt '_voiced_'.$r->{voiced};
      end;
    }
 
@@ -180,8 +180,8 @@ sub _infotable {
      Tr ++$i % 2 ? (class => 'odd') : ();
       td mt '_relinfo_ani';
       td join ', ',
-        $r->{ani_story} ? mt('_relinfo_ani_story', $self->{animated}[$r->{ani_story}]):(),
-        $r->{ani_ero}   ? mt('_relinfo_ani_ero',   $self->{animated}[$r->{ani_ero}  ]):();
+        $r->{ani_story} ? mt('_relinfo_ani_story', mt '_animated_'.$r->{ani_story}):(),
+        $r->{ani_ero}   ? mt('_relinfo_ani_ero',   mt '_animated_'.$r->{ani_ero}  ):();
      end;
    }
 
@@ -313,9 +313,9 @@ sub edit {
       { name => 'platforms', required => 0, default => '', multi => 1, enum => $self->{platforms} },
       { name => 'media',     required => 0, default => '' },
       { name => 'resolution',required => 0, default => 0, enum => [ 0..$#{$self->{resolutions}} ] },
-      { name => 'voiced',    required => 0, default => 0, enum => [ 0..$#{$self->{voiced}} ] },
-      { name => 'ani_story', required => 0, default => 0, enum => [ 0..$#{$self->{animated}} ] },
-      { name => 'ani_ero',   required => 0, default => 0, enum => [ 0..$#{$self->{animated}} ] },
+      { name => 'voiced',    required => 0, default => 0, enum => $self->{voiced} },
+      { name => 'ani_story', required => 0, default => 0, enum => $self->{animated} },
+      { name => 'ani_ero',   required => 0, default => 0, enum => $self->{animated} },
       { name => 'producers', required => 0, default => '' },
       { name => 'vn',        maxlength => 5000 },
       { name => 'editsum',   maxlength => 5000 },
@@ -408,11 +408,11 @@ sub _form {
     [ select => short => 'resolution', name => mt('_redit_form_resolution'), options => [
       map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
     [ select => short => 'voiced',     name => mt('_redit_form_voiced'), options => [
-      map [ $_, $self->{voiced}[$_] ], 0..$#{$self->{voiced}} ] ],
+      map [ $_, mt '_voiced_'.$_ ], @{$self->{voiced}} ] ],
     [ select => short => 'ani_story',  name => mt('_redit_form_ani_story'), options => [
-      map [ $_, $self->{animated}[$_] ], 0..$#{$self->{animated}} ] ],
+      map [ $_, mt '_animated_'.$_ ], @{$self->{animated}} ] ],
     [ select => short => 'ani_ero',  name => mt('_redit_form_ani_ero'), options => [
-      map [ $_, $_ ? $self->{animated}[$_] : mt('_redit_form_ani_ero_none') ], 0..$#{$self->{animated}} ] ],
+      map [ $_, $_ ? mt '_animated_'.$_ : mt('_redit_form_ani_ero_none') ], @{$self->{animated}} ] ],
     [ static => content => mt('_redit_form_ani_ero_note') ],
     [ hidden => short => 'media' ],
     [ static => nolabel => 1, content => sub {

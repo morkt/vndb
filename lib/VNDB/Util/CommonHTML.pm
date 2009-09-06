@@ -436,7 +436,7 @@ sub htmlVoteStats {
     end; end;
     tfoot; Tr;
      td colspan => 2, sprintf '%d vote%s total, average %.2f%s', $count, $count != 1 ? 's' : '', $total/$count,
-       $type eq 'v' ? ' ('.$self->{votes}[ceil($total/$count-1)].')' : '';
+       $type eq 'v' ? ' ('.mt('_vote_'.ceil($total/$count-1)).')' : '';
     end; end;
     for (reverse 0..$#$stats) {
       Tr;

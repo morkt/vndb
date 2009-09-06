@@ -325,7 +325,7 @@ sub _useroptions {
       Select id => 'votesel';
        option $vote ? mt '_vnpage_uopt_voted', $vote->{vote} : mt '_vnpage_uopt_novote';
        optgroup label => $vote ? mt '_vnpage_uopt_changevote' : mt '_vnpage_uopt_dovote';
-        option value => $_, "$_ ($self->{votes}[$_-1])" for (reverse 1..10);
+        option value => $_, "$_ (".mt("_vote_$_").')' for (reverse 1..10);
        end;
        option value => -1, mt '_vnpage_uopt_delvote' if $vote;
       end;

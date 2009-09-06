@@ -338,6 +338,95 @@ en : Users
 ru : Пользователи
 
 
+# 'Voiced' information for releases
+
+:_voiced_0
+en : Unknown
+ru*:
+
+:_voiced_1
+en : Not voiced
+ru*:
+
+:_voiced_2
+en : Only ero scenes voiced
+ru*:
+
+:_voiced_3
+en : Partially voiced
+ru*:
+
+:_voiced_4
+en : Fully voiced
+ru*:
+
+
+# 'Animated' information for releases
+
+:_animated_0
+en : Unknown
+ru*:
+
+:_animated_1
+en : No animations
+ru*:
+
+:_animated_2
+en : Simple animations
+ru*:
+
+:_animated_3
+en : Some fully animated scenes
+ru*:
+
+:_animated_4
+en : All scenes fully animated
+ru*:
+
+
+# Rating indications
+
+:_vote_1
+en : worst ever
+ru*:
+
+:_vote_2
+en : awful
+ru*:
+
+:_vote_3
+en : bad
+ru*:
+
+:_vote_4
+en : weak
+ru*:
+
+:_vote_5
+en : so-so
+ru*:
+
+:_vote_6
+en : decent
+ru*:
+
+:_vote_7
+en : good
+ru*:
+
+:_vote_8
+en : very good
+ru*:
+
+:_vote_9
+en : excellent
+ru*:
+
+:_vote_10
+en : masterpiece
+ru*:
+
+
 
 
 #############################################################################
@@ -1107,7 +1196,7 @@ ru : Патч
 en : Freeware
 ru : Freeware
 
-:_revfield_r_doujijn
+:_revfield_r_doujin
 en : Doujin
 ru : Додзинси
 
