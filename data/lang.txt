@@ -336,215 +336,215 @@ ru : Пользователи
 
 :_wish_0
 en : high
-ru*:
+ru : высокий
 
 :_wish_1
 en : medium
-ru*:
+ru : средний
 
 :_wish_2
 en : low
-ru*:
+ru : низкий
 
 :_wish_3
 en : blacklist
-ru*:
+ru : в чёрном списке
 
 
 # 'Voiced' information for releases
 
 :_voiced_0
 en : Unknown
-ru*:
+ru : Неизвестно
 
 :_voiced_1
 en : Not voiced
-ru*:
+ru : Нет озвучки
 
 :_voiced_2
 en : Only ero scenes voiced
-ru*:
+ru : Озвучены лишь эросцены
 
 :_voiced_3
 en : Partially voiced
-ru*:
+ru : Частичная озвучка
 
 :_voiced_4
 en : Fully voiced
-ru*:
+ru : Озвучено целиком
 
 
 # 'Animated' information for releases
 
 :_animated_0
 en : Unknown
-ru*:
+ru : Неизвестно
 
 :_animated_1
 en : No animations
-ru*:
+ru : Без анимации
 
 :_animated_2
 en : Simple animations
-ru*:
+ru : Простая анимация
 
 :_animated_3
 en : Some fully animated scenes
-ru*:
+ru : Некоторые сцены анимированы целиком
 
 :_animated_4
 en : All scenes fully animated
-ru*:
+ru : Все сцены полностью анимированы
 
 
 # Rating indications
 
 :_vote_1
 en : worst ever
-ru*:
+ru : хуже некуда
 
 :_vote_2
 en : awful
-ru*:
+ru : ужасно
 
 :_vote_3
 en : bad
-ru*:
+ru : плохо
 
 :_vote_4
 en : weak
-ru*:
+ru : слабо
 
 :_vote_5
 en : so-so
-ru*:
+ru : так себе
 
 :_vote_6
 en : decent
-ru*:
+ru : неплохо
 
 :_vote_7
 en : good
-ru*:
+ru : хорошо
 
 :_vote_8
 en : very good
-ru*:
+ru : здорово
 
 :_vote_9
 en : excellent
-ru*:
+ru : отлично
 
 :_vote_10
 en : masterpiece
-ru*:
+ru : шедевр
 
 
 # Form messages
 
 :_formerr_e_login_failed
 en : Invalid username or password
-ru*:
+ru : Некорректное имя пользователя или пароль
 
 :_formerr_e_nomail
 en : No user found with that email address
-ru*:
+ru : Пользователя с такой электронной почтой не существует
 
 :_formerr_e_passmatch
 en : Passwords do not match
-ru*:
+ru : Пароли не совпадают
 
 :_formerr_e_usrexists
 en : Someone already has this username, please choose something else
-ru*:
+ru : Кто-то уже зарегистрировал такой ник, пожалуйста выберите другой
 
 :_formerr_e_mailexists
 en : Someone already registered with that email address
-ru*:
+ru : Кто-то уже регистрировался с таким адресом электронной почты
 
 :_formerr_e_noimage
 en : Image must be in JPEG or PNG format
-ru*:
+ru : Изображение должно быть в формате JPEG, либо в формате PNG
 
 :_formerr_e_toolarge
 en : Image is too large, only 500kB allowed
-ru*:
+ru : Изображение слишком большое, 500 кб - максимально допустимый предел
 
 :_formerr_e_oneaday
 en : You can only register one account from the same IP within 24 hours
-ru*:
+ru : Вы можете зарегистрировать учётную запись с одного и того же IP лишь по прошествии 24 часов
 
 :_formerr_e_nochanges
 en : No changes, please don't create an entry that is fully identical to another
-ru*:
+ru : Изменения отсутствуют, пожалуйста не создавайте идентичных копий записей
 
 :_formerr_e_doublepost
 en : Please wait 30 seconds before making another post
-ru*:
+ru : Прежде чем публиковать очередное сообщение, пожалуйста подождите 30 секунд
 
 :_formerr_title
 en : Error
-ru*:
+ru : Ошибка
 
 :_formerr_subtitle
 en : Form could not be sent:
-ru*:
+ru : Невозможно отправить форму:
 
 :_formerr_required
 en : [_1] is a required field!
-ru*:
+ru : [_1] - обязательное поле!
 
 :_formerr_minlength
 en : [_1]: should have at least [_2] characters
-ru*:
+ru : [_1]: [quant,_2,необходим,необходимы,необходимо] хотя бы [_2] [quant,_2,символ,символа,символов]
 
 :_formerr_maxlength
 en : [_1]: only [_2] characters allowed
-ru*:
+ru : [_1]: [quant,_2,разрешён,разрешены,разрешено] лишь [_2] [quant,_2,символ,символа,символов]
 
 :_formerr_enum
 en : [_1] must be one of the following: [_2]
-ru*:
+ru : Поле '[_1]' должно равняться одному из следующих значений: [_2]
 
 :_formerr_wrongboard
 en : Wrong board: [_1]
-ru*:
+ru : Некорректная ветка: [_1]
 
 :_formerr_tagexists
 en : Tag [url,_1,_2] already exists!
-ru*:
+ru : Тег [url,_1,_2] уже существует!
 
 :_formerr_tpl_mail
 en : Invalid email address
-ru*:
+ru : Некорректный адрес электронной почты
 
 :_formerr_tpl_url
 en : [_1]: Invalid URL
-ru*:
+ru : [_1]: Некорректная ссылка
 
 :_formerr_tpl_asciiprint
 en : [_1] may only contain ASCII characters
-ru*:
+ru : Поле '[_1]' может содержать лишь символы диапазона ASCII
 
 :_formerr_tpl_int
 en : [_1]: Not a valid number
-ru*:
+ru : [_1]: Не является правильным числом
 
 :_formerr_tpl_pname
-en : [_1] can only contain lowercase alphanumberic characters and a hyphen, and must start with a character
-ru*:
+en : [_1] can only contain lowercase alphanumeric characters and a hyphen, and must start with a character
+ru : Поле '[_1]' может содержать лишь символы буквенно-цифрового диапазона в нижнем регистре и чёрточку, а так же начинаться с буквы
 
 :_form_tab_all
 en : All items
-ru*:
+ru : Все поля
 
 :_form_editsum
 en : Edit summary
-ru*:
+ru : Суммарно о правке
 
 :_form_submit
 en : Submit
-ru*:
+ru : Отправить
 
 
 
@@ -656,12 +656,12 @@ ru : Выйти
 # used for both the box title and submit button
 :_menu_login
 en : Login
-ru : Войти
+ru : Вход
 
 :_menu_loginmsg
 en : Need to [url,_1,register],[br]
      or [url,_2,forgot your password]?
-ru : Хотите [url,_1,зарегистрироваться],[br]
+ru : Нужна [url,_1,регистрация],[br]
      или [url,_2,забыли свой пароль]?
 
 # database statistics
@@ -1072,7 +1072,7 @@ ru : Правка сообщения
 
 :_postedit_form_username
 en : Username
-ru : Ник
+ru : Имя пользователя
 
 :_postedit_form_title
 en : Thread title
@@ -1753,7 +1753,7 @@ ru : Языки
 
 :_rbrowse_boolor
 en : boolean or, selecting more gives more results
-ru : булевое 'или', чем больше выбирано, тем больше даёт результатов
+ru : булевое 'или', чем больше выбрано, тем больше даёт результатов
 
 :_rbrowse_platforms
 en : Platforms
@@ -2035,7 +2035,7 @@ ru : Пожалуйста, убедитесь что прочли [url,/d10,ре
 
 :_tagv_msg_submit
 en : Don't forget to hit the submit button on the bottom of the page to make your changes permanent.
-ru : Не забудьте нажать кнопку "Отправить", иначе изменения не вступят в силу.
+ru : Не забудьте сохранить изменения, нажав соответствующую кнопку в низу страницы, иначе они не вступят в силу.
 
 :_tagv_msg_cache
 en : Some tag information on the site is cached, it can take up to an hour for your changes to be visible everywhere.
@@ -2170,98 +2170,98 @@ ru : Отклонённые теги
 
 :_wishlist_title_my
 en : My wishlist
-ru*:
+ru : Мой список желаемого
 
 :_wishlist_title_other
 en : [_1]'s wishlist
-ru*:
+ru : Список желаемого [_1]
 
 :_wishlist_noresults
 en : Wishlist empty...
-ru*:
+ru : Список пуст...
 
 :_wishlist_prio_all
 en : All priorities
-ru*:
+ru : Все приоритеты
 
 :_wishlist_col_title
 en : Title
-ru*:
+ru : Название
 
 :_wishlist_col_prio
 en : Priority
-ru*:
+ru : Приоритет
 
 :_wishlist_col_added
 en : Added
-ru*:
+ru : Добавлено
 
 :_wishlist_select
 en : -- with selected --
-ru*:
+ru : -- с выбранными --
 
 :_wishlist_changeprio
 en : Change priority
-ru*:
+ru : Изменить приоритет
 
 :_wishlist_remove
 en : remove from wishlist
-ru*:
+ru : убрать из списка желаемого
 
 
 # VN list (/u+/list)
 
 :_rlist_title_my
 en : My visual novel list
-ru*:
+ru : Мой список новелл
 
 :_rlist_title_other
 en : [_1]'s visual novel list
-ru*:
+ru : Список новелл [_1]
 
 :_rlist_voted_all
 en : All
-ru*:
+ru : Все
 
 :_rlist_voted_only
 en : Only voted
-ru*:
+ru : Проголосованные
 
 :_rlist_voted_none
 en : Hide voted
-ru*:
+ru : Скрыть проголосованные
 
 :_rlist_col_title
 en : Title
-ru*:
+ru : Название
 
 :_rlist_col_releases
 en : Releases
-ru*:
+ru : Выпуски
 
 :_rlist_col_vote
 en : Vote
-ru*:
+ru : Голос
 
 :_rlist_selection
 en : -- with selected --
-ru*:
+ru : -- с выбранными --
 
 :_rlist_changerel
 en : Change release status
-ru*:
+ru : Смена статуса выпуска
 
 :_rlist_changeplay
 en : Change play status
-ru*:
+ru : Смена статуса игры
 
 :_rlist_del
 en : remove from list
-ru*:
+ru : убрать из списка
 
 :_rlist_releasenote
 en : * Obtained/finished/total
-ru*:
+ru : * Приобретено/прочитано/всего
 
 
 
@@ -2276,90 +2276,90 @@ ru*:
 
 :_userpage_title
 en : [_1]'s profile
-ru*:
+ru : Учётная запись [_1]
 
 :_userpage_username
 en : Username
-ru*:
+ru : Имя пользователя
 
 :_userpage_registered
 en : Registered
-ru*:
+ru : Регистрация
 
 :_userpage_edits
 en : Edits
-ru*:
+ru : Правки
 
 :_userpage_votes
 en : Votes
-ru*:
+ru : Отдано голосов
 
 :_userpage_votes_item
 en : [url,_1,_2] ([_3] average)
-ru*:
+ru : [url,_1,_2] ([_3] в среднем)
 
 :_userpage_hidden
 en : hidden
-ru*:
+ru : скрыто
 
 :_userpage_tags
 en : Tags
-ru*:
+ru : Теги
 
 :_userpage_tags_item
 en : [_1] [quant,_1,vote,votes] on [_2] distinct [quant,_2,tag,tags] and [_3] visual [quant,_3,novel,novels]
-ru*:
+ru : [_1] [quant,_1,голос,голоса,голосов] по [_2][quant,_2,-у тегу,-м различным тегам,-и различным тегам] и [_3][quant,_3,-й новелле,-м новеллам,-и новеллам]
 
 :_userpage_list
 en : List stats
-ru*:
+ru : Статистика по спискам
 
 :_userpage_list_item
 en : [_1] [quant,_1,release,releases] of [_2] visual [quant,_2,novel,novels]
-ru*:
+ru : [_1] [quant,_1,выпуск,выпуска,выпусков] [_2][quant,_2,-й новеллы,-х новелл,-и новелл]
 
 :_userpage_forum
 en : Forum stats
-ru*:
+ru : Статистика по форуму
 
 :_userpage_forum_item
 en : [_1] [quant,_1,post,posts], [_2] new [quant,_2,thead,threads].
-ru*:
+ru : [_1] [quant,_1,сообщение,сообщения,сообщений], [_2] [quant,_2,новая тема,новые темы,новых тем]
 
 :_userpage_forum_browse
 en : Browse posts
-ru*:
+ru : Обзор сообщений
 
 :_userpage_votestats
 en : Vote statistics
-ru*:
+ru : Статистика по голосованиям
 
 :_userpage_changes
 en : Recent changes
-ru*:
+ru : Свежие правки
 
 
 # Login form (/u/login)
 
 :_login_title
 en : Login
-ru*:
+ru : Вход
 
 :_login_username
 en : Username
-ru*:
+ru : Имя пользователя
 
 :_login_register
 en : No account yet?
-ru*:
+ru : Нет учётной записи?
 
 :_login_password
 en : Password
-ru*:
+ru : Пароль
 
 :_login_forgotpass
 en : Forgot your password?
-ru*:
+ru : Забыли пароль?
 
 
 # Reset password (/u/newpass)
@@ -2376,55 +2376,69 @@ en : Hello [_1]
      Now don't forget your password again! :-)
 
      vndb.org
-ru*:
+ru : Привет, [_1]
 
+     Ваш пароль был сброшен, теперь вы можете пройти авторизацию на http://vndb.org/
+     со следующими данными:
+
+     Имя пользователя: [_1]
+     Ваш новый пароль: [_2]
+
+     Постарайтесь больше не забывать свой пароль! :-)
+
+     vndb.org
 :_newpass_mail_subject
 en : New password for [_1]
-ru*:
+ru : Новый пароль для [_1]
 
 :_newpass_title
 en : Forgot password
-ru*:
+ru : Забытый пароль
 
 :_newpass_msg
 en : Forgot your password and can't login to VNDB anymore?
      Don't worry! Just give us the email address you used to register on VNDB,
      and we'll send you a new password within a few minutes!
-ru*:
+ru : Забыли пароль и больше не можете авторизоваться на VNDB?
+     Без паники! Всё что вам нужно - указать адрес электронной почты, который
+     вы использовали для регистрации в VNDB, и мы вышлем вам новый пароль за
+     считанные минуты!
 
 :_newpass_reset_title
 en : Reset password
-ru*:
+ru : Сброс пароля
 
 :_newpass_mail
 en : Email
-ru*:
+ru : E-mail
 
 :_newpass_sent_title
 en : New password
-ru*:
+ru : Новый пароль
 
 :_newpass_sent_subtitle
 en : Password reset
-ru*:
+ru : Сбросить пароль
 
 :_newpass_sent_msg
 en : Your password has been reset and your new password should reach your mailbox in a few minutes.[br]
      You can always change your password again after logging in.[br]
      [br]
      [url,/u/login,Login] - [url,/,Home]
-ru*:
-
+ru : Ваш пароль был сброшен. Через несколько минут на ваш ящик прибудет письмо с новым паролем.[br]
+     Вы всегда можете изменить пароль после того как прошли авторизацию.[br]
+     [br]
+     [url,/u/login,Вход] - [url,/,Главная]
 
 # Register new account (/u/register)
 
 :_register_title
 en : Create an account
-ru*:
+ru : Создание учётной записи
 
 :_register_why
 en : Why should I register?
-ru*:
+ru : Для чего нужна регистрация?
 
 :_register_why_msg
 en : Creating an account is completely painless, the only thing we need to know is your prefered username
@@ -2437,153 +2451,163 @@ en : Creating an account is completely painless, the only thing we need to know 
      - Keep track of all visual novels and releases you have, you'd like to play, are playing, or have finished playing[br]
      - Vote on the visual novels you liked or disliked[br]
      - Contribute to the discussions on the boards
-ru*:
+ru : Создание учётной записи совершенно безопасно. Единственное, что нам от вас требуется - желаемое имя
+     пользователя и пароль. Вы можете ввести любой, даже абсолютно "левый", адрес электронной почты, поскольку
+     мы даже не проверяем его подлинность. Однако, помните что если вы ненароком забудете свой пароль, да ещё
+     и ввели неправильный адрес...[br]
+     [br]
+     В общем, наличие учётной записи здесь даёт несколько преимуществ перед простыми посетителями:[br]
+     - Вы можете помогать базе развиваться, редактируя любые страницы и добавляя новые[br]
+     - Следить за всеми новеллами и выпусками, которые у вас есть, в которые вы бы хотели сыграть, в которые играете, либо уже доиграли[br]
+     - Голосовать за понравившиеся или, наоборот, не понравившиеся новеллы[br]
+     - Вступать в обсуждения на ветках форума
 
 :_register_form_title
 en : New account
-ru*:
+ru : Новая учётная запись
 
 :_register_username
 en : Username
-ru*:
+ru : Имя пользователя
 
 :_register_username_msg
 en : Requested username. Must be lowercase and can only consist of alphanumeric characters.
-ru*:
+ru : Запрашиваемое имя пользователя. Должно состоять из буквенно-цифровых символов в нижнем регистре.
 
 :_register_mail
 en : Email
-ru*:
+ru : E-mail
 
 :_register_mail_msg
 en : Your email address will only be used in case you lose your password. We will never send
      spam or newsletters unless you explicitly ask us for it.
-ru*:
+ru : Адрес вашей электронной почты будет использоваться лишь в случае утери пароля. Мы никогда не
+     пришлём вам спама или новостных рассылок, пока вы недвусмысленно не попросите об обратном.
 
 :_register_password
 en : Password
-ru*:
+ru : Пароль
 
 :_register_confirm
 en : Confirm password
-ru*:
+ru : Подтверждение пароля
 
 
 # User edit (/u+/edit)
 
 :_usere_title
 en : My account
-ru*:
+ru : Моя учётная запись
 
 :_usere_saved_title
 en : Settings saved
-ru*:
+ru : Параметры сохранены
 
 :_usere_saved_msg
 en : Settings successfully saved.
-ru*:
+ru : Параметры успешно сохранены.
 
 :_usere_geninfo
 en : General info
-ru*:
+ru : Основная информация
 
 :_usere_username
 en : Username
-ru*:
+ru : Имя пользователя
 
 :_usere_rank
 en : Rank
-ru*:
+ru : Ранг
 
 :_usere_ignvotes
 en : Ignore votes in VN statistics
-ru*:
+ru : Игнорировать голосования в статистике новелл
 
 :_usere_mail
 en : Email
-ru*:
+ru : E-mail
 
 :_usere_changepass
 en : Change password
-ru*:
+ru : Смена пароля
 
 :_usere_changepass_msg
 en : Leave blank to keep your current password
-ru*:
+ru : Оставьте пустым чтобы сохранить текущий пароль
 
 :_usere_password
 en : Password
-ru*:
+ru : Пароль
 
 :_usere_confirm
 en : Confirm password
-ru*:
+ru : Подтверждение пароля
 
 :_usere_options
 en : Options
-ru*:
+ru : Настройки
 
 :_usere_flist
 en : Allow other people to see my visual novel list ([url,_1,_1]) and wishlist ([url,_2,_2])
-ru*:
+ru : Разрешить остальным видеть мой список новелл ([url,_1,_1]) и список желаемого ([url,_2,_2])
 
 :_usere_fnsfw
 en : Disable warnings for images that are not safe for work.
-ru*:
+ru : Отключить предупреждения для небезопасных изображений.
 
 :_usere_skin
 en : Prefered skin
-ru*:
+ru : Предпочитаемая шкурка
 
 :_usere_css
 en : Additional [url,http://en.wikipedia.org/wiki/Cascading_Style_Sheets,CSS]
-ru*:
+ru : Дополнительный [url,http://en.wikipedia.org/wiki/Cascading_Style_Sheets,CSS]
 
 
 # Users posts (/u+/posts)
 
 :_uposts_title
 en : Posts made by [_1]
-ru*:
+ru : Сообщения [_1]
 
 :_uposts_noresults
 en : [_1] hasn't made any posts yet.
-ru*:
+ru : [_1] пока не имеет сообщений.
 
 :_uposts_col_date
 en : Date
-ru*:
+ru : Дата
 
 :_uposts_col_title
 en : Title
-ru*:
+ru : Название
 
 
 # User list (/u/all)
 
 :_ulist_title
 en : Browse users
-ru*:
+ru : Обзор пользователей
 
 :_ulist_col_username
 en : Username
-ru*:
+ru : Имя пользователя
 
 :_ulist_col_registered
 en : Registered
-ru*:
+ru : Регистрация
 
 :_ulist_col_votes
 en : Votes
-ru*:
+ru : Отдано голосов
 
 :_ulist_col_edits
 en : Edits
-ru*:
+ru : Правок
 
 :_ulist_col_tags
 en : Tags
-ru*:
+ru : Тегов
 
 
 
@@ -2599,201 +2623,209 @@ ru*:
 
 :_vnbrowse_title
 en : Browse visual novels
-ru*:
+ru : Обзор интерактивных новелл
 
 :_vnbrowse_col_score
 en : Score
-ru*:
+ru : Рейтинг
 
 :_vnbrowse_col_title
 en : Title
-ru*:
+ru : Название
 
 :_vnbrowse_col_released
 en : Released
-ru*:
+ru : Выпуск
 
 :_vnbrowse_col_popularity
 en : Popularity
-ru*:
+ru : Популярность
 
 :_vnbrowse_tagign_title
 en : The following tags were ignored:
-ru*:
+ru : Следующие теги были пропущены:
 
 :_vnbrowse_tagign_meta
 en : can't filter on meta tags
-ru*:
+ru : фильтрация мета-тегов невозможна
 
 :_vnbrowse_tagign_notfound
 en : no such tag found
-ru*:
+ru : тег не найден
 
 :_vnbrowse_advsearch
 en : advanced search
-ru*:
+ru : расширенный поиск
 
 :_vnbrowse_tags
 en : Tag filters
-ru*:
+ru : Фильтры тегов
 
 :_vnbrowse_booland
 en : boolean and, selecting more gives less results
-ru*:
+ru : булевое 'и', чем больше выбрано, тем меньше даёт результатов
 
 :_vnbrowse_taginc
 en : Tags to include
-ru*:
+ru : Включить теги
 
 :_vnbrowse_tagexc
 en : Tags to exclude
-ru*:
+ru : Исключить теги
 
 :_vnbrowse_spoil0
 en : Hide spoilers
-ru*:
+ru : Скрыть спойлеры
 
 :_vnbrowse_spoil1
 en : Show minor spoilers
-ru*:
+ru : Показать лёгкие спойлеры
 
 :_vnbrowse_spoil2
 en : Show major spoilers
-ru*:
+ru : Показать жёсткие спойлеры
 
 :_vnbrowse_lang
 en : Languages
-ru*:
+ru : Языки
 
 :_vnbrowse_boolor
 en : boolean or, selecting more gives more results
-ru*:
+ru : булевое 'или', чем больше выбрано, тем больше даёт результатов
 
 :_vnbrowse_plat
 en : Platforms
-ru*:
+ru : Платформы
 
 :_vnbrowse_apply
 en : Apply
-ru*:
+ru : Применить
 
 :_vnbrowse_clear
 en : Clear
-ru*:
+ru : Очистить
 
 
 # VN add/edit form (/v+/edit)
 
 :_vnedit_title_edit
 en : Edit [_1]
-ru*:
+ru : Правка [_1]
 
 :_vnedit_title_add
 en : Add a new visual novel
-ru*:
+ru : Добавление новой новеллы
 
 :_vnedit_geninfo
 en : General info
-ru*:
+ru : Основная информация
 
 :_vnedit_frm_title
 en : Title (romaji)
-ru*:
+ru : Название (ромадзи)
 
 :_vnedit_original
 en : Original title
-ru*:
+ru : Оригинальное название
 
 :_vnedit_original_msg
 en : The original title of this visual novel, leave blank if it already is in the Latin alphabet.
-ru*:
+ru : Оригинальное название данной новеллы, оставьте пустым если уже набрано в латинском алфавите.
 
 :_vnedit_alias
 en : Aliases
-ru*:
+ru : Прочие названия
 
 :_vnedit_alias_msg
 en : Comma seperated list of alternative titles or abbreviations. Can include both official
      (japanese/english) titles and unofficial titles used around net.[br]
      Titles that are listed in the releases should not be added here!
-ru*:
+ru : Список альтернативных названий или аббревиатур, перечисленных через запятую. Может включать как
+     официальные (японские/английские/русские) названия, так и неофициальные, имеющие хождение в сети.[br]
+     Не следует добавлять сюда названия, указанные в выпусках!
 
 :_vnedit_desc
 en : Description
-ru*:
+ru : Описание
 
 :_vnedit_desc_msg
 en : Short description of the main story. Please do not include spoilers, and don't forget to list
      the source in case you didn't write the description yourself. (formatting codes are allowed)
-ru*:
+ru : Краткое описание главной сюжетной линии. Пожалуйста, не вносите сюда спойлеры, а так же не
+     забывайте указать источник описания, если не являетесь его автором. (коды форматирования разрешены)
 
 :_vnedit_length
 en : Length
-ru*:
+ru : Длина
 
 :_vnedit_links
 en : External links
-ru*:
+ru : Внешние ссылки
 
 :_vnedit_anime
 en : Anime
-ru*:
+ru : Аниме
 
 :_vnedit_anime_msg
 en : Whitespace seperated list of [url,http://anidb.net/,AniDB] anime IDs.
      E.g. "1015 3348" will add [url,http://anidb.net/a1015,Shingetsutan Tsukihime]
      and [url,http://anidb.net/a3348,Fate/stay night] as related anime.[br]
      Note: It can take a few minutes for the anime titles to appear on the VN page.
-ru*:
+ru : Список идентификаторов аниме по [url,http://anidb.net/,AniDB], разделённых пробелами.
+     Например, "1015 3348" добавит связь с аниме [url,http://anidb.net/a1015,Shingetsutan Tsukihime]
+     и [url,http://anidb.net/a3348,Fate/stay night].[br]
+     Замечание: появление названия аниме на странице новеллы может занять несколько минут.
 
 :_vnedit_image
 en : Image
-ru*:
+ru : Изображение
 
 :_vnedit_image_none
 en : No image uploaded yet
-ru*:
+ru : Изображения пока нет
 
 :_vnedit_image_processing
 en : ~[processing image, please return in a few minutes~]
-ru*:
+ru : ~[обработка изображения, пожалуйста подождите несколько минут~]
 
 :_vnedit_image_upload
 en : Upload new image
-ru*:
+ru : Загрузить новое изображение
 
 :_vnedit_image_upload_msg
 en : Preferably the cover of the CD/DVD/package. Image must be in JPEG or PNG format
      and at most 500kB. Images larger than 256x400 will automatically be resized.
-ru*:
+ru : Желательно, обложка CD/DVD/коробки. Изображение должно быть в формате JPEG, либо в
+     формате PNG, и весить не более 500 Кб. Изображения размером более 256 на 400 точек
+     будут автоматически уменьшены.
 
 :_vnedit_image_nsfw
 en : NSFW
-ru*:
+ru : НБДР (NSFW)
 
 :_vnedit_image_nsfw_check
 en : Not Safe For Work
-ru*:
+ru : Не безопасно для работы
 
 :_vnedit_image_nsfw_msg
 en : Please check this option if the image contains nudity, gore, or is otherwise not safe in a work-friendly environment.
-ru*:
+ru : Пожалуйста, поставьте эту галочку если изображение содержит наготу, кровищу, либо тем или иным образом не безопасно для рабочего окружения.
 
 :_vnedit_rel
 en : Relations
-ru*:
+ru : Связи
 
 :_vnedit_rel_sel
 en : Selected relations
-ru*:
+ru : Выбранные связи
 
 :_vnedit_rel_add
 en : Add relation
-ru*:
+ru : Добавить связь
 
 :_vnedit_scr
 en : Screenshots
-ru*:
+ru : Скриншоты
 
 :_vnedit_scr_msg
 en : Please keep the following in mind when uploading screenshots:[br]
@@ -2802,276 +2834,281 @@ en : Please keep the following in mind when uploading screenshots:[br]
      - Don't only upload event CGs.[br]
      Please read the [url,/d2#6,guidelines] for more information.[br]
      Make sure to submit the form after the upload has finished!
-ru*:
+ru : Когда загружаете скриншоты, пожалуйста помните:[br]
+     - Они должны быть исходного размера игры,[br]
+     - На изображении не должно быть "водяных знаков", а так же границ и заголовка окна,[br]
+     - Старайтесь загружать не только одни сюжетные картинки.[br]
+     За подробностями обращайтесь к [url,/d2#6,рекомендациям].[br]
+     Не забудьте сохранить изменения когда закончите загружать изображения!
 
 
 # VN Relation graph page (/v+/rg)
 
 :_vnrg_title
 en : Relation graph for [_1]
-ru*:
+ru : Схема связей для [_1]
 
 
 # VN Diff viewer (/v+.+)
 
 :_revfield_v_title
 en : Title (romaji)
-ru*:
+ru : Название (ромадзи)
 
 :_revfield_v_original
 en : Original title
-ru*:
+ru : Оригинальное название
 
 :_revfield_v_alias
 en : Alias
-ru*:
+ru : Прочие названия
 
 :_revfield_v_desc
 en : Description
-ru*:
+ru : Описание
 
 :_revfield_v_length
 en : Length
-ru*:
+ru : Длина
 
 :_vndiff_nolink
 en : ~[no link~]
-ru*:
+ru : ~[нет ссылки~]
 
 :_vndiff_none
 en : ~[none~]
-ru*:
+ru : ~[пусто~]
 
 :_revfield_v_l_wp
 en : Wikipedia link
-ru*:
+ru : Ссылка Википедии
 
 :_revfield_v_l_encubed
 en : Encubed tag
-ru*:
+ru : Тег Encubed'а
 
 :_revfield_v_l_renai
 en : Renai.us link
-ru*:
+ru : Ссылка Renai.us
 
 :_revfield_v_l_vnn
 en : V-N.net link
-ru*:
+ru : Ссылка V-N.net
 
 :_revfield_v_relations
 en : Relations
-ru*:
+ru : Связи
 
 :_revfield_v_anime
 en : Anime
-ru*:
+ru : Аниме
 
 :_revfield_v_screenshots
 en : Screenshots
-ru*:
+ru : Скриншоты
 
 :_revfield_v_image
 en : Image
-ru*:
+ru : Изображение
 
 :_vndiff_image_nsfw
 en : (NSFW)
-ru*:
+ru : (НБДР|NSFW)
 
 :_vndiff_image_proc
 en : ~[processing~]
-ru*:
+ru : ~[обработка~]
 
 :_vndiff_image_none
 en : No image
-ru*:
+ru : Нет изображения
 
 :_revfield_v_img_nsfw
 en : Image NSFW
-ru*:
+ru : Изображение НБДР (NSFW)
 
 :_vndiff_nsfw_safe
 en : Safe
-ru*:
+ru : Безопасно
 
 :_vndiff_nsfw_notsafe
 en : Not safe
-ru*:
+ru : Не безопасно
 
 
 # VN page (/v+)
 
 :_vnpage_noimg
 en : No image uploaded yet
-ru*:
+ru : Нет загруженного изображения
 
 :_vnpage_imgproc
 en : ~[processing image, please return in a few minutes~]
-ru*:
+ru : ~[идёт обработка изображения, подождите несколько минут~]
 
 :_vnpage_imgnsfw_msg
 en : This image has been flagged as Not Safe For Work.
-ru*:
+ru : Данное изображение помечено как не безопасное для работы.
 
 :_vnpage_imgnsfw_show
 en : Show me anyway
-ru*:
+ru : Всё равно показать
 
 :_vnpage_imgnsfw_note
 en : (This warning can be disabled in your account)
-ru*:
+ru : (Это предупреждение можно отключить в настройках вашей учётной записи)
 
 :_vnpage_imgnsfw_foot
 en : Flagged as NSFW
-ru*:
+ru : Помечено как НБДР (NSFW)
 
 :_vnpage_vntitle
 en : Title
-ru*:
+ru : Название
 
 :_vnpage_original
 en : Original title
-ru*:
+ru : Оригинальное название
 
 :_vnpage_alias
 en : Aliases
-ru*:
+ru : Прочие названия
 
 :_vnpage_length
 en : Length
-ru*:
+ru : Длина
 
 :_vnpage_links
 en : Links
-ru*:
+ru : Ссылки
 
 :_vnpage_description
 en : Description
-ru*:
+ru : Описание
 
 :_vnpage_tags_spoil0
 en : hide spoilers
-ru*:
+ru : скрыть спойлеры
 
 :_vnpage_tags_spoil1
 en : show minor spoilers
-ru*:
+ru : показать лёгкие спойлеры
 
 :_vnpage_tags_spoil2
 en : spoil me!
-ru*:
+ru : показать все!
 
 :_vnpage_tags_summary
 en : summary
-ru*:
+ru : суммарно
 
 :_vnpage_tags_all
 en : all
-ru*:
+ru : все
 
 :_vnpage_producers
 en : Producers
-ru*:
+ru : Компании
 
 :_vnpage_relations
 en : Relations
-ru*:
+ru : Связи
 
 :_vnpage_anime
 en : Related anime
-ru*:
+ru : Связанное аниме
 
 :_vnpage_anime_noinfo
 en : ~[no information available at this time: [url,_2,_1]~]
-ru*:
+ru : ~[к сожалению, пока никакой информации: [url,_2,_1]~]
 
 :_vnpage_uopt
 en : User options
-ru*:
+ru : Настройки пользователя
 
 :_vnpage_uopt_voted
 en : your vote: [_1]
-ru*:
+ru : ваш голос: [_1]
 
 :_vnpage_uopt_novote
 en : not voted yet
-ru*:
+ru : пока без голоса
 
 :_vnpage_uopt_changevote
 en : Change vote
-ru*:
+ru : Переголосовать
 
 :_vnpage_uopt_dovote
 en : Vote
-ru*:
+ru : Голосовать
 
 :_vnpage_uopt_delvote
 en : revoke
-ru*:
+ru : снять голос
 
 :_vnpage_uopt_wishlisted
 en : wishlist: [_1]
-ru*:
+ru : список желаемого: [_1]
 
 :_vnpage_uopt_nowish
 en : not on your wishlist
-ru*:
+ru : не в вашем списке
 
 :_vnpage_uopt_changewish
 en : Change status
-ru*:
+ru : Сменить статус
 
 :_vnpage_uopt_addwish
 en : Add to wishlist
-ru*:
+ru : Добавить к списку
 
 :_vnpage_uopt_delwish
 en : remove from wishlist
-ru*:
+ru : убрать из списка
 
 :_vnpage_rel
 en : Releases
-ru*:
+ru : Выпуски
 
 :_vnpage_rel_none
 en : We don't have any information about releases of this visual novel yet...
-ru*:
+ru : У нас пока нет информации о выпусках этой новеллы...
 
 :_vnpage_rel_add
 en : add release
-ru*:
+ru : добавить выпуск
 
 :_vnpage_rel_patch
 en : (patch)
-ru*:
+ru : (патч)
 
 :_vnpage_rel_extlink
 en : External link
-ru*:
+ru : Внешняя ссылка
 
 :_vnpage_scr
 en : Screenshots
-ru*:
+ru : Скриншоты
 
 :_vnpage_scr_showing
 en : Showing [_1] out of [_2] [quant,_2,screenshot,screenshots].
-ru*:
+ru : [_1] из [_2] [quant,_2,скриншота,скриншотов,скриншотов] отображено.
 
 :_vnpage_scr_nsfwhide
 en : show/hide NSFW
-ru*:
+ru : показать/скрыть НБДР (NSFW)
 
 :_vnpage_scr_num
 en : Screenshot #[_1]
-ru*:
+ru : Скриншот #[_1]
 
 :_vnpage_stats
 en : User stats
-ru*:
+ru : Статистика пользователей
 
 :_vnpage_stats_none
 en : Nobody has voted on this visual novel yet...
-ru*:
+ru : Никто пока не голосовал за эту новеллу...
 
 
 
