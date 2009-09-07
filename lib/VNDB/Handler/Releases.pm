@@ -531,10 +531,10 @@ sub browse {
     pageurl  => "$url;s=$f->{s};o=$f->{o}",
     sorturl  => $url,
     header   => [
-      [ mt('_rbrowse_col_minage'), 'released' ],
-      [ mt('_rbrowse_col_rating'), 'minage' ],
+      [ mt('_rbrowse_col_released'), 'released' ],
+      [ mt('_rbrowse_col_minage'),   'minage' ],
       [ '',         '' ],
-      [ mt('_rbrowse_col_title'),  'title' ],
+      [ mt('_rbrowse_col_title'),    'title' ],
     ],
     row      => sub {
       my($s, $n, $l) = @_;
