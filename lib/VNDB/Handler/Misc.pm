@@ -6,6 +6,7 @@ use strict;
 use warnings;
 use YAWF ':html', ':xml', 'xml_escape';
 use VNDB::Func;
+use POSIX 'strftime';
 
 
 YAWF::register(
@@ -59,7 +60,9 @@ sub homepage {
 
     # Recent changes
     td;
-     h1 mt '_home_recentchanges';
+     h1;
+      a href => '/hist', mt '_home_recentchanges';
+     end;
      my $changes = $self->dbRevisionGet(what => 'item user', results => 10, auto => 1, hidden => 1);
      ul;
       for (@$changes) {
@@ -77,8 +80,9 @@ sub homepage {
     # Announcements
     td;
      my $an = $self->dbThreadGet(type => 'an', order => 't.id DESC', results => 2);
-     a class => 'right', href => '/t/an', mt '_home_newsarchive';
-     h1 mt '_home_announcements';
+     h1;
+      a href => '/t/an', mt '_home_announcements';
+     end;
      for (@$an) {
        my $post = $self->dbPostGet(tid => $_->{id}, num => 1)->[0];
        h2;
@@ -92,7 +96,9 @@ sub homepage {
 
     # Recent posts
     td;
-     h1 mt '_home_recentposts';
+     h1;
+      a href => '/t', mt '_home_recentposts';
+     end;
      my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, order => 'tpl.date DESC', notusers => 1);
      ul;
       for (@$posts) {
@@ -125,7 +131,9 @@ sub homepage {
 
     # Upcoming releases
     td;
-     h1 mt '_home_upcoming';
+     h1;
+      a href => strftime('/r?mi=%Y%m%d;o=a;s=released', gmtime), mt '_home_upcoming';
+     end;
      my $upcoming = $self->dbReleaseGet(results => 10, unreleased => 1, what => 'platforms');
      ul;
       for (@$upcoming) {
@@ -142,7 +150,9 @@ sub homepage {
 
     # Just released
     td;
-     h1 mt '_home_justreleased';
+     h1;
+      a href => strftime('/r?ma=%Y%m%d;o=d;s=released', gmtime), mt '_home_justreleased';
+     end;
      my $justrel = $self->dbReleaseGet(results => 10, order => 'rr.released DESC', unreleased => 0, what => 'platforms');
      ul;
       for (@$justrel) {

@@ -401,6 +401,9 @@ p.screenshots {
 p.screenshots img {
   margin: 2px;
 }
+#maincontent .mainbox.threelayout h1 a {
+  color: $boxtitle$;
+}
 
 
 

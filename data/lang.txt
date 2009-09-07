@@ -900,10 +900,6 @@ ru : [_1]:[_2], [userstr,_3]
 en : Announcements
 ru : Объявления
 
-:_home_newsarchive
-en : News Archive
-ru : Архив новостей
-
 :_home_recentposts
 en : Recent Posts
 ru : Недавние сообщения
