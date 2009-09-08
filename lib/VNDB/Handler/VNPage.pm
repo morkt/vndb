@@ -8,9 +8,16 @@ use VNDB::Func;
 
 
 YAWF::register(
+  qr{v/rand}                        => \&rand,
   qr{v([1-9]\d*)/rg}                => \&rg,
   qr{v([1-9]\d*)(?:\.([1-9]\d*))?}  => \&page,
 );
+
+
+sub rand {
+  my $self = shift;
+  $self->resRedirect('/v'.$self->dbVNGet(results => 1, order => 'RANDOM()')->[0]{id}, 'temp');
+}
 
 
 sub rg {

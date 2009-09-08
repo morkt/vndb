@@ -617,6 +617,10 @@ ru : Форум
 en : FAQ
 ru : ЧаВо
 
+:_menu_randvn
+en : Random visual novel
+ru*:
+
 :_menu_webchat
 en : webchat
 ru : Веб-чат

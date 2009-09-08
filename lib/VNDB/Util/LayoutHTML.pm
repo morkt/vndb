@@ -74,6 +74,7 @@ sub _menu {
      a href => '/hist',  mt '_menu_recent_changes'; br;
      a href => '/t',     mt '_menu_discussion_board'; br;
      a href => '/d6',    mt '_menu_faq'; br;
+     a href => '/v/rand', mt '_menu_randvn'; br;
      a href => 'irc://irc.synirc.net/vndb', '#vndb';
       lit ' (<a href="http://cgiirc.synirc.net/?chan=%23vndb">'.mt('_menu_webchat').'</a>)';
     end;
