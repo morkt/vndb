@@ -2629,6 +2629,8 @@ ru : Тегов
 #############################################################################
 # Handler::VNBrowse
 # Handler::VNEdit
+# Handler::VNPage
+# Util::CommonHTML::htmlVoteStats
 
 
 # VN browser (/v/all)
@@ -3121,6 +3123,26 @@ ru : Статистика пользователей
 :_vnpage_stats_none
 en : Nobody has voted on this visual novel yet...
 ru : Никто пока не голосовал за эту новеллу...
+
+:_votestats_title
+en : Vote stats
+ru*:
+
+:_votestats_sum
+en : [_1] [quant,_1,vote,votes] total, average [_1]
+ru*:
+
+:_votestats_recent
+en : Recent votes
+ru*:
+
+:_votestats_pop_title
+en : Popularity
+ru*:
+
+:_votestats_pop_sum
+en : Ranked #[_1] out of [_2] with a score of [_3].
+ru*:
 
 
 

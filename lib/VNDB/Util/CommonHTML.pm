@@ -432,11 +432,11 @@ sub htmlVoteStats {
   div class => 'votestats';
    table class => 'votegraph';
     thead; Tr;
-     td colspan => 2, 'Vote graph';
+     td colspan => 2, mt '_votestats_title';
     end; end;
     tfoot; Tr;
-     td colspan => 2, sprintf '%d vote%s total, average %.2f%s', $count, $count != 1 ? 's' : '', $total/$count,
-       $type eq 'v' ? ' ('.mt('_vote_'.ceil($total/$count-1)).')' : '';
+     td colspan => 2, mt('_votestats_sum', $count, sprintf('%.2f', $total/$count))
+       .($type eq 'v' ? ' ('.mt('_vote_'.ceil($total/$count-1)).')' : '');
     end; end;
     for (reverse 0..$#$stats) {
       Tr;
@@ -460,7 +460,7 @@ sub htmlVoteStats {
    if(@$recent) {
      table class => 'recentvotes';
       thead; Tr;
-       td colspan => 3, 'Recent votes';
+       td colspan => 3, mt '_votestats_recent';
       end; end;
       for (0..$#$recent) {
         Tr $_ % 2 == 0 ? (class => 'odd') : ();
@@ -481,8 +481,8 @@ sub htmlVoteStats {
    clearfloat;
    if($type eq 'v') {
      div;
-      h3 'Popularity';
-      p sprintf 'Ranked #%d out of %d with a score of %.2f.', $obj->{ranking}, $self->{stats}{vn}, $obj->{c_popularity}*100;
+      h3 mt '_votestats_pop_title';
+      p mt '_votestats_pop_sum', $obj->{ranking}, $self->{stats}{vn}, sprintf('%0.2f',$obj->{c_popularity}*100);
      end;
    }
   end;
