@@ -39,7 +39,7 @@ sub edit {
       { name => 'original',    required => 0, maxlength => 250, default => '' },
       { name => 'alias',       required => 0, maxlength => 500, default => '' },
       { name => 'desc',        required => 0, default => '', maxlength => 10240 },
-      { name => 'length',      required => 0, default => 0,  enum => [ 0..$#{$self->{vn_lengths}} ] },
+      { name => 'length',      required => 0, default => 0,  enum => $self->{vn_lengths} },
       { name => 'l_wp',        required => 0, default => '', maxlength => 150 },
       { name => 'l_encubed',   required => 0, default => '', maxlength => 100 },
       { name => 'l_renai',     required => 0, default => '', maxlength => 100 },
@@ -150,7 +150,7 @@ sub _form {
     [ textarea => short => 'desc',      name => mt('_vnedit_desc'), rows => 10 ],
     [ static   => content => mt '_vnedit_desc_msg' ],
     [ select   => short => 'length',    name => mt('_vnedit_length'), width => 300, options =>
-      [ map [ $_ => $self->{vn_lengths}[$_][0].($_ ? " ($self->{vn_lengths}[$_][2])" : '') ], 0..$#{$self->{vn_lengths}} ] ],
+      [ map [ $_ => mt '_vnlength_'.$_, 2 ], @{$self->{vn_lengths}} ] ],
 
     [ input    => short => 'l_wp',      name => mt('_vnedit_links'), pre => 'http://en.wikipedia.org/wiki/' ],
     [ input    => short => 'l_encubed', pre => 'http://novelnews.net/tag/', post => '/' ],

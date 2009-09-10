@@ -106,7 +106,7 @@ sub page {
      if($v->{length}) {
        Tr ++$i % 2 ? (class => 'odd') : ();
         td mt '_vnpage_length';
-        td "$self->{vn_lengths}[$v->{length}][0] ($self->{vn_lengths}[$v->{length}][1])";
+        td mt '_vnlength_'.$v->{length}, 1;
        end;
      }
      my @links = (
@@ -188,7 +188,7 @@ sub _revision {
     [ original    => diff => 1 ],
     [ alias       => diff => 1 ],
     [ desc        => diff => 1 ],
-    [ length      => serialize => sub { $self->{vn_lengths}[$_[0]][0] } ],
+    [ length      => serialize => sub { mt '_vnlength_'.$_[0] } ],
     [ l_wp        => htmlize => sub {
       $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink'
     }],

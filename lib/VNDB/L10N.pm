@@ -153,7 +153,7 @@ use warnings;
   # Arguments: index, @list. returns $list[index]
   sub index {
     shift;
-    return $_[shift];
+    return $_[shift||0];
   }
 
   # Shortcut for <a href="arg1">arg2</a>

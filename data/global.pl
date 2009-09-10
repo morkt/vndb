@@ -34,14 +34,7 @@ our %S = (%S,
   languages       => [qw|cs da de en es fi fr it ja ko nl no pl pt ru sv tr vi zh|],
   producer_types  => [qw|co in ng|],
   discussion_boards => [qw|an db v p u|],
-  vn_lengths      => [
-    [ 'Unknown',    '',              '' ],
-    [ 'Very short', '< 2 hours',     'OMGWTFOTL, A Dream of Summer' ],
-    [ 'Short',      '2 - 10 hours',  'Narcissu, Planetarian' ],
-    [ 'Medium',     '10 - 30 hours', 'Kana: Little Sister' ],
-    [ 'Long',       '30 - 50 hours', 'Tsukihime' ],
-    [ 'Very long',  '> 50 hours',    'Clannad' ],
-  ],
+  vn_lengths      => [ 0..5 ],
   anime_types     => [
     # AniDB anime type starts counting at 1, 0 = unknown
     #   we start counting at 0, with NULL being unknown

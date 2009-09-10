@@ -452,6 +452,33 @@ en : masterpiece
 ru : шедевр
 
 
+# VN lengths
+
+:_vnlength_0
+en : Unknown
+ru*:
+
+:_vnlength_1
+en : Very short[index,_1,, (< 2 hours), (OMGWTHOTL~, A Dream of Summer)]
+ru*:
+
+:_vnlength_2
+en : Short[index,_1,, (2 - 10 hours), (Narcissu~, Planetarian)]
+ru*:
+
+:_vnlength_3
+en : Medium[index,_1,, (10 - 30 hours), (Kana: Little Sister)]
+ru*:
+
+:_vnlength_4
+en : Long[index,_1,, (30 - 50 hours), (Tsukihime)]
+ru*:
+
+:_vnlength_5
+en : Very long[index,_1,, (> 50 hours), (Clannad)]
+ru*:
+
+
 # Form messages
 
 :_formerr_e_login_failed
