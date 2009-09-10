@@ -31,3 +31,45 @@ DELETE FROM vn_relations WHERE relation > 50;
 -- Be sure to execute the following query after restarting Multi, to regenerate the relation graphs:
 --   UPDATE vn SET rgraph = NULL;
 
+
+
+
+
+-- set freeware flag for all trials with internet download as medium
+
+CREATE FUNCTION tmp_edit_release(iid integer) RETURNS void AS $$
+DECLARE
+  cid integer;
+  oid integer;
+BEGIN
+  SELECT INTO oid latest FROM releases WHERE id = iid;
+  INSERT INTO changes (type, requester, ip, comments, rev)
+    VALUES (1, 1, '0.0.0.0',
+      E'Automated edit with the update to VNDB 2.7.\n\nThis release is a downloadable trial, freeware flag is assumed.',
+      (SELECT rev+1 FROM changes WHERE id = oid))
+    RETURNING id INTO cid;
+  INSERT INTO releases_rev (id, rid, title, original, type, website, released, notes,
+      minage, gtin, patch, catalog, resolution, voiced, freeware, doujin, ani_story, ani_ero)
+    SELECT cid, rid, title, original, type, website, released, notes,
+        minage, gtin, patch, catalog, resolution, voiced, true, doujin, ani_story, ani_ero
+      FROM releases_rev WHERE id = oid;
+  INSERT INTO releases_media (rid, medium, qty) SELECT cid, medium, qty FROM releases_media WHERE rid = oid;
+  INSERT INTO releases_platforms (rid, platform) SELECT cid, platform FROM releases_platforms WHERE rid = oid;
+  INSERT INTO releases_producers (rid, pid) SELECT cid, pid FROM releases_producers WHERE rid = oid;
+  INSERT INTO releases_lang (rid, lang) SELECT cid, lang FROM releases_lang WHERE rid = oid;
+  INSERT INTO releases_vn (rid, vid) SELECT cid, vid FROM releases_vn WHERE rid = oid;
+  UPDATE releases SET latest = cid WHERE id = iid;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT tmp_edit_release(r.id)
+  FROM releases r
+  JOIN releases_rev rr ON rr.id = r.latest
+ WHERE r.hidden = FALSE
+   AND rr.type = 2
+   AND NOT rr.freeware
+   AND EXISTS(SELECT 1 FROM releases_media rm WHERE rm.medium = 'in ' AND rm.rid = rr.id)
+ ORDER BY r.id;
+
+DROP FUNCTION tmp_edit_release(integer);
+
