@@ -618,6 +618,15 @@ DOMLoad(function() {
   if(x('taglinks'))
     tglLoad();
 
+  // make some fields readonly when patch flag is set
+  if(x('jt_box_rel_geninfo')) {
+    var func = function() {
+      x('doujin').disabled = x('resolution').disabled = x('voiced').disabled = x('ani_story').disabled = x('ani_ero').disabled = x('patch').checked;
+    };
+    func();
+    x('patch').onclick = func;
+  }
+
   // spam protection on all forms
   if(document.forms.length >= 1)
     for(i=0; i<document.forms.length; i++)

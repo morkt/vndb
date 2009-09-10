@@ -13,6 +13,7 @@ git - ?
 	- Box titles on homepage are click-able
 	- Russian translation of the interface
 	- Random VN link in menu
+	- Ignore some release fields when the patch status is checked
 
 2.6 - 2009-08-09
 	- New screen resolutions: 1024x600 and 1600x1200

@@ -329,7 +329,9 @@ sub edit {
       $new_vn    = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];
       $frm->{platforms} = [ grep $_, @{$frm->{platforms}} ];
       $frm->{$_} = $frm->{$_} ? 1 : 0 for (qw|patch freeware doujin|);
-      $frm->{doujin} = 0 if $frm->{patch};
+
+      # reset some fields when the patch flag is set
+      $frm->{doujin} = $frm->{resolution} = $frm->{voiced} = $frm->{ani_story} = $frm->{ani_ero} = 0 if $frm->{patch};
 
       my $same = $rid &&
           (join(',', sort @{$b4{platforms}}) eq join(',', sort @{$frm->{platforms}})) &&
