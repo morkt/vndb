@@ -365,7 +365,7 @@ sub ie6message {
    end;
    body;
     div;
-     h1 'Oops, we were too lazy support your browser!';
+     h1 'Oops, we were too lazy to support your browser!';
      p;
       lit qq|We decided to stop supporting Internet Explorer 6, as it's a royal pain in |
          .qq|the ass to make our site look good in a browser that doesn't want to cooperate with us.<br />|
