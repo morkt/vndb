@@ -135,7 +135,7 @@ sub _infotable {
 
    Tr ++$i % 2 ? (class => 'odd') : ();
     td mt '_relinfo_publication';
-    td mt $r->{patch} ? '_relinfo_pub_patch' : '_relinfo_pub_nopatch', $r->{freeware}?1:0, $r->{doujin}?1:0;
+    td mt $r->{patch} ? '_relinfo_pub_patch' : '_relinfo_pub_nopatch', $r->{freeware}?0:1, $r->{doujin}?0:1;
    end;
 
    if(@{$r->{platforms}}) {
