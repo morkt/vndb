@@ -102,6 +102,7 @@ sub thread {
        textarea name => 'msg', id => 'msg', rows => 4, cols => 50, '';
        br;
        input type => 'submit', value => mt('_thread_quickreply_submit'), class => 'submit';
+       input type => 'submit', value => mt('_thread_quickreply_full'), class => 'submit', name => 'fullreply';
       end;
      end;
     end;
@@ -166,10 +167,13 @@ sub edit {
         { name => 'nolastmod', required => 0 },
       ) : (),
       { name => 'msg', maxlenght => 5000 },
+      { name => 'fullreply', required => 0 },
     );
 
+    $frm->{_err} = 1 if $frm->{fullreply};
+
     # check for double-posting
-    push @{$frm->{_err}}, 'doublepost' if !$num && $self->dbPostGet(
+    push @{$frm->{_err}}, 'doublepost' if !$num && !$frm->{_err} && $self->dbPostGet(
       uid => $self->authInfo->{id}, tid => $tid, mindate => time - 30, results => 1, $tid ? () : (num => 1))->[0]{num};
 
     # parse and validate the boards
@@ -227,6 +231,7 @@ sub edit {
       $frm->{hidden}  = $t->{hidden} if !exists $frm->{hidden};
     }
   }
+  delete $frm->{_err} unless ref $frm->{_err};
   $frm->{boards} ||= $board;
   $frm->{nolastmod} = 1 if $num && $self->authCan('boardmod') && !exists $frm->{nolastmod};
 
@@ -254,7 +259,7 @@ sub edit {
         [ check => name => mt('_postedit_form_nolastmod'), short => 'nolastmod' ],
       ) : (),
     ) : (),
-    [ text   => name => mt('_postedit_form_msg').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'msg', rows => 10 ],
+    [ text   => name => mt('_postedit_form_msg').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'msg', rows => 25, cols => 75 ],
     [ static => content => mt('_postedit_form_msg_format') ],
   ]);
   $self->htmlFooter;

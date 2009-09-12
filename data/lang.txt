@@ -1094,6 +1094,10 @@ ru : Быстрый ответ
 en : Reply
 ru : Ответить
 
+:_thread_quickreply_full
+en : Go advanced...
+ru*:
+
 
 # Post edit/reply/new thread form
 
