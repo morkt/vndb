@@ -900,7 +900,7 @@ ru : Искать!
 
 
 :_home_intro
-en : VNDB.org strives to be a comprehensive database for information about visual novels and eroge.[br]
+en : VNDB.org strives to be a comprehensive database for information about visual novels.[br]
      This website is built as a wiki, meaning that anyone can freely add and contribute information
      to the database, allowing us to create the largest, most accurate and most up-to-date visual novel
      database on the web.[br]
@@ -908,7 +908,7 @@ en : VNDB.org strives to be a comprehensive database for information about visua
      and they can vote on all visual novels.[br][br]
      Feel free to [url,/v/all,browse around], [url,/u/register,register an account]
      or to participate in the discussions about visual novels or VNDB on our [url,/t,discussion board].
-ru : VNDB.org стремится быть наиболее полной базой данных с информацией об интерактивных новеллах и эрогеймах.[br]
+ru*: VNDB.org стремится быть наиболее полной базой данных с информацией об интерактивных новеллах и эрогеймах.[br]
      Данный веб-сайт создан в стиле вики, то есть любой желающий может добавлять информацию в базу данных,
      тем самым позволяя нам создать крупнейшую, наиболее аккуратную и самую актуальную базу данных интерактивных
      новелл в сети.[br]
