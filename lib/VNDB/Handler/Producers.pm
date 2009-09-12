@@ -144,7 +144,7 @@ sub edit {
     [ select => name => mt('_pedit_form_lang'), short => 'lang',
       options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
     [ input  => name => mt('_pedit_form_website'), short => 'website' ],
-    [ text   => name => mt('_pedit_form_desc'), short => 'desc', rows => 6 ],
+    [ text   => name => mt('_pedit_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
   ]);
   $self->htmlFooter;
 }

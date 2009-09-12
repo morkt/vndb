@@ -95,7 +95,10 @@ sub thread {
     form action => "/t$tid/reply", method => 'post', 'accept-charset' => 'UTF-8';
      div class => 'mainbox';
       fieldset class => 'submit';
-       h2 mt '_thread_quickreply_title';
+       h2;
+        txt mt '_thread_quickreply_title';
+        b class => 'standout', ' ('.mt('_inenglish').')';
+       end;
        textarea name => 'msg', id => 'msg', rows => 4, cols => 50, '';
        br;
        input type => 'submit', value => mt('_thread_quickreply_submit'), class => 'submit';
@@ -251,7 +254,7 @@ sub edit {
         [ check => name => mt('_postedit_form_nolastmod'), short => 'nolastmod' ],
       ) : (),
     ) : (),
-    [ text   => name => mt('_postedit_form_msg'), short => 'msg', rows => 10 ],
+    [ text   => name => mt('_postedit_form_msg').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'msg', rows => 10 ],
     [ static => content => mt('_postedit_form_msg_format') ],
   ]);
   $self->htmlFooter;

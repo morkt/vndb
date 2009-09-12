@@ -217,7 +217,10 @@ sub htmlForm {
         (my $txt = $options->{frm}{editsum}||'') =~ s/&/&amp;/;
         $txt =~ s/</&lt;/;
         $txt =~ s/>/&gt;/;
-        h2 mt '_form_editsum';
+        h2;
+         txt mt '_form_editsum';
+         b class => 'standout', ' ('.mt('_inenglish').')';
+        end;
         textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50;
          lit $txt;
         end;

@@ -402,7 +402,7 @@ sub _form {
     [ select => short => 'minage', name => mt('_redit_form_minage'),
       options => [ map [ $_, $self->{age_ratings}{$_}[0].($self->{age_ratings}{$_}[1]?" (e.g. $self->{age_ratings}{$_}[1])":'') ],
         sort { $a <=> $b } keys %{$self->{age_ratings}} ] ],
-    [ textarea => short => 'notes', name => mt('_redit_form_notes') ],
+    [ textarea => short => 'notes', name => mt('_redit_form_notes').'<br /><b class="standout">'.mt('_inenglish').'</b>' ],
     [ static => content => mt('_redit_form_notes_note') ],
   ],
 

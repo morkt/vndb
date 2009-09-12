@@ -147,7 +147,7 @@ sub _form {
     [ static   => content => mt '_vnedit_original_msg' ],
     [ textarea => short => 'alias',     name => mt('_vnedit_alias'), rows => 4 ],
     [ static   => content => mt '_vnedit_alias_msg' ],
-    [ textarea => short => 'desc',      name => mt('_vnedit_desc'), rows => 10 ],
+    [ textarea => short => 'desc',      name => mt('_vnedit_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', rows => 10 ],
     [ static   => content => mt '_vnedit_desc_msg' ],
     [ select   => short => 'length',    name => mt('_vnedit_length'), width => 300, options =>
       [ map [ $_ => mt '_vnlength_'.$_, 2 ], @{$self->{vn_lengths}} ] ],

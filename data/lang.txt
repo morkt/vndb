@@ -3292,3 +3292,10 @@ en : The form could not be sent, please make sure you have Javascript enabled in
 ru : Не удалось отправить форму, пожалуйста убедитесь что в вашем браузере включён Javascript.
 
 
+# Short message reminding the user to post in ENGLISH (Used at about every message/description input field)
+
+:_inenglish
+en : English please!
+ru*:
+
+

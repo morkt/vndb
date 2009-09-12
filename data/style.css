@@ -239,7 +239,7 @@ td.field label {
 p.center {
   text-align: center;
 }
-b.future {
+b.future, b.standout {
   font-weight: normal;
   color: $standout$;
 }
