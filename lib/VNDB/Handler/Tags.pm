@@ -70,7 +70,7 @@ sub tagpage {
   }
 
   div class => 'mainbox';
-   a class => 'addnew', href => "/g$tag/add", mt '_tagp_addchild' if $self->authCan('tag');
+   a class => 'addnew', href => "/g$tag/add", mt '_tagp_addchild' if $self->authCan('tag') && $t->{state} != 1;
    h1 $title;
 
    p;
