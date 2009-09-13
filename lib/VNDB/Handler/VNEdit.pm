@@ -43,7 +43,7 @@ sub edit {
       { name => 'l_wp',        required => 0, default => '', maxlength => 150 },
       { name => 'l_encubed',   required => 0, default => '', maxlength => 100 },
       { name => 'l_renai',     required => 0, default => '', maxlength => 100 },
-      { name => 'l_vnn',       required => 0, default => 0,  template => 'int' },
+      { name => 'l_vnn',       required => 0, default => $b4{l_vnn},  template => 'int' },
       { name => 'anime',       required => 0, default => '' },
       { name => 'img_nsfw',    required => 0, default => 0 },
       { name => 'relations',   required => 0, default => '', maxlength => 5000 },
@@ -155,7 +155,6 @@ sub _form {
     [ input    => short => 'l_wp',      name => mt('_vnedit_links'), pre => 'http://en.wikipedia.org/wiki/' ],
     [ input    => short => 'l_encubed', pre => 'http://novelnews.net/tag/', post => '/' ],
     [ input    => short => 'l_renai',   pre => 'http://renai.us/game/', post => '.shtml' ],
-    [ input    => short => 'l_vnn',     pre => 'http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=', width => 40 ],
 
     [ input    => short => 'anime',     name => mt '_vnedit_anime' ],
     [ static   => content => mt '_vnedit_anime_msg' ],

@@ -113,7 +113,6 @@ sub page {
        $v->{l_wp} ?      [ 'Wikipedia', 'http://en.wikipedia.org/wiki/%s', $v->{l_wp} ] : (),
        $v->{l_encubed} ? [ 'Encubed',   'http://novelnews.net/tag/%s/', $v->{l_encubed} ] : (),
        $v->{l_renai} ?   [ 'Renai.us',  'http://renai.us/game/%s.shtml', $v->{l_renai} ] : (),
-       $v->{l_vnn}  ?    [ 'V-N.net',   'http://visual-novels.net/vn/index.php?option=com_content&task=view&id=%d', $v->{l_vnn} ] : (),
      );
      if(@links) {
        Tr ++$i % 2 ? (class => 'odd') : ();
@@ -197,9 +196,6 @@ sub _revision {
     }],
     [ l_renai     => htmlize => sub {
       $_[0] ? sprintf '<a href="http://renai.us/game/%s.shtml">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink'
-    }],
-    [ l_vnn       => htmlize => sub {
-      $_[0] ? sprintf '<a href="http://visual-novels.net/vn/index.php?option=com_content&amp;task=view&amp;id=%d">%1$d</a>', xml_escape $_[0] : mt '_vndiff_nolink'
     }],
     [ relations   => join => '<br />', split => sub {
       my @r = map sprintf('%s: <a href="/v%d" title="%s">%s</a>',
