@@ -49,7 +49,7 @@ sub page {
    h2 class => 'alttitle', $p->{original} if $p->{original};
    p class => 'center';
     txt mt '_prodpage_langtype', mt("_lang_$p->{lang}"), mt "_ptype_$p->{type}";
-    txt "\n".mt '_progpage_aliases', $p->{alias} if $p->{alias};
+    txt "\n".mt '_prodpage_aliases', $p->{alias} if $p->{alias};
     if($p->{website}) {
       txt "\n";
       a href => $p->{website}, $p->{website};
