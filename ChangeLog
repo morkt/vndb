@@ -18,6 +18,7 @@ git - ?
 	- Remind the user to type English in several form fields
 	- Full reply button in Quick reply box + larger textarea in post form
 	- Removed visual-novels.net link from the interface
+	- Fixed bug with excluding AVG(vote) < 0 VNs from tag pages
 
 2.6 - 2009-08-09
 	- New screen resolutions: 1024x600 and 1600x1200
