@@ -333,7 +333,7 @@ ru : Форум VNDB
 
 :_dboard_v
 en : Visual novels
-ru : Интерактивные новеллы
+ru : Новеллы
 
 :_dboard_p
 en : Producers
@@ -599,7 +599,7 @@ ru : Отправить
 # Main title of the site, used on header of each page and as title on the homepage
 :_site_title
 en : The Visual Novel Database
-ru : База Данных Интерактивных Новелл
+ru : The Visual Novel Database
 
 
 # Main menu
@@ -614,7 +614,7 @@ ru : Главная
 
 :_menu_vn
 en : Visual novels
-ru : Интерактивные новеллы
+ru : Новеллы
 
 :_menu_releases
 en : Releases
@@ -867,7 +867,7 @@ ru : ~[пусто~]
 
 :_searchbox_vn
 en : Visual novels
-ru : Интерактивные новеллы
+ru : Новеллы
 
 :_searchbox_releases
 en : Releases
@@ -908,9 +908,9 @@ en : VNDB.org strives to be a comprehensive database for information about visua
      and they can vote on all visual novels.[br][br]
      Feel free to [url,/v/all,browse around], [url,/u/register,register an account]
      or to participate in the discussions about visual novels or VNDB on our [url,/t,discussion board].
-ru : VNDB.org стремится быть наиболее полной базой данных с информацией об интерактивных новеллах.[br]
-     Данный веб-сайт создан в стиле вики, то есть любой желающий может добавлять сюда информацию, тем самым
-     позволяя нам создать крупнейшую, наиболее аккуратную и самую актуальную базу по интерактивным новеллам в сети.[br]
+ru : VNDB.org стремится быть наиболее полной базой данных с информацией по интерактивным визуальным новеллам.[br]
+     Данный сайт создан в стиле вики, то есть любой желающий может добавлять сюда информацию, тем самым позволяя
+     нам создать крупнейшую, наиболее аккуратную и самую актуальную базу по визуальным новеллам в сети.[br]
      Зарегистрированные пользователи могут составлять списки желаемых и пройденных игр, а так же влиять на
      их рейтинг.[br][br]
      Если хотите, можете [url,/v/all,побродить по сайту], [url,/u/register,создать учётную запись] или
@@ -1872,7 +1872,7 @@ ru : ещё [_1] [quant,_1,тег,тега,тегов]
 
 :_tagp_vnlist
 en : Visual novels
-ru : Интерактивные новеллы
+ru : Новеллы
 
 :_tagp_spoil0
 en : Hide spoilers
@@ -2667,7 +2667,7 @@ ru : Тегов
 
 :_vnbrowse_title
 en : Browse visual novels
-ru : Обзор интерактивных новелл
+ru : Обзор новелл
 
 :_vnbrowse_col_score
 en : Score
@@ -3273,7 +3273,7 @@ ru : Правка заблокирована
 
 :_itemmsg_login
 en : You need to be [url,_1,logged in] to edit this page
-ru : Чтобы править эту страницу, вы должны быть [url,_1,авторизованы]
+ru : Чтобы редактировать эту страницу, вы должны быть [url,_1,авторизованы]
 
 :_itemmsg_denied
 en : You are not allowed to edit this page
