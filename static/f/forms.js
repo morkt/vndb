@@ -645,7 +645,7 @@ function medSetSubmit() {
 function medAddNew(med, qty) {
   var o = document.createElement('span');
   var r = '<select class="qty" onchange="medSerialize()"><option value="0">- quantity -</option>';
-  for(var i=1;i<=10;i++)
+  for(var i=1;i<=20;i++)
     r += '<option value="'+i+'"'+(qty == i ? ' selected="selected"' : '')+'>'+i+'</option>';
   r += '</select><select class="medium" onchange="return medCheckNew(this)">';
   for(i=0;i<medTypes.length;i++)
