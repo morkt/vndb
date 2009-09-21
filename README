@@ -1,0 +1,59 @@
+The VNDB.org Source Code
+------------------------
+
+
+Installation & documentation
+
+  Documentation is lacking, you're pretty much on your own if you want to
+  get things running. :-(
+
+
+Requirements
+
+  global requirements:
+    Linux, or an OS that resembles Linux. Chances are VNDB won't run on Windows.
+    PostgreSQL 8.3 recommended, 8.1 may also work
+    perl 5.10 recommended, 5.8 may also work
+    A webserver that works with YAWF (lighttpd and Apache are known to work)
+
+  (perl 5.10 core modules are not listed.)
+
+  util/vndb.pl:
+    Algorithm::Diff::XS
+    CGI::Minimal         (required by YAWF)
+    CGI::Cookie::XS      (required by YAWF)
+    DBI
+    DBD::Pg
+    FCGI                 (optional, for running as a FastCGI script)
+    PerlIO::gzip         (optional, for output compression)
+
+  util/multi.pl:
+    Core:
+      DBI
+      DBD::Pg
+      POE
+      POE::Component::Pg (get it from http://g.blicky.net/poco-pg.git/)
+    IRC:
+      POE::Component::IRC
+      URI::Escape
+    Image:
+      Image::Magick
+    Maintenance:
+      PerlIO::gzip
+    RG:
+      graphviz           (/usr/bin/dot is used by default)
+    Sitemap:
+      XML::Writer
+      PerlIO::gzip
+
+
+Contact
+
+  IRC:   #vndb @ irc.synirc.net
+  Email: contact@vndb.org
+
+
+License
+
+  GNU AGPL, see COPYING file for details.
+
