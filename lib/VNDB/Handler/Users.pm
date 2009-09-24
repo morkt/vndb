@@ -343,7 +343,7 @@ sub edit {
     [ passwd => short => 'usrpass2', name => mt '_usere_confirm' ],
 
     [ part   => title => mt '_usere_options' ],
-    [ check  => short => 'flags_list', name => mt '_usere_flist' ],
+    [ check  => short => 'flags_list', name => mt '_usere_flist', "/u$uid/list", "/u$uid/wish" ],
     [ check  => short => 'flags_nsfw', name => mt '_usere_fnsfw' ],
     [ select => short => 'skin', name => mt('_usere_skin'), width => 300, options => [
       map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_}.($self->debug?" [$_]":'') ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
