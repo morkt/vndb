@@ -130,19 +130,6 @@ use warnings;
     return qq|<b class="future">$str</b>|;
   }
 
-  # same as datestr(), but different output format:
-  #  e.g.: 'Jan 2009', '2009', 'unknown', 'TBA'
-  sub monthstr {
-    my $self = shift;
-    my $date = sprintf '%08d', shift||0;
-    my($y, $m, $d) = ($1, $2, $3) if $date =~ /^([0-9]{4})([0-9]{2})([0-9]{2})/;
-    return 'TBA' if $y == 9999;
-    return 'unknown' if $y == 0;
-    return $y if $m == 99;
-    my $r = sprintf '%s %d', [qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)]->[$m-1], $y;
-    return $d == 99 ? "<i>$r</i>" : $r;
-  }
-
   # Arguments: (uid, username), or a hashref containing that info
   sub userstr {
     my $self = shift;

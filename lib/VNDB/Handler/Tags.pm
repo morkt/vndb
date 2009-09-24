@@ -212,7 +212,7 @@ sub _vnlist {
           for (reverse sort split /\//, $l->{c_languages});
        end;
        td class => 'tc5';
-        lit $self->{l10n}->monthstr($l->{c_released});
+        lit $self->{l10n}->datestr($l->{c_released});
        end;
        td class => 'tc6', sprintf '%.2f', $l->{c_popularity}*100;
       end;
