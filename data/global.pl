@@ -17,63 +17,24 @@ our %S = (%S,
   version         => `cd $VNDB::ROOT; git describe` =~ /^(.+)$/ && $1,
   url             => 'http://vndb.org',
   url_static      => 'http://s.vndb.org',
-  site_title      => 'Yet another VNDB clone',
   skin_default    => 'angel',
   cookie_domain   => '.vndb.org',
   global_salt     => 'any-private-string-here',
   source_url      => 'http://git.blicky.net/vndb.git/?h=master',
   admin_email     => 'contact@vndb.org',
-  sharedmem_key   => 'VNDB',
   user_ranks      => [
-       # rankname   allowed actions                                   # DB number
-    [qw| visitor    hist                                                     |], # 0
-    [qw| banned     hist                                                     |], # 1
-    [qw| loser      hist board                                               |], # 2
-    [qw| user       hist board edit tag                                      |], # 3
-    [qw| mod        hist board boardmod edit tag mod lock del tagmod         |], # 4
-    [qw| admin      hist board boardmod edit tag mod lock del tagmod usermod |], # 5
+       # allowed actions                                              # DB number
+    [qw| hist                                                     |], # 0
+    [qw| hist                                                     |], # 1
+    [qw| hist board                                               |], # 2
+    [qw| hist board edit tag                                      |], # 3
+    [qw| hist board boardmod edit tag mod lock del tagmod         |], # 4
+    [qw| hist board boardmod edit tag mod lock del tagmod usermod |], # 5
   ],
-  languages       => {
-    cs  => q|Czech|,
-    da  => q|Danish|,
-    de  => q|German|,
-    en  => q|English|,
-    es  => q|Spanish|,
-    fi  => q|Finnish|,
-    fr  => q|French|,
-    it  => q|Italian|,
-    ja  => q|Japanese|,
-    ko  => q|Korean|,
-    nl  => q|Dutch|,
-    no  => q|Norwegian|,
-    pl  => q|Polish|,
-    pt  => q|Portuguese|,
-    ru  => q|Russian|,
-    sv  => q|Swedish|,
-    tr  => q|Turkish|,
-    vi  => q|Vietnamese|,
-    zh  => q|Chinese|,
-  },
-  producer_types  => {
-    co => 'Company',
-    in => 'Individual',
-    ng => 'Amateur group',
-  },
-  discussion_boards => {
-    an => 'Announcements',    # 0   - usage restricted to boardmods
-    db => 'VNDB Discussions', # 0
-    v  => 'Visual novels',    # vid
-    p  => 'Producers',        # pid
-    u  => 'Users',            # uid
-  },
-  vn_lengths      => [
-    [ 'Unknown',    '',              '' ],
-    [ 'Very short', '< 2 hours',     'OMGWTFOTL, A Dream of Summer' ],
-    [ 'Short',      '2 - 10 hours',  'Narcissu, Planetarian' ],
-    [ 'Medium',     '10 - 30 hours', 'Kana: Little Sister' ],
-    [ 'Long',       '30 - 50 hours', 'Tsukihime' ],
-    [ 'Very long',  '> 50 hours',    'Clannad' ],
-  ],
+  languages       => [qw|cs da de en es fi fr it ja ko nl no pl pt ru sv tr vi zh|],
+  producer_types  => [qw|co in ng|],
+  discussion_boards => [qw|an db v p u|],
+  vn_lengths      => [ 0..5 ],
   anime_types     => [
     # AniDB anime type starts counting at 1, 0 = unknown
     #   we start counting at 0, with NULL being unknown
@@ -90,14 +51,13 @@ our %S = (%S,
     [ 'Sequel',              0 ],
     [ 'Prequel',             1 ],
     [ 'Same setting',        0 ],
-    [ 'Alternative setting', 0 ],
     [ 'Alternative version', 0 ],
-    [ 'Same characters',     0 ],
+    [ 'Shares characters',   0 ],
     [ 'Side story',          0 ],
     [ 'Parent story',        1 ],
-    [ 'Summary',             0 ],
-    [ 'Full story',          1 ],
-    [ 'Other',               0 ],
+    [ 'Same series',         0 ],
+    [ 'Fandisc',             0 ],
+    [ 'Original game',       1 ],
   ],
   age_ratings     => {
     -1 => [ 'Unknown' ],
@@ -116,30 +76,8 @@ our %S = (%S,
     17 => [ '17+', 'CERO D' ],
     18 => [ '18+', 'CERO Z' ],
   },
-  release_types   => [
-    'Complete',
-    'Partial',
-    'Trial'
-  ],
-  platforms       => {
-    win => 'Windows',
-    lin => 'Linux',
-    mac => 'Mac OS',
-    dvd => 'DVD Player',
-    gba => "Game Boy Advance",
-    msx => 'MSX',
-    nds => 'Nintendo DS',
-    nes => 'Famicom',
-    psp => 'Playstation Portable',
-    ps1 => 'Playstation 1',
-    ps2 => 'Playstation 2',
-    ps3 => 'Playstation 3',
-    drc => 'Dreamcast',
-    sfc => 'Super Nintendo',
-    wii => 'Nintendo Wii',
-    xb3 => 'Xbox 360',
-    oth => 'Other'
-  },
+  release_types   => [0..2],
+  platforms       => [qw|win dos lin mac dvd gba msx nds nes p98 psp ps1 ps2 ps3 drc sat sfc wii xb3 oth|],
   media           => {
    #DB       display            qty
     cd  => [ 'CD',                1 ],
@@ -167,38 +105,9 @@ our %S = (%S,
     [ '1280x720 (720p)',   'widescreen' ],
     [ '1920x1080 (1080p)', 'widescreen' ],
   ],
-  voiced          => [
-    'Unknown',
-    'Not voiced',
-    'Only ero scenes voiced',
-    'Partially voiced',
-    'Fully voiced',
-  ],
-  animated        => [
-    'Unknown',
-    'No animations',
-    'Simple animations',
-    'Some fully animated scenes',
-    'All scenes fully animated',
-  ],
-  votes           => [
-    'worst ever',
-    'awful',
-    'bad',
-    'weak',
-    'so-so',
-    'decent',
-    'good',
-    'very good',
-    'excellent',
-    'masterpiece',
-  ],
-  wishlist_status => [
-    'high',
-    'medium',
-    'low',
-    'blacklist',
-  ],
+  voiced          => [ 0..4 ],
+  animated        => [ 0..4 ],
+  wishlist_status => [ 0..3 ],
   # note: keep these synchronised in script.js
   vn_rstat        => [
     'Unknown',

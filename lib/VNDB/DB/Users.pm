@@ -43,7 +43,7 @@ sub dbUserGet {
   );
 
   my @select = (
-    qw|id username mail rank salt c_votes c_changes show_nsfw show_list skin customcss ip c_tags|,
+    qw|id username mail rank salt c_votes c_changes show_nsfw show_list skin customcss ip c_tags ign_votes|,
     q|encode(passwd, 'hex') AS passwd|, q|extract('epoch' from registered) as registered|,
     $o{what} =~ /stats/ ? (
       '(SELECT COUNT(*) FROM rlists WHERE uid = u.id) AS releasecount',
@@ -74,7 +74,7 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail rank show_nsfw show_list skin customcss salt |);
+    for (qw| username mail rank show_nsfw show_list skin customcss salt ign_votes |);
   $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
     if defined $o{passwd};
 

@@ -607,16 +607,25 @@ DOMLoad(function() {
   // forms.js
   if(x('relations'))
     relLoad();
-  if(x('jt_box_screenshots'))
+  if(x('jt_box_vn_scr'))
     scrLoad();
   if(x('media'))
     medLoad();
-  if(x('jt_box_visual_novels'))
+  if(x('jt_box_rel_vn'))
     vnpLoad('vn');
-  if(x('jt_box_producers'))
+  if(x('jt_box_rel_prod'))
     vnpLoad('producers');
   if(x('taglinks'))
     tglLoad();
+
+  // make some fields readonly when patch flag is set
+  if(x('jt_box_rel_geninfo')) {
+    var func = function() {
+      x('doujin').disabled = x('resolution').disabled = x('voiced').disabled = x('ani_story').disabled = x('ani_ero').disabled = x('patch').checked;
+    };
+    func();
+    x('patch').onclick = func;
+  }
 
   // spam protection on all forms
   if(document.forms.length >= 1)

@@ -234,7 +234,7 @@ CREATE TABLE threads_posts (
   num smallint NOT NULL DEFAULT 0,
   uid integer NOT NULL DEFAULT 0,
   date timestamptz NOT NULL DEFAULT NOW(),
-  edited timestamptz NOT NULL,
+  edited timestamptz,
   msg text NOT NULL DEFAULT '',
   hidden boolean NOT NULL DEFAULT FALSE,
   PRIMARY KEY(tid, num)
@@ -264,7 +264,8 @@ CREATE TABLE users (
   customcss text NOT NULL DEFAULT '',
   ip inet NOT NULL DEFAULT '0.0.0.0',
   c_tags integer NOT NULL DEFAULT 0,
-  salt character(9) NOT NULL DEFAULT ''
+  salt character(9) NOT NULL DEFAULT '',
+  ign_votes voolean NOT NULL DEFAULT FALSE
 );
 
 -- vn
@@ -484,7 +485,11 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION update_vnpopularity() RETURNS void AS $$
 BEGIN
   CREATE OR REPLACE TEMP VIEW tmp_pop1 (uid, vid, rank) AS
-    SELECT v.uid, v.vid, sqrt(count(*))::real FROM votes v JOIN votes v2 ON v.uid = v2.uid AND v2.vote < v.vote GROUP BY v.vid, v.uid;
+      SELECT v.uid, v.vid, sqrt(count(*))::real
+        FROM votes v
+        JOIN votes v2 ON v.uid = v2.uid AND v2.vote < v.vote
+        WHERE v.uid NOT IN(SELECT id FROM users WHERE ign_votes)
+    GROUP BY v.vid, v.uid;
   CREATE OR REPLACE TEMP VIEW tmp_pop2 (vid, win) AS
     SELECT vid, sum(rank) FROM tmp_pop1 GROUP BY vid;
   UPDATE vn SET c_popularity = COALESCE((SELECT win/(SELECT MAX(win) FROM tmp_pop2) FROM tmp_pop2 WHERE vid = id), 0);
@@ -581,7 +586,7 @@ BEGIN
   -- grouped by (tag, vid, uid), so only one user votes on one parent tag per VN entry
   CREATE OR REPLACE TEMPORARY VIEW tags_vn_grouped AS
     SELECT tag, vid, uid, MAX(vote)::real AS vote, COALESCE(AVG(spoiler), 0)::real AS spoiler
-    FROM tags_vn_all WHERE vote > 0 GROUP BY tag, vid, uid;
+    FROM tags_vn_all GROUP BY tag, vid, uid;
   -- grouped by (tag, vid) and serialized into a table
   DROP INDEX IF EXISTS tags_vn_bayesian_tag;
   TRUNCATE tags_vn_bayesian;
@@ -589,7 +594,8 @@ BEGIN
       SELECT tag, vid, COUNT(uid) AS users, AVG(vote)::real AS rating,
           (CASE WHEN AVG(spoiler) < 0.7 THEN 0 WHEN AVG(spoiler) > 1.3 THEN 2 ELSE 1 END)::smallint AS spoiler
         FROM tags_vn_grouped
-    GROUP BY tag, vid;
+    GROUP BY tag, vid
+      HAVING AVG(vote) > 0;
   CREATE INDEX tags_vn_bayesian_tag ON tags_vn_bayesian (tag);
   -- now perform the bayesian ranking calculation
   UPDATE tags_vn_bayesian tvs SET rating =

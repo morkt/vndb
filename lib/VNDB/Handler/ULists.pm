@@ -42,7 +42,7 @@ sub vnwish {
   return $self->htmlDenied() if !$uid;
 
   my $f = $self->formValidate(
-    { name => 's', enum => [ -1..$#{$self->{wishlist_status}} ] }
+    { name => 's', enum => [ -1, @{$self->{wishlist_status}} ] }
   );
   return 404 if $f->{_err};
 
@@ -99,20 +99,20 @@ sub wishlist {
 
   my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
   my $u = $self->dbUserGet(uid => $uid)->[0];
-  return 404 if !$u || !$own && !$u->{show_list};
+  return 404 if !$u || !$own && !($u->{show_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'o', required => 0, default => 'd', enum => [ 'a', 'd' ] },
     { name => 's', required => 0, default => 'wstat', enum => [qw|title added wstat|] },
-    { name => 'f', required => 0, default => -1, enum => [ -1..$#{$self->{wishlist_status}} ] },
+    { name => 'f', required => 0, default => -1, enum => [ -1, @{$self->{wishlist_status}} ] },
   );
   return 404 if $f->{_err};
 
   if($own && $self->reqMethod eq 'POST') {
     my $frm = $self->formValidate(
       { name => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
-      { name => 'batchedit', required => 1, enum => [ -1..$#{$self->{wishlist_status}} ] },
+      { name => 'batchedit', required => 1, enum => [ -1, @{$self->{wishlist_status}} ] },
     );
     if(!$frm->{_err} && @{$frm->{sel}} && $frm->{sel}[0]) {
       $self->dbWishListDel($uid, $frm->{sel}) if $frm->{batchedit} == -1;
@@ -129,20 +129,20 @@ sub wishlist {
     page => $f->{p},
   );
 
-  my $title = $own ? 'My wishlist' : "\u$u->{username}'s wishlist";
+  my $title = $own ? mt('_wishlist_title_my') : mt('_wishlist_title_other', $u->{username});
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('u', $u, 'wish');
   div class => 'mainbox';
    h1 $title;
    if(!@$list && $f->{f} == -1) {
-      p 'Wishlist empty...';
+      p mt '_wishlist_noresults';
      end;
      return $self->htmlFooter;
    }
    p class => 'browseopts';
     a $f->{f} == $_ ? (class => 'optselected') : (), href => "/u$uid/wish?f=$_",
-        $_ == -1 ? 'All priorities' : ucfirst $self->{wishlist_status}[$_]
-      for (-1..$#{$self->{wishlist_status}});
+        $_ == -1 ? mt '_wishlist_prio_all' : mt "_wish_$_"
+      for (-1, @{$self->{wishlist_status}});
    end;
   end;
 
@@ -157,9 +157,9 @@ sub wishlist {
     pageurl  => "/u$uid/wish?f=$f->{f};o=$f->{o};s=$f->{s}",
     sorturl  => "/u$uid/wish?f=$f->{f}",
     header   => [
-      [ Title    => 'title' ],
-      [ Priority => 'wstat' ],
-      [ Added    => 'added' ],
+      [ mt('_wishlist_col_title') => 'title' ],
+      [ mt('_wishlist_col_prio')  => 'wstat' ],
+      [ mt('_wishlist_col_added') => 'added' ],
     ],
     row      => sub {
       my($s, $n, $i) = @_;
@@ -169,20 +169,20 @@ sub wishlist {
           if $own;
         a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, ' '.shorten $i->{title}, 70;
        end;
-       td class => 'tc2', ucfirst $self->{wishlist_status}[$i->{wstat}];
-       td class => 'tc3', date $i->{added}, 'compact';
+       td class => 'tc2', mt "_wish_$i->{wstat}";
+       td class => 'tc3', $self->{l10n}->date($i->{added}, 'compact');
       end;
     },
     $own ? (footer => sub {
       Tr;
        td colspan => 3;
         Select name => 'batchedit', id => 'batchedit';
-         option '-- with selected --';
-         optgroup label => 'Change priority';
-          option value => $_, $self->{wishlist_status}[$_]
-            for (0..$#{$self->{wishlist_status}});
+         option mt '_wishlist_select';
+         optgroup label => mt '_wishlist_changeprio';
+          option value => $_, mt "_wish_$_"
+            for (@{$self->{wishlist_status}});
          end;
-         option value => -1, 'remove from wishlist';
+         option value => -1, mt '_wishlist_remove';
         end;
        end;
       end;
@@ -198,7 +198,7 @@ sub vnlist {
 
   my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
   my $u = $self->dbUserGet(uid => $uid)->[0];
-  return 404 if !$u || !$own && !$u->{show_list};
+  return 404 if !$u || !$own && !($u->{show_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p',  required => 0, default => 1, template => 'int' },
@@ -234,7 +234,7 @@ sub vnlist {
     $f->{c} ne 'all' ? (char => $f->{c}) : (),
   );
 
-  my $title = $own ? 'My visual novel list' : "\u$u->{username}'s visual novel list";
+  my $title = $own ? mt '_rlist_title_my' : mt '_rlist_title_other', $u->{username};
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('u', $u, 'list');
 
@@ -260,9 +260,9 @@ sub vnlist {
     }
    end;
    p class => 'browseopts';
-    a href => $url->(v =>  0),  0 == $f->{v} ? (class => 'optselected') : (), 'All';
-    a href => $url->(v =>  1),  1 == $f->{v} ? (class => 'optselected') : (), 'Only voted';
-    a href => $url->(v => -1), -1 == $f->{v} ? (class => 'optselected') : (), 'Hide voted';
+    a href => $url->(v =>  0),  0 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_voted_all';
+    a href => $url->(v =>  1),  1 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_voted_only';
+    a href => $url->(v => -1), -1 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_voted_none';
    end;
   end;
 
@@ -284,12 +284,11 @@ sub _vnlist_browse {
     sorturl  => $url->(),
     pageurl  => $url->('page'),
     header   => [
-      [ Title    => 'title', 3 ],
-      sub { td class => 'tc2', id => 'relhidall'; lit '<i>&#9656;</i>Releases*'; end; },
-      [ Vote     => 'vote'  ],
+      [ mt('_rlist_col_title') => 'title', 3 ],
+      sub { td class => 'tc2', id => 'relhidall'; lit '<i>&#9656;</i>'.mt('_rlist_col_releases').'*'; end; },
+      [ mt('_rlist_col_vote')  => 'vote'  ],
     ],
     row      => sub {
-
       my($s, $n, $i) = @_;
       Tr $n % 2 == 0 ? (class => 'odd') : ();
        td class => 'tc1', colspan => 3;
@@ -312,11 +311,11 @@ sub _vnlist_browse {
          td class => 'tc1'.($own ? ' own' : '');
           input type => 'checkbox', name => 'sel', value => $_->{rid}
             if $own;
-          lit datestr $_->{released};
+          lit $self->{l10n}->datestr($_->{released});
          end;
          td class => 'tc2';
-          cssicon "lang $_", $self->{languages}{$_} for @{$_->{languages}};
-          cssicon substr(lc $self->{release_types}[$_->{type}], 0, 3), $self->{release_types}[$_->{type}].' release';
+          cssicon "lang $_", mt "_lang_$_" for @{$_->{languages}};
+          cssicon "rt$_->{type}", mt "_rtype_$_->{type}";
          end;
          td class => 'tc3';
           a href => "/r$_->{rid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;
@@ -332,19 +331,19 @@ sub _vnlist_browse {
       Tr;
        td class => 'tc1', colspan => 3;
         Select id => 'batchedit', name => 'batchedit';
-         option '- with selected -';
-         optgroup label => 'Change release status';
+         option mt '_rlist_selection';
+         optgroup label => mt '_rlist_changerel';
           option value => "r$_", $self->{vn_rstat}[$_]
             for (0..$#{$self->{vn_rstat}});
          end;
-         optgroup label => 'Change play status';
+         optgroup label => mt '_rlist_changeplay';
           option value => "v$_", $self->{vn_vstat}[$_]
             for (0..$#{$self->{vn_vstat}});
          end;
-         option value => 'del', 'remove from list';
+         option value => 'del', mt '_rlist_del';
         end;
        end;
-       td class => 'tc2', colspan => 2, '* Obtained/finished/total';
+       td class => 'tc2', colspan => 2, mt '_rlist_releasenote';
       end;
     }) : (),
   );

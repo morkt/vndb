@@ -213,7 +213,7 @@ function relLoad() {
 
   // make sure the title is up-to-date
   x('title').onchange = function() {
-    l = x('jt_box_relations').getElementsByTagName('td');
+    l = x('jt_box_vn_rel').getElementsByTagName('td');
     for(i=0;i<l.length;i++)
       if(l[i].className == 'tc3')
         l[i].innerHTML = shorten(this.value, 40);
@@ -645,7 +645,7 @@ function medSetSubmit() {
 function medAddNew(med, qty) {
   var o = document.createElement('span');
   var r = '<select class="qty" onchange="medSerialize()"><option value="0">- quantity -</option>';
-  for(var i=1;i<=10;i++)
+  for(var i=1;i<=20;i++)
     r += '<option value="'+i+'"'+(qty == i ? ' selected="selected"' : '')+'>'+i+'</option>';
   r += '</select><select class="medium" onchange="return medCheckNew(this)">';
   for(i=0;i<medTypes.length;i++)
@@ -720,7 +720,7 @@ function vnpLoad(type) {
   vnpCheckEmpty(type);
 
   // dropdown
-  var n = x('jt_box_'+(type == 'vn' ? 'visual_novels' : type)).getElementsByTagName('div')[1];
+  var n = x('jt_box_'+(type == 'vn' ? 'rel_vn' : 'rel_prod')).getElementsByTagName('div')[1];
   dsInit(n.getElementsByTagName('input')[0], '/xml/'+type+'.xml?q=', function(item, tr) {
     var td = document.createElement('td');
     td.innerHTML = type.substr(0,1)+item.getAttribute('id');
@@ -771,7 +771,7 @@ function vnpStripe(type) {
 }
 
 function vnpFormAdd(type) {
-  var n = x('jt_box_'+(type == 'vn' ? 'visual_novels' : type)).getElementsByTagName('div')[1];
+  var n = x('jt_box_'+(type == 'vn' ? 'rel_vn' : 'rel_prod')).getElementsByTagName('div')[1];
   var txt = n.getElementsByTagName('input')[0];
   var lnk = n.getElementsByTagName('a')[0];
   var input = txt.value;
@@ -825,7 +825,7 @@ function vnpSerialize(type) {
 
 function tglLoad() {
   var n = x('tagtable').getElementsByTagName('tfoot')[0].getElementsByTagName('input');
-  dsInit(n[0], '/xml/tags.xml?q=', function(item, tr) {
+  dsInit(n[1], '/xml/tags.xml?q=', function(item, tr) {
     var td = document.createElement('td');
     td.innerHTML = shorten(item.firstChild.nodeValue, 40);
     if(item.getAttribute('meta') == 'yes')
@@ -836,7 +836,7 @@ function tglLoad() {
   }, function(item) {
     return item.firstChild.nodeValue;
   }, tglAdd);
-  n[1].onclick = tglAdd;
+  n[2].onclick = tglAdd;
 
   tglStripe();
   var l = x('tagtable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
@@ -888,12 +888,12 @@ function tglVoteBarSel(obj, vote) {
 
 function tglAdd() {
   var n = x('tagtable').getElementsByTagName('tfoot')[0].getElementsByTagName('input');
-  n[0].disabled = n[1].disabled = true;
-  n[1].value = 'loading...';
-  ajax('/xml/tags.xml?q=name:'+encodeURIComponent(n[0].value), function(hr) {
-    n[0].disabled = n[1].disabled = false;
-    n[1].value = 'Add tag';
-    n[0].value = '';
+  n[1].disabled = n[2].disabled = true;
+  n[2].value = 'loading...';
+  ajax('/xml/tags.xml?q=name:'+encodeURIComponent(n[1].value), function(hr) {
+    n[1].disabled = n[1].disabled = false;
+    n[2].value = 'Add tag';
+    n[1].value = '';
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
@@ -903,12 +903,12 @@ function tglAdd() {
     var name = items[0].firstChild.nodeValue;
     var l = x('tagtable').getElementsByTagName('a');
     for(var i=0; i<l.length; i++)
-      if(l[i].innerHTML == shorten(name, 40))
+      if(l[i].innerHTML == qq(name))
         return alert('Tag is already present!');
 
     var tr = document.createElement('tr');
     var td = document.createElement('td');
-    td.innerHTML = '<a href="/g'+items[0].getAttribute('id')+'">'+name+'</a>';
+    td.innerHTML = '<a href="/g'+items[0].getAttribute('id')+'">'+qq(name)+'</a>';
     td.className = 'tc1';
     tr.appendChild(td);
     td = document.createElement('td');

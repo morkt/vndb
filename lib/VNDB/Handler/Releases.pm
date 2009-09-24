@@ -36,34 +36,34 @@ sub page {
       what => 'vn extended producers platforms media changes'
     )->[0];
     $self->htmlRevision('r', $prev, $r,
-      [ vn        => 'Relations',      join => '<br />', split => sub {
+      [ vn         => join => '<br />', split => sub {
         map sprintf('<a href="/v%d" title="%s">%s</a>', $_->{vid}, $_->{original}||$_->{title}, shorten $_->{title}, 50), @{$_[0]};
       } ],
-      [ type      => 'Type',           serialize => sub { $self->{release_types}[$_[0]] } ],
-      [ patch     => 'Patch',          serialize => sub { $_[0] ? 'Patch' : 'Not a patch' } ],
-      [ freeware  => 'Freeware',       serialize => sub { $_[0] ? 'yes' : 'nope' } ],
-      [ doujin    => 'Doujin',         serialize => sub { $_[0] ? 'yups' : 'nope' } ],
-      [ title     => 'Title (romaji)', diff => 1 ],
-      [ original  => 'Original title', diff => 1 ],
-      [ gtin      => 'JAN/UPC/EAN',    serialize => sub { $_[0]||'[none]' } ],
-      [ catalog   => 'Catalog number', serialize => sub { $_[0]||'[none]' } ],
-      [ languages => 'Language',       join => ', ', split => sub { map $self->{languages}{$_}, @{$_[0]} } ],
-      [ website   => 'Website',        ],
-      [ released  => 'Release date',   htmlize   => sub { datestr $_[0] } ],
-      [ minage    => 'Age rating',     serialize => sub { $self->{age_ratings}{$_[0]}[0] } ],
-      [ notes     => 'Notes',          diff => 1 ],
-      [ platforms => 'Platforms',      join => ', ', split => sub { map $self->{platforms}{$_}, @{$_[0]} } ],
-      [ media     => 'Media',          join => ', ', split => sub {
+      [ type       => serialize => sub { mt "_rtype_$_[0]" } ],
+      [ patch      => serialize => sub { $_[0] ? 'Patch' : 'Not a patch' } ],
+      [ freeware   => serialize => sub { $_[0] ? 'yes' : 'nope' } ],
+      [ doujin     => serialize => sub { $_[0] ? 'yups' : 'nope' } ],
+      [ title      => diff => 1 ],
+      [ original   => diff => 1 ],
+      [ gtin       => serialize => sub { $_[0]||'[none]' } ],
+      [ catalog    => serialize => sub { $_[0]||'[none]' } ],
+      [ languages  => join => ', ', split => sub { map mt("_lang_$_"), @{$_[0]} } ],
+      [ 'website' ],
+      [ released   => htmlize   => sub { $self->{l10n}->datestr($_[0]) } ],
+      [ minage     => serialize => sub { $self->{age_ratings}{$_[0]}[0] } ],
+      [ notes      => diff => 1 ],
+      [ platforms  => join => ', ', split => sub { map mt("_plat_$_"), @{$_[0]} } ],
+      [ media      => join => ', ', split => sub {
         map {
           my $med = $self->{media}{$_->{medium}};
           $med->[1] ? sprintf('%d %s%s', $_->{qty}, $med->[0], $_->{qty}>1?'s':'') : $med->[0]
         } @{$_[0]};
       } ],
-      [ resolution => 'Resolution',    serialize => sub { $self->{resolutions}[$_[0]][0] } ],
-      [ voiced    => 'Voiced',         serialize => sub { $self->{voiced}[$_[0]] } ],
-      [ ani_story => 'Story animation',serialize => sub { $self->{animated}[$_[0]] } ],
-      [ ani_ero   => 'Ero animation',  serialize => sub { $self->{animated}[$_[0]] } ],
-      [ producers => 'Producers',      join => '<br />', split => sub {
+      [ resolution => serialize => sub { $self->{resolutions}[$_[0]][0] } ],
+      [ voiced     => serialize => sub { mt '_voiced_'.$_[0] } ],
+      [ ani_story  => serialize => sub { mt '_animated_'.$_[0] } ],
+      [ ani_ero    => serialize => sub { mt '_animated_'.$_[0] } ],
+      [ producers  => join => '<br />', split => sub {
         map sprintf('<a href="/p%d" title="%s">%s</a>', $_->{id}, $_->{original}||$_->{name}, shorten $_->{name}, 50), @{$_[0]};
       } ],
     );
@@ -93,7 +93,7 @@ sub _infotable {
    my $i = 0;
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td class => 'key', 'Relation';
+    td class => 'key', mt '_relinfo_vnrel';
     td;
      for (@{$r->{vn}}) {
        a href => "/v$_->{vid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 60;
@@ -103,50 +103,48 @@ sub _infotable {
    end;
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td 'Title';
+    td mt '_relinfo_title';
     td $r->{title};
    end;
 
    if($r->{original}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Original title';
+      td mt '_relinfo_original';
       td $r->{original};
      end;
    }
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td 'Type';
+    td mt '_relinfo_type';
     td;
-     my $type = $self->{release_types}[$r->{type}];
-     cssicon lc(substr $type, 0, 3), $type;
-     txt ' '.$type;
-     txt ' patch' if $r->{patch};
+     cssicon "rt$r->{type}", mt "_rtype_$r->{type}";
+     txt ' '.mt '_relinfo_type_format', mt("_rtype_$r->{type}"), $r->{patch}?1:0;
     end;
    end;
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td 'Language';
+    td mt '_relinfo_lang';
     td;
      for (@{$r->{languages}}) {
-       cssicon "lang $_", $self->{languages}{$_};
-       txt ' '.$self->{languages}{$_};
+       cssicon "lang $_", mt "_lang_$_";
+       txt ' '.mt("_lang_$_");
        br if $_ ne $r->{languages}[$#{$r->{languages}}];
      }
     end;
    end;
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td 'Publication';
-    td join ', ', $r->{freeware} ? 'Freeware' : 'Non-free', $r->{patch} ? () : $r->{doujin} ? 'doujin' : 'commercial';
+    td mt '_relinfo_publication';
+    td mt $r->{patch} ? '_relinfo_pub_patch' : '_relinfo_pub_nopatch', $r->{freeware}?0:1, $r->{doujin}?0:1;
    end;
 
    if(@{$r->{platforms}}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Platform'.($#{$r->{platforms}} ? 's' : '');
+      td mt '_relinfo_platform', scalar @{$r->{platforms}};
       td;
        for(@{$r->{platforms}}) {
-         cssicon $_, $self->{platforms}{$_};
-         txt ' '.$self->{platforms}{$_};
+         cssicon $_, mt "_plat_$_";
+         txt ' '.mt("_plat_$_");
          br if $_ ne $r->{platforms}[$#{$r->{platforms}}];
        }
       end;
@@ -155,7 +153,8 @@ sub _infotable {
 
    if(@{$r->{media}}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Medi'.($#{$r->{media}} ? 'a' : 'um');
+      td mt '_relinfo_media', scalar @{$r->{media}};
+      # TODO: TL the media
       td join ', ', map {
         my $med = $self->{media}{$_->{medium}};
         $med->[1] ? sprintf('%d %s%s', $_->{qty}, $med->[0], $_->{qty}>1?'s':'') : $med->[0]
@@ -165,44 +164,44 @@ sub _infotable {
 
    if($r->{resolution}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Resolution';
+      td mt '_relinfo_resolution';
       td $self->{resolutions}[$r->{resolution}][0];
      end;
    }
 
    if($r->{voiced}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Voiced';
-      td $self->{voiced}[$r->{voiced}];
+      td mt '_relinfo_voiced';
+      td mt '_voiced_'.$r->{voiced};
      end;
    }
 
    if($r->{ani_story} || $r->{ani_ero}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Animation';
+      td mt '_relinfo_ani';
       td join ', ',
-        $r->{ani_story} ? ('Story: '     .$self->{animated}[$r->{ani_story}]):(),
-        $r->{ani_ero}   ? ('Ero scenes: '.$self->{animated}[$r->{ani_ero}  ]):();
+        $r->{ani_story} ? mt('_relinfo_ani_story', mt '_animated_'.$r->{ani_story}):(),
+        $r->{ani_ero}   ? mt('_relinfo_ani_ero',   mt '_animated_'.$r->{ani_ero}  ):();
      end;
    }
 
    Tr ++$i % 2 ? (class => 'odd') : ();
-    td 'Released';
+    td mt '_relinfo_released';
     td;
-     lit datestr $r->{released};
+     lit $self->{l10n}->datestr($r->{released});
     end;
    end;
 
    if($r->{minage} >= 0) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Age rating';
+      td mt '_relinfo_minage';
       td $self->{age_ratings}{$r->{minage}}[0];
      end;
    }
 
    if(@{$r->{producers}}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Producer'.($#{$r->{producers}} ? 's' : '');
+      td mt '_relinfo_producer', scalar @{$r->{producers}};
       td;
        for (@{$r->{producers}}) {
          a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 60;
@@ -221,16 +220,16 @@ sub _infotable {
 
    if($r->{catalog}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Catalog no.';
+      td mt '_relinfo_catalog';
       td $r->{catalog};
      end;
    }
 
    if($r->{website}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'Links';
+      td mt '_relinfo_links';
       td;
-       a href => $r->{website}, rel => 'nofollow', 'Official website';
+       a href => $r->{website}, rel => 'nofollow', mt '_relinfo_website';
       end;
      end;
    }
@@ -238,19 +237,20 @@ sub _infotable {
    if($self->authInfo->{id}) {
      my $rl = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => $r->{id})->[0];
      Tr ++$i % 2 ? (class => 'odd') : ();
-      td 'User options';
+      td mt '_relinfo_user';
       td;
        Select id => 'listsel', name => 'listsel';
-        option !$rl ? 'not in your list' : "Status: $self->{vn_rstat}[$rl->{rstat}] / $self->{vn_vstat}[$rl->{vstat}]";
-        optgroup label => 'Set release status';
+        option mt !$rl ? '_relinfo_user_notlist' :
+          ('_relinfo_user_inlist', $self->{vn_rstat}[$rl->{rstat}], $self->{vn_vstat}[$rl->{vstat}]);
+        optgroup label => mt '_relinfo_user_setr';
          option value => "r$_", $self->{vn_rstat}[$_]
            for (0..$#{$self->{vn_rstat}});
         end;
-        optgroup label => 'Set play status';
+        optgroup label => mt '_relinfo_user_setv';
          option value => "v$_", $self->{vn_vstat}[$_]
            for (0..$#{$self->{vn_vstat}});
         end;
-        option value => 'del', 'remove from list' if $rl;
+        option value => 'del', mt '_relinfo_user_del' if $rl;
        end;
       end;
      end;
@@ -296,7 +296,7 @@ sub edit {
 
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
-      { name => 'type',      enum => [ 0..$#{$self->{release_types}} ] },
+      { name => 'type',      enum => $self->{release_types} },
       { name => 'patch',     required => 0, default => 0 },
       { name => 'freeware',  required => 0, default => 0 },
       { name => 'doujin',    required => 0, default => 0 },
@@ -305,17 +305,17 @@ sub edit {
       { name => 'gtin',      required => 0, default => '0',
         func => [ \&gtintype, 'Not a valid JAN/UPC/EAN code' ] },
       { name => 'catalog',   required => 0, default => '', maxlength => 50 },
-      { name => 'languages', multi => 1, enum => [ keys %{$self->{languages}} ] },
+      { name => 'languages', multi => 1, enum => $self->{languages} },
       { name => 'website',   required => 0, default => '', template => 'url' },
       { name => 'released',  required => 0, default => 0, template => 'int' },
       { name => 'minage' ,   required => 0, default => -1, enum => [ keys %{$self->{age_ratings}} ] },
       { name => 'notes',     required => 0, default => '', maxlength => 10240 },
-      { name => 'platforms', required => 0, default => '', multi => 1, enum => [ keys %{$self->{platforms}} ] },
+      { name => 'platforms', required => 0, default => '', multi => 1, enum => $self->{platforms} },
       { name => 'media',     required => 0, default => '' },
       { name => 'resolution',required => 0, default => 0, enum => [ 0..$#{$self->{resolutions}} ] },
-      { name => 'voiced',    required => 0, default => 0, enum => [ 0..$#{$self->{voiced}} ] },
-      { name => 'ani_story', required => 0, default => 0, enum => [ 0..$#{$self->{animated}} ] },
-      { name => 'ani_ero',   required => 0, default => 0, enum => [ 0..$#{$self->{animated}} ] },
+      { name => 'voiced',    required => 0, default => 0, enum => $self->{voiced} },
+      { name => 'ani_story', required => 0, default => 0, enum => $self->{animated} },
+      { name => 'ani_ero',   required => 0, default => 0, enum => $self->{animated} },
       { name => 'producers', required => 0, default => '' },
       { name => 'vn',        maxlength => 5000 },
       { name => 'editsum',   maxlength => 5000 },
@@ -329,7 +329,9 @@ sub edit {
       $new_vn    = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];
       $frm->{platforms} = [ grep $_, @{$frm->{platforms}} ];
       $frm->{$_} = $frm->{$_} ? 1 : 0 for (qw|patch freeware doujin|);
-      $frm->{doujin} = 0 if $frm->{patch};
+
+      # reset some fields when the patch flag is set
+      $frm->{doujin} = $frm->{resolution} = $frm->{voiced} = $frm->{ani_story} = $frm->{ani_ero} = 0 if $frm->{patch};
 
       my $same = $rid &&
           (join(',', sort @{$b4{platforms}}) eq join(',', sort @{$frm->{platforms}})) &&
@@ -367,10 +369,11 @@ sub edit {
   $frm->{title} = $v->{title} if !defined $frm->{title} && !$r;
   $frm->{original} = $v->{original} if !defined $frm->{original} && !$r;
 
-  $self->htmlHeader(js => 'forms', title => $rid ? ''.($copy ? 'Copy ':'Edit ').$r->{title} : 'Add release to '.$v->{title}, noindex => 1);
+  my $title = mt $rid ? ($copy ? '_redit_title_copy' : '_redit_title_edit', $r->{title}) : ('_redit_title_add', $v->{title});
+  $self->htmlHeader(js => 'forms', title => $title, noindex => 1);
   $self->htmlMainTabs('r', $r, $copy ? 'copy' : 'edit') if $rid;
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
-  $self->htmlEditMessage('r', $r, $copy);
+  $self->htmlEditMessage('r', $r, $title, $copy);
   _form($self, $r, $v, $frm, $copy);
   $self->htmlFooter;
 }
@@ -380,57 +383,56 @@ sub _form {
   my($self, $r, $v, $frm, $copy) = @_;
 
   $self->htmlForm({ frm => $frm, action => $r ? "/r$r->{id}/".($copy ? 'copy' : 'edit') : "/v$v->{id}/add", editsum => 1 },
-  "General info" => [
-    [ select => short => 'type',      name => 'Type',
-      options => [ map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ] ],
-    [ check  => short => 'patch',     name => 'This release is a patch to another release.' ],
-    [ check  => short => 'freeware',  name => 'Freeware (i.e. available at no cost)' ],
-    [ check  => short => 'doujin',    name => 'Doujin (self-published / not by a commercial company)' ],
-    [ input  => short => 'title',     name => 'Title (romaji)', width => 300 ],
-    [ input  => short => 'original',  name => 'Original title', width => 300 ],
-    [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],
-    [ select => short => 'languages', name => 'Language(s)', multi => 1,
-      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
-    [ input  => short => 'gtin',      name => 'JAN/UPC/EAN' ],
-    [ input  => short => 'catalog',   name => 'Catalog number' ],
-    [ input  => short => 'website',   name => 'Official website' ],
-    [ date   => short => 'released',  name => 'Release date' ],
-    [ static => content => 'Leave month or day blank if they are unknown' ],
-    [ select => short => 'minage', name => 'Age rating',
+  rel_geninfo => [ mt('_redit_form_geninfo'),
+    [ select => short => 'type',      name => mt('_redit_form_type'),
+      options => [ map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ] ],
+    [ check  => short => 'patch',     name => mt('_redit_form_patch') ],
+    [ check  => short => 'freeware',  name => mt('_redit_form_freeware') ],
+    [ check  => short => 'doujin',    name => mt('_redit_form_doujin') ],
+    [ input  => short => 'title',     name => mt('_redit_form_title'),    width => 300 ],
+    [ input  => short => 'original',  name => mt('_redit_form_original'), width => 300 ],
+    [ static => content => mt '_redit_form_original_note' ],
+    [ select => short => 'languages', name => mt('_redit_form_languages'), multi => 1,
+      options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
+    [ input  => short => 'gtin',      name => mt('_redit_form_gtin') ],
+    [ input  => short => 'catalog',   name => mt('_redit_form_catalog') ],
+    [ input  => short => 'website',   name => mt('_redit_form_website') ],
+    [ date   => short => 'released',  name => mt('_redit_form_released') ],
+    [ static => content => mt('_redit_form_released_note') ],
+    [ select => short => 'minage', name => mt('_redit_form_minage'),
       options => [ map [ $_, $self->{age_ratings}{$_}[0].($self->{age_ratings}{$_}[1]?" (e.g. $self->{age_ratings}{$_}[1])":'') ],
         sort { $a <=> $b } keys %{$self->{age_ratings}} ] ],
-    [ textarea => short => 'notes', name => 'Notes' ],
-    [ static => content => 'Miscellaneous notes/comments, information that does not fit in the above fields. '
-       .'E.g.: Censored/uncensored or for which releases this patch applies. Max. 250 characters.' ],
+    [ textarea => short => 'notes', name => mt('_redit_form_notes').'<br /><b class="standout">'.mt('_inenglish').'</b>' ],
+    [ static => content => mt('_redit_form_notes_note') ],
   ],
 
-  'Format' => [
-    [ select => short => 'resolution', name => 'Resolution', options => [
+  rel_format => [ mt('_redit_form_format'),
+    [ select => short => 'resolution', name => mt('_redit_form_resolution'), options => [
       map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
-    [ select => short => 'voiced',     name => 'Voiced', options => [
-      map [ $_, $self->{voiced}[$_] ], 0..$#{$self->{voiced}} ] ],
-    [ select => short => 'ani_story',  name => 'Story animation', options => [
-      map [ $_, $self->{animated}[$_] ], 0..$#{$self->{animated}} ] ],
-    [ select => short => 'ani_ero',  name => 'Ero animation', options => [
-      map [ $_, $_ ? $self->{animated}[$_] : 'Unknown / no ero scenes' ], 0..$#{$self->{animated}} ] ],
-    [ static => content => 'Animation in erotic scenes, leave to unknown if there are no ero scenes.' ],
+    [ select => short => 'voiced',     name => mt('_redit_form_voiced'), options => [
+      map [ $_, mt '_voiced_'.$_ ], @{$self->{voiced}} ] ],
+    [ select => short => 'ani_story',  name => mt('_redit_form_ani_story'), options => [
+      map [ $_, mt '_animated_'.$_ ], @{$self->{animated}} ] ],
+    [ select => short => 'ani_ero',  name => mt('_redit_form_ani_ero'), options => [
+      map [ $_, $_ ? mt '_animated_'.$_ : mt('_redit_form_ani_ero_none') ], @{$self->{animated}} ] ],
+    [ static => content => mt('_redit_form_ani_ero_note') ],
     [ hidden => short => 'media' ],
     [ static => nolabel => 1, content => sub {
-      h2 'Platforms';
+      h2 mt '_redit_form_platforms';
       div class => 'platforms';
-       for my $p (sort keys %{$self->{platforms}}) {
+       for my $p (sort @{$self->{platforms}}) {
          span;
           input type => 'checkbox', name => 'platforms', value => $p, id => $p,
             $frm->{platforms} && grep($_ eq $p, @{$frm->{platforms}}) ? (checked => 'checked') : ();
           label for => $p;
-           cssicon $p, $self->{platforms}{$p};
-           txt ' '.$self->{platforms}{$p};
+           cssicon $p, mt "_plat_$p";
+           txt ' '.mt("_plat_$p");
           end;
          end;
        }
       end;
 
-      h2 'Media';
+      h2 mt '_redit_form_media';
       div id => 'media_div';
        Select;
         option value => $_, class => $self->{media}{$_}[1] ? 'qty' : 'noqty', $self->{media}{$_}[0]
@@ -440,13 +442,13 @@ sub _form {
     }],
   ],
 
-  'Producers' => [
+  rel_prod => [ mt('_redit_form_prod'),
     [ hidden => short => 'producers' ],
     [ static => nolabel => 1, content => sub {
-      h2 'Selected producers';
+      h2 mt('_redit_form_prod_sel');
       div id => 'producerssel';
       end;
-      h2 'Add producer';
+      h2 mt('_redit_form_prod_add');
       div;
        input type => 'text', class => 'text';
        a href => '#', 'add';
@@ -454,13 +456,13 @@ sub _form {
     }],
   ],
 
-  'Visual novels' => [
+  rel_vn => [ mt('_redit_form_vn'),
     [ hidden => short => 'vn' ],
     [ static => nolabel => 1, content => sub {
-      h2 'Selected visual novels';
+      h2 mt('_redit_form_vn_sel');
       div id => 'vnsel';
       end;
-      h2 'Add visual novel';
+      h2 mt('_redit_form_vn_add');
       div;
        input type => 'text', class => 'text';
        a href => '#', 'add';
@@ -479,10 +481,10 @@ sub browse {
     { name => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
     { name => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
     { name => 'q',  required => 0, default => '', maxlength => 500 },
-    { name => 'ln', required => 0, multi => 1, default => '', enum => [ keys %{$self->{languages}} ] },
-    { name => 'pl', required => 0, multi => 1, default => '', enum => [ keys %{$self->{platforms}} ] },
+    { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
+    { name => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
     { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
-    { name => 'tp', required => 0, default => -1, enum => [ -1..$#{$self->{release_types}} ] },
+    { name => 'tp', required => 0, default => -1, enum => [ -1, @{$self->{release_types}} ] },
     { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
@@ -521,7 +523,7 @@ sub browse {
   $_&&($url .= ";re=$_") for @{$f->{re}};
   $_&&($url .= ";me=$_") for @{$f->{me}};
 
-  $self->htmlHeader(title => 'Browse releases');
+  $self->htmlHeader(title => mt('_rbrowse_title'));
   _filters($self, $f, !@filters || !@$list);
   $self->htmlBrowse(
     class    => 'relbrowse',
@@ -531,22 +533,22 @@ sub browse {
     pageurl  => "$url;s=$f->{s};o=$f->{o}",
     sorturl  => $url,
     header   => [
-      [ 'Released', 'released' ],
-      [ 'Rating',   'minage' ],
+      [ mt('_rbrowse_col_released'), 'released' ],
+      [ mt('_rbrowse_col_minage'),   'minage' ],
       [ '',         '' ],
-      [ 'Title',    'title' ],
+      [ mt('_rbrowse_col_title'),    'title' ],
     ],
     row      => sub {
       my($s, $n, $l) = @_;
       Tr $n % 2 ? (class => 'odd') : ();
        td class => 'tc1';
-        lit datestr $l->{released};
+        lit $self->{l10n}->datestr($l->{released});
        end;
        td class => 'tc2', $l->{minage} > -1 ? $self->{age_ratings}{$l->{minage}}[0] : '';
        td class => 'tc3';
-        $_ ne 'oth' && cssicon $_, $self->{platforms}{$_} for (@{$l->{platforms}});
-        cssicon "lang $_", $self->{languages}{$_} for (@{$l->{languages}});
-        cssicon lc(substr($self->{release_types}[$l->{type}],0,3)), $self->{release_types}[$l->{type}];
+        $_ ne 'oth' && cssicon $_, mt "_plat_$_" for (@{$l->{platforms}});
+        cssicon "lang $_", mt "_lang_$_" for (@{$l->{languages}});
+        cssicon "rt$l->{type}", mt "_rtype_$l->{type}";
        end;
        td class => 'tc4';
         a href => "/r$l->{id}", title => $l->{original}||$l->{title}, shorten $l->{title}, 90;
@@ -557,11 +559,9 @@ sub browse {
   ) if @$list;
   if(@filters && !@$list) {
     div class => 'mainbox';
-     h1 'No results found';
+     h1 mt '_rbrowse_noresults_title';
      div class => 'notice';
-      p qq|Sorry, couldn't find anything that comes through your filters. You might want to disable a few filters to get more results.\n\n|
-       .qq|Also, keep in mind that we don't have all information about all releases. So e.g. filtering on screen resolution will exclude |
-       .qq|all releases of which we don't know it's resolution, even though it might in fact be in the resolution you're looking for.|;
+      p mt '_rbrowse_noresults_msg';
      end;
     end;
   }
@@ -574,32 +574,31 @@ sub _filters {
 
   form method => 'get', action => '/r', 'accept-charset' => 'UTF-8';
   div class => 'mainbox';
-   h1 'Browse releases';
+   h1 mt '_rbrowse_title';
 
    $self->htmlSearchBox('r', $f->{q});
 
    a id => 'advselect', href => '#';
-    lit '<i>'.($shown?'&#9662;':'&#9656;').'</i> filters';
+    lit '<i>'.($shown?'&#9662;':'&#9656;').'</i> '.mt('_rbrowse_filters');
    end;
    div id => 'advoptions', !$shown ? (class => 'hidden') : ();
 
-    h2 'Filters';
+    h2 mt '_rbrowse_filters';
     table class => 'formtable', style => 'margin-left: 0';
      Tr class => 'newfield';
-      td class => 'label'; label for => 'ma_m', 'Age rating'; end;
+      td class => 'label'; label for => 'ma_m', mt '_rbrowse_minage'; end;
       td class => 'field';
-       Select id => 'ma_m', name => 'ma_m', style => 'width: 70px';
-        option value => 0, $f->{ma_m} == 0 ? ('selected' => 'selected') : (), 'greater';
-        option value => 1, $f->{ma_m} == 1 ? ('selected' => 'selected') : (), 'smaller';
+       Select id => 'ma_m', name => 'ma_m', style => 'width: 160px';
+        option value => 0, $f->{ma_m} == 0 ? ('selected' => 'selected') : (), mt '_rbrowse_ge';
+        option value => 1, $f->{ma_m} == 1 ? ('selected' => 'selected') : (), mt '_rbrowse_le';
        end;
-       txt ' than or equal to ';
        Select id => 'ma_a', name => 'ma_a', style => 'width: 80px; text-align: center';
         $_>=0 && option value => $_, $f->{ma_a} == $_ ? ('selected' => 'selected') : (), $self->{age_ratings}{$_}[0]
           for (sort { $a <=> $b } keys %{$self->{age_ratings}});
        end;
       end;
       td rowspan => 5, style => 'padding-left: 40px';
-       label for => 're', 'Screen resolution'; br;
+       label for => 're', mt '_rbrowse_resolution'; br;
        Select id => 're', name => 're', multiple => 'multiple', size => 8;
         my $l='';
         for my $i (1..$#{$self->{resolutions}}) {
@@ -614,47 +613,50 @@ sub _filters {
        end;
       end;
      end;
-     $self->htmlFormPart($f, [ select => short => 'tp', name => 'Release type',
-       options => [ [-1, 'All'], map [ $_, $self->{release_types}[$_] ], 0..$#{$self->{release_types}} ]]);
-     $self->htmlFormPart($f, [ select => short => 'pa', name => 'Patch status',
-       options => [ [0, 'All'], [1, 'Only patches'], [2, 'Only standalone releases']]]);
-     $self->htmlFormPart($f, [ select => short => 'fw', name => 'Freeware',
-       options => [ [0, 'All'], [1, 'Freeware only'], [2, 'Only non-free releases']]]);
-     $self->htmlFormPart($f, [ select => short => 'do', name => 'Doujin',
-       options => [ [0, 'All'], [1, 'Only doujin releases'], [2, 'Only commercial releases']]]);
-     $self->htmlFormPart($f, [ date => short => 'mi', name => 'Released after' ]);
-     $self->htmlFormPart($f, [ date => short => 'ma', name => 'Released before' ]);
+     $self->htmlFormPart($f, [ select => short => 'tp', name => mt('_rbrowse_type'),
+       options => [ [-1, mt '_rbrowse_all'], map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ]]);
+     $self->htmlFormPart($f, [ select => short => 'pa', name => mt('_rbrowse_patch'),
+       options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_patchonly'], [2, mt '_rbrowse_patchnone']]]);
+     $self->htmlFormPart($f, [ select => short => 'fw', name => mt('_rbrowse_freeware'),
+       options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_freewareonly'], [2, mt '_rbrowse_freewarenone']]]);
+     $self->htmlFormPart($f, [ select => short => 'do', name => mt('_rbrowse_doujin'),
+       options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_doujinonly'], [2, mt '_rbrowse_doujinnone']]]);
+     $self->htmlFormPart($f, [ date => short => 'mi', name => mt '_rbrowse_dateafter' ]);
+     $self->htmlFormPart($f, [ date => short => 'ma', name => mt '_rbrowse_datebefore' ]);
     end;
 
     h2;
-     lit 'Languages <b>(boolean or, selecting more gives more results)</b>';
+     txt mt '_rbrowse_languages';
+     b ' ('.mt('_rbrowse_boolor').')';
     end;
     for my $i (sort @{$self->dbLanguages}) {
       span;
        input type => 'checkbox', name => 'ln', value => $i, id => "lang_$i", grep($_ eq $i, @{$f->{ln}}) ? (checked => 'checked') : ();
        label for => "lang_$i";
-        cssicon "lang $i", $self->{languages}{$i};
-        txt $self->{languages}{$i};
+        cssicon "lang $i", mt "_lang_$i";
+        txt mt "_lang_$i";
        end;
       end;
     }
 
     h2;
-     lit 'Platforms <b>(boolean or, selecting more gives more results)</b>';
+     txt mt '_rbrowse_platforms';
+     b ' ('.mt('_rbrowse_boolor').')';
     end;
-    for my $i (sort keys %{$self->{platforms}}) {
+    for my $i (sort @{$self->{platforms}}) {
       next if $i eq 'oth';
       span;
        input type => 'checkbox', name => 'pl', value => $i, id => "plat_$i", grep($_ eq $i, @{$f->{pl}}) ? (checked => 'checked') : ();
        label for => "plat_$i";
-        cssicon $i, $self->{platforms}{$i};
-        txt $self->{platforms}{$i};
+        cssicon $i, mt "_plat_$i";
+        txt mt "_plat_$i";
        end;
       end;
     }
 
     h2;
-     lit 'Media <b>(boolean or, selecting more gives more results)</b>';
+     txt mt '_rbrowse_media';
+     b ' ('.mt('_rbrowse_boolor').')';
     end;
     for my $i (sort keys %{$self->{media}}) {
       next if $i eq 'otc';
@@ -665,8 +667,8 @@ sub _filters {
     }
 
     div style => 'text-align: center; clear: left;';
-     input type => 'submit', value => 'Apply', class => 'submit';
-     input type => 'reset', value => 'Clear', class => 'submit', onclick => 'location.href="/r"';
+     input type => 'submit', value => mt('_rbrowse_apply'), class => 'submit';
+     input type => 'reset', value => mt('_rbrowse_clear'), class => 'submit', onclick => 'location.href="/r"';
     end;
    end;
   end;

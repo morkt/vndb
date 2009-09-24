@@ -29,48 +29,48 @@ sub htmlMainTabs {
   ul class => 'maintabs';
    if($type =~ /[uvrp]/) {
      li $sel eq 'hist' ? (class => 'tabselected') : ();
-      a href => "/$id/hist", 'history';
+      a href => "/$id/hist", mt '_mtabs_hist';
      end;
    }
 
    if($type =~ /[uvp]/) {
      my $cnt = $self->dbThreadCount($type, $obj->{id});
      li $sel eq 'disc' ? (class => 'tabselected') : ();
-      a href => "/t/$id", "discussions ($cnt)";
+      a href => "/t/$id", mt '_mtabs_discuss', $cnt;
      end;
    }
 
    if($type eq 'u') {
      li $sel eq 'posts' ? (class => 'tabselected') : ();
-      a href => "/$id/posts", 'posts';
+      a href => "/$id/posts", mt '_mtabs_posts';
      end;
    }
 
-   if($type eq 'u' && $obj->{show_list}) {
+   if($type eq 'u' && ($obj->{show_list} || $self->authCan('usermod'))) {
      li $sel eq 'wish' ? (class => 'tabselected') : ();
-      a href => "/$id/wish", 'wishlist';
+      a href => "/$id/wish", mt '_mtabs_wishlist';
      end;
 
      li $sel eq 'list' ? (class => 'tabselected') : ();
-      a href => "/$id/list", 'list';
+      a href => "/$id/list", mt '_mtabs_list';
      end;
    }
 
    if($type eq 'u') {
      li $sel eq 'tags' ? (class => 'tabselected') : ();
-      a href => "/$id/tags", 'tags';
+      a href => "/$id/tags", mt '_mtabs_tags';
      end;
    }
 
    if($type eq 'v' && $self->authCan('tag') && !$obj->{hidden}) {
      li $sel eq 'tagmod' ? (class => 'tabselected') : ();
-      a href => "/$id/tagmod", 'modify tags';
+      a href => "/$id/tagmod", mt '_mtabs_tagmod';
      end;
    }
 
    if($type eq 'r' && $self->authCan('edit')) {
      li $sel eq 'copy' ? (class => 'tabselected') : ();
-      a href => "/$id/copy", 'copy';
+      a href => "/$id/copy", mt '_mtabs_copy';
      end;
    }
 
@@ -79,31 +79,31 @@ sub htmlMainTabs {
       || $type eq 'g'     && $self->authCan('tagmod')
    ) {
      li $sel eq 'edit' ? (class => 'tabselected') : ();
-      a href => "/$id/edit", 'edit';
+      a href => "/$id/edit", mt '_mtabs_edit';
      end;
    }
 
    if($type =~ /[vrp]/ && $self->authCan('del')) {
      li;
-      a href => "/$id/hide", $obj->{hidden} ? 'unhide' : 'hide';
+      a href => "/$id/hide", mt $obj->{hidden} ? '_mtabs_unhide' : '_mtabs_hide';
      end;
    }
 
    if($type =~ /[vrp]/ && $self->authCan('lock')) {
      li;
-      a href => "/$id/lock", $obj->{locked} ? 'unlock' : 'lock';
+      a href => "/$id/lock", mt $obj->{locked} ? '_mtabs_unlock' : '_mtabs_lock';
      end;
    }
 
    if($type eq 'u' && $self->authCan('usermod')) {
      li $sel eq 'del' ? (class => 'tabselected') : ();
-      a href => "/$id/del", 'del';
+      a href => "/$id/del", mt '_mtabs_del';
      end;
    }
 
    if($type eq 'v' && $obj->{rgraph}) {
      li $sel eq 'rg' ? (class => 'tabselected') : ();
-      a href => "/$id/rg", 'relations';
+      a href => "/$id/rg", mt '_mtabs_relations';
      end;
    }
 
@@ -117,19 +117,16 @@ sub htmlMainTabs {
 # generates a full error page, including header and footer
 sub htmlDenied {
   my $self = shift;
-  $self->htmlHeader(title => 'Access Denied');
+  $self->htmlHeader(title => mt '_denied_title');
   div class => 'mainbox';
-   h1 'Access Denied';
+   h1 mt '_denied_title';
    div class => 'warning';
     if(!$self->authInfo->{id}) {
-      h2 'You need to be logged in to perform this action.';
-      p;
-       lit 'Please <a href="/u/login">login</a>, or <a href="/u/register">create an account</a> '
-          .'if you don\'t have one yet.';
-      end;
+      h2 mt '_denied_needlogin_title';
+      p; lit mt '_denied_needlogin_msg'; end;
     } else {
-      h2 "You are not allowed to perform this action.";
-      p 'It seems you don\'t have the proper rights to perform the action you wanted to perform...';
+      h2 mt '_denied_noaccess_title';
+      p mt '_denied_noaccess_msg';
     }
    end;
   end;
@@ -147,10 +144,9 @@ sub htmlHiddenMessage {
   div class => 'mainbox';
    h1 $obj->{title}||$obj->{name};
    div class => 'warning';
-    h2 'Item deleted';
+    h2 mt '_hiddenmsg_title';
     p;
-     lit qq|This item has been deleted from the database, File a request on the|
-        .qq| <a href="/t/$board">discussion board</a> to undelete this page.|;
+     lit mt '_hiddenmsg_msg', "/t/$board";
     end;
    end;
   end;
@@ -240,12 +236,12 @@ sub htmlBrowseNavigate {
   ul class => 'maintabs ' . ($al eq 't' ? 'notfirst' : 'bottom');
    if($p > 1) {
      li class => 'left';
-      a href => $url.($p-1), '<- previous';
+      a href => $url.($p-1), '<- '.mt '_browse_previous';
      end;
    }
    if($np) {
      li;
-      a href => $url.($p+1), 'next ->';
+      a href => $url.($p+1), mt('_browse_next').' ->';
      end;
    }
   end;
@@ -265,12 +261,12 @@ sub htmlBrowseNavigate {
 sub htmlRevision {
   my($self, $type, $old, $new, @fields) = @_;
   div class => 'mainbox revision';
-   h1 'Revision '.$new->{rev};
+   h1 mt '_revision_title', $new->{rev};
 
    # previous/next revision links
-   a class => 'prev', href => sprintf('/%s%d.%d', $type, $new->{id}, $new->{rev}-1), '<- earlier revision'
+   a class => 'prev', href => sprintf('/%s%d.%d', $type, $new->{id}, $new->{rev}-1), '<- '.mt '_revision_previous'
      if $new->{rev} > 1;
-   a class => 'next', href => sprintf('/%s%d.%d', $type, $new->{id}, $new->{rev}+1), 'later revision ->'
+   a class => 'next', href => sprintf('/%s%d.%d', $type, $new->{id}, $new->{rev}+1), mt('_revision_next').' ->'
      if $new->{cid} != $new->{latest};
    p class => 'center';
     a href => "/$type$new->{id}", "$type$new->{id}";
@@ -279,11 +275,11 @@ sub htmlRevision {
    # no previous revision, just show info about the revision itself
    if(!$old) {
      div;
-      revheader($type, $new);
+      revheader($self, $type, $new);
       br;
-      b 'Edit summary:';
+      b mt '_revision_new_summary';
       br; br;
-      lit bb2html($new->{comments})||'[no summary]';
+      lit bb2html($new->{comments})||'-';
      end;
    }
 
@@ -293,40 +289,37 @@ sub htmlRevision {
       thead;
        Tr;
         td; lit '&nbsp;'; end;
-        td; revheader($type, $old); end;
-        td; revheader($type, $new); end;
+        td; revheader($self, $type, $old); end;
+        td; revheader($self, $type, $new); end;
        end;
        Tr;
         td; lit '&nbsp;'; end;
         td colspan => 2;
-         b 'Edit summary of revision '.$new->{rev}.':';
+         b mt '_revision_edit_summary', $new->{rev};
          br; br;
-         lit bb2html($new->{comments})||'[no summary]';
+         lit bb2html($new->{comments})||'-';
         end;
        end;
       end;
       my $i = 1;
-      revdiff(\$i, $old, $new, @$_) for (@fields);
+      revdiff(\$i, $type, $old, $new, @$_) for (@fields);
      end;
    }
   end;
 }
 
 sub revheader { # type, obj
-  my($type, $obj) = @_;
-  b 'Revision '.$obj->{rev};
+  my($self, $type, $obj) = @_;
+  b mt '_revision_title', $obj->{rev};
   txt ' (';
-  a href => "/$type$obj->{id}.$obj->{rev}/edit", 'edit';
+  a href => "/$type$obj->{id}.$obj->{rev}/edit", mt '_mtabs_edit';
   txt ')';
   br;
-  txt 'By ';
-  lit userstr($obj);
-  txt ' on ';
-  lit date $obj->{added}, 'full';
+  lit mt '_revision_user_date', $obj, $obj->{added};
 }
 
 sub revdiff {
-  my($i, $old, $new, $short, $name, %o) = @_;
+  my($i, $type, $old, $new, $short, %o) = @_;
 
   $o{serialize} ||= $o{htmlize};
   $o{diff}++ if $o{split};
@@ -358,11 +351,11 @@ sub revdiff {
     $ser2 = xml_escape $ser2;
   }
 
-  $ser1 = '[empty]' if !$ser1 && $ser1 ne '0';
-  $ser2 = '[empty]' if !$ser2 && $ser2 ne '0';
+  $ser1 = mt '_revision_emptyfield' if !$ser1 && $ser1 ne '0';
+  $ser2 = mt '_revision_emptyfield' if !$ser2 && $ser2 ne '0';
 
   Tr $$i++ % 2 ? (class => 'odd') : ();
-   td $name;
+   td mt "_revfield_${type}_$short";
    td class => 'tcval'; lit $ser1; end;
    td class => 'tcval'; lit $ser2; end;
   end;
@@ -372,38 +365,36 @@ sub revdiff {
 # Generates a generic message to show as the header of the edit forms
 # Arguments: v/r/p, obj
 sub htmlEditMessage {
-  my($self, $type, $obj, $copy) = @_;
-  my $full       = {v => 'visual novel', r => 'release', p => 'producer'}->{$type};
+  my($self, $type, $obj, $title, $copy) = @_;
+  my $num        = {v => 0, r => 1, p => 2}->{$type};
   my $guidelines = {v => 2, r => 3, p => 4}->{$type};
 
   div class => 'mainbox';
-   h1 $obj ? ''.($copy ? 'Copy ':'Edit ').($obj->{name}||$obj->{title}) : "Add new $full";
+   h1 $title;
    if($copy) {
      div class => 'warning';
-      h2 "You're not editing a release!";
+      h2 mt '_editmsg_copy_title';
       p;
-       txt "You're about to insert a new release into the database with information based on ";
-       a href => "/$type$obj->{id}", $obj->{title};
-       txt ". Hit the 'edit' tab on the right-top if you intended to edit the release instead of creating a new one.";
+       lit mt '_editmsg_copy_msg', sprintf '<a href="/%s%d">%s</a>', $type, $obj->{id}, xml_escape $obj->{title}, 
       end;
      end;
    }
    div class => 'notice';
-    h2 'Before editing:';
+    h2 mt '_editmsg_msg_title';
     ul;
-     li; lit qq|Read the <a href="/d$guidelines">guidelines</a>!|; end;
+     li; lit mt '_editmsg_msg_guidelines', "/d$guidelines"; end;
      if($obj) {
-       li; lit qq|Check for any existing discussions on the <a href="/t/$type$obj->{id}">discussion board</a>|; end;
-       li; lit qq|Browse the <a href="/$type$obj->{id}/hist">edit history</a> for any recent changes related to what you want to change.|; end;
+       li; lit mt '_editmsg_msg_discuss', $type eq 'r' ? "/t/v$obj->{vn}[0]{vid}" : "/t/$type$obj->{id}"; end;
+       li; lit mt '_editmsg_msg_history', "/$type$obj->{id}/hist"; end;
      } elsif($type ne 'r') {
-       li; lit qq|<a href="/$type/all">Search the database</a> to see if we already have information about this $full|; end;
+       li; lit mt '_editmsg_msg_search', "/$type/all", $num; end;
      }
     end;
    end;
    if($obj && $obj->{latest} != $obj->{cid}) {
      div class => 'warning';
-      h2 'Reverting';
-      p qq|You are editing an old revision of this $full. If you save it, all changes made after this revision will be reverted!|;
+      h2 mt '_editmsg_revert_title';
+      p mt '_editmsg_revert_msg', $num;
      end;
    }
   end;
@@ -417,13 +408,13 @@ sub htmlItemMessage {
   my($self, $type, $obj) = @_;
 
   if($obj->{locked}) {
-    p class => 'locked', 'Locked for editing'
+    p class => 'locked', mt '_itemmsg_locked';
   } elsif(!$self->authInfo->{id}) {
     p class => 'locked';
-     lit 'You need to be <a href="/u/login">logged in</a> to edit this page';
+     lit mt '_itemmsg_login', '/u/login';
     end;
   } elsif(!$self->authCan('edit')) {
-    p class => 'locked', "You're not allowed to edit this page";
+    p class => 'locked', mt '_itemmsg_denied';
   }
 }
 
@@ -441,11 +432,11 @@ sub htmlVoteStats {
   div class => 'votestats';
    table class => 'votegraph';
     thead; Tr;
-     td colspan => 2, 'Vote graph';
+     td colspan => 2, mt '_votestats_title';
     end; end;
     tfoot; Tr;
-     td colspan => 2, sprintf '%d vote%s total, average %.2f%s', $count, $count != 1 ? 's' : '', $total/$count,
-       $type eq 'v' ? ' ('.$self->{votes}[ceil($total/$count-1)].')' : '';
+     td colspan => 2, mt('_votestats_sum', $count, sprintf('%.2f', $total/$count))
+       .($type eq 'v' ? ' ('.mt('_vote_'.ceil($total/$count-1)).')' : '');
     end; end;
     for (reverse 0..$#$stats) {
       Tr;
@@ -464,11 +455,12 @@ sub htmlVoteStats {
      order => 'date DESC',
      what => $type eq 'v' ? 'user' : 'vn',
      hide => $type eq 'v',
+     hide_ign => $type eq 'v',
    );
    if(@$recent) {
      table class => 'recentvotes';
       thead; Tr;
-       td colspan => 3, 'Recent votes';
+       td colspan => 3, mt '_votestats_recent';
       end; end;
       for (0..$#$recent) {
         Tr $_ % 2 == 0 ? (class => 'odd') : ();
@@ -480,7 +472,7 @@ sub htmlVoteStats {
           }
          end;
          td $recent->[$_]{vote};
-         td date $recent->[$_]{date};
+         td $self->{l10n}->date($recent->[$_]{date});
         end;
       }
      end;
@@ -489,8 +481,8 @@ sub htmlVoteStats {
    clearfloat;
    if($type eq 'v') {
      div;
-      h3 'Popularity';
-      p sprintf 'Ranked #%d out of %d with a score of %.2f.', $obj->{ranking}, $self->{stats}{vn}, $obj->{c_popularity}*100;
+      h3 mt '_votestats_pop_title';
+      p mt '_votestats_pop_sum', $obj->{ranking}, $self->{stats}{vn}, sprintf('%0.2f',$obj->{c_popularity}*100);
      end;
    }
   end;
@@ -506,10 +498,10 @@ sub htmlHistory {
     pageurl  => $url,
     class    => 'history',
     header   => [
-      sub { td colspan => 2, class => 'tc1', 'Rev.' },
-      [ 'Date' ],
-      [ 'User' ],
-      sub { td; a href => '#', id => 'history_comments', 'expand'; txt 'Page'; end; }
+      sub { td colspan => 2, class => 'tc1', mt '_hist_col_rev' },
+      [ mt '_hist_col_date' ],
+      [ mt '_hist_col_user' ],
+      sub { td; a href => '#', id => 'history_comments', 'expand'; txt mt '_hist_col_page'; end; }
     ],
     row      => sub {
       my($s, $n, $i) = @_;
@@ -523,9 +515,9 @@ sub htmlHistory {
        td class => 'tc1_2';
         a href => $revurl, ".$i->{rev}";
        end;
-       td class => 'tc2', date $i->{added};
+       td class => 'tc2', $self->{l10n}->date($i->{added});
        td class => 'tc3';
-        lit userstr($i);
+        lit $self->{l10n}->userstr($i);
        end;
        td;
         a href => $revurl, title => $i->{ioriginal}, shorten $i->{ititle}, 80;
@@ -548,14 +540,14 @@ sub htmlSearchBox {
 
   fieldset class => 'search';
    p class => 'searchtabs';
-    a href => '/v/all', $sel eq 'v' ? (class => 'sel') : (), 'Visual novels';
-    a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), 'Releases';
-    a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), 'Producers';
-    a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), 'Tags';
-    a href => '/u/all', $sel eq 'u' ? (class => 'sel') : (), 'Users';
+    a href => '/v/all', $sel eq 'v' ? (class => 'sel') : (), mt '_searchbox_vn';
+    a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), mt '_searchbox_releases';
+    a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), mt '_searchbox_producers';
+    a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), mt '_searchbox_tags';
+    a href => '/u/all', $sel eq 'u' ? (class => 'sel') : (), mt '_searchbox_users';
    end;
    input type => 'text', name => 'q', id => 'q', class => 'text', value => $v;
-   input type => 'submit', class => 'submit', value => 'Search!';
+   input type => 'submit', class => 'submit', value => mt '_searchbox_submit';
   end;
 }
 

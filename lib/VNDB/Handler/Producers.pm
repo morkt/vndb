@@ -33,13 +33,13 @@ sub page {
   if($rev) {
     my $prev = $rev && $rev > 1 && $self->dbProducerGet(id => $pid, rev => $rev-1, what => 'changes extended')->[0];
     $self->htmlRevision('p', $prev, $p,
-      [ type      => 'Type',          serialize => sub { $self->{producer_types}{$_[0]} } ],
-      [ name      => 'Name (romaji)', diff => 1 ],
-      [ original  => 'Original name', diff => 1 ],
-      [ alias     => 'Aliases',       diff => 1 ],
-      [ lang      => 'Language',      serialize => sub { "$_[0] ($self->{languages}{$_[0]})" } ],
-      [ website   => 'Website',       diff => 1 ],
-      [ desc      => 'Description',   diff => 1 ],
+      [ type      => serialize => sub { mt "_ptype_$_[0]" } ],
+      [ name      => diff => 1 ],
+      [ original  => diff => 1 ],
+      [ alias     => diff => 1 ],
+      [ lang      => serialize => sub { "$_[0] (".mt("_lang_$_[0]").')' } ],
+      [ website   => diff => 1 ],
+      [ desc      => diff => 1 ],
     );
   }
 
@@ -48,8 +48,8 @@ sub page {
    h1 $p->{name};
    h2 class => 'alttitle', $p->{original} if $p->{original};
    p class => 'center';
-    txt "$self->{languages}{$p->{lang}} \L$self->{producer_types}{$p->{type}}";
-    txt "\na.k.a. $p->{alias}" if $p->{alias};
+    txt mt '_prodpage_langtype', mt("_lang_$p->{lang}"), mt "_ptype_$p->{type}";
+    txt "\n".mt '_prodpage_aliases', $p->{alias} if $p->{alias};
     if($p->{website}) {
       txt "\n";
       a href => $p->{website}, $p->{website};
@@ -64,15 +64,15 @@ sub page {
 
   end;
   div class => 'mainbox producerpage';
-   h1 'Visual Novel Relations';
+   h1 mt '_prodpage_vnrel';
    if(!@{$p->{vn}}) {
-     p 'We have currently no visual novels related to this producer.';
+     p mt '_prodpage_norel';
    } else {
      ul;
       for (@{$p->{vn}}) {
         li;
          i;
-          lit datestr $_->{date};
+          lit $self->{l10n}->datestr($_->{date});
          end;
          a href => "/v$_->{id}", title => $_->{original}, $_->{title};
         end;
@@ -101,11 +101,11 @@ sub edit {
 
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
-      { name => 'type', enum => [ keys %{$self->{producer_types}} ] },
+      { name => 'type', enum => $self->{producer_types} },
       { name => 'name', maxlength => 200 },
       { name => 'original', required => 0, maxlength => 200, default => '' },
       { name => 'alias', required => 0, maxlength => 500, default => '' },
-      { name => 'lang', enum => [ keys %{$self->{languages}} ] },
+      { name => 'lang', enum => $self->{languages} },
       { name => 'website', required => 0, template => 'url', default => '' },
       { name => 'desc', required => 0, maxlength => 5000, default => '' },
       { name => 'editsum', maxlength => 5000 },
@@ -129,21 +129,22 @@ sub edit {
   $frm->{lang} = 'ja' if !$pid && !defined $frm->{lang};
   $frm->{editsum} = sprintf 'Reverted to revision p%d.%d', $pid, $rev if $rev && !defined $frm->{editsum};
 
-  $self->htmlHeader(title => $pid ? 'Edit '.$p->{name} : 'Add new producer', noindex => 1);
+  my $title = mt $pid ? ('_pedit_title_edit', $p->{name}) : '_pedit_title_add';
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('p', $p, 'edit') if $pid;
-  $self->htmlEditMessage('p', $p);
-  $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 }, "General info" => [
-    [ select => name => 'Type', short => 'type',
-      options => [ map [ $_, $self->{producer_types}{$_} ], sort keys %{$self->{producer_types}} ] ],
-    [ input  => name => 'Name (romaji)', short => 'name' ],
-    [ input  => name => 'Original name', short => 'original' ],
-    [ static => content => q|The original name of the producer, leave blank if it is already in the Latin alphabet.| ],
-    [ input  => name => 'Aliases', short => 'alias', width => 400 ],
-    [ static => content => q|(Un)official aliases, separated by a comma.| ],
-    [ select => name => 'Primary language', short => 'lang',
-      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
-    [ input  => name => 'Website', short => 'website' ],
-    [ text   => name => 'Description', short => 'desc', rows => 6 ],
+  $self->htmlEditMessage('p', $p, $title);
+  $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 }, 'pedit_geninfo' => [mt('_pedit_form_generalinfo'),
+    [ select => name => mt('_pedit_form_type'), short => 'type',
+      options => [ map [ $_, mt "_ptype_$_" ], sort @{$self->{producer_types}} ] ],
+    [ input  => name => mt('_pedit_form_name'), short => 'name' ],
+    [ input  => name => mt('_pedit_form_original'), short => 'original' ],
+    [ static => content => mt('_pedit_form_original_note') ],
+    [ input  => name => mt('_pedit_form_alias'), short => 'alias', width => 400 ],
+    [ static => content => mt('_pedit_form_alias_note') ],
+    [ select => name => mt('_pedit_form_lang'), short => 'lang',
+      options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
+    [ input  => name => mt('_pedit_form_website'), short => 'website' ],
+    [ text   => name => mt('_pedit_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
   ]);
   $self->htmlFooter;
 }
@@ -165,16 +166,16 @@ sub list {
     page => $f->{p}
   );
 
-  $self->htmlHeader(title => 'Browse producers');
+  $self->htmlHeader(title => mt '_pbrowse_title');
 
   div class => 'mainbox';
-   h1 'Browse producers';
+   h1 mt '_pbrowse_title';
    form action => '/p/all', 'accept-charset' => 'UTF-8', method => 'get';
     $self->htmlSearchBox('p', $f->{q});
    end;
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => "/p/$_", $_ eq $char ? (class => 'optselected') : (), $_ ? uc $_ : '#';
+      a href => "/p/$_", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
     }
    end;
   end;
@@ -182,9 +183,9 @@ sub list {
   my $pageurl = "/p/$char" . ($f->{q} ? "?q=$f->{q}" : '');
   $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 't');
   div class => 'mainbox producerbrowse';
-   h1 $f->{q} ? 'Search results' : 'Producer list';
+   h1 mt $f->{q} ? '_pbrowse_searchres' : '_pbrowse_list';
    if(!@$list) {
-     p 'No results found';
+     p mt '_pbrowse_noresults';
    } else {
      # spread the results over 3 equivalent-sized lists
      my $perlist = @$list/3 < 1 ? 1 : @$list/3;
@@ -192,7 +193,7 @@ sub list {
        ul;
        for ($perlist*$c..($perlist*($c+1))-1) {
          li;
-          cssicon 'lang '.$list->[$_]{lang}, $self->{languages}{$list->[$_]{lang}};
+          cssicon 'lang '.$list->[$_]{lang}, mt "_lang_$list->[$_]{lang}";
           a href => "/p$list->[$_]{id}", title => $list->[$_]{original}, $list->[$_]{name};
          end;
        }

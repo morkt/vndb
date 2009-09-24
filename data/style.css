@@ -119,6 +119,7 @@ b.spoiler_shown { font-weight: normal }
   border-left: 1px dotted $border$;
   text-align: left;
 }
+.linethrough { text-decoration: line-through }
 
 
 
@@ -156,7 +157,7 @@ fieldset.submit {
   margin: 5px;
 }
 fieldset.submit input {
-  width: 200px;
+  width: 150px;
 }
 fieldset.submit h2 {
   font-size: 11px!important;
@@ -215,13 +216,13 @@ td.field label {
   margin: -17px 0 15px 15px;
   font-weight: normal;
 }
-#maincontent div.mainbox {
+#maincontent div.mainbox, #maincontent table.mainbox td {
   border: 1px solid $border$;
   margin: 21px 0 -10px 0;
   padding: 5px;
   background: url($_boxbg$) repeat;
 }
-#maincontent div.mainbox a {
+#maincontent .mainbox a {
   color: $link$;
 }
 #maincontent p {
@@ -238,7 +239,7 @@ td.field label {
 p.center {
   text-align: center;
 }
-b.future {
+b.future, b.standout {
   font-weight: normal;
   color: $standout$;
 }
@@ -270,6 +271,10 @@ b.future {
 #menulist h2, #menulist h2 a {
   font-size: 11px;
   color: $maintext$;
+}
+#menulist h2 span {
+  float: right;
+  padding-top: 1px;
 }
 #menulist dt {
   display: block;
@@ -362,18 +367,17 @@ b.future {
 /***** Homepage ******/
 
 #maincontent .mainbox.threelayout {
-  float: left;
-  width: 31%;
-  height: 200px;
-  margin: 21px 10px -10px 0;
-  padding: 2px;
-  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 10px;
+  margin: 10px -10px -20px -10px;
+  min-width: 100%;
 }
-#maincontent .mainbox.threelayout.last {
-  margin-right: 0;
+#maincontent .mainbox.threelayout td {
+  width: 32%;
+  padding: 0 2px 10px 2px;
 }
 #maincontent .mainbox.threelayout h1 {
-  margin: -3px 0 1px 0;
+  margin: 0;
   font-size: 14px;
   font-weight: bold;
 }
@@ -396,6 +400,9 @@ p.screenshots {
 }
 p.screenshots img {
   margin: 2px;
+}
+#maincontent .mainbox.threelayout h1 a {
+  color: $boxtitle$;
 }
 
 
@@ -717,15 +724,15 @@ a.addnew {
 
 /***** VN edit *****/
 
-#jt_box_relations table  { margin-bottom: 10px; }
-#jt_box_relations h2     { margin: 0 0 3px 0px; }
-#jt_box_relations td     { padding: 1px 2px; vertical-align: middle; }
-#jt_box_relations td.tc1 { width: 300px; text-align: right }
-#jt_box_relations td.tc2 { width: 170px;  white-space: nowrap }
-#jt_box_relations td.tc3 { width: 200px; }
-#jt_box_relations td.tc4 { width: 40px; text-align: right }
-#jt_box_relations td.tc1 input  { width: 280px; }
-#jt_box_relations td.tc2 select { width: 130px; }
+#jt_box_vn_rel table  { margin-bottom: 10px; }
+#jt_box_vn_rel h2     { margin: 0 0 3px 0px; }
+#jt_box_vn_rel td     { padding: 1px 2px; vertical-align: middle; }
+#jt_box_vn_rel td.tc1 { width: 300px; text-align: right }
+#jt_box_vn_rel td.tc2 { width: 170px;  white-space: nowrap }
+#jt_box_vn_rel td.tc3 { width: 200px; }
+#jt_box_vn_rel td.tc4 { width: 40px; text-align: right }
+#jt_box_vn_rel td.tc1 input  { width: 280px; }
+#jt_box_vn_rel td.tc2 select { width: 130px; }
 
 #ds_box {
   border: 1px solid $border$;
@@ -743,16 +750,16 @@ a.addnew {
   width: 100%;
 }
 
-#jt_box_image div.img {
+#jt_box_vn_img div.img {
   float: left;
   height: 400px;
   padding-right: 20px;
 }
-#jt_box_image h2 {
+#jt_box_vn_img h2 {
   margin: 0;
 }
 
-#jt_box_screenshots table { width: 95% }
+#jt_box_vn_scr table { width: 95% }
 #scr_table td { height: 108px; border-top: 1px solid #258; padding: 0; padding-right: 5px }
 #scr_table td.thumb { width: 136px; vertical-align: middle }
 #scr_table select { width: 400px; }
@@ -850,19 +857,19 @@ a.addnew {
 .platforms {  padding-left: 20px; }
 .platforms span { display: block; float: left; width: 150px; }
 
-#jt_box_format h2 { clear: left; padding-top: 10px; }
+#jt_box_rel_format h2 { clear: left; padding-top: 10px; }
 #media_div select.qty { width: 90px; }
 #media_div select.medium { width: 150px }
 #media_div { padding-left: 20px; }
 #media_div span { display: block }
 
-#jt_box_visual_novels h2,       #jt_box_producers h2 { clear: left; padding-top: 10px; }
-#jt_box_visual_novels div,      #jt_box_producers div { padding-left: 20px }
-#jt_box_visual_novels input,    #jt_box_producers input { margin-right: 10px; width: 300px }
-#jt_box_visual_novels span,     #jt_box_producers span { clear: left; display: block; padding: 2px; }
-#jt_box_visual_novels span.odd, #jt_box_producers span.odd { background: url($_boxbg$) repeat; }
-#jt_box_visual_novels i,        #jt_box_producers i { font-style: normal; display: block; float: left; width: 310px }
-#jt_box_visual_novels b,        #jt_box_producers b { font-weight: normal; }
+#jt_box_rel_vn h2,       #jt_box_rel_prod h2 { clear: left; padding-top: 10px; }
+#jt_box_rel_vn div,      #jt_box_rel_prod div { padding-left: 20px }
+#jt_box_rel_vn input,    #jt_box_rel_prod input { margin-right: 10px; width: 300px }
+#jt_box_rel_vn span,     #jt_box_rel_prod span { clear: left; display: block; padding: 2px; }
+#jt_box_rel_vn span.odd, #jt_box_rel_prod span.odd { background: url($_boxbg$) repeat; }
+#jt_box_rel_vn i,        #jt_box_rel_prod i { font-style: normal; display: block; float: left; width: 310px }
+#jt_box_rel_vn b,        #jt_box_rel_prod b { font-weight: normal; }
 
 
 
@@ -963,7 +970,7 @@ div.browse.uposts td.tc1 {
 
 /***** VN tagmod *****/
 
-#jt_box_tags .formtable table td { padding: 1px 5px }
+#jt_box_tagmod .formtable table td { padding: 1px 5px }
 #tagtable tfoot td { padding-top: 20px!important; }
 #tagtable .tc2_1 { border-right: 1px solid $border$; border-left: 1px solid $border$; width: 150px; text-align: center }
 #tagtable .tc3_1 { border-left: 1px solid $border$; width: 150px; text-align: center }
@@ -984,7 +991,7 @@ a.taglvl:hover { border-bottom: 1px solid transparent!important }
 .taglvlsel.taglvl1 { background-color: #cf0; border-color: #cf0 }
 .taglvlsel.taglvl2 { background-color: #8f0; border-color: #8f0 }
 .taglvlsel.taglvl3 { background-color: #0f0; border-color: #0f0 }
-#jt_box_tags #tagtable .tc3 { padding: 0 }
+#jt_box_tagmod #tagtable .tc3 { padding: 0 }
 #tagtable .tc3 select { width: 90px; height: 15px; border: 0; margin: 0; font-size: 11px; background-color: $_blendbg$; text-align: right }
 #tagtable .odd .tc3 select { background-color: $secbg$ }
 
@@ -1124,7 +1131,7 @@ div#iv_view {
   height: 11px;
   opacity: 0.5;
 }
-.icons.par, .icons.tri, .icons.com { width: 11px; }
+.icons.rt0, .icons.rt1, .icons.rt2 { width: 11px; }
 acronym.icons, acronym.uicons { cursor: default; }
 a .icons { cursor: pointer }
 .icons.oth { background: none; }
@@ -1135,6 +1142,7 @@ a .icons { cursor: pointer }
 .icons.sfc { background-position:   0px -56px; }
 .icons.gba { background-position:   0px -70px; }
 .icons.ps3 { background-position:   0px -84px; }
+.icons.p98 { background-position:   0px -98px; }
 
 .icons.dvd { background-position: -16px   0px; }
 .icons.mac { background-position: -16px -14px; }
@@ -1143,15 +1151,15 @@ a .icons { cursor: pointer }
 .icons.win { background-position: -16px -56px; }
 .icons.wii { background-position: -16px -70px; }
 .icons.xb3 { background-position: -16px -84px; }
+.icons.sat { background-position: -16px -98px; }
 
-.icons.com { background-position: -32px   0px; }
-.icons.par { background-position: -32px -14px; }
-.icons.tri { background-position: -32px -28px; }
+.icons.rt0 { background-position: -32px   0px; }
+.icons.rt1 { background-position: -32px -14px; }
+.icons.rt2 { background-position: -32px -28px; }
 .icons.ext { background-position: -32px -42px; }
 .icons.msx { background-position: -32px -56px; }
 .icons.nes { background-position: -32px -70px; }
-
-.icons.vi  { background-position: -34px -88px; }
+.icons.dos { background-position: -32px -84px; }
 
 .icons.cs  { background-position: -48px   0px; }
 .icons.da  { background-position: -48px -11px; }
@@ -1172,4 +1180,5 @@ a .icons { cursor: pointer }
 .icons.tr  { background-position: -61px -66px; }
 .icons.zh  { background-position: -61px -77px; }
 .icons.ko  { background-position: -61px -88px; }
+.icons.vi  { background-position: -61px -99px; }
 

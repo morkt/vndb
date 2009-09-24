@@ -17,6 +17,7 @@ use lib $ROOT.'/lib';
 
 
 use YAWF ':html';
+use VNDB::L10N;
 
 
 our(%O, %S);
@@ -25,6 +26,10 @@ our(%O, %S);
 # load and (if required) regenerate the skins
 # NOTE: $S{skins} can be modified in data/config.pl, allowing deletion of skins or forcing only one skin
 $S{skins} = readskins();
+
+
+# load lang.dat
+VNDB::L10N::loadfile();
 
 
 # load settings from global.pl
@@ -42,6 +47,12 @@ YAWF::init(
 
 sub reqinit {
   my $self = shift;
+
+  $self->{l10n} = VNDB::L10N->get_handle($self->reqParam('l10n') || $self->reqCookie('l10n') || ());
+  my $lang = $self->{l10n}->language_tag();
+  $self->resHeader('Set-Cookie', "l10n=$lang; expires=Sat, 01-Jan-2030 00:00:00 GMT; path=/; domain=$self->{cookie_domain}")
+    if $lang ne ($self->reqCookie('l10n')||'');
+
   $self->authInit;
 
   # check for IE6

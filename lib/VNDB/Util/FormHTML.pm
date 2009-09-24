@@ -6,56 +6,9 @@ use warnings;
 use YAWF ':html';
 use Exporter 'import';
 use POSIX 'strftime';
+use VNDB::Func;
 
 our @EXPORT = qw| htmlFormError htmlFormPart htmlForm |;
-
-
-# form error messages
-my %formerr_names = (
-  alias         => 'Aliases',
-  anime         => 'Anime',
-  desc          => 'Description',
-  description   => 'Description',
-  editsum       => 'Edit summary',
-  gtin          => 'JAN/EAN/UPC',
-  lang          => 'Language',
-  language      => 'Language',
-  length        => 'Length',
-  l_wp          => 'Wikipedia link',
-  l_encubed     => 'Novelnews link',
-  l_renai       => 'Renai.us link',
-  l_vnn         => 'V-N.net link',
-  mail          => 'Email',
-  media         => 'Media',
-  minage        => 'Age rating',
-  msg           => 'Message',
-  name          => 'Name',
-  notes         => 'Notes',
-  original      => 'Original',
-  platforms     => 'Platforms',
-  producers     => 'Producers',
-  released      => 'Release date',
-  boards        => 'Boards',
-  title         => 'Title',
-  type          => 'Type',
-  usrname       => 'Username',
-  usrpass       => 'Password',
-  usrpass2      => 'Password (confirm)',
-  vn            => 'Visual novels',
-  website       => 'Website',
-);
-my %formerr_exeptions = (
-  login_failed  => 'Invalid username or password',
-  nomail        => 'No user found with that email address',
-  passmatch     => 'Passwords do not match',
-  usrexists     => 'Someone already has this username, please choose something else',
-  mailexists    => 'Someone already registered with that email address',
-  noimage       => 'Image must be in JPEG or PNG format',
-  toolarge      => 'Image is too large, only 500kB allowed',
-  oneaday       => 'You can only register one account from the same IP within 24 hours',
-  nochanges     => 'No changes, please don\'t create an entry that is fully -identical- to another',
-  doublepost	=> 'Please wait 30 seconds before making another post',
-);
 
 
 # Displays friendly error message when form validation failed
@@ -67,40 +20,25 @@ sub htmlFormError {
   return if !$frm->{_err};
   if($mainbox) {
     div class => 'mainbox';
-     h1 'Error';
+     h1 mt '_formerr_title';
   }
   div class => 'warning';
-   h2 'Form could not be sent:';
+   h2 mt '_formerr_subtitle';
    ul;
     for my $e (@{$frm->{_err}}) {
       if(!ref $e) {
-        li $formerr_exeptions{$e};
+        li mt '_formerr_e_'.$e;
         next;
       }
       my($field, $type, $rule) = @$e;
-      $field = $formerr_names{$field}||$field;
-      li sprintf '%s is a required field!', $field if $type eq 'required';
-      li sprintf '%s should have at least %d characters', $field, $rule if $type eq 'minlength';
-      li sprintf '%s: only %d characters allowed', $field, $rule if $type eq 'maxlength';
-      li sprintf '%s must be one of the following: %s', $field, join ', ', @$rule if $type eq 'enum';
-      li sprintf 'Wrong board: %s', $rule if $type eq 'wrongboard';
-      if($type eq 'tagexists') {
-        li;
-         lit $rule->{state} != 1 ? qq|Tag <a href="/g$rule->{id}">$rule->{name}</a> already exists!|
-          : qq|A tag <a href="/g$rule->{id}">with the same name</a> has been deleted in the past,|
-           .qq| please use <a href="/t/db">the discussion board</a> if you want it to be re-added.|;
-        end;
-      }
+      li mt '_formerr_required', $field if $type eq 'required';
+      li mt '_formerr_minlength', $field, $rule if $type eq 'minlength';
+      li mt '_formerr_maxlength', $field, $rule if $type eq 'maxlength';
+      li mt '_formerr_enum', $field, join ', ', @$rule if $type eq 'enum';
+      li mt '_formerr_wrongboard', $rule if $type eq 'wrongboard';
+      li mt '_formerr_tagexists', "/g$rule->{id}", $rule->{name} if $type eq 'tagexists';
       li $rule->[1] if $type eq 'func' || $type eq 'regex';
-      if($type eq 'template') {
-        li sprintf
-          $rule eq 'mail'       ? 'Invalid email address' :
-          $rule eq 'url'        ? '%s: Invalid URL' :
-          $rule eq 'asciiprint' ? '%s may only contain ASCII characters' :
-          $rule eq 'int'        ? '%s: Not a valid number' :
-          $rule eq 'pname'      ? '%s can only contain lowercase alphanumberic characters and a hyphen, and must start with a character' : '',
-          $field;
-      }
+      li mt "_formerr_tpl_$rule", $field if $type eq 'template';
     }
    end;
   end;
@@ -246,21 +184,20 @@ sub htmlForm {
   if(@subs > 2) {
     ul class => 'maintabs notfirst', id => 'jt_select';
      for (0..$#subs/2) {
-       (my $short = lc $subs[$_*2]) =~ s/[^\w\d]+/_/g;
        li class => 'left';
-        a href => "#$short", id => "jt_sel_$short", $subs[$_*2];
+        a href => "#$subs[$_*2]", id => "jt_sel_$subs[$_*2]", $subs[$_*2+1][0];
        end;
      }
      li class => 'left';
-      a href => '#all', id => 'jt_sel_all', 'All items';
+      a href => '#all', id => 'jt_sel_all', mt '_form_tab_all';
      end;
     end;
   }
 
   # form subs
-  while(my($name, $parts) = (shift(@subs), shift(@subs))) {
-    last if !$name || !$parts;
-    (my $short = lc $name) =~ s/[^\w\d]+/_/g;
+  while(my($short, $parts) = (shift(@subs), shift(@subs))) {
+    last if !$short || !$parts;
+    my $name = shift @$parts;
     div class => 'mainbox', id => 'jt_box_'.$short;
      h1 $name;
      fieldset;
@@ -273,23 +210,26 @@ sub htmlForm {
   }
 
   # edit summary / submit button
-  div class => 'mainbox';
-   fieldset class => 'submit';
-    if($options->{editsum}) {
-      (my $txt = $options->{frm}{editsum}||'') =~ s/&/&amp;/;
-      $txt =~ s/</&lt;/;
-      $txt =~ s/>/&gt;/;
-      h2 'Edit summary';
-      textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50;
-       lit $txt;
-      end;
-      br;
-    }
-    b "Don't forget! -> " if $options->{hitsubmit};
-    input type => 'submit', value => 'Submit', class => 'submit';
-    b ' <-' if $options->{hitsubmit};
-   end;
-  end;
+  if(!$options->{nosubmit}) {
+    div class => 'mainbox';
+     fieldset class => 'submit';
+      if($options->{editsum}) {
+        (my $txt = $options->{frm}{editsum}||'') =~ s/&/&amp;/;
+        $txt =~ s/</&lt;/;
+        $txt =~ s/>/&gt;/;
+        h2;
+         txt mt '_form_editsum';
+         b class => 'standout', ' ('.mt('_inenglish').')';
+        end;
+        textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50;
+         lit $txt;
+        end;
+        br;
+      }
+      input type => 'submit', value => mt('_form_submit'), class => 'submit';
+     end;
+    end;
+  }
 
   end;
 }

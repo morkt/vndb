@@ -6,79 +6,13 @@ use warnings;
 use YAWF ':html';
 use Exporter 'import';
 use POSIX 'strftime', 'ceil', 'floor';
-our @EXPORT = qw| shorten age date datestr monthstr userstr bb2html gtintype liststat clearfloat cssicon tagscore|;
+our @EXPORT = qw| shorten bb2html gtintype liststat clearfloat cssicon tagscore mt |;
 
 
 # I would've done this as a #define if this was C...
 sub shorten {
   my($str, $len) = @_;
   return length($str) > $len ? substr($str, 0, $len-3).'...' : $str;
-}
-
-
-# Argument: unix timestamp
-# Returns: age
-sub age {
-  my $a = time-$_[0];
-  return sprintf '%d %s ago',
-    $a > 60*60*24*365*2       ? ( $a/60/60/24/365,      'years'  ) :
-    $a > 60*60*24*(365/12)*2  ? ( $a/60/60/24/(365/12), 'months' ) :
-    $a > 60*60*24*7*2         ? ( $a/60/60/24/7,        'weeks'  ) :
-    $a > 60*60*24*2           ? ( $a/60/60/24,          'days'   ) :
-    $a > 60*60*2              ? ( $a/60/60,             'hours'  ) :
-    $a > 60*2                 ? ( $a/60,                'min'    ) :
-                                ( $a,                   'sec'    );
-}
-
-
-# argument: unix timestamp and optional format (compact/full)
-# return value: yyyy-mm-dd
-# (maybe an idea to use cgit-style ages for recent timestamps)
-sub date {
-  my($t, $f) = @_;
-  return strftime '%Y-%m-%d', gmtime $t if !$f || $f eq 'compact';
-  return strftime '%Y-%m-%d at %R', gmtime $t;
-}
-
-
-# argument: database release date format (yyyymmdd)
-#  y = 0000 -> unknown
-#  y = 9999 -> TBA
-#  m = 99   -> month+day unknown
-#  d = 99   -> day unknown
-# return value: (unknown|TBA|yyyy|yyyy-mm|yyyy-mm-dd)
-#  if date > now: <b class="future">str</b>
-sub datestr {
-  my $date = sprintf '%08d', shift||0;
-  my $future = $date > strftime '%Y%m%d', gmtime;
-  my($y, $m, $d) = ($1, $2, $3) if $date =~ /^([0-9]{4})([0-9]{2})([0-9]{2})$/;
-
-  my $str = $y == 0 ? 'unknown' : $y == 9999 ? 'TBA' :
-    $m == 99 ? sprintf('%04d', $y) :
-    $d == 99 ? sprintf('%04d-%02d', $y, $m) :
-               sprintf('%04d-%02d-%02d', $y, $m, $d);
-
-  return $str if !$future;
-  return qq|<b class="future">$str</b>|;
-}
-
-# same as datestr(), but different output format:
-#  e.g.: 'Jan 2009', '2009', 'unknown', 'TBA'
-sub monthstr {
-  my $date = sprintf '%08d', shift||0;
-  my($y, $m, $d) = ($1, $2, $3) if $date =~ /^([0-9]{4})([0-9]{2})([0-9]{2})/;
-  return 'TBA' if $y == 9999;
-  return 'unknown' if $y == 0;
-  return $y if $m == 99;
-  my $r = sprintf '%s %d', [qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)]->[$m-1], $y;
-  return $d == 99 ? "<i>$r</i>" : $r;
-}
-
-
-# Arguments: (uid, username), or a hashref containing that info
-sub userstr {
-  my($id,$n) = ref($_[0])eq'HASH'?($_[0]{uid}||$_[0]{requester}, $_[0]{username}):@_;
-  return !$id ? '[deleted]' : '<a href="/u'.$id.'">'.$n.'</a>';
 }
 
 
@@ -264,6 +198,13 @@ sub tagscore {
     }
   }
   div class => 'taglvl', style => sprintf('width: %.0fpx', (ceil($s)-$s)*10), ' ' if $s > 0 && ceil($s)-$s > 0;
+}
+
+
+# short wrapper around maketext()
+# (not thread-safe, in the same sense as YAWF::XML. But who cares about threads, anyway?)
+sub mt {
+  return $YAWF::OBJ->{l10n}->maketext(@_);
 }
 
 
