@@ -135,7 +135,7 @@ sub page {
       td class => 'vndesc', colspan => 2;
        h2 mt '_vnpage_description';
        p;
-        lit bb2html $v->{desc};
+        lit $v->{desc} ? bb2html $v->{desc} : '-';
        end;
       end;
      end;
