@@ -468,7 +468,7 @@ sub list {
    end;
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => "/u/$_", $_ eq $char ? (class => 'optselected') : (), $_ ? uc $_ : '#';
+      a href => "/u/$_", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
     }
    end;
   end;

@@ -156,11 +156,11 @@ sub htmlFooter {
       }
 
       txt "vndb $self->{version} | ";
-      a href => '/d7', 'about us';
+      a href => '/d7', mt '_footer_aboutus';
       txt ' | ';
       a href => "mailto:$self->{admin_email}", $self->{admin_email};
       txt ' | ';
-      a href => $self->{source_url}, 'source';
+      a href => $self->{source_url}, mt '_footer_source';
      end;
     end; # /div maincontent
    end; # /body

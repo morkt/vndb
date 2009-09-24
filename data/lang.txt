@@ -602,6 +602,12 @@ en : The Visual Novel Database
 ru : The Visual Novel Database
 
 
+# the 'ALL' in "ALL A B C D .. #"
+:_char_all
+en : ALL
+ru : ВСЕ
+
+
 # Main menu
 
 :_menu
