@@ -3165,8 +3165,8 @@ en : Vote stats
 ru : Статистика голосования
 
 :_votestats_sum
-en : [_1] [quant,_1,vote,votes] total, average [_1]
-ru : Всего [_1] [quant,_1,голос,голоса,голосов], в среднем [_1]
+en : [_1] [quant,_1,vote,votes] total, average [_2]
+ru : Всего [_1] [quant,_1,голос,голоса,голосов], в среднем [_2]
 
 :_votestats_recent
 en : Recent votes
