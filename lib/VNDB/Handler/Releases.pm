@@ -517,7 +517,7 @@ sub browse {
     @filters,
   );
 
-  my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a};q=$f->{q};mi=$f->{mi};ma=$f->{ma}";
+  my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a};q=$f->{q};mi=$f->{mi};ma=$f->{ma};do=$f->{do};fw=$f->{fw}";
   $_&&($url .= ";ln=$_") for @{$f->{ln}};
   $_&&($url .= ";pl=$_") for @{$f->{pl}};
   $_&&($url .= ";re=$_") for @{$f->{re}};
