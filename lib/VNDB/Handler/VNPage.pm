@@ -23,20 +23,37 @@ sub rand {
 sub rg {
   my($self, $vid) = @_;
 
+  # TODO: browser detection + notice, this trick gives some ugly results in IE
+
   my $v = $self->dbVNGet(id => $vid, what => 'relgraph')->[0];
   return 404 if !$v->{id} || !$v->{rgraph};
 
   my $title = mt '_vnrg_title', $v->{title};
+  $self->resHeader('Content-Type' => 'application/xhtml+xml');
+
+  # This is a REALLY ugly hack, need find a proper solution in YAWF
+  no warnings 'redefine';
+  my $sub = \&YAWF::XML::html;
+  *YAWF::XML::html = sub () {
+     lit q|<!DOCTYPE html PUBLIC
+         "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"
+             "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">|;
+     tag 'html',
+       xmlns         => "http://www.w3.org/1999/xhtml",
+       'xmlns:svg'   => 'http://www.w3.org/2000/svg',
+       'xmlns:xlink' => 'http://www.w3.org/1999/xlink';
+  };
   $self->htmlHeader(title => $title);
+  *YAWF::XML::html = $sub;
+
   $self->htmlMainTabs('v', $v, 'rg');
   div class => 'mainbox';
    h1 $title;
-   lit $v->{cmap};
    p class => 'center';
-    img src => sprintf('%s/rg/%02d/%d.png', $self->{url_static}, $v->{rgraph}%100, $v->{rgraph}),
-      alt => $title, usemap => '#rgraph';
+    lit $v->{svg};
    end;
   end;
+  $self->htmlFooter;
 }
 
 

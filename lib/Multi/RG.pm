@@ -9,6 +9,8 @@ use strict;
 use warnings;
 use POE 'Wheel::Run', 'Filter::Stream';
 use Encode 'encode_utf8';
+use XML::Parser;
+use XML::Writer;
 use Time::HiRes 'time';
 
 
@@ -17,14 +19,13 @@ sub spawn {
   POE::Session->create(
     package_states => [
       $p => [qw|
-        _start shutdown check_rg creategraph getrel builddot buildgraph savegraph
+        _start shutdown check_rg creategraph getrel builddot savegraph finish
         proc_stdin proc_stdout proc_stderr proc_closed proc_child
       |],
     ],
     heap => {
       font => 'Arial',
       fsize => [ 9, 7, 10 ], # nodes, edges, node_title
-      imgdir => '/www/vndb/static/rg',
       moy => [qw| Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec |],
       dot => '/usr/bin/dot',
       check_delay => 3600,
@@ -104,12 +105,10 @@ sub builddot { # num, res
 
   my $gv =
     qq|graph rgraph {\n|.
-    qq|\tratio = "compress"\n|.
-    qq|\tgraph [ bgcolor="#ffffff00" ]\n|.
     qq|\tnode [ fontname = "$_[HEAP]{font}", shape = "plaintext",|.
-      qq| fontsize = $_[HEAP]{fsize}[0], style = "setlinewidth(0.5)", fontcolor = "#cccccc", color = "#225588" ]\n|.
+      qq| fontsize = $_[HEAP]{fsize}[0], fontcolor = "#333333", color = "#111111" ]\n|.
     qq|\tedge [ labeldistance = 2.5, labelangle = -20, labeljust = 1, minlen = 2, dir = "both",|.
-      qq| fontname = $_[HEAP]{font}, fontsize = $_[HEAP]{fsize}[1], arrowsize = 0.7, color = "#225588", fontcolor = "#cccccc" ]\n|;
+      qq| fontname = $_[HEAP]{font}, fontsize = $_[HEAP]{fsize}[1], arrowsize = 0.7, color = "#111111", fontcolor = "#333333" ]\n|;
 
   # insert all nodes, ordered by release date
   for (sort { $a->{date} <=> $b->{date} } @$vns) {
@@ -128,7 +127,7 @@ sub builddot { # num, res
 
     $gv .= sprintf
       qq|\tv%d [ URL = "/v%d", tooltip = "%s" label=<|.
-        q|<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" CELLBORDER="1" BGCOLOR="#00000033">|.
+        q|<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" CELLBORDER="1" BGCOLOR="#222222">|.
           q|<TR><TD COLSPAN="2" ALIGN="CENTER" CELLPADDING="2"><FONT POINT-SIZE="%d">  %s  </FONT></TD></TR>|.
           q|<TR><TD> %s </TD><TD> %s </TD></TR>|.
         qq|</TABLE>> ]\n|,
@@ -161,49 +160,79 @@ sub builddot { # num, res
 
   $gv .= "}\n";
 
-  # get ID
-  $_[KERNEL]->post(pg => query => 'INSERT INTO relgraph (cmap) VALUES (\'\') RETURNING id', undef, 'buildgraph', \$gv);
-}
-
-
-sub buildgraph { # num, res, \$gv
-  $_[HEAP]{gid} = $_[ARG1][0]{id};
-  $_[HEAP]{graph} = sprintf('%s/%02d/%d.png', $_[HEAP]{imgdir}, $_[ARG1][0]{id} % 100, $_[ARG1][0]{id});
-  $_[HEAP]{cmap} = '';
-
-  # roughly equivalent to:
-  #  cat layout.txt | dot -Tpng -o graph.png -Tcmapx
+  # Pass our dot file to graphviz
+  $_[HEAP]{svg} = '';
   $_[HEAP]{proc} = POE::Wheel::Run->new(
     Program => $_[HEAP]{dot},
-    ProgramArgs => [ '-Tpng', '-o', $_[HEAP]{graph}, '-Tcmapx' ],
+    ProgramArgs => [ '-Tsvg' ],
     StdioFilter => POE::Filter::Stream->new(),
     StdinEvent => 'proc_stdin',
     StdoutEvent => 'proc_stdout',
     StderrEvent => 'proc_stderr',
     CloseEvent => 'proc_closed',
   );
-  $_[HEAP]{proc}->put(${$_[ARG2]});
+  $_[HEAP]{proc}->put($gv);
 }
 
 
 sub savegraph {
+  # Before saving the SVG output, we'll modify it a little:
+  # - Remove comments
+  # - Add svg: prefix to all tags
+  # - Remove xmlns declarations (this is set in the html)
+  # - Remove <title> elements (unused)
+  # - Remove id attributes (unused)
+  # - Remove first <polygon> element (emulates the background color)
+  # - Replace stroke and fill attributes with classes (so that coloring is done in CSS)
+  my $svg = '';
+  my $w = XML::Writer->new(OUTPUT => \$svg);
+  my $p = XML::Parser->new;
+  $p->setHandlers(
+    Start => sub {
+      my($expat, $el, %attr) = @_;
+      return if $el eq 'title' || $expat->in_element('title');
+      return if $el eq 'polygon' && $expat->depth == 2;
+
+      $attr{class} = 'border' if $attr{stroke} && $attr{stroke} eq '#111111';
+      $attr{class} = 'nodebg' if $attr{fill} && $attr{fill} eq '#222222';
+
+      delete @attr{qw|stroke fill id xmlns xmlns:xlink|};
+      $el eq 'path' || $el eq 'polygon'
+        ? $w->emptyTag("svg:$el", %attr)
+        : $w->startTag("svg:$el", %attr);
+    },
+    End => sub {
+      my($expat, $el) = @_;
+      return if $el eq 'title' || $expat->in_element('title');
+      return if $el eq 'polygon' && $expat->depth == 2;
+      $w->endTag("svg:$el") if $el ne 'path' && $el ne 'polygon';
+    },
+    Char => sub {
+      my($expat, $str) = @_;
+      return if $expat->in_element('title');
+      $w->characters($str) if $str !~ /^[\s\t\r\n]*$/s;
+    }
+  );
+  $p->parsestring($_[HEAP]{svg});
+  $w->end();
+
+  # save the processed SVG in the database and fetch graph ID
+  $_[KERNEL]->post(pg => query => 'INSERT INTO vn_graphs (svg) VALUES (?) RETURNING id', [ $svg ], 'finish');
+}
+
+
+sub finish { # num, res
+  my $id = $_[ARG1][0]{id};
   my $vids = join ',', sort map int, keys %{$_[HEAP]{nodes}};
 
-  # chmod graph
-  chmod 0666, $_[HEAP]{graph};
-
-  # save the image map in the database
-  $_[KERNEL]->post(pg => do => 'UPDATE relgraph SET cmap = ? WHERE id = ?',
-    [ "<!-- V:$vids -->\n$_[HEAP]{cmap}", $_[HEAP]{gid} ]);
-
   # update the VN table
-  $_[KERNEL]->post(pg => do => "UPDATE vn SET rgraph = ? WHERE id IN($vids)", [ $_[HEAP]{gid} ]);
+  $_[KERNEL]->post(pg => do => "UPDATE vn SET rgraph = ? WHERE id IN($vids)", [ $id ]);
 
   # log
-  $_[KERNEL]->call(core => log => 'Generated relation graph in %.2fs, V: %s', time-$_[HEAP]{start}, $vids);
+  $_[KERNEL]->call(core => log => 'Generated VN relation graph #%d in %.2fs, V: %s', $id, time-$_[HEAP]{start}, $vids);
 
   # clean up
-  delete @{$_[HEAP]}{qw| start vid nodes rels gid graph cmap proc |};
+  delete @{$_[HEAP]}{qw| start vid nodes rels svg proc |};
 
   # check for more things to do
   $_[KERNEL]->yield('check_rg');
@@ -216,7 +245,7 @@ sub proc_stdin {
   $_[HEAP]{proc}->shutdown_stdin;
 }
 sub proc_stdout {
-  $_[HEAP]{cmap} .= $_[ARG0];
+  $_[HEAP]{svg} .= $_[ARG0];
 }
 sub proc_stderr {
   $_[KERNEL]->call(core => log => 'GraphViz STDERR: %s', $_[ARG0]);

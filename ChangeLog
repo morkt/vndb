@@ -1,3 +1,7 @@
+git - ?
+	- Converted relation graphs to use inline SVG
+	  - Relation graphs now use the color scheme of selected skin
+
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout
 	- Blacklist a users' votes from the VN vote statistics

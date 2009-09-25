@@ -12,7 +12,7 @@ Requirements
 
   global requirements:
     Linux, or an OS that resembles Linux. Chances are VNDB won't run on Windows.
-    PostgreSQL 8.3 recommended, 8.1 may also work
+    PostgreSQL 8.3+
     perl 5.10 recommended, 5.8 may also work
     A webserver that works with YAWF (lighttpd and Apache are known to work)
 
@@ -41,6 +41,8 @@ Requirements
     Maintenance:
       PerlIO::gzip
     RG:
+      XML::Parser
+      XML::Writer
       graphviz           (/usr/bin/dot is used by default)
     Sitemap:
       XML::Writer
