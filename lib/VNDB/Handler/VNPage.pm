@@ -23,12 +23,24 @@ sub rand {
 sub rg {
   my($self, $vid) = @_;
 
-  # TODO: browser detection + notice, this trick gives some ugly results in IE
-
   my $v = $self->dbVNGet(id => $vid, what => 'relgraph')->[0];
   return 404 if !$v->{id} || !$v->{rgraph};
 
   my $title = mt '_vnrg_title', $v->{title};
+
+  if(($self->reqHeader('Accept')||'') !~ /application\/xhtml\+xml/) {
+    $self->htmlHeader(title => $title);
+    $self->htmlMainTabs('v', $v, 'rg');
+    div class => 'mainbox';
+     h1 $title;
+     div class => 'warning';
+      h2 mt '_vnrg_notsupp';
+      p mt '_vnrg_notsupp_msg';
+     end;
+    end;
+    $self->htmlFooter;
+    return;
+  }
   $self->resHeader('Content-Type' => 'application/xhtml+xml');
 
   # This is a REALLY ugly hack, need find a proper solution in YAWF

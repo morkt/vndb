@@ -2898,6 +2898,14 @@ ru : Когда загружаете скриншоты, пожалуйста п
 en : Relation graph for [_1]
 ru : Схема связей для [_1]
 
+:_vnrg_notsupp
+en : Not supported
+ru*:
+
+:_vnrg_notsupp_msg
+en : Your browser sucks, it doesn't have the functionality to render our nice relation graphs.
+ru*:
+
 
 # VN Diff viewer (/v+.+)
 
