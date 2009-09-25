@@ -436,7 +436,7 @@ sub htmlVoteStats {
     end; end;
     tfoot; Tr;
      td colspan => 2, mt('_votestats_sum', $count, sprintf('%.2f', $total/$count))
-       .($type eq 'v' ? ' ('.mt('_vote_'.ceil($total/$count-1)).')' : '');
+       .($type eq 'v' ? ' ('.mt('_vote_'.(ceil($total/$count-1)||1)).')' : '');
     end; end;
     for (reverse 0..$#$stats) {
       Tr;
