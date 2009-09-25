@@ -43,7 +43,7 @@ sub edit {
       { name => 'l_wp',        required => 0, default => '', maxlength => 150 },
       { name => 'l_encubed',   required => 0, default => '', maxlength => 100 },
       { name => 'l_renai',     required => 0, default => '', maxlength => 100 },
-      { name => 'l_vnn',       required => 0, default => $b4{l_vnn},  template => 'int' },
+      { name => 'l_vnn',       required => 0, default => $b4{l_vnn}||0,  template => 'int' },
       { name => 'anime',       required => 0, default => '' },
       { name => 'img_nsfw',    required => 0, default => 0 },
       { name => 'relations',   required => 0, default => '', maxlength => 5000 },
