@@ -17,12 +17,12 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown set_daily daily set_monthly monthly log_stats
-        vncache tagcache vnpopularity
+        vncache tagcache vnpopularity cleangraphs
         usercache statscache revcache logrotate
       |],
     ],
     heap => {
-      daily => [qw|vncache tagcache vnpopularity|],
+      daily => [qw|vncache tagcache vnpopularity cleangraphs|],
       monthly => [qw|usercache statscache revcache logrotate|],
       @_,
     },
@@ -99,23 +99,29 @@ sub log_stats { # num, res, action, time
 
 
 sub vncache {
-  # this takes about 30s to complete. We really need to search for an alternative
+  # this takes about 40s to complete. We really need to search for an alternative
   # method of keeping the c_* columns in the vn table up-to-date.
   $_[KERNEL]->post(pg => do => 'SELECT update_vncache(0)', undef, 'log_stats', 'vncache');
 }
 
 
 sub tagcache {
-  # this still takes "only" about 3 seconds max. Let's hope that doesn't increase too much.
+  # takes about 18 seconds max. ouch, but still kind-of acceptable
   $_[KERNEL]->post(pg => do => 'SELECT tag_vn_calc()', undef, 'log_stats', 'tagcache');
 }
 
 
 sub vnpopularity {
-  # still takes at most 2 seconds. Againt, let's hope that doesn't increase...
+  # still takes at most 2 seconds. let's hope that doesn't increase...
   $_[KERNEL]->post(pg => do => 'SELECT update_vnpopularity()', undef, 'log_stats', 'vnpopularity');
 }
 
+
+sub cleangraphs {
+  # should be pretty fast
+  $_[KERNEL]->post(pg => do => 'DELETE FROM vn_graphs vg WHERE NOT EXISTS(SELECT 1 FROM vn WHERE rgraph = vg.id)',
+    undef, 'log_stats', 'cleangraphs');
+}
 
 
 #
