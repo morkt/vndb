@@ -1188,4 +1188,5 @@ svg .border { fill: none; stroke: $border$ }
 svg .edge polygon.border { fill: $border$ }
 svg .nodebg { fill: $tabbg$; stroke: $tabbg$ }
 svg text { fill: $maintext$ }
+svg .edge text { font: 8px "Tahoma" }
 
