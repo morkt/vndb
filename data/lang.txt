@@ -945,7 +945,7 @@ en : [age,_1] [_2] by [userstr,_3]
 ru : [age,_1] [_2], [userstr,_3]
 
 :_home_randomvn
-en : Random vsual novels
+en : Random visual novels
 ru : Случайные новеллы
 
 :_home_upcoming

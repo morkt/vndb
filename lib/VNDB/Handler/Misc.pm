@@ -118,7 +118,9 @@ sub homepage {
 
     # Random visual novels
     td;
-     h1 mt '_home_randomvn';
+     h1;
+      a href => '/v/rand', mt '_home_randomvn';
+     end;
      my $random = $self->dbVNGet(results => 10, order => 'RANDOM()');
      ul;
       for (@$random) {
