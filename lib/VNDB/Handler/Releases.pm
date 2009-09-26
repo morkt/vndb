@@ -644,7 +644,6 @@ sub _filters {
      b ' ('.mt('_rbrowse_boolor').')';
     end;
     for my $i (sort @{$self->{platforms}}) {
-      next if $i eq 'oth';
       span;
        input type => 'checkbox', name => 'pl', value => $i, id => "plat_$i", grep($_ eq $i, @{$f->{pl}}) ? (checked => 'checked') : ();
        label for => "plat_$i";
@@ -659,7 +658,6 @@ sub _filters {
      b ' ('.mt('_rbrowse_boolor').')';
     end;
     for my $i (sort keys %{$self->{media}}) {
-      next if $i eq 'otc';
       span;
        input type => 'checkbox', name => 'me', value => $i, id => "med_$i", grep($_ eq $i, @{$f->{me}}) ? (checked => 'checked') : ();
        label for => "med_$i", $self->{media}{$i}[0];
