@@ -57,7 +57,7 @@ sub edit {
     if(!$frm->{_err}) {
       # parse and re-sort fields that have multiple representations of the same information
       my $anime = { map +($_=>1), grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} };
-      my $relations = [ map { /^([0-9]+),([0-9]+),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{relations} ];
+      my $relations = [ map { /^([a-z]+),([0-9]+),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{relations} ];
       my $screenshots = [ map /^[0-9]+,[01],[0-9]+$/ ? [split /,/] : (), split / +/, $frm->{screenshots} ];
 
       $frm->{anime} = join ' ', sort { $a <=> $b } keys %$anime;
@@ -202,7 +202,8 @@ sub _form {
         td class => 'tc2';
          txt ' is a ';
          Select;
-          option value => $_, $self->{vn_relations}[$_][0] for (0..$#{$self->{vn_relations}});
+          option value => $_, mt "_vnrel_$_"
+            for (sort { $self->{vn_relations}{$a}[0] <=> $self->{vn_relations}{$b}[0] } keys %{$self->{vn_relations}});
          end;
          txt ' of';
         end;
@@ -250,11 +251,9 @@ sub _updreverse {
   # compare %old and %new
   for (keys %$old, keys %$new) {
     if(exists $$old{$_} and !exists $$new{$_}) {
-      $upd{$_} = -1;
-    } elsif((!exists $$old{$_} and exists $$new{$_}) || ($$old{$_} != $$new{$_})) {
-      $upd{$_} = $$new{$_};
-      if   ($self->{vn_relations}[$upd{$_}  ][1]) { $upd{$_}-- }
-      elsif($self->{vn_relations}[$upd{$_}+1][1]) { $upd{$_}++ }
+      $upd{$_} = undef;
+    } elsif((!exists $$old{$_} and exists $$new{$_}) || ($$old{$_} ne $$new{$_})) {
+      $upd{$_} = $self->{vn_relations}{$$new{$_}}[1];
     }
   }
 
@@ -264,7 +263,7 @@ sub _updreverse {
   for my $i (keys %upd) {
     my $r = $self->dbVNGet(id => $i, what => 'extended relations anime screenshots')->[0];
     my @newrel = map $_->{id} != $vid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
-    push @newrel, [ $upd{$i}, $vid ] if $upd{$i} != -1;
+    push @newrel, [ $upd{$i}, $vid ] if $upd{$i};
     $self->dbVNEdit($i,
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision v$vid.$rev",

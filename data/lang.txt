@@ -291,6 +291,49 @@ en : Other
 ru : Другая
 
 
+# VN relations
+
+:_vnrel_seq
+en : Sequel
+ru*:
+
+:_vnrel_preq
+en : Prequel
+ru*:
+
+:_vnrel_set
+en : Same setting
+ru*:
+
+:_vnrel_alt
+en : Alternative version
+ru*:
+
+:_vnrel_char
+en : Shares characters
+ru*:
+
+:_vnrel_side
+en : Side story
+ru*:
+
+:_vnrel_par
+en : Parent story
+ru*:
+
+:_vnrel_ser
+en : Same series
+ru*:
+
+:_vnrel_fan
+en : Fandisc
+ru*:
+
+:_vnrel_orig
+en : Original game
+ru*:
+
+
 # producer types
 
 :_ptype_co

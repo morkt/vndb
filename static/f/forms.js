@@ -199,7 +199,7 @@ function relLoad() {
   // fetch the relation types from the add new relation selectbox
   l = x('relation_new').getElementsByTagName('select')[0].options;
   for(i=0;i<l.length;i++)
-    relTypes[Math.floor(l[i].value)] = l[i].text;
+    relTypes[l[i].value] = l[i].text;
 
   // read the current relations
   l = x('relations').value.split('|||');
@@ -247,7 +247,7 @@ function relAdd(rel, vid, title) {
   o.appendChild(t);
 
   var options = '';
-  for(var i=0;i<relTypes.length;i++)
+  for(var i in relTypes)
     options += '<option value="'+i+'"'+(i == rel ? ' selected="selected"' : '')+'>'+qq(relTypes[i])+'</option>';
   t = document.createElement('td');
   t.className = 'tc2';
@@ -289,10 +289,11 @@ function relSerialize() {
   var l = x('relation_tbl').getElementsByTagName('tr');
   for(i=0;i<l.length;i++) {
     var title = l[i].getElementsByTagName('td')[0];
+    var rel = l[i].getElementsByTagName('select')[0];
     title = title.innerText || title.textContent;
     title = title.substr(title.indexOf(':')+1);
     r += (r ? '|||' : '')
-        +l[i].getElementsByTagName('select')[0].selectedIndex
+        +rel.options[rel.selectedIndex].value
         +','+l[i].id.substr(12)+','+title;
   }
   x('relations').value = r;

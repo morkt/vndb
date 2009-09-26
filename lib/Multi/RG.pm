@@ -78,8 +78,8 @@ sub getrel { # num, res, vid
   $_[HEAP]{nodes}{$id} = 1;
 
   for($_[ARG0] > 0 ? @{$_[ARG1]} : ()) {
-    $_[HEAP]{rels}{$id.'-'.$_->{id}} = reverserel($_->{relation}) if $id < $_->{id};
-    $_[HEAP]{rels}{$_->{id}.'-'.$id} = $_->{relation}             if $id > $_->{id};
+    $_[HEAP]{rels}{$id.'-'.$_->{id}} = $VNDB::S{vn_relations}{$_->{relation}}[1] if $id < $_->{id};
+    $_[HEAP]{rels}{$_->{id}.'-'.$id} = $_->{relation} if $id > $_->{id};
 
     if(!exists $_[HEAP]{nodes}{$_->{id}}) {
       $_[HEAP]{nodes}{$_->{id}} = 0;
@@ -147,14 +147,13 @@ sub builddot { # num, res
     # [older game] -> [newer game]
     if($_->[4] > $_->[3]) {
       ($_->[0], $_->[1]) = ($_->[1], $_->[0]);
-      $_->[2] = reverserel($_->[2]);
+      $_->[2] = $VNDB::S{vn_relations}{$_->[2]}[1];
     }
+    my $rev = $VNDB::S{vn_relations}{$_->[2]}[1];
     my $label = 
-      $VNDB::S{vn_relations}[$_->[2]][1]
-        ? qq|headlabel = "$VNDB::S{vn_relations}[$_->[2]][0]", taillabel = "$VNDB::S{vn_relations}[$_->[2]-1][0]"| :
-      $VNDB::S{vn_relations}[$_->[2]+1][1]
-        ? qq|headlabel = "$VNDB::S{vn_relations}[$_->[2]][0]", taillabel = "$VNDB::S{vn_relations}[$_->[2]+1][0]"|
-        : qq|label = " $VNDB::S{vn_relations}[$_->[2]][0]"|;
+      $rev ne $_->[2]
+        ? qq|headlabel = "\$____vnrel_$_->[2]____\$", taillabel = "\$____vnrel_${rev}____\$"|
+        : qq|label = "\$____vnrel_$_->[2]____\$"|;
     $gv .= qq|\tv$$_[1] -- v$$_[0] [ $label ]\n|;
   }
 
@@ -255,13 +254,6 @@ sub proc_closed {
 }
 sub proc_child {
   1; # do nothing, just make sure SIGCHLD is handled to reap the process
-}
-
-
-
-# non-POE helper function
-sub reverserel { # relation
-  return $VNDB::S{vn_relations}[$_[0]][1] ? $_[0]-1 : $VNDB::S{vn_relations}[$_[0]+1][1] ? $_[0]+1 : $_[0];
 }
 
 

@@ -58,6 +58,8 @@ sub rg {
   $self->htmlHeader(title => $title);
   *YAWF::XML::html = $sub;
 
+  $v->{svg} =~ s/\$___(_vnrel_[a-z]+)____\$/mt $1/eg;
+
   $self->htmlMainTabs('v', $v, 'rg');
   div class => 'mainbox';
    h1 $title;
@@ -228,7 +230,7 @@ sub _revision {
     }],
     [ relations   => join => '<br />', split => sub {
       my @r = map sprintf('%s: <a href="/v%d" title="%s">%s</a>',
-        $self->{vn_relations}[$_->{relation}][0], $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
+        mt("_vnrel_$_->{relation}"), $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
       ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
       return @r ? @r : (mt '_vndiff_none');
     }],
@@ -295,7 +297,7 @@ sub _relations {
    td class => 'relations';
     dl;
      for(sort keys %rel) {
-       dt $self->{vn_relations}[$_][0];
+       dt mt "_vnrel_$_";
        dd;
         for (@{$rel{$_}}) {
           a href => "/v$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 40;
