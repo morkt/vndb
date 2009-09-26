@@ -41,7 +41,7 @@ sub rg {
     $self->htmlFooter;
     return;
   }
-  $self->resHeader('Content-Type' => 'application/xhtml+xml');
+  $self->resHeader('Content-Type' => 'application/xhtml+xml; charset=UTF-8');
 
   # This is a REALLY ugly hack, need find a proper solution in YAWF
   no warnings 'redefine';

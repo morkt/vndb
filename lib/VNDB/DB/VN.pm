@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 use VNDB::Func 'gtintype';
+use Encode 'decode_utf8';
 
 our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbVNCache dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
 
@@ -100,6 +101,10 @@ sub dbVNGet {
       ORDER BY !s|,
     join(', ', @select), join(' ', @join), \%where, $o{order},
   );
+
+  if($o{what} =~ /relgraph/) {
+    $_->{svg} = decode_utf8($_->{svg}) for @$r;
+  }
 
   if(@$r && $o{what} =~ /(anime|relations|screenshots)/) {
     my %r = map {
