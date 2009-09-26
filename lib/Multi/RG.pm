@@ -113,7 +113,12 @@ sub builddot { # num, res
   # insert all nodes, ordered by release date
   for (sort { $a->{date} <=> $b->{date} } @$vns) {
     my $date = sprintf '%08d', $_->{date};
-    $date =~ s#^([0-9]{4})([0-9]{2}).+#$1==0?'N/A':$1==9999?'TBA':(($2&&$2<13?($_[HEAP]{moy}[$2-1].' '):'').$1)#e;
+    $date =~ s{^([0-9]{4})([0-9]{2})([0-9]{2})$}{
+        $1 ==    0 ? 'unknown'
+      : $1 == 9999 ? 'TBA'
+      : $2 ==   99 ? $1
+      : $3 ==   99 ? "$1-$2" : "$1-$2-$3"
+    }e;
 
     my $title = $_->{title};
     $title = substr($title, 0, 27).'...' if length($title) > 30;

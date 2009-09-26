@@ -2,6 +2,7 @@ git - ?
 	- Converted relation graphs to use inline SVG
 	  - Relation graphs now use the color scheme of selected skin
 	  - VN relations are translatable in both the interface and the graphs
+		- Full date is displayed in graphs instead of only month/year
 	- Converted VN relations to an enum data type
 
 2.7 - 2009-09-24
