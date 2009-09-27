@@ -5,6 +5,7 @@ use warnings;
 {
   package VNDB::L10N;
   use base 'Locale::Maketext';
+  use LangFile;
 
   sub fallback_languages { ('en') };
 
@@ -25,51 +26,20 @@ use warnings;
       en => \%VNDB::L10N::en::Lexicon,
       ru => \%VNDB::L10N::ru::Lexicon,
     );
-
-    open my $F, '<:utf8', $VNDB::ROOT.'/data/lang.txt' or die "Opening language file: $!\n";
-    my($empty, $line, $key, $lang) = (0, 0);
-    while(<$F>) {
-      chomp;
-      $line++;
-
-      # ignore intro
-      if(!defined $key) {
-        $key = 0 if /^\/intro$/;
-        next;
+    my $r = LangFile->new(read => "$VNDB::ROOT/data/lang.txt");
+    my $key;
+    while(my $l = $r->read) {
+      my($t, @l) = @$l;
+      $key = $l[0] if $t eq 'key';
+      if($t eq 'tl') {
+        my($lang, undef, $text) = @l;
+        next if !$text;
+        die "Unknown language \"$l->[1]\"\n" if !$lang{$lang};
+        die "Unknown key for translation \"$lang: $text\"\n" if !$key;
+        $lang{$lang}{$key} = $text;
       }
-      # ignore comments
-      next if /^#/;
-      # key
-      if(/^:(.+)$/) {
-        $key = $1;
-        $lang = undef;
-        $empty = 0;
-        next;
-      }
-      # locale string
-      if(/^([a-z_-]{2,7})[ *]: (.+)$/) {
-        $lang = $1;
-        die "Unknown language on #$line: $lang\n" if !$lang{$lang};
-        die "Unknown key for locale on #$line\n" if !$key;
-        $lang{$lang}{$key} = $2;
-        $empty = 0;
-        next;
-      }
-      # multi-line locale string
-      if($lang && /^\s+([^\s].*)$/) {
-        $lang{$lang}{$key} .= ''.("\n"x$empty)."\n$1";
-        $empty = 0;
-        next;
-      }
-      # empty string (count them in case they're part of a multi-line locale string)
-      if(/^\s*$/) {
-        $empty++;
-        next;
-      }
-      # something we didn't expect
-      die "Don't know what to do with line $line\n" unless /^([a-z_-]{2,7})[ *]:/;
     }
-    close $F;
+    $r->close;
   }
 }
 
