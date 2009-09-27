@@ -70,6 +70,17 @@ sub spawn {
       lm => 0,    # timestamp of last outgoing message, 0=no running msg
       aid => 0,   # anime ID of the last sent ANIME command
       tag => int(rand()*50000),
+      # anime types as returned by AniDB (lowercased)
+      anime_types => {
+        'unknown'     => undef, # NULL
+        'tv series'   => 'tv',
+        'ova'         => 'ova',
+        'movie'       => 'mov',
+        'other'       => 'oth',
+        'web'         => 'web',
+        'tv special'  => 'spe',
+        'music video' => 'mv',
+      },
     },
   );
 }
@@ -224,7 +235,7 @@ sub receivepacket { # input, wheelid
     $col[2] = undef if !$col[2] || $col[2] =~ /^0,/;
     $col[3] = $1 if $col[3] =~ /^([0-9]+)/; # remove multi-year stuff
     $col[3] = undef if !$col[3];
-    $col[4] = (grep lc($VNDB::S{anime_types}[$_]) eq lc($col[4]), 0..$#{$VNDB::S{anime_types}})[0];
+    $col[4] = $_[HEAP]{anime_types}{ lc($col[4]) };
     $col[5] = undef if !$col[5];
     $col[6] = undef if !$col[6];
     $_[KERNEL]->post(pg => do => 'UPDATE anime

@@ -337,7 +337,7 @@ sub _anime {
          txt '] ';
         end;
         acronym title => $_->{title_kanji}||$_->{title_romaji}, shorten $_->{title_romaji}, 50;
-        b ' ('.(defined $_->{type} ? $self->{anime_types}[$_->{type}].', ' : '').$_->{year}.')';
+        b ' ('.(defined $_->{type} ? mt("_animetype_$_->{type}").', ' : '').$_->{year}.')';
         txt "\n";
       }
     }

@@ -35,17 +35,7 @@ our %S = (%S,
   producer_types  => [qw|co in ng|],
   discussion_boards => [qw|an db v p u|],
   vn_lengths      => [ 0..5 ],
-  anime_types     => [
-    # AniDB anime type starts counting at 1, 0 = unknown
-    #   we start counting at 0, with NULL being unknown
-    'TV Series',
-    'OVA',
-    'Movie',
-    'Other',
-    'Web',
-    'TV Special',
-    'Music Video',
-  ],
+  anime_types     => [qw|tv ova mov oth web spe mv|],
   vn_relations    => {
   # id   => [ order, reverse ]
     seq  => [ 0, 'preq' ],

@@ -32,3 +32,18 @@ ALTER TABLE vn_relations ALTER COLUMN relation TYPE vn_relation USING
     ELSE 'orig'
   END;
 
+
+-- Anime types stored as enum
+CREATE TYPE anime_type AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
+ALTER TABLE anime ALTER COLUMN type TYPE anime_type USING
+  CASE
+    WHEN type = 0 THEN 'tv'::anime_type
+    WHEN type = 1 THEN 'ova'
+    WHEN type = 2 THEN 'mov'
+    WHEN type = 3 THEN 'oth'
+    WHEN type = 4 THEN 'web'
+    WHEN type = 5 THEN 'spe'
+    WHEN type = 6 THEN 'mv'
+    ELSE NULL
+  END;
+

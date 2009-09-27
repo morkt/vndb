@@ -364,6 +364,37 @@ en : Trial
 ru : Триальный
 
 
+# Anime types
+
+:_animetype_tv
+en : TV Series
+ru*:
+
+:_animetype_ova
+en : OVA
+ru*:
+
+:_animetype_mov
+en : Movie
+ru*:
+
+:_animetype_oth
+en : Other
+ru*:
+
+:_animetype_web
+en : Web
+ru*:
+
+:_animetype_spe
+en : TV Special
+ru*:
+
+:_animetype_mv
+en : Music Video
+ru*:
+
+
 # Discussion board types
 
 :_dboard_an
