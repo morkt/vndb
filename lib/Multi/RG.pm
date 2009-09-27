@@ -26,7 +26,6 @@ sub spawn {
     heap => {
       font => 'Arial',
       fsize => [ 9, 7, 10 ], # nodes, edges, node_title
-      moy => [qw| Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec |],
       dot => '/usr/bin/dot',
       check_delay => 3600,
       @_,
