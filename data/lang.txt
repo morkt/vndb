@@ -157,6 +157,10 @@ ru : Финский
 en : French
 ru : Французский
 
+:_lang_hu
+en : Hungarian
+ru*:
+
 :_lang_it
 en : Italian
 ru : Итальянский

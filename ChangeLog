@@ -6,6 +6,7 @@ git - ?
 	- Converted to ENUM data type:
 	  - vn_relations.relation
 	  - anime.type
+	- New language: Hungarian
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout
