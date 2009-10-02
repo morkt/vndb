@@ -11,7 +11,7 @@ use warnings;
 
   # used for the language switch interface, language tags must
   # be the same as in the languages hash in global.pl
-  sub languages { ('en', 'ru') }
+  sub languages { ('en', 'ru', 'cs') }
 
   sub maketext {
     my $r = eval { shift->SUPER::maketext(@_) };
@@ -25,6 +25,7 @@ use warnings;
     my %lang = (
       en => \%VNDB::L10N::en::Lexicon,
       ru => \%VNDB::L10N::ru::Lexicon,
+      cs => \%VNDB::L10N::cs::Lexicon,
     );
     my $r = LangFile->new(read => "$VNDB::ROOT/data/lang.txt");
     my $key;
@@ -135,6 +136,22 @@ use warnings;
     my($self, $num, $single, $couple, $lots) = @_;
     return $single if ($num % 10) == 1 && ($num % 100) != 11;
     return $couple if ($num % 10) >= 2 && ($num % 10) <= 4 && !(($num % 100) >= 12 && ($num % 100) <= 14);
+    return $lots;
+  }
+}
+
+
+
+{
+  package VNDB::L10N::cs;
+  use base 'VNDB::L10N::en';
+  our %Lexicon;
+
+  sub quant {
+    my($self, $num, $single, $couple, $lots) = @_;
+    return $lots   if ($num % 100) >= 11 && ($num % 100) <= 14;
+    return $single if ($num % 10) == 1;
+    return $couple if ($num % 10) >= 2 && ($num % 10) <= 4;
     return $lots;
   }
 }

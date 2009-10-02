@@ -78,6 +78,10 @@ ends with ']'. The following options are supported:
     Same as the english [quant] as above, but has three forms for a word
     instead of two.
 
+  [quant,{num},{singular},{normative},{genetive}] (Czech)
+    Same as the english [quant] as above, but has three forms for a word
+    instead of two.
+
   [url,{url},{title}]
     Formats a link to another page, where {url} is the location of the page
     and {title} the link title. {url} is usually an argument, e.g.:
