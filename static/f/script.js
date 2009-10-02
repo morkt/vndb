@@ -1,17 +1,13 @@
 
-/*  G L O B A L   S T U F F  */
-
-function x(y){return document.getElementById(y)}
+/*  M I N I M A L   J A V A S C R I P T   L I B R A R Y  */
 
 var http_request = false;
 function ajax(url, func) {
   if(http_request)
     http_request.abort();
   http_request = (window.ActiveXObject) ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
-  if(http_request == null) {
-    alert("Your browser does not support the functionality this website requires.");
-    return;
-  }
+  if(http_request == null)
+    return alert("Your browser does not support the functionality this website requires.");
   http_request.onreadystatechange = function() {
     if(!http_request || http_request.readyState != 4 || !http_request.responseText)
       return;
@@ -41,6 +37,103 @@ function getCookie(n) {
   return null;
 }
 
+function x(y) { // deprecated
+  return document.getElementById(y)
+}
+function byId(n) {
+  return document.getElementById(n)
+}
+function byName(){
+  var d = arguments.length > 1 ? arguments[0] : document;
+  var n = arguments.length > 1 ? arguments[1] : arguments[0];
+  return d.getElementsByTagName(n);
+}
+function byClass() { // [class], [parent, class], [tagname, class], [parent, tagname, class]
+  var par = typeof arguments[0] == 'object' ? arguments[0] : document;
+  var tag = arguments.length == 2 && typeof arguments[0] == 'string' ? arguments[0] : arguments.length == 3 ? arguments[1] : '*';
+  var c = arguments[arguments.length-1];
+  var l = byName(par, tag);
+  var ret = [];
+  for(var i=0; i<l.length; i++)
+    if(hasClass(l[i], c))
+      ret[ret.length-1] = l[i];
+  return ret;
+}
+
+/* wrapper around DOM element creation
+ * tag('string') -> createTextNode
+ * tag('tagname', tag(), 'string', ..) -> createElement(), appendChild(), ..
+ * tag('tagname', { class: 'meh', title: 'Title' }) -> createElement(), setAttribute()..
+ * tag('tagname', { <attributes> }, <elements>) -> create, setattr, append */
+function tag() {
+  if(arguments.length == 1)
+    return typeof arguments[0] != 'object' ? document.createTextNode(arguments[0]) : arguments[0];
+  var el = typeof document.createElementNS != 'undefined'
+    ? document.createElementNS('http://www.w3.org/1999/xhtml', arguments[0])
+    : document.createElement(arguments[0]);
+  for(var i=1; i<arguments.length; i++) {
+    if(arguments[i] == null)
+      continue;
+    if(typeof arguments[i] == 'object' && !arguments[i].appendChild) {
+      for(attr in arguments[i]) {
+        if(attr == 'style')
+          el.setAttribute(attr, arguments[i][attr]);
+        else
+          el[ attr == 'class' ? 'className' : attr ] = arguments[i][attr];
+      }
+    } else
+      el.appendChild(tag(arguments[i]));
+  }
+  return el;
+}
+function addBody(el) {
+  if(document.body.appendChild)
+    document.body.appendChild(el);
+  else if(document.documentElement.appendChild)
+    document.documentElement.appendChild(el);
+  else if(document.appendChild)
+    document.appendChild(el);
+}
+function setContent(el, content) {
+  setText(el, '');
+  el.appendChild(content);
+}
+function getText(obj) {
+  return obj.textContent || obj.innerText || '';
+}
+function setText(obj, txt) {
+  if(obj.textContent != null)
+    obj.textContent = txt;
+  else
+    obj.innerText = txt;
+}
+
+function listClass(obj) {
+  var n = obj.className;
+  if(!n)
+    return [];
+  return n.split(/ /);
+}
+function hasClass(obj, c) {
+  var l = listClass(obj);
+  for(var i=0; i<l.length; i++)
+    if(l[i] == c)
+      return true;
+  return false;
+}
+function addClass(obj, c) {
+  if(!hasClass(obj, c))
+    obj.className = (obj.className ? obj.className+' ' : '') + c;
+}
+function removeClass(obj, c) {
+  var l = listClass(obj);
+  var n = [];
+  for(var i=0; i<l.length; i++)
+    if(l[i] != c)
+      n[n.length] = l[i];
+  obj.className = n.join(' ');
+}
+
 
 
 
@@ -48,25 +141,22 @@ function getCookie(n) {
 
 function ivInit() {
   var init = 0;
-  var l = document.getElementsByTagName('a');
+  var l = byName('a');
   for(var i=0;i<l.length;i++)
     if(l[i].rel.substr(0,3) == 'iv:') {
       init++;
       l[i].onclick = ivView;
     }
-  if(init && !x('iv_view')) {
-    var d = document.createElement('div');
-    d.id = 'iv_view';
-    d.innerHTML = '<b id="ivimg"></b><br />'
-      +'<a href="#" id="ivfull">&nbsp;</a>'
-      +'<a href="#" onclick="return ivClose()" id="ivclose">close</a>'
-      +'<a href="#" onclick="return ivView(this)" id="ivprev">&laquo; previous</a>'
-      +'<a href="#" onclick="return ivView(this)" id="ivnext">next &raquo;</a>';
-    document.body.appendChild(d);
-    d = document.createElement('b');
-    d.id = 'ivimgload';
-    d.innerHTML = 'Loading...';
-    document.body.appendChild(d);
+  if(init && !byId('iv_view')) {
+    addBody(tag('div', {id: 'iv_view'},
+      tag('b', {id:'ivimg'}, ''),
+      tag('br', null),
+      tag('a', {href:'#', id:'ivfull'}, ''),
+      tag('a', {href:'#', onclick: ivClose, id:'ivclose'}, 'close'),
+      tag('a', {href:'#', onclick: ivView, id:'ivprev'}, '« previous'),
+      tag('a', {href:'#', onclick: ivView, id:'ivnext'}, 'next »')
+    ));
+    addBody(tag('b', {id:'ivimgload'}, 'Loading...'));
   }
 }
 
@@ -74,37 +164,40 @@ function ivView(what) {
   what = what && what.rel ? what : this;
   var u = what.href;
   var opt = what.rel.split(':');
-  d = x('iv_view');
+  var view = byId('iv_view');
+  var next = byId('ivnext');
+  var prev = byId('ivprev');
+  var full = byId('ivfull');
 
- // fix prev/next links (if any)
+  // fix prev/next links (if any)
   if(opt[2]) {
-    var ol = document.getElementsByTagName('a');
+    var ol = byName('a');
     var l=[];
     for(i=0;i<ol.length;i++)
       if(ol[i].rel.substr(0,3) == 'iv:' && ol[i].rel.indexOf(':'+opt[2]) > 4 && ol[i].className.indexOf('hidden') < 0 && ol[i].id != 'ivprev' && ol[i].id != 'ivnext')
         l[l.length] = ol[i];
     for(i=0;i<l.length;i++)
       if(l[i].href == u) {
-        x('ivnext').style.visibility = l[i+1] ? 'visible' : 'hidden';
-        x('ivnext').href = l[i+1] ? l[i+1].href : '#';
-        x('ivnext').rel = l[i+1] ? l[i+1].rel : '';
-        x('ivprev').style.visibility = l[i-1] ? 'visible' : 'hidden';
-        x('ivprev').href = l[i-1] ? l[i-1].href : '#';
-        x('ivprev').rel = l[i-1] ? l[i-1].rel : '';
+        next.style.visibility = l[i+1] ? 'visible'   : 'hidden';
+        next.href             = l[i+1] ? l[i+1].href : '#';
+        next.rel              = l[i+1] ? l[i+1].rel  : '';
+        prev.style.visibility = l[i-1] ? 'visible'   : 'hidden';
+        prev.href             = l[i-1] ? l[i-1].href : '#';
+        prev.rel              = l[i-1] ? l[i-1].rel  : '';
       }
   } else
-    x('ivnext').style.visibility = x('ivprev').style.visibility = 'hidden';
+    next.style.visibility = prev.style.visibility = 'hidden';
 
- // calculate dimensions
+  // calculate dimensions
   var w = Math.floor(opt[1].split('x')[0]);
   var h = Math.floor(opt[1].split('x')[1]);
   var ww = typeof(window.innerWidth) == 'number' ? window.innerWidth : document.documentElement.clientWidth;
   var wh = typeof(window.innerHeight) == 'number' ? window.innerHeight : document.documentElement.clientHeight;
   var st = typeof(window.pageYOffset) == 'number' ? window.pageYOffset : document.body && document.body.scrollTop ? document.body.scrollTop : document.documentElement.scrollTop;
   if(w+100 > ww || h+70 > wh) {
-    x('ivfull').href = u;
-    x('ivfull').innerHTML = w+'x'+h;
-    x('ivfull').style.visibility = 'visible';
+    full.href = u;
+    setText(full, w+'x'+h);
+    full.style.visibility = 'visible';
     if(w/h > ww/wh) { // width++
       h *= (ww-100)/w;
       w = ww-100;
@@ -113,30 +206,35 @@ function ivView(what) {
       h = wh-70;
     }
   } else
-    x('ivfull').style.visibility = 'hidden';
+    full.style.visibility = 'hidden';
   var dw = w;
   var dh = h+20;
   dw = dw < 200 ? 200 : dw;
 
- // update document
-  d.style.display = 'block';
-  x('ivimg').innerHTML = '<img src="'+u+'" onclick="ivClose()" onload="document.getElementById(\'ivimgload\').style.top=\'-400px\'" style="width: '+w+'px; height: '+h+'px" />';
-  d.style.width = dw+'px';
-  d.style.height = dh+'px';
-  d.style.left = ((ww - dw) / 2 - 10)+'px';
-  d.style.top = ((wh - dh) / 2 + st - 20)+'px';
-  x('ivimgload').style.left = ((ww - 100) / 2 - 10)+'px';
-  x('ivimgload').style.top = ((wh - 20) / 2 + st)+'px';
+  // update document
+  view.style.display = 'block';
+  setContent(x('ivimg'), tag('img', {src:u, onclick:ivClose,
+    onload: function() { byId('ivimgload').style.top='-400px'; },
+    style: 'width: '+w+'px; height: '+h+'px'
+  }));
+  view.style.width = dw+'px';
+  view.style.height = dh+'px';
+  view.style.left = ((ww - dw) / 2 - 10)+'px';
+  view.style.top = ((wh - dh) / 2 + st - 20)+'px';
+  byId('ivimgload').style.left = ((ww - 100) / 2 - 10)+'px';
+  byId('ivimgload').style.top = ((wh - 20) / 2 + st)+'px';
   return false;
 }
 
 function ivClose() {
-  x('iv_view').style.display = 'none';
-  x('iv_view').style.top = '-5000px';
-  x('ivimgload').style.top = '-400px';
-  x('ivimg').innerHTML = '';
+  byId('iv_view').style.display = 'none';
+  byId('iv_view').style.top = '-5000px';
+  byId('ivimgload').style.top = '-400px';
+  setText(byId('ivimg'), '');
   return false;
 }
+
+ivInit();
 
 
 
@@ -509,9 +607,6 @@ function dtSerialize(obj) {
       x('nsfwshown').innerHTML = s;
       return false;
     };
-
-  // initialize image viewer
-  ivInit();
 
   // vnlist dropdown
   var l = document.getElementsByTagName('a');
