@@ -426,7 +426,7 @@ sub _releases {
          end;
          td class => 'tc5';
           if($self->authInfo->{id}) {
-            a href => "/r$rel->{id}", id => "rlsel_$rel->{id}";
+            a href => "/r$rel->{id}", id => "rlsel_$rel->{id}", class => 'vnrlsel';
              lit $rel->{ulist} ? liststat $rel->{ulist} : '--';
             end;
           } else {

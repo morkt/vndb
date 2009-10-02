@@ -56,7 +56,7 @@ function byClass() { // [class], [parent, class], [tagname, class], [parent, tag
   var ret = [];
   for(var i=0; i<l.length; i++)
     if(hasClass(l[i], c))
-      ret[ret.length-1] = l[i];
+      ret[ret.length] = l[i];
   return ret;
 }
 
@@ -239,74 +239,112 @@ ivInit();
 
 
 
+/*  D R O P D O W N  */
 
+function ddInit(obj, align, contents) {
+  obj.dd_align = align; // only 'left' and 'bottom' supported at the moment
+  obj.dd_contents = contents;
+  document.onmousemove = ddMouseMove;
+  if(!byId('dd_box'))
+    addBody(tag('div', {id:'dd_box', dd_used: false}));
+}
 
-/*  V N L I S T   D R O P D O W N  */
+function ddHide() {
+  var box = byId('dd_box');
+  setText(box, '');
+  box.style.left = '-500px';
+  box.dd_used = false;
+}
 
-var rstat = [ 'Unknown', 'Pending', 'Obtained', 'On loan', 'Deleted' ];
-var vstat = [ 'Unknown', 'Playing', 'Finished', 'Stalled', 'Dropped' ];
-function vlDropDown(e) {
+function ddMouseMove(e) {
   e = e || window.event;
-  var tg = e.target || e.srcElement;
-  while(tg && (tg.nodeType == 3 || tg.nodeName.toLowerCase() != 'a'))
-    tg = tg.parentNode;
-
-  var o = x('vldd');
-  if(!o && (!tg || tg.id.substr(0,6) != 'rlsel_'))
+  var lnk = e.target || e.srcElement;
+  while(lnk && (lnk.nodeType == 3 || !lnk.dd_align))
+    lnk = lnk.parentNode;
+  var box = byId('dd_box');
+  if(!box.dd_used && !lnk)
     return;
 
-  if(o) {
+  if(box.dd_used) {
     var mouseX = e.pageX || (e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
     var mouseY = e.pageY || (e.clientY + document.body.scrollTop  + document.documentElement.scrollTop);
-    if((mouseX < ddx-5 || mouseX > ddx+o.offsetWidth+100 || mouseY < ddy-5 || mouseY > ddy+o.offsetHeight+5)
-        || (tg && tg.id.substr(0,6) == 'rlsel_' && tg.id != 'rlsel_'+o.relId)) {
-      document.body.removeChild(o);
-      o = null;
-    }
+    if((mouseX < ddx-10 || mouseX > ddx+box.offsetWidth+10 || mouseY < ddy-10 || mouseY > ddy+box.offsetHeight+10)
+        || (lnk && lnk.id == box.dd_id))
+      ddHide();
   }
-  if(!o && tg) {
-    o = tg;
+
+  if(!box.dd_used && lnk) {
+    var content = lnk.dd_contents(lnk, box);
+    if(content == null)
+      return;
+    setContent(box, content);
+    box.dd_id = lnk.id;
+    box.dd_used = true;
+
+    var o = lnk;
     ddx = ddy = 0;
     do {
       ddx += o.offsetLeft;
       ddy += o.offsetTop;
     } while(o = o.offsetParent);
-    ddx -= 185;
 
-    var cu = tg.id.substr(6);
-    var st = tg.innerHTML.split(' / ');
-    if(st[0].indexOf('loading') >= 0)
-      return;
-    var r = '<ul><li><b>Release status</b></li>';
-    for(var i=0;i<rstat.length;i++)
-      r += st[0] && st[0].indexOf(rstat[i]) >= 0 ? '<li><i>'+rstat[i]+'</i></li>' : '<li><a href="#" onclick="return vlMod('+cu+',\'r'+i+'\')">'+rstat[i]+'</a></li>';
-    r += '</ul><ul><li><b>Play status</b></li>';
-    for(var i=0;i<vstat.length;i++)
-      r += st[1] && st[1].indexOf(vstat[i]) >= 0 ? '<li><i>'+vstat[i]+'</i></li>' : '<li><a href="#" onclick="return vlMod('+cu+',\'v'+i+'\')">'+vstat[i]+'</a></li>';
-    r += '</ul>';
-    if(tg.innerHTML != '--')
-      r += '<ul class="full"><li><a href="#" onclick="return vlMod('+cu+',\'del\')">Remove from VN list</a></li></ul>';
-
-    o = document.createElement('div');
-    o.id = 'vldd';
-    o.relId = tg.id.substr(6);
-    o.style.left = ddx+'px';
-    o.style.top = ddy+'px';
-    o.innerHTML = r;
-    document.body.appendChild(o);
+    if(lnk.dd_align == 'left')
+      ddx -= box.offsetWidth;
+    if(lnk.dd_align == 'bottom')
+      ddy += lnk.offsetHeight;
+    box.style.left = ddx+'px';
+    box.style.top = ddy+'px';
   }
 }
 
-function vlMod(rid, act) {
-  document.body.removeChild(x('vldd'));
-  x('rlsel_'+rid).innerHTML = '<b class="patch">loading...</b>';
-  ajax('/xml/rlist.xml?id='+rid+';e='+act, function(hr) {
-    x('rlsel_'+rid).innerHTML = hr.responseXML.getElementsByTagName('rlist')[0].firstChild.nodeValue;
+
+
+// release list dropdown on VN pages
+
+var rstat = [ 'Unknown', 'Pending', 'Obtained', 'On loan', 'Deleted' ];
+var vstat = [ 'Unknown', 'Playing', 'Finished', 'Stalled', 'Dropped' ];
+function rlDropDown(lnk) {
+  var relid = lnk.id.substr(6);
+  var st = getText(lnk).split(' / ');
+  if(st[0].indexOf('loading') >= 0)
+    return null;
+
+  var rs = tag('ul', tag('li', tag('b', 'Release status')));
+  var vs = tag('ul', tag('li', tag('b', 'Play status')));
+  for(var i=0;i<rstat.length;i++) {
+    if(st[0] && st[0].indexOf(rstat[i]) >= 0)
+      rs.appendChild(tag('li', tag('i', rstat[i])));
+    else
+      rs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'r'+i, onclick:rlMod}, rstat[i])));
+  }
+  for(var i=0;i<vstat.length;i++) {
+    if(st[0] && st[0].indexOf(vstat[i]) >= 0)
+      vs.appendChild(tag('li', tag('i', vstat[i])));
+    else
+      vs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'v'+i, onclick:rlMod}, vstat[i])));
+  }
+
+  return tag('div', {class:'vrdd'}, rs, vs, st[0] == '--' ? null :
+    tag('ul', {class:'full'}, tag('li', tag('a', {href:'#', rl_rid: relid, rl_act:'del', onclick:rlMod}, 'Remove from VN List')))
+  );
+}
+
+function rlMod() {
+  var lnk = byId('rlsel_'+this.rl_rid);
+  ddHide();
+  setContent(lnk, tag('b', {class: 'patch'}, 'loading...'));
+  ajax('/xml/rlist.xml?id='+this.rl_rid+';e='+this.rl_act, function(hr) {
+    // TODO: get rid of innerHTML here...
+    lnk.innerHTML = hr.responseXML.getElementsByTagName('rlist')[0].firstChild.nodeValue;
   });
   return false;
 }
 
-
+{
+  var l = byClass('a', 'vnrlsel');
+  for(var i=0;i<l.length;i++)
+    ddInit(l[i], 'left', rlDropDown);
+}
 
 
 
@@ -607,14 +645,6 @@ function dtSerialize(obj) {
       x('nsfwshown').innerHTML = s;
       return false;
     };
-
-  // vnlist dropdown
-  var l = document.getElementsByTagName('a');
-  for(var i=0;i<l.length;i++)
-    if(l[i].id.substr(0,6) == 'rlsel_') {
-      document.onmousemove = vlDropDown;
-      break;
-    }
 
   // VN tag spoiler options
   if(x('tagops')) {
