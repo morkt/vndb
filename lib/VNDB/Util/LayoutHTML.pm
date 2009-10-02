@@ -14,6 +14,7 @@ sub htmlHeader { # %options->{ title, js, noindex, search }
   my($self, %o) = @_;
   my $skin = $self->reqParam('skin') || $self->authInfo->{skin} || $self->{skin_default};
   $skin = $self->{skin_default} if !$self->{skins}{$skin} || !-d "$VNDB::ROOT/static/s/$skin";
+  $self->{js} = $o{js}; # save for use in htmlFooter
 
   # heading
   html;
@@ -22,12 +23,6 @@ sub htmlHeader { # %options->{ title, js, noindex, search }
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
     Link rel => 'stylesheet', href => $self->{url_static}.'/s/'.$skin.'/style.css?'.$self->{version}, type => 'text/css', media => 'all';
     Link rel => 'search', type => 'application/opensearchdescription+xml', title => 'VNDB VN Search', href => $self->{url}.'/opensearch.xml';
-    if($o{js}) {
-      script type => 'text/javascript', src => $self->{url_static}.'/f/forms.js?'.$self->{version}; end;
-    }
-    script type => 'text/javascript', src => $self->{url_static}.'/f/script.js?'.$self->{version};
-     # most browsers don't like a self-closing <script> tag...
-    end;
     if($self->authInfo->{customcss}) {
       (my $css = $self->authInfo->{customcss}) =~ s/\n/ /g;
       style type => 'text/css', $css;
@@ -163,6 +158,8 @@ sub htmlFooter {
       a href => $self->{source_url}, mt '_footer_source';
      end;
     end; # /div maincontent
+    script type => 'text/javascript', src => $self->{url_static}.'/f/script.js?'.$self->{version}, '';
+    script type => 'text/javascript', src => $self->{url_static}.'/f/forms.js?'.$self->{version}, '' if $self->{js};
    end; # /body
   end; # /html
 

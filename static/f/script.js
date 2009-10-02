@@ -2,15 +2,6 @@
 /*  G L O B A L   S T U F F  */
 
 function x(y){return document.getElementById(y)}
-function cl(o,f){if(x(o))x(o).onclick=f}
-function DOMLoad(y){var d=0;var f=function(){if(d++)return;y()};
-if(document.addEventListener)document.addEventListener("DOMCont"
-+"entLoaded",f,false);document.write("<script id=_ie defer src="
-+"javascript:void(0)><\/script>");document.getElementById('_ie')
-.onreadystatechange=function(){if(this.readyState=="complete")f()
-};if(/WebKit/i.test(navigator.userAgent))var t=setInterval(
-function(){if(/loaded|complete/.test(document.readyState)){
-clearInterval(t);f()}},10);window.onload=f;}
 
 var http_request = false;
 function ajax(url, func) {
@@ -18,7 +9,7 @@ function ajax(url, func) {
     http_request.abort();
   http_request = (window.ActiveXObject) ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
   if(http_request == null) {
-    alert("Your browse does not support the functionality this website requires.");
+    alert("Your browser does not support the functionality this website requires.");
     return;
   }
   http_request.onreadystatechange = function() {
@@ -38,7 +29,7 @@ function setCookie(n,v) {
   date.setTime(date.getTime()+(365*24*60*60*1000));
   document.cookie = n+'='+v+'; expires='+date.toGMTString()+'; path=/';
 }
-function readCookie(n) {
+function getCookie(n) {
   var l = document.cookie.split(';');
   for(var i=0; i<l.length; i++) {
     var c = l[i];
@@ -347,10 +338,6 @@ function dtSerialize(obj) {
 
 
 
-/*  O N L O A D   E V E N T  */
-
-DOMLoad(function() {
-
   // search box
   var i = x('sq');
   i.onfocus = function () {
@@ -447,12 +434,13 @@ DOMLoad(function() {
   }
 
   // Advanced search
-  cl('advselect', function() {
-    var e = x('advoptions');
-    e.className = e.className.indexOf('hidden')>=0 ? '' : 'hidden';
-    this.getElementsByTagName('i')[0].innerHTML = e.className.indexOf('hidden')>=0 ? '&#9656;' : '&#9662;';
-    return false;
-  });
+  if(x('advselect'))
+    x('advselect').onload = function() {
+      var e = x('advoptions');
+      e.className = e.className.indexOf('hidden')>=0 ? '' : 'hidden';
+      this.getElementsByTagName('i')[0].innerHTML = e.className.indexOf('hidden')>=0 ? '&#9656;' : '&#9662;';
+      return false;
+    };
 
   // auto-complete tag search
   if(x('advselect') && x('ti')) {
@@ -480,10 +468,10 @@ DOMLoad(function() {
 
   // update spoiler cookie on VN search radio button
   if(x('sp_0')) {
-    cl('sp_0', function(){setCookie('tagspoil',0)});
-    cl('sp_1', function(){setCookie('tagspoil',1)});
-    cl('sp_2', function(){setCookie('tagspoil',2)});
-    if((i = readCookie('tagspoil')) == null)
+    x('sp_0').onload = function(){setCookie('tagspoil',0)};
+    x('sp_1').onload = function(){setCookie('tagspoil',1)};
+    x('sp_2').onload = function(){setCookie('tagspoil',2)};
+    if((i = getCookie('tagspoil')) == null)
       i = 1;
     x('sp_'+i).checked = true;
   }
@@ -501,25 +489,26 @@ DOMLoad(function() {
     };
 
   // NSFW toggle for screenshots
-  cl('nsfwhide', function() {
-    var s=0;
-    var l = x('screenshots').getElementsByTagName('div');
-    for(var i=0;i<l.length;i++) {
-      if(l[i].className.indexOf('nsfw') >= 0) {
-        if(l[i].className.indexOf('hidden') >= 0) {
+  if(x('nsfwhide'))
+    x('nsfwhide').onload = function() {
+      var s=0;
+      var l = x('screenshots').getElementsByTagName('div');
+      for(var i=0;i<l.length;i++) {
+        if(l[i].className.indexOf('nsfw') >= 0) {
+          if(l[i].className.indexOf('hidden') >= 0) {
+            s++;
+            l[i].className = 'nsfw';
+            l[i].getElementsByTagName('a')[0].className = '';
+          } else {
+            l[i].className += ' hidden';
+            l[i].getElementsByTagName('a')[0].className = 'hidden';
+          }
+        } else
           s++;
-          l[i].className = 'nsfw';
-          l[i].getElementsByTagName('a')[0].className = '';
-        } else {
-          l[i].className += ' hidden';
-          l[i].getElementsByTagName('a')[0].className = 'hidden';
-        }
-      } else
-        s++;
-    }
-    x('nsfwshown').innerHTML = s;
-    return false;
-  });
+      }
+      x('nsfwshown').innerHTML = s;
+      return false;
+    };
 
   // initialize image viewer
   ivInit();
@@ -549,7 +538,7 @@ DOMLoad(function() {
           }
         return false;
       };
-    tvsSet(readCookie('tagspoil'), true);
+    tvsSet(getCookie('tagspoil'), true);
   }
 
   // Javascript tabs
@@ -567,7 +556,7 @@ DOMLoad(function() {
   // expand/collapse edit summaries on */hist
   if(x('history_comments')) {
     setcomment = function() {
-      var e = readCookie('histexpand') == 1;
+      var e = getCookie('histexpand') == 1;
       var l = x('history_comments');
       l.innerHTML = e ? 'collapse' : 'expand';
       while(l.nodeName.toLowerCase() != 'table')
@@ -584,7 +573,7 @@ DOMLoad(function() {
     };
     setcomment();
     x('history_comments').onclick = function () {
-      setCookie('histexpand', readCookie('histexpand') == 1 ? 0 : 1);
+      setCookie('histexpand', getCookie('histexpand') == 1 ? 0 : 1);
       setcomment();
       return false;
     };
@@ -604,20 +593,6 @@ DOMLoad(function() {
     if(l[i].className == 'dateinput')
       dtLoad(l[i]);
 
-  // forms.js
-  if(x('relations'))
-    relLoad();
-  if(x('jt_box_vn_scr'))
-    scrLoad();
-  if(x('media'))
-    medLoad();
-  if(x('jt_box_rel_vn'))
-    vnpLoad('vn');
-  if(x('jt_box_rel_prod'))
-    vnpLoad('producers');
-  if(x('taglinks'))
-    tglLoad();
-
   // make some fields readonly when patch flag is set
   if(x('jt_box_rel_geninfo')) {
     var func = function() {
@@ -632,4 +607,3 @@ DOMLoad(function() {
     for(i=0; i<document.forms.length; i++)
       document.forms[i].action = document.forms[i].action.replace(/\/nospam\?/,'');
 
-});

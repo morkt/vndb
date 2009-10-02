@@ -1,6 +1,3 @@
-// various form functions
-// called by script.js
-
 function qq(v) {
   return v.replace(/&/g,"&amp;").replace(/</,"&lt;").replace(/>/,"&gt;").replace(/"/g,'&quot;');
 } 
@@ -952,5 +949,23 @@ function tglSerialize() {
   }
   x('taglinks').value = r;
 }
+
+
+
+
+// load
+
+if(x('relations'))
+  relLoad();
+if(x('jt_box_vn_scr'))
+  scrLoad();
+if(x('media'))
+  medLoad();
+if(x('jt_box_rel_vn'))
+  vnpLoad('vn');
+if(x('jt_box_rel_prod'))
+  vnpLoad('producers');
+if(x('taglinks'))
+  tglLoad();
 
 
