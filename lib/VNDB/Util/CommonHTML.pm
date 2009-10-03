@@ -524,7 +524,7 @@ sub htmlHistory {
        end;
       end;
       if($i->{comments}) {
-        Tr class => $n % 2 ? 'collapse odd hidden' : 'collapse hidden';
+        Tr class => $n % 2 ? 'collapse msgsum odd hidden' : 'collapse msgsum hidden';
          td colspan => 5;
           lit bb2html $i->{comments}, 150;
          end;

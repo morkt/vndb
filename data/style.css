@@ -479,7 +479,7 @@ div.mainbox.history td.tc1_2 {
 }
 div.mainbox.history td.tc2 { width: 65px; }
 div.mainbox.history td.tc3 { width: 90px  }
-tr.collapse td {
+tr.msgsum td {
   color: $grayedout$;
   padding-top: 0;
   text-align: right;
@@ -907,8 +907,8 @@ a.addnew {
 
 /***** User VN list browser ******/
 
-.relhid_but, #relhidall { cursor: pointer }
-.relhid_but i, #relhidall i { font-style: normal }
+#expandall, .collapse_but { cursor: pointer }
+#expandall i, .collapse_but i { font-style: normal }
 .browse.rlist .tc2 { width: 100px; }
 .browse.rlist .tc3 { width: 70px; }
 .browse.rlist .relhid .tc1 { padding-left: 40px; width: 70px; }

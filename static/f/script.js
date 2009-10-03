@@ -1,3 +1,5 @@
+var expanded_icon = '▾';
+var collapsed_icon = '▸';
 
 /*  M I N I M A L   J A V A S C R I P T   L I B R A R Y  */
 
@@ -300,7 +302,6 @@ function ddMouseMove(e) {
 }
 
 
-
 // release list dropdown on VN pages
 
 var rstat = [ 'Unknown', 'Pending', 'Obtained', 'On loan', 'Deleted' ];
@@ -548,7 +549,7 @@ if(byId('advselect')) {
     var box = byId('advoptions');
     var hidden = !hasClass(box, 'hidden');
     setClass(box, 'hidden', hidden);
-    setText(byName(this, 'i')[0], hidden ? '▸' : '▾');
+    setText(byName(this, 'i')[0], hidden ? collapsed_icon : expanded_icon);
     return false;
   };
 }
@@ -681,6 +682,41 @@ if(byId('expandlist')) {
   };
 }
 
+// collapse/expand row groups (/u+/tags, /u+/list) (limited to one table on a page)
+if(byId('expandall')) {
+  var table = byId('expandall');
+  while(table.nodeName.toLowerCase() != 'table')
+    table = table.parentNode;
+  var heads = byClass(table, 'td', 'collapse_but');
+  var allhid = false;
+
+  var alltoggle = function() {
+    allhid = !allhid;
+    var l = byClass(table, 'tr', 'collapse');
+    for(var i=0; i<l.length; i++)
+      setClass(l[i], 'hidden', allhid);
+    setText(byName(byId('expandall'), 'i')[0], allhid ? collapsed_icon : expanded_icon);
+    for(var i=0; i<heads.length; i++)
+      setText(byName(heads[i], 'i')[0], allhid ? collapsed_icon : expanded_icon);
+    return false;
+  }
+  byId('expandall').onclick = alltoggle;
+  alltoggle();
+
+  var singletoggle = function() {
+    var l = byClass(table, 'tr', 'collapse_'+this.id);
+    if(l.length < 1)
+      return;
+    var hid = !hasClass(l[0], 'hidden');
+    for(var i=0; i<l.length; i++)
+      setClass(l[i], 'hidden', hid);
+    setText(byName(this, 'i')[0], hid ? collapsed_icon : expanded_icon);
+  };
+  for(var i=0; i<heads.length; i++)
+    heads[i].onclick = singletoggle;
+}
+
+
 // spam protection on all forms
 setTimeout(function() {
   for(i=1; i<document.forms.length; i++)
@@ -688,38 +724,6 @@ setTimeout(function() {
 }, 500);
 
 
-
-  // User VN list
-  // (might want to make this a bit more generic, as it's now also used for the user tag list)
-  i = x('relhidall');
-  if(i) {
-    var l = document.getElementsByTagName('tr');
-    for(var i=0;i<l.length;i++)
-      if(l[i].className.indexOf('relhid') >= 0)
-        l[i].style.display = 'none';
-    var l = document.getElementsByTagName('td');
-    for(var i=0;i<l.length;i++)
-      if(l[i].className.indexOf('relhid_but') >= 0)
-        l[i].onclick = function() {
-          var l = document.getElementsByTagName('tr');
-          for(var i=0;i<l.length;i++)
-            if(l[i].className.substr(7) == this.id) {
-              l[i].style.display = l[i].style.display == 'none' ? '' : 'none';
-              this.getElementsByTagName('i')[0].innerHTML = l[i].style.display == 'none' ? '&#9656;' : '&#9662;';
-            }
-        };
-    var allhid = 1;
-    x('relhidall').onclick = function() {
-      allhid = !allhid;
-      var l = document.getElementsByTagName('tr');
-      for(var i=0;i<l.length;i++)
-        if(l[i].className.indexOf('relhid') >= 0) {
-          l[i].style.display = allhid ? 'none' : '';
-          x(l[i].className.substr(7)).getElementsByTagName('i')[0].innerHTML = allhid ? '&#9656;' : '&#9662;';
-        }
-      this.getElementsByTagName('i')[0].innerHTML = allhid ? '&#9656;' : '&#9662;';
-    };
-  }
 
   // auto-complete tag search
   if(x('advselect') && x('ti')) {

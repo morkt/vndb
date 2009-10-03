@@ -396,7 +396,7 @@ sub posts {
        td class => 'tc3', $self->{l10n}->date($l->{date});
        td class => 'tc4'; a href => "/t$l->{tid}.$l->{num}", $l->{title}; end;
       end;
-      Tr class => $n % 2 ? 'collapse odd hidden' : 'collapse hidden';
+      Tr class => $n % 2 ? 'collapse msgsum odd hidden' : 'collapse msgsum hidden';
        td colspan => 4;
         lit bb2html $l->{msg}, 150;
        end;

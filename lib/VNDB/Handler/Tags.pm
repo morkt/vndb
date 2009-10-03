@@ -529,7 +529,7 @@ sub usertags {
       header   => [
         sub {
           td class => 'tc1';
-           b id => 'relhidall';
+           b id => 'expandall';
             lit '<i>&#9656;</i> '.mt('_tagu_col_num').' ';
            end;
            lit $f->{s} eq 'cnt' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u$u->{id}/tags?o=a;s=cnt">\x{25B4}</a>|;
@@ -542,7 +542,7 @@ sub usertags {
       row     => sub {
         my($s, $n, $l) = @_;
         Tr $n % 2 ? (class => 'odd') : ();
-         td class => 'tc1 relhid_but', id => "tag$l->{id}";
+         td class => 'tc1 collapse_but', id => "tag$l->{id}";
           lit "<i>&#9656;</i> $l->{cnt}";
          end;
          td class => 'tc2', colspan => 2;
@@ -550,7 +550,7 @@ sub usertags {
          end;
         end;
         for(@{$l->{vns}}) {
-          Tr class => "relhid tag$l->{id}";
+          Tr class => "collapse collapse_tag$l->{id}";
            td class => 'tc1_1';
             tagscore $_->{vote};
            end;

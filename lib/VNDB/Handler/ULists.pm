@@ -285,7 +285,7 @@ sub _vnlist_browse {
     pageurl  => $url->('page'),
     header   => [
       [ mt('_rlist_col_title') => 'title', 3 ],
-      sub { td class => 'tc2', id => 'relhidall'; lit '<i>&#9656;</i>'.mt('_rlist_col_releases').'*'; end; },
+      sub { td class => 'tc2', id => 'expandall'; lit '<i>&#9656;</i>'.mt('_rlist_col_releases').'*'; end; },
       [ mt('_rlist_col_vote')  => 'vote'  ],
     ],
     row      => sub {
@@ -294,7 +294,7 @@ sub _vnlist_browse {
        td class => 'tc1', colspan => 3;
         a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, shorten $i->{title}, 70;
        end;
-       td class => 'tc2'.(@{$i->{rels}} ? ' relhid_but' : ''), id => 'vid'.$i->{vid};
+       td class => 'tc2'.(@{$i->{rels}} ? ' collapse_but' : ''), id => 'vid'.$i->{vid};
         lit '<i>&#9656;</i>';
         my $obtained = grep $_->{rstat}==2, @{$i->{rels}};
         my $finished = grep $_->{vstat}==2, @{$i->{rels}};
@@ -307,7 +307,7 @@ sub _vnlist_browse {
       end;
 
       for (@{$i->{rels}}) {
-        Tr class => "relhid vid$i->{vid}";
+        Tr class => "collapse relhid collapse_vid$i->{vid}";
          td class => 'tc1'.($own ? ' own' : '');
           input type => 'checkbox', name => 'sel', value => $_->{rid}
             if $own;
