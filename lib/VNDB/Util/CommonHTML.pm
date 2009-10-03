@@ -501,7 +501,7 @@ sub htmlHistory {
       sub { td colspan => 2, class => 'tc1', mt '_hist_col_rev' },
       [ mt '_hist_col_date' ],
       [ mt '_hist_col_user' ],
-      sub { td; a href => '#', id => 'history_comments', 'expand'; txt mt '_hist_col_page'; end; }
+      sub { td; a href => '#', id => 'expandlist', 'expand'; txt mt '_hist_col_page'; end; }
     ],
     row      => sub {
       my($s, $n, $i) = @_;
@@ -524,7 +524,7 @@ sub htmlHistory {
        end;
       end;
       if($i->{comments}) {
-        Tr class => $n % 2 ? 'editsum odd hidden' : 'editsum hidden';
+        Tr class => $n % 2 ? 'collapse odd hidden' : 'collapse hidden';
          td colspan => 5;
           lit bb2html $i->{comments}, 150;
          end;

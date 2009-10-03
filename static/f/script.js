@@ -660,6 +660,27 @@ if(byId('batchedit')) {
   };
 }
 
+// expand/collapse listings (/*/hist, /u+/posts)
+if(byId('expandlist')) {
+  var lnk = byId('expandlist');
+  setexpand = function() {
+    var exp = getCookie('histexpand') == 1;
+    setText(lnk, exp ? 'collapse' : 'expand');
+    var tbl = lnk;
+    while(tbl.nodeName.toLowerCase() != 'table')
+      tbl = tbl.parentNode;
+    var l = byClass(tbl, 'tr', 'collapse');
+    for(var i=0; i<l.length; i++)
+      setClass(l[i], 'hidden', !exp);
+  };
+  setexpand();
+  lnk.onclick = function () {
+    setCookie('histexpand', getCookie('histexpand') == 1 ? 0 : 1);
+    setexpand();
+    return false;
+  };
+}
+
 // spam protection on all forms
 setTimeout(function() {
   for(i=1; i<document.forms.length; i++)
@@ -724,29 +745,4 @@ setTimeout(function() {
       );
   }
 
-  // expand/collapse edit summaries on */hist
-  if(x('history_comments')) {
-    setcomment = function() {
-      var e = getCookie('histexpand') == 1;
-      var l = x('history_comments');
-      l.innerHTML = e ? 'collapse' : 'expand';
-      while(l.nodeName.toLowerCase() != 'table')
-        l = l.parentNode;
-      l = l.getElementsByTagName('tr');
-      for(var i=0;i<l.length;i++)
-        //alert(l[i].className);
-        if(l[i].className.indexOf('editsum') >= 0) {
-          if(!e && l[i].className.indexOf('hidden') < 0)
-            l[i].className += ' hidden';
-          if(e && l[i].className.indexOf('hidden') >= 0)
-            l[i].className = l[i].className.replace(/hidden/, '');
-        }
-    };
-    setcomment();
-    x('history_comments').onclick = function () {
-      setCookie('histexpand', getCookie('histexpand') == 1 ? 0 : 1);
-      setcomment();
-      return false;
-    };
-  }
 

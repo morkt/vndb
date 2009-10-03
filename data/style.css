@@ -479,13 +479,13 @@ div.mainbox.history td.tc1_2 {
 }
 div.mainbox.history td.tc2 { width: 65px; }
 div.mainbox.history td.tc3 { width: 90px  }
-tr.editsum td {
+tr.collapse td {
   color: $grayedout$;
   padding-top: 0;
   text-align: right;
 }
-a#history_comments { float: right }
-a#history_comments:hover { border-bottom: none }
+a#expandlist { float: right }
+a#expandlist:hover { border-bottom: none }
 
 
 

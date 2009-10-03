@@ -386,7 +386,7 @@ sub posts {
       [ '' ],
       [ '' ],
       [ mt '_uposts_col_date' ],
-      sub { td; a href => '#', id => 'history_comments', 'expand'; txt mt '_uposts_col_title'; end; }
+      sub { td; a href => '#', id => 'expandlist', 'expand'; txt mt '_uposts_col_title'; end; }
     ],
     row     => sub {
       my($s, $n, $l) = @_;
@@ -396,7 +396,7 @@ sub posts {
        td class => 'tc3', $self->{l10n}->date($l->{date});
        td class => 'tc4'; a href => "/t$l->{tid}.$l->{num}", $l->{title}; end;
       end;
-      Tr class => $n % 2 ? 'editsum odd hidden' : 'editsum hidden';
+      Tr class => $n % 2 ? 'collapse odd hidden' : 'collapse hidden';
        td colspan => 4;
         lit bb2html $l->{msg}, 150;
        end;
