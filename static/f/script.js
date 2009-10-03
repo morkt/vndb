@@ -138,6 +138,10 @@ function setClass(obj, c, set) {
   obj.className = n.join(' ');
 }
 
+function shorten(v, l) {
+  return qq(v.length > l ? v.substr(0, l-3)+'...' : v);
+}
+
 
 
 
@@ -504,6 +508,167 @@ function dateSerialize() {
 
 
 
+/*  D R O P D O W N   S E A R C H  */
+
+function dsInit(obj, url, trfunc, serfunc, retfunc, parfunc) {
+  obj.setAttribute('autocomplete', 'off');
+  obj.onkeydown = dsKeyDown;
+  obj.onblur = function() { setTimeout(function () { byId('ds_box').style.top = '-500px'; }, 500) };
+  obj.ds_returnFunc = retfunc;
+  obj.ds_trFunc = trfunc;
+  obj.ds_serFunc = serfunc;
+  obj.ds_parFunc = parfunc;
+  obj.ds_searchURL = url;
+  obj.ds_selectedId = 0;
+  obj.ds_dosearch = null;
+  if(!byId('ds_box'))
+    addBody(tag('div', {id: 'ds_box', style: 'position: absolute; top: -500px'}, tag('b', 'Loading...')));
+}
+
+function dsKeyDown(ev) {
+  var c = document.layers ? ev.which : document.all ? event.keyCode : ev.keyCode;
+  var obj = this;
+
+  if(c == 9) // tab
+    return true;
+
+  // do some processing when the enter key has been pressed
+  if(c == 13) {
+    var frm = obj;
+    while(frm && frm.nodeName.toLowerCase() != 'form')
+      frm = frm.parentNode;
+    if(frm) {
+      var oldsubmit = frm.onsubmit;
+      frm.onsubmit = function() { return false };
+      setTimeout(function() { frm.onsubmit = oldsubmit }, 100);
+    }
+
+    if(obj.ds_selectedId != 0)
+      obj.value = obj.ds_serFunc(byId('ds_box_'+obj.ds_selectedId).ds_itemData, obj);
+    if(obj.ds_returnFunc)
+      obj.ds_returnFunc();
+    byId('ds_box').style.top = '-500px';
+    obj.ds_selectedId = 0;
+
+    return false;
+  }
+
+  // process up/down keys
+  if(c == 38 || c == 40) {
+    var l = byName(byId('ds_box'), 'tr');
+    if(l.length < 1)
+      return true;
+
+    // get new selected id
+    if(obj.ds_selectedId == 0) {
+      if(c == 38) // up
+        obj.ds_selectedId = l[l.length-1].id.substr(7);
+      else
+        obj.ds_selectedId = l[0].id.substr(7);
+    } else {
+      var sel = null;
+      for(var i=0; i<l.length; i++)
+        if(l[i].id == 'ds_box_'+obj.ds_selectedId) {
+          if(c == 38) // up
+            sel = i>0 ? l[i-1] : l[l.length-1];
+          else
+            sel = l[i+1] ? l[i+1] : l[0];
+        }
+      obj.ds_selectedId = sel.id.substr(7);
+    }
+
+    // set selected class
+    for(var i=0; i<l.length; i++)
+      setClass(l[i], 'selected', l[i].id == 'ds_box_'+obj.ds_selectedId);
+    return true;
+  }
+
+  // perform search after a timeout
+  if(obj.ds_dosearch)
+    clearTimeout(obj.ds_dosearch);
+  obj.ds_dosearch = setTimeout(function() {
+    dsSearch(obj);
+  }, 500);
+
+  return true;
+}
+
+function dsSearch(obj) {
+  var box = byId('ds_box');
+  var val = obj.ds_parFunc ? obj.ds_parFunc(obj.value) : obj.value;
+
+  clearTimeout(obj.ds_dosearch);
+  obj.ds_dosearch = null;
+
+  // hide the ds_box div
+  if(val.length < 2) {
+    box.style.top = '-500px';
+    setContent(box, tag('b', 'Loading...'));
+    obj.ds_selectedId = 0;
+    return;
+  }
+
+  // position the div
+  var ddx=0;
+  var ddy=obj.offsetHeight;
+  var o = obj;
+  do {
+    ddx += o.offsetLeft;
+    ddy += o.offsetTop;
+  } while(o = o.offsetParent);
+
+  box.style.position = 'absolute';
+  box.style.left = ddx+'px';
+  box.style.top = ddy+'px';
+  box.style.width = obj.offsetWidth+'px';
+
+  // perform search
+  ajax(obj.ds_searchURL + encodeURIComponent(val), function(hr) {
+    dsResults(hr, obj);
+  });
+}
+
+function dsResults(hr, obj) {
+  var lst = hr.responseXML.getElementsByTagName('item');
+  var box = byId('ds_box');
+  if(lst.length < 1) {
+    setContent(box, tag('b', 'No results...'));
+    obj.selectedId = 0;
+    return;
+  }
+
+  var tb = tag('tbody', null);
+  for(var i=0; i<lst.length; i++) {
+    var id = lst[i].getAttribute('id');
+    var tr = tag('tr', {id: 'ds_box_'+id, ds_itemData: lst[i]} );
+    setClass(tr, 'selected', obj.selectedId == id);
+
+    tr.onmouseover = function() {
+      obj.ds_selectedId = this.id.substr(7);
+      var l = byName(box, 'tr');
+      for(var j=0; j<l.length; j++)
+        setClass(l[j], 'selected', l[j].id == 'ds_box_'+obj.ds_selectedId);
+    };
+    tr.onmousedown = function() {
+      obj.value = obj.ds_serFunc(this.ds_itemData, obj);
+      if(obj.ds_returnFunc)
+        obj.ds_returnFunc();
+      box.style.top = '-500px';
+      obj.ds_selectedId = 0;
+    };
+
+    obj.ds_trFunc(lst[i], tr);
+    tb.appendChild(tr);
+  }
+  setContent(box, tag('table', tb));
+
+  if(obj.ds_selectedId != 0 && !byId('ds_box_'+obj.ds_selectedId))
+    obj.ds_selectedId = 0;
+}
+
+
+
+
 /*  M I S C   S T U F F  */
 
 // search box
@@ -716,37 +881,32 @@ if(byId('expandall')) {
     heads[i].onclick = singletoggle;
 }
 
+// auto-complete tag search (/v/*)
+if(byId('advselect') && byId('ti')) {
+  var trfunc = function(item, tr) {
+    tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
+      item.getAttribute('meta') == 'yes' ? tag('b', {class: 'grayedout'}, ' meta') : null,
+      item.getAttribute('state') == 0    ? tag('b', {class: 'grayedout'}, ' awaiting moderation') : null
+    ));
+  };
+  var serfunc = function(item, obj) {
+    var tags = obj.value.split(/ *, */);
+    tags[tags.length-1] = item.firstChild.nodeValue;
+    return tags.join(', ');
+  };
+  var retfunc = function() { false; };
+  var parfunc = function(val) {
+    return (val.split(/, */))[val.split(/, */).length-1];
+  };
+  dsInit(byId('ti'), '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
+  dsInit(byId('te'), '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
+}
+
 
 // spam protection on all forms
 setTimeout(function() {
   for(i=1; i<document.forms.length; i++)
     document.forms[i].action = document.forms[i].action.replace(/\/nospam\?/,'');
 }, 500);
-
-
-
-  // auto-complete tag search
-  if(x('advselect') && x('ti')) {
-    var fields=['ti','te'];
-    for(var field=0;field<fields.length;field++)
-      dsInit(x(fields[field]), '/xml/tags.xml?q=',
-        function(item, tr) {
-          var td = document.createElement('td');
-          td.innerHTML = shorten(item.firstChild.nodeValue, 40);
-          if(item.getAttribute('meta') == 'yes')
-            td.innerHTML += ' <b class="grayedout">meta</b>';
-          else if(item.getAttribute('state') == 0)
-            td.innerHTML += ' <b class="grayedout">awaiting moderation</b>';
-          tr.appendChild(td);
-        },
-        function(item, obj) {
-          var tags = obj.value.split(/ *, */);
-          tags[tags.length-1] = item.firstChild.nodeValue;
-          return tags.join(', ');
-        },
-        function() { false; },
-        function(val) { return (val.split(/, */))[val.split(/, */).length-1]; }
-      );
-  }
 
 
