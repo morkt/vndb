@@ -176,7 +176,7 @@ function ivView(what) {
     var ol = byName('a');
     var l=[];
     for(i=0;i<ol.length;i++)
-      if(ol[i].rel.substr(0,3) == 'iv:' && ol[i].rel.indexOf(':'+opt[2]) > 4 && ol[i].className.indexOf('hidden') < 0 && ol[i].id != 'ivprev' && ol[i].id != 'ivnext')
+      if(ol[i].rel.substr(0,3) == 'iv:' && ol[i].rel.indexOf(':'+opt[2]) > 4 && !hasClass(l[i], 'hidden') && ol[i].id != 'ivprev' && ol[i].id != 'ivnext')
         l[l.length] = ol[i];
     for(i=0;i<l.length;i++)
       if(l[i].href == u) {
@@ -503,8 +503,11 @@ function dateSerialize() {
 
 
 
-  // search box
-  var i = x('sq');
+/*  M I S C   S T U F F  */
+
+// search box
+{
+  var i = byId('sq');
   i.onfocus = function () {
     if(this.value == 'search') {
       this.value = '';
@@ -517,54 +520,153 @@ function dateSerialize() {
       this.style.fontStyle = 'italic'
     }
   };
+}
+
+// VN Voting (/v+)
+if(byId('votesel')) {
+  byId('votesel').onchange = function() {
+    var s = this.options[this.selectedIndex].value;
+    if(s == 1 && !confirm(
+      "You are about to give this visual novel a 1 out of 10. This is a rather extreme rating, "
+      +"meaning this game has absolutely nothing to offer, and that it's the worst game you have ever played.\n"
+      +"Are you really sure this visual novel matches that description?"))
+      return;
+    if(s == 10 && !confirm(
+      "You are about to give this visual novel a 10 out of 10. This is a rather extreme rating, "
+      +"meaning this is one of the best visual novels you've ever played and it's unlikely "
+      +"that any other game could ever be better than this one.\n"
+      +"It is generally a bad idea to have more than three games in your vote list with this rating, choose carefully!"))
+      return;
+    if(s)
+      location.href = location.href.replace(/\.[0-9]+/, '')+'/vote?v='+s;
+  };
+}
+
+// Advanced search (/v/*, /r)
+if(byId('advselect')) {
+  byId('advselect').onclick = function() {
+    var box = byId('advoptions');
+    var hidden = !hasClass(box, 'hidden');
+    setClass(box, 'hidden', hidden);
+    setText(byName(this, 'i')[0], hidden ? '▸' : '▾');
+    return false;
+  };
+}
+
+// Spoiler filters -> cookie (/v/*)
+if(byId('sp_0')) {
+  byId('sp_0').onclick = function() { setCookie('tagspoil', 0) };
+  byId('sp_1').onclick = function() { setCookie('tagspoil', 1) };
+  byId('sp_2').onclick = function() { setCookie('tagspoil', 2) };
+  var spoil = getCookie('tagspoil');
+  byId('sp_'+(spoil == null ? 1 : spoil)).checked = true;
+}
+
+// NSFW VN image toggle (/v+)
+if(byId('nsfw_show')) {
+  var msg = byId('nsfw_show');
+  var img = byId('nsfw_hid');
+  byName(msg, 'a')[0].onclick = function() {
+    msg.style.display = 'none';
+    img.style.display = 'block';
+    return false;
+  };
+  img.onclick = function() {
+    msg.style.display = 'block';
+    img.style.display = 'none';
+  };
+}
+
+// NSFW toggle for screenshots (/v+)
+if(byId('nsfwhide')) {
+  byId('nsfwhide').onclick = function() {
+    var shown = 0;
+    var l = byName(byId('screenshots'), 'div');
+    for(var i=0; i<l.length; i++) {
+      if(hasClass(l[i], 'nsfw')) {
+        var hidden = !hasClass(l[i], 'hidden');
+        setClass(l[i], 'hidden', hidden);
+        setClass(byName(l[i], 'a')[0], 'hidden', hidden); // for the image viewer
+        if(!hidden)
+          shown++;
+      } else
+        shown++;
+    }
+    setText(byId('nsfwshown'), shown);
+    return false;
+  };
+}
+
+// VN Wishlist dropdown box (/v+)
+if(byId('wishsel')) {
+  byId('wishsel').onchange = function() {
+    if(this.selectedIndex != 0)
+      location.href = location.href.replace(/\.[0-9]+/, '')
+        +'/wish?s='+this.options[this.selectedIndex].value;
+  };
+}
+
+// Release list dropdown box (/r+)
+if(byId('listsel')) {
+  byId('listsel').onchange = function() {
+    if(this.selectedIndex != 0)
+      location.href = location.href.replace(/\.[0-9]+/, '')
+        +'/list?e='+this.options[this.selectedIndex].value;
+  };
+}
+
+// BBCode spoiler tags
+{
+  var l = byClass('b', 'spoiler');
+  for(var i=0; i<l.length; i++) {
+    l[i].onmouseover = function() { setClass(this, 'spoiler', false); setClass(this, 'spoiler_shown', true)  };
+    l[i].onmouseout = function()  { setClass(this, 'spoiler', true);  setClass(this, 'spoiler_shown', false) };
+  }
+}
+
+// vndb.org domain check
+if(location.hostname != 'vndb.org') {
+  addBody(tag('div', {id:'debug'},
+    tag('h2', 'This is not VNDB!'),
+    'The real VNDB is ',
+    tag('a', {href:'http://vndb.org/'}, 'here'),
+    '.'
+  ));
+}
+
+// make some fields readonly when patch flag is set (/r+/edit)
+if(byId('jt_box_rel_geninfo')) {
+  var func = function() {
+    byId('doujin').disabled =
+      byId('resolution').disabled =
+      byId('voiced').disabled =
+      byId('ani_story').disabled =
+      byId('ani_ero').disabled =
+      byId('patch').checked;
+  };
+  func();
+  byId('patch').onclick = func;
+}
+
+// Batch edit wishlist dropdown box (/u+/wish)
+if(byId('batchedit')) {
+  byId('batchedit').onchange = function() {
+    if(this.selectedIndex == 0)
+      return true;
+    var frm = this;
+    while(frm.nodeName.toLowerCase() != 'form')
+      frm = frm.parentNode;
+    frm.submit();
+  };
+}
+
+// spam protection on all forms
+setTimeout(function() {
+  for(i=1; i<document.forms.length; i++)
+    document.forms[i].action = document.forms[i].action.replace(/\/nospam\?/,'');
+}, 500);
 
 
-  // VN Voting
-  i = x('votesel');
-  if(i)
-    i.onchange = function() {
-      var s = this.options[this.selectedIndex].value;
-      if(s == 1 && !confirm(
-        "You are about to give this visual novel a 1 out of 10. This is a rather extreme rating, "
-        +"meaning this game has absolutely nothing to offer, and that it's the worst game you have ever played.\n"
-        +"Are you really sure this visual novel matches that description?"))
-        return;
-      if(s == 10 && !confirm(
-        "You are about to give this visual novel a 10 out of 10. This is a rather extreme rating, "
-        +"meaning this is one of the best visual novels you've ever played and it's unlikely "
-        +"that any other game could ever be better than this one.\n"
-        +"It is generally a bad idea to have more than three games in your vote list with this rating, choose carefully!"))
-        return;
-      if(s)
-        location.href = location.href.replace(/\.[0-9]+/, '')+'/vote?v='+s;
-    };
-
-  // VN Wishlist editing
-  i = x('wishsel');
-  if(i)
-    i.onchange = function() {
-      if(this.selectedIndex != 0)
-        location.href = location.href.replace(/\.[0-9]+/, '')+'/wish?s='+this.options[this.selectedIndex].value;
-    };
-  // Batch Wishlist editing
-  i = x('batchedit');
-  if(i)
-    i.onchange = function() {
-      var frm = this;
-      while(frm.nodeName.toLowerCase() != 'form')
-        frm = frm.parentNode;
-      if(this.selectedIndex != 0)
-        frm.submit();
-    };
-
-
-  // Release list editing
-  i = x('listsel');
-  if(i)
-    i.onchange = function() {
-      if(this.selectedIndex != 0)
-        location.href = location.href.replace(/\.[0-9]+/, '')+'/list?e='+this.options[this.selectedIndex].value;
-    };
 
   // User VN list
   // (might want to make this a bit more generic, as it's now also used for the user tag list)
@@ -598,15 +700,6 @@ function dateSerialize() {
     };
   }
 
-  // Advanced search
-  if(x('advselect'))
-    x('advselect').onclick = function() {
-      var e = x('advoptions');
-      e.className = e.className.indexOf('hidden')>=0 ? '' : 'hidden';
-      this.getElementsByTagName('i')[0].innerHTML = e.className.indexOf('hidden')>=0 ? '&#9656;' : '&#9662;';
-      return false;
-    };
-
   // auto-complete tag search
   if(x('advselect') && x('ti')) {
     var fields=['ti','te'];
@@ -630,58 +723,6 @@ function dateSerialize() {
         function(val) { return (val.split(/, */))[val.split(/, */).length-1]; }
       );
   }
-
-  // update spoiler cookie on VN search radio button
-  if(x('sp_0')) {
-    x('sp_0').onclick = function(){setCookie('tagspoil',0)};
-    x('sp_1').onclick = function(){setCookie('tagspoil',1)};
-    x('sp_2').onclick = function(){setCookie('tagspoil',2)};
-    if((i = getCookie('tagspoil')) == null)
-      i = 1;
-    x('sp_'+i).checked = true;
-  }
-
-  // show/hide NSFW VN image
-  if(x('nsfw_show'))
-    x('nsfw_show').getElementsByTagName('a')[0].onclick = function() {
-      x('nsfw_show').style.display = 'none';
-      x('nsfw_hid').style.display = 'block';
-      x('nsfw_hid').onclick = function() {
-        x('nsfw_show').style.display = 'block';
-        x('nsfw_hid').style.display = 'none';
-      };
-      return false
-    };
-
-  // NSFW toggle for screenshots
-  if(x('nsfwhide'))
-    x('nsfwhide').onclick = function() {
-      var s=0;
-      var l = x('screenshots').getElementsByTagName('div');
-      for(var i=0;i<l.length;i++) {
-        if(l[i].className.indexOf('nsfw') >= 0) {
-          if(l[i].className.indexOf('hidden') >= 0) {
-            s++;
-            l[i].className = 'nsfw';
-            l[i].getElementsByTagName('a')[0].className = '';
-          } else {
-            l[i].className += ' hidden';
-            l[i].getElementsByTagName('a')[0].className = 'hidden';
-          }
-        } else
-          s++;
-      }
-      x('nsfwshown').innerHTML = s;
-      return false;
-    };
-
-  // spoiler tags
-  l = document.getElementsByTagName('b');
-  for(i=0;i<l.length;i++)
-    if(l[i].className == 'spoiler') {
-      l[i].onmouseover = function() { this.className = 'spoiler_shown' };
-      l[i].onmouseout = function() { this.className = 'spoiler' };
-    }
 
   // expand/collapse edit summaries on */hist
   if(x('history_comments')) {
@@ -708,26 +749,4 @@ function dateSerialize() {
       return false;
     };
   }
-
-  // Are we really vndb?
-  if(location.hostname != 'vndb.org') {
-    var d = document.createElement('div');
-    d.setAttribute('id', 'debug');
-    d.innerHTML = '<h2>This is not VNDB!</h2>The real VNDB is <a href="http://vndb.org/">here</a>.';
-    document.body.appendChild(d);
-  }
-
-  // make some fields readonly when patch flag is set
-  if(x('jt_box_rel_geninfo')) {
-    var func = function() {
-      x('doujin').disabled = x('resolution').disabled = x('voiced').disabled = x('ani_story').disabled = x('ani_ero').disabled = x('patch').checked;
-    };
-    func();
-    x('patch').onclick = func;
-  }
-
-  // spam protection on all forms
-  if(document.forms.length >= 1)
-    for(i=0; i<document.forms.length; i++)
-      document.forms[i].action = document.forms[i].action.replace(/\/nospam\?/,'');
 
