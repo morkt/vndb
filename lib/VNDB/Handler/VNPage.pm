@@ -179,6 +179,7 @@ sub page {
    my $t = $self->dbTagStats(vid => $v->{id}, order => 'avg(tv.vote) DESC', minrating => 0, results => 999);
    if(@$t) {
      div id => 'tagops';
+      # NOTE: order of these links is hardcoded in JS
       a href => '#', mt '_vnpage_tags_spoil0';
       a href => '#', class => 'tsel', mt '_vnpage_tags_spoil1';
       a href => '#', mt '_vnpage_tags_spoil2';

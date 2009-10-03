@@ -121,16 +121,18 @@ function hasClass(obj, c) {
       return true;
   return false;
 }
-function addClass(obj, c) {
-  if(!hasClass(obj, c))
-    obj.className = (obj.className ? obj.className+' ' : '') + c;
-}
-function removeClass(obj, c) {
+function setClass(obj, c, set) {
   var l = listClass(obj);
   var n = [];
-  for(var i=0; i<l.length; i++)
-    if(l[i] != c)
-      n[n.length] = l[i];
+  if(set) {
+    n = l;
+    if(!hasClass(obj, c))
+      n[n.length] = c;
+  } else {
+    for(var i=0; i<l.length; i++)
+      if(l[i] != c)
+        n[n.length] = l[i];
+  }
   obj.className = n.join(' ');
 }
 
@@ -352,19 +354,20 @@ function rlMod() {
 /*  J A V A S C R I P T   T A B S  */
 
 function jtInit() {
+  if(!byId('jt_select'))
+    return;
   var sel = '';
   var first = '';
-  var l = x('jt_select').getElementsByTagName('a');
-  for(var i=0;i<l.length;i++)
-    if(l[i].id.substr(0,7) == 'jt_sel_') {
-      l[i].onclick = jtSel;
-      if(!first)
-        first = l[i].id;
-      if(location.hash && l[i].id == 'jt_sel_'+location.hash.substr(1))
-        sel = l[i].id;
-    }
-  if(!first)
+  var l = byName(byId('jt_select'), 'a');
+  if(l.length < 1)
     return;
+  for(var i=0; i<l.length; i++) {
+    l[i].onclick = jtSel;
+    if(!first)
+      first = l[i].id;
+    if(location.hash && l[i].id == 'jt_sel_'+location.hash.substr(1))
+      sel = l[i].id;
+  }
   if(!sel)
     sel = first;
   jtSel(sel, 1);
@@ -374,68 +377,83 @@ function jtSel(which, nolink) {
   which = typeof(which) == 'string' ? which : which && which.id ? which.id : this.id;
   which = which.substr(7);
 
-  var l = x('jt_select').getElementsByTagName('a');
-  for(var i=0;i<l.length;i++)
-    if(l[i].id.substr(0,7) == 'jt_sel_') {
-      var name = l[i].id.substr(7);
-      if(name != 'all')
-        x('jt_box_'+name).style.display = name == which || which == 'all' ? 'block' : 'none';
-      var o = x('jt_sel_'+name).parentNode;
-      if(o.className.indexOf('tabselected') >= 0) {
-        if(name != which)
-          o.className = o.className.replace(/tabselected/, '');
-      } else
-        if(name == which)
-          o.className += ' tabselected';
-    }
+  var l = byName(byId('jt_select'), 'a');
+  for(var i=0;i<l.length;i++) {
+    var name = l[i].id.substr(7);
+    if(name != 'all')
+      byId('jt_box_'+name).style.display = name == which || which == 'all' ? 'block' : 'none';
+    var tab = l[i].parentNode;
+    setClass(tab, 'tabselected', name == which);
+  }
 
   if(!nolink)
     location.href = '#'+which;
   return false;
 }
 
+jtInit();
 
 
 
-/* Tag VN spoilers */
-/* lvl = null to not change lvl, lim = null to not change limit */
+
+/*  V N   P A G E   T A G   S P O I L E R S  */
+
+function tvsInit() {
+  if(!byId('tagops'))
+    return;
+  var l = byName(byId('tagops'), 'a');
+  for(var i=0;i<l.length; i++)
+    l[i].onclick = tvsClick;
+  tvsSet(getCookie('tagspoil'), true);
+}
+
+function tvsClick() {
+  var sel;
+  var l = byName(byId('tagops'), 'a');
+  for(var i=0; i<l.length; i++)
+    if(l[i] == this) {
+      if(i < 3) {
+        tvsSet(i, null);
+        setCookie('tagspoil', i);
+      } else
+        tvsSet(null, i == 3 ? true : false);
+    }
+  return false;
+}
+
 function tvsSet(lvl, lim) {
-  var l = x('tagops').getElementsByTagName('a');
-  for(var i=0;i<l.length;i++) {
-    if(i < 3) {
-      if(lvl == null) { /* determine level */
-        if(l[i].className.indexOf('tsel') >= 0)
-         lvl = i;
-      } else { /* set level */
-        if(i == lvl && l[i].className.indexOf('tsel') < 0)
-          l[i].className += ' tsel';
-        else if(i != lvl && l[i].className.indexOf('tsel') >= 0)
-          l[i].className = l[i].className.replace(/tsel/, '');
-      }
-    } else {
-      if(lim == null) { /* determine limit */
-        if(l[i].className.indexOf('tsel') >= 0)
-          lim = i == 3;
-      } else { /* set limit */
-        if((i == 3) == lim && l[i].className.indexOf('tsel') < 0)
-          l[i].className += ' tsel';
-        else if((i == 3) != lim && l[i].className.indexOf('tsel') >= 0)
-          l[i].className = l[i].className.replace(/tsel/, '');
-      }
+  /* set/get level and limit to/from the links */
+  var l = byName(byId('tagops'), 'a');
+  for(var i=0; i<l.length; i++) {
+    if(i < 3) { /* spoiler level */
+      if(lvl != null)
+        setClass(l[i], 'tsel', i == lvl);
+      if(lvl == null && hasClass(l[i], 'tsel'))
+        lvl = i;
+    } else { /* display limit (3 = summary) */
+      if(lim != null)
+        setClass(l[i], 'tsel', lim == (i == 3));
+      if(lim == null && hasClass(l[i], 'tsel'))
+        lim = i == 3;
     }
   }
 
-  l = x('vntags').getElementsByTagName('span');
+  /* update tag visibility */
+  l = byName(byId('vntags'), 'span');
   lim = lim ? 15 : 999;
   var s=0;
   for(i=0;i<l.length;i++) {
-    if((lvl < l[i].className.substr(6, 1) || s>=lim) && l[i].className.indexOf('hidden') < 0)
-      l[i].className += ' hidden';
-    if(lvl >= l[i].className.substr(6, 1) && ++s<=lim && l[i].className.indexOf('hidden') >= 0)
-      l[i].className = l[i].className.replace(/hidden/, '');
+    var thislvl = l[i].className.substr(6, 1);
+    if(thislvl <= lvl && s < lim) {
+      setClass(l[i], 'hidden', false);
+      s++;
+    } else
+      setClass(l[i], 'hidden', true);
   }
   return false;
 }
+
+tvsInit();
 
 
 
@@ -645,30 +663,6 @@ function dtSerialize(obj) {
       x('nsfwshown').innerHTML = s;
       return false;
     };
-
-  // VN tag spoiler options
-  if(x('tagops')) {
-    l = x('tagops').getElementsByTagName('a');
-    for(i=0;i<l.length;i++)
-      l[i].onclick = function() {
-        var l = x('tagops').getElementsByTagName('a');
-        var sel = 0;
-        for(var i=0;i<l.length;i++)
-          if(l[i] == this) {
-            if(i < 3) {
-              tvsSet(i, null);
-              setCookie('tagspoil', i);
-            } else
-              tvsSet(null, i==3?true:false);
-          }
-        return false;
-      };
-    tvsSet(getCookie('tagspoil'), true);
-  }
-
-  // Javascript tabs
-  if(x('jt_select'))
-    jtInit();
 
   // spoiler tags
   l = document.getElementsByTagName('b');
