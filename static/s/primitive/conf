@@ -1,0 +1,39 @@
+name         Primitive Link (haze)
+
+// Primitive Link skin made using an image that I liked without knowing what it's based on for a long time
+// created: 23/01/2009 by echomateria
+
+// text
+maintext     #f8eacd  // primary text color (also used for the menu links)
+grayedout    #ff9d8a  // color used for grayed-out/non-important things
+standout     #642a12  // color of 'stand-out' text
+link         #ffda63  // primary link color (not used for the menu links)
+statok       #edc176  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok      #d63f21  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+footer       #935a40  // text color of the footer
+
+// titles
+maintitle    #f8eacd  // text color of the site title
+boxtitle     #f8eacd  // box titles
+alttitle     #f19d20  // alternative title
+
+// bg colors
+bodybg       #ddac9b  // main background color
+tabbg        #935a40  // background color of inactive tabs
+secbg        #be8f9f  // secondary background color (used on input fields and table headers)
+secborder    #642a12  // secondary border color (used on input fields)
+border       #edc176  // primary border color
+boxbg        #935a4099  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
+
+// images (0 = no image)
+imglefttop   0
+imgrighttop  bgright.jpg
+
+// misc colors
+diffadd      #bd7f98  // background color of changes in the diff viewer
+diffdel      #c6562d
+warnbg       #7a3313  // background color of a warning box
+warnborder   #ff392a  // ..border
+noticebg     #d4aab4  // notice box
+noticeborder #edc176  // ...and border
+

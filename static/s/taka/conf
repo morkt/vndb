@@ -1,12 +1,11 @@
-name         My Perfect Day (turquoise)
+name         Sora no Iro, Mizu no Iro (turquoise)
 
-// A skin based on a wallpaper named My Perfect Day that I encountered on minitokyo which is based on a Tony Taka drawing.
-// So it's not related to any games in the database then? -Well it's probably related to one of the games TT drawn for...
+// A Sora no Iro, Mizu no Iro skin based on a wallpaper named My Perfect Day
 // created: 23/01/2009 by echomateria
 
 // text
 maintext     #fefefc  // primary text color (also used for the menu links)
-grayedout    #ffaa88  // color used for grayed-out/non-important things
+grayedout    #4b2427  // color used for grayed-out/non-important things
 standout     #ffaa88  // color of 'stand-out' text
 link         #f4d926  // primary link color (not used for the menu links)
 statok       #f8a022  //#  // generic 'ok' text color (used for vnlist statuses & category browser)
@@ -31,8 +30,8 @@ imglefttop   0
 imgrighttop  bgright.jpg
 
 // misc colors
-diffadd      #5ed8e5 // background color of changes in the diff viewer
-diffdel      #4b2427
+diffadd      #b2f68f  // background color of changes in the diff viewer
+diffdel      #5ed8e5
 warnbg       #008278  // background color of a warning box
 warnborder   #fcfefd  // ..border
 noticebg     #5bdebe  // notice box

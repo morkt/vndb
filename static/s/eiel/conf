@@ -1,0 +1,39 @@
+name         EIeL (sand)
+
+// A skin made using an image that I still haven't found the source of, only clue is a hard to read mark the original bears, reading something like "EIeL (or ELeL) the 10 yerS old girl"
+// Guess it's not related to any game we have in the database, or maybe it is and we don't know yet...
+// created: 24/01/2009 by echomateria
+
+// text
+maintext     #f8cb8a  // primary text color (also used for the menu links)
+grayedout    #f26a7e  // color used for grayed-out/non-important things
+standout     #ff435f  // color of 'stand-out' text
+link         #ffffff  // primary link color (not used for the menu links)
+statok       #ffcbee  //#  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok      #ff435f  //#  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+footer       #362142  // text color of the footer
+
+// titles
+maintitle    #676082  // text color of the site title
+boxtitle     #ffcbee  // box titles
+alttitle     #f26a7e  //#  // alternative title
+
+// bg colors
+bodybg       #fdd298  // main background color
+tabbg        #5a3a49  // background color of inactive tabs
+secbg        #584563  // secondary background color (used on input fields and table headers)
+secborder    #c42b5a  // secondary border color (used on input fields)
+border       #362142  // primary border color
+boxbg        #36214299  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
+
+// images (0 = no image)
+imglefttop   bg.jpg
+
+// misc colors
+diffadd      #2bc88b  // background color of changes in the diff viewer
+diffdel      #ca4a4d
+warnbg       #c42b5a  // background color of a warning box
+warnborder   #f8cb8a  // ..border
+noticebg     #b48ab2  // notice box
+noticeborder #f8cb8a  // ...and border
+

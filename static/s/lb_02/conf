@@ -1,0 +1,37 @@
+name         Little Busters! (sand)
+
+// Little Busters! skin made using the Minitokyo.Little.Busters.Scans_316439
+// created: 09/27/2009 by echomateria
+
+// text
+maintext     #3c363f  // primary text color (also used for the menu links)
+grayedout    #785a5b  // color used for grayed-out/non-important things
+standout     #eb0e4c  // color of 'stand-out' text
+link         #04529b  // primary link color (not used for the menu links)
+statok       #d87417  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok      #eb0e4c  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+footer       #eb0e4c  // text color of the footer
+
+// titles
+maintitle    #fffeff  // text color of the site title
+boxtitle     #ff9013  // box titles
+alttitle     #f0a260  // alternative title
+
+// bg colors
+bodybg       #fff4d4  // main background color
+tabbg        #9aa4d7  // background color of inactive tabs
+secbg        #bcd1e4  // secondary background color (used on input fields and table headers)
+secborder    #966932  // secondary border color (used on input fields)
+border       #016c80  // primary border color
+boxbg        #d1ebee99  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
+
+// images (0 = no image)
+imglefttop   bg.jpg
+
+// misc colors
+diffadd      #3689b5  // background color of changes in the diff viewer
+diffdel      #b7adc6
+warnbg       #e97a9a  // background color of a warning box
+warnborder   #f1a360  // ...border
+noticebg     #fefbf6  // notice box
+noticeborder #951924  // ...and border

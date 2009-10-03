@@ -1,0 +1,39 @@
+name         Saya no Uta (maroon)
+
+// Saya no Uta skin made using a criminally cute fanart
+// created: 22/01/2009 by echomateria
+
+// text
+maintext     #ffffff  // primary text color (also used for the menu links)
+grayedout    #ecbc93  // color used for grayed-out/non-important things
+standout     #d75f25  // color of 'stand-out' text
+link         #ffcb3a  // primary link color (not used for the menu links)
+statok       #a55a3d  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok      #281e14  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+footer       #e07340  // text color of the footer
+
+// titles
+maintitle    #ebb48b  // text color of the site title
+boxtitle     #de9670  // box titles
+alttitle     #ebb48b  // alternative title
+
+// bg colors
+bodybg       #25010f  // main background color
+tabbg        #575c51  // background color of inactive tabs
+secbg        #437f63  // secondary background color (used on input fields and table headers)
+secborder    #ffcb3a  // secondary border color (used on input fields)
+border       #ebb48b  // primary border color
+boxbg        #437f6388  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
+
+// images (0 = no image)
+imglefttop   0
+imgrighttop  bgright.jpg
+
+// misc colors
+diffadd      #f59731  // background color of changes in the diff viewer
+diffdel      #f2c5a3
+warnbg       #d45628  // background color of a warning box
+warnborder   #fbab34  // ..border
+noticebg     #c5af88  // notice box
+noticeborder #56714e  // ...and border
+

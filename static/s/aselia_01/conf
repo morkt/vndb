@@ -1,0 +1,38 @@
+name         Aselia (sunset)
+
+// Eien no Aselia skin made using Minitokyo.Eien.no.Aselia.Scans_373967
+// created: 09/27/2009 by echomateria
+
+// text
+maintext     #ffffff  // primary text color (also used for the menu links)
+grayedout    #eee388  // color used for grayed-out/non-important things
+standout     #e96e73  // color of 'stand-out' text
+link         #4a2b33  // primary link color (not used for the menu links)
+statok       #ffcbee  // generic 'ok' text color (used for vnlist statuses & category browser)
+statnok      #e96e73  // generoc 'not ok' text color (used for above, and as border for NSFW screenshots)
+footer       #f4f1e6  // text color of the footer
+
+// titles
+maintitle    #fce5e5  // text color of the site title
+boxtitle     #f4e1b5  // box titles
+alttitle     #ed9f92  // alternative title
+
+// bg colors
+bodybg       #8a3c35  // main background color
+tabbg        #ac7595  // background color of inactive tabs
+secbg        #8a3c35  // secondary background color (used on input fields and table headers)
+secborder    #e86a76  // secondary border color (used on input fields)
+border       #f1c0b2  // primary border color
+boxbg        #ac759595  // RGBA, background color of the boxes, stacked for menu box titles and odd row numers
+
+// images (0 = no image)
+imglefttop   0
+imgrighttop  bgright.jpg
+
+// misc colors
+diffadd      #833d71  // background color of changes in the diff viewer
+diffdel      #6c3a55
+warnbg       #6b3b51  // background color of a warning box
+warnborder   #e37192  // ..border
+noticebg     #cc8487  // notice box
+noticeborder #975352  // ...and border
