@@ -765,6 +765,7 @@ a.addnew {
 #scr_table td { height: 108px; border-top: 1px solid #258; padding: 0; padding-right: 5px }
 #scr_table td.thumb { width: 136px; vertical-align: middle }
 #scr_table select { width: 400px; }
+div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px; position: absolute; left: -500px; top: -500px; }
 
 
 

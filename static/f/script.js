@@ -81,7 +81,7 @@ function tag() {
         if(attr == 'style')
           el.setAttribute(attr, arguments[i][attr]);
         else
-          el[ attr == 'class' ? 'className' : attr ] = arguments[i][attr];
+          el[ attr == 'class' ? 'className' : attr == 'for' ? 'htmlFor' : attr ] = arguments[i][attr];
       }
     } else
       el.appendChild(tag(arguments[i]));
@@ -96,9 +96,10 @@ function addBody(el) {
   else if(document.appendChild)
     document.appendChild(el);
 }
-function setContent(el, content) {
-  setText(el, '');
-  el.appendChild(content);
+function setContent() {
+  setText(arguments[0], '');
+  for(var i=1; i<arguments.length; i++)
+    arguments[0].appendChild(tag(arguments[i]));
 }
 function getText(obj) {
   return obj.textContent || obj.innerText || '';
@@ -182,7 +183,7 @@ function ivView(what) {
     var ol = byName('a');
     var l=[];
     for(i=0;i<ol.length;i++)
-      if(ol[i].rel.substr(0,3) == 'iv:' && ol[i].rel.indexOf(':'+opt[2]) > 4 && !hasClass(l[i], 'hidden') && ol[i].id != 'ivprev' && ol[i].id != 'ivnext')
+      if(ol[i].rel.substr(0,3) == 'iv:' && ol[i].rel.indexOf(':'+opt[2]) > 4 && !hasClass(ol[i], 'hidden') && ol[i].id != 'ivprev' && ol[i].id != 'ivnext')
         l[l.length] = ol[i];
     for(i=0;i<l.length;i++)
       if(l[i].href == u) {
@@ -872,6 +873,251 @@ function medSerialize() {
 
 if(byId('jt_box_rel_format'))
   medLoad();
+
+
+
+
+/*  V I S U A L   N O V E L   S C R E E N S H O T   U P L O A D E R  (/v+/edit)  */
+
+var scrRel = [ [ 0, '-- select release --' ] ];
+var scrStaticURL;
+var scrUplNr = 0;
+
+function scrLoad() {
+  // get scrRel and scrStaticURL
+  var rel = byId('scr_rel');
+  scrStaticURL = rel.className;
+  for(var i=0; i<rel.options.length; i++)
+    scrRel[scrRel.length] = [ rel.options[i].value, getText(rel.options[i]) ];
+  rel.parentNode.removeChild(rel);
+
+  // load the current screenshots
+  var scr = byId('screenshots').value.split(' ');
+  for(i=0; i<scr.length && scr[i].length>1; i++) {
+    var r = scr[i].split(',');
+    scrAdd(r[0], r[1], r[2]);
+  }
+
+  scrLast();
+  scrCheckStatus();
+  scrSetSubmit();
+}
+
+function scrSetSubmit() {
+  var frm = byId('screenshots');
+  while(frm.nodeName.toLowerCase() != 'form')
+    frm = frm.parentNode;
+  oldfunc = frm.onsubmit;
+  frm.onsubmit = function() {
+    var loading = 0;
+    var norelease = 0;
+    var l = byName(byId('scr_table'), 'tr');
+    for(var i=0; i<l.length-1; i++) {
+      if(l[i].scr_status > 0)
+        loading = 1;
+      else if(byName(l[i], 'select')[0].selectedIndex == 0)
+        norelease = 1;
+    }
+    if(loading) {
+      alert('Please wait for the screenshots to be uploaded before submitting the form.');
+      return false;
+    } else if(norelease) {
+      alert('Please select the appropriate release for every screenshot');
+      return false;
+    } else if(oldfunc)
+      return oldfunc();
+  };
+}
+
+function scrURL(id, t) {
+  return scrStaticURL+'/s'+t+'/'+(id%100<10?'0':'')+(id%100)+'/'+id+'.jpg';
+}
+
+function scrAdd(id, nsfw, rel) {
+  // tr.scr_status = 0: done, 1: uploading, 2: waiting for thumbnail, 3: deleted
+
+  var tr = tag('tr', { id:'scr_tr_'+id, scr_id: id, scr_status: id?2:1, scr_rel: rel, scr_nsfw: nsfw},
+    tag('td', { class: 'thumb'}, 'loading...'),
+    tag('td',
+      tag('b', id ? 'Fetching thumbnail...' : 'Uploading screenshot'),
+      tag('br', null),
+      id ? null : 'This can take a while, depending on the file size and your upload speed.',
+      tag('br', null),
+      id ? null : tag('a', {href:'#', onclick:scrDel}, 'cancel')
+    )
+  );
+  byId('scr_table').appendChild(tr);
+  scrStripe();
+  return tr;
+}
+
+function scrLast() {
+  if(byId('scr_last'))
+    byId('scr_table').removeChild(byId('scr_last'));
+  var full = byName(byId('scr_table'), 'tr').length >= 10;
+
+  byId('scr_table').appendChild(tag('tr', {id:'scr_last'},
+    tag('td', {class: 'thumb'}),
+    full ? tag('td',
+      tag('b', 'Enough screenshots'),
+      tag('br', null),
+      'The limit of 10 screenshots per visual novel has been reached. ',
+      'If you want to add a new screenshot, please remove an existing one first.'
+    ) : tag('td',
+      tag('b', 'Add screenshot'),
+      tag('br', null),
+      'Image must be smaller than 5MB and in PNG or JPEG format.',
+      tag('br', null),
+      tag('input', {name:'scr_upload', id:'scr_upload', type:'file', class:'text'}),
+      tag('br', null),
+      tag('input', {type:'button', value:'Upload!', class:'submit', onclick:scrUpload})
+    )
+  ));
+  scrStripe();
+}
+
+function scrStripe() {
+  var l = byName(byId('scr_table'), 'tr');
+  for(var i=0; i<l.length; i++)
+    setClass(l[i], 'odd', i%2==0);
+}
+
+function scrCheckStatus() {
+  var ids = [];
+  var trs = byName(byId('scr_table'), 'tr');
+  for(var i=0; i<trs.length-1; i++)
+    if(trs[i].scr_status == 2)
+      ids[ids.length] = 'id='+trs[i].scr_id;
+  if(!ids.length)
+    return setTimeout(scrCheckStatus, 1000);
+
+  var ti = setTimeout(scrCheckStatus, 10000);
+  ajax('/xml/screenshots.xml?'+ids.join(';'), function(hr) {
+    var ls = hr.responseXML.getElementsByTagName('item');
+    for(var i=0; i<ls.length; i++) {
+      var tr = byId('scr_tr_'+ls[i].getAttribute('id'));
+      if(!tr || ls[i].getAttribute('processed') != '1')
+        continue;
+      tr.scr_status = 0; // ready
+
+      // image
+      var dim = ls[i].getAttribute('width')+'x'+ls[i].getAttribute('height');
+      setContent(byName(tr, 'td')[0],
+        tag('a', {href: scrURL(tr.scr_id, 'f'), rel:'iv:'+dim+':edit'},
+          tag('img', {src: scrURL(tr.scr_id, 't')})
+        )
+      );
+
+      // content
+      var rel = tag('select', {onchange: scrSerialize, class:'scr_relsel'});
+      for(var j=0; j<scrRel.length; j++)
+        rel.appendChild(tag('option', {value: scrRel[j][0], selected: tr.scr_rel == scrRel[j][0]}, scrRel[j][1]));
+      var nsfwid = 'scr_sfw_'+tr.scr_id;
+      setContent(byName(tr, 'td')[1],
+        tag('b', 'Screenshot #'+tr.scr_id),
+        ' (', tag('a', {href: '#', onclick:scrDel}, 'remove'), ')',
+        tag('br', null),
+        'Full size: '+dim,
+        tag('br', null),
+        tag('br', null),
+        tag('input', {type:'checkbox', onclick:scrSerialize, id:nsfwid, name:nsfwid, checked: tr.scr_nsfw>0, class:'scr_nsfw'}),
+        tag('label', {for:nsfwid}, 'This screenshot is NSFW'),
+        tag('br', null),
+        rel
+      );
+    }
+    scrSerialize();
+    ivInit();
+    clearTimeout(ti);
+    setTimeout(scrCheckStatus, 1000);
+  });
+}
+
+function scrDel(what) {
+  var tr = what && what.scr_status != null ? what : this;
+  while(tr.nodeName.toLowerCase() != 'tr')
+    tr = tr.parentNode;
+  tr.scr_status = 3;
+  byId('scr_table').removeChild(tr);
+  scrSerialize();
+  scrLast();
+  return false;
+}
+
+function scrUpload() {
+  scrUplNr++;
+
+  // create temporary form
+  var ifid = 'scr_upl_'+scrUplNr;
+  var frm = tag('form', {method: 'post', action:'/xml/screenshots.xml', target: ifid, enctype:'multipart/form-data'});
+  var ifr = tag('iframe', {id:ifid, name:ifid, src:'about:blank', onload:scrUploadComplete});
+  addBody(tag('div', {class:'scr_uploader'}, ifr, frm));
+
+  // submit form and delete it
+  frm.appendChild(byId('scr_upload'));
+  frm.submit();
+  frm.parentNode.removeChild(frm);
+  ifr.scr_tr = scrAdd(0, 0, 0);
+  scrLast();
+  return false;
+}
+
+function scrUploadComplete() {
+  var ifr = this;
+  var fr = window.frames[ifr.id];
+  if(fr.location.href.indexOf('screenshots') < 0)
+    return;
+
+  var tr = ifr.scr_tr;
+  if(!tr || tr.scr_status == 3)
+    return;
+
+  try {
+    tr.scr_id = fr.window.document.getElementsByTagName('image')[0].getAttribute('id');
+  } catch(e) {
+    tr.scr_id = -10;
+  }
+  if(tr.scr_id < 0) {
+    alert(
+      tr.scr_id == -10 ?
+         'Oops! Seems like something went wrong...\n'
+        +'Make sure the file you\'re uploading doesn\'t exceed 5MB in size.\n'
+        +'If that isn\'t the problem, then please report a bug.' :
+      tr.scr_id == -1 ?
+        'Upload failed!\nOnly JPEG or PNG images are accepted.' :
+        'Upload failed!\nNo file selected, or an empty file?'
+    );
+    return scrDel(tr);
+  }
+
+  tr.id = 'scr_tr_'+tr.scr_id;
+  tr.scr_status = 2;
+  setContent(byName(tr, 'td')[1],
+    tag('b', 'Generating thumbnail...'),
+    tag('br', null),
+    'Note: if this takes longer than 30 seconds, there\'s probably something wrong on our side. ',
+    'Please try again later or report a bug if that is the case.'
+  );
+
+  // remove the <div> in a timeout, otherwise some browsers think the page is still loading
+  setTimeout(function() { ifr.parentNode.parentNode.removeChild(ifr.parentNode) }, 100);
+}
+
+function scrSerialize() {
+  var r = [];
+  var l = byName(byId('scr_table'), 'tr');
+  for(var i=0; i<l.length-1; i++)
+    if(l[i].scr_status == 0)
+      r[r.length] = [
+        l[i].scr_id,
+        byClass(l[i], 'input', 'scr_nsfw')[0].checked ? 1 : 0,
+        scrRel[byClass(l[i], 'select', 'scr_relsel')[0].selectedIndex][0]
+      ].join(',');
+  byId('screenshots').value = r.join(' ');
+}
+
+if(x('jt_box_vn_scr'))
+  scrLoad();
 
 
 
