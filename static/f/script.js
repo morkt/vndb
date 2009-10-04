@@ -680,7 +680,7 @@ function dsResults(hr, obj) {
 function vnrLoad() {
   // read the current relations
   var rels = byId('vnrelations').value.split('|||');
-  for(var i=0; i<rels.length; i++) {
+  for(var i=0; i<rels.length && rels[0].length>1; i++) {
     var rel = rels[i].split(',', 3);
     vnrAdd(rel[0], rel[1], rel[2]);
   }
@@ -791,6 +791,87 @@ function vnrFormAdd() {
 
 if(byId('vnrelations'))
   vnrLoad();
+
+
+
+
+/*  R E L E A S E   M E D I A  (/r+/edit)  */
+
+var medTypes = [ ];
+function medLoad() {
+  // load the medTypes and clear the div
+  var sel = byName(byId('media_div'), 'select')[0].options;
+  for(var i=0; i<sel.length; i++)
+    medTypes[medTypes.length] = [ sel[i].value, getText(sel[i]), !hasClass(sel[i], 'noqty') ];
+  setText(byId('media_div'), '');
+
+  // load the selected media
+  var med = byId('media').value.split(',');
+  for(var i=0; i<med.length && med[i].length > 1; i++)
+    medAdd(med[i].split(' ')[0], Math.floor(med[i].split(' ')[1]));
+
+  medAdd('', 0);
+}
+
+function medAdd(med, qty) {
+  var qsel = tag('select', {class:'qty', onchange:medSerialize}, tag('option', {value:0}, '- quantity -'));
+  for(var i=1; i<=20; i++)
+    qsel.appendChild(tag('option', {value:i, selected: qty==i}, i));
+
+  var msel = tag('select', {class:'medium', onchange: med == '' ? medFormAdd : medSerialize});
+  if(med == '')
+    msel.appendChild(tag('option', {value:''}, '- medium -'));
+  for(var i=0; i<medTypes.length; i++)
+    msel.appendChild(tag('option', {value:medTypes[i][0], selected: med==medTypes[i][0]}, medTypes[i][1]));
+
+  byId('media_div').appendChild(tag('span', qsel, msel,
+    med != '' ? tag('input', {type: 'button', class:'submit', onclick:medDel, value:'remove'}) : null
+  ));
+}
+
+function medDel() {
+  var span = this;
+  while(span.nodeName.toLowerCase() != 'span')
+    span = span.parentNode;
+  byId('media_div').removeChild(span);
+  medSerialize();
+  return false;
+}
+
+function medFormAdd() {
+  var span = this;
+  while(span.nodeName.toLowerCase() != 'span')
+    span = span.parentNode;
+  var med = byClass(span, 'select', 'medium')[0];
+  var qty = byClass(span, 'select', 'qty')[0];
+  if(!med.selectedIndex)
+    return;
+  medAdd(med.options[med.selectedIndex].value, qty.options[qty.selectedIndex].value);
+  byId('media_div').removeChild(span);
+  medAdd('', 0);
+  medSerialize();
+}
+
+function medSerialize() {
+  var r = [];
+  var meds = byName(byId('media_div'), 'span');
+  for(var i=0; i<meds.length-1; i++) {
+    var med = byClass(meds[i], 'select', 'medium')[0];
+    var qty = byClass(meds[i], 'select', 'qty')[0];
+
+    /* correct quantity if necessary */
+    if(medTypes[med.selectedIndex][2] && !qty.selectedIndex)
+      qty.selectedIndex = 1;
+    if(!medTypes[med.selectedIndex][2] && qty.selectedIndex)
+      qty.selectedIndex = 0;
+
+    r[r.length] = medTypes[med.selectedIndex][0] + ' ' + qty.selectedIndex;
+  }
+  byId('media').value = r.join(',');
+}
+
+if(byId('jt_box_rel_format'))
+  medLoad();
 
 
 
