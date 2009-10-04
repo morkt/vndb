@@ -729,12 +729,12 @@ a.addnew {
 #jt_box_vn_rel table  { margin-bottom: 10px; }
 #jt_box_vn_rel h2     { margin: 0 0 3px 0px; }
 #jt_box_vn_rel td     { padding: 1px 2px; vertical-align: middle; }
-#jt_box_vn_rel td.tc1 { width: 300px; text-align: right }
-#jt_box_vn_rel td.tc2 { width: 170px;  white-space: nowrap }
-#jt_box_vn_rel td.tc3 { width: 200px; }
-#jt_box_vn_rel td.tc4 { width: 40px; text-align: right }
-#jt_box_vn_rel td.tc1 input  { width: 280px; }
-#jt_box_vn_rel td.tc2 select { width: 130px; }
+#jt_box_vn_rel td.tc_vn    { width: 300px; text-align: right }
+#jt_box_vn_rel td.tc_rel   { width: 170px;  white-space: nowrap }
+#jt_box_vn_rel td.tc_title { width: 200px; }
+#jt_box_vn_rel td.tc_add   { width: 40px; text-align: right }
+#jt_box_vn_rel td.tc_vn input   { width: 280px; }
+#jt_box_vn_rel td.tc_rel select { width: 130px; }
 
 #ds_box {
   border: 1px solid $border$;

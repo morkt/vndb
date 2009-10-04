@@ -139,7 +139,7 @@ function setClass(obj, c, set) {
 }
 
 function shorten(v, l) {
-  return qq(v.length > l ? v.substr(0, l-3)+'...' : v);
+  return v.length > l ? v.substr(0, l-3)+'...' : v;
 }
 
 
@@ -221,7 +221,7 @@ function ivView(what) {
 
   // update document
   view.style.display = 'block';
-  setContent(x('ivimg'), tag('img', {src:u, onclick:ivClose,
+  setContent(byId('ivimg'), tag('img', {src:u, onclick:ivClose,
     onload: function() { byId('ivimgload').style.top='-400px'; },
     style: 'width: '+w+'px; height: '+h+'px'
   }));
@@ -547,8 +547,14 @@ function dsKeyDown(ev) {
       obj.value = obj.ds_serFunc(byId('ds_box_'+obj.ds_selectedId).ds_itemData, obj);
     if(obj.ds_returnFunc)
       obj.ds_returnFunc();
+
     byId('ds_box').style.top = '-500px';
+    setContent(byId('ds_box'), tag('b', 'Loading...'));
     obj.ds_selectedId = 0;
+    if(obj.ds_dosearch) {
+      clearTimeout(obj.ds_dosearch);
+      obj.ds_dosearch = null;
+    }
 
     return false;
   }
@@ -665,6 +671,126 @@ function dsResults(hr, obj) {
   if(obj.ds_selectedId != 0 && !byId('ds_box_'+obj.ds_selectedId))
     obj.ds_selectedId = 0;
 }
+
+
+
+
+/*  V I S U A L   N O V E L   R E L A T I O N S  (/v+/edit)  */
+
+function vnrLoad() {
+  // read the current relations
+  var rels = byId('vnrelations').value.split('|||');
+  for(var i=0; i<rels.length; i++) {
+    var rel = rels[i].split(',', 3);
+    vnrAdd(rel[0], rel[1], rel[2]);
+  }
+  vnrEmpty();
+
+  // make sure the title is up-to-date
+  byId('title').onchange = function() {
+    var l = byClass(byId('jt_box_vn_rel'), 'td', 'tc_title');
+    for(i=0; i<l.length; i++)
+      setText(l[i], shorten(this.value, 40));
+  };
+
+  // bind the add-link
+  byName(byClass(byId('relation_new'), 'td', 'tc_add')[0], 'a')[0].onclick = vnrFormAdd;
+
+  // dropdown
+  dsInit(byName(byClass(byId('relation_new'), 'td', 'tc_vn')[0], 'input')[0], '/xml/vn.xml?q=', function(item, tr) {
+    tr.appendChild(tag('td', { style: 'text-align: right; padding-right: 5px'}, 'v'+item.getAttribute('id')));
+    tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40)));
+  }, function(item) {
+    return 'v'+item.getAttribute('id')+':'+item.firstChild.nodeValue;
+  }, vnrFormAdd);
+}
+
+function vnrAdd(rel, vid, title) {
+  var sel = tag('select', {onchange: vnrSerialize});
+  var ops = byName(byClass(byId('relation_new'), 'td', 'tc_rel')[0], 'select')[0].options;
+  for(var i=0; i<ops.length; i++)
+    sel.appendChild(tag('option', {value: ops[i].value, selected: ops[i].value==rel}, getText(ops[i])));
+
+  byId('relation_tbl').appendChild(tag('tr', {id:'relation_tr_'+vid},
+    tag('td', {class:'tc_vn'   }, 'v'+vid+':', tag('a', {href:'/v'+vid}, shorten(title, 40))),
+    tag('td', {class:'tc_rel'  }, 'is a ', sel, ' of'),
+    tag('td', {class:'tc_title'}, shorten(byId('title').value, 40)),
+    tag('td', {class:'tc_add'  }, tag('a', {href:'#', onclick:vnrDel}, 'del'))
+  ));
+
+  vnrEmpty();
+}
+
+function vnrEmpty() {
+  var tbl = byId('relation_tbl');
+  if(byName(tbl, 'tr').length < 1)
+    tbl.appendChild(tag('tr', {id:'relation_tr_none'}, tag('td', {colspan:4}, 'No relations selected.')));
+  else if(byId('relation_tr_none'))
+    tbl.removeChild(byId('relation_tr_none'));
+}
+
+function vnrSerialize() {
+  var r = [];
+  var trs = byName(byId('relation_tbl'), 'tr');
+  for(var i=0; i<trs.length; i++) {
+    var rel = byName(byClass(trs[i], 'td', 'tc_rel')[0], 'select')[0];
+    r[r.length] = [
+      rel.options[rel.selectedIndex].value,                      // relation
+      trs[i].id.substr(12),                                      // vid
+      getText(byName(byClass(trs[i], 'td', 'tc_vn')[0], 'a')[0]) // title
+    ].join(',');
+  }
+  byId('vnrelations').value = r.join('|||');
+}
+
+function vnrDel() {
+  var tr = this;
+  while(tr.nodeName.toLowerCase() != 'tr')
+    tr = tr.parentNode;
+  byId('relation_tbl').removeChild(tr);
+  vnrSerialize();
+  vnrEmpty();
+  return false;
+}
+
+function vnrFormAdd() {
+  var relnew = byId('relation_new');
+  var txt = byName(byClass(relnew, 'td', 'tc_vn')[0], 'input')[0];
+  var sel = byName(byClass(relnew, 'td', 'tc_rel')[0], 'select')[0];
+  var lnk = byName(byClass(relnew, 'td', 'tc_add')[0], 'a')[0];
+  var input = txt.value;
+
+  if(!input.match(/^v[0-9]+/)) {
+    alert('Visual novel textbox must start with an ID (e.g. v17)');
+    return false;
+  }
+
+  txt.disabled = sel.disabled = true;
+  txt.value = 'loading...';
+  setText(lnk, 'loading...');
+
+  ajax('/xml/vn.xml?q='+encodeURIComponent(input), function(hr) {
+    txt.disabled = sel.disabled = false;
+    txt.value = '';
+    setText(lnk, 'add');
+
+    var items = hr.responseXML.getElementsByTagName('item');
+    if(items.length < 1)
+      return alert('Visual novel not found!');
+
+    var id = items[0].getAttribute('id');
+    if(byId('relation_tr_'+id))
+      return alert('This visual novel has already been selected!');
+
+    vnrAdd(sel.selectedIndex, id, items[0].firstChild.nodeValue);
+    sel.selectedIndex = 0;
+    vnrSerialize();
+  });
+  return false;
+}
+
+if(byId('vnrelations'))
+  vnrLoad();
 
 
 
