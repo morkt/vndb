@@ -974,15 +974,15 @@ div.browse.uposts td.tc1 {
 /***** VN tagmod *****/
 
 #jt_box_tagmod .formtable table td { padding: 1px 5px }
-#tagtable tfoot td { padding-top: 20px!important; }
-#tagtable .tc2_1 { border-right: 1px solid $border$; border-left: 1px solid $border$; width: 150px; text-align: center }
-#tagtable .tc3_1 { border-left: 1px solid $border$; width: 150px; text-align: center }
-#tagtable .tc1 { min-width: 200px; border-right: 1px solid $border$ }
-#tagtable .tc2 { padding-left: 30px!important }
-#tagtable .tc3 { border-right: 1px solid $border$; padding-right: 30px!important; text-align: right; padding-left: 10px!important  }
-#tagtable .tc4 { padding-left: 30px!important; }
-#tagtable .tc4 i { font-style: normal; font-size: 8px }
-#tagtable .tc5 { text-align: right; padding-right: 30px!important; }
+table.tgl tfoot td { padding-top: 20px!important; }
+table.tgl .tc_you { border-right: 1px solid $border$; border-left: 1px solid $border$; width: 150px; text-align: center }
+table.tgl .tc_others { border-left: 1px solid $border$; width: 150px; text-align: center }
+table.tgl .tc_tagname { min-width: 200px; border-right: 1px solid $border$ }
+table.tgl .tc_myvote { padding-left: 30px!important }
+table.tgl .tc_myspoil { border-right: 1px solid $border$; padding-right: 30px!important; text-align: right; padding-left: 10px!important; cursor: pointer }
+table.tgl .tc_allvote { padding-left: 30px!important; }
+table.tgl .tc_allvote i { font-style: normal; font-size: 8px }
+table.tgl .tc_allspoil { text-align: right; padding-right: 30px!important; }
 .taglvl { display: block; float: left; width: 8px; height: 12px; border: 1px solid $border$; font-size: 1px; color: $maintext$!important }
 .taglvl0 { width: 15px; border: none!important; font-size: 10px; text-align: center; }
 div.taglvl0 { font-size: 8px; width: 20px!important }
@@ -994,9 +994,6 @@ a.taglvl:hover { border-bottom: 1px solid transparent!important }
 .taglvlsel.taglvl1 { background-color: #cf0; border-color: #cf0 }
 .taglvlsel.taglvl2 { background-color: #8f0; border-color: #8f0 }
 .taglvlsel.taglvl3 { background-color: #0f0; border-color: #0f0 }
-#jt_box_tagmod #tagtable .tc3 { padding: 0 }
-#tagtable .tc3 select { width: 90px; height: 15px; border: 0; margin: 0; font-size: 11px; background-color: $_blendbg$; text-align: right }
-#tagtable .odd .tc3 select { background-color: $secbg$ }
 
 
 

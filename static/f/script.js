@@ -251,9 +251,10 @@ ivInit();
 /*  D R O P D O W N  */
 
 function ddInit(obj, align, contents) {
-  obj.dd_align = align; // only 'left' and 'bottom' supported at the moment
+  obj.dd_align = align; // see ddRefresh for details
   obj.dd_contents = contents;
   document.onmousemove = ddMouseMove;
+  document.onscroll = ddHide;
   if(!byId('dd_box'))
     addBody(tag('div', {id:'dd_box', dd_used: false}));
 }
@@ -263,6 +264,7 @@ function ddHide() {
   setText(box, '');
   box.style.left = '-500px';
   box.dd_used = false;
+  box.dd_lnk = null;
 }
 
 function ddMouseMove(e) {
@@ -278,32 +280,42 @@ function ddMouseMove(e) {
     var mouseX = e.pageX || (e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
     var mouseY = e.pageY || (e.clientY + document.body.scrollTop  + document.documentElement.scrollTop);
     if((mouseX < ddx-10 || mouseX > ddx+box.offsetWidth+10 || mouseY < ddy-10 || mouseY > ddy+box.offsetHeight+10)
-        || (lnk && lnk.id == box.dd_id))
+        || (lnk && lnk == box.dd_lnk))
       ddHide();
   }
 
   if(!box.dd_used && lnk) {
-    var content = lnk.dd_contents(lnk, box);
-    if(content == null)
-      return;
-    setContent(box, content);
-    box.dd_id = lnk.id;
+    box.dd_lnk = lnk;
     box.dd_used = true;
-
-    var o = lnk;
-    ddx = ddy = 0;
-    do {
-      ddx += o.offsetLeft;
-      ddy += o.offsetTop;
-    } while(o = o.offsetParent);
-
-    if(lnk.dd_align == 'left')
-      ddx -= box.offsetWidth;
-    if(lnk.dd_align == 'bottom')
-      ddy += lnk.offsetHeight;
-    box.style.left = ddx+'px';
-    box.style.top = ddy+'px';
+    if(!ddRefresh())
+      ddHide();
   }
+}
+
+function ddRefresh() {
+  var box = byId('dd_box');
+  if(!box.dd_used)
+    return false;
+  var lnk = box.dd_lnk;
+  var content = lnk.dd_contents(lnk, box);
+  if(content == null)
+    return false;
+  setContent(box, content);
+
+  var o = lnk;
+  ddx = ddy = 0;
+  do {
+    ddx += o.offsetLeft;
+    ddy += o.offsetTop;
+  } while(o = o.offsetParent);
+
+  if(lnk.dd_align == 'left')
+    ddx -= box.offsetWidth;
+  if(lnk.dd_align == 'tagmod')
+    ddx += lnk.offsetWidth-35;
+  box.style.left = ddx+'px';
+  box.style.top = ddy+'px';
+  return true;
 }
 
 
@@ -1118,6 +1130,166 @@ function scrSerialize() {
 
 if(x('jt_box_vn_scr'))
   scrLoad();
+
+
+
+
+/*  V I S U A L   N O V E L   T A G   L I N K I N G  (/v+/tagmod)  */
+
+var tglSpoilers = [ 'neutral', 'no spoiler', 'minor spoiler', 'major spoiler' ];
+
+function tglLoad() {
+  // tag dropdown search
+  dsInit(byId('tagmod_tag'), '/xml/tags.xml?q=', function(item, tr) {
+    tr.appendChild(tag('td',
+      shorten(item.firstChild.nodeValue, 40),
+      item.getAttribute('meta') == 'yes' ? tag('b', {class:'grayedout'}, ' meta') :
+      item.getAttribute('state') == 0    ? tag('b', {class:'grayedout'}, ' awaiting moderation') : null
+    ));
+  }, function(item) {
+    return item.firstChild.nodeValue;
+  }, tglAdd);
+  byId('tagmod_add').onclick = tglAdd;
+
+  // JS'ify the voting bar and spoiler setting
+  tglStripe();
+  var trs = byName(byId('tagtable'), 'tr');
+  for(var i=0; i<trs.length; i++) {
+    var vote = byClass(trs[i], 'td', 'tc_myvote')[0];
+    vote.tgl_vote = getText(vote)*1;
+    tglVoteBar(vote);
+
+    var spoil = byClass(trs[i], 'td', 'tc_myspoil')[0];
+    spoil.tgl_spoil = getText(spoil)*1+1;
+    setText(spoil, tglSpoilers[spoil.tgl_spoil]);
+    ddInit(spoil, 'tagmod', tglSpoilDD);
+    spoil.onclick = tglSpoilNext;
+  }
+  tglSerialize();
+}
+
+function tglSpoilNext() {
+  if(++this.tgl_spoil >= tglSpoilers.length)
+    this.tgl_spoil = 0;
+  setText(this, tglSpoilers[this.tgl_spoil]);
+  tglSerialize();
+  ddRefresh();
+}
+
+function tglSpoilDD(lnk) {
+  var lst = tag('ul', null);
+  for(var i=0; i<tglSpoilers.length; i++)
+    lst.appendChild(tag('li', i == lnk.tgl_spoil
+      ? tag('i', tglSpoilers[i])
+      : tag('a', {href: '#', onclick:tglSpoilSet, tgl_td:lnk, tgl_sp:i}, tglSpoilers[i])
+    ));
+  return lst;
+}
+
+function tglSpoilSet() {
+  this.tgl_td.tgl_spoil = this.tgl_sp;
+  setText(this.tgl_td, tglSpoilers[this.tgl_sp]);
+  ddHide();
+  tglSerialize();
+  return false;
+}
+
+function tglVoteBar(td, vote) {
+  setText(td, '');
+  for(var i=-3; i<=3; i++)
+    td.appendChild(tag('a', {
+      class:'taglvl taglvl'+i, tgl_num: i,
+      onmouseover:tglVoteBarSel, onmouseout:tglVoteBarSel, onclick:tglVoteBarSel
+    }, ' '));
+  tglVoteBarSel(td, td.tgl_vote);
+  return false;
+}
+
+function tglVoteBarSel(td, vote) {
+  // nasty trick to make this function multifunctional
+  if(this && this.tgl_num != null) {
+    var e = td || window.event;
+    td = this.parentNode;
+    vote = this.tgl_num;
+    if(e.type.toLowerCase() == 'click') {
+      td.tgl_vote = vote;
+      tglSerialize();
+    }
+    if(e.type.toLowerCase() == 'mouseout')
+      vote = td.tgl_vote;
+  }
+  var l = byName(td, 'a');
+  var num;
+  for(var i=0; i<l.length; i++) {
+    num = l[i].tgl_num;
+    if(num == 0)
+      setText(l[i], vote || '-');
+    else
+      setClass(l[i], 'taglvlsel', num<0&&vote<=num || num>0&&vote>=num);
+  }
+}
+
+function tglAdd() {
+  var tg = byId('tagmod_tag');
+  var add = byId('tagmod_add');
+  tag.disabled = add.disabled = true;
+  add.value = 'loading...';
+
+  ajax('/xml/tags.xml?q=name:'+encodeURIComponent(tg.value), function(hr) {
+    tg.disabled = add.disabled = false;
+    tg.value = '';
+    add.value = 'Add tag';
+
+    var items = hr.responseXML.getElementsByTagName('item');
+    if(items.length < 1)
+      return alert('Item not found!');
+    if(items[0].getAttribute('meta') == 'yes')
+      return alert('Can\'t use meta tags here!');
+
+    var name = items[0].firstChild.nodeValue;
+    var id = items[0].getAttribute('id');
+    if(byId('tgl_'+id))
+      return alert('Tag is already present!');
+
+    var vote = tag('td', {class:'tc_myvote', tgl_vote: 2}, '');
+    tglVoteBar(vote);
+    var spoil = tag('td', {class:'tc_myspoil', tgl_spoil: 0}, tglSpoilers[0]);
+    ddInit(spoil, 'tagmod', tglSpoilDD);
+
+    byId('tagtable').appendChild(tag('tr', {id:'tgl_'+id},
+      tag('td', {class:'tc_tagname'}, tag('a', {href:'/g'+id}, name)),
+      vote, spoil,
+      tag('td', {class:'tc_allvote'}, '-'),
+      tag('td', {class:'tc_allspoil'}, '-')
+    ));
+    tglStripe();
+    tglSerialize();
+  });
+}
+
+function tglStripe() {
+  var l = byName(byId('tagtable'), 'tr');
+  for(var i=0; i<l.length; i++)
+    setClass(l[i], 'odd', i%2);
+}
+
+function tglSerialize() {
+  var r = [];
+  var l = byName(byId('tagtable'), 'tr');
+  for(var i=0; i<l.length; i++) {
+    var vote = byClass(l[i], 'td', 'tc_myvote')[0].tgl_vote;
+    if(vote != 0)
+      r[r.length] = [
+        l[i].id.substr(4),
+        vote,
+        byClass(l[i], 'td', 'tc_myspoil')[0].tgl_spoil-1
+      ].join(',');
+  }
+  byId('taglinks').value = r.join(' ');
+}
+
+if(byId('taglinks'))
+  tglLoad();
 
 
 
