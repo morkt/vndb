@@ -344,15 +344,15 @@ function rlDropDown(lnk) {
       vs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'v'+i, onclick:rlMod}, vstat[i])));
   }
 
-  return tag('div', {class:'vrdd'}, rs, vs, st[0] == '--' ? null :
-    tag('ul', {class:'full'}, tag('li', tag('a', {href:'#', rl_rid: relid, rl_act:'del', onclick:rlMod}, 'Remove from VN List')))
+  return tag('div', {'class':'vrdd'}, rs, vs, st[0] == '--' ? null :
+    tag('ul', {'class':'full'}, tag('li', tag('a', {href:'#', rl_rid: relid, rl_act:'del', onclick:rlMod}, 'Remove from VN List')))
   );
 }
 
 function rlMod() {
   var lnk = byId('rlsel_'+this.rl_rid);
   ddHide();
-  setContent(lnk, tag('b', {class: 'patch'}, 'loading...'));
+  setContent(lnk, tag('b', {'class': 'patch'}, 'loading...'));
   ajax('/xml/rlist.xml?id='+this.rl_rid+';e='+this.rl_act, function(hr) {
     // TODO: get rid of innerHTML here...
     lnk.innerHTML = hr.responseXML.getElementsByTagName('rlist')[0].firstChild.nodeValue;
@@ -509,7 +509,6 @@ function dateSerialize() {
     sel[2].options[sel[2].selectedIndex].value*1
   ];
   div.date_obj.value = val[0] == 0 ? 0 : val[0] == 9999 ? 99999999 : val[0]*10000+val[1]*100+(val[1]==99?99:val[2]);
-  alert(div.date_obj.value);
 }
 
 {
@@ -725,10 +724,10 @@ function vnrAdd(rel, vid, title) {
     sel.appendChild(tag('option', {value: ops[i].value, selected: ops[i].value==rel}, getText(ops[i])));
 
   byId('relation_tbl').appendChild(tag('tr', {id:'relation_tr_'+vid},
-    tag('td', {class:'tc_vn'   }, 'v'+vid+':', tag('a', {href:'/v'+vid}, shorten(title, 40))),
-    tag('td', {class:'tc_rel'  }, 'is a ', sel, ' of'),
-    tag('td', {class:'tc_title'}, shorten(byId('title').value, 40)),
-    tag('td', {class:'tc_add'  }, tag('a', {href:'#', onclick:vnrDel}, 'del'))
+    tag('td', {'class':'tc_vn'   }, 'v'+vid+':', tag('a', {href:'/v'+vid}, shorten(title, 40))),
+    tag('td', {'class':'tc_rel'  }, 'is a ', sel, ' of'),
+    tag('td', {'class':'tc_title'}, shorten(byId('title').value, 40)),
+    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:vnrDel}, 'del'))
   ));
 
   vnrEmpty();
@@ -827,18 +826,18 @@ function medLoad() {
 }
 
 function medAdd(med, qty) {
-  var qsel = tag('select', {class:'qty', onchange:medSerialize}, tag('option', {value:0}, '- quantity -'));
+  var qsel = tag('select', {'class':'qty', onchange:medSerialize}, tag('option', {value:0}, '- quantity -'));
   for(var i=1; i<=20; i++)
     qsel.appendChild(tag('option', {value:i, selected: qty==i}, i));
 
-  var msel = tag('select', {class:'medium', onchange: med == '' ? medFormAdd : medSerialize});
+  var msel = tag('select', {'class':'medium', onchange: med == '' ? medFormAdd : medSerialize});
   if(med == '')
     msel.appendChild(tag('option', {value:''}, '- medium -'));
   for(var i=0; i<medTypes.length; i++)
     msel.appendChild(tag('option', {value:medTypes[i][0], selected: med==medTypes[i][0]}, medTypes[i][1]));
 
   byId('media_div').appendChild(tag('span', qsel, msel,
-    med != '' ? tag('input', {type: 'button', class:'submit', onclick:medDel, value:'remove'}) : null
+    med != '' ? tag('input', {type: 'button', 'class':'submit', onclick:medDel, value:'remove'}) : null
   ));
 }
 
@@ -949,7 +948,7 @@ function scrAdd(id, nsfw, rel) {
   // tr.scr_status = 0: done, 1: uploading, 2: waiting for thumbnail, 3: deleted
 
   var tr = tag('tr', { id:'scr_tr_'+id, scr_id: id, scr_status: id?2:1, scr_rel: rel, scr_nsfw: nsfw},
-    tag('td', { class: 'thumb'}, 'loading...'),
+    tag('td', { 'class': 'thumb'}, 'loading...'),
     tag('td',
       tag('b', id ? 'Fetching thumbnail...' : 'Uploading screenshot'),
       tag('br', null),
@@ -969,7 +968,7 @@ function scrLast() {
   var full = byName(byId('scr_table'), 'tr').length >= 10;
 
   byId('scr_table').appendChild(tag('tr', {id:'scr_last'},
-    tag('td', {class: 'thumb'}),
+    tag('td', {'class': 'thumb'}),
     full ? tag('td',
       tag('b', 'Enough screenshots'),
       tag('br', null),
@@ -980,9 +979,9 @@ function scrLast() {
       tag('br', null),
       'Image must be smaller than 5MB and in PNG or JPEG format.',
       tag('br', null),
-      tag('input', {name:'scr_upload', id:'scr_upload', type:'file', class:'text'}),
+      tag('input', {name:'scr_upload', id:'scr_upload', type:'file', 'class':'text'}),
       tag('br', null),
-      tag('input', {type:'button', value:'Upload!', class:'submit', onclick:scrUpload})
+      tag('input', {type:'button', value:'Upload!', 'class':'submit', onclick:scrUpload})
     )
   ));
   scrStripe();
@@ -1021,7 +1020,7 @@ function scrCheckStatus() {
       );
 
       // content
-      var rel = tag('select', {onchange: scrSerialize, class:'scr_relsel'});
+      var rel = tag('select', {onchange: scrSerialize, 'class':'scr_relsel'});
       for(var j=0; j<scrRel.length; j++)
         rel.appendChild(tag('option', {value: scrRel[j][0], selected: tr.scr_rel == scrRel[j][0]}, scrRel[j][1]));
       var nsfwid = 'scr_sfw_'+tr.scr_id;
@@ -1032,8 +1031,8 @@ function scrCheckStatus() {
         'Full size: '+dim,
         tag('br', null),
         tag('br', null),
-        tag('input', {type:'checkbox', onclick:scrSerialize, id:nsfwid, name:nsfwid, checked: tr.scr_nsfw>0, class:'scr_nsfw'}),
-        tag('label', {for:nsfwid}, 'This screenshot is NSFW'),
+        tag('input', {type:'checkbox', onclick:scrSerialize, id:nsfwid, name:nsfwid, checked: tr.scr_nsfw>0, 'class':'scr_nsfw'}),
+        tag('label', {'for':nsfwid}, 'This screenshot is NSFW'),
         tag('br', null),
         rel
       );
@@ -1063,7 +1062,7 @@ function scrUpload() {
   var ifid = 'scr_upl_'+scrUplNr;
   var frm = tag('form', {method: 'post', action:'/xml/screenshots.xml', target: ifid, enctype:'multipart/form-data'});
   var ifr = tag('iframe', {id:ifid, name:ifid, src:'about:blank', onload:scrUploadComplete});
-  addBody(tag('div', {class:'scr_uploader'}, ifr, frm));
+  addBody(tag('div', {'class':'scr_uploader'}, ifr, frm));
 
   // submit form and delete it
   frm.appendChild(byId('scr_upload'));
@@ -1143,8 +1142,8 @@ function tglLoad() {
   dsInit(byId('tagmod_tag'), '/xml/tags.xml?q=', function(item, tr) {
     tr.appendChild(tag('td',
       shorten(item.firstChild.nodeValue, 40),
-      item.getAttribute('meta') == 'yes' ? tag('b', {class:'grayedout'}, ' meta') :
-      item.getAttribute('state') == 0    ? tag('b', {class:'grayedout'}, ' awaiting moderation') : null
+      item.getAttribute('meta') == 'yes' ? tag('b', {'class':'grayedout'}, ' meta') :
+      item.getAttribute('state') == 0    ? tag('b', {'class':'grayedout'}, ' awaiting moderation') : null
     ));
   }, function(item) {
     return item.firstChild.nodeValue;
@@ -1198,7 +1197,7 @@ function tglVoteBar(td, vote) {
   setText(td, '');
   for(var i=-3; i<=3; i++)
     td.appendChild(tag('a', {
-      class:'taglvl taglvl'+i, tgl_num: i,
+      'class':'taglvl taglvl'+i, tgl_num: i,
       onmouseover:tglVoteBarSel, onmouseout:tglVoteBarSel, onclick:tglVoteBarSel
     }, ' '));
   tglVoteBarSel(td, td.tgl_vote);
@@ -1251,16 +1250,17 @@ function tglAdd() {
     if(byId('tgl_'+id))
       return alert('Tag is already present!');
 
-    var vote = tag('td', {class:'tc_myvote', tgl_vote: 2}, '');
+    var vote = tag('td', {'class':'tc_myvote', tgl_vote: 2}, '');
     tglVoteBar(vote);
-    var spoil = tag('td', {class:'tc_myspoil', tgl_spoil: 0}, tglSpoilers[0]);
+    var spoil = tag('td', {'class':'tc_myspoil', tgl_spoil: 0}, tglSpoilers[0]);
     ddInit(spoil, 'tagmod', tglSpoilDD);
+    spoil.onclick = tglSpoilNext;
 
     byId('tagtable').appendChild(tag('tr', {id:'tgl_'+id},
-      tag('td', {class:'tc_tagname'}, tag('a', {href:'/g'+id}, name)),
+      tag('td', {'class':'tc_tagname'}, tag('a', {href:'/g'+id}, name)),
       vote, spoil,
-      tag('td', {class:'tc_allvote'}, '-'),
-      tag('td', {class:'tc_allspoil'}, '-')
+      tag('td', {'class':'tc_allvote'}, '-'),
+      tag('td', {'class':'tc_allspoil'}, '-')
     ));
     tglStripe();
     tglSerialize();
@@ -1510,8 +1510,8 @@ if(byId('expandall')) {
 if(byId('advselect') && byId('ti')) {
   var trfunc = function(item, tr) {
     tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
-      item.getAttribute('meta') == 'yes' ? tag('b', {class: 'grayedout'}, ' meta') : null,
-      item.getAttribute('state') == 0    ? tag('b', {class: 'grayedout'}, ' awaiting moderation') : null
+      item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' meta') : null,
+      item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' awaiting moderation') : null
     ));
   };
   var serfunc = function(item, obj) {
