@@ -747,7 +747,7 @@ ru : Сообщений
 # Footer
 
 :_footer_aboutus
-en : abous us
+en : about us
 ru : о нас
 
 :_footer_source
