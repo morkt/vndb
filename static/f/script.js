@@ -1,3 +1,16 @@
+/* function/attribute prefixes:
+ *  date -> Date selector
+ *  dd   -> dropdown
+ *  ds   -> dropdown search
+ *  iv   -> image viewer
+ *  jt   -> Javascript Tabs
+ *  med  -> Release media selector
+ *  rl   -> Release List dropdown
+ *  scr  -> VN screenshot uploader
+ *  tgl  -> VN tag linking
+ *  tvs  -> VN page tag spoilers
+ *  vnr  -> VN relation editor
+ */
 var expanded_icon = '▾';
 var collapsed_icon = '▸';
 
