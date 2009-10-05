@@ -7,6 +7,11 @@ git - ?
 	  - vn_relations.relation
 	  - anime.type
 	- New language: Hungarian
+	- Complete rewrite of the Javascript code:
+	  - Intended to be less error prone, more maintainable, and easier to make
+	    'XHTML compliant' in the future (currently still has some issues here).
+	  - Improved spoiler selection on /v+/tagmod
+	  - Everything merged into one file.
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout

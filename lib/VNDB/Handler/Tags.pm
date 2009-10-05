@@ -422,7 +422,7 @@ sub vntagmod {
   my $frm;
 
   my $title = mt '_tagv_title', $v->{title};
-  $self->htmlHeader(title => $title, noindex => 1, js => 'forms');
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('v', $v, 'tagmod');
   div class => 'mainbox';
    h1 $title;

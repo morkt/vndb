@@ -6,6 +6,8 @@
  *  jt   -> Javascript Tabs
  *  med  -> Release media selector
  *  rl   -> Release List dropdown
+ *  rpr  -> Release <-> producer linking
+ *  rvn  -> Release <-> visual novel linking
  *  scr  -> VN screenshot uploader
  *  tgl  -> VN tag linking
  *  tvs  -> VN page tag spoilers
@@ -758,6 +760,8 @@ function vnrSerialize() {
   var r = [];
   var trs = byName(byId('relation_tbl'), 'tr');
   for(var i=0; i<trs.length; i++) {
+    if(trs[i].id == 'relation_tr_none')
+      continue;
     var rel = byName(byClass(trs[i], 'td', 'tc_rel')[0], 'select')[0];
     r[r.length] = [
       rel.options[rel.selectedIndex].value,                      // relation
@@ -1303,6 +1307,210 @@ function tglSerialize() {
 
 if(byId('taglinks'))
   tglLoad();
+
+
+
+
+/*  R E L E A S E  ->  V I S U A L   N O V E L   L I N K I N G  (/r+/edit)  */
+
+function rvnLoad() {
+  var vns = byId('vn').value.split('|||');
+  for(var i=0; i<vns.length && vns[i].length>1; i++)
+    rvnAdd(vns[i].split(',',2)[0], vns[i].split(',',2)[1]);
+  rvnEmpty();
+
+  dsInit(byId('vn_input'), '/xml/vn.xml?q=',
+    function(item, tr) {
+      tr.appendChild(tag('td', {style:'text-align: right; padding-right: 5px'}, 'v'+item.getAttribute('id')));
+      tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40)));
+    }, function(item) {
+      return 'v'+item.getAttribute('id')+':'+item.firstChild.nodeValue;
+    },
+    rvnFormAdd
+  );
+  byId('vn_add').onclick = rvnFormAdd;
+}
+
+function rvnAdd(id, title) {
+  x('vn_tbl').appendChild(tag('tr', {id:'rvn_'+id, rvn_id:id},
+    tag('td', {'class':'tc_title'}, 'v'+id+':', tag('a', {href:'/v'+id}, shorten(title, 40))),
+    tag('td', {'class':'tc_rm'},    tag('a', {href:'#', onclick:rvnDel}, 'remove'))
+  ));
+  rvnStripe();
+  rvnEmpty();
+}
+
+function rvnDel() {
+  var tr = this;
+  while(tr.nodeName.toLowerCase() != 'tr')
+    tr = tr.parentNode;
+  tr.parentNode.removeChild(tr);
+  rvnEmpty();
+  rvnSerialize();
+  rvnStripe();
+  return false;
+}
+
+function rvnEmpty() {
+  var tbl = byId('vn_tbl');
+  if(byName(tbl, 'tr').length < 1)
+    tbl.appendChild(tag('tr', {id:'rvn_tr_none'}, tag('td', {colspan:2}, 'Nothing selected.')));
+  else if(byId('rvn_tr_none'))
+    tbl.removeChild(byId('rvn_tr_none'));
+}
+
+function rvnStripe() {
+  var l = byName(byId('vn_tbl'), 'tr');
+  for(var i=0; i<l.length; i++)
+    setClass(l[i], 'odd', i%2);
+}
+
+function rvnFormAdd() {
+  var txt = byId('vn_input');
+  var lnk = byId('vn_add');
+  var val = txt.value;
+
+  if(!val.match(/^v[0-9]+/)) {
+    alert('Visual novel textbox must start with an ID (e.g. v17)');
+    return false;
+  }
+
+  txt.disabled = true;
+  txt.value = 'loading...';
+  setText(lnk, 'loading...');
+
+  ajax('/xml/vn.xml?q='+encodeURIComponent(val), function(hr) {
+    txt.disabled = false;
+    txt.value = '';
+    setText(lnk, 'add');
+
+    var items = hr.responseXML.getElementsByTagName('item');
+    if(items.length < 1)
+      return alert('Visual novel not found!');
+
+    var id = items[0].getAttribute('id');
+    if(byId('rvn_'+id))
+      return alert('VN already selected!');
+
+    rvnAdd(id, items[0].firstChild.nodeValue);
+    rvnSerialize();
+  });
+  return false;
+}
+
+function rvnSerialize() {
+  var r = [];
+  var l = byName(byId('vn_tbl'), 'tr');
+  for(var i=0; i<l.length; i++)
+    if(l[i].rvn_id)
+      r[r.length] = l[i].rvn_id + ',' + getText(byName(byClass(l[i], 'td', 'tc_title')[0], 'a')[0]);
+  byId('vn').value = r.join('|||');
+}
+
+if(byId('jt_box_rel_vn'))
+  rvnLoad();
+
+
+
+
+/*  R E L E A S E  ->  P R O D U C E R   L I N K I N G  (/r+/edit)  */
+
+function rprLoad() {
+  var ps = byId('producers').value.split('|||');
+  for(var i=0; i<ps.length && ps[i].length>1; i++)
+    rprAdd(ps[i].split(',',2)[0], ps[i].split(',',2)[1]);
+  rprEmpty();
+
+  dsInit(byId('producer_input'), '/xml/producers.xml?q=',
+    function(item, tr) {
+      tr.appendChild(tag('td', {style:'text-align: right; padding-right: 5px'}, 'p'+item.getAttribute('id')));
+      tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40)));
+    }, function(item) {
+      return 'p'+item.getAttribute('id')+':'+item.firstChild.nodeValue;
+    },
+    rprFormAdd
+  );
+  byId('producer_add').onclick = rprFormAdd;
+}
+
+function rprAdd(id, name) {
+  x('producer_tbl').appendChild(tag('tr', {id:'rpr_'+id, rpr_id:id},
+    tag('td', {'class':'tc_name'}, 'p'+id+':', tag('a', {href:'/p'+id}, shorten(name, 40))),
+    tag('td', {'class':'tc_rm'},   tag('a', {href:'#', onclick:rprDel}, 'remove'))
+  ));
+  rprStripe();
+  rprEmpty();
+}
+
+function rprDel() {
+  var tr = this;
+  while(tr.nodeName.toLowerCase() != 'tr')
+    tr = tr.parentNode;
+  tr.parentNode.removeChild(tr);
+  rprEmpty();
+  rprSerialize();
+  rprStripe();
+  return false;
+}
+
+function rprEmpty() {
+  var tbl = byId('producer_tbl');
+  if(byName(tbl, 'tr').length < 1)
+    tbl.appendChild(tag('tr', {id:'rpr_tr_none'}, tag('td', {colspan:2}, 'Nothing selected.')));
+  else if(byId('rpr_tr_none'))
+    tbl.removeChild(byId('rpr_tr_none'));
+}
+
+function rprStripe() {
+  var l = byName(byId('producer_tbl'), 'tr');
+  for(var i=0; i<l.length; i++)
+    setClass(l[i], 'odd', i%2);
+}
+
+function rprFormAdd() {
+  var txt = byId('producer_input');
+  var lnk = byId('producer_add');
+  var val = txt.value;
+
+  if(!val.match(/^p[0-9]+/)) {
+    alert('Producer textbox must start with an ID (e.g. p17)');
+    return false;
+  }
+
+  txt.disabled = true;
+  txt.value = 'loading...';
+  setText(lnk, 'loading...');
+
+  ajax('/xml/producers.xml?q='+encodeURIComponent(val), function(hr) {
+    txt.disabled = false;
+    txt.value = '';
+    setText(lnk, 'add');
+
+    var items = hr.responseXML.getElementsByTagName('item');
+    if(items.length < 1)
+      return alert('Producer not found!');
+
+    var id = items[0].getAttribute('id');
+    if(byId('rpr_'+id))
+      return alert('Producer already selected!');
+
+    rprAdd(id, items[0].firstChild.nodeValue);
+    rprSerialize();
+  });
+  return false;
+}
+
+function rprSerialize() {
+  var r = [];
+  var l = byName(byId('producer_tbl'), 'tr');
+  for(var i=0; i<l.length; i++)
+    if(l[i].rpr_id)
+      r[r.length] = l[i].rpr_id + ',' + getText(byName(byClass(l[i], 'td', 'tc_name')[0], 'a')[0]);
+  byId('producers').value = r.join('|||');
+}
+
+if(byId('jt_box_rel_prod'))
+  rprLoad();
 
 
 

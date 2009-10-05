@@ -97,7 +97,7 @@ sub edit {
   $frm->{editsum} = sprintf 'Reverted to revision v%d.%d', $vid, $rev if $rev && !defined $frm->{editsum};
 
   my $title = $vid ? mt('_vnedit_title_edit', $v->{title}) : mt '_vnedit_title_add';
-  $self->htmlHeader(js => 'forms', title => $title, noindex => 1);
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
   $self->htmlEditMessage('v', $v, $title);
   _form($self, $v, $frm);

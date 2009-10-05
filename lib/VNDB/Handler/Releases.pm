@@ -370,7 +370,7 @@ sub edit {
   $frm->{original} = $v->{original} if !defined $frm->{original} && !$r;
 
   my $title = mt $rid ? ($copy ? '_redit_title_copy' : '_redit_title_edit', $r->{title}) : ('_redit_title_add', $v->{title});
-  $self->htmlHeader(js => 'forms', title => $title, noindex => 1);
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('r', $r, $copy ? 'copy' : 'edit') if $rid;
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
   $self->htmlEditMessage('r', $r, $title, $copy);
@@ -446,12 +446,11 @@ sub _form {
     [ hidden => short => 'producers' ],
     [ static => nolabel => 1, content => sub {
       h2 mt('_redit_form_prod_sel');
-      div id => 'producerssel';
-      end;
+      table; tbody id => 'producer_tbl'; end; end;
       h2 mt('_redit_form_prod_add');
       div;
-       input type => 'text', class => 'text';
-       a href => '#', 'add';
+       input id => 'producer_input', type => 'text', class => 'text';
+       a id => 'producer_add', href => '#', 'add';
       end;
     }],
   ],
@@ -460,12 +459,11 @@ sub _form {
     [ hidden => short => 'vn' ],
     [ static => nolabel => 1, content => sub {
       h2 mt('_redit_form_vn_sel');
-      div id => 'vnsel';
-      end;
+      table; tbody id => 'vn_tbl'; end; end;
       h2 mt('_redit_form_vn_add');
       div;
-       input type => 'text', class => 'text';
-       a href => '#', 'add';
+       input id => 'vn_input', type => 'text', class => 'text';
+       a href => '#', id => 'vn_add', 'add';
       end;
     }],
   ],

@@ -10,11 +10,10 @@ use VNDB::Func;
 our @EXPORT = qw|htmlHeader htmlFooter|;
 
 
-sub htmlHeader { # %options->{ title, js, noindex, search }
+sub htmlHeader { # %options->{ title, noindex, search }
   my($self, %o) = @_;
   my $skin = $self->reqParam('skin') || $self->authInfo->{skin} || $self->{skin_default};
   $skin = $self->{skin_default} if !$self->{skins}{$skin} || !-d "$VNDB::ROOT/static/s/$skin";
-  $self->{js} = $o{js}; # save for use in htmlFooter
 
   # heading
   html;
@@ -159,7 +158,6 @@ sub htmlFooter {
      end;
     end; # /div maincontent
     script type => 'text/javascript', src => $self->{url_static}.'/f/script.js?'.$self->{version}, '';
-    script type => 'text/javascript', src => $self->{url_static}.'/f/forms.js?'.$self->{version}, '' if $self->{js};
    end; # /body
   end; # /html
 

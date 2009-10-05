@@ -866,13 +866,11 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 #media_div { padding-left: 20px; }
 #media_div span { display: block }
 
-#jt_box_rel_vn h2,       #jt_box_rel_prod h2 { clear: left; padding-top: 10px; }
-#jt_box_rel_vn div,      #jt_box_rel_prod div { padding-left: 20px }
-#jt_box_rel_vn input,    #jt_box_rel_prod input { margin-right: 10px; width: 300px }
-#jt_box_rel_vn span,     #jt_box_rel_prod span { clear: left; display: block; padding: 2px; }
-#jt_box_rel_vn span.odd, #jt_box_rel_prod span.odd { background: url($_boxbg$) repeat; }
-#jt_box_rel_vn i,        #jt_box_rel_prod i { font-style: normal; display: block; float: left; width: 310px }
-#jt_box_rel_vn b,        #jt_box_rel_prod b { font-weight: normal; }
+#jt_box_rel_vn h2,        #jt_box_rel_prod h2       { clear: left; padding-top: 10px; }
+#jt_box_rel_vn div,       #jt_box_rel_vn table,
+#jt_box_rel_prod div,     #jt_box_rel_prod table    { margin-left: 20px }
+#jt_box_rel_vn input,     #jt_box_rel_prod input    { margin-right: 10px; width: 300px }
+#jt_box_rel_vn .tc_title, #jt_box_rel_prod .tc_name { width: 310px; padding: 2px }
 
 
 
