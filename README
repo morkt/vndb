@@ -52,6 +52,9 @@ Requirements
     Image::Magick
     CSS::Minifier::XS    (optional, minimizes CSS output)
 
+  util/jsgen.pl
+    JavaScript::Minifier::XS (optional, minimizes JS output)
+
 
 Contact
 
