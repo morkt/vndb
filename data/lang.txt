@@ -1942,6 +1942,30 @@ ru : Выбранные компании
 en : Add producer
 ru : Добавить компанию
 
+:_redit_form_prod_addbut
+en : add
+ru*:
+
+:_redit_form_prod_remove
+en : remove
+ru*:
+
+:_redit_form_prod_none
+en : Nothing selected.
+ru*:
+
+:_redit_form_prod_pformat
+en : Producer textbox must start with an ID (e.g. p17)
+ru*:
+
+:_redit_form_prod_notfound
+en : Producer not found!
+ru*:
+
+:_redit_form_prod_double
+en : Producer already selected!
+ru*:
+
 :_redit_form_vn
 en : Visual novels
 ru : Новеллы
@@ -1953,6 +1977,30 @@ ru : Выбранные новеллы
 :_redit_form_vn_add
 en : Add visual novel
 ru : Добавить новеллу
+
+:_redit_form_vn_addbut
+en : add
+ru*:
+
+:_redit_form_vn_remove
+en : remove
+ru*:
+
+:_redit_form_vn_none
+en : Nothing selected.
+ru*:
+
+:_redit_form_vn_vnformat
+en : Visual novel textbox must start with an ID (e.g. v17)
+ru*:
+
+:_redit_form_vn_notfound
+en : Visual novel not found!
+ru*:
+
+:_redit_form_vn_double
+en : VN already selected!
+ru*:
 
 
 # Release browser
@@ -2388,6 +2436,34 @@ en : Check the [url,/g,tag list] to browse all available tags.[br]
      Can't find what you're looking for? [url,/g/new,Request a new tag].
 ru : Откройте [url,/g,список тегов] чтобы увидеть все доступные теги.[br]
      Не нашли что искали? Вы можете [url,/g/new,запросить новый тег].
+
+:_tagv_spoil0
+en : neutral
+ru*:
+
+:_tagv_spoil1
+en : no spoiler
+ru*:
+
+:_tagv_spoil2
+en : minor spoiler
+ru*:
+
+:_tagv_spoil3
+en : major spoiler
+ru*:
+
+:_tagv_notfound
+en : Item not found!
+ru*:
+
+:_tagv_nometa
+en : Can't use meta tags here!
+ru*:
+
+:_tagv_double
+en : Tag is already present!
+ru*:
 
 
 # User tag list (/u+/tags)

@@ -1159,9 +1159,12 @@ if(x('jt_box_vn_scr'))
 
 /*  V I S U A L   N O V E L   T A G   L I N K I N G  (/v+/tagmod)  */
 
-var tglSpoilers = [ 'neutral', 'no spoiler', 'minor spoiler', 'major spoiler' ];
+var tglSpoilers = [];
 
 function tglLoad() {
+  for(var i=0; i<=3; i++)
+    tglSpoilers[i] = mt('_tagv_spoil'+i);
+
   // tag dropdown search
   dsInit(byId('tagmod_tag'), '/xml/tags.xml?q=', function(item, tr) {
     tr.appendChild(tag('td',
@@ -1261,18 +1264,18 @@ function tglAdd() {
   ajax('/xml/tags.xml?q=name:'+encodeURIComponent(tg.value), function(hr) {
     tg.disabled = add.disabled = false;
     tg.value = '';
-    add.value = 'Add tag';
+    add.value = mt('_tagv_add');
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
-      return alert('Item not found!');
+      return alert(mt('_tagv_notfound'));
     if(items[0].getAttribute('meta') == 'yes')
-      return alert('Can\'t use meta tags here!');
+      return alert(mt('_tagv_nometa'));
 
     var name = items[0].firstChild.nodeValue;
     var id = items[0].getAttribute('id');
     if(byId('tgl_'+id))
-      return alert('Tag is already present!');
+      return alert(mt('_tagv_double'));
 
     var vote = tag('td', {'class':'tc_myvote', tgl_vote: 2}, '');
     tglVoteBar(vote);
@@ -1341,7 +1344,7 @@ function rvnLoad() {
 function rvnAdd(id, title) {
   x('vn_tbl').appendChild(tag('tr', {id:'rvn_'+id, rvn_id:id},
     tag('td', {'class':'tc_title'}, 'v'+id+':', tag('a', {href:'/v'+id}, shorten(title, 40))),
-    tag('td', {'class':'tc_rm'},    tag('a', {href:'#', onclick:rvnDel}, 'remove'))
+    tag('td', {'class':'tc_rm'},    tag('a', {href:'#', onclick:rvnDel}, mt('_redit_form_vn_remove')))
   ));
   rvnStripe();
   rvnEmpty();
@@ -1361,7 +1364,7 @@ function rvnDel() {
 function rvnEmpty() {
   var tbl = byId('vn_tbl');
   if(byName(tbl, 'tr').length < 1)
-    tbl.appendChild(tag('tr', {id:'rvn_tr_none'}, tag('td', {colspan:2}, 'Nothing selected.')));
+    tbl.appendChild(tag('tr', {id:'rvn_tr_none'}, tag('td', {colspan:2}, mt('_redit_form_vn_none'))));
   else if(byId('rvn_tr_none'))
     tbl.removeChild(byId('rvn_tr_none'));
 }
@@ -1378,7 +1381,7 @@ function rvnFormAdd() {
   var val = txt.value;
 
   if(!val.match(/^v[0-9]+/)) {
-    alert('Visual novel textbox must start with an ID (e.g. v17)');
+    alert(mt('_redit_form_vn_vnformat'));
     return false;
   }
 
@@ -1389,15 +1392,15 @@ function rvnFormAdd() {
   ajax('/xml/vn.xml?q='+encodeURIComponent(val), function(hr) {
     txt.disabled = false;
     txt.value = '';
-    setText(lnk, 'add');
+    setText(lnk, mt('_redit_form_vn_addbut'));
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
-      return alert('Visual novel not found!');
+      return alert(mt('_redit_form_vn_notfound'));
 
     var id = items[0].getAttribute('id');
     if(byId('rvn_'+id))
-      return alert('VN already selected!');
+      return alert(mt('_redit_form_vn_double'));
 
     rvnAdd(id, items[0].firstChild.nodeValue);
     rvnSerialize();
@@ -1443,7 +1446,7 @@ function rprLoad() {
 function rprAdd(id, name) {
   x('producer_tbl').appendChild(tag('tr', {id:'rpr_'+id, rpr_id:id},
     tag('td', {'class':'tc_name'}, 'p'+id+':', tag('a', {href:'/p'+id}, shorten(name, 40))),
-    tag('td', {'class':'tc_rm'},   tag('a', {href:'#', onclick:rprDel}, 'remove'))
+    tag('td', {'class':'tc_rm'},   tag('a', {href:'#', onclick:rprDel}, mt('_redit_form_prod_remove')))
   ));
   rprStripe();
   rprEmpty();
@@ -1463,7 +1466,7 @@ function rprDel() {
 function rprEmpty() {
   var tbl = byId('producer_tbl');
   if(byName(tbl, 'tr').length < 1)
-    tbl.appendChild(tag('tr', {id:'rpr_tr_none'}, tag('td', {colspan:2}, 'Nothing selected.')));
+    tbl.appendChild(tag('tr', {id:'rpr_tr_none'}, tag('td', {colspan:2}, mt('_redit_form_prod_none'))));
   else if(byId('rpr_tr_none'))
     tbl.removeChild(byId('rpr_tr_none'));
 }
@@ -1480,7 +1483,7 @@ function rprFormAdd() {
   var val = txt.value;
 
   if(!val.match(/^p[0-9]+/)) {
-    alert('Producer textbox must start with an ID (e.g. p17)');
+    alert(mt('_redit_form_prod_pformat'));
     return false;
   }
 
@@ -1491,15 +1494,15 @@ function rprFormAdd() {
   ajax('/xml/producers.xml?q='+encodeURIComponent(val), function(hr) {
     txt.disabled = false;
     txt.value = '';
-    setText(lnk, 'add');
+    setText(lnk, mt('_redit_form_prod_addbut'));
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
-      return alert('Producer not found!');
+      return alert(mt('_redit_form_prod_notfound'));
 
     var id = items[0].getAttribute('id');
     if(byId('rpr_'+id))
-      return alert('Producer already selected!');
+      return alert(mt('_redit_form_prod_double'));
 
     rprAdd(id, items[0].firstChild.nodeValue);
     rprSerialize();

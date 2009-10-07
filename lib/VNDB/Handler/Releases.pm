@@ -445,7 +445,7 @@ sub _form {
       h2 mt('_redit_form_prod_add');
       div;
        input id => 'producer_input', type => 'text', class => 'text';
-       a id => 'producer_add', href => '#', 'add';
+       a id => 'producer_add', href => '#', mt '_redit_form_prod_addbut';
       end;
     }],
   ],
@@ -458,7 +458,7 @@ sub _form {
       h2 mt('_redit_form_vn_add');
       div;
        input id => 'vn_input', type => 'text', class => 'text';
-       a href => '#', id => 'vn_add', 'add';
+       a href => '#', id => 'vn_add', mt '_redit_form_vn_addbut';
       end;
     }],
   ],

@@ -29,7 +29,10 @@ my $jskeys = qr{^(?:
     _rlst_[vr]stat_.+|
     _vnedit_rel_(?:isa|of|addbut|del|none|findformat|novn|double)|
     _redit_form_med_.+|
-    _vnedit_scr_.+
+    _vnedit_scr_.+|
+    _tagv_(?:add|spoil\d|notfound|nometa|double)|
+    _redit_form_vn_(?:addbut|remove|none|vnformat|notfound|double)|
+    _redit_form_prod_(?:addbut|remove|none|pformat|notfound|double)
   )$}x;
 
 sub l10n {
