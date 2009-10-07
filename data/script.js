@@ -754,9 +754,9 @@ function vnrAdd(rel, vid, title) {
 
   byId('relation_tbl').appendChild(tag('tr', {id:'relation_tr_'+vid},
     tag('td', {'class':'tc_vn'   }, 'v'+vid+':', tag('a', {href:'/v'+vid}, shorten(title, 40))),
-    tag('td', {'class':'tc_rel'  }, 'is a ', sel, ' of'),
+    tag('td', {'class':'tc_rel'  }, mt('_vnedit_rel_isa')+' ', sel, ' '+mt('_vnedit_rel_of')),
     tag('td', {'class':'tc_title'}, shorten(byId('title').value, 40)),
-    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:vnrDel}, 'del'))
+    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:vnrDel}, mt('_vnedit_rel_del')))
   ));
 
   vnrEmpty();
@@ -765,7 +765,7 @@ function vnrAdd(rel, vid, title) {
 function vnrEmpty() {
   var tbl = byId('relation_tbl');
   if(byName(tbl, 'tr').length < 1)
-    tbl.appendChild(tag('tr', {id:'relation_tr_none'}, tag('td', {colspan:4}, 'No relations selected.')));
+    tbl.appendChild(tag('tr', {id:'relation_tr_none'}, tag('td', {colspan:4}, mt('_vnedit_rel_none'))));
   else if(byId('relation_tr_none'))
     tbl.removeChild(byId('relation_tr_none'));
 }
@@ -804,7 +804,7 @@ function vnrFormAdd() {
   var input = txt.value;
 
   if(!input.match(/^v[0-9]+/)) {
-    alert('Visual novel textbox must start with an ID (e.g. v17)');
+    alert('_vnedit_rel_findformat');
     return false;
   }
 
@@ -815,15 +815,15 @@ function vnrFormAdd() {
   ajax('/xml/vn.xml?q='+encodeURIComponent(input), function(hr) {
     txt.disabled = sel.disabled = false;
     txt.value = '';
-    setText(lnk, 'add');
+    setText(lnk, mt('_vnedit_rel_addbut'));
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
-      return alert('Visual novel not found!');
+      return alert(mt('_vnedit_rel_novn'));
 
     var id = items[0].getAttribute('id');
     if(byId('relation_tr_'+id))
-      return alert('This visual novel has already been selected!');
+      return alert(mt('_vnedit_rel_double'));
 
     vnrAdd(sel.selectedIndex, id, items[0].firstChild.nodeValue);
     sel.selectedIndex = 0;

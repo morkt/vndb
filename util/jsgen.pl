@@ -26,7 +26,8 @@ my $jskeys = qr{^(?:
     _js_.+|
     _menu_emptysearch|
     _vnpage_uopt_(?:10?vote|rel.+)|
-    _rlst_[vr]stat_.+
+    _rlst_[vr]stat_.+|
+    _vnedit_rel_(?:isa|of|addbut|del|none|findformat|novn|double)
   )$}x;
 
 sub l10n {

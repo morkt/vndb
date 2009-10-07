@@ -3076,6 +3076,40 @@ ru : Выбранные связи
 en : Add relation
 ru : Добавить связь
 
+# <title1> is a <relation> of <title2>
+# this trick doesn't even work very well in English, so just an approximation is fine
+:_vnedit_rel_isa
+en : is a
+ru*:
+
+:_vnedit_rel_of
+en : of
+ru*:
+
+:_vnedit_rel_addbut
+en : add
+ru*:
+
+:_vnedit_rel_del
+en : del
+ru*:
+
+:_vnedit_rel_none
+en : No relations selected.
+ru*:
+
+:_vnedit_rel_findformat
+en : Visual novel textbox must start with an ID (e.g. v17)
+ru*:
+
+:_vnedit_rel_novn
+en : Visual novel not found!
+ru*:
+
+:_vnedit_rel_double
+en : This visual novel has already been selected!
+ru*:
+
 :_vnedit_scr
 en : Screenshots
 ru : Скриншоты

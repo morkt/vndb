@@ -193,23 +193,22 @@ sub _form {
       end;
 
       h2 mt '_vnedit_rel_add';
-      # TODO: localize JS relartion selector
       table;
        Tr id => 'relation_new';
         td class => 'tc_vn';
          input type => 'text', class => 'text';
         end;
         td class => 'tc_rel';
-         txt ' is a ';
+         txt mt('_vnedit_rel_isa').' ';
          Select;
           option value => $_, mt "_vnrel_$_"
             for (sort { $self->{vn_relations}{$a}[0] <=> $self->{vn_relations}{$b}[0] } keys %{$self->{vn_relations}});
          end;
-         txt ' of';
+         txt ' '.mt '_vnedit_rel_of';
         end;
         td class => 'tc_title', $v ? $v->{title} : '';
         td class => 'tc_add';
-         a href => '#', 'add';
+         a href => '#', mt '_vnedit_rel_addbut';
         end;
        end;
       end;
