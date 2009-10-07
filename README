@@ -48,6 +48,10 @@ Requirements
       XML::Writer
       PerlIO::gzip
 
+  util/skingen.pl
+    Image::Magick
+    CSS::Minifier::XS    (optional, minimizes CSS output)
+
 
 Contact
 

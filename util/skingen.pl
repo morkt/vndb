@@ -5,8 +5,8 @@ package VNDB;
 use strict;
 use warnings;
 use Cwd 'abs_path';
-use Data::Dumper 'Dumper';
 use Image::Magick;
+eval { require CSS::Minifier::XS };
 
 
 our($ROOT, %O);
@@ -78,19 +78,12 @@ sub writeskin { # $obj
 
   # write the CSS
   open my $CSS, '<', "$ROOT/data/style.css" or die $!;
-  open my $SKIN, '>', "$ROOT/static/s/$o->{_name}/style.css" or die $!;
-  while((my $d = <$CSS>)) {
-    if($O{debug}) {
-      chomp $d;
-      $d =~ s/^\s*/ /;
-      $d =~ s{/\*.+\*/}{}; # NOTE: multiline comments or multiple comments per line won't work
-      next if $d !~ /[^\s\t]/;
-    }
-    $d =~ s/\$$_\$/$o->{$_}/g for (keys %$o);
-    print $SKIN $d;
-  }
-  close $SKIN;
+  my $css = join '', <$CSS>;
   close $CSS;
+  $css =~ s/\$$_\$/$o->{$_}/g for (keys %$o);
+  open my $SKIN, '>', "$ROOT/static/s/$o->{_name}/style.css" or die $!;
+  print $SKIN $CSS::Minifier::XS::VERSION ? CSS::Minifier::XS::minify($css) : $css;
+  close $SKIN;
 }
 
 
