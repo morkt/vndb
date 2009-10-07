@@ -54,9 +54,6 @@ function getCookie(n) {
   return null;
 }
 
-function x(y) { // deprecated
-  return document.getElementById(y)
-}
 function byId(n) {
   return document.getElementById(n)
 }
@@ -1151,7 +1148,7 @@ function scrSerialize() {
   byId('screenshots').value = r.join(' ');
 }
 
-if(x('jt_box_vn_scr'))
+if(byId('jt_box_vn_scr'))
   scrLoad();
 
 
@@ -1342,7 +1339,7 @@ function rvnLoad() {
 }
 
 function rvnAdd(id, title) {
-  x('vn_tbl').appendChild(tag('tr', {id:'rvn_'+id, rvn_id:id},
+  byId('vn_tbl').appendChild(tag('tr', {id:'rvn_'+id, rvn_id:id},
     tag('td', {'class':'tc_title'}, 'v'+id+':', tag('a', {href:'/v'+id}, shorten(title, 40))),
     tag('td', {'class':'tc_rm'},    tag('a', {href:'#', onclick:rvnDel}, mt('_redit_form_vn_remove')))
   ));
@@ -1444,7 +1441,7 @@ function rprLoad() {
 }
 
 function rprAdd(id, name) {
-  x('producer_tbl').appendChild(tag('tr', {id:'rpr_'+id, rpr_id:id},
+  byId('producer_tbl').appendChild(tag('tr', {id:'rpr_'+id, rpr_id:id},
     tag('td', {'class':'tc_name'}, 'p'+id+':', tag('a', {href:'/p'+id}, shorten(name, 40))),
     tag('td', {'class':'tc_rm'},   tag('a', {href:'#', onclick:rprDel}, mt('_redit_form_prod_remove')))
   ));
