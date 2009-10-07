@@ -100,6 +100,37 @@ ends with ']'. The following options are supported:
 # data/global.pl - used in many places
 
 
+# Age display
+
+:_age_years
+en : [_1] [quant,_1,year,years] ago
+ru : [_1] [quant,_1,год,года,лет] назад
+
+:_age_months
+en : [_1] [quant,_1,month,months] ago
+ru : [_1] [quant,_1,месяц,месяца,месяцев] назад
+
+:_age_weeks
+en : [_1] [quant,_1,week,weeks] ago
+ru : [_1] [quant,_1,неделя,недели,недель] назад
+
+:_age_days
+en : [_1] [quant,_1,day,days] ago
+ru : [_1] [quant,_1,день,дня,дней] назад
+
+:_age_hours
+en : [_1] [quant,_1,hour,hours] ago
+ru : [_1] [quant,_1,час,часа,часов] назад
+
+:_age_min
+en : [_1] min ago
+ru : [_1] [quant,_1,минута,минуты,минут] назад
+
+:_age_sec
+en : [_1] sec ago
+ru : [_1] [quant,_1,секунда,секунды,секунд] назад
+
+
 # user ranks
 
 :_urank_0

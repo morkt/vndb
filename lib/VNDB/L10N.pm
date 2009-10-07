@@ -58,8 +58,9 @@ use warnings;
   # Argument: unix timestamp
   # Returns: age
   sub age {
-    my $a = time-$_[1];
-    return sprintf '%d %s ago',
+    my($self, $time) = @_;
+    my $a = time-$time;
+    my @f =
       $a > 60*60*24*365*2       ? ( $a/60/60/24/365,      'years'  ) :
       $a > 60*60*24*(365/12)*2  ? ( $a/60/60/24/(365/12), 'months' ) :
       $a > 60*60*24*7*2         ? ( $a/60/60/24/7,        'weeks'  ) :
@@ -67,6 +68,7 @@ use warnings;
       $a > 60*60*2              ? ( $a/60/60,             'hours'  ) :
       $a > 60*2                 ? ( $a/60,                'min'    ) :
                                   ( $a,                   'sec'    );
+    return $self->maketext("_age_$f[1]", int $f[0]);
   }
 
   # argument: unix timestamp and optional format (compact/full)
@@ -135,23 +137,6 @@ use warnings;
     return $couple if ($num % 10) >= 2 && ($num % 10) <= 4 && !(($num % 100) >= 12 && ($num % 100) <= 14);
     return $lots;
   }
-
-  sub age {
-    my $self = shift;
-    my $a = time-shift;
-    use utf8;
-    my @l = (
-      $a > 60*60*24*365*2       ? ( $a/60/60/24/365,      'год',     'года',    'лет'     ) :
-      $a > 60*60*24*(365/12)*2  ? ( $a/60/60/24/(365/12), 'месяц',   'месяца',  'месяцев' ) :
-      $a > 60*60*24*7*2         ? ( $a/60/60/24/7,        'неделя',  'недели',  'недель'  ) :
-      $a > 60*60*24*2           ? ( $a/60/60/24,          'день',    'дня',     'дней'    ) :
-      $a > 60*60*2              ? ( $a/60/60,             'час',     'часа',    'часов'   ) :
-      $a > 60*2                 ? ( $a/60,                'минута',  'минуты',  'минут'   ) :
-                                  ( $a,                   'секунда', 'секунды', 'секунд'  )
-    );
-    return sprintf '%d %s назад', $l[0], $self->quant(@l);
-  }
-
 }
 
 
