@@ -272,7 +272,7 @@ b.future, b.standout {
   font-size: 11px;
   color: $maintext$;
 }
-#menulist h2 span {
+#menulist h2 #lang_select {
   float: right;
   padding-top: 1px;
 }
@@ -306,6 +306,7 @@ b.future, b.standout {
 #menulist #search input.submit {
   display: none;
 }
+#dd_box acronym { margin: 2px 5px 2px 0!important; }
 
 
 
@@ -697,8 +698,8 @@ a.addnew {
 #dd_box { position: absolute; left: -500px; border: 1px solid $border$; background-color: $secbg$; }
 #dd_box ul { list-style-type: none; margin: 0; padding: 0 }
 #dd_box li b { display: block; font-weight: normal; padding-left: 5px; }
-#dd_box li i { display: block; font-style: normal; padding-left: 10px; }
-#dd_box li a { display: block; padding-left: 10px; color: $link$; border: 0; }
+#dd_box li i { display: block; font-style: normal; padding-left: 10px; padding-right: 5px }
+#dd_box li a { display: block; padding-left: 10px; color: $link$; border: 0; padding-right: 5px }
 #dd_box li a:hover { background: url($_boxbg$) repeat }
 #dd_box .vrdd { width: 180px; }
 #dd_box .vrdd ul { float: left; width: 90px; }

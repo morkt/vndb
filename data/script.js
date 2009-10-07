@@ -344,6 +344,8 @@ function ddRefresh() {
     ddx -= box.offsetWidth;
   if(lnk.dd_align == 'tagmod')
     ddx += lnk.offsetWidth-35;
+  if(lnk.dd_align == 'bottom')
+    ddy += lnk.offsetHeight;
   box.style.left = ddx+'px';
   box.style.top = ddy+'px';
   return true;
@@ -1749,6 +1751,20 @@ if(byId('advselect') && byId('ti')) {
   dsInit(byId('te'), '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
 }
 
+// Language selector
+if(byId('lang_select'))
+  ddInit(byId('lang_select'), 'bottom', function(lnk) {
+    var lst = tag('ul', null);
+    for(var i=0; i<L10N_LANG.length; i++) {
+      var ln = L10N_LANG[i];
+      var icon = tag('acronym', {'class':'icons lang '+ln}, ' ');
+      lst.appendChild(tag('li', {'class':'lang_selector'}, mt_curlang == ln
+        ? tag('i', icon, mt('_lang_'+ln))
+        : tag('a', {href:'?l10n='+ln}, icon, L10N_STR['_lang_'+ln][ln])
+      ));
+    }
+    return lst;
+  });
 
 // spam protection on all forms
 setTimeout(function() {

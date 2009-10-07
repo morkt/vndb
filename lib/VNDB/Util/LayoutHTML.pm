@@ -49,12 +49,8 @@ sub _menu {
 
    div class => 'menubox';
     h2;
-     span;
-      for (grep $self->{l10n}->language_tag() ne $_, $self->{l10n}->languages()) {
-        a href => "?l10n=$_";
-         cssicon "lang $_", mt "_lang_$_"; # NOTE: should actually be in the destination language...
-        end;
-      }
+     a href => "#", id => 'lang_select';
+      cssicon "lang ".$self->{l10n}->language_tag(), mt "_lang_".$self->{l10n}->language_tag();
      end;
      txt mt '_menu';
     end;

@@ -22,7 +22,9 @@ use LangFile;
 use VNDB::L10N;
 
 
+my $jskeys_lang = join '|', VNDB::L10N::languages();
 my $jskeys = qr{^(?:
+    _lang_(?:$jskeys_lang)|
     _js_.+|
     _menu_emptysearch|
     _vnpage_uopt_(?:10?vote|rel.+)|
@@ -64,7 +66,7 @@ sub l10n {
       $val =~ s/"/\\"/g;
       $val =~ s/\n/\\n/g;
       $r[$#r] .= ',' if $cur == 2;
-      $lang = q{"$l->[0]"} if $lang =~ /^(?:as|do|if|in|is)$/; # reserved two-char words
+      $lang = qq{"$l->[0]"} if $lang =~ /^(?:as|do|if|in|is)$/; # reserved two-char words
       push @r, qq|    $lang: "$val"|;
       $cur = 2;
     }
