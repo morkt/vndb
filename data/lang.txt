@@ -3337,6 +3337,18 @@ ru : Добавить к списку
 en : remove from wishlist
 ru : убрать из списка
 
+:_vnpage_uopt_relrstat
+en : Release status
+ru*:
+
+:_vnpage_uopt_relvstat
+en : Play status
+ru*:
+
+:_vnpage_uopt_reldel
+en : Remove from VN list
+ru*:
+
 :_vnpage_rel
 en : Releases
 ru : Выпуски

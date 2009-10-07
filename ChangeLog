@@ -14,6 +14,7 @@ git - ?
 	  - Everything merged into one file.
 	  - Optionally minified (using JavaScript::Minifier::XS)
 	  - Language strings are translatable
+	  - Information is automatically synchronised with data/global.pl
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout

@@ -11,7 +11,6 @@ eval { require CSS::Minifier::XS };
 
 our($ROOT, %O);
 BEGIN { ($ROOT = abs_path $0) =~ s{/util/skingen\.pl$}{}; }
-require $ROOT.'/data/global.pl';
 
 
 if(@ARGV) {

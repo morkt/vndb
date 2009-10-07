@@ -98,7 +98,6 @@ our %S = (%S,
   voiced          => [ 0..4 ],
   animated        => [ 0..4 ],
   wishlist_status => [ 0..3 ],
-  # note: keep these synchronised in script.js
   rlst_rstat      => [ 0..4 ], # 2 = hardcoded 'OK', < 2 = hardcoded 'NOK'
   rlst_vstat      => [ 0..4 ], # 2 = hardcoded 'OK', 0 || 4 = hardcoded 'NOK'
 );

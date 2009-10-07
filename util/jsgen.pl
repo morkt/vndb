@@ -1,13 +1,16 @@
 #!/usr/bin/perl
 
+package VNDB;
+
 use strict;
 use warnings;
 use Encode 'encode_utf8';
 use Cwd 'abs_path';
 eval { require JavaScript::Minifier::XS; };
 
-our($ROOT, %O);
+our($ROOT, %S);
 BEGIN { ($ROOT = abs_path $0) =~ s{/util/jsgen\.pl$}{}; }
+require $ROOT.'/data/global.pl';
 
 use lib "$ROOT/lib";
 use lib "$ROOT/yawf/lib";
@@ -22,7 +25,7 @@ use VNDB::L10N;
 my $jskeys = qr{^(?:
     _js_.+|
     _menu_emptysearch|
-    _vnpage_uopt_10?vote|
+    _vnpage_uopt_(?:10?vote|rel.+)|
     _rlst_[vr]stat_.+
   )$}x;
 
@@ -70,7 +73,9 @@ sub l10n {
 sub jsgen {
   # JavaScript::Minifier::XS doesn't correctly handle perl's unicode,
   #  so just do everything in raw bytes instead.
-  my $js = encode_utf8(l10n()) . "\n\n";
+  my $js = encode_utf8(l10n()) . "\n";
+  $js .= sprintf "rlst_rstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_rstat}};
+  $js .= sprintf "rlst_vstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_vstat}};
   open my $JS, '<', "$ROOT/data/script.js" or die $!;
   $js .= join '', <$JS>;
   close $JS;

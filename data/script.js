@@ -352,40 +352,38 @@ function ddRefresh() {
 
 // release list dropdown on VN pages
 
-var rl_rstat = 4;
-var rl_vstat = 4;
 function rlDropDown(lnk) {
   var relid = lnk.id.substr(6);
   var st = getText(lnk).split(' / ');
   if(st[0].indexOf(mt('_js_loading')) >= 0)
     return null;
 
-  var rs = tag('ul', tag('li', tag('b', 'Release status')));
-  var vs = tag('ul', tag('li', tag('b', 'Play status')));
-  for(var i=0; i<=rl_rstat; i++) {
-    var val = mt('_rlst_rstat_'+i);
+  var rs = tag('ul', tag('li', tag('b', mt('_vnpage_uopt_relrstat'))));
+  var vs = tag('ul', tag('li', tag('b', mt('_vnpage_uopt_relvstat'))));
+  for(var i=0; i<rlst_rstat.length; i++) {
+    var val = mt('_rlst_rstat_'+rlst_rstat[i]);
     if(st[0] && st[0].indexOf(val) >= 0)
       rs.appendChild(tag('li', tag('i', val)));
     else
-      rs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'r'+i, onclick:rlMod}, val)));
+      rs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'r'+rlst_rstat[i], onclick:rlMod}, val)));
   }
-  for(var i=0; i<=rl_vstat; i++) {
-    var val = mt('_rlst_vstat_'+i);
+  for(var i=0; i<rlst_vstat.length; i++) {
+    var val = mt('_rlst_vstat_'+rlst_vstat[i]);
     if(st[1] && st[1].indexOf(val) >= 0)
       vs.appendChild(tag('li', tag('i', val)));
     else
-      vs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'v'+i, onclick:rlMod}, val)));
+      vs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'v'+rlst_vstat[i], onclick:rlMod}, val)));
   }
 
   return tag('div', {'class':'vrdd'}, rs, vs, st[0] == '--' ? null :
-    tag('ul', {'class':'full'}, tag('li', tag('a', {href:'#', rl_rid: relid, rl_act:'del', onclick:rlMod}, 'Remove from VN List')))
+    tag('ul', {'class':'full'}, tag('li', tag('a', {href:'#', rl_rid: relid, rl_act:'del', onclick:rlMod}, mt('_vnpage_uopt_reldel'))))
   );
 }
 
 function rlMod() {
   var lnk = byId('rlsel_'+this.rl_rid);
   ddHide();
-  setContent(lnk, tag('b', {'class': 'patch'}, mt('_js_loading')));
+  setContent(lnk, tag('b', {'class': 'grayedout'}, mt('_js_loading')));
   ajax('/xml/rlist.xml?id='+this.rl_rid+';e='+this.rl_act, function(hr) {
     // TODO: get rid of innerHTML here...
     lnk.innerHTML = hr.responseXML.getElementsByTagName('rlist')[0].firstChild.nodeValue;
