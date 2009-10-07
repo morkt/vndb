@@ -352,27 +352,29 @@ function ddRefresh() {
 
 // release list dropdown on VN pages
 
-var rstat = [ 'Unknown', 'Pending', 'Obtained', 'On loan', 'Deleted' ];
-var vstat = [ 'Unknown', 'Playing', 'Finished', 'Stalled', 'Dropped' ];
+var rl_rstat = 4;
+var rl_vstat = 4;
 function rlDropDown(lnk) {
   var relid = lnk.id.substr(6);
   var st = getText(lnk).split(' / ');
-  if(st[0].indexOf('loading') >= 0)
+  if(st[0].indexOf(mt('_js_loading')) >= 0)
     return null;
 
   var rs = tag('ul', tag('li', tag('b', 'Release status')));
   var vs = tag('ul', tag('li', tag('b', 'Play status')));
-  for(var i=0;i<rstat.length;i++) {
-    if(st[0] && st[0].indexOf(rstat[i]) >= 0)
-      rs.appendChild(tag('li', tag('i', rstat[i])));
+  for(var i=0; i<=rl_rstat; i++) {
+    var val = mt('_rlst_rstat_'+i);
+    if(st[0] && st[0].indexOf(val) >= 0)
+      rs.appendChild(tag('li', tag('i', val)));
     else
-      rs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'r'+i, onclick:rlMod}, rstat[i])));
+      rs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'r'+i, onclick:rlMod}, val)));
   }
-  for(var i=0;i<vstat.length;i++) {
-    if(st[0] && st[0].indexOf(vstat[i]) >= 0)
-      vs.appendChild(tag('li', tag('i', vstat[i])));
+  for(var i=0; i<=rl_vstat; i++) {
+    var val = mt('_rlst_vstat_'+i);
+    if(st[1] && st[1].indexOf(val) >= 0)
+      vs.appendChild(tag('li', tag('i', val)));
     else
-      vs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'v'+i, onclick:rlMod}, vstat[i])));
+      vs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'v'+i, onclick:rlMod}, val)));
   }
 
   return tag('div', {'class':'vrdd'}, rs, vs, st[0] == '--' ? null :
@@ -383,7 +385,7 @@ function rlDropDown(lnk) {
 function rlMod() {
   var lnk = byId('rlsel_'+this.rl_rid);
   ddHide();
-  setContent(lnk, tag('b', {'class': 'patch'}, mt('js_loading')));
+  setContent(lnk, tag('b', {'class': 'patch'}, mt('_js_loading')));
   ajax('/xml/rlist.xml?id='+this.rl_rid+';e='+this.rl_act, function(hr) {
     // TODO: get rid of innerHTML here...
     lnk.innerHTML = hr.responseXML.getElementsByTagName('rlist')[0].firstChild.nodeValue;

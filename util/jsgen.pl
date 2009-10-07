@@ -22,7 +22,8 @@ use VNDB::L10N;
 my $jskeys = qr{^(?:
     _js_.+|
     _menu_emptysearch|
-    _vnpage_uopt_10?vote
+    _vnpage_uopt_10?vote|
+    _rlst_[vr]stat_.+
   )$}x;
 
 sub l10n {

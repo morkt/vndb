@@ -588,6 +588,49 @@ en : Very long[index,_1,, (> 50 hours), (Clannad)]
 ru : Очень длинная[index,_1,, (> 50 часов), (Clannad)]
 
 
+# VN list statuses
+
+:_rlst_rstat_0
+en : Unknown
+ru*:
+
+:_rlst_rstat_1
+en : Pending
+ru*:
+
+:_rlst_rstat_2
+en : Obtained
+ru*:
+
+:_rlst_rstat_3
+en : On loan
+ru*:
+
+:_rlst_rstat_4
+en : Deleted
+ru*:
+
+:_rlst_vstat_0
+en : Unknown
+ru*:
+
+:_rlst_vstat_1
+en : Playing
+ru*:
+
+:_rlst_vstat_2
+en : Finished
+ru*:
+
+:_rlst_vstat_3
+en : Stalled
+ru*:
+
+:_rlst_vstat_4
+en : Dropped
+ru*:
+
+
 # Form messages
 
 :_formerr_e_login_failed

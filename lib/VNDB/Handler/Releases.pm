@@ -241,14 +241,14 @@ sub _infotable {
       td;
        Select id => 'listsel', name => 'listsel';
         option mt !$rl ? '_relinfo_user_notlist' :
-          ('_relinfo_user_inlist', $self->{vn_rstat}[$rl->{rstat}], $self->{vn_vstat}[$rl->{vstat}]);
+          ('_relinfo_user_inlist', mt('_rlst_rstat_'.$rl->{rstat}), mt('_rlst_vstat_'.$rl->{vstat}));
         optgroup label => mt '_relinfo_user_setr';
-         option value => "r$_", $self->{vn_rstat}[$_]
-           for (0..$#{$self->{vn_rstat}});
+         option value => "r$_", mt '_rlst_rstat_'.$_
+           for (@{$self->{rlst_rstat}});
         end;
         optgroup label => mt '_relinfo_user_setv';
-         option value => "v$_", $self->{vn_vstat}[$_]
-           for (0..$#{$self->{vn_vstat}});
+         option value => "v$_", mt '_rlst_vstat_'.$_
+           for (@{$self->{rlst_vstat}});
         end;
         option value => 'del', mt '_relinfo_user_del' if $rl;
        end;

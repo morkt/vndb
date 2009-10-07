@@ -99,20 +99,8 @@ our %S = (%S,
   animated        => [ 0..4 ],
   wishlist_status => [ 0..3 ],
   # note: keep these synchronised in script.js
-  vn_rstat        => [
-    'Unknown',
-    'Pending',
-    'Obtained', # hardcoded
-    'On loan',
-    'Deleted',
-  ],
-  vn_vstat        => [
-    'Unknown',
-    'Playing',
-    'Finished', # hardcoded
-    'Stalled',
-    'Dropped',
-  ],
+  rlst_rstat      => [ 0..4 ], # 2 = hardcoded 'OK', < 2 = hardcoded 'NOK'
+  rlst_vstat      => [ 0..4 ], # 2 = hardcoded 'OK', 0 || 4 = hardcoded 'NOK'
 );
 
 

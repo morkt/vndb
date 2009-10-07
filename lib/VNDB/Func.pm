@@ -149,10 +149,10 @@ sub gtintype {
 sub liststat {
   my $l = shift;
   return '' if !$l;
-  my $rs = $YAWF::OBJ->{vn_rstat}[$l->{rstat}];
+  my $rs = mt('_rlst_rstat_'.$l->{rstat});
   $rs = qq|<b class="done">$rs</b>| if $l->{rstat} == 2; # Obtained
   $rs = qq|<b class="todo">$rs</b>| if $l->{rstat} < 2; # Unknown/pending
-  my $vs = $YAWF::OBJ->{vn_vstat}[$l->{vstat}];
+  my $vs = mt('_rlst_vstat_'.$l->{vstat});
   $vs = qq|<b class="done">$vs</b>| if $l->{vstat} == 2; # Finished
   $vs = qq|<b class="todo">$vs</b>| if $l->{vstat} == 0 || $l->{vstat} == 4; # Unknown/dropped
   return "$rs / $vs";
