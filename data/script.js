@@ -158,6 +158,22 @@ function shorten(v, l) {
   return v.length > l ? v.substr(0, l-3)+'...' : v;
 }
 
+/* maketext function, less powerful than the Perl equivalent (only supports [_n] and ~[~])
+ * assumes that a TL structure called 'L10N_STR' is defined in the header of this file */
+var mt_curlang = getCookie('l10n') || 'en';
+function mt() {
+  var key = arguments[0];
+  var val = L10N_STR[key][mt_curlang] || L10N_STR[key].en || key;
+  for(var i=1; i<arguments.length; i++) {
+    var expr = '[_'+i+']';
+    while(val.substr(expr) >= 0)
+      val = val.replace(expr, arguments[i]);
+  }
+  while(val.substr('~[') >= 0 || val.substr('~]') >= 0)
+    val = val.replace('~[', '[').replace('~]', ']');
+  return val;
+}
+
 
 
 
@@ -1521,14 +1537,14 @@ if(byId('jt_box_rel_prod'))
 {
   var i = byId('sq');
   i.onfocus = function () {
-    if(this.value == 'search') {
+    if(this.value == mt('_menu_emptysearch')) {
       this.value = '';
       this.style.fontStyle = 'normal'
     }
   };
   i.onblur = function () {
     if(this.value.length < 1) {
-      this.value = 'search';
+      this.value = mt('_menu_emptysearch');
       this.style.fontStyle = 'italic'
     }
   };
