@@ -120,8 +120,9 @@ sub readskins {
 
 sub checkjs {
   my $script = "$ROOT/static/f/script.js";
+  my $lastmod = [stat $script]->[9];
   system "$ROOT/util/jsgen.pl" if
        (!-e $script && -x "$ROOT/static/f")
-    || (-e $script && -w $script && [stat $script]->[9] < [stat "$ROOT/data/script.js"]->[9]);
+    || (-e $script && -w $script && $lastmod < [stat "$ROOT/data/script.js"]->[9] || $lastmod < [stat "$ROOT/data/lang.txt"]->[9]);
 }
 

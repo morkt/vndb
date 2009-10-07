@@ -19,8 +19,11 @@ use LangFile;
 use VNDB::L10N;
 
 
-my $jskeys = qr{^_menu_emptysearch$};
-
+my $jskeys = qr{^(?:
+    _js_.+|
+    _menu_emptysearch|
+    _vnpage_uopt_10?vote
+  )$}x;
 
 sub l10n {
   # Using JSON::XS or something may be shorter and less error prone,
@@ -47,6 +50,7 @@ sub l10n {
     $lang{$l->[0]} = 1 if $type eq 'tl';
     if($type eq 'tl' && $cur) {
       my($lang, $sync, $val) = @$l;
+      next if !$val;
       $val =~ s/"/\\"/g;
       $val =~ s/\n/\\n/g;
       $r[$#r] .= ',' if $cur == 2;

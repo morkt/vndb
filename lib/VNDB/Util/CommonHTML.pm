@@ -501,7 +501,7 @@ sub htmlHistory {
       sub { td colspan => 2, class => 'tc1', mt '_hist_col_rev' },
       [ mt '_hist_col_date' ],
       [ mt '_hist_col_user' ],
-      sub { td; a href => '#', id => 'expandlist', 'expand'; txt mt '_hist_col_page'; end; }
+      sub { td; a href => '#', id => 'expandlist', mt '_js_expand'; txt mt '_hist_col_page'; end; }
     ],
     row      => sub {
       my($s, $n, $i) = @_;

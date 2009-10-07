@@ -695,6 +695,57 @@ en : Submit
 ru : Отправить
 
 
+# Common javascript strings
+
+:_js_expand
+en : expand
+ru*:
+
+:_js_collapse
+en : collapse
+ru*:
+
+:_js_loading
+en : Loading...
+ru*:
+
+:_js_date_year
+en : -year-
+ru*:
+
+:_js_date_month
+en : -month-
+ru*:
+
+:_js_date_day
+en : -day-
+ru*:
+
+:_js_ds_noresults
+en : No results...
+ru*:
+
+:_js_iv_close
+en : close
+ru*:
+
+:_js_iv_prev
+en : previous
+ru*:
+
+:_js_iv_next
+en : next
+ru*:
+
+:_js_ds_tag_meta
+en : meta
+ru*:
+
+:_js_ds_tag_mod
+en : awaiting moderation
+ru*:
+
+
 
 
 #############################################################################
@@ -3212,6 +3263,16 @@ ru : Голосовать
 :_vnpage_uopt_delvote
 en : revoke
 ru : снять голос
+
+:_vnpage_uopt_1vote
+en : You are about to give this visual novel a 1 out of 10. This is a rather extreme rating, meaning this game has absolutely nothing to offer, and that it's the worst game you have ever played.
+     Are you really sure this visual novel matches that description?
+ru*:
+
+:_vnpage_uopt_10vote
+en : You are about to give this visual novel a 10 out of 10. This is a rather extreme rating, meaning this is one of the best visual novels you've ever played and it's unlikely that any other game could ever be better than this one.
+     It is generally a bad idea to have more than three games in your vote list with this rating, choose carefully!
+ru*:
 
 :_vnpage_uopt_wishlisted
 en : wishlist: [_1]

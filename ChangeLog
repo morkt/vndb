@@ -12,6 +12,8 @@ git - ?
 	    'XHTML compliant' in the future (currently still has some issues here).
 	  - Improved spoiler selection on /v+/tagmod
 	  - Everything merged into one file.
+	  - Optionally minified (using JavaScript::Minifier::XS)
+	  - Language strings are translatable
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout

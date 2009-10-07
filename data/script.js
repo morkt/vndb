@@ -163,7 +163,7 @@ function shorten(v, l) {
 var mt_curlang = getCookie('l10n') || 'en';
 function mt() {
   var key = arguments[0];
-  var val = L10N_STR[key][mt_curlang] || L10N_STR[key].en || key;
+  var val = L10N_STR[key] ? L10N_STR[key][mt_curlang] || L10N_STR[key].en : key;
   for(var i=1; i<arguments.length; i++) {
     var expr = '[_'+i+']';
     while(val.substr(expr) >= 0)
@@ -192,11 +192,11 @@ function ivInit() {
       tag('b', {id:'ivimg'}, ''),
       tag('br', null),
       tag('a', {href:'#', id:'ivfull'}, ''),
-      tag('a', {href:'#', onclick: ivClose, id:'ivclose'}, 'close'),
-      tag('a', {href:'#', onclick: ivView, id:'ivprev'}, '« previous'),
-      tag('a', {href:'#', onclick: ivView, id:'ivnext'}, 'next »')
+      tag('a', {href:'#', onclick: ivClose, id:'ivclose'}, mt('_js_iv_close')),
+      tag('a', {href:'#', onclick: ivView, id:'ivprev'}, '« '+mt('_js_iv_prev')),
+      tag('a', {href:'#', onclick: ivView, id:'ivnext'}, mt('_js_iv_next')+' »')
     ));
-    addBody(tag('b', {id:'ivimgload'}, 'Loading...'));
+    addBody(tag('b', {id:'ivimgload'}, mt('_js_loading')));
   }
 }
 
@@ -383,7 +383,7 @@ function rlDropDown(lnk) {
 function rlMod() {
   var lnk = byId('rlsel_'+this.rl_rid);
   ddHide();
-  setContent(lnk, tag('b', {'class': 'patch'}, 'loading...'));
+  setContent(lnk, tag('b', {'class': 'patch'}, mt('js_loading')));
   ajax('/xml/rlist.xml?id='+this.rl_rid+';e='+this.rl_act, function(hr) {
     // TODO: get rid of innerHTML here...
     lnk.innerHTML = hr.responseXML.getElementsByTagName('rlist')[0].firstChild.nodeValue;
@@ -509,22 +509,20 @@ tvsInit();
 
 /*  D A T E   I N P U T  */
 
-var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
 function dateLoad(obj) {
   var val = Math.floor(obj.value) || 0;
   val = [ Math.floor(val/10000), Math.floor(val/100)%100, val%100 ];
 
-  var year = tag('select', {style: 'width: 70px', onchange: dateSerialize}, tag('option', {value:0}, '-year-'));
+  var year = tag('select', {style: 'width: 70px', onchange: dateSerialize}, tag('option', {value:0}, mt('_js_date_year')));
   for(var i=1980; i<=(new Date()).getFullYear()+5; i++)
     year.appendChild(tag('option', {value: i, selected: i==val[0]}, i));
   year.appendChild(tag('option', {value: 9999, selected: val[0]==9999}, 'TBA'));
 
-  var month = tag('select', {style: 'width: 100px', onchange: dateSerialize}, tag('option', {value:99}, '-month-'));
+  var month = tag('select', {style: 'width: 70px', onchange: dateSerialize}, tag('option', {value:99}, mt('_js_date_month')));
   for(var i=1; i<=12; i++)
-    month.appendChild(tag('option', {value: i, selected: i==val[1]}, months[i-1]));
+    month.appendChild(tag('option', {value: i, selected: i==val[1]}, i));
 
-  var day = tag('select', {style: 'width: 70px', onchange: dateSerialize}, tag('option', {value:99}, '-day-'));
+  var day = tag('select', {style: 'width: 70px', onchange: dateSerialize}, tag('option', {value:99}, mt('_js_date_day')));
   for(var i=1; i<=31; i++)
     day.appendChild(tag('option', {value: i, selected: i==val[2]}, i));
 
@@ -565,7 +563,7 @@ function dsInit(obj, url, trfunc, serfunc, retfunc, parfunc) {
   obj.ds_selectedId = 0;
   obj.ds_dosearch = null;
   if(!byId('ds_box'))
-    addBody(tag('div', {id: 'ds_box', style: 'position: absolute; top: -500px'}, tag('b', 'Loading...')));
+    addBody(tag('div', {id: 'ds_box', style: 'position: absolute; top: -500px'}, tag('b', mt('_js_loading'))));
 }
 
 function dsKeyDown(ev) {
@@ -592,7 +590,7 @@ function dsKeyDown(ev) {
       obj.ds_returnFunc();
 
     byId('ds_box').style.top = '-500px';
-    setContent(byId('ds_box'), tag('b', 'Loading...'));
+    setContent(byId('ds_box'), tag('b', mt('_js_loading')));
     obj.ds_selectedId = 0;
     if(obj.ds_dosearch) {
       clearTimeout(obj.ds_dosearch);
@@ -652,7 +650,7 @@ function dsSearch(obj) {
   // hide the ds_box div
   if(val.length < 2) {
     box.style.top = '-500px';
-    setContent(box, tag('b', 'Loading...'));
+    setContent(box, tag('b', mt('_js_loading')));
     obj.ds_selectedId = 0;
     return;
   }
@@ -681,7 +679,7 @@ function dsResults(hr, obj) {
   var lst = hr.responseXML.getElementsByTagName('item');
   var box = byId('ds_box');
   if(lst.length < 1) {
-    setContent(box, tag('b', 'No results...'));
+    setContent(box, tag('b', mt('_js_ds_noresults')));
     obj.selectedId = 0;
     return;
   }
@@ -811,8 +809,8 @@ function vnrFormAdd() {
   }
 
   txt.disabled = sel.disabled = true;
-  txt.value = 'loading...';
-  setText(lnk, 'loading...');
+  txt.value = mt('_js_loading');
+  setText(lnk, mt('_js_loading'));
 
   ajax('/xml/vn.xml?q='+encodeURIComponent(input), function(hr) {
     txt.disabled = sel.disabled = false;
@@ -981,7 +979,7 @@ function scrAdd(id, nsfw, rel) {
   // tr.scr_status = 0: done, 1: uploading, 2: waiting for thumbnail, 3: deleted
 
   var tr = tag('tr', { id:'scr_tr_'+id, scr_id: id, scr_status: id?2:1, scr_rel: rel, scr_nsfw: nsfw},
-    tag('td', { 'class': 'thumb'}, 'loading...'),
+    tag('td', { 'class': 'thumb'}, mt('_js_loading')),
     tag('td',
       tag('b', id ? 'Fetching thumbnail...' : 'Uploading screenshot'),
       tag('br', null),
@@ -1175,8 +1173,8 @@ function tglLoad() {
   dsInit(byId('tagmod_tag'), '/xml/tags.xml?q=', function(item, tr) {
     tr.appendChild(tag('td',
       shorten(item.firstChild.nodeValue, 40),
-      item.getAttribute('meta') == 'yes' ? tag('b', {'class':'grayedout'}, ' meta') :
-      item.getAttribute('state') == 0    ? tag('b', {'class':'grayedout'}, ' awaiting moderation') : null
+      item.getAttribute('meta') == 'yes' ? tag('b', {'class':'grayedout'}, ' '+mt('_js_ds_tag_meta')) :
+      item.getAttribute('state') == 0    ? tag('b', {'class':'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
     ));
   }, function(item) {
     return item.firstChild.nodeValue;
@@ -1265,7 +1263,7 @@ function tglAdd() {
   var tg = byId('tagmod_tag');
   var add = byId('tagmod_add');
   tag.disabled = add.disabled = true;
-  add.value = 'loading...';
+  add.value = mt('_js_loading');
 
   ajax('/xml/tags.xml?q=name:'+encodeURIComponent(tg.value), function(hr) {
     tg.disabled = add.disabled = false;
@@ -1392,8 +1390,8 @@ function rvnFormAdd() {
   }
 
   txt.disabled = true;
-  txt.value = 'loading...';
-  setText(lnk, 'loading...');
+  txt.value = mt('_js_loading');
+  setText(lnk, mt('_js_loading'));
 
   ajax('/xml/vn.xml?q='+encodeURIComponent(val), function(hr) {
     txt.disabled = false;
@@ -1494,8 +1492,8 @@ function rprFormAdd() {
   }
 
   txt.disabled = true;
-  txt.value = 'loading...';
-  setText(lnk, 'loading...');
+  txt.value = mt('_js_loading');
+  setText(lnk, mt('_js_loading'));
 
   ajax('/xml/producers.xml?q='+encodeURIComponent(val), function(hr) {
     txt.disabled = false;
@@ -1554,16 +1552,9 @@ if(byId('jt_box_rel_prod'))
 if(byId('votesel')) {
   byId('votesel').onchange = function() {
     var s = this.options[this.selectedIndex].value;
-    if(s == 1 && !confirm(
-      "You are about to give this visual novel a 1 out of 10. This is a rather extreme rating, "
-      +"meaning this game has absolutely nothing to offer, and that it's the worst game you have ever played.\n"
-      +"Are you really sure this visual novel matches that description?"))
+    if(s == 1 && !confirm(mt('_vnpage_uopt_1vote')))
       return;
-    if(s == 10 && !confirm(
-      "You are about to give this visual novel a 10 out of 10. This is a rather extreme rating, "
-      +"meaning this is one of the best visual novels you've ever played and it's unlikely "
-      +"that any other game could ever be better than this one.\n"
-      +"It is generally a bad idea to have more than three games in your vote list with this rating, choose carefully!"))
+    if(s == 10 && !confirm(mt('_vnpage_uopt_10vote')))
       return;
     if(s)
       location.href = location.href.replace(/\.[0-9]+/, '')+'/vote?v='+s;
@@ -1653,6 +1644,7 @@ if(byId('listsel')) {
 }
 
 // vndb.org domain check
+// (let's just keep this untranslatable, nobody cares anyway ^^)
 if(location.hostname != 'vndb.org') {
   addBody(tag('div', {id:'debug'},
     tag('h2', 'This is not VNDB!'),
@@ -1693,7 +1685,7 @@ if(byId('expandlist')) {
   var lnk = byId('expandlist');
   setexpand = function() {
     var exp = getCookie('histexpand') == 1;
-    setText(lnk, exp ? 'collapse' : 'expand');
+    setText(lnk, mt(exp ? '_js_collapse' : '_js_expand'));
     var tbl = lnk;
     while(tbl.nodeName.toLowerCase() != 'table')
       tbl = tbl.parentNode;
@@ -1747,8 +1739,8 @@ if(byId('expandall')) {
 if(byId('advselect') && byId('ti')) {
   var trfunc = function(item, tr) {
     tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
-      item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' meta') : null,
-      item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' awaiting moderation') : null
+      item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_meta')) : null,
+      item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
     ));
   };
   var serfunc = function(item, obj) {

@@ -386,7 +386,7 @@ sub posts {
       [ '' ],
       [ '' ],
       [ mt '_uposts_col_date' ],
-      sub { td; a href => '#', id => 'expandlist', 'expand'; txt mt '_uposts_col_title'; end; }
+      sub { td; a href => '#', id => 'expandlist', mt '_js_expand'; txt mt '_uposts_col_title'; end; }
     ],
     row     => sub {
       my($s, $n, $l) = @_;
