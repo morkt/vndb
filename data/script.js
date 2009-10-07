@@ -168,11 +168,11 @@ function mt() {
   var val = L10N_STR[key] ? L10N_STR[key][mt_curlang] || L10N_STR[key].en : key;
   for(var i=1; i<arguments.length; i++) {
     var expr = '[_'+i+']';
-    while(val.substr(expr) >= 0)
+    while(val.indexOf(expr) >= 0)
       val = val.replace(expr, arguments[i]);
   }
   val = val.replace(/\[quant,_\d+\,([^,]+)[^\]]+\]/g, "$1");
-  while(val.substr('~[') >= 0 || val.substr('~]') >= 0)
+  while(val.indexOf('~[') >= 0 || val.indexOf('~]') >= 0)
     val = val.replace('~[', '[').replace('~]', ']');
   return val;
 }
@@ -924,7 +924,7 @@ if(byId('jt_box_rel_format'))
 
 /*  V I S U A L   N O V E L   S C R E E N S H O T   U P L O A D E R  (/v+/edit)  */
 
-var scrRel = [ [ 0, '-- select release --' ] ];
+var scrRel = [ [ 0, mt('_vnedit_scr_selrel') ] ];
 var scrStaticURL;
 var scrUplNr = 0;
 
@@ -964,10 +964,10 @@ function scrSetSubmit() {
         norelease = 1;
     }
     if(loading) {
-      alert('Please wait for the screenshots to be uploaded before submitting the form.');
+      alert(mt('_vnedit_scr_frmloading'));
       return false;
     } else if(norelease) {
-      alert('Please select the appropriate release for every screenshot');
+      alert(mt('_vnedit_scr_frmnorel'));
       return false;
     } else if(oldfunc)
       return oldfunc();
@@ -984,11 +984,11 @@ function scrAdd(id, nsfw, rel) {
   var tr = tag('tr', { id:'scr_tr_'+id, scr_id: id, scr_status: id?2:1, scr_rel: rel, scr_nsfw: nsfw},
     tag('td', { 'class': 'thumb'}, mt('_js_loading')),
     tag('td',
-      tag('b', id ? 'Fetching thumbnail...' : 'Uploading screenshot'),
+      tag('b', mt(id ? '_vnedit_scr_fetching' : '_vnedit_scr_uploading')),
       tag('br', null),
-      id ? null : 'This can take a while, depending on the file size and your upload speed.',
+      id ? null : mt('_vnedit_scr_upl_msg'),
       tag('br', null),
-      id ? null : tag('a', {href:'#', onclick:scrDel}, 'cancel')
+      id ? null : tag('a', {href:'#', onclick:scrDel}, mt('_vnedit_scr_cancel'))
     )
   );
   byId('scr_table').appendChild(tr);
@@ -1004,18 +1004,17 @@ function scrLast() {
   byId('scr_table').appendChild(tag('tr', {id:'scr_last'},
     tag('td', {'class': 'thumb'}),
     full ? tag('td',
-      tag('b', 'Enough screenshots'),
+      tag('b', mt('_vnedit_scr_full')),
       tag('br', null),
-      'The limit of 10 screenshots per visual novel has been reached. ',
-      'If you want to add a new screenshot, please remove an existing one first.'
+      mt('_vnedit_scr_full_msg')
     ) : tag('td',
-      tag('b', 'Add screenshot'),
+      tag('b', mt('_vnedit_scr_add')),
       tag('br', null),
-      'Image must be smaller than 5MB and in PNG or JPEG format.',
+      mt('_vnedit_scr_imgnote'),
       tag('br', null),
       tag('input', {name:'scr_upload', id:'scr_upload', type:'file', 'class':'text'}),
       tag('br', null),
-      tag('input', {type:'button', value:'Upload!', 'class':'submit', onclick:scrUpload})
+      tag('input', {type:'button', value:mt('_vnedit_scr_addbut'), 'class':'submit', onclick:scrUpload})
     )
   ));
   scrStripe();
@@ -1059,14 +1058,14 @@ function scrCheckStatus() {
         rel.appendChild(tag('option', {value: scrRel[j][0], selected: tr.scr_rel == scrRel[j][0]}, scrRel[j][1]));
       var nsfwid = 'scr_sfw_'+tr.scr_id;
       setContent(byName(tr, 'td')[1],
-        tag('b', 'Screenshot #'+tr.scr_id),
-        ' (', tag('a', {href: '#', onclick:scrDel}, 'remove'), ')',
+        tag('b', mt('_vnedit_scr_id', tr.scr_id)),
+        ' (', tag('a', {href: '#', onclick:scrDel}, mt('_vnedit_scr_remove')), ')',
         tag('br', null),
-        'Full size: '+dim,
+        mt('_vnedit_scr_fullsize', dim),
         tag('br', null),
         tag('br', null),
         tag('input', {type:'checkbox', onclick:scrSerialize, id:nsfwid, name:nsfwid, checked: tr.scr_nsfw>0, 'class':'scr_nsfw'}),
-        tag('label', {'for':nsfwid}, 'This screenshot is NSFW'),
+        tag('label', {'for':nsfwid}, mt('_vnedit_scr_nsfw')),
         tag('br', null),
         rel
       );
@@ -1123,25 +1122,16 @@ function scrUploadComplete() {
     tr.scr_id = -10;
   }
   if(tr.scr_id < 0) {
-    alert(
-      tr.scr_id == -10 ?
-         'Oops! Seems like something went wrong...\n'
-        +'Make sure the file you\'re uploading doesn\'t exceed 5MB in size.\n'
-        +'If that isn\'t the problem, then please report a bug.' :
-      tr.scr_id == -1 ?
-        'Upload failed!\nOnly JPEG or PNG images are accepted.' :
-        'Upload failed!\nNo file selected, or an empty file?'
-    );
+    alert(mt(tr.scr_id == -10 ? '_vnedit_scr_oops' : tr.scr_id == -1 ? '_vnedit_scr_errformat' : '_vnedit_scr_errempty'));
     return scrDel(tr);
   }
 
   tr.id = 'scr_tr_'+tr.scr_id;
   tr.scr_status = 2;
   setContent(byName(tr, 'td')[1],
-    tag('b', 'Generating thumbnail...'),
+    tag('b', mt('_vnedit_scr_genthumb')),
     tag('br', null),
-    'Note: if this takes longer than 30 seconds, there\'s probably something wrong on our side. ',
-    'Please try again later or report a bug if that is the case.'
+    mt('_vnedit_scr_genthumb_msg')
   );
 
   // remove the <div> in a timeout, otherwise some browsers think the page is still loading

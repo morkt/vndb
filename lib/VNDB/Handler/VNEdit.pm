@@ -219,10 +219,9 @@ sub _form {
     [ hidden => short => 'screenshots' ],
     [ static => nolabel => 1, content => sub {
       div class => 'warning';
-       lit mt '_vnedit_scr_msg';
+       lit mt '_vnedit_scrmsg';
       end;
       br;
-      # TODO: localize screenshot uploader
       table;
        tbody id => 'scr_table', '';
       end;

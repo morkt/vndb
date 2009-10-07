@@ -28,7 +28,8 @@ my $jskeys = qr{^(?:
     _vnpage_uopt_(?:10?vote|rel.+)|
     _rlst_[vr]stat_.+|
     _vnedit_rel_(?:isa|of|addbut|del|none|findformat|novn|double)|
-    _redit_form_med_.+
+    _redit_form_med_.+|
+    _vnedit_scr_.+
   )$}x;
 
 sub l10n {

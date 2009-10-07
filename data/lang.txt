@@ -3173,7 +3173,7 @@ ru*:
 en : Screenshots
 ru : Скриншоты
 
-:_vnedit_scr_msg
+:_vnedit_scrmsg
 en : Please keep the following in mind when uploading screenshots:[br]
      - Screenshots have to be in the native resolution of the game,[br]
      - Remove any window borders and make sure the image is unmarked,[br]
@@ -3186,6 +3186,96 @@ ru : Когда загружаете скриншоты, пожалуйста п
      - Старайтесь загружать не только одни сюжетные картинки.[br]
      За подробностями обращайтесь к [url,/d2#6,рекомендациям].[br]
      Не забудьте сохранить изменения когда закончите загружать изображения!
+
+:_vnedit_scr_selrel
+en : -- select release --
+ru*:
+
+:_vnedit_scr_frmloading
+en : Please wait for the screenshots to be uploaded before submitting the form.
+ru*:
+
+:_vnedit_scr_frmnorel
+en : Please select the appropriate release for every screenshot.
+ru*:
+
+:_vnedit_scr_fetching
+en : Fetching thumbnail...
+ru*:
+
+:_vnedit_scr_uploading
+en : Uploading screenshot
+ru*:
+
+:_vnedit_scr_upl_msg
+en : This can take a while, depending on the file size and your upload speed.
+ru*:
+
+:_vnedit_scr_cancel
+en : cancel
+ru*:
+
+:_vnedit_scr_full
+en : Enough screenshots
+ru*:
+
+:_vnedit_scr_full_msg
+en : The limit of 10 screenshots per visual novel has been reached.
+     If you want to add a new screenshot, please remove an existing one first.
+ru*:
+
+:_vnedit_scr_add
+en : Add screenshot
+ru*:
+
+:_vnedit_scr_imgnote
+en : Image must be smaller than 5MB and in PNG or JPEG format.
+ru*:
+
+:_vnedit_scr_addbut
+en : Upload!
+ru*:
+
+:_vnedit_scr_id
+en : Screenshot #[_1]
+ru*:
+
+:_vnedit_scr_remove
+en : remove
+ru*:
+
+:_vnedit_scr_fullsize
+en : Full size: [_1]
+ru*:
+
+:_vnedit_scr_nsfw
+en : This screenshot is NSFW
+ru*:
+
+:_vnedit_scr_oops
+en : Oops! Seems like something went wrong...
+     Make sure the file you're uploading doesn't exceed 5MB in size.
+     If that isn't the problem, then please report a bug.
+ru*:
+
+:_vnedit_scr_errformat
+en : Upload failed!
+     Only JPEG or PNG images are accepted.
+ru*:
+
+:_vnedit_scr_errempty
+en : Upload failed!
+     No file selected, or an empty file?
+ru*:
+
+:_vnedit_scr_genthumb
+en : Generating thumbnail...
+ru*:
+
+:_vnedit_scr_genthumb_msg
+en : Note: if this takes longer than 30 seconds, there\'s probably something wrong on our side.
+     Please try again later or report a bug if that is the case.
+ru*:
 
 
 # VN Relation graph page (/v+/rg)
