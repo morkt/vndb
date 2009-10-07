@@ -158,7 +158,9 @@ function shorten(v, l) {
   return v.length > l ? v.substr(0, l-3)+'...' : v;
 }
 
-/* maketext function, less powerful than the Perl equivalent (only supports [_n] and ~[~])
+/* maketext function, less powerful than the Perl equivalent:
+ * - Only supports [_n], ~[, ~]
+ * - When it finds [quant,_n,..], it will only return the first argument (and doesn't support ~ in an argument)
  * assumes that a TL structure called 'L10N_STR' is defined in the header of this file */
 var mt_curlang = getCookie('l10n') || 'en';
 function mt() {
@@ -169,6 +171,7 @@ function mt() {
     while(val.substr(expr) >= 0)
       val = val.replace(expr, arguments[i]);
   }
+  val = val.replace(/\[quant,_\d+\,([^,]+)[^\]]+\]/g, "$1");
   while(val.substr('~[') >= 0 || val.substr('~]') >= 0)
     val = val.replace('~[', '[').replace('~]', ']');
   return val;
@@ -857,18 +860,18 @@ function medLoad() {
 }
 
 function medAdd(med, qty) {
-  var qsel = tag('select', {'class':'qty', onchange:medSerialize}, tag('option', {value:0}, '- quantity -'));
+  var qsel = tag('select', {'class':'qty', onchange:medSerialize}, tag('option', {value:0}, mt('_redit_form_med_quantity')));
   for(var i=1; i<=20; i++)
     qsel.appendChild(tag('option', {value:i, selected: qty==i}, i));
 
   var msel = tag('select', {'class':'medium', onchange: med == '' ? medFormAdd : medSerialize});
   if(med == '')
-    msel.appendChild(tag('option', {value:''}, '- medium -'));
+    msel.appendChild(tag('option', {value:''}, mt('_redit_form_med_medium')));
   for(var i=0; i<medTypes.length; i++)
     msel.appendChild(tag('option', {value:medTypes[i][0], selected: med==medTypes[i][0]}, medTypes[i][1]));
 
   byId('media_div').appendChild(tag('span', qsel, msel,
-    med != '' ? tag('input', {type: 'button', 'class':'submit', onclick:medDel, value:'remove'}) : null
+    med != '' ? tag('input', {type: 'button', 'class':'submit', onclick:medDel, value:mt('_redit_form_med_remove')}) : null
   ));
 }
 

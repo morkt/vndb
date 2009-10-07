@@ -326,6 +326,53 @@ en : Other
 ru : Другая
 
 
+# Release media
+
+:_med_cd
+en : [quant,_1,CD,CDs]
+ru*:
+
+:_med_dvd
+en : [quant,_1,DVD,DVDs]
+ru*:
+
+:_med_gdr
+en : [quant,_1,GD-ROM,GD-ROMs]
+ru*:
+
+:_med_blr
+en : [quant,_1,Blu-ray disc,Blu-ray discs]
+ru*:
+
+:_med_flp
+en : [quant,_1,Floppy,Floppies]
+ru*:
+
+:_med_mrt
+en : [quant,_1,Cartridge,Cartridges]
+ru*:
+
+:_med_mem
+en : [quant,_1,Memory card,Memory cards]
+ru*:
+
+:_med_umd
+en : [quant,_1,UMD,UMDs]
+ru*:
+
+:_med_nod
+en : Nintendo Optical [quant,_1,Disk,Disks]
+ru*:
+
+:_med_in
+en : Internet download
+ru*:
+
+:_med_otc
+en : Other
+ru*:
+
+
 # VN relations
 
 :_vnrel_seq
@@ -1870,6 +1917,18 @@ ru : Платформы
 :_redit_form_media
 en : Media
 ru : Носители
+
+:_redit_form_med_quantity
+en : -quantity-
+ru*:
+
+:_redit_form_med_medium
+en : -medium-
+ru*:
+
+:_redit_form_med_remove
+en : remove
+ru*:
 
 :_redit_form_prod
 en : Producers

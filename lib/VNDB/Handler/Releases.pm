@@ -54,10 +54,7 @@ sub page {
       [ notes      => diff => 1 ],
       [ platforms  => join => ', ', split => sub { map mt("_plat_$_"), @{$_[0]} } ],
       [ media      => join => ', ', split => sub {
-        map {
-          my $med = $self->{media}{$_->{medium}};
-          $med->[1] ? sprintf('%d %s%s', $_->{qty}, $med->[0], $_->{qty}>1?'s':'') : $med->[0]
-        } @{$_[0]};
+        map $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1), @{$_[0]}
       } ],
       [ resolution => serialize => sub { $self->{resolutions}[$_[0]][0] } ],
       [ voiced     => serialize => sub { mt '_voiced_'.$_[0] } ],
@@ -154,11 +151,9 @@ sub _infotable {
    if(@{$r->{media}}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
       td mt '_relinfo_media', scalar @{$r->{media}};
-      # TODO: TL the media
-      td join ', ', map {
-        my $med = $self->{media}{$_->{medium}};
-        $med->[1] ? sprintf('%d %s%s', $_->{qty}, $med->[0], $_->{qty}>1?'s':'') : $med->[0]
-      } @{$r->{media}};
+      td join ', ', map
+        $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1),
+        @{$r->{media}};
      end;
    }
 
@@ -435,7 +430,7 @@ sub _form {
       h2 mt '_redit_form_media';
       div id => 'media_div';
        Select;
-        option value => $_, class => $self->{media}{$_}[1] ? 'qty' : 'noqty', $self->{media}{$_}[0]
+        option value => $_, class => $self->{media}{$_} ? 'qty' : 'noqty', mt "_med_$_", 1
           for (sort keys %{$self->{media}});
        end;
       end;
@@ -657,10 +652,9 @@ sub _filters {
      b ' ('.mt('_rbrowse_boolor').')';
     end;
     for my $i (sort keys %{$self->{media}}) {
-      next if $i eq 'otc';
       span;
        input type => 'checkbox', name => 'me', value => $i, id => "med_$i", grep($_ eq $i, @{$f->{me}}) ? (checked => 'checked') : ();
-       label for => "med_$i", $self->{media}{$i}[0];
+       label for => "med_$i", mt "_med_$i";
       end;
     }
 
