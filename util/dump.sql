@@ -1,15 +1,12 @@
 
-
--- we don't use PgSQL's OIDS
-SET default_with_oids = false;
-
--- for the functions to work, the following query must
--- be executed on the database by a superuser:
---  CREATE PROCEDURAL LANGUAGE plpgsql
+-- plpgsql is required for our (trigger) functions
+CREATE LANGUAGE plpgsql;
 
 
+-- data types
 
-
+CREATE TYPE vn_relation AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
+CREATE TYPE anime_type  AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
 
 
 -----------------------------------------
@@ -23,7 +20,7 @@ CREATE TABLE anime (
   year smallint,
   ann_id integer,
   nfo_id varchar(200),
-  type smallint,
+  type anime_type,
   title_romaji,
   title_kanji,
   lastfetch timestamptz
@@ -135,12 +132,6 @@ CREATE TABLE releases_vn (
   rid integer NOT NULL DEFAULT 0,
   vid integer NOT NULL DEFAULT 0,
   PRIMARY KEY(rid, vid)
-);
-
--- relgraph
-CREATE TABLE relgraph (
-  id SERIAL NOT NULL PRIMARY KEY,
-  cmap text NOT NULL DEFAULT ''
 );
 
 -- rlists
@@ -288,11 +279,17 @@ CREATE TABLE vn_anime (
   PRIMARY KEY(vid, aid)
 );
 
+-- vn_graphs
+CREATE TABLE vn_graphs (
+  id SERIAL PRIMARY KEY,
+  svg xml NOT NULL
+);
+
 -- vn_relations
 CREATE TABLE vn_relations (
   vid1 integer NOT NULL DEFAULT 0,
   vid2 integer NOT NULL DEFAULT 0,
-  relation integer NOT NULL DEFAULT 0,
+  relation vn_relation NOT NULL,
   PRIMARY KEY(vid1, vid2)
 );
 
@@ -380,7 +377,7 @@ ALTER TABLE threads_posts      ADD FOREIGN KEY (tid)       REFERENCES threads   
 ALTER TABLE threads_posts      ADD FOREIGN KEY (uid)       REFERENCES users         (id);
 ALTER TABLE threads_boards     ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
 ALTER TABLE vn                 ADD FOREIGN KEY (latest)    REFERENCES vn_rev        (id) DEFERRABLE INITIALLY DEFERRED;
-ALTER TABLE vn                 ADD FOREIGN KEY (rgraph)    REFERENCES relgraph      (id);
+ALTER TABLE vn                 ADD FOREIGN KEY (rgraph)    REFERENCES vn_graphs     (id);
 ALTER TABLE vn_anime           ADD FOREIGN KEY (aid)       REFERENCES anime         (id);
 ALTER TABLE vn_anime           ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
 ALTER TABLE vn_relations       ADD FOREIGN KEY (vid1)      REFERENCES vn_rev        (id);

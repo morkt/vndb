@@ -18,11 +18,11 @@ use warnings;
 my %subgraphs = (
   'Producers'        => [qw| FFFFCC producers producers_rev |],
   'Releases'         => [qw| C8FFC8 releases releases_rev releases_media releases_platforms releases_producers releases_lang releases_vn |],
-  'Visual Novels'    => [qw| FFE6BE vn vn_rev vn_relations vn_categories vn_anime vn_screenshots |],
-  'Users'            => [qw| CCFFFF users votes rlists wlists |],
+  'Visual Novels'    => [qw| FFE6BE vn vn_rev vn_relations vn_anime vn_screenshots vn_graphs |],
+  'Users'            => [qw| CCFFFF users votes rlists wlists sessions |],
   'Discussion board' => [qw| FFDCDC threads threads_boards threads_posts |],
   'Tags'             => [qw| FFC8C8 tags tags_aliases tags_parents tags_vn |],
-  'Misc'             => [qw| F5F5F5 changes anime screenshots relgraph stats_cache quotes sessions |],
+  'Misc'             => [qw| F5F5F5 changes anime screenshots stats_cache quotes |],
 );
 
 my %tables; # table_name => [ [ col1, pri ], ... ]
