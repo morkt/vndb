@@ -1942,6 +1942,18 @@ ru : Выбранные компании
 en : Add producer
 ru : Добавить компанию
 
+:_redit_form_prod_dev
+en : Developer
+ru*:
+
+:_redit_form_prod_pub
+en : Publisher
+ru*:
+
+:_redit_form_prod_both
+en : Both
+ru*:
+
 :_redit_form_prod_addbut
 en : add
 ru*:

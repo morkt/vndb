@@ -117,7 +117,7 @@ sub dbReleaseGet {
 
     if($o{what} =~ /producers/) {
       push(@{$r->[$r{$_->{rid}}]{producers}}, $_) for (@{$self->dbAll(q|
-        SELECT rp.rid, p.id, pr.name, pr.original, pr.type
+        SELECT rp.rid, rp.developer, rp.publisher, p.id, pr.name, pr.original, pr.type
           FROM releases_producers rp
           JOIN producers p ON rp.pid = p.id
           JOIN producers_rev pr ON pr.id = p.latest
@@ -189,9 +189,9 @@ sub insert_rev {
   ) for (@{$o->{languages}});
 
   $self->dbExec(q|
-    INSERT INTO releases_producers (rid, pid)
-      VALUES (?, ?)|,
-    $cid, $_
+    INSERT INTO releases_producers (rid, pid, developer, publisher)
+      VALUES (?, ?, ?, ?)|,
+    $cid, $_->[0], $_->[1]?1:0, $_->[2]?1:0
   ) for (@{$o->{producers}});
 
   $self->dbExec(q|

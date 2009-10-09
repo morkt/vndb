@@ -1426,8 +1426,10 @@ if(byId('jt_box_rel_vn'))
 
 function rprLoad() {
   var ps = byId('producers').value.split('|||');
-  for(var i=0; i<ps.length && ps[i].length>1; i++)
-    rprAdd(ps[i].split(',',2)[0], ps[i].split(',',2)[1]);
+  for(var i=0; i<ps.length && ps[i].length>1; i++) {
+    var val = ps[i].split(',',3);
+    rprAdd(val[0], val[1], val[2]);
+  }
   rprEmpty();
 
   dsInit(byId('producer_input'), '/xml/producers.xml?q=',
@@ -1442,12 +1444,17 @@ function rprLoad() {
   byId('producer_add').onclick = rprFormAdd;
 }
 
-function rprAdd(id, name) {
+function rprAdd(id, role, name) {
+  var roles = byId('producer_role').options;
+  var rl = tag('select', {onchange:rprSerialize});
+  for(var i=0; i<roles.length; i++)
+    rl.appendChild(tag('option', {value: roles[i].value, selected:role==roles[i].value}, getText(roles[i])));
+
   byId('producer_tbl').appendChild(tag('tr', {id:'rpr_'+id, rpr_id:id},
     tag('td', {'class':'tc_name'}, 'p'+id+':', tag('a', {href:'/p'+id}, shorten(name, 40))),
+    tag('td', {'class':'tc_role'}, rl),
     tag('td', {'class':'tc_rm'},   tag('a', {href:'#', onclick:rprDel}, mt('_redit_form_prod_remove')))
   ));
-  rprStripe();
   rprEmpty();
 }
 
@@ -1458,7 +1465,6 @@ function rprDel() {
   tr.parentNode.removeChild(tr);
   rprEmpty();
   rprSerialize();
-  rprStripe();
   return false;
 }
 
@@ -1468,12 +1474,6 @@ function rprEmpty() {
     tbl.appendChild(tag('tr', {id:'rpr_tr_none'}, tag('td', {colspan:2}, mt('_redit_form_prod_none'))));
   else if(byId('rpr_tr_none'))
     tbl.removeChild(byId('rpr_tr_none'));
-}
-
-function rprStripe() {
-  var l = byName(byId('producer_tbl'), 'tr');
-  for(var i=0; i<l.length; i++)
-    setClass(l[i], 'odd', i%2);
 }
 
 function rprFormAdd() {
@@ -1503,7 +1503,10 @@ function rprFormAdd() {
     if(byId('rpr_'+id))
       return alert(mt('_redit_form_prod_double'));
 
-    rprAdd(id, items[0].firstChild.nodeValue);
+    var role = byId('producer_role');
+    role = role[role.selectedIndex].value;
+
+    rprAdd(id, role, items[0].firstChild.nodeValue);
     rprSerialize();
   });
   return false;
@@ -1513,8 +1516,14 @@ function rprSerialize() {
   var r = [];
   var l = byName(byId('producer_tbl'), 'tr');
   for(var i=0; i<l.length; i++)
-    if(l[i].rpr_id)
-      r[r.length] = l[i].rpr_id + ',' + getText(byName(byClass(l[i], 'td', 'tc_name')[0], 'a')[0]);
+    if(l[i].rpr_id) {
+      var role = byName(byClass(l[i], 'td', 'tc_role')[0], 'select')[0];
+      r[r.length] = [
+        l[i].rpr_id,
+        role.options[role.selectedIndex].value,
+        getText(byName(byClass(l[i], 'td', 'tc_name')[0], 'a')[0])
+      ].join(',');
+    }
   byId('producers').value = r.join('|||');
 }
 

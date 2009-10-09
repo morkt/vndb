@@ -54,3 +54,8 @@ ALTER TABLE releases_media ALTER COLUMN medium DROP DEFAULT;
 ALTER TABLE releases_media ALTER COLUMN medium TYPE medium USING TRIM(both ' ' from medium)::medium;
 
 
+-- Differentiate between publishers and developers
+ALTER TABLE releases_producers ADD COLUMN developer boolean NOT NULL DEFAULT FALSE;
+ALTER TABLE releases_producers ADD COLUMN publisher boolean NOT NULL DEFAULT TRUE;
+ALTER TABLE releases_producers ADD CHECK(developer OR publisher);
+

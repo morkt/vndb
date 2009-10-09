@@ -16,6 +16,7 @@ git - ?
 	  - Language strings are translatable
 	  - Information is automatically synchronised with data/global.pl
 	- Changed language selector into a Javascript dropdown
+	- Added producer role (developer/publisher) to releases
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout

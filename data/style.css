@@ -870,8 +870,9 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 #jt_box_rel_vn h2,        #jt_box_rel_prod h2       { clear: left; padding-top: 10px; }
 #jt_box_rel_vn div,       #jt_box_rel_vn table,
 #jt_box_rel_prod div,     #jt_box_rel_prod table    { margin-left: 20px }
-#jt_box_rel_vn input,     #jt_box_rel_prod input    { margin-right: 10px; width: 300px }
+#jt_box_rel_vn input,     #jt_box_rel_prod input    { margin-right: 10px; width: 295px }
 #jt_box_rel_vn .tc_title, #jt_box_rel_prod .tc_name { width: 310px; padding: 2px }
+#jt_box_rel_prod .tc_role select { width: 100px; margin-right: 10px; }
 
 
 

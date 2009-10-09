@@ -103,6 +103,9 @@ CREATE TABLE releases_platforms (
 CREATE TABLE releases_producers (
   rid integer NOT NULL,
   pid integer NOT NULL,
+  developer boolean NOT NULL DEFAULT FALSE,
+  publisher boolean NOT NULL DEFAULT TRUE,
+  CHECK(developer OR publisher),
   PRIMARY KEY(pid, rid)
 );
 

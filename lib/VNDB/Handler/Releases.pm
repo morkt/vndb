@@ -284,7 +284,10 @@ sub edit {
     (map { $_ => $r->{$_} } qw|type title original gtin catalog languages website released
       notes minage platforms patch resolution voiced freeware doujin ani_story ani_ero|),
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
-    producers => join('|||', map "$_->{id},$_->{name}", sort { $a->{id} <=> $b->{id} } @{$r->{producers}}),
+    producers => join('|||', map
+      sprintf('%d,%d,%s', $_->{id}, ($_->{developer}?1:0)+($_->{publisher}?2:0), $_->{name}),
+      sort { $a->{id} <=> $b->{id} } @{$r->{producers}}
+    ),
   );
   $b4{vn} = join('|||', map "$_->{vid},$_->{title}", @$vn);
   my $frm;
@@ -320,7 +323,7 @@ sub edit {
     if(!$frm->{_err}) {
       # de-serialize
       $media     = [ map [ split / / ], split /,/, $frm->{media} ];
-      $producers = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{producers} ];
+      $producers = [ map { /^([0-9]+),([1-3])/ ? [ $1, $2&1?1:0, $2&2?1:0] : () } split /\|\|\|/, $frm->{producers} ];
       $new_vn    = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];
       $frm->{platforms} = [ grep $_, @{$frm->{platforms}} ];
       $frm->{$_} = $frm->{$_} ? 1 : 0 for (qw|patch freeware doujin|);
@@ -330,7 +333,7 @@ sub edit {
 
       my $same = $rid &&
           (join(',', sort @{$b4{platforms}}) eq join(',', sort @{$frm->{platforms}})) &&
-          (join(',', sort @$producers) eq join(',', sort map $_->{id}, @{$r->{producers}})) &&
+          (join(',', map join(' ', @$_), sort { $a->[0] <=> $b->[0] }  @$producers) eq join(',', sort map sprintf('%d %d %d',$_->{id}, $_->{developer}?1:0, $_->{publisher}?1:0), sort { $a->{id} <=> $b->{id} } @{$r->{producers}})) &&
           (join(',', sort @$new_vn) eq join(',', sort map $_->{vid}, @$vn)) &&
           (join(',', sort @{$b4{languages}}) eq join(',', sort @{$frm->{languages}})) &&
           !grep !/^(platforms|producers|vn|languages)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
@@ -443,10 +446,15 @@ sub _form {
       h2 mt('_redit_form_prod_sel');
       table; tbody id => 'producer_tbl'; end; end;
       h2 mt('_redit_form_prod_add');
-      div;
-       input id => 'producer_input', type => 'text', class => 'text';
-       a id => 'producer_add', href => '#', mt '_redit_form_prod_addbut';
-      end;
+      table; Tr;
+       td class => 'tc_name'; input id => 'producer_input', type => 'text', class => 'text'; end;
+       td class => 'tc_role'; Select id => 'producer_role';
+        option value => 1, mt '_redit_form_prod_dev';
+        option value => 2, selected => 'selected',  mt '_redit_form_prod_pub';
+        option value => 3, mt '_redit_form_prod_both';
+       end; end;
+       td class => 'tc_add';  a id => 'producer_add', href => '#', mt '_redit_form_prod_addbut'; end;
+      end; end;
     }],
   ],
 
