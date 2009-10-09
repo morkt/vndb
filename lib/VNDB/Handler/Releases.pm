@@ -654,7 +654,7 @@ sub _filters {
     for my $i (sort keys %{$self->{media}}) {
       span;
        input type => 'checkbox', name => 'me', value => $i, id => "med_$i", grep($_ eq $i, @{$f->{me}}) ? (checked => 'checked') : ();
-       label for => "med_$i", mt "_med_$i";
+       label for => "med_$i", mt "_med_$i", 1;
       end;
     }
 
