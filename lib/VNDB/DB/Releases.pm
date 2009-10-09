@@ -137,7 +137,7 @@ sub dbReleaseGet {
     }
 
     if($o{what} =~ /media/) {
-      ($_->{medium}=~s/\s+//||1)&&push(@{$r->[$r{$_->{rid}}]{media}}, $_) for (@{$self->dbAll(q|
+      push(@{$r->[$r{$_->{rid}}]{media}}, $_) for (@{$self->dbAll(q|
         SELECT rid, medium, qty
           FROM releases_media
           WHERE rid IN(!l)|,

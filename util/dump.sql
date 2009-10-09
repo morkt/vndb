@@ -5,8 +5,9 @@ CREATE LANGUAGE plpgsql;
 
 -- data types
 
-CREATE TYPE vn_relation AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
 CREATE TYPE anime_type  AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
+CREATE TYPE medium      AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
+CREATE TYPE vn_relation AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
 
 
 -----------------------------------------
@@ -86,7 +87,7 @@ CREATE TABLE releases_lang (
 -- releases_media
 CREATE TABLE releases_media (
   rid integer NOT NULL DEFAULT 0,
-  medium character(3) NOT NULL DEFAULT '',
+  medium medium NOT NULL,
   qty smallint NOT NULL DEFAULT 1,
   PRIMARY KEY(rid, medium, qty)
 );

@@ -47,3 +47,10 @@ ALTER TABLE anime ALTER COLUMN type TYPE anime_type USING
     ELSE NULL
   END;
 
+
+-- Release media stored as enum
+CREATE TYPE medium AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
+ALTER TABLE releases_media ALTER COLUMN medium DROP DEFAULT;
+ALTER TABLE releases_media ALTER COLUMN medium TYPE medium USING TRIM(both ' ' from medium)::medium;
+
+
