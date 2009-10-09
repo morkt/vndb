@@ -61,7 +61,9 @@ sub page {
       [ ani_story  => serialize => sub { mt '_animated_'.$_[0] } ],
       [ ani_ero    => serialize => sub { mt '_animated_'.$_[0] } ],
       [ producers  => join => '<br />', split => sub {
-        map sprintf('<a href="/p%d" title="%s">%s</a>', $_->{id}, $_->{original}||$_->{name}, shorten $_->{name}, 50), @{$_[0]};
+        map sprintf('<a href="/p%d" title="%s">%s</a> (%s)', $_->{id}, $_->{original}||$_->{name}, shorten($_->{name}, 50),
+          join(', ', $_->{developer} ? mt '_reldiff_developer' :(), $_->{publisher} ? mt '_reldiff_publisher' :())
+        ), @{$_[0]};
       } ],
     );
   }
@@ -194,16 +196,19 @@ sub _infotable {
      end;
    }
 
-   if(@{$r->{producers}}) {
-     Tr ++$i % 2 ? (class => 'odd') : ();
-      td mt '_relinfo_producer', scalar @{$r->{producers}};
-      td;
-       for (@{$r->{producers}}) {
-         a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 60;
-         br if $_ != $r->{producers}[$#{$r->{producers}}];
-       }
-      end;
-     end;
+   for my $t (qw|developer publisher|) {
+     my @prod = grep $_->{$t}, @{$r->{producers}};
+     if(@prod) {
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td mt "_relinfo_$t", scalar @prod;
+        td;
+         for (@prod) {
+           a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 60;
+           br if $_ != $prod[$#prod];
+         }
+        end;
+       end;
+     }
    }
 
    if($r->{gtin}) {

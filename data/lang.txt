@@ -1682,6 +1682,14 @@ ru : Анимация эросцен
 en : Producers
 ru : Компании
 
+:_reldiff_developer
+en : developer
+ru*:
+
+:_reldiff_publisher
+en : publisher
+ru*:
+
 
 # Information table (on every release page)
 
@@ -1757,9 +1765,13 @@ ru : Дата выпуска
 en : Age rating
 ru : Возрастной рейтинг
 
-:_relinfo_producer
-en : [quant,_1,Producer,Producers]
-ru : [quant,_1,Компания,Компании,Компаний]
+:_relinfo_developer
+en : [quant,_1,Developer,Developers]
+ru*:
+
+:_relinfo_publisher
+en : [quant,_1,Publisher,Publishers]
+ru*:
 
 :_relinfo_catalog
 en : Catalog no.
