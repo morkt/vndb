@@ -635,7 +635,7 @@ sub _filters {
      txt mt '_rbrowse_languages';
      b ' ('.mt('_rbrowse_boolor').')';
     end;
-    for my $i (sort @{$self->dbLanguages}) {
+    for my $i (@{$self->{languages}}) {
       span;
        input type => 'checkbox', name => 'ln', value => $i, id => "lang_$i", grep($_ eq $i, @{$f->{ln}}) ? (checked => 'checked') : ();
        label for => "lang_$i";

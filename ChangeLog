@@ -19,6 +19,7 @@ git - ?
 	- Added producer role (developer/publisher) to releases
 	- Display number of unread posts in "My messages" (instead of total threads)
 	- Optimized dbUserGet (mostly for the user list)
+	- All languages are listed on /r and /v/all instead of only those in use
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout

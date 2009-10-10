@@ -162,7 +162,7 @@ sub _filters {
      txt mt '_vnbrowse_lang';
      b ' ('.mt('_vnbrowse_boolor').')';
     end;
-    for my $i (sort @{$self->dbLanguages}) {
+    for my $i (@{$self->{languages}}) {
       span;
        input type => 'checkbox', name => 'ln', value => $i, id => "lang_$i",
          (scalar grep $_ eq $i, @{$f->{ln}}) ? (checked => 'checked') : ();

@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw|
-  dbStats dbRevisionInsert dbItemInsert dbRevisionGet dbItemMod dbLanguages dbRandomQuote
+  dbStats dbRevisionInsert dbItemInsert dbRevisionGet dbItemMod dbRandomQuote
 |;
 
 
@@ -157,20 +157,6 @@ sub dbItemMod {
     {qw|v vn r releases p producers|}->{$type},
     { map { ($_.' = ?', int $o{$_}) } keys %o }, $id
   );
-}
-
-
-# Returns a list of languages actually in use
-sub dbLanguages {
-  my $self = shift;
-  return [
-    map $_->{lang}, @{$self->dbAll(q|
-      SELECT DISTINCT rl.lang
-        FROM releases r
-        JOIN releases_lang rl ON rl.rid = r.latest
-        WHERE r.hidden = FALSE|
-    )}
-  ];
 }
 
 
