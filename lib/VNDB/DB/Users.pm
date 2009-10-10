@@ -5,11 +5,11 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel dbSessionAdd dbSessionDel dbSessionCheck|;
+our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel dbUserMessageCount dbSessionAdd dbSessionDel dbSessionCheck|;
 
 
 # %options->{ username passwd mail order uid ip registered search results page what }
-# what: stats mymessages
+# what: stats
 sub dbUserGet {
   my $s = shift;
   my %o = (
@@ -53,14 +53,6 @@ sub dbUserGet {
       '(SELECT COUNT(DISTINCT tag) FROM tags_vn WHERE uid = u.id) AS tagcount',
       '(SELECT COUNT(DISTINCT vid) FROM tags_vn WHERE uid = u.id) AS tagvncount',
     ) : (),
-    $o{what} =~ /mymessages/ ?
-      q{COALESCE((SELECT SUM(tbi.count) FROM (
-        SELECT t.count-COALESCE(tb.lastread,0)
-          FROM threads_boards tb
-          JOIN threads t ON t.id = tb.tid AND NOT t.hidden
-         WHERE tb.type = 'u' AND tb.iid = u.id) AS tbi (count)
-        ), 0) AS mymessages
-      } : (),
   );
 
   my($r, $np) = $s->dbPage(\%o, q|
@@ -113,6 +105,20 @@ sub dbUserDel {
     q|UPDATE threads_posts SET uid = 0 WHERE uid = ?|,
     q|DELETE FROM users WHERE id = ?|
   );
+}
+
+
+# Returns number of unread messages
+sub dbUserMessageCount { # uid
+  my($s, $uid) = @_;
+  return $s->dbRow(q{
+    SELECT SUM(tbi.count) AS cnt FROM (
+      SELECT t.count-COALESCE(tb.lastread,0)
+        FROM threads_boards tb
+        JOIN threads t ON t.id = tb.tid AND NOT t.hidden
+       WHERE tb.type = 'u' AND tb.iid = ?
+    ) AS tbi (count)
+  }, $uid)->{cnt}||0;
 }
 
 
