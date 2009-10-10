@@ -54,7 +54,13 @@ sub dbUserGet {
       '(SELECT COUNT(DISTINCT vid) FROM tags_vn WHERE uid = u.id) AS tagvncount',
     ) : (),
     $o{what} =~ /mymessages/ ?
-      '(SELECT COUNT(*) FROM threads_boards tb JOIN threads t ON t.id = tb.tid WHERE tb.type = \'u\' AND tb.iid = u.id AND t.hidden = FALSE) AS mymessages' : (),
+      q{COALESCE((SELECT SUM(tbi.count) FROM (
+        SELECT t.count-COALESCE(tb.lastread,0)
+          FROM threads_boards tb
+          JOIN threads t ON t.id = tb.tid AND NOT t.hidden
+         WHERE tb.type = 'u' AND tb.iid = u.id) AS tbi (count)
+        ), 0) AS mymessages
+      } : (),
   );
 
   my($r, $np) = $s->dbPage(\%o, q|

@@ -59,3 +59,8 @@ ALTER TABLE releases_producers ADD COLUMN developer boolean NOT NULL DEFAULT FAL
 ALTER TABLE releases_producers ADD COLUMN publisher boolean NOT NULL DEFAULT TRUE;
 ALTER TABLE releases_producers ADD CHECK(developer OR publisher);
 
+
+-- Keep track of last read post for PMs
+ALTER TABLE threads_boards ADD COLUMN lastread smallint;
+
+

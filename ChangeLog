@@ -17,6 +17,7 @@ git - ?
 	  - Information is automatically synchronised with data/global.pl
 	- Changed language selector into a Javascript dropdown
 	- Added producer role (developer/publisher) to releases
+	- Display number of unread posts in "My messages" (instead of total threads)
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout

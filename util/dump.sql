@@ -240,6 +240,7 @@ CREATE TABLE threads_boards (
   tid integer NOT NULL DEFAULT 0,
   type character(2) NOT NULL DEFAULT 0,
   iid integer NOT NULL DEFAULT 0,
+  lastread smallint NOT NULL,
   PRIMARY KEY(tid, type, iid)
 );
 
