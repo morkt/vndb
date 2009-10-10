@@ -75,6 +75,8 @@ sub page {
           lit $self->{l10n}->datestr($_->{date});
          end;
          a href => "/v$_->{id}", title => $_->{original}, $_->{title};
+         b class => 'grayedout', ' ('.join(', ',
+          $_->{developer} ? mt '_prodpage_dev' : (), $_->{publisher} ? mt '_prodpage_pub' : ()).')';
         end;
       }
      end;

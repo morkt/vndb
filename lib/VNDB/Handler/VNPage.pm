@@ -261,27 +261,42 @@ sub _revision {
 
 sub _producers {
   my($self, $i, $r) = @_;
-  return if !grep @{$_->{producers}}, @$r;
 
   my %lang;
   my @lang = grep !$lang{$_}++, map @{$_->{languages}}, @$r;
 
-  Tr ++$$i % 2 ? (class => 'odd') : ();
-   td mt '_vnpage_producers';
-   td;
-    for my $l (@lang) {
-      my %p = map { $_->{id} => $_ } map @{$_->{producers}}, grep grep($_ eq $l, @{$_->{languages}}), @$r;
-      my @p = values %p;
-      next if !@p;
-      cssicon "lang $l", mt "_lang_$l";
-      for (@p) {
+  if(grep $_->{developer}, map @{$_->{producers}}, @$r) {
+    my %dev = map $_->{developer} ? ($_->{id} => $_) : (), map @{$_->{producers}}, @$r;
+    my @dev = values %dev;
+    Tr ++$$i % 2 ? (class => 'odd') : ();
+     td mt "_vnpage_developer";
+     td;
+      for (@dev) {
         a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 30;
-        txt ' & ' if $_ != $p[$#p];
+        txt ' & ' if $_ != $dev[$#dev];
       }
-      txt "\n";
-    }
-   end;
-  end;
+     end;
+    end;
+  }
+
+  if(grep $_->{publisher}, map @{$_->{producers}}, @$r) {
+    Tr ++$$i % 2 ? (class => 'odd') : ();
+     td mt "_vnpage_publisher";
+     td;
+      for my $l (@lang) {
+        my %p = map $_->{publisher} ? ($_->{id} => $_) : (), map @{$_->{producers}}, grep grep($_ eq $l, @{$_->{languages}}), @$r;
+        my @p = values %p;
+        next if !@p;
+        cssicon "lang $l", mt "_lang_$l";
+        for (@p) {
+          a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 30;
+          txt ' & ' if $_ != $p[$#p];
+        }
+        txt "\n";
+      }
+     end;
+    end;
+  }
 }
 
 

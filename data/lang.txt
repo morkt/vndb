@@ -1486,6 +1486,14 @@ ru : Связи новелл
 en : We have currently no visual novels by this producer.
 ru : У нас пока нет сведений о новеллах авторства этой компании.
 
+:_prodpage_dev
+en : developer
+ru*:
+
+:_prodpage_pub
+en : publisher
+ru*:
+
 
 # producer diff fields
 
@@ -3550,9 +3558,13 @@ ru : суммарно
 en : all
 ru : все
 
-:_vnpage_producers
-en : Producers
-ru : Компании
+:_vnpage_developer
+en : Developer
+ru*:
+
+:_vnpage_publisher
+en : Publishers
+ru*:
 
 :_vnpage_relations
 en : Relations

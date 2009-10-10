@@ -61,7 +61,8 @@ sub dbProducerGet {
     } 0..$#$r;
 
     push @{$r->[$r{$_->{pid}}]{vn}}, $_ for (@{$self->dbAll(q|
-      SELECT MAX(vp.pid) AS pid, v.id, MAX(vr.title) AS title, MAX(vr.original) AS original, MIN(rr.released) AS date
+      SELECT MAX(vp.pid) AS pid, v.id, MAX(vr.title) AS title, MAX(vr.original) AS original, MIN(rr.released) AS date,
+          MAX(CASE WHEN vp.developer = true THEN 1 ELSE 0 END) AS developer, MAX(CASE WHEN vp.publisher = true THEN 1 ELSE 0 END) AS publisher
         FROM releases_producers vp
         JOIN releases_rev rr ON rr.id = vp.rid
         JOIN releases r ON r.latest = rr.id
