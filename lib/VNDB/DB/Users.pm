@@ -9,7 +9,7 @@ our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel dbUserMessageCount dbS
 
 
 # %options->{ username passwd mail order uid ip registered search results page what }
-# what: stats
+# what: stats extended
 sub dbUserGet {
   my $s = shift;
   my %o = (
@@ -43,8 +43,12 @@ sub dbUserGet {
   );
 
   my @select = (
-    qw|id username mail rank salt c_votes c_changes show_nsfw show_list skin customcss ip c_tags ign_votes|,
-    q|encode(passwd, 'hex') AS passwd|, q|extract('epoch' from registered) as registered|,
+    qw|id username c_votes c_changes show_list c_tags|,
+    q|extract('epoch' from registered) as registered|,
+    $o{what} =~ /extended/ ? (
+      qw|mail rank salt skin customcss show_nsfw ign_votes|,
+      q|encode(passwd, 'hex') AS passwd|
+    ) : (),
     $o{what} =~ /stats/ ? (
       '(SELECT COUNT(*) FROM rlists WHERE uid = u.id) AS releasecount',
       '(SELECT COUNT(DISTINCT rv.vid) FROM rlists rl JOIN releases r ON rl.rid = r.id JOIN releases_vn rv ON rv.rid = r.latest WHERE uid = u.id) AS vncount',

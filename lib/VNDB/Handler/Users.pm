@@ -267,7 +267,7 @@ sub edit {
   return $self->htmlDenied if !$self->authInfo->{id} || $self->authInfo->{id} != $uid && !$self->authCan('usermod');
 
   # fetch user info (cached if uid == loggedin uid)
-  my $u = $self->authInfo->{id} == $uid ? $self->authInfo : $self->dbUserGet(uid => $uid)->[0];
+  my $u = $self->authInfo->{id} == $uid ? $self->authInfo : $self->dbUserGet(uid => $uid, what => 'extended')->[0];
   return 404 if !$u->{id};
 
   # check POST data
