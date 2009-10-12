@@ -537,13 +537,20 @@ sub htmlHistory {
 sub htmlSearchBox {
   my($self, $sel, $v) = @_;
 
+  # escape search query for use as a query string value
+  (my $q = $v||'') =~ s/&/%26/g;
+  $q =~ s/\?/%3F/g;
+  $q =~ s/;/%3B/g;
+  $q =~ s/ /%20/g;
+  $q = "?q=$q" if $q;
+
   fieldset class => 'search';
    p class => 'searchtabs';
-    a href => '/v/all', $sel eq 'v' ? (class => 'sel') : (), mt '_searchbox_vn';
-    a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), mt '_searchbox_releases';
-    a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), mt '_searchbox_producers';
-    a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), mt '_searchbox_tags';
-    a href => '/u/all', $sel eq 'u' ? (class => 'sel') : (), mt '_searchbox_users';
+    a href => "/v/all$q", $sel eq 'v' ? (class => 'sel') : (), mt '_searchbox_vn';
+    a href => "/r$q",     $sel eq 'r' ? (class => 'sel') : (), mt '_searchbox_releases';
+    a href => "/p/all$q", $sel eq 'p' ? (class => 'sel') : (), mt '_searchbox_producers';
+    a href => '/g'.($q?"/list$q":''), $sel eq 'g' ? (class => 'sel') : (), mt '_searchbox_tags';
+    a href => "/u/all$q", $sel eq 'u' ? (class => 'sel') : (), mt '_searchbox_users';
    end;
    input type => 'text', name => 'q', id => 'q', class => 'text', value => $v;
    input type => 'submit', class => 'submit', value => mt '_searchbox_submit';
