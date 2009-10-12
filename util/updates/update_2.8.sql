@@ -64,3 +64,14 @@ ALTER TABLE releases_producers ADD CHECK(developer OR publisher);
 ALTER TABLE threads_boards ADD COLUMN lastread smallint;
 
 
+-- changes.type stored as enum
+CREATE TYPE dbentry_type AS ENUM ('v', 'r', 'p');
+ALTER TABLE changes ALTER COLUMN type DROP DEFAULT;
+ALTER TABLE changes ALTER COLUMN type TYPE dbentry_type USING
+  CASE
+    WHEN type = 0 THEN 'v'::dbentry_type
+    WHEN type = 1 THEN 'r'
+    WHEN type = 2 THEN 'p'
+    ELSE NULL -- not allowed to happen, otherwise FIX YOUR DATABASE!
+  END;
+

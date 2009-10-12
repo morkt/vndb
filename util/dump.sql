@@ -5,9 +5,10 @@ CREATE LANGUAGE plpgsql;
 
 -- data types
 
-CREATE TYPE anime_type  AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
-CREATE TYPE medium      AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
-CREATE TYPE vn_relation AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
+CREATE TYPE anime_type   AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
+CREATE TYPE dbentry_type AS ENUM ('v', 'r', 'p');
+CREATE TYPE medium       AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
+CREATE TYPE vn_relation  AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
 
 
 -----------------------------------------
@@ -30,7 +31,7 @@ CREATE TABLE anime (
 -- changes
 CREATE TABLE changes (
   id SERIAL NOT NULL PRIMARY KEY,
-  type smallint NOT NULL DEFAULT 0,
+  type dbentry_type NOT NULL,
   rev integer NOT NULL DEFAULT 1,
   added timestamptz NOT NULL DEFAULT NOW(),
   requester integer NOT NULL DEFAULT 0,

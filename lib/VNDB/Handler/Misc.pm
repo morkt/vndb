@@ -66,10 +66,9 @@ sub homepage {
      my $changes = $self->dbRevisionGet(what => 'item user', results => 10, auto => 1, hidden => 1);
      ul;
       for (@$changes) {
-        my $t = (qw|v r p|)[$_->{type}];
         li;
-         lit mt '_home_recentchanges_item', $t,
-          sprintf('<a href="%s" title="%s">%s</a>', "/$t$_->{iid}.$_->{rev}",
+         lit mt '_home_recentchanges_item', $_->{type},
+          sprintf('<a href="%s" title="%s">%s</a>', "/$_->{type}$_->{iid}.$_->{rev}",
             xml_escape($_->{ioriginal}||$_->{ititle}), xml_escape shorten $_->{ititle}, 33),
           $_;
         end;

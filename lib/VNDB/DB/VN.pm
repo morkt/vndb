@@ -160,7 +160,7 @@ sub dbVNGet {
 # returns: ( local revision, global revision )
 sub dbVNEdit {
   my($self, $id, %o) = @_;
-  my($rev, $cid) = $self->dbRevisionInsert(0, $id, $o{editsum}, $o{uid});
+  my($rev, $cid) = $self->dbRevisionInsert('v', $id, $o{editsum}, $o{uid});
   insert_rev($self, $cid, $id, \%o);
   return ($rev, $cid);
 }
@@ -170,7 +170,7 @@ sub dbVNEdit {
 # returns: ( item id, global revision )
 sub dbVNAdd {
   my($self, %o) = @_;
-  my($id, $cid) = $self->dbItemInsert(0, $o{editsum}, $o{uid});
+  my($id, $cid) = $self->dbItemInsert('v', $o{editsum}, $o{uid});
   insert_rev($self, $cid, $id, \%o);
   return ($id, $cid);
 }

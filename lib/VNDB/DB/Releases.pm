@@ -154,7 +154,7 @@ sub dbReleaseGet {
 # returns: ( local revision, global revision )
 sub dbReleaseEdit {
   my($self, $rid, %o) = @_;
-  my($rev, $cid) = $self->dbRevisionInsert(1, $rid, $o{editsum}, $o{uid});
+  my($rev, $cid) = $self->dbRevisionInsert('r', $rid, $o{editsum}, $o{uid});
   insert_rev($self, $cid, $rid, \%o);
   return ($rev, $cid);
 }
@@ -164,7 +164,7 @@ sub dbReleaseEdit {
 # returns: ( item id, global revision )
 sub dbReleaseAdd {
   my($self, %o) = @_;
-  my($rid, $cid) = $self->dbItemInsert(1, $o{editsum}, $o{uid});
+  my($rid, $cid) = $self->dbItemInsert('r', $o{editsum}, $o{uid});
   insert_rev($self, $cid, $rid, \%o);
   return ($rid, $cid);
 }

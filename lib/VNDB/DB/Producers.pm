@@ -86,7 +86,7 @@ sub dbProducerGet {
 # returns: ( local revision, global revision )
 sub dbProducerEdit {
   my($self, $pid, %o) = @_;
-  my($rev, $cid) = $self->dbRevisionInsert(2, $pid, $o{editsum}, $o{uid});
+  my($rev, $cid) = $self->dbRevisionInsert('p', $pid, $o{editsum}, $o{uid});
   insert_rev($self, $cid, $pid, \%o);
   return ($rev, $cid);
 }
@@ -96,7 +96,7 @@ sub dbProducerEdit {
 # returns: ( item id, global revision )
 sub dbProducerAdd {
   my($self, %o) = @_;
-  my($pid, $cid) = $self->dbItemInsert(2, $o{editsum}, $o{uid});
+  my($pid, $cid) = $self->dbItemInsert('p', $o{editsum}, $o{uid});
   insert_rev($self, $cid, $pid, \%o);
   return ($pid, $cid);
 }

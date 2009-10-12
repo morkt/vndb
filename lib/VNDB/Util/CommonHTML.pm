@@ -505,12 +505,11 @@ sub htmlHistory {
     ],
     row      => sub {
       my($s, $n, $i) = @_;
-      my $tc = [qw|v r p|]->[$i->{type}];
-      my $revurl = "/$tc$i->{iid}.$i->{rev}";
+      my $revurl = "/$i->{type}$i->{iid}.$i->{rev}";
 
       Tr $n % 2 ? ( class => 'odd' ) : ();
        td class => 'tc1_1';
-        a href => $revurl, "$tc$i->{iid}";
+        a href => $revurl, "$i->{type}$i->{iid}";
        end;
        td class => 'tc1_2';
         a href => $revurl, ".$i->{rev}";
