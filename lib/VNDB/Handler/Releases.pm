@@ -490,7 +490,7 @@ sub browse {
     { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
     { name => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
     { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
-    { name => 'tp', required => 0, default => -1, enum => [ -1, @{$self->{release_types}} ] },
+    { name => 'tp', required => 0, default => '', enum => [ '', @{$self->{release_types}} ] },
     { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
@@ -509,7 +509,7 @@ sub browse {
     $f->{ln}[0] ? (languages => $f->{ln}) : (),
     $f->{me}[0] ? (media => $f->{me}) : (),
     $f->{re}[0] ? (resolutions => $f->{re} ) : (),
-    $f->{tp} >= 0 ? (type => $f->{tp}) : (),
+    $f->{tp} ? (type => $f->{tp}) : (),
     $f->{ma_a} || $f->{ma_m} ? (minage => [$f->{ma_m}, $f->{ma_a}]) : (),
     $f->{pa} ? (patch => $f->{pa}) : (),
     $f->{fw} ? (freeware => $f->{fw}) : (),
@@ -620,7 +620,7 @@ sub _filters {
       end;
      end;
      $self->htmlFormPart($f, [ select => short => 'tp', name => mt('_rbrowse_type'),
-       options => [ [-1, mt '_rbrowse_all'], map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ]]);
+       options => [ ['', mt '_rbrowse_all'], map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ]]);
      $self->htmlFormPart($f, [ select => short => 'pa', name => mt('_rbrowse_patch'),
        options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_patchonly'], [2, mt '_rbrowse_patchnone']]]);
      $self->htmlFormPart($f, [ select => short => 'fw', name => mt('_rbrowse_freeware'),

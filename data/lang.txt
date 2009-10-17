@@ -433,15 +433,15 @@ ru : Любительская группа
 
 # release types
 
-:_rtype_0
+:_rtype_complete
 en : Complete
 ru : Полный
 
-:_rtype_1
+:_rtype_partial
 en : Partial
 ru : Частичный
 
-:_rtype_2
+:_rtype_trial
 en : Trial
 ru : Триальный
 

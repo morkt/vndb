@@ -1131,7 +1131,7 @@ div#iv_view {
   height: 11px;
   opacity: 0.5;
 }
-.icons.rt0, .icons.rt1, .icons.rt2 { width: 11px; }
+.icons.rtcomplete, .icons.rtpartial, .icons.rttrial { width: 11px; }
 acronym.icons, acronym.uicons { cursor: default; }
 a .icons { cursor: pointer }
 .icons.oth { background: none; }
@@ -1153,9 +1153,9 @@ a .icons { cursor: pointer }
 .icons.xb3 { background-position: -16px -84px; }
 .icons.sat { background-position: -16px -98px; }
 
-.icons.rt0 { background-position: -32px   0px; }
-.icons.rt1 { background-position: -32px -14px; }
-.icons.rt2 { background-position: -32px -28px; }
+.icons.rtcomplete { background-position: -32px   0px; }
+.icons.rtpartial  { background-position: -32px -14px; }
+.icons.rttrial    { background-position: -32px -28px; }
 .icons.ext { background-position: -32px -42px; }
 .icons.msx { background-position: -32px -56px; }
 .icons.nes { background-position: -32px -70px; }

@@ -8,6 +8,7 @@ CREATE LANGUAGE plpgsql;
 CREATE TYPE anime_type   AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
 CREATE TYPE dbentry_type AS ENUM ('v', 'r', 'p');
 CREATE TYPE medium       AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
+CREATE TYPE release_type AS ENUM ('complete', 'partial', 'trial');
 CREATE TYPE vn_relation  AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
 
 
@@ -116,7 +117,7 @@ CREATE TABLE releases_rev (
   rid integer NOT NULL DEFAULT 0,
   title varchar(250) NOT NULL DEFAULT '',
   original varchar(250) NOT NULL DEFAULT '',
-  type smallint NOT NULL DEFAULT 0,
+  type release_type NOT NULL DEFAULT 'complete',
   website varchar(250) NOT NULL DEFAULT '',
   released integer NOT NULL,
   notes text NOT NULL DEFAULT '',
@@ -448,7 +449,7 @@ BEGIN
       JOIN releases r1 ON rr1.id = r1.latest
       JOIN releases_vn rv1 ON rr1.id = rv1.rid
       WHERE rv1.vid = vn.id
-      AND rr1.type <> 2
+      AND rr1.type <> ''trial''
       AND r1.hidden = FALSE
       AND rr1.released <> 0
       GROUP BY rv1.vid
@@ -460,7 +461,7 @@ BEGIN
       JOIN releases r2 ON rr2.id = r2.latest
       JOIN releases_vn rv2 ON rr2.id = rv2.rid
       WHERE rv2.vid = vn.id
-      AND rr2.type <> 2
+      AND rr2.type <> ''trial''
       AND rr2.released <= TO_CHAR(''today''::timestamp, ''YYYYMMDD'')::integer
       AND r2.hidden = FALSE
       GROUP BY rl2.lang
@@ -473,7 +474,7 @@ BEGIN
       JOIN releases r3 ON rp3.rid = r3.latest
       JOIN releases_vn rv3 ON rp3.rid = rv3.rid
       WHERE rv3.vid = vn.id
-      AND rr3.type <> 2
+      AND rr3.type <> ''trial''
       AND rr3.released <= TO_CHAR(''today''::timestamp, ''YYYYMMDD'')::integer
       AND r3.hidden = FALSE
       GROUP BY rp3.platform

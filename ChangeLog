@@ -6,6 +6,9 @@ git - ?
 	- Converted to ENUM data type:
 	  - vn_relations.relation
 	  - anime.type
+	  - changes.type
+	  - releases_rev.type
+	  - releases_media.medium
 	- New language: Hungarian
 	- Complete rewrite of the Javascript code:
 	  - Intended to be less error prone, more maintainable, and easier to make
