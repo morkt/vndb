@@ -229,7 +229,7 @@ sub vnlist {
     uid => $uid,
     results => 50,
     page => $f->{p},
-    order => $f->{s}.' '.($f->{o} eq 'd' ? 'DESC' : 'ASC'),
+    order => $f->{s}.' '.($f->{o} eq 'd' ? 'DESC' : 'ASC').($f->{s} eq 'vote' ? ', title ASC' : ''),
     voted => $f->{v},
     $f->{c} ne 'all' ? (char => $f->{c}) : (),
   );

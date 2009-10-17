@@ -21,6 +21,7 @@ git - ?
 	- Optimized dbUserGet (mostly for the user list)
 	- All languages are listed on /r and /v/all instead of only those in use
 	- Copy over search query when switching search type (htmlSearchBox)
+	- Fixed obscure sorting bug on user VN list
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout
