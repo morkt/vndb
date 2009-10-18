@@ -50,7 +50,7 @@ sub set_daily {
   # (GMT because we're calculating on the UNIX timestamp, I can easily add an
   #  offset if necessary, but it doesn't really matter what time this cron
   #  runs, as long as it's run on a daily basis)
-  $_[KERNEL]->alarm(daily => int(time/86400+1)*86400);
+  $_[KERNEL]->alarm(daily => int((time+3)/86400+1)*86400);
 }
 
 
@@ -70,7 +70,7 @@ sub set_monthly {
   # We do this by simply incrementing the timestamp with one day and checking gmtime()
   # for a month change. This might not be very reliable, but should be enough for
   # our purposes.
-  my $nextday = int(time/86400+1)*86400;
+  my $nextday = int((time+3)/86400+1)*86400;
   my $thismonth = (gmtime)[5]*100+(gmtime)[4]; # year*100 + month, for easy comparing
   $nextday += 86400 while (gmtime $nextday)[5]*100+(gmtime $nextday)[4] <= $thismonth;
   $_[KERNEL]->alarm(monthly => $nextday);
