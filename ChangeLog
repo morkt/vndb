@@ -26,6 +26,7 @@ git - ?
 	- Copy over search query when switching search type (htmlSearchBox)
 	- Fixed obscure sorting bug on user VN list
 	- Fixed calculation of tags_vn_bayesian.spoiler
+	- Fixed bug with unhiding a producer entry
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout

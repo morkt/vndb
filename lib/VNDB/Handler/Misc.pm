@@ -328,7 +328,7 @@ sub itemmod {
 
   my $obj = $type eq 'v' ? $self->dbVNGet(id => $iid)->[0] :
             $type eq 'r' ? $self->dbReleaseGet(id => $iid, what => 'vn extended')->[0] :
-                           $self->dbProducerGet(id => $iid)->[0];
+                           $self->dbProducerGet(id => $iid, what => 'extended')->[0];
   return 404 if !$obj->{id};
 
   $self->dbItemMod($type, $iid, $act eq 'hide' ? (hidden => !$obj->{hidden}) : (locked => !$obj->{locked}));
