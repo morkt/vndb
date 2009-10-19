@@ -3876,7 +3876,7 @@ ru : Прочие названия
 cs : Aliasy
 
 :_vnedit_alias_msg
-en : Comma seperated list of alternative titles or abbreviations. Can include both official
+en : Comma separated list of alternative titles or abbreviations. Can include both official
      (japanese/english) titles and unofficial titles used around net.[br]
      Titles that are listed in the releases should not be added here!
 ru : Список альтернативных названий или аббревиатур, перечисленных через запятую. Может включать как
@@ -3915,7 +3915,7 @@ ru : Аниме
 cs : Anime
 
 :_vnedit_anime_msg
-en : Whitespace seperated list of [url,http://anidb.net/,AniDB] anime IDs.
+en : Whitespace separated list of [url,http://anidb.net/,AniDB] anime IDs.
      E.g. "1015 3348" will add [url,http://anidb.net/a1015,Shingetsutan Tsukihime]
      and [url,http://anidb.net/a3348,Fate/stay night] as related anime.[br]
      Note: It can take a few minutes for the anime titles to appear on the VN page.
