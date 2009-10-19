@@ -109,30 +109,37 @@ ends with ']'. The following options are supported:
 :_age_years
 en : [_1] [quant,_1,year,years] ago
 ru : [_1] [quant,_1,год,года,лет] назад
+cs*:
 
 :_age_months
 en : [_1] [quant,_1,month,months] ago
 ru : [_1] [quant,_1,месяц,месяца,месяцев] назад
+cs*:
 
 :_age_weeks
 en : [_1] [quant,_1,week,weeks] ago
 ru : [_1] [quant,_1,неделя,недели,недель] назад
+cs*:
 
 :_age_days
 en : [_1] [quant,_1,day,days] ago
 ru : [_1] [quant,_1,день,дня,дней] назад
+cs*:
 
 :_age_hours
 en : [_1] [quant,_1,hour,hours] ago
 ru : [_1] [quant,_1,час,часа,часов] назад
+cs*:
 
 :_age_min
 en : [_1] min ago
 ru : [_1] [quant,_1,минута,минуты,минут] назад
+cs*:
 
 :_age_sec
 en : [_1] sec ago
 ru : [_1] [quant,_1,секунда,секунды,секунд] назад
+cs*:
 
 
 # user ranks
@@ -140,26 +147,32 @@ ru : [_1] [quant,_1,секунда,секунды,секунд] назад
 :_urank_0
 en : visitor
 ru : посетитель
+cs : návštěvník
 
 :_urank_1
 en : banned
 ru : забанен
+cs : zabanovaný
 
 :_urank_2
 en : loser
 ru : лузер
+cs : loser
 
 :_urank_3
 en : user
 ru : пользователь
+cs : uživatel
 
 :_urank_4
 en : mod
 ru : модератор
+cs : moderátor
 
 :_urank_5
 en : admin
 ru : администратор
+cs : administrátor
 
 
 # languages
@@ -167,82 +180,102 @@ ru : администратор
 :_lang_cs
 en : Czech
 ru : Чешский
+cs : Česky
 
 :_lang_da
 en : Danish
 ru : Датский
+cs : Dánsky
 
 :_lang_de
 en : German
 ru : Немецкий
+cs : Německy
 
 :_lang_en
 en : English
 ru : Английский
+cs : Anglicky
 
 :_lang_es
 en : Spanish
 ru : Испанский
+cs : Španělsky
 
 :_lang_fi
 en : Finnish
 ru : Финский
+cs : Finsky
 
 :_lang_fr
 en : French
 ru : Французский
+cs : Francouzsky
 
 :_lang_hu
 en : Hungarian
 ru*:
+cs*:
 
 :_lang_it
 en : Italian
 ru : Итальянский
+cs : Italsky
 
 :_lang_ja
 en : Japanese
 ru : Японский
+cs : Japonsky
 
 :_lang_ko
 en : Korean
 ru : Корейский
+cs : Korejsky
 
 :_lang_nl
 en : Dutch
 ru : Голландский
+cs : Nizozemsky
 
 :_lang_no
 en : Norwegian
 ru : Норвежский
+cs : Norsky
 
 :_lang_pl
 en : Polish
 ru : Польский
+cs : Polsky
 
 :_lang_pt
 en : Portuguese
 ru : Португальский
+cs : Portugalsky
 
 :_lang_ru
 en : Russian
 ru : Русский
+cs : Rusky
 
 :_lang_sv
 en : Swedish
 ru : Шведский
+cs : Švédsky
 
 :_lang_tr
 en : Turkish
 ru : Турецкий
+cs : Turecky
 
 :_lang_vi
 en : Vietnamese
 ru : Вьетнамский
+cs : Vietnamsky
 
 :_lang_zh
 en : Chinese
 ru : Китайский
+cs : Čínsky
 
 
 # platforms
@@ -252,82 +285,102 @@ ru : Китайский
 :_plat_win
 en : Windows
 ru : Windows
+cs : Windows
 
 :_plat_dos
 en : DOS
 ru : DOS
+cs : DOS
 
 :_plat_lin
 en : Linux
 ru : Linux
+cs : Linux
 
 :_plat_mac
 en : Mac OS
 ru : Mac OS
+cs : Mac OS
 
 :_plat_dvd
 en : DVD Player
 ru : DVD Плеер
+cs : DVD Přehrávač
 
 :_plat_gba
 en : Game Boy Advance
 ru : Game Boy Advance
+cs : Game Boy Advance
 
 :_plat_msx
 en : MSX
 ru : MSX
+cs : MSX
 
 :_plat_nds
 en : Nintendo DS
 ru : Nintendo DS
+cs : Nintendo DS
 
 :_plat_nes
 en : Famicom
 ru : Famicom (Dendy)
+cs : Famicom
 
 :_plat_p98
 en : PC-98
 ru : PC-98
+cs : PC-98
 
 :_plat_psp
 en : Playstation Portable
 ru : Playstation Portable
+cs : Playstation Portable
 
 :_plat_ps1
 en : Playstation 1
 ru : Playstation 1
+cs : Playstation 1
 
 :_plat_ps2
 en : Playstation 2
 ru : Playstation 2
+cs : Playstation 2
 
 :_plat_ps3
 en : Playstation 3
 ru : Playstation 3
+cs : Playstation 3
 
 :_plat_drc
 en : Dreamcast
 ru : Dreamcast
+cs : Dreamcast
 
 :_plat_sat
 en : Sega Saturn
 ru : Sega Saturn
+cs : Sega Saturn
 
 :_plat_sfc
 en : Super Nintendo
 ru : Super Nintendo
+cs : Super Nintendo
 
 :_plat_wii
 en : Nintendo Wii
 ru : Nintendo Wii
+cs : Nintendo Wii
 
 :_plat_xb3
 en : Xbox 360
 ru : Xbox 360
+cs : Xbox 360
 
 :_plat_oth
 en : Other
 ru : Другая
+cs : Ostatní
 
 
 # Release media
@@ -335,46 +388,57 @@ ru : Другая
 :_med_cd
 en : [quant,_1,CD,CDs]
 ru*:
+cs*:
 
 :_med_dvd
 en : [quant,_1,DVD,DVDs]
 ru*:
+cs*:
 
 :_med_gdr
 en : [quant,_1,GD-ROM,GD-ROMs]
 ru*:
+cs*:
 
 :_med_blr
 en : [quant,_1,Blu-ray disc,Blu-ray discs]
 ru*:
+cs*:
 
 :_med_flp
 en : [quant,_1,Floppy,Floppies]
 ru*:
+cs*:
 
 :_med_mrt
 en : [quant,_1,Cartridge,Cartridges]
 ru*:
+cs*:
 
 :_med_mem
 en : [quant,_1,Memory card,Memory cards]
 ru*:
+cs*:
 
 :_med_umd
 en : [quant,_1,UMD,UMDs]
 ru*:
+cs*:
 
 :_med_nod
 en : Nintendo Optical [quant,_1,Disk,Disks]
 ru*:
+cs*:
 
 :_med_in
 en : Internet download
 ru*:
+cs*:
 
 :_med_otc
 en : Other
 ru*:
+cs*:
 
 
 # VN relations
@@ -382,42 +446,52 @@ ru*:
 :_vnrel_seq
 en : Sequel
 ru*:
+cs*:
 
 :_vnrel_preq
 en : Prequel
 ru*:
+cs*:
 
 :_vnrel_set
 en : Same setting
 ru*:
+cs*:
 
 :_vnrel_alt
 en : Alternative version
 ru*:
+cs*:
 
 :_vnrel_char
 en : Shares characters
 ru*:
+cs*:
 
 :_vnrel_side
 en : Side story
 ru*:
+cs*:
 
 :_vnrel_par
 en : Parent story
 ru*:
+cs*:
 
 :_vnrel_ser
 en : Same series
 ru*:
+cs*:
 
 :_vnrel_fan
 en : Fandisc
 ru*:
+cs*:
 
 :_vnrel_orig
 en : Original game
 ru*:
+cs*:
 
 
 # producer types
@@ -425,14 +499,17 @@ ru*:
 :_ptype_co
 en : Company
 ru : Компания
+cs : Společnost
 
 :_ptype_in
 en : Individual
 ru : Частное лицо
+cs : Jednotlivec
 
 :_ptype_ng
 en : Amateur group
 ru : Любительская группа
+cs : Amatérská skupina
 
 
 # release types
@@ -440,14 +517,17 @@ ru : Любительская группа
 :_rtype_complete
 en : Complete
 ru : Полный
+cs : Kompletní
 
 :_rtype_partial
 en : Partial
 ru : Частичный
+cs : Částečné
 
 :_rtype_trial
 en : Trial
 ru : Триальный
+cs : Trial
 
 
 # Anime types
@@ -455,30 +535,37 @@ ru : Триальный
 :_animetype_tv
 en : TV Series
 ru*:
+cs*:
 
 :_animetype_ova
 en : OVA
 ru*:
+cs*:
 
 :_animetype_mov
 en : Movie
 ru*:
+cs*:
 
 :_animetype_oth
 en : Other
 ru*:
+cs*:
 
 :_animetype_web
 en : Web
 ru*:
+cs*:
 
 :_animetype_spe
 en : TV Special
 ru*:
+cs*:
 
 :_animetype_mv
 en : Music Video
 ru*:
+cs*:
 
 
 # Discussion board types
@@ -486,22 +573,27 @@ ru*:
 :_dboard_an
 en : Announcements
 ru : Объявления
+cs : Oznámení
 
 :_dboard_db
 en : VNDB Discussions
 ru : Форум VNDB
+cs : Diskuse o VNDB
 
 :_dboard_v
 en : Visual novels
 ru : Новеллы
+cs : Vizuální novely
 
 :_dboard_p
 en : Producers
 ru : Компании
+cs : Producenti
 
 :_dboard_u
 en : Users
 ru : Пользователи
+cs : Uživatelé
 
 
 # Wishlist statuses
@@ -509,18 +601,22 @@ ru : Пользователи
 :_wish_0
 en : high
 ru : высокий
+cs : vysoká
 
 :_wish_1
 en : medium
 ru : средний
+cs : střední
 
 :_wish_2
 en : low
 ru : низкий
+cs : nízká
 
 :_wish_3
 en : blacklist
 ru : в чёрном списке
+cs : blacklist
 
 
 # 'Voiced' information for releases
@@ -528,22 +624,27 @@ ru : в чёрном списке
 :_voiced_0
 en : Unknown
 ru : Неизвестно
+cs : Není známo
 
 :_voiced_1
 en : Not voiced
 ru : Нет озвучки
+cs : Bez hlasu
 
 :_voiced_2
 en : Only ero scenes voiced
 ru : Озвучены лишь эросцены
+cs : S hlasem pouze v ero scénách
 
 :_voiced_3
 en : Partially voiced
 ru : Частичная озвучка
+cs : Částečně s hlasem
 
 :_voiced_4
 en : Fully voiced
 ru : Озвучено целиком
+cs : Plně s hlasem
 
 
 # 'Animated' information for releases
@@ -551,22 +652,27 @@ ru : Озвучено целиком
 :_animated_0
 en : Unknown
 ru : Неизвестно
+cs : Není známo
 
 :_animated_1
 en : No animations
 ru : Без анимации
+cs : Bez animací
 
 :_animated_2
 en : Simple animations
 ru : Простая анимация
+cs : Jednoduché animace
 
 :_animated_3
 en : Some fully animated scenes
 ru : Некоторые сцены анимированы целиком
+cs : Některé plně animované scény
 
 :_animated_4
 en : All scenes fully animated
 ru : Все сцены полностью анимированы
+cs : Všechny scény plně animovány
 
 
 # Rating indications
@@ -574,42 +680,52 @@ ru : Все сцены полностью анимированы
 :_vote_1
 en : worst ever
 ru : хуже некуда
+cs : absolutně nejhorší
 
 :_vote_2
 en : awful
 ru : ужасно
+cs : hrozná
 
 :_vote_3
 en : bad
 ru : плохо
+cs : špatná
 
 :_vote_4
 en : weak
 ru : слабо
+cs : slabá
 
 :_vote_5
 en : so-so
 ru : так себе
+cs : taktak
 
 :_vote_6
 en : decent
 ru : неплохо
+cs : slušná
 
 :_vote_7
 en : good
 ru : хорошо
+cs : dobrá
 
 :_vote_8
 en : very good
 ru : здорово
+cs : velmi dobrá
 
 :_vote_9
 en : excellent
 ru : отлично
+cs : skvělá
 
 :_vote_10
 en : masterpiece
 ru : шедевр
+cs : mistrovský kus
 
 
 # VN lengths
@@ -617,26 +733,32 @@ ru : шедевр
 :_vnlength_0
 en : Unknown
 ru : Неизвестно
+cs : Není známo
 
 :_vnlength_1
 en : Very short[index,_1,, (< 2 hours), (OMGWTHOTL~, A Dream of Summer)]
 ru : Очень короткая[index,_1,, (< 2 часов), (OMGWTFOTL~, A Dream Of Summer)]
+cs : Velmi krátká[index,_1,, (< 2 hours), (OMGWTHOTL~, A Dream of Summer)]
 
 :_vnlength_2
 en : Short[index,_1,, (2 - 10 hours), (Narcissu~, Planetarian)]
 ru : Короткая[index,_1,, (2 - 10 часов), (Narcissu~, Planetarian)]
+cs : Krátká[index,_1,, (2 - 10 hours), (Narcissu~, Planetarian)]
 
 :_vnlength_3
 en : Medium[index,_1,, (10 - 30 hours), (Kana: Little Sister)]
 ru : Средняя[index,_1,, (10 - 30 часов), (Kana: Little Sister)]
+cs : Střední[index,_1,, (10 - 30 hours), (Kana: Little Sister)]
 
 :_vnlength_4
 en : Long[index,_1,, (30 - 50 hours), (Tsukihime)]
 ru : Длинная[index,_1,, (30 - 50 часов), (Tsukihime)]
+cs : Dlouhá[index,_1,, (30 - 50 hours), (Tsukihime)]
 
 :_vnlength_5
 en : Very long[index,_1,, (> 50 hours), (Clannad)]
 ru : Очень длинная[index,_1,, (> 50 часов), (Clannad)]
+cs : Velmi dlouhá[index,_1,, (> 50 hours), (Clannad)]
 
 
 # VN list statuses
@@ -644,42 +766,52 @@ ru : Очень длинная[index,_1,, (> 50 часов), (Clannad)]
 :_rlst_rstat_0
 en : Unknown
 ru*:
+cs*:
 
 :_rlst_rstat_1
 en : Pending
 ru*:
+cs*:
 
 :_rlst_rstat_2
 en : Obtained
 ru*:
+cs*:
 
 :_rlst_rstat_3
 en : On loan
 ru*:
+cs*:
 
 :_rlst_rstat_4
 en : Deleted
 ru*:
+cs*:
 
 :_rlst_vstat_0
 en : Unknown
 ru*:
+cs*:
 
 :_rlst_vstat_1
 en : Playing
 ru*:
+cs*:
 
 :_rlst_vstat_2
 en : Finished
 ru*:
+cs*:
 
 :_rlst_vstat_3
 en : Stalled
 ru*:
+cs*:
 
 :_rlst_vstat_4
 en : Dropped
 ru*:
+cs*:
 
 
 # Form messages
@@ -687,106 +819,132 @@ ru*:
 :_formerr_e_login_failed
 en : Invalid username or password
 ru : Некорректное имя пользователя или пароль
+cs : Neplatné uživatelské jméno nebo heslo
 
 :_formerr_e_nomail
 en : No user found with that email address
 ru : Пользователя с такой электронной почтой не существует
+cs : Uživatel s touto e-mailovou adresou nebyl nalezen
 
 :_formerr_e_passmatch
 en : Passwords do not match
 ru : Пароли не совпадают
+cs : Hesla nejsou stejná
 
 :_formerr_e_usrexists
 en : Someone already has this username, please choose something else
 ru : Кто-то уже зарегистрировал такой ник, пожалуйста выберите другой
+cs : Toto uživatelské jméno už je v užívání, vyberte prosím jiné
 
 :_formerr_e_mailexists
 en : Someone already registered with that email address
 ru : Кто-то уже регистрировался с таким адресом электронной почты
+cs : Tuto e-mailovou adresu již někdo k registraci použil
 
 :_formerr_e_noimage
 en : Image must be in JPEG or PNG format
 ru : Изображение должно быть в формате JPEG, либо в формате PNG
+cs : Obrázek musí být v JPEG nebo PNG formátu
 
 :_formerr_e_toolarge
 en : Image is too large, only 500kB allowed
 ru : Изображение слишком большое, 500 кб - максимально допустимый предел
+cs : Obrázek je moc velký, je povoleno pouze 500kB
 
 :_formerr_e_oneaday
 en : You can only register one account from the same IP within 24 hours
 ru : Вы можете зарегистрировать учётную запись с одного и того же IP лишь по прошествии 24 часов
+cs : V rámci 24 hodin si lze z jedné IP adresy zaregistrovat pouze jeden účet
 
 :_formerr_e_nochanges
 en : No changes, please don't create an entry that is fully identical to another
 ru : Изменения отсутствуют, пожалуйста не создавайте идентичных копий записей
+cs : Nenalezeny změny, netvořte prosím záznam, který je plně totožný s jiným
 
 :_formerr_e_doublepost
 en : Please wait 30 seconds before making another post
 ru : Прежде чем публиковать очередное сообщение, пожалуйста подождите 30 секунд
+cs : Před posláním dalšího příspěvku počkejte prosím 30 sekund
 
 :_formerr_title
 en : Error
 ru : Ошибка
+cs : Chyba
 
 :_formerr_subtitle
 en : Form could not be sent:
 ru : Невозможно отправить форму:
+cs : Dokument nemohl být odeslán:
 
 :_formerr_required
 en : [_1] is a required field!
 ru : [_1] - обязательное поле!
+cs : [_1] je pole, které musí být vyplněno!
 
 :_formerr_minlength
 en : [_1]: should have at least [_2] characters
 ru : [_1]: [quant,_2,необходим,необходимы,необходимо] хотя бы [_2] [quant,_2,символ,символа,символов]
+cs : [_1]: musí mít minimálně [_2] znaků
 
 :_formerr_maxlength
 en : [_1]: only [_2] characters allowed
 ru : [_1]: [quant,_2,разрешён,разрешены,разрешено] лишь [_2] [quant,_2,символ,символа,символов]
+cs : [_1]: je povoleno maximálně [_2] znaků
 
 :_formerr_enum
 en : [_1] must be one of the following: [_2]
 ru : Поле '[_1]' должно равняться одному из следующих значений: [_2]
+cs : [_1] musí být z následujícího seznamu: [_2]
 
 :_formerr_wrongboard
 en : Wrong board: [_1]
 ru : Некорректная ветка: [_1]
+cs : Špatný board: [_1]
 
 :_formerr_tagexists
 en : Tag [url,_1,_2] already exists!
 ru : Тег [url,_1,_2] уже существует!
+cs : Tag [url,_1,_2] již existuje!
 
 :_formerr_tpl_mail
 en : Invalid email address
 ru : Некорректный адрес электронной почты
+cs : Neplatná e-mailová adresa
 
 :_formerr_tpl_url
 en : [_1]: Invalid URL
 ru : [_1]: Некорректная ссылка
+cs : [_1]: Neplatná URL
 
 :_formerr_tpl_asciiprint
 en : [_1] may only contain ASCII characters
 ru : Поле '[_1]' может содержать лишь символы диапазона ASCII
+cs : [_1] smí obsahovat pouze znaky ASCII
 
 :_formerr_tpl_int
 en : [_1]: Not a valid number
 ru : [_1]: Не является правильным числом
+cs : [_1]: Neplatné číslo
 
 :_formerr_tpl_pname
 en : [_1] can only contain lowercase alphanumeric characters and a hyphen, and must start with a character
 ru : Поле '[_1]' может содержать лишь символы буквенно-цифрового диапазона в нижнем регистре и чёрточку, а так же начинаться с буквы
+cs : [_1] smí obsahovat pouze malá písmena, čísla a pomlčku, a musí začínat písmenem
 
 :_form_tab_all
 en : All items
 ru : Все поля
+cs : Všechny položky
 
 :_form_editsum
 en : Edit summary
 ru : Суммарно о правке
+cs : Shrnutí editace
 
 :_form_submit
 en : Submit
 ru : Отправить
+cs : Potvrdit
 
 
 # Common javascript strings
@@ -794,50 +952,62 @@ ru : Отправить
 :_js_expand
 en : expand
 ru*:
+cs*:
 
 :_js_collapse
 en : collapse
 ru*:
+cs*:
 
 :_js_loading
 en : Loading...
 ru*:
+cs*:
 
 :_js_date_year
 en : -year-
 ru*:
+cs*:
 
 :_js_date_month
 en : -month-
 ru*:
+cs*:
 
 :_js_date_day
 en : -day-
 ru*:
+cs*:
 
 :_js_ds_noresults
 en : No results...
 ru*:
+cs*:
 
 :_js_iv_close
 en : close
 ru*:
+cs*:
 
 :_js_iv_prev
 en : previous
 ru*:
+cs*:
 
 :_js_iv_next
 en : next
 ru*:
+cs*:
 
 :_js_ds_tag_meta
 en : meta
 ru*:
+cs*:
 
 :_js_ds_tag_mod
 en : awaiting moderation
 ru*:
+cs*:
 
 
 
@@ -854,12 +1024,14 @@ ru*:
 :_site_title
 en : The Visual Novel Database
 ru : The Visual Novel Database
+cs : Databáze Vizuálních Novel
 
 
 # the 'ALL' in "ALL A B C D .. #"
 :_char_all
 en : ALL
 ru : ВСЕ
+cs : VŠE
 
 
 # Main menu
@@ -867,54 +1039,67 @@ ru : ВСЕ
 :_menu
 en : Menu
 ru : Меню
+cs : Menu
 
 :_menu_home
 en : Home
 ru : Главная
+cs : Home
 
 :_menu_vn
 en : Visual novels
 ru : Новеллы
+cs : Vizuální novely
 
 :_menu_releases
 en : Releases
 ru : Выпуски
+cs : Vydání
 
 :_menu_producers
 en : Producers
 ru : Компании
+cs : Producenti
 
 :_menu_tags
 en : Tags
 ru : Теги
+cs : Tagy
 
 :_menu_users
 en : Users
 ru : Пользователи
+cs : Uživatelé
 
 :_menu_recent_changes
 en : Recent changes
 ru : Свежие правки
+cs : Poslední změny
 
 :_menu_discussion_board
 en : Discussion board
 ru : Форум
+cs : Diskusní board
 
 :_menu_faq
 en : FAQ
 ru : ЧаВо
+cs : FAQ
 
 :_menu_randvn
 en : Random visual novel
 ru : Случайная новелла
+cs : Náhodná vizuální novela
 
 :_menu_webchat
 en : webchat
 ru : Веб-чат
+cs : webchat
 
 :_menu_emptysearch
 en : search
 ru : поиск
+cs : hledat
 
 
 # User menu
@@ -922,80 +1107,99 @@ ru : поиск
 :_menu_myprofile
 en : My Profile
 ru : Мой профиль
+cs : Můj profil
 
 :_menu_myvnlist
 en : My Visual Novel List
 ru : Мой список новелл
+cs : Můj list vizuálních novel
 
 :_menu_mywishlist
 en : My Wishlist
 ru : Мой список желаемого
+cs : Můj wishlist
 
 # [_1] = number of messages
 :_menu_mymessages
 en : My Messages ([_1])
 ru : Мои сообщения
+cs : Mé zprávy ([_1])
 
 :_menu_mychanges
 en : My Recent Changes
 ru : Мои недавние правки
+cs : Mé poslední změny
 
 :_menu_mytags
 en : My Tags
 ru : Мои теги
+cs : Moje tagy
 
 :_menu_addvn
 en : Add Visual Novel
 ru : Добавить новеллу
+cs : Přidat vizuální novelu
 
 :_menu_addproducer
 en : Add Producer
 ru : Добавить компанию
+cs : Přidat producenta
 
 :_menu_logout
 en : Logout
 ru : Выйти
+cs : Odhlásit
 
 # used for both the box title and submit button
 :_menu_login
 en : Login
 ru : Вход
+cs : Přihlášení
 
 :_menu_loginmsg
 en : Need to [url,_1,register],[br]
      or [url,_2,forgot your password]?
 ru : Нужна [url,_1,регистрация],[br]
      или [url,_2,забыли свой пароль]?
+cs : Potřebujete se [url,_1,přihlásit],[br]
+     nebo jste [url,_2,zapomněli heslo]?
 
 # database statistics
 
 :_menu_dbstats
 en : Database Statistics
 ru : Статистика базы данных
+cs : Statistiky databáze
 
 :_menu_stat_vn
 en : Visual Novels
 ru : Новелл
+cs : Vizuální novely
 
 :_menu_stat_releases
 en : Releases
 ru : Выпусков
+cs : Vydání
 
 :_menu_stat_producers
 en : Producers
 ru : Компаний
+cs : Producenti
 
 :_menu_stat_users
 en : Users
 ru : Пользователей
+cs : Uživatelé
 
 :_menu_stat_threads
 en : Threads
 ru : Тем
+cs : Thready
 
 :_menu_stat_posts
 en : Posts
 ru : Сообщений
+cs : Příspevky
 
 
 # Footer
@@ -1003,10 +1207,12 @@ ru : Сообщений
 :_footer_aboutus
 en : abous us
 ru : о нас
+cs : o nás
 
 :_footer_source
 en : source
 ru : исходный код
+cs : zdroj
 
 
 # Main tabs (those on the right top of the highest box)
@@ -1014,70 +1220,85 @@ ru : исходный код
 :_mtabs_hist
 en : history
 ru : история
+cs : historie
 
 :_mtabs_discuss
 en : discussions ([_1])
 ru : обсуждения ([_1])
+cs : diskuse ([_1])
 
 # the following 4 tabs are only present on user pages
 :_mtabs_posts
 en : posts
 ru : сообщения
+cs : příspevky
 
 :_mtabs_wishlist
 en : wishlist
 ru : список желаемого
+cs : wishlist
 
 :_mtabs_list
 en : list
 ru : список
+cs : seznam
 
 :_mtabs_tags
 en : tags
 ru : теги
+cs : tagy
 
 # modify tags on VN pages
 :_mtabs_tagmod
 en : modify tags
 ru : править теги
+cs : změnit tagy
 
 # copy a release
 :_mtabs_copy
 en : copy
 ru : копировать
+cs : kopírovat
 
 # following line is also used on revision pages (it's the same action, anyway)
 :_mtabs_edit
 en : edit
 ru : правка
+cs : upravit
 
 # hide/unhide a DB item
 :_mtabs_hide
 en : hide
 ru : скрыть
+cs : skrýt
 
 :_mtabs_unhide
 en : unhide
 ru : показать
+cs : odkrýt
 
 # lock/unlock for editing
 :_mtabs_lock
 en : lock
 ru : заблокировать
+cs : zamknout
 
 :_mtabs_unlock
 en : unlock
 ru : снять блокировку
+cs : odemknout
 
 # delete
 :_mtabs_del
 en : del
 ru : удалить
+cs : smazat
 
 # VN relations
 :_mtabs_relations
 en : relations
 ru : связи
+cs : vztahy
 
 
 # Navigation buttons on the browse pages
@@ -1085,10 +1306,12 @@ ru : связи
 :_browse_previous
 en : previous
 ru : назад
+cs : předchozí
 
 :_browse_next
 en : next
 ru : далее
+cs : další
 
 
 # Revision pages
@@ -1096,31 +1319,38 @@ ru : далее
 :_revision_previous
 en : earlier revision
 ru : более ранняя редакция
+cs : dřívější revize
 
 :_revision_next
 en : later revision
 ru : более поздняя редакция
+cs : pozdější revize
 
 :_revision_title
 en : Revision [_1]
 ru : Редакция [_1]
+cs : Revize [_1]
 
 # it's the summary of the edit, "edit" is not a verb here.
 :_revision_new_summary
 en : Edit summary
 ru : Суммарно
+cs : Shrnutí editace
 
 :_revision_edit_summary
 en : Edit summary of revision [_1]:
 ru : Суммарно о редакции [_1]:
+cs : Shrnutí editace revize[_1]:
 
 :_revision_user_date
 en : By [userstr,_1] on [date,_2,full]
 ru : [userstr,_1], [date,_2,full]
+cs : Změnil [userstr,_1] [date,_2,full]
 
 :_revision_emptyfield
 en : ~[empty~]
 ru : ~[пусто~]
+cs : ~[prázdná~]
 
 
 # tabs above the search boxes
@@ -1128,27 +1358,33 @@ ru : ~[пусто~]
 :_searchbox_vn
 en : Visual novels
 ru : Новеллы
+cs : Vizuální novely
 
 :_searchbox_releases
 en : Releases
 ru : Выпуски
+cs : Vydání
 
 :_searchbox_producers
 en : Producers
 ru : Компании
+cs : Producenti
 
 :_searchbox_tags
 en : Tags
 ru : Теги
+cs : Tagy
 
 :_searchbox_users
 en : Users
 ru : Пользователи
+cs : Uživatelé
 
 # text on the search button
 :_searchbox_submit
 en : Search!
 ru : Искать!
+cs : Hledat!
 
 
 
@@ -1176,39 +1412,55 @@ ru : VNDB.org стремится быть наиболее полной базо
      Если хотите, можете [url,/v/all,побродить по сайту], [url,/u/register,создать учётную запись] или
      поучаствовать в обсуждении новелл (либо самой VNDB) на нашем [url,/t,форуме] (убедительная просьба писать
      только на английском).
+cs : VNDB.org se snaží být srozumitelnou databází informací o vizuálních novelách.[br]
+     Tato stránka funguje na principu wikipedie, tedy kdokoliv může volně přispívat informacemi
+     do databáze, což nám umožňuje tvořit největší, nejpřesnější a nejaktuálnější databázi
+     vizuálních novel na webu.[br]
+     Registrovaní uživatelé si také mohou vytvořit osobní list her, které chtějí hrát nebo dohráli
+     a mohou hodnotit všechny vizuální novely.[br][br]
+     Můžete jen tak [url,/v/all,brouzdat kolem], [url,/u/register,zaregistrovat si účet]
+     nebo se účastnit diskusí o vizuálních novelách nebo VNDB na našem [url,/t,diskusním boardu].
 
 
 :_home_recentchanges
 en : Recent Changes
 ru : Свежие правки
+cs : Poslední změny
 
 :_home_recentchanges_item
 en : [_1]:[_2] by [userstr,_3]
 ru : [_1]:[_2], [userstr,_3]
+cs : [_1]:[_2], [userstr,_3]
 
 :_home_announcements
 en : Announcements
 ru : Объявления
+cs : Oznámení
 
 :_home_recentposts
 en : Recent Posts
 ru : Недавние сообщения
+cs : Poslední příspěvky
 
 :_home_recentposts_item
 en : [age,_1] [_2] by [userstr,_3]
 ru : [age,_1] [_2], [userstr,_3]
+cs : [age,_1] [_2], [userstr,_3]
 
 :_home_randomvn
 en : Random vsual novels
 ru : Случайные новеллы
+cs : Náhodné vizuální novely
 
 :_home_upcoming
 en : Upcoming releases
 ru : Грядущие выпуски
+cs : Nadcházející vydání
 
 :_home_justreleased
 en : Just released
 ru : Только что вышли
+cs : Právě vydáno
 
 
 
@@ -1222,10 +1474,12 @@ ru : Только что вышли
 :_hist_title
 en : Recent changes
 ru : Свежие правки
+cs : Poslední změny
 
 :_hist_title_item
 en : Edit history of [_1]
 ru : История изменений [_1]
+cs : Editovat historii [_1]
 
 
 # the filter buttons
@@ -1233,54 +1487,67 @@ ru : История изменений [_1]
 :_hist_filter_showauto
 en : Show automated edits
 ru : Показать автоматические правки
+cs : Ukázat automatické editace
 
 :_hist_filter_hideauto
 en : Hide automated edits
 ru : Скрыть автоматические правки
+cs : Skrýt automatické editace
 
 :_hist_filter_hidedel
 en : Hide deleted items
 ru : Скрыть удалённые страницы
+cs : Skrýt smazané položky
 
 :_hist_filter_showdel
 en : Show deleted items
 ru : Показать удалённые страницы
+cs : Ukázat smazané položky
 
 :_hist_filter_alltypes
 en : Show all items
 ru : Показать все страницы
+cs : Ukázat všechny položky
 
 :_hist_filter_onlyvn
 en : Only visual novels
 ru : Только новеллы
+cs : Pouze vizuální novely
 
 :_hist_filter_onlyreleases
 en : Only releases
 ru : Только выпуски
+cs : Pouze vydání
 
 :_hist_filter_onlyproducers
 en : Only producers
 ru : Только компании
+cs : Pouze producenti
 
 :_hist_filter_allactions
 en : Show all changes
 ru : Показать все изменения
+cs : Ukázat všechny změny
 
 :_hist_filter_onlyedits
 en : Only edits
 ru : Только правки
+cs : Pouze editace
 
 :_hist_filter_onlynew
 en : Only newly created pages
 ru : Только новые страницы
+cs : Pouze nově stvořené stránky
 
 :_hist_filter_exrel
 en : Exclude edits of releases
 ru : Исключить правки выпусков
+cs : Výjmout editace vydání
 
 :_hist_filter_increl
 en : Include edits of releases
 ru : Включить правки выпусков
+cs : Zahrnout editace vydání
 
 
 # column headers
@@ -1289,18 +1556,22 @@ ru : Включить правки выпусков
 :_hist_col_rev
 en : Rev.
 ru : Ревизия
+cs : Rev.
 
 :_hist_col_date
 en : Date
 ru : Дата
+cs : Datum
 
 :_hist_col_user
 en : User
 ru : Пользователь
+cs : Uživatel
 
 :_hist_col_page
 en : Page
 ru : Страница
+cs : Stránka
 
 
 
@@ -1316,46 +1587,57 @@ ru : Страница
 :_thread_postedin
 en : Posted in
 ru : В теме
+cs : Přispěno v
 
 :_thread_byuser
 en : by [userstr,_1]
 ru : [userstr,_1]
+cs : , [userstr,_1]
 
 :_thread_editpost
 en : edit
 ru : правка
+cs : editovat
 
 :_thread_deletedpost
 en : Post deleted.
 ru : Сообщение удалено.
+cs : Příspěvek smazán.
 
 :_thread_lastmodified
 en : Last modified on [date,_1,full]
 ru : Последний раз редактировалось [date,_1,full]
+cs : Naposledy změněno [date,_1,full]
 
 :_thread_noreply_title
 en : Reply
 ru : Ответить
+cs : Odpovědět
 
 :_thread_noreply_locked
 en : This thread has been locked, you can't reply to it anymore
 ru : Данная тема заблокирована, вы больше не можете в неё ответить
+cs : Tento thread byl zamčen, již se do něj nedá odpovědět
 
 :_thread_noreply_login
 en : You must be logged in to reply to this thread.
 ru : Вы должны быть авторизованы чтобы ответить в эту тему.
+cs : Pro odpověď do tohoto threadu se musíte přihlásit.
 
 :_thread_quickreply_title
 en : Quick reply
 ru : Быстрый ответ
+cs : Rychlá odpověď
 
 :_thread_quickreply_submit
 en : Reply
 ru : Ответить
+cs : Odpovědět
 
 :_thread_quickreply_full
 en : Go advanced...
 ru : В расширенный режим...
+cs : Rozšířený mód...
 
 
 # Post edit/reply/new thread form
@@ -1363,54 +1645,67 @@ ru : В расширенный режим...
 :_postedit_newthread
 en : Start new thread
 ru : Начать новую тему
+cs : Založit nový thread
 
 :_postedit_replyto
 en : Reply to [_1]
 ru : Ответить в [_1]
+cs : Odpovědět na [_1]
 
 :_postedit_edit
 en : Edit post
 ru : Правка сообщения
+cs : Editovat příspěvek
 
 :_postedit_form_username
 en : Username
 ru : Имя пользователя
+cs : Uživatelské jméno
 
 :_postedit_form_title
 en : Thread title
 ru : Название темы
+cs : Název threadu
 
 :_postedit_form_boards
 en : Board(s)
 ru : Форум(ы)
+cs : Board(y)
 
 :_postedit_form_boards_info
 en : Read [url,/d9.2,d9.2] for information about how to specify boards.
 ru : О том как указывать форумы читайте в разделе [url,/d9.2,d9.2].
+cs : Přečtěte si [url,/d9.2,d9.2] pro informace jak určit správný board.
 
 :_postedit_form_locked
 en : Locked
 ru : Заблокировано
+cs : Zamčený
 
 :_postedit_form_topic
 en : Topic
 ru : Тема
+cs : Téma
 
 :_postedit_form_hidden
 en : Hidden
 ru : Скрыто
+cs : Skrytý
 
 :_postedit_form_nolastmod
 en : Don't update last modified field
 ru : Не обновлять дату последнего изменения
+cs : Neměnit poslední změněné pole
 
 :_postedit_form_msg
 en : Message
 ru : Сообщение
+cs : Zpráva
 
 :_postedit_form_msg_format
 en : See [url,/d9.3,d9.3] for the allowed formatting codes
 ru : Список разрешённых кодов смотрите в разделе [url,/d9.3,d9.3]
+cs : Přečtěte si [url,/d9.3,d9.3] pro povolené formátovací kódy
 
 
 # Browsing threads by board (/t/{board_id})
@@ -1418,22 +1713,27 @@ ru : Список разрешённых кодов смотрите в разд
 :_disboard_item_title
 en : Related discussions for [_1]
 ru : Темы, относящиеся к [_1]
+cs : Diskuse pro [_1]
 
 :_disboard_rootlink
 en : Discussion board
 ru : Форум
+cs : Diskusní board
 
 :_disboard_nothreads
 en : No related threads found
 ru : Связанных тем не найдено
+cs : Nenalezeny žádné diskuse
 
 :_disboard_createyourown
 en : Why not create one yourself?
 ru : Почему бы не создать новую?
+cs : Proč jednu nevytvořite sami?
 
 :_disboard_startnew
 en : Start a new thread
 ru : Начать новую тему
+cs : Začít nový thread
 
 
 # The discussion board index (/t)
@@ -1441,6 +1741,7 @@ ru : Начать новую тему
 :_disindex_title
 en : Discussion board index
 ru : Корневая директория форума
+cs : Seznam diskusních boardů
 
 
 # Thread list (on discussion board index and board browser)
@@ -1448,18 +1749,22 @@ ru : Корневая директория форума
 :_threadlist_col_topic
 en : Topic
 ru : Тема
+cs : Téma
 
 :_threadlist_col_replies
 en : Replies
 ru : Ответов
+cs : Odpovědi
 
 :_threadlist_col_starter
 en : Starter
 ru : Автор темы
+cs : První příspěvek
 
 :_threadlist_col_lastpost
 en : Last post
 ru : Последнее сообщение
+cs : Poslední příspěvek
 
 
 
@@ -1477,26 +1782,32 @@ ru : Последнее сообщение
 :_prodpage_langtype
 en : [_1] [_2]
 ru : [_2], основной язык: [_1]
+cs : [_2], [_1]
 
 :_prodpage_aliases
 en : a.k.a. [_1]
 ru : a.k.a. [_1]
+cs : a.k.a. [_1]
 
 :_prodpage_vnrel
 en : Visual Novel Relations
 ru : Связи новелл
+cs : Vztahy k vizuálním novelám
 
 :_prodpage_norel
 en : We have currently no visual novels by this producer.
 ru : У нас пока нет сведений о новеллах авторства этой компании.
+cs : Nemáme žádné vizuální novely od tohoto producenta.
 
 :_prodpage_dev
 en : developer
 ru*:
+cs*:
 
 :_prodpage_pub
 en : publisher
 ru*:
+cs*:
 
 
 # producer diff fields
@@ -1504,30 +1815,37 @@ ru*:
 :_revfield_p_type
 en : Type
 ru : Тип
+cs : Typ
 
 :_revfield_p_name
 en : Name (romaji)
 ru : Название (ромадзи)
+cs : Jméno (romaji)
 
 :_revfield_p_original
 en : Original name
 ru : Оригинальное название
+cs : Originální jméno
 
 :_revfield_p_alias
 en : Aliases
 ru : Прочие названия
+cs : Aliasy
 
 :_revfield_p_lang
 en : Language
 ru : Язык
+cs : Jazyk
 
 :_revfield_p_website
 en : Website
 ru : Веб-сайт
+cs : Internetová stránka
 
 :_revfield_p_desc
 en : Description
 ru : Описание
+cs : Popis
 
 
 # Add/Edit producer
@@ -1535,50 +1853,62 @@ ru : Описание
 :_pedit_title_edit
 en : Edit [_1]
 ru : Править [_1]
+cs : Editovat [_1]
 
 :_pedit_title_add
 en : Add new producer
 ru : Добавление новой компании
+cs : Přidat nového producenta
 
 :_pedit_form_generalinfo
 en : General info
 ru : Основная информация
+cs : Obecné informace
 
 :_pedit_form_type
 en : Type
 ru : Тип
+cs : Typ
 
 :_pedit_form_name
 en : Name (romaji)
 ru : Название (ромадзи)
+cs : Jméno (romaji)
 
 :_pedit_form_original
 en : Original name
 ru : Оригинальное название
+cs : Originální jméno
 
 :_pedit_form_original_note
 en : The original name of the producer, leave blank if it is already in the Latin alphabet.
 ru : Оригинальное название компании, оставьте пустым если уже в латинском алфавите.
+cs : Originální jméno producenta, ponechte prázdné, pokud již je v latince.
 
 :_pedit_form_alias
 en : Aliases
 ru : Прочие названия
+cs : Aliasy
 
 :_pedit_form_alias_note
 en : (Un)official aliases, separated by a comma.
 ru : (Не)официальные альтернативные названия, через запятую.
+cs : Ne(oficiální) aliasy, oddělené čárkou.
 
 :_pedit_form_lang
 en : Primary language
 ru : Основной язык
+cs : Hlavní jazyk
 
 :_pedit_form_website
 en : Website
 ru : Веб-сайт
+cs : Internetová stránka
 
 :_pedit_form_desc
 en : Description
 ru : Описание
+cs : Popis
 
 
 # Browse/search producers
@@ -1586,18 +1916,22 @@ ru : Описание
 :_pbrowse_title
 en : Browse producers
 ru : Обзор компаний
+cs : Procházet producenty
 
 :_pbrowse_searchres
 en : Search results
 ru : Результаты поиска
+cs : Výsledky hledání
 
 :_pbrowse_list
 en : Producer list
 ru : Список компаний
+cs : Seznam producentů
 
 :_pbrowse_noresults
 en : No results found
 ru : Ничего не найдено
+cs : Nenalezeny žádné výsledky
 
 
 
@@ -1613,94 +1947,117 @@ ru : Ничего не найдено
 :_revfield_r_vn
 en : Relations
 ru : Связи
+cs : Vztahy
 
 :_revfield_r_type
 en : Type
 ru : Тип
+cs : Typ
 
 :_revfield_r_patch
 en : Patch
 ru : Патч
+cs : Patch
 
 :_revfield_r_freeware
 en : Freeware
 ru : Freeware
+cs : Freeware
 
 :_revfield_r_doujin
 en : Doujin
 ru : Додзинси
+cs : Doujin
 
 :_revfield_r_title
 en : Title (romaji)
 ru : Название (ромадзи)
+cs : Název (romaji)
 
 :_revfield_r_original
 en : Original title
 ru : Оригинальное название
+cs : Originální název
 
 :_revfield_r_gtin
 en : JAN/UPC/EAN
 ru : JAN/UPC/EAN
+cs : JAN/UPC/EAN
 
 :_revfield_r_catalog
 en : Catalog number
 ru : Номер в каталоге
+cs : Číslo v katalogu
 
 :_revfield_r_languages
 en : Language
 ru : Язык
+cs : Jazyk
 
 :_revfield_r_website
 en : Website
 ru : Веб-сайт
+cs : Internetová stránka
 
 :_revfield_r_released
 en : Release date
 ru : Дата выпуска
+cs : Datum vydání
 
 :_revfield_r_minage
 en : Age rating
 ru : Возрастной рейтинг
+cs : Věková přístupnost
 
 :_revfield_r_notes
 en : Notes
 ru : Заметки
+cs : Poznámky
 
 :_revfield_r_platforms
 en : Platforms
 ru : Платформы
+cs : Platformy
 
 :_revfield_r_media
 en : Media
 ru : Носители
+cs : Média
 
 :_revfield_r_resolution
 en : Resolution
 ru : Разрешение
+cs : Rozlišení
 
 :_revfield_r_voiced
 en : Voiced
 ru : Озвучка
+cs : Hlas
 
 :_revfield_r_ani_story
 en : Story animation
 ru : Сюжетная анимация
+cs : Animace příběhu
 
 :_revfield_r_ani_ero
 en : Ero animation
 ru : Анимация эросцен
+cs : Ero animace
 
 :_revfield_r_producers
 en : Producers
 ru : Компании
+cs : Producenti
 
 :_reldiff_developer
 en : developer
 ru*:
+cs*:
 
 :_reldiff_publisher
 en : publisher
 ru*:
+cs*:
 
 
 # Information table (on every release page)
@@ -1708,118 +2065,147 @@ ru*:
 :_relinfo_vnrel
 en : Relation
 ru : Связи
+cs : Vztah
 
 :_relinfo_title
 en : Title
 ru : Название
+cs : Název
 
 :_relinfo_original
 en : Original title
 ru : Оригинальное название
+cs : Originální název
 
 :_relinfo_type
 en : Type
 ru : Тип
+cs : Typ
 
 :_relinfo_type_format
 en : [_1][index,_2,, patch]
 ru : [_1][index,_2,, патч]
+cs : [_1][index,_2,, patch]
 
 :_relinfo_lang
 en : Language
 ru : Язык
+cs : Jazyk
 
 :_relinfo_publication
 en : Publication
 ru : Публикация
+cs : Publikováno
 
 :_relinfo_pub_nopatch
 en : [index,_1,Freeware,Non-free], [index,_2,doujin,commercial]
 ru : [index,_1,Freeware,Несвободная], [index,_2,додзинси,коммерческая]
+cs : [index,_1,Freeware,Non-free], [index,_2,doujin,komerční]
 
 :_relinfo_pub_patch
 en : [index,_1,Freeware,Non-free]
 ru : [index,_1,Freeware,Несвободная]
+cs : [index,_1,Freeware,Non-free]
 
 :_relinfo_platform
 en : [quant,_1,Platform,Platforms]
 ru : [quant,_1,Платформа,Платформы,Платформ]
+cs : [quant,_1,Platforma,Platformy,Platforem]
 
 :_relinfo_media
 en : [quant,_1,Medium,Media]
 ru : [quant,_1,Носитель,Носители,Носителей]
+cs : [quant,_1,Médium,Média,Médií]
 
 :_relinfo_resolution
 en : Resolution
 ru : Разрешение
+cs : Rozlišení
 
 :_relinfo_voiced
 en : Voiced
 ru : Озвучка
+cs : Hlas
 
 :_relinfo_ani
 en : Animation
 ru : Анимация
+cs : Animace
 
 :_relinfo_ani_story
 en : Story: [_1]
 ru : Сюжет: [_1]
+cs : Příběh: [_1]
 
 :_relinfo_ani_ero
 en : Ero scenes: [_1]
 ru : Эросцены: [_1]
+cs : Ero scény: [_1]
 
 :_relinfo_released
 en : Released
 ru : Дата выпуска
+cs : Vydáno
 
 :_relinfo_minage
 en : Age rating
 ru : Возрастной рейтинг
+cs : Věková přístupnost
 
 :_relinfo_developer
 en : [quant,_1,Developer,Developers]
 ru*:
+cs*:
 
 :_relinfo_publisher
 en : [quant,_1,Publisher,Publishers]
 ru*:
+cs*:
 
 :_relinfo_catalog
 en : Catalog no.
 ru : № в каталоге
+cs : Č. v katalogu
 
 :_relinfo_links
 en : Links
 ru : Ссылки
+cs : Odkazy
 
 :_relinfo_website
 en : Official website
 ru : Официальный веб-сайт
+cs : Oficiální stránky
 
 :_relinfo_user
 en : User options
 ru : Настройки пользователя
+cs : Možnosti uživatele
 
 :_relinfo_user_notlist
 en : not in your list
 ru : не в вашем списке
+cs : není ve vašem listu
 
 :_relinfo_user_inlist
 en : Status: [_1] / [_2]
 ru : Статус: [_1] / [_2]
+cs : Status: [_1] / [_2]
 
 :_relinfo_user_setr
 en : Set release status
 ru : Установка статуса выпуска
+cs : Změnit status vydání
 
 :_relinfo_user_setv
 en : Set play status
 ru : Установка статуса игры
+cs : Změnit herní status
 
 :_relinfo_user_del
 en : remove from list
 ru : убрать из списка
+cs : odstranit z listu
 
 
 # Editing a release
@@ -1827,216 +2213,270 @@ ru : убрать из списка
 :_redit_title_edit
 en : Edit [_1]
 ru : Правка [_1]
+cs : Editovat [_1]
 
 :_redit_title_copy
 en : Copy [_1]
 ru : Копирование [_1]
+cs : Kopírovat [_1]
 
 :_redit_title_add
 en : Add release to [_1]
 ru : Добавление выпуска для [_1]
+cs : Přidat vydání hry [_1]
 
 :_redit_form_geninfo
 en : General info
 ru : Основная информация
+cs : Obecné informace
 
 :_redit_form_type
 en : Type
 ru : Тип
+cs : Typ
 
 :_redit_form_patch
 en : This release is a patch to another release.
 ru : Данный выпуск является патчем для другого выпуска.
+cs : Toto vydání je patch k jinému vydání.
 
 :_redit_form_freeware
 en : Freeware (i.e. available at no cost)
 ru : Freeware (т.е. распространяется бесплатно)
+cs : Freeware (tj. dostupný zdarma)
 
 :_redit_form_doujin
 en : Doujin (self-published, not by a company)
 ru : Додзинси (выпущено самостоятельно, частным лицом)
+cs : Doujin (publikováno samostatně, ne firmou)
 
 :_redit_form_title
 en : Title (romaji)
 ru : Название (ромадзи)
+cs : Název (romaji)
 
 :_redit_form_original
 en : Original title
 ru : Оригинальное название
+cs : Originální název
 
 :_redit_form_original_note
 en : The original title of this release, leave blank if it already is in the Latin alphabet.
 ru : Оригинальное название данного выпуска, осавьте пустым если уже в латинском алфавите.
+cs : Originální název tohoto vydání, ponechte prázdné, pokud již je latinkou.
 
 :_redit_form_languages
 en : Language(s)
 ru : Язык(и)
+cs : Jazyk(y)
 
 :_redit_form_gtin
 en : JAN/UPC/EAN
 ru : JAN/UPC/EAN
+cs : JAN/UPC/EAN
 
 :_redit_form_catalog
 en : Catalog number
 ru : Номер в каталоге
+cs : Číslo v katalogu
 
 :_redit_form_website
 en : Official website
 ru : Официальный веб-сайт
+cs : Oficiální stránky
 
 :_redit_form_released
 en : Release date
 ru : Дата выпуска
+cs : Datum vydání
 
 :_redit_form_released_note
 en : Leave month or day blank if they are unknown
 ru : Если месяц или день неизвестны, оставьте их пустыми
+cs : Ponechte měsíc či den prázdné, pokud jsou neznámé
 
 :_redit_form_minage
 en : Age rating
 ru : Возрастной рейтинг
+cs : Věková přístupnist
 
 :_redit_form_notes
 en : Notes
 ru : Заметки
+cs : Poznámky
 
 :_redit_form_notes_note
 en : Miscellaneous notes/comments, information that does not fit in the above fields.
      E.g.: Censored/uncensored or for which releases this patch applies.
 ru : Дополнительные заметки/комментарии, информация для которой не нашлось приемлимых полей.
      Т.е.: присутствие/отсутствие цензуры, или для каких версий применим данный патч.
+cs : Různé poznámky/komentáře a informace, které se nehodí do předchozích polí.
+     Např.: Cenzurovaná/necenzurovaná verze nebo pro které vydání je patch.
 
 :_redit_form_format
 en : Format
 ru : Формат
+cs : Formát
 
 :_redit_form_resolution
 en : Resolution
 ru : Разрешение
+cs : Rozlišení
 
 :_redit_form_voiced
 en : Voiced
 ru : Озвучка
+cs : Hlas
 
 :_redit_form_ani_story
 en : Story animation
 ru : Сюжетная анимация
+cs : Animace příběhu
 
 :_redit_form_ani_ero
 en : Ero animation
 ru : Анимация эросцен
+cs : Ero animace
 
 :_redit_form_ani_ero_none
 en : Unknown / no ero scenes
 ru : Неизвестно / нет эросцен
+cs : Není známo / bez ero scén
 
 :_redit_form_ani_ero_note
 en : Animation in erotic scenes, leave to unknown if there are no ero scenes.
 ru : Анимация в эротических сценах, не изменяйте поле если эросцены отсутствуют.
+cs : Animace v ero scénách, ponechte na Není známo, pokud novela nemá ero scény.
 
 :_redit_form_platforms
 en : Platforms
 ru : Платформы
+cs : Platformy
 
 :_redit_form_media
 en : Media
 ru : Носители
+cs : Média
 
 :_redit_form_med_quantity
 en : -quantity-
 ru*:
+cs*:
 
 :_redit_form_med_medium
 en : -medium-
 ru*:
+cs*:
 
 :_redit_form_med_remove
 en : remove
 ru*:
+cs*:
 
 :_redit_form_prod
 en : Producers
 ru : Компании
+cs : Producenti
 
 :_redit_form_prod_sel
 en : Selected producers
 ru : Выбранные компании
+cs : Vybraní producenti
 
 :_redit_form_prod_add
 en : Add producer
 ru : Добавить компанию
+cs : Přidat producenta
 
 :_redit_form_prod_dev
 en : Developer
 ru*:
+cs*:
 
 :_redit_form_prod_pub
 en : Publisher
 ru*:
+cs*:
 
 :_redit_form_prod_both
 en : Both
 ru*:
+cs*:
 
 :_redit_form_prod_addbut
 en : add
 ru*:
+cs*:
 
 :_redit_form_prod_remove
 en : remove
 ru*:
+cs*:
 
 :_redit_form_prod_none
 en : Nothing selected.
 ru*:
+cs*:
 
 :_redit_form_prod_pformat
 en : Producer textbox must start with an ID (e.g. p17)
 ru*:
+cs*:
 
 :_redit_form_prod_notfound
 en : Producer not found!
 ru*:
+cs*:
 
 :_redit_form_prod_double
 en : Producer already selected!
 ru*:
+cs*:
 
 :_redit_form_vn
 en : Visual novels
 ru : Новеллы
+cs : Vizuální novely
 
 :_redit_form_vn_sel
 en : Selected visual novels
 ru : Выбранные новеллы
+cs : Vybrané vizuální novely
 
 :_redit_form_vn_add
 en : Add visual novel
 ru : Добавить новеллу
+cs : Přidat vizuální novelu
 
 :_redit_form_vn_addbut
 en : add
 ru*:
+cs*:
 
 :_redit_form_vn_remove
 en : remove
 ru*:
+cs*:
 
 :_redit_form_vn_none
 en : Nothing selected.
 ru*:
+cs*:
 
 :_redit_form_vn_vnformat
 en : Visual novel textbox must start with an ID (e.g. v17)
 ru*:
+cs*:
 
 :_redit_form_vn_notfound
 en : Visual novel not found!
 ru*:
+cs*:
 
 :_redit_form_vn_double
 en : VN already selected!
 ru*:
+cs*:
 
 
 # Release browser
@@ -2044,22 +2484,27 @@ ru*:
 :_rbrowse_title
 en : Browse releases
 ru : Обзор выпусков
+cs : Procházet vydání
 
 :_rbrowse_col_released
 en : Released
 ru : Выпущено
+cs : Vydáno
 
 :_rbrowse_col_minage
 en : Rating
 ru : Рейтинг
+cs : Hodnocení
 
 :_rbrowse_col_title
 en : Title
 ru : Название
+cs : Název
 
 :_rbrowse_noresults_title
 en : No results found
 ru : Совпадений не найдено
+cs : Nenalezeny žádné výsledky
 
 :_rbrowse_noresults_msg
 en : Sorry, couldn't find anything that comes through your filters. You might want to disable a few filters to get more results.
@@ -2068,102 +2513,129 @@ en : Sorry, couldn't find anything that comes through your filters. You might wa
 ru : Простите, по вашему запросу ничего не найдено. Для получения результатов, попробуйте отключить пару-тройку фильтров.
 
      Также, не забывайте что у нас нет информации об абсолютно всех выпусках. Поэтому, если вы, например, поставили фильтр по разрешению экрана, он исключит все новеллы, не удовлетворяющие выбранному разрешению, даже если в действительности та которую вы ищите имеет искомое разрешение.
+cs : Omlouváme se, nenalezli jsme nic, co by vyhovovalo vašemu nastavení filtrů. Možná najdete více výsledků, pokud nějaké z nich vypnete.
+
+     Také nezapomeňte, že o všech vydáních nemáme všechny údaje. Takže pokud například vyfiltrujete rozlišení obrazovky, pak ve výsledcích nebudou všechna vydání, u kterých neznáme jejich rozlišení, i když by to mohla být právě vydání v rozlišení, o které se zajímáte.
 
 :_rbrowse_filters
 en : Filters
 ru : Фильтры
+cs : Filtry
 
 :_rbrowse_minage
 en : Age rating
 ru : Возрастной рейтинг
+cs : Věková přístupnost
 
 :_rbrowse_ge
 en : Greater than or equal to
 ru : Больше или равно
+cs : Větší než nebo rovno
 
 :_rbrowse_le
 en : Less than or equal to
 ru : Меньше или равно
+cs : Menší než nebo rovno
 
 :_rbrowse_resolution
 en : Screen resolution
 ru : Разрешение экрана
+cs : Rozlišení obrazovky
 
 :_rbrowse_type
 en : Release type
 ru : Тип выпуска
+cs : Typ vydání
 
 :_rbrowse_all
 en : All
 ru : Все
+cs : Vše
 
 :_rbrowse_patch
 en : Patch status
 ru : Статус патча
+cs : Status patche
 
 :_rbrowse_patchonly
 en : Only patches
 ru : Только патчи
+cs : Pouze patche
 
 :_rbrowse_patchnone
 en : Only standalone releases
 ru : Только самостоятельные выпуски
+cs : Pouze samostatná vydání
 
 :_rbrowse_freeware
 en : Freeware
 ru : Freeware
+cs : Freeware
 
 :_rbrowse_freewareonly
 en : Freeware only
 ru : Только Freeware
+cs : Pouze freeware
 
 :_rbrowse_freewarenone
 en : Only non-free releases
 ru : Только несвободные
+cs : Pouze placená vydání
 
 :_rbrowse_doujin
 en : Doujin
 ru : Додзинси
+cs : Doujin
 
 :_rbrowse_doujinonly
 en : Only doujin releases
 ru : Только додзинси
+cs : Pouze doujin vydání
 
 :_rbrowse_doujinnone
 en : Only commercial releases
 ru : Только коммерческие
+cs : Pouze komerční vydání
 
 :_rbrowse_dateafter
 en : Released after
 ru : Выпущены после
+cs : Vydáno po
 
 :_rbrowse_datebefore
 en : Released before
 ru : Выпущены до
+cs : Vydáno před
 
 :_rbrowse_languages
 en : Languages
 ru : Языки
+cs : Jazyky
 
 :_rbrowse_boolor
 en : boolean or, selecting more gives more results
 ru : булевое 'или', чем больше выбрано, тем больше даёт результатов
+cs : boolean nebo, výběr více dá více výsledků
 
 :_rbrowse_platforms
 en : Platforms
 ru : Платформы
+cs : Platformy
 
 :_rbrowse_media
 en : Media
 ru : Носители
+cs : Média
 
 :_rbrowse_apply
 en : Apply
 ru : Применить
+cs : Použít
 
 :_rbrowse_clear
 en : Clear
 ru : Очистить
+cs : Začít znovu
 
 
 
@@ -2179,88 +2651,110 @@ ru : Очистить
 :_tagp_title
 en : [index,_1,Meta tag,Tag]: [_2]
 ru : [index,_1,Мета тег,Тег]: [_2]
+cs : [index,_1,Meta tag,Tag]: [_2]
 
 :_tagp_del_title
 en : Tag deleted
 ru : Тег удалён
+cs : Tag smazán
 
 :_tagp_del_msg
 en : This tag has been removed from the database, and cannot be used or re-added.
      File a request on the [url,/t/db,discussion board] if you disagree with this.
 ru : Данный тег удалён из базы данных, и не может быть использован.
      Напишите на [url,/t/db,форуме], если вы с этим не согласны.
+cs : Tento tag byl smazán z databáze a nemůže být použit nebo znovu přidán.
+     Pokud s tímto nesouhlasíte, napište žádost na [url,/t/db,diskusní board].
 
 :_tagp_pending_title
 en : Waiting for approval
 ru : Ждёт одобрения
+cs : Čeká na schválení
 
 :_tagp_pending_msg
 en : This tag is waiting for a moderator to approve it. You can still use it to tag VNs as you would with a normal tag.
 ru : Данный тег ожидает одобрения модератором. Однако, вы можете использовать его для пометки новелл, как и любой нормальный тег.
+cs : Tento tag čeká na schválení moderátorem. Mezitím ho stále můžete používat jako normální tag.
 
 :_tagp_addchild
 en : Create child tag
 ru : Создать дочерний тег
+cs : Vytvořit závislý tag
 
 :_tagp_indexlink
 en : Tags
 ru : Теги
+cs : Tagy
 
 :_tagp_aliases
 en : Aliases
 ru : Прочие названия
+cs : Aliasy
 
 :_tagp_childs
 en : Child tags
 ru : Дочерние теги
+cs : Závislé tagy
 
 :_tagp_tree
 en : Tag tree
 ru : Древо тега
+cs : Strom tagů
 
 :_tagp_moretags
 en : [_1] more [quant,_1,tag,tags]
 ru : ещё [_1] [quant,_1,тег,тега,тегов]
+cs : [_1] [quant,_1,další tag,další tagy,dalších tagů]
 
 :_tagp_vnlist
 en : Visual novels
 ru : Новеллы
+cs : Vizuální novely
 
 :_tagp_spoil0
 en : Hide spoilers
 ru : Скрыть спойлеры
+cs : Skrýt spoilery
 
 :_tagp_spoil1
 en : Show minor spoilers
 ru : Показать лёгкие спойлеры
+cs : Ukázat menší spoilery
 
 :_tagp_spoil2
 en : Show major spoilers
 ru : Показать жёсткие спойлеры
+cs : Ukázat všechny spoilery
 
 :_tagp_novn
 en : This tag has not been linked to any visual novels yet, or they were hidden because of the spoiler settings.
 ru : Этот тег пока не содержит ссылок ни на одну новеллу, либо они скрыты из-за настроек отображения спойлеров.
+cs : Tento tag ještě nebyl použit v žádné vizuální novele nebo byly tyto skryty kvůli nastavení spoilerů.
 
 :_tagp_cached
 en : NOTE: This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.
 ru : ЗАМЕЧАНИЕ: Данный список кэшируется, поэтому может пройти вплоть до 24 часов, прежде чем новелла, помеченная тегом, отобразится на этой странице.
+cs : POZNÁMKA: Tento list se ukládá do cache, takže může trvat až 24 hodin po otagování vizuální novely do objevení se na této stránce.
 
 :_tagp_vncol_score
 en : Score
 ru : Балл
+cs : Skóre
 
 :_tagp_vncol_title
 en : Title
 ru : Название
+cs : Název
 
 :_tagp_vncol_rel
 en : Released
 ru : Выпуск
+cs : Vydáno
 
 :_tagp_vncol_pop
 en : Popularity
 ru : Популярность
+cs : Popularita
 
 
 # Tag add/edit form (/g+/edit, /g+/add, /g/add)
@@ -2268,26 +2762,32 @@ ru : Популярность
 :_tagedit_err_notfound
 en : Tag '[_1]' not found
 ru : Тег '[_1]' не найден
+cs : Tag '[_1]' nenalezen
 
 :_tagedit_title_add
 en : Add child tag to [_1]
 ru : Добавление дочернего тега для '[_1]'
+cs : Přidat závislý tag tagu [_1]
 
 :_tagedit_title_edit
 en : Edit tag: [_1]
 ru : Править тег: [_1]
+cs : Editovat tag: [_1]
 
 :_tagedit_title_new
 en : Add new tag
 ru : Добавить новый тег
+cs : Přidat nový tag
 
 :_tagedit_req_title
 en : Requesting new tag
 ru : Запросить новый тег
+cs : Požaduje se nový tag
 
 :_tagedit_req_subtitle
 en : Your tag must be approved
 ru : Ваш тег должен быть одобрен
+cs : Váš tag musí být schválen
 
 :_tagedit_req_msg
 en : Because all tags have to be approved by moderators, it can take a while before it will show up in the tag list
@@ -2298,68 +2798,88 @@ ru : В связи с тем что все теги должны быть утв
      займёт некоторое время. Однако, вы всё равно можете голосовать за тег, даже если тот ещё не был утверждён.
      [br][br]
      Также, пожалуйста убедитесь что прочли [url,/d10,рекомендации], тогда вам не придётся гадать, утвердят ваш тег или нет.
+cs : Protože všechny tagy musí být schválené moderátorem, může chvilku trvat, než se objeví na listu tagů
+     nebo na stránce vizuální novely. I před schválením ale můžete stále tag hodnotit.
+     [br][br]
+     Také se ujistěte, že jste přečetli [url,/d10,doporučení], abyste věděli, zda váš tag bude přidán nebo ne.
 
 :_tagedit_frm_name
 en : Primary name
 ru : Основное название
+cs : Hlavní jméno
 
 :_tagedit_frm_by
 en : Added by
 ru : Добавлено
+cs : Přidal
 
 :_tagedit_frm_state
 en : State
 ru : Состояние
+cs : Stav
 
 :_tagedit_frm_state0
 en : Awaiting moderation
 ru : Ждёт модерации
+cs : Čeká na schválení
 
 :_tagedit_frm_state1
 en : Deleted/hidden
 ru : Удалён/скрыт
+cs : Smazán/skryt
 
 :_tagedit_frm_state2
 en : Approved
 ru : Одобрен
+cs : Schválen
 
 :_tagedit_frm_meta
 en : This is a meta-tag (only to be used as parent for other tags, not for linking to VN entries)
 ru : Это мета-тег (его нельзя добавлять к новеллам, он может использоваться лишь как родитель для других тегов)
+cs : Toto je meta-tag (používá se pouze jako mateřský pro ostatní tagy, ne pro vlastní vizuální novely)
 
 :_tagedit_frm_meta_warn
 en : WARNING: Checking this option or selecting "Deleted" as state will permanently delete all existing VN relations!
 ru : ПРЕДУПРЕЖДЕНИЕ: Если выбрать данную опцию, либо выставить состояние "Удалён", произойдёт немедленное удаление всех существующих связей с новеллами!
+cs : VAROVÁNÍ: Zaškrtnutí této volby nebo výběr položky "Smazáno" jako stavu smaže automaticky tag u všech vizuálních novel!
 
 :_tagedit_frm_alias
 en : Aliases
      (separated by newlines)
 ru : Прочие названия
      (каждое с новой строки)
+cs : Aliasy
+     (odděleny novou řádkou)
 
 :_tagedit_frm_desc
 en : Description
 ru : Описание
+cs : Popis
 
 :_tagedit_frm_desc_msg
 en : What should the tag be used for? Having a good description helps users choose which tags to link to a VN.
 ru : Для пометки чего будет использоваться тег? Хорошее описание поможет пользователям выбрать подходящий тег для подходящей новеллы.
+cs : Pro co by měl být tag používán? Tagy s dobrým popisem usnadňují uživatelům jejich používání u vizuálních novel.
 
 :_tagedit_frm_parents
 en : Parent tags
 ru : Родительские теги
+cs : Mateřské tagy
 
 :_tagedit_frm_parents_msg
 en : Comma separated list of tag names to be used as parent for this tag.
 ru : Теги, которые будут задействованы для этого в качестве родительских. Через запятую.
+cs : Seznam tagů, oddělených čárkou, které mají být použity jako mateřské pro tento tag
 
 :_tagedit_frm_merge
 en : Merge tags
 ru : Объединение тегов
+cs : Sjednotit tagy
 
 :_tagedit_frm_merge_tags
 en : Tags to merge
 ru : Теги для объединения
+cs : Tagy ke sjednocení
 
 :_tagedit_frm_merge_msg
 en : Comma separated list of tag names to merge into this one. All votes and aliases/names will be moved over
@@ -2368,6 +2888,9 @@ en : Comma separated list of tag names to merge into this one. All votes and ali
 ru : Список тегов для объединения в данный, через запятую. Все голоса и побочные названия будут перемещены в
      данный тег, а все старые теги удалены. Оставьте поле пустым, если вы не собираетесь проводить объединение.
      [br]ПРЕДУПРЕЖДЕНИЕ: данную операцию отменить невозможно!
+cs : Seznam tagů, oddělených čárkou, ke sjednocení do tohoto. Všechny hlasy a aliasy/jména budou přesunuty do tohoto tagu
+     a staré tagy budou smazány. Nechte toto pole prázdné, pokud nehodláte nic sjednocovat.
+     [br]VAROVÁNÍ: tato akce nejde vrátit!
 
 
 # Plain tag browser (/g/list)
@@ -2375,42 +2898,52 @@ ru : Список тегов для объединения в данный, че
 :_tagb_title
 en : Browse tags
 ru : Обзор тегов
+cs : Procházet tagy
 
 :_tagb_state-1
 en : All
 ru : Все
+cs : Všechny
 
 :_tagb_state0
 en : Awaiting moderation
 ru : Ожидающие модерации
+cs : Čekající na schválení
 
 :_tagb_state1
 en : Deleted
 ru : Удалённые
+cs : Smazané
 
 :_tagb_state2
 en : Accepted
 ru : Одобренные
+cs : Přijaté
 
 :_tagb_noresults
 en : No results found
 ru : Совпадений не найдено
+cs : Nenalezeny žádné výsledky
 
 :_tagb_col_added
 en : Created
 ru : Созданы
+cs : Vytvořené
 
 :_tagb_col_name
 en : Tag
 ru : Тег
+cs : Tag
 
 :_tagb_note_awaiting
 en : awaiting moderation
 ru : ждёт модерации
+cs : čeká na schválení
 
 :_tagb_note_del
 en : deleted
 ru : удалён
+cs : smazán
 
 
 # VN<->Tag voting (/v+/tagmod)
@@ -2418,88 +2951,110 @@ ru : удалён
 :_tagv_title
 en : Add/remove tags for [_1]
 ru : Добавление/удаление тегов для [_1]
+cs : Přidat/odebrat tag pro novelu [_1]
 
 :_tagv_msg_title
 en : Tagging
 ru : Пометка тегами
+cs : Tagování
 
 :_tagv_msg_guidelines
 en : Make sure you have read the [url,/d10,guidelines]!
 ru : Пожалуйста, убедитесь что прочли [url,/d10,рекомендации]!
+cs : Ujistěte se, že jste přečetli [url,/d10,doporučení]!
 
 :_tagv_msg_submit
 en : Don't forget to hit the submit button on the bottom of the page to make your changes permanent.
 ru : Не забудьте сохранить изменения, нажав соответствующую кнопку в низу страницы, иначе они не вступят в силу.
+cs : Nezapomeňte potvrdit tlačítko na spodku stránky, abyste uložili změny trvale.
 
 :_tagv_msg_cache
 en : Some tag information on the site is cached, it can take up to an hour for your changes to be visible everywhere.
 ru : Информация о некоторых тегах на данном сайте кэшируется, поэтому ваши изменения станут видны везде в течение часа.
+cs : Některé informace o tazích na této stránce jsou v cache a může zabrat až hodinu než budou změny vidět.
 
 :_tagv_frm_title
 en : Tags
 ru : Теги
+cs : Tagy
 
 :_tagv_col_you
 en : You
 ru : Вы
+cs : Vy
 
 :_tagv_col_others
 en : Others
 ru : Остальные
+cs : Ostatní
 
 :_tagv_col_tag
 en : Tag
 ru : Тег
+cs : Tag
 
 :_tagv_col_rating
 en : Rating
 ru : Рейтинг
+cs : Hodnocení
 
 :_tagv_col_spoiler
 en : Spoiler
 ru : Спойлер
+cs : Spoiler
 
 :_tagv_save
 en : Save changes
 ru : Сохранить изменения
+cs : Uložit změny
 
 :_tagv_add
 en : Add tag
 ru : Добавить тег
+cs : Přidat tag
 
 :_tagv_addmsg
 en : Check the [url,/g,tag list] to browse all available tags.[br]
      Can't find what you're looking for? [url,/g/new,Request a new tag].
 ru : Откройте [url,/g,список тегов] чтобы увидеть все доступные теги.[br]
      Не нашли что искали? Вы можете [url,/g/new,запросить новый тег].
+cs : Zkontrolujte [url,/g,list tagů] pro seznam všech dostupných tagů.[br]
+     Nenašli jste, co jste hledali? [url,/g/new,Vyžádejte si nový tag].
 
 :_tagv_spoil0
 en : neutral
 ru*:
+cs*:
 
 :_tagv_spoil1
 en : no spoiler
 ru*:
+cs*:
 
 :_tagv_spoil2
 en : minor spoiler
 ru*:
+cs*:
 
 :_tagv_spoil3
 en : major spoiler
 ru*:
+cs*:
 
 :_tagv_notfound
 en : Item not found!
 ru*:
+cs*:
 
 :_tagv_nometa
 en : Can't use meta tags here!
 ru*:
+cs*:
 
 :_tagv_double
 en : Tag is already present!
 ru*:
+cs*:
 
 
 # User tag list (/u+/tags)
@@ -2507,34 +3062,42 @@ ru*:
 :_tagu_title
 en : Tags by [_1]
 ru : Теги [_1]
+cs : Tagy podle [_1]
 
 :_tagu_spoilerwarn
 en : Warning: spoilery tags are not hidden in this list!
 ru : Предупреждение: в этом списке отображаются теги-спойлеры!
+cs : Varování: spoilerové tagy nejsou v tomto seznamu skryté!
 
 :_tagu_notags
 en : [_1] doesn't seem to have used the tagging system yet...
 ru : Похоже, что [_1] пока не использует систему тегов...
+cs : Nezdá se, že by [_1] zatím použil tagovací systém...
 
 :_tagu_col_num
 en : #VNs
 ru : #Новеллы
+cs : #VN
 
 :_tagu_col_name
 en : Tag
 ru : Тег
+cs : Tag
 
 :_tagu_spoil0
 en : No spoiler
 ru : Нет спойлера
+cs : Bez spoilerů
 
 :_tagu_spoil1
 en : Minor spoiler
 ru : Лёгкий спойлер
+cs : Menší spoilery
 
 :_tagu_spoil2
 en : Major spoiler
 ru : Жёсткий спойлер
+cs : Všechny spoilery
 
 
 # Tag index (/g)
@@ -2542,42 +3105,52 @@ ru : Жёсткий спойлер
 :_tagidx_title
 en : Tag index
 ru : Индекс тега
+cs : Seznam tagů
 
 :_tagidx_create
 en : Create new tag
 ru : Создать новый тег
+cs : Vytvořit nový tag
 
 :_tagidx_search
 en : Search tags
 ru : Поиск тегов
+cs : Hledat tag
 
 :_tagidx_browseall
 en : Browse all tags
 ru : Обзор всех тегов
+cs : Procházet všechny tagy
 
 :_tagidx_recent
 en : Recently added
 ru : Недавно добавлены
+cs : Poslední přidané
 
 :_tagidx_popular
 en : Popular tags
 ru : Популярные теги
+cs : Populární tagy
 
 :_tagidx_queue
 en : Awaiting moderation
 ru : Ожидают модерации
+cs : Čekající na schválení
 
 :_tagidx_queue_empty
 en : Moderation queue empty! yay!
 ru : В очереди модерации пусто! Няа!
+cs : Fronta ke schválení prázdná! Jej!
 
 :_tagidx_queue_link
 en : Moderation queue
 ru : Очередь модерации
+cs : Fronta ke schválení
 
 :_tagidx_denied
 en : Denied tags
 ru : Отклонённые теги
+cs : Zamítnuté tagy
 
 
 
@@ -2593,42 +3166,52 @@ ru : Отклонённые теги
 :_wishlist_title_my
 en : My wishlist
 ru : Мой список желаемого
+cs : Můj wishlist
 
 :_wishlist_title_other
 en : [_1]'s wishlist
 ru : Список желаемого [_1]
+cs : Wishlist uživatele [_1]
 
 :_wishlist_noresults
 en : Wishlist empty...
 ru : Список пуст...
+cs : Wishlist je prázdný...
 
 :_wishlist_prio_all
 en : All priorities
 ru : Все приоритеты
+cs : Všechny priority
 
 :_wishlist_col_title
 en : Title
 ru : Название
+cs : Název
 
 :_wishlist_col_prio
 en : Priority
 ru : Приоритет
+cs : Priorita
 
 :_wishlist_col_added
 en : Added
 ru : Добавлено
+cs : Přidáno
 
 :_wishlist_select
 en : -- with selected --
 ru : -- с выбранными --
+cs : -- s vybranými --
 
 :_wishlist_changeprio
 en : Change priority
 ru : Изменить приоритет
+cs : Změnit prioritu
 
 :_wishlist_remove
 en : remove from wishlist
 ru : убрать из списка желаемого
+cs : odstranit z wishlistu
 
 
 # VN list (/u+/list)
@@ -2636,54 +3219,67 @@ ru : убрать из списка желаемого
 :_rlist_title_my
 en : My visual novel list
 ru : Мой список новелл
+cs : Můj list vizuálních novel
 
 :_rlist_title_other
 en : [_1]'s visual novel list
 ru : Список новелл [_1]
+cs : List vizuálních novel uživatele [_1]
 
 :_rlist_voted_all
 en : All
 ru : Все
+cs : Všechny
 
 :_rlist_voted_only
 en : Only voted
 ru : Проголосованные
+cs : Pouze hodnocené
 
 :_rlist_voted_none
 en : Hide voted
 ru : Скрыть проголосованные
+cs : Skrýt hodnocené
 
 :_rlist_col_title
 en : Title
 ru : Название
+cs : Název
 
 :_rlist_col_releases
 en : Releases
 ru : Выпуски
+cs : Vydání
 
 :_rlist_col_vote
 en : Vote
 ru : Голос
+cs : Hodnocení
 
 :_rlist_selection
 en : -- with selected --
 ru : -- с выбранными --
+cs : -- s vybranými --
 
 :_rlist_changerel
 en : Change release status
 ru : Смена статуса выпуска
+cs : Změnit stav vydání
 
 :_rlist_changeplay
 en : Change play status
 ru : Смена статуса игры
+cs : Změnit stav hraní
 
 :_rlist_del
 en : remove from list
 ru : убрать из списка
+cs : odstranit z listu
 
 :_rlist_releasenote
 en : * Obtained/finished/total
 ru : * Приобретено/прочитано/всего
+cs : * Sehnáno/dohráno/celkem
 
 
 
@@ -2699,66 +3295,82 @@ ru : * Приобретено/прочитано/всего
 :_userpage_title
 en : [_1]'s profile
 ru : Учётная запись [_1]
+cs : Profil uživatele [_1]
 
 :_userpage_username
 en : Username
 ru : Имя пользователя
+cs : Uživatelské jméno
 
 :_userpage_registered
 en : Registered
 ru : Регистрация
+cs : Registrován
 
 :_userpage_edits
 en : Edits
 ru : Правки
+cs : Editace
 
 :_userpage_votes
 en : Votes
 ru : Отдано голосов
+cs : Hlasování
 
 :_userpage_votes_item
 en : [url,_1,_2] ([_3] average)
 ru : [url,_1,_2] ([_3] в среднем)
+cs : [url,_1,_2] (průměr [_3])
 
 :_userpage_hidden
 en : hidden
 ru : скрыто
+cs : skryto
 
 :_userpage_tags
 en : Tags
 ru : Теги
+cs : Tagy
 
 :_userpage_tags_item
 en : [_1] [quant,_1,vote,votes] on [_2] distinct [quant,_2,tag,tags] and [_3] visual [quant,_3,novel,novels]
 ru : [_1] [quant,_1,голос,голоса,голосов] по [_2][quant,_2,-у тегу,-м различным тегам,-и различным тегам] и [_3][quant,_3,-й новелле,-м новеллам,-и новеллам]
+cs : [_1] [quant,_1,hlasy,hlasy,hlasů] pro [_2] [quant,_2,tag,různé tagy,různých tagů] a [_3] [quant,_3,vizuální novelu,vizuální novely,vizuálních novel]
 
 :_userpage_list
 en : List stats
 ru : Статистика по спискам
+cs : Statistiky listu
 
 :_userpage_list_item
 en : [_1] [quant,_1,release,releases] of [_2] visual [quant,_2,novel,novels]
 ru : [_1] [quant,_1,выпуск,выпуска,выпусков] [_2][quant,_2,-й новеллы,-х новелл,-и новелл]
+cs : [_1] [quant,_1,vydání,vydání,vydání] [_2] [quant,_2,vizuální novely,vizuálních novel,vizuálních novel]
 
 :_userpage_forum
 en : Forum stats
 ru : Статистика по форуму
+cs : Statistiky fóra
 
 :_userpage_forum_item
 en : [_1] [quant,_1,post,posts], [_2] new [quant,_2,thead,threads].
 ru : [_1] [quant,_1,сообщение,сообщения,сообщений], [_2] [quant,_2,новая тема,новые темы,новых тем]
+cs : [_1] [quant,_1,příspěvek, příspěvky, příspěvků], [_2] [quant,_2,nový thread, nové thready, nových threadů].
 
 :_userpage_forum_browse
 en : Browse posts
 ru : Обзор сообщений
+cs : Procházet příspěvky
 
 :_userpage_votestats
 en : Vote statistics
 ru : Статистика по голосованиям
+cs : Statistiky hlasování
 
 :_userpage_changes
 en : Recent changes
 ru : Свежие правки
+cs : Poslední změny
 
 
 # Login form (/u/login)
@@ -2766,22 +3378,27 @@ ru : Свежие правки
 :_login_title
 en : Login
 ru : Вход
+cs : Přihlásit
 
 :_login_username
 en : Username
 ru : Имя пользователя
+cs : Uživatelské jméno
 
 :_login_register
 en : No account yet?
 ru : Нет учётной записи?
+cs : Ještě nemáte účet?
 
 :_login_password
 en : Password
 ru : Пароль
+cs : Heslo
 
 :_login_forgotpass
 en : Forgot your password?
 ru : Забыли пароль?
+cs : Zapomněli jste své heslo?
 
 
 # Reset password (/u/newpass)
@@ -2809,13 +3426,26 @@ ru : Привет, [_1]
      Постарайтесь больше не забывать свой пароль! :-)
 
      vndb.org
+cs : Zdravíme, [_1]
+
+     Vaše heslo bylo změněno, nyní se můžete přihlásit na http://vndb.org
+     s následujícími informacemi:
+
+     Uživatelské jmno: [_1]
+     Heslo: [_2]
+
+     A snažte se už heslo znovu nezapomenout! :-)
+
+     vndb.org
 :_newpass_mail_subject
 en : New password for [_1]
 ru : Новый пароль для [_1]
+cs : Nové heslo pro uživatele [_1]
 
 :_newpass_title
 en : Forgot password
 ru : Забытый пароль
+cs : Zapomenuté heslo
 
 :_newpass_msg
 en : Forgot your password and can't login to VNDB anymore?
@@ -2825,22 +3455,29 @@ ru : Забыли пароль и больше не можете авториз�
      Без паники! Всё что вам нужно - указать адрес электронной почты, который
      вы использовали для регистрации в VNDB, и мы вышлем вам новый пароль за
      считанные минуты!
+cs : Zapomněli jste své heslo a nemůžete se přihlásit na VNDB?
+     Nebojte! Stačí zadat e-mailovou adresu, se kterou jste se na VNDB registrovali,
+     a my vám do několika minut pošleme heslo nové!
 
 :_newpass_reset_title
 en : Reset password
 ru : Сброс пароля
+cs : Změnit heslo
 
 :_newpass_mail
 en : Email
 ru : E-mail
+cs : E-mail
 
 :_newpass_sent_title
 en : New password
 ru : Новый пароль
+cs : Nové heslo
 
 :_newpass_sent_subtitle
 en : Password reset
 ru : Сбросить пароль
+cs : Změnit heslo
 
 :_newpass_sent_msg
 en : Your password has been reset and your new password should reach your mailbox in a few minutes.[br]
@@ -2851,16 +3488,22 @@ ru : Ваш пароль был сброшен. Через несколько м
      Вы всегда можете изменить пароль после того как прошли авторизацию.[br]
      [br]
      [url,/u/login,Вход] - [url,/,Главная]
+cs : Vaše heslo bylo změněno a vaše nové heslo by mělo být za několik minut doručeno do vaší schránky.[br]
+     Vždy můžete změnit vaše heslo po přihlášení.[br]
+     [br]
+     [url,/u/login,Přihlásit] - [url,/,Home]
 
 # Register new account (/u/register)
 
 :_register_title
 en : Create an account
 ru : Создание учётной записи
+cs : Vytvořit účet
 
 :_register_why
 en : Why should I register?
 ru : Для чего нужна регистрация?
+cs : Proč bych se měl registrovat?
 
 :_register_why_msg
 en : Creating an account is completely painless, the only thing we need to know is your prefered username
@@ -2883,36 +3526,53 @@ ru : Создание учётной записи совершенно безо�
      - Следить за всеми новеллами и выпусками, которые у вас есть, в которые вы бы хотели сыграть, в которые играете, либо уже доиграли[br]
      - Голосовать за понравившиеся или, наоборот, не понравившиеся новеллы[br]
      - Вступать в обсуждения на ветках форума
+cs : Tvorba účtu je zcela bezbolestná, jediné údaje, které potřebujeme znát jsou uživatelské jméno, které chcete, a vaše heslo.
+     Můžete i použít e-mail, který není váš, jelikož ani neověřujeme, že jste nám zadali opravdu váš e-mail.
+     Pamatujte ale, že pokud jste zadali neplatnou e-mailovou adresu, pak byste si měli dobře zapamatovat vaše heslo...[br]
+     [br]
+     V každém případě, založení účtu vám přináší několik výhod oproti běžným návštěvníkům[br]
+     - Můžete přispívat do databáze editací všech dat a přidáváním dat nových[br]
+     - Mějte přehled o všech vizuálních novelách, které máte, chtěli byste hrát, hrajete, nebo jste dohráli[br]
+     - Hlasujte pro vizuální novely, které se vám líbily nebo nelíbily[br]
+     - Přispívejte do diskusí na boardech
 
 :_register_form_title
 en : New account
 ru : Новая учётная запись
+cs : Nový účet
 
 :_register_username
 en : Username
 ru : Имя пользователя
+cs : Uživatelské jméno
 
 :_register_username_msg
 en : Preferred username. Must be lowercase and can only consist of alphanumeric characters.
 ru : Запрашиваемое имя пользователя. Должно состоять из буквенно-цифровых символов в нижнем регистре.
+cs : Požadováné uživatelské jméno. Musí být malými písmeny a smí obsahovat pouze písmena a číslice.
 
 :_register_mail
 en : Email
 ru : E-mail
+cs : E-mail
 
 :_register_mail_msg
 en : Your email address will only be used in case you lose your password. We will never send
      spam or newsletters unless you explicitly ask us for it.
 ru : Адрес вашей электронной почты будет использоваться лишь в случае утери пароля. Мы никогда не
      пришлём вам спама или новостных рассылок, пока вы недвусмысленно не попросите об обратном.
+cs : Vaše e-mailová adresa bude použita pouze v případě ztráty vašeho hesla. Nikdy vám nezašleme spam nebo newslettery,
+     pokud o to explicitně nezažádáte.
 
 :_register_password
 en : Password
 ru : Пароль
+cs : Heslo
 
 :_register_confirm
 en : Confirm password
 ru : Подтверждение пароля
+cs : Potvrdit heslo
 
 
 # User edit (/u+/edit)
@@ -2920,70 +3580,87 @@ ru : Подтверждение пароля
 :_usere_title
 en : My account
 ru : Моя учётная запись
+cs : Můj účet
 
 :_usere_saved_title
 en : Settings saved
 ru : Параметры сохранены
+cs : Nastavení uloženo
 
 :_usere_saved_msg
 en : Settings successfully saved.
 ru : Параметры успешно сохранены.
+cs : Nastavení úspěšně uloženo.
 
 :_usere_geninfo
 en : General info
 ru : Основная информация
+cs : Obecné informace
 
 :_usere_username
 en : Username
 ru : Имя пользователя
+cs : Uživatelské jméno
 
 :_usere_rank
 en : Rank
 ru : Ранг
+cs : Postavení
 
 :_usere_ignvotes
 en : Ignore votes in VN statistics
 ru : Игнорировать голосования в статистике новелл
+cs : Ignorovat hlasy ve statistikách vizuálních novel
 
 :_usere_mail
 en : Email
 ru : E-mail
+cs : E-mail
 
 :_usere_changepass
 en : Change password
 ru : Смена пароля
+cs : Změnit heslo
 
 :_usere_changepass_msg
 en : Leave blank to keep your current password
 ru : Оставьте пустым чтобы сохранить текущий пароль
+cs : Zanechte prázdné pro zachování současného hesla
 
 :_usere_password
 en : Password
 ru : Пароль
+cs : Heslo
 
 :_usere_confirm
 en : Confirm password
 ru : Подтверждение пароля
+cs : Potvrdit heslo
 
 :_usere_options
 en : Options
 ru : Настройки
+cs : Nastavení
 
 :_usere_flist
 en : Allow other people to see my visual novel list ([url,_1,_1]) and wishlist ([url,_2,_2])
 ru : Разрешить остальным видеть мой список новелл ([url,_1,_1]) и список желаемого ([url,_2,_2])
+cs : Povolit ostatním zobrazit můj list vizuálních novel ([url,_1,_1]) a wishlist ([url,_2,_2])
 
 :_usere_fnsfw
 en : Disable warnings for images that are not safe for work.
 ru : Отключить предупреждения для небезопасных изображений.
+cs : Vypnout varování pro obrázky, které jsou "Not Safe For Work".
 
 :_usere_skin
 en : Prefered skin
 ru : Предпочитаемая шкурка
+cs : Preferovaný skin
 
 :_usere_css
 en : Additional [url,http://en.wikipedia.org/wiki/Cascading_Style_Sheets,CSS]
 ru : Дополнительный [url,http://en.wikipedia.org/wiki/Cascading_Style_Sheets,CSS]
+cs : Další [url,http://en.wikipedia.org/wiki/Cascading_Style_Sheets,CSS]
 
 
 # Users posts (/u+/posts)
@@ -2991,18 +3668,22 @@ ru : Дополнительный [url,http://en.wikipedia.org/wiki/Cascading_St
 :_uposts_title
 en : Posts made by [_1]
 ru : Сообщения [_1]
+cs : Příspěvek od uživatele [_1]
 
 :_uposts_noresults
 en : [_1] hasn't made any posts yet.
 ru : [_1] пока не имеет сообщений.
+cs : [_1] ještě nenapsal žádný příspěvek.
 
 :_uposts_col_date
 en : Date
 ru : Дата
+cs : Datum
 
 :_uposts_col_title
 en : Title
 ru : Название
+cs : Název
 
 
 # User list (/u/all)
@@ -3010,26 +3691,32 @@ ru : Название
 :_ulist_title
 en : Browse users
 ru : Обзор пользователей
+cs : Procházet uživatele
 
 :_ulist_col_username
 en : Username
 ru : Имя пользователя
+cs : Uživatelské jméno
 
 :_ulist_col_registered
 en : Registered
 ru : Регистрация
+cs : Registrován
 
 :_ulist_col_votes
 en : Votes
 ru : Отдано голосов
+cs : Hlasy
 
 :_ulist_col_edits
 en : Edits
 ru : Правок
+cs : Editace
 
 :_ulist_col_tags
 en : Tags
 ru : Тегов
+cs : Tagy
 
 
 
@@ -3048,86 +3735,107 @@ ru : Тегов
 :_vnbrowse_title
 en : Browse visual novels
 ru : Обзор новелл
+cs : Procházet vizuální novely
 
 :_vnbrowse_col_score
 en : Score
 ru : Рейтинг
+cs : Skóre
 
 :_vnbrowse_col_title
 en : Title
 ru : Название
+cs : Název
 
 :_vnbrowse_col_released
 en : Released
 ru : Выпуск
+cs : Vydáno
 
 :_vnbrowse_col_popularity
 en : Popularity
 ru : Популярность
+cs : Popularita
 
 :_vnbrowse_tagign_title
 en : The following tags were ignored:
 ru : Следующие теги были пропущены:
+cs : Následující tagy byly ignorovány:
 
 :_vnbrowse_tagign_meta
 en : can't filter on meta tags
 ru : фильтрация мета-тегов невозможна
+cs : nedají se filtrovat meta tagy
 
 :_vnbrowse_tagign_notfound
 en : no such tag found
 ru : тег не найден
+cs : nenalezeny takové tagy
 
 :_vnbrowse_advsearch
 en : advanced search
 ru : расширенный поиск
+cs : pokročilé hledání
 
 :_vnbrowse_tags
 en : Tag filters
 ru : Фильтры тегов
+cs : Filtry tagů
 
 :_vnbrowse_booland
 en : boolean and, selecting more gives less results
 ru : булевое 'и', чем больше выбрано, тем меньше даёт результатов
+cs : boolean a, výběr více dá méně výsledků
 
 :_vnbrowse_taginc
 en : Tags to include
 ru : Включить теги
+cs : Tagy k zahrnutí
 
 :_vnbrowse_tagexc
 en : Tags to exclude
 ru : Исключить теги
+cs : Tagy k vyjmutí
 
 :_vnbrowse_spoil0
 en : Hide spoilers
 ru : Скрыть спойлеры
+cs : Skrýt spoilery
 
 :_vnbrowse_spoil1
 en : Show minor spoilers
 ru : Показать лёгкие спойлеры
+cs : Ukázat menší spoilery
 
 :_vnbrowse_spoil2
 en : Show major spoilers
 ru : Показать жёсткие спойлеры
+cs : Ukázat všechny spoilery
 
 :_vnbrowse_lang
 en : Languages
 ru : Языки
+cs : Jazyky
 
 :_vnbrowse_boolor
 en : boolean or, selecting more gives more results
 ru : булевое 'или', чем больше выбрано, тем больше даёт результатов
+cs : boolean nebo, výběr více dá více výsledků
 
 :_vnbrowse_plat
 en : Platforms
 ru : Платформы
+cs : Platformy
 
 :_vnbrowse_apply
 en : Apply
 ru : Применить
+cs : Použít
 
 :_vnbrowse_clear
 en : Clear
 ru : Очистить
+cs : Začít znovu
 
 
 # VN add/edit form (/v+/edit)
@@ -3135,30 +3843,37 @@ ru : Очистить
 :_vnedit_title_edit
 en : Edit [_1]
 ru : Правка [_1]
+cs : Editovat vizuální novelu [_1]
 
 :_vnedit_title_add
 en : Add a new visual novel
 ru : Добавление новой новеллы
+cs : Přidat novou vizuální novelu
 
 :_vnedit_geninfo
 en : General info
 ru : Основная информация
+cs : Obecné informace
 
 :_vnedit_frm_title
 en : Title (romaji)
 ru : Название (ромадзи)
+cs : Název (romaji)
 
 :_vnedit_original
 en : Original title
 ru : Оригинальное название
+cs : Originální název
 
 :_vnedit_original_msg
 en : The original title of this visual novel, leave blank if it already is in the Latin alphabet.
 ru : Оригинальное название данной новеллы, оставьте пустым если уже набрано в латинском алфавите.
+cs : Originální název této vizuální novely, ponechte prázdné, pokud již je latinkou.
 
 :_vnedit_alias
 en : Aliases
 ru : Прочие названия
+cs : Aliasy
 
 :_vnedit_alias_msg
 en : Comma seperated list of alternative titles or abbreviations. Can include both official
@@ -3167,28 +3882,37 @@ en : Comma seperated list of alternative titles or abbreviations. Can include bo
 ru : Список альтернативных названий или аббревиатур, перечисленных через запятую. Может включать как
      официальные (японские/английские/русские) названия, так и неофициальные, имеющие хождение в сети.[br]
      Не следует добавлять сюда названия, указанные в выпусках!
+cs : Seznam alternativních názvů nebo zkratek, oddělených čárkou. Může zahrnovat oba
+     (japonský/anglický) názvy a neoficiální názvy používané na internetu.[br]
+     Názvy, vypsané ve vydáních by se sem přidávat neměly!
 
 :_vnedit_desc
 en : Description
 ru : Описание
+cs : Popis
 
 :_vnedit_desc_msg
 en : Short description of the main story. Please do not include spoilers, and don't forget to list
      the source in case you didn't write the description yourself. (formatting codes are allowed)
 ru : Краткое описание главной сюжетной линии. Пожалуйста, не вносите сюда спойлеры, а так же не
      забывайте указать источник описания, если не являетесь его автором. (коды форматирования разрешены)
+cs : Krátký popis hlavního příběhu. Prosím nepište spoilery a nezapomeňte uvést zdroj,
+     pokud jste popis nenapsali sami. (formátovací kódy jsou povoleny)
 
 :_vnedit_length
 en : Length
 ru : Продолжительность
+cs : Délka
 
 :_vnedit_links
 en : External links
 ru : Внешние ссылки
+cs : Externí odkazy
 
 :_vnedit_anime
 en : Anime
 ru : Аниме
+cs : Anime
 
 :_vnedit_anime_msg
 en : Whitespace seperated list of [url,http://anidb.net/,AniDB] anime IDs.
@@ -3199,22 +3923,30 @@ ru : Список идентификаторов аниме по [url,http://ani
      Например, "1015 3348" добавит связь с аниме [url,http://anidb.net/a1015,Shingetsutan Tsukihime]
      и [url,http://anidb.net/a3348,Fate/stay night].[br]
      Замечание: появление названия аниме на странице новеллы может занять несколько минут.
+cs : Seznam AnimeID z [url,http://anidb.net/,AniDB], oddělených mezerou.
+     Např. "1015 3348" přidá [url,http://anidb.net/a1015,Shingetsutan Tsukihime]
+     a [url,http://anidb.net/a3348,Fate/stay night] jako příbuzná anime.[br]
+     Poznámka: Může trvat několik minut, než se názvy anime objeví na stránce vizuální novely.
 
 :_vnedit_image
 en : Image
 ru : Изображение
+cs : Obrázek
 
 :_vnedit_image_none
 en : No image uploaded yet
 ru : Изображения пока нет
+cs : Obrázek ještě nebyl nahrán
 
 :_vnedit_image_processing
 en : ~[processing image, please return in a few minutes~]
 ru : ~[обработка изображения, пожалуйста подождите несколько минут~]
+cs : ~[obrázek se zpracovává, vraťte se prosím za několik minut~]
 
 :_vnedit_image_upload
 en : Upload new image
 ru : Загрузить новое изображение
+cs : Nahrát nový obrázek
 
 :_vnedit_image_upload_msg
 en : Preferably the cover of the CD/DVD/package. Image must be in JPEG or PNG format
@@ -3222,68 +3954,85 @@ en : Preferably the cover of the CD/DVD/package. Image must be in JPEG or PNG fo
 ru : Желательно, обложка CD/DVD/коробки. Изображение должно быть в формате JPEG, либо в
      формате PNG, и весить не более 500 Кб. Изображения размером более 256 на 400 точек
      будут автоматически уменьшены.
+cs : Pokud možno obálka CD/DVD/balení. Obrázek musí být ve formátu JPEG nebo PNG
+     a ne větší 500kB. Obrázek větší než 256x400 pixelů bude automaticky zmenšen.
 
 :_vnedit_image_nsfw
 en : NSFW
 ru : НБДР (NSFW)
+cs : NSFW
 
 :_vnedit_image_nsfw_check
 en : Not Safe For Work
 ru : Не безопасно для работы
+cs : Not Safe For Work
 
 :_vnedit_image_nsfw_msg
 en : Please check this option if the image contains nudity, gore, or is otherwise not safe in a work-friendly environment.
 ru : Пожалуйста, поставьте эту галочку если изображение содержит наготу, кровищу, либо тем или иным образом не безопасно для рабочего окружения.
+cs : Prosíme, zaškrtněte tuto možnost, pokud obrázek obsahuje nahotu, gore nebo je jinak nevhodný pro pracovní prostředí.
 
 :_vnedit_rel
 en : Relations
 ru : Связи
+cs : Vztahy
 
 :_vnedit_rel_sel
 en : Selected relations
 ru : Выбранные связи
+cs : Vybrané vztahy
 
 :_vnedit_rel_add
 en : Add relation
 ru : Добавить связь
+cs : Přidat vztah
 
 # <title1> is a <relation> of <title2>
 # this trick doesn't even work very well in English, so just an approximation is fine
 :_vnedit_rel_isa
 en : is a
 ru*:
+cs*:
 
 :_vnedit_rel_of
 en : of
 ru*:
+cs*:
 
 :_vnedit_rel_addbut
 en : add
 ru*:
+cs*:
 
 :_vnedit_rel_del
 en : del
 ru*:
+cs*:
 
 :_vnedit_rel_none
 en : No relations selected.
 ru*:
+cs*:
 
 :_vnedit_rel_findformat
 en : Visual novel textbox must start with an ID (e.g. v17)
 ru*:
+cs*:
 
 :_vnedit_rel_novn
 en : Visual novel not found!
 ru*:
+cs*:
 
 :_vnedit_rel_double
 en : This visual novel has already been selected!
 ru*:
+cs*:
 
 :_vnedit_scr
 en : Screenshots
 ru : Скриншоты
+cs : Screenshoty
 
 :_vnedit_scrmsg
 en : Please keep the following in mind when uploading screenshots:[br]
@@ -3298,96 +4047,123 @@ ru : Когда загружаете скриншоты, пожалуйста п
      - Старайтесь загружать не только одни сюжетные картинки.[br]
      За подробностями обращайтесь к [url,/d2#6,рекомендациям].[br]
      Не забудьте сохранить изменения когда закончите загружать изображения!
+cs : Prosíme, pamatujte na následující věci, pokud nahráváte screenshoty:[br]
+     - Screenshots musí být v původním rozlišení hry,[br]
+     - Odstraňte všechna okna kolem a ujistěte se, že na obrázku není nic navíc,[br]
+     - Nenahrávejte pouze CG.[br]
+     Prosíme, přečtěte si [url,/d2#6,doporučení] pro více informací.[br]
+     Ujistěte se, že jste potvrdili odeslání informací poté, co nahrajete obrázky!
 
 :_vnedit_scr_selrel
 en : -- select release --
 ru*:
+cs*:
 
 :_vnedit_scr_frmloading
 en : Please wait for the screenshots to be uploaded before submitting the form.
 ru*:
+cs*:
 
 :_vnedit_scr_frmnorel
 en : Please select the appropriate release for every screenshot.
 ru*:
+cs*:
 
 :_vnedit_scr_fetching
 en : Fetching thumbnail...
 ru*:
+cs*:
 
 :_vnedit_scr_uploading
 en : Uploading screenshot
 ru*:
+cs*:
 
 :_vnedit_scr_upl_msg
 en : This can take a while, depending on the file size and your upload speed.
 ru*:
+cs*:
 
 :_vnedit_scr_cancel
 en : cancel
 ru*:
+cs*:
 
 :_vnedit_scr_full
 en : Enough screenshots
 ru*:
+cs*:
 
 :_vnedit_scr_full_msg
 en : The limit of 10 screenshots per visual novel has been reached.
      If you want to add a new screenshot, please remove an existing one first.
 ru*:
+cs*:
 
 :_vnedit_scr_add
 en : Add screenshot
 ru*:
+cs*:
 
 :_vnedit_scr_imgnote
 en : Image must be smaller than 5MB and in PNG or JPEG format.
 ru*:
+cs*:
 
 :_vnedit_scr_addbut
 en : Upload!
 ru*:
+cs*:
 
 :_vnedit_scr_id
 en : Screenshot #[_1]
 ru*:
+cs*:
 
 :_vnedit_scr_remove
 en : remove
 ru*:
+cs*:
 
 :_vnedit_scr_fullsize
 en : Full size: [_1]
 ru*:
+cs*:
 
 :_vnedit_scr_nsfw
 en : This screenshot is NSFW
 ru*:
+cs*:
 
 :_vnedit_scr_oops
 en : Oops! Seems like something went wrong...
      Make sure the file you're uploading doesn't exceed 5MB in size.
      If that isn't the problem, then please report a bug.
 ru*:
+cs*:
 
 :_vnedit_scr_errformat
 en : Upload failed!
      Only JPEG or PNG images are accepted.
 ru*:
+cs*:
 
 :_vnedit_scr_errempty
 en : Upload failed!
      No file selected, or an empty file?
 ru*:
+cs*:
 
 :_vnedit_scr_genthumb
 en : Generating thumbnail...
 ru*:
+cs*:
 
 :_vnedit_scr_genthumb_msg
 en : Note: if this takes longer than 30 seconds, there\'s probably something wrong on our side.
      Please try again later or report a bug if that is the case.
 ru*:
+cs*:
 
 
 # VN Relation graph page (/v+/rg)
@@ -3395,14 +4171,17 @@ ru*:
 :_vnrg_title
 en : Relation graph for [_1]
 ru : Схема связей для [_1]
+cs : Graf vztahů pro vizuální novelu [_1]
 
 :_vnrg_notsupp
 en : Not supported
 ru*:
+cs*:
 
 :_vnrg_notsupp_msg
 en : Your browser sucks, it doesn't have the functionality to render our nice relation graphs.
 ru*:
+cs*:
 
 
 # VN Diff viewer (/v+.+)
@@ -3410,86 +4189,107 @@ ru*:
 :_revfield_v_title
 en : Title (romaji)
 ru : Название (ромадзи)
+cs : Název (romaji)
 
 :_revfield_v_original
 en : Original title
 ru : Оригинальное название
+cs : Originální název
 
 :_revfield_v_alias
 en : Alias
 ru : Прочие названия
+cs : Alias
 
 :_revfield_v_desc
 en : Description
 ru : Описание
+cs : Popis
 
 :_revfield_v_length
 en : Length
 ru : Продолжительность
+cs : Délka
 
 :_vndiff_nolink
 en : ~[no link~]
 ru : ~[нет ссылки~]
+cs : ~[žádný odkaz~]
 
 :_vndiff_none
 en : ~[none~]
 ru : ~[пусто~]
+cs : ~[nic~]
 
 :_revfield_v_l_wp
 en : Wikipedia link
 ru : Ссылка Википедии
+cs : Link na Wikipedii
 
 :_revfield_v_l_encubed
 en : Encubed tag
 ru : Тег Encubed'а
+cs : Tag na Encubed
 
 :_revfield_v_l_renai
 en : Renai.us link
 ru : Ссылка Renai.us
+cs : Odkaz na Renai.us
 
 :_revfield_v_l_vnn
 en : V-N.net link
 ru : Ссылка V-N.net
+cs : Odkaz na V-N.net
 
 :_revfield_v_relations
 en : Relations
 ru : Связи
+cs : Vztahy
 
 :_revfield_v_anime
 en : Anime
 ru : Аниме
+cs : Anime
 
 :_revfield_v_screenshots
 en : Screenshots
 ru : Скриншоты
+cs : Screenshoty
 
 :_revfield_v_image
 en : Image
 ru : Изображение
+cs : Obrázek
 
 :_vndiff_image_nsfw
 en : (NSFW)
 ru : (НБДР|NSFW)
+cs : (NSFW)
 
 :_vndiff_image_proc
 en : ~[processing~]
 ru : ~[обработка~]
+cs : ~[zpracovává se~]
 
 :_vndiff_image_none
 en : No image
 ru : Нет изображения
+cs : Obrázek není
 
 :_revfield_v_img_nsfw
 en : Image NSFW
 ru : Изображение НБДР (NSFW)
+cs : Vhodnost obrázku
 
 :_vndiff_nsfw_safe
 en : Safe
 ru : Безопасно
+cs : SFW
 
 :_vndiff_nsfw_notsafe
 en : Not safe
 ru : Не безопасно
+cs : NSFW
 
 
 # VN page (/v+)
@@ -3497,220 +4297,274 @@ ru : Не безопасно
 :_vnpage_noimg
 en : No image uploaded yet
 ru : Нет загруженного изображения
+cs : Ještě nebyl nahrán žádný obrázek
 
 :_vnpage_imgproc
 en : ~[processing image, please return in a few minutes~]
 ru : ~[идёт обработка изображения, подождите несколько минут~]
+cs : ~[obrázek se zpracovává, prosíme, vraťte se za několik minut~]
 
 :_vnpage_imgnsfw_msg
 en : This image has been flagged as Not Safe For Work.
 ru : Данное изображение помечено как не безопасное для работы.
+cs : Tento obrázek byl označen jako "Not Safe For Work"
 
 :_vnpage_imgnsfw_show
 en : Show me anyway
 ru : Всё равно показать
+cs : Ukázat i přes to
 
 :_vnpage_imgnsfw_note
 en : (This warning can be disabled in your account)
 ru : (Это предупреждение можно отключить в настройках вашей учётной записи)
+cs : (Toto varování může být vypnuto ve vašem nastavení)
 
 :_vnpage_imgnsfw_foot
 en : Flagged as NSFW
 ru : Помечено как НБДР (NSFW)
+cs : Označeno jako NSFW
 
 :_vnpage_vntitle
 en : Title
 ru : Название
+cs : Název
 
 :_vnpage_original
 en : Original title
 ru : Оригинальное название
+cs : Originální název
 
 :_vnpage_alias
 en : Aliases
 ru : Прочие названия
+cs : Aliasy
 
 :_vnpage_length
 en : Length
 ru : Продолжительность
+cs : Délka
 
 :_vnpage_links
 en : Links
 ru : Ссылки
+cs : Odkazy
 
 :_vnpage_description
 en : Description
 ru : Описание
+cs : Popis
 
 :_vnpage_tags_spoil0
 en : hide spoilers
 ru : скрыть спойлеры
+cs : skrýt spoilery
 
 :_vnpage_tags_spoil1
 en : show minor spoilers
 ru : показать лёгкие спойлеры
+cs : ukázat menší spoilery
 
 :_vnpage_tags_spoil2
 en : spoil me!
 ru : показать все!
+cs : prozraď mi vše!
 
 :_vnpage_tags_summary
 en : summary
 ru : суммарно
+cs : shrnutí
 
 :_vnpage_tags_all
 en : all
 ru : все
+cs : vše
 
 :_vnpage_developer
 en : Developer
 ru*:
+cs*:
 
 :_vnpage_publisher
 en : Publishers
 ru*:
+cs*:
 
 :_vnpage_relations
 en : Relations
 ru : Связи
+cs : Vztahy
 
 :_vnpage_anime
 en : Related anime
 ru : Связанное аниме
+cs : Příbuzná anime
 
 :_vnpage_anime_noinfo
 en : ~[no information available at this time: [url,_2,_1]~]
 ru : ~[к сожалению, пока никакой информации: [url,_2,_1]~]
+cs : ~[nyní nejsou dostupné žádné informace: [url,_2,_1]~]
 
 :_vnpage_uopt
 en : User options
 ru : Настройки пользователя
+cs : Možnosti uživatele
 
 :_vnpage_uopt_voted
 en : your vote: [_1]
 ru : ваш голос: [_1]
+cs : váš hlas: [_1]
 
 :_vnpage_uopt_novote
 en : not voted yet
 ru : пока без голоса
+cs : ještě nehlasováno
 
 :_vnpage_uopt_changevote
 en : Change vote
 ru : Переголосовать
+cs : Změnit hlas
 
 :_vnpage_uopt_dovote
 en : Vote
 ru : Голосовать
+cs : Hlasovat
 
 :_vnpage_uopt_delvote
 en : revoke
 ru : снять голос
+cs : zdržet se
 
 :_vnpage_uopt_1vote
 en : You are about to give this visual novel a 1 out of 10. This is a rather extreme rating, meaning this game has absolutely nothing to offer, and that it's the worst game you have ever played.
      Are you really sure this visual novel matches that description?
 ru*:
+cs*:
 
 :_vnpage_uopt_10vote
 en : You are about to give this visual novel a 10 out of 10. This is a rather extreme rating, meaning this is one of the best visual novels you've ever played and it's unlikely that any other game could ever be better than this one.
      It is generally a bad idea to have more than three games in your vote list with this rating, choose carefully!
 ru*:
+cs*:
 
 :_vnpage_uopt_wishlisted
 en : wishlist: [_1]
 ru : список желаемого: [_1]
+cs : wishlist: [_1]
 
 :_vnpage_uopt_nowish
 en : not on your wishlist
 ru : не в вашем списке
+cs : není na vašem wishlistu
 
 :_vnpage_uopt_changewish
 en : Change status
 ru : Сменить статус
+cs : Změnit status
 
 :_vnpage_uopt_addwish
 en : Add to wishlist
 ru : Добавить к списку
+cs : Přidat na wishlist
 
 :_vnpage_uopt_delwish
 en : remove from wishlist
 ru : убрать из списка
+cs : odstranit z wishlistu
 
 :_vnpage_uopt_relrstat
 en : Release status
 ru*:
+cs*:
 
 :_vnpage_uopt_relvstat
 en : Play status
 ru*:
+cs*:
 
 :_vnpage_uopt_reldel
 en : Remove from VN list
 ru*:
+cs*:
 
 :_vnpage_rel
 en : Releases
 ru : Выпуски
+cs : Vydání
 
 :_vnpage_rel_none
 en : We don't have any information about releases of this visual novel yet...
 ru : У нас пока нет информации о выпусках этой новеллы...
+cs : K této vizuální novele zatím nemáme informace o žádném vydání...
 
 :_vnpage_rel_add
 en : add release
 ru : добавить выпуск
+cs : přidat vydání
 
 :_vnpage_rel_patch
 en : (patch)
 ru : (патч)
+cs : (patch)
 
 :_vnpage_rel_extlink
 en : External link
 ru : Внешняя ссылка
+cs : Externí odkaz
 
 :_vnpage_scr
 en : Screenshots
 ru : Скриншоты
+cs : Screenshoty
 
 :_vnpage_scr_showing
 en : Showing [_1] out of [_2] [quant,_2,screenshot,screenshots].
 ru : [_1] из [_2] [quant,_2,скриншота,скриншотов,скриншотов] отображено.
+cs : Ukazuji screenshot [_1] z celkém [_2] [quant,_2,screenshotu,screenshotů,screenshotů].
 
 :_vnpage_scr_nsfwhide
 en : show/hide NSFW
 ru : показать/скрыть НБДР (NSFW)
+cs : skrýt/zobrazit NSFW
 
 :_vnpage_scr_num
 en : Screenshot #[_1]
 ru : Скриншот #[_1]
+cs : Screenshot #[_1]
 
 :_vnpage_stats
 en : User stats
 ru : Статистика пользователей
+cs : Statistiky uživatelů
 
 :_vnpage_stats_none
 en : Nobody has voted on this visual novel yet...
 ru : Никто пока не голосовал за эту новеллу...
+cs : Pro tuto vizuální novelu ještě nikdo nehlasoval...
 
 :_votestats_title
 en : Vote stats
 ru : Статистика голосования
+cs : Statistika hlasování
 
 :_votestats_sum
 en : [_1] [quant,_1,vote,votes] total, average [_2]
 ru : Всего [_1] [quant,_1,голос,голоса,голосов], в среднем [_2]
+cs : Celkem [_1] [quant,_1,hlas,hlasy,hlasů], průměr [_2]
 
 :_votestats_recent
 en : Recent votes
 ru : Недавно проголосовали
+cs : Poslední hlasy
 
 :_votestats_pop_title
 en : Popularity
 ru : Популярность
+cs : Popularita
 
 :_votestats_pop_sum
 en : Ranked #[_1] out of [_2] with a score of [_3].
 ru : Рейтинг - #[_1] из [_2], средний балл - [_3].
+cs : Hodnoceno na [_1]. místě z celkem [_2] se skóre [_3].
 
 
 
@@ -3727,24 +4581,29 @@ ru : Рейтинг - #[_1] из [_2], средний балл - [_3].
 :_denied_title
 en : Access Denied
 ru : В доступе отказано
+cs : Přístup odepřen
 
 # not logged in
 :_denied_needlogin_title
 en : You need to be logged in to perform this action.
 ru : Для выполнения этого действия требуется авторизация.
+cs : Pro vykonání této akce se musíte přihlásit.
 
 :_denied_needlogin_msg
 en : Please [url,/u/login,login], or [url,/u/register,create an account] if you don't have one yet.
 ru : Пожалуйста [url,/u/login,авторизуйтесь], либо [url,/u/register,создайте учётную запись], если таковой у вас нет.
+cs : Prosíme, [url,/u/login,přihlašte se], nebo si [url,/u/register,vytvořte účet], pokud ještě žádný nemáte.
 
 # logged in, but simply no access
 :_denied_noaccess_title
 en : You are not allowed to perform this action.
 ru : Вам запрещено выполнять это действие.
+cs : Nemáte oprávnění provést tuto akci.
 
 :_denied_noaccess_msg
 en : It seems you don't have the proper rights to perform the action you wanted to perform...
 ru : Похоже, у вас нет прав на выполнение того, чего вы хотите...
+cs : Zdá se, že nemáte potřebná práva pro vykonání akce, kterou chcete provést...
 
 
 # "DB Item has been deleted" page
@@ -3752,12 +4611,15 @@ ru : Похоже, у вас нет прав на выполнение того,
 :_hiddenmsg_title
 en : Item deleted
 ru : Запись удалена
+cs : Položka smazána
 
 :_hiddenmsg_msg
 en : This item has been deleted from the database, File a request on the
      [url,_1,discussion board] to undelete this page.
 ru : Данная запись удалена из базы данных. Пожалуйста, подайте заявку на
      [url,_1,форуме] для восстановления этой страницы.
+cs : Tato položka byla smazána z databáze. Pro obnovení této stránky napište žádost na
+     [url,_1,diskusní board].
 
 
 # The warning/notice messages on edit pages
@@ -3765,42 +4627,53 @@ ru : Данная запись удалена из базы данных. Пож
 :_editmsg_copy_title
 en : You're not editing a release!
 ru : Вы не редактируете выпуск, а копируете его!
+cs : Needitujete vydání!
 
 :_editmsg_copy_msg
 en : You're about to insert a new release into the database with information based on [_1].[br]
      Hit the 'edit' tab on the right-top if you intended to edit the release instead of creating a new one.
 ru : Вы собираетесь вставить новый выпуск, основанный на информации из [_1].[br]
      Щёлкните вкладку 'правка' в правом верхнем углу, если собирались редактировать выпуск, а не создавать новый.
+cs : Chystáte se vložit nové vydání do databáze s informacemi založenými na vydání [_1].[br]
+     Pokud chcete editovat vydání místo toho, abyste vložili další vydání, přejděte na záložku 'editovat' v pravém horním rohu.
 
 :_editmsg_msg_title
 en : Before editing:
 ru : Прежде чем приступить к редактированию:
+cs : Před editací:
 
 :_editmsg_msg_guidelines
 en : Read the [url,_1,guidelines]!
 ru : Прочтите [url,_1,рекомендации]!
+cs : Přečtěte si [url,_1,doporučení]!
 
 :_editmsg_msg_discuss
 en : Check for any existing discussions on the [url,_1,discussion board]
 ru : Проверьте все существующие темы на [url,_1,форуме]
+cs : Podívejte se do existujících diskusí na [url,_1,diskusním boardu]
 
 :_editmsg_msg_history
 en : Browse the [url,_1,edit history] for any recent changes related to what you want to change.
 ru : Просмотрите [url,_1,историю правок] на предмет недавних изменений данных, которые вы хотите изменить.
+cs : Projděte [url,_1,historii editací] pro nedávné změny týkající se změn, které se chystáte provést.
 
 :_editmsg_msg_search
 en : [url,_1,Search the database] to see if we already have information about this [index,_2,visual novel,release,producer].
 ru : [url,_1,Воспользуйтесь поиском], ведь вполне возможно что у нас уже есть информация об [index,_2,этой новелле,этом выпуске,этой компании].
+cs : [url,_1,Prohledejte databázi], zda již nemáme informaci o [index,_2,této vizuální novele,tomto vydání,tomto producentovi].
 
 :_editmsg_revert_title
 en : Reverting
 ru : Восстановление
+cs : Vracení
 
 :_editmsg_revert_msg
 en : You are editing an old revision of this [index,_1,visual novel,release,producer].
      If you save it, all changes made after this revision will be reverted!
 ru : Вы правите старую редакцию страницы [index,_1,новеллы,выпуска,компании].
      Если вы сохраните её, все изменения сделанные после этой правки будут утеряны!
+cs : Editujete starší verzi [index,_1,této vizuální novely,tohoto vydání,tohoto producenta].
+     Pokud ji uložíte, všechny změny provedené po této revizi budou vráceny!
 
 
 # Messages about editing on the VN/Release/Producer pages (right beneath the tabs)
@@ -3808,14 +4681,17 @@ ru : Вы правите старую редакцию страницы [index,_
 :_itemmsg_locked
 en : Locked for editing
 ru : Правка заблокирована
+cs : Zamčeno pro editaci
 
 :_itemmsg_login
 en : You need to be [url,_1,logged in] to edit this page
 ru : Чтобы редактировать эту страницу, вы должны быть [url,_1,авторизованы]
+cs : Pro editaci této stránky musíte být [url,_1,přihlášen]
 
 :_itemmsg_denied
 en : You are not allowed to edit this page
 ru : Вам запрещено редактировать эту страницу
+cs : Nemáte oprávnění editovat tuto stránku
 
 
 # User didn't pass the spam protection
@@ -3823,14 +4699,17 @@ ru : Вам запрещено редактировать эту страниц�
 :_nospam_title
 en : Could not send form
 ru : Невозможно отправить форму
+cs : Formulář nemohl být odeslán
 
 :_nospam_subtitle
 en : Error
 ru : Ошибка
+cs : Chyba
 
 :_nospam_msg
 en : The form could not be sent, please make sure you have Javascript enabled in your browser.
 ru : Не удалось отправить форму, пожалуйста убедитесь что в вашем браузере включён Javascript.
+cs : Formulář nemohl být odeslán, ujistěte se, že máte ve svém prohlížeči povolen Javascript.
 
 
 # Short message reminding the user to post in ENGLISH (Used at about every message/description input field)
@@ -3838,5 +4717,6 @@ ru : Не удалось отправить форму, пожалуйста у�
 :_inenglish
 en : English please!
 ru : Пожалуйста, пишите на английском!
+cs : Prosíme, anglicky!
 
 
