@@ -27,6 +27,7 @@ git - ?
 	- Fixed obscure sorting bug on user VN list
 	- Fixed calculation of tags_vn_bayesian.spoiler
 	- Fixed bug with unhiding a producer entry
+	- Set 'no spoilers' as default spoiler level for tags
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout

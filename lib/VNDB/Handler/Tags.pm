@@ -36,7 +36,7 @@ sub tagpage {
   );
   return 404 if $f->{_err};
   my $tagspoil = $self->reqCookie('tagspoil');
-  $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 1 if $f->{m} == -1;
+  $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0 if $f->{m} == -1;
 
   my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbTagVNs(
     tag => $tag,

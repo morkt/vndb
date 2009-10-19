@@ -25,7 +25,7 @@ sub list {
     { name => 'pl', required => 0, multi => 1, enum => $self->{platforms}, default => '' },
     { name => 'ti', required => 0, default => '', maxlength => 200 },
     { name => 'te', required => 0, default => '', maxlength => 200 },
-    { name => 'sp', required => 0, default => $self->reqCookie('tagspoil') =~ /^([0-2])$/ ? $1 : 1, enum => [0..2] },
+    { name => 'sp', required => 0, default => $self->reqCookie('tagspoil') =~ /^([0-2])$/ ? $1 : 0, enum => [0..2] },
   );
   return 404 if $f->{_err};
   $f->{q} ||= $f->{sq};

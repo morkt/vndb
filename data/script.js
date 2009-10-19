@@ -1582,7 +1582,7 @@ if(byId('sp_0')) {
   byId('sp_1').onclick = function() { setCookie('tagspoil', 1) };
   byId('sp_2').onclick = function() { setCookie('tagspoil', 2) };
   var spoil = getCookie('tagspoil');
-  byId('sp_'+(spoil == null ? 1 : spoil)).checked = true;
+  byId('sp_'+(spoil == null ? 0 : spoil)).checked = true;
 }
 
 // NSFW VN image toggle (/v+)
