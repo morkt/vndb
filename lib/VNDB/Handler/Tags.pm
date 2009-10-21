@@ -653,7 +653,7 @@ sub tagxml {
 
   my($list, $np) = $self->dbTagGet(
     $q =~ /^g([1-9]\d*)/ ? (id => $1) : $q =~ /^name:(.+)$/ ? (name => $1) : (search => $q),
-    results => 10,
+    results => 15,
     page => 1,
   );
 

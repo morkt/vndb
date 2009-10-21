@@ -30,6 +30,7 @@ git - ?
 	- Set 'no spoilers' as default spoiler level for tags
 	- Added Czech and Hungarian interface translation
 	- Producer relations
+	- Increased tag dropdown search results to 15
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout
