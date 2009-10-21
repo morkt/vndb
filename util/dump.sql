@@ -5,11 +5,12 @@ CREATE LANGUAGE plpgsql;
 
 -- data types
 
-CREATE TYPE anime_type   AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
-CREATE TYPE dbentry_type AS ENUM ('v', 'r', 'p');
-CREATE TYPE medium       AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
-CREATE TYPE release_type AS ENUM ('complete', 'partial', 'trial');
-CREATE TYPE vn_relation  AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
+CREATE TYPE anime_type        AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
+CREATE TYPE dbentry_type      AS ENUM ('v', 'r', 'p');
+CREATE TYPE medium            AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
+CREATE TYPE producer_relation AS ENUM ('old', 'new', 'par', 'sub', 'imp', 'ipa');
+CREATE TYPE release_type      AS ENUM ('complete', 'partial', 'trial');
+CREATE TYPE vn_relation       AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
 
 
 -----------------------------------------
@@ -48,6 +49,16 @@ CREATE TABLE producers (
   locked boolean NOT NULL DEFAULT FALSE,
   hidden boolean NOT NULL DEFAULT FALSE
 );
+
+
+-- producers_relations
+CREATE TABLE producers_relations (
+  pid1 integer NOT NULL,
+  pid2 integer NOT NULL,
+  relation producer_relation NOT NULL,
+  PRIMARY KEY(pid1, pid2)
+);
+
 
 -- producers_rev
 CREATE TABLE producers_rev (
@@ -356,6 +367,8 @@ CREATE TABLE wlists (
 ALTER TABLE changes            ADD FOREIGN KEY (requester) REFERENCES users         (id);
 ALTER TABLE changes            ADD FOREIGN KEY (causedby)  REFERENCES changes       (id);
 ALTER TABLE producers          ADD FOREIGN KEY (latest)    REFERENCES producers_rev (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE producers_relations ADD FOREIGN KEY (pid1)     REFERENCES producers_rev (id);
+ALTER TABLE producers_relations ADD FOREIGN KEY (pid2)     REFERENCES producers     (id);
 ALTER TABLE producers_rev      ADD FOREIGN KEY (id)        REFERENCES changes       (id);
 ALTER TABLE producers_rev      ADD FOREIGN KEY (pid)       REFERENCES producers     (id);
 ALTER TABLE quotes             ADD FOREIGN KEY (vid)       REFERENCES vn            (id);

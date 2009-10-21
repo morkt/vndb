@@ -34,12 +34,6 @@ ALTER TABLE vn_relations ALTER COLUMN relation TYPE vn_relation USING
 
 
 -- producer relations
---  old -> Formerly
---  new -> Succeeded by
---  par -> Parent producer
---  sub -> Subsidairy
---  imp -> Imprint
---  ipa -> Parent brand
 CREATE TYPE producer_relation AS ENUM ('old', 'new', 'par', 'sub', 'imp', 'ipa');
 CREATE TABLE producers_relations (
   pid1 integer NOT NULL REFERENCES producers_rev (id),
