@@ -589,6 +589,45 @@ cs : Amatérská skupina
 hu : Amatör csoport
 
 
+# producer relations
+
+:_prodrel_old
+en : Formerly
+ru*:
+cs*:
+hu*:
+
+:_prodrel_new
+en : Succeeded by
+ru*:
+cs*:
+hu*:
+
+:_prodrel_par
+en : Parent producer
+ru*:
+cs*:
+hu*:
+
+:_prodrel_sub
+en : Subsidairy
+ru*:
+cs*:
+hu*:
+
+:_prodrel_imp
+en : Imprint
+ru*:
+cs*:
+hu*:
+
+:_prodrel_ipa
+en : Parent brand
+ru*:
+cs*:
+hu*:
+
+
 # release types
 
 :_rtype_complete
@@ -2163,6 +2202,18 @@ en : Description
 ru : Описание
 cs : Popis
 hu : Leírás
+
+:_revfield_p_relations
+en : Relations
+ru*:
+cs*:
+hu*:
+
+:_proddiff_none
+en : none
+ru*:
+cs*:
+hu*:
 
 
 # Add/Edit producer

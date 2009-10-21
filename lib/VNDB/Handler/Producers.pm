@@ -3,7 +3,7 @@ package VNDB::Handler::Producers;
 
 use strict;
 use warnings;
-use YAWF ':html', ':xml';
+use YAWF ':html', ':xml', 'xml_escape';
 use VNDB::Func;
 
 
@@ -21,7 +21,7 @@ sub page {
 
   my $p = $self->dbProducerGet(
     id => $pid,
-    what => 'vn extended'.($rev ? ' changes' : ''),
+    what => 'vn extended relations'.($rev ? ' changes' : ''),
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return 404 if !$p->{id};
@@ -31,7 +31,7 @@ sub page {
   return if $self->htmlHiddenMessage('p', $p);
 
   if($rev) {
-    my $prev = $rev && $rev > 1 && $self->dbProducerGet(id => $pid, rev => $rev-1, what => 'changes extended')->[0];
+    my $prev = $rev && $rev > 1 && $self->dbProducerGet(id => $pid, rev => $rev-1, what => 'changes extended relations')->[0];
     $self->htmlRevision('p', $prev, $p,
       [ type      => serialize => sub { mt "_ptype_$_[0]" } ],
       [ name      => diff => 1 ],
@@ -40,6 +40,12 @@ sub page {
       [ lang      => serialize => sub { "$_[0] (".mt("_lang_$_[0]").')' } ],
       [ website   => diff => 1 ],
       [ desc      => diff => 1 ],
+      [ relations   => join => '<br />', split => sub {
+        my @r = map sprintf('%s: <a href="/p%d" title="%s">%s</a>',
+          mt("_prodrel_$_->{relation}"), $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape shorten $_->{name}, 40
+        ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
+        return @r ? @r : (mt '_proddiff_none');
+      }],
     );
   }
 
