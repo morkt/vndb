@@ -77,7 +77,7 @@ sub dbVNGet {
     $o{what} =~ /changes/ ?
       'JOIN users u ON u.id = c.requester' : (),
     $o{what} =~ /relgraph/ ?
-      'JOIN vn_graphs vg ON vg.id = v.rgraph' : (),
+      'JOIN relgraphs vg ON vg.id = v.rgraph' : (),
   );
 
   my $tag_ids = $o{tags_include} && join ',', @{$o{tags_include}[1]};

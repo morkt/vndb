@@ -220,7 +220,7 @@ sub savegraph {
   $w->end();
 
   # save the processed SVG in the database and fetch graph ID
-  $_[KERNEL]->post(pg => query => 'INSERT INTO vn_graphs (svg) VALUES (?) RETURNING id', [ $svg ], 'finish');
+  $_[KERNEL]->post(pg => query => 'INSERT INTO relgraphs (svg) VALUES (?) RETURNING id', [ $svg ], 'finish');
 }
 
 

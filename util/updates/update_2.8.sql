@@ -8,11 +8,11 @@
 UPDATE vn SET rgraph = NULL;
 ALTER TABLE vn DROP CONSTRAINT vn_rgraph_fkey;
 DROP TABLE relgraph;
-CREATE TABLE vn_graphs (
+CREATE TABLE relgraphs (
   id SERIAL PRIMARY KEY,
   svg xml NOT NULL
 );
-ALTER TABLE vn ADD FOREIGN KEY (rgraph) REFERENCES vn_graphs (id);
+ALTER TABLE vn ADD FOREIGN KEY (rgraph) REFERENCES relgraphs (id);
 
 
 -- VN relations stored as enum

@@ -50,7 +50,6 @@ CREATE TABLE producers (
   hidden boolean NOT NULL DEFAULT FALSE
 );
 
-
 -- producers_relations
 CREATE TABLE producers_relations (
   pid1 integer NOT NULL,
@@ -58,7 +57,6 @@ CREATE TABLE producers_relations (
   relation producer_relation NOT NULL,
   PRIMARY KEY(pid1, pid2)
 );
-
 
 -- producers_rev
 CREATE TABLE producers_rev (
@@ -73,14 +71,12 @@ CREATE TABLE producers_rev (
   alias varchar(500) NOT NULL DEFAULT ''
 );
 
-
 -- quotes
 CREATE TABLE quotes (
   vid integer NOT NULL,
   quote varchar(250) NOT NULL,
   PRIMARY KEY(vid, quote)
 );
-
 
 -- releases
 CREATE TABLE releases (
@@ -149,6 +145,12 @@ CREATE TABLE releases_vn (
   rid integer NOT NULL DEFAULT 0,
   vid integer NOT NULL DEFAULT 0,
   PRIMARY KEY(rid, vid)
+);
+
+-- relgraphs
+CREATE TABLE relgraphs (
+  id SERIAL PRIMARY KEY,
+  svg xml NOT NULL
 );
 
 -- rlists
@@ -297,12 +299,6 @@ CREATE TABLE vn_anime (
   PRIMARY KEY(vid, aid)
 );
 
--- vn_graphs
-CREATE TABLE vn_graphs (
-  id SERIAL PRIMARY KEY,
-  svg xml NOT NULL
-);
-
 -- vn_relations
 CREATE TABLE vn_relations (
   vid1 integer NOT NULL DEFAULT 0,
@@ -397,7 +393,7 @@ ALTER TABLE threads_posts      ADD FOREIGN KEY (tid)       REFERENCES threads   
 ALTER TABLE threads_posts      ADD FOREIGN KEY (uid)       REFERENCES users         (id);
 ALTER TABLE threads_boards     ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
 ALTER TABLE vn                 ADD FOREIGN KEY (latest)    REFERENCES vn_rev        (id) DEFERRABLE INITIALLY DEFERRED;
-ALTER TABLE vn                 ADD FOREIGN KEY (rgraph)    REFERENCES vn_graphs     (id);
+ALTER TABLE vn                 ADD FOREIGN KEY (rgraph)    REFERENCES relgraphs     (id);
 ALTER TABLE vn_anime           ADD FOREIGN KEY (aid)       REFERENCES anime         (id);
 ALTER TABLE vn_anime           ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
 ALTER TABLE vn_relations       ADD FOREIGN KEY (vid1)      REFERENCES vn_rev        (id);

@@ -119,7 +119,7 @@ sub vnpopularity {
 
 sub cleangraphs {
   # should be pretty fast
-  $_[KERNEL]->post(pg => do => 'DELETE FROM vn_graphs vg WHERE NOT EXISTS(SELECT 1 FROM vn WHERE rgraph = vg.id)',
+  $_[KERNEL]->post(pg => do => 'DELETE FROM relgraphs vg WHERE NOT EXISTS(SELECT 1 FROM vn WHERE rgraph = vg.id)',
     undef, 'log_stats', 'cleangraphs');
 }
 
