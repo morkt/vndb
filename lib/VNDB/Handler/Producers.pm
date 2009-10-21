@@ -69,7 +69,7 @@ sub page {
      p class => 'center';
       txt "\n";
       for my $r (sort keys %rel) {
-        txt mt("_prodrel_$r").' ';
+        txt mt("_prodrel_$r").': ';
         for (@{$rel{$r}}) {
           a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 40;
           txt ', ' if $_ ne $rel{$r}[$#{$rel{$r}}];
@@ -191,7 +191,33 @@ sub edit {
     [ input  => name => mt('_pedit_form_website'), short => 'website' ],
     [ text   => name => mt('_pedit_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
   ], 'pedit_rel' => [ mt('_pedit_form_rel'),
-    [ textarea => short => 'prodrelations' ],
+    [ hidden   => short => 'prodrelations' ],
+    [ static   => nolabel => 1, content => sub {
+      h2 mt '_pedit_rel_sel';
+      table;
+       tbody id => 'relation_tbl';
+        # to be filled using javascript
+       end;
+      end;
+
+      h2 mt '_pedit_rel_add';
+      table;
+       Tr id => 'relation_new';
+        td class => 'tc_prod';
+         input type => 'text', class => 'text';
+        end;
+        td class => 'tc_rel';
+         Select;
+          option value => $_, mt "_prodrel_$_"
+            for (sort { $self->{prod_relations}{$a}[0] <=> $self->{prod_relations}{$b}[0] } keys %{$self->{prod_relations}});
+         end;
+        end;
+        td class => 'tc_add';
+         a href => '#', mt '_pedit_rel_addbut';
+        end;
+       end;
+      end;
+    }],
   ]);
   $self->htmlFooter;
 }

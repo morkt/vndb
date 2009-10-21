@@ -2296,6 +2296,54 @@ ru*:
 cs*:
 hu*:
 
+:_pedit_rel_sel
+en : Selected producers
+ru*:
+cs*:
+hu*:
+
+:_pedit_rel_add
+en : Add producer
+ru*:
+cs*:
+hu*:
+
+:_pedit_rel_addbut
+en : add
+ru*:
+cs*:
+hu*:
+
+:_pedit_rel_del
+en : remove
+ru*:
+cs*:
+hu*:
+
+:_pedit_rel_none
+en : Nothing selected.
+ru*:
+cs*:
+hu*:
+
+:_pedit_rel_findformat
+en : Producer textbox should start with an ID (e.g. "p7:")
+ru*:
+cs*:
+hu*:
+
+:_pedit_rel_notfound
+en : Producer not found
+ru*:
+cs*:
+hu*:
+
+:_pedit_rel_double
+en : Producer already selected!
+ru*:
+cs*:
+hu*:
+
 
 # Browse/search producers
 

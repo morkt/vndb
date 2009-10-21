@@ -844,6 +844,16 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
   padding-bottom: 10px!important
 }
 
+/***** Producer edit *****/
+
+#jt_box_pedit_rel table  { margin-bottom: 10px; }
+#jt_box_pedit_rel h2     { margin: 0 0 3px 0px; }
+#jt_box_pedit_rel td     { padding: 1px 2px; vertical-align: middle; }
+#jt_box_pedit_rel td.tc_prod { width: 290px; padding-left: 10px }
+#jt_box_pedit_rel td.tc_add  { width: 40px; text-align: left }
+#jt_box_pedit_rel td.tc_prod input { width: 280px; }
+#jt_box_pedit_rel td.tc_rel select { width: 130px; }
+
 
 
 

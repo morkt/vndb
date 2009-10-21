@@ -34,7 +34,8 @@ my $jskeys = qr{^(?:
     _vnedit_scr_.+|
     _tagv_(?:add|spoil\d|notfound|nometa|double)|
     _redit_form_vn_(?:addbut|remove|none|vnformat|notfound|double)|
-    _redit_form_prod_(?:addbut|remove|none|pformat|notfound|double)
+    _redit_form_prod_(?:addbut|remove|none|pformat|notfound|double)|
+    _pedit_rel_(?:addbut|del|none|findformat|notfound|double)
   )$}x;
 
 sub l10n {
