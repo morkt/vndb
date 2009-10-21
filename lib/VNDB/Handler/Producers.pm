@@ -62,6 +62,23 @@ sub page {
     }
    end;
 
+   if(@{$p->{relations}}) {
+     my %rel;
+     push @{$rel{$_->{relation}}}, $_
+       for (sort { $a->{name} cmp $b->{name} } @{$p->{relations}});
+     p class => 'center';
+      txt "\n";
+      for my $r (sort keys %rel) {
+        txt mt("_prodrel_$r").' ';
+        for (@{$rel{$r}}) {
+          a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 40;
+          txt ', ' if $_ ne $rel{$r}[$#{$rel{$r}}];
+        }
+        txt "\n";
+      }
+     end;
+   }
+
    if($p->{desc}) {
      p class => 'description';
       lit bb2html $p->{desc};
