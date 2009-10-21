@@ -123,6 +123,12 @@ sub checkjs {
   my $lastmod = [stat $script]->[9];
   system "$ROOT/util/jsgen.pl" if
        (!-e $script && -x "$ROOT/static/f")
-    || (-e $script && -w $script && $lastmod < [stat "$ROOT/data/script.js"]->[9] || $lastmod < [stat "$ROOT/data/lang.txt"]->[9]);
+    || (-e $script && -w $script && (
+           $lastmod < [stat "$ROOT/data/script.js"]->[9]
+        || $lastmod < [stat "$ROOT/data/lang.txt"]->[9]
+        || (-e "$ROOT/data/config.pl" && $lastmod < [stat "$ROOT/data/config.pl"]->[9])
+        || $lastmod < [stat "$ROOT/data/global.pl"]->[9]
+        || $lastmod < [stat "$ROOT/util/jsgen.pl"]->[9]
+       ));
 }
 
