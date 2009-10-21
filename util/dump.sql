@@ -796,6 +796,36 @@ $$ LANGUAGE plpgsql;
 CREATE CONSTRAINT TRIGGER vn_relgraph_notify AFTER INSERT OR UPDATE ON vn DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE PROCEDURE vn_relgraph_notify();
 
 
+-- Same as above for producers, with slight differences in the steps:
+-- There is no 2, and
+-- 3 = New producer revision of which the name, language or type differs from the previous revision (deferred)
+CREATE OR REPLACE FUNCTION producer_relgraph_notify() RETURNS trigger AS $$
+BEGIN
+  -- 1.
+  IF TG_TABLE_NAME = 'producers' THEN
+    IF NEW.rgraph IS NULL AND EXISTS(SELECT 1 FROM producers_relations WHERE pid1 = NEW.latest) THEN
+      NOTIFY relgraph;
+    END IF;
+  END IF;
+  IF TG_TABLE_NAME = 'producers' AND TG_OP = 'UPDATE' THEN
+    IF NEW.rgraph IS NOT NULL AND OLD.latest > 0 THEN
+      -- 3 & 4
+      IF OLD.latest <> NEW.latest AND (
+           EXISTS(SELECT 1 FROM producers_rev p1, producers_rev p2 WHERE (p2.name <> p1.name OR p2.type <> p1.type OR p2.lang <> p1.lang) AND p1.id = OLD.latest AND p2.id = NEW.latest)
+        OR EXISTS(SELECT p1.pid2, p1.relation FROM producers_relations p1 WHERE p1.pid1 = OLD.latest EXCEPT SELECT p2.pid2, p2.relation FROM producers_relations p2 WHERE p2.pid1 = NEW.latest)
+        OR EXISTS(SELECT p1.pid2, p1.relation FROM producers_relations p1 WHERE p1.pid1 = NEW.latest EXCEPT SELECT p2.pid2, p2.relation FROM producers_relations p2 WHERE p2.pid1 = OLD.latest)
+      ) THEN
+        UPDATE producers SET rgraph = NULL WHERE id = NEW.id;
+      END IF;
+    END IF;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER vn_relgraph_notify AFTER INSERT OR UPDATE ON producers DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE PROCEDURE producer_relgraph_notify();
+
+
 -- NOTIFY on insert into changes/posts/tags
 CREATE OR REPLACE FUNCTION insert_notify() RETURNS trigger AS $$
 BEGIN
