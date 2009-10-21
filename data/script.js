@@ -828,7 +828,7 @@ function vnrFormAdd() {
     if(byId('relation_tr_'+id))
       return alert(mt('_vnedit_rel_double'));
 
-    vnrAdd(sel.selectedIndex, id, items[0].firstChild.nodeValue);
+    vnrAdd(sel.options[sel.selectedIndex].value, id, items[0].firstChild.nodeValue);
     sel.selectedIndex = 0;
     vnrSerialize();
   });
@@ -1635,7 +1635,7 @@ function prrFormAdd() {
     if(byId('relation_tr_'+id))
       return alert(mt('_pedit_rel_double'));
 
-    prrAdd(sel.selectedIndex, id, items[0].firstChild.nodeValue);
+    prrAdd(sel.options[sel.selectedIndex].value, id, items[0].firstChild.nodeValue);
     sel.selectedIndex = 0;
     prrSerialize();
   });
