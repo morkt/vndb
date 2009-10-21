@@ -12,7 +12,7 @@ use POSIX 'ceil';
 
 our @EXPORT = qw|
   htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate
-  htmlRevision htmlEditMessage htmlItemMessage htmlVoteStats htmlHistory htmlSearchBox
+  htmlRevision htmlEditMessage htmlItemMessage htmlVoteStats htmlHistory htmlSearchBox htmlRGHeader
 |;
 
 
@@ -101,7 +101,7 @@ sub htmlMainTabs {
      end;
    }
 
-   if($type eq 'v' && $obj->{rgraph}) {
+   if($type =~ /[vp]/ && $obj->{rgraph}) {
      li $sel eq 'rg' ? (class => 'tabselected') : ();
       a href => "/$id/rg", mt '_mtabs_relations';
      end;
@@ -557,6 +557,42 @@ sub htmlSearchBox {
   end;
 }
 
+
+sub htmlRGHeader {
+  my($self, $title, $type, $obj) = @_;
+
+  if(($self->reqHeader('Accept')||'') !~ /application\/xhtml\+xml/) {
+    $self->htmlHeader(title => $title);
+    $self->htmlMainTabs($type, $obj, 'rg');
+    div class => 'mainbox';
+     h1 $title;
+     div class => 'warning';
+      h2 mt '_rg_notsupp';
+      p mt '_rg_notsupp_msg';
+     end;
+    end;
+    $self->htmlFooter;
+    return 1;
+  }
+  $self->resHeader('Content-Type' => 'application/xhtml+xml; charset=UTF-8');
+
+  # This is a REALLY ugly hack, need find a proper solution in YAWF
+  no warnings 'redefine';
+  my $sub = \&YAWF::XML::html;
+  *YAWF::XML::html = sub () {
+     lit q|<!DOCTYPE html PUBLIC
+         "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"
+             "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">|;
+     tag 'html',
+       xmlns         => "http://www.w3.org/1999/xhtml",
+       'xmlns:svg'   => 'http://www.w3.org/2000/svg',
+       'xmlns:xlink' => 'http://www.w3.org/1999/xlink';
+  };
+  $self->htmlHeader(title => $title);
+  *YAWF::XML::html = $sub;
+  $self->htmlMainTabs($type, $obj, 'rg');
+  return 0;
+}
 
 
 1;

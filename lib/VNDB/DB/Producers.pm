@@ -9,7 +9,7 @@ our @EXPORT = qw|dbProducerGet dbProducerEdit dbProducerAdd|;
 
 
 # options: results, page, id, search, char, rev
-# what: extended, changes, vn, relations
+# what: extended changes vn relations relgraph
 sub dbProducerGet {
   my $self = shift;
   my %o = (
@@ -40,10 +40,12 @@ sub dbProducerGet {
   push @join, $o{rev} ? 'JOIN producers p ON p.id = pr.pid' : 'JOIN producers p ON pr.id = p.latest';
   push @join, 'JOIN changes c ON c.id = pr.id' if $o{what} =~ /changes/ || $o{rev};
   push @join, 'JOIN users u ON u.id = c.requester' if $o{what} =~ /changes/;
+  push @join, 'JOIN relgraphs pg ON pg.id = p.rgraph' if $o{what} =~ /relgraph/;
 
-  my $select = 'p.id, pr.type, pr.name, pr.original, pr.lang, pr.id AS cid';
+  my $select = 'p.id, pr.type, pr.name, pr.original, pr.lang, pr.id AS cid, p.rgraph';
   $select .= ', pr.desc, pr.alias, pr.website, p.hidden, p.locked' if $o{what} =~ /extended/;
   $select .= q|, extract('epoch' from c.added) as added, c.requester, c.comments, p.latest, pr.id AS cid, u.username, c.rev| if $o{what} =~ /changes/;
+  $select .= ', pg.svg' if $o{what} =~ /relgraph/;
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s

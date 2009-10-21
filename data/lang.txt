@@ -2216,6 +2216,15 @@ cs*:
 hu*:
 
 
+# Producer relation graph page (/p+/rg)
+
+:_prodrg_title
+en : Relation graph for [_1]
+ru*:
+cs*:
+hu*:
+
+
 # Add/Edit producer
 
 :_pedit_title_edit
@@ -5054,18 +5063,6 @@ ru : Схема связей для [_1]
 cs : Graf vztahů pro vizuální novelu [_1]
 hu : Összefüggés gráf [_1]-hoz
 
-:_vnrg_notsupp
-en : Not supported
-ru*:
-cs*:
-hu*:
-
-:_vnrg_notsupp_msg
-en : Your browser sucks, it doesn't have the functionality to render our nice relation graphs.
-ru*:
-cs*:
-hu*:
-
 
 # VN Diff viewer (/v+.+)
 
@@ -5703,4 +5700,18 @@ ru : Пожалуйста, пишите на английском!
 cs : Prosíme, anglicky!
 hu : Kérlek angolul válaszolj!
 
+
+# No browser support to display the relation graphs
+
+:_rg_notsupp
+en : Not supported
+ru*:
+cs*:
+hu*:
+
+:_rg_notsupp_msg
+en : Your browser sucks, it doesn't have the functionality to render our nice relation graphs.
+ru*:
+cs*:
+hu*:
 

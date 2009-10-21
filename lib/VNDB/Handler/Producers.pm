@@ -8,6 +8,7 @@ use VNDB::Func;
 
 
 YAWF::register(
+  qr{p([1-9]\d*)/rg}               => \&rg,
   qr{p([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
   qr{p(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit|/new)}
     => \&edit,
@@ -15,6 +16,28 @@ YAWF::register(
   qr{xml/producers\.xml}           => \&pxml,
 );
 
+
+sub rg {
+  my($self, $pid) = @_;
+
+  my $p = $self->dbProducerGet(id => $pid, what => 'relgraph')->[0];
+  return 404 if !$p->{id} || !$p->{rgraph};
+
+  my $title = mt '_prodrg_title', $p->{name};
+  return if $self->htmlRGHeader($title, 'p', $p);
+
+  $p->{svg} =~ s/\$___(_prodrel_[a-z]+)____\$/mt $1/eg;
+  $p->{svg} =~ s/\$(_lang_[a-z]+)_\$/mt $1/eg;
+  $p->{svg} =~ s/\$(_ptype_[a-z]+)_\$/mt $1/eg;
+
+  div class => 'mainbox';
+   h1 $title;
+   p class => 'center';
+    lit $p->{svg};
+   end;
+  end;
+  $self->htmlFooter;
+}
 
 sub page {
   my($self, $pid, $rev) = @_;

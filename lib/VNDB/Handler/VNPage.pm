@@ -27,40 +27,10 @@ sub rg {
   return 404 if !$v->{id} || !$v->{rgraph};
 
   my $title = mt '_vnrg_title', $v->{title};
-
-  if(($self->reqHeader('Accept')||'') !~ /application\/xhtml\+xml/) {
-    $self->htmlHeader(title => $title);
-    $self->htmlMainTabs('v', $v, 'rg');
-    div class => 'mainbox';
-     h1 $title;
-     div class => 'warning';
-      h2 mt '_vnrg_notsupp';
-      p mt '_vnrg_notsupp_msg';
-     end;
-    end;
-    $self->htmlFooter;
-    return;
-  }
-  $self->resHeader('Content-Type' => 'application/xhtml+xml; charset=UTF-8');
-
-  # This is a REALLY ugly hack, need find a proper solution in YAWF
-  no warnings 'redefine';
-  my $sub = \&YAWF::XML::html;
-  *YAWF::XML::html = sub () {
-     lit q|<!DOCTYPE html PUBLIC
-         "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"
-             "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">|;
-     tag 'html',
-       xmlns         => "http://www.w3.org/1999/xhtml",
-       'xmlns:svg'   => 'http://www.w3.org/2000/svg',
-       'xmlns:xlink' => 'http://www.w3.org/1999/xlink';
-  };
-  $self->htmlHeader(title => $title);
-  *YAWF::XML::html = $sub;
+  return if $self->htmlRGHeader($title, 'v', $v);
 
   $v->{svg} =~ s/\$___(_vnrel_[a-z]+)____\$/mt $1/eg;
 
-  $self->htmlMainTabs('v', $v, 'rg');
   div class => 'mainbox';
    h1 $title;
    p class => 'center';

@@ -47,7 +47,8 @@ CREATE TABLE producers (
   id SERIAL NOT NULL PRIMARY KEY,
   latest integer NOT NULL DEFAULT 0,
   locked boolean NOT NULL DEFAULT FALSE,
-  hidden boolean NOT NULL DEFAULT FALSE
+  hidden boolean NOT NULL DEFAULT FALSE,
+  rgraph integer
 );
 
 -- producers_relations
@@ -363,6 +364,7 @@ CREATE TABLE wlists (
 ALTER TABLE changes            ADD FOREIGN KEY (requester) REFERENCES users         (id);
 ALTER TABLE changes            ADD FOREIGN KEY (causedby)  REFERENCES changes       (id);
 ALTER TABLE producers          ADD FOREIGN KEY (latest)    REFERENCES producers_rev (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE producers          ADD FOREIGN KEY (rgraph)    REFERENCES relgraphs     (id);
 ALTER TABLE producers_relations ADD FOREIGN KEY (pid1)     REFERENCES producers_rev (id);
 ALTER TABLE producers_relations ADD FOREIGN KEY (pid2)     REFERENCES producers     (id);
 ALTER TABLE producers_rev      ADD FOREIGN KEY (id)        REFERENCES changes       (id);

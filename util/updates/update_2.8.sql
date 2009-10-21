@@ -41,6 +41,7 @@ CREATE TABLE producers_relations (
   relation producer_relation NOT NULL,
   PRIMARY KEY(pid1, pid2)
 );
+ALTER TABLE producers ADD COLUMN rgraph integer REFERENCES relgraphs (id);
 
 
 -- Anime types stored as enum
