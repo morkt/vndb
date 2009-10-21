@@ -33,6 +33,22 @@ ALTER TABLE vn_relations ALTER COLUMN relation TYPE vn_relation USING
   END;
 
 
+-- producer relations
+--  old -> Formerly
+--  new -> Succeeded by
+--  par -> Parent producer
+--  sub -> Subsidairy
+--  imp -> Imprint
+--  ipa -> Parent brand
+CREATE TYPE producer_relation AS ENUM ('old', 'new', 'par', 'sub', 'imp', 'ipa');
+CREATE TABLE producers_relations (
+  pid1 integer NOT NULL REFERENCES producers_rev (id),
+  pid2 integer NOT NULL REFERENCES producers (id),
+  relation producer_relation NOT NULL,
+  PRIMARY KEY(pid1, pid2)
+);
+
+
 -- Anime types stored as enum
 CREATE TYPE anime_type AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
 ALTER TABLE anime ALTER COLUMN type TYPE anime_type USING

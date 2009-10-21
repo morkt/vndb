@@ -29,6 +29,7 @@ git - ?
 	- Fixed bug with unhiding a producer entry
 	- Set 'no spoilers' as default spoiler level for tags
 	- Added Czech and Hungarian interface translation
+	- Producer relations
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout

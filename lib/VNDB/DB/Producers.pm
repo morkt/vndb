@@ -9,7 +9,7 @@ our @EXPORT = qw|dbProducerGet dbProducerEdit dbProducerAdd|;
 
 
 # options: results, page, id, search, char, rev
-# what: extended, changes, vn
+# what: extended, changes, vn, relations
 sub dbProducerGet {
   my $self = shift;
   my %o = (
@@ -41,7 +41,7 @@ sub dbProducerGet {
   push @join, 'JOIN changes c ON c.id = pr.id' if $o{what} =~ /changes/ || $o{rev};
   push @join, 'JOIN users u ON u.id = c.requester' if $o{what} =~ /changes/;
 
-  my $select = 'p.id, pr.type, pr.name, pr.original, pr.lang';
+  my $select = 'p.id, pr.type, pr.name, pr.original, pr.lang, pr.id AS cid';
   $select .= ', pr.desc, pr.alias, pr.website, p.hidden, p.locked' if $o{what} =~ /extended/;
   $select .= q|, extract('epoch' from c.added) as added, c.requester, c.comments, p.latest, pr.id AS cid, u.username, c.rev| if $o{what} =~ /changes/;
 
@@ -78,6 +78,22 @@ sub dbProducerGet {
     )});
   }
 
+  if(@$r && $o{what} =~ /relations/) {
+    my %r = map {
+      $r->[$_]{relations} = [];
+      ($r->[$_]{cid}, $_)
+    } 0..$#$r;
+
+    push @{$r->[$r{$_->{pid1}}]{relations}}, $_ for(@{$self->dbAll(q|
+      SELECT rel.pid1, rel.pid2 AS id, rel.relation, pr.name, pr.original
+        FROM producers_relations rel
+        JOIN producers p ON rel.pid2 = p.id
+        JOIN producers_rev pr ON p.latest = pr.id
+        WHERE rel.pid1 IN(!l)|,
+      [ keys %r ]
+    )});
+  }
+
   return wantarray ? ($r, $np) : $r;
 }
 
@@ -103,7 +119,7 @@ sub dbProducerAdd {
 
 
 # helper function, inserts a producer revision
-# Arguments: global revision, item id, { columns in producers_rev }
+# Arguments: global revision, item id, { columns in producers_rev }, relations
 sub insert_rev {
   my($self, $cid, $pid, $o) = @_;
   $self->dbExec(q|
@@ -111,6 +127,12 @@ sub insert_rev {
       VALUES (!l)|,
     [ $cid, $pid, @$o{qw| name original website type lang desc alias|} ]
   );
+
+  $self->dbExec(q|
+    INSERT INTO producers_relations (pid1, pid2, relation)
+      VALUES (?, ?, ?)|,
+    $cid, $_->[1], $_->[0]
+  ) for (@{$o->{relations}});
 }
 
 
