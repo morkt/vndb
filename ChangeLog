@@ -28,7 +28,7 @@ git - ?
 	- Fixed calculation of tags_vn_bayesian.spoiler
 	- Fixed bug with unhiding a producer entry
 	- Set 'no spoilers' as default spoiler level for tags
-	- Added Czech translation
+	- Added Czech and Hungarian interface translation
 
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout

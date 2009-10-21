@@ -11,7 +11,7 @@ use warnings;
 
   # used for the language switch interface, language tags must
   # be the same as in the languages hash in global.pl
-  sub languages { ('en', 'ru', 'cs') }
+  sub languages { qw{ cs en hu ru } }
 
   sub maketext {
     my $r = eval { shift->SUPER::maketext(@_) };
@@ -22,11 +22,10 @@ use warnings;
 
   # can be called as either a subroutine or a method
   sub loadfile {
-    my %lang = (
-      en => \%VNDB::L10N::en::Lexicon,
-      ru => \%VNDB::L10N::ru::Lexicon,
-      cs => \%VNDB::L10N::cs::Lexicon,
-    );
+    my %lang = do {
+      no strict 'refs';
+      map +($_, \%{"VNDB::L10N::${_}::Lexicon"}), languages
+    };
     my $r = LangFile->new(read => "$VNDB::ROOT/data/lang.txt");
     my $key;
     while(my $l = $r->read) {
@@ -43,6 +42,7 @@ use warnings;
     $r->close;
   }
 }
+
 
 
 {
@@ -128,21 +128,6 @@ use warnings;
 
 
 {
-  package VNDB::L10N::ru;
-  use base 'VNDB::L10N::en';
-  our %Lexicon;
-
-  sub quant {
-    my($self, $num, $single, $couple, $lots) = @_;
-    return $single if ($num % 10) == 1 && ($num % 100) != 11;
-    return $couple if ($num % 10) >= 2 && ($num % 10) <= 4 && !(($num % 100) >= 12 && ($num % 100) <= 14);
-    return $lots;
-  }
-}
-
-
-
-{
   package VNDB::L10N::cs;
   use base 'VNDB::L10N::en';
   our %Lexicon;
@@ -155,6 +140,30 @@ use warnings;
     return $lots;
   }
 }
+
+
+
+{
+  package VNDB::L10N::hu;
+  use base 'VNDB::L10N::en';
+  our %Lexicon;
+}
+
+
+
+{
+  package VNDB::L10N::ru;
+  use base 'VNDB::L10N::en';
+  our %Lexicon;
+
+  sub quant {
+    my($self, $num, $single, $couple, $lots) = @_;
+    return $single if ($num % 10) == 1 && ($num % 100) != 11;
+    return $couple if ($num % 10) >= 2 && ($num % 10) <= 4 && !(($num % 100) >= 12 && ($num % 100) <= 14);
+    return $lots;
+  }
+}
+
 
 
 1;
