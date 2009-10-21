@@ -1761,19 +1761,22 @@ if(byId('advselect') && byId('ti')) {
 }
 
 // Language selector
-if(byId('lang_select'))
-  ddInit(byId('lang_select'), 'bottom', function(lnk) {
+if(byId('lang_select')) {
+  var d = byId('lang_select');
+  ddInit(d, 'bottom', function(lnk) {
     var lst = tag('ul', null);
     for(var i=0; i<L10N_LANG.length; i++) {
       var ln = L10N_LANG[i];
       var icon = tag('acronym', {'class':'icons lang '+ln}, ' ');
       lst.appendChild(tag('li', {'class':'lang_selector'}, mt_curlang == ln
         ? tag('i', icon, mt('_lang_'+ln))
-        : tag('a', {href:'?l10n='+ln}, icon, L10N_STR['_lang_'+ln][ln])
+        : tag('a', {href:'?l10n='+ln}, icon, L10N_STR['_lang_'+ln][ln]||mt('_lang_'+ln))
       ));
     }
     return lst;
   });
+  d.onclick = function() {return false};
+}
 
 // spam protection on all forms
 setTimeout(function() {
