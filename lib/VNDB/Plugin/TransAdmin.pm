@@ -1,10 +1,12 @@
 # This plugin provides a quick and dirty user interface to editing lang.txt,
 # to use it, add the following to your data/config.pl:
 # 
-#   use VNDB::Plugin::TransAdmin;
-#   $VNDB::S{transadmin} = {
-#     <userid> => 'all' || <language> || <arrayref with languages>
-#   };
+#  if($INC{"YAWF.pm"}) {
+#    require VNDB::Plugin::TransAdmin;
+#    $VNDB::S{transadmin} = {
+#      <userid> => 'all' || <language> || <arrayref with languages>
+#    };
+#  }
 #
 # And then open /tladmin in your browser.
 # Also make sure data/lang.txt is writable by the httpd process.
