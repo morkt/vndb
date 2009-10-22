@@ -610,7 +610,7 @@ cs*:
 hu*:
 
 :_prodrel_sub
-en : Subsidairy
+en : Subsidiary
 ru : Второстепенная
 cs*:
 hu*:
