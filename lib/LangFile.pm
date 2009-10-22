@@ -2,10 +2,16 @@
 
 package LangFile;
 
+use strict;
+use warnings;
+use Fcntl qw(LOCK_SH LOCK_EX SEEK_SET);
+
 
 sub new {
   my($class, $action, $file) = @_;
   open my $F, $action eq 'read' ? '<:utf8' : '>:utf8', $file or die "Opening $file: $!";
+  flock($F, $action eq 'read' ? LOCK_SH : LOCK_EX) or die "Locking $file: $!";
+  seek($F, 0, SEEK_SET) or die "Seeking $file: $!";
   return bless {
     act => $action,
     FH => $F,
