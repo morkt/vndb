@@ -47,25 +47,50 @@
 
 :SUB:Credits
 <p>
- Due to the sites nature as a wiki, all information in the database is added and
- kept up-to-date by active users. VNDB would not have been as large and comprehensive
- as it is now without the support of the many contributers. For a complete list of
- active contributors, check out the <a href="/u/all?o=d;s=changes">user list</a>.
+ <b>Code development</b><br />
+ <dl>
+  <dt>Yorhel</dt><dd>Main developer.</dd>
+  <dt>3dB</dt><dd>Wrote the current user authentication code and implemented post throttling on the discussion board.</dd>
+ </dl>
+ <br />
+
+ <b>Translations</b><br />
+ <dl>
+  <dt>Czech</dt><dd><a href="mailto:nya.chan.production@gmail.com">Nya-chan Production</a></dd>
+  <dt>Hungarian</dt><dd><a href="mailto:bikmate@gmail.com">Bikfalvi Máté</a></dd>
+  <dt>Russian</dt><dd><a href="mailto:winkillerstudio@gmail.com">Dmitri Poguliayev</a></dd>
+ </dl>
+
+ <br />
+ <b>Skins</b>
+ <dl>
+  <dt>applehq</dt><dd>
+   <a href="?skin=lb">Little Busters! (pink)</a>,
+   <a href="?skin=term">Neon (black)</a>
+  </dd><dt>EchoMateria</dt><dd>
+   <a href="?skin=aselia_01">Aselia (sunset)</a>,
+   <a href="?skin=carnevale">Gekkou no Carnevale (black)</a>,
+   <a href="?skin=eiel">EIeL (sand)</a>,
+   <a href="?skin=ever17_01">Ever17 (light blue)</a>,
+   <a href="?skin=fate_01">Fate/stay night (rust)</a>,
+   <a href="?skin=fate_02">Fate/stay night (red)</a>,
+   <a href="?skin=higu">Higurashi no Naku Koro ni (orange)</a>,
+   <a href="?skin=lb_02">Little Busters! (sand)</a>,
+   <a href="?skin=haze">Primitive Link (haze)</a>,
+   <a href="?skin=saya">Saya no Uta (maroon)</a>,
+   <a href="?skin=seinarukana">Seinarukana (white)</a>,
+   <a href="?skin=taka">Sora no Iro, Mizu no Iro (turquoise)</a>,
+   <a href="?skin=tsukihime">Tsukihime (purple)</a>,
+   <a href="?skin=tsukihime_02">Tsukihime (black)</a>
+  </dd><dt>Yorhel</dt><dd>
+   <a href="?skin=angel">Angelic Serenade (dark blue)</a>,
+   <a href="?skin=grey">Touhou (grey)</a>
+  </dd>
+ </dl>
+ <br />
+
+ <b>Top 5 Contributors</b>
+:TOP5CONTRIB:
+ ...and <a href="/u/all?o=d;s=changes">many more</a>.
 </p>
-
-
-:SUB:Link to us
-<p>
- Due to popular demand, here are some icons you could use to link to and promote
- VNDB. Direct linking is, unlike with all other images on this site, allowed.<br />
- <img src="http://static.yorhel.nl/2008/vndb_88x31.gif" style="margin: 5px">
- <img src="http://static.yorhel.nl/2009/vndb1.gif" style="margin: 5px">
- <img src="http://static.yorhel.nl/2009/vndb2.jpg" style="margin: 5px">
- <img src="http://static.yorhel.nl/2009/vndb3.jpg" style="margin: 5px">
- <img src="http://static.yorhel.nl/2009/vndb4.jpg" style="margin: 5px">
- <img src="http://static.yorhel.nl/2009/vndb5.jpg" style="margin: 5px">
- <img src="http://static.yorhel.nl/2009/vndb6.jpg" style="margin: 5px"><br />
- If you feel these banners don't suit your needs, please don't hesitate to make
- one yourself.
-<p>
 

@@ -292,6 +292,12 @@ sub docpage {
       close $F;
       $ii;
     }eg;
+    s{^:TOP5CONTRIB:$}{
+      my $l = $self->dbUserGet(results => 6, order => 'c_changes DESC');
+      '<dl>'.join('', map $_->{id} == 1 ? () :
+        sprintf('<dt><a href="/u%d">%s</a></dt><dd>%d</dd>', $_->{id}, $_->{username}, $_->{c_changes}),
+      @$l).'</dl>';
+    }eg;
   }
 
   $self->htmlHeader(title => $title);
