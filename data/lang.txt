@@ -109,43 +109,43 @@ ends with ']'. The following options are supported:
 :_age_years
 en : [_1] [quant,_1,year,years] ago
 ru : [_1] [quant,_1,год,года,лет] назад
-cs*:
+cs : před [_1] [quant,_1,rokem,roky,roky]
 hu*:
 
 :_age_months
 en : [_1] [quant,_1,month,months] ago
 ru : [_1] [quant,_1,месяц,месяца,месяцев] назад
-cs*:
+cs : před [_1] [quant,_1,měsícem,měsíci,měsíci]
 hu*:
 
 :_age_weeks
 en : [_1] [quant,_1,week,weeks] ago
 ru : [_1] [quant,_1,неделя,недели,недель] назад
-cs*:
+cs : před [_1] [quant,_1,týdnem,týdny,týdny]
 hu*:
 
 :_age_days
 en : [_1] [quant,_1,day,days] ago
 ru : [_1] [quant,_1,день,дня,дней] назад
-cs*:
+cs : před [_1] [quant,_1,dnem,dny,dny]
 hu*:
 
 :_age_hours
 en : [_1] [quant,_1,hour,hours] ago
 ru : [_1] [quant,_1,час,часа,часов] назад
-cs*:
+cs : před [_1] [quant,_1,hodinou,hodinami,hodinami]
 hu*:
 
 :_age_min
 en : [_1] min ago
 ru : [_1] [quant,_1,минута,минуты,минут] назад
-cs*:
+cs : před [_1] min
 hu*:
 
 :_age_sec
 en : [_1] sec ago
 ru : [_1] [quant,_1,секунда,секунды,секунд] назад
-cs*:
+cs : před [_1] s
 hu*:
 
 
@@ -235,7 +235,7 @@ hu : Francia
 :_lang_hu
 en : Hungarian
 ru : Венгерский
-cs*:
+cs : Maďarsky
 hu*:
 
 :_lang_it
@@ -441,67 +441,67 @@ hu : Egyéb
 :_med_cd
 en : [quant,_1,CD,CDs]
 ru : [quant,_1,CD,CD,CD]
-cs*:
+cs : [quant,_1,CD,CD,CD]
 hu*:
 
 :_med_dvd
 en : [quant,_1,DVD,DVDs]
 ru : [quant,_1,DVD,DVD,DVD]
-cs*:
+cs : [quant,_1,DVD,DVD,DVD]
 hu*:
 
 :_med_gdr
 en : [quant,_1,GD-ROM,GD-ROMs]
 ru : [quant,_1,GD-ROM,GD-ROM,GD-ROM]
-cs*:
+cs : [quant,_1,GD-ROM,GD-ROMy,GD-ROMů]
 hu*:
 
 :_med_blr
 en : [quant,_1,Blu-ray disc,Blu-ray discs]
 ru : [quant,_1,BD-ROM,BD-ROM,BD-ROM]
-cs*:
+cs : [quant,_1,disk Blu-ray,disky Blu-ray,disků Blu-ray]
 hu*:
 
 :_med_flp
 en : [quant,_1,Floppy,Floppies]
 ru : [quant,_1,Дискета,Дискеты,Дискетт]
-cs*:
+cs : [quant,_1,disketa,diskety,disket]
 hu*:
 
 :_med_mrt
 en : [quant,_1,Cartridge,Cartridges]
 ru : [quant,_1,Картридж,Картриджа,Картриджей]
-cs*:
+cs : [quant,_1,Cartridge,Cartridge,Cartridgí]
 hu*:
 
 :_med_mem
 en : [quant,_1,Memory card,Memory cards]
 ru : [quant,_1,Карта памяти,Карты памяти,Карт памяти]
-cs*:
+cs : [quant,_1,Paměťová karta,Paměťové karty,Paměťových karet]
 hu*:
 
 :_med_umd
 en : [quant,_1,UMD,UMDs]
 ru : [quant,_1,UMD,UMD,UMD]
-cs*:
+cs : [quant,_1,UMD,UMD,UMD]
 hu*:
 
 :_med_nod
 en : Nintendo Optical [quant,_1,Disk,Disks]
 ru : [quant,_1,Оптический диск,Оптические диски,Оптических дисков] Nintendo
-cs*:
+cs : [quant,_1,Nintendo Optical Disk,Nintendo Optical Disky,Nintendo Optical Disků]
 hu*:
 
 :_med_in
 en : Internet download
 ru : Распространение через Интернет
-cs*:
+cs : Stažení z internetu
 hu*:
 
 :_med_otc
 en : Other
 ru : Другое
-cs*:
+cs : Ostatní
 hu*:
 
 
@@ -510,61 +510,61 @@ hu*:
 :_vnrel_seq
 en : Sequel
 ru : Продолжение
-cs*:
+cs : Pokračování
 hu*:
 
 :_vnrel_preq
 en : Prequel
 ru : Предыстория
-cs*:
+cs : Prequel
 hu*:
 
 :_vnrel_set
 en : Same setting
 ru : Тот же мир
-cs*:
+cs : Stejné zasazení
 hu*:
 
 :_vnrel_alt
 en : Alternative version
 ru : Альтернативная версия
-cs*:
+cs : Alternativní verze
 hu*:
 
 :_vnrel_char
 en : Shares characters
 ru : Те же персонажи
-cs*:
+cs : Sdílí postavy
 hu*:
 
 :_vnrel_side
 en : Side story
 ru : Побочный сюжет
-cs*:
+cs : Vedlejší příběh
 hu*:
 
 :_vnrel_par
 en : Parent story
 ru : Исходный сюжет
-cs*:
+cs : Mateřský příběh
 hu*:
 
 :_vnrel_ser
 en : Same series
 ru : Из той же серии
-cs*:
+cs : Stejná série
 hu*:
 
 :_vnrel_fan
 en : Fandisc
 ru : Фандиск
-cs*:
+cs : Fandisk
 hu*:
 
 :_vnrel_orig
 en : Original game
 ru : Оригинальная игра
-cs*:
+cs : Originální hra
 hu*:
 
 
@@ -594,37 +594,37 @@ hu : Amatör csoport
 :_prodrel_old
 en : Formerly
 ru : Изначально
-cs*:
+cs : Dříve
 hu*:
 
 :_prodrel_new
 en : Succeeded by
 ru : Унаследована
-cs*:
+cs : Nahrazeno
 hu*:
 
 :_prodrel_par
 en : Parent producer
 ru : Исходная компания
-cs*:
+cs : Mateřský producent
 hu*:
 
 :_prodrel_sub
 en : Subsidiary
 ru : Второстепенная
-cs*:
+cs : Vedlejší
 hu*:
 
 :_prodrel_imp
 en : Imprint
 ru : Марка
-cs*:
+cs : Otisk
 hu*:
 
 :_prodrel_ipa
 en : Parent brand
 ru : Исходный бренд
-cs*:
+cs : mateřská značka
 hu*:
 
 
@@ -654,43 +654,43 @@ hu : Próba
 :_animetype_tv
 en : TV Series
 ru : ТВ Сериал
-cs*:
+cs : TV série
 hu*:
 
 :_animetype_ova
 en : OVA
 ru : ОВА
-cs*:
+cs : OVA
 hu*:
 
 :_animetype_mov
 en : Movie
 ru : Фильм
-cs*:
+cs : Film
 hu*:
 
 :_animetype_oth
 en : Other
 ru : Другое
-cs*:
+cs : Ostatní
 hu*:
 
 :_animetype_web
 en : Web
 ru : Веб-трансляция
-cs*:
+cs : Internet
 hu*:
 
 :_animetype_spe
 en : TV Special
 ru : ТВ-спешл
-cs*:
+cs : TV Speciál
 hu*:
 
 :_animetype_mv
 en : Music Video
 ru : Музыкальное видео
-cs*:
+cs : Hudební video
 hu*:
 
 
@@ -927,61 +927,61 @@ hu : Nagyon hosszú[index,_1,, (> 50 óra), (Clannad)]
 :_rlst_rstat_0
 en : Unknown
 ru : Неизвестно
-cs*:
+cs : Není známo
 hu*:
 
 :_rlst_rstat_1
 en : Pending
 ru : Ожидает
-cs*:
+cs : V čekání
 hu*:
 
 :_rlst_rstat_2
 en : Obtained
 ru : Приобретено
-cs*:
+cs : Obdrženo
 hu*:
 
 :_rlst_rstat_3
 en : On loan
 ru : Взято напрокат
-cs*:
+cs : Vypůjčeno
 hu*:
 
 :_rlst_rstat_4
 en : Deleted
 ru : Удалено
-cs*:
+cs : Smazáno
 hu*:
 
 :_rlst_vstat_0
 en : Unknown
 ru : Неизвестно
-cs*:
+cs : Není známo
 hu*:
 
 :_rlst_vstat_1
 en : Playing
 ru : Играю
-cs*:
+cs : Ve hraní
 hu*:
 
 :_rlst_vstat_2
 en : Finished
 ru : Завершено
-cs*:
+cs : Dohráno
 hu*:
 
 :_rlst_vstat_3
 en : Stalled
 ru : Застряло
-cs*:
+cs : Pozastaveno
 hu*:
 
 :_rlst_vstat_4
 en : Dropped
 ru : Заброшено
-cs*:
+cs : Vyřazeno
 hu*:
 
 
@@ -1149,73 +1149,73 @@ hu : Beküldés
 :_js_expand
 en : expand
 ru : развернуть
-cs*:
+cs : rozbalit
 hu*:
 
 :_js_collapse
 en : collapse
 ru : свернуть
-cs*:
+cs : složit
 hu*:
 
 :_js_loading
 en : Loading...
 ru : Загрузка...
-cs*:
+cs : Nahrává se...
 hu*:
 
 :_js_date_year
 en : -year-
 ru : -год-
-cs*:
+cs : -rok-
 hu*:
 
 :_js_date_month
 en : -month-
 ru : -месяц-
-cs*:
+cs : -měsíc-
 hu*:
 
 :_js_date_day
 en : -day-
 ru : -день-
-cs*:
+cs : -dne-
 hu*:
 
 :_js_ds_noresults
 en : No results...
 ru : Совпадений не найдено...
-cs*:
+cs : Žádné výsledky...
 hu*:
 
 :_js_iv_close
 en : close
 ru : закрыть
-cs*:
+cs : zavřít
 hu*:
 
 :_js_iv_prev
 en : previous
 ru : назад
-cs*:
+cs : předchozí
 hu*:
 
 :_js_iv_next
 en : next
 ru : далее
-cs*:
+cs : další
 hu*:
 
 :_js_ds_tag_meta
 en : meta
 ru : мета
-cs*:
+cs : meta
 hu*:
 
 :_js_ds_tag_mod
 en : awaiting moderation
 ru : ждёт модерирования
-cs*:
+cs : čeká na schválení
 hu*:
 
 
@@ -2149,13 +2149,13 @@ hu : Jelenleg nincsen visual novel bejegyzésünk ettől a készítőtől.
 :_prodpage_dev
 en : developer
 ru : разработчик
-cs*:
+cs : vývojář
 hu*:
 
 :_prodpage_pub
 en : publisher
 ru : издатель
-cs*:
+cs : vydavatel
 hu*:
 
 
@@ -2206,13 +2206,13 @@ hu : Leírás
 :_revfield_p_relations
 en : Relations
 ru : Отношения
-cs*:
+cs : Vztahy
 hu*:
 
 :_proddiff_none
 en : none
 ru : нет
-cs*:
+cs : žádné
 hu*:
 
 
@@ -2221,7 +2221,7 @@ hu*:
 :_prodrg_title
 en : Relation graph for [_1]
 ru : Схема отношений для [_1]
-cs*:
+cs : Graf vztahů pro producenta [_1]
 hu*:
 
 
@@ -2302,55 +2302,55 @@ hu : Leírás
 :_pedit_form_rel
 en : Relations
 ru : Отношения
-cs*:
+cs : Vztahy
 hu*:
 
 :_pedit_rel_sel
 en : Selected producers
 ru : Выбранные компании
-cs*:
+cs : Vybraní producenti
 hu*:
 
 :_pedit_rel_add
 en : Add producer
 ru : Добавить компанию
-cs*:
+cs : Přidat producenta
 hu*:
 
 :_pedit_rel_addbut
 en : add
 ru : добавить
-cs*:
+cs : přidat
 hu*:
 
 :_pedit_rel_del
 en : remove
 ru : убрать
-cs*:
+cs : odebrat
 hu*:
 
 :_pedit_rel_none
 en : Nothing selected.
 ru : Ничего не выбрано.
-cs*:
+cs : Není nic vybráno.
 hu*:
 
 :_pedit_rel_findformat
 en : Producer textbox should start with an ID (e.g. "p7:")
 ru : Строка компании должна начинаться с идентификатора (например, "p7:")
-cs*:
+cs : Textové pole producenta by mělo začínat ID (např. "p7:")
 hu*:
 
 :_pedit_rel_notfound
 en : Producer not found
 ru : Компания не найдена
-cs*:
+cs : Producent nenalezen
 hu*:
 
 :_pedit_rel_double
 en : Producer already selected!
 ru : Компания уже выбрана!
-cs*:
+cs : Producent byl již vybrán!
 hu*:
 
 
@@ -2520,13 +2520,13 @@ hu : Készítők
 :_reldiff_developer
 en : developer
 ru : разработчик
-cs*:
+cs : vývojář
 hu*:
 
 :_reldiff_publisher
 en : publisher
 ru : издатель
-cs*:
+cs : vydavatel
 hu*:
 
 
@@ -2643,13 +2643,13 @@ hu : Korhatár
 :_relinfo_developer
 en : [quant,_1,Developer,Developers]
 ru : [quant,_1,Разработчик,Разработчика,Разработчиков]
-cs*:
+cs : [quant,_1,Vývojář,Vývojáři,Vývojářů]
 hu*:
 
 :_relinfo_publisher
 en : [quant,_1,Publisher,Publishers]
 ru : [quant,_1,Издатель,Издателя,Издателей]
-cs*:
+cs : [quant,_1,Vydavatel,Vydavatelé,Vydavatelů]
 hu*:
 
 :_relinfo_catalog
@@ -2890,19 +2890,19 @@ hu : Médium
 :_redit_form_med_quantity
 en : -quantity-
 ru : -количество-
-cs*:
+cs : -množství-
 hu*:
 
 :_redit_form_med_medium
 en : -medium-
 ru : -носитель-
-cs*:
+cs : -médium-
 hu*:
 
 :_redit_form_med_remove
 en : remove
 ru : убрать
-cs*:
+cs : odebrat
 hu*:
 
 :_redit_form_prod
@@ -2926,55 +2926,55 @@ hu : Készitő hozzáadása
 :_redit_form_prod_dev
 en : Developer
 ru : Разработчик
-cs*:
+cs : Vývojář
 hu*:
 
 :_redit_form_prod_pub
 en : Publisher
 ru : Издатель
-cs*:
+cs : Vydavatel
 hu*:
 
 :_redit_form_prod_both
 en : Both
 ru : Оба
-cs*:
+cs : Obojí
 hu*:
 
 :_redit_form_prod_addbut
 en : add
 ru : добавить
-cs*:
+cs : přidat
 hu*:
 
 :_redit_form_prod_remove
 en : remove
 ru : убрать
-cs*:
+cs : odebrat
 hu*:
 
 :_redit_form_prod_none
 en : Nothing selected.
 ru : Ничего не выбрано.
-cs*:
+cs : Není nic vybráno.
 hu*:
 
 :_redit_form_prod_pformat
 en : Producer textbox must start with an ID (e.g. p17)
 ru : Строка компании должна начинаться с идентификатора (например, p17)
-cs*:
+cs : Textové pole producenta musí začínat ID (např. p17)
 hu*:
 
 :_redit_form_prod_notfound
 en : Producer not found!
 ru : Компания не найдена!
-cs*:
+cs : Producent nenalezen!
 hu*:
 
 :_redit_form_prod_double
 en : Producer already selected!
 ru : Компания уже выбрана!
-cs*:
+cs : Producent byl již vybrán!
 hu*:
 
 :_redit_form_vn
@@ -2998,37 +2998,37 @@ hu : Visual novel hozzáadása
 :_redit_form_vn_addbut
 en : add
 ru : добавить
-cs*:
+cs : přidat
 hu*:
 
 :_redit_form_vn_remove
 en : remove
 ru : убрать
-cs*:
+cs : odebrat
 hu*:
 
 :_redit_form_vn_none
 en : Nothing selected.
 ru : Ничего не выбрано.
-cs*:
+cs : Není nic vybráno.
 hu*:
 
 :_redit_form_vn_vnformat
 en : Visual novel textbox must start with an ID (e.g. v17)
 ru : Строка новеллы должна начинаться с идентификатора (например, v17)
-cs*:
+cs : Vizuální novela musí začínat ID (např. v17)
 hu*:
 
 :_redit_form_vn_notfound
 en : Visual novel not found!
 ru : Новелла не найдена!
-cs*:
+cs : Vizuální novela nenalezena!
 hu*:
 
 :_redit_form_vn_double
 en : VN already selected!
 ru : Новелла уже выбрана!
-cs*:
+cs : VN již byla vybrána!
 hu*:
 
 
@@ -3685,43 +3685,43 @@ hu : Menj a [url,/g,cimke listára] ha szeretnél böngészni az összes rendelk
 :_tagv_spoil0
 en : neutral
 ru : нейтральный
-cs*:
+cs : neutrální
 hu*:
 
 :_tagv_spoil1
 en : no spoiler
 ru : без спойлеров
-cs*:
+cs : bez spoilerů
 hu*:
 
 :_tagv_spoil2
 en : minor spoiler
 ru : лёгкий спойлер
-cs*:
+cs : menší spoilery
 hu*:
 
 :_tagv_spoil3
 en : major spoiler
 ru : тяжёлый спойлер
-cs*:
+cs : všechny spoilery
 hu*:
 
 :_tagv_notfound
 en : Item not found!
 ru : Элемент не найден!
-cs*:
+cs : Předmět nenalezen!
 hu*:
 
 :_tagv_nometa
 en : Can't use meta tags here!
 ru : Использование мета-тегов здесь запрещено!
-cs*:
+cs : Zde se nedají použít meta-tagy!
 hu*:
 
 :_tagv_double
 en : Tag is already present!
 ru : Тег уже указан!
-cs*:
+cs : Tag už je přiřazen!
 hu*:
 
 
@@ -4845,49 +4845,49 @@ hu : Összefüggés hozzáadása
 :_vnedit_rel_isa
 en : is a
 ru : это
-cs*:
+cs : je
 hu*:
 
 :_vnedit_rel_of
 en : of
 ru : для
-cs*:
+cs : titulu
 hu*:
 
 :_vnedit_rel_addbut
 en : add
 ru : добавить
-cs*:
+cs : přidat
 hu*:
 
 :_vnedit_rel_del
 en : del
 ru : убрать
-cs*:
+cs : smazat
 hu*:
 
 :_vnedit_rel_none
 en : No relations selected.
 ru : Отношений не выбрано.
-cs*:
+cs : Nejsou vybrány žádné vztahy.
 hu*:
 
 :_vnedit_rel_findformat
 en : Visual novel textbox must start with an ID (e.g. v17)
 ru : Строка новеллы должна начинаться с идентификатора (например, v17)
-cs*:
+cs : textové pole vizuální novely musí začínat ID (např. v17)
 hu*:
 
 :_vnedit_rel_novn
 en : Visual novel not found!
 ru : Новелла не найдена!
-cs*:
+cs : Vizuální novela nenalezena!
 hu*:
 
 :_vnedit_rel_double
 en : This visual novel has already been selected!
 ru : Эта новелла уже была выбрана!
-cs*:
+cs : Tato vizuální novela již byla vybrána!
 hu*:
 
 :_vnedit_scr
@@ -4925,49 +4925,49 @@ hu : Mielőtt pillanatképeket töltesz fel, tarts néhány dolgot figyelembe:[b
 :_vnedit_scr_selrel
 en : -- select release --
 ru : -- выбор выпуска --
-cs*:
+cs : -- vybrat vydání --
 hu*:
 
 :_vnedit_scr_frmloading
 en : Please wait for the screenshots to be uploaded before submitting the form.
 ru : Прежде чем сохранить изменения, дождитесь загрузки скриншотов на сервер.
-cs*:
+cs : Prosíme, počkejte na nahrání screenshotů před potvrzením změn.
 hu*:
 
 :_vnedit_scr_frmnorel
 en : Please select the appropriate release for every screenshot.
 ru : Пожалуйста, укажите подходящий выпуск для каждого скриншота.
-cs*:
+cs : Prosíme, vyberte příslušné vydání pro každý screenshot.
 hu*:
 
 :_vnedit_scr_fetching
 en : Fetching thumbnail...
 ru : Обработка превьюшки...
-cs*:
+cs : Načítám náhled...
 hu*:
 
 :_vnedit_scr_uploading
 en : Uploading screenshot
 ru : Загрузка скриншота
-cs*:
+cs : Nahrávám screenshot
 hu*:
 
 :_vnedit_scr_upl_msg
 en : This can take a while, depending on the file size and your upload speed.
 ru : Это может занять некоторое время, в зависимости от размера файла и скорости вашего соединения.
-cs*:
+cs : Toto může chvíli trvat, v závislosti na velikosti souboru a vaší rychlosti uploadu.
 hu*:
 
 :_vnedit_scr_cancel
 en : cancel
 ru : отменить
-cs*:
+cs : zrušit
 hu*:
 
 :_vnedit_scr_full
 en : Enough screenshots
 ru : Больше нет места
-cs*:
+cs : Již máme dostatek screenshotů
 hu*:
 
 :_vnedit_scr_full_msg
@@ -4975,49 +4975,50 @@ en : The limit of 10 screenshots per visual novel has been reached.
      If you want to add a new screenshot, please remove an existing one first.
 ru : Достигнуто ограничение в 10 скриншотов.
      Если вы хотите добавить новый скриншот, пожалуйста удалите один из существующих.
-cs*:
+cs : Limit deseti screenshotů na vizuální novelu byl dosažen.
+     Pokud chcete přidat další screenshot, prosíme odstraňte nejdříve nějaký již existující.
 hu*:
 
 :_vnedit_scr_add
 en : Add screenshot
 ru : Добавить скриншот
-cs*:
+cs : Přidat screenshot
 hu*:
 
 :_vnedit_scr_imgnote
 en : Image must be smaller than 5MB and in PNG or JPEG format.
 ru : Изображение должно быть не более 5 Мегабайт и в формате PNG, либо JPEG.
-cs*:
+cs : Obrázek musí být menší 5MB a ve formátu PNG nebo JPEG.
 hu*:
 
 :_vnedit_scr_addbut
 en : Upload!
 ru : Загрузить!
-cs*:
+cs : Nahrát!
 hu*:
 
 :_vnedit_scr_id
 en : Screenshot #[_1]
 ru : Скриншот #[_1]
-cs*:
+cs : Screenshot #[_1]
 hu*:
 
 :_vnedit_scr_remove
 en : remove
 ru : убрать
-cs*:
+cs : odebrat
 hu*:
 
 :_vnedit_scr_fullsize
 en : Full size: [_1]
 ru : Полный размер: [_1]
-cs*:
+cs : Plná velikost: [_1]
 hu*:
 
 :_vnedit_scr_nsfw
 en : This screenshot is NSFW
 ru : Этот скриншот НБДР (NSFW)
-cs*:
+cs : Tento screenshot je NSFW
 hu*:
 
 :_vnedit_scr_oops
@@ -5027,7 +5028,9 @@ en : Oops! Seems like something went wrong...
 ru : Э-кхм! Похоже, возникла проблема...
      Пожалуйста, убедитесь что ваш файл не превышает размер в 5 Мегабайт.
      Если дело не в размере, тогда пожалуйста сообщите администрации сайта об ошибке.
-cs*:
+cs : Hups! Zdá se, že se něco pokazilo...
+     Ujistěte se, že soubor, který nahráváte nemá více jak 5MB.
+     Pokud v tom problém neleží, nahlaste systémovou chybu.
 hu*:
 
 :_vnedit_scr_errformat
@@ -5035,7 +5038,8 @@ en : Upload failed!
      Only JPEG or PNG images are accepted.
 ru : Ошибка при загрузке!
      Допускаются только JPEG или PNG.
-cs*:
+cs : Nahrání se nezdařilo!
+     Přijímány jsou pouze obrázky formátu JPEG nebo PNG.
 hu*:
 
 :_vnedit_scr_errempty
@@ -5043,13 +5047,14 @@ en : Upload failed!
      No file selected, or an empty file?
 ru : Ошибка при загрузке!
      Файл не выбран или имеет нулевой размер.
-cs*:
+cs : Nahrání se nezdařilo!
+     Buď jste nevybrali soubor, nebo byl tento soubor prázdný.
 hu*:
 
 :_vnedit_scr_genthumb
 en : Generating thumbnail...
 ru : Генерация превьюшки...
-cs*:
+cs : Tvořím náhled...
 hu*:
 
 :_vnedit_scr_genthumb_msg
@@ -5057,7 +5062,8 @@ en : Note: if this takes longer than 30 seconds, there\'s probably something wro
      Please try again later or report a bug if that is the case.
 ru : Замечание: если эта операция длится более 30 секунд, значит у нас на сервере неполадки.
      В таком случае попытайтесь снова или сообщите администрации об ошибках.
-cs*:
+cs : Poznámka: Pokud toto zabere více jak 30 sekund, je pravděpodobně chyba někde na naší straně.
+     Prosíme, zkuste to znovu později nebo nahlaste systémovou chybu, pokud tomu tak je.
 hu*:
 
 
@@ -5306,13 +5312,13 @@ hu : mind
 :_vnpage_developer
 en : Developer
 ru : Разработчик
-cs*:
+cs : Vývojář
 hu*:
 
 :_vnpage_publisher
 en : Publishers
 ru : Издатели
-cs*:
+cs : Vydavatel
 hu*:
 
 :_vnpage_relations
@@ -5374,7 +5380,8 @@ en : You are about to give this visual novel a 1 out of 10. This is a rather ext
      Are you really sure this visual novel matches that description?
 ru : Вы собираетесь дать этой новелле оценку 1 из 10. Это весьма сильная оценка, означающая что это совершенно бездарная работа и худшее из всего во что вы играли.
      Вы уверены, что эта новелла соответствует такому критерию?
-cs*:
+cs : Chystáte se této vizuální novele dát hodnocení 1 z 10. To je celkem extrémní hodnocení, znamenající, že tato hra nemá absolutně nic co nabídnout, a že je to ta nejhorší hra, kterou jste kdy hráli.
+     Jste si opravdu jisti, že tato vizuální novela odpovídá tomuto popisu?
 hu*:
 
 :_vnpage_uopt_10vote
@@ -5382,7 +5389,8 @@ en : You are about to give this visual novel a 10 out of 10. This is a rather ex
      It is generally a bad idea to have more than three games in your vote list with this rating, choose carefully!
 ru : Вы собираетесь дать этой новелле оценку 10 из 10. Это весьма сильная оценка, означающая что это одна из лучших когда либо выпущенных новелл, которую вы когда-либо читали.
      Вы уверены, что эта новелла соответствует такому критерию?
-cs*:
+cs : Chystáte se této vizuální novele dát hodnocení 10 z 10. To je celkem extrémní hodnocení, znamenající, že to je jedna z nejlepších vizuálních novel, které jste kdy hráli a je nepravděpodobné, že by nějaká další hra mohla být lepší než tato.
+     Obecně vztao je špatný nápad mít víc jak tři hry s tímto hodnocením ve vašem listu hlasování, vybírejte pečlivě!
 hu*:
 
 :_vnpage_uopt_wishlisted
@@ -5418,19 +5426,19 @@ hu : eltávolitás a kivánságlistából
 :_vnpage_uopt_relrstat
 en : Release status
 ru : Статус выпуска
-cs*:
+cs : Status vydání
 hu*:
 
 :_vnpage_uopt_relvstat
 en : Play status
 ru : Статус играбельности
-cs*:
+cs : Herní status
 hu*:
 
 :_vnpage_uopt_reldel
 en : Remove from VN list
 ru : Убрать из списка новелл
-cs*:
+cs : Odstranit z listu VN
 hu*:
 
 :_vnpage_rel
@@ -5714,12 +5722,12 @@ hu : Kérlek angolul válaszolj!
 :_rg_notsupp
 en : Not supported
 ru : Не поддерживается
-cs*:
+cs : Nepodporováno
 hu*:
 
 :_rg_notsupp_msg
 en : Your browser sucks, it doesn't have the functionality to render our nice relation graphs.
 ru : Ваш браузер настолько отстоен, что даже не может отрендерить наши графики.
-cs*:
+cs : Váš prohlížeč je na nic, nepodporuje vykreslování našich krásných vztahových grafů.
 hu*:
 
