@@ -1,6 +1,6 @@
 # This plugin provides a quick and dirty user interface to editing lang.txt,
 # to use it, add the following to your data/config.pl:
-# 
+#
 #  if($INC{"YAWF.pm"}) {
 #    require VNDB::Plugin::TransAdmin;
 #    $VNDB::S{transadmin} = {
@@ -9,7 +9,7 @@
 #  }
 #
 # And then open /tladmin in your browser.
-# Also make sure data/lang.txt is writable by the httpd process.
+# Also make sure data/lang.txt and data/docs/* are writable by the httpd process.
 # English is considered the 'main' language, and cannot be edited using this interface.
 
 package VNDB::Plugin::TransAdmin;
@@ -53,21 +53,23 @@ sub tladmin {
   my $intro = $lang =~ s/intro//;
   return 404 if $lang && ($lang eq 'en' || !grep $_ eq $lang, $self->{l10n}->languages);
   my $sect = $self->reqParam('sect')||'';
+  my $doc = $self->reqParam('doc')||'';
 
   my $uid = $self->authInfo->{id};
   return $self->htmlDenied if !$uid || !$self->{transadmin}{$uid};
 
-  if(!-w $langfile) {
+  if(!-w $langfile || !-w "$VNDB::ROOT/data/docs" || grep /\.[a-z]{2}$/ && !-w $_, glob "$VNDB::ROOT/data/docs/*") {
     $self->htmlHeader(title => 'Language file not writable', noindex => 1);
     div class => 'mainbox';
      h1 'Language file not writable';
-     div class => 'warning', 'Sorry, I do not have enough permission to write to the language file.';
+     div class => 'warning', 'Sorry, I do not have enough permission to write to the language files.';
     end;
     $self->htmlFooter;
     return;
   }
 
-  _savelang($self, $lang) if $lang && $self->reqMethod eq 'POST' && _allowed($self, $lang);
+  _savelang($self, $lang) if $lang && $sect && $self->reqMethod eq 'POST' && _allowed($self, $lang);
+  _savedoc($self, $lang, $doc) if $lang && $doc && $self->reqMethod eq 'POST' && _allowed($self, $lang);
   my($sects, $page) = _readlang($lang, $sect) if $lang;
 
   $self->htmlHeader(title => 'Quick-and-dirty Translation Editor', noindex => 1);
@@ -80,10 +82,12 @@ sub tladmin {
       for grep !/en/, $self->{l10n}->languages;
    end;
    _sections($self, $lang, $sect, $sects) if $lang;
+   _docs($lang, $doc) if $lang;
   end;
 
   _intro() if $intro;
-  _page($self, $lang, $sect, $page) if $lang && $sect;
+  _section($self, $lang, $sect, $page) if $lang && $sect;
+  _doc($self, $lang, $doc) if $lang && $doc;
 
   $self->htmlFooter;
 }
@@ -161,27 +165,6 @@ sub _readlang {
 }
 
 
-sub _sections {
-  my($self, $lang, $sect, $list) = @_;
-  
-  br;
-  h2 class => 'alttitle', 'Step #2: Choose a section';
-   div style => 'margin: 0 40px';
-   for (@$list) {
-     div style => 'float: left; width: 200px;';
-      a href => "/tladmin/$lang?sect=".uri_escape($_->[0]), $_->[0] if $sect ne $_->[0];
-      txt $sect if $sect eq $_->[0];
-      txt " ";
-      txt "0/$_->[1]" if !$_->[2];
-      b class => 'standout', "$_->[2]/$_->[1]" if $_->[2];
-     end;
-   }
-   clearfloat;
-  end;
-  br;
-}
-
-
 sub _intro {
   my $f = LangFile->new(read => $langfile);
   my $intro = $f->read;
@@ -194,7 +177,29 @@ sub _intro {
 }
 
 
-sub _page {
+sub _sections {
+  my($self, $lang, $sect, $list) = @_;
+
+  br;
+  h2 class => 'alttitle', 'Step #2: Choose a section';
+  div style => 'margin: 0 40px';
+   for (@$list) {
+     div style => 'float: left; width: 200px;';
+      a href => "/tladmin/$lang?sect=".uri_escape($_->[0]), $_->[0] if $sect ne $_->[0];
+      txt $sect if $sect eq $_->[0];
+      txt " ";
+      txt "0/$_->[1]" if !$_->[2];
+      b class => 'standout', "$_->[2]/$_->[1]" if $_->[2];
+     end;
+   }
+   clearfloat;
+  end;
+  br;
+  br;
+}
+
+
+sub _section {
   my($self, $lang, $sect, $page) = @_;
 
   form action => "/tladmin/$lang?sect=".uri_escape($sect), method => 'POST', 'accept-charset' => 'utf-8';
@@ -229,9 +234,9 @@ sub _page {
      end;
      div style => 'float: left';
       if($multi) {
-        $tl =~ s/&/&amp;/;
-        $tl =~ s/</&lt;/;
-        $tl =~ s/>/&gt;/;
+        $tl =~ s/&/&amp;/g;
+        $tl =~ s/</&lt;/g;
+        $tl =~ s/>/&gt;/g;
         textarea name => $key, id => $key, rows => $multi+2, style => 'width: 700px; height: auto; white-space: nowrap; border: none', wrap => 'off';
          lit $tl;
         end;
@@ -243,6 +248,94 @@ sub _page {
    }
    if(_allowed($self, $lang)) {
      br;br;
+     fieldset class => 'submit';
+      input type => 'submit', value => 'Save', class => 'submit';
+     end;
+   }
+  end;
+  end;
+}
+
+
+sub _savedoc {
+  my($self, $lang, $doc) = @_;
+
+  my $file = "$VNDB::ROOT/data/docs/$doc.$lang";
+
+  open my $f, '<:utf8', "$VNDB::ROOT/data/docs/$doc" or die $!;
+  my $en = join '', <$f>;
+  close $f;
+
+  my $tl = $self->reqParam('tl');
+  $tl =~ s/\r?\n/\n/g;
+
+  return -e $file && unlink $file if $tl eq $en;
+
+  open $f, '>:utf8', $file or die $!;
+  print $f $tl;
+  close $f;
+  chmod 0666, $file;
+}
+
+
+sub _docs {
+  my($lang, $doc) = @_;
+
+  my @d = map /\.[a-z]{2}$/ || /\/8$/ ? () : s{^.+\/([^/]+)$}{$1} && $_, glob "$VNDB::ROOT/data/docs/*";
+
+  h2 class => 'alttitle', '...or a doc page';
+  div style => 'margin: 0 40px';
+   for (sort { $a =~ /^\d+$/ && $b =~ /^\d+$/ ? $a <=> $b : $a cmp $b } @d) {
+     div style => 'float: left; width: 60px;';
+      a href => "/tladmin/$lang?doc=$_", $_ if $_ ne $doc;
+      txt $_ if $_ eq $doc;
+     end;
+   }
+   clearfloat;
+  end;
+}
+
+
+sub _doc {
+  my($self, $lang, $doc) = @_;
+
+  open my $f, '<:utf8', "$VNDB::ROOT/data/docs/$doc" or die $!;
+  my $en = join '', <$f>;
+  close $f;
+
+  my $tl = $en;
+  if(open $f, '<:utf8', "$VNDB::ROOT/data/docs/$doc.$lang") {
+    $tl = join '', <$f>;
+    close $f;
+  }
+  $tl =~ s/&/&amp;/g;
+  $tl =~ s/</&lt;/g;
+  $tl =~ s/>/&gt;/g;
+
+
+  form action => "/tladmin/$lang?doc=$doc", method => 'POST', 'accept-charset' => 'utf-8';
+  div class => 'mainbox';
+   a class => 'addnew', href => "/d$doc", "View current page" if $doc =~ /^\d+$/;
+   h1 "Translating page $doc";
+   h2 class => 'alttitle', 'Left = English, Right = translation';
+
+   if(!_allowed($self, $lang)) {
+     div class => 'warning';
+      h2 'Read-only';
+      p "You can't edit this language.";
+     end;
+   }
+
+   div style => 'width: 48%; margin-right: 10px; overflow-y: auto; float: left';
+    pre style => 'font: 12px Tahoma', $en;
+   end;
+   textarea name => 'tl', id => 'tl', rows => ($en =~ y/\n//),
+     style => 'border: none; float: left; width: 49%; white-space: nowrap', wrap => 'off';
+    lit $tl;
+   end;
+   clearfloat;
+   if(_allowed($self, $lang)) {
+     br;
      fieldset class => 'submit';
       input type => 'submit', value => 'Save', class => 'submit';
      end;
