@@ -629,13 +629,13 @@ hu : Szüllő márka
 
 :_prodrel_spa
 en : Spawned
-ru*:
+ru : Порождена
 cs*:
 hu*:
 
 :_prodrel_ori
 en : Originated from
-ru*:
+ru : Вышла из
 cs*:
 hu*:
 
@@ -905,13 +905,13 @@ hu : Ismeretlen
 
 :_vnlength_1
 en : Very short[index,_1,, (< 2 hours), (OMGWTHOTL~, A Dream of Summer)]
-ru : Очень короткая[index,_1,, (< 2 часов), (OMGWTFOTL~, A Dream Of Summer)]
+ru : Крошечная[index,_1,, (< 2 часов), (OMGWTFOTL~, A Dream Of Summer)]
 cs : Velmi krátká[index,_1,, (< 2 hours), (OMGWTHOTL~, A Dream of Summer)]
 hu : Nagyon rövid[index,_1,, (< 2 óra), (OMGWTHOTL~, A Dream of Summer)]
 
 :_vnlength_2
 en : Short[index,_1,, (2 - 10 hours), (Narcissu~, Planetarian)]
-ru : Короткая[index,_1,, (2 - 10 часов), (Narcissu~, Planetarian)]
+ru : Малая[index,_1,, (2 - 10 часов), (Narcissu~, Planetarian)]
 cs : Krátká[index,_1,, (2 - 10 hours), (Narcissu~, Planetarian)]
 hu : Rövid[index,_1,, (2 - 10 óra), (Narcissu~, Planetarian)]
 
