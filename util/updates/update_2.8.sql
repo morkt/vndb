@@ -34,7 +34,7 @@ ALTER TABLE vn_relations ALTER COLUMN relation TYPE vn_relation USING
 
 
 -- producer relations
-CREATE TYPE producer_relation AS ENUM ('old', 'new', 'par', 'sub', 'imp', 'ipa');
+CREATE TYPE producer_relation AS ENUM ('old', 'new', 'sub', 'par', 'imp', 'ipa', 'spa', 'ori');
 CREATE TABLE producers_relations (
   pid1 integer NOT NULL REFERENCES producers_rev (id),
   pid2 integer NOT NULL REFERENCES producers (id),

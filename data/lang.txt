@@ -603,17 +603,17 @@ ru : Унаследована
 cs : Nahrazeno
 hu : Utódja
 
-:_prodrel_par
-en : Parent producer
-ru : Исходная компания
-cs : Mateřský producent
-hu : Szüllő készítő
-
 :_prodrel_sub
 en : Subsidiary
 ru : Второстепенная
 cs : Vedlejší
 hu : Alválalat
+
+:_prodrel_par
+en : Parent producer
+ru : Исходная компания
+cs : Mateřský producent
+hu : Szüllő készítő
 
 :_prodrel_imp
 en : Imprint
@@ -626,6 +626,18 @@ en : Parent brand
 ru : Исходный бренд
 cs : mateřská značka
 hu : Szüllő márka
+
+:_prodrel_spa
+en : Spawned
+ru*:
+cs*:
+hu*:
+
+:_prodrel_ori
+en : Originated from
+ru*:
+cs*:
+hu*:
 
 
 # release types

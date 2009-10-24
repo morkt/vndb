@@ -8,7 +8,7 @@ CREATE LANGUAGE plpgsql;
 CREATE TYPE anime_type        AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
 CREATE TYPE dbentry_type      AS ENUM ('v', 'r', 'p');
 CREATE TYPE medium            AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
-CREATE TYPE producer_relation AS ENUM ('old', 'new', 'par', 'sub', 'imp', 'ipa');
+CREATE TYPE producer_relation AS ENUM ('old', 'new', 'sub', 'par', 'imp', 'ipa', 'spa', 'ori');
 CREATE TYPE release_type      AS ENUM ('complete', 'partial', 'trial');
 CREATE TYPE vn_relation       AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
 
