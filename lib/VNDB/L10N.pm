@@ -5,12 +5,13 @@ use warnings;
 {
   package VNDB::L10N;
   use base 'Locale::Maketext';
+  use LangFile;
 
   sub fallback_languages { ('en') };
 
   # used for the language switch interface, language tags must
   # be the same as in the languages hash in global.pl
-  sub languages { ('en', 'ru') }
+  sub languages { qw{ cs en hu ru } }
 
   sub maketext {
     my $r = eval { shift->SUPER::maketext(@_) };
@@ -21,57 +22,27 @@ use warnings;
 
   # can be called as either a subroutine or a method
   sub loadfile {
-    my %lang = (
-      en => \%VNDB::L10N::en::Lexicon,
-      ru => \%VNDB::L10N::ru::Lexicon,
-    );
-
-    open my $F, '<:utf8', $VNDB::ROOT.'/data/lang.txt' or die "Opening language file: $!\n";
-    my($empty, $line, $key, $lang) = (0, 0);
-    while(<$F>) {
-      chomp;
-      $line++;
-
-      # ignore intro
-      if(!defined $key) {
-        $key = 0 if /^\/intro$/;
-        next;
+    my %lang = do {
+      no strict 'refs';
+      map +($_, \%{"VNDB::L10N::${_}::Lexicon"}), languages
+    };
+    my $r = LangFile->new(read => "$VNDB::ROOT/data/lang.txt");
+    my $key;
+    while(my $l = $r->read) {
+      my($t, @l) = @$l;
+      $key = $l[0] if $t eq 'key';
+      if($t eq 'tl') {
+        my($lang, undef, $text) = @l;
+        next if !$text;
+        die "Unknown language \"$l->[1]\"\n" if !$lang{$lang};
+        die "Unknown key for translation \"$lang: $text\"\n" if !$key;
+        $lang{$lang}{$key} = $text;
       }
-      # ignore comments
-      next if /^#/;
-      # key
-      if(/^:(.+)$/) {
-        $key = $1;
-        $lang = undef;
-        $empty = 0;
-        next;
-      }
-      # locale string
-      if(/^([a-z_-]{2,7})[ *]: (.+)$/) {
-        $lang = $1;
-        die "Unknown language on #$line: $lang\n" if !$lang{$lang};
-        die "Unknown key for locale on #$line\n" if !$key;
-        $lang{$lang}{$key} = $2;
-        $empty = 0;
-        next;
-      }
-      # multi-line locale string
-      if($lang && /^\s+([^\s].*)$/) {
-        $lang{$lang}{$key} .= ''.("\n"x$empty)."\n$1";
-        $empty = 0;
-        next;
-      }
-      # empty string (count them in case they're part of a multi-line locale string)
-      if(/^\s*$/) {
-        $empty++;
-        next;
-      }
-      # something we didn't expect
-      die "Don't know what to do with line $line\n" unless /^([a-z_-]{2,7})[ *]:/;
     }
-    close $F;
+    $r->close;
   }
 }
+
 
 
 {
@@ -88,8 +59,9 @@ use warnings;
   # Argument: unix timestamp
   # Returns: age
   sub age {
-    my $a = time-$_[1];
-    return sprintf '%d %s ago',
+    my($self, $time) = @_;
+    my $a = time-$time;
+    my @f =
       $a > 60*60*24*365*2       ? ( $a/60/60/24/365,      'years'  ) :
       $a > 60*60*24*(365/12)*2  ? ( $a/60/60/24/(365/12), 'months' ) :
       $a > 60*60*24*7*2         ? ( $a/60/60/24/7,        'weeks'  ) :
@@ -97,6 +69,7 @@ use warnings;
       $a > 60*60*2              ? ( $a/60/60,             'hours'  ) :
       $a > 60*2                 ? ( $a/60,                'min'    ) :
                                   ( $a,                   'sec'    );
+    return $self->maketext("_age_$f[1]", int $f[0]);
   }
 
   # argument: unix timestamp and optional format (compact/full)
@@ -155,6 +128,30 @@ use warnings;
 
 
 {
+  package VNDB::L10N::cs;
+  use base 'VNDB::L10N::en';
+  our %Lexicon;
+
+  sub quant {
+    my($self, $num, $single, $couple, $lots) = @_;
+    return $lots   if ($num % 100) >= 11 && ($num % 100) <= 14;
+    return $single if ($num % 10) == 1;
+    return $couple if ($num % 10) >= 2 && ($num % 10) <= 4;
+    return $lots;
+  }
+}
+
+
+
+{
+  package VNDB::L10N::hu;
+  use base 'VNDB::L10N::en';
+  our %Lexicon;
+}
+
+
+
+{
   package VNDB::L10N::ru;
   use base 'VNDB::L10N::en';
   our %Lexicon;
@@ -165,24 +162,8 @@ use warnings;
     return $couple if ($num % 10) >= 2 && ($num % 10) <= 4 && !(($num % 100) >= 12 && ($num % 100) <= 14);
     return $lots;
   }
-
-  sub age {
-    my $self = shift;
-    my $a = time-shift;
-    use utf8;
-    my @l = (
-      $a > 60*60*24*365*2       ? ( $a/60/60/24/365,      'год',     'года',    'лет'     ) :
-      $a > 60*60*24*(365/12)*2  ? ( $a/60/60/24/(365/12), 'месяц',   'месяца',  'месяцев' ) :
-      $a > 60*60*24*7*2         ? ( $a/60/60/24/7,        'неделя',  'недели',  'недель'  ) :
-      $a > 60*60*24*2           ? ( $a/60/60/24,          'день',    'дня',     'дней'    ) :
-      $a > 60*60*2              ? ( $a/60/60,             'час',     'часа',    'часов'   ) :
-      $a > 60*2                 ? ( $a/60,                'минута',  'минуты',  'минут'   ) :
-                                  ( $a,                   'секунда', 'секунды', 'секунд'  )
-    );
-    return sprintf '%d %s назад', $l[0], $self->quant(@l);
-  }
-
 }
+
 
 
 1;

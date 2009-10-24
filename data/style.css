@@ -239,7 +239,7 @@ td.field label {
 p.center {
   text-align: center;
 }
-b.future, b.standout {
+b.future, b.standout, a.standout {
   font-weight: normal;
   color: $standout$;
 }
@@ -272,7 +272,7 @@ b.future, b.standout {
   font-size: 11px;
   color: $maintext$;
 }
-#menulist h2 span {
+#menulist h2 #lang_select {
   float: right;
   padding-top: 1px;
 }
@@ -295,8 +295,8 @@ b.future, b.standout {
   margin-left: 15px;
 }
 #menulist input.submit {
-  width: 40px;
-  margin-left: 45px;
+  width: 70px;
+  margin-left: 30px;
 }
 #menulist #search input.text {
   width: 133px;
@@ -306,6 +306,7 @@ b.future, b.standout {
 #menulist #search input.submit {
   display: none;
 }
+#dd_box acronym { margin: 2px 5px 2px 0!important; }
 
 
 
@@ -479,13 +480,13 @@ div.mainbox.history td.tc1_2 {
 }
 div.mainbox.history td.tc2 { width: 65px; }
 div.mainbox.history td.tc3 { width: 90px  }
-tr.editsum td {
+tr.msgsum td {
   color: $grayedout$;
   padding-top: 0;
   text-align: right;
 }
-a#history_comments { float: right }
-a#history_comments:hover { border-bottom: none }
+a#expandlist { float: right }
+a#expandlist:hover { border-bottom: none }
 
 
 
@@ -694,14 +695,16 @@ a.addnew {
   margin: 0;
 }
 
-#vldd { position: absolute; left: -500px; border: 1px solid $border$; background-color: $secbg$; width: 180px; }
-#vldd ul { float: left; width: 90px; list-style-type: none; margin: 0; padding: 0 }
-#vldd li b { display: block; font-weight: normal; padding-left: 5px; }
-#vldd li i { display: block; font-style: normal; padding-left: 10px; }
-#vldd li a { display: block; padding-left: 10px; color: $link$; border: 0; }
-#vldd li a:hover { background: url($_boxbg$) repeat }
-#vldd ul.full { width: 180px; text-align: center; }
-#vldd ul.full li a { padding: 0 }
+#dd_box { position: absolute; left: -500px; border: 1px solid $border$; background-color: $secbg$; }
+#dd_box ul { list-style-type: none; margin: 0; padding: 0 }
+#dd_box li b { display: block; font-weight: normal; padding-left: 5px; }
+#dd_box li i { display: block; font-style: normal; padding-left: 10px; padding-right: 5px }
+#dd_box li a { display: block; padding-left: 10px; color: $link$; border: 0; padding-right: 5px }
+#dd_box li a:hover { background: url($_boxbg$) repeat }
+#dd_box .vrdd { width: 180px; }
+#dd_box .vrdd ul { float: left; width: 90px; }
+#dd_box .vrdd ul.full { width: 180px; text-align: center; }
+#dd_box .vrdd ul.full li a { padding: 0 }
 
 
 
@@ -727,12 +730,12 @@ a.addnew {
 #jt_box_vn_rel table  { margin-bottom: 10px; }
 #jt_box_vn_rel h2     { margin: 0 0 3px 0px; }
 #jt_box_vn_rel td     { padding: 1px 2px; vertical-align: middle; }
-#jt_box_vn_rel td.tc1 { width: 300px; text-align: right }
-#jt_box_vn_rel td.tc2 { width: 170px;  white-space: nowrap }
-#jt_box_vn_rel td.tc3 { width: 200px; }
-#jt_box_vn_rel td.tc4 { width: 40px; text-align: right }
-#jt_box_vn_rel td.tc1 input  { width: 280px; }
-#jt_box_vn_rel td.tc2 select { width: 130px; }
+#jt_box_vn_rel td.tc_vn    { width: 300px; text-align: right }
+#jt_box_vn_rel td.tc_rel   { width: 170px;  white-space: nowrap }
+#jt_box_vn_rel td.tc_title { width: 200px; }
+#jt_box_vn_rel td.tc_add   { width: 40px; text-align: right }
+#jt_box_vn_rel td.tc_vn input   { width: 280px; }
+#jt_box_vn_rel td.tc_rel select { width: 130px; }
 
 #ds_box {
   border: 1px solid $border$;
@@ -763,6 +766,7 @@ a.addnew {
 #scr_table td { height: 108px; border-top: 1px solid #258; padding: 0; padding-right: 5px }
 #scr_table td.thumb { width: 136px; vertical-align: middle }
 #scr_table select { width: 400px; }
+div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px; position: absolute; left: -500px; top: -500px; }
 
 
 
@@ -840,6 +844,16 @@ a.addnew {
   padding-bottom: 10px!important
 }
 
+/***** Producer edit *****/
+
+#jt_box_pedit_rel table  { margin-bottom: 10px; }
+#jt_box_pedit_rel h2     { margin: 0 0 3px 0px; }
+#jt_box_pedit_rel td     { padding: 1px 2px; vertical-align: middle; }
+#jt_box_pedit_rel td.tc_prod { width: 290px; padding-left: 10px }
+#jt_box_pedit_rel td.tc_add  { width: 40px; text-align: left }
+#jt_box_pedit_rel td.tc_prod input { width: 280px; }
+#jt_box_pedit_rel td.tc_rel select { width: 130px; }
+
 
 
 
@@ -863,13 +877,12 @@ a.addnew {
 #media_div { padding-left: 20px; }
 #media_div span { display: block }
 
-#jt_box_rel_vn h2,       #jt_box_rel_prod h2 { clear: left; padding-top: 10px; }
-#jt_box_rel_vn div,      #jt_box_rel_prod div { padding-left: 20px }
-#jt_box_rel_vn input,    #jt_box_rel_prod input { margin-right: 10px; width: 300px }
-#jt_box_rel_vn span,     #jt_box_rel_prod span { clear: left; display: block; padding: 2px; }
-#jt_box_rel_vn span.odd, #jt_box_rel_prod span.odd { background: url($_boxbg$) repeat; }
-#jt_box_rel_vn i,        #jt_box_rel_prod i { font-style: normal; display: block; float: left; width: 310px }
-#jt_box_rel_vn b,        #jt_box_rel_prod b { font-weight: normal; }
+#jt_box_rel_vn h2,        #jt_box_rel_prod h2       { clear: left; padding-top: 10px; }
+#jt_box_rel_vn div,       #jt_box_rel_vn table,
+#jt_box_rel_prod div,     #jt_box_rel_prod table    { margin-left: 20px }
+#jt_box_rel_vn input,     #jt_box_rel_prod input    { margin-right: 10px; width: 295px }
+#jt_box_rel_vn .tc_title, #jt_box_rel_prod .tc_name { width: 310px; padding: 2px }
+#jt_box_rel_prod .tc_role select { width: 100px; margin-right: 10px; }
 
 
 
@@ -905,8 +918,8 @@ a.addnew {
 
 /***** User VN list browser ******/
 
-.relhid_but, #relhidall { cursor: pointer }
-.relhid_but i, #relhidall i { font-style: normal }
+#expandall, .collapse_but { cursor: pointer }
+#expandall i, .collapse_but i { font-style: normal }
 .browse.rlist .tc2 { width: 100px; }
 .browse.rlist .tc3 { width: 70px; }
 .browse.rlist .relhid .tc1 { padding-left: 40px; width: 70px; }
@@ -971,15 +984,15 @@ div.browse.uposts td.tc1 {
 /***** VN tagmod *****/
 
 #jt_box_tagmod .formtable table td { padding: 1px 5px }
-#tagtable tfoot td { padding-top: 20px!important; }
-#tagtable .tc2_1 { border-right: 1px solid $border$; border-left: 1px solid $border$; width: 150px; text-align: center }
-#tagtable .tc3_1 { border-left: 1px solid $border$; width: 150px; text-align: center }
-#tagtable .tc1 { min-width: 200px; border-right: 1px solid $border$ }
-#tagtable .tc2 { padding-left: 30px!important }
-#tagtable .tc3 { border-right: 1px solid $border$; padding-right: 30px!important; text-align: right; padding-left: 10px!important  }
-#tagtable .tc4 { padding-left: 30px!important; }
-#tagtable .tc4 i { font-style: normal; font-size: 8px }
-#tagtable .tc5 { text-align: right; padding-right: 30px!important; }
+table.tgl tfoot td { padding-top: 20px!important; }
+table.tgl .tc_you { border-right: 1px solid $border$; border-left: 1px solid $border$; width: 150px; text-align: center }
+table.tgl .tc_others { border-left: 1px solid $border$; width: 150px; text-align: center }
+table.tgl .tc_tagname { min-width: 200px; border-right: 1px solid $border$ }
+table.tgl .tc_myvote { padding-left: 30px!important }
+table.tgl .tc_myspoil { border-right: 1px solid $border$; padding-right: 30px!important; text-align: right; padding-left: 10px!important; cursor: pointer }
+table.tgl .tc_allvote { padding-left: 30px!important; }
+table.tgl .tc_allvote i { font-style: normal; font-size: 8px }
+table.tgl .tc_allspoil { text-align: right; padding-right: 30px!important; }
 .taglvl { display: block; float: left; width: 8px; height: 12px; border: 1px solid $border$; font-size: 1px; color: $maintext$!important }
 .taglvl0 { width: 15px; border: none!important; font-size: 10px; text-align: center; }
 div.taglvl0 { font-size: 8px; width: 20px!important }
@@ -991,9 +1004,6 @@ a.taglvl:hover { border-bottom: 1px solid transparent!important }
 .taglvlsel.taglvl1 { background-color: #cf0; border-color: #cf0 }
 .taglvlsel.taglvl2 { background-color: #8f0; border-color: #8f0 }
 .taglvlsel.taglvl3 { background-color: #0f0; border-color: #0f0 }
-#jt_box_tagmod #tagtable .tc3 { padding: 0 }
-#tagtable .tc3 select { width: 90px; height: 15px; border: 0; margin: 0; font-size: 11px; background-color: $_blendbg$; text-align: right }
-#tagtable .odd .tc3 select { background-color: $secbg$ }
 
 
 
@@ -1131,7 +1141,7 @@ div#iv_view {
   height: 11px;
   opacity: 0.5;
 }
-.icons.rt0, .icons.rt1, .icons.rt2 { width: 11px; }
+.icons.rtcomplete, .icons.rtpartial, .icons.rttrial { width: 11px; }
 acronym.icons, acronym.uicons { cursor: default; }
 a .icons { cursor: pointer }
 .icons.oth { background: none; }
@@ -1153,9 +1163,9 @@ a .icons { cursor: pointer }
 .icons.xb3 { background-position: -16px -84px; }
 .icons.sat { background-position: -16px -98px; }
 
-.icons.rt0 { background-position: -32px   0px; }
-.icons.rt1 { background-position: -32px -14px; }
-.icons.rt2 { background-position: -32px -28px; }
+.icons.rtcomplete { background-position: -32px   0px; }
+.icons.rtpartial  { background-position: -32px -14px; }
+.icons.rttrial    { background-position: -32px -28px; }
 .icons.ext { background-position: -32px -42px; }
 .icons.msx { background-position: -32px -56px; }
 .icons.nes { background-position: -32px -70px; }
@@ -1170,6 +1180,7 @@ a .icons { cursor: pointer }
 .icons.fr  { background-position: -48px -66px; }
 .icons.it  { background-position: -48px -77px; }
 .icons.ja  { background-position: -48px -88px; }
+.icons.hu  { background-position: -48px -99px; }
 
 .icons.nl  { background-position: -61px   0px; }
 .icons.no  { background-position: -61px -11px; }
@@ -1181,4 +1192,12 @@ a .icons { cursor: pointer }
 .icons.zh  { background-position: -61px -77px; }
 .icons.ko  { background-position: -61px -88px; }
 .icons.vi  { background-position: -61px -99px; }
+
+
+/* Relation graph colors */
+svg .border { fill: none; stroke: $border$ }
+svg .edge polygon.border { fill: $border$ }
+svg .nodebg { fill: $tabbg$; stroke: $tabbg$ }
+svg text { fill: $maintext$ }
+svg .edge text { font: 8px "Tahoma" }
 

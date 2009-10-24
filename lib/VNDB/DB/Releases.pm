@@ -117,7 +117,7 @@ sub dbReleaseGet {
 
     if($o{what} =~ /producers/) {
       push(@{$r->[$r{$_->{rid}}]{producers}}, $_) for (@{$self->dbAll(q|
-        SELECT rp.rid, p.id, pr.name, pr.original, pr.type
+        SELECT rp.rid, rp.developer, rp.publisher, p.id, pr.name, pr.original, pr.type
           FROM releases_producers rp
           JOIN producers p ON rp.pid = p.id
           JOIN producers_rev pr ON pr.id = p.latest
@@ -137,7 +137,7 @@ sub dbReleaseGet {
     }
 
     if($o{what} =~ /media/) {
-      ($_->{medium}=~s/\s+//||1)&&push(@{$r->[$r{$_->{rid}}]{media}}, $_) for (@{$self->dbAll(q|
+      push(@{$r->[$r{$_->{rid}}]{media}}, $_) for (@{$self->dbAll(q|
         SELECT rid, medium, qty
           FROM releases_media
           WHERE rid IN(!l)|,
@@ -154,7 +154,7 @@ sub dbReleaseGet {
 # returns: ( local revision, global revision )
 sub dbReleaseEdit {
   my($self, $rid, %o) = @_;
-  my($rev, $cid) = $self->dbRevisionInsert(1, $rid, $o{editsum}, $o{uid});
+  my($rev, $cid) = $self->dbRevisionInsert('r', $rid, $o{editsum}, $o{uid});
   insert_rev($self, $cid, $rid, \%o);
   return ($rev, $cid);
 }
@@ -164,7 +164,7 @@ sub dbReleaseEdit {
 # returns: ( item id, global revision )
 sub dbReleaseAdd {
   my($self, %o) = @_;
-  my($rid, $cid) = $self->dbItemInsert(1, $o{editsum}, $o{uid});
+  my($rid, $cid) = $self->dbItemInsert('r', $o{editsum}, $o{uid});
   insert_rev($self, $cid, $rid, \%o);
   return ($rid, $cid);
 }
@@ -189,9 +189,9 @@ sub insert_rev {
   ) for (@{$o->{languages}});
 
   $self->dbExec(q|
-    INSERT INTO releases_producers (rid, pid)
-      VALUES (?, ?)|,
-    $cid, $_
+    INSERT INTO releases_producers (rid, pid, developer, publisher)
+      VALUES (?, ?, ?, ?)|,
+    $cid, $_->[0], $_->[1]?1:0, $_->[2]?1:0
   ) for (@{$o->{producers}});
 
   $self->dbExec(q|

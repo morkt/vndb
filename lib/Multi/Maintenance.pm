@@ -17,13 +17,13 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown set_daily daily set_monthly monthly log_stats
-        vncache tagcache vnpopularity
-        usercache statscache revcache logrotate
+        vncache tagcache vnpopularity cleangraphs
+        usercache statscache logrotate
       |],
     ],
     heap => {
-      daily => [qw|vncache tagcache vnpopularity|],
-      monthly => [qw|usercache statscache revcache logrotate|],
+      daily => [qw|vncache tagcache vnpopularity cleangraphs|],
+      monthly => [qw|usercache statscache logrotate|],
       @_,
     },
   );
@@ -50,7 +50,7 @@ sub set_daily {
   # (GMT because we're calculating on the UNIX timestamp, I can easily add an
   #  offset if necessary, but it doesn't really matter what time this cron
   #  runs, as long as it's run on a daily basis)
-  $_[KERNEL]->alarm(daily => int(time/86400+1)*86400);
+  $_[KERNEL]->alarm(daily => int((time+3)/86400+1)*86400);
 }
 
 
@@ -70,7 +70,7 @@ sub set_monthly {
   # We do this by simply incrementing the timestamp with one day and checking gmtime()
   # for a month change. This might not be very reliable, but should be enough for
   # our purposes.
-  my $nextday = int(time/86400+1)*86400;
+  my $nextday = int((time+3)/86400+1)*86400;
   my $thismonth = (gmtime)[5]*100+(gmtime)[4]; # year*100 + month, for easy comparing
   $nextday += 86400 while (gmtime $nextday)[5]*100+(gmtime $nextday)[4] <= $thismonth;
   $_[KERNEL]->alarm(monthly => $nextday);
@@ -99,23 +99,32 @@ sub log_stats { # num, res, action, time
 
 
 sub vncache {
-  # this takes about 30s to complete. We really need to search for an alternative
+  # this takes about 40s to complete. We really need to search for an alternative
   # method of keeping the c_* columns in the vn table up-to-date.
   $_[KERNEL]->post(pg => do => 'SELECT update_vncache(0)', undef, 'log_stats', 'vncache');
 }
 
 
 sub tagcache {
-  # this still takes "only" about 3 seconds max. Let's hope that doesn't increase too much.
+  # takes about 18 seconds max. ouch, but still kind-of acceptable
   $_[KERNEL]->post(pg => do => 'SELECT tag_vn_calc()', undef, 'log_stats', 'tagcache');
 }
 
 
 sub vnpopularity {
-  # still takes at most 2 seconds. Againt, let's hope that doesn't increase...
+  # still takes at most 2 seconds. let's hope that doesn't increase...
   $_[KERNEL]->post(pg => do => 'SELECT update_vnpopularity()', undef, 'log_stats', 'vnpopularity');
 }
 
+
+sub cleangraphs {
+  # should be pretty fast
+  $_[KERNEL]->post(pg => do => q|
+    DELETE FROM relgraphs vg
+     WHERE NOT EXISTS(SELECT 1 FROM vn WHERE rgraph = vg.id)
+       AND NOT EXISTS(SELECT 1 FROM producers WHERE rgraph = vg.id)
+    |, undef, 'log_stats', 'cleangraphs');
+}
 
 
 #
@@ -161,14 +170,6 @@ sub statscache {
     q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM threads_posts WHERE hidden = FALSE
         AND EXISTS(SELECT 1 FROM threads WHERE threads.id = tid AND threads.hidden = FALSE)) WHERE section = 'threads_posts'|
   );
-}
-
-
-sub revcache {
-  # This -really- shouldn't be necessary...
-  # Currently takes about 25 seconds to complete
-  $_[KERNEL]->post(pg => do => q|SELECT update_rev('vn', ''), update_rev('releases', ''), update_rev('producers', '')|,
-    undef, 'log_stats', 'revcache');
 }
 
 

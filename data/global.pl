@@ -31,34 +31,34 @@ our %S = (%S,
     [qw| hist board boardmod edit tag mod lock del tagmod         |], # 4
     [qw| hist board boardmod edit tag mod lock del tagmod usermod |], # 5
   ],
-  languages       => [qw|cs da de en es fi fr it ja ko nl no pl pt ru sv tr vi zh|],
+  languages       => [qw|cs da de en es fi fr hu it ja ko nl no pl pt ru sv tr vi zh|],
   producer_types  => [qw|co in ng|],
   discussion_boards => [qw|an db v p u|],
   vn_lengths      => [ 0..5 ],
-  anime_types     => [
-    # AniDB anime type starts counting at 1, 0 = unknown
-    #   we start counting at 0, with NULL being unknown
-    'TV Series',
-    'OVA',
-    'Movie',
-    'Other',
-    'Web',
-    'TV Special',
-    'Music Video',
-  ],
-  vn_relations    => [
-    # Name,           Reverse--
-    [ 'Sequel',              0 ],
-    [ 'Prequel',             1 ],
-    [ 'Same setting',        0 ],
-    [ 'Alternative version', 0 ],
-    [ 'Shares characters',   0 ],
-    [ 'Side story',          0 ],
-    [ 'Parent story',        1 ],
-    [ 'Same series',         0 ],
-    [ 'Fandisc',             0 ],
-    [ 'Original game',       1 ],
-  ],
+  anime_types     => [qw|tv ova mov oth web spe mv|],
+  vn_relations    => {
+  # id   => [ order, reverse ]
+    seq  => [ 0, 'preq' ],
+    preq => [ 1, 'seq'  ],
+    set  => [ 2, 'set'  ],
+    alt  => [ 3, 'alt'  ],
+    char => [ 4, 'char' ],
+    side => [ 5, 'par'  ],
+    par  => [ 6, 'side' ],
+    ser  => [ 7, 'ser'  ],
+    fan  => [ 8, 'orig' ],
+    orig => [ 9, 'fan'  ],
+  },
+  prod_relations  => {
+    'old' => [ 0, 'new' ],
+    'new' => [ 1, 'old' ],
+    'sub' => [ 2, 'par' ],
+    'par' => [ 3, 'sub' ],
+    'imp' => [ 4, 'ipa' ],
+    'ipa' => [ 5, 'imp' ],
+    'spa' => [ 6, 'ori' ],
+    'ori' => [ 7, 'spa' ],
+  },
   age_ratings     => {
     -1 => [ 'Unknown' ],
     0  => [ 'All ages' ,'CERO A' ],
@@ -76,21 +76,21 @@ our %S = (%S,
     17 => [ '17+', 'CERO D' ],
     18 => [ '18+', 'CERO Z' ],
   },
-  release_types   => [0..2],
+  release_types   => [qw|complete partial trial|],
   platforms       => [qw|win dos lin mac dvd gba msx nds nes p98 psp ps1 ps2 ps3 drc sat sfc wii xb3 oth|],
   media           => {
-   #DB       display            qty
-    cd  => [ 'CD',                1 ],
-    dvd => [ 'DVD',               1 ],
-    gdr => [ 'GD',                1 ],
-    blr => [ 'Blu-ray',           1 ],
-    flp => [ 'Floppy',            1 ],
-    mrt => [ 'Cartridge',         1 ],
-    mem => [ 'Memory card',       1 ],
-    umd => [ 'UMD',               1 ],
-    nod => [ 'Nintendo Optical Disk', 1 ],
-    in  => [ 'Internet download', 0 ],
-    otc => [ 'Other',             0 ],
+   #DB     qty?
+    cd  => 1,
+    dvd => 1,
+    gdr => 1,
+    blr => 1,
+    flp => 1,
+    mrt => 1,
+    mem => 1,
+    umd => 1,
+    nod => 1,
+    in  => 0,
+    otc => 0
   },
   resolutions     => [
     [ 'Unknown / console / handheld', '' ],
@@ -108,21 +108,8 @@ our %S = (%S,
   voiced          => [ 0..4 ],
   animated        => [ 0..4 ],
   wishlist_status => [ 0..3 ],
-  # note: keep these synchronised in script.js
-  vn_rstat        => [
-    'Unknown',
-    'Pending',
-    'Obtained', # hardcoded
-    'On loan',
-    'Deleted',
-  ],
-  vn_vstat        => [
-    'Unknown',
-    'Playing',
-    'Finished', # hardcoded
-    'Stalled',
-    'Dropped',
-  ],
+  rlst_rstat      => [ 0..4 ], # 2 = hardcoded 'OK', < 2 = hardcoded 'NOK'
+  rlst_vstat      => [ 0..4 ], # 2 = hardcoded 'OK', 0 || 4 = hardcoded 'NOK'
 );
 
 

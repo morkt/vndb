@@ -28,6 +28,10 @@ our(%O, %S);
 $S{skins} = readskins();
 
 
+# automatically regenerate script.js when required and possible
+checkjs();
+
+
 # load lang.dat
 VNDB::L10N::loadfile();
 
@@ -111,5 +115,20 @@ sub readskins {
   }
   system "$ROOT/util/skingen.pl", @regen if @regen;
   return \%skins;
+}
+
+
+sub checkjs {
+  my $script = "$ROOT/static/f/script.js";
+  my $lastmod = [stat $script]->[9];
+  system "$ROOT/util/jsgen.pl" if
+       (!-e $script && -x "$ROOT/static/f")
+    || (-e $script && -w $script && (
+           $lastmod < [stat "$ROOT/data/script.js"]->[9]
+        || $lastmod < [stat "$ROOT/data/lang.txt"]->[9]
+        || (-e "$ROOT/data/config.pl" && $lastmod < [stat "$ROOT/data/config.pl"]->[9])
+        || $lastmod < [stat "$ROOT/data/global.pl"]->[9]
+        || $lastmod < [stat "$ROOT/util/jsgen.pl"]->[9]
+       ));
 }
 

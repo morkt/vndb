@@ -66,10 +66,9 @@ sub homepage {
      my $changes = $self->dbRevisionGet(what => 'item user', results => 10, auto => 1, hidden => 1);
      ul;
       for (@$changes) {
-        my $t = (qw|v r p|)[$_->{type}];
         li;
-         lit mt '_home_recentchanges_item', $t,
-          sprintf('<a href="%s" title="%s">%s</a>', "/$t$_->{iid}.$_->{rev}",
+         lit mt '_home_recentchanges_item', $_->{type},
+          sprintf('<a href="%s" title="%s">%s</a>', "/$_->{type}$_->{iid}.$_->{rev}",
             xml_escape($_->{ioriginal}||$_->{ititle}), xml_escape shorten $_->{ititle}, 33),
           $_;
         end;
@@ -295,6 +294,12 @@ sub docpage {
       close $F;
       $ii;
     }eg;
+    s{^:TOP5CONTRIB:$}{
+      my $l = $self->dbUserGet(results => 6, order => 'c_changes DESC');
+      '<dl>'.join('', map $_->{id} == 1 ? () :
+        sprintf('<dt><a href="/u%d">%s</a></dt><dd>%d</dd>', $_->{id}, $_->{username}, $_->{c_changes}),
+      @$l).'</dl>';
+    }eg;
   }
 
   $self->htmlHeader(title => $title);
@@ -331,7 +336,7 @@ sub itemmod {
 
   my $obj = $type eq 'v' ? $self->dbVNGet(id => $iid)->[0] :
             $type eq 'r' ? $self->dbReleaseGet(id => $iid, what => 'vn extended')->[0] :
-                           $self->dbProducerGet(id => $iid)->[0];
+                           $self->dbProducerGet(id => $iid, what => 'extended')->[0];
   return 404 if !$obj->{id};
 
   $self->dbItemMod($type, $iid, $act eq 'hide' ? (hidden => !$obj->{hidden}) : (locked => !$obj->{locked}));

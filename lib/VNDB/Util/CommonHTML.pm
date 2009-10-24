@@ -12,7 +12,7 @@ use POSIX 'ceil';
 
 our @EXPORT = qw|
   htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate
-  htmlRevision htmlEditMessage htmlItemMessage htmlVoteStats htmlHistory htmlSearchBox
+  htmlRevision htmlEditMessage htmlItemMessage htmlVoteStats htmlHistory htmlSearchBox htmlRGHeader
 |;
 
 
@@ -101,7 +101,7 @@ sub htmlMainTabs {
      end;
    }
 
-   if($type eq 'v' && $obj->{rgraph}) {
+   if($type =~ /[vp]/ && $obj->{rgraph}) {
      li $sel eq 'rg' ? (class => 'tabselected') : ();
       a href => "/$id/rg", mt '_mtabs_relations';
      end;
@@ -501,16 +501,15 @@ sub htmlHistory {
       sub { td colspan => 2, class => 'tc1', mt '_hist_col_rev' },
       [ mt '_hist_col_date' ],
       [ mt '_hist_col_user' ],
-      sub { td; a href => '#', id => 'history_comments', 'expand'; txt mt '_hist_col_page'; end; }
+      sub { td; a href => '#', id => 'expandlist', mt '_js_expand'; txt mt '_hist_col_page'; end; }
     ],
     row      => sub {
       my($s, $n, $i) = @_;
-      my $tc = [qw|v r p|]->[$i->{type}];
-      my $revurl = "/$tc$i->{iid}.$i->{rev}";
+      my $revurl = "/$i->{type}$i->{iid}.$i->{rev}";
 
       Tr $n % 2 ? ( class => 'odd' ) : ();
        td class => 'tc1_1';
-        a href => $revurl, "$tc$i->{iid}";
+        a href => $revurl, "$i->{type}$i->{iid}";
        end;
        td class => 'tc1_2';
         a href => $revurl, ".$i->{rev}";
@@ -524,7 +523,7 @@ sub htmlHistory {
        end;
       end;
       if($i->{comments}) {
-        Tr class => $n % 2 ? 'editsum odd hidden' : 'editsum hidden';
+        Tr class => $n % 2 ? 'collapse msgsum odd hidden' : 'collapse msgsum hidden';
          td colspan => 5;
           lit bb2html $i->{comments}, 150;
          end;
@@ -538,19 +537,62 @@ sub htmlHistory {
 sub htmlSearchBox {
   my($self, $sel, $v) = @_;
 
+  # escape search query for use as a query string value
+  (my $q = $v||'') =~ s/&/%26/g;
+  $q =~ s/\?/%3F/g;
+  $q =~ s/;/%3B/g;
+  $q =~ s/ /%20/g;
+  $q = "?q=$q" if $q;
+
   fieldset class => 'search';
    p class => 'searchtabs';
-    a href => '/v/all', $sel eq 'v' ? (class => 'sel') : (), mt '_searchbox_vn';
-    a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), mt '_searchbox_releases';
-    a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), mt '_searchbox_producers';
-    a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), mt '_searchbox_tags';
-    a href => '/u/all', $sel eq 'u' ? (class => 'sel') : (), mt '_searchbox_users';
+    a href => "/v/all$q", $sel eq 'v' ? (class => 'sel') : (), mt '_searchbox_vn';
+    a href => "/r$q",     $sel eq 'r' ? (class => 'sel') : (), mt '_searchbox_releases';
+    a href => "/p/all$q", $sel eq 'p' ? (class => 'sel') : (), mt '_searchbox_producers';
+    a href => '/g'.($q?"/list$q":''), $sel eq 'g' ? (class => 'sel') : (), mt '_searchbox_tags';
+    a href => "/u/all$q", $sel eq 'u' ? (class => 'sel') : (), mt '_searchbox_users';
    end;
    input type => 'text', name => 'q', id => 'q', class => 'text', value => $v;
    input type => 'submit', class => 'submit', value => mt '_searchbox_submit';
   end;
 }
 
+
+sub htmlRGHeader {
+  my($self, $title, $type, $obj) = @_;
+
+  if(($self->reqHeader('Accept')||'') !~ /application\/xhtml\+xml/) {
+    $self->htmlHeader(title => $title);
+    $self->htmlMainTabs($type, $obj, 'rg');
+    div class => 'mainbox';
+     h1 $title;
+     div class => 'warning';
+      h2 mt '_rg_notsupp';
+      p mt '_rg_notsupp_msg';
+     end;
+    end;
+    $self->htmlFooter;
+    return 1;
+  }
+  $self->resHeader('Content-Type' => 'application/xhtml+xml; charset=UTF-8');
+
+  # This is a REALLY ugly hack, need find a proper solution in YAWF
+  no warnings 'redefine';
+  my $sub = \&YAWF::XML::html;
+  *YAWF::XML::html = sub () {
+     lit q|<!DOCTYPE html PUBLIC
+         "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"
+             "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">|;
+     tag 'html',
+       xmlns         => "http://www.w3.org/1999/xhtml",
+       'xmlns:svg'   => 'http://www.w3.org/2000/svg',
+       'xmlns:xlink' => 'http://www.w3.org/1999/xlink';
+  };
+  $self->htmlHeader(title => $title);
+  *YAWF::XML::html = $sub;
+  $self->htmlMainTabs($type, $obj, 'rg');
+  return 0;
+}
 
 
 1;

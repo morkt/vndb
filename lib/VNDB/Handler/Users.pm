@@ -267,7 +267,7 @@ sub edit {
   return $self->htmlDenied if !$self->authInfo->{id} || $self->authInfo->{id} != $uid && !$self->authCan('usermod');
 
   # fetch user info (cached if uid == loggedin uid)
-  my $u = $self->authInfo->{id} == $uid ? $self->authInfo : $self->dbUserGet(uid => $uid)->[0];
+  my $u = $self->authInfo->{id} == $uid ? $self->authInfo : $self->dbUserGet(uid => $uid, what => 'extended')->[0];
   return 404 if !$u->{id};
 
   # check POST data
@@ -386,7 +386,7 @@ sub posts {
       [ '' ],
       [ '' ],
       [ mt '_uposts_col_date' ],
-      sub { td; a href => '#', id => 'history_comments', 'expand'; txt mt '_uposts_col_title'; end; }
+      sub { td; a href => '#', id => 'expandlist', mt '_js_expand'; txt mt '_uposts_col_title'; end; }
     ],
     row     => sub {
       my($s, $n, $l) = @_;
@@ -396,7 +396,7 @@ sub posts {
        td class => 'tc3', $self->{l10n}->date($l->{date});
        td class => 'tc4'; a href => "/t$l->{tid}.$l->{num}", $l->{title}; end;
       end;
-      Tr class => $n % 2 ? 'editsum odd hidden' : 'editsum hidden';
+      Tr class => $n % 2 ? 'collapse msgsum odd hidden' : 'collapse msgsum hidden';
        td colspan => 4;
         lit bb2html $l->{msg}, 150;
        end;

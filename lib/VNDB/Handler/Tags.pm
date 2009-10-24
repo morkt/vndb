@@ -36,7 +36,7 @@ sub tagpage {
   );
   return 404 if $f->{_err};
   my $tagspoil = $self->reqCookie('tagspoil');
-  $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 1 if $f->{m} == -1;
+  $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0 if $f->{m} == -1;
 
   my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbTagVNs(
     tag => $tag,
@@ -422,7 +422,7 @@ sub vntagmod {
   my $frm;
 
   my $title = mt '_tagv_title', $v->{title};
-  $self->htmlHeader(title => $title, noindex => 1, js => 'forms');
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('v', $v, 'tagmod');
   div class => 'mainbox';
    h1 $title;
@@ -438,43 +438,44 @@ sub vntagmod {
   $self->htmlForm({ frm => $frm, action => "/v$vid/tagmod", nosubmit => 1 }, tagmod => [ mt('_tagv_frm_title'),
     [ hidden => short => 'taglinks', value => '' ],
     [ static => nolabel => 1, content => sub {
-      table id => 'tagtable';
+      table class => 'tgl';
        thead;
         Tr;
          td '';
-         td colspan => 2, class => 'tc2_1', mt '_tagv_col_you';
-         td colspan => 2, class => 'tc3_1', mt '_tagv_col_others';
+         td colspan => 2, class => 'tc_you', mt '_tagv_col_you';
+         td colspan => 2, class => 'tc_others', mt '_tagv_col_others';
         end;
         Tr;
-         my $i=0;
-         td class => 'tc'.++$i, mt '_tagv_col_'.$_ for(qw|tag rating spoiler rating spoiler|);
+         td class => 'tc_tagname',  mt '_tagv_col_tag';
+         td class => 'tc_myvote',   mt '_tagv_col_rating';
+         td class => 'tc_myspoil',  mt '_tagv_col_spoiler';
+         td class => 'tc_allvote',  mt '_tagv_col_rating';
+         td class => 'tc_allspoil', mt '_tagv_col_spoiler';
         end;
        end;
        tfoot; Tr;
         td colspan => 5;
          input type => 'submit', class => 'submit', value => mt('_tagv_save'), style => 'float: right';
-         input type => 'text', class => 'text', name => 'addtag', value => '';
-         input type => 'button', class => 'submit', value => mt '_tagv_add';
+         input id => 'tagmod_tag', type => 'text', class => 'text', value => '';
+         input id => 'tagmod_add', type => 'button', class => 'submit', value => mt '_tagv_add';
          br;
          p;
           lit mt '_tagv_addmsg';
          end;
         end;
        end; end;
-       tbody;
+       tbody id => 'tagtable';
         for my $t (sort { $a->{name} cmp $b->{name} } @$tags) {
           my $m = (grep $_->{tag} == $t->{id}, @$my)[0] || {};
-          Tr;
-           td class => 'tc1';
-            a href => "/g$t->{id}", $t->{name};
-           end;
-           td class => 'tc2', $m->{vote}||0;
-           td class => 'tc3', defined $m->{spoiler} ? $m->{spoiler} : -1;
-           td class => 'tc4';
+          Tr id => "tgl_$t->{id}";
+           td class => 'tc_tagname'; a href => "/g$t->{id}", $t->{name}; end;
+           td class => 'tc_myvote',  $m->{vote}||0;
+           td class => 'tc_myspoil', defined $m->{spoiler} ? $m->{spoiler} : -1;
+           td class => 'tc_allvote';
             tagscore !$m->{vote} ? $t->{rating} : $t->{cnt} == 1 ? 0 : ($t->{rating}*$t->{cnt} - $m->{vote}) / ($t->{cnt}-1);
             i ' ('.($t->{cnt} - ($m->{vote} ? 1 : 0)).')';
            end;
-           td class => 'tc5', sprintf '%.2f', $t->{spoiler};
+           td class => 'tc_allspoil', sprintf '%.2f', $t->{spoiler};
           end;
         }
        end;
@@ -529,7 +530,7 @@ sub usertags {
       header   => [
         sub {
           td class => 'tc1';
-           b id => 'relhidall';
+           b id => 'expandall';
             lit '<i>&#9656;</i> '.mt('_tagu_col_num').' ';
            end;
            lit $f->{s} eq 'cnt' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u$u->{id}/tags?o=a;s=cnt">\x{25B4}</a>|;
@@ -542,7 +543,7 @@ sub usertags {
       row     => sub {
         my($s, $n, $l) = @_;
         Tr $n % 2 ? (class => 'odd') : ();
-         td class => 'tc1 relhid_but', id => "tag$l->{id}";
+         td class => 'tc1 collapse_but', id => "tag$l->{id}";
           lit "<i>&#9656;</i> $l->{cnt}";
          end;
          td class => 'tc2', colspan => 2;
@@ -550,7 +551,7 @@ sub usertags {
          end;
         end;
         for(@{$l->{vns}}) {
-          Tr class => "relhid tag$l->{id}";
+          Tr class => "collapse collapse_tag$l->{id}";
            td class => 'tc1_1';
             tagscore $_->{vote};
            end;
@@ -652,7 +653,7 @@ sub tagxml {
 
   my($list, $np) = $self->dbTagGet(
     $q =~ /^g([1-9]\d*)/ ? (id => $1) : $q =~ /^name:(.+)$/ ? (name => $1) : (search => $q),
-    results => 10,
+    results => 15,
     page => 1,
   );
 

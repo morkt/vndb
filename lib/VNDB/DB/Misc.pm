@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw|
-  dbStats dbRevisionInsert dbItemInsert dbRevisionGet dbItemMod dbLanguages dbRandomQuote
+  dbStats dbRevisionInsert dbItemInsert dbRevisionGet dbItemMod dbRandomQuote
 |;
 
 
@@ -24,12 +24,12 @@ sub dbStats {
 #  This function leaves the DB in an inconsistent state, the actual revision
 #  will have to be inserted directly after calling this function, otherwise
 #  the commit will fail.
-# Arguments: type [0..2], item ID, edit summary
+# Arguments: type [vrp], item ID, edit summary
 # Returns: local revision, global revision
 sub dbRevisionInsert {
   my($self, $type, $iid, $editsum, $uid) = @_;
 
-  my $table = [qw|vn releases producers|]->[$type];
+  my $table = {qw|v vn r releases p producers|}->{$type};
 
   my $c = $self->dbRow(q|
     INSERT INTO changes (type, requester, ip, comments, rev)
@@ -43,7 +43,7 @@ sub dbRevisionInsert {
       ))
       RETURNING id, rev|,
     $type, $uid||$self->authInfo->{id}, $self->reqIP, $editsum,
-    $table, [qw|v r p|]->[$type], $iid
+    $table, $type, $iid
   );
 
   $self->dbExec(q|UPDATE !s SET latest = ? WHERE id = ?|, $table, $c->{id}, $iid);
@@ -54,7 +54,7 @@ sub dbRevisionInsert {
 
 # Comparable to RevisionInsert, but creates a new item with a corresponding
 #  change. Same things about inconsistent state, etc.
-# Argumments: type [0..2], edit summary, [uid]
+# Argumments: type [vrp], edit summary, [uid]
 # Returns: item id, global revision
 sub dbItemInsert {
   my($self, $type, $editsum, $uid) = @_;
@@ -70,7 +70,7 @@ sub dbItemInsert {
     INSERT INTO !s (latest)
       VALUES (?)
       RETURNING id|,
-    [qw|vn releases producers|]->[$type], $cid
+    {qw|v vn r releases p producers|}->{$type}, $cid
   )->{id};
 
   return ($iid, $cid);
@@ -94,7 +94,7 @@ sub dbRevisionGet {
       '((c.type = ? AND vr.vid = ?) OR (c.type = ? AND rv.vid = ?))' => [0, $o{iid}, 1, $o{iid}],
     ) : (
       $o{type} ? (
-        'c.type = ?' => { v=>0, r=>1, p=>2 }->{$o{type}} ) : (),
+        'c.type = ?' => $o{type} ) : (),
       $o{iid} ? (
         '!sr.!sid = ?' => [ $o{type}, $o{type}, $o{iid} ] ) : (),
     ),
@@ -113,14 +113,14 @@ sub dbRevisionGet {
 
   my @join = (
     $o{iid} || $o{what} =~ /item/ || $o{hidden} || $o{releases} ? (
-      'LEFT JOIN vn_rev vr ON c.type = 0 AND c.id = vr.id',
-      'LEFT JOIN releases_rev rr ON c.type = 1 AND c.id = rr.id',
-      'LEFT JOIN producers_rev pr ON c.type = 2 AND c.id = pr.id',
+      q{LEFT JOIN vn_rev vr ON c.type = 'v' AND c.id = vr.id},
+      q{LEFT JOIN releases_rev rr ON c.type = 'r' AND c.id = rr.id},
+      q{LEFT JOIN producers_rev pr ON c.type = 'p' AND c.id = pr.id},
     ) : (),
     $o{hidden} || $o{releases} ? (
-      'LEFT JOIN vn v ON c.type = 0 AND vr.vid = v.id',
-      'LEFT JOIN releases r ON c.type = 1 AND rr.rid = r.id',
-      'LEFT JOIN producers p ON c.type = 2 AND pr.pid = p.id',
+      q{LEFT JOIN vn v ON c.type = 'v' AND vr.vid = v.id},
+      q{LEFT JOIN releases r ON c.type = 'r' AND rr.rid = r.id},
+      q{LEFT JOIN producers p ON c.type = 'p' AND pr.pid = p.id},
     ) : (),
     $o{what} =~ /user/ ? 'JOIN users u ON c.requester = u.id' : (),
     $o{releases} ? 'LEFT JOIN releases_vn rv ON c.id = rv.rid' : (),
@@ -157,20 +157,6 @@ sub dbItemMod {
     {qw|v vn r releases p producers|}->{$type},
     { map { ($_.' = ?', int $o{$_}) } keys %o }, $id
   );
-}
-
-
-# Returns a list of languages actually in use
-sub dbLanguages {
-  my $self = shift;
-  return [
-    map $_->{lang}, @{$self->dbAll(q|
-      SELECT DISTINCT rl.lang
-        FROM releases r
-        JOIN releases_lang rl ON rl.rid = r.latest
-        WHERE r.hidden = FALSE|
-    )}
-  ];
 }
 
 

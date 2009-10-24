@@ -69,7 +69,7 @@ sub rlist {
   return $self->htmlDenied() if !$uid;
 
   my $f = $self->formValidate(
-    { name => 'e', required => 1, enum => [ 'del', map("r$_", 0..$#{$self->{vn_rstat}}), map("v$_", 0..$#{$self->{vn_vstat}}) ] },
+    { name => 'e', required => 1, enum => [ 'del', map("r$_", @{$self->{rlst_rstat}}), map("v$_", @{$self->{rlst_vstat}}) ] },
   );
   return 404 if $f->{_err};
 
@@ -212,7 +212,7 @@ sub vnlist {
   if($own && $self->reqMethod eq 'POST') {
     my $frm = $self->formValidate(
       { name => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
-      { name => 'batchedit', required => 1, enum => [ 'del', map("r$_", 0..$#{$self->{vn_rstat}}), map("v$_", 0..$#{$self->{vn_vstat}}) ] },
+      { name => 'batchedit', required => 1, enum => [ 'del', map("r$_", @{$self->{rlst_rstat}}), map("v$_", @{$self->{rlst_vstat}}) ] },
     );
     if(!$frm->{_err} && @{$frm->{sel}} && $frm->{sel}[0]) {
       $self->dbVNListDel($uid, $frm->{sel}) if $frm->{batchedit} eq 'del';
@@ -229,7 +229,7 @@ sub vnlist {
     uid => $uid,
     results => 50,
     page => $f->{p},
-    order => $f->{s}.' '.($f->{o} eq 'd' ? 'DESC' : 'ASC'),
+    order => $f->{s}.' '.($f->{o} eq 'd' ? 'DESC' : 'ASC').($f->{s} eq 'vote' ? ', title ASC' : ''),
     voted => $f->{v},
     $f->{c} ne 'all' ? (char => $f->{c}) : (),
   );
@@ -285,7 +285,7 @@ sub _vnlist_browse {
     pageurl  => $url->('page'),
     header   => [
       [ mt('_rlist_col_title') => 'title', 3 ],
-      sub { td class => 'tc2', id => 'relhidall'; lit '<i>&#9656;</i>'.mt('_rlist_col_releases').'*'; end; },
+      sub { td class => 'tc2', id => 'expandall'; lit '<i>&#9656;</i>'.mt('_rlist_col_releases').'*'; end; },
       [ mt('_rlist_col_vote')  => 'vote'  ],
     ],
     row      => sub {
@@ -294,7 +294,7 @@ sub _vnlist_browse {
        td class => 'tc1', colspan => 3;
         a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, shorten $i->{title}, 70;
        end;
-       td class => 'tc2'.(@{$i->{rels}} ? ' relhid_but' : ''), id => 'vid'.$i->{vid};
+       td class => 'tc2'.(@{$i->{rels}} ? ' collapse_but' : ''), id => 'vid'.$i->{vid};
         lit '<i>&#9656;</i>';
         my $obtained = grep $_->{rstat}==2, @{$i->{rels}};
         my $finished = grep $_->{vstat}==2, @{$i->{rels}};
@@ -307,7 +307,7 @@ sub _vnlist_browse {
       end;
 
       for (@{$i->{rels}}) {
-        Tr class => "relhid vid$i->{vid}";
+        Tr class => "collapse relhid collapse_vid$i->{vid}";
          td class => 'tc1'.($own ? ' own' : '');
           input type => 'checkbox', name => 'sel', value => $_->{rid}
             if $own;
@@ -333,12 +333,12 @@ sub _vnlist_browse {
         Select id => 'batchedit', name => 'batchedit';
          option mt '_rlist_selection';
          optgroup label => mt '_rlist_changerel';
-          option value => "r$_", $self->{vn_rstat}[$_]
-            for (0..$#{$self->{vn_rstat}});
+          option value => "r$_", mt "_rlst_rstat_$_"
+            for (@{$self->{rlst_rstat}});
          end;
          optgroup label => mt '_rlist_changeplay';
-          option value => "v$_", $self->{vn_vstat}[$_]
-            for (0..$#{$self->{vn_vstat}});
+          option value => "v$_", mt "_rlst_vstat_$_"
+            for (@{$self->{rlst_vstat}});
          end;
          option value => 'del', mt '_rlist_del';
         end;

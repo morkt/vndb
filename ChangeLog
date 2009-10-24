@@ -1,3 +1,37 @@
+2.8 - 2009-10-24
+	- Converted relation graphs to use inline SVG
+	  - Relation graphs now use the color scheme of selected skin
+	  - VN relations are translatable in both the interface and the graphs
+	  - Full date is displayed in graphs instead of only month/year
+	- Converted to ENUM data type:
+	  - vn_relations.relation
+	  - anime.type
+	  - changes.type
+	  - releases_rev.type
+	  - releases_media.medium
+	- New language: Hungarian
+	- Complete rewrite of the Javascript code:
+	  - Intended to be less error prone, more maintainable, and easier to make
+	    'XHTML compliant' in the future (currently still has some issues here).
+	  - Improved spoiler selection on /v+/tagmod
+	  - Everything merged into one file.
+	  - Optionally minified (using JavaScript::Minifier::XS)
+	  - Language strings are translatable
+	  - Information is automatically synchronised with data/global.pl
+	- Changed language selector into a Javascript dropdown
+	- Added producer role (developer/publisher) to releases
+	- Display number of unread posts in "My messages" (instead of total threads)
+	- Optimized dbUserGet (mostly for the user list)
+	- All languages are listed on /r and /v/all instead of only those in use
+	- Copy over search query when switching search type (htmlSearchBox)
+	- Fixed obscure sorting bug on user VN list
+	- Fixed calculation of tags_vn_bayesian.spoiler
+	- Fixed bug with unhiding a producer entry
+	- Set 'no spoilers' as default spoiler level for tags
+	- Added Czech and Hungarian interface translation
+	- Producer relations
+	- Increased tag dropdown search results to 15
+
 2.7 - 2009-09-24
 	- Improved styling of the threeboxes layout
 	- Blacklist a users' votes from the VN vote statistics

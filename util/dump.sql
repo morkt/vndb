@@ -1,15 +1,16 @@
 
-
--- we don't use PgSQL's OIDS
-SET default_with_oids = false;
-
--- for the functions to work, the following query must
--- be executed on the database by a superuser:
---  CREATE PROCEDURAL LANGUAGE plpgsql
+-- plpgsql is required for our (trigger) functions
+CREATE LANGUAGE plpgsql;
 
 
+-- data types
 
-
+CREATE TYPE anime_type        AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
+CREATE TYPE dbentry_type      AS ENUM ('v', 'r', 'p');
+CREATE TYPE medium            AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
+CREATE TYPE producer_relation AS ENUM ('old', 'new', 'sub', 'par', 'imp', 'ipa', 'spa', 'ori');
+CREATE TYPE release_type      AS ENUM ('complete', 'partial', 'trial');
+CREATE TYPE vn_relation       AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
 
 
 -----------------------------------------
@@ -23,7 +24,7 @@ CREATE TABLE anime (
   year smallint,
   ann_id integer,
   nfo_id varchar(200),
-  type smallint,
+  type anime_type,
   title_romaji,
   title_kanji,
   lastfetch timestamptz
@@ -32,7 +33,7 @@ CREATE TABLE anime (
 -- changes
 CREATE TABLE changes (
   id SERIAL NOT NULL PRIMARY KEY,
-  type smallint NOT NULL DEFAULT 0,
+  type dbentry_type NOT NULL,
   rev integer NOT NULL DEFAULT 1,
   added timestamptz NOT NULL DEFAULT NOW(),
   requester integer NOT NULL DEFAULT 0,
@@ -46,7 +47,16 @@ CREATE TABLE producers (
   id SERIAL NOT NULL PRIMARY KEY,
   latest integer NOT NULL DEFAULT 0,
   locked boolean NOT NULL DEFAULT FALSE,
-  hidden boolean NOT NULL DEFAULT FALSE
+  hidden boolean NOT NULL DEFAULT FALSE,
+  rgraph integer
+);
+
+-- producers_relations
+CREATE TABLE producers_relations (
+  pid1 integer NOT NULL,
+  pid2 integer NOT NULL,
+  relation producer_relation NOT NULL,
+  PRIMARY KEY(pid1, pid2)
 );
 
 -- producers_rev
@@ -62,14 +72,12 @@ CREATE TABLE producers_rev (
   alias varchar(500) NOT NULL DEFAULT ''
 );
 
-
 -- quotes
 CREATE TABLE quotes (
   vid integer NOT NULL,
   quote varchar(250) NOT NULL,
   PRIMARY KEY(vid, quote)
 );
-
 
 -- releases
 CREATE TABLE releases (
@@ -89,7 +97,7 @@ CREATE TABLE releases_lang (
 -- releases_media
 CREATE TABLE releases_media (
   rid integer NOT NULL DEFAULT 0,
-  medium character(3) NOT NULL DEFAULT '',
+  medium medium NOT NULL,
   qty smallint NOT NULL DEFAULT 1,
   PRIMARY KEY(rid, medium, qty)
 );
@@ -105,6 +113,9 @@ CREATE TABLE releases_platforms (
 CREATE TABLE releases_producers (
   rid integer NOT NULL,
   pid integer NOT NULL,
+  developer boolean NOT NULL DEFAULT FALSE,
+  publisher boolean NOT NULL DEFAULT TRUE,
+  CHECK(developer OR publisher),
   PRIMARY KEY(pid, rid)
 );
 
@@ -114,7 +125,7 @@ CREATE TABLE releases_rev (
   rid integer NOT NULL DEFAULT 0,
   title varchar(250) NOT NULL DEFAULT '',
   original varchar(250) NOT NULL DEFAULT '',
-  type smallint NOT NULL DEFAULT 0,
+  type release_type NOT NULL DEFAULT 'complete',
   website varchar(250) NOT NULL DEFAULT '',
   released integer NOT NULL,
   notes text NOT NULL DEFAULT '',
@@ -137,10 +148,10 @@ CREATE TABLE releases_vn (
   PRIMARY KEY(rid, vid)
 );
 
--- relgraph
-CREATE TABLE relgraph (
-  id SERIAL NOT NULL PRIMARY KEY,
-  cmap text NOT NULL DEFAULT ''
+-- relgraphs
+CREATE TABLE relgraphs (
+  id SERIAL PRIMARY KEY,
+  svg xml NOT NULL
 );
 
 -- rlists
@@ -245,6 +256,7 @@ CREATE TABLE threads_boards (
   tid integer NOT NULL DEFAULT 0,
   type character(2) NOT NULL DEFAULT 0,
   iid integer NOT NULL DEFAULT 0,
+  lastread smallint NOT NULL,
   PRIMARY KEY(tid, type, iid)
 );
 
@@ -292,7 +304,7 @@ CREATE TABLE vn_anime (
 CREATE TABLE vn_relations (
   vid1 integer NOT NULL DEFAULT 0,
   vid2 integer NOT NULL DEFAULT 0,
-  relation integer NOT NULL DEFAULT 0,
+  relation vn_relation NOT NULL,
   PRIMARY KEY(vid1, vid2)
 );
 
@@ -352,6 +364,9 @@ CREATE TABLE wlists (
 ALTER TABLE changes            ADD FOREIGN KEY (requester) REFERENCES users         (id);
 ALTER TABLE changes            ADD FOREIGN KEY (causedby)  REFERENCES changes       (id);
 ALTER TABLE producers          ADD FOREIGN KEY (latest)    REFERENCES producers_rev (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE producers          ADD FOREIGN KEY (rgraph)    REFERENCES relgraphs     (id);
+ALTER TABLE producers_relations ADD FOREIGN KEY (pid1)     REFERENCES producers_rev (id);
+ALTER TABLE producers_relations ADD FOREIGN KEY (pid2)     REFERENCES producers     (id);
 ALTER TABLE producers_rev      ADD FOREIGN KEY (id)        REFERENCES changes       (id);
 ALTER TABLE producers_rev      ADD FOREIGN KEY (pid)       REFERENCES producers     (id);
 ALTER TABLE quotes             ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
@@ -380,7 +395,7 @@ ALTER TABLE threads_posts      ADD FOREIGN KEY (tid)       REFERENCES threads   
 ALTER TABLE threads_posts      ADD FOREIGN KEY (uid)       REFERENCES users         (id);
 ALTER TABLE threads_boards     ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
 ALTER TABLE vn                 ADD FOREIGN KEY (latest)    REFERENCES vn_rev        (id) DEFERRABLE INITIALLY DEFERRED;
-ALTER TABLE vn                 ADD FOREIGN KEY (rgraph)    REFERENCES relgraph      (id);
+ALTER TABLE vn                 ADD FOREIGN KEY (rgraph)    REFERENCES relgraphs     (id);
 ALTER TABLE vn_anime           ADD FOREIGN KEY (aid)       REFERENCES anime         (id);
 ALTER TABLE vn_anime           ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
 ALTER TABLE vn_relations       ADD FOREIGN KEY (vid1)      REFERENCES vn_rev        (id);
@@ -405,31 +420,6 @@ ALTER TABLE wlists             ADD FOREIGN KEY (vid)       REFERENCES vn        
 -------------------------
 
 
--- update_rev(table, ids) - updates the rev column in the changes table
-CREATE FUNCTION update_rev(tbl text, ids text) RETURNS void AS $$
-DECLARE
-  r RECORD;
-  r2 RECORD;
-  i integer;
-  t text;
-  e text;
-BEGIN
-  SELECT INTO t SUBSTRING(tbl, 1, 1);
-  e := '';
-  IF ids <> '' THEN
-    e := ' WHERE id IN('||ids||')';
-  END IF;
-  FOR r IN EXECUTE 'SELECT id FROM '||tbl||e LOOP
-    i := 1;
-    FOR r2 IN EXECUTE 'SELECT id FROM '||tbl||'_rev WHERE '||t||'id = '||r.id||' ORDER BY id ASC' LOOP
-      UPDATE changes SET rev = i WHERE id = r2.id;
-      i := i+1;
-    END LOOP;
-  END LOOP;
-END;
-$$ LANGUAGE plpgsql;
-
-
 -- update_vncache(id) - updates the c_* columns in the vn table
 CREATE FUNCTION update_vncache(id integer) RETURNS void AS $$
 DECLARE
@@ -445,7 +435,7 @@ BEGIN
       JOIN releases r1 ON rr1.id = r1.latest
       JOIN releases_vn rv1 ON rr1.id = rv1.rid
       WHERE rv1.vid = vn.id
-      AND rr1.type <> 2
+      AND rr1.type <> ''trial''
       AND r1.hidden = FALSE
       AND rr1.released <> 0
       GROUP BY rv1.vid
@@ -457,7 +447,7 @@ BEGIN
       JOIN releases r2 ON rr2.id = r2.latest
       JOIN releases_vn rv2 ON rr2.id = rv2.rid
       WHERE rv2.vid = vn.id
-      AND rr2.type <> 2
+      AND rr2.type <> ''trial''
       AND rr2.released <= TO_CHAR(''today''::timestamp, ''YYYYMMDD'')::integer
       AND r2.hidden = FALSE
       GROUP BY rl2.lang
@@ -470,7 +460,7 @@ BEGIN
       JOIN releases r3 ON rp3.rid = r3.latest
       JOIN releases_vn rv3 ON rp3.rid = rv3.rid
       WHERE rv3.vid = vn.id
-      AND rr3.type <> 2
+      AND rr3.type <> ''trial''
       AND rr3.released <= TO_CHAR(''today''::timestamp, ''YYYYMMDD'')::integer
       AND r3.hidden = FALSE
       GROUP BY rp3.platform
@@ -585,7 +575,7 @@ BEGIN
     SELECT * FROM tags_vn UNION SELECT * FROM tag_vn_childs();
   -- grouped by (tag, vid, uid), so only one user votes on one parent tag per VN entry
   CREATE OR REPLACE TEMPORARY VIEW tags_vn_grouped AS
-    SELECT tag, vid, uid, MAX(vote)::real AS vote, COALESCE(AVG(spoiler), 0)::real AS spoiler
+    SELECT tag, vid, uid, MAX(vote)::real AS vote, AVG(spoiler)::real AS spoiler
     FROM tags_vn_all GROUP BY tag, vid, uid;
   -- grouped by (tag, vid) and serialized into a table
   DROP INDEX IF EXISTS tags_vn_bayesian_tag;
@@ -779,6 +769,36 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE CONSTRAINT TRIGGER vn_relgraph_notify AFTER INSERT OR UPDATE ON vn DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE PROCEDURE vn_relgraph_notify();
+
+
+-- Same as above for producers, with slight differences in the steps:
+-- There is no 2, and
+-- 3 = New producer revision of which the name, language or type differs from the previous revision (deferred)
+CREATE OR REPLACE FUNCTION producer_relgraph_notify() RETURNS trigger AS $$
+BEGIN
+  -- 1.
+  IF TG_TABLE_NAME = 'producers' THEN
+    IF NEW.rgraph IS NULL AND EXISTS(SELECT 1 FROM producers_relations WHERE pid1 = NEW.latest) THEN
+      NOTIFY relgraph;
+    END IF;
+  END IF;
+  IF TG_TABLE_NAME = 'producers' AND TG_OP = 'UPDATE' THEN
+    IF NEW.rgraph IS NOT NULL AND OLD.latest > 0 THEN
+      -- 3 & 4
+      IF OLD.latest <> NEW.latest AND (
+           EXISTS(SELECT 1 FROM producers_rev p1, producers_rev p2 WHERE (p2.name <> p1.name OR p2.type <> p1.type OR p2.lang <> p1.lang) AND p1.id = OLD.latest AND p2.id = NEW.latest)
+        OR EXISTS(SELECT p1.pid2, p1.relation FROM producers_relations p1 WHERE p1.pid1 = OLD.latest EXCEPT SELECT p2.pid2, p2.relation FROM producers_relations p2 WHERE p2.pid1 = NEW.latest)
+        OR EXISTS(SELECT p1.pid2, p1.relation FROM producers_relations p1 WHERE p1.pid1 = NEW.latest EXCEPT SELECT p2.pid2, p2.relation FROM producers_relations p2 WHERE p2.pid1 = OLD.latest)
+      ) THEN
+        UPDATE producers SET rgraph = NULL WHERE id = NEW.id;
+      END IF;
+    END IF;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER vn_relgraph_notify AFTER INSERT OR UPDATE ON producers DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE PROCEDURE producer_relgraph_notify();
 
 
 -- NOTIFY on insert into changes/posts/tags

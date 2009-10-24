@@ -22,7 +22,7 @@ print "\n";
 
 
 print "Creating directory structures...\n";
-for my $d (qw| cv rg st sf |) {
+for my $d (qw| cv st sf |) {
   print "  /static/$d\n";
   mkdir "$ROOT/static/$d" or die "mkdir '$ROOT/static/$d': $!\n";
   for my $i (0..99) {

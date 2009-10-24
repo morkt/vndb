@@ -25,7 +25,7 @@ sub list {
     { name => 'pl', required => 0, multi => 1, enum => $self->{platforms}, default => '' },
     { name => 'ti', required => 0, default => '', maxlength => 200 },
     { name => 'te', required => 0, default => '', maxlength => 200 },
-    { name => 'sp', required => 0, default => $self->reqCookie('tagspoil') =~ /^([0-2])$/ ? $1 : 1, enum => [0..2] },
+    { name => 'sp', required => 0, default => $self->reqCookie('tagspoil') =~ /^([0-2])$/ ? $1 : 0, enum => [0..2] },
   );
   return 404 if $f->{_err};
   $f->{q} ||= $f->{sq};
@@ -70,7 +70,7 @@ sub list {
   $self->resRedirect('/v'.$list->[0]{id}, 'temp')
     if $f->{q} && @$list == 1;
 
-  $self->htmlHeader(title => mt('_vnbrowse_title'), search => $f->{q}, js => 'forms');
+  $self->htmlHeader(title => mt('_vnbrowse_title'), search => $f->{q});
   _filters($self, $f, $char, \@ignored);
 
   my $url = "/v/$char?q=$f->{q};ti=$f->{ti};te=$f->{te}";
@@ -162,7 +162,7 @@ sub _filters {
      txt mt '_vnbrowse_lang';
      b ' ('.mt('_vnbrowse_boolor').')';
     end;
-    for my $i (sort @{$self->dbLanguages}) {
+    for my $i (@{$self->{languages}}) {
       span;
        input type => 'checkbox', name => 'ln', value => $i, id => "lang_$i",
          (scalar grep $_ eq $i, @{$f->{ln}}) ? (checked => 'checked') : ();

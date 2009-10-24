@@ -27,16 +27,17 @@ sub rg {
   return 404 if !$v->{id} || !$v->{rgraph};
 
   my $title = mt '_vnrg_title', $v->{title};
-  $self->htmlHeader(title => $title);
-  $self->htmlMainTabs('v', $v, 'rg');
+  return if $self->htmlRGHeader($title, 'v', $v);
+
+  $v->{svg} =~ s/\$___(_vnrel_[a-z]+)____\$/mt $1/eg;
+
   div class => 'mainbox';
    h1 $title;
-   lit $v->{cmap};
    p class => 'center';
-    img src => sprintf('%s/rg/%02d/%d.png', $self->{url_static}, $v->{rgraph}%100, $v->{rgraph}),
-      alt => $title, usemap => '#rgraph';
+    lit $v->{svg};
    end;
   end;
+  $self->htmlFooter;
 }
 
 
@@ -148,15 +149,16 @@ sub page {
    my $t = $self->dbTagStats(vid => $v->{id}, order => 'avg(tv.vote) DESC', minrating => 0, results => 999);
    if(@$t) {
      div id => 'tagops';
-      a href => '#', mt '_vnpage_tags_spoil0';
-      a href => '#', class => 'tsel', mt '_vnpage_tags_spoil1';
+      # NOTE: order of these links is hardcoded in JS
+      a href => '#', class => 'tsel', mt '_vnpage_tags_spoil0';
+      a href => '#', mt '_vnpage_tags_spoil1';
       a href => '#', mt '_vnpage_tags_spoil2';
       a href => '#', class => 'sec', mt '_vnpage_tags_summary';
       a href => '#', mt '_vnpage_tags_all';
      end;
      div id => 'vntags';
       for (@$t) {
-        span class => sprintf 'tagspl%.0f %s', $_->{spoiler}, $_->{spoiler} > 1 ? 'hidden' : '';
+        span class => sprintf 'tagspl%.0f %s', $_->{spoiler}, $_->{spoiler} > 0 ? 'hidden' : '';
          a href => "/g$_->{id}", style => sprintf('font-size: %dpx', $_->{rating}*3.5+6), $_->{name};
          b class => 'grayedout', sprintf ' %.1f', $_->{rating};
         end;
@@ -199,7 +201,7 @@ sub _revision {
     }],
     [ relations   => join => '<br />', split => sub {
       my @r = map sprintf('%s: <a href="/v%d" title="%s">%s</a>',
-        $self->{vn_relations}[$_->{relation}][0], $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
+        mt("_vnrel_$_->{relation}"), $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
       ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
       return @r ? @r : (mt '_vndiff_none');
     }],
@@ -229,27 +231,42 @@ sub _revision {
 
 sub _producers {
   my($self, $i, $r) = @_;
-  return if !grep @{$_->{producers}}, @$r;
 
   my %lang;
   my @lang = grep !$lang{$_}++, map @{$_->{languages}}, @$r;
 
-  Tr ++$$i % 2 ? (class => 'odd') : ();
-   td mt '_vnpage_producers';
-   td;
-    for my $l (@lang) {
-      my %p = map { $_->{id} => $_ } map @{$_->{producers}}, grep grep($_ eq $l, @{$_->{languages}}), @$r;
-      my @p = values %p;
-      next if !@p;
-      cssicon "lang $l", mt "_lang_$l";
-      for (@p) {
+  if(grep $_->{developer}, map @{$_->{producers}}, @$r) {
+    my %dev = map $_->{developer} ? ($_->{id} => $_) : (), map @{$_->{producers}}, @$r;
+    my @dev = values %dev;
+    Tr ++$$i % 2 ? (class => 'odd') : ();
+     td mt "_vnpage_developer";
+     td;
+      for (@dev) {
         a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 30;
-        txt ' & ' if $_ != $p[$#p];
+        txt ' & ' if $_ != $dev[$#dev];
       }
-      txt "\n";
-    }
-   end;
-  end;
+     end;
+    end;
+  }
+
+  if(grep $_->{publisher}, map @{$_->{producers}}, @$r) {
+    Tr ++$$i % 2 ? (class => 'odd') : ();
+     td mt "_vnpage_publisher";
+     td;
+      for my $l (@lang) {
+        my %p = map $_->{publisher} ? ($_->{id} => $_) : (), map @{$_->{producers}}, grep grep($_ eq $l, @{$_->{languages}}), @$r;
+        my @p = values %p;
+        next if !@p;
+        cssicon "lang $l", mt "_lang_$l";
+        for (@p) {
+          a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 30;
+          txt ' & ' if $_ != $p[$#p];
+        }
+        txt "\n";
+      }
+     end;
+    end;
+  }
 }
 
 
@@ -266,7 +283,7 @@ sub _relations {
    td class => 'relations';
     dl;
      for(sort keys %rel) {
-       dt $self->{vn_relations}[$_][0];
+       dt mt "_vnrel_$_";
        dd;
         for (@{$rel{$_}}) {
           a href => "/v$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 40;
@@ -306,7 +323,7 @@ sub _anime {
          txt '] ';
         end;
         acronym title => $_->{title_kanji}||$_->{title_romaji}, shorten $_->{title_romaji}, 50;
-        b ' ('.(defined $_->{type} ? $self->{anime_types}[$_->{type}].', ' : '').$_->{year}.')';
+        b ' ('.(defined $_->{type} ? mt("_animetype_$_->{type}").', ' : '').$_->{year}.')';
         txt "\n";
       }
     }
@@ -395,7 +412,7 @@ sub _releases {
          end;
          td class => 'tc5';
           if($self->authInfo->{id}) {
-            a href => "/r$rel->{id}", id => "rlsel_$rel->{id}";
+            a href => "/r$rel->{id}", id => "rlsel_$rel->{id}", class => 'vnrlsel';
              lit $rel->{ulist} ? liststat $rel->{ulist} : '--';
             end;
           } else {

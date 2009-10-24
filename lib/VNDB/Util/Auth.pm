@@ -26,7 +26,7 @@ sub authInit {
   my $token = substr($cookie, 0, 40);
   my $uid  = substr($cookie, 40);
   return _rmcookie($self) if $uid !~ /^\d+$/ || !$self->dbSessionCheck($uid, $token);
-  $self->{_auth} = $self->dbUserGet(uid => $uid, what => 'mymessages')->[0];
+  $self->{_auth} = $self->dbUserGet(uid => $uid, what => 'extended')->[0];
 }
 
 
@@ -95,7 +95,7 @@ sub _authCheck {
 
   return 0 if !$user || length($user) > 15 || length($user) < 2 || !$pass;
 
-  my $d = $self->dbUserGet(username => $user, what => 'mymessages')->[0];
+  my $d = $self->dbUserGet(username => $user, what => 'extended')->[0];
   return 0 if !defined $d->{id} || !$d->{rank};
 
   if(_authEncryptPass($self, $pass, $d->{salt}) eq $d->{passwd}) {

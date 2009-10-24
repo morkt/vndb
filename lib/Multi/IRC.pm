@@ -266,12 +266,12 @@ sub notify { # name, pid, payload
   return if !$_[HEAP]{$k};
 
   my $q = $_[ARG0] eq 'newrevision' ? q|SELECT
-      CASE WHEN c.type = 0 THEN 'v' WHEN c.type = 1 THEN 'r' ELSE 'p' END AS type, c.rev, c.comments, c.id AS lastrev,
+      CASE WHEN c.type, c.rev, c.comments, c.id AS lastrev,
       COALESCE(vr.vid, rr.rid, pr.pid) AS id, COALESCE(vr.title, rr.title, pr.name) AS title, u.username
     FROM changes c
-    LEFT JOIN vn_rev vr ON c.type = 0 AND c.id = vr.id
-    LEFT JOIN releases_rev rr ON c.type = 1 AND c.id = rr.id
-    LEFT JOIN producers_rev pr ON c.type = 2 AND c.id = pr.id
+    LEFT JOIN vn_rev vr ON c.type = 'v' AND c.id = vr.id
+    LEFT JOIN releases_rev rr ON c.type = 'r' AND c.id = rr.id
+    LEFT JOIN producers_rev pr ON c.type = 'p' AND c.id = pr.id
     JOIN users u ON u.id = c.requester
     WHERE c.id > ? AND c.requester <> 1
     ORDER BY c.added|

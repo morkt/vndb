@@ -28,7 +28,7 @@ sub edit {
   my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn img_nsfw|),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
-    relations => join('|||', map $_->{relation}.','.$_->{id}.','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
+    vnrelations => join('|||', map $_->{relation}.','.$_->{id}.','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
     screenshots => join(' ', map sprintf('%d,%d,%d', $_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$v->{screenshots}}),
   );
 
@@ -46,7 +46,7 @@ sub edit {
       { name => 'l_vnn',       required => 0, default => $b4{l_vnn}||0,  template => 'int' },
       { name => 'anime',       required => 0, default => '' },
       { name => 'img_nsfw',    required => 0, default => 0 },
-      { name => 'relations',   required => 0, default => '', maxlength => 5000 },
+      { name => 'vnrelations', required => 0, default => '', maxlength => 5000 },
       { name => 'screenshots', required => 0, default => '', maxlength => 1000 },
       { name => 'editsum',     maxlength => 5000 },
     );
@@ -57,11 +57,11 @@ sub edit {
     if(!$frm->{_err}) {
       # parse and re-sort fields that have multiple representations of the same information
       my $anime = { map +($_=>1), grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} };
-      my $relations = [ map { /^([0-9]+),([0-9]+),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{relations} ];
+      my $relations = [ map { /^([a-z]+),([0-9]+),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{vnrelations} ];
       my $screenshots = [ map /^[0-9]+,[01],[0-9]+$/ ? [split /,/] : (), split / +/, $frm->{screenshots} ];
 
       $frm->{anime} = join ' ', sort { $a <=> $b } keys %$anime;
-      $frm->{relations} = join '|||', map $_->[0].','.$_->[1].','.$_->[2], sort { $a->[1] <=> $b->[1]} @{$relations};
+      $frm->{vnrelations} = join '|||', map $_->[0].','.$_->[1].','.$_->[2], sort { $a->[1] <=> $b->[1]} @{$relations};
       $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
       $frm->{screenshots} = join ' ', map sprintf('%d,%d,%d', $_->[0], $_->[1]?1:0, $_->[2]), sort { $a->[0] <=> $b->[0] } @$screenshots;
 
@@ -83,7 +83,7 @@ sub edit {
       ($nvid, $cid) = $self->dbVNAdd(%args) if !$vid;
 
       # update reverse relations & relation graph
-      if(!$vid && $#$relations >= 0 || $vid && $frm->{relations} ne $b4{relations}) {
+      if(!$vid && $#$relations >= 0 || $vid && $frm->{vnrelations} ne $b4{vnrelations}) {
         my %old = $vid ? (map { $_->{id} => $_->{relation} } @{$v->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations;
         _updreverse($self, \%old, \%new, $nvid, $cid, $nrev);
@@ -97,7 +97,7 @@ sub edit {
   $frm->{editsum} = sprintf 'Reverted to revision v%d.%d', $vid, $rev if $rev && !defined $frm->{editsum};
 
   my $title = $vid ? mt('_vnedit_title_edit', $v->{title}) : mt '_vnedit_title_add';
-  $self->htmlHeader(js => 'forms', title => $title, noindex => 1);
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
   $self->htmlEditMessage('v', $v, $title);
   _form($self, $v, $frm);
@@ -183,7 +183,7 @@ sub _form {
   ],
 
   vn_rel => [ mt('_vnedit_rel'),
-    [ hidden   => short => 'relations' ],
+    [ hidden   => short => 'vnrelations' ],
     [ static   => nolabel => 1, content => sub {
       h2 mt '_vnedit_rel_sel';
       table;
@@ -193,22 +193,22 @@ sub _form {
       end;
 
       h2 mt '_vnedit_rel_add';
-      # TODO: localize JS relartion selector
       table;
        Tr id => 'relation_new';
-        td class => 'tc1';
+        td class => 'tc_vn';
          input type => 'text', class => 'text';
         end;
-        td class => 'tc2';
-         txt ' is a ';
+        td class => 'tc_rel';
+         txt mt('_vnedit_rel_isa').' ';
          Select;
-          option value => $_, $self->{vn_relations}[$_][0] for (0..$#{$self->{vn_relations}});
+          option value => $_, mt "_vnrel_$_"
+            for (sort { $self->{vn_relations}{$a}[0] <=> $self->{vn_relations}{$b}[0] } keys %{$self->{vn_relations}});
          end;
-         txt ' of';
+         txt ' '.mt '_vnedit_rel_of';
         end;
-        td class => 'tc3', $v ? $v->{title} : '';
-        td class => 'tc4';
-         a href => '#', 'add';
+        td class => 'tc_title', $v ? $v->{title} : '';
+        td class => 'tc_add';
+         a href => '#', mt '_vnedit_rel_addbut';
         end;
        end;
       end;
@@ -219,10 +219,9 @@ sub _form {
     [ hidden => short => 'screenshots' ],
     [ static => nolabel => 1, content => sub {
       div class => 'warning';
-       lit mt '_vnedit_scr_msg';
+       lit mt '_vnedit_scrmsg';
       end;
       br;
-      # TODO: localize screenshot uploader
       table;
        tbody id => 'scr_table', '';
       end;
@@ -250,11 +249,9 @@ sub _updreverse {
   # compare %old and %new
   for (keys %$old, keys %$new) {
     if(exists $$old{$_} and !exists $$new{$_}) {
-      $upd{$_} = -1;
-    } elsif((!exists $$old{$_} and exists $$new{$_}) || ($$old{$_} != $$new{$_})) {
-      $upd{$_} = $$new{$_};
-      if   ($self->{vn_relations}[$upd{$_}  ][1]) { $upd{$_}-- }
-      elsif($self->{vn_relations}[$upd{$_}+1][1]) { $upd{$_}++ }
+      $upd{$_} = undef;
+    } elsif((!exists $$old{$_} and exists $$new{$_}) || ($$old{$_} ne $$new{$_})) {
+      $upd{$_} = $self->{vn_relations}{$$new{$_}}[1];
     }
   }
 
@@ -264,7 +261,7 @@ sub _updreverse {
   for my $i (keys %upd) {
     my $r = $self->dbVNGet(id => $i, what => 'extended relations anime screenshots')->[0];
     my @newrel = map $_->{id} != $vid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
-    push @newrel, [ $upd{$i}, $vid ] if $upd{$i} != -1;
+    push @newrel, [ $upd{$i}, $vid ] if $upd{$i};
     $self->dbVNEdit($i,
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision v$vid.$rev",

@@ -3,11 +3,12 @@ package VNDB::Handler::Producers;
 
 use strict;
 use warnings;
-use YAWF ':html', ':xml';
+use YAWF ':html', ':xml', 'xml_escape';
 use VNDB::Func;
 
 
 YAWF::register(
+  qr{p([1-9]\d*)/rg}               => \&rg,
   qr{p([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
   qr{p(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit|/new)}
     => \&edit,
@@ -16,12 +17,34 @@ YAWF::register(
 );
 
 
+sub rg {
+  my($self, $pid) = @_;
+
+  my $p = $self->dbProducerGet(id => $pid, what => 'relgraph')->[0];
+  return 404 if !$p->{id} || !$p->{rgraph};
+
+  my $title = mt '_prodrg_title', $p->{name};
+  return if $self->htmlRGHeader($title, 'p', $p);
+
+  $p->{svg} =~ s/\$___(_prodrel_[a-z]+)____\$/mt $1/eg;
+  $p->{svg} =~ s/\$(_lang_[a-z]+)_\$/mt $1/eg;
+  $p->{svg} =~ s/\$(_ptype_[a-z]+)_\$/mt $1/eg;
+
+  div class => 'mainbox';
+   h1 $title;
+   p class => 'center';
+    lit $p->{svg};
+   end;
+  end;
+  $self->htmlFooter;
+}
+
 sub page {
   my($self, $pid, $rev) = @_;
 
   my $p = $self->dbProducerGet(
     id => $pid,
-    what => 'vn extended'.($rev ? ' changes' : ''),
+    what => 'vn extended relations'.($rev ? ' changes' : ''),
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return 404 if !$p->{id};
@@ -31,7 +54,7 @@ sub page {
   return if $self->htmlHiddenMessage('p', $p);
 
   if($rev) {
-    my $prev = $rev && $rev > 1 && $self->dbProducerGet(id => $pid, rev => $rev-1, what => 'changes extended')->[0];
+    my $prev = $rev && $rev > 1 && $self->dbProducerGet(id => $pid, rev => $rev-1, what => 'changes extended relations')->[0];
     $self->htmlRevision('p', $prev, $p,
       [ type      => serialize => sub { mt "_ptype_$_[0]" } ],
       [ name      => diff => 1 ],
@@ -40,6 +63,12 @@ sub page {
       [ lang      => serialize => sub { "$_[0] (".mt("_lang_$_[0]").')' } ],
       [ website   => diff => 1 ],
       [ desc      => diff => 1 ],
+      [ relations   => join => '<br />', split => sub {
+        my @r = map sprintf('%s: <a href="/p%d" title="%s">%s</a>',
+          mt("_prodrel_$_->{relation}"), $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape shorten $_->{name}, 40
+        ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
+        return @r ? @r : (mt '_proddiff_none');
+      }],
     );
   }
 
@@ -55,6 +84,23 @@ sub page {
       a href => $p->{website}, $p->{website};
     }
    end;
+
+   if(@{$p->{relations}}) {
+     my %rel;
+     push @{$rel{$_->{relation}}}, $_
+       for (sort { $a->{name} cmp $b->{name} } @{$p->{relations}});
+     p class => 'center';
+      txt "\n";
+      for my $r (sort keys %rel) {
+        txt mt("_prodrel_$r").': ';
+        for (@{$rel{$r}}) {
+          a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 40;
+          txt ', ' if $_ ne $rel{$r}[$#{$rel{$r}}];
+        }
+        txt "\n";
+      }
+     end;
+   }
 
    if($p->{desc}) {
      p class => 'description';
@@ -75,6 +121,8 @@ sub page {
           lit $self->{l10n}->datestr($_->{date});
          end;
          a href => "/v$_->{id}", title => $_->{original}, $_->{title};
+         b class => 'grayedout', ' ('.join(', ',
+          $_->{developer} ? mt '_prodpage_dev' : (), $_->{publisher} ? mt '_prodpage_pub' : ()).')';
         end;
       }
      end;
@@ -89,36 +137,55 @@ sub page {
 sub edit {
   my($self, $pid, $rev) = @_;
 
-  my $p = $pid && $self->dbProducerGet(id => $pid, what => 'changes extended', $rev ? (rev => $rev) : ())->[0];
+  my $p = $pid && $self->dbProducerGet(id => $pid, what => 'changes extended relations', $rev ? (rev => $rev) : ())->[0];
   return 404 if $pid && !$p->{id};
   $rev = undef if !$p || $p->{cid} == $p->{latest};
 
   return $self->htmlDenied if !$self->authCan('edit')
     || $pid && ($p->{locked} && !$self->authCan('lock') || $p->{hidden} && !$self->authCan('del'));
 
-  my %b4 = !$pid ? () : map { $_ => $p->{$_} } qw|type name original lang website desc alias|;
+  my %b4 = !$pid ? () : (
+    (map { $_ => $p->{$_} } qw|type name original lang website desc alias|),
+    prodrelations => join('|||', map $_->{relation}.','.$_->{id}.','.$_->{name}, sort { $a->{id} <=> $b->{id} } @{$p->{relations}}),
+  );
   my $frm;
 
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
-      { name => 'type', enum => $self->{producer_types} },
-      { name => 'name', maxlength => 200 },
-      { name => 'original', required => 0, maxlength => 200, default => '' },
-      { name => 'alias', required => 0, maxlength => 500, default => '' },
-      { name => 'lang', enum => $self->{languages} },
-      { name => 'website', required => 0, template => 'url', default => '' },
-      { name => 'desc', required => 0, maxlength => 5000, default => '' },
-      { name => 'editsum', maxlength => 5000 },
+      { name => 'type',          enum      => $self->{producer_types} },
+      { name => 'name',          maxlength => 200 },
+      { name => 'original',      required  => 0, maxlength => 200,  default => '' },
+      { name => 'alias',         required  => 0, maxlength => 500,  default => '' },
+      { name => 'lang',          enum      => $self->{languages} },
+      { name => 'website',       required  => 0, template => 'url', default => '' },
+      { name => 'desc',          required  => 0, maxlength => 5000, default => '' },
+      { name => 'prodrelations', required  => 0, maxlength => 5000, default => '' },
+      { name => 'editsum',       maxlength => 5000 },
     );
     if(!$frm->{_err}) {
+      # parse
+      my $relations = [ map { /^([a-z]+),([0-9]+),(.+)$/ && (!$pid || $2 != $pid) ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{prodrelations} ];
+
+      # normalize
+      $frm->{prodrelations} = join '|||', map $_->[0].','.$_->[1].','.$_->[2], sort { $a->[1] <=> $b->[1]} @{$relations};
+
       return $self->resRedirect("/p$pid", 'post')
         if $pid && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
+      $frm->{relations} = $relations;
       $rev = 1;
+      my $cid;
       if($pid) {
-        ($rev) = $self->dbProducerEdit($pid, %$frm);
+        ($rev, $cid) = $self->dbProducerEdit($pid, %$frm);
       } else {
-        ($pid) = $self->dbProducerAdd(%$frm);
+        ($pid, $cid) = $self->dbProducerAdd(%$frm);
+      }
+
+      # update reverse relations
+      if(!$pid && $#$relations >= 0 || $pid && $frm->{prodrelations} ne $b4{prodrelations}) {
+        my %old = $pid ? (map { $_->{id} => $_->{relation} } @{$p->{relations}}) : ();
+        my %new = map { $_->[1] => $_->[0] } @$relations;
+        _updreverse($self, \%old, \%new, $pid, $cid, $rev);
       }
 
       return $self->resRedirect("/p$pid.$rev", 'post');
@@ -133,7 +200,8 @@ sub edit {
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('p', $p, 'edit') if $pid;
   $self->htmlEditMessage('p', $p, $title);
-  $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 }, 'pedit_geninfo' => [mt('_pedit_form_generalinfo'),
+  $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 },
+  'pedit_geninfo' => [ mt('_pedit_form_generalinfo'),
     [ select => name => mt('_pedit_form_type'), short => 'type',
       options => [ map [ $_, mt "_ptype_$_" ], sort @{$self->{producer_types}} ] ],
     [ input  => name => mt('_pedit_form_name'), short => 'name' ],
@@ -145,8 +213,68 @@ sub edit {
       options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
     [ input  => name => mt('_pedit_form_website'), short => 'website' ],
     [ text   => name => mt('_pedit_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
+  ], 'pedit_rel' => [ mt('_pedit_form_rel'),
+    [ hidden   => short => 'prodrelations' ],
+    [ static   => nolabel => 1, content => sub {
+      h2 mt '_pedit_rel_sel';
+      table;
+       tbody id => 'relation_tbl';
+        # to be filled using javascript
+       end;
+      end;
+
+      h2 mt '_pedit_rel_add';
+      table;
+       Tr id => 'relation_new';
+        td class => 'tc_prod';
+         input type => 'text', class => 'text';
+        end;
+        td class => 'tc_rel';
+         Select;
+          option value => $_, mt "_prodrel_$_"
+            for (sort { $self->{prod_relations}{$a}[0] <=> $self->{prod_relations}{$b}[0] } keys %{$self->{prod_relations}});
+         end;
+        end;
+        td class => 'tc_add';
+         a href => '#', mt '_pedit_rel_addbut';
+        end;
+       end;
+      end;
+    }],
   ]);
   $self->htmlFooter;
+}
+
+# !IMPORTANT!: Don't forget to update this function when
+#   adding/removing fields to/from producer entries!
+sub _updreverse {
+  my($self, $old, $new, $pid, $cid, $rev) = @_;
+  my %upd;
+
+  # compare %old and %new
+  for (keys %$old, keys %$new) {
+    if(exists $$old{$_} and !exists $$new{$_}) {
+      $upd{$_} = undef;
+    } elsif((!exists $$old{$_} and exists $$new{$_}) || ($$old{$_} ne $$new{$_})) {
+      $upd{$_} = $self->{prod_relations}{$$new{$_}}[1];
+    }
+  }
+
+  return if !keys %upd;
+
+  # edit all related producers
+  for my $i (keys %upd) {
+    my $r = $self->dbProducerGet(id => $i, what => 'extended relations')->[0];
+    my @newrel = map $_->{id} != $pid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
+    push @newrel, [ $upd{$i}, $pid ] if $upd{$i};
+    $self->dbProducerEdit($i,
+      relations => \@newrel,
+      editsum => "Reverse relation update caused by revision p$pid.$rev",
+      causedby => $cid,
+      uid => 1,         # Multi - hardcoded
+      ( map { $_ => $r->{$_} } qw|type name original lang website desc alias| )
+    );
+  }
 }
 
 

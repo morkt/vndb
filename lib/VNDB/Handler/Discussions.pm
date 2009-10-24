@@ -29,6 +29,11 @@ sub thread {
   my $p = $self->dbPostGet(tid => $tid, results => 25, page => $page, what => 'user');
   return 404 if !$p->[0];
 
+  # mark as read when this thread is posted in the board of the currently logged in user
+  my $uid = $self->authInfo->{id};
+  $self->dbPostRead($t->{id}, $uid, $p->[$#$p]{num})
+    if $uid && grep $_->{type} eq 'u' && $_->{iid} == $uid, @{$t->{boards}};
+
   $self->htmlHeader(title => $t->{title});
 
   div class => 'mainbox';
@@ -293,7 +298,7 @@ sub board {
     order => $type eq 'an' ? 't.id DESC' : 'tpl.date DESC',
   );
 
-  $self->htmlHeader(title => $title, noindex => !@$list);
+  $self->htmlHeader(title => $title, noindex => !@$list || $type eq 'u');
 
   $self->htmlMainTabs($type, $obj, 'disc') if $iid;
   div class => 'mainbox';

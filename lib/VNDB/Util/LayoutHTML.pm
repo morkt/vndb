@@ -10,7 +10,7 @@ use VNDB::Func;
 our @EXPORT = qw|htmlHeader htmlFooter|;
 
 
-sub htmlHeader { # %options->{ title, js, noindex, search }
+sub htmlHeader { # %options->{ title, noindex, search }
   my($self, %o) = @_;
   my $skin = $self->reqParam('skin') || $self->authInfo->{skin} || $self->{skin_default};
   $skin = $self->{skin_default} if !$self->{skins}{$skin} || !-d "$VNDB::ROOT/static/s/$skin";
@@ -22,12 +22,6 @@ sub htmlHeader { # %options->{ title, js, noindex, search }
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
     Link rel => 'stylesheet', href => $self->{url_static}.'/s/'.$skin.'/style.css?'.$self->{version}, type => 'text/css', media => 'all';
     Link rel => 'search', type => 'application/opensearchdescription+xml', title => 'VNDB VN Search', href => $self->{url}.'/opensearch.xml';
-    if($o{js}) {
-      script type => 'text/javascript', src => $self->{url_static}.'/f/forms.js?'.$self->{version}; end;
-    }
-    script type => 'text/javascript', src => $self->{url_static}.'/f/script.js?'.$self->{version};
-     # most browsers don't like a self-closing <script> tag...
-    end;
     if($self->authInfo->{customcss}) {
       (my $css = $self->authInfo->{customcss}) =~ s/\n/ /g;
       style type => 'text/css', $css;
@@ -55,12 +49,8 @@ sub _menu {
 
    div class => 'menubox';
     h2;
-     span;
-      for (grep $self->{l10n}->language_tag() ne $_, $self->{l10n}->languages()) {
-        a href => "?l10n=$_";
-         cssicon "lang $_", mt "_lang_$_"; # NOTE: should actually be in the destination language...
-        end;
-      }
+     a href => "#", id => 'lang_select';
+      cssicon "lang ".$self->{l10n}->language_tag(), mt "_lang_".$self->{l10n}->language_tag();
      end;
      txt mt '_menu';
     end;
@@ -89,6 +79,7 @@ sub _menu {
 
    div class => 'menubox';
     if($self->authInfo->{id}) {
+      my $msg = $self->dbUserMessageCount($self->authInfo->{id});
       my $uid = sprintf '/u%d', $self->authInfo->{id};
       h2;
        a href => $uid, ucfirst $self->authInfo->{username};
@@ -99,7 +90,7 @@ sub _menu {
        a href => "$uid/edit", mt '_menu_myprofile'; br;
        a href => "$uid/list", mt '_menu_myvnlist'; br;
        a href => "$uid/wish", mt '_menu_mywishlist'; br;
-       a href => "/t$uid",    mt '_menu_mymessages', $self->authInfo->{mymessages}; br;
+       a href => "/t$uid",    $msg ? (class => 'standout') : (), mt '_menu_mymessages', $msg; br;
        a href => "$uid/hist", mt '_menu_mychanges'; br;
        a href => "$uid/tags", mt '_menu_mytags'; br;
        br;
@@ -163,6 +154,7 @@ sub htmlFooter {
       a href => $self->{source_url}, mt '_footer_source';
      end;
     end; # /div maincontent
+    script type => 'text/javascript', src => $self->{url_static}.'/f/script.js?'.$self->{version}, '';
    end; # /body
   end; # /html
 

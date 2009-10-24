@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 use VNDB::Func 'gtintype';
+use Encode 'decode_utf8';
 
 our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbVNCache dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
 
@@ -76,7 +77,7 @@ sub dbVNGet {
     $o{what} =~ /changes/ ?
       'JOIN users u ON u.id = c.requester' : (),
     $o{what} =~ /relgraph/ ?
-      'JOIN relgraph rg ON rg.id = v.rgraph' : (),
+      'JOIN relgraphs vg ON vg.id = v.rgraph' : (),
   );
 
   my $tag_ids = $o{tags_include} && join ',', @{$o{tags_include}[1]};
@@ -86,7 +87,7 @@ sub dbVNGet {
       qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai vr.l_vnn| ) : (),
     $o{what} =~ /changes/ ? (
       qw|c.requester c.comments v.latest u.username c.rev c.causedby|, q|extract('epoch' from c.added) as added|) : (),
-    $o{what} =~ /relgraph/ ? 'rg.cmap' : (),
+    $o{what} =~ /relgraph/ ? 'vg.svg' : (),
     $o{what} =~ /ranking/ ? '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_popularity > v.c_popularity) AS ranking' : (),
     $tag_ids ?
       qq|(SELECT AVG(tvb.rating) FROM tags_vn_bayesian tvb WHERE tvb.tag IN($tag_ids) AND tvb.vid = v.id AND spoiler <= $o{tags_include}[0] GROUP BY tvb.vid) AS tagscore| : (),
@@ -100,6 +101,10 @@ sub dbVNGet {
       ORDER BY !s|,
     join(', ', @select), join(' ', @join), \%where, $o{order},
   );
+
+  if($o{what} =~ /relgraph/) {
+    $_->{svg} = decode_utf8($_->{svg}) for @$r;
+  }
 
   if(@$r && $o{what} =~ /(anime|relations|screenshots)/) {
     my %r = map {
@@ -155,7 +160,7 @@ sub dbVNGet {
 # returns: ( local revision, global revision )
 sub dbVNEdit {
   my($self, $id, %o) = @_;
-  my($rev, $cid) = $self->dbRevisionInsert(0, $id, $o{editsum}, $o{uid});
+  my($rev, $cid) = $self->dbRevisionInsert('v', $id, $o{editsum}, $o{uid});
   insert_rev($self, $cid, $id, \%o);
   return ($rev, $cid);
 }
@@ -165,7 +170,7 @@ sub dbVNEdit {
 # returns: ( item id, global revision )
 sub dbVNAdd {
   my($self, %o) = @_;
-  my($id, $cid) = $self->dbItemInsert(0, $o{editsum}, $o{uid});
+  my($id, $cid) = $self->dbItemInsert('v', $o{editsum}, $o{uid});
   insert_rev($self, $cid, $id, \%o);
   return ($id, $cid);
 }

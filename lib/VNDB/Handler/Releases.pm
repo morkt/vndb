@@ -54,17 +54,16 @@ sub page {
       [ notes      => diff => 1 ],
       [ platforms  => join => ', ', split => sub { map mt("_plat_$_"), @{$_[0]} } ],
       [ media      => join => ', ', split => sub {
-        map {
-          my $med = $self->{media}{$_->{medium}};
-          $med->[1] ? sprintf('%d %s%s', $_->{qty}, $med->[0], $_->{qty}>1?'s':'') : $med->[0]
-        } @{$_[0]};
+        map $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1), @{$_[0]}
       } ],
       [ resolution => serialize => sub { $self->{resolutions}[$_[0]][0] } ],
       [ voiced     => serialize => sub { mt '_voiced_'.$_[0] } ],
       [ ani_story  => serialize => sub { mt '_animated_'.$_[0] } ],
       [ ani_ero    => serialize => sub { mt '_animated_'.$_[0] } ],
       [ producers  => join => '<br />', split => sub {
-        map sprintf('<a href="/p%d" title="%s">%s</a>', $_->{id}, $_->{original}||$_->{name}, shorten $_->{name}, 50), @{$_[0]};
+        map sprintf('<a href="/p%d" title="%s">%s</a> (%s)', $_->{id}, $_->{original}||$_->{name}, shorten($_->{name}, 50),
+          join(', ', $_->{developer} ? mt '_reldiff_developer' :(), $_->{publisher} ? mt '_reldiff_publisher' :())
+        ), @{$_[0]};
       } ],
     );
   }
@@ -154,11 +153,9 @@ sub _infotable {
    if(@{$r->{media}}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
       td mt '_relinfo_media', scalar @{$r->{media}};
-      # TODO: TL the media
-      td join ', ', map {
-        my $med = $self->{media}{$_->{medium}};
-        $med->[1] ? sprintf('%d %s%s', $_->{qty}, $med->[0], $_->{qty}>1?'s':'') : $med->[0]
-      } @{$r->{media}};
+      td join ', ', map
+        $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1),
+        @{$r->{media}};
      end;
    }
 
@@ -199,16 +196,19 @@ sub _infotable {
      end;
    }
 
-   if(@{$r->{producers}}) {
-     Tr ++$i % 2 ? (class => 'odd') : ();
-      td mt '_relinfo_producer', scalar @{$r->{producers}};
-      td;
-       for (@{$r->{producers}}) {
-         a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 60;
-         br if $_ != $r->{producers}[$#{$r->{producers}}];
-       }
-      end;
-     end;
+   for my $t (qw|developer publisher|) {
+     my @prod = grep $_->{$t}, @{$r->{producers}};
+     if(@prod) {
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td mt "_relinfo_$t", scalar @prod;
+        td;
+         for (@prod) {
+           a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 60;
+           br if $_ != $prod[$#prod];
+         }
+        end;
+       end;
+     }
    }
 
    if($r->{gtin}) {
@@ -241,14 +241,14 @@ sub _infotable {
       td;
        Select id => 'listsel', name => 'listsel';
         option mt !$rl ? '_relinfo_user_notlist' :
-          ('_relinfo_user_inlist', $self->{vn_rstat}[$rl->{rstat}], $self->{vn_vstat}[$rl->{vstat}]);
+          ('_relinfo_user_inlist', mt('_rlst_rstat_'.$rl->{rstat}), mt('_rlst_vstat_'.$rl->{vstat}));
         optgroup label => mt '_relinfo_user_setr';
-         option value => "r$_", $self->{vn_rstat}[$_]
-           for (0..$#{$self->{vn_rstat}});
+         option value => "r$_", mt '_rlst_rstat_'.$_
+           for (@{$self->{rlst_rstat}});
         end;
         optgroup label => mt '_relinfo_user_setv';
-         option value => "v$_", $self->{vn_vstat}[$_]
-           for (0..$#{$self->{vn_vstat}});
+         option value => "v$_", mt '_rlst_vstat_'.$_
+           for (@{$self->{rlst_vstat}});
         end;
         option value => 'del', mt '_relinfo_user_del' if $rl;
        end;
@@ -289,7 +289,10 @@ sub edit {
     (map { $_ => $r->{$_} } qw|type title original gtin catalog languages website released
       notes minage platforms patch resolution voiced freeware doujin ani_story ani_ero|),
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
-    producers => join('|||', map "$_->{id},$_->{name}", sort { $a->{id} <=> $b->{id} } @{$r->{producers}}),
+    producers => join('|||', map
+      sprintf('%d,%d,%s', $_->{id}, ($_->{developer}?1:0)+($_->{publisher}?2:0), $_->{name}),
+      sort { $a->{id} <=> $b->{id} } @{$r->{producers}}
+    ),
   );
   $b4{vn} = join('|||', map "$_->{vid},$_->{title}", @$vn);
   my $frm;
@@ -325,7 +328,7 @@ sub edit {
     if(!$frm->{_err}) {
       # de-serialize
       $media     = [ map [ split / / ], split /,/, $frm->{media} ];
-      $producers = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{producers} ];
+      $producers = [ map { /^([0-9]+),([1-3])/ ? [ $1, $2&1?1:0, $2&2?1:0] : () } split /\|\|\|/, $frm->{producers} ];
       $new_vn    = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];
       $frm->{platforms} = [ grep $_, @{$frm->{platforms}} ];
       $frm->{$_} = $frm->{$_} ? 1 : 0 for (qw|patch freeware doujin|);
@@ -335,7 +338,7 @@ sub edit {
 
       my $same = $rid &&
           (join(',', sort @{$b4{platforms}}) eq join(',', sort @{$frm->{platforms}})) &&
-          (join(',', sort @$producers) eq join(',', sort map $_->{id}, @{$r->{producers}})) &&
+          (join(',', map join(' ', @$_), sort { $a->[0] <=> $b->[0] }  @$producers) eq join(',', sort map sprintf('%d %d %d',$_->{id}, $_->{developer}?1:0, $_->{publisher}?1:0), sort { $a->{id} <=> $b->{id} } @{$r->{producers}})) &&
           (join(',', sort @$new_vn) eq join(',', sort map $_->{vid}, @$vn)) &&
           (join(',', sort @{$b4{languages}}) eq join(',', sort @{$frm->{languages}})) &&
           !grep !/^(platforms|producers|vn|languages)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
@@ -370,7 +373,7 @@ sub edit {
   $frm->{original} = $v->{original} if !defined $frm->{original} && !$r;
 
   my $title = mt $rid ? ($copy ? '_redit_title_copy' : '_redit_title_edit', $r->{title}) : ('_redit_title_add', $v->{title});
-  $self->htmlHeader(js => 'forms', title => $title, noindex => 1);
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('r', $r, $copy ? 'copy' : 'edit') if $rid;
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
   $self->htmlEditMessage('r', $r, $title, $copy);
@@ -435,7 +438,7 @@ sub _form {
       h2 mt '_redit_form_media';
       div id => 'media_div';
        Select;
-        option value => $_, class => $self->{media}{$_}[1] ? 'qty' : 'noqty', $self->{media}{$_}[0]
+        option value => $_, class => $self->{media}{$_} ? 'qty' : 'noqty', mt "_med_$_", 1
           for (sort keys %{$self->{media}});
        end;
       end;
@@ -446,13 +449,17 @@ sub _form {
     [ hidden => short => 'producers' ],
     [ static => nolabel => 1, content => sub {
       h2 mt('_redit_form_prod_sel');
-      div id => 'producerssel';
-      end;
+      table; tbody id => 'producer_tbl'; end; end;
       h2 mt('_redit_form_prod_add');
-      div;
-       input type => 'text', class => 'text';
-       a href => '#', 'add';
-      end;
+      table; Tr;
+       td class => 'tc_name'; input id => 'producer_input', type => 'text', class => 'text'; end;
+       td class => 'tc_role'; Select id => 'producer_role';
+        option value => 1, mt '_redit_form_prod_dev';
+        option value => 2, selected => 'selected',  mt '_redit_form_prod_pub';
+        option value => 3, mt '_redit_form_prod_both';
+       end; end;
+       td class => 'tc_add';  a id => 'producer_add', href => '#', mt '_redit_form_prod_addbut'; end;
+      end; end;
     }],
   ],
 
@@ -460,12 +467,11 @@ sub _form {
     [ hidden => short => 'vn' ],
     [ static => nolabel => 1, content => sub {
       h2 mt('_redit_form_vn_sel');
-      div id => 'vnsel';
-      end;
+      table; tbody id => 'vn_tbl'; end; end;
       h2 mt('_redit_form_vn_add');
       div;
-       input type => 'text', class => 'text';
-       a href => '#', 'add';
+       input id => 'vn_input', type => 'text', class => 'text';
+       a href => '#', id => 'vn_add', mt '_redit_form_vn_addbut';
       end;
     }],
   ],
@@ -484,7 +490,7 @@ sub browse {
     { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
     { name => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
     { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
-    { name => 'tp', required => 0, default => -1, enum => [ -1, @{$self->{release_types}} ] },
+    { name => 'tp', required => 0, default => '', enum => [ '', @{$self->{release_types}} ] },
     { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
@@ -503,7 +509,7 @@ sub browse {
     $f->{ln}[0] ? (languages => $f->{ln}) : (),
     $f->{me}[0] ? (media => $f->{me}) : (),
     $f->{re}[0] ? (resolutions => $f->{re} ) : (),
-    $f->{tp} >= 0 ? (type => $f->{tp}) : (),
+    $f->{tp} ? (type => $f->{tp}) : (),
     $f->{ma_a} || $f->{ma_m} ? (minage => [$f->{ma_m}, $f->{ma_a}]) : (),
     $f->{pa} ? (patch => $f->{pa}) : (),
     $f->{fw} ? (freeware => $f->{fw}) : (),
@@ -614,7 +620,7 @@ sub _filters {
       end;
      end;
      $self->htmlFormPart($f, [ select => short => 'tp', name => mt('_rbrowse_type'),
-       options => [ [-1, mt '_rbrowse_all'], map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ]]);
+       options => [ ['', mt '_rbrowse_all'], map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ]]);
      $self->htmlFormPart($f, [ select => short => 'pa', name => mt('_rbrowse_patch'),
        options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_patchonly'], [2, mt '_rbrowse_patchnone']]]);
      $self->htmlFormPart($f, [ select => short => 'fw', name => mt('_rbrowse_freeware'),
@@ -629,7 +635,7 @@ sub _filters {
      txt mt '_rbrowse_languages';
      b ' ('.mt('_rbrowse_boolor').')';
     end;
-    for my $i (sort @{$self->dbLanguages}) {
+    for my $i (@{$self->{languages}}) {
       span;
        input type => 'checkbox', name => 'ln', value => $i, id => "lang_$i", grep($_ eq $i, @{$f->{ln}}) ? (checked => 'checked') : ();
        label for => "lang_$i";
@@ -660,7 +666,7 @@ sub _filters {
     for my $i (sort keys %{$self->{media}}) {
       span;
        input type => 'checkbox', name => 'me', value => $i, id => "med_$i", grep($_ eq $i, @{$f->{me}}) ? (checked => 'checked') : ();
-       label for => "med_$i", $self->{media}{$i}[0];
+       label for => "med_$i", mt "_med_$i", 1;
       end;
     }
 
