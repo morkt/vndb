@@ -298,7 +298,7 @@ sub board {
     order => $type eq 'an' ? 't.id DESC' : 'tpl.date DESC',
   );
 
-  $self->htmlHeader(title => $title, noindex => !@$list);
+  $self->htmlHeader(title => $title, noindex => !@$list || $type eq 'u');
 
   $self->htmlMainTabs($type, $obj, 'disc') if $iid;
   div class => 'mainbox';
