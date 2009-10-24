@@ -110,43 +110,43 @@ ends with ']'. The following options are supported:
 en : [_1] [quant,_1,year,years] ago
 ru : [_1] [quant,_1,год,года,лет] назад
 cs : před [_1] [quant,_1,rokem,roky,roky]
-hu*:
+hu : [_1] [quant,_1,éve,éve]
 
 :_age_months
 en : [_1] [quant,_1,month,months] ago
 ru : [_1] [quant,_1,месяц,месяца,месяцев] назад
 cs : před [_1] [quant,_1,měsícem,měsíci,měsíci]
-hu*:
+hu : [_1] [quant,_1,hónapja,hónapja]
 
 :_age_weeks
 en : [_1] [quant,_1,week,weeks] ago
 ru : [_1] [quant,_1,неделя,недели,недель] назад
 cs : před [_1] [quant,_1,týdnem,týdny,týdny]
-hu*:
+hu : [_1] [quant,_1,hete,hete]
 
 :_age_days
 en : [_1] [quant,_1,day,days] ago
 ru : [_1] [quant,_1,день,дня,дней] назад
 cs : před [_1] [quant,_1,dnem,dny,dny]
-hu*:
+hu : [_1] [quant,_1,napja,napja]
 
 :_age_hours
 en : [_1] [quant,_1,hour,hours] ago
 ru : [_1] [quant,_1,час,часа,часов] назад
 cs : před [_1] [quant,_1,hodinou,hodinami,hodinami]
-hu*:
+hu : [_1] [quant,_1,órája,órája]
 
 :_age_min
 en : [_1] min ago
 ru : [_1] [quant,_1,минута,минуты,минут] назад
 cs : před [_1] min
-hu*:
+hu : [_1] perce
 
 :_age_sec
 en : [_1] sec ago
 ru : [_1] [quant,_1,секунда,секунды,секунд] назад
 cs : před [_1] s
-hu*:
+hu : [_1] másodperce
 
 
 # user ranks
@@ -236,7 +236,7 @@ hu : Francia
 en : Hungarian
 ru : Венгерский
 cs : Maďarsky
-hu*:
+hu : Magyar
 
 :_lang_it
 en : Italian
@@ -442,67 +442,67 @@ hu : Egyéb
 en : [quant,_1,CD,CDs]
 ru : [quant,_1,CD,CD,CD]
 cs : [quant,_1,CD,CD,CD]
-hu*:
+hu : [quant,_1,CD,CD]
 
 :_med_dvd
 en : [quant,_1,DVD,DVDs]
 ru : [quant,_1,DVD,DVD,DVD]
 cs : [quant,_1,DVD,DVD,DVD]
-hu*:
+hu : [quant,_1,DVD,DVD]
 
 :_med_gdr
 en : [quant,_1,GD-ROM,GD-ROMs]
 ru : [quant,_1,GD-ROM,GD-ROM,GD-ROM]
 cs : [quant,_1,GD-ROM,GD-ROMy,GD-ROMů]
-hu*:
+hu : [quant,_1,GD-ROM,GD-ROM]
 
 :_med_blr
 en : [quant,_1,Blu-ray disc,Blu-ray discs]
 ru : [quant,_1,BD-ROM,BD-ROM,BD-ROM]
 cs : [quant,_1,disk Blu-ray,disky Blu-ray,disků Blu-ray]
-hu*:
+hu : [quant,_1,Blu-ray lemez,Blu-ray lemez]
 
 :_med_flp
 en : [quant,_1,Floppy,Floppies]
 ru : [quant,_1,Дискета,Дискеты,Дискетт]
 cs : [quant,_1,disketa,diskety,disket]
-hu*:
+hu : [quant,_1,Floppy,Floppy]
 
 :_med_mrt
 en : [quant,_1,Cartridge,Cartridges]
 ru : [quant,_1,Картридж,Картриджа,Картриджей]
 cs : [quant,_1,Cartridge,Cartridge,Cartridgí]
-hu*:
+hu : [quant,_1,Kazetta,Kazetta]
 
 :_med_mem
 en : [quant,_1,Memory card,Memory cards]
 ru : [quant,_1,Карта памяти,Карты памяти,Карт памяти]
 cs : [quant,_1,Paměťová karta,Paměťové karty,Paměťových karet]
-hu*:
+hu : [quant,_1,Memória kártya,Memória kártya]
 
 :_med_umd
 en : [quant,_1,UMD,UMDs]
 ru : [quant,_1,UMD,UMD,UMD]
 cs : [quant,_1,UMD,UMD,UMD]
-hu*:
+hu : [quant,_1,UMD,UMD]
 
 :_med_nod
 en : Nintendo Optical [quant,_1,Disk,Disks]
 ru : [quant,_1,Оптический диск,Оптические диски,Оптических дисков] Nintendo
 cs : [quant,_1,Nintendo Optical Disk,Nintendo Optical Disky,Nintendo Optical Disků]
-hu*:
+hu : Nintendo Optical [quant,_1,Lemez,Lemezek]
 
 :_med_in
 en : Internet download
 ru : Распространение через Интернет
 cs : Stažení z internetu
-hu*:
+hu : Internetes letöltés
 
 :_med_otc
 en : Other
 ru : Другое
 cs : Ostatní
-hu*:
+hu : Egyéb
 
 
 # VN relations
@@ -511,61 +511,61 @@ hu*:
 en : Sequel
 ru : Продолжение
 cs : Pokračování
-hu*:
+hu : Folytatás
 
 :_vnrel_preq
 en : Prequel
 ru : Предыстория
 cs : Prequel
-hu*:
+hu : Előzmény
 
 :_vnrel_set
 en : Same setting
 ru : Тот же мир
 cs : Stejné zasazení
-hu*:
+hu : Egyforma környezet
 
 :_vnrel_alt
 en : Alternative version
 ru : Альтернативная версия
 cs : Alternativní verze
-hu*:
+hu : Alternatív változat
 
 :_vnrel_char
 en : Shares characters
 ru : Те же персонажи
 cs : Sdílí postavy
-hu*:
+hu : Megosztott szereplők
 
 :_vnrel_side
 en : Side story
 ru : Побочный сюжет
 cs : Vedlejší příběh
-hu*:
+hu : Mellék történet
 
 :_vnrel_par
 en : Parent story
 ru : Исходный сюжет
 cs : Mateřský příběh
-hu*:
+hu : Szüllő történet
 
 :_vnrel_ser
 en : Same series
 ru : Из той же серии
 cs : Stejná série
-hu*:
+hu : Ugyanaz a sorozat
 
 :_vnrel_fan
 en : Fandisc
 ru : Фандиск
 cs : Fandisk
-hu*:
+hu : Rajongó lemez
 
 :_vnrel_orig
 en : Original game
 ru : Оригинальная игра
 cs : Originální hra
-hu*:
+hu : Eredeti játék
 
 
 # producer types
@@ -586,7 +586,7 @@ hu : Magánszemély
 en : Amateur group
 ru : Любительская группа
 cs : Amatérská skupina
-hu : Amatör csoport
+hu : Amatőr csoport
 
 
 # producer relations
@@ -595,37 +595,37 @@ hu : Amatör csoport
 en : Formerly
 ru : Изначально
 cs : Dříve
-hu*:
+hu : Előzőleg
 
 :_prodrel_new
 en : Succeeded by
 ru : Унаследована
 cs : Nahrazeno
-hu*:
+hu : Utódja
 
 :_prodrel_par
 en : Parent producer
 ru : Исходная компания
 cs : Mateřský producent
-hu*:
+hu : Szüllő készítő
 
 :_prodrel_sub
 en : Subsidiary
 ru : Второстепенная
 cs : Vedlejší
-hu*:
+hu : Alválalat
 
 :_prodrel_imp
 en : Imprint
 ru : Марка
 cs : Otisk
-hu*:
+hu : Megjelenési adatok
 
 :_prodrel_ipa
 en : Parent brand
 ru : Исходный бренд
 cs : mateřská značka
-hu*:
+hu : Szüllő márka
 
 
 # release types
@@ -655,43 +655,43 @@ hu : Próba
 en : TV Series
 ru : ТВ Сериал
 cs : TV série
-hu*:
+hu : TV Sorozat
 
 :_animetype_ova
 en : OVA
 ru : ОВА
 cs : OVA
-hu*:
+hu :
 
 :_animetype_mov
 en : Movie
 ru : Фильм
 cs : Film
-hu*:
+hu : Film
 
 :_animetype_oth
 en : Other
 ru : Другое
 cs : Ostatní
-hu*:
+hu : Egyéb
 
 :_animetype_web
 en : Web
 ru : Веб-трансляция
 cs : Internet
-hu*:
+hu :
 
 :_animetype_spe
 en : TV Special
 ru : ТВ-спешл
 cs : TV Speciál
-hu*:
+hu : TV Különkiadás
 
 :_animetype_mv
 en : Music Video
 ru : Музыкальное видео
 cs : Hudební video
-hu*:
+hu : Videoklip
 
 
 # Discussion board types
@@ -772,7 +772,7 @@ hu : Néma
 en : Only ero scenes voiced
 ru : Озвучены лишь эросцены
 cs : S hlasem pouze v ero scénách
-hu : Csak ero jelenetek szinkronossak
+hu : Csak ero jelenetek szinkronosak
 
 :_voiced_3
 en : Partially voiced
@@ -928,61 +928,61 @@ hu : Nagyon hosszú[index,_1,, (> 50 óra), (Clannad)]
 en : Unknown
 ru : Неизвестно
 cs : Není známo
-hu*:
+hu : Ismeretlen
 
 :_rlst_rstat_1
 en : Pending
 ru : Ожидает
 cs : V čekání
-hu*:
+hu : Függő
 
 :_rlst_rstat_2
 en : Obtained
 ru : Приобретено
 cs : Obdrženo
-hu*:
+hu : Megszerezve
 
 :_rlst_rstat_3
 en : On loan
 ru : Взято напрокат
 cs : Vypůjčeno
-hu*:
+hu : Kölcsönadva
 
 :_rlst_rstat_4
 en : Deleted
 ru : Удалено
 cs : Smazáno
-hu*:
+hu : Törölve
 
 :_rlst_vstat_0
 en : Unknown
 ru : Неизвестно
 cs : Není známo
-hu*:
+hu : Ismeretlen
 
 :_rlst_vstat_1
 en : Playing
 ru : Играю
 cs : Ve hraní
-hu*:
+hu : Játszás
 
 :_rlst_vstat_2
 en : Finished
 ru : Завершено
 cs : Dohráno
-hu*:
+hu : Befejezve
 
 :_rlst_vstat_3
 en : Stalled
 ru : Застряло
 cs : Pozastaveno
-hu*:
+hu : Leragadva
 
 :_rlst_vstat_4
 en : Dropped
 ru : Заброшено
 cs : Vyřazeno
-hu*:
+hu : Lemondva
 
 
 # Form messages
@@ -1021,7 +1021,7 @@ hu : Valaki már regisztrált ezzel az email címmel
 en : Image must be in JPEG or PNG format
 ru : Изображение должно быть в формате JPEG, либо в формате PNG
 cs : Obrázek musí být v JPEG nebo PNG formátu
-hu : A kép múszáj JPEG vagy PNG formátúmba legyen
+hu : A kép muszáj JPEG vagy PNG formátumba legyen
 
 :_formerr_e_toolarge
 en : Image is too large, only 500kB allowed
@@ -1033,13 +1033,13 @@ hu : A kép túl nagy, 500kb a megengedett
 en : You can only register one account from the same IP within 24 hours
 ru : Вы можете зарегистрировать учётную запись с одного и того же IP лишь по прошествии 24 часов
 cs : V rámci 24 hodin si lze z jedné IP adresy zaregistrovat pouze jeden účet
-hu : 24 óra alatt csak egy fiókot hozzhatsz létre úgyanazzal az IP-vel
+hu : 24 óra alatt csak egy fiókot hozhatsz létre ugyanazzal az IP-vel
 
 :_formerr_e_nochanges
 en : No changes, please don't create an entry that is fully identical to another
 ru : Изменения отсутствуют, пожалуйста не создавайте идентичных копий записей
 cs : Nenalezeny změny, netvořte prosím záznam, který je plně totožný s jiným
-hu : Nem történt változtatás, kérlek ne készíts egy bejegyzést ami teljesen megegyezzik egy másikkal
+hu : Nem történt változtatás, kérlek ne készíts egy bejegyzést ami teljesen megegyezik egy másikkal
 
 :_formerr_e_doublepost
 en : Please wait 30 seconds before making another post
@@ -1057,13 +1057,13 @@ hu : Hiba
 en : Form could not be sent:
 ru : Невозможно отправить форму:
 cs : Dokument nemohl být odeslán:
-hu : Az űrlappot nem sikerült elküldeni:
+hu : Az űrlapot nem sikerült elküldeni:
 
 :_formerr_required
 en : [_1] is a required field!
 ru : [_1] - обязательное поле!
 cs : [_1] je pole, které musí být vyplněno!
-hu : [_1] kitöltésse kötelező!
+hu : [_1] kitöltése kötelező!
 
 :_formerr_minlength
 en : [_1]: should have at least [_2] characters
@@ -1075,7 +1075,7 @@ hu : [_1]: legalább [_2] karaktert kell tartalmazzon
 en : [_1]: only [_2] characters allowed
 ru : [_1]: [quant,_2,разрешён,разрешены,разрешено] лишь [_2] [quant,_2,символ,символа,символов]
 cs : [_1]: je povoleno maximálně [_2] znaků
-hu : [_1]: csakis [_2] karakterek megengedetek
+hu : [_1]: csakis [_2] karakterek megengedettek
 
 :_formerr_enum
 en : [_1] must be one of the following: [_2]
@@ -1093,7 +1093,7 @@ hu : Rossz alfórum: [_1]
 en : Tag [url,_1,_2] already exists!
 ru : Тег [url,_1,_2] уже существует!
 cs : Tag [url,_1,_2] již existuje!
-hu : A(z) [url,_1,_2] cimke már létezik!
+hu : A(z) [url,_1,_2] címke már létezik!
 
 :_formerr_tpl_mail
 en : Invalid email address
@@ -1150,73 +1150,73 @@ hu : Beküldés
 en : expand
 ru : развернуть
 cs : rozbalit
-hu*:
+hu : kiterjeszt
 
 :_js_collapse
 en : collapse
 ru : свернуть
 cs : složit
-hu*:
+hu : összevonás
 
 :_js_loading
 en : Loading...
 ru : Загрузка...
 cs : Nahrává se...
-hu*:
+hu : Betöltés...
 
 :_js_date_year
 en : -year-
 ru : -год-
 cs : -rok-
-hu*:
+hu : -év-
 
 :_js_date_month
 en : -month-
 ru : -месяц-
 cs : -měsíc-
-hu*:
+hu : -hónap-
 
 :_js_date_day
 en : -day-
 ru : -день-
 cs : -dne-
-hu*:
+hu : -nap-
 
 :_js_ds_noresults
 en : No results...
 ru : Совпадений не найдено...
 cs : Žádné výsledky...
-hu*:
+hu : Nincs eredmény...
 
 :_js_iv_close
 en : close
 ru : закрыть
 cs : zavřít
-hu*:
+hu : bezárás
 
 :_js_iv_prev
 en : previous
 ru : назад
 cs : předchozí
-hu*:
+hu : előző
 
 :_js_iv_next
 en : next
 ru : далее
 cs : další
-hu*:
+hu : következő
 
 :_js_ds_tag_meta
 en : meta
 ru : мета
 cs : meta
-hu*:
+hu :
 
 :_js_ds_tag_mod
 en : awaiting moderation
 ru : ждёт модерирования
 cs : čeká na schválení
-hu*:
+hu : moderálásra vár
 
 
 
@@ -1281,7 +1281,7 @@ hu : Készítők
 en : Tags
 ru : Теги
 cs : Tagy
-hu : Cimkék
+hu : Címkék
 
 :_menu_users
 en : Users
@@ -1357,13 +1357,13 @@ hu : Üzenenteim ([_1])
 en : My Recent Changes
 ru : Мои недавние правки
 cs : Mé poslední změny
-hu : Legútóbbi változtatásaim
+hu : Legutóbbi változtatásaim
 
 :_menu_mytags
 en : My Tags
 ru : Мои теги
 cs : Moje tagy
-hu : Cimkéim
+hu : Címkéim
 
 :_menu_addvn
 en : Add Visual Novel
@@ -1497,14 +1497,14 @@ hu : lista
 en : tags
 ru : теги
 cs : tagy
-hu : cimkék
+hu : címkék
 
 # modify tags on VN pages
 :_mtabs_tagmod
 en : modify tags
 ru : править теги
 cs : změnit tagy
-hu : cimkék módosítása
+hu : címkék módosítása
 
 # copy a release
 :_mtabs_copy
@@ -1558,7 +1558,7 @@ hu : törlés
 en : relations
 ru : связи
 cs : vztahy
-hu : kapcsolatok
+hu : összefüggések
 
 
 # Navigation buttons on the browse pages
@@ -1646,7 +1646,7 @@ hu : Keszítők
 en : Tags
 ru : Теги
 cs : Tagy
-hu : Cimkék
+hu : Címkék
 
 :_searchbox_users
 en : Users
@@ -1695,10 +1695,10 @@ cs : VNDB.org se snaží být srozumitelnou databází informací o vizuálních
      a mohou hodnotit všechny vizuální novely.[br][br]
      Můžete jen tak [url,/v/all,brouzdat kolem], [url,/u/register,zaregistrovat si účet]
      nebo se účastnit diskusí o vizuálních novelách nebo VNDB na našem [url,/t,diskusním boardu].
-hu : A VNDB.org arra törekszik, hogy egy átfogó és információdús adatbázist hozzon létre visual novellekről.[br]
+hu : A VNDB.org arra törekszik, hogy egy átfogó és információ dús adatbázist hozzon létre visual novellekről.[br]
      Ez az oldal úgy van felépítve mint egy wiki, s annak érdekében, hogy ez legyen a legnagyobb, legpontosabb
      és napra kész visual novel adatbázis a weben, mindenki szabadon hozzájárulhat a tartalom bővítéséhez.[br]
-     Regisztrált felhasználók úgyanakkor listát vezethetnek azokról a játékokról amelyeket már játszottak,játszanak
+     Regisztrált felhasználók ugyanakkor listát vezethetnek azokról a játékokról amelyeket már játszottak,játszanak
      vagy épp játszani szeretnének, valamint szavazhatnak is az oldalon tálalható bármely novelre.[br][br]
      Bátran, [url,/v/all,nézz körül], [url,/u/register,regisztrálj az oldalra] vagy vegyél részt a visual
      novellek és a VNDB-ről szóló eszmecserékbe a [url,/t,fórumon].
@@ -1765,7 +1765,7 @@ hu : Épp most jelentek meg
 en : Recent changes
 ru : Свежие правки
 cs : Poslední změny
-hu : Legútóbbi változtatások
+hu : Legutóbbi változtatások
 
 :_hist_title_item
 en : Edit history of [_1]
@@ -1780,13 +1780,13 @@ hu : [_1] előzményeinek szerkesztése
 en : Show automated edits
 ru : Показать автоматические правки
 cs : Ukázat automatické editace
-hu : Autómata szerkesztések megjelenítése
+hu : Automata szerkesztések megjelenítése
 
 :_hist_filter_hideauto
 en : Hide automated edits
 ru : Скрыть автоматические правки
 cs : Skrýt automatické editace
-hu : Autómata szerkesztések elrejtése
+hu : Automata szerkesztések elrejtése
 
 :_hist_filter_hidedel
 en : Hide deleted items
@@ -1840,7 +1840,7 @@ hu : Csak a szerkesztések
 en : Only newly created pages
 ru : Только новые страницы
 cs : Pouze nově stvořené stránky
-hu : Csak újjonan létrehozott oldalakat
+hu : Csak újonnan létrehozott oldalakat
 
 :_hist_filter_exrel
 en : Exclude edits of releases
@@ -1862,7 +1862,7 @@ hu : Ezen kiadások szerkesztésének a mellékelése
 en : Rev.
 ru : Ревизия
 cs : Rev.
-hu : Javitás
+hu : Javítás
 
 :_hist_col_date
 en : Date
@@ -1939,7 +1939,7 @@ hu : A téma le van zárva, nem lehet rá válaszolni
 en : You must be logged in to reply to this thread.
 ru : Вы должны быть авторизованы чтобы ответить в эту тему.
 cs : Pro odpověď do tohoto threadu se musíte přihlásit.
-hu : Be kell legyél jelentkezve, hogy hozzászolhas a témához.
+hu : Be kell legyél jelentkezve, hogy hozzászólhass a témához.
 
 :_thread_quickreply_title
 en : Quick reply
@@ -2026,7 +2026,7 @@ hu : Rejtett
 en : Don't update last modified field
 ru : Не обновлять дату последнего изменения
 cs : Neměnit poslední změněné pole
-hu : Ne frissítse az utolsó változtatot mezőt
+hu : Ne frissítse az utolsó változtatott mezőt
 
 :_postedit_form_msg
 en : Message
@@ -2150,13 +2150,13 @@ hu : Jelenleg nincsen visual novel bejegyzésünk ettől a készítőtől.
 en : developer
 ru : разработчик
 cs : vývojář
-hu*:
+hu : fejlesztő
 
 :_prodpage_pub
 en : publisher
 ru : издатель
 cs : vydavatel
-hu*:
+hu : kiadó
 
 
 # producer diff fields
@@ -2207,13 +2207,13 @@ hu : Leírás
 en : Relations
 ru : Отношения
 cs : Vztahy
-hu*:
+hu : Összefüggések
 
 :_proddiff_none
 en : none
 ru : нет
 cs : žádné
-hu*:
+hu : semmi
 
 
 # Producer relation graph page (/p+/rg)
@@ -2222,7 +2222,7 @@ hu*:
 en : Relation graph for [_1]
 ru : Схема отношений для [_1]
 cs : Graf vztahů pro producenta [_1]
-hu*:
+hu : [_1] összefüggés gráfja
 
 
 # Add/Edit producer
@@ -2303,55 +2303,55 @@ hu : Leírás
 en : Relations
 ru : Отношения
 cs : Vztahy
-hu*:
+hu : Összefüggések
 
 :_pedit_rel_sel
 en : Selected producers
 ru : Выбранные компании
 cs : Vybraní producenti
-hu*:
+hu : Kiválasztott készítők
 
 :_pedit_rel_add
 en : Add producer
 ru : Добавить компанию
 cs : Přidat producenta
-hu*:
+hu : Készítő hozzáadása
 
 :_pedit_rel_addbut
 en : add
 ru : добавить
 cs : přidat
-hu*:
+hu : hozzáad
 
 :_pedit_rel_del
 en : remove
 ru : убрать
 cs : odebrat
-hu*:
+hu : eltávolít
 
 :_pedit_rel_none
 en : Nothing selected.
 ru : Ничего не выбрано.
 cs : Není nic vybráno.
-hu*:
+hu : Nincs semmi kiválasztva.
 
 :_pedit_rel_findformat
 en : Producer textbox should start with an ID (e.g. "p7:")
 ru : Строка компании должна начинаться с идентификатора (например, "p7:")
 cs : Textové pole producenta by mělo začínat ID (např. "p7:")
-hu*:
+hu : A Készítő szövegdoboz egy ID-val kell kezdődjön (pl. "p7:")
 
 :_pedit_rel_notfound
 en : Producer not found
 ru : Компания не найдена
 cs : Producent nenalezen
-hu*:
+hu : A készítő nem található
 
 :_pedit_rel_double
 en : Producer already selected!
 ru : Компания уже выбрана!
 cs : Producent byl již vybrán!
-hu*:
+hu : A készítő már ki van választva!
 
 
 # Browse/search producers
@@ -2521,13 +2521,13 @@ hu : Készítők
 en : developer
 ru : разработчик
 cs : vývojář
-hu*:
+hu : fejlesztő
 
 :_reldiff_publisher
 en : publisher
 ru : издатель
 cs : vydavatel
-hu*:
+hu : kiadó
 
 
 # Information table (on every release page)
@@ -2644,13 +2644,13 @@ hu : Korhatár
 en : [quant,_1,Developer,Developers]
 ru : [quant,_1,Разработчик,Разработчика,Разработчиков]
 cs : [quant,_1,Vývojář,Vývojáři,Vývojářů]
-hu*:
+hu : [quant,_1,Fejlesztő,Fejlesztők]
 
 :_relinfo_publisher
 en : [quant,_1,Publisher,Publishers]
 ru : [quant,_1,Издатель,Издателя,Издателей]
 cs : [quant,_1,Vydavatel,Vydavatelé,Vydavatelů]
-hu*:
+hu : [quant,_1,Kiadó,Kiadók]
 
 :_relinfo_catalog
 en : Catalog no.
@@ -2831,7 +2831,7 @@ ru : Дополнительные заметки/комментарии, инф�
 cs : Různé poznámky/komentáře a informace, které se nehodí do předchozích polí.
      Např.: Cenzurovaná/necenzurovaná verze nebo pro které vydání je patch.
 hu : Különböző észrevételek/megjegyzések, olyan infók amelyek nem illenek a fenti mezőbe.
-     Pl. : Cenzurált/Cenzurálatlan, vagy, hogy melyik kiadásra vonatkozik a patch, stb.
+     Pl. : Cenzúrázott/Cenzúrázatlan, vagy, hogy melyik kiadásra vonatkozik a patch, stb.
 
 :_redit_form_format
 en : Format
@@ -2891,19 +2891,19 @@ hu : Médium
 en : -quantity-
 ru : -количество-
 cs : -množství-
-hu*:
+hu : -mennyiség-
 
 :_redit_form_med_medium
 en : -medium-
 ru : -носитель-
 cs : -médium-
-hu*:
+hu : -medium-
 
 :_redit_form_med_remove
 en : remove
 ru : убрать
 cs : odebrat
-hu*:
+hu : eltávolítás
 
 :_redit_form_prod
 en : Producers
@@ -2927,55 +2927,55 @@ hu : Készitő hozzáadása
 en : Developer
 ru : Разработчик
 cs : Vývojář
-hu*:
+hu : Fejlesztő
 
 :_redit_form_prod_pub
 en : Publisher
 ru : Издатель
 cs : Vydavatel
-hu*:
+hu : Kiadó
 
 :_redit_form_prod_both
 en : Both
 ru : Оба
 cs : Obojí
-hu*:
+hu : Mindkettő
 
 :_redit_form_prod_addbut
 en : add
 ru : добавить
 cs : přidat
-hu*:
+hu : hozzáadd
 
 :_redit_form_prod_remove
 en : remove
 ru : убрать
 cs : odebrat
-hu*:
+hu : eltávolít
 
 :_redit_form_prod_none
 en : Nothing selected.
 ru : Ничего не выбрано.
 cs : Není nic vybráno.
-hu*:
+hu : Nincsen semmi kiválasztva.
 
 :_redit_form_prod_pformat
 en : Producer textbox must start with an ID (e.g. p17)
 ru : Строка компании должна начинаться с идентификатора (например, p17)
 cs : Textové pole producenta musí začínat ID (např. p17)
-hu*:
+hu : A Készítő szövegdoboz muszáj egy ID-val kezdődjön (pl. p17)
 
 :_redit_form_prod_notfound
 en : Producer not found!
 ru : Компания не найдена!
 cs : Producent nenalezen!
-hu*:
+hu : A készítő nem található!
 
 :_redit_form_prod_double
 en : Producer already selected!
 ru : Компания уже выбрана!
 cs : Producent byl již vybrán!
-hu*:
+hu : A készítő már ki van választva!
 
 :_redit_form_vn
 en : Visual novels
@@ -2999,37 +2999,37 @@ hu : Visual novel hozzáadása
 en : add
 ru : добавить
 cs : přidat
-hu*:
+hu : hozzáadd
 
 :_redit_form_vn_remove
 en : remove
 ru : убрать
 cs : odebrat
-hu*:
+hu : eltávolít
 
 :_redit_form_vn_none
 en : Nothing selected.
 ru : Ничего не выбрано.
 cs : Není nic vybráno.
-hu*:
+hu : Nincsen semmi kiválasztva
 
 :_redit_form_vn_vnformat
 en : Visual novel textbox must start with an ID (e.g. v17)
 ru : Строка новеллы должна начинаться с идентификатора (например, v17)
 cs : Vizuální novela musí začínat ID (např. v17)
-hu*:
+hu : A Visual novel szövegdoboz muszáj egy ID-val kezdődjön (pl. v17)
 
 :_redit_form_vn_notfound
 en : Visual novel not found!
 ru : Новелла не найдена!
 cs : Vizuální novela nenalezena!
-hu*:
+hu : A visual novel nem található!
 
 :_redit_form_vn_double
 en : VN already selected!
 ru : Новелла уже выбрана!
 cs : VN již byla vybrána!
-hu*:
+hu : A visual novel már ki van választva!
 
 
 # Release browser
@@ -3074,9 +3074,9 @@ ru : Простите, по вашему запросу ничего не най
 cs : Omlouváme se, nenalezli jsme nic, co by vyhovovalo vašemu nastavení filtrů. Možná najdete více výsledků, pokud nějaké z nich vypnete.
 
      Také nezapomeňte, že o všech vydáních nemáme všechny údaje. Takže pokud například vyfiltrujete rozlišení obrazovky, pak ve výsledcích nebudou všechna vydání, u kterých neznáme jejich rozlišení, i když by to mohla být právě vydání v rozlišení, o které se zajímáte.
-hu : Bocs, de ezzekel a szűrőkkel nem található semmi. Talán ki kéne kapcsolj egy párat, hogy több eredmény jöjjön ki.
+hu : Bocs, de ezekkel a szűrőkkel nem található semmi. Talán ki kéne kapcsolj egy párat, hogy több eredmény jöjjön ki.
 
-     Valamint, ne felejtsd el, hogy nincsen minden kiadásról elégséges információnk. Szóval ha bekapcsolod a felbontásra vonatkozó szűrőt, azokat nem mutatja amelyeknek nincs megadva a felbontásuk, még akkor is ha valójabban annyi, mint amennyit te keresel.
+     Valamint, ne felejtsd el, hogy nincsen minden kiadásról elégséges információnk. Szóval ha bekapcsolod a felbontásra vonatkozó szűrőt, azokat nem mutatja amelyeknek nincs megadva a felbontásuk, még akkor is ha valójában annyi, mint amennyit te keresel.
 
 :_rbrowse_filters
 en : Filters
@@ -3237,13 +3237,13 @@ hu : Törlés
 en : [index,_1,Meta tag,Tag]: [_2]
 ru : [index,_1,Мета тег,Тег]: [_2]
 cs : [index,_1,Meta tag,Tag]: [_2]
-hu : [index,_1,Meta Cimke,Cimke]: [_2]
+hu : [index,_1,Meta Címke,Címke]: [_2]
 
 :_tagp_del_title
 en : Tag deleted
 ru : Тег удалён
 cs : Tag smazán
-hu : Cimke törölve
+hu : Címke törölve
 
 :_tagp_del_msg
 en : This tag has been removed from the database, and cannot be used or re-added.
@@ -3252,7 +3252,7 @@ ru : Данный тег удалён из базы данных, и не мож
      Напишите на [url,/t/db,форуме], если вы с этим не согласны.
 cs : Tento tag byl smazán z databáze a nemůže být použit nebo znovu přidán.
      Pokud s tímto nesouhlasíte, napište žádost na [url,/t/db,diskusní board].
-hu : Ez a cimke törölve lett az adatbázisból, s nem lehetséges visszaállitani vagy használni.
+hu : Ez a címke törölve lett az adatbázisból, s nem lehetséges visszaállítani vagy használni.
      Tegyél panaszt a [url,/t/db,fórumon] ha nem értesz egyet.
 
 :_tagp_pending_title
@@ -3265,19 +3265,19 @@ hu : Megerősítésre vár
 en : This tag is waiting for a moderator to approve it. You can still use it to tag VNs as you would with a normal tag.
 ru : Данный тег ожидает одобрения модератором. Однако, вы можете использовать его для пометки новелл, как и любой нормальный тег.
 cs : Tento tag čeká na schválení moderátorem. Mezitím ho stále můžete používat jako normální tag.
-hu : Ez a cimke arra vár, hogy egy moderátor elfogadja. Azonban használhatod bármely VN-nél nyugodtan akárcsak egy normális cimkét.
+hu : Ez a címke arra vár, hogy egy moderátor elfogadja. Azonban használhatod bármely VN-nél nyugodtan akárcsak egy normális címkét.
 
 :_tagp_addchild
 en : Create child tag
 ru : Создать дочерний тег
 cs : Vytvořit závislý tag
-hu : Gyerek cimke létrehozássa
+hu : Gyerek címke létrehozása
 
 :_tagp_indexlink
 en : Tags
 ru : Теги
 cs : Tagy
-hu : Cimkék
+hu : Címkék
 
 :_tagp_aliases
 en : Aliases
@@ -3289,19 +3289,19 @@ hu : Más nevek
 en : Child tags
 ru : Дочерние теги
 cs : Závislé tagy
-hu : Gyerek cimkék
+hu : Gyerek címkék
 
 :_tagp_tree
 en : Tag tree
 ru : Древо тега
 cs : Strom tagů
-hu : Cimke fa
+hu : Címke fa
 
 :_tagp_moretags
 en : [_1] more [quant,_1,tag,tags]
 ru : ещё [_1] [quant,_1,тег,тега,тегов]
 cs : [_1] [quant,_1,další tag,další tagy,dalších tagů]
-hu : [_1] több [quant,_1,cimke,cimkék]
+hu : [_1] több [quant,_1,címke,címkék]
 
 :_tagp_vnlist
 en : Visual novels
@@ -3331,13 +3331,13 @@ hu : Nagyobb spoilerek megjelenítése
 en : This tag has not been linked to any visual novels yet, or they were hidden because of the spoiler settings.
 ru : Этот тег пока не содержит ссылок ни на одну новеллу, либо они скрыты из-за настроек отображения спойлеров.
 cs : Tento tag ještě nebyl použit v žádné vizuální novele nebo byly tyto skryty kvůli nastavení spoilerů.
-hu : Ez a cimke eddig egy visual novelhez sincs hozzárendelve, vagy el lettek rejtve a spoiler-ek beállítása során.
+hu : Ez a címke eddig egy visual novelhez sincs hozzárendelve, vagy el lettek rejtve a spoiler-ek beállítása során.
 
 :_tagp_cached
 en : NOTE: This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.
 ru : ЗАМЕЧАНИЕ: Данный список кэшируется, поэтому может пройти вплоть до 24 часов, прежде чем новелла, помеченная тегом, отобразится на этой странице.
 cs : POZNÁMKA: Tento list se ukládá do cache, takže může trvat až 24 hodin po otagování vizuální novely do objevení se na této stránce.
-hu : FIGYELEM: Ez a lista le van mentve a gyorsítótárba, beletelhet 24 órába míg a visual novelhez újjonan hozzárendelt cimke megjelenik ezzen az oldalon.
+hu : FIGYELEM: Ez a lista le van mentve a gyorsítótárba, beletelhet 24 órába míg a visual novelhez újonnan hozzárendelt címke megjelenik ezen az oldalon.
 
 :_tagp_vncol_score
 en : Score
@@ -3370,37 +3370,37 @@ hu : Népszerűség
 en : Tag '[_1]' not found
 ru : Тег '[_1]' не найден
 cs : Tag '[_1]' nenalezen
-hu : A(z) '[_1]' cimke nem található
+hu : A(z) '[_1]' címke nem található
 
 :_tagedit_title_add
 en : Add child tag to [_1]
 ru : Добавление дочернего тега для '[_1]'
 cs : Přidat závislý tag tagu [_1]
-hu : Gyerek cimke hozzárendelése a(z) [_1] - hez
+hu : Gyerek címke hozzárendelése a(z) [_1] - hez
 
 :_tagedit_title_edit
 en : Edit tag: [_1]
 ru : Править тег: [_1]
 cs : Editovat tag: [_1]
-hu : Cimke szerkesztése: [_1]
+hu : Címke szerkesztése: [_1]
 
 :_tagedit_title_new
 en : Add new tag
 ru : Добавить новый тег
 cs : Přidat nový tag
-hu : Új cimke készítése
+hu : Új címke készítése
 
 :_tagedit_req_title
 en : Requesting new tag
 ru : Запросить новый тег
 cs : Požaduje se nový tag
-hu : Új cimke kérése
+hu : Új címke kérése
 
 :_tagedit_req_subtitle
 en : Your tag must be approved
 ru : Ваш тег должен быть одобрен
 cs : Váš tag musí být schválen
-hu : A cimkédet előbb el kell fogadják
+hu : A címkédet előbb el kell fogadják
 
 :_tagedit_req_msg
 en : Because all tags have to be approved by moderators, it can take a while before it will show up in the tag list
@@ -3415,10 +3415,10 @@ cs : Protože všechny tagy musí být schválené moderátorem, může chvilku 
      nebo na stránce vizuální novely. I před schválením ale můžete stále tag hodnotit.
      [br][br]
      Také se ujistěte, že jste přečetli [url,/d10,doporučení], abyste věděli, zda váš tag bude přidán nebo ne.
-hu : Mivel minden cimkét külön el kell fogadjanak a moderátorok, beletarthat egy kis időbe míg azok megjelennek a listába
-     vagy a visual novellek oldalain. Viszont, akkor is tudsz egy cimkére szavazni, ha még nincsen elfogadva.
+hu : Mivel minden címkét külön el kell fogadjanak a moderátorok, beletarthat egy kis időbe míg azok megjelennek a listába
+     vagy a visual novellek oldalain. Viszont, akkor is tudsz egy címkére szavazni, ha még nincsen elfogadva.
      [br][br]
-     Valamint, olvasd el az [url,/d10,útmutatót], ha biztosra akarsz menni, hogy a cimkédet el fogják fogadni vagy nem.
+     Valamint, olvasd el az [url,/d10,útmutatót], ha biztosra akarsz menni, hogy a címkédet el fogják fogadni vagy nem.
 
 :_tagedit_frm_name
 en : Primary name
@@ -3460,13 +3460,13 @@ hu : Elfogadva
 en : This is a meta-tag (only to be used as parent for other tags, not for linking to VN entries)
 ru : Это мета-тег (его нельзя добавлять к новеллам, он может использоваться лишь как родитель для других тегов)
 cs : Toto je meta-tag (používá se pouze jako mateřský pro ostatní tagy, ne pro vlastní vizuální novely)
-hu : Ez itt egy meta-cimke (csakis más cimkék szűlője ként használandó, nem pedig VN bejegyzésekhez)
+hu : Ez itt egy meta-címke (csakis más címkék szülője ként használandó, nem pedig VN bejegyzésekhez)
 
 :_tagedit_frm_meta_warn
 en : WARNING: Checking this option or selecting "Deleted" as state will permanently delete all existing VN relations!
 ru : ПРЕДУПРЕЖДЕНИЕ: Если выбрать данную опцию, либо выставить состояние "Удалён", произойдёт немедленное удаление всех существующих связей с новеллами!
 cs : VAROVÁNÍ: Zaškrtnutí této volby nebo výběr položky "Smazáno" jako stavu smaže automaticky tag u všech vizuálních novel!
-hu : FIGYELEM: Ezzen opció bejelölése vagy a "Törölve" állapot kiválasztása véglegesen megsemmísit minden összefüggést a VN-ekel!
+hu : FIGYELEM: Ezen opció bejelölése vagy a "Törölve" állapot kiválasztása véglegesen megsemmisít minden összefüggést a VN-ekel!
 
 :_tagedit_frm_alias
 en : Aliases
@@ -3488,31 +3488,31 @@ hu : Leírás
 en : What should the tag be used for? Having a good description helps users choose which tags to link to a VN.
 ru : Для пометки чего будет использоваться тег? Хорошее описание поможет пользователям выбрать подходящий тег для подходящей новеллы.
 cs : Pro co by měl být tag používán? Tagy s dobrým popisem usnadňují uživatelům jejich používání u vizuálních novel.
-hu : Mire és mikor használja valaki a cimkét? Egy jó leírás megkönyíti a felhasználók dolgát mikor hozzá akarják rendelni egy VN-hez.
+hu : Mire és mikor használja valaki a címkét? Egy jó leírás megkönnyíti a felhasználók dolgát mikor hozzá akarják rendelni egy VN-hez.
 
 :_tagedit_frm_parents
 en : Parent tags
 ru : Родительские теги
 cs : Mateřské tagy
-hu : Szűlő cimkék
+hu : Szülő címkék
 
 :_tagedit_frm_parents_msg
 en : Comma separated list of tag names to be used as parent for this tag.
 ru : Теги, которые будут задействованы для этого в качестве родительских. Через запятую.
 cs : Seznam tagů, oddělených čárkou, které mají být použity jako mateřské pro tento tag
-hu : Vesszővel elválasztot cimke nevek amelyek szűlő ként szolgálnak ennek a cimkének.
+hu : Vesszővel elválasztott címke nevek amelyek szülő ként szolgálnak ennek a címkének.
 
 :_tagedit_frm_merge
 en : Merge tags
 ru : Объединение тегов
 cs : Sjednotit tagy
-hu : Cimkék egyesítése
+hu : Címkék egyesítése
 
 :_tagedit_frm_merge_tags
 en : Tags to merge
 ru : Теги для объединения
 cs : Tagy ke sjednocení
-hu : Egyesítésre váró cimkék
+hu : Egyesítésre váró címkék
 
 :_tagedit_frm_merge_msg
 en : Comma separated list of tag names to merge into this one. All votes and aliases/names will be moved over
@@ -3524,8 +3524,8 @@ ru : Список тегов для объединения в данный, че
 cs : Seznam tagů, oddělených čárkou, ke sjednocení do tohoto. Všechny hlasy a aliasy/jména budou přesunuty do tohoto tagu
      a staré tagy budou smazány. Nechte toto pole prázdné, pokud nehodláte nic sjednocovat.
      [br]VAROVÁNÍ: tato akce nejde vrátit!
-hu : Egy lista, veszővel elválasztot cimke nevekkel amelyeket egyesíteni akarsz ebbe az egybe. Minden szavazat és aliasz/nevek át lesznek
-     helyezve ehhez az új cimkéhez és a régi cimkék pedig törölve lesznek. Ha nem akarsz cimkéket egyesíteni akkor ezt a mezőt hagyd űresen.
+hu : Egy lista, veszővel elválasztott címke nevekkel amelyeket egyesíteni akarsz ebbe az egybe. Minden szavazat és alias/nevek át lesznek
+     helyezve ehhez az új címkéhez és a régi címkék pedig törölve lesznek. Ha nem akarsz címkéket egyesíteni akkor ezt a mezőt hagyd üresen.
      [br]FIGYELEM: ez a művelet végleges, nem lehet visszavonni!
 
 
@@ -3535,7 +3535,7 @@ hu : Egy lista, veszővel elválasztot cimke nevekkel amelyeket egyesíteni akar
 en : Browse tags
 ru : Обзор тегов
 cs : Procházet tagy
-hu : Cimkék böngészése
+hu : Címkék böngészése
 
 :_tagb_state-1
 en : All
@@ -3577,7 +3577,7 @@ hu : Létrehozva
 en : Tag
 ru : Тег
 cs : Tag
-hu : Cimke
+hu : Címke
 
 :_tagb_note_awaiting
 en : awaiting moderation
@@ -3598,19 +3598,19 @@ hu : törölve
 en : Add/remove tags for [_1]
 ru : Добавление/удаление тегов для [_1]
 cs : Přidat/odebrat tag pro novelu [_1]
-hu : Cimke hozzáadása/törlése [_1]-hez
+hu : Címke hozzáadása/törlése [_1]-hez
 
 :_tagv_msg_title
 en : Tagging
 ru : Пометка тегами
 cs : Tagování
-hu : Cimkézés
+hu : Címkézés
 
 :_tagv_msg_guidelines
 en : Make sure you have read the [url,/d10,guidelines]!
 ru : Пожалуйста, убедитесь что прочли [url,/d10,рекомендации]!
 cs : Ujistěte se, že jste přečetli [url,/d10,doporučení]!
-hu : Olvasdd el az [url,/d10,utmutatókat]!
+hu : Olvasd el az [url,/d10,útmutatókat]!
 
 :_tagv_msg_submit
 en : Don't forget to hit the submit button on the bottom of the page to make your changes permanent.
@@ -3622,13 +3622,13 @@ hu : Ne felejtsd el megnyomni a beküldés gombot a lap alján, hogy véglegesí
 en : Some tag information on the site is cached, it can take up to an hour for your changes to be visible everywhere.
 ru : Информация о некоторых тегах на данном сайте кэшируется, поэтому ваши изменения станут видны везде в течение часа.
 cs : Některé informace o tazích na této stránce jsou v cache a může zabrat až hodinu než budou změny vidět.
-hu : Valamely cimkékkel kapcsolatos információ le van mentve a gyorsítótárba, beletelhet egy órába is mire mindenhol láthatóvá válnak a változtatások.
+hu : Valamely címkékkel kapcsolatos információ le van mentve a gyorsítótárba, beletelhet egy órába is mire mindenhol láthatóvá válnak a változtatások.
 
 :_tagv_frm_title
 en : Tags
 ru : Теги
 cs : Tagy
-hu : Cimkék
+hu : Címkék
 
 :_tagv_col_you
 en : You
@@ -3646,7 +3646,7 @@ hu : Egyebek
 en : Tag
 ru : Тег
 cs : Tag
-hu : Cimke
+hu : Címke
 
 :_tagv_col_rating
 en : Rating
@@ -3670,7 +3670,7 @@ hu : Változtatások mentése
 en : Add tag
 ru : Добавить тег
 cs : Přidat tag
-hu : Cimke hozzáadása
+hu : Címke hozzáadása
 
 :_tagv_addmsg
 en : Check the [url,/g,tag list] to browse all available tags.[br]
@@ -3679,50 +3679,50 @@ ru : Откройте [url,/g,список тегов] чтобы увидеть
      Не нашли что искали? Вы можете [url,/g/new,запросить новый тег].
 cs : Zkontrolujte [url,/g,list tagů] pro seznam všech dostupných tagů.[br]
      Nenašli jste, co jste hledali? [url,/g/new,Vyžádejte si nový tag].
-hu : Menj a [url,/g,cimke listára] ha szeretnél böngészni az összes rendelkezésre álló cimke közt.[br]
-     Nem találod azt amelyiket keresed? [url,/g/new,Itt kérhetsz egy új cimkét].
+hu : Menj a [url,/g,cimke listára] ha szeretnél böngészni az összes rendelkezésre álló címke közt.[br]
+     Nem találod azt amelyiket keresed? [url,/g/new,Itt kérhetsz egy új címkét].
 
 :_tagv_spoil0
 en : neutral
 ru : нейтральный
 cs : neutrální
-hu*:
+hu : semleges
 
 :_tagv_spoil1
 en : no spoiler
 ru : без спойлеров
 cs : bez spoilerů
-hu*:
+hu : nem spoiler
 
 :_tagv_spoil2
 en : minor spoiler
 ru : лёгкий спойлер
 cs : menší spoilery
-hu*:
+hu : kisebb spoiler
 
 :_tagv_spoil3
 en : major spoiler
 ru : тяжёлый спойлер
 cs : všechny spoilery
-hu*:
+hu : nagyobb spoiler
 
 :_tagv_notfound
 en : Item not found!
 ru : Элемент не найден!
 cs : Předmět nenalezen!
-hu*:
+hu : A tárgy nem található!
 
 :_tagv_nometa
 en : Can't use meta tags here!
 ru : Использование мета-тегов здесь запрещено!
 cs : Zde se nedají použít meta-tagy!
-hu*:
+hu : Itt nem használhatsz meta címkéket!
 
 :_tagv_double
 en : Tag is already present!
 ru : Тег уже указан!
 cs : Tag už je přiřazen!
-hu*:
+hu : A címke már jelen van!
 
 
 # User tag list (/u+/tags)
@@ -3731,19 +3731,19 @@ hu*:
 en : Tags by [_1]
 ru : Теги [_1]
 cs : Tagy podle [_1]
-hu : [_1] által létrehozott cimkék
+hu : [_1] által létrehozott címkék
 
 :_tagu_spoilerwarn
 en : Warning: spoilery tags are not hidden in this list!
 ru : Предупреждение: в этом списке отображаются теги-спойлеры!
 cs : Varování: spoilerové tagy nejsou v tomto seznamu skryté!
-hu : Figyelem: ebbe a listába a spoiler-t tartalmazó cimkek nincsenek elrejtve!
+hu : Figyelem: ebbe a listába a spoiler-t tartalmazó címkék nincsenek elrejtve!
 
 :_tagu_notags
 en : [_1] doesn't seem to have used the tagging system yet...
 ru : Похоже, что [_1] пока не использует систему тегов...
 cs : Nezdá se, že by [_1] zatím použil tagovací systém...
-hu : Úgy tűnik, hogy [_1] még nem használta a cimkéző rendszert...
+hu : Úgy tűnik, hogy [_1] még nem használta a címkéző rendszert...
 
 :_tagu_col_num
 en : #VNs
@@ -3755,7 +3755,7 @@ hu : #VN-nek
 en : Tag
 ru : Тег
 cs : Tag
-hu : Cimke
+hu : Címke
 
 :_tagu_spoil0
 en : No spoiler
@@ -3767,13 +3767,13 @@ hu : Nem spoiler
 en : Minor spoiler
 ru : Лёгкий спойлер
 cs : Menší spoilery
-hu : Enyhe spoiler
+hu : Kisebb spoiler
 
 :_tagu_spoil2
 en : Major spoiler
 ru : Жёсткий спойлер
 cs : Všechny spoilery
-hu : Nagy spoiler
+hu : Nagyobb spoiler
 
 
 # Tag index (/g)
@@ -3782,25 +3782,25 @@ hu : Nagy spoiler
 en : Tag index
 ru : Индекс тега
 cs : Seznam tagů
-hu : Cimke index
+hu : Címke index
 
 :_tagidx_create
 en : Create new tag
 ru : Создать новый тег
 cs : Vytvořit nový tag
-hu : Új cimke létrehozássa
+hu : Új címke létrehozása
 
 :_tagidx_search
 en : Search tags
 ru : Поиск тегов
 cs : Hledat tag
-hu : Cimkék keresése
+hu : Címkék keresése
 
 :_tagidx_browseall
 en : Browse all tags
 ru : Обзор всех тегов
 cs : Procházet všechny tagy
-hu : Összes cimke böngészése
+hu : Összes címke böngészése
 
 :_tagidx_recent
 en : Recently added
@@ -3812,7 +3812,7 @@ hu : Nemrég hozzáadva
 en : Popular tags
 ru : Популярные теги
 cs : Populární tagy
-hu : Népszerű cimkék
+hu : Népszerű címkék
 
 :_tagidx_queue
 en : Awaiting moderation
@@ -3836,7 +3836,7 @@ hu : Moderálásra váró lista
 en : Denied tags
 ru : Отклонённые теги
 cs : Zamítnuté tagy
-hu : Megtagadot cimkék
+hu : Megtagadott címkék
 
 
 
@@ -3853,19 +3853,19 @@ hu : Megtagadot cimkék
 en : My wishlist
 ru : Мой список желаемого
 cs : Můj wishlist
-hu : Kivánságlistám
+hu : Kívánságlistám
 
 :_wishlist_title_other
 en : [_1]'s wishlist
 ru : Список желаемого [_1]
 cs : Wishlist uživatele [_1]
-hu : [_1] kivánság listája
+hu : [_1] kívánság listája
 
 :_wishlist_noresults
 en : Wishlist empty...
 ru : Список пуст...
 cs : Wishlist je prázdný...
-hu : Kivánságlista üres...
+hu : Kívánságlista üres...
 
 :_wishlist_prio_all
 en : All priorities
@@ -3907,7 +3907,7 @@ hu : Prioritás megváltoztatása
 en : remove from wishlist
 ru : убрать из списка желаемого
 cs : odstranit z wishlistu
-hu : eltávolítás a kivánságlistából
+hu : eltávolítás a kívánságlistából
 
 
 # VN list (/u+/list)
@@ -4047,13 +4047,13 @@ hu : elrejtve
 en : Tags
 ru : Теги
 cs : Tagy
-hu : Cimkék
+hu : Címkék
 
 :_userpage_tags_item
 en : [_1] [quant,_1,vote,votes] on [_2] distinct [quant,_2,tag,tags] and [_3] visual [quant,_3,novel,novels]
 ru : [_1] [quant,_1,голос,голоса,голосов] по [_2][quant,_2,-у тегу,-м различным тегам,-и различным тегам] и [_3][quant,_3,-й новелле,-м новеллам,-и новеллам]
 cs : [_1] [quant,_1,hlasy,hlasy,hlasů] pro [_2] [quant,_2,tag,různé tagy,různých tagů] a [_3] [quant,_3,vizuální novelu,vizuální novely,vizuálních novel]
-hu : [_1] [quant,_1,szavazat,szavazat] [_2] egyedi [quant,_2,cimkére,cimkére] és [_3] visual [quant,_3,novelre,novelre]
+hu : [_1] [quant,_1,szavazat,szavazat] [_2] egyedi [quant,_2,címkére,címkére] és [_3] visual [quant,_3,novelre,novelre]
 
 :_userpage_list
 en : List stats
@@ -4077,7 +4077,7 @@ hu : Fórum adatok
 en : [_1] [quant,_1,post,posts], [_2] new [quant,_2,thead,threads].
 ru : [_1] [quant,_1,сообщение,сообщения,сообщений], [_2] [quant,_2,новая тема,новые темы,новых тем]
 cs : [_1] [quant,_1,příspěvek, příspěvky, příspěvků], [_2] [quant,_2,nový thread, nové thready, nových threadů].
-hu : [_1] [quant,_1,válasz,válaszok], [_2] új [quant,_2,téma,témá].
+hu : [_1] [quant,_1,válasz,válaszok], [_2] új [quant,_2,téma,téma].
 
 :_userpage_forum_browse
 en : Browse posts
@@ -4167,8 +4167,8 @@ cs : Zdravíme, [_1]
      A snažte se už heslo znovu nezapomenout! :-)
 hu : Üdv [_1]
 
-     A jelszavad vissza lett állítva, mostmár bejelentkezhetsz a http://vndb.org/ címmen az
-     új adataidal:
+     A jelszavad vissza lett állítva, most már bejelentkezhetsz a http://vndb.org/ címen az
+     új adataiddal:
 
      Felhasználónév: [_1]
      Jelszó: [_2]
@@ -4201,8 +4201,8 @@ cs : Zapomněli jste své heslo a nemůžete se přihlásit na VNDB?
      Nebojte! Stačí zadat e-mailovou adresu, se kterou jste se na VNDB registrovali,
      a my vám do několika minut pošleme heslo nové!
 hu : Elfelejtetted a jelszavad és nem tudsz bejelentkezni a VNBD-be?
-     Ne aggódj! Csak add meg nekünk az email címmet amivel regisztráltál,
-     s egy pár percen belűl kapsz tőlünk egy új jelszót!
+     Ne aggódj! Csak add meg nekünk az email címet amivel regisztráltál,
+     s egy pár percen belül kapsz tőlünk egy új jelszót!
 
 :_newpass_reset_title
 en : Reset password
@@ -4241,8 +4241,8 @@ cs : Vaše heslo bylo změněno a vaše nové heslo by mělo být za několik mi
      Vždy můžete změnit vaše heslo po přihlášení.[br]
      [br]
      [url,/u/login,Přihlásit] - [url,/,Home]
-hu : A jelszavad vissza lett állítva s pár percen belül kapsz egy újjat a postafiókodba.[br]
-     Miútán bejelentkezel, nyugodtan megváltoztathatod a jelszavad amire akarod.[br]
+hu : A jelszavad vissza lett állítva s pár percen belül kapsz egy ujjat a postafiókodba.[br]
+     Miután bejelentkezel, nyugodtan megváltoztathatod a jelszavad amire akarod.[br]
      [br]
      [url,/u/login,Bejelentkezés] - [url,/,Kezdőlap]
 
@@ -4252,7 +4252,7 @@ hu : A jelszavad vissza lett állítva s pár percen belül kapsz egy újjat a p
 en : Create an account
 ru : Создание учётной записи
 cs : Vytvořit účet
-hu : Új fiók létrehozzása
+hu : Új fiók létrehozása
 
 :_register_why
 en : Why should I register?
@@ -4290,14 +4290,14 @@ cs : Tvorba účtu je zcela bezbolestná, jediné údaje, které potřebujeme zn
      - Mějte přehled o všech vizuálních novelách, které máte, chtěli byste hrát, hrajete, nebo jste dohráli[br]
      - Hlasujte pro vizuální novely, které se vám líbily nebo nelíbily[br]
      - Přispívejte do diskusí na boardech
-hu : Egy fiókot nagyon egyszerű készíteni, minden ami kell egy felhasználónév és egy jelszó. Bármilyen email címmet használhatsz,
+hu : Egy fiókot nagyon egyszerű készíteni, minden ami kell egy felhasználónév és egy jelszó. Bármilyen email címet használhatsz,
      minket nem érdekel, hogy a tied vagy nem, mivel nincs külön aktiválás. Viszont ha nem jó emailt adsz meg nekünk
      akkor jól vésd az eszedbe a jelszavad, különben nem tudunk neked segíteni ha elfelejted.[br]
      [br]
-     Nos, a saját fiókkal rendelkezők több előnybe is részesűlnek mint az egyszerű látogatók[br]
-     - Hozzájárúlhatsz az adatbázis fejlődéséhez, hiszen szerkeszthetsz, vagy létrehozhatsz új bejegyzéseket[br]
+     Nos, a saját fiókkal rendelkezők több előnybe is részesülnek mint az egyszerű látogatók[br]
+     - Hozzájárulhatsz az adatbázis fejlődéséhez, hiszen szerkeszthetsz, vagy létrehozhatsz új bejegyzéseket[br]
      - Nyomon követheted a tulajdonodban levő visual novellek, helyzetét, állapotát...mit játszol, melyiket fejezted már be stb.[br]
-     - Szavazhatsz a visual novellekre, melyek tetszettek, vagy ép meggyülölteték magukat[br]
+     - Szavazhatsz a visual novellekre, melyek tetszettek, vagy ép meggyűlöltették magukat[br]
      - Bekapcsolódhatsz a fórumba levő beszélgetésekbe
 
 :_register_form_title
@@ -4316,7 +4316,7 @@ hu : Felhasználónév
 en : Preferred username. Must be lowercase and can only consist of alphanumeric characters.
 ru : Запрашиваемое имя пользователя. Должно состоять из буквенно-цифровых символов в нижнем регистре.
 cs : Požadováné uživatelské jméno. Musí být malými písmeny a smí obsahovat pouze písmena a číslice.
-hu : A kivánt felhasználónév. Múszáj kisbetűkkel legyen s csakis alfanumerikus karaktereket tartalmazhat.
+hu : A kívánt felhasználónév. Muszáj kisbetűkkel legyen s csakis alfanumerikus karaktereket tartalmazhat.
 
 :_register_mail
 en : Email
@@ -4331,8 +4331,8 @@ ru : Адрес вашей электронной почты будет испо
      пришлём вам спама или новостных рассылок, пока вы недвусмысленно не попросите об обратном.
 cs : Vaše e-mailová adresa bude použita pouze v případě ztráty vašeho hesla. Nikdy vám nezašleme spam nebo newslettery,
      pokud o to explicitně nezažádáte.
-hu : Az email címmed csakis akkor kerül használatba ha elveszted a jelszavad. Soha nem fogunk
-     spam vagy hírleveleket küldeni, csakis ha te azt kifejezeten kéred tőlünk.
+hu : Az email címed csakis akkor kerül használatba ha elveszted a jelszavad. Soha nem fogunk
+     spam vagy hírleveleket küldeni, csakis ha te azt kifejezetten kéred tőlünk.
 
 :_register_password
 en : Password
@@ -4344,7 +4344,7 @@ hu : Jelszó
 en : Confirm password
 ru : Подтверждение пароля
 cs : Potvrdit heslo
-hu : Jelszó megerősitése
+hu : Jelszó megerősítése
 
 
 # User edit (/u+/edit)
@@ -4359,13 +4359,13 @@ hu : Fiókom
 en : Settings saved
 ru : Параметры сохранены
 cs : Nastavení uloženo
-hu : Beállitások mentve
+hu : Beállítások mentve
 
 :_usere_saved_msg
 en : Settings successfully saved.
 ru : Параметры успешно сохранены.
 cs : Nastavení úspěšně uloženo.
-hu : Beállitások sikeresen mentve.
+hu : Beállítások sikeresen mentve.
 
 :_usere_geninfo
 en : General info
@@ -4389,7 +4389,7 @@ hu : Rang
 en : Ignore votes in VN statistics
 ru : Игнорировать голосования в статистике новелл
 cs : Ignorovat hlasy ve statistikách vizuálních novel
-hu : VN szavazatok figyelmen kivűl hagyása a statisztikákban
+hu : VN szavazatok figyelmen kívül hagyása a statisztikákban
 
 :_usere_mail
 en : Email
@@ -4419,19 +4419,19 @@ hu : Jelszó
 en : Confirm password
 ru : Подтверждение пароля
 cs : Potvrdit heslo
-hu : Jelszó megerősitése
+hu : Jelszó megerősítése
 
 :_usere_options
 en : Options
 ru : Настройки
 cs : Nastavení
-hu : Beállitások
+hu : Beállítások
 
 :_usere_flist
 en : Allow other people to see my visual novel list ([url,_1,_1]) and wishlist ([url,_2,_2])
 ru : Разрешить остальным видеть мой список новелл ([url,_1,_1]) и список желаемого ([url,_2,_2])
 cs : Povolit ostatním zobrazit můj list vizuálních novel ([url,_1,_1]) a wishlist ([url,_2,_2])
-hu : Más embereknek megengedni, hogy lássák a visual novel listám ([url,_1,_1]) és a kivánságlistám ([url,_2,_2])
+hu : Más embereknek megengedni, hogy lássák a visual novel listám ([url,_1,_1]) és a kívánságlistám ([url,_2,_2])
 
 :_usere_fnsfw
 en : Disable warnings for images that are not safe for work.
@@ -4515,7 +4515,7 @@ hu : Szerkesztések
 en : Tags
 ru : Тегов
 cs : Tagy
-hu : Cimkék
+hu : Címkék
 
 
 
@@ -4565,19 +4565,19 @@ hu : Népszerűség
 en : The following tags were ignored:
 ru : Следующие теги были пропущены:
 cs : Následující tagy byly ignorovány:
-hu : Az allábi cimkék nem lettek figyelembe véve:
+hu : Az allábi címkék nem lettek figyelembe véve:
 
 :_vnbrowse_tagign_meta
 en : can't filter on meta tags
 ru : фильтрация мета-тегов невозможна
 cs : nedají se filtrovat meta tagy
-hu : meta cimkéken nem működik a szűrő
+hu : meta címkéken nem működik a szűrő
 
 :_vnbrowse_tagign_notfound
 en : no such tag found
 ru : тег не найден
 cs : nenalezeny takové tagy
-hu : nem található ilyen cimke
+hu : nem található ilyen címke
 
 :_vnbrowse_advsearch
 en : advanced search
@@ -4589,7 +4589,7 @@ hu : bővített keresés
 en : Tag filters
 ru : Фильтры тегов
 cs : Filtry tagů
-hu : cimke szűrők
+hu : címke szűrők
 
 :_vnbrowse_booland
 en : boolean and, selecting more gives less results
@@ -4601,13 +4601,13 @@ hu : Boole féle értékhalmaz(igaz/hamis), s ha többet választasz ki akkor ke
 en : Tags to include
 ru : Включить теги
 cs : Tagy k zahrnutí
-hu : Cimkék beleszámítása
+hu : Címkék beleszámítása
 
 :_vnbrowse_tagexc
 en : Tags to exclude
 ru : Исключить теги
 cs : Tagy k vyjmutí
-hu : Cimkék kihagyása
+hu : Címkék kihagyása
 
 :_vnbrowse_spoil0
 en : Hide spoilers
@@ -4712,9 +4712,9 @@ ru : Список альтернативных названий или аббр�
 cs : Seznam alternativních názvů nebo zkratek, oddělených čárkou. Může zahrnovat oba
      (japonský/anglický) názvy a neoficiální názvy používané na internetu.[br]
      Názvy, vypsané ve vydáních by se sem přidávat neměly!
-hu : Vesszővel elválasztott lista, más címmekel vagy röviditésekel. Tartalmazhat hivatalos
-     (japán/angol) címmeket vagy nem hivatalosokat amelyet a netten használnak.[br]
-     Azok a címmek amelyek a kiadásokba vannak ne tegyétek bele!
+hu : Vesszővel elválasztott lista, más címekkel vagy rövidítésekkel. Tartalmazhat hivatalos
+     (japán/angol) címeket vagy nem hivatalosokat amelyet a netten használnak.[br]
+     Azok a címek amelyek a kiadásokba vannak ne tegyétek bele!
 
 :_vnedit_desc
 en : Description
@@ -4730,7 +4730,7 @@ ru : Краткое описание главной сюжетной линии.
 cs : Krátký popis hlavního příběhu. Prosím nepište spoilery a nezapomeňte uvést zdroj,
      pokud jste popis nenapsali sami. (formátovací kódy jsou povoleny)
 hu : A fő történet rövid leírása. Ne tartalmazzon spoilert és ha nem te írtad akkor ne felejtsd el
-     megemlítetni a forrást amit felhasználtál. (formázó kódok megengedettek)
+     megemlíteni a forrást amit felhasználtál. (formázó kódok megengedettek)
 
 :_vnedit_length
 en : Length
@@ -4763,10 +4763,10 @@ cs : Seznam AnimeID z [url,http://anidb.net/,AniDB], oddělených mezerou.
      Např. "1015 3348" přidá [url,http://anidb.net/a1015,Shingetsutan Tsukihime]
      a [url,http://anidb.net/a3348,Fate/stay night] jako příbuzná anime.[br]
      Poznámka: Může trvat několik minut, než se názvy anime objeví na stránce vizuální novely.
-hu : Szókőzzel elválasztot lista [url,http://anidb.net/,AniDB] anime ID-kal.
+hu : Szóközzel elválasztott lista [url,http://anidb.net/,AniDB] anime ID-kal.
      Pl. "1015 3348" belinkeli [url,http://anidb.net/a1015,Shingetsutan Tsukihime]
-     és [url,http://anidb.net/a3348,Fate/stay night] mint kapcsolodó animék.[br]
-     Figyelem: Beletelhet pár percbe míg az anime címmek megjelennek a VN oldalán.
+     és [url,http://anidb.net/a3348,Fate/stay night] mint kapcsolódó animék.[br]
+     Figyelem: Beletelhet pár percbe míg az anime címek megjelennek a VN oldalán.
 
 :_vnedit_image
 en : Image
@@ -4790,7 +4790,7 @@ hu : ~[a kép feldolgozás alatt van, gyere vissza pár perc múlva~]
 en : Upload new image
 ru : Загрузить новое изображение
 cs : Nahrát nový obrázek
-hu : Tötls fel egy új képet
+hu : Tölts fel egy új képet
 
 :_vnedit_image_upload_msg
 en : Preferably the cover of the CD/DVD/package. Image must be in JPEG or PNG format
@@ -4800,7 +4800,7 @@ ru : Желательно, обложка CD/DVD/коробки. Изображ�
      будут автоматически уменьшены.
 cs : Pokud možno obálka CD/DVD/balení. Obrázek musí být ve formátu JPEG nebo PNG
      a ne větší 500kB. Obrázek větší než 256x400 pixelů bude automaticky zmenšen.
-hu : Lehetőleg a CD/DVD/csomagolás borítóját. A képek muszáj JPEG vagy PNG formátúmba
+hu : Lehetőleg a CD/DVD/csomagolás borítóját. A képek muszáj JPEG vagy PNG formátumba
      legyenek és maximum 500kb nagyok. 254x400-nál nagyobb képek automatikusan át lesznek
      méretezve.
 
@@ -4832,7 +4832,7 @@ hu : Összefüggések
 en : Selected relations
 ru : Выбранные связи
 cs : Vybrané vztahy
-hu : Kiválasztot összefüggések
+hu : Kiválasztott összefüggések
 
 :_vnedit_rel_add
 en : Add relation
@@ -4846,49 +4846,49 @@ hu : Összefüggés hozzáadása
 en : is a
 ru : это
 cs : je
-hu*:
+hu*: -
 
 :_vnedit_rel_of
 en : of
 ru : для
 cs : titulu
-hu*:
+hu*: -
 
 :_vnedit_rel_addbut
 en : add
 ru : добавить
 cs : přidat
-hu*:
+hu : hozzáadd
 
 :_vnedit_rel_del
 en : del
 ru : убрать
 cs : smazat
-hu*:
+hu : töröl
 
 :_vnedit_rel_none
 en : No relations selected.
 ru : Отношений не выбрано.
 cs : Nejsou vybrány žádné vztahy.
-hu*:
+hu : Semmilyen összefüggés nincs kiválasztva.
 
 :_vnedit_rel_findformat
 en : Visual novel textbox must start with an ID (e.g. v17)
 ru : Строка новеллы должна начинаться с идентификатора (например, v17)
 cs : textové pole vizuální novely musí začínat ID (např. v17)
-hu*:
+hu : A visual novel szövegdoboz muszáj egy ID-val kezdődjön (pl. v17)
 
 :_vnedit_rel_novn
 en : Visual novel not found!
 ru : Новелла не найдена!
 cs : Vizuální novela nenalezena!
-hu*:
+hu : A visual novel nem található!
 
 :_vnedit_rel_double
 en : This visual novel has already been selected!
 ru : Эта новелла уже была выбрана!
 cs : Tato vizuální novela již byla vybrána!
-hu*:
+hu : Ez a visual novel már ki van választva!
 
 :_vnedit_scr
 en : Screenshots
@@ -4917,58 +4917,58 @@ cs : Prosíme, pamatujte na následující věci, pokud nahráváte screenshoty:
      Ujistěte se, že jste potvrdili odeslání informací poté, co nahrajete obrázky!
 hu : Mielőtt pillanatképeket töltesz fel, tarts néhány dolgot figyelembe:[br]
      - A pillanatképek a játék eredeti felbontásába kell legyenek,[br]
-     - Távolits el bármilyen ablak szélet és vigyázz, hogy a képen ne legyenek jelölések,[br]
+     - Távolíts el bármilyen ablak szélet és vigyázz, hogy a képen ne legyenek jelölések,[br]
      - Ne csak esemény CG-ket tölts fel.[br]
-     Legyél szives és olvasd el az [url,/d2#6,útmutatókat] több információért.[br]
-     A feltöltés útán ne felejtsd beküldeni a formulát!
+     Legyél szíves és olvasd el az [url,/d2#6,útmutatókat] több információért.[br]
+     A feltöltés után ne felejtsd beküldeni a formulát!
 
 :_vnedit_scr_selrel
 en : -- select release --
 ru : -- выбор выпуска --
 cs : -- vybrat vydání --
-hu*:
+hu : -- kiadás kiválasztása --
 
 :_vnedit_scr_frmloading
 en : Please wait for the screenshots to be uploaded before submitting the form.
 ru : Прежде чем сохранить изменения, дождитесь загрузки скриншотов на сервер.
 cs : Prosíme, počkejte na nahrání screenshotů před potvrzením změn.
-hu*:
+hu : Kérlek várj míg a pillanatképek feltöltődnek, mielőtt beküldenéd a forma lapot.
 
 :_vnedit_scr_frmnorel
 en : Please select the appropriate release for every screenshot.
 ru : Пожалуйста, укажите подходящий выпуск для каждого скриншота.
 cs : Prosíme, vyberte příslušné vydání pro každý screenshot.
-hu*:
+hu : Kérlek válaszd ki a megfelelő kiadást mindegyik pillanatképhez.
 
 :_vnedit_scr_fetching
 en : Fetching thumbnail...
 ru : Обработка превьюшки...
 cs : Načítám náhled...
-hu*:
+hu : Indexképek előkészítése...
 
 :_vnedit_scr_uploading
 en : Uploading screenshot
 ru : Загрузка скриншота
 cs : Nahrávám screenshot
-hu*:
+hu : Pillanatkép feltöltése
 
 :_vnedit_scr_upl_msg
 en : This can take a while, depending on the file size and your upload speed.
 ru : Это может занять некоторое время, в зависимости от размера файла и скорости вашего соединения.
 cs : Toto může chvíli trvat, v závislosti na velikosti souboru a vaší rychlosti uploadu.
-hu*:
+hu : Ez eltarthat egy ideig, attól függ milyen nagy a fájl mérete és mennyivel tudsz feltölteni.
 
 :_vnedit_scr_cancel
 en : cancel
 ru : отменить
 cs : zrušit
-hu*:
+hu : mégse
 
 :_vnedit_scr_full
 en : Enough screenshots
 ru : Больше нет места
 cs : Již máme dostatek screenshotů
-hu*:
+hu : Elég ennyi pillanatkép
 
 :_vnedit_scr_full_msg
 en : The limit of 10 screenshots per visual novel has been reached.
@@ -4977,49 +4977,50 @@ ru : Достигнуто ограничение в 10 скриншотов.
      Если вы хотите добавить новый скриншот, пожалуйста удалите один из существующих.
 cs : Limit deseti screenshotů na vizuální novelu byl dosažen.
      Pokud chcete přidat další screenshot, prosíme odstraňte nejdříve nějaký již existující.
-hu*:
+hu : A megengedett 10 pillanatkép/visual novel megtelt.
+     Ha szeretnél egy új pillanatképet feltölteni, akkor el kell távolíts egy már létezőt.
 
 :_vnedit_scr_add
 en : Add screenshot
 ru : Добавить скриншот
 cs : Přidat screenshot
-hu*:
+hu : Pillanatkép hozzáadása
 
 :_vnedit_scr_imgnote
 en : Image must be smaller than 5MB and in PNG or JPEG format.
 ru : Изображение должно быть не более 5 Мегабайт и в формате PNG, либо JPEG.
 cs : Obrázek musí být menší 5MB a ve formátu PNG nebo JPEG.
-hu*:
+hu : A kép kisebb kell legyen mint 5MB és PNG vagy JPEG formátumba kell legyen.
 
 :_vnedit_scr_addbut
 en : Upload!
 ru : Загрузить!
 cs : Nahrát!
-hu*:
+hu : Feltöltés!
 
 :_vnedit_scr_id
 en : Screenshot #[_1]
 ru : Скриншот #[_1]
 cs : Screenshot #[_1]
-hu*:
+hu : #[_1]-dik pillanatkép
 
 :_vnedit_scr_remove
 en : remove
 ru : убрать
 cs : odebrat
-hu*:
+hu : eltávolítás
 
 :_vnedit_scr_fullsize
 en : Full size: [_1]
 ru : Полный размер: [_1]
 cs : Plná velikost: [_1]
-hu*:
+hu : Teljes méret: [_1]
 
 :_vnedit_scr_nsfw
 en : This screenshot is NSFW
 ru : Этот скриншот НБДР (NSFW)
 cs : Tento screenshot je NSFW
-hu*:
+hu : Ez a pillanatkép nem biztonságos
 
 :_vnedit_scr_oops
 en : Oops! Seems like something went wrong...
@@ -5031,7 +5032,9 @@ ru : Э-кхм! Похоже, возникла проблема...
 cs : Hups! Zdá se, že se něco pokazilo...
      Ujistěte se, že soubor, který nahráváte nemá více jak 5MB.
      Pokud v tom problém neleží, nahlaste systémovou chybu.
-hu*:
+hu : Hoppá! Úgy tűnik valami rosszul sült el...
+     Ellenőrizd, hogy a fájl amit fel akarsz tölteni nem haladja meg az 5MB-os méretet.
+     Ha nem az a baj, akkor kérlek jelentsd a hibát.
 
 :_vnedit_scr_errformat
 en : Upload failed!
@@ -5040,7 +5043,8 @@ ru : Ошибка при загрузке!
      Допускаются только JPEG или PNG.
 cs : Nahrání se nezdařilo!
      Přijímány jsou pouze obrázky formátu JPEG nebo PNG.
-hu*:
+hu : Feltöltés sikertelen!
+     Csakis JPEG vagy PNG képek az elfogadhatóak.
 
 :_vnedit_scr_errempty
 en : Upload failed!
@@ -5049,13 +5053,14 @@ ru : Ошибка при загрузке!
      Файл не выбран или имеет нулевой размер.
 cs : Nahrání se nezdařilo!
      Buď jste nevybrali soubor, nebo byl tento soubor prázdný.
-hu*:
+hu : Feltöltés sikertelen!
+     Nincs fájl kiválasztva, vagy üres volna a fájl?
 
 :_vnedit_scr_genthumb
 en : Generating thumbnail...
 ru : Генерация превьюшки...
 cs : Tvořím náhled...
-hu*:
+hu : Indexkép készítése
 
 :_vnedit_scr_genthumb_msg
 en : Note: if this takes longer than 30 seconds, there\'s probably something wrong on our side.
@@ -5064,7 +5069,8 @@ ru : Замечание: если эта операция длится боле�
      В таком случае попытайтесь снова или сообщите администрации об ошибках.
 cs : Poznámka: Pokud toto zabere více jak 30 sekund, je pravděpodobně chyba někde na naší straně.
      Prosíme, zkuste to znovu později nebo nahlaste systémovou chybu, pokud tomu tak je.
-hu*:
+hu : Figyelem: ha ez tovább tart mint 30 másodperc, akkor a mivelünk van a gond.
+     Kérlek próbáld meg később és ha adott az eset, akkor jelentsd a hibát.
 
 
 # VN Relation graph page (/v+/rg)
@@ -5130,7 +5136,7 @@ hu :
 en : Encubed tag
 ru : Тег Encubed'а
 cs : Tag na Encubed
-hu : Encubed cimke
+hu : Encubed címke
 
 :_revfield_v_l_renai
 en : Renai.us link
@@ -5148,7 +5154,7 @@ hu :
 en : Relations
 ru : Связи
 cs : Vztahy
-hu : Kapcsolatok
+hu : Összefüggések
 
 :_revfield_v_anime
 en : Anime
@@ -5172,7 +5178,7 @@ hu : Kép
 en : (NSFW)
 ru : (НБДР|NSFW)
 cs : (NSFW)
-hu : (NB)
+hu : (Nem Biztonságos)
 
 :_vndiff_image_proc
 en : ~[processing~]
@@ -5223,7 +5229,7 @@ hu : ~[a kép feldolgozás alatt van, gyere vissza pár perc múlva~]
 en : This image has been flagged as Not Safe For Work.
 ru : Данное изображение помечено как не безопасное для работы.
 cs : Tento obrázek byl označen jako "Not Safe For Work"
-hu : Ezt a képet Nem Biztonságosnak nyilvánitották.
+hu : Ezt a képet Nem Biztonságosnak nyilvánították.
 
 :_vnpage_imgnsfw_show
 en : Show me anyway
@@ -5313,13 +5319,13 @@ hu : mind
 en : Developer
 ru : Разработчик
 cs : Vývojář
-hu*:
+hu : Fejlesztő
 
 :_vnpage_publisher
 en : Publishers
 ru : Издатели
 cs : Vydavatel
-hu*:
+hu : Kiadó
 
 :_vnpage_relations
 en : Relations
@@ -5337,7 +5343,7 @@ hu : Kapcsolódó animék
 en : ~[no information available at this time: [url,_2,_1]~]
 ru : ~[к сожалению, пока никакой информации: [url,_2,_1]~]
 cs : ~[nyní nejsou dostupné žádné informace: [url,_2,_1]~]
-hu : ~[jelenleg nincs semmilyen információÉ [url,_2,_1]~]
+hu : ~[jelenleg nincs semmilyen információ: [url,_2,_1]~]
 
 :_vnpage_uopt
 en : User options
@@ -5382,7 +5388,8 @@ ru : Вы собираетесь дать этой новелле оценку 1
      Вы уверены, что эта новелла соответствует такому критерию?
 cs : Chystáte se této vizuální novele dát hodnocení 1 z 10. To je celkem extrémní hodnocení, znamenající, že tato hra nemá absolutně nic co nabídnout, a že je to ta nejhorší hra, kterou jste kdy hráli.
      Jste si opravdu jisti, že tato vizuální novela odpovídá tomuto popisu?
-hu*:
+hu : Te most épp a 10-ből, 1-et adsz ennek a visual novelnek. Ez egy elég extrém osztályozás, ez azt jelenti, hogy ez a játék egyáltalán semmit nem tud nyújtani és, hogy ez a legrosszabb amit valaha játszottál.
+     Biztos vagy benne, hogy ezt a visual novel azok közzé lehet sorolni?
 
 :_vnpage_uopt_10vote
 en : You are about to give this visual novel a 10 out of 10. This is a rather extreme rating, meaning this is one of the best visual novels you've ever played and it's unlikely that any other game could ever be better than this one.
@@ -5391,7 +5398,8 @@ ru : Вы собираетесь дать этой новелле оценку 1
      Вы уверены, что эта новелла соответствует такому критерию?
 cs : Chystáte se této vizuální novele dát hodnocení 10 z 10. To je celkem extrémní hodnocení, znamenající, že to je jedna z nejlepších vizuálních novel, které jste kdy hráli a je nepravděpodobné, že by nějaká další hra mohla být lepší než tato.
      Obecně vztao je špatný nápad mít víc jak tři hry s tímto hodnocením ve vašem listu hlasování, vybírejte pečlivě!
-hu*:
+hu : Te most épp a 10-ből, 10-et adsz ennek a visual novelnek. Ez egy elég extrém osztályozás, ami annyit jelent, hogy ez a legjobb visual novel amit valaha játszottál és elég valószínűtlen, hogy találkozol ettől jobb játékkal.
+     Általában rossz ötlet ha 3-nál több ilyen játékot tartasz a szavazási listádba, válasz óvatosan!
 
 :_vnpage_uopt_wishlisted
 en : wishlist: [_1]
@@ -5427,19 +5435,19 @@ hu : eltávolitás a kivánságlistából
 en : Release status
 ru : Статус выпуска
 cs : Status vydání
-hu*:
+hu : Kiadás állapota
 
 :_vnpage_uopt_relvstat
 en : Play status
 ru : Статус играбельности
 cs : Herní status
-hu*:
+hu : Játszás állapota
 
 :_vnpage_uopt_reldel
 en : Remove from VN list
 ru : Убрать из списка новелл
 cs : Odstranit z listu VN
-hu*:
+hu : Eltávolítás a VN listából
 
 :_vnpage_rel
 en : Releases
@@ -5579,7 +5587,7 @@ hu : Ezt a műveletet nem hajthatod végre.
 en : It seems you don't have the proper rights to perform the action you wanted to perform...
 ru : Похоже, у вас нет прав на выполнение того, чего вы хотите...
 cs : Zdá se, že nemáte potřebná práva pro vykonání akce, kterou chcete provést...
-hu : Úgy tűnik, hogy nem rendelkezzel megfelelő jogokkal, hogy elvégezd azt a műveletet amit szerettél volna...
+hu : Úgy tűnik, hogy nem rendelkezel megfelelő jogokkal, hogy elvégezd azt a műveletet amit szerettél volna...
 
 
 # "DB Item has been deleted" page
@@ -5598,7 +5606,7 @@ ru : Данная запись удалена из базы данных. Пож
 cs : Tato položka byla smazána z databáze. Pro obnovení této stránky napište žádost na
      [url,_1,diskusní board].
 hu : Ez a bejegyzés ki lett törölve az adatbázisból. Nyújtsd be egy kérvényt a
-     [url,_1,forumon], hogy állítsák vissza ezt az oldalt.
+     [url,_1,fórumon], hogy állítsák vissza ezt az oldalt.
 
 
 # The warning/notice messages on edit pages
@@ -5617,7 +5625,7 @@ ru : Вы собираетесь вставить новый выпуск, ос�
 cs : Chystáte se vložit nové vydání do databáze s informacemi založenými na vydání [_1].[br]
      Pokud chcete editovat vydání místo toho, abyste vložili další vydání, přejděte na záložku 'editovat' v pravém horním rohu.
 hu : Te most ép arra készülsz, hogy egy új kiadást hozzál létre az adatbázisban, [_1]-ra alapozva az információkat.[br]
-     Klikelj a 'szerkesztés' fűlre a jobb felső sarokba ha egy új kiadás helyet, csak szerkeszteni akartad a meglévőt.
+     Klikkelj a 'szerkesztés' fülre a jobb felső sarokba ha egy új kiadás helyet, csak szerkeszteni akartad a meglévőt.
 
 :_editmsg_msg_title
 en : Before editing:
@@ -5629,7 +5637,7 @@ hu : Szerkesztés előtt:
 en : Read the [url,_1,guidelines]!
 ru : Прочтите [url,_1,рекомендации]!
 cs : Přečtěte si [url,_1,doporučení]!
-hu : Olvasdd el az [url,_1,útmutatokat]!
+hu : Olvasd el az [url,_1,útmutatókat]!
 
 :_editmsg_msg_discuss
 en : Check for any existing discussions on the [url,_1,discussion board]
@@ -5684,7 +5692,7 @@ hu : Be kell legyél [url,_1, jelentkezve], hogy szerkeszthesd ezt az oldalt
 en : You are not allowed to edit this page
 ru : Вам запрещено редактировать эту страницу
 cs : Nemáte oprávnění editovat tuto stránku
-hu : Nincs engedélyed, hogy szerkesd ezt az oldalt
+hu : Nincs engedélyed, hogy szerkeszd ezt az oldalt
 
 
 # User didn't pass the spam protection
@@ -5693,7 +5701,7 @@ hu : Nincs engedélyed, hogy szerkesd ezt az oldalt
 en : Could not send form
 ru : Невозможно отправить форму
 cs : Formulář nemohl být odeslán
-hu : Nem lehetet elküldeni a formulát
+hu : Nem lehetett elküldeni a formulát
 
 :_nospam_subtitle
 en : Error
@@ -5705,7 +5713,7 @@ hu : Hiba
 en : The form could not be sent, please make sure you have Javascript enabled in your browser.
 ru : Не удалось отправить форму, пожалуйста убедитесь что в вашем браузере включён Javascript.
 cs : Formulář nemohl být odeslán, ujistěte se, že máte ve svém prohlížeči povolen Javascript.
-hu : A formulát nem lehetet elküldeni, kérlek ellenőrizd, hogy engedélyezve van a Javascript a böngésződbe.
+hu : A formulát nem lehetett elküldeni, kérlek ellenőrizd, hogy engedélyezve van a JavaScript a böngésződbe.
 
 
 # Short message reminding the user to post in ENGLISH (Used at about every message/description input field)
@@ -5723,11 +5731,11 @@ hu : Kérlek angolul válaszolj!
 en : Not supported
 ru : Не поддерживается
 cs : Nepodporováno
-hu*:
+hu : Nem támogatott
 
 :_rg_notsupp_msg
 en : Your browser sucks, it doesn't have the functionality to render our nice relation graphs.
 ru : Ваш браузер настолько отстоен, что даже не может отрендерить наши графики.
 cs : Váš prohlížeč je na nic, nepodporuje vykreslování našich krásných vztahových grafů.
-hu*:
+hu : A böngésződ szar, nem képes megjeleníteni a szép összefüggés gráfunkat.
 
