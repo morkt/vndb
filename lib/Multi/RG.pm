@@ -192,7 +192,7 @@ sub finish { # num, res
   $_[KERNEL]->post(pg => do => "UPDATE $table SET rgraph = ? WHERE id IN($ids)", [ $id ]);
 
   # log
-  $_[KERNEL]->call(core => log => 'Generated %s relation graph #%d in %.2fs, V: %s', $table, $id, time-$_[HEAP]{start}, $ids);
+  $_[KERNEL]->call(core => log => 'Generated relation graph #%d in %.2fs, %s: %s', $id, time-$_[HEAP]{start}, uc $_[HEAP]{type}, $ids);
 
   # clean up
   delete @{$_[HEAP]}{qw| start id type nodes rels svg proc |};
