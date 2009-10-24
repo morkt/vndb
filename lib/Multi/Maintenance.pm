@@ -18,12 +18,12 @@ sub spawn {
       $p => [qw|
         _start shutdown set_daily daily set_monthly monthly log_stats
         vncache tagcache vnpopularity cleangraphs
-        usercache statscache revcache logrotate
+        usercache statscache logrotate
       |],
     ],
     heap => {
       daily => [qw|vncache tagcache vnpopularity cleangraphs|],
-      monthly => [qw|usercache statscache revcache logrotate|],
+      monthly => [qw|usercache statscache logrotate|],
       @_,
     },
   );
@@ -170,14 +170,6 @@ sub statscache {
     q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM threads_posts WHERE hidden = FALSE
         AND EXISTS(SELECT 1 FROM threads WHERE threads.id = tid AND threads.hidden = FALSE)) WHERE section = 'threads_posts'|
   );
-}
-
-
-sub revcache {
-  # This -really- shouldn't be necessary...
-  # Currently takes about 25 seconds to complete
-  $_[KERNEL]->post(pg => do => q|SELECT update_rev('vn', ''), update_rev('releases', ''), update_rev('producers', '')|,
-    undef, 'log_stats', 'revcache');
 }
 
 

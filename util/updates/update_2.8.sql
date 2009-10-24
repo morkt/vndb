@@ -207,3 +207,7 @@ END;
 $$ LANGUAGE plpgsql;
 SELECT tag_vn_calc();
 
+
+-- remove update_rev()
+DROP FUNCTION update_rev(text, text);
+

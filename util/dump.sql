@@ -420,31 +420,6 @@ ALTER TABLE wlists             ADD FOREIGN KEY (vid)       REFERENCES vn        
 -------------------------
 
 
--- update_rev(table, ids) - updates the rev column in the changes table
-CREATE FUNCTION update_rev(tbl text, ids text) RETURNS void AS $$
-DECLARE
-  r RECORD;
-  r2 RECORD;
-  i integer;
-  t text;
-  e text;
-BEGIN
-  SELECT INTO t SUBSTRING(tbl, 1, 1);
-  e := '';
-  IF ids <> '' THEN
-    e := ' WHERE id IN('||ids||')';
-  END IF;
-  FOR r IN EXECUTE 'SELECT id FROM '||tbl||e LOOP
-    i := 1;
-    FOR r2 IN EXECUTE 'SELECT id FROM '||tbl||'_rev WHERE '||t||'id = '||r.id||' ORDER BY id ASC' LOOP
-      UPDATE changes SET rev = i WHERE id = r2.id;
-      i := i+1;
-    END LOOP;
-  END LOOP;
-END;
-$$ LANGUAGE plpgsql;
-
-
 -- update_vncache(id) - updates the c_* columns in the vn table
 CREATE FUNCTION update_vncache(id integer) RETURNS void AS $$
 DECLARE
