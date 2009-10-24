@@ -132,8 +132,22 @@
 
 :SUB:Producers
 <p>
- The companies/groups/individuals involved in the creation, development or translation
- of this release. Does not include distributors.
+ The companies/groups/individuals involved in the development or publishing of
+ this release. Does not include distributors. The following roles can be selected:
+ <dl>
+  <dt>Developer</dt><dd>
+   The producer involved in the creation of the game itself, not necessarily of
+   this specific release. Keep in mind that producers that have made modifications
+   to a game but have not made the game itself should NOT be listed as developers.
+  </dd><dt>Publisher</dt><dd>
+   The producer responsible for publishing this specific release. The publisher may have
+   made modifications to the game (e.g. translating all text or porting to a different
+   platform), but was not involved in the creation process.
+  </dd><dt>Both</dt><dd>
+   When the release is developed and published by the same producer. This is often
+   true for doujin games and the first releases of commercial games.
+  </dd>
+ </dl>
 </p>
 
 
