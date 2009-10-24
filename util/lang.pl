@@ -35,6 +35,9 @@ $0 merge <lang> <file>
 
 $0 reorder <lang1>,<lang2>,..
   Re-orders the translation lines in lang.txt using the specified order.
+
+$0 stage <lang>
+  Puts all changes of <lang> into the git index, and leaves everything else untouched.
 __
   exit;
 }
@@ -142,6 +145,17 @@ sub reorder {
 }
 
 
+sub stage {
+  my $lang = shift;
+  chdir "$ROOT/data";
+  rename 'lang.txt', '.lang.txt.tmp' or die $!;
+  `git checkout lang.txt`;
+  merge $lang, '.lang.txt.tmp';
+  `git add lang.txt`;
+  rename '.lang.txt.tmp', 'lang.txt';
+}
+
+
 usage if !@ARGV;
 my $act = shift;
 stats if $act eq 'stats';
@@ -149,4 +163,5 @@ add @ARGV if $act eq 'add';
 only @ARGV if $act eq 'only';
 merge @ARGV if $act eq 'merge';
 reorder @ARGV if $act eq 'reorder';
+stage @ARGV if $act eq 'stage';
 
