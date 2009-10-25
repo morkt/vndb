@@ -631,13 +631,13 @@ hu : Szüllő márka
 en : Spawned
 ru : Порождена
 cs*:
-hu*:
+hu : Létrehozott
 
 :_prodrel_ori
 en : Originated from
 ru : Вышла из
 cs*:
-hu*:
+hu : Származik
 
 
 # release types
