@@ -10,10 +10,32 @@ use warnings;
 use POE;
 use POE::Component::Pg;
 use DBI;
+use POSIX 'setsid', 'pause', 'SIGUSR1';
 
 
 sub run {
   my $p = shift;
+
+  die "PID file already exists\n" if -e "$VNDB::ROOT/data/multi.pid";
+
+  # fork
+  my $pid = fork();
+  die "fork(): $!" if !defined $pid or $pid < 0;
+
+  # parent process, log PID and wait for child to initialize
+  if($pid > 0) {
+    $SIG{CHLD} = sub { die "Initialization failed.\n"; };
+    $SIG{ALRM} = sub { kill $pid, 9; die "Initialization timeout.\n"; };
+    $SIG{USR1} = sub {
+      open my $P, '>', "$VNDB::ROOT/data/multi.pid" or kill($pid, 9) && die $!;
+      print $P $pid;
+      close $P;
+      exit;
+    };
+    alarm(10);
+    pause();
+    exit 1;
+  }
 
   # spawn our SQL handling session
   my @db = @{$VNDB::O{db_login}};
@@ -28,9 +50,6 @@ sub run {
       $p => [qw| _start log pg_error sig_shutdown shutdown |],
     ],
   );
-
-  # log warnings
-  $SIG{__WARN__} = sub {(local$_=shift)=~s/\r?\n//;$poe_kernel->call(core=>log=>'__WARN__: '.$_)};
 
   $poe_kernel->run();
 }
@@ -53,6 +72,16 @@ sub _start {
     # I'm surprised the strict pagma isn't complaining about this
     "Multi::$mod"->spawn(%$args);
   }
+
+  # finish daemonizing
+  kill SIGUSR1, getppid();
+  setsid();
+  chdir '/';
+  umask 0022;
+  $SIG{__WARN__} = sub {(local$_=shift)=~s/\r?\n//;$poe_kernel->call(core=>log=>'__WARN__: '.$_)};
+  close STDOUT;
+  close STDERR;
+  close STDIN;
 }
 
 
@@ -87,6 +116,7 @@ sub shutdown {
   $_[KERNEL]->call(core => log => 'Shutting down (%s)', $_[ARG1]);
   $_[KERNEL]->post(pg => 'shutdown');
   $_[KERNEL]->alias_remove('core');
+  unlink "$VNDB::ROOT/data/multi.pid";
 }
 
 
