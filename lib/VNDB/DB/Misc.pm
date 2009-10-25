@@ -91,7 +91,7 @@ sub dbRevisionGet {
 
   my %where = (
     $o{releases} ? (
-      '((c.type = ? AND vr.vid = ?) OR (c.type = ? AND rv.vid = ?))' => [0, $o{iid}, 1, $o{iid}],
+      q{((c.type = 'v' AND vr.vid = ?) OR (c.type = 'r' AND rv.vid = ?))} => [$o{iid}, $o{iid}],
     ) : (
       $o{type} ? (
         'c.type = ?' => $o{type} ) : (),
