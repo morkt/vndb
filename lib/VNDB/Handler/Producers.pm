@@ -174,21 +174,19 @@ sub edit {
 
       $frm->{relations} = $relations;
       $rev = 1;
+      my $npid = $pid;
       my $cid;
-      if($pid) {
-        ($rev, $cid) = $self->dbProducerEdit($pid, %$frm);
-      } else {
-        ($pid, $cid) = $self->dbProducerAdd(%$frm);
-      }
+      ($rev, $cid) = $self->dbProducerEdit($pid, %$frm) if $pid;
+      ($npid, $cid) = $self->dbProducerAdd(%$frm) if !$pid;
 
       # update reverse relations
       if(!$pid && $#$relations >= 0 || $pid && $frm->{prodrelations} ne $b4{prodrelations}) {
         my %old = $pid ? (map { $_->{id} => $_->{relation} } @{$p->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations;
-        _updreverse($self, \%old, \%new, $pid, $cid, $rev);
+        _updreverse($self, \%old, \%new, $npid, $cid, $rev);
       }
 
-      return $self->resRedirect("/p$pid.$rev", 'post');
+      return $self->resRedirect("/p$npid.$rev", 'post');
     }
   }
 
