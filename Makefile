@@ -22,13 +22,17 @@
 # chmod-tladmin
 # 	The TransAdmin plugin also needs write access to some files
 #
+# multi-start, multi-stop, multi-restart:
+# 	Start/stop/restart the Multi daemon. Provided for convenience, a proper initscript
+# 	probably makes more sense.
+#
 #
 # NOTE: This Makefile has only been tested using a recent version of GNU make
 #   in a relatively up-to-date Arch Linux environment, and may not work in other
 #   environments. Patches to improve the portability are always welcome.
 
 
-.PHONY: all staticdirs js skins robots chmod chmod-tladmin
+.PHONY: all staticdirs js skins robots chmod chmod-tladmin multi-start multi-stop multi-restart
 
 all: staticdirs js skins robots
 
@@ -69,4 +73,30 @@ chmod: all
 
 chmod-tladmin:
 	chmod a-x+rwX data/lang.txt data/docs data/docs/*\.*
+
+
+# may wait indefinitely, ^C and kill -9 in that case
+define multi-stop
+	if [ -s data/multi.pid ]; then\
+	  kill `cat data/multi.pid`;\
+	  while [ -s data/multi.pid ]; do\
+	    if kill -0 `cat data/multi.pid`; then sleep 1;\
+	    else rm -f data/multi.pid; fi\
+	  done;\
+	fi
+endef
+
+define multi-start
+	util/multi.pl
+endef
+
+multi-stop:
+	$(multi-stop)
+
+multi-start:
+	$(multi-start)
+
+multi-restart:
+	$(multi-stop)
+	$(multi-start)
 
