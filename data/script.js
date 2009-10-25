@@ -1614,7 +1614,7 @@ function prrFormAdd() {
   var input = txt.value;
 
   if(!input.match(/^p[0-9]+/)) {
-    alert('_pedit_rel_findformat');
+    alert(mt('_pedit_rel_findformat'));
     return false;
   }
 
