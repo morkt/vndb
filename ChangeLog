@@ -1,3 +1,6 @@
+git - ?
+	- Fixed another bug with the calculation of tags_vn_bayesian.spoiler
+
 2.8 - 2009-10-24
 	- Converted relation graphs to use inline SVG
 	  - Relation graphs now use the color scheme of selected skin
