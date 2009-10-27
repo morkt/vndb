@@ -73,7 +73,7 @@
    <a href="?skin=fate_02">Fate/stay night (red)</a>,
    <a href="?skin=higu">Higurashi no Naku Koro ni (orange)</a>,
    <a href="?skin=lb_02">Little Busters! (sand)</a>,
-   <a href="?skin=haze">Primitive Link (haze)</a>,
+   <a href="?skin=primitive">Primitive Link (haze)</a>,
    <a href="?skin=saya">Saya no Uta (maroon)</a>,
    <a href="?skin=seinarukana">Seinarukana (white)</a>,
    <a href="?skin=taka">Sora no Iro, Mizu no Iro (turquoise)</a>,
