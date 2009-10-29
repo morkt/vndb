@@ -178,7 +178,7 @@ sub newpass {
       ($o{passwd}, $o{salt}) = $self->authPreparePass($pass);
       $self->dbUserEdit($u->{id}, %o);
       $self->mail(mt('_newpass_mail_body', $u->{username}, $pass),
-        To => $u->{mail},
+        To => $frm->{mail},
         From => 'VNDB <noreply@vndb.org>',
         Subject => mt('_newpass_mail_subject', $u->{username}),
       );
