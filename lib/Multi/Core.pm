@@ -79,9 +79,9 @@ sub _start {
   chdir '/';
   umask 0022;
   $SIG{__WARN__} = sub {(local$_=shift)=~s/\r?\n//;$poe_kernel->call(core=>log=>'__WARN__: '.$_)};
-  close STDOUT;
-  close STDERR;
-  close STDIN;
+  open STDIN, '/dev/null';
+  open STDOUT, '>/dev/null';
+  open STDERR, '>/dev/null';
 }
 
 
