@@ -47,25 +47,24 @@ The following relations are defined:
   because of a name change, or when the earlier producer disbanded and the same
   people started again under a different name.
  </dd><dt>Succeeded by</dt><dd>
-  Reverse of <i>Formerly</i>.
+  Reverse of <i>Formerly</i> - selected producer was formerly known as the current producer.
  </dd><dt>Subsidiary</dt><dd>
-  Selected producer is a subsidiary of the current producer. A subsidiary is
-  still "part" of the parent producer, but consist of a different group and
-  publishes under a different name.
+  Selected producer is a <a href="http://en.wikipedia.org/wiki/Subsidiary">subsidiary</a>
+  of the current producer.
  </dd><dt>Parent producer</dt><dd>
-  Reverse of <i>Subsidiary</i>.
+  Reverse of <i>Subsidiary</i> - current producer is a subsidiary of the selected producer.
  </dd><dt>Imprint</dt><dd>
   Selected producer is an imprint of the current producer. Simply put, an
   "imprint" is a different name for the same group of people, used when
   publishing games. See <a href="http://en.wikipedia.org/wiki/Imprint">Wikipedia</a> for more info.
  </dd><dt>Parent brand</dt><dd>
-  Reverse of <i>Imprint</i>.
+  Reverse of <i>Imprint</i> - current producer is an imprint of the selected producer.
  </dd><dt>Spawned</dt><dd>
   The selected producer was formed by former members of the current producers.
   The difference with the <i>Formerly</i> relation is that the producer where the
   members came from is still alive.
  </dd><dt>Originated from</dt><dd>
-  Reverse of <i>Spawned</i>.
+  Reverse of <i>Spawned</i> - current producer spawned the selected producer.
  </dd>
 </dl>
 
