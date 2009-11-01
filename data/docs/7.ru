@@ -74,19 +74,19 @@
    <a href="?skin=lb">Little Busters! (pink)</a>,
    <a href="?skin=term">Neon (black)</a>
   </dd><dt>EchoMateria</dt><dd>
-   <a href="?skin=aselia_01">Aselia (sunset)</a>,
+   <a href="?skin=aselia_01">Aselia (falu red)</a>,
    <a href="?skin=carnevale">Gekkou no Carnevale (black)</a>,
-   <a href="?skin=eiel">EIeL (sand)</a>,
-   <a href="?skin=ever17_01">Ever17 (light blue)</a>,
-   <a href="?skin=fate_01">Fate/stay night (rust)</a>,
-   <a href="?skin=fate_02">Fate/stay night (red)</a>,
+   <a href="?skin=eiel">Jingai Makyo (peach-orange)</a>,
+   <a href="?skin=ever17_01">Ever17 (bondi blue)</a>,
+   <a href="?skin=fate_01">Fate/stay night (seal brown)</a>,
+   <a href="?skin=fate_02">Fate/stay night (pale carmine)</a>,
    <a href="?skin=higu">Higurashi no Naku Koro ni (orange)</a>,
-   <a href="?skin=lb_02">Little Busters! (sand)</a>,
-   <a href="?skin=primitive">Primitive Link (haze)</a>,
-   <a href="?skin=saya">Saya no Uta (maroon)</a>,
+   <a href="?skin=lb_02">Little Busters! (lemon chiffon)</a>,
+   <a href="?skin=primitive">Primitive Link (pale chestnut)</a>,
+   <a href="?skin=saya">Saya no Uta (dark scarlet)</a>,
    <a href="?skin=seinarukana">Seinarukana (white)</a>,
    <a href="?skin=taka">Sora no Iro, Mizu no Iro (turquoise)</a>,
-   <a href="?skin=tsukihime">Tsukihime (purple)</a>,
+   <a href="?skin=tsukihime">Tsukihime (midnight blue)</a>,
    <a href="?skin=tsukihime_02">Tsukihime (black)</a>
   </dd><dt>Yorhel</dt><dd>
    <a href="?skin=angel">Angelic Serenade (dark blue)</a>,
@@ -99,3 +99,4 @@
 :TOP5CONTRIB:
  ...и <a href="/u/all?o=d;s=changes">многие другие</a>.
 </p>
+
