@@ -87,3 +87,5 @@
  <img src="http://static.yorhel.nl/2009/vndb6.jpg" style="margin: 5px"><br />
  Pokud cítíte, že ani jeden z těchto bannerů nevyhovuje tomu, co hledáte, neváhejte udělat
  jeden sami.
+</p>
+

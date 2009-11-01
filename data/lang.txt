@@ -341,7 +341,7 @@ hu :
 
 :_plat_dvd
 en : DVD Player
-ru : DVD Плеер
+ru : DVD-плеер
 cs : DVD Přehrávač
 hu : DVD Lejátszó
 
@@ -464,19 +464,19 @@ hu : [quant,_1,Blu-ray lemez,Blu-ray lemez]
 
 :_med_flp
 en : [quant,_1,Floppy,Floppies]
-ru : [quant,_1,Дискета,Дискеты,Дискетт]
+ru : [quant,_1,дискета,дискеты,дискет]
 cs : [quant,_1,disketa,diskety,disket]
 hu : [quant,_1,Floppy,Floppy]
 
 :_med_mrt
 en : [quant,_1,Cartridge,Cartridges]
-ru : [quant,_1,Картридж,Картриджа,Картриджей]
+ru : [quant,_1,картридж,картриджа,картриджей]
 cs : [quant,_1,Cartridge,Cartridge,Cartridgí]
 hu : [quant,_1,Kazetta,Kazetta]
 
 :_med_mem
 en : [quant,_1,Memory card,Memory cards]
-ru : [quant,_1,Карта памяти,Карты памяти,Карт памяти]
+ru : [quant,_1,карта памяти,карты памяти,карт памяти]
 cs : [quant,_1,Paměťová karta,Paměťové karty,Paměťových karet]
 hu : [quant,_1,Memória kártya,Memória kártya]
 
@@ -488,7 +488,7 @@ hu : [quant,_1,UMD,UMD]
 
 :_med_nod
 en : Nintendo Optical [quant,_1,Disk,Disks]
-ru : [quant,_1,Оптический диск,Оптические диски,Оптических дисков] Nintendo
+ru : [quant,_1,оптический диск,оптических диска,оптических дисков] Nintendo
 cs : [quant,_1,Nintendo Optical Disk,Nintendo Optical Disky,Nintendo Optical Disků]
 hu : Nintendo Optical [quant,_1,Lemez,Lemezek]
 
@@ -605,7 +605,7 @@ hu : Utódja
 
 :_prodrel_sub
 en : Subsidiary
-ru : Второстепенная
+ru : Подразделение
 cs : Vedlejší
 hu : Alválalat
 
@@ -665,7 +665,7 @@ hu : Próba
 
 :_animetype_tv
 en : TV Series
-ru : ТВ Сериал
+ru : ТВ-сериал
 cs : TV série
 hu : TV Sorozat
 
@@ -701,7 +701,7 @@ hu : TV Különkiadás
 
 :_animetype_mv
 en : Music Video
-ru : Музыкальное видео
+ru : АМВ
 cs : Hudební video
 hu : Videoklip
 
@@ -794,7 +794,7 @@ hu : Részlegesen szinkronos
 
 :_voiced_4
 en : Fully voiced
-ru : Озвучено целиком
+ru : Озвучено полностью
 cs : Plně s hlasem
 hu : Szinkronizált
 
@@ -821,7 +821,7 @@ hu : Egyszerű animációk
 
 :_animated_3
 en : Some fully animated scenes
-ru : Некоторые сцены анимированы целиком
+ru : Некоторые сцены полностью анимированы
 cs : Některé plně animované scény
 hu : Pár teljesen animált jelenet
 
@@ -944,7 +944,7 @@ hu : Ismeretlen
 
 :_rlst_rstat_1
 en : Pending
-ru : Ожидает
+ru : Ожидается
 cs : V čekání
 hu : Függő
 
@@ -974,7 +974,7 @@ hu : Ismeretlen
 
 :_rlst_vstat_1
 en : Playing
-ru : Играю
+ru : В процессе
 cs : Ve hraní
 hu : Játszás
 
@@ -1019,7 +1019,7 @@ hu : A jelszavak nem egyeznek meg
 
 :_formerr_e_usrexists
 en : Someone already has this username, please choose something else
-ru : Кто-то уже зарегистрировал такой ник, пожалуйста выберите другой
+ru : Кто-то уже зарегистрировал такой ник, пожалуйста, выберите другой
 cs : Toto uživatelské jméno už je v užívání, vyberte prosím jiné
 hu : Már foglalt ez a felhasználónév, kérlek válassz másikat
 
@@ -1031,7 +1031,7 @@ hu : Valaki már regisztrált ezzel az email címmel
 
 :_formerr_e_noimage
 en : Image must be in JPEG or PNG format
-ru : Изображение должно быть в формате JPEG, либо в формате PNG
+ru : Изображение должно быть в формате JPEG или PNG
 cs : Obrázek musí být v JPEG nebo PNG formátu
 hu : A kép muszáj JPEG vagy PNG formátumba legyen
 
@@ -1049,13 +1049,13 @@ hu : 24 óra alatt csak egy fiókot hozhatsz létre ugyanazzal az IP-vel
 
 :_formerr_e_nochanges
 en : No changes, please don't create an entry that is fully identical to another
-ru : Изменения отсутствуют, пожалуйста не создавайте идентичных копий записей
+ru : Изменения отсутствуют, пожалуйста, не создавайте идентичных копий записей
 cs : Nenalezeny změny, netvořte prosím záznam, který je plně totožný s jiným
 hu : Nem történt változtatás, kérlek ne készíts egy bejegyzést ami teljesen megegyezik egy másikkal
 
 :_formerr_e_doublepost
 en : Please wait 30 seconds before making another post
-ru : Прежде чем публиковать очередное сообщение, пожалуйста подождите 30 секунд
+ru : Прежде чем публиковать очередное сообщение, пожалуйста, подождите 30 секунд
 cs : Před posláním dalšího příspěvku počkejte prosím 30 sekund
 hu : Kérlek várj 30 másodpercet mielőtt új hozzászólást küldesz
 
@@ -1091,13 +1091,13 @@ hu : [_1]: csakis [_2] karakterek megengedettek
 
 :_formerr_enum
 en : [_1] must be one of the following: [_2]
-ru : Поле '[_1]' должно равняться одному из следующих значений: [_2]
+ru : Поле '[_1]' должно соответствовать одному из следующих значений: [_2]
 cs : [_1] musí být z následujícího seznamu: [_2]
 hu : [_1] muszáj az alábbiak közül valamelyik legyen: [_2]
 
 :_formerr_wrongboard
 en : Wrong board: [_1]
-ru : Некорректная ветка: [_1]
+ru : Некорректная доска: [_1]
 cs : Špatný board: [_1]
 hu : Rossz alfórum: [_1]
 
@@ -1127,13 +1127,13 @@ hu : [_1] kizárólag ASCII karaktereket tartalmazhat
 
 :_formerr_tpl_int
 en : [_1]: Not a valid number
-ru : [_1]: Не является правильным числом
+ru : [_1] не является правильным числом
 cs : [_1]: Neplatné číslo
 hu : [_1]: Nem egy érvényes szám
 
 :_formerr_tpl_pname
 en : [_1] can only contain lowercase alphanumeric characters and a hyphen, and must start with a character
-ru : Поле '[_1]' может содержать лишь символы буквенно-цифрового диапазона в нижнем регистре и чёрточку, а так же начинаться с буквы
+ru : Поле '[_1]' может содержать лишь символы буквенно-цифрового диапазона в нижнем регистре и чёрточку и должно начинаться с буквы
 cs : [_1] smí obsahovat pouze malá písmena, čísla a pomlčku, a musí začínat písmenem
 hu : [_1] egy karakterrel kell kezdődjön és csak kisbetűs alfanumerikus karaktereket és egy kötőjelet tartalmazhat
 
@@ -1226,7 +1226,7 @@ hu :
 
 :_js_ds_tag_mod
 en : awaiting moderation
-ru : ждёт модерирования
+ru : ожидает подтверждения модератором
 cs : čeká na schválení
 hu : moderálásra vár
 
@@ -1361,7 +1361,7 @@ hu : Kivánságlistám
 # [_1] = number of messages
 :_menu_mymessages
 en : My Messages ([_1])
-ru : Мои сообщения
+ru : Мои сообщения ([_1])
 cs : Mé zprávy ([_1])
 hu : Üzenenteim ([_1])
 
@@ -1554,7 +1554,7 @@ hu : bezárás
 
 :_mtabs_unlock
 en : unlock
-ru : снять блокировку
+ru : разблокировать
 cs : odemknout
 hu : kinyitás
 
@@ -1691,9 +1691,9 @@ en : VNDB.org strives to be a comprehensive database for information about visua
      and they can vote on all visual novels.[br][br]
      Feel free to [url,/v/all,browse around], [url,/u/register,register an account]
      or to participate in the discussions about visual novels or VNDB on our [url,/t,discussion board].
-ru : VNDB.org стремится быть наиболее полной базой данных с информацией по интерактивным визуальным новеллам.[br]
+ru : VNDB.org стремится быть наиболее полной базой данных с информацией по интерактивным новеллам.[br]
      Данный сайт создан в стиле вики, то есть любой желающий может добавлять сюда информацию, тем самым позволяя
-     нам создать крупнейшую, наиболее аккуратную и самую актуальную базу по визуальным новеллам в сети.[br]
+     нам создать крупнейшую, наиболее точную и самую актуальную базу по интерактивным новеллам в сети.[br]
      Зарегистрированные пользователи могут составлять списки желаемых и пройденных игр, а так же влиять на
      их рейтинг.[br][br]
      Если хотите, можете [url,/v/all,побродить по сайту], [url,/u/register,создать учётную запись] или
@@ -1907,7 +1907,7 @@ hu : Oldal
 
 :_thread_postedin
 en : Posted in
-ru : В теме
+ru : На доске
 cs : Přispěno v
 hu : Válaszolva
 
@@ -1943,13 +1943,13 @@ hu : Válasz
 
 :_thread_noreply_locked
 en : This thread has been locked, you can't reply to it anymore
-ru : Данная тема заблокирована, вы больше не можете в неё ответить
+ru : Данная тема заблокирована, вы больше не можете в неё ответить.
 cs : Tento thread byl zamčen, již se do něj nedá odpovědět
 hu : A téma le van zárva, nem lehet rá válaszolni
 
 :_thread_noreply_login
 en : You must be logged in to reply to this thread.
-ru : Вы должны быть авторизованы чтобы ответить в эту тему.
+ru : Вы должны быть авторизованы, чтобы ответить в эту тему.
 cs : Pro odpověď do tohoto threadu se musíte přihlásit.
 hu : Be kell legyél jelentkezve, hogy hozzászólhass a témához.
 
@@ -2012,7 +2012,7 @@ hu : Fórum(ok)
 
 :_postedit_form_boards_info
 en : Read [url,/d9.2,d9.2] for information about how to specify boards.
-ru : О том как указывать форумы читайте в разделе [url,/d9.2,d9.2].
+ru : О том, как указывать доски, читайте в разделе [url,/d9.2,d9.2].
 cs : Přečtěte si [url,/d9.2,d9.2] pro informace jak určit správný board.
 hu : Lásd [url,/d9.2,d9.2], hogy hogy kell meghatározni a fórumokat.
 
@@ -2277,7 +2277,7 @@ hu : Eredeti név
 
 :_pedit_form_original_note
 en : The original name of the producer, leave blank if it is already in the Latin alphabet.
-ru : Оригинальное название компании, оставьте пустым если уже в латинском алфавите.
+ru : Оригинальное название компании, оставьте пустым, если оно уже в латинском алфавите.
 cs : Originální jméno producenta, ponechte prázdné, pokud již je v latince.
 hu : A készítő eredeti neve, hagyd üresen ha latin betűkből áll s már beírtad a "Név" mezőbe.
 
@@ -2600,13 +2600,13 @@ hu : [index,_1,Freeware,Nem Freeware]
 
 :_relinfo_platform
 en : [quant,_1,Platform,Platforms]
-ru : [quant,_1,Платформа,Платформы,Платформ]
+ru : [quant,_1,платформа,платформы,платформ]
 cs : [quant,_1,Platforma,Platformy,Platforem]
 hu : [quant,_1,Platform,Platformok]
 
 :_relinfo_media
 en : [quant,_1,Medium,Media]
-ru : [quant,_1,Носитель,Носители,Носителей]
+ru : [quant,_1,носитель,носители,носителей]
 cs : [quant,_1,Médium,Média,Médií]
 hu : [quant,_1,Medium,Mediumok]
 
@@ -2654,13 +2654,13 @@ hu : Korhatár
 
 :_relinfo_developer
 en : [quant,_1,Developer,Developers]
-ru : [quant,_1,Разработчик,Разработчика,Разработчиков]
+ru : [quant,_1,Разработчик,Разработчики,Разработчики]
 cs : [quant,_1,Vývojář,Vývojáři,Vývojářů]
 hu : [quant,_1,Fejlesztő,Fejlesztők]
 
 :_relinfo_publisher
 en : [quant,_1,Publisher,Publishers]
-ru : [quant,_1,Издатель,Издателя,Издателей]
+ru : [quant,_1,Издатель,Издатели,Издатели]
 cs : [quant,_1,Vydavatel,Vydavatelé,Vydavatelů]
 hu : [quant,_1,Kiadó,Kiadók]
 
@@ -2783,7 +2783,7 @@ hu : Eredeti cím
 
 :_redit_form_original_note
 en : The original title of this release, leave blank if it already is in the Latin alphabet.
-ru : Оригинальное название данного выпуска, осавьте пустым если уже в латинском алфавите.
+ru : Оригинальное название данного выпуска, осавьте пустым, если оно уже в латинском алфавите.
 cs : Originální název tohoto vydání, ponechte prázdné, pokud již je latinkou.
 hu : A kiadás eredeti neve, hagyd üresen ha latin betűkből áll s már beírtad a "Cím" mezőbe.
 
@@ -2838,7 +2838,7 @@ hu : Megjegyzések
 :_redit_form_notes_note
 en : Miscellaneous notes/comments, information that does not fit in the above fields.
      E.g.: Censored/uncensored or for which releases this patch applies.
-ru : Дополнительные заметки/комментарии, информация для которой не нашлось приемлимых полей.
+ru : Дополнительные заметки/комментарии, информация, для которой не нашлось приемлимых полей.
      Т.е.: присутствие/отсутствие цензуры, или для каких версий применим данный патч.
 cs : Různé poznámky/komentáře a informace, které se nehodí do předchozích polí.
      Např.: Cenzurovaná/necenzurovaná verze nebo pro které vydání je patch.
@@ -3082,7 +3082,7 @@ en : Sorry, couldn't find anything that comes through your filters. You might wa
      Also, keep in mind that we don't have all information about all releases. So e.g. filtering on screen resolution will exclude all releases of which we don't know it's resolution, even though it might in fact be in the resolution you're looking for.
 ru : Простите, по вашему запросу ничего не найдено. Для получения результатов, попробуйте отключить пару-тройку фильтров.
 
-     Также, не забывайте что у нас нет информации об абсолютно всех выпусках. Поэтому, если вы, например, поставили фильтр по разрешению экрана, он исключит все новеллы, не удовлетворяющие выбранному разрешению, даже если в действительности та которую вы ищите имеет искомое разрешение.
+     Также, не забывайте, что мы просто не можем собрать всю возможную информацию о всех существующих выпусках. Поэтому, если вы, например, поставили фильтр по разрешению экрана, он исключит все новеллы, не удовлетворяющие выбранному разрешению, даже если в действительности та, которую вы ищете, имеет искомое разрешение.
 cs : Omlouváme se, nenalezli jsme nic, co by vyhovovalo vašemu nastavení filtrů. Možná najdete více výsledků, pokud nějaké z nich vypnete.
 
      Také nezapomeňte, že o všech vydáních nemáme všechny údaje. Takže pokud například vyfiltrujete rozlišení obrazovky, pak ve výsledcích nebudou všechna vydání, u kterých neznáme jejich rozlišení, i když by to mohla být právě vydání v rozlišení, o které se zajímáte.
@@ -3419,10 +3419,10 @@ en : Because all tags have to be approved by moderators, it can take a while bef
      or on visual novel pages. You can still vote on tag even if it has not been approved yet, though.
      [br][br]
      Also, make sure you've read the [url,/d10,guidelines], so you can predict whether your tag will be accepted or not.
-ru : В связи с тем что все теги должны быть утверждены модераторами, их появление в списке тегов или на страницах новелл
-     займёт некоторое время. Однако, вы всё равно можете голосовать за тег, даже если тот ещё не был утверждён.
+ru : В связи с тем, что все теги должны быть утверждены модераторами, их появление в списке тегов или на страницах новелл
+     займёт некоторое время. Однако, вы всё равно можете голосовать за тег, даже если он ещё не был утверждён.
      [br][br]
-     Также, пожалуйста убедитесь что прочли [url,/d10,рекомендации], тогда вам не придётся гадать, утвердят ваш тег или нет.
+     Также, пожалуйста убедитесь, что вы прочли [url,/d10,рекомендации], тогда вам не придётся гадать, утвердят ваш тег или нет.
 cs : Protože všechny tagy musí být schválené moderátorem, může chvilku trvat, než se objeví na listu tagů
      nebo na stránce vizuální novely. I před schválením ale můžete stále tag hodnotit.
      [br][br]
@@ -3452,7 +3452,7 @@ hu : Állapot
 
 :_tagedit_frm_state0
 en : Awaiting moderation
-ru : Ждёт модерации
+ru : Ожидает модерации
 cs : Čeká na schválení
 hu : Moderálásra vár
 
@@ -3593,7 +3593,7 @@ hu : Címke
 
 :_tagb_note_awaiting
 en : awaiting moderation
-ru : ждёт модерации
+ru : ожидает модерации
 cs : čeká na schválení
 hu : moderálásra vár
 
@@ -3620,19 +3620,19 @@ hu : Címkézés
 
 :_tagv_msg_guidelines
 en : Make sure you have read the [url,/d10,guidelines]!
-ru : Пожалуйста, убедитесь что прочли [url,/d10,рекомендации]!
+ru : Пожалуйста, убедитесь, что вы прочли [url,/d10,рекомендации]!
 cs : Ujistěte se, že jste přečetli [url,/d10,doporučení]!
 hu : Olvasd el az [url,/d10,útmutatókat]!
 
 :_tagv_msg_submit
 en : Don't forget to hit the submit button on the bottom of the page to make your changes permanent.
-ru : Не забудьте сохранить изменения, нажав соответствующую кнопку в низу страницы, иначе они не вступят в силу.
+ru : Не забудьте сохранить изменения, нажав соответствующую кнопку внизу страницы, иначе они не вступят в силу.
 cs : Nezapomeňte potvrdit tlačítko na spodku stránky, abyste uložili změny trvale.
 hu : Ne felejtsd el megnyomni a beküldés gombot a lap alján, hogy véglegesítsd a változtatásokat.
 
 :_tagv_msg_cache
 en : Some tag information on the site is cached, it can take up to an hour for your changes to be visible everywhere.
-ru : Информация о некоторых тегах на данном сайте кэшируется, поэтому ваши изменения станут видны везде в течение часа.
+ru : Информация о некоторых тегах на данном сайте кэшируется, поэтому во всей базе ваши изменения станут видны в течение часа.
 cs : Některé informace o tazích na této stránce jsou v cache a může zabrat až hodinu než budou změny vidět.
 hu : Valamely címkékkel kapcsolatos információ le van mentve a gyorsítótárba, beletelhet egy órába is mire mindenhol láthatóvá válnak a változtatások.
 
@@ -3714,7 +3714,7 @@ hu : kisebb spoiler
 
 :_tagv_spoil3
 en : major spoiler
-ru : тяжёлый спойлер
+ru : жёсткий спойлер
 cs : všechny spoilery
 hu : nagyobb spoiler
 
@@ -3792,7 +3792,7 @@ hu : Nagyobb spoiler
 
 :_tagidx_title
 en : Tag index
-ru : Индекс тега
+ru : Список тегов
 cs : Seznam tagů
 hu : Címke index
 
@@ -4246,7 +4246,7 @@ en : Your password has been reset and your new password should reach your mailbo
      [br]
      [url,/u/login,Login] - [url,/,Home]
 ru : Ваш пароль был сброшен. Через несколько минут на ваш ящик прибудет письмо с новым паролем.[br]
-     Вы всегда можете изменить пароль после того как прошли авторизацию.[br]
+     Вы всегда можете изменить пароль после того, как прошли авторизацию.[br]
      [br]
      [url,/u/login,Вход] - [url,/,Главная]
 cs : Vaše heslo bylo změněno a vaše nové heslo by mělo být za několik minut doručeno do vaší schránky.[br]
@@ -4284,11 +4284,11 @@ en : Creating an account is completely painless, the only thing we need to know 
      - Vote on the visual novels you liked or disliked[br]
      - Contribute to the discussions on the boards
 ru : Создание учётной записи совершенно безопасно. Единственное, что нам от вас требуется - желаемое имя
-     пользователя и пароль. Вы можете ввести любой, даже абсолютно "левый", адрес электронной почты, поскольку
-     мы даже не проверяем его подлинность. Однако, помните что если вы ненароком забудете свой пароль, да ещё
+     пользователя и пароль. Вы можете ввести любой, даже абсолютно "левый" адрес электронной почты, поскольку
+     мы даже не проверяем его подлинность. Однако, помните, что если вы ненароком забудете свой пароль, да ещё
      и ввели неправильный адрес...[br]
      [br]
-     В общем, наличие учётной записи здесь даёт несколько преимуществ перед простыми посетителями:[br]
+     В общем, наличие учётной записи даёт несколько преимуществ перед простыми посетителями:[br]
      - Вы можете помогать базе развиваться, редактируя любые страницы и добавляя новые[br]
      - Следить за всеми новеллами и выпусками, которые у вас есть, в которые вы бы хотели сыграть, в которые играете, либо уже доиграли[br]
      - Голосовать за понравившиеся или, наоборот, не понравившиеся новеллы[br]
@@ -4326,7 +4326,7 @@ hu : Felhasználónév
 
 :_register_username_msg
 en : Preferred username. Must be lowercase and can only consist of alphanumeric characters.
-ru : Запрашиваемое имя пользователя. Должно состоять из буквенно-цифровых символов в нижнем регистре.
+ru : Предпочитаемое имя пользователя. Должно состоять из буквенно-цифровых символов в нижнем регистре.
 cs : Požadováné uživatelské jméno. Musí být malými písmeny a smí obsahovat pouze písmena a číslice.
 hu : A kívánt felhasználónév. Muszáj kisbetűkkel legyen s csakis alfanumerikus karaktereket tartalmazhat.
 
@@ -4417,7 +4417,7 @@ hu : Jelszó megváltoztatása
 
 :_usere_changepass_msg
 en : Leave blank to keep your current password
-ru : Оставьте пустым чтобы сохранить текущий пароль
+ru : Оставьте пустым, чтобы сохранить текущий пароль
 cs : Zanechte prázdné pro zachování současného hesla
 hu : Hagyd üresen ha a jelenlegi jelszavad meg akarod tartani
 
@@ -4581,7 +4581,7 @@ hu : Az allábi címkék nem lettek figyelembe véve:
 
 :_vnbrowse_tagign_meta
 en : can't filter on meta tags
-ru : фильтрация мета-тегов невозможна
+ru : фильтрация по мета-тегам невозможна
 cs : nedají se filtrovat meta tagy
 hu : meta címkéken nem működik a szűrő
 
@@ -4704,7 +4704,7 @@ hu : Eredeti cím
 
 :_vnedit_original_msg
 en : The original title of this visual novel, leave blank if it already is in the Latin alphabet.
-ru : Оригинальное название данной новеллы, оставьте пустым если уже набрано в латинском алфавите.
+ru : Оригинальное название данной новеллы, оставьте пустым, если уже набрано в латинском алфавите.
 cs : Originální název této vizuální novely, ponechte prázdné, pokud již je latinkou.
 hu : A visual novel eredeti címe, ha latin betűkkel van akkor ne írd be mégegyszer ide.
 
@@ -4807,8 +4807,8 @@ hu : Tölts fel egy új képet
 :_vnedit_image_upload_msg
 en : Preferably the cover of the CD/DVD/package. Image must be in JPEG or PNG format
      and at most 500kB. Images larger than 256x400 will automatically be resized.
-ru : Желательно, обложка CD/DVD/коробки. Изображение должно быть в формате JPEG, либо в
-     формате PNG, и весить не более 500 Кб. Изображения размером более 256 на 400 точек
+ru : Желательно, обложка CD/DVD/коробки. Изображение должно быть в формате
+     JPEG или PNG, и весить не более 500 Кб. Изображения размером более 256 на 400 точек
      будут автоматически уменьшены.
 cs : Pokud možno obálka CD/DVD/balení. Obrázek musí být ve formátu JPEG nebo PNG
      a ne větší 500kB. Obrázek větší než 256x400 pixelů bude automaticky zmenšen.
@@ -4916,11 +4916,11 @@ en : Please keep the following in mind when uploading screenshots:[br]
      Please read the [url,/d2#6,guidelines] for more information.[br]
      Make sure to submit the form after the upload has finished!
 ru : Когда загружаете скриншоты, пожалуйста помните:[br]
-     - Они должны быть исходного размера игры,[br]
+     - Они должны быть исходного разрешения игры,[br]
      - На изображении не должно быть "водяных знаков", а так же границ и заголовка окна,[br]
      - Старайтесь загружать не только одни сюжетные картинки.[br]
      За подробностями обращайтесь к [url,/d2#6,рекомендациям].[br]
-     Не забудьте сохранить изменения когда закончите загружать изображения!
+     Не забудьте сохранить изменения, когда закончите загружать изображения!
 cs : Prosíme, pamatujte na následující věci, pokud nahráváte screenshoty:[br]
      - Screenshots musí být v původním rozlišení hry,[br]
      - Odstraňte všechna okna kolem a ujistěte se, že na obrázku není nic navíc,[br]
@@ -4954,7 +4954,7 @@ hu : Kérlek válaszd ki a megfelelő kiadást mindegyik pillanatképhez.
 
 :_vnedit_scr_fetching
 en : Fetching thumbnail...
-ru : Обработка превьюшки...
+ru : Обработка превью...
 cs : Načítám náhled...
 hu : Indexképek előkészítése...
 
@@ -5000,7 +5000,7 @@ hu : Pillanatkép hozzáadása
 
 :_vnedit_scr_imgnote
 en : Image must be smaller than 5MB and in PNG or JPEG format.
-ru : Изображение должно быть не более 5 Мегабайт и в формате PNG, либо JPEG.
+ru : Изображение должно быть не более 5 Мегабайт и в формате PNG либо JPEG.
 cs : Obrázek musí být menší 5MB a ve formátu PNG nebo JPEG.
 hu : A kép kisebb kell legyen mint 5MB és PNG vagy JPEG formátumba kell legyen.
 
@@ -5038,9 +5038,9 @@ hu : Ez a pillanatkép nem biztonságos
 en : Oops! Seems like something went wrong...
      Make sure the file you're uploading doesn't exceed 5MB in size.
      If that isn't the problem, then please report a bug.
-ru : Э-кхм! Похоже, возникла проблема...
-     Пожалуйста, убедитесь что ваш файл не превышает размер в 5 Мегабайт.
-     Если дело не в размере, тогда пожалуйста сообщите администрации сайта об ошибке.
+ru : Э-кхм! Похоже, что-то пошло не так...
+     Пожалуйста, убедитесь, что ваш файл не превышает размер в 5 Мегабайт.
+     Если дело не в размере, пожалуйста, сообщите администрации сайта об ошибке.
 cs : Hups! Zdá se, že se něco pokazilo...
      Ujistěte se, že soubor, který nahráváte nemá více jak 5MB.
      Pokud v tom problém neleží, nahlaste systémovou chybu.
@@ -5070,14 +5070,14 @@ hu : Feltöltés sikertelen!
 
 :_vnedit_scr_genthumb
 en : Generating thumbnail...
-ru : Генерация превьюшки...
+ru : Генерация превью...
 cs : Tvořím náhled...
 hu : Indexkép készítése
 
 :_vnedit_scr_genthumb_msg
 en : Note: if this takes longer than 30 seconds, there\'s probably something wrong on our side.
      Please try again later or report a bug if that is the case.
-ru : Замечание: если эта операция длится более 30 секунд, значит у нас на сервере неполадки.
+ru : Замечание: если эта операция длится более 30 секунд, значит, у нас на сервере неполадки.
      В таком случае попытайтесь снова или сообщите администрации об ошибках.
 cs : Poznámka: Pokud toto zabere více jak 30 sekund, je pravděpodobně chyba někde na naší straně.
      Prosíme, zkuste to znovu později nebo nahlaste systémovou chybu, pokud tomu tak je.
@@ -5218,7 +5218,7 @@ hu : Biztonságos
 
 :_vndiff_nsfw_notsafe
 en : Not safe
-ru : Не безопасно
+ru : Небезопасно
 cs : NSFW
 hu : Nem biztonságos
 
@@ -5239,7 +5239,7 @@ hu : ~[a kép feldolgozás alatt van, gyere vissza pár perc múlva~]
 
 :_vnpage_imgnsfw_msg
 en : This image has been flagged as Not Safe For Work.
-ru : Данное изображение помечено как не безопасное для работы.
+ru : Данное изображение помечено как небезопасное для работы.
 cs : Tento obrázek byl označen jako "Not Safe For Work"
 hu : Ezt a képet Nem Biztonságosnak nyilvánították.
 
@@ -5396,7 +5396,7 @@ hu : visszavonás
 :_vnpage_uopt_1vote
 en : You are about to give this visual novel a 1 out of 10. This is a rather extreme rating, meaning this game has absolutely nothing to offer, and that it's the worst game you have ever played.
      Are you really sure this visual novel matches that description?
-ru : Вы собираетесь дать этой новелле оценку 1 из 10. Это весьма сильная оценка, означающая что это совершенно бездарная работа и худшее из всего во что вы играли.
+ru : Вы собираетесь дать этой новелле оценку 1 из 10. Это весьма сильная оценка, означающая, что это совершенно бездарная работа и худшее из всего, во что вы играли.
      Вы уверены, что эта новелла соответствует такому критерию?
 cs : Chystáte se této vizuální novele dát hodnocení 1 z 10. To je celkem extrémní hodnocení, znamenající, že tato hra nemá absolutně nic co nabídnout, a že je to ta nejhorší hra, kterou jste kdy hráli.
      Jste si opravdu jisti, že tato vizuální novela odpovídá tomuto popisu?
@@ -5406,7 +5406,7 @@ hu : Te most épp a 10-ből, 1-et adsz ennek a visual novelnek. Ez egy elég ext
 :_vnpage_uopt_10vote
 en : You are about to give this visual novel a 10 out of 10. This is a rather extreme rating, meaning this is one of the best visual novels you've ever played and it's unlikely that any other game could ever be better than this one.
      It is generally a bad idea to have more than three games in your vote list with this rating, choose carefully!
-ru : Вы собираетесь дать этой новелле оценку 10 из 10. Это весьма сильная оценка, означающая что это одна из лучших когда либо выпущенных новелл, которую вы когда-либо читали.
+ru : Вы собираетесь дать этой новелле оценку 10 из 10. Это весьма сильная оценка, означающая, что это одна из лучших когда-либо выпущенных новелл, которую вы когда-либо читали.
      Вы уверены, что эта новелла соответствует такому критерию?
 cs : Chystáte se této vizuální novele dát hodnocení 10 z 10. To je celkem extrémní hodnocení, znamenající, že to je jedna z nejlepších vizuálních novel, které jste kdy hráli a je nepravděpodobné, že by nějaká další hra mohla být lepší než tato.
      Obecně vztao je špatný nápad mít víc jak tři hry s tímto hodnocením ve vašem listu hlasování, vybírejte pečlivě!
@@ -5451,7 +5451,7 @@ hu : Kiadás állapota
 
 :_vnpage_uopt_relvstat
 en : Play status
-ru : Статус играбельности
+ru : Статус прохождения
 cs : Herní status
 hu : Játszás állapota
 
@@ -5632,7 +5632,7 @@ hu : Te most nem szerkesztesz egy kiadást!
 :_editmsg_copy_msg
 en : You're about to insert a new release into the database with information based on [_1].[br]
      Hit the 'edit' tab on the right-top if you intended to edit the release instead of creating a new one.
-ru : Вы собираетесь вставить новый выпуск, основанный на информации из [_1].[br]
+ru : Вы собираетесь создать новый выпуск, основанный на информации из [_1].[br]
      Щёлкните вкладку 'правка' в правом верхнем углу, если собирались редактировать выпуск, а не создавать новый.
 cs : Chystáte se vložit nové vydání do databáze s informacemi založenými na vydání [_1].[br]
      Pokud chcete editovat vydání místo toho, abyste vložili další vydání, přejděte na záložku 'editovat' v pravém horním rohu.
@@ -5659,13 +5659,13 @@ hu : Keress bármilyen meglévő beszélgetésre a [url,_1,fórumon]
 
 :_editmsg_msg_history
 en : Browse the [url,_1,edit history] for any recent changes related to what you want to change.
-ru : Просмотрите [url,_1,историю правок] на предмет недавних изменений данных, которые вы хотите изменить.
+ru : Просмотрите [url,_1,историю правок] на предмет недавних правок данных, которые вы хотите изменить.
 cs : Projděte [url,_1,historii editací] pro nedávné změny týkající se změn, které se chystáte provést.
 hu : Nézz bele a [url,_1,szerkesztési előzményekbe], hogy lásd milyen változtatások voltak mielőtt te is megváltoztatnál valamit.
 
 :_editmsg_msg_search
 en : [url,_1,Search the database] to see if we already have information about this [index,_2,visual novel,release,producer].
-ru : [url,_1,Воспользуйтесь поиском], ведь вполне возможно что у нас уже есть информация об [index,_2,этой новелле,этом выпуске,этой компании].
+ru : [url,_1,Воспользуйтесь поиском], ведь вполне возможно, что у нас уже есть информация об [index,_2,этой новелле,этом выпуске,этой компании].
 cs : [url,_1,Prohledejte databázi], zda již nemáme informaci o [index,_2,této vizuální novele,tomto vydání,tomto producentovi].
 hu : [url,_1,Nézd át az adatbázist], hogy van-e már információ erről a [index,_2,visual novelről, kiadásról, készítőről].
 
@@ -5679,7 +5679,7 @@ hu : Visszaállítás
 en : You are editing an old revision of this [index,_1,visual novel,release,producer].
      If you save it, all changes made after this revision will be reverted!
 ru : Вы правите старую редакцию страницы [index,_1,новеллы,выпуска,компании].
-     Если вы сохраните её, все изменения сделанные после этой правки будут утеряны!
+     Если вы сохраните её, все изменения, сделанные после этой правки будут утеряны!
 cs : Editujete starší verzi [index,_1,této vizuální novely,tohoto vydání,tohoto producenta].
      Pokud ji uložíte, všechny změny provedené po této revizi budou vráceny!
 hu : Te egy régi átjavítását szerkeszted ennek a [index,_1,visual novelnek, kiadásnak, készítőnek].
@@ -5723,7 +5723,7 @@ hu : Hiba
 
 :_nospam_msg
 en : The form could not be sent, please make sure you have Javascript enabled in your browser.
-ru : Не удалось отправить форму, пожалуйста убедитесь что в вашем браузере включён Javascript.
+ru : Не удалось отправить форму, пожалуйста убедитесь, что в вашем браузере включён Javascript.
 cs : Formulář nemohl být odeslán, ujistěte se, že máte ve svém prohlížeči povolen Javascript.
 hu : A formulát nem lehetett elküldeni, kérlek ellenőrizd, hogy engedélyezve van a JavaScript a böngésződbe.
 
@@ -5747,7 +5747,7 @@ hu : Nem támogatott
 
 :_rg_notsupp_msg
 en : Your browser sucks, it doesn't have the functionality to render our nice relation graphs.
-ru : Ваш браузер настолько отстоен, что даже не может отрендерить наши графики.
+ru : Ваш браузер настолько отстоен, что даже не может отрендерить наши красивые графики.
 cs : Váš prohlížeč je na nic, nepodporuje vykreslování našich krásných vztahových grafů.
 hu : A böngésződ szar, nem képes megjeleníteni a szép összefüggés gráfunkat.
 
