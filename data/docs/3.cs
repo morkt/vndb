@@ -127,7 +127,21 @@ s DVD jako s médiem.
 :SUB:Producenti
 <p>
  Firmy/skupiny/jedinci, kteří se podíleli na tvorbě, vývoji nebo překladu tohoto vydání.
- Nezahrnuje distributory.
+ Nezahrnuje distributory. Dají se vybrat následující úlohy:
+ <dl>
+  <dt>Vývojář</dt><dd>
+   Producent stojící za tvorbou hry samotné, ne nutně právě tohoto vydání.
+   Pamatujte, že producenti, kteří provedli ve hře změny, ale hru nevytvořili,
+   by NEměli být zahrnuti do producentů.
+  </dd><dt>Vydavatel</dt><dd>
+   Producent zodpovědný za vydání tohoto vydání. Vydavatel mohl ve hře provést
+   změny (jako překlad všeho textu nebo převod na jinou platformu), ale nebyl
+   přítomný procesu tvorby.
+  </dd><dt>Obojí</dt><dd>
+   Pokud bylo vydání vytvořeno a vydáno tím samým producentem. Toto je často
+   případ doujin her a prvních vydání komerčních her.
+  </dd>
+ </dl>
 </p>
 
 

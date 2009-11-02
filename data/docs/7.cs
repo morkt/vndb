@@ -46,7 +46,7 @@
 <p>
  <b>Vývoj kódu</b><br />
  <dl>
-  <dt>Yorhel</dt><dd>Hlavní vývojářr.</dd>
+  <dt>Yorhel</dt><dd>Hlavní vývojář.</dd>
   <dt>3dB</dt><dd>Napsal současný kód ověřující autorizaci uživatelů a na diskusních boardech implementoval limitaci příspěvků za určitý čas.</dd>
  </dl>
  <br />

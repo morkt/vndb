@@ -34,3 +34,34 @@
  </dd>
 </dl>
 
+
+:SUB:Vztahy
+Tyto vztahy poskytují informace o tom, jak jsou různí producenti provázáni
+s producenty ostatními. Vybrání správného vztahu může trochu mást, v případě
+pochybností jednoduše zkontrolujte graf vztahů producentů.
+Jsou určeny následující vztahy:
+<dl>
+ <dt>Dříve</dt><dd>
+  Editovaný producent byl dříve znám jako producent vybraný. To se může stát kvůli
+  změně jména nebo pokud se dřívější producent rozpadl a ti samí lidé začali pod
+  jiným jménem.
+ </dd><dt>Nahrazeno</dt><dd>
+  Opak <i>Dříve</i> - vybraný producent byl dříve znám jako producent editovaný.
+ </dd><dt>Vedlejší</dt><dd>
+  Vybraný producent je <a href="http://en.wikipedia.org/wiki/Subsidiary">odnoží</a> editovaného producenta.
+ </dd><dt>Mateřský producent</dt><dd>
+  Opak <i>Vedlejšího</i> - editovaný producent je odnoží producenta vybraného.
+ </dd><dt>Otisk</dt><dd>
+  Vybraný producent je otiskem producenta editovaného. Jednoduše řečeno,
+  "otisk" je jiné jméno stejné skupinylidí, používaný při vydávání her. Pro více
+  informací se podívejte na <a href="http://en.wikipedia.org/wiki/Imprint">Wikipedii</a>.
+ </dd><dt>Mateřská značka</dt><dd>
+  Opak <i>Otisku</i> - editovaný producent je odnoží producenta vybraného.
+ </dd><dt>Stvořilo</dt><dd>
+  Vybraný producent byl vytvořen bývalými členy producenta editovaného.
+  Rozdíl oproti vztahu <i>Dříve</i> je ten, že producent, odkud členové
+  přišli, stále existuje a funguje.
+ </dd><dt>Vzniklo z</dt><dd>
+  Opak <i>Stvořilo</i> - editovaný producent stvořil vybraného producenta.
+ </dd>
+</dl>

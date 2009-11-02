@@ -624,19 +624,19 @@ hu : Megjelenési adatok
 :_prodrel_ipa
 en : Parent brand
 ru : Исходный бренд
-cs : mateřská značka
+cs : Mateřská značka
 hu : Szüllő márka
 
 :_prodrel_spa
 en : Spawned
 ru : Порождена
-cs*:
+cs : Stvořilo
 hu : Létrehozott
 
 :_prodrel_ori
 en : Originated from
 ru : Вышла из
-cs*:
+cs : Vzniklo z
 hu : Származik
 
 

@@ -37,19 +37,21 @@
 :SUB:Pořadí jmen
 <p>
  Ve většině anglicky mluvících zemí se jména píší v pořadí "křestní jméno, příjmení".
- Toto nazýváme "západním psaním".
- V angličtině je obvyklé na někoho volat jeho křestním jménem, pokud ho znáte dobře, jinak se použije příslušný titul a příjmení.
+ Toto nazýváme "západním psaním". V angličtině je obvyklé na někoho volat
+ jeho křestním jménem, pokud ho znáte dobře, jinak se použije příslušný titul a příjmení.
  <br />
  V japonštině (a i v dalších jazycích) se jména píší v pořadí "příjmení, křestní jméno".
- Toto nazýváme "japonským psaním".
- V japonštině na někoho voláme jedním z jeho jmen s použitím příslušného sufixu.
+ Toto nazýváme "japonským psaním". V japonštině na někoho voláme jedním
+ z jeho jmen s použitím příslušného sufixu.
  <br />
- Aby pomohly anglicky mluvícím, některé zdroje (např. Wikipedia) užívají japonských jmen v západním psaní.
- Zde na vndb.org preferujeme užívání původního psaní, které používala hra.
+ Aby pomohly anglicky mluvícím, některé zdroje (např. Wikipedia) užívají japonských
+ jmen v západním psaní. Zde na vndb.org preferujeme užívání původního psaní,
+ které používala hra.
  <br />
  Tedy, pokud byla hra původně japonská s japonskými jmény, použije se japonské psaní.
  <br />
- Pokud byla hra původně anglická nebo postava měla kompletně cizí jméno (John Smith), použije se západního psaní.
+ Pokud byla hra původně anglická nebo postava měla kompletně cizí jméno (John Smith),
+ použije se západního psaní.
 </p> 
 
 
@@ -59,10 +61,12 @@
  <br />
  To vám umožňuje vysvětlit o čem je vaše editace bez zbytečného zahlcování hlavní stránky.
  <br />
- Můžete se zmínit o tom, proč jste pozměnili kategorii, změnili odkaz, nebo ukázat, odkud jsou vaše informace (aby je další přispěvatelé mohli ověřit).
+ Můžete se zmínit o tom, proč jste pozměnili kategorii, změnili odkaz, nebo ukázat,
+ odkud jsou vaše informace (aby je další přispěvatelé mohli ověřit).
  <br />
- Možná chcete přidat vizuální novelu do databáze, ale nejste schopni pro ni najít další informace.
- Pokud to zde napíšete, snad je jiný přispěvatel jednou najde a stránku dokončí.
+ Možná chcete přidat vizuální novelu do databáze, ale nejste schopni pro ni najít
+ další informace. Pokud to zde napíšete, snad je jiný přispěvatel jednou najde
+ a stránku dokončí.
 </p>
 
 
@@ -75,7 +79,8 @@
  [From [url=<b>URL</b>]<b>title or author</b>[/url]]<br />
  Což je aplikováno jako, například, '[From <a href="http://en.wikipedia.org/Wiki/Ever17">Wikipedia</a>]'
  pro popisy převzaté z Wikipedie. Pokud popis není převzta doslova, ale má nějaké změny,
- pak by 'From' mělo být nahrazeno něčím podoným a naznačujícím, že popis byl pozměněn, např. 'Edited from', 'Based on'.<br />
+ pak by 'From' mělo být nahrazeno něčím podoným a naznačujícím, že popis byl pozměněn,
+ např. 'Edited from', 'Based on'.<br />
  Jelikož není povoleno odkazovat na stránky poskytující nebo vybízející k ilegálnímu stahování,
  měla by adresa (URL) pro takovéto popisy zůstat vynechána.
 </p>
