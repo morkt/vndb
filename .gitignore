@@ -1,4 +1,5 @@
 /data/config.pl
+/data/multi.pid
 /data/log/
 /static/f/script.js
 /static/s/*/style.css
