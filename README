@@ -28,6 +28,8 @@ Requirements
     PerlIO::gzip         (optional, for output compression)
 
   util/multi.pl:
+    API:
+      JSON::XS
     Core:
       DBI
       DBD::Pg
