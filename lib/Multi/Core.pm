@@ -105,7 +105,7 @@ sub pg_error { # ARG: command, errmsg, [ query, params, orig_session, event-args
   my $s = $_[ARG2] ? sprintf ' (Session: %s, Query: "%s", Params: %s, Args: %s)',
     join(', ', $_[KERNEL]->alias_list($_[ARG4])), $_[ARG2],
     join(', ', $_[ARG3] ? map qq|"$_"|, @{$_[ARG3]} : '[none]'), $_[ARG5]||'' : '';
-  $_[KERNEL]->call(core => log => 'SQL Error for command %s: %s %s', $_[ARG0], $_[ARG1], $s);
+  die sprintf 'SQL Error for command %s: %s%s', $_[ARG0], $_[ARG1], $s;
 }
 
 
