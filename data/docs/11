@@ -187,7 +187,7 @@ however still required.<br />
  the message explains what went wrong in more detail, there are several
  different messages for the same id. The following error identifiers are currently
  defined:
-</p> 
+</p>
 <dl>
  <dt>parse</dt><dd>Syntax error or unknown command.</dd>
  <dt>missing</dt><dd>A JSON object argument is missing a required member. The name of which is given in the additional "field" member.</dd>

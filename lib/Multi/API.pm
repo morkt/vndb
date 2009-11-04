@@ -128,7 +128,7 @@ sub filtertosql {
 sub _start {
   $_[KERNEL]->alias_set('api');
   $_[KERNEL]->sig(shutdown => 'shutdown');
-  
+
   # create listen socket
   $_[HEAP]{listen} = POE::Wheel::SocketFactory->new(
     BindPort     => $_[HEAP]{port},
@@ -278,7 +278,7 @@ sub login_res { # num, res, [ c, arg ]
 
 sub get_vn {
   my($c, $info, $filters) = @_[ARG0..$#_];
-  
+
   return cerr $c, getinfo => "Unkown info flag '$_'", flag => $_ for (grep $_ ne 'basic', @$info);
 
   my $select = 'v.id, vr.title, vr.original, v.c_released, v.c_languages, v.c_platforms';
