@@ -119,6 +119,23 @@ sub filtertosql {
     }
   }
 
+  # vn search
+  if($type eq 'vnsearch') {
+    return cerr $c, filterval => "Operator for '$field' must be ~.", %e if $op ne '~';
+    return cerr $c, filterop => "Value for '$field' must be a string.", %e if !defined $value || ref $value;
+    push @$p, "%$value%" for (1..4);
+    return q|(vr.title ILIKE ?
+       OR vr.alias ILIKE ?
+       OR v.id IN(
+         SELECT rv.vid
+         FROM releases r
+         JOIN releases_rev rr ON rr.id = r.latest
+         JOIN releases_vn rv ON rv.rid = rr.id
+         WHERE rr.title ILIKE ?
+            OR rr.original ILIKE ?
+     ))|;
+  }
+
   die "This shouldn't happen!";
 }
 
@@ -288,6 +305,7 @@ sub get_vn {
     [ id => 'int',       dbfield => 'v.id' ],
     [ title => 'str',    dbfield => 'vr.title' ],
     [ original => 'str', dbfield => 'vr.original', null => '' ],
+    [ search => 'vnsearch' ],
   ];
   return if !$where;
 
