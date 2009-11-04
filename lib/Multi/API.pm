@@ -252,7 +252,7 @@ sub login {
   return cerr $c, badarg => 'Invalid client name', field => 'client'        if $arg->{client}    !~ /^[a-zA-Z0-9 _-]{3,50}$/;
   return cerr $c, badarg => 'Invalid client version', field => 'clientver'  if $arg->{clientver} !~ /^\d+(\.\d+)?$/;
   return cerr $c, sesslimit => "Too many open sessions for user '$arg->{username}'", max_allowed => $_[HEAP]{sess_per_user}
-    if $_[HEAP]{sess_per_user} <= grep $arg->{username} eq $_[HEAP]{c}{$_}{username}, keys %{$_[HEAP]{c}};
+    if $_[HEAP]{sess_per_user} <= grep $_[HEAP]{c}{$_}{username} && $arg->{username} eq $_[HEAP]{c}{$_}{username}, keys %{$_[HEAP]{c}};
 
   # fetch user info
   $_[KERNEL]->post(pg => query => "SELECT rank, salt, encode(passwd, 'hex') as passwd FROM users WHERE username = ?",
@@ -289,7 +289,6 @@ sub get_vn {
     [ title => 'str',    dbfield => 'vr.title' ],
     [ original => 'str', dbfield => 'vr.original', null => '' ],
   ];
-  warn $where;
   return if !$where;
 
   $_[KERNEL]->post(pg => query =>
