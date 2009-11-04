@@ -1,6 +1,6 @@
 
 #
-#  Multi::Core  -  handles logging and the main command queue
+#  Multi::Core  -  handles spawning and logging
 #
 
 package Multi::Core;
@@ -78,21 +78,26 @@ sub _start {
   setsid();
   chdir '/';
   umask 0022;
-  $SIG{__WARN__} = sub {(local$_=shift)=~s/\r?\n//;$poe_kernel->call(core=>log=>'__WARN__: '.$_)};
   open STDIN, '/dev/null';
-  open STDOUT, '>/dev/null';
-  open STDERR, '>/dev/null';
+  tie *STDOUT, 'Multi::Core::STDIO', 'STDOUT';
+  tie *STDERR, 'Multi::Core::STDIO', 'STDERR';
 }
 
 
-sub log { # level, msg
-  (my $p = eval { $_[SENDER][2]{$_[CALLER_STATE]}[0] } || '') =~ s/^Multi:://;
-  my $msg = sprintf '%s::%s: %s', $p, $_[CALLER_STATE],
-    $_[ARG1] ? sprintf($_[ARG0], @_[ARG1..$#_]) : $_[ARG0];
-
+# subroutine, not supposed to be called as a POE event
+sub log_msg { # msg
+  (my $msg = shift) =~ s/\n+$//;
   open(my $F, '>>', $VNDB::M{log_dir}.'/multi.log');
   printf $F "[%s] %s\n", scalar localtime, $msg;
   close $F;
+}
+
+
+# the POE event
+sub log { # level, msg
+  (my $p = eval { $_[SENDER][2]{$_[CALLER_STATE]}[0] } || '') =~ s/^Multi:://;
+  log_msg sprintf '%s::%s: %s', $p, $_[CALLER_STATE],
+    $_[ARG1] ? sprintf($_[ARG0], @_[ARG1..$#_]) : $_[ARG0];
 }
 
 
@@ -118,6 +123,14 @@ sub shutdown {
   $_[KERNEL]->alias_remove('core');
   unlink "$VNDB::ROOT/data/multi.pid";
 }
+
+
+# Tiny class for forwarding output for STDERR/STDOUT to the log file using tie().
+package Multi::Core::STDIO;
+
+use base 'Tie::Handle';
+sub TIEHANDLE { return bless \"$_[1]", $_[0] }
+sub WRITE     { Multi::Core::log_msg(${$_[0]}.': '.$_[1]) }
 
 
 1;
