@@ -294,9 +294,11 @@ sub login_res { # num, res, [ c, arg ]
 sub get_vn {
   my($c, $info, $filters) = @_[ARG0..$#_];
 
-  return cerr $c, getinfo => "Unkown info flag '$_'", flag => $_ for (grep $_ ne 'basic', @$info);
+  return cerr $c, getinfo => "Unkown info flag '$_'", flag => $_ for (grep !/^(basic|details)$/, @$info);
 
-  my $select = 'v.id, vr.title, vr.original, v.c_released, v.c_languages, v.c_platforms';
+  my $select = 'v.id';
+  $select .= ', vr.title, vr.original, v.c_released, v.c_languages, v.c_platforms' if grep /basic/, @$info;
+  $select .= ', vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai' if grep /details/, @$info;
 
   my @placeholders;
   my $where = encode_filters $filters, \&filtertosql, $c, \@placeholders, [
@@ -340,10 +342,23 @@ sub get_vn_res {
 
   for (@$res) {
     $_->{id}*=1;
-    $_->{original} ||= undef;
-    $_->{platforms} = [ split /\//, delete $_->{c_platforms} ];
-    $_->{languages} = [ split /\//, delete $_->{c_languages} ];
-    $_->{released} = formatdate delete $_->{c_released};
+    if(grep /basic/, @$info) {
+      $_->{original}  ||= undef;
+      $_->{platforms} = [ split /\//, delete $_->{c_platforms} ];
+      $_->{languages} = [ split /\//, delete $_->{c_languages} ];
+      $_->{released}  = formatdate delete $_->{c_released};
+    }
+    if(grep /details/, @$info) {
+      $_->{aliases}     ||= undef;
+      $_->{length}      *= 1;
+      $_->{length}      ||= undef;
+      $_->{description} ||= undef;
+      $_->{links} = {
+        wikipedia => delete($_->{l_wp})     ||undef,
+        encubed   => delete($_->{l_encubed})||undef,
+        renai     => delete($_->{l_renai})  ||undef
+      };
+    }
   }
 
   $c->{wheel}->put([ results => { num => $#$res+1, items => $res }]);

@@ -236,10 +236,22 @@ however still required.<br />
   array of strings. Can be an empty array when nothing has been released yet.
  </dd><dt>platforms (basic)</dt><dd>
   array of strings. Can be an empty array when unknown or nothing has been released yet.
+ </dd><dt>aliases (details)</dt><dd>
+  string, comma-separated list of aliases. Can be <b>null</b>.
+ </dd><dt>length (details)</dt><dd>
+  integer between 1 and 5, length of the game. <b>null</b> when unknown.
+ </dd><dt>description (details)</dt><dd>
+  string, description of the VN. Note that this description can include formatting codes as described in d9.3.
+  <b>null</b> when whe don't have a description.
+ </dd><dt>links (details)</dt><dd>
+  object. Contains the following members:<br />
+  "wikipedia", string, name of the related article on the English Wikipedia.<br />
+  "encubed", string, the URL-encoded tag used on <a href="http://novelnews.net/">encubed</a>.<br />
+  "renai", string, the name part of the url on <a href="http://renai.us/">renai.us</a>.<br />
+  All members can be <b>null</b> when no links are available or known to us.
  </dd>
 </dl>
 <br />
-
 
 <b>Filters:</b>
 <dl>
