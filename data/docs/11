@@ -198,9 +198,7 @@ however still required.<br />
  <dt>sesslimit</dt><dd>(login) Too many open sessions for the current user.</dd>
  <dt>gettype</dt><dd>(get) Unknown type argument to the 'get' command.</dd>
  <dt>getinfo</dt><dd>(get) Unknown info flag to the 'get' command. The name of the unrecognised flag is given in an additional "flag" member.</dd>
- <dt>filterop</dt><dd>(get) Bad operator in filter expression for the field/value combination. Includes three additional members: "field", "op" and "value" of the incorrect expression.</dd>
- <dt>filterval</dt><dd>(get) Wrong type or format for the value in a filter expression. Adds same three members as the 'filterop' error.</dd>
- <dt>filterfield</dt><dd>(get) Unknown field in filter expression. Adds same three members as the 'filterop' error.</dd>
+ <dt>filter</dt><dd>(get) Unknown filter field or invalid combination of field/operator/argument type. Includes three additional members: "field", "op" and "value" of the incorrect expression.</dd>
 </dl>
 
 

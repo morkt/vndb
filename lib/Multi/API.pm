@@ -63,80 +63,77 @@ sub formatdate {
 }
 
 
+# see the notes after __END__ for an explanation of what this function does
 sub filtertosql {
   my($c, $p, $t, $field, $op, $value) = ($_[1], $_[2], $_[3], @{$_[0]});
   my %e = ( field => $field, op => $op, value => $value );
 
+  # get the field that matches
   $t = (grep $_->[0] eq $field, @$t)[0];
-  return cerr $c, filterfield => "Unknown field '$field'", %e if !$t;
+  return cerr $c, filter => "Unknown field '$field'", %e if !$t;
   shift @$t; # field name
-  my $type = shift @$t;
-  my %o = @$t;
 
-  # integer, options: dbfield
-  if($type eq 'int') {
-    if($value && ref $value eq 'ARRAY') {
-      return cerr $c, filterop => "Operator for '$field' must be either = or != for array values", %e if $op ne '=' && $op ne '!=';
-      return cerr $c, filterval => "Array elements for '$field' must be integers", %e if grep !defined($_) || !/^\d+$/, @$value;
-      push @$p, @$value;
-      return sprintf '%s %s(%s)', $o{dbfield}, $op eq '=' ? 'IN' : 'NOT IN', join ',', map '?', @$value;
-    } elsif(defined $value && !ref $value && $value =~ /^\d+$/) {
-      my @ops = qw(= != > >= < <=);
-      return cerr $c, filterop => "Operator for '$field' must be one of ".join(', ', @ops), %e if !grep $op eq $_, @ops;
-      push @$p, $value;
-      return sprintf '%s %s ?', $o{dbfield}, $op eq '!=' ? '<>' : $op;
-    }
-    return cerr $c, filterval => "Value for '$field' must be either an integer or an array of integers", %e;
-  }
+  # get the type that matches
+  $t = (grep +(
+    # wrong operator? don't even look further!
+    !$_->[2]{$op} ? 0
+    # undef
+    : !defined($_->[0]) ? !defined($value)
+    # int
+    : $_->[0] eq 'int'  ? (defined($value) && !ref($value) && $value =~ /^-?\d+$/)
+    # str
+    : $_->[0] eq 'str'  ? defined($value) && !ref($value)
+    # inta
+    : $_->[0] eq 'inta' ? ref($value) eq 'ARRAY' && !grep(!defined($_) || ref($_) || $_ !~ /^-?\d+$/, @$value)
+    # stra
+    : $_->[0] eq 'stra' ? ref($value) eq 'ARRAY' && !grep(!defined($_) || ref($_), @$value)
+    # oops
+    : die "Invalid filter type $_->[0]"
+  ), @$t)[0];
+  return cerr $c, filter => 'Wrong field/operator/expression type combination', %e if !$t;
 
-  # string, options: dbfield, null
-  if($type eq 'str') {
-    if(!defined $value) {
-      return cerr $c, filterval => "null not allowed for '$field'", %e if !exists $o{null};
-      return cerr $c, filterop => "Operator for '$field' must be either = or != for null", %e if $op ne '=' && $op ne '!=';
-      return sprintf '%s %s', $o{dbfield}, $op eq '=' ? 'IS NULL' : 'IS NOT NULL' if !defined $o{null};
-      push @$p, $o{null};
-      return sprintf '%s %s ?', $o{dbfield}, $op eq '=' ? '=' : '<>';
-    } elsif(ref($value) eq 'ARRAY') {
-      return cerr $c, filterop => "Operator for '$field' must be either = or != for array values", %e if $op ne '=' && $op ne '!=';
-      return cerr $c, filterval => "Array elements for '$field' must be scalars", %e if grep !defined($_) || ref($_), @$value;
-      push @$p, @$value;
-      return sprintf '%s %s(%s)', $o{dbfield}, $op eq '=' ? 'IN' : 'NOT IN', join ',', map '?', @$value;
-    } elsif(!ref $value) {
-      my @ops = qw(= != ~);
-      if($op eq '=' || $op eq '!=') {
-        push @$p, $value;
-        return sprintf '%s %s ?', $o{dbfield}, $op eq '!=' ? '<>' : $op;
-      } elsif($op eq '~') {
-        $value =~ s/%//;
-        push @$p, "%$value%";
-        return sprintf '%s ILIKE ?', $o{dbfield};
-      } else {
-        return cerr $c, filterop => "Operator for '$field' must be =, != or ~", %e;
-      }
-    } else {
-      return cerr $c, filterval => "Value for '$field' must be a string or an array of strings.", %e;
+  my($type, $sql, $ops, %o) = @$t;
+
+  # substistute :op: in $sql, which is the same for all types
+  $sql =~ s/:op:/$ops->{$op}/g;
+
+  # no further processing required for type=undef
+  return $sql if !defined $type;
+
+  # pre-process the argument(s)
+  for (!$o{process} ? () : ref($value) eq 'ARRAY' ? @$value : $value) {
+    if(!ref $o{process}) {
+      $_ = sprintf $o{process}, $_;
+    } elsif(ref($o{process}) eq 'CODE') {
+      $_ = $o{process}->($_);
+    } elsif(${$o{process}} eq 'like') {
+      y/%//;
+      $_ = "%$_%";
     }
   }
 
-  # vn search
-  if($type eq 'vnsearch') {
-    return cerr $c, filterval => "Operator for '$field' must be ~.", %e if $op ne '~';
-    return cerr $c, filterop => "Value for '$field' must be a string.", %e if !defined $value || ref $value;
-    push @$p, "%$value%" for (1..4);
-    return q|(vr.title ILIKE ?
-       OR vr.alias ILIKE ?
-       OR v.id IN(
-         SELECT rv.vid
-         FROM releases r
-         JOIN releases_rev rr ON rr.id = r.latest
-         JOIN releases_vn rv ON rv.rid = rr.id
-         WHERE rr.title ILIKE ?
-            OR rr.original ILIKE ?
-     ))|;
+  # type=str and type=int are now quite simple
+  if(!ref $value) {
+    $sql =~ s/:value:/push @$p, $value; '?'/eg;
+    return $sql;
   }
 
-  die "This shouldn't happen!";
+  # and do some processing for type=stra and type=inta
+  my @parameters;
+  if($o{serialize}) {
+    for (@$value) {
+      my $v = $o{serialize};
+      $v =~ s/:op:/$ops->{$op}/g;
+      $v =~ s/:value:/push @parameters, $_; '?'/eg;
+      $_ = $v;
+    }
+  } else {
+    @parameters = @$value;
+    $_ = '?' for @$value;
+  }
+  my $joined = join defined $o{join} ? $o{join} : '', @$value;
+  $sql =~ s/:value:/push @$p, @parameters; $joined/eg;
+  return $sql;
 }
 
 
@@ -302,10 +299,32 @@ sub get_vn {
 
   my @placeholders;
   my $where = encode_filters $filters, \&filtertosql, $c, \@placeholders, [
-    [ id => 'int',       dbfield => 'v.id' ],
-    [ title => 'str',    dbfield => 'vr.title' ],
-    [ original => 'str', dbfield => 'vr.original', null => '' ],
-    [ search => 'vnsearch' ],
+    [ 'id',
+      [ 'int' => 'v.id :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|} ],
+      [ inta  => 'v.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, join => ',' ],
+    ], [ 'title',
+      [ str   => 'vr.title :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'vr.title ILIKE :value:', {'~',1}, process => \'like' ],
+    ], [ 'original',
+      [ undef,   "vr.original :op: ''", {qw|= =  != <>|} ],
+      [ str   => 'vr.original :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'vr.original ILIKE :value:', {'~',1}, process => \'like' ]
+    ], [ 'platforms',
+      [ undef,   "v.c_platforms :op: ''", {qw|= =  != <>|} ],
+      [ str   => 'v.c_platforms :op: :value:', {'=' => 'LIKE', '!=' => 'NOT LIKE'}, process => \'like' ],
+      [ stra  => '(:value:)', {'=', 1}, join => ' OR ',  serialize => 'v.c_platforms LIKE :value:', \'like' ],
+      [ stra  => '(:value:)', {'!=',1}, join => ' AND ', serialize => 'v.c_platforms NOT LIKE :value:', \'like' ],
+    ], [ 'languages', # rather similar to platforms
+      [ undef,   "v.c_languages :op: ''", {qw|= =  != <>|} ],
+      [ str   => 'v.c_languages :op: :value:', {'=' => 'LIKE', '!=' => 'NOT LIKE'}, process => \'like' ],
+      [ stra  => '(:value:)', {'=', 1}, join => ' OR ',  serialize => 'v.c_languages LIKE :value:', process => \'like' ],
+      [ stra  => '(:value:)', {'!=',1}, join => ' AND ', serialize => 'v.c_languages NOT LIKE :value:', process => \'like' ],
+    ], [ 'search',
+      [ str   => '(vr.title ILIKE :value: OR vr.alias ILIKE :value: OR v.id IN(
+           SELECT rv.vid FROM releases r JOIN releases_rev rr ON rr.id = r.latest JOIN releases_vn rv ON rv.rid = rr.id
+           WHERE rr.title ILIKE :value: OR rr.original ILIKE :value:
+         ))', {'~', 1}, process => \'like' ],
+    ],
   ];
   return if !$where;
 
@@ -332,4 +351,68 @@ sub get_vn_res {
 
 
 1;
+
+
+__END__
+
+Filter definitions:
+
+  [ 'field name', [ type, 'sql string', { filterop => sqlop, .. }, %options{process serialize join} ] ]
+  type (does not have to be unique, to support multiple operators with different SQL but with the same type):
+    undef (null)
+    'str' (normal string)
+    'int' (normal int)
+    'stra' (array of strings)
+    'inra' (array of ints)
+  sql string:
+    The relevant SQL string, with :op: and :value: subsistutions. :value: is not available for type=undef
+  join: (only used when type is an array)
+    scalar, join string used when joining multiple values.
+  serialize: (serializes the values before join()'ing, only for arrays)
+    scalar, :op: and :value: subsistution
+  process: (process the value(s) that will be passed to Pg)
+    scalar, %s subsitutes the value
+    sub, argument = value, returns new value
+    scalarref, template:
+      \'like' => sub { (local$_=shift)=~y/%//; lc "%$_%" }
+
+  example for v.id:
+  [ 'id',
+    [ int  => 'v.id :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|} ],
+    [ inta => 'v.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, join => ',' ]
+  ]
+
+  example for vr.original:
+  [ 'original',
+    [ undef,   "vr.original :op: ''", {qw|= =  != <>|} ],
+    [ str   => 'vr.original :op: :value:', {qw|= =  != <>|} ],
+    [ str   => 'vr.original :op: :value:', {qw|~ ILIKE|}, process => \'like' ],
+  ]
+
+  example for v.c_platforms:
+  [ 'platforms',
+    [ undef,   "v.c_platforms :op: ''", {qw|= =  != <>|} ],
+    [ str   => 'v.c_platforms :op: :value:', {'=' => 'LIKE', '!=' => 'NOT LIKE'}, process => \'like' ],
+    [ stra  => '(:value:)', {'=' => 'LIKE', '!=' => 'NOT LIKE'}, join => ' or ', serialize => 'v.c_platforms :op: :value:', process => \'like' ],
+  ]
+
+  example for the VN search:
+  [ 'search', [ '(vr.title ILIKE :value:
+       OR vr.alias ILIKE :value:
+       OR v.id IN(
+         SELECT rv.vid
+         FROM releases r
+         JOIN releases_rev rr ON rr.id = r.latest
+         JOIN releases_vn rv ON rv.rid = rr.id
+         WHERE rr.title ILIKE :value:
+            OR rr.original ILIKE :value:
+     ))', {'~', 1}, process => \'like'
+  ]],
+
+  example for vn_anime (for the sake of the example...)
+  [ 'anime',
+    [ undef,  ':op:(SELECT 1 FROM vn_anime va WHERE va.vid = v.id)', {'=' => 'EXISTS', '!=' => 'NOT EXISTS'} ],
+    [ int  => 'v.id :op:(SELECT va.vid FROM vn_anime va WHERE va.aid = :value:)', {'=' => 'IN', '!=' => 'NOT IN'} ],
+    [ inta => 'v.id :op:(SELECT va.vid FROM vn_anime va WHERE va.aid IN(:value:))', {'=' => 'IN', '!=' => 'NOT IN'}, join => ','],
+  ]
 
