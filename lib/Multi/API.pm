@@ -84,9 +84,9 @@ sub filtertosql {
     # str
     : $_->[0] eq 'str'  ? defined($value) && !ref($value)
     # inta
-    : $_->[0] eq 'inta' ? ref($value) eq 'ARRAY' && !grep(!defined($_) || ref($_) || $_ !~ /^-?\d+$/, @$value)
+    : $_->[0] eq 'inta' ? ref($value) eq 'ARRAY' && @$value && !grep(!defined($_) || ref($_) || $_ !~ /^-?\d+$/, @$value)
     # stra
-    : $_->[0] eq 'stra' ? ref($value) eq 'ARRAY' && !grep(!defined($_) || ref($_), @$value)
+    : $_->[0] eq 'stra' ? ref($value) eq 'ARRAY' && @$value && !grep(!defined($_) || ref($_), @$value)
     # oops
     : die "Invalid filter type $_->[0]"
   ), @$t)[0];
