@@ -8,6 +8,13 @@
 :INC:index
 
 :SUB:Introduction
+<p>
+ This document describes the public API of VNDB and is intended to be read by
+ programmers. The API allows programs and websites to access (parts of) the VNDB
+ database without actually visiting a page on the website.
+ <br /><br />
+</p>
+
 <b>Design goals</b>
 <ul>
  <li>
@@ -168,6 +175,95 @@ however still required.<br />
 <p>
  The server replies with either 'ok' (no arguments), or 'error' (see below).
 </p>
+
+
+:SUB:The 'get' command
+<p>
+ This command is used to fetch data from the database. It accepts 3 arguments:
+ the type of data to fetch (e.g. visual novels or producers), what part of that
+ data to fetch (e.g. only the VN titles, or the descriptions and relations as
+ well), and lastly a filter expression.
+</p>
+<pre>
+ get <b class="standout">type flags filters</b>
+</pre>
+<p>
+ Type and flags are unescaped strings. The only type currently accepted is 'vn'.
+ Flags is a comma-separated list of flags indicating what info to fetch. The
+ filters, available flags and their meaning are documented separately for each
+ type. The following example will fetch basic information and information about
+ the related anime of the visual novel with id = 17:
+</p>
+<pre>
+ get vn basic,anime (id = 17)
+</pre>
+<p>
+ The server will reply with a 'results' message, this message is followed by a
+ JSON object describing the results. This object has two members: 'num', which
+ is an integer indicating the number of results returned, and 'items', which
+ contains the results as an array of objects. For example, the server could
+ reply to the previous command with the following message:
+</p>
+<pre>
+ results {"num":1, "items":[{
+   "id": 17, "title": "Ever17 -the out of infinity-", "original": null,
+   "released": "2002-08-29", "languages": ["en","ja","ru","zh"],
+   "platforms": ["drc","ps2","psp","win"],"anime": []
+ }]}
+</pre>
+<p>
+ Note that the actual result from the server can (and likely will) be formatted
+ differently and that the order of the members may not be the same. What each
+ member means and what possible values they can have differs per type and is
+ documented below.
+</p>
+
+
+
+:SUB:get vn
+<b>Returned object members:</b>
+<p>(the respective info flag is indicated within the parentheses)</p>
+<dl>
+ <dt>id (always present)</dt><dd>
+  integer, visual novel ID.
+ </dd><dt>title (basic)</dt><dd>
+  string, main title.
+ </dd><dt>original (basic)</dt><dd>
+  string, original/official title. Can be <b>null</b> when not known/available.
+ </dd><dt>released (basic)</dt><dd>
+  string, date of the first release. Can be <b>null</b>.
+ </dd><dt>languages (basic)</dt><dd>
+  array of strings. Can be an empty array when nothing has been released yet.
+ </dd><dt>platforms (basic)</dt><dd>
+  array of strings. Can be an empty array when unknown or nothing has been released yet.
+ </dd>
+</dl>
+<br />
+
+
+<b>Filters:</b>
+<dl>
+ <dt>id</dt><dd>
+  value: integer, operators: =, !=, &gt;, &gt;=, &lt; and &lt;=<br />
+  value: array of integers, operators: = and !=
+ </dd><dt>title</dt><dd>
+  value: string, operators: =, != and ~
+ </dd><dt>original</dt><dd>
+  value: null, operators: = and !=<br />
+  value: string, operators: =, != and ~
+ </dd><dt>platforms</dt><dd>
+  values: null, string or array of strings, operators: = and !=<br />
+  <i>TODO: document platform codes.</i>
+ </dd><dt>languages</dt><dd>
+  values: null, string or array of strings, operators: = and !=<br />
+  <i>TODO: document language codes.</i>
+ </dd><dt>search</dt><dd>
+  value: string, operator: ~<br />
+  This isn't an actual field, but performs a search on the titles of the visual
+  novel and its releases. Note that the algorithm of this search may change and
+  that it can use a different algorithm than the search function on the website.
+ </dd>
+</dl>
 
 
 
