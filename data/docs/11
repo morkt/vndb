@@ -216,66 +216,143 @@ however still required.<br />
  differently and that the order of the members may not be the same. What each
  member means and what possible values they can have differs per type and is
  documented below.
-</p>
+</p><br />
 
+<b>Returned object members for the 'vn' type:</b>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Member</td>
+  <td style="width: 50px">Flag</td>
+  <td style="width: 90px">Type</td>
+  <td style="width: 40px">null</td>
+  <td>Description</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>id</td>
+  <td>-</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>Visual novel ID</td>
+ </tr>
+ <tr>
+  <td>title</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>no</td>
+  <td>Main title</td>
+ </tr>
+ <tr class="odd">
+  <td>original</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Original/official title.</td>
+ </tr>
+ <tr>
+  <td>released</td>
+  <td>basic</td>
+  <td>date (string)</td>
+  <td>yes</td>
+  <td>Date of the first release.</td>
+ </tr>
+ <tr class="odd">
+  <td>languages</td>
+  <td>basic</td>
+  <td>array of strings</td>
+  <td>no</td>
+  <td>Can be an empty array when nothing has been released yet.</td>
+ </tr>
+ <tr>
+  <td>platforms</td>
+  <td>basic</td>
+  <td>array of strings</td>
+  <td>no</td>
+  <td>Can be an empty array when unknown or nothing has been released yet.</td>
+ </tr>
+ <tr class="odd">
+  <td>aliases</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Comma-separated list of aliases.</td>
+ </tr>
+ <tr>
+  <td>length</td>
+  <td>details</td>
+  <td>integer</td>
+  <td>yes</td>
+  <td>Length of the game, 1-5</td>
+ </tr>
+ <tr class="odd">
+  <td>description</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Description of the VN. Can include formatting codes as described in <a href="/d9.3">d9.3</a>.</td>
+ </tr>
+ <tr>
+  <td>links</td>
+  <td>details</td>
+  <td>object</td>
+  <td>no</td>
+  <td>
+   Contains the following members:<br />
+   "wikipedia", string, name of the related article on the English Wikipedia.<br />
+   "encubed", string, the URL-encoded tag used on <a href="http://novelnews.net/">encubed</a>.<br />
+   "renai", string, the name part of the url on <a href="http://renai.us/">renai.us</a>.<br />
+   All members can be <b>null</b> when no links are available or known to us.
+  </td>
+ </tr>
+</table>
 
-
-:SUB:get vn
-<b>Returned object members:</b>
-<p>(the respective info flag is indicated within the parentheses)</p>
-<dl>
- <dt>id (always present)</dt><dd>
-  integer, visual novel ID.
- </dd><dt>title (basic)</dt><dd>
-  string, main title.
- </dd><dt>original (basic)</dt><dd>
-  string, original/official title. Can be <b>null</b> when not known/available.
- </dd><dt>released (basic)</dt><dd>
-  string, date of the first release. Can be <b>null</b>.
- </dd><dt>languages (basic)</dt><dd>
-  array of strings. Can be an empty array when nothing has been released yet.
- </dd><dt>platforms (basic)</dt><dd>
-  array of strings. Can be an empty array when unknown or nothing has been released yet.
- </dd><dt>aliases (details)</dt><dd>
-  string, comma-separated list of aliases. Can be <b>null</b>.
- </dd><dt>length (details)</dt><dd>
-  integer between 1 and 5, length of the game. <b>null</b> when unknown.
- </dd><dt>description (details)</dt><dd>
-  string, description of the VN. Note that this description can include formatting codes as described in d9.3.
-  <b>null</b> when whe don't have a description.
- </dd><dt>links (details)</dt><dd>
-  object. Contains the following members:<br />
-  "wikipedia", string, name of the related article on the English Wikipedia.<br />
-  "encubed", string, the URL-encoded tag used on <a href="http://novelnews.net/">encubed</a>.<br />
-  "renai", string, the name part of the url on <a href="http://renai.us/">renai.us</a>.<br />
-  All members can be <b>null</b> when no links are available or known to us.
- </dd>
-</dl>
-<br />
-
-<b>Filters:</b>
-<dl>
- <dt>id</dt><dd>
-  value: integer, operators: =, !=, &gt;, &gt;=, &lt; and &lt;=<br />
-  value: array of integers, operators: = and !=
- </dd><dt>title</dt><dd>
-  value: string, operators: =, != and ~
- </dd><dt>original</dt><dd>
-  value: null, operators: = and !=<br />
-  value: string, operators: =, != and ~
- </dd><dt>platforms</dt><dd>
-  values: null, string or array of strings, operators: = and !=<br />
-  <i>TODO: document platform codes.</i>
- </dd><dt>languages</dt><dd>
-  values: null, string or array of strings, operators: = and !=<br />
-  <i>TODO: document language codes.</i>
- </dd><dt>search</dt><dd>
-  value: string, operator: ~<br />
-  This isn't an actual field, but performs a search on the titles of the visual
-  novel and its releases. Note that the algorithm of this search may change and
-  that it can use a different algorithm than the search function on the website.
- </dd>
-</dl>
+<b>Accepted filters for the 'vn' type:</b>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Field</td>
+  <td style="width: 90px">Value</td>
+  <td style="width: 90px">Operators</td>
+  <td>&nbsp;</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>id</td>
+  <td>integer<br />array of integers</td>
+  <td>= != &gt; &gt;= &lt; &lt;=<br />= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>title</td>
+  <td>string</td>
+  <td>= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>original</td>
+  <td>null<br />string</td>
+  <td>= !=<br />= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>platforms</td>
+  <td>null<br />string<br />array of strings</td>
+  <td><br />= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>languages</td>
+  <td>null<br />string<br />array of strings</td>
+  <td><br />= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>search</td>
+  <td>string</td>
+  <td>~</td>
+  <td>
+   This is not an actual field, but performs a search on the titles of the visual
+   novel and its releases. Note that the algorithm of this search may change and
+   that it can use a different algorithm than the search function on the website.
+  </td>
+</table>
 
 
 
