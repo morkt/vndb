@@ -71,7 +71,7 @@ sub filtertosql {
   # get the field that matches
   $t = (grep $_->[0] eq $field, @$t)[0];
   return cerr $c, filter => "Unknown field '$field'", %e if !$t;
-  shift @$t; # field name
+  $t = [ @$t[1..$#$t] ];
 
   # get the type that matches
   $t = (grep +(
@@ -101,7 +101,8 @@ sub filtertosql {
   return $sql if !defined $type;
 
   # pre-process the argument(s)
-  for (!$o{process} ? () : ref($value) eq 'ARRAY' ? @$value : $value) {
+  my @values = ref($value) eq 'ARRAY' ? @$value : $value;
+  for (!$o{process} ? () : @values) {
     if(!ref $o{process}) {
       $_ = sprintf $o{process}, $_;
     } elsif(ref($o{process}) eq 'CODE') {
@@ -114,24 +115,24 @@ sub filtertosql {
 
   # type=str and type=int are now quite simple
   if(!ref $value) {
-    $sql =~ s/:value:/push @$p, $value; '?'/eg;
+    $sql =~ s/:value:/push @$p, $values[0]; '?'/eg;
     return $sql;
   }
 
   # and do some processing for type=stra and type=inta
   my @parameters;
   if($o{serialize}) {
-    for (@$value) {
+    for (@values) {
       my $v = $o{serialize};
       $v =~ s/:op:/$ops->{$op}/g;
       $v =~ s/:value:/push @parameters, $_; '?'/eg;
       $_ = $v;
     }
   } else {
-    @parameters = @$value;
-    $_ = '?' for @$value;
+    @parameters = @values;
+    $_ = '?' for @values;
   }
-  my $joined = join defined $o{join} ? $o{join} : '', @$value;
+  my $joined = join defined $o{join} ? $o{join} : '', @values;
   $sql =~ s/:value:/push @$p, @parameters; $joined/eg;
   return $sql;
 }
