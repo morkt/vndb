@@ -304,6 +304,24 @@ however still required.<br />
    All members can be <b>null</b> when no links are available or known to us.
   </td>
  </tr>
+ <tr class="odd">
+  <td>anime</td>
+  <td>anime</td>
+  <td>array of objects</td>
+  <td>no</td>
+  <td>
+   List of anime related to the VN, each object has the following members:<br />
+   "id", integer, <a href="http://anidb.net/">AniDB</a> ID<br />
+   "ann_id", integer, <a href="http://animenewsnetwork.com/">AnimeNewsNetwork</a> ID<br />
+   "nfo_id", string, <a href="http://animenfo.com/">AnimeNfo</a> ID<br />
+   "title_romaji", string<br />
+   "title_kanji", string<br />
+   "year", integer, year in which the anime was aired<br />
+   "type", string<br />
+   All members except the "id" can be <b>null</b>. Note that this data is courtesy of AniDB,
+   and may not reflect the latest state of their information due to caching.
+  </td>
+ </tr>
 </table>
 
 <b>Accepted filters for the 'vn' type:</b>
