@@ -63,6 +63,14 @@ sub formatdate {
 }
 
 
+sub parsedate {
+  return 0 if !defined $_[0];
+  return \'Invalid date value' if $_[0] !~ /^(?:tba|\d{4}(?:-\d{2}(?:-\d{2})?)?)$/;
+  my @v = split /-/, $_[0];
+  return $v[0] eq 'tba' ? 99999999 : @v==1 ? "$v[0]9999" : @v==2 ? "$v[0]$v[1]99" : $v[0].$v[1].$v[2];
+}
+
+
 # see the notes after __END__ for an explanation of what this function does
 sub filtertosql {
   my($c, $p, $t, $field, $op, $value) = ($_[1], $_[2], $_[3], @{$_[0]});
@@ -107,6 +115,7 @@ sub filtertosql {
       $_ = sprintf $o{process}, $_;
     } elsif(ref($o{process}) eq 'CODE') {
       $_ = $o{process}->($_);
+      return cerr $c, filter => $$_, %e if ref($_) eq 'SCALAR';
     } elsif(${$o{process}} eq 'like') {
       y/%//;
       $_ = "%$_%";
@@ -312,6 +321,9 @@ sub get_vn {
       [ undef,   "vr.original :op: ''", {qw|= =  != <>|} ],
       [ str   => 'vr.original :op: :value:', {qw|= =  != <>|} ],
       [ str   => 'vr.original ILIKE :value:', {'~',1}, process => \'like' ]
+    ], [ 'released',
+      [ undef,   'v.c_released :op: 0', {qw|= =  != <>|} ],
+      [ str   => 'v.c_released :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, process => \&parsedate ],
     ], [ 'platforms',
       [ undef,   "v.c_platforms :op: ''", {qw|= =  != <>|} ],
       [ str   => 'v.c_platforms :op: :value:', {'=' => 'LIKE', '!=' => 'NOT LIKE'}, process => \'like' ],
