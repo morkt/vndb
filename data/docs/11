@@ -310,7 +310,7 @@ however still required.<br />
   <td>array of objects</td>
   <td>no</td>
   <td>
-   List of anime related to the VN, each object has the following members:<br />
+   (Possibly empty) list of anime related to the VN, each object has the following members:<br />
    "id", integer, <a href="http://anidb.net/">AniDB</a> ID<br />
    "ann_id", integer, <a href="http://animenewsnetwork.com/">AnimeNewsNetwork</a> ID<br />
    "nfo_id", string, <a href="http://animenfo.com/">AnimeNfo</a> ID<br />
@@ -320,6 +320,19 @@ however still required.<br />
    "type", string<br />
    All members except the "id" can be <b>null</b>. Note that this data is courtesy of AniDB,
    and may not reflect the latest state of their information due to caching.
+  </td>
+ </tr>
+ <tr>
+  <td>relations</td>
+  <td>relations</td>
+  <td>array of objects</td>
+  <td>no</td>
+  <td>
+   (Possibly empty) list of related visual novels, each object has the following members:<br />
+   "id", integer<br />
+   "relation", string, relation to the VN<br />
+   "title", string, (romaji) title<br />
+   "original", string, original/official title, can be <b>null</b>.
   </td>
  </tr>
 </table>

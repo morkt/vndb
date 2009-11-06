@@ -303,7 +303,7 @@ sub login_res { # num, res, [ c, arg ]
 sub get_vn {
   my($c, $info, $filters) = @_[ARG0..$#_];
 
-  return cerr $c, getinfo => "Unkown info flag '$_'", flag => $_ for (grep !/^(basic|details|anime)$/, @$info);
+  return cerr $c, getinfo => "Unkown info flag '$_'", flag => $_ for (grep !/^(basic|details|anime|relations)$/, @$info);
 
   my $select = 'v.id, v.latest';
   $select .= ', vr.title, vr.original, v.c_released, v.c_languages, v.c_platforms' if grep /basic/, @$info;
@@ -395,14 +395,34 @@ sub get_vn_res {
     $get->{anime} = 1;
   }
 
+  elsif($get->{type} eq 'relations') {
+    for my $i (@{$get->{list}}) {
+      $i->{relations} = [ grep $i->{latest} == $_->{vid1}, @$res ];
+    }
+    for (@$res) {
+      $_->{id} *= 1;
+      $_->{original} ||= undef;
+      delete $_->{vid1};
+    }
+    $get->{relations} = 1;
+  }
+
   # fetch more results
+  my @ids = map $_->{latest}, @{$get->{list}};
+  my $ids = join ',', map '?', @ids;
+
   if(!$get->{anime} && grep /anime/, @{$get->{info}}) {
-    my @ids = map $_->{latest}, @{$get->{list}};
-    my $ids = join ',', map '?', @ids;
     return $_[KERNEL]->post(pg => query => qq|
       SELECT va.vid, a.id, a.year, a.ann_id, a.nfo_id, a.type, a.title_romaji, a.title_kanji
         FROM anime a JOIN vn_anime va ON va.aid = a.id WHERE va.vid IN($ids)|,
       \@ids, 'get_vn_res', { %$get, type => 'anime' });
+  }
+
+  if(!$get->{relations} && grep /relations/, @{$get->{info}}) {
+    return $_[KERNEL]->post(pg => query => qq|
+      SELECT vl.vid1, v.id, vl.relation, vr.title, vr.original FROM vn_relations vl
+        JOIN vn v ON v.id = vl.vid2 JOIN vn_rev vr ON vr.id = v.latest WHERE vl.vid1 IN($ids) AND NOT v.hidden|,
+      \@ids, 'get_vn_res', { %$get, type => 'relations' });
   }
 
   # send and log
