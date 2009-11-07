@@ -475,7 +475,7 @@ sub get_vn_res {
 sub get_release {
   my($c, $info, $filters) = @_[ARG0..$#_];
 
-  return cerr $c, getinfo => "Unkown info flag '$_'", flag => $_ for (grep !/^(basic|details)$/, @$info);
+  return cerr $c, getinfo => "Unkown info flag '$_'", flag => $_ for (grep !/^(basic|details|vn|producers)$/, @$info);
 
   my $select = 'r.id, r.latest';
   $select .= ', rr.title, rr.original, rr.released, rr.type, rr.patch, rr.freeware, rr.doujin' if grep /basic/, @$info;
@@ -514,11 +514,11 @@ sub get_release_res {
         $_->{doujin}   = $_->{doujin}   ? TRUE : FALSE;
       }
       if(grep /details/, @{$get->{info}}) {
-        $_->{website}    ||= undef;
-        $_->{notes}      ||= undef;
-        $_->{minage}       = $_->{minage} < 0 ? undef : $_->{minage}*1;
-        $_->{gtin}       ||= undef;
-        $_->{catalog}    ||= undef;
+        $_->{website}  ||= undef;
+        $_->{notes}    ||= undef;
+        $_->{minage}     = $_->{minage} < 0 ? undef : $_->{minage}*1;
+        $_->{gtin}     ||= undef;
+        $_->{catalog}  ||= undef;
       }
     }
     $get->{list} = $res;
@@ -545,6 +545,30 @@ sub get_release_res {
     }
     $get->{media} = 1;
   }
+  elsif($get->{type} eq 'vn') {
+    for my $i (@{$get->{list}}) {
+      $i->{vn} = [ grep $i->{latest} == $_->{rid}, @$res ];
+    }
+    for (@$res) {
+      $_->{id}*=1;
+      $_->{original} ||= undef;
+      delete $_->{rid};
+    }
+    $get->{vn} = 1;
+  }
+  elsif($get->{type} eq 'producers') {
+    for my $i (@{$get->{list}}) {
+      $i->{producers} = [ grep $i->{latest} == $_->{rid}, @$res ];
+    }
+    for (@$res) {
+      $_->{id}*=1;
+      $_->{original}  ||= undef;
+      $_->{developer} = $_->{developer} ? TRUE : FALSE;
+      $_->{publisher} = $_->{publisher} ? TRUE : FALSE;
+      delete $_->{rid};
+    }
+    $get->{producers} = 1;
+  }
 
   # get more info
   my @ids = map $_->{latest}, @{$get->{list}};
@@ -561,6 +585,16 @@ sub get_release_res {
   !$get->{media} && grep(/details/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query =>
     qq|SELECT rid, medium, qty FROM releases_media WHERE rid IN($ids)|,
     \@ids, 'get_release_res', { %$get, type => 'media' });
+
+  !$get->{vn} && grep(/vn/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+    SELECT rv.rid, v.id, vr.title, vr.original FROM releases_vn rv JOIN vn v ON v.id = rv.vid
+      JOIN vn_rev vr ON vr.id = v.latest WHERE NOT v.hidden AND rv.rid IN($ids)|,
+    \@ids, 'get_release_res', { %$get, type => 'vn' });
+
+  !$get->{producers} && grep(/producers/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+    SELECT rp.rid, rp.developer, rp.publisher, p.id, pr.type, pr.name, pr.original FROM releases_producers rp
+      JOIN producers p ON p.id = rp.pid JOIN producers_rev pr ON pr.id = p.latest WHERE NOT p.hidden AND rp.rid IN($ids)|,
+    \@ids, 'get_release_res', { %$get, type => 'producers' });
 
   # send results
   delete $_->{latest} for @{$get->{list}};

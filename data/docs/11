@@ -530,6 +530,31 @@ however still required.<br />
    An empty array is returned when the media are unknown.
   </td>
  </tr>
+ <tr class="odd">
+  <td>vn</td>
+  <td>vn</td>
+  <td>array of objects</td>
+  <td>no</td>
+  <td>
+   Array of visual novels linked to this release. Objects have the following members:
+   id, title and original. These are the same as the members of the "get vn" command.
+  </td>
+ </tr>
+ <tr>
+  <td>producers</td>
+  <td>producers</td>
+  <td>array of objects</td>
+  <td>no</td>
+  <td>
+   (Possibly empty) list of producers involved in this release. Objects have the following members:<br />
+   "id", integer<br />
+   "developer", boolean,<br />
+   "publisher", boolean,<br />
+   "name", string, romaji name<br />
+   "original", string, official/original name, can be <b>null</b><br />
+   "type", string, producer type
+  </td>
+ </tr>
 </table>
 
 <b>Accepted filters for the 'release' type:</b>
