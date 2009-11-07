@@ -571,6 +571,72 @@ however still required.<br />
   <td>= != &gt; &gt;= &lt; &lt;=<br />= !=</td>
   <td>&nbsp;</td>
  </tr>
+ <tr>
+  <td>vn</td>
+  <td>integer</td>
+  <td>=</td>
+  <td>Find releases linked to the given visual novel ID.</td>
+ </tr>
+ <tr class="odd">
+  <td>title</td>
+  <td>string</td>
+  <td>= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>original</td>
+  <td>null<br />string</td>
+  <td>= !=<br />= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>released</td>
+  <td>null<br />date (string)</td>
+  <td>= !=<br />= != &gt; &gt;= &lt; &lt;=</td>
+  <td>Note about released filter for the vn type also applies here.</td>
+ </tr>
+ <tr>
+  <td>patch</td>
+  <td>boolean</td>
+  <td>=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>freeware</td>
+  <td>boolean</td>
+  <td>=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>doujin</td>
+  <td>boolean</td>
+  <td>=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>type</td>
+  <td>string</td>
+  <td>= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>gtin</td>
+  <td>int</td>
+  <td>= !=</td>
+  <td>Value can also be escaped as a string (if you risk an integer overflow otherwise)</td>
+ </tr>
+ <tr class="odd">
+  <td>catalog</td>
+  <td>string</td>
+  <td>= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>languages</td>
+  <td>string<br />array of strings</td>
+  <td>= !=</td>
+  <td>&nbsp;</td>
+ </tr>
 </table>
 
 

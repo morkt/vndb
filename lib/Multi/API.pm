@@ -14,6 +14,7 @@ use POE::Filter::VNDBAPI 'encode_filters';
 use Digest::SHA 'sha256_hex';
 use Encode 'encode_utf8';
 use Time::HiRes 'time'; # important for throttling
+use JSON::XS;
 
 
 # not exported by Socket, taken from netinet/tcp.h (specific to Linux, AFAIK)
@@ -107,6 +108,8 @@ sub filtertosql {
     : $_->[0] eq 'inta' ? ref($value) eq 'ARRAY' && @$value && !grep(!defined($_) || ref($_) || $_ !~ /^-?\d+$/, @$value)
     # stra
     : $_->[0] eq 'stra' ? ref($value) eq 'ARRAY' && @$value && !grep(!defined($_) || ref($_), @$value)
+    # bool
+    : $_->[0] eq 'bool' ? defined($value) && JSON::XS::is_bool($value)
     # oops
     : die "Invalid filter type $_->[0]"
   ), @$t)[0];
@@ -122,19 +125,24 @@ sub filtertosql {
 
   # pre-process the argument(s)
   my @values = ref($value) eq 'ARRAY' ? @$value : $value;
-  for (!$o{process} ? () : @values) {
+  for my $v (!$o{process} ? () : @values) {
     if(!ref $o{process}) {
-      $_ = sprintf $o{process}, $_;
+      $v = sprintf $o{process}, $v;
     } elsif(ref($o{process}) eq 'CODE') {
-      $_ = $o{process}->($_);
-      return cerr $c, filter => $$_, %e if ref($_) eq 'SCALAR';
+      $v = $o{process}->($v);
+      return cerr $c, filter => $$v, %e if ref($v) eq 'SCALAR';
     } elsif(${$o{process}} eq 'like') {
       y/%//;
-      $_ = "%$_%";
+      $v = "%$v%";
+    } elsif(${$o{process}} eq 'lang') {
+      return cerr $c, filter => 'Invalid language code', %e if !grep $v eq $_, @{$VNDB::S{languages}};
     }
   }
 
-  # type=str and type=int are now quite simple
+  # type=bool and no processing done? convert bool to what DBD::Pg wants
+  $values[0] = $values[0] ? 1 : 0 if $type eq 'bool' && !$o{process};
+
+  # type=str, int and bool are now quite simple
   if(!ref $value) {
     $sql =~ s/:value:/push @$p, $values[0]; '?'/eg;
     return $sql;
@@ -456,12 +464,12 @@ sub get_vn_res {
   my @ids = map $_->{latest}, @{$get->{list}};
   my $ids = join ',', map '?', @ids;
 
-  !$get->{anime} && grep(/anime/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+  @ids && !$get->{anime} && grep(/anime/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
     SELECT va.vid, a.id, a.year, a.ann_id, a.nfo_id, a.type, a.title_romaji, a.title_kanji
       FROM anime a JOIN vn_anime va ON va.aid = a.id WHERE va.vid IN($ids)|,
     \@ids, 'get_vn_res', { %$get, type => 'anime' });
 
-  !$get->{relations} && grep(/relations/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+  @ids && !$get->{relations} && grep(/relations/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
     SELECT vl.vid1, v.id, vl.relation, vr.title, vr.original FROM vn_relations vl
       JOIN vn v ON v.id = vl.vid2 JOIN vn_rev vr ON vr.id = v.latest WHERE vl.vid1 IN($ids) AND NOT v.hidden|,
     \@ids, 'get_vn_res', { %$get, type => 'relations' });
@@ -486,6 +494,31 @@ sub get_release {
     [ 'id',
       [ 'int' => 'r.id :op: :value:', {qw|= =  != <>  > >  >= >=  < <  <= <=|} ],
       [ inta  => 'r.id :op:(:value:)', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',' ],
+    ], [ 'vn',
+      [ 'int' => 'rr.id IN(SELECT rv.rid FROM releases_vn rv WHERE rv.vid = :value:)', {'=',1} ],
+    ], [ 'title',
+      [ str   => 'rr.title :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'rr.title ILIKE :value:', {'~',1}, process => \'like' ],
+    ], [ 'original',
+      [ undef,   "rr.original :op: ''", {qw|= =  != <>|} ],
+      [ str   => 'rr.original :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'rr.original ILIKE :value:', {'~',1}, process => \'like' ]
+    ], [ 'released',
+      [ undef,   'rr.released :op: 0', {qw|= =  != <>|} ],
+      [ str   => 'rr.released :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, process => \&parsedate ],
+    ], [ 'patch',    [ bool  => 'rr.patch = :value:',    {'=',1} ],
+    ], [ 'freeware', [ bool  => 'rr.freeware = :value:', {'=',1} ],
+    ], [ 'doujin',   [ bool  => 'rr.doujin = :value:',   {'=',1} ],
+    ], [ 'type',
+      [ str   => 'rr.type :op: :value:', {qw|= =  != <>|},
+        process => sub { !grep($_ eq $_[0], @{$VNDB::S{release_types}}) ? \'No such release type' : $_[0] } ],
+    ], [ 'gtin',
+      [ 'int' => 'rr.gtin :op: :value:', {qw|= =  != <>|} ],
+    ], [ 'catalog',
+      [ str   => 'rr.catalog :op: :value:', {qw|= =  != <>|} ],
+    ], [ 'languages',
+      [ str   => 'rr.id :op:(SELECT rl.rid FROM releases_lang rl WHERE rl.lang = :value:)', {'=' => 'IN', '!=' => 'NOT IN'}, process => \'lang' ],
+      [ stra  => 'rr.id :op:(SELECT rl.rid FROM releases_lang rl WHERE rl.lang IN(:value:))', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',', process => \'lang' ],
     ],
   ];
   return if !$where;
@@ -574,24 +607,24 @@ sub get_release_res {
   my @ids = map $_->{latest}, @{$get->{list}};
   my $ids = join ',', map '?', @ids;
 
-  !$get->{languages} && grep(/basic/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query =>
+  @ids && !$get->{languages} && grep(/basic/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query =>
     qq|SELECT rid, lang FROM releases_lang WHERE rid IN($ids)|,
     \@ids, 'get_release_res', { %$get, type => 'languages' });
 
-  !$get->{platforms} && grep(/details/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query =>
+  @ids && !$get->{platforms} && grep(/details/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query =>
     qq|SELECT rid, platform FROM releases_platforms WHERE rid IN($ids)|,
     \@ids, 'get_release_res', { %$get, type => 'platforms' });
 
-  !$get->{media} && grep(/details/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query =>
+  @ids && !$get->{media} && grep(/details/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query =>
     qq|SELECT rid, medium, qty FROM releases_media WHERE rid IN($ids)|,
     \@ids, 'get_release_res', { %$get, type => 'media' });
 
-  !$get->{vn} && grep(/vn/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+  @ids && !$get->{vn} && grep(/vn/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
     SELECT rv.rid, v.id, vr.title, vr.original FROM releases_vn rv JOIN vn v ON v.id = rv.vid
       JOIN vn_rev vr ON vr.id = v.latest WHERE NOT v.hidden AND rv.rid IN($ids)|,
     \@ids, 'get_release_res', { %$get, type => 'vn' });
 
-  !$get->{producers} && grep(/producers/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+  @ids && !$get->{producers} && grep(/producers/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
     SELECT rp.rid, rp.developer, rp.publisher, p.id, pr.type, pr.name, pr.original FROM releases_producers rp
       JOIN producers p ON p.id = rp.pid JOIN producers_rev pr ON pr.id = p.latest WHERE NOT p.hidden AND rp.rid IN($ids)|,
     \@ids, 'get_release_res', { %$get, type => 'producers' });
@@ -616,6 +649,7 @@ Filter definitions:
     'int' (normal int)
     'stra' (array of strings)
     'inra' (array of ints)
+    'bool'
   sql string:
     The relevant SQL string, with :op: and :value: subsistutions. :value: is not available for type=undef
   join: (only used when type is an array)
@@ -627,6 +661,7 @@ Filter definitions:
     sub, argument = value, returns new value
     scalarref, template:
       \'like' => sub { (local$_=shift)=~y/%//; lc "%$_%" }
+      \'lang' => sub { !grep($_ eq $_[0], @{$VNDB::S{languages}}) ? \'Invalid language' : $_[0] }
 
   example for v.id:
   [ 'id',
