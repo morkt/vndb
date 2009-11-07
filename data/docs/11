@@ -53,7 +53,14 @@ server resources and prevent abuse of this service.</p>
  <li>5 connections per IP. All connections that are opened after reaching this limit will be immediately closed.</li>
  <li>3 connections per user. The login command will reply with a 'sesslimit' error when reaching this limit.</li>
  <li>Each command currently returns at most 10 results. <i>TODO: make configurable?</i></li>
- <li><i>more to come...</i></li>
+ <li>30 commands per minute per user. Server will reply with a 'throttled' error (type="cmd") when reaching this limit.</li>
+ <li>
+  1 second of SQL time per minute per user. SQL time is the total time taken to
+  run the database queries for each command.  This depends on both the command
+  (filters and get flags) and server load, and is thus not very predictable.
+  Server will reply with a 'throttled' error with type="sql" upon reaching
+  this limit.
+ </li>
 </ul>
 
 <br />
@@ -421,6 +428,14 @@ however still required.<br />
  <dt>missing</dt><dd>A JSON object argument is missing a required member. The name of which is given in the additional "field" member.</dd>
  <dt>badarg</dt><dd>A JSON value is of the wrong type or in the wrong format. The name of the incorrect field is given in a "field" member.</dd>
  <dt>needlogin</dt><dd>Need to be logged in to issue this command.</dd>
+ <dt>throttled</td><dd>
+  You have used too many server resources within a short time, and need to wait
+  a bit before sending the next command.  The type of throttle is given in the
+  "type" member, and the "minwait" and "fullwait" members tell you how long you
+  need to wait before sending the next command and when you can start bursting
+  again (this is the recommended waiting time), respectively.  Both values are in
+  seconds, with one decimal after the point.
+ </dd>
  <dt>auth</dt><dd>(login) Incorrect username/password combination.</dd>
  <dt>loggedin</dt><dd>(login) Already logged in. Only one successful login command can be issues on one connection.</dd>
  <dt>sesslimit</dt><dd>(login) Too many open sessions for the current user.</dd>

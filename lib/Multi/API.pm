@@ -13,12 +13,18 @@ use POE 'Wheel::SocketFactory', 'Wheel::ReadWrite';
 use POE::Filter::VNDBAPI 'encode_filters';
 use Digest::SHA 'sha256_hex';
 use Encode 'encode_utf8';
+use Time::HiRes 'time'; # important for throttling
 
 
 # not exported by Socket, taken from netinet/tcp.h (specific to Linux, AFAIK)
 sub TCP_KEEPIDLE  { 4 }
 sub TCP_KEEPINTVL { 5 }
 sub TCP_KEEPCNT   { 6 }
+
+
+# Global throttle hash, key = username, value = [ cmd_time, sql_time ]
+# TODO: clean up items in this hash when username isn't connected anymore and throttle times < current time
+my %throttle;
 
 
 sub spawn {
@@ -37,6 +43,8 @@ sub spawn {
       conn_per_ip => 5,
       sess_per_user => 3,
       tcp_keepalive => [ 120, 60, 3 ], # time, intvl, probes
+      throttle_cmd => [ 2, 30 ], # interval between each command, allowed burst
+      throttle_sql => [ 60, 1 ], # sql time multiplier, allowed burst (in sql time)
       @_,
       c => {},
     },
@@ -247,13 +255,28 @@ sub client_input {
   # when we're here, we can assume that $cmd contains a valid command
   # and the arguments are syntactically valid
 
-  # login
+  # handle login command
   return $_[KERNEL]->yield(login => $c, @$arg) if $cmd eq 'login';
-
   return cerr $c, needlogin => 'Not logged in.' if !$c->{username};
-  # TODO: throttling
 
-  # get
+  # update throttle array of the current user
+  my $time = time;
+  $_ < $time && ($_ = $time) for @{$c->{throttle}};
+
+  # check for thottle rule violation
+  my @limits = ('cmd', 'sql');
+  for (0..$#limits) {
+    my $threshold = $_[HEAP]{"throttle_$limits[$_]"}[0]*$_[HEAP]{"throttle_$limits[$_]"}[1];
+    return cerr $c, throttled => 'Throttle limit reached.', type => $limits[$_],
+        minwait  => int(10*($c->{throttle}[$_]-$time-$threshold))/10+1,
+        fullwait => int(10*($c->{throttle}[$_]-$time))/10+1
+      if $c->{throttle}[$_]-$time > $threshold;
+  }
+
+  # update commands/second throttle
+  $c->{throttle}[0] += $_[HEAP]{throttle_cmd}[0];
+
+  # handle get command
   return cerr $c, 'parse', "Unkown command '$cmd'" if $cmd ne 'get';
   my $type = shift @$arg;
   return cerr $c, 'gettype', "Unknown get type: '$type'" if $type ne 'vn';
@@ -293,8 +316,12 @@ sub login_res { # num, res, [ c, arg ]
   my $encrypted = sha256_hex($VNDB::S{global_salt}.encode_utf8($arg->{password}).encode_utf8($res->[0]{salt}));
   return cerr $c, auth => "Wrong password for user '$arg->{username}'" if lc($encrypted) ne lc($res->[0]{passwd});
 
-  $c->{wheel}->put(['ok']);
+  # link this connection to the users' throttle array (create this if necessary)
+  $throttle{$arg->{username}} = [ time, time ] if !$throttle{$arg->{username}};
+  $c->{throttle} = $throttle{$arg->{username}};
+
   $c->{username} = $arg->{username};
+  $c->{wheel}->put(['ok']);
   $_[KERNEL]->yield(log => $c,
     'Successful login by %s using client "%s" ver. %s', $arg->{username}, $arg->{client}, $arg->{clientver});
 }
@@ -424,6 +451,9 @@ sub get_vn_res {
         JOIN vn v ON v.id = vl.vid2 JOIN vn_rev vr ON vr.id = v.latest WHERE vl.vid1 IN($ids) AND NOT v.hidden|,
       \@ids, 'get_vn_res', { %$get, type => 'relations' });
   }
+
+  # update sql throttle
+  $get->{c}{throttle}[1] += $get->{time}*$_[HEAP]{throttle_sql}[0];
 
   # send and log
   delete $_->{latest} for @{$get->{list}};
