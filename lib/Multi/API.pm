@@ -17,9 +17,14 @@ use Time::HiRes 'time'; # important for throttling
 
 
 # not exported by Socket, taken from netinet/tcp.h (specific to Linux, AFAIK)
-sub TCP_KEEPIDLE  { 4 }
-sub TCP_KEEPINTVL { 5 }
-sub TCP_KEEPCNT   { 6 }
+sub TCP_KEEPIDLE  () { 4 }
+sub TCP_KEEPINTVL () { 5 }
+sub TCP_KEEPCNT   () { 6 }
+
+
+# what our JSON encoder considers 'true' or 'false'
+sub TRUE  () { JSON::XS::true }
+sub FALSE () { JSON::XS::false }
 
 
 # Global throttle hash, key = username, value = [ cmd_time, sql_time ]
@@ -33,8 +38,7 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown log server_error client_connect client_error client_input
-        login login_res
-        get_vn get_vn_res
+        login login_res get_results get_vn get_vn_res get_release get_release_res
       |],
     ],
     heap => {
@@ -279,7 +283,7 @@ sub client_input {
   # handle get command
   return cerr $c, 'parse', "Unkown command '$cmd'" if $cmd ne 'get';
   my $type = shift @$arg;
-  return cerr $c, 'gettype', "Unknown get type: '$type'" if $type ne 'vn';
+  return cerr $c, 'gettype', "Unknown get type: '$type'" if $type !~ /^(?:vn|release)$/;
   $_[KERNEL]->yield("get_$type", $c, @$arg);
 }
 
@@ -324,6 +328,20 @@ sub login_res { # num, res, [ c, arg ]
   $c->{wheel}->put(['ok']);
   $_[KERNEL]->yield(log => $c,
     'Successful login by %s using client "%s" ver. %s', $arg->{username}, $arg->{client}, $arg->{clientver});
+}
+
+
+sub get_results {
+  my $get = $_[ARG0]; # hashref, must contain: type, c, queries, time, list, info, filters,
+
+  # update sql throttle
+  $get->{c}{throttle}[1] += $get->{time}*$_[HEAP]{throttle_sql}[0];
+
+  # send and log
+  my $num = @{$get->{list}};
+  $get->{c}{wheel}->put([ results => { num => $num, items => $get->{list} }]);
+  $_[KERNEL]->yield(log => $get->{c}, "T:%4.0fms  Q:%d  R:%02d get %s %s %s",
+    $get->{time}*1000, $get->{queries}, $num, $get->{type}, join(',', @{$get->{info}}), encode_filters $get->{filters});
 }
 
 
@@ -438,29 +456,115 @@ sub get_vn_res {
   my @ids = map $_->{latest}, @{$get->{list}};
   my $ids = join ',', map '?', @ids;
 
-  if(!$get->{anime} && grep /anime/, @{$get->{info}}) {
-    return $_[KERNEL]->post(pg => query => qq|
-      SELECT va.vid, a.id, a.year, a.ann_id, a.nfo_id, a.type, a.title_romaji, a.title_kanji
-        FROM anime a JOIN vn_anime va ON va.aid = a.id WHERE va.vid IN($ids)|,
-      \@ids, 'get_vn_res', { %$get, type => 'anime' });
-  }
+  !$get->{anime} && grep(/anime/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+    SELECT va.vid, a.id, a.year, a.ann_id, a.nfo_id, a.type, a.title_romaji, a.title_kanji
+      FROM anime a JOIN vn_anime va ON va.aid = a.id WHERE va.vid IN($ids)|,
+    \@ids, 'get_vn_res', { %$get, type => 'anime' });
 
-  if(!$get->{relations} && grep /relations/, @{$get->{info}}) {
-    return $_[KERNEL]->post(pg => query => qq|
-      SELECT vl.vid1, v.id, vl.relation, vr.title, vr.original FROM vn_relations vl
-        JOIN vn v ON v.id = vl.vid2 JOIN vn_rev vr ON vr.id = v.latest WHERE vl.vid1 IN($ids) AND NOT v.hidden|,
-      \@ids, 'get_vn_res', { %$get, type => 'relations' });
-  }
+  !$get->{relations} && grep(/relations/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+    SELECT vl.vid1, v.id, vl.relation, vr.title, vr.original FROM vn_relations vl
+      JOIN vn v ON v.id = vl.vid2 JOIN vn_rev vr ON vr.id = v.latest WHERE vl.vid1 IN($ids) AND NOT v.hidden|,
+    \@ids, 'get_vn_res', { %$get, type => 'relations' });
 
-  # update sql throttle
-  $get->{c}{throttle}[1] += $get->{time}*$_[HEAP]{throttle_sql}[0];
-
-  # send and log
+  # send results
   delete $_->{latest} for @{$get->{list}};
-  $num = @{$get->{list}};
-  $get->{c}{wheel}->put([ results => { num => $num, items => $get->{list} }]);
-  $_[KERNEL]->yield(log => $get->{c}, "T:%4.0fms  Q:%d  R:%02d get vn %s %s",
-    $get->{time}*1000, $get->{queries}, $num, join(',', @{$get->{info}}), encode_filters $get->{filters});
+  $_[KERNEL]->yield(get_results => { %$get, type => 'vn' });
+}
+
+
+sub get_release {
+  my($c, $info, $filters) = @_[ARG0..$#_];
+
+  return cerr $c, getinfo => "Unkown info flag '$_'", flag => $_ for (grep !/^(basic|details)$/, @$info);
+
+  my $select = 'r.id, r.latest';
+  $select .= ', rr.title, rr.original, rr.released, rr.type, rr.patch, rr.freeware, rr.doujin' if grep /basic/, @$info;
+  $select .= ', rr.website, rr.notes, rr.minage, rr.gtin, rr.catalog' if grep /details/, @$info;
+
+  my @placeholders;
+  my $where = encode_filters $filters, \&filtertosql, $c, \@placeholders, [
+    [ 'id',
+      [ 'int' => 'r.id :op: :value:', {qw|= =  != <>  > >  >= >=  < <  <= <=|} ],
+      [ inta  => 'r.id :op:(:value:)', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',' ],
+    ],
+  ];
+  return if !$where;
+
+  $_[KERNEL]->post(pg => query =>
+    qq|SELECT $select FROM releases r JOIN releases_rev rr ON rr.id = r.latest WHERE $where AND NOT hidden LIMIT 10|,
+    \@placeholders, 'get_release_res', { c => $c, info => $info, filters => $filters });
+}
+
+
+sub get_release_res {
+  my($num, $res, $get, $time) = (@_[ARG0..$#_]);
+
+  $get->{time} += $time;
+  $get->{queries}++;
+
+  # process the results
+  if(!$get->{type}) {
+    for (@$res) {
+      $_->{id}*=1;
+      if(grep /basic/, @{$get->{info}}) {
+        $_->{original} ||= undef;
+        $_->{released} = formatdate($_->{released});
+        $_->{patch}    = $_->{patch}    ? TRUE : FALSE;
+        $_->{freeware} = $_->{freeware} ? TRUE : FALSE;
+        $_->{doujin}   = $_->{doujin}   ? TRUE : FALSE;
+      }
+      if(grep /details/, @{$get->{info}}) {
+        $_->{website}    ||= undef;
+        $_->{notes}      ||= undef;
+        $_->{minage}       = $_->{minage} < 0 ? undef : $_->{minage}*1;
+        $_->{gtin}       ||= undef;
+        $_->{catalog}    ||= undef;
+      }
+    }
+    $get->{list} = $res;
+  }
+  elsif($get->{type} eq 'languages') {
+    for my $i (@{$get->{list}}) {
+      $i->{languages} = [ map $i->{latest} == $_->{rid} ? $_->{lang} : (), @$res ];
+    }
+    $get->{languages} = 1;
+  }
+  elsif($get->{type} eq 'platforms') {
+    for my $i (@{$get->{list}}) {
+      $i->{platforms} = [ map $i->{latest} == $_->{rid} ? $_->{platform} : (), @$res ];
+    }
+    $get->{platforms} = 1;
+  }
+  elsif($get->{type} eq 'media') {
+    for my $i (@{$get->{list}}) {
+      $i->{media} = [ grep $i->{latest} == $_->{rid}, @$res ];
+    }
+    for (@$res) {
+      delete $_->{rid};
+      $_->{qty} = $VNDB::S{media}{$_->{medium}} ? $_->{qty}*1 : undef;
+    }
+    $get->{media} = 1;
+  }
+
+  # get more info
+  my @ids = map $_->{latest}, @{$get->{list}};
+  my $ids = join ',', map '?', @ids;
+
+  !$get->{languages} && grep(/basic/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query =>
+    qq|SELECT rid, lang FROM releases_lang WHERE rid IN($ids)|,
+    \@ids, 'get_release_res', { %$get, type => 'languages' });
+
+  !$get->{platforms} && grep(/details/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query =>
+    qq|SELECT rid, platform FROM releases_platforms WHERE rid IN($ids)|,
+    \@ids, 'get_release_res', { %$get, type => 'platforms' });
+
+  !$get->{media} && grep(/details/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query =>
+    qq|SELECT rid, medium, qty FROM releases_media WHERE rid IN($ids)|,
+    \@ids, 'get_release_res', { %$get, type => 'media' });
+
+  # send results
+  delete $_->{latest} for @{$get->{list}};
+  $_[KERNEL]->yield(get_results => { %$get, type => 'release' });
 }
 
 
