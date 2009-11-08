@@ -4086,7 +4086,7 @@ cs : Statistiky fóra
 hu : Fórum adatok
 
 :_userpage_forum_item
-en : [_1] [quant,_1,post,posts], [_2] new [quant,_2,thead,threads].
+en : [_1] [quant,_1,post,posts], [_2] new [quant,_2,thread,threads].
 ru : [_1] [quant,_1,сообщение,сообщения,сообщений], [_2] [quant,_2,новая тема,новые темы,новых тем]
 cs : [_1] [quant,_1,příspěvek, příspěvky, příspěvků], [_2] [quant,_2,nový thread, nové thready, nových threadů].
 hu : [_1] [quant,_1,válasz,válaszok], [_2] új [quant,_2,téma,téma].
