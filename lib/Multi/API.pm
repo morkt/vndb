@@ -521,6 +521,8 @@ sub get_release {
       [ inta  => 'r.id :op:(:value:)', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',' ],
     ], [ 'vn',
       [ 'int' => 'rr.id IN(SELECT rv.rid FROM releases_vn rv WHERE rv.vid = :value:)', {'=',1} ],
+    ], [ 'producer',
+      [ 'int' => 'rr.id IN(SELECT rp.rid FROM releases_producers rp WHERE rp.pid = :value:)', {'=',1} ],
     ], [ 'title',
       [ str   => 'rr.title :op: :value:', {qw|= =  != <>|} ],
       [ str   => 'rr.title ILIKE :value:', {'~',1}, process => \'like' ],
