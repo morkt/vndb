@@ -49,7 +49,7 @@ sub spawn {
       conn_per_ip => 5,
       sess_per_user => 3,
       tcp_keepalive => [ 120, 60, 3 ], # time, intvl, probes
-      throttle_cmd => [ 2, 30 ], # interval between each command, allowed burst
+      throttle_cmd => [ 6, 100 ], # interval between each command, allowed burst
       throttle_sql => [ 60, 1 ], # sql time multiplier, allowed burst (in sql time)
       ipbans => [],
       @_,

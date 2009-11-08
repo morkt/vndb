@@ -53,7 +53,7 @@ server resources and prevent abuse of this service.</p>
  <li>5 connections per IP. All connections that are opened after reaching this limit will be immediately closed.</li>
  <li>3 connections per user. The login command will reply with a 'sesslimit' error when reaching this limit.</li>
  <li>Each command currently returns at most 10 results. <i>TODO: make configurable?</i></li>
- <li>30 commands per minute per user. Server will reply with a 'throttled' error (type="cmd") when reaching this limit.</li>
+ <li>100 commands per 10 minutes per user. Server will reply with a 'throttled' error (type="cmd") when reaching this limit.</li>
  <li>
   1 second of SQL time per minute per user. SQL time is the total time taken to
   run the database queries for each command.  This depends on both the command
