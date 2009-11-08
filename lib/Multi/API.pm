@@ -40,6 +40,7 @@ sub spawn {
       $p => [qw|
         _start shutdown log server_error client_connect client_error client_input
         login login_res get_results get_vn get_vn_res get_release get_release_res
+        admin
       |],
     ],
     heap => {
@@ -50,8 +51,10 @@ sub spawn {
       tcp_keepalive => [ 120, 60, 3 ], # time, intvl, probes
       throttle_cmd => [ 2, 30 ], # interval between each command, allowed burst
       throttle_sql => [ 60, 1 ], # sql time multiplier, allowed burst (in sql time)
+      ipbans => [],
       @_,
-      c => {},
+      c => {}, # open connections
+      s => {conn => 0, cmds => 0, cmd_err => 0}, # stats
     },
   );
 }
@@ -61,8 +64,15 @@ sub spawn {
 
 sub cerr {
   my($c, $id, $msg, %o) = @_;
+
+  # update stat counters
+  $c->{cmd_err}++;
+  $poe_kernel->get_active_session()->get_heap()->{s}{cmd_err}++;
+
+  # send error
   $c->{wheel}->put([ error => { id => $id, msg => $msg, %o }]);
-  # using $poe_kernel here isn't really a clean solution...
+
+  # log
   $poe_kernel->yield(log => $c, 'error: %s, %s', $id, $msg);
   return undef;
 }
@@ -215,6 +225,9 @@ sub client_connect {
   my $ip = inet_ntoa($_[ARG1]);
   my $sock = $_[ARG0];
 
+  $_[HEAP]{s}{conn}++;
+
+  return close $sock if grep $ip eq $_, @{$_[HEAP]{ipbans}};
   if($_[HEAP]{conn_per_ip} <= grep $ip eq $_[HEAP]{c}{$_}{ip}, keys %{$_[HEAP]{c}}) {
     $_[KERNEL]->yield(log => 0,
       'Connect from %s denied, limit of %d connections per IP reached', $ip, $_[HEAP]{conn_per_ip});
@@ -239,8 +252,12 @@ sub client_connect {
     InputEvent => 'client_input',
   );
   $_[HEAP]{c}{ $w->ID() } = {
-    wheel => $w,
-    ip => $ip,
+    wheel     => $w,
+    ip        => $ip,
+    connected => time,
+    cmds      => 0,
+    cmd_err   => 0,
+    # username, client, clientver are added after logging in
   };
   $_[KERNEL]->yield(log => $_[HEAP]{c}{ $w->ID() }, 'Connected');
 }
@@ -262,6 +279,11 @@ sub client_input {
   my $cmd = shift @$arg;
   my $c = $_[HEAP]{c}{$id};
 
+  # stats
+  $_[HEAP]{s}{cmds}++;
+  $c->{cmds}++;
+
+  # parse error?
   return cerr $c, $arg->[0]{id}, $arg->[0]{msg} if !defined $cmd;
 
   # when we're here, we can assume that $cmd contains a valid command
@@ -333,6 +355,9 @@ sub login_res { # num, res, [ c, arg ]
   $c->{throttle} = $throttle{$arg->{username}};
 
   $c->{username} = $arg->{username};
+  $c->{client} = $arg->{client};
+  $c->{clientver} = $arg->{clientver};
+
   $c->{wheel}->put(['ok']);
   $_[KERNEL]->yield(log => $c,
     'Successful login by %s using client "%s" ver. %s', $arg->{username}, $arg->{client}, $arg->{clientver});
@@ -632,6 +657,44 @@ sub get_release_res {
   # send results
   delete $_->{latest} for @{$get->{list}};
   $_[KERNEL]->yield(get_results => { %$get, type => 'release' });
+}
+
+
+# can be call()'ed from other sessions (specifically written for IRC)
+sub admin {
+  my($func, @arg) = @_[ARG0..$#_];
+
+  if($func eq 'stats') {
+    return { %{$_[HEAP]{s}}, online => scalar keys %{$_[HEAP]{c}} };
+  }
+  if($func eq 'list') {
+    return [ map {
+      my $c = $_[HEAP]{c}{$_};
+      my $r = { # make sure not to return our wheel
+        id => $_,
+        (map +($_, $c->{$_}), qw|username ip client clientver connected cmds cmd_err|)
+      };
+      if($c->{username}) {
+        $r->{t_cmd} = ($c->{throttle}[0]-time)/$_[HEAP]{throttle_cmd}[0];
+        $r->{t_sql} = ($c->{throttle}[1]-time)/$_[HEAP]{throttle_sql}[0];
+        $r->{t_cmd} = 0 if $r->{t_cmd} < 0;
+        $r->{t_sql} = 0 if $r->{t_sql} < 0;
+      }
+      $r
+    } keys %{$_[HEAP]{c}} ];
+  }
+  if($func eq 'bans') {
+    return $_[HEAP]{ipbans};
+  }
+  if($func eq 'ban') {
+    my $ip = $_[HEAP]{c}{$arg[0]} ? $_[HEAP]{c}{$arg[0]}{ip} : $arg[0];
+    return undef if !$ip || $ip !~ /^\d{1,3}(?:\.\d{1,3}){3}$/;
+    push @{$_[HEAP]{ipbans}}, $ip;
+    delete $_[HEAP]{c}{$_} for grep $_[HEAP]{c}{$_}{ip} eq $ip, keys %{$_[HEAP]{c}};
+  }
+  if($func eq 'unban') {
+    $_[HEAP]{ipbans} = [ grep $_ ne $arg[0], @{$_[HEAP]{ipbans}} ];
+  }
 }
 
 
