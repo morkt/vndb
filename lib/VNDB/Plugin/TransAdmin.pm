@@ -172,7 +172,7 @@ sub _intro {
   $f->close;
   div class => 'mainbox';
    h1 'Introduction to the language file';
-   pre $intro;
+   pre style => 'padding: 0; margin: 0; background: none; border: none', $intro;
   end;
 }
 
@@ -217,7 +217,7 @@ sub _section {
 
    for my $l (@$page) {
      if($l->[0] eq 'comment') {
-       pre;
+       pre style => 'padding: 0; margin: 0; background: none; border: none';
         b class => 'grayedout', $l->[1]."\n";
        end;
        next;
@@ -281,7 +281,7 @@ sub _savedoc {
 sub _docs {
   my($lang, $doc) = @_;
 
-  my @d = map /\.[a-z]{2}$/ || /\/8$/ ? () : s{^.+\/([^/]+)$}{$1} && $_, glob "$VNDB::ROOT/data/docs/*";
+  my @d = map /\.[a-z]{2}$/ || /\/(?:8|11)$/ ? () : s{^.+\/([^/]+)$}{$1} && $_, glob "$VNDB::ROOT/data/docs/*";
 
   h2 class => 'alttitle', '...or a doc page';
   div style => 'margin: 0 40px';

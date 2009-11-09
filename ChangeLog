@@ -1,5 +1,8 @@
 git - ?
 	- Fixed another bug with the calculation of tags_vn_bayesian.spoiler
+	- Implemented proper daemonizing and error handling for Multi
+	- Added basic Makefile
+	- Added public database API
 
 2.8 - 2009-10-24
 	- Converted relation graphs to use inline SVG
