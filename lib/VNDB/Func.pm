@@ -22,6 +22,7 @@ sub shorten {
 #  [raw] .. [/raw]
 #  [spoiler] .. [/spoiler]
 #  [quote] .. [/quote]
+#  [code] .. [/code]
 #  v+,  v+.+
 #  http://../
 sub bb2html {
@@ -51,12 +52,17 @@ sub bb2html {
     $rmnewline-- && $_ eq "\n" && next if $rmnewline;
 
     my $lit = $_;
-    if($open[$#open] ne 'raw') {
+    if($open[$#open] ne 'raw' && $open[$#open] ne 'code') {
       if    (lc$_ eq '[raw]')      { push @open, 'raw'; next }
       elsif (lc$_ eq '[spoiler]')  { push @open, 'spoiler'; $result .= '<b class="spoiler">'; next }
       elsif (lc$_ eq '[quote]')    {
         push @open, 'quote';
         $result .= '<div class="quote">' if !$maxlength;
+        $rmnewline = 1;
+        next
+      } elsif (lc$_ eq '[code]') {
+        push @open, 'code';
+        $result .= '<pre>' if !$maxlength;
         $rmnewline = 1;
         next
       } elsif (lc$_ eq '[/spoiler]') {
@@ -97,8 +103,12 @@ sub bb2html {
         $result .= $_;
         next;
       }
-    } elsif(lc$_ eq '[/raw]') {
-      pop @open if $open[$#open] eq 'raw';
+    } elsif($open[$#open] eq 'raw' && lc$_ eq '[/raw]') {
+      pop @open;
+      next;
+    } elsif($open[$#open] eq 'code' && lc$_ eq '[/code]') {
+      $result .= '</pre>' if !$maxlength;
+      pop @open;
       next;
     }
 
@@ -108,8 +118,11 @@ sub bb2html {
     $result .= $e->($_);
   }
 
-  $result .= $_ eq 'url' ? '</a>' : $_ eq 'quote' ? '</div>' : '</b>'
-    while((local $_ = pop @open) ne 'first');
+  # close open tags
+  while((local $_ = pop @open) ne 'first') {
+    $result .= $_ eq 'url' ? '</a>' : $_ eq 'spoiler' ? '</b>' : '';
+    $result .= $_ eq 'quote' ? '</div>' : $_ eq 'code' ? '</pre>' : '' if !$maxlength;
+  }
   $result .= '...' if $maxlength && $length > $maxlength;
 
   return $result;

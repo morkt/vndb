@@ -3,6 +3,7 @@ git - ?
 	- Implemented proper daemonizing and error handling for Multi
 	- Added basic Makefile
 	- Added public database API
+	- Added [code] tag to bb2html()
 
 2.8 - 2009-10-24
 	- Converted relation graphs to use inline SVG
