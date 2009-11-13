@@ -249,8 +249,8 @@ sub command { # mask, dest, msg
 sub idlequote {
   for (keys %{$_[HEAP]{idlequotes}}) {
     next if --$_[HEAP]{idlequotes}{$_} > 0;
-    $_[KERNEL]->yield(cmd_quote => '', [$_]) if $_[HEAP]{idlequotes}{$_} == 0;
-    $_[HEAP]{idlequotes}{$_} = int(120+rand(600));
+    $_[KERNEL]->yield(cmd_quote => '', [$_]) if $_[HEAP]{idlequotes}{$_} == 0 && !throttle $_[HEAP], "idlequote_$_", 48*3600;
+    $_[HEAP]{idlequotes}{$_} = int(60+rand(300));
   }
   $_[KERNEL]->delay(idlequote => 60);
 }
