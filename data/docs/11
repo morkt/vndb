@@ -52,7 +52,7 @@ server resources and prevent abuse of this service.</p>
 <ul>
  <li>5 connections per IP. All connections that are opened after reaching this limit will be immediately closed.</li>
  <li>3 connections per user. The login command will reply with a 'sesslimit' error when reaching this limit.</li>
- <li>Each command currently returns at most 10 results. <i>TODO: make configurable?</i></li>
+ <li>Each command returns at most 10 results.</li>
  <li>100 commands per 10 minutes per user. Server will reply with a 'throttled' error (type="cmd") when reaching this limit.</li>
  <li>
   1 second of SQL time per minute per user. SQL time is the total time taken to
@@ -221,27 +221,44 @@ however still required.<br />
  well), and lastly a filter expression.
 </p>
 <pre>
- get <b class="standout">type flags filters</b>
+ get <b class="standout">type flags filters options</b>
 </pre>
 <p>
- Type and flags are unescaped strings. The only type currently accepted is 'vn'.
- Flags is a comma-separated list of flags indicating what info to fetch. The
- filters, available flags and their meaning are documented separately for each
- type. The following example will fetch basic information and information about
- the related anime of the visual novel with id = 17:
+ <i>type</i> and <i>flags</i> are unescaped strings. The accepted values for <i>type</i> are
+ documented below.  <i>flags</i> is a comma-separated list of flags indicating what
+ info to fetch. The filters, available flags and their meaning are documented
+ separately for each type. The last <i>options</i> argument is optional, and
+ influences the behaviour of the returned results. When present, <i>options</i>
+ should be a JSON object with the following members (all are optional):
+</p>
+<dl>
+ <dt>page</dt><dd>
+  integer, used for pagination. Page 1 (the default) returns the first 10
+  results (1-10), page 2 returns the following 10 (11-20), etc.
+ </dd><dt>sort</dt><dd>
+  string, the field to order the results by. The accepted field names differ
+  per type, the default sort field is the ID of the database entry.
+ </dd>
+ <dt>reverse</dt><dd>boolean, default false. Set to true to reverse the order of the results.</dd>
+</dl>
+<p>
+ The following example will fetch basic information and information about the
+ related anime of the visual novel with id = 17:
 </p>
 <pre>
  get vn basic,anime (id = 17)
 </pre>
 <p>
  The server will reply with a 'results' message, this message is followed by a
- JSON object describing the results. This object has two members: 'num', which
- is an integer indicating the number of results returned, and 'items', which
- contains the results as an array of objects. For example, the server could
- reply to the previous command with the following message:
+ JSON object describing the results. This object has three members: 'num', which
+ is an integer indicating the number of results returned, 'more', which is true
+ when there are more results available (i.e. increasing the <i>page</i> option
+ described above will give new results) and 'items', which contains the results
+ as an array of objects. For example, the server could reply to the previous
+ command with the following message:
 </p>
 <pre>
- results {"num":1, "items":[{
+ results {"num":1, "more":false, "items":[{
    "id": 17, "title": "Ever17 -the out of infinity-", "original": null,
    "released": "2002-08-29", "languages": ["en","ja","ru","zh"],
    "platforms": ["drc","ps2","psp","win"],"anime": []
@@ -372,6 +389,7 @@ however still required.<br />
   </td>
  </tr>
 </table>
+<p>Sorting is possible on the 'id', 'title' and 'released' fields.</p><br />
 
 <p>'get vn' accepts the following filter expressions:</p>
 <table style="margin: 5px 2%; width: 95%">
@@ -586,6 +604,7 @@ however still required.<br />
   </td>
  </tr>
 </table>
+<p>Sorting is possible on the 'id', 'title' and 'released' fields.</p><br />
 
 <p>Accepted filters:</p>
 <table style="margin: 5px 2%; width: 95%">

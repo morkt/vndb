@@ -6,10 +6,11 @@
 # C: login <json-object>
 #    [ 'login', {object} ]
 #
-# C: get <type> <info> <filters>
-#    [ 'get', <type>, <info>[ split ',', $2 ], [ filters ] ]
+# C: get <type> <info> <filters> <options>
+#    [ 'get', <type>, <info>[ split ',', $2 ], [ filters ], { options } ]
 #    <type> must match /[a-z\/_]+/
 #    <info> as string: /[a-z_]+(,[a-z_]+)*/, in perl: [ /[a-z_]+/, .. ]
+#    <options> is optional, must be JSON-object otherwise
 #
 # S: ok
 #    [ 'ok' ]
@@ -129,7 +130,7 @@ sub get_one {
     if(!defined $json) {
       my $err = $@;
       $err =~ s/,? at .+ line [0-9]+[\.\r\n ]*$//;
-      return _err "JSON-decode: $err" if !defined $json;
+      return _err "JSON-decode: $err";
     }
     return _err qq|"$cmd" command requires a JSON object| if ref($json) ne 'HASH';
     return [[ $cmd, $json ]];
@@ -137,11 +138,19 @@ sub get_one {
 
   # C: get
   if($self->{type} eq 'server' && $str =~ /^$WS*get$WS+($GET_TYPE)$WS+($GET_INFO)$WS+(.+)$/s) {
-    my($type, $info) = ($1, $2);
+    my($type, $info, $options) = ($1, $2, {});
     my($filters, $rest) = decode_filters($3);
     return _err $filters if !ref $filters;
-    return _err 'Leading characters' if length $rest && $rest !~ /^$WS+$/;
-    return [[ 'get', $type, [ split /,/, $info ], $filters ]];
+    if($rest !~ /^$WS*$/) {
+      $options = eval { JSON::XS->new->decode($rest) };
+      if(!defined $options) {
+        my $err = $@;
+        $err =~ s/,? at .+ line [0-9]+[\.\r\n ]*$//;
+        return _err "JSON-decode: $err";
+      }
+      return _err 'options argument must be a JSON object' if ref($options) ne 'HASH';
+    }
+    return [[ 'get', $type, [ split /,/, $info ], $filters, $options ]];
   }
 
   # S: ok

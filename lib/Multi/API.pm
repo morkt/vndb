@@ -48,6 +48,7 @@ sub spawn {
       logfile => "$VNDB::M{log_dir}/api.log",
       conn_per_ip => 5,
       sess_per_user => 3,
+      results => 10,
       tcp_keepalive => [ 120, 60, 3 ], # time, intvl, probes
       throttle_cmd => [ 6, 100 ], # interval between each command, allowed burst
       throttle_sql => [ 60, 1 ], # sql time multiplier, allowed burst (in sql time)
@@ -174,6 +175,22 @@ sub filtertosql {
   my $joined = join defined $o{join} ? $o{join} : '', @values;
   $sql =~ s/:value:/push @$p, @parameters; $joined/eg;
   return $sql;
+}
+
+
+# generates the LIMIT/OFFSET/ORDER BY part of the queries
+sub sqllast { # $get, default sort field, hashref with sort fields and SQL variant
+  my($get, $def, $sort) = @_;
+
+  my $o = $get->{opt}{reverse} ? 'DESC' : 'ASC';
+  $get->{opt}{sort} = $def if !defined $get->{opt}{sort};
+  my $s = $sort->{$get->{opt}{sort}};
+  return cerr $get->{c}, badarg => 'Invalid sort field', field => 'sort' if !$s;
+  my $q = 'ORDER BY '.sprintf($s, $o);
+
+  my $res = $poe_kernel->get_active_session()->get_heap()->{results};
+  $q .= sprintf ' LIMIT %d OFFSET %d', $res+1, $res*($get->{opt}{page}-1);
+  return $q;
 }
 
 
@@ -311,10 +328,28 @@ sub client_input {
   $c->{throttle}[0] += $_[HEAP]{throttle_cmd}[0];
 
   # handle get command
+  if($cmd eq 'get') {
+    my $opt = $arg->[3];
+    return cerr $c, badarg => 'Invalid argument for the "page" option', field => 'page'
+      if defined($opt->{page}) && (ref($opt->{page}) || $opt->{page} !~ /^\d+$/ || $opt->{page} < 1);
+    return cerr $c, badarg => '"reverse" option must be boolean', field => 'reverse'
+      if defined($opt->{reverse}) && !JSON::XS::is_bool($opt->{reverse});
+    return cerr $c, badarg => '"sort" option must be a string', field => 'sort'
+      if defined($opt->{sort}) && ref($opt->{sort});
+    $opt->{page} = $opt->{page}||1;
+    $opt->{reverse} = defined($opt->{reverse}) && $opt->{reverse};
+    my %obj = (
+      c => $c,
+      info => $arg->[1],
+      filters => $arg->[2],
+      opt => $opt,
+    );
+    return cerr $c, 'gettype', "Unknown get type: '$arg->[0]'" if $arg->[0] !~ /^(?:vn|release)$/;
+    return $_[KERNEL]->yield("get_$arg->[0]", \%obj);
+  }
+
+  # unknown command
   return cerr $c, 'parse', "Unkown command '$cmd'" if $cmd ne 'get';
-  my $type = shift @$arg;
-  return cerr $c, 'gettype', "Unknown get type: '$type'" if $type !~ /^(?:vn|release)$/;
-  $_[KERNEL]->yield("get_$type", $c, @$arg);
 }
 
 
@@ -365,30 +400,32 @@ sub login_res { # num, res, [ c, arg ]
 
 
 sub get_results {
-  my $get = $_[ARG0]; # hashref, must contain: type, c, queries, time, list, info, filters,
+  my $get = $_[ARG0]; # hashref, must contain: type, c, queries, time, list, info, filters, more, opt
 
   # update sql throttle
   $get->{c}{throttle}[1] += $get->{time}*$_[HEAP]{throttle_sql}[0];
 
   # send and log
   my $num = @{$get->{list}};
-  $get->{c}{wheel}->put([ results => { num => $num, items => $get->{list} }]);
-  $_[KERNEL]->yield(log => $get->{c}, "T:%4.0fms  Q:%d  R:%02d get %s %s %s",
-    $get->{time}*1000, $get->{queries}, $num, $get->{type}, join(',', @{$get->{info}}), encode_filters $get->{filters});
+  $get->{c}{wheel}->put([ results => { num => $num, more => $get->{more} ? TRUE : FALSE, items => $get->{list} }]);
+  $_[KERNEL]->yield(log => $get->{c}, "T:%4.0fms  Q:%d  R:%02d get %s %s %s {%s %s, page %d}",
+    $get->{time}*1000, $get->{queries}, $num, $get->{type}, join(',', @{$get->{info}}), encode_filters($get->{filters}),
+    $get->{opt}{sort}, $get->{opt}{reverse}?'desc':'asc', $get->{opt}{page});
 }
 
 
 sub get_vn {
-  my($c, $info, $filters) = @_[ARG0..$#_];
+  my $get = $_[ARG0];
 
-  return cerr $c, getinfo => "Unkown info flag '$_'", flag => $_ for (grep !/^(basic|details|anime|relations)$/, @$info);
+  return cerr $get->{c}, getinfo => "Unkown info flag '$_'", flag => $_
+    for (grep !/^(basic|details|anime|relations)$/, @{$get->{info}});
 
   my $select = 'v.id, v.latest';
-  $select .= ', vr.title, vr.original, v.c_released, v.c_languages, v.c_platforms' if grep /basic/, @$info;
-  $select .= ', vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai' if grep /details/, @$info;
+  $select .= ', vr.title, vr.original, v.c_released, v.c_languages, v.c_platforms' if grep /basic/, @{$get->{info}};
+  $select .= ', vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai' if grep /details/, @{$get->{info}};
 
   my @placeholders;
-  my $where = encode_filters $filters, \&filtertosql, $c, \@placeholders, [
+  my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
     [ 'id',
       [ 'int' => 'v.id :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|} ],
       [ inta  => 'v.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, join => ',' ],
@@ -419,11 +456,16 @@ sub get_vn {
          ))', {'~', 1}, process => \'like' ],
     ],
   ];
-  return if !$where;
+  my $last = sqllast $get, 'id', {
+    id => 'v.id %s',
+    title => 'vr.title %s',
+    released => 'v.c_released %s',
+  };
+  return if !$last || !$where;
 
   $_[KERNEL]->post(pg => query =>
-    qq|SELECT $select FROM vn v JOIN vn_rev vr ON v.latest = vr.id WHERE NOT v.hidden AND $where LIMIT 10|,
-    \@placeholders, 'get_vn_res', { c => $c, info => $info, filters => $filters });
+    qq|SELECT $select FROM vn v JOIN vn_rev vr ON v.latest = vr.id WHERE NOT v.hidden AND $where $last|,
+    \@placeholders, 'get_vn_res', $get);
 }
 
 
@@ -455,6 +497,7 @@ sub get_vn_res {
         };
       }
     }
+    $get->{more} = pop(@$res)&&1 if @$res > $_[HEAP]{results};
     $get->{list} = $res;
   }
 
@@ -506,16 +549,16 @@ sub get_vn_res {
 
 
 sub get_release {
-  my($c, $info, $filters) = @_[ARG0..$#_];
+  my $get = $_[ARG0];
 
-  return cerr $c, getinfo => "Unkown info flag '$_'", flag => $_ for (grep !/^(basic|details|vn|producers)$/, @$info);
+  return cerr $get->{c}, getinfo => "Unkown info flag '$_'", flag => $_ for (grep !/^(basic|details|vn|producers)$/, @{$get->{info}});
 
   my $select = 'r.id, r.latest';
-  $select .= ', rr.title, rr.original, rr.released, rr.type, rr.patch, rr.freeware, rr.doujin' if grep /basic/, @$info;
-  $select .= ', rr.website, rr.notes, rr.minage, rr.gtin, rr.catalog' if grep /details/, @$info;
+  $select .= ', rr.title, rr.original, rr.released, rr.type, rr.patch, rr.freeware, rr.doujin' if grep /basic/, @{$get->{info}};
+  $select .= ', rr.website, rr.notes, rr.minage, rr.gtin, rr.catalog' if grep /details/, @{$get->{info}};
 
   my @placeholders;
-  my $where = encode_filters $filters, \&filtertosql, $c, \@placeholders, [
+  my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
     [ 'id',
       [ 'int' => 'r.id :op: :value:', {qw|= =  != <>  > >  >= >=  < <  <= <=|} ],
       [ inta  => 'r.id :op:(:value:)', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',' ],
@@ -548,11 +591,16 @@ sub get_release {
       [ stra  => 'rr.id :op:(SELECT rl.rid FROM releases_lang rl WHERE rl.lang IN(:value:))', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',', process => \'lang' ],
     ],
   ];
-  return if !$where;
+  my $last = sqllast $get, 'id', {
+    id => 'r.id %s',
+    title => 'rr.title %s',
+    released => 'rr.released %s',
+  };
+  return if !$where || !$last;
 
   $_[KERNEL]->post(pg => query =>
-    qq|SELECT $select FROM releases r JOIN releases_rev rr ON rr.id = r.latest WHERE $where AND NOT hidden LIMIT 10|,
-    \@placeholders, 'get_release_res', { c => $c, info => $info, filters => $filters });
+    qq|SELECT $select FROM releases r JOIN releases_rev rr ON rr.id = r.latest WHERE $where AND NOT hidden $last|,
+    \@placeholders, 'get_release_res', $get);
 }
 
 
@@ -581,6 +629,7 @@ sub get_release_res {
         $_->{catalog}  ||= undef;
       }
     }
+    $get->{more} = pop(@$res)&&1 if @$res > $_[HEAP]{results};
     $get->{list} = $res;
   }
   elsif($get->{type} eq 'languages') {
