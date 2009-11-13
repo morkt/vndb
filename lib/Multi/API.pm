@@ -677,8 +677,8 @@ sub admin {
         (map +($_, $c->{$_}), qw|username ip client clientver connected cmds cmd_err|)
       };
       if($c->{username}) {
-        $r->{t_cmd} = ($c->{throttle}[0]-time)/$_[HEAP]{throttle_cmd}[0];
-        $r->{t_sql} = ($c->{throttle}[1]-time)/$_[HEAP]{throttle_sql}[0];
+        $r->{t_cmd} = ($c->{throttle}[0]-time())/$_[HEAP]{throttle_cmd}[0];
+        $r->{t_sql} = ($c->{throttle}[1]-time())/$_[HEAP]{throttle_sql}[0];
         $r->{t_cmd} = 0 if $r->{t_cmd} < 0;
         $r->{t_sql} = 0 if $r->{t_sql} < 0;
       }
