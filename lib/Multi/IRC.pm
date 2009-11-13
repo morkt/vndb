@@ -15,6 +15,8 @@ use POE qw|
 |;
 use POE::Component::IRC::Common ':ALL';
 use URI::Escape 'uri_escape_utf8';
+use Time::HiRes 'time';
+
 
 use constant {
   USER => ARG0,
@@ -90,21 +92,17 @@ sub spawn {
 # returns false if throttling isn't necessary for that key
 sub throttle {
   my($heap, $key, $tm, $num) = @_;
+  my $time = time;
 
   # garbage collect
   return ($heap->{throttle} = {
-    map $heap->{throttle}{$_}[$#{$heap->{throttle}{$_}}] > time-3600 ? ($_, $heap->{throttle}{$_}) : (), keys %{$heap->{throttle}}
+    map $heap->{throttle}{$_} > $time ? ($_, $heap->{throttle}{$_}) : (), keys %{$heap->{throttle}}
   }) if !$key;
 
+  $heap->{throttle}{$key} = $time if !$heap->{throttle}{$key} || $heap->{throttle}{$key} < $time;
   $num ||= 1;
-  my $dat = $heap->{throttle};
-  if(!$dat->{$key}) {
-    $dat->{$key} = [ time ];
-    return 0;
-  }
-  $dat->{$key} = [ grep $_ > time-$tm, @{$dat->{$key}} ];
-  return 1 if @{$dat->{$key}} >= $num;
-  push @{$dat->{$key}}, time;
+  return 1 if $heap->{throttle}{$key}-$time > $tm*($num-1);
+  $heap->{throttle}{$key} += $tm;
   return 0;
 }
 
@@ -348,7 +346,7 @@ sub cmd_vn {
   (my $q = $_[ARG]||'') =~ s/%//g;
   return $_[KERNEL]->yield(reply => $_[DEST], 'You forgot the search query, dummy~~!', $_[USER]) if !$q;
   return $_[KERNEL]->yield(reply => $_[DEST], 'Stop abusing me, it\'s not like I enjoy spamming this channel!', $_[USER])
-    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 5;
+    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 3;
 
   $_[KERNEL]->post(pg => query => q|
     SELECT 'v'::text AS type, v.id, vr.title
@@ -382,7 +380,7 @@ sub cmd_p {
   (my $q = $_[ARG]||'') =~ s/%//g;
   return $_[KERNEL]->yield(reply => $_[DEST], 'You forgot the search query, dummy~~!', $_[USER]) if !$q;
   return $_[KERNEL]->yield(reply => $_[DEST], 'Stop abusing me, it\'s not like I enjoy spamming this channel!', $_[USER])
-    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 5;
+    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 3;
 
   $_[KERNEL]->post(pg => query => q|
     SELECT 'p'::text AS type, p.id, pr.name AS title
@@ -404,6 +402,8 @@ sub cmd_p_results { # num, res, \@_
 
 
 sub cmd_quote {
+  return $_[KERNEL]->yield(reply => $_[DEST], 'Stop abusing me, it\'s not like I enjoy spamming this channel!', $_[USER])
+    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 3;
   $_[KERNEL]->post(pg => query => q|SELECT quote FROM quotes ORDER BY random() LIMIT 1|, undef, 'cmd_quote_result', $_[DEST]);
 }
 
