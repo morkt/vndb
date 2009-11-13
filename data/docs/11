@@ -694,6 +694,134 @@ however still required.<br />
  </tr>
 </table>
 
+:SUBSUB:get producer
+<p>Returned members:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Member</td>
+  <td style="width: 50px">Flag</td>
+  <td style="width: 90px">Type</td>
+  <td style="width: 40px">null</td>
+  <td>Description</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>id</td>
+  <td>-</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>Producer ID</td>
+ </tr>
+ <tr>
+  <td>name</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>no</td>
+  <td>(romaji) producer name</td>
+ </tr>
+ <tr class="odd">
+  <td>original</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Original/official name</td>
+ </tr>
+ <tr>
+  <td>type</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>no</td>
+  <td>Producer type</td>
+ </tr>
+ <tr class="odd">
+  <td>language</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>no</td>
+  <td>Primary language</td>
+ </tr>
+ <tr>
+  <td>website</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Official website URL</td>
+ </tr>
+ <tr class="odd">
+  <td>aliases</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Comma separated list of alternative names</td>
+ </tr>
+ <tr>
+  <td>description</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Description/notes of the producer, can contain formatting codes as described in <a href="/d9.3">d9.3</a></td>
+ </tr>
+ <tr class="odd">
+  <td>relations</td>
+  <td>relations</td>
+  <td>array of objects</td>
+  <td>no</td>
+  <td>
+   (possibly empty) list of related producers, each object has the following members:<br />
+   "id", integer, producer ID,<br />
+   "relation", string, relation to the current producer,<br />
+   "name", string,<br />
+   "original", string, can be <b>null</b>
+  </td>
+ </tr>
+</table>
+<p>Sorting is possible on the 'id' and 'name' fields.</p><br />
+
+<p>The following filters are recognised:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Field</td>
+  <td style="width: 90px">Value</td>
+  <td style="width: 90px">Operators</td>
+  <td>&nbsp;</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>id</td>
+  <td>integer<br />array of integers</td>
+  <td>= != &gt; &gt;= &lt; &lt;=<br />= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>name</td>
+  <td>string</td>
+  <td>= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>original</td>
+  <td>null<br />string</td>
+  <td>= !=<br />= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>type</td>
+  <td>string</td>
+  <td>= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>language</td>
+  <td>string<br />array of strings</td>
+  <td>= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>search</td>
+  <td>string</td>
+  <td>~</td>
+  <td>Not an actual field. Performs a search on the title, original and aliases fields.</td>
+ </tr>
+</table>
+
 
 
 :SUB:The 'error' response

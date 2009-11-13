@@ -40,7 +40,7 @@ sub spawn {
       $p => [qw|
         _start shutdown log server_error client_connect client_error client_input
         login login_res get_results get_vn get_vn_res get_release get_release_res
-        admin
+        get_producer get_producer_res admin
       |],
     ],
     heap => {
@@ -344,7 +344,7 @@ sub client_input {
       filters => $arg->[2],
       opt => $opt,
     );
-    return cerr $c, 'gettype', "Unknown get type: '$arg->[0]'" if $arg->[0] !~ /^(?:vn|release)$/;
+    return cerr $c, 'gettype', "Unknown get type: '$arg->[0]'" if $arg->[0] !~ /^(?:vn|release|producer)$/;
     return $_[KERNEL]->yield("get_$arg->[0]", \%obj);
   }
 
@@ -708,6 +708,97 @@ sub get_release_res {
   # send results
   delete $_->{latest} for @{$get->{list}};
   $_[KERNEL]->yield(get_results => { %$get, type => 'release' });
+}
+
+
+sub get_producer {
+  my $get = $_[ARG0];
+
+  return cerr $get->{c}, getinfo => "Unkown info flag '$_'", flag => $_
+    for (grep !/^(basic|details|relations)$/, @{$get->{info}});
+
+  my $select = 'p.id, p.latest';
+  $select .= ', pr.type, pr.name, pr.original, pr.lang AS language' if grep /basic/, @{$get->{info}};
+  $select .= ', pr.website, pr.desc AS description, pr.alias AS aliases' if grep /details/, @{$get->{info}};
+
+  my @placeholders;
+  my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
+    [ 'id',
+      [ 'int' => 'p.id :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|} ],
+      [ inta  => 'p.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, join => ',' ],
+    ], [ 'name',
+      [ str   => 'pr.name :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'pr.name ILIKE :value:', {'~',1}, process => \'like' ],
+    ], [ 'original',
+      [ undef,   "pr.original :op: ''", {qw|= =  != <>|} ],
+      [ str   => 'pr.original :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'pr.original ILIKE :value:', {'~',1}, process => \'like' ]
+    ], [ 'type',
+      [ str   => 'pr.type :op: :value:', {qw|= =  != <>|},
+        process => sub { !grep($_ eq $_[0], @{$VNDB::S{producer_types}}) ? \'No such producer type' : $_[0] } ],
+    ], [ 'language',
+      [ str   => 'pr.lang :op: :value:', {qw|= =  != <>|}, process => \'lang' ],
+      [ stra  => 'pr.lang :op:(:value:)', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',', process => \'lang' ],
+    ], [ 'search',
+      [ str   => '(pr.name ILIKE :value: OR pr.original ILIKE :value: OR pr.alias ILIKE :value:)', {'~',1}, process => \'like' ],
+    ],
+  ];
+  my $last = sqllast $get, 'id', {
+    id => 'p.id %s',
+    name => 'pr.name %s',
+  };
+  return if !$where || !$last;
+
+  $_[KERNEL]->post(pg => query =>
+    qq|SELECT $select FROM producers p JOIN producers_rev pr ON pr.id = p.latest WHERE $where AND NOT hidden $last|,
+    \@placeholders, 'get_producer_res', $get);
+}
+
+
+sub get_producer_res {
+  my($num, $res, $get, $time) = (@_[ARG0..$#_]);
+
+  $get->{time} += $time;
+  $get->{queries}++;
+
+  # process the results
+  if(!$get->{type}) {
+    for (@$res) {
+      $_->{id}*=1;
+      $_->{original} ||= undef if grep /basic/, @{$get->{info}};
+      if(grep /details/, @{$get->{info}}) {
+        $_->{website}     ||= undef;
+        $_->{description} ||= undef;
+        $_->{aliases}     ||= undef;
+      }
+    }
+    $get->{more} = pop(@$res)&&1 if @$res > $_[HEAP]{results};
+    $get->{list} = $res;
+  }
+  elsif($get->{type} eq 'relations') {
+    for my $i (@{$get->{list}}) {
+      $i->{relations} = [ grep $i->{latest} == $_->{pid1}, @$res ];
+    }
+    for (@$res) {
+      $_->{id}*=1;
+      $_->{original} ||= undef;
+      delete $_->{pid1};
+    }
+    $get->{relations} = 1;
+  }
+
+  # get more info
+  my @ids = map $_->{latest}, @{$get->{list}};
+  my $ids = join ',', map '?', @ids;
+
+  @ids && !$get->{relations} && grep(/relations/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+    SELECT pl.pid1, p.id, pl.relation, pr.name, pr.original FROM producers_relations pl
+      JOIN producers p ON p.id = pl.pid2 JOIN producers_rev pr ON pr.id = p.latest WHERE pl.pid1 IN($ids) AND NOT p.hidden|,
+    \@ids, 'get_producer_res', { %$get, type => 'relations' });
+
+  # send results
+  delete $_->{latest} for @{$get->{list}};
+  $_[KERNEL]->yield(get_results => { %$get, type => 'producer' });
 }
 
 
