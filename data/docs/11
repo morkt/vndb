@@ -70,6 +70,34 @@ server resources and prevent abuse of this service.</p>
  <dt>Port</dt><dd>19534 ('VN')</dd>
 </dl>
 
+<br />
+<b>Disclaimer</b>
+<p>These notes should be obvious, but I'll point it out anyway.</p>
+<ul>
+ <li>
+  This service is still experimental and is provided for free. No guarantees
+  are given about the stability and uptime of this service. It may disappear
+  at any time, and access to it can be restricted without prior notice.
+ </li>
+ <li>
+  Changes to this API can be made without prior notice. Backwards compatibility
+  is provided when feasable, but non-compatible changes will be made at some
+  point.  It is the responsibility of the application developers to keep their
+  applications up-to-date.
+ </li>
+ <li>
+  This service does not grant anyone the right to copy or republish the
+  information fetched using the API. VNDB does not have a clear copyright
+  statement, and in general we're not very strict about other people copying our
+  information, but this API is not intended to be used fetching and publishing
+  half of our database. When in doubt, ask.
+ </li>
+ <li>
+  Lastly, this API is not complete. If you have any specific features you'd
+  like to see, don't hesitate to ask.
+ </li>
+</ul>
+
 
 :SUB:Request/response syntax
 <p>
@@ -224,9 +252,10 @@ however still required.<br />
  differently and that the order of the members may not be the same. What each
  member means and what possible values they can have differs per type and is
  documented below.
-</p><br />
+</p>
 
-<b>Returned object members for the 'vn' type:</b>
+:SUBSUB:get vn
+<p>The following members are returned from a 'get vn' command:</p>
 <table style="margin: 5px 2%; width: 95%">
  <thead><tr>
   <td style="width: 80px">Member</td>
@@ -344,7 +373,7 @@ however still required.<br />
  </tr>
 </table>
 
-<b>Accepted filters for the 'vn' type:</b>
+<p>'get vn' accepts the following filter expressions:</p>
 <table style="margin: 5px 2%; width: 95%">
  <thead><tr>
   <td style="width: 80px">Field</td>
@@ -402,9 +431,10 @@ however still required.<br />
    novel and its releases. Note that the algorithm of this search may change and
    that it can use a different algorithm than the search function on the website.
   </td>
-</table><br /><br />
+</table>
 
-<b>Returned object members for the 'release' type:</b>
+:SUBSUB:get release
+<p>Returned members:</p>
 <table style="margin: 5px 2%; width: 95%">
  <thead><tr>
   <td style="width: 80px">Member</td>
@@ -557,7 +587,7 @@ however still required.<br />
  </tr>
 </table>
 
-<b>Accepted filters for the 'release' type:</b>
+<p>Accepted filters:</p>
 <table style="margin: 5px 2%; width: 95%">
  <thead><tr>
   <td style="width: 80px">Field</td>

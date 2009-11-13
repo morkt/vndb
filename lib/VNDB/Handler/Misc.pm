@@ -281,11 +281,16 @@ sub docpage {
   (my $title = shift @c) =~ s/^:TITLE://;
   chomp $title;
 
-  my $sec = 0;
+  my($sec, $subsec) = (0,0);
   for (@c) {
     s{^:SUB:(.+)\r?\n$}{
       $sec++;
+      $subsec = 0;
       qq|<h3><a href="#$sec" name="$sec">$sec. $1</a></h3>\n|
+    }eg;
+    s{^:SUBSUB:(.+)\r?\n$}{
+      $subsec++;
+      qq|<h4><a href="#$sec.$subsec" name="$sec.$subsec">$sec.$subsec. $1</a></h4>\n|
     }eg;
     s{^:INC:(.+)\r?\n$}{
       $f = sprintf('%s/data/docs/%s', $VNDB::ROOT, $1);

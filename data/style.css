@@ -905,7 +905,8 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 /***** Documentation pages *****/
 
 .docs { padding: 0 15% 20px 15%; }
-.docs h3 { margin-top: 25px;  }
+.docs h3 { margin-top: 30px; font-size: 14px }
+.docs h4 { margin-top: 15px; font-size: 12px }
 .docs dd { padding-bottom: 5px; margin-left: 120px; }
 .docs dt { float: left }
 .docs ul.index { display: block; float: right; width: 150px; padding: 2px; margin: 0 0 10px 5px; background: url($_boxbg$) repeat; border: 1px solid $border$; }

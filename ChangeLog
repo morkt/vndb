@@ -5,6 +5,7 @@ git - ?
 	- Added public database API
 	- Added [code] tag to bb2html()
 	- Tweaked Multi's idlequote timings
+	- Added :SUBSUB: macro to the doc pages
 
 2.8 - 2009-10-24
 	- Converted relation graphs to use inline SVG
