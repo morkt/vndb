@@ -5623,17 +5623,23 @@ ru : Недавно проголосовали
 cs : Poslední hlasy
 hu : Legútóbbi szavazatok
 
-:_votestats_pop_title
-en : Popularity
-ru : Популярность
-cs : Popularita
-hu : Népszerűsség
+:_votestats_rank_title
+en : Ranking
+ru*:
+cs*:
+hu*:
 
-:_votestats_pop_sum
-en : Ranked #[_1] out of [_2] with a score of [_3].
-ru : Рейтинг - #[_1] из [_2], средний балл - [_3].
-cs : Hodnoceno na [_1]. místě z celkem [_2] se skóre [_3].
-hu : [_1]. helyezet a [_2] bejegyzésből [_3] pontszámmal.
+:_votestats_rank_pop
+en : Popularity: ranked #[_1] with a score of [_2]
+ru*:
+cs*:
+hu*:
+
+:_votestats_rank_rat
+en : Bayesian rating: ranked #[_1] with a rating of [_2]
+ru*:
+cs*:
+hu*:
 
 
 

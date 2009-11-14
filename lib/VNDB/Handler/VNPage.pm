@@ -46,7 +46,7 @@ sub page {
 
   my $v = $self->dbVNGet(
     id => $vid,
-    what => 'extended anime relations screenshots ranking'.($rev ? ' changes' : ''),
+    what => 'extended anime relations screenshots rating ranking'.($rev ? ' changes' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
   return 404 if !$v->{id};

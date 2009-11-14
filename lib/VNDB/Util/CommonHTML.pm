@@ -481,8 +481,9 @@ sub htmlVoteStats {
    clearfloat;
    if($type eq 'v') {
      div;
-      h3 mt '_votestats_pop_title';
-      p mt '_votestats_pop_sum', $obj->{ranking}, $self->{stats}{vn}, sprintf('%0.2f',$obj->{c_popularity}*100);
+      h3 mt '_votestats_rank_title';
+      p mt '_votestats_rank_pop', $obj->{p_ranking}, sprintf '%.2f', $obj->{c_popularity}*100;
+      p mt '_votestats_rank_rat', $obj->{r_ranking}, sprintf '%.2f', $obj->{rating};
      end;
    }
   end;
