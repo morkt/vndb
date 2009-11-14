@@ -5345,6 +5345,24 @@ ru : Ссылки
 cs : Odkazy
 hu : Linkek
 
+:_vnpage_l_wp
+en : Wikipedia
+ru*:
+cs*:
+hu*:
+
+:_vnpage_l_encubed
+en : Encubed
+ru*:
+cs*:
+hu*:
+
+:_vnpage_l_renai
+en : Renai.us
+ru*:
+cs*:
+hu*:
+
 :_vnpage_description
 en : Description
 ru : Описание

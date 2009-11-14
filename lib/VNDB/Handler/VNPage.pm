@@ -111,16 +111,16 @@ sub page {
        end;
      }
      my @links = (
-       $v->{l_wp} ?      [ 'Wikipedia', 'http://en.wikipedia.org/wiki/%s', $v->{l_wp} ] : (),
-       $v->{l_encubed} ? [ 'Encubed',   'http://novelnews.net/tag/%s/', $v->{l_encubed} ] : (),
-       $v->{l_renai} ?   [ 'Renai.us',  'http://renai.us/game/%s.shtml', $v->{l_renai} ] : (),
+       $v->{l_wp} ?      [ 'wp', 'http://en.wikipedia.org/wiki/%s', $v->{l_wp} ] : (),
+       $v->{l_encubed} ? [ 'encubed',   'http://novelnews.net/tag/%s/', $v->{l_encubed} ] : (),
+       $v->{l_renai} ?   [ 'renai',  'http://renai.us/game/%s.shtml', $v->{l_renai} ] : (),
      );
      if(@links) {
        Tr ++$i % 2 ? (class => 'odd') : ();
         td mt '_vnpage_links';
         td;
          for(@links) {
-           a href => sprintf($_->[1], $_->[2]), $_->[0];
+           a href => sprintf($_->[1], $_->[2]), mt "_vnpage_l_$_->[0]";
            txt ', ' if $_ ne $links[$#links];
          }
         end;

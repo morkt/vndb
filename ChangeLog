@@ -7,7 +7,7 @@ git - ?
 	- Tweaked Multi's idlequote timings
 	- Added :SUBSUB: macro to the doc pages
 	- Allow NULL values for releases_rev.minage
-	- Made age ratings translatable
+	- Made age ratings and external VN link titles translatable
 	- Added wikipedia link for producers
 
 2.8 - 2009-10-24
