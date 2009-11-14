@@ -44,11 +44,13 @@ ALTER TABLE producers_rev ADD COLUMN l_wp varchar(150);
 
 
 -- bayesian rating
-CREATE OR REPLACE VIEW vn_ratings AS
-  SELECT vid, COUNT(uid) AS votecount, (
+ALTER TABLE vn ADD COLUMN c_rating real;
+ALTER TABLE vn ADD COLUMN c_votecount integer NOT NULL DEFAULT 0;
+UPDATE vn SET
+  c_rating = (SELECT (
       ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes)*(SELECT AVG(vote)::real FROM votes) + SUM(vote)::real) /
       ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes) + COUNT(uid)::real)
-    ) AS rating
-  FROM votes
-  GROUP BY vid;
+    ) FROM votes WHERE vid = id
+  ),
+  c_votecount = COALESCE((SELECT count(*) FROM votes WHERE vid = id), 0);
 

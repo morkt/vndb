@@ -55,13 +55,21 @@ sub list {
   $f->{s} = 'title' if !@ti && $f->{s} eq 'tagscore';
   $f->{o} = $f->{s} eq 'tagscore' ? 'd' : 'a' if !$f->{o};
 
+  my $sortcol = {qw|
+    rel      c_released
+    pop      c_popularity
+    rating   c_rating
+    title    title
+    tagscore tagscore
+  |}->{$f->{s}};
+
   my($list, $np) = $self->dbVNGet(
     what => 'rating',
     $char ne 'all' ? ( char => $char ) : (),
     $f->{q} ? ( search => $f->{q} ) : (),
     results => 50,
     page => $f->{p},
-    order => ($f->{s} eq 'rel' ? 'c_released' : $f->{s} eq 'pop' ? 'c_popularity' : $f->{s}).($f->{o} eq 'a' ? ' ASC' : ' DESC'),
+    order => $sortcol.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
     $f->{pl}[0] ? ( platform => $f->{pl} ) : (),
     $f->{ln}[0] ? ( lang => $f->{ln} ) : (),
     @ti ? (tags_include => [ $f->{sp}, \@ti ]) : (),
@@ -117,8 +125,8 @@ sub list {
        end;
        td class => 'tc5', sprintf '%.2f', $l->{c_popularity}*100;
        td class => 'tc6';
-        txt sprintf '%.2f', $l->{rating}||0;
-        b class => 'grayedout', sprintf ' (%d)', $l->{votecount}||0;
+        txt sprintf '%.2f', $l->{c_rating};
+        b class => 'grayedout', sprintf ' (%d)', $l->{c_votecount};
        end;
       end;
     },

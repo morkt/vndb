@@ -291,7 +291,9 @@ CREATE TABLE vn (
   c_released integer NOT NULL DEFAULT 0,
   c_languages varchar(32) NOT NULL DEFAULT '',
   c_platforms varchar(32) NOT NULL DEFAULT '',
-  c_popularity real NOT NULL DEFAULT 0
+  c_popularity real NOT NULL DEFAULT 0,
+  c_rating real,
+  c_votecount integer NOT NULL DEFAULT 0
 );
 
 -- vn_anime
@@ -827,16 +829,6 @@ CREATE TRIGGER insert_notify AFTER INSERT ON tags FOR EACH STATEMENT EXECUTE PRO
 ---------------------------------
 --  M I S C E L L A N E O U S  --
 ---------------------------------
-
-
--- bayesian rating view
-CREATE OR REPLACE VIEW vn_ratings AS
-  SELECT vid, COUNT(uid) AS votecount, (
-      ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes)*(SELECT AVG(vote)::real FROM votes) + SUM(vote)::real) /
-      ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes) + COUNT(uid)::real)
-    ) AS rating
-  FROM votes
-  GROUP BY vid;
 
 
 -- Sequences used for ID generation of items not in the DB
