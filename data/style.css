@@ -786,7 +786,8 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 .vnbrowse .tc_s { width: 65px }
 .vnbrowse .tc2 { text-align: right; padding: 0; }
 .vnbrowse .tc3 { padding: 0; }
-.vnbrowse .tc5 { text-align: right; padding-right: 10px; }
+.vnbrowse .tc5 { text-align: right; padding-right: 10px }
+.vnbrowse .tc6 { width: 80px }
 #advselect {
   text-align: center;
   display: block;

@@ -78,6 +78,8 @@ sub dbVNGet {
       'JOIN users u ON u.id = c.requester' : (),
     $o{what} =~ /relgraph/ ?
       'JOIN relgraphs vg ON vg.id = v.rgraph' : (),
+    $o{what} =~ /rating/ ?
+      'LEFT JOIN vn_ratings r ON r.vid = v.id' : (),
   );
 
   my $tag_ids = $o{tags_include} && join ',', @{$o{tags_include}[1]};
@@ -89,6 +91,7 @@ sub dbVNGet {
       qw|c.requester c.comments v.latest u.username c.rev c.causedby|, q|extract('epoch' from c.added) as added|) : (),
     $o{what} =~ /relgraph/ ? 'vg.svg' : (),
     $o{what} =~ /ranking/ ? '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_popularity > v.c_popularity) AS ranking' : (),
+    $o{what} =~ /rating/ ? 'r.rating, r.votecount' : (),
     $tag_ids ?
       qq|(SELECT AVG(tvb.rating) FROM tags_vn_bayesian tvb WHERE tvb.tag IN($tag_ids) AND tvb.vid = v.id AND spoiler <= $o{tags_include}[0] GROUP BY tvb.vid) AS tagscore| : (),
   );
@@ -98,7 +101,7 @@ sub dbVNGet {
       FROM vn_rev vr
       !s
       !W
-      ORDER BY !s|,
+      ORDER BY !s NULLS LAST|,
     join(', ', @select), join(' ', @join), \%where, $o{order},
   );
 

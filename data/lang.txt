@@ -4627,6 +4627,12 @@ ru : Популярность
 cs : Popularita
 hu : Népszerűség
 
+:_vnbrowse_col_rating
+en : Rating
+ru*:
+cs*:
+hu*:
+
 :_vnbrowse_tagign_title
 en : The following tags were ignored:
 ru : Следующие теги были пропущены:

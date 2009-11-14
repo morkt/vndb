@@ -16,7 +16,7 @@ sub list {
   my($self, $char) = @_;
 
   my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'tagscore', enum => [ qw|title rel pop tagscore| ] },
+    { name => 's', required => 0, default => 'tagscore', enum => [ qw|title rel pop tagscore rating| ] },
     { name => 'o', required => 0, enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'q', required => 0, default => '' },
@@ -56,6 +56,7 @@ sub list {
   $f->{o} = $f->{s} eq 'tagscore' ? 'd' : 'a' if !$f->{o};
 
   my($list, $np) = $self->dbVNGet(
+    what => 'rating',
     $char ne 'all' ? ( char => $char ) : (),
     $f->{q} ? ( search => $f->{q} ) : (),
     results => 50,
@@ -90,6 +91,7 @@ sub list {
       [ '',                              0,       undef, 'tc3' ],
       [ mt('_vnbrowse_col_released'),    'rel',   undef, 'tc4' ],
       [ mt('_vnbrowse_col_popularity'),  'pop',   undef, 'tc5' ],
+      [ mt('_vnbrowse_col_rating'),      'rating', undef, 'tc6' ],
     ],
     row     => sub {
       my($s, $n, $l) = @_;
@@ -114,6 +116,10 @@ sub list {
         lit $self->{l10n}->datestr($l->{c_released});
        end;
        td class => 'tc5', sprintf '%.2f', $l->{c_popularity}*100;
+       td class => 'tc6';
+        txt sprintf '%.2f', $l->{rating}||0;
+        b class => 'grayedout', sprintf ' (%d)', $l->{votecount}||0;
+       end;
       end;
     },
   );

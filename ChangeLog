@@ -9,6 +9,7 @@ git - ?
 	- Allow NULL values for releases_rev.minage
 	- Made age ratings and external VN link titles translatable
 	- Added wikipedia link for producers
+	- Added bayesian rating for VNs
 
 2.8 - 2009-10-24
 	- Converted relation graphs to use inline SVG

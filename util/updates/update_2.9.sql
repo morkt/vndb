@@ -42,3 +42,13 @@ UPDATE releases_rev SET minage = NULL WHERE minage < 0;
 -- wikipedia link for producers
 ALTER TABLE producers_rev ADD COLUMN l_wp varchar(150);
 
+
+-- bayesian rating
+CREATE OR REPLACE VIEW vn_ratings AS
+  SELECT vid, COUNT(uid) AS votecount, (
+      ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes)*(SELECT AVG(vote)::real FROM votes) + SUM(vote)::real) /
+      ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes) + COUNT(uid)::real)
+    ) AS rating
+  FROM votes
+  GROUP BY vid;
+
