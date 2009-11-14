@@ -740,11 +740,16 @@ however still required.<br />
   <td>Primary language</td>
  </tr>
  <tr>
-  <td>website</td>
+  <td>links</td>
   <td>details</td>
-  <td>string</td>
-  <td>yes</td>
-  <td>Official website URL</td>
+  <td>object</td>
+  <td>no</td>
+  <td>
+   External links, object has the following members:<br />
+   "homepage", official homepage,<br />
+   "wikipedia", title of the related article on the English wikipedia.<br />
+   Both values can be <b>null</b>.
+  </td>
  </tr>
  <tr class="odd">
   <td>aliases</td>

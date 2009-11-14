@@ -719,7 +719,7 @@ sub get_producer {
 
   my $select = 'p.id, p.latest';
   $select .= ', pr.type, pr.name, pr.original, pr.lang AS language' if grep /basic/, @{$get->{info}};
-  $select .= ', pr.website, pr.desc AS description, pr.alias AS aliases' if grep /details/, @{$get->{info}};
+  $select .= ', pr.website, pr.l_wp, pr.desc AS description, pr.alias AS aliases' if grep /details/, @{$get->{info}};
 
   my @placeholders;
   my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
@@ -767,7 +767,10 @@ sub get_producer_res {
       $_->{id}*=1;
       $_->{original} ||= undef if grep /basic/, @{$get->{info}};
       if(grep /details/, @{$get->{info}}) {
-        $_->{website}     ||= undef;
+        $_->{links} = {
+          homepage  => delete($_->{website})||undef,
+          wikipedia => delete $_->{l_wp},
+        };
         $_->{description} ||= undef;
         $_->{aliases}     ||= undef;
       }
