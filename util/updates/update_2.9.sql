@@ -50,7 +50,7 @@ UPDATE vn SET
   c_rating = (SELECT (
       ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes)*(SELECT AVG(vote)::real FROM votes) + SUM(vote)::real) /
       ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes) + COUNT(uid)::real)
-    ) FROM votes WHERE vid = id
+    ) FROM votes WHERE vid = id AND uid NOT IN(SELECT id FROM users WHERE ign_votes)
   ),
-  c_votecount = COALESCE((SELECT count(*) FROM votes WHERE vid = id), 0);
+  c_votecount = COALESCE((SELECT count(*) FROM votes WHERE vid = id AND uid NOT IN(SELECT id FROM users WHERE ign_votes)), 0);
 
