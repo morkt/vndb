@@ -10,6 +10,7 @@ git - ?
 	- Made age ratings and external VN link titles translatable
 	- Added wikipedia link for producers
 	- Added bayesian rating for VNs
+	- Improved popularity sorting on VN list
 
 2.8 - 2009-10-24
 	- Converted relation graphs to use inline SVG

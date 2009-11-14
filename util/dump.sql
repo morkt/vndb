@@ -291,7 +291,7 @@ CREATE TABLE vn (
   c_released integer NOT NULL DEFAULT 0,
   c_languages varchar(32) NOT NULL DEFAULT '',
   c_platforms varchar(32) NOT NULL DEFAULT '',
-  c_popularity real NOT NULL DEFAULT 0,
+  c_popularity real,
   c_rating real,
   c_votecount integer NOT NULL DEFAULT 0
 );
@@ -485,7 +485,7 @@ BEGIN
     GROUP BY v.vid, v.uid;
   CREATE OR REPLACE TEMP VIEW tmp_pop2 (vid, win) AS
     SELECT vid, sum(rank) FROM tmp_pop1 GROUP BY vid;
-  UPDATE vn SET c_popularity = COALESCE((SELECT win/(SELECT MAX(win) FROM tmp_pop2) FROM tmp_pop2 WHERE vid = id), 0);
+  UPDATE vn SET c_popularity = (SELECT win/(SELECT MAX(win) FROM tmp_pop2) FROM tmp_pop2 WHERE vid = id);
   RETURN;
 END;
 $$ LANGUAGE plpgsql;

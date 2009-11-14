@@ -54,3 +54,23 @@ UPDATE vn SET
   ),
   c_votecount = COALESCE((SELECT count(*) FROM votes WHERE vid = id AND uid NOT IN(SELECT id FROM users WHERE ign_votes)), 0);
 
+
+-- vn.c_popularity can be NULL
+ALTER TABLE vn ALTER COLUMN c_popularity DROP NOT NULL;
+ALTER TABLE vn ALTER COLUMN c_popularity DROP DEFAULT;
+CREATE OR REPLACE FUNCTION update_vnpopularity() RETURNS void AS $$
+BEGIN
+  CREATE OR REPLACE TEMP VIEW tmp_pop1 (uid, vid, rank) AS
+      SELECT v.uid, v.vid, sqrt(count(*))::real
+        FROM votes v
+        JOIN votes v2 ON v.uid = v2.uid AND v2.vote < v.vote
+        WHERE v.uid NOT IN(SELECT id FROM users WHERE ign_votes)
+    GROUP BY v.vid, v.uid;
+  CREATE OR REPLACE TEMP VIEW tmp_pop2 (vid, win) AS
+    SELECT vid, sum(rank) FROM tmp_pop1 GROUP BY vid;
+  UPDATE vn SET c_popularity = (SELECT win/(SELECT MAX(win) FROM tmp_pop2) FROM tmp_pop2 WHERE vid = id);
+  RETURN;
+END;
+$$ LANGUAGE plpgsql;
+SELECT update_vnpopularity();
+

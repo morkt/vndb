@@ -123,9 +123,9 @@ sub list {
        td class => 'tc4';
         lit $self->{l10n}->datestr($l->{c_released});
        end;
-       td class => 'tc5', sprintf '%.2f', $l->{c_popularity}*100;
+       td class => 'tc5', sprintf '%.2f', ($l->{c_popularity}||0)*100;
        td class => 'tc6';
-        txt sprintf '%.2f', $l->{c_rating};
+        txt sprintf '%.2f', $l->{c_rating}||0;
         b class => 'grayedout', sprintf ' (%d)', $l->{c_votecount};
        end;
       end;
