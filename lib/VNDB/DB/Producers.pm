@@ -43,7 +43,7 @@ sub dbProducerGet {
   push @join, 'JOIN relgraphs pg ON pg.id = p.rgraph' if $o{what} =~ /relgraph/;
 
   my $select = 'p.id, pr.type, pr.name, pr.original, pr.lang, pr.id AS cid, p.rgraph';
-  $select .= ', pr.desc, pr.alias, pr.website, p.hidden, p.locked' if $o{what} =~ /extended/;
+  $select .= ', pr.desc, pr.alias, pr.website, pr.l_wp, p.hidden, p.locked' if $o{what} =~ /extended/;
   $select .= q|, extract('epoch' from c.added) as added, c.requester, c.comments, p.latest, pr.id AS cid, u.username, c.rev| if $o{what} =~ /changes/;
   $select .= ', pg.svg' if $o{what} =~ /relgraph/;
 
@@ -125,9 +125,9 @@ sub dbProducerAdd {
 sub insert_rev {
   my($self, $cid, $pid, $o) = @_;
   $self->dbExec(q|
-    INSERT INTO producers_rev (id, pid, name, original, website, type, lang, "desc", alias)
+    INSERT INTO producers_rev (id, pid, name, original, website, l_wp, type, lang, "desc", alias)
       VALUES (!l)|,
-    [ $cid, $pid, @$o{qw| name original website type lang desc alias|} ]
+    [ $cid, $pid, @$o{qw| name original website l_wp type lang desc alias|} ]
   );
 
   $self->dbExec(q|

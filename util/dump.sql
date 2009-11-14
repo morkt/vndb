@@ -69,7 +69,8 @@ CREATE TABLE producers_rev (
   website varchar(250) NOT NULL DEFAULT '',
   lang varchar NOT NULL DEFAULT 'ja',
   "desc" text NOT NULL DEFAULT '',
-  alias varchar(500) NOT NULL DEFAULT ''
+  alias varchar(500) NOT NULL DEFAULT '',
+  l_wp varchar(150)
 );
 
 -- quotes

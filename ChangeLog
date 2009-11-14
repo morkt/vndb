@@ -8,6 +8,7 @@ git - ?
 	- Added :SUBSUB: macro to the doc pages
 	- Allow NULL values for releases_rev.minage
 	- Made age ratings translatable
+	- Added wikipedia link for producers
 
 2.8 - 2009-10-24
 	- Converted relation graphs to use inline SVG

@@ -2176,6 +2176,18 @@ ru : a.k.a. [_1]
 cs : a.k.a. [_1]
 hu :
 
+:_prodpage_homepage
+en : Homepage
+ru*:
+cs*:
+hu*:
+
+:_prodpage_wikipedia
+en : Wikipedia
+ru*:
+cs*:
+hu*:
+
 :_prodpage_vnrel
 en : Visual Novel Relations
 ru : Связи новелл
@@ -2238,6 +2250,12 @@ en : Website
 ru : Веб-сайт
 cs : Internetová stránka
 hu : Weboldal
+
+:_revfield_p_l_wp
+en : Wikipedia link
+ru*:
+cs*:
+hu*:
 
 :_revfield_p_desc
 en : Description
@@ -2334,6 +2352,12 @@ en : Website
 ru : Веб-сайт
 cs : Internetová stránka
 hu : Weboldal
+
+:_pedit_form_wikipedia
+en : Wikipedia link
+ru*:
+cs*:
+hu*:
 
 :_pedit_form_desc
 en : Description

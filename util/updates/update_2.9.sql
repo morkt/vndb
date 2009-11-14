@@ -38,3 +38,7 @@ ALTER TABLE releases_rev ALTER COLUMN minage DROP NOT NULL;
 ALTER TABLE releases_rev ALTER COLUMN minage DROP DEFAULT;
 UPDATE releases_rev SET minage = NULL WHERE minage < 0;
 
+
+-- wikipedia link for producers
+ALTER TABLE producers_rev ADD COLUMN l_wp varchar(150);
+
