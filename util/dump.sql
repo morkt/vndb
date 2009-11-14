@@ -129,7 +129,7 @@ CREATE TABLE releases_rev (
   website varchar(250) NOT NULL DEFAULT '',
   released integer NOT NULL,
   notes text NOT NULL DEFAULT '',
-  minage smallint NOT NULL DEFAULT -1,
+  minage smallint,
   gtin bigint NOT NULL DEFAULT 0,
   patch boolean NOT NULL DEFAULT FALSE,
   catalog varchar(50) NOT NULL DEFAULT '',

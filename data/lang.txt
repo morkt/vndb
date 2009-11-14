@@ -997,6 +997,36 @@ cs : Vyřazeno
 hu : Lemondva
 
 
+# Age ratings
+
+:_minage_null
+en : Unknown
+ru*:
+cs*:
+hu*:
+
+:_minage_all
+en : All ages
+ru*:
+cs*:
+hu*:
+
+# "Ages [_1] and up", but shorter
+:_minage_age
+en : [_1]+
+ru*:
+cs*:
+hu*:
+
+# [_1] is an example of an age rating, like 'CERO A', 'CERO D', etc.
+# this string is appended to the other _minage_* strings
+:_minage_example
+en : (e.g. [_1])
+ru*:
+cs*:
+hu*:
+
+
 # Form messages
 
 :_formerr_e_login_failed

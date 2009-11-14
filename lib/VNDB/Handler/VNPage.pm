@@ -398,7 +398,7 @@ sub _releases {
       for my $rel (grep grep($_ eq $l, @{$_->{languages}}), @$r) {
         Tr;
          td class => 'tc1'; lit $self->{l10n}->datestr($rel->{released}); end;
-         td class => 'tc2', $rel->{minage} < 0 ? '' : $self->{age_ratings}{$rel->{minage}}[0];
+         td class => 'tc2', !defined($rel->{minage}) ? '' : minage $rel->{minage};
          td class => 'tc3';
           for (sort @{$rel->{platforms}}) {
             next if $_ eq 'oth';

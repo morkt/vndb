@@ -6,7 +6,7 @@ use warnings;
 use YAWF ':html';
 use Exporter 'import';
 use POSIX 'strftime', 'ceil', 'floor';
-our @EXPORT = qw| shorten bb2html gtintype liststat clearfloat cssicon tagscore mt |;
+our @EXPORT = qw| shorten bb2html gtintype liststat clearfloat cssicon tagscore mt minage |;
 
 
 # I would've done this as a #define if this was C...
@@ -218,6 +218,21 @@ sub tagscore {
 # (not thread-safe, in the same sense as YAWF::XML. But who cares about threads, anyway?)
 sub mt {
   return $YAWF::OBJ->{l10n}->maketext(@_);
+}
+
+
+sub minage {
+  my($a, $ex) = @_;
+  my $str = !defined($a) ? mt '_minage_null' : !$a ? mt '_minage_all' : mt '_minage_age', $a;
+  $ex = !defined($a) ? '' : {
+     0 => 'CERO A',
+    12 => 'CERO B',
+    15 => 'CERO C',
+    17 => 'CERO D',
+    18 => 'CERO Z',
+  }->{$a} if $ex;
+  return $str if !$ex;
+  return $str.' '.mt('_minage_example', $ex);
 }
 
 

@@ -40,7 +40,7 @@ sub dbReleaseGet {
     defined $o{type} ? (
       'rr.type = ?' => $o{type} ) : (),
     $o{minage} ? (
-      '(rr.minage !s ? AND rr.minage <> -1)' => [ $o{minage}[0] ? '<=' : '>=', $o{minage}[1] ] ) : (),
+      'rr.minage !s ?' => [ $o{minage}[0] ? '<=' : '>=', $o{minage}[1] ] ) : (),
     $o{media} ? (
       'rr.id IN(SELECT irm.rid FROM releases_media irm JOIN releases ir ON ir.latest = irm.rid WHERE irm.medium IN(!l))' => [ $o{media} ] ) : (),
     $o{resolutions} ? (

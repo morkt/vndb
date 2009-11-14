@@ -30,3 +30,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 SELECT tag_vn_calc();
+
+
+
+-- releases_rev.minage should accept NULL
+ALTER TABLE releases_rev ALTER COLUMN minage DROP NOT NULL;
+ALTER TABLE releases_rev ALTER COLUMN minage DROP DEFAULT;
+UPDATE releases_rev SET minage = NULL WHERE minage < 0;
+
