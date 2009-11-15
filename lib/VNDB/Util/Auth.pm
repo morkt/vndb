@@ -25,8 +25,8 @@ sub authInit {
   return _rmcookie($self) if length($cookie) < 41;
   my $token = substr($cookie, 0, 40);
   my $uid  = substr($cookie, 40);
-  return _rmcookie($self) if $uid !~ /^\d+$/ || !$self->dbSessionCheck($uid, $token);
-  $self->{_auth} = $self->dbUserGet(uid => $uid, what => 'extended')->[0];
+  $self->{_auth} = $uid =~ /^\d+$/ && $self->dbUserGet(uid => $uid, session => $token, what => 'extended')->[0];
+  return _rmcookie($self) if !$self->{_auth};
 }
 
 

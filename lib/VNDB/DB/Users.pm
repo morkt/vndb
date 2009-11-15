@@ -5,10 +5,10 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel dbUserMessageCount dbSessionAdd dbSessionDel dbSessionCheck|;
+our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel dbUserMessageCount dbSessionAdd dbSessionDel|;
 
 
-# %options->{ username passwd mail order uid ip registered search results page what }
+# %options->{ username passwd mail session order uid ip registered search results page what }
 # what: stats extended
 sub dbUserGet {
   my $s = shift;
@@ -40,6 +40,8 @@ sub dbUserGet {
       'registered > to_timestamp(?)' => $o{registered} ) : (),
     $o{search} ? (
       'username ILIKE ?' => "%$o{search}%") : (),
+    $o{session} ? (
+      q|s.token = decode(?, 'hex')| => $o{session} ) : (),
   );
 
   my @select = (
@@ -59,12 +61,17 @@ sub dbUserGet {
     ) : (),
   );
 
+  my @join = (
+    $o{session} ? 'JOIN sessions s ON s.uid = u.id' : (),
+  );
+
   my($r, $np) = $s->dbPage(\%o, q|
     SELECT !s
       FROM users u
+      !s
       !W
       ORDER BY !s|,
-    join(', ', @select), \%where, $o{order}
+    join(', ', @select), join(' ', @join), \%where, $o{order}
   );
   return wantarray ? ($r, $np) : $r;
 }
@@ -147,15 +154,5 @@ sub dbSessionDel {
 }
 
 
-# Queries the database for the validity of a session
-# Returns 1 if corresponding session found, 0 if not
-# uid, token
-sub dbSessionCheck {
-  my($s, @o) = @_;
-  return $s->dbRow(
-    q|SELECT count(uid) AS count FROM sessions WHERE uid = ? AND token = decode(?, 'hex') LIMIT 1|, @o
-  )->{count}||0;
-}
-
-
 1;
+
