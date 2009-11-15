@@ -327,7 +327,7 @@ sub _doc {
    }
 
    div style => 'width: 48%; margin-right: 10px; overflow-y: auto; float: left';
-    pre style => 'font: 12px Tahoma', $en;
+    pre style => 'font: 12px Tahoma; border: none; background: none; margin: 0', $en;
    end;
    textarea name => 'tl', id => 'tl', rows => ($en =~ y/\n//),
      style => 'border: none; float: left; width: 49%; white-space: nowrap', wrap => 'off';
