@@ -48,7 +48,7 @@ ALTER TABLE vn ADD COLUMN c_rating real;
 ALTER TABLE vn ADD COLUMN c_votecount integer NOT NULL DEFAULT 0;
 UPDATE vn SET
   c_rating = (SELECT (
-      ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes)*(SELECT AVG(vote)::real FROM votes) + SUM(vote)::real) /
+      ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes)*(SELECT AVG(a)::real FROM (SELECT AVG(vote) FROM votes GROUP BY vid) AS v(a)) + SUM(vote)::real) /
       ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes) + COUNT(uid)::real)
     ) FROM votes WHERE vid = id AND uid NOT IN(SELECT id FROM users WHERE ign_votes)
   ),
