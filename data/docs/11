@@ -4,8 +4,8 @@
 :SUB:Introduction
 <p>
  This document describes the public API of VNDB and is intended to be read by
- programmers. The API allows programs and websites to access (parts of) the VNDB
- database without actually visiting a page on the website.
+  programmers. This API allows programs and websites to access (parts of) the
+  VNDB database without actually visiting the website.
  <br /><br />
 </p>
 
@@ -14,16 +14,11 @@
  <li>
   Simple in implementation of both client and server. "Simple" here means that
   it shouldn't take much code to write a secure and full implementation and that
-  client applications don't require huge dependency trees just to use this API.
+  client applications shouldn't require huge dependency trees just to use this API.
  </li>
  <li>Powerful: Not as powerful as raw SQL, but not as rigid as commonly used REST or RPC protocols.</li>
- <li>Fast: minimal bandwidth overhead</li>
- <li>
-  High-level: nobody is interested in the internal database structure of VNDB
-  (ok, maybe you are, but you wouldn't want to write an application using it: it
-  changes quite often)
- </li>
- <li>Stateful</li>
+ <li>High-level: common applications need to perform only few actions to get what they want.</li>
+ <li>Fast: minimal bandwidth overhead and simple and customizable queries.</li>
 </ul>
 <br />
 
@@ -45,8 +40,7 @@
 server resources and prevent abuse of this service.</p>
 <ul>
  <li>5 connections per IP. All connections that are opened after reaching this limit will be immediately closed.</li>
- <li>3 connections per user. The login command will reply with a 'sesslimit' error when reaching this limit.</li>
- <li>Each command returns at most 10 results.</li>
+ <li>3 sessions per user. The login command will reply with a 'sesslimit' error when this limit is reached.</li>
  <li>100 commands per 10 minutes per user. Server will reply with a 'throttled' error (type="cmd") when reaching this limit.</li>
  <li>
   1 second of SQL time per minute per user. SQL time is the total time taken to
@@ -55,6 +49,7 @@ server resources and prevent abuse of this service.</p>
   Server will reply with a 'throttled' error with type="sql" upon reaching
   this limit.
  </li>
+ <li>Each command returns at most 10 results.</li>
 </ul>
 
 <br />
@@ -82,9 +77,9 @@ server resources and prevent abuse of this service.</p>
  <li>
   This service does not grant anyone the right to copy or republish the
   information fetched using the API. VNDB does not have a clear copyright
-  statement, and in general we're not very strict about other people copying our
-  information, but this API is not intended to be used fetching and publishing
-  half of our database. When in doubt, ask.
+  statement, and in general we're not very strict about other people copying
+  our information, but this API is not intended to be used for fetching and
+  publishing more than half of our database. When in doubt, ask.
  </li>
  <li>
   Lastly, this API is not complete. If you have any specific features you'd
@@ -106,12 +101,12 @@ server resources and prevent abuse of this service.</p>
   returned, it may very well happen that this is later changed into an array.
   Make sure your application doesn't completely crash in such an event. Also keep
   in mind that for every command you send, the server can reply with an error, or
-  can immediately close the connection (but this is be rare).
+  can immediately close the connection (but this should be rare).
  </li>
  <li>
   Regularly check this page to see if anything has changed to the API, and
-  update your client where necessary. I'll probably add a changelog to the bottom
-  of this page to make this easier.
+  update your client when necessary. I'll probably add a changelog to the bottom
+  of this page in the future.
  </li>
  <li>
   Use a JSON library for both encoding and decoding JSON data. While the format
@@ -130,7 +125,7 @@ server resources and prevent abuse of this service.</p>
  for the glory details.
  <br /><br />
  The words <i>object</i>, <i>array</i>, <i>value</i>, <i>string</i>,
- <i>number</i> and <i>int</i> refer to the JSON data types. In addition the following
+ <i>number</i> and <i>integer</i> refer to the JSON data types. In addition the following
  definitions are used in this document:
 </p>
 <dl>
@@ -183,7 +178,7 @@ however still required.<br />
 <p>
  Some commands accept a filter string as argument. This argument is formatted
  similar to boolean expressions in most programming languages. A filter consists
- of one or more <i>expressions</i>, separated by the boolean operators "and" and
+ of one or more <i>expressions</i>, separated by the boolean operators "and" or
  "or" (lowercase). Each filter expression can be surrounded by parentheses to
  indicate precedence, the filter argument itself must be surrounded by parentheses.
  <br />
@@ -205,7 +200,7 @@ however still required.<br />
    title ~ "osananajimi"
  )
 </pre>
-<p>More complex things are also possible:</p>
+<p>More complex filters are also possible:</p>
 <pre>
  ((platforms = ["win", "ps2"] or languages = "ja") and released > "2009-01-10")
 </pre>
@@ -238,10 +233,10 @@ however still required.<br />
 
 :SUB:The 'get' command
 <p>
- This command is used to fetch data from the database. It accepts 3 arguments:
+ This command is used to fetch data from the database. It accepts 4 arguments:
  the type of data to fetch (e.g. visual novels or producers), what part of that
  data to fetch (e.g. only the VN titles, or the descriptions and relations as
- well), and lastly a filter expression.
+ well), a filter expression, and lastly some options.
 </p>
 <pre>
  get <b class="standout">type flags filters options</b>
