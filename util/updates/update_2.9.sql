@@ -64,7 +64,7 @@ BEGIN
       SELECT v.uid, v.vid, sqrt(count(*))::real
         FROM votes v
         JOIN votes v2 ON v.uid = v2.uid AND v2.vote < v.vote
-        WHERE v.uid NOT IN(SELECT id FROM users WHERE ign_votes)
+        JOIN users u ON u.id = v.uid AND NOT ign_votes
     GROUP BY v.vid, v.uid;
   CREATE OR REPLACE TEMP VIEW tmp_pop2 (vid, win) AS
     SELECT vid, sum(rank) FROM tmp_pop1 GROUP BY vid;
