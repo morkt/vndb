@@ -1001,20 +1001,20 @@ hu : Lemondva
 
 :_minage_null
 en : Unknown
-ru*:
+ru : Неизвестно
 cs : Není známo
 hu*:
 
 :_minage_all
 en : All ages
-ru*:
+ru : Все возраста
 cs : Pro všechny věky
 hu*:
 
 # "Ages [_1] and up", but shorter
 :_minage_age
 en : [_1]+
-ru*:
+ru : [_1]+
 cs : [_1]+
 hu*:
 
@@ -1022,7 +1022,7 @@ hu*:
 # this string is appended to the other _minage_* strings
 :_minage_example
 en : (e.g. [_1])
-ru*:
+ru : (т.е. [_1])
 cs : (např. [_1])
 hu*:
 
@@ -2178,13 +2178,13 @@ hu :
 
 :_prodpage_homepage
 en : Homepage
-ru*:
+ru : Домашняя страничка
 cs : Domovská stránka
 hu*:
 
 :_prodpage_wikipedia
 en : Wikipedia
-ru*:
+ru : Википедия
 cs : Wikipedie
 hu*:
 
@@ -2253,7 +2253,7 @@ hu : Weboldal
 
 :_revfield_p_l_wp
 en : Wikipedia link
-ru*:
+ru : Ссылка на Википедию
 cs : Odkaz na Wikipedii
 hu*:
 
@@ -2355,7 +2355,7 @@ hu : Weboldal
 
 :_pedit_form_wikipedia
 en : Wikipedia link
-ru*:
+ru : Ссылка на Википедию
 cs : Odkaz na Wikipedii
 hu*:
 
@@ -4629,7 +4629,7 @@ hu : Népszerűség
 
 :_vnbrowse_col_rating
 en : Rating
-ru*:
+ru : Рейтинг
 cs : Hodnocení
 hu*:
 
@@ -5353,19 +5353,19 @@ hu : Linkek
 
 :_vnpage_l_wp
 en : Wikipedia
-ru*:
+ru : Википедия
 cs : Wikipedie
 hu*:
 
 :_vnpage_l_encubed
 en : Encubed
-ru*:
+ru : Encubed
 cs : Encubed
 hu*:
 
 :_vnpage_l_renai
 en : Renai.us
-ru*:
+ru : Renai.us
 cs : Renai.us
 hu*:
 
@@ -5625,19 +5625,19 @@ hu : Legútóbbi szavazatok
 
 :_votestats_rank_title
 en : Ranking
-ru*:
+ru : Место
 cs : Hodnocení
 hu*:
 
 :_votestats_rank_pop
 en : Popularity: ranked #[_1] with a score of [_2]
-ru*:
+ru : Популярность: #[_1] место с количеством баллов, равным [_2]
 cs : Popularita: [_1]. místo se skóre [_2]
 hu*:
 
 :_votestats_rank_rat
 en : Bayesian rating: ranked #[_1] with a rating of [_2]
-ru*:
+ru : Рейтинг методом Байезия: #[_1] место с рейтингом [_2]
 cs : Bayesovo hodnocení: [_1]. místo se skóre [_2]
 hu*:
 
