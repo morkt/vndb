@@ -517,7 +517,7 @@ hu : Folytatás
 en : Prequel
 ru : Предыстория
 cs : Prequel
-hu : Előzmény
+hu : Előd
 
 :_vnrel_set
 en : Same setting
@@ -547,7 +547,7 @@ hu : Mellék történet
 en : Parent story
 ru : Исходный сюжет
 cs : Mateřský příběh
-hu : Szüllő történet
+hu : Fő történet
 
 :_vnrel_ser
 en : Same series
@@ -613,7 +613,7 @@ hu : Alválalat
 en : Parent producer
 ru : Исходная компания
 cs : Mateřský producent
-hu : Szüllő készítő
+hu : Fő készítő
 
 :_prodrel_imp
 en : Imprint
@@ -712,7 +712,7 @@ hu : Videoklip
 en : Announcements
 ru : Объявления
 cs : Oznámení
-hu : Hirdetések
+hu : Hírek
 
 :_dboard_db
 en : VNDB Discussions
@@ -995,6 +995,36 @@ en : Dropped
 ru : Заброшено
 cs : Vyřazeno
 hu : Lemondva
+
+
+# Age ratings
+
+:_minage_null
+en : Unknown
+ru : Неизвестно
+cs : Není známo
+hu : Ismeretlen
+
+:_minage_all
+en : All ages
+ru : Все возраста
+cs : Pro všechny věky
+hu : Nincs korhatár
+
+# "Ages [_1] and up", but shorter
+:_minage_age
+en : [_1]+
+ru : [_1]+
+cs : [_1]+
+hu : [_1]+
+
+# [_1] is an example of an age rating, like 'CERO A', 'CERO D', etc.
+# this string is appended to the other _minage_* strings
+:_minage_example
+en : (e.g. [_1])
+ru : (т.е. [_1])
+cs : (např. [_1])
+hu : (p.l. [_1])
 
 
 # Form messages
@@ -2146,6 +2176,18 @@ ru : a.k.a. [_1]
 cs : a.k.a. [_1]
 hu :
 
+:_prodpage_homepage
+en : Homepage
+ru : Домашняя страничка
+cs : Domovská stránka
+hu : Weboldal
+
+:_prodpage_wikipedia
+en : Wikipedia
+ru : Википедия
+cs : Wikipedie
+hu :
+
 :_prodpage_vnrel
 en : Visual Novel Relations
 ru : Связи новелл
@@ -2168,7 +2210,7 @@ hu : fejlesztő
 en : publisher
 ru : издатель
 cs : vydavatel
-hu : kiadó
+hu : forgalmazó
 
 
 # producer diff fields
@@ -2209,6 +2251,12 @@ ru : Веб-сайт
 cs : Internetová stránka
 hu : Weboldal
 
+:_revfield_p_l_wp
+en : Wikipedia link
+ru : Ссылка на Википедию
+cs : Odkaz na Wikipedii
+hu :
+
 :_revfield_p_desc
 en : Description
 ru : Описание
@@ -2234,7 +2282,7 @@ hu : semmi
 en : Relation graph for [_1]
 ru : Схема отношений для [_1]
 cs : Graf vztahů pro producenta [_1]
-hu : [_1] összefüggés gráfja
+hu : [_1] összefüggés grafikonja
 
 
 # Add/Edit producer
@@ -2304,6 +2352,12 @@ en : Website
 ru : Веб-сайт
 cs : Internetová stránka
 hu : Weboldal
+
+:_pedit_form_wikipedia
+en : Wikipedia link
+ru : Ссылка на Википедию
+cs : Odkaz na Wikipedii
+hu :
 
 :_pedit_form_desc
 en : Description
@@ -2539,7 +2593,7 @@ hu : fejlesztő
 en : publisher
 ru : издатель
 cs : vydavatel
-hu : kiadó
+hu : forgalmazó
 
 
 # Information table (on every release page)
@@ -2662,7 +2716,7 @@ hu : [quant,_1,Fejlesztő,Fejlesztők]
 en : [quant,_1,Publisher,Publishers]
 ru : [quant,_1,Издатель,Издатели,Издатели]
 cs : [quant,_1,Vydavatel,Vydavatelé,Vydavatelů]
-hu : [quant,_1,Kiadó,Kiadók]
+hu : [quant,_1,Forgalmazó,Forgalmazók]
 
 :_relinfo_catalog
 en : Catalog no.
@@ -2674,7 +2728,7 @@ hu : Katalógus szám
 en : Links
 ru : Ссылки
 cs : Odkazy
-hu : Linkek
+hu : Hivatkozások
 
 :_relinfo_website
 en : Official website
@@ -2945,7 +2999,7 @@ hu : Fejlesztő
 en : Publisher
 ru : Издатель
 cs : Vydavatel
-hu : Kiadó
+hu : Forgalmazó
 
 :_redit_form_prod_both
 en : Both
@@ -4573,6 +4627,12 @@ ru : Популярность
 cs : Popularita
 hu : Népszerűség
 
+:_vnbrowse_col_rating
+en : Rating
+ru : Рейтинг
+cs : Hodnocení
+hu : Értékelés
+
 :_vnbrowse_tagign_title
 en : The following tags were ignored:
 ru : Следующие теги были пропущены:
@@ -4754,13 +4814,13 @@ hu : Hossz
 en : External links
 ru : Внешние ссылки
 cs : Externí odkazy
-hu : Külső linkek
+hu : Külső hivatkozások
 
 :_vnedit_anime
 en : Anime
 ru : Аниме
 cs : Anime
-hu :
+hu : Kapcsolódó anime
 
 :_vnedit_anime_msg
 en : Whitespace separated list of [url,http://anidb.net/,AniDB] anime IDs.
@@ -4858,13 +4918,13 @@ hu : Összefüggés hozzáadása
 en : is a
 ru : это
 cs : je
-hu*: -
+hu : -
 
 :_vnedit_rel_of
 en : of
 ru : для
 cs : titulu
-hu*: -
+hu : -
 
 :_vnedit_rel_addbut
 en : add
@@ -5091,7 +5151,7 @@ hu : Figyelem: ha ez tovább tart mint 30 másodperc, akkor a mivelünk van a go
 en : Relation graph for [_1]
 ru : Схема связей для [_1]
 cs : Graf vztahů pro vizuální novelu [_1]
-hu : Összefüggés gráf [_1]-hoz
+hu : Összefüggés grafikon [_1]-hoz
 
 
 # VN Diff viewer (/v+.+)
@@ -5130,7 +5190,7 @@ hu : Hossz
 en : ~[no link~]
 ru : ~[нет ссылки~]
 cs : ~[žádný odkaz~]
-hu : ~[nincs link~]
+hu : ~[nincs hivatkozás~]
 
 :_vndiff_none
 en : ~[none~]
@@ -5291,6 +5351,24 @@ ru : Ссылки
 cs : Odkazy
 hu : Linkek
 
+:_vnpage_l_wp
+en : Wikipedia
+ru : Википедия
+cs : Wikipedie
+hu :
+
+:_vnpage_l_encubed
+en : Encubed
+ru : Encubed
+cs : Encubed
+hu :
+
+:_vnpage_l_renai
+en : Renai.us
+ru : Renai.us
+cs : Renai.us
+hu :
+
 :_vnpage_description
 en : Description
 ru : Описание
@@ -5337,7 +5415,7 @@ hu : Fejlesztő
 en : Publishers
 ru : Издатели
 cs : Vydavatel
-hu : Kiadó
+hu : Forgalmazók
 
 :_vnpage_relations
 en : Relations
@@ -5545,17 +5623,23 @@ ru : Недавно проголосовали
 cs : Poslední hlasy
 hu : Legútóbbi szavazatok
 
-:_votestats_pop_title
-en : Popularity
-ru : Популярность
-cs : Popularita
-hu : Népszerűsség
+:_votestats_rank_title
+en : Ranking
+ru : Место
+cs : Hodnocení
+hu : Ranglista
 
-:_votestats_pop_sum
-en : Ranked #[_1] out of [_2] with a score of [_3].
-ru : Рейтинг - #[_1] из [_2], средний балл - [_3].
-cs : Hodnoceno na [_1]. místě z celkem [_2] se skóre [_3].
-hu : [_1]. helyezet a [_2] bejegyzésből [_3] pontszámmal.
+:_votestats_rank_pop
+en : Popularity: ranked #[_1] with a score of [_2]
+ru : Популярность: #[_1] место с количеством баллов, равным [_2]
+cs : Popularita: [_1]. místo se skóre [_2]
+hu : Népszerűség: [_1]. hely [_2] pontszámmal
+
+:_votestats_rank_rat
+en : Bayesian rating: ranked #[_1] with a rating of [_2]
+ru : Рейтинг методом Байезия: #[_1] место с рейтингом [_2]
+cs : Bayesovo hodnocení: [_1]. místo se skóre [_2]
+hu : Bayes-i ranglista: [_1]. hely [_2]-s értékeléssel
 
 
 
@@ -5749,5 +5833,5 @@ hu : Nem támogatott
 en : Your browser sucks, it doesn't have the functionality to render our nice relation graphs.
 ru : Ваш браузер настолько отстоен, что даже не может отрендерить наши красивые графики.
 cs : Váš prohlížeč je na nic, nepodporuje vykreslování našich krásných vztahových grafů.
-hu : A böngésződ szar, nem képes megjeleníteni a szép összefüggés gráfunkat.
+hu : A böngésződ szar, nem képes megjeleníteni a szép összefüggés grafikonunkat.
 

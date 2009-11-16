@@ -69,7 +69,8 @@ CREATE TABLE producers_rev (
   website varchar(250) NOT NULL DEFAULT '',
   lang varchar NOT NULL DEFAULT 'ja',
   "desc" text NOT NULL DEFAULT '',
-  alias varchar(500) NOT NULL DEFAULT ''
+  alias varchar(500) NOT NULL DEFAULT '',
+  l_wp varchar(150)
 );
 
 -- quotes
@@ -129,7 +130,7 @@ CREATE TABLE releases_rev (
   website varchar(250) NOT NULL DEFAULT '',
   released integer NOT NULL,
   notes text NOT NULL DEFAULT '',
-  minage smallint NOT NULL DEFAULT -1,
+  minage smallint,
   gtin bigint NOT NULL DEFAULT 0,
   patch boolean NOT NULL DEFAULT FALSE,
   catalog varchar(50) NOT NULL DEFAULT '',
@@ -290,7 +291,9 @@ CREATE TABLE vn (
   c_released integer NOT NULL DEFAULT 0,
   c_languages varchar(32) NOT NULL DEFAULT '',
   c_platforms varchar(32) NOT NULL DEFAULT '',
-  c_popularity real NOT NULL DEFAULT 0
+  c_popularity real,
+  c_rating real,
+  c_votecount integer NOT NULL DEFAULT 0
 );
 
 -- vn_anime
@@ -478,11 +481,11 @@ BEGIN
       SELECT v.uid, v.vid, sqrt(count(*))::real
         FROM votes v
         JOIN votes v2 ON v.uid = v2.uid AND v2.vote < v.vote
-        WHERE v.uid NOT IN(SELECT id FROM users WHERE ign_votes)
+        JOIN users u ON u.id = v.uid AND NOT ign_votes
     GROUP BY v.vid, v.uid;
   CREATE OR REPLACE TEMP VIEW tmp_pop2 (vid, win) AS
     SELECT vid, sum(rank) FROM tmp_pop1 GROUP BY vid;
-  UPDATE vn SET c_popularity = COALESCE((SELECT win/(SELECT MAX(win) FROM tmp_pop2) FROM tmp_pop2 WHERE vid = id), 0);
+  UPDATE vn SET c_popularity = (SELECT win/(SELECT MAX(win) FROM tmp_pop2) FROM tmp_pop2 WHERE vid = id);
   RETURN;
 END;
 $$ LANGUAGE plpgsql;
@@ -575,7 +578,7 @@ BEGIN
     SELECT * FROM tags_vn UNION SELECT * FROM tag_vn_childs();
   -- grouped by (tag, vid, uid), so only one user votes on one parent tag per VN entry
   CREATE OR REPLACE TEMPORARY VIEW tags_vn_grouped AS
-    SELECT tag, vid, uid, MAX(vote)::real AS vote, AVG(spoiler)::real AS spoiler
+    SELECT tag, vid, uid, MAX(vote)::real AS vote, COALESCE(AVG(spoiler), 0)::real AS spoiler
     FROM tags_vn_all GROUP BY tag, vid, uid;
   -- grouped by (tag, vid) and serialized into a table
   DROP INDEX IF EXISTS tags_vn_bayesian_tag;

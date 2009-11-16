@@ -78,7 +78,7 @@ sub dbVNListList {
     } @$r;
 
     my $rel = $self->dbAll(q|
-      SELECT rv.vid, rr.rid, r.latest, rr.title, rr.original, rr.released, rr.type, rr.minage, rl.rstat, rl.vstat
+      SELECT rv.vid, rr.rid, r.latest, rr.title, rr.original, rr.released, rr.type, rl.rstat, rl.vstat
         FROM rlists rl
         JOIN releases r ON rl.rid = r.id
         JOIN releases_rev rr ON rr.id = r.latest

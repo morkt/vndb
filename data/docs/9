@@ -62,6 +62,10 @@
  </dd><dt>[raw]</dt><dd>
   Show off your formatting code skills by putting anything you don't want to have formatted in a [raw]
   tag. Any of the formatting codes mentioned above are ignored within a [raw] .. [/raw] block.
+ </dd><dt>[code]</dt><dd>
+  Similar to [raw], except that the text within the [code] .. [/code] block is
+  formatted in a fixed width font and surrounded by a nice box to keep it
+  separate from the rest of your post.
  </dd>
 </dl>
 <p>

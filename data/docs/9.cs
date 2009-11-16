@@ -63,6 +63,10 @@
  </dd><dt>[raw]</dt><dd>
   Předveďte své dovednosti ve formátovacím kódu umístěním čehokoliv, co nechcete aby bylo naformátováno do [raw]
   tagu. Jakýkoliv formátovací kód do teď zmíněný bude v [raw] .. [/raw] bloku ignorován.
+ </dd><dt>[code]</dt><dd>
+  Podobá se tagu [raw], až na to, že text v [code] .. [/code] bloku je formátován
+  do fontu s pevnou šířkou a ohraničen pěkným rámečkem pro oddělení od zbytku
+  vašeho příspěvku.
  </dd>
 </dl>
 <p>

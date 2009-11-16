@@ -46,7 +46,7 @@ sub page {
 
   my $v = $self->dbVNGet(
     id => $vid,
-    what => 'extended anime relations screenshots ranking'.($rev ? ' changes' : ''),
+    what => 'extended anime relations screenshots rating ranking'.($rev ? ' changes' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
   return 404 if !$v->{id};
@@ -111,16 +111,16 @@ sub page {
        end;
      }
      my @links = (
-       $v->{l_wp} ?      [ 'Wikipedia', 'http://en.wikipedia.org/wiki/%s', $v->{l_wp} ] : (),
-       $v->{l_encubed} ? [ 'Encubed',   'http://novelnews.net/tag/%s/', $v->{l_encubed} ] : (),
-       $v->{l_renai} ?   [ 'Renai.us',  'http://renai.us/game/%s.shtml', $v->{l_renai} ] : (),
+       $v->{l_wp} ?      [ 'wp', 'http://en.wikipedia.org/wiki/%s', $v->{l_wp} ] : (),
+       $v->{l_encubed} ? [ 'encubed',   'http://novelnews.net/tag/%s/', $v->{l_encubed} ] : (),
+       $v->{l_renai} ?   [ 'renai',  'http://renai.us/game/%s.shtml', $v->{l_renai} ] : (),
      );
      if(@links) {
        Tr ++$i % 2 ? (class => 'odd') : ();
         td mt '_vnpage_links';
         td;
          for(@links) {
-           a href => sprintf($_->[1], $_->[2]), $_->[0];
+           a href => sprintf($_->[1], $_->[2]), mt "_vnpage_l_$_->[0]";
            txt ', ' if $_ ne $links[$#links];
          }
         end;
@@ -398,7 +398,7 @@ sub _releases {
       for my $rel (grep grep($_ eq $l, @{$_->{languages}}), @$r) {
         Tr;
          td class => 'tc1'; lit $self->{l10n}->datestr($rel->{released}); end;
-         td class => 'tc2', $rel->{minage} < 0 ? '' : $self->{age_ratings}{$rel->{minage}}[0];
+         td class => 'tc2', !defined($rel->{minage}) ? '' : minage $rel->{minage};
          td class => 'tc3';
           for (sort @{$rel->{platforms}}) {
             next if $_ eq 'oth';

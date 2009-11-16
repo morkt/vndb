@@ -11,7 +11,7 @@ our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbVNCache dbScreenshotAdd 
 
 
 # Options: id, rev, char, search, lang, platform, tags_include, tags_exclude, results, page, order, what
-# What: extended anime relations screenshots relgraph ranking changes
+# What: extended anime relations screenshots relgraph rating ranking changes
 sub dbVNGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -82,13 +82,17 @@ sub dbVNGet {
 
   my $tag_ids = $o{tags_include} && join ',', @{$o{tags_include}[1]};
   my @select = (
-    qw|v.id v.locked v.hidden v.c_released v.c_languages v.c_platforms vr.title vr.original v.rgraph v.c_popularity|, 'vr.id AS cid',
+    qw|v.id v.locked v.hidden v.c_released v.c_languages v.c_platforms vr.title vr.original v.rgraph|, 'vr.id AS cid',
     $o{what} =~ /extended/ ? (
       qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai vr.l_vnn| ) : (),
     $o{what} =~ /changes/ ? (
       qw|c.requester c.comments v.latest u.username c.rev c.causedby|, q|extract('epoch' from c.added) as added|) : (),
     $o{what} =~ /relgraph/ ? 'vg.svg' : (),
-    $o{what} =~ /ranking/ ? '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_popularity > v.c_popularity) AS ranking' : (),
+    $o{what} =~ /rating/ ? (qw|v.c_popularity v.c_rating v.c_votecount|) : (),
+    $o{what} =~ /ranking/ ? (
+      '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_popularity > v.c_popularity) AS p_ranking',
+      '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_rating > v.c_rating) AS r_ranking',
+    ) : (),
     $tag_ids ?
       qq|(SELECT AVG(tvb.rating) FROM tags_vn_bayesian tvb WHERE tvb.tag IN($tag_ids) AND tvb.vid = v.id AND spoiler <= $o{tags_include}[0] GROUP BY tvb.vid) AS tagscore| : (),
   );
@@ -98,7 +102,7 @@ sub dbVNGet {
       FROM vn_rev vr
       !s
       !W
-      ORDER BY !s|,
+      ORDER BY !s NULLS LAST|,
     join(', ', @select), join(' ', @join), \%where, $o{order},
   );
 

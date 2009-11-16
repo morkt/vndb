@@ -17,12 +17,12 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown set_daily daily set_monthly monthly log_stats
-        vncache tagcache vnpopularity cleangraphs
+        vncache tagcache vnpopularity vnrating cleangraphs
         usercache statscache logrotate
       |],
     ],
     heap => {
-      daily => [qw|vncache tagcache vnpopularity cleangraphs|],
+      daily => [qw|vncache tagcache vnpopularity vnrating cleangraphs|],
       monthly => [qw|usercache statscache logrotate|],
       @_,
     },
@@ -114,6 +114,20 @@ sub tagcache {
 sub vnpopularity {
   # still takes at most 2 seconds. let's hope that doesn't increase...
   $_[KERNEL]->post(pg => do => 'SELECT update_vnpopularity()', undef, 'log_stats', 'vnpopularity');
+}
+
+
+sub vnrating {
+  # takes less than a second, but can be performed in ranges as well when necessary
+  $_[KERNEL]->post(pg => do => q|
+    UPDATE vn SET
+      c_rating = (SELECT (
+          ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes)*(SELECT AVG(a)::real FROM (SELECT AVG(vote) FROM votes GROUP BY vid) AS v(a)) + SUM(vote)::real) /
+          ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes) + COUNT(uid)::real)
+        ) FROM votes WHERE vid = id AND uid NOT IN(SELECT id FROM users WHERE ign_votes)
+      ),
+      c_votecount = COALESCE((SELECT count(*) FROM votes WHERE vid = id AND uid NOT IN(SELECT id FROM users WHERE ign_votes)), 0)
+  |, undef, 'log_stats', 'vnrating');
 }
 
 

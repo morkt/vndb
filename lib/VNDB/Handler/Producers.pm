@@ -62,6 +62,9 @@ sub page {
       [ alias     => diff => 1 ],
       [ lang      => serialize => sub { "$_[0] (".mt("_lang_$_[0]").')' } ],
       [ website   => diff => 1 ],
+      [ l_wp      => htmlize => sub {
+        $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink' # _vn? hmm...
+      }],
       [ desc      => diff => 1 ],
       [ relations   => join => '<br />', split => sub {
         my @r = map sprintf('%s: <a href="/p%d" title="%s">%s</a>',
@@ -79,9 +82,15 @@ sub page {
    p class => 'center';
     txt mt '_prodpage_langtype', mt("_lang_$p->{lang}"), mt "_ptype_$p->{type}";
     txt "\n".mt '_prodpage_aliases', $p->{alias} if $p->{alias};
-    if($p->{website}) {
-      txt "\n";
-      a href => $p->{website}, $p->{website};
+
+    my @links = (
+      $p->{website} ? [ 'homepage',  $p->{website} ] : (),
+      $p->{l_wp}    ? [ 'wikipedia', "http://en.wikipedia.org/wiki/$p->{l_wp}" ] : (),
+    );
+    txt "\n" if @links;
+    for(@links) {
+      a href => $_->[1], mt "_prodpage_$_->[0]";
+      txt ' - ' if $_ ne $links[$#links];
     }
    end;
 
@@ -146,6 +155,7 @@ sub edit {
 
   my %b4 = !$pid ? () : (
     (map { $_ => $p->{$_} } qw|type name original lang website desc alias|),
+    l_wp => $p->{l_wp} || '',
     prodrelations => join('|||', map $_->{relation}.','.$_->{id}.','.$_->{name}, sort { $a->{id} <=> $b->{id} } @{$p->{relations}}),
   );
   my $frm;
@@ -158,6 +168,7 @@ sub edit {
       { name => 'alias',         required  => 0, maxlength => 500,  default => '' },
       { name => 'lang',          enum      => $self->{languages} },
       { name => 'website',       required  => 0, template => 'url', default => '' },
+      { name => 'l_wp',          required  => 0, maxlength => 150,  default => '' },
       { name => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { name => 'prodrelations', required  => 0, maxlength => 5000, default => '' },
       { name => 'editsum',       maxlength => 5000 },
@@ -173,6 +184,7 @@ sub edit {
         if $pid && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
       $frm->{relations} = $relations;
+      $frm->{l_wp} = undef if !$frm->{l_wp};
       $rev = 1;
       my $npid = $pid;
       my $cid;
@@ -210,6 +222,7 @@ sub edit {
     [ select => name => mt('_pedit_form_lang'), short => 'lang',
       options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
     [ input  => name => mt('_pedit_form_website'), short => 'website' ],
+    [ input  => name => mt('_pedit_form_wikipedia'), short => 'l_wp', pre => 'http://en.wikipedia.org/wiki/' ],
     [ text   => name => mt('_pedit_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
   ], 'pedit_rel' => [ mt('_pedit_form_rel'),
     [ hidden   => short => 'prodrelations' ],

@@ -9,6 +9,7 @@
  <li><a href="/d9">Diskusní boardy</a></li>
  <li><a href="/d6">FAQ</a></li>
  <li><a href="/d7">O nás</a></li>
+ <li><a href="/d11">Databáze API</a></li>
  <li><a href="/d8">Vývoj</a></li>
 </ul>
 

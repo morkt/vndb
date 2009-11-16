@@ -16,7 +16,7 @@ sub list {
   my($self, $char) = @_;
 
   my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'tagscore', enum => [ qw|title rel pop tagscore| ] },
+    { name => 's', required => 0, default => 'tagscore', enum => [ qw|title rel pop tagscore rating| ] },
     { name => 'o', required => 0, enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'q', required => 0, default => '' },
@@ -55,12 +55,21 @@ sub list {
   $f->{s} = 'title' if !@ti && $f->{s} eq 'tagscore';
   $f->{o} = $f->{s} eq 'tagscore' ? 'd' : 'a' if !$f->{o};
 
+  my $sortcol = {qw|
+    rel      c_released
+    pop      c_popularity
+    rating   c_rating
+    title    title
+    tagscore tagscore
+  |}->{$f->{s}};
+
   my($list, $np) = $self->dbVNGet(
+    what => 'rating',
     $char ne 'all' ? ( char => $char ) : (),
     $f->{q} ? ( search => $f->{q} ) : (),
     results => 50,
     page => $f->{p},
-    order => ($f->{s} eq 'rel' ? 'c_released' : $f->{s} eq 'pop' ? 'c_popularity' : $f->{s}).($f->{o} eq 'a' ? ' ASC' : ' DESC'),
+    order => $sortcol.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
     $f->{pl}[0] ? ( platform => $f->{pl} ) : (),
     $f->{ln}[0] ? ( lang => $f->{ln} ) : (),
     @ti ? (tags_include => [ $f->{sp}, \@ti ]) : (),
@@ -90,6 +99,7 @@ sub list {
       [ '',                              0,       undef, 'tc3' ],
       [ mt('_vnbrowse_col_released'),    'rel',   undef, 'tc4' ],
       [ mt('_vnbrowse_col_popularity'),  'pop',   undef, 'tc5' ],
+      [ mt('_vnbrowse_col_rating'),      'rating', undef, 'tc6' ],
     ],
     row     => sub {
       my($s, $n, $l) = @_;
@@ -113,7 +123,11 @@ sub list {
        td class => 'tc4';
         lit $self->{l10n}->datestr($l->{c_released});
        end;
-       td class => 'tc5', sprintf '%.2f', $l->{c_popularity}*100;
+       td class => 'tc5', sprintf '%.2f', ($l->{c_popularity}||0)*100;
+       td class => 'tc6';
+        txt sprintf '%.2f', $l->{c_rating}||0;
+        b class => 'grayedout', sprintf ' (%d)', $l->{c_votecount};
+       end;
       end;
     },
   );

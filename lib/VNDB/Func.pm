@@ -6,7 +6,7 @@ use warnings;
 use YAWF ':html';
 use Exporter 'import';
 use POSIX 'strftime', 'ceil', 'floor';
-our @EXPORT = qw| shorten bb2html gtintype liststat clearfloat cssicon tagscore mt |;
+our @EXPORT = qw| shorten bb2html gtintype liststat clearfloat cssicon tagscore mt minage |;
 
 
 # I would've done this as a #define if this was C...
@@ -22,6 +22,7 @@ sub shorten {
 #  [raw] .. [/raw]
 #  [spoiler] .. [/spoiler]
 #  [quote] .. [/quote]
+#  [code] .. [/code]
 #  v+,  v+.+
 #  http://../
 sub bb2html {
@@ -51,12 +52,17 @@ sub bb2html {
     $rmnewline-- && $_ eq "\n" && next if $rmnewline;
 
     my $lit = $_;
-    if($open[$#open] ne 'raw') {
+    if($open[$#open] ne 'raw' && $open[$#open] ne 'code') {
       if    (lc$_ eq '[raw]')      { push @open, 'raw'; next }
       elsif (lc$_ eq '[spoiler]')  { push @open, 'spoiler'; $result .= '<b class="spoiler">'; next }
       elsif (lc$_ eq '[quote]')    {
         push @open, 'quote';
         $result .= '<div class="quote">' if !$maxlength;
+        $rmnewline = 1;
+        next
+      } elsif (lc$_ eq '[code]') {
+        push @open, 'code';
+        $result .= '<pre>' if !$maxlength;
         $rmnewline = 1;
         next
       } elsif (lc$_ eq '[/spoiler]') {
@@ -97,8 +103,12 @@ sub bb2html {
         $result .= $_;
         next;
       }
-    } elsif(lc$_ eq '[/raw]') {
-      pop @open if $open[$#open] eq 'raw';
+    } elsif($open[$#open] eq 'raw' && lc$_ eq '[/raw]') {
+      pop @open;
+      next;
+    } elsif($open[$#open] eq 'code' && lc$_ eq '[/code]') {
+      $result .= '</pre>' if !$maxlength;
+      pop @open;
       next;
     }
 
@@ -108,8 +118,11 @@ sub bb2html {
     $result .= $e->($_);
   }
 
-  $result .= $_ eq 'url' ? '</a>' : $_ eq 'quote' ? '</div>' : '</b>'
-    while((local $_ = pop @open) ne 'first');
+  # close open tags
+  while((local $_ = pop @open) ne 'first') {
+    $result .= $_ eq 'url' ? '</a>' : $_ eq 'spoiler' ? '</b>' : '';
+    $result .= $_ eq 'quote' ? '</div>' : $_ eq 'code' ? '</pre>' : '' if !$maxlength;
+  }
   $result .= '...' if $maxlength && $length > $maxlength;
 
   return $result;
@@ -205,6 +218,21 @@ sub tagscore {
 # (not thread-safe, in the same sense as YAWF::XML. But who cares about threads, anyway?)
 sub mt {
   return $YAWF::OBJ->{l10n}->maketext(@_);
+}
+
+
+sub minage {
+  my($a, $ex) = @_;
+  my $str = !defined($a) ? mt '_minage_null' : !$a ? mt '_minage_all' : mt '_minage_age', $a;
+  $ex = !defined($a) ? '' : {
+     0 => 'CERO A',
+    12 => 'CERO B',
+    15 => 'CERO C',
+    17 => 'CERO D',
+    18 => 'CERO Z',
+  }->{$a} if $ex;
+  return $str if !$ex;
+  return $str.' '.mt('_minage_example', $ex);
 }
 
 

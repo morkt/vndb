@@ -1,0 +1,891 @@
+:TITLE:Public Database API
+:INC:index
+
+:SUB:Introduction
+<p>
+ This document describes the public API of VNDB and is intended to be read by
+  programmers. This API allows programs and websites to access (parts of) the
+  VNDB database without actually visiting the website.
+ <br /><br />
+</p>
+
+<b>Design goals</b>
+<ul>
+ <li>
+  Simple in implementation of both client and server. "Simple" here means that
+  it shouldn't take much code to write a secure and full implementation and that
+  client applications shouldn't require huge dependency trees just to use this API.
+ </li>
+ <li>Powerful: Not as powerful as raw SQL, but not as rigid as commonly used REST or RPC protocols.</li>
+ <li>High-level: common applications need to perform only few actions to get what they want.</li>
+ <li>Fast: minimal bandwidth overhead and simple and customizable queries.</li>
+</ul>
+<br />
+
+<b>Design overview</b>
+<ul>
+ <li>TCP-based, all communication between the client and the server is done
+  using one TCP connection. This connection stays alive until it is explicitely
+  closed by either the client or the server.</li>
+ <li>Request/response, client sends a request and server replies with a response.</li>
+ <li>Session-based: clients are required to login before issuing commands to
+  the server. A session is created by issuing the 'login' command, this session
+  stays valid for the lifetime of the TCP connection.</li>
+ <li><b>Everything</b> sent between the client and the server is encoded in UTF-8.</li>
+</ul>
+<br />
+
+<b>Limits</b>
+<p>The following limits are enforced by the server, in order to limit the
+server resources and prevent abuse of this service.</p>
+<ul>
+ <li>5 connections per IP. All connections that are opened after reaching this limit will be immediately closed.</li>
+ <li>3 sessions per user. The login command will reply with a 'sesslimit' error when this limit is reached.</li>
+ <li>100 commands per 10 minutes per user. Server will reply with a 'throttled' error (type="cmd") when reaching this limit.</li>
+ <li>
+  1 second of SQL time per minute per user. SQL time is the total time taken to
+  run the database queries for each command.  This depends on both the command
+  (filters and get flags) and server load, and is thus not very predictable.
+  Server will reply with a 'throttled' error with type="sql" upon reaching
+  this limit.
+ </li>
+ <li>Each command returns at most 10 results.</li>
+</ul>
+
+<br />
+<b>Connection info:</b>
+<dl>
+ <dt>Host</dt><dd>api.vndb.org (primary), beta.vndb.org (available for testing)</dd>
+ <dt>Port (tcp)</dt><dd>19534 ('VN')</dd>
+</dl>
+
+<br />
+<b>Disclaimer</b>
+<p>These notes should be obvious, but I'll point it out anyway.</p>
+<ul>
+ <li>
+  This service is still experimental and is provided for free. No guarantees
+  are given about the stability and uptime of this service. It may disappear
+  at any time, and access to it can be restricted without prior notice.
+ </li>
+ <li>
+  Changes to this API can be made without prior notice. Backwards compatibility
+  is provided when feasable, but non-compatible changes will be made at some
+  point.  It is the responsibility of the application developers to keep their
+  applications up-to-date.
+ </li>
+ <li>
+  This service does not grant anyone the right to copy or republish the
+  information fetched using the API. VNDB does not have a clear copyright
+  statement, and in general we're not very strict about other people copying
+  our information, but this API is not intended to be used for fetching and
+  publishing more than half of our database. When in doubt, ask.
+ </li>
+ <li>
+  Lastly, this API is not complete. If you have any specific features you'd
+  like to see, don't hesitate to ask.
+ </li>
+</ul>
+
+<br />
+<b>Implementation tips</b>
+<p>Like the disclaimer, these notes should be obvious, but it can't hurt to state them anyway.</p>
+<ul>
+ <li>
+  <b>Cache</b> everything you receive, the data on VNDB doesn't change very
+  often. Even if you only refresh the cached information once every month, you
+  can be sure that most of the data hasn't changed within that time.
+ </li>
+ <li>
+  Program defensively. Even when the documentation says that a string will be
+  returned, it may very well happen that this is later changed into an array.
+  Make sure your application doesn't completely crash in such an event. Also keep
+  in mind that for every command you send, the server can reply with an error, or
+  can immediately close the connection (but this should be rare).
+ </li>
+ <li>
+  Regularly check this page to see if anything has changed to the API, and
+  update your client when necessary. I'll probably add a changelog to the bottom
+  of this page in the future.
+ </li>
+ <li>
+  Use a JSON library for both encoding and decoding JSON data. While the format
+  is relatively easy to use, you're much more likely to introduce bugs when you're
+  writing your own parser.
+ </li>
+</ul>
+
+
+
+:SUB:Request/response syntax
+<p>
+ The VNDB API uses the JSON format for data in various places, this document assumes
+ you are familiar with it. See <a href="http://json.org/">JSON.org</a> for a quick
+ overview and <a href="http://www.ietf.org/rfc/rfc4627.txt?number=4627">RFC 4627</a>
+ for the glory details.
+ <br /><br />
+ The words <i>object</i>, <i>array</i>, <i>value</i>, <i>string</i>,
+ <i>number</i> and <i>integer</i> refer to the JSON data types. In addition the following
+ definitions are used in this document:
+</p>
+<dl>
+ <dt><i>request</i> or <i>command</i></dt><dd>
+  Message sent from the client to the server.
+ </dd><dt><i>response</i></dt><dd>
+  Message sent from the server to the client.
+ </dd><dt><i>whitespace</i></dt><dd>
+  Any sequence of the following characters: space, tab, line feed and carriage
+  return.  (hexadecimal: 20, 09, 10, 0D, respectively). This is in line with the
+  definition of whitespace in the JSON specification.
+ </dd><dt><i>date</i></dt><dd>
+  A <i>string</i> signifying a date (in particular: release date). The
+  following formats are used: "yyyy" (when day and month are unknown), "yyyy-mm"
+  (when day is unknown) "yyyy-mm-dd", and "tba" (To Be Announced). If the year is
+  not known and the date is not "tba", the special value <b>null</b> is used.
+ </dd>
+</dl>
+<br />
+
+<b>Message format</b>
+<p>
+ A message is formatted as a command or response name, followed by any number of
+ arguments, followed by the End Of Transmission character (04 in hexadecimal).
+ Arguments are separated by one or more whitespace characters, and any sequence
+ of whitespace characters is allowed before and after the message.<br />
+ The command or response name is an unescaped string containing only lowercase
+ alphabetical ASCII characters, and indicates what kind of command or response
+ this message contains.<br />
+ An argument can either be an unescaped string (not containing whitespace), any
+ JSON value, or a filter string. The following two examples demonstrate a
+ 'login' command, with an object as argument. Both messages are equivalent, as
+ the whitespace is ignored. '0x04' is used to indicate the End Of Transmission
+ character.
+</p>
+<pre>
+ login {"protocol":1,"username":"ayo"}<b class="standout">0x04</b>
+</pre><pre>
+ login {
+  "protocol" : 1,
+  "username" : "ayo"
+ }
+ <b class="standout">0x04</b>
+</pre>
+The 0x04 byte will be ommitted in the other examples in this document. It is
+however still required.<br />
+
+<br />
+<b>Filter string syntax</b>
+<p>
+ Some commands accept a filter string as argument. This argument is formatted
+ similar to boolean expressions in most programming languages. A filter consists
+ of one or more <i>expressions</i>, separated by the boolean operators "and" or
+ "or" (lowercase). Each filter expression can be surrounded by parentheses to
+ indicate precedence, the filter argument itself must be surrounded by parentheses.
+ <br />
+ An <i>expression</i> consists of a <i>field name</i>, followed by an
+ <i>operator</i> and a <i>value</i>. The field name must consist entirely of
+ lowercase alphanumeric characters and can also contain an underscore. The
+ operator must be one of the following characters: =, !=, &lt;, &lt;=, &gt;,
+ &gt;= or ~.  The <i>value</i> can be any valid JSON value. Whitespace
+ characters are allowed, but not required, between all expressions, field names,
+ operators and values.<br />
+ The following two filters are equivalent:
+</p>
+<pre>
+ (title~"osananajimi"or(id=2))
+</pre><pre>
+ (
+   id = 2
+   or
+   title ~ "osananajimi"
+ )
+</pre>
+<p>More complex filters are also possible:</p>
+<pre>
+ ((platforms = ["win", "ps2"] or languages = "ja") and released > "2009-01-10")
+</pre>
+<p>See the individual commands for more details.</p>
+
+
+:SUB:The 'login' command
+<pre>
+ login {"protocol":1,"client":"test","clientver":0.1,"username":"ayo","password":"hi-mi-tsu!"}
+</pre>
+<p>
+ Every client is required to login before issuing other commands. The login
+ command accepts a JSON object as argument. This object must have the following members:
+</p>
+<dl>
+ <dt>protocol</dt><dd>An integer that indicates which protocol version the client implements. Must be 1.</dd>
+ <dt>client</dt><dd>
+  A string identifying the client application. Between the 3 and 50 characters,
+  must contain only alphanumeric ASCII characters, space, underscore and hyphens.
+  When writing a client, think of a funny (unique) name and hardcode it into
+  your application.
+ </dd><dt>clientver</dt><dd>A positive number indicating the software version of the client.</dd>
+ <dt>username</dt><dd>String containing the username of the person using the client.</dd>
+ <dt>password</dt><dd>String, password of that user in plain text.</dd>
+</dl>
+<p>
+ The server replies with either 'ok' (no arguments), or 'error' (see below).
+</p>
+
+
+:SUB:The 'get' command
+<p>
+ This command is used to fetch data from the database. It accepts 4 arguments:
+ the type of data to fetch (e.g. visual novels or producers), what part of that
+ data to fetch (e.g. only the VN titles, or the descriptions and relations as
+ well), a filter expression, and lastly some options.
+</p>
+<pre>
+ get <b class="standout">type flags filters options</b>
+</pre>
+<p>
+ <i>type</i> and <i>flags</i> are unescaped strings. The accepted values for <i>type</i> are
+ documented below.  <i>flags</i> is a comma-separated list of flags indicating what
+ info to fetch. The filters, available flags and their meaning are documented
+ separately for each type. The last <i>options</i> argument is optional, and
+ influences the behaviour of the returned results. When present, <i>options</i>
+ should be a JSON object with the following members (all are optional):
+</p>
+<dl>
+ <dt>page</dt><dd>
+  integer, used for pagination. Page 1 (the default) returns the first 10
+  results (1-10), page 2 returns the following 10 (11-20), etc.
+ </dd><dt>sort</dt><dd>
+  string, the field to order the results by. The accepted field names differ
+  per type, the default sort field is the ID of the database entry.
+ </dd>
+ <dt>reverse</dt><dd>boolean, default false. Set to true to reverse the order of the results.</dd>
+</dl>
+<p>
+ The following example will fetch basic information and information about the
+ related anime of the visual novel with id = 17:
+</p>
+<pre>
+ get vn basic,anime (id = 17)
+</pre>
+<p>
+ The server will reply with a 'results' message, this message is followed by a
+ JSON object describing the results. This object has three members: 'num', which
+ is an integer indicating the number of results returned, 'more', which is true
+ when there are more results available (i.e. increasing the <i>page</i> option
+ described above will give new results) and 'items', which contains the results
+ as an array of objects. For example, the server could reply to the previous
+ command with the following message:
+</p>
+<pre>
+ results {"num":1, "more":false, "items":[{
+   "id": 17, "title": "Ever17 -the out of infinity-", "original": null,
+   "released": "2002-08-29", "languages": ["en","ja","ru","zh"],
+   "platforms": ["drc","ps2","psp","win"],"anime": []
+ }]}
+</pre>
+<p>
+ Note that the actual result from the server can (and likely will) be formatted
+ differently and that the order of the members may not be the same. What each
+ member means and what possible values they can have differs per type and is
+ documented below.
+</p>
+
+:SUBSUB:get vn
+<p>The following members are returned from a 'get vn' command:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Member</td>
+  <td style="width: 50px">Flag</td>
+  <td style="width: 90px">Type</td>
+  <td style="width: 40px">null</td>
+  <td>Description</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>id</td>
+  <td>-</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>Visual novel ID</td>
+ </tr>
+ <tr>
+  <td>title</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>no</td>
+  <td>Main title</td>
+ </tr>
+ <tr class="odd">
+  <td>original</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Original/official title.</td>
+ </tr>
+ <tr>
+  <td>released</td>
+  <td>basic</td>
+  <td>date (string)</td>
+  <td>yes</td>
+  <td>Date of the first release.</td>
+ </tr>
+ <tr class="odd">
+  <td>languages</td>
+  <td>basic</td>
+  <td>array of strings</td>
+  <td>no</td>
+  <td>Can be an empty array when nothing has been released yet.</td>
+ </tr>
+ <tr>
+  <td>platforms</td>
+  <td>basic</td>
+  <td>array of strings</td>
+  <td>no</td>
+  <td>Can be an empty array when unknown or nothing has been released yet.</td>
+ </tr>
+ <tr class="odd">
+  <td>aliases</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Comma-separated list of aliases.</td>
+ </tr>
+ <tr>
+  <td>length</td>
+  <td>details</td>
+  <td>integer</td>
+  <td>yes</td>
+  <td>Length of the game, 1-5</td>
+ </tr>
+ <tr class="odd">
+  <td>description</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Description of the VN. Can include formatting codes as described in <a href="/d9.3">d9.3</a>.</td>
+ </tr>
+ <tr>
+  <td>links</td>
+  <td>details</td>
+  <td>object</td>
+  <td>no</td>
+  <td>
+   Contains the following members:<br />
+   "wikipedia", string, name of the related article on the English Wikipedia.<br />
+   "encubed", string, the URL-encoded tag used on <a href="http://novelnews.net/">encubed</a>.<br />
+   "renai", string, the name part of the url on <a href="http://renai.us/">renai.us</a>.<br />
+   All members can be <b>null</b> when no links are available or known to us.
+  </td>
+ </tr>
+ <tr class="odd">
+  <td>anime</td>
+  <td>anime</td>
+  <td>array of objects</td>
+  <td>no</td>
+  <td>
+   (Possibly empty) list of anime related to the VN, each object has the following members:<br />
+   "id", integer, <a href="http://anidb.net/">AniDB</a> ID<br />
+   "ann_id", integer, <a href="http://animenewsnetwork.com/">AnimeNewsNetwork</a> ID<br />
+   "nfo_id", string, <a href="http://animenfo.com/">AnimeNfo</a> ID<br />
+   "title_romaji", string<br />
+   "title_kanji", string<br />
+   "year", integer, year in which the anime was aired<br />
+   "type", string<br />
+   All members except the "id" can be <b>null</b>. Note that this data is courtesy of AniDB,
+   and may not reflect the latest state of their information due to caching.
+  </td>
+ </tr>
+ <tr>
+  <td>relations</td>
+  <td>relations</td>
+  <td>array of objects</td>
+  <td>no</td>
+  <td>
+   (Possibly empty) list of related visual novels, each object has the following members:<br />
+   "id", integer<br />
+   "relation", string, relation to the VN<br />
+   "title", string, (romaji) title<br />
+   "original", string, original/official title, can be <b>null</b>.
+  </td>
+ </tr>
+</table>
+<p>Sorting is possible on the 'id', 'title' and 'released' fields.</p><br />
+
+<p>'get vn' accepts the following filter expressions:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Field</td>
+  <td style="width: 90px">Value</td>
+  <td style="width: 90px">Operators</td>
+  <td>&nbsp;</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>id</td>
+  <td>integer<br />array of integers</td>
+  <td>= != &gt; &gt;= &lt; &lt;=<br />= !=</td>
+  <td>
+   When you need to fetch info about multiple VNs, it is recommended to do so
+   in one command using an array of integers as value. e.g. (id = [7,11,17]).
+  </td>
+ </tr>
+ <tr>
+  <td>title</td>
+  <td>string</td>
+  <td>= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>original</td>
+  <td>null<br />string</td>
+  <td>= !=<br />= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>released</td>
+  <td>null<br />date (string)</td>
+  <td>= !=<br />= != &gt; &gt;= &lt; &lt;=</td>
+  <td>
+   Note that matching on partial dates (released = "2009") doesn't do what
+   you want, use ranges instead, e.g. (released &gt; "2008" and released &lt;= "2009").
+  </td>
+ </tr>
+ <tr class="odd">
+  <td>platforms</td>
+  <td>null<br />string<br />array of strings</td>
+  <td><br />= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>languages</td>
+  <td>null<br />string<br />array of strings</td>
+  <td><br />= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>search</td>
+  <td>string</td>
+  <td>~</td>
+  <td>
+   This is not an actual field, but performs a search on the titles of the visual
+   novel and its releases. Note that the algorithm of this search may change and
+   that it can use a different algorithm than the search function on the website.
+  </td>
+ </tr>
+</table>
+
+:SUBSUB:get release
+<p>Returned members:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Member</td>
+  <td style="width: 50px">Flag</td>
+  <td style="width: 90px">Type</td>
+  <td style="width: 40px">null</td>
+  <td>Description</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>id</td>
+  <td>-</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>Release ID</td>
+ </tr>
+ <tr>
+  <td>title</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>no</td>
+  <td>Release title (romaji)</td>
+ </tr>
+ <tr class="odd">
+  <td>original</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Original/official title of the release.</td>
+ </tr>
+ <tr>
+  <td>released</td>
+  <td>basic</td>
+  <td>date (string)</td>
+  <td>yes</td>
+  <td>Release date</td>
+ </tr>
+ <tr class="odd">
+  <td>type</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>no</td>
+  <td>"complete", "partial" or "trial"</td>
+ </tr>
+ <tr>
+  <td>patch</td>
+  <td>basic</td>
+  <td>boolean</td>
+  <td>no</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>freeware</td>
+  <td>basic</td>
+  <td>boolean</td>
+  <td>no</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>doujin</td>
+  <td>basic</td>
+  <td>boolean</td>
+  <td>no</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>languages</td>
+  <td>basic</td>
+  <td>array of strings</td>
+  <td>no</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>website</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Official website URL</td>
+ </tr>
+ <tr class="odd">
+  <td>notes</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Random notes, can contain formatting codes as described in <a href="/d9.3">d9.3</a></td>
+ </tr>
+ <tr>
+  <td>minage</td>
+  <td>details</td>
+  <td>integer</td>
+  <td>yes</td>
+  <td>Age rating, 0 = all ages.</td>
+ </tr>
+ <tr class="odd">
+  <td>gtin</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>JAN/UPC/EAN code. This is actually an integer, but formatted as a string to avoid an overflow on 32bit platforms.</td>
+ </tr>
+ <tr>
+  <td>catalog</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Catalog number.</td>
+ </tr>
+ <tr class="odd">
+  <td>platforms</td>
+  <td>details</td>
+  <td>array of strings</td>
+  <td>no</td>
+  <td>Empty array when platform is unknown.</td>
+ </tr>
+ <tr>
+  <td>media</td>
+  <td>details</td>
+  <td>array of objects</td>
+  <td>no</td>
+  <td>
+   Objects have the following two members:<br />
+   "medium", string<br />
+   "qty", integer, the quantity. <b>null</b> when it is not applicable for the medium.<br />
+   An empty array is returned when the media are unknown.
+  </td>
+ </tr>
+ <tr class="odd">
+  <td>vn</td>
+  <td>vn</td>
+  <td>array of objects</td>
+  <td>no</td>
+  <td>
+   Array of visual novels linked to this release. Objects have the following members:
+   id, title and original. These are the same as the members of the "get vn" command.
+  </td>
+ </tr>
+ <tr>
+  <td>producers</td>
+  <td>producers</td>
+  <td>array of objects</td>
+  <td>no</td>
+  <td>
+   (Possibly empty) list of producers involved in this release. Objects have the following members:<br />
+   "id", integer<br />
+   "developer", boolean,<br />
+   "publisher", boolean,<br />
+   "name", string, romaji name<br />
+   "original", string, official/original name, can be <b>null</b><br />
+   "type", string, producer type
+  </td>
+ </tr>
+</table>
+<p>Sorting is possible on the 'id', 'title' and 'released' fields.</p><br />
+
+<p>Accepted filters:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Field</td>
+  <td style="width: 90px">Value</td>
+  <td style="width: 90px">Operators</td>
+  <td>&nbsp;</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>id</td>
+  <td>integer<br />array of integers</td>
+  <td>= != &gt; &gt;= &lt; &lt;=<br />= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>vn</td>
+  <td>integer</td>
+  <td>=</td>
+  <td>Find releases linked to the given visual novel ID.</td>
+ </tr>
+ <tr class="odd">
+  <td>producer</td>
+  <td>integer</td>
+  <td>=</td>
+  <td>Find releases linked to the given producer ID.</td>
+ </tr>
+ <tr>
+  <td>title</td>
+  <td>string</td>
+  <td>= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>original</td>
+  <td>null<br />string</td>
+  <td>= !=<br />= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>released</td>
+  <td>null<br />date (string)</td>
+  <td>= !=<br />= != &gt; &gt;= &lt; &lt;=</td>
+  <td>Note about released filter for the vn type also applies here.</td>
+ </tr>
+ <tr class="odd">
+  <td>patch</td>
+  <td>boolean</td>
+  <td>=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>freeware</td>
+  <td>boolean</td>
+  <td>=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>doujin</td>
+  <td>boolean</td>
+  <td>=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>type</td>
+  <td>string</td>
+  <td>= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>gtin</td>
+  <td>int</td>
+  <td>= !=</td>
+  <td>Value can also be escaped as a string (if you risk an integer overflow otherwise)</td>
+ </tr>
+ <tr>
+  <td>catalog</td>
+  <td>string</td>
+  <td>= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>languages</td>
+  <td>string<br />array of strings</td>
+  <td>= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+</table>
+
+:SUBSUB:get producer
+<p>Returned members:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Member</td>
+  <td style="width: 50px">Flag</td>
+  <td style="width: 90px">Type</td>
+  <td style="width: 40px">null</td>
+  <td>Description</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>id</td>
+  <td>-</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>Producer ID</td>
+ </tr>
+ <tr>
+  <td>name</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>no</td>
+  <td>(romaji) producer name</td>
+ </tr>
+ <tr class="odd">
+  <td>original</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Original/official name</td>
+ </tr>
+ <tr>
+  <td>type</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>no</td>
+  <td>Producer type</td>
+ </tr>
+ <tr class="odd">
+  <td>language</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>no</td>
+  <td>Primary language</td>
+ </tr>
+ <tr>
+  <td>links</td>
+  <td>details</td>
+  <td>object</td>
+  <td>no</td>
+  <td>
+   External links, object has the following members:<br />
+   "homepage", official homepage,<br />
+   "wikipedia", title of the related article on the English wikipedia.<br />
+   Both values can be <b>null</b>.
+  </td>
+ </tr>
+ <tr class="odd">
+  <td>aliases</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Comma separated list of alternative names</td>
+ </tr>
+ <tr>
+  <td>description</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Description/notes of the producer, can contain formatting codes as described in <a href="/d9.3">d9.3</a></td>
+ </tr>
+ <tr class="odd">
+  <td>relations</td>
+  <td>relations</td>
+  <td>array of objects</td>
+  <td>no</td>
+  <td>
+   (possibly empty) list of related producers, each object has the following members:<br />
+   "id", integer, producer ID,<br />
+   "relation", string, relation to the current producer,<br />
+   "name", string,<br />
+   "original", string, can be <b>null</b>
+  </td>
+ </tr>
+</table>
+<p>Sorting is possible on the 'id' and 'name' fields.</p><br />
+
+<p>The following filters are recognised:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Field</td>
+  <td style="width: 90px">Value</td>
+  <td style="width: 90px">Operators</td>
+  <td>&nbsp;</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>id</td>
+  <td>integer<br />array of integers</td>
+  <td>= != &gt; &gt;= &lt; &lt;=<br />= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>name</td>
+  <td>string</td>
+  <td>= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>original</td>
+  <td>null<br />string</td>
+  <td>= !=<br />= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>type</td>
+  <td>string</td>
+  <td>= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>language</td>
+  <td>string<br />array of strings</td>
+  <td>= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>search</td>
+  <td>string</td>
+  <td>~</td>
+  <td>Not an actual field. Performs a search on the title, original and aliases fields.</td>
+ </tr>
+</table>
+
+
+
+:SUB:The 'error' response
+<p>
+ Every command to the server can receive an 'error' response, this response has one
+ argument: a JSON object containing at least a member named "id", which identifies
+ the error, and a "msg", which contains a human readable message explaining what
+ went wrong. Other members are also possible, depending on the value of "id".
+ Example error message:
+</p>
+<pre>
+ error {"id":"parse", "msg":"Invalid command or argument"}
+</pre>
+<p>
+ Note that the value of "msg" is not directly linked to the error identifier:
+ the message explains what went wrong in more detail, there are several
+ different messages for the same id. The following error identifiers are currently
+ defined:
+</p>
+<dl>
+ <dt>parse</dt><dd>Syntax error or unknown command.</dd>
+ <dt>missing</dt><dd>A JSON object argument is missing a required member. The name of which is given in the additional "field" member.</dd>
+ <dt>badarg</dt><dd>A JSON value is of the wrong type or in the wrong format. The name of the incorrect field is given in a "field" member.</dd>
+ <dt>needlogin</dt><dd>Need to be logged in to issue this command.</dd>
+ <dt>throttled</dt><dd>
+  You have used too many server resources within a short time, and need to wait
+  a bit before sending the next command.  The type of throttle is given in the
+  "type" member, and the "minwait" and "fullwait" members tell you how long you
+  need to wait before sending the next command and when you can start bursting
+  again (this is the recommended waiting time), respectively.  Both values are in
+  seconds, with one decimal after the point.
+ </dd>
+ <dt>auth</dt><dd>(login) Incorrect username/password combination.</dd>
+ <dt>loggedin</dt><dd>(login) Already logged in. Only one successful login command can be issues on one connection.</dd>
+ <dt>sesslimit</dt><dd>(login) Too many open sessions for the current user.</dd>
+ <dt>gettype</dt><dd>(get) Unknown type argument to the 'get' command.</dd>
+ <dt>getinfo</dt><dd>(get) Unknown info flag to the 'get' command. The name of the unrecognised flag is given in an additional "flag" member.</dd>
+ <dt>filter</dt><dd>(get) Unknown filter field or invalid combination of field/operator/argument type. Includes three additional members: "field", "op" and "value" of the incorrect expression.</dd>
+</dl>
+
+
+

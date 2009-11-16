@@ -15,6 +15,8 @@ use POE qw|
 |;
 use POE::Component::IRC::Common ':ALL';
 use URI::Escape 'uri_escape_utf8';
+use Time::HiRes 'time';
+
 
 use constant {
   USER => ARG0,
@@ -51,7 +53,7 @@ sub spawn {
         _start shutdown throttle_gc irc_001 irc_public irc_ctcp_action irc_msg
         command idlequote reply notify_init notify notify_result
         cmd_info cmd_list cmd_uptime cmd_vn cmd_vn_results cmd_p cmd_p_results cmd_quote cmd_quote_result
-        cmd_say cmd_me cmd_notifications cmd_eval cmd_die cmd_post vndbid formatid
+        cmd_say cmd_me cmd_notifications cmd_eval cmd_die cmd_post cmd_api vndbid formatid
       |],
     ],
     heap => {
@@ -77,6 +79,7 @@ sub spawn {
         eval     => 2|8,
         die      => 2|8,
         post     => 2|8,
+        api      => 2|8,
       },
     }
   );
@@ -89,22 +92,29 @@ sub spawn {
 # returns false if throttling isn't necessary for that key
 sub throttle {
   my($heap, $key, $tm, $num) = @_;
+  my $time = time;
 
   # garbage collect
   return ($heap->{throttle} = {
-    map $heap->{throttle}{$_}[$#{$heap->{throttle}{$_}}] > time-3600 ? ($_, $heap->{throttle}{$_}) : (), keys %{$heap->{throttle}}
+    map $heap->{throttle}{$_} > $time ? ($_, $heap->{throttle}{$_}) : (), keys %{$heap->{throttle}}
   }) if !$key;
 
+  $heap->{throttle}{$key} = $time if !$heap->{throttle}{$key} || $heap->{throttle}{$key} < $time;
   $num ||= 1;
-  my $dat = $heap->{throttle};
-  if(!$dat->{$key}) {
-    $dat->{$key} = [ time ];
-    return 0;
-  }
-  $dat->{$key} = [ grep $_ > time-$tm, @{$dat->{$key}} ];
-  return 1 if @{$dat->{$key}} >= $num;
-  push @{$dat->{$key}}, time;
+  return 1 if $heap->{throttle}{$key}-$time > $tm*($num-1);
+  $heap->{throttle}{$key} += $tm;
   return 0;
+}
+
+sub age {
+  return '-' if !$_[0];
+  my $d = int $_[0] / 86400;
+  $_[0] %= 86400;
+  my $h = int $_[0] / 3600;
+  $_[0] %= 3600;
+  my $m = int $_[0] / 60;
+  $_[0] %= 60;
+  return sprintf '%s%02d:%02d:%02d', $d ? $d.' day'.($d>1?'s':'').', ' : '', $h, $m, int $_[0];
 }
 
 
@@ -239,8 +249,8 @@ sub command { # mask, dest, msg
 sub idlequote {
   for (keys %{$_[HEAP]{idlequotes}}) {
     next if --$_[HEAP]{idlequotes}{$_} > 0;
-    $_[KERNEL]->yield(cmd_quote => '', [$_]) if $_[HEAP]{idlequotes}{$_} == 0;
-    $_[HEAP]{idlequotes}{$_} = int(120+rand(600));
+    $_[KERNEL]->yield(cmd_quote => '', [$_]) if $_[HEAP]{idlequotes}{$_} == 0 && !throttle $_[HEAP], "idlequote_$_", 48*3600;
+    $_[HEAP]{idlequotes}{$_} = int(60+rand(300));
   }
   $_[KERNEL]->delay(idlequote => 60);
 }
@@ -323,23 +333,12 @@ sub cmd_list {
 
 
 sub cmd_uptime {
-  my $age = sub {
-    return '...down!?' if !$_[0];
-    my $d = int $_[0] / 86400;
-    $_[0] %= 86400;
-    my $h = int $_[0] / 3600;
-    $_[0] %= 3600;
-    my $m = int $_[0] / 60;
-    $_[0] %= 60;
-    return sprintf '%s%02d:%02d:%02d', $d ? $d.' day'.($d>1?'s':'').', ' : '', $h, $m, int $_[0];
-  };
-
   open my $R, '<', '/proc/uptime';
   my $server = <$R> =~ /^\s*([0-9]+)/ ? $1 : 0;
   close $R;
   my $multi = time - $^T;
 
-  $_[KERNEL]->yield(reply => $_[DEST], sprintf 'Server uptime: %s -- mine: %s', $age->($server), $age->($multi));
+  $_[KERNEL]->yield(reply => $_[DEST], sprintf 'Server uptime: %s -- mine: %s', age($server), age($multi));
 }
 
 
@@ -347,7 +346,7 @@ sub cmd_vn {
   (my $q = $_[ARG]||'') =~ s/%//g;
   return $_[KERNEL]->yield(reply => $_[DEST], 'You forgot the search query, dummy~~!', $_[USER]) if !$q;
   return $_[KERNEL]->yield(reply => $_[DEST], 'Stop abusing me, it\'s not like I enjoy spamming this channel!', $_[USER])
-    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 5;
+    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 3;
 
   $_[KERNEL]->post(pg => query => q|
     SELECT 'v'::text AS type, v.id, vr.title
@@ -381,7 +380,7 @@ sub cmd_p {
   (my $q = $_[ARG]||'') =~ s/%//g;
   return $_[KERNEL]->yield(reply => $_[DEST], 'You forgot the search query, dummy~~!', $_[USER]) if !$q;
   return $_[KERNEL]->yield(reply => $_[DEST], 'Stop abusing me, it\'s not like I enjoy spamming this channel!', $_[USER])
-    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 5;
+    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 3;
 
   $_[KERNEL]->post(pg => query => q|
     SELECT 'p'::text AS type, p.id, pr.name AS title
@@ -403,6 +402,8 @@ sub cmd_p_results { # num, res, \@_
 
 
 sub cmd_quote {
+  return $_[KERNEL]->yield(reply => $_[DEST], 'Stop abusing me, it\'s not like I enjoy spamming this channel!', $_[USER])
+    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 3;
   $_[KERNEL]->post(pg => query => q|SELECT quote FROM quotes ORDER BY random() LIMIT 1|, undef, 'cmd_quote_result', $_[DEST]);
 }
 
@@ -454,6 +455,40 @@ sub cmd_post {
   $_[KERNEL]->yield(reply => $_[DEST], $_[KERNEL]->post(split /\s+/, $_[ARG])
     ? 'Sent your message to the post office, it will be processed shortly!'
     : "Oh no! The post office wouldn't accept your message! Wrong destination address?", $_[USER]);
+}
+
+
+sub cmd_api {
+  my($cmd, @arg) = split /\s+/, $_[ARG]||'';
+  return $_[KERNEL]->yield(reply => $_[DEST], 'API module not enabled.')
+    if !defined $_[KERNEL]->alias_resolve('api');
+
+  if(!$cmd) {
+    my $stats = $_[KERNEL]->call(api => admin => 'stats');
+    return $_[KERNEL]->yield(reply => $_[DEST], sprintf
+      'API up %s, %d connects (%d online), %d commands (%d errors).',
+      age(time - $^T), $stats->{conn}, $stats->{online}, $stats->{cmds}, $stats->{cmd_err});
+  }
+  if($cmd eq 'list') {
+    my $lst = $_[KERNEL]->call(api => admin => 'list');
+    return $_[KERNEL]->yield(reply => $_[DEST], 'Nobody connected.') if !@$lst;
+    $_[KERNEL]->yield(reply => $_[DEST], sprintf '%3d %15s %s%s', $_->{id}, $_->{ip}, age(time-$_->{connected}),
+      !$_->{username} ? '' : sprintf ' - %s (%s %s)  C/E: %d/%d  T: %.2f/%.2f', $_->{username},
+        $_->{client}, $_->{clientver}, $_->{cmds}, $_->{cmd_err}, $_->{t_cmd}, $_->{t_sql})
+      for (sort { $a->{ip} cmp $b->{ip} } @$lst);
+  }
+  if($cmd eq 'bans') {
+    my $lst = $_[KERNEL]->call(api => admin => 'bans');
+    return $_[KERNEL]->yield(reply => $_[DEST], !@$lst ? 'Ban list empty.' : join ' ', sort @$lst);
+  }
+  if($cmd eq 'ban') {
+    $_[KERNEL]->call(api => admin => ban => $arg[0]);
+    return $_[KERNEL]->yield(reply => $_[DEST], 'IP banned');
+  }
+  if($cmd eq 'unban') {
+    $_[KERNEL]->call(api => admin => unban => $arg[0]);
+    return $_[KERNEL]->yield(reply => $_[DEST], 'IP unbanned');
+  }
 }
 
 

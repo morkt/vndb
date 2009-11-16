@@ -50,7 +50,7 @@ sub page {
       [ languages  => join => ', ', split => sub { map mt("_lang_$_"), @{$_[0]} } ],
       [ 'website' ],
       [ released   => htmlize   => sub { $self->{l10n}->datestr($_[0]) } ],
-      [ minage     => serialize => sub { $self->{age_ratings}{$_[0]}[0] } ],
+      [ minage     => serialize => \&minage ],
       [ notes      => diff => 1 ],
       [ platforms  => join => ', ', split => sub { map mt("_plat_$_"), @{$_[0]} } ],
       [ media      => join => ', ', split => sub {
@@ -189,10 +189,10 @@ sub _infotable {
     end;
    end;
 
-   if($r->{minage} >= 0) {
+   if(defined $r->{minage}) {
      Tr ++$i % 2 ? (class => 'odd') : ();
       td mt '_relinfo_minage';
-      td $self->{age_ratings}{$r->{minage}}[0];
+      td minage $r->{minage};
      end;
    }
 
@@ -287,7 +287,8 @@ sub edit {
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (
     (map { $_ => $r->{$_} } qw|type title original gtin catalog languages website released
-      notes minage platforms patch resolution voiced freeware doujin ani_story ani_ero|),
+      notes platforms patch resolution voiced freeware doujin ani_story ani_ero|),
+    minage    => defined($r->{minage}) ? $r->{minage} : -1,
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map
       sprintf('%d,%d,%s', $_->{id}, ($_->{developer}?1:0)+($_->{publisher}?2:0), $_->{name}),
@@ -311,7 +312,7 @@ sub edit {
       { name => 'languages', multi => 1, enum => $self->{languages} },
       { name => 'website',   required => 0, default => '', template => 'url' },
       { name => 'released',  required => 0, default => 0, template => 'int' },
-      { name => 'minage' ,   required => 0, default => -1, enum => [ keys %{$self->{age_ratings}} ] },
+      { name => 'minage' ,   required => 0, default => -1, enum => [map !defined($_)?-1:$_, @{$self->{age_ratings}}] },
       { name => 'notes',     required => 0, default => '', maxlength => 10240 },
       { name => 'platforms', required => 0, default => '', multi => 1, enum => $self->{platforms} },
       { name => 'media',     required => 0, default => '' },
@@ -349,7 +350,8 @@ sub edit {
     if(!$frm->{_err}) {
       my %opts = (
         (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released
-          notes minage platforms resolution editsum patch voiced freeware doujin ani_story ani_ero|),
+          notes platforms resolution editsum patch voiced freeware doujin ani_story ani_ero|),
+        minage    => $frm->{minage} < 0 ? undef : $frm->{minage},
         vn        => $new_vn,
         producers => $producers,
         media     => $media,
@@ -403,8 +405,7 @@ sub _form {
     [ date   => short => 'released',  name => mt('_redit_form_released') ],
     [ static => content => mt('_redit_form_released_note') ],
     [ select => short => 'minage', name => mt('_redit_form_minage'),
-      options => [ map [ $_, $self->{age_ratings}{$_}[0].($self->{age_ratings}{$_}[1]?" (e.g. $self->{age_ratings}{$_}[1])":'') ],
-        sort { $a <=> $b } keys %{$self->{age_ratings}} ] ],
+      options => [ map [ !defined($_)?-1:$_, minage $_, 1 ], @{$self->{age_ratings}} ] ],
     [ textarea => short => 'notes', name => mt('_redit_form_notes').'<br /><b class="standout">'.mt('_inenglish').'</b>' ],
     [ static => content => mt('_redit_form_notes_note') ],
   ],
@@ -495,7 +496,7 @@ sub browse {
     { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
-    { name => 'ma_a', required => 0, default => 0, enum => [ keys %{$self->{age_ratings}} ] },
+    { name => 'ma_a', required => 0, default => 0, enum => [ grep defined($_), @{$self->{age_ratings}} ] },
     { name => 'mi', required => 0, default => 0, template => 'int' },
     { name => 'ma', required => 0, default => 99999999, template => 'int' },
     { name => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
@@ -550,7 +551,7 @@ sub browse {
        td class => 'tc1';
         lit $self->{l10n}->datestr($l->{released});
        end;
-       td class => 'tc2', $l->{minage} > -1 ? $self->{age_ratings}{$l->{minage}}[0] : '';
+       td class => 'tc2', !defined($l->{minage}) ? '' : minage $l->{minage};
        td class => 'tc3';
         $_ ne 'oth' && cssicon $_, mt "_plat_$_" for (@{$l->{platforms}});
         cssicon "lang $_", mt "_lang_$_" for (@{$l->{languages}});
@@ -599,8 +600,8 @@ sub _filters {
         option value => 1, $f->{ma_m} == 1 ? ('selected' => 'selected') : (), mt '_rbrowse_le';
        end;
        Select id => 'ma_a', name => 'ma_a', style => 'width: 80px; text-align: center';
-        $_>=0 && option value => $_, $f->{ma_a} == $_ ? ('selected' => 'selected') : (), $self->{age_ratings}{$_}[0]
-          for (sort { $a <=> $b } keys %{$self->{age_ratings}});
+        defined($_) && option value => $_, $f->{ma_a} == $_ ? ('selected' => 'selected') : (), minage $_
+          for (@{$self->{age_ratings}});
        end;
       end;
       td rowspan => 5, style => 'padding-left: 40px';
