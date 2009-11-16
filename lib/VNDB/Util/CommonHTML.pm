@@ -482,7 +482,7 @@ sub htmlVoteStats {
    if($type eq 'v' && $obj->{c_votecount}) {
      div;
       h3 mt '_votestats_rank_title';
-      p mt '_votestats_rank_pop', $obj->{p_ranking}, sprintf '%.2f', $obj->{c_popularity}*100;
+      p mt '_votestats_rank_pop', $obj->{p_ranking}, sprintf '%.2f', ($obj->{c_popularity}||0)*100;
       p mt '_votestats_rank_rat', $obj->{r_ranking}, sprintf '%.2f', $obj->{c_rating};
      end;
    }
