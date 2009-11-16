@@ -214,7 +214,7 @@ sub _vnlist {
        td class => 'tc5';
         lit $self->{l10n}->datestr($l->{c_released});
        end;
-       td class => 'tc6', sprintf '%.2f', $l->{c_popularity}*100;
+       td class => 'tc6', sprintf '%.2f', ($l->{c_popularity}||0)*100;
       end;
     }
   );
