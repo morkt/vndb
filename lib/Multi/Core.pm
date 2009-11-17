@@ -36,6 +36,7 @@ sub run {
     pause();
     exit 1;
   }
+  $poe_kernel->has_forked();
 
   # spawn our SQL handling session
   my @db = @{$VNDB::O{db_login}};
