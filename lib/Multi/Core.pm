@@ -131,7 +131,14 @@ package Multi::Core::STDIO;
 
 use base 'Tie::Handle';
 sub TIEHANDLE { return bless \"$_[1]", $_[0] }
-sub WRITE     { Multi::Core::log_msg(${$_[0]}.': '.$_[1]) }
+sub WRITE     {
+  my($s, $msg) = @_;
+  # Surpress warning about STDIO being tied in POE::Wheel::Run::new().
+  # the untie() is being performed in the child process, which doesn't effect
+  # the parent process, so the tie() will still be in place where we want it.
+  return if $msg =~ /^Cannot redirect into tied STD(?:ERR|OUT)\.  Untying it/;
+  Multi::Core::log_msg($$s.': '.$msg);
+}
 
 
 1;
