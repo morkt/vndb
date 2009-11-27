@@ -375,7 +375,7 @@ sub htmlEditMessage {
      div class => 'warning';
       h2 mt '_editmsg_copy_title';
       p;
-       lit mt '_editmsg_copy_msg', sprintf '<a href="/%s%d">%s</a>', $type, $obj->{id}, xml_escape $obj->{title}, 
+       lit mt '_editmsg_copy_msg', sprintf '<a href="/%s%d">%s</a>', $type, $obj->{id}, xml_escape $obj->{title};
       end;
      end;
    }
