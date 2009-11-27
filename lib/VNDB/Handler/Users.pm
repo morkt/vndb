@@ -117,7 +117,7 @@ sub userpage {
     h1 class => 'boxtitle';
      a href => "/u$uid/hist", mt '_userpage_changes';
     end;
-    $self->htmlHistory($list, { p => 1 }, 0, "/u$uid/hist");
+    $self->htmlBrowseHist($list, { p => 1 }, 0, "/u$uid/hist");
   }
   $self->htmlFooter;
 }

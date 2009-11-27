@@ -263,7 +263,7 @@ sub history {
    }
   end;
 
-  $self->htmlHistory($list, $f, $np, $u->());
+  $self->htmlBrowseHist($list, $f, $np, $u->());
   $self->htmlFooter;
 }
 
