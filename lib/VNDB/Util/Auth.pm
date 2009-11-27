@@ -82,7 +82,7 @@ sub authInfo {
 # a certain action. Argument is the action name as defined in global.pl
 sub authCan {
   my($self, $act) = @_;
-  my $r = $self->{_auth}{rank}||0;
+  my $r = $self->{_auth} ? $self->{_auth}{rank} : 0;
   return scalar grep $_ eq $act, @{$self->{user_ranks}[$r]}[0..$#{$self->{user_ranks}[$r]}];
 }
 
