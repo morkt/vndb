@@ -10,13 +10,13 @@ use Encode 'decode_utf8';
 our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbVNCache dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
 
 
-# Options: id, rev, char, search, lang, platform, tags_include, tags_exclude, results, page, order, what
+# Options: id, rev, char, search, lang, platform, tags_include, tags_exclude, results, page, what, sort, reverse
 # What: extended anime relations screenshots relgraph rating ranking changes
+# Sort: id rel pop rating title tagscore rand
 sub dbVNGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
   $o{page}    ||= 1;
-  $o{order}   ||= 'vr.title ASC';
   $o{what}    ||= '';
 
   my %where = (
@@ -97,13 +97,23 @@ sub dbVNGet {
       qq|(SELECT AVG(tvh.rating) FROM tags_vn_inherit tvh WHERE tvh.tag IN($tag_ids) AND tvh.vid = v.id AND spoiler <= $o{tags_include}[0] GROUP BY tvh.vid) AS tagscore| : (),
   );
 
+  my $order = sprintf {
+    id       => 'id %s',
+    rel      => 'c_released %s',
+    pop      => 'c_popularity %s NULLS LAST',
+    rating   => 'c_rating %s NULLS LAST',
+    title    => 'title %s',
+    tagscore => 'tagscore %s',
+    rand     => 'RANDOM()',
+  }->{ $o{sort}||'title' }, $o{reverse} ? 'DESC' : 'ASC';
+
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
       FROM vn_rev vr
       !s
       !W
-      ORDER BY !s NULLS LAST|,
-    join(', ', @select), join(' ', @join), \%where, $o{order},
+      ORDER BY !s|,
+    join(', ', @select), join(' ', @join), \%where, $order,
   );
 
   if($o{what} =~ /relgraph/) {

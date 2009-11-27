@@ -55,21 +55,13 @@ sub list {
   $f->{s} = 'title' if !@ti && $f->{s} eq 'tagscore';
   $f->{o} = $f->{s} eq 'tagscore' ? 'd' : 'a' if !$f->{o};
 
-  my $sortcol = {qw|
-    rel      c_released
-    pop      c_popularity
-    rating   c_rating
-    title    title
-    tagscore tagscore
-  |}->{$f->{s}};
-
   my($list, $np) = $self->dbVNGet(
     what => 'rating',
     $char ne 'all' ? ( char => $char ) : (),
     $f->{q} ? ( search => $f->{q} ) : (),
     results => 50,
     page => $f->{p},
-    order => $sortcol.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
     $f->{pl}[0] ? ( platform => $f->{pl} ) : (),
     $f->{ln}[0] ? ( lang => $f->{ln} ) : (),
     @ti ? (tags_include => [ $f->{sp}, \@ti ]) : (),

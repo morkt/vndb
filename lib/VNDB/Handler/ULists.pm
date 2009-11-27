@@ -122,7 +122,7 @@ sub wishlist {
 
   my($list, $np) = $self->dbWishListGet(
     uid => $uid,
-    order => $f->{s}.' '.($f->{o} eq 'a' ? ($f->{s} eq 'wstat' ? 'DESC' : 'ASC' ) : ($f->{s} eq 'wstat' ? 'ASC' : 'DESC')).($f->{s} eq 'wstat' ? ', title ASC' : ''),
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
     $f->{f} != -1 ? (wstat => $f->{f}) : (),
     what => 'vn',
     results => 50,
@@ -229,7 +229,7 @@ sub vnlist {
     uid => $uid,
     results => 50,
     page => $f->{p},
-    order => $f->{s}.' '.($f->{o} eq 'd' ? 'DESC' : 'ASC').($f->{s} eq 'vote' ? ', title ASC' : ''),
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
     voted => $f->{v},
     $f->{c} ne 'all' ? (char => $f->{c}) : (),
   );

@@ -517,7 +517,7 @@ sub browse {
     $f->{do} ? (doujin => $f->{do}) : (),
   );
   my($list, $np) = !@filters ? ([], 0) : $self->dbReleaseGet(
-    order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
     page => $f->{p},
     results => 50,
     what => 'platforms',

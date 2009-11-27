@@ -8,12 +8,12 @@ use Exporter 'import';
 our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagMerge dbTagLinks dbTagLinkEdit dbTagStats|;
 
 
-# %options->{ id noid name search state meta page results order what }
+# %options->{ id noid name search state meta page results what sort reverse  }
 # what: parents childs(n) aliases addedby
+# sort: id name added vns
 sub dbTagGet {
   my $self = shift;
   my %o = (
-    order => 't.id ASC',
     page => 1,
     results => 10,
     what => '',
@@ -45,13 +45,20 @@ sub dbTagGet {
   );
   my @join = $o{what} =~ /addedby/ ? 'JOIN users u ON u.id = t.addedby' : ();
 
+  my $order = sprintf {
+    id    => 't.id %s',
+    name  => 't.name %s',
+    added => 't.added %s',
+    vns   => 't.c_vns %s',
+  }->{ $o{sort}||'id' }, $o{reverse} ? 'DESC' : 'ASC';
+
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
       FROM tags t
       !s
       !W
       ORDER BY !s|,
-    join(', ', @select), join(' ', @join), \%where, $o{order}
+    join(', ', @select), join(' ', @join), \%where, $order
   );
 
   if(@$r && $o{what} =~ /aliases/) {
@@ -147,13 +154,13 @@ sub dbTagLinkEdit {
 
 
 # Fetch all tags related to a VN or User
-# Argument: %options->{ uid vid minrating results what page order }
+# Argument: %options->{ uid vid minrating results what page sort reverse }
 # what: vns
+# sort: name, count, rating
 sub dbTagStats {
   my($self, %o) = @_;
   $o{results} ||= 10;
   $o{page}  ||= 1;
-  $o{order} ||= 't.name ASC';
   $o{what}  ||= '';
 
   my %where = (
@@ -162,6 +169,13 @@ sub dbTagStats {
     $o{vid} ? (
       'tv.vid = ?' => $o{vid} ) : (),
   );
+
+  my $order = sprintf {
+    name => 't.name %s',
+    count => 'count(*) %s',
+    rating => 'avg(tv.vote) %s',
+  }->{ $o{sort}||'name' }, $o{reverse} ? 'DESC' : 'ASC';
+
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT t.id, t.name, count(*) as cnt, avg(tv.vote) as rating, COALESCE(avg(tv.spoiler), 0) as spoiler
       FROM tags t
@@ -171,7 +185,7 @@ sub dbTagStats {
       !s
       ORDER BY !s|,
     \%where, defined $o{minrating} ? "HAVING avg(tv.vote) > $o{minrating}" : '',
-    $o{order}
+    $order
   );
 
   if(@$r && $o{what} =~ /vns/ && $o{uid}) {

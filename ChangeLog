@@ -2,6 +2,7 @@ git - ?
 	- VN score on tag pages use plain averages instead of bayesian rating
 	- Display VN ratings on tag pages as well
 	- Split browse functions from CommonHTML.pm into BrowseHTML.pm
+	- Abstracted all ORDER BY clauses in the DB abstraction layer
 
 2.9 - 2009-11-16
 	- Fixed another bug with the calculation of tags_vn_bayesian.spoiler

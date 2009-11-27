@@ -16,7 +16,7 @@ YAWF::register(
 
 sub rand {
   my $self = shift;
-  $self->resRedirect('/v'.$self->dbVNGet(results => 1, order => 'RANDOM()')->[0]{id}, 'temp');
+  $self->resRedirect('/v'.$self->dbVNGet(results => 1, sort => 'rand')->[0]{id}, 'temp');
 }
 
 
@@ -146,7 +146,7 @@ sub page {
    clearfloat;
 
    # tags
-   my $t = $self->dbTagStats(vid => $v->{id}, order => 'avg(tv.vote) DESC', minrating => 0, results => 999);
+   my $t = $self->dbTagStats(vid => $v->{id}, sort => 'rating', reverse => 1, minrating => 0, results => 999);
    if(@$t) {
      div id => 'tagops';
       # NOTE: order of these links is hardcoded in JS

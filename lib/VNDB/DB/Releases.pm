@@ -10,15 +10,15 @@ use VNDB::Func 'gtintype';
 our @EXPORT = qw|dbReleaseGet dbReleaseAdd dbReleaseEdit|;
 
 
-# Options: id vid rev order unreleased page results what date media
+# Options: id vid rev unreleased page results what date media sort reverse
 #   platforms languages type minage search resolutions freeware doujin
 # What: extended changes vn producers platforms media
+# Sort: title released minage
 sub dbReleaseGet {
   my($self, %o) = @_;
   $o{results} ||= 50;
   $o{page} ||= 1;
   $o{what} ||= '';
-  $o{order} ||= 'rr.released ASC';
 
   my @where = (
     !$o{id} && !$o{rev} ? ( 'r.hidden = FALSE' => 0       ) : (),
@@ -77,13 +77,19 @@ sub dbReleaseGet {
       (qw|c.requester c.comments r.latest u.username c.rev|, q|extract('epoch' from c.added) as added|) : (),
   );
 
+  my $order = sprintf {
+    title    => 'rr.title %s',
+    minage   => 'rr.minage %s',
+    released => 'rr.released %s',
+  }->{ $o{sort}||'released' }, $o{reverse} ? 'DESC' : 'ASC';
+
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
       FROM releases_rev rr
       !s
       !W
       ORDER BY !s|,
-    join(', ', @select), join(' ', @join), \@where, $o{order}
+    join(', ', @select), join(' ', @join), \@where, $order
   );
 
   if(@$r) {

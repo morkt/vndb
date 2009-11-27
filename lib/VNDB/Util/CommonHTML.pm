@@ -359,7 +359,6 @@ sub htmlVoteStats {
    my $recent = $self->dbVoteGet(
      $type.'id' => $obj->{id},
      results => 8,
-     order => 'date DESC',
      what => $type eq 'v' ? 'user' : 'vn',
      hide => $type eq 'v',
      hide_ign => $type eq 'v',

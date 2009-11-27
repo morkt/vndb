@@ -38,19 +38,11 @@ sub tagpage {
   my $tagspoil = $self->reqCookie('tagspoil');
   $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0 if $f->{m} == -1;
 
-  my $sortcol = {qw|
-    rel      c_released
-    pop      c_popularity
-    rating   c_rating
-    title    title
-    tagscore tagscore
-  |}->{$f->{s}};
-
   my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbVNGet(
     what => 'rating',
     results => 50,
     page => $f->{p},
-    order => $sortcol.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
     tags_include => [ $f->{m}, [$tag ]],
   );
 
@@ -309,7 +301,7 @@ sub taglist {
   return 404 if $f->{_err};
 
   my($t, $np) = $self->dbTagGet(
-    order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
     page => $f->{p},
     results => 50,
     state => $f->{t},
@@ -457,7 +449,7 @@ sub usertags {
   return 404 if !$u;
 
   my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'cnt', enum => [ qw|cnt name| ] },
+    { name => 's', required => 0, default => 'count', enum => [ qw|count name| ] },
     { name => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
   );
@@ -467,7 +459,7 @@ sub usertags {
   my($list, $np) = $self->dbTagStats(
     uid => $uid,
     page => $f->{p},
-    order => ($f->{s}eq'cnt'?'COUNT(*)':'name').($f->{o}eq'a'?' ASC':' DESC'),
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
     what => 'vns',
   );
 
@@ -497,8 +489,8 @@ sub usertags {
            b id => 'expandall';
             lit '<i>&#9656;</i> '.mt('_tagu_col_num').' ';
            end;
-           lit $f->{s} eq 'cnt' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u$u->{id}/tags?o=a;s=cnt">\x{25B4}</a>|;
-           lit $f->{s} eq 'cnt' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u$u->{id}/tags?o=d;s=cnt">\x{25BE}</a>|;
+           lit $f->{s} eq 'count' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u$u->{id}/tags?o=a;s=count">\x{25B4}</a>|;
+           lit $f->{s} eq 'count' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u$u->{id}/tags?o=d;s=count">\x{25BE}</a>|;
           end;
         },
         [ mt('_tagu_col_name'),  'name' ],
@@ -553,7 +545,7 @@ sub tagindex {
     # Recently added
     td;
      a class => 'right', href => '/g/list', mt '_tagidx_browseall';
-     my $r = $self->dbTagGet(order => 'added DESC', results => 10, state => 2);
+     my $r = $self->dbTagGet(sort => 'added', reverse => 1, results => 10, state => 2);
      h1 mt '_tagidx_recent';
      ul;
       for (@$r) {
@@ -568,7 +560,7 @@ sub tagindex {
 
     # Popular
     td;
-     $r = $self->dbTagGet(order => 'c_vns DESC', meta => 0, results => 10);
+     $r = $self->dbTagGet(sort => 'vns', reverse => 1, meta => 0, results => 10);
      h1 mt '_tagidx_popular';
      ul;
       for (@$r) {
@@ -583,7 +575,7 @@ sub tagindex {
     # Moderation queue
     td;
      h1 mt '_tagidx_queue';
-     $r = $self->dbTagGet(state => 0, order => 'added DESC', results => 10);
+     $r = $self->dbTagGet(state => 0, sort => 'added', reverse => 1, results => 10);
      ul;
       li mt '_tagidx_queue_empty' if !@$r;
       for (@$r) {
