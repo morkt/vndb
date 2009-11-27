@@ -40,7 +40,7 @@ sub tagpage {
 
   my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbTagVNs(
     tag => $tag,
-    order => {score=>'tb.rating',title=>'vr.title',rel=>'v.c_released',pop=>'v.c_popularity'}->{$f->{s}}.($f->{o}eq'a'?' ASC':' DESC'),
+    order => {score=>'th.rating',title=>'vr.title',rel=>'v.c_released',pop=>'v.c_popularity'}->{$f->{s}}.($f->{o}eq'a'?' ASC':' DESC').($f->{s}eq'score'?', th.users DESC':''),
     page => $f->{p},
     results => 50,
     maxspoil => $f->{m},

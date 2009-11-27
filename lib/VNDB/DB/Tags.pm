@@ -200,21 +200,21 @@ sub dbTagStats {
 # Argument: %options->{ tag order page results maxspoil }
 sub dbTagVNs {
   my($self, %o) = @_;
-  $o{order} ||= 'tb.rating DESC';
+  $o{order} ||= 'th.rating DESC';
   $o{page} ||= 1;
   $o{results} ||= 10;
 
   my %where = (
     'tag = ?' => $o{tag},
     defined $o{maxspoil} ? (
-      'tb.spoiler <= ?' => $o{maxspoil} ) : (),
+      'th.spoiler <= ?' => $o{maxspoil} ) : (),
     'v.hidden = FALSE' => 1,
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
-    SELECT tb.tag, tb.vid, tb.users, tb.rating, tb.spoiler, vr.title, vr.original, v.c_languages, v.c_released, v.c_platforms, v.c_popularity
-      FROM tags_vn_bayesian tb
-      JOIN vn v ON v.id = tb.vid
+    SELECT th.tag, th.vid, th.users, th.rating, th.spoiler, vr.title, vr.original, v.c_languages, v.c_released, v.c_platforms, v.c_popularity
+      FROM tags_vn_inherit th
+      JOIN vn v ON v.id = th.vid
       JOIN vn_rev vr ON vr.id = v.latest
       !W
       ORDER BY !s|,

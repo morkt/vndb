@@ -33,11 +33,11 @@ sub dbVNGet {
     $o{platform} && @{$o{platform}} ? (
       '('.join(' OR ', map "v.c_platforms ILIKE '%%$_%%'", @{$o{platform}}).')' => 1 ) : (),
     $o{tags_include} && @{$o{tags_include}} ? (
-      'v.id IN(SELECT vid FROM tags_vn_bayesian WHERE tag IN(!l) AND spoiler <= ? GROUP BY vid HAVING COUNT(tag) = ?)',
+      'v.id IN(SELECT vid FROM tags_vn_inherit WHERE tag IN(!l) AND spoiler <= ? GROUP BY vid HAVING COUNT(tag) = ?)',
       [ $o{tags_include}[1], $o{tags_include}[0], $#{$o{tags_include}[1]}+1 ]
     ) : (),
     $o{tags_exclude} && @{$o{tags_exclude}} ? (
-      'v.id NOT IN(SELECT vid FROM tags_vn_bayesian WHERE tag IN(!l))' => [ $o{tags_exclude} ] ) : (),
+      'v.id NOT IN(SELECT vid FROM tags_vn_inherit WHERE tag IN(!l))' => [ $o{tags_exclude} ] ) : (),
    # don't fetch hidden items unless we ask for an ID
     !$o{id} && !$o{rev} ? (
       'v.hidden = FALSE' => 0 ) : (),
@@ -94,7 +94,7 @@ sub dbVNGet {
       '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_rating > v.c_rating) AS r_ranking',
     ) : (),
     $tag_ids ?
-      qq|(SELECT AVG(tvb.rating) FROM tags_vn_bayesian tvb WHERE tvb.tag IN($tag_ids) AND tvb.vid = v.id AND spoiler <= $o{tags_include}[0] GROUP BY tvb.vid) AS tagscore| : (),
+      qq|(SELECT AVG(tvh.rating) FROM tags_vn_inherit tvh WHERE tvh.tag IN($tag_ids) AND tvh.vid = v.id AND spoiler <= $o{tags_include}[0] GROUP BY tvh.vid) AS tagscore| : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
