@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagMerge dbTagLinks dbTagLinkEdit dbTagStats dbTagVNs|;
+our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagMerge dbTagLinks dbTagLinkEdit dbTagStats|;
 
 
 # %options->{ id noid name search state meta page results order what }
@@ -195,32 +195,6 @@ sub dbTagStats {
   return wantarray ? ($r, $np) : $r;
 }
 
-
-# Fetch all VNs from a tag, including VNs from child tags, and provide ratings for them.
-# Argument: %options->{ tag order page results maxspoil }
-sub dbTagVNs {
-  my($self, %o) = @_;
-  $o{order} ||= 'th.rating DESC';
-  $o{page} ||= 1;
-  $o{results} ||= 10;
-
-  my %where = (
-    'tag = ?' => $o{tag},
-    defined $o{maxspoil} ? (
-      'th.spoiler <= ?' => $o{maxspoil} ) : (),
-    'v.hidden = FALSE' => 1,
-  );
-
-  my($r, $np) = $self->dbPage(\%o, q|
-    SELECT th.tag, th.vid, th.users, th.rating, th.spoiler, vr.title, vr.original, v.c_languages, v.c_released, v.c_platforms, v.c_popularity
-      FROM tags_vn_inherit th
-      JOIN vn v ON v.id = th.vid
-      JOIN vn_rev vr ON vr.id = v.latest
-      !W
-      ORDER BY !s|,
-    \%where, $o{order});
-  return wantarray ? ($r, $np) : $r;
-}
 
 1;
 

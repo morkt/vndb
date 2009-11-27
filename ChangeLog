@@ -1,5 +1,6 @@
 git - ?
 	- VN score on tag pages use plain averages instead of bayesian rating
+	- Display VN ratings on tag pages as well
 
 2.9 - 2009-11-16
 	- Fixed another bug with the calculation of tags_vn_bayesian.spoiler

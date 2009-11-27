@@ -29,7 +29,7 @@ sub tagpage {
   return 404 if !$t;
 
   my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'score', enum => [ qw|score title rel pop| ] },
+    { name => 's', required => 0, default => 'tagscore', enum => [ qw|title rel pop tagscore rating| ] },
     { name => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'm', required => 0, default => -1, enum => [qw|0 1 2|] },
@@ -38,12 +38,20 @@ sub tagpage {
   my $tagspoil = $self->reqCookie('tagspoil');
   $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0 if $f->{m} == -1;
 
-  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbTagVNs(
-    tag => $tag,
-    order => {score=>'th.rating',title=>'vr.title',rel=>'v.c_released',pop=>'v.c_popularity'}->{$f->{s}}.($f->{o}eq'a'?' ASC':' DESC').($f->{s}eq'score'?', th.users DESC':''),
-    page => $f->{p},
+  my $sortcol = {qw|
+    rel      c_released
+    pop      c_popularity
+    rating   c_rating
+    title    title
+    tagscore tagscore
+  |}->{$f->{s}};
+
+  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbVNGet(
+    what => 'rating',
     results => 50,
-    maxspoil => $f->{m},
+    page => $f->{p},
+    order => $sortcol.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
+    tags_include => [ $f->{m}, [$tag ]],
   );
 
   my $title = mt '_tagp_title', $t->{meta}?0:1, $t->{name};
@@ -111,7 +119,20 @@ sub tagpage {
   end;
 
   _childtags($self, $t) if @{$t->{childs}};
-  _vnlist($self, $t, $f, $list, $np) if !$t->{meta} && $t->{state} == 2;
+
+  if(!$t->{meta} && $t->{state} == 2) {
+    div class => 'mainbox';
+     h1 mt '_tagp_vnlist';
+     p class => 'browseopts';
+      a href => "/g$t->{id}?m=0", $f->{m} == 0 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 0);return true;", mt '_tagp_spoil0';
+      a href => "/g$t->{id}?m=1", $f->{m} == 1 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 1);return true;", mt '_tagp_spoil1';
+      a href => "/g$t->{id}?m=2", $f->{m} == 2 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 2);return true;", mt '_tagp_spoil2';
+     end;
+     p "\n\n".mt '_tagp_novn' if !@$list;
+     p "\n".mt '_tagp_cached';
+    end;
+    $self->htmlBrowseVN($list, $f, $np, "/g$t->{id}?m=$f->{m}", 1);
+  }
 
   $self->htmlFooter;
 }
@@ -161,63 +182,6 @@ sub _childtags {
    clearfloat;
    br;
   end;
-}
-
-sub _vnlist {
-  my($self, $t, $f, $list, $np) = @_;
-  div class => 'mainbox';
-   h1 mt '_tagp_vnlist';
-   p class => 'browseopts';
-    a href => "/g$t->{id}?m=0", $f->{m} == 0 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 0);return true;", mt '_tagp_spoil0';
-    a href => "/g$t->{id}?m=1", $f->{m} == 1 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 1);return true;", mt '_tagp_spoil1';
-    a href => "/g$t->{id}?m=2", $f->{m} == 2 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 2);return true;", mt '_tagp_spoil2';
-   end;
-   if(!@$list) {
-     p "\n\n".mt '_tagp_novn';
-   }
-   p "\n".mt '_tagp_cached';
-  end;
-  return if !@$list;
-  $self->htmlBrowse(
-    class    => 'tagvnlist',
-    items    => $list,
-    options  => $f,
-    nextpage => $np,
-    pageurl  => "/g$t->{id}?m=$f->{m};o=$f->{o};s=$f->{s}",
-    sorturl  => "/g$t->{id}?m=$f->{m}",
-    header   => [
-      [ mt('_tagp_vncol_score'), 'score' ],
-      [ mt('_tagp_vncol_title'), 'title' ],
-      [ '',                      0       ],
-      [ '',                      0       ],
-      [ mt('_tagp_vncol_rel'),   'rel'   ],
-      [ mt('_tagp_vncol_pop'),   'pop'   ],
-    ],
-    row     => sub {
-      my($s, $n, $l) = @_;
-      Tr $n % 2 ? (class => 'odd') : ();
-       td class => 'tc1';
-        tagscore $l->{rating};
-        i sprintf '(%d)', $l->{users};
-       end;
-       td class => 'tc2';
-        a href => '/v'.$l->{vid}, title => $l->{original}||$l->{title}, shorten $l->{title}, 100;
-       end;
-       td class => 'tc3';
-        $_ ne 'oth' && cssicon $_, mt "_plat_$_"
-          for (sort split /\//, $l->{c_platforms});
-       end;
-       td class => 'tc4';
-        cssicon "lang $_", mt "_lang_$_"
-          for (reverse sort split /\//, $l->{c_languages});
-       end;
-       td class => 'tc5';
-        lit $self->{l10n}->datestr($l->{c_released});
-       end;
-       td class => 'tc6', sprintf '%.2f', ($l->{c_popularity}||0)*100;
-      end;
-    }
-  );
 }
 
 

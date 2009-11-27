@@ -11,8 +11,8 @@ use Encode 'encode_utf8', 'decode_utf8';
 use POSIX 'ceil';
 
 our @EXPORT = qw|
-  htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate
-  htmlRevision htmlEditMessage htmlItemMessage htmlVoteStats htmlHistory htmlSearchBox htmlRGHeader
+  htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate htmlRevision
+  htmlEditMessage htmlItemMessage htmlVoteStats htmlHistory htmlBrowseVN htmlSearchBox htmlRGHeader
 |;
 
 
@@ -530,6 +530,57 @@ sub htmlHistory {
          end;
         end;
       }
+    },
+  );
+}
+
+
+sub htmlBrowseVN {
+  my($self, $list, $f, $np, $url, $tagscore) = @_;
+  $self->htmlBrowse(
+    class    => 'vnbrowse',
+    items    => $list,
+    options  => $f,
+    nextpage => $np,
+    pageurl  => "$url;o=$f->{o};s=$f->{s}",
+    sorturl  => $url,
+    header   => [
+      $tagscore ? [ mt('_vnbrowse_col_score'), 'tagscore', undef, 'tc_s' ] : (),
+      [ mt('_vnbrowse_col_title'),       'title', undef, $tagscore ? 'tc_t' : 'tc1' ],
+      [ '',                              0,       undef, 'tc2' ],
+      [ '',                              0,       undef, 'tc3' ],
+      [ mt('_vnbrowse_col_released'),    'rel',   undef, 'tc4' ],
+      [ mt('_vnbrowse_col_popularity'),  'pop',   undef, 'tc5' ],
+      [ mt('_vnbrowse_col_rating'),      'rating', undef, 'tc6' ],
+    ],
+    row     => sub {
+      my($s, $n, $l) = @_;
+      Tr $n % 2 ? (class => 'odd') : ();
+       if($tagscore) {
+         td class => 'tc_s';
+          tagscore $l->{tagscore}, 0;
+         end;
+       }
+       td class => $tagscore ? 'tc_t' : 'tc1';
+        a href => '/v'.$l->{id}, title => $l->{original}||$l->{title}, shorten $l->{title}, 100;
+       end;
+       td class => 'tc2';
+        $_ ne 'oth' && cssicon $_, mt "_plat_$_"
+          for (sort split /\//, $l->{c_platforms});
+       end;
+       td class => 'tc3';
+        cssicon "lang $_", mt "_lang_$_"
+          for (reverse sort split /\//, $l->{c_languages});
+       end;
+       td class => 'tc4';
+        lit $self->{l10n}->datestr($l->{c_released});
+       end;
+       td class => 'tc5', sprintf '%.2f', ($l->{c_popularity}||0)*100;
+       td class => 'tc6';
+        txt sprintf '%.2f', $l->{c_rating}||0;
+        b class => 'grayedout', sprintf ' (%d)', $l->{c_votecount};
+       end;
+      end;
     },
   );
 }
