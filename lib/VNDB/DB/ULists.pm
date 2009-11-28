@@ -266,7 +266,7 @@ sub dbWishListGet {
     title => 'vr.title %s',
     added => 'wl.added %s',
     wstat => 'wl.wstat %2$s, vr.title ASC',
-  }->{ $o{sort}||'wstat' }, $o{reverse} ? 'DESC' : 'ASC', $o{reverse} ? 'ASC' : 'DESC';
+  }->{ $o{sort}||'added' }, $o{reverse} ? 'DESC' : 'ASC', $o{reverse} ? 'ASC' : 'DESC';
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
