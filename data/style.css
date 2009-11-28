@@ -599,7 +599,7 @@ div.vnimg p {
 .vndesc p {
   padding: 0 0 0 5px;
 }
-img#nsfw_hid {
+p#nsfw_hid {
   display: none;
   cursor: pointer;
 }

@@ -72,16 +72,18 @@ sub page {
        p mt '_vnpage_noimg';
      } elsif($v->{image} < 0) {
        p mt '_vnpage_imgproc';
-     } elsif($v->{img_nsfw} && !$self->authInfo->{show_nsfw}) {
-       img id => 'nsfw_hid', src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title};
-       p id => 'nsfw_show';
-        txt mt('_vnpage_imgnsfw_msg')."\n\n";
-        a href => '#', mt '_vnpage_imgnsfw_show';
-        txt "\n\n".mt '_vnpage_imgnsfw_note';
-       end;
      } else {
-       img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title};
-       i mt '_vnpage_imgnsfw_foot' if $v->{img_nsfw} && $self->authInfo->{show_nsfw};
+       p $v->{img_nsfw} ? (id => 'nsfw_hid', style => $self->authInfo->{show_nsfw} ? 'display: block' : '') : ();
+        img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title};
+        i mt '_vnpage_imgnsfw_foot' if $v->{img_nsfw};
+       end;
+       if($v->{img_nsfw}) {
+         p id => 'nsfw_show', $self->authInfo->{show_nsfw} ? (style => 'display: none') : ();
+          txt mt('_vnpage_imgnsfw_msg')."\n\n";
+          a href => '#', mt '_vnpage_imgnsfw_show';
+          txt "\n\n".mt '_vnpage_imgnsfw_note';
+         end;
+       }
      }
     end;
 
