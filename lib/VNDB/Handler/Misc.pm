@@ -142,6 +142,7 @@ sub homepage {
          lit $self->{l10n}->datestr($_->{released});
          txt ' ';
          cssicon $_, mt "_plat_$_" for (@{$_->{platforms}});
+         cssicon "lang $_", mt "_lang_$_" for (@{$_->{languages}});
          txt ' ';
          a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
         end;
@@ -161,6 +162,7 @@ sub homepage {
          lit $self->{l10n}->datestr($_->{released});
          txt ' ';
          cssicon $_, mt "_plat_$_" for (@{$_->{platforms}});
+         cssicon "lang $_", mt "_lang_$_" for (@{$_->{languages}});
          txt ' ';
          a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
         end;

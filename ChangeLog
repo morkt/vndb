@@ -3,6 +3,7 @@ git - ?
 	- Display VN ratings on tag pages as well
 	- Split browse functions from CommonHTML.pm into BrowseHTML.pm
 	- Abstracted all ORDER BY clauses in the DB abstraction layer
+	- Show language flags on release lists on the homepage
 
 2.9 - 2009-11-16
 	- Fixed another bug with the calculation of tags_vn_bayesian.spoiler
