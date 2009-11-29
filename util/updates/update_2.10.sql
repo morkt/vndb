@@ -13,7 +13,7 @@ CREATE TABLE tags_vn_inherit (
 -- more efficient version of tag_vn_calc()
 CREATE OR REPLACE FUNCTION tag_vn_calc() RETURNS void AS $$
 BEGIN
-  DROP INDEX IF EXISTS tags_vn_inherit_tag;
+  DROP INDEX IF EXISTS tags_vn_inherit_tag_vid;
   TRUNCATE tags_vn_inherit;
   -- populate tags_vn_inherit
   INSERT INTO tags_vn_inherit
@@ -43,7 +43,7 @@ BEGIN
     GROUP BY tag, vid
     HAVING AVG(vote) > 0;
   -- recreate index
-  CREATE INDEX tags_vn_inherit_tag ON tags_vn_inherit (tag);
+  CREATE INDEX tags_vn_inherit_tag_vid ON tags_vn_inherit (tag, vid);
   -- and update the VN count in the tags table
   UPDATE tags SET c_vns = (SELECT COUNT(*) FROM tags_vn_inherit WHERE tag = id);
   RETURN;
