@@ -5,6 +5,8 @@ git - ?
 	- Abstracted all ORDER BY clauses in the DB abstraction layer
 	- Show language flags on release lists on the homepage
 	- Allow hiding of NSFW cover even if NSFW warning is disabled
+	- Removed /g/debug
+	- Replaced recursive stored procedures with WITH .. SELECT queries
 
 2.9 - 2009-11-16
 	- Fixed another bug with the calculation of tags_vn_bayesian.spoiler

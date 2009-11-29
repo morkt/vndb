@@ -73,21 +73,46 @@ sub dbTagGet {
   }
 
   if($o{what} =~ /parents\((\d+)\)/) {
-    $_->{parents} = $self->dbTagTree($_->{id}, $1, 0) for(@$r);
+    $_->{parents} = $self->dbTagTree($_->{id}, $1, 1) for(@$r);
   }
 
   if($o{what} =~ /childs\((\d+)\)/) {
-    $_->{childs} = $self->dbTagTree($_->{id}, $1, 1) for(@$r);
+    $_->{childs} = $self->dbTagTree($_->{id}, $1) for(@$r);
   }
 
   return wantarray ? ($r, $np) : $r;
 }
 
 
-# plain interface to the tag_tree() stored procedure in pgsql
+# Walks the tag tree
+#  id = tag to start with, or 0 to start with top-level tags
+#  lvl = max. recursion level
+#  back = false for parent->child, true for child->parent
+# Returns: [ { id, name, c_vns, sub => [ { id, name, c_vns, sub => [..] }, .. ] }, .. ]
 sub dbTagTree {
-  my($self, $id, $lvl, $dir) = @_;
-  return $self->dbAll('SELECT * FROM tag_tree(?, ?, ?)', $id, $lvl||0, $dir?1:0);
+  my($self, $id, $lvl, $back) = @_;
+  $lvl ||= 15;
+  my $r = $self->dbAll(q|
+    WITH RECURSIVE tagtree(lvl, id, parent, name, c_vns) AS (
+        SELECT ?::integer, id, 0, name, c_vns
+        FROM tags
+        !W
+      UNION ALL
+        SELECT tt.lvl-1, t.id, tt.id, t.name, t.c_vns
+        FROM tagtree tt
+        JOIN tags_parents tp ON !s
+        JOIN tags t ON !s
+        WHERE tt.lvl > 0
+          AND t.state = 2
+    ) SELECT id, parent, name, c_vns FROM tagtree ORDER BY name|, $lvl,
+    $id ? {'id = ?' => $id} : {'NOT EXISTS(SELECT 1 FROM tags_parents WHERE tag = id)' => 1, 'state = 2' => 1},
+    !$back ? ('tp.parent = tt.id', 't.id = tp.tag') : ('tp.tag = tt.id', 't.id = tp.parent')
+  );
+  for my $i (@$r) {
+    $i->{'sub'} = [ grep $_->{parent} == $i->{id}, @$r ];
+  }
+  my @r = grep !delete($_->{parent}), @$r;
+  return $id ? $r[0]{'sub'} : \@r;
 }
 
 

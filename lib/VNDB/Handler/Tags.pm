@@ -18,7 +18,6 @@ YAWF::register(
   qr{u([1-9]\d*)/tags},     \&usertags,
   qr{g},                    \&tagindex,
   qr{xml/tags\.xml},        \&tagxml,
-  qr{g/debug},              \&tagtree,
 );
 
 
@@ -86,7 +85,7 @@ sub tagpage {
         a href => '/g', mt '_tagp_indexlink';
         for ($p[$_], reverse @r) {
           txt ' > ';
-          a href => "/g$_->{tag}", $_->{name};
+          a href => "/g$_->{id}", $_->{name};
         }
         txt " > $t->{name}\n";
       }
@@ -133,38 +132,27 @@ sub tagpage {
 sub _childtags {
   my($self, $t, $index) = @_;
 
-  my @l = @{$t->{childs}};
-  my @tags;
-  for (0..$#l) {
-    if($l[$_]{lvl} == $l[0]{lvl}) {
-      $l[$_]{childs} = [];
-      push @tags, $l[$_];
-    } else {
-      push @{$tags[$#tags]{childs}}, $l[$_];
-    }
-  }
-
   div class => 'mainbox';
    h1 mt $index ? '_tagp_tree' : '_tagp_childs';
    ul class => 'tagtree';
-    for my $p (sort { @{$b->{childs}} <=> @{$a->{childs}} } @tags) {
+    for my $p (sort { @{$b->{'sub'}} <=> @{$a->{'sub'}} } @{$t->{childs}}) {
       li;
-       a href => "/g$p->{tag}", $p->{name};
+       a href => "/g$p->{id}", $p->{name};
        b class => 'grayedout', " ($p->{c_vns})" if $p->{c_vns};
-       end, next if !@{$p->{childs}};
+       end, next if !@{$p->{'sub'}};
        ul;
-        for (0..$#{$p->{childs}}) {
-          last if $_ >= 5 && @{$p->{childs}} > 6;
+        for (0..$#{$p->{'sub'}}) {
+          last if $_ >= 5 && @{$p->{'sub'}} > 6;
           li;
            txt '> ';
-           a href => "/g$p->{childs}[$_]{tag}", $p->{childs}[$_]{name};
-           b class => 'grayedout', " ($p->{childs}[$_]{c_vns})" if $p->{childs}[$_]{c_vns};
+           a href => "/g$p->{sub}[$_]{id}", $p->{'sub'}[$_]{name};
+           b class => 'grayedout', " ($p->{sub}[$_]{c_vns})" if $p->{'sub'}[$_]{c_vns};
           end;
         }
-        if(@{$p->{childs}} > 6) {
+        if(@{$p->{'sub'}} > 6) {
           li;
            txt '> ';
-           a href => "/g$p->{tag}", style => 'font-style: italic', mt '_tagp_moretags', @{$p->{childs}}-5;
+           a href => "/g$p->{id}", style => 'font-style: italic', mt '_tagp_moretags', @{$p->{'sub'}}-5;
           end;
         }
        end;
@@ -536,7 +524,7 @@ sub tagindex {
    end;
   end;
 
-  my $t = $self->dbTagTree(0, 2, 1);
+  my $t = $self->dbTagTree(0, 2);
   _childtags($self, {childs => $t}, 1);
 
   table class => 'mainbox threelayout';
@@ -620,34 +608,6 @@ sub tagxml {
      tag 'item', id => $_->{id}, meta => $_->{meta} ? 'yes' : 'no', state => $_->{state}, $_->{name};
    }
   end;
-}
-
-
-sub tagtree {
-  my $self = shift;
-
-  return 404 if !$self->authCan('tagmod');
-
-  $self->htmlHeader(title => '[DEBUG] The complete tag tree');
-  div class => 'mainbox';
-   h1 '[DEBUG] The complete tag tree';
-
-   div style => 'margin-left: 10px';
-    my $t = $self->dbTagTree(0, -1, 1);
-    my $lvl = $t->[0]{lvl} + 1;
-    for (@$t) {
-      map ul(style => 'margin-left: 15px; list-style-type: none'),  1..($lvl-$_->{lvl}) if $lvl > $_->{lvl};
-      map end, 1..($_->{lvl}-$lvl) if $lvl < $_->{lvl};
-      $lvl = $_->{lvl};
-      li;
-       txt '> ';
-       a href => "/g$_->{tag}", $_->{name};
-      end;
-    }
-    map end, 0..($t->[0]{lvl}-$lvl);
-   end;
-  end;
-  $self->htmlFooter;
 }
 
 

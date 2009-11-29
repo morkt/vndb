@@ -52,6 +52,8 @@ $$ LANGUAGE plpgsql;
 SELECT tag_vn_calc();
 
 
--- tag_vn_childs() is not used anymore
+-- remove unused functions
 DROP FUNCTION tag_vn_childs() CASCADE;
+DROP FUNCTION tag_tree(integer, integer, boolean);
+DROP TYPE tag_tree_item;
 
