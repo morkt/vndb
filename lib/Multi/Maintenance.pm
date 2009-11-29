@@ -99,20 +99,20 @@ sub log_stats { # num, res, action, time
 
 
 sub vncache {
-  # this takes about 40s to complete. We really need to search for an alternative
+  # this takes about 50s to complete. We really need to search for an alternative
   # method of keeping the c_* columns in the vn table up-to-date.
   $_[KERNEL]->post(pg => do => 'SELECT update_vncache(0)', undef, 'log_stats', 'vncache');
 }
 
 
 sub tagcache {
-  # takes about 18 seconds max. ouch, but still kind-of acceptable
+  # takes about 2 seconds max, still OK
   $_[KERNEL]->post(pg => do => 'SELECT tag_vn_calc()', undef, 'log_stats', 'tagcache');
 }
 
 
 sub vnpopularity {
-  # still takes at most 2 seconds. let's hope that doesn't increase...
+  # still takes at most 3 seconds. let's hope that doesn't increase...
   $_[KERNEL]->post(pg => do => 'SELECT update_vnpopularity()', undef, 'log_stats', 'vnpopularity');
 }
 
