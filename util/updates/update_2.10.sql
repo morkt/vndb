@@ -57,3 +57,70 @@ DROP FUNCTION tag_vn_childs() CASCADE;
 DROP FUNCTION tag_tree(integer, integer, boolean);
 DROP TYPE tag_tree_item;
 
+
+
+-- improved relgraph notify triggers
+DROP TRIGGER vn_relgraph_notify ON vn;
+CREATE OR REPLACE FUNCTION vn_relgraph_notify() RETURNS trigger AS $$
+BEGIN
+  -- 1.
+  IF NEW.rgraph IS DISTINCT FROM OLD.rgraph OR NEW.latest IS DISTINCT FROM OLD.latest THEN
+    IF NEW.rgraph IS NULL AND EXISTS(SELECT 1 FROM vn_relations WHERE vid1 = NEW.latest) THEN
+      NOTIFY relgraph;
+    END IF;
+  END IF;
+  IF NEW.rgraph IS NOT NULL THEN
+    IF
+      -- 2.
+         OLD.c_released  IS DISTINCT FROM NEW.c_released
+      OR OLD.c_languages IS DISTINCT FROM NEW.c_languages
+      OR OLD.latest <> 0 AND OLD.latest IS DISTINCT FROM NEW.latest AND (
+        -- 3.
+           EXISTS(SELECT 1 FROM vn_rev v1, vn_rev v2 WHERE v2.title <> v1.title AND v1.id = OLD.latest AND v2.id = NEW.latest)
+        -- 4. (not-really-readable method of comparing two query results)
+        OR EXISTS(SELECT vid2, relation FROM vn_relations WHERE vid1 = OLD.latest EXCEPT SELECT vid2, relation FROM vn_relations WHERE vid1 = NEW.latest)
+        OR (SELECT COUNT(*) FROM vn_relations WHERE vid1 = OLD.latest) <> (SELECT COUNT(*) FROM vn_relations WHERE vid1 = NEW.latest)
+      )
+    THEN
+      UPDATE vn SET rgraph = NULL WHERE id = NEW.id;
+    END IF;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER vn_relgraph_notify AFTER UPDATE ON vn FOR EACH ROW EXECUTE PROCEDURE vn_relgraph_notify();
+
+
+DROP TRIGGER vn_relgraph_notify ON producers;
+CREATE OR REPLACE FUNCTION vn_relgraph_notify() RETURNS trigger AS $$
+BEGIN
+  -- 1.
+  IF NEW.rgraph IS DISTINCT FROM OLD.rgraph OR NEW.latest IS DISTINCT FROM OLD.latest THEN
+    IF NEW.rgraph IS NULL AND EXISTS(SELECT 1 FROM producers_relations WHERE pid1 = NEW.latest) THEN
+      NOTIFY relgraph;
+    END IF;
+  END IF;
+  IF NEW.rgraph IS NOT NULL THEN
+    IF
+      -- 2.
+         OLD.c_released  IS DISTINCT FROM NEW.c_released
+      OR OLD.c_languages IS DISTINCT FROM NEW.c_languages
+      OR OLD.latest <> 0 AND OLD.latest IS DISTINCT FROM NEW.latest AND (
+        -- 3.
+           EXISTS(SELECT 1 FROM producers_rev p1, producers_rev p2 WHERE (p2.name <> p1.name OR p2.type <> p1.type OR p2.lang <> p1.lang) AND p1.id = OLD.latest AND p2.id = NEW.latest)
+        -- 4. (not-really-readable method of comparing two query results)
+        OR EXISTS(SELECT p1.pid2, p1.relation FROM producers_relations p1 WHERE p1.pid1 = OLD.latest EXCEPT SELECT p2.pid2, p2.relation FROM producers_relations p2 WHERE p2.pid1 = NEW.latest)
+        OR (SELECT COUNT(*) FROM producers_relations WHERE pid1 = OLD.latest) <> (SELECT COUNT(*) FROM producers_relations WHERE pid1 = NEW.latest)
+      )
+    THEN
+      UPDATE producers SET rgraph = NULL WHERE id = NEW.id;
+    END IF;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER producer_relgraph_notify AFTER UPDATE ON producers FOR EACH ROW EXECUTE PROCEDURE producer_relgraph_notify();
+
+
+

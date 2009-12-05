@@ -669,70 +669,74 @@ CREATE TRIGGER screenshot_process_notify AFTER INSERT OR UPDATE ON screenshots F
 
 
 -- Update vn.rgraph column and send notify when a relation graph needs to be regenerated
--- 1. NOTIFY is sent on an UPDATE or INSERT on vn with rgraph = NULL and with entries in vn_relations (deferred)
+-- 1. NOTIFY is sent on VN edit or insert or change in vn.rgraph, when rgraph = NULL and entries in vn_relations
 -- vn.rgraph is set to NULL when:
--- 2. UPDATE on vn where c_released or c_languages has changed (deferred, but doesn't have to be)
--- 3. New VN revision of which the title differs from previous revision (deferred)
--- 4. New VN revision with items in vn_relations that differ from previous revision (deferred)
+-- 2. UPDATE on vn where c_released or c_languages has changed
+-- 3. VN edit of which the title differs from previous revision
+-- 4. VN edit with items in vn_relations that differ from previous
 CREATE OR REPLACE FUNCTION vn_relgraph_notify() RETURNS trigger AS $$
 BEGIN
   -- 1.
-  IF TG_TABLE_NAME = 'vn' THEN
+  IF NEW.rgraph IS DISTINCT FROM OLD.rgraph OR NEW.latest IS DISTINCT FROM OLD.latest THEN
     IF NEW.rgraph IS NULL AND EXISTS(SELECT 1 FROM vn_relations WHERE vid1 = NEW.latest) THEN
       NOTIFY relgraph;
     END IF;
   END IF;
-  IF TG_TABLE_NAME = 'vn' AND TG_OP = 'UPDATE' THEN
-    IF NEW.rgraph IS NOT NULL AND OLD.latest > 0 THEN
+  IF NEW.rgraph IS NOT NULL THEN
+    IF
       -- 2.
-      IF OLD.c_released <> NEW.c_released OR OLD.c_languages <> NEW.c_languages THEN
-        UPDATE vn SET rgraph = NULL WHERE id = NEW.id;
-      END IF;
-      -- 3 & 4
-      IF OLD.latest <> NEW.latest AND (
+         OLD.c_released  IS DISTINCT FROM NEW.c_released
+      OR OLD.c_languages IS DISTINCT FROM NEW.c_languages
+      OR OLD.latest <> 0 AND OLD.latest IS DISTINCT FROM NEW.latest AND (
+        -- 3.
            EXISTS(SELECT 1 FROM vn_rev v1, vn_rev v2 WHERE v2.title <> v1.title AND v1.id = OLD.latest AND v2.id = NEW.latest)
-        OR EXISTS(SELECT v1.vid2, v1.relation FROM vn_relations v1 WHERE v1.vid1 = OLD.latest EXCEPT SELECT v2.vid2, v2.relation FROM vn_relations v2 WHERE v2.vid1 = NEW.latest)
-        OR EXISTS(SELECT v1.vid2, v1.relation FROM vn_relations v1 WHERE v1.vid1 = NEW.latest EXCEPT SELECT v2.vid2, v2.relation FROM vn_relations v2 WHERE v2.vid1 = OLD.latest)
-      ) THEN
-        UPDATE vn SET rgraph = NULL WHERE id = NEW.id;
-      END IF;
+        -- 4. (not-really-readable method of comparing two query results)
+        OR EXISTS(SELECT vid2, relation FROM vn_relations WHERE vid1 = OLD.latest EXCEPT SELECT vid2, relation FROM vn_relations WHERE vid1 = NEW.latest)
+        OR (SELECT COUNT(*) FROM vn_relations WHERE vid1 = OLD.latest) <> (SELECT COUNT(*) FROM vn_relations WHERE vid1 = NEW.latest)
+      )
+    THEN
+      UPDATE vn SET rgraph = NULL WHERE id = NEW.id;
     END IF;
   END IF;
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE CONSTRAINT TRIGGER vn_relgraph_notify AFTER INSERT OR UPDATE ON vn DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE PROCEDURE vn_relgraph_notify();
+CREATE TRIGGER vn_relgraph_notify AFTER UPDATE ON vn FOR EACH ROW EXECUTE PROCEDURE vn_relgraph_notify();
 
 
 -- Same as above for producers, with slight differences in the steps:
 -- There is no 2, and
--- 3 = New producer revision of which the name, language or type differs from the previous revision (deferred)
-CREATE OR REPLACE FUNCTION producer_relgraph_notify() RETURNS trigger AS $$
+-- 3 = Producer edit of which the name, language or type differs from the previous revision
+CREATE OR REPLACE FUNCTION vn_relgraph_notify() RETURNS trigger AS $$
 BEGIN
   -- 1.
-  IF TG_TABLE_NAME = 'producers' THEN
+  IF NEW.rgraph IS DISTINCT FROM OLD.rgraph OR NEW.latest IS DISTINCT FROM OLD.latest THEN
     IF NEW.rgraph IS NULL AND EXISTS(SELECT 1 FROM producers_relations WHERE pid1 = NEW.latest) THEN
       NOTIFY relgraph;
     END IF;
   END IF;
-  IF TG_TABLE_NAME = 'producers' AND TG_OP = 'UPDATE' THEN
-    IF NEW.rgraph IS NOT NULL AND OLD.latest > 0 THEN
-      -- 3 & 4
-      IF OLD.latest <> NEW.latest AND (
+  IF NEW.rgraph IS NOT NULL THEN
+    IF
+      -- 2.
+         OLD.c_released  IS DISTINCT FROM NEW.c_released
+      OR OLD.c_languages IS DISTINCT FROM NEW.c_languages
+      OR OLD.latest <> 0 AND OLD.latest IS DISTINCT FROM NEW.latest AND (
+        -- 3.
            EXISTS(SELECT 1 FROM producers_rev p1, producers_rev p2 WHERE (p2.name <> p1.name OR p2.type <> p1.type OR p2.lang <> p1.lang) AND p1.id = OLD.latest AND p2.id = NEW.latest)
+        -- 4. (not-really-readable method of comparing two query results)
         OR EXISTS(SELECT p1.pid2, p1.relation FROM producers_relations p1 WHERE p1.pid1 = OLD.latest EXCEPT SELECT p2.pid2, p2.relation FROM producers_relations p2 WHERE p2.pid1 = NEW.latest)
-        OR EXISTS(SELECT p1.pid2, p1.relation FROM producers_relations p1 WHERE p1.pid1 = NEW.latest EXCEPT SELECT p2.pid2, p2.relation FROM producers_relations p2 WHERE p2.pid1 = OLD.latest)
-      ) THEN
-        UPDATE producers SET rgraph = NULL WHERE id = NEW.id;
-      END IF;
+        OR (SELECT COUNT(*) FROM producers_relations WHERE pid1 = OLD.latest) <> (SELECT COUNT(*) FROM producers_relations WHERE pid1 = NEW.latest)
+      )
+    THEN
+      UPDATE producers SET rgraph = NULL WHERE id = NEW.id;
     END IF;
   END IF;
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE CONSTRAINT TRIGGER vn_relgraph_notify AFTER INSERT OR UPDATE ON producers DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE PROCEDURE producer_relgraph_notify();
+CREATE TRIGGER producer_relgraph_notify AFTER UPDATE ON producers FOR EACH ROW EXECUTE PROCEDURE producer_relgraph_notify();
 
 
 -- NOTIFY on insert into changes/posts/tags
