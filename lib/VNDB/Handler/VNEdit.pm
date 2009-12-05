@@ -78,15 +78,15 @@ sub edit {
         screenshots => $screenshots,
       );
 
-      my($nvid, $nrev, $cid) = ($vid, 1);
-      ($nrev, $cid) = $self->dbItemEdit(v => $vid, %args) if $vid;
-      ($nvid, $cid) = $self->dbItemAdd(v =>%args) if !$vid;
+      my($nvid, $nrev) = ($vid, 1);
+      ($nrev) = $self->dbItemEdit(v => $vid, %args) if $vid;
+      ($nvid) = $self->dbItemAdd(v => %args) if !$vid;
 
       # update reverse relations & relation graph
       if(!$vid && $#$relations >= 0 || $vid && $frm->{vnrelations} ne $b4{vnrelations}) {
         my %old = $vid ? (map { $_->{id} => $_->{relation} } @{$v->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations;
-        _updreverse($self, \%old, \%new, $nvid, $cid, $nrev);
+        _updreverse($self, \%old, \%new, $nvid, $nrev);
       }
 
       return $self->resRedirect("/v$nvid.$nrev", 'post');
@@ -236,14 +236,14 @@ sub _form {
 
 
 # Update reverse relations and regenerate relation graph
-# Arguments: %old. %new, vid, cid, rev
+# Arguments: %old. %new, vid, rev
 #  %old,%new -> { vid2 => relation, .. }
 #    from the perspective of vid
-#  cid, rev are of the related edit
+#  rev is of the related edit
 # !IMPORTANT!: Don't forget to update this function when
 #   adding/removing fields to/from VN entries!
 sub _updreverse {
-  my($self, $old, $new, $vid, $cid, $rev) = @_;
+  my($self, $old, $new, $vid, $rev) = @_;
   my %upd;
 
   # compare %old and %new
@@ -265,7 +265,6 @@ sub _updreverse {
     $self->dbItemEdit(v => $i,
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision v$vid.$rev",
-      causedby => $cid,
       uid => 1,         # Multi - hardcoded
       anime => [ map $_->{id}, @{$r->{anime}} ],
       screenshots => [ map [ $_->{id}, $_->{nsfw}, $_->{rid} ], @{$r->{screenshots}} ],

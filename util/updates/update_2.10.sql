@@ -182,3 +182,14 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER release_vncache_update AFTER UPDATE ON releases FOR EACH ROW EXECUTE PROCEDURE release_vncache_update();
 
 
+-- remove changes.causedby and give the affected changes to Multi
+UPDATE changes SET requester = 1 WHERE causedby IS NOT NULL;
+ALTER TABLE changes DROP COLUMN causedby;
+UPDATE users SET
+  c_changes = COALESCE((
+    SELECT COUNT(id)
+    FROM changes
+    WHERE requester = users.id
+    GROUP BY requester
+  ), 0);
+

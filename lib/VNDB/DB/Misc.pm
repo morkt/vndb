@@ -134,7 +134,7 @@ sub dbRevisionGet {
   );
 
   my @select = (
-    qw|c.id c.type c.requester c.comments c.rev c.causedby|,
+    qw|c.id c.type c.requester c.comments c.rev|,
     q|extract('epoch' from c.added) as added|,
     $o{what} =~ /user/ ? 'u.username' : (),
     $o{what} =~ /item/ ? (

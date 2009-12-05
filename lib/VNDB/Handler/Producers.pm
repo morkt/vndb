@@ -187,15 +187,14 @@ sub edit {
       $frm->{l_wp} = undef if !$frm->{l_wp};
       $rev = 1;
       my $npid = $pid;
-      my $cid;
-      ($rev, $cid) = $self->dbItemEdit(p => $pid, %$frm) if $pid;
-      ($npid, $cid) = $self->dbItemAdd(p => %$frm) if !$pid;
+      ($rev) = $self->dbItemEdit(p => $pid, %$frm) if $pid;
+      ($npid) = $self->dbItemAdd(p => %$frm) if !$pid;
 
       # update reverse relations
       if(!$pid && $#$relations >= 0 || $pid && $frm->{prodrelations} ne $b4{prodrelations}) {
         my %old = $pid ? (map { $_->{id} => $_->{relation} } @{$p->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations;
-        _updreverse($self, \%old, \%new, $npid, $cid, $rev);
+        _updreverse($self, \%old, \%new, $npid, $rev);
       }
 
       return $self->resRedirect("/p$npid.$rev", 'post');
@@ -259,7 +258,7 @@ sub edit {
 # !IMPORTANT!: Don't forget to update this function when
 #   adding/removing fields to/from producer entries!
 sub _updreverse {
-  my($self, $old, $new, $pid, $cid, $rev) = @_;
+  my($self, $old, $new, $pid, $rev) = @_;
   my %upd;
 
   # compare %old and %new
@@ -281,7 +280,6 @@ sub _updreverse {
     $self->dbItemEdit(p => $i,
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision p$pid.$rev",
-      causedby => $cid,
       uid => 1,         # Multi - hardcoded
       ( map { $_ => $r->{$_} } qw|type name original lang website desc alias| )
     );

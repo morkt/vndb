@@ -38,8 +38,7 @@ CREATE TABLE changes (
   added timestamptz NOT NULL DEFAULT NOW(),
   requester integer NOT NULL DEFAULT 0,
   ip inet NOT NULL DEFAULT '0.0.0.0',
-  comments text NOT NULL DEFAULT '',
-  causedby integer
+  comments text NOT NULL DEFAULT ''
 );
 
 -- producers
@@ -365,7 +364,6 @@ CREATE TABLE wlists (
 
 
 ALTER TABLE changes            ADD FOREIGN KEY (requester) REFERENCES users         (id);
-ALTER TABLE changes            ADD FOREIGN KEY (causedby)  REFERENCES changes       (id);
 ALTER TABLE producers          ADD FOREIGN KEY (latest)    REFERENCES producers_rev (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE producers          ADD FOREIGN KEY (rgraph)    REFERENCES relgraphs     (id);
 ALTER TABLE producers_relations ADD FOREIGN KEY (pid1)     REFERENCES producers_rev (id);
