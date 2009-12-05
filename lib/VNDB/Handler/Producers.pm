@@ -167,7 +167,7 @@ sub edit {
       { name => 'original',      required  => 0, maxlength => 200,  default => '' },
       { name => 'alias',         required  => 0, maxlength => 500,  default => '' },
       { name => 'lang',          enum      => $self->{languages} },
-      { name => 'website',       required  => 0, template => 'url', default => '' },
+      { name => 'website',       required  => 0, maxlength => 250,  default => '', template => 'url' },
       { name => 'l_wp',          required  => 0, maxlength => 150,  default => '' },
       { name => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { name => 'prodrelations', required  => 0, maxlength => 5000, default => '' },

@@ -310,7 +310,7 @@ sub edit {
         func => [ \&gtintype, 'Not a valid JAN/UPC/EAN code' ] },
       { name => 'catalog',   required => 0, default => '', maxlength => 50 },
       { name => 'languages', multi => 1, enum => $self->{languages} },
-      { name => 'website',   required => 0, default => '', template => 'url' },
+      { name => 'website',   required => 0, default => '', maxlength => 250, template => 'url' },
       { name => 'released',  required => 0, default => 0, template => 'int' },
       { name => 'minage' ,   required => 0, default => -1, enum => [map !defined($_)?-1:$_, @{$self->{age_ratings}}] },
       { name => 'notes',     required => 0, default => '', maxlength => 10240 },

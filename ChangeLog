@@ -9,6 +9,7 @@ git - ?
 	- Replaced recursive stored procedures with WITH .. SELECT queries
 	- Merged db[VN|Producer|Release][Edit|Add] into dbItemEdit and dbItemAdd
 	- Removed the use of CONSTRAINT TRIGGERs
+	- Added maxlength check on the website fields for releases and producers
 
 2.9 - 2009-11-16
 	- Fixed another bug with the calculation of tags_vn_bayesian.spoiler
