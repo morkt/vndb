@@ -79,8 +79,8 @@ sub edit {
       );
 
       my($nvid, $nrev, $cid) = ($vid, 1);
-      ($nrev, $cid) = $self->dbVNEdit($vid, %args) if $vid;
-      ($nvid, $cid) = $self->dbVNAdd(%args) if !$vid;
+      ($nrev, $cid) = $self->dbItemEdit(v => $vid, %args) if $vid;
+      ($nvid, $cid) = $self->dbItemAdd(v =>%args) if !$vid;
 
       # update reverse relations & relation graph
       if(!$vid && $#$relations >= 0 || $vid && $frm->{vnrelations} ne $b4{vnrelations}) {
@@ -262,7 +262,7 @@ sub _updreverse {
     my $r = $self->dbVNGet(id => $i, what => 'extended relations anime screenshots')->[0];
     my @newrel = map $_->{id} != $vid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
     push @newrel, [ $upd{$i}, $vid ] if $upd{$i};
-    $self->dbVNEdit($i,
+    $self->dbItemEdit(v => $i,
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision v$vid.$rev",
       causedby => $cid,

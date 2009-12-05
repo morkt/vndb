@@ -358,8 +358,8 @@ sub edit {
       );
 
       $rev = 1;
-      ($rev) = $self->dbReleaseEdit($rid, %opts) if !$copy && $rid;
-      ($rid) = $self->dbReleaseAdd(%opts) if $copy || !$rid;
+      ($rev) = $self->dbItemEdit(r => $rid, %opts) if !$copy && $rid;
+      ($rid) = $self->dbItemAdd(r => %opts) if $copy || !$rid;
 
       $self->dbVNCache(@$new_vn, map $_->{vid}, @$vn);
 

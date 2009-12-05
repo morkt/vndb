@@ -7,7 +7,7 @@ use POSIX 'strftime';
 use Exporter 'import';
 use VNDB::Func 'gtintype';
 
-our @EXPORT = qw|dbReleaseGet dbReleaseAdd dbReleaseEdit|;
+our @EXPORT = qw|dbReleaseGet dbReleaseRevisionInsert|;
 
 
 # Options: id vid rev unreleased page results what date media sort reverse
@@ -156,29 +156,9 @@ sub dbReleaseGet {
 }
 
 
-# arguments: id, %options ->( editsum uid + insert_rev )
-# returns: ( local revision, global revision )
-sub dbReleaseEdit {
-  my($self, $rid, %o) = @_;
-  my($rev, $cid) = $self->dbRevisionInsert('r', $rid, $o{editsum}, $o{uid});
-  insert_rev($self, $cid, $rid, \%o);
-  return ($rev, $cid);
-}
-
-
-# arguments: %options ->( editsum uid + insert_rev )
-# returns: ( item id, global revision )
-sub dbReleaseAdd {
-  my($self, %o) = @_;
-  my($rid, $cid) = $self->dbItemInsert('r', $o{editsum}, $o{uid});
-  insert_rev($self, $cid, $rid, \%o);
-  return ($rid, $cid);
-}
-
-
-# helper function, inserts a producer revision
+# inserts a release revision, called from dbItemEdit() or dbItemAdd()
 # Arguments: global revision, item id, { columns in releases_rev + languages + vn + producers + media + platforms }
-sub insert_rev {
+sub dbReleaseRevisionInsert {
   my($self, $cid, $rid, $o) = @_;
 
   $self->dbExec(q|

@@ -7,7 +7,7 @@ use Exporter 'import';
 use VNDB::Func 'gtintype';
 use Encode 'decode_utf8';
 
-our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbVNCache dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
+our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbVNCache dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
 
 
 # Options: id, rev, char, search, lang, platform, tags_include, tags_exclude, results, page, what, sort, reverse
@@ -171,32 +171,12 @@ sub dbVNGet {
 }
 
 
-# arguments: id, %options ->( editsum uid + insert_rev )
-# returns: ( local revision, global revision )
-sub dbVNEdit {
-  my($self, $id, %o) = @_;
-  my($rev, $cid) = $self->dbRevisionInsert('v', $id, $o{editsum}, $o{uid});
-  insert_rev($self, $cid, $id, \%o);
-  return ($rev, $cid);
-}
-
-
-# arguments: %options ->( editsum uid + insert_rev )
-# returns: ( item id, global revision )
-sub dbVNAdd {
-  my($self, %o) = @_;
-  my($id, $cid) = $self->dbItemInsert('v', $o{editsum}, $o{uid});
-  insert_rev($self, $cid, $id, \%o);
-  return ($id, $cid);
-}
-
-
-# helper function, inserts a producer revision
+# inserts a visual novel revision, used from dbItemEdit() or dbItemAdd()
 # Arguments: global revision, item id, { columns in producers_rev + anime + relations + screenshots }
 #  screenshots = [ [ scrid, nsfw, rid ], .. ]
 #  relations   = [ [ rel, vid ], .. ]
 #  anime       = [ aid, .. ]
-sub insert_rev {
+sub dbVNRevisionInsert {
   my($self, $cid, $vid, $o) = @_;
 
   $o->{img_nsfw} = $o->{img_nsfw}?1:0;

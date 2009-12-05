@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbProducerGet dbProducerEdit dbProducerAdd|;
+our @EXPORT = qw|dbProducerGet dbProducerRevisionInsert|;
 
 
 # options: results, page, id, search, char, rev
@@ -100,30 +100,11 @@ sub dbProducerGet {
 }
 
 
-# arguments: id, %options ->( editsum uid + insert_rev )
-# returns: ( local revision, global revision )
-sub dbProducerEdit {
-  my($self, $pid, %o) = @_;
-  my($rev, $cid) = $self->dbRevisionInsert('p', $pid, $o{editsum}, $o{uid});
-  insert_rev($self, $cid, $pid, \%o);
-  return ($rev, $cid);
-}
-
-
-# arguments: %options ->( editsum uid + insert_rev )
-# returns: ( item id, global revision )
-sub dbProducerAdd {
-  my($self, %o) = @_;
-  my($pid, $cid) = $self->dbItemInsert('p', $o{editsum}, $o{uid});
-  insert_rev($self, $cid, $pid, \%o);
-  return ($pid, $cid);
-}
-
-
-# helper function, inserts a producer revision
-# Arguments: global revision, item id, { columns in producers_rev }, relations
-sub insert_rev {
+# inserts a producer revision, called from dbItemEdit() or dbItemAdd()
+# Arguments: global revision, item id, { columns in producers_rev + relations },
+sub dbProducerRevisionInsert {
   my($self, $cid, $pid, $o) = @_;
+
   $self->dbExec(q|
     INSERT INTO producers_rev (id, pid, name, original, website, l_wp, type, lang, "desc", alias)
       VALUES (!l)|,
@@ -139,3 +120,4 @@ sub insert_rev {
 
 
 1;
+

@@ -188,8 +188,8 @@ sub edit {
       $rev = 1;
       my $npid = $pid;
       my $cid;
-      ($rev, $cid) = $self->dbProducerEdit($pid, %$frm) if $pid;
-      ($npid, $cid) = $self->dbProducerAdd(%$frm) if !$pid;
+      ($rev, $cid) = $self->dbItemEdit(p => $pid, %$frm) if $pid;
+      ($npid, $cid) = $self->dbItemAdd(p => %$frm) if !$pid;
 
       # update reverse relations
       if(!$pid && $#$relations >= 0 || $pid && $frm->{prodrelations} ne $b4{prodrelations}) {
@@ -278,7 +278,7 @@ sub _updreverse {
     my $r = $self->dbProducerGet(id => $i, what => 'extended relations')->[0];
     my @newrel = map $_->{id} != $pid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
     push @newrel, [ $upd{$i}, $pid ] if $upd{$i};
-    $self->dbProducerEdit($i,
+    $self->dbItemEdit(p => $i,
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision p$pid.$rev",
       causedby => $cid,
