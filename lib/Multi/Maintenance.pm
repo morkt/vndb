@@ -101,7 +101,7 @@ sub log_stats { # num, res, action, time
 sub vncache {
   # this takes about 50s to complete. We really need to search for an alternative
   # method of keeping the c_* columns in the vn table up-to-date.
-  $_[KERNEL]->post(pg => do => 'SELECT update_vncache(0)', undef, 'log_stats', 'vncache');
+  $_[KERNEL]->post(pg => do => 'SELECT update_vncache(id) FROM vn', undef, 'log_stats', 'vncache');
 }
 
 
