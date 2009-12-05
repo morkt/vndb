@@ -361,8 +361,6 @@ sub edit {
       ($rev) = $self->dbItemEdit(r => $rid, %opts) if !$copy && $rid;
       ($rid) = $self->dbItemAdd(r => %opts) if $copy || !$rid;
 
-      $self->dbVNCache(@$new_vn, map $_->{vid}, @$vn);
-
       return $self->resRedirect("/r$rid.$rev", 'post');
     }
   }

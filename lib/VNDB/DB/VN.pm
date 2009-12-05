@@ -7,7 +7,7 @@ use Exporter 'import';
 use VNDB::Func 'gtintype';
 use Encode 'decode_utf8';
 
-our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbVNCache dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
+our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
 
 
 # Options: id, rev, char, search, lang, platform, tags_include, tags_exclude, results, page, what, sort, reverse
@@ -208,13 +208,6 @@ sub dbVNRevisionInsert {
 # fetches an ID for a new image
 sub dbVNImageId {
   return shift->dbRow("SELECT nextval('covers_seq') AS ni")->{ni};
-}
-
-
-# Updates the vn.c_ columns
-sub dbVNCache {
-  my($self, @vn) = @_;
-  $self->dbExec('SELECT update_vncache(?)', $_) for (@vn);
 }
 
 

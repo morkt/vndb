@@ -92,7 +92,7 @@ CREATE TRIGGER vn_relgraph_notify AFTER UPDATE ON vn FOR EACH ROW EXECUTE PROCED
 
 
 DROP TRIGGER vn_relgraph_notify ON producers;
-CREATE OR REPLACE FUNCTION vn_relgraph_notify() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION producer_relgraph_notify() RETURNS trigger AS $$
 BEGIN
   -- 1.
   IF NEW.rgraph IS DISTINCT FROM OLD.rgraph OR NEW.latest IS DISTINCT FROM OLD.latest THEN
@@ -165,5 +165,20 @@ CREATE OR REPLACE FUNCTION update_vncache(integer) RETURNS void AS $$
     ), '/'), '')
   WHERE id = $1;
 $$ LANGUAGE sql;
+
+
+-- call update_vncache() when a release is added, edited, hidden or unhidden
+CREATE OR REPLACE FUNCTION release_vncache_update() RETURNS trigger AS $$
+BEGIN
+  IF OLD.latest IS DISTINCT FROM NEW.latest OR OLD.hidden IS DISTINCT FROM NEW.hidden THEN
+    PERFORM update_vncache(vid) FROM (
+      SELECT DISTINCT vid FROM releases_vn WHERE rid = OLD.latest OR rid = NEW.latest
+    ) AS v(vid);
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER release_vncache_update AFTER UPDATE ON releases FOR EACH ROW EXECUTE PROCEDURE release_vncache_update();
 
 
