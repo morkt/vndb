@@ -1,0 +1,72 @@
+:TITLE:Készítők hozzáadása/szerkesztése
+:INC:index
+
+
+:SUB:Mikor adjunk hozzá egy új készítőt
+<p>
+ Egy készítői bejegyzést akkor kell létrehozni mikor egy olyan visual novelt szeretnénk bejegyezni
+ amelyiknek még nincs benne a készítője az adatbázisba. Az olyan készítők amelyeknek nincsenek
+ kiadásaik az adatbázisba egy után törölve lesznek, szóval csak akkor készíts egy bejegyzést ha azt
+ hozzá is tudod társítani egy kiadáshoz. Ahhoz, hogy egy készítő bekerüljön a listába legalább egy
+ teljesen befejezett, kiadott terméke kell legyen. Ez annyit jelent, hogy a fordító csoportokat csak
+ akkor kell betenni a készítők közé miután be is fejezték a projektjüket.
+</p>
+
+
+:SUB:Általános tudnivalók
+<dl>
+ <dt>Típus</dt><dd>
+  A készítő típusa.
+ </dd><dt>Név (romaji)</dt><dd>
+  A készítő neve a latin ábécé betűivel írva, <a href="/d5.1">romanizálj</a> ha az eredeti név
+  nem latin betűkkel van írva. <a href="/d5.2">Nagybetűsítés</a> is fontos ebbe a mezőbe.
+ </dd><dt>Eredeti név</dt><dd>
+  Ha a név(eggyel feljebb) romanizálva lett, akkor ide írd be az eredeti nevet ami több mint
+  valószínű, hogy japánul van.
+ </dd><dt>Aliaszok</dt><dd>
+  Más ismert nevei a készítőnek. Ha több van, akkor veszővel válaszd el őket.
+ </dd><dt>Elsődleges nyelv</dt><dd>
+  A nyelv amelyet a legtöbbet használja a készítő. Ez alapból japánra van állítva.
+ </dd><dt>Weboldal</dt><dd>
+  A készítő hivatalos weboldala.
+ </dd><dt>Leírás</dt><dd>
+  Egy rövid bemutató a készítőről, története, vagy pár tudnivaló a játékokról amiket kiad.
+ </dd>
+</dl>
+
+
+:SUB:Összefüggések
+Ezek az összefüggések információval szolgálnak arról, hogy mely készítők állnak kapcsolatba
+egymással és milyen ez a kapcsolat köztük. A megfelelő összefüggés kiválasztása egy picit
+zavaros lehet, szóval, ha kételkedsz akkor villants egy pillantást a készítő összefüggés grafikonjára.
+Az alábbi összefüggés fajták az adottak:
+<dl>
+ <dt>Előzőleg</dt><dd>
+  A jelenlegi készítő régebben a kiválasztott készítő ként volt ismert. Ez azért lehet mert
+  megváltoztatta a nevet, vagy feloszlott és ugyanaz a csapat újra kezdte egy más név alatt.
+ </dd><dt>Felváltotta</dt><dd>
+  Az <i>Előzőleg</i> ellentéte - a kiválasztott készítő előzőleg úgy volt ismert mint a jelenlegi
+  készítő.
+ </dd><dt>Leányvállalat</dt><dd>
+  A kiválasztott készítő <a href="http://en.wikipedia.org/wiki/Subsidiary">leányválalata</a> a
+  jelenlegi készítőnek.
+ </dd><dt>Fővállalat</dt><dd>
+  Ellentéte a <i>leányvállalat</i>nak - a jelenlegi készítő leányvállalata a kiválasztott készítőnek
+ </dd><dt>Impresszum</dt><dd>
+  A kiválasztott készítő impresszuma a jelenlegi készítőnek. Egyszerűbben mondva az "impresszum"
+  egy másik név ugyanannak az embereknek a csoportjának, csak más név alatt adják ki a
+  játékokat (X=Y, de X a készítő és Y a kiadó).
+  Nézd meg a <a href="http://en.wikipedia.org/wiki/Imprint">Wikipedia</a>-t ha többet akarsz
+  tudni.
+ </dd><dt>Fő márka</dt><dd>
+  Az ellentéte az<i>Impresszum</i>nak - a jelenlegi készítő impresszuma a kiválasztott készítőnek.
+ </dd><dt>Leszármazott</dt><dd>
+  A kiválasztott készítő a jelenlegi készítő volt tagjai alapították. A különbség az
+  <i>Előzőleg</i> összefüggés és e közt az, hogy itt még a működik az a készítő amelyikből
+  kikerültek az emberek.
+ </dd><dt>Előd</dt><dd>
+  ellentéte a <i>Leszármazott</i>nak - a jelenlegi készítőből alakult a kiválasztott készítő.
+ </dd>
+</dl>
+
+

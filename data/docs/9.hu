@@ -1,0 +1,76 @@
+:TITLE:Fórum
+:INC:index
+
+
+:SUB:Bevezető
+<p>
+A VNDB-nek egy ügyesen beépített fóruma van amibe beszélgethetünk. Mivel teljesen saját
+fejlesztés van néhány eltérő különbség a népszerű fórumoktól működésétől.
+</p>
+
+
+:SUB:Alfórumok
+<p>
+Ahhoz,hogy az emberek megtalálják a különböző témákat, ezek összefüggésbe vannak hozva
+egy vagy több alfórummal, ami egy képet add, hogy miről is lehet szó a témában. Ez olyasmi mint
+az alfórum más helyeken, csak itt, minden tárgynak ami az adatbázisban van, saját alfórummal
+rendelkezik s egy témát hozzá lehet kapcsolni több alfórumhoz is. Az alábbi alfórum típusok vannak:
+</p>
+<dl>
+ <dt>db</dt><dd>
+  VNDB Társalgó. Ez a hely ahova azok a témák kerülnek amelyek nem tartoznak egy bejegyzéshez
+ sem.
+ </dd><dt>v#</dt><dd>
+  Arra használjuk, hogy egy bizonyos VN-ről beszéljünk. A <i>v17</i>-es alfórum pl. összekapcsolja
+  az összes témát ami a <a href="/v17">v17</a>-es novelhez kapcsolódik.
+ </dd><dt>p#</dt><dd>
+  Ugyanaz mint a <i>v#</i>, csak a készítőknek.
+ </dd><dt>u#</dt><dd>
+  The <i>u#</i> alfórumot arra lehet használni, hogy kapcsolatba lépj egy felhasználóval az oldalon.
+ Ez hasonló a más oldalakon megtalálható 'privát üzenet'-re csak ez itt nem 'privát'...
+ </dd><dt>an</dt><dd>
+  Hirdetésekre használják, csak moderátoroknak.
+ </dd>
+</dl>
+
+
+:SUB:Formázás
+<p>
+Az alábbi kódokat lehet felhasználni:
+</p>
+<dl>
+ <dt>X# vagy X#.#</dt><dd>
+  Egy 'VNDBID', ahogy mi hívjuk őket. Ezek számok amelyek egy betűvel előttük kezdődnek (d, p, r, u or v),
+  amit néha követ egy pont és még egy szám. A VNDBID automatikusan átalakul egy linkre ami az oldalon található.
+Például, ha beírjuk azt, hogy 'v4.4' akkor az eredmény -> '<a href="/v4.4">v4.4</a>'.
+ </dd><dt>URL</dt><dd>
+  Bármely URL (ha nem használod az [url] kódot) egy linkre lesz átalakítva, hasonlóan a VNDBID-khoz.
+  Pl. 'http://vndb.org' így fog megjelenni -> '<a href="http://vndb.org/">link</a>'.
+ </dd><dt>[url]</dt><dd>
+  A klasszikus [url] kód.Csak egy alakba lehet használni <i>[url=link]link neve[/url]</i>.<br />
+  Pl. '[url=/v]Visual novel lista[/url] és [url=http://blicky.net/]egy külső oldal[/url]'
+  igy fognak megjelenni -> '<a href="/v">Visual novel lista</a> és
+<a href="http://blicky.net/">egy külső oldal</a>'
+ </dd><dt>[spoiler]</dt><dd>
+  A [spoiler] kódok arra kell használni, hogy elrejtsünk olyan információt ami pl. elronthatja
+egy olyan valakinek a történetet aki még nem játszotta a VN-t.
+ </dd><dt>[quote]</dt><dd>
+  Ez arra jó, hogy idézzünk másokat egy [quote] .. [/quote] dobozban.. A népszerű
+  [quote=forrás]-kód nem működik a VNDB-n. (egyenlőre)
+ </dd><dt>[raw]</dt><dd>
+ A fentebb említett kódok nem lesznek figyelembe véve ha [raw] .. [/raw] dobozba vannak,
+ így azok meg lesznek jelenítve a szöveg mellett. Ez arra, jó ha meg akarod mutatni pl. valakinek,
+hogy, hogy nézz ki valami formázás nélkül.
+ </dd><dt>[code]</dt><dd>
+ Hasonló a [raw]-hoz, csak itt a szöveg egy egyforma szélességű betűtípussal van megjelenítve
+és szépen be van keretezve, hogy kiemelje azt és elkülönítse a hozzászólás többi részétől.
+ </dd>
+</dl>
+<p>
+ Nekünk nincsen [img]-kódunk és több mint valószínű, hogy nem is lesz, szóval ha képeket
+ akarsz mellékelni a hozzászólásodba, töltsd fel egy kép megosztóra
+ (pl. <a href="http://tinypic.com/" rel="nofollow">TinyPic</a>) és használd az ott megkapott
+linkeket.
+</p>
+
+

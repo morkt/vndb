@@ -1,0 +1,80 @@
+:TITLE:Szerkesztési útmutató
+:INC:index
+
+
+:SUB:Romanizálás
+<p>
+ A VNDB-t a legtöbben az angolul beszélő rajongók látogatják. Mikor létrehoztuk az adatbázist
+ alapból azt feltételeztük, hogy ezek a rajongók nem tudnak vagy nem ismernek fel mást a latin
+ betűkön kívül. Ezért sok helyen kell alkalmazni a romanizálást az adatbázisban: a címeknél,
+ vagy a kiadások és készítőknél.<br />
+ Ahhoz, hogy a dolgok simán menjenek a
+ <a href="http://en.wikipedia.org/wiki/Hepburn_romanization">Hepburn féle romanizálást</a>
+ használjuk ami megegyezik azzal a fajta romanizálással amelyet az
+ <a href="http://wiki.anidb.net/w/Romanisation">AniDB</a> is használ.
+ <br />
+ Angol vagy más idegen nyelvű szavakat amelyek nem a római ábécé betűivel vannak írva, alakítsatok
+ át az eredeti alakjukba. Ha ezek a szavak nem a római írásmódot használják, egy alkalmas
+ romanizálás technikát kell alkalmazni.
+</p>
+
+
+:SUB:Nagybetűsítés
+<p>
+ Néha előfordul, hogy hivatalos címek vagy nevek, teljesen nagy vagy kis betűkből állnak.
+ Ha ennek a manővernek nincs semmi értelme(nem rövidítés), akkor ezek át kell legyenek
+ alakítva normálisra (ahogy ez a
+ <a href="http://en.wikipedia.org/wiki/Capitalization">Wikipedia</a>-án le van írva) mielőtt
+ a bejegyzés bekerülne az adatbázisba.<br />
+ Ez viszont csak a romanizált és a fő címekre érvényes. Az 'Eredeti Cím'-eket a hivatalosan megjelenő
+ alakjukba kell betáplálni.
+</p>
+
+
+:SUB:Név sorrend
+<p>
+ A legtöbb angolt beszélő országban a neveket a "keresztnév, vezetéknév" sorrendbe használják.
+ Ezt nevezik a "Nyugati Sorrendnek". Angolba, akkor szólítsz meg valakit a keresztnevén ha azt jól
+ ismered, más esetben a vezetéknevet használják.
+ <br />
+ Japánban (és pár más helyen) a neveket a "vezetéknév, keresztnév" sorrendbe használják.
+ Az oldalon ezt a "Japán Sorrendnek" nevezzük. Japánban bármelyik névvel hozzászólhatsz valakihez
+ a megfelelő toldalékkal követve.
+ <br />
+ Több hely mint pl. a Wikipedia, ahhoz, hogy segítse az angol felhasználókat, a japán neveket
+ a Nyugati sorrendbe jelenítik meg. A VNDB-n azt a sorrendet használjuk amelyet az eredeti
+ játék használt.
+ <br />
+ Szóval ha a játék japán, japán nevekkel ellátott szereplőkel, akkor a japán sorrendet kell használni.
+ <br />
+ Ha a játék eredetileg angol, vagy a szereplőnek egy idegen neve van (Mary Smith), akkor a Nyugati
+ sorrendet kell használni.
+</p>
+
+
+:SUB:Összegzések
+<p>
+ Minden szerkesztési oldalnak van egy opcionális "Összegzés" mezője, ahova beírhatod, hogy mit
+ változtattál meg, anélkül, hogy telezsúfolnánk a főoldalt ezzel a szöveggel. Elmondhatod, hogy
+ miért változtattad meg a leírást, egy linket, vagy megmutathatod, hogy honnan szerezted meg
+ az információt (hogy más hozzájárulók ezt ellenőrizni tudják). Talán az is lehet, hogy egy új
+ visual novelt szeretnél betenni az adatbázisba de nem találsz róla elég infót. Ezt is leírhatod oda
+ s akkor majd valaki más egyszer úgyis kitölti a hiányzó adatokat.
+</p>
+
+
+:SUB:Külső forrásból származó leírások
+<p>
+ Lehetséges, hogy egy leírást vagy jegyzeteket, hozzáadjunk egy visual novel, készítő vagy kiadáshoz
+ az adatbázisban. Az eredeti leírásokat jobban favorizáljuk, de külső forrásokból is megengedettek,
+ természetesen csak akkor, ha megjelölitek az eredeti szerzőt. A legjobb mód, hogy ezt megtedd ha
+ ezt a sémát beilleszted a leírás végére.<br />
+ [Forrás: [url=<b>link</b>]<b>cím vagy szerző</b>[/url]]<br />
+ Itt egy példa, hogy mi lesz ennek az eredménye,
+ '[Forrás: <a href="http://en.wikipedia.org/Wiki/Ever17">Wikipedia</a>]'
+ ha a leírást a Wikipedáról szerezzük. Ha a leírás nem szóról szóra lett átmásolva, hanem volt
+ rajta pár változtatás, akkor ezt jelöljétek másképp. pl. 'Eredeti forrás' vagy '... nyomán', stb.<br />
+ Mivel szabályellenes, olyan linkeket nyilvánossá tenni, ahol illegális letöltéseket lehet végbevinni, az
+ ilyen esetekben az "link" részt ki kell hagyni a leírásból
+</p>
+

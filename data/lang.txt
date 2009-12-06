@@ -718,7 +718,7 @@ hu : Hírek
 en : VNDB Discussions
 ru : Форум VNDB
 cs : Diskuse o VNDB
-hu : VNDB Eszmecsere
+hu : VNDB Társalgó
 
 :_dboard_v
 en : Visual novels
@@ -1353,7 +1353,7 @@ hu : GYIK
 en : Random visual novel
 ru : Случайная новелла
 cs : Náhodná vizuální novela
-hu : Véletlenszerű novel
+hu : Véletlenszerű visual novel
 
 :_menu_webchat
 en : webchat
@@ -1411,13 +1411,13 @@ hu : Címkéim
 en : Add Visual Novel
 ru : Добавить новеллу
 cs : Přidat vizuální novelu
-hu : Visual Novel hozzáadássa
+hu : Visual Novel bejegyzése
 
 :_menu_addproducer
 en : Add Producer
 ru : Добавить компанию
 cs : Přidat producenta
-hu : Készítő hozzáadássa
+hu : Készítő bejegyzése
 
 :_menu_logout
 en : Logout
@@ -1780,7 +1780,7 @@ hu : [age,_1] [_2] - [userstr,_3] által
 en : Random visual novels
 ru : Случайные новеллы
 cs : Náhodné vizuální novely
-hu : Véletlenszerű visual novel
+hu : Véletlenszerű visual novellek
 
 :_home_upcoming
 en : Upcoming releases
@@ -2038,13 +2038,13 @@ hu : Téma cím
 en : Board(s)
 ru : Форум(ы)
 cs : Board(y)
-hu : Fórum(ok)
+hu : AlFórum(ok)
 
 :_postedit_form_boards_info
 en : Read [url,/d9.2,d9.2] for information about how to specify boards.
 ru : О том, как указывать доски, читайте в разделе [url,/d9.2,d9.2].
 cs : Přečtěte si [url,/d9.2,d9.2] pro informace jak určit správný board.
-hu : Lásd [url,/d9.2,d9.2], hogy hogy kell meghatározni a fórumokat.
+hu : Lásd [url,/d9.2,d9.2], hogy hogy kell meghatározni az alfórumokat.
 
 :_postedit_form_locked
 en : Locked
@@ -2143,7 +2143,7 @@ hu : Válaszok
 en : Starter
 ru : Автор темы
 cs : První příspěvek
-hu : Készítő
+hu : Létrehozta
 
 :_threadlist_col_lastpost
 en : Last post

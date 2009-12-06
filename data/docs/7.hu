@@ -1,0 +1,95 @@
+:TITLE:Rólunk
+:INC:index
+
+
+:SUB:Célunk
+<p>
+A célunk egy nagy, átfogó és napra kész adatbázist létrehozni minden létező visual novelről.
+A VNDB központosítani akarja ezt és általános, praktikus információval akar szolgálni bármilyen
+visual novel, kiadás, honosítás és készítőről.<br />
+A másodlagos célunk, hogy terjesztsük a visual novelek gyönyörét egy szélesebb közönségnek,
+egy olyan közönségnek amely nem csak azokra van leszűkítve akik tudnak japánul, hanem bárkinek
+akit érdekel az irodalom, anime, manga és játékok függetlenül attól, hogy hol laknak és, hogy milyen
+kultúra tagjai.
+</p>
+
+
+:SUB:Genezis
+<p>
+Minden akkor kezdődöt mikor <a href="/u2">yorhel</a> befejezte az
+ <a href="/v17">Ever17</a>-et. Mivel hihetetlenül le volt nyűgözve ettől a mesterműtől, több
+kérdés is felvillant a fejébe: Miután megtudod egy s mást a visual novelekről, megkérdezte magától,
+hogy miért is került neki
+több hónapba, hogy megtalálja ezt a játékot? Miért nem hallott még előtte sose róla? Hogy
+történhetett az, hogy egy ilyen nagy kaliberű visual novel szinte észrevétlen maradt majdnem az
+összes online anime és játék közösségekbe? De legfőképpen: Léteznek-e még ilyen jó visual novelek
+a nagy világban?<br />
+ <br />
+A VNDB lett a válasz az utóbbi kérdésre. Mivel nem létezett egy központi erőforrás, vagy legalább
+egy egyszerű lista a visual novelekről, hihetetlenül nehézé tette, hogy új játékokat találjanak az
+emberek, vagy legalább egy áttekintő leírást róluk. De ha volna egy hely ami rendezett és mindenki
+hozzájárulhat a fejlődéséhez akkor megoldaná ezt a problémát.<br />
+ <br />
+Három héti kemény munka után meg is jelent a VNDB első változata ami 2007 szeptemberébe
+látta meg a napvilágot. Az ismeretlenség, kis rajongói tábor, a funkciók elenyésző mennyisége
+és egy rideg hozzászólás rendszer, ami akkortájt létezett, elősegítette, hogy az adatbázis csak lassan
+tudjon növekedni. De ahogy telt az idő, egyre többen vettek a VNDB-ről tudomást, új és
+komolyabb funkciók is be lettek mutatva és válaszul több látogató is el kezdte bővíteni az
+információ tömeget.
+2008 februárjában bevezetett, új és nyitott hozzászólási rendszer arra motiválta, a felhasználókat,
+hogy még több információt küldjenek be és 2008 szeptemberében, pont egy évvel a megalakulás
+után, már az adatbázis több mint 1000 visual novelt és 2000 kiadást számolt, ami még ebbe a percben
+is növekszik.
+
+</p>
+
+
+:SUB:Stáblista
+<p>
+ <b>Kód fejlesztés</b><br />
+ <dl>
+  <dt>Yorhel</dt><dd>Fő fejlesztő.</dd>
+  <dt>3dB</dt><dd>Írta a felhasználó hitelesítő kódot és bevezette a fórumba a hozzászólás szabályzó rendszert.</dd>
+ </dl>
+ <br />
+
+ <b>Fordítók</b><br />
+ <dl>
+  <dt>Cseh</dt><dd><a href="mailto:nya.chan.production@gmail.com">Nya-chan Production</a></dd>
+  <dt>Magyar</dt><dd><a href="mailto:bikmate@gmail.com">Bikfalvi Máté</a></dd>
+  <dt>Orosz</dt><dd><a href="mailto:winkillerstudio@gmail.com">Dmitri Poguliayev</a></dd>
+ </dl>
+
+ <br />
+ <b>Témák</b>
+ <dl>
+  <dt>applehq</dt><dd>
+   <a href="?skin=lb">Little Busters! (pink)</a>,
+   <a href="?skin=term">Neon (black)</a>
+  </dd><dt>EchoMateria</dt><dd>
+   <a href="?skin=aselia_01">Eien no Aselia (falu red)</a>,
+   <a href="?skin=carnevale">Gekkou no Carnevale (black)</a>,
+   <a href="?skin=eiel">Jingai Makyo (peach-orange)</a>,
+   <a href="?skin=ever17_01">Ever17 (bondi blue)</a>,
+   <a href="?skin=fate_01">Fate/stay night (seal brown)</a>,
+   <a href="?skin=fate_02">Fate/stay night (pale carmine)</a>,
+   <a href="?skin=higu">Higurashi no Naku Koro ni (orange)</a>,
+   <a href="?skin=lb_02">Little Busters! (lemon chiffon)</a>,
+   <a href="?skin=primitive">Primitive Link (pale chestnut)</a>,
+   <a href="?skin=saya">Saya no Uta (dark scarlet)</a>,
+   <a href="?skin=seinarukana">Seinarukana (white)</a>,
+   <a href="?skin=taka">Sora no Iro, Mizu no Iro (turquoise)</a>,
+   <a href="?skin=tsukihime">Tsukihime (midnight blue)</a>,
+   <a href="?skin=tsukihime_02">Tsukihime (black)</a>
+  </dd><dt>Yorhel</dt><dd>
+   <a href="?skin=angel">Angelic Serenade (dark blue)</a>,
+   <a href="?skin=grey">Touhou (grey)</a>
+  </dd>
+ </dl>
+ <br />
+
+ <b>Top 5 hozzájáruló</b>
+:TOP5CONTRIB:
+ ...and <a href="/u/all?o=d;s=changes">és sokan mások</a>.
+</p>
+
