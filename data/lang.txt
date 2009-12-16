@@ -4503,7 +4503,7 @@ hu : Más embereknek megengedni, hogy lássák a visual novel listám ([url,_1,_
 en : Disable warnings for images that are not safe for work.
 ru : Отключить предупреждения для небезопасных изображений.
 cs : Vypnout varování pro obrázky, které jsou "Not Safe For Work".
-hu : Nem biztonságos képek előtti figyelmeztetés kikapcsolása.
+hu : Nem munkabarát képek előtti figyelmeztetés kikapcsolása.
 
 :_usere_skin
 en : Prefered skin
@@ -4886,13 +4886,13 @@ hu : Nem Biztonságos
 en : Not Safe For Work
 ru : Не безопасно для работы
 cs : Not Safe For Work
-hu : Nem biztonságos
+hu : Nem munkabarát
 
 :_vnedit_image_nsfw_msg
 en : Please check this option if the image contains nudity, gore, or is otherwise not safe in a work-friendly environment.
 ru : Пожалуйста, поставьте эту галочку если изображение содержит наготу, кровищу, либо тем или иным образом не безопасно для рабочего окружения.
 cs : Prosíme, zaškrtněte tuto možnost, pokud obrázek obsahuje nahotu, gore nebo je jinak nevhodný pro pracovní prostředí.
-hu : Kérlek pipáld ezt be ha a kép tartalmaz meztelenséget, vért vagy más módon nem szalon képes dolgokat.
+hu : Kérlek pipáld ezt be ha a kép tartalmaz meztelenséget, vért vagy más olyan elemet amely nem illik egy munkabarát környezetbe.
 
 :_vnedit_rel
 en : Relations
@@ -5250,7 +5250,7 @@ hu : Kép
 en : (NSFW)
 ru : (НБДР|NSFW)
 cs : (NSFW)
-hu : (Nem Biztonságos)
+hu : (NMB)
 
 :_vndiff_image_proc
 en : ~[processing~]
@@ -5268,19 +5268,19 @@ hu : Nincs kép
 en : Image NSFW
 ru : Изображение НБДР (NSFW)
 cs : Vhodnost obrázku
-hu : A kép nem biztonságos
+hu : A kép NMB
 
 :_vndiff_nsfw_safe
 en : Safe
 ru : Безопасно
 cs : SFW
-hu : Biztonságos
+hu : Munkabarát
 
 :_vndiff_nsfw_notsafe
 en : Not safe
 ru : Небезопасно
 cs : NSFW
-hu : Nem biztonságos
+hu : Nem munkabarát
 
 
 # VN page (/v+)
@@ -5301,7 +5301,7 @@ hu : ~[a kép feldolgozás alatt van, gyere vissza pár perc múlva~]
 en : This image has been flagged as Not Safe For Work.
 ru : Данное изображение помечено как небезопасное для работы.
 cs : Tento obrázek byl označen jako "Not Safe For Work"
-hu : Ezt a képet Nem Biztonságosnak nyilvánították.
+hu : Ezt a képet Nem Munkabarátnak lett nyilvánitották.
 
 :_vnpage_imgnsfw_show
 en : Show me anyway
