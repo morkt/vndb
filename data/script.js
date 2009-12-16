@@ -316,7 +316,7 @@ function ddMouseMove(e) {
       ddHide();
   }
 
-  if(!box.dd_used && lnk) {
+  if(!box.dd_used && lnk || box.dd_used && lnk && box.dd_lnk != lnk) {
     box.dd_lnk = lnk;
     box.dd_used = true;
     if(!ddRefresh())
