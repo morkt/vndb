@@ -12,6 +12,7 @@ git - ?
 	- Added maxlength check on the website fields for releases and producers
 	- Removed changes.causedby
 	- Fixed minor JS dropdown issue when trigger objects are close to each other
+	- Allow earlier selecting of release on screenshot upload
 
 2.9 - 2009-11-16
 	- Fixed another bug with the calculation of tags_vn_bayesian.spoiler

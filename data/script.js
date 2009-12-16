@@ -927,6 +927,7 @@ if(byId('jt_box_rel_format'))
 var scrRel = [ [ 0, mt('_vnedit_scr_selrel') ] ];
 var scrStaticURL;
 var scrUplNr = 0;
+var scrDefRel;
 
 function scrLoad() {
   // get scrRel and scrStaticURL
@@ -935,6 +936,9 @@ function scrLoad() {
   for(var i=0; i<rel.options.length; i++)
     scrRel[scrRel.length] = [ rel.options[i].value, getText(rel.options[i]) ];
   rel.parentNode.removeChild(rel);
+  if(scrRel.length <= 2)
+    scrRel.shift();
+  scrDefRel = scrRel[0][0];
 
   // load the current screenshots
   var scr = byId('screenshots').value.split(' ');
@@ -1001,6 +1005,11 @@ function scrLast() {
     byId('scr_table').removeChild(byId('scr_last'));
   var full = byName(byId('scr_table'), 'tr').length >= 10;
 
+
+  var rel = tag('select', {onchange: function(){scrDefRel=this.options[this.selectedIndex].value}, 'class':'scr_relsel', 'id':'scradd_relsel'});
+  for(var j=0; j<scrRel.length; j++)
+    rel.appendChild(tag('option', {value: scrRel[j][0], selected: scrDefRel == scrRel[j][0]}, scrRel[j][1]));
+
   byId('scr_table').appendChild(tag('tr', {id:'scr_last'},
     tag('td', {'class': 'thumb'}),
     full ? tag('td',
@@ -1013,6 +1022,8 @@ function scrLast() {
       mt('_vnedit_scr_imgnote'),
       tag('br', null),
       tag('input', {name:'scr_upload', id:'scr_upload', type:'file', 'class':'text'}),
+      tag('br', null),
+      rel,
       tag('br', null),
       tag('input', {type:'button', value:mt('_vnedit_scr_addbut'), 'class':'submit', onclick:scrUpload})
     )
@@ -1102,6 +1113,7 @@ function scrUpload() {
   frm.submit();
   frm.parentNode.removeChild(frm);
   ifr.scr_tr = scrAdd(0, 0, 0);
+  ifr.scr_tr.scr_rel = byId('scradd_relsel').options[byId('scradd_relsel').selectedIndex].value;
   scrLast();
   return false;
 }
