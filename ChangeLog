@@ -13,6 +13,7 @@ git - ?
 	- Removed changes.causedby
 	- Fixed minor JS dropdown issue when trigger objects are close to each other
 	- Allow earlier selecting of release on screenshot upload
+	- Fixed bug with zero strings ("0") in the diff viewer
 
 2.9 - 2009-11-16
 	- Fixed another bug with the calculation of tags_vn_bayesian.spoiler
