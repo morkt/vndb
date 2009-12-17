@@ -104,6 +104,24 @@ ends with ']'. The following options are supported:
 # data/global.pl - used in many places
 
 
+# Date/time format
+# See http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html for the formatting code
+# (I recommend to keep the yyyy-mm-dd format, though, see http://www.cl.cam.ac.uk/~mgk25/iso-time.html)
+
+
+:_datetime_compact
+en : %Y-%m-%d
+ru*:
+cs*:
+hu*:
+
+:_datetime_full
+en : %Y-%m-%d at %R
+ru*:
+cs*:
+hu*:
+
+
 # Age display
 
 :_age_years
