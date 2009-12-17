@@ -5092,7 +5092,7 @@ hu : Teljes méret: [_1]
 en : This screenshot is NSFW
 ru : Этот скриншот НБДР (NSFW)
 cs : Tento screenshot je NSFW
-hu : Ez a pillanatkép nem biztonságos
+hu : Ez a pillanatkép NMB
 
 :_vnedit_scr_oops
 en : Oops! Seems like something went wrong...
@@ -5319,7 +5319,7 @@ hu : (Ezt a figyelmeztetést ki lehet kapcsolni a profilodba)
 en : Flagged as NSFW
 ru : Помечено как НБДР (NSFW)
 cs : Označeno jako NSFW
-hu : Nem biztonságosnak van bejelölve
+hu : NMB-nek van bejelölve
 
 :_vnpage_vntitle
 en : Title
@@ -5585,7 +5585,7 @@ hu : [_1] megjelenitve a [_2] [quant,_2,pillanatkép,pillanatképekből].
 en : show/hide NSFW
 ru : показать/скрыть НБДР (NSFW)
 cs : skrýt/zobrazit NSFW
-hu : megjelenít/elrejt NB
+hu : megjelenít/elrejt NMB
 
 :_vnpage_scr_num
 en : Screenshot #[_1]
