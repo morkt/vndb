@@ -1007,7 +1007,7 @@ hu : Ismeretlen
 
 :_minage_all
 en : All ages
-ru : Все возраста
+ru : Для всех
 cs : Pro všechny věky
 hu : Nincs korhatár
 
@@ -5619,7 +5619,7 @@ hu : [_1] [quant,_1,szavazat,szavazatok] összesen, átlagba [_2]
 
 :_votestats_recent
 en : Recent votes
-ru : Недавно проголосовали
+ru : Недавние голоса
 cs : Poslední hlasy
 hu : Legútóbbi szavazatok
 
@@ -5637,7 +5637,7 @@ hu : Népszerűség: [_1]. hely [_2] pontszámmal
 
 :_votestats_rank_rat
 en : Bayesian rating: ranked #[_1] with a rating of [_2]
-ru : Рейтинг методом Байезия: #[_1] место с рейтингом [_2]
+ru : Метод Байезия: #[_1] место с рейтингом [_2]
 cs : Bayesovo hodnocení: [_1]. místo se skóre [_2]
 hu : Bayes-i ranglista: [_1]. hely [_2]-s értékeléssel
 
