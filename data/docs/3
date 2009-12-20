@@ -50,7 +50,9 @@
   Catalog number as assigned by the producer. Often used to identify releases on
   webshops, and can usually be found somewhere on the packaging of the product.
  </dd><dt>Official website</dt><dd>
-  URL of the official homepage for this product.
+  URL of the official homepage for this product. Note that, even though VNDB does
+  not support piracy, it is allowed to link to a homepage or forum that does in the
+  case it is the only <b>official</b> source of information for this release.
  </dd><dt>Release date</dt><dd>
   For commercial games, the sale date.
   For all others, the date on which the release was first available.

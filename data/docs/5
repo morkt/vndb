@@ -60,7 +60,7 @@
 
 :SUB:Edit Summaries
 <p>
- Every edit to any page has an optional "Edit summary" box, this allows you to
+ Every edit to any page has a required "Edit summary" box, this allows you to
  explain yourself on what your edit is about without cluttering the main page.
  You can say why you've modified the description, changed a link, or show where
  you obtained some information (so that other contributors can verify it).
