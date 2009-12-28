@@ -137,7 +137,7 @@ sub _readlang {
     my $t = shift @$l;
 
     if($t eq 'space') {
-      if(join("\n", @$l) =~ /((#{30,90}\n)## +(.+) +##\n\2.+)^/ms) {
+      if(join("\n", @$l) =~ /((#{30,90}\n)## +(.+) +##\n\2.+)/ms) {
         my $header = $1;
         (my $title = $3) =~ s/\s+$//;
         $title =~ s/\s+\([^)]+\)$//;
