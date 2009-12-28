@@ -158,7 +158,8 @@ sub savegraph {
       $attr{class} = 'border' if $attr{stroke} && $attr{stroke} eq '#111111';
       $attr{class} = 'nodebg' if $attr{fill} && $attr{fill} eq '#222222';
 
-      delete @attr{qw|stroke fill id xmlns xmlns:xlink|};
+      delete @attr{qw|stroke fill xmlns xmlns:xlink|};
+      delete $attr{id} if $attr{id} && $attr{id} !~ /^node_[vp]\d+$/;
       $el eq 'path' || $el eq 'polygon'
         ? $w->emptyTag("svg:$el", %attr)
         : $w->startTag("svg:$el", %attr);
@@ -246,12 +247,12 @@ sub _vnnode {
   $tooltip =~ s/"/\\"/g;
 
   return sprintf
-    qq|\tv%d [ URL = "/v%d", tooltip = "%s", label=<|.
+    qq|\tv%d [ id = "node_v%1\$d", URL = "/v%1\$d", tooltip = "%s", label=<|.
       q|<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" CELLBORDER="1" BGCOLOR="#222222">|.
         q|<TR><TD COLSPAN="2" ALIGN="CENTER" CELLPADDING="2"><FONT POINT-SIZE="%d">  %s  </FONT></TD></TR>|.
         q|<TR><TD> %s </TD><TD> %s </TD></TR>|.
       qq|</TABLE>> ]\n|,
-    $_->{id}, $_->{id}, encode_utf8($tooltip), $heap->{fsize}[2], encode_utf8($title), $date, $n->{lang}||'N/A';
+    $_->{id}, encode_utf8($tooltip), $heap->{fsize}[2], encode_utf8($title), $date, $n->{lang}||'N/A';
 }
 
 
@@ -298,12 +299,12 @@ sub _prodnode {
   $tooltip =~ s/"/\\"/g;
 
   return sprintf
-    qq|\tp%d [ URL = "/p%d", tooltip = "%s", label=<|.
+    qq|\tp%d [ id = "node_p%1\$d", URL = "/p%1\$d", tooltip = "%s", label=<|.
       q|<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" CELLBORDER="1" BGCOLOR="#222222">|.
         q|<TR><TD COLSPAN="2" ALIGN="CENTER" CELLPADDING="2"><FONT POINT-SIZE="%d">  %s  </FONT></TD></TR>|.
         q|<TR><TD ALIGN="CENTER"> $_lang_%s_$ </TD><TD ALIGN="CENTER"> $_ptype_%s_$ </TD></TR>|.
       qq|</TABLE>> ]\n|,
-    $_->{id}, $_->{id}, encode_utf8($tooltip), $heap->{fsize}[2], encode_utf8($name), $n->{lang}, $n->{type};
+    $_->{id}, encode_utf8($tooltip), $heap->{fsize}[2], encode_utf8($name), $n->{lang}, $n->{type};
 }
 
 

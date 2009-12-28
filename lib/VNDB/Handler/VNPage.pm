@@ -29,6 +29,7 @@ sub rg {
   my $title = mt '_vnrg_title', $v->{title};
   return if $self->htmlRGHeader($title, 'v', $v);
 
+  $v->{svg} =~ s/id="node_v$vid"/id="graph_current"/;
   $v->{svg} =~ s/\$___(_vnrel_[a-z]+)____\$/mt $1/eg;
 
   div class => 'mainbox';

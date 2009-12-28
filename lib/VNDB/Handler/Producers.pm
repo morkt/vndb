@@ -26,6 +26,7 @@ sub rg {
   my $title = mt '_prodrg_title', $p->{name};
   return if $self->htmlRGHeader($title, 'p', $p);
 
+  $p->{svg} =~ s/id="node_p$pid"/id="graph_current"/;
   $p->{svg} =~ s/\$___(_prodrel_[a-z]+)____\$/mt $1/eg;
   $p->{svg} =~ s/\$(_lang_[a-z]+)_\$/mt $1/eg;
   $p->{svg} =~ s/\$(_ptype_[a-z]+)_\$/mt $1/eg;
