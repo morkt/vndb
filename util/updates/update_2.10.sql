@@ -101,11 +101,8 @@ BEGIN
     END IF;
   END IF;
   IF NEW.rgraph IS NOT NULL THEN
-    IF
-      -- 2.
-         OLD.c_released  IS DISTINCT FROM NEW.c_released
-      OR OLD.c_languages IS DISTINCT FROM NEW.c_languages
-      OR OLD.latest <> 0 AND OLD.latest IS DISTINCT FROM NEW.latest AND (
+    -- 2.
+    IF OLD.latest <> 0 AND OLD.latest IS DISTINCT FROM NEW.latest AND (
         -- 3.
            EXISTS(SELECT 1 FROM producers_rev p1, producers_rev p2 WHERE (p2.name <> p1.name OR p2.type <> p1.type OR p2.lang <> p1.lang) AND p1.id = OLD.latest AND p2.id = NEW.latest)
         -- 4. (not-really-readable method of comparing two query results)
