@@ -77,8 +77,9 @@ our %S = (%S,
     otc => 0
   },
   resolutions     => [
+    # TODO: Make translatable!
     [ 'Unknown / console / handheld', '' ],
-    [ 'Custom',            '' ],
+    [ 'Non-standard',      '' ],
     [ '640x480 (480p)',    '4:3' ],
     [ '800x600',           '4:3' ],
     [ '1024x768',          '4:3' ],
