@@ -264,7 +264,7 @@ sub client_connect {
   # the wheel
   my $w = POE::Wheel::ReadWrite->new(
     Handle     => $sock,
-    Filter     => POE::Filter::VNDBAPI->new(type => 'server'),
+    Filter     => POE::Filter::VNDBAPI->new(),
     ErrorEvent => 'client_error',
     InputEvent => 'client_input',
   );
@@ -303,11 +303,8 @@ sub client_input {
   # parse error?
   return cerr $c, $arg->[0]{id}, $arg->[0]{msg} if !defined $cmd;
 
-  # when we're here, we can assume that $cmd contains a valid command
-  # and the arguments are syntactically valid
-
   # handle login command
-  return $_[KERNEL]->yield(login => $c, @$arg) if $cmd eq 'login';
+  return $_[KERNEL]->yield(login => $c, $arg) if $cmd eq 'login';
   return cerr $c, needlogin => 'Not logged in.' if !$c->{username};
 
   # update throttle array of the current user
@@ -329,7 +326,10 @@ sub client_input {
 
   # handle get command
   if($cmd eq 'get') {
-    my $opt = $arg->[3];
+    return cerr $c, parse => 'Invalid arguments to get command' if @$arg < 3 || @$arg > 4
+      || ref($arg->[0]) || ref($arg->[1]) || ref($arg->[2]) ne 'POE::Filter::VNDBAPI::filter'
+      || exists($arg->[3]) && ref($arg->[3]) ne 'HASH';
+    my $opt = $arg->[3] || {};
     return cerr $c, badarg => 'Invalid argument for the "page" option', field => 'page'
       if defined($opt->{page}) && (ref($opt->{page}) || $opt->{page} !~ /^\d+$/ || $opt->{page} < 1);
     return cerr $c, badarg => '"reverse" option must be boolean', field => 'reverse'
@@ -340,7 +340,7 @@ sub client_input {
     $opt->{reverse} = defined($opt->{reverse}) && $opt->{reverse};
     my %obj = (
       c => $c,
-      info => $arg->[1],
+      info => [ split /,/, $arg->[1] ],
       filters => $arg->[2],
       opt => $opt,
     );
@@ -357,6 +357,8 @@ sub login {
   my($c, $arg) = @_[ARG0,ARG1];
 
   # validation (bah)
+  return cerr $c, parse => 'Argument to login must be a single JSON object' if @$arg != 1 || ref($arg->[0]) ne 'HASH';
+  $arg = $arg->[0];
   return cerr $c, loggedin => 'Already logged in, please reconnect to start a new session' if $c->{username};
   for (qw|protocol client clientver username password|) {
     !exists $arg->{$_}  && return cerr $c, missing => "Required field '$_' is missing", field => $_;
