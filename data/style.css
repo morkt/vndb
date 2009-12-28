@@ -746,6 +746,8 @@ a.addnew {
 #jt_box_vn_rel td.tc_rel select { width: 130px; }
 
 #ds_box {
+  position: absolute;
+  top: -500px;
   border: 1px solid $border$;
   border-top: none;
   background-color: $secbg$;

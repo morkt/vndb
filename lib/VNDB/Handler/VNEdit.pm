@@ -320,8 +320,10 @@ sub scrxml {
   }
 
   # upload new screenshot
+  my $num = $self->formValidate({name => 'upload', template => 'int'});
+  return 404 if $num->{_err};
   my $tmp = sprintf '%s/static/sf/00/tmp.%d.jpg', $VNDB::ROOT, $$*int(rand(1000)+1);
-  $self->reqSaveUpload('scr_upload', $tmp);
+  $self->reqSaveUpload("scr_upl_file_$num->{upload}", $tmp);
 
   my $id = 0;
   $id = -2 if !-s $tmp;
