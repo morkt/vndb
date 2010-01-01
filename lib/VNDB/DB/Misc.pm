@@ -27,17 +27,16 @@ sub dbStats {
 sub dbItemEdit {
   my($self, $type, $oid, %o) = @_;
 
-  die "Only VNs are supported at this moment!" if $type ne 'v';
-  $self->dbExec('SELECT edit_!s_init(?)',
-    {qw|v vn r releases p producers|}->{$type}, $oid);
+  my $fun = {qw|v vn r release p producer|}->{$type};
+  $self->dbExec('SELECT edit_!s_init(?)', $fun, $oid);
   $self->dbExec('UPDATE edit_revision SET requester = ?, ip = ?, comments = ?',
     $o{uid}||$self->authInfo->{id}, $self->reqIP, $o{editsum});
 
   $self->dbVNRevisionInsert(      \%o) if $type eq 'v';
   #$self->dbProducerRevisionInsert(\%o) if $type eq 'p';
-  #$self->dbReleaseRevisionInsert( \%o) if $type eq 'r';
+  $self->dbReleaseRevisionInsert( \%o) if $type eq 'r';
 
-  return $self->dbRow('SELECT * FROM edit_vn_commit()');
+  return $self->dbRow('SELECT * FROM edit_!s_commit()', $fun);
 }
 
 

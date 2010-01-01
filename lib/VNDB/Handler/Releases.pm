@@ -348,7 +348,7 @@ sub edit {
     }
 
     if(!$frm->{_err}) {
-      my %opts = (
+      my $nrev = $self->dbItemEdit(r => !$copy && $rid ? $r->{cid} : undef,
         (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released
           notes platforms resolution editsum patch voiced freeware doujin ani_story ani_ero|),
         minage    => $frm->{minage} < 0 ? undef : $frm->{minage},
@@ -357,11 +357,7 @@ sub edit {
         media     => $media,
       );
 
-      $rev = 1;
-      ($rev) = $self->dbItemEdit(r => $rid, %opts) if !$copy && $rid;
-      ($rid) = $self->dbItemAdd(r => %opts) if $copy || !$rid;
-
-      return $self->resRedirect("/r$rid.$rev", 'post');
+      return $self->resRedirect("/r$nrev->{iid}.$nrev->{rev}", 'post');
     }
   }
 

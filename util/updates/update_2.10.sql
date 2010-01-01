@@ -191,7 +191,8 @@ UPDATE users SET
   ), 0);
 
 
-
+-- set default on releases_rev.released, required for the revision insertion abstraction
+ALTER TABLE releases_rev ALTER COLUMN released SET DEFAULT 0;
 
 -- revision insertion abstraction
 -- IMPORTANT: these functions will need to be updated on each change in the DB structure
@@ -289,6 +290,9 @@ CREATE OR REPLACE FUNCTION edit_vn_commit() RETURNS edit_rettype AS $$
 DECLARE
   r edit_rettype;
 BEGIN
+  IF (SELECT COUNT(*) FROM edit_vn) <> 1 THEN
+    RAISE 'edit_vn must have exactly one row!';
+  END IF;
   SELECT INTO r * FROM edit_commit();
   INSERT INTO vn_rev SELECT r.cid, r.iid, title, alias, img_nsfw, length, "desc", l_wp, l_vnn, image, l_encubed, l_renai, original FROM edit_vn;
   INSERT INTO vn_anime SELECT r.cid, aid FROM edit_vn_anime;
@@ -299,4 +303,62 @@ BEGIN
   RETURN r;
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION edit_release_init(cid integer) RETURNS void AS $$
+BEGIN
+  -- temp. tables
+  CREATE TEMPORARY TABLE edit_release (LIKE releases_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+  ALTER TABLE edit_release DROP COLUMN id;
+  ALTER TABLE edit_release DROP COLUMN rid;
+  CREATE TEMPORARY TABLE edit_release_lang (LIKE releases_lang INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+  ALTER TABLE edit_release_lang DROP COLUMN rid;
+  CREATE TEMPORARY TABLE edit_release_media (LIKE releases_media INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+  ALTER TABLE edit_release_media DROP COLUMN rid;
+  CREATE TEMPORARY TABLE edit_release_platforms (LIKE releases_platforms INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+  ALTER TABLE edit_release_platforms DROP COLUMN rid;
+  CREATE TEMPORARY TABLE edit_release_producers (LIKE releases_producers INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+  ALTER TABLE edit_release_producers DROP COLUMN rid;
+  CREATE TEMPORARY TABLE edit_release_vn (LIKE releases_vn INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+  ALTER TABLE edit_release_vn DROP COLUMN rid;
+  -- new release
+  IF cid IS NULL THEN
+    PERFORM edit_revtable('r', NULL);
+    INSERT INTO edit_release DEFAULT VALUES;
+  -- load revision
+  ELSE
+    PERFORM edit_revtable('r', (SELECT rid FROM releases_rev WHERE id = cid));
+    INSERT INTO edit_release SELECT title, original, type, website, released, notes, minage, gtin, patch, catalog, resolution, voiced, freeware, doujin, ani_story, ani_ero FROM releases_rev WHERE id = cid;
+    INSERT INTO edit_release_lang SELECT lang FROM releases_lang WHERE rid = cid;
+    INSERT INTO edit_release_media SELECT medium, qty FROM releases_media WHERE rid = cid;
+    INSERT INTO edit_release_platforms SELECT platform FROM releases_platforms WHERE rid = cid;
+    INSERT INTO edit_release_producers SELECT pid, developer, publisher FROM releases_producers WHERE rid = cid;
+    INSERT INTO edit_release_vn SELECT vid FROM releases_vn WHERE rid = cid;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION edit_release_commit() RETURNS edit_rettype AS $$
+DECLARE
+  r edit_rettype;
+BEGIN
+  IF (SELECT COUNT(*) FROM edit_release) <> 1 THEN
+    RAISE 'edit_release must have exactly one row!';
+  ELSIF NOT EXISTS(SELECT 1 FROM edit_release_vn) THEN
+    RAISE 'edit_release_vn must have at least one row!';
+  END IF;
+  SELECT INTO r * FROM edit_commit();
+  INSERT INTO releases_rev SELECT r.cid, r.iid, title, original, type, website, released, notes, minage, gtin, patch, catalog, resolution, voiced, freeware, doujin, ani_story, ani_ero FROM edit_release;
+  INSERT INTO releases_lang SELECT r.cid, lang FROM edit_release_lang;
+  INSERT INTO releases_media SELECT r.cid, medium, qty FROM edit_release_media;
+  INSERT INTO releases_platforms SELECT r.cid, platform FROM edit_release_platforms;
+  INSERT INTO releases_producers SELECT pid, r.cid, developer, publisher FROM edit_release_producers;
+  INSERT INTO releases_vn SELECT r.cid, vid FROM edit_release_vn;
+  UPDATE releases SET latest = r.cid WHERE id = r.iid;
+  DROP TABLE edit_revision, edit_release, edit_release_lang, edit_release_media, edit_release_platforms, edit_release_producers, edit_release_vn;
+  RETURN r;
+END;
+$$ LANGUAGE plpgsql;
+
 

@@ -127,7 +127,7 @@ CREATE TABLE releases_rev (
   original varchar(250) NOT NULL DEFAULT '',
   type release_type NOT NULL DEFAULT 'complete',
   website varchar(250) NOT NULL DEFAULT '',
-  released integer NOT NULL,
+  released integer NOT NULL DEFAULT 0,
   notes text NOT NULL DEFAULT '',
   minage smallint,
   gtin bigint NOT NULL DEFAULT 0,

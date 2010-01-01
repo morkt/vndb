@@ -156,47 +156,47 @@ sub dbReleaseGet {
 }
 
 
-# inserts a release revision, called from dbItemEdit() or dbItemAdd()
-# Arguments: global revision, item id, { columns in releases_rev + languages + vn + producers + media + platforms }
+# Updates the edit_* tables, used from dbItemEdit()
+# Arguments: { columns in releases_rev + languages + vn + producers + media + platforms }
 sub dbReleaseRevisionInsert {
-  my($self, $cid, $rid, $o) = @_;
+  my($self, $o) = @_;
 
-  $self->dbExec(q|
-    INSERT INTO releases_rev (id, rid, title, original, gtin, catalog, website, released,
-        notes, minage, type, patch, resolution, voiced, freeware, doujin, ani_story, ani_ero)
-      VALUES (!l)|,
-    [ $cid, $rid, @$o{qw| title original gtin catalog website released
-        notes minage type patch resolution voiced freeware doujin ani_story ani_ero|} ]);
+  my %set = map exists($o->{$_}) ? ("$_ = ?", $o->{$_}) : (),
+    qw|title original gtin catalog website released notes minage type
+       patch resolution voiced freeware doujin ani_story ani_ero|;
+  $self->dbExec('UPDATE edit_release !H', \%set) if keys %set;
 
-  $self->dbExec(q|
-    INSERT INTO releases_lang (rid, lang)
-      VALUES (?, ?)|,
-    $cid, $_
-  ) for (@{$o->{languages}});
+  if($o->{languages}) {
+    $self->dbExec('DELETE FROM edit_release_lang');
+    my $q = join ',', map '(?)', @{$o->{languages}};
+    $self->dbExec("INSERT INTO edit_release_lang (lang) VALUES $q", @{$o->{languages}}) if @{$o->{languages}};
+  }
 
-  $self->dbExec(q|
-    INSERT INTO releases_producers (rid, pid, developer, publisher)
-      VALUES (?, ?, ?, ?)|,
-    $cid, $_->[0], $_->[1]?1:0, $_->[2]?1:0
-  ) for (@{$o->{producers}});
+  if($o->{producers}) {
+    $self->dbExec('DELETE FROM edit_release_producers');
+    my $q = join ',', map '(?,?,?)', @{$o->{producers}};
+    my @q = map +($_->[0], $_->[1]?1:0, $_->[2]?1:0), @{$o->{producers}};
+    $self->dbExec("INSERT INTO edit_release_producers (pid, developer, publisher) VALUES $q", @q) if @q;
+  }
 
-  $self->dbExec(q|
-    INSERT INTO releases_platforms (rid, platform)
-      VALUES (?, ?)|,
-    $cid, $_
-  ) for (@{$o->{platforms}});
+  if($o->{platforms}) {
+    $self->dbExec('DELETE FROM edit_release_platforms');
+    my $q = join ',', map '(?)', @{$o->{platforms}};
+    $self->dbExec("INSERT INTO edit_release_platforms (platform) VALUES $q", @{$o->{platforms}}) if @{$o->{platforms}};
+  }
 
-  $self->dbExec(q|
-    INSERT INTO releases_vn (rid, vid)
-      VALUES (?, ?)|,
-    $cid, $_
-  ) for (@{$o->{vn}});
+  if($o->{vn}) {
+    $self->dbExec('DELETE FROM edit_release_vn');
+    my $q = join ',', map '(?)', @{$o->{vn}};
+    $self->dbExec("INSERT INTO edit_release_vn (vid) VALUES $q", @{$o->{vn}}) if @{$o->{vn}};
+  }
 
-  $self->dbExec(q|
-    INSERT INTO releases_media (rid, medium, qty)
-      VALUES (?, ?, ?)|,
-    $cid, $_->[0], $_->[1]
-  ) for (@{$o->{media}});
+  if($o->{media}) {
+    $self->dbExec('DELETE FROM edit_release_media');
+    my $q = join ',', map '(?,?)', @{$o->{media}};
+    my @q = map +($_->[0], $_->[1]), @{$o->{media}};
+    $self->dbExec("INSERT INTO edit_release_media (medium, qty) VALUES $q", @q) if @q;
+  }
 }
 
 
