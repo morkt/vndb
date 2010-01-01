@@ -190,3 +190,113 @@ UPDATE users SET
     GROUP BY requester
   ), 0);
 
+
+
+
+-- revision insertion abstraction
+-- IMPORTANT: these functions will need to be updated on each change in the DB structure
+--   of the relevant tables
+
+CREATE TYPE edit_rettype AS (iid integer, cid integer, rev integer);
+
+-- create temporary table for generic revision info
+CREATE OR REPLACE FUNCTION edit_revtable(t dbentry_type, i integer) RETURNS void AS $$
+BEGIN
+  CREATE TEMPORARY TABLE edit_revision (
+    type dbentry_type NOT NULL,
+    iid integer,
+    requester integer,
+    ip inet,
+    comments text
+  );
+  INSERT INTO edit_revision (type, iid) VALUES (t, i);
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION edit_commit() RETURNS edit_rettype AS $$
+DECLARE
+  r edit_rettype;
+  t dbentry_type;
+  i integer;
+BEGIN
+  SELECT type INTO t FROM edit_revision;
+  SELECT iid INTO i FROM edit_revision;
+  -- figure out revision number
+  IF i IS NULL THEN
+    r.rev := 1;
+  ELSE
+    SELECT c.rev+1 INTO r.rev FROM changes c
+      LEFT JOIN vn_rev vr        ON c.id = vr.id
+      LEFT JOIN releases_rev rr  ON c.id = rr.id
+      LEFT JOIN producers_rev pr ON c.id = pr.id
+      WHERE (t = 'v' AND vr.vid = i)
+         OR (t = 'r' AND rr.rid = i)
+         OR (t = 'p' AND pr.pid = i)
+      ORDER BY c.id DESC
+      LIMIT 1;
+  END IF;
+  -- insert change
+  INSERT INTO changes (type, requester, ip, comments, rev)
+    SELECT t, requester, ip, comments, r.rev
+    FROM edit_revision
+    RETURNING id INTO r.cid;
+  -- insert DB item
+  IF i IS NULL THEN
+    CASE t
+      WHEN 'v' THEN INSERT INTO vn        (latest) VALUES (0) RETURNING id INTO r.iid;
+      WHEN 'r' THEN INSERT INTO releases  (latest) VALUES (0) RETURNING id INTO r.iid;
+      WHEN 'p' THEN INSERT INTO producers (latest) VALUES (0) RETURNING id INTO r.iid;
+    END CASE;
+  ELSE
+    r.iid := i;
+  END IF;
+  RETURN r;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION edit_vn_init(cid integer) RETURNS void AS $$
+BEGIN
+  -- create tables, based on existing tables (so that the column types are always synchronised)
+  CREATE TEMPORARY TABLE edit_vn (LIKE vn_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+  ALTER TABLE edit_vn DROP COLUMN id;
+  ALTER TABLE edit_vn DROP COLUMN vid;
+  CREATE TEMPORARY TABLE edit_vn_anime (LIKE vn_anime INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+  ALTER TABLE edit_vn_anime DROP COLUMN vid;
+  CREATE TEMPORARY TABLE edit_vn_relations (LIKE vn_relations INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+  ALTER TABLE edit_vn_relations DROP COLUMN vid1;
+  ALTER TABLE edit_vn_relations RENAME COLUMN vid2 TO vid;
+  CREATE TEMPORARY TABLE edit_vn_screenshots (LIKE vn_screenshots INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+  ALTER TABLE edit_vn_screenshots DROP COLUMN vid;
+  -- new VN, load defaults
+  IF cid IS NULL THEN
+    PERFORM edit_revtable('v', NULL);
+    INSERT INTO edit_vn DEFAULT VALUES;
+  -- otherwise, load revision
+  ELSE
+    PERFORM edit_revtable('v', (SELECT vid FROM vn_rev WHERE id = cid));
+    INSERT INTO edit_vn SELECT title, alias, img_nsfw, length, "desc", l_wp, l_vnn, image, l_encubed, l_renai, original FROM vn_rev WHERE id = cid;
+    INSERT INTO edit_vn_anime SELECT aid FROM vn_anime WHERE vid = cid;
+    INSERT INTO edit_vn_relations SELECT vid2, relation FROM vn_relations WHERE vid1 = cid;
+    INSERT INTO edit_vn_screenshots SELECT scr, nsfw, rid FROM vn_screenshots WHERE vid = cid;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION edit_vn_commit() RETURNS edit_rettype AS $$
+DECLARE
+  r edit_rettype;
+BEGIN
+  SELECT INTO r * FROM edit_commit();
+  INSERT INTO vn_rev SELECT r.cid, r.iid, title, alias, img_nsfw, length, "desc", l_wp, l_vnn, image, l_encubed, l_renai, original FROM edit_vn;
+  INSERT INTO vn_anime SELECT r.cid, aid FROM edit_vn_anime;
+  INSERT INTO vn_relations SELECT r.cid, vid, relation FROM edit_vn_relations;
+  INSERT INTO vn_screenshots SELECT r.cid, scr, nsfw, rid FROM edit_vn_screenshots;
+  UPDATE vn SET latest = r.cid WHERE id = r.iid;
+  DROP TABLE edit_revision, edit_vn, edit_vn_anime, edit_vn_relations, edit_vn_screenshots;
+  RETURN r;
+END;
+$$ LANGUAGE plpgsql;
+

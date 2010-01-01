@@ -171,37 +171,38 @@ sub dbVNGet {
 }
 
 
-# inserts a visual novel revision, used from dbItemEdit() or dbItemAdd()
-# Arguments: global revision, item id, { columns in producers_rev + anime + relations + screenshots }
+# Updates the edit_* tables, used from dbItemEdit()
+# Arguments: { columns in producers_rev + anime + relations + screenshots }
 #  screenshots = [ [ scrid, nsfw, rid ], .. ]
 #  relations   = [ [ rel, vid ], .. ]
 #  anime       = [ aid, .. ]
 sub dbVNRevisionInsert {
-  my($self, $cid, $vid, $o) = @_;
+  my($self, $o) = @_;
 
-  $o->{img_nsfw} = $o->{img_nsfw}?1:0;
-  $self->dbExec(q|
-    INSERT INTO vn_rev (id, vid, title, original, "desc", alias, image, img_nsfw, length, l_wp, l_encubed, l_renai, l_vnn)
-      VALUES (!l)|,
-    [ $cid, $vid, @$o{qw|title original desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|} ]);
+  $o->{img_nsfw} = $o->{img_nsfw}?1:0 if exists $o->{img_nsfw};
+  my %set = map exists($o->{$_}) ? (qq|"$_" = ?| => $o->{$_}) : (),
+    qw|title original desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|;
+  $self->dbExec('UPDATE edit_vn !H', \%set) if keys %set;
 
-  $self->dbExec(q|
-    INSERT INTO vn_screenshots (vid, scr, nsfw, rid)
-      VALUES (?, ?, ?, ?)|,
-    $cid, $_->[0], $_->[1]?1:0, $_->[2]
-  ) for (@{$o->{screenshots}});
+  if($o->{screenshots}) {
+    $self->dbExec('DELETE FROM edit_vn_screenshots');
+    my $q = join ',', map '(?, ?, ?)', @{$o->{screenshots}};
+    my @val = map +($_->[0], $_->[1]?1:0, $_->[2]), @{$o->{screenshots}};
+    $self->dbExec("INSERT INTO edit_vn_screenshots (scr, nsfw, rid) VALUES $q", @val) if @val;
+  }
 
-  $self->dbExec(q|
-    INSERT INTO vn_relations (vid1, vid2, relation)
-      VALUES (?, ?, ?)|,
-    $cid, $_->[1], $_->[0]
-  ) for (@{$o->{relations}});
+  if($o->{relations}) {
+    $self->dbExec('DELETE FROM edit_vn_relations');
+    my $q = join ',', map '(?, ?)', @{$o->{relations}};
+    my @val = map +($_->[1], $_->[0]), @{$o->{relations}};
+    $self->dbExec("INSERT INTO edit_vn_relations (vid, relation) VALUES $q", @val) if @val;
+  }
 
-  $self->dbExec(q|
-    INSERT INTO vn_anime (vid, aid)
-      VALUES (?, ?)|,
-    $cid, $_
-  ) for (@{$o->{anime}});
+  if($o->{anime}) {
+    $self->dbExec('DELETE FROM edit_vn_anime');
+    my $q = join ',', map '(?)', @{$o->{anime}};
+    $self->dbExec("INSERT INTO edit_vn_anime (aid) VALUES $q", @{$o->{anime}}) if @{$o->{anime}};
+  }
 }
 
 

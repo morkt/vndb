@@ -69,8 +69,8 @@ sub edit {
       return $self->resRedirect("/v$vid", 'post')
         if $vid && !$self->reqUploadFileName('img') && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
-      # execute the edit/add
-      my %args = (
+      # perform the edit/add
+      my $nrev = $self->dbItemEdit(v => $vid ? $v->{cid} : undef,
         (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum img_nsfw|),
         anime => [ keys %$anime ],
         relations => $relations,
@@ -78,18 +78,14 @@ sub edit {
         screenshots => $screenshots,
       );
 
-      my($nvid, $nrev) = ($vid, 1);
-      ($nrev) = $self->dbItemEdit(v => $vid, %args) if $vid;
-      ($nvid) = $self->dbItemAdd(v => %args) if !$vid;
-
       # update reverse relations & relation graph
       if(!$vid && $#$relations >= 0 || $vid && $frm->{vnrelations} ne $b4{vnrelations}) {
         my %old = $vid ? (map { $_->{id} => $_->{relation} } @{$v->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations;
-        _updreverse($self, \%old, \%new, $nvid, $nrev);
+        _updreverse($self, \%old, \%new, $nrev->{iid}, $nrev->{rev});
       }
 
-      return $self->resRedirect("/v$nvid.$nrev", 'post');
+      return $self->resRedirect("/v$nrev->{iid}.$nrev->{rev}", 'post');
     }
   }
 
@@ -240,8 +236,6 @@ sub _form {
 #  %old,%new -> { vid2 => relation, .. }
 #    from the perspective of vid
 #  rev is of the related edit
-# !IMPORTANT!: Don't forget to update this function when
-#   adding/removing fields to/from VN entries!
 sub _updreverse {
   my($self, $old, $new, $vid, $rev) = @_;
   my %upd;
@@ -254,21 +248,17 @@ sub _updreverse {
       $upd{$_} = $self->{vn_relations}{$$new{$_}}[1];
     }
   }
-
   return if !keys %upd;
 
   # edit all related VNs
   for my $i (keys %upd) {
-    my $r = $self->dbVNGet(id => $i, what => 'extended relations anime screenshots')->[0];
+    my $r = $self->dbVNGet(id => $i, what => 'relations')->[0];
     my @newrel = map $_->{id} != $vid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
     push @newrel, [ $upd{$i}, $vid ] if $upd{$i};
-    $self->dbItemEdit(v => $i,
+    $self->dbItemEdit(v => $r->{cid},
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision v$vid.$rev",
-      uid => 1,         # Multi - hardcoded
-      anime => [ map $_->{id}, @{$r->{anime}} ],
-      screenshots => [ map [ $_->{id}, $_->{nsfw}, $_->{rid} ], @{$r->{screenshots}} ],
-      ( map { $_ => $r->{$_} } qw| title original desc alias img_nsfw length l_wp l_encubed l_renai l_vnn image | )
+      uid => 1, # Multi
     );
   }
 }

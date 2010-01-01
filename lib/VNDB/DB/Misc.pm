@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw|
-  dbStats dbItemEdit dbItemAdd dbRevisionGet dbItemMod dbRandomQuote
+  dbStats dbItemEdit dbRevisionGet dbItemMod dbRandomQuote
 |;
 
 
@@ -20,67 +20,24 @@ sub dbStats {
 }
 
 
-# Inserts a new revision and updates the item to point to this revision
-# Arguments: type [vrp], item ID, %options->{ editsum uid + db[item]RevisionInsert }
-# Returns: local revision, global revision
+# Inserts a new revision into the database
+# Arguments: type [vrp], revision id, %options->{ editsum uid + db[item]RevisionInsert }
+#  revision id = changes.id of the revision this edit is based on, undef to create a new DB item
+# Returns: { iid, cid, rev }
 sub dbItemEdit {
-  my($self, $type, $iid, %o) = @_;
+  my($self, $type, $oid, %o) = @_;
 
-  my $table = {qw|v vn r releases p producers|}->{$type};
+  die "Only VNs are supported at this moment!" if $type ne 'v';
+  $self->dbExec('SELECT edit_!s_init(?)',
+    {qw|v vn r releases p producers|}->{$type}, $oid);
+  $self->dbExec('UPDATE edit_revision SET requester = ?, ip = ?, comments = ?',
+    $o{uid}||$self->authInfo->{id}, $self->reqIP, $o{editsum});
 
-  my $c = $self->dbRow(q|
-    INSERT INTO changes (type, requester, ip, comments, rev)
-      VALUES (?, ?, ?, ?, (
-        SELECT c.rev+1
-        FROM changes c
-        JOIN !s_rev ir ON ir.id = c.id
-        WHERE ir.!sid = ?
-        ORDER BY c.id DESC
-        LIMIT 1
-      ))
-      RETURNING id, rev|,
-    $type, $o{uid}||$self->authInfo->{id}, $self->reqIP, $o{editsum},
-    $table, $type, $iid
-  );
+  $self->dbVNRevisionInsert(      \%o) if $type eq 'v';
+  #$self->dbProducerRevisionInsert(\%o) if $type eq 'p';
+  #$self->dbReleaseRevisionInsert( \%o) if $type eq 'r';
 
-  $self->dbVNRevisionInsert(      $c->{id}, $iid, \%o) if $type eq 'v';
-  $self->dbProducerRevisionInsert($c->{id}, $iid, \%o) if $type eq 'p';
-  $self->dbReleaseRevisionInsert( $c->{id}, $iid, \%o) if $type eq 'r';
-
-  $self->dbExec(q|UPDATE !s SET latest = ? WHERE id = ?|, $table, $c->{id}, $iid);
-  return ($c->{rev}, $c->{id});
-}
-
-
-# Comparable to dbItemEdit(), but creates a new item with a corresponding revision.
-# Argumments: type [vrp] + same option hash as dbItemEdit()
-# Returns: item id, global revision
-sub dbItemAdd {
-  my($self, $type, %o) = @_;
-
-  my $table = {qw|v vn r releases p producers|}->{$type};
-
-  my $cid = $self->dbRow(q|
-    INSERT INTO changes (type, requester, ip, comments)
-      VALUES (?, ?, ?, ?)
-      RETURNING id|,
-    $type, $o{uid}||$self->authInfo->{id}, $self->reqIP, $o{editsum}
-  )->{id};
-
-  my $iid = $self->dbRow(q|
-    INSERT INTO !s (latest)
-      VALUES (0)
-      RETURNING id|,
-    $table
-  )->{id};
-
-  $self->dbVNRevisionInsert(      $cid, $iid, \%o) if $type eq 'v';
-  $self->dbProducerRevisionInsert($cid, $iid, \%o) if $type eq 'p';
-  $self->dbReleaseRevisionInsert( $cid, $iid, \%o) if $type eq 'r';
-
-  $self->dbExec(q|UPDATE !s SET latest = ? WHERE id = ?|, $table, $cid, $iid);
-
-  return ($iid, $cid);
+  return $self->dbRow('SELECT * FROM edit_vn_commit()');
 }
 
 
