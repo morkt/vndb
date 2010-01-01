@@ -186,19 +186,16 @@ sub edit {
 
       $frm->{relations} = $relations;
       $frm->{l_wp} = undef if !$frm->{l_wp};
-      $rev = 1;
-      my $npid = $pid;
-      ($rev) = $self->dbItemEdit(p => $pid, %$frm) if $pid;
-      ($npid) = $self->dbItemAdd(p => %$frm) if !$pid;
+      my $nrev = $self->dbItemEdit(p => $pid ? $p->{cid} : undef, %$frm);
 
       # update reverse relations
       if(!$pid && $#$relations >= 0 || $pid && $frm->{prodrelations} ne $b4{prodrelations}) {
         my %old = $pid ? (map { $_->{id} => $_->{relation} } @{$p->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations;
-        _updreverse($self, \%old, \%new, $npid, $rev);
+        _updreverse($self, \%old, \%new, $nrev->{iid}, $nrev->{rev});
       }
 
-      return $self->resRedirect("/p$npid.$rev", 'post');
+      return $self->resRedirect("/p$nrev->{iid}.$nrev->{rev}", 'post');
     }
   }
 
@@ -256,8 +253,6 @@ sub edit {
   $self->htmlFooter;
 }
 
-# !IMPORTANT!: Don't forget to update this function when
-#   adding/removing fields to/from producer entries!
 sub _updreverse {
   my($self, $old, $new, $pid, $rev) = @_;
   my %upd;
@@ -270,19 +265,17 @@ sub _updreverse {
       $upd{$_} = $self->{prod_relations}{$$new{$_}}[1];
     }
   }
-
   return if !keys %upd;
 
   # edit all related producers
   for my $i (keys %upd) {
-    my $r = $self->dbProducerGet(id => $i, what => 'extended relations')->[0];
+    my $r = $self->dbProducerGet(id => $i, what => 'relations')->[0];
     my @newrel = map $_->{id} != $pid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
     push @newrel, [ $upd{$i}, $pid ] if $upd{$i};
-    $self->dbItemEdit(p => $i,
+    $self->dbItemEdit(p => $r->{cid},
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision p$pid.$rev",
-      uid => 1,         # Multi - hardcoded
-      ( map { $_ => $r->{$_} } qw|type name original lang website desc alias| )
+      uid => 1,
     );
   }
 }

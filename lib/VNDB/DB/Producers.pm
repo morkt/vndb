@@ -100,22 +100,21 @@ sub dbProducerGet {
 }
 
 
-# inserts a producer revision, called from dbItemEdit() or dbItemAdd()
-# Arguments: global revision, item id, { columns in producers_rev + relations },
+# Updates the edit_* tables, used from dbItemEdit()
+# Arguments: { columns in producers_rev + relations },
 sub dbProducerRevisionInsert {
-  my($self, $cid, $pid, $o) = @_;
+  my($self, $o) = @_;
 
-  $self->dbExec(q|
-    INSERT INTO producers_rev (id, pid, name, original, website, l_wp, type, lang, "desc", alias)
-      VALUES (!l)|,
-    [ $cid, $pid, @$o{qw| name original website l_wp type lang desc alias|} ]
-  );
+  my %set = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
+    qw|name original website l_wp type lang desc alias|;
+  $self->dbExec('UPDATE edit_producer !H', \%set) if keys %set;
 
-  $self->dbExec(q|
-    INSERT INTO producers_relations (pid1, pid2, relation)
-      VALUES (?, ?, ?)|,
-    $cid, $_->[1], $_->[0]
-  ) for (@{$o->{relations}});
+  if($o->{relations}) {
+    $self->dbExec('DELETE FROM edit_producer_relations');
+    my $q = join ',', map '(?,?)', @{$o->{relations}};
+    my @q = map +($_->[1], $_->[0]), @{$o->{relations}};
+    $self->dbExec("INSERT INTO edit_producer_relations (pid, relation) VALUES $q", @q) if @q;
+  }
 }
 
 

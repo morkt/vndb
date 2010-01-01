@@ -33,7 +33,7 @@ sub dbItemEdit {
     $o{uid}||$self->authInfo->{id}, $self->reqIP, $o{editsum});
 
   $self->dbVNRevisionInsert(      \%o) if $type eq 'v';
-  #$self->dbProducerRevisionInsert(\%o) if $type eq 'p';
+  $self->dbProducerRevisionInsert(\%o) if $type eq 'p';
   $self->dbReleaseRevisionInsert( \%o) if $type eq 'r';
 
   return $self->dbRow('SELECT * FROM edit_!s_commit()', $fun);

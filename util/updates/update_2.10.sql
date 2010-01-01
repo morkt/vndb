@@ -362,3 +362,42 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+CREATE OR REPLACE FUNCTION edit_producer_init(cid integer) RETURNS void AS $$
+BEGIN
+  CREATE TEMPORARY TABLE edit_producer (LIKE producers_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+  ALTER TABLE edit_producer DROP COLUMN id;
+  ALTER TABLE edit_producer DROP COLUMN pid;
+  CREATE TEMPORARY TABLE edit_producer_relations (LIKE producers_relations INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+  ALTER TABLE edit_producer_relations DROP COLUMN pid1;
+  ALTER TABLE edit_producer_relations RENAME COLUMN pid2 TO pid;
+  -- new producer
+  IF cid IS NULL THEN
+    PERFORM edit_revtable('p', NULL);
+    INSERT INTO edit_producer DEFAULT VALUES;
+  -- load revision
+  ELSE
+    PERFORM edit_revtable('p', (SELECT pid FROM producers_rev WHERE id = cid));
+    INSERT INTO edit_producer SELECT type, name, original, website, lang, "desc", alias, l_wp FROM producers_rev WHERE id = cid;
+    INSERT INTO edit_producer_relations SELECT pid2, relation FROM producers_relations WHERE pid1 = cid;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION edit_producer_commit() RETURNS edit_rettype AS $$
+DECLARE
+  r edit_rettype;
+BEGIN
+  IF (SELECT COUNT(*) FROM edit_producer) <> 1 THEN
+    RAISE 'edit_producer must have exactly one row!';
+  END IF;
+  SELECT INTO r * FROM edit_commit();
+  INSERT INTO producers_rev SELECT r.cid, r.iid, type, name, original, website, lang, "desc", alias, l_wp FROM edit_producer;
+  INSERT INTO producers_relations SELECT r.cid, pid, relation FROM edit_producer_relations;
+  UPDATE producers SET latest = r.cid WHERE id = r.iid;
+  DROP TABLE edit_revision, edit_producer, edit_producer_relations;
+  RETURN r;
+END;
+$$ LANGUAGE plpgsql;
+
+
