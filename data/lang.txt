@@ -2654,13 +2654,13 @@ hu : [index,_1,Freeware,Nem Freeware]
 
 :_relinfo_platform
 en : [quant,_1,Platform,Platforms]
-ru : [quant,_1,платформа,платформы,платформ]
+ru : [quant,_1,Платформа,Платформы,Платформ]
 cs : [quant,_1,Platforma,Platformy,Platforem]
 hu : [quant,_1,Platform,Platformok]
 
 :_relinfo_media
 en : [quant,_1,Medium,Media]
-ru : [quant,_1,носитель,носители,носителей]
+ru : [quant,_1,Носитель,Носители,Носителей]
 cs : [quant,_1,Médium,Média,Médií]
 hu : [quant,_1,Medium,Mediumok]
 
