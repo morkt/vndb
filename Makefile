@@ -27,7 +27,7 @@
 # 	probably makes more sense.
 #
 #	sql-import
-#		Imports util/dump.sql into your (presumably empty) database
+#		Imports util/sql/all.sql into your (presumably empty) database
 #
 #	update-2.10
 #		Updates all non-versioned items to 2.10
@@ -128,7 +128,7 @@ endef
 
 
 sql-import:
-	${runpsql} < util/dump.sql
+	${runpsql} < util/sql/all.sql
 
 
 update-2.10: all
