@@ -194,40 +194,41 @@ sub _revision {
     [ desc        => diff => 1 ],
     [ length      => serialize => sub { mt '_vnlength_'.$_[0] } ],
     [ l_wp        => htmlize => sub {
-      $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink'
+      $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
     }],
     [ l_encubed   => htmlize => sub {
-      $_[0] ? sprintf '<a href="http://novelnews.net/tag/%s/">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink'
+      $_[0] ? sprintf '<a href="http://novelnews.net/tag/%s/">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
     }],
     [ l_renai     => htmlize => sub {
-      $_[0] ? sprintf '<a href="http://renai.us/game/%s.shtml">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink'
+      $_[0] ? sprintf '<a href="http://renai.us/game/%s.shtml">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
     }],
     [ relations   => join => '<br />', split => sub {
       my @r = map sprintf('%s: <a href="/v%d" title="%s">%s</a>',
         mt("_vnrel_$_->{relation}"), $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
       ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
-      return @r ? @r : (mt '_vndiff_none');
+      return @r ? @r : (mt '_revision_empty');
     }],
     [ anime       => join => ', ', split => sub {
       my @r = map sprintf('<a href="http://anidb.net/a%d">a%1$d</a>', $_->{id}), sort { $a->{id} <=> $b->{id} } @{$_[0]};
-      return @r ? @r : (mt '_vndiff_none');
+      return @r ? @r : (mt '_revision_empty');
     }],
     [ screenshots => join => '<br />', split => sub {
       my @r = map sprintf('[%s] <a href="%s/sf/%02d/%d.jpg" rel="iv:%dx%d">%4$d</a> (%s)',
         $_->{rid} ? qq|<a href="/r$_->{rid}">r$_->{rid}</a>| : 'no release',
-        $self->{url_static}, $_->{id}%100, $_->{id}, $_->{width}, $_->{height}, $_->{nsfw} ? 'NSFW' : 'Safe'
+        $self->{url_static}, $_->{id}%100, $_->{id}, $_->{width}, $_->{height},
+        mt($_->{nsfw} ? '_vndiff_nsfw_notsafe' : '_vndiff_nsfw_safe')
       ), @{$_[0]};
-      return @r ? @r : (mt '_vndiff_none');
+      return @r ? @r : (mt '_revision_empty');
     }],
     [ image       => htmlize => sub {
       my $url = sprintf "%s/cv/%02d/%d.jpg", $self->{url_static}, $_[0]%100, $_[0];
       if($_[0] > 0) {
-        return $_[1]->{img_nsfw} && !$self->authInfo->{show_nsfw} ? "<a href=\"$url\">(NSFW)</a>" : "<img src=\"$url\" />";
+        return $_[1]->{img_nsfw} && !$self->authInfo->{show_nsfw} ? "<a href=\"$url\">".mt('_vndiff_image_nsfw').'</a>' : "<img src=\"$url\" />";
       } else {
-        return $_[0] < 0 ? '[processing]' : 'No image';
+        return mt $_[0] < 0 ? '_vndiff_image_proc' : '_vndiff_image_none';
       }
     }],
-    [ img_nsfw    => serialize => sub { $_[0] ? 'Not safe' : 'Safe' } ],
+    [ img_nsfw    => serialize => sub { mt $_[0] ? '_vndiff_nsfw_notsafe' : '_vndiff_nsfw_safe' } ],
   );
 }
 

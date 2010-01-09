@@ -64,14 +64,14 @@ sub page {
       [ lang      => serialize => sub { "$_[0] (".mt("_lang_$_[0]").')' } ],
       [ website   => diff => 1 ],
       [ l_wp      => htmlize => sub {
-        $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink' # _vn? hmm...
+        $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
       }],
       [ desc      => diff => 1 ],
       [ relations   => join => '<br />', split => sub {
         my @r = map sprintf('%s: <a href="/p%d" title="%s">%s</a>',
           mt("_prodrel_$_->{relation}"), $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape shorten $_->{name}, 40
         ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
-        return @r ? @r : (mt '_proddiff_none');
+        return @r ? @r : (mt '_revision_empty');
       }],
     );
   }

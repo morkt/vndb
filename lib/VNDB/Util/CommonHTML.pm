@@ -258,8 +258,8 @@ sub revdiff {
     $ser2 = xml_escape $ser2;
   }
 
-  $ser1 = mt '_revision_emptyfield' if !$ser1 && $ser1 ne '0';
-  $ser2 = mt '_revision_emptyfield' if !$ser2 && $ser2 ne '0';
+  $ser1 = mt '_revision_empty' if !$ser1 && $ser1 ne '0';
+  $ser2 = mt '_revision_empty' if !$ser2 && $ser2 ne '0';
 
   Tr $$i++ % 2 ? (class => 'odd') : ();
    td mt "_revfield_${type}_$short";
