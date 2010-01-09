@@ -122,7 +122,7 @@ sub tagpage {
      p "\n\n".mt '_tagp_novn' if !@$list;
      p "\n".mt '_tagp_cached';
     end;
-    $self->htmlBrowseVN($list, $f, $np, "/g$t->{id}?m=$f->{m}", 1);
+    $self->htmlBrowseVN($list, $f, $np, "/g$t->{id}?m=$f->{m}", 1) if @$list;
   }
 
   $self->htmlFooter;
