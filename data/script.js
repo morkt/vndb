@@ -160,7 +160,7 @@ function shorten(v, l) {
  * - Only supports [_n], ~[, ~]
  * - When it finds [quant,_n,..], it will only return the first argument (and doesn't support ~ in an argument)
  * assumes that a TL structure called 'L10N_STR' is defined in the header of this file */
-var mt_curlang = getCookie('l10n') || 'en';
+var mt_curlang = byName(byId('lang_select'), 'acronym')[0].className.substr(11, 2);
 function mt() {
   var key = arguments[0];
   var val = L10N_STR[key] ? L10N_STR[key][mt_curlang] || L10N_STR[key].en : key;
