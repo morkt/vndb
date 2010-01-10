@@ -50,7 +50,7 @@
 </p>
 
 
-:SUB:Создатели
+:SUB:Над проектом трудились:
 <p>
  <b>Разработчики</b><br />
  <dl>
@@ -68,29 +68,29 @@
  </dl>
 
  <br />
- <b>Шкурки</b>
+ <b>Дизайнеры шкурок</b>
  <dl>
   <dt>applehq</dt><dd>
-   <a href="?skin=lb">Little Busters! (pink)</a>,
-   <a href="?skin=term">Neon (black)</a>
+   <a href="?skin=lb">Little Busters! (розовый)</a>,
+   <a href="?skin=term">Neon (чёрный)</a>
   </dd><dt>EchoMateria</dt><dd>
-   <a href="?skin=aselia_01">Eien no Aselia (falu red)</a>,
-   <a href="?skin=carnevale">Gekkou no Carnevale (black)</a>,
-   <a href="?skin=eiel">Jingai Makyo (peach-orange)</a>,
-   <a href="?skin=ever17_01">Ever17 (bondi blue)</a>,
-   <a href="?skin=fate_01">Fate/stay night (seal brown)</a>,
-   <a href="?skin=fate_02">Fate/stay night (pale carmine)</a>,
-   <a href="?skin=higu">Higurashi no Naku Koro ni (orange)</a>,
-   <a href="?skin=lb_02">Little Busters! (lemon chiffon)</a>,
-   <a href="?skin=primitive">Primitive Link (pale chestnut)</a>,
-   <a href="?skin=saya">Saya no Uta (dark scarlet)</a>,
-   <a href="?skin=seinarukana">Seinarukana (white)</a>,
-   <a href="?skin=taka">Sora no Iro, Mizu no Iro (turquoise)</a>,
-   <a href="?skin=tsukihime">Tsukihime (midnight blue)</a>,
-   <a href="?skin=tsukihime_02">Tsukihime (black)</a>
+   <a href="?skin=aselia_01">Eien no Aselia (бордовый)</a>,
+   <a href="?skin=carnevale">Gekkou no Carnevale (черный)</a>,
+   <a href="?skin=eiel">Jingai Makyo (персиковый)</a>,
+   <a href="?skin=ever17_01">Ever17 (вода пляжа Бонди)</a>,
+   <a href="?skin=fate_01">Fate/stay night (серо-коричневый)</a>,
+   <a href="?skin=fate_02">Fate/stay night (бледно-карминный)</a>,
+   <a href="?skin=higu">Higurashi no Naku Koro ni (оранжевый)</a>,
+   <a href="?skin=lb_02">Little Busters! (желто-персиковый)</a>,
+   <a href="?skin=primitive">Primitive Link (бледно-каштановый)</a>,
+   <a href="?skin=saya">Saya no Uta (алый)</a>,
+   <a href="?skin=seinarukana">Seinarukana (белый)</a>,
+   <a href="?skin=taka">Sora no Iro, Mizu no Iro (бирюзовый)</a>,
+   <a href="?skin=tsukihime">Tsukihime (полуночно-синий)</a>,
+   <a href="?skin=tsukihime_02">Tsukihime (чёрный)</a>
   </dd><dt>Yorhel</dt><dd>
-   <a href="?skin=angel">Angelic Serenade (dark blue)</a>,
-   <a href="?skin=grey">Touhou (grey)</a>
+   <a href="?skin=angel">Angelic Serenade (тёмно-синий)</a>,
+   <a href="?skin=grey">Touhou (серый)</a>
   </dd>
  </dl>
  <br />

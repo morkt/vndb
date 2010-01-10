@@ -110,13 +110,13 @@ ends with ']'. The following options are supported:
 
 :_datetime_compact
 en : %Y-%m-%d
-ru*:
+ru : %d.%m.%Y
 cs*:
 hu*:
 
 :_datetime_full
 en : %Y-%m-%d at %R
-ru*:
+ru : %d.%m.%Y, %R
 cs*:
 hu*:
 
@@ -1688,13 +1688,13 @@ hu : ~[nincs hivatkozás~]
 
 :_revision_yes
 en : Yes
-ru*:
+ru : Да
 cs*:
 hu*:
 
 :_revision_no
 en : No
-ru*:
+ru : Нет
 cs*:
 hu*:
 
