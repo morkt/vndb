@@ -74,21 +74,13 @@ sub tagpage {
 
    p;
     my @p = @{$t->{parents}};
-    my @r;
-    for (0..$#p) {
-      if($_ && $p[$_-1]{lvl} < $p[$_]{lvl}) {
-        pop @r for (1..($p[$_]{lvl}-$p[$_-1]{lvl}));
+    for my $p (_parenttags(@p)) {
+      a href => '/g', mt '_tagp_indexlink';
+      for (reverse @$p) {
+        txt ' > ';
+        a href => "/g$_->{id}", $_->{name};
       }
-      if($_ < $#p && $p[$_+1]{lvl} < $p[$_]{lvl}) {
-        push @r, $p[$_];
-      } elsif($#p == $_ || $p[$_+1]{lvl} >= $p[$_]{lvl}) {
-        a href => '/g', mt '_tagp_indexlink';
-        for ($p[$_], reverse @r) {
-          txt ' > ';
-          a href => "/g$_->{id}", $_->{name};
-        }
-        txt " > $t->{name}\n";
-      }
+      txt " > $t->{name}\n";
     }
     if(!@p) {
       a href => '/g', mt '_tagp_indexlink';
@@ -127,6 +119,22 @@ sub tagpage {
 
   $self->htmlFooter;
 }
+
+
+# arg: tag hashref
+# returns: [ [ tag1, tag2, tag3 ], [ tag1, tag2, tag5 ] ]
+sub _parenttags {
+  my @r;
+  for my $t (@_) {
+    for (@{$t->{'sub'}}) {
+      my @p = _parenttags($_);
+      push @r, [ $t, @p?@{$p[0]}:() ];
+    }
+    push @r, [$t] if !@{$t->{'sub'}};
+  }
+  return @r;
+}
+
 
 # used for on both /g and /g+
 sub _childtags {
