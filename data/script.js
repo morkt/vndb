@@ -316,7 +316,7 @@ function ddMouseMove(e) {
       ddHide();
   }
 
-  if(!box.dd_used && lnk) {
+  if(!box.dd_used && lnk || box.dd_used && lnk && box.dd_lnk != lnk) {
     box.dd_lnk = lnk;
     box.dd_used = true;
     if(!ddRefresh())
@@ -566,7 +566,7 @@ function dsInit(obj, url, trfunc, serfunc, retfunc, parfunc) {
   obj.ds_selectedId = 0;
   obj.ds_dosearch = null;
   if(!byId('ds_box'))
-    addBody(tag('div', {id: 'ds_box', style: 'position: absolute; top: -500px'}, tag('b', mt('_js_loading'))));
+    addBody(tag('div', {id: 'ds_box'}, tag('b', mt('_js_loading'))));
 }
 
 function dsKeyDown(ev) {
@@ -927,6 +927,7 @@ if(byId('jt_box_rel_format'))
 var scrRel = [ [ 0, mt('_vnedit_scr_selrel') ] ];
 var scrStaticURL;
 var scrUplNr = 0;
+var scrDefRel;
 
 function scrLoad() {
   // get scrRel and scrStaticURL
@@ -935,6 +936,9 @@ function scrLoad() {
   for(var i=0; i<rel.options.length; i++)
     scrRel[scrRel.length] = [ rel.options[i].value, getText(rel.options[i]) ];
   rel.parentNode.removeChild(rel);
+  if(scrRel.length <= 2)
+    scrRel.shift();
+  scrDefRel = scrRel[0][0];
 
   // load the current screenshots
   var scr = byId('screenshots').value.split(' ');
@@ -958,9 +962,10 @@ function scrSetSubmit() {
     var norelease = 0;
     var l = byName(byId('scr_table'), 'tr');
     for(var i=0; i<l.length-1; i++) {
+      var rel = byName(l[i], 'select')[0];
       if(l[i].scr_status > 0)
         loading = 1;
-      else if(byName(l[i], 'select')[0].selectedIndex == 0)
+      else if(rel.options[rel.selectedIndex].value == 0)
         norelease = 1;
     }
     if(loading) {
@@ -979,7 +984,7 @@ function scrURL(id, t) {
 }
 
 function scrAdd(id, nsfw, rel) {
-  // tr.scr_status = 0: done, 1: uploading, 2: waiting for thumbnail, 3: deleted
+  // tr.scr_status = 0: done, 1: uploading, 2: waiting for thumbnail
 
   var tr = tag('tr', { id:'scr_tr_'+id, scr_id: id, scr_status: id?2:1, scr_rel: rel, scr_nsfw: nsfw},
     tag('td', { 'class': 'thumb'}, mt('_js_loading')),
@@ -1001,6 +1006,11 @@ function scrLast() {
     byId('scr_table').removeChild(byId('scr_last'));
   var full = byName(byId('scr_table'), 'tr').length >= 10;
 
+
+  var rel = tag('select', {onchange: function(){scrDefRel=this.options[this.selectedIndex].value}, 'class':'scr_relsel', 'id':'scradd_relsel'});
+  for(var j=0; j<scrRel.length; j++)
+    rel.appendChild(tag('option', {value: scrRel[j][0], selected: scrDefRel == scrRel[j][0]}, scrRel[j][1]));
+
   byId('scr_table').appendChild(tag('tr', {id:'scr_last'},
     tag('td', {'class': 'thumb'}),
     full ? tag('td',
@@ -1013,6 +1023,8 @@ function scrLast() {
       mt('_vnedit_scr_imgnote'),
       tag('br', null),
       tag('input', {name:'scr_upload', id:'scr_upload', type:'file', 'class':'text'}),
+      tag('br', null),
+      rel,
       tag('br', null),
       tag('input', {type:'button', value:mt('_vnedit_scr_addbut'), 'class':'submit', onclick:scrUpload})
     )
@@ -1081,7 +1093,9 @@ function scrDel(what) {
   var tr = what && what.scr_status != null ? what : this;
   while(tr.nodeName.toLowerCase() != 'tr')
     tr = tr.parentNode;
-  tr.scr_status = 3;
+  tr.scr_status = null;
+  if(tr.scr_upl && byId(tr.scr_upl))
+    byId(tr.scr_upl).parentNode.removeChild(byId(tr.scr_upl));
   byId('scr_table').removeChild(tr);
   scrSerialize();
   scrLast();
@@ -1093,15 +1107,19 @@ function scrUpload() {
 
   // create temporary form
   var ifid = 'scr_upl_'+scrUplNr;
-  var frm = tag('form', {method: 'post', action:'/xml/screenshots.xml', target: ifid, enctype:'multipart/form-data'});
+  var frm = tag('form', {method: 'post', action:'/xml/screenshots.xml?upload='+scrUplNr,
+    target: ifid, enctype:'multipart/form-data'});
   var ifr = tag('iframe', {id:ifid, name:ifid, src:'about:blank', onload:scrUploadComplete});
   addBody(tag('div', {'class':'scr_uploader'}, ifr, frm));
 
-  // submit form and delete it
-  frm.appendChild(byId('scr_upload'));
+  // submit form
+  var upl = byId('scr_upload');
+  upl.id = upl.name = 'scr_upl_file_'+scrUplNr;
+  frm.appendChild(upl);
   frm.submit();
-  frm.parentNode.removeChild(frm);
   ifr.scr_tr = scrAdd(0, 0, 0);
+  ifr.scr_upl = ifid;
+  ifr.scr_tr.scr_rel = byId('scradd_relsel').options[byId('scradd_relsel').selectedIndex].value;
   scrLast();
   return false;
 }
@@ -1113,29 +1131,29 @@ function scrUploadComplete() {
     return;
 
   var tr = ifr.scr_tr;
-  if(!tr || tr.scr_status == 3)
-    return;
-
-  try {
-    tr.scr_id = fr.window.document.getElementsByTagName('image')[0].getAttribute('id');
-  } catch(e) {
-    tr.scr_id = -10;
+  if(tr && tr.scr_status == 1) {
+    try {
+      tr.scr_id = fr.window.document.getElementsByTagName('image')[0].getAttribute('id');
+    } catch(e) {
+      tr.scr_id = -10;
+    }
+    if(tr.scr_id < 0) {
+      alert(mt(tr.scr_id == -10 ? '_vnedit_scr_oops' : tr.scr_id == -1 ? '_vnedit_scr_errformat' : '_vnedit_scr_errempty'));
+      scrDel(tr);
+    } else {
+      tr.id = 'scr_tr_'+tr.scr_id;
+      tr.scr_status = 2;
+      setContent(byName(tr, 'td')[1],
+        tag('b', mt('_vnedit_scr_genthumb')),
+        tag('br', null),
+        mt('_vnedit_scr_genthumb_msg')
+      );
+    }
   }
-  if(tr.scr_id < 0) {
-    alert(mt(tr.scr_id == -10 ? '_vnedit_scr_oops' : tr.scr_id == -1 ? '_vnedit_scr_errformat' : '_vnedit_scr_errempty'));
-    return scrDel(tr);
-  }
 
-  tr.id = 'scr_tr_'+tr.scr_id;
-  tr.scr_status = 2;
-  setContent(byName(tr, 'td')[1],
-    tag('b', mt('_vnedit_scr_genthumb')),
-    tag('br', null),
-    mt('_vnedit_scr_genthumb_msg')
-  );
-
-  // remove the <div> in a timeout, otherwise some browsers think the page is still loading
-  setTimeout(function() { ifr.parentNode.parentNode.removeChild(ifr.parentNode) }, 100);
+  tr.scr_upl = null;
+  /* remove the <div> in a timeout, otherwise some browsers think the page is still loading */
+  setTimeout(function() { ifr.parentNode.parentNode.removeChild(ifr.parentNode) }, 1000);
 }
 
 function scrSerialize() {

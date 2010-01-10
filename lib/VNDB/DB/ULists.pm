@@ -35,14 +35,14 @@ sub dbVNListGet {
 }
 
 
-# %options->{ uid order char voted page results }
+# %options->{ uid char voted page results sort reverse }
+# sort: title vote
 # NOTE: this function is mostly copied from 1.x, may need some rewriting...
 sub dbVNListList {
   my($self, %o) = @_;
 
   $o{results} ||= 50;
   $o{page}    ||= 1;
-  $o{order}   ||= 'vr.title ASC';
   $o{voted}   ||= 0;  # -1: only non-voted, 0: all, 1: only voted
 
   # construct the global WHERE clause
@@ -58,6 +58,11 @@ sub dbVNListList {
   $where = '('.$where.') AND (ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' if defined $o{char} && !$o{char};
   $where = '('.$where.') AND vo.vote IS NULL' if $o{voted} == -1;
 
+  my $order = sprintf {
+    title => 'vr.title %s',
+    vote  => 'vo.vote %s NULLS LAST, vr.title ASC',
+  }->{ $o{sort}||'title' }, $o{reverse} ? 'DESC' : 'ASC';
+
   # execute query
   my($r, $np) = $self->dbPage(\%o, qq|
     SELECT vr.vid, vr.title, vr.original, v.c_released, v.c_languages, v.c_platforms, COALESCE(vo.vote, 0) AS vote
@@ -67,7 +72,7 @@ sub dbVNListList {
       WHERE $where
       ORDER BY !s|,
     $o{voted} == 1 ? '' : 'LEFT', $o{uid},   # JOIN if we only want votes, LEFT JOIN if we also want rlist items
-    $o{voted} != 1 ? $o{uid} : (), $o{order},
+    $o{voted} != 1 ? $o{uid} : (), $order
   );
 
   # fetch releases and link to VNs
@@ -142,11 +147,10 @@ sub dbVNListDel {
 }
 
 
-# %options->{ uid vid hide order results page what }
+# %options->{ uid vid hide results page what }
 # what: user, vn
 sub dbVoteGet {
   my($self, %o) = @_;
-  $o{order} ||= 'n.date DESC';
   $o{results} ||= 50;
   $o{page} ||= 1;
   $o{what} ||= '';
@@ -179,8 +183,8 @@ sub dbVoteGet {
       FROM votes n
       !s
       !W
-      ORDER BY !s|,
-    join(',', @select), join(' ', @join), \%where, $o{order}
+      ORDER BY n.date DESC|,
+    join(',', @select), join(' ', @join), \%where
   );
 
   return wantarray ? ($r, $np) : $r;
@@ -234,12 +238,12 @@ sub dbVoteDel {
 }
 
 
-# %options->{ uid vid wstat what order page results }
+# %options->{ uid vid wstat what page results sort reverse }
 # what: vn
+# sort: title added wstat
 sub dbWishListGet {
   my($self, %o) = @_;
 
-  $o{order} ||= 'wl.wstat ASC';
   $o{page} ||= 1;
   $o{results} ||= 50;
   $o{what} ||= '';
@@ -258,13 +262,19 @@ sub dbWishListGet {
     'JOIN vn_rev vr ON vr.id = v.latest';
   }
 
+  my $order = sprintf  {
+    title => 'vr.title %s',
+    added => 'wl.added %s',
+    wstat => 'wl.wstat %2$s, vr.title ASC',
+  }->{ $o{sort}||'added' }, $o{reverse} ? 'DESC' : 'ASC', $o{reverse} ? 'ASC' : 'DESC';
+
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
       FROM wlists wl
       !s
       !W
       ORDER BY !s|,
-    $select, join(' ', @join), \%where, $o{order},
+    $select, join(' ', @join), \%where, $order,
   );
 
   return wantarray ? ($r, $np) : $r;

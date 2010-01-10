@@ -104,6 +104,23 @@ ends with ']'. The following options are supported:
 # data/global.pl - used in many places
 
 
+# Date/time format
+# See http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html for the formatting codes
+# (I recommend to keep the yyyy-mm-dd format, though, see http://www.cl.cam.ac.uk/~mgk25/iso-time.html)
+
+:_datetime_compact
+en : %Y-%m-%d
+ru*:
+cs*:
+hu*:
+
+:_datetime_full
+en : %Y-%m-%d at %R
+ru*:
+cs*:
+hu*:
+
+
 # Age display
 
 :_age_years
@@ -1657,11 +1674,29 @@ ru : [userstr,_1], [date,_2,full]
 cs : Změnil [userstr,_1] [date,_2,full]
 hu : [userstr,_1] által, [date,_2,full]
 
-:_revision_emptyfield
+:_revision_empty
 en : ~[empty~]
 ru : ~[пусто~]
 cs : ~[prázdná~]
 hu : ~[üres~]
+
+:_revision_nolink
+en : ~[no link~]
+ru : ~[нет ссылки~]
+cs : ~[žádný odkaz~]
+hu : ~[nincs hivatkozás~]
+
+:_revision_yes
+en : Yes
+ru*:
+cs*:
+hu*:
+
+:_revision_no
+en : No
+ru*:
+cs*:
+hu*:
 
 
 # tabs above the search boxes
@@ -2268,12 +2303,6 @@ en : Relations
 ru : Отношения
 cs : Vztahy
 hu : Összefüggések
-
-:_proddiff_none
-en : none
-ru : нет
-cs : žádné
-hu : semmi
 
 
 # Producer relation graph page (/p+/rg)
@@ -5185,18 +5214,6 @@ en : Length
 ru : Продолжительность
 cs : Délka
 hu : Hossz
-
-:_vndiff_nolink
-en : ~[no link~]
-ru : ~[нет ссылки~]
-cs : ~[žádný odkaz~]
-hu : ~[nincs hivatkozás~]
-
-:_vndiff_none
-en : ~[none~]
-ru : ~[пусто~]
-cs : ~[nic~]
-hu : ~[nincs~]
 
 :_revfield_v_l_wp
 en : Wikipedia link

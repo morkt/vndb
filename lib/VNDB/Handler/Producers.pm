@@ -26,6 +26,7 @@ sub rg {
   my $title = mt '_prodrg_title', $p->{name};
   return if $self->htmlRGHeader($title, 'p', $p);
 
+  $p->{svg} =~ s/id="node_p$pid"/id="graph_current"/;
   $p->{svg} =~ s/\$___(_prodrel_[a-z]+)____\$/mt $1/eg;
   $p->{svg} =~ s/\$(_lang_[a-z]+)_\$/mt $1/eg;
   $p->{svg} =~ s/\$(_ptype_[a-z]+)_\$/mt $1/eg;
@@ -63,14 +64,14 @@ sub page {
       [ lang      => serialize => sub { "$_[0] (".mt("_lang_$_[0]").')' } ],
       [ website   => diff => 1 ],
       [ l_wp      => htmlize => sub {
-        $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_vndiff_nolink' # _vn? hmm...
+        $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
       }],
       [ desc      => diff => 1 ],
       [ relations   => join => '<br />', split => sub {
         my @r = map sprintf('%s: <a href="/p%d" title="%s">%s</a>',
           mt("_prodrel_$_->{relation}"), $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape shorten $_->{name}, 40
         ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
-        return @r ? @r : (mt '_proddiff_none');
+        return @r ? @r : (mt '_revision_empty');
       }],
     );
   }
@@ -167,7 +168,7 @@ sub edit {
       { name => 'original',      required  => 0, maxlength => 200,  default => '' },
       { name => 'alias',         required  => 0, maxlength => 500,  default => '' },
       { name => 'lang',          enum      => $self->{languages} },
-      { name => 'website',       required  => 0, template => 'url', default => '' },
+      { name => 'website',       required  => 0, maxlength => 250,  default => '', template => 'url' },
       { name => 'l_wp',          required  => 0, maxlength => 150,  default => '' },
       { name => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { name => 'prodrelations', required  => 0, maxlength => 5000, default => '' },
@@ -185,20 +186,16 @@ sub edit {
 
       $frm->{relations} = $relations;
       $frm->{l_wp} = undef if !$frm->{l_wp};
-      $rev = 1;
-      my $npid = $pid;
-      my $cid;
-      ($rev, $cid) = $self->dbProducerEdit($pid, %$frm) if $pid;
-      ($npid, $cid) = $self->dbProducerAdd(%$frm) if !$pid;
+      my $nrev = $self->dbItemEdit(p => $pid ? $p->{cid} : undef, %$frm);
 
       # update reverse relations
       if(!$pid && $#$relations >= 0 || $pid && $frm->{prodrelations} ne $b4{prodrelations}) {
         my %old = $pid ? (map { $_->{id} => $_->{relation} } @{$p->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations;
-        _updreverse($self, \%old, \%new, $npid, $cid, $rev);
+        _updreverse($self, \%old, \%new, $nrev->{iid}, $nrev->{rev});
       }
 
-      return $self->resRedirect("/p$npid.$rev", 'post');
+      return $self->resRedirect("/p$nrev->{iid}.$nrev->{rev}", 'post');
     }
   }
 
@@ -256,10 +253,8 @@ sub edit {
   $self->htmlFooter;
 }
 
-# !IMPORTANT!: Don't forget to update this function when
-#   adding/removing fields to/from producer entries!
 sub _updreverse {
-  my($self, $old, $new, $pid, $cid, $rev) = @_;
+  my($self, $old, $new, $pid, $rev) = @_;
   my %upd;
 
   # compare %old and %new
@@ -270,20 +265,17 @@ sub _updreverse {
       $upd{$_} = $self->{prod_relations}{$$new{$_}}[1];
     }
   }
-
   return if !keys %upd;
 
   # edit all related producers
   for my $i (keys %upd) {
-    my $r = $self->dbProducerGet(id => $i, what => 'extended relations')->[0];
+    my $r = $self->dbProducerGet(id => $i, what => 'relations')->[0];
     my @newrel = map $_->{id} != $pid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
     push @newrel, [ $upd{$i}, $pid ] if $upd{$i};
-    $self->dbProducerEdit($i,
+    $self->dbItemEdit(p => $r->{cid},
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision p$pid.$rev",
-      causedby => $cid,
-      uid => 1,         # Multi - hardcoded
-      ( map { $_ => $r->{$_} } qw|type name original lang website desc alias| )
+      uid => 1,
     );
   }
 }

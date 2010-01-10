@@ -8,12 +8,12 @@ use Exporter 'import';
 our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel dbUserMessageCount dbSessionAdd dbSessionDel|;
 
 
-# %options->{ username passwd mail session order uid ip registered search results page what }
+# %options->{ username passwd mail session uid ip registered search results page what sort reverse }
 # what: stats extended
+# sort: username registered votes changes tags
 sub dbUserGet {
   my $s = shift;
   my %o = (
-    order => 'username ASC',
     page => 1,
     results => 10,
     what => '',
@@ -65,13 +65,21 @@ sub dbUserGet {
     $o{session} ? 'JOIN sessions s ON s.uid = u.id' : (),
   );
 
+  my $order = sprintf {
+    username => 'u.username %s',
+    registered => 'u.registered %s',
+    votes => 'NOT u.show_list, u.c_votes %s',
+    changes => 'u.c_changes %s',
+    tags => 'u.c_tags %s',
+  }->{ $o{sort}||'username' }, $o{reverse} ? 'DESC' : 'ASC';
+
   my($r, $np) = $s->dbPage(\%o, q|
     SELECT !s
       FROM users u
       !s
       !W
       ORDER BY !s|,
-    join(', ', @select), join(' ', @join), \%where, $o{order}
+    join(', ', @select), join(' ', @join), \%where, $order
   );
   return wantarray ? ($r, $np) : $r;
 }

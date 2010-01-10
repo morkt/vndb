@@ -295,7 +295,7 @@ sub board {
     results => 50,
     page => $f->{p},
     what => 'firstpost lastpost boardtitles',
-    order => $type eq 'an' ? 't.id DESC' : 'tpl.date DESC',
+    sort => $type eq 'an' ? 'id' : 'lastpost', reverse => 1,
   );
 
   $self->htmlHeader(title => $title, noindex => !@$list || $type eq 'u');
@@ -349,7 +349,7 @@ sub index {
       results => 5,
       page => 1,
       what => 'firstpost lastpost boardtitles',
-      order => 'tpl.date DESC',
+      sort => 'lastpost', reverse => 1,
     );
     h1 class => 'boxtitle';
      a href => "/t/$_", mt "_dboard_$_";

@@ -8,14 +8,14 @@ use Exporter 'import';
 our @EXPORT = qw|dbThreadGet dbThreadEdit dbThreadAdd dbPostGet dbPostEdit dbPostAdd dbThreadCount dbPostRead|;
 
 
-# Options: id, type, iid, results, page, what, notusers
+# Options: id, type, iid, results, page, what, notusers, sort, reverse
 # What: boards, boardtitles, firstpost, lastpost
+# Sort: id lastpost
 sub dbThreadGet {
   my($self, %o) = @_;
   $o{results} ||= 50;
   $o{page} ||= 1;
   $o{what} ||= '';
-  $o{order} ||= 't.id DESC';
 
   my %where = (
     $o{id} ? (
@@ -49,13 +49,18 @@ sub dbThreadGet {
       'JOIN threads_boards tb ON tb.tid = t.id' : (),
   );
 
+  my $order = sprintf {
+    id       => 't.id %s',
+    lastpost => 'tpl.date %s',
+  }->{ $o{sort}||'id' }, $o{reverse} ? 'DESC' : 'ASC';
+
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
       FROM threads t
       !s
       !W
       ORDER BY !s|,
-    join(', ', @select), join(' ', @join), \%where, $o{order}
+    join(', ', @select), join(' ', @join), \%where, $order
   );
 
   if($o{what} =~ /(boards|boardtitles)/ && $#$r >= 0) {
@@ -153,14 +158,13 @@ sub dbThreadCount {
 }
 
 
-# Options: tid, num, what, order, uid, mindate, hide, page, results
+# Options: tid, num, what, uid, mindate, hide, page, results
 # what: user thread
 sub dbPostGet {
   my($self, %o) = @_;
   $o{results} ||= 50;
   $o{page} ||= 1;
   $o{what} ||= '';
-  $o{order} ||= 'tp.num ASC';
 
   my %where = (
     $o{tid} ? (
@@ -192,8 +196,8 @@ sub dbPostGet {
       FROM threads_posts tp
       !s
       !W
-      ORDER BY !s|,
-    join(', ', @select), join(' ', @join), \%where, $o{order}
+      ORDER BY tp.num ASC|,
+    join(', ', @select), join(' ', @join), \%where
   );
 
   return wantarray ? ($r, $np) : $r;

@@ -78,7 +78,7 @@ sub homepage {
 
     # Announcements
     td;
-     my $an = $self->dbThreadGet(type => 'an', order => 't.id DESC', results => 2);
+     my $an = $self->dbThreadGet(type => 'an', sort => 'id', reverse => 1, results => 2);
      h1;
       a href => '/t/an', mt '_home_announcements';
      end;
@@ -98,7 +98,7 @@ sub homepage {
      h1;
       a href => '/t', mt '_home_recentposts';
      end;
-     my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, order => 'tpl.date DESC', notusers => 1);
+     my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, sort => 'lastpost', reverse => 1, notusers => 1);
      ul;
       for (@$posts) {
         my $boards = join ', ', map mt("_dboard_$_->{type}").($_->{iid}?' > '.$_->{title}:''), @{$_->{boards}};
@@ -120,7 +120,7 @@ sub homepage {
      h1;
       a href => '/v/rand', mt '_home_randomvn';
      end;
-     my $random = $self->dbVNGet(results => 10, order => 'RANDOM()');
+     my $random = $self->dbVNGet(results => 10, sort => 'rand');
      ul;
       for (@$random) {
         li;
@@ -142,6 +142,7 @@ sub homepage {
          lit $self->{l10n}->datestr($_->{released});
          txt ' ';
          cssicon $_, mt "_plat_$_" for (@{$_->{platforms}});
+         cssicon "lang $_", mt "_lang_$_" for (@{$_->{languages}});
          txt ' ';
          a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
         end;
@@ -154,13 +155,14 @@ sub homepage {
      h1;
       a href => strftime('/r?ma=%Y%m%d;o=d;s=released', gmtime), mt '_home_justreleased';
      end;
-     my $justrel = $self->dbReleaseGet(results => 10, order => 'rr.released DESC', unreleased => 0, what => 'platforms');
+     my $justrel = $self->dbReleaseGet(results => 10, sort => 'released', reverse => 1, unreleased => 0, what => 'platforms');
      ul;
       for (@$justrel) {
         li;
          lit $self->{l10n}->datestr($_->{released});
          txt ' ';
          cssicon $_, mt "_plat_$_" for (@{$_->{platforms}});
+         cssicon "lang $_", mt "_lang_$_" for (@{$_->{languages}});
          txt ' ';
          a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
         end;
@@ -263,7 +265,7 @@ sub history {
    }
   end;
 
-  $self->htmlHistory($list, $f, $np, $u->());
+  $self->htmlBrowseHist($list, $f, $np, $u->());
   $self->htmlFooter;
 }
 
@@ -300,7 +302,7 @@ sub docpage {
       $ii;
     }eg;
     s{^:TOP5CONTRIB:$}{
-      my $l = $self->dbUserGet(results => 6, order => 'c_changes DESC');
+      my $l = $self->dbUserGet(results => 6, sort => 'changes', reverse => 1);
       '<dl>'.join('', map $_->{id} == 1 ? () :
         sprintf('<dt><a href="/u%d">%s</a></dt><dd>%d</dd>', $_->{id}, $_->{username}, $_->{c_changes}),
       @$l).'</dl>';
@@ -340,16 +342,11 @@ sub itemmod {
   return $self->htmlDenied if !$self->authCan($act eq 'hide' ? 'del' : 'lock');
 
   my $obj = $type eq 'v' ? $self->dbVNGet(id => $iid)->[0] :
-            $type eq 'r' ? $self->dbReleaseGet(id => $iid, what => 'vn extended')->[0] :
+            $type eq 'r' ? $self->dbReleaseGet(id => $iid, what => 'extended')->[0] :
                            $self->dbProducerGet(id => $iid, what => 'extended')->[0];
   return 404 if !$obj->{id};
 
   $self->dbItemMod($type, $iid, $act eq 'hide' ? (hidden => !$obj->{hidden}) : (locked => !$obj->{locked}));
-
-  # update cached vn info when hiding an r+ page
-  $self->dbVNCache(map $_->{vid}, @{$obj->{vn}})
-    if $type eq 'r' && $act eq 'hide';
-
   $self->resRedirect("/$type$iid", 'temp');
 }
 

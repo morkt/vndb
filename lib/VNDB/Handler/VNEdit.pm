@@ -69,8 +69,8 @@ sub edit {
       return $self->resRedirect("/v$vid", 'post')
         if $vid && !$self->reqUploadFileName('img') && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
-      # execute the edit/add
-      my %args = (
+      # perform the edit/add
+      my $nrev = $self->dbItemEdit(v => $vid ? $v->{cid} : undef,
         (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum img_nsfw|),
         anime => [ keys %$anime ],
         relations => $relations,
@@ -78,18 +78,14 @@ sub edit {
         screenshots => $screenshots,
       );
 
-      my($nvid, $nrev, $cid) = ($vid, 1);
-      ($nrev, $cid) = $self->dbVNEdit($vid, %args) if $vid;
-      ($nvid, $cid) = $self->dbVNAdd(%args) if !$vid;
-
       # update reverse relations & relation graph
       if(!$vid && $#$relations >= 0 || $vid && $frm->{vnrelations} ne $b4{vnrelations}) {
         my %old = $vid ? (map { $_->{id} => $_->{relation} } @{$v->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations;
-        _updreverse($self, \%old, \%new, $nvid, $cid, $nrev);
+        _updreverse($self, \%old, \%new, $nrev->{iid}, $nrev->{rev});
       }
 
-      return $self->resRedirect("/v$nvid.$nrev", 'post');
+      return $self->resRedirect("/v$nrev->{iid}.$nrev->{rev}", 'post');
     }
   }
 
@@ -236,14 +232,12 @@ sub _form {
 
 
 # Update reverse relations and regenerate relation graph
-# Arguments: %old. %new, vid, cid, rev
+# Arguments: %old. %new, vid, rev
 #  %old,%new -> { vid2 => relation, .. }
 #    from the perspective of vid
-#  cid, rev are of the related edit
-# !IMPORTANT!: Don't forget to update this function when
-#   adding/removing fields to/from VN entries!
+#  rev is of the related edit
 sub _updreverse {
-  my($self, $old, $new, $vid, $cid, $rev) = @_;
+  my($self, $old, $new, $vid, $rev) = @_;
   my %upd;
 
   # compare %old and %new
@@ -254,22 +248,17 @@ sub _updreverse {
       $upd{$_} = $self->{vn_relations}{$$new{$_}}[1];
     }
   }
-
   return if !keys %upd;
 
   # edit all related VNs
   for my $i (keys %upd) {
-    my $r = $self->dbVNGet(id => $i, what => 'extended relations anime screenshots')->[0];
+    my $r = $self->dbVNGet(id => $i, what => 'relations')->[0];
     my @newrel = map $_->{id} != $vid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
     push @newrel, [ $upd{$i}, $vid ] if $upd{$i};
-    $self->dbVNEdit($i,
+    $self->dbItemEdit(v => $r->{cid},
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision v$vid.$rev",
-      causedby => $cid,
-      uid => 1,         # Multi - hardcoded
-      anime => [ map $_->{id}, @{$r->{anime}} ],
-      screenshots => [ map [ $_->{id}, $_->{nsfw}, $_->{rid} ], @{$r->{screenshots}} ],
-      ( map { $_ => $r->{$_} } qw| title original desc alias img_nsfw length l_wp l_encubed l_renai l_vnn image | )
+      uid => 1, # Multi
     );
   }
 }
@@ -321,8 +310,10 @@ sub scrxml {
   }
 
   # upload new screenshot
+  my $num = $self->formValidate({name => 'upload', template => 'int'});
+  return 404 if $num->{_err};
   my $tmp = sprintf '%s/static/sf/00/tmp.%d.jpg', $VNDB::ROOT, $$*int(rand(1000)+1);
-  $self->reqSaveUpload('scr_upload', $tmp);
+  $self->reqSaveUpload("scr_upl_file_$num->{upload}", $tmp);
 
   my $id = 0;
   $id = -2 if !-s $tmp;

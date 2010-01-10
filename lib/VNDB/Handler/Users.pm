@@ -117,7 +117,7 @@ sub userpage {
     h1 class => 'boxtitle';
      a href => "/u$uid/hist", mt '_userpage_changes';
     end;
-    $self->htmlHistory($list, { p => 1 }, 0, "/u$uid/hist");
+    $self->htmlBrowseHist($list, { p => 1 }, 0, "/u$uid/hist");
   }
   $self->htmlFooter;
 }
@@ -474,7 +474,7 @@ sub list {
   end;
 
   my($list, $np) = $self->dbUserGet(
-    order => ($f->{s} eq 'changes' || $f->{s} eq 'tags' ? 'c_' : $f->{s} eq 'votes' ? 'NOT show_list, c_' : '').$f->{s}.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
     $char ne 'all' ? (
       firstchar => $char ) : (),
     results => 50,

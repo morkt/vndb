@@ -55,21 +55,13 @@ sub list {
   $f->{s} = 'title' if !@ti && $f->{s} eq 'tagscore';
   $f->{o} = $f->{s} eq 'tagscore' ? 'd' : 'a' if !$f->{o};
 
-  my $sortcol = {qw|
-    rel      c_released
-    pop      c_popularity
-    rating   c_rating
-    title    title
-    tagscore tagscore
-  |}->{$f->{s}};
-
   my($list, $np) = $self->dbVNGet(
     what => 'rating',
     $char ne 'all' ? ( char => $char ) : (),
     $f->{q} ? ( search => $f->{q} ) : (),
     results => 50,
     page => $f->{p},
-    order => $sortcol.($f->{o} eq 'a' ? ' ASC' : ' DESC'),
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
     $f->{pl}[0] ? ( platform => $f->{pl} ) : (),
     $f->{ln}[0] ? ( lang => $f->{ln} ) : (),
     @ti ? (tags_include => [ $f->{sp}, \@ti ]) : (),
@@ -85,52 +77,7 @@ sub list {
   my $url = "/v/$char?q=$f->{q};ti=$f->{ti};te=$f->{te}";
   $_ and $url .= ";pl=$_" for @{$f->{pl}};
   $_ and $url .= ";ln=$_" for @{$f->{ln}};
-  $self->htmlBrowse(
-    class    => 'vnbrowse',
-    items    => $list,
-    options  => $f,
-    nextpage => $np,
-    pageurl  => "$url;o=$f->{o};s=$f->{s}",
-    sorturl  => $url,
-    header   => [
-      @ti ? [ mt('_vnbrowse_col_score'), 'tagscore', undef, 'tc_s' ] : (),
-      [ mt('_vnbrowse_col_title'),       'title', undef, @ti ? 'tc_t' : 'tc1' ],
-      [ '',                              0,       undef, 'tc2' ],
-      [ '',                              0,       undef, 'tc3' ],
-      [ mt('_vnbrowse_col_released'),    'rel',   undef, 'tc4' ],
-      [ mt('_vnbrowse_col_popularity'),  'pop',   undef, 'tc5' ],
-      [ mt('_vnbrowse_col_rating'),      'rating', undef, 'tc6' ],
-    ],
-    row     => sub {
-      my($s, $n, $l) = @_;
-      Tr $n % 2 ? (class => 'odd') : ();
-       if(@ti) {
-         td class => 'tc_s';
-          tagscore $l->{tagscore}, 0;
-         end;
-       }
-       td class => @ti ? 'tc_t' : 'tc1';
-        a href => '/v'.$l->{id}, title => $l->{original}||$l->{title}, shorten $l->{title}, 100;
-       end;
-       td class => 'tc2';
-        $_ ne 'oth' && cssicon $_, mt "_plat_$_"
-          for (sort split /\//, $l->{c_platforms});
-       end;
-       td class => 'tc3';
-        cssicon "lang $_", mt "_lang_$_"
-          for (reverse sort split /\//, $l->{c_languages});
-       end;
-       td class => 'tc4';
-        lit $self->{l10n}->datestr($l->{c_released});
-       end;
-       td class => 'tc5', sprintf '%.2f', ($l->{c_popularity}||0)*100;
-       td class => 'tc6';
-        txt sprintf '%.2f', $l->{c_rating}||0;
-        b class => 'grayedout', sprintf ' (%d)', $l->{c_votecount};
-       end;
-      end;
-    },
-  );
+  $self->htmlBrowseVN($list, $f, $np, $url, scalar @ti);
   $self->htmlFooter;
 }
 

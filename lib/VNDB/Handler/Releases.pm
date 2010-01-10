@@ -40,13 +40,13 @@ sub page {
         map sprintf('<a href="/v%d" title="%s">%s</a>', $_->{vid}, $_->{original}||$_->{title}, shorten $_->{title}, 50), @{$_[0]};
       } ],
       [ type       => serialize => sub { mt "_rtype_$_[0]" } ],
-      [ patch      => serialize => sub { $_[0] ? 'Patch' : 'Not a patch' } ],
-      [ freeware   => serialize => sub { $_[0] ? 'yes' : 'nope' } ],
-      [ doujin     => serialize => sub { $_[0] ? 'yups' : 'nope' } ],
+      [ patch      => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
+      [ freeware   => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
+      [ doujin     => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
       [ title      => diff => 1 ],
       [ original   => diff => 1 ],
-      [ gtin       => serialize => sub { $_[0]||'[none]' } ],
-      [ catalog    => serialize => sub { $_[0]||'[none]' } ],
+      [ gtin       => serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ catalog    => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ languages  => join => ', ', split => sub { map mt("_lang_$_"), @{$_[0]} } ],
       [ 'website' ],
       [ released   => htmlize   => sub { $self->{l10n}->datestr($_[0]) } ],
@@ -310,7 +310,7 @@ sub edit {
         func => [ \&gtintype, 'Not a valid JAN/UPC/EAN code' ] },
       { name => 'catalog',   required => 0, default => '', maxlength => 50 },
       { name => 'languages', multi => 1, enum => $self->{languages} },
-      { name => 'website',   required => 0, default => '', template => 'url' },
+      { name => 'website',   required => 0, default => '', maxlength => 250, template => 'url' },
       { name => 'released',  required => 0, default => 0, template => 'int' },
       { name => 'minage' ,   required => 0, default => -1, enum => [map !defined($_)?-1:$_, @{$self->{age_ratings}}] },
       { name => 'notes',     required => 0, default => '', maxlength => 10240 },
@@ -348,7 +348,7 @@ sub edit {
     }
 
     if(!$frm->{_err}) {
-      my %opts = (
+      my $nrev = $self->dbItemEdit(r => !$copy && $rid ? $r->{cid} : undef,
         (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released
           notes platforms resolution editsum patch voiced freeware doujin ani_story ani_ero|),
         minage    => $frm->{minage} < 0 ? undef : $frm->{minage},
@@ -357,13 +357,7 @@ sub edit {
         media     => $media,
       );
 
-      $rev = 1;
-      ($rev) = $self->dbReleaseEdit($rid, %opts) if !$copy && $rid;
-      ($rid) = $self->dbReleaseAdd(%opts) if $copy || !$rid;
-
-      $self->dbVNCache(@$new_vn, map $_->{vid}, @$vn);
-
-      return $self->resRedirect("/r$rid.$rev", 'post');
+      return $self->resRedirect("/r$nrev->{iid}.$nrev->{rev}", 'post');
     }
   }
 
@@ -517,7 +511,7 @@ sub browse {
     $f->{do} ? (doujin => $f->{do}) : (),
   );
   my($list, $np) = !@filters ? ([], 0) : $self->dbReleaseGet(
-    order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
     page => $f->{p},
     results => 50,
     what => 'platforms',

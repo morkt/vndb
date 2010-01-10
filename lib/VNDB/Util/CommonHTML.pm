@@ -11,8 +11,8 @@ use Encode 'encode_utf8', 'decode_utf8';
 use POSIX 'ceil';
 
 our @EXPORT = qw|
-  htmlMainTabs htmlDenied htmlHiddenMessage htmlBrowse htmlBrowseNavigate
-  htmlRevision htmlEditMessage htmlItemMessage htmlVoteStats htmlHistory htmlSearchBox htmlRGHeader
+  htmlMainTabs htmlDenied htmlHiddenMessage htmlRevision
+  htmlEditMessage htmlItemMessage htmlVoteStats htmlSearchBox htmlRGHeader
 |;
 
 
@@ -155,99 +155,6 @@ sub htmlHiddenMessage {
 }
 
 
-# generates a browse box, arguments:
-#  items    => arrayref with the list items
-#  options  => hashref containing at least the keys s (sort key), o (order) and p (page)
-#  nextpage => whether there's a next page or not
-#  sorturl  => base URL to append the sort options to (if there are any sortable columns)
-#  pageurl  => base URL to append the page option to
-#  class    => classname of the mainbox
-#  header   =>
-#   can be either an arrayref or subroutine reference,
-#   in the case of a subroutine, it will be called when the header should be written,
-#   in the case of an arrayref, the array should contain the header items. Each item
-#   can again be either an arrayref or subroutine ref. The arrayref would consist of
-#   two elements: the name of the header, and the name of the sorting column if it can
-#   be sorted
-#  row      => subroutine ref, which is called for each item in $list, arguments will be
-#   $self, $item_number (starting from 0), $item_value
-#  footer   => subroutine ref, called after all rows have been processed
-sub htmlBrowse {
-  my($self, %opt) = @_;
-
-  $opt{sorturl} .= $opt{sorturl} =~ /\?/ ? ';' : '?' if $opt{sorturl};
-
-  # top navigation
-  $self->htmlBrowseNavigate($opt{pageurl}, $opt{options}{p}, $opt{nextpage}, 't');
-
-  div class => 'mainbox browse'.($opt{class} ? ' '.$opt{class} : '');
-   table;
-
-   # header
-    thead;
-     Tr;
-      if(ref $opt{header} eq 'CODE') {
-        $opt{header}->($self);
-      } else {
-        for(0..$#{$opt{header}}) {
-          if(ref $opt{header}[$_] eq 'CODE') {
-            $opt{header}[$_]->($self, $_+1);
-          } else {
-            td class => $opt{header}[$_][3]||'tc'.($_+1), $opt{header}[$_][2] ? (colspan => $opt{header}[$_][2]) : ();
-             lit $opt{header}[$_][0];
-             if($opt{header}[$_][1]) {
-               lit ' ';
-               lit $opt{options}{s} eq $opt{header}[$_][1] && $opt{options}{o} eq 'a' ? "\x{25B4}" : qq|<a href="$opt{sorturl}o=a;s=$opt{header}[$_][1]">\x{25B4}</a>|;
-               lit $opt{options}{s} eq $opt{header}[$_][1] && $opt{options}{o} eq 'd' ? "\x{25BE}" : qq|<a href="$opt{sorturl}o=d;s=$opt{header}[$_][1]">\x{25BE}</a>|;
-             }
-            end;
-          }
-        }
-      }
-     end;
-    end;
-
-   # footer
-    if($opt{footer}) {
-      tfoot;
-       $opt{footer}->($self);
-      end;
-    }
-
-   # rows
-    $opt{row}->($self, $_+1, $opt{items}[$_])
-      for 0..$#{$opt{items}};
-
-   end;
-  end;
-
-  # bottom navigation
-  $self->htmlBrowseNavigate($opt{pageurl}, $opt{options}{p}, $opt{nextpage}, 'b');
-}
-
-
-# creates next/previous buttons (tabs), if needed
-# Arguments: page url, current page (1..n), nextpage (0/1), alignment (t/b), noappend (0/1)
-sub htmlBrowseNavigate {
-  my($self, $url, $p, $np, $al, $na) = @_;
-  return if $p == 1 && !$np;
-
-  $url .= $url =~ /\?/ ? ';p=' : '?p=' unless $na;
-  ul class => 'maintabs ' . ($al eq 't' ? 'notfirst' : 'bottom');
-   if($p > 1) {
-     li class => 'left';
-      a href => $url.($p-1), '<- '.mt '_browse_previous';
-     end;
-   }
-   if($np) {
-     li;
-      a href => $url.($p+1), mt('_browse_next').' ->';
-     end;
-   }
-  end;
-}
-
-
 # Shows a revision, including diff if there is a previous revision.
 # Arguments: v|p|r, old revision, new revision, @fields
 # Where @fields is a list of fields as arrayrefs with:
@@ -341,8 +248,8 @@ sub revdiff {
       # $i % 2 == 0  -> equal, otherwise it's different
       my $a = join($o{join}, @ser1[ $d[$i*2]   .. $d[$i*2+2]-1 ]);
       my $b = join($o{join}, @ser2[ $d[$i*2+1] .. $d[$i*2+3]-1 ]);
-      $ser1 .= ($ser1?$o{join}:'').($i % 2 ? qq|<b class="diff_del">$a</b>| : $a) if $a;
-      $ser2 .= ($ser2?$o{join}:'').($i % 2 ? qq|<b class="diff_add">$b</b>| : $b) if $b;
+      $ser1 .= ($ser1?$o{join}:'').($i % 2 ? qq|<b class="diff_del">$a</b>| : $a) if $a ne '';
+      $ser2 .= ($ser2?$o{join}:'').($i % 2 ? qq|<b class="diff_add">$b</b>| : $b) if $b ne '';
     }
     $ser1 = decode_utf8($ser1);
     $ser2 = decode_utf8($ser2);
@@ -351,8 +258,8 @@ sub revdiff {
     $ser2 = xml_escape $ser2;
   }
 
-  $ser1 = mt '_revision_emptyfield' if !$ser1 && $ser1 ne '0';
-  $ser2 = mt '_revision_emptyfield' if !$ser2 && $ser2 ne '0';
+  $ser1 = mt '_revision_empty' if !$ser1 && $ser1 ne '0';
+  $ser2 = mt '_revision_empty' if !$ser2 && $ser2 ne '0';
 
   Tr $$i++ % 2 ? (class => 'odd') : ();
    td mt "_revfield_${type}_$short";
@@ -375,7 +282,7 @@ sub htmlEditMessage {
      div class => 'warning';
       h2 mt '_editmsg_copy_title';
       p;
-       lit mt '_editmsg_copy_msg', sprintf '<a href="/%s%d">%s</a>', $type, $obj->{id}, xml_escape $obj->{title}, 
+       lit mt '_editmsg_copy_msg', sprintf '<a href="/%s%d">%s</a>', $type, $obj->{id}, xml_escape $obj->{title};
       end;
      end;
    }
@@ -452,7 +359,6 @@ sub htmlVoteStats {
    my $recent = $self->dbVoteGet(
      $type.'id' => $obj->{id},
      results => 8,
-     order => 'date DESC',
      what => $type eq 'v' ? 'user' : 'vn',
      hide => $type eq 'v',
      hide_ign => $type eq 'v',
@@ -487,51 +393,6 @@ sub htmlVoteStats {
      end;
    }
   end;
-}
-
-
-sub htmlHistory {
-  my($self, $list, $f, $np, $url) = @_;
-  $self->htmlBrowse(
-    items    => $list,
-    options  => $f,
-    nextpage => $np,
-    pageurl  => $url,
-    class    => 'history',
-    header   => [
-      sub { td colspan => 2, class => 'tc1', mt '_hist_col_rev' },
-      [ mt '_hist_col_date' ],
-      [ mt '_hist_col_user' ],
-      sub { td; a href => '#', id => 'expandlist', mt '_js_expand'; txt mt '_hist_col_page'; end; }
-    ],
-    row      => sub {
-      my($s, $n, $i) = @_;
-      my $revurl = "/$i->{type}$i->{iid}.$i->{rev}";
-
-      Tr $n % 2 ? ( class => 'odd' ) : ();
-       td class => 'tc1_1';
-        a href => $revurl, "$i->{type}$i->{iid}";
-       end;
-       td class => 'tc1_2';
-        a href => $revurl, ".$i->{rev}";
-       end;
-       td class => 'tc2', $self->{l10n}->date($i->{added});
-       td class => 'tc3';
-        lit $self->{l10n}->userstr($i);
-       end;
-       td;
-        a href => $revurl, title => $i->{ioriginal}, shorten $i->{ititle}, 80;
-       end;
-      end;
-      if($i->{comments}) {
-        Tr class => $n % 2 ? 'collapse msgsum odd hidden' : 'collapse msgsum hidden';
-         td colspan => 5;
-          lit bb2html $i->{comments}, 150;
-         end;
-        end;
-      }
-    },
-  );
 }
 
 

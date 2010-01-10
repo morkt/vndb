@@ -73,12 +73,10 @@ use warnings;
   }
 
   # argument: unix timestamp and optional format (compact/full)
-  # return value: yyyy-mm-dd
-  # (maybe an idea to use cgit-style ages for recent timestamps)
   sub date {
     my($s, $t, $f) = @_;
-    return strftime '%Y-%m-%d', gmtime $t if !$f || $f eq 'compact';
-    return strftime '%Y-%m-%d at %R', gmtime $t;
+    return strftime $s->maketext('_datetime_compact'), gmtime $t if !$f || $f eq 'compact';
+    return strftime $s->maketext('_datetime_full'), gmtime $t;
   }
 
   # argument: database release date format (yyyymmdd)

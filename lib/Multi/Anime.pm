@@ -147,7 +147,6 @@ sub nextcmd {
       clientver => $_[HEAP]{clientver},
       enc => 'UTF-8',
     );
-    $_[KERNEL]->call(core => log => 'Authenticating with AniDB...');
   }
   # logged in, get anime
   else {
@@ -156,7 +155,6 @@ sub nextcmd {
       aid => $_[HEAP]{aid},
       acode => 3973121, # aid, ANN id, NFO id, year, type, romaji, kanji
     );
-    $_[KERNEL]->call(core => log => 'Fetching info for a%d', $_[HEAP]{aid});
   }
 
   # send command
@@ -179,17 +177,14 @@ sub receivepacket { # input, wheelid
   # parse message
   my @r = split /\n/, $_[ARG0]{payload}[0];
   my($tag, $code, $msg) = ($1, $2, $3) if $r[0] =~ /^([0-9]+) ([0-9]+) (.+)$/;
-
-  # log
-  $_[KERNEL]->call(core => log => 'Received from AniDB after %.2fs: %d %s',
-    time-$_[HEAP]{lm}, $code, $msg);
+  my $time = time-$_[HEAP]{lm};
 
   # tag incorrect, ignore message
-  return $_[KERNEL]->call(core => log => 'Ignoring incorrect tag')
+  return $_[KERNEL]->call(core => log => 'Ignoring incorrect tag of message: %d %s', $code, $msg)
     if $tag != $_[HEAP]{tag};
 
   # unhandled code, ignore as well
-  return $_[KERNEL]->call(core => log => 'Ignoring unhandled code')
+  return $_[KERNEL]->call(core => log => 'Ignoring unhandled code %d (%s)', $code, $msg)
     if !grep $_ == $code, @handled_codes;
 
   # at this point, we have a message we can handle, so disable the timeout
@@ -201,7 +196,7 @@ sub receivepacket { # input, wheelid
     $_[HEAP]{tm}++;
     my $delay = $_[HEAP]{msgdelay}**(1 + $_[HEAP]{tm}*$_[HEAP]{timeoutdelay});
     $delay = $_[HEAP]{maxtimeoutdelay} if $delay > $_[HEAP]{maxtimeoutdelay};
-    $_[KERNEL]->call(core => log => 'Delaying %.0fs.', $delay);
+    $_[KERNEL]->call(core => log => 'Reply timed out, delaying %.0fs.', $delay);
     return $_[KERNEL]->delay(nextcmd => $_[HEAP]{msgdelay});
   }
 
@@ -211,12 +206,14 @@ sub receivepacket { # input, wheelid
   # our session isn't valid, discard it and call nextcmd to get a new one
   if($code == NOT_LOGGED_IN || $code == LOGIN_FIRST || $code == INVALID_SESSION) {
     $_[HEAP]{s} = '';
+    $_[KERNEL]->call(core => log => 'Our session was invalid, logging in again...');
     return $_[KERNEL]->delay(nextcmd => $_[HEAP]{msgdelay});
   }
 
   # we received a session ID, call nextcmd again to fetch anime info
   if($code == LOGIN_ACCEPTED || $code == LOGIN_ACCEPTED_NEW_VER) {
     $_[HEAP]{s} = $1 if $msg =~ /^\s*([a-zA-Z0-9]{4,8}) /;
+    $_[KERNEL]->call(core => log => 'Successfully logged in to AniDB in %.2fs.', $time);
     return $_[KERNEL]->delay(nextcmd => $_[HEAP]{msgdelay});
   }
 
@@ -244,7 +241,7 @@ sub receivepacket { # input, wheelid
       WHERE id = ?',
       [ @col, $_[HEAP]{aid} ]
     );
-    $_[KERNEL]->call(core => log => 'Updated anime info for a%d', $_[HEAP]{aid});
+    $_[KERNEL]->call(core => log => 'Fetched anime info for a%d in %.2fs', $_[HEAP]{aid}, $time);
     $_[KERNEL]->call(core => log => 'ERROR: a%d doesn\'t have a title or year!', $_[HEAP]{aid})
       if !$col[3] || !$col[5];
   }

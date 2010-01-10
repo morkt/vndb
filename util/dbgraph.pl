@@ -2,7 +2,7 @@
 
 
 # Generates a graphviz relation graph of the complete SQL database,
-# information is parsed from dump.sql (has to be in the 'current directory').
+# information is parsed from sql/schema.sql
 # outputs the graph in dot format, usable as input to graphviz.
 #
 # Usage:
@@ -13,6 +13,10 @@
 
 use strict;
 use warnings;
+
+
+use Cwd 'abs_path';
+(my $ROOT = abs_path $0) =~ s{/util/dbgraph\.pl$}{};
 
 
 my %subgraphs = (
@@ -29,7 +33,7 @@ my %tables; # table_name => [ [ col1, pri ], ... ]
 my @rel; # 'table:col -- table:col', ...
 
 sub parse_dump {
-  open my $R, '<', 'dump.sql' or die $!;
+  open my $R, '<', "$ROOT/util/sql/schema.sql" or die $!;
   my $in='';
   while (<$R>) {
     chomp;

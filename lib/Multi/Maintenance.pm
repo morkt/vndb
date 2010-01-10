@@ -17,13 +17,13 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown set_daily daily set_monthly monthly log_stats
-        vncache tagcache vnpopularity vnrating cleangraphs
-        usercache statscache logrotate
+        vncache_inc tagcache vnpopularity vnrating cleangraphs
+        vncache_full usercache statscache logrotate
       |],
     ],
     heap => {
-      daily => [qw|vncache tagcache vnpopularity vnrating cleangraphs|],
-      monthly => [qw|usercache statscache logrotate|],
+      daily => [qw|vncache_inc tagcache vnpopularity vnrating cleangraphs|],
+      monthly => [qw|vncache_full usercache statscache logrotate|],
       @_,
     },
   );
@@ -98,21 +98,31 @@ sub log_stats { # num, res, action, time
 #
 
 
-sub vncache {
-  # this takes about 40s to complete. We really need to search for an alternative
-  # method of keeping the c_* columns in the vn table up-to-date.
-  $_[KERNEL]->post(pg => do => 'SELECT update_vncache(0)', undef, 'log_stats', 'vncache');
+sub vncache_inc {
+  # takes about 50ms to 1s to complete, depending on how many
+  # releases have been released within the past 5 days
+  $_[KERNEL]->post(pg => do => q|
+    SELECT update_vncache(id)
+      FROM (
+        SELECT DISTINCT rv.vid
+          FROM releases r
+          JOIN releases_rev rr ON rr.id = r.latest
+          JOIN releases_vn rv ON rv.rid = r.latest
+         WHERE rr.released  > TO_CHAR(NOW() - '5 days'::interval, 'YYYYMMDD')::integer
+           AND rr.released <= TO_CHAR(NOW(), 'YYYYMMDD')::integer
+     ) AS r(id)
+  |, undef, 'log_stats', 'vncache_inc');
 }
 
 
 sub tagcache {
-  # takes about 18 seconds max. ouch, but still kind-of acceptable
+  # takes about 2 seconds max, still OK
   $_[KERNEL]->post(pg => do => 'SELECT tag_vn_calc()', undef, 'log_stats', 'tagcache');
 }
 
 
 sub vnpopularity {
-  # still takes at most 2 seconds. let's hope that doesn't increase...
+  # still takes at most 3 seconds. let's hope that doesn't increase...
   $_[KERNEL]->post(pg => do => 'SELECT update_vnpopularity()', undef, 'log_stats', 'vnpopularity');
 }
 
@@ -144,6 +154,13 @@ sub cleangraphs {
 #
 #  M O N T H L Y   J O B S
 #
+
+
+sub vncache_full {
+  # this takes more than a minute to complete, and should only be necessary in the
+  # event that the daily vncache_inc cron hasn't been running for 5 subsequent days.
+  $_[KERNEL]->post(pg => do => 'SELECT update_vncache(id) FROM vn', undef, 'log_stats', 'vncache_full');
+}
 
 
 sub usercache {

@@ -7,16 +7,16 @@ use Exporter 'import';
 use VNDB::Func 'gtintype';
 use Encode 'decode_utf8';
 
-our @EXPORT = qw|dbVNGet dbVNAdd dbVNEdit dbVNImageId dbVNCache dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
+our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
 
 
-# Options: id, rev, char, search, lang, platform, tags_include, tags_exclude, results, page, order, what
+# Options: id, rev, char, search, lang, platform, tags_include, tags_exclude, results, page, what, sort, reverse
 # What: extended anime relations screenshots relgraph rating ranking changes
+# Sort: id rel pop rating title tagscore rand
 sub dbVNGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
   $o{page}    ||= 1;
-  $o{order}   ||= 'vr.title ASC';
   $o{what}    ||= '';
 
   my %where = (
@@ -33,11 +33,11 @@ sub dbVNGet {
     $o{platform} && @{$o{platform}} ? (
       '('.join(' OR ', map "v.c_platforms ILIKE '%%$_%%'", @{$o{platform}}).')' => 1 ) : (),
     $o{tags_include} && @{$o{tags_include}} ? (
-      'v.id IN(SELECT vid FROM tags_vn_bayesian WHERE tag IN(!l) AND spoiler <= ? GROUP BY vid HAVING COUNT(tag) = ?)',
+      'v.id IN(SELECT vid FROM tags_vn_inherit WHERE tag IN(!l) AND spoiler <= ? GROUP BY vid HAVING COUNT(tag) = ?)',
       [ $o{tags_include}[1], $o{tags_include}[0], $#{$o{tags_include}[1]}+1 ]
     ) : (),
     $o{tags_exclude} && @{$o{tags_exclude}} ? (
-      'v.id NOT IN(SELECT vid FROM tags_vn_bayesian WHERE tag IN(!l))' => [ $o{tags_exclude} ] ) : (),
+      'v.id NOT IN(SELECT vid FROM tags_vn_inherit WHERE tag IN(!l))' => [ $o{tags_exclude} ] ) : (),
    # don't fetch hidden items unless we ask for an ID
     !$o{id} && !$o{rev} ? (
       'v.hidden = FALSE' => 0 ) : (),
@@ -86,24 +86,35 @@ sub dbVNGet {
     $o{what} =~ /extended/ ? (
       qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai vr.l_vnn| ) : (),
     $o{what} =~ /changes/ ? (
-      qw|c.requester c.comments v.latest u.username c.rev c.causedby|, q|extract('epoch' from c.added) as added|) : (),
+      qw|c.requester c.comments v.latest u.username c.rev|, q|extract('epoch' from c.added) as added|) : (),
     $o{what} =~ /relgraph/ ? 'vg.svg' : (),
     $o{what} =~ /rating/ ? (qw|v.c_popularity v.c_rating v.c_votecount|) : (),
     $o{what} =~ /ranking/ ? (
       '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_popularity > v.c_popularity) AS p_ranking',
       '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_rating > v.c_rating) AS r_ranking',
     ) : (),
+    # TODO: optimize this, as it will be very slow when the selected tags match a lot of VNs (>1000)
     $tag_ids ?
-      qq|(SELECT AVG(tvb.rating) FROM tags_vn_bayesian tvb WHERE tvb.tag IN($tag_ids) AND tvb.vid = v.id AND spoiler <= $o{tags_include}[0] GROUP BY tvb.vid) AS tagscore| : (),
+      qq|(SELECT AVG(tvh.rating) FROM tags_vn_inherit tvh WHERE tvh.tag IN($tag_ids) AND tvh.vid = v.id AND spoiler <= $o{tags_include}[0] GROUP BY tvh.vid) AS tagscore| : (),
   );
+
+  my $order = sprintf {
+    id       => 'id %s',
+    rel      => 'c_released %s',
+    pop      => 'c_popularity %s NULLS LAST',
+    rating   => 'c_rating %s NULLS LAST',
+    title    => 'title %s',
+    tagscore => 'tagscore %s',
+    rand     => 'RANDOM()',
+  }->{ $o{sort}||'title' }, $o{reverse} ? 'DESC' : 'ASC';
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
       FROM vn_rev vr
       !s
       !W
-      ORDER BY !s NULLS LAST|,
-    join(', ', @select), join(' ', @join), \%where, $o{order},
+      ORDER BY !s|,
+    join(', ', @select), join(' ', @join), \%where, $order,
   );
 
   if($o{what} =~ /relgraph/) {
@@ -160,70 +171,44 @@ sub dbVNGet {
 }
 
 
-# arguments: id, %options ->( editsum uid + insert_rev )
-# returns: ( local revision, global revision )
-sub dbVNEdit {
-  my($self, $id, %o) = @_;
-  my($rev, $cid) = $self->dbRevisionInsert('v', $id, $o{editsum}, $o{uid});
-  insert_rev($self, $cid, $id, \%o);
-  return ($rev, $cid);
-}
-
-
-# arguments: %options ->( editsum uid + insert_rev )
-# returns: ( item id, global revision )
-sub dbVNAdd {
-  my($self, %o) = @_;
-  my($id, $cid) = $self->dbItemInsert('v', $o{editsum}, $o{uid});
-  insert_rev($self, $cid, $id, \%o);
-  return ($id, $cid);
-}
-
-
-# helper function, inserts a producer revision
-# Arguments: global revision, item id, { columns in producers_rev + anime + relations + screenshots }
+# Updates the edit_* tables, used from dbItemEdit()
+# Arguments: { columns in producers_rev + anime + relations + screenshots }
 #  screenshots = [ [ scrid, nsfw, rid ], .. ]
 #  relations   = [ [ rel, vid ], .. ]
 #  anime       = [ aid, .. ]
-sub insert_rev {
-  my($self, $cid, $vid, $o) = @_;
+sub dbVNRevisionInsert {
+  my($self, $o) = @_;
 
-  $o->{img_nsfw} = $o->{img_nsfw}?1:0;
-  $self->dbExec(q|
-    INSERT INTO vn_rev (id, vid, title, original, "desc", alias, image, img_nsfw, length, l_wp, l_encubed, l_renai, l_vnn)
-      VALUES (!l)|,
-    [ $cid, $vid, @$o{qw|title original desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|} ]);
+  $o->{img_nsfw} = $o->{img_nsfw}?1:0 if exists $o->{img_nsfw};
+  my %set = map exists($o->{$_}) ? (qq|"$_" = ?| => $o->{$_}) : (),
+    qw|title original desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|;
+  $self->dbExec('UPDATE edit_vn !H', \%set) if keys %set;
 
-  $self->dbExec(q|
-    INSERT INTO vn_screenshots (vid, scr, nsfw, rid)
-      VALUES (?, ?, ?, ?)|,
-    $cid, $_->[0], $_->[1]?1:0, $_->[2]
-  ) for (@{$o->{screenshots}});
+  if($o->{screenshots}) {
+    $self->dbExec('DELETE FROM edit_vn_screenshots');
+    my $q = join ',', map '(?, ?, ?)', @{$o->{screenshots}};
+    my @val = map +($_->[0], $_->[1]?1:0, $_->[2]), @{$o->{screenshots}};
+    $self->dbExec("INSERT INTO edit_vn_screenshots (scr, nsfw, rid) VALUES $q", @val) if @val;
+  }
 
-  $self->dbExec(q|
-    INSERT INTO vn_relations (vid1, vid2, relation)
-      VALUES (?, ?, ?)|,
-    $cid, $_->[1], $_->[0]
-  ) for (@{$o->{relations}});
+  if($o->{relations}) {
+    $self->dbExec('DELETE FROM edit_vn_relations');
+    my $q = join ',', map '(?, ?)', @{$o->{relations}};
+    my @val = map +($_->[1], $_->[0]), @{$o->{relations}};
+    $self->dbExec("INSERT INTO edit_vn_relations (vid, relation) VALUES $q", @val) if @val;
+  }
 
-  $self->dbExec(q|
-    INSERT INTO vn_anime (vid, aid)
-      VALUES (?, ?)|,
-    $cid, $_
-  ) for (@{$o->{anime}});
+  if($o->{anime}) {
+    $self->dbExec('DELETE FROM edit_vn_anime');
+    my $q = join ',', map '(?)', @{$o->{anime}};
+    $self->dbExec("INSERT INTO edit_vn_anime (aid) VALUES $q", @{$o->{anime}}) if @{$o->{anime}};
+  }
 }
 
 
 # fetches an ID for a new image
 sub dbVNImageId {
   return shift->dbRow("SELECT nextval('covers_seq') AS ni")->{ni};
-}
-
-
-# Updates the vn.c_ columns
-sub dbVNCache {
-  my($self, @vn) = @_;
-  $self->dbExec('SELECT update_vncache(?)', $_) for (@vn);
 }
 
 

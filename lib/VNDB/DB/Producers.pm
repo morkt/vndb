@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbProducerGet dbProducerEdit dbProducerAdd|;
+our @EXPORT = qw|dbProducerGet dbProducerRevisionInsert|;
 
 
 # options: results, page, id, search, char, rev
@@ -100,42 +100,23 @@ sub dbProducerGet {
 }
 
 
-# arguments: id, %options ->( editsum uid + insert_rev )
-# returns: ( local revision, global revision )
-sub dbProducerEdit {
-  my($self, $pid, %o) = @_;
-  my($rev, $cid) = $self->dbRevisionInsert('p', $pid, $o{editsum}, $o{uid});
-  insert_rev($self, $cid, $pid, \%o);
-  return ($rev, $cid);
-}
+# Updates the edit_* tables, used from dbItemEdit()
+# Arguments: { columns in producers_rev + relations },
+sub dbProducerRevisionInsert {
+  my($self, $o) = @_;
 
+  my %set = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
+    qw|name original website l_wp type lang desc alias|;
+  $self->dbExec('UPDATE edit_producer !H', \%set) if keys %set;
 
-# arguments: %options ->( editsum uid + insert_rev )
-# returns: ( item id, global revision )
-sub dbProducerAdd {
-  my($self, %o) = @_;
-  my($pid, $cid) = $self->dbItemInsert('p', $o{editsum}, $o{uid});
-  insert_rev($self, $cid, $pid, \%o);
-  return ($pid, $cid);
-}
-
-
-# helper function, inserts a producer revision
-# Arguments: global revision, item id, { columns in producers_rev }, relations
-sub insert_rev {
-  my($self, $cid, $pid, $o) = @_;
-  $self->dbExec(q|
-    INSERT INTO producers_rev (id, pid, name, original, website, l_wp, type, lang, "desc", alias)
-      VALUES (!l)|,
-    [ $cid, $pid, @$o{qw| name original website l_wp type lang desc alias|} ]
-  );
-
-  $self->dbExec(q|
-    INSERT INTO producers_relations (pid1, pid2, relation)
-      VALUES (?, ?, ?)|,
-    $cid, $_->[1], $_->[0]
-  ) for (@{$o->{relations}});
+  if($o->{relations}) {
+    $self->dbExec('DELETE FROM edit_producer_relations');
+    my $q = join ',', map '(?,?)', @{$o->{relations}};
+    my @q = map +($_->[1], $_->[0]), @{$o->{relations}};
+    $self->dbExec("INSERT INTO edit_producer_relations (pid, relation) VALUES $q", @q) if @q;
+  }
 }
 
 
 1;
+

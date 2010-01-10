@@ -1,35 +1,24 @@
 # Implements a POE::Filter for the VNDB API, and includes basic error checking
 #
-# Currently recognised commands and their mapping between Perl and strings
-# (this is just a simple overview, actual implementation is more advanced)
+# Mapping between the request/response data and perl data structure:
 #
-# C: login <json-object>
-#    [ 'login', {object} ]
+# <command> -> [ '<command>' ]
 #
-# C: get <type> <info> <filters> <options>
-#    [ 'get', <type>, <info>[ split ',', $2 ], [ filters ], { options } ]
-#    <type> must match /[a-z\/_]+/
-#    <info> as string: /[a-z_]+(,[a-z_]+)*/, in perl: [ /[a-z_]+/, .. ]
-#    <options> is optional, must be JSON-object otherwise
+# <command> <arg1> <arg2> ..  -> [ 'command', <arg1>, <arg2>, .. ]
 #
-# S: ok
-#    [ 'ok' ]
+# <arg>: <JSON-text> | <filter> | <unescaped-string>
 #
-# S: results <json-object>
-#    [ 'results', {object} ]
+# <JSON-text>: JSON object or array -> perl object or array
 #
-# S: error <json-object>
-#    [ 'error', {object} ]
-#
-# <filters>:
+# <filter>:
 #   string: ((<field> <op> <json-value>) <bool-op> (<field> <op> <json-value> ))
-#   perl:   [ [ 'field', 'op', value ], 'bool-op', [ 'field', 'op', value ] ]
+#   perl:   bless [ [ 'field', 'op', value ], 'bool-op', [ 'field', 'op', value ] ], 'POE::Filter::VNDBAPI::filter'
 # <field> must match /[a-z_]+/
 # <op> must be one of =, !=, <, >, >=, <= or ~
 # whitespace around fields/ops/json-values/bool-ops are ignored.
 #
-# When type='server', put() will accept the objects marked by 'S' and get() will accept the strings marked by 'C'
-# When type='client', put() will accept the objects marked by 'C' and get() will accept the strings marked by 'S'
+# <unescaped-string>: Any string not starting with (, [ or { and not containing
+#   whitespace. In perl represented as a normal string.
 #
 # When invalid data is given to put(), ...don't do that, seriously.
 # When invalid data is given to get(), it will return the following arrayref:
@@ -56,8 +45,6 @@ our @EXPORT_OK = qw|decode_filters encode_filters|;
 
 my $EOT          = "\x04"; # End Of Transmission, this string is searched in the binary data using index()
 my $WS           = qr/[\x20\x09\x0a\x0d]/;       # witespace as defined by RFC4627
-my $GET_TYPE     = qr/(?:[a-z\/_]+)/;            # get <type>
-my $GET_INFO     = qr/(?:[a-z_]+(?:,[a-z_]+)*)/; # get <info>
 my $FILTER_FIELD = qr/(?:[a-z_]+)/;              # <field> in the filters
 my $FILTER_OP    = qr/(?:=|!=|<|>|>=|<=|~)/;     # <op> in the filters
 my $FILTER_BOOL  = qr/(?:and|or)/;               # <boolean-op> in the filters
@@ -65,19 +52,15 @@ my $FILTER_BOOL  = qr/(?:and|or)/;               # <boolean-op> in the filters
 
 sub new {
   my($class, %o) = @_;
-  my $type = ($o{type}||'') eq 'server' ? 'server' : 'client';
-  return bless {
-    type => $type,
-    buffer => ''
-  }, $class;
+  my $b = '';
+  return bless \$b, $class;
 }
 
 
 sub clone {
   my $self = shift;
-  return bless {
-    type => $self->{type},
-  }, ref $self;
+  my $b = '';
+  return bless \$b, ref $self;
 }
 
 
@@ -98,13 +81,13 @@ sub get {
 
 sub get_one_start {
   my($self, $data) = @_;
-  $self->{buffer} .= join '', @$data;
+  $$self .= join '', @$data;
 }
 
 
 sub get_pending {
   my $self = shift;
-  return $self->{buffer} ne '' ? [ $self->{buffer} ] : undef;
+  return $$self ne '' ? [ $$self ] : undef;
 }
 
 
@@ -113,53 +96,52 @@ sub _err($) { [ [ undef, { id => 'parse', msg => $_[0] } ] ] };
 sub get_one {
   my $self = shift;
   # look for EOT
-  my $end = index $self->{buffer}, $EOT;
+  my $end = index $$self, $EOT;
   return [] if $end < 0;
-  my $str = substr $self->{buffer}, 0, $end;
-  $self->{buffer} = substr $self->{buffer}, $end+1;
+  my $str = substr $$self, 0, $end;
+  $$self = substr $$self, $end+1;
 
   # $str now contains our request/response encoded in UTF8, time to decode
   $str = eval { decode_utf8($str, Encode::FB_CROAK); };
   return _err "Encoding error: $@" if !defined $str;
 
-  # C: login
-  # S: error, results
-  if($str =~ /^$WS*(login|error|results)$WS+(.+)$/s && ($self->{type} eq 'server' && $1 eq 'login' || $self->{type} eq 'client' && $1 ne 'login')) {
-    my($cmd, $json) = ($1, $2);
-    $json = eval { JSON::XS->new->decode($json) };
-    if(!defined $json) {
-      my $err = $@;
-      $err =~ s/,? at .+ line [0-9]+[\.\r\n ]*$//;
-      return _err "JSON-decode: $err";
-    }
-    return _err qq|"$cmd" command requires a JSON object| if ref($json) ne 'HASH';
-    return [[ $cmd, $json ]];
-  }
+  # get command
+  return _err "Invalid command" if !($str =~ s/^$WS*([a-z]+)$WS*//);
+  my @ret = ($1);
 
-  # C: get
-  if($self->{type} eq 'server' && $str =~ /^$WS*get$WS+($GET_TYPE)$WS+($GET_INFO)$WS+(.+)$/s) {
-    my($type, $info, $options) = ($1, $2, {});
-    my($filters, $rest) = decode_filters($3);
-    return _err $filters if !ref $filters;
-    if($rest !~ /^$WS*$/) {
-      $options = eval { JSON::XS->new->decode($rest) };
-      if(!defined $options) {
+  # parse arguments
+  while($str) {
+    $str =~ s/^$WS*//;
+
+    # JSON text, starts with { or [
+    if($str =~ /^[\[{]/) {
+      my($value, $chars) = eval { JSON::XS->new->decode_prefix($str) };
+      if(!defined $chars) {
         my $err = $@;
         $err =~ s/,? at .+ line [0-9]+[\.\r\n ]*$//;
-        return _err "JSON-decode: $err";
+        return _err "Invalid JSON value in filter expression: $err";
       }
-      return _err 'options argument must be a JSON object' if ref($options) ne 'HASH';
+      $str = substr $str, $chars;
+      push @ret, $value;
     }
-    return [[ 'get', $type, [ split /,/, $info ], $filters, $options ]];
+
+    # filter expression, starts with (
+    elsif($str =~ /^\(/) {
+      my($value, $rest) = decode_filters($str);
+      return _err $value if !ref $value;
+      $str = $rest;
+      push @ret, bless $value, 'POE::Filter::VNDBAPI::filter';
+    }
+
+    # otherwise it's an unescaped string
+    else {
+      my ($value, $rest) = split /$WS+/, $str, 2;
+      $str = $rest;
+      push @ret, $value;
+    }
   }
 
-  # S: ok
-  if($self->{type} eq 'client' && $str =~ /^$WS*ok$WS*$/) {
-    return [[ 'ok' ]];
-  }
-
-  # if we're here, we've received something strange
-  return _err 'Invalid command or argument';
+  return [ \@ret ];
 }
 
 
@@ -170,22 +152,13 @@ sub put {
   my @r;
   for my $p (@$cmds) {
     my $cmd = shift @$p;
-
-    # C: login
-    push @r, 'login '.JSON::XS->new->encode($p->[0])
-      if $self->{type} eq 'client' && $cmd eq 'login';
-
-    # C: get
-    push @r, sprintf 'get %s %s %s', $p->[0], join(',',@{$p->[1]}), encode_filters($p->[2])
-      if $self->{type} eq 'client' && $cmd eq 'get';
-
-    # S: ok
-    push @r, 'ok'
-      if $self->{type} eq 'server' && $cmd eq 'ok';
-
-    # S: error, results
-    push @r, "$cmd ".JSON::XS->new->encode($p->[0])
-      if $self->{type} eq 'server' && ($cmd eq 'error' || $cmd eq 'results');
+    for (@$p) {
+      $cmd .= ' '.(
+        ref($_) eq 'POE::Filter::VNDBAPI::filter' ? encode_filters $_ :
+        ref($_) eq 'ARRAY' || ref($_) eq 'HASH'   ? JSON::XS->new->encode($_) : $_
+      );
+    }
+    push @r, $cmd;
   }
   # the $EOT can also be passed through encode_utf8(), the result is the same.
   return [ map encode_utf8($_).$EOT, @r ];

@@ -18,7 +18,6 @@ YAWF::register(
   qr{u([1-9]\d*)/tags},     \&usertags,
   qr{g},                    \&tagindex,
   qr{xml/tags\.xml},        \&tagxml,
-  qr{g/debug},              \&tagtree,
 );
 
 
@@ -29,7 +28,7 @@ sub tagpage {
   return 404 if !$t;
 
   my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'score', enum => [ qw|score title rel pop| ] },
+    { name => 's', required => 0, default => 'tagscore', enum => [ qw|title rel pop tagscore rating| ] },
     { name => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'm', required => 0, default => -1, enum => [qw|0 1 2|] },
@@ -38,12 +37,12 @@ sub tagpage {
   my $tagspoil = $self->reqCookie('tagspoil');
   $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0 if $f->{m} == -1;
 
-  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbTagVNs(
-    tag => $tag,
-    order => {score=>'tb.rating',title=>'vr.title',rel=>'v.c_released',pop=>'v.c_popularity'}->{$f->{s}}.($f->{o}eq'a'?' ASC':' DESC'),
-    page => $f->{p},
+  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbVNGet(
+    what => 'rating',
     results => 50,
-    maxspoil => $f->{m},
+    page => $f->{p},
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
+    tags_include => [ $f->{m}, [$tag ]],
   );
 
   my $title = mt '_tagp_title', $t->{meta}?0:1, $t->{name};
@@ -86,7 +85,7 @@ sub tagpage {
         a href => '/g', mt '_tagp_indexlink';
         for ($p[$_], reverse @r) {
           txt ' > ';
-          a href => "/g$_->{tag}", $_->{name};
+          a href => "/g$_->{id}", $_->{name};
         }
         txt " > $t->{name}\n";
       }
@@ -111,7 +110,20 @@ sub tagpage {
   end;
 
   _childtags($self, $t) if @{$t->{childs}};
-  _vnlist($self, $t, $f, $list, $np) if !$t->{meta} && $t->{state} == 2;
+
+  if(!$t->{meta} && $t->{state} == 2) {
+    div class => 'mainbox';
+     h1 mt '_tagp_vnlist';
+     p class => 'browseopts';
+      a href => "/g$t->{id}?m=0", $f->{m} == 0 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 0);return true;", mt '_tagp_spoil0';
+      a href => "/g$t->{id}?m=1", $f->{m} == 1 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 1);return true;", mt '_tagp_spoil1';
+      a href => "/g$t->{id}?m=2", $f->{m} == 2 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 2);return true;", mt '_tagp_spoil2';
+     end;
+     p "\n\n".mt '_tagp_novn' if !@$list;
+     p "\n".mt '_tagp_cached';
+    end;
+    $self->htmlBrowseVN($list, $f, $np, "/g$t->{id}?m=$f->{m}", 1) if @$list;
+  }
 
   $self->htmlFooter;
 }
@@ -120,38 +132,27 @@ sub tagpage {
 sub _childtags {
   my($self, $t, $index) = @_;
 
-  my @l = @{$t->{childs}};
-  my @tags;
-  for (0..$#l) {
-    if($l[$_]{lvl} == $l[0]{lvl}) {
-      $l[$_]{childs} = [];
-      push @tags, $l[$_];
-    } else {
-      push @{$tags[$#tags]{childs}}, $l[$_];
-    }
-  }
-
   div class => 'mainbox';
    h1 mt $index ? '_tagp_tree' : '_tagp_childs';
    ul class => 'tagtree';
-    for my $p (sort { @{$b->{childs}} <=> @{$a->{childs}} } @tags) {
+    for my $p (sort { @{$b->{'sub'}} <=> @{$a->{'sub'}} } @{$t->{childs}}) {
       li;
-       a href => "/g$p->{tag}", $p->{name};
+       a href => "/g$p->{id}", $p->{name};
        b class => 'grayedout', " ($p->{c_vns})" if $p->{c_vns};
-       end, next if !@{$p->{childs}};
+       end, next if !@{$p->{'sub'}};
        ul;
-        for (0..$#{$p->{childs}}) {
-          last if $_ >= 5 && @{$p->{childs}} > 6;
+        for (0..$#{$p->{'sub'}}) {
+          last if $_ >= 5 && @{$p->{'sub'}} > 6;
           li;
            txt '> ';
-           a href => "/g$p->{childs}[$_]{tag}", $p->{childs}[$_]{name};
-           b class => 'grayedout', " ($p->{childs}[$_]{c_vns})" if $p->{childs}[$_]{c_vns};
+           a href => "/g$p->{sub}[$_]{id}", $p->{'sub'}[$_]{name};
+           b class => 'grayedout', " ($p->{sub}[$_]{c_vns})" if $p->{'sub'}[$_]{c_vns};
           end;
         }
-        if(@{$p->{childs}} > 6) {
+        if(@{$p->{'sub'}} > 6) {
           li;
            txt '> ';
-           a href => "/g$p->{tag}", style => 'font-style: italic', mt '_tagp_moretags', @{$p->{childs}}-5;
+           a href => "/g$p->{id}", style => 'font-style: italic', mt '_tagp_moretags', @{$p->{'sub'}}-5;
           end;
         }
        end;
@@ -161,63 +162,6 @@ sub _childtags {
    clearfloat;
    br;
   end;
-}
-
-sub _vnlist {
-  my($self, $t, $f, $list, $np) = @_;
-  div class => 'mainbox';
-   h1 mt '_tagp_vnlist';
-   p class => 'browseopts';
-    a href => "/g$t->{id}?m=0", $f->{m} == 0 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 0);return true;", mt '_tagp_spoil0';
-    a href => "/g$t->{id}?m=1", $f->{m} == 1 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 1);return true;", mt '_tagp_spoil1';
-    a href => "/g$t->{id}?m=2", $f->{m} == 2 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 2);return true;", mt '_tagp_spoil2';
-   end;
-   if(!@$list) {
-     p "\n\n".mt '_tagp_novn';
-   }
-   p "\n".mt '_tagp_cached';
-  end;
-  return if !@$list;
-  $self->htmlBrowse(
-    class    => 'tagvnlist',
-    items    => $list,
-    options  => $f,
-    nextpage => $np,
-    pageurl  => "/g$t->{id}?m=$f->{m};o=$f->{o};s=$f->{s}",
-    sorturl  => "/g$t->{id}?m=$f->{m}",
-    header   => [
-      [ mt('_tagp_vncol_score'), 'score' ],
-      [ mt('_tagp_vncol_title'), 'title' ],
-      [ '',                      0       ],
-      [ '',                      0       ],
-      [ mt('_tagp_vncol_rel'),   'rel'   ],
-      [ mt('_tagp_vncol_pop'),   'pop'   ],
-    ],
-    row     => sub {
-      my($s, $n, $l) = @_;
-      Tr $n % 2 ? (class => 'odd') : ();
-       td class => 'tc1';
-        tagscore $l->{rating};
-        i sprintf '(%d)', $l->{users};
-       end;
-       td class => 'tc2';
-        a href => '/v'.$l->{vid}, title => $l->{original}||$l->{title}, shorten $l->{title}, 100;
-       end;
-       td class => 'tc3';
-        $_ ne 'oth' && cssicon $_, mt "_plat_$_"
-          for (sort split /\//, $l->{c_platforms});
-       end;
-       td class => 'tc4';
-        cssicon "lang $_", mt "_lang_$_"
-          for (reverse sort split /\//, $l->{c_languages});
-       end;
-       td class => 'tc5';
-        lit $self->{l10n}->datestr($l->{c_released});
-       end;
-       td class => 'tc6', sprintf '%.2f', ($l->{c_popularity}||0)*100;
-      end;
-    }
-  );
 }
 
 
@@ -345,7 +289,7 @@ sub taglist {
   return 404 if $f->{_err};
 
   my($t, $np) = $self->dbTagGet(
-    order => $f->{s}.($f->{o}eq'd'?' DESC':' ASC'),
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
     page => $f->{p},
     results => 50,
     state => $f->{t},
@@ -493,7 +437,7 @@ sub usertags {
   return 404 if !$u;
 
   my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'cnt', enum => [ qw|cnt name| ] },
+    { name => 's', required => 0, default => 'count', enum => [ qw|count name| ] },
     { name => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
     { name => 'p', required => 0, default => 1, template => 'int' },
   );
@@ -503,7 +447,7 @@ sub usertags {
   my($list, $np) = $self->dbTagStats(
     uid => $uid,
     page => $f->{p},
-    order => ($f->{s}eq'cnt'?'COUNT(*)':'name').($f->{o}eq'a'?' ASC':' DESC'),
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
     what => 'vns',
   );
 
@@ -533,8 +477,8 @@ sub usertags {
            b id => 'expandall';
             lit '<i>&#9656;</i> '.mt('_tagu_col_num').' ';
            end;
-           lit $f->{s} eq 'cnt' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u$u->{id}/tags?o=a;s=cnt">\x{25B4}</a>|;
-           lit $f->{s} eq 'cnt' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u$u->{id}/tags?o=d;s=cnt">\x{25BE}</a>|;
+           lit $f->{s} eq 'count' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u$u->{id}/tags?o=a;s=count">\x{25B4}</a>|;
+           lit $f->{s} eq 'count' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u$u->{id}/tags?o=d;s=count">\x{25BE}</a>|;
           end;
         },
         [ mt('_tagu_col_name'),  'name' ],
@@ -580,7 +524,7 @@ sub tagindex {
    end;
   end;
 
-  my $t = $self->dbTagTree(0, 2, 1);
+  my $t = $self->dbTagTree(0, 2);
   _childtags($self, {childs => $t}, 1);
 
   table class => 'mainbox threelayout';
@@ -589,7 +533,7 @@ sub tagindex {
     # Recently added
     td;
      a class => 'right', href => '/g/list', mt '_tagidx_browseall';
-     my $r = $self->dbTagGet(order => 'added DESC', results => 10, state => 2);
+     my $r = $self->dbTagGet(sort => 'added', reverse => 1, results => 10, state => 2);
      h1 mt '_tagidx_recent';
      ul;
       for (@$r) {
@@ -604,7 +548,7 @@ sub tagindex {
 
     # Popular
     td;
-     $r = $self->dbTagGet(order => 'c_vns DESC', meta => 0, results => 10);
+     $r = $self->dbTagGet(sort => 'vns', reverse => 1, meta => 0, results => 10);
      h1 mt '_tagidx_popular';
      ul;
       for (@$r) {
@@ -619,7 +563,7 @@ sub tagindex {
     # Moderation queue
     td;
      h1 mt '_tagidx_queue';
-     $r = $self->dbTagGet(state => 0, order => 'added DESC', results => 10);
+     $r = $self->dbTagGet(state => 0, sort => 'added', reverse => 1, results => 10);
      ul;
       li mt '_tagidx_queue_empty' if !@$r;
       for (@$r) {
@@ -664,34 +608,6 @@ sub tagxml {
      tag 'item', id => $_->{id}, meta => $_->{meta} ? 'yes' : 'no', state => $_->{state}, $_->{name};
    }
   end;
-}
-
-
-sub tagtree {
-  my $self = shift;
-
-  return 404 if !$self->authCan('tagmod');
-
-  $self->htmlHeader(title => '[DEBUG] The complete tag tree');
-  div class => 'mainbox';
-   h1 '[DEBUG] The complete tag tree';
-
-   div style => 'margin-left: 10px';
-    my $t = $self->dbTagTree(0, -1, 1);
-    my $lvl = $t->[0]{lvl} + 1;
-    for (@$t) {
-      map ul(style => 'margin-left: 15px; list-style-type: none'),  1..($lvl-$_->{lvl}) if $lvl > $_->{lvl};
-      map end, 1..($_->{lvl}-$lvl) if $lvl < $_->{lvl};
-      $lvl = $_->{lvl};
-      li;
-       txt '> ';
-       a href => "/g$_->{tag}", $_->{name};
-      end;
-    }
-    map end, 0..($t->[0]{lvl}-$lvl);
-   end;
-  end;
-  $self->htmlFooter;
 }
 
 

@@ -1,8 +1,8 @@
 # all (default)
-#   Same as $ make staticdirs js skins www robots
+#   Same as $ make dirs js skins www robots
 #
-# staticdirs
-# 	Creates the required directory structures in static/
+# dirs
+# 	Creates the required directories not present in git
 #
 # js
 # 	Generates the Javascript code
@@ -26,27 +26,35 @@
 # 	Start/stop/restart the Multi daemon. Provided for convenience, a proper initscript
 # 	probably makes more sense.
 #
+#	sql-import
+#		Imports util/sql/all.sql into your (presumably empty) database
+#
+#	update-2.10
+#		Updates all non-versioned items to 2.10
 #
 # NOTE: This Makefile has only been tested using a recent version of GNU make
 #   in a relatively up-to-date Arch Linux environment, and may not work in other
 #   environments. Patches to improve the portability are always welcome.
 
 
-.PHONY: all staticdirs js skins robots chmod chmod-tladmin multi-start multi-stop multi-restart
+.PHONY: all dirs js skins robots chmod chmod-tladmin multi-start multi-stop multi-restart sql-import update-2.10
 
-all: staticdirs js skins robots
+all: dirs js skins robots data/config.pl
 
 
-staticdirs: static/cv static/sf static/st
+dirs: static/cv static/sf static/st data/log www
 
 static/cv static/sf static/st:
 	mkdir $@;
 	for i in $$(seq -w 0 1 99); do mkdir "$@/$$i"; done
 
+data/log www:
+	mkdir $@
+
 
 js: static/f/script.js
 
-static/f/script.js: data/script.js data/lang.txt util/jsgen.pl
+static/f/script.js: data/script.js data/lang.txt util/jsgen.pl data/config.pl
 	util/jsgen.pl
 
 
@@ -56,10 +64,7 @@ static/s/%/style.css: static/s/%/conf util/skingen.pl data/style.css
 	util/skingen.pl $*
 
 
-www:
-	mkdir www
-
-robots: www www/robots.txt static/robots.txt
+robots: dirs www/robots.txt static/robots.txt
 
 %/robots.txt:
 	echo 'User-agent: *' > $@
@@ -99,4 +104,36 @@ multi-start:
 multi-restart:
 	$(multi-stop)
 	$(multi-start)
+
+
+# Small perl script that tries to connect to the PostgreSQL database using 'psql', with the
+# connection settings from data/config.pl. May not work in all configurations, though...
+define runpsql
+	perl -MDBI -e 'package VNDB;\
+	$$ROOT=".";\
+	require "data/global.pl";\
+	$$_=(DBI->parse_dsn($$VNDB::O{db_login}[0]))[4];\
+	$$ENV{PGPASSWORD} = $$VNDB::O{db_login}[2];\
+	$$ENV{PGUSER}     = $$VNDB::O{db_login}[1];\
+	$$ENV{PGDATABASE} = $$2 if /(dbname|db|database)=([^;]+)/;\
+	$$ENV{PGHOST}     = $$1 if /host=([^;]+)/;\
+	$$ENV{PGHOSTADDR} = $$1 if /hostaddr=([^;]+)/;\
+	$$ENV{PGPORT}     = $$1 if /port=([^;]+)/;\
+	$$ENV{PGSERVICE}  = $$1 if /service=([^;]+)/;\
+	$$ENV{PGSSLMODE}  = $$1 if /sslmode=([^;]+)/;\
+	open F, "|psql" or die $$!;\
+	print F while(<>);\
+	close F or exit 1'
+endef
+
+
+sql-import:
+	${runpsql} < util/sql/all.sql
+
+
+update-2.10: all
+	$(multi-stop)
+	@${runpsql} < util/updates/update_2.10.sql
+	$(multi-start)
+
 

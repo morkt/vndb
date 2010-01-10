@@ -5,15 +5,15 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagMerge dbTagLinks dbTagLinkEdit dbTagStats dbTagVNs|;
+our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagMerge dbTagLinks dbTagLinkEdit dbTagStats|;
 
 
-# %options->{ id noid name search state meta page results order what }
+# %options->{ id noid name search state meta page results what sort reverse  }
 # what: parents childs(n) aliases addedby
+# sort: id name added vns
 sub dbTagGet {
   my $self = shift;
   my %o = (
-    order => 't.id ASC',
     page => 1,
     results => 10,
     what => '',
@@ -45,13 +45,20 @@ sub dbTagGet {
   );
   my @join = $o{what} =~ /addedby/ ? 'JOIN users u ON u.id = t.addedby' : ();
 
+  my $order = sprintf {
+    id    => 't.id %s',
+    name  => 't.name %s',
+    added => 't.added %s',
+    vns   => 't.c_vns %s',
+  }->{ $o{sort}||'id' }, $o{reverse} ? 'DESC' : 'ASC';
+
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
       FROM tags t
       !s
       !W
       ORDER BY !s|,
-    join(', ', @select), join(' ', @join), \%where, $o{order}
+    join(', ', @select), join(' ', @join), \%where, $order
   );
 
   if(@$r && $o{what} =~ /aliases/) {
@@ -66,21 +73,46 @@ sub dbTagGet {
   }
 
   if($o{what} =~ /parents\((\d+)\)/) {
-    $_->{parents} = $self->dbTagTree($_->{id}, $1, 0) for(@$r);
+    $_->{parents} = $self->dbTagTree($_->{id}, $1, 1) for(@$r);
   }
 
   if($o{what} =~ /childs\((\d+)\)/) {
-    $_->{childs} = $self->dbTagTree($_->{id}, $1, 1) for(@$r);
+    $_->{childs} = $self->dbTagTree($_->{id}, $1) for(@$r);
   }
 
   return wantarray ? ($r, $np) : $r;
 }
 
 
-# plain interface to the tag_tree() stored procedure in pgsql
+# Walks the tag tree
+#  id = tag to start with, or 0 to start with top-level tags
+#  lvl = max. recursion level
+#  back = false for parent->child, true for child->parent
+# Returns: [ { id, name, c_vns, sub => [ { id, name, c_vns, sub => [..] }, .. ] }, .. ]
 sub dbTagTree {
-  my($self, $id, $lvl, $dir) = @_;
-  return $self->dbAll('SELECT * FROM tag_tree(?, ?, ?)', $id, $lvl||0, $dir?1:0);
+  my($self, $id, $lvl, $back) = @_;
+  $lvl ||= 15;
+  my $r = $self->dbAll(q|
+    WITH RECURSIVE tagtree(lvl, id, parent, name, c_vns) AS (
+        SELECT ?::integer, id, 0, name, c_vns
+        FROM tags
+        !W
+      UNION ALL
+        SELECT tt.lvl-1, t.id, tt.id, t.name, t.c_vns
+        FROM tagtree tt
+        JOIN tags_parents tp ON !s
+        JOIN tags t ON !s
+        WHERE tt.lvl > 0
+          AND t.state = 2
+    ) SELECT id, parent, name, c_vns FROM tagtree ORDER BY name|, $lvl,
+    $id ? {'id = ?' => $id} : {'NOT EXISTS(SELECT 1 FROM tags_parents WHERE tag = id)' => 1, 'state = 2' => 1},
+    !$back ? ('tp.parent = tt.id', 't.id = tp.tag') : ('tp.tag = tt.id', 't.id = tp.parent')
+  );
+  for my $i (@$r) {
+    $i->{'sub'} = [ grep $_->{parent} == $i->{id}, @$r ];
+  }
+  my @r = grep !delete($_->{parent}), @$r;
+  return $id ? $r[0]{'sub'} : \@r;
 }
 
 
@@ -147,13 +179,13 @@ sub dbTagLinkEdit {
 
 
 # Fetch all tags related to a VN or User
-# Argument: %options->{ uid vid minrating results what page order }
+# Argument: %options->{ uid vid minrating results what page sort reverse }
 # what: vns
+# sort: name, count, rating
 sub dbTagStats {
   my($self, %o) = @_;
   $o{results} ||= 10;
   $o{page}  ||= 1;
-  $o{order} ||= 't.name ASC';
   $o{what}  ||= '';
 
   my %where = (
@@ -162,6 +194,13 @@ sub dbTagStats {
     $o{vid} ? (
       'tv.vid = ?' => $o{vid} ) : (),
   );
+
+  my $order = sprintf {
+    name => 't.name %s',
+    count => 'count(*) %s',
+    rating => 'avg(tv.vote) %s',
+  }->{ $o{sort}||'name' }, $o{reverse} ? 'DESC' : 'ASC';
+
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT t.id, t.name, count(*) as cnt, avg(tv.vote) as rating, COALESCE(avg(tv.spoiler), 0) as spoiler
       FROM tags t
@@ -171,7 +210,7 @@ sub dbTagStats {
       !s
       ORDER BY !s|,
     \%where, defined $o{minrating} ? "HAVING avg(tv.vote) > $o{minrating}" : '',
-    $o{order}
+    $order
   );
 
   if(@$r && $o{what} =~ /vns/ && $o{uid}) {
@@ -195,32 +234,6 @@ sub dbTagStats {
   return wantarray ? ($r, $np) : $r;
 }
 
-
-# Fetch all VNs from a tag, including VNs from child tags, and provide ratings for them.
-# Argument: %options->{ tag order page results maxspoil }
-sub dbTagVNs {
-  my($self, %o) = @_;
-  $o{order} ||= 'tb.rating DESC';
-  $o{page} ||= 1;
-  $o{results} ||= 10;
-
-  my %where = (
-    'tag = ?' => $o{tag},
-    defined $o{maxspoil} ? (
-      'tb.spoiler <= ?' => $o{maxspoil} ) : (),
-    'v.hidden = FALSE' => 1,
-  );
-
-  my($r, $np) = $self->dbPage(\%o, q|
-    SELECT tb.tag, tb.vid, tb.users, tb.rating, tb.spoiler, vr.title, vr.original, v.c_languages, v.c_released, v.c_platforms, v.c_popularity
-      FROM tags_vn_bayesian tb
-      JOIN vn v ON v.id = tb.vid
-      JOIN vn_rev vr ON vr.id = v.latest
-      !W
-      ORDER BY !s|,
-    \%where, $o{order});
-  return wantarray ? ($r, $np) : $r;
-}
 
 1;
 

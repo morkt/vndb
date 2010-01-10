@@ -1,3 +1,24 @@
+2.10 - 2010-01-10
+	- VN score on tag pages use plain averages instead of bayesian rating
+	- Display VN ratings on tag pages as well
+	- Split browse functions from CommonHTML.pm into BrowseHTML.pm
+	- Abstracted all ORDER BY clauses in the DB abstraction layer
+	- Show language flags on release lists on the homepage
+	- Allow hiding of NSFW cover even if NSFW warning is disabled
+	- Removed /g/debug
+	- Replaced recursive stored procedures with WITH .. SELECT queries
+	- Merged db[VN|Producer|Release][Edit|Add] into dbItemEdit and dbItemAdd
+	- Removed the use of CONSTRAINT TRIGGERs
+	- Added maxlength check on the website fields for releases and producers
+	- Removed changes.causedby
+	- Fixed minor JS dropdown issue when trigger objects are close to each other
+	- Allow earlier selecting of release on screenshot upload
+	- Fixed bug with zero strings ("0") in the diff viewer
+	- Rewrote POE::Filter::VNDBAPI to be more generic
+	- Highlight opened VN/producer in relation graphs
+	- Added revision insertion abstraction functions in SQL
+	- Determine interface language from Accept-Language header
+
 2.9 - 2009-11-16
 	- Fixed another bug with the calculation of tags_vn_bayesian.spoiler
 	- Implemented proper daemonizing and error handling for Multi
