@@ -17,6 +17,7 @@ git - ?
 	- Rewrote POE::Filter::VNDBAPI to be more generic
 	- Highlight opened VN/producer in relation graphs
 	- Added revision insertion abstraction functions in SQL
+	- Determine interface language from Accept-Language header
 
 2.9 - 2009-11-16
 	- Fixed another bug with the calculation of tags_vn_bayesian.spoiler
