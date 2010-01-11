@@ -1022,9 +1022,9 @@ function scrLast() {
       tag('br', null),
       mt('_vnedit_scr_imgnote'),
       tag('br', null),
-      tag('input', {name:'scr_upload', id:'scr_upload', type:'file', 'class':'text'}),
-      tag('br', null),
       rel,
+      tag('br', null),
+      tag('input', {name:'scr_upload', id:'scr_upload', type:'file', 'class':'text'}),
       tag('br', null),
       tag('input', {type:'button', value:mt('_vnedit_scr_addbut'), 'class':'submit', onclick:scrUpload})
     )
