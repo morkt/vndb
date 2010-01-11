@@ -303,6 +303,12 @@ ru : Русский
 cs : Rusky
 hu : Orosz
 
+:_lang_sk
+en : Slovak
+ru : Словацкий
+cs : Slovenština
+hu : Szlovák
+
 :_lang_sv
 en : Swedish
 ru : Шведский

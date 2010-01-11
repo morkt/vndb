@@ -31,7 +31,7 @@ our %S = (%S,
     [qw| hist board boardmod edit tag mod lock del tagmod         |], # 4
     [qw| hist board boardmod edit tag mod lock del tagmod usermod |], # 5
   ],
-  languages       => [qw|cs da de en es fi fr hu it ja ko nl no pl pt ru sv tr vi zh|],
+  languages       => [qw|cs da de en es fi fr hu it ja ko nl no pl pt ru sk sv tr vi zh|],
   producer_types  => [qw|co in ng|],
   discussion_boards => [qw|an db v p u|],
   vn_lengths      => [ 0..5 ],
