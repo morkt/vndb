@@ -158,7 +158,7 @@ sub dbThreadCount {
 }
 
 
-# Options: tid, num, what, uid, mindate, hide, page, results
+# Options: tid, num, what, uid, mindate, hide, page, results, sort, reverse
 # what: user thread
 sub dbPostGet {
   my($self, %o) = @_;
@@ -191,13 +191,18 @@ sub dbPostGet {
     $o{what} =~ /thread/ ? 'JOIN threads t ON t.id = tp.tid' : (),
   );
 
+  my $order = sprintf {
+    num  => 'tp.num %s',
+    date => 'tp.date %s',
+  }->{ $o{sort}||'num' }, $o{reverse} ? 'DESC' : 'ASC';
+
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
       FROM threads_posts tp
       !s
       !W
-      ORDER BY tp.num ASC|,
-    join(', ', @select), join(' ', @join), \%where
+      ORDER BY !s|,
+    join(', ', @select), join(' ', @join), \%where, $order
   );
 
   return wantarray ? ($r, $np) : $r;

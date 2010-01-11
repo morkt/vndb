@@ -364,7 +364,7 @@ sub posts {
     { name => 'p', required => 0, default => 1, template => 'int' }
   );
 
-  my($posts, $np) = $self->dbPostGet(uid => $uid, hide => 1, what => 'thread', page => $f->{p}, order => 'tp.date DESC');
+  my($posts, $np) = $self->dbPostGet(uid => $uid, hide => 1, what => 'thread', page => $f->{p}, sort => 'date', reverse => 1);
 
   my $title = mt '_uposts_title', $u->{username};
   $self->htmlHeader(title => $title, noindex => 1);
