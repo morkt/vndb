@@ -73,17 +73,13 @@ sub tagpage {
    h1 $title;
 
    p;
-    my @p = @{$t->{parents}};
-    for my $p (_parenttags(@p)) {
+    my @p = _parenttags(@{$t->{parents}});
+    for my $p (@p ? @p : []) {
       a href => '/g', mt '_tagp_indexlink';
       for (reverse @$p) {
         txt ' > ';
         a href => "/g$_->{id}", $_->{name};
       }
-      txt " > $t->{name}\n";
-    }
-    if(!@p) {
-      a href => '/g', mt '_tagp_indexlink';
       txt " > $t->{name}\n";
     }
    end;
@@ -127,8 +123,7 @@ sub _parenttags {
   my @r;
   for my $t (@_) {
     for (@{$t->{'sub'}}) {
-      my @p = _parenttags($_);
-      push @r, [ $t, @p?@{$p[0]}:() ];
+      push @r, [ $t, @$_ ] for _parenttags($_);
     }
     push @r, [$t] if !@{$t->{'sub'}};
   }

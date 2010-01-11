@@ -104,7 +104,7 @@ sub dbTagTree {
         JOIN tags t ON !s
         WHERE tt.lvl > 0
           AND t.state = 2
-    ) SELECT id, parent, name, c_vns FROM tagtree ORDER BY name|, $lvl,
+    ) SELECT DISTINCT id, parent, name, c_vns FROM tagtree ORDER BY name|, $lvl,
     $id ? {'id = ?' => $id} : {'NOT EXISTS(SELECT 1 FROM tags_parents WHERE tag = id)' => 1, 'state = 2' => 1},
     !$back ? ('tp.parent = tt.id', 't.id = tp.tag') : ('tp.tag = tt.id', 't.id = tp.parent')
   );
