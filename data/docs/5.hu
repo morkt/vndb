@@ -54,7 +54,7 @@
 
 :SUB:Összegzések
 <p>
- Minden szerkesztési oldalnak van egy opcionális "Összegzés" mezője, ahova beírhatod, hogy mit
+ Minden szerkesztési oldalnak van egy kötelezően kitöltendő "Összegzés" mezője, ahol elmagyarázhatod, hogy mit
  változtattál meg, anélkül, hogy telezsúfolnánk a főoldalt ezzel a szöveggel. Elmondhatod, hogy
  miért változtattad meg a leírást, egy linket, vagy megmutathatod, hogy honnan szerezted meg
  az információt (hogy más hozzájárulók ezt ellenőrizni tudják). Talán az is lehet, hogy egy új
