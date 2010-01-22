@@ -1737,12 +1737,11 @@ if(byId('nsfw_show')) {
 if(byId('nsfwhide')) {
   byId('nsfwhide').onclick = function() {
     var shown = 0;
-    var l = byName(byId('screenshots'), 'div');
+    var l = byClass(byId('screenshots'), 'a', 'scrlnk');
     for(var i=0; i<l.length; i++) {
       if(hasClass(l[i], 'nsfw')) {
         var hidden = !hasClass(l[i], 'hidden');
         setClass(l[i], 'hidden', hidden);
-        setClass(byName(l[i], 'a')[0], 'hidden', hidden); // for the image viewer
         if(!hidden)
           shown++;
       } else

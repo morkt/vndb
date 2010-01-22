@@ -683,25 +683,22 @@ div#vntags {
 a.addnew {
   float: right;
 }
-#screenshots td.scr {
-  padding-left: 30px;
-}
-#screenshots td.scr div {
-  float: left;
-  width: 142px;
-  height: 108px;
-  margin: 2px;
+
+#screenshots p.rel {
+  background: url($_boxbg$) repeat;
+  margin: 0;
+  padding: 2px;
+  font-weight: bold;
   text-align: center;
 }
-#screenshots td.scr img          { border: 3px solid transparent; }
-#screenshots td.scr div.nsfw img { border: 3px solid $statnok$; }
-#screenshots td.scr a:hover img  { border: 3px solid $border$; }
-#screenshots td.scr a            { border: none; }
-#screenshots #nsfwshown          { font-style: normal }
-#screenshots p.nsfwtoggle {
-  float: right;
-  margin: 0;
-}
+#screenshots a.scrlnk     { margin: 2px; border: none }
+#screenshots div.scr      { display: block; padding-left: 30px; text-align: center }
+#screenshots img          { border: 3px solid transparent; }
+#screenshots a.nsfw img   { border: 3px solid $statnok$; }
+#screenshots a:hover img  { border: 3px solid $border$; }
+#screenshots #nsfwshown   { font-style: normal }
+#screenshots p.nsfwtoggle { float: right; margin: 0; }
+
 
 #dd_box { position: absolute; left: -500px; border: 1px solid $border$; background-color: $secbg$; }
 #dd_box ul { list-style-type: none; margin: 0; padding: 0 }

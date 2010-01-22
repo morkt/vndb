@@ -455,30 +455,24 @@ sub _screenshots {
    }
 
    h1 mt '_vnpage_scr';
-   table;
-    for my $rel (@$r) {
-      my @scr = grep $_->{rid} && $rel->{id} == $_->{rid}, @{$v->{screenshots}};
-      next if !@scr;
-      Tr class => 'rel';
-       td colspan => 5;
-        cssicon "lang $_", mt "_lang_$_" for (@{$rel->{languages}});
-        txt $rel->{title};
-       end;
-      end;
-      Tr;
-       td class => 'scr';
-        for (@scr) {
-          div $_->{nsfw} ? (class => 'nsfw'.(!$self->authInfo->{show_nsfw} ? ' hidden' : '')) : ();
-           a href => sprintf('%s/sf/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}),
-             rel => "iv:$_->{width}x$_->{height}:scr", $_->{nsfw} && !$self->authInfo->{show_nsfw} ? (class => 'hidden') : ();
-            img src => sprintf('%s/st/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}), alt => mt '_vnpage_scr_num', $_->{id};
-           end;
-          end;
-        }
-       end;
-      end;
-    }
-   end;
+
+   for my $rel (@$r) {
+     my @scr = grep $_->{rid} && $rel->{id} == $_->{rid}, @{$v->{screenshots}};
+     next if !@scr;
+     p class => 'rel';
+      cssicon "lang $_", mt "_lang_$_" for (@{$rel->{languages}});
+      a href => "/r$rel->{id}", $rel->{title};
+     end;
+     div class => 'scr';
+      for (@scr) {
+        a href => sprintf('%s/sf/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}),
+          class => sprintf('scrlnk%s%s', $_->{nsfw} ? ' nsfw':'', $_->{nsfw}&&!$self->authInfo->{show_nsfw}?' hidden':''),
+          rel => "iv:$_->{width}x$_->{height}:scr";
+         img src => sprintf('%s/st/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}), alt => mt '_vnpage_scr_num', $_->{id};
+        end;
+      }
+     end;
+   }
   end;
 }
 
