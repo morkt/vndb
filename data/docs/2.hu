@@ -1,7 +1,7 @@
 :TITLE:Visual Novel bejegyzés létrehozása/szerkesztése
 :INC:index
 
-:SUB:Mikor hozzunk létre egy Visual Novelt bejegyzést
+:SUB:Mikor hozzunk létre egy Visual Novel bejegyzést
 <p>
 Ahhoz, hogy a játék be kerüljön az adatbázisba, megszakítás nélkül a regényekre hasonló elbeszélés
 módot kell, hogy alkalmazza. Ez alatt értjük a <a
@@ -170,7 +170,7 @@ formátumba, és mindig kell kövessék ezeket az irányelveket:
  szélek. Ezeket távolítsd el mielőtt feltöltöd őket. Nem érdekel minket, hogy milyen stílust használsz
  és az sem, hogy hogy nézz ki mindez a fasza AGTH felépitésedbe.</li>
  <li>Legalább a képek fele legyen magáról a játékmenetről. Szóval legyenek rajta szereplők valamilyen
-  párbeszéddel vagy látszodjon a kezelő felület. Sima esemény CG képek szöveg nélkül vagy a
+  párbeszéddel vagy látszódjon a kezelő felület. Sima esemény CG képek szöveg nélkül vagy a
   felület nélkül csak arra legyenek használva, hogy bemutassák a rajzolási stílust, de ne legyenek
   többségbe a többi pillanatképpel szemben.</li>
  <li>Erotikus jellegű képek feltöltése megengedett, addig míg az erotikus/nem erotikus

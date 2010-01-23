@@ -1358,7 +1358,7 @@ hu : Felhasználók
 en : Recent changes
 ru : Свежие правки
 cs : Poslední změny
-hu : Legútóbbi változtatások
+hu : Friss szerkesztések
 
 :_menu_discussion_board
 en : Discussion board
@@ -1376,7 +1376,7 @@ hu : GYIK
 en : Random visual novel
 ru : Случайная новелла
 cs : Náhodná vizuální novela
-hu : Véletlenszerű visual novel
+hu : Véletlenszerű VN
 
 :_menu_webchat
 en : webchat
@@ -1397,50 +1397,50 @@ hu : kereső
 en : My Profile
 ru : Мой профиль
 cs : Můj profil
-hu : Profilom
+hu : A profilom
 
 :_menu_myvnlist
 en : My Visual Novel List
 ru : Мой список новелл
 cs : Můj list vizuálních novel
-hu : Visual Novel listám
+hu : A Visual Novel listám
 
 :_menu_mywishlist
 en : My Wishlist
 ru : Мой список желаемого
 cs : Můj wishlist
-hu : Kivánságlistám
+hu : A kivánságlistám
 
 # [_1] = number of messages
 :_menu_mymessages
 en : My Messages ([_1])
 ru : Мои сообщения ([_1])
 cs : Mé zprávy ([_1])
-hu : Üzenenteim ([_1])
+hu : Az üzenenteim ([_1])
 
 :_menu_mychanges
 en : My Recent Changes
 ru : Мои недавние правки
 cs : Mé poslední změny
-hu : Legutóbbi változtatásaim
+hu : A szerkesztéseim
 
 :_menu_mytags
 en : My Tags
 ru : Мои теги
 cs : Moje tagy
-hu : Címkéim
+hu : A címkéim
 
 :_menu_addvn
 en : Add Visual Novel
 ru : Добавить новеллу
 cs : Přidat vizuální novelu
-hu : Visual Novel bejegyzése
+hu : Új VN bejegyzése
 
 :_menu_addproducer
 en : Add Producer
 ru : Добавить компанию
 cs : Přidat producenta
-hu : Készítő bejegyzése
+hu : Új készítő bejegyzése
 
 :_menu_logout
 en : Logout
@@ -1854,7 +1854,7 @@ hu : Legutóbbi változtatások
 en : Edit history of [_1]
 ru : История изменений [_1]
 cs : Editovat historii [_1]
-hu : [_1] előzményeinek szerkesztése
+hu : [_1] szerkesztéseinek listája
 
 
 # the filter buttons
@@ -1980,7 +1980,7 @@ hu : Oldal
 en : Posted in
 ru : На доске
 cs : Přispěno v
-hu : Válaszolva
+hu : Közzétéve:
 
 :_thread_byuser
 en : by [userstr,_1]
@@ -2004,7 +2004,7 @@ hu : Hozzászólás törölve.
 en : Last modified on [date,_1,full]
 ru : Последний раз редактировалось [date,_1,full]
 cs : Naposledy změněno [date,_1,full]
-hu : Utolsó szerkesztés [date,_1,full]
+hu : Utoljára szerkesztve [date,_1,full]
 
 :_thread_noreply_title
 en : Reply
@@ -2121,7 +2121,7 @@ hu : Üzenet
 en : See [url,/d9.3,d9.3] for the allowed formatting codes
 ru : Список разрешённых кодов смотрите в разделе [url,/d9.3,d9.3]
 cs : Přečtěte si [url,/d9.3,d9.3] pro povolené formátovací kódy
-hu : A formázó kódokat itt [url,/d9.3,d9.3] találod meg
+hu : A formázó kódokat a [url,/d9.3,d9.3]-as pont alatt találod meg
 
 
 # Browsing threads by board (/t/{board_id})
@@ -3954,7 +3954,7 @@ hu : Megtagadott címkék
 en : My wishlist
 ru : Мой список желаемого
 cs : Můj wishlist
-hu : Kívánságlistám
+hu : A kívánságlistám
 
 :_wishlist_title_other
 en : [_1]'s wishlist
@@ -3966,7 +3966,7 @@ hu : [_1] kívánság listája
 en : Wishlist empty...
 ru : Список пуст...
 cs : Wishlist je prázdný...
-hu : Kívánságlista üres...
+hu : A kívánságlista üres...
 
 :_wishlist_prio_all
 en : All priorities
@@ -4550,7 +4550,7 @@ hu : Előnybe részesített stílus
 en : Additional [url,http://en.wikipedia.org/wiki/Cascading_Style_Sheets,CSS]
 ru : Дополнительный [url,http://en.wikipedia.org/wiki/Cascading_Style_Sheets,CSS]
 cs : Další [url,http://en.wikipedia.org/wiki/Cascading_Style_Sheets,CSS]
-hu : Továbbiak [url,http://en.wikipedia.org/wiki/Cascading_Style_Sheets,CSS]
+hu : További [url,http://en.wikipedia.org/wiki/Cascading_Style_Sheets,CSS]
 
 
 # Users posts (/u+/posts)
