@@ -1,6 +1,7 @@
 git - ?
 	- Added Slovak to the language list
 	- Centered the thumbnails on the screenshots viewer
+	- Improved date selector
 
 2.10 - 2010-01-10
 	- VN score on tag pages use plain averages instead of bayesian rating

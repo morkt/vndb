@@ -512,33 +512,82 @@ tvsInit();
 
 /*  D A T E   I N P U T  */
 
+
+var date_years = [];
+var date_months = [];
+var date_days = [];
+
 function dateLoad(obj) {
+  /* load the arrays */
+  var i;
+  date_years = [ [ 0, mt('_js_date_year') ], [ 9999, 'TBA' ] ];
+  for(i=(new Date()).getFullYear()+5; i>=1980; i--)
+    date_years[date_years.length] = [ i, i ];
+
+  date_months = [ [ 99, mt('_js_date_month') ] ];
+  for(i=1; i<=12; i++)
+    date_months[date_months.length] = [ i, i ];
+
+  date_days = [ [ 99, mt('_js_date_day') ] ];
+  for(var i=1; i<=31; i++)
+    date_days[date_days.length] = [ i, i ];
+
+  /* get current value */
   var val = Math.floor(obj.value) || 0;
   val = [ Math.floor(val/10000), Math.floor(val/100)%100, val%100 ];
 
-  var year = tag('select', {style: 'width: 70px', onchange: dateSerialize}, tag('option', {value:0}, mt('_js_date_year')));
-  for(var i=1980; i<=(new Date()).getFullYear()+5; i++)
-    year.appendChild(tag('option', {value: i, selected: i==val[0]}, i));
-  year.appendChild(tag('option', {value: 9999, selected: val[0]==9999}, 'TBA'));
+  /* create elements */
+  for(var i=0; i<date_years.length; i++)
+    if(val[0] == date_years[i][0]) { val[0] = i; break };
+  var year = tag('b', {'class':'datepart', date_sel: val[0], date_lst:date_years, date_cnt:10},
+    tag('i', expanded_icon),
+    tag('b', date_years[val[0]][1])
+  );
+  ddInit(year, 'bottom', dateDD);
 
-  var month = tag('select', {style: 'width: 70px', onchange: dateSerialize}, tag('option', {value:99}, mt('_js_date_month')));
-  for(var i=1; i<=12; i++)
-    month.appendChild(tag('option', {value: i, selected: i==val[1]}, i));
+  val[1] = val[1] == 99 ? 0 : val[1];
+  var month = tag('b', {'class':'datepart', date_sel: val[1], date_lst:date_months, date_cnt:7},
+    tag('i', expanded_icon),
+    tag('b', date_months[val[1]][1])
+  );
+  ddInit(month, 'bottom', dateDD);
 
-  var day = tag('select', {style: 'width: 70px', onchange: dateSerialize}, tag('option', {value:99}, mt('_js_date_day')));
-  for(var i=1; i<=31; i++)
-    day.appendChild(tag('option', {value: i, selected: i==val[2]}, i));
+  val[2] = val[2] == 99 ? 0 : val[2];
+  var day = tag('b', {'class':'datepart', date_sel: val[2], date_lst:date_days, date_cnt:10},
+    tag('i', expanded_icon),
+    tag('b', date_days[val[2]][1])
+  );
+  ddInit(day, 'bottom', dateDD);
 
   obj.parentNode.insertBefore(tag('div', {date_obj: obj}, year, month, day), obj);
 }
 
-function dateSerialize() {
-  var div = this.parentNode;
-  var sel = byName(div, 'select');
+function dateDD(lnk) {
+  var d = tag('div', {'class':'date'});
+  var clk = function () {
+    lnk.date_sel = this.date_val;
+    setText(byName(lnk, 'b')[0], lnk.date_lst[lnk.date_sel][1]);
+    ddHide();
+    dateSerialize(lnk);
+    return false;
+  };
+  for(var i=0; i<lnk.date_lst.length; i++) {
+    var txt = lnk.date_lst[i][1];
+    if(txt == mt('_js_date_year') || txt == mt('_js_date_month') || txt == mt('_js_date_day')) txt = '--';
+    if((i % lnk.date_cnt) == 0) d.appendChild(tag('ul', null));
+    d.childNodes[d.childNodes.length-1].appendChild(tag('li', lnk.date_sel == i ? tag('i', txt) :
+      tag('a', {href:'#', date_val: i, onclick: clk}, txt)));
+  }
+  return d;
+}
+
+function dateSerialize(div) {
+  var div = div.parentNode;
+  var sel = byClass(div, 'b', 'datepart');
   var val = [
-    sel[0].options[sel[0].selectedIndex].value*1,
-    sel[1].options[sel[1].selectedIndex].value*1,
-    sel[2].options[sel[2].selectedIndex].value*1
+    date_years[sel[0].date_sel][0],
+    date_months[sel[1].date_sel][0],
+    date_days[sel[2].date_sel][0],
   ];
   div.date_obj.value = val[0] == 0 ? 0 : val[0] == 9999 ? 99999999 : val[0]*10000+val[1]*100+(val[1]==99?99:val[2]);
 }

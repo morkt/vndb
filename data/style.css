@@ -710,6 +710,11 @@ a.addnew {
 #dd_box .vrdd ul { float: left; width: 90px; }
 #dd_box .vrdd ul.full { width: 180px; text-align: center; }
 #dd_box .vrdd ul.full li a { padding: 0 }
+#dd_box .date ul { float: left }
+
+b.datepart { display: inline-block; width: 60px; margin-right: 5px; background-color: $secbg$; padding: 1px 5px; border: 1px solid $secborder$; font-weight: normal }
+b.datepart i { float: right }
+b.datepart b { font-weight: normal }
 
 
 
@@ -751,7 +756,7 @@ a.addnew {
   cursor: pointer;
 }
 #ds_box b {
-  padding: 2px 0 0 10px; 
+  padding: 2px 0 0 10px;
 }
 #ds_box tr.selected {
   background: url($_boxbg$) repeat;
