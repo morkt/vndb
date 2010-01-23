@@ -325,6 +325,8 @@ sub edit {
       { name => 'editsum',   maxlength => 5000 },
     );
 
+    push @{$frm->{_err}}, [ 'released', 'required', 1 ] if !$frm->{released};
+
     my($media, $producers, $new_vn);
     if(!$frm->{_err}) {
       # de-serialize
