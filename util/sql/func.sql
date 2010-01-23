@@ -119,13 +119,17 @@ $$ LANGUAGE plpgsql;
 -- create temporary table for generic revision info
 CREATE OR REPLACE FUNCTION edit_revtable(t dbentry_type, i integer) RETURNS void AS $$
 BEGIN
-  CREATE TEMPORARY TABLE edit_revision (
-    type dbentry_type NOT NULL,
-    iid integer,
-    requester integer,
-    ip inet,
-    comments text
-  );
+  BEGIN
+    CREATE TEMPORARY TABLE edit_revision (
+      type dbentry_type NOT NULL,
+      iid integer,
+      requester integer,
+      ip inet,
+      comments text
+    );
+  EXCEPTION WHEN duplicate_table THEN
+    TRUNCATE edit_revision;
+  END;
   INSERT INTO edit_revision (type, iid) VALUES (t, i);
 END;
 $$ LANGUAGE plpgsql;
@@ -178,16 +182,20 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION edit_vn_init(cid integer) RETURNS void AS $$
 BEGIN
   -- create tables, based on existing tables (so that the column types are always synchronised)
-  CREATE TEMPORARY TABLE edit_vn (LIKE vn_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-  ALTER TABLE edit_vn DROP COLUMN id;
-  ALTER TABLE edit_vn DROP COLUMN vid;
-  CREATE TEMPORARY TABLE edit_vn_anime (LIKE vn_anime INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-  ALTER TABLE edit_vn_anime DROP COLUMN vid;
-  CREATE TEMPORARY TABLE edit_vn_relations (LIKE vn_relations INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-  ALTER TABLE edit_vn_relations DROP COLUMN vid1;
-  ALTER TABLE edit_vn_relations RENAME COLUMN vid2 TO vid;
-  CREATE TEMPORARY TABLE edit_vn_screenshots (LIKE vn_screenshots INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-  ALTER TABLE edit_vn_screenshots DROP COLUMN vid;
+  BEGIN
+    CREATE TEMPORARY TABLE edit_vn (LIKE vn_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_vn DROP COLUMN id;
+    ALTER TABLE edit_vn DROP COLUMN vid;
+    CREATE TEMPORARY TABLE edit_vn_anime (LIKE vn_anime INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_vn_anime DROP COLUMN vid;
+    CREATE TEMPORARY TABLE edit_vn_relations (LIKE vn_relations INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_vn_relations DROP COLUMN vid1;
+    ALTER TABLE edit_vn_relations RENAME COLUMN vid2 TO vid;
+    CREATE TEMPORARY TABLE edit_vn_screenshots (LIKE vn_screenshots INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_vn_screenshots DROP COLUMN vid;
+  EXCEPTION WHEN duplicate_table THEN
+    TRUNCATE edit_vn, edit_vn_anime, edit_vn_relations, edit_vn_screenshots;
+  END;
   -- new VN, load defaults
   IF cid IS NULL THEN
     PERFORM edit_revtable('v', NULL);
@@ -218,7 +226,6 @@ BEGIN
   INSERT INTO vn_relations SELECT r.cid, vid, relation FROM edit_vn_relations;
   INSERT INTO vn_screenshots SELECT r.cid, scr, nsfw, rid FROM edit_vn_screenshots;
   UPDATE vn SET latest = r.cid WHERE id = r.iid;
-  DROP TABLE edit_revision, edit_vn, edit_vn_anime, edit_vn_relations, edit_vn_screenshots;
   RETURN r;
 END;
 $$ LANGUAGE plpgsql;
@@ -228,19 +235,23 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION edit_release_init(cid integer) RETURNS void AS $$
 BEGIN
   -- temp. tables
-  CREATE TEMPORARY TABLE edit_release (LIKE releases_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-  ALTER TABLE edit_release DROP COLUMN id;
-  ALTER TABLE edit_release DROP COLUMN rid;
-  CREATE TEMPORARY TABLE edit_release_lang (LIKE releases_lang INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-  ALTER TABLE edit_release_lang DROP COLUMN rid;
-  CREATE TEMPORARY TABLE edit_release_media (LIKE releases_media INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-  ALTER TABLE edit_release_media DROP COLUMN rid;
-  CREATE TEMPORARY TABLE edit_release_platforms (LIKE releases_platforms INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-  ALTER TABLE edit_release_platforms DROP COLUMN rid;
-  CREATE TEMPORARY TABLE edit_release_producers (LIKE releases_producers INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-  ALTER TABLE edit_release_producers DROP COLUMN rid;
-  CREATE TEMPORARY TABLE edit_release_vn (LIKE releases_vn INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-  ALTER TABLE edit_release_vn DROP COLUMN rid;
+  BEGIN
+    CREATE TEMPORARY TABLE edit_release (LIKE releases_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_release DROP COLUMN id;
+    ALTER TABLE edit_release DROP COLUMN rid;
+    CREATE TEMPORARY TABLE edit_release_lang (LIKE releases_lang INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_release_lang DROP COLUMN rid;
+    CREATE TEMPORARY TABLE edit_release_media (LIKE releases_media INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_release_media DROP COLUMN rid;
+    CREATE TEMPORARY TABLE edit_release_platforms (LIKE releases_platforms INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_release_platforms DROP COLUMN rid;
+    CREATE TEMPORARY TABLE edit_release_producers (LIKE releases_producers INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_release_producers DROP COLUMN rid;
+    CREATE TEMPORARY TABLE edit_release_vn (LIKE releases_vn INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_release_vn DROP COLUMN rid;
+  EXCEPTION WHEN duplicate_table THEN
+    TRUNCATE edit_release, edit_release_lang, edit_release_media, edit_release_platforms, edit_release_producers, edit_release_vn;
+  END;
   -- new release
   IF cid IS NULL THEN
     PERFORM edit_revtable('r', NULL);
@@ -277,7 +288,6 @@ BEGIN
   INSERT INTO releases_producers SELECT pid, r.cid, developer, publisher FROM edit_release_producers;
   INSERT INTO releases_vn SELECT r.cid, vid FROM edit_release_vn;
   UPDATE releases SET latest = r.cid WHERE id = r.iid;
-  DROP TABLE edit_revision, edit_release, edit_release_lang, edit_release_media, edit_release_platforms, edit_release_producers, edit_release_vn;
   RETURN r;
 END;
 $$ LANGUAGE plpgsql;
@@ -286,12 +296,16 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION edit_producer_init(cid integer) RETURNS void AS $$
 BEGIN
-  CREATE TEMPORARY TABLE edit_producer (LIKE producers_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-  ALTER TABLE edit_producer DROP COLUMN id;
-  ALTER TABLE edit_producer DROP COLUMN pid;
-  CREATE TEMPORARY TABLE edit_producer_relations (LIKE producers_relations INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-  ALTER TABLE edit_producer_relations DROP COLUMN pid1;
-  ALTER TABLE edit_producer_relations RENAME COLUMN pid2 TO pid;
+  BEGIN
+    CREATE TEMPORARY TABLE edit_producer (LIKE producers_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_producer DROP COLUMN id;
+    ALTER TABLE edit_producer DROP COLUMN pid;
+    CREATE TEMPORARY TABLE edit_producer_relations (LIKE producers_relations INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_producer_relations DROP COLUMN pid1;
+    ALTER TABLE edit_producer_relations RENAME COLUMN pid2 TO pid;
+  EXCEPTION WHEN duplicate_table THEN
+    TRUNCATE edit_producer, edit_producer_relations;
+  END;
   -- new producer
   IF cid IS NULL THEN
     PERFORM edit_revtable('p', NULL);
@@ -318,7 +332,6 @@ BEGIN
   INSERT INTO producers_rev SELECT r.cid, r.iid, type, name, original, website, lang, "desc", alias, l_wp FROM edit_producer;
   INSERT INTO producers_relations SELECT r.cid, pid, relation FROM edit_producer_relations;
   UPDATE producers SET latest = r.cid WHERE id = r.iid;
-  DROP TABLE edit_revision, edit_producer, edit_producer_relations;
   RETURN r;
 END;
 $$ LANGUAGE plpgsql;
