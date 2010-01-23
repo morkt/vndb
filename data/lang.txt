@@ -3295,7 +3295,7 @@ hu : Nyelvek
 
 :_rbrowse_boolor
 en : boolean or, selecting more gives more results
-ru : булевое 'или', чем больше выбрано, тем больше даёт результатов
+ru : логическое 'или', чем больше выбрано, тем больше даёт результатов
 cs : boolean nebo, výběr více dá více výsledků
 hu : Boole féle értékhalmaz(igaz/hamis), ha többet jelölsz be, több eredményt ad ki
 
@@ -4700,7 +4700,7 @@ hu : címke szűrők
 
 :_vnbrowse_booland
 en : boolean and, selecting more gives less results
-ru : булевое 'и', чем больше выбрано, тем меньше даёт результатов
+ru : логическое 'и', чем больше выбрано, тем меньше даёт результатов
 cs : boolean a, výběr více dá méně výsledků
 hu : Boole féle értékhalmaz(igaz/hamis), s ha többet választasz ki akkor kevesebb találatot ad
 
@@ -4742,7 +4742,7 @@ hu : Nyelvek
 
 :_vnbrowse_boolor
 en : boolean or, selecting more gives more results
-ru : булевое 'или', чем больше выбрано, тем больше даёт результатов
+ru : логическое 'или', чем больше выбрано, тем больше даёт результатов
 cs : boolean nebo, výběr více dá více výsledků
 hu : Boole féle értékhalmaz(igaz/hamis), ha többet választasz ki akkor több találatot ad ki
 
@@ -5704,7 +5704,7 @@ hu : Ezt a műveletet nem hajthatod végre.
 
 :_denied_noaccess_msg
 en : It seems you don't have the proper rights to perform the action you wanted to perform...
-ru : Похоже, у вас нет прав на выполнение того, чего вы хотите...
+ru : Похоже, сюда вам нельзя...
 cs : Zdá se, že nemáte potřebná práva pro vykonání akce, kterou chcete provést...
 hu : Úgy tűnik, hogy nem rendelkezel megfelelő jogokkal, hogy elvégezd azt a műveletet amit szerettél volna...
 
