@@ -4,6 +4,7 @@ git - ?
 	- Improved date selector
 	- Made the release date a required field
 	- Versioned the deleting and locking of database entries
+	- Multi's announcements are colored in blue
 
 2.10 - 2010-01-10
 	- VN score on tag pages use plain averages instead of bayesian rating

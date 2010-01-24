@@ -310,7 +310,7 @@ sub notify_result { # num, res
   $_[HEAP]{lastpost} = $r->{lastpost} if $r->{lastpost};
   $_[HEAP]{lasttag} = $r->{lasttag} if $r->{lasttag};
   return if !keys %{$_[HEAP]{notify}};
-  $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], [ keys %{$_[HEAP]{notify}} ]);
+  $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], [ [ keys %{$_[HEAP]{notify}} ], 1 ]);
 }
 
 
@@ -372,7 +372,7 @@ sub cmd_vn_results { # num, res, \@_
   return $_[KERNEL]->yield(reply => $_[ARG2][DEST], sprintf(
       'Too many results found, see %s/v/all?q=%s', $VNDB::S{url}, uri_escape_utf8($_[ARG2][ARG])
     ), $_[ARG2][USER]) if $_[ARG0] > 5;
-  $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], $_[ARG2][DEST]);
+  $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], [$_[ARG2][DEST]]);
 }
 
 
@@ -397,7 +397,7 @@ sub cmd_p_results { # num, res, \@_
   return $_[KERNEL]->yield(reply => $_[ARG2][DEST], sprintf(
       'Too many results found, see %s/p/all?q=%s', $VNDB::S{url}, uri_escape_utf8($_[ARG2][ARG])
     ), $_[ARG2][USER]) if $_[ARG0] > 5;
-  $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], $_[ARG2][DEST]);
+  $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], [$_[ARG2][DEST]]);
 }
 
 
@@ -521,7 +521,7 @@ sub vndbid { # dest, msg
       $t eq 't' ? 'title, '.GETBOARDS.' FROM threads t WHERE id = ?' :
       $t eq 'g' ? 'name AS title FROM tags WHERE id = ?' :
                   'rr.title FROM releases_rev rr JOIN releases r ON r.latest = rr.id WHERE r.id = ?'),
-      [ $t, $id, $id ], 'formatid', $dest
+      [ $t, $id, $id ], 'formatid', [$dest]
     ) if !$rev && $t =~ /[vprtug]/;
 
     # edit/insert of vn/release/producer or discussion board post
@@ -530,7 +530,7 @@ sub vndbid { # dest, msg
       $t eq 'r' ? 'rr.title, u.username, c.comments FROM changes c JOIN releases_rev rr ON c.id = rr.id JOIN users u ON u.id = c.requester WHERE rr.rid = ? AND c.rev = ?' :
       $t eq 'p' ? 'pr.name AS title, u.username, c.comments FROM changes c JOIN producers_rev pr ON c.id = pr.id JOIN users u ON u.id = c.requester WHERE pr.pid = ? AND c.rev = ?' :
                   't.title, u.username, '.GETBOARDS.' FROM threads t JOIN threads_posts tp ON tp.tid = t.id JOIN users u ON u.id = tp.uid WHERE t.id = ? AND tp.num = ?'),
-      [ $t, $id, $rev, $id, $rev], 'formatid', $dest
+      [ $t, $id, $rev, $id, $rev], 'formatid', [$dest]
     ) if $rev && $t =~ /[vprt]/;
 
     # documentation page (need to parse the doc pages manually here)
@@ -545,7 +545,7 @@ sub vndbid { # dest, msg
       }
       close $F;
       next if $rev && !$sub;
-      $_[KERNEL]->yield(formatid => 1, [{type => 'd', id => $id, title => $title, rev => $rev, section => $sub}], $dest);
+      $_[KERNEL]->yield(formatid => 1, [{type => 'd', id => $id, title => $title, rev => $rev, section => $sub}], [$dest]);
     }
   }
 }
@@ -561,7 +561,9 @@ sub vndbid { # dest, msg
 #   boards    (optional) board titles the thread has been posted in
 #   comments  (optional) edit summary
 sub formatid {
-  my($num, $res, $dest) = @_[ARG0..$#_];
+  my($num, $res, $arg) = @_[ARG0..$#_];
+  my($dest, $notify) = @$arg;
+  my $c = $notify ? LIGHT_BLUE : RED;
 
   # only the types for which creation/edit announcements matter
   my %types = (
@@ -577,11 +579,11 @@ sub formatid {
 
     # (always) [x+.+]
     my @msg = (
-      BOLD.RED.'['.NORMAL.BOLD.$id.RED.']'.NORMAL
+      BOLD.$c.'['.NORMAL.BOLD.$id.$c.']'.NORMAL
     );
 
     # (only if username key is present) Edit of / New item / reply to / whatever
-    push @msg, RED.(
+    push @msg, $c.(
       ($_->{rev}||1) == 1 ? 'New '.$types{$_->{type}} :
       $_->{type} eq 't' ? 'Reply to' : 'Edit of'
     ).NORMAL if $_->{username};
@@ -590,22 +592,22 @@ sub formatid {
     push @msg, $_->{title};
 
     # (only if boards key is present) Posted in [boards]
-    push @msg, RED.'Posted in'.NORMAL.' '.$_->{boards} if $_->{boards};
+    push @msg, $c.'Posted in'.NORMAL.' '.$_->{boards} if $_->{boards};
 
     # (only if username key is present) By [username]
-    push @msg, RED.'By'.NORMAL.' '.$_->{username} if $_->{username};
+    push @msg, $c.'By'.NORMAL.' '.$_->{username} if $_->{username};
 
     # (only if comments key is present) Summary:
     $_->{comments} =~ s/\n/ /g if $_->{comments};
-    push @msg, RED.'Summary:'.NORMAL.' '.(
+    push @msg, $c.'Summary:'.NORMAL.' '.(
       length $_->{comments} > 40 ? substr($_->{comments}, 0, 37).'...' : $_->{comments}
     ) if defined $_->{comments};
 
     # (for d+.+) -> section title
-    push @msg, RED.'->'.NORMAL.' '.$_->{section} if $_->{section};
+    push @msg, $c.'->'.NORMAL.' '.$_->{section} if $_->{section};
 
     # (always) @ URL
-    push @msg, RED.'@ '.NORMAL.LIGHT_GREY.$VNDB::S{url}.'/'.$id.NORMAL;
+    push @msg, $c.'@ '.NORMAL.LIGHT_GREY.$VNDB::S{url}.'/'.$id.NORMAL;
 
     # now post it
     $_[KERNEL]->yield(reply => $dest, join ' ',  @msg);
