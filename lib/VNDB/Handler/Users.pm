@@ -346,7 +346,7 @@ sub edit {
     [ check  => short => 'flags_list', name => mt '_usere_flist', "/u$uid/list", "/u$uid/wish" ],
     [ check  => short => 'flags_nsfw', name => mt '_usere_fnsfw' ],
     [ select => short => 'skin', name => mt('_usere_skin'), width => 300, options => [
-      map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_}.($self->debug?" [$_]":'') ], sort { $self->{skins}{$a} cmp $self->{skins}{$b} } keys %{$self->{skins}} ] ],
+      map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_}[0].($self->debug?" [$_]":'') ], sort { $self->{skins}{$a}[0] cmp $self->{skins}{$b}[0] } keys %{$self->{skins}} ] ],
     [ textarea => short => 'customcss', name => mt '_usere_css' ],
   ]);
   $self->htmlFooter;

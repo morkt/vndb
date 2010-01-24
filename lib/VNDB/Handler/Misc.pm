@@ -288,24 +288,33 @@ sub docpage {
       $sec++;
       $subsec = 0;
       qq|<h3><a href="#$sec" name="$sec">$sec. $1</a></h3>\n|
-    }eg;
+    }e;
     s{^:SUBSUB:(.+)\r?\n$}{
       $subsec++;
       qq|<h4><a href="#$sec.$subsec" name="$sec.$subsec">$sec.$subsec. $1</a></h4>\n|
-    }eg;
+    }e;
     s{^:INC:(.+)\r?\n$}{
       $f = sprintf('%s/data/docs/%s', $VNDB::ROOT, $1);
       open($F, '<:utf8', $f.$l) or open($F, '<:utf8', $f) or die $!;
       my $ii = join('', <$F>);
       close $F;
       $ii;
-    }eg;
+    }e;
     s{^:TOP5CONTRIB:$}{
       my $l = $self->dbUserGet(results => 6, sort => 'changes', reverse => 1);
       '<dl>'.join('', map $_->{id} == 1 ? () :
         sprintf('<dt><a href="/u%d">%s</a></dt><dd>%d</dd>', $_->{id}, $_->{username}, $_->{c_changes}),
       @$l).'</dl>';
-    }eg;
+    }e;
+    s{^:SKINCONTRIB:$}{
+      my %users;
+      push @{$users{ $self->{skins}{$_}[1] }}, [ $_, $self->{skins}{$_}[0] ]
+        for sort { $self->{skins}{$a}[0] cmp $self->{skins}{$b}[0] } keys %{$self->{skins}};
+      my $u = $self->dbUserGet(uid => [ keys %users ]);
+      '<dl>'.join('', map sprintf('<dt><a href="/u%d">%s</a></dt><dd>%s</dd>',
+        $_->{id}, $_->{username}, join(', ', map sprintf('<a href="?skin=%s">%s</a>', $_->[0], $_->[1]), @{$users{$_->{id}}})
+      ), @$u).'</dl>';
+    }e;
   }
 
   $self->htmlHeader(title => $title);

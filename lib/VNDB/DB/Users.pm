@@ -30,8 +30,10 @@ sub dbUserGet {
       'ASCII(username) < 97 OR ASCII(username) > 122' => 1 ) : (),
     $o{mail} ? (
       'mail = ?' => $o{mail} ) : (),
-    $o{uid} ? (
+    $o{uid} && !ref($o{uid}) ? (
       'id = ?' => $o{uid} ) : (),
+    $o{uid} && ref($o{uid}) ? (
+      'id IN(!l)' => [ $o{uid} ]) : (),
     !$o{uid} && !$o{username} ? (
       'id > 0' => 1 ) : (),
     $o{ip} ? (

@@ -107,8 +107,8 @@ sub readskins {
   my $lasttemplate = [stat "$ROOT/data/style.css"]->[9];
   my $skin = SkinFile->new("$ROOT/static/s");
   for my $n ($skin->list) {
-    $skins{$n} = $skin->get($n, 'name');
-    next if !$skins{$n};
+    $skins{$n} = [ $skin->get($n, 'name'), $skin->get($n, 'userid') ];
+    next if !$skins{$n}[0];
 
     my $f = "$ROOT/static/s/$n";
     my $css = -f "$f/style.css" && [stat "$f/style.css"]->[9] || 0;

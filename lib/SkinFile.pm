@@ -26,6 +26,7 @@ sub open {
   open my $F, '<:utf8', "$self->{root}/$dir/conf" or die $!;
   flock $F, LOCK_SH or die $!;
   seek $F, 0, SEEK_SET or die $!;
+  local $_;
   while(<$F>) {
     chomp;
     s/\r//g;
