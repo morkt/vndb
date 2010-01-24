@@ -18,6 +18,7 @@ use lib $ROOT.'/lib';
 
 use YAWF ':html';
 use VNDB::L10N;
+use SkinFile;
 
 
 our(%O, %S);
@@ -104,21 +105,12 @@ sub readskins {
   my %skins; # dirname => skin name
   my @regen;
   my $lasttemplate = [stat "$ROOT/data/style.css"]->[9];
-  for my $f (glob "$ROOT/static/s/*") {
-    next if !-e "$f/conf";
-    my $n = $1 if $f =~ m{([^/]+)$};
-    open my $F, '<', "$f/conf" or die $!;
-    while(<$F>) {
-      chomp;
-      s/\r//;
-      s{[\t\s]*//.*$}{};
-      next if !/^name[\t\s]+(.+)$/;
-      $skins{$n} = $1;
-      last;
-    }
-    close $F;
+  my $skin = SkinFile->new("$ROOT/static/s");
+  for my $n ($skin->list) {
+    $skins{$n} = $skin->get($n, 'name');
     next if !$skins{$n};
 
+    my $f = "$ROOT/static/s/$n";
     my $css = -f "$f/style.css" && [stat "$f/style.css"]->[9] || 0;
     my $boxbg = -f "$f/boxbg.png" && [stat "$f/boxbg.png"]->[9] || 0;
     my $lastgen = $css < $boxbg ? $css : $boxbg;
