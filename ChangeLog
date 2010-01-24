@@ -7,6 +7,7 @@ git - ?
 	- Multi's announcements are colored in blue
 	- Abstracted parsing skin config files into a SkinFile module
 	- Automatically generate the skin credits on d7, by reading the skin files
+	- Only tagmods can create top-level tags
 
 2.10 - 2010-01-10
 	- VN score on tag pages use plain averages instead of bayesian rating

@@ -191,7 +191,7 @@ sub tagedit {
       { name => 'meta',        required => 0, default => 0 },
       { name => 'alias',       required => 0, maxlength => 1024, default => '', regex => [ qr/^[^,]+$/s, 'No comma allowed in aliases' ]  },
       { name => 'description', required => 0, maxlength => 1024, default => '' },
-      { name => 'parents',     required => 0, default => '' },
+      { name => 'parents',     required => !$self->authCan('tagmod'), default => '' },
       { name => 'merge',       required => 0, default => '' },
     );
     my @aliases = split /[\t\s]*\n[\t\s]*/, $frm->{alias};
