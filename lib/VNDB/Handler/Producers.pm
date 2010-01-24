@@ -155,7 +155,7 @@ sub edit {
     || $pid && ($p->{locked} && !$self->authCan('lock') || $p->{hidden} && !$self->authCan('del'));
 
   my %b4 = !$pid ? () : (
-    (map { $_ => $p->{$_} } qw|type name original lang website desc alias|),
+    (map { $_ => $p->{$_} } qw|type name original lang website desc alias ihid ilock|),
     l_wp => $p->{l_wp} || '',
     prodrelations => join('|||', map $_->{relation}.','.$_->{id}.','.$_->{name}, sort { $a->{id} <=> $b->{id} } @{$p->{relations}}),
   );
@@ -173,12 +173,17 @@ sub edit {
       { name => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { name => 'prodrelations', required  => 0, maxlength => 5000, default => '' },
       { name => 'editsum',       maxlength => 5000 },
+      { name => 'ihid',          required  => 0 },
+      { name => 'ilock',         required  => 0 },
     );
     if(!$frm->{_err}) {
       # parse
       my $relations = [ map { /^([a-z]+),([0-9]+),(.+)$/ && (!$pid || $2 != $pid) ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{prodrelations} ];
 
       # normalize
+      $frm->{ihid} = $frm->{ihid}?1:0;
+      $frm->{ilock} = $frm->{ilock}?1:0;
+      $relations = [] if $frm->{ihid};
       $frm->{prodrelations} = join '|||', map $_->[0].','.$_->[1].','.$_->[2], sort { $a->[1] <=> $b->[1]} @{$relations};
 
       return $self->resRedirect("/p$pid", 'post')

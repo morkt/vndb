@@ -14,7 +14,6 @@ YAWF::register(
   qr{(?:([upvr])([1-9]\d*)/)?hist},  \&history,
   qr{d([1-9]\d*)},                   \&docpage,
   qr{nospam},                        \&nospam,
-  qr{([vrp])([1-9]\d*)/(lock|hide)}, \&itemmod,
   qr{we-dont-like-ie6},              \&ie6message,
   qr{opensearch\.xml},               \&opensearch,
 
@@ -333,21 +332,6 @@ sub nospam {
   end;
 
   $self->htmlFooter;
-}
-
-
-# /hide and /lock for v/r/p+ pages
-sub itemmod {
-  my($self, $type, $iid, $act) = @_;
-  return $self->htmlDenied if !$self->authCan($act eq 'hide' ? 'del' : 'lock');
-
-  my $obj = $type eq 'v' ? $self->dbVNGet(id => $iid)->[0] :
-            $type eq 'r' ? $self->dbReleaseGet(id => $iid, what => 'extended')->[0] :
-                           $self->dbProducerGet(id => $iid, what => 'extended')->[0];
-  return 404 if !$obj->{id};
-
-  $self->dbItemMod($type, $iid, $act eq 'hide' ? (hidden => !$obj->{hidden}) : (locked => !$obj->{locked}));
-  $self->resRedirect("/$type$iid", 'temp');
 }
 
 

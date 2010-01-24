@@ -125,12 +125,20 @@ BEGIN
       iid integer,
       requester integer,
       ip inet,
-      comments text
+      comments text,
+      ihid boolean,
+      ilock boolean
     );
   EXCEPTION WHEN duplicate_table THEN
     TRUNCATE edit_revision;
   END;
-  INSERT INTO edit_revision (type, iid) VALUES (t, i);
+  INSERT INTO edit_revision (type, iid, ihid, ilock) VALUES (t,
+    (       SELECT vid FROM vn_rev WHERE id = i
+      UNION SELECT rid FROM releases_rev WHERE id = i
+      UNION SELECT pid FROM producers_rev WHERE id = i),
+    COALESCE((SELECT ihid FROM changes WHERE id = i), FALSE),
+    COALESCE((SELECT ilock FROM changes WHERE id = i), FALSE)
+  );
 END;
 $$ LANGUAGE plpgsql;
 
@@ -159,8 +167,8 @@ BEGIN
       LIMIT 1;
   END IF;
   -- insert change
-  INSERT INTO changes (type, requester, ip, comments, rev)
-    SELECT t, requester, ip, comments, r.rev
+  INSERT INTO changes (type, requester, ip, comments, ihid, ilock, rev)
+    SELECT t, requester, ip, comments, ihid, ilock, r.rev
     FROM edit_revision
     RETURNING id INTO r.cid;
   -- insert DB item
@@ -196,13 +204,12 @@ BEGIN
   EXCEPTION WHEN duplicate_table THEN
     TRUNCATE edit_vn, edit_vn_anime, edit_vn_relations, edit_vn_screenshots;
   END;
+  PERFORM edit_revtable('v', cid);
   -- new VN, load defaults
   IF cid IS NULL THEN
-    PERFORM edit_revtable('v', NULL);
     INSERT INTO edit_vn DEFAULT VALUES;
   -- otherwise, load revision
   ELSE
-    PERFORM edit_revtable('v', (SELECT vid FROM vn_rev WHERE id = cid));
     INSERT INTO edit_vn SELECT title, alias, img_nsfw, length, "desc", l_wp, l_vnn, image, l_encubed, l_renai, original FROM vn_rev WHERE id = cid;
     INSERT INTO edit_vn_anime SELECT aid FROM vn_anime WHERE vid = cid;
     INSERT INTO edit_vn_relations SELECT vid2, relation FROM vn_relations WHERE vid1 = cid;
@@ -252,13 +259,12 @@ BEGIN
   EXCEPTION WHEN duplicate_table THEN
     TRUNCATE edit_release, edit_release_lang, edit_release_media, edit_release_platforms, edit_release_producers, edit_release_vn;
   END;
+  PERFORM edit_revtable('r', cid);
   -- new release
   IF cid IS NULL THEN
-    PERFORM edit_revtable('r', NULL);
     INSERT INTO edit_release DEFAULT VALUES;
   -- load revision
   ELSE
-    PERFORM edit_revtable('r', (SELECT rid FROM releases_rev WHERE id = cid));
     INSERT INTO edit_release SELECT title, original, type, website, released, notes, minage, gtin, patch, catalog, resolution, voiced, freeware, doujin, ani_story, ani_ero FROM releases_rev WHERE id = cid;
     INSERT INTO edit_release_lang SELECT lang FROM releases_lang WHERE rid = cid;
     INSERT INTO edit_release_media SELECT medium, qty FROM releases_media WHERE rid = cid;
@@ -306,13 +312,12 @@ BEGIN
   EXCEPTION WHEN duplicate_table THEN
     TRUNCATE edit_producer, edit_producer_relations;
   END;
+  PERFORM edit_revtable('p', cid);
   -- new producer
   IF cid IS NULL THEN
-    PERFORM edit_revtable('p', NULL);
     INSERT INTO edit_producer DEFAULT VALUES;
   -- load revision
   ELSE
-    PERFORM edit_revtable('p', (SELECT pid FROM producers_rev WHERE id = cid));
     INSERT INTO edit_producer SELECT type, name, original, website, lang, "desc", alias, l_wp FROM producers_rev WHERE id = cid;
     INSERT INTO edit_producer_relations SELECT pid2, relation FROM producers_relations WHERE pid1 = cid;
   END IF;
@@ -550,6 +555,23 @@ BEGIN
     ) AS v(vid);
   END IF;
   RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- update (vn|release|producer).(hidden|locked) on a new revision
+-- NOTE: this is a /before/ trigger, it modifies NEW
+CREATE OR REPLACE FUNCTION update_hidlock() RETURNS trigger AS $$
+DECLARE
+  r record;
+BEGIN
+  IF OLD.latest IS DISTINCT FROM NEW.latest THEN
+    SELECT INTO r ihid, ilock FROM changes WHERE id = NEW.latest;
+    NEW.hidden := r.ihid;
+    NEW.locked := r.ilock;
+  END IF;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 

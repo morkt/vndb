@@ -6,7 +6,7 @@ use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw|
-  dbStats dbItemEdit dbRevisionGet dbItemMod dbRandomQuote
+  dbStats dbItemEdit dbRevisionGet dbRandomQuote
 |;
 
 
@@ -21,7 +21,7 @@ sub dbStats {
 
 
 # Inserts a new revision into the database
-# Arguments: type [vrp], revision id, %options->{ editsum uid + db[item]RevisionInsert }
+# Arguments: type [vrp], revision id, %options->{ editsum uid ihid ilock + db[item]RevisionInsert }
 #  revision id = changes.id of the revision this edit is based on, undef to create a new DB item
 # Returns: { iid, cid, rev }
 sub dbItemEdit {
@@ -29,8 +29,13 @@ sub dbItemEdit {
 
   my $fun = {qw|v vn r release p producer|}->{$type};
   $self->dbExec('SELECT edit_!s_init(?)', $fun, $oid);
-  $self->dbExec('UPDATE edit_revision SET requester = ?, ip = ?, comments = ?',
-    $o{uid}||$self->authInfo->{id}, $self->reqIP, $o{editsum});
+  $self->dbExec('UPDATE edit_revision !H', {
+    'requester = ?' => $o{uid}||$self->authInfo->{id},
+    'ip = ?'        => $self->reqIP,
+    'comments = ?'  => $o{editsum},
+    exists($o{ihid})  ? ('ihid = ?'  => $o{ihid} ?1:0) : (),
+    exists($o{ilock}) ? ('ilock = ?' => $o{ilock}?1:0) : (),
+  });
 
   $self->dbVNRevisionInsert(      \%o) if $type eq 'v';
   $self->dbProducerRevisionInsert(\%o) if $type eq 'p';
@@ -109,17 +114,6 @@ sub dbRevisionGet {
     join(', ', @select), join(' ', @join), \%where
   );
   return wantarray ? ($r, $np) : $r;
-}
-
-
-# Lock or hide a DB item
-# arguments: v/r/p, id, %options ->( hidden, locked )
-sub dbItemMod {
-  my($self, $type, $id, %o) = @_;
-  $self->dbExec('UPDATE !s !H WHERE id = ?',
-    {qw|v vn r releases p producers|}->{$type},
-    { map { ($_.' = ?', int $o{$_}) } keys %o }, $id
-  );
 }
 
 

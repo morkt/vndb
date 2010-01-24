@@ -29,15 +29,15 @@
 #	sql-import
 #		Imports util/sql/all.sql into your (presumably empty) database
 #
-#	update-2.10
-#		Updates all non-versioned items to 2.10
+#	update-<version>
+#		Updates all non-versioned items from the version before to <version>.
 #
 # NOTE: This Makefile has only been tested using a recent version of GNU make
 #   in a relatively up-to-date Arch Linux environment, and may not work in other
 #   environments. Patches to improve the portability are always welcome.
 
 
-.PHONY: all dirs js skins robots chmod chmod-tladmin multi-start multi-stop multi-restart sql-import update-2.10
+.PHONY: all dirs js skins robots chmod chmod-tladmin multi-start multi-stop multi-restart sql-import update-2.10 update-2.11
 
 all: dirs js skins robots data/config.pl
 
@@ -109,7 +109,7 @@ multi-restart:
 # Small perl script that tries to connect to the PostgreSQL database using 'psql', with the
 # connection settings from data/config.pl. May not work in all configurations, though...
 define runpsql
-	perl -MDBI -e 'package VNDB;\
+	@perl -MDBI -e 'package VNDB;\
 	$$ROOT=".";\
 	require "data/global.pl";\
 	$$_=(DBI->parse_dsn($$VNDB::O{db_login}[0]))[4];\
@@ -133,7 +133,11 @@ sql-import:
 
 update-2.10: all
 	$(multi-stop)
-	@${runpsql} < util/updates/update_2.10.sql
+	${runpsql} < util/updates/update_2.10.sql
 	$(multi-start)
 
+update-2.11: all
+	$(multi-stop)
+	${runpsql} < util/updates/update_2.11.sql
+	$(multi-start)
 

@@ -26,7 +26,7 @@ sub edit {
     || $vid && ($v->{locked} && !$self->authCan('lock') || $v->{hidden} && !$self->authCan('del'));
 
   my %b4 = !$vid ? () : (
-    (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn img_nsfw|),
+    (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn img_nsfw ihid ilock|),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
     vnrelations => join('|||', map $_->{relation}.','.$_->{id}.','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
     screenshots => join(' ', map sprintf('%d,%d,%d', $_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$v->{screenshots}}),
@@ -49,6 +49,8 @@ sub edit {
       { name => 'vnrelations', required => 0, default => '', maxlength => 5000 },
       { name => 'screenshots', required => 0, default => '', maxlength => 1000 },
       { name => 'editsum',     maxlength => 5000 },
+      { name => 'ihid',        required  => 0 },
+      { name => 'ilock',       required  => 0 },
     );
 
     # handle image upload
@@ -60,6 +62,9 @@ sub edit {
       my $relations = [ map { /^([a-z]+),([0-9]+),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{vnrelations} ];
       my $screenshots = [ map /^[0-9]+,[01],[0-9]+$/ ? [split /,/] : (), split / +/, $frm->{screenshots} ];
 
+      $frm->{ihid} = $frm->{ihid}?1:0;
+      $frm->{ilock} = $frm->{ilock}?1:0;
+      $relations = [] if $frm->{ihid};
       $frm->{anime} = join ' ', sort { $a <=> $b } keys %$anime;
       $frm->{vnrelations} = join '|||', map $_->[0].','.$_->[1].','.$_->[2], sort { $a->[1] <=> $b->[1]} @{$relations};
       $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
@@ -71,7 +76,7 @@ sub edit {
 
       # perform the edit/add
       my $nrev = $self->dbItemEdit(v => $vid ? $v->{cid} : undef,
-        (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum img_nsfw|),
+        (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum img_nsfw ihid ilock|),
         anime => [ keys %$anime ],
         relations => $relations,
         image => $image,

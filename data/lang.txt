@@ -1208,6 +1208,24 @@ ru : Отправить
 cs : Potvrdit
 hu : Beküldés
 
+:_form_ihid
+en : Deleted
+ru*:
+cs*:
+hu*:
+
+:_form_ilock
+en : Locked
+ru*:
+cs*:
+hu*:
+
+:_form_hidlock_note
+en : Note: edit summary of the last edit should indicate the reason for the deletion or lock.
+ru*:
+cs*:
+hu*:
+
 
 # Common javascript strings
 
@@ -1585,32 +1603,6 @@ ru : правка
 cs : upravit
 hu : szerkesztés
 
-# hide/unhide a DB item
-:_mtabs_hide
-en : hide
-ru : скрыть
-cs : skrýt
-hu : elrejtés
-
-:_mtabs_unhide
-en : unhide
-ru : показать
-cs : odkrýt
-hu : megjelenítés
-
-# lock/unlock for editing
-:_mtabs_lock
-en : lock
-ru : заблокировать
-cs : zamknout
-hu : bezárás
-
-:_mtabs_unlock
-en : unlock
-ru : разблокировать
-cs : odemknout
-hu : kinyitás
-
 # delete
 :_mtabs_del
 en : del
@@ -1703,6 +1695,18 @@ en : No
 ru : Нет
 cs*:
 hu : Nem
+
+:_revfield_ihid
+en : Deleted
+ru*:
+cs*:
+hu*:
+
+:_revfield_ilock
+en : Locked
+ru*:
+cs*:
+hu*:
 
 
 # tabs above the search boxes
@@ -5718,7 +5722,7 @@ cs : Položka smazána
 hu : Tárgy törölve
 
 :_hiddenmsg_msg
-en : This item has been deleted from the database, File a request on the
+en : This item has been deleted from the database. File a request on the
      [url,_1,discussion board] to undelete this page.
 ru : Данная запись удалена из базы данных. Пожалуйста, подайте заявку на
      [url,_1,форуме] для восстановления этой страницы.

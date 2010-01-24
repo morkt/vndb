@@ -20,7 +20,9 @@ CREATE TABLE changes (
   added timestamptz NOT NULL DEFAULT NOW(),
   requester integer NOT NULL DEFAULT 0,
   ip inet NOT NULL DEFAULT '0.0.0.0',
-  comments text NOT NULL DEFAULT ''
+  comments text NOT NULL DEFAULT '',
+  ihid boolean NOT NULL DEFAULT FALSE,
+  ilock boolean NOT NULL DEFAULT FALSE
 );
 
 -- producers

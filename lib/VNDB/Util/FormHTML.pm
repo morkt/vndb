@@ -209,11 +209,23 @@ sub htmlForm {
     end;
   }
 
-  # edit summary / submit button
+  # db mod / edit summary / submit button
   if(!$options->{nosubmit}) {
     div class => 'mainbox';
      fieldset class => 'submit';
       if($options->{editsum}) {
+        # hidden / locked checkbox
+        if($self->authCan('del')) {
+          input type => 'checkbox', name => 'ihid', id => 'ihid', value => 1, $options->{frm}{ihid} ? (checked => 'checked') : ();
+          label for => 'ihid', mt '_form_ihid';
+        }
+        if($self->authCan('lock')) {
+          input type => 'checkbox', name => 'ilock', id => 'ilock', value => 1, $options->{frm}{ilock} ? (checked => 'checked') : ();
+          label for => 'ilock', mt '_form_ilock';
+        }
+        txt "\n".mt('_form_hidlock_note')."\n" if $self->authCan('lock') || $self->authCan('del');
+
+        # edit summary
         (my $txt = $options->{frm}{editsum}||'') =~ s/&/&amp;/;
         $txt =~ s/</&lt;/;
         $txt =~ s/>/&gt;/;

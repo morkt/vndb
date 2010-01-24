@@ -74,7 +74,7 @@ sub dbReleaseGet {
     'rr.id AS cid',
     $o{what} =~ /extended/ ? qw|rr.notes rr.catalog rr.gtin rr.resolution rr.voiced rr.freeware rr.doujin rr.ani_story rr.ani_ero r.hidden r.locked| : (),
     $o{what} =~ /changes/ ?
-      (qw|c.requester c.comments r.latest u.username c.rev|, q|extract('epoch' from c.added) as added|) : (),
+      (qw|c.requester c.comments r.latest u.username c.rev c.ihid c.ilock|, q|extract('epoch' from c.added) as added|) : (),
   );
 
   my $order = sprintf {

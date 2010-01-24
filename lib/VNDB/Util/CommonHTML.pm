@@ -83,18 +83,6 @@ sub htmlMainTabs {
      end;
    }
 
-   if($type =~ /[vrp]/ && $self->authCan('del')) {
-     li;
-      a href => "/$id/hide", mt $obj->{hidden} ? '_mtabs_unhide' : '_mtabs_hide';
-     end;
-   }
-
-   if($type =~ /[vrp]/ && $self->authCan('lock')) {
-     li;
-      a href => "/$id/lock", mt $obj->{locked} ? '_mtabs_unlock' : '_mtabs_lock';
-     end;
-   }
-
    if($type eq 'u' && $self->authCan('usermod')) {
      li $sel eq 'del' ? (class => 'tabselected') : ();
       a href => "/$id/del", mt '_mtabs_del';
@@ -141,12 +129,18 @@ sub htmlHiddenMessage {
   my($self, $type, $obj) = @_;
   return 0 if !$obj->{hidden};
   my $board = $type eq 'r' ? 'v'.$obj->{vn}[0]{vid} : $type.$obj->{id};
+  # fetch edit summary (not present in $obj because the changes aren't fetched)
+  my $editsum = $type eq 'v' ? $self->dbVNGet(id => $obj->{id}, what => 'changes')->[0]{comments}
+              : $type eq 'r' ? $self->dbReleaseGet(id => $obj->{id}, what => 'changes')->[0]{comments}
+                             : $self->dbProducerGet(id => $obj->{id}, what => 'changes')->[0]{comments};
   div class => 'mainbox';
    h1 $obj->{title}||$obj->{name};
    div class => 'warning';
     h2 mt '_hiddenmsg_title';
     p;
      lit mt '_hiddenmsg_msg', "/t/$board";
+     br; br;
+     lit bb2html $editsum;
     end;
    end;
   end;
@@ -209,7 +203,11 @@ sub htmlRevision {
        end;
       end;
       my $i = 1;
-      revdiff(\$i, $type, $old, $new, @$_) for (@fields);
+      revdiff(\$i, $type, $old, $new, @$_) for (
+        [ ihid   => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
+        [ ilock  => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
+        @fields
+      );
      end;
    }
   end;
@@ -262,7 +260,7 @@ sub revdiff {
   $ser2 = mt '_revision_empty' if !$ser2 && $ser2 ne '0';
 
   Tr $$i++ % 2 ? (class => 'odd') : ();
-   td mt "_revfield_${type}_$short";
+   td mt $short eq 'ihid' || $short eq 'ilock' ? "_revfield_$short" : "_revfield_${type}_$short";
    td class => 'tcval'; lit $ser1; end;
    td class => 'tcval'; lit $ser2; end;
   end;

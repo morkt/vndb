@@ -287,7 +287,7 @@ sub edit {
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (
     (map { $_ => $r->{$_} } qw|type title original gtin catalog languages website released
-      notes platforms patch resolution voiced freeware doujin ani_story ani_ero|),
+      notes platforms patch resolution voiced freeware doujin ani_story ani_ero ihid ilock|),
     minage    => defined($r->{minage}) ? $r->{minage} : -1,
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map
@@ -323,6 +323,8 @@ sub edit {
       { name => 'producers', required => 0, default => '' },
       { name => 'vn',        maxlength => 5000 },
       { name => 'editsum',   maxlength => 5000 },
+      { name => 'ihid',      required  => 0 },
+      { name => 'ilock',     required  => 0 },
     );
 
     push @{$frm->{_err}}, [ 'released', 'required', 1 ] if !$frm->{released};
@@ -334,7 +336,7 @@ sub edit {
       $producers = [ map { /^([0-9]+),([1-3])/ ? [ $1, $2&1?1:0, $2&2?1:0] : () } split /\|\|\|/, $frm->{producers} ];
       $new_vn    = [ map { /^([0-9]+)/ ? $1 : () } split /\|\|\|/, $frm->{vn} ];
       $frm->{platforms} = [ grep $_, @{$frm->{platforms}} ];
-      $frm->{$_} = $frm->{$_} ? 1 : 0 for (qw|patch freeware doujin|);
+      $frm->{$_} = $frm->{$_} ? 1 : 0 for (qw|patch freeware doujin ihid ilock|);
 
       # reset some fields when the patch flag is set
       $frm->{doujin} = $frm->{resolution} = $frm->{voiced} = $frm->{ani_story} = $frm->{ani_ero} = 0 if $frm->{patch};
@@ -352,7 +354,7 @@ sub edit {
     if(!$frm->{_err}) {
       my $nrev = $self->dbItemEdit(r => !$copy && $rid ? $r->{cid} : undef,
         (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released
-          notes platforms resolution editsum patch voiced freeware doujin ani_story ani_ero|),
+          notes platforms resolution editsum patch voiced freeware doujin ani_story ani_ero ihid ilock|),
         minage    => $frm->{minage} < 0 ? undef : $frm->{minage},
         vn        => $new_vn,
         producers => $producers,
