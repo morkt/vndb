@@ -13,6 +13,7 @@ YAWF::register(
   qr{},                              \&homepage,
   qr{(?:([upvr])([1-9]\d*)/)?hist},  \&history,
   qr{d([1-9]\d*)},                   \&docpage,
+  qr{setlang},                       \&setlang,
   qr{nospam},                        \&nospam,
   qr{we-dont-like-ie6},              \&ie6message,
   qr{opensearch\.xml},               \&opensearch,
@@ -325,6 +326,20 @@ sub docpage {
    end;
   end;
   $self->htmlFooter;
+}
+
+
+sub setlang {
+  my $self = shift;
+
+  my $lang = $self->formValidate({name => 'lang', required => 1, enum => [ VNDB::L10N::languages ]});
+  return 404 if $lang->{_err};
+  $lang = $lang->{lang};
+
+  (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$self->{url}//;
+  $self->resRedirect($ref, 'post');
+  $self->resHeader('Set-Cookie', "l10n=$lang; expires=Sat, 01-Jan-2030 00:00:00 GMT; path=/; domain=$self->{cookie_domain}")
+    if $lang ne $self->{l10n}->language_tag();
 }
 
 

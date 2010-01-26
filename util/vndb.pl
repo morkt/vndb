@@ -54,18 +54,14 @@ sub reqinit {
   my $self = shift;
 
   # Determine language
-  # if the cookie or parameter "l10n" is set, use that.
-  #   otherwise, interpret the Accept-Language header or fall back to English
+  # if the cookie is set, use that. Otherwise, interpret the Accept-Language header or fall back to English.
   # if the cookie is set and is the same as either the Accept-Language header or the fallback, remove it
-  my $conf = $self->reqParam('l10n') || $self->reqCookie('l10n');
+  my $conf = $self->reqCookie('l10n');
   $conf = '' if !$conf || !grep $_ eq $conf, VNDB::L10N::languages;
 
   $self->{l10n} = VNDB::L10N->get_handle(); # this uses I18N::LangTags::Detect
-  if($self->{l10n}->language_tag() eq $conf && $self->reqCookie('l10n')) {
-    $self->resHeader('Set-Cookie', "l10n= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$self->{cookie_domain}");
-  } elsif($self->reqParam('l10n') && $conf && $conf ne ($self->reqCookie('l10n')||'') && $self->{l10n}->language_tag() ne $conf) {
-    $self->resHeader('Set-Cookie', "l10n=$conf; expires=Sat, 01-Jan-2030 00:00:00 GMT; path=/; domain=$self->{cookie_domain}");
-  }
+  $self->resHeader('Set-Cookie', "l10n= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$self->{cookie_domain}")
+    if $conf && $self->{l10n}->language_tag() eq $conf;
   $self->{l10n} = VNDB::L10N->get_handle($conf) if $conf && $self->{l10n}->language_tag() ne $conf;
 
 

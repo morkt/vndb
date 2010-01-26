@@ -1951,7 +1951,7 @@ if(byId('lang_select')) {
       var icon = tag('acronym', {'class':'icons lang '+ln}, ' ');
       lst.appendChild(tag('li', {'class':'lang_selector'}, mt_curlang == ln
         ? tag('i', icon, mt('_lang_'+ln))
-        : tag('a', {href:'?l10n='+ln}, icon, L10N_STR['_lang_'+ln][ln]||mt('_lang_'+ln))
+        : tag('a', {href:'/setlang?lang='+ln}, icon, L10N_STR['_lang_'+ln][ln]||mt('_lang_'+ln))
       ));
     }
     return lst;
