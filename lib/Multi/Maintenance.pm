@@ -17,12 +17,12 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown set_daily daily set_monthly monthly log_stats
-        vncache_inc tagcache vnpopularity vnrating cleangraphs
+        vncache_inc tagcache vnpopularity vnrating cleangraphs cleansessions
         vncache_full usercache statscache logrotate
       |],
     ],
     heap => {
-      daily => [qw|vncache_inc tagcache vnpopularity vnrating cleangraphs|],
+      daily => [qw|vncache_inc tagcache vnpopularity vnrating cleangraphs cleansessions|],
       monthly => [qw|vncache_full usercache statscache logrotate|],
       @_,
     },
@@ -148,6 +148,13 @@ sub cleangraphs {
      WHERE NOT EXISTS(SELECT 1 FROM vn WHERE rgraph = vg.id)
        AND NOT EXISTS(SELECT 1 FROM producers WHERE rgraph = vg.id)
     |, undef, 'log_stats', 'cleangraphs');
+}
+
+
+sub cleansessions {
+  $_[KERNEL]->post(pg => do =>
+    q|DELETE FROM sessions WHERE lastused < NOW()-'1 month'::interval|,
+    undef, 'log_stats', 'cleansessions');
 }
 
 
