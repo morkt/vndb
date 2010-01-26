@@ -3,7 +3,7 @@ package VNDB::Handler::Users;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use YAWF ':html', 'xml_escape';
 use VNDB::Func;
 
 
@@ -18,6 +18,8 @@ YAWF::register(
   qr{u([1-9]\d*)/posts}       => \&posts,
   qr{u([1-9]\d*)/del(/[od])?} => \&delete,
   qr{u/(all|[0a-z])}          => \&list,
+  qr{u([1-9]\d*)/notifies}    => \&notifies,
+  qr{u([1-9]\d*)/notify/([1-9]\d*)} => \&readnotify,
 );
 
 
@@ -516,6 +518,109 @@ sub list {
     },
   );
   $self->htmlFooter;
+}
+
+
+sub notifies {
+  my($self, $uid) = @_;
+  return $self->htmlDenied if !$self->authInfo->{id} || $uid != $self->authInfo->{id};
+
+  my $u = $self->dbUserGet(uid => $uid)->[0];
+
+  my $f = $self->formValidate(
+    { name => 'p', required => 0, default => 1, template => 'int' },
+    { name => 'r', required => 0, default => 0, enum => [0,1] },
+  );
+  return 404 if $f->{_err};
+
+  if($self->reqMethod() eq 'POST') {
+    my $frm = $self->formValidate(
+      { name => 'notifysel', multi => 1, required => 0, template => 'int' },
+      { name => 'markread', required => 0 },
+      { name => 'remove', required => 0 }
+    );
+    return 404 if $frm->{_err};
+    my @ids = grep $_, @{$frm->{notifysel}};
+    $self->dbNotifyMarkRead(@ids) if @ids && $frm->{markread};
+    $self->dbNotifyRemove(@ids) if @ids && $frm->{remove};
+  }
+
+  my($list, $np) = $self->dbNotifyGet(
+    uid => $uid,
+    page => $f->{p},
+    results => 25,
+    what => 'titles',
+    read => $f->{r} == 1 ? undef : 0,
+  );
+
+  $self->htmlHeader(title => mt('_usern_title'), noindex => 1);
+  $self->htmlMainTabs(u => $u);
+  div class => 'mainbox';
+   h1 mt '_usern_title';
+   p class => 'browseopts';
+    a !$f->{r} ? (class => 'optselected') : (), href => "/u$uid/notifies?r=0", mt '_usern_o_unread';
+    a  $f->{r} ? (class => 'optselected') : (), href => "/u$uid/notifies?r=1", mt '_usern_o_alsoread';
+   end;
+   p mt '_usern_nonotifies' if !@$list;
+  end;
+
+  if(@$list) {
+    form action => "/u$uid/notifies?r=$f->{r}", method => 'post';
+    $self->htmlBrowse(
+      items    => $list,
+      options  => $f,
+      nextpage => $np,
+      class    => 'notifies',
+      pageurl  => "/u$uid/notifies?r=$f->{r}",
+      header   => [
+        [ '<input type="checkbox" class="checkall" name="notifysel" value="0" />' ],
+        [ mt '_usern_col_type' ],
+        [ mt '_usern_col_age' ],
+        [ mt '_usern_col_id' ],
+        [ mt '_usern_col_desc' ],
+      ],
+      row     => sub {
+        my($s, $n, $l) = @_;
+        Tr class => join ' ', $n%2?'odd':'', $l->{read}?'':'unread';
+         td class => 'tc1';
+          input type => 'checkbox', name => 'notifysel', value => "$l->{id}";
+         end;
+         td class => 'tc2', mt "_usern_type_$l->{ntype}";
+         td class => 'tc3', $self->{l10n}->age($l->{date});
+         td class => 'tc4';
+          a href => "/u$uid/notify/$l->{id}", "$l->{ltype}$l->{iid}".($l->{subid}?".$l->{subid}":'');
+         end;
+         td class => 'tc5';
+          lit mt '_usern_n_'.(
+            $l->{ltype} eq 't' ? ($l->{subid} == 1 ? 't_new' : 't_reply')
+            : die("unknown notification type")),
+            sprintf('<i>%s</i>', xml_escape $l->{title}), sprintf('<i>%s</i>', xml_escape $l->{subtitle});
+         end;
+        end;
+      },
+      footer => sub {
+        Tr;
+         td colspan => 5;
+          input type => 'submit', name => 'markread', value => mt '_usern_but_markread';
+          input type => 'submit', name => 'remove', value => mt '_usern_but_remove';
+         end;
+        end;
+      }
+    );
+    end;
+  }
+  $self->htmlFooter;
+}
+
+
+sub readnotify {
+  my($self, $uid, $nid) = @_;
+  return $self->htmlDenied if !$self->authInfo->{id} || $uid != $self->authInfo->{id};
+  my $n = $self->dbNotifyGet(uid => $uid, id => $nid)->[0];
+  return 404 if !$n->{iid};
+  $self->dbNotifyMarkRead($n->{id}) if !$n->{read};
+  # NOTE: for t+.+ IDs, this will create a double redirect, which is rather awkward...
+  $self->resRedirect("/$n->{ltype}$n->{iid}".($n->{subid}?".$n->{subid}":''), 'perm');
 }
 
 

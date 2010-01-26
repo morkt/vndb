@@ -25,6 +25,18 @@ CREATE TABLE changes (
   ilock boolean NOT NULL DEFAULT FALSE
 );
 
+-- notifications
+CREATE TABLE notifications (
+  id serial PRIMARY KEY NOT NULL,
+  uid integer NOT NULL,
+  date timestamptz NOT NULL DEFAULT NOW(),
+  read timestamptz,
+  ntype notification_ntype NOT NULL,
+  ltype notification_ltype NOT NULL,
+  iid integer NOT NULL,
+  subid integer
+);
+
 -- producers
 CREATE TABLE producers (
   id SERIAL NOT NULL PRIMARY KEY,
@@ -240,7 +252,6 @@ CREATE TABLE threads_boards (
   tid integer NOT NULL DEFAULT 0,
   type character(2) NOT NULL DEFAULT 0,
   iid integer NOT NULL DEFAULT 0,
-  lastread smallint NOT NULL,
   PRIMARY KEY(tid, type, iid)
 );
 
@@ -341,10 +352,11 @@ CREATE TABLE wlists (
 
 
 ALTER TABLE changes             ADD FOREIGN KEY (requester) REFERENCES users         (id);
+ALTER TABLE notifications       ADD FOREIGN KEY (uid)       REFERENCES users         (id);
 ALTER TABLE producers           ADD FOREIGN KEY (latest)    REFERENCES producers_rev (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE producers           ADD FOREIGN KEY (rgraph)    REFERENCES relgraphs     (id);
-ALTER TABLE producers_relations ADD FOREIGN KEY (pid1)     REFERENCES producers_rev (id);
-ALTER TABLE producers_relations ADD FOREIGN KEY (pid2)     REFERENCES producers     (id);
+ALTER TABLE producers_relations ADD FOREIGN KEY (pid1)      REFERENCES producers_rev (id);
+ALTER TABLE producers_relations ADD FOREIGN KEY (pid2)      REFERENCES producers     (id);
 ALTER TABLE producers_rev       ADD FOREIGN KEY (id)        REFERENCES changes       (id);
 ALTER TABLE producers_rev       ADD FOREIGN KEY (pid)       REFERENCES producers     (id);
 ALTER TABLE quotes              ADD FOREIGN KEY (vid)       REFERENCES vn            (id);

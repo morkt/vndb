@@ -943,6 +943,16 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 .browse.rlist .relhid .tc4 { text-align: right }
 
 
+/***** User notifications *****/
+
+.browse.notifies td.tc1 { width: 14px }
+.browse.notifies td.tc3 { width: 90px }
+.browse.notifies td.tc4 { width: 60px }
+.browse.notifies tbody td.tc5 { color: $grayedout$ }
+.browse.notifies td.tc5 i { font-style: normal; color: $maintext$ }
+.browse.notifies .unread td { font-weight: bold }
+.browse.notifies tfoot td { padding: 0 0 0 25px }
+
 
 
 /***** Userpage *****/

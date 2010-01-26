@@ -1430,11 +1430,11 @@ cs : Můj wishlist
 hu : Kivánságlistám
 
 # [_1] = number of messages
-:_menu_mymessages
-en : My Messages ([_1])
-ru : Мои сообщения ([_1])
-cs : Mé zprávy ([_1])
-hu : Üzenenteim ([_1])
+:_menu_mynotifications
+en : My Notifications ([_1])
+ru*: Мои сообщения ([_1])
+cs*: Mé zprávy ([_1])
+hu*: Üzenenteim ([_1])
 
 :_menu_mychanges
 en : My Recent Changes
@@ -4622,6 +4622,86 @@ ru : Тегов
 cs : Tagy
 hu : Címkék
 
+
+# Notifications (/u+/notifies)
+
+:_usern_title
+en : My notifications
+ru*:
+cs*:
+hu*:
+
+:_usern_o_unread
+en : Unread notifications
+ru*:
+cs*:
+hu*:
+
+:_usern_o_alsoread
+en : All notifications
+ru*:
+cs*:
+hu*:
+
+:_usern_nonotifies
+en : No notifications!
+ru*:
+cs*:
+hu*:
+
+:_usern_col_type
+en : Type
+ru*:
+cs*:
+hu*:
+
+:_usern_col_age
+en : Age
+ru*:
+cs*:
+hu*:
+
+:_usern_col_id
+en : ID
+ru*:
+cs*:
+hu*:
+
+:_usern_col_desc
+en : Description
+ru*:
+cs*:
+hu*:
+
+:_usern_type_pm
+en : PM
+ru*:
+cs*:
+hu*:
+
+:_usern_n_t_new
+en : New thread [_1] by [_2]
+ru*:
+cs*:
+hu*:
+
+:_usern_n_t_reply
+en : Reply to [_1] by [_2]
+ru*:
+cs*:
+hu*:
+
+:_usern_but_markread
+en : mark selected read
+ru*:
+cs*:
+hu*:
+
+:_usern_but_remove
+en : remove selected
+ru*:
+cs*:
+hu*:
 
 
 

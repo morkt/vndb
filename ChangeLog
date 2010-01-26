@@ -8,6 +8,7 @@ git - ?
 	- Abstracted parsing skin config files into a SkinFile module
 	- Automatically generate the skin credits on d7, by reading the skin files
 	- Only tagmods can create top-level tags
+	- Notification system (still only used for PMs)
 
 2.10 - 2010-01-10
 	- VN score on tag pages use plain averages instead of bayesian rating

@@ -1,4 +1,16 @@
 
+-- A small note on the function naming scheme:
+--   edit_*      -> revision insertion abstraction functions
+--   *_notify    -> functions issuing a PgSQL NOTIFY statement
+--   notify_*    -> functions creating entries in the notifications table
+--   update_*    -> functions to update a cache
+--   *_update    ^  (I should probably rename these to
+--   *_calc      ^   the update_* scheme for consistency)
+-- I like to keep the nouns in functions singular, in contrast to the table
+-- naming scheme where nouns are always plural. But I'm not very consistent
+-- with that, either.
+
+
 
 -- update_vncache(id) - updates the c_* columns in the vn table
 CREATE OR REPLACE FUNCTION update_vncache(integer) RETURNS void AS $$
@@ -38,8 +50,7 @@ CREATE OR REPLACE FUNCTION update_vncache(integer) RETURNS void AS $$
       AND rr3.released <= TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer
       AND r3.hidden = FALSE
       GROUP BY rp3.platform
-      ORDER BY rp3.platform
-    ), '/'), '')
+      ORDER BY rp3.platform), '/'), '')
   WHERE id = $1;
 $$ LANGUAGE sql;
 
@@ -572,6 +583,38 @@ BEGIN
     NEW.locked := r.ilock;
   END IF;
   RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
+----------------------------------------------------------
+--                notification functions                --
+--          (these are, in fact, also triggers)         --
+----------------------------------------------------------
+
+
+-- called on INSERT INTO threads_posts
+CREATE OR REPLACE FUNCTION notify_pm() RETURNS trigger AS $$
+BEGIN
+  INSERT INTO notifications (ntype, ltype, uid, iid, subid)
+    SELECT 'pm', 't', tb.iid, t.id, NEW.num
+      FROM threads t
+      JOIN threads_boards tb ON tb.tid = t.id
+     WHERE t.id = NEW.tid
+       AND tb.type = 'u'
+       AND tb.iid <> NEW.uid -- don't notify when posting in your own board
+       AND NOT EXISTS( -- don't notify when you haven't read an earlier post in the thread yet
+         SELECT 1
+           FROM notifications n
+          WHERE n.uid = tb.iid
+            AND n.ntype = 'pm'
+            AND n.iid = t.id
+            AND n.read IS NULL
+       );
+  RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 

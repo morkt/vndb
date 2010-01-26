@@ -25,7 +25,7 @@ sub authInit {
   return _rmcookie($self) if length($cookie) < 41;
   my $token = substr($cookie, 0, 40);
   my $uid  = substr($cookie, 40);
-  $self->{_auth} = $uid =~ /^\d+$/ && $self->dbUserGet(uid => $uid, session => $token, what => 'extended')->[0];
+  $self->{_auth} = $uid =~ /^\d+$/ && $self->dbUserGet(uid => $uid, session => $token, what => 'extended notifycount')->[0];
   return _rmcookie($self) if !$self->{_auth};
 }
 
@@ -95,7 +95,7 @@ sub _authCheck {
 
   return 0 if !$user || length($user) > 15 || length($user) < 2 || !$pass;
 
-  my $d = $self->dbUserGet(username => $user, what => 'extended')->[0];
+  my $d = $self->dbUserGet(username => $user, what => 'extended notifycount')->[0];
   return 0 if !defined $d->{id} || !$d->{rank};
 
   if(_authEncryptPass($self, $pass, $d->{salt}) eq $d->{passwd}) {

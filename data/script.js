@@ -1959,6 +1959,20 @@ if(byId('lang_select')) {
   d.onclick = function() {return false};
 }
 
+// "check all" checkbox
+{
+  var f = function() {
+    var l = byName('input');
+    for(var i=0; i<l.length; i++)
+      if(l[i].type == this.type && l[i].name == this.name)
+        l[i].checked = this.checked;
+  };
+  var l = byClass('input', 'checkall');
+  for(var i=0; i<l.length; i++)
+    if(l[i].type == 'checkbox')
+      l[i].onclick = f;
+}
+
 // spam protection on all forms
 setTimeout(function() {
   for(i=1; i<document.forms.length; i++)

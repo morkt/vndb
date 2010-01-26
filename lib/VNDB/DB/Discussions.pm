@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbThreadGet dbThreadEdit dbThreadAdd dbPostGet dbPostEdit dbPostAdd dbThreadCount dbPostRead|;
+our @EXPORT = qw|dbThreadGet dbThreadEdit dbThreadAdd dbPostGet dbPostEdit dbPostAdd dbThreadCount|;
 
 
 # Options: id, type, iid, results, page, what, notusers, sort, reverse
@@ -249,16 +249,6 @@ sub dbPostAdd {
     $tid);
 
   return $num;
-}
-
-
-sub dbPostRead { # thread id, user id, last post number
-  my($s, $tid, $uid, $num) = @_;
-  $s->dbExec(q|
-    UPDATE threads_boards
-      SET lastread = ?
-      WHERE tid = ? AND type = 'u' AND iid = ?|,
-    $num, $tid, $uid);
 }
 
 

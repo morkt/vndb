@@ -10,6 +10,8 @@ CREATE TYPE anime_type        AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 
 CREATE TYPE dbentry_type      AS ENUM ('v', 'r', 'p');
 CREATE TYPE edit_rettype      AS (iid integer, cid integer, rev integer);
 CREATE TYPE medium            AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
+CREATE TYPE notification_ntype AS ENUM ('pm');
+CREATE TYPE notification_ltype AS ENUM ('t');
 CREATE TYPE producer_relation AS ENUM ('old', 'new', 'sub', 'par', 'imp', 'ipa', 'spa', 'ori');
 CREATE TYPE release_type      AS ENUM ('complete', 'partial', 'trial');
 CREATE TYPE vn_relation       AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
@@ -59,6 +61,8 @@ CREATE TRIGGER insert_notify              AFTER  INSERT           ON threads_pos
 CREATE TRIGGER insert_notify              AFTER  INSERT           ON tags          FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
 
 CREATE TRIGGER release_vncache_update     AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE release_vncache_update();
+
+CREATE TRIGGER notify_pm                  AFTER  INSERT           ON threads_posts FOR EACH ROW EXECUTE PROCEDURE notify_pm();
 
 
 -- Sequences used for ID generation of items not in the DB

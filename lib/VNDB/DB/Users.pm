@@ -5,11 +5,14 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbUserGet dbUserEdit dbUserAdd dbUserDel dbUserMessageCount dbSessionAdd dbSessionDel|;
+our @EXPORT = qw|
+  dbUserGet dbUserEdit dbUserAdd dbUserDel dbSessionAdd dbSessionDel
+  dbNotifyGet dbNotifyMarkRead dbNotifyRemove
+|;
 
 
 # %options->{ username passwd mail session uid ip registered search results page what sort reverse }
-# what: stats extended
+# what: notifycount stats extended
 # sort: username registered votes changes tags
 sub dbUserGet {
   my $s = shift;
@@ -53,6 +56,8 @@ sub dbUserGet {
       qw|mail rank salt skin customcss show_nsfw ign_votes|,
       q|encode(passwd, 'hex') AS passwd|
     ) : (),
+    $o{what} =~ /notifycount/ ?
+      '(SELECT COUNT(*) FROM notifications WHERE uid = u.id AND read IS NULL) AS notifycount' : (),
     $o{what} =~ /stats/ ? (
       '(SELECT COUNT(*) FROM rlists WHERE uid = u.id) AS releasecount',
       '(SELECT COUNT(DISTINCT rv.vid) FROM rlists rl JOIN releases r ON rl.rid = r.id JOIN releases_vn rv ON rv.rid = r.latest WHERE uid = u.id) AS vncount',
@@ -129,20 +134,6 @@ sub dbUserDel {
 }
 
 
-# Returns number of unread messages
-sub dbUserMessageCount { # uid
-  my($s, $uid) = @_;
-  return $s->dbRow(q{
-    SELECT SUM(tbi.count) AS cnt FROM (
-      SELECT t.count-COALESCE(tb.lastread,0)
-        FROM threads_boards tb
-        JOIN threads t ON t.id = tb.tid AND NOT t.hidden
-       WHERE tb.type = 'u' AND tb.iid = ?
-    ) AS tbi (count)
-  }, $uid)->{cnt}||0;
-}
-
-
 # Adds a session to the database
 # If no expiration is supplied the database default is used
 # uid, 40 character session token, expiration time (timestamp)
@@ -161,6 +152,65 @@ sub dbSessionDel {
   my %where = ('uid = ?' => $o[0]);
   $where{"token = decode(?, 'hex')"} = $o[1] if $o[1];
   $s->dbExec('DELETE FROM sessions !W', \%where);
+}
+
+
+# %options->{ uid id what results page }
+# what: titles
+sub dbNotifyGet {
+  my($s, %o) = @_;
+  $o{what} ||= '';
+  $o{results} ||= 10;
+  $o{page} ||= 1;
+
+  my %where = (
+    'n.uid = ?' => $o{uid},
+    $o{id} ? (
+      'n.id = ?' => $o{id} ) : (),
+    defined($o{read}) ? (
+      'n.read !s' => $o{read} ? 'IS NOT NULL' : 'IS NULL' ) : (),
+  );
+
+  my @join = (
+    $o{what} =~ /titles/ ? (
+      q|LEFT JOIN threads t ON n.ltype = 't' AND t.id = n.iid|,
+      q|LEFT JOIN threads_posts tp ON n.ltype = 't' AND tp.tid = t.id AND n.subid = tp.num|,
+      q|LEFT JOIN users tu ON tp.uid = tu.id|
+    ) : ()
+  );
+
+  my @select = (
+    qw|n.id n.ntype n.ltype n.iid n.subid|,
+    q|extract('epoch' from n.date) as date|,
+    q|extract('epoch' from n.read) as read|,
+    $o{what} =~ /titles/ ? (
+      q|COALESCE(t.title,'') AS title|,
+      q|COALESCE(tu.username,'') AS subtitle|,
+    ) : (),
+  );
+
+  my($r, $np) = $s->dbPage(\%o, q|
+    SELECT !s
+      FROM notifications n
+      !s
+      !W
+      ORDER BY n.id
+  |, join(', ', @select), join(' ', @join), \%where);
+  return wantarray ? ($r, $np) : $r;
+}
+
+
+# ids
+sub dbNotifyMarkRead {
+  my $s = shift;
+  $s->dbExec('UPDATE notifications SET read = NOW() WHERE id IN(!l)', \@_);
+}
+
+
+# ids
+sub dbNotifyRemove {
+  my $s = shift;
+  $s->dbExec('DELETE FROM notifications WHERE id IN(!l)', \@_);
 }
 
 

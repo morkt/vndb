@@ -79,8 +79,8 @@ sub _menu {
 
    div class => 'menubox';
     if($self->authInfo->{id}) {
-      my $msg = $self->dbUserMessageCount($self->authInfo->{id});
       my $uid = sprintf '/u%d', $self->authInfo->{id};
+      my $nc = $self->authInfo->{notifycount};
       h2;
        a href => $uid, ucfirst $self->authInfo->{username};
        # note: user ranks aren't TL'ed (but might be in the future, hmm)
@@ -90,7 +90,7 @@ sub _menu {
        a href => "$uid/edit", mt '_menu_myprofile'; br;
        a href => "$uid/list", mt '_menu_myvnlist'; br;
        a href => "$uid/wish", mt '_menu_mywishlist'; br;
-       a href => "/t$uid",    $msg ? (class => 'standout') : (), mt '_menu_mymessages', $msg; br;
+       a href => "$uid/notifies", $nc ? (class => 'standout') : (), mt '_menu_mynotifications', $nc; br;
        a href => "$uid/hist", mt '_menu_mychanges'; br;
        a href => "$uid/tags", mt '_menu_mytags'; br;
        br;
