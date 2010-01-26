@@ -42,11 +42,10 @@ sub authLogin {
 
   if(_authCheck($self, $user, $pass)) {
     my $token = sha1_hex(join('', Time::HiRes::gettimeofday()) . join('', map chr(rand(93)+33), 1..9));
-    my $expiration = time + 31536000;  # 1yr
     my $cookie = $token . $self->{_auth}{id};
-    $self->dbSessionAdd($self->{_auth}{id}, $token, $expiration);
+    $self->dbSessionAdd($self->{_auth}{id}, $token);
 
-    my $expstr = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime($expiration));
+    my $expstr = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime(time + 31536000)); # keep the cookie for 1 year
     $self->resRedirect($to, 'post');
     $self->resHeader('Set-Cookie', "vndb_auth=$cookie; expires=$expstr; path=/; domain=$self->{cookie_domain}");
     return 1;

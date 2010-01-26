@@ -172,7 +172,7 @@ CREATE TABLE screenshots (
 CREATE TABLE sessions (
   uid integer NOT NULL,
   token bytea NOT NULL,
-  expiration timestamptz NOT NULL DEFAULT (now() + '1 year'::interval),
+  added timestamptz NOT NULL DEFAULT NOW(),
   lastused timestamptz NOT NULL DEFAULT NOW(),
   PRIMARY KEY (uid, token)
 );

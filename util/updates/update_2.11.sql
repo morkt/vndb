@@ -84,4 +84,7 @@ DROP FUNCTION tmp_edit_hidlock(text, integer);
 
 -- keep track of when a session is last used
 ALTER TABLE sessions ADD COLUMN lastused timestamptz NOT NULL DEFAULT NOW();
+ALTER TABLE sessions RENAME COLUMN expiration TO added;
+UPDATE sessions SET added = added - '1 year'::interval;
+
 
