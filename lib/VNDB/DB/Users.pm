@@ -6,7 +6,8 @@ use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw|
-  dbUserGet dbUserEdit dbUserAdd dbUserDel dbSessionAdd dbSessionDel
+  dbUserGet dbUserEdit dbUserAdd dbUserDel
+  dbSessionAdd dbSessionDel dbSessionUpdateLastUsed
   dbNotifyGet dbNotifyMarkRead dbNotifyRemove
 |;
 
@@ -66,6 +67,7 @@ sub dbUserGet {
       '(SELECT COUNT(DISTINCT tag) FROM tags_vn WHERE uid = u.id) AS tagcount',
       '(SELECT COUNT(DISTINCT vid) FROM tags_vn WHERE uid = u.id) AS tagvncount',
     ) : (),
+    $o{session} ? q|extract('epoch' from s.lastused) as session_lastused| : (),
   );
 
   my @join = (
@@ -152,6 +154,12 @@ sub dbSessionDel {
   my %where = ('uid = ?' => $o[0]);
   $where{"token = decode(?, 'hex')"} = $o[1] if $o[1];
   $s->dbExec('DELETE FROM sessions !W', \%where);
+}
+
+
+# uid, token
+sub dbSessionUpdateLastUsed {
+  $_[0]->dbExec(q|UPDATE sessions SET lastused = NOW() WHERE uid = ? AND token = decode(?, 'hex')|, $_[1], $_[2]);
 }
 
 

@@ -26,6 +26,8 @@ sub authInit {
   my $token = substr($cookie, 0, 40);
   my $uid  = substr($cookie, 40);
   $self->{_auth} = $uid =~ /^\d+$/ && $self->dbUserGet(uid => $uid, session => $token, what => 'extended notifycount')->[0];
+  # update the sessions.lastused column if lastused < now()'6 hours'
+  $self->dbSessionUpdateLastUsed($uid, $token) if $self->{_auth} && $self->{_auth}{session_lastused} < time()-6*3600;
   return _rmcookie($self) if !$self->{_auth};
 }
 

@@ -81,3 +81,7 @@ UNION SELECT 'r', COUNT(*) FROM (SELECT tmp_edit_hidlock('r', id) FROM releases 
 UNION SELECT 'p', COUNT(*) FROM (SELECT tmp_edit_hidlock('p', id) FROM producers WHERE hidden OR locked) x;
 DROP FUNCTION tmp_edit_hidlock(text, integer);
 
+
+-- keep track of when a session is last used
+ALTER TABLE sessions ADD COLUMN lastused timestamptz NOT NULL DEFAULT NOW();
+

@@ -10,6 +10,7 @@ git - ?
 	- Only tagmods can create top-level tags
 	- Notification system (still only used for PMs)
 	- Removed the ?l10n= paremeter
+	- Keep track of when a session has last been used
 
 2.10 - 2010-01-10
 	- VN score on tag pages use plain averages instead of bayesian rating
