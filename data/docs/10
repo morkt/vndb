@@ -25,6 +25,10 @@
  <li>Some tags can act as spoilers for the plot of a VN, this can be indicated by voting on the spoiler
   status. It is highly recommended to not leave this as "Neutral", and really try to give an indication
   of whether the tag is not a spoiler at all or does spoil a bit.</li>
+ <li>Tags are supposed to reflect the things you'll be experiencing as you play the game, even if
+  some things might get revealed to be lies or illusions towards the end of the story. In cases like this,
+  add both the (arguably incorrect) tags and the tags describing the situation after the truth has been
+  revealed, making sure mark the "correct" tags as spoilers.</li>
 </ul>
 
 
