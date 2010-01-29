@@ -85,10 +85,10 @@ BEGIN
     )
     -- grouped by (tag, vid)
     SELECT tag, vid, COUNT(uid) AS users, AVG(vote)::real AS rating,
-           (CASE WHEN AVG(spoiler) < 0.7 THEN 0 WHEN AVG(spoiler) > 1.3 THEN 2 ELSE 1 END)::smallint AS spoiler
+           (CASE WHEN AVG(spoiler) > 1.3 THEN 2 WHEN AVG(spoiler) > 0.7 THEN 1 ELSE 0 END)::smallint AS spoiler
     FROM (
       -- grouped by (tag, vid, uid), so only one user votes on one parent tag per VN entry (also removing meta tags)
-      SELECT tag, vid, uid, MAX(vote)::real, COALESCE(AVG(spoiler), 0)::real
+      SELECT tag, vid, uid, MAX(vote)::real, AVG(spoiler)::real
       FROM tags_vn_all
       WHERE NOT meta
       GROUP BY tag, vid, uid
