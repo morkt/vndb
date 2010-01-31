@@ -1378,12 +1378,6 @@ ru : Случайная новелла
 cs : Náhodná vizuální novela
 hu : Véletlenszerű VN
 
-:_menu_webchat
-en : webchat
-ru : Веб-чат
-cs : webchat
-hu :
-
 :_menu_emptysearch
 en : search
 ru : поиск

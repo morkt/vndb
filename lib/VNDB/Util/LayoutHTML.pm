@@ -64,9 +64,7 @@ sub _menu {
      a href => '/hist',  mt '_menu_recent_changes'; br;
      a href => '/t',     mt '_menu_discussion_board'; br;
      a href => '/d6',    mt '_menu_faq'; br;
-     a href => '/v/rand', mt '_menu_randvn'; br;
-     a href => 'irc://irc.synirc.net/vndb', '#vndb';
-      lit ' (<a href="http://cgiirc.synirc.net/?chan=%23vndb">'.mt('_menu_webchat').'</a>)';
+     a href => '/v/rand', mt '_menu_randvn';
     end;
     form action => '/v/all', method => 'get', id => 'search';
      fieldset;
@@ -148,6 +146,8 @@ sub htmlFooter {
 
       txt "vndb $self->{version} | ";
       a href => '/d7', mt '_footer_aboutus';
+      txt ' | ';
+      a href => 'irc://irc.synirc.net/vndb', '#vndb';
       txt ' | ';
       a href => "mailto:$self->{admin_email}", $self->{admin_email};
       txt ' | ';
