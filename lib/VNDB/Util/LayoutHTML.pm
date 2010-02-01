@@ -83,14 +83,13 @@ sub _menu {
       my $nc = $self->authInfo->{notifycount};
       h2;
        a href => $uid, ucfirst $self->authInfo->{username};
-       # note: user ranks aren't TL'ed (but might be in the future, hmm)
        txt ' ('.mt('_urank_'.$self->authInfo->{rank}).')';
       end;
       div;
        a href => "$uid/edit", mt '_menu_myprofile'; br;
        a href => "$uid/list", mt '_menu_myvnlist'; br;
        a href => "$uid/wish", mt '_menu_mywishlist'; br;
-       a href => "$uid/notifies", $nc ? (class => 'standout') : (), mt '_menu_mynotifications', $nc; br;
+       a href => "$uid/notifies", $nc ? (class => 'notifyget') : (), mt('_menu_mynotifications').($nc?" ($nc)":''); br;
        a href => "$uid/hist", mt '_menu_mychanges'; br;
        a href => "$uid/tags", mt '_menu_mytags'; br;
        br;

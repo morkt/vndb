@@ -1429,12 +1429,11 @@ ru : Мой список желаемого
 cs : Můj wishlist
 hu : Kivánságlistám
 
-# [_1] = number of messages
 :_menu_mynotifications
-en : My Notifications ([_1])
-ru*: Мои сообщения ([_1])
-cs*: Mé zprávy ([_1])
-hu*: Üzenenteim ([_1])
+en : My Notifications
+ru*: Мои сообщения
+cs*: Mé zprávy
+hu*: Üzenenteim
 
 :_menu_mychanges
 en : My Recent Changes

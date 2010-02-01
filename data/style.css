@@ -315,6 +315,7 @@ b.future, b.standout, a.standout {
   display: none;
 }
 #dd_box acronym { margin: 2px 5px 2px 0!important; }
+#menulist .notifyget { display: inline-block; width: 125px; padding: 4px; background: $warnbg$; border: 1px solid $warnborder$; }
 
 
 
