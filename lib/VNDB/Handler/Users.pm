@@ -590,7 +590,7 @@ sub notifies {
          td class => 'tc4';
           a href => "/u$uid/notify/$l->{id}", "$l->{ltype}$l->{iid}".($l->{subid}?".$l->{subid}":'');
          end;
-         td class => 'tc5';
+         td class => 'tc5', onclick => qq|javascript:location.href="/u$uid/notify/$l->{id}"|;
           lit mt '_usern_n_'.(
             $l->{ltype} eq 't' ? ($l->{subid} == 1 ? 't_new' : 't_reply')
             : die("unknown notification type")),
