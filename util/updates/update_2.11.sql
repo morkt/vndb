@@ -35,9 +35,9 @@ ALTER TABLE changes ADD COLUMN ilock boolean NOT NULL DEFAULT FALSE;
 
 \i util/sql/func.sql
 
-CREATE TRIGGER vn_hidlock_update          BEFORE UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
-CREATE TRIGGER producers_hidlock_update   BEFORE UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
-CREATE TRIGGER releases_hidlock_update    BEFORE UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
+CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
+CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
+CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
 
 CREATE TRIGGER notify_pm                  AFTER  INSERT           ON threads_posts FOR EACH ROW EXECUTE PROCEDURE notify_pm();
 
