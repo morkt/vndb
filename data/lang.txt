@@ -4673,7 +4673,13 @@ cs*:
 hu*:
 
 :_usern_type_pm
-en : PM
+en : Private Message
+ru*:
+cs*:
+hu*:
+
+:_usern_type_dbdel
+en : Entry you contributed to has been deleted
 ru*:
 cs*:
 hu*:
@@ -4686,6 +4692,12 @@ hu*:
 
 :_usern_n_t_reply
 en : Reply to [_1] by [_2]
+ru*:
+cs*:
+hu*:
+
+:_usern_n_item_edit
+en : Edit of [_1] by [_2]
 ru*:
 cs*:
 hu*:

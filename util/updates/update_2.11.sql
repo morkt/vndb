@@ -1,7 +1,7 @@
 
 
-CREATE TYPE notification_ntype AS ENUM ('pm');
-CREATE TYPE notification_ltype AS ENUM ('t');
+CREATE TYPE notification_ntype AS ENUM ('pm', 'dbdel');
+CREATE TYPE notification_ltype AS ENUM ('v', 'r', 'p', 't');
 
 CREATE TABLE notifications (
   id serial PRIMARY KEY NOT NULL,
@@ -38,8 +38,6 @@ ALTER TABLE changes ADD COLUMN ilock boolean NOT NULL DEFAULT FALSE;
 CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
 CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
 CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
-
-CREATE TRIGGER notify_pm                  AFTER  INSERT           ON threads_posts FOR EACH ROW EXECUTE PROCEDURE notify_pm();
 
 
 CREATE OR REPLACE FUNCTION tmp_edit_hidlock(t text, iid integer) RETURNS void AS $$
@@ -89,4 +87,10 @@ ALTER TABLE sessions ADD COLUMN lastused timestamptz NOT NULL DEFAULT NOW();
 ALTER TABLE sessions RENAME COLUMN expiration TO added;
 UPDATE sessions SET added = added - '1 year'::interval;
 
+
+CREATE TRIGGER notify_pm                  AFTER  INSERT           ON threads_posts FOR EACH ROW EXECUTE PROCEDURE notify_pm();
+-- make sure to add these triggers AFTER performing the batch edit above
+CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
+CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
+CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
 

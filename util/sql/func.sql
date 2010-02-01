@@ -618,3 +618,36 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+-- called on UPDATE vn / producers / releases
+CREATE OR REPLACE FUNCTION notify_dbdel() RETURNS trigger AS $$
+BEGIN
+  -- item is deleted?
+  IF OLD.latest IS DISTINCT FROM NEW.latest AND NOT OLD.hidden AND NEW.hidden THEN
+    INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
+      SELECT DISTINCT 'dbdel'::notification_ntype,
+             (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' WHEN 'releases' THEN 'r' ELSE 'p' END)::notification_ltype,
+             c.requester, NEW.id, c2.rev, x.title, c2.requester
+        -- look for changes of the deleted entry
+        -- this method may look a bit unintuitive, but it's way faster than doing LEFT JOINs
+        FROM changes c
+        JOIN (  SELECT vr.id, vr2.title FROM vn_rev vr
+                  JOIN vn v ON v.id = vr.vid JOIN vn_rev vr2 ON vr2.id = v.latest
+                 WHERE TG_TABLE_NAME = 'vn' AND vr.vid = NEW.id
+          UNION SELECT rr.id, rr2.title FROM releases_rev rr
+                  JOIN releases r ON r.id = rr.rid JOIN releases_rev rr2 ON rr2.id = r.latest
+                 WHERE TG_TABLE_NAME = 'releases'  AND rr.rid = NEW.id
+          UNION SELECT pr.id, pr2.name FROM producers_rev pr
+                  JOIN producers p ON p.id = pr.pid JOIN producers_rev pr2 ON pr2.id = p.latest
+                 WHERE TG_TABLE_NAME = 'producers' AND pr.pid = NEW.id
+        ) x(id, title) ON c.id = x.id
+        -- join info about the deletion itself
+        JOIN changes c2 ON c2.id = NEW.latest
+       WHERE c.requester <> 1 -- exclude Multi
+         -- exclude the user who deleted the entry
+         AND c.requester <> c2.requester;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+

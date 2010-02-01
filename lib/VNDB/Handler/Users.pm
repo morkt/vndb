@@ -593,8 +593,9 @@ sub notifies {
          td class => 'tc5', onclick => qq|javascript:location.href="/u$uid/notify/$l->{id}"|;
           lit mt '_usern_n_'.(
             $l->{ltype} eq 't' ? ($l->{subid} == 1 ? 't_new' : 't_reply')
-            : die("unknown notification type")),
+            : 'item_edit'),
             sprintf('<i>%s</i>', xml_escape $l->{c_title}), sprintf('<i>%s</i>', xml_escape $l->{username});
+            sprintf('<i>%s</i>', xml_escape $l->{title}), sprintf('<i>%s</i>', xml_escape $l->{subtitle});
          end;
         end;
       },

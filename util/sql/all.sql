@@ -63,6 +63,9 @@ CREATE TRIGGER insert_notify              AFTER  INSERT           ON tags       
 CREATE TRIGGER release_vncache_update     AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE release_vncache_update();
 
 CREATE TRIGGER notify_pm                  AFTER  INSERT           ON threads_posts FOR EACH ROW EXECUTE PROCEDURE notify_pm();
+CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
+CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
+CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
 
 
 -- Sequences used for ID generation of items not in the DB
