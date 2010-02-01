@@ -457,16 +457,16 @@ fieldset.search {
 fieldset.search .submit {
   padding: 0 1px;
 }
-p.searchtabs {
+p#searchtabs {
   height: 12px;
   padding-right: 70px;
 }
-p.searchtabs a {
+p#searchtabs a {
   padding: 2px 6px 2px 6px;
   margin: 0 2px;
   color: $maintext$!important;
 }
-p.searchtabs a:hover, p.searchtabs a.sel {
+p#searchtabs a:hover, p#searchtabs a.sel {
   border: 1px solid $secborder$;
   border-bottom: none;
   padding: 1px 5px 2px 5px;

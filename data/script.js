@@ -1973,6 +1973,22 @@ if(byId('lang_select')) {
       l[i].onclick = f;
 }
 
+// search tabs
+if(byId('searchtabs')) {
+  var f = function() {
+    var str = byId('q').value;
+    if(str.length > 1) {
+      if(this.href.indexOf('/g') >= 0)
+        this.href += '/list';
+      this.href += '?q=' + encodeURIComponent(str);
+    }
+    return true;
+  };
+  var l = byName(byId('searchtabs'), 'a');
+  for(var i=0; i<l.length; i++)
+    l[i].onclick = f;
+}
+
 // spam protection on all forms
 setTimeout(function() {
   for(i=1; i<document.forms.length; i++)
