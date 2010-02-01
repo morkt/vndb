@@ -599,8 +599,8 @@ $$ LANGUAGE plpgsql;
 -- called on INSERT INTO threads_posts
 CREATE OR REPLACE FUNCTION notify_pm() RETURNS trigger AS $$
 BEGIN
-  INSERT INTO notifications (ntype, ltype, uid, iid, subid)
-    SELECT 'pm', 't', tb.iid, t.id, NEW.num
+  INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
+    SELECT 'pm', 't', tb.iid, t.id, NEW.num, t.title, NEw.uid
       FROM threads t
       JOIN threads_boards tb ON tb.tid = t.id
      WHERE t.id = NEW.tid

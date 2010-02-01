@@ -11,12 +11,14 @@ CREATE TABLE notifications (
   ntype notification_ntype NOT NULL,
   ltype notification_ltype NOT NULL,
   iid integer NOT NULL,
-  subid integer
+  subid integer,
+  c_title text NOT NULL,
+  c_byuser integer REFERENCES users (id)
 );
 
 -- convert the "unread messages" count into notifications
-INSERT INTO notifications (uid, date, ntype, ltype, iid, subid)
-  SELECT tb.iid, tp.date, 'pm', 't', t.id, tp.num
+INSERT INTO notifications (uid, date, ntype, ltype, iid, subid, c_title, c_byuser)
+  SELECT tb.iid, tp.date, 'pm', 't', t.id, tp.num, t.title, tp.uid
     FROM threads_boards tb
     JOIN threads t ON t.id = tb.tid
     JOIN threads_posts tp ON tp.tid = t.id AND tp.num = COALESCE(tb.lastread, 1)

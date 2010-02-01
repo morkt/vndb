@@ -594,7 +594,7 @@ sub notifies {
           lit mt '_usern_n_'.(
             $l->{ltype} eq 't' ? ($l->{subid} == 1 ? 't_new' : 't_reply')
             : die("unknown notification type")),
-            sprintf('<i>%s</i>', xml_escape $l->{title}), sprintf('<i>%s</i>', xml_escape $l->{subtitle});
+            sprintf('<i>%s</i>', xml_escape $l->{c_title}), sprintf('<i>%s</i>', xml_escape $l->{username});
          end;
         end;
       },

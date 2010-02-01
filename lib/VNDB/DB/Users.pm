@@ -177,21 +177,14 @@ sub dbNotifyGet {
   );
 
   my @join = (
-    $o{what} =~ /titles/ ? (
-      q|LEFT JOIN threads t ON n.ltype = 't' AND t.id = n.iid|,
-      q|LEFT JOIN threads_posts tp ON n.ltype = 't' AND tp.tid = t.id AND n.subid = tp.num|,
-      q|LEFT JOIN users tu ON tp.uid = tu.id|
-    ) : ()
+    $o{what} =~ /titles/ ? 'LEFT JOIN users u ON n.c_byuser = u.id' : (),
   );
 
   my @select = (
     qw|n.id n.ntype n.ltype n.iid n.subid|,
     q|extract('epoch' from n.date) as date|,
     q|extract('epoch' from n.read) as read|,
-    $o{what} =~ /titles/ ? (
-      q|COALESCE(t.title,'') AS title|,
-      q|COALESCE(tu.username,'') AS subtitle|,
-    ) : (),
+    $o{what} =~ /titles/ ? qw|u.username n.c_title| : (),
   );
 
   my($r, $np) = $s->dbPage(\%o, q|

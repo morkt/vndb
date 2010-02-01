@@ -34,7 +34,9 @@ CREATE TABLE notifications (
   ntype notification_ntype NOT NULL,
   ltype notification_ltype NOT NULL,
   iid integer NOT NULL,
-  subid integer
+  subid integer,
+  c_title text NOT NULL,
+  c_byuser integer
 );
 
 -- producers
@@ -354,6 +356,7 @@ CREATE TABLE wlists (
 
 ALTER TABLE changes             ADD FOREIGN KEY (requester) REFERENCES users         (id);
 ALTER TABLE notifications       ADD FOREIGN KEY (uid)       REFERENCES users         (id);
+ALTER TABLE notifications       ADD FOREIGN KEY (c_byuser)  REFERENCES users         (id);
 ALTER TABLE producers           ADD FOREIGN KEY (latest)    REFERENCES producers_rev (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE producers           ADD FOREIGN KEY (rgraph)    REFERENCES relgraphs     (id);
 ALTER TABLE producers_relations ADD FOREIGN KEY (pid1)      REFERENCES producers_rev (id);
