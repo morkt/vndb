@@ -30,16 +30,15 @@ ALTER TABLE threads_boards DROP COLUMN lastread;
 
 
 -- languages -> ENUM
-CREATE TYPE language AS ENUM('cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'hu', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'ru', 'sk', 'sv', 'tr', 'vi', 'zh');
+CREATE TYPE language AS ENUM('cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'hu', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt-pt', 'pt-br', 'ru', 'sk', 'sv', 'tr', 'vi', 'zh');
 ALTER TABLE producers_rev ALTER COLUMN lang DROP DEFAULT;
-ALTER TABLE producers_rev ALTER COLUMN lang TYPE language USING lang::language;
+ALTER TABLE producers_rev ALTER COLUMN lang TYPE language USING CASE lang WHEN 'pt' THEN 'pt-pt' ELSE lang::language END;
 ALTER TABLE producers_rev ALTER COLUMN lang SET DEFAULT 'ja';
-ALTER TABLE releases_lang ALTER COLUMN lang TYPE language USING lang::language;
+ALTER TABLE releases_lang ALTER COLUMN lang TYPE language USING CASE lang WHEN 'pt' THEN 'pt-pt' ELSE lang::language END;
 -- c_languages is an now array of languages, rather than a serialized string
 ALTER TABLE vn ALTER COLUMN c_languages DROP DEFAULT;
-ALTER TABLE vn ALTER COLUMN c_languages TYPE language[] USING coalesce(string_to_array(c_languages, '/')::language[], '{}');
+ALTER TABLE vn ALTER COLUMN c_languages TYPE language[] USING '{}';
 ALTER TABLE vn ALTER COLUMN c_languages SET DEFAULT '{}';
-
 
 
 
@@ -47,6 +46,8 @@ ALTER TABLE changes ADD COLUMN ihid boolean NOT NULL DEFAULT FALSE;
 ALTER TABLE changes ADD COLUMN ilock boolean NOT NULL DEFAULT FALSE;
 
 \i util/sql/func.sql
+
+SELECT COUNT(*) FROM (SELECT update_vncache(id) FROM vn) x;
 
 CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
 CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE update_hidlock();

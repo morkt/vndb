@@ -1194,8 +1194,6 @@ a .icons { cursor: pointer }
 .icons.nes { background-position: -32px -70px; }
 .icons.dos { background-position: -32px -84px; }
 
-.icons.sk  { background-position: -35px -99px; }
-
 .icons.cs  { background-position: -48px   0px; }
 .icons.da  { background-position: -48px -11px; }
 .icons.de  { background-position: -48px -22px; }
@@ -1206,17 +1204,19 @@ a .icons { cursor: pointer }
 .icons.it  { background-position: -48px -77px; }
 .icons.ja  { background-position: -48px -88px; }
 .icons.hu  { background-position: -48px -99px; }
+.icons.pt-br { background-position: -48px -110px; }
 
 .icons.nl  { background-position: -61px   0px; }
 .icons.no  { background-position: -61px -11px; }
 .icons.pl  { background-position: -61px -22px; }
-.icons.pt  { background-position: -61px -33px; }
+.icons.pt-pt { background-position: -61px -33px; }
 .icons.ru  { background-position: -61px -44px; }
 .icons.sv  { background-position: -61px -55px; }
 .icons.tr  { background-position: -61px -66px; }
 .icons.zh  { background-position: -61px -77px; }
 .icons.ko  { background-position: -61px -88px; }
 .icons.vi  { background-position: -61px -99px; }
+.icons.sk  { background-position: -61px -110px; }
 
 
 /* Relation graph colors */

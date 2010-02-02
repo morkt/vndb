@@ -291,11 +291,17 @@ ru : Польский
 cs : Polsky
 hu : Lengyel
 
-:_lang_pt
-en : Portuguese
-ru : Португальский
-cs : Portugalsky
-hu : Portugál
+:_lang_pt-br
+en : Portuguese (Brazil)
+ru*: Португальский
+cs*: Portugalsky
+hu*: Portugál
+
+:_lang_pt-pt
+en : Portuguese (Portugal)
+ru*: Португальский
+cs*: Portugalsky
+hu*: Portugál
 
 :_lang_ru
 en : Russian
