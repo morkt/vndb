@@ -65,7 +65,7 @@ sub dbVNListList {
 
   # execute query
   my($r, $np) = $self->dbPage(\%o, qq|
-    SELECT vr.vid, vr.title, vr.original, v.c_released, v.c_languages, v.c_platforms, COALESCE(vo.vote, 0) AS vote
+    SELECT vr.vid, vr.title, vr.original, COALESCE(vo.vote, 0) AS vote
       FROM vn v
       JOIN vn_rev vr ON vr.id = v.latest
       !s JOIN votes vo ON vo.vid = v.id AND vo.uid = ?

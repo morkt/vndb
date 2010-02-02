@@ -97,7 +97,7 @@ sub getrel { # num, res, id
   if(!grep !$_, values %{$_[HEAP]{nodes}}) {
     my $ids = join(', ', map '?', keys %{$_[HEAP]{nodes}});
     $_[KERNEL]->post(pg => query => $_[HEAP]{type} eq 'v'
-      ? "SELECT v.id, vr.title, v.c_released AS date, v.c_languages AS lang FROM vn v JOIN vn_rev vr ON vr.id = v.latest WHERE v.id IN($ids) ORDER BY v.c_released"
+      ? "SELECT v.id, vr.title, v.c_released AS date, v.c_languages::text[] AS lang FROM vn v JOIN vn_rev vr ON vr.id = v.latest WHERE v.id IN($ids) ORDER BY v.c_released"
       : "SELECT p.id, pr.name, pr.lang, pr.type FROM producers p JOIN producers_rev pr ON pr.id = p.latest WHERE p.id IN($ids) ORDER BY pr.name",
       [ keys %{$_[HEAP]{nodes}} ], 'builddot');
   }
@@ -252,7 +252,7 @@ sub _vnnode {
         q|<TR><TD COLSPAN="2" ALIGN="CENTER" CELLPADDING="2"><FONT POINT-SIZE="%d">  %s  </FONT></TD></TR>|.
         q|<TR><TD> %s </TD><TD> %s </TD></TR>|.
       qq|</TABLE>> ]\n|,
-    $_->{id}, encode_utf8($tooltip), $heap->{fsize}[2], encode_utf8($title), $date, $n->{lang}||'N/A';
+    $_->{id}, encode_utf8($tooltip), $heap->{fsize}[2], encode_utf8($title), $date, join('/', @{$n->{lang}})||'N/A';
 }
 
 

@@ -108,7 +108,7 @@ sub filtertosql {
   # get the type that matches
   $t = (grep +(
     # wrong operator? don't even look further!
-    !$_->[2]{$op} ? 0
+    !defined($_->[2]{$op}) ? 0
     # undef
     : !defined($_->[0]) ? !defined($value)
     # int
@@ -423,7 +423,7 @@ sub get_vn {
     for (grep !/^(basic|details|anime|relations)$/, @{$get->{info}});
 
   my $select = 'v.id, v.latest';
-  $select .= ', vr.title, vr.original, v.c_released, v.c_languages, v.c_platforms' if grep /basic/, @{$get->{info}};
+  $select .= ', vr.title, vr.original, v.c_released, v.c_languages::text[], v.c_platforms' if grep /basic/, @{$get->{info}};
   $select .= ', vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai' if grep /details/, @{$get->{info}};
 
   my @placeholders;
@@ -446,11 +446,10 @@ sub get_vn {
       [ str   => 'v.c_platforms :op: :value:', {'=' => 'LIKE', '!=' => 'NOT LIKE'}, process => \'like' ],
       [ stra  => '(:value:)', {'=', 1}, join => ' OR ',  serialize => 'v.c_platforms LIKE :value:', \'like' ],
       [ stra  => '(:value:)', {'!=',1}, join => ' AND ', serialize => 'v.c_platforms NOT LIKE :value:', \'like' ],
-    ], [ 'languages', # rather similar to platforms
-      [ undef,   "v.c_languages :op: ''", {qw|= =  != <>|} ],
-      [ str   => 'v.c_languages :op: :value:', {'=' => 'LIKE', '!=' => 'NOT LIKE'}, process => \'like' ],
-      [ stra  => '(:value:)', {'=', 1}, join => ' OR ',  serialize => 'v.c_languages LIKE :value:', process => \'like' ],
-      [ stra  => '(:value:)', {'!=',1}, join => ' AND ', serialize => 'v.c_languages NOT LIKE :value:', process => \'like' ],
+    ], [ 'languages',
+      [ undef,   "v.c_languages :op: '{}'", {qw|= =  != <>|} ],
+      [ str   => ':op: (v.c_languages && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'} ],
+      [ stra  => ':op: (v.c_languages && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, join => ',' ],
     ], [ 'search',
       [ str   => '(vr.title ILIKE :value: OR vr.alias ILIKE :value: OR v.id IN(
            SELECT rv.vid FROM releases r JOIN releases_rev rr ON rr.id = r.latest JOIN releases_vn rv ON rv.rid = rr.id
@@ -484,7 +483,7 @@ sub get_vn_res {
       if(grep /basic/, @{$get->{info}}) {
         $_->{original}  ||= undef;
         $_->{platforms} = [ split /\//, delete $_->{c_platforms} ];
-        $_->{languages} = [ split /\//, delete $_->{c_languages} ];
+        $_->{languages} = delete $_->{c_languages};
         $_->{released}  = formatdate delete $_->{c_released};
       }
       if(grep /details/, @{$get->{info}}) {

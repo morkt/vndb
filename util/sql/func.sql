@@ -26,7 +26,7 @@ CREATE OR REPLACE FUNCTION update_vncache(integer) RETURNS void AS $$
       AND rr1.released <> 0
       GROUP BY rv1.vid
     ), 0),
-    c_languages = COALESCE(ARRAY_TO_STRING(ARRAY(
+    c_languages = ARRAY(
       SELECT rl2.lang
       FROM releases_rev rr2
       JOIN releases_lang rl2 ON rl2.rid = rr2.id
@@ -38,7 +38,7 @@ CREATE OR REPLACE FUNCTION update_vncache(integer) RETURNS void AS $$
       AND r2.hidden = FALSE
       GROUP BY rl2.lang
       ORDER BY rl2.lang
-    ), '/'), ''),
+    ),
     c_platforms = COALESCE(ARRAY_TO_STRING(ARRAY(
       SELECT rp3.platform
       FROM releases_platforms rp3

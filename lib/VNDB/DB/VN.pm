@@ -29,7 +29,7 @@ sub dbVNGet {
     defined $o{char} && !$o{char} ? (
       '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
     $o{lang} && @{$o{lang}} ? (
-      '('.join(' OR ', map "v.c_languages ILIKE '%%$_%%'", @{$o{lang}}).')' => 1 ) : (),
+      'v.c_languages && ARRAY[!l]::language[]' => [ $o{lang} ]) : (),
     $o{platform} && @{$o{platform}} ? (
       '('.join(' OR ', map "v.c_platforms ILIKE '%%$_%%'", @{$o{platform}}).')' => 1 ) : (),
     $o{tags_include} && @{$o{tags_include}} ? (
@@ -81,8 +81,8 @@ sub dbVNGet {
   );
 
   my $tag_ids = $o{tags_include} && join ',', @{$o{tags_include}[1]};
-  my @select = (
-    qw|v.id v.locked v.hidden v.c_released v.c_languages v.c_platforms vr.title vr.original v.rgraph|, 'vr.id AS cid',
+  my @select = ( # see https://rt.cpan.org/Ticket/Display.html?id=54224 for the cast on c_languages
+    qw|v.id v.locked v.hidden v.c_released v.c_languages::text[] v.c_platforms vr.title vr.original v.rgraph|, 'vr.id AS cid',
     $o{what} =~ /extended/ ? (
       qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai vr.l_vnn| ) : (),
     $o{what} =~ /changes/ ? (

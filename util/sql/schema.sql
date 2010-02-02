@@ -64,7 +64,7 @@ CREATE TABLE producers_rev (
   name varchar(200) NOT NULL DEFAULT '',
   original varchar(200) NOT NULL DEFAULT '',
   website varchar(250) NOT NULL DEFAULT '',
-  lang varchar NOT NULL DEFAULT 'ja',
+  lang language NOT NULL DEFAULT 'ja',
   "desc" text NOT NULL DEFAULT '',
   alias varchar(500) NOT NULL DEFAULT '',
   l_wp varchar(150)
@@ -88,7 +88,7 @@ CREATE TABLE releases (
 -- releases_lang
 CREATE TABLE releases_lang (
   rid integer NOT NULL,
-  lang varchar NOT NULL,
+  lang language NOT NULL,
   PRIMARY KEY(rid, lang)
 );
 
@@ -286,7 +286,7 @@ CREATE TABLE vn (
   hidden boolean NOT NULL DEFAULT FALSE,
   rgraph integer,
   c_released integer NOT NULL DEFAULT 0,
-  c_languages varchar(32) NOT NULL DEFAULT '',
+  c_languages language[] NOT NULL DEFAULT '{}',
   c_platforms varchar(32) NOT NULL DEFAULT '',
   c_popularity real,
   c_rating real,

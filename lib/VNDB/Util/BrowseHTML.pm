@@ -184,7 +184,7 @@ sub htmlBrowseVN {
        end;
        td class => 'tc3';
         cssicon "lang $_", mt "_lang_$_"
-          for (reverse sort split /\//, $l->{c_languages});
+          for (reverse sort @{$l->{c_languages}});
        end;
        td class => 'tc4';
         lit $self->{l10n}->datestr($l->{c_released});

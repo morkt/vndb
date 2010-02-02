@@ -14,6 +14,7 @@ git - ?
 	- Removed the ?l10n= paremeter
 	- Remove sessions that haven't been used for more than a month
 	- Properly copy over search string on switching with the searchtabs
+	- Converted language columns in SQL to an ENUM type
 
 2.10 - 2010-01-10
 	- VN score on tag pages use plain averages instead of bayesian rating
