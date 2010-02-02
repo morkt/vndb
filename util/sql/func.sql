@@ -168,12 +168,10 @@ BEGIN
     r.rev := 1;
   ELSE
     SELECT c.rev+1 INTO r.rev FROM changes c
-      LEFT JOIN vn_rev vr        ON c.id = vr.id
-      LEFT JOIN releases_rev rr  ON c.id = rr.id
-      LEFT JOIN producers_rev pr ON c.id = pr.id
-      WHERE (t = 'v' AND vr.vid = i)
-         OR (t = 'r' AND rr.rid = i)
-         OR (t = 'p' AND pr.pid = i)
+      JOIN (  SELECT id FROM vn_rev        WHERE t = 'v' AND vid = i
+        UNION SELECT id FROM releases_rev  WHERE t = 'r' AND rid = i
+        UNION SELECT id FROM producers_rev WHERE t = 'p' AND pid = i
+      ) x(id) ON x.id = c.id
       ORDER BY c.id DESC
       LIMIT 1;
   END IF;
