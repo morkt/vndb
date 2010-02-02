@@ -4666,8 +4666,8 @@ ru*:
 cs*:
 hu*:
 
-:_usern_col_desc
-en : Description
+:_usern_col_act
+en : Action
 ru*:
 cs*:
 hu*:

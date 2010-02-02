@@ -577,7 +577,7 @@ sub notifies {
         [ mt '_usern_col_type' ],
         [ mt '_usern_col_age' ],
         [ mt '_usern_col_id' ],
-        [ mt '_usern_col_desc' ],
+        [ mt '_usern_col_act' ],
       ],
       row     => sub {
         my($s, $n, $l) = @_;
