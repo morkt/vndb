@@ -595,7 +595,6 @@ sub notifies {
             $l->{ltype} eq 't' ? ($l->{subid} == 1 ? 't_new' : 't_reply')
             : 'item_edit'),
             sprintf('<i>%s</i>', xml_escape $l->{c_title}), sprintf('<i>%s</i>', xml_escape $l->{username});
-            sprintf('<i>%s</i>', xml_escape $l->{title}), sprintf('<i>%s</i>', xml_escape $l->{subtitle});
          end;
         end;
       },
