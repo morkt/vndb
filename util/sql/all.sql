@@ -11,8 +11,8 @@ CREATE TYPE dbentry_type      AS ENUM ('v', 'r', 'p');
 CREATE TYPE edit_rettype      AS (iid integer, cid integer, rev integer);
 CREATE TYPE language          AS ENUM('cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'hu', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'ru', 'sk', 'sv', 'tr', 'vi', 'zh');
 CREATE TYPE medium            AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
-CREATE TYPE notification_ntype AS ENUM ('pm');
-CREATE TYPE notification_ltype AS ENUM ('t');
+CREATE TYPE notification_ntype AS ENUM ('pm', 'dbdel', 'listdel');
+CREATE TYPE notification_ltype AS ENUM ('v', 'r', 'p', 't');
 CREATE TYPE producer_relation AS ENUM ('old', 'new', 'sub', 'par', 'imp', 'ipa', 'spa', 'ori');
 CREATE TYPE release_type      AS ENUM ('complete', 'partial', 'trial');
 CREATE TYPE vn_relation       AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
@@ -67,6 +67,8 @@ CREATE TRIGGER notify_pm                  AFTER  INSERT           ON threads_pos
 CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
 CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
 CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
+CREATE TRIGGER notify_listdel             AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE notify_listdel();
+CREATE TRIGGER notify_listdel             AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_listdel();
 
 
 -- Sequences used for ID generation of items not in the DB

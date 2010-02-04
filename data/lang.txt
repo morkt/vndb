@@ -4690,6 +4690,12 @@ ru*:
 cs*:
 hu*:
 
+:_usern_type_listdel
+en : VN in your (wish)list has been deleted
+ru*:
+cs*:
+hu*:
+
 :_usern_n_t_new
 en : New thread [_1] by [_2]
 ru*:

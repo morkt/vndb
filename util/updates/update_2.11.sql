@@ -1,6 +1,6 @@
 
 
-CREATE TYPE notification_ntype AS ENUM ('pm', 'dbdel');
+CREATE TYPE notification_ntype AS ENUM ('pm', 'dbdel', 'listdel');
 CREATE TYPE notification_ltype AS ENUM ('v', 'r', 'p', 't');
 
 CREATE TABLE notifications (
@@ -107,4 +107,6 @@ CREATE TRIGGER notify_pm                  AFTER  INSERT           ON threads_pos
 CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
 CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
 CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
+CREATE TRIGGER notify_listdel             AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE notify_listdel();
+CREATE TRIGGER notify_listdel             AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_listdel();
 

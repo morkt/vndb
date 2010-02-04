@@ -621,7 +621,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION notify_dbdel() RETURNS trigger AS $$
 BEGIN
   -- item is deleted?
-  IF OLD.latest IS DISTINCT FROM NEW.latest AND NOT OLD.hidden AND NEW.hidden THEN
+  IF NOT OLD.hidden AND NEW.hidden THEN
     INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
       SELECT DISTINCT 'dbdel'::notification_ntype,
              (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' WHEN 'releases' THEN 'r' ELSE 'p' END)::notification_ltype,
@@ -644,6 +644,39 @@ BEGIN
        WHERE c.requester <> 1 -- exclude Multi
          -- exclude the user who deleted the entry
          AND c.requester <> c2.requester;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- called on UPDATE vn / releases
+CREATE OR REPLACE FUNCTION notify_listdel() RETURNS trigger AS $$
+BEGIN
+  -- item is deleted?
+  IF NOT OLD.hidden AND NEW.hidden THEN
+    INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
+      SELECT DISTINCT 'listdel'::notification_ntype,
+             (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' ELSE 'r' END)::notification_ltype,
+             u.uid, NEW.id, c.rev, x.title, c.requester
+        -- look for users who should get this notify
+        FROM (
+          -- voted on the VN
+                SELECT uid FROM votes  WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
+          -- VN in wishlist
+          UNION SELECT uid FROM wlists WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
+          -- release in release list
+          UNION SELECT uid FROM rlists WHERE TG_TABLE_NAME = 'releases' AND rid = NEW.id
+          -- there's also a special case which we're ignoring here:
+          --  when a VN linked to a release in a user's release list is deleted
+          -- normally, the releases are also deleted, so a notify is generated anyway
+        ) u
+        -- fetch info about this edit
+        JOIN changes c ON c.id = NEW.latest
+        JOIN (
+                SELECT id, title FROM vn_rev       WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
+          UNION SELECT id, title FROM releases_rev WHERE TG_TABLE_NAME = 'releases' AND rid = NEW.id
+        ) x ON c.id = x.id;
   END IF;
   RETURN NULL;
 END;
