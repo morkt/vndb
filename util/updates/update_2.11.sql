@@ -100,6 +100,7 @@ DROP FUNCTION tmp_edit_hidlock(text, integer);
 ALTER TABLE sessions ADD COLUMN lastused timestamptz NOT NULL DEFAULT NOW();
 ALTER TABLE sessions RENAME COLUMN expiration TO added;
 UPDATE sessions SET added = added - '1 year'::interval;
+ALTER TABLE sessions ALTER COLUMN added SET DEFAULT NOW();
 
 
 CREATE TRIGGER notify_pm                  AFTER  INSERT           ON threads_posts FOR EACH ROW EXECUTE PROCEDURE notify_pm();
