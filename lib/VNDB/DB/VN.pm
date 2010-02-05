@@ -90,8 +90,8 @@ sub dbVNGet {
     $o{what} =~ /relgraph/ ? 'vg.svg' : (),
     $o{what} =~ /rating/ ? (qw|v.c_popularity v.c_rating v.c_votecount|) : (),
     $o{what} =~ /ranking/ ? (
-      '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_popularity > v.c_popularity) AS p_ranking',
-      '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_rating > v.c_rating) AS r_ranking',
+      '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_popularity > COALESCE(v.c_popularity, 0.0)) AS p_ranking',
+      '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_rating > COALESCE(v.c_rating, 0.0)) AS r_ranking',
     ) : (),
     # TODO: optimize this, as it will be very slow when the selected tags match a lot of VNs (>1000)
     $tag_ids ?
