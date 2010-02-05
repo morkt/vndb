@@ -537,11 +537,14 @@ sub notifies {
   my $saved;
   if($self->reqMethod() eq 'POST' && $self->reqParam('set')) {
     my $frm = $self->formValidate(
-      { name => 'notify_dbedit', required => 0 }
+      { name => 'notify_dbedit', required => 0 },
+      { name => 'notify_announce', required => 0 }
     );
     return 404 if $frm->{_err};
-    $frm->{notify_dbedit} = $frm->{notify_dbedit} ? 1 : 0;
-    $self->authInfo->{notify_dbedit} = $frm->{notify_dbedit};
+    for ('notify_dbedit', 'notify_announce') {
+      $frm->{$_} = $frm->{$_} ? 1 : 0;
+      $self->authInfo->{$_} = $frm->{$_};
+    }
     $self->dbUserEdit($uid, %$frm);
     $saved = 1;
 
@@ -628,10 +631,12 @@ sub notifies {
    h1 mt '_usern_set_title';
    div class => 'notice', mt '_usern_set_saved' if $saved;
    p;
-    input type => 'checkbox', name => 'notify_dbedit', id => 'notify_dbedit', value => 1,
-      $self->authInfo->{notify_dbedit} ? (checked => 'checked') : ();
-    label for => 'notify_dbedit', ' '.mt('_usern_set_dbedit');
-    br;
+    for('dbedit', 'announce') {
+      input type => 'checkbox', name => "notify_$_", id => "notify_$_", value => 1,
+        $self->authInfo->{"notify_$_"} ? (checked => 'checked') : ();
+      label for => "notify_$_", ' '.mt("_usern_set_$_");
+      br;
+    }
     input type => 'submit', name => 'set', value => mt '_usern_set_submit';
    end;
   end;

@@ -4702,6 +4702,12 @@ ru*:
 cs*:
 hu*:
 
+:_usern_type_announce
+en : Site announcement
+ru*:
+cs*:
+hu*:
+
 :_usern_n_t_new
 en : New thread [_1] by [_2]
 ru*:
@@ -4746,6 +4752,12 @@ hu*:
 
 :_usern_set_dbedit
 en : Notify me about edits of database entries I contributed to.
+ru*:
+cs*:
+hu*:
+
+:_usern_set_announce
+en : Notify me about site announcements
 ru*:
 cs*:
 hu*:

@@ -13,6 +13,7 @@ git - ?
 	  - Notifying users of a deletion of an entry they contributed to
 	  - Notifying users of a deletion they have in their (wish)list
 	  - Notifying users of an edit of an entry they contributed to
+	  - Notifying users of site announcements
 	- Removed the ?l10n= paremeter
 	- Remove sessions that haven't been used for more than a month
 	- Properly copy over search string on switching with the searchtabs

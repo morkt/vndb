@@ -1,6 +1,6 @@
 
 
-CREATE TYPE notification_ntype AS ENUM ('pm', 'dbdel', 'listdel', 'dbedit');
+CREATE TYPE notification_ntype AS ENUM ('pm', 'dbdel', 'listdel', 'dbedit', 'announce');
 CREATE TYPE notification_ltype AS ENUM ('v', 'r', 'p', 't');
 
 CREATE TABLE notifications (
@@ -28,6 +28,7 @@ INSERT INTO notifications (uid, date, ntype, ltype, iid, subid, c_title, c_byuse
 ALTER TABLE threads_boards DROP COLUMN lastread;
 
 ALTER TABLE users ADD COLUMN notify_dbedit boolean NOT NULL DEFAULT true;
+ALTER TABLE users ADD COLUMN notify_announce boolean NOT NULL DEFAULT false;
 UPDATE users SET notify_dbedit = false WHERE id IN(0,1);
 
 
@@ -115,4 +116,5 @@ CREATE TRIGGER notify_listdel             AFTER  UPDATE           ON releases   
 CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE notify_dbedit();
 CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE notify_dbedit();
 CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_dbedit();
+CREATE TRIGGER notify_announce            AFTER  INSERT           ON threads_posts FOR EACH ROW EXECUTE PROCEDURE notify_announce();
 

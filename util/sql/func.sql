@@ -718,3 +718,23 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+-- called on INSERT INTO threads_posts
+CREATE OR REPLACE FUNCTION notify_announce() RETURNS trigger AS $$
+BEGIN
+  -- new thread?
+  IF NEW.num = 1 THEN
+    INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
+      SELECT 'announce', 't', u.id, t.id, 1, t.title, NEw.uid
+        FROM threads t
+        JOIN threads_boards tb ON tb.tid = t.id
+        -- get the users who want this announcement
+        JOIN users u ON u.notify_announce
+       WHERE t.id = NEW.tid
+         AND tb.type = 'an' -- announcement board
+         AND NOT t.hidden;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
