@@ -54,7 +54,7 @@ sub dbUserGet {
     qw|id username c_votes c_changes show_list c_tags|,
     q|extract('epoch' from registered) as registered|,
     $o{what} =~ /extended/ ? (
-      qw|mail rank salt skin customcss show_nsfw ign_votes|,
+      qw|mail rank salt skin customcss show_nsfw ign_votes notify_dbedit|,
       q|encode(passwd, 'hex') AS passwd|
     ) : (),
     $o{what} =~ /notifycount/ ?
@@ -100,7 +100,7 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail rank show_nsfw show_list skin customcss salt ign_votes |);
+    for (qw| username mail rank show_nsfw show_list skin customcss salt ign_votes notify_dbedit |);
   $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
     if defined $o{passwd};
 

@@ -4696,6 +4696,12 @@ ru*:
 cs*:
 hu*:
 
+:_usern_type_dbedit
+en : Entry you contributed to has been edited
+ru*:
+cs*:
+hu*:
+
 :_usern_n_t_new
 en : New thread [_1] by [_2]
 ru*:
@@ -4725,6 +4731,31 @@ en : remove selected
 ru*:
 cs*:
 hu*:
+
+:_usern_set_saved
+en : Settings successfully saved.
+ru*:
+cs*:
+hu*:
+
+:_usern_set_title
+en : Settings
+ru*:
+cs*:
+hu*:
+
+:_usern_set_dbedit
+en : Notify me about edits of database entries I contributed to.
+ru*:
+cs*:
+hu*:
+
+:_usern_set_submit
+en : Save
+ru*:
+cs*:
+hu*:
+
 
 
 

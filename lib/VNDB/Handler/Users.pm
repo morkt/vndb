@@ -533,7 +533,20 @@ sub notifies {
   );
   return 404 if $f->{_err};
 
-  if($self->reqMethod() eq 'POST') {
+  # changing the notification settings
+  my $saved;
+  if($self->reqMethod() eq 'POST' && $self->reqParam('set')) {
+    my $frm = $self->formValidate(
+      { name => 'notify_dbedit', required => 0 }
+    );
+    return 404 if $frm->{_err};
+    $frm->{notify_dbedit} = $frm->{notify_dbedit} ? 1 : 0;
+    $self->authInfo->{notify_dbedit} = $frm->{notify_dbedit};
+    $self->dbUserEdit($uid, %$frm);
+    $saved = 1;
+
+  # updating notifications
+  } elsif($self->reqMethod() eq 'POST') {
     my $frm = $self->formValidate(
       { name => 'notifysel', multi => 1, required => 0, template => 'int' },
       { name => 'markread', required => 0 },
@@ -609,6 +622,20 @@ sub notifies {
     );
     end;
   }
+
+  form method => 'post', action => "/u$uid/notifies";
+  div class => 'mainbox';
+   h1 mt '_usern_set_title';
+   div class => 'notice', mt '_usern_set_saved' if $saved;
+   p;
+    input type => 'checkbox', name => 'notify_dbedit', id => 'notify_dbedit', value => 1,
+      $self->authInfo->{notify_dbedit} ? (checked => 'checked') : ();
+    label for => 'notify_dbedit', ' '.mt('_usern_set_dbedit');
+    br;
+    input type => 'submit', name => 'set', value => mt '_usern_set_submit';
+   end;
+  end;
+  end;
   $self->htmlFooter;
 }
 

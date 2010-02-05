@@ -275,7 +275,8 @@ CREATE TABLE users (
   ip inet NOT NULL DEFAULT '0.0.0.0',
   c_tags integer NOT NULL DEFAULT 0,
   salt character(9) NOT NULL DEFAULT '',
-  ign_votes voolean NOT NULL DEFAULT FALSE
+  ign_votes boolean NOT NULL DEFAULT FALSE,
+  notify_dbedit boolean NOT NULL DEFAULT TRUE
 );
 
 -- vn

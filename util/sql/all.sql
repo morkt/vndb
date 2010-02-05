@@ -11,7 +11,7 @@ CREATE TYPE dbentry_type      AS ENUM ('v', 'r', 'p');
 CREATE TYPE edit_rettype      AS (iid integer, cid integer, rev integer);
 CREATE TYPE language          AS ENUM('cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'hu', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'ru', 'sk', 'sv', 'tr', 'vi', 'zh');
 CREATE TYPE medium            AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
-CREATE TYPE notification_ntype AS ENUM ('pm', 'dbdel', 'listdel');
+CREATE TYPE notification_ntype AS ENUM ('pm', 'dbdel', 'listdel', 'dbedit');
 CREATE TYPE notification_ltype AS ENUM ('v', 'r', 'p', 't');
 CREATE TYPE producer_relation AS ENUM ('old', 'new', 'sub', 'par', 'imp', 'ipa', 'spa', 'ori');
 CREATE TYPE release_type      AS ENUM ('complete', 'partial', 'trial');
@@ -69,6 +69,9 @@ CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON producers  
 CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
 CREATE TRIGGER notify_listdel             AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE notify_listdel();
 CREATE TRIGGER notify_listdel             AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_listdel();
+CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE notify_dbedit();
+CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE notify_dbedit();
+CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_dbedit();
 
 
 -- Sequences used for ID generation of items not in the DB
@@ -76,8 +79,8 @@ CREATE SEQUENCE covers_seq;
 
 
 -- Rows that are assumed to be available
-INSERT INTO users (id, username, mail, rank) VALUES (0, 'deleted', 'del@vndb.org', 0);
-INSERT INTO users (username, mail, rank)     VALUES ('multi', 'multi@vndb.org', 0);
+INSERT INTO users (id, username, mail, rank, notify_dbdel) VALUES (0, 'deleted', 'del@vndb.org', 0, false);
+INSERT INTO users (username, mail, rank, notify_dbdel)     VALUES ('multi', 'multi@vndb.org', 0, false);
 
 INSERT INTO stats_cache (section, count) VALUES
   ('users',         1),
