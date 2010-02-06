@@ -178,7 +178,7 @@ sub _form {
        input type => 'checkbox', class => 'checkbox', id => 'img_nsfw', name => 'img_nsfw',
          $frm->{img_nsfw} ? (checked => 'checked') : ();
        label class => 'checkbox', for => 'img_nsfw', mt '_vnedit_image_nsfw_check';
-       p "\n".mt '_vnedit_image_nsfw_msg';
+       p mt '_vnedit_image_nsfw_msg';
       end;
     }],
   ],
