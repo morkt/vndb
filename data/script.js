@@ -856,7 +856,7 @@ function vnrFormAdd() {
   var input = txt.value;
 
   if(!input.match(/^v[0-9]+/)) {
-    alert('_vnedit_rel_findformat');
+    alert(mt('_vnedit_rel_findformat'));
     return false;
   }
 
