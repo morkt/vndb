@@ -322,14 +322,14 @@ nl : Pools
 
 :_lang_pt-br
 en : Portuguese (Brazil)
-ru*: Португальский
+ru : Португальский (Бразилия)
 cs*: Portugalsky
 hu : Portugál (Brazil)
 nl : Portugees (Brazilië)
 
 :_lang_pt-pt
 en : Portuguese (Portugal)
-ru*: Португальский
+ru : Португальский (Португалия)
 cs*: Portugalsky
 hu : Portugál
 nl : Portugees (Portugal)
@@ -1390,21 +1390,21 @@ nl : Verstuur
 
 :_form_ihid
 en : Deleted
-ru*:
+ru : Удалено
 cs*:
 hu : Törölve
 nl : Verwijderd
 
 :_form_ilock
 en : Locked
-ru*:
+ru : Заблокировано
 cs*:
 hu : Lezárva
 nl : Gesloten
 
 :_form_hidlock_note
 en : Note: edit summary of the last edit should indicate the reason for the deletion or lock.
-ru*:
+ru : Замечание: если производится блокировка или удаление, поле "суммарно о правке" для последнего изменения должно содержать причину.
 cs*:
 hu : Megjegyzés: az összegzése az utolsó szerkesztésnek foglalja magába a törlés vagy lezárás okát.
 nl : Opmerking: Samenvatting van de laatste wijziging geeft aan wat de reden was voor de verwijdering of sluiting.
@@ -1637,7 +1637,7 @@ nl : Mijn wensenlijst
 
 :_menu_mynotifications
 en : My Notifications
-ru*: Мои сообщения
+ru : Мои сообщения
 cs*: Mé zprávy
 hu : Az értesítéseim
 nl : Mijn notificaties
@@ -1944,14 +1944,14 @@ nl : Nee
 
 :_revfield_ihid
 en : Deleted
-ru*:
+ru : Удалено
 cs*:
 hu : Törölve
 nl : Verwijderd
 
 :_revfield_ilock
 en : Locked
-ru*:
+ru : Заблокировано
 cs*:
 hu : Lezárva
 nl : Gesloten
@@ -5348,161 +5348,161 @@ nl :
 
 :_usern_title
 en : My notifications
-ru*:
+ru : Мои сообщения
 cs*:
 hu : Az értesítéseim
 nl : Mijn notificaties
 
 :_usern_o_unread
 en : Unread notifications
-ru*:
+ru : Непрочитанные сообщения
 cs*:
 hu : Olvasatlan értesítések
 nl : Ongelezen notificaties
 
 :_usern_o_alsoread
 en : All notifications
-ru*:
+ru : Все сообщения
 cs*:
 hu : Összes értesítés
 nl : Alle notificaties
 
 :_usern_nonotifies
 en : No notifications!
-ru*:
+ru : Нет сообщений!
 cs*:
 hu : Nincs értesítés!
 nl : Geen notificaties!
 
 :_usern_col_type
 en : Type
-ru*:
+ru : Тип
 cs*:
 hu : Típus
 nl :
 
 :_usern_col_age
 en : Age
-ru*:
+ru : Возраст
 cs*:
 hu : Mikor
 nl : Leeftijd
 
 :_usern_col_id
 en : ID
-ru*:
+ru : ID
 cs*:
 hu :
 nl :
 
 :_usern_col_act
 en : Action
-ru*:
+ru : Действие
 cs*:
 hu : Végrehajtott művelet
 nl : Actie
 
 :_usern_type_pm
 en : Private Message
-ru*:
+ru : Личное сообщение
 cs*:
 hu : Privát Üzenet
 nl : Privébericht
 
 :_usern_type_dbdel
 en : Entry you contributed to has been deleted
-ru*:
+ru : Запись, к которой вы добавляли сведения, удалена
 cs*:
 hu : Egy bejegyzés melyhez hozzájárultál törölve lett
 nl : Item waar je aan bij hebt gedragen is gewijzigd
 
 :_usern_type_listdel
 en : VN in your (wish)list has been deleted
-ru*:
+ru : Новелла из вашего списка (желаемого) была удалена
 cs*:
 hu : Egy VN a (kivánság)listádból törölve lett
 nl : VN in je (wensen)lijst is verwijderd
 
 :_usern_type_dbedit
 en : Entry you contributed to has been edited
-ru*:
+ru : Запись, к которой вы добавляли сведения, отредактирована
 cs*:
 hu : Egy bejegyzés melyhez hozzájárultál át lett szerkesztve
 nl : Item waar je aan bij hebt gedragen is gewijzigd
 
 :_usern_type_announce
 en : Site announcement
-ru*:
+ru : Объявление сайта
 cs*:
 hu : Oldalal kapcsolatos bejelentés
 nl : Website aankondiging
 
 :_usern_n_t_new
 en : New thread [_1] by [_2]
-ru*:
+ru : Новая тема [_1] - [_2]
 cs*:
 hu : Új téma [_1], létrehozta [_2]
 nl : Nieuw topic [_1] door [_2]
 
 :_usern_n_t_reply
 en : Reply to [_1] by [_2]
-ru*:
+ru : Ответ в [_1] - [_2]
 cs*:
 hu : Válaszolj a(z) [_1], létrehozta [_2]
 nl : Reactie op [_1] door [_2]
 
 :_usern_n_item_edit
 en : Edit of [_1] by [_2]
-ru*:
+ru : Правка [_1] - [_2]
 cs*:
 hu : [_1]-t szerkesztette, [_2]l
 nl : Wijziging op [_1] door [_2]
 
 :_usern_but_markread
 en : mark selected read
-ru*:
+ru : отметить выбранное как прочитанное
 cs*:
 hu : bejelöltek olvasottá nyilvánítása
 nl : markeer als gelezen
 
 :_usern_but_remove
 en : remove selected
-ru*:
+ru : удалить выбранное
 cs*:
 hu : bejelöltek eltávolítássa
 nl : verwijder
 
 :_usern_set_saved
 en : Settings successfully saved.
-ru*:
+ru : Параметры успешно сохранены.
 cs*:
 hu : A beállitások sikeresen le lettek mentve.
 nl : Instellingen succesvol opgeslagen.
 
 :_usern_set_title
 en : Settings
-ru*:
+ru : Параметры
 cs*:
 hu : Beállítások
 nl : Instellingen
 
 :_usern_set_dbedit
 en : Notify me about edits of database entries I contributed to.
-ru*:
+ru : Уведомлять меня о правках записей базы данных, которые я редактировал(а).
 cs*:
 hu : Értesíts azon adatbázis bejegyzések szerkesztéséről amelyekhez én is hozzájárultam.
 nl : Houd me op de hoogte van wijzigingen op database items waar ik aan bijgedragen heb.
 
 :_usern_set_announce
 en : Notify me about site announcements
-ru*:
+ru : Уведомлять меня о новых объявлениях сайта
 cs*:
 hu : Értesíts az oldalal kapcsolatos bejelentésekről
 nl : Houd me op de hoogte van website aankondigingen
 
 :_usern_set_submit
 en : Save
-ru*:
+ru : Сохранить
 cs*:
 hu : Mentés
 nl : Opslaan
