@@ -559,6 +559,7 @@ sub notifies {
     my @ids = grep $_, @{$frm->{notifysel}};
     $self->dbNotifyMarkRead(@ids) if @ids && $frm->{markread};
     $self->dbNotifyRemove(@ids) if @ids && $frm->{remove};
+    $self->authInfo->{notifycount} = $self->dbUserGet(uid => $uid, what => 'notifycount')->[0]{notifycount};
   }
 
   my($list, $np) = $self->dbNotifyGet(
