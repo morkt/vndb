@@ -11,7 +11,7 @@ use warnings;
 
   # used for the language switch interface, language tags must
   # be the same as in the languages hash in global.pl
-  sub languages { qw{ cs en hu ru } }
+  sub languages { qw{ cs en hu nl ru } }
 
   sub maketext {
     my $r = eval { shift->SUPER::maketext(@_) };
@@ -143,6 +143,14 @@ use warnings;
 
 {
   package VNDB::L10N::hu;
+  use base 'VNDB::L10N::en';
+  our %Lexicon;
+}
+
+
+
+{
+  package VNDB::L10N::nl;
   use base 'VNDB::L10N::en';
   our %Lexicon;
 }

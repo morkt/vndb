@@ -19,6 +19,7 @@ git - ?
 	- Properly copy over search string on switching with the searchtabs
 	- Converted language columns in SQL to an ENUM type
 	- Differentiate between pt-PT and pt-BR
+	- Added Dutch translation of the user interface
 
 2.10 - 2010-01-10
 	- VN score on tag pages use plain averages instead of bayesian rating
