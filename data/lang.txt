@@ -1184,7 +1184,7 @@ en : All ages
 ru : Для всех
 cs : Pro všechny věky
 hu : Nincs korhatár
-nl : Alle leeftijden
+nl : AL
 
 # "Ages [_1] and up", but shorter
 :_minage_age
@@ -2439,7 +2439,7 @@ en : See [url,/d9.3,d9.3] for the allowed formatting codes
 ru : Список разрешённых кодов смотрите в разделе [url,/d9.3,d9.3]
 cs : Přečtěte si [url,/d9.3,d9.3] pro povolené formátovací kódy
 hu : A formázó kódokat a [url,/d9.3,d9.3]-as pont alatt találod meg
-nl : Zie [url,/d9.2,d9.3] voor de toegestaande opmaakcodes
+nl : Zie [url,/d9.2,d9.3] voor de toegestane opmaakcodes
 
 
 # Browsing threads by board (/t/{board_id})
@@ -2511,7 +2511,7 @@ en : Starter
 ru : Автор темы
 cs : První příspěvek
 hu : Létrehozta
-nl : Beginner
+nl :
 
 :_threadlist_col_lastpost
 en : Last post
@@ -2538,7 +2538,7 @@ en : [_1] [_2]
 ru : [_2], основной язык: [_1]
 cs : [_2], [_1]
 hu :
-nl : [_2], [_2]
+nl : [_1], [_2]
 
 :_prodpage_aliases
 en : a.k.a. [_1]
@@ -3433,7 +3433,7 @@ en : Platforms
 ru : Платформы
 cs : Platformy
 hu : Platformok
-nl :
+nl : Platformen
 
 :_redit_form_media
 en : Media
@@ -4388,7 +4388,7 @@ en : minor spoiler
 ru : лёгкий спойлер
 cs : menší spoilery
 hu : kisebb spoiler
-nl : kleine spoiler
+nl : geringe spoiler
 
 :_tagv_spoil3
 en : major spoiler
@@ -4660,7 +4660,7 @@ en : Only voted
 ru : Проголосованные
 cs : Pouze hodnocené
 hu : Csak a szavazottak
-nl : Uitsluitend op gestemd
+nl : Alleen gestemd
 
 :_rlist_voted_none
 en : Hide voted
@@ -5244,7 +5244,7 @@ en : Allow other people to see my visual novel list ([url,_1,_1]) and wishlist (
 ru : Разрешить остальным видеть мой список новелл ([url,_1,_1]) и список желаемого ([url,_2,_2])
 cs : Povolit ostatním zobrazit můj list vizuálních novel ([url,_1,_1]) a wishlist ([url,_2,_2])
 hu : Más embereknek megengedni, hogy lássák a visual novel listám ([url,_1,_1]) és a kívánságlistám ([url,_2,_2])
-nl : Sta andere mensen toe om mijn visual novel lijst ([url,_1,_1]) en wensenlijst (url,_2,_2]) te zien
+nl : Sta andere mensen toe om mijn visual novel lijst ([url,_1,_1]) en wensenlijst ([url,_2,_2]) te zien
 
 :_usere_fnsfw
 en : Disable warnings for images that are not safe for work.
@@ -5844,8 +5844,8 @@ cs : Pokud možno obálka CD/DVD/balení. Obrázek musí být ve formátu JPEG n
 hu : Lehetőleg a CD/DVD/csomagolás borítóját. A képek muszáj JPEG vagy PNG formátumba
      legyenek és maximum 500kb nagyok. 254x400-nál nagyobb képek automatikusan át lesznek
      méretezve.
-nl : Bij voorkeur de omslag van de CD of DVD. Plaatje moet in het JPEG of PNG formaat zijn,
-     en moet kleiner zijn dan 500kB. Plaatjes groter dan 256x400 worden automatisch verkleind.
+nl : Bij voorkeur de omslag van de CD of DVD. Plaatje moet in het JPEG of PNG formaat zijn, en moet kleiner zijn dan 500kB.
+     Plaatjes groter dan 256x400 worden automatisch verkleind.
 
 :_vnedit_image_nsfw
 en : NSFW
@@ -5866,7 +5866,7 @@ en : Please check this option if the image contains nudity, gore, or is otherwis
 ru : Пожалуйста, поставьте эту галочку если изображение содержит наготу, кровищу, либо тем или иным образом не безопасно для рабочего окружения.
 cs : Prosíme, zaškrtněte tuto možnost, pokud obrázek obsahuje nahotu, gore nebo je jinak nevhodný pro pracovní prostředí.
 hu : Kérlek pipáld ezt be ha a kép tartalmaz meztelenséget, vért vagy más olyan elemet amely nem illik egy munkabarát környezetbe.
-nl : Selecteer deze optie als het plaatje erotische or aanstootgevende inhoud bevat.
+nl : Selecteer deze optie als het plaatje erotische of aanstootgevende inhoud bevat.
 
 :_vnedit_rel
 en : Relations
@@ -6663,7 +6663,7 @@ en : show/hide NSFW
 ru : показать/скрыть НБДР (NSFW)
 cs : skrýt/zobrazit NSFW
 hu : megjelenít/elrejt NMB
-nl : toon/verberk NSFW
+nl : toon/verberg NSFW
 
 :_vnpage_scr_num
 en : Screenshot #[_1]
