@@ -256,7 +256,7 @@ sub vnlist {
    h1 $title;
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => $url->(c => $_), $_ eq $f->{c} ? (class => 'optselected') : (), $_ ? uc $_ : '#';
+      a href => $url->(c => $_), $_ eq $f->{c} ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
     }
    end;
    p class => 'browseopts';
