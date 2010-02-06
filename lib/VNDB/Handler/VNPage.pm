@@ -361,7 +361,7 @@ sub _useroptions {
        optgroup label => $wish ? mt '_vnpage_uopt_changewish' : mt '_vnpage_uopt_addwish';
         option value => $_, mt "_wish_$_" for (@{$self->{wishlist_status}});
        end;
-       option value => -1, mt '_vnpage_uopt_delwish';
+       option value => -1, mt '_vnpage_uopt_delwish' if $wish;
       end;
     }
    end;
