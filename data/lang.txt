@@ -1637,7 +1637,7 @@ nl : Mijn wensenlijst
 
 :_menu_mynotifications
 en : My Notifications
-ru : Мои сообщения
+ru : Мои уведомления
 cs*: Mé zprávy
 hu : Az értesítéseim
 nl : Mijn notificaties
