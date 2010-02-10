@@ -190,7 +190,7 @@ sub tagedit {
       { name => 'state',       required => 0, default => 0,  enum => [ 0..2 ] },
       { name => 'meta',        required => 0, default => 0 },
       { name => 'alias',       required => 0, maxlength => 1024, default => '', regex => [ qr/^[^,]+$/s, 'No comma allowed in aliases' ]  },
-      { name => 'description', required => 0, maxlength => 1024, default => '' },
+      { name => 'description', required => 0, maxlength => 10240, default => '' },
       { name => 'parents',     required => !$self->authCan('tagmod'), default => '' },
       { name => 'merge',       required => 0, default => '' },
     );
