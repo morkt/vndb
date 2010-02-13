@@ -180,8 +180,8 @@ sub receivepacket { # input, wheelid
   my $time = time-$_[HEAP]{lm};
 
   # tag incorrect, ignore message
-  return $_[KERNEL]->call(core => log => 'Ignoring incorrect tag of message: %d %s', $code, $msg)
-    if $tag != $_[HEAP]{tag};
+  return $_[KERNEL]->call(core => log => 'Ignoring incorrect tag of message: %s', $r[0])
+    if !$tag || $tag != $_[HEAP]{tag};
 
   # unhandled code, ignore as well
   return $_[KERNEL]->call(core => log => 'Ignoring unhandled code %d (%s)', $code, $msg)
@@ -197,7 +197,7 @@ sub receivepacket { # input, wheelid
     my $delay = $_[HEAP]{msgdelay}**(1 + $_[HEAP]{tm}*$_[HEAP]{timeoutdelay});
     $delay = $_[HEAP]{maxtimeoutdelay} if $delay > $_[HEAP]{maxtimeoutdelay};
     $_[KERNEL]->call(core => log => 'Reply timed out, delaying %.0fs.', $delay);
-    return $_[KERNEL]->delay(nextcmd => $_[HEAP]{msgdelay});
+    return $_[KERNEL]->delay(nextcmd => $delay);
   }
 
   # message wasn't a timeout, reset timeout counter
