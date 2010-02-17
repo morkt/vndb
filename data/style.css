@@ -1145,7 +1145,7 @@ div#iv_view {
 /****** Icons *******/
 
 .icons {
-  background: url(/f/icons.png) no-repeat;
+  background: url(/f/icons.png?$version$) no-repeat;
   width: 16px;
   height: 14px;
   margin: 0 2px 0 0;

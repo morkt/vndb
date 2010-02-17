@@ -1,17 +1,21 @@
 #!/usr/bin/perl
 
 
+package VNDB;
+
 use strict;
 use warnings;
 use Cwd 'abs_path';
 use Image::Magick;
 eval { require CSS::Minifier::XS };
 
-our $ROOT;
+our($ROOT, %S);
 BEGIN { ($ROOT = abs_path $0) =~ s{/util/skingen\.pl$}{}; }
 
 use lib "$ROOT/lib";
 use SkinFile;
+
+require $ROOT.'/data/global.pl';
 
 
 sub writeskin { # $name
@@ -24,15 +28,15 @@ sub writeskin { # $name
     my $path = "/s/$name/$o{imgrighttop}";
     my $img = Image::Magick->new;
     $img->Read("$ROOT/static$path");
-    $o{_bgright} = sprintf 'background: url(%s) no-repeat; width: %dpx; height: %dpx',
-      $path, $img->Get('width'), $img->Get('height');
+    $o{_bgright} = sprintf 'background: url(%s?%s) no-repeat; width: %dpx; height: %dpx',
+      $path, $S{version}, $img->Get('width'), $img->Get('height');
   } else {
     $o{_bgright} = 'display: none';
   }
 
   # body background
   if($o{imglefttop}) {
-    $o{_bodybg} = sprintf 'background: %s url(/s/%s/%s) no-repeat', $o{bodybg}, $name, $o{imglefttop};
+    $o{_bodybg} = sprintf 'background: %s url(/s/%s/%s?%s) no-repeat', $o{bodybg}, $name, $o{imglefttop}, $S{version};
   } else {
     $o{_bodybg} = sprintf 'background-color: %s', $o{bodybg};
   }
@@ -44,13 +48,16 @@ sub writeskin { # $name
   my $img = Image::Magick->new(size => '1x1');
   $img->Read("xc:$o{boxbg}");
   $img->Write(filename => "$ROOT/static/s/$name/boxbg.png");
-  $o{_boxbg} = "/s/$name/boxbg.png";
+  $o{_boxbg} = "/s/$name/boxbg.png?$S{version}";
 
   # get the blend color
   $img = Image::Magick->new(size => '1x1');
   $img->Read("xc:$o{bodybg}", "xc:$o{boxbg}");
   $img = $img->Flatten();
   $o{_blendbg} = '#'.join '', map sprintf('%02x', $_*255), $img->GetPixel(x=>1,y=>1);
+
+  # version
+  $o{version} = $S{version};
 
   # write the CSS
   open my $CSS, '<', "$ROOT/data/style.css" or die $!;
