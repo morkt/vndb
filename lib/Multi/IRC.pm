@@ -53,7 +53,7 @@ sub spawn {
         _start shutdown throttle_gc irc_001 irc_public irc_ctcp_action irc_msg
         command idlequote reply notify_init notify notify_result
         cmd_info cmd_list cmd_uptime cmd_vn cmd_vn_results cmd_p cmd_p_results cmd_quote cmd_quote_result
-        cmd_say cmd_me cmd_notifications cmd_eval cmd_die cmd_post cmd_api vndbid formatid
+        cmd_scr cmd_scr_result cmd_say cmd_me cmd_notifications cmd_eval cmd_die cmd_post cmd_api vndbid formatid
       |],
     ],
     heap => {
@@ -73,6 +73,7 @@ sub spawn {
         vn       => 0,   #   2: only users matching the mask in @masters
         p        => 0,   #  |8: has to be addressed to the bot (e.g. 'Multi: eval' instead of '!eval')
         quote    => 0,
+        scr      => 0,
         say      => 1|8,
         me       => 1|8,
         notifications => 1,
@@ -410,6 +411,31 @@ sub cmd_quote {
 
 sub cmd_quote_result { # 1, res, dest
   $_[KERNEL]->yield(reply => $_[ARG2] => $_[ARG1][0]{quote}) if $_[ARG0] > 0;
+}
+
+
+sub cmd_scr {
+  my $q = $_[ARG]||'';
+  $q = $1 if $q =~ /([0-9]+)\.jpg/;
+  return $_[KERNEL]->yield(reply => $_[DEST],
+     q|Sorry, I failed to comprehend which screenshot you'd like me to lookup for you,|
+    .q| please understand that Yorhel was not willing to supply me with mind reading capabilities.|,
+    $_[USER]) if !$q || $q !~ /^[0-9]+$/;
+  return $_[KERNEL]->yield(reply => $_[DEST], 'Stop abusing me, it\'s not like I enjoy spamming this channel!', $_[USER])
+    if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 3;
+  $_[KERNEL]->post(pg => query => q|
+    SELECT 'v'::text AS type, v.id, vr.title
+      FROM vn v
+      JOIN vn_rev vr ON vr.id = v.latest
+      JOIN vn_rev vr2 ON vr2.vid = v.id
+      JOIN vn_screenshots vs ON vs.vid = vr2.id
+     WHERE vs.scr = ? LIMIT 1|, [ $q ], "cmd_scr_result", \@_);
+}
+
+
+sub cmd_scr_result {
+  return $_[KERNEL]->yield(reply => $_[ARG2][DEST], 'Couldn\'t find VN with that screenshot.', $_[ARG2][USER]) if $_[ARG0] < 1;
+  $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], [$_[ARG2][DEST]]);
 }
 
 
