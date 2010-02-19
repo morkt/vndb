@@ -152,7 +152,7 @@ sub gtintype {
   local $_ = $c;
   return 'JAN' if /^4[59]/; # prefix code 450-459 & 490-499
   return 'UPC' if /^(?:0[01]|0[6-9]|13|75[45])/; # prefix code 000-019 & 060-139 & 754-755
-  return  undef if /(?:0[2-5]|2|97[789]|9[6-9])/; # some codes we don't want: 020–059 & 200-299 & 977-999
+  return  undef if /^(?:0[2-5]|2|97[789]|9[6-9])/; # some codes we don't want: 020–059 & 200-299 & 977-999
   return 'EAN'; # let's just call everything else EAN :)
 }
 
