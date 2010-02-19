@@ -134,7 +134,6 @@ sub bb2html {
 # Also 'normalizes' the first argument in place
 sub gtintype {
   $_[0] =~ s/[^\d]+//g;
-  $_[0] =~ s/^0+//;
   my $c = shift;
   return undef if $c !~ /^[0-9]{12,13}$/; # only gtin-12 and 13
   $c = ('0'x(13-length $c)) . $c; # pad with zeros
