@@ -134,9 +134,10 @@ sub bb2html {
 # Also 'normalizes' the first argument in place
 sub gtintype {
   $_[0] =~ s/[^\d]+//g;
+  $_[0] = ('0'x(12-length $_[0])) . $_[0] if length($_[0]) < 12; # pad with zeros to GTIN-12
   my $c = shift;
-  return undef if $c !~ /^[0-9]{12,13}$/; # only gtin-12 and 13
-  $c = ('0'x(13-length $c)) . $c; # pad with zeros
+  return undef if $c !~ /^[0-9]{12,13}$/;
+  $c = "0$c" if length($c) == 12; # pad with another zero for GTIN-13
 
   # calculate check digit according to
   #  http://www.gs1.org/productssolutions/barcodes/support/check_digit_calculator.html#how

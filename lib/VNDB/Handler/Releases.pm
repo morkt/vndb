@@ -295,6 +295,7 @@ sub edit {
       sort { $a->{id} <=> $b->{id} } @{$r->{producers}}
     ),
   );
+  gtintype($b4{gtin}); # normalize gtin code
   $b4{vn} = join('|||', map "$_->{vid},$_->{title}", @$vn);
   my $frm;
 
