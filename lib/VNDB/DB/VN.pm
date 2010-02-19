@@ -47,7 +47,7 @@ sub dbVNGet {
     my @w;
     for (split /[ -,._]/, $o{search}) {
       s/%//g;
-      if(/^\d+$/ && gtintype($_)) {
+      if(/^[0-9]{12,13}$/ && gtintype($_)) {
         push @w, 'irr.gtin = ?', $_;
       } elsif(length($_) > 0) {
         $_ = "%$_%";
