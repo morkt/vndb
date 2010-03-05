@@ -424,7 +424,7 @@ sub get_vn {
 
   my $select = 'v.id, v.latest';
   $select .= ', vr.title, vr.original, v.c_released, v.c_languages::text[], v.c_platforms' if grep /basic/, @{$get->{info}};
-  $select .= ', vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai' if grep /details/, @{$get->{info}};
+  $select .= ', vr.image, vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai' if grep /details/, @{$get->{info}};
 
   my @placeholders;
   my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
@@ -496,6 +496,7 @@ sub get_vn_res {
           encubed   => delete($_->{l_encubed})||undef,
           renai     => delete($_->{l_renai})  ||undef
         };
+        $_->{image} = $_->{image} ? sprintf '%s/cv/%02d/%d.jpg', $VNDB::S{url_static}, $_->{image}%100, $_->{image} : undef;
       }
     }
     $get->{more} = pop(@$res)&&1 if @$res > $_[HEAP]{results};

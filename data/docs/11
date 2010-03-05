@@ -376,6 +376,16 @@ however still required.<br />
   </td>
  </tr>
  <tr class="odd">
+  <td>image</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>
+   HTTP link to the VN image. Please note that hotlinking is not allowed, so
+   make sure to leave the HTTP Referer header empty when fetching the image.
+  </td>
+ </tr>
+ <tr>
   <td>anime</td>
   <td>anime</td>
   <td>array of objects</td>
@@ -393,7 +403,7 @@ however still required.<br />
    and may not reflect the latest state of their information due to caching.
   </td>
  </tr>
- <tr>
+ <tr class="odd">
   <td>relations</td>
   <td>relations</td>
   <td>array of objects</td>
