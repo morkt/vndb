@@ -189,7 +189,7 @@ function ivInit() {
       l[i].onclick = ivView;
     }
   if(init && !byId('iv_view')) {
-    addBody(tag('div', {id: 'iv_view'},
+    addBody(tag('div', {id: 'iv_view','class':'hidden'},
       tag('b', {id:'ivimg'}, ''),
       tag('br', null),
       tag('a', {href:'#', id:'ivfull'}, ''),
@@ -197,7 +197,7 @@ function ivInit() {
       tag('a', {href:'#', onclick: ivView, id:'ivprev'}, '« '+mt('_js_iv_prev')),
       tag('a', {href:'#', onclick: ivView, id:'ivnext'}, mt('_js_iv_next')+' »')
     ));
-    addBody(tag('b', {id:'ivimgload'}, mt('_js_loading')));
+    addBody(tag('b', {id:'ivimgload','class':'hidden'}, mt('_js_loading')));
   }
 }
 
@@ -253,9 +253,9 @@ function ivView(what) {
   dw = dw < 200 ? 200 : dw;
 
   // update document
-  view.style.display = 'block';
+  setClass(view, 'hidden', false);
   setContent(byId('ivimg'), tag('img', {src:u, onclick:ivClose,
-    onload: function() { byId('ivimgload').style.top='-400px'; },
+    onload: function() { setClass(byId('ivimgload'), 'hidden', true); },
     style: 'width: '+w+'px; height: '+h+'px'
   }));
   view.style.width = dw+'px';
@@ -264,13 +264,13 @@ function ivView(what) {
   view.style.top = ((wh - dh) / 2 + st - 20)+'px';
   byId('ivimgload').style.left = ((ww - 100) / 2 - 10)+'px';
   byId('ivimgload').style.top = ((wh - 20) / 2 + st)+'px';
+  setClass(byId('ivimgload'), 'hidden', false);
   return false;
 }
 
 function ivClose() {
-  byId('iv_view').style.display = 'none';
-  byId('iv_view').style.top = '-5000px';
-  byId('ivimgload').style.top = '-400px';
+  setClass(byId('iv_view'), 'hidden', true);
+  setClass(byId('ivimgload'), 'hidden', true);
   setText(byId('ivimg'), '');
   return false;
 }
@@ -288,13 +288,13 @@ function ddInit(obj, align, contents) {
   document.onmousemove = ddMouseMove;
   document.onscroll = ddHide;
   if(!byId('dd_box'))
-    addBody(tag('div', {id:'dd_box', dd_used: false}));
+    addBody(tag('div', {id:'dd_box', 'class':'hidden', dd_used: false}));
 }
 
 function ddHide() {
   var box = byId('dd_box');
   setText(box, '');
-  box.style.left = '-500px';
+  setClass(box, 'hidden', true);
   box.dd_used = false;
   box.dd_lnk = null;
 }
@@ -333,6 +333,7 @@ function ddRefresh() {
   if(content == null)
     return false;
   setContent(box, content);
+  setClass(box, 'hidden', false);
 
   var o = lnk;
   ddx = ddy = 0;
@@ -606,7 +607,7 @@ function dateSerialize(div) {
 function dsInit(obj, url, trfunc, serfunc, retfunc, parfunc) {
   obj.setAttribute('autocomplete', 'off');
   obj.onkeydown = dsKeyDown;
-  obj.onblur = function() { setTimeout(function () { byId('ds_box').style.top = '-500px'; }, 500) };
+  obj.onblur = function() { setTimeout(function () { setClass(byId('ds_box'), 'hidden', true) }, 500) };
   obj.ds_returnFunc = retfunc;
   obj.ds_trFunc = trfunc;
   obj.ds_serFunc = serfunc;
@@ -615,7 +616,7 @@ function dsInit(obj, url, trfunc, serfunc, retfunc, parfunc) {
   obj.ds_selectedId = 0;
   obj.ds_dosearch = null;
   if(!byId('ds_box'))
-    addBody(tag('div', {id: 'ds_box'}, tag('b', mt('_js_loading'))));
+    addBody(tag('div', {id: 'ds_box', 'class':'hidden'}, tag('b', mt('_js_loading'))));
 }
 
 function dsKeyDown(ev) {
@@ -641,7 +642,7 @@ function dsKeyDown(ev) {
     if(obj.ds_returnFunc)
       obj.ds_returnFunc();
 
-    byId('ds_box').style.top = '-500px';
+    setClass(byId('ds_box'), 'hidden', true);
     setContent(byId('ds_box'), tag('b', mt('_js_loading')));
     obj.ds_selectedId = 0;
     if(obj.ds_dosearch) {
@@ -701,7 +702,7 @@ function dsSearch(obj) {
 
   // hide the ds_box div
   if(val.length < 2) {
-    box.style.top = '-500px';
+    setClass(box, 'hidden', true);
     setContent(box, tag('b', mt('_js_loading')));
     obj.ds_selectedId = 0;
     return;
@@ -720,6 +721,7 @@ function dsSearch(obj) {
   box.style.left = ddx+'px';
   box.style.top = ddy+'px';
   box.style.width = obj.offsetWidth+'px';
+  setClass(box, 'hidden', false);
 
   // perform search
   ajax(obj.ds_searchURL + encodeURIComponent(val), function(hr) {
@@ -752,7 +754,7 @@ function dsResults(hr, obj) {
       obj.value = obj.ds_serFunc(this.ds_itemData, obj);
       if(obj.ds_returnFunc)
         obj.ds_returnFunc();
-      box.style.top = '-500px';
+      setClass(box, 'hidden', true);
       obj.ds_selectedId = 0;
     };
 
