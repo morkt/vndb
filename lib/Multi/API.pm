@@ -349,7 +349,7 @@ sub client_input {
   }
 
   # unknown command
-  return cerr $c, 'parse', "Unkown command '$cmd'" if $cmd ne 'get';
+  return cerr $c, 'parse', "Unknown command '$cmd'" if $cmd ne 'get';
 }
 
 
@@ -366,7 +366,7 @@ sub login {
     # note that 'true' and 'false' are also refs
     ref $arg->{$_}      && return cerr $c, badarg  => "Field '$_' must be a scalar", field => $_;
   }
-  return cerr $c, badarg => 'Unkonwn protocol version', field => 'protocol' if $arg->{protocol}  ne '1';
+  return cerr $c, badarg => 'Unknown protocol version', field => 'protocol' if $arg->{protocol}  ne '1';
   return cerr $c, badarg => 'Invalid client name', field => 'client'        if $arg->{client}    !~ /^[a-zA-Z0-9 _-]{3,50}$/;
   return cerr $c, badarg => 'Invalid client version', field => 'clientver'  if $arg->{clientver} !~ /^\d+(\.\d+)?$/;
   return cerr $c, sesslimit => "Too many open sessions for user '$arg->{username}'", max_allowed => $_[HEAP]{sess_per_user}
@@ -419,7 +419,7 @@ sub get_results {
 sub get_vn {
   my $get = $_[ARG0];
 
-  return cerr $get->{c}, getinfo => "Unkown info flag '$_'", flag => $_
+  return cerr $get->{c}, getinfo => "Unknown info flag '$_'", flag => $_
     for (grep !/^(basic|details|anime|relations)$/, @{$get->{info}});
 
   my $select = 'v.id, v.latest';
@@ -553,7 +553,7 @@ sub get_vn_res {
 sub get_release {
   my $get = $_[ARG0];
 
-  return cerr $get->{c}, getinfo => "Unkown info flag '$_'", flag => $_ for (grep !/^(basic|details|vn|producers)$/, @{$get->{info}});
+  return cerr $get->{c}, getinfo => "Unknown info flag '$_'", flag => $_ for (grep !/^(basic|details|vn|producers)$/, @{$get->{info}});
 
   my $select = 'r.id, r.latest';
   $select .= ', rr.title, rr.original, rr.released, rr.type, rr.patch, rr.freeware, rr.doujin' if grep /basic/, @{$get->{info}};
@@ -716,7 +716,7 @@ sub get_release_res {
 sub get_producer {
   my $get = $_[ARG0];
 
-  return cerr $get->{c}, getinfo => "Unkown info flag '$_'", flag => $_
+  return cerr $get->{c}, getinfo => "Unknown info flag '$_'", flag => $_
     for (grep !/^(basic|details|relations)$/, @{$get->{info}});
 
   my $select = 'p.id, p.latest';
