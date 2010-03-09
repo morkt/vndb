@@ -47,13 +47,13 @@ sub dbVNListList {
 
   # construct the global WHERE clause
   my $where = $o{voted} != -1 ? 'vo.vote IS NOT NULL' : '';
-  $where .= ($where?' OR ':'').q|v.id IN(
+  $where .= ($where?' OR ':'').q|v.id = ANY(ARRAY(
   SELECT irv.vid
     FROM rlists irl
     JOIN releases ir ON ir.id = irl.rid
     JOIN releases_vn irv ON irv.rid = ir.latest
     WHERE uid = ?
-  )| if $o{voted} != 1;
+  ))| if $o{voted} != 1;
   $where = '('.$where.') AND LOWER(SUBSTR(vr.title, 1, 1)) = \''.$o{char}.'\'' if $o{char};
   $where = '('.$where.') AND (ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' if defined $o{char} && !$o{char};
   $where = '('.$where.') AND vo.vote IS NULL' if $o{voted} == -1;
