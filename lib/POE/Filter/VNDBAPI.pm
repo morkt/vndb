@@ -103,7 +103,11 @@ sub get_one {
 
   # $str now contains our request/response encoded in UTF8, time to decode
   $str = eval { decode_utf8($str, Encode::FB_CROAK); };
-  return _err "Encoding error: $@" if !defined $str;
+  if(!defined $str) {
+    my $err = $@;
+    $err =~ s/,? at .+ line [0-9]+[\.\r\n ]*$//;
+    return _err "Encoding error: $err" if !defined $str;
+  }
 
   # get command
   return _err "Invalid command" if !($str =~ s/^$WS*([a-z]+)$WS*//);
