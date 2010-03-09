@@ -121,7 +121,7 @@ sub get_one {
         $err =~ s/,? at .+ line [0-9]+[\.\r\n ]*$//;
         return _err "Invalid JSON value in filter expression: $err";
       }
-      $str = substr $str, $chars;
+      $str = $chars > length($str) ? substr $str, $chars : '';
       push @ret, $value;
     }
 
