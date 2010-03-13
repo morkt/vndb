@@ -16,6 +16,7 @@ use POE qw|
 use POE::Component::IRC::Common ':ALL';
 use URI::Escape 'uri_escape_utf8';
 use Time::HiRes 'time';
+use VNDBUtil 'normalize_query';
 
 
 use constant {
@@ -344,27 +345,25 @@ sub cmd_uptime {
 
 
 sub cmd_vn {
-  (my $q = $_[ARG]||'') =~ s/%//g;
+  my $q = $_[ARG];
   return $_[KERNEL]->yield(reply => $_[DEST], 'You forgot the search query, dummy~~!', $_[USER]) if !$q;
   return $_[KERNEL]->yield(reply => $_[DEST], 'Stop abusing me, it\'s not like I enjoy spamming this channel!', $_[USER])
     if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 3;
 
-  $_[KERNEL]->post(pg => query => q|
+  my @q = normalize_query($q);
+  return $_[KERNEL]->yield(reply => $_[DEST],
+    "Couldn't do anything with that search query, you might want to add quotes or use longer words.",
+    $_[USER]) if !@q;
+
+  my $w = join ' AND ', map 'v.c_search LIKE ?', @q;
+  $_[KERNEL]->post(pg => query => qq{
     SELECT 'v'::text AS type, v.id, vr.title
-    FROM vn v
-    JOIN vn_rev vr ON vr.id = v.latest
-    WHERE v.hidden = FALSE AND (vr.title ILIKE $1
-       OR vr.alias ILIKE $1
-       OR v.id IN(
-         SELECT rv.vid
-         FROM releases r
-         JOIN releases_rev rr ON rr.id = r.latest
-         JOIN releases_vn rv ON rv.rid = rr.id
-         WHERE rr.title ILIKE $1
-            OR rr.original ILIKE $1
-       ))
-    ORDER BY vr.title
-    LIMIT 6|, [ "%$q%" ], 'cmd_vn_results', \@_);
+      FROM vn v
+      JOIN vn_rev vr ON vr.id = v.latest
+     WHERE NOT v.hidden AND $w
+     ORDER BY vr.title
+     LIMIT 6
+  }, [ map "%$_%", @q ], 'cmd_vn_results', \@_);
 }
 
 
