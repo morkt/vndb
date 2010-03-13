@@ -74,6 +74,9 @@ CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON producers  
 CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_dbedit();
 CREATE TRIGGER notify_announce            AFTER  INSERT           ON threads_posts FOR EACH ROW EXECUTE PROCEDURE notify_announce();
 
+CREATE TRIGGER vn_vnsearch_notify         AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE vn_vnsearch_notify();
+CREATE TRIGGER vn_vnsearch_notify         AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE vn_vnsearch_notify();
+
 
 -- Sequences used for ID generation of items not in the DB
 CREATE SEQUENCE covers_seq;

@@ -4,7 +4,7 @@ package VNDB::DB::VN;
 use strict;
 use warnings;
 use Exporter 'import';
-use VNDB::Func 'gtintype';
+use VNDB::Func 'gtintype', 'normalize_query';
 use Encode 'decode_utf8';
 
 our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
@@ -19,7 +19,7 @@ sub dbVNGet {
   $o{page}    ||= 1;
   $o{what}    ||= '';
 
-  my %where = (
+  my @where = (
     $o{id} ? (
       'v.id = ?' => $o{id} ) : (),
     $o{rev} ? (
@@ -38,35 +38,12 @@ sub dbVNGet {
     ) : (),
     $o{tags_exclude} && @{$o{tags_exclude}} ? (
       'v.id NOT IN(SELECT vid FROM tags_vn_inherit WHERE tag IN(!l))' => [ $o{tags_exclude} ] ) : (),
+    $o{search} ? (
+      map +('v.c_search like ?', "%$_%"), normalize_query($o{search})) : (),
    # don't fetch hidden items unless we ask for an ID
     !$o{id} && !$o{rev} ? (
       'v.hidden = FALSE' => 0 ) : (),
   );
-
-  if($o{search}) {
-    my @w;
-    for (split /[ -,._]/, $o{search}) {
-      s/%//g;
-      if(/^\d+$/ && gtintype($_)) {
-        push @w, 'irr.gtin = ?', $_;
-      } elsif(length($_) > 0) {
-        $_ = "%$_%";
-        push @w, '(ivr.title ILIKE ? OR ivr.original ILIKE ? OR ivr.alias ILIKE ? OR irr.title ILIKE ? OR irr.original ILIKE ?)',
-          [ $_, $_, $_, $_, $_ ];
-      }
-    }
-    push @w, '(irr.id IS NULL OR ir.latest = irr.id)' => 1 if @w;
-    $where{ q|
-      v.id IN(SELECT iv.id
-        FROM vn iv
-        JOIN vn_rev ivr ON iv.latest = ivr.id
-        LEFT JOIN releases_vn irv ON irv.vid = iv.id
-        LEFT JOIN releases_rev irr ON irr.id = irv.rid
-        LEFT JOIN releases ir ON ir.latest = irr.id
-        !W
-        GROUP BY iv.id)|
-    } = [ \@w ] if @w;
-  }
 
   my @join = (
     $o{rev} ?
@@ -114,7 +91,7 @@ sub dbVNGet {
       !s
       !W
       ORDER BY !s|,
-    join(', ', @select), join(' ', @join), \%where, $order,
+    join(', ', @select), join(' ', @join), \@where, $order,
   );
 
   if($o{what} =~ /relgraph/) {

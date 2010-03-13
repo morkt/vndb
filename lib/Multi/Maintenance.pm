@@ -9,6 +9,7 @@ use strict;
 use warnings;
 use POE;
 use PerlIO::gzip;
+use VNDBUtil 'normalize_titles';
 
 
 sub spawn {
@@ -19,11 +20,13 @@ sub spawn {
         _start shutdown set_daily daily set_monthly monthly log_stats
         vncache_inc tagcache vnpopularity vnrating cleangraphs cleansessions
         vncache_full usercache statscache logrotate
+        vnsearch_check vnsearch_gettitles vnsearch_update
       |],
     ],
     heap => {
       daily => [qw|vncache_inc tagcache vnpopularity vnrating cleangraphs cleansessions|],
       monthly => [qw|vncache_full usercache statscache logrotate|],
+      vnsearch_checkdelay => 3600,
       @_,
     },
   );
@@ -35,6 +38,8 @@ sub _start {
   $_[KERNEL]->sig(shutdown => 'shutdown');
   $_[KERNEL]->yield('set_daily');
   $_[KERNEL]->yield('set_monthly');
+  $_[KERNEL]->yield('vnsearch_check');
+  $_[KERNEL]->post(pg => listen => vnsearch => 'vnsearch_check');
 }
 
 
@@ -232,6 +237,54 @@ sub logrotate {
     close $I;
   }
   $_[KERNEL]->call(core => log => 'Logs rotated.');
+}
+
+
+#
+#  V N   S E A R C H   C A C H E
+#
+
+
+sub vnsearch_check {
+  $_[KERNEL]->call(pg => query =>
+    'SELECT id FROM vn WHERE NOT hidden AND c_search IS NULL LIMIT 1',
+    undef, 'vnsearch_gettitles');
+}
+
+
+sub vnsearch_gettitles { # num, res
+  return $_[KERNEL]->delay('vnsearch_check', $_[HEAP]{vnsearch_checkdelay}) if $_[ARG0] == 0;
+  my $id = $_[ARG1][0]{id};
+
+  # fetch the titles
+  $_[KERNEL]->call(pg => query => q{
+    SELECT vr.title, vr.original, vr.alias
+      FROM vn v
+      JOIN vn_rev vr ON vr.id = v.latest
+     WHERE v.id = ?
+    UNION
+    SELECT rr.title, rr.original, NULL
+      FROM releases r
+      JOIN releases_rev rr ON rr.id = r.latest
+      JOIN releases_vn rv ON rv.rid = r.latest
+     WHERE rv.vid = ?
+       AND NOT r.hidden
+  }, [ $id, $id ], 'vnsearch_update', $id);
+}
+
+
+sub vnsearch_update { # num, res, vid, time
+  my($res, $id, $time) = @_[ARG1..ARG3];
+  my @t = map +($_->{title}, $_->{original}), @$res;
+  # alias fields are a bit special
+  for (@$res) {
+    push @t, split /,/, $_->{alias} if $_->{alias};
+  }
+  my $t = normalize_titles(@t);
+  $_[KERNEL]->call(core => log => 'Updated search cache for v%d', $id);
+  $_[KERNEL]->call(pg => do =>
+    q|UPDATE vn SET c_search = ? WHERE id = ?|,
+    [ $t, $id ], 'vnsearch_check');
 }
 
 

@@ -586,6 +586,52 @@ $$ LANGUAGE plpgsql;
 
 
 
+-- Check for updates to vn.c_search
+-- 1. NOTIFY is sent when vn.c_search goes from non-NULL to NULL
+-- vn.c_search is set to NULL when:
+-- 2. UPDATE on VN with the hidden field going from TRUE to FALSE
+-- 3. VN add/edit of which the title/original/alias fields differ from previous revision
+-- 4. Release gets hidden or unhidden
+-- 5. Release add/edit of which the title/original/vn fields differ from the previous revision
+CREATE OR REPLACE FUNCTION vn_vnsearch_notify() RETURNS trigger AS $$
+BEGIN
+  IF TG_TABLE_NAME = 'vn' THEN
+    -- 1.
+    IF NEW.c_search IS NULL AND NOT NEW.hidden THEN
+      NOTIFY vnsearch;
+    -- 2.
+    ELSIF NEW.hidden IS DISTINCT FROM OLD.hidden THEN
+      UPDATE vn SET c_search = NULL WHERE id = NEW.id;
+    -- 3.
+    ELSIF NEW.latest IS DISTINCT FROM OLD.latest THEN
+      IF EXISTS(SELECT 1 FROM vn_rev v1, vn_rev v2
+        WHERE v1.id = OLD.latest AND v2.id = NEW.latest
+          AND (v1.title IS DISTINCT FROM v2.title OR v1.original IS DISTINCT FROM v2.original OR v1.alias IS DISTINCT FROM v2.alias)
+      ) THEN
+        UPDATE vn SET c_search = NULL WHERE id = NEW.id;
+      END IF;
+    END IF;
+  ELSIF TG_TABLE_NAME = 'releases' THEN
+    -- 4. & 5.
+    IF NEW.hidden IS DISTINCT FROM OLD.hidden OR (
+       NEW.latest IS DISTINCT FROM OLD.latest AND (
+         EXISTS(
+          SELECT 1 FROM releases_rev r1, releases_rev r2
+           WHERE r1.id = OLD.latest AND r2.id = NEW.latest
+             AND (r1.title IS DISTINCT FROM r2.title OR r1.original IS DISTINCT FROM r2.original)
+         )
+         OR EXISTS(SELECT vid FROM releases_vn WHERE rid = OLD.latest EXCEPT SELECT vid FROM releases_vn WHERE rid = NEW.latest)
+         OR (SELECT COUNT(*) FROM releases_vn WHERE rid = OLD.latest) <> (SELECT COUNT(*) FROM releases_vn WHERE rid = NEW.latest)
+    )) THEN
+      UPDATE vn SET c_search = NULL WHERE id IN(SELECT vid FROM releases_vn WHERE rid = OLD.latest OR rid = NEW.latest);
+    END IF;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
 
 
 ----------------------------------------------------------
