@@ -14,6 +14,7 @@ use POE::Filter::VNDBAPI 'encode_filters';
 use Digest::SHA 'sha256_hex';
 use Encode 'encode_utf8';
 use Time::HiRes 'time'; # important for throttling
+use VNDBUtil 'normalize_query';
 use JSON::XS;
 
 
@@ -133,6 +134,14 @@ sub filtertosql {
 
   # no further processing required for type=undef
   return $sql if !defined $type;
+
+  # split a string into an array of strings
+  if($type eq 'str' && $o{split}) {
+    $value = [ $o{split}->($value) ];
+    # assume that this match failed if the function doesn't return anything useful
+    return 'false' if !@$value || grep(!defined($_) || ref($_), @$value);
+    $type = 'stra';
+  }
 
   # pre-process the argument(s)
   my @values = ref($value) eq 'ARRAY' ? @$value : $value;
@@ -451,10 +460,8 @@ sub get_vn {
       [ str   => ':op: (v.c_languages && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'} ],
       [ stra  => ':op: (v.c_languages && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, join => ',' ],
     ], [ 'search',
-      [ str   => '(vr.title ILIKE :value: OR vr.alias ILIKE :value: OR v.id IN(
-           SELECT rv.vid FROM releases r JOIN releases_rev rr ON rr.id = r.latest JOIN releases_vn rv ON rv.rid = rr.id
-           WHERE rr.title ILIKE :value: OR rr.original ILIKE :value:
-         ))', {'~', 1}, process => \'like' ],
+      [ str   => '(:value:)', {'=',1}, split => \&normalize_query,
+                  join => ' AND ', serialize => 'v.c_search LIKE :value:', process => \'like' ],
     ],
   ];
   my $last = sqllast $get, 'id', {
@@ -862,6 +869,8 @@ Filter definitions:
     'bool'
   sql string:
     The relevant SQL string, with :op: and :value: subsistutions. :value: is not available for type=undef
+  split: (only when the type is str)
+    sub, splits the string into an array and further processes it as if it was of type 'stra'
   join: (only used when type is an array)
     scalar, join string used when joining multiple values.
   serialize: (serializes the values before join()'ing, only for arrays)
