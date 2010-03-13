@@ -17,6 +17,7 @@ YAWF::register(
   qr{v([1-9]\d*)/tagmod},   \&vntagmod,
   qr{u([1-9]\d*)/tags},     \&usertags,
   qr{g},                    \&tagindex,
+  qr{g/debug},              \&fulltree,
   qr{xml/tags\.xml},        \&tagxml,
 );
 
@@ -587,6 +588,36 @@ sub tagindex {
 
    end; # /tr
   end; # /table
+  $self->htmlFooter;
+}
+
+
+# non-translatable debug page
+sub fulltree {
+  my $self = shift;
+  return $self->htmlDenied if !$self->authCan('tagmod');
+
+  my $e;
+  $e = sub {
+    my $lst = shift;
+    ul style => 'list-style-type: none; margin-left: 15px';
+     for (@$lst) {
+       li;
+        txt '> ';
+        a href => "/g$_->{id}", $_->{name};
+        b class => 'grayedout', " ($_->{c_vns})" if $_->{c_vns};
+       end;
+       $e->($_->{sub}) if $_->{sub};
+     }
+    end;
+  };
+
+  my $tags = $self->dbTagTree(0, 25);
+  $self->htmlHeader(title => '[DEBUG] Tag tree', noindex => 1);
+  div class => 'mainbox';
+   h1 '[DEBUG] Tag tree';
+   $e->($tags);
+  end;
   $self->htmlFooter;
 }
 
