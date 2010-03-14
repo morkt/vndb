@@ -32,7 +32,7 @@ sub userpage {
   my $votes = $u->{c_votes} && $self->dbVoteStats(uid => $uid);
 
   my $title = mt '_userpage_title', $u->{username};
-  $self->htmlHeader(title => $title);
+  $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('u', $u);
   div class => 'mainbox userpage';
    h1 $title;
