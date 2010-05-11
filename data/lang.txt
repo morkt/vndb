@@ -5456,7 +5456,7 @@ en : Edit of [_1] by [_2]
 ru : Правка [_1] - [_2]
 cs*:
 hu : [_1]-t szerkesztette, [_2]l
-nl : Wijziging op [_1] door [_2]
+nl : Wijziging van [_1] door [_2]
 
 :_usern_but_markread
 en : mark selected read
@@ -5631,14 +5631,14 @@ en : Show minor spoilers
 ru : Показать лёгкие спойлеры
 cs : Ukázat menší spoilery
 hu : Kisebb spoilerek megjelenítése
-nl : Laat geringe spoilers zien
+nl : Toon geringe spoilers
 
 :_vnbrowse_spoil2
 en : Show major spoilers
 ru : Показать жёсткие спойлеры
 cs : Ukázat všechny spoilery
 hu : Nagyobb spoilerek megjelenítése
-nl : Laat alle spoilers zien
+nl : Toon alle spoilers
 
 :_vnbrowse_lang
 en : Languages
