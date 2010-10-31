@@ -64,7 +64,7 @@ The following relations are defined:
   The difference with the <i>Formerly</i> relation is that the producer where the
   members came from is still alive.
  </dd><dt>Originated from</dt><dd>
-  Reverse of <i>Spawned</i> - current producer spawned the selected producer.
+  Reverse of <i>Spawned</i> - selected producer spawned the current producer.
  </dd>
 </dl>
 
