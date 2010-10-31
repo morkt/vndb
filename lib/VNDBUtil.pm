@@ -177,6 +177,8 @@ sub normalize {
    |cd|cdr|cdrom|dvdrom|dvd|dvdpack|dvdpg|windows
    |初回限定|初回|限定|通常|廉価|パッケージ|ダウンロード
    )(?:edition|version|版|生産)//xg;
+  # other common things
+  s/fandisk/fandisc/g;
   no utf8;
   return $_;
 }
