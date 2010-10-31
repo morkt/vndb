@@ -5954,6 +5954,13 @@ cs : Screenshoty
 hu : Pillanatképek
 nl :
 
+:_vnedit_scrnorel
+en : No releases in the database yet. Screenshots can only be uploaded after a release has been added.
+ru :
+cs :
+hu :
+nl : Nog geen uitgaven in de database. Screenshots kunnen alleen geupload worden nadat een uitgave is toegevoegd.
+
 :_vnedit_scrmsg
 en : Please keep the following in mind when uploading screenshots:[br]
      - Screenshots have to be in the native resolution of the game,[br]

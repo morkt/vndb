@@ -4,6 +4,7 @@
 	- API: Slightly improved error messages
 	- Re-added /g/debug (for moderators)
 	- Improved search
+	- Display friendly message in the VN edit scr tab when no release is known
 	- Bugfix: only redirect VN search to VN page if page=1
 	- Bugfix: remove duplicate votes when merging tags (fixes a 500)
 

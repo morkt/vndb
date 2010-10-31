@@ -216,7 +216,9 @@ sub _form {
     }],
   ],
 
-  !@$r ? () : ( vn_scr => [ mt('_vnedit_scr'),
+  vn_scr => [ mt('_vnedit_scr'), !@$r ? (
+    [ static => nolabel => 1, content => mt '_vnedit_scrnorel' ],
+  ) : (
     [ hidden => short => 'screenshots' ],
     [ static => nolabel => 1, content => sub {
       div class => 'warning';
@@ -230,7 +232,7 @@ sub _form {
        option value => $_->{id}, sprintf '[%s] %s (r%d)', join(',', @{$_->{languages}}), $_->{title}, $_->{id} for (@$r);
       end;
     }],
-  ])
+  )]
 
   );
 }

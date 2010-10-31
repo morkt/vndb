@@ -1218,7 +1218,7 @@ function scrSerialize() {
   byId('screenshots').value = r.join(' ');
 }
 
-if(byId('jt_box_vn_scr'))
+if(byId('jt_box_vn_scr') && byId('scr_table'))
   scrLoad();
 
 
