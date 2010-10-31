@@ -231,7 +231,6 @@ sub receivepacket { # input, wheelid
     $col[1] = undef if !$col[1];
     $col[2] = undef if !$col[2] || $col[2] =~ /^0,/;
     $col[3] = $col[3] =~ /^([0-9]+)/ ? $1 : undef;
-    $col[3] = undef if !$col[3];
     $col[4] = $_[HEAP]{anime_types}{ lc($col[4]) };
     $col[5] = undef if !$col[5];
     $col[6] = undef if !$col[6];
