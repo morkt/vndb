@@ -1,6 +1,9 @@
 2.12 - ?
 	- !scr command for Multi::IRC
 	- API: Added 'image' field to get vn
+	- API: Slightly improved error messages
+	- Re-added /g/debug (for moderators)
+	- Improved search
 
 2.11 - 2010-02-06
 	- Added Slovak to the language list

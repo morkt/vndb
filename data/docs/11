@@ -899,3 +899,15 @@ however still required.<br />
 
 
 
+:SUB:Change Log
+<p>
+ This section lists the changes made in each version of the VNDB code.
+ Check out the <a href="/t/an">announcements board</a> for more information about updates.
+</p>
+<b>2.12</b>
+<ul>
+ <li>Added "image" member to "get vn"</li>
+ <li>A few minor fixes in some error messages</li>
+ <li>Switched to a different (and faster) search algorithm for "get vn .. (search ~ ..)"</li>
+</ul>
+
