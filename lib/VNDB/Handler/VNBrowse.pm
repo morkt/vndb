@@ -69,7 +69,7 @@ sub list {
   );
 
   $self->resRedirect('/v'.$list->[0]{id}, 'temp')
-    if $f->{q} && @$list == 1;
+    if $f->{q} && @$list == 1 && $f->{p} == 1;
 
   $self->htmlHeader(title => mt('_vnbrowse_title'), search => $f->{q});
   _filters($self, $f, $char, \@ignored);
