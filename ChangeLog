@@ -6,6 +6,7 @@
 	- Improved search
 	- Display friendly message in the VN edit scr tab when no release is known
 	- Added 1024x576 and 1280x800 screen resolutions
+	- Added more comparison VNs for the length field
 	- Bugfix: only redirect VN search to VN page if page=1
 	- Bugfix: remove duplicate votes when merging tags (fixes a 500)
 	- Bugfix: Multi::Anime: don't crash when anidb returns an invalid or empty year

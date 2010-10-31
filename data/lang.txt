@@ -1062,39 +1062,39 @@ hu : Ismeretlen
 nl : Onbekend
 
 :_vnlength_1
-en : Very short[index,_1,, (< 2 hours), (OMGWTHOTL~, A Dream of Summer)]
-ru : Крошечная[index,_1,, (< 2 часов), (OMGWTFOTL~, A Dream Of Summer)]
-cs : Velmi krátká[index,_1,, (< 2 hours), (OMGWTHOTL~, A Dream of Summer)]
-hu : Nagyon rövid[index,_1,, (< 2 óra), (OMGWTHOTL~, A Dream of Summer)]
-nl : Erg kort[index,_1,, (< 2 uur), (OMGWTHOTL~, A Dream of Summer)]
+en : Very short[index,_1,, (< 2 hours), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
+ru : Крошечная[index,_1,, (< 2 часов), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
+cs : Velmi krátká[index,_1,, (< 2 hours), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
+hu : Nagyon rövid[index,_1,, (< 2 óra), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
+nl : Erg kort[index,_1,, (< 2 uur), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
 
 :_vnlength_2
-en : Short[index,_1,, (2 - 10 hours), (Narcissu~, Planetarian)]
-ru : Малая[index,_1,, (2 - 10 часов), (Narcissu~, Planetarian)]
-cs : Krátká[index,_1,, (2 - 10 hours), (Narcissu~, Planetarian)]
-hu : Rövid[index,_1,, (2 - 10 óra), (Narcissu~, Planetarian)]
-nl : Kort[index,_1,, (2 - 10 uur), (Narcissu~, Planetarian)]
+en : Short[index,_1,, (2 - 10 hours), (Narcissu~, Saya no Uta~, Planetarian)]
+ru : Малая[index,_1,, (2 - 10 часов), (Narcissu~, Saya no Uta~, Planetarian)]
+cs : Krátká[index,_1,, (2 - 10 hours), (Narcissu~, Saya no Uta~, Planetarian)]
+hu : Rövid[index,_1,, (2 - 10 óra), (Narcissu~, Saya no Uta~, Planetarian)]
+nl : Kort[index,_1,, (2 - 10 uur), (Narcissu~, Saya no Uta~, Planetarian)]
 
 :_vnlength_3
-en : Medium[index,_1,, (10 - 30 hours), (Kana: Little Sister)]
-ru : Средняя[index,_1,, (10 - 30 часов), (Kana: Little Sister)]
-cs : Střední[index,_1,, (10 - 30 hours), (Kana: Little Sister)]
-hu : Közepes[index,_1,, (10 - 30 óra), (Kana: Little Sister)]
-nl : Gemiddeld[index,_1,, (10 - 30 uur), (Kana: Little Sister)]
+en : Medium[index,_1,, (10 - 30 hours), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
+ru : Средняя[index,_1,, (10 - 30 часов), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
+cs : Střední[index,_1,, (10 - 30 hours), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
+hu : Közepes[index,_1,, (10 - 30 óra), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
+nl : Gemiddeld[index,_1,, (10 - 30 uur), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
 
 :_vnlength_4
-en : Long[index,_1,, (30 - 50 hours), (Tsukihime)]
-ru : Большая[index,_1,, (30 - 50 часов), (Tsukihime)]
-cs : Dlouhá[index,_1,, (30 - 50 hours), (Tsukihime)]
-hu : Hosszú[index,_1,, (30 - 50 óra), (Tsukihime)]
-nl : Lang[index,_1,, (30 - 50 uur), (Tsukihime)]
+en : Long[index,_1,, (30 - 50 hours), (Tsukihime~, Ever17~, Utawarerumono)]
+ru : Большая[index,_1,, (30 - 50 часов), (Tsukihime~, Ever17~, Utawarerumono)]
+cs : Dlouhá[index,_1,, (30 - 50 hours), (Tsukihime~, Ever17~, Utawarerumono)]
+hu : Hosszú[index,_1,, (30 - 50 óra), (Tsukihime~, Ever17~, Utawarerumono)]
+nl : Lang[index,_1,, (30 - 50 uur), (Tsukihime~, Ever17~, Utawarerumono)]
 
 :_vnlength_5
-en : Very long[index,_1,, (> 50 hours), (Clannad)]
-ru : Очень большая[index,_1,, (> 50 часов), (Clannad)]
-cs : Velmi dlouhá[index,_1,, (> 50 hours), (Clannad)]
-hu : Nagyon hosszú[index,_1,, (> 50 óra), (Clannad)]
-nl : Erg lang[index,_1,, (> 50 uur), (Clannad)]
+en : Very long[index,_1,, (> 50 hours), (Clannad~, Umineko~, Fate/Stay Night)]
+ru : Очень большая[index,_1,, (> 50 часов), (Clannad~, Umineko~, Fate/Stay Night)]
+cs : Velmi dlouhá[index,_1,, (> 50 hours), (Clannad~, Umineko~, Fate/Stay Night)]
+hu : Nagyon hosszú[index,_1,, (> 50 óra), (Clannad~, Umineko~, Fate/Stay Night)]
+nl : Erg lang[index,_1,, (> 50 uur), (Clannad~, Umineko~, Fate/Stay Night)]
 
 
 # VN list statuses
