@@ -147,6 +147,10 @@ sub dbTagAdd {
 
 sub dbTagMerge {
   my($self, $id, @merge) = @_;
+  $self->dbExec(q|
+    DELETE FROM tags_vn tv
+          WHERE tag IN(!l)
+            AND EXISTS(SELECT 1 FROM tags_vn ti WHERE ti.tag = ? AND ti.uid = tv.uid AND ti.vid = tv.vid)|, \@merge, $id);
   $self->dbExec('UPDATE tags_vn SET tag = ? WHERE tag IN(!l)', $id, \@merge);
   $self->dbExec('UPDATE tags_aliases SET tag = ? WHERE tag IN(!l)', $id, \@merge);
   $self->dbExec('INSERT INTO tags_aliases (tag, alias) VALUES (?, ?)', $id, $_->{name})

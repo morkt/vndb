@@ -5,6 +5,7 @@
 	- Re-added /g/debug (for moderators)
 	- Improved search
 	- Bugfix: only redirect VN search to VN page if page=1
+	- Bugfix: remove duplicate votes when merging tags (fixes a 500)
 
 2.11 - 2010-02-06
 	- Added Slovak to the language list
