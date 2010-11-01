@@ -18,13 +18,13 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown set_daily daily set_monthly monthly log_stats
-        vncache_inc tagcache vnpopularity vnrating cleangraphs cleansessions
+        vncache_inc tagcache vnpopularity vnrating cleangraphs cleansessions cleannotifications
         vncache_full usercache statscache logrotate
         vnsearch_check vnsearch_gettitles vnsearch_update
       |],
     ],
     heap => {
-      daily => [qw|vncache_inc tagcache vnpopularity vnrating cleangraphs cleansessions|],
+      daily => [qw|vncache_inc tagcache vnpopularity vnrating cleangraphs cleansessions cleannotifications|],
       monthly => [qw|vncache_full usercache statscache logrotate|],
       vnsearch_checkdelay => 3600,
       @_,
@@ -160,6 +160,13 @@ sub cleansessions {
   $_[KERNEL]->post(pg => do =>
     q|DELETE FROM sessions WHERE lastused < NOW()-'1 month'::interval|,
     undef, 'log_stats', 'cleansessions');
+}
+
+
+sub cleannotifications {
+  $_[KERNEL]->post(pg => do =>
+    q|DELETE FROM notifications WHERE read < NOW()-'1 month'::interval|,
+    undef, 'log_stats', 'cleannotifications');
 }
 
 
