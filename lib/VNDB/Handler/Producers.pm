@@ -101,7 +101,7 @@ sub page {
        for (sort { $a->{name} cmp $b->{name} } @{$p->{relations}});
      p class => 'center';
       txt "\n";
-      for my $r (sort keys %rel) {
+      for my $r (sort { $self->{prod_relations}{$a}[0] <=> $self->{prod_relations}{$b}[0] } keys %rel) {
         txt mt("_prodrel_$r").': ';
         for (@{$rel{$r}}) {
           a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 40;
