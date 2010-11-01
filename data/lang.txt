@@ -409,6 +409,13 @@ cs : Mac OS
 hu :
 nl :
 
+:_plat_ios
+en : Apple iProduct
+ru*:
+cs*:
+hu*:
+nl :
+
 :_plat_dvd
 en : DVD Player
 ru : DVD-плеер

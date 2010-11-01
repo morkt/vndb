@@ -12,3 +12,4 @@ CREATE TRIGGER vn_vnsearch_notify         AFTER  UPDATE           ON releases   
 UPDATE releases_rev SET resolution = resolution + 1 WHERE resolution >= 7;
 UPDATE releases_rev SET resolution = resolution + 1 WHERE resolution >= 11;
 
+

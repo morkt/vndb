@@ -62,7 +62,7 @@ our %S = (%S,
   },
   age_ratings     => [undef, 0, 6..18],
   release_types   => [qw|complete partial trial|],
-  platforms       => [qw|win dos lin mac dvd gba msx nds nes p98 psp ps1 ps2 ps3 drc sat sfc wii xb3 oth|],
+  platforms       => [qw|win dos lin mac ios dvd gba msx nds nes p98 psp ps1 ps2 ps3 drc sat sfc wii xb3 oth|],
   media           => {
    #DB     qty?
     cd  => 1,
