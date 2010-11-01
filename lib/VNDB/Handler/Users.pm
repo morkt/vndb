@@ -620,6 +620,7 @@ sub notifies {
          td colspan => 5;
           input type => 'submit', name => 'markread', value => mt '_usern_but_markread';
           input type => 'submit', name => 'remove', value => mt '_usern_but_remove';
+          b class => 'grayedout', ' '.mt '_usern_autodel';
          end;
         end;
       }

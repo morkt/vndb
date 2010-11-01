@@ -5472,6 +5472,13 @@ cs*:
 hu : bejelöltek eltávolítássa
 nl : verwijder
 
+:_usern_autodel
+en : (Read notifications are automatically removed after one month)
+ru*:
+cs*:
+hu*:
+nl : (Gelezen notificaties worden na 1 maand automatisch verwijderd)
+
 :_usern_set_saved
 en : Settings successfully saved.
 ru : Параметры успешно сохранены.
