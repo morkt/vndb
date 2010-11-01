@@ -6964,3 +6964,5 @@ cs : Váš prohlížeč je na nic, nepodporuje vykreslování našich krásných
 hu : A böngésződ szar, nem képes megjeleníteni a szép összefüggés grafikonunkat.
 nl : Je browser is troep, het heeft niet de benodigde functionaliteit om onze mooie grafiekjes weer te geven.
 
+
+# vim: set ft=none:
