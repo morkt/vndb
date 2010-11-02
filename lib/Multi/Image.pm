@@ -21,8 +21,6 @@ sub spawn {
       |],
     ],
     heap => {
-      cvsize  => [ 256, 400 ],
-      scrsize => [ 136, 102 ],
       cvpath  => $VNDB::ROOT.'/static/cv',
       sfpath  => $VNDB::ROOT.'/static/sf',
       stpath  => $VNDB::ROOT.'/static/st',
@@ -67,7 +65,7 @@ sub cv_process { # num, res
   my $im = Image::Magick->new;
   $im->Read($img);
   $im->Set(magick => 'JPEG');
-  my($old, $new) = do_resize($im, $_[HEAP]{cvsize});
+  my($old, $new) = do_resize($im, $VNDB::S{cv_size});
   $im->Set(quality => 80);
   $im->Write($img);
 
@@ -102,7 +100,7 @@ sub scr_process { # num, res
   $im->Write($sf);
 
   # create thumbnail
-  my($old, $new) = do_resize($im, $_[HEAP]{scrsize});
+  my($old, $new) = do_resize($im, $VNDB::S{scr_size});
   $im->Set(quality => 90);
   $im->Write($st);
 

@@ -23,6 +23,8 @@ our %S = (%S,
   global_salt     => 'any-private-string-here',
   source_url      => 'http://git.blicky.net/vndb.git/?h=master',
   admin_email     => 'contact@vndb.org',
+  scr_size        => [ 136, 102 ], # w*h of screenshot thumbnails
+  cv_size         => [ 256, 400 ], # max. w*h of cover images
   user_ranks      => [
        # allowed actions                                              # DB number
     [qw| hist                                                     |], # 0
