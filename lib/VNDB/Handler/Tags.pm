@@ -35,7 +35,7 @@ sub tagpage {
     { name => 'm', required => 0, default => -1, enum => [qw|0 1 2|] },
   );
   return 404 if $f->{_err};
-  my $tagspoil = $self->reqCookie('tagspoil');
+  my $tagspoil = $self->reqCookie($self->{cookie_prefix}.'tagspoil');
   $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0 if $f->{m} == -1;
 
   my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbVNGet(

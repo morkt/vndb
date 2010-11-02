@@ -41,10 +41,11 @@ function ajax(url, func) {
 function setCookie(n,v) {
   var date = new Date();
   date.setTime(date.getTime()+(365*24*60*60*1000));
-  document.cookie = n+'='+v+'; expires='+date.toGMTString()+'; path=/';
+  document.cookie = cookie_prefix+n+'='+v+'; expires='+date.toGMTString()+'; path=/';
 }
 function getCookie(n) {
   var l = document.cookie.split(';');
+  n = cookie_prefix+n;
   for(var i=0; i<l.length; i++) {
     var c = l[i];
     while(c.charAt(0) == ' ')

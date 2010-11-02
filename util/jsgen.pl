@@ -85,6 +85,7 @@ sub jsgen {
   my $js = encode_utf8(l10n()) . "\n";
   $js .= sprintf "rlst_rstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_rstat}};
   $js .= sprintf "rlst_vstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_vstat}};
+  $js .= sprintf "cookie_prefix = '%s';\n", $S{cookie_prefix};
   open my $JS, '<', "$ROOT/data/script.js" or die $!;
   $js .= join '', <$JS>;
   close $JS;

@@ -20,7 +20,7 @@ sub authInit {
   my $self = shift;
   $self->{_auth} = undef;
 
-  my $cookie = $self->reqCookie($self->{cookie_auth});
+  my $cookie = $self->reqCookie($self->{cookie_prefix}.'auth');
   return 0 if !$cookie;
   return _rmcookie($self) if length($cookie) < 41;
   my $token = substr($cookie, 0, 40);
@@ -47,7 +47,7 @@ sub authLogin {
 
     my $expstr = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime(time + 31536000)); # keep the cookie for 1 year
     $self->resRedirect($to, 'post');
-    $self->resHeader('Set-Cookie', "$self->{cookie_auth}=$cookie; expires=$expstr; path=/; domain=$self->{cookie_domain}");
+    $self->resHeader('Set-Cookie', "$self->{cookie_prefix}auth=$cookie; expires=$expstr; path=/; domain=$self->{cookie_domain}");
     return 1;
   }
 
@@ -59,7 +59,7 @@ sub authLogin {
 sub authLogout {
   my $self = shift;
 
-  my $cookie = $self->reqCookie($self->{cookie_auth});
+  my $cookie = $self->reqCookie($self->{cookie_prefix}.'auth');
   if ($cookie && length($cookie) >= 41) {
     my $token = substr($cookie, 0, 40);
     my $uid  = substr($cookie, 40);
@@ -138,7 +138,7 @@ sub authPreparePass{
 # removes the vndb_auth cookie
 sub _rmcookie {
   $_[0]->resHeader('Set-Cookie',
-    "$_[0]->{cookie_auth}= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$_[0]->{cookie_domain}");
+    "$_[0]->{cookie_prefix}auth= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$_[0]->{cookie_domain}");
 }
 
 
