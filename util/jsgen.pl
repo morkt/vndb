@@ -22,75 +22,73 @@ use LangFile;
 use VNDB::L10N;
 
 
-my $jskeys_lang = join '|', VNDB::L10N::languages();
-my $jskeys = qr{^(?:
-    _lang_(?:$jskeys_lang)|
-    _js_.+|
-    _menu_emptysearch|
-    _vnpage_uopt_(?:10?vote|rel.+)|
-    _rlst_[vr]stat_.+|
-    _vnedit_rel_(?:isa|of|addbut|del|none|findformat|novn|double)|
-    _redit_form_med_.+|
-    _vnedit_scr_.+|
-    _tagv_(?:add|spoil\d|notfound|nometa|double)|
-    _redit_form_vn_(?:addbut|remove|none|vnformat|notfound|double)|
-    _redit_form_prod_(?:addbut|remove|none|pformat|notfound|double)|
-    _pedit_rel_(?:addbut|del|none|findformat|notfound|double)
-  )$}x;
-
 sub l10n {
-  # Using JSON::XS or something may be shorter and less error prone,
-  #  although I would have less power over the output (mostly the quoting of the keys)
+  # parse the .js code to find the l10n keys to use
+  my $js = shift;
+  my @keys;
+  push @keys, $1 ? quotemeta($1) : qr/$2/ while($js =~ m{(?:mt\('([a-z0-9_]+)'[,\)]|l10n /([^/]+)/)}g);
+  # also add the _lang_* for all languages for which we have a translation
+  my $jskeys_lang = join '|', VNDB::L10N::languages();
+  push @keys, qr/_lang_(?:$jskeys_lang)/;
 
+  # fetch the corresponding text from lang.txt
+  my %lang; # key1 => { lang1 => .., lang2 => .. }, key2 => { .. }
   my $lang = LangFile->new(read => "$ROOT/data/lang.txt");
-  my @r;
-  push @r, 'L10N_STR = {';
-  my $cur; # undef = none/excluded, 1 = awaiting first TL line, 2 = after first TL line
-  my %lang;
+  my $cur; # 0 = none/excluded, 1 = TL lines
+  my $key;
   while((my $l = $lang->read())) {
     my $type = shift @$l;
     if($type eq 'key') {
-      my $key = shift @$l;
-      push @r, '  }' if $cur;
-      $cur = $key =~ $jskeys ? 1 : undef;
-      if($cur) {
-        $r[$#r] .= ',' if $r[$#r] =~ /}$/;
-        # let's assume key names don't trigger a reserved word in JS
-        $key = qq{"$key"} if $key !~ /^[a-z_][a-z0-9_]*$/i;
-        push @r, qq|  $key: {|;
-      }
+      my $k = shift @$l;
+      $cur = grep $k =~ /$_/, @keys;
+      $key = $k;
     }
-    $lang{$l->[0]} = 1 if $type eq 'tl';
     if($type eq 'tl' && $cur) {
       my($lang, $sync, $val) = @$l;
       next if !$val;
-      $val =~ s/"/\\"/g;
-      $val =~ s/\n/\\n/g;
-      $r[$#r] .= ',' if $cur == 2;
-      $lang = qq{"$l->[0]"} if $lang =~ /^(?:as|do|if|in|is)$/; # reserved two-char words
-      push @r, qq|    $lang: "$val"|;
-      $cur = 2;
+      $lang{$key}{$lang} = $val;
     }
   }
-  push @r, '  }' if $cur;
-  push @r, '};';
-  push @r, 'L10N_LANG = [ '.join(', ', map qq{"$_"}, VNDB::L10N::languages()).' ];';
-  return join "\n", @r;
+
+  # generate JS code
+  my $r = "L10N_STR = {\n";
+  my $first = 1;
+  for my $key (sort keys %lang) {
+    $r .= ",\n" if !$first;
+    $first = 0;
+    # let's assume all L10N keys are valid JS variable names
+    $r .= sprintf qq|  "%s": {\n|, $key;
+    my $firstk = 1;
+    for (sort keys %{$lang{$key}}) {
+      $r .= ",\n" if !$firstk;
+      $firstk = 0;
+      my $lang = $_;
+      $lang = qq{"$lang"} if $lang =~ /^(?:as|do|if|in|is)$/; # reserved two-char words
+      my $val = $lang{$key}{$_};
+      $val =~ s/"/\\"/g;
+      $val =~ s/\n/\\n/g;
+      $r .= sprintf qq|    %s: "%s"|, $lang, $val;
+    }
+    $r .= "\n  }";
+  }
+  $r .= "\n};\n";
+  $r .= 'L10N_LANG = [ '.join(', ', map qq{"$_"}, VNDB::L10N::languages()).' ];';
+  return "$r\n";
 }
 
 
 sub jsgen {
   # JavaScript::Minifier::XS doesn't correctly handle perl's unicode,
   #  so just do everything in raw bytes instead.
-  my $js = encode_utf8(l10n()) . "\n";
-  $js .= sprintf "rlst_rstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_rstat}};
-  $js .= sprintf "rlst_vstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_vstat}};
-  $js .= sprintf "cookie_prefix = '%s';\n", $S{cookie_prefix};
   open my $JS, '<', "$ROOT/data/script.js" or die $!;
-  $js .= join '', <$JS>;
+  my $js .= join '', <$JS>;
   close $JS;
+  my $head = encode_utf8(l10n($js)) . "\n";
+  $head .= sprintf "rlst_rstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_rstat}};
+  $head .= sprintf "rlst_vstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_vstat}};
+  $head .= sprintf "cookie_prefix = '%s';\n", $S{cookie_prefix};
   open my $NEWJS, '>', "$ROOT/static/f/script.js" or die $!;
-  print $NEWJS $JavaScript::Minifier::XS::VERSION ? JavaScript::Minifier::XS::minify($js) : $js;
+  print $NEWJS $JavaScript::Minifier::XS::VERSION ? JavaScript::Minifier::XS::minify($head.$js) : $head.$js;
   close $NEWJS;
 }
 

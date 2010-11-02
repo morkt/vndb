@@ -12,6 +12,7 @@
 	- Removed XML sitemap
 	- Added image dimensions to screenshot thumbail <img> tags
 	- Prefix all cookies with a configurable cookie_prefix
+	- Automatically read L10N keys from script.js
 	- Bugfix: only redirect VN search to VN page if page=1
 	- Bugfix: remove duplicate votes when merging tags (fixes a 500)
 	- Bugfix: Multi::Anime: don't crash when anidb returns an invalid or empty year

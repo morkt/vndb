@@ -14,6 +14,25 @@
  *  tvs  -> VN page tag spoilers
  *  vnr  -> VN relation editor
  */
+
+/* Internationalization note:
+ *   The translation keys to be inserted in the header of this file are parsed
+ *   from the source code. So when using mt(), make sure it is in the following
+ *   format:
+ *     mt('<exact translation key>',<more arguments>
+ *   or
+ *     mt('<exact translation key>')
+ *   The single quotes and (lack of) spaces are significant!
+ *
+ *   To use non-exact translation keys as argument to mt(), make sure to
+ *   indicate which keys should be inserted in the header by adding a comment
+ *   containing the following format:
+ *     l10n /<perl regex>/
+ *   any keys matching that regex will be included.
+ *
+ *   The "_lang_*" keys for all languages for which we have a translation are
+ *   already included automatically.
+ */
 var expanded_icon = '▾';
 var collapsed_icon = '▸';
 
@@ -365,14 +384,14 @@ function rlDropDown(lnk) {
   var rs = tag('ul', tag('li', tag('b', mt('_vnpage_uopt_relrstat'))));
   var vs = tag('ul', tag('li', tag('b', mt('_vnpage_uopt_relvstat'))));
   for(var i=0; i<rlst_rstat.length; i++) {
-    var val = mt('_rlst_rstat_'+rlst_rstat[i]);
+    var val = mt('_rlst_rstat_'+rlst_rstat[i]); // l10n /_rlst_rstat_\d+/
     if(st[0] && st[0].indexOf(val) >= 0)
       rs.appendChild(tag('li', tag('i', val)));
     else
       rs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'r'+rlst_rstat[i], onclick:rlMod}, val)));
   }
   for(var i=0; i<rlst_vstat.length; i++) {
-    var val = mt('_rlst_vstat_'+rlst_vstat[i]);
+    var val = mt('_rlst_vstat_'+rlst_vstat[i]); // l10n /_rlst_vstat_\d+/
     if(st[1] && st[1].indexOf(val) >= 0)
       vs.appendChild(tag('li', tag('i', val)));
     else
@@ -1039,7 +1058,7 @@ function scrAdd(id, nsfw, rel) {
   var tr = tag('tr', { id:'scr_tr_'+id, scr_id: id, scr_status: id?2:1, scr_rel: rel, scr_nsfw: nsfw},
     tag('td', { 'class': 'thumb'}, mt('_js_loading')),
     tag('td',
-      tag('b', mt(id ? '_vnedit_scr_fetching' : '_vnedit_scr_uploading')),
+      tag('b', id ? mt('_vnedit_scr_fetching') : mt('_vnedit_scr_uploading')),
       tag('br', null),
       id ? null : mt('_vnedit_scr_upl_msg'),
       tag('br', null),
@@ -1188,7 +1207,8 @@ function scrUploadComplete() {
       tr.scr_id = -10;
     }
     if(tr.scr_id < 0) {
-      alert(mt(tr.scr_id == -10 ? '_vnedit_scr_oops' : tr.scr_id == -1 ? '_vnedit_scr_errformat' : '_vnedit_scr_errempty'));
+      alert(tr.scr_id == -10 ? mt('_vnedit_scr_oops') :
+            tr.scr_id ==  -1 ? mt('_vnedit_scr_errformat') : mt('_vnedit_scr_errempty'));
       scrDel(tr);
     } else {
       tr.id = 'scr_tr_'+tr.scr_id;
@@ -1231,7 +1251,7 @@ var tglSpoilers = [];
 
 function tglLoad() {
   for(var i=0; i<=3; i++)
-    tglSpoilers[i] = mt('_tagv_spoil'+i);
+    tglSpoilers[i] = mt('_tagv_spoil'+i); // l10n /_tagv_spoil\d+/
 
   // tag dropdown search
   dsInit(byId('tagmod_tag'), '/xml/tags.xml?q=', function(item, tr) {
@@ -1871,7 +1891,7 @@ if(byId('expandlist')) {
   var lnk = byId('expandlist');
   setexpand = function() {
     var exp = getCookie('histexpand') == 1;
-    setText(lnk, mt(exp ? '_js_collapse' : '_js_expand'));
+    setText(lnk, exp ? mt('_js_collapse') : mt('_js_expand'));
     var tbl = lnk;
     while(tbl.nodeName.toLowerCase() != 'table')
       tbl = tbl.parentNode;
