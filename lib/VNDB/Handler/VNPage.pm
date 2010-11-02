@@ -465,10 +465,12 @@ sub _screenshots {
      end;
      div class => 'scr';
       for (@scr) {
+        my($w, $h) = imgsize($_->{width}, $_->{height}, @{$self->{scr_size}});
         a href => sprintf('%s/sf/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}),
           class => sprintf('scrlnk%s%s', $_->{nsfw} ? ' nsfw':'', $_->{nsfw}&&!$self->authInfo->{show_nsfw}?' hidden':''),
           rel => "iv:$_->{width}x$_->{height}:scr";
-         img src => sprintf('%s/st/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}), alt => mt '_vnpage_scr_num', $_->{id};
+         img src => sprintf('%s/st/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}),
+           width => $w, height => $h, alt => mt '_vnpage_scr_num', $_->{id};
         end;
       }
      end;
