@@ -205,10 +205,11 @@ sub dbScreenshotGet {
 # Fetch random VN + screenshots
 sub dbScreenshotRandom {
   return shift->dbAll(q|
-    SELECT vs.scr, vr.vid, vr.title
+    SELECT vs.scr, vr.vid, vr.title, s.width, s.height
       FROM vn_screenshots vs
       JOIN vn v ON v.latest = vs.vid
       JOIN vn_rev vr ON vr.id = v.latest
+      JOIN screenshots s ON vs.scr = s.id
       WHERE vs.nsfw = FALSE AND v.hidden = FALSE
       ORDER BY RANDOM()
       LIMIT 4|

@@ -7,7 +7,7 @@ use warnings;
 use Exporter 'import';
 use Unicode::Normalize 'NFKD';
 
-our @EXPORT = qw|shorten bb2html gtintype normalize normalize_titles normalize_query|;
+our @EXPORT = qw|shorten bb2html gtintype normalize normalize_titles normalize_query imgsize|;
 
 
 sub shorten {
@@ -197,6 +197,23 @@ sub normalize_query {
   $q =~ s/"([^"]+)"/(my $s=$1)=~y{ }{}d;$s/ge;
   # split into search words, normalize, and remove too short words
   return map length($_)>(/^[\x01-\x7F]+$/?2:0) ? quotemeta($_) : (), map normalize($_), split / /, $q;
+}
+
+
+# arguments: <image size>, <max dimensions>
+# returns the size of the thumbnail with the same aspect ratio as the full-size
+#   image, but fits within the specified maximum dimensions
+sub imgsize {
+  my($ow, $oh, $sw, $sh) = @_;
+  return ($ow, $oh) if $ow <= $sw && $oh <= $sh;
+  if($ow/$oh > $sw/$sh) { # width is the limiting factor
+    $oh *= $sw/$ow;
+    $ow = $sw;
+  } else {
+    $ow *= $sh/$oh;
+    $oh = $sh;
+  }
+  return ($ow, $oh);
 }
 
 
