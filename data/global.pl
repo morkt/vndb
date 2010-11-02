@@ -108,7 +108,6 @@ our %M = (
     #API         => {},  # disabled by default, not really needed
     RG          => {},
     Image       => {},
-    Sitemap     => {},
     #Anime       => {},  # disabled by default, requires AniDB username/pass
     Maintenance => {},
     #IRC         => {},  # disabled by default, no need to run an IRC bot when debugging

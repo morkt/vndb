@@ -143,5 +143,6 @@ update-2.11: all
 
 update-2.12: all
 	$(multi-stop)
+	rm www/sitemap.xml.gz
 	${runpsql} < util/updates/update_2.12.sql
 	$(multi-start)
