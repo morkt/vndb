@@ -46,9 +46,6 @@ Requirements
       XML::Parser
       XML::Writer
       graphviz           (/usr/bin/dot is used by default)
-    Sitemap:
-      XML::Writer
-      PerlIO::gzip
 
   util/skingen.pl
     Image::Magick
