@@ -1,4 +1,4 @@
-2.12 - ?
+2.12 - 2010-11-03
 	- !scr command for Multi::IRC
 	- API: Added 'image' field to get vn
 	- API: Slightly improved error messages
@@ -16,10 +16,13 @@
 	- Compressed the thread listing into one row per thread (instead of two)
 	- Use newlines to separate aliases (except when displayed on VN pages)
 	- Automatically remove duplicate aliases on /v+/edit
+	- Increased maxlength of tag descriptions
 	- Bugfix: only redirect VN search to VN page if page=1
 	- Bugfix: remove duplicate votes when merging tags (fixes a 500)
 	- Bugfix: Multi::Anime: don't crash when anidb returns an invalid or empty year
 	- Bugfix: properly order the relations listed on producer pages
+	- Bugfix: Various gtintype() related issues
+	- Bugfix: background image issue in Opera 10.50
 
 2.11 - 2010-02-06
 	- Added Slovak to the language list
