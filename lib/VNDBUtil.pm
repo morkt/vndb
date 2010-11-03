@@ -196,7 +196,7 @@ sub normalize_query {
   # remove spaces within quotes, so that it's considered as one search word
   $q =~ s/"([^"]+)"/(my $s=$1)=~y{ }{}d;$s/ge;
   # split into search words, normalize, and remove too short words
-  return map length($_)>(/^[\x01-\x7F]+$/?2:0) ? quotemeta($_) : (), map normalize($_), split / /, $q;
+  return map length($_)>=(/^[\x01-\x7F]+$/?2:1) ? quotemeta($_) : (), map normalize($_), split / /, $q;
 }
 
 
