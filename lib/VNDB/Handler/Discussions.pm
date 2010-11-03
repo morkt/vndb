@@ -374,6 +374,17 @@ sub _threadlist {
       Tr $n % 2 ? ( class => 'odd' ) : ();
        td class => 'tc1';
         a $o->{locked} ? ( class => 'locked' ) : (), href => "/t$o->{id}", shorten $o->{title}, 50;
+        b class => 'boards';
+         my $i = 1;
+         for(sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$o->{boards}}) {
+           last if $i++ > 4;
+           txt ', ' if $i > 2;
+           a href => "/t/$_->{type}".($_->{iid}||''),
+             title => $_->{original}||mt("_dboard_$_->{type}"),
+             shorten $_->{title}||mt("_dboard_$_->{type}"), 30;
+         }
+         txt ', ...' if @{$o->{boards}} > 4;
+        end;
        end;
        td class => 'tc2', $o->{count}-1;
        td class => 'tc3';
@@ -385,20 +396,6 @@ sub _threadlist {
         a href => "/t$o->{id}.$o->{count}";
          lit $self->{l10n}->date($o->{ldate});
         end;
-       end;
-      end;
-      Tr $n % 2 ? ( class => 'odd' ) : ();
-       td colspan => 4, class => 'boards';
-        txt ' > ';
-        my $i = 1;
-        for(sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$o->{boards}}) {
-          last if $i++ > 5;
-          txt ', ' if $i > 2;
-          a href => "/t/$_->{type}".($_->{iid}||''),
-            title => $_->{original}||mt("_dboard_$_->{type}"),
-            shorten $_->{title}||mt("_dboard_$_->{type}"), 30;
-        }
-        txt ', ...' if @{$o->{boards}} > 5;
        end;
       end;
     }
