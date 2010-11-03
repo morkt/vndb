@@ -181,4 +181,5 @@ formátu a měly by vždy být v souladu s těmito doporučeními:
   přítomný v původním screenshotu.</li>
  <li>Screenshoty by ideálně měly být z anglického nebo z originálního (japonského) vydání. Ostatní jazyky
   jsou pvoloeny, ale množství těchto obrázků by mělo být zachování na minimu.</li>
+<li>Nenahrávejte různé jazykové verze stejných screenshotů, toto není galerie pro porovnání.</li>
 </ul>

@@ -46,8 +46,8 @@
   Číslo v katalogu jak je mu přiřazeno producentem. Často se používá pro identifikaci vydání
   na webshopech a obvykle se dá najít někde na obalu produktu.
  </dd><dt>Oficiální internetová stránka</dt><dd>
-  URL oficiálních stránek pro tento produkt.
- </dd><dt>Datum vydání</dt><dd>
+URL oficiálních stránek pro tento produkt. Poznamenáme, že i když VNDB nepodporujepirátství, je povoleno odkázat na domovskou stránku či fórum, která tak činí, za předpokladu,
+že je to jediný <b>oficiální</b> zdroj informací pro toto vydání. </dd><dt>Datum vydání</dt><dd>
   Pro komerční hry datum prodeje.
   Pro vše ostatní datum, kdy bylo vydání poprvé dostupné.
   Pokud byla hra uvedena na internetové stránce, pak datum příspěvku, který ji oznámil.
@@ -56,7 +56,7 @@
   nebo na internetových stránkách produktuT.
  </dd><dt>Poznámky</dt><dd>
   Další různé užitečné věci.
-  Obecně vzato sem patří extra (ale ne předobjednávkové bonusy) a informace o vývoji/překladu.
+Obecně vzato sem patří extra (ale ne předobjednávkové bonusy) a informace o vývoji/překladu.
  </dd>
 </dl>
 

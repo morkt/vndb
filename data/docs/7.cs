@@ -56,7 +56,7 @@
   <dt>Český</dt><dd><a href="mailto:nya.chan.production@gmail.com">Nya-chan Production</a></dd>
   <dt>Maďarský</dt><dd><a href="mailto:bikmate@gmail.com">Bikfalvi Máté</a></dd>
   <dt>Nizozemsky</dt><dd><a href="mailto:contact@vndb.org">Yorhel</a></dd>
-  <dt>Ruský</dt><dd><a href="mailto:winkillerstudio@gmail.com">Dmitri Poguliayev</a></dd>
+  <dt>Ruský</dt><dd><a href="mailto:winkillerstudio@gmail.com">Dmitri Poguliayev</a> a <a href="mailto:just.some.silver.dragon@gmail.com">SilverDragon</a></dd>
  </dl>
 
  <br />

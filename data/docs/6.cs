@@ -70,10 +70,18 @@
 
 :SUB:Kde můžu stáhnout vizuální novely?
 <p>
- Tady ne. Neposkytujeme stahování ani odkazy na zdroje, které podporují ilegální šíření
- vizuálních novel.
+ Tady ne. Neposkytujeme žádné odkazy na přímé stažení, torrenty či jiné způsoby
+stahování her. Poskytujeme ale odkazy na oficiální domovské stránky vývojářů,
+kteří mohou poskytovat trial verze zadarmo nebo i plné verze.
 </p>
 
+:SUB:Můžete mi doporučit vizuální novelu<p> Ptát se na doporučení na diskusním fóru či na IRC obvykle nebývá dobrý nápad,
+ z nejrůznějších důvodů. Pokud sháníte VN, které hrálo hodně lidí, vyzkoušejte
+ <a href="/v/all?s=pop;o=d">řazení dle popularity</a>. Pokud vás zajímají VN,
+ které jsou obecně považovány za "dobré" nebo "skvělé", vyzkoušejte <a href="/v/all?s=rating;o=d">hodnocení</a>.
+ Pokud se zajímáte o osobnější odpověď, můžete porovnat seznam hlasování
+ našich <a href="/u/all">uživatelů</a> s vaším vlastním a rozhodnout se co číst
+ dále podle toho.</p>
 :SUB:Mohu na VNDB odkázat?
 <p>
  Samozřejmě můžete! Máme dkonce několik ikonek, které můžete k odkazování a podpoře
