@@ -111,14 +111,14 @@ ends with ']'. The following options are supported:
 :_datetime_compact
 en : %Y-%m-%d
 ru : %d.%m.%Y
-cs*:
+cs : %Y-%m-%d
 hu :
 nl :
 
 :_datetime_full
 en : %Y-%m-%d at %R
 ru : %d.%m.%Y, %R
-cs*:
+cs : %Y-%m-%d v %R
 hu : %Y-%m-%d - %R-kor
 nl : %Y-%m-%d om %R
 
@@ -323,14 +323,14 @@ nl : Pools
 :_lang_pt-br
 en : Portuguese (Brazil)
 ru : Португальский (Бразилия)
-cs*: Portugalsky
+cs : Portugalsky (Brazílie)
 hu : Portugál (Brazil)
 nl : Portugees (Brazilië)
 
 :_lang_pt-pt
 en : Portuguese (Portugal)
 ru : Португальский (Португалия)
-cs*: Portugalsky
+cs : Portugalsky (Portugalsko)
 hu : Portugál
 nl : Portugees (Portugal)
 
@@ -1398,21 +1398,21 @@ nl : Verstuur
 :_form_ihid
 en : Deleted
 ru : Удалено
-cs*:
+cs : Smazáno
 hu : Törölve
 nl : Verwijderd
 
 :_form_ilock
 en : Locked
 ru : Заблокировано
-cs*:
+cs : Zamčeno
 hu : Lezárva
 nl : Gesloten
 
 :_form_hidlock_note
 en : Note: edit summary of the last edit should indicate the reason for the deletion or lock.
 ru : Замечание: если производится блокировка или удаление, поле "суммарно о правке" для последнего изменения должно содержать причину.
-cs*:
+cs : Poznámka: shrnutí poslední editace by mělo obshovat důvod smazání či zamčení.
 hu : Megjegyzés: az összegzése az utolsó szerkesztésnek foglalja magába a törlés vagy lezárás okát.
 nl : Opmerking: Samenvatting van de laatste wijziging geeft aan wat de reden was voor de verwijdering of sluiting.
 
@@ -1645,7 +1645,7 @@ nl : Mijn wensenlijst
 :_menu_mynotifications
 en : My Notifications
 ru : Мои уведомления
-cs*: Mé zprávy
+cs : Má upozornění
 hu : Az értesítéseim
 nl : Mijn notificaties
 
@@ -1938,28 +1938,28 @@ nl : ~[geen link~]
 :_revision_yes
 en : Yes
 ru : Да
-cs*:
+cs : Ano
 hu : Igen
 nl : Ja
 
 :_revision_no
 en : No
 ru : Нет
-cs*:
+cs : Ne
 hu : Nem
 nl : Nee
 
 :_revfield_ihid
 en : Deleted
 ru : Удалено
-cs*:
+cs : Smazáno
 hu : Törölve
 nl : Verwijderd
 
 :_revfield_ilock
 en : Locked
 ru : Заблокировано
-cs*:
+cs : Zamčeno
 hu : Lezárva
 nl : Gesloten
 
@@ -5356,126 +5356,126 @@ nl :
 :_usern_title
 en : My notifications
 ru : Мои сообщения
-cs*:
+cs : Má upozornění
 hu : Az értesítéseim
 nl : Mijn notificaties
 
 :_usern_o_unread
 en : Unread notifications
 ru : Непрочитанные сообщения
-cs*:
+cs : Nepřečtená upozornění
 hu : Olvasatlan értesítések
 nl : Ongelezen notificaties
 
 :_usern_o_alsoread
 en : All notifications
 ru : Все сообщения
-cs*:
+cs : Všechna upozornění
 hu : Összes értesítés
 nl : Alle notificaties
 
 :_usern_nonotifies
 en : No notifications!
 ru : Нет сообщений!
-cs*:
+cs : Žádná upozornění!
 hu : Nincs értesítés!
 nl : Geen notificaties!
 
 :_usern_col_type
 en : Type
 ru : Тип
-cs*:
+cs : Typ
 hu : Típus
 nl :
 
 :_usern_col_age
 en : Age
 ru : Возраст
-cs*:
+cs : Věk
 hu : Mikor
 nl : Leeftijd
 
 :_usern_col_id
 en : ID
 ru : ID
-cs*:
+cs : ID
 hu :
 nl :
 
 :_usern_col_act
 en : Action
 ru : Действие
-cs*:
+cs : Akce
 hu : Végrehajtott művelet
 nl : Actie
 
 :_usern_type_pm
 en : Private Message
 ru : Личное сообщение
-cs*:
+cs : Soukromá zpráva
 hu : Privát Üzenet
 nl : Privébericht
 
 :_usern_type_dbdel
 en : Entry you contributed to has been deleted
 ru : Запись, к которой вы добавляли сведения, удалена
-cs*:
+cs : Záznam s vaším přispěním byl smazán
 hu : Egy bejegyzés melyhez hozzájárultál törölve lett
 nl : Item waar je aan bij hebt gedragen is gewijzigd
 
 :_usern_type_listdel
 en : VN in your (wish)list has been deleted
 ru : Новелла из вашего списка (желаемого) была удалена
-cs*:
+cs : VN ve vašem (wish)listu byla smazána
 hu : Egy VN a (kivánság)listádból törölve lett
 nl : VN in je (wensen)lijst is verwijderd
 
 :_usern_type_dbedit
 en : Entry you contributed to has been edited
 ru : Запись, к которой вы добавляли сведения, отредактирована
-cs*:
+cs : Záznam s vaším přispěním byl upraven
 hu : Egy bejegyzés melyhez hozzájárultál át lett szerkesztve
 nl : Item waar je aan bij hebt gedragen is gewijzigd
 
 :_usern_type_announce
 en : Site announcement
 ru : Объявление сайта
-cs*:
+cs : Oznámení stránky
 hu : Oldalal kapcsolatos bejelentés
 nl : Website aankondiging
 
 :_usern_n_t_new
 en : New thread [_1] by [_2]
 ru : Новая тема [_1] - [_2]
-cs*:
+cs : Uživatel [_2] založil nový thread [_1]
 hu : Új téma [_1], létrehozta [_2]
 nl : Nieuw topic [_1] door [_2]
 
 :_usern_n_t_reply
 en : Reply to [_1] by [_2]
 ru : Ответ в [_1] - [_2]
-cs*:
+cs : Odpověď na [_1] od uživatele [_2]
 hu : Válaszolj a(z) [_1], létrehozta [_2]
 nl : Reactie op [_1] door [_2]
 
 :_usern_n_item_edit
 en : Edit of [_1] by [_2]
 ru : Правка [_1] - [_2]
-cs*:
+cs : Úprava záznamu [_1] uživatelem [_2]
 hu : [_1]-t szerkesztette, [_2]l
-nl : Wijziging op [_1] door [_2]
+nl : Wijziging van [_1] door [_2]
 
 :_usern_but_markread
 en : mark selected read
 ru : отметить выбранное как прочитанное
-cs*:
+cs : označit vybrané jako přečtené
 hu : bejelöltek olvasottá nyilvánítása
 nl : markeer als gelezen
 
 :_usern_but_remove
 en : remove selected
 ru : удалить выбранное
-cs*:
+cs : odstranit označené
 hu : bejelöltek eltávolítássa
 nl : verwijder
 
@@ -5489,35 +5489,35 @@ nl : (Gelezen notificaties worden na 1 maand automatisch verwijderd)
 :_usern_set_saved
 en : Settings successfully saved.
 ru : Параметры успешно сохранены.
-cs*:
+cs : Nastavení úspěšně uložena,.
 hu : A beállitások sikeresen le lettek mentve.
 nl : Instellingen succesvol opgeslagen.
 
 :_usern_set_title
 en : Settings
 ru : Параметры
-cs*:
+cs : Nastavení
 hu : Beállítások
 nl : Instellingen
 
 :_usern_set_dbedit
 en : Notify me about edits of database entries I contributed to.
 ru : Уведомлять меня о правках записей базы данных, которые я редактировал(а).
-cs*:
+cs : Upozorňovat mne na úpravy databáze, ke kterým jsem přispěl/a.
 hu : Értesíts azon adatbázis bejegyzések szerkesztéséről amelyekhez én is hozzájárultam.
 nl : Houd me op de hoogte van wijzigingen op database items waar ik aan bijgedragen heb.
 
 :_usern_set_announce
 en : Notify me about site announcements
 ru : Уведомлять меня о новых объявлениях сайта
-cs*:
+cs : Upozorňovat mne na oznámení stránky
 hu : Értesíts az oldalal kapcsolatos bejelentésekről
 nl : Houd me op de hoogte van website aankondigingen
 
 :_usern_set_submit
 en : Save
 ru : Сохранить
-cs*:
+cs : Uložit
 hu : Mentés
 nl : Opslaan
 
@@ -5645,14 +5645,14 @@ en : Show minor spoilers
 ru : Показать лёгкие спойлеры
 cs : Ukázat menší spoilery
 hu : Kisebb spoilerek megjelenítése
-nl : Laat geringe spoilers zien
+nl : Toon geringe spoilers
 
 :_vnbrowse_spoil2
 en : Show major spoilers
 ru : Показать жёсткие спойлеры
 cs : Ukázat všechny spoilery
 hu : Nagyobb spoilerek megjelenítése
-nl : Laat alle spoilers zien
+nl : Toon alle spoilers
 
 :_vnbrowse_lang
 en : Languages

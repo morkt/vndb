@@ -57,7 +57,7 @@
 
 :SUB:Shrnutí editací
 <p>
- Editování jakékoliv stránky zahrnuje volitelné pole "Shrnutí editace".
+ Editování jakékoliv stránky zahrnuje povinné pole "Shrnutí editace".
  <br />
  To vám umožňuje vysvětlit o čem je vaše editace bez zbytečného zahlcování hlavní stránky.
  <br />
