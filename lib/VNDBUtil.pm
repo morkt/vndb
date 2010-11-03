@@ -134,10 +134,10 @@ sub bb2html {
 # Also 'normalizes' the first argument in place
 sub gtintype {
   $_[0] =~ s/[^\d]+//g;
-  $_[0] =~ s/^0+//;
+  $_[0] = ('0'x(12-length $_[0])) . $_[0] if length($_[0]) < 12; # pad with zeros to GTIN-12
   my $c = shift;
-  return undef if $c !~ /^[0-9]{12,13}$/; # only gtin-12 and 13
-  $c = ('0'x(13-length $c)) . $c; # pad with zeros
+  return undef if $c !~ /^[0-9]{12,13}$/;
+  $c = "0$c" if length($c) == 12; # pad with another zero for GTIN-13
 
   # calculate check digit according to
   #  http://www.gs1.org/productssolutions/barcodes/support/check_digit_calculator.html#how
@@ -152,7 +152,7 @@ sub gtintype {
   local $_ = $c;
   return 'JAN' if /^4[59]/; # prefix code 450-459 & 490-499
   return 'UPC' if /^(?:0[01]|0[6-9]|13|75[45])/; # prefix code 000-019 & 060-139 & 754-755
-  return  undef if /(?:0[2-5]|2|97[789]|9[6-9])/; # some codes we don't want: 020–059 & 200-299 & 977-999
+  return  undef if /^(?:0[2-5]|2|97[789]|9[6-9])/; # some codes we don't want: 020–059 & 200-299 & 977-999
   return 'EAN'; # let's just call everything else EAN :)
 }
 

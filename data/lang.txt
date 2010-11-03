@@ -771,21 +771,21 @@ nl : Voortgebracht uit
 en : Complete
 ru : Полный
 cs : Kompletní
-hu : Teljes
+hu : Kész játék
 nl : Compleet
 
 :_rtype_partial
 en : Partial
 ru : Частичный
 cs : Částečné
-hu : Részleges
+hu : Félig kész játék
 nl : Partieel
 
 :_rtype_trial
 en : Trial
 ru : Триальный
 cs : Trial
-hu : Próba
+hu : Próba játék
 nl :
 
 
@@ -930,21 +930,21 @@ nl : Niet ingesproken
 en : Only ero scenes voiced
 ru : Озвучены лишь эросцены
 cs : S hlasem pouze v ero scénách
-hu : Csak ero jelenetek szinkronosak
+hu : Csak az ero jeleneteknél van
 nl : Alleen erotische scenes ingesproken
 
 :_voiced_3
 en : Partially voiced
 ru : Частичная озвучка
 cs : Částečně s hlasem
-hu : Részlegesen szinkronos
+hu : Pár helyen van
 nl : Deels ingesproken
 
 :_voiced_4
 en : Fully voiced
 ru : Озвучено полностью
 cs : Plně s hlasem
-hu : Szinkronizált
+hu : Van
 nl : Volledig ingesproken
 
 
@@ -968,7 +968,7 @@ nl : Geen animaties
 en : Simple animations
 ru : Простая анимация
 cs : Jednoduché animace
-hu : Egyszerű animációk
+hu : Egyszerűen animált
 nl : Simpele animaties
 
 :_animated_3
@@ -1430,7 +1430,7 @@ nl : uitklappen
 en : collapse
 ru : свернуть
 cs : složit
-hu : összevonás
+hu : összezár
 nl : inklappen
 
 :_js_loading
@@ -1632,7 +1632,7 @@ nl : Mijn profiel
 en : My Visual Novel List
 ru : Мой список новелл
 cs : Můj list vizuálních novel
-hu : A Visual Novel listám
+hu : A visual novel listám
 nl : Mijn Visual Novel lijst
 
 :_menu_mywishlist
@@ -2994,21 +2994,21 @@ nl : Resolutie
 en : Voiced
 ru : Озвучка
 cs : Hlas
-hu : Szinkronos
+hu : Hangszínjáték
 nl : Ingesproken
 
 :_revfield_r_ani_story
 en : Story animation
 ru : Сюжетная анимация
 cs : Animace příběhu
-hu : Animált történet
+hu : Történet animáció
 nl : Verhaalanimatie
 
 :_revfield_r_ani_ero
 en : Ero animation
 ru : Анимация эросцен
 cs : Ero animace
-hu : Animált ero jelenetek
+hu : Ero jelenet animáció
 nl : Erotische animatie
 
 :_revfield_r_producers
@@ -3123,7 +3123,7 @@ nl : Resolutie
 en : Voiced
 ru : Озвучка
 cs : Hlas
-hu : Szinkronos
+hu : Hangszínjáték
 nl : Ingesproken
 
 :_relinfo_ani
@@ -3404,21 +3404,21 @@ nl : Resolutie
 en : Voiced
 ru : Озвучка
 cs : Hlas
-hu : Szinkronos
+hu : Hangszínjáték
 nl : Ingesproken
 
 :_redit_form_ani_story
 en : Story animation
 ru : Сюжетная анимация
 cs : Animace příběhu
-hu : Animált történet
+hu : Történet animáció
 nl : Verhaalanimatie
 
 :_redit_form_ani_ero
 en : Ero animation
 ru : Анимация эросцен
 cs : Ero animace
-hu : Animált ero jelenetek
+hu : Ero jelenet animáció
 nl : Erotische animatie
 
 :_redit_form_ani_ero_none
@@ -3432,7 +3432,7 @@ nl : Onbekend / geen erotische scenes
 en : Animation in erotic scenes, leave to unknown if there are no ero scenes.
 ru : Анимация в эротических сценах, не изменяйте поле если эросцены отсутствуют.
 cs : Animace v ero scénách, ponechte na Není známo, pokud novela nemá ero scény.
-hu : Animált erotikus jelenetek, hagyd 'Ismeretlen'-en ha nem tartalmaz erotikus jelenetek.
+hu : Az animált erotikus jeleneteket hagyd 'Ismeretlen'-en ha nem tartalmaz erotikus jelenetek.
 nl : Animatie in de erotische scenes, laat onbekend als er geen erotische scenes zijn.
 
 :_redit_form_platforms

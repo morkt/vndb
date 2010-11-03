@@ -102,7 +102,7 @@ b.todo { font-weight: normal; color: $statnok$ }
   height: 0;
 }
 .hidden {
-  display: none
+  display: none!important
 }
 
 b.spoiler, b.spoiler a {
@@ -120,7 +120,7 @@ b.spoiler_shown { font-weight: normal }
   text-align: left;
 }
 .linethrough { text-decoration: line-through }
- pre {
+pre {
   padding:1px 5px;
   margin: 5px 15px;
   border: 1px dotted $border$;
@@ -700,7 +700,7 @@ a.addnew {
 #screenshots p.nsfwtoggle { float: right; margin: 0; }
 
 
-#dd_box { position: absolute; left: -500px; border: 1px solid $border$; background-color: $secbg$; }
+#dd_box { position: absolute; left: 0px; border: 1px solid $border$; background-color: $secbg$; }
 #dd_box ul { list-style-type: none; margin: 0; padding: 0 }
 #dd_box li b { display: block; font-weight: normal; padding-left: 5px; }
 #dd_box li i { display: block; font-style: normal; padding-left: 10px; padding-right: 5px }
@@ -749,7 +749,7 @@ b.datepart b { font-weight: normal }
 
 #ds_box {
   position: absolute;
-  top: -500px;
+  top: 0;
   border: 1px solid $border$;
   border-top: none;
   background-color: $secbg$;
@@ -778,7 +778,7 @@ b.datepart b { font-weight: normal }
 #scr_table td { height: 108px; border-top: 1px solid #258; padding: 0; padding-right: 5px }
 #scr_table td.thumb { width: 136px; vertical-align: middle }
 #scr_table select { width: 400px; }
-div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px; position: absolute; left: -500px; top: -500px; }
+div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px; position: absolute; display: none; left: 0; top: 0; }
 
 
 
@@ -1112,9 +1112,8 @@ div.revision .item {
 
 div#iv_view {
   position: absolute;
-  display: none;
-  top: -5000px;
-  left: -5000px;
+  top: 0px;
+  left: 0px;
   background: url($_boxbg$) repeat;
   border: 1px solid $border$;
   padding: 5px;
@@ -1127,10 +1126,10 @@ div#iv_view {
 #ivprev { padding-right: 5px; }
 #ivfull { float: left; padding-right: 10px; }
 #ivimgload {
-  display: block;
   position: absolute;
-  left: -500px;
-  top: -50px;
+  display: block;
+  left: 0;
+  top: 0;
   width: 100px;
   padding: 3px;
   background-color: #f5f5f5; /* no real need to skin this */
