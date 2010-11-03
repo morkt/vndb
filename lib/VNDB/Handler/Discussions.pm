@@ -319,7 +319,7 @@ sub board {
    end;
   end;
 
-  _threadlist($self, $list, $f, $np, "/t/$type$iid") if @$list;
+  _threadlist($self, $list, $f, $np, "/t/$type$iid", $type.$iid) if @$list;
 
   $self->htmlFooter;
 }
@@ -348,7 +348,7 @@ sub index {
     h1 class => 'boxtitle';
      a href => "/t/$_", mt "_dboard_$_";
     end;
-    _threadlist($self, $list, {p=>1}, 0, "/t");
+    _threadlist($self, $list, {p=>1}, 0, "/t", $_);
   }
 
   $self->htmlFooter;
@@ -356,7 +356,7 @@ sub index {
 
 
 sub _threadlist {
-  my($self, $list, $f, $np, $url) = @_;
+  my($self, $list, $f, $np, $url, $board) = @_;
   $self->htmlBrowse(
     items    => $list,
     options  => $f,
@@ -376,14 +376,15 @@ sub _threadlist {
         a $o->{locked} ? ( class => 'locked' ) : (), href => "/t$o->{id}", shorten $o->{title}, 50;
         b class => 'boards';
          my $i = 1;
-         for(sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$o->{boards}}) {
+         my @boards = sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } grep $_->{type}.($_->{iid}||'') ne $board, @{$o->{boards}};
+         for(@boards) {
            last if $i++ > 4;
            txt ', ' if $i > 2;
            a href => "/t/$_->{type}".($_->{iid}||''),
              title => $_->{original}||mt("_dboard_$_->{type}"),
              shorten $_->{title}||mt("_dboard_$_->{type}"), 30;
          }
-         txt ', ...' if @{$o->{boards}} > 4;
+         txt ', ...' if @boards > 4;
         end;
        end;
        td class => 'tc2', $o->{count}-1;
