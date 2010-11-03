@@ -5742,19 +5742,19 @@ hu : Más nevek
 nl : Aliassen
 
 :_vnedit_alias_msg
-en : Comma separated list of alternative titles or abbreviations. Can include both official
-     (japanese/english) titles and unofficial titles used around net.[br]
+en : List of alternative titles or abbreviations. One line for each alias.
+     Can include both official (japanese/english) titles and unofficial titles used around net.[br]
      Titles that are listed in the releases should not be added here!
-ru : Список альтернативных названий или аббревиатур, перечисленных через запятую. Может включать как
+ru*: Список альтернативных названий или аббревиатур, перечисленных через запятую. Может включать как
      официальные (японские/английские/русские) названия, так и неофициальные, имеющие хождение в сети.[br]
      Не следует добавлять сюда названия, указанные в выпусках!
-cs : Seznam alternativních názvů nebo zkratek, oddělených čárkou. Může zahrnovat oba
+cs*: Seznam alternativních názvů nebo zkratek, oddělených čárkou. Může zahrnovat oba
      (japonský/anglický) názvy a neoficiální názvy používané na internetu.[br]
      Názvy, vypsané ve vydáních by se sem přidávat neměly!
-hu : Vesszővel elválasztott lista, más címekkel vagy rövidítésekkel. Tartalmazhat hivatalos
+hu*: Vesszővel elválasztott lista, más címekkel vagy rövidítésekkel. Tartalmazhat hivatalos
      (japán/angol) címeket vagy nem hivatalosokat amelyet a netten használnak.[br]
      Azok a címek amelyek a kiadásokba vannak ne tegyétek bele!
-nl : Kommagescheiden lijst van alternatieve titels of afkortingen. Kan zowel officiële
+nl : Lijst van alternatieve titels of afkortingen, één titel per regel. Kan zowel officiële
      (Japanse/Engelse) als officieuze titels bevatten.
 
 :_vnedit_desc

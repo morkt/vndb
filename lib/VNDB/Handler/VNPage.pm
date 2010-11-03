@@ -102,6 +102,7 @@ sub page {
        end;
      }
      if($v->{alias}) {
+       $v->{alias} =~ s/\n/, /g;
        Tr ++$i % 2 ? (class => 'odd') : ();
         td mt '_vnpage_alias';
         td $v->{alias};

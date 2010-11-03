@@ -1,4 +1,9 @@
 
+-- use newlines to separate aliases
+-- (note: this will go wrong with titles that contain a comma. Those have to be fixed manually)
+UPDATE vn_rev SET alias = trim(both ' ' from regexp_replace(alias, ' *, *', E'\n', 'g'));
+
+
 -- cache for search
 ALTER TABLE vn ADD COLUMN c_search text;
 
