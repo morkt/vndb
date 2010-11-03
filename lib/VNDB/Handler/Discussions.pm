@@ -340,7 +340,7 @@ sub index {
   for (qw|an db v p u|) {
     my $list = $self->dbThreadGet(
       type => $_,
-      results => 5,
+      results => $_ eq 'db' || $_ eq 'v' ? 10 : 5,
       page => 1,
       what => 'firstpost lastpost boardtitles',
       sort => 'lastpost', reverse => 1,
