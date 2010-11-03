@@ -15,6 +15,7 @@
 	- Automatically read L10N keys from script.js
 	- Compressed the thread listing into one row per thread (instead of two)
 	- Use newlines to separate aliases (except when displayed on VN pages)
+	- Automatically remove duplicate aliases on /v+/edit
 	- Bugfix: only redirect VN search to VN page if page=1
 	- Bugfix: remove duplicate votes when merging tags (fixes a 500)
 	- Bugfix: Multi::Anime: don't crash when anidb returns an invalid or empty year

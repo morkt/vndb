@@ -25,6 +25,8 @@ sub edit {
   return $self->htmlDenied if !$self->authCan('edit')
     || $vid && ($v->{locked} && !$self->authCan('lock') || $v->{hidden} && !$self->authCan('del'));
 
+  my $r = $v ? $self->dbReleaseGet(vid => $v->{id}) : [];
+
   my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn img_nsfw ihid ilock|),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
@@ -70,6 +72,14 @@ sub edit {
       $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
       $frm->{screenshots} = join ' ', map sprintf('%d,%d,%d', $_->[0], $_->[1]?1:0, $_->[2]), sort { $a->[0] <=> $b->[0] } @$screenshots;
 
+      # weed out duplicate aliases
+      my %alias;
+      $frm->{alias} = join "\n", grep {
+        my $a = lc $_;
+        $a && !$alias{$a}++ && $a ne lc($frm->{title}) && $a ne lc($frm->{original})
+          && !grep $a eq lc($_->{title}) || $a eq lc($_->{original}), @$r;
+      } map { s/^ +//g; s/ +$//g; $_ } split /\n/, $frm->{alias};
+
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post')
         if $vid && !$self->reqUploadFileName('img') && !grep $frm->{$_} ne $b4{$_}, keys %b4;
@@ -101,7 +111,7 @@ sub edit {
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
   $self->htmlEditMessage('v', $v, $title);
-  _form($self, $v, $frm);
+  _form($self, $v, $frm, $r);
   $self->htmlFooter;
 }
 
@@ -139,8 +149,7 @@ sub _uploadimage {
 
 
 sub _form {
-  my($self, $v, $frm) = @_;
-  my $r = $v ? $self->dbReleaseGet(vid => $v->{id}) : [];
+  my($self, $v, $frm, $r) = @_;
   $self->htmlForm({ frm => $frm, action => $v ? "/v$v->{id}/edit" : '/v/new', editsum => 1, upload => 1 },
   vn_geninfo => [ mt('_vnedit_geninfo'),
     [ input    => short => 'title',     name => mt '_vnedit_frm_title' ],
