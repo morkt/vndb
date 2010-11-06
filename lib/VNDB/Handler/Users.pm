@@ -166,6 +166,7 @@ sub newpass {
 
   my($frm, $u);
   if($self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
     $frm = $self->formValidate(
       { name => 'mail', required => 1, template => 'mail' },
     );
@@ -219,10 +220,11 @@ sub newpass_sent {
 
 sub register {
   my $self = shift;
-  #return $self->resRedirect('/') if $self->authInfo->{id};
+  return $self->resRedirect('/') if $self->authInfo->{id};
 
   my $frm;
   if($self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
     $frm = $self->formValidate(
       { name => 'usrname', template => 'pname', minlength => 2, maxlength => 15 },
       { name => 'mail', template => 'mail' },
@@ -275,6 +277,7 @@ sub edit {
   # check POST data
   my $frm;
   if($self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
     $frm = $self->formValidate(
       $self->authCan('usermod') ? (
         { name => 'usrname', template => 'pname', minlength => 2, maxlength => 15 },
@@ -417,6 +420,7 @@ sub delete {
 
   # confirm
   if(!$act) {
+    my $code = $self->authGetCode("/u$uid/del/o");
     my $u = $self->dbUserGet(uid => $uid)->[0];
     return 404 if !$u->{id};
     $self->htmlHeader(title => 'Delete user', noindex => 1);
@@ -426,7 +430,7 @@ sub delete {
       h2 'Delete user';
       p;
        lit qq|Are you sure you want to remove <a href="/u$uid">$u->{username}</a>'s account?<br /><br />|
-          .qq|<a href="/u$uid/del/o">Yes, I'm not kidding!</a>|;
+          .qq|<a href="/u$uid/del/o?formcode=$code">Yes, I'm not kidding!</a>|;
       end;
      end;
     end;
@@ -434,6 +438,7 @@ sub delete {
   }
   # delete
   elsif($act eq '/o') {
+    return if !$self->authCheckCode;
     $self->dbUserDel($uid);
     $self->resRedirect("/u$uid/del/d", 'post');
   }
@@ -536,6 +541,7 @@ sub notifies {
   # changing the notification settings
   my $saved;
   if($self->reqMethod() eq 'POST' && $self->reqParam('set')) {
+    return if !$self->authCheckCode;
     my $frm = $self->formValidate(
       { name => 'notify_dbedit', required => 0 },
       { name => 'notify_announce', required => 0 }
@@ -550,6 +556,7 @@ sub notifies {
 
   # updating notifications
   } elsif($self->reqMethod() eq 'POST') {
+    return if !$self->authCheckCode;
     my $frm = $self->formValidate(
       { name => 'notifysel', multi => 1, required => 0, template => 'int' },
       { name => 'markread', required => 0 },
@@ -581,8 +588,10 @@ sub notifies {
    p mt '_usern_nonotifies' if !@$list;
   end;
 
+  my $code = $self->authGetCode("/u$uid/notifies");
+
   if(@$list) {
-    form action => "/u$uid/notifies?r=$f->{r}", method => 'post';
+    form action => "/u$uid/notifies?r=$f->{r};formcode=$code", method => 'post';
     $self->htmlBrowse(
       items    => $list,
       options  => $f,
@@ -628,7 +637,7 @@ sub notifies {
     end;
   }
 
-  form method => 'post', action => "/u$uid/notifies";
+  form method => 'post', action => "/u$uid/notifies?formcode=$code";
   div class => 'mainbox';
    h1 mt '_usern_set_title';
    div class => 'notice', mt '_usern_set_saved' if $saved;

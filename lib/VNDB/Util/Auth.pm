@@ -10,9 +10,11 @@ use Digest::SHA qw|sha1_hex sha256_hex|;
 use Time::HiRes;
 use Encode 'encode_utf8';
 use POSIX 'strftime';
+use YAWF ':html';
+use VNDB::Func;
 
 
-our @EXPORT = qw| authInit authLogin authLogout authInfo authCan authPreparePass |;
+our @EXPORT = qw| authInit authLogin authLogout authInfo authCan authPreparePass authGetCode authCheckCode |;
 
 
 # initializes authentication information and checks the vndb_auth cookie
@@ -139,6 +141,58 @@ sub authPreparePass{
 sub _rmcookie {
   $_[0]->resHeader('Set-Cookie',
     "$_[0]->{cookie_prefix}auth= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$_[0]->{cookie_domain}");
+}
+
+
+# Generate a code to be used later on to validate that the form was indeed
+# submitted from our site and by the same user/visitor. Not limited to
+# logged-in users.
+# Arguments:
+#   form-id (string, can be empty, but makes the validation stronger)
+#   time (optional, time() to encode in the code)
+sub authGetCode {
+  my $self = shift;
+  my $id = shift;
+  my $time = (shift || time)/3600; # accuracy of an hour
+  my $uid = pack('N', $self->{_auth} ? $self->{_auth}{id} : 0);
+  return lc substr sha1_hex($self->{form_salt} . $uid . encode_utf8($id||'') . pack('N', int $time)), 0, 16;
+}
+
+
+# Validates the correctness of the returned code, creates an error page and
+# returns false if it's invalid, returns true otherwise. Codes are valid for at
+# least two and at most three hours.
+# Arguments:
+#   [ form-id, [ code ] ]
+# If the code is not given, uses the 'formcode' form parameter instead. If
+# form-id is not given, the path of the current requests is used.
+sub authCheckCode {
+  my $self = shift;
+  my $id = shift || '/'.$self->reqPath();
+  my $code = shift || $self->reqParam('formcode');
+  return _incorrectcode($self) if !$code || $code !~ qr/^[0-9a-f]{16}$/;
+  my $time = time;
+  return 1 if $self->authGetCode($id, $time) eq $code;
+  return 1 if $self->authGetCode($id, $time-3600) eq $code;
+  return 1 if $self->authGetCode($id, $time-2*3600) eq $code;
+  return _incorrectcode($self);
+}
+
+
+sub _incorrectcode {
+  my $self = shift;
+  $self->resInit;
+  $self->htmlHeader(title => mt '_formcode_title', noindex => 1);
+
+  div class => 'mainbox';
+   h1 mt '_formcode_title';
+   div class => 'warning';
+    p mt '_formcode_msg';
+   end;
+  end;
+
+  $self->htmlFooter;
+  return 0;
 }
 
 

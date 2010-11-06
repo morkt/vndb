@@ -36,6 +36,7 @@ sub edit {
 
   my $frm;
   if($self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
     $frm = $self->formValidate(
       { name => 'title',       maxlength => 250 },
       { name => 'original',    required => 0, maxlength => 250, default => '' },

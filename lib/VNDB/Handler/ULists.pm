@@ -23,6 +23,7 @@ sub vnvote {
   my $uid = $self->authInfo->{id};
   return $self->htmlDenied() if !$uid;
 
+  return if !$self->authCheckCode;
   my $f = $self->formValidate(
     { name => 'v', enum => [ -1, 1..10 ] }
   );
@@ -41,6 +42,7 @@ sub vnwish {
   my $uid = $self->authInfo->{id};
   return $self->htmlDenied() if !$uid;
 
+  return if !$self->authCheckCode;
   my $f = $self->formValidate(
     { name => 's', enum => [ -1, @{$self->{wishlist_status}} ] }
   );
@@ -68,6 +70,7 @@ sub rlist {
   my $uid = $self->authInfo->{id};
   return $self->htmlDenied() if !$uid;
 
+  return if !$self->authCheckCode;
   my $f = $self->formValidate(
     { name => 'e', required => 1, enum => [ 'del', map("r$_", @{$self->{rlst_rstat}}), map("v$_", @{$self->{rlst_vstat}}) ] },
   );
@@ -110,6 +113,7 @@ sub wishlist {
   return 404 if $f->{_err};
 
   if($own && $self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
     my $frm = $self->formValidate(
       { name => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
       { name => 'batchedit', required => 1, enum => [ -1, @{$self->{wishlist_status}} ] },
@@ -146,8 +150,10 @@ sub wishlist {
    end;
   end;
 
-  form action => "/u$uid/wish?f=$f->{f};o=$f->{o};s=$f->{s};p=$f->{p}", method => 'post'
-    if $own;
+  if($own) {
+    my $code = $self->authGetCode("/u$uid/wish");
+    form action => "/u$uid/wish?formcode=$code;f=$f->{f};o=$f->{o};s=$f->{s};p=$f->{p}", method => 'post';
+  }
 
   $self->htmlBrowse(
     class    => 'wishlist',
@@ -210,6 +216,7 @@ sub vnlist {
   return 404 if $f->{_err};
 
   if($own && $self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
     my $frm = $self->formValidate(
       { name => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
       { name => 'batchedit', required => 1, enum => [ 'del', map("r$_", @{$self->{rlst_rstat}}), map("v$_", @{$self->{rlst_vstat}}) ] },
@@ -266,14 +273,14 @@ sub vnlist {
    end;
   end;
 
-  _vnlist_browse($self, $own, $list, $np, $f, $url);
+  _vnlist_browse($self, $own, $list, $np, $f, $url, $uid);
   $self->htmlFooter;
 }
 
 sub _vnlist_browse {
-  my($self, $own, $list, $np, $f, $url) = @_;
+  my($self, $own, $list, $np, $f, $url, $uid) = @_;
 
-  form action => $url->(), method => 'post'
+  form action => $url->().';formcode='.$self->authGetCode("/u$uid/list"), method => 'post'
     if $own;
 
   $self->htmlBrowse(

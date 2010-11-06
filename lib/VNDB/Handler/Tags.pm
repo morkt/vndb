@@ -186,6 +186,7 @@ sub tagedit {
   return 404 if $tag && !$t;
 
   if($self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
     $frm = $self->formValidate(
       { name => 'name',        required => 1, maxlength => 250, regex => [ qr/^[^,]+$/, 'A comma is not allowed in tag names' ] },
       { name => 'state',       required => 0, default => 0,  enum => [ 0..2 ] },
@@ -357,6 +358,7 @@ sub vntagmod {
   return $self->htmlDenied if !$self->authCan('tag');
 
   if($self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
     my $frm = $self->formValidate(
       { name => 'taglinks', required => 0, default => '', maxlength => 10240, regex => [ qr/^[1-9][0-9]*,-?[1-3],-?[0-2]( [1-9][0-9]*,-?[1-3],-?[0-2])*$/, 'meh' ] }
     );

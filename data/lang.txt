@@ -6945,6 +6945,23 @@ hu : A formulát nem lehetett elküldeni, kérlek ellenőrizd, hogy engedélyezv
 nl : Formulier kon niet verzonden worden, zorg er voor dat Javascript aan staat in je browserinstellingen.
 
 
+# User didn't pass the form code protection
+
+:_formcode_title
+en : Validation code expired
+ru*:
+cs*:
+hu*:
+nl : Validatie code ongeldig
+
+:_formcode_msg
+en : Please hit the back-button of your browser, refresh the page and try again.
+ru*:
+cs*:
+hu*:
+nl : Ga terug naar de vorige pagina, vernieuw deze en probeer het opnieuw.
+
+
 # Short message reminding the user to post in ENGLISH (Used at about every message/description input field)
 
 :_inenglish

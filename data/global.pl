@@ -21,6 +21,7 @@ our %S = (%S,
   cookie_domain   => '.vndb.org',
   cookie_prefix   => 'vndb_',
   global_salt     => 'any-private-string-here',
+  form_salt       => 'a-different-private-string-here',
   source_url      => 'http://git.blicky.net/vndb.git/?h=master',
   admin_email     => 'contact@vndb.org',
   scr_size        => [ 136, 102 ], # w*h of screenshot thumbnails

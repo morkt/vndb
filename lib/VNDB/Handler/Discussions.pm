@@ -155,6 +155,7 @@ sub edit {
   # check form etc...
   my $frm;
   if($self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
     $frm = $self->formValidate(
       !$tid || $num == 1 ? (
         { name => 'title', maxlength => 50 },
@@ -235,10 +236,10 @@ sub edit {
   $frm->{nolastmod} = 1 if $num && $self->authCan('boardmod') && !exists $frm->{nolastmod};
 
   # generate html
+  my $url = !$tid ? "/t/$board/new" : !$num ? "/t$tid/reply" : "/t$tid.$num/edit";
   my $title = mt !$tid ? '_postedit_newthread' :
                  !$num ? ('_postedit_replyto', $t->{title}) :
                          '_postedit_edit';
-  my $url = !$tid ? "/t/$board/new" : !$num ? "/t$tid/reply" : "/t$tid.$num/edit";
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlForm({ frm => $frm, action => $url }, 'postedit' => [$title,
     [ static => label => mt('_postedit_form_username'), content => $self->{l10n}->userstr($self->authInfo->{id}, $self->authInfo->{username}) ],

@@ -162,6 +162,7 @@ sub edit {
   my $frm;
 
   if($self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
     $frm = $self->formValidate(
       { name => 'type',          enum      => $self->{producer_types} },
       { name => 'name',          maxlength => 200 },

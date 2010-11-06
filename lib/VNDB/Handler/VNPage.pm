@@ -347,7 +347,7 @@ sub _useroptions {
    td mt '_vnpage_uopt';
    td;
     if($vote || !$wish) {
-      Select id => 'votesel';
+      Select id => 'votesel', name => $self->authGetCode("/v$v->{id}/vote");
        option $vote ? mt '_vnpage_uopt_voted', $vote->{vote} : mt '_vnpage_uopt_novote';
        optgroup label => $vote ? mt '_vnpage_uopt_changevote' : mt '_vnpage_uopt_dovote';
         option value => $_, "$_ (".mt("_vote_$_").')' for (reverse 1..10);
@@ -357,7 +357,7 @@ sub _useroptions {
       br;
     }
     if(!$vote || $wish) {
-      Select id => 'wishsel';
+      Select id => 'wishsel', name => $self->authGetCode("/v$v->{id}/wish");
        option $wish ? mt '_vnpage_uopt_wishlisted', mt '_wish_'.$wish->{wstat} : mt '_vnpage_uopt_nowish';
        optgroup label => $wish ? mt '_vnpage_uopt_changewish' : mt '_vnpage_uopt_addwish';
         option value => $_, mt "_wish_$_" for (@{$self->{wishlist_status}});
@@ -387,6 +387,7 @@ sub _releases {
      for my $i (@$l) {
        [grep $i->{rid} == $_->{id}, @$r]->[0]{ulist} = $i;
      }
+     div id => 'vnrlist_code', class => 'hidden', $self->authGetCode('/xml/rlist.xml');
    }
 
    my %lang;

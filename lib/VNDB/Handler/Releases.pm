@@ -239,7 +239,7 @@ sub _infotable {
      Tr ++$i % 2 ? (class => 'odd') : ();
       td mt '_relinfo_user';
       td;
-       Select id => 'listsel', name => 'listsel';
+       Select id => 'listsel', name => $self->authGetCode("/r$r->{id}/list");
         option mt !$rl ? '_relinfo_user_notlist' :
           ('_relinfo_user_inlist', mt('_rlst_rstat_'.$rl->{rstat}), mt('_rlst_vstat_'.$rl->{vstat}));
         optgroup label => mt '_relinfo_user_setr';
@@ -300,6 +300,7 @@ sub edit {
   my $frm;
 
   if($self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
     $frm = $self->formValidate(
       { name => 'type',      enum => $self->{release_types} },
       { name => 'patch',     required => 0, default => 0 },

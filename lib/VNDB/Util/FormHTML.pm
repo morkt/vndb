@@ -166,17 +166,21 @@ sub htmlFormPart {
 
 # Generates a form, first argument is a hashref with global options, keys:
 #   frm     => the $frm as returned by formValidate,
-#   action  => The location the form should POST to
+#   action  => The location the form should POST to (also used as form id)
 #   upload  => 1/0, adds an enctype.
 #   editsum => 1/0, adds an edit summary field before the submit button
 # The other arguments are a list of subforms in the form
 # of (subform-name => [form parts]). Each subform is shown as a
 # (JavaScript-powered) tab, and has it's own 'mainbox'. This function
-# automatically calls htmlFormError
+# automatically calls htmlFormError and adds a 'formcode' field.
 sub htmlForm {
   my($self, $options, @subs) = @_;
   form action => '/nospam?'.$options->{action}, method => 'post', 'accept-charset' => 'utf-8',
     $options->{upload} ? (enctype => 'multipart/form-data') : ();
+
+  div class => 'hidden';
+   input type => 'hidden', name => 'formcode', value => $self->authGetCode($options->{action});
+  end;
 
   $self->htmlFormError($options->{frm}, 1);
 

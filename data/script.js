@@ -406,16 +406,17 @@ function rlDropDown(lnk) {
 
 function rlMod() {
   var lnk = byId('rlsel_'+this.rl_rid);
+  var code = getText(byId('vnrlist_code'));
   ddHide();
   setContent(lnk, tag('b', {'class': 'grayedout'}, mt('_js_loading')));
-  ajax('/xml/rlist.xml?id='+this.rl_rid+';e='+this.rl_act, function(hr) {
+  ajax('/xml/rlist.xml?formcode='+code+';id='+this.rl_rid+';e='+this.rl_act, function(hr) {
     // TODO: get rid of innerHTML here...
     lnk.innerHTML = hr.responseXML.getElementsByTagName('rlist')[0].firstChild.nodeValue;
   });
   return false;
 }
 
-{
+if(byId('vnrlist_code')) {
   var l = byClass('a', 'vnrlsel');
   for(var i=0;i<l.length;i++)
     ddInit(l[i], 'left', rlDropDown);
@@ -1766,7 +1767,7 @@ if(byId('votesel')) {
     if(s == 10 && !confirm(mt('_vnpage_uopt_10vote')))
       return;
     if(s)
-      location.href = location.href.replace(/\.[0-9]+/, '')+'/vote?v='+s;
+      location.href = location.href.replace(/\.[0-9]+/, '')+'/vote?formcode='+this.name+';v='+s;
   };
 }
 
@@ -1829,7 +1830,7 @@ if(byId('wishsel')) {
   byId('wishsel').onchange = function() {
     if(this.selectedIndex != 0)
       location.href = location.href.replace(/\.[0-9]+/, '')
-        +'/wish?s='+this.options[this.selectedIndex].value;
+        +'/wish?formcode='+this.name+';s='+this.options[this.selectedIndex].value;
   };
 }
 
@@ -1838,7 +1839,7 @@ if(byId('listsel')) {
   byId('listsel').onchange = function() {
     if(this.selectedIndex != 0)
       location.href = location.href.replace(/\.[0-9]+/, '')
-        +'/list?e='+this.options[this.selectedIndex].value;
+        +'/list?formcode='+this.name+';e='+this.options[this.selectedIndex].value;
   };
 }
 
