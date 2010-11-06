@@ -124,12 +124,17 @@ sub dbUserAdd {
 # uid
 sub dbUserDel {
   my($s, $id) = @_;
+  # TODO: delete/update all those referenced rows using PgSQL reference actions
   $s->dbExec($_, $id) for (
     q|DELETE FROM rlists WHERE uid = ?|,
     q|DELETE FROM wlists WHERE uid = ?|,
     q|DELETE FROM votes WHERE uid = ?|,
+    q|DELETE FROM tags_vn WHERE uid = ?|,
     q|DELETE FROM sessions WHERE uid = ?|,
+    q|DELETE FROM notifications WHERE uid = ?|,
+    q|UPDATE notifications SET c_byuser = 0 WHERE c_byuser = ?|,
     q|UPDATE changes SET requester = 0 WHERE requester = ?|,
+    q|UPDATE tags SET addedby = 0 WHERE addedby = ?|,
     q|UPDATE threads_posts SET uid = 0 WHERE uid = ?|,
     q|DELETE FROM users WHERE id = ?|
   );
