@@ -292,7 +292,8 @@ CREATE TABLE vn (
   c_platforms varchar(32) NOT NULL DEFAULT '',
   c_popularity real,
   c_rating real,
-  c_votecount integer NOT NULL DEFAULT 0
+  c_votecount integer NOT NULL DEFAULT 0,
+  c_search text
 );
 
 -- vn_anime
