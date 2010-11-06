@@ -94,7 +94,7 @@ sub _menu {
        a href => '/v/new',    mt '_menu_addvn'; br;
        a href => '/p/new',    mt '_menu_addproducer'; br;
        br;
-       a href => '/u/logout', mt '_menu_logout';
+       a href => "$uid/logout", mt '_menu_logout';
       end;
     } else {
       h2;

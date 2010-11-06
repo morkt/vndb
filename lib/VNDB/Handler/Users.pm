@@ -10,7 +10,7 @@ use VNDB::Func;
 YAWF::register(
   qr{u([1-9]\d*)}             => \&userpage,
   qr{u/login}                 => \&login,
-  qr{u/logout}                => \&logout,
+  qr{u([1-9]\d*)/logout}      => \&logout,
   qr{u/newpass}               => \&newpass,
   qr{u/newpass/sent}          => \&newpass_sent,
   qr{u/register}              => \&register,
@@ -155,7 +155,10 @@ sub login {
 
 
 sub logout {
-  shift->authLogout;
+  my $self = shift;
+  my $uid = shift;
+  return 404 if !$self->authInfo->{id} || $self->authInfo->{id} != $uid;
+  $self->authLogout;
 }
 
 
