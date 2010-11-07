@@ -18,6 +18,7 @@ sub dbVNGet {
   $o{results} ||= 10;
   $o{page}    ||= 1;
   $o{what}    ||= '';
+  $o{sort}    ||= 'title';
 
   my @where = (
     $o{id} ? (
@@ -43,6 +44,11 @@ sub dbVNGet {
    # don't fetch hidden items unless we ask for an ID
     !$o{id} && !$o{rev} ? (
       'v.hidden = FALSE' => 0 ) : (),
+   # optimize fetching random entries (only when there are no other filters present, otherwise this won't work well)
+    $o{sort} eq 'rand' && $o{results} <= 10 && !grep(!/^(?:results|page|what|sort)$/, keys %o) ? (
+      sprintf 'v.id IN(SELECT floor(random() * last_value)::integer
+           FROM generate_series(1,20), (SELECT last_value FROM vn_id_seq) s1
+          LIMIT 20)' ) : (),
   );
 
   my @join = (
@@ -83,7 +89,7 @@ sub dbVNGet {
     title    => 'title %s',
     tagscore => 'tagscore %s',
     rand     => 'RANDOM()',
-  }->{ $o{sort}||'title' }, $o{reverse} ? 'DESC' : 'ASC';
+  }->{$o{sort}}, $o{reverse} ? 'DESC' : 'ASC';
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
