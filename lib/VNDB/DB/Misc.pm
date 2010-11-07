@@ -47,6 +47,8 @@ sub dbItemEdit {
 
 # Options: type, iid, uid, auto, hidden, edit, page, results, what, releases
 # what: item user
+# Not very fast in each situation. Can be further optimized by: putting indexes
+# on *_rev.?id, or by caching iid, ititle and ihidden in the changes table.
 sub dbRevisionGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -57,9 +59,17 @@ sub dbRevisionGet {
   $o{what} ||= '';
   $o{releases} = 0 if !$o{type} || $o{type} ne 'v' || !$o{iid};
 
+  my %tables = qw|v vn r releases p producers|;
+  # what types should we join?
+  my @types = (
+    !$o{type} ? ('v', 'r', 'p') :
+    $o{type} ne 'v' ? $o{type} :
+    $o{releases} ? ('v', 'r') : 'v'
+  );
+
   my %where = (
     $o{releases} ? (
-      q{((c.type = 'v' AND vr.vid = ?) OR (c.type = 'r' AND rv.vid = ?))} => [$o{iid}, $o{iid}],
+      q{((c.type = 'v' AND vr.vid = ?) OR (c.type = 'r' AND c.id = ANY(ARRAY(SELECT rv.rid FROM releases_vn rv WHERE rv.vid = ?))))} => [$o{iid}, $o{iid}],
     ) : (
       $o{type} ? (
         'c.type = ?' => $o{type} ) : (),
@@ -70,28 +80,20 @@ sub dbRevisionGet {
       'c.requester = ?' => $o{uid} ) : (),
     $o{auto} ? (
       'c.requester !s 1' => $o{auto} < 0 ? '=' : '<>' ) : (),
-    $o{hidden} == 1 ? (
-      '(v.hidden IS NOT NULL AND v.hidden = FALSE OR r.hidden IS NOT NULL AND r.hidden = FALSE OR p.hidden IS NOT NULL AND p.hidden = FALSE)' => 1,
-    ) : $o{hidden} == -1 ? (
-      '(v.hidden IS NOT NULL AND v.hidden = TRUE OR r.hidden IS NOT NULL AND r.hidden = TRUE OR p.hidden IS NOT NULL AND p.hidden = TRUE)' => 1,
-    ) : (),
+    $o{hidden} ? (
+      '('.join(' OR ', map sprintf('%s.hidden IS NOT NULL AND %s %1$s.hidden', $_, $o{hidden} == 1 ? 'NOT' : ''), @types).')' => 1 ) : (),
     $o{edit} ? (
       'c.rev !s 1' => $o{edit} < 0 ? '=' : '>' ) : (),
   );
 
   my @join = (
     $o{iid} || $o{what} =~ /item/ || $o{hidden} || $o{releases} ? (
-      q{LEFT JOIN vn_rev vr ON c.type = 'v' AND c.id = vr.id},
-      q{LEFT JOIN releases_rev rr ON c.type = 'r' AND c.id = rr.id},
-      q{LEFT JOIN producers_rev pr ON c.type = 'p' AND c.id = pr.id},
+      map sprintf(q|LEFT JOIN %s_rev %sr ON c.type = '%2$s' AND c.id = %2$sr.id|, $tables{$_}, $_), @types
     ) : (),
-    $o{hidden} || $o{releases} ? (
-      q{LEFT JOIN vn v ON c.type = 'v' AND vr.vid = v.id},
-      q{LEFT JOIN releases r ON c.type = 'r' AND rr.rid = r.id},
-      q{LEFT JOIN producers p ON c.type = 'p' AND pr.pid = p.id},
+    $o{hidden} ? (
+      map sprintf(q|LEFT JOIN %s %s ON c.type = '%2$s' AND %2$sr.%2$sid = %2$s.id|, $tables{$_}, $_), @types
     ) : (),
     $o{what} =~ /user/ ? 'JOIN users u ON c.requester = u.id' : (),
-    $o{releases} ? 'LEFT JOIN releases_vn rv ON c.id = rv.rid' : (),
   );
 
   my @select = (
@@ -99,9 +101,9 @@ sub dbRevisionGet {
     q|extract('epoch' from c.added) as added|,
     $o{what} =~ /user/ ? 'u.username' : (),
     $o{what} =~ /item/ ? (
-      'COALESCE(vr.vid, rr.rid, pr.pid) AS iid',
-      'COALESCE(vr.title, rr.title, pr.name) AS ititle',
-      'COALESCE(vr.original, rr.original, pr.original) AS ioriginal',
+      'COALESCE('.join(', ', map "${_}r.${_}id", @types).') AS iid',
+      'COALESCE('.join(', ', map $_ eq 'p' ? 'pr.name' : "${_}r.title", @types).') AS ititle',
+      'COALESCE('.join(', ', map "${_}r.original", @types).') AS ioriginal',
     ) : (),
   );
 

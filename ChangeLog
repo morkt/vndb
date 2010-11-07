@@ -3,7 +3,10 @@
 	  cross-site request forgery vulnerabilities
 	- URL change: /u/logout => /u$id/logout
 	- Bugfix: delete/update all references when deleting a user
-	- Optimized random screenshot and VN SQL queries
+	- Optimized SQL queries:
+	  - dbScreenshotRandom()
+	  - dbVNGet() with random ordering
+	  - dbRevisionGet() (in most cases)
 
 2.12 - 2010-11-03
 	- !scr command for Multi::IRC
