@@ -346,7 +346,7 @@ however still required.<br />
   <td>details</td>
   <td>string</td>
   <td>yes</td>
-  <td>Comma-separated list of aliases.</td>
+  <td>Aliases, separated by newlines.</td>
  </tr>
  <tr>
   <td>length</td>
