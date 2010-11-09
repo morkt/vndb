@@ -1269,6 +1269,13 @@ cs : V rámci 24 hodin si lze z jedné IP adresy zaregistrovat pouze jeden úče
 hu : 24 óra alatt csak egy fiókot hozhatsz létre ugyanazzal az IP-vel
 nl : Per dag mag je maar één account aanmaken vanaf hetzelfde IP
 
+:_formerr_e_notanswer
+en : Question was not correctly answered. Are you sure you are a human?
+ru*:
+cs*:
+hu*:
+nl : Vraag was incorrect beantwoord. Weet je zeker dat je een mens bent?
+
 :_formerr_e_nochanges
 en : No changes, please don't create an entry that is fully identical to another
 ru : Изменения отсутствуют, пожалуйста, не создавайте идентичных копий записей
@@ -5151,6 +5158,20 @@ ru : Подтверждение пароля
 cs : Potvrdit heslo
 hu : Jelszó megerősítése
 nl : Herhaal wachtwoord
+
+:_register_question
+en : How many [index,_1,visual novels,releases,producers] do we have in the database? (Hint: look at your left)
+ru*:
+cs*:
+hu*:
+nl : Hoeveel [index,_1,visual novels,uitgaven,producenten] hebben wij in de database? (Tip: zie links van de pagina)
+
+:_register_answer
+en : Answer
+ru*:
+cs*:
+hu*:
+nl : Antwoord
 
 
 # User edit (/u+/edit)

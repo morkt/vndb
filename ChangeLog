@@ -2,11 +2,12 @@
 	- Added 'formcode' parameter to all modification requests to fix all
 	  cross-site request forgery vulnerabilities
 	- URL change: /u/logout => /u$id/logout
-	- Bugfix: delete/update all references when deleting a user
+	- Added human confirmation question to the register page
 	- Optimized SQL queries:
 	  - dbScreenshotRandom()
 	  - dbVNGet() with random ordering
 	  - dbRevisionGet() (in most cases)
+	- Bugfix: delete/update all references when deleting a user
 
 2.12 - 2010-11-03
 	- !scr command for Multi::IRC

@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use YAWF ':html', 'xml_escape';
 use VNDB::Func;
+use POSIX 'floor';
 
 
 YAWF::register(
@@ -229,11 +230,15 @@ sub register {
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
-      { name => 'usrname', template => 'pname', minlength => 2, maxlength => 15 },
-      { name => 'mail', template => 'mail' },
+      { name => 'usrname',  template => 'pname', minlength => 2, maxlength => 15 },
+      { name => 'mail',     template => 'mail' },
       { name => 'usrpass',  minlength => 4, maxlength => 64, template => 'asciiprint' },
       { name => 'usrpass2', minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { name => 'type',     regex => [ qr/^[1-3]$/ ] },
+      { name => 'answer',   template => 'int' },
     );
+    my $num = $self->{stats}{[qw|vn releases producers|]->[ $frm->{type} - 1 ]};
+    push @{$frm->{_err}}, 'notanswer'  if !$frm->{_err} && ($frm->{answer} > $num || $frm->{answer} < $num*0.995);
     push @{$frm->{_err}}, 'passmatch'  if $frm->{usrpass} ne $frm->{usrpass2};
     push @{$frm->{_err}}, 'usrexists'  if $frm->{usrname} eq 'anonymous' || !$frm->{_err} && $self->dbUserGet(username => $frm->{usrname})->[0]{id};
     push @{$frm->{_err}}, 'mailexists' if !$frm->{_err} && $self->dbUserGet(mail => $frm->{mail})->[0]{id};
@@ -255,13 +260,17 @@ sub register {
    end;
   end;
 
+  my $type = $frm->{type} || floor(rand 3)+1;
   $self->htmlForm({ frm => $frm, action => '/u/register' }, register => [ mt('_register_form_title'),
+    [ hidden => short => 'type', value => $type ],
     [ input  => short => 'usrname', name => mt '_register_username' ],
     [ static => content => mt '_register_username_msg' ],
     [ input  => short => 'mail', name => mt '_register_mail' ],
     [ static => content => mt('_register_mail_msg').'<br /><br />' ],
     [ passwd => short => 'usrpass', name => mt('_register_password') ],
     [ passwd => short => 'usrpass2', name => mt('_register_confirm') ],
+    [ static => content => '<br /><br />'.mt('_register_question', $type-1) ],
+    [ input  => short => 'answer', name => mt '_register_answer' ],
   ]);
   $self->htmlFooter;
 }
