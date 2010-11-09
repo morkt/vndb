@@ -5160,7 +5160,7 @@ hu : Jelszó megerősítése
 nl : Herhaal wachtwoord
 
 :_register_question
-en : How many [index,_1,visual novels,releases,producers] do we have in the database? (Hint: look at your left)
+en : How many [index,_1,visual novels,releases,producers] do we have in the database? (Hint: look to your left)
 ru*:
 cs*:
 hu*:
