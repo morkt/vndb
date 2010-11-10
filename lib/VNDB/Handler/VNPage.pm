@@ -292,6 +292,7 @@ sub _relations {
        dt mt "_vnrel_$_";
        dd;
         for (@{$rel{$_}}) {
+          b class => 'grayedout', mt('_vnpage_relations_unofficial').' ' if !$_->{official};
           a href => "/v$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 40;
           br;
         }

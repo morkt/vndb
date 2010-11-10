@@ -6536,6 +6536,13 @@ cs : Vztahy
 hu : Összefüggések
 nl : Relaties
 
+:_vnpage_relations_unofficial
+en : ~[unofficial~]
+ru*:
+cs*:
+hu*:
+nl : ~[officieus~]
+
 :_vnpage_anime
 en : Related anime
 ru : Связанное аниме
