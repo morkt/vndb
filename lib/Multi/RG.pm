@@ -66,11 +66,11 @@ sub creategraph { # num, res
   $_[HEAP]{start} = time;
   $_[HEAP]{id} = $_[ARG1][0]{id};
   $_[HEAP]{type} = $_[ARG1][0]{type};
-  $_[HEAP]{rels} = {};  # relations (key=id1-id2, value=relation)
+  $_[HEAP]{rels} = {};  # relations (key=id1-id2, value=[relation,official])
   $_[HEAP]{nodes} = {}; # nodes (key=id, value= 0:found, 1:processed)
 
   $_[KERNEL]->post(pg => query => $_[HEAP]{type} eq 'v'
-    ? 'SELECT vid2 AS id, relation FROM vn v JOIN vn_relations vr ON vr.vid1 = v.latest WHERE v.id = ?'
+    ? 'SELECT vid2 AS id, relation, official FROM vn v JOIN vn_relations vr ON vr.vid1 = v.latest WHERE v.id = ?'
     : 'SELECT pid2 AS id, relation FROM producers p JOIN producers_relations pr ON pr.pid1 = p.latest WHERE p.id = ?',
     [ $_[HEAP]{id} ], 'getrel', $_[HEAP]{id});
 }
@@ -81,13 +81,13 @@ sub getrel { # num, res, id
   $_[HEAP]{nodes}{$id} = 1;
 
   for($_[ARG0] > 0 ? @{$_[ARG1]} : ()) {
-    $_[HEAP]{rels}{$id.'-'.$_->{id}} = $VNDB::S{ $_[HEAP]{type} eq 'v' ? 'vn_relations' : 'prod_relations' }{$_->{relation}}[1] if $id < $_->{id};
-    $_[HEAP]{rels}{$_->{id}.'-'.$id} = $_->{relation} if $id > $_->{id};
+    $_[HEAP]{rels}{$id.'-'.$_->{id}} = [ $VNDB::S{ $_[HEAP]{type} eq 'v' ? 'vn_relations' : 'prod_relations' }{$_->{relation}}[1], $_->{official} ] if $id < $_->{id};
+    $_[HEAP]{rels}{$_->{id}.'-'.$id} = [ $_->{relation}, $_->{official} ] if $id > $_->{id};
 
     if(!exists $_[HEAP]{nodes}{$_->{id}}) {
       $_[HEAP]{nodes}{$_->{id}} = 0;
       $_[KERNEL]->post(pg => query => $_[HEAP]{type} eq 'v'
-        ? 'SELECT vid2 AS id, relation FROM vn v JOIN vn_relations vr ON vr.vid1 = v.latest WHERE v.id = ?'
+        ? 'SELECT vid2 AS id, relation, official FROM vn v JOIN vn_relations vr ON vr.vid1 = v.latest WHERE v.id = ?'
         : 'SELECT pid2 AS id, relation FROM producers p JOIN producers_relations pr ON pr.pid1 = p.latest WHERE p.id = ?',
         [ $_->{id} ], 'getrel', $_->{id});
     }
@@ -260,25 +260,26 @@ sub _vnrels {
   my($rels, $vns) = @_;
   my $r = '';
 
-  # @rels = ([ vid1, vid2, relation, date1, date2 ], ..), for easier processing
+  # @rels = ([ vid1, vid2, relation, official, date1, date2 ], ..), for easier processing
   my @rels = map {
     /^([0-9]+)-([0-9]+)$/;
     my $vn1 = (grep $1 == $_->{id}, @$vns)[0];
     my $vn2 = (grep $2 == $_->{id}, @$vns)[0];
-    [ $1, $2, $rels->{$_}, $vn1->{date}, $vn2->{date} ]
+    [ $1, $2, @{$rels->{$_}}, $vn1->{date}, $vn2->{date} ]
   } keys %$rels;
 
   # insert all edges, ordered by release date again
-  for (sort { ($a->[3]>$a->[4]?$a->[4]:$a->[3]) <=> ($b->[3]>$b->[4]?$b->[4]:$b->[3]) } @rels) {
+  for (sort { ($a->[4]>$a->[5]?$a->[5]:$a->[4]) <=> ($b->[4]>$b->[5]?$b->[5]:$b->[4]) } @rels) {
     # [older game] -> [newer game]
-    if($_->[4] > $_->[3]) {
+    if($_->[5] > $_->[4]) {
       ($_->[0], $_->[1]) = ($_->[1], $_->[0]);
       $_->[2] = $VNDB::S{vn_relations}{$_->[2]}[1];
     }
     my $rev = $VNDB::S{vn_relations}{$_->[2]}[1];
+    my $style = $_->[3] ? '' : ', style="dotted"';
     my $label = $rev ne $_->[2]
-      ? qq|headlabel = "\$____vnrel_$_->[2]____\$", taillabel = "\$____vnrel_${rev}____\$"|
-      : qq|label = "\$____vnrel_$_->[2]____\$"|;
+      ? qq|headlabel = "\$____vnrel_$_->[2]____\$" taillabel = "\$____vnrel_${rev}____\$" $style|
+      : qq|label = "\$____vnrel_$_->[2]____\$" $style|;
     $r .= qq|\tv$$_[1] -- v$$_[0] [ $label ]\n|;
   }
   return $r;
@@ -317,10 +318,10 @@ sub _prodrels {
     my $p1 = (grep $1 == $_->{id}, @$prods)[0];
     my $p2 = (grep $2 == $_->{id}, @$prods)[0];
 
-    my $rev = $VNDB::S{prod_relations}{$rels->{$_}}[1];
-    my $label = $rev ne $rels->{$_}
-      ? qq|headlabel = "\$____prodrel_${rev}____\$", taillabel = "\$____prodrel_$rels->{$_}____\$"|
-      : qq|label = "\$____prodrel_$rels->{$_}____\$"|;
+    my $rev = $VNDB::S{prod_relations}{$rels->{$_}[0]}[1];
+    my $label = $rev ne $rels->{$_}[0]
+      ? qq|headlabel = "\$____prodrel_${rev}____\$", taillabel = "\$____prodrel_$rels->{$_}[0]____\$"|
+      : qq|label = "\$____prodrel_$rels->{$_}[0]____\$"|;
     $r .= qq|\tp$p1->{id} -- p$p2->{id} [ $label ]\n|;
   }
   return $r;

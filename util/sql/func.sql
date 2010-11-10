@@ -496,7 +496,7 @@ BEGIN
         -- 3.
            EXISTS(SELECT 1 FROM vn_rev v1, vn_rev v2 WHERE v2.title <> v1.title AND v1.id = OLD.latest AND v2.id = NEW.latest)
         -- 4. (not-really-readable method of comparing two query results)
-        OR EXISTS(SELECT vid2, relation FROM vn_relations WHERE vid1 = OLD.latest EXCEPT SELECT vid2, relation FROM vn_relations WHERE vid1 = NEW.latest)
+        OR EXISTS(SELECT vid2, relation, official FROM vn_relations WHERE vid1 = OLD.latest EXCEPT SELECT vid2, relation, official FROM vn_relations WHERE vid1 = NEW.latest)
         OR (SELECT COUNT(*) FROM vn_relations WHERE vid1 = OLD.latest) <> (SELECT COUNT(*) FROM vn_relations WHERE vid1 = NEW.latest)
       )
     THEN
