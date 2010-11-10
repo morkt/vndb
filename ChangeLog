@@ -7,6 +7,7 @@
 	  - dbScreenshotRandom()
 	  - dbVNGet() with random ordering
 	  - dbRevisionGet() (in most cases)
+	- Removed (p###) from release resolution information
 	- Bugfix: delete/update all references when deleting a user
 
 2.12 - 2010-11-03
