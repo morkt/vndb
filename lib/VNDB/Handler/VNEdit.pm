@@ -30,7 +30,7 @@ sub edit {
   my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn img_nsfw ihid ilock|),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
-    vnrelations => join('|||', map $_->{relation}.','.$_->{id}.','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
+    vnrelations => join('|||', map $_->{relation}.','.$_->{id}.','.($_->{official}?1:0).','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
     screenshots => join(' ', map sprintf('%d,%d,%d', $_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$v->{screenshots}}),
   );
 
@@ -62,14 +62,14 @@ sub edit {
     if(!$frm->{_err}) {
       # parse and re-sort fields that have multiple representations of the same information
       my $anime = { map +($_=>1), grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} };
-      my $relations = [ map { /^([a-z]+),([0-9]+),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{vnrelations} ];
+      my $relations = [ map { /^([a-z]+),([0-9]+),([01]),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3, $4 ] : () } split /\|\|\|/, $frm->{vnrelations} ];
       my $screenshots = [ map /^[0-9]+,[01],[0-9]+$/ ? [split /,/] : (), split / +/, $frm->{screenshots} ];
 
       $frm->{ihid} = $frm->{ihid}?1:0;
       $frm->{ilock} = $frm->{ilock}?1:0;
       $relations = [] if $frm->{ihid};
       $frm->{anime} = join ' ', sort { $a <=> $b } keys %$anime;
-      $frm->{vnrelations} = join '|||', map $_->[0].','.$_->[1].','.$_->[2], sort { $a->[1] <=> $b->[1]} @{$relations};
+      $frm->{vnrelations} = join '|||', map $_->[0].','.$_->[1].','.($_->[2]?1:0).','.$_->[3], sort { $a->[1] <=> $b->[1]} @{$relations};
       $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
       $frm->{screenshots} = join ' ', map sprintf('%d,%d,%d', $_->[0], $_->[1]?1:0, $_->[2]), sort { $a->[0] <=> $b->[0] } @$screenshots;
 
@@ -96,8 +96,8 @@ sub edit {
 
       # update reverse relations & relation graph
       if(!$vid && $#$relations >= 0 || $vid && $frm->{vnrelations} ne $b4{vnrelations}) {
-        my %old = $vid ? (map { $_->{id} => $_->{relation} } @{$v->{relations}}) : ();
-        my %new = map { $_->[1] => $_->[0] } @$relations;
+        my %old = $vid ? (map +($_->{id} => [ $_->{relation}, $_->{official} ]), @{$v->{relations}}) : ();
+        my %new = map +($_->[1] => [ $_->[0], $_->[2] ]), @$relations;
         _updreverse($self, \%old, \%new, $nrev->{iid}, $nrev->{rev});
       }
 
@@ -211,6 +211,8 @@ sub _form {
         end;
         td class => 'tc_rel';
          txt mt('_vnedit_rel_isa').' ';
+         input type => 'checkbox', id => 'official', checked => 'checked';
+         label for => 'official', mt '_vnedit_rel_official';
          Select;
           option value => $_, mt "_vnrel_$_"
             for (sort { $self->{vn_relations}{$a}[0] <=> $self->{vn_relations}{$b}[0] } keys %{$self->{vn_relations}});
@@ -250,7 +252,7 @@ sub _form {
 
 # Update reverse relations and regenerate relation graph
 # Arguments: %old. %new, vid, rev
-#  %old,%new -> { vid2 => relation, .. }
+#  %old,%new -> { vid2 => [ relation, official ], .. }
 #    from the perspective of vid
 #  rev is of the related edit
 sub _updreverse {
@@ -261,8 +263,8 @@ sub _updreverse {
   for (keys %$old, keys %$new) {
     if(exists $$old{$_} and !exists $$new{$_}) {
       $upd{$_} = undef;
-    } elsif((!exists $$old{$_} and exists $$new{$_}) || ($$old{$_} ne $$new{$_})) {
-      $upd{$_} = $self->{vn_relations}{$$new{$_}}[1];
+    } elsif((!exists $$old{$_} and exists $$new{$_}) || ($$old{$_}[0] ne $$new{$_}[0] || !$$old{$_}[1] != !$$new{$_}[1])) {
+      $upd{$_} = [ $self->{vn_relations}{ $$new{$_}[0] }[1], $$new{$_}[1] ];
     }
   }
   return if !keys %upd;
@@ -271,7 +273,7 @@ sub _updreverse {
   for my $i (keys %upd) {
     my $r = $self->dbVNGet(id => $i, what => 'relations')->[0];
     my @newrel = map $_->{id} != $vid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
-    push @newrel, [ $upd{$i}, $vid ] if $upd{$i};
+    push @newrel, [ $upd{$i}[0], $vid, $upd{$i}[1] ] if $upd{$i};
     $self->dbItemEdit(v => $r->{cid},
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision v$vid.$rev",

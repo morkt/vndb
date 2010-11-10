@@ -797,8 +797,8 @@ function vnrLoad() {
   // read the current relations
   var rels = byId('vnrelations').value.split('|||');
   for(var i=0; i<rels.length && rels[0].length>1; i++) {
-    var rel = rels[i].split(',', 3);
-    vnrAdd(rel[0], rel[1], rel[2]);
+    var rel = rels[i].split(',', 4);
+    vnrAdd(rel[0], rel[1], rel[2]==1?true:false, rel[3]);
   }
   vnrEmpty();
 
@@ -821,7 +821,7 @@ function vnrLoad() {
   }, vnrFormAdd);
 }
 
-function vnrAdd(rel, vid, title) {
+function vnrAdd(rel, vid, official, title) {
   var sel = tag('select', {onchange: vnrSerialize});
   var ops = byName(byClass(byId('relation_new'), 'td', 'tc_rel')[0], 'select')[0].options;
   for(var i=0; i<ops.length; i++)
@@ -829,7 +829,11 @@ function vnrAdd(rel, vid, title) {
 
   byId('relation_tbl').appendChild(tag('tr', {id:'relation_tr_'+vid},
     tag('td', {'class':'tc_vn'   }, 'v'+vid+':', tag('a', {href:'/v'+vid}, shorten(title, 40))),
-    tag('td', {'class':'tc_rel'  }, mt('_vnedit_rel_isa')+' ', sel, ' '+mt('_vnedit_rel_of')),
+    tag('td', {'class':'tc_rel'  },
+      mt('_vnedit_rel_isa')+' ',
+      tag('input', {type: 'checkbox', onclick:vnrSerialize, id:'official_'+vid, checked:official}),
+      tag('label', {'for':'official_'+vid}, mt('_vnedit_rel_official')),
+      sel, ' '+mt('_vnedit_rel_of')),
     tag('td', {'class':'tc_title'}, shorten(byId('title').value, 40)),
     tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:vnrDel}, mt('_vnedit_rel_del')))
   ));
@@ -855,6 +859,7 @@ function vnrSerialize() {
     r[r.length] = [
       rel.options[rel.selectedIndex].value,                      // relation
       trs[i].id.substr(12),                                      // vid
+      byName(byClass(trs[i], 'td', 'tc_rel')[0], 'input')[0].checked ? '1' : '0', // official
       getText(byName(byClass(trs[i], 'td', 'tc_vn')[0], 'a')[0]) // title
     ].join(',');
   }
@@ -874,6 +879,7 @@ function vnrDel() {
 function vnrFormAdd() {
   var relnew = byId('relation_new');
   var txt = byName(byClass(relnew, 'td', 'tc_vn')[0], 'input')[0];
+  var off = byName(byClass(relnew, 'td', 'tc_rel')[0], 'input')[0];
   var sel = byName(byClass(relnew, 'td', 'tc_rel')[0], 'select')[0];
   var lnk = byName(byClass(relnew, 'td', 'tc_add')[0], 'a')[0];
   var input = txt.value;
@@ -883,12 +889,12 @@ function vnrFormAdd() {
     return false;
   }
 
-  txt.disabled = sel.disabled = true;
+  txt.disabled = sel.disabled = off.disabled = true;
   txt.value = mt('_js_loading');
   setText(lnk, mt('_js_loading'));
 
   ajax('/xml/vn.xml?q='+encodeURIComponent(input), function(hr) {
-    txt.disabled = sel.disabled = false;
+    txt.disabled = sel.disabled = off.disabled = false;
     txt.value = '';
     setText(lnk, mt('_vnedit_rel_addbut'));
 
@@ -900,7 +906,7 @@ function vnrFormAdd() {
     if(byId('relation_tr_'+id))
       return alert(mt('_vnedit_rel_double'));
 
-    vnrAdd(sel.options[sel.selectedIndex].value, id, items[0].firstChild.nodeValue);
+    vnrAdd(sel.options[sel.selectedIndex].value, id, off.checked, items[0].firstChild.nodeValue);
     sel.selectedIndex = 0;
     vnrSerialize();
   });

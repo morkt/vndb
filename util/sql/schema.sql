@@ -308,6 +308,7 @@ CREATE TABLE vn_relations (
   vid1 integer NOT NULL DEFAULT 0,
   vid2 integer NOT NULL DEFAULT 0,
   relation vn_relation NOT NULL,
+  official boolean NOT NULL DEFAULT TRUE,
   PRIMARY KEY(vid1, vid2)
 );
 

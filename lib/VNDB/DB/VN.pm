@@ -125,11 +125,12 @@ sub dbVNGet {
     if($o{what} =~ /relations/) {
       push(@{$r->[$r{$_->{vid1}}]{relations}}, {
         relation => $_->{relation},
+        official => $_->{official},
         id => $_->{vid2},
         title => $_->{title},
-        original => $_->{original}
+        original => $_->{original},
       }) for(@{$self->dbAll(q|
-        SELECT rel.vid1, rel.vid2, rel.relation, vr.title, vr.original
+        SELECT rel.vid1, rel.vid2, rel.relation, rel.official, vr.title, vr.original
           FROM vn_relations rel
           JOIN vn v ON rel.vid2 = v.id
           JOIN vn_rev vr ON v.latest = vr.id
@@ -176,9 +177,9 @@ sub dbVNRevisionInsert {
 
   if($o->{relations}) {
     $self->dbExec('DELETE FROM edit_vn_relations');
-    my $q = join ',', map '(?, ?)', @{$o->{relations}};
-    my @val = map +($_->[1], $_->[0]), @{$o->{relations}};
-    $self->dbExec("INSERT INTO edit_vn_relations (vid, relation) VALUES $q", @val) if @val;
+    my $q = join ',', map '(?, ?, ?)', @{$o->{relations}};
+    my @val = map +($_->[1], $_->[0], $_->[2]?1:0), @{$o->{relations}};
+    $self->dbExec("INSERT INTO edit_vn_relations (vid, relation, official) VALUES $q", @val) if @val;
   }
 
   if($o->{anime}) {

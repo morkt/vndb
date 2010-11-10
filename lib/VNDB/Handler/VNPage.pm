@@ -204,7 +204,8 @@ sub _revision {
       $_[0] ? sprintf '<a href="http://renai.us/game/%s.shtml">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
     }],
     [ relations   => join => '<br />', split => sub {
-      my @r = map sprintf('%s: <a href="/v%d" title="%s">%s</a>',
+      my @r = map sprintf('[%s] %s: <a href="/v%d" title="%s">%s</a>',
+        mt($_->{official} ? '_vndiff_rel_official' : '_vndiff_rel_unofficial'),
         mt("_vnrel_$_->{relation}"), $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
       ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
       return @r ? @r : (mt '_revision_empty');

@@ -3,6 +3,7 @@
 	  cross-site request forgery vulnerabilities
 	- URL change: /u/logout => /u$id/logout
 	- Added human confirmation question to the register page
+	- Added "official" flag to vn<->vn relations
 	- Optimized SQL queries:
 	  - dbScreenshotRandom()
 	  - dbVNGet() with random ordering

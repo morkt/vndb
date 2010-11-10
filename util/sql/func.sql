@@ -221,7 +221,7 @@ BEGIN
   ELSE
     INSERT INTO edit_vn SELECT title, alias, img_nsfw, length, "desc", l_wp, l_vnn, image, l_encubed, l_renai, original FROM vn_rev WHERE id = cid;
     INSERT INTO edit_vn_anime SELECT aid FROM vn_anime WHERE vid = cid;
-    INSERT INTO edit_vn_relations SELECT vid2, relation FROM vn_relations WHERE vid1 = cid;
+    INSERT INTO edit_vn_relations SELECT vid2, relation, official FROM vn_relations WHERE vid1 = cid;
     INSERT INTO edit_vn_screenshots SELECT scr, nsfw, rid FROM vn_screenshots WHERE vid = cid;
   END IF;
 END;
@@ -239,7 +239,7 @@ BEGIN
   SELECT INTO r * FROM edit_commit();
   INSERT INTO vn_rev SELECT r.cid, r.iid, title, alias, img_nsfw, length, "desc", l_wp, l_vnn, image, l_encubed, l_renai, original FROM edit_vn;
   INSERT INTO vn_anime SELECT r.cid, aid FROM edit_vn_anime;
-  INSERT INTO vn_relations SELECT r.cid, vid, relation FROM edit_vn_relations;
+  INSERT INTO vn_relations SELECT r.cid, vid, relation, official FROM edit_vn_relations;
   INSERT INTO vn_screenshots SELECT r.cid, scr, nsfw, rid FROM edit_vn_screenshots;
   UPDATE vn SET latest = r.cid WHERE id = r.iid;
   RETURN r;

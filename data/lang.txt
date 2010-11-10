@@ -5924,14 +5924,21 @@ cs : Přidat vztah
 hu : Összefüggés hozzáadása
 nl : Voeg relatie toe
 
-# <title1> is a <relation> of <title2>
+# <title1> is an [x] official <relation> of <title2>
 # this trick doesn't even work very well in English, so just an approximation is fine
 :_vnedit_rel_isa
-en : is a
+en : is an
 ru : это
 cs : je
 hu : -
 nl : is een
+
+:_vnedit_rel_official
+en : official
+ru*:
+cs*:
+hu*:
+nl : officiële
 
 :_vnedit_rel_of
 en : of
@@ -6350,6 +6357,20 @@ ru : Небезопасно
 cs : NSFW
 hu : Nem munkabarát
 nl : Niet veilig
+
+:_vndiff_rel_official
+en : official
+ru*:
+cs*:
+hu*:
+nl : officiëel
+
+:_vndiff_rel_unofficial
+en : unofficial
+ru*:
+cs*:
+hu*:
+nl : officieus
 
 
 # VN page (/v+)

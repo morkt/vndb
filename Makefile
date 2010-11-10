@@ -37,7 +37,7 @@
 #   environments. Patches to improve the portability are always welcome.
 
 
-.PHONY: all dirs js skins robots chmod chmod-tladmin multi-start multi-stop multi-restart sql-import update-2.10 update-2.11 update-2.12
+.PHONY: all dirs js skins robots chmod chmod-tladmin multi-start multi-stop multi-restart sql-import update-2.10 update-2.11 update-2.12 update-2.13
 
 all: dirs js skins robots data/config.pl
 
@@ -146,3 +146,9 @@ update-2.12: all
 	rm www/sitemap.xml.gz
 	${runpsql} < util/updates/update_2.12.sql
 	$(multi-start)
+
+update-2.13: all
+	$(multi-stop)
+	${runpsql} < util/updates/update_2.13.sql
+	$(multi-start)
+
