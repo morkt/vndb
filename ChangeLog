@@ -9,6 +9,7 @@
 	  - dbVNGet() with random ordering
 	  - dbRevisionGet() (in most cases)
 	- Removed (p###) from release resolution information
+	- Replaced Algorithm::Diff::XS with Algorithm::Diff::Fast
 	- Bugfix: delete/update all references when deleting a user
 
 2.12 - 2010-11-03

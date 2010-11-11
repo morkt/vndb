@@ -19,7 +19,7 @@ Requirements
   (perl 5.10 core modules are not listed.)
 
   util/vndb.pl:
-    Algorithm::Diff::XS
+    Algorithm::Diff::Fast
     CGI::Minimal         (required by YAWF)
     CGI::Cookie::XS      (required by YAWF)
     DBI

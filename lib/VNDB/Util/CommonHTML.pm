@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use YAWF ':html', 'xml_escape';
 use Exporter 'import';
-use Algorithm::Diff::XS 'compact_diff';
+use Algorithm::Diff::Fast 'compact_diff';
 use VNDB::Func;
 use Encode 'encode_utf8', 'decode_utf8';
 use POSIX 'ceil';
