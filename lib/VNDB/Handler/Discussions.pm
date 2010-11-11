@@ -94,6 +94,7 @@ sub thread {
     form action => "/t$tid/reply", method => 'post', 'accept-charset' => 'UTF-8';
      div class => 'mainbox';
       fieldset class => 'submit';
+       input type => 'hidden', class => 'hidden', name => 'formcode', value => $self->authGetCode("/t$tid/reply");
        h2;
         txt mt '_thread_quickreply_title';
         b class => 'standout', ' ('.mt('_inenglish').')';
