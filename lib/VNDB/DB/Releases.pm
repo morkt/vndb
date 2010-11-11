@@ -62,7 +62,7 @@ sub dbReleaseGet {
   }
 
   my @join = (
-    $o{rev} ? 'JOIN releases r ON r.id = rr.rid' : 'JOIN releases r ON rr.id = r.latest AND rr.rid = r.id',
+    $o{rev} ? 'JOIN releases r ON r.id = rr.rid' : 'JOIN releases r ON rr.id = r.latest',
     $o{vid} ? 'JOIN releases_vn rv ON rv.rid = rr.id' : (),
     $o{pid} ? 'JOIN releases_producers rp ON rp.rid = rr.id' : (),
     $o{what} =~ /changes/ || $o{rev} ? (
