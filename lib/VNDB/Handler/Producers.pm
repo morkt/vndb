@@ -45,7 +45,7 @@ sub page {
 
   my $p = $self->dbProducerGet(
     id => $pid,
-    what => 'vn extended relations'.($rev ? ' changes' : ''),
+    what => 'extended relations'.($rev ? ' changes' : ''),
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return 404 if !$p->{id};
@@ -76,7 +76,7 @@ sub page {
     );
   }
 
-  div class => 'mainbox producerpage';
+  div class => 'mainbox';
    $self->htmlItemMessage('p', $p);
    h1 $p->{name};
    h2 class => 'alttitle', $p->{original} if $p->{original};
@@ -117,28 +117,72 @@ sub page {
       lit bb2html $p->{desc};
      end;
    }
-
   end;
-  div class => 'mainbox producerpage';
-   h1 mt '_prodpage_vnrel';
-   if(!@{$p->{vn}}) {
+
+  _releases($self, $p);
+
+  $self->htmlFooter;
+}
+
+sub _releases {
+  my($self, $p) = @_;
+
+  # prodpage_(dev|pub)
+  my $r = $self->dbReleaseGet(pid => $p->{id}, results => 999, what => 'vn platforms');
+  div class => 'mainbox prodrel';
+   h1 mt '_prodpage_rel';
+   if(!@$r) {
      p mt '_prodpage_norel';
-   } else {
-     ul;
-      for (@{$p->{vn}}) {
-        li;
-         i;
-          lit $self->{l10n}->datestr($_->{date});
+     end;
+     return;
+   }
+
+   my %vn; # key = vid, value = [ $r1, $r2, $r3, .. ]
+   my @vn; # $vn objects in order of first release
+   for my $rel (@$r) {
+     for my $v (@{$rel->{vn}}) {
+       push @vn, $v if !$vn{$v->{vid}};
+       push @{$vn{$v->{vid}}}, $rel;
+     }
+   }
+
+   table;
+    for my $v (@vn) {
+      Tr class => 'vn';
+       td colspan => 5;
+        a href => "/v$v->{vid}", title => $v->{original}, $v->{title};
+       end;
+      end;
+      for my $rel (@{$vn{$v->{vid}}}) {
+        Tr;
+         td class => 'tc1'; lit $self->{l10n}->datestr($rel->{released}); end;
+         td class => 'tc2', !defined($rel->{minage}) ? '' : minage $rel->{minage};
+         td class => 'tc3';
+          for (sort @{$rel->{platforms}}) {
+            next if $_ eq 'oth';
+            cssicon $_, mt "_plat_$_";
+          }
+          cssicon "lang $_", mt "_lang_$_" for (@{$rel->{languages}});
+          cssicon "rt$rel->{type}", mt "_rtype_$rel->{type}";
          end;
-         a href => "/v$_->{id}", title => $_->{original}, $_->{title};
-         b class => 'grayedout', ' ('.join(', ',
-          $_->{developer} ? mt '_prodpage_dev' : (), $_->{publisher} ? mt '_prodpage_pub' : ()).')';
+         td class => 'tc4';
+          a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
+          b class => 'grayedout', ' '.mt '_vnpage_rel_patch' if $rel->{patch};
+         end;
+         td class => 'tc5';
+          if($rel->{website}) {
+            a href => $rel->{website}, rel => 'nofollow';
+             cssicon 'ext', mt '_vnpage_rel_extlink';
+            end;
+          } else {
+            txt ' ';
+          }
+         end;
         end;
       }
-     end;
-   }
+    }
+   end;
   end;
-  $self->htmlFooter;
 }
 
 

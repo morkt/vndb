@@ -826,18 +826,30 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 
 /***** Producer page/list *******/
 
-.producerpage ul {
-  margin: 0 50px;
+.prodrel table {
+  width: 100%;
 }
-.producerpage li {
-  padding-top: 3px;
-  list-style-type: none;
+.prodrel tr.vn td {
+  background: url($_boxbg$) repeat;
+  font-weight: bold;
 }
-.producerpage li i {
-  display: block;
-  font-style: normal;
-  float: left;
+.prodrel td.tc1 {
+  padding-left: 30px;
   width: 80px;
+}
+.prodrel td.tc2 {
+  text-align: center;
+  width: 50px;
+}
+.prodrel td.tc3 {
+  text-align: right;
+  padding: 0;
+  width: 120px;
+}
+.prodrel td.tc5 {
+  text-align: right;
+  width: 25px;
+  padding: 0;
 }
 
 .producerbrowse ul {

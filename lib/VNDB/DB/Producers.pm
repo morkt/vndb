@@ -9,7 +9,7 @@ our @EXPORT = qw|dbProducerGet dbProducerRevisionInsert|;
 
 
 # options: results, page, id, search, char, rev
-# what: extended changes vn relations relgraph
+# what: extended changes relations relgraph
 sub dbProducerGet {
   my $self = shift;
   my %o = (
@@ -55,30 +55,6 @@ sub dbProducerGet {
       ORDER BY pr.name ASC|,
     $select, join(' ', @join), \%where,
   );
-
-  if(@$r && $o{what} =~ /vn/) {
-    my %r = map {
-      $r->[$_]{vn} = [];
-      ($r->[$_]{id}, $_)
-    } 0..$#$r;
-
-    push @{$r->[$r{$_->{pid}}]{vn}}, $_ for (@{$self->dbAll(q|
-      SELECT MAX(vp.pid) AS pid, v.id, MAX(vr.title) AS title, MAX(vr.original) AS original, MIN(rr.released) AS date,
-          MAX(CASE WHEN vp.developer = true THEN 1 ELSE 0 END) AS developer, MAX(CASE WHEN vp.publisher = true THEN 1 ELSE 0 END) AS publisher
-        FROM releases_producers vp
-        JOIN releases_rev rr ON rr.id = vp.rid
-        JOIN releases r ON r.latest = rr.id
-        JOIN releases_vn rv ON rv.rid = rr.id
-        JOIN vn v ON v.id = rv.vid
-        JOIN vn_rev vr ON vr.id = v.latest
-        WHERE vp.pid IN(!l)
-          AND v.hidden = FALSE
-          AND r.hidden = FALSE
-        GROUP BY v.id
-        ORDER BY date|,
-      [ keys %r ]
-    )});
-  }
 
   if(@$r && $o{what} =~ /relations/) {
     my %r = map {

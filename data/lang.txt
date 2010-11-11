@@ -2575,12 +2575,12 @@ cs : Wikipedie
 hu :
 nl :
 
-:_prodpage_vnrel
-en : Visual Novel Relations
-ru : Связи новелл
-cs : Vztahy k vizuálním novelám
-hu : Visual Novel Összefüggések
-nl : Gerelateerde Visual Novels
+:_prodpage_rel
+en : Releases
+ru*:
+cs*:
+hu*:
+nl : Uitgaven
 
 :_prodpage_norel
 en : We have currently no visual novels by this producer.
@@ -2589,6 +2589,7 @@ cs : Nemáme žádné vizuální novely od tohoto producenta.
 hu : Jelenleg nincsen visual novel bejegyzésünk ettől a készítőtől.
 nl : Momenteel geen visual novels van deze producent bij ons bekend
 
+# (next two are unused at the moment)
 :_prodpage_dev
 en : developer
 ru : разработчик

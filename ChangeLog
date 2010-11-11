@@ -4,6 +4,7 @@
 	- URL change: /u/logout => /u$id/logout
 	- Added human confirmation question to the register page
 	- Added "official" flag to vn<->vn relations
+	- Display releases grouped by VNs on producer pages
 	- Optimized SQL queries:
 	  - dbScreenshotRandom()
 	  - dbVNGet() with random ordering

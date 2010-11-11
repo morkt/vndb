@@ -10,7 +10,7 @@ use VNDB::Func 'gtintype';
 our @EXPORT = qw|dbReleaseGet dbReleaseRevisionInsert|;
 
 
-# Options: id vid rev unreleased page results what date media sort reverse
+# Options: id vid pid rev unreleased page results what date media sort reverse
 #   platforms languages type minage search resolutions freeware doujin
 # What: extended changes vn producers platforms media
 # Sort: title released minage
@@ -25,6 +25,7 @@ sub dbReleaseGet {
     $o{id}              ? ( 'r.id = ?'         => $o{id}  ) : (),
     $o{rev}             ? ( 'c.rev = ?'        => $o{rev} ) : (),
     $o{vid}             ? ( 'rv.vid = ?'       => $o{vid} ) : (),
+    $o{pid}             ? ( 'rp.pid = ?'       => $o{pid} ) : (),
     $o{patch}           ? ( 'rr.patch = ?'     => $o{patch}    == 1 ? 1 : 0) : (),
     $o{freeware}        ? ( 'rr.freeware = ?'  => $o{freeware} == 1 ? 1 : 0) : (),
     $o{doujin}          ? ( 'rr.doujin = ?'    => $o{doujin}   == 1 ? 1 : 0) : (),
@@ -61,8 +62,9 @@ sub dbReleaseGet {
   }
 
   my @join = (
-    $o{rev} ? 'JOIN releases r ON r.id = rr.rid' : 'JOIN releases r ON rr.id = r.latest',
+    $o{rev} ? 'JOIN releases r ON r.id = rr.rid' : 'JOIN releases r ON rr.id = r.latest AND rr.rid = r.id',
     $o{vid} ? 'JOIN releases_vn rv ON rv.rid = rr.id' : (),
+    $o{pid} ? 'JOIN releases_producers rp ON rp.rid = rr.id' : (),
     $o{what} =~ /changes/ || $o{rev} ? (
       'JOIN changes c ON c.id = rr.id',
       'JOIN users u ON u.id = c.requester'
