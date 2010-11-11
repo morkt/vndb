@@ -125,6 +125,12 @@
  always try to think about the relations between all related games - as shown in
  the graph - instead of only looking at the specific visual novel you're editing.
  <br />
+ The "official" checkbox can be used to indicate whether relation is an official
+ one or not.  A relation is official if both games were published by the same
+ brand, or at least the publisher of the earlier game has given persmission to
+ create the later game. In general: fandiscs and games of the same series are
+ official, while fan fiction is not.
+ <br />
  There is a static list of relations to choose from (as described below). As with
  many things, the relations between games can in reality be more complex than these
  options could describe. Simply choose the option you think is closest to describing
