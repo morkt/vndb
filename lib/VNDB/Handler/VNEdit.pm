@@ -275,7 +275,7 @@ sub _updreverse {
   # edit all related VNs
   for my $i (keys %upd) {
     my $r = $self->dbVNGet(id => $i, what => 'relations')->[0];
-    my @newrel = map $_->{id} != $vid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
+    my @newrel = map $_->{id} != $vid ? [ $_->{relation}, $_->{id}, $_->{official} ] : (), @{$r->{relations}};
     push @newrel, [ $upd{$i}[0], $vid, $upd{$i}[1] ] if $upd{$i};
     $self->dbItemEdit(v => $r->{cid},
       relations => \@newrel,
