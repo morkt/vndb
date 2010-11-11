@@ -1,4 +1,4 @@
-2.13 - ?
+2.13 - 2010-11-11
 	- Added 'formcode' parameter to all modification requests to fix all
 	  cross-site request forgery vulnerabilities
 	- URL change: /u/logout => /u$id/logout
