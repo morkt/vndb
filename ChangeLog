@@ -12,6 +12,7 @@
 	- Removed (p###) from release resolution information
 	- Replaced Algorithm::Diff::XS with Algorithm::Diff::Fast
 	- Bugfix: delete/update all references when deleting a user
+	- Bugfix: reverting a VN image now works
 
 2.12 - 2010-11-03
 	- !scr command for Multi::IRC

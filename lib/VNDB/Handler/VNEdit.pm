@@ -48,6 +48,7 @@ sub edit {
       { name => 'l_renai',     required => 0, default => '', maxlength => 100 },
       { name => 'l_vnn',       required => 0, default => $b4{l_vnn}||0,  template => 'int' },
       { name => 'anime',       required => 0, default => '' },
+      { name => 'previmage',   required => 0, default => 0,  template => 'int' },
       { name => 'img_nsfw',    required => 0, default => 0 },
       { name => 'vnrelations', required => 0, default => '', maxlength => 5000 },
       { name => 'screenshots', required => 0, default => '', maxlength => 1000 },
@@ -83,7 +84,8 @@ sub edit {
 
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post')
-        if $vid && !$self->reqUploadFileName('img') && !grep $frm->{$_} ne $b4{$_}, keys %b4;
+        if $vid && !$self->reqUploadFileName('img') && $image == $v->{image}
+          && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
       # perform the edit/add
       my $nrev = $self->dbItemEdit(v => $vid ? $v->{cid} : undef,
@@ -119,7 +121,7 @@ sub edit {
 
 sub _uploadimage {
   my($self, $v, $frm) = @_;
-  return $v ? $v->{image} : 0 if $frm->{_err} || !$self->reqUploadFileName('img');
+  return $v ? $frm->{previmage} : 0 if $frm->{_err} || !$self->reqUploadFileName('img');
 
   # save to temporary location
   my $tmp = sprintf '%s/static/cv/00/tmp.%d.jpg', $VNDB::ROOT, $$*int(rand(1000)+1);
@@ -172,6 +174,7 @@ sub _form {
   ],
 
   vn_img => [ mt('_vnedit_image'),
+    [ hidden => short => 'previmage', value => $v ? $v->{image} : 0 ],
     [ static => nolabel => 1, content => sub {
       div class => 'img';
        p mt '_vnedit_image_none' if !$v || !$v->{image};
