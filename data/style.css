@@ -826,31 +826,17 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 
 /***** Producer page/list *******/
 
-.prodrel table {
-  width: 100%;
-}
-.prodrel tr.vn td {
-  background: url($_boxbg$) repeat;
-  font-weight: bold;
-}
-.prodrel td.tc1 {
-  padding-left: 30px;
-  width: 80px;
-}
-.prodrel td.tc2 {
-  text-align: center;
-  width: 50px;
-}
-.prodrel td.tc3 {
-  text-align: right;
-  padding: 0;
-  width: 120px;
-}
-.prodrel td.tc5 {
-  text-align: right;
-  width: 25px;
-  padding: 0;
-}
+#prodrel              { width:  100%; }
+#prodrel tr.vn td     { background: url($_boxbg$) repeat; font-weight: bold; }
+#prodrel tr.vn i      { display: none }
+#prodrel tr.vn_lst td { padding: 1px }
+#prodrel tr.vn_lst i  { font-style: normal; display: block; float: left; width: 80px; padding: 0 0 0 40px; }
+#prodrel td.tc1       { width:  80px; padding-left: 30px; }
+#prodrel td.tc2       { width:  50px; text-align: center; }
+#prodrel td.tc3       { width: 120px; text-align: right;  padding: 0; }
+#prodrel td.tc5       { width: 120px; color: $grayedout$; }
+#prodrel td.tc6       { width:  25px; text-align: right; padding: 0; }
+#expandprodrel        { float: right; font-weight: bold; padding-bottom: 2px; border: none }
 
 .producerbrowse ul {
   float: left;

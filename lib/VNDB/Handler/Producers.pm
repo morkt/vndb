@@ -129,7 +129,8 @@ sub _releases {
 
   # prodpage_(dev|pub)
   my $r = $self->dbReleaseGet(pid => $p->{id}, results => 999, what => 'vn platforms');
-  div class => 'mainbox prodrel';
+  div class => 'mainbox';
+   a href => '#', id => 'expandprodrel', mt '_js_collapse';
    h1 mt '_prodpage_rel';
    if(!@$r) {
      p mt '_prodpage_norel';
@@ -146,15 +147,16 @@ sub _releases {
      }
    }
 
-   table;
+   table id => 'prodrel';
     for my $v (@vn) {
       Tr class => 'vn';
-       td colspan => 5;
+       td colspan => 6;
+        i; lit $self->{l10n}->datestr($vn{$v->{vid}}[0]{released}); end;
         a href => "/v$v->{vid}", title => $v->{original}, $v->{title};
        end;
       end;
       for my $rel (@{$vn{$v->{vid}}}) {
-        Tr;
+        Tr class => 'rel';
          td class => 'tc1'; lit $self->{l10n}->datestr($rel->{released}); end;
          td class => 'tc2', !defined($rel->{minage}) ? '' : minage $rel->{minage};
          td class => 'tc3';
@@ -169,7 +171,9 @@ sub _releases {
           a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
           b class => 'grayedout', ' '.mt '_vnpage_rel_patch' if $rel->{patch};
          end;
-         td class => 'tc5';
+         td class => 'tc5', join ', ',
+           ($rel->{developer} ? mt '_prodpage_dev' : ()), ($rel->{publisher} ? mt '_prodpage_pub' : ());
+         td class => 'tc6';
           if($rel->{website}) {
             a href => $rel->{website}, rel => 'nofollow';
              cssicon 'ext', mt '_vnpage_rel_extlink';

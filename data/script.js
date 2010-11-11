@@ -1950,6 +1950,29 @@ if(byId('expandall')) {
     heads[i].onclick = singletoggle;
 }
 
+// expand/collapse release listing (/p+)
+if(byId('expandprodrel')) {
+  var lnk = byId('expandprodrel');
+  setexpand = function() {
+    var exp = !(getCookie('prodrelexpand') == 1);
+    setText(lnk, exp ? mt('_js_collapse') : mt('_js_expand'));
+    var l = byClass(byId('prodrel'), 'tr', 'rel');
+    for(var i=0; i<l.length; i++)
+      setClass(l[i], 'hidden', !exp);
+    var l = byClass(byId('prodrel'), 'tr', exp ? 'vn_lst' : 'vn');
+    for(var i=0; i<l.length; i++) {
+      setClass(l[i], 'vn', exp);
+      setClass(l[i], 'vn_lst', !exp);
+    }
+  };
+  setexpand();
+  lnk.onclick = function () {
+    setCookie('prodrelexpand', getCookie('prodrelexpand') == 1 ? 0 : 1);
+    setexpand();
+    return false;
+  };
+}
+
 // auto-complete tag search (/v/*)
 if(byId('advselect') && byId('ti')) {
   var trfunc = function(item, tr) {
