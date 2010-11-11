@@ -7,7 +7,6 @@ use YAWF ':html', 'xml_escape';
 use Exporter 'import';
 use Algorithm::Diff::Fast 'compact_diff';
 use VNDB::Func;
-use Encode 'encode_utf8', 'decode_utf8';
 use POSIX 'ceil';
 
 our @EXPORT = qw|
@@ -235,9 +234,8 @@ sub revdiff {
   return if $ser1 eq $ser2;
 
   if($o{diff} && $ser1 && $ser2) {
-    # compact_diff doesn't like utf8 encoded strings, so encode input, decode output
-    my @ser1 = map encode_utf8($_), $o{split} ? $o{split}->($ser1) : map xml_escape($_), split //, $ser1;
-    my @ser2 = map encode_utf8($_), $o{split} ? $o{split}->($ser2) : map xml_escape($_), split //, $ser2;
+    my @ser1 = $o{split} ? $o{split}->($ser1) : map xml_escape($_), split //, $ser1;
+    my @ser2 = $o{split} ? $o{split}->($ser2) : map xml_escape($_), split //, $ser2;
     return if $o{split} && $#ser1 == $#ser2 && !grep $ser1[$_] ne $ser2[$_], 0..$#ser1;
 
     $ser1 = $ser2 = '';
@@ -249,8 +247,6 @@ sub revdiff {
       $ser1 .= ($ser1?$o{join}:'').($i % 2 ? qq|<b class="diff_del">$a</b>| : $a) if $a ne '';
       $ser2 .= ($ser2?$o{join}:'').($i % 2 ? qq|<b class="diff_add">$b</b>| : $b) if $b ne '';
     }
-    $ser1 = decode_utf8($ser1);
-    $ser2 = decode_utf8($ser2);
   } elsif(!$o{htmlize}) {
     $ser1 = xml_escape $ser1;
     $ser2 = xml_escape $ser2;
