@@ -63,7 +63,8 @@ sub homepage {
     # Recent changes
     td;
      h1;
-      a href => '/hist', mt '_home_recentchanges';
+      a href => '/hist', mt '_home_recentchanges'; txt ' ';
+      a href => '/feeds/changes.atom'; cssicon 'feed'; end;
      end;
      my $changes = $self->dbRevisionGet(what => 'item user', results => 10, auto => 1);
      ul;
@@ -82,7 +83,9 @@ sub homepage {
     td;
      my $an = $self->dbThreadGet(type => 'an', sort => 'id', reverse => 1, results => 2);
      h1;
-      a href => '/t/an', mt '_home_announcements';
+      a href => '/t/an', mt '_home_announcements'; txt ' ';
+      a href => '/feeds/announcements.atom'; cssicon 'feed'; end;
+
      end;
      for (@$an) {
        my $post = $self->dbPostGet(tid => $_->{id}, num => 1)->[0];
@@ -98,7 +101,9 @@ sub homepage {
     # Recent posts
     td;
      h1;
-      a href => '/t', mt '_home_recentposts';
+      a href => '/t', mt '_home_recentposts'; txt ' ';
+      a href => '/feeds/posts.atom'; cssicon 'feed'; end;
+
      end;
      my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, sort => 'lastpost', reverse => 1, notusers => 1);
      ul;

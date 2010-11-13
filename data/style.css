@@ -414,6 +414,7 @@ p.screenshots img {
 #maincontent .mainbox.threelayout h1 a {
   color: $boxtitle$;
 }
+a.feed { float: right }
 
 
 
@@ -1161,6 +1162,7 @@ div#iv_view {
   height: 11px;
   opacity: 0.5;
 }
+.icons.feed { width: 12px; height: 12px }
 .icons.rtcomplete, .icons.rtpartial, .icons.rttrial { width: 11px; }
 acronym.icons, acronym.uicons { cursor: default; }
 a .icons { cursor: pointer }
@@ -1173,6 +1175,7 @@ a .icons { cursor: pointer }
 .icons.gba { background-position:   0px -70px; }
 .icons.ps3 { background-position:   0px -84px; }
 .icons.p98 { background-position:   0px -98px; }
+.icons.feed { background-position:  0px -112px; }
 
 .icons.dvd { background-position: -16px   0px; }
 .icons.mac { background-position: -16px -14px; }
