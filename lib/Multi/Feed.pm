@@ -23,9 +23,6 @@ sub spawn {
     heap => {
       regenerate_interval => 900, # 15 min.
       stats_interval => 86400, # daily
-      num_announcements => 10,
-      num_changes => 25,
-      num_posts => 25,
       debug => 0,
       @_,
       stats => {}, # key = feed, value = [ count, total, max ]
@@ -62,12 +59,8 @@ sub generate {
      JOIN users u ON u.id = tp.uid
     WHERE NOT t.hidden
     ORDER BY t.id DESC
-    LIMIT ?}, [ $_[HEAP]{num_announcements} ], 'write_atom',
-  {
-    feed => 'announcements',
-    title => 'VNDB.org Site Announcements',
-    id => '/t/an',
-  });
+    LIMIT ?}, [ $VNDB::S{atom_feeds}{announcements}[0] ], 'write_atom', 'announcements'
+  );
 
   # changes
   $_[KERNEL]->post(pg => query => q{
@@ -81,12 +74,8 @@ sub generate {
      JOIN users u ON u.id = c.requester
     WHERE c.requester <> 1
     ORDER BY c.id DESC
-    LIMIT ?}, [ $_[HEAP]{num_changes} ], 'write_atom',
-  {
-    feed => 'changes',
-    title => 'VNDB.org Recent Changes',
-    id => '/hist',
-  });
+    LIMIT ?}, [ $VNDB::S{atom_feeds}{changes}[0] ], 'write_atom', 'changes'
+  );
 
   # posts (this query isn't all that fast)
   $_[KERNEL]->post(pg => query => q{
@@ -97,18 +86,14 @@ sub generate {
      JOIN users u ON u.id = tp.uid
     WHERE NOT tp.hidden AND NOT t.hidden
     ORDER BY tp.date DESC
-    LIMIT ?}, [ $_[HEAP]{num_posts} ], 'write_atom',
-  {
-    feed => 'posts',
-    title => 'VNDB.org Recent Posts',
-    id => '/t',
-  });
+    LIMIT ?}, [ $VNDB::S{atom_feeds}{posts}[0] ], 'write_atom', 'posts'
+  );
 }
 
 
-sub write_atom { # num, res, nfo, time
+sub write_atom { # num, res, feed, time
   my $r = $_[ARG1];
-  my $nfo = $_[ARG2];
+  my $feed = $_[ARG2];
 
   my $start = time;
 
@@ -122,11 +107,11 @@ sub write_atom { # num, res, nfo, time
   my $x = XML::Writer->new(OUTPUT => \$data, DATA_MODE => 1, DATA_INDENT => 2);
   $x->xmlDecl('UTF-8');
   $x->startTag(feed => xmlns => 'http://www.w3.org/2005/Atom', 'xml:lang' => 'en', 'xml:base' => $VNDB::S{url}.'/');
-  $x->dataElement(title => $nfo->{title});
+  $x->dataElement(title => $VNDB::S{atom_feeds}{$feed}[1]);
   $x->dataElement(updated => datetime($updated));
-  $x->dataElement(id => $VNDB::S{url}.$nfo->{id});
-  $x->emptyTag(link => rel => 'self', type => 'application/atom+xml', href => "$VNDB::S{url}/feeds/$nfo->{feed}.atom");
-  $x->emptyTag(link => rel => 'alternate', type => 'text/html', href => $nfo->{id});
+  $x->dataElement(id => $VNDB::S{url}.$VNDB::S{atom_feeds}{$feed}[2]);
+  $x->emptyTag(link => rel => 'self', type => 'application/atom+xml', href => "$VNDB::S{url}/feeds/$feed.atom");
+  $x->emptyTag(link => rel => 'alternate', type => 'text/html', href => $VNDB::S{atom_feeds}{$feed}[2]);
 
   for(@$r) {
     $x->startTag('entry');
@@ -147,18 +132,18 @@ sub write_atom { # num, res, nfo, time
 
   $x->endTag('feed');
 
-  open my $f, '>:utf8', "$VNDB::ROOT/www/feeds/$nfo->{feed}.atom" || die $!;
+  open my $f, '>:utf8', "$VNDB::ROOT/www/feeds/$feed.atom" || die $!;
   print $f $data;
   close $f;
 
   $_[HEAP]{debug} && $_[KERNEL]->call(core => log => 'Wrote %s.atom (%d entries, sql:%4dms, perl:%4dms)',
-    $nfo->{feed}, scalar(@$r), $_[ARG3]*1000, (time-$start)*1000);
+    $feed, scalar(@$r), $_[ARG3]*1000, (time-$start)*1000);
 
-  $_[HEAP]{stats}{$nfo->{feed}} = [ 0, 0, 0 ] if !$_[HEAP]{stats}{$nfo->{feed}};
+  $_[HEAP]{stats}{$feed} = [ 0, 0, 0 ] if !$_[HEAP]{stats}{$feed};
   my $time = ((time-$start)+$_[ARG3])*1000;
-  $_[HEAP]{stats}{$nfo->{feed}}[0]++;
-  $_[HEAP]{stats}{$nfo->{feed}}[1] += $time;
-  $_[HEAP]{stats}{$nfo->{feed}}[2] = $time if $_[HEAP]{stats}{$nfo->{feed}}[2] < $time;
+  $_[HEAP]{stats}{$feed}[0]++;
+  $_[HEAP]{stats}{$feed}[1] += $time;
+  $_[HEAP]{stats}{$feed}[2] = $time if $_[HEAP]{stats}{$feed}[2] < $time;
 }
 
 

@@ -37,7 +37,7 @@ YAWF::register(
 
 sub homepage {
   my $self = shift;
-  $self->htmlHeader(title => mt '_site_title');
+  $self->htmlHeader(title => mt('_site_title'), feeds => [ keys %{$self->{atom_feeds}} ]);
 
   div class => 'mainbox';
    h1 mt '_site_title';
@@ -216,7 +216,7 @@ sub history {
     releases => $f->{r},
   );
 
-  $self->htmlHeader(title => $title, noindex => 1);
+  $self->htmlHeader(title => $title, noindex => 1, feeds => [ 'changes' ]);
   $self->htmlMainTabs($type, $obj, 'hist') if $type;
 
   # url generator

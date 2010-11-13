@@ -10,7 +10,7 @@ use VNDB::Func;
 our @EXPORT = qw|htmlHeader htmlFooter|;
 
 
-sub htmlHeader { # %options->{ title, noindex, search }
+sub htmlHeader { # %options->{ title, noindex, search, feeds }
   my($self, %o) = @_;
   my $skin = $self->reqParam('skin') || $self->authInfo->{skin} || $self->{skin_default};
   $skin = $self->{skin_default} if !$self->{skins}{$skin} || !-d "$VNDB::ROOT/static/s/$skin";
@@ -26,6 +26,8 @@ sub htmlHeader { # %options->{ title, noindex, search }
       (my $css = $self->authInfo->{customcss}) =~ s/\n/ /g;
       style type => 'text/css', $css;
     }
+    Link rel => 'alternate', type => 'application/atom+xml', href => "/feeds/$_.atom", title => $self->{atom_feeds}{$_}[1]
+      for ($o{feeds} ? @{$o{feeds}} : ());
     meta name => 'robots', content => 'noindex, follow', undef if $o{noindex};
    end;
    body;
