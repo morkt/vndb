@@ -37,18 +37,18 @@
 #   environments. Patches to improve the portability are always welcome.
 
 
-.PHONY: all dirs js skins robots chmod chmod-tladmin multi-start multi-stop multi-restart sql-import update-2.10 update-2.11 update-2.12 update-2.13
+.PHONY: all dirs js skins robots chmod chmod-tladmin multi-start multi-stop multi-restart sql-import update-2.10 update-2.11 update-2.12 update-2.13 update-2.14
 
 all: dirs js skins robots data/config.pl
 
 
-dirs: static/cv static/sf static/st data/log www
+dirs: static/cv static/sf static/st data/log www www/feeds
 
 static/cv static/sf static/st:
 	mkdir $@;
 	for i in $$(seq -w 0 1 99); do mkdir "$@/$$i"; done
 
-data/log www:
+data/log www www/feeds:
 	mkdir $@
 
 
@@ -151,4 +151,6 @@ update-2.13: all
 	$(multi-stop)
 	${runpsql} < util/updates/update_2.13.sql
 	$(multi-start)
+
+update-2.14: all
 

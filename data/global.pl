@@ -109,6 +109,7 @@ our %M = (
   log_dir   => $ROOT.'/data/log',
   modules   => {
     #API         => {},  # disabled by default, not really needed
+    Feed        => {},
     RG          => {},
     Image       => {},
     #Anime       => {},  # disabled by default, requires AniDB username/pass

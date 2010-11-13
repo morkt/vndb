@@ -13,10 +13,10 @@ Requirements
   global requirements:
     Linux, or an OS that resembles Linux. Chances are VNDB won't run on Windows.
     PostgreSQL 8.4+
-    perl 5.10 recommended, 5.8 may also work
+    perl 5.12 recommended, 5.10 and 5.8 may also work
     A webserver that works with YAWF (lighttpd and Apache are known to work)
 
-  (perl 5.10 core modules are not listed.)
+  (perl 5.12 core modules are not listed.)
 
   util/vndb.pl:
     Algorithm::Diff::Fast
@@ -35,6 +35,8 @@ Requirements
       DBD::Pg
       POE
       POE::Component::Pg (get it from http://g.blicky.net/poco-pg.git/)
+    Feed:
+      XML::Writer
     IRC:
       POE::Component::IRC
       URI::Escape
