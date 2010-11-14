@@ -30,52 +30,74 @@ CREATE TYPE vn_relation       AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'sid
 
 -- triggers
 
-CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
-CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
-CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE update_hidlock();
+CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON vn            FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest) EXECUTE PROCEDURE update_hidlock();
+CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON producers     FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest) EXECUTE PROCEDURE update_hidlock();
+CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON releases      FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest) EXECUTE PROCEDURE update_hidlock();
 
 CREATE TRIGGER users_changes_update       AFTER  INSERT OR DELETE ON changes       FOR EACH ROW EXECUTE PROCEDURE update_users_cache();
 CREATE TRIGGER users_votes_update         AFTER  INSERT OR DELETE ON votes         FOR EACH ROW EXECUTE PROCEDURE update_users_cache();
 CREATE TRIGGER users_tags_update          AFTER  INSERT OR DELETE ON tags_vn       FOR EACH ROW EXECUTE PROCEDURE update_users_cache();
 
-CREATE TRIGGER vn_stats_update            AFTER  INSERT OR UPDATE ON vn            FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
-CREATE TRIGGER producers_stats_update     AFTER  INSERT OR UPDATE ON producers     FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
-CREATE TRIGGER releases_stats_update      AFTER  INSERT OR UPDATE ON releases      FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
-CREATE TRIGGER threads_stats_update       AFTER  INSERT OR UPDATE ON threads       FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
-CREATE TRIGGER threads_posts_stats_update AFTER  INSERT OR UPDATE ON threads_posts FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
-CREATE TRIGGER users_stats_update         AFTER  INSERT OR DELETE ON users         FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER stats_cache_new            AFTER  INSERT           ON vn            FOR EACH ROW WHEN (NEW.hidden = FALSE) EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER stats_cache_edit           AFTER  UPDATE           ON vn            FOR EACH ROW WHEN (OLD.hidden IS DISTINCT FROM NEW.hidden) EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER stats_cache_new            AFTER  INSERT           ON producers     FOR EACH ROW WHEN (NEW.hidden = FALSE) EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER stats_cache_edit           AFTER  UPDATE           ON producers     FOR EACH ROW WHEN (OLD.hidden IS DISTINCT FROM NEW.hidden) EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER stats_cache_new            AFTER  INSERT           ON releases      FOR EACH ROW WHEN (NEW.hidden = FALSE) EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER stats_cache_edit           AFTER  UPDATE           ON releases      FOR EACH ROW WHEN (OLD.hidden IS DISTINCT FROM NEW.hidden) EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER stats_cache_new            AFTER  INSERT           ON threads       FOR EACH ROW WHEN (NEW.hidden = FALSE) EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER stats_cache_edit           AFTER  UPDATE           ON threads       FOR EACH ROW WHEN (OLD.hidden IS DISTINCT FROM NEW.hidden) EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER stats_cache_new            AFTER  INSERT           ON threads_posts FOR EACH ROW WHEN (NEW.hidden = FALSE) EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER stats_cache_edit           AFTER  UPDATE           ON threads_posts FOR EACH ROW WHEN (OLD.hidden IS DISTINCT FROM NEW.hidden) EXECUTE PROCEDURE update_stats_cache();
+CREATE TRIGGER stats_cache                AFTER  INSERT OR DELETE ON users         FOR EACH ROW EXECUTE PROCEDURE update_stats_cache();
 
-CREATE TRIGGER vn_anime_aid               BEFORE INSERT OR UPDATE ON vn_anime      FOR EACH ROW EXECUTE PROCEDURE vn_anime_aid();
+CREATE TRIGGER vn_anime_aid_new           BEFORE INSERT           ON vn_anime      FOR EACH ROW EXECUTE PROCEDURE vn_anime_aid();
+CREATE TRIGGER vn_anime_aid_edit          BEFORE UPDATE           ON vn_anime      FOR EACH ROW WHEN (OLD.aid IS DISTINCT FROM NEW.aid) EXECUTE PROCEDURE vn_anime_aid();
 
-CREATE TRIGGER anime_fetch_notify         AFTER  INSERT OR UPDATE ON anime         FOR EACH ROW EXECUTE PROCEDURE anime_fetch_notify();
+CREATE TRIGGER anime_fetch_notify         AFTER  INSERT OR UPDATE ON anime         FOR EACH ROW WHEN (NEW.lastfetch IS NULL) EXECUTE PROCEDURE anime_fetch_notify();
 
-CREATE TRIGGER vn_rev_image_notify        AFTER  INSERT OR UPDATE ON vn_rev        FOR EACH ROW EXECUTE PROCEDURE vn_rev_image_notify();
+CREATE TRIGGER vn_rev_image_notify        AFTER  INSERT OR UPDATE ON vn_rev        FOR EACH ROW WHEN (NEW.image < 0) EXECUTE PROCEDURE vn_rev_image_notify();
 
-CREATE TRIGGER screenshot_process_notify  AFTER  INSERT OR UPDATE ON screenshots   FOR EACH ROW EXECUTE PROCEDURE screenshot_process_notify();
+CREATE TRIGGER screenshot_process_notify  AFTER  INSERT OR UPDATE ON screenshots   FOR EACH ROW WHEN (NEW.processed = FALSE) EXECUTE PROCEDURE screenshot_process_notify();
 
-CREATE TRIGGER vn_relgraph_notify         AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE vn_relgraph_notify();
+CREATE TRIGGER vn_relgraph_notify AFTER UPDATE ON vn FOR EACH ROW
+  WHEN (OLD.rgraph      IS DISTINCT FROM NEW.rgraph
+     OR OLD.latest      IS DISTINCT FROM NEW.latest
+     OR OLD.c_released  IS DISTINCT FROM NEW.c_released
+     OR OLD.c_languages IS DISTINCT FROM NEW.c_languages
+  ) EXECUTE PROCEDURE vn_relgraph_notify();
 
-CREATE TRIGGER producer_relgraph_notify   AFTER  UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE producer_relgraph_notify();
+CREATE TRIGGER producer_relgraph_notify AFTER UPDATE ON producers FOR EACH ROW
+  WHEN (OLD.rgraph IS DISTINCT FROM NEW.rgraph
+     OR OLD.latest IS DISTINCT FROM NEW.latest
+  ) EXECUTE PROCEDURE producer_relgraph_notify();
 
 CREATE TRIGGER insert_notify              AFTER  INSERT           ON changes       FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
 CREATE TRIGGER insert_notify              AFTER  INSERT           ON threads_posts FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
 CREATE TRIGGER insert_notify              AFTER  INSERT           ON tags          FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
 
-CREATE TRIGGER release_vncache_update     AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE release_vncache_update();
+CREATE TRIGGER release_vncache_update AFTER UPDATE ON releases FOR EACH ROW
+  WHEN (OLD.latest IS DISTINCT FROM NEW.latest OR OLD.hidden IS DISTINCT FROM NEW.hidden)
+  EXECUTE PROCEDURE release_vncache_update();
 
 CREATE TRIGGER notify_pm                  AFTER  INSERT           ON threads_posts FOR EACH ROW EXECUTE PROCEDURE notify_pm();
-CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
-CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
-CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_dbdel();
-CREATE TRIGGER notify_listdel             AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE notify_listdel();
-CREATE TRIGGER notify_listdel             AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_listdel();
-CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE notify_dbedit();
-CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON producers     FOR EACH ROW EXECUTE PROCEDURE notify_dbedit();
-CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE notify_dbedit();
-CREATE TRIGGER notify_announce            AFTER  INSERT           ON threads_posts FOR EACH ROW EXECUTE PROCEDURE notify_announce();
+CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON vn            FOR EACH ROW WHEN (NOT OLD.hidden AND NEW.hidden) EXECUTE PROCEDURE notify_dbdel();
+CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON producers     FOR EACH ROW WHEN (NOT OLD.hidden AND NEW.hidden) EXECUTE PROCEDURE notify_dbdel();
+CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON releases      FOR EACH ROW WHEN (NOT OLD.hidden AND NEW.hidden) EXECUTE PROCEDURE notify_dbdel();
+CREATE TRIGGER notify_listdel             AFTER  UPDATE           ON vn            FOR EACH ROW WHEN (NOT OLD.hidden AND NEW.hidden) EXECUTE PROCEDURE notify_listdel();
+CREATE TRIGGER notify_listdel             AFTER  UPDATE           ON releases      FOR EACH ROW WHEN (NOT OLD.hidden AND NEW.hidden) EXECUTE PROCEDURE notify_listdel();
+CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON vn            FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest AND NOT NEW.hidden) EXECUTE PROCEDURE notify_dbedit();
+CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON producers     FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest AND NOT NEW.hidden) EXECUTE PROCEDURE notify_dbedit();
+CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON releases      FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest AND NOT NEW.hidden) EXECUTE PROCEDURE notify_dbedit();
+CREATE TRIGGER notify_announce            AFTER  INSERT           ON threads_posts FOR EACH ROW WHEN (NEW.num = 1) EXECUTE PROCEDURE notify_announce();
 
-CREATE TRIGGER vn_vnsearch_notify         AFTER  UPDATE           ON vn            FOR EACH ROW EXECUTE PROCEDURE vn_vnsearch_notify();
-CREATE TRIGGER vn_vnsearch_notify         AFTER  UPDATE           ON releases      FOR EACH ROW EXECUTE PROCEDURE vn_vnsearch_notify();
+CREATE TRIGGER vn_vnsearch_notify AFTER UPDATE ON vn FOR EACH ROW
+  WHEN (OLD.c_search IS NOT NULL AND NEW.c_search IS NULL AND NOT NEW.hidden
+     OR NEW.hidden IS DISTINCT FROM OLD.hidden
+     OR NEW.latest IS DISTINCT FROM OLD.latest
+  ) EXECUTE PROCEDURE vn_vnsearch_notify();
+CREATE TRIGGER vn_vnsearch_notify AFTER UPDATE ON releases FOR EACH ROW
+  WHEN (NEW.hidden IS DISTINCT FROM OLD.hidden OR NEW.latest IS DISTINCT FROM OLD.latest)
+  EXECUTE PROCEDURE vn_vnsearch_notify();
 
 
 -- Sequences used for ID generation of items not in the DB

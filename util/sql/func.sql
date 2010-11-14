@@ -395,7 +395,7 @@ BEGIN
   IF TG_OP = 'INSERT' THEN
     IF TG_TABLE_NAME = 'users' THEN
       UPDATE stats_cache SET count = count+1 WHERE section = TG_TABLE_NAME;
-    ELSIF NEW.hidden = FALSE THEN
+    ELSE
       IF TG_TABLE_NAME = 'threads_posts' THEN
         IF EXISTS(SELECT 1 FROM threads WHERE id = NEW.tid AND hidden = FALSE) THEN
           UPDATE stats_cache SET count = count+1 WHERE section = TG_TABLE_NAME;
@@ -406,12 +406,12 @@ BEGIN
     END IF;
 
   ELSIF TG_OP = 'UPDATE' AND TG_TABLE_NAME <> 'users' THEN
-    IF OLD.hidden = TRUE AND NEW.hidden = FALSE THEN
+    IF OLD.hidden = TRUE THEN
       IF TG_TABLE_NAME = 'threads' THEN
         UPDATE stats_cache SET count = count+NEW.count WHERE section = 'threads_posts';
       END IF;
       UPDATE stats_cache SET count = count+1 WHERE section = TG_TABLE_NAME;
-    ELSIF OLD.hidden = FALSE AND NEW.hidden = TRUE THEN
+    ELSIF OLD.hidden = FALSE THEN
       IF TG_TABLE_NAME = 'threads' THEN
         UPDATE stats_cache SET count = count-NEW.count WHERE section = 'threads_posts';
       END IF;
@@ -428,6 +428,7 @@ $$ LANGUAGE 'plpgsql';
 
 
 -- insert rows into anime for new vn_anime.aid items
+-- (this is a BEFORE trigger)
 CREATE OR REPLACE FUNCTION vn_anime_aid() RETURNS trigger AS $$
 BEGIN
   IF NOT EXISTS(SELECT 1 FROM anime WHERE id = NEW.aid) THEN
@@ -441,36 +442,21 @@ $$ LANGUAGE plpgsql;
 
 -- Send a notify whenever anime info should be fetched
 CREATE OR REPLACE FUNCTION anime_fetch_notify() RETURNS trigger AS $$
-BEGIN
-  IF NEW.lastfetch IS NULL THEN
-    NOTIFY anime;
-  END IF;
-  RETURN NULL;
-END;
+  BEGIN NOTIFY anime; RETURN NULL; END;
 $$ LANGUAGE plpgsql;
 
 
 
 -- Send a notify when a new cover image is uploaded
 CREATE OR REPLACE FUNCTION vn_rev_image_notify() RETURNS trigger AS $$
-BEGIN
-  IF NEW.image < 0 THEN
-    NOTIFY coverimage;
-  END IF;
-  RETURN NULL;
-END;
+  BEGIN NOTIFY coverimage; RETURN NULL; END;
 $$ LANGUAGE plpgsql;
 
 
 
 -- Send a notify when a screenshot needs to be processed
 CREATE OR REPLACE FUNCTION screenshot_process_notify() RETURNS trigger AS $$
-BEGIN
-  IF NEW.processed = FALSE THEN
-    NOTIFY screenshot;
-  END IF;
-  RETURN NULL;
-END;
+  BEGIN NOTIFY screenshot; RETURN NULL; END;
 $$ LANGUAGE plpgsql;
 
 
@@ -560,11 +546,9 @@ $$ LANGUAGE plpgsql;
 -- call update_vncache() when a release is added, edited, hidden or unhidden
 CREATE OR REPLACE FUNCTION release_vncache_update() RETURNS trigger AS $$
 BEGIN
-  IF OLD.latest IS DISTINCT FROM NEW.latest OR OLD.hidden IS DISTINCT FROM NEW.hidden THEN
-    PERFORM update_vncache(vid) FROM (
-      SELECT DISTINCT vid FROM releases_vn WHERE rid = OLD.latest OR rid = NEW.latest
-    ) AS v(vid);
-  END IF;
+  PERFORM update_vncache(vid) FROM (
+    SELECT DISTINCT vid FROM releases_vn WHERE rid = OLD.latest OR rid = NEW.latest
+  ) AS v(vid);
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -577,11 +561,9 @@ CREATE OR REPLACE FUNCTION update_hidlock() RETURNS trigger AS $$
 DECLARE
   r record;
 BEGIN
-  IF OLD.latest IS DISTINCT FROM NEW.latest THEN
-    SELECT INTO r ihid, ilock FROM changes WHERE id = NEW.latest;
-    NEW.hidden := r.ihid;
-    NEW.locked := r.ilock;
-  END IF;
+  SELECT INTO r ihid, ilock FROM changes WHERE id = NEW.latest;
+  NEW.hidden := r.ihid;
+  NEW.locked := r.ilock;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -665,123 +647,111 @@ END;
 $$ LANGUAGE plpgsql;
 
 
--- called on UPDATE vn / producers / releases
+-- called on UPDATE vn / producers / releases when (NOT OLD.hidden AND NEW.hidden)
 CREATE OR REPLACE FUNCTION notify_dbdel() RETURNS trigger AS $$
 BEGIN
-  -- item is deleted?
-  IF NOT OLD.hidden AND NEW.hidden THEN
-    INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
-      SELECT DISTINCT 'dbdel'::notification_ntype,
-             (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' WHEN 'releases' THEN 'r' ELSE 'p' END)::notification_ltype,
-             c.requester, NEW.id, c2.rev, x.title, c2.requester
-        -- look for changes of the deleted entry
-        -- this method may look a bit unintuitive, but it's way faster than doing LEFT JOINs
-        FROM changes c
-        JOIN (  SELECT vr.id, vr2.title FROM vn_rev vr
-                  JOIN vn v ON v.id = vr.vid JOIN vn_rev vr2 ON vr2.id = v.latest
-                 WHERE TG_TABLE_NAME = 'vn' AND vr.vid = NEW.id
-          UNION SELECT rr.id, rr2.title FROM releases_rev rr
-                  JOIN releases r ON r.id = rr.rid JOIN releases_rev rr2 ON rr2.id = r.latest
-                 WHERE TG_TABLE_NAME = 'releases'  AND rr.rid = NEW.id
-          UNION SELECT pr.id, pr2.name FROM producers_rev pr
-                  JOIN producers p ON p.id = pr.pid JOIN producers_rev pr2 ON pr2.id = p.latest
-                 WHERE TG_TABLE_NAME = 'producers' AND pr.pid = NEW.id
-        ) x(id, title) ON c.id = x.id
-        -- join info about the deletion itself
-        JOIN changes c2 ON c2.id = NEW.latest
-       WHERE c.requester <> 1 -- exclude Multi
-         -- exclude the user who deleted the entry
-         AND c.requester <> c2.requester;
-  END IF;
+  INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
+    SELECT DISTINCT 'dbdel'::notification_ntype,
+           (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' WHEN 'releases' THEN 'r' ELSE 'p' END)::notification_ltype,
+           c.requester, NEW.id, c2.rev, x.title, c2.requester
+      -- look for changes of the deleted entry
+      -- this method may look a bit unintuitive, but it's way faster than doing LEFT JOINs
+      FROM changes c
+      JOIN (  SELECT vr.id, vr2.title FROM vn_rev vr
+                JOIN vn v ON v.id = vr.vid JOIN vn_rev vr2 ON vr2.id = v.latest
+               WHERE TG_TABLE_NAME = 'vn' AND vr.vid = NEW.id
+        UNION SELECT rr.id, rr2.title FROM releases_rev rr
+                JOIN releases r ON r.id = rr.rid JOIN releases_rev rr2 ON rr2.id = r.latest
+               WHERE TG_TABLE_NAME = 'releases'  AND rr.rid = NEW.id
+        UNION SELECT pr.id, pr2.name FROM producers_rev pr
+                JOIN producers p ON p.id = pr.pid JOIN producers_rev pr2 ON pr2.id = p.latest
+               WHERE TG_TABLE_NAME = 'producers' AND pr.pid = NEW.id
+      ) x(id, title) ON c.id = x.id
+      -- join info about the deletion itself
+      JOIN changes c2 ON c2.id = NEW.latest
+     WHERE c.requester <> 1 -- exclude Multi
+       -- exclude the user who deleted the entry
+       AND c.requester <> c2.requester;
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
 
--- called on UPDATE vn / releases
+-- called on UPDATE vn / releases when (NOT OLD.hidden AND NEW.hidden)
 CREATE OR REPLACE FUNCTION notify_listdel() RETURNS trigger AS $$
 BEGIN
-  -- item is deleted?
-  IF NOT OLD.hidden AND NEW.hidden THEN
-    INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
-      SELECT DISTINCT 'listdel'::notification_ntype,
-             (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' ELSE 'r' END)::notification_ltype,
-             u.uid, NEW.id, c.rev, x.title, c.requester
-        -- look for users who should get this notify
-        FROM (
-          -- voted on the VN
-                SELECT uid FROM votes  WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
-          -- VN in wishlist
-          UNION SELECT uid FROM wlists WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
-          -- release in release list
-          UNION SELECT uid FROM rlists WHERE TG_TABLE_NAME = 'releases' AND rid = NEW.id
-          -- there's also a special case which we're ignoring here:
-          --  when a VN linked to a release in a user's release list is deleted
-          -- normally, the releases are also deleted, so a notify is generated anyway
-        ) u
-        -- fetch info about this edit
-        JOIN changes c ON c.id = NEW.latest
-        JOIN (
-                SELECT id, title FROM vn_rev       WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
-          UNION SELECT id, title FROM releases_rev WHERE TG_TABLE_NAME = 'releases' AND rid = NEW.id
-        ) x ON c.id = x.id;
-  END IF;
+  INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
+    SELECT DISTINCT 'listdel'::notification_ntype,
+           (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' ELSE 'r' END)::notification_ltype,
+           u.uid, NEW.id, c.rev, x.title, c.requester
+      -- look for users who should get this notify
+      FROM (
+        -- voted on the VN
+              SELECT uid FROM votes  WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
+        -- VN in wishlist
+        UNION SELECT uid FROM wlists WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
+        -- release in release list
+        UNION SELECT uid FROM rlists WHERE TG_TABLE_NAME = 'releases' AND rid = NEW.id
+        -- there's also a special case which we're ignoring here:
+        --  when a VN linked to a release in a user's release list is deleted
+        -- normally, the releases are also deleted, so a notify is generated anyway
+      ) u
+      -- fetch info about this edit
+      JOIN changes c ON c.id = NEW.latest
+      JOIN (
+              SELECT id, title FROM vn_rev       WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
+        UNION SELECT id, title FROM releases_rev WHERE TG_TABLE_NAME = 'releases' AND rid = NEW.id
+      ) x ON c.id = x.id;
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
 
--- called on UPDATE vn / producers / releases
+-- called on UPDATE vn / producers / releases when (OLD.latest IS DISTINCT FROM NEW.latest AND NOT NEW.hidden)
 -- this trigger is very similar to notify_dbdel()
 CREATE OR REPLACE FUNCTION notify_dbedit() RETURNS trigger AS $$
 BEGIN
-  -- item is edited but not deleted? (deleted items are handled by the dbdel notify)
-  IF OLD.latest IS DISTINCT FROM NEW.latest AND NOT NEW.hidden THEN
-    INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
-      SELECT DISTINCT 'dbedit'::notification_ntype,
-             (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' WHEN 'releases' THEN 'r' ELSE 'p' END)::notification_ltype,
-             c.requester, NEW.id, c2.rev, x.title, c2.requester
-        -- look for changes of the edited entry
-        FROM changes c
-        JOIN (  SELECT vr.id, vr2.title FROM vn_rev vr
-                  JOIN vn v ON v.id = vr.vid JOIN vn_rev vr2 ON vr2.id = v.latest
-                 WHERE TG_TABLE_NAME = 'vn' AND vr.vid = NEW.id
-          UNION SELECT rr.id, rr2.title FROM releases_rev rr
-                  JOIN releases r ON r.id = rr.rid JOIN releases_rev rr2 ON rr2.id = r.latest
-                 WHERE TG_TABLE_NAME = 'releases'  AND rr.rid = NEW.id
-          UNION SELECT pr.id, pr2.name FROM producers_rev pr
-                  JOIN producers p ON p.id = pr.pid JOIN producers_rev pr2 ON pr2.id = p.latest
-                 WHERE TG_TABLE_NAME = 'producers' AND pr.pid = NEW.id
-        ) x(id, title) ON c.id = x.id
-        -- join info about the deletion itself
-        JOIN changes c2 ON c2.id = NEW.latest
-        -- join info about the user who should get this notification
-        JOIN users u ON u.id = c.requester
-        -- exclude the user who edited the entry
-       WHERE c.requester <> c2.requester
-         -- exclude users who don't want this notify
-         AND u.notify_dbedit;
-  END IF;
+  INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
+    SELECT DISTINCT 'dbedit'::notification_ntype,
+           (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' WHEN 'releases' THEN 'r' ELSE 'p' END)::notification_ltype,
+           c.requester, NEW.id, c2.rev, x.title, c2.requester
+      -- look for changes of the edited entry
+      FROM changes c
+      JOIN (  SELECT vr.id, vr2.title FROM vn_rev vr
+                JOIN vn v ON v.id = vr.vid JOIN vn_rev vr2 ON vr2.id = v.latest
+               WHERE TG_TABLE_NAME = 'vn' AND vr.vid = NEW.id
+        UNION SELECT rr.id, rr2.title FROM releases_rev rr
+                JOIN releases r ON r.id = rr.rid JOIN releases_rev rr2 ON rr2.id = r.latest
+               WHERE TG_TABLE_NAME = 'releases'  AND rr.rid = NEW.id
+        UNION SELECT pr.id, pr2.name FROM producers_rev pr
+                JOIN producers p ON p.id = pr.pid JOIN producers_rev pr2 ON pr2.id = p.latest
+               WHERE TG_TABLE_NAME = 'producers' AND pr.pid = NEW.id
+      ) x(id, title) ON c.id = x.id
+      -- join info about the deletion itself
+      JOIN changes c2 ON c2.id = NEW.latest
+      -- join info about the user who should get this notification
+      JOIN users u ON u.id = c.requester
+      -- exclude the user who edited the entry
+     WHERE c.requester <> c2.requester
+       -- exclude users who don't want this notify
+       AND u.notify_dbedit;
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
 
--- called on INSERT INTO threads_posts
+-- called on INSERT INTO threads_posts when (NEW.num = 1)
 CREATE OR REPLACE FUNCTION notify_announce() RETURNS trigger AS $$
 BEGIN
-  -- new thread?
-  IF NEW.num = 1 THEN
-    INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
-      SELECT 'announce', 't', u.id, t.id, 1, t.title, NEw.uid
-        FROM threads t
-        JOIN threads_boards tb ON tb.tid = t.id
-        -- get the users who want this announcement
-        JOIN users u ON u.notify_announce
-       WHERE t.id = NEW.tid
-         AND tb.type = 'an' -- announcement board
-         AND NOT t.hidden;
-  END IF;
+  INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
+    SELECT 'announce', 't', u.id, t.id, 1, t.title, NEw.uid
+      FROM threads t
+      JOIN threads_boards tb ON tb.tid = t.id
+      -- get the users who want this announcement
+      JOIN users u ON u.notify_announce
+     WHERE t.id = NEW.tid
+       AND tb.type = 'an' -- announcement board
+       AND NOT t.hidden;
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
