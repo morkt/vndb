@@ -59,6 +59,8 @@ $$ LANGUAGE sql;
 -- recalculate vn.c_popularity
 CREATE OR REPLACE FUNCTION update_vnpopularity() RETURNS void AS $$
 BEGIN
+  -- the following queries only update rows with popularity > 0, so make sure to reset all rows first
+  UPDATE vn SET c_popularity = NULL;
   CREATE OR REPLACE TEMP VIEW tmp_pop1 (uid, vid, rank) AS
       SELECT v.uid, v.vid, sqrt(count(*))::real
         FROM votes v
@@ -67,7 +69,7 @@ BEGIN
     GROUP BY v.vid, v.uid;
   CREATE OR REPLACE TEMP VIEW tmp_pop2 (vid, win) AS
     SELECT vid, sum(rank) FROM tmp_pop1 GROUP BY vid;
-  UPDATE vn SET c_popularity = (SELECT win/(SELECT MAX(win) FROM tmp_pop2) FROM tmp_pop2 WHERE vid = id);
+  UPDATE vn SET c_popularity = s1.win/(SELECT MAX(win) FROM tmp_pop2) FROM tmp_pop2 s1 WHERE s1.vid = vn.id;
   RETURN;
 END;
 $$ LANGUAGE plpgsql;

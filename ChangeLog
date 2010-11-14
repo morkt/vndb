@@ -1,6 +1,7 @@
 2.14 - ?
 	- Added Atom feeds for the recent announcements, changes and posts
 	  (located in /www/feeds and updated every 15 min. by Multi::Feed)
+	- Improved performance of update_vnpopularity() on PostgreSQL 9.0
 
 2.13 - 2010-11-11
 	- Added 'formcode' parameter to all modification requests to fix all
