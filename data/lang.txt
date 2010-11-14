@@ -1511,6 +1511,14 @@ hu : moderálásra vár
 nl : ongemodereerd
 
 
+# title of the syndication icon (this thing -> http://en.wikipedia.org/wiki/Atom_feed)
+
+:_atom_feed
+en : Atom Feed
+ru*:
+cs*:
+hu*:
+nl :
 
 
 #############################################################################
