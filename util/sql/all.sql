@@ -1,8 +1,5 @@
 -- NOTE: Make sure you're cd'ed in the vndb root directory before running this script
 
--- plpgsql is required for our (trigger) functions
-CREATE LANGUAGE plpgsql;
-
 
 -- data types
 
