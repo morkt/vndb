@@ -1,5 +1,5 @@
 # all (default)
-#   Same as $ make dirs js skins www robots
+#   Same as `make dirs js skins robots`
 #
 # dirs
 # 	Creates the required directories not present in git
@@ -37,12 +37,15 @@
 #   environments. Patches to improve the portability are always welcome.
 
 
-.PHONY: all dirs js skins robots chmod chmod-tladmin multi-start multi-stop multi-restart sql-import update-2.10 update-2.11 update-2.12 update-2.13 update-2.14
+$(phony all): dirs js skins robots data/config.pl
 
-all: dirs js skins robots data/config.pl
+$(phony dirs): static/cv static/sf static/st data/log www www/feeds
 
+$(phony js): static/f/script.js
 
-dirs: static/cv static/sf static/st data/log www www/feeds
+$(phony skins): static/s/*/style.css
+
+$(phony robots): dirs www/robots.txt static/robots.txt
 
 static/cv static/sf static/st:
 	mkdir $@;
@@ -51,32 +54,22 @@ static/cv static/sf static/st:
 data/log www www/feeds:
 	mkdir $@
 
-
-js: static/f/script.js
-
 static/f/script.js: data/script.js data/lang.txt util/jsgen.pl data/config.pl
 	util/jsgen.pl
 
-
-skins: static/s/*/style.css
-
 static/s/%/style.css: static/s/%/conf util/skingen.pl data/style.css
 	util/skingen.pl $*
-
-
-robots: dirs www/robots.txt static/robots.txt
 
 %/robots.txt:
 	echo 'User-agent: *' > $@
 	echo 'Disallow: /' >> $@
 
-
-chmod: all
+$(phony chmod): all
 	chmod a-x+rw static/f/script.js
 	chmod -R a-x+rwX static/{cv,sf,st}
 	chmod a-x+rw static/s/*/{style.css,boxbg.png}
 
-chmod-tladmin:
+$(phony chmod-tladmin):
 	chmod a-x+rwX data/lang.txt data/docs data/docs/*\.*
 
 
@@ -95,13 +88,13 @@ define multi-start
 	util/multi.pl
 endef
 
-multi-stop:
+$(phony multi-stop):
 	$(multi-stop)
 
-multi-start:
+$(phony multi-start):
 	$(multi-start)
 
-multi-restart:
+$(phony multi-restart):
 	$(multi-stop)
 	$(multi-start)
 
@@ -127,32 +120,32 @@ define runpsql
 endef
 
 
-sql-import:
+$(phony sql-import):
 	${runpsql} < util/sql/all.sql
 
 
-update-2.10: all
+$(phony update-2.10): all
 	$(multi-stop)
 	${runpsql} < util/updates/update_2.10.sql
 	$(multi-start)
 
-update-2.11: all
+$(phony update-2.11): all
 	$(multi-stop)
 	${runpsql} < util/updates/update_2.11.sql
 	$(multi-start)
 
-update-2.12: all
+$(phony update-2.12): all
 	$(multi-stop)
 	rm www/sitemap.xml.gz
 	${runpsql} < util/updates/update_2.12.sql
 	$(multi-start)
 
-update-2.13: all
+$(phony update-2.13): all
 	$(multi-stop)
 	${runpsql} < util/updates/update_2.13.sql
 	$(multi-start)
 
-update-2.14: all
+$(phony update-2.14): all
 	$(multi-stop)
 	${runpsql} < util/updates/update_2.14.sql
 	$(multi-start)
