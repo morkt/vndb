@@ -29,7 +29,7 @@ sub thread {
   my $p = $self->dbPostGet(tid => $tid, results => 25, page => $page, what => 'user');
   return 404 if !$p->[0];
 
-  $self->htmlHeader(title => $t->{title});
+  $self->htmlHeader(title => $t->{title}, noindex => 1);
   div class => 'mainbox';
    h1 $t->{title};
    h2 mt '_thread_postedin';
@@ -294,7 +294,7 @@ sub board {
     sort => $type eq 'an' ? 'id' : 'lastpost', reverse => 1,
   );
 
-  $self->htmlHeader(title => $title, noindex => !@$list || $type eq 'u');
+  $self->htmlHeader(title => $title, noindex => 1);
 
   $self->htmlMainTabs($type, $obj, 'disc') if $iid;
   div class => 'mainbox';
@@ -330,7 +330,7 @@ sub board {
 sub index {
   my $self = shift;
 
-  $self->htmlHeader(title => mt '_disindex_title');
+  $self->htmlHeader(title => mt('_disindex_title'), noindex => 1);
   div class => 'mainbox';
    h1 mt '_disindex_title';
    p class => 'browseopts';
