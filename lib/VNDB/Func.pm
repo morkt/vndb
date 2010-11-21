@@ -98,7 +98,7 @@ sub minage {
 sub fil_parse {
   return { map {
     my($f, $v) = split /-/, $_, 2;
-    my @v = split /,/, $v;
+    my @v = split /~/, $v;
     s/_([0-9]{2})/$1 > $#fil_escape ? '' : $fil_escape[$1]/eg for(@v);
     $f => @v > 1 ? \@v : @v
   } split /\./, scalar shift };
@@ -111,7 +111,7 @@ sub fil_serialize {
   return join '.', map {
     my @v = ref $fil->{$_} ? @{$fil->{$_}} : ($fil->{$_});
     s/$e/_$fil_escape{$1}/g for(@v);
-    $_.'-'.join ',', @v
+    $_.'-'.join '~', @v
   } keys %$fil;
 }
 

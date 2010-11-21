@@ -1784,7 +1784,7 @@ if(byId('prodrelations'))
  *  <fieldwritefunc>  function reference, argument: <fieldcontents>, data from filter format; must update the contents with the passed data
  *
  * Filter string format:
- *  <field>-<value1>,<value2>.<field2>-<value>.<field3>-<value1>,<value2>
+ *  <field>-<value1>~<value2>.<field2>-<value>.<field3>-<value1>~<value2>
  * Where:
  *  <field> = [a-z0-9]+
  *  <value> = [a-zA-Z0-9_]+ and any UTF-8 characters not in the ASCII range
@@ -1900,7 +1900,7 @@ function filSerialize() {
       }
     }
     if(r.length > 0 && r[0] != '')
-      l.push(fil_cats[0][f].fil_code+'-'+r.join(','));
+      l.push(fil_cats[0][f].fil_code+'-'+r.join('~'));
   }
   byId('fil').value = l.join('.');
   var cnt = byName(byId('filselect'), 'i')[1];
@@ -1922,7 +1922,7 @@ function filDeSerialize() {
   for(var fn in f) {
     var c = byId('fil_check_'+fn);
     c.checked = f[fn] == '' ? false : true;
-    var v = f[fn].split(',');
+    var v = f[fn].split('~');
     for(var i=0; i<v.length; i++)
       v[i] = v[i].replace(/_([0-9]{2})/g, function (a, e) { return fil_escape[e] });
     fil_cats[0][fn].fil_writefunc(fil_cats[0][fn].fil_contents, v);
