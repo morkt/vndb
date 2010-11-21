@@ -1842,8 +1842,8 @@ function filLoad() {
     tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} })
   ));
   filSelectCat(1);
-  filDeSerialize();
   byId('filselect').onclick = filShow;
+  filDeSerialize();
 }
 
 function filSelectCat(n) {
@@ -1922,7 +1922,10 @@ function filDeSerialize() {
   for(var fn in f) {
     var c = byId('fil_check_'+fn);
     c.checked = f[fn] == '' ? false : true;
-    fil_cats[0][fn].fil_writefunc(fil_cats[0][fn].fil_contents, f[fn].split(','));
+    var v = f[fn].split(',');
+    for(var i=0; i<v.length; i++)
+      v[i] = v[i].replace(/_([0-9]{2})/g, function (a, e) { return fil_escape[e] });
+    fil_cats[0][fn].fil_writefunc(fil_cats[0][fn].fil_contents, v);
     // not very efficient: filSelectField() does a lot of things that can be
     //  batched after all fields have been updated, and in some cases the
     //  writefunc() triggers the same filSelectField() as well

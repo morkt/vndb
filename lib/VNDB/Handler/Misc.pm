@@ -138,7 +138,7 @@ sub homepage {
     # Upcoming releases
     td;
      h1;
-      a href => strftime('/r?mi=%Y%m%d;o=a;s=released', gmtime), mt '_home_upcoming';
+      a href => strftime('/r?fil=date_after-%Y%m%d;o=a;s=released', gmtime), mt '_home_upcoming';
      end;
      my $upcoming = $self->dbReleaseGet(results => 10, unreleased => 1, what => 'platforms');
      ul;
@@ -158,7 +158,7 @@ sub homepage {
     # Just released
     td;
      h1;
-      a href => strftime('/r?ma=%Y%m%d;o=d;s=released', gmtime), mt '_home_justreleased';
+      a href => strftime('/r?fil=date_before-%Y%m%d;o=d;s=released', gmtime), mt '_home_justreleased';
      end;
      my $justrel = $self->dbReleaseGet(results => 10, sort => 'released', reverse => 1, unreleased => 0, what => 'platforms');
      ul;

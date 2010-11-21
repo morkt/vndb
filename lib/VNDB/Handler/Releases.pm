@@ -485,50 +485,26 @@ sub browse {
 
   my $f = $self->formValidate(
     { name => 'p',  required => 0, default => 1, template => 'int' },
-    { name => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
     { name => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
     { name => 'q',  required => 0, default => '', maxlength => 500 },
-    { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
-    { name => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
-    { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
-    { name => 'tp', required => 0, default => '', enum => [ '', @{$self->{release_types}} ] },
-    { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
-    { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
-    { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
-    { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
-    { name => 'ma_a', required => 0, default => 0, enum => [ grep defined($_), @{$self->{age_ratings}} ] },
-    { name => 'mi', required => 0, default => 0, template => 'int' },
-    { name => 'ma', required => 0, default => 99999999, template => 'int' },
-    { name => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
+    { name => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
+    { name => 'fil',required => 0, default => '' },
   );
   return 404 if $f->{_err};
 
-  my @filters = (
-    $f->{mi} > 0 || $f->{ma} < 99990000 ? (date => [ $f->{mi}, $f->{ma} ]) : (),
-    $f->{q} ? (search => $f->{q}) : (),
-    $f->{pl}[0] ? (platforms => $f->{pl}) : (),
-    $f->{ln}[0] ? (languages => $f->{ln}) : (),
-    $f->{me}[0] ? (media => $f->{me}) : (),
-    $f->{re}[0] ? (resolutions => $f->{re} ) : (),
-    $f->{tp} ? (type => $f->{tp}) : (),
-    $f->{ma_a} || $f->{ma_m} ? (minage => [$f->{ma_m}, $f->{ma_a}]) : (),
-    $f->{pa} ? (patch => $f->{pa}) : (),
-    $f->{fw} ? (freeware => $f->{fw}) : (),
-    $f->{do} ? (doujin => $f->{do}) : (),
-  );
-  my($list, $np) = !@filters ? ([], 0) : $self->dbReleaseGet(
+  # TODO: validate the filter string?
+  my $fil = fil_parse $f->{fil};
+  _fil_compat($self, $fil);
+  $f->{fil} = fil_serialize($fil);
+
+  my($list, $np) = !$f->{q} && !keys %$fil ? ([], 0) : $self->dbReleaseGet(
     sort => $f->{s}, reverse => $f->{o} eq 'd',
     page => $f->{p},
     results => 50,
     what => 'platforms',
-    @filters,
+    $f->{q} ? ( search => $f->{q} ) : (),
+    %$fil
   );
-
-  my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a};q=$f->{q};mi=$f->{mi};ma=$f->{ma};do=$f->{do};fw=$f->{fw}";
-  $_&&($url .= ";ln=$_") for @{$f->{ln}};
-  $_&&($url .= ";pl=$_") for @{$f->{pl}};
-  $_&&($url .= ";re=$_") for @{$f->{re}};
-  $_&&($url .= ";me=$_") for @{$f->{me}};
 
   $self->htmlHeader(title => mt('_rbrowse_title'));
 
@@ -539,7 +515,7 @@ sub browse {
    a id => 'filselect', href => '#';
     lit '<i>&#9656;</i> '.mt('_rbrowse_filters').'<i></i>';
    end;
-   input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => '';
+   input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
   end;
 
   $self->htmlBrowse(
@@ -547,8 +523,8 @@ sub browse {
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => "$url;s=$f->{s};o=$f->{o}",
-    sorturl  => $url,
+    pageurl  => "/r?q=$f->{q};fil=$f->{fil};s=$f->{s};o=$f->{o}",
+    sorturl  => "/r?q=$f->{q};fil=$f->{fil}",
     header   => [
       [ mt('_rbrowse_col_released'), 'released' ],
       [ mt('_rbrowse_col_minage'),   'minage' ],
@@ -574,7 +550,7 @@ sub browse {
       end;
     },
   ) if @$list;
-  if(@filters && !@$list) {
+  if(($f->{q} || keys %$fil) && !@$list) {
     div class => 'mainbox';
      h1 mt '_rbrowse_noresults_title';
      div class => 'notice';
@@ -583,6 +559,38 @@ sub browse {
     end;
   }
   $self->htmlFooter;
+}
+
+
+# provide compatibility with old filter URLs
+sub _fil_compat {
+  my($self, $fil) = @_;
+  my $f = $self->formValidate(
+    { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
+    { name => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
+    { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
+    { name => 'tp', required => 0, default => '', enum => [ '', @{$self->{release_types}} ] },
+    { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
+    { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
+    { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
+    { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
+    { name => 'ma_a', required => 0, default => 0, enum => [ grep defined($_), @{$self->{age_ratings}} ] },
+    { name => 'mi', required => 0, default => 0, template => 'int' },
+    { name => 'ma', required => 0, default => 99999999, template => 'int' },
+    { name => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
+  );
+  return if $f->{_err};
+  $fil->{minage} //= [ grep defined($_) && $f->{ma_m} ? $f->{ma_a} >= $_ : $f->{ma_a} <= $_, @{$self->{age_ratings}} ] if $f->{ma_a} || $f->{ma_m};
+  $fil->{date_after} //= $f->{mi}  if $f->{mi};
+  $fil->{date_before} //= $f->{ma} if $f->{ma} < 99990000;
+  $fil->{plat} //= $f->{pl}        if $f->{pl}[0];
+  $fil->{lang} //= $f->{ln}        if $f->{ln}[0];
+  $fil->{med} //= $f->{me}         if $f->{me}[0];
+  $fil->{resolution} //= $f->{re}  if $f->{re}[0];
+  $fil->{type} //= $f->{tp}        if $f->{tp};
+  $fil->{patch} //= $f->{pa} == 2 ? 0 : 1 if $f->{pa};
+  $fil->{freeware} //= $f->{fw} == 2 ? 0 : 1 if $f->{fw};
+  $fil->{doujin} //= $f->{do} == 2 ? 0 : 1 if $f->{do};
 }
 
 

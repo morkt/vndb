@@ -13,7 +13,7 @@ Requirements
   global requirements:
     Linux, or an OS that resembles Linux. Chances are VNDB won't run on Windows.
     PostgreSQL 9.0+ (don't try older versions or other SQL databases, it won't work)
-    perl 5.12 recommended, 5.10 and 5.8 may also work
+    perl 5.12 recommended, 5.10 may also work
     A webserver that works with YAWF (lighttpd and Apache are known to work)
 
   (perl 5.12 core modules are not listed.)

@@ -1,4 +1,5 @@
 2.14 - ?
+	- Improved release filter selection interface
 	- Added Atom feeds for the recent announcements, changes and posts
 	  (located in /www/feeds and updated every 15 min. by Multi::Feed)
 	- Improved performance of update_vnpopularity() on PostgreSQL 9.0
