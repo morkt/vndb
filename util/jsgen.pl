@@ -56,8 +56,7 @@ sub l10n {
   for my $key (sort keys %lang) {
     $r .= ",\n" if !$first;
     $first = 0;
-    # let's assume all L10N keys are valid JS variable names
-    $r .= sprintf qq|  "%s": {\n|, $key;
+    $r .= sprintf qq|  %s: {\n|, $key !~ /^[a-z0-9_]+$/ ? "'$key'" : $key;;
     my $firstk = 1;
     for (sort keys %{$lang{$key}}) {
       $r .= ",\n" if !$firstk;
@@ -77,6 +76,27 @@ sub l10n {
 }
 
 
+# screen resolution information, suitable for usage in filFSelect()
+sub resolutions {
+  my $res_cat = '';
+  my $resolutions = '';
+  my $comma = 0;
+  for my $i (0..$#{$S{resolutions}}) {
+    my $r = $S{resolutions}[$i];
+    if($res_cat ne $r->[1]) {
+      $resolutions .= ']' if $res_cat;
+      $resolutions .= ",['$r->[1]',";
+      $res_cat = $r->[1];
+      $comma = 0;
+    }
+    $resolutions .= ($comma ? ',' : '')."[$i,'$r->[0]']";
+    $comma = 1;
+  }
+  $resolutions .= ']' if $res_cat;
+  return "resolutions = [ $resolutions ];\n";
+}
+
+
 sub jsgen {
   # JavaScript::Minifier::XS doesn't correctly handle perl's unicode,
   #  so just do everything in raw bytes instead.
@@ -87,6 +107,12 @@ sub jsgen {
   $head .= sprintf "rlst_rstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_rstat}};
   $head .= sprintf "rlst_vstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_vstat}};
   $head .= sprintf "cookie_prefix = '%s';\n", $S{cookie_prefix};
+  $head .= sprintf "age_ratings = [ %s ];\n", join ',', map !defined $_ ? -1 : $_, @{$S{age_ratings}};
+  $head .= sprintf "languages = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{languages}};
+  $head .= sprintf "platforms = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{platforms}};
+  $head .= sprintf "media = [ %s ];\n", join ', ', map qq{"$_"}, sort keys %{$S{media}};
+  $head .= sprintf "release_types = [ %s ];\n", join ', ', map qq{"$_"}, sort @{$S{release_types}};
+  $head .= resolutions();
   open my $NEWJS, '>', "$ROOT/static/f/script.js" or die $!;
   print $NEWJS $JavaScript::Minifier::XS::VERSION ? JavaScript::Minifier::XS::minify($head.$js) : $head.$js;
   close $NEWJS;

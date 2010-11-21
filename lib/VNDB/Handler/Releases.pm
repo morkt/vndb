@@ -531,7 +531,17 @@ sub browse {
   $_&&($url .= ";me=$_") for @{$f->{me}};
 
   $self->htmlHeader(title => mt('_rbrowse_title'));
-  _filters($self, $f, !@filters || !@$list);
+
+  form method => 'get', action => '/r', 'accept-charset' => 'UTF-8';
+  div class => 'mainbox';
+   h1 mt '_rbrowse_title';
+   $self->htmlSearchBox('r', $f->{q});
+   a id => 'filselect', href => '#';
+    lit '<i>&#9656;</i> '.mt('_rbrowse_filters').'<i></i>';
+   end;
+   input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => '';
+  end;
+
   $self->htmlBrowse(
     class    => 'relbrowse',
     items    => $list,
@@ -573,111 +583,6 @@ sub browse {
     end;
   }
   $self->htmlFooter;
-}
-
-
-sub _filters {
-  my($self, $f, $shown) = @_;
-
-  form method => 'get', action => '/r', 'accept-charset' => 'UTF-8';
-  div class => 'mainbox';
-   h1 mt '_rbrowse_title';
-
-   $self->htmlSearchBox('r', $f->{q});
-
-   a id => 'advselect', href => '#';
-    lit '<i>'.($shown?'&#9662;':'&#9656;').'</i> '.mt('_rbrowse_filters');
-   end;
-   div id => 'advoptions', !$shown ? (class => 'hidden') : ();
-
-    h2 mt '_rbrowse_filters';
-    table class => 'formtable', style => 'margin-left: 0';
-     Tr class => 'newfield';
-      td class => 'label'; label for => 'ma_m', mt '_rbrowse_minage'; end;
-      td class => 'field';
-       Select id => 'ma_m', name => 'ma_m', style => 'width: 160px';
-        option value => 0, $f->{ma_m} == 0 ? ('selected' => 'selected') : (), mt '_rbrowse_ge';
-        option value => 1, $f->{ma_m} == 1 ? ('selected' => 'selected') : (), mt '_rbrowse_le';
-       end;
-       Select id => 'ma_a', name => 'ma_a', style => 'width: 80px; text-align: center';
-        defined($_) && option value => $_, $f->{ma_a} == $_ ? ('selected' => 'selected') : (), minage $_
-          for (@{$self->{age_ratings}});
-       end;
-      end;
-      td rowspan => 5, style => 'padding-left: 40px';
-       label for => 're', mt '_rbrowse_resolution'; br;
-       Select id => 're', name => 're', multiple => 'multiple', size => 8;
-        my $l='';
-        for my $i (1..$#{$self->{resolutions}}) {
-          if($l ne $self->{resolutions}[$i][1]) {
-            end if $l;
-            $l = $self->{resolutions}[$i][1];
-            optgroup label => $l;
-          }
-          option value => $i, scalar grep($i==$_, @{$f->{re}}) ? (selected => 'selected') : (), $self->{resolutions}[$i][0];
-        }
-        end if $l;
-       end;
-      end;
-     end;
-     $self->htmlFormPart($f, [ select => short => 'tp', name => mt('_rbrowse_type'),
-       options => [ ['', mt '_rbrowse_all'], map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ]]);
-     $self->htmlFormPart($f, [ select => short => 'pa', name => mt('_rbrowse_patch'),
-       options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_patchonly'], [2, mt '_rbrowse_patchnone']]]);
-     $self->htmlFormPart($f, [ select => short => 'fw', name => mt('_rbrowse_freeware'),
-       options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_freewareonly'], [2, mt '_rbrowse_freewarenone']]]);
-     $self->htmlFormPart($f, [ select => short => 'do', name => mt('_rbrowse_doujin'),
-       options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_doujinonly'], [2, mt '_rbrowse_doujinnone']]]);
-     $self->htmlFormPart($f, [ date => short => 'mi', name => mt '_rbrowse_dateafter' ]);
-     $self->htmlFormPart($f, [ date => short => 'ma', name => mt '_rbrowse_datebefore' ]);
-    end;
-
-    h2;
-     txt mt '_rbrowse_languages';
-     b ' ('.mt('_rbrowse_boolor').')';
-    end;
-    for my $i (@{$self->{languages}}) {
-      span;
-       input type => 'checkbox', name => 'ln', value => $i, id => "lang_$i", grep($_ eq $i, @{$f->{ln}}) ? (checked => 'checked') : ();
-       label for => "lang_$i";
-        cssicon "lang $i", mt "_lang_$i";
-        txt mt "_lang_$i";
-       end;
-      end;
-    }
-
-    h2;
-     txt mt '_rbrowse_platforms';
-     b ' ('.mt('_rbrowse_boolor').')';
-    end;
-    for my $i (sort @{$self->{platforms}}) {
-      span;
-       input type => 'checkbox', name => 'pl', value => $i, id => "plat_$i", grep($_ eq $i, @{$f->{pl}}) ? (checked => 'checked') : ();
-       label for => "plat_$i";
-        cssicon $i, mt "_plat_$i";
-        txt mt "_plat_$i";
-       end;
-      end;
-    }
-
-    h2;
-     txt mt '_rbrowse_media';
-     b ' ('.mt('_rbrowse_boolor').')';
-    end;
-    for my $i (sort keys %{$self->{media}}) {
-      span;
-       input type => 'checkbox', name => 'me', value => $i, id => "med_$i", grep($_ eq $i, @{$f->{me}}) ? (checked => 'checked') : ();
-       label for => "med_$i", mt "_med_$i", 1;
-      end;
-    }
-
-    div style => 'text-align: center; clear: left;';
-     input type => 'submit', value => mt('_rbrowse_apply'), class => 'submit';
-     input type => 'reset', value => mt('_rbrowse_clear'), class => 'submit', onclick => 'location.href="/r"';
-    end;
-   end;
-  end;
-  end;
 }
 
 

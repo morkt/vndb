@@ -3695,33 +3695,19 @@ cs : Filtry
 hu : Szűrők
 nl :
 
-:_rbrowse_minage
-en : Age rating
-ru : Возрастной рейтинг
-cs : Věková přístupnost
-hu : Korhatár
-nl : Minimum leeftijd
+:_rbrowse_fil_title
+en : Release filters
+ru*:
+cs*:
+hu*:
+nl : Uitgavenfilters
 
-:_rbrowse_ge
-en : Greater than or equal to
-ru : Больше или равно
-cs : Větší než nebo rovno
-hu : Nagyobb vagy egyenlő
-nl : Hoger dan of gelijk aan
-
-:_rbrowse_le
-en : Less than or equal to
-ru : Меньше или равно
-cs : Menší než nebo rovno
-hu : Kisebb vagy egyenlő
-nl : Lager dan of gelijk aan
-
-:_rbrowse_resolution
-en : Screen resolution
-ru : Разрешение экрана
-cs : Rozlišení obrazovky
-hu : Felbontás
-nl : Schermresolutie
+:_rbrowse_general
+en : General
+ru*:
+cs*:
+hu*:
+nl : Algemeen
 
 :_rbrowse_type
 en : Release type
@@ -3730,13 +3716,6 @@ cs : Typ vydání
 hu : Kiadás típus
 nl : Type
 
-:_rbrowse_all
-en : All
-ru : Все
-cs : Vše
-hu : Minden
-nl : Alle
-
 :_rbrowse_patch
 en : Patch status
 ru : Статус патча
@@ -3744,19 +3723,19 @@ cs : Status patche
 hu : Patch állapot
 nl :
 
-:_rbrowse_patchonly
-en : Only patches
-ru : Только патчи
-cs : Pouze patche
-hu : Csak patchek
-nl : Alleen patches
+:_rbrowse_patch_yes
+en : Patch
+ru*: Только патчи
+cs*: Pouze patche
+hu*: Csak patchek
+nl :
 
-:_rbrowse_patchnone
-en : Only standalone releases
-ru : Только самостоятельные выпуски
-cs : Pouze samostatná vydání
-hu : Csak különálló kiadások
-nl : Geen patches
+:_rbrowse_patch_no
+en : Standalone
+ru*: Только самостоятельные выпуски
+cs*: Pouze samostatná vydání
+hu*: Csak különálló kiadások
+nl : Geen patch
 
 :_rbrowse_freeware
 en : Freeware
@@ -3765,14 +3744,14 @@ cs : Freeware
 hu :
 nl :
 
-:_rbrowse_freewareonly
-en : Freeware only
+:_rbrowse_freeware_yes
+en : Only freeware
 ru : Только Freeware
 cs : Pouze freeware
 hu : Csak Freeware
 nl : Alleen freeware
 
-:_rbrowse_freewarenone
+:_rbrowse_freeware_no
 en : Only non-free releases
 ru : Только несвободные
 cs : Pouze placená vydání
@@ -3786,14 +3765,14 @@ cs : Doujin
 hu :
 nl :
 
-:_rbrowse_doujinonly
+:_rbrowse_doujin_yes
 en : Only doujin releases
 ru : Только додзинси
 cs : Pouze doujin vydání
 hu : Csak doujin kiadások
 nl : Alleen doujin uitgaven
 
-:_rbrowse_doujinnone
+:_rbrowse_doujin_no
 en : Only commercial releases
 ru : Только коммерческие
 cs : Pouze komerční vydání
@@ -3814,13 +3793,28 @@ cs : Vydáno před
 hu : Kiadva előtt
 nl : Uitgegeven voor
 
-:_rbrowse_languages
-en : Languages
-ru : Языки
-cs : Jazyky
-hu : Nyelvek
-nl : Talen
+:_rbrowse_minage
+en : Age rating
+ru : Возрастной рейтинг
+cs : Věková přístupnost
+hu : Korhatár
+nl : Minimum leeftijd
 
+:_rbrowse_language
+en : Language
+ru*: Языки
+cs*: Jazyky
+hu*: Nyelvek
+nl : Taal
+
+:_rbrowse_resolution
+en : Screen resolution
+ru : Разрешение экрана
+cs : Rozlišení obrazovky
+hu : Felbontás
+nl : Schermresolutie
+
+# currently unused - TODO
 :_rbrowse_boolor
 en : boolean or, selecting more gives more results
 ru : логическое 'или', чем больше выбрано, тем больше даёт результатов
@@ -3828,18 +3822,18 @@ cs : boolean nebo, výběr více dá více výsledků
 hu : Boole féle értékhalmaz(igaz/hamis), ha többet jelölsz be, több eredményt ad ki
 nl : booleaanse 'of', meerdere selecties geven meer resultaten
 
-:_rbrowse_platforms
-en : Platforms
-ru : Платформы
-cs : Platformy
-hu : Platformok
-nl : Platformen
+:_rbrowse_platform
+en : Platform
+ru*: Платформы
+cs*: Platformy
+hu*: Platformok
+nl : Platform
 
-:_rbrowse_media
-en : Media
-ru : Носители
-cs : Média
-hu : Médium
+:_rbrowse_medium
+en : Medium
+ru*: Носители
+cs*: Média
+hu*: Médium
 nl :
 
 :_rbrowse_apply
@@ -3849,12 +3843,12 @@ cs : Použít
 hu : Alkalmaz
 nl : Zoek
 
-:_rbrowse_clear
-en : Clear
-ru : Очистить
-cs : Začít znovu
-hu : Törlés
-nl : Reset
+:_rbrowse_reset
+en : Reset
+ru*: Очистить
+cs*: Začít znovu
+hu*: Törlés
+nl :
 
 
 

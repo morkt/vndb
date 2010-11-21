@@ -426,14 +426,15 @@ p.browseopts {
   text-align: center;
   padding: 2px;
 }
-#maincontent p.browseopts a {
+p.browseopts a {
   padding: 1px 3px;
-  color: $maintext$;
+  color: $maintext$!important;
   border: 1px solid $border$;
   margin: 0 2px;
+  white-space: nowrap;
 }
-#maincontent p.browseopts a.optselected,
-#maincontent p.browseopts a:hover {
+p.browseopts a.optselected,
+p.browseopts a:hover {
   border: 0;
   padding: 2px 4px;
 }
@@ -701,7 +702,7 @@ a.addnew {
 #screenshots p.nsfwtoggle { float: right; margin: 0; }
 
 
-#dd_box { position: absolute; left: 0px; border: 1px solid $border$; background-color: $secbg$; }
+#dd_box { position: absolute; left: 0px; border: 1px solid $border$; background-color: $secbg$; z-index: 2 }
 #dd_box ul { list-style-type: none; margin: 0; padding: 0 }
 #dd_box li b { display: block; font-weight: normal; padding-left: 5px; }
 #dd_box li i { display: block; font-style: normal; padding-left: 10px; padding-right: 5px }
@@ -793,7 +794,7 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 .vnbrowse .tc3 { padding: 0; }
 .vnbrowse .tc5 { text-align: right; padding-right: 10px }
 .vnbrowse .tc6 { width: 80px }
-#advselect {
+#advselect, #filselect {
   text-align: center;
   display: block;
   margin: 10px auto 3px auto;
@@ -1137,6 +1138,31 @@ div#iv_view {
   color: #000;
 }
 
+
+
+
+/****** filter selector *****/
+
+div#fil_div {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background: $tabbg$;
+  border: 1px solid $border$;
+  padding: 5px;
+  width: 600px;
+  text-align: center;
+}
+#fil_div p.browseopts { padding: 2px 50px; line-height: 23px }
+#fil_div .browseopts a { outline: none }
+#fil_div .browseopts a.active { font-weight: bold }
+#fil_div b.ruler { display: block; margin: auto; width: 93%; height: 1px; border-bottom: 1px solid $border$; margin-bottom: 5px }
+#fil_div h3 { width: 100%; text-align: center; font-size: 11px }
+#fil_div table { width: 93%; text-align: left; margin: 0 auto 5px auto }
+#fil_div table td.label label { width: 120px }
+#fil_div table td.check { width: 15px }
+#fil_div label.active { font-weight: bold }
+#filselect i { font-style: normal }
 
 
 
