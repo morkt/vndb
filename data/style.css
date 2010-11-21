@@ -1161,6 +1161,7 @@ div#fil_div {
 #fil_div h3 { width: 100%; text-align: center; font-size: 11px }
 #fil_div table { width: 93%; text-align: left; margin: 0 auto 5px auto }
 #fil_div table td.label label { width: 120px }
+#fil_div table td.label b { display: block; font-weight: normal; padding: 10px 5px 0 0 }
 #fil_div table td.check { width: 15px }
 #fil_div label.active { font-weight: bold }
 #filselect i { font-style: normal }

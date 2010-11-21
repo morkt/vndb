@@ -1815,9 +1815,13 @@ function filLoad() {
     a.fil_t = t;
     for(var j=1; j<l[i].length; j++) {
       var fd = l[i][j];
+      var lab = typeof fd[1] == 'object' ? fd[1][0] : fd[1];
       var f = tag('tr', {'class':'newfield', fil_code: fd[0], fil_contents: fd[2], fil_readfunc: fd[3], fil_writefunc: fd[4]},
         tag('td', {'class':'check'}, tag('input', {type:'checkbox', id:'fil_check_'+fd[0], name:'fil_check_'+fd[0], onclick: filSelectField })),
-        fd[1] ? tag('td', {'class':'label'}, tag('label', {'for':'fil_check_'+fd[0]}, fd[1])) : '',
+        fd[1] ? tag('td', {'class':'label'},
+          tag('label', {'for':'fil_check_'+fd[0]}, lab),
+          typeof fd[1] == 'object' ? tag('b', fd[1][1]) : null
+        ) : null,
         tag('td', {'class':'cont' }, fd[2]));
       fil_cats[0][fd[0]] = f;
       t.appendChild(f);
@@ -1966,7 +1970,7 @@ function filFSelect(c, n, lines, opts) {
       s.appendChild(g);
     }
   }
-  return [ c, n, s,
+  return [ c, lines > 1 ? [ n, mt('_rbrowse_boolor') ] : n, s,
     function (c) {
       var l = [];
       for(var i=0; i<c.options.length; i++)

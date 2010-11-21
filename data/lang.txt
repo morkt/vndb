@@ -3821,13 +3821,12 @@ cs : Rozlišení obrazovky
 hu : Felbontás
 nl : Schermresolutie
 
-# currently unused - TODO
 :_rbrowse_boolor
-en : boolean or, selecting more gives more results
+en : Boolean or, selecting more gives more results
 ru : логическое 'или', чем больше выбрано, тем больше даёт результатов
 cs : boolean nebo, výběr více dá více výsledků
 hu : Boole féle értékhalmaz(igaz/hamis), ha többet jelölsz be, több eredményt ad ki
-nl : booleaanse 'of', meerdere selecties geven meer resultaten
+nl : Booleaanse 'of', meerdere selecties geven meer resultaten
 
 :_rbrowse_platform
 en : Platform
