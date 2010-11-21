@@ -1828,6 +1828,7 @@ function filLoad() {
   }
 
   addBody(tag('div', { id: 'fil_div', 'class':'hidden' },
+    tag('a', {href:'#', onclick:filShow, 'class':'close'}, mt('_rbrowse_close')),
     tag('h3', l[0]),
     p,
     tag('b', {'class':'ruler'}, null),

@@ -1153,6 +1153,7 @@ div#fil_div {
   width: 600px;
   text-align: center;
 }
+#fil_div a.close { float: right; color: $link$; border: 0; font-weight: bold }
 #fil_div p.browseopts { padding: 2px 50px; line-height: 23px }
 #fil_div .browseopts a { outline: none }
 #fil_div .browseopts a.active { font-weight: bold }

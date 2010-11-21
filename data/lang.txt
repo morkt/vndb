@@ -3709,6 +3709,13 @@ cs*:
 hu*:
 nl : Algemeen
 
+:_rbrowse_close
+en : close
+ru*:
+cs*:
+hu*:
+nl : sluiten
+
 :_rbrowse_type
 en : Release type
 ru : Тип выпуска
