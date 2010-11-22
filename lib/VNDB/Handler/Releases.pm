@@ -492,8 +492,7 @@ sub browse {
   );
   return 404 if $f->{_err};
 
-  # TODO: validate the filter string?
-  my $fil = fil_parse $f->{fil};
+  my $fil = fil_parse $f->{fil}, qw|type patch freeware doujin date_before date_after minage lang resolution plat med|;
   _fil_compat($self, $fil);
   $f->{fil} = fil_serialize($fil);
 

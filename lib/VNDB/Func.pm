@@ -95,13 +95,19 @@ sub minage {
 }
 
 
+# arguments: $filter_string, @allowed_keys
 sub fil_parse {
-  return { map {
-    my($f, $v) = split /-/, $_, 2;
+  my $str = shift;
+  my %keys = map +($_,1), @_;
+  my %r;
+  for (split /\./, $str) {
+    next if !/^([a-z0-9_]+)-([a-zA-Z0-9_~]+)$/ || !$keys{$1};
+    my($f, $v) = ($1, $2);
     my @v = split /~/, $v;
     s/_([0-9]{2})/$1 > $#fil_escape ? '' : $fil_escape[$1]/eg for(@v);
-    $f => @v > 1 ? \@v : @v
-  } split /\./, scalar shift };
+    $r{$f} = @v > 1 ? \@v : $v[0]
+  }
+  return \%r;
 }
 
 
