@@ -535,44 +535,21 @@ tvsInit();
 
 /*  D A T E   I N P U T  */
 
-
-var date_years = [];
-var date_months = [];
-var date_days = [];
-
 function dateLoad(obj, serfunc) {
-  /* load the arrays */
-  var i;
-  date_years = [ [ 0, mt('_js_date_year') ], [ 9999, 'TBA' ] ];
-  for(i=(new Date()).getFullYear()+5; i>=1980; i--)
-    date_years[date_years.length] = [ i, i ];
+  var year = tag('select', {style: 'width: 70px', onfocus:serfunc, onchange: dateSerialize},
+    tag('option', {value:0}, mt('_js_date_year')),
+    tag('option', {value: 9999}, 'TBA')
+  );
+  for(var i=(new Date()).getFullYear()+5; i>=1980; i--)
+    year.appendChild(tag('option', {value: i}, i));
 
-  date_months = [ [ 99, mt('_js_date_month') ] ];
-  for(i=1; i<=12; i++)
-    date_months[date_months.length] = [ i, i ];
+  var month = tag('select', {style: 'width: 70px', onfocus:serfunc, onchange: dateSerialize}, tag('option', {value:99}, mt('_js_date_month')));
+  for(var i=1; i<=12; i++)
+    month.appendChild(tag('option', {value: i}, i));
 
-  date_days = [ [ 99, mt('_js_date_day') ] ];
+  var day = tag('select', {style: 'width: 70px', onfocus:serfunc, onchange: dateSerialize}, tag('option', {value:99}, mt('_js_date_day')));
   for(var i=1; i<=31; i++)
-    date_days[date_days.length] = [ i, i ];
-
-  /* create elements */
-  var year = tag('b', {'class':'datepart', date_sel: 0, date_lst:date_years, date_cnt:10},
-    tag('i', expanded_icon),
-    tag('b', date_years[0][1])
-  );
-  ddInit(year, 'bottom', dateDD);
-
-  var month = tag('b', {'class':'datepart', date_sel: 0, date_lst:date_months, date_cnt:7},
-    tag('i', expanded_icon),
-    tag('b', date_months[0][1])
-  );
-  ddInit(month, 'bottom', dateDD);
-
-  var day = tag('b', {'class':'datepart', date_sel: 0, date_lst:date_days, date_cnt:10},
-    tag('i', expanded_icon),
-    tag('b', date_days[0][1])
-  );
-  ddInit(day, 'bottom', dateDD);
+    day.appendChild(tag('option', {value: i}, i));
 
   var div = tag('div', {date_obj: obj, date_serfunc: serfunc, date_val: obj ? obj.value : 0}, year, month, day);
   dateSet(div, obj ? obj.value : 0);
@@ -583,49 +560,20 @@ function dateSet(div, val) {
   val = typeof val == 'object' ? val[0] : val;
   val = Math.floor(val) || 0;
   val = [ Math.floor(val/10000), Math.floor(val/100)%100, val%100 ];
-  var l = byClass(div, 'b', 'datepart');
-  // year
-  for(var i=0; i<date_years.length; i++)
-    if(val[0] == date_years[i][0]) { val[0] = i; break };
-  l[0].date_sel = val[0];
-  setText(byName(l[0], 'b')[0], date_years[val[0]][1]);
-  // month
-  val[1] = val[1] == 99 ? 0 : val[1];
-  l[1].date_sel = val[1];
-  setText(byName(l[1], 'b')[0], date_months[val[1]][1]);
-  // day
-  val[2] = val[2] == 99 ? 0 : val[2];
-  l[2].date_sel = val[2];
-  setText(byName(l[2], 'b')[0], date_days[val[2]][1]);
+  var l = byName(div, 'select');
+  for(var i=0; i<l.length; i++)
+    for(var j=0; j<l[i].options.length; j++)
+      l[i].options[j].selected = l[i].options[j].value == val[i];
   dateSerialize(div.childNodes[0], true);
 }
 
-function dateDD(lnk) {
-  var d = tag('div', {'class':'date'});
-  var clk = function () {
-    lnk.date_sel = this.date_val;
-    setText(byName(lnk, 'b')[0], lnk.date_lst[lnk.date_sel][1]);
-    ddHide();
-    dateSerialize(lnk);
-    return false;
-  };
-  for(var i=0; i<lnk.date_lst.length; i++) {
-    var txt = lnk.date_lst[i][1];
-    if(txt == mt('_js_date_year') || txt == mt('_js_date_month') || txt == mt('_js_date_day')) txt = '--';
-    if((i % lnk.date_cnt) == 0) d.appendChild(tag('ul', null));
-    d.childNodes[d.childNodes.length-1].appendChild(tag('li', lnk.date_sel == i ? tag('i', txt) :
-      tag('a', {href:'#', date_val: i, onclick: clk}, txt)));
-  }
-  return d;
-}
-
 function dateSerialize(div, nonotify) {
-  var div = div.parentNode;
-  var sel = byClass(div, 'b', 'datepart');
+  var div = div.parentNode ? div.parentNode : this.parentNode;
+  var sel = byName(div, 'select');
   var val = [
-    date_years[sel[0].date_sel][0],
-    date_months[sel[1].date_sel][0],
-    date_days[sel[2].date_sel][0],
+    sel[0].options[sel[0].selectedIndex].value*1,
+    sel[1].options[sel[1].selectedIndex].value*1,
+    sel[2].options[sel[2].selectedIndex].value*1
   ];
   div.date_val = val[0] == 0 ? 0 : val[0] == 9999 ? 99999999 : val[0]*10000+val[1]*100+(val[1]==99?99:val[2]);
   if(div.date_obj)
