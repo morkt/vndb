@@ -42,9 +42,9 @@
 
 all: dirs js skins robots data/config.pl
 
-dirs: static/cv static/sf static/st data/log www www/feeds
+dirs: static/f/js static/cv static/sf static/st data/log www www/feeds
 
-js: static/f/script.js
+js: static/f/js/en.js
 
 skins: static/s/*/style.css
 
@@ -54,10 +54,10 @@ static/cv static/sf static/st:
 	mkdir $@;
 	for i in $$(seq -w 0 1 99); do mkdir "$@/$$i"; done
 
-data/log www www/feeds:
+static/f/js data/log www www/feeds:
 	mkdir $@
 
-static/f/script.js: data/script.js data/lang.txt util/jsgen.pl data/config.pl data/global.pl
+static/f/js/en.js: data/script.js data/lang.txt util/jsgen.pl data/config.pl data/global.pl
 	util/jsgen.pl
 
 static/s/%/style.css: static/s/%/conf util/skingen.pl data/style.css
@@ -68,7 +68,7 @@ static/s/%/style.css: static/s/%/conf util/skingen.pl data/style.css
 	echo 'Disallow: /' >> $@
 
 chmod: all
-	chmod a-x+rw static/f/script.js
+	chmod a+xrw static/f/js
 	chmod -R a-x+rwX static/{cv,sf,st}
 	chmod a-x+rw static/s/*/{style.css,boxbg.png}
 
@@ -149,6 +149,7 @@ update-2.13: all
 	$(multi-start)
 
 update-2.14: all
+	rm static/s/script.js
 	$(multi-stop)
 	${runpsql} < util/updates/update_2.14.sql
 	$(multi-start)

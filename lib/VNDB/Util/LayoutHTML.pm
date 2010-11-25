@@ -155,7 +155,7 @@ sub htmlFooter {
       a href => $self->{source_url}, mt '_footer_source';
      end;
     end; # /div maincontent
-    script type => 'text/javascript', src => $self->{url_static}.'/f/script.js?'.$self->{version}, '';
+    script type => 'text/javascript', src => $self->{url_static}.'/f/js/'.$self->{l10n}->language_tag().'.js?'.$self->{version}, '';
    end; # /body
   end; # /html
 

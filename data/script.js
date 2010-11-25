@@ -31,6 +31,10 @@
  *     l10n /<perl regex>/
  *   any keys matching that regex will be included.
  *
+ *   In the case of an mt('<key>') without any extra arguments, the entire
+ *   function call may be replaced by the TL string. In such a case mt()
+ *   behaves similar to a preprocessor macro in C.
+ *
  *   The "_lang_*" keys for all languages for which we have a translation are
  *   already included automatically.
  */
@@ -181,10 +185,9 @@ function shorten(v, l) {
  * - Only supports [_n], ~[, ~]
  * - When it finds [quant,_n,..], it will only return the first argument (and doesn't support ~ in an argument)
  * assumes that a TL structure called 'L10N_STR' is defined in the header of this file */
-var mt_curlang = byName(byId('lang_select'), 'acronym')[0].className.substr(11, 2);
 function mt() {
   var key = arguments[0];
-  var val = L10N_STR[key] ? L10N_STR[key][mt_curlang] || L10N_STR[key].en : key;
+  var val = L10N_STR[key] ? L10N_STR[key] : key;
   for(var i=1; i<arguments.length; i++) {
     var expr = '[_'+i+']';
     while(val.indexOf(expr) >= 0)
@@ -2229,12 +2232,13 @@ if(byId('advselect') && byId('ti')) {
 // Language selector
 if(byId('lang_select')) {
   var d = byId('lang_select');
+  var curlang = byName(d, 'acronym')[0].className.substr(11, 2);
   ddInit(d, 'bottom', function(lnk) {
     var lst = tag('ul', null);
     for(var i=0; i<L10N_LANG.length; i++) {
       var ln = L10N_LANG[i];
       var icon = tag('acronym', {'class':'icons lang '+ln}, ' ');
-      lst.appendChild(tag('li', {'class':'lang_selector'}, mt_curlang == ln
+      lst.appendChild(tag('li', {'class':'lang_selector'}, curlang == ln
         ? tag('i', icon, mt('_lang_'+ln))
         : tag('a', {href:'/setlang?lang='+ln}, icon, L10N_STR['_lang_'+ln][ln]||mt('_lang_'+ln))
       ));
