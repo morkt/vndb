@@ -153,7 +153,7 @@ sub htmlHiddenMessage {
 # Where @fields is a list of fields as arrayrefs with:
 #  [ shortname, displayname, %options ],
 #  Where %options:
-#   diff      => 1/0, whether do show a diff on this field
+#   diff      => 1/0/regex, whether to show a diff on this field, and what to split it with (1 = character-level diff)
 #   serialize => coderef, should convert the field into a readable string, no HTML allowed
 #   htmlize   => same as serialize, but HTML is allowed and this can't be diff'ed
 #   split     => coderef, should return an array of HTML strings that can be diff'ed. (implies diff => 1)
@@ -226,7 +226,7 @@ sub revdiff {
   my($i, $type, $old, $new, $short, %o) = @_;
 
   $o{serialize} ||= $o{htmlize};
-  $o{diff}++ if $o{split};
+  $o{diff} = 1 if $o{split};
   $o{join} ||= '';
 
   my $ser1 = $o{serialize} ? $o{serialize}->($old->{$short}, $old) : $old->{$short};
@@ -234,8 +234,9 @@ sub revdiff {
   return if $ser1 eq $ser2;
 
   if($o{diff} && $ser1 && $ser2) {
-    my @ser1 = $o{split} ? $o{split}->($ser1) : map xml_escape($_), split //, $ser1;
-    my @ser2 = $o{split} ? $o{split}->($ser2) : map xml_escape($_), split //, $ser2;
+    my $sep = ref $o{diff} ? qr/($o{diff})/ : qr//;
+    my @ser1 = $o{split} ? $o{split}->($ser1) : map xml_escape($_), split $sep, $ser1;
+    my @ser2 = $o{split} ? $o{split}->($ser2) : map xml_escape($_), split $sep, $ser2;
     return if $o{split} && $#ser1 == $#ser2 && !grep $ser1[$_] ne $ser2[$_], 0..$#ser1;
 
     $ser1 = $ser2 = '';

@@ -8,6 +8,7 @@
 	- Added WHEN clause to all SQL TRIGGERs for which it was useful
 		(this *requires* PostgreSQL 9.0 or up!)
 	- Added ON DELETE clause to all foreign keys referencing users (id)
+	- Use word-level (instead of character-level) diff for large fields
 
 2.13 - 2010-11-11
 	- Added 'formcode' parameter to all modification requests to fix all

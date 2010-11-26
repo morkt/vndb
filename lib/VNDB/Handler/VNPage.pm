@@ -191,8 +191,8 @@ sub _revision {
   $self->htmlRevision('v', $prev, $v,
     [ title       => diff => 1 ],
     [ original    => diff => 1 ],
-    [ alias       => diff => 1 ],
-    [ desc        => diff => 1 ],
+    [ alias       => diff => qr/[ ,\n\.]/ ],
+    [ desc        => diff => qr/[ ,\n\.]/ ],
     [ length      => serialize => sub { mt '_vnlength_'.$_[0] } ],
     [ l_wp        => htmlize => sub {
       $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'

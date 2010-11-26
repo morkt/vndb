@@ -51,7 +51,7 @@ sub page {
       [ 'website' ],
       [ released   => htmlize   => sub { $self->{l10n}->datestr($_[0]) } ],
       [ minage     => serialize => \&minage ],
-      [ notes      => diff => 1 ],
+      [ notes      => diff => qr/[ ,\n\.]/ ],
       [ platforms  => join => ', ', split => sub { map mt("_plat_$_"), @{$_[0]} } ],
       [ media      => join => ', ', split => sub {
         map $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1), @{$_[0]}
