@@ -3842,6 +3842,27 @@ cs*: Média
 hu*: Médium
 nl :
 
+:_rbrowse_animation
+en : Animation
+ru*:
+cs*:
+hu*:
+nl : Animatie
+
+:_rbrowse_ani_story
+en : Story
+ru*:
+cs*:
+hu*:
+nl : Verhaal
+
+:_rbrowse_ani_ero
+en : Ero scenes
+ru*:
+cs*:
+hu*:
+nl : Erotische scenes
+
 :_rbrowse_apply
 en : Apply
 ru : Применить

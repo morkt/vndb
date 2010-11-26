@@ -1,5 +1,6 @@
 2.14 - ?
 	- Improved release filter selection interface
+	- New release filter: animation
 	- Added Atom feeds for the recent announcements, changes and posts
 	  (located in /www/feeds and updated every 15 min. by Multi::Feed)
 	- JS: Reverted to the old selection box date selector
