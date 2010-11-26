@@ -110,6 +110,7 @@ sub jsgen {
   $common .= sprintf "media = [ %s ];\n", join ', ', map qq{"$_"}, sort keys %{$S{media}};
   $common .= sprintf "release_types = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{release_types}};
   $common .= sprintf "animated = [ %s ];\n", join ', ', @{$S{animated}};
+  $common .= sprintf "voiced = [ %s ];\n", join ', ', @{$S{voiced}};
   $common .= sprintf "L10N_LANG = [ %s ];\n", join(', ', map qq{"$_"}, VNDB::L10N::languages());
 
   open my $JS, '<:utf8', "$ROOT/data/script.js" or die $!;

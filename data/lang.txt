@@ -3842,6 +3842,13 @@ cs*: Média
 hu*: Médium
 nl :
 
+:_rbrowse_voiced
+en : Voiced
+ru*:
+cs*:
+hu*:
+nl : Ingesproken
+
 :_rbrowse_animation
 en : Animation
 ru*:

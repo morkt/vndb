@@ -11,7 +11,7 @@ our @EXPORT = qw|dbReleaseGet dbReleaseRevisionInsert|;
 
 
 # Options: id vid pid rev unreleased page results what med sort reverse date_before date_after 
-#   plat lang type minage search resolution freeware doujin ani_story ani_ero
+#   plat lang type minage search resolution freeware doujin voiced ani_story ani_ero
 # What: extended changes vn producers platforms media
 # Sort: title released minage
 sub dbReleaseGet {
@@ -33,6 +33,7 @@ sub dbReleaseGet {
     defined $o{date_before} ? ( 'rr.released <= ?' => $o{date_before} ) : (),
     defined $o{date_after}  ? ( 'rr.released >= ?' => $o{date_after} ) : (),
     defined $o{resolution}  ? ( 'rr.resolution IN(!l)' => [ ref $o{resolution} ? $o{resolution} : [$o{resolution}] ] ) : (),
+    defined $o{voiced}      ? ( 'rr.voiced IN(!l)'     => [ ref $o{voiced}     ? $o{voiced}     : [$o{voiced}]     ] ) : (),
     defined $o{ani_story}   ? ( 'rr.ani_story IN(!l)'  => [ ref $o{ani_story}  ? $o{ani_story}  : [$o{ani_story}]  ] ) : (),
     defined $o{ani_ero}     ? ( 'rr.ani_ero IN(!l)'    => [ ref $o{ani_ero}    ? $o{ani_ero}    : [$o{ani_ero}]    ] ) : (),
     defined $o{unreleased}  ? ( 'rr.released !s ?' => [ $o{unreleased} ? '>' : '<=', strftime('%Y%m%d', gmtime) ] ) : (),

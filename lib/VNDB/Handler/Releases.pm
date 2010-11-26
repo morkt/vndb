@@ -492,7 +492,7 @@ sub browse {
   );
   return 404 if $f->{_err};
 
-  my $fil = fil_parse $f->{fil}, qw|type patch freeware doujin date_before date_after minage lang resolution plat med ani_story ani_ero|;
+  my $fil = fil_parse $f->{fil}, qw|type patch freeware doujin date_before date_after minage lang resolution plat med voiced ani_story ani_ero|;
   _fil_compat($self, $fil);
   $f->{fil} = fil_serialize($fil);
 

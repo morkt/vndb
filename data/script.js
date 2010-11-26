@@ -1956,6 +1956,9 @@ function filReleases() {
   var med = media;
   for(var i=0; i<med.length; i++) // l10n /_med_.+/
     med[i] = [ med[i], mt('_med_'+med[i]) ];
+  var voi = voiced;
+  for(var i=0; i<voi.length; i++) // l10n /_voiced_.+/
+    voi[i] = [ voi[i], mt('_voiced_'+voi[i]) ];
   var ani = animated;
   for(var i=0; i<ani.length; i++) // l10n /_animated_.+/
     ani[i] = [ ani[i], mt('_animated_'+ani[i]) ];
@@ -1974,6 +1977,7 @@ function filReleases() {
     [ mt('_rbrowse_resolution'), filFSelect('resolution', mt('_rbrowse_resolution'), 15, resolutions) ],
     [ mt('_rbrowse_platform'),   filFSelect('plat', mt('_rbrowse_platform'), 20, plat) ],
     [ mt('_rbrowse_medium'),     filFSelect('med',  mt('_rbrowse_medium'), 10, med) ],
+    [ mt('_rbrowse_voiced'),     filFSelect('voiced', mt('_rbrowse_voiced'), 5, voi) ],
     [ mt('_rbrowse_animation'),
       filFSelect('ani_story', mt('_rbrowse_ani_story'), 5, ani),
       filFSelect('ani_ero',   mt('_rbrowse_ani_ero'),   5, ani)
