@@ -6,8 +6,9 @@
 	- JS: Reverted to the old selection box date selector
 	- JS: Split script.js into a separate file for each language
 	- Improved performance of update_vnpopularity() on PostgreSQL 9.0
+	- Faster and improved bb2html()
 	- Added WHEN clause to all SQL TRIGGERs for which it was useful
-		(this *requires* PostgreSQL 9.0 or up!)
+	  (this *requires* PostgreSQL 9.0 or up!)
 	- Added ON DELETE clause to all foreign keys referencing users (id)
 	- Use word-level (instead of character-level) diff for large fields
 
