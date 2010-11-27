@@ -825,9 +825,12 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 
 #prodrel              { width:  100%; }
 #prodrel tr.vn td     { background: url($_boxbg$) repeat; font-weight: bold; }
-#prodrel tr.vn i      { display: none }
-#prodrel tr.vn_lst td { padding: 1px }
-#prodrel tr.vn_lst i  { font-style: normal; display: block; float: left; width: 80px; padding: 0 0 0 40px; }
+#prodrel tr.vn i,
+#prodrel tr.vn span   { display: none }
+#prodrel.collapse tr.vn td   { padding: 1px; background: none; font-weight: normal }
+#prodrel.collapse tr.vn i    { font-style: normal; display: block; float: left; width: 80px; padding: 0 0 0 40px; }
+#prodrel.collapse tr.vn span { display: inline; font-weight: normal; color: $grayedout$; padding: 0 0 0 5px }
+#prodrel.collapse tr.rel     { display: none }
 #prodrel td.tc1       { width:  80px; padding-left: 30px; }
 #prodrel td.tc2       { width:  50px; text-align: center; }
 #prodrel td.tc3       { width: 120px; text-align: right;  padding: 0; }

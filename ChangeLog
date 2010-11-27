@@ -3,6 +3,7 @@
 	- New release filters: voiced and animation
 	- Added Atom feeds for the recent announcements, changes and posts
 	  (located in /www/feeds and updated every 15 min. by Multi::Feed)
+	- Re-added producer role to collapsed view on producer pages
 	- JS: Reverted to the old selection box date selector
 	- JS: Split script.js into a separate file for each language
 	- Improved performance of update_vnpopularity() on PostgreSQL 9.0

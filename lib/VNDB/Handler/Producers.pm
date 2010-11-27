@@ -153,6 +153,10 @@ sub _releases {
        td colspan => 6;
         i; lit $self->{l10n}->datestr($vn{$v->{vid}}[0]{released}); end;
         a href => "/v$v->{vid}", title => $v->{original}, $v->{title};
+        span '('.join(', ',
+           (grep($_->{developer}, @{$vn{$v->{vid}}}) ? mt '_prodpage_dev' : ()),
+           (grep($_->{publisher}, @{$vn{$v->{vid}}}) ? mt '_prodpage_pub' : ())
+        ).')';
        end;
       end;
       for my $rel (@{$vn{$v->{vid}}}) {

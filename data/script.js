@@ -2202,14 +2202,7 @@ if(byId('expandprodrel')) {
   setexpand = function() {
     var exp = !(getCookie('prodrelexpand') == 1);
     setText(lnk, exp ? mt('_js_collapse') : mt('_js_expand'));
-    var l = byClass(byId('prodrel'), 'tr', 'rel');
-    for(var i=0; i<l.length; i++)
-      setClass(l[i], 'hidden', !exp);
-    var l = byClass(byId('prodrel'), 'tr', exp ? 'vn_lst' : 'vn');
-    for(var i=0; i<l.length; i++) {
-      setClass(l[i], 'vn', exp);
-      setClass(l[i], 'vn_lst', !exp);
-    }
+    setClass(byId('prodrel'), 'collapse', !exp);
   };
   setexpand();
   lnk.onclick = function () {
