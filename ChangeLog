@@ -1,5 +1,5 @@
 2.14 - ?
-	- Improved release filter selection interface
+	- Improved filter selection interface for the release and VN browser
 	- New release filters: voiced and animation
 	- Added Atom feeds for the recent announcements, changes and posts
 	  (located in /www/feeds and updated every 15 min. by Multi::Feed)

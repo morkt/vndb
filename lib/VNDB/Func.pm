@@ -13,7 +13,7 @@ our @EXPORT = (@VNDBUtil::EXPORT, qw| liststat clearfloat cssicon tagscore mt mi
 # three ways to represent the same information
 our $fil_escape = '_ !"#$%&\'()*+,-./:;<=>?@[\]^`{}~';
 our @fil_escape = split //, $fil_escape;
-our %fil_escape = map +($fil_escape[$_], $_), 0..$#fil_escape;
+our %fil_escape = map +($fil_escape[$_], sprintf '%02d', $_), 0..$#fil_escape;
 
 
 # Argument: hashref with rstat and vstat

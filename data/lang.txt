@@ -5656,19 +5656,19 @@ cs : nenalezeny takové tagy
 hu : nem található ilyen címke
 nl : tag niet gevonden
 
-:_vnbrowse_advsearch
-en : advanced search
-ru : расширенный поиск
-cs : pokročilé hledání
-hu : bővített keresés
-nl : geavanceerd zoeken
+:_vnbrowse_fil_title
+en : Visual Novel Filters
+ru*:
+cs*:
+hu*:
+nl :
 
 :_vnbrowse_tags
-en : Tag filters
-ru : Фильтры тегов
-cs : Filtry tagů
-hu : címke szűrők
-nl : Tagfilters
+en : Tags
+ru*:
+cs*:
+hu*:
+nl :
 
 :_vnbrowse_booland
 en : boolean and, selecting more gives less results
@@ -5712,40 +5712,19 @@ cs : Ukázat všechny spoilery
 hu : Nagyobb spoilerek megjelenítése
 nl : Toon alle spoilers
 
-:_vnbrowse_lang
-en : Languages
-ru : Языки
-cs : Jazyky
-hu : Nyelvek
-nl : Talen
+:_vnbrowse_language
+en : Language
+ru*: Языки
+cs*: Jazyky
+hu*: Nyelvek
+nl : Taal
 
-:_vnbrowse_boolor
-en : boolean or, selecting more gives more results
-ru : логическое 'или', чем больше выбрано, тем больше даёт результатов
-cs : boolean nebo, výběr více dá více výsledků
-hu : Boole féle értékhalmaz(igaz/hamis), ha többet választasz ki akkor több találatot ad ki
-nl : booleaanse 'of', meerdere selecties geven meer resultaten
-
-:_vnbrowse_plat
-en : Platforms
-ru : Платформы
-cs : Platformy
-hu : Platformok
-nl : Platformen
-
-:_vnbrowse_apply
-en : Apply
-ru : Применить
-cs : Použít
-hu : Alkalmazás
-nl : Toepassen
-
-:_vnbrowse_clear
-en : Clear
-ru : Очистить
-cs : Začít znovu
-hu : Törlés
-nl : Wissen
+:_vnbrowse_platform
+en : Platform
+ru*: Платформы
+cs*: Platformy
+hu*: Platformok
+nl :
 
 
 # VN add/edit form (/v+/edit)

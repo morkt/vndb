@@ -632,7 +632,7 @@ function dsKeyDown(ev) {
     if(obj.ds_selectedId != 0)
       obj.value = obj.ds_serFunc(byId('ds_box_'+obj.ds_selectedId).ds_itemData, obj);
     if(obj.ds_returnFunc)
-      obj.ds_returnFunc();
+      obj.ds_returnFunc(obj);
 
     setClass(byId('ds_box'), 'hidden', true);
     setContent(byId('ds_box'), tag('b', mt('_js_loading')));
@@ -1728,8 +1728,8 @@ if(byId('prodrelations'))
  * Where:
  *  <title>           human-readable title of the filter box
  *  <category_name>   human-readable name of the category. ignored if there's only one category
- *  <fieldcode>       code of this field, refers to the <field> in the filter format
- *  <fieldname>       human-readanle name of the field. Empty to not display a label
+ *  <fieldcode>       code of this field, refers to the <field> in the filter format. Empty string for just a <tr>
+ *  <fieldname>       human-readanle name of the field. Empty to not display a label. Space for always-enabled items (without checkbox)
  *  <fieldcontents>   tag() object, or an array of tag() objects
  *  <fieldreadfunc>   function reference. argument: <fieldcontents>; must return data to be used in the filter format
  *  <fieldwritefunc>  function reference, argument: <fieldcontents>, data from filter format; must update the contents with the passed data
@@ -1749,7 +1749,7 @@ if(byId('prodrelations'))
 var fil_cats; // [ <object with field->tr mapping>, <category-link1>, .. ]
 var fil_escape = "_ !\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~".split('');
 function filLoad() {
-  var l = filReleases();
+  var l = byId('filselect').href.match(/#r$/) ? filReleases() : filVN();
   fil_cats = [ new Object ];
 
   var p = tag('p', {'class':'browseopts'});
@@ -1768,13 +1768,14 @@ function filLoad() {
       var fd = l[i][j];
       var lab = typeof fd[1] == 'object' ? fd[1][0] : fd[1];
       var f = tag('tr', {'class':'newfield', fil_code: fd[0], fil_contents: fd[2], fil_readfunc: fd[3], fil_writefunc: fd[4]},
-        tag('td', {'class':'check'}, tag('input', {type:'checkbox', id:'fil_check_'+fd[0], name:'fil_check_'+fd[0], onclick: filSelectField })),
+        fd[0] ? tag('td', {'class':'check'}, tag('input', {type:'checkbox', id:'fil_check_'+fd[0], 'class':fd[1]==' '?'hidden':'', name:'fil_check_'+fd[0], onclick: filSelectField })) : tag('td', null),
         fd[1] ? tag('td', {'class':'label'},
           tag('label', {'for':'fil_check_'+fd[0]}, lab),
           typeof fd[1] == 'object' ? tag('b', fd[1][1]) : null
         ) : null,
         tag('td', {'class':'cont' }, fd[2]));
-      fil_cats[0][fd[0]] = f;
+      if(fd[0])
+        fil_cats[0][fd[0]] = f;
       t.appendChild(f);
     }
     c.appendChild(t);
@@ -1782,6 +1783,7 @@ function filLoad() {
     fil_cats[i] = a;
   }
 
+  // TODO: _rbrowse_ -> generalize (this isn't specific to the release browser)
   addBody(tag('div', { id: 'fil_div', 'class':'hidden' },
     tag('a', {href:'#', onclick:filShow, 'class':'close'}, mt('_rbrowse_close')),
     tag('h3', l[0]),
@@ -1820,6 +1822,8 @@ function filSelectField(obj) {
   var c = byId('fil_check_'+o.fil_code);
   if(c != t)
     c.checked = true;
+  if(hasClass(c, 'hidden'))
+    c.checked = true;
   setClass(byName(o, 'label')[0], 'active', c.checked);
 
   // update category link
@@ -1828,7 +1832,7 @@ function filSelectField(obj) {
   var l = byName(o, 'input');
   var n=0;
   for(var i=0; i<l.length; i++)
-    if(l[i].type == 'checkbox' && l[i].id.substr(0, 10) == 'fil_check_' && l[i].checked)
+    if(l[i].type == 'checkbox' && l[i].id.substr(0, 10) == 'fil_check_' && !hasClass(l[i], 'hidden') && l[i].checked)
       n++;
   setClass(fil_cats[o.fil_num], 'active', n>0);
 
@@ -1839,9 +1843,12 @@ function filSelectField(obj) {
 
 function filSerialize() {
   var l = [];
+  var num = 0;
   for(var f in fil_cats[0]) {
     if(!byId('fil_check_'+f).checked)
       continue;
+    if(!hasClass(byId('fil_check_'+f), 'hidden'))
+      num++;
     var v = fil_cats[0][f].fil_readfunc(fil_cats[0][f].fil_contents);
     var r = [];
     for(var h=0; h<v.length; h++) {
@@ -1859,8 +1866,7 @@ function filSerialize() {
       l.push(fil_cats[0][f].fil_code+'-'+r.join('~'));
   }
   byId('fil').value = l.join('.');
-  var cnt = byName(byId('filselect'), 'i')[1];
-  setText(cnt, l.length > 0 ? ' ('+l.length+')' : '');
+  setText(byName(byId('filselect'), 'i')[1], num > 0 ? ' ('+num+')' : '');
 }
 
 function filDeSerialize() {
@@ -1880,7 +1886,7 @@ function filDeSerialize() {
     c.checked = f[fn] == '' ? false : true;
     var v = f[fn].split('~');
     for(var i=0; i<v.length; i++)
-      v[i] = v[i].replace(/_([0-9]{2})/g, function (a, e) { return fil_escape[e] });
+      v[i] = v[i].replace(/_([0-9]{2})/g, function (a, e) { return fil_escape[Math.floor(e)] });
     fil_cats[0][fn].fil_writefunc(fil_cats[0][fn].fil_contents, v);
     // not very efficient: filSelectField() does a lot of things that can be
     //  batched after all fields have been updated, and in some cases the
@@ -1985,6 +1991,50 @@ function filReleases() {
   ];
 }
 
+function filVN() {
+  var lang = languages;
+  for(var i=0; i<lang.length; i++) // l10n /_lang_.+/
+    lang[i] = [ lang[i], mt('_lang_'+lang[i]) ];
+  var plat = platforms;
+  for(var i=0; i<plat.length; i++) // l10n /_plat_.+/
+    plat[i] = [ plat[i], mt('_plat_'+plat[i]) ];
+
+  // tag include/exclude dropdown search
+  var taginc = tag('input', {type:'text', 'class':'text', style:'width:350px', onfocus:filSelectField});
+  var tagexc = tag('input', {type:'text', 'class':'text', style:'width:350px', onfocus:filSelectField});
+  var trfunc = function(item, tr) {
+    tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
+      item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_meta')) : null,
+      item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
+    ));
+  };
+  var serfunc = function(item, obj) {
+    var tags = obj.value.split(/ *, */);
+    tags[tags.length-1] = item.firstChild.nodeValue;
+    filSelectField(obj);
+    return tags.join(', ');
+  };
+  var retfunc   = function(o)   { filSelectField(o); false };
+  var parfunc   = function(val) { return (val.split(/, */))[val.split(/, */).length-1]; };
+  var readfunc  = function(c)   { return c.value.split(/, */) };
+  var writefunc = function(c,v) { c.value = v.join(', ') };
+  dsInit(taginc, '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
+  dsInit(tagexc, '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
+
+  return [
+    mt('_vnbrowse_fil_title'),
+    [ mt('_vnbrowse_tags'),
+      [ '',       ' ',                    tag('('+mt('_vnbrowse_booland')+')') ],
+      [ 'taginc', mt('_vnbrowse_taginc'), taginc, readfunc, writefunc ],
+      [ 'tagexc', mt('_vnbrowse_tagexc'), tagexc, readfunc, writefunc ],
+      // TODO: get/set cookie
+      filFSelect('tagspoil', ' ', 1, [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]])
+    ],
+    [ mt('_vnbrowse_language'), filFSelect('lang', mt('_vnbrowse_language'), 20, lang) ],
+    [ mt('_vnbrowse_platform'), filFSelect('plat', mt('_vnbrowse_platform'), 20, plat) ]
+  ];
+}
+
 if(byId('filselect'))
   filLoad();
 
@@ -2035,13 +2085,14 @@ if(byId('advselect')) {
 }
 
 // Spoiler filters -> cookie (/v/*)
+/* TODO: unused
 if(byId('sp_0')) {
   byId('sp_0').onclick = function() { setCookie('tagspoil', 0) };
   byId('sp_1').onclick = function() { setCookie('tagspoil', 1) };
   byId('sp_2').onclick = function() { setCookie('tagspoil', 2) };
   var spoil = getCookie('tagspoil');
   byId('sp_'+(spoil == null ? 0 : spoil)).checked = true;
-}
+}*/
 
 // NSFW VN image toggle (/v+)
 if(byId('nsfw_show')) {
@@ -2210,27 +2261,6 @@ if(byId('expandprodrel')) {
     setexpand();
     return false;
   };
-}
-
-// auto-complete tag search (/v/*)
-if(byId('advselect') && byId('ti')) {
-  var trfunc = function(item, tr) {
-    tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
-      item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_meta')) : null,
-      item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
-    ));
-  };
-  var serfunc = function(item, obj) {
-    var tags = obj.value.split(/ *, */);
-    tags[tags.length-1] = item.firstChild.nodeValue;
-    return tags.join(', ');
-  };
-  var retfunc = function() { false; };
-  var parfunc = function(val) {
-    return (val.split(/, */))[val.split(/, */).length-1];
-  };
-  dsInit(byId('ti'), '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
-  dsInit(byId('te'), '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
 }
 
 // Language selector

@@ -751,6 +751,7 @@ a.addnew {
   border-top: none;
   background-color: $secbg$;
   cursor: pointer;
+  z-index: 2
 }
 #ds_box b {
   padding: 2px 0 0 10px;
@@ -789,35 +790,13 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 .vnbrowse .tc3 { padding: 0; }
 .vnbrowse .tc5 { text-align: right; padding-right: 10px }
 .vnbrowse .tc6 { width: 80px }
-#advselect, #filselect {
+#filselect {
   text-align: center;
   display: block;
   margin: 10px auto 3px auto;
   border: none;
   outline: none;
 }
-#advoptions {
-  width: 90%;
-  padding: 0 30px 5px 30px;
-  margin: 0 auto;
-  border-top: 1px solid $border$;
-}
-#advoptions h2 {
-  clear: left;
-  padding-top: 10px;
-  margin-left: -20px;
-  margin-top: 0;
-  margin-bottom: 3px;
-}
-#advoptions span {
-  display: block;
-  float: left;
-  width: 170px;
-}
-#advoptions span input {
-  margin-right: 3px;
-}
-
 
 
 

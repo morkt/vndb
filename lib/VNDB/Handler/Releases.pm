@@ -511,7 +511,7 @@ sub browse {
   div class => 'mainbox';
    h1 mt '_rbrowse_title';
    $self->htmlSearchBox('r', $f->{q});
-   a id => 'filselect', href => '#';
+   a id => 'filselect', href => '#r';
     lit '<i>&#9656;</i> '.mt('_rbrowse_filters').'<i></i>';
    end;
    input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
