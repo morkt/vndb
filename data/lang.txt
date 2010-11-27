@@ -5663,6 +5663,20 @@ cs*:
 hu*:
 nl :
 
+:_vnbrowse_general
+en : General
+ru*:
+cs*:
+hu*:
+nl :
+
+:_vnbrowse_length
+en : Length
+ru*:
+cs*:
+hu*:
+nl :
+
 :_vnbrowse_tags
 en : Tags
 ru*:

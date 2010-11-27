@@ -2023,6 +2023,9 @@ function filVN() {
   var plat = platforms;
   for(var i=0; i<plat.length; i++) // l10n /_plat_.+/
     plat[i] = [ plat[i], mt('_plat_'+plat[i]) ];
+  var len = vn_lengths;
+  for(var i=0; i<len.length; i++) // l10n /_vnlength_.+/
+    len[i] = [ len[i], mt('_vnlength_'+len[i]) ];
 
   // tag include/exclude dropdown search
   var taginc = tag('input', {type:'text', 'class':'text', style:'width:350px', onfocus:filSelectField});
@@ -2048,6 +2051,9 @@ function filVN() {
 
   return [
     mt('_vnbrowse_fil_title'),
+    [ mt('_vnbrowse_general'),
+      filFSelect('length', mt('_vnbrowse_length'), 6, len)
+    ],
     [ mt('_vnbrowse_tags'),
       [ '',       ' ',                    tag('('+mt('_vnbrowse_booland')+')') ],
       [ 'taginc', mt('_vnbrowse_taginc'), taginc, readfunc, writefunc ],

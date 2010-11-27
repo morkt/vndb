@@ -69,6 +69,7 @@ sub l10n {
     my $val = $lang{$lang}{$key} || $lang{'en'}{$key};
     $val =~ s/"/\\"/g;
     $val =~ s/\n/\\n/g;
+    $val =~ s/\[index,.+$// if $key =~ /^_vnlength_/; # special casing the VN lengths, since the JS mt() doesn't handle [index]
     $r .= sprintf qq|  %s: "%s"|, $key !~ /^[a-z0-9_]+$/ ? "'$key'" : $key, $val;
   }
   $r .= "\n};";
@@ -111,6 +112,7 @@ sub jsgen {
   $common .= sprintf "release_types = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{release_types}};
   $common .= sprintf "animated = [ %s ];\n", join ', ', @{$S{animated}};
   $common .= sprintf "voiced = [ %s ];\n", join ', ', @{$S{voiced}};
+  $common .= sprintf "vn_lengths = [ %s ];\n", join ', ', @{$S{vn_lengths}};
   $common .= sprintf "L10N_LANG = [ %s ];\n", join(', ', map qq{"$_"}, VNDB::L10N::languages());
 
   open my $JS, '<:utf8', "$ROOT/data/script.js" or die $!;

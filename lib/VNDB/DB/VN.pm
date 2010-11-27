@@ -10,7 +10,7 @@ use Encode 'decode_utf8';
 our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
 
 
-# Options: id, rev, char, search, lang, plat, tags_include, tags_exclude, results, page, what, sort, reverse
+# Options: id, rev, char, search, length, lang, plat, tags_include, tags_exclude, results, page, what, sort, reverse
 # What: extended anime relations screenshots relgraph rating ranking changes
 # Sort: id rel pop rating title tagscore rand
 sub dbVNGet {
@@ -29,6 +29,8 @@ sub dbVNGet {
       'LOWER(SUBSTR(vr.title, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
       '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
+    defined $o{length} ? (
+      'vr.length IN(!l)' => [ ref $o{length} ? $o{length} : [$o{length}] ]) : (),
     $o{lang} ? (
       'v.c_languages && ARRAY[!l]::language[]' => [ ref $o{lang} ? $o{lang} : [$o{lang}] ]) : (),
     $o{plat} ? (
