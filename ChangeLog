@@ -14,6 +14,8 @@
 	  (this *requires* PostgreSQL 9.0 or up!)
 	- Added ON DELETE clause to all foreign keys referencing users (id)
 	- Use word-level (instead of character-level) diff for large fields
+	- Extended IE6 warning message to show up for IE7 as well
+
 
 2.13 - 2010-11-11
 	- Added 'formcode' parameter to all modification requests to fix all

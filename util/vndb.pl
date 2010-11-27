@@ -70,11 +70,11 @@ sub reqinit {
   $self->authInit;
 
   # check for IE6
-  if($self->reqHeader('User-Agent') && $self->reqHeader('User-Agent') =~ /MSIE 6/
-    && !$self->reqCookie('ie-sucks') && $self->reqPath ne 'we-dont-like-ie6') {
+  if($self->reqHeader('User-Agent') && $self->reqHeader('User-Agent') =~ /MSIE [67]/
+    && !$self->reqCookie('ie-sucks') && $self->reqPath ne 'we-dont-like-ie') {
     # act as if we're opening /we-dont-like-ie6 (ugly hack, until YAWF supports preventing URL handlers from firing)
     $ENV{HTTP_REFERER} = $ENV{REQUEST_URI};
-    $ENV{REQUEST_URI} = '/we-dont-like-ie6';
+    $ENV{REQUEST_URI} = '/we-dont-like-ie';
   }
 
   # load some stats (used for about all pageviews, anyway)
