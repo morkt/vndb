@@ -1946,10 +1946,12 @@ function filFSelect(c, n, lines, opts) {
   ];
 }
 
-function filFOptions(c, n, opts) {
+function filFOptions(c, n, opts, setfunc) {
   var p = tag('p', {'class':'opts', fil_val:opts[0][0]});
   var sel = function (e) {
     var o = typeof e == 'object' ? this.fil_n : e;
+    if(setfunc)
+      o = setfunc(o);
     var l = byName(p, 'a');
     for(var i=0; i<l.length; i++)
       setClass(l[i], 'tsel', l[i].fil_n+'' == o+'');
@@ -1964,7 +1966,7 @@ function filFOptions(c, n, opts) {
       p.appendChild(tag('b', '|'));
   }
   return [ c, n, p,
-    function (c) { return c.fil_val },
+    function (c) { return [ c.fil_val ] },
     function (c, v) { sel(v[0]) }
   ];
 }
@@ -2050,8 +2052,8 @@ function filVN() {
       [ '',       ' ',                    tag('('+mt('_vnbrowse_booland')+')') ],
       [ 'taginc', mt('_vnbrowse_taginc'), taginc, readfunc, writefunc ],
       [ 'tagexc', mt('_vnbrowse_tagexc'), tagexc, readfunc, writefunc ],
-      // TODO: get/set cookie
-      filFOptions('tagspoil', ' ', [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]])
+      filFOptions('tagspoil', ' ', [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]],
+        function (o) { var s = getCookie('tagspoil'); if(o == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
     ],
     [ mt('_vnbrowse_language'), filFSelect('lang', mt('_vnbrowse_language'), 20, lang) ],
     [ mt('_vnbrowse_platform'), filFSelect('plat', mt('_vnbrowse_platform'), 20, plat) ]
@@ -2106,16 +2108,6 @@ if(byId('advselect')) {
     return false;
   };
 }
-
-// Spoiler filters -> cookie (/v/*)
-/* TODO: unused
-if(byId('sp_0')) {
-  byId('sp_0').onclick = function() { setCookie('tagspoil', 0) };
-  byId('sp_1').onclick = function() { setCookie('tagspoil', 1) };
-  byId('sp_2').onclick = function() { setCookie('tagspoil', 2) };
-  var spoil = getCookie('tagspoil');
-  byId('sp_'+(spoil == null ? 0 : spoil)).checked = true;
-}*/
 
 // NSFW VN image toggle (/v+)
 if(byId('nsfw_show')) {
