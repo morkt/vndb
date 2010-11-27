@@ -1,6 +1,8 @@
 2.14 - ?
 	- Improved filter selection interface for the release and VN browser
 	- New release filters: voiced and animation
+	- New VN filters: length and "has anime"
+	- Apply search query and filters when changing first char
 	- Added Atom feeds for the recent announcements, changes and posts
 	  (located in /www/feeds and updated every 15 min. by Multi::Feed)
 	- Re-added producer role to collapsed view on producer pages

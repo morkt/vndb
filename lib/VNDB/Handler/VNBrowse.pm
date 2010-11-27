@@ -78,7 +78,7 @@ sub list {
    $self->htmlSearchBox('v', $f->{q});
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => "/v/$_", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+      a href => "/v/$_?q=$f->{q};fil=$f->{fil}", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
     }
    end;
 
