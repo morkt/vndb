@@ -25,7 +25,7 @@ sub list {
   );
   return 404 if $f->{_err};
   $f->{q} ||= $f->{sq};
-  my $fil = fil_parse $f->{fil}, qw|length taginc tagexc tagspoil lang plat|;
+  my $fil = fil_parse $f->{fil}, qw|length hasani taginc tagexc tagspoil lang plat|;
   _fil_compat($self, $fil);
 
   if($f->{q}) {

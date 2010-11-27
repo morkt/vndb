@@ -2052,7 +2052,8 @@ function filVN() {
   return [
     mt('_vnbrowse_fil_title'),
     [ mt('_vnbrowse_general'),
-      filFSelect('length', mt('_vnbrowse_length'), 6, len)
+      filFSelect( 'length', mt('_vnbrowse_length'), 6, len),
+      filFOptions('hasani', mt('_vnbrowse_anime'), [[1, mt('_vnbrowse_anime_yes')],[0, mt('_vnbrowse_anime_no')]])
     ],
     [ mt('_vnbrowse_tags'),
       [ '',       ' ',                    tag('('+mt('_vnbrowse_booland')+')') ],

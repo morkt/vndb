@@ -5668,14 +5668,35 @@ en : General
 ru*:
 cs*:
 hu*:
-nl :
+nl : Algemeen
 
 :_vnbrowse_length
 en : Length
 ru*:
 cs*:
 hu*:
+nl : Lengte
+
+:_vnbrowse_anime
+en : Anime
+ru*:
+cs*:
+hu*:
 nl :
+
+:_vnbrowse_anime_yes
+en : Has anime
+ru*:
+cs*:
+hu*:
+nl : Heeft anime
+
+:_vnbrowse_anime_no
+en : Does not have anime
+ru*:
+cs*:
+hu*:
+nl : Heeft geen anime
 
 :_vnbrowse_tags
 en : Tags
