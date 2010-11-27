@@ -516,6 +516,7 @@ sub browse {
    end;
    input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
   end;
+  end;
 
   $self->htmlBrowse(
     class    => 'relbrowse',

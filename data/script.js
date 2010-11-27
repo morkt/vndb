@@ -563,6 +563,8 @@ function dateSet(div, val) {
   val = typeof val == 'object' ? val[0] : val;
   val = Math.floor(val) || 0;
   val = [ Math.floor(val/10000), Math.floor(val/100)%100, val%100 ];
+  if(val[1] == 0) val[1] = 99;
+  if(val[2] == 0) val[2] = 99;
   var l = byName(div, 'select');
   for(var i=0; i<l.length; i++)
     for(var j=0; j<l[i].options.length; j++)
@@ -571,7 +573,7 @@ function dateSet(div, val) {
 }
 
 function dateSerialize(div, nonotify) {
-  var div = div.parentNode ? div.parentNode : this.parentNode;
+  var div = div && div.parentNode ? div.parentNode : this.parentNode;
   var sel = byName(div, 'select');
   var val = [
     sel[0].options[sel[0].selectedIndex].value*1,
@@ -1814,7 +1816,7 @@ function filSelectCat(n) {
 }
 
 function filSelectField(obj) {
-  var t = obj.parentNode ? obj : this;
+  var t = obj && obj.parentNode ? obj : this;
   // update checkbox and label
   var o = t;
   while(o.nodeName.toLowerCase() != 'tr')
@@ -1949,14 +1951,14 @@ function filFSelect(c, n, lines, opts) {
 function filFOptions(c, n, opts, setfunc) {
   var p = tag('p', {'class':'opts', fil_val:opts[0][0]});
   var sel = function (e) {
-    var o = typeof e == 'object' ? this.fil_n : e;
+    var o = typeof e == 'string' ? e : this.fil_n;
     if(setfunc)
       o = setfunc(o);
     var l = byName(p, 'a');
     for(var i=0; i<l.length; i++)
       setClass(l[i], 'tsel', l[i].fil_n+'' == o+'');
     p.fil_val = o;
-    if(typeof e == 'object')
+    if(typeof e != 'string')
       filSelectField(p);
     return false
   };
