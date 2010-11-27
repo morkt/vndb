@@ -71,32 +71,39 @@ sub bb2html {
       if($tag) {
         $tag = lc $tag;
         if($tag eq '[raw]') {
-          push @open, 'raw'
+          push @open, 'raw';
+          next;
         } elsif($tag eq '[spoiler]') {
           push @open, 'spoiler';
-          $result .= '<b class="spoiler">'
+          $result .= '<b class="spoiler">';
+          next;
         } elsif($tag eq '[quote]') {
           push @open, 'quote';
           $result .= '<div class="quote">' if !$maxlength;
           $rmnewline = 1;
+          next;
         } elsif($tag eq '[code]') {
           push @open, 'code';
           $result .= '<pre>' if !$maxlength;
           $rmnewline = 1;
+          next;
         } elsif($tag eq '[/spoiler]' && $open[$#open] eq 'spoiler') {
           $result .= '</b>';
           pop @open;
+          next;
         } elsif($tag eq '[/quote]' && $open[$#open] eq 'quote') {
           $result .= '</div>' if !$maxlength;
           $rmnewline = 1;
+          next;
         } elsif($tag eq '[/url]' && $open[$#open] eq 'url') {
           $result .= '</a>';
           pop @open;
+          next;
         } elsif($tag =~ s{\[url=((https?://|/)[^\]>]+)\]}{<a href="$1" rel="nofollow">}i) {
           $result .= $tag;
           push @open, 'url';
+          next;
         }
-        next;
       }
       # handle URLs
       if($url && !grep(/url/, @open)) {
@@ -106,14 +113,11 @@ sub bb2html {
         next;
       }
       # id
-      if($id || $exid) {
-        my $r = $id || $exid;
-        if(substr($raw, $last-1-length($r), 1) !~ /[\w]/ && substr($raw, $last, 1) !~ /[\w]/) {
-          $length += length $r;
-          last if $maxlength && $length > $maxlength;
-          $result .= sprintf '<a href="/%s">%1$s</a>', $r;
-          next
-        }
+      if(($id || $exid) && substr($raw, $last-1-length($match), 1) !~ /[\w]/ && substr($raw, $last, 1) !~ /[\w]/) {
+        $length += length $match;
+        last if $maxlength && $length > $maxlength;
+        $result .= sprintf '<a href="/%s">%1$s</a>', $match;
+        next
       }
     }
 
