@@ -1946,6 +1946,29 @@ function filFSelect(c, n, lines, opts) {
   ];
 }
 
+function filFOptions(c, n, opts) {
+  var p = tag('p', {'class':'opts', fil_val:opts[0][0]});
+  var sel = function (e) {
+    var o = typeof e == 'object' ? this.fil_n : e;
+    var l = byName(p, 'a');
+    for(var i=0; i<l.length; i++)
+      setClass(l[i], 'tsel', l[i].fil_n+'' == o+'');
+    p.fil_val = o;
+    if(typeof e == 'object')
+      filSelectField(p);
+    return false
+  };
+  for(var i=0; i<opts.length; i++) {
+    p.appendChild(tag('a', {href:'#', fil_n: opts[i][0], onclick:sel}, opts[i][1]));
+    if(i<opts.length-1)
+      p.appendChild(tag('b', '|'));
+  }
+  return [ c, n, p,
+    function (c) { return c.fil_val },
+    function (c, v) { sel(v[0]) }
+  ];
+}
+
 function filReleases() {
   var types = release_types;
   for(var i=0; i<types.length; i++) // l10n /_rtype_.+/
@@ -1971,10 +1994,10 @@ function filReleases() {
   return [
     mt('_rbrowse_fil_title'),
     [ mt('_rbrowse_general'),
-      filFSelect('type',     mt('_rbrowse_type'),    1, types),
-      filFSelect('patch',    mt('_rbrowse_patch'),   1, [ [1, mt('_rbrowse_patch_yes')],    [0, mt('_rbrowse_patch_no')] ]),
-      filFSelect('freeware', mt('_rbrowse_freeware'),1, [ [1, mt('_rbrowse_freeware_yes')], [0, mt('_rbrowse_freeware_no')] ]),
-      filFSelect('doujin',   mt('_rbrowse_doujin'),  1, [ [1, mt('_rbrowse_doujin_yes')],   [0, mt('_rbrowse_doujin_no')] ]),
+      filFOptions('type',     mt('_rbrowse_type'),    types),
+      filFOptions('patch',    mt('_rbrowse_patch'),   [ [1, mt('_rbrowse_patch_yes')],    [0, mt('_rbrowse_patch_no')] ]),
+      filFOptions('freeware', mt('_rbrowse_freeware'),[ [1, mt('_rbrowse_freeware_yes')], [0, mt('_rbrowse_freeware_no')] ]),
+      filFOptions('doujin',   mt('_rbrowse_doujin'),  [ [1, mt('_rbrowse_doujin_yes')],   [0, mt('_rbrowse_doujin_no')] ]),
       [ 'date_after',  mt('_rbrowse_dateafter'),  dateLoad(null, filSelectField), function (c) { return [c.date_val] }, dateSet ],
       [ 'date_before', mt('_rbrowse_datebefore'), dateLoad(null, filSelectField), function (c) { return [c.date_val] }, dateSet ]
     ],
@@ -2028,7 +2051,7 @@ function filVN() {
       [ 'taginc', mt('_vnbrowse_taginc'), taginc, readfunc, writefunc ],
       [ 'tagexc', mt('_vnbrowse_tagexc'), tagexc, readfunc, writefunc ],
       // TODO: get/set cookie
-      filFSelect('tagspoil', ' ', 1, [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]])
+      filFOptions('tagspoil', ' ', [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]])
     ],
     [ mt('_vnbrowse_language'), filFSelect('lang', mt('_vnbrowse_language'), 20, lang) ],
     [ mt('_vnbrowse_platform'), filFSelect('plat', mt('_vnbrowse_platform'), 20, plat) ]
