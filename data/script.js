@@ -2060,7 +2060,7 @@ function filVN() {
       [ 'taginc', mt('_vnbrowse_taginc'), taginc, readfunc, writefunc ],
       [ 'tagexc', mt('_vnbrowse_tagexc'), tagexc, readfunc, writefunc ],
       filFOptions('tagspoil', ' ', [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]],
-        function (o) { var s = getCookie('tagspoil'); if(o == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
+        function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
     ],
     [ mt('_vnbrowse_language'), filFSelect('lang', mt('_vnbrowse_language'), 20, lang) ],
     [ mt('_vnbrowse_platform'), filFSelect('plat', mt('_vnbrowse_platform'), 20, plat) ]
