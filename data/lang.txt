@@ -411,7 +411,7 @@ nl :
 
 :_plat_ios
 en : Apple iProduct
-ru*:
+ru : Apple iЧтоНибудь
 cs*:
 hu : Apple iTermék
 nl :
@@ -1271,7 +1271,7 @@ nl : Per dag mag je maar één account aanmaken vanaf hetzelfde IP
 
 :_formerr_e_notanswer
 en : Question was not correctly answered. Are you sure you are a human?
-ru*:
+ru : Неправильный ответ. Вы уверены, что вы человек?
 cs*:
 hu : A kérdésre a válasz helytelen. Biztos vagy benne, hogy ember vagy?
 nl : Vraag was incorrect beantwoord. Weet je zeker dat je een mens bent?
@@ -1515,7 +1515,7 @@ nl : ongemodereerd
 
 :_atom_feed
 en : Atom Feed
-ru*:
+ru : Лента Atom
 cs*:
 hu : Atom Hírfolyam
 nl :
@@ -2585,7 +2585,7 @@ nl :
 
 :_prodpage_rel
 en : Releases
-ru*:
+ru : Выпуски
 cs*:
 hu : Kiadások
 nl : Uitgaven
@@ -3697,21 +3697,21 @@ nl :
 
 :_rbrowse_fil_title
 en : Release filters
-ru*:
+ru : Фильтры выпусков
 cs*:
 hu : Kiadás szűrők
 nl : Uitgavenfilters
 
 :_rbrowse_general
 en : General
-ru*:
+ru : Общие
 cs*:
 hu : Általános
 nl : Algemeen
 
 :_rbrowse_close
 en : close
-ru*:
+ru : закрыть
 cs*:
 hu : bezár
 nl : sluiten
@@ -3732,14 +3732,14 @@ nl :
 
 :_rbrowse_patch_yes
 en : Patch
-ru*: Только патчи
+ru : Только патчи
 cs*: Pouze patche
 hu : Patch
 nl :
 
 :_rbrowse_patch_no
 en : Standalone
-ru*: Только самостоятельные выпуски
+ru : Только самостоятельные выпуски
 cs*: Pouze samostatná vydání
 hu : Önálló
 nl : Geen patch
@@ -3809,14 +3809,14 @@ nl : Minimum leeftijd
 
 :_rbrowse_language
 en : Language
-ru*: Языки
+ru : Языки
 cs*: Jazyky
 hu : Nyelvek
 nl : Taal
 
 :_rbrowse_olang
 en : Original language
-ru*:
+ru : Язык оригинала
 cs*:
 hu : Eredeti nyelv
 nl : Originele taal
@@ -3837,42 +3837,42 @@ nl : Booleaanse 'of', meerdere selecties geven meer resultaten
 
 :_rbrowse_platform
 en : Platform
-ru*: Платформы
+ru : Платформы
 cs*: Platformy
 hu : Platformok
 nl : Platform
 
 :_rbrowse_medium
 en : Medium
-ru*: Носители
+ru : Носители
 cs*: Média
 hu : Médium
 nl :
 
 :_rbrowse_voiced
 en : Voiced
-ru*:
+ru : Озвучка
 cs*:
 hu : Szinkronos
 nl : Ingesproken
 
 :_rbrowse_animation
 en : Animation
-ru*:
+ru : Анимация
 cs*:
 hu : Animáció
 nl : Animatie
 
 :_rbrowse_ani_story
 en : Story
-ru*:
+ru : Сюжетная анимация
 cs*:
 hu : Történet
 nl : Verhaal
 
 :_rbrowse_ani_ero
 en : Ero scenes
-ru*:
+ru : Анимация эро-сцен
 cs*:
 hu : Ero jelenetek
 nl : Erotische scenes
@@ -3886,7 +3886,7 @@ nl : Zoek
 
 :_rbrowse_reset
 en : Reset
-ru*: Очистить
+ru : Очистить
 cs*: Začít znovu
 hu : Törlés
 nl :
@@ -5205,14 +5205,14 @@ nl : Herhaal wachtwoord
 
 :_register_question
 en : How many [index,_1,visual novels,releases,producers] do we have in the database? (Hint: look to your left)
-ru*:
+ru : Сколько [index,_1,новелл,выпусков,компаний] у нас в базе? (Подсказка: посмотрите слева)
 cs*:
 hu : Mennyi [index,_1,visual novels,releases,producers] van az adatbázisunkba? (Tip: vess egy pillantást balra)
 nl : Hoeveel [index,_1,visual novels,uitgaven,producenten] hebben wij in de database? (Tip: zie links van de pagina)
 
 :_register_answer
 en : Answer
-ru*:
+ru : Ответ
 cs*:
 hu : Válasz
 nl : Antwoord
@@ -5546,7 +5546,7 @@ nl : verwijder
 
 :_usern_autodel
 en : (Read notifications are automatically removed after one month)
-ru*:
+ru : (Прочитанные уведомления автоматически удаляются по истечении месяца)
 cs*:
 hu : (Az elolvasott értesítések egy hónap után automatikusan törölve lesznek)
 nl : (Gelezen notificaties worden na 1 maand automatisch verwijderd)
@@ -5665,49 +5665,49 @@ nl : tag niet gevonden
 
 :_vnbrowse_fil_title
 en : Visual Novel Filters
-ru*:
+ru : Фильтры новелл
 cs*:
 hu : Visual Novel Szűrők
 nl :
 
 :_vnbrowse_general
 en : General
-ru*:
+ru : Общие
 cs*:
 hu : Általános
 nl : Algemeen
 
 :_vnbrowse_length
 en : Length
-ru*:
+ru : Продолжительность
 cs*:
 hu : Hossz
 nl : Lengte
 
 :_vnbrowse_anime
 en : Anime
-ru*:
+ru : Аниме
 cs*:
 hu :
 nl :
 
 :_vnbrowse_anime_yes
 en : Has anime
-ru*:
+ru : Имеет экранизацию
 cs*:
 hu : Van róla anime
 nl : Heeft anime
 
 :_vnbrowse_anime_no
 en : Does not have anime
-ru*:
+ru : Не имеет экранизации
 cs*:
 hu : Nincs róla anime
 nl : Heeft geen anime
 
 :_vnbrowse_tags
 en : Tags
-ru*:
+ru : Теги
 cs*:
 hu : Címkék
 nl :
@@ -5756,21 +5756,21 @@ nl : Toon alle spoilers
 
 :_vnbrowse_language
 en : Language
-ru*: Языки
+ru : Языки
 cs*: Jazyky
 hu : Nyelvek
 nl : Taal
 
 :_vnbrowse_olang
 en : Original language
-ru*:
+ru : Язык оригинала
 cs*:
 hu : Eredeti nyelv
 nl : Originele taal
 
 :_vnbrowse_platform
 en : Platform
-ru*: Платформы
+ru : Платформы
 cs*: Platformy
 hu : Platformok
 nl :
@@ -5831,7 +5831,7 @@ nl : Aliassen
 en : List of alternative titles or abbreviations. One line for each alias.
      Can include both official (japanese/english) titles and unofficial titles used around net.[br]
      Titles that are listed in the releases should not be added here!
-ru*: Список альтернативных названий или аббревиатур, перечисленных через запятую. Может включать как
+ru : Список альтернативных названий или аббревиатур, по одной на строчку. Может включать как
      официальные (японские/английские/русские) названия, так и неофициальные, имеющие хождение в сети.[br]
      Не следует добавлять сюда названия, указанные в выпусках!
 cs*: Seznam alternativních názvů nebo zkratek, oddělených čárkou. Může zahrnovat oba
@@ -6000,7 +6000,7 @@ nl : is een
 
 :_vnedit_rel_official
 en : official
-ru*:
+ru : официальный(-ая/-ое)
 cs*:
 hu : hivatalos
 nl : officiële
@@ -6063,7 +6063,7 @@ nl :
 
 :_vnedit_scrnorel
 en : No releases in the database yet. Screenshots can only be uploaded after a release has been added.
-ru*:
+ru : В базе нет ещё ни одного выпуска для этой новеллы. Скриншоты могут быть добавлены только при наличии выпусков.
 cs*:
 hu : Még nincs kiadás az adatbázisban. Ameddig nincs bejegyezve egy kiadás sem, addig nem lehet pillanatképeket feltölteni.
 nl : Nog geen uitgaven in de database. Screenshots kunnen alleen geupload worden nadat een uitgave is toegevoegd.
@@ -6425,14 +6425,14 @@ nl : Niet veilig
 
 :_vndiff_rel_official
 en : official
-ru*:
+ru : оф.
 cs*:
 hu : hivatalos
 nl : officiëel
 
 :_vndiff_rel_unofficial
 en : unofficial
-ru*:
+ru : неоф.
 cs*:
 hu : nem hivatalos
 nl : officieus
@@ -6603,7 +6603,7 @@ nl : Relaties
 
 :_vnpage_relations_unofficial
 en : ~[unofficial~]
-ru*:
+ru : ~[неоф.~]
 cs*:
 hu : ~[nem hivatalos~]
 nl : ~[officieus~]
@@ -7039,7 +7039,7 @@ nl : Je bent niet toegestaan om wijzigingen aan te brengen
 
 :_nospam_title
 en : Could not send form
-ru : Невозможно отправить форму
+ru : Невозможно отправить данные
 cs : Formulář nemohl být odeslán
 hu : Nem lehetett elküldeni a formulát
 nl : Formulier kon niet verzonden worden
@@ -7053,7 +7053,7 @@ nl :
 
 :_nospam_msg
 en : The form could not be sent, please make sure you have Javascript enabled in your browser.
-ru : Не удалось отправить форму, пожалуйста убедитесь, что в вашем браузере включён Javascript.
+ru : Не удалось отправить данные, пожалуйста убедитесь, что в вашем браузере включён Javascript.
 cs : Formulář nemohl být odeslán, ujistěte se, že máte ve svém prohlížeči povolen Javascript.
 hu : A formulát nem lehetett elküldeni, kérlek ellenőrizd, hogy engedélyezve van a JavaScript a böngésződbe.
 nl : Formulier kon niet verzonden worden, zorg er voor dat Javascript aan staat in je browserinstellingen.
@@ -7063,14 +7063,14 @@ nl : Formulier kon niet verzonden worden, zorg er voor dat Javascript aan staat 
 
 :_formcode_title
 en : Validation code expired
-ru*:
+ru : Срок годности проверочного кода истек
 cs*:
 hu : Az érvényesítő kód lejárt
 nl : Validatie code ongeldig
 
 :_formcode_msg
 en : Please hit the back-button of your browser, refresh the page and try again.
-ru*:
+ru : Пожалуйста, вернитесь назад, обновите страницу и попробуйте ещё раз.
 cs*:
 hu : Kérem nyomva meg a böngészője vissza gombját, frissítse az oldalt és próbálja újra.
 nl : Ga terug naar de vorige pagina, vernieuw deze en probeer het opnieuw.
