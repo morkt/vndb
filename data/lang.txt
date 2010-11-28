@@ -5754,6 +5754,13 @@ cs*: Jazyky
 hu*: Nyelvek
 nl : Taal
 
+:_vnbrowse_olang
+en : Original language
+ru*:
+cs*:
+hu*:
+nl : Originele taal
+
 :_vnbrowse_platform
 en : Platform
 ru*: Платформы

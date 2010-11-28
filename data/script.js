@@ -2065,6 +2065,7 @@ function filVN() {
         function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
     ],
     [ mt('_vnbrowse_language'), filFSelect('lang', mt('_vnbrowse_language'), 20, lang) ],
+    [ mt('_vnbrowse_olang'),    filFSelect('olang',mt('_vnbrowse_olang'),    20, lang) ],
     [ mt('_vnbrowse_platform'), filFSelect('plat', mt('_vnbrowse_platform'), 20, plat) ]
   ];
 }

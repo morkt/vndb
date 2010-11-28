@@ -293,7 +293,8 @@ CREATE TABLE vn (
   c_popularity real,
   c_rating real,
   c_votecount integer NOT NULL DEFAULT 0,
-  c_search text
+  c_search text,
+  c_olang language[] NOT NULL DEFAULT '{}'
 );
 
 -- vn_anime

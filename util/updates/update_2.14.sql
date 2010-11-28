@@ -1,5 +1,12 @@
 
+-- add vn.c_olang
+
+ALTER TABLE vn ADD COLUMN c_olang language[] NOT NULL DEFAULT '{}';
+
+
+-- reload functions
 \i util/sql/func.sql
+
 
 -- redefine the triggers to use the new conditional triggers in PostgreSQL 9.0
 
