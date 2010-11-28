@@ -51,7 +51,7 @@ sub page {
       [ 'website' ],
       [ released   => htmlize   => sub { $self->{l10n}->datestr($_[0]) } ],
       [ minage     => serialize => \&minage ],
-      [ notes      => diff => 1 ],
+      [ notes      => diff => qr/[ ,\n\.]/ ],
       [ platforms  => join => ', ', split => sub { map mt("_plat_$_"), @{$_[0]} } ],
       [ media      => join => ', ', split => sub {
         map $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1), @{$_[0]}
@@ -485,60 +485,46 @@ sub browse {
 
   my $f = $self->formValidate(
     { name => 'p',  required => 0, default => 1, template => 'int' },
-    { name => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
     { name => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
     { name => 'q',  required => 0, default => '', maxlength => 500 },
-    { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
-    { name => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
-    { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
-    { name => 'tp', required => 0, default => '', enum => [ '', @{$self->{release_types}} ] },
-    { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
-    { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
-    { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
-    { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
-    { name => 'ma_a', required => 0, default => 0, enum => [ grep defined($_), @{$self->{age_ratings}} ] },
-    { name => 'mi', required => 0, default => 0, template => 'int' },
-    { name => 'ma', required => 0, default => 99999999, template => 'int' },
-    { name => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
+    { name => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
+    { name => 'fil',required => 0, default => '' },
   );
   return 404 if $f->{_err};
 
-  my @filters = (
-    $f->{mi} > 0 || $f->{ma} < 99990000 ? (date => [ $f->{mi}, $f->{ma} ]) : (),
-    $f->{q} ? (search => $f->{q}) : (),
-    $f->{pl}[0] ? (platforms => $f->{pl}) : (),
-    $f->{ln}[0] ? (languages => $f->{ln}) : (),
-    $f->{me}[0] ? (media => $f->{me}) : (),
-    $f->{re}[0] ? (resolutions => $f->{re} ) : (),
-    $f->{tp} ? (type => $f->{tp}) : (),
-    $f->{ma_a} || $f->{ma_m} ? (minage => [$f->{ma_m}, $f->{ma_a}]) : (),
-    $f->{pa} ? (patch => $f->{pa}) : (),
-    $f->{fw} ? (freeware => $f->{fw}) : (),
-    $f->{do} ? (doujin => $f->{do}) : (),
-  );
-  my($list, $np) = !@filters ? ([], 0) : $self->dbReleaseGet(
+  my $fil = fil_parse $f->{fil}, qw|type patch freeware doujin date_before date_after minage lang olang resolution plat med voiced ani_story ani_ero|;
+  _fil_compat($self, $fil);
+  $f->{fil} = fil_serialize($fil);
+
+  my($list, $np) = !$f->{q} && !keys %$fil ? ([], 0) : $self->dbReleaseGet(
     sort => $f->{s}, reverse => $f->{o} eq 'd',
     page => $f->{p},
     results => 50,
     what => 'platforms',
-    @filters,
+    $f->{q} ? ( search => $f->{q} ) : (),
+    %$fil
   );
 
-  my $url = "/r?tp=$f->{tp};pa=$f->{pa};ma_m=$f->{ma_m};ma_a=$f->{ma_a};q=$f->{q};mi=$f->{mi};ma=$f->{ma};do=$f->{do};fw=$f->{fw}";
-  $_&&($url .= ";ln=$_") for @{$f->{ln}};
-  $_&&($url .= ";pl=$_") for @{$f->{pl}};
-  $_&&($url .= ";re=$_") for @{$f->{re}};
-  $_&&($url .= ";me=$_") for @{$f->{me}};
-
   $self->htmlHeader(title => mt('_rbrowse_title'));
-  _filters($self, $f, !@filters || !@$list);
+
+  form method => 'get', action => '/r', 'accept-charset' => 'UTF-8';
+  div class => 'mainbox';
+   h1 mt '_rbrowse_title';
+   $self->htmlSearchBox('r', $f->{q});
+   a id => 'filselect', href => '#r';
+    lit '<i>&#9656;</i> '.mt('_rbrowse_filters').'<i></i>';
+   end;
+   input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
+  end;
+  end;
+
   $self->htmlBrowse(
     class    => 'relbrowse',
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => "$url;s=$f->{s};o=$f->{o}",
-    sorturl  => $url,
+    pageurl  => "/r?q=$f->{q};fil=$f->{fil};s=$f->{s};o=$f->{o}",
+    sorturl  => "/r?q=$f->{q};fil=$f->{fil}",
     header   => [
       [ mt('_rbrowse_col_released'), 'released' ],
       [ mt('_rbrowse_col_minage'),   'minage' ],
@@ -564,7 +550,7 @@ sub browse {
       end;
     },
   ) if @$list;
-  if(@filters && !@$list) {
+  if(($f->{q} || keys %$fil) && !@$list) {
     div class => 'mainbox';
      h1 mt '_rbrowse_noresults_title';
      div class => 'notice';
@@ -576,108 +562,35 @@ sub browse {
 }
 
 
-sub _filters {
-  my($self, $f, $shown) = @_;
-
-  form method => 'get', action => '/r', 'accept-charset' => 'UTF-8';
-  div class => 'mainbox';
-   h1 mt '_rbrowse_title';
-
-   $self->htmlSearchBox('r', $f->{q});
-
-   a id => 'advselect', href => '#';
-    lit '<i>'.($shown?'&#9662;':'&#9656;').'</i> '.mt('_rbrowse_filters');
-   end;
-   div id => 'advoptions', !$shown ? (class => 'hidden') : ();
-
-    h2 mt '_rbrowse_filters';
-    table class => 'formtable', style => 'margin-left: 0';
-     Tr class => 'newfield';
-      td class => 'label'; label for => 'ma_m', mt '_rbrowse_minage'; end;
-      td class => 'field';
-       Select id => 'ma_m', name => 'ma_m', style => 'width: 160px';
-        option value => 0, $f->{ma_m} == 0 ? ('selected' => 'selected') : (), mt '_rbrowse_ge';
-        option value => 1, $f->{ma_m} == 1 ? ('selected' => 'selected') : (), mt '_rbrowse_le';
-       end;
-       Select id => 'ma_a', name => 'ma_a', style => 'width: 80px; text-align: center';
-        defined($_) && option value => $_, $f->{ma_a} == $_ ? ('selected' => 'selected') : (), minage $_
-          for (@{$self->{age_ratings}});
-       end;
-      end;
-      td rowspan => 5, style => 'padding-left: 40px';
-       label for => 're', mt '_rbrowse_resolution'; br;
-       Select id => 're', name => 're', multiple => 'multiple', size => 8;
-        my $l='';
-        for my $i (1..$#{$self->{resolutions}}) {
-          if($l ne $self->{resolutions}[$i][1]) {
-            end if $l;
-            $l = $self->{resolutions}[$i][1];
-            optgroup label => $l;
-          }
-          option value => $i, scalar grep($i==$_, @{$f->{re}}) ? (selected => 'selected') : (), $self->{resolutions}[$i][0];
-        }
-        end if $l;
-       end;
-      end;
-     end;
-     $self->htmlFormPart($f, [ select => short => 'tp', name => mt('_rbrowse_type'),
-       options => [ ['', mt '_rbrowse_all'], map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ]]);
-     $self->htmlFormPart($f, [ select => short => 'pa', name => mt('_rbrowse_patch'),
-       options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_patchonly'], [2, mt '_rbrowse_patchnone']]]);
-     $self->htmlFormPart($f, [ select => short => 'fw', name => mt('_rbrowse_freeware'),
-       options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_freewareonly'], [2, mt '_rbrowse_freewarenone']]]);
-     $self->htmlFormPart($f, [ select => short => 'do', name => mt('_rbrowse_doujin'),
-       options => [ [0, mt '_rbrowse_all' ], [1, mt '_rbrowse_doujinonly'], [2, mt '_rbrowse_doujinnone']]]);
-     $self->htmlFormPart($f, [ date => short => 'mi', name => mt '_rbrowse_dateafter' ]);
-     $self->htmlFormPart($f, [ date => short => 'ma', name => mt '_rbrowse_datebefore' ]);
-    end;
-
-    h2;
-     txt mt '_rbrowse_languages';
-     b ' ('.mt('_rbrowse_boolor').')';
-    end;
-    for my $i (@{$self->{languages}}) {
-      span;
-       input type => 'checkbox', name => 'ln', value => $i, id => "lang_$i", grep($_ eq $i, @{$f->{ln}}) ? (checked => 'checked') : ();
-       label for => "lang_$i";
-        cssicon "lang $i", mt "_lang_$i";
-        txt mt "_lang_$i";
-       end;
-      end;
-    }
-
-    h2;
-     txt mt '_rbrowse_platforms';
-     b ' ('.mt('_rbrowse_boolor').')';
-    end;
-    for my $i (sort @{$self->{platforms}}) {
-      span;
-       input type => 'checkbox', name => 'pl', value => $i, id => "plat_$i", grep($_ eq $i, @{$f->{pl}}) ? (checked => 'checked') : ();
-       label for => "plat_$i";
-        cssicon $i, mt "_plat_$i";
-        txt mt "_plat_$i";
-       end;
-      end;
-    }
-
-    h2;
-     txt mt '_rbrowse_media';
-     b ' ('.mt('_rbrowse_boolor').')';
-    end;
-    for my $i (sort keys %{$self->{media}}) {
-      span;
-       input type => 'checkbox', name => 'me', value => $i, id => "med_$i", grep($_ eq $i, @{$f->{me}}) ? (checked => 'checked') : ();
-       label for => "med_$i", mt "_med_$i", 1;
-      end;
-    }
-
-    div style => 'text-align: center; clear: left;';
-     input type => 'submit', value => mt('_rbrowse_apply'), class => 'submit';
-     input type => 'reset', value => mt('_rbrowse_clear'), class => 'submit', onclick => 'location.href="/r"';
-    end;
-   end;
-  end;
-  end;
+# provide compatibility with old filter URLs
+sub _fil_compat {
+  my($self, $fil) = @_;
+  my $f = $self->formValidate(
+    { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
+    { name => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
+    { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
+    { name => 'tp', required => 0, default => '', enum => [ '', @{$self->{release_types}} ] },
+    { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
+    { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
+    { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
+    { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
+    { name => 'ma_a', required => 0, default => 0, enum => [ grep defined($_), @{$self->{age_ratings}} ] },
+    { name => 'mi', required => 0, default => 0, template => 'int' },
+    { name => 'ma', required => 0, default => 99999999, template => 'int' },
+    { name => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
+  );
+  return if $f->{_err};
+  $fil->{minage} //= [ grep defined($_) && $f->{ma_m} ? $f->{ma_a} >= $_ : $f->{ma_a} <= $_, @{$self->{age_ratings}} ] if $f->{ma_a} || $f->{ma_m};
+  $fil->{date_after} //= $f->{mi}  if $f->{mi};
+  $fil->{date_before} //= $f->{ma} if $f->{ma} < 99990000;
+  $fil->{plat} //= $f->{pl}        if $f->{pl}[0];
+  $fil->{lang} //= $f->{ln}        if $f->{ln}[0];
+  $fil->{med} //= $f->{me}         if $f->{me}[0];
+  $fil->{resolution} //= $f->{re}  if $f->{re}[0];
+  $fil->{type} //= $f->{tp}        if $f->{tp};
+  $fil->{patch} //= $f->{pa} == 2 ? 0 : 1 if $f->{pa};
+  $fil->{freeware} //= $f->{fw} == 2 ? 0 : 1 if $f->{fw};
+  $fil->{doujin} //= $f->{do} == 2 ? 0 : 1 if $f->{do};
 }
 
 

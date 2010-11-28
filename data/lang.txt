@@ -1511,6 +1511,14 @@ hu : moderálásra vár
 nl : ongemodereerd
 
 
+# title of the syndication icon (this thing -> http://en.wikipedia.org/wiki/Atom_feed)
+
+:_atom_feed
+en : Atom Feed
+ru*:
+cs*:
+hu*:
+nl :
 
 
 #############################################################################
@@ -3687,33 +3695,26 @@ cs : Filtry
 hu : Szűrők
 nl :
 
-:_rbrowse_minage
-en : Age rating
-ru : Возрастной рейтинг
-cs : Věková přístupnost
-hu : Korhatár
-nl : Minimum leeftijd
+:_rbrowse_fil_title
+en : Release filters
+ru*:
+cs*:
+hu*:
+nl : Uitgavenfilters
 
-:_rbrowse_ge
-en : Greater than or equal to
-ru : Больше или равно
-cs : Větší než nebo rovno
-hu : Nagyobb vagy egyenlő
-nl : Hoger dan of gelijk aan
+:_rbrowse_general
+en : General
+ru*:
+cs*:
+hu*:
+nl : Algemeen
 
-:_rbrowse_le
-en : Less than or equal to
-ru : Меньше или равно
-cs : Menší než nebo rovno
-hu : Kisebb vagy egyenlő
-nl : Lager dan of gelijk aan
-
-:_rbrowse_resolution
-en : Screen resolution
-ru : Разрешение экрана
-cs : Rozlišení obrazovky
-hu : Felbontás
-nl : Schermresolutie
+:_rbrowse_close
+en : close
+ru*:
+cs*:
+hu*:
+nl : sluiten
 
 :_rbrowse_type
 en : Release type
@@ -3722,13 +3723,6 @@ cs : Typ vydání
 hu : Kiadás típus
 nl : Type
 
-:_rbrowse_all
-en : All
-ru : Все
-cs : Vše
-hu : Minden
-nl : Alle
-
 :_rbrowse_patch
 en : Patch status
 ru : Статус патча
@@ -3736,19 +3730,19 @@ cs : Status patche
 hu : Patch állapot
 nl :
 
-:_rbrowse_patchonly
-en : Only patches
-ru : Только патчи
-cs : Pouze patche
-hu : Csak patchek
-nl : Alleen patches
+:_rbrowse_patch_yes
+en : Patch
+ru*: Только патчи
+cs*: Pouze patche
+hu*: Csak patchek
+nl :
 
-:_rbrowse_patchnone
-en : Only standalone releases
-ru : Только самостоятельные выпуски
-cs : Pouze samostatná vydání
-hu : Csak különálló kiadások
-nl : Geen patches
+:_rbrowse_patch_no
+en : Standalone
+ru*: Только самостоятельные выпуски
+cs*: Pouze samostatná vydání
+hu*: Csak különálló kiadások
+nl : Geen patch
 
 :_rbrowse_freeware
 en : Freeware
@@ -3757,14 +3751,14 @@ cs : Freeware
 hu :
 nl :
 
-:_rbrowse_freewareonly
-en : Freeware only
+:_rbrowse_freeware_yes
+en : Only freeware
 ru : Только Freeware
 cs : Pouze freeware
 hu : Csak Freeware
 nl : Alleen freeware
 
-:_rbrowse_freewarenone
+:_rbrowse_freeware_no
 en : Only non-free releases
 ru : Только несвободные
 cs : Pouze placená vydání
@@ -3778,14 +3772,14 @@ cs : Doujin
 hu :
 nl :
 
-:_rbrowse_doujinonly
+:_rbrowse_doujin_yes
 en : Only doujin releases
 ru : Только додзинси
 cs : Pouze doujin vydání
 hu : Csak doujin kiadások
 nl : Alleen doujin uitgaven
 
-:_rbrowse_doujinnone
+:_rbrowse_doujin_no
 en : Only commercial releases
 ru : Только коммерческие
 cs : Pouze komerční vydání
@@ -3806,33 +3800,82 @@ cs : Vydáno před
 hu : Kiadva előtt
 nl : Uitgegeven voor
 
-:_rbrowse_languages
-en : Languages
-ru : Языки
-cs : Jazyky
-hu : Nyelvek
-nl : Talen
+:_rbrowse_minage
+en : Age rating
+ru : Возрастной рейтинг
+cs : Věková přístupnost
+hu : Korhatár
+nl : Minimum leeftijd
+
+:_rbrowse_language
+en : Language
+ru*: Языки
+cs*: Jazyky
+hu*: Nyelvek
+nl : Taal
+
+:_rbrowse_olang
+en : Original language
+ru*:
+cs*:
+hu*:
+nl : Originele taal
+
+:_rbrowse_resolution
+en : Screen resolution
+ru : Разрешение экрана
+cs : Rozlišení obrazovky
+hu : Felbontás
+nl : Schermresolutie
 
 :_rbrowse_boolor
-en : boolean or, selecting more gives more results
+en : Boolean or, selecting more gives more results
 ru : логическое 'или', чем больше выбрано, тем больше даёт результатов
 cs : boolean nebo, výběr více dá více výsledků
 hu : Boole féle értékhalmaz(igaz/hamis), ha többet jelölsz be, több eredményt ad ki
-nl : booleaanse 'of', meerdere selecties geven meer resultaten
+nl : Booleaanse 'of', meerdere selecties geven meer resultaten
 
-:_rbrowse_platforms
-en : Platforms
-ru : Платформы
-cs : Platformy
-hu : Platformok
-nl : Platformen
+:_rbrowse_platform
+en : Platform
+ru*: Платформы
+cs*: Platformy
+hu*: Platformok
+nl : Platform
 
-:_rbrowse_media
-en : Media
-ru : Носители
-cs : Média
-hu : Médium
+:_rbrowse_medium
+en : Medium
+ru*: Носители
+cs*: Média
+hu*: Médium
 nl :
+
+:_rbrowse_voiced
+en : Voiced
+ru*:
+cs*:
+hu*:
+nl : Ingesproken
+
+:_rbrowse_animation
+en : Animation
+ru*:
+cs*:
+hu*:
+nl : Animatie
+
+:_rbrowse_ani_story
+en : Story
+ru*:
+cs*:
+hu*:
+nl : Verhaal
+
+:_rbrowse_ani_ero
+en : Ero scenes
+ru*:
+cs*:
+hu*:
+nl : Erotische scenes
 
 :_rbrowse_apply
 en : Apply
@@ -3841,12 +3884,12 @@ cs : Použít
 hu : Alkalmaz
 nl : Zoek
 
-:_rbrowse_clear
-en : Clear
-ru : Очистить
-cs : Začít znovu
-hu : Törlés
-nl : Reset
+:_rbrowse_reset
+en : Reset
+ru*: Очистить
+cs*: Začít znovu
+hu*: Törlés
+nl :
 
 
 
@@ -5620,19 +5663,54 @@ cs : nenalezeny takové tagy
 hu : nem található ilyen címke
 nl : tag niet gevonden
 
-:_vnbrowse_advsearch
-en : advanced search
-ru : расширенный поиск
-cs : pokročilé hledání
-hu : bővített keresés
-nl : geavanceerd zoeken
+:_vnbrowse_fil_title
+en : Visual Novel Filters
+ru*:
+cs*:
+hu*:
+nl :
+
+:_vnbrowse_general
+en : General
+ru*:
+cs*:
+hu*:
+nl : Algemeen
+
+:_vnbrowse_length
+en : Length
+ru*:
+cs*:
+hu*:
+nl : Lengte
+
+:_vnbrowse_anime
+en : Anime
+ru*:
+cs*:
+hu*:
+nl :
+
+:_vnbrowse_anime_yes
+en : Has anime
+ru*:
+cs*:
+hu*:
+nl : Heeft anime
+
+:_vnbrowse_anime_no
+en : Does not have anime
+ru*:
+cs*:
+hu*:
+nl : Heeft geen anime
 
 :_vnbrowse_tags
-en : Tag filters
-ru : Фильтры тегов
-cs : Filtry tagů
-hu : címke szűrők
-nl : Tagfilters
+en : Tags
+ru*:
+cs*:
+hu*:
+nl :
 
 :_vnbrowse_booland
 en : boolean and, selecting more gives less results
@@ -5676,40 +5754,26 @@ cs : Ukázat všechny spoilery
 hu : Nagyobb spoilerek megjelenítése
 nl : Toon alle spoilers
 
-:_vnbrowse_lang
-en : Languages
-ru : Языки
-cs : Jazyky
-hu : Nyelvek
-nl : Talen
+:_vnbrowse_language
+en : Language
+ru*: Языки
+cs*: Jazyky
+hu*: Nyelvek
+nl : Taal
 
-:_vnbrowse_boolor
-en : boolean or, selecting more gives more results
-ru : логическое 'или', чем больше выбрано, тем больше даёт результатов
-cs : boolean nebo, výběr více dá více výsledků
-hu : Boole féle értékhalmaz(igaz/hamis), ha többet választasz ki akkor több találatot ad ki
-nl : booleaanse 'of', meerdere selecties geven meer resultaten
+:_vnbrowse_olang
+en : Original language
+ru*:
+cs*:
+hu*:
+nl : Originele taal
 
-:_vnbrowse_plat
-en : Platforms
-ru : Платформы
-cs : Platformy
-hu : Platformok
-nl : Platformen
-
-:_vnbrowse_apply
-en : Apply
-ru : Применить
-cs : Použít
-hu : Alkalmazás
-nl : Toepassen
-
-:_vnbrowse_clear
-en : Clear
-ru : Очистить
-cs : Začít znovu
-hu : Törlés
-nl : Wissen
+:_vnbrowse_platform
+en : Platform
+ru*: Платформы
+cs*: Platformy
+hu*: Platformok
+nl :
 
 
 # VN add/edit form (/v+/edit)

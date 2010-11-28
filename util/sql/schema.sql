@@ -36,7 +36,7 @@ CREATE TABLE notifications (
   iid integer NOT NULL,
   subid integer,
   c_title text NOT NULL,
-  c_byuser integer
+  c_byuser integer NOT NULL DEFAULT 0
 );
 
 -- producers
@@ -194,7 +194,7 @@ CREATE TABLE tags (
   added timestamptz NOT NULL DEFAULT NOW(),
   state smallint NOT NULL DEFAULT 0,
   c_vns integer NOT NULL DEFAULT 0,
-  addedby integer NOT NULL DEFAULT 1
+  addedby integer NOT NULL DEFAULT 0
 );
 
 -- tags_aliases
@@ -293,7 +293,8 @@ CREATE TABLE vn (
   c_popularity real,
   c_rating real,
   c_votecount integer NOT NULL DEFAULT 0,
-  c_search text
+  c_search text,
+  c_olang language[] NOT NULL DEFAULT '{}'
 );
 
 -- vn_anime
@@ -358,9 +359,9 @@ CREATE TABLE wlists (
 
 
 
-ALTER TABLE changes             ADD FOREIGN KEY (requester) REFERENCES users         (id);
-ALTER TABLE notifications       ADD FOREIGN KEY (uid)       REFERENCES users         (id);
-ALTER TABLE notifications       ADD FOREIGN KEY (c_byuser)  REFERENCES users         (id);
+ALTER TABLE changes             ADD FOREIGN KEY (requester) REFERENCES users         (id) ON DELETE SET DEFAULT;
+ALTER TABLE notifications       ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
+ALTER TABLE notifications       ADD FOREIGN KEY (c_byuser)  REFERENCES users         (id) ON DELETE SET DEFAULT;
 ALTER TABLE producers           ADD FOREIGN KEY (latest)    REFERENCES producers_rev (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE producers           ADD FOREIGN KEY (rgraph)    REFERENCES relgraphs     (id);
 ALTER TABLE producers_relations ADD FOREIGN KEY (pid1)      REFERENCES producers_rev (id);
@@ -378,19 +379,19 @@ ALTER TABLE releases_rev        ADD FOREIGN KEY (id)        REFERENCES changes  
 ALTER TABLE releases_rev        ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
 ALTER TABLE releases_vn         ADD FOREIGN KEY (rid)       REFERENCES releases_rev  (id);
 ALTER TABLE releases_vn         ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
-ALTER TABLE rlists              ADD FOREIGN KEY (uid)       REFERENCES users         (id);
+ALTER TABLE rlists              ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE rlists              ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
-ALTER TABLE sessions            ADD FOREIGN KEY (uid)       REFERENCES users         (id);
-ALTER TABLE tags                ADD FOREIGN KEY (addedby)   REFERENCES users         (id);
+ALTER TABLE sessions            ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
+ALTER TABLE tags                ADD FOREIGN KEY (addedby)   REFERENCES users         (id) ON DELETE SET DEFAULT;
 ALTER TABLE tags_aliases        ADD FOREIGN KEY (tag)       REFERENCES tags          (id);
 ALTER TABLE tags_parents        ADD FOREIGN KEY (tag)       REFERENCES tags          (id);
 ALTER TABLE tags_parents        ADD FOREIGN KEY (parent)    REFERENCES tags          (id);
 ALTER TABLE tags_vn             ADD FOREIGN KEY (tag)       REFERENCES tags          (id);
 ALTER TABLE tags_vn             ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
-ALTER TABLE tags_vn             ADD FOREIGN KEY (uid)       REFERENCES users         (id);
+ALTER TABLE tags_vn             ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE threads             ADD FOREIGN KEY (id, count) REFERENCES threads_posts (tid, num) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE threads_posts       ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
-ALTER TABLE threads_posts       ADD FOREIGN KEY (uid)       REFERENCES users         (id);
+ALTER TABLE threads_posts       ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE SET DEFAULT;
 ALTER TABLE threads_boards      ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
 ALTER TABLE vn                  ADD FOREIGN KEY (latest)    REFERENCES vn_rev        (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn                  ADD FOREIGN KEY (rgraph)    REFERENCES relgraphs     (id);
@@ -403,8 +404,8 @@ ALTER TABLE vn_rev              ADD FOREIGN KEY (vid)       REFERENCES vn       
 ALTER TABLE vn_screenshots      ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
 ALTER TABLE vn_screenshots      ADD FOREIGN KEY (scr)       REFERENCES screenshots   (id);
 ALTER TABLE vn_screenshots      ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
-ALTER TABLE votes               ADD FOREIGN KEY (uid)       REFERENCES users         (id);
+ALTER TABLE votes               ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE votes               ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
-ALTER TABLE wlists              ADD FOREIGN KEY (uid)       REFERENCES users         (id);
+ALTER TABLE wlists              ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE wlists              ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
 

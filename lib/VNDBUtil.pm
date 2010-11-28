@@ -29,94 +29,117 @@ sub bb2html {
   my $raw = shift;
   my $maxlength = shift;
   $raw =~ s/\r//g;
-  $raw =~ s/\n{5,}/\n\n/g;
   return '' if !$raw && $raw ne "0";
 
-  my($result, $length, $rmnewline, @open) = ('', 0, 0, 'first');
+  my($result, $last, $length, $rmnewline, @open) = ('', 0, 0, 0, 'first');
 
+  # escapes, returns string, and takes care of $length and $maxlength; also
+  # takes care to remove newlines and double spaces when necessary
   my $e = sub {
     local $_ = shift;
+    s/^\n//         if $rmnewline && $rmnewline--;
+    s/\n{5,}/\n\n/g if $open[$#open] ne 'code';
+    s/  +/ /g       if $open[$#open] ne 'code';
+    $length += length $_;
+    if($maxlength && $length > $maxlength) {
+      $_ = substr($_, 0, $maxlength-$length);
+      s/[ \.,:;]+[^ \.,:;]*$//; # cleanly cut off on word boundary
+    }
     s/&/&amp;/g;
     s/>/&gt;/g;
     s/</&lt;/g;
     s/\n/<br \/>/g if !$maxlength;
-    s/\n/ /g if $maxlength;
+    s/\n/ /g       if $maxlength;
     return $_;
   };
 
-  for (split /(\s|\n|\[[^\]]+\])/, $raw) {
-    next if !defined $_;
-    next if $_ eq '';
+  while($raw =~ m{(
+    ([tdvpr][1-9][0-9]*\.[1-9][0-9]*)         | # 2. exid
+    ([tdvprug][1-9][0-9]*)                    | # 3. id
+    (\[[^\s\]]+\])                            | # 4. tag
+    ((?:https?|ftp)://[^><"\n\s\]\[]+[\d\w=/-]) # 5. url
+  )}xg) {
+    my($match, $exid, $id, $tag, $url) = ($1, $2, $3, $4, $5);
 
-    # (note to self: stop using unreadable hacks like these!)
-    $rmnewline-- && $_ eq "\n" && next if $rmnewline;
+    # add string before the match
+    $result .= $e->(substr $raw, $last, (pos($raw)-length($match))-$last);
+    last if $maxlength && $length > $maxlength;
+    $last = pos $raw;
 
-    my $lit = $_;
     if($open[$#open] ne 'raw' && $open[$#open] ne 'code') {
-      if    (lc$_ eq '[raw]')      { push @open, 'raw'; next }
-      elsif (lc$_ eq '[spoiler]')  { push @open, 'spoiler'; $result .= '<b class="spoiler">'; next }
-      elsif (lc$_ eq '[quote]')    {
-        push @open, 'quote';
-        $result .= '<div class="quote">' if !$maxlength;
-        $rmnewline = 1;
-        next
-      } elsif (lc$_ eq '[code]') {
-        push @open, 'code';
-        $result .= '<pre>' if !$maxlength;
-        $rmnewline = 1;
-        next
-      } elsif (lc$_ eq '[/spoiler]') {
-        if($open[$#open] eq 'spoiler') {
+      # handle tags
+      if($tag) {
+        $tag = lc $tag;
+        if($tag eq '[raw]') {
+          push @open, 'raw';
+          next;
+        } elsif($tag eq '[spoiler]') {
+          push @open, 'spoiler';
+          $result .= '<b class="spoiler">';
+          next;
+        } elsif($tag eq '[quote]') {
+          push @open, 'quote';
+          $result .= '<div class="quote">' if !$maxlength;
+          $rmnewline = 1;
+          next;
+        } elsif($tag eq '[code]') {
+          push @open, 'code';
+          $result .= '<pre>' if !$maxlength;
+          $rmnewline = 1;
+          next;
+        } elsif($tag eq '[/spoiler]' && $open[$#open] eq 'spoiler') {
           $result .= '</b>';
           pop @open;
-        }
-        next;
-      } elsif (lc$_ eq '[/quote]') {
-        if($open[$#open] eq 'quote') {
+          next;
+        } elsif($tag eq '[/quote]' && $open[$#open] eq 'quote') {
           $result .= '</div>' if !$maxlength;
           $rmnewline = 1;
-          pop @open;
-        }
-        next;
-      } elsif(lc$_ eq '[/url]') {
-        if($open[$#open] eq 'url') {
+          next;
+        } elsif($tag eq '[/url]' && $open[$#open] eq 'url') {
           $result .= '</a>';
           pop @open;
+          next;
+        } elsif($tag =~ s{\[url=((https?://|/)[^\]>]+)\]}{<a href="$1" rel="nofollow">}i) {
+          $result .= $tag;
+          push @open, 'url';
+          next;
         }
-        next;
-      } elsif(s{\[url=((https?://|/)[^\]>]+)\]}{<a href="$1" rel="nofollow">}i) {
-        $result .= $_;
-        push @open, 'url';
-        next;
-      } elsif(!grep(/url/, @open) &&
-           s{(.*)(http|https)://(.+[\d\w=/-])(.*)}
-            {$e->($1).qq|<a href="$2://|.$e->($3, 1).'" rel="nofollow">'.$e->('link').'</a>'.$e->($4)}e) {
+      }
+      # handle URLs
+      if($url && !grep(/url/, @open)) {
         $length += 4;
         last if $maxlength && $length > $maxlength;
-        $result .= $_;
-        next;
-      } elsif(!grep(/url/, @open) && (
-          s{^(.*[^\w]|)([tdvpr][1-9][0-9]*)\.([1-9][0-9]*)([^\w].*|)$}{$e->($1).qq|<a href="/$2.$3">$2.$3</a>|.$e->($4)}e ||
-          s{^(.*[^\w]|)([tdvprug][1-9][0-9]*)([^\w].*|)$}{$e->($1).qq|<a href="/$2">$2</a>|.$e->($3)}e)) {
-        $length += length $lit;
-        last if $maxlength && $length > $maxlength;
-        $result .= $_;
+        $result .= sprintf '<a href="%s" rel="nofollow">link</a>', $url;
         next;
       }
-    } elsif($open[$#open] eq 'raw' && lc$_ eq '[/raw]') {
+      # id
+      if(($id || $exid) && substr($raw, $last-1-length($match), 1) !~ /[\w]/ && substr($raw, $last, 1) !~ /[\w]/) {
+        $length += length $match;
+        last if $maxlength && $length > $maxlength;
+        $result .= sprintf '<a href="/%s">%1$s</a>', $match;
+        next
+      }
+    }
+
+    if($tag && $open[$#open] eq 'raw' && lc$tag eq '[/raw]') {
       pop @open;
       next;
-    } elsif($open[$#open] eq 'code' && lc$_ eq '[/code]') {
+    }
+
+    if($tag && $open[$#open] eq 'code' && lc$tag eq '[/code]') {
       $result .= '</pre>' if !$maxlength;
       pop @open;
       next;
     }
 
-    # normal text processing
-    $length += length $_;
+    # We'll only get here when the bbcode input isn't correct or something else
+    # didn't work out. In that case, just output whatever we've matched.
+    $result .= $e->($match);
     last if $maxlength && $length > $maxlength;
-    $result .= $e->($_);
   }
+
+  # the last unmatched part, just escape and output
+  $result .= $e->(substr $raw, $last);
 
   # close open tags
   while((local $_ = pop @open) ne 'first') {

@@ -24,13 +24,10 @@ use SkinFile;
 our(%O, %S);
 
 
-# load and (if required) regenerate the skins
+# load the skins
 # NOTE: $S{skins} can be modified in data/config.pl, allowing deletion of skins or forcing only one skin
-$S{skins} = readskins();
-
-
-# automatically regenerate script.js when required and possible
-checkjs();
+my $skin = SkinFile->new("$ROOT/static/s");
+$S{skins} = { map +($_ => [ $skin->get($_, 'name'), $skin->get($_, 'userid') ]), $skin->list };
 
 
 # load lang.dat
@@ -39,6 +36,10 @@ VNDB::L10N::loadfile();
 
 # load settings from global.pl
 require $ROOT.'/data/global.pl';
+
+
+# automatically regenerate the skins and script.js and whatever else should be done
+system "make -sC $ROOT" if $S{regen_static};
 
 
 YAWF::init(
@@ -69,11 +70,11 @@ sub reqinit {
   $self->authInit;
 
   # check for IE6
-  if($self->reqHeader('User-Agent') && $self->reqHeader('User-Agent') =~ /MSIE 6/
-    && !$self->reqCookie('ie-sucks') && $self->reqPath ne 'we-dont-like-ie6') {
+  if($self->reqHeader('User-Agent') && $self->reqHeader('User-Agent') =~ /MSIE [67]/
+    && !$self->reqCookie('ie-sucks') && $self->reqPath ne 'we-dont-like-ie') {
     # act as if we're opening /we-dont-like-ie6 (ugly hack, until YAWF supports preventing URL handlers from firing)
     $ENV{HTTP_REFERER} = $ENV{REQUEST_URI};
-    $ENV{REQUEST_URI} = '/we-dont-like-ie6';
+    $ENV{REQUEST_URI} = '/we-dont-like-ie';
   }
 
   # load some stats (used for about all pageviews, anyway)
@@ -94,41 +95,5 @@ sub handle404 {
    end;
   end;
   $self->htmlFooter;
-}
-
-
-sub readskins {
-  my %skins; # dirname => skin name
-  my @regen;
-  my $lasttemplate = [stat "$ROOT/data/style.css"]->[9];
-  my $skin = SkinFile->new("$ROOT/static/s");
-  for my $n ($skin->list) {
-    $skins{$n} = [ $skin->get($n, 'name'), $skin->get($n, 'userid') ];
-    next if !$skins{$n}[0];
-
-    my $f = "$ROOT/static/s/$n";
-    my $css = -f "$f/style.css" && [stat "$f/style.css"]->[9] || 0;
-    my $boxbg = -f "$f/boxbg.png" && [stat "$f/boxbg.png"]->[9] || 0;
-    my $lastgen = $css < $boxbg ? $css : $boxbg;
-    push @regen, $n if (!$lastgen && -x $f && (!$css && !$boxbg || $css && -w "$f/style.css" || $boxbg && -w "$f/boxbg.png"))
-      || ([stat "$f/conf"]->[9] > $lastgen || $lasttemplate > $lastgen) && -w "$f/style.css" && -w "$f/boxbg.png";
-  }
-  system "$ROOT/util/skingen.pl", @regen if @regen;
-  return \%skins;
-}
-
-
-sub checkjs {
-  my $script = "$ROOT/static/f/script.js";
-  my $lastmod = [stat $script]->[9];
-  system "$ROOT/util/jsgen.pl" if
-       (!-e $script && -x "$ROOT/static/f")
-    || (-e $script && -w $script && (
-           $lastmod < [stat "$ROOT/data/script.js"]->[9]
-        || $lastmod < [stat "$ROOT/data/lang.txt"]->[9]
-        || (-e "$ROOT/data/config.pl" && $lastmod < [stat "$ROOT/data/config.pl"]->[9])
-        || $lastmod < [stat "$ROOT/data/global.pl"]->[9]
-        || $lastmod < [stat "$ROOT/util/jsgen.pl"]->[9]
-       ));
 }
 

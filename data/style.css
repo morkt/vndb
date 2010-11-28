@@ -414,6 +414,7 @@ p.screenshots img {
 #maincontent .mainbox.threelayout h1 a {
   color: $boxtitle$;
 }
+a.feed { float: right }
 
 
 
@@ -425,14 +426,15 @@ p.browseopts {
   text-align: center;
   padding: 2px;
 }
-#maincontent p.browseopts a {
+p.browseopts a {
   padding: 1px 3px;
-  color: $maintext$;
+  color: $maintext$!important;
   border: 1px solid $border$;
   margin: 0 2px;
+  white-space: nowrap;
 }
-#maincontent p.browseopts a.optselected,
-#maincontent p.browseopts a:hover {
+p.browseopts a.optselected,
+p.browseopts a:hover {
   border: 0;
   padding: 2px 4px;
 }
@@ -700,7 +702,7 @@ a.addnew {
 #screenshots p.nsfwtoggle { float: right; margin: 0; }
 
 
-#dd_box { position: absolute; left: 0px; border: 1px solid $border$; background-color: $secbg$; }
+#dd_box { position: absolute; left: 0px; border: 1px solid $border$; background-color: $secbg$; z-index: 2 }
 #dd_box ul { list-style-type: none; margin: 0; padding: 0 }
 #dd_box li b { display: block; font-weight: normal; padding-left: 5px; }
 #dd_box li i { display: block; font-style: normal; padding-left: 10px; padding-right: 5px }
@@ -710,11 +712,6 @@ a.addnew {
 #dd_box .vrdd ul { float: left; width: 90px; }
 #dd_box .vrdd ul.full { width: 180px; text-align: center; }
 #dd_box .vrdd ul.full li a { padding: 0 }
-#dd_box .date ul { float: left }
-
-b.datepart { display: inline-block; width: 60px; margin-right: 5px; background-color: $secbg$; padding: 1px 5px; border: 1px solid $secborder$; font-weight: normal }
-b.datepart i { float: right }
-b.datepart b { font-weight: normal }
 
 
 
@@ -754,6 +751,7 @@ b.datepart b { font-weight: normal }
   border-top: none;
   background-color: $secbg$;
   cursor: pointer;
+  z-index: 2
 }
 #ds_box b {
   padding: 2px 0 0 10px;
@@ -792,35 +790,13 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 .vnbrowse .tc3 { padding: 0; }
 .vnbrowse .tc5 { text-align: right; padding-right: 10px }
 .vnbrowse .tc6 { width: 80px }
-#advselect {
+#filselect {
   text-align: center;
   display: block;
   margin: 10px auto 3px auto;
   border: none;
   outline: none;
 }
-#advoptions {
-  width: 90%;
-  padding: 0 30px 5px 30px;
-  margin: 0 auto;
-  border-top: 1px solid $border$;
-}
-#advoptions h2 {
-  clear: left;
-  padding-top: 10px;
-  margin-left: -20px;
-  margin-top: 0;
-  margin-bottom: 3px;
-}
-#advoptions span {
-  display: block;
-  float: left;
-  width: 170px;
-}
-#advoptions span input {
-  margin-right: 3px;
-}
-
 
 
 
@@ -828,9 +804,12 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 
 #prodrel              { width:  100%; }
 #prodrel tr.vn td     { background: url($_boxbg$) repeat; font-weight: bold; }
-#prodrel tr.vn i      { display: none }
-#prodrel tr.vn_lst td { padding: 1px }
-#prodrel tr.vn_lst i  { font-style: normal; display: block; float: left; width: 80px; padding: 0 0 0 40px; }
+#prodrel tr.vn i,
+#prodrel tr.vn span   { display: none }
+#prodrel.collapse tr.vn td   { padding: 1px; background: none; font-weight: normal }
+#prodrel.collapse tr.vn i    { font-style: normal; display: block; float: left; width: 80px; padding: 0 0 0 40px; }
+#prodrel.collapse tr.vn span { display: inline; font-weight: normal; color: $grayedout$; padding: 0 0 0 5px }
+#prodrel.collapse tr.rel     { display: none }
 #prodrel td.tc1       { width:  80px; padding-left: 30px; }
 #prodrel td.tc2       { width:  50px; text-align: center; }
 #prodrel td.tc3       { width: 120px; text-align: right;  padding: 0; }
@@ -1139,6 +1118,36 @@ div#iv_view {
 
 
 
+/****** filter selector *****/
+
+div#fil_div {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background: $tabbg$;
+  border: 1px solid $border$;
+  padding: 5px;
+  width: 600px;
+  text-align: center;
+}
+#fil_div a.close { float: right; color: $link$; border: 0; font-weight: bold }
+#fil_div p.browseopts { padding: 2px 50px; line-height: 23px }
+#fil_div .browseopts a { outline: none }
+#fil_div .browseopts a.active { font-weight: bold }
+#fil_div b.ruler { display: block; margin: auto; width: 93%; height: 1px; border-bottom: 1px solid $border$; margin-bottom: 5px }
+#fil_div h3 { width: 100%; text-align: center; font-size: 11px }
+#fil_div table { width: 93%; text-align: left; margin: 0 auto 5px auto }
+#fil_div table td.label label { width: 120px }
+#fil_div table td.label b { display: block; font-weight: normal; padding: 10px 5px 0 0 }
+#fil_div table td.check { width: 15px }
+#fil_div label.active { font-weight: bold }
+#fil_div .opts a      { border: 0; outline: none; color: $link$ }
+#fil_div .opts b      { margin: 0 7px; font-weight: normal }
+#fil_div .opts a.tsel { color: $maintext$; }
+#filselect i { font-style: normal }
+
+
+
 /****** Icons *******/
 
 .icons {
@@ -1161,6 +1170,7 @@ div#iv_view {
   height: 11px;
   opacity: 0.5;
 }
+.icons.feed { width: 12px; height: 12px }
 .icons.rtcomplete, .icons.rtpartial, .icons.rttrial { width: 11px; }
 acronym.icons, acronym.uicons { cursor: default; }
 a .icons { cursor: pointer }
@@ -1173,6 +1183,7 @@ a .icons { cursor: pointer }
 .icons.gba { background-position:   0px -70px; }
 .icons.ps3 { background-position:   0px -84px; }
 .icons.p98 { background-position:   0px -98px; }
+.icons.feed { background-position:  0px -112px; }
 
 .icons.dvd { background-position: -16px   0px; }
 .icons.mac { background-position: -16px -14px; }

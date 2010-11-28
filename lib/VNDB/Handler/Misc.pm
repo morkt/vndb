@@ -15,7 +15,7 @@ YAWF::register(
   qr{d([1-9]\d*)},                   \&docpage,
   qr{setlang},                       \&setlang,
   qr{nospam},                        \&nospam,
-  qr{we-dont-like-ie6},              \&ie6message,
+  qr{we-dont-like-ie},               \&iemessage,
   qr{opensearch\.xml},               \&opensearch,
 
   # redirects for old URLs
@@ -37,7 +37,7 @@ YAWF::register(
 
 sub homepage {
   my $self = shift;
-  $self->htmlHeader(title => mt '_site_title');
+  $self->htmlHeader(title => mt('_site_title'), feeds => [ keys %{$self->{atom_feeds}} ]);
 
   div class => 'mainbox';
    h1 mt '_site_title';
@@ -63,7 +63,8 @@ sub homepage {
     # Recent changes
     td;
      h1;
-      a href => '/hist', mt '_home_recentchanges';
+      a href => '/hist', mt '_home_recentchanges'; txt ' ';
+      a href => '/feeds/changes.atom'; cssicon 'feed', mt '_atom_feed'; end;
      end;
      my $changes = $self->dbRevisionGet(what => 'item user', results => 10, auto => 1);
      ul;
@@ -82,7 +83,8 @@ sub homepage {
     td;
      my $an = $self->dbThreadGet(type => 'an', sort => 'id', reverse => 1, results => 2);
      h1;
-      a href => '/t/an', mt '_home_announcements';
+      a href => '/t/an', mt '_home_announcements'; txt ' ';
+      a href => '/feeds/announcements.atom'; cssicon 'feed', mt '_atom_feed'; end;
      end;
      for (@$an) {
        my $post = $self->dbPostGet(tid => $_->{id}, num => 1)->[0];
@@ -98,7 +100,8 @@ sub homepage {
     # Recent posts
     td;
      h1;
-      a href => '/t', mt '_home_recentposts';
+      a href => '/t', mt '_home_recentposts'; txt ' ';
+      a href => '/feeds/posts.atom'; cssicon 'feed', mt '_atom_feed'; end;
      end;
      my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, sort => 'lastpost', reverse => 1, notusers => 1);
      ul;
@@ -135,7 +138,7 @@ sub homepage {
     # Upcoming releases
     td;
      h1;
-      a href => strftime('/r?mi=%Y%m%d;o=a;s=released', gmtime), mt '_home_upcoming';
+      a href => strftime('/r?fil=date_after-%Y%m%d;o=a;s=released', gmtime), mt '_home_upcoming';
      end;
      my $upcoming = $self->dbReleaseGet(results => 10, unreleased => 1, what => 'platforms');
      ul;
@@ -155,7 +158,7 @@ sub homepage {
     # Just released
     td;
      h1;
-      a href => strftime('/r?ma=%Y%m%d;o=d;s=released', gmtime), mt '_home_justreleased';
+      a href => strftime('/r?fil=date_before-%Y%m%d;o=d;s=released', gmtime), mt '_home_justreleased';
      end;
      my $justrel = $self->dbReleaseGet(results => 10, sort => 'released', reverse => 1, unreleased => 0, what => 'platforms');
      ul;
@@ -216,7 +219,7 @@ sub history {
     releases => $f->{r},
   );
 
-  $self->htmlHeader(title => $title, noindex => 1);
+  $self->htmlHeader(title => $title, noindex => 1, feeds => [ 'changes' ]);
   $self->htmlMainTabs($type, $obj, 'hist') if $type;
 
   # url generator
@@ -361,12 +364,12 @@ sub nospam {
 }
 
 
-sub ie6message {
+sub iemessage {
   my $self = shift;
 
   if($self->reqParam('i-still-want-access')) {
     (my $ref = $self->reqHeader('Referer') || '/') =~ s/^\Q$self->{url}//;
-    $ref = '/' if $ref eq '/we-dont-like-ie6';
+    $ref = '/' if $ref eq '/we-dont-like-ie';
     $self->resRedirect($ref, 'temp');
     $self->resHeader('Set-Cookie', "ie-sucks=1; path=/; domain=$self->{cookie_domain}");
     return;
@@ -386,16 +389,16 @@ sub ie6message {
     div;
      h1 'Oops, we were too lazy to support your browser!';
      p;
-      lit qq|We decided to stop supporting Internet Explorer 6, as it's a royal pain in |
+      lit qq|We decided to stop supporting Internet Explorer 6 and 7, as it's a royal pain in |
          .qq|the ass to make our site look good in a browser that doesn't want to cooperate with us.<br />|
          .qq|You can try one of the following free alternatives: |
          .qq|<a href="http://www.mozilla.com/firefox/">Firefox</a>, |
          .qq|<a href="http://www.opera.com/">Opera</a>, |
          .qq|<a href="http://www.apple.com/safari/">Safari</a>, or |
          .qq|<a href="http://www.google.com/chrome">Chrome</a>.<br /><br />|
-         .qq|If you're really stubborn about using Internet Explorer, upgrading to version 7 will also work.<br /><br />|
+         .qq|If you're really stubborn about using Internet Explorer, upgrading to version 8 will also work.<br /><br />|
          .qq|...and if you're mad, you can also choose to ignore this warning and |
-         .qq|<a href="/we-dont-like-ie6?i-still-want-access=1">open the site anyway</a>.|;
+         .qq|<a href="/we-dont-like-ie?i-still-want-access=1">open the site anyway</a>.|;
      end;
     end;
    end;

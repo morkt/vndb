@@ -294,7 +294,7 @@ sub board {
     sort => $type eq 'an' ? 'id' : 'lastpost', reverse => 1,
   );
 
-  $self->htmlHeader(title => $title, noindex => 1);
+  $self->htmlHeader(title => $title, noindex => 1, feeds => [ $type eq 'an' ? 'announcements' : 'posts' ]);
 
   $self->htmlMainTabs($type, $obj, 'disc') if $iid;
   div class => 'mainbox';
@@ -330,7 +330,7 @@ sub board {
 sub index {
   my $self = shift;
 
-  $self->htmlHeader(title => mt('_disindex_title'), noindex => 1);
+  $self->htmlHeader(title => mt('_disindex_title'), noindex => 1, feeds => [ 'posts', 'announcements' ]);
   div class => 'mainbox';
    h1 mt '_disindex_title';
    p class => 'browseopts';

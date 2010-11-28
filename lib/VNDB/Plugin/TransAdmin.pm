@@ -121,7 +121,7 @@ sub _savelang {
   # re-read the file and regenerate the JS in case we're not running as CGI
   if($INC{"FCGI.pm"}) {
     VNDB::L10N::loadfile();
-    VNDB::checkjs();
+    system "make -sC $VNDB::ROOT js" if $self->{regen_static};
   }
 }
 

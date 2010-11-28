@@ -22,6 +22,7 @@ our %S = (%S,
   cookie_prefix   => 'vndb_',
   global_salt     => 'any-private-string-here',
   form_salt       => 'a-different-private-string-here',
+  regen_static    => 0,
   source_url      => 'http://git.blicky.net/vndb.git/?h=master',
   admin_email     => 'contact@vndb.org',
   scr_size        => [ 136, 102 ], # w*h of screenshot thumbnails
@@ -101,6 +102,11 @@ our %S = (%S,
   wishlist_status => [ 0..3 ],
   rlst_rstat      => [ 0..4 ], # 2 = hardcoded 'OK', < 2 = hardcoded 'NOK'
   rlst_vstat      => [ 0..4 ], # 2 = hardcoded 'OK', 0 || 4 = hardcoded 'NOK'
+  atom_feeds => { # num_entries, title, id
+    announcements => [ 10, 'VNDB Site Announcements', '/t/an' ],
+    changes       => [ 25, 'VNDB Recent Changes', '/hist' ],
+    posts         => [ 25, 'VNDB Recent Posts', '/t' ],
+  },
 );
 
 
@@ -109,6 +115,7 @@ our %M = (
   log_dir   => $ROOT.'/data/log',
   modules   => {
     #API         => {},  # disabled by default, not really needed
+    Feed        => {},
     RG          => {},
     Image       => {},
     #Anime       => {},  # disabled by default, requires AniDB username/pass

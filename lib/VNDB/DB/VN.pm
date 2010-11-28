@@ -10,7 +10,7 @@ use Encode 'decode_utf8';
 our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
 
 
-# Options: id, rev, char, search, lang, platform, tags_include, tags_exclude, results, page, what, sort, reverse
+# Options: id, rev, char, search, length, lang, olang, plat, tags_include, tags_exclude, hasani, results, page, what, sort, reverse
 # What: extended anime relations screenshots relgraph rating ranking changes
 # Sort: id rel pop rating title tagscore rand
 sub dbVNGet {
@@ -29,10 +29,16 @@ sub dbVNGet {
       'LOWER(SUBSTR(vr.title, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
       '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
-    $o{lang} && @{$o{lang}} ? (
-      'v.c_languages && ARRAY[!l]::language[]' => [ $o{lang} ]) : (),
-    $o{platform} && @{$o{platform}} ? (
-      '('.join(' OR ', map "v.c_platforms ILIKE '%%$_%%'", @{$o{platform}}).')' => 1 ) : (),
+    defined $o{length} ? (
+      'vr.length IN(!l)' => [ ref $o{length} ? $o{length} : [$o{length}] ]) : (),
+    $o{lang} ? (
+      'v.c_languages && ARRAY[!l]::language[]' => [ ref $o{lang} ? $o{lang} : [$o{lang}] ]) : (),
+    $o{olang} ? (
+      'v.c_olang && ARRAY[!l]::language[]' => [ ref $o{olang} ? $o{olang} : [$o{olang}] ]) : (),
+    $o{plat} ? (
+      '('.join(' OR ', map "v.c_platforms ILIKE '%%$_%%'", ref $o{plat} ? @{$o{plat}} : $o{plat}).')' => 1 ) : (),
+    defined $o{hasani} ? (
+      '!sEXISTS(SELECT 1 FROM vn_anime va WHERE va.vid = vr.id)' => [ $o{hasani} ? '' : 'NOT ' ]) : (),
     $o{tags_include} && @{$o{tags_include}} ? (
       'v.id IN(SELECT vid FROM tags_vn_inherit WHERE tag IN(!l) AND spoiler <= ? GROUP BY vid HAVING COUNT(tag) = ?)',
       [ $o{tags_include}[1], $o{tags_include}[0], $#{$o{tags_include}[1]}+1 ]
