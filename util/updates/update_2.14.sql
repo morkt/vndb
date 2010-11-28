@@ -7,10 +7,6 @@ ALTER TABLE vn ADD COLUMN c_olang language[] NOT NULL DEFAULT '{}';
 \i util/sql/func.sql
 
 
--- regenerate vn.c_* columns
-SELECT COUNT(*) FROM (SELECT update_vncache(id) FROM vn WHERE NOT hidden) s;
-
-
 -- redefine the triggers to use the new conditional triggers in PostgreSQL 9.0
 
 DROP TRIGGER hidlock_update ON vn;
@@ -142,4 +138,8 @@ ALTER TABLE votes               ADD FOREIGN KEY (uid)       REFERENCES users    
 
 ALTER TABLE wlists DROP CONSTRAINT wlists_uid_fkey;
 ALTER TABLE wlists              ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
+
+
+-- regenerate vn.c_* columns
+SELECT COUNT(*) FROM (SELECT update_vncache(id) FROM vn WHERE NOT hidden) s;
 
