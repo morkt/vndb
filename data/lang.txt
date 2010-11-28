@@ -413,7 +413,7 @@ nl :
 en : Apple iProduct
 ru*:
 cs*:
-hu*:
+hu : Apple iTermék
 nl :
 
 :_plat_dvd
@@ -1273,7 +1273,7 @@ nl : Per dag mag je maar één account aanmaken vanaf hetzelfde IP
 en : Question was not correctly answered. Are you sure you are a human?
 ru*:
 cs*:
-hu*:
+hu : A kérdésre a válasz helytelen. Biztos vagy benne, hogy ember vagy?
 nl : Vraag was incorrect beantwoord. Weet je zeker dat je een mens bent?
 
 :_formerr_e_nochanges
@@ -1517,7 +1517,7 @@ nl : ongemodereerd
 en : Atom Feed
 ru*:
 cs*:
-hu*:
+hu : Atom Hírfolyam
 nl :
 
 
@@ -2587,7 +2587,7 @@ nl :
 en : Releases
 ru*:
 cs*:
-hu*:
+hu : Kiadások
 nl : Uitgaven
 
 :_prodpage_norel
@@ -3699,21 +3699,21 @@ nl :
 en : Release filters
 ru*:
 cs*:
-hu*:
+hu : Kiadás szűrők
 nl : Uitgavenfilters
 
 :_rbrowse_general
 en : General
 ru*:
 cs*:
-hu*:
+hu : Általános
 nl : Algemeen
 
 :_rbrowse_close
 en : close
 ru*:
 cs*:
-hu*:
+hu : bezár
 nl : sluiten
 
 :_rbrowse_type
@@ -3734,14 +3734,14 @@ nl :
 en : Patch
 ru*: Только патчи
 cs*: Pouze patche
-hu*: Csak patchek
+hu : Patch
 nl :
 
 :_rbrowse_patch_no
 en : Standalone
 ru*: Только самостоятельные выпуски
 cs*: Pouze samostatná vydání
-hu*: Csak különálló kiadások
+hu : Önálló
 nl : Geen patch
 
 :_rbrowse_freeware
@@ -3811,14 +3811,14 @@ nl : Minimum leeftijd
 en : Language
 ru*: Языки
 cs*: Jazyky
-hu*: Nyelvek
+hu : Nyelvek
 nl : Taal
 
 :_rbrowse_olang
 en : Original language
 ru*:
 cs*:
-hu*:
+hu : Eredeti nyelv
 nl : Originele taal
 
 :_rbrowse_resolution
@@ -3839,42 +3839,42 @@ nl : Booleaanse 'of', meerdere selecties geven meer resultaten
 en : Platform
 ru*: Платформы
 cs*: Platformy
-hu*: Platformok
+hu : Platformok
 nl : Platform
 
 :_rbrowse_medium
 en : Medium
 ru*: Носители
 cs*: Média
-hu*: Médium
+hu : Médium
 nl :
 
 :_rbrowse_voiced
 en : Voiced
 ru*:
 cs*:
-hu*:
+hu : Szinkronos
 nl : Ingesproken
 
 :_rbrowse_animation
 en : Animation
 ru*:
 cs*:
-hu*:
+hu : Animáció
 nl : Animatie
 
 :_rbrowse_ani_story
 en : Story
 ru*:
 cs*:
-hu*:
+hu : Történet
 nl : Verhaal
 
 :_rbrowse_ani_ero
 en : Ero scenes
 ru*:
 cs*:
-hu*:
+hu : Ero jelenetek
 nl : Erotische scenes
 
 :_rbrowse_apply
@@ -3888,7 +3888,7 @@ nl : Zoek
 en : Reset
 ru*: Очистить
 cs*: Začít znovu
-hu*: Törlés
+hu : Törlés
 nl :
 
 
@@ -5207,14 +5207,14 @@ nl : Herhaal wachtwoord
 en : How many [index,_1,visual novels,releases,producers] do we have in the database? (Hint: look to your left)
 ru*:
 cs*:
-hu*:
+hu : Mennyi [index,_1,visual novels,releases,producers] van az adatbázisunkba? (Tip: vess egy pillantást balra)
 nl : Hoeveel [index,_1,visual novels,uitgaven,producenten] hebben wij in de database? (Tip: zie links van de pagina)
 
 :_register_answer
 en : Answer
 ru*:
 cs*:
-hu*:
+hu : Válasz
 nl : Antwoord
 
 
@@ -5548,7 +5548,7 @@ nl : verwijder
 en : (Read notifications are automatically removed after one month)
 ru*:
 cs*:
-hu*:
+hu : (Az elolvasott értesítések egy hónap után automatikusan törölve lesznek)
 nl : (Gelezen notificaties worden na 1 maand automatisch verwijderd)
 
 :_usern_set_saved
@@ -5667,49 +5667,49 @@ nl : tag niet gevonden
 en : Visual Novel Filters
 ru*:
 cs*:
-hu*:
+hu : Visual Novel Szűrők
 nl :
 
 :_vnbrowse_general
 en : General
 ru*:
 cs*:
-hu*:
+hu : Általános
 nl : Algemeen
 
 :_vnbrowse_length
 en : Length
 ru*:
 cs*:
-hu*:
+hu : Hossz
 nl : Lengte
 
 :_vnbrowse_anime
 en : Anime
 ru*:
 cs*:
-hu*:
+hu :
 nl :
 
 :_vnbrowse_anime_yes
 en : Has anime
 ru*:
 cs*:
-hu*:
+hu : Van róla anime
 nl : Heeft anime
 
 :_vnbrowse_anime_no
 en : Does not have anime
 ru*:
 cs*:
-hu*:
+hu : Nincs róla anime
 nl : Heeft geen anime
 
 :_vnbrowse_tags
 en : Tags
 ru*:
 cs*:
-hu*:
+hu : Címkék
 nl :
 
 :_vnbrowse_booland
@@ -5758,21 +5758,21 @@ nl : Toon alle spoilers
 en : Language
 ru*: Языки
 cs*: Jazyky
-hu*: Nyelvek
+hu : Nyelvek
 nl : Taal
 
 :_vnbrowse_olang
 en : Original language
 ru*:
 cs*:
-hu*:
+hu : Eredeti nyelv
 nl : Originele taal
 
 :_vnbrowse_platform
 en : Platform
 ru*: Платформы
 cs*: Platformy
-hu*: Platformok
+hu : Platformok
 nl :
 
 
@@ -5837,9 +5837,9 @@ ru*: Список альтернативных названий или аббр�
 cs*: Seznam alternativních názvů nebo zkratek, oddělených čárkou. Může zahrnovat oba
      (japonský/anglický) názvy a neoficiální názvy používané na internetu.[br]
      Názvy, vypsané ve vydáních by se sem přidávat neměly!
-hu*: Vesszővel elválasztott lista, más címekkel vagy rövidítésekkel. Tartalmazhat hivatalos
+hu : Alternatív címek vagy röviditések listája. Külön sorba minden elnevezést. Tartalmazhat hivatalos
      (japán/angol) címeket vagy nem hivatalosokat amelyet a netten használnak.[br]
-     Azok a címek amelyek a kiadásokba vannak ne tegyétek bele!
+     Azokat a címeket amelyek a kiadásokba be vannak írva ne írjátok ide be!
 nl : Lijst van alternatieve titels of afkortingen, één titel per regel. Kan zowel officiële
      (Japanse/Engelse) als officieuze titels bevatten.
 
@@ -6002,7 +6002,7 @@ nl : is een
 en : official
 ru*:
 cs*:
-hu*:
+hu : hivatalos
 nl : officiële
 
 :_vnedit_rel_of
@@ -6065,7 +6065,7 @@ nl :
 en : No releases in the database yet. Screenshots can only be uploaded after a release has been added.
 ru*:
 cs*:
-hu*:
+hu : Még nincs kiadás az adatbázisban. Ameddig nincs bejegyezve egy kiadás sem, addig nem lehet pillanatképeket feltölteni.
 nl : Nog geen uitgaven in de database. Screenshots kunnen alleen geupload worden nadat een uitgave is toegevoegd.
 
 :_vnedit_scrmsg
@@ -6427,14 +6427,14 @@ nl : Niet veilig
 en : official
 ru*:
 cs*:
-hu*:
+hu : hivatalos
 nl : officiëel
 
 :_vndiff_rel_unofficial
 en : unofficial
 ru*:
 cs*:
-hu*:
+hu : nem hivatalos
 nl : officieus
 
 
@@ -6605,7 +6605,7 @@ nl : Relaties
 en : ~[unofficial~]
 ru*:
 cs*:
-hu*:
+hu : ~[nem hivatalos~]
 nl : ~[officieus~]
 
 :_vnpage_anime
@@ -7065,14 +7065,14 @@ nl : Formulier kon niet verzonden worden, zorg er voor dat Javascript aan staat 
 en : Validation code expired
 ru*:
 cs*:
-hu*:
+hu : Az érvényesítő kód lejárt
 nl : Validatie code ongeldig
 
 :_formcode_msg
 en : Please hit the back-button of your browser, refresh the page and try again.
 ru*:
 cs*:
-hu*:
+hu : Kérem nyomva meg a böngészője vissza gombját, frissítse az oldalt és próbálja újra.
 nl : Ga terug naar de vorige pagina, vernieuw deze en probeer het opnieuw.
 
 
