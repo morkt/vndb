@@ -3814,6 +3814,13 @@ cs*: Jazyky
 hu*: Nyelvek
 nl : Taal
 
+:_rbrowse_olang
+en : Original language
+ru*:
+cs*:
+hu*:
+nl : Originele taal
+
 :_rbrowse_resolution
 en : Screen resolution
 ru : Разрешение экрана

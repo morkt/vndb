@@ -11,7 +11,7 @@ our @EXPORT = qw|dbReleaseGet dbReleaseRevisionInsert|;
 
 
 # Options: id vid pid rev unreleased page results what med sort reverse date_before date_after 
-#   plat lang type minage search resolution freeware doujin voiced ani_story ani_ero
+#   plat lang olang type minage search resolution freeware doujin voiced ani_story ani_ero
 # What: extended changes vn producers platforms media
 # Sort: title released minage
 sub dbReleaseGet {
@@ -38,7 +38,9 @@ sub dbReleaseGet {
     defined $o{ani_ero}     ? ( 'rr.ani_ero IN(!l)'    => [ ref $o{ani_ero}    ? $o{ani_ero}    : [$o{ani_ero}]    ] ) : (),
     defined $o{unreleased}  ? ( 'rr.released !s ?' => [ $o{unreleased} ? '>' : '<=', strftime('%Y%m%d', gmtime) ] ) : (),
     $o{lang} ? (
-      'rr.id IN(SELECT irl.rid FROM releases_lang irl JOIN releases ir ON ir.latest = irl.rid WHERE irl.lang IN(!l))', => [ ref $o{lang} ? $o{lang} : [ $o{lang} ] ] ) : (),
+      'rr.id IN(SELECT irl.rid FROM releases_lang irl JOIN releases ir ON ir.latest = irl.rid WHERE irl.lang IN(!l))' => [ ref $o{lang} ? $o{lang} : [ $o{lang} ] ] ) : (),
+    $o{olang} ? (
+      'rr.id IN(SELECT irv.rid FROM releases_vn irv JOIN releases ir ON ir.latest = irv.rid JOIN vn v ON irv.vid = v.id WHERE v.c_olang && ARRAY[!l]::language[])' => [ ref $o{olang} ? $o{olang} : [ $o{olang} ] ] ) : (),
     $o{plat} ? (
       'rr.id IN(SELECT irp.rid FROM releases_platforms irp JOIN releases ir ON ir.latest = irp.rid WHERE irp.platform IN(!l))' => [ ref $o{plat} ? $o{plat} : [ $o{plat} ] ] ) : (),
     $o{med} ? (

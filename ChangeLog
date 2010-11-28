@@ -1,6 +1,6 @@
 2.14 - ?
 	- Improved filter selection interface for the release and VN browser
-	- New release filters: voiced and animation
+	- New release filters: voiced, animation and original language
 	- New VN filters: length, "has anime" and original language
 	- Apply search query and filters when changing first char
 	- Added Atom feeds for the recent announcements, changes and posts

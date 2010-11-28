@@ -2005,12 +2005,13 @@ function filReleases() {
       [ 'date_after',  mt('_rbrowse_dateafter'),  dateLoad(null, filSelectField), function (c) { return [c.date_val] }, dateSet ],
       [ 'date_before', mt('_rbrowse_datebefore'), dateLoad(null, filSelectField), function (c) { return [c.date_val] }, dateSet ]
     ],
-    [ mt('_rbrowse_minage'),     filFSelect('minage', mt('_rbrowse_minage'), 15, ages) ],
-    [ mt('_rbrowse_language'),   filFSelect('lang', mt('_rbrowse_language'), 20, lang) ],
+    [ mt('_rbrowse_minage'),     filFSelect('minage',     mt('_rbrowse_minage'),     15, ages) ],
+    [ mt('_rbrowse_language'),   filFSelect('lang',       mt('_rbrowse_language'),   20, lang) ],
+    [ mt('_rbrowse_olang'),      filFSelect('olang',      mt('_rbrowse_olang'),      20, lang) ],
     [ mt('_rbrowse_resolution'), filFSelect('resolution', mt('_rbrowse_resolution'), 15, resolutions) ],
-    [ mt('_rbrowse_platform'),   filFSelect('plat', mt('_rbrowse_platform'), 20, plat) ],
-    [ mt('_rbrowse_medium'),     filFSelect('med',  mt('_rbrowse_medium'), 10, med) ],
-    [ mt('_rbrowse_voiced'),     filFSelect('voiced', mt('_rbrowse_voiced'), 5, voi) ],
+    [ mt('_rbrowse_platform'),   filFSelect('plat',       mt('_rbrowse_platform'),   20, plat) ],
+    [ mt('_rbrowse_medium'),     filFSelect('med',        mt('_rbrowse_medium'),     10, med)  ],
+    [ mt('_rbrowse_voiced'),     filFSelect('voiced',     mt('_rbrowse_voiced'),      5, voi)  ],
     [ mt('_rbrowse_animation'),
       filFSelect('ani_story', mt('_rbrowse_ani_story'), 5, ani),
       filFSelect('ani_ero',   mt('_rbrowse_ani_ero'),   5, ani)
