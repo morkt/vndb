@@ -35,7 +35,7 @@ sub list {
     # for URL compatibilty with older versions (ugly hack to get English strings)
     my @lang;
     $f->{q} =~ s/\s*$VNDB::L10N::en::Lexicon{"_lang_$_"}\s*//&&push @lang, $_ for (@{$self->{languages}});
-    $fil->{lang} = $fil->{lang} ? [ ref($fil->{lang}) ? @{$fil->{lang}} : $fil->{lang}, @lang ] : \@lang;
+    $fil->{lang} = $fil->{lang} ? [ ref($fil->{lang}) ? @{$fil->{lang}} : $fil->{lang}, @lang ] : \@lang if @lang;
   }
   $f->{fil} = fil_serialize $fil;
 
