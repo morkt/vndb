@@ -49,7 +49,7 @@ server resources and prevent abuse of this service.</p>
   Server will reply with a 'throttled' error with type="sql" upon reaching
   this limit.
  </li>
- <li>Each command returns at most 10 results.</li>
+ <li>Each command returns at most 25 results.</li>
 </ul>
 
 <br />
@@ -922,6 +922,7 @@ however still required.<br />
  <li>Allow non-numbers as "clientver" for the login command</li>
  <li>Added "image_nsfw" member to "get vn"</li>
  <li>Added "results" option to the "get .. {<options>}"</li>
+ <li>Increased the maximum number of results for the "get .." command to 25</li>
 </ul>
 <b>2.12</b>
 <ul>

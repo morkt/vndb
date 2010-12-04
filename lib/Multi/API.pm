@@ -49,7 +49,8 @@ sub spawn {
       logfile => "$VNDB::M{log_dir}/api.log",
       conn_per_ip => 5,
       sess_per_user => 3,
-      max_results => 10,
+      max_results => 25,
+      default_results => 10,
       tcp_keepalive => [ 120, 60, 3 ], # time, intvl, probes
       throttle_cmd => [ 6, 100 ], # interval between each command, allowed burst
       throttle_sql => [ 60, 1 ], # sql time multiplier, allowed burst (in sql time)
@@ -341,13 +342,13 @@ sub client_input {
     return cerr $c, badarg => 'Invalid argument for the "page" option', field => 'page'
       if defined($opt->{page}) && (ref($opt->{page}) || $opt->{page} !~ /^\d+$/ || $opt->{page} < 1);
     return cerr $c, badarg => 'Invalid argument for the "results" option', field => 'results'
-      if defined($opt->{results}) && (ref($opt->{results}) || $opt->{results} !~ /^\d+$/ || $opt->{results} < 1 || $opt->{results} > 10);
+      if defined($opt->{results}) && (ref($opt->{results}) || $opt->{results} !~ /^\d+$/ || $opt->{results} < 1 || $opt->{results} > $_[HEAP]{max_results});
     return cerr $c, badarg => '"reverse" option must be boolean', field => 'reverse'
       if defined($opt->{reverse}) && !JSON::XS::is_bool($opt->{reverse});
     return cerr $c, badarg => '"sort" option must be a string', field => 'sort'
       if defined($opt->{sort}) && ref($opt->{sort});
     $opt->{page} = $opt->{page}||1;
-    $opt->{results} = $opt->{results}||$_[HEAP]{max_results};
+    $opt->{results} = $opt->{results}||$_[HEAP]{default_results};
     $opt->{reverse} = defined($opt->{reverse}) && $opt->{reverse};
     my %obj = (
       c => $c,
