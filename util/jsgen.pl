@@ -55,9 +55,6 @@ sub l10n {
       "mt('$k'$s"
     }
   #eg;
-  # also add the _lang_* for all languages for which we have a translation
-  my $jskeys_lang = join '|', VNDB::L10N::languages();
-  push @keys, qr/_lang_(?:$jskeys_lang)/;
 
   # generate header
   my $r = "L10N_STR = {\n";
@@ -113,7 +110,9 @@ sub jsgen {
   $common .= sprintf "animated = [ %s ];\n", join ', ', @{$S{animated}};
   $common .= sprintf "voiced = [ %s ];\n", join ', ', @{$S{voiced}};
   $common .= sprintf "vn_lengths = [ %s ];\n", join ', ', @{$S{vn_lengths}};
-  $common .= sprintf "L10N_LANG = [ %s ];\n", join(', ', map qq{"$_"}, VNDB::L10N::languages());
+  $common .= sprintf "L10N_LANG = [ %s ];\n", join(', ', map
+      sprintf('["%s","%s"]', $_, $lang{$_}{"_lang_$_"}||$lang{en}{"_lang_$_"}),
+    VNDB::L10N::languages());
 
   open my $JS, '<:utf8', "$ROOT/data/script.js" or die $!;
   my $js .= join '', <$JS>;
