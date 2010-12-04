@@ -482,6 +482,12 @@ however still required.<br />
   <td>&nbsp;</td>
  </tr>
  <tr class="odd">
+  <td>orig_lang</td>
+  <td>string<br />array of strings</td>
+  <td>= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
   <td>search</td>
   <td>string</td>
   <td>~</td>
@@ -923,6 +929,7 @@ however still required.<br />
  <li>Added "image_nsfw" member to "get vn"</li>
  <li>Added "results" option to the "get .. {<options>}"</li>
  <li>Increased the maximum number of results for the "get .." command to 25</li>
+ <li>Added "orig_lang" filter to the "get vn .." command</li>
 </ul>
 <b>2.12</b>
 <ul>

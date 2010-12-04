@@ -4,6 +4,7 @@
 	- API: Added "image_nsfw" member to "get vn"
 	- API: Added "results" option to the "get .. {}"
 	- API: Increased the maximum number of results for the "get" command to 25
+	- API: Added "orig_lang" filter to the "get vn .." command
 
 2.14 - 2010-11-28
 	- Improved filter selection interface for the release and VN browser
