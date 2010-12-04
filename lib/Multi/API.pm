@@ -435,7 +435,7 @@ sub get_vn {
     for (grep !/^(basic|details|anime|relations)$/, @{$get->{info}});
 
   my $select = 'v.id, v.latest';
-  $select .= ', vr.title, vr.original, v.c_released, v.c_languages::text[], v.c_platforms' if grep /basic/, @{$get->{info}};
+  $select .= ', vr.title, vr.original, v.c_released, v.c_languages::text[], v.c_olang::text[], v.c_platforms' if grep /basic/, @{$get->{info}};
   $select .= ', vr.image, vr.img_nsfw, vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai' if grep /details/, @{$get->{info}};
 
   my @placeholders;
@@ -497,6 +497,7 @@ sub get_vn_res {
         $_->{original}  ||= undef;
         $_->{platforms} = [ split /\//, delete $_->{c_platforms} ];
         $_->{languages} = delete $_->{c_languages};
+        $_->{orig_lang} = delete $_->{c_olang};
         $_->{released}  = formatdate delete $_->{c_released};
       }
       if(grep /details/, @{$get->{info}}) {

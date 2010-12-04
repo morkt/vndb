@@ -340,34 +340,41 @@ however still required.<br />
   <td>Can be an empty array when nothing has been released yet.</td>
  </tr>
  <tr>
+  <td>orig_lang</td>
+  <td>basic</td>
+  <td>array of strings</td>
+  <td>no</td>
+  <td>Language(s) of the first release. Can be an empty array.</td>
+ </tr>
+ <tr class="odd">
   <td>platforms</td>
   <td>basic</td>
   <td>array of strings</td>
   <td>no</td>
   <td>Can be an empty array when unknown or nothing has been released yet.</td>
  </tr>
- <tr class="odd">
+ <tr>
   <td>aliases</td>
   <td>details</td>
   <td>string</td>
   <td>yes</td>
   <td>Aliases, separated by newlines.</td>
  </tr>
- <tr>
+ <tr class="odd">
   <td>length</td>
   <td>details</td>
   <td>integer</td>
   <td>yes</td>
   <td>Length of the game, 1-5</td>
  </tr>
- <tr class="odd">
+ <tr>
   <td>description</td>
   <td>details</td>
   <td>string</td>
   <td>yes</td>
   <td>Description of the VN. Can include formatting codes as described in <a href="/d9.3">d9.3</a>.</td>
  </tr>
- <tr>
+ <tr class="odd">
   <td>links</td>
   <td>details</td>
   <td>object</td>
@@ -380,7 +387,7 @@ however still required.<br />
    All members can be <b>null</b> when no links are available or known to us.
   </td>
  </tr>
- <tr class="odd">
+ <tr>
   <td>image</td>
   <td>details</td>
   <td>string</td>
@@ -390,14 +397,14 @@ however still required.<br />
    make sure to leave the HTTP Referer header empty when fetching the image.
   </td>
  </tr>
- <tr>
+ <tr class="odd">
   <td>image_nsfw</td>
   <td>details</td>
   <td>boolean</td>
   <td>no</td>
   <td>Whether the VN image is flagged as NSFW or not.</td>
  </tr>
- <tr class="odd">
+ <tr>
   <td>anime</td>
   <td>anime</td>
   <td>array of objects</td>
@@ -415,7 +422,7 @@ however still required.<br />
    and may not reflect the latest state of their information due to caching.
   </td>
  </tr>
- <tr>
+ <tr class="odd">
   <td>relations</td>
   <td>relations</td>
   <td>array of objects</td>
@@ -929,7 +936,7 @@ however still required.<br />
  <li>Added "image_nsfw" member to "get vn"</li>
  <li>Added "results" option to the "get .. {<options>}"</li>
  <li>Increased the maximum number of results for the "get .." command to 25</li>
- <li>Added "orig_lang" filter to the "get vn .." command</li>
+ <li>Added "orig_lang" member and filter to the "get vn .." command</li>
 </ul>
 <b>2.12</b>
 <ul>
