@@ -252,7 +252,12 @@ however still required.<br />
 <dl>
  <dt>page</dt><dd>
   integer, used for pagination. Page 1 (the default) returns the first 10
-  results (1-10), page 2 returns the following 10 (11-20), etc.
+  results (1-10), page 2 returns the following 10 (11-20), etc. (The actual
+  number of results per page can be set with the "results" option below).
+ </dd><dt>results</dt><dd>
+  integer, maximum number of results to return. Also affects the "page" option
+  above. For example: with "page" set to 2 and "results" set to 5, the second
+  five results (that is, results 6-10) will be returned. Default: 10.
  </dd><dt>sort</dt><dd>
   string, the field to order the results by. The accepted field names differ
   per type, the default sort field is the ID of the database entry.
@@ -916,6 +921,7 @@ however still required.<br />
  <li>Fixed a bug with the server not allowing extra whitespace after a "get .. " command</li>
  <li>Allow non-numbers as "clientver" for the login command</li>
  <li>Added "image_nsfw" member to "get vn"</li>
+ <li>Added "results" option to the "get .. {<options>}"</li>
 </ul>
 <b>2.12</b>
 <ul>

@@ -49,7 +49,7 @@ sub spawn {
       logfile => "$VNDB::M{log_dir}/api.log",
       conn_per_ip => 5,
       sess_per_user => 3,
-      results => 10,
+      max_results => 10,
       tcp_keepalive => [ 120, 60, 3 ], # time, intvl, probes
       throttle_cmd => [ 6, 100 ], # interval between each command, allowed burst
       throttle_sql => [ 60, 1 ], # sql time multiplier, allowed burst (in sql time)
@@ -197,8 +197,7 @@ sub sqllast { # $get, default sort field, hashref with sort fields and SQL varia
   return cerr $get->{c}, badarg => 'Invalid sort field', field => 'sort' if !$s;
   my $q = 'ORDER BY '.sprintf($s, $o);
 
-  my $res = $poe_kernel->get_active_session()->get_heap()->{results};
-  $q .= sprintf ' LIMIT %d OFFSET %d', $res+1, $res*($get->{opt}{page}-1);
+  $q .= sprintf ' LIMIT %d OFFSET %d', $get->{opt}{results}+1, $get->{opt}{results}*($get->{opt}{page}-1);
   return $q;
 }
 
@@ -341,11 +340,14 @@ sub client_input {
     my $opt = $arg->[3] || {};
     return cerr $c, badarg => 'Invalid argument for the "page" option', field => 'page'
       if defined($opt->{page}) && (ref($opt->{page}) || $opt->{page} !~ /^\d+$/ || $opt->{page} < 1);
+    return cerr $c, badarg => 'Invalid argument for the "results" option', field => 'results'
+      if defined($opt->{results}) && (ref($opt->{results}) || $opt->{results} !~ /^\d+$/ || $opt->{results} < 1 || $opt->{results} > 10);
     return cerr $c, badarg => '"reverse" option must be boolean', field => 'reverse'
       if defined($opt->{reverse}) && !JSON::XS::is_bool($opt->{reverse});
     return cerr $c, badarg => '"sort" option must be a string', field => 'sort'
       if defined($opt->{sort}) && ref($opt->{sort});
     $opt->{page} = $opt->{page}||1;
+    $opt->{results} = $opt->{results}||$_[HEAP]{max_results};
     $opt->{reverse} = defined($opt->{reverse}) && $opt->{reverse};
     my %obj = (
       c => $c,
@@ -507,7 +509,7 @@ sub get_vn_res {
         $_->{image} = $_->{image} ? sprintf '%s/cv/%02d/%d.jpg', $VNDB::S{url_static}, $_->{image}%100, $_->{image} : undef;
       }
     }
-    $get->{more} = pop(@$res)&&1 if @$res > $_[HEAP]{results};
+    $get->{more} = pop(@$res)&&1 if @$res > $get->{results};
     $get->{list} = $res;
   }
 
@@ -639,7 +641,7 @@ sub get_release_res {
         $_->{catalog}  ||= undef;
       }
     }
-    $get->{more} = pop(@$res)&&1 if @$res > $_[HEAP]{results};
+    $get->{more} = pop(@$res)&&1 if @$res > $get->{results};
     $get->{list} = $res;
   }
   elsif($get->{type} eq 'languages') {
@@ -785,7 +787,7 @@ sub get_producer_res {
         $_->{aliases}     ||= undef;
       }
     }
-    $get->{more} = pop(@$res)&&1 if @$res > $_[HEAP]{results};
+    $get->{more} = pop(@$res)&&1 if @$res > $get->{results};
     $get->{list} = $res;
   }
   elsif($get->{type} eq 'relations') {
