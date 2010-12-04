@@ -580,7 +580,7 @@ sub _fil_compat {
     { name => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
   );
   return if $f->{_err};
-  $fil->{minage} //= [ grep defined($_) && $f->{ma_m} ? $f->{ma_a} >= $_ : $f->{ma_a} <= $_, @{$self->{age_ratings}} ] if $f->{ma_a} || $f->{ma_m};
+  $fil->{minage} //= [ grep defined($_) && $f->{ma_m} ? $f->{ma_a} >= $_ : defined ($_) && $f->{ma_a} <= $_, @{$self->{age_ratings}} ] if $f->{ma_a} || $f->{ma_m};
   $fil->{date_after} //= $f->{mi}  if $f->{mi};
   $fil->{date_before} //= $f->{ma} if $f->{ma} < 99990000;
   $fil->{plat} //= $f->{pl}        if $f->{pl}[0];
