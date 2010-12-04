@@ -222,7 +222,7 @@ however still required.<br />
   must contain only alphanumeric ASCII characters, space, underscore and hyphens.
   When writing a client, think of a funny (unique) name and hardcode it into
   your application.
- </dd><dt>clientver</dt><dd>A positive number indicating the software version of the client.</dd>
+ </dd><dt>clientver</dt><dd>A number or string indicating the software version of the client.</dd>
  <dt>username</dt><dd>String containing the username of the person using the client.</dd>
  <dt>password</dt><dd>String, password of that user in plain text.</dd>
 </dl>
@@ -907,6 +907,7 @@ however still required.<br />
 <b>2.15</b>
 <ul>
  <li>Fixed a bug with the server not allowing extra whitespace after a "get .. " command</li>
+ <li>Allow non-numbers as "clientver" for the login command</li>
 </ul>
 <b>2.12</b>
 <ul>

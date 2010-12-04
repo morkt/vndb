@@ -1,5 +1,6 @@
 2.14 - ?
 	- API: Allow extra whitespace after "get .." command
+	- API: Allow non-numbers as "clientver" for the login command
 
 2.14 - 2010-11-28
 	- Improved filter selection interface for the release and VN browser
