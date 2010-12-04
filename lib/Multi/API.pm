@@ -433,7 +433,7 @@ sub get_vn {
 
   my $select = 'v.id, v.latest';
   $select .= ', vr.title, vr.original, v.c_released, v.c_languages::text[], v.c_platforms' if grep /basic/, @{$get->{info}};
-  $select .= ', vr.image, vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai' if grep /details/, @{$get->{info}};
+  $select .= ', vr.image, vr.img_nsfw, vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai' if grep /details/, @{$get->{info}};
 
   my @placeholders;
   my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
@@ -498,6 +498,7 @@ sub get_vn_res {
         $_->{length}      *= 1;
         $_->{length}      ||= undef;
         $_->{description} ||= undef;
+        $_->{image_nsfw}  = delete($_->{img_nsfw}) ? TRUE : FALSE;
         $_->{links} = {
           wikipedia => delete($_->{l_wp})     ||undef,
           encubed   => delete($_->{l_encubed})||undef,

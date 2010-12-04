@@ -386,6 +386,13 @@ however still required.<br />
   </td>
  </tr>
  <tr>
+  <td>image_nsfw</td>
+  <td>details</td>
+  <td>boolean</td>
+  <td>no</td>
+  <td>Whether the VN image is flagged as NSFW or not.</td>
+ </tr>
+ <tr class="odd">
   <td>anime</td>
   <td>anime</td>
   <td>array of objects</td>
@@ -403,7 +410,7 @@ however still required.<br />
    and may not reflect the latest state of their information due to caching.
   </td>
  </tr>
- <tr class="odd">
+ <tr>
   <td>relations</td>
   <td>relations</td>
   <td>array of objects</td>
@@ -908,6 +915,7 @@ however still required.<br />
 <ul>
  <li>Fixed a bug with the server not allowing extra whitespace after a "get .. " command</li>
  <li>Allow non-numbers as "clientver" for the login command</li>
+ <li>Added "image_nsfw" member to "get vn"</li>
 </ul>
 <b>2.12</b>
 <ul>
