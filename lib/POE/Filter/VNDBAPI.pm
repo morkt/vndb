@@ -141,7 +141,7 @@ sub get_one {
     else {
       my ($value, $rest) = split /$WS+/, $str, 2;
       $str = $rest;
-      push @ret, $value;
+      push @ret, $value if length $value;
     }
   }
 

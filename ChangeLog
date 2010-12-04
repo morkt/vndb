@@ -1,3 +1,6 @@
+2.14 - ?
+	- API: Allow extra whitespace after "get .." command
+
 2.14 - 2010-11-28
 	- Improved filter selection interface for the release and VN browser
 	- New release filters: voiced, animation and original language

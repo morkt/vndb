@@ -904,6 +904,10 @@ however still required.<br />
  This section lists the changes made in each version of the VNDB code.
  Check out the <a href="/t/an">announcements board</a> for more information about updates.
 </p>
+<b>2.15</b>
+<ul>
+ <li>Fixed a bug with the server not allowing extra whitespace after a "get .. " command</li>
+</ul>
 <b>2.12</b>
 <ul>
  <li>Added "image" member to "get vn"</li>
