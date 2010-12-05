@@ -384,11 +384,11 @@ sub login {
   }
   return cerr $c, badarg => 'Unknown protocol version', field => 'protocol' if $arg->{protocol}  ne '1';
   return cerr $c, badarg => 'The fields "username" and "password" must either both be present or both be missing.', field => 'username'
-    if $arg->{username} && !$arg->{password} || $arg->{password} && !$arg->{username};
+    if exists $arg->{username} && !exists $arg->{password} || exists $arg->{password} && !exists $arg->{username};
   return cerr $c, badarg => 'Invalid client name', field => 'client'        if $arg->{client}    !~ /^[a-zA-Z0-9 _-]{3,50}$/;
   return cerr $c, badarg => 'Invalid client version', field => 'clientver'  if $arg->{clientver} !~ /^[a-zA-Z0-9_.\/-]{1,25}$/;
 
-  if($arg->{username}) {
+  if(exists $arg->{username}) {
     # fetch user info
     $_[KERNEL]->post(pg => query => "SELECT rank, salt, encode(passwd, 'hex') as passwd FROM users WHERE username = ?",
       [ $arg->{username} ], 'login_res', [ $c, $arg ]);
