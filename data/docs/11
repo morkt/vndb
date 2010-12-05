@@ -41,9 +41,9 @@ server resources and prevent abuse of this service.</p>
 <ul>
  <li>5 connections per IP. All connections that are opened after reaching this limit will be immediately closed.</li>
  <li>3 sessions per user. The login command will reply with a 'sesslimit' error when this limit is reached.</li>
- <li>100 commands per 10 minutes per user. Server will reply with a 'throttled' error (type="cmd") when reaching this limit.</li>
+ <li>100 commands per 10 minutes per ip. Server will reply with a 'throttled' error (type="cmd") when reaching this limit.</li>
  <li>
-  1 second of SQL time per minute per user. SQL time is the total time taken to
+  1 second of SQL time per minute per ip. SQL time is the total time taken to
   run the database queries for each command.  This depends on both the command
   (filters and get flags) and server load, and is thus not very predictable.
   Server will reply with a 'throttled' error with type="sql" upon reaching
@@ -937,6 +937,7 @@ however still required.<br />
  <li>Added "results" option to the "get .. {<options>}"</li>
  <li>Increased the maximum number of results for the "get .." command to 25</li>
  <li>Added "orig_lang" member and filter to the "get vn .." command</li>
+ <li>Throttle the commands and sqltime per IP instead of per user</li>
 </ul>
 <b>2.12</b>
 <ul>

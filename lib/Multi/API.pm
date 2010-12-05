@@ -29,8 +29,8 @@ sub TRUE  () { JSON::XS::true }
 sub FALSE () { JSON::XS::false }
 
 
-# Global throttle hash, key = username, value = [ cmd_time, sql_time ]
-# TODO: clean up items in this hash when username isn't connected anymore and throttle times < current time
+# Global throttle hash, key = ip, value = [ cmd_time, sql_time ]
+# TODO: clean up items in this hash when ip isn't connected anymore and throttle times < current time
 my %throttle;
 
 
@@ -277,12 +277,17 @@ sub client_connect {
     ErrorEvent => 'client_error',
     InputEvent => 'client_input',
   );
+
+  # link this connection to the entry in %throttle (create if not exists)
+  $throttle{$ip} = [ time, time ] if !$throttle{$ip};
+
   $_[HEAP]{c}{ $w->ID() } = {
     wheel     => $w,
     ip        => $ip,
     connected => time,
     cmds      => 0,
     cmd_err   => 0,
+    throttle  => $throttle{$ip},
     # username, client, clientver are added after logging in
   };
   $_[KERNEL]->yield(log => $_[HEAP]{c}{ $w->ID() }, 'Connected');
@@ -312,11 +317,7 @@ sub client_input {
   # parse error?
   return cerr $c, $arg->[0]{id}, $arg->[0]{msg} if !defined $cmd;
 
-  # handle login command
-  return $_[KERNEL]->yield(login => $c, $arg) if $cmd eq 'login';
-  return cerr $c, needlogin => 'Not logged in.' if !$c->{username};
-
-  # update throttle array of the current user
+  # make sure the throttle values for this connection are at least the current time
   my $time = time;
   $_ < $time && ($_ = $time) for @{$c->{throttle}};
 
@@ -332,6 +333,10 @@ sub client_input {
 
   # update commands/second throttle
   $c->{throttle}[0] += $_[HEAP]{throttle_cmd}[0];
+
+  # handle login command
+  return $_[KERNEL]->yield(login => $c, $arg) if $cmd eq 'login';
+  return cerr $c, needlogin => 'Not logged in.' if !$c->{username};
 
   # handle get command
   if($cmd eq 'get') {
@@ -398,10 +403,6 @@ sub login_res { # num, res, [ c, arg ]
 
   my $encrypted = sha256_hex($VNDB::S{global_salt}.encode_utf8($arg->{password}).encode_utf8($res->[0]{salt}));
   return cerr $c, auth => "Wrong password for user '$arg->{username}'" if lc($encrypted) ne lc($res->[0]{passwd});
-
-  # link this connection to the users' throttle array (create this if necessary)
-  $throttle{$arg->{username}} = [ time, time ] if !$throttle{$arg->{username}};
-  $c->{throttle} = $throttle{$arg->{username}};
 
   $c->{username} = $arg->{username};
   $c->{client} = $arg->{client};
