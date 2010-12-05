@@ -48,7 +48,6 @@ sub spawn {
       port => 19534,
       logfile => "$VNDB::M{log_dir}/api.log",
       conn_per_ip => 5,
-      sess_per_user => 3,
       max_results => 25,
       default_results => 10,
       tcp_keepalive => [ 120, 60, 3 ], # time, intvl, probes
@@ -336,7 +335,7 @@ sub client_input {
 
   # handle login command
   return $_[KERNEL]->yield(login => $c, $arg) if $cmd eq 'login';
-  return cerr $c, needlogin => 'Not logged in.' if !$c->{username};
+  return cerr $c, needlogin => 'Not logged in.' if !$c->{client};
 
   # handle get command
   if($cmd eq 'get') {
@@ -376,7 +375,7 @@ sub login {
   # validation (bah)
   return cerr $c, parse => 'Argument to login must be a single JSON object' if @$arg != 1 || ref($arg->[0]) ne 'HASH';
   $arg = $arg->[0];
-  return cerr $c, loggedin => 'Already logged in, please reconnect to start a new session' if $c->{username};
+  return cerr $c, loggedin => 'Already logged in, please reconnect to start a new session' if $c->{client};
   for (qw|protocol client clientver username password|) {
     !exists $arg->{$_}  && return cerr $c, missing => "Required field '$_' is missing", field => $_;
     !defined $arg->{$_} && return cerr $c, badarg  => "Field '$_' cannot be null", field => $_;
@@ -386,8 +385,6 @@ sub login {
   return cerr $c, badarg => 'Unknown protocol version', field => 'protocol' if $arg->{protocol}  ne '1';
   return cerr $c, badarg => 'Invalid client name', field => 'client'        if $arg->{client}    !~ /^[a-zA-Z0-9 _-]{3,50}$/;
   return cerr $c, badarg => 'Invalid client version', field => 'clientver'  if $arg->{clientver} !~ /^[a-zA-Z0-9_.\/-]{1,25}$/;
-  return cerr $c, sesslimit => "Too many open sessions for user '$arg->{username}'", max_allowed => $_[HEAP]{sess_per_user}
-    if $_[HEAP]{sess_per_user} <= grep $_[HEAP]{c}{$_}{username} && $arg->{username} eq $_[HEAP]{c}{$_}{username}, keys %{$_[HEAP]{c}};
 
   # fetch user info
   $_[KERNEL]->post(pg => query => "SELECT rank, salt, encode(passwd, 'hex') as passwd FROM users WHERE username = ?",

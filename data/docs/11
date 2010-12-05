@@ -40,7 +40,6 @@
 server resources and prevent abuse of this service.</p>
 <ul>
  <li>5 connections per IP. All connections that are opened after reaching this limit will be immediately closed.</li>
- <li>3 sessions per user. The login command will reply with a 'sesslimit' error when this limit is reached.</li>
  <li>100 commands per 10 minutes per ip. Server will reply with a 'throttled' error (type="cmd") when reaching this limit.</li>
  <li>
   1 second of SQL time per minute per ip. SQL time is the total time taken to
@@ -916,7 +915,6 @@ however still required.<br />
  </dd>
  <dt>auth</dt><dd>(login) Incorrect username/password combination.</dd>
  <dt>loggedin</dt><dd>(login) Already logged in. Only one successful login command can be issues on one connection.</dd>
- <dt>sesslimit</dt><dd>(login) Too many open sessions for the current user.</dd>
  <dt>gettype</dt><dd>(get) Unknown type argument to the 'get' command.</dd>
  <dt>getinfo</dt><dd>(get) Unknown info flag to the 'get' command. The name of the unrecognised flag is given in an additional "flag" member.</dd>
  <dt>filter</dt><dd>(get) Unknown filter field or invalid combination of field/operator/argument type. Includes three additional members: "field", "op" and "value" of the incorrect expression.</dd>
@@ -938,6 +936,7 @@ however still required.<br />
  <li>Increased the maximum number of results for the "get .." command to 25</li>
  <li>Added "orig_lang" member and filter to the "get vn .." command</li>
  <li>Throttle the commands and sqltime per IP instead of per user</li>
+ <li>Removed the limit on the number of open sessions per user</li>
 </ul>
 <b>2.12</b>
 <ul>
