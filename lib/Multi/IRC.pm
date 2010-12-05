@@ -498,7 +498,7 @@ sub cmd_api {
     my $lst = $_[KERNEL]->call(api => admin => 'list');
     return $_[KERNEL]->yield(reply => $_[DEST], 'Nobody connected.') if !@$lst;
     $_[KERNEL]->yield(reply => $_[DEST], sprintf '%3d %15s %s%s', $_->{id}, $_->{ip}, age(time-$_->{connected}),
-      !$_->{username} ? '' : sprintf ' - %s (%s %s)  C/E: %d/%d  T: %.2f/%.2f', $_->{username},
+      !$_->{client} ? '' : sprintf ' - %s (%s %s)  C/E: %d/%d  T: %.2f/%.2f', ($_->{username}||'-'),
         $_->{client}, $_->{clientver}, $_->{cmds}, $_->{cmd_err}, $_->{t_cmd}, $_->{t_sql})
       for (sort { $a->{ip} cmp $b->{ip} } @$lst);
   }

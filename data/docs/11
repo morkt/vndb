@@ -212,7 +212,7 @@ however still required.<br />
 </pre>
 <p>
  Every client is required to login before issuing other commands. The login
- command accepts a JSON object as argument. This object must have the following members:
+ command accepts a JSON object as argument. This object has the following members:
 </p>
 <dl>
  <dt>protocol</dt><dd>An integer that indicates which protocol version the client implements. Must be 1.</dd>
@@ -222,11 +222,14 @@ however still required.<br />
   When writing a client, think of a funny (unique) name and hardcode it into
   your application.
  </dd><dt>clientver</dt><dd>A number or string indicating the software version of the client.</dd>
- <dt>username</dt><dd>String containing the username of the person using the client.</dd>
- <dt>password</dt><dd>String, password of that user in plain text.</dd>
+ <dt>username</dt><dd>(optional) String containing the username of the person using the client.</dd>
+ <dt>password</dt><dd>(optional) String, password of that user in plain text.</dd>
 </dl>
 <p>
  The server replies with either 'ok' (no arguments), or 'error' (see below).
+ Note that logging in using a username or password is optional. While currently
+ there is no difference between anonymous and user logins, future features may
+ only be available when logged in with a username.
 </p>
 
 
@@ -937,6 +940,7 @@ however still required.<br />
  <li>Added "orig_lang" member and filter to the "get vn .." command</li>
  <li>Throttle the commands and sqltime per IP instead of per user</li>
  <li>Removed the limit on the number of open sessions per user</li>
+ <li>Allow the API to be used without logging in with a username/password</li>
 </ul>
 <b>2.12</b>
 <ul>

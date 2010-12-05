@@ -377,18 +377,27 @@ sub login {
   $arg = $arg->[0];
   return cerr $c, loggedin => 'Already logged in, please reconnect to start a new session' if $c->{client};
   for (qw|protocol client clientver username password|) {
-    !exists $arg->{$_}  && return cerr $c, missing => "Required field '$_' is missing", field => $_;
-    !defined $arg->{$_} && return cerr $c, badarg  => "Field '$_' cannot be null", field => $_;
+    $_ ne "username" && $_ ne "password" && !exists $arg->{$_} && return cerr $c, missing => "Required field '$_' is missing", field => $_;
+    exists $arg->{$_} && !defined $arg->{$_} && return cerr $c, badarg  => "Field '$_' cannot be null", field => $_;
     # note that 'true' and 'false' are also refs
-    ref $arg->{$_}      && return cerr $c, badarg  => "Field '$_' must be a scalar", field => $_;
+    exists $arg->{$_} && ref $arg->{$_}      && return cerr $c, badarg  => "Field '$_' must be a scalar", field => $_;
   }
   return cerr $c, badarg => 'Unknown protocol version', field => 'protocol' if $arg->{protocol}  ne '1';
+  return cerr $c, badarg => 'The fields "username" and "password" must either both be present or both be missing.', field => 'username'
+    if $arg->{username} && !$arg->{password} || $arg->{password} && !$arg->{username};
   return cerr $c, badarg => 'Invalid client name', field => 'client'        if $arg->{client}    !~ /^[a-zA-Z0-9 _-]{3,50}$/;
   return cerr $c, badarg => 'Invalid client version', field => 'clientver'  if $arg->{clientver} !~ /^[a-zA-Z0-9_.\/-]{1,25}$/;
 
-  # fetch user info
-  $_[KERNEL]->post(pg => query => "SELECT rank, salt, encode(passwd, 'hex') as passwd FROM users WHERE username = ?",
-    [ $arg->{username} ], 'login_res', [ $c, $arg ]);
+  if($arg->{username}) {
+    # fetch user info
+    $_[KERNEL]->post(pg => query => "SELECT rank, salt, encode(passwd, 'hex') as passwd FROM users WHERE username = ?",
+      [ $arg->{username} ], 'login_res', [ $c, $arg ]);
+  } else {
+    $c->{client} = $arg->{client};
+    $c->{clientver} = $arg->{clientver};
+    $c->{wheel}->put(['ok']);
+    $_[KERNEL]->yield(log => $c, 'Login using client "%s" ver. %s', $arg->{client}, $arg->{clientver});
+  }
 }
 
 
@@ -834,7 +843,7 @@ sub admin {
         id => $_,
         (map +($_, $c->{$_}), qw|username ip client clientver connected cmds cmd_err|)
       };
-      if($c->{username}) {
+      if($c->{client}) {
         $r->{t_cmd} = ($c->{throttle}[0]-time())/$_[HEAP]{throttle_cmd}[0];
         $r->{t_sql} = ($c->{throttle}[1]-time())/$_[HEAP]{throttle_sql}[0];
         $r->{t_cmd} = 0 if $r->{t_cmd} < 0;
