@@ -8,6 +8,7 @@
 	- API: Throttle the commands and sqltime per IP instead of per user
 	- API: Removed the limit on the number of open sessions per user
 	- API: Allow the API to be used without logging in with a username/password
+	- d11: Various documentation fixes and improvements
 
 2.14 - 2010-11-28
 	- Improved filter selection interface for the release and VN browser

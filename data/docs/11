@@ -50,6 +50,13 @@ server resources and prevent abuse of this service.</p>
  </li>
  <li>Each command returns at most 25 results.</li>
 </ul>
+<p>
+ These limits may sound strict, but in practice you won't have to worry much
+ about it. As long as your application properly waits when the server replies
+ with a "throttle" error, everything will be handled automatically. In the event
+ that your application does require more resources, don't hesitate to ask.
+</p>
+
 
 <br />
 <b>Connection info:</b>
@@ -69,7 +76,7 @@ server resources and prevent abuse of this service.</p>
  </li>
  <li>
   Changes to this API can be made without prior notice. Backwards compatibility
-  is provided when feasable, but non-compatible changes will be made at some
+  is provided when feasable, but non-compatible changes may be made at some
   point.  It is the responsibility of the application developers to keep their
   applications up-to-date.
  </li>
@@ -91,9 +98,9 @@ server resources and prevent abuse of this service.</p>
 <p>Like the disclaimer, these notes should be obvious, but it can't hurt to state them anyway.</p>
 <ul>
  <li>
-  <b>Cache</b> everything you receive, the data on VNDB doesn't change very
-  often. Even if you only refresh the cached information once every month, you
-  can be sure that most of the data hasn't changed within that time.
+  Cache as much as you can, the data on VNDB doesn't change very often. Even if
+  you only refresh the cached information once every month, you can be sure
+  that most of the data hasn't changed within that time.
  </li>
  <li>
   Program defensively. Even when the documentation says that a string will be
@@ -104,8 +111,9 @@ server resources and prevent abuse of this service.</p>
  </li>
  <li>
   Regularly check this page to see if anything has changed to the API, and
-  update your client when necessary. I'll probably add a changelog to the bottom
-  of this page in the future.
+  update your client when necessary. A change log can be found on the bottom of
+  this page. It is recommended to subscribe to the <a
+  href="/feeds/announcements.atom">announcements Atom feed</a>.
  </li>
  <li>
   Use a JSON library for both encoding and decoding JSON data. While the format
@@ -134,7 +142,7 @@ server resources and prevent abuse of this service.</p>
   Message sent from the server to the client.
  </dd><dt><i>whitespace</i></dt><dd>
   Any sequence of the following characters: space, tab, line feed and carriage
-  return.  (hexadecimal: 20, 09, 10, 0D, respectively). This is in line with the
+  return.  (hexadecimal: 20, 09, 0A, 0D, respectively). This is in line with the
   definition of whitespace in the JSON specification.
  </dd><dt><i>date</i></dt><dd>
   A <i>string</i> signifying a date (in particular: release date). The
