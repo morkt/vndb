@@ -521,7 +521,7 @@ sub get_vn_res {
         $_->{image} = $_->{image} ? sprintf '%s/cv/%02d/%d.jpg', $VNDB::S{url_static}, $_->{image}%100, $_->{image} : undef;
       }
     }
-    $get->{more} = pop(@$res)&&1 if @$res > $get->{results};
+    $get->{more} = pop(@$res)&&1 if @$res > $get->{opt}{results};
     $get->{list} = $res;
   }
 
@@ -653,7 +653,7 @@ sub get_release_res {
         $_->{catalog}  ||= undef;
       }
     }
-    $get->{more} = pop(@$res)&&1 if @$res > $get->{results};
+    $get->{more} = pop(@$res)&&1 if @$res > $get->{opt}{results};
     $get->{list} = $res;
   }
   elsif($get->{type} eq 'languages') {
@@ -799,7 +799,7 @@ sub get_producer_res {
         $_->{aliases}     ||= undef;
       }
     }
-    $get->{more} = pop(@$res)&&1 if @$res > $get->{results};
+    $get->{more} = pop(@$res)&&1 if @$res > $get->{opt}{results};
     $get->{list} = $res;
   }
   elsif($get->{type} eq 'relations') {
