@@ -2215,28 +2215,6 @@ if(byId('batchedit')) {
   };
 }
 
-// expand/collapse listings (/u+/posts)
-if(byId('expandlist')) {
-  var lnk = byId('expandlist');
-  setexpand = function() {
-    var exp = getCookie('histexpand') == 1;
-    setText(lnk, exp ? mt('_js_collapse') : mt('_js_expand'));
-    var tbl = lnk;
-    while(tbl.nodeName.toLowerCase() != 'table')
-      tbl = tbl.parentNode;
-    var l = byClass(tbl, 'tr', 'collapse');
-    for(var i=0; i<l.length; i++)
-      setClass(l[i], 'hidden', !exp);
-  };
-  setexpand();
-  lnk.onclick = function () {
-    // cookie isn't correctly named now that it's not used for edit histories anymore
-    setCookie('histexpand', getCookie('histexpand') == 1 ? 0 : 1);
-    setexpand();
-    return false;
-  };
-}
-
 // collapse/expand row groups (/u+/tags, /u+/list) (limited to one table on a page)
 if(byId('expandall')) {
   var table = byId('expandall');

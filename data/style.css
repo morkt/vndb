@@ -934,21 +934,13 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 
 
 /***** User posts browser ****/
-div.browse.uposts td.tc1 {
-  padding-left: 0!important;
-  padding-right: 0;
-  text-align: right;
-  width: 60px;
-}
-.uposts td.tc2 {
-  padding-left: 0;
-  width: 25px;
-}
-.uposts td.tc3 { width: 65px; }
-
-a#expandlist { float: right }
-a#expandlist:hover { border-bottom: none }
-
+div.uposts table    { table-layout: fixed }
+div.uposts td       { white-space: nowrap }
+div.uposts td.tc1   { width: 60px; padding-left: 0!important; padding-right: 0; text-align: right }
+div.uposts td.tc2   { width: 25px; padding-left: 0 }
+div.uposts td.tc3   { width: 65px; }
+div.uposts td.tc4   { overflow: hidden }
+div.uposts td.tc4 b { margin-left: 10px }
 
 
 

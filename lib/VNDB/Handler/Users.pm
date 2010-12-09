@@ -403,7 +403,7 @@ sub posts {
       [ '' ],
       [ '' ],
       [ mt '_uposts_col_date' ],
-      sub { td; a href => '#', id => 'expandlist', mt '_js_expand'; txt mt '_uposts_col_title'; end; }
+      [ mt '_uposts_col_title' ],
     ],
     row     => sub {
       my($s, $n, $l) = @_;
@@ -411,11 +411,9 @@ sub posts {
        td class => 'tc1'; a href => "/t$l->{tid}.$l->{num}", 't'.$l->{tid}; end;
        td class => 'tc2'; a href => "/t$l->{tid}.$l->{num}", '.'.$l->{num}; end;
        td class => 'tc3', $self->{l10n}->date($l->{date});
-       td class => 'tc4'; a href => "/t$l->{tid}.$l->{num}", $l->{title}; end;
-      end;
-      Tr class => $n % 2 ? 'collapse msgsum odd hidden' : 'collapse msgsum hidden';
-       td colspan => 4;
-        lit bb2html $l->{msg}, 150;
+       td class => 'tc4';
+        a href => "/t$l->{tid}.$l->{num}", $l->{title};
+        b class => 'grayedout'; lit bb2html $l->{msg}, 150; end;
        end;
       end;
     },
