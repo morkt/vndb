@@ -29,16 +29,6 @@ YAWF::register(
 );
 
 
-sub uri_escape {
-  local $_ = shift;
-  s/ /%20/g;
-  s/\?/%3F/g;
-  s/;/%3B/g;
-  s/&/%26/g;
-  return $_;
-}
-
-
 sub _allowed {
   my($self, $lang) = @_;
   my $a = $self->{transadmin}{ $self->authInfo->{id} };
