@@ -2215,7 +2215,7 @@ if(byId('batchedit')) {
   };
 }
 
-// expand/collapse listings (/*/hist, /u+/posts)
+// expand/collapse listings (/u+/posts)
 if(byId('expandlist')) {
   var lnk = byId('expandlist');
   setexpand = function() {
@@ -2230,6 +2230,7 @@ if(byId('expandlist')) {
   };
   setexpand();
   lnk.onclick = function () {
+    // cookie isn't correctly named now that it's not used for edit histories anymore
     setCookie('histexpand', getCookie('histexpand') == 1 ? 0 : 1);
     setexpand();
     return false;

@@ -113,10 +113,10 @@ sub htmlBrowseHist {
     pageurl  => $url,
     class    => 'history',
     header   => [
-      sub { td colspan => 2, class => 'tc1', mt '_hist_col_rev' },
+      sub { td class => 'tc1_1', mt '_hist_col_rev'; td class => 'tc1_2', ''; },
       [ mt '_hist_col_date' ],
       [ mt '_hist_col_user' ],
-      sub { td; a href => '#', id => 'expandlist', mt '_js_expand'; txt mt '_hist_col_page'; end; }
+      [ mt '_hist_col_page' ],
     ],
     row      => sub {
       my($s, $n, $i) = @_;
@@ -133,17 +133,11 @@ sub htmlBrowseHist {
        td class => 'tc3';
         lit $self->{l10n}->userstr($i);
        end;
-       td;
+       td class => 'tc4';
         a href => $revurl, title => $i->{ioriginal}, shorten $i->{ititle}, 80;
+        b class => 'grayedout'; lit bb2html $i->{comments}, 250; end;
        end;
       end;
-      if($i->{comments}) {
-        Tr class => $n % 2 ? 'collapse msgsum odd hidden' : 'collapse msgsum hidden';
-         td colspan => 5;
-          lit bb2html $i->{comments}, 150;
-         end;
-        end;
-      }
     },
   );
 }

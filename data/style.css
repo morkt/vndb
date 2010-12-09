@@ -478,25 +478,14 @@ p#searchtabs a:hover, p#searchtabs a.sel {
 #q { width: 350px }
 
 /* history browser */
-div.mainbox.history td.tc1_1 {
-  padding-left: 0;
-  padding-right: 0;
-  text-align: right;
-  width: 60px;
-}
-div.mainbox.history td.tc1_2 {
-  padding-left: 0;
-  width: 25px;
-}
-div.mainbox.history td.tc2 { width: 65px; }
-div.mainbox.history td.tc3 { width: 90px  }
-tr.msgsum td {
-  color: $grayedout$;
-  padding-top: 0;
-  text-align: right;
-}
-a#expandlist { float: right }
-a#expandlist:hover { border-bottom: none }
+div.history table    { table-layout: fixed }
+div.history td       { white-space: nowrap }
+div.history td.tc1_1 { width: 60px; padding-left: 0; padding-right: 0; text-align: right }
+div.history td.tc1_2 { width: 25px; padding-left: 0 }
+div.history td.tc2   { width: 65px }
+div.history td.tc3   { width: 90px }
+div.history td.tc4   { overflow: hidden }
+div.history td.tc4 b { margin-left: 10px }
 
 
 
@@ -956,6 +945,9 @@ div.browse.uposts td.tc1 {
   width: 25px;
 }
 .uposts td.tc3 { width: 65px; }
+
+a#expandlist { float: right }
+a#expandlist:hover { border-bottom: none }
 
 
 
