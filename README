@@ -39,7 +39,6 @@ Requirements
       XML::Writer
     IRC:
       POE::Component::IRC
-      URI::Escape
     Image:
       Image::Magick
     Maintenance:

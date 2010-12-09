@@ -14,9 +14,8 @@ use POE qw|
   Component::IRC::Plugin::Logger
 |;
 use POE::Component::IRC::Common ':ALL';
-use URI::Escape 'uri_escape_utf8';
 use Time::HiRes 'time';
-use VNDBUtil 'normalize_query';
+use VNDBUtil 'normalize_query', 'uri_escape';
 
 
 use constant {
@@ -370,7 +369,7 @@ sub cmd_vn {
 sub cmd_vn_results { # num, res, \@_
   return $_[KERNEL]->yield(reply => $_[ARG2][DEST], 'No visual novels found', $_[ARG2][USER]) if $_[ARG0] < 1;
   return $_[KERNEL]->yield(reply => $_[ARG2][DEST], sprintf(
-      'Too many results found, see %s/v/all?q=%s', $VNDB::S{url}, uri_escape_utf8($_[ARG2][ARG])
+      'Too many results found, see %s/v/all?q=%s', $VNDB::S{url}, uri_escape($_[ARG2][ARG])
     ), $_[ARG2][USER]) if $_[ARG0] > 5;
   $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], [$_[ARG2][DEST]]);
 }
@@ -395,7 +394,7 @@ sub cmd_p {
 sub cmd_p_results { # num, res, \@_
   return $_[KERNEL]->yield(reply => $_[ARG2][DEST], 'No producers found', $_[ARG2][USER]) if $_[ARG0] < 1;
   return $_[KERNEL]->yield(reply => $_[ARG2][DEST], sprintf(
-      'Too many results found, see %s/p/all?q=%s', $VNDB::S{url}, uri_escape_utf8($_[ARG2][ARG])
+      'Too many results found, see %s/p/all?q=%s', $VNDB::S{url}, uri_escape($_[ARG2][ARG])
     ), $_[ARG2][USER]) if $_[ARG0] > 5;
   $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], [$_[ARG2][DEST]]);
 }
