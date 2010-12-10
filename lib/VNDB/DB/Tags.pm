@@ -174,11 +174,34 @@ sub dbTagLinks {
 # Change a user's tags for a VN entry
 # Arguments: uid, vid, [ [ tag, vote, spoiler ], .. ]
 sub dbTagLinkEdit {
-  my($self, $uid, $vid, $tags) = @_;
-  $self->dbExec('DELETE FROM tags_vn WHERE vid = ? AND uid = ?', $vid, $uid);
+  my($self, $uid, $vid, $new) = @_;
+
+  # compare with the old votes and determine which to delete, and/or insert
+  my %old = map +($_->{tag}, [ $_->{vote}, $_->{spoiler} // -1 ]),
+    @{$self->dbTagLinks(vid => $vid, uid => $self->authInfo->{id})};
+  my %new = map +($_->[0], [ $_->[1], $_->[2] ]), @$new;
+
+  my(%delete, %update, %insert);
+  for my $tag (keys %old, keys %new) {
+    if($old{$tag} && !$new{$tag}) {
+      $delete{$tag} = 1;
+    } elsif(!$old{$tag} && $new{$tag}) {
+      $insert{$tag} = $new{$tag};
+    } elsif($old{$tag}[0] != $new{$tag}[0] || $old{$tag}[1] != $new{$tag}[1]) {
+      $update{$tag} = $new{$tag};
+    }
+  }
+
+  # spoiler '-1' -> NULL
+  $new{$_}[1] == -1 && ($new{$_}[1] = undef) for keys %new;
+
+  # perform the changes
+  $self->dbExec('DELETE FROM tags_vn WHERE vid = ? AND uid = ? AND tag IN(!l)',
+    $vid, $uid, [ keys %delete ]) if keys %delete;
   $self->dbExec('INSERT INTO tags_vn (tag, vid, uid, vote, spoiler) VALUES (?, ?, ?, ?, ?)',
-    $_->[0], $vid, $uid, $_->[1], $_->[2] == -1 ? undef : $_->[2]
-  ) for (@$tags);
+    $_, $vid, $uid, $insert{$_}[0], $insert{$_}[1]) for (keys %insert);
+  $self->dbExec('UPDATE tags_vn SET vote = ?, spoiler = ?, date = NOW() WHERE tag = ? AND vid = ? AND uid = ?',
+    $update{$_}[0], $update{$_}[1], $_, $vid, $uid) for (keys %update);
 }
 
 

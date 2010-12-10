@@ -217,6 +217,7 @@ CREATE TABLE tags_vn (
   uid integer NOT NULL,
   vote smallint NOT NULL DEFAULT 3 CHECK (vote >= -3 AND vote <= 3 AND vote <> 0),
   spoiler smallint CHECK(spoiler >= 0 AND spoiler <= 2),
+  date timestamptz NOT NULL DEFAULT NOW(),
   PRIMARY KEY(tag, vid, uid)
 );
 
