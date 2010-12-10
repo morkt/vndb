@@ -24,14 +24,12 @@ YAWF::register(
   qr{v/search},    sub { $_[0]->resRedirect("/v/all?q=".uri_escape($_[0]->reqParam('q')), 'perm') },
   qr{notes},       sub { $_[0]->resRedirect('/d8', 'perm') },
   qr{faq},         sub { $_[0]->resRedirect('/d6', 'perm') },
-  qr{v([1-9]\d*)/(?:stats|scr|votes)},
+  qr{v([1-9]\d*)/(?:stats|scr)},
     sub { $_[0]->resRedirect("/v$_[1]", 'perm') },
   qr{u/list(/[a-z0]|/all)?},
     sub { my $l = defined $_[1] ? $_[1] : '/all'; $_[0]->resRedirect("/u$l", 'perm') },
   qr{d([1-9]\d*)\.([1-9]\d*)},
-    sub { $_[0]->resRedirect("/d$_[1]#$_[2]", 'perm') },
-  qr{u([1-9]\d*)/votes},
-    sub { $_[0]->resRedirect("/u$_[1]/list?v=1", 'perm') },
+    sub { $_[0]->resRedirect("/d$_[1]#$_[2]", 'perm') }
 );
 
 

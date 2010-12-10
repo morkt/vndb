@@ -147,13 +147,15 @@ sub dbVNListDel {
 }
 
 
-# %options->{ uid vid hide results page what }
+# Options: uid vid hide hide_ign results page what sort reverse
 # what: user, vn
 sub dbVoteGet {
   my($self, %o) = @_;
   $o{results} ||= 50;
   $o{page} ||= 1;
   $o{what} ||= '';
+  $o{sort} ||= 'date';
+  $o{reverse} //= 1;
 
   my %where = (
     $o{uid} ? ( 'n.uid = ?' => $o{uid} ) : (),
@@ -178,13 +180,20 @@ sub dbVoteGet {
     ) : (),
   );
 
+  my $order = sprintf {
+    date     => 'n.date %s',
+    username => 'u.username %s',
+    title    => 'vr.title %s',
+    vote     => 'n.vote %s',
+  }->{$o{sort}}, $o{reverse} ? 'DESC' : 'ASC';
+
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
       FROM votes n
       !s
       !W
-      ORDER BY n.date DESC|,
-    join(',', @select), join(' ', @join), \%where
+      ORDER BY !s|,
+    join(',', @select), join(' ', @join), \%where, $order
   );
 
   return wantarray ? ($r, $np) : $r;

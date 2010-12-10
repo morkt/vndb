@@ -717,7 +717,7 @@ a.addnew {
 .votestats div { text-align: center; padding-top: 5px; }
 
 .recentvotes { width: 300px }
-
+.recentvotes thead tr td b { font-weight: normal; padding-left: 5px }
 
 
 
@@ -887,6 +887,12 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 .docs dt b { color: $grayedout$; font-weight: normal; font-style: normal; font-size: 12px; }
 
 
+
+
+/* vote lists */
+
+div.votelist td.tc1 { width: 70px }
+div.votelist td.tc2 { width: 50px; text-align: right; padding-right: 10px }
 
 
 /***** Wishlist browser ******/

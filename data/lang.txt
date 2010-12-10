@@ -4697,6 +4697,53 @@ hu : eltávolítás a kívánságlistából
 nl : verwijder van wensenlijst
 
 
+
+# Vote listings (/v+/votes and /u+/votes)
+
+:_votelist_title_vn
+en : Votes for [_1]
+ru*:
+cs*:
+hu*:
+nl : Stemmen op [_1]
+
+:_votelist_title_user
+en : Votes by [_1]
+ru*:
+cs*:
+hu*:
+nl : Stemmen van [_1]
+
+:_votelist_col_date
+en : Cast
+ru*:
+cs*:
+hu*:
+nl : Gestemd
+
+:_votelist_col_vote
+en : Vote
+ru*:
+cs*:
+hu*:
+nl : Stem
+
+:_votelist_col_vn
+en : Visual novel
+ru*:
+cs*:
+hu*:
+nl :
+
+:_votelist_col_user
+en : User
+ru*:
+cs*:
+hu*:
+nl : Gebruiker
+
+
+
 # VN list (/u+/list)
 
 :_rlist_title_my
@@ -6848,6 +6895,13 @@ ru : Недавние голоса
 cs : Poslední hlasy
 hu : Legútóbbi szavazatok
 nl : Recente stemmen
+
+:_votestats_allvotes
+en : show all
+ru*:
+cs*:
+hu*:
+nl : alle stemmen
 
 :_votestats_rank_title
 en : Ranking

@@ -361,7 +361,14 @@ sub htmlVoteStats {
    if(@$recent) {
      table class => 'recentvotes';
       thead; Tr;
-       td colspan => 3, mt '_votestats_recent';
+       td colspan => 3;
+        txt mt '_votestats_recent';
+        b;
+         txt '(';
+         a href => "/$type$obj->{id}/votes", mt '_votestats_allvotes';
+         txt ')';
+        end;
+       end;
       end; end;
       for (0..$#$recent) {
         Tr $_ % 2 == 0 ? (class => 'odd') : ();

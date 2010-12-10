@@ -521,7 +521,7 @@ sub list {
        td class => 'tc2', $self->{l10n}->date($l->{registered});
        td class => 'tc3'.(!$l->{show_list} && $self->authCan('usermod') ? ' linethrough' : '');
         lit !$l->{show_list} && !$self->authCan('usermod') ? '-' : !$l->{c_votes} ? 0 :
-          qq|<a href="/u$l->{id}/list">$l->{c_votes}</a>|;
+          qq|<a href="/u$l->{id}/votes">$l->{c_votes}</a>|;
        end;
        td class => 'tc4';
         lit !$l->{c_changes} ? 0 : qq|<a href="/u$l->{id}/hist">$l->{c_changes}</a>|;

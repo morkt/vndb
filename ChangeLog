@@ -2,6 +2,7 @@
 	- Removed expand/collapse from history browser and /u+/posts and switched to
 	  a combined view
 	- Added a "general discussions" board
+	- Added vote listings for VNs and users (/[uv]+/votes)
 	- API: Allow extra whitespace after "get .." command
 	- API: Allow non-numbers as "clientver" for the login command
 	- API: Added "image_nsfw" member to "get vn"

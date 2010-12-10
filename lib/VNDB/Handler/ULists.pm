@@ -12,6 +12,7 @@ YAWF::register(
   qr{v([1-9]\d*)/wish},  \&vnwish,
   qr{r([1-9]\d*)/list},  \&rlist,
   qr{xml/rlist.xml},     \&rlist,
+  qr{([uv])([1-9]\d*)/votes}, \&votelist,
   qr{u([1-9]\d*)/wish},  \&wishlist,
   qr{u([1-9]\d*)/list},  \&vnlist,
 );
@@ -94,6 +95,65 @@ sub rlist {
      txt $st ? liststat $st : '--';
     end;
   }
+}
+
+
+sub votelist {
+  my($self, $type, $id) = @_;
+
+  my $obj = $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : $self->dbUserGet(uid => $id)->[0];
+  return 404 if !$obj->{id};
+
+  my $f = $self->formValidate(
+    { name => 'p',  required => 0, default => 1, template => 'int' },
+    { name => 'o',  required => 0, default => 'd', enum => ['a', 'd'] },
+    { name => 's',  required => 0, default => 'date', enum => [qw|date title vote|] },
+  );
+
+  my($list, $np) = $self->dbVoteGet(
+    $type.'id' => $id,
+    what     => $type eq 'v' ? 'user' : 'vn',
+    hide     => $type eq 'v',
+    hide_ign => $type eq 'v',
+    sort     => $f->{s} eq 'title' && $type eq 'v' ? 'username' : $f->{s},
+    reverse  => $f->{o} eq 'd',
+    results  => 50,
+    page     => $f->{p}
+  );
+  return 404 if !@$list;
+
+  my $title = mt $type eq 'v' ? '_votelist_title_vn' : '_votelist_title_user', $obj->{title} || $obj->{username};
+  $self->htmlHeader(title => $title);
+  $self->htmlMainTabs($type => $obj, 'votes');
+  div class => 'mainbox';
+   h1 $title;
+  end;
+
+  $self->htmlBrowse(
+    class    => 'votelist',
+    items    => $list,
+    options  => $f,
+    nextpage => $np,
+    pageurl  => "/$type$id/votes?o=$f->{o};s=$f->{s}",
+    sorturl  => "/$type$id/votes",
+    header   => [
+      [ mt('_votelist_col_date'),  'date'  ],
+      [ mt('_votelist_col_vote'),  'vote'  ],
+      [ mt('_votelist_col_'.($type eq 'v'?'user':'vn')), 'title' ],
+    ],
+    row      => sub {
+      my($s, $n, $l) = @_;
+      Tr $n % 2 ? (class => 'odd') : ();
+       td class => 'tc1', $self->{l10n}->date($l->{date});
+       td class => 'tc2', $l->{vote};
+       td class => 'tc3';
+        a href => $type eq 'v' ? ("/u$l->{uid}", $l->{username}) : ("/v$l->{vid}", shorten $l->{title}, 100);
+       end;
+      end;
+    },
+  );
+
+  $self->htmlFooter;
 }
 
 
