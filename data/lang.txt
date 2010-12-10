@@ -857,6 +857,13 @@ cs : Diskuse o VNDB
 hu : VNDB Társalgó
 nl : VNDB discussies
 
+:_dboard_ge
+en : General discussions
+ru*:
+cs*:
+hu*:
+nl : Algemene discussies
+
 :_dboard_v
 en : Visual novels
 ru : Новеллы

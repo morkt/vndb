@@ -38,7 +38,7 @@ our %S = (%S,
   ],
   languages       => [qw|cs da de en es fi fr hu it ja ko nl no pl pt-br pt-pt ru sk sv tr vi zh|],
   producer_types  => [qw|co in ng|],
-  discussion_boards => [qw|an db v p u|],
+  discussion_boards => [qw|an db ge v p u|], # <- note that some properties of these boards are hard-coded
   vn_lengths      => [ 0..5 ],
   anime_types     => [qw|tv ova mov oth web spe mv|],
   vn_relations    => {

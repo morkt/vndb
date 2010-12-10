@@ -20,8 +20,10 @@
 </p>
 <dl>
  <dt>db</dt><dd>
-  VNDB Discussions. This is a general board for threads not about any specific
-  entry in the database.
+  VNDB Discussions. This board is for discussions about the database and the site.
+ </dd><dt>ge</dt><dd>
+  General discussions. This is a general board for threads that do not fit in
+  any of the other boards.
  </dd><dt>v#</dt><dd>
   For discussions about a particular visual novel. The board <i>v17</i>, for example,
   is used for all threads related to <a href="/v17">v17</a>.

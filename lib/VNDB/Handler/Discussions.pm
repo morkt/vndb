@@ -11,10 +11,10 @@ use VNDB::Func;
 YAWF::register(
   qr{t([1-9]\d*)(?:/([1-9]\d*))?}    => \&thread,
   qr{t([1-9]\d*)\.([1-9]\d*)}        => \&redirect,
-  qr{t/(db|an|[vpu])([1-9]\d*)?}     => \&board,
+  qr{t/(db|an|ge|[vpu])([1-9]\d*)?}  => \&board,
   qr{t([1-9]\d*)/reply}              => \&edit,
   qr{t([1-9]\d*)\.([1-9]\d*)/edit}   => \&edit,
-  qr{t/(db|an|[vpu])([1-9]\d*)?/new} => \&edit,
+  qr{t/(db|an|ge|[vpu])([1-9]\d*)?/new} => \&edit,
   qr{t}                              => \&index,
 );
 
@@ -135,7 +135,7 @@ sub edit {
   # in case we start a new thread, parse boards
   my $board = '';
   if($tid !~ /^\d+$/) {
-    return 404 if $tid =~ /(db|an)/ && $num || $tid =~ /[vpu]/ && !$num;
+    return 404 if $tid =~ /(db|an|ge)/ && $num || $tid =~ /[vpu]/ && !$num;
     $board = $tid.($num||'');
     $tid = 0;
     $num = 0;
@@ -187,6 +187,7 @@ sub edit {
              !$ty || !grep($_ eq $ty, @{$self->{discussion_boards}})
           || $ty eq 'an' && ($id || !$self->authCan('boardmod'))
           || $ty eq 'db' && $id
+          || $ty eq 'ge' && $id
           || $ty eq 'v'  && (!$id || !$self->dbVNGet(id => $id)->[0]{id})
           || $ty eq 'p'  && (!$id || !$self->dbProducerGet(id => $id)->[0]{id})
           || $ty eq 'u'  && (!$id || !$self->dbUserGet(uid => $id)->[0]{id});
@@ -270,7 +271,7 @@ sub edit {
 sub board {
   my($self, $type, $iid) = @_;
   $iid ||= '';
-  return 404 if $type =~ /(db|an)/ && $iid;
+  return 404 if $type =~ /(db|an|ge)/ && $iid;
 
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
@@ -316,7 +317,7 @@ sub board {
       br; br;
       a href => "/t/$type$iid/new", mt '_disboard_createyourown';
     } else {
-      a href => '/t/'.($iid ? $type.$iid : 'db').'/new', mt '_disboard_startnew';
+      a href => '/t/'.($iid ? $type.$iid : $type ne 'ge' ? 'db' : $type).'/new', mt '_disboard_startnew';
     }
    end;
   end;
@@ -335,14 +336,14 @@ sub index {
    h1 mt '_disindex_title';
    p class => 'browseopts';
     a href => '/t/'.$_, mt "_dboard_$_"
-      for (qw|an db v p u|);
+      for (@{$self->{discussion_boards}});
    end;
   end;
 
-  for (qw|an db v p u|) {
+  for (@{$self->{discussion_boards}}) {
     my $list = $self->dbThreadGet(
       type => $_,
-      results => $_ eq 'db' || $_ eq 'v' ? 10 : 5,
+      results => /^(db|v|ge)$/ ? 10 : 5,
       page => 1,
       what => 'firstpost lastpost boardtitles',
       sort => 'lastpost', reverse => 1,
