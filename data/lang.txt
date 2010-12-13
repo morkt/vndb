@@ -3991,6 +3991,13 @@ cs : Vizuální novely
 hu : Visual novellek
 nl :
 
+:_tagp_rawvotes
+en : Recently tagged
+ru*:
+cs*:
+hu*:
+nl : Recentelijk getagged
+
 :_tagp_spoil0
 en : Hide spoilers
 ru : Скрыть спойлеры
@@ -4020,11 +4027,11 @@ hu : Ez a címke eddig egy visual novelhez sincs hozzárendelve, vagy el lettek 
 nl : Deze tag is nog niet gekoppeld aan een visual novel, of deze worden niet weergegeven in verband met de spoilerinstelling.
 
 :_tagp_cached
-en : NOTE: This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.
-ru : ЗАМЕЧАНИЕ: Данный список кэшируется, поэтому может пройти вплоть до 24 часов, прежде чем новелла, помеченная тегом, отобразится на этой странице.
-cs : POZNÁMKA: Tento list se ukládá do cache, takže může trvat až 24 hodin po otagování vizuální novely do objevení se na této stránce.
-hu : FIGYELEM: Ez a lista le van mentve a gyorsítótárba, beletelhet 24 órába míg a visual novelhez újonnan hozzárendelt címke megjelenik ezen az oldalon.
-nl : NOTE: Deze lijst wordt gecached, het kan 24 uur duren voordat een visual novel op deze pagina te zien is.
+en : The list below also includes all visual novels linked to child tags. This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.
+ru*: ЗАМЕЧАНИЕ: Данный список кэшируется, поэтому может пройти вплоть до 24 часов, прежде чем новелла, помеченная тегом, отобразится на этой странице.
+cs*: POZNÁMKA: Tento list se ukládá do cache, takže může trvat až 24 hodin po otagování vizuální novely do objevení se na této stránce.
+hu*: FIGYELEM: Ez a lista le van mentve a gyorsítótárba, beletelhet 24 órába míg a visual novelhez újonnan hozzárendelt címke megjelenik ezen az oldalon.
+nl : De volgende lijst bevat ook alle visual novels die gelinkt zijn aan subtags. Deze lijst is gecached, het kan 24 uur duren voordat een visual novel op deze pagina te zien is.
 
 :_tagp_vncol_score
 en : Score
@@ -4656,6 +4663,13 @@ ru : Популярные теги
 cs : Populární tagy
 hu : Népszerű címkék
 nl : Populaire tags
+
+:_tagidx_rawtags
+en : Recently tagged
+ru :
+cs :
+hu :
+nl : Recentelijk getagged
 
 :_tagidx_queue
 en : Awaiting moderation

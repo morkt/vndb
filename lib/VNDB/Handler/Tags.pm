@@ -103,6 +103,7 @@ sub tagpage {
 
   if(!$t->{meta} && $t->{state} == 2) {
     div class => 'mainbox';
+     a class => 'addnew', href => "/g/links?t=$tag", mt '_tagp_rawvotes';
      h1 mt '_tagp_vnlist';
      p class => 'browseopts';
       a href => "/g$t->{id}?m=0", $f->{m} == 0 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 0);return true;", mt '_tagp_spoil0';
@@ -593,6 +594,7 @@ sub tagindex {
 
     # Popular
     td;
+     a class => 'addnew', href => "/g/links", mt '_tagidx_rawtags';
      $r = $self->dbTagGet(sort => 'vns', reverse => 1, meta => 0, results => 10);
      h1 mt '_tagidx_popular';
      ul;
