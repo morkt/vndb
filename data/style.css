@@ -973,10 +973,6 @@ div.uposts td.tc4 b { margin-left: 10px }
 .browse.taglinks .tc3 { width: 90px }
 .browse.taglinks .setfil { font-size: 8px; padding-right: 3px }
 
-/***** User tag list *****/
-.browse.tagstats .tc1 { width: 80px }
-.browse.tagstats .tc1_2 { padding-left: 15px }
-
 /***** VN tagmod *****/
 
 #jt_box_tagmod .formtable table td { padding: 1px 5px }

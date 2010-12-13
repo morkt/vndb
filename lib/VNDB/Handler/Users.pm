@@ -86,7 +86,15 @@ sub userpage {
 
     Tr ++$i % 2 ? (class => 'odd') : ();
      td mt '_userpage_tags';
-     td !$u->{c_tags} ? '-' : mt '_userpage_tags_item', $u->{c_tags}, $u->{tagcount}, $u->{tagvncount};
+     td;
+      if(!$u->{c_tags}) {
+        txt '-';
+      } else {
+        txt mt '_userpage_tags_item', $u->{c_tags}, $u->{tagcount}, $u->{tagvncount};
+        txt ' ';
+        a href => "/g/links?u=$uid"; lit mt('_userpage_tags_browse').' &raquo;'; end;
+      }
+     end;
     end;
 
     Tr ++$i % 2 ? (class => 'odd') : ();
@@ -527,7 +535,7 @@ sub list {
         lit !$l->{c_changes} ? 0 : qq|<a href="/u$l->{id}/hist">$l->{c_changes}</a>|;
        end;
        td class => 'tc5';
-        lit !$l->{c_tags} ? 0 : qq|<a href="/u$l->{id}/tags">$l->{c_tags}</a>|;
+        lit !$l->{c_tags} ? 0 : qq|<a href="/g/links?u=$l->{id}">$l->{c_tags}</a>|;
        end;
       end;
     },
@@ -545,6 +553,7 @@ sub notifies {
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'r', required => 0, default => 0, enum => [0,1] },
+
   );
   return 404 if $f->{_err};
 

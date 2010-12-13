@@ -2215,7 +2215,7 @@ if(byId('batchedit')) {
   };
 }
 
-// collapse/expand row groups (/u+/tags, /u+/list) (limited to one table on a page)
+// collapse/expand row groups (/u+/list) (limited to one table on a page)
 if(byId('expandall')) {
   var table = byId('expandall');
   while(table.nodeName.toLowerCase() != 'table')

@@ -91,7 +91,7 @@ sub _menu {
        a href => "$uid/wish", mt '_menu_mywishlist'; br;
        a href => "$uid/notifies", $nc ? (class => 'notifyget') : (), mt('_menu_mynotifications').($nc?" ($nc)":''); br;
        a href => "$uid/hist", mt '_menu_mychanges'; br;
-       a href => "$uid/tags", mt '_menu_mytags'; br;
+       a href => '/g/links?u='.$self->authInfo->{id}, mt '_menu_mytags'; br;
        br;
        a href => '/v/new',    mt '_menu_addvn'; br;
        a href => '/p/new',    mt '_menu_addproducer'; br;

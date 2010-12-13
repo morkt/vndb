@@ -55,12 +55,6 @@ sub htmlMainTabs {
      end;
    }
 
-   if($type eq 'u') {
-     li $sel eq 'tags' ? (class => 'tabselected') : ();
-      a href => "/$id/tags", mt '_mtabs_tags';
-     end;
-   }
-
    if($type eq 'v' && $self->authCan('tag') && !$obj->{hidden}) {
      li $sel eq 'tagmod' ? (class => 'tabselected') : ();
       a href => "/$id/tagmod", mt '_mtabs_tagmod';

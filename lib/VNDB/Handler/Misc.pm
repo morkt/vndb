@@ -19,6 +19,7 @@ YAWF::register(
   qr{opensearch\.xml},               \&opensearch,
 
   # redirects for old URLs
+  qr{u([1-9]\d*)/tags}, sub { $_[0]->resRedirect("/g/links?u=$_[1]", 'perm') },
   qr{(.*[^/]+)/+}, sub { $_[0]->resRedirect("/$_[1]", 'perm') },
   qr{([pv])},      sub { $_[0]->resRedirect("/$_[1]/all", 'perm') },
   qr{v/search},    sub { $_[0]->resRedirect("/v/all?q=".uri_escape($_[0]->reqParam('q')), 'perm') },

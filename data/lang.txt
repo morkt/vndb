@@ -1833,13 +1833,6 @@ cs : seznam
 hu : lista
 nl : lijst
 
-:_mtabs_tags
-en : tags
-ru : теги
-cs : tagy
-hu : címkék
-nl :
-
 # modify tags on VN pages
 :_mtabs_tagmod
 en : modify tags
@@ -4436,6 +4429,27 @@ cs*:
 hu*:
 nl :
 
+:_taglink_spoil0
+en : No spoiler
+ru : Нет спойлера
+cs : Bez spoilerů
+hu : Nem spoiler
+nl : Geen spoiler
+
+:_taglink_spoil1
+en : Minor spoiler
+ru : Лёгкий спойлер
+cs : Menší spoilery
+hu : Kisebb spoiler
+nl : Geringe spoiler
+
+:_taglink_spoil2
+en : Major spoiler
+ru : Жёсткий спойлер
+cs : Všechny spoilery
+hu : Nagyobb spoiler
+nl : Grote spoiler
+
 
 # VN<->Tag voting (/v+/tagmod)
 
@@ -4590,65 +4604,6 @@ ru : Тег уже указан!
 cs : Tag už je přiřazen!
 hu : A címke már jelen van!
 nl : Tag is al geselecteerd!
-
-
-# User tag list (/u+/tags)
-
-:_tagu_title
-en : Tags by [_1]
-ru : Теги [_1]
-cs : Tagy podle [_1]
-hu : [_1] által létrehozott címkék
-nl : Tags van [_1]
-
-:_tagu_spoilerwarn
-en : Warning: spoilery tags are not hidden in this list!
-ru : Предупреждение: в этом списке отображаются теги-спойлеры!
-cs : Varování: spoilerové tagy nejsou v tomto seznamu skryté!
-hu : Figyelem: ebbe a listába a spoiler-t tartalmazó címkék nincsenek elrejtve!
-nl : Waarschuwing: spoilertags zijn in deze lijst gewoon zichtbaar!
-
-:_tagu_notags
-en : [_1] doesn't seem to have used the tagging system yet...
-ru : Похоже, что [_1] пока не использует систему тегов...
-cs : Nezdá se, že by [_1] zatím použil tagovací systém...
-hu : Úgy tűnik, hogy [_1] még nem használta a címkéző rendszert...
-nl : Lijkt er niet op dat [_1] het tagsysteem ooit heeft gebruikt...
-
-:_tagu_col_num
-en : #VNs
-ru : #Новеллы
-cs : #VN
-hu : #VN-nek
-nl :
-
-:_tagu_col_name
-en : Tag
-ru : Тег
-cs : Tag
-hu : Címke
-nl :
-
-:_tagu_spoil0
-en : No spoiler
-ru : Нет спойлера
-cs : Bez spoilerů
-hu : Nem spoiler
-nl : Geen spoiler
-
-:_tagu_spoil1
-en : Minor spoiler
-ru : Лёгкий спойлер
-cs : Menší spoilery
-hu : Kisebb spoiler
-nl : Geringe spoiler
-
-:_tagu_spoil2
-en : Major spoiler
-ru : Жёсткий спойлер
-cs : Všechny spoilery
-hu : Nagyobb spoiler
-nl : Grote spoiler
 
 
 # Tag index (/g)
@@ -5018,6 +4973,13 @@ ru : [_1] [quant,_1,голос,голоса,голосов] по [_2][quant,_2,-
 cs : [_1] [quant,_1,hlasy,hlasy,hlasů] pro [_2] [quant,_2,tag,různé tagy,různých tagů] a [_3] [quant,_3,vizuální novelu,vizuální novely,vizuálních novel]
 hu : [_1] [quant,_1,szavazat,szavazat] [_2] egyedi [quant,_2,címkére,címkére] és [_3] visual [quant,_3,novelre,novelre]
 nl : [_1] [quant,_1,stem,stemmen] op [_2] verschillende [quant,_2,tag,tags] en [_3] visual [quant,_3,novel,novels]
+
+:_userpage_tags_browse
+en : Browse tags
+ru*:
+cs*:
+hu*:
+nl :
 
 :_userpage_list
 en : List stats

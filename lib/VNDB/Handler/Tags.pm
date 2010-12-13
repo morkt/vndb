@@ -454,7 +454,7 @@ sub taglinks {
         a href => $url->(t=>$l->{tag}), class => 'setfil', '> ' if !$f->{t};
         a href => "/g$l->{tag}", $l->{name};
        end;
-       td class => 'tc5', !defined $l->{spoiler} ? ' ' : mt "_tagu_spoil$l->{spoiler}";
+       td class => 'tc5', !defined $l->{spoiler} ? ' ' : mt "_taglink_spoil$l->{spoiler}";
        td class => 'tc6';
         a href => $url->(v=>$l->{vid}), class => 'setfil', '> ' if !$f->{v};
         a href => "/v$l->{vid}", shorten $l->{title}, 50;
@@ -549,88 +549,6 @@ sub vntagmod {
       end;
     } ],
   ]);
-  $self->htmlFooter;
-}
-
-
-sub usertags {
-  my($self, $uid) = @_;
-
-  my $u = $self->dbUserGet(uid => $uid)->[0];
-  return 404 if !$u;
-
-  my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'count', enum => [ qw|count name| ] },
-    { name => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
-    { name => 'p', required => 0, default => 1, template => 'int' },
-  );
-  return 404 if $f->{_err};
-
-  # TODO: might want to use AJAX to load the VN list on request
-  my($list, $np) = $self->dbTagStats(
-    uid => $uid,
-    page => $f->{p},
-    sort => $f->{s}, reverse => $f->{o} eq 'd',
-    what => 'vns',
-  );
-
-  my $title = mt '_tagu_title', $u->{username};
-  $self->htmlHeader(title => $title, noindex => 1);
-  $self->htmlMainTabs('u', $u, 'tags');
-  div class => 'mainbox';
-   h1 $title;
-   if(@$list) {
-     p mt '_tagu_spoilerwarn';
-   } else {
-     p mt '_tagu_notags', $u->{username};
-   }
-  end;
-
-  if(@$list) {
-    $self->htmlBrowse(
-      class    => 'tagstats',
-      options  => $f,
-      nextpage => $np,
-      items    => $list,
-      pageurl  => "/u$u->{id}/tags?s=$f->{s};o=$f->{o}",
-      sorturl  => "/u$u->{id}/tags",
-      header   => [
-        sub {
-          td class => 'tc1';
-           b id => 'expandall';
-            lit '<i>&#9656;</i> '.mt('_tagu_col_num').' ';
-           end;
-           lit $f->{s} eq 'count' && $f->{o} eq 'a' ? "\x{25B4}" : qq|<a href="/u$u->{id}/tags?o=a;s=count">\x{25B4}</a>|;
-           lit $f->{s} eq 'count' && $f->{o} eq 'd' ? "\x{25BE}" : qq|<a href="/u$u->{id}/tags?o=d;s=count">\x{25BE}</a>|;
-          end;
-        },
-        [ mt('_tagu_col_name'),  'name' ],
-        [ ' ', '' ],
-      ],
-      row     => sub {
-        my($s, $n, $l) = @_;
-        Tr $n % 2 ? (class => 'odd') : ();
-         td class => 'tc1 collapse_but', id => "tag$l->{id}";
-          lit "<i>&#9656;</i> $l->{cnt}";
-         end;
-         td class => 'tc2', colspan => 2;
-          a href => "/g$l->{id}", $l->{name};
-         end;
-        end;
-        for(@{$l->{vns}}) {
-          Tr class => "collapse collapse_tag$l->{id}";
-           td class => 'tc1_1';
-            tagscore $_->{vote};
-           end;
-           td class => 'tc1_2';
-            a href => "/v$_->{vid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;
-           end;
-           td class => 'tc1_3', !defined $_->{spoiler} ? ' ' : mt "_tagu_spoil$_->{spoiler}";
-          end;
-        }
-      },
-    );
-  }
   $self->htmlFooter;
 }
 
