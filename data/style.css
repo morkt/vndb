@@ -984,7 +984,7 @@ table.tgl .tc_myvote { padding-left: 30px!important }
 table.tgl .tc_myspoil { border-right: 1px solid $border$; padding-right: 30px!important; text-align: right; padding-left: 10px!important; cursor: pointer }
 table.tgl .tc_allvote { padding-left: 30px!important; }
 table.tgl .tc_allvote i { font-style: normal; font-size: 8px }
-table.tgl .tc_allspoil { text-align: right; padding-right: 30px!important; }
+table.tgl .tc_allspoil { text-align: right; padding-right: 15px!important; }
 .taglvl { display: block; float: left; width: 8px; height: 12px; border: 1px solid $border$; font-size: 1px; color: $maintext$!important }
 .taglvl0 { width: 15px; border: none!important; font-size: 10px; text-align: center; }
 div.taglvl0 { font-size: 8px; width: 20px!important }

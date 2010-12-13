@@ -4530,6 +4530,13 @@ cs : Spoiler
 hu : Spoiler
 nl :
 
+:_tagv_who
+en : Who?
+ru*:
+cs*:
+hu*:
+nl : Wie?
+
 :_tagv_save
 en : Save changes
 ru : Сохранить изменения

@@ -510,7 +510,7 @@ sub vntagmod {
         Tr;
          td '';
          td colspan => 2, class => 'tc_you', mt '_tagv_col_you';
-         td colspan => 2, class => 'tc_others', mt '_tagv_col_others';
+         td colspan => 3, class => 'tc_others', mt '_tagv_col_others';
         end;
         Tr;
          td class => 'tc_tagname',  mt '_tagv_col_tag';
@@ -518,10 +518,11 @@ sub vntagmod {
          td class => 'tc_myspoil',  mt '_tagv_col_spoiler';
          td class => 'tc_allvote',  mt '_tagv_col_rating';
          td class => 'tc_allspoil', mt '_tagv_col_spoiler';
+         td class => 'tc_allwho',   '';
         end;
        end;
        tfoot; Tr;
-        td colspan => 5;
+        td colspan => 6;
          input type => 'submit', class => 'submit', value => mt('_tagv_save'), style => 'float: right';
          input id => 'tagmod_tag', type => 'text', class => 'text', value => '';
          input id => 'tagmod_add', type => 'button', class => 'submit', value => mt '_tagv_add';
@@ -543,6 +544,9 @@ sub vntagmod {
             i ' ('.($t->{cnt} - ($m->{vote} ? 1 : 0)).')';
            end;
            td class => 'tc_allspoil', sprintf '%.2f', $t->{spoiler};
+           td class => 'tc_allwho';
+            a href => "/g/links?v=$vid;t=$t->{id}", mt '_tagv_who';
+           end;
           end;
         }
        end;

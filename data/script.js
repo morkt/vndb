@@ -1353,8 +1353,9 @@ function tglAdd() {
     byId('tagtable').appendChild(tag('tr', {id:'tgl_'+id},
       tag('td', {'class':'tc_tagname'}, tag('a', {href:'/g'+id}, name)),
       vote, spoil,
-      tag('td', {'class':'tc_allvote'}, '-'),
-      tag('td', {'class':'tc_allspoil'}, '-')
+      tag('td', {'class':'tc_allvote'}, ' '),
+      tag('td', {'class':'tc_allspoil'}, ' '),
+      tag('td', {'class':'tc_allwho'}, '')
     ));
     tglStripe();
     tglSerialize();
