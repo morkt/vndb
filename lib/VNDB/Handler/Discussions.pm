@@ -235,7 +235,6 @@ sub edit {
   }
   delete $frm->{_err} unless ref $frm->{_err};
   $frm->{boards} ||= $board;
-  $frm->{nolastmod} = 1 if $num && $self->authCan('boardmod') && !exists $frm->{nolastmod};
 
   # generate html
   my $url = !$tid ? "/t/$board/new" : !$num ? "/t$tid/reply" : "/t$tid.$num/edit";
