@@ -161,13 +161,43 @@ sub dbTagMerge {
 
 
 # Directly fetch rows from tags_vn
-# Arguments: %options->{ vid uid tag }
+# Options: vid uid tag page results what sort reverse
+# What: details
 sub dbTagLinks {
   my($self, %o) = @_;
-  return $self->dbAll(
-    'SELECT tag, vid, uid, vote, spoiler FROM tags_vn !W',
-    { map { +"$_ = ?" => $o{$_} } keys %o }
+  $o{results} ||= 999;
+  $o{page}    ||= 1;
+  $o{what}    ||= '';
+
+  my %where = (
+    $o{vid} ? ('tv.vid = ?' => $o{vid}) : (),
+    $o{uid} ? ('tv.uid = ?' => $o{uid}) : (),
+    $o{tag} ? ('tv.tag = ?' => $o{tag}) : (),
   );
+
+  my @select = (
+    qw|tv.tag tv.vid tv.uid tv.vote tv.spoiler|, "EXTRACT('epoch' from tv.date) AS date",
+    $o{what} =~ /details/ ? (qw|vr.title u.username t.name|) : (),
+  );
+
+  my @join = $o{what} =~ /details/ ? (
+    'JOIN vn v ON v.id = tv.vid JOIN vn_rev vr ON vr.id = v.latest',
+    'JOIN users u ON u.id = tv.uid',
+    'JOIN tags t ON t.id = tv.tag'
+  ) : ();
+
+  my $order = !$o{sort} ? '' : 'ORDER BY '.{
+    username => 'u.username',
+    date     => 'tv.date',
+    title    => 'vr.title',
+    tag      => 't.name',
+  }->{$o{sort}}.($o{reverse} ? ' DESC' : ' ASC');
+
+  my($r, $np) = $self->dbPage(\%o,
+    'SELECT !s FROM tags_vn tv !s !W !s',
+    join(', ', @select), join(' ', @join), \%where, $order
+  );
+  return wantarray ? ($r, $np) : $r;
 }
 
 

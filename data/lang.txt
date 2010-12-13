@@ -4329,6 +4329,114 @@ hu : törölve
 nl : verwijderd
 
 
+# Tag link browser (/g/links)
+
+:_taglink_title
+en : Tag link browser
+ru*:
+cs*:
+hu*:
+nl :
+
+:_taglink_spoil_title
+en : Spoiler warning
+ru*:
+cs*:
+hu*:
+nl : Spoiler waarschuwing
+
+:_taglink_spoil_msg
+en : This list displays the tag votes of individual users. Spoilery tags are not hidden, and may not even be correctly flagged as such.
+ru*:
+cs*:
+hu*:
+nl : Deze lijst bevat alle stemmen op tags van individuele gebruikers. Tags die spoiler kunnen zijn worden hier niet verborgen, and sommige tags hoeven niet eens correct gemarkeerd te zijn als spoiler.
+
+:_taglink_fil_active
+en : Active filters:
+ru*:
+cs*:
+hu*:
+nl : Actieve filters:
+
+:_taglink_fil_remove
+en : remove
+ru*:
+cs*:
+hu*:
+nl : verwijder
+
+:_taglink_fil_user
+en : User:
+ru*:
+cs*:
+hu*:
+nl : Gebruiker:
+
+:_taglink_fil_tag
+en : Tag:
+ru*:
+cs*:
+hu*:
+nl :
+
+:_taglink_fil_vn
+en : Visual novel:
+ru*:
+cs*:
+hu*:
+nl :
+
+:_taglink_fil_add
+en : Click the arrow beside a user, tag or VN to add it as a filter.
+ru*:
+cs*:
+hu*:
+nl : Gebruik het pijltje naast een gebruiker, tag of VN om het toe te voegen als filter.
+
+:_taglink_col_date
+en : Date
+ru*:
+cs*:
+hu*:
+nl : Datum
+
+:_taglink_col_user
+en : User
+ru*:
+cs*:
+hu*:
+nl : Gebruiker
+
+:_taglink_col_rating
+en : Rating
+ru*:
+cs*:
+hu*:
+nl : Score
+
+:_taglink_col_tag
+en : Tag
+ru*:
+cs*:
+hu*:
+nl :
+
+:_taglink_col_spoiler
+en : Spoiler
+ru*:
+cs*:
+hu*:
+nl :
+
+:_taglink_col_vn
+en : Visual novel
+ru*:
+cs*:
+hu*:
+nl :
+
+
 # VN<->Tag voting (/v+/tagmod)
 
 :_tagv_title

@@ -14,6 +14,7 @@ YAWF::register(
   qr{g([1-9]\d*)/(add)},    \&tagedit,
   qr{g/new},                \&tagedit,
   qr{g/list},               \&taglist,
+  qr{g/links},              \&taglinks,
   qr{v([1-9]\d*)/tagmod},   \&vntagmod,
   qr{u([1-9]\d*)/tags},     \&usertags,
   qr{g},                    \&tagindex,
@@ -345,6 +346,122 @@ sub taglist {
       }
     );
   }
+  $self->htmlFooter;
+}
+
+
+sub taglinks {
+  my $self = shift;
+
+  my $f = $self->formValidate(
+    { name => 'p', required => 0, default => 1, template => 'int' },
+    { name => 'o', required => 0, default => 'd', enum => ['a', 'd'] },
+    { name => 's', required => 0, default => 'date', enum => [qw|date username title tag|] },
+    { name => 'v', required => 0, default => 0, template => 'int' },
+    { name => 'u', required => 0, default => 0, template => 'int' },
+    { name => 't', required => 0, default => 0, template => 'int' },
+  );
+  return 404 if $f->{_err};
+
+  my($list, $np) = $self->dbTagLinks(
+    what => 'details',
+    results => 50,
+    page => $f->{p},
+    sort => $f->{s},
+    reverse => $f->{o} eq 'd',
+    $f->{v} ? (vid => $f->{v}) : (),
+    $f->{u} ? (uid => $f->{u}) : (),
+    $f->{t} ? (tag => $f->{t}) : (),
+  );
+
+  my $url = sub {
+    my %f = ((map +($_,$f->{$_}), qw|s o v u t|), @_);
+    my $qs = join ';', map $f{$_}?"$_=$f{$_}":(), keys %f;
+    return '/g/links'.($qs?"?$qs":'')
+  };
+
+  $self->htmlHeader(title => mt '_taglink_title');
+  div class => 'mainbox';
+   h1 mt '_taglink_title';
+
+   div class => 'warning';
+    h2 mt '_taglink_spoil_title';
+    p mt '_taglink_spoil_msg';
+   end;
+   br;
+
+   if($f->{u} || $f->{t} || $f->{v}) {
+     p mt '_taglink_fil_active';
+     ul;
+      if($f->{u}) {
+        my $o = $self->dbUserGet(uid => $f->{u})->[0];
+        li;
+         txt '['; a href => $url->(u=>0), mt '_taglink_fil_remove'; txt '] ';
+         txt mt '_taglink_fil_user'; txt ' ';
+         a href => "/u$o->{id}", $o->{username};
+        end;
+      }
+      if($f->{t}) {
+        my $o = $self->dbTagGet(id => $f->{t})->[0];
+        li;
+         txt '['; a href => $url->(t=>0), mt '_taglink_fil_remove'; txt '] ';
+         txt mt '_taglink_fil_tag'; txt ' ';
+         a href => "/g$o->{id}", $o->{name};
+        end;
+      }
+      if($f->{v}) {
+        my $o = $self->dbVNGet(id => $f->{v})->[0];
+        li;
+         txt '['; a href => $url->(v=>0), mt '_taglink_fil_remove'; txt '] ';
+         txt mt '_taglink_fil_vn'; txt ' ';
+         a href => "/v$o->{id}", $o->{title};
+        end;
+      }
+     end;
+   }
+   p mt '_taglink_fil_add' unless $f->{v} && $f->{u} && $f->{t};
+  end;
+
+  $self->htmlBrowse(
+    class    => 'taglinks',
+    options  => $f,
+    nextpage => $np,
+    items    => $list,
+    pageurl  => $url->(),
+    sorturl  => $url->(s=>0,o=>0),
+    header   => [
+      [ mt('_taglink_col_date'),   'date' ],
+      [ mt('_taglink_col_user'),   'username' ],
+      [ mt('_taglink_col_rating') ],
+      [ mt('_taglink_col_tag'),    'tag' ],
+      [ mt('_taglink_col_spoiler') ],
+      [ mt('_taglink_col_vn'),     'title' ],
+    ],
+    row      => sub {
+      my($s, $n, $l) = @_;
+      Tr $n % 2 ? (class => 'odd') : ();
+       td class => 'tc1';
+        lit $self->{l10n}->date($l->{date});
+       end;
+       td class => 'tc2';
+        a href => $url->(u=>$l->{uid}), class => 'setfil', '> ' if !$f->{u};
+        a href => "/u$l->{uid}", $l->{username};
+       end;
+       td class => 'tc3';
+        tagscore $l->{vote};
+       end;
+       td class => 'tc4';
+        a href => $url->(t=>$l->{tag}), class => 'setfil', '> ' if !$f->{t};
+        a href => "/g$l->{tag}", $l->{name};
+       end;
+       td class => 'tc5', !defined $l->{spoiler} ? ' ' : mt "_tagu_spoil$l->{spoiler}";
+       td class => 'tc6';
+        a href => $url->(v=>$l->{vid}), class => 'setfil', '> ' if !$f->{v};
+        a href => "/v$l->{vid}", shorten $l->{title}, 50;
+       end;
+      end;
+    },
+  );
   $self->htmlFooter;
 }
 

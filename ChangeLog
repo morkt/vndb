@@ -4,6 +4,7 @@
 	- Added a "general discussions" board
 	- Added vote listings for VNs and users (/[uv]+/votes)
 	- Keep track of last modification date for tag<->vn links
+	- Added advanced tag link browser
 	- API: Allow extra whitespace after "get .." command
 	- API: Allow non-numbers as "clientver" for the login command
 	- API: Added "image_nsfw" member to "get vn"
