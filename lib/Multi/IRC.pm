@@ -291,7 +291,7 @@ sub notify { # name, pid, payload
     FROM threads_posts tp
     JOIN threads t ON t.id = tp.tid
     JOIN users u ON u.id = tp.uid
-    WHERE tp.date > ?
+    WHERE tp.date > ? AND tp.num = 1
     ORDER BY tp.date|
   : q|SELECT
       'g' AS type, t.id, t.name AS title, u.username, t.id AS lasttag
