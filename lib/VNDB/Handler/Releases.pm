@@ -160,9 +160,10 @@ sub _infotable {
    }
 
    if($r->{resolution}) {
+     my $res = $self->{resolutions}[$r->{resolution}][0];
      Tr ++$i % 2 ? (class => 'odd') : ();
       td mt '_relinfo_resolution';
-      td $self->{resolutions}[$r->{resolution}][0];
+      td $res =~ /^_/ ? mt $res : $res;
      end;
    }
 
@@ -412,7 +413,7 @@ sub _form {
 
   rel_format => [ mt('_redit_form_format'),
     [ select => short => 'resolution', name => mt('_redit_form_resolution'), options => [
-      map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
+      map [ $_, map /^_/?mt($_):$_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
     [ select => short => 'voiced',     name => mt('_redit_form_voiced'), options => [
       map [ $_, mt '_voiced_'.$_ ], @{$self->{voiced}} ] ],
     [ select => short => 'ani_story',  name => mt('_redit_form_ani_story'), options => [

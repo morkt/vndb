@@ -917,6 +917,30 @@ hu : fekete lista
 nl :
 
 
+# screen resolutions
+
+:_scrres_unknown
+en : Unknown / console / handheld
+ru*:
+cs*:
+hu*:
+nl : Onbekend / console / handheld
+
+:_scrres_nonstandard
+en : Non-standard
+ru*:
+cs*:
+hu*:
+nl : Non-standaard
+
+:_scrres_ws
+en : widescreen
+ru*:
+cs*:
+hu*:
+nl :
+
+
 # 'Voiced' information for releases
 
 :_voiced_0

@@ -76,18 +76,21 @@ sub l10n {
 
 # screen resolution information, suitable for usage in filFSelect()
 sub resolutions {
+  my $ln = shift;
   my $res_cat = '';
   my $resolutions = '';
   my $comma = 0;
   for my $i (0..$#{$S{resolutions}}) {
     my $r = $S{resolutions}[$i];
     if($res_cat ne $r->[1]) {
+      my $cat = $r->[1] =~ /^_/ ? $lang{$ln}{$r->[1]}||$lang{'en'}{$r->[1]} : $r->[1];
       $resolutions .= ']' if $res_cat;
-      $resolutions .= ",['$r->[1]',";
+      $resolutions .= ",['$cat',";
       $res_cat = $r->[1];
       $comma = 0;
     }
-    $resolutions .= ($comma ? ',' : '')."[$i,'$r->[0]']";
+    my $n = $r->[0] =~ /^_/ ? $lang{$ln}{$r->[0]}||$lang{'en'}{$r->[0]} : $r->[0];
+    $resolutions .= ($comma ? ',' : '')."[$i,'$n']";
     $comma = 1;
   }
   $resolutions .= ']' if $res_cat;
@@ -98,7 +101,6 @@ sub resolutions {
 sub jsgen {
   l10n_load();
   my $common = '';
-  $common .= resolutions();
   $common .= sprintf "rlst_rstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_rstat}};
   $common .= sprintf "rlst_vstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_vstat}};
   $common .= sprintf "cookie_prefix = '%s';\n", $S{cookie_prefix};
@@ -120,6 +122,7 @@ sub jsgen {
 
   for my $l (VNDB::L10N::languages()) {
     my($head, $body) = l10n($l, $js);
+    $head .= resolutions($l);
     # JavaScript::Minifier::XS doesn't correctly handle perl's unicode, so manually encode
     my $content = encode_utf8($head . $common . $body);
     open my $NEWJS, '>', "$ROOT/static/f/js/$l.js" or die $!;
