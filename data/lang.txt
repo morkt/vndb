@@ -411,7 +411,7 @@ nl :
 
 :_plat_ios
 en : Apple iProduct
-ru : Apple iЧтоНибудь
+ru : Apple iИзделие
 cs : Apple iProduct
 hu : Apple iTermék
 nl :
@@ -676,7 +676,7 @@ nl :
 
 :_vnrel_orig
 en : Original game
-ru : Оригинальная игра
+ru : Исходная игра
 cs : Originální hra
 hu : Eredeti játék
 nl : Originele spel
@@ -859,7 +859,7 @@ nl : VNDB discussies
 
 :_dboard_ge
 en : General discussions
-ru*:
+ru : Общий форум
 cs*:
 hu : Általános megbeszélések
 nl : Algemene discussies
@@ -921,21 +921,21 @@ nl :
 
 :_scrres_unknown
 en : Unknown / console / handheld
-ru*:
+ru : Неизвестно / консоль / наладонник
 cs*:
 hu : Ismeretlen / konzol / kézi
 nl : Onbekend / console / handheld
 
 :_scrres_nonstandard
 en : Non-standard
-ru*:
+ru : Нестандартное
 cs*:
 hu : Nem-standard
 nl : Non-standaard
 
 :_scrres_ws
 en : widescreen
-ru*:
+ru : Широкий экран
 cs*:
 hu : szélesvásznú
 nl :
@@ -1302,7 +1302,7 @@ nl : Per dag mag je maar één account aanmaken vanaf hetzelfde IP
 
 :_formerr_e_notanswer
 en : Question was not correctly answered. Are you sure you are a human?
-ru : Неправильный ответ. Вы уверены, что вы человек?
+ru : Неправильный ответ. А ты точно человек?
 cs : Na otázku jste neodpověděli správně. Jste si jisti, že jste člověk?
 hu : A kérdésre a válasz helytelen. Biztos vagy benne, hogy ember vagy?
 nl : Vraag was incorrect beantwoord. Weet je zeker dat je een mens bent?
@@ -2655,7 +2655,7 @@ nl : Naam (romaji)
 
 :_revfield_p_original
 en : Original name
-ru : Оригинальное название
+ru : Исходное название
 cs : Originální jméno
 hu : Eredeti név
 nl : Originele naam
@@ -2752,14 +2752,14 @@ nl : Naam (romaji)
 
 :_pedit_form_original
 en : Original name
-ru : Оригинальное название
+ru : Исходное название
 cs : Originální jméno
 hu : Eredeti név
 nl : Originele naam
 
 :_pedit_form_original_note
 en : The original name of the producer, leave blank if it is already in the Latin alphabet.
-ru : Оригинальное название компании, оставьте пустым, если оно уже в латинском алфавите.
+ru : Исходное название компании, оставьте пустым, если оно уже в латинском алфавите.
 cs : Originální jméno producenta, ponechte prázdné, pokud již je v latince.
 hu : A készítő eredeti neve, hagyd üresen ha latin betűkből áll s már beírtad a "Név" mezőbe.
 nl : De werkelijke naam van de producent, laat leeg als dit al in het Latijnse alphabet is.
@@ -2955,7 +2955,7 @@ nl : Titel (romaji)
 
 :_revfield_r_original
 en : Original title
-ru : Оригинальное название
+ru : Исходное название
 cs : Originální název
 hu : Eredeti cím
 nl : Originele titel
@@ -3091,7 +3091,7 @@ nl : Titel
 
 :_relinfo_original
 en : Original title
-ru : Оригинальное название
+ru : Исходное название
 cs : Originální název
 hu : Eredeti cím
 nl : Originele titel
@@ -3346,14 +3346,14 @@ nl : Titel (romaji)
 
 :_redit_form_original
 en : Original title
-ru : Оригинальное название
+ru : Исходное название
 cs : Originální název
 hu : Eredeti cím
 nl : Originele titel
 
 :_redit_form_original_note
 en : The original title of this release, leave blank if it already is in the Latin alphabet.
-ru : Оригинальное название данного выпуска, осавьте пустым, если оно уже в латинском алфавите.
+ru : Исходное название данного выпуска, осавьте пустым, если оно уже в латинском алфавите.
 cs : Originální název tohoto vydání, ponechte prázdné, pokud již je latinkou.
 hu : A kiadás eredeti neve, hagyd üresen ha latin betűkből áll s már beírtad a "Cím" mezőbe.
 nl : De originele titel van deze uitgave, laat leeg als deze al in het Latijnse alphabet is.
@@ -3840,7 +3840,7 @@ nl : Taal
 
 :_rbrowse_olang
 en : Original language
-ru : Язык оригинала
+ru : Исходный язык
 cs : Originální jazyk
 hu : Eredeti nyelv
 nl : Originele taal
@@ -3943,7 +3943,7 @@ nl : Verwijderde tag
 :_tagp_del_msg
 en : This tag has been removed from the database, and cannot be used or re-added.
      File a request on the [url,/t/db,discussion board] if you disagree with this.
-ru : Данный тег удалён из базы данных, и не может быть использован.
+ru : Данный тег удалён из базы данных, и более не может использоваться.
      Напишите на [url,/t/db,форуме], если вы с этим не согласны.
 cs : Tento tag byl smazán z databáze a nemůže být použit nebo znovu přidán.
      Pokud s tímto nesouhlasíte, napište žádost na [url,/t/db,diskusní board].
@@ -4017,7 +4017,7 @@ nl :
 
 :_tagp_rawvotes
 en : Recently tagged
-ru*:
+ru : Недавно отмеченные
 cs*:
 hu : Mostanában megcímkézve
 nl : Recentelijk getagged
@@ -4052,7 +4052,7 @@ nl : Deze tag is nog niet gekoppeld aan een visual novel, of deze worden niet we
 
 :_tagp_cached
 en : The list below also includes all visual novels linked to child tags. This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.
-ru*: ЗАМЕЧАНИЕ: Данный список кэшируется, поэтому может пройти вплоть до 24 часов, прежде чем новелла, помеченная тегом, отобразится на этой странице.
+ru : Данный список также содержит все новеллы, отмеченные дочерними тегами. Список кэшируется, поэтому до появления новеллы на этой странице может пройти до 24 часов.
 cs*: POZNÁMKA: Tento list se ukládá do cache, takže může trvat až 24 hodin po otagování vizuální novely do objevení se na této stránce.
 hu : A lent megtalálható lista tartalmazza az alcímkékhez hozzákapcsolt összes visual novel-t is. Ez a lista le van mentve a gyorsítótárba, beletelhet 24 órába míg a visual novelhez újonnan hozzárendelt címke megjelenik ezen az oldalon.
 nl : De volgende lijst bevat ook alle visual novels die gelinkt zijn aan subtags. Deze lijst is gecached, het kan 24 uur duren voordat een visual novel op deze pagina te zien is.
@@ -4357,112 +4357,112 @@ nl : verwijderd
 
 :_taglink_title
 en : Tag link browser
-ru*:
+ru : Обзор прикреплённых тегов
 cs*:
 hu : Címke link böngésző
 nl :
 
 :_taglink_spoil_title
 en : Spoiler warning
-ru*:
+ru : Предупреждение о спойлерах
 cs*:
 hu : Spoiler veszély
 nl : Spoiler waarschuwing
 
 :_taglink_spoil_msg
 en : This list displays the tag votes of individual users. Spoilery tags are not hidden, and may not even be correctly flagged as such.
-ru*:
+ru : Данный список отображает голоса отдельных пользователей по тегам. Теги-спойлеры не скрываются, и даже могут быть не помеченными как таковые.
 cs*:
 hu : Ez a lista tartalmazza az egyéni felhasználók által kiértékelt cimkék pontozását. Azok a címkék amelyeket tartalmazhatnak spoiler-t el vannak rejtve, vagy lehet, hogy nincsenek jól megjelölve.
 nl : Deze lijst bevat alle stemmen op tags van individuele gebruikers. Tags die spoiler kunnen zijn worden hier niet verborgen, and sommige tags hoeven niet eens correct gemarkeerd te zijn als spoiler.
 
 :_taglink_fil_active
 en : Active filters:
-ru*:
+ru : Активные фильтры:
 cs*:
 hu : Aktív szűrők:
 nl : Actieve filters:
 
 :_taglink_fil_remove
 en : remove
-ru*:
+ru : убрать
 cs*:
 hu : eltávolít
 nl : verwijder
 
 :_taglink_fil_user
 en : User:
-ru*:
+ru : Пользователь:
 cs*:
 hu : Felhasználó:
 nl : Gebruiker:
 
 :_taglink_fil_tag
 en : Tag:
-ru*:
+ru : Тег:
 cs*:
 hu : Címke
 nl :
 
 :_taglink_fil_vn
 en : Visual novel:
-ru*:
+ru : Новелла:
 cs*:
 hu :
 nl :
 
 :_taglink_fil_add
 en : Click the arrow beside a user, tag or VN to add it as a filter.
-ru*:
+ru : Щёлкните по стрелке рядом с именем пользователя, тегом или названием новеллы, чтобы отфильтровать по этому значению.
 cs*:
 hu : A felhasználó, címke vagy VN melleti nyílal berakhatód őket szűrőnek.
 nl : Gebruik het pijltje naast een gebruiker, tag of VN om het toe te voegen als filter.
 
 :_taglink_col_date
 en : Date
-ru*:
+ru : Дата
 cs*:
 hu : Dátum
 nl : Datum
 
 :_taglink_col_user
 en : User
-ru*:
+ru : Пользователь
 cs*:
 hu : Felhasználó
 nl : Gebruiker
 
 :_taglink_col_rating
 en : Rating
-ru*:
+ru : Рейтинг
 cs*:
 hu : Értékelés
 nl : Score
 
 :_taglink_col_tag
 en : Tag
-ru*:
+ru : Тег
 cs*:
 hu : Címke
 nl :
 
 :_taglink_col_spoiler
 en : Spoiler
-ru*:
+ru : Спойлер
 cs*:
 hu :
 nl :
 
 :_taglink_col_vn
 en : Visual novel
-ru*:
+ru : Новелла
 cs*:
 hu :
 nl :
 
 :_taglink_spoil0
 en : No spoiler
-ru : Нет спойлера
+ru : Без спойлера
 cs : Bez spoilerů
 hu : Nem spoiler
 nl : Geen spoiler
@@ -4563,7 +4563,7 @@ nl :
 
 :_tagv_who
 en : Who?
-ru*:
+ru : Кто?
 cs*:
 hu : Kicsoda?
 nl : Wie?
@@ -4690,7 +4690,7 @@ nl : Populaire tags
 
 :_tagidx_rawtags
 en : Recently tagged
-ru :
+ru : Недавно отмеченные
 cs :
 hu :
 nl : Recentelijk getagged
@@ -4810,42 +4810,42 @@ nl : verwijder van wensenlijst
 
 :_votelist_title_vn
 en : Votes for [_1]
-ru*:
+ru : Голоса за [_1]
 cs*:
 hu : [_1]-nak(nek) a szavazatai
 nl : Stemmen op [_1]
 
 :_votelist_title_user
 en : Votes by [_1]
-ru*:
+ru : Отданы [_1]
 cs*:
 hu : Szavazatok [_1]-tól(től)
 nl : Stemmen van [_1]
 
 :_votelist_col_date
 en : Cast
-ru*:
+ru : Дата
 cs*:
 hu : Leadva
 nl : Gestemd
 
 :_votelist_col_vote
 en : Vote
-ru*:
+ru : Голос
 cs*:
 hu : Szavazat
 nl : Stem
 
 :_votelist_col_vn
 en : Visual novel
-ru*:
+ru : Новелла
 cs*:
 hu :
 nl :
 
 :_votelist_col_user
 en : User
-ru*:
+ru : Пользователь
 cs*:
 hu : Felhasználó
 nl : Gebruiker
@@ -5021,7 +5021,7 @@ nl : [_1] [quant,_1,stem,stemmen] op [_2] verschillende [quant,_2,tag,tags] en [
 
 :_userpage_tags_browse
 en : Browse tags
-ru*:
+ru : Просмотреть теги
 cs*:
 hu : Címkék böngészése
 nl :
@@ -5374,7 +5374,7 @@ nl : Herhaal wachtwoord
 
 :_register_question
 en : How many [index,_1,visual novels,releases,producers] do we have in the database? (Hint: look to your left)
-ru : Сколько [index,_1,новелл,выпусков,компаний] у нас в базе? (Подсказка: посмотрите слева)
+ru : Сколько [index,_1,новелл,выпусков,компаний] у нас в базе? (Подсказка: посмотри слева)
 cs : Kolik [index,_1,vizulních novel,vydání,producentů] máme v databázi? (Nápověda: podívejte se doleva)
 hu : Mennyi [index,_1,visual novels,releases,producers] van az adatbázisunkba? (Tip: vess egy pillantást balra)
 nl : Hoeveel [index,_1,visual novels,uitgaven,producenten] hebben wij in de database? (Tip: zie links van de pagina)
@@ -5862,14 +5862,14 @@ nl :
 
 :_vnbrowse_anime_yes
 en : Has anime
-ru : Имеет экранизацию
+ru : Есть экранизация
 cs : Obsahuje anime
 hu : Van róla anime
 nl : Heeft anime
 
 :_vnbrowse_anime_no
 en : Does not have anime
-ru : Не имеет экранизации
+ru : Без экранизации
 cs : Neobsahuje anime
 hu : Nincs róla anime
 nl : Heeft geen anime
@@ -5932,7 +5932,7 @@ nl : Taal
 
 :_vnbrowse_olang
 en : Original language
-ru : Язык оригинала
+ru : Исходный язык
 cs : Originální jazyk
 hu : Eredeti nyelv
 nl : Originele taal
@@ -5977,14 +5977,14 @@ nl : Titel (romaji)
 
 :_vnedit_original
 en : Original title
-ru : Оригинальное название
+ru : Исходное название
 cs : Originální název
 hu : Eredeti cím
 nl : Originele titel
 
 :_vnedit_original_msg
 en : The original title of this visual novel, leave blank if it already is in the Latin alphabet.
-ru : Оригинальное название данной новеллы, оставьте пустым, если уже набрано в латинском алфавите.
+ru : Исходное название данной новеллы, оставьте пустым, если уже набрано в латинском алфавите.
 cs : Originální název této vizuální novely, ponechte prázdné, pokud již je latinkou.
 hu : A visual novel eredeti címe, ha latin betűkkel van akkor ne írd be mégegyszer ide.
 nl : De originele titel van deze visual novel, laat leeg als deze al in het Latijnse alfabet is.
@@ -6125,7 +6125,7 @@ nl :
 
 :_vnedit_image_nsfw_check
 en : Not Safe For Work
-ru : Не безопасно для работы
+ru : Небезопасно для работы
 cs : Not Safe For Work
 hu : Nem munkabarát
 nl : Niet geschikt voor op het werk
@@ -6169,7 +6169,7 @@ nl : is een
 
 :_vnedit_rel_official
 en : official
-ru : официальный(-ая/-ое)
+ru : оф.
 cs : oficiální
 hu : hivatalos
 nl : officiële
@@ -6232,7 +6232,7 @@ nl :
 
 :_vnedit_scrnorel
 en : No releases in the database yet. Screenshots can only be uploaded after a release has been added.
-ru : В базе нет ещё ни одного выпуска для этой новеллы. Скриншоты могут быть добавлены только при наличии выпусков.
+ru : В базе нет ещё ни одного выпуска для этой новеллы. Скриншоты можно добавлять лишь при наличии выпусков.
 cs : Ještě nemáme žádné vydání v databázi. Screenshoty mohou být přidány pouze pokud bylo přidáno vydání.
 hu : Még nincs kiadás az adatbázisban. Ameddig nincs bejegyezve egy kiadás sem, addig nem lehet pillanatképeket feltölteni.
 nl : Nog geen uitgaven in de database. Screenshots kunnen alleen geupload worden nadat een uitgave is toegevoegd.
@@ -6468,7 +6468,7 @@ nl : Titel (romaji)
 
 :_revfield_v_original
 en : Original title
-ru : Оригинальное название
+ru : Исходное название
 cs : Originální název
 hu : Eredeti cím
 nl : Originele titel
@@ -6660,7 +6660,7 @@ nl : Titel
 
 :_vnpage_original
 en : Original title
-ru : Оригинальное название
+ru : Исходное название
 cs : Originální název
 hu : Eredeti cím
 nl : Originele titel
@@ -6836,7 +6836,7 @@ nl : intrekken
 :_vnpage_uopt_1vote
 en : You are about to give this visual novel a 1 out of 10. This is a rather extreme rating, meaning this game has absolutely nothing to offer, and that it's the worst game you have ever played.
      Are you really sure this visual novel matches that description?
-ru : Вы собираетесь дать этой новелле оценку 1 из 10. Это весьма сильная оценка, означающая, что это совершенно бездарная работа и худшее из всего, во что вы играли.
+ru : Вы собираетесь дать этой новелле оценку 1 из 10. Это весьма сильная оценка, означающая, что это совершенно бездарная работа и худшее из всего, что вы читали.
      Вы уверены, что эта новелла соответствует такому критерию?
 cs : Chystáte se této vizuální novele dát hodnocení 1 z 10. To je celkem extrémní hodnocení, znamenající, že tato hra nemá absolutně nic co nabídnout, a že je to ta nejhorší hra, kterou jste kdy hráli.
      Jste si opravdu jisti, že tato vizuální novela odpovídá tomuto popisu?
@@ -6848,7 +6848,7 @@ nl : Je staat op het punt om deze visual novel een 1 te geven. Dit is een erg ex
 :_vnpage_uopt_10vote
 en : You are about to give this visual novel a 10 out of 10. This is a rather extreme rating, meaning this is one of the best visual novels you've ever played and it's unlikely that any other game could ever be better than this one.
      It is generally a bad idea to have more than three games in your vote list with this rating, choose carefully!
-ru : Вы собираетесь дать этой новелле оценку 10 из 10. Это весьма сильная оценка, означающая, что это одна из лучших когда-либо выпущенных новелл, которую вы когда-либо читали.
+ru : Вы собираетесь дать этой новелле оценку 10 из 10. Это весьма сильная оценка, означающая, что это одна из лучших когда-либо выпущенных новелл, что вы читали.
      Вы уверены, что эта новелла соответствует такому критерию?
 cs : Chystáte se této vizuální novele dát hodnocení 10 z 10. To je celkem extrémní hodnocení, znamenající, že to je jedna z nejlepších vizuálních novel, které jste kdy hráli a je nepravděpodobné, že by nějaká další hra mohla být lepší než tato.
      Obecně vztao je špatný nápad mít víc jak tři hry s tímto hodnocením ve vašem listu hlasování, vybírejte pečlivě!
@@ -7013,7 +7013,7 @@ nl : Recente stemmen
 
 :_votestats_allvotes
 en : show all
-ru*:
+ru : показать всё
 cs*:
 hu : mindegyik megjelenitése
 nl : alle stemmen
@@ -7083,7 +7083,7 @@ nl : Je bent niet toegestaan om deze actie uit te voeren.
 
 :_denied_noaccess_msg
 en : It seems you don't have the proper rights to perform the action you wanted to perform...
-ru : Похоже, сюда вам нельзя...
+ru : Похоже, у тебя нет прав для выполнения действия, которое ты пытаешься совершить. Короче, сюда нельзя...
 cs : Zdá se, že nemáte potřebná práva pro vykonání akce, kterou chcete provést...
 hu : Úgy tűnik, hogy nem rendelkezel megfelelő jogokkal, hogy elvégezd azt a műveletet amit szerettél volna...
 nl : Het lijkt er op dat je niet genoeg rechten hebt om te doen wat je wilde doen...
@@ -7239,7 +7239,7 @@ nl : Formulier kon niet verzonden worden, zorg er voor dat Javascript aan staat 
 
 :_formcode_title
 en : Validation code expired
-ru : Срок годности проверочного кода истек
+ru : Печеньки протухли
 cs : Validační doba vypršela
 hu : Az érvényesítő kód lejárt
 nl : Validatie code ongeldig
@@ -7273,7 +7273,7 @@ nl : Niet ondersteund
 
 :_rg_notsupp_msg
 en : Your browser sucks, it doesn't have the functionality to render our nice relation graphs.
-ru : Ваш браузер настолько отстоен, что даже не может отрендерить наши красивые графики.
+ru : Ваш браузер настолько отстоен, что даже не в состоянии отрисовать наши красивые графики.
 cs : Váš prohlížeč je na nic, nepodporuje vykreslování našich krásných vztahových grafů.
 hu : A böngésződ szar, nem képes megjeleníteni a szép összefüggés grafikonunkat.
 nl : Je browser is troep, het heeft niet de benodigde functionaliteit om onze mooie grafiekjes weer te geven.
