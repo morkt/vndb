@@ -381,7 +381,7 @@ sub taglinks {
     return '/g/links'.($qs?"?$qs":'')
   };
 
-  $self->htmlHeader(title => mt '_taglink_title');
+  $self->htmlHeader(noindex => 1, title => mt '_taglink_title');
   div class => 'mainbox';
    h1 mt '_taglink_title';
 
