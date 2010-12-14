@@ -861,7 +861,7 @@ nl : VNDB discussies
 en : General discussions
 ru*:
 cs*:
-hu*:
+hu : Általános megbeszélések
 nl : Algemene discussies
 
 :_dboard_v
@@ -923,21 +923,21 @@ nl :
 en : Unknown / console / handheld
 ru*:
 cs*:
-hu*:
+hu : Ismeretlen / konzol / kézi
 nl : Onbekend / console / handheld
 
 :_scrres_nonstandard
 en : Non-standard
 ru*:
 cs*:
-hu*:
+hu : Nem-standard
 nl : Non-standaard
 
 :_scrres_ws
 en : widescreen
 ru*:
 cs*:
-hu*:
+hu : szélesvásznú
 nl :
 
 
@@ -4019,7 +4019,7 @@ nl :
 en : Recently tagged
 ru*:
 cs*:
-hu*:
+hu : Mostanában megcímkézve
 nl : Recentelijk getagged
 
 :_tagp_spoil0
@@ -4054,7 +4054,7 @@ nl : Deze tag is nog niet gekoppeld aan een visual novel, of deze worden niet we
 en : The list below also includes all visual novels linked to child tags. This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.
 ru*: ЗАМЕЧАНИЕ: Данный список кэшируется, поэтому может пройти вплоть до 24 часов, прежде чем новелла, помеченная тегом, отобразится на этой странице.
 cs*: POZNÁMKA: Tento list se ukládá do cache, takže může trvat až 24 hodin po otagování vizuální novely do objevení se na této stránce.
-hu*: FIGYELEM: Ez a lista le van mentve a gyorsítótárba, beletelhet 24 órába míg a visual novelhez újonnan hozzárendelt címke megjelenik ezen az oldalon.
+hu : A lent megtalálható lista tartalmazza az alcímkékhez hozzákapcsolt összes visual novel-t is. Ez a lista le van mentve a gyorsítótárba, beletelhet 24 órába míg a visual novelhez újonnan hozzárendelt címke megjelenik ezen az oldalon.
 nl : De volgende lijst bevat ook alle visual novels die gelinkt zijn aan subtags. Deze lijst is gecached, het kan 24 uur duren voordat een visual novel op deze pagina te zien is.
 
 :_tagp_vncol_score
@@ -4359,105 +4359,105 @@ nl : verwijderd
 en : Tag link browser
 ru*:
 cs*:
-hu*:
+hu : Címke link böngésző
 nl :
 
 :_taglink_spoil_title
 en : Spoiler warning
 ru*:
 cs*:
-hu*:
+hu : Spoiler veszély
 nl : Spoiler waarschuwing
 
 :_taglink_spoil_msg
 en : This list displays the tag votes of individual users. Spoilery tags are not hidden, and may not even be correctly flagged as such.
 ru*:
 cs*:
-hu*:
+hu : Ez a lista tartalmazza az egyéni felhasználók által kiértékelt cimkék pontozását. Azok a címkék amelyeket tartalmazhatnak spoiler-t el vannak rejtve, vagy lehet, hogy nincsenek jól megjelölve.
 nl : Deze lijst bevat alle stemmen op tags van individuele gebruikers. Tags die spoiler kunnen zijn worden hier niet verborgen, and sommige tags hoeven niet eens correct gemarkeerd te zijn als spoiler.
 
 :_taglink_fil_active
 en : Active filters:
 ru*:
 cs*:
-hu*:
+hu : Aktív szűrők:
 nl : Actieve filters:
 
 :_taglink_fil_remove
 en : remove
 ru*:
 cs*:
-hu*:
+hu : eltávolít
 nl : verwijder
 
 :_taglink_fil_user
 en : User:
 ru*:
 cs*:
-hu*:
+hu : Felhasználó:
 nl : Gebruiker:
 
 :_taglink_fil_tag
 en : Tag:
 ru*:
 cs*:
-hu*:
+hu : Címke
 nl :
 
 :_taglink_fil_vn
 en : Visual novel:
 ru*:
 cs*:
-hu*:
+hu :
 nl :
 
 :_taglink_fil_add
 en : Click the arrow beside a user, tag or VN to add it as a filter.
 ru*:
 cs*:
-hu*:
+hu : A felhasználó, címke vagy VN melleti nyílal berakhatód őket szűrőnek.
 nl : Gebruik het pijltje naast een gebruiker, tag of VN om het toe te voegen als filter.
 
 :_taglink_col_date
 en : Date
 ru*:
 cs*:
-hu*:
+hu : Dátum
 nl : Datum
 
 :_taglink_col_user
 en : User
 ru*:
 cs*:
-hu*:
+hu : Felhasználó
 nl : Gebruiker
 
 :_taglink_col_rating
 en : Rating
 ru*:
 cs*:
-hu*:
+hu : Értékelés
 nl : Score
 
 :_taglink_col_tag
 en : Tag
 ru*:
 cs*:
-hu*:
+hu : Címke
 nl :
 
 :_taglink_col_spoiler
 en : Spoiler
 ru*:
 cs*:
-hu*:
+hu :
 nl :
 
 :_taglink_col_vn
 en : Visual novel
 ru*:
 cs*:
-hu*:
+hu :
 nl :
 
 :_taglink_spoil0
@@ -4565,7 +4565,7 @@ nl :
 en : Who?
 ru*:
 cs*:
-hu*:
+hu : Kicsoda?
 nl : Wie?
 
 :_tagv_save
@@ -4812,42 +4812,42 @@ nl : verwijder van wensenlijst
 en : Votes for [_1]
 ru*:
 cs*:
-hu*:
+hu : [_1]-nak(nek) a szavazatai
 nl : Stemmen op [_1]
 
 :_votelist_title_user
 en : Votes by [_1]
 ru*:
 cs*:
-hu*:
+hu : Szavazatok [_1]-tól(től)
 nl : Stemmen van [_1]
 
 :_votelist_col_date
 en : Cast
 ru*:
 cs*:
-hu*:
+hu : Leadva
 nl : Gestemd
 
 :_votelist_col_vote
 en : Vote
 ru*:
 cs*:
-hu*:
+hu : Szavazat
 nl : Stem
 
 :_votelist_col_vn
 en : Visual novel
 ru*:
 cs*:
-hu*:
+hu :
 nl :
 
 :_votelist_col_user
 en : User
 ru*:
 cs*:
-hu*:
+hu : Felhasználó
 nl : Gebruiker
 
 
@@ -5023,7 +5023,7 @@ nl : [_1] [quant,_1,stem,stemmen] op [_2] verschillende [quant,_2,tag,tags] en [
 en : Browse tags
 ru*:
 cs*:
-hu*:
+hu : Címkék böngészése
 nl :
 
 :_userpage_list
@@ -7015,7 +7015,7 @@ nl : Recente stemmen
 en : show all
 ru*:
 cs*:
-hu*:
+hu : mindegyik megjelenitése
 nl : alle stemmen
 
 :_votestats_rank_title
