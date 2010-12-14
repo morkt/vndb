@@ -154,3 +154,7 @@ update-2.14: all
 	${runpsql} < util/updates/update_2.14.sql
 	$(multi-start)
 
+update-2.15: all
+	$(multi-stop)
+	${runpsql} < util/updates/update_2.15.sql
+	$(multi-start)

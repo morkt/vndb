@@ -8,6 +8,7 @@
 	- Removed specific tags-by-user listing
 	- Disable "Don't update last modified field" by default for mods
 	- Make Multi not report posts
+	- Consider "senpai" and "sempai" the same in the VN search
 	- API: Allow extra whitespace after "get .." command
 	- API: Allow non-numbers as "clientver" for the login command
 	- API: Added "image_nsfw" member to "get vn"

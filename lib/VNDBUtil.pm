@@ -203,6 +203,7 @@ sub normalize {
    )(?:edition|version|版|生産)//xg;
   # other common things
   s/fandisk/fandisc/g;
+  s/sempai/senpai/g;
   no utf8;
   return $_;
 }
