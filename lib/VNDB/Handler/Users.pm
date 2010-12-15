@@ -77,7 +77,7 @@ sub userpage {
           $total += $_*$votes->[$_-1];
           $count += $votes->[$_-1];
         }
-        lit mt '_userpage_votes_item', "/u$uid/list?v=1", $count, sprintf '%.2f', $total/$count;
+        lit mt '_userpage_votes_item', "/u$uid/votes", $count, sprintf '%.2f', $total/$count;
       } else {
         txt '-';
       }
