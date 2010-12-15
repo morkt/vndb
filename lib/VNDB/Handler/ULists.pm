@@ -123,7 +123,7 @@ sub votelist {
   return 404 if !@$list;
 
   my $title = mt $type eq 'v' ? '_votelist_title_vn' : '_votelist_title_user', $obj->{title} || $obj->{username};
-  $self->htmlHeader(title => $title);
+  $self->htmlHeader(noindex => 1, title => $title);
   $self->htmlMainTabs($type => $obj, 'votes');
   div class => 'mainbox';
    h1 $title;
