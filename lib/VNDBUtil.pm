@@ -114,7 +114,7 @@ sub bb2html {
         next;
       }
       # id
-      if(($id || $exid) && substr($raw, $last-1-length($match), 1) !~ /[\w]/ && substr($raw, $last, 1) !~ /[\w]/) {
+      if(($id || $exid) && (!$result || substr($raw, $last-1-length($match), 1) !~ /[\w]/) && substr($raw, $last, 1) !~ /[\w]/) {
         $length += length $match;
         last if $maxlength && $length > $maxlength;
         $result .= sprintf '<a href="/%s">%1$s</a>', $match;
