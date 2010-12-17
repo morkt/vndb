@@ -32,6 +32,7 @@ sub dbReleaseGet {
     defined $o{type}        ? ( 'rr.type = ?'      => $o{type} ) : (),
     defined $o{date_before} ? ( 'rr.released <= ?' => $o{date_before} ) : (),
     defined $o{date_after}  ? ( 'rr.released >= ?' => $o{date_after} ) : (),
+    defined $o{minage}      ? ( 'rr.minage IN(!l)'     => [ ref $o{minage}     ? $o{minage}     : [$o{minage}]     ] ) : (),
     defined $o{resolution}  ? ( 'rr.resolution IN(!l)' => [ ref $o{resolution} ? $o{resolution} : [$o{resolution}] ] ) : (),
     defined $o{voiced}      ? ( 'rr.voiced IN(!l)'     => [ ref $o{voiced}     ? $o{voiced}     : [$o{voiced}]     ] ) : (),
     defined $o{ani_story}   ? ( 'rr.ani_story IN(!l)'  => [ ref $o{ani_story}  ? $o{ani_story}  : [$o{ani_story}]  ] ) : (),
@@ -46,16 +47,6 @@ sub dbReleaseGet {
     $o{med} ? (
       'rr.id IN(SELECT irm.rid FROM releases_media irm JOIN releases ir ON ir.latest = irm.rid WHERE irm.medium IN(!l))' => [ ref $o{med} ? $o{med} : [ $o{med} ] ] ) : (),
   );
-
-  # TODO: don't allow NULL for rr.minage after all, since this could be a lot easier...
-  if(exists $o{minage}) {
-    my @m = ref $o{minage} ? @{$o{minage}} : ($o{minage});
-    my @w = (
-      grep(!defined $_ || $_ == -1, @m) ? 'rr.minage IS NULL' : (),
-      grep(defined $_ && $_ != -1, @m) ? 'rr.minage IN(!s)' : ()
-    );
-    push @where, '('.join(' OR ', @w).')', [ grep defined $_ && $_ != -1, @m ];
-  }
 
   if($o{search}) {
     for (split /[ -,._]/, $o{search}) {

@@ -38,7 +38,7 @@
 
 
 .PHONY: all dirs js skins robots chmod chmod-tladmin multi-stop multi-start multi-restart\
-	sql-import update-2.10 update-2.11 update-2.12 update-2.13 update-2.14
+	sql-import update-2.10 update-2.11 update-2.12 update-2.13 update-2.14 update-2.15 update-2.16
 
 all: dirs js skins robots data/config.pl
 
@@ -157,4 +157,9 @@ update-2.14: all
 update-2.15: all
 	$(multi-stop)
 	${runpsql} < util/updates/update_2.15.sql
+	$(multi-start)
+
+update-2.16: all
+	$(multi-stop)
+	${runpsql} < util/updates/update_2.16.sql
 	$(multi-start)

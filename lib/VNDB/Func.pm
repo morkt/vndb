@@ -82,7 +82,7 @@ sub mt {
 
 sub minage {
   my($a, $ex) = @_;
-  my $str = !defined($a) ? mt '_minage_null' : !$a ? mt '_minage_all' : mt '_minage_age', $a;
+  my $str = $a == -1 ? mt '_minage_null' : !$a ? mt '_minage_all' : mt '_minage_age', $a;
   $ex = !defined($a) ? '' : {
      0 => 'CERO A',
     12 => 'CERO B',

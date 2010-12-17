@@ -190,7 +190,7 @@ sub _infotable {
     end;
    end;
 
-   if(defined $r->{minage}) {
+   if($r->{minage} >= 0) {
      Tr ++$i % 2 ? (class => 'odd') : ();
       td mt '_relinfo_minage';
       td minage $r->{minage};
@@ -287,9 +287,8 @@ sub edit {
 
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (
-    (map { $_ => $r->{$_} } qw|type title original gtin catalog languages website released
+    (map { $_ => $r->{$_} } qw|type title original gtin catalog languages website released minage
       notes platforms patch resolution voiced freeware doujin ani_story ani_ero ihid ilock|),
-    minage    => defined($r->{minage}) ? $r->{minage} : -1,
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map
       sprintf('%d,%d,%s', $_->{id}, ($_->{developer}?1:0)+($_->{publisher}?2:0), $_->{name}),
@@ -315,7 +314,7 @@ sub edit {
       { name => 'languages', multi => 1, enum => $self->{languages} },
       { name => 'website',   required => 0, default => '', maxlength => 250, template => 'url' },
       { name => 'released',  required => 0, default => 0, template => 'int' },
-      { name => 'minage' ,   required => 0, default => -1, enum => [map !defined($_)?-1:$_, @{$self->{age_ratings}}] },
+      { name => 'minage' ,   required => 0, default => -1, enum => $self->{age_ratings} },
       { name => 'notes',     required => 0, default => '', maxlength => 10240 },
       { name => 'platforms', required => 0, default => '', multi => 1, enum => $self->{platforms} },
       { name => 'media',     required => 0, default => '' },
@@ -356,9 +355,8 @@ sub edit {
 
     if(!$frm->{_err}) {
       my $nrev = $self->dbItemEdit(r => !$copy && $rid ? $r->{cid} : undef,
-        (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released
+        (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released minage
           notes platforms resolution editsum patch voiced freeware doujin ani_story ani_ero ihid ilock|),
-        minage    => $frm->{minage} < 0 ? undef : $frm->{minage},
         vn        => $new_vn,
         producers => $producers,
         media     => $media,
@@ -406,7 +404,7 @@ sub _form {
     [ date   => short => 'released',  name => mt('_redit_form_released') ],
     [ static => content => mt('_redit_form_released_note') ],
     [ select => short => 'minage', name => mt('_redit_form_minage'),
-      options => [ map [ !defined($_)?-1:$_, minage $_, 1 ], @{$self->{age_ratings}} ] ],
+      options => [ map [ $_, minage $_, 1 ], @{$self->{age_ratings}} ] ],
     [ textarea => short => 'notes', name => mt('_redit_form_notes').'<br /><b class="standout">'.mt('_inenglish').'</b>' ],
     [ static => content => mt('_redit_form_notes_note') ],
   ],
@@ -538,7 +536,7 @@ sub browse {
        td class => 'tc1';
         lit $self->{l10n}->datestr($l->{released});
        end;
-       td class => 'tc2', !defined($l->{minage}) ? '' : minage $l->{minage};
+       td class => 'tc2', $l->{minage} < 0 ? '' : minage $l->{minage};
        td class => 'tc3';
         $_ ne 'oth' && cssicon $_, mt "_plat_$_" for (@{$l->{platforms}});
         cssicon "lang $_", mt "_lang_$_" for (@{$l->{languages}});
@@ -575,13 +573,13 @@ sub _fil_compat {
     { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
-    { name => 'ma_a', required => 0, default => 0, enum => [ grep defined($_), @{$self->{age_ratings}} ] },
+    { name => 'ma_a', required => 0, default => 0, enum => $self->{age_ratings} },
     { name => 'mi', required => 0, default => 0, template => 'int' },
     { name => 'ma', required => 0, default => 99999999, template => 'int' },
     { name => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
   );
   return if $f->{_err};
-  $fil->{minage} //= [ grep defined($_) && $f->{ma_m} ? $f->{ma_a} >= $_ : defined ($_) && $f->{ma_a} <= $_, @{$self->{age_ratings}} ] if $f->{ma_a} || $f->{ma_m};
+  $fil->{minage} //= [ grep $_ >= 0 && ($f->{ma_m} ? $f->{ma_a} >= $_ : $f->{ma_a} <= $_), @{$self->{age_ratings}} ] if $f->{ma_a} || $f->{ma_m};
   $fil->{date_after} //= $f->{mi}  if $f->{mi};
   $fil->{date_before} //= $f->{ma} if $f->{ma} < 99990000;
   $fil->{plat} //= $f->{pl}        if $f->{pl}[0];

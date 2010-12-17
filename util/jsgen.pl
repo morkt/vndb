@@ -104,7 +104,7 @@ sub jsgen {
   $common .= sprintf "rlst_rstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_rstat}};
   $common .= sprintf "rlst_vstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_vstat}};
   $common .= sprintf "cookie_prefix = '%s';\n", $S{cookie_prefix};
-  $common .= sprintf "age_ratings = [ %s ];\n", join ',', map !defined $_ ? -1 : $_, @{$S{age_ratings}};
+  $common .= sprintf "age_ratings = [ %s ];\n", join ',', map @{$S{age_ratings}};
   $common .= sprintf "languages = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{languages}};
   $common .= sprintf "platforms = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{platforms}};
   $common .= sprintf "media = [ %s ];\n", join ', ', map qq{"$_"}, sort keys %{$S{media}};

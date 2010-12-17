@@ -64,7 +64,7 @@ our %S = (%S,
     'imp' => [ 6, 'ipa' ],
     'ipa' => [ 7, 'imp' ],
   },
-  age_ratings     => [undef, 0, 6..18],
+  age_ratings     => [-1, 0, 6..18],
   release_types   => [qw|complete partial trial|],
   platforms       => [qw|win dos lin mac ios dvd gba msx nds nes p98 psp ps1 ps2 ps3 drc sat sfc wii xb3 oth|],
   media           => {

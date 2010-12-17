@@ -1,6 +1,7 @@
 2.16 - ?
 	- VNDBUtil::bb2html(): Fixed bug when the string starts with a VNDBID
 	- Fixed perl warning on /v/search redirect without search query
+	- Don't allow NULL for rr.minage and use -1 for unknown
 
 2.15 - 2010-12-15
 	- Removed expand/collapse from history browser and /u+/posts and switched to
