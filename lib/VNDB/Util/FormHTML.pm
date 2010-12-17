@@ -27,7 +27,7 @@ sub htmlFormError {
    ul;
     for my $e (@{$frm->{_err}}) {
       if(!ref $e) {
-        li mt '_formerr_e_'.$e;
+        li; lit mt '_formerr_e_'.$e; end;
         next;
       }
       my($field, $type, $rule) = @$e;

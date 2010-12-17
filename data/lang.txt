@@ -1321,6 +1321,13 @@ cs : Před posláním dalšího příspěvku počkejte prosím 30 sekund
 hu : Kérlek várj 30 másodpercet mielőtt új hozzászólást küldesz
 nl : Wacht a.u.b. 30 seconden voordat je een nieuwe post maakt
 
+:_formerr_e_badeditsum
+en : Please read [url,/d5.4,the guidelines] on how to use the edit summary.
+ru*:
+cs*:
+hu*:
+nl : Lees a.u.b. [url,/d5.4,de richtlijnen] over het gebruik van de samenvatting.
+
 :_formerr_title
 en : Error
 ru : Ошибка

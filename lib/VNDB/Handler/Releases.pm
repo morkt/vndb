@@ -324,11 +324,12 @@ sub edit {
       { name => 'ani_ero',   required => 0, default => 0, enum => $self->{animated} },
       { name => 'producers', required => 0, default => '' },
       { name => 'vn',        maxlength => 5000 },
-      { name => 'editsum',   maxlength => 5000 },
+      { name => 'editsum',   required  => 0, maxlength => 5000 },
       { name => 'ihid',      required  => 0 },
       { name => 'ilock',     required  => 0 },
     );
 
+    push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{notes});
     push @{$frm->{_err}}, [ 'released', 'required', 1 ] if !$frm->{released};
 
     my($media, $producers, $new_vn);

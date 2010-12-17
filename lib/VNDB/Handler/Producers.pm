@@ -225,10 +225,11 @@ sub edit {
       { name => 'l_wp',          required  => 0, maxlength => 150,  default => '' },
       { name => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { name => 'prodrelations', required  => 0, maxlength => 5000, default => '' },
-      { name => 'editsum',       maxlength => 5000 },
+      { name => 'editsum',       required  => 0, maxlength => 5000 },
       { name => 'ihid',          required  => 0 },
       { name => 'ilock',         required  => 0 },
     );
+    push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
     if(!$frm->{_err}) {
       # parse
       my $relations = [ map { /^([a-z]+),([0-9]+),(.+)$/ && (!$pid || $2 != $pid) ? [ $1, $2, $3 ] : () } split /\|\|\|/, $frm->{prodrelations} ];
