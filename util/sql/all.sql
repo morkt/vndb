@@ -96,6 +96,9 @@ CREATE TRIGGER vn_vnsearch_notify AFTER UPDATE ON releases FOR EACH ROW
   WHEN (NEW.hidden IS DISTINCT FROM OLD.hidden OR NEW.latest IS DISTINCT FROM OLD.latest)
   EXECUTE PROCEDURE vn_vnsearch_notify();
 
+CREATE CONSTRAINT TRIGGER update_vnlist_rlist AFTER DELETE ON vnlists DEFERRABLE FOR EACH ROW EXECUTE PROCEDURE update_vnlist_rlist();
+CREATE CONSTRAINT TRIGGER update_vnlist_rlist AFTER INSERT ON rlists  DEFERRABLE FOR EACH ROW EXECUTE PROCEDURE update_vnlist_rlist();
+
 
 -- Sequences used for ID generation of items not in the DB
 CREATE SEQUENCE covers_seq;

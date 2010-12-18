@@ -340,6 +340,16 @@ CREATE TABLE vn_screenshots (
   PRIMARY KEY(vid, scr)
 );
 
+
+-- vnlists
+CREATE TABLE vnlists (
+  uid integer NOT NULL,
+  vid integer NOT NULL,
+  status smallint NOT NULL DEFAULT 0,
+  added TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY(uid, vid)
+);
+
 -- votes
 CREATE TABLE votes (
   vid integer NOT NULL DEFAULT 0,
@@ -405,6 +415,8 @@ ALTER TABLE vn_rev              ADD FOREIGN KEY (vid)       REFERENCES vn       
 ALTER TABLE vn_screenshots      ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
 ALTER TABLE vn_screenshots      ADD FOREIGN KEY (scr)       REFERENCES screenshots   (id);
 ALTER TABLE vn_screenshots      ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
+ALTER TABLE vnlists             ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
+ALTER TABLE vnlists             ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
 ALTER TABLE votes               ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE votes               ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
 ALTER TABLE wlists              ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
