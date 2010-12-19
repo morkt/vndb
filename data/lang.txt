@@ -3258,25 +3258,18 @@ hu : nincs a listádba
 nl : niet op je lijst
 
 :_relinfo_user_inlist
-en : Status: [_1] / [_2]
-ru : Статус: [_1] / [_2]
-cs : Status: [_1] / [_2]
-hu : Állapot: [_1] / [_2]
+en : Status: [_1]
+ru : Статус: [_1]
+cs : Status: [_1]
+hu : Állapot: [_1]
 nl :
 
-:_relinfo_user_setr
-en : Set release status
-ru : Установка статуса выпуска
-cs : Změnit status vydání
-hu : Kiadás állapotának módosítása
-nl : Zet uitgavestatus
-
-:_relinfo_user_setv
-en : Set play status
-ru : Установка статуса игры
-cs : Změnit herní status
-hu : Játszás állapotának módosítása
-nl : Zet speelstatus
+:_relinfo_user_setstatus
+en : Set status
+ru*:
+cs*:
+hu*:
+nl : Zet status
 
 :_relinfo_user_del
 en : remove from list

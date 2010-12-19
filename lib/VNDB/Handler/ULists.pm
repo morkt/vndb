@@ -73,21 +73,18 @@ sub rlist {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { name => 'e', required => 1, enum => [ 'del', map("r$_", @{$self->{rlst_rstat}}), map("v$_", @{$self->{rlst_vstat}}) ] },
+    { name => 'e', required => 1, enum => [ -1, @{$self->{rlst_rstat}} ] }
   );
   return 404 if $f->{_err};
 
-  $self->dbVNListDel($uid, $rid) if $f->{e} eq 'del';
-  $self->dbVNListAdd(
-    rid => $rid,
-    uid => $uid,
-    $f->{e} =~ /^([rv])(\d+)$/ && $1 eq 'r' ? (rstat => $2) : (vstat => $2)
-  ) if $f->{e} ne 'del';
+  $self->dbRListDel($uid, $rid) if $f->{e} == -1;
+  $self->dbRListAdd($uid, $rid, $f->{e}) if $f->{e} >= 0;
 
   if($id) {
     (my $ref = $self->reqHeader('Referer')||"/r$id") =~ s/^\Q$self->{url}//;
     $self->resRedirect($ref, 'temp');
   } else {
+    # TODO: FIX
     $self->resHeader('Content-type' => 'text/xml');
     my $st = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => [$rid])->[0];
     xml;

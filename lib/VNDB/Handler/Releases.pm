@@ -236,22 +236,18 @@ sub _infotable {
    }
 
    if($self->authInfo->{id}) {
-     my $rl = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => $r->{id})->[0];
+     my $rl = $self->dbRListGet(uid => $self->authInfo->{id}, rid => $r->{id})->[0];
      Tr ++$i % 2 ? (class => 'odd') : ();
       td mt '_relinfo_user';
       td;
        Select id => 'listsel', name => $self->authGetCode("/r$r->{id}/list");
-        option mt !$rl ? '_relinfo_user_notlist' :
-          ('_relinfo_user_inlist', mt('_rlst_rstat_'.$rl->{rstat}), mt('_rlst_vstat_'.$rl->{vstat}));
-        optgroup label => mt '_relinfo_user_setr';
-         option value => "r$_", mt '_rlst_rstat_'.$_
+        option value => -2, 
+          mt !$rl ? '_relinfo_user_notlist' : ('_relinfo_user_inlist', mt('_rlst_stat_'.$rl->{status}));
+        optgroup label => mt '_relinfo_user_setstatus';
+         option value => $_, mt '_rlst_stat_'.$_
            for (@{$self->{rlst_rstat}});
         end;
-        optgroup label => mt '_relinfo_user_setv';
-         option value => "v$_", mt '_rlst_vstat_'.$_
-           for (@{$self->{rlst_vstat}});
-        end;
-        option value => 'del', mt '_relinfo_user_del' if $rl;
+        option value => -1, mt '_relinfo_user_del' if $rl;
        end;
       end;
      end;
