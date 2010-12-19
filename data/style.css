@@ -660,7 +660,7 @@ div#vntags {
   width: 90px;
 }
 .releases td.tc5 {
-  width: 140px;
+  width: 70px;
 }
 .releases td.tc5 a {
   color: $maintext$!important;
@@ -697,10 +697,6 @@ a.addnew {
 #dd_box li i { display: block; font-style: normal; padding-left: 10px; padding-right: 5px }
 #dd_box li a { display: block; padding-left: 10px; color: $link$; border: 0; padding-right: 5px }
 #dd_box li a:hover { background: url($_boxbg$) repeat }
-#dd_box .vrdd { width: 180px; }
-#dd_box .vrdd ul { float: left; width: 90px; }
-#dd_box .vrdd ul.full { width: 180px; text-align: center; }
-#dd_box .vrdd ul.full li a { padding: 0 }
 
 
 

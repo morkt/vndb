@@ -379,40 +379,32 @@ function ddRefresh() {
 
 function rlDropDown(lnk) {
   var relid = lnk.id.substr(6);
-  var st = getText(lnk).split(' / ');
-  if(st[0].indexOf(mt('_js_loading')) >= 0)
+  var st = getText(lnk);
+  if(st == mt('_js_loading'))
     return null;
 
-  var rs = tag('ul', tag('li', tag('b', mt('_vnpage_uopt_relrstat'))));
-  var vs = tag('ul', tag('li', tag('b', mt('_vnpage_uopt_relvstat'))));
+  var o = tag('ul', null);
   for(var i=0; i<rlst_rstat.length; i++) {
-    var val = mt('_rlst_rstat_'+rlst_rstat[i]); // l10n /_rlst_rstat_\d+/
-    if(st[0] && st[0].indexOf(val) >= 0)
-      rs.appendChild(tag('li', tag('i', val)));
+    var val = mt('_rlst_stat_'+rlst_rstat[i]); // l10n /_rlst_stat_\d+/
+    if(st == val)
+      o.appendChild(tag('li', tag('i', val)));
     else
-      rs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'r'+rlst_rstat[i], onclick:rlMod}, val)));
+      o.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:rlst_rstat[i], onclick:rlMod}, val)));
   }
-  for(var i=0; i<rlst_vstat.length; i++) {
-    var val = mt('_rlst_vstat_'+rlst_vstat[i]); // l10n /_rlst_vstat_\d+/
-    if(st[1] && st[1].indexOf(val) >= 0)
-      vs.appendChild(tag('li', tag('i', val)));
-    else
-      vs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'v'+rlst_vstat[i], onclick:rlMod}, val)));
-  }
+  if(st != '--')
+    o.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:-1, onclick:rlMod}, mt('_vnpage_uopt_reldel'))));
 
-  return tag('div', {'class':'vrdd'}, rs, vs, st[0] == '--' ? null :
-    tag('ul', {'class':'full'}, tag('li', tag('a', {href:'#', rl_rid: relid, rl_act:'del', onclick:rlMod}, mt('_vnpage_uopt_reldel'))))
-  );
+  return tag('div', o);
 }
 
 function rlMod() {
   var lnk = byId('rlsel_'+this.rl_rid);
   var code = getText(byId('vnrlist_code'));
+  var act = this.rl_act;
   ddHide();
   setContent(lnk, tag('b', {'class': 'grayedout'}, mt('_js_loading')));
-  ajax('/xml/rlist.xml?formcode='+code+';id='+this.rl_rid+';e='+this.rl_act, function(hr) {
-    // TODO: get rid of innerHTML here...
-    lnk.innerHTML = hr.responseXML.getElementsByTagName('rlist')[0].firstChild.nodeValue;
+  ajax('/xml/rlist.xml?formcode='+code+';id='+this.rl_rid+';e='+act, function(hr) {
+    setText(lnk, act == -1 ? '--' : mt('_rlst_stat_'+act));
   });
   return false;
 }

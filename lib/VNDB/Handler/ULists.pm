@@ -84,13 +84,10 @@ sub rlist {
     (my $ref = $self->reqHeader('Referer')||"/r$id") =~ s/^\Q$self->{url}//;
     $self->resRedirect($ref, 'temp');
   } else {
-    # TODO: FIX
+    # doesn't really matter what we return, as long as it's XML
     $self->resHeader('Content-type' => 'text/xml');
-    my $st = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => [$rid])->[0];
     xml;
-    tag 'rlist', uid => $self->authInfo->{id}, rid => $rid;
-     txt $st ? liststat $st : '--';
-    end;
+    tag 'done', '';
   }
 }
 

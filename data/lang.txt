@@ -6907,26 +6907,12 @@ cs : odstranit z wishlistu
 hu : eltávolitás a kivánságlistából
 nl : Verwijder van wensenlijst
 
-:_vnpage_uopt_relrstat
-en : Release status
-ru : Статус выпуска
-cs : Status vydání
-hu : Kiadás állapota
-nl : Uitgavestatus
-
-:_vnpage_uopt_relvstat
-en : Play status
-ru : Статус прохождения
-cs : Herní status
-hu : Játszás állapota
-nl : Speelstatus
-
 :_vnpage_uopt_reldel
-en : Remove from VN list
-ru : Убрать из списка новелл
-cs : Odstranit z listu VN
-hu : Eltávolítás a VN listából
-nl : Verwijder van VN lijst
+en : Remove from list
+ru*:
+cs*:
+hu*:
+nl : Verwijder van lijst
 
 :_vnpage_rel
 en : Releases

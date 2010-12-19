@@ -385,7 +385,7 @@ sub _releases {
    }
 
    if($self->authInfo->{id}) {
-     my $l = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => [map $_->{id}, @$r]);
+     my $l = $self->dbRListGet(uid => $self->authInfo->{id}, rid => [map $_->{id}, @$r]);
      for my $i (@$l) {
        [grep $i->{rid} == $_->{id}, @$r]->[0]{ulist} = $i;
      }
@@ -420,9 +420,8 @@ sub _releases {
          end;
          td class => 'tc5';
           if($self->authInfo->{id}) {
-            a href => "/r$rel->{id}", id => "rlsel_$rel->{id}", class => 'vnrlsel';
-             lit $rel->{ulist} ? liststat $rel->{ulist} : '--';
-            end;
+            a href => "/r$rel->{id}", id => "rlsel_$rel->{id}", class => 'vnrlsel',
+             $rel->{ulist} ? mt '_rlst_stat_'.$rel->{ulist}{status} : '--';
           } else {
             txt ' ';
           }
