@@ -134,16 +134,17 @@ sub votelist {
     results  => 50,
     page     => $f->{p}
   );
-  return 404 if !@$list;
+  return 404 if !@$list && $type eq 'v';
 
   my $title = mt $type eq 'v' ? '_votelist_title_vn' : '_votelist_title_user', $obj->{title} || $obj->{username};
   $self->htmlHeader(noindex => 1, title => $title);
   $self->htmlMainTabs($type => $obj, 'votes');
   div class => 'mainbox';
    h1 $title;
+   p mt '_votelist_novotes' if !@$list;
   end;
 
-  $self->htmlBrowse(
+  @$list && $self->htmlBrowse(
     class    => 'votelist',
     items    => $list,
     options  => $f,

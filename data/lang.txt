@@ -4822,6 +4822,13 @@ cs*:
 hu : Szavazatok [_1]-tól(től)
 nl : Stemmen van [_1]
 
+:_votelist_novotes
+en : No votes to list. :-(
+ru*:
+cs*:
+hu*:
+nl : Geen stemmen om weer te geven. :-(
+
 :_votelist_col_date
 en : Cast
 ru : Дата
