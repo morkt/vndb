@@ -2,6 +2,7 @@
 	- VNDBUtil::bb2html(): Fixed bug when the string starts with a VNDBID
 	- VNDBUtil::bb2html(): Fixed bug with lowercasing all [url=..] URLs
 	- Fixed perl warning on /v/search redirect without search query
+	- Bugfix: Don't allow others to open /u+/votes when show_list is false
 
 2.15 - 2010-12-15
 	- Removed expand/collapse from history browser and /u+/posts and switched to

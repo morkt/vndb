@@ -104,6 +104,9 @@ sub votelist {
   my $obj = $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : $self->dbUserGet(uid => $id)->[0];
   return 404 if !$obj->{id};
 
+  my $own = $type eq 'u' && $self->authInfo->{id} && $self->authInfo->{id} == $id;
+  return 404 if $type eq 'u' && !$own && !($obj->{show_list} || $self->authCan('usermod'));
+
   my $f = $self->formValidate(
     { name => 'p',  required => 0, default => 1, template => 'int' },
     { name => 'o',  required => 0, default => 'd', enum => ['a', 'd'] },
