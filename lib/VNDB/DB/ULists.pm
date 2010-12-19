@@ -186,6 +186,12 @@ sub dbVoteGet {
     $o{vid} ? ( 'n.vid = ?' => $o{vid} ) : (),
     $o{hide} ? ( 'u.show_list = TRUE' => 1 ) : (),
     $o{hide_ign} ? ( '(NOT u.ign_votes OR u.id = ?)' => $self->authInfo->{id}||0 ) : (),
+    $o{vn_char}  ? ( 'LOWER(SUBSTR(vr.title, 1, 1)) = ?' => $o{vn_char} ) : (),
+    defined $o{vn_char} && !$o{vn_char} ? (
+      '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
+    $o{user_char} ? ( 'LOWER(SUBSTR(u.username, 1, 1)) = ?' => $o{user_char} ) : (),
+    defined $o{user_char} && !$o{user_char} ? (
+      '(ASCII(u.username) < 97 OR ASCII(u.username) > 122) AND (ASCII(u.username) < 65 OR ASCII(u.username) > 90)' => 1 ) : (),
   );
 
   my @select = (

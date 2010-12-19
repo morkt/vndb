@@ -122,6 +122,7 @@ sub votelist {
     { name => 'p',  required => 0, default => 1, template => 'int' },
     { name => 'o',  required => 0, default => 'd', enum => ['a', 'd'] },
     { name => 's',  required => 0, default => 'date', enum => [qw|date title vote|] },
+    { name => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
   );
 
   my($list, $np) = $self->dbVoteGet(
@@ -132,15 +133,20 @@ sub votelist {
     sort     => $f->{s} eq 'title' && $type eq 'v' ? 'username' : $f->{s},
     reverse  => $f->{o} eq 'd',
     results  => 50,
-    page     => $f->{p}
+    page     => $f->{p},
+    $f->{c} ne 'all' ? ($type eq 'u' ? 'vn_char' : 'user_char', $f->{c}) : (),
   );
-  return 404 if !@$list && $type eq 'v';
 
   my $title = mt $type eq 'v' ? '_votelist_title_vn' : '_votelist_title_user', $obj->{title} || $obj->{username};
   $self->htmlHeader(noindex => 1, title => $title);
   $self->htmlMainTabs($type => $obj, 'votes');
   div class => 'mainbox';
    h1 $title;
+   p class => 'browseopts';
+    for ('all', 'a'..'z', 0) {
+      a href => "/$type$id/votes?c=$_", $_ eq $f->{c} ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+    }
+   end;
    p mt '_votelist_novotes' if !@$list;
   end;
 
@@ -149,8 +155,8 @@ sub votelist {
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => "/$type$id/votes?o=$f->{o};s=$f->{s}",
-    sorturl  => "/$type$id/votes",
+    pageurl  => "/$type$id/votes?c=$f->{c};o=$f->{o};s=$f->{s}",
+    sorturl  => "/$type$id/votes?c=$f->{c}",
     header   => [
       [ mt('_votelist_col_date'),  'date'  ],
       [ mt('_votelist_col_vote'),  'vote'  ],
