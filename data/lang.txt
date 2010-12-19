@@ -6872,6 +6872,41 @@ hu : Te most épp a 10-ből, 10-et adsz ennek a visual novelnek. Ez egy elég ex
 nl : Je staat op het punt om deze visual novel een 10 te geven. Dit is een erg extreme stem, en betekent dat dit één van de beste visual novels die je ooit hebt gespeeld is, en dat de kans klein is dat je ooit iets beters zal vinden dan dit.
      Het is over het algemeen een slecht idee om meer dan drie spellen in je lijst een 10 te geven, wees zorgvuldig!
 
+:_vnpage_uopt_vnlisted
+en : VN list: [_1]
+ru*:
+cs*:
+hu*:
+nl : VN-lijst: [_1]
+
+:_vnpage_uopt_novn
+en : not on your VN list
+ru*:
+cs*:
+hu*:
+nl : niet in je VN-lijst
+
+:_vnpage_uopt_changevn
+en : Change status
+ru*: Сменить статус
+cs*: Změnit status
+hu*: Állapot megváltoztatássa
+nl : Wijzig status
+
+:_vnpage_uopt_addvn
+en : Add to VN list
+ru*:
+cs*:
+hu*:
+nl : Voeg toe aan VN-lijst
+
+:_vnpage_uopt_delvn
+en : remove from VN list
+ru*:
+cs*:
+hu*:
+nl : Verwijder van VN-lijst
+
 :_vnpage_uopt_wishlisted
 en : wishlist: [_1]
 ru : список желаемого: [_1]

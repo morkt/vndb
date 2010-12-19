@@ -2153,7 +2153,7 @@ if(byId('wishsel')) {
   };
 }
 
-// Release list dropdown box (/r+)
+// Release & VN list dropdown box (/r+ and /v+)
 if(byId('listsel')) {
   byId('listsel').onchange = function() {
     if(this.selectedIndex != 0)

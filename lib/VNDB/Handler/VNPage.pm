@@ -343,6 +343,7 @@ sub _useroptions {
   my($self, $i, $v) = @_;
 
   my $vote = $self->dbVoteGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
+  my $list = $self->dbVNListGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
   my $wish = $self->dbWishListGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
 
   Tr ++$$i % 2 ? (class => 'odd') : ();
@@ -358,6 +359,16 @@ sub _useroptions {
       end;
       br;
     }
+
+    Select id => 'listsel', name => $self->authGetCode("/v$v->{id}/list");
+     option $list ? mt '_vnpage_uopt_vnlisted', mt '_vnlst_stat_'.$list->{status} : mt '_vnpage_uopt_novn';
+     optgroup label => $list ? mt '_vnpage_uopt_changevn' : mt '_vnpage_uopt_addvn';
+      option value => $_, mt "_vnlst_stat_$_" for (@{$self->{rlst_vstat}});
+     end;
+     option value => -1, mt '_vnpage_uopt_delvn' if $list;
+    end;
+    br;
+
     if(!$vote || $wish) {
       Select id => 'wishsel', name => $self->authGetCode("/v$v->{id}/wish");
        option $wish ? mt '_vnpage_uopt_wishlisted', mt '_wish_'.$wish->{wstat} : mt '_vnpage_uopt_nowish';

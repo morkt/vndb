@@ -10,8 +10,9 @@ use VNDB::Func;
 YAWF::register(
   qr{v([1-9]\d*)/vote},  \&vnvote,
   qr{v([1-9]\d*)/wish},  \&vnwish,
-  qr{r([1-9]\d*)/list},  \&rlist,
-  qr{xml/rlist.xml},     \&rlist,
+  qr{v([1-9]\d*)/list},  \&vnlist_e,
+  qr{r([1-9]\d*)/list},  \&rlist_e,
+  qr{xml/rlist.xml},     \&rlist_e,
   qr{([uv])([1-9]\d*)/votes}, \&votelist,
   qr{u([1-9]\d*)/wish},  \&wishlist,
   qr{u([1-9]\d*)/list},  \&vnlist,
@@ -56,7 +57,26 @@ sub vnwish {
 }
 
 
-sub rlist {
+sub vnlist_e {
+  my($self, $id) = @_;
+
+  my $uid = $self->authInfo->{id};
+  return $self->htmlDenied() if !$uid;
+
+  return if !$self->authCheckCode;
+  my $f = $self->formValidate(
+    { name => 'e', enum => [ -1, @{$self->{rlst_vstat}} ] }
+  );
+  return 404 if $f->{_err};
+
+  $self->dbVNListDel($uid, $id) if $f->{e} == -1;
+  $self->dbVNListAdd($uid, $id, $f->{e}) if $f->{e} != -1;
+
+  $self->resRedirect('/v'.$id, 'temp');
+}
+
+
+sub rlist_e {
   my($self, $id) = @_;
 
   my $rid = $id;
