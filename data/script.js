@@ -2216,7 +2216,7 @@ if(byId('batchedit')) {
   };
 }
 
-// collapse/expand row groups (/u+/list) (limited to one table on a page)
+// collapse/expand row groups (/u+/list)
 if(byId('expandall')) {
   var table = byId('expandall');
   while(table.nodeName.toLowerCase() != 'table')
@@ -2227,11 +2227,14 @@ if(byId('expandall')) {
   var alltoggle = function() {
     allhid = !allhid;
     var l = byClass(table, 'tr', 'collapse');
-    for(var i=0; i<l.length; i++)
+    for(var i=0; i<l.length; i++) {
       setClass(l[i], 'hidden', allhid);
-    setText(byName(byId('expandall'), 'i')[0], allhid ? collapsed_icon : expanded_icon);
+      var sel = byName(l[i], 'input')[0];
+      if(sel) setClass(sel, 'hidden', allhid);
+    }
+    setText(byId('expandall'), allhid ? collapsed_icon : expanded_icon);
     for(var i=0; i<heads.length; i++)
-      setText(byName(heads[i], 'i')[0], allhid ? collapsed_icon : expanded_icon);
+      setText(heads[i], allhid ? collapsed_icon : expanded_icon);
     return false;
   }
   byId('expandall').onclick = alltoggle;
@@ -2242,9 +2245,12 @@ if(byId('expandall')) {
     if(l.length < 1)
       return;
     var hid = !hasClass(l[0], 'hidden');
-    for(var i=0; i<l.length; i++)
+    for(var i=0; i<l.length; i++) {
       setClass(l[i], 'hidden', hid);
-    setText(byName(this, 'i')[0], hid ? collapsed_icon : expanded_icon);
+      var sel = byName(l[i], 'input')[0];
+      if(sel) setClass(sel, 'hidden', hid);
+    }
+    setText(this, hid ? collapsed_icon : expanded_icon);
   };
   for(var i=0; i<heads.length; i++)
     heads[i].onclick = singletoggle;
@@ -2290,7 +2296,7 @@ if(byId('lang_select')) {
   var f = function() {
     var l = byName('input');
     for(var i=0; i<l.length; i++)
-      if(l[i].type == this.type && l[i].name == this.name)
+      if(l[i].type == this.type && l[i].name == this.name && !hasClass(l[i], 'hidden'))
         l[i].checked = this.checked;
   };
   var l = byClass('input', 'checkall');

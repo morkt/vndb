@@ -1137,70 +1137,70 @@ nl : Erg lang[index,_1,, (> 50 uur), (Clannad~, Umineko~, Fate/Stay Night)]
 
 # VN list statuses
 
-:_rlst_rstat_0
+:_rlst_stat_0
 en : Unknown
 ru : Неизвестно
 cs : Není známo
 hu : Ismeretlen
 nl : Onbekend
 
-:_rlst_rstat_1
+:_rlst_stat_1
 en : Pending
 ru : Ожидается
 cs : V čekání
 hu : Függő
 nl : Bezig
 
-:_rlst_rstat_2
+:_rlst_stat_2
 en : Obtained
 ru : Приобретено
 cs : Obdrženo
 hu : Megszerezve
 nl : In bezit
 
-:_rlst_rstat_3
+:_rlst_stat_3
 en : On loan
 ru : Взято напрокат
 cs : Vypůjčeno
 hu : Kölcsönadva
 nl : Uitgeleend
 
-:_rlst_rstat_4
+:_rlst_stat_4
 en : Deleted
 ru : Удалено
 cs : Smazáno
 hu : Törölve
 nl : Weggegooid
 
-:_rlst_vstat_0
+:_vnlst_stat_0
 en : Unknown
 ru : Неизвестно
 cs : Není známo
 hu : Ismeretlen
 nl : Onbekend
 
-:_rlst_vstat_1
+:_vnlst_stat_1
 en : Playing
 ru : В процессе
 cs : Ve hraní
 hu : Játszás
 nl : Mee bezig
 
-:_rlst_vstat_2
+:_vnlst_stat_2
 en : Finished
 ru : Завершено
 cs : Dohráno
 hu : Befejezve
 nl : Uitgespeeld
 
-:_rlst_vstat_3
+:_vnlst_stat_3
 en : Stalled
 ru : Застряло
 cs : Pozastaveno
 hu : Leragadva
 nl : Uitgesteld
 
-:_rlst_vstat_4
+:_vnlst_stat_4
 en : Dropped
 ru : Заброшено
 cs : Vyřazeno
@@ -4903,6 +4903,13 @@ cs : Název
 hu : Cím
 nl : Titel
 
+:_rlist_col_status
+en : Status
+ru*:
+cs*:
+hu*:
+nl :
+
 :_rlist_col_releases
 en : Releases
 ru : Выпуски
@@ -4917,26 +4924,26 @@ cs : Hodnocení
 hu : Szavazat
 nl : Stem
 
-:_rlist_selection
-en : -- with selected --
-ru : -- с выбранными --
-cs : -- s vybranými --
-hu : -- kiválasztva --
-nl : -- met geselecteerde items --
+:_rlist_withvn
+en : -- with selected VNs --
+ru*:
+cs*:
+hu*:
+nl : -- met geselecteerde VNs --
 
-:_rlist_changerel
-en : Change release status
-ru : Смена статуса выпуска
-cs : Změnit stav vydání
-hu : Kiadás állapotának megváltoztatása
-nl : Verander uitgavestatus
+:_rlist_withrel
+en : -- with selected releases --
+ru*:
+cs*:
+hu*:
+nl : -- met geselecteerde uitgaven --
 
-:_rlist_changeplay
-en : Change play status
-ru : Смена статуса игры
-cs : Změnit stav hraní
-hu : Játszás állapot megváltoztatása
-nl : Verander speelstatus
+:_rlist_changestat
+en : Change status
+ru*:
+cs*:
+hu*:
+nl : Verander status
 
 :_rlist_del
 en : remove from list
@@ -4945,12 +4952,20 @@ cs : odstranit z listu
 hu : eltávolítás a listából
 nl : verwijder uit lijst
 
+# label of the button. "Update!" in the commanding sense
+:_rlist_update
+en : Update
+ru*:
+cs*:
+hu*:
+nl :
+
 :_rlist_releasenote
-en : * Obtained/finished/total
-ru : * Приобретено/прочитано/всего
-cs : * Sehnáno/dohráno/celkem
-hu : * Megszerezve/befejezve/összesen
-nl : * In bezit/uitgespeeld/totaal
+en : * Obtained/total
+ru : * Приобретено/всего
+cs : * Sehnáno/celkem
+hu : * Megszerezve/összesen
+nl : * In bezit/totaal
 
 
 

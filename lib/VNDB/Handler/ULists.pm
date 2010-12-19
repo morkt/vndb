@@ -278,26 +278,29 @@ sub vnlist {
   if($own && $self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { name => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
-      { name => 'batchedit', required => 1, enum => [ 'del', map("r$_", @{$self->{rlst_rstat}}), map("v$_", @{$self->{rlst_vstat}}) ] },
+      { name => 'vid', required => 0, default => 0, multi => 1, template => 'int' },
+      { name => 'rid', required => 0, default => 0, multi => 1, template => 'int' },
+      { name => 'vns', required => 1, enum => [ -2, -1, @{$self->{rlst_vstat}} ] },
+      { name => 'rel', required => 1, enum => [ -2, -1, @{$self->{rlst_rstat}} ] },
     );
-    if(!$frm->{_err} && @{$frm->{sel}} && $frm->{sel}[0]) {
-      $self->dbVNListDel($uid, $frm->{sel}) if $frm->{batchedit} eq 'del';
-      $self->dbVNListAdd(
-        rid => $frm->{sel},
-        uid => $uid,
-        $frm->{batchedit} =~ /^([rv])(\d+)$/ && $1 eq 'r' ? (rstat => $2) : (vstat => $2)
-      ) if $frm->{batchedit} ne 'del';
+    my @vid = grep $_ > 0, @{$frm->{vid}};
+    my @rid = grep $_ > 0, @{$frm->{rid}};
+    if(!$frm->{_err} && @vid && $frm->{vns} > -2) {
+      $self->dbVNListDel($uid, \@vid) if $frm->{vns} == -1;
+      $self->dbVNListAdd($uid, \@vid, $frm->{vns}) if $frm->{vns} >= 0;
+    }
+    if(!$frm->{_err} && @rid && $frm->{rel} > -2) {
+      $self->dbRListDel($uid, \@rid) if $frm->{rel} == -1;
+      $self->dbRListAdd($uid, \@rid, $frm->{rel}) if $frm->{rel} >= 0;
     }
   }
-
 
   my($list, $np) = $self->dbVNListList(
     uid => $uid,
     results => 50,
     page => $f->{p},
     sort => $f->{s}, reverse => $f->{o} eq 'd',
-    voted => $f->{v},
+    voted => $f->{v} == 0 ? undef : $f->{v} < 0 ? 0 : $f->{v},
     $f->{c} ne 'all' ? (char => $f->{c}) : (),
   );
 
@@ -351,66 +354,82 @@ sub _vnlist_browse {
     sorturl  => $url->(),
     pageurl  => $url->('page'),
     header   => [
-      [ mt('_rlist_col_title') => 'title', 3 ],
-      sub { td class => 'tc2', id => 'expandall'; lit '<i>&#9656;</i>'.mt('_rlist_col_releases').'*'; end; },
+      [ '' ],
+      sub { td class => 'tc2', id => 'expandall'; lit '&#9656;'; end; },
+      [ mt('_rlist_col_title') => 'title' ],
+      [ '' ], [ '' ],
+      [ mt('_rlist_col_status') ],
+      [ mt('_rlist_col_releases').'*' ],
       [ mt('_rlist_col_vote')  => 'vote'  ],
     ],
     row      => sub {
       my($s, $n, $i) = @_;
       Tr $n % 2 == 0 ? (class => 'odd') : ();
-       td class => 'tc1', colspan => 3;
+       td class => 'tc1'; input type => 'checkbox', name => 'vid', value => $i->{vid} if $own; end;
+       if(@{$i->{rels}}) {
+         td class => 'tc2 collapse_but', id => "vid$i->{vid}"; lit '&#9656;'; end;
+       } else {
+         td class => 'tc2', '';
+       }
+       td class => 'tc3_5', colspan => 3;
         a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, shorten $i->{title}, 70;
        end;
-       td class => 'tc2'.(@{$i->{rels}} ? ' collapse_but' : ''), id => 'vid'.$i->{vid};
-        lit '<i>&#9656;</i>';
-        my $obtained = grep $_->{rstat}==2, @{$i->{rels}};
-        my $finished = grep $_->{vstat}==2, @{$i->{rels}};
-        my $txt = sprintf '%d/%d/%d', $obtained, $finished, scalar @{$i->{rels}};
-        $txt = qq|<b class="done">$txt</b>| if $finished > $obtained || $finished && $finished == $obtained;
-        $txt = qq|<b class="todo">$txt</b>| if $obtained > $finished;
+       td class => 'tc6', $i->{status} ? mt '_vnlst_stat_'.$i->{status} : '';
+       td class => 'tc7';
+        my $obtained = grep $_->{status}==2, @{$i->{rels}};
+        my $total = scalar @{$i->{rels}};
+        my $txt = sprintf '%d/%d', $obtained, $total;
+        $txt = qq|<b class="done">$txt</b>| if $total && $obtained == $total;
+        $txt = qq|<b class="todo">$txt</b>| if $obtained < $total;
         lit $txt;
        end;
-       td class => 'tc3', $i->{vote} || '-';
+       td class => 'tc8', $i->{vote} || '-';
       end;
 
       for (@{$i->{rels}}) {
-        Tr class => "collapse relhid collapse_vid$i->{vid}";
-         td class => 'tc1'.($own ? ' own' : '');
-          input type => 'checkbox', name => 'sel', value => $_->{rid}
-            if $own;
-          lit $self->{l10n}->datestr($_->{released});
-         end;
+        Tr class => "collapse relhid collapse_vid$i->{vid}".($n%2 ? '':' odd');
+         td class => 'tc1', '';
          td class => 'tc2';
+          input type => 'checkbox', name => 'rid', value => $_->{rid} if $own;
+         end;
+         td class => 'tc3', $self->{l10n}->datestr($_->{released});
+         td class => 'tc4';
           cssicon "lang $_", mt "_lang_$_" for @{$_->{languages}};
           cssicon "rt$_->{type}", mt "_rtype_$_->{type}";
          end;
-         td class => 'tc3';
+         td class => 'tc5';
           a href => "/r$_->{rid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;
          end;
-         td colspan => 2, class => 'tc4';
-          lit liststat($_);
-         end;
+         td class => 'tc6', $_->{status} ? mt '_rlst_stat_'.$_->{status} : '';
+         td class => 'tc7_8', colspan => 2, '';
         end;
       }
     },
 
     $own ? (footer => sub {
       Tr;
-       td class => 'tc1', colspan => 3;
-        Select id => 'batchedit', name => 'batchedit';
-         option mt '_rlist_selection';
-         optgroup label => mt '_rlist_changerel';
-          option value => "r$_", mt "_rlst_rstat_$_"
-            for (@{$self->{rlst_rstat}});
-         end;
-         optgroup label => mt '_rlist_changeplay';
-          option value => "v$_", mt "_rlst_vstat_$_"
+       td class => 'tc1'; input type => 'checkbox', name => 'vid', value => -1, class => 'checkall'; end;
+       td class => 'tc2'; input type => 'checkbox', name => 'rid', value => -1, class => 'checkall'; end;
+       td class => 'tc3_6', colspan => 4;
+        Select id => 'vns', name => 'vns';
+         option value => -2, mt '_rlist_withvn';
+         optgroup label => mt '_rlist_changestat';
+          option value => $_, mt "_vnlst_stat_$_"
             for (@{$self->{rlst_vstat}});
          end;
-         option value => 'del', mt '_rlist_del';
+         option value => -1, mt '_rlist_del';
         end;
+        Select id => 'rel', name => 'rel';
+         option value => -2, mt '_rlist_withrel';
+         optgroup label => mt '_rlist_changestat';
+          option value => $_, mt "_rlst_stat_$_"
+            for (@{$self->{rlst_rstat}});
+         end;
+         option value => -1, mt '_rlist_del';
+        end;
+        input type => 'submit', value => mt '_rlist_update';
        end;
-       td class => 'tc2', colspan => 2, mt '_rlist_releasenote';
+       td class => 'tc7_8', colspan => 2, mt '_rlist_releasenote';
       end;
     }) : (),
   );
