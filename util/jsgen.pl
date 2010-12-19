@@ -101,8 +101,7 @@ sub resolutions {
 sub jsgen {
   l10n_load();
   my $common = '';
-  $common .= sprintf "rlst_rstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_rstat}};
-  $common .= sprintf "rlst_vstat = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlst_vstat}};
+  $common .= sprintf "rlist_status = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlist_status}};
   $common .= sprintf "cookie_prefix = '%s';\n", $S{cookie_prefix};
   $common .= sprintf "age_ratings = [ %s ];\n", join ',', @{$S{age_ratings}};
   $common .= sprintf "languages = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{languages}};

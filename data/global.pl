@@ -99,8 +99,8 @@ our %S = (%S,
   voiced          => [ 0..4 ],
   animated        => [ 0..4 ],
   wishlist_status => [ 0..3 ],
-  rlst_rstat      => [ 0..4 ], # 2 = hardcoded 'OK', < 2 = hardcoded 'NOK'
-  rlst_vstat      => [ 0..4 ], # 2 = hardcoded 'OK', 0 || 4 = hardcoded 'NOK'
+  rlist_status    => [ 0..4 ], # 2 = hardcoded 'OK'
+  vnlist_status   => [ 0..4 ],
   atom_feeds => { # num_entries, title, id
     announcements => [ 10, 'VNDB Site Announcements', '/t/an' ],
     changes       => [ 25, 'VNDB Recent Changes', '/hist' ],

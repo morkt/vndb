@@ -242,10 +242,10 @@ sub _infotable {
       td;
        Select id => 'listsel', name => $self->authGetCode("/r$r->{id}/list");
         option value => -2, 
-          mt !$rl ? '_relinfo_user_notlist' : ('_relinfo_user_inlist', mt('_rlst_stat_'.$rl->{status}));
+          mt !$rl ? '_relinfo_user_notlist' : ('_relinfo_user_inlist', mt('_rlist_status_'.$rl->{status}));
         optgroup label => mt '_relinfo_user_setstatus';
-         option value => $_, mt '_rlst_stat_'.$_
-           for (@{$self->{rlst_rstat}});
+         option value => $_, mt '_rlist_status_'.$_
+           for (@{$self->{rlist_status}});
         end;
         option value => -1, mt '_relinfo_user_del' if $rl;
        end;

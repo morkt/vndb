@@ -23,7 +23,7 @@ sub dbRListGet {
   );
 
   return $self->dbAll(q|
-    SELECT uid, rid, rstat AS status
+    SELECT uid, rid, status
       FROM rlists
       !W|,
     \%where
@@ -88,7 +88,7 @@ sub dbVNListList {
     } @$r;
 
     my $rel = $self->dbAll(q|
-      SELECT rv.vid, rr.rid, r.latest, rr.title, rr.original, rr.released, rr.type, rl.rstat AS status
+      SELECT rv.vid, rr.rid, r.latest, rr.title, rr.original, rr.released, rr.type, rl.status
         FROM rlists rl
         JOIN releases r ON rl.rid = r.id
         JOIN releases_rev rr ON rr.id = r.latest
@@ -150,12 +150,12 @@ sub dbVNListDel {
 sub dbRListAdd {
   my($self, $uid, $rid, $stat) = @_;
     $self->dbExec(
-      'UPDATE rlists SET rstat = ? WHERE uid = ? AND rid IN(!l)',
+      'UPDATE rlists SET status = ? WHERE uid = ? AND rid IN(!l)',
       $stat, $uid, ref($rid) ? $rid : [ $rid ]
     )
   ||
     $self->dbExec(
-      'INSERT INTO rlists (uid, rid, rstat) VALUES(?, ?, ?)',
+      'INSERT INTO rlists (uid, rid, status) VALUES(?, ?, ?)',
       $uid, $rid, $stat
     );
 }

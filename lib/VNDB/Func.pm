@@ -7,28 +7,13 @@ use YAWF ':html';
 use Exporter 'import';
 use POSIX 'strftime', 'ceil', 'floor';
 use VNDBUtil;
-our @EXPORT = (@VNDBUtil::EXPORT, qw| liststat clearfloat cssicon tagscore mt minage fil_parse fil_serialize |);
+our @EXPORT = (@VNDBUtil::EXPORT, qw| clearfloat cssicon tagscore mt minage fil_parse fil_serialize |);
 
 
 # three ways to represent the same information
 our $fil_escape = '_ !"#$%&\'()*+,-./:;<=>?@[\]^`{}~';
 our @fil_escape = split //, $fil_escape;
 our %fil_escape = map +($fil_escape[$_], sprintf '%02d', $_), 0..$#fil_escape;
-
-
-# Argument: hashref with rstat and vstat
-# Returns: empty string if not in list, otherwise colour-encoded list status
-sub liststat {
-  my $l = shift;
-  return '' if !$l;
-  my $rs = mt('_rlst_rstat_'.$l->{rstat});
-  $rs = qq|<b class="done">$rs</b>| if $l->{rstat} == 2; # Obtained
-  $rs = qq|<b class="todo">$rs</b>| if $l->{rstat} < 2; # Unknown/pending
-  my $vs = mt('_rlst_vstat_'.$l->{vstat});
-  $vs = qq|<b class="done">$vs</b>| if $l->{vstat} == 2; # Finished
-  $vs = qq|<b class="todo">$vs</b>| if $l->{vstat} == 0 || $l->{vstat} == 4; # Unknown/dropped
-  return "$rs / $vs";
-}
 
 
 # Clears a float, to make sure boxes always have the correct height

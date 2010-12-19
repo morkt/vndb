@@ -156,8 +156,7 @@ CREATE TABLE relgraphs (
 CREATE TABLE rlists (
   uid integer NOT NULL DEFAULT 0,
   rid integer NOT NULL DEFAULT 0,
-  vstat smallint NOT NULL DEFAULT 0,
-  rstat smallint NOT NULL DEFAULT 0,
+  status smallint NOT NULL DEFAULT 0,
   added timestamptz NOT NULL DEFAULT NOW(),
   PRIMARY KEY(uid, rid)
 );

@@ -42,3 +42,7 @@ INSERT INTO vnlists SELECT
 CREATE CONSTRAINT TRIGGER update_vnlist_rlist AFTER DELETE ON vnlists DEFERRABLE FOR EACH ROW EXECUTE PROCEDURE update_vnlist_rlist();
 CREATE CONSTRAINT TRIGGER update_vnlist_rlist AFTER INSERT ON rlists  DEFERRABLE FOR EACH ROW EXECUTE PROCEDURE update_vnlist_rlist();
 
+-- remove rlists.vstat and rename rlists.rstat
+ALTER TABLE rlists DROP COLUMN vstat;
+ALTER TABLE rlists RENAME COLUMN rstat TO status;
+

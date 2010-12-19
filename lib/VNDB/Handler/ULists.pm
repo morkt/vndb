@@ -65,7 +65,7 @@ sub vnlist_e {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { name => 'e', enum => [ -1, @{$self->{rlst_vstat}} ] }
+    { name => 'e', enum => [ -1, @{$self->{vnlist_status}} ] }
   );
   return 404 if $f->{_err};
 
@@ -93,7 +93,7 @@ sub rlist_e {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { name => 'e', required => 1, enum => [ -1, @{$self->{rlst_rstat}} ] }
+    { name => 'e', required => 1, enum => [ -1, @{$self->{rlist_status}} ] }
   );
   return 404 if $f->{_err};
 
@@ -294,8 +294,8 @@ sub vnlist {
     my $frm = $self->formValidate(
       { name => 'vid', required => 0, default => 0, multi => 1, template => 'int' },
       { name => 'rid', required => 0, default => 0, multi => 1, template => 'int' },
-      { name => 'vns', required => 1, enum => [ -2, -1, @{$self->{rlst_vstat}} ] },
-      { name => 'rel', required => 1, enum => [ -2, -1, @{$self->{rlst_rstat}} ] },
+      { name => 'vns', required => 1, enum => [ -2, -1, @{$self->{vnlist_status}} ] },
+      { name => 'rel', required => 1, enum => [ -2, -1, @{$self->{rlist_status}} ] },
     );
     my @vid = grep $_ > 0, @{$frm->{vid}};
     my @rid = grep $_ > 0, @{$frm->{rid}};
@@ -388,7 +388,7 @@ sub _vnlist_browse {
        td class => 'tc3_5', colspan => 3;
         a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, shorten $i->{title}, 70;
        end;
-       td class => 'tc6', $i->{status} ? mt '_vnlst_stat_'.$i->{status} : '';
+       td class => 'tc6', $i->{status} ? mt '_vnlist_status_'.$i->{status} : '';
        td class => 'tc7';
         my $obtained = grep $_->{status}==2, @{$i->{rels}};
         my $total = scalar @{$i->{rels}};
@@ -414,7 +414,7 @@ sub _vnlist_browse {
          td class => 'tc5';
           a href => "/r$_->{rid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;
          end;
-         td class => 'tc6', $_->{status} ? mt '_rlst_stat_'.$_->{status} : '';
+         td class => 'tc6', $_->{status} ? mt '_rlist_status_'.$_->{status} : '';
          td class => 'tc7_8', colspan => 2, '';
         end;
       }
@@ -428,16 +428,16 @@ sub _vnlist_browse {
         Select id => 'vns', name => 'vns';
          option value => -2, mt '_rlist_withvn';
          optgroup label => mt '_rlist_changestat';
-          option value => $_, mt "_vnlst_stat_$_"
-            for (@{$self->{rlst_vstat}});
+          option value => $_, mt "_vnlist_status_$_"
+            for (@{$self->{vnlist_status}});
          end;
          option value => -1, mt '_rlist_del';
         end;
         Select id => 'rel', name => 'rel';
          option value => -2, mt '_rlist_withrel';
          optgroup label => mt '_rlist_changestat';
-          option value => $_, mt "_rlst_stat_$_"
-            for (@{$self->{rlst_rstat}});
+          option value => $_, mt "_rlist_status_$_"
+            for (@{$self->{rlist_status}});
          end;
          option value => -1, mt '_rlist_del';
         end;

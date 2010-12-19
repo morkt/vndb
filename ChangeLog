@@ -3,6 +3,7 @@
 	- Fixed perl warning on /v/search redirect without search query
 	- Don't allow NULL for rr.minage and use -1 for unknown
 	- Check for editsum = description and give an easier to understand error
+	- RFC-01: Added vnlists feature and removed rlists.vstat option
 
 2.15 - 2010-12-15
 	- Removed expand/collapse from history browser and /u+/posts and switched to

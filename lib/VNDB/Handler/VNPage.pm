@@ -361,9 +361,9 @@ sub _useroptions {
     }
 
     Select id => 'listsel', name => $self->authGetCode("/v$v->{id}/list");
-     option $list ? mt '_vnpage_uopt_vnlisted', mt '_vnlst_stat_'.$list->{status} : mt '_vnpage_uopt_novn';
+     option $list ? mt '_vnpage_uopt_vnlisted', mt '_vnlist_status_'.$list->{status} : mt '_vnpage_uopt_novn';
      optgroup label => $list ? mt '_vnpage_uopt_changevn' : mt '_vnpage_uopt_addvn';
-      option value => $_, mt "_vnlst_stat_$_" for (@{$self->{rlst_vstat}});
+      option value => $_, mt "_vnlist_status_$_" for (@{$self->{rlist_status}});
      end;
      option value => -1, mt '_vnpage_uopt_delvn' if $list;
     end;
@@ -432,7 +432,7 @@ sub _releases {
          td class => 'tc5';
           if($self->authInfo->{id}) {
             a href => "/r$rel->{id}", id => "rlsel_$rel->{id}", class => 'vnrlsel',
-             $rel->{ulist} ? mt '_rlst_stat_'.$rel->{ulist}{status} : '--';
+             $rel->{ulist} ? mt '_rlist_status_'.$rel->{ulist}{status} : '--';
           } else {
             txt ' ';
           }

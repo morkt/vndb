@@ -1137,70 +1137,70 @@ nl : Erg lang[index,_1,, (> 50 uur), (Clannad~, Umineko~, Fate/Stay Night)]
 
 # VN list statuses
 
-:_rlst_stat_0
+:_rlist_status_0
 en : Unknown
 ru : Неизвестно
 cs : Není známo
 hu : Ismeretlen
 nl : Onbekend
 
-:_rlst_stat_1
+:_rlist_status_1
 en : Pending
 ru : Ожидается
 cs : V čekání
 hu : Függő
 nl : Bezig
 
-:_rlst_stat_2
+:_rlist_status_2
 en : Obtained
 ru : Приобретено
 cs : Obdrženo
 hu : Megszerezve
 nl : In bezit
 
-:_rlst_stat_3
+:_rlist_status_3
 en : On loan
 ru : Взято напрокат
 cs : Vypůjčeno
 hu : Kölcsönadva
 nl : Uitgeleend
 
-:_rlst_stat_4
+:_rlist_status_4
 en : Deleted
 ru : Удалено
 cs : Smazáno
 hu : Törölve
 nl : Weggegooid
 
-:_vnlst_stat_0
+:_vnlist_status_0
 en : Unknown
 ru : Неизвестно
 cs : Není známo
 hu : Ismeretlen
 nl : Onbekend
 
-:_vnlst_stat_1
+:_vnlist_status_1
 en : Playing
 ru : В процессе
 cs : Ve hraní
 hu : Játszás
 nl : Mee bezig
 
-:_vnlst_stat_2
+:_vnlist_status_2
 en : Finished
 ru : Завершено
 cs : Dohráno
 hu : Befejezve
 nl : Uitgespeeld
 
-:_vnlst_stat_3
+:_vnlist_status_3
 en : Stalled
 ru : Застряло
 cs : Pozastaveno
 hu : Leragadva
 nl : Uitgesteld
 
-:_vnlst_stat_4
+:_vnlist_status_4
 en : Dropped
 ru : Заброшено
 cs : Vyřazeno

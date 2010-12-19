@@ -384,12 +384,12 @@ function rlDropDown(lnk) {
     return null;
 
   var o = tag('ul', null);
-  for(var i=0; i<rlst_rstat.length; i++) {
-    var val = mt('_rlst_stat_'+rlst_rstat[i]); // l10n /_rlst_stat_\d+/
+  for(var i=0; i<rlist_status.length; i++) {
+    var val = mt('_rlist_status_'+rlist_status[i]); // l10n /_rlist_status_\d+/
     if(st == val)
       o.appendChild(tag('li', tag('i', val)));
     else
-      o.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:rlst_rstat[i], onclick:rlMod}, val)));
+      o.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:rlist_status[i], onclick:rlMod}, val)));
   }
   if(st != '--')
     o.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:-1, onclick:rlMod}, mt('_vnpage_uopt_reldel'))));
@@ -404,7 +404,7 @@ function rlMod() {
   ddHide();
   setContent(lnk, tag('b', {'class': 'grayedout'}, mt('_js_loading')));
   ajax('/xml/rlist.xml?formcode='+code+';id='+this.rl_rid+';e='+act, function(hr) {
-    setText(lnk, act == -1 ? '--' : mt('_rlst_stat_'+act));
+    setText(lnk, act == -1 ? '--' : mt('_rlist_status_'+act));
   });
   return false;
 }
