@@ -421,3 +421,8 @@ ALTER TABLE votes               ADD FOREIGN KEY (vid)       REFERENCES vn       
 ALTER TABLE wlists              ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE wlists              ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
 
+
+
+CREATE INDEX releases_vn_vid ON releases_vn (vid);
+CREATE INDEX tags_vn_date    ON tags_vn     (date);
+
