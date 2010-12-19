@@ -100,8 +100,8 @@ sub bb2html {
           $result .= '</a>';
           pop @open;
           next;
-        } elsif($tag =~ s{\[url=((https?://|/)[^\]>]+)\]}{<a href="$1" rel="nofollow">}i) {
-          $result .= $tag;
+        } elsif($match =~ s{\[url=((https?://|/)[^\]>]+)\]}{<a href="$1" rel="nofollow">}i) {
+          $result .= $match;
           push @open, 'url';
           next;
         }
