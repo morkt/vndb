@@ -50,6 +50,10 @@ sub htmlMainTabs {
       a href => "/$id/wish", mt '_mtabs_wishlist';
      end;
 
+     li $sel eq 'votes' ? (class => 'tabselected') : ();
+      a href => "/$id/votes", mt '_mtabs_votes';
+     end;
+
      li $sel eq 'list' ? (class => 'tabselected') : ();
       a href => "/$id/list", mt '_mtabs_list';
      end;

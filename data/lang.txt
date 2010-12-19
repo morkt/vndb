@@ -1688,6 +1688,13 @@ cs : Můj list vizuálních novel
 hu : A visual novel listám
 nl : Mijn Visual Novel lijst
 
+:_menu_myvotes
+en : My Votes
+ru*:
+cs*:
+hu*:
+nl : Mijn Stemmen
+
 :_menu_mywishlist
 en : My Wishlist
 ru : Мой список желаемого
@@ -1856,6 +1863,13 @@ ru : список желаемого
 cs : wishlist
 hu : kivánságlista
 nl : wensenlijst
+
+:_mtabs_votes
+en : votes
+ru*:
+cs*:
+hu*:
+nl : stemmen
 
 :_mtabs_list
 en : list
