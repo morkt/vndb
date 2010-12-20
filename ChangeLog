@@ -7,6 +7,7 @@
 	- ULists::votelist: Don't give a 404 on /u+/votes when no votes found
 	- Added tab and link for /u+/votes to user tabs & main menu
 	- Added ability to batch-edit votes to /u+/votes
+	- Update the votes.date column when changing a vote
 	- ULists::votelist: Added first character selection
 	- Added advanced page-browsing tabs to threads
 
