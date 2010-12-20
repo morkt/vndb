@@ -7,6 +7,7 @@
 	- ULists::votelist: Don't give a 404 on /u+/votes when no votes found
 	- Added tab and link for /u+/votes to user tabs & main menu
 	- ULists::votelist: Added first character selection
+	- Added advanced page-browsing tabs to threads
 
 2.15 - 2010-12-15
 	- Removed expand/collapse from history browser and /u+/posts and switched to

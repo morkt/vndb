@@ -1921,6 +1921,13 @@ nl : relaties
 
 # Navigation buttons on the browse pages
 
+:_browse_first
+en : first
+ru*:
+cs*:
+hu*:
+nl : eerste
+
 :_browse_previous
 en : previous
 ru : назад
@@ -1934,6 +1941,13 @@ ru : далее
 cs : další
 hu : következő
 nl : volgende
+
+:_browse_last
+en : last
+ru*:
+cs*:
+hu*:
+nl : laatste
 
 
 # Revision pages

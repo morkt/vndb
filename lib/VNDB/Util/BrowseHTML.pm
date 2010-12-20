@@ -6,6 +6,7 @@ use warnings;
 use YAWF ':html', 'xml_escape';
 use Exporter 'import';
 use VNDB::Func;
+use POSIX 'ceil';
 
 
 our @EXPORT = qw| htmlBrowse htmlBrowseNavigate htmlBrowseHist htmlBrowseVN |;
@@ -83,23 +84,39 @@ sub htmlBrowse {
 
 
 # creates next/previous buttons (tabs), if needed
-# Arguments: page url, current page (1..n), nextpage (0/1), alignment (t/b), noappend (0/1)
+# Arguments: page url, current page (1..n), nextpage (0/1 or [$total, $perpage]), alignment (t/b), noappend (0/1)
 sub htmlBrowseNavigate {
   my($self, $url, $p, $np, $al, $na) = @_;
-  return if $p == 1 && !$np;
+  my($cnt, $pp) = ref($np) ? @$np : ($p+$np, 1);
+  return if $p == 1 && $cnt <= $pp;
 
   $url .= $url =~ /\?/ ? ';p=' : '?p=' unless $na;
-  ul class => 'maintabs ' . ($al eq 't' ? 'notfirst' : 'bottom');
-   if($p > 1) {
-     li class => 'left';
-      a href => $url.($p-1), '<- '.mt '_browse_previous';
-     end;
-   }
-   if($np) {
-     li;
-      a href => $url.($p+1), mt('_browse_next').' ->';
-     end;
-   }
+
+  my $tab = sub {
+    my($left, $page, $label) = @_;
+    li $left ? (class => 'left') : ();
+     a href => $url.$page; lit $label; end;
+    end;
+  };
+  my $ell = sub {
+    use utf8;
+    li class => 'ellipsis'.(shift() ? ' left' : '');
+     b '⋯';
+    end;
+  };
+  my $nc = 5; # max. number of buttons on each side
+
+  ul class => 'maintabs browsetabs ' . ($al eq 't' ? 'notfirst' : 'bottom');
+   $p > 2     and ref $np and $tab->(1, 1, '&laquo; '.mt '_browse_first');
+   $p > $nc+1 and ref $np and $ell->(1);
+   $p > $_    and ref $np and $tab->(1, $p-$_, $p-$_) for (reverse 2..($nc>$p-2?$p-2:$nc-1));
+   $p > 1                 and $tab->(1, $p-1, '&lsaquo; '.mt '_browse_previous');
+
+   my $l = ceil($cnt/$pp)-$p+1;
+   $l > 2     and $tab->(0, $l+$p-1, mt('_browse_last').' &raquo;');
+   $l > $nc+1 and $ell->(0);
+   $l > $_    and $tab->(0, $p+$_, $p+$_) for (reverse 2..($nc>$l-2?$l-2:$nc-1));
+   $l > 1     and $tab->(0, $p+1, mt('_browse_next').' &rsaquo;');
   end;
 }
 

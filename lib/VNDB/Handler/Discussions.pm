@@ -48,7 +48,7 @@ sub thread {
    end;
   end;
 
-  $self->htmlBrowseNavigate("/t$tid/", $page, $t->{count} > $page*25, 't', 1);
+  $self->htmlBrowseNavigate("/t$tid/", $page, [ $t->{count}, 25 ], 't', 1);
   div class => 'mainbox thread';
    table;
     for my $i (0..$#$p) {
@@ -83,7 +83,7 @@ sub thread {
     }
    end;
   end;
-  $self->htmlBrowseNavigate("/t$tid/", $page, $t->{count} > $page*25, 'b', 1);
+  $self->htmlBrowseNavigate("/t$tid/", $page, [ $t->{count}, 25 ], 'b', 1);
 
   if($t->{locked}) {
     div class => 'mainbox';
