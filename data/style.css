@@ -870,7 +870,7 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 
 /* vote lists */
 
-div.votelist td.tc1 { width: 70px }
+div.votelist td.tc1 { width: 80px; padding-top: 0; padding-bottom: 0 }
 div.votelist td.tc2 { width: 50px; text-align: right; padding-right: 10px }
 
 

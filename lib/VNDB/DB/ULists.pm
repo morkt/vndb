@@ -251,14 +251,15 @@ sub dbVoteStats {
 
 # Adds a new vote or updates an existing one
 # Arguments: vid, uid, vote
+# vid can be an arrayref only when the rows are already present, in which case an update is done
 sub dbVoteAdd {
   my($self, $vid, $uid, $vote) = @_;
   $self->dbExec(q|
     UPDATE votes
       SET vote = ?
-      WHERE vid = ?
+      WHERE vid IN(!l)
       AND uid = ?|,
-    $vote, $vid, $uid
+    $vote, ref($vid) ? $vid : [$vid], $uid
   ) || $self->dbExec(q|
     INSERT INTO votes
       (vid, uid, vote)
@@ -269,10 +270,11 @@ sub dbVoteAdd {
 
 
 # Arguments: uid, vid
+# vid can be an arrayref
 sub dbVoteDel {
   my($self, $uid, $vid) = @_;
   $self->dbExec('DELETE FROM votes !W',
-    { 'vid = ?' => $vid, 'uid = ?' => $uid }
+    { 'vid IN(!l)' => [ref($vid)?$vid:[$vid]], 'uid = ?' => $uid }
   );
 }
 

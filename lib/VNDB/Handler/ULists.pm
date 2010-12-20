@@ -118,12 +118,27 @@ sub votelist {
   my $obj = $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : $self->dbUserGet(uid => $id)->[0];
   return 404 if !$obj->{id};
 
+  my $own = $type eq 'u' && $self->authInfo->{id} && $self->authInfo->{id} == $id;
+
   my $f = $self->formValidate(
     { name => 'p',  required => 0, default => 1, template => 'int' },
     { name => 'o',  required => 0, default => 'd', enum => ['a', 'd'] },
     { name => 's',  required => 0, default => 'date', enum => [qw|date title vote|] },
     { name => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
   );
+
+  if($own && $self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
+    my $frm = $self->formValidate(
+      { name => 'vid', required => 1, multi => 1, template => 'int' },
+      { name => 'batchedit', required => 1, enum => [ -2, -1, 1..10 ] },
+    );
+    my @vid = grep $_ > 0, @{$frm->{vid}};
+    if(!$frm->{_err} && @vid && $frm->{batchedit} > -2) {
+      $self->dbVoteDel($id, \@vid) if $frm->{batchedit} == -1;
+      $self->dbVoteAdd(\@vid, $id, $frm->{batchedit}) if $frm->{batchedit} >= 0;
+    }
+  }
 
   my($list, $np) = $self->dbVoteGet(
     $type.'id' => $id,
@@ -150,6 +165,11 @@ sub votelist {
    p mt '_votelist_novotes' if !@$list;
   end;
 
+  if($own) {
+    my $code = $self->authGetCode("/u$id/votes");
+    form action => "/u$id/votes?formcode=$code;c=$f->{c};s=$f->{s};p=$f->{p}", method => 'post';
+  }
+
   @$list && $self->htmlBrowse(
     class    => 'votelist',
     items    => $list,
@@ -165,15 +185,33 @@ sub votelist {
     row      => sub {
       my($s, $n, $l) = @_;
       Tr $n % 2 ? (class => 'odd') : ();
-       td class => 'tc1', $self->{l10n}->date($l->{date});
+       td class => 'tc1';
+        input type => 'checkbox', name => 'vid', value => $l->{vid} if $own;
+        txt ' '.$self->{l10n}->date($l->{date});
+       end;
        td class => 'tc2', $l->{vote};
        td class => 'tc3';
         a href => $type eq 'v' ? ("/u$l->{uid}", $l->{username}) : ("/v$l->{vid}", shorten $l->{title}, 100);
        end;
       end;
     },
+    $own ? (footer => sub {
+      Tr;
+       td colspan => 3, class => 'tc1';
+        input type => 'checkbox', class => 'checkall', name => 'vid', value => -1;
+        txt ' ';
+        Select name => 'batchedit', id => 'batchedit';
+         option value => -2, '-- with selected --';
+         optgroup label => 'Change vote';
+          option value => $_, "$_ (".mt("_vote_$_").')' for (reverse 1..10);
+         end;
+         option value => -1, 'revoke';
+        end;
+       end;
+      end;
+    }) : (),
   );
-
+  end if $own;
   $self->htmlFooter;
 }
 
