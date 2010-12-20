@@ -2196,7 +2196,7 @@ if(byId('jt_box_rel_geninfo')) {
   byId('patch').onclick = func;
 }
 
-// Batch edit wishlist dropdown box (/u+/wish)
+// Batch edit dropdown box (/u+/wish and /u+/votes)
 if(byId('batchedit')) {
   byId('batchedit').onchange = function() {
     if(this.selectedIndex == 0)
