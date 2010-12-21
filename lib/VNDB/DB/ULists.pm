@@ -70,7 +70,7 @@ sub dbVNListList {
 
   # execute query
   my($r, $np) = $self->dbPage(\%o, qq|
-    SELECT vr.vid, vr.title, vr.original, vl.status, COALESCE(vo.vote, 0) AS vote
+    SELECT vr.vid, vr.title, vr.original, vl.status, vl.notes, COALESCE(vo.vote, 0) AS vote
       FROM vnlists vl
       JOIN vn v ON v.id = vl.vid
       JOIN vn_rev vr ON vr.id = v.latest
@@ -119,18 +119,21 @@ sub dbVNListList {
 }
 
 
-# Arguments: uid vid status
+# Arguments: uid vid status notes
 # vid can be an arrayref only when the rows are already present, in which case an update is done
+# status and notes can be undef when an update is done, in which case these fields aren't updated
 sub dbVNListAdd {
-  my($self, $uid, $vid, $stat) = @_;
+  my($self, $uid, $vid, $stat, $notes) = @_;
     $self->dbExec(
-      'UPDATE vnlists SET status = ? WHERE uid = ? AND vid IN(!l)',
-      $stat, $uid, ref($vid) ? $vid : [ $vid ]
+      'UPDATE vnlists !H WHERE uid = ? AND vid IN(!l)',
+      {defined($stat) ? ('status = ?' => $stat ):(),
+       defined($notes)? ('notes = ?'  => $notes):()},
+      $uid, ref($vid) ? $vid : [ $vid ]
     )
   ||
     $self->dbExec(
-      'INSERT INTO vnlists (uid, vid, status) VALUES(?, ?, ?)',
-      $uid, $vid, $stat
+      'INSERT INTO vnlists (uid, vid, status, notes) VALUES(?, ?, ?, ?)',
+      $uid, $vid, $stat||0, $notes||''
     );
 }
 

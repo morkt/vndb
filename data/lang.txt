@@ -4973,6 +4973,20 @@ cs*:
 hu*:
 nl : Verander status
 
+:_rlist_setnote
+en : Set note
+ru*:
+cs*:
+hu*:
+nl : Verander notitie
+
+:_rlist_setnote_prompt
+en : Set notes (leave empty to remove note)
+ru*:
+cs*:
+hu*:
+nl : Verander notitie (laat leeg om de notitie te verwijderen)
+
 :_rlist_del
 en : remove from list
 ru : убрать из списка

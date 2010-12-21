@@ -10,6 +10,7 @@
 	- Update the votes.date column when changing a vote
 	- ULists::votelist: Added first character selection
 	- Added advanced page-browsing tabs to threads
+	- Added notes field to the user VN list
 
 2.15 - 2010-12-15
 	- Removed expand/collapse from history browser and /u+/posts and switched to

@@ -887,6 +887,7 @@ div.votelist td.tc2 { width: 50px; text-align: right; padding-right: 10px }
 .browse.rlist .tc1 { width: 16px; padding-bottom: 0 }
 .browse.rlist .tc2 { width: 16px; padding-bottom: 0 }
 .browse.rlist .tc3 { width: 60px }
+.browse.rlist .tc3_5 b { margin-left: 10px }
 .browse.rlist .tc4 { width: 60px; text-align: right; padding-top: 0; padding-bottom: 0 }
 .browse.rlist .tc6 { width: 100px }
 .browse.rlist .relhid .tc6 { padding-left: 15px; width: auto }

@@ -339,14 +339,16 @@ sub vnlist {
     my $frm = $self->formValidate(
       { name => 'vid', required => 0, default => 0, multi => 1, template => 'int' },
       { name => 'rid', required => 0, default => 0, multi => 1, template => 'int' },
-      { name => 'vns', required => 1, enum => [ -2, -1, @{$self->{vnlist_status}} ] },
+      { name => 'not', required => 0, default => '', maxlength => 2000 },
+      { name => 'vns', required => 1, enum => [ -2, -1, @{$self->{vnlist_status}}, 999 ] },
       { name => 'rel', required => 1, enum => [ -2, -1, @{$self->{rlist_status}} ] },
     );
     my @vid = grep $_ > 0, @{$frm->{vid}};
     my @rid = grep $_ > 0, @{$frm->{rid}};
     if(!$frm->{_err} && @vid && $frm->{vns} > -2) {
       $self->dbVNListDel($uid, \@vid) if $frm->{vns} == -1;
-      $self->dbVNListAdd($uid, \@vid, $frm->{vns}) if $frm->{vns} >= 0;
+      $self->dbVNListAdd($uid, \@vid, $frm->{vns}) if $frm->{vns} >= 0 && $frm->{vns} < 999;
+      $self->dbVNListAdd($uid, \@vid, undef, $frm->{not}) if $frm->{vns} == 999;
     }
     if(!$frm->{_err} && @rid && $frm->{rel} > -2) {
       $self->dbRListDel($uid, \@rid) if $frm->{rel} == -1;
@@ -402,8 +404,11 @@ sub vnlist {
 sub _vnlist_browse {
   my($self, $own, $list, $np, $f, $url, $uid) = @_;
 
-  form action => $url->().';formcode='.$self->authGetCode("/u$uid/list"), method => 'post'
-    if $own;
+  if($own) {
+    form action => $url->(), method => 'post';
+    input type => 'hidden', class => 'hidden', name => 'not', id => 'not', value => '';
+    input type => 'hidden', class => 'hidden', name => 'formcode', id => 'formcode', value => $self->authGetCode("/u$uid/list");
+  }
 
   $self->htmlBrowse(
     class    => 'rlist',
@@ -432,6 +437,7 @@ sub _vnlist_browse {
        }
        td class => 'tc3_5', colspan => 3;
         a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, shorten $i->{title}, 70;
+        b class => 'grayedout', $i->{notes} if $i->{notes};
        end;
        td class => 'tc6', $i->{status} ? mt '_vnlist_status_'.$i->{status} : '';
        td class => 'tc7';
@@ -476,6 +482,7 @@ sub _vnlist_browse {
           option value => $_, mt "_vnlist_status_$_"
             for (@{$self->{vnlist_status}});
          end;
+         option value => 999, mt '_rlist_setnote';
          option value => -1, mt '_rlist_del';
         end;
         Select id => 'rel', name => 'rel';

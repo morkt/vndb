@@ -15,6 +15,7 @@ CREATE TABLE vnlists (
   vid integer NOT NULL REFERENCES vn (id),
   status smallint NOT NULL DEFAULT 0,
   added TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  notes varchar NOT NULL DEFAULT '',
   PRIMARY KEY(uid, vid)
 );
 
@@ -24,7 +25,7 @@ CREATE TABLE vnlists (
 
 
 -- convert from rlists.vstat
-INSERT INTO vnlists SELECT
+INSERT INTO vnlists (uid, vid, status, added) SELECT
     i.uid, i.vid, COALESCE(MIN(CASE WHEN rl.vstat = 0 THEN NULL ELSE rl.vstat END), 0), MIN(rl.added)
   FROM (
     SELECT DISTINCT rl.uid, rv.vid

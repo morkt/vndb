@@ -346,6 +346,7 @@ CREATE TABLE vnlists (
   vid integer NOT NULL,
   status smallint NOT NULL DEFAULT 0,
   added TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  notes varchar NOT NULL DEFAULT '',
   PRIMARY KEY(uid, vid)
 );
 

@@ -2248,6 +2248,16 @@ if(byId('expandall')) {
     heads[i].onclick = singletoggle;
 }
 
+
+// set note input box (/u+/list)
+if(byId('not') && byId('vns'))
+  byId('vns').onchange = function () {
+    if(this.options[this.selectedIndex].value == 999)
+      byId('not').value = prompt(mt('_rlist_setnote_prompt'), '');
+    return true;
+  };
+
+
 // expand/collapse release listing (/p+)
 if(byId('expandprodrel')) {
   var lnk = byId('expandprodrel');
