@@ -4903,7 +4903,7 @@ cs : List vizuálních novel uživatele [_1]
 hu : [_1] visual novel listája
 nl : Visual novel lijst van [_1]
 
-:_rlist_voted_all
+:_rlist_all
 en : All
 ru : Все
 cs : Všechny

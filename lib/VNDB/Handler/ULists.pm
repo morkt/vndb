@@ -331,6 +331,7 @@ sub vnlist {
     { name => 's',  required => 0, default => 'title', enum => [ 'title', 'vote' ] },
     { name => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
     { name => 'v',  required => 0, default => 0, enum => [ -1..1  ] },
+    { name => 't',  required => 0, default => -1, enum => [ -1, @{$self->{vnlist_status}} ] },
   );
   return 404 if $f->{_err};
 
@@ -363,6 +364,7 @@ sub vnlist {
     sort => $f->{s}, reverse => $f->{o} eq 'd',
     voted => $f->{v} == 0 ? undef : $f->{v} < 0 ? 0 : $f->{v},
     $f->{c} ne 'all' ? (char => $f->{c}) : (),
+    $f->{t} >= 0 ? (status => $f->{t}) : (),
   );
 
   my $title = $own ? mt '_rlist_title_my' : mt '_rlist_title_other', $u->{username};
@@ -376,6 +378,7 @@ sub vnlist {
     local $_ = "/u$uid/list";
     $_ .= '?c='.($n eq 'c' ? $v : $f->{c});
     $_ .= ';v='.($n eq 'v' ? $v : $f->{v});
+    $_ .= ';t='.($n eq 't' ? $v : $f->{t});
     if($n eq 'page') {
       $_ .= ';o='.($n eq 'o' ? $v : $f->{o});
       $_ .= ';s='.($n eq 's' ? $v : $f->{s});
@@ -391,9 +394,13 @@ sub vnlist {
     }
    end;
    p class => 'browseopts';
-    a href => $url->(v =>  0),  0 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_voted_all';
+    a href => $url->(v =>  0),  0 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_all';
     a href => $url->(v =>  1),  1 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_voted_only';
     a href => $url->(v => -1), -1 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_voted_none';
+   end;
+   p class => 'browseopts';
+    a href => $url->(t => -1), -1 == $f->{t} ? (class => 'optselected') : (), mt '_rlist_all';
+    a href => $url->(t => $_), $_ == $f->{t} ? (class => 'optselected') : (), mt '_vnlist_status_'.$_ for @{$self->{vnlist_status}};
    end;
   end;
 

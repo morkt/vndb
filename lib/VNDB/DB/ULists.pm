@@ -58,6 +58,7 @@ sub dbVNListList {
   my %where = (
     'vl.uid = ?' => $o{uid},
     defined($o{voted}) ? ('vo.vote !s NULL' => $o{voted} ? 'IS NOT' : 'IS') : (),
+    defined($o{status})? ('vl.status = ?' => $o{status}) : (),
     $o{char}           ? ('LOWER(SUBSTR(vr.title, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
       '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
