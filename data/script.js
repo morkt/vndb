@@ -1840,8 +1840,8 @@ function filSelectField(obj) {
 }
 
 function filSerialize() {
-  var l = [];
   var num = 0;
+  var values = {};
   for(var f in fil_cats[0]) {
     if(!byId('fil_check_'+f).checked)
       continue;
@@ -1861,8 +1861,13 @@ function filSerialize() {
       }
     }
     if(r.length > 0 && r[0] != '')
-      l.push(fil_cats[0][f].fil_code+'-'+r.join('~'));
+      values[fil_cats[0][f].fil_code] = r.join('~');
   }
+  if(!values['tag_inc'])
+    delete values['tagspoil'];
+  var l = [];
+  for(var f in values)
+    l.push(f+'-'+values[f]);
   byId('fil').value = l.join('.');
   setText(byName(byId('filselect'), 'i')[1], num > 0 ? ' ('+num+')' : '');
 }
