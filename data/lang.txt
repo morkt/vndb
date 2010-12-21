@@ -5875,27 +5875,6 @@ cs : Hodnocení
 hu : Értékelés
 nl : Waardering
 
-:_vnbrowse_tagign_title
-en : The following tags were ignored:
-ru : Следующие теги были пропущены:
-cs : Následující tagy byly ignorovány:
-hu : Az allábi címkék nem lettek figyelembe véve:
-nl : De volgende tags zijn genegeerd:
-
-:_vnbrowse_tagign_meta
-en : can't filter on meta tags
-ru : фильтрация по мета-тегам невозможна
-cs : nedají se filtrovat meta tagy
-hu : meta címkéken nem működik a szűrő
-nl : kan niet filteren op metatags
-
-:_vnbrowse_tagign_notfound
-en : no such tag found
-ru : тег не найден
-cs : nenalezeny takové tagy
-hu : nem található ilyen címke
-nl : tag niet gevonden
-
 :_vnbrowse_fil_title
 en : Visual Novel Filters
 ru : Фильтры новелл

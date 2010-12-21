@@ -10,7 +10,8 @@ use Encode 'decode_utf8';
 our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
 
 
-# Options: id, rev, char, search, length, lang, olang, plat, tags_include, tags_exclude, hasani, results, page, what, sort, reverse
+# Options: id, rev, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
+#   hasani, results, page, what, sort, reverse
 # What: extended anime relations screenshots relgraph rating ranking changes
 # Sort: id rel pop rating title tagscore rand
 sub dbVNGet {
@@ -19,6 +20,12 @@ sub dbVNGet {
   $o{page}    ||= 1;
   $o{what}    ||= '';
   $o{sort}    ||= 'title';
+  $o{tagspoil} //= 2;
+
+  # user input that is literally added to the query should be checked...
+  die "Invalid input for tagspoil or tag_inc at dbVNGet()\n" if
+    grep !defined($_) || $_!~/^\d+$/, $o{tagspoil},
+      !$o{tag_inc} ? () : (ref($o{tag_inc}) ? @{$o{tag_inc}} : $o{tag_inc});
 
   my @where = (
     $o{id} ? (
@@ -39,19 +46,18 @@ sub dbVNGet {
       '('.join(' OR ', map "v.c_platforms ILIKE '%%$_%%'", ref $o{plat} ? @{$o{plat}} : $o{plat}).')' => 1 ) : (),
     defined $o{hasani} ? (
       '!sEXISTS(SELECT 1 FROM vn_anime va WHERE va.vid = vr.id)' => [ $o{hasani} ? '' : 'NOT ' ]) : (),
-    $o{tags_include} && @{$o{tags_include}} ? (
+    $o{tag_inc} ? (
       'v.id IN(SELECT vid FROM tags_vn_inherit WHERE tag IN(!l) AND spoiler <= ? GROUP BY vid HAVING COUNT(tag) = ?)',
-      [ $o{tags_include}[1], $o{tags_include}[0], $#{$o{tags_include}[1]}+1 ]
-    ) : (),
-    $o{tags_exclude} && @{$o{tags_exclude}} ? (
-      'v.id NOT IN(SELECT vid FROM tags_vn_inherit WHERE tag IN(!l))' => [ $o{tags_exclude} ] ) : (),
+      [ ref $o{tag_inc} ? $o{tag_inc} : [$o{tag_inc}], $o{tagspoil}, ref $o{tag_inc} ? $#{$o{tag_inc}}+1 : 1 ]) : (),
+    $o{tag_exc} ? (
+      'v.id NOT IN(SELECT vid FROM tags_vn_inherit WHERE tag IN(!l))' => [ ref $o{tag_exc} ? $o{tag_exc} : [$o{tag_exc}] ] ) : (),
     $o{search} ? (
       map +('v.c_search like ?', "%$_%"), normalize_query($o{search})) : (),
    # don't fetch hidden items unless we ask for an ID
     !$o{id} && !$o{rev} ? (
       'v.hidden = FALSE' => 0 ) : (),
    # optimize fetching random entries (only when there are no other filters present, otherwise this won't work well)
-    $o{sort} eq 'rand' && $o{results} <= 10 && !grep(!/^(?:results|page|what|sort)$/, keys %o) ? (
+    $o{sort} eq 'rand' && $o{results} <= 10 && !grep(!/^(?:results|page|what|sort|tagspoil)$/, keys %o) ? (
       sprintf 'v.id IN(SELECT floor(random() * last_value)::integer
            FROM generate_series(1,20), (SELECT last_value FROM vn_id_seq) s1
           LIMIT 20)' ) : (),
@@ -69,7 +75,7 @@ sub dbVNGet {
       'JOIN relgraphs vg ON vg.id = v.rgraph' : (),
   );
 
-  my $tag_ids = $o{tags_include} && join ',', @{$o{tags_include}[1]};
+  my $tag_ids = $o{tag_inc} && join ',', ref $o{tag_inc} ? @{$o{tag_inc}} : $o{tag_inc};
   my @select = ( # see https://rt.cpan.org/Ticket/Display.html?id=54224 for the cast on c_languages
     qw|v.id v.locked v.hidden v.c_released v.c_languages::text[] v.c_platforms vr.title vr.original v.rgraph|, 'vr.id AS cid',
     $o{what} =~ /extended/ ? (
@@ -84,7 +90,7 @@ sub dbVNGet {
     ) : (),
     # TODO: optimize this, as it will be very slow when the selected tags match a lot of VNs (>1000)
     $tag_ids ?
-      qq|(SELECT AVG(tvh.rating) FROM tags_vn_inherit tvh WHERE tvh.tag IN($tag_ids) AND tvh.vid = v.id AND spoiler <= $o{tags_include}[0] GROUP BY tvh.vid) AS tagscore| : (),
+      qq|(SELECT AVG(tvh.rating) FROM tags_vn_inherit tvh WHERE tvh.tag IN($tag_ids) AND tvh.vid = v.id AND spoiler <= $o{tagspoil} GROUP BY tvh.vid) AS tagscore| : (),
   );
 
   my $order = sprintf {

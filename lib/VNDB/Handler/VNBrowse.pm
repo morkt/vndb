@@ -25,7 +25,7 @@ sub list {
   );
   return 404 if $f->{_err};
   $f->{q} ||= $f->{sq};
-  my $fil = fil_parse $f->{fil}, qw|length hasani taginc tagexc tagspoil lang olang plat|;
+  my $fil = fil_parse $f->{fil}, qw|length hasani tag_inc tag_exc taginc tagexc tagspoil lang olang plat|;
   _fil_compat($self, $fil);
 
   if($f->{q}) {
@@ -39,20 +39,7 @@ sub list {
   }
   $f->{fil} = fil_serialize $fil;
 
-  # TODO: this should be moved to dbVNGet() in order for savable VN filters to be useful
-  my @ignored;
-  my $tagfind = sub {
-    return map {
-      my $i = $self->dbTagGet(name => $_)->[0];
-      push @ignored, [$_, 0] if !$i;
-      push @ignored, [$_, 1] if $i && $i->{meta};
-      $i && !$i->{meta} ? $i->{id} : ();
-    } grep $_, ref $_[0] ? @{$_[0]} : ($_[0]||'')
-  };
-  my @ti = $tagfind->(delete $fil->{taginc});
-  my @te = $tagfind->(delete $fil->{tagexc});
-
-  $f->{s} = 'title' if !@ti && $f->{s} eq 'tagscore';
+  $f->{s} = 'title' if !$fil->{tag_inc} && $f->{s} eq 'tagscore';
   $f->{o} = $f->{s} eq 'tagscore' ? 'd' : 'a' if !$f->{o};
 
   my($list, $np) = $self->dbVNGet(
@@ -62,8 +49,6 @@ sub list {
     results => 50,
     page => $f->{p},
     sort => $f->{s}, reverse => $f->{o} eq 'd',
-    @ti ? (tags_include => [ delete $fil->{tagspoil}, \@ti ]) : (),
-    @te ? (tags_exclude => \@te) : (),
     %$fil
   );
 
@@ -82,15 +67,6 @@ sub list {
     }
    end;
 
-   if(@ignored) {
-     div class => 'warning';
-      h2 mt '_vnbrowse_tagign_title';
-      ul;
-       li $_->[0].' ('.mt('_vnbrowse_tagign_'.($_->[1]?'meta':'notfound')).')' for @ignored;
-      end;
-     end;
-   }
-
    a id => 'filselect', href => '#v';
     lit '<i>&#9656;</i> '.mt('_rbrowse_filters').'<i></i>'; # TODO: it's not *r*browse
    end;
@@ -98,7 +74,7 @@ sub list {
   end;
   end; # /form
 
-  $self->htmlBrowseVN($list, $f, $np, "/v/$char?q=$f->{q};fil=$f->{fil}", scalar @ti);
+  $self->htmlBrowseVN($list, $f, $np, "/v/$char?q=$f->{q};fil=$f->{fil}", $fil->{tag_inc});
   $self->htmlFooter;
 }
 
@@ -117,6 +93,16 @@ sub _fil_compat {
   $fil->{taginc}   //= $f->{ti} if $f->{ti};
   $fil->{tagexc}   //= $f->{te} if $f->{te};
   $fil->{tagspoil} //= $f->{sp};
+
+  # older tag specification (by name rather than ID)
+  my $tagfind = sub {
+    return map {
+      my $i = $self->dbTagGet(name => $_)->[0];
+      $i && !$i->{meta} ? $i->{id} : ();
+    } grep $_, ref $_[0] ? @{$_[0]} : ($_[0]||'')
+  };
+  $fil->{tag_inc} //= [ $tagfind->(delete $fil->{taginc}) ] if $fil->{taginc};
+  $fil->{tag_exc} //= [ $tagfind->(delete $fil->{tagexc}) ] if $fil->{tagexc};
 }
 
 

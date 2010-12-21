@@ -41,22 +41,24 @@ var collapsed_icon = '▸';
 /*  M I N I M A L   J A V A S C R I P T   L I B R A R Y  */
 
 var http_request = false;
-function ajax(url, func) {
-  if(http_request)
+function ajax(url, func, async) {
+  if(!async && http_request)
     http_request.abort();
-  http_request = (window.ActiveXObject) ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
-  if(http_request == null)
+  var req = (window.ActiveXObject) ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
+  if(req == null)
     return alert("Your browser does not support the functionality this website requires.");
-  http_request.onreadystatechange = function() {
-    if(!http_request || http_request.readyState != 4 || !http_request.responseText)
+  if(!async)
+    http_request = req;
+  req.onreadystatechange = function() {
+    if(!req || req.readyState != 4 || !req.responseText)
       return;
-    if(http_request.status != 200)
+    if(req.status != 200)
       return alert('Whoops, error! :(');
-    func(http_request);
+    func(req);
   };
   url += (url.indexOf('?')>=0 ? ';' : '?')+(Math.floor(Math.random()*999)+1);
-  http_request.open('GET', url, true);
-  http_request.send(null);
+  req.open('GET', url, true);
+  req.send(null);
 }
 
 function setCookie(n,v) {
@@ -1748,7 +1750,7 @@ function filLoad() {
   var c = tag('div', null);
   for(var i=1; i<l.length; i++) {
     // category link
-    var a = tag('a', { href: '#', onclick: filSelectCat, fil_num: i }, l[i][0]);
+    var a = tag('a', { href: '#', onclick: filSelectCat, fil_num: i, fil_onshow:[] }, l[i][0]);
     p.appendChild(a);
     p.appendChild(tag(' '));
 
@@ -1768,6 +1770,8 @@ function filLoad() {
         tag('td', {'class':'cont' }, fd[2]));
       if(fd[0])
         fil_cats[0][fd[0]] = f;
+      if(fd[5])
+        a.fil_onshow.push([ fd[5], f.fil_contents ]);
       t.appendChild(f);
     }
     c.appendChild(t);
@@ -1802,6 +1806,8 @@ function filSelectCat(n) {
     setClass(fil_cats[i], 'optselected', i == n);
     setClass(fil_cats[i].fil_t, 'hidden', i != n);
   }
+  for(var i=0; i<fil_cats[n].fil_onshow.length; i++)
+    fil_cats[n].fil_onshow[i][0](fil_cats[n].fil_onshow[i][1]);
   return false
 }
 
@@ -1844,14 +1850,14 @@ function filSerialize() {
     var v = fil_cats[0][f].fil_readfunc(fil_cats[0][f].fil_contents);
     var r = [];
     for(var h=0; h<v.length; h++) {
-      v[h] = (''+v[h]).split('');
+      var vs = (''+v[h]).split('');
       r[h] = '';
       // this isn't a very fast escaping method, blame JavaScript for inflexible search/replace support
-      for(var i=0; i<v[h].length; i++) {
+      for(var i=0; i<vs.length; i++) {
         for(var j=0; j<fil_escape.length; j++)
-          if(v[h][i] == fil_escape[j])
+          if(vs[i] == fil_escape[j])
             break;
-        r[h] += j == fil_escape.length ? v[h][i] : '_'+(j<10?'0'+j:j);
+        r[h] += j == fil_escape.length ? vs[i] : '_'+(j<10?'0'+j:j);
       }
     }
     if(r.length > 0 && r[0] != '')
@@ -1963,6 +1969,58 @@ function filFOptions(c, n, opts, setfunc) {
   ];
 }
 
+function filFTagInput(name, label) {
+  var visible = false;
+  var input = tag('input', {type:'text', 'class':'text', style:'width:410px', onfocus:filSelectField});
+  var trfunc = function(item, tr) {
+    tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
+      item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_meta')) : null,
+      item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
+    ));
+  };
+  var serfunc = function(item, obj) {
+    var tags = obj.value.split(/ *, */);
+    var id = item.getAttribute('id');
+    tags[tags.length-1] = 'g'+id+':'+item.firstChild.nodeValue;
+    filSelectField(obj);
+    return tags.join(', ');
+  };
+  var retfunc   = function(o)   { filSelectField(o); false };
+  var parfunc   = function(val) { return (val.split(/, */))[val.split(/, */).length-1]; };
+  var readfunc  = function(c)   {
+    var l = [];
+    c.value.replace(/g([0-9]+):/g, function (a, e) { l.push(e); return '' });
+    return l;
+  };
+  var fetch     = function(c)   {
+    var v = c.fil_val;
+    if(!v[0]) {
+      c.value = '';
+      return;
+    }
+    var q = []; var t = [];
+    for(var i=0; i<v.length; i++) {
+      q.push('id='+v[i]);
+      t.push('g'+v[i]+':');
+    }
+    c.value = mt('_js_loading')+'  (tags: '+t.join(',')+')';
+    c.disabled = true;
+    if(visible)
+      ajax('/xml/tags.xml?'+q.join(';'), function (hr) {
+        var l = [];
+        var items = hr.responseXML.getElementsByTagName('item');
+        for(var i=0; i<items.length; i++)
+          l.push('g'+items[i].getAttribute('id')+':'+items[i].firstChild.nodeValue);
+        c.value = l.join(', ');
+        c.disabled = false;
+      }, 1);
+  };
+  var writefunc = function(c,v) { c.fil_val = v; fetch(c) };
+  var showfunc  = function(c)  { visible = true; fetch(c); };
+  dsInit(input, '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
+  return [name, label, input, readfunc, writefunc, showfunc];
+}
+
 function filReleases() {
   var types = release_types;
   for(var i=0; i<types.length; i++) // l10n /_rtype_.+/
@@ -2020,28 +2078,6 @@ function filVN() {
   for(var i=0; i<len.length; i++) // l10n /_vnlength_.+/
     len[i] = [ len[i], mt('_vnlength_'+len[i]) ];
 
-  // tag include/exclude dropdown search
-  var taginc = tag('input', {type:'text', 'class':'text', style:'width:350px', onfocus:filSelectField});
-  var tagexc = tag('input', {type:'text', 'class':'text', style:'width:350px', onfocus:filSelectField});
-  var trfunc = function(item, tr) {
-    tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
-      item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_meta')) : null,
-      item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
-    ));
-  };
-  var serfunc = function(item, obj) {
-    var tags = obj.value.split(/ *, */);
-    tags[tags.length-1] = item.firstChild.nodeValue;
-    filSelectField(obj);
-    return tags.join(', ');
-  };
-  var retfunc   = function(o)   { filSelectField(o); false };
-  var parfunc   = function(val) { return (val.split(/, */))[val.split(/, */).length-1]; };
-  var readfunc  = function(c)   { return c.value.split(/, */) };
-  var writefunc = function(c,v) { c.value = v.join(', ') };
-  dsInit(taginc, '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
-  dsInit(tagexc, '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
-
   return [
     mt('_vnbrowse_fil_title'),
     [ mt('_vnbrowse_general'),
@@ -2050,8 +2086,8 @@ function filVN() {
     ],
     [ mt('_vnbrowse_tags'),
       [ '',       ' ',                    tag('('+mt('_vnbrowse_booland')+')') ],
-      [ 'taginc', mt('_vnbrowse_taginc'), taginc, readfunc, writefunc ],
-      [ 'tagexc', mt('_vnbrowse_tagexc'), tagexc, readfunc, writefunc ],
+      filFTagInput('tag_inc', mt('_vnbrowse_taginc')),
+      filFTagInput('tag_exc', mt('_vnbrowse_tagexc')),
       filFOptions('tagspoil', ' ', [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]],
         function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
     ],

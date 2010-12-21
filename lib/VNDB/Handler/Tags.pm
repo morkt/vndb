@@ -44,7 +44,8 @@ sub tagpage {
     results => 50,
     page => $f->{p},
     sort => $f->{s}, reverse => $f->{o} eq 'd',
-    tags_include => [ $f->{m}, [$tag ]],
+    tagspoil => $f->{m},
+    tag_inc => $tag,
   );
 
   my $title = mt '_tagp_title', $t->{meta}?0:1, $t->{name};
@@ -668,19 +669,22 @@ sub fulltree {
 sub tagxml {
   my $self = shift;
 
-  my $q = $self->formValidate({ name => 'q', maxlength => 500 });
-  return 404 if $q->{_err};
-  $q = $q->{q};
+  my $f = $self->formValidate(
+    { name => 'q', required => 0, maxlength => 500 },
+    { name => 'id', required => 0, multi => 1, template => 'int' },
+  );
+  return 404 if $f->{_err} || (!$f->{q} && !$f->{id} && !$f->{id}[0]);
 
   my($list, $np) = $self->dbTagGet(
-    $q =~ /^g([1-9]\d*)/ ? (id => $1) : $q =~ /^name:(.+)$/ ? (name => $1) : (search => $q),
+    !$f->{q} ? () : $f->{q} =~ /^g([1-9]\d*)/ ? (id => $1) : $f->{q} =~ /^name:(.+)$/ ? (name => $1) : (search => $f->{q}),
+    $f->{id} && $f->{id}[0] ? (id => $f->{id}) : (),
     results => 15,
     page => 1,
   );
 
   $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
   xml;
-  tag 'tags', more => $np ? 'yes' : 'no', query => $q;
+  tag 'tags', more => $np ? 'yes' : 'no', $f->{q} ? (query => $f->{q}) : ();
    for(@$list) {
      tag 'item', id => $_->{id}, meta => $_->{meta} ? 'yes' : 'no', state => $_->{state}, $_->{name};
    }

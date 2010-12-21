@@ -24,7 +24,7 @@ sub dbTagGet {
 
   my %where = (
     $o{id} ? (
-      't.id = ?' => $o{id} ) : (),
+      't.id IN(!l)' => [ ref $o{id} ? $o{id} : [$o{id}] ] ) : (),
     $o{noid} ? (
       't.id <> ?' => $o{noid} ) : (),
     $o{name} ? (
