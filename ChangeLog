@@ -14,6 +14,7 @@
 	- Added vnlists.status filter to /u+/list
 	- Pass VN tag filters by ID rather than name
 	- Don't send 'tagspoil' filter when 'tag_inc' isn't active
+	- Don't allow page > 100 or sorting on username or title on tag link browser
 
 2.15 - 2010-12-15
 	- Removed expand/collapse from history browser and /u+/posts and switched to

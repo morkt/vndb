@@ -358,12 +358,12 @@ sub taglinks {
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'o', required => 0, default => 'd', enum => ['a', 'd'] },
-    { name => 's', required => 0, default => 'date', enum => [qw|date username title tag|] },
+    { name => 's', required => 0, default => 'date', enum => [qw|date tag|] },
     { name => 'v', required => 0, default => 0, template => 'int' },
     { name => 'u', required => 0, default => 0, template => 'int' },
     { name => 't', required => 0, default => 0, template => 'int' },
   );
-  return 404 if $f->{_err};
+  return 404 if $f->{_err} || $f->{p} > 100;
 
   my($list, $np) = $self->dbTagLinks(
     what => 'details',
@@ -433,11 +433,11 @@ sub taglinks {
     sorturl  => $url->(s=>0,o=>0),
     header   => [
       [ mt('_taglink_col_date'),   'date' ],
-      [ mt('_taglink_col_user'),   'username' ],
+      [ mt('_taglink_col_user')   ],
       [ mt('_taglink_col_rating') ],
       [ mt('_taglink_col_tag'),    'tag' ],
       [ mt('_taglink_col_spoiler') ],
-      [ mt('_taglink_col_vn'),     'title' ],
+      [ mt('_taglink_col_vn'),     ],
     ],
     row      => sub {
       my($s, $n, $l) = @_;
