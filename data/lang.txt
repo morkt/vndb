@@ -5931,6 +5931,13 @@ cs : boolean a, výběr více dá méně výsledků
 hu : Boole féle értékhalmaz(igaz/hamis), s ha többet választasz ki akkor kevesebb találatot ad
 nl : booleaanse 'en', meerdere selecties geven minder resultaten
 
+:_vnbrowse_tagrem
+en : remove
+ru*:
+cs*:
+hu*:
+nl : verwijder
+
 :_vnbrowse_taginc
 en : Tags to include
 ru : Включить теги

@@ -1990,7 +1990,7 @@ function filFTagInput(name, label) {
           filSelectField(ul.parentNode);
           return false
         }
-      }, 'remove'), ')'
+      }, mt('_vnbrowse_tagrem')), ')'
     ));
   }
   var fetch = function(c)   {
