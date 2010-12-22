@@ -1117,6 +1117,8 @@ div#fil_div {
 #fil_div .opts b      { margin: 0 7px; font-weight: normal }
 #fil_div .opts a.tsel { color: $maintext$; }
 #filselect i { font-style: normal }
+#fil_div table ul { margin: 0 0 0 15px }
+#fil_div table ul a { color: $link$ }
 
 
 

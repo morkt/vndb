@@ -1976,54 +1976,85 @@ function filFOptions(c, n, opts, setfunc) {
 
 function filFTagInput(name, label) {
   var visible = false;
-  var input = tag('input', {type:'text', 'class':'text', style:'width:410px', onfocus:filSelectField});
-  var trfunc = function(item, tr) {
-    tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
-      item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_meta')) : null,
-      item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
+  var remove = function() {
+    ;
+  };
+  var addtag = function(ul, id, name) {
+    ul.appendChild(tag('li', { fil_id: id },
+      tag('a', {href:'/g'+id}, name||'g'+id),
+      ' (', tag('a', {href:'#',
+        onclick:function () {
+          // a -> li -> ul -> div
+          var ul = this.parentNode.parentNode;
+          ul.removeChild(this.parentNode);
+          filSelectField(ul.parentNode);
+          return false
+        }
+      }, 'remove'), ')'
     ));
-  };
-  var serfunc = function(item, obj) {
-    var tags = obj.value.split(/ *, */);
-    var id = item.getAttribute('id');
-    tags[tags.length-1] = 'g'+id+':'+item.firstChild.nodeValue;
-    filSelectField(obj);
-    return tags.join(', ');
-  };
-  var retfunc   = function(o)   { filSelectField(o); false };
-  var parfunc   = function(val) { return (val.split(/, */))[val.split(/, */).length-1]; };
-  var readfunc  = function(c)   {
-    var l = [];
-    c.value.replace(/g([0-9]+):/g, function (a, e) { l.push(e); return '' });
-    return l;
-  };
-  var fetch     = function(c)   {
+  }
+  var fetch = function(c)   {
     var v = c.fil_val;
+    var ul = byName(c, 'ul')[0];
+    var txt = byName(c, 'input')[0];
+    if(v == null)
+      return;
     if(!v[0]) {
-      c.value = '';
+      setText(ul, '');
+      txt.disabled = false;
+      txt.value = '';
       return;
     }
-    var q = []; var t = [];
+    if(!visible)
+      setText(ul, '');
+    var q = [];
     for(var i=0; i<v.length; i++) {
       q.push('id='+v[i]);
-      t.push('g'+v[i]+':');
+      if(!visible)
+        addtag(ul, v[i]);
     }
-    c.value = mt('_js_loading')+'  (tags: '+t.join(',')+')';
-    c.disabled = true;
+    txt.value = mt('_js_loading');
+    txt.disabled = true;
     if(visible)
       ajax('/xml/tags.xml?'+q.join(';'), function (hr) {
         var l = [];
         var items = hr.responseXML.getElementsByTagName('item');
+        setText(ul, '');
         for(var i=0; i<items.length; i++)
-          l.push('g'+items[i].getAttribute('id')+':'+items[i].firstChild.nodeValue);
-        c.value = l.join(', ');
-        c.disabled = false;
+          addtag(ul, items[i].getAttribute('id'), items[i].firstChild.nodeValue);
+        txt.value = '';
+        txt.disabled = false;
+        c.fil_val = null;
       }, 1);
   };
-  var writefunc = function(c,v) { c.fil_val = v; fetch(c) };
-  var showfunc  = function(c)  { visible = true; fetch(c); };
-  dsInit(input, '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
-  return [name, label, input, readfunc, writefunc, showfunc];
+  var input = tag('input', {type:'text', 'class':'text', style:'width:300px', onfocus:filSelectField});
+  var list = tag('ul', null);
+  dsInit(input, '/xml/tags.xml?q=',
+    function(item, tr) {
+      tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
+        item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_meta')) : null,
+        item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
+      ));
+    },
+    function(item, obj) {
+      addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue);
+      filSelectField(obj);
+      return '';
+    },
+    function(o) { filSelectField(o); false }
+  );
+
+  return [
+    name, label, tag('div', list, input),
+    function(c) {
+      var v = []; var l = byName(c, 'li');
+      for(var i=0; i<l.length; i++)
+        v.push(l[i].fil_id);
+      return v;
+    },
+    function(c,v) { c.fil_val = v; fetch(c) },
+    function(c) { visible = true; fetch(c); }
+  ];
 }
 
 function filReleases() {
