@@ -278,7 +278,7 @@ sub board {
   return 404 if $f->{_err};
 
   my $obj = !$iid ? undef :
-    $type eq 'u' ? $self->dbUserGet(uid => $iid)->[0] :
+    $type eq 'u' ? $self->dbUserGet(uid => $iid, what => 'hide_list')->[0] :
     $type eq 'p' ? $self->dbProducerGet(id => $iid)->[0] :
                    $self->dbVNGet(id => $iid)->[0];
   return 404 if $iid && !$obj;

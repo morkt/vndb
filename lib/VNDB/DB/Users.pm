@@ -13,7 +13,7 @@ our @EXPORT = qw|
 
 
 # %options->{ username passwd mail session uid ip registered search results page what sort reverse }
-# what: notifycount stats extended prefs
+# what: notifycount stats extended prefs hide_list
 # sort: username registered votes changes tags
 sub dbUserGet {
   my $s = shift;
@@ -21,6 +21,7 @@ sub dbUserGet {
     page => 1,
     results => 10,
     what => '',
+    sort => '',
     @_
   );
 
@@ -51,12 +52,13 @@ sub dbUserGet {
   );
 
   my @select = (
-    qw|id username c_votes c_changes show_list c_tags|,
+    qw|id username c_votes c_changes c_tags|,
     q|extract('epoch' from registered) as registered|,
     $o{what} =~ /extended/ ? (
       qw|mail rank salt ign_votes notify_dbedit notify_announce|,
       q|encode(passwd, 'hex') AS passwd|
     ) : (),
+    $o{what} =~ /hide_list/ ? 'up.value AS hide_list' : (),
     $o{what} =~ /notifycount/ ?
       '(SELECT COUNT(*) FROM notifications WHERE uid = u.id AND read IS NULL) AS notifycount' : (),
     $o{what} =~ /stats/ ? (
@@ -72,12 +74,14 @@ sub dbUserGet {
 
   my @join = (
     $o{session} ? 'JOIN sessions s ON s.uid = u.id' : (),
+    $o{what} =~ /hide_list/ || $o{sort} eq 'votes' ?
+      "LEFT JOIN users_prefs up ON up.uid = u.id AND up.key = 'hide_list'" : (),
   );
 
   my $order = sprintf {
     username => 'u.username %s',
     registered => 'u.registered %s',
-    votes => 'NOT u.show_list, u.c_votes %s',
+    votes => 'up.value NULLS FIRST, u.c_votes %s',
     changes => 'u.c_changes %s',
     tags => 'u.c_tags %s',
   }->{ $o{sort}||'username' }, $o{reverse} ? 'DESC' : 'ASC';
@@ -114,7 +118,7 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail rank show_list salt ign_votes notify_dbedit notify_announce |);
+    for (qw| username mail rank salt ign_votes notify_dbedit notify_announce |);
   $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
     if defined $o{passwd};
 

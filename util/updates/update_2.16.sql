@@ -65,8 +65,11 @@ INSERT INTO users_prefs (uid, key, value)
     SELECT id, 'customcss', customcss FROM users WHERE customcss <> '';
   UNION
     SELECT id, 'show_nsfw'::prefs_key, '1' FROM users WHERE show_nsfw;
+  UNION
+    SELECT id, 'hide_list'::prefs_key, '1' FROM users WHERE NOT show_list;
 
 ALTER TABLE users DROP COLUMN skin;
 ALTER TABLE users DROP COLUMN customcss;
 ALTER TABLE users DROP COLUMN show_nsfw;
+ALTER TABLE users DROP COLUMN show_list;
 

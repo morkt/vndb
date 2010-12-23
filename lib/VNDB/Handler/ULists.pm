@@ -115,10 +115,11 @@ sub rlist_e {
 sub votelist {
   my($self, $type, $id) = @_;
 
-  my $obj = $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : $self->dbUserGet(uid => $id)->[0];
+  my $obj = $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : $self->dbUserGet(uid => $id, what => 'hide_list')->[0];
   return 404 if !$obj->{id};
 
   my $own = $type eq 'u' && $self->authInfo->{id} && $self->authInfo->{id} == $id;
+  return 404 if $type eq 'u' && !$own && ($obj->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p',  required => 0, default => 1, template => 'int' },
@@ -220,8 +221,8 @@ sub wishlist {
   my($self, $uid) = @_;
 
   my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
-  my $u = $self->dbUserGet(uid => $uid)->[0];
-  return 404 if !$u || !$own && !($u->{show_list} || $self->authCan('usermod'));
+  my $u = $self->dbUserGet(uid => $uid, what => 'hide_list')->[0];
+  return 404 if !$u || !$own && ($u->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
@@ -322,8 +323,8 @@ sub vnlist {
   my($self, $uid) = @_;
 
   my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
-  my $u = $self->dbUserGet(uid => $uid)->[0];
-  return 404 if !$u || !$own && !($u->{show_list} || $self->authCan('usermod'));
+  my $u = $self->dbUserGet(uid => $uid, what => 'hide_list')->[0];
+  return 404 if !$u || !$own && ($u->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p',  required => 0, default => 1, template => 'int' },

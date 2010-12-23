@@ -27,7 +27,7 @@ YAWF::register(
 sub userpage {
   my($self, $uid) = @_;
 
-  my $u = $self->dbUserGet(uid => $uid, what => 'stats')->[0];
+  my $u = $self->dbUserGet(uid => $uid, what => 'stats hide_list')->[0];
   return 404 if !$u->{id};
 
   my $votes = $u->{c_votes} && $self->dbVoteStats(uid => $uid);
@@ -69,7 +69,7 @@ sub userpage {
     Tr ++$i % 2 ? (class => 'odd') : ();
      td mt '_userpage_votes';
      td;
-      if(!$u->{show_list}) {
+      if($u->{hide_list}) {
         txt mt '_userpage_hidden';
       } elsif($votes) {
         my($total, $count) = (0, 0);
@@ -99,7 +99,7 @@ sub userpage {
 
     Tr ++$i % 2 ? (class => 'odd') : ();
      td mt '_userpage_list';
-     td !$u->{show_list} ? mt('_userpage_hidden') :
+     td $u->{hide_list} ? mt('_userpage_hidden') :
        mt('_userpage_list_item', $u->{releasecount}, $u->{vncount});
     end;
 
@@ -116,7 +116,7 @@ sub userpage {
    end;
   end;
 
-  if($u->{show_list} && $votes) {
+  if(!$u->{hide_list} && $votes) {
     div class => 'mainbox';
      h1 mt '_userpage_votestats';
      $self->htmlVoteStats(u => $u, $votes);
@@ -307,7 +307,7 @@ sub edit {
       { name => 'mail',       template => 'mail' },
       { name => 'usrpass',    required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
       { name => 'usrpass2',   required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
-      { name => 'flags_list', required => 0, default => 0 },
+      { name => 'hide_list',  required => 0, default => 0,  enum => [0,1] },
       { name => 'show_nsfw',  required => 0, default => 0,  enum => [0,1] },
       { name => 'skin',       required => 0, default => '', enum => [ '', keys %{$self->{skins}} ] },
       { name => 'customcss',  required => 0, maxlength => 2000, default => '' },
@@ -315,13 +315,12 @@ sub edit {
     push @{$frm->{_err}}, 'passmatch'
       if ($frm->{usrpass} || $frm->{usrpass2}) && (!$frm->{usrpass} || !$frm->{usrpass2} || $frm->{usrpass} ne $frm->{usrpass2});
     if(!$frm->{_err}) {
-      $self->dbUserPrefSet($uid, $_ => $frm->{$_}) for (qw|skin customcss show_nsfw |);
+      $self->dbUserPrefSet($uid, $_ => $frm->{$_}) for (qw|skin customcss show_nsfw hide_list |);
       my %o;
       $o{username} = $frm->{usrname} if $frm->{usrname};
       $o{rank} = $frm->{rank} if $frm->{rank};
       $o{mail} = $frm->{mail};
       ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->{usrpass}) if $frm->{usrpass};
-      $o{show_list} = $frm->{flags_list} ? 1 : 0;
       $o{ign_votes} = $frm->{ign_votes} ? 1 : 0 if $self->authCan('usermod');
       $self->dbUserEdit($uid, %o);
       $self->dbSessionDel($uid) if $frm->{usrpass};
@@ -333,8 +332,7 @@ sub edit {
   # fill out default values
   $frm->{usrname}    ||= $u->{username};
   $frm->{$_} ||= $u->{$_} for(qw|rank mail|);
-  $frm->{$_} //= $u->{prefs}{$_} for(qw|skin customcss show_nsfw|);
-  $frm->{flags_list} = $u->{show_list} if !defined $frm->{flags_list};
+  $frm->{$_} //= $u->{prefs}{$_} for(qw|skin customcss show_nsfw hide_list|);
   $frm->{ign_votes} = $u->{ign_votes} if !defined $frm->{ign_votes};
 
   # create the page
@@ -366,7 +364,7 @@ sub edit {
     [ passwd => short => 'usrpass2', name => mt '_usere_confirm' ],
 
     [ part   => title => mt '_usere_options' ],
-    [ check  => short => 'flags_list', name => mt '_usere_flist', "/u$uid/list", "/u$uid/wish" ],
+    [ check  => short => 'hide_list', name => mt '_usere_flist', "/u$uid/list", "/u$uid/votes", "/u$uid/wish" ],
     [ check  => short => 'show_nsfw', name => mt '_usere_fnsfw' ],
     [ select => short => 'skin', name => mt('_usere_skin'), width => 300, options => [
       map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_}[0].($self->debug?" [$_]":'') ], sort { $self->{skins}{$a}[0] cmp $self->{skins}{$b}[0] } keys %{$self->{skins}} ] ],
@@ -380,7 +378,7 @@ sub posts {
   my($self, $uid) = @_;
 
   # fetch user info (cached if uid == loggedin uid)
-  my $u = $self->authInfo->{id} && $self->authInfo->{id} == $uid ? $self->authInfo : $self->dbUserGet(uid => $uid)->[0];
+  my $u = $self->authInfo->{id} && $self->authInfo->{id} == $uid ? $self->authInfo : $self->dbUserGet(uid => $uid, what => 'hide_list')->[0];
   return 404 if !$u->{id};
 
   my $f = $self->formValidate(
@@ -437,7 +435,7 @@ sub delete {
   # confirm
   if(!$act) {
     my $code = $self->authGetCode("/u$uid/del/o");
-    my $u = $self->dbUserGet(uid => $uid)->[0];
+    my $u = $self->dbUserGet(uid => $uid, what => 'hide_list')->[0];
     return 404 if !$u->{id};
     $self->htmlHeader(title => 'Delete user', noindex => 1);
     $self->htmlMainTabs('u', $u, 'del');
@@ -498,6 +496,7 @@ sub list {
 
   my($list, $np) = $self->dbUserGet(
     sort => $f->{s}, reverse => $f->{o} eq 'd',
+    what => 'hide_list',
     $char ne 'all' ? (
       firstchar => $char ) : (),
     results => 50,
@@ -525,8 +524,8 @@ sub list {
         a href => '/u'.$l->{id}, $l->{username};
        end;
        td class => 'tc2', $self->{l10n}->date($l->{registered});
-       td class => 'tc3'.(!$l->{show_list} && $self->authCan('usermod') ? ' linethrough' : '');
-        lit !$l->{show_list} && !$self->authCan('usermod') ? '-' : !$l->{c_votes} ? 0 :
+       td class => 'tc3'.($l->{hide_list} && $self->authCan('usermod') ? ' linethrough' : '');
+        lit $l->{hide_list} && !$self->authCan('usermod') ? '-' : !$l->{c_votes} ? 0 :
           qq|<a href="/u$l->{id}/votes">$l->{c_votes}</a>|;
        end;
        td class => 'tc4';
@@ -544,9 +543,9 @@ sub list {
 
 sub notifies {
   my($self, $uid) = @_;
-  return $self->htmlDenied if !$self->authInfo->{id} || $uid != $self->authInfo->{id};
 
-  my $u = $self->dbUserGet(uid => $uid)->[0];
+  my $u = $self->authInfo;
+  return $self->htmlDenied if !$u->{id} || $uid != $u->{id};
 
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },

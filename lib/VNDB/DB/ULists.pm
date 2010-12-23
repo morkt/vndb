@@ -188,7 +188,7 @@ sub dbVoteGet {
   my %where = (
     $o{uid} ? ( 'n.uid = ?' => $o{uid} ) : (),
     $o{vid} ? ( 'n.vid = ?' => $o{vid} ) : (),
-    $o{hide} ? ( 'u.show_list = TRUE' => 1 ) : (),
+    $o{hide} ? ( 'NOT EXISTS(SELECT 1 FROM users_prefs WHERE uid = n.uid AND key = \'hide_list\')' => 1 ) : (),
     $o{hide_ign} ? ( '(NOT u.ign_votes OR u.id = ?)' => $self->authInfo->{id}||0 ) : (),
     $o{vn_char}  ? ( 'LOWER(SUBSTR(vr.title, 1, 1)) = ?' => $o{vn_char} ) : (),
     defined $o{vn_char} && !$o{vn_char} ? (

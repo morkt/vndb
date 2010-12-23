@@ -5545,11 +5545,11 @@ hu : Beállítások
 nl : Opties
 
 :_usere_flist
-en : Allow other people to see my visual novel list ([url,_1,_1]) and wishlist ([url,_2,_2])
-ru : Разрешить остальным видеть мой список новелл ([url,_1,_1]) и список желаемого ([url,_2,_2])
-cs : Povolit ostatním zobrazit můj list vizuálních novel ([url,_1,_1]) a wishlist ([url,_2,_2])
-hu : Más embereknek megengedni, hogy lássák a visual novel listám ([url,_1,_1]) és a kívánságlistám ([url,_2,_2])
-nl : Sta andere mensen toe om mijn visual novel lijst ([url,_1,_1]) en wensenlijst ([url,_2,_2]) te zien
+en : Don't allow other people to see my visual novel list ([url,_1,_1]), votes ([url,_2,_2]) and wishlist ([url,_3,_3])
+ru*:
+cs*:
+hu*:
+nl : Sta andere mensen niet toe om mijn visual novel lijst ([url,_1,_1]), stemmen ([url,_2,_2]) en wensenlijst ([url,_3,_3]) te zien
 
 :_usere_fnsfw
 en : Disable warnings for images that are not safe for work.
