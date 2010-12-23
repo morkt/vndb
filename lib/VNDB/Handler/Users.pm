@@ -300,29 +300,28 @@ sub edit {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
       $self->authCan('usermod') ? (
-        { name => 'usrname', template => 'pname', minlength => 2, maxlength => 15 },
-        { name => 'rank', enum => [ 1..$#{$self->{user_ranks}} ] },
+        { name => 'usrname',   template => 'pname', minlength => 2, maxlength => 15 },
+        { name => 'rank',      enum => [ 1..$#{$self->{user_ranks}} ] },
         { name => 'ign_votes', required => 0, default => 0 },
       ) : (),
-      { name => 'mail', template => 'mail' },
-      { name => 'usrpass',  required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
-      { name => 'usrpass2', required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { name => 'mail',       template => 'mail' },
+      { name => 'usrpass',    required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { name => 'usrpass2',   required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
       { name => 'flags_list', required => 0, default => 0 },
-      { name => 'flags_nsfw', required => 0, default => 0 },
-      { name => 'skin',     enum => [ '', keys %{$self->{skins}} ], required => 0, default => '' },
-      { name => 'customcss', required => 0, maxlength => 2000, default => '' },
+      { name => 'show_nsfw',  required => 0, default => 0,  enum => [0,1] },
+      { name => 'skin',       required => 0, default => '', enum => [ '', keys %{$self->{skins}} ] },
+      { name => 'customcss',  required => 0, maxlength => 2000, default => '' },
     );
     push @{$frm->{_err}}, 'passmatch'
       if ($frm->{usrpass} || $frm->{usrpass2}) && (!$frm->{usrpass} || !$frm->{usrpass2} || $frm->{usrpass} ne $frm->{usrpass2});
     if(!$frm->{_err}) {
-      $self->dbUserPrefSet($uid, $_ => $frm->{$_}) for (qw|skin customcss|);
+      $self->dbUserPrefSet($uid, $_ => $frm->{$_}) for (qw|skin customcss show_nsfw |);
       my %o;
       $o{username} = $frm->{usrname} if $frm->{usrname};
       $o{rank} = $frm->{rank} if $frm->{rank};
       $o{mail} = $frm->{mail};
       ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->{usrpass}) if $frm->{usrpass};
       $o{show_list} = $frm->{flags_list} ? 1 : 0;
-      $o{show_nsfw} = $frm->{flags_nsfw} ? 1 : 0;
       $o{ign_votes} = $frm->{ign_votes} ? 1 : 0 if $self->authCan('usermod');
       $self->dbUserEdit($uid, %o);
       $self->dbSessionDel($uid) if $frm->{usrpass};
@@ -334,9 +333,8 @@ sub edit {
   # fill out default values
   $frm->{usrname}    ||= $u->{username};
   $frm->{$_} ||= $u->{$_} for(qw|rank mail|);
-  $frm->{$_} ||= $u->{prefs}{$_} for(qw|skin customcss|);
+  $frm->{$_} //= $u->{prefs}{$_} for(qw|skin customcss show_nsfw|);
   $frm->{flags_list} = $u->{show_list} if !defined $frm->{flags_list};
-  $frm->{flags_nsfw} = $u->{show_nsfw} if !defined $frm->{flags_nsfw};
   $frm->{ign_votes} = $u->{ign_votes} if !defined $frm->{ign_votes};
 
   # create the page
@@ -369,7 +367,7 @@ sub edit {
 
     [ part   => title => mt '_usere_options' ],
     [ check  => short => 'flags_list', name => mt '_usere_flist', "/u$uid/list", "/u$uid/wish" ],
-    [ check  => short => 'flags_nsfw', name => mt '_usere_fnsfw' ],
+    [ check  => short => 'show_nsfw', name => mt '_usere_fnsfw' ],
     [ select => short => 'skin', name => mt('_usere_skin'), width => 300, options => [
       map [ $_ eq $self->{skin_default} ? '' : $_, $self->{skins}{$_}[0].($self->debug?" [$_]":'') ], sort { $self->{skins}{$a}[0] cmp $self->{skins}{$b}[0] } keys %{$self->{skins}} ] ],
     [ textarea => short => 'customcss', name => mt '_usere_css' ],

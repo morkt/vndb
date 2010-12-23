@@ -89,7 +89,7 @@ sub htmlFormPart {
      end;
      td class => 'field';
       input type => 'checkbox', name => $o{short}, id => $o{short},
-        value => $o{value}||'true', $frm->{$o{short}} ? ( checked => 'checked' ) : ();
+        value => $o{value}||1, $frm->{$o{short}} ? ( checked => 'checked' ) : ();
       label for => $o{short};
        lit $o{name};
       end;
