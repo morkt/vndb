@@ -12,7 +12,7 @@ our @EXPORT = qw|htmlHeader htmlFooter|;
 
 sub htmlHeader { # %options->{ title, noindex, search, feeds }
   my($self, %o) = @_;
-  my $skin = $self->reqParam('skin') || $self->authInfo->{skin} || $self->{skin_default};
+  my $skin = $self->reqParam('skin') || $self->authPref('skin') || $self->{skin_default};
   $skin = $self->{skin_default} if !$self->{skins}{$skin} || !-d "$VNDB::ROOT/static/s/$skin";
 
   # heading
@@ -22,8 +22,8 @@ sub htmlHeader { # %options->{ title, noindex, search, feeds }
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
     Link rel => 'stylesheet', href => $self->{url_static}.'/s/'.$skin.'/style.css?'.$self->{version}, type => 'text/css', media => 'all';
     Link rel => 'search', type => 'application/opensearchdescription+xml', title => 'VNDB VN Search', href => $self->{url}.'/opensearch.xml';
-    if($self->authInfo->{customcss}) {
-      (my $css = $self->authInfo->{customcss}) =~ s/\n/ /g;
+    if($self->authPref('customcss')) {
+      (my $css = $self->authPref('customcss')) =~ s/\n/ /g;
       style type => 'text/css', $css;
     }
     Link rel => 'alternate', type => 'application/atom+xml', href => "/feeds/$_.atom", title => $self->{atom_feeds}{$_}[1]

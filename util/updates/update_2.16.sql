@@ -47,3 +47,23 @@ CREATE CONSTRAINT TRIGGER update_vnlist_rlist AFTER INSERT ON rlists  DEFERRABLE
 ALTER TABLE rlists DROP COLUMN vstat;
 ALTER TABLE rlists RENAME COLUMN rstat TO status;
 
+
+
+-- add users_prefs table
+CREATE TYPE prefs_key AS ENUM ('l10n', 'skin', 'customcss', 'show_nsfw', 'hide_list', 'notify_dbedit', 'notify_announce');
+CREATE TABLE users_prefs (
+  uid integer NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+  key prefs_key NOT NULL,
+  value varchar NOT NULL,
+  PRIMARY KEY(uid, key)
+);
+
+-- convert from users.* to users_prefs
+INSERT INTO users_prefs (uid, key, value)
+    SELECT id, 'skin'::prefs_key, skin FROM users WHERE skin <> ''
+  UNION
+    SELECT id, 'customcss', customcss FROM users WHERE customcss <> '';
+
+ALTER TABLE users DROP COLUMN skin;
+ALTER TABLE users DROP COLUMN customcss;
+

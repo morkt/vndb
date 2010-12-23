@@ -270,14 +270,20 @@ CREATE TABLE users (
   show_list boolean NOT NULL DEFAULT TRUE,
   c_votes integer NOT NULL DEFAULT 0,
   c_changes integer NOT NULL DEFAULT 0,
-  skin varchar(128) NOT NULL DEFAULT '',
-  customcss text NOT NULL DEFAULT '',
   ip inet NOT NULL DEFAULT '0.0.0.0',
   c_tags integer NOT NULL DEFAULT 0,
   salt character(9) NOT NULL DEFAULT '',
   ign_votes boolean NOT NULL DEFAULT FALSE,
   notify_dbedit boolean NOT NULL DEFAULT TRUE,
   notify_announce boolean NOT NULL DEFAULT FALSE
+);
+
+-- users_prefs
+CREATE TABLE users_prefs (
+  uid integer NOT NULL,
+  key prefs_key NOT NULL,
+  value varchar NOT NULL,
+  PRIMARY KEY(uid, key)
 );
 
 -- vn
@@ -404,6 +410,7 @@ ALTER TABLE threads             ADD FOREIGN KEY (id, count) REFERENCES threads_p
 ALTER TABLE threads_posts       ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
 ALTER TABLE threads_posts       ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE SET DEFAULT;
 ALTER TABLE threads_boards      ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
+ALTER TABLE users_prefs         ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE vn                  ADD FOREIGN KEY (latest)    REFERENCES vn_rev        (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn                  ADD FOREIGN KEY (rgraph)    REFERENCES relgraphs     (id);
 ALTER TABLE vn_anime            ADD FOREIGN KEY (aid)       REFERENCES anime         (id);

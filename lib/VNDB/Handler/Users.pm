@@ -291,7 +291,7 @@ sub edit {
   return $self->htmlDenied if !$self->authInfo->{id} || $self->authInfo->{id} != $uid && !$self->authCan('usermod');
 
   # fetch user info (cached if uid == loggedin uid)
-  my $u = $self->authInfo->{id} == $uid ? $self->authInfo : $self->dbUserGet(uid => $uid, what => 'extended')->[0];
+  my $u = $self->authInfo->{id} == $uid ? $self->authInfo : $self->dbUserGet(uid => $uid, what => 'extended prefs')->[0];
   return 404 if !$u->{id};
 
   # check POST data
@@ -315,12 +315,11 @@ sub edit {
     push @{$frm->{_err}}, 'passmatch'
       if ($frm->{usrpass} || $frm->{usrpass2}) && (!$frm->{usrpass} || !$frm->{usrpass2} || $frm->{usrpass} ne $frm->{usrpass2});
     if(!$frm->{_err}) {
+      $self->dbUserPrefSet($uid, $_ => $frm->{$_}) for (qw|skin customcss|);
       my %o;
       $o{username} = $frm->{usrname} if $frm->{usrname};
       $o{rank} = $frm->{rank} if $frm->{rank};
       $o{mail} = $frm->{mail};
-      $o{skin} = $frm->{skin};
-      $o{customcss} = $frm->{customcss};
       ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->{usrpass}) if $frm->{usrpass};
       $o{show_list} = $frm->{flags_list} ? 1 : 0;
       $o{show_nsfw} = $frm->{flags_nsfw} ? 1 : 0;
@@ -334,7 +333,8 @@ sub edit {
 
   # fill out default values
   $frm->{usrname}    ||= $u->{username};
-  $frm->{$_} ||= $u->{$_} for(qw|rank mail skin customcss|);
+  $frm->{$_} ||= $u->{$_} for(qw|rank mail|);
+  $frm->{$_} ||= $u->{prefs}{$_} for(qw|skin customcss|);
   $frm->{flags_list} = $u->{show_list} if !defined $frm->{flags_list};
   $frm->{flags_nsfw} = $u->{show_nsfw} if !defined $frm->{flags_nsfw};
   $frm->{ign_votes} = $u->{ign_votes} if !defined $frm->{ign_votes};

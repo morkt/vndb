@@ -6,14 +6,14 @@ use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw|
-  dbUserGet dbUserEdit dbUserAdd dbUserDel
+  dbUserGet dbUserEdit dbUserAdd dbUserDel dbUserPrefSet
   dbSessionAdd dbSessionDel dbSessionUpdateLastUsed
   dbNotifyGet dbNotifyMarkRead dbNotifyRemove
 |;
 
 
 # %options->{ username passwd mail session uid ip registered search results page what sort reverse }
-# what: notifycount stats extended
+# what: notifycount stats extended prefs
 # sort: username registered votes changes tags
 sub dbUserGet {
   my $s = shift;
@@ -54,7 +54,7 @@ sub dbUserGet {
     qw|id username c_votes c_changes show_list c_tags|,
     q|extract('epoch' from registered) as registered|,
     $o{what} =~ /extended/ ? (
-      qw|mail rank salt skin customcss show_nsfw ign_votes notify_dbedit notify_announce|,
+      qw|mail rank salt show_nsfw ign_votes notify_dbedit notify_announce|,
       q|encode(passwd, 'hex') AS passwd|
     ) : (),
     $o{what} =~ /notifycount/ ?
@@ -90,6 +90,20 @@ sub dbUserGet {
       ORDER BY !s|,
     join(', ', @select), join(' ', @join), \%where, $order
   );
+
+  if($o{what} =~ /prefs/) {
+    my %r = map {
+      $r->[$_]{prefs} = {};
+      ($r->[$_]{id}, $r->[$_])
+    } 0..$#$r;
+
+    $r{$_->{uid}}{prefs}{$_->{key}} = $_->{value} for (@{$s->dbAll(q|
+      SELECT uid, key, value
+        FROM users_prefs
+        WHERE uid IN(!l)|,
+      [ keys %r ]
+    )});
+  }
   return wantarray ? ($r, $np) : $r;
 }
 
@@ -100,7 +114,7 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail rank show_nsfw show_list skin customcss salt ign_votes notify_dbedit notify_announce |);
+    for (qw| username mail rank show_nsfw show_list salt ign_votes notify_dbedit notify_announce |);
   $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
     if defined $o{passwd};
 
@@ -124,6 +138,15 @@ sub dbUserAdd {
 # uid
 sub dbUserDel {
   $_[0]->dbExec(q|DELETE FROM users WHERE id = ?|, $_[1]);
+}
+
+
+# uid, key, val
+sub dbUserPrefSet {
+  my($s, $uid, $key, $val) = @_;
+  !$val ? $s->dbExec('DELETE FROM users_prefs WHERE uid = ? AND key = ?', $uid, $key)
+   : $s->dbExec('UPDATE users_prefs SET value = ? WHERE uid = ? AND key = ?', $val, $uid, $key)
+  || $s->dbExec('INSERT INTO users_prefs (uid, key, value) VALUES (?, ?, ?)', $uid, $key, $val);
 }
 
 
