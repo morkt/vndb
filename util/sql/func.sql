@@ -790,12 +790,10 @@ BEGIN
       ) x(id, title) ON c.id = x.id
       -- join info about the deletion itself
       JOIN changes c2 ON c2.id = NEW.latest
-      -- join info about the user who should get this notification
-      JOIN users u ON u.id = c.requester
       -- exclude the user who edited the entry
      WHERE c.requester <> c2.requester
        -- exclude users who don't want this notify
-       AND u.notify_dbedit;
+       AND NOT EXISTS(SELECT 1 FROM users_prefs up WHERE uid = c.requester AND key = 'notify_nodbedit');
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -805,11 +803,11 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION notify_announce() RETURNS trigger AS $$
 BEGIN
   INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
-    SELECT 'announce', 't', u.id, t.id, 1, t.title, NEw.uid
+    SELECT 'announce', 't', up.uid, t.id, 1, t.title, NEw.uid
       FROM threads t
       JOIN threads_boards tb ON tb.tid = t.id
       -- get the users who want this announcement
-      JOIN users u ON u.notify_announce
+      JOIN users_prefs up ON up.key = 'notify_announce'
      WHERE t.id = NEW.tid
        AND tb.type = 'an' -- announcement board
        AND NOT t.hidden;

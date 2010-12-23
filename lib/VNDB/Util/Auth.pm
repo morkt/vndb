@@ -198,10 +198,11 @@ sub _incorrectcode {
 
 sub authPref {
   my($self, $key, $val) = @_;
-  return '' if !$self->authInfo->{id};
-  return $self->{_auth}{prefs}{$key}||'' if @_ == 2;
-  $self->{_auth}{prefs}{$key} = $val;
-  $self->dbUserPrefSet($key, $val);
+  my $nfo = $self->authInfo;
+  return '' if !$nfo->{id};
+  return $nfo->{prefs}{$key}||'' if @_ == 2;
+  $nfo->{prefs}{$key} = $val;
+  $self->dbUserPrefSet($nfo->{id}, $key, $val);
 }
 
 1;

@@ -5798,7 +5798,7 @@ cs : Nastavení
 hu : Beállítások
 nl : Instellingen
 
-:_usern_set_dbedit
+:_usern_set_nodbedit
 en : Notify me about edits of database entries I contributed to.
 ru : Уведомлять меня о правках записей базы данных, которые я редактировал(а).
 cs : Upozorňovat mne na úpravy databáze, ke kterým jsem přispěl/a.

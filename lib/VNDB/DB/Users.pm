@@ -55,7 +55,7 @@ sub dbUserGet {
     qw|id username c_votes c_changes c_tags|,
     q|extract('epoch' from registered) as registered|,
     $o{what} =~ /extended/ ? (
-      qw|mail rank salt ign_votes notify_dbedit notify_announce|,
+      qw|mail rank salt ign_votes|,
       q|encode(passwd, 'hex') AS passwd|
     ) : (),
     $o{what} =~ /hide_list/ ? 'up.value AS hide_list' : (),
@@ -95,7 +95,7 @@ sub dbUserGet {
     join(', ', @select), join(' ', @join), \%where, $order
   );
 
-  if($o{what} =~ /prefs/) {
+  if(@$r && $o{what} =~ /prefs/) {
     my %r = map {
       $r->[$_]{prefs} = {};
       ($r->[$_]{id}, $r->[$_])
@@ -118,7 +118,7 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail rank salt ign_votes notify_dbedit notify_announce |);
+    for (qw| username mail rank salt ign_votes |);
   $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
     if defined $o{passwd};
 

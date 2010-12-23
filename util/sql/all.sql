@@ -10,7 +10,7 @@ CREATE TYPE language          AS ENUM('cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 
 CREATE TYPE medium            AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
 CREATE TYPE notification_ntype AS ENUM ('pm', 'dbdel', 'listdel', 'dbedit', 'announce');
 CREATE TYPE notification_ltype AS ENUM ('v', 'r', 'p', 't');
-CREATE TYPE prefs_key         AS ENUM ('l10n', 'skin', 'customcss', 'show_nsfw', 'hide_list', 'notify_dbedit', 'notify_announce');
+CREATE TYPE prefs_key         AS ENUM ('l10n', 'skin', 'customcss', 'show_nsfw', 'hide_list', 'notify_nodbedit', 'notify_announce');
 CREATE TYPE producer_relation AS ENUM ('old', 'new', 'sub', 'par', 'imp', 'ipa', 'spa', 'ori');
 CREATE TYPE release_type      AS ENUM ('complete', 'partial', 'trial');
 CREATE TYPE vn_relation       AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
@@ -106,8 +106,10 @@ CREATE SEQUENCE covers_seq;
 
 
 -- Rows that are assumed to be available
-INSERT INTO users (id, username, mail, rank, notify_dbdel) VALUES (0, 'deleted', 'del@vndb.org', 0, false);
-INSERT INTO users (username, mail, rank, notify_dbdel)     VALUES ('multi', 'multi@vndb.org', 0, false);
+INSERT INTO users (id, username, mail, rank) VALUES (0, 'deleted', 'del@vndb.org', 0);
+INSERT INTO users (username, mail, rank)     VALUES ('multi', 'multi@vndb.org', 0);
+INSERT INTO users_prefs (uid, key, value)    VALUES (0, 'notify_nodbedit', '1');
+INSERT INTO users_prefs (uid, key, value)    VALUES (1, 'notify_nodbedit', '1');
 
 INSERT INTO stats_cache (section, count) VALUES
   ('users',         1),

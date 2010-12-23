@@ -50,7 +50,7 @@ ALTER TABLE rlists RENAME COLUMN rstat TO status;
 
 
 -- add users_prefs table
-CREATE TYPE prefs_key AS ENUM ('l10n', 'skin', 'customcss', 'show_nsfw', 'hide_list', 'notify_dbedit', 'notify_announce');
+CREATE TYPE prefs_key AS ENUM ('l10n', 'skin', 'customcss', 'show_nsfw', 'hide_list', 'notify_nodbedit', 'notify_announce');
 CREATE TABLE users_prefs (
   uid integer NOT NULL REFERENCES users (id) ON DELETE CASCADE,
   key prefs_key NOT NULL,
@@ -61,15 +61,23 @@ CREATE TABLE users_prefs (
 -- convert from users.* to users_prefs
 INSERT INTO users_prefs (uid, key, value)
     SELECT id, 'skin'::prefs_key, skin FROM users WHERE skin <> ''
-  UNION
-    SELECT id, 'customcss', customcss FROM users WHERE customcss <> '';
-  UNION
-    SELECT id, 'show_nsfw'::prefs_key, '1' FROM users WHERE show_nsfw;
-  UNION
-    SELECT id, 'hide_list'::prefs_key, '1' FROM users WHERE NOT show_list;
+  UNION ALL
+    SELECT id, 'customcss', customcss FROM users WHERE customcss <> ''
+  UNION ALL
+    SELECT id, 'show_nsfw', '1' FROM users WHERE show_nsfw
+  UNION ALL
+    SELECT id, 'hide_list', '1' FROM users WHERE NOT show_list
+  UNION ALL
+    SELECT id, 'notify_nodbedit', '1' FROM users WHERE NOT notify_dbedit
+  UNION ALL
+    SELECT id, 'notify_announce', '1' FROM users WHERE notify_announce;
 
+-- remove unused columns from the user table
 ALTER TABLE users DROP COLUMN skin;
 ALTER TABLE users DROP COLUMN customcss;
 ALTER TABLE users DROP COLUMN show_nsfw;
 ALTER TABLE users DROP COLUMN show_list;
+ALTER TABLE users DROP COLUMN notify_dbedit;
+ALTER TABLE users DROP COLUMN notify_announce;
+
 

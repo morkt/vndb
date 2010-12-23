@@ -559,15 +559,11 @@ sub notifies {
   if($self->reqMethod() eq 'POST' && $self->reqParam('set')) {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { name => 'notify_dbedit', required => 0 },
-      { name => 'notify_announce', required => 0 }
+      { name => 'notify_nodbedit', required => 0, default => 1, enum => [0,1] },
+      { name => 'notify_announce', required => 0, default => 0, enum => [0,1] }
     );
     return 404 if $frm->{_err};
-    for ('notify_dbedit', 'notify_announce') {
-      $frm->{$_} = $frm->{$_} ? 1 : 0;
-      $self->authInfo->{$_} = $frm->{$_};
-    }
-    $self->dbUserEdit($uid, %$frm);
+    $self->authPref($_, $frm->{$_}) for ('notify_nodbedit', 'notify_announce');
     $saved = 1;
 
   # updating notifications
@@ -658,9 +654,10 @@ sub notifies {
    h1 mt '_usern_set_title';
    div class => 'notice', mt '_usern_set_saved' if $saved;
    p;
-    for('dbedit', 'announce') {
-      input type => 'checkbox', name => "notify_$_", id => "notify_$_", value => 1,
-        $self->authInfo->{"notify_$_"} ? (checked => 'checked') : ();
+    for('nodbedit', 'announce') {
+      my $def = $_ eq 'nodbedit'? 0 : 1;
+      input type => 'checkbox', name => "notify_$_", id => "notify_$_", value => $def,
+        ($self->authPref("notify_$_")||0) == $def ? (checked => 'checked') : ();
       label for => "notify_$_", ' '.mt("_usern_set_$_");
       br;
     }
