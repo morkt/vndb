@@ -54,22 +54,42 @@ YAWF::init(
 sub reqinit {
   my $self = shift;
 
-  # Determine language
-  # if the cookie is set, use that. Otherwise, interpret the Accept-Language header or fall back to English.
-  # if the cookie is set and is the same as either the Accept-Language header or the fallback, remove it
-  my $conf = $self->reqCookie('l10n');
-  $conf = '' if !$conf || !grep $_ eq $conf, VNDB::L10N::languages;
-
-  $self->{l10n} = VNDB::L10N->get_handle(); # this uses I18N::LangTags::Detect
-  $self->resHeader('Set-Cookie', "l10n= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$self->{cookie_domain}")
-    if $conf && $self->{l10n}->language_tag() eq $conf;
-  $self->{l10n} = VNDB::L10N->get_handle($conf) if $conf && $self->{l10n}->language_tag() ne $conf;
-
-
   # check authentication cookies
   $self->authInit;
 
-  # check for IE6
+  # Determine language
+  my $cookie = $self->reqCookie('l10n');
+  $cookie = '' if !$cookie || !grep $_ eq $cookie, VNDB::L10N::languages;
+  my $handle = VNDB::L10N->get_handle(); # falls back to English
+  my $browser = $handle->language_tag();
+  my $rmcookie = 0;
+
+  # when logged in, the setting is kept in the DB even if it's the same as what
+  # the browser requests. This is to ensure a user gets the same language even
+  # when switching PCs
+  if($self->authInfo->{id}) {
+    my $db = $self->authPref('l10n');
+    if($db && !grep $_ eq $db, VNDB::L10N::languages) {
+      $self->authPref(l10n => undef);
+      $db = '';
+    }
+    $rmcookie = 1 if $cookie;
+    if(!$db && $cookie && $cookie ne $browser) {
+      $self->authPref(l10n => $cookie);
+      $db = $cookie;
+    }
+    $handle = VNDB::L10N->get_handle($db) if $db && $db ne $browser;
+  }
+
+  else {
+    $rmcookie = 1 if $cookie && $cookie eq $browser;
+    $handle = VNDB::L10N->get_handle($cookie) if $cookie && $browser ne $cookie;
+  }
+  $self->resHeader('Set-Cookie', "l10n= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$self->{cookie_domain}")
+    if $rmcookie;
+  $self->{l10n} = $handle;
+
+  # check for IE
   if($self->reqHeader('User-Agent') && $self->reqHeader('User-Agent') =~ /MSIE [67]/
     && !$self->reqCookie('ie-sucks') && $self->reqPath ne 'we-dont-like-ie') {
     # act as if we're opening /we-dont-like-ie6 (ugly hack, until YAWF supports preventing URL handlers from firing)

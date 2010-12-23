@@ -340,10 +340,17 @@ sub setlang {
   return 404 if $lang->{_err};
   $lang = $lang->{lang};
 
+  my $browser = VNDB::L10N->get_handle()->language_tag();
+
   (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$self->{url}//;
   $self->resRedirect($ref, 'post');
-  $self->resHeader('Set-Cookie', "l10n=$lang; expires=Sat, 01-Jan-2030 00:00:00 GMT; path=/; domain=$self->{cookie_domain}")
-    if $lang ne $self->{l10n}->language_tag();
+  if($lang ne $self->{l10n}->language_tag()) {
+    $self->authInfo->{id}
+    ? $self->authPref(l10n => $lang eq $browser ? undef : $lang)
+    : $self->resHeader('Set-Cookie', sprintf 'l10n=%s; expires=%s; path=/; domain=%s',
+        $lang, $lang eq $browser ? 'Sat, 01-Jan-2000 00:00:00 GMT' : 'Sat, 01-Jan-2030 00:00:00 GMT',
+        $self->{cookie_domain});
+  }
 }
 
 

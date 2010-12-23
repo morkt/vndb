@@ -70,6 +70,10 @@ sub authLogout {
 
   $self->resRedirect('/', 'temp');
   _rmcookie($self);
+
+  # set l10n cookie if the user has a preferred language set
+  my $l10n = $self->authPref('l10n');
+  $self->resHeader('Set-Cookie', "l10n=$l10n; expires=Sat, 01-Jan-2030 00:00:00 GMT; path=/; domain=$self->{cookie_domain}") if $l10n;
 }
 
 
