@@ -119,7 +119,7 @@ sub votelist {
   return 404 if !$obj->{id};
 
   my $own = $type eq 'u' && $self->authInfo->{id} && $self->authInfo->{id} == $id;
-  return 404 if $type eq 'u' && !$own && ($obj->{hide_list} || $self->authCan('usermod'));
+  return 404 if $type eq 'u' && !$own && !(!$obj->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p',  required => 0, default => 1, template => 'int' },
@@ -223,7 +223,7 @@ sub wishlist {
 
   my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
   my $u = $self->dbUserGet(uid => $uid, what => 'hide_list')->[0];
-  return 404 if !$u || !$own && ($u->{hide_list} || $self->authCan('usermod'));
+  return 404 if !$u || !$own && !(!$u->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
@@ -325,7 +325,7 @@ sub vnlist {
 
   my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
   my $u = $self->dbUserGet(uid => $uid, what => 'hide_list')->[0];
-  return 404 if !$u || !$own && ($u->{hide_list} || $self->authCan('usermod'));
+  return 404 if !$u || !$own && !(!$u->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p',  required => 0, default => 1, template => 'int' },
