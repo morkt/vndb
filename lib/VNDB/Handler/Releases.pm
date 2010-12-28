@@ -56,7 +56,7 @@ sub page {
       [ media      => join => ', ', split => sub {
         map $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1), @{$_[0]}
       } ],
-      [ resolution => serialize => sub { $self->{resolutions}[$_[0]][0] } ],
+      [ resolution => serialize => sub { my $r = $self->{resolutions}[$_[0]][0]; $r =~ /^_/ ? mt($r) : $r } ],
       [ voiced     => serialize => sub { mt '_voiced_'.$_[0] } ],
       [ ani_story  => serialize => sub { mt '_animated_'.$_[0] } ],
       [ ani_ero    => serialize => sub { mt '_animated_'.$_[0] } ],
