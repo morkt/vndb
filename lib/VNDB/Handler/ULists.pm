@@ -127,6 +127,7 @@ sub votelist {
     { name => 's',  required => 0, default => 'date', enum => [qw|date title vote|] },
     { name => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
   );
+  return 404 if $f->{_err};
 
   if($own && $self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;

@@ -19,6 +19,7 @@
 	- Added users_prefs table and removed the following columns from users:
 	  skin, customcss, show_nsfw, show_list, notify_announce, notify_dbedit
 	- Store l10n preference in the database for logged-in users
+	- Bugfix: check for validness of form arguments on /[uv]+/votes
 
 2.15 - 2010-12-15
 	- Removed expand/collapse from history browser and /u+/posts and switched to
