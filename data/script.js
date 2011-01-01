@@ -1787,6 +1787,7 @@ function filLoad() {
     tag('b', {'class':'ruler'}, null),
     c,
     tag('b', {'class':'ruler'}, null),
+    PREF_CODE != '' ? tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_filsave'), onclick:filSaveDefault }) : null,
     tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_apply'), onclick:function () {
       var f = byId('fil');
       while(f.nodeName.toLowerCase() != 'form')
@@ -1798,6 +1799,17 @@ function filLoad() {
   filSelectCat(1);
   byId('filselect').onclick = filShow;
   filDeSerialize();
+}
+
+function filSaveDefault() {
+  var but = this;
+  but.value = mt('_js_loading');
+  but.enabled = false;
+  var type = byId('filselect').href.match(/#r$/) ? 'release' : 'vn';
+  ajax('/xml/prefs.xml?formcode='+PREF_CODE+';key=filter_'+type+';value='+byId('fil').value, function (hr) {
+    but.value = mt('_rbrowse_filsave');
+    but.enable = true;
+  });
 }
 
 function filSelectCat(n) {

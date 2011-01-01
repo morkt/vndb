@@ -21,6 +21,7 @@
 	- Store l10n preference in the database for logged-in users
 	- Bugfix: check for validness of form arguments on /[uv]+/votes
 	- Bugfix: translate screen resolutions on release revision pages
+	- Implemented permanent release/vn filters
 
 2.15 - 2010-12-15
 	- Removed expand/collapse from history browser and /u+/posts and switched to

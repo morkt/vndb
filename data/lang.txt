@@ -3929,6 +3929,13 @@ cs : Ero scény
 hu : Ero jelenetek
 nl : Erotische scenes
 
+:_rbrowse_filsave
+en : Save as default
+ru*:
+cs*:
+hu*:
+nl : Opslaan als standaard
+
 :_rbrowse_apply
 en : Apply
 ru : Применить
