@@ -1794,7 +1794,8 @@ function filLoad() {
         f = f.parentNode;
       f.submit();
     }}),
-    tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} })
+    tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} }),
+    tag('p', {id:'fil_savenote', 'class':'hidden'}, mt('_rbrowse_savenote'))
   ));
   filSelectCat(1);
   byId('filselect').onclick = filShow;
@@ -1805,6 +1806,7 @@ function filSaveDefault() {
   var but = this;
   but.value = mt('_js_loading');
   but.enabled = false;
+  setClass(byId('fil_savenote'), 'hidden', false);
   var type = byId('filselect').href.match(/#r$/) ? 'release' : 'vn';
   ajax('/xml/prefs.xml?formcode='+PREF_CODE+';key=filter_'+type+';value='+byId('fil').value, function (hr) {
     but.value = mt('_rbrowse_filsave');
@@ -1813,6 +1815,7 @@ function filSaveDefault() {
 }
 
 function filSelectCat(n) {
+  setClass(byId('fil_savenote'), 'hidden', true);
   n = this.fil_num ? this.fil_num : n;
   for(var i=1; i<fil_cats.length; i++) {
     setClass(fil_cats[i], 'optselected', i == n);
@@ -1825,6 +1828,7 @@ function filSelectCat(n) {
 
 function filSelectField(obj) {
   var t = obj && obj.parentNode ? obj : this;
+  setClass(byId('fil_savenote'), 'hidden', true);
   // update checkbox and label
   var o = t;
   while(o.nodeName.toLowerCase() != 'tr')
@@ -1915,6 +1919,7 @@ function filShow() {
   var hid = !hasClass(div, 'hidden');
   setClass(div, 'hidden', hid);
   setText(byName(byId('filselect'), 'i')[0], hid ? collapsed_icon : expanded_icon);
+  setClass(byId('fil_savenote'), 'hidden', true);
 
   var o = this;
   ddx = ddy = 0;
@@ -2133,7 +2138,8 @@ function filVN() {
       filFOptions('hasani', mt('_vnbrowse_anime'), [[1, mt('_vnbrowse_anime_yes')],[0, mt('_vnbrowse_anime_no')]])
     ],
     [ mt('_vnbrowse_tags'),
-      [ '',       ' ',                    tag('('+mt('_vnbrowse_booland')+')') ],
+      [ '',       ' ',                   tag(mt('_vnbrowse_booland')) ],
+      [ '',       ' ', PREF_CODE != '' ? tag(mt('_vnbrowse_tagactive')) : null ],
       filFTagInput('tag_inc', mt('_vnbrowse_taginc')),
       filFTagInput('tag_exc', mt('_vnbrowse_tagexc')),
       filFOptions('tagspoil', ' ', [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]],

@@ -16,7 +16,7 @@ YAWF::register(
 
 sub rand {
   my $self = shift;
-  $self->resRedirect('/v'.$self->dbVNGet(results => 1, sort => 'rand')->[0]{id}, 'temp');
+  $self->resRedirect('/v'.$self->filFetchDB(vn => undef, undef, {results => 1, sort => 'rand'})->[0]{id}, 'temp');
 }
 
 

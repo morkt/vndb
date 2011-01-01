@@ -39,14 +39,15 @@ sub tagpage {
   my $tagspoil = $self->reqCookie($self->{cookie_prefix}.'tagspoil');
   $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0 if $f->{m} == -1;
 
-  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbVNGet(
+  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->filFetchDB(vn => undef, undef, {
     what => 'rating',
     results => 50,
     page => $f->{p},
     sort => $f->{s}, reverse => $f->{o} eq 'd',
     tagspoil => $f->{m},
     tag_inc => $tag,
-  );
+    tag_exc => undef,
+  });
 
   my $title = mt '_tagp_title', $t->{meta}?0:1, $t->{name};
   $self->htmlHeader(title => $title, noindex => $t->{state} != 2);

@@ -3950,6 +3950,13 @@ cs : Vymazat
 hu : Törlés
 nl :
 
+:_rbrowse_savenote
+en : Your saved filters will be applied automatically to several other parts of the site as well, such as the homepage. To change these filters, come back to this page and use the "Save as default" button again. To remove your saved filters, hit "Reset" and then save.
+ru*:
+cs*:
+hu*:
+nl : Je opgeslagen filters worden ook automatisch toegepast op een aantal andere delen van de site, waaronder de homepagina. Om deze filters te veranderen, ga terug naar deze pagina en gebruik de "Opslaan als standaard" knop weer. Om je opgeslagen filters te verwijderen, klik op "Reset" en sla je instellingen weer op.
+
 
 
 
@@ -4079,11 +4086,11 @@ hu : Nagyobb spoilerek megjelenítése
 nl : Laat alle spoilers zien
 
 :_tagp_novn
-en : This tag has not been linked to any visual novels yet, or they were hidden because of the spoiler settings.
-ru : Этот тег пока не содержит ссылок ни на одну новеллу, либо они скрыты из-за настроек отображения спойлеров.
-cs : Tento tag ještě nebyl použit v žádné vizuální novele nebo byly tyto skryty kvůli nastavení spoilerů.
-hu : Ez a címke eddig egy visual novelhez sincs hozzárendelve, vagy el lettek rejtve a spoiler-ek beállítása során.
-nl : Deze tag is nog niet gekoppeld aan een visual novel, of deze worden niet weergegeven in verband met de spoilerinstelling.
+en : This tag has not been linked to any visual novels yet, or they were hidden because of your spoiler settings or default filters.
+ru*: Этот тег пока не содержит ссылок ни на одну новеллу, либо они скрыты из-за настроек отображения спойлеров.
+cs*: Tento tag ještě nebyl použit v žádné vizuální novele nebo byly tyto skryty kvůli nastavení spoilerů.
+hu*: Ez a címke eddig egy visual novelhez sincs hozzárendelve, vagy el lettek rejtve a spoiler-ek beállítása során.
+nl : Deze tag is nog niet gekoppeld aan een visual novel, of deze worden niet weergegeven in verband met je spoiler- of filterinstelling.
 
 :_tagp_cached
 en : The list below also includes all visual novels linked to child tags. This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.
@@ -5932,11 +5939,18 @@ hu : Címkék
 nl :
 
 :_vnbrowse_booland
-en : boolean and, selecting more gives less results
+en : Boolean and, selecting more gives less results
 ru : логическое 'и', чем больше выбрано, тем меньше даёт результатов
-cs : boolean a, výběr více dá méně výsledků
+cs : Boolean a, výběr více dá méně výsledků
 hu : Boole féle értékhalmaz(igaz/hamis), s ha többet választasz ki akkor kevesebb találatot ad
-nl : booleaanse 'en', meerdere selecties geven minder resultaten
+nl : Booleaanse 'en', meerdere selecties geven minder resultaten
+
+:_vnbrowse_tagactive
+en : These filters are ignored on tag pages (when set as default).
+ru*:
+cs*:
+hu*:
+nl : Deze filters worden genegeerd op tagpaginas (als ze gebruikt worden als standaardfilters).
 
 :_vnbrowse_tagrem
 en : remove
