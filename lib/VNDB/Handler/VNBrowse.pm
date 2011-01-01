@@ -47,13 +47,14 @@ sub list {
 
   $self->htmlHeader(title => mt('_vnbrowse_title'), search => $f->{q});
 
+  my $quri = uri_escape($f->{q});
   form action => '/v/all', 'accept-charset' => 'UTF-8', method => 'get';
   div class => 'mainbox';
    h1 mt '_vnbrowse_title';
    $self->htmlSearchBox('v', $f->{q});
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => "/v/$_?q=$f->{q};fil=$f->{fil}", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+      a href => "/v/$_?q=$quri;fil=$f->{fil}", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
     }
    end;
 
@@ -64,7 +65,7 @@ sub list {
   end;
   end; # /form
 
-  $self->htmlBrowseVN($list, $f, $np, "/v/$char?q=$f->{q};fil=$f->{fil}", $f->{fil} =~ /tag_inc-/);
+  $self->htmlBrowseVN($list, $f, $np, "/v/$char?q=$quri;fil=$f->{fil}", $f->{fil} =~ /tag_inc-/);
   $self->htmlFooter(prefs => ['filter_vn']);
 }
 

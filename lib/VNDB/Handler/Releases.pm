@@ -510,13 +510,14 @@ sub browse {
   end;
   end;
 
+  my $uri = sprintf '/r?q=%s;fil=%s', uri_escape($f->{q}), $f->{fil};
   $self->htmlBrowse(
     class    => 'relbrowse',
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => "/r?q=$f->{q};fil=$f->{fil};s=$f->{s};o=$f->{o}",
-    sorturl  => "/r?q=$f->{q};fil=$f->{fil}",
+    pageurl  => "$uri;s=$f->{s};o=$f->{o}",
+    sorturl  => $uri,
     header   => [
       [ mt('_rbrowse_col_released'), 'released' ],
       [ mt('_rbrowse_col_minage'),   'minage' ],
