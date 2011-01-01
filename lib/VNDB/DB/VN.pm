@@ -11,7 +11,7 @@ our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreen
 
 
 # Options: id, rev, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
-#   hasani, results, page, what, sort, reverse
+#   hasani, hasshot, results, page, what, sort, reverse
 # What: extended anime relations screenshots relgraph rating ranking changes
 # Sort: id rel pop rating title tagscore rand
 sub dbVNGet {
@@ -46,6 +46,8 @@ sub dbVNGet {
       '('.join(' OR ', map "v.c_platforms ILIKE '%%$_%%'", ref $o{plat} ? @{$o{plat}} : $o{plat}).')' => 1 ) : (),
     defined $o{hasani} ? (
       '!sEXISTS(SELECT 1 FROM vn_anime va WHERE va.vid = vr.id)' => [ $o{hasani} ? '' : 'NOT ' ]) : (),
+    defined $o{hasshot} ? (
+      '!sEXISTS(SELECT 1 FROM vn_screenshots vs WHERE vs.vid = vr.id)' => [ $o{hasshot} ? '' : 'NOT ' ]) : (),
     $o{tag_inc} ? (
       'v.id IN(SELECT vid FROM tags_vn_inherit WHERE tag IN(!l) AND spoiler <= ? GROUP BY vid HAVING COUNT(tag) = ?)',
       [ ref $o{tag_inc} ? $o{tag_inc} : [$o{tag_inc}], $o{tagspoil}, ref $o{tag_inc} ? $#{$o{tag_inc}}+1 : 1 ]) : (),
@@ -222,8 +224,10 @@ sub dbScreenshotGet {
 
 
 # Fetch random VN + screenshots
+# if any arguments are given, it will return one random screenshot for each VN
 sub dbScreenshotRandom {
-  return shift->dbAll(q|
+  my($self, @vids) = @_;
+  return $self->dbAll(q|
     SELECT s.id AS scr, s.width, s.height, vr.vid, vr.title
       FROM screenshots s
       JOIN vn_screenshots vs ON vs.scr = s.id
@@ -236,7 +240,22 @@ sub dbScreenshotRandom {
           LIMIT 20
        )
      LIMIT 4|
-  );
+  ) if !@vids;
+  # this query is faster than it looks
+  return $self->dbAll(join(' UNION ALL ', map
+    q|SELECT s.id AS scr, s.width, s.height, vr.vid, vr.title, RANDOM() AS position
+        FROM vn v
+        JOIN vn_rev vr ON vr.id = v.latest
+        JOIN vn_screenshots vs ON vs.vid = v.latest
+        JOIN screenshots s ON s.id = vs.scr
+       WHERE v.id = ? AND s.id = (
+         SELECT vs2.scr
+          FROM vn_screenshots vs2
+          JOIN vn v2 ON v2.latest = vs2.vid
+         WHERE v2.id = v.id
+         ORDER BY RANDOM()
+         LIMIT 1
+       )|, @vids).' ORDER BY position', @vids);
 }
 
 
