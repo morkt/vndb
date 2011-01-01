@@ -488,18 +488,14 @@ sub browse {
   );
   return 404 if $f->{_err};
 
-  my $fil = fil_parse $f->{fil}, qw|type patch freeware doujin date_before date_after minage lang olang resolution plat med voiced ani_story ani_ero|;
-  _fil_compat($self, $fil);
-  $f->{fil} = fil_serialize($fil);
-
-  my($list, $np) = !$f->{q} && !keys %$fil ? ([], 0) : $self->dbReleaseGet(
+  my %compat = _fil_compat($self);
+  my($list, $np) = !$f->{q} && !$f->{fil} && !keys %compat ? ([], 0) : $self->filFetchDB(release => $f->{fil}, \%compat, {
     sort => $f->{s}, reverse => $f->{o} eq 'd',
     page => $f->{p},
     results => 50,
     what => 'platforms',
     $f->{q} ? ( search => $f->{q} ) : (),
-    %$fil
-  );
+  });
 
   $self->htmlHeader(title => mt('_rbrowse_title'));
 
@@ -546,7 +542,7 @@ sub browse {
       end;
     },
   ) if @$list;
-  if(($f->{q} || keys %$fil) && !@$list) {
+  if(($f->{q} || $f->{fil}) && !@$list) {
     div class => 'mainbox';
      h1 mt '_rbrowse_noresults_title';
      div class => 'notice';
@@ -558,9 +554,10 @@ sub browse {
 }
 
 
-# provide compatibility with old filter URLs
+# provide compatibility with old URLs
 sub _fil_compat {
-  my($self, $fil) = @_;
+  my $self = shift;
+  my %c;
   my $f = $self->formValidate(
     { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
     { name => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
@@ -575,18 +572,19 @@ sub _fil_compat {
     { name => 'ma', required => 0, default => 99999999, template => 'int' },
     { name => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
   );
-  return if $f->{_err};
-  $fil->{minage} //= [ grep $_ >= 0 && ($f->{ma_m} ? $f->{ma_a} >= $_ : $f->{ma_a} <= $_), @{$self->{age_ratings}} ] if $f->{ma_a} || $f->{ma_m};
-  $fil->{date_after} //= $f->{mi}  if $f->{mi};
-  $fil->{date_before} //= $f->{ma} if $f->{ma} < 99990000;
-  $fil->{plat} //= $f->{pl}        if $f->{pl}[0];
-  $fil->{lang} //= $f->{ln}        if $f->{ln}[0];
-  $fil->{med} //= $f->{me}         if $f->{me}[0];
-  $fil->{resolution} //= $f->{re}  if $f->{re}[0];
-  $fil->{type} //= $f->{tp}        if $f->{tp};
-  $fil->{patch} //= $f->{pa} == 2 ? 0 : 1 if $f->{pa};
-  $fil->{freeware} //= $f->{fw} == 2 ? 0 : 1 if $f->{fw};
-  $fil->{doujin} //= $f->{do} == 2 ? 0 : 1 if $f->{do};
+  return () if $f->{_err};
+  $c{minage} = [ grep $_ >= 0 && ($f->{ma_m} ? $f->{ma_a} >= $_ : $f->{ma_a} <= $_), @{$self->{age_ratings}} ] if $f->{ma_a} || $f->{ma_m};
+  $c{date_after} = $f->{mi}  if $f->{mi};
+  $c{date_before} = $f->{ma} if $f->{ma} < 99990000;
+  $c{plat} = $f->{pl}        if $f->{pl}[0];
+  $c{lang} = $f->{ln}        if $f->{ln}[0];
+  $c{med} = $f->{me}         if $f->{me}[0];
+  $c{resolution} = $f->{re}  if $f->{re}[0];
+  $c{type} = $f->{tp}        if $f->{tp};
+  $c{patch} = $f->{pa} == 2 ? 0 : 1 if $f->{pa};
+  $c{freeware} = $f->{fw} == 2 ? 0 : 1 if $f->{fw};
+  $c{doujin} = $f->{do} == 2 ? 0 : 1 if $f->{do};
+  return %c;
 }
 
 
