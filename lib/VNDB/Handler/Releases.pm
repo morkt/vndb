@@ -484,9 +484,10 @@ sub browse {
     { name => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
     { name => 'q',  required => 0, default => '', maxlength => 500 },
     { name => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
-    { name => 'fil',required => 0, default => $self->authPref('filter_release') },
+    { name => 'fil',required => 0, default => '' },
   );
   return 404 if $f->{_err};
+  $f->{fil} = $self->authPref('filter_release') if !grep $_ eq 'fil', $self->reqParam();
 
   my %compat = _fil_compat($self);
   my($list, $np) = !$f->{q} && !$f->{fil} && !keys %compat ? ([], 0) : $self->filFetchDB(release => $f->{fil}, \%compat, {

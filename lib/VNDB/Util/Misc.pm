@@ -18,7 +18,7 @@ my %filfields = (
 # Arguments:
 #   type ('vn' or 'release'),
 #   filter overwrite (string or undef),
-#     when defined and not '', these filters will be used instead of the preferences,
+#     when defined, these filters will be used instead of the preferences,
 #     must point to a variable, will be modified in-place with the actually used filters
 #   options to pass to db*Get() before the filters (hashref or undef)
 #     these options can be overwritten by the filters or the next option
@@ -36,11 +36,11 @@ sub filFetchDB {
   # simply call the DB if we're not applying filters
   return $dbfunc->($self, %$pre, %$post) if !$pref && !$overwrite;
 
-  my $filters = fil_parse $overwrite || $pref, @{$filfields{$type}};
+  my $filters = fil_parse $overwrite // $pref, @{$filfields{$type}};
 
   # compatibility
   $self->authPref($prefname => fil_serialize $filters)
-    if $type eq 'vn' && _fil_vn_compat($self, $filters) && !$overwrite;
+    if $type eq 'vn' && _fil_vn_compat($self, $filters) && !defined $overwrite;
 
   # write the definite filter string in $overwrite
   $_[2] = fil_serialize({map +(
@@ -49,7 +49,7 @@ sub filFetchDB {
     exists($pre->{$_})     ? ($_ => $pre->{$_})     : (),
   ), @{$filfields{$type}}}) if defined $overwrite;
 
-  return $dbfunc->($self, %$pre, %$filters, %$post) if $overwrite;
+  return $dbfunc->($self, %$pre, %$filters, %$post) if defined $overwrite;
 
   # since incorrect filters can throw a database error, we have to special-case
   # filters that originate from a preference setting, so that in case these are
