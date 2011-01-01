@@ -30,7 +30,7 @@ sub filFetchDB {
   $pre = {} if !$pre;
   $post = {} if !$post;
   my $dbfunc = $self->can($type eq 'vn' ? 'dbVNGet' : 'dbReleaseGet');
-  my $prefname = 'fil_'.$type;
+  my $prefname = 'filter_'.$type;
   my $pref = $self->authPref($prefname);
 
   # simply call the DB if we're not applying filters

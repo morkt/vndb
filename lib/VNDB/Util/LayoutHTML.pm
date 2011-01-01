@@ -135,8 +135,8 @@ sub _menu {
 }
 
 
-sub htmlFooter {
-  my $self = shift;
+sub htmlFooter { # %options => { prefs => [pref1,..] }
+  my($self, %o) = @_;
      div id => 'footer';
 
       my $q = $self->dbRandomQuote;
@@ -156,6 +156,17 @@ sub htmlFooter {
       a href => $self->{source_url}, mt '_footer_source';
      end;
     end; # /div maincontent
+
+    # insert users' preference data when required by JS
+    if($o{prefs}) {
+      script type => 'text/javascript';
+       txt sprintf "PREF_CODE='%s';", $self->authInfo->{id} ? $self->authGetCode('/xml/prefs.xml') : '';
+       txt 'PREFS={';
+       # assumes the preference value doesn't contain a '
+       txt join ',', map sprintf("'%s':'%s'", $_, $self->authPref($_)), @{$o{prefs}};
+       txt '};';
+      end;
+    }
     script type => 'text/javascript', src => $self->{url_static}.'/f/js/'.$self->{l10n}->language_tag().'.js?'.$self->{version}, '';
    end; # /body
   end; # /html

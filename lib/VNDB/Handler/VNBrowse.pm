@@ -21,7 +21,7 @@ sub list {
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'q', required => 0, default => '' },
     { name => 'sq', required => 0, default => '' },
-    { name => 'fil',required => 0, default => '' },
+    { name => 'fil',required => 0, default => $self->authPref('filter_vn') },
   );
   return 404 if $f->{_err};
   $f->{q} ||= $f->{sq};
@@ -65,7 +65,7 @@ sub list {
   end; # /form
 
   $self->htmlBrowseVN($list, $f, $np, "/v/$char?q=$f->{q};fil=$f->{fil}", $f->{fil} =~ /tag_inc-/);
-  $self->htmlFooter;
+  $self->htmlFooter(prefs => ['filter_vn']);
 }
 
 

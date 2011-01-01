@@ -50,7 +50,7 @@ ALTER TABLE rlists RENAME COLUMN rstat TO status;
 
 
 -- add users_prefs table
-CREATE TYPE prefs_key AS ENUM ('l10n', 'skin', 'customcss', 'show_nsfw', 'hide_list', 'notify_nodbedit', 'notify_announce');
+CREATE TYPE prefs_key AS ENUM ('l10n', 'skin', 'customcss', 'filter_vn', 'filter_release', 'show_nsfw', 'hide_list', 'notify_nodbedit', 'notify_announce');
 CREATE TABLE users_prefs (
   uid integer NOT NULL REFERENCES users (id) ON DELETE CASCADE,
   key prefs_key NOT NULL,

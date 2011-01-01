@@ -16,6 +16,7 @@ YAWF::register(
   qr{setlang},                       \&setlang,
   qr{nospam},                        \&nospam,
   qr{we-dont-like-ie},               \&iemessage,
+  qr{xml/prefs\.xml},                \&prefs,
   qr{opensearch\.xml},               \&opensearch,
 
   # redirects for old URLs
@@ -409,6 +410,24 @@ sub iemessage {
     end;
    end;
   end;
+}
+
+
+sub prefs {
+  my $self = shift;
+  return if !$self->authCheckCode;
+  return 404 if !$self->authInfo->{id};
+  my $f = $self->formValidate(
+    { name => 'key',   enum => [qw|filter_vn filter_release|] },
+    { name => 'value', required => 0, maxlength => 2000 },
+  );
+  return 404 if $f->{_err};
+  $self->authPref($f->{key}, $f->{value});
+
+  # doesn't really matter what we return, as long as it's XML
+  $self->resHeader('Content-type' => 'text/xml');
+  xml;
+  tag 'done', '';
 }
 
 

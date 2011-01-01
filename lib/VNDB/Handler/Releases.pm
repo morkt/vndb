@@ -484,7 +484,7 @@ sub browse {
     { name => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
     { name => 'q',  required => 0, default => '', maxlength => 500 },
     { name => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
-    { name => 'fil',required => 0, default => '' },
+    { name => 'fil',required => 0, default => $self->authPref('filter_release') },
   );
   return 404 if $f->{_err};
 
@@ -550,7 +550,7 @@ sub browse {
      end;
     end;
   }
-  $self->htmlFooter;
+  $self->htmlFooter(prefs => [qw|filter_release|]);
 }
 
 
