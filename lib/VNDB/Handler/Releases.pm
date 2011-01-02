@@ -56,7 +56,7 @@ sub page {
       [ media      => join => ', ', split => sub {
         map $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1), @{$_[0]}
       } ],
-      [ resolution => serialize => sub { $self->{resolutions}[$_[0]][0] } ],
+      [ resolution => serialize => sub { my $r = $self->{resolutions}[$_[0]][0]; $r =~ /^_/ ? mt($r) : $r } ],
       [ voiced     => serialize => sub { mt '_voiced_'.$_[0] } ],
       [ ani_story  => serialize => sub { mt '_animated_'.$_[0] } ],
       [ ani_ero    => serialize => sub { mt '_animated_'.$_[0] } ],
@@ -190,7 +190,7 @@ sub _infotable {
     end;
    end;
 
-   if(defined $r->{minage}) {
+   if($r->{minage} >= 0) {
      Tr ++$i % 2 ? (class => 'odd') : ();
       td mt '_relinfo_minage';
       td minage $r->{minage};
@@ -236,22 +236,18 @@ sub _infotable {
    }
 
    if($self->authInfo->{id}) {
-     my $rl = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => $r->{id})->[0];
+     my $rl = $self->dbRListGet(uid => $self->authInfo->{id}, rid => $r->{id})->[0];
      Tr ++$i % 2 ? (class => 'odd') : ();
       td mt '_relinfo_user';
       td;
        Select id => 'listsel', name => $self->authGetCode("/r$r->{id}/list");
-        option mt !$rl ? '_relinfo_user_notlist' :
-          ('_relinfo_user_inlist', mt('_rlst_rstat_'.$rl->{rstat}), mt('_rlst_vstat_'.$rl->{vstat}));
-        optgroup label => mt '_relinfo_user_setr';
-         option value => "r$_", mt '_rlst_rstat_'.$_
-           for (@{$self->{rlst_rstat}});
+        option value => -2, 
+          mt !$rl ? '_relinfo_user_notlist' : ('_relinfo_user_inlist', mt('_rlist_status_'.$rl->{status}));
+        optgroup label => mt '_relinfo_user_setstatus';
+         option value => $_, mt '_rlist_status_'.$_
+           for (@{$self->{rlist_status}});
         end;
-        optgroup label => mt '_relinfo_user_setv';
-         option value => "v$_", mt '_rlst_vstat_'.$_
-           for (@{$self->{rlst_vstat}});
-        end;
-        option value => 'del', mt '_relinfo_user_del' if $rl;
+        option value => -1, mt '_relinfo_user_del' if $rl;
        end;
       end;
      end;
@@ -287,9 +283,8 @@ sub edit {
 
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (
-    (map { $_ => $r->{$_} } qw|type title original gtin catalog languages website released
+    (map { $_ => $r->{$_} } qw|type title original gtin catalog languages website released minage
       notes platforms patch resolution voiced freeware doujin ani_story ani_ero ihid ilock|),
-    minage    => defined($r->{minage}) ? $r->{minage} : -1,
     media     => join(',',   sort map "$_->{medium} $_->{qty}", @{$r->{media}}),
     producers => join('|||', map
       sprintf('%d,%d,%s', $_->{id}, ($_->{developer}?1:0)+($_->{publisher}?2:0), $_->{name}),
@@ -315,7 +310,7 @@ sub edit {
       { name => 'languages', multi => 1, enum => $self->{languages} },
       { name => 'website',   required => 0, default => '', maxlength => 250, template => 'url' },
       { name => 'released',  required => 0, default => 0, template => 'int' },
-      { name => 'minage' ,   required => 0, default => -1, enum => [map !defined($_)?-1:$_, @{$self->{age_ratings}}] },
+      { name => 'minage' ,   required => 0, default => -1, enum => $self->{age_ratings} },
       { name => 'notes',     required => 0, default => '', maxlength => 10240 },
       { name => 'platforms', required => 0, default => '', multi => 1, enum => $self->{platforms} },
       { name => 'media',     required => 0, default => '' },
@@ -325,11 +320,12 @@ sub edit {
       { name => 'ani_ero',   required => 0, default => 0, enum => $self->{animated} },
       { name => 'producers', required => 0, default => '' },
       { name => 'vn',        maxlength => 5000 },
-      { name => 'editsum',   maxlength => 5000 },
+      { name => 'editsum',   required  => 0, maxlength => 5000 },
       { name => 'ihid',      required  => 0 },
       { name => 'ilock',     required  => 0 },
     );
 
+    push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{notes});
     push @{$frm->{_err}}, [ 'released', 'required', 1 ] if !$frm->{released};
 
     my($media, $producers, $new_vn);
@@ -356,9 +352,8 @@ sub edit {
 
     if(!$frm->{_err}) {
       my $nrev = $self->dbItemEdit(r => !$copy && $rid ? $r->{cid} : undef,
-        (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released
+        (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released minage
           notes platforms resolution editsum patch voiced freeware doujin ani_story ani_ero ihid ilock|),
-        minage    => $frm->{minage} < 0 ? undef : $frm->{minage},
         vn        => $new_vn,
         producers => $producers,
         media     => $media,
@@ -406,7 +401,7 @@ sub _form {
     [ date   => short => 'released',  name => mt('_redit_form_released') ],
     [ static => content => mt('_redit_form_released_note') ],
     [ select => short => 'minage', name => mt('_redit_form_minage'),
-      options => [ map [ !defined($_)?-1:$_, minage $_, 1 ], @{$self->{age_ratings}} ] ],
+      options => [ map [ $_, minage $_, 1 ], @{$self->{age_ratings}} ] ],
     [ textarea => short => 'notes', name => mt('_redit_form_notes').'<br /><b class="standout">'.mt('_inenglish').'</b>' ],
     [ static => content => mt('_redit_form_notes_note') ],
   ],
@@ -492,19 +487,16 @@ sub browse {
     { name => 'fil',required => 0, default => '' },
   );
   return 404 if $f->{_err};
+  $f->{fil} = $self->authPref('filter_release') if !grep $_ eq 'fil', $self->reqParam();
 
-  my $fil = fil_parse $f->{fil}, qw|type patch freeware doujin date_before date_after minage lang olang resolution plat med voiced ani_story ani_ero|;
-  _fil_compat($self, $fil);
-  $f->{fil} = fil_serialize($fil);
-
-  my($list, $np) = !$f->{q} && !keys %$fil ? ([], 0) : $self->dbReleaseGet(
+  my %compat = _fil_compat($self);
+  my($list, $np) = !$f->{q} && !$f->{fil} && !keys %compat ? ([], 0) : $self->filFetchDB(release => $f->{fil}, \%compat, {
     sort => $f->{s}, reverse => $f->{o} eq 'd',
     page => $f->{p},
     results => 50,
     what => 'platforms',
     $f->{q} ? ( search => $f->{q} ) : (),
-    %$fil
-  );
+  });
 
   $self->htmlHeader(title => mt('_rbrowse_title'));
 
@@ -519,13 +511,14 @@ sub browse {
   end;
   end;
 
+  my $uri = sprintf '/r?q=%s;fil=%s', uri_escape($f->{q}), $f->{fil};
   $self->htmlBrowse(
     class    => 'relbrowse',
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => "/r?q=$f->{q};fil=$f->{fil};s=$f->{s};o=$f->{o}",
-    sorturl  => "/r?q=$f->{q};fil=$f->{fil}",
+    pageurl  => "$uri;s=$f->{s};o=$f->{o}",
+    sorturl  => $uri,
     header   => [
       [ mt('_rbrowse_col_released'), 'released' ],
       [ mt('_rbrowse_col_minage'),   'minage' ],
@@ -538,7 +531,7 @@ sub browse {
        td class => 'tc1';
         lit $self->{l10n}->datestr($l->{released});
        end;
-       td class => 'tc2', !defined($l->{minage}) ? '' : minage $l->{minage};
+       td class => 'tc2', $l->{minage} < 0 ? '' : minage $l->{minage};
        td class => 'tc3';
         $_ ne 'oth' && cssicon $_, mt "_plat_$_" for (@{$l->{platforms}});
         cssicon "lang $_", mt "_lang_$_" for (@{$l->{languages}});
@@ -551,7 +544,7 @@ sub browse {
       end;
     },
   ) if @$list;
-  if(($f->{q} || keys %$fil) && !@$list) {
+  if(($f->{q} || $f->{fil}) && !@$list) {
     div class => 'mainbox';
      h1 mt '_rbrowse_noresults_title';
      div class => 'notice';
@@ -559,13 +552,14 @@ sub browse {
      end;
     end;
   }
-  $self->htmlFooter;
+  $self->htmlFooter(prefs => [qw|filter_release|]);
 }
 
 
-# provide compatibility with old filter URLs
+# provide compatibility with old URLs
 sub _fil_compat {
-  my($self, $fil) = @_;
+  my $self = shift;
+  my %c;
   my $f = $self->formValidate(
     { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
     { name => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
@@ -575,23 +569,24 @@ sub _fil_compat {
     { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
     { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
-    { name => 'ma_a', required => 0, default => 0, enum => [ grep defined($_), @{$self->{age_ratings}} ] },
+    { name => 'ma_a', required => 0, default => 0, enum => $self->{age_ratings} },
     { name => 'mi', required => 0, default => 0, template => 'int' },
     { name => 'ma', required => 0, default => 99999999, template => 'int' },
     { name => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
   );
-  return if $f->{_err};
-  $fil->{minage} //= [ grep defined($_) && $f->{ma_m} ? $f->{ma_a} >= $_ : defined ($_) && $f->{ma_a} <= $_, @{$self->{age_ratings}} ] if $f->{ma_a} || $f->{ma_m};
-  $fil->{date_after} //= $f->{mi}  if $f->{mi};
-  $fil->{date_before} //= $f->{ma} if $f->{ma} < 99990000;
-  $fil->{plat} //= $f->{pl}        if $f->{pl}[0];
-  $fil->{lang} //= $f->{ln}        if $f->{ln}[0];
-  $fil->{med} //= $f->{me}         if $f->{me}[0];
-  $fil->{resolution} //= $f->{re}  if $f->{re}[0];
-  $fil->{type} //= $f->{tp}        if $f->{tp};
-  $fil->{patch} //= $f->{pa} == 2 ? 0 : 1 if $f->{pa};
-  $fil->{freeware} //= $f->{fw} == 2 ? 0 : 1 if $f->{fw};
-  $fil->{doujin} //= $f->{do} == 2 ? 0 : 1 if $f->{do};
+  return () if $f->{_err};
+  $c{minage} = [ grep $_ >= 0 && ($f->{ma_m} ? $f->{ma_a} >= $_ : $f->{ma_a} <= $_), @{$self->{age_ratings}} ] if $f->{ma_a} || $f->{ma_m};
+  $c{date_after} = $f->{mi}  if $f->{mi};
+  $c{date_before} = $f->{ma} if $f->{ma} < 99990000;
+  $c{plat} = $f->{pl}        if $f->{pl}[0];
+  $c{lang} = $f->{ln}        if $f->{ln}[0];
+  $c{med} = $f->{me}         if $f->{me}[0];
+  $c{resolution} = $f->{re}  if $f->{re}[0];
+  $c{type} = $f->{tp}        if $f->{tp};
+  $c{patch} = $f->{pa} == 2 ? 0 : 1 if $f->{pa};
+  $c{freeware} = $f->{fw} == 2 ? 0 : 1 if $f->{fw};
+  $c{doujin} = $f->{do} == 2 ? 0 : 1 if $f->{do};
+  return %c;
 }
 
 

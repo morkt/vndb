@@ -6,10 +6,11 @@
 CREATE TYPE anime_type        AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
 CREATE TYPE dbentry_type      AS ENUM ('v', 'r', 'p');
 CREATE TYPE edit_rettype      AS (iid integer, cid integer, rev integer);
-CREATE TYPE language          AS ENUM('cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'hu', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'ru', 'sk', 'sv', 'tr', 'vi', 'zh');
+CREATE TYPE language          AS ENUM ('cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'hu', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt-pt', 'pt-br', 'ru', 'sk', 'sv', 'tr', 'vi', 'zh');
 CREATE TYPE medium            AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
 CREATE TYPE notification_ntype AS ENUM ('pm', 'dbdel', 'listdel', 'dbedit', 'announce');
 CREATE TYPE notification_ltype AS ENUM ('v', 'r', 'p', 't');
+CREATE TYPE prefs_key         AS ENUM ('l10n', 'skin', 'customcss', 'filter_vn', 'filter_release', 'show_nsfw', 'hide_list', 'notify_nodbedit', 'notify_announce');
 CREATE TYPE producer_relation AS ENUM ('old', 'new', 'sub', 'par', 'imp', 'ipa', 'spa', 'ori');
 CREATE TYPE release_type      AS ENUM ('complete', 'partial', 'trial');
 CREATE TYPE vn_relation       AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'side', 'par', 'ser', 'fan', 'orig');
@@ -96,14 +97,19 @@ CREATE TRIGGER vn_vnsearch_notify AFTER UPDATE ON releases FOR EACH ROW
   WHEN (NEW.hidden IS DISTINCT FROM OLD.hidden OR NEW.latest IS DISTINCT FROM OLD.latest)
   EXECUTE PROCEDURE vn_vnsearch_notify();
 
+CREATE CONSTRAINT TRIGGER update_vnlist_rlist AFTER DELETE ON vnlists DEFERRABLE FOR EACH ROW EXECUTE PROCEDURE update_vnlist_rlist();
+CREATE CONSTRAINT TRIGGER update_vnlist_rlist AFTER INSERT ON rlists  DEFERRABLE FOR EACH ROW EXECUTE PROCEDURE update_vnlist_rlist();
+
 
 -- Sequences used for ID generation of items not in the DB
 CREATE SEQUENCE covers_seq;
 
 
 -- Rows that are assumed to be available
-INSERT INTO users (id, username, mail, rank, notify_dbdel) VALUES (0, 'deleted', 'del@vndb.org', 0, false);
-INSERT INTO users (username, mail, rank, notify_dbdel)     VALUES ('multi', 'multi@vndb.org', 0, false);
+INSERT INTO users (id, username, mail, rank) VALUES (0, 'deleted', 'del@vndb.org', 0);
+INSERT INTO users (username, mail, rank)     VALUES ('multi', 'multi@vndb.org', 0);
+INSERT INTO users_prefs (uid, key, value)    VALUES (0, 'notify_nodbedit', '1');
+INSERT INTO users_prefs (uid, key, value)    VALUES (1, 'notify_nodbedit', '1');
 
 INSERT INTO stats_cache (section, count) VALUES
   ('users',         1),

@@ -52,10 +52,12 @@ sub edit {
       { name => 'img_nsfw',    required => 0, default => 0 },
       { name => 'vnrelations', required => 0, default => '', maxlength => 5000 },
       { name => 'screenshots', required => 0, default => '', maxlength => 1000 },
-      { name => 'editsum',     maxlength => 5000 },
+      { name => 'editsum',     required => 0, maxlength => 5000 },
       { name => 'ihid',        required  => 0 },
       { name => 'ilock',       required  => 0 },
     );
+
+    push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
 
     # handle image upload
     my $image = _uploadimage($self, $v, $frm);

@@ -322,53 +322,36 @@ b.future, b.standout, a.standout {
 
 /***** main tabs *****/
 
-#maincontent ul.maintabs {
-  display: inline;
-  margin: 0;
-}
-#maincontent ul.maintabs.notfirst {
-  display: block;
-  height: 20px;
-}
-#maincontent ul.maintabs li {
-  display: inline;
-  list-style-type: none;
-}
-#maincontent ul.maintabs li a {
+ul.maintabs          { display: inline; margin: 0; }
+ul.maintabs.notfirst { display: block; height: 20px }
+ul.maintabs li       { display: inline; list-style-type: none }
+ul.maintabs li a, ul.maintabs li b {
   float: right;
   display: block;
   height: 14px;
-  border: 1px solid $border$;
-  border-bottom: none;
   padding: 1px 7px 5px 7px;
   margin: 0 0 0 10px;
+}
+ul.maintabs li a {
+  border: 1px solid $border$;
+  border-bottom: none;
   background-color: $tabbg$;
 }
-#maincontent ul.maintabs.notfirst li a {
-  margin-top: 20px;
-}
-#maincontent ul.maintabs.bottom li a {
-  margin-top: 10px;
-  border-bottom: 1px solid $border$;
-  border-top: none;
-  padding: 4px 7px 2px 7px;
-}
-#maincontent ul.maintabs li.left a {
-  float: left;
-  margin-left: 0;
-  margin-right: 10px;
-}
-#maincontent ul.maintabs li.tabselected a,
-#maincontent ul.maintabs li a:hover {
-  background-color: $_blendbg$;
-  padding-bottom: 6px;
-}
-#maincontent ul.maintabs.bottom li.tabselected a,
-#maincontent ul.maintabs.bottom li a:hover {
-  padding-bottom: 2px;
-  padding-top: 5px;
-  margin-top: 9px;
-}
+ul.maintabs.notfirst li a,
+ul.maintabs.notfirst li b        { margin-top: 20px }
+ul.maintabs.bottom li a,
+ul.maintabs.bottom li b          { margin-top: 10px; padding: 4px 7px 2px 7px }
+ul.maintabs.bottom li a          { border-bottom: 1px solid $border$; border-top: none }
+ul.maintabs li.left a,
+ul.maintabs li.left b            { float: left; margin-left: 0; margin-right: 10px }
+ul.maintabs li b                 { margin-left: -2px; margin-right: -7px }
+ul.maintabs li.left b            { margin-left: -7px; margin-right: -2px }
+ul.maintabs li.tabselected a,
+ul.maintabs li a:hover           { background-color: $_blendbg$; padding-bottom: 6px }
+ul.maintabs.bottom li.tabselected a,
+ul.maintabs.bottom li a:hover    { padding-bottom: 2px; padding-top: 5px; margin-top: 9px }
+ul.maintabs.browsetabs li a      { margin-left: 5px }
+ul.maintabs.browsetabs li.left a { margin-left: 0; margin-right: 5px }
 
 
 
@@ -660,7 +643,7 @@ div#vntags {
   width: 90px;
 }
 .releases td.tc5 {
-  width: 140px;
+  width: 70px;
 }
 .releases td.tc5 a {
   color: $maintext$!important;
@@ -697,10 +680,6 @@ a.addnew {
 #dd_box li i { display: block; font-style: normal; padding-left: 10px; padding-right: 5px }
 #dd_box li a { display: block; padding-left: 10px; color: $link$; border: 0; padding-right: 5px }
 #dd_box li a:hover { background: url($_boxbg$) repeat }
-#dd_box .vrdd { width: 180px; }
-#dd_box .vrdd ul { float: left; width: 90px; }
-#dd_box .vrdd ul.full { width: 180px; text-align: center; }
-#dd_box .vrdd ul.full li a { padding: 0 }
 
 
 
@@ -891,7 +870,7 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 
 /* vote lists */
 
-div.votelist td.tc1 { width: 70px }
+div.votelist td.tc1 { width: 80px; padding-top: 0; padding-bottom: 0 }
 div.votelist td.tc2 { width: 50px; text-align: right; padding-right: 10px }
 
 
@@ -905,15 +884,16 @@ div.votelist td.tc2 { width: 50px; text-align: right; padding-right: 10px }
 /***** User VN list browser ******/
 
 #expandall, .collapse_but { cursor: pointer }
-#expandall i, .collapse_but i { font-style: normal }
-.browse.rlist .tc2 { width: 100px; }
-.browse.rlist .tc3 { width: 70px; }
-.browse.rlist .relhid .tc1 { padding-left: 40px; width: 70px; }
-.browse.rlist .relhid .tc1.own { padding: 0 0 0 25px; width: 95px }
-.browse.rlist .relhid input { margin-right: 5px }
-.browse.rlist .relhid .tc2 { padding: 0; width: 30px; }
-.browse.rlist .relhid .tc3 { width: auto }
-.browse.rlist .relhid .tc4 { text-align: right }
+.browse.rlist .tc1 { width: 16px; padding-bottom: 0 }
+.browse.rlist .tc2 { width: 16px; padding-bottom: 0 }
+.browse.rlist .tc3 { width: 60px }
+.browse.rlist .tc3_5 b { margin-left: 10px }
+.browse.rlist .tc4 { width: 60px; text-align: right; padding-top: 0; padding-bottom: 0 }
+.browse.rlist .tc6 { width: 100px }
+.browse.rlist .relhid .tc6 { padding-left: 15px; width: auto }
+.browse.rlist .tc7 { width: 90px }
+.browse.rlist .tc8 { width: 70px }
+.browse.rlist tfoot select { width: 200px }
 
 
 /***** User notifications *****/
@@ -1137,6 +1117,8 @@ div#fil_div {
 #fil_div .opts b      { margin: 0 7px; font-weight: normal }
 #fil_div .opts a.tsel { color: $maintext$; }
 #filselect i { font-style: normal }
+#fil_div table ul { margin: 0 0 0 15px }
+#fil_div table ul a { color: $link$ }
 
 
 

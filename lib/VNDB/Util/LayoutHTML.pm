@@ -12,7 +12,7 @@ our @EXPORT = qw|htmlHeader htmlFooter|;
 
 sub htmlHeader { # %options->{ title, noindex, search, feeds }
   my($self, %o) = @_;
-  my $skin = $self->reqParam('skin') || $self->authInfo->{skin} || $self->{skin_default};
+  my $skin = $self->reqParam('skin') || $self->authPref('skin') || $self->{skin_default};
   $skin = $self->{skin_default} if !$self->{skins}{$skin} || !-d "$VNDB::ROOT/static/s/$skin";
 
   # heading
@@ -22,8 +22,8 @@ sub htmlHeader { # %options->{ title, noindex, search, feeds }
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
     Link rel => 'stylesheet', href => $self->{url_static}.'/s/'.$skin.'/style.css?'.$self->{version}, type => 'text/css', media => 'all';
     Link rel => 'search', type => 'application/opensearchdescription+xml', title => 'VNDB VN Search', href => $self->{url}.'/opensearch.xml';
-    if($self->authInfo->{customcss}) {
-      (my $css = $self->authInfo->{customcss}) =~ s/\n/ /g;
+    if($self->authPref('customcss')) {
+      (my $css = $self->authPref('customcss')) =~ s/\n/ /g;
       style type => 'text/css', $css;
     }
     Link rel => 'alternate', type => 'application/atom+xml', href => "/feeds/$_.atom", title => $self->{atom_feeds}{$_}[1]
@@ -88,6 +88,7 @@ sub _menu {
       div;
        a href => "$uid/edit", mt '_menu_myprofile'; br;
        a href => "$uid/list", mt '_menu_myvnlist'; br;
+       a href => "$uid/votes",mt '_menu_myvotes'; br;
        a href => "$uid/wish", mt '_menu_mywishlist'; br;
        a href => "$uid/notifies", $nc ? (class => 'notifyget') : (), mt('_menu_mynotifications').($nc?" ($nc)":''); br;
        a href => "$uid/hist", mt '_menu_mychanges'; br;
@@ -134,8 +135,8 @@ sub _menu {
 }
 
 
-sub htmlFooter {
-  my $self = shift;
+sub htmlFooter { # %options => { prefs => [pref1,..] }
+  my($self, %o) = @_;
      div id => 'footer';
 
       my $q = $self->dbRandomQuote;
@@ -155,6 +156,17 @@ sub htmlFooter {
       a href => $self->{source_url}, mt '_footer_source';
      end;
     end; # /div maincontent
+
+    # insert users' preference data when required by JS
+    if($o{prefs}) {
+      script type => 'text/javascript';
+       txt sprintf "PREF_CODE='%s';", $self->authInfo->{id} ? $self->authGetCode('/xml/prefs.xml') : '';
+       txt 'PREFS={';
+       # assumes the preference value doesn't contain a '
+       txt join ',', map sprintf("'%s':'%s'", $_, $self->authPref($_)), @{$o{prefs}};
+       txt '};';
+      end;
+    }
     script type => 'text/javascript', src => $self->{url_static}.'/f/js/'.$self->{l10n}->language_tag().'.js?'.$self->{version}, '';
    end; # /body
   end; # /html

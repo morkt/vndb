@@ -45,9 +45,13 @@ sub htmlMainTabs {
      end;
    }
 
-   if($type eq 'u' && ($obj->{show_list} || $self->authCan('usermod'))) {
+   if($type eq 'u' && (!($obj->{hide_list} || $obj->{prefs}{hide_list}) || ($self->authInfo->{id} && $self->authInfo->{id} == $obj->{id}) || $self->authCan('usermod'))) {
      li $sel eq 'wish' ? (class => 'tabselected') : ();
       a href => "/$id/wish", mt '_mtabs_wishlist';
+     end;
+
+     li $sel eq 'votes' ? (class => 'tabselected') : ();
+      a href => "/$id/votes", mt '_mtabs_votes';
      end;
 
      li $sel eq 'list' ? (class => 'tabselected') : ();

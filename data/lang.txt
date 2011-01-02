@@ -1137,70 +1137,70 @@ nl : Erg lang[index,_1,, (> 50 uur), (Clannad~, Umineko~, Fate/Stay Night)]
 
 # VN list statuses
 
-:_rlst_rstat_0
+:_rlist_status_0
 en : Unknown
 ru : Неизвестно
 cs : Není známo
 hu : Ismeretlen
 nl : Onbekend
 
-:_rlst_rstat_1
+:_rlist_status_1
 en : Pending
 ru : Ожидается
 cs : V čekání
 hu : Függő
 nl : Bezig
 
-:_rlst_rstat_2
+:_rlist_status_2
 en : Obtained
 ru : Приобретено
 cs : Obdrženo
 hu : Megszerezve
 nl : In bezit
 
-:_rlst_rstat_3
+:_rlist_status_3
 en : On loan
 ru : Взято напрокат
 cs : Vypůjčeno
 hu : Kölcsönadva
 nl : Uitgeleend
 
-:_rlst_rstat_4
+:_rlist_status_4
 en : Deleted
 ru : Удалено
 cs : Smazáno
 hu : Törölve
 nl : Weggegooid
 
-:_rlst_vstat_0
+:_vnlist_status_0
 en : Unknown
 ru : Неизвестно
 cs : Není známo
 hu : Ismeretlen
 nl : Onbekend
 
-:_rlst_vstat_1
+:_vnlist_status_1
 en : Playing
 ru : В процессе
 cs : Ve hraní
 hu : Játszás
 nl : Mee bezig
 
-:_rlst_vstat_2
+:_vnlist_status_2
 en : Finished
 ru : Завершено
 cs : Dohráno
 hu : Befejezve
 nl : Uitgespeeld
 
-:_rlst_vstat_3
+:_vnlist_status_3
 en : Stalled
 ru : Застряло
 cs : Pozastaveno
 hu : Leragadva
 nl : Uitgesteld
 
-:_rlst_vstat_4
+:_vnlist_status_4
 en : Dropped
 ru : Заброшено
 cs : Vyřazeno
@@ -1302,7 +1302,7 @@ nl : Per dag mag je maar één account aanmaken vanaf hetzelfde IP
 
 :_formerr_e_notanswer
 en : Question was not correctly answered. Are you sure you are a human?
-ru : Неправильный ответ. А ты точно человек?
+ru : Неправильный ответ. А вы точно человек?
 cs : Na otázku jste neodpověděli správně. Jste si jisti, že jste člověk?
 hu : A kérdésre a válasz helytelen. Biztos vagy benne, hogy ember vagy?
 nl : Vraag was incorrect beantwoord. Weet je zeker dat je een mens bent?
@@ -1320,6 +1320,13 @@ ru : Прежде чем публиковать очередное сообще�
 cs : Před posláním dalšího příspěvku počkejte prosím 30 sekund
 hu : Kérlek várj 30 másodpercet mielőtt új hozzászólást küldesz
 nl : Wacht a.u.b. 30 seconden voordat je een nieuwe post maakt
+
+:_formerr_e_badeditsum
+en : Please read [url,/d5.4,the guidelines] on how to use the edit summary.
+ru : Пожалуйста, прочтите [url,/d5.4,руководство] о том, как использовать поле "Суммарно о правке".
+cs*:
+hu*:
+nl : Lees a.u.b. [url,/d5.4,de richtlijnen] over het gebruik van de samenvatting.
 
 :_formerr_title
 en : Error
@@ -1681,6 +1688,13 @@ cs : Můj list vizuálních novel
 hu : A visual novel listám
 nl : Mijn Visual Novel lijst
 
+:_menu_myvotes
+en : My Votes
+ru : Мои отданные голоса
+cs*:
+hu*:
+nl : Mijn Stemmen
+
 :_menu_mywishlist
 en : My Wishlist
 ru : Мой список желаемого
@@ -1850,6 +1864,13 @@ cs : wishlist
 hu : kivánságlista
 nl : wensenlijst
 
+:_mtabs_votes
+en : votes
+ru : голоса
+cs*:
+hu*:
+nl : stemmen
+
 :_mtabs_list
 en : list
 ru : список
@@ -1900,6 +1921,13 @@ nl : relaties
 
 # Navigation buttons on the browse pages
 
+:_browse_first
+en : first
+ru : первая
+cs*:
+hu*:
+nl : eerste
+
 :_browse_previous
 en : previous
 ru : назад
@@ -1913,6 +1941,13 @@ ru : далее
 cs : další
 hu : következő
 nl : volgende
+
+:_browse_last
+en : last
+ru : последняя
+cs*:
+hu*:
+nl : laatste
 
 
 # Revision pages
@@ -3251,25 +3286,18 @@ hu : nincs a listádba
 nl : niet op je lijst
 
 :_relinfo_user_inlist
-en : Status: [_1] / [_2]
-ru : Статус: [_1] / [_2]
-cs : Status: [_1] / [_2]
-hu : Állapot: [_1] / [_2]
+en : Status: [_1]
+ru : Статус: [_1]
+cs : Status: [_1]
+hu : Állapot: [_1]
 nl :
 
-:_relinfo_user_setr
-en : Set release status
-ru : Установка статуса выпуска
-cs : Změnit status vydání
-hu : Kiadás állapotának módosítása
-nl : Zet uitgavestatus
-
-:_relinfo_user_setv
-en : Set play status
-ru : Установка статуса игры
-cs : Změnit herní status
-hu : Játszás állapotának módosítása
-nl : Zet speelstatus
+:_relinfo_user_setstatus
+en : Set status
+ru : Установка статуса
+cs*:
+hu*:
+nl : Zet status
 
 :_relinfo_user_del
 en : remove from list
@@ -3901,6 +3929,13 @@ cs : Ero scény
 hu : Ero jelenetek
 nl : Erotische scenes
 
+:_rbrowse_filsave
+en : Save as default
+ru : Запомнить по умолчанию
+cs*:
+hu*:
+nl : Opslaan als standaard
+
 :_rbrowse_apply
 en : Apply
 ru : Применить
@@ -3914,6 +3949,13 @@ ru : Очистить
 cs : Vymazat
 hu : Törlés
 nl :
+
+:_rbrowse_savenote
+en : Your saved filters will be applied automatically to several other parts of the site as well, such as the homepage. To change these filters, come back to this page and use the "Save as default" button again. To remove your saved filters, hit "Reset" and then save.
+ru : Сохранённые фильтры также будут автоматически применены к другим частям сайта, например, к заглавной странице. Для их изменения вновь откройте эту страницу и щёлкните кнопку "Запомнить по умолчанию". Чтобы избавиться от сохранённых фильтров, щёлкните "Сброс" и сохраните настройки.
+cs*:
+hu*:
+nl : Je opgeslagen filters worden ook automatisch toegepast op een aantal andere delen van de site, waaronder de homepagina. Om deze filters te veranderen, ga terug naar deze pagina en gebruik de "Opslaan als standaard" knop weer. Om je opgeslagen filters te verwijderen, klik op "Reset" en sla je instellingen weer op.
 
 
 
@@ -4044,11 +4086,11 @@ hu : Nagyobb spoilerek megjelenítése
 nl : Laat alle spoilers zien
 
 :_tagp_novn
-en : This tag has not been linked to any visual novels yet, or they were hidden because of the spoiler settings.
-ru : Этот тег пока не содержит ссылок ни на одну новеллу, либо они скрыты из-за настроек отображения спойлеров.
-cs : Tento tag ještě nebyl použit v žádné vizuální novele nebo byly tyto skryty kvůli nastavení spoilerů.
-hu : Ez a címke eddig egy visual novelhez sincs hozzárendelve, vagy el lettek rejtve a spoiler-ek beállítása során.
-nl : Deze tag is nog niet gekoppeld aan een visual novel, of deze worden niet weergegeven in verband met de spoilerinstelling.
+en : This tag has not been linked to any visual novels yet, or they were hidden because of your spoiler settings or default filters.
+ru : Этот тег пока не содержит ссылок ни на одну новеллу, либо они скрыты из-за настроек отображения спойлеров, либо из-за фильтров.
+cs*: Tento tag ještě nebyl použit v žádné vizuální novele nebo byly tyto skryty kvůli nastavení spoilerů.
+hu*: Ez a címke eddig egy visual novelhez sincs hozzárendelve, vagy el lettek rejtve a spoiler-ek beállítása során.
+nl : Deze tag is nog niet gekoppeld aan een visual novel, of deze worden niet weergegeven in verband met je spoiler- of filterinstelling.
 
 :_tagp_cached
 en : The list below also includes all visual novels linked to child tags. This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.
@@ -4822,6 +4864,13 @@ cs*:
 hu : Szavazatok [_1]-tól(től)
 nl : Stemmen van [_1]
 
+:_votelist_novotes
+en : No votes to list. :-(
+ru : Не найдено ни одного голоса. T_T
+cs*:
+hu*:
+nl : Geen stemmen om weer te geven. :-(
+
 :_votelist_col_date
 en : Cast
 ru : Дата
@@ -4868,7 +4917,7 @@ cs : List vizuálních novel uživatele [_1]
 hu : [_1] visual novel listája
 nl : Visual novel lijst van [_1]
 
-:_rlist_voted_all
+:_rlist_all
 en : All
 ru : Все
 cs : Všechny
@@ -4896,6 +4945,13 @@ cs : Název
 hu : Cím
 nl : Titel
 
+:_rlist_col_status
+en : Status
+ru : Статус
+cs*:
+hu*:
+nl :
+
 :_rlist_col_releases
 en : Releases
 ru : Выпуски
@@ -4910,26 +4966,40 @@ cs : Hodnocení
 hu : Szavazat
 nl : Stem
 
-:_rlist_selection
-en : -- with selected --
-ru : -- с выбранными --
-cs : -- s vybranými --
-hu : -- kiválasztva --
-nl : -- met geselecteerde items --
+:_rlist_withvn
+en : -- with selected VNs --
+ru : -- с указанными новеллами --
+cs*:
+hu*:
+nl : -- met geselecteerde VNs --
 
-:_rlist_changerel
-en : Change release status
-ru : Смена статуса выпуска
-cs : Změnit stav vydání
-hu : Kiadás állapotának megváltoztatása
-nl : Verander uitgavestatus
+:_rlist_withrel
+en : -- with selected releases --
+ru : -- с указанными выпусками --
+cs*:
+hu*:
+nl : -- met geselecteerde uitgaven --
 
-:_rlist_changeplay
-en : Change play status
-ru : Смена статуса игры
-cs : Změnit stav hraní
-hu : Játszás állapot megváltoztatása
-nl : Verander speelstatus
+:_rlist_changestat
+en : Change status
+ru : Смена статуса
+cs*:
+hu*:
+nl : Verander status
+
+:_rlist_setnote
+en : Set note
+ru : Установка заметки
+cs*:
+hu*:
+nl : Verander notitie
+
+:_rlist_setnote_prompt
+en : Set notes (leave empty to remove note)
+ru : Установка заметок (оставьте поле пустым чтобы стереть заметку)
+cs*:
+hu*:
+nl : Verander notitie (laat leeg om de notitie te verwijderen)
 
 :_rlist_del
 en : remove from list
@@ -4938,12 +5008,20 @@ cs : odstranit z listu
 hu : eltávolítás a listából
 nl : verwijder uit lijst
 
+# label of the button. "Update!" in the commanding sense
+:_rlist_update
+en : Update
+ru : Обновить
+cs*:
+hu*:
+nl :
+
 :_rlist_releasenote
-en : * Obtained/finished/total
-ru : * Приобретено/прочитано/всего
-cs : * Sehnáno/dohráno/celkem
-hu : * Megszerezve/befejezve/összesen
-nl : * In bezit/uitgespeeld/totaal
+en : * Obtained/total
+ru : * Приобретено/всего
+cs : * Sehnáno/celkem
+hu : * Megszerezve/összesen
+nl : * In bezit/totaal
 
 
 
@@ -5374,7 +5452,7 @@ nl : Herhaal wachtwoord
 
 :_register_question
 en : How many [index,_1,visual novels,releases,producers] do we have in the database? (Hint: look to your left)
-ru : Сколько [index,_1,новелл,выпусков,компаний] у нас в базе? (Подсказка: посмотри слева)
+ru : Сколько [index,_1,новелл,выпусков,компаний] у нас в базе? (Подсказка: посмотрите слева)
 cs : Kolik [index,_1,vizulních novel,vydání,producentů] máme v databázi? (Nápověda: podívejte se doleva)
 hu : Mennyi [index,_1,visual novels,releases,producers] van az adatbázisunkba? (Tip: vess egy pillantást balra)
 nl : Hoeveel [index,_1,visual novels,uitgaven,producenten] hebben wij in de database? (Tip: zie links van de pagina)
@@ -5481,11 +5559,11 @@ hu : Beállítások
 nl : Opties
 
 :_usere_flist
-en : Allow other people to see my visual novel list ([url,_1,_1]) and wishlist ([url,_2,_2])
-ru : Разрешить остальным видеть мой список новелл ([url,_1,_1]) и список желаемого ([url,_2,_2])
-cs : Povolit ostatním zobrazit můj list vizuálních novel ([url,_1,_1]) a wishlist ([url,_2,_2])
-hu : Más embereknek megengedni, hogy lássák a visual novel listám ([url,_1,_1]) és a kívánságlistám ([url,_2,_2])
-nl : Sta andere mensen toe om mijn visual novel lijst ([url,_1,_1]) en wensenlijst ([url,_2,_2]) te zien
+en : Don't allow other people to see my visual novel list ([url,_1,_1]), votes ([url,_2,_2]) and wishlist ([url,_3,_3])
+ru : Запретить другим участникам видеть мой список новелл ([url,_1,_1]), отданные голоса ([url,_2,_2]) и список желаемого ([url,_3,_3])
+cs*:
+hu*:
+nl : Sta andere mensen niet toe om mijn visual novel lijst ([url,_1,_1]), stemmen ([url,_2,_2]) en wensenlijst ([url,_3,_3]) te zien
 
 :_usere_fnsfw
 en : Disable warnings for images that are not safe for work.
@@ -5734,7 +5812,7 @@ cs : Nastavení
 hu : Beállítások
 nl : Instellingen
 
-:_usern_set_dbedit
+:_usern_set_nodbedit
 en : Notify me about edits of database entries I contributed to.
 ru : Уведомлять меня о правках записей базы данных, которые я редактировал(а).
 cs : Upozorňovat mne na úpravy databáze, ke kterým jsem přispěl/a.
@@ -5811,27 +5889,6 @@ cs : Hodnocení
 hu : Értékelés
 nl : Waardering
 
-:_vnbrowse_tagign_title
-en : The following tags were ignored:
-ru : Следующие теги были пропущены:
-cs : Následující tagy byly ignorovány:
-hu : Az allábi címkék nem lettek figyelembe véve:
-nl : De volgende tags zijn genegeerd:
-
-:_vnbrowse_tagign_meta
-en : can't filter on meta tags
-ru : фильтрация по мета-тегам невозможна
-cs : nedají se filtrovat meta tagy
-hu : meta címkéken nem működik a szűrő
-nl : kan niet filteren op metatags
-
-:_vnbrowse_tagign_notfound
-en : no such tag found
-ru : тег не найден
-cs : nenalezeny takové tagy
-hu : nem található ilyen címke
-nl : tag niet gevonden
-
 :_vnbrowse_fil_title
 en : Visual Novel Filters
 ru : Фильтры новелл
@@ -5882,11 +5939,25 @@ hu : Címkék
 nl :
 
 :_vnbrowse_booland
-en : boolean and, selecting more gives less results
+en : Boolean and, selecting more gives less results
 ru : логическое 'и', чем больше выбрано, тем меньше даёт результатов
-cs : boolean a, výběr více dá méně výsledků
+cs : Boolean a, výběr více dá méně výsledků
 hu : Boole féle értékhalmaz(igaz/hamis), s ha többet választasz ki akkor kevesebb találatot ad
-nl : booleaanse 'en', meerdere selecties geven minder resultaten
+nl : Booleaanse 'en', meerdere selecties geven minder resultaten
+
+:_vnbrowse_tagactive
+en : These filters are ignored on tag pages (when set as default).
+ru : Эти фильтры недействительны на страницах тегов (по умолчанию).
+cs*:
+hu*:
+nl : Deze filters worden genegeerd op tagpaginas (als ze gebruikt worden als standaardfilters).
+
+:_vnbrowse_tagrem
+en : remove
+ru : убрать
+cs*:
+hu*:
+nl : verwijder
 
 :_vnbrowse_taginc
 en : Tags to include
@@ -5984,7 +6055,7 @@ nl : Originele titel
 
 :_vnedit_original_msg
 en : The original title of this visual novel, leave blank if it already is in the Latin alphabet.
-ru : Исходное название данной новеллы, оставьте пустым, если уже набрано в латинском алфавите.
+ru : Исходное название данной новеллы, оставьте пустым, если указано в латинском алфавите.
 cs : Originální název této vizuální novely, ponechte prázdné, pokud již je latinkou.
 hu : A visual novel eredeti címe, ha latin betűkkel van akkor ne írd be mégegyszer ide.
 nl : De originele titel van deze visual novel, laat leeg als deze al in het Latijnse alfabet is.
@@ -6857,6 +6928,41 @@ hu : Te most épp a 10-ből, 10-et adsz ennek a visual novelnek. Ez egy elég ex
 nl : Je staat op het punt om deze visual novel een 10 te geven. Dit is een erg extreme stem, en betekent dat dit één van de beste visual novels die je ooit hebt gespeeld is, en dat de kans klein is dat je ooit iets beters zal vinden dan dit.
      Het is over het algemeen een slecht idee om meer dan drie spellen in je lijst een 10 te geven, wees zorgvuldig!
 
+:_vnpage_uopt_vnlisted
+en : VN list: [_1]
+ru : Список новелл: [_1]
+cs*:
+hu*:
+nl : VN-lijst: [_1]
+
+:_vnpage_uopt_novn
+en : not on your VN list
+ru : не в вашем списке
+cs*:
+hu*:
+nl : niet in je VN-lijst
+
+:_vnpage_uopt_changevn
+en : Change status
+ru : Сменить статус
+cs*: Změnit status
+hu*: Állapot megváltoztatássa
+nl : Wijzig status
+
+:_vnpage_uopt_addvn
+en : Add to VN list
+ru : Добавить в список
+cs*:
+hu*:
+nl : Voeg toe aan VN-lijst
+
+:_vnpage_uopt_delvn
+en : remove from VN list
+ru : убрать из списка
+cs*:
+hu*:
+nl : Verwijder van VN-lijst
+
 :_vnpage_uopt_wishlisted
 en : wishlist: [_1]
 ru : список желаемого: [_1]
@@ -6892,26 +6998,12 @@ cs : odstranit z wishlistu
 hu : eltávolitás a kivánságlistából
 nl : Verwijder van wensenlijst
 
-:_vnpage_uopt_relrstat
-en : Release status
-ru : Статус выпуска
-cs : Status vydání
-hu : Kiadás állapota
-nl : Uitgavestatus
-
-:_vnpage_uopt_relvstat
-en : Play status
-ru : Статус прохождения
-cs : Herní status
-hu : Játszás állapota
-nl : Speelstatus
-
 :_vnpage_uopt_reldel
-en : Remove from VN list
-ru : Убрать из списка новелл
-cs : Odstranit z listu VN
-hu : Eltávolítás a VN listából
-nl : Verwijder van VN lijst
+en : Remove from list
+ru : Убрать из списка
+cs*:
+hu*:
+nl : Verwijder van lijst
 
 :_vnpage_rel
 en : Releases
@@ -7083,7 +7175,7 @@ nl : Je bent niet toegestaan om deze actie uit te voeren.
 
 :_denied_noaccess_msg
 en : It seems you don't have the proper rights to perform the action you wanted to perform...
-ru : Похоже, у тебя нет прав для выполнения действия, которое ты пытаешься совершить. Короче, сюда нельзя...
+ru : Похоже, у вас нет прав для выполнения действия, которое вы пытаетесь совершить...
 cs : Zdá se, že nemáte potřebná práva pro vykonání akce, kterou chcete provést...
 hu : Úgy tűnik, hogy nem rendelkezel megfelelő jogokkal, hogy elvégezd azt a műveletet amit szerettél volna...
 nl : Het lijkt er op dat je niet genoeg rechten hebt om te doen wat je wilde doen...

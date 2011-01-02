@@ -27,7 +27,7 @@ sub htmlFormError {
    ul;
     for my $e (@{$frm->{_err}}) {
       if(!ref $e) {
-        li mt '_formerr_e_'.$e;
+        li; lit mt '_formerr_e_'.$e; end;
         next;
       }
       my($field, $type, $rule) = @$e;
@@ -89,7 +89,7 @@ sub htmlFormPart {
      end;
      td class => 'field';
       input type => 'checkbox', name => $o{short}, id => $o{short},
-        value => $o{value}||'true', $frm->{$o{short}} ? ( checked => 'checked' ) : ();
+        value => $o{value}||1, ($frm->{$o{short}}||0) eq ($o{value}||1) ? ( checked => 'checked' ) : ();
       label for => $o{short};
        lit $o{name};
       end;

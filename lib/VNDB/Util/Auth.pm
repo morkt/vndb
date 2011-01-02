@@ -14,7 +14,7 @@ use YAWF ':html';
 use VNDB::Func;
 
 
-our @EXPORT = qw| authInit authLogin authLogout authInfo authCan authPreparePass authGetCode authCheckCode |;
+our @EXPORT = qw| authInit authLogin authLogout authInfo authCan authPreparePass authGetCode authCheckCode authPref |;
 
 
 # initializes authentication information and checks the vndb_auth cookie
@@ -27,7 +27,7 @@ sub authInit {
   return _rmcookie($self) if length($cookie) < 41;
   my $token = substr($cookie, 0, 40);
   my $uid  = substr($cookie, 40);
-  $self->{_auth} = $uid =~ /^\d+$/ && $self->dbUserGet(uid => $uid, session => $token, what => 'extended notifycount')->[0];
+  $self->{_auth} = $uid =~ /^\d+$/ && $self->dbUserGet(uid => $uid, session => $token, what => 'extended notifycount prefs')->[0];
   # update the sessions.lastused column if lastused < now()'6 hours'
   $self->dbSessionUpdateLastUsed($uid, $token) if $self->{_auth} && $self->{_auth}{session_lastused} < time()-6*3600;
   return _rmcookie($self) if !$self->{_auth};
@@ -70,6 +70,10 @@ sub authLogout {
 
   $self->resRedirect('/', 'temp');
   _rmcookie($self);
+
+  # set l10n cookie if the user has a preferred language set
+  my $l10n = $self->authPref('l10n');
+  $self->resHeader('Set-Cookie', "l10n=$l10n; expires=Sat, 01-Jan-2030 00:00:00 GMT; path=/; domain=$self->{cookie_domain}") if $l10n;
 }
 
 
@@ -195,6 +199,15 @@ sub _incorrectcode {
   return 0;
 }
 
+
+sub authPref {
+  my($self, $key, $val) = @_;
+  my $nfo = $self->authInfo;
+  return '' if !$nfo->{id};
+  return $nfo->{prefs}{$key}||'' if @_ == 2;
+  $nfo->{prefs}{$key} = $val;
+  $self->dbUserPrefSet($nfo->{id}, $key, $val);
+}
 
 1;
 

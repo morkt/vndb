@@ -41,22 +41,24 @@ var collapsed_icon = '▸';
 /*  M I N I M A L   J A V A S C R I P T   L I B R A R Y  */
 
 var http_request = false;
-function ajax(url, func) {
-  if(http_request)
+function ajax(url, func, async) {
+  if(!async && http_request)
     http_request.abort();
-  http_request = (window.ActiveXObject) ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
-  if(http_request == null)
+  var req = (window.ActiveXObject) ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
+  if(req == null)
     return alert("Your browser does not support the functionality this website requires.");
-  http_request.onreadystatechange = function() {
-    if(!http_request || http_request.readyState != 4 || !http_request.responseText)
+  if(!async)
+    http_request = req;
+  req.onreadystatechange = function() {
+    if(!req || req.readyState != 4 || !req.responseText)
       return;
-    if(http_request.status != 200)
+    if(req.status != 200)
       return alert('Whoops, error! :(');
-    func(http_request);
+    func(req);
   };
   url += (url.indexOf('?')>=0 ? ';' : '?')+(Math.floor(Math.random()*999)+1);
-  http_request.open('GET', url, true);
-  http_request.send(null);
+  req.open('GET', url, true);
+  req.send(null);
 }
 
 function setCookie(n,v) {
@@ -379,40 +381,32 @@ function ddRefresh() {
 
 function rlDropDown(lnk) {
   var relid = lnk.id.substr(6);
-  var st = getText(lnk).split(' / ');
-  if(st[0].indexOf(mt('_js_loading')) >= 0)
+  var st = getText(lnk);
+  if(st == mt('_js_loading'))
     return null;
 
-  var rs = tag('ul', tag('li', tag('b', mt('_vnpage_uopt_relrstat'))));
-  var vs = tag('ul', tag('li', tag('b', mt('_vnpage_uopt_relvstat'))));
-  for(var i=0; i<rlst_rstat.length; i++) {
-    var val = mt('_rlst_rstat_'+rlst_rstat[i]); // l10n /_rlst_rstat_\d+/
-    if(st[0] && st[0].indexOf(val) >= 0)
-      rs.appendChild(tag('li', tag('i', val)));
+  var o = tag('ul', null);
+  for(var i=0; i<rlist_status.length; i++) {
+    var val = mt('_rlist_status_'+rlist_status[i]); // l10n /_rlist_status_\d+/
+    if(st == val)
+      o.appendChild(tag('li', tag('i', val)));
     else
-      rs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'r'+rlst_rstat[i], onclick:rlMod}, val)));
+      o.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:rlist_status[i], onclick:rlMod}, val)));
   }
-  for(var i=0; i<rlst_vstat.length; i++) {
-    var val = mt('_rlst_vstat_'+rlst_vstat[i]); // l10n /_rlst_vstat_\d+/
-    if(st[1] && st[1].indexOf(val) >= 0)
-      vs.appendChild(tag('li', tag('i', val)));
-    else
-      vs.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:'v'+rlst_vstat[i], onclick:rlMod}, val)));
-  }
+  if(st != '--')
+    o.appendChild(tag('li', tag('a', {href:'#', rl_rid:relid, rl_act:-1, onclick:rlMod}, mt('_vnpage_uopt_reldel'))));
 
-  return tag('div', {'class':'vrdd'}, rs, vs, st[0] == '--' ? null :
-    tag('ul', {'class':'full'}, tag('li', tag('a', {href:'#', rl_rid: relid, rl_act:'del', onclick:rlMod}, mt('_vnpage_uopt_reldel'))))
-  );
+  return tag('div', o);
 }
 
 function rlMod() {
   var lnk = byId('rlsel_'+this.rl_rid);
   var code = getText(byId('vnrlist_code'));
+  var act = this.rl_act;
   ddHide();
   setContent(lnk, tag('b', {'class': 'grayedout'}, mt('_js_loading')));
-  ajax('/xml/rlist.xml?formcode='+code+';id='+this.rl_rid+';e='+this.rl_act, function(hr) {
-    // TODO: get rid of innerHTML here...
-    lnk.innerHTML = hr.responseXML.getElementsByTagName('rlist')[0].firstChild.nodeValue;
+  ajax('/xml/rlist.xml?formcode='+code+';id='+this.rl_rid+';e='+act, function(hr) {
+    setText(lnk, act == -1 ? '--' : mt('_rlist_status_'+act));
   });
   return false;
 }
@@ -1756,7 +1750,7 @@ function filLoad() {
   var c = tag('div', null);
   for(var i=1; i<l.length; i++) {
     // category link
-    var a = tag('a', { href: '#', onclick: filSelectCat, fil_num: i }, l[i][0]);
+    var a = tag('a', { href: '#', onclick: filSelectCat, fil_num: i, fil_onshow:[] }, l[i][0]);
     p.appendChild(a);
     p.appendChild(tag(' '));
 
@@ -1776,6 +1770,8 @@ function filLoad() {
         tag('td', {'class':'cont' }, fd[2]));
       if(fd[0])
         fil_cats[0][fd[0]] = f;
+      if(fd[5])
+        a.fil_onshow.push([ fd[5], f.fil_contents ]);
       t.appendChild(f);
     }
     c.appendChild(t);
@@ -1791,30 +1787,48 @@ function filLoad() {
     tag('b', {'class':'ruler'}, null),
     c,
     tag('b', {'class':'ruler'}, null),
+    PREF_CODE != '' ? tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_filsave'), onclick:filSaveDefault }) : null,
     tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_apply'), onclick:function () {
       var f = byId('fil');
       while(f.nodeName.toLowerCase() != 'form')
         f = f.parentNode;
       f.submit();
     }}),
-    tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} })
+    tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} }),
+    tag('p', {id:'fil_savenote', 'class':'hidden'}, mt('_rbrowse_savenote'))
   ));
   filSelectCat(1);
   byId('filselect').onclick = filShow;
   filDeSerialize();
 }
 
+function filSaveDefault() {
+  var but = this;
+  but.value = mt('_js_loading');
+  but.enabled = false;
+  setClass(byId('fil_savenote'), 'hidden', false);
+  var type = byId('filselect').href.match(/#r$/) ? 'release' : 'vn';
+  ajax('/xml/prefs.xml?formcode='+PREF_CODE+';key=filter_'+type+';value='+byId('fil').value, function (hr) {
+    but.value = mt('_rbrowse_filsave');
+    but.enable = true;
+  });
+}
+
 function filSelectCat(n) {
+  setClass(byId('fil_savenote'), 'hidden', true);
   n = this.fil_num ? this.fil_num : n;
   for(var i=1; i<fil_cats.length; i++) {
     setClass(fil_cats[i], 'optselected', i == n);
     setClass(fil_cats[i].fil_t, 'hidden', i != n);
   }
+  for(var i=0; i<fil_cats[n].fil_onshow.length; i++)
+    fil_cats[n].fil_onshow[i][0](fil_cats[n].fil_onshow[i][1]);
   return false
 }
 
 function filSelectField(obj) {
   var t = obj && obj.parentNode ? obj : this;
+  setClass(byId('fil_savenote'), 'hidden', true);
   // update checkbox and label
   var o = t;
   while(o.nodeName.toLowerCase() != 'tr')
@@ -1842,8 +1856,8 @@ function filSelectField(obj) {
 }
 
 function filSerialize() {
-  var l = [];
   var num = 0;
+  var values = {};
   for(var f in fil_cats[0]) {
     if(!byId('fil_check_'+f).checked)
       continue;
@@ -1852,19 +1866,24 @@ function filSerialize() {
     var v = fil_cats[0][f].fil_readfunc(fil_cats[0][f].fil_contents);
     var r = [];
     for(var h=0; h<v.length; h++) {
-      v[h] = (''+v[h]).split('');
+      var vs = (''+v[h]).split('');
       r[h] = '';
       // this isn't a very fast escaping method, blame JavaScript for inflexible search/replace support
-      for(var i=0; i<v[h].length; i++) {
+      for(var i=0; i<vs.length; i++) {
         for(var j=0; j<fil_escape.length; j++)
-          if(v[h][i] == fil_escape[j])
+          if(vs[i] == fil_escape[j])
             break;
-        r[h] += j == fil_escape.length ? v[h][i] : '_'+(j<10?'0'+j:j);
+        r[h] += j == fil_escape.length ? vs[i] : '_'+(j<10?'0'+j:j);
       }
     }
     if(r.length > 0 && r[0] != '')
-      l.push(fil_cats[0][f].fil_code+'-'+r.join('~'));
+      values[fil_cats[0][f].fil_code] = r.join('~');
   }
+  if(!values['tag_inc'])
+    delete values['tagspoil'];
+  var l = [];
+  for(var f in values)
+    l.push(f+'-'+values[f]);
   byId('fil').value = l.join('.');
   setText(byName(byId('filselect'), 'i')[1], num > 0 ? ' ('+num+')' : '');
 }
@@ -1900,6 +1919,7 @@ function filShow() {
   var hid = !hasClass(div, 'hidden');
   setClass(div, 'hidden', hid);
   setText(byName(byId('filselect'), 'i')[0], hid ? collapsed_icon : expanded_icon);
+  setClass(byId('fil_savenote'), 'hidden', true);
 
   var o = this;
   ddx = ddy = 0;
@@ -1971,6 +1991,89 @@ function filFOptions(c, n, opts, setfunc) {
   ];
 }
 
+function filFTagInput(name, label) {
+  var visible = false;
+  var remove = function() {
+    ;
+  };
+  var addtag = function(ul, id, name) {
+    ul.appendChild(tag('li', { fil_id: id },
+      tag('a', {href:'/g'+id}, name||'g'+id),
+      ' (', tag('a', {href:'#',
+        onclick:function () {
+          // a -> li -> ul -> div
+          var ul = this.parentNode.parentNode;
+          ul.removeChild(this.parentNode);
+          filSelectField(ul.parentNode);
+          return false
+        }
+      }, mt('_vnbrowse_tagrem')), ')'
+    ));
+  }
+  var fetch = function(c)   {
+    var v = c.fil_val;
+    var ul = byName(c, 'ul')[0];
+    var txt = byName(c, 'input')[0];
+    if(v == null)
+      return;
+    if(!v[0]) {
+      setText(ul, '');
+      txt.disabled = false;
+      txt.value = '';
+      return;
+    }
+    if(!visible)
+      setText(ul, '');
+    var q = [];
+    for(var i=0; i<v.length; i++) {
+      q.push('id='+v[i]);
+      if(!visible)
+        addtag(ul, v[i]);
+    }
+    txt.value = mt('_js_loading');
+    txt.disabled = true;
+    if(visible)
+      ajax('/xml/tags.xml?'+q.join(';'), function (hr) {
+        var l = [];
+        var items = hr.responseXML.getElementsByTagName('item');
+        setText(ul, '');
+        for(var i=0; i<items.length; i++)
+          addtag(ul, items[i].getAttribute('id'), items[i].firstChild.nodeValue);
+        txt.value = '';
+        txt.disabled = false;
+        c.fil_val = null;
+      }, 1);
+  };
+  var input = tag('input', {type:'text', 'class':'text', style:'width:300px', onfocus:filSelectField});
+  var list = tag('ul', null);
+  dsInit(input, '/xml/tags.xml?q=',
+    function(item, tr) {
+      tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
+        item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_meta')) : null,
+        item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
+      ));
+    },
+    function(item, obj) {
+      addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue);
+      filSelectField(obj);
+      return '';
+    },
+    function(o) { filSelectField(o); false }
+  );
+
+  return [
+    name, label, tag('div', list, input),
+    function(c) {
+      var v = []; var l = byName(c, 'li');
+      for(var i=0; i<l.length; i++)
+        v.push(l[i].fil_id);
+      return v;
+    },
+    function(c,v) { c.fil_val = v; fetch(c) },
+    function(c) { visible = true; fetch(c); }
+  ];
+}
+
 function filReleases() {
   var types = release_types;
   for(var i=0; i<types.length; i++) // l10n /_rtype_.+/
@@ -2028,28 +2131,6 @@ function filVN() {
   for(var i=0; i<len.length; i++) // l10n /_vnlength_.+/
     len[i] = [ len[i], mt('_vnlength_'+len[i]) ];
 
-  // tag include/exclude dropdown search
-  var taginc = tag('input', {type:'text', 'class':'text', style:'width:350px', onfocus:filSelectField});
-  var tagexc = tag('input', {type:'text', 'class':'text', style:'width:350px', onfocus:filSelectField});
-  var trfunc = function(item, tr) {
-    tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
-      item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_meta')) : null,
-      item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
-    ));
-  };
-  var serfunc = function(item, obj) {
-    var tags = obj.value.split(/ *, */);
-    tags[tags.length-1] = item.firstChild.nodeValue;
-    filSelectField(obj);
-    return tags.join(', ');
-  };
-  var retfunc   = function(o)   { filSelectField(o); false };
-  var parfunc   = function(val) { return (val.split(/, */))[val.split(/, */).length-1]; };
-  var readfunc  = function(c)   { return c.value.split(/, */) };
-  var writefunc = function(c,v) { c.value = v.join(', ') };
-  dsInit(taginc, '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
-  dsInit(tagexc, '/xml/tags.xml?q=', trfunc, serfunc, retfunc, parfunc);
-
   return [
     mt('_vnbrowse_fil_title'),
     [ mt('_vnbrowse_general'),
@@ -2057,9 +2138,10 @@ function filVN() {
       filFOptions('hasani', mt('_vnbrowse_anime'), [[1, mt('_vnbrowse_anime_yes')],[0, mt('_vnbrowse_anime_no')]])
     ],
     [ mt('_vnbrowse_tags'),
-      [ '',       ' ',                    tag('('+mt('_vnbrowse_booland')+')') ],
-      [ 'taginc', mt('_vnbrowse_taginc'), taginc, readfunc, writefunc ],
-      [ 'tagexc', mt('_vnbrowse_tagexc'), tagexc, readfunc, writefunc ],
+      [ '',       ' ',                   tag(mt('_vnbrowse_booland')) ],
+      [ '',       ' ', PREF_CODE != '' ? tag(mt('_vnbrowse_tagactive')) : null ],
+      filFTagInput('tag_inc', mt('_vnbrowse_taginc')),
+      filFTagInput('tag_exc', mt('_vnbrowse_tagexc')),
       filFOptions('tagspoil', ' ', [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]],
         function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
     ],
@@ -2161,7 +2243,7 @@ if(byId('wishsel')) {
   };
 }
 
-// Release list dropdown box (/r+)
+// Release & VN list dropdown box (/r+ and /v+)
 if(byId('listsel')) {
   byId('listsel').onchange = function() {
     if(this.selectedIndex != 0)
@@ -2204,7 +2286,7 @@ if(byId('jt_box_rel_geninfo')) {
   byId('patch').onclick = func;
 }
 
-// Batch edit wishlist dropdown box (/u+/wish)
+// Batch edit dropdown box (/u+/wish and /u+/votes)
 if(byId('batchedit')) {
   byId('batchedit').onchange = function() {
     if(this.selectedIndex == 0)
@@ -2216,7 +2298,7 @@ if(byId('batchedit')) {
   };
 }
 
-// collapse/expand row groups (/u+/list) (limited to one table on a page)
+// collapse/expand row groups (/u+/list)
 if(byId('expandall')) {
   var table = byId('expandall');
   while(table.nodeName.toLowerCase() != 'table')
@@ -2227,11 +2309,14 @@ if(byId('expandall')) {
   var alltoggle = function() {
     allhid = !allhid;
     var l = byClass(table, 'tr', 'collapse');
-    for(var i=0; i<l.length; i++)
+    for(var i=0; i<l.length; i++) {
       setClass(l[i], 'hidden', allhid);
-    setText(byName(byId('expandall'), 'i')[0], allhid ? collapsed_icon : expanded_icon);
+      var sel = byName(l[i], 'input')[0];
+      if(sel) setClass(sel, 'hidden', allhid);
+    }
+    setText(byId('expandall'), allhid ? collapsed_icon : expanded_icon);
     for(var i=0; i<heads.length; i++)
-      setText(byName(heads[i], 'i')[0], allhid ? collapsed_icon : expanded_icon);
+      setText(heads[i], allhid ? collapsed_icon : expanded_icon);
     return false;
   }
   byId('expandall').onclick = alltoggle;
@@ -2242,13 +2327,26 @@ if(byId('expandall')) {
     if(l.length < 1)
       return;
     var hid = !hasClass(l[0], 'hidden');
-    for(var i=0; i<l.length; i++)
+    for(var i=0; i<l.length; i++) {
       setClass(l[i], 'hidden', hid);
-    setText(byName(this, 'i')[0], hid ? collapsed_icon : expanded_icon);
+      var sel = byName(l[i], 'input')[0];
+      if(sel) setClass(sel, 'hidden', hid);
+    }
+    setText(this, hid ? collapsed_icon : expanded_icon);
   };
   for(var i=0; i<heads.length; i++)
     heads[i].onclick = singletoggle;
 }
+
+
+// set note input box (/u+/list)
+if(byId('not') && byId('vns'))
+  byId('vns').onchange = function () {
+    if(this.options[this.selectedIndex].value == 999)
+      byId('not').value = prompt(mt('_rlist_setnote_prompt'), '');
+    return true;
+  };
+
 
 // expand/collapse release listing (/p+)
 if(byId('expandprodrel')) {
@@ -2290,7 +2388,7 @@ if(byId('lang_select')) {
   var f = function() {
     var l = byName('input');
     for(var i=0; i<l.length; i++)
-      if(l[i].type == this.type && l[i].name == this.name)
+      if(l[i].type == this.type && l[i].name == this.name && !hasClass(l[i], 'hidden'))
         l[i].checked = this.checked;
   };
   var l = byClass('input', 'checkall');

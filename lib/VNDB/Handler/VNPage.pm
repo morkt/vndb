@@ -16,7 +16,7 @@ YAWF::register(
 
 sub rand {
   my $self = shift;
-  $self->resRedirect('/v'.$self->dbVNGet(results => 1, sort => 'rand')->[0]{id}, 'temp');
+  $self->resRedirect('/v'.$self->filFetchDB(vn => undef, undef, {results => 1, sort => 'rand'})->[0]{id}, 'temp');
 }
 
 
@@ -74,12 +74,12 @@ sub page {
      } elsif($v->{image} < 0) {
        p mt '_vnpage_imgproc';
      } else {
-       p $v->{img_nsfw} ? (id => 'nsfw_hid', style => $self->authInfo->{show_nsfw} ? 'display: block' : '') : ();
+       p $v->{img_nsfw} ? (id => 'nsfw_hid', style => $self->authPref('show_nsfw') ? 'display: block' : '') : ();
         img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title};
         i mt '_vnpage_imgnsfw_foot' if $v->{img_nsfw};
        end;
        if($v->{img_nsfw}) {
-         p id => 'nsfw_show', $self->authInfo->{show_nsfw} ? (style => 'display: none') : ();
+         p id => 'nsfw_show', $self->authPref('show_nsfw') ? (style => 'display: none') : ();
           txt mt('_vnpage_imgnsfw_msg')."\n\n";
           a href => '#', mt '_vnpage_imgnsfw_show';
           txt "\n\n".mt '_vnpage_imgnsfw_note';
@@ -225,7 +225,7 @@ sub _revision {
     [ image       => htmlize => sub {
       my $url = sprintf "%s/cv/%02d/%d.jpg", $self->{url_static}, $_[0]%100, $_[0];
       if($_[0] > 0) {
-        return $_[1]->{img_nsfw} && !$self->authInfo->{show_nsfw} ? "<a href=\"$url\">".mt('_vndiff_image_nsfw').'</a>' : "<img src=\"$url\" />";
+        return $_[1]->{img_nsfw} && !$self->authPref('show_nsfw') ? "<a href=\"$url\">".mt('_vndiff_image_nsfw').'</a>' : "<img src=\"$url\" />";
       } else {
         return mt $_[0] < 0 ? '_vndiff_image_proc' : '_vndiff_image_none';
       }
@@ -343,6 +343,7 @@ sub _useroptions {
   my($self, $i, $v) = @_;
 
   my $vote = $self->dbVoteGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
+  my $list = $self->dbVNListGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
   my $wish = $self->dbWishListGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
 
   Tr ++$$i % 2 ? (class => 'odd') : ();
@@ -358,6 +359,16 @@ sub _useroptions {
       end;
       br;
     }
+
+    Select id => 'listsel', name => $self->authGetCode("/v$v->{id}/list");
+     option $list ? mt '_vnpage_uopt_vnlisted', mt '_vnlist_status_'.$list->{status} : mt '_vnpage_uopt_novn';
+     optgroup label => $list ? mt '_vnpage_uopt_changevn' : mt '_vnpage_uopt_addvn';
+      option value => $_, mt "_vnlist_status_$_" for (@{$self->{rlist_status}});
+     end;
+     option value => -1, mt '_vnpage_uopt_delvn' if $list;
+    end;
+    br;
+
     if(!$vote || $wish) {
       Select id => 'wishsel', name => $self->authGetCode("/v$v->{id}/wish");
        option $wish ? mt '_vnpage_uopt_wishlisted', mt '_wish_'.$wish->{wstat} : mt '_vnpage_uopt_nowish';
@@ -385,7 +396,7 @@ sub _releases {
    }
 
    if($self->authInfo->{id}) {
-     my $l = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => [map $_->{id}, @$r]);
+     my $l = $self->dbRListGet(uid => $self->authInfo->{id}, rid => [map $_->{id}, @$r]);
      for my $i (@$l) {
        [grep $i->{rid} == $_->{id}, @$r]->[0]{ulist} = $i;
      }
@@ -406,7 +417,7 @@ sub _releases {
       for my $rel (grep grep($_ eq $l, @{$_->{languages}}), @$r) {
         Tr;
          td class => 'tc1'; lit $self->{l10n}->datestr($rel->{released}); end;
-         td class => 'tc2', !defined($rel->{minage}) ? '' : minage $rel->{minage};
+         td class => 'tc2', $rel->{minage} < 0 ? '' : minage $rel->{minage};
          td class => 'tc3';
           for (sort @{$rel->{platforms}}) {
             next if $_ eq 'oth';
@@ -420,9 +431,8 @@ sub _releases {
          end;
          td class => 'tc5';
           if($self->authInfo->{id}) {
-            a href => "/r$rel->{id}", id => "rlsel_$rel->{id}", class => 'vnrlsel';
-             lit $rel->{ulist} ? liststat $rel->{ulist} : '--';
-            end;
+            a href => "/r$rel->{id}", id => "rlsel_$rel->{id}", class => 'vnrlsel',
+             $rel->{ulist} ? mt '_rlist_status_'.$rel->{ulist}{status} : '--';
           } else {
             txt ' ';
           }
@@ -451,7 +461,7 @@ sub _screenshots {
    if(grep $_->{nsfw}, @{$v->{screenshots}}) {
      p class => 'nsfwtoggle';
       lit mt '_vnpage_scr_showing',
-        sprintf('<i id="nsfwshown">%d</i>', $self->authInfo->{show_nsfw} ? scalar @{$v->{screenshots}} : scalar grep(!$_->{nsfw}, @{$v->{screenshots}})),
+        sprintf('<i id="nsfwshown">%d</i>', $self->authPref('show_nsfw') ? scalar @{$v->{screenshots}} : scalar grep(!$_->{nsfw}, @{$v->{screenshots}})),
         scalar @{$v->{screenshots}};
       txt " ";
       a href => '#', id => "nsfwhide", mt '_vnpage_scr_nsfwhide';
@@ -471,7 +481,7 @@ sub _screenshots {
       for (@scr) {
         my($w, $h) = imgsize($_->{width}, $_->{height}, @{$self->{scr_size}});
         a href => sprintf('%s/sf/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}),
-          class => sprintf('scrlnk%s%s', $_->{nsfw} ? ' nsfw':'', $_->{nsfw}&&!$self->authInfo->{show_nsfw}?' hidden':''),
+          class => sprintf('scrlnk%s%s', $_->{nsfw} ? ' nsfw':'', $_->{nsfw}&&!$self->authPref('show_nsfw')?' hidden':''),
           rel => "iv:$_->{width}x$_->{height}:scr";
          img src => sprintf('%s/st/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}),
            width => $w, height => $h, alt => mt '_vnpage_scr_num', $_->{id};

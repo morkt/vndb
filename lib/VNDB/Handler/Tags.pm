@@ -39,13 +39,15 @@ sub tagpage {
   my $tagspoil = $self->reqCookie($self->{cookie_prefix}.'tagspoil');
   $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0 if $f->{m} == -1;
 
-  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->dbVNGet(
+  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->filFetchDB(vn => undef, undef, {
     what => 'rating',
     results => 50,
     page => $f->{p},
     sort => $f->{s}, reverse => $f->{o} eq 'd',
-    tags_include => [ $f->{m}, [$tag ]],
-  );
+    tagspoil => $f->{m},
+    tag_inc => $tag,
+    tag_exc => undef,
+  });
 
   my $title = mt '_tagp_title', $t->{meta}?0:1, $t->{name};
   $self->htmlHeader(title => $title, noindex => $t->{state} != 2);
@@ -357,12 +359,12 @@ sub taglinks {
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
     { name => 'o', required => 0, default => 'd', enum => ['a', 'd'] },
-    { name => 's', required => 0, default => 'date', enum => [qw|date username title tag|] },
+    { name => 's', required => 0, default => 'date', enum => [qw|date tag|] },
     { name => 'v', required => 0, default => 0, template => 'int' },
     { name => 'u', required => 0, default => 0, template => 'int' },
     { name => 't', required => 0, default => 0, template => 'int' },
   );
-  return 404 if $f->{_err};
+  return 404 if $f->{_err} || $f->{p} > 100;
 
   my($list, $np) = $self->dbTagLinks(
     what => 'details',
@@ -432,11 +434,11 @@ sub taglinks {
     sorturl  => $url->(s=>0,o=>0),
     header   => [
       [ mt('_taglink_col_date'),   'date' ],
-      [ mt('_taglink_col_user'),   'username' ],
+      [ mt('_taglink_col_user')   ],
       [ mt('_taglink_col_rating') ],
       [ mt('_taglink_col_tag'),    'tag' ],
       [ mt('_taglink_col_spoiler') ],
-      [ mt('_taglink_col_vn'),     'title' ],
+      [ mt('_taglink_col_vn'),     ],
     ],
     row      => sub {
       my($s, $n, $l) = @_;
@@ -668,19 +670,22 @@ sub fulltree {
 sub tagxml {
   my $self = shift;
 
-  my $q = $self->formValidate({ name => 'q', maxlength => 500 });
-  return 404 if $q->{_err};
-  $q = $q->{q};
+  my $f = $self->formValidate(
+    { name => 'q', required => 0, maxlength => 500 },
+    { name => 'id', required => 0, multi => 1, template => 'int' },
+  );
+  return 404 if $f->{_err} || (!$f->{q} && !$f->{id} && !$f->{id}[0]);
 
   my($list, $np) = $self->dbTagGet(
-    $q =~ /^g([1-9]\d*)/ ? (id => $1) : $q =~ /^name:(.+)$/ ? (name => $1) : (search => $q),
+    !$f->{q} ? () : $f->{q} =~ /^g([1-9]\d*)/ ? (id => $1) : $f->{q} =~ /^name:(.+)$/ ? (name => $1) : (search => $f->{q}),
+    $f->{id} && $f->{id}[0] ? (id => $f->{id}) : (),
     results => 15,
     page => 1,
   );
 
   $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
   xml;
-  tag 'tags', more => $np ? 'yes' : 'no', query => $q;
+  tag 'tags', more => $np ? 'yes' : 'no', $f->{q} ? (query => $f->{q}) : ();
    for(@$list) {
      tag 'item', id => $_->{id}, meta => $_->{meta} ? 'yes' : 'no', state => $_->{state}, $_->{name};
    }

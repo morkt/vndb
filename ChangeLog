@@ -1,8 +1,31 @@
-2.16 - ?
+2.16 - 2011-01-02
 	- VNDBUtil::bb2html(): Fixed bug when the string starts with a VNDBID
 	- VNDBUtil::bb2html(): Fixed bug with lowercasing all [url=..] URLs
 	- Fixed perl warning on /v/search redirect without search query
 	- Bugfix: Don't allow others to open /u+/votes when show_list is false
+	- Don't allow NULL for rr.minage and use -1 for unknown
+	- Check for editsum = description and give an easier to understand error
+	- RFC-01: Added vnlists feature and removed rlists.vstat option
+	- ULists::votelist: Don't give a 404 on /u+/votes when no votes found
+	- Added tab and link for /u+/votes to user tabs & main menu
+	- Added ability to batch-edit votes to /u+/votes
+	- Update the votes.date column when changing a vote
+	- ULists::votelist: Added first character selection
+	- Added advanced page-browsing tabs to threads
+	- Added notes field to the user VN list
+	- Added vnlists.status filter to /u+/list
+	- Pass VN tag filters by ID rather than name
+	- Improved VN tag filter selection with a dynamic HTML list of selected tags
+	- Don't send 'tagspoil' filter when 'tag_inc' isn't active
+	- Don't allow page > 100 or sorting on username or title on tag link browser
+	- Added users_prefs table and removed the following columns from users:
+	  skin, customcss, show_nsfw, show_list, notify_announce, notify_dbedit
+	- Store l10n preference in the database for logged-in users
+	- Bugfix: check for validness of form arguments on /[uv]+/votes
+	- Bugfix: translate screen resolutions on release revision pages
+	- Bugfix: properly escape search query in links query string
+	- Bugfix: allow a VN to be available for more than 7 platforms
+	- Implemented permanent release/vn filters
 
 2.15 - 2010-12-15
 	- Removed expand/collapse from history browser and /u+/posts and switched to

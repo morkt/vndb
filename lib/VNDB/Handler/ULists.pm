@@ -10,8 +10,9 @@ use VNDB::Func;
 YAWF::register(
   qr{v([1-9]\d*)/vote},  \&vnvote,
   qr{v([1-9]\d*)/wish},  \&vnwish,
-  qr{r([1-9]\d*)/list},  \&rlist,
-  qr{xml/rlist.xml},     \&rlist,
+  qr{v([1-9]\d*)/list},  \&vnlist_e,
+  qr{r([1-9]\d*)/list},  \&rlist_e,
+  qr{xml/rlist.xml},     \&rlist_e,
   qr{([uv])([1-9]\d*)/votes}, \&votelist,
   qr{u([1-9]\d*)/wish},  \&wishlist,
   qr{u([1-9]\d*)/list},  \&vnlist,
@@ -56,7 +57,26 @@ sub vnwish {
 }
 
 
-sub rlist {
+sub vnlist_e {
+  my($self, $id) = @_;
+
+  my $uid = $self->authInfo->{id};
+  return $self->htmlDenied() if !$uid;
+
+  return if !$self->authCheckCode;
+  my $f = $self->formValidate(
+    { name => 'e', enum => [ -1, @{$self->{vnlist_status}} ] }
+  );
+  return 404 if $f->{_err};
+
+  $self->dbVNListDel($uid, $id) if $f->{e} == -1;
+  $self->dbVNListAdd($uid, $id, $f->{e}) if $f->{e} != -1;
+
+  $self->resRedirect('/v'.$id, 'temp');
+}
+
+
+sub rlist_e {
   my($self, $id) = @_;
 
   my $rid = $id;
@@ -73,27 +93,21 @@ sub rlist {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { name => 'e', required => 1, enum => [ 'del', map("r$_", @{$self->{rlst_rstat}}), map("v$_", @{$self->{rlst_vstat}}) ] },
+    { name => 'e', required => 1, enum => [ -1, @{$self->{rlist_status}} ] }
   );
   return 404 if $f->{_err};
 
-  $self->dbVNListDel($uid, $rid) if $f->{e} eq 'del';
-  $self->dbVNListAdd(
-    rid => $rid,
-    uid => $uid,
-    $f->{e} =~ /^([rv])(\d+)$/ && $1 eq 'r' ? (rstat => $2) : (vstat => $2)
-  ) if $f->{e} ne 'del';
+  $self->dbRListDel($uid, $rid) if $f->{e} == -1;
+  $self->dbRListAdd($uid, $rid, $f->{e}) if $f->{e} >= 0;
 
   if($id) {
     (my $ref = $self->reqHeader('Referer')||"/r$id") =~ s/^\Q$self->{url}//;
     $self->resRedirect($ref, 'temp');
   } else {
+    # doesn't really matter what we return, as long as it's XML
     $self->resHeader('Content-type' => 'text/xml');
-    my $st = $self->dbVNListGet(uid => $self->authInfo->{id}, rid => [$rid])->[0];
     xml;
-    tag 'rlist', uid => $self->authInfo->{id}, rid => $rid;
-     txt $st ? liststat $st : '--';
-    end;
+    tag 'done', '';
   }
 }
 
@@ -101,17 +115,32 @@ sub rlist {
 sub votelist {
   my($self, $type, $id) = @_;
 
-  my $obj = $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : $self->dbUserGet(uid => $id)->[0];
+  my $obj = $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : $self->dbUserGet(uid => $id, what => 'hide_list')->[0];
   return 404 if !$obj->{id};
 
   my $own = $type eq 'u' && $self->authInfo->{id} && $self->authInfo->{id} == $id;
-  return 404 if $type eq 'u' && !$own && !($obj->{show_list} || $self->authCan('usermod'));
+  return 404 if $type eq 'u' && !$own && !(!$obj->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p',  required => 0, default => 1, template => 'int' },
     { name => 'o',  required => 0, default => 'd', enum => ['a', 'd'] },
     { name => 's',  required => 0, default => 'date', enum => [qw|date title vote|] },
+    { name => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
   );
+  return 404 if $f->{_err};
+
+  if($own && $self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
+    my $frm = $self->formValidate(
+      { name => 'vid', required => 1, multi => 1, template => 'int' },
+      { name => 'batchedit', required => 1, enum => [ -2, -1, 1..10 ] },
+    );
+    my @vid = grep $_ > 0, @{$frm->{vid}};
+    if(!$frm->{_err} && @vid && $frm->{batchedit} > -2) {
+      $self->dbVoteDel($id, \@vid) if $frm->{batchedit} == -1;
+      $self->dbVoteAdd(\@vid, $id, $frm->{batchedit}) if $frm->{batchedit} >= 0;
+    }
+  }
 
   my($list, $np) = $self->dbVoteGet(
     $type.'id' => $id,
@@ -121,24 +150,35 @@ sub votelist {
     sort     => $f->{s} eq 'title' && $type eq 'v' ? 'username' : $f->{s},
     reverse  => $f->{o} eq 'd',
     results  => 50,
-    page     => $f->{p}
+    page     => $f->{p},
+    $f->{c} ne 'all' ? ($type eq 'u' ? 'vn_char' : 'user_char', $f->{c}) : (),
   );
-  return 404 if !@$list;
 
   my $title = mt $type eq 'v' ? '_votelist_title_vn' : '_votelist_title_user', $obj->{title} || $obj->{username};
   $self->htmlHeader(noindex => 1, title => $title);
   $self->htmlMainTabs($type => $obj, 'votes');
   div class => 'mainbox';
    h1 $title;
+   p class => 'browseopts';
+    for ('all', 'a'..'z', 0) {
+      a href => "/$type$id/votes?c=$_", $_ eq $f->{c} ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+    }
+   end;
+   p mt '_votelist_novotes' if !@$list;
   end;
 
-  $self->htmlBrowse(
+  if($own) {
+    my $code = $self->authGetCode("/u$id/votes");
+    form action => "/u$id/votes?formcode=$code;c=$f->{c};s=$f->{s};p=$f->{p}", method => 'post';
+  }
+
+  @$list && $self->htmlBrowse(
     class    => 'votelist',
     items    => $list,
     options  => $f,
     nextpage => $np,
-    pageurl  => "/$type$id/votes?o=$f->{o};s=$f->{s}",
-    sorturl  => "/$type$id/votes",
+    pageurl  => "/$type$id/votes?c=$f->{c};o=$f->{o};s=$f->{s}",
+    sorturl  => "/$type$id/votes?c=$f->{c}",
     header   => [
       [ mt('_votelist_col_date'),  'date'  ],
       [ mt('_votelist_col_vote'),  'vote'  ],
@@ -147,15 +187,33 @@ sub votelist {
     row      => sub {
       my($s, $n, $l) = @_;
       Tr $n % 2 ? (class => 'odd') : ();
-       td class => 'tc1', $self->{l10n}->date($l->{date});
+       td class => 'tc1';
+        input type => 'checkbox', name => 'vid', value => $l->{vid} if $own;
+        txt ' '.$self->{l10n}->date($l->{date});
+       end;
        td class => 'tc2', $l->{vote};
        td class => 'tc3';
         a href => $type eq 'v' ? ("/u$l->{uid}", $l->{username}) : ("/v$l->{vid}", shorten $l->{title}, 100);
        end;
       end;
     },
+    $own ? (footer => sub {
+      Tr;
+       td colspan => 3, class => 'tc1';
+        input type => 'checkbox', class => 'checkall', name => 'vid', value => -1;
+        txt ' ';
+        Select name => 'batchedit', id => 'batchedit';
+         option value => -2, '-- with selected --';
+         optgroup label => 'Change vote';
+          option value => $_, "$_ (".mt("_vote_$_").')' for (reverse 1..10);
+         end;
+         option value => -1, 'revoke';
+        end;
+       end;
+      end;
+    }) : (),
   );
-
+  end if $own;
   $self->htmlFooter;
 }
 
@@ -164,8 +222,8 @@ sub wishlist {
   my($self, $uid) = @_;
 
   my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
-  my $u = $self->dbUserGet(uid => $uid)->[0];
-  return 404 if !$u || !$own && !($u->{show_list} || $self->authCan('usermod'));
+  my $u = $self->dbUserGet(uid => $uid, what => 'hide_list')->[0];
+  return 404 if !$u || !$own && !(!$u->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p', required => 0, default => 1, template => 'int' },
@@ -266,8 +324,8 @@ sub vnlist {
   my($self, $uid) = @_;
 
   my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
-  my $u = $self->dbUserGet(uid => $uid)->[0];
-  return 404 if !$u || !$own && !($u->{show_list} || $self->authCan('usermod'));
+  my $u = $self->dbUserGet(uid => $uid, what => 'hide_list')->[0];
+  return 404 if !$u || !$own && !(!$u->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
     { name => 'p',  required => 0, default => 1, template => 'int' },
@@ -275,33 +333,40 @@ sub vnlist {
     { name => 's',  required => 0, default => 'title', enum => [ 'title', 'vote' ] },
     { name => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
     { name => 'v',  required => 0, default => 0, enum => [ -1..1  ] },
+    { name => 't',  required => 0, default => -1, enum => [ -1, @{$self->{vnlist_status}} ] },
   );
   return 404 if $f->{_err};
 
   if($own && $self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { name => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
-      { name => 'batchedit', required => 1, enum => [ 'del', map("r$_", @{$self->{rlst_rstat}}), map("v$_", @{$self->{rlst_vstat}}) ] },
+      { name => 'vid', required => 0, default => 0, multi => 1, template => 'int' },
+      { name => 'rid', required => 0, default => 0, multi => 1, template => 'int' },
+      { name => 'not', required => 0, default => '', maxlength => 2000 },
+      { name => 'vns', required => 1, enum => [ -2, -1, @{$self->{vnlist_status}}, 999 ] },
+      { name => 'rel', required => 1, enum => [ -2, -1, @{$self->{rlist_status}} ] },
     );
-    if(!$frm->{_err} && @{$frm->{sel}} && $frm->{sel}[0]) {
-      $self->dbVNListDel($uid, $frm->{sel}) if $frm->{batchedit} eq 'del';
-      $self->dbVNListAdd(
-        rid => $frm->{sel},
-        uid => $uid,
-        $frm->{batchedit} =~ /^([rv])(\d+)$/ && $1 eq 'r' ? (rstat => $2) : (vstat => $2)
-      ) if $frm->{batchedit} ne 'del';
+    my @vid = grep $_ > 0, @{$frm->{vid}};
+    my @rid = grep $_ > 0, @{$frm->{rid}};
+    if(!$frm->{_err} && @vid && $frm->{vns} > -2) {
+      $self->dbVNListDel($uid, \@vid) if $frm->{vns} == -1;
+      $self->dbVNListAdd($uid, \@vid, $frm->{vns}) if $frm->{vns} >= 0 && $frm->{vns} < 999;
+      $self->dbVNListAdd($uid, \@vid, undef, $frm->{not}) if $frm->{vns} == 999;
+    }
+    if(!$frm->{_err} && @rid && $frm->{rel} > -2) {
+      $self->dbRListDel($uid, \@rid) if $frm->{rel} == -1;
+      $self->dbRListAdd($uid, \@rid, $frm->{rel}) if $frm->{rel} >= 0;
     }
   }
-
 
   my($list, $np) = $self->dbVNListList(
     uid => $uid,
     results => 50,
     page => $f->{p},
     sort => $f->{s}, reverse => $f->{o} eq 'd',
-    voted => $f->{v},
+    voted => $f->{v} == 0 ? undef : $f->{v} < 0 ? 0 : $f->{v},
     $f->{c} ne 'all' ? (char => $f->{c}) : (),
+    $f->{t} >= 0 ? (status => $f->{t}) : (),
   );
 
   my $title = $own ? mt '_rlist_title_my' : mt '_rlist_title_other', $u->{username};
@@ -315,6 +380,7 @@ sub vnlist {
     local $_ = "/u$uid/list";
     $_ .= '?c='.($n eq 'c' ? $v : $f->{c});
     $_ .= ';v='.($n eq 'v' ? $v : $f->{v});
+    $_ .= ';t='.($n eq 't' ? $v : $f->{t});
     if($n eq 'page') {
       $_ .= ';o='.($n eq 'o' ? $v : $f->{o});
       $_ .= ';s='.($n eq 's' ? $v : $f->{s});
@@ -330,9 +396,13 @@ sub vnlist {
     }
    end;
    p class => 'browseopts';
-    a href => $url->(v =>  0),  0 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_voted_all';
+    a href => $url->(v =>  0),  0 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_all';
     a href => $url->(v =>  1),  1 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_voted_only';
     a href => $url->(v => -1), -1 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_voted_none';
+   end;
+   p class => 'browseopts';
+    a href => $url->(t => -1), -1 == $f->{t} ? (class => 'optselected') : (), mt '_rlist_all';
+    a href => $url->(t => $_), $_ == $f->{t} ? (class => 'optselected') : (), mt '_vnlist_status_'.$_ for @{$self->{vnlist_status}};
    end;
   end;
 
@@ -343,8 +413,11 @@ sub vnlist {
 sub _vnlist_browse {
   my($self, $own, $list, $np, $f, $url, $uid) = @_;
 
-  form action => $url->().';formcode='.$self->authGetCode("/u$uid/list"), method => 'post'
-    if $own;
+  if($own) {
+    form action => $url->(), method => 'post';
+    input type => 'hidden', class => 'hidden', name => 'not', id => 'not', value => '';
+    input type => 'hidden', class => 'hidden', name => 'formcode', id => 'formcode', value => $self->authGetCode("/u$uid/list");
+  }
 
   $self->htmlBrowse(
     class    => 'rlist',
@@ -354,66 +427,84 @@ sub _vnlist_browse {
     sorturl  => $url->(),
     pageurl  => $url->('page'),
     header   => [
-      [ mt('_rlist_col_title') => 'title', 3 ],
-      sub { td class => 'tc2', id => 'expandall'; lit '<i>&#9656;</i>'.mt('_rlist_col_releases').'*'; end; },
+      [ '' ],
+      sub { td class => 'tc2', id => 'expandall'; lit '&#9656;'; end; },
+      [ mt('_rlist_col_title') => 'title' ],
+      [ '' ], [ '' ],
+      [ mt('_rlist_col_status') ],
+      [ mt('_rlist_col_releases').'*' ],
       [ mt('_rlist_col_vote')  => 'vote'  ],
     ],
     row      => sub {
       my($s, $n, $i) = @_;
       Tr $n % 2 == 0 ? (class => 'odd') : ();
-       td class => 'tc1', colspan => 3;
+       td class => 'tc1'; input type => 'checkbox', name => 'vid', value => $i->{vid} if $own; end;
+       if(@{$i->{rels}}) {
+         td class => 'tc2 collapse_but', id => "vid$i->{vid}"; lit '&#9656;'; end;
+       } else {
+         td class => 'tc2', '';
+       }
+       td class => 'tc3_5', colspan => 3;
         a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, shorten $i->{title}, 70;
+        b class => 'grayedout', $i->{notes} if $i->{notes};
        end;
-       td class => 'tc2'.(@{$i->{rels}} ? ' collapse_but' : ''), id => 'vid'.$i->{vid};
-        lit '<i>&#9656;</i>';
-        my $obtained = grep $_->{rstat}==2, @{$i->{rels}};
-        my $finished = grep $_->{vstat}==2, @{$i->{rels}};
-        my $txt = sprintf '%d/%d/%d', $obtained, $finished, scalar @{$i->{rels}};
-        $txt = qq|<b class="done">$txt</b>| if $finished > $obtained || $finished && $finished == $obtained;
-        $txt = qq|<b class="todo">$txt</b>| if $obtained > $finished;
+       td class => 'tc6', $i->{status} ? mt '_vnlist_status_'.$i->{status} : '';
+       td class => 'tc7';
+        my $obtained = grep $_->{status}==2, @{$i->{rels}};
+        my $total = scalar @{$i->{rels}};
+        my $txt = sprintf '%d/%d', $obtained, $total;
+        $txt = qq|<b class="done">$txt</b>| if $total && $obtained == $total;
+        $txt = qq|<b class="todo">$txt</b>| if $obtained < $total;
         lit $txt;
        end;
-       td class => 'tc3', $i->{vote} || '-';
+       td class => 'tc8', $i->{vote} || '-';
       end;
 
       for (@{$i->{rels}}) {
-        Tr class => "collapse relhid collapse_vid$i->{vid}";
-         td class => 'tc1'.($own ? ' own' : '');
-          input type => 'checkbox', name => 'sel', value => $_->{rid}
-            if $own;
-          lit $self->{l10n}->datestr($_->{released});
-         end;
+        Tr class => "collapse relhid collapse_vid$i->{vid}".($n%2 ? '':' odd');
+         td class => 'tc1', '';
          td class => 'tc2';
+          input type => 'checkbox', name => 'rid', value => $_->{rid} if $own;
+         end;
+         td class => 'tc3', $self->{l10n}->datestr($_->{released});
+         td class => 'tc4';
           cssicon "lang $_", mt "_lang_$_" for @{$_->{languages}};
           cssicon "rt$_->{type}", mt "_rtype_$_->{type}";
          end;
-         td class => 'tc3';
+         td class => 'tc5';
           a href => "/r$_->{rid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;
          end;
-         td colspan => 2, class => 'tc4';
-          lit liststat($_);
-         end;
+         td class => 'tc6', $_->{status} ? mt '_rlist_status_'.$_->{status} : '';
+         td class => 'tc7_8', colspan => 2, '';
         end;
       }
     },
 
     $own ? (footer => sub {
       Tr;
-       td class => 'tc1', colspan => 3;
-        Select id => 'batchedit', name => 'batchedit';
-         option mt '_rlist_selection';
-         optgroup label => mt '_rlist_changerel';
-          option value => "r$_", mt "_rlst_rstat_$_"
-            for (@{$self->{rlst_rstat}});
+       td class => 'tc1'; input type => 'checkbox', name => 'vid', value => -1, class => 'checkall'; end;
+       td class => 'tc2'; input type => 'checkbox', name => 'rid', value => -1, class => 'checkall'; end;
+       td class => 'tc3_6', colspan => 4;
+        Select id => 'vns', name => 'vns';
+         option value => -2, mt '_rlist_withvn';
+         optgroup label => mt '_rlist_changestat';
+          option value => $_, mt "_vnlist_status_$_"
+            for (@{$self->{vnlist_status}});
          end;
-         optgroup label => mt '_rlist_changeplay';
-          option value => "v$_", mt "_rlst_vstat_$_"
-            for (@{$self->{rlst_vstat}});
-         end;
-         option value => 'del', mt '_rlist_del';
+         option value => 999, mt '_rlist_setnote';
+         option value => -1, mt '_rlist_del';
         end;
+        Select id => 'rel', name => 'rel';
+         option value => -2, mt '_rlist_withrel';
+         optgroup label => mt '_rlist_changestat';
+          option value => $_, mt "_rlist_status_$_"
+            for (@{$self->{rlist_status}});
+         end;
+         option value => -1, mt '_rlist_del';
+        end;
+        input type => 'submit', value => mt '_rlist_update';
        end;
-       td class => 'tc2', colspan => 2, mt '_rlist_releasenote';
+       td class => 'tc7_8', colspan => 2, mt '_rlist_releasenote';
       end;
     }) : (),
   );

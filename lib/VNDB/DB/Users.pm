@@ -6,14 +6,14 @@ use warnings;
 use Exporter 'import';
 
 our @EXPORT = qw|
-  dbUserGet dbUserEdit dbUserAdd dbUserDel
+  dbUserGet dbUserEdit dbUserAdd dbUserDel dbUserPrefSet
   dbSessionAdd dbSessionDel dbSessionUpdateLastUsed
   dbNotifyGet dbNotifyMarkRead dbNotifyRemove
 |;
 
 
 # %options->{ username passwd mail session uid ip registered search results page what sort reverse }
-# what: notifycount stats extended
+# what: notifycount stats extended prefs hide_list
 # sort: username registered votes changes tags
 sub dbUserGet {
   my $s = shift;
@@ -21,6 +21,7 @@ sub dbUserGet {
     page => 1,
     results => 10,
     what => '',
+    sort => '',
     @_
   );
 
@@ -51,12 +52,13 @@ sub dbUserGet {
   );
 
   my @select = (
-    qw|id username c_votes c_changes show_list c_tags|,
+    qw|id username c_votes c_changes c_tags|,
     q|extract('epoch' from registered) as registered|,
     $o{what} =~ /extended/ ? (
-      qw|mail rank salt skin customcss show_nsfw ign_votes notify_dbedit notify_announce|,
+      qw|mail rank salt ign_votes|,
       q|encode(passwd, 'hex') AS passwd|
     ) : (),
+    $o{what} =~ /hide_list/ ? 'up.value AS hide_list' : (),
     $o{what} =~ /notifycount/ ?
       '(SELECT COUNT(*) FROM notifications WHERE uid = u.id AND read IS NULL) AS notifycount' : (),
     $o{what} =~ /stats/ ? (
@@ -72,12 +74,14 @@ sub dbUserGet {
 
   my @join = (
     $o{session} ? 'JOIN sessions s ON s.uid = u.id' : (),
+    $o{what} =~ /hide_list/ || $o{sort} eq 'votes' ?
+      "LEFT JOIN users_prefs up ON up.uid = u.id AND up.key = 'hide_list'" : (),
   );
 
   my $order = sprintf {
     username => 'u.username %s',
     registered => 'u.registered %s',
-    votes => 'NOT u.show_list, u.c_votes %s',
+    votes => 'up.value NULLS FIRST, u.c_votes %s',
     changes => 'u.c_changes %s',
     tags => 'u.c_tags %s',
   }->{ $o{sort}||'username' }, $o{reverse} ? 'DESC' : 'ASC';
@@ -90,6 +94,20 @@ sub dbUserGet {
       ORDER BY !s|,
     join(', ', @select), join(' ', @join), \%where, $order
   );
+
+  if(@$r && $o{what} =~ /prefs/) {
+    my %r = map {
+      $r->[$_]{prefs} = {};
+      ($r->[$_]{id}, $r->[$_])
+    } 0..$#$r;
+
+    $r{$_->{uid}}{prefs}{$_->{key}} = $_->{value} for (@{$s->dbAll(q|
+      SELECT uid, key, value
+        FROM users_prefs
+        WHERE uid IN(!l)|,
+      [ keys %r ]
+    )});
+  }
   return wantarray ? ($r, $np) : $r;
 }
 
@@ -100,7 +118,7 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail rank show_nsfw show_list skin customcss salt ign_votes notify_dbedit notify_announce |);
+    for (qw| username mail rank salt ign_votes |);
   $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
     if defined $o{passwd};
 
@@ -124,6 +142,15 @@ sub dbUserAdd {
 # uid
 sub dbUserDel {
   $_[0]->dbExec(q|DELETE FROM users WHERE id = ?|, $_[1]);
+}
+
+
+# uid, key, val
+sub dbUserPrefSet {
+  my($s, $uid, $key, $val) = @_;
+  !$val ? $s->dbExec('DELETE FROM users_prefs WHERE uid = ? AND key = ?', $uid, $key)
+   : $s->dbExec('UPDATE users_prefs SET value = ? WHERE uid = ? AND key = ?', $val, $uid, $key)
+  || $s->dbExec('INSERT INTO users_prefs (uid, key, value) VALUES (?, ?, ?)', $uid, $key, $val);
 }
 
 

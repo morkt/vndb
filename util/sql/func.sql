@@ -455,6 +455,53 @@ $$ LANGUAGE plpgsql;
 
 
 
+-- For each row in rlists, there should be at least one corresponding row in
+-- vnlists for at least one of the VNs linked to that release.
+-- 1. When a row is deleted from vnlists, also remove all rows from rlists that
+--    would otherwise not have a corresponding row in vnlists
+-- 2. When a row is inserted to rlists and there is not yet a corresponding row
+--    in vnlists, add a row in vnlists (with status=unknown) for each vn linked
+--    to the release.
+CREATE OR REPLACE FUNCTION update_vnlist_rlist() RETURNS trigger AS $$
+BEGIN
+  -- 1.
+  IF TG_TABLE_NAME = 'vnlists' THEN
+    DELETE FROM rlists WHERE uid = OLD.uid AND rid IN(SELECT r.id
+      -- fetch all related rows in rlists
+      FROM releases_vn rv
+      JOIN releases r ON r.latest = rv.rid
+      JOIN rlists rl ON rl.rid = r.id
+     WHERE rv.vid = OLD.vid AND rl.uid = OLD.uid
+       -- and test for a corresponding row in vnlists
+       AND NOT EXISTS(
+        SELECT 1
+          FROM releases_vn rvi
+          JOIN vnlists vl ON vl.vid = rvi.vid AND uid = OLD.uid
+         WHERE rvi.rid = r.latest
+       ));
+
+  -- 2.
+  ELSE
+   INSERT INTO vnlists (uid, vid) SELECT NEW.uid, rv.vid
+     -- all VNs linked to the release
+      FROM releases_vn rv
+      JOIN releases r ON rv.rid = r.latest
+     WHERE r.id = NEW.rid
+       -- but only if there are no corresponding rows in vnlists yet
+       AND NOT EXISTS(
+        SELECT 1
+          FROM releases_vn rvi
+          JOIN releases ri ON rvi.rid = ri.latest
+          JOIN vnlists vl ON vl.vid = rvi.vid
+         WHERE ri.id = NEW.rid AND vl.uid = NEW.uid
+       );
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
 -- Send a notify whenever anime info should be fetched
 CREATE OR REPLACE FUNCTION anime_fetch_notify() RETURNS trigger AS $$
   BEGIN NOTIFY anime; RETURN NULL; END;
@@ -702,14 +749,13 @@ BEGIN
       -- look for users who should get this notify
       FROM (
         -- voted on the VN
-              SELECT uid FROM votes  WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
+              SELECT uid FROM votes   WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
+        -- VN in vnlist
+        UNION SELECT uid FROM vnlists WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
         -- VN in wishlist
-        UNION SELECT uid FROM wlists WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
+        UNION SELECT uid FROM wlists  WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
         -- release in release list
-        UNION SELECT uid FROM rlists WHERE TG_TABLE_NAME = 'releases' AND rid = NEW.id
-        -- there's also a special case which we're ignoring here:
-        --  when a VN linked to a release in a user's release list is deleted
-        -- normally, the releases are also deleted, so a notify is generated anyway
+        UNION SELECT uid FROM rlists  WHERE TG_TABLE_NAME = 'releases' AND rid = NEW.id
       ) u
       -- fetch info about this edit
       JOIN changes c ON c.id = NEW.latest
@@ -744,12 +790,10 @@ BEGIN
       ) x(id, title) ON c.id = x.id
       -- join info about the deletion itself
       JOIN changes c2 ON c2.id = NEW.latest
-      -- join info about the user who should get this notification
-      JOIN users u ON u.id = c.requester
       -- exclude the user who edited the entry
      WHERE c.requester <> c2.requester
        -- exclude users who don't want this notify
-       AND u.notify_dbedit;
+       AND NOT EXISTS(SELECT 1 FROM users_prefs up WHERE uid = c.requester AND key = 'notify_nodbedit');
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -759,11 +803,11 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION notify_announce() RETURNS trigger AS $$
 BEGIN
   INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
-    SELECT 'announce', 't', u.id, t.id, 1, t.title, NEw.uid
+    SELECT 'announce', 't', up.uid, t.id, 1, t.title, NEw.uid
       FROM threads t
       JOIN threads_boards tb ON tb.tid = t.id
       -- get the users who want this announcement
-      JOIN users u ON u.notify_announce
+      JOIN users_prefs up ON up.key = 'notify_announce'
      WHERE t.id = NEW.tid
        AND tb.type = 'an' -- announcement board
        AND NOT t.hidden;

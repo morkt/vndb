@@ -156,8 +156,7 @@ CREATE TABLE relgraphs (
 CREATE TABLE rlists (
   uid integer NOT NULL DEFAULT 0,
   rid integer NOT NULL DEFAULT 0,
-  vstat smallint NOT NULL DEFAULT 0,
-  rstat smallint NOT NULL DEFAULT 0,
+  status smallint NOT NULL DEFAULT 0,
   added timestamptz NOT NULL DEFAULT NOW(),
   PRIMARY KEY(uid, rid)
 );
@@ -267,18 +266,20 @@ CREATE TABLE users (
   rank smallint NOT NULL DEFAULT 3,
   passwd bytea NOT NULL DEFAULT '',
   registered timestamptz NOT NULL DEFAULT NOW(),
-  show_nsfw boolean NOT NULL DEFAULT FALSE,
-  show_list boolean NOT NULL DEFAULT TRUE,
   c_votes integer NOT NULL DEFAULT 0,
   c_changes integer NOT NULL DEFAULT 0,
-  skin varchar(128) NOT NULL DEFAULT '',
-  customcss text NOT NULL DEFAULT '',
   ip inet NOT NULL DEFAULT '0.0.0.0',
   c_tags integer NOT NULL DEFAULT 0,
   salt character(9) NOT NULL DEFAULT '',
-  ign_votes boolean NOT NULL DEFAULT FALSE,
-  notify_dbedit boolean NOT NULL DEFAULT TRUE,
-  notify_announce boolean NOT NULL DEFAULT FALSE
+  ign_votes boolean NOT NULL DEFAULT FALSE
+);
+
+-- users_prefs
+CREATE TABLE users_prefs (
+  uid integer NOT NULL,
+  key prefs_key NOT NULL,
+  value varchar NOT NULL,
+  PRIMARY KEY(uid, key)
 );
 
 -- vn
@@ -290,7 +291,7 @@ CREATE TABLE vn (
   rgraph integer,
   c_released integer NOT NULL DEFAULT 0,
   c_languages language[] NOT NULL DEFAULT '{}',
-  c_platforms varchar(32) NOT NULL DEFAULT '',
+  c_platforms varchar NOT NULL DEFAULT '',
   c_popularity real,
   c_rating real,
   c_votecount integer NOT NULL DEFAULT 0,
@@ -338,6 +339,17 @@ CREATE TABLE vn_screenshots (
   nsfw boolean NOT NULL DEFAULT FALSE,
   rid integer DEFAULT NULL,
   PRIMARY KEY(vid, scr)
+);
+
+
+-- vnlists
+CREATE TABLE vnlists (
+  uid integer NOT NULL,
+  vid integer NOT NULL,
+  status smallint NOT NULL DEFAULT 0,
+  added TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  notes varchar NOT NULL DEFAULT '',
+  PRIMARY KEY(uid, vid)
 );
 
 -- votes
@@ -394,6 +406,7 @@ ALTER TABLE threads             ADD FOREIGN KEY (id, count) REFERENCES threads_p
 ALTER TABLE threads_posts       ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
 ALTER TABLE threads_posts       ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE SET DEFAULT;
 ALTER TABLE threads_boards      ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
+ALTER TABLE users_prefs         ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE vn                  ADD FOREIGN KEY (latest)    REFERENCES vn_rev        (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn                  ADD FOREIGN KEY (rgraph)    REFERENCES relgraphs     (id);
 ALTER TABLE vn_anime            ADD FOREIGN KEY (aid)       REFERENCES anime         (id);
@@ -405,8 +418,15 @@ ALTER TABLE vn_rev              ADD FOREIGN KEY (vid)       REFERENCES vn       
 ALTER TABLE vn_screenshots      ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
 ALTER TABLE vn_screenshots      ADD FOREIGN KEY (scr)       REFERENCES screenshots   (id);
 ALTER TABLE vn_screenshots      ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
+ALTER TABLE vnlists             ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
+ALTER TABLE vnlists             ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
 ALTER TABLE votes               ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE votes               ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
 ALTER TABLE wlists              ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE wlists              ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
+
+
+
+CREATE INDEX releases_vn_vid ON releases_vn (vid);
+CREATE INDEX tags_vn_date    ON tags_vn     (date);
 

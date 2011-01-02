@@ -64,7 +64,7 @@ our %S = (%S,
     'imp' => [ 6, 'ipa' ],
     'ipa' => [ 7, 'imp' ],
   },
-  age_ratings     => [undef, 0, 6..18],
+  age_ratings     => [-1, 0, 6..18],
   release_types   => [qw|complete partial trial|],
   platforms       => [qw|win dos lin mac ios dvd gba msx nds nes p98 psp ps1 ps2 ps3 drc sat sfc wii xb3 oth|],
   media           => {
@@ -99,8 +99,8 @@ our %S = (%S,
   voiced          => [ 0..4 ],
   animated        => [ 0..4 ],
   wishlist_status => [ 0..3 ],
-  rlst_rstat      => [ 0..4 ], # 2 = hardcoded 'OK', < 2 = hardcoded 'NOK'
-  rlst_vstat      => [ 0..4 ], # 2 = hardcoded 'OK', 0 || 4 = hardcoded 'NOK'
+  rlist_status    => [ 0..4 ], # 2 = hardcoded 'OK'
+  vnlist_status   => [ 0..4 ],
   atom_feeds => { # num_entries, title, id
     announcements => [ 10, 'VNDB Site Announcements', '/t/an' ],
     changes       => [ 25, 'VNDB Recent Changes', '/hist' ],

@@ -648,7 +648,7 @@ sub get_release_res {
       if(grep /details/, @{$get->{info}}) {
         $_->{website}  ||= undef;
         $_->{notes}    ||= undef;
-        $_->{minage}    *= 1 if defined $_->{minage};
+        $_->{minage}   = $_->{minage} < 0 ? undef : $_->{minage}*1;
         $_->{gtin}     ||= undef;
         $_->{catalog}  ||= undef;
       }

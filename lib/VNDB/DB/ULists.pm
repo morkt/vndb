@@ -7,56 +7,62 @@ use Exporter 'import';
 
 
 our @EXPORT = qw|
-  dbVNListGet dbVNListList dbVNListAdd dbVNListDel
+  dbRListGet dbVNListGet dbVNListList dbVNListAdd dbVNListDel dbRListAdd dbRListDel
   dbVoteGet dbVoteStats dbVoteAdd dbVoteDel
   dbWishListGet dbWishListAdd dbWishListDel
 |;
 
 
-# Simpler and more efficient version of dbVNListList below
-# %options->{ uid rid }
-sub dbVNListGet {
+# Options: uid rid
+sub dbRListGet {
   my($self, %o) = @_;
 
   my %where = (
     'uid = ?' => $o{uid},
-    $o{rid} && !ref $o{rid} ? (
-      'rid = ?' => $o{rid} ) : (),
-    $o{rid} && ref $o{rid} ? (
-      'rid IN(!l)' => [$o{rid}] ) : (),
+    $o{rid} ? ('rid IN(!l)' => [ ref $o{rid} ? $o{rid} : [$o{rid}] ]) : (),
   );
 
   return $self->dbAll(q|
-    SELECT uid, rid, rstat, vstat
+    SELECT uid, rid, status
       FROM rlists
       !W|,
     \%where
   );
 }
 
-
-# %options->{ uid char voted page results sort reverse }
-# sort: title vote
-# NOTE: this function is mostly copied from 1.x, may need some rewriting...
-sub dbVNListList {
+# Options: uid vid
+sub dbVNListGet {
   my($self, %o) = @_;
 
+  my %where = (
+    'uid = ?' => $o{uid},
+    $o{vid} ? ('vid IN(!l)' => [ ref $o{vid} ? $o{vid} : [$o{vid}] ]) : (),
+  );
+
+  return $self->dbAll(q|
+    SELECT uid, vid, status
+      FROM vnlists
+      !W|,
+    \%where
+  );
+}
+
+
+# Options: uid char voted page results sort reverse
+# sort: title vote
+sub dbVNListList {
+  my($self, %o) = @_;
   $o{results} ||= 50;
   $o{page}    ||= 1;
-  $o{voted}   ||= 0;  # -1: only non-voted, 0: all, 1: only voted
 
-  # construct the global WHERE clause
-  my $where = $o{voted} != -1 ? 'vo.vote IS NOT NULL' : '';
-  $where .= ($where?' OR ':'').q|v.id = ANY(ARRAY(
-  SELECT irv.vid
-    FROM rlists irl
-    JOIN releases ir ON ir.id = irl.rid
-    JOIN releases_vn irv ON irv.rid = ir.latest
-    WHERE uid = ?
-  ))| if $o{voted} != 1;
-  $where = '('.$where.') AND LOWER(SUBSTR(vr.title, 1, 1)) = \''.$o{char}.'\'' if $o{char};
-  $where = '('.$where.') AND (ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' if defined $o{char} && !$o{char};
-  $where = '('.$where.') AND vo.vote IS NULL' if $o{voted} == -1;
+  my %where = (
+    'vl.uid = ?' => $o{uid},
+    defined($o{voted}) ? ('vo.vote !s NULL' => $o{voted} ? 'IS NOT' : 'IS') : (),
+    defined($o{status})? ('vl.status = ?' => $o{status}) : (),
+    $o{char}           ? ('LOWER(SUBSTR(vr.title, 1, 1)) = ?' => $o{char} ) : (),
+    defined $o{char} && !$o{char} ? (
+      '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
+  );
 
   my $order = sprintf {
     title => 'vr.title %s',
@@ -65,14 +71,14 @@ sub dbVNListList {
 
   # execute query
   my($r, $np) = $self->dbPage(\%o, qq|
-    SELECT vr.vid, vr.title, vr.original, COALESCE(vo.vote, 0) AS vote
-      FROM vn v
+    SELECT vr.vid, vr.title, vr.original, vl.status, vl.notes, COALESCE(vo.vote, 0) AS vote
+      FROM vnlists vl
+      JOIN vn v ON v.id = vl.vid
       JOIN vn_rev vr ON vr.id = v.latest
-      !s JOIN votes vo ON vo.vid = v.id AND vo.uid = ?
-      WHERE $where
+      LEFT JOIN votes vo ON vo.vid = vl.vid AND vo.uid = vl.uid
+      !W
       ORDER BY !s|,
-    $o{voted} == 1 ? '' : 'LEFT', $o{uid},   # JOIN if we only want votes, LEFT JOIN if we also want rlist items
-    $o{voted} != 1 ? $o{uid} : (), $order
+    \%where, $order
   );
 
   # fetch releases and link to VNs
@@ -83,7 +89,7 @@ sub dbVNListList {
     } @$r;
 
     my $rel = $self->dbAll(q|
-      SELECT rv.vid, rr.rid, r.latest, rr.title, rr.original, rr.released, rr.type, rl.rstat, rl.vstat
+      SELECT rv.vid, rr.rid, r.latest, rr.title, rr.original, rr.released, rr.type, rl.status
         FROM rlists rl
         JOIN releases r ON rl.rid = r.id
         JOIN releases_rev rr ON rr.id = r.latest
@@ -114,35 +120,57 @@ sub dbVNListList {
 }
 
 
-# %options->{ uid rid rstat vstat }
+# Arguments: uid vid status notes
+# vid can be an arrayref only when the rows are already present, in which case an update is done
+# status and notes can be undef when an update is done, in which case these fields aren't updated
 sub dbVNListAdd {
-  my($self, %o) = @_;
-
-  my %s = (
-    defined $o{rstat} ? ( 'rstat = ?', $o{rstat} ) : (),
-    defined $o{vstat} ? ( 'vstat = ?', $o{vstat} ) : (),
-  );
-  $o{rstat}||=0;
-  $o{vstat}||=0;
-
+  my($self, $uid, $vid, $stat, $notes) = @_;
     $self->dbExec(
-      'UPDATE rlists !H WHERE uid = ? AND rid IN(!l)',
-      \%s, $o{uid}, ref($o{rid}) eq 'ARRAY' ? $o{rid} : [ $o{rid} ]
+      'UPDATE vnlists !H WHERE uid = ? AND vid IN(!l)',
+      {defined($stat) ? ('status = ?' => $stat ):(),
+       defined($notes)? ('notes = ?'  => $notes):()},
+      $uid, ref($vid) ? $vid : [ $vid ]
     )
   ||
     $self->dbExec(
-      'INSERT INTO rlists (uid, rid, rstat, vstat) VALUES(!l)',
-      [@o{qw| uid rid rstat vstat |}]
+      'INSERT INTO vnlists (uid, vid, status, notes) VALUES(?, ?, ?, ?)',
+      $uid, $vid, $stat||0, $notes||''
+    );
+}
+
+
+# Arguments: uid, vid
+sub dbVNListDel {
+  my($self, $uid, $vid) = @_;
+  $self->dbExec(
+    'DELETE FROM vnlists WHERE uid = ? AND vid IN(!l)',
+    $uid, ref($vid) ? $vid : [ $vid ]
+  );
+}
+
+
+# Arguments: uid rid status
+# rid can be an arrayref only when the rows are already present, in which case an update is done
+sub dbRListAdd {
+  my($self, $uid, $rid, $stat) = @_;
+    $self->dbExec(
+      'UPDATE rlists SET status = ? WHERE uid = ? AND rid IN(!l)',
+      $stat, $uid, ref($rid) ? $rid : [ $rid ]
+    )
+  ||
+    $self->dbExec(
+      'INSERT INTO rlists (uid, rid, status) VALUES(?, ?, ?)',
+      $uid, $rid, $stat
     );
 }
 
 
 # Arguments: uid, rid
-sub dbVNListDel {
+sub dbRListDel {
   my($self, $uid, $rid) = @_;
   $self->dbExec(
     'DELETE FROM rlists WHERE uid = ? AND rid IN(!l)',
-    $uid, ref($rid) eq 'ARRAY' ? $rid : [ $rid ]
+    $uid, ref($rid) ? $rid : [ $rid ]
   );
 }
 
@@ -160,8 +188,14 @@ sub dbVoteGet {
   my %where = (
     $o{uid} ? ( 'n.uid = ?' => $o{uid} ) : (),
     $o{vid} ? ( 'n.vid = ?' => $o{vid} ) : (),
-    $o{hide} ? ( 'u.show_list = TRUE' => 1 ) : (),
+    $o{hide} ? ( 'NOT EXISTS(SELECT 1 FROM users_prefs WHERE uid = n.uid AND key = \'hide_list\')' => 1 ) : (),
     $o{hide_ign} ? ( '(NOT u.ign_votes OR u.id = ?)' => $self->authInfo->{id}||0 ) : (),
+    $o{vn_char}  ? ( 'LOWER(SUBSTR(vr.title, 1, 1)) = ?' => $o{vn_char} ) : (),
+    defined $o{vn_char} && !$o{vn_char} ? (
+      '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
+    $o{user_char} ? ( 'LOWER(SUBSTR(u.username, 1, 1)) = ?' => $o{user_char} ) : (),
+    defined $o{user_char} && !$o{user_char} ? (
+      '(ASCII(u.username) < 97 OR ASCII(u.username) > 122) AND (ASCII(u.username) < 65 OR ASCII(u.username) > 90)' => 1 ) : (),
   );
 
   my @select = (
@@ -221,14 +255,15 @@ sub dbVoteStats {
 
 # Adds a new vote or updates an existing one
 # Arguments: vid, uid, vote
+# vid can be an arrayref only when the rows are already present, in which case an update is done
 sub dbVoteAdd {
   my($self, $vid, $uid, $vote) = @_;
   $self->dbExec(q|
     UPDATE votes
-      SET vote = ?
-      WHERE vid = ?
+      SET vote = ?, date = NOW()
+      WHERE vid IN(!l)
       AND uid = ?|,
-    $vote, $vid, $uid
+    $vote, ref($vid) ? $vid : [$vid], $uid
   ) || $self->dbExec(q|
     INSERT INTO votes
       (vid, uid, vote)
@@ -239,10 +274,11 @@ sub dbVoteAdd {
 
 
 # Arguments: uid, vid
+# vid can be an arrayref
 sub dbVoteDel {
   my($self, $uid, $vid) = @_;
   $self->dbExec('DELETE FROM votes !W',
-    { 'vid = ?' => $vid, 'uid = ?' => $uid }
+    { 'vid IN(!l)' => [ref($vid)?$vid:[$vid]], 'uid = ?' => $uid }
   );
 }
 

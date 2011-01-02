@@ -16,6 +16,7 @@ YAWF::register(
   qr{setlang},                       \&setlang,
   qr{nospam},                        \&nospam,
   qr{we-dont-like-ie},               \&iemessage,
+  qr{xml/prefs\.xml},                \&prefs,
   qr{opensearch\.xml},               \&opensearch,
 
   # redirects for old URLs
@@ -44,7 +45,13 @@ sub homepage {
     lit mt '_home_intro';
    end;
 
-   my $scr = $self->dbScreenshotRandom;
+   # with filters applied it's signifcantly slower, so special-code the situations with and without filters
+   my @vns;
+   if($self->authPref('filter_vn')) {
+     my $r = $self->filFetchDB(vn => undef, undef, {hasshot => 1, results => 4, order => 'rand'});
+     @vns = map $_->{id}, @$r;
+   }
+   my $scr = $self->dbScreenshotRandom(@vns);
    p class => 'screenshots';
     for (@$scr) {
       my($w, $h) = imgsize($_->{width}, $_->{height}, @{$self->{scr_size}});
@@ -124,7 +131,7 @@ sub homepage {
      h1;
       a href => '/v/rand', mt '_home_randomvn';
      end;
-     my $random = $self->dbVNGet(results => 10, sort => 'rand');
+     my $random = $self->filFetchDB(vn => undef, undef, {results => 10, sort => 'rand'});
      ul;
       for (@$random) {
         li;
@@ -139,7 +146,7 @@ sub homepage {
      h1;
       a href => strftime('/r?fil=date_after-%Y%m%d;o=a;s=released', gmtime), mt '_home_upcoming';
      end;
-     my $upcoming = $self->dbReleaseGet(results => 10, unreleased => 1, what => 'platforms');
+     my $upcoming = $self->filFetchDB(release => undef, undef, {results => 10, unreleased => 1, what => 'platforms'});
      ul;
       for (@$upcoming) {
         li;
@@ -159,7 +166,7 @@ sub homepage {
      h1;
       a href => strftime('/r?fil=date_before-%Y%m%d;o=d;s=released', gmtime), mt '_home_justreleased';
      end;
-     my $justrel = $self->dbReleaseGet(results => 10, sort => 'released', reverse => 1, unreleased => 0, what => 'platforms');
+     my $justrel = $self->filFetchDB(release => undef, undef, {results => 10, sort => 'released', reverse => 1, unreleased => 0, what => 'platforms'});
      ul;
       for (@$justrel) {
         li;
@@ -197,7 +204,7 @@ sub history {
   return 404 if $f->{_err};
 
   # get item object and title
-  my $obj = $type eq 'u' ? $self->dbUserGet(uid => $id)->[0] :
+  my $obj = $type eq 'u' ? $self->dbUserGet(uid => $id, what => 'hide_list')->[0] :
             $type eq 'p' ? $self->dbProducerGet(id => $id)->[0] :
             $type eq 'r' ? $self->dbReleaseGet(id => $id)->[0] :
             $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : undef;
@@ -340,10 +347,17 @@ sub setlang {
   return 404 if $lang->{_err};
   $lang = $lang->{lang};
 
+  my $browser = VNDB::L10N->get_handle()->language_tag();
+
   (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$self->{url}//;
   $self->resRedirect($ref, 'post');
-  $self->resHeader('Set-Cookie', "l10n=$lang; expires=Sat, 01-Jan-2030 00:00:00 GMT; path=/; domain=$self->{cookie_domain}")
-    if $lang ne $self->{l10n}->language_tag();
+  if($lang ne $self->{l10n}->language_tag()) {
+    $self->authInfo->{id}
+    ? $self->authPref(l10n => $lang eq $browser ? undef : $lang)
+    : $self->resHeader('Set-Cookie', sprintf 'l10n=%s; expires=%s; path=/; domain=%s',
+        $lang, $lang eq $browser ? 'Sat, 01-Jan-2000 00:00:00 GMT' : 'Sat, 01-Jan-2030 00:00:00 GMT',
+        $self->{cookie_domain});
+  }
 }
 
 
@@ -402,6 +416,24 @@ sub iemessage {
     end;
    end;
   end;
+}
+
+
+sub prefs {
+  my $self = shift;
+  return if !$self->authCheckCode;
+  return 404 if !$self->authInfo->{id};
+  my $f = $self->formValidate(
+    { name => 'key',   enum => [qw|filter_vn filter_release|] },
+    { name => 'value', required => 0, maxlength => 2000 },
+  );
+  return 404 if $f->{_err};
+  $self->authPref($f->{key}, $f->{value});
+
+  # doesn't really matter what we return, as long as it's XML
+  $self->resHeader('Content-type' => 'text/xml');
+  xml;
+  tag 'done', '';
 }
 
 
