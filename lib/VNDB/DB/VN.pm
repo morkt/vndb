@@ -252,7 +252,7 @@ sub dbScreenshotRandom {
          SELECT vs2.scr
           FROM vn_screenshots vs2
           JOIN vn v2 ON v2.latest = vs2.vid
-         WHERE v2.id = v.id
+         WHERE v2.id = v.id AND NOT vs2.nsfw
          ORDER BY RANDOM()
          LIMIT 1
        )|, @vids).' ORDER BY position', @vids);
