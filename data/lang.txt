@@ -1325,7 +1325,7 @@ nl : Wacht a.u.b. 30 seconden voordat je een nieuwe post maakt
 en : Please read [url,/d5.4,the guidelines] on how to use the edit summary.
 ru : Пожалуйста, прочтите [url,/d5.4,руководство] о том, как использовать поле "Суммарно о правке".
 cs*:
-hu*:
+hu : Légyszíves olvasdd el a szerkesztési összegzés [url,/d5.4, útmutatóját].
 nl : Lees a.u.b. [url,/d5.4,de richtlijnen] over het gebruik van de samenvatting.
 
 :_formerr_title
@@ -1692,7 +1692,7 @@ nl : Mijn Visual Novel lijst
 en : My Votes
 ru : Мои отданные голоса
 cs*:
-hu*:
+hu : A szavazataim
 nl : Mijn Stemmen
 
 :_menu_mywishlist
@@ -1868,7 +1868,7 @@ nl : wensenlijst
 en : votes
 ru : голоса
 cs*:
-hu*:
+hu : szavazatok
 nl : stemmen
 
 :_mtabs_list
@@ -1925,7 +1925,7 @@ nl : relaties
 en : first
 ru : первая
 cs*:
-hu*:
+hu : első
 nl : eerste
 
 :_browse_previous
@@ -1946,7 +1946,7 @@ nl : volgende
 en : last
 ru : последняя
 cs*:
-hu*:
+hu : utolsó
 nl : laatste
 
 
@@ -3296,7 +3296,7 @@ nl :
 en : Set status
 ru : Установка статуса
 cs*:
-hu*:
+hu : Állapot beállítása
 nl : Zet status
 
 :_relinfo_user_del
@@ -3933,7 +3933,7 @@ nl : Erotische scenes
 en : Save as default
 ru : Запомнить по умолчанию
 cs*:
-hu*:
+hu : Mentés alapértelmezet ként
 nl : Opslaan als standaard
 
 :_rbrowse_apply
@@ -3954,7 +3954,7 @@ nl :
 en : Your saved filters will be applied automatically to several other parts of the site as well, such as the homepage. To change these filters, come back to this page and use the "Save as default" button again. To remove your saved filters, hit "Reset" and then save.
 ru : Сохранённые фильтры также будут автоматически применены к другим частям сайта, например, к заглавной странице. Для их изменения вновь откройте эту страницу и щёлкните кнопку "Запомнить по умолчанию". Чтобы избавиться от сохранённых фильтров, щёлкните "Сброс" и сохраните настройки.
 cs*:
-hu*:
+hu : Az általad lementet szűrők automatikusan alkalmazva lesznek a honlap többi részén is, mint pl. a főoldalon. Ha meg akarod változtatni ezeket a szűrőket, akkor gyere vissza erre az oldalra és klikkelj újra a "Mentés alapértelmezet ként" gombra. A szűrőket a "Törlés" gombbal tudod eltávolítani, majd mentsd le újra.
 nl : Je opgeslagen filters worden ook automatisch toegepast op een aantal andere delen van de site, waaronder de homepagina. Om deze filters te veranderen, ga terug naar deze pagina en gebruik de "Opslaan als standaard" knop weer. Om je opgeslagen filters te verwijderen, klik op "Reset" en sla je instellingen weer op.
 
 
@@ -4089,7 +4089,7 @@ nl : Laat alle spoilers zien
 en : This tag has not been linked to any visual novels yet, or they were hidden because of your spoiler settings or default filters.
 ru : Этот тег пока не содержит ссылок ни на одну новеллу, либо они скрыты из-за настроек отображения спойлеров, либо из-за фильтров.
 cs*: Tento tag ještě nebyl použit v žádné vizuální novele nebo byly tyto skryty kvůli nastavení spoilerů.
-hu*: Ez a címke eddig egy visual novelhez sincs hozzárendelve, vagy el lettek rejtve a spoiler-ek beállítása során.
+hu : Ez a címke még nincs egy visual novelhez se hozzárendelve, vagy pedig el lettek rejtve a spoiler-ek vagy az alapértelmezet szűrők beállítása során.
 nl : Deze tag is nog niet gekoppeld aan een visual novel, of deze worden niet weergegeven in verband met je spoiler- of filterinstelling.
 
 :_tagp_cached
@@ -4868,7 +4868,7 @@ nl : Stemmen van [_1]
 en : No votes to list. :-(
 ru : Не найдено ни одного голоса. T_T
 cs*:
-hu*:
+hu : Nincs mit mutatni. :-(
 nl : Geen stemmen om weer te geven. :-(
 
 :_votelist_col_date
@@ -4949,7 +4949,7 @@ nl : Titel
 en : Status
 ru : Статус
 cs*:
-hu*:
+hu : Állapot
 nl :
 
 :_rlist_col_releases
@@ -4970,35 +4970,35 @@ nl : Stem
 en : -- with selected VNs --
 ru : -- с указанными новеллами --
 cs*:
-hu*:
+hu : -- a kiválasztott VN-ekkel együtt --
 nl : -- met geselecteerde VNs --
 
 :_rlist_withrel
 en : -- with selected releases --
 ru : -- с указанными выпусками --
 cs*:
-hu*:
+hu : -- a kiválasztott kiadásokkal együtt --
 nl : -- met geselecteerde uitgaven --
 
 :_rlist_changestat
 en : Change status
 ru : Смена статуса
 cs*:
-hu*:
+hu : Állapot megváltoztatássa
 nl : Verander status
 
 :_rlist_setnote
 en : Set note
 ru : Установка заметки
 cs*:
-hu*:
+hu : Jegyzet beállítása
 nl : Verander notitie
 
 :_rlist_setnote_prompt
 en : Set notes (leave empty to remove note)
 ru : Установка заметок (оставьте поле пустым чтобы стереть заметку)
 cs*:
-hu*:
+hu : Jegyzetek beállítása (hagyd üresen ha törölni akarod a jegyzetet)
 nl : Verander notitie (laat leeg om de notitie te verwijderen)
 
 :_rlist_del
@@ -5013,7 +5013,7 @@ nl : verwijder uit lijst
 en : Update
 ru : Обновить
 cs*:
-hu*:
+hu : Frissítés
 nl :
 
 :_rlist_releasenote
@@ -5127,10 +5127,10 @@ nl :
 
 :_userpage_forum_item
 en : [_1] [quant,_1,post,posts], [_2] new [quant,_2,thread,threads].
-ru : [_1] [quant,_1,сообщение,сообщения,сообщений], [_2] [quant,_2,новая тема,новые темы,новых тем]
+ru : [_1] [quant,_1,сообщение,сообщения,сообщений], [_2] [quant,_2,новая тема,новые темы,новых тем].
 cs : [_1] [quant,_1,příspěvek, příspěvky, příspěvků], [_2] [quant,_2,nový thread, nové thready, nových threadů].
 hu : [_1] [quant,_1,válasz,válaszok], [_2] új [quant,_2,téma,téma].
-nl : [_1] [quant,_1,bericht,berichten], [_2] [quant,_2,nieuw topic,nieuwe topics]
+nl : [_1] [quant,_1,bericht,berichten], [_2] [quant,_2,nieuw topic,nieuwe topics].
 
 :_userpage_forum_browse
 en : Browse posts
@@ -5562,7 +5562,7 @@ nl : Opties
 en : Don't allow other people to see my visual novel list ([url,_1,_1]), votes ([url,_2,_2]) and wishlist ([url,_3,_3])
 ru : Запретить другим участникам видеть мой список новелл ([url,_1,_1]), отданные голоса ([url,_2,_2]) и список желаемого ([url,_3,_3])
 cs*:
-hu*:
+hu : Ne engedd, hogy más emberek lássák a visual novel listámat ([url,_1,_1]), a szavazataimat ([url,_2,_2]) és a kívánságlistámat ([url,_3,_3])
 nl : Sta andere mensen niet toe om mijn visual novel lijst ([url,_1,_1]), stemmen ([url,_2,_2]) en wensenlijst ([url,_3,_3]) te zien
 
 :_usere_fnsfw
@@ -5949,14 +5949,14 @@ nl : Booleaanse 'en', meerdere selecties geven minder resultaten
 en : These filters are ignored on tag pages (when set as default).
 ru : Эти фильтры недействительны на страницах тегов (по умолчанию).
 cs*:
-hu*:
+hu : Ezzek a szűrők figyelmen kívűl maradnak a címke oldalakon (ha alapértelmezetnek vannak beállítva).
 nl : Deze filters worden genegeerd op tagpaginas (als ze gebruikt worden als standaardfilters).
 
 :_vnbrowse_tagrem
 en : remove
 ru : убрать
 cs*:
-hu*:
+hu : eltávolítás
 nl : verwijder
 
 :_vnbrowse_taginc
@@ -6932,35 +6932,35 @@ nl : Je staat op het punt om deze visual novel een 10 te geven. Dit is een erg e
 en : VN list: [_1]
 ru : Список новелл: [_1]
 cs*:
-hu*:
+hu : VN lista: [_1]
 nl : VN-lijst: [_1]
 
 :_vnpage_uopt_novn
 en : not on your VN list
 ru : не в вашем списке
 cs*:
-hu*:
+hu : nincs a VN listádba
 nl : niet in je VN-lijst
 
 :_vnpage_uopt_changevn
 en : Change status
 ru : Сменить статус
 cs*: Změnit status
-hu*: Állapot megváltoztatássa
+hu : Állapot megváltoztatássa
 nl : Wijzig status
 
 :_vnpage_uopt_addvn
 en : Add to VN list
 ru : Добавить в список
 cs*:
-hu*:
+hu : Hozzáadás a VN listához
 nl : Voeg toe aan VN-lijst
 
 :_vnpage_uopt_delvn
 en : remove from VN list
 ru : убрать из списка
 cs*:
-hu*:
+hu : eltávolítás a VN listából
 nl : Verwijder van VN-lijst
 
 :_vnpage_uopt_wishlisted
@@ -7002,7 +7002,7 @@ nl : Verwijder van wensenlijst
 en : Remove from list
 ru : Убрать из списка
 cs*:
-hu*:
+hu : Eltávolítás a listából
 nl : Verwijder van lijst
 
 :_vnpage_rel
