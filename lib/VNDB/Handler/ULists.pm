@@ -135,7 +135,7 @@ sub votelist {
       { name => 'vid', required => 1, multi => 1, template => 'int' },
       { name => 'batchedit', required => 1, enum => [ -2, -1, 1..10 ] },
     );
-    my @vid = grep $_ > 0, @{$frm->{vid}};
+    my @vid = grep $_ && $_ > 0, @{$frm->{vid}};
     if(!$frm->{_err} && @vid && $frm->{batchedit} > -2) {
       $self->dbVoteDel($id, \@vid) if $frm->{batchedit} == -1;
       $self->dbVoteAdd(\@vid, $id, $frm->{batchedit}) if $frm->{batchedit} >= 0;
