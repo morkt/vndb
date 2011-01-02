@@ -5091,11 +5091,11 @@ hu : Címkék
 nl :
 
 :_userpage_tags_item
-en : [_1] [quant,_1,vote,votes] on [_2] distinct [quant,_2,tag,tags] and [_3] visual [quant,_3,novel,novels]
-ru : [_1] [quant,_1,голос,голоса,голосов] по [_2][quant,_2,-у тегу,-м различным тегам,-и различным тегам] и [_3][quant,_3,-й новелле,-м новеллам,-и новеллам]
-cs : [_1] [quant,_1,hlasy,hlasy,hlasů] pro [_2] [quant,_2,tag,různé tagy,různých tagů] a [_3] [quant,_3,vizuální novelu,vizuální novely,vizuálních novel]
-hu : [_1] [quant,_1,szavazat,szavazat] [_2] egyedi [quant,_2,címkére,címkére] és [_3] visual [quant,_3,novelre,novelre]
-nl : [_1] [quant,_1,stem,stemmen] op [_2] verschillende [quant,_2,tag,tags] en [_3] visual [quant,_3,novel,novels]
+en : [_1] [quant,_1,vote,votes] on [_2] distinct [quant,_2,tag,tags] and [_3] visual [quant,_3,novel,novels].
+ru : [_1] [quant,_1,голос,голоса,голосов] по [_2][quant,_2,-у тегу,-м различным тегам,-и различным тегам] и [_3][quant,_3,-й новелле,-м новеллам,-и новеллам].
+cs : [_1] [quant,_1,hlasy,hlasy,hlasů] pro [_2] [quant,_2,tag,různé tagy,různých tagů] a [_3] [quant,_3,vizuální novelu,vizuální novely,vizuálních novel].
+hu : [_1] [quant,_1,szavazat,szavazat] [_2] egyedi [quant,_2,címkére,címkére] és [_3] visual [quant,_3,novelre,novelre].
+nl : [_1] [quant,_1,stem,stemmen] op [_2] verschillende [quant,_2,tag,tags] en [_3] visual [quant,_3,novel,novels].
 
 :_userpage_tags_browse
 en : Browse tags
@@ -5112,11 +5112,11 @@ hu : Lista adatok
 nl : Lijst stats
 
 :_userpage_list_item
-en : [_1] [quant,_1,release,releases] of [_2] visual [quant,_2,novel,novels]
-ru : [_1] [quant,_1,выпуск,выпуска,выпусков] [_2][quant,_2,-й новеллы,-х новелл,-и новелл]
-cs : [_1] [quant,_1,vydání,vydání,vydání] [_2] [quant,_2,vizuální novely,vizuálních novel,vizuálních novel]
-hu : [_1] [quant,_1,kiadás,kiadás] és [_2] visual [quant,_2,novel,novel]
-nl : [_1] [quant,_1,uitgave,uitgaven] van [_2] visual [quant,_2,novel,novels]
+en : [_1] [quant,_1,release,releases] of [_2] visual [quant,_2,novel,novels].
+ru : [_1] [quant,_1,выпуск,выпуска,выпусков] [_2][quant,_2,-й новеллы,-х новелл,-и новелл].
+cs : [_1] [quant,_1,vydání,vydání,vydání] [_2] [quant,_2,vizuální novely,vizuálních novel,vizuálních novel].
+hu : [_1] [quant,_1,kiadás,kiadás] és [_2] visual [quant,_2,novel,novel].
+nl : [_1] [quant,_1,uitgave,uitgaven] van [_2] visual [quant,_2,novel,novels].
 
 :_userpage_forum
 en : Forum stats
