@@ -48,7 +48,7 @@ sub homepage {
    # with filters applied it's signifcantly slower, so special-code the situations with and without filters
    my @vns;
    if($self->authPref('filter_vn')) {
-     my $r = $self->filFetchDB(vn => undef, undef, {hasshot => 1, results => 4, order => 'rand'});
+     my $r = $self->filFetchDB(vn => undef, undef, {hasshot => 1, results => 4, sort => 'rand'});
      @vns = map $_->{id}, @$r;
    }
    my $scr = $self->dbScreenshotRandom(@vns);
