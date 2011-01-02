@@ -81,3 +81,6 @@ ALTER TABLE users DROP COLUMN notify_dbedit;
 ALTER TABLE users DROP COLUMN notify_announce;
 
 
+-- remove size constraint on vn.c_platforms
+ALTER TABLE vn ALTER COLUMN c_platforms TYPE varchar;
+
