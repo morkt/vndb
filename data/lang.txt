@@ -1302,7 +1302,7 @@ nl : Per dag mag je maar één account aanmaken vanaf hetzelfde IP
 
 :_formerr_e_notanswer
 en : Question was not correctly answered. Are you sure you are a human?
-ru : Неправильный ответ. А ты точно человек?
+ru : Неправильный ответ. А вы точно человек?
 cs : Na otázku jste neodpověděli správně. Jste si jisti, že jste člověk?
 hu : A kérdésre a válasz helytelen. Biztos vagy benne, hogy ember vagy?
 nl : Vraag was incorrect beantwoord. Weet je zeker dat je een mens bent?
@@ -1323,7 +1323,7 @@ nl : Wacht a.u.b. 30 seconden voordat je een nieuwe post maakt
 
 :_formerr_e_badeditsum
 en : Please read [url,/d5.4,the guidelines] on how to use the edit summary.
-ru*:
+ru : Пожалуйста, прочтите [url,/d5.4,руководство] о том, как использовать поле "Суммарно о правке".
 cs*:
 hu*:
 nl : Lees a.u.b. [url,/d5.4,de richtlijnen] over het gebruik van de samenvatting.
@@ -1690,7 +1690,7 @@ nl : Mijn Visual Novel lijst
 
 :_menu_myvotes
 en : My Votes
-ru*:
+ru : Мои отданные голоса
 cs*:
 hu*:
 nl : Mijn Stemmen
@@ -1866,7 +1866,7 @@ nl : wensenlijst
 
 :_mtabs_votes
 en : votes
-ru*:
+ru : голоса
 cs*:
 hu*:
 nl : stemmen
@@ -1923,7 +1923,7 @@ nl : relaties
 
 :_browse_first
 en : first
-ru*:
+ru : первая
 cs*:
 hu*:
 nl : eerste
@@ -1944,7 +1944,7 @@ nl : volgende
 
 :_browse_last
 en : last
-ru*:
+ru : последняя
 cs*:
 hu*:
 nl : laatste
@@ -3294,7 +3294,7 @@ nl :
 
 :_relinfo_user_setstatus
 en : Set status
-ru*:
+ru : Установка статуса
 cs*:
 hu*:
 nl : Zet status
@@ -3931,7 +3931,7 @@ nl : Erotische scenes
 
 :_rbrowse_filsave
 en : Save as default
-ru*:
+ru : Запомнить по умолчанию
 cs*:
 hu*:
 nl : Opslaan als standaard
@@ -3952,7 +3952,7 @@ nl :
 
 :_rbrowse_savenote
 en : Your saved filters will be applied automatically to several other parts of the site as well, such as the homepage. To change these filters, come back to this page and use the "Save as default" button again. To remove your saved filters, hit "Reset" and then save.
-ru*:
+ru : Сохранённые фильтры также будут автоматически применены к другим частям сайта, например, к заглавной странице. Для их изменения вновь откройте эту страницу и щёлкните кнопку "Запомнить по умолчанию". Чтобы избавиться от сохранённых фильтров, щёлкните "Сброс" и сохраните настройки.
 cs*:
 hu*:
 nl : Je opgeslagen filters worden ook automatisch toegepast op een aantal andere delen van de site, waaronder de homepagina. Om deze filters te veranderen, ga terug naar deze pagina en gebruik de "Opslaan als standaard" knop weer. Om je opgeslagen filters te verwijderen, klik op "Reset" en sla je instellingen weer op.
@@ -4087,7 +4087,7 @@ nl : Laat alle spoilers zien
 
 :_tagp_novn
 en : This tag has not been linked to any visual novels yet, or they were hidden because of your spoiler settings or default filters.
-ru*: Этот тег пока не содержит ссылок ни на одну новеллу, либо они скрыты из-за настроек отображения спойлеров.
+ru : Этот тег пока не содержит ссылок ни на одну новеллу, либо они скрыты из-за настроек отображения спойлеров, либо из-за фильтров.
 cs*: Tento tag ještě nebyl použit v žádné vizuální novele nebo byly tyto skryty kvůli nastavení spoilerů.
 hu*: Ez a címke eddig egy visual novelhez sincs hozzárendelve, vagy el lettek rejtve a spoiler-ek beállítása során.
 nl : Deze tag is nog niet gekoppeld aan een visual novel, of deze worden niet weergegeven in verband met je spoiler- of filterinstelling.
@@ -4866,7 +4866,7 @@ nl : Stemmen van [_1]
 
 :_votelist_novotes
 en : No votes to list. :-(
-ru*:
+ru : Не найдено ни одного голоса. T_T
 cs*:
 hu*:
 nl : Geen stemmen om weer te geven. :-(
@@ -4947,7 +4947,7 @@ nl : Titel
 
 :_rlist_col_status
 en : Status
-ru*:
+ru : Статус
 cs*:
 hu*:
 nl :
@@ -4968,35 +4968,35 @@ nl : Stem
 
 :_rlist_withvn
 en : -- with selected VNs --
-ru*:
+ru : -- с указанными новеллами --
 cs*:
 hu*:
 nl : -- met geselecteerde VNs --
 
 :_rlist_withrel
 en : -- with selected releases --
-ru*:
+ru : -- с указанными выпусками --
 cs*:
 hu*:
 nl : -- met geselecteerde uitgaven --
 
 :_rlist_changestat
 en : Change status
-ru*:
+ru : Смена статуса
 cs*:
 hu*:
 nl : Verander status
 
 :_rlist_setnote
 en : Set note
-ru*:
+ru : Установка заметки
 cs*:
 hu*:
 nl : Verander notitie
 
 :_rlist_setnote_prompt
 en : Set notes (leave empty to remove note)
-ru*:
+ru : Установка заметок (оставьте поле пустым чтобы стереть заметку)
 cs*:
 hu*:
 nl : Verander notitie (laat leeg om de notitie te verwijderen)
@@ -5011,7 +5011,7 @@ nl : verwijder uit lijst
 # label of the button. "Update!" in the commanding sense
 :_rlist_update
 en : Update
-ru*:
+ru : Обновить
 cs*:
 hu*:
 nl :
@@ -5452,7 +5452,7 @@ nl : Herhaal wachtwoord
 
 :_register_question
 en : How many [index,_1,visual novels,releases,producers] do we have in the database? (Hint: look to your left)
-ru : Сколько [index,_1,новелл,выпусков,компаний] у нас в базе? (Подсказка: посмотри слева)
+ru : Сколько [index,_1,новелл,выпусков,компаний] у нас в базе? (Подсказка: посмотрите слева)
 cs : Kolik [index,_1,vizulních novel,vydání,producentů] máme v databázi? (Nápověda: podívejte se doleva)
 hu : Mennyi [index,_1,visual novels,releases,producers] van az adatbázisunkba? (Tip: vess egy pillantást balra)
 nl : Hoeveel [index,_1,visual novels,uitgaven,producenten] hebben wij in de database? (Tip: zie links van de pagina)
@@ -5560,7 +5560,7 @@ nl : Opties
 
 :_usere_flist
 en : Don't allow other people to see my visual novel list ([url,_1,_1]), votes ([url,_2,_2]) and wishlist ([url,_3,_3])
-ru*:
+ru : Запретить другим участникам видеть мой список новелл ([url,_1,_1]), отданные голоса ([url,_2,_2]) и список желаемого ([url,_3,_3])
 cs*:
 hu*:
 nl : Sta andere mensen niet toe om mijn visual novel lijst ([url,_1,_1]), stemmen ([url,_2,_2]) en wensenlijst ([url,_3,_3]) te zien
@@ -5947,14 +5947,14 @@ nl : Booleaanse 'en', meerdere selecties geven minder resultaten
 
 :_vnbrowse_tagactive
 en : These filters are ignored on tag pages (when set as default).
-ru*:
+ru : Эти фильтры недействительны на страницах тегов (по умолчанию).
 cs*:
 hu*:
 nl : Deze filters worden genegeerd op tagpaginas (als ze gebruikt worden als standaardfilters).
 
 :_vnbrowse_tagrem
 en : remove
-ru*:
+ru : убрать
 cs*:
 hu*:
 nl : verwijder
@@ -6055,7 +6055,7 @@ nl : Originele titel
 
 :_vnedit_original_msg
 en : The original title of this visual novel, leave blank if it already is in the Latin alphabet.
-ru : Исходное название данной новеллы, оставьте пустым, если уже набрано в латинском алфавите.
+ru : Исходное название данной новеллы, оставьте пустым, если указано в латинском алфавите.
 cs : Originální název této vizuální novely, ponechte prázdné, pokud již je latinkou.
 hu : A visual novel eredeti címe, ha latin betűkkel van akkor ne írd be mégegyszer ide.
 nl : De originele titel van deze visual novel, laat leeg als deze al in het Latijnse alfabet is.
@@ -6930,35 +6930,35 @@ nl : Je staat op het punt om deze visual novel een 10 te geven. Dit is een erg e
 
 :_vnpage_uopt_vnlisted
 en : VN list: [_1]
-ru*:
+ru : Список новелл: [_1]
 cs*:
 hu*:
 nl : VN-lijst: [_1]
 
 :_vnpage_uopt_novn
 en : not on your VN list
-ru*:
+ru : не в вашем списке
 cs*:
 hu*:
 nl : niet in je VN-lijst
 
 :_vnpage_uopt_changevn
 en : Change status
-ru*: Сменить статус
+ru : Сменить статус
 cs*: Změnit status
 hu*: Állapot megváltoztatássa
 nl : Wijzig status
 
 :_vnpage_uopt_addvn
 en : Add to VN list
-ru*:
+ru : Добавить в список
 cs*:
 hu*:
 nl : Voeg toe aan VN-lijst
 
 :_vnpage_uopt_delvn
 en : remove from VN list
-ru*:
+ru : убрать из списка
 cs*:
 hu*:
 nl : Verwijder van VN-lijst
@@ -7000,7 +7000,7 @@ nl : Verwijder van wensenlijst
 
 :_vnpage_uopt_reldel
 en : Remove from list
-ru*:
+ru : Убрать из списка
 cs*:
 hu*:
 nl : Verwijder van lijst
@@ -7175,7 +7175,7 @@ nl : Je bent niet toegestaan om deze actie uit te voeren.
 
 :_denied_noaccess_msg
 en : It seems you don't have the proper rights to perform the action you wanted to perform...
-ru : Похоже, у тебя нет прав для выполнения действия, которое ты пытаешься совершить. Короче, сюда нельзя...
+ru : Похоже, у вас нет прав для выполнения действия, которое вы пытаетесь совершить...
 cs : Zdá se, že nemáte potřebná práva pro vykonání akce, kterou chcete provést...
 hu : Úgy tűnik, hogy nem rendelkezel megfelelő jogokkal, hogy elvégezd azt a műveletet amit szerettél volna...
 nl : Het lijkt er op dat je niet genoeg rechten hebt om te doen wat je wilde doen...
