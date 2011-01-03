@@ -473,7 +473,7 @@ sub get_vn {
       [ str   => ':op: (v.c_olang && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'} ],
       [ stra  => ':op: (v.c_olang && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, join => ',' ],
     ], [ 'search',
-      [ str   => '(:value:)', {'=',1}, split => \&normalize_query,
+      [ str   => '(:value:)', {'~',1}, split => \&normalize_query,
                   join => ' AND ', serialize => 'v.c_search LIKE :value:', process => \'like' ],
     ],
   ];
