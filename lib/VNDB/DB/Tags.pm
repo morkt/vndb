@@ -235,26 +235,16 @@ sub dbTagLinkEdit {
 }
 
 
-# Fetch all tags related to a VN or User
-# Argument: %options->{ uid vid minrating results what page sort reverse }
-# what: vns
-# sort: name, count, rating
+# Fetch all tags related to a VN
+# Argument: %options->{ vid minrating results what page sort reverse }
+# sort: name, rating
 sub dbTagStats {
   my($self, %o) = @_;
   $o{results} ||= 10;
   $o{page}  ||= 1;
-  $o{what}  ||= '';
-
-  my %where = (
-    $o{uid} ? (
-      'tv.uid = ?' => $o{uid} ) : (),
-    $o{vid} ? (
-      'tv.vid = ?' => $o{vid} ) : (),
-  );
 
   my $order = sprintf {
     name => 't.name %s',
-    count => 'count(*) %s',
     rating => 'avg(tv.vote) %s',
   }->{ $o{sort}||'name' }, $o{reverse} ? 'DESC' : 'ASC';
 
@@ -262,31 +252,12 @@ sub dbTagStats {
     SELECT t.id, t.name, count(*) as cnt, avg(tv.vote) as rating, COALESCE(avg(tv.spoiler), 0) as spoiler
       FROM tags t
       JOIN tags_vn tv ON tv.tag = t.id
-      !W
+      WHERE tv.vid = ? AND NOT tv.ignore
       GROUP BY t.id, t.name
       !s
       ORDER BY !s|,
-    \%where, defined $o{minrating} ? "HAVING avg(tv.vote) > $o{minrating}" : '',
-    $order
+    $o{vid}, defined $o{minrating} ? "HAVING avg(tv.vote) > $o{minrating}" : '', $order
   );
-
-  if(@$r && $o{what} =~ /vns/ && $o{uid}) {
-    my %r = map {
-      $_->{vns} = [];
-      ($_->{id}, $_->{vns})
-    } @$r;
-
-    push @{$r{$_->{tag}}}, $_ for (@{$self->dbAll(q|
-      SELECT tv.tag, tv.vote, tv.spoiler, vr.vid, vr.title, vr.original
-        FROM tags_vn tv
-        JOIN vn v ON v.id = tv.vid
-        JOIN vn_rev vr ON vr.id = v.latest
-        WHERE tv.uid = ?
-          AND tv.tag IN(!l)
-        ORDER BY vr.title ASC|,
-      $o{uid}, [ keys %r ]
-    )});
-  }
 
   return wantarray ? ($r, $np) : $r;
 }
