@@ -176,7 +176,7 @@ sub dbTagLinks {
   );
 
   my @select = (
-    qw|tv.tag tv.vid tv.uid tv.vote tv.spoiler|, "EXTRACT('epoch' from tv.date) AS date",
+    qw|tv.tag tv.vid tv.uid tv.vote tv.spoiler tv.ignore|, "EXTRACT('epoch' from tv.date) AS date",
     $o{what} =~ /details/ ? (qw|vr.title u.username t.name|) : (),
   );
 
@@ -243,25 +243,27 @@ sub dbTagStats {
   $o{results} ||= 10;
   $o{page}  ||= 1;
 
+  my $rating = 'avg(CASE WHEN tv.ignore THEN NULL ELSE tv.vote END)';
   my $order = sprintf {
     name => 't.name %s',
-    rating => 'avg(tv.vote) %s',
+    rating => "$rating %s",
   }->{ $o{sort}||'name' }, $o{reverse} ? 'DESC' : 'ASC';
 
-  my($r, $np) = $self->dbPage(\%o, q|
-    SELECT t.id, t.name, count(*) as cnt, avg(tv.vote) as rating, COALESCE(avg(tv.spoiler), 0) as spoiler
+  my($r, $np) = $self->dbPage(\%o, qq|
+    SELECT t.id, t.name, count(*) as cnt, $rating as rating,
+        COALESCE(avg(CASE WHEN tv.ignore THEN NULL ELSE tv.spoiler END), 0) as spoiler,
+        bool_or(tv.ignore) AS overruled
       FROM tags t
       JOIN tags_vn tv ON tv.tag = t.id
-      WHERE tv.vid = ? AND NOT tv.ignore
+      WHERE tv.vid = ?
       GROUP BY t.id, t.name
       !s
       ORDER BY !s|,
-    $o{vid}, defined $o{minrating} ? "HAVING avg(tv.vote) > $o{minrating}" : '', $order
+    $o{vid}, defined $o{minrating} ? "HAVING $rating > $o{minrating}" : '', $order
   );
 
   return wantarray ? ($r, $np) : $r;
 }
-
 
 1;
 

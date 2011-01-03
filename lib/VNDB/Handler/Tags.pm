@@ -450,7 +450,7 @@ sub taglinks {
         a href => $url->(u=>$l->{uid}), class => 'setfil', '> ' if !$f->{u};
         a href => "/u$l->{uid}", $l->{username};
        end;
-       td class => 'tc3';
+       td class => 'tc3'.($l->{ignore}?' ignored':'');
         tagscore $l->{vote};
        end;
        td class => 'tc4';
@@ -544,7 +544,8 @@ sub vntagmod {
            td class => 'tc_myspoil', defined $m->{spoiler} ? $m->{spoiler} : -1;
            td class => 'tc_allvote';
             tagscore !$m->{vote} ? $t->{rating} : $t->{cnt} == 1 ? 0 : ($t->{rating}*$t->{cnt} - $m->{vote}) / ($t->{cnt}-1);
-            i ' ('.($t->{cnt} - ($m->{vote} ? 1 : 0)).')';
+            i $t->{overruled} ? (class => 'grayedout') : (), ' ('.($t->{cnt} - ($m->{vote} ? 1 : 0)).')';
+            b class => 'standout', style => 'font-weight: bold', ' !' if $t->{overruled};
            end;
            td class => 'tc_allspoil', sprintf '%.2f', $t->{spoiler};
            td class => 'tc_allwho';
