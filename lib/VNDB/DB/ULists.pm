@@ -218,7 +218,7 @@ sub dbVoteGet {
     date     => 'n.date %s',
     username => 'u.username %s',
     title    => 'vr.title %s',
-    vote     => 'n.vote %s',
+    vote     => 'n.vote %s'.($o{what} =~ /vn/ ? ', vr.title ASC' : $o{what} =~ /user/ ? ', u.username ASC' : ''),
   }->{$o{sort}}, $o{reverse} ? 'DESC' : 'ASC';
 
   my($r, $np) = $self->dbPage(\%o, q|
