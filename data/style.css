@@ -965,6 +965,7 @@ table.tgl .tc_you { border-right: 1px solid $border$; border-left: 1px solid $bo
 table.tgl .tc_others { border-left: 1px solid $border$; width: 150px; text-align: center }
 table.tgl .tc_tagname { min-width: 200px; border-right: 1px solid $border$ }
 table.tgl .tc_myvote { padding-left: 30px!important }
+table.tgl .tc_myover { padding: 0!important }
 table.tgl .tc_myspoil { border-right: 1px solid $border$; padding-right: 30px!important; text-align: right; padding-left: 10px!important; cursor: pointer }
 table.tgl .tc_allvote { padding-left: 30px!important; }
 table.tgl .tc_allvote i { font-style: normal; font-size: 8px }

@@ -4,6 +4,7 @@
 	- Bugfix: Don't show NSFW screenshots on homepage with filters
 	- Bugfix-API: Use ~ for the get vn search filter instead of =
 	- Bugfix: Secondary order by title or username on vote listings
+	- Allow moderators to overrule VN tag votes
 
 2.16 - 2011-01-02
 	- VNDBUtil::bb2html(): Fixed bug when the string starts with a VNDBID

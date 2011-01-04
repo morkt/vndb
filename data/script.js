@@ -1344,9 +1344,13 @@ function tglAdd() {
     ddInit(spoil, 'tagmod', tglSpoilDD);
     spoil.onclick = tglSpoilNext;
 
+    var ismod = byClass(byId('tagtable').parentNode, 'td', 'tc_myover').length;
+
     byId('tagtable').appendChild(tag('tr', {id:'tgl_'+id},
       tag('td', {'class':'tc_tagname'}, tag('a', {href:'/g'+id}, name)),
-      vote, spoil,
+      vote,
+      ismod ? tag('td', {'class':'tc_myover'}, ' ') : null,
+      spoil,
       tag('td', {'class':'tc_allvote'}, ' '),
       tag('td', {'class':'tc_allspoil'}, ' '),
       tag('td', {'class':'tc_allwho'}, '')

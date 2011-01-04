@@ -202,36 +202,31 @@ sub dbTagLinks {
 
 
 # Change a user's tags for a VN entry
-# Arguments: uid, vid, [ [ tag, vote, spoiler ], .. ]
 sub dbTagLinkEdit {
-  my($self, $uid, $vid, $new) = @_;
+  my($self, $uid, $vid, $insert, $update, $delete, $overrule) = @_;
 
-  # compare with the old votes and determine which to delete, and/or insert
-  my %old = map +($_->{tag}, [ $_->{vote}, $_->{spoiler} // -1 ]),
-    @{$self->dbTagLinks(vid => $vid, uid => $self->authInfo->{id})};
-  my %new = map +($_->[0], [ $_->[1], $_->[2] ]), @$new;
+  # overrule
+  # 1. set ignore flag for everyone except $uid
+  $self->dbExec('UPDATE tags_vn SET ignore = ? WHERE tag = ? AND vid = ? AND uid <> ?',
+    $overrule->{$_}?1:0, $_, $vid, $uid) for(keys %$overrule);
+  # 2. make sure $uid isn't ignored when others are set to ignore
+  #    (this happens when a mod takes over an other mods' overrule)
+  $self->dbExec('UPDATE tags_vn SET ignore = false WHERE tag = ? AND vid = ? AND uid = ?',
+    $_, $vid, $uid) for(grep $overrule->{$_}, keys %$overrule);
 
-  my(%delete, %update, %insert);
-  for my $tag (keys %old, keys %new) {
-    if($old{$tag} && !$new{$tag}) {
-      $delete{$tag} = 1;
-    } elsif(!$old{$tag} && $new{$tag}) {
-      $insert{$tag} = $new{$tag};
-    } elsif($old{$tag}[0] != $new{$tag}[0] || $old{$tag}[1] != $new{$tag}[1]) {
-      $update{$tag} = $new{$tag};
-    }
-  }
-
-  # spoiler '-1' -> NULL
-  $new{$_}[1] == -1 && ($new{$_}[1] = undef) for keys %new;
-
-  # perform the changes
+  # delete
   $self->dbExec('DELETE FROM tags_vn WHERE vid = ? AND uid = ? AND tag IN(!l)',
-    $vid, $uid, [ keys %delete ]) if keys %delete;
-  $self->dbExec('INSERT INTO tags_vn (tag, vid, uid, vote, spoiler) VALUES (?, ?, ?, ?, ?)',
-    $_, $vid, $uid, $insert{$_}[0], $insert{$_}[1]) for (keys %insert);
+    $vid, $uid, [ keys %$delete ]) if keys %$delete;
+
+  # insert
+  my $val = join ',', map '(?,?,?,?,?,?)', keys %$insert;
+  $self->dbExec("INSERT INTO tags_vn (tag, vid, uid, vote, spoiler, ignore) VALUES $val", map
+      +($_, $vid, $uid, $insert->{$_}[0], $insert->{$_}[1]<0?undef:$insert->{$_}[1], $insert->{$_}[2]?1:0),
+    keys %$insert) if keys %$insert;
+
+  # update
   $self->dbExec('UPDATE tags_vn SET vote = ?, spoiler = ?, date = NOW() WHERE tag = ? AND vid = ? AND uid = ?',
-    $update{$_}[0], $update{$_}[1], $_, $vid, $uid) for (keys %update);
+    $update->{$_}[0], $update->{$_}[1]<0?undef:$update->{$_}[1], $_, $vid, $uid) for (keys %$update);
 }
 
 

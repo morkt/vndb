@@ -477,19 +477,57 @@ sub vntagmod {
 
   return $self->htmlDenied if !$self->authCan('tag');
 
+  my $tags = $self->dbTagStats(vid => $vid, results => 9999);
+  my $my = $self->dbTagLinks(vid => $vid, uid => $self->authInfo->{id});
+
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { name => 'taglinks', required => 0, default => '', maxlength => 10240, regex => [ qr/^[1-9][0-9]*,-?[1-3],-?[0-2]( [1-9][0-9]*,-?[1-3],-?[0-2])*$/, 'meh' ] }
+      { name => 'taglinks', required => 0, default => '', maxlength => 10240, regex => [ qr/^[1-9][0-9]*,-?[1-3],-?[0-2]( [1-9][0-9]*,-?[1-3],-?[0-2])*$/, 'meh' ] },
+      { name => 'overrule', required => 0, multi => 1, template => 'int' },
     );
     return 404 if $frm->{_err};
-    $self->dbTagLinkEdit($self->authInfo->{id}, $vid, [ map [ split /,/ ], split / /, $frm->{taglinks}]);
+
+    # convert some data in a more convenient structure for faster lookup
+    my %tags = map +($_->{id} => $_), @$tags;
+    my %old = map +($_->{tag} => $_), @$my;
+    my %new = map { my($tag, $vote, $spoiler) = split /,/; ($tag => [ $vote, $spoiler ]) } split / /, $frm->{taglinks};
+    my %over = !$self->authCan('tagmod') || !$frm->{overrule}[0] ? () : (map $new{$_} ? ($_ => 1) : (), @{$frm->{overrule}});
+
+    # hashes which need to be filled, indicating what should be changed to the DB
+    my %delete;   # tag => 1
+    my %update;   # tag => [ vote, spoiler ] (ignore flag is untouched)
+    my %insert;   # tag => [ vote, spoiler, ignore ]
+    my %overrule; # tag => 0/1
+
+    for my $t (keys %old, keys %new) {
+      my $prev_over = $old{$t} && !$old{$t}{ignore} && $tags{$t}{overruled};
+
+      # overrule checkbox has changed? make sure to (de-)overrule the tag votes
+      $overrule{$t} = $over{$t}?1:0 if (!$prev_over && $over{$t}) || ($prev_over && !$over{$t});
+
+      # tag deleted?
+      if($old{$t} && !$new{$t}) {
+        $delete{$t} = 1;
+        next;
+      }
+
+      # and insert or update the vote
+      if(!$old{$t} && $new{$t}) {
+        # determine whether this vote is going to be ignored or not
+        my $ign = $tags{$t}{overruled} && !$prev_over && !$over{$t};
+        $insert{$t} = [ $new{$t}[0], $new{$t}[1], $ign ];
+      } elsif($old{$t}{vote} != $new{$t}[0] || (defined $old{$t}{spoiler} ? $old{$t}{spoiler} : -1) != $new{$t}[1]) {
+        $update{$t} = [ $new{$t}[0], $new{$t}[1] ];
+      }
+    }
+    $self->dbTagLinkEdit($self->authInfo->{id}, $vid, \%insert, \%update, \%delete, \%overrule);
+
+    # need to re-fetch the tags and tag links, as these have been modified
+    $tags = $self->dbTagStats(vid => $vid, results => 9999);
+    $my = $self->dbTagLinks(vid => $vid, uid => $self->authInfo->{id});
   }
 
-  my $my = $self->dbTagLinks(vid => $vid, uid => $self->authInfo->{id});
-  my $tags = $self->dbTagStats(vid => $vid, results => 9999);
-
-  my $frm;
 
   my $title = mt '_tagv_title', $v->{title};
   $self->htmlHeader(title => $title, noindex => 1);
@@ -505,19 +543,20 @@ sub vntagmod {
     end;
    end;
   end;
-  $self->htmlForm({ frm => $frm, action => "/v$vid/tagmod", nosubmit => 1 }, tagmod => [ mt('_tagv_frm_title'),
+  $self->htmlForm({ action => "/v$vid/tagmod", nosubmit => 1 }, tagmod => [ mt('_tagv_frm_title'),
     [ hidden => short => 'taglinks', value => '' ],
     [ static => nolabel => 1, content => sub {
       table class => 'tgl';
        thead;
         Tr;
          td '';
-         td colspan => 2, class => 'tc_you', mt '_tagv_col_you';
+         td colspan => $self->authCan('tagmod') ? 3 : 2, class => 'tc_you', mt '_tagv_col_you';
          td colspan => 3, class => 'tc_others', mt '_tagv_col_others';
         end;
         Tr;
          td class => 'tc_tagname',  mt '_tagv_col_tag';
          td class => 'tc_myvote',   mt '_tagv_col_rating';
+         td class => 'tc_myover',   'O' if $self->authCan('tagmod');
          td class => 'tc_myspoil',  mt '_tagv_col_spoiler';
          td class => 'tc_allvote',  mt '_tagv_col_rating';
          td class => 'tc_allspoil', mt '_tagv_col_spoiler';
@@ -541,10 +580,17 @@ sub vntagmod {
           Tr id => "tgl_$t->{id}";
            td class => 'tc_tagname'; a href => "/g$t->{id}", $t->{name}; end;
            td class => 'tc_myvote',  $m->{vote}||0;
+           if($self->authCan('tagmod')) {
+             td class => 'tc_myover';
+              input type => 'checkbox', name => 'overrule', value => $t->{id},
+                $m->{vote} && !$m->{ignore} && $t->{overruled} ? (checked => 'checked') : ()
+                if $t->{cnt} > 1;
+             end;
+           }
            td class => 'tc_myspoil', defined $m->{spoiler} ? $m->{spoiler} : -1;
            td class => 'tc_allvote';
-            tagscore !$m->{vote} ? $t->{rating} : $t->{cnt} == 1 ? 0 : ($t->{rating}*$t->{cnt} - $m->{vote}) / ($t->{cnt}-1);
-            i $t->{overruled} ? (class => 'grayedout') : (), ' ('.($t->{cnt} - ($m->{vote} ? 1 : 0)).')';
+            tagscore $t->{rating};
+            i $t->{overruled} ? (class => 'grayedout') : (), " ($t->{cnt})";
             b class => 'standout', style => 'font-weight: bold', ' !' if $t->{overruled};
            end;
            td class => 'tc_allspoil', sprintf '%.2f', $t->{spoiler};
