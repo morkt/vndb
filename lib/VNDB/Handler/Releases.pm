@@ -342,7 +342,7 @@ sub edit {
 
       my $same = $rid &&
           (join(',', sort @{$b4{platforms}}) eq join(',', sort @{$frm->{platforms}})) &&
-          (join(',', map join(' ', @$_), sort { $a->[0] <=> $b->[0] }  @$producers) eq join(',', sort map sprintf('%d %d %d',$_->{id}, $_->{developer}?1:0, $_->{publisher}?1:0), sort { $a->{id} <=> $b->{id} } @{$r->{producers}})) &&
+          (join(',', map join(' ', @$_), sort { $a->[0] <=> $b->[0] }  @$producers) eq join(',', map sprintf('%d %d %d',$_->{id}, $_->{developer}?1:0, $_->{publisher}?1:0), sort { $a->{id} <=> $b->{id} } @{$r->{producers}})) &&
           (join(',', sort @$new_vn) eq join(',', sort map $_->{vid}, @$vn)) &&
           (join(',', sort @{$b4{languages}}) eq join(',', sort @{$frm->{languages}})) &&
           !grep !/^(platforms|producers|vn|languages)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
