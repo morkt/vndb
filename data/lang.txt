@@ -3852,6 +3852,27 @@ cs : Vydáno před
 hu : Kiadva előtt
 nl : Uitgegeven voor
 
+:_rbrowse_released
+en : Release date
+ru*:
+cs*:
+hu*:
+nl : Uitgavedatum
+
+:_rbrowse_released_yes
+en : Past (already released)
+ru*:
+cs*:
+hu*:
+nl : Verleden (al uitgegeven)
+
+:_rbrowse_released_no
+en : Future (to be released)
+ru*:
+cs*:
+hu*:
+nl : Toekomst (nog niet uitgegeven)
+
 :_rbrowse_minage
 en : Age rating
 ru : Возрастной рейтинг

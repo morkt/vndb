@@ -2108,7 +2108,8 @@ function filReleases() {
       filFOptions('freeware', mt('_rbrowse_freeware'),[ [1, mt('_rbrowse_freeware_yes')], [0, mt('_rbrowse_freeware_no')] ]),
       filFOptions('doujin',   mt('_rbrowse_doujin'),  [ [1, mt('_rbrowse_doujin_yes')],   [0, mt('_rbrowse_doujin_no')] ]),
       [ 'date_after',  mt('_rbrowse_dateafter'),  dateLoad(null, filSelectField), function (c) { return [c.date_val] }, dateSet ],
-      [ 'date_before', mt('_rbrowse_datebefore'), dateLoad(null, filSelectField), function (c) { return [c.date_val] }, dateSet ]
+      [ 'date_before', mt('_rbrowse_datebefore'), dateLoad(null, filSelectField), function (c) { return [c.date_val] }, dateSet ],
+      filFOptions('released', mt('_rbrowse_released'),[ [1, mt('_rbrowse_released_yes')], [0, mt('_rbrowse_released_no')] ])
     ],
     [ mt('_rbrowse_minage'),     filFSelect('minage',     mt('_rbrowse_minage'),     15, ages) ],
     [ mt('_rbrowse_language'),   filFSelect('lang',       mt('_rbrowse_language'),   20, lang) ],
