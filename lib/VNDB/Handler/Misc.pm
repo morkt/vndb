@@ -146,7 +146,7 @@ sub homepage {
      h1;
       a href => strftime('/r?fil=date_after-%Y%m%d;o=a;s=released', gmtime), mt '_home_upcoming';
      end;
-     my $upcoming = $self->filFetchDB(release => undef, undef, {results => 10, unreleased => 1, what => 'platforms'});
+     my $upcoming = $self->filFetchDB(release => undef, undef, {results => 10, released => 0, what => 'platforms'});
      ul;
       for (@$upcoming) {
         li;
@@ -166,7 +166,7 @@ sub homepage {
      h1;
       a href => strftime('/r?fil=date_before-%Y%m%d;o=d;s=released', gmtime), mt '_home_justreleased';
      end;
-     my $justrel = $self->filFetchDB(release => undef, undef, {results => 10, sort => 'released', reverse => 1, unreleased => 0, what => 'platforms'});
+     my $justrel = $self->filFetchDB(release => undef, undef, {results => 10, sort => 'released', reverse => 1, released => 1, what => 'platforms'});
      ul;
       for (@$justrel) {
         li;

@@ -10,7 +10,7 @@ use VNDB::Func 'gtintype';
 our @EXPORT = qw|dbReleaseGet dbReleaseRevisionInsert|;
 
 
-# Options: id vid pid rev unreleased page results what med sort reverse date_before date_after 
+# Options: id vid pid rev released page results what med sort reverse date_before date_after
 #   plat lang olang type minage search resolution freeware doujin voiced ani_story ani_ero
 # What: extended changes vn producers platforms media
 # Sort: title released minage
@@ -37,7 +37,7 @@ sub dbReleaseGet {
     defined $o{voiced}      ? ( 'rr.voiced IN(!l)'     => [ ref $o{voiced}     ? $o{voiced}     : [$o{voiced}]     ] ) : (),
     defined $o{ani_story}   ? ( 'rr.ani_story IN(!l)'  => [ ref $o{ani_story}  ? $o{ani_story}  : [$o{ani_story}]  ] ) : (),
     defined $o{ani_ero}     ? ( 'rr.ani_ero IN(!l)'    => [ ref $o{ani_ero}    ? $o{ani_ero}    : [$o{ani_ero}]    ] ) : (),
-    defined $o{unreleased}  ? ( 'rr.released !s ?' => [ $o{unreleased} ? '>' : '<=', strftime('%Y%m%d', gmtime) ] ) : (),
+    defined $o{released}    ? ( 'rr.released !s ?' => [ $o{released} ? '<=' : '>', strftime('%Y%m%d', gmtime) ] ) : (),
     $o{lang} ? (
       'rr.id IN(SELECT irl.rid FROM releases_lang irl JOIN releases ir ON ir.latest = irl.rid WHERE irl.lang IN(!l))' => [ ref $o{lang} ? $o{lang} : [ $o{lang} ] ] ) : (),
     $o{olang} ? (
