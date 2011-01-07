@@ -260,7 +260,7 @@ sub dbVoteAdd {
   my($self, $vid, $uid, $vote) = @_;
   $self->dbExec(q|
     UPDATE votes
-      SET vote = ?, date = NOW()
+      SET vote = ?
       WHERE vid IN(!l)
       AND uid = ?|,
     $vote, ref($vid) ? $vid : [$vid], $uid

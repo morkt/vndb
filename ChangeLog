@@ -1,5 +1,6 @@
 2.17 - ?
 	- Fixed perl warning on /u+/votes batchedit with nothing selected
+	- Don't update the 'date' when changing a VN vote
 	- Bugfix: Correctly randomize screenshots on homepage with filters
 	- Bugfix: Don't show NSFW screenshots on homepage with filters
 	- Bugfix-API: Use ~ for the get vn search filter instead of =
