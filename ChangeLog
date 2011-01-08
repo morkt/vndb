@@ -2,6 +2,7 @@
 	- Allow moderators to overrule VN tag votes
 	- Added 'released' release filter
 	- Changed order of the filter action buttons
+	- Slightly re-organized lang.txt
 	- Fixed perl warning on /u+/votes batchedit with nothing selected
 	- Bugfix: Correctly randomize screenshots on homepage with filters
 	- Bugfix: Don't show NSFW screenshots on homepage with filters

@@ -216,7 +216,7 @@ function ivInit() {
       tag('b', {id:'ivimg'}, ''),
       tag('br', null),
       tag('a', {href:'#', id:'ivfull'}, ''),
-      tag('a', {href:'#', onclick: ivClose, id:'ivclose'}, mt('_js_iv_close')),
+      tag('a', {href:'#', onclick: ivClose, id:'ivclose'}, mt('_js_close')),
       tag('a', {href:'#', onclick: ivView, id:'ivprev'}, '« '+mt('_js_iv_prev')),
       tag('a', {href:'#', onclick: ivView, id:'ivnext'}, mt('_js_iv_next')+' »')
     ));
@@ -1783,22 +1783,21 @@ function filLoad() {
     fil_cats[i] = a;
   }
 
-  // TODO: _rbrowse_ -> generalize (this isn't specific to the release browser)
   addBody(tag('div', { id: 'fil_div', 'class':'hidden' },
-    tag('a', {href:'#', onclick:filShow, 'class':'close'}, mt('_rbrowse_close')),
+    tag('a', {href:'#', onclick:filShow, 'class':'close'}, mt('_js_close')),
     tag('h3', l[0]),
     p,
     tag('b', {'class':'ruler'}, null),
     c,
     tag('b', {'class':'ruler'}, null),
-    tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_apply'), onclick:function () {
+    tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_apply'), onclick:function () {
       var f = byId('fil');
       while(f.nodeName.toLowerCase() != 'form')
         f = f.parentNode;
       f.submit();
     }}),
-    tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} }),
-    PREF_CODE != '' ? tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_filsave'), onclick:filSaveDefault }) : null,
+    tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} }),
+    PREF_CODE != '' ? tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_save'), onclick:filSaveDefault }) : null,
     tag('p', {id:'fil_savenote', 'class':'hidden'}, '')
   ));
   filSelectCat(1);
@@ -1814,7 +1813,7 @@ function filSaveDefault() {
   setClass(byId('fil_savenote'), 'hidden', false);
   var type = byId('filselect').href.match(/#r$/) ? 'release' : 'vn';
   ajax('/xml/prefs.xml?formcode='+PREF_CODE+';key=filter_'+type+';value='+byId('fil').value, function (hr) {
-    setText(note, mt('_rbrowse_savenote'));
+    setText(note, mt('_js_fil_savenote'));
     but.enable = true;
   });
 }
@@ -1952,7 +1951,7 @@ function filFSelect(c, n, lines, opts) {
       s.appendChild(g);
     }
   }
-  return [ c, lines > 1 ? [ n, mt('_rbrowse_boolor') ] : n, s,
+  return [ c, lines > 1 ? [ n, mt('_js_fil_boolor') ] : n, s,
     function (c) {
       var l = [];
       for(var i=0; i<c.options.length; i++)
@@ -2144,7 +2143,7 @@ function filVN() {
       filFOptions('hasani', mt('_vnbrowse_anime'), [[1, mt('_vnbrowse_anime_yes')],[0, mt('_vnbrowse_anime_no')]])
     ],
     [ mt('_vnbrowse_tags'),
-      [ '',       ' ',                   tag(mt('_vnbrowse_booland')) ],
+      [ '',       ' ',                   tag(mt('_js_fil_booland')) ],
       [ '',       ' ', PREF_CODE != '' ? tag(mt('_vnbrowse_tagactive')) : null ],
       filFTagInput('tag_inc', mt('_vnbrowse_taginc')),
       filFTagInput('tag_exc', mt('_vnbrowse_tagexc')),
