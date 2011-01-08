@@ -1791,7 +1791,6 @@ function filLoad() {
     tag('b', {'class':'ruler'}, null),
     c,
     tag('b', {'class':'ruler'}, null),
-    PREF_CODE != '' ? tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_filsave'), onclick:filSaveDefault }) : null,
     tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_apply'), onclick:function () {
       var f = byId('fil');
       while(f.nodeName.toLowerCase() != 'form')
@@ -1799,7 +1798,8 @@ function filLoad() {
       f.submit();
     }}),
     tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} }),
-    tag('p', {id:'fil_savenote', 'class':'hidden'}, mt('_rbrowse_savenote'))
+    PREF_CODE != '' ? tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_filsave'), onclick:filSaveDefault }) : null,
+    tag('p', {id:'fil_savenote', 'class':'hidden'}, '')
   ));
   filSelectCat(1);
   byId('filselect').onclick = filShow;
@@ -1808,12 +1808,13 @@ function filLoad() {
 
 function filSaveDefault() {
   var but = this;
-  but.value = mt('_js_loading');
+  var note = byId('fil_savenote');
+  setText(note, mt('_js_loading'));
   but.enabled = false;
   setClass(byId('fil_savenote'), 'hidden', false);
   var type = byId('filselect').href.match(/#r$/) ? 'release' : 'vn';
   ajax('/xml/prefs.xml?formcode='+PREF_CODE+';key=filter_'+type+';value='+byId('fil').value, function (hr) {
-    but.value = mt('_rbrowse_filsave');
+    setText(note, mt('_rbrowse_savenote'));
     but.enable = true;
   });
 }
