@@ -22,7 +22,7 @@ sub authInit {
   my $self = shift;
   $self->{_auth} = undef;
 
-  my $cookie = $self->reqCookie($self->{cookie_prefix}.'auth');
+  my $cookie = $self->reqCookie('auth');
   return 0 if !$cookie;
   return _rmcookie($self) if length($cookie) < 41;
   my $token = substr($cookie, 0, 40);
@@ -61,7 +61,7 @@ sub authLogin {
 sub authLogout {
   my $self = shift;
 
-  my $cookie = $self->reqCookie($self->{cookie_prefix}.'auth');
+  my $cookie = $self->reqCookie('auth');
   if ($cookie && length($cookie) >= 41) {
     my $token = substr($cookie, 0, 40);
     my $uid  = substr($cookie, 40);
