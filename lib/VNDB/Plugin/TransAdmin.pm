@@ -1,9 +1,9 @@
 # This plugin provides a quick and dirty user interface to editing lang.txt,
 # to use it, add the following to your data/config.pl:
 #
-#  if($INC{"YAWF.pm"}) {
-#    require VNDB::Plugin::TransAdmin;
-#    $VNDB::S{transadmin} = {
+#  if($TUWF::OBJ) {
+#    TUWF::load('VNDB::Plugin::TransAdmin');
+#    $TUWF::OBJ->{transadmin} = {
 #      <userid> => 'all' || <language> || <arrayref with languages>
 #    };
 #  }
@@ -16,7 +16,7 @@ package VNDB::Plugin::TransAdmin;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use TUWF ':html';
 use LangFile;
 use VNDB::Func;
 
@@ -24,7 +24,7 @@ use VNDB::Func;
 my $langfile = "$VNDB::ROOT/data/lang.txt";
 
 
-YAWF::register(
+TUWF::register(
   qr{tladmin(?:/([a-z]+))?} => \&tladmin
 );
 
@@ -41,7 +41,7 @@ sub tladmin {
 
   $lang ||= '';
   my $intro = $lang =~ s/intro//;
-  return 404 if $lang && ($lang eq 'en' || !grep $_ eq $lang, $self->{l10n}->languages);
+  return $self->resNotFound if $lang && ($lang eq 'en' || !grep $_ eq $lang, $self->{l10n}->languages);
   my $sect = $self->reqParam('sect')||'';
   my $doc = $self->reqParam('doc')||'';
 

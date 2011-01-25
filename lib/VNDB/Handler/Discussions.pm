@@ -3,12 +3,12 @@ package VNDB::Handler::Discussions;
 
 use strict;
 use warnings;
-use YAWF ':html', 'xml_escape';
+use TUWF ':html', 'xml_escape';
 use POSIX 'ceil';
 use VNDB::Func;
 
 
-YAWF::register(
+TUWF::register(
   qr{t([1-9]\d*)(?:/([1-9]\d*))?}    => \&thread,
   qr{t([1-9]\d*)\.([1-9]\d*)}        => \&redirect,
   qr{t/(db|an|ge|[vpu])([1-9]\d*)?}  => \&board,
@@ -24,10 +24,10 @@ sub thread {
   $page ||= 1;
 
   my $t = $self->dbThreadGet(id => $tid, what => 'boardtitles')->[0];
-  return 404 if !$t->{id} || $t->{hidden} && !$self->authCan('boardmod');
+  return $self->resNotFound if !$t->{id} || $t->{hidden} && !$self->authCan('boardmod');
 
   my $p = $self->dbPostGet(tid => $tid, results => 25, page => $page, what => 'user');
-  return 404 if !$p->[0];
+  return $self->resNotFound if !$p->[0];
 
   $self->htmlHeader(title => $t->{title}, noindex => 1);
   div class => 'mainbox';
@@ -135,7 +135,7 @@ sub edit {
   # in case we start a new thread, parse boards
   my $board = '';
   if($tid !~ /^\d+$/) {
-    return 404 if $tid =~ /(db|an|ge)/ && $num || $tid =~ /[vpu]/ && !$num;
+    return $self->resNotFound if $tid =~ /(db|an|ge)/ && $num || $tid =~ /[vpu]/ && !$num;
     $board = $tid.($num||'');
     $tid = 0;
     $num = 0;
@@ -143,10 +143,10 @@ sub edit {
 
   # get thread and post, if any
   my $t = $tid && $self->dbThreadGet(id => $tid, what => 'boards')->[0];
-  return 404 if $tid && !$t->{id};
+  return $self->resNotFound if $tid && !$t->{id};
 
   my $p = $num && $self->dbPostGet(tid => $tid, num => $num, what => 'user')->[0];
-  return 404 if $num && !$p->{num};
+  return $self->resNotFound if $num && !$p->{num};
 
   # are we allowed to perform this action?
   return $self->htmlDenied if !$self->authCan('board')
@@ -159,16 +159,16 @@ sub edit {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
       !$tid || $num == 1 ? (
-        { name => 'title', maxlength => 50 },
-        { name => 'boards', maxlength => 50 },
+        { post => 'title', maxlength => 50 },
+        { post => 'boards', maxlength => 50 },
       ) : (),
       $self->authCan('boardmod') ? (
-        { name => 'locked', required => 0 },
-        { name => 'hidden', required => 0 },
-        { name => 'nolastmod', required => 0 },
+        { post => 'locked', required => 0 },
+        { post => 'hidden', required => 0 },
+        { post => 'nolastmod', required => 0 },
       ) : (),
-      { name => 'msg', maxlenght => 5000 },
-      { name => 'fullreply', required => 0 },
+      { post => 'msg', maxlength => 32768 },
+      { post => 'fullreply', required => 0 },
     );
 
     $frm->{_err} = 1 if $frm->{fullreply};
@@ -270,18 +270,18 @@ sub edit {
 sub board {
   my($self, $type, $iid) = @_;
   $iid ||= '';
-  return 404 if $type =~ /(db|an|ge)/ && $iid;
+  return $self->resNotFound if $type =~ /(db|an|ge)/ && $iid;
 
   my $f = $self->formValidate(
-    { name => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'int' },
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   my $obj = !$iid ? undef :
     $type eq 'u' ? $self->dbUserGet(uid => $iid, what => 'hide_list')->[0] :
     $type eq 'p' ? $self->dbProducerGet(id => $iid)->[0] :
                    $self->dbVNGet(id => $iid)->[0];
-  return 404 if $iid && !$obj;
+  return $self->resNotFound if $iid && !$obj;
   my $ititle = $obj && ($obj->{title}||$obj->{name}||$obj->{username});
   my $title = !$obj ? mt("_dboard_$type") : mt '_disboard_item_title', $ititle;
 

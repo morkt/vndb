@@ -3,11 +3,11 @@ package VNDB::Handler::VNEdit;
 
 use strict;
 use warnings;
-use YAWF ':html', ':xml';
+use TUWF ':html', ':xml';
 use VNDB::Func;
 
 
-YAWF::register(
+TUWF::register(
   qr{v(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit|/new)}
     => \&edit,
   qr{xml/vn\.xml}          => \&vnxml,
@@ -19,7 +19,7 @@ sub edit {
   my($self, $vid, $rev) = @_;
 
   my $v = $vid && $self->dbVNGet(id => $vid, what => 'extended screenshots relations anime changes', $rev ? (rev => $rev) : ())->[0];
-  return 404 if $vid && !$v->{id};
+  return $self->resNotFound if $vid && !$v->{id};
   $rev = undef if !$vid || $v->{cid} == $v->{latest};
 
   return $self->htmlDenied if !$self->authCan('edit')
@@ -38,23 +38,23 @@ sub edit {
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
-      { name => 'title',       maxlength => 250 },
-      { name => 'original',    required => 0, maxlength => 250, default => '' },
-      { name => 'alias',       required => 0, maxlength => 500, default => '' },
-      { name => 'desc',        required => 0, default => '', maxlength => 10240 },
-      { name => 'length',      required => 0, default => 0,  enum => $self->{vn_lengths} },
-      { name => 'l_wp',        required => 0, default => '', maxlength => 150 },
-      { name => 'l_encubed',   required => 0, default => '', maxlength => 100 },
-      { name => 'l_renai',     required => 0, default => '', maxlength => 100 },
-      { name => 'l_vnn',       required => 0, default => $b4{l_vnn}||0,  template => 'int' },
-      { name => 'anime',       required => 0, default => '' },
-      { name => 'previmage',   required => 0, default => 0,  template => 'int' },
-      { name => 'img_nsfw',    required => 0, default => 0 },
-      { name => 'vnrelations', required => 0, default => '', maxlength => 5000 },
-      { name => 'screenshots', required => 0, default => '', maxlength => 1000 },
-      { name => 'editsum',     required => 0, maxlength => 5000 },
-      { name => 'ihid',        required  => 0 },
-      { name => 'ilock',       required  => 0 },
+      { post => 'title',       maxlength => 250 },
+      { post => 'original',    required => 0, maxlength => 250, default => '' },
+      { post => 'alias',       required => 0, maxlength => 500, default => '' },
+      { post => 'desc',        required => 0, default => '', maxlength => 10240 },
+      { post => 'length',      required => 0, default => 0,  enum => $self->{vn_lengths} },
+      { post => 'l_wp',        required => 0, default => '', maxlength => 150 },
+      { post => 'l_encubed',   required => 0, default => '', maxlength => 100 },
+      { post => 'l_renai',     required => 0, default => '', maxlength => 100 },
+      { post => 'l_vnn',       required => 0, default => $b4{l_vnn}||0,  template => 'int' },
+      { post => 'anime',       required => 0, default => '' },
+      { post => 'previmage',   required => 0, default => 0,  template => 'int' },
+      { post => 'img_nsfw',    required => 0, default => 0 },
+      { post => 'vnrelations', required => 0, default => '', maxlength => 5000 },
+      { post => 'screenshots', required => 0, default => '', maxlength => 1000 },
+      { post => 'editsum',     required => 0, maxlength => 5000 },
+      { post => 'ihid',        required  => 0 },
+      { post => 'ilock',       required  => 0 },
     );
 
     push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
@@ -86,7 +86,7 @@ sub edit {
 
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post')
-        if $vid && !$self->reqUploadFileName('img') && $image == $v->{image}
+        if $vid && !$self->reqParam('img') && $image == $v->{image}
           && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
       # perform the edit/add
@@ -123,7 +123,7 @@ sub edit {
 
 sub _uploadimage {
   my($self, $v, $frm) = @_;
-  return $v ? $frm->{previmage} : 0 if $frm->{_err} || !$self->reqUploadFileName('img');
+  return $v ? $frm->{previmage} : 0 if $frm->{_err} || !$self->reqParam('img');
 
   # save to temporary location
   my $tmp = sprintf '%s/static/cv/00/tmp.%d.jpg', $VNDB::ROOT, $$*int(rand(1000)+1);
@@ -187,7 +187,8 @@ sub _form {
 
        h2 mt '_vnedit_image_upload';
        input type => 'file', class => 'text', name => 'img', id => 'img';
-       p mt('_vnedit_image_upload_msg')."\n\n\n";
+       p mt('_vnedit_image_upload_msg');
+       br; br; br;
 
        h2 mt '_vnedit_image_nsfw';
        input type => 'checkbox', class => 'checkbox', id => 'img_nsfw', name => 'img_nsfw',
@@ -292,8 +293,8 @@ sub _updreverse {
 sub vnxml {
   my $self = shift;
 
-  my $q = $self->formValidate({ name => 'q', maxlength => 500 });
-  return 404 if $q->{_err};
+  my $q = $self->formValidate({ get => 'q', maxlength => 500 });
+  return $self->resNotFound if $q->{_err};
   $q = $q->{q};
 
   my($list, $np) = $self->dbVNGet(
@@ -321,9 +322,9 @@ sub scrxml {
   # fetch information about screenshots
   if($self->reqMethod ne 'POST') {
     my $ids = $self->formValidate(
-      { name => 'id', required => 1, template => 'int', multi => 1 }
+      { get => 'id', required => 1, template => 'int', multi => 1 }
     );
-    return 404 if $ids->{_err};
+    return $self->resNotFound if $ids->{_err};
     my $r = $self->dbScreenshotGet($ids->{id});
 
     xml;
@@ -334,8 +335,8 @@ sub scrxml {
   }
 
   # upload new screenshot
-  my $num = $self->formValidate({name => 'upload', template => 'int'});
-  return 404 if $num->{_err};
+  my $num = $self->formValidate({get => 'upload', template => 'int'});
+  return $self->resNotFound if $num->{_err};
   my $tmp = sprintf '%s/static/sf/00/tmp.%d.jpg', $VNDB::ROOT, $$*int(rand(1000)+1);
   $self->reqSaveUpload("scr_upl_file_$num->{upload}", $tmp);
 

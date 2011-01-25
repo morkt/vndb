@@ -12,11 +12,10 @@ our $ROOT;
 BEGIN { ($ROOT = abs_path $0) =~ s{/util/vndb\.pl$}{}; }
 
 
-use lib $ROOT.'/yawf/lib';
 use lib $ROOT.'/lib';
 
 
-use YAWF ':html';
+use TUWF ':html';
 use VNDB::L10N;
 use SkinFile;
 
@@ -42,13 +41,22 @@ require $ROOT.'/data/global.pl';
 system "make -sC $ROOT" if $S{regen_static};
 
 
-YAWF::init(
+$TUWF::OBJ->{$_} = $S{$_} for (keys %S);
+TUWF::set(
   %O,
-  namespace => 'VNDB',
-  object_data => \%S,
   pre_request_handler => \&reqinit,
   error_404_handler => \&handle404,
+  # for compatibility with YAWF
+  validate_templates => {
+    mail       => { regex => qr/^[^@<>]+@[^@.<>]+(?:\.[^@.<>]+)+$/ },
+    url        => { regex => qr/^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/ },
+    asciiprint => { regex => qr/^[\x20-\x7E]*$/ },
+    int        => { regex => qr/^-?\d+$/ },
+    pname      => { regex => qr/^[a-z0-9-]*$/ },
+  },
 );
+TUWF::load_recursive('VNDB::Util', 'VNDB::DB', 'VNDB::Handler');
+TUWF::run();
 
 
 sub reqinit {
@@ -93,12 +101,15 @@ sub reqinit {
   if($self->reqHeader('User-Agent') && $self->reqHeader('User-Agent') =~ /MSIE [67]/
     && !$self->reqCookie('ie-sucks') && $self->reqPath ne 'we-dont-like-ie') {
     # act as if we're opening /we-dont-like-ie6 (ugly hack, until YAWF supports preventing URL handlers from firing)
+    # TODO: TUWF has support for this, use it
     $ENV{HTTP_REFERER} = $ENV{REQUEST_URI};
     $ENV{REQUEST_URI} = '/we-dont-like-ie';
   }
 
   # load some stats (used for about all pageviews, anyway)
   $self->{stats} = $self->dbStats;
+
+  return 1;
 }
 
 
@@ -110,8 +121,11 @@ sub handle404 {
    h1 'Page not found';
    div class => 'warning';
     h2 'Oops!';
-    p "It seems the page you were looking for does not exist,\n".
-      "you may want to try using the menu on your left to find what you are looking for.";
+    p;
+     txt 'It seems the page you were looking for does not exist,';
+     br;
+     txt 'you may want to try using the menu on your left to find what you are looking for.';
+    end;
    end;
   end;
   $self->htmlFooter;

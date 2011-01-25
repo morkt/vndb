@@ -3,12 +3,12 @@ package VNDB::Handler::Users;
 
 use strict;
 use warnings;
-use YAWF ':html', 'xml_escape';
+use TUWF ':html', 'xml_escape';
 use VNDB::Func;
 use POSIX 'floor';
 
 
-YAWF::register(
+TUWF::register(
   qr{u([1-9]\d*)}             => \&userpage,
   qr{u/login}                 => \&login,
   qr{u([1-9]\d*)/logout}      => \&logout,
@@ -28,7 +28,7 @@ sub userpage {
   my($self, $uid) = @_;
 
   my $u = $self->dbUserGet(uid => $uid, what => 'stats hide_list')->[0];
-  return 404 if !$u->{id};
+  return $self->resNotFound if !$u->{id};
 
   my $votes = $u->{c_votes} && $self->dbVoteStats(uid => $uid);
 
@@ -142,8 +142,8 @@ sub login {
   my $frm;
   if($self->reqMethod eq 'POST') {
     $frm = $self->formValidate(
-      { name => 'usrname', required => 1, minlength => 2, maxlength => 15 },
-      { name => 'usrpass', required => 1, minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { post => 'usrname', required => 1, minlength => 2, maxlength => 15 },
+      { post => 'usrpass', required => 1, minlength => 4, maxlength => 64, template => 'asciiprint' },
     );
 
     (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$self->{url}//;
@@ -166,7 +166,7 @@ sub login {
 sub logout {
   my $self = shift;
   my $uid = shift;
-  return 404 if !$self->authInfo->{id} || $self->authInfo->{id} != $uid;
+  return $self->resNotFound if !$self->authInfo->{id} || $self->authInfo->{id} != $uid;
   $self->authLogout;
 }
 
@@ -180,7 +180,7 @@ sub newpass {
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
-      { name => 'mail', required => 1, template => 'mail' },
+      { post => 'mail', required => 1, template => 'mail' },
     );
     if(!$frm->{_err}) {
       $u = $self->dbUserGet(mail => $frm->{mail})->[0];
@@ -238,12 +238,12 @@ sub register {
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
-      { name => 'usrname',  template => 'pname', minlength => 2, maxlength => 15 },
-      { name => 'mail',     template => 'mail' },
-      { name => 'usrpass',  minlength => 4, maxlength => 64, template => 'asciiprint' },
-      { name => 'usrpass2', minlength => 4, maxlength => 64, template => 'asciiprint' },
-      { name => 'type',     regex => [ qr/^[1-3]$/ ] },
-      { name => 'answer',   template => 'int' },
+      { post => 'usrname',  template => 'pname', minlength => 2, maxlength => 15 },
+      { post => 'mail',     template => 'mail' },
+      { post => 'usrpass',  minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { post => 'usrpass2', minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { post => 'type',     regex => [ qr/^[1-3]$/ ] },
+      { post => 'answer',   template => 'int' },
     );
     my $num = $self->{stats}{[qw|vn releases producers|]->[ $frm->{type} - 1 ]};
     push @{$frm->{_err}}, 'notanswer'  if !$frm->{_err} && ($frm->{answer} > $num || $frm->{answer} < $num*0.995);
@@ -292,7 +292,7 @@ sub edit {
 
   # fetch user info (cached if uid == loggedin uid)
   my $u = $self->authInfo->{id} == $uid ? $self->authInfo : $self->dbUserGet(uid => $uid, what => 'extended prefs')->[0];
-  return 404 if !$u->{id};
+  return $self->resNotFound if !$u->{id};
 
   # check POST data
   my $frm;
@@ -300,17 +300,17 @@ sub edit {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
       $self->authCan('usermod') ? (
-        { name => 'usrname',   template => 'pname', minlength => 2, maxlength => 15 },
-        { name => 'rank',      enum => [ 1..$#{$self->{user_ranks}} ] },
-        { name => 'ign_votes', required => 0, default => 0 },
+        { post => 'usrname',   template => 'pname', minlength => 2, maxlength => 15 },
+        { post => 'rank',      enum => [ 1..$#{$self->{user_ranks}} ] },
+        { post => 'ign_votes', required => 0, default => 0 },
       ) : (),
-      { name => 'mail',       template => 'mail' },
-      { name => 'usrpass',    required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
-      { name => 'usrpass2',   required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
-      { name => 'hide_list',  required => 0, default => 0,  enum => [0,1] },
-      { name => 'show_nsfw',  required => 0, default => 0,  enum => [0,1] },
-      { name => 'skin',       required => 0, default => '', enum => [ '', keys %{$self->{skins}} ] },
-      { name => 'customcss',  required => 0, maxlength => 2000, default => '' },
+      { post => 'mail',       template => 'mail' },
+      { post => 'usrpass',    required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { post => 'usrpass2',   required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { post => 'hide_list',  required => 0, default => 0,  enum => [0,1] },
+      { post => 'show_nsfw',  required => 0, default => 0,  enum => [0,1] },
+      { post => 'skin',       required => 0, default => '', enum => [ '', keys %{$self->{skins}} ] },
+      { post => 'customcss',  required => 0, maxlength => 2000, default => '' },
     );
     push @{$frm->{_err}}, 'passmatch'
       if ($frm->{usrpass} || $frm->{usrpass2}) && (!$frm->{usrpass} || !$frm->{usrpass2} || $frm->{usrpass} ne $frm->{usrpass2});
@@ -379,10 +379,10 @@ sub posts {
 
   # fetch user info (cached if uid == loggedin uid)
   my $u = $self->authInfo->{id} && $self->authInfo->{id} == $uid ? $self->authInfo : $self->dbUserGet(uid => $uid, what => 'hide_list')->[0];
-  return 404 if !$u->{id};
+  return $self->resNotFound if !$u->{id};
 
   my $f = $self->formValidate(
-    { name => 'p', required => 0, default => 1, template => 'int' }
+    { get => 'p', required => 0, default => 1, template => 'int' }
   );
 
   my($posts, $np) = $self->dbPostGet(uid => $uid, hide => 1, what => 'thread', page => $f->{p}, sort => 'date', reverse => 1);
@@ -436,7 +436,7 @@ sub delete {
   if(!$act) {
     my $code = $self->authGetCode("/u$uid/del/o");
     my $u = $self->dbUserGet(uid => $uid, what => 'hide_list')->[0];
-    return 404 if !$u->{id};
+    return $self->resNotFound if !$u->{id};
     $self->htmlHeader(title => 'Delete user', noindex => 1);
     $self->htmlMainTabs('u', $u, 'del');
     div class => 'mainbox';
@@ -473,12 +473,12 @@ sub list {
   my($self, $char) = @_;
 
   my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'username', enum => [ qw|username registered votes changes tags| ] },
-    { name => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
-    { name => 'p', required => 0, default => 1, template => 'int' },
-    { name => 'q', required => 0, default => '', maxlength => 50 },
+    { get => 's', required => 0, default => 'username', enum => [ qw|username registered votes changes tags| ] },
+    { get => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
+    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'q', required => 0, default => '', maxlength => 50 },
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   $self->htmlHeader(noindex => 1, title => mt '_ulist_title');
 
@@ -548,21 +548,20 @@ sub notifies {
   return $self->htmlDenied if !$u->{id} || $uid != $u->{id};
 
   my $f = $self->formValidate(
-    { name => 'p', required => 0, default => 1, template => 'int' },
-    { name => 'r', required => 0, default => 0, enum => [0,1] },
-
+    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'r', required => 0, default => 0, enum => [0,1] },
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   # changing the notification settings
   my $saved;
   if($self->reqMethod() eq 'POST' && $self->reqParam('set')) {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { name => 'notify_nodbedit', required => 0, default => 1, enum => [0,1] },
-      { name => 'notify_announce', required => 0, default => 0, enum => [0,1] }
+      { post => 'notify_nodbedit', required => 0, default => 1, enum => [0,1] },
+      { post => 'notify_announce', required => 0, default => 0, enum => [0,1] }
     );
-    return 404 if $frm->{_err};
+    return $self->resNotFound if $frm->{_err};
     $self->authPref($_, $frm->{$_}) for ('notify_nodbedit', 'notify_announce');
     $saved = 1;
 
@@ -570,11 +569,11 @@ sub notifies {
   } elsif($self->reqMethod() eq 'POST') {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { name => 'notifysel', multi => 1, required => 0, template => 'int' },
-      { name => 'markread', required => 0 },
-      { name => 'remove', required => 0 }
+      { post => 'notifysel', multi => 1, required => 0, template => 'int' },
+      { post => 'markread', required => 0 },
+      { post => 'remove', required => 0 }
     );
-    return 404 if $frm->{_err};
+    return $self->resNotFound if $frm->{_err};
     my @ids = grep $_, @{$frm->{notifysel}};
     $self->dbNotifyMarkRead(@ids) if @ids && $frm->{markread};
     $self->dbNotifyRemove(@ids) if @ids && $frm->{remove};
@@ -673,7 +672,7 @@ sub readnotify {
   my($self, $uid, $nid) = @_;
   return $self->htmlDenied if !$self->authInfo->{id} || $uid != $self->authInfo->{id};
   my $n = $self->dbNotifyGet(uid => $uid, id => $nid)->[0];
-  return 404 if !$n->{iid};
+  return $self->resNotFound if !$n->{iid};
   $self->dbNotifyMarkRead($n->{id}) if !$n->{read};
   # NOTE: for t+.+ IDs, this will create a double redirect, which is rather awkward...
   $self->resRedirect("/$n->{ltype}$n->{iid}".($n->{subid}?".$n->{subid}":''), 'perm');

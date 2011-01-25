@@ -3,7 +3,7 @@ package VNDB::Util::BrowseHTML;
 
 use strict;
 use warnings;
-use YAWF ':html', 'xml_escape';
+use TUWF ':html', 'xml_escape';
 use Exporter 'import';
 use VNDB::Func;
 use POSIX 'ceil';

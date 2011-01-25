@@ -4,6 +4,7 @@
 	- Changed order of the filter action buttons
 	- Slightly re-organized lang.txt
 	- Fixed perl warning on /u+/votes batchedit with nothing selected
+	- Switched to TUWF
 	- Bugfix: Correctly randomize screenshots on homepage with filters
 	- Bugfix: Don't show NSFW screenshots on homepage with filters
 	- Bugfix-API: Use ~ for the get vn search filter instead of =

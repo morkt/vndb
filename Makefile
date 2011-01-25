@@ -166,5 +166,5 @@ update-2.16: all
 
 update-2.17: all
 	$(multi-stop)
-	${runpsql} < util/updates/update_2.16.sql
+	${runpsql} < util/updates/update_2.17.sql
 	$(multi-start)

@@ -3,7 +3,7 @@ package VNDB::Util::FormHTML;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use TUWF ':html';
 use Exporter 'import';
 use POSIX 'strftime';
 use VNDB::Func;
@@ -227,7 +227,9 @@ sub htmlForm {
           input type => 'checkbox', name => 'ilock', id => 'ilock', value => 1, $options->{frm}{ilock} ? (checked => 'checked') : ();
           label for => 'ilock', mt '_form_ilock';
         }
-        txt "\n".mt('_form_hidlock_note')."\n" if $self->authCan('lock') || $self->authCan('del');
+        if($self->authCan('lock') || $self->authCan('del')) {
+          br; txt mt('_form_hidlock_note'); br;
+        }
 
         # edit summary
         (my $txt = $options->{frm}{editsum}||'') =~ s/&/&amp;/;

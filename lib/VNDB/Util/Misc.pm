@@ -57,7 +57,7 @@ sub filFetchDB {
   # throwing 500's even for non-browse pages. We have to do some low-level
   # PostgreSQL stuff with savepoints to ensure that an error won't affect our
   # existing transaction.
-  my $dbh = $self->{_YAWF}{DB}{sql};
+  my $dbh = $self->dbh;
   $dbh->pg_savepoint('filter');
   my($r, $np);
   my $OK = eval {

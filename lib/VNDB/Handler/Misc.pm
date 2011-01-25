@@ -4,12 +4,12 @@ package VNDB::Handler::Misc;
 
 use strict;
 use warnings;
-use YAWF ':html', ':xml', 'xml_escape';
+use TUWF ':html', ':xml', 'xml_escape';
 use VNDB::Func;
 use POSIX 'strftime';
 
 
-YAWF::register(
+TUWF::register(
   qr{},                              \&homepage,
   qr{(?:([upvr])([1-9]\d*)/)?hist},  \&history,
   qr{d([1-9]\d*)},                   \&docpage,
@@ -194,14 +194,14 @@ sub history {
   $id ||= 0;
 
   my $f = $self->formValidate(
-    { name => 'p', required => 0, default => 1, template => 'int' },
-    { name => 'm', required => 0, default => !$type, enum => [ 0, 1 ] },
-    { name => 'h', required => 0, default => 0, enum => [ -1..1 ] },
-    { name => 't', required => 0, default => '', enum => [ 'v', 'r', 'p' ] },
-    { name => 'e', required => 0, default => 0, enum => [ -1..1 ] },
-    { name => 'r', required => 0, default => 0, enum => [ 0, 1 ] },
+    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'm', required => 0, default => !$type, enum => [ 0, 1 ] },
+    { get => 'h', required => 0, default => 0, enum => [ -1..1 ] },
+    { get => 't', required => 0, default => '', enum => [ 'v', 'r', 'p' ] },
+    { get => 'e', required => 0, default => 0, enum => [ -1..1 ] },
+    { get => 'r', required => 0, default => 0, enum => [ 0, 1 ] },
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   # get item object and title
   my $obj = $type eq 'u' ? $self->dbUserGet(uid => $id, what => 'hide_list')->[0] :
@@ -209,7 +209,7 @@ sub history {
             $type eq 'r' ? $self->dbReleaseGet(id => $id)->[0] :
             $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : undef;
   my $title = mt $type ? ('_hist_title_item', $obj->{title} || $obj->{name} || $obj->{username}) : '_hist_title';
-  return 404 if $type && !$obj->{id};
+  return $self->resNotFound if $type && !$obj->{id};
 
   # get the edit history
   my($list, $np) = $self->dbRevisionGet(
@@ -287,7 +287,7 @@ sub docpage {
   my $l = '.'.$self->{l10n}->language_tag();
   my $f = sprintf('%s/data/docs/%d', $VNDB::ROOT, $did);
   my $F;
-  open($F, '<:utf8', $f.$l) or open($F, '<:utf8', $f) or return 404;
+  open($F, '<:utf8', $f.$l) or open($F, '<:utf8', $f) or return $self->resNotFound;
   my @c = <$F>;
   close $F;
 
@@ -343,8 +343,8 @@ sub docpage {
 sub setlang {
   my $self = shift;
 
-  my $lang = $self->formValidate({name => 'lang', required => 1, enum => [ VNDB::L10N::languages ]});
-  return 404 if $lang->{_err};
+  my $lang = $self->formValidate({get => 'lang', required => 1, enum => [ VNDB::L10N::languages ]});
+  return $self->resNotFound if $lang->{_err};
   $lang = $lang->{lang};
 
   my $browser = VNDB::L10N->get_handle()->language_tag();
@@ -422,12 +422,12 @@ sub iemessage {
 sub prefs {
   my $self = shift;
   return if !$self->authCheckCode;
-  return 404 if !$self->authInfo->{id};
+  return $self->resNotFound if !$self->authInfo->{id};
   my $f = $self->formValidate(
-    { name => 'key',   enum => [qw|filter_vn filter_release|] },
-    { name => 'value', required => 0, maxlength => 2000 },
+    { get => 'key',   enum => [qw|filter_vn filter_release|] },
+    { get => 'value', required => 0, maxlength => 2000 },
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
   $self->authPref($f->{key}, $f->{value});
 
   # doesn't really matter what we return, as long as it's XML

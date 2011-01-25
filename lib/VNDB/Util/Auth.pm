@@ -10,7 +10,7 @@ use Digest::SHA qw|sha1_hex sha256_hex|;
 use Time::HiRes;
 use Encode 'encode_utf8';
 use POSIX 'strftime';
-use YAWF ':html';
+use TUWF ':html';
 use VNDB::Func;
 
 
