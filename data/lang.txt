@@ -1384,6 +1384,13 @@ nl : ongemodereerd
 
 # Filter selector
 
+:_js_fil_filters
+en : Filters
+ru : Фильтры
+cs : Filtry
+hu : Szűrők
+nl :
+
 :_js_fil_apply
 en : Apply
 ru : Применить
@@ -3653,13 +3660,6 @@ hu : Bocs, de ezekkel a szűrőkkel nem található semmi. Talán ki kéne kapcs
 nl : Sorry, geen items gevonden die aan je filters voldoen. Je kan wat filters uitschakelen om meer resultaten te krijgen.
 
      Houd er ook rekening mee dat we niet alle informatie hebben over alle uitgaven, dus filteren op o.a. schermresolutie zal alle uitgaven waarvan we dit niet weten niet weergeven, ook al heeft het wel wat je zoekt.
-
-:_rbrowse_filters
-en : Filters
-ru : Фильтры
-cs : Filtry
-hu : Szűrők
-nl :
 
 :_rbrowse_fil_title
 en : Release filters

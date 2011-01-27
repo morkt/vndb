@@ -60,7 +60,7 @@ sub list {
    end;
 
    a id => 'filselect', href => '#v';
-    lit '<i>&#9656;</i> '.mt('_rbrowse_filters').'<i></i>'; # TODO: it's not *r*browse
+    lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
    end;
    input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
   end;
