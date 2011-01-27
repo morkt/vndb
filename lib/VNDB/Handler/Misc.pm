@@ -354,9 +354,7 @@ sub setlang {
   if($lang ne $self->{l10n}->language_tag()) {
     $self->authInfo->{id}
     ? $self->authPref(l10n => $lang eq $browser ? undef : $lang)
-    : $self->resHeader('Set-Cookie', sprintf 'l10n=%s; expires=%s; path=/; domain=%s',
-        $lang, $lang eq $browser ? 'Sat, 01-Jan-2000 00:00:00 GMT' : 'Sat, 01-Jan-2030 00:00:00 GMT',
-        $self->{cookie_domain});
+    : $self->resCookie(l10n => $lang eq $browser ? undef : $lang, expires => time()+31536000);
   }
 }
 
@@ -384,7 +382,7 @@ sub iemessage {
     (my $ref = $self->reqHeader('Referer') || '/') =~ s/^\Q$self->{url}//;
     $ref = '/' if $ref eq '/we-dont-like-ie';
     $self->resRedirect($ref, 'temp');
-    $self->resHeader('Set-Cookie', "ie-sucks=1; path=/; domain=$self->{cookie_domain}");
+    $self->resCookie('ie_sucks' => 1);
     return;
   }
 

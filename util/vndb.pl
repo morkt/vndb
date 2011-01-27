@@ -93,8 +93,7 @@ sub reqinit {
     $rmcookie = 1 if $cookie && $cookie eq $browser;
     $handle = VNDB::L10N->get_handle($cookie) if $cookie && $browser ne $cookie;
   }
-  $self->resHeader('Set-Cookie', "l10n= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$self->{cookie_domain}")
-    if $rmcookie;
+  $self->resCookie(l10n => undef) if $rmcookie;
   $self->{l10n} = $handle;
 
   # check for IE
