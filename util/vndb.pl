@@ -97,13 +97,7 @@ sub reqinit {
   $self->{l10n} = $handle;
 
   # check for IE
-  if($self->reqHeader('User-Agent') && $self->reqHeader('User-Agent') =~ /MSIE [67]/
-    && !$self->reqCookie('ie-sucks') && $self->reqPath ne 'we-dont-like-ie') {
-    # act as if we're opening /we-dont-like-ie6 (ugly hack, until YAWF supports preventing URL handlers from firing)
-    # TODO: TUWF has support for this, use it
-    $ENV{HTTP_REFERER} = $ENV{REQUEST_URI};
-    $ENV{REQUEST_URI} = '/we-dont-like-ie';
-  }
+  return 0 if !$self->ieCheck;
 
   # load some stats (used for about all pageviews, anyway)
   $self->{stats} = $self->dbStats;

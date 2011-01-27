@@ -4,9 +4,10 @@ package VNDB::Util::Misc;
 use strict;
 use warnings;
 use Exporter 'import';
+use TUWF ':html';
 use VNDB::Func;
 
-our @EXPORT = qw|filFetchDB|;
+our @EXPORT = qw|filFetchDB ieCheck|;
 
 
 my %filfields = (
@@ -97,4 +98,52 @@ sub _fil_vn_compat {
 
   return 0;
 }
+
+
+sub ieCheck {
+  my $self = shift;
+
+  return 1 if !$self->reqHeader('User-Agent') ||
+    $self->reqHeader('User-Agent') !~ /MSIE [67]/ || $self->reqCookie('ie_sucks');
+
+  if($self->reqParam('i-still-want-access')) {
+    (my $ref = $self->reqHeader('Referer') || '/') =~ s/^\Q$self->{url}//;
+    $self->resRedirect($ref, 'temp');
+    $self->resCookie('ie_sucks' => 1);
+    return;
+  }
+
+  html;
+   head;
+    title 'Your browser sucks';
+    style type => 'text/css',
+      q|body { background: black }|
+     .q|div  { position: absolute; left: 50%; top: 50%; width: 500px; margin-left: -250px; height: 180px; margin-top: -90px; background-color: #012; border: 1px solid #258; text-align: center; }|
+     .q|p    { color: #ddd; margin: 10px; font: 9pt "Tahoma"; }|
+     .q|h1   { color: #258; font-size: 14pt; font-family: "Futura", "Century New Gothic", "Arial", Serif; font-weight: normal; margin: 10px 0 0 0; } |
+     .q|a    { color: #fff }|;
+   end;
+   body;
+    div;
+     h1 'Oops, we were too lazy to support your browser!';
+     p;
+      lit qq|We decided to stop supporting Internet Explorer 6 and 7, as it's a royal pain in |
+         .qq|the ass to make our site look good in a browser that doesn't want to cooperate with us.<br />|
+         .qq|You can try one of the following free alternatives: |
+         .qq|<a href="http://www.mozilla.com/firefox/">Firefox</a>, |
+         .qq|<a href="http://www.opera.com/">Opera</a>, |
+         .qq|<a href="http://www.apple.com/safari/">Safari</a>, or |
+         .qq|<a href="http://www.google.com/chrome">Chrome</a>.<br /><br />|
+         .qq|If you're really stubborn about using Internet Explorer, upgrading to version 8 will also work.<br /><br />|
+         .qq|...and if you're mad, you can also choose to ignore this warning and |
+         .qq|<a href="/?i-still-want-access=1">open the site anyway</a>.|;
+     end;
+    end;
+   end;
+  end;
+  return 0;
+}
+
+
+1;
 
