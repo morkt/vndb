@@ -10,7 +10,7 @@ use warnings;
 use POE 'Wheel::Run', 'Filter::Stream';
 use Encode 'encode_utf8';
 use XML::Parser;
-use XML::Writer;
+use TUWF::XML;
 use Time::HiRes 'time';
 
 
@@ -147,7 +147,7 @@ sub savegraph {
   # - Remove first <polygon> element (emulates the background color)
   # - Replace stroke and fill attributes with classes (so that coloring is done in CSS)
   my $svg = '';
-  my $w = XML::Writer->new(OUTPUT => \$svg);
+  my $w = TUWF::XML->new(write => sub { $svg .= shift });
   my $p = XML::Parser->new;
   $p->setHandlers(
     Start => sub {
@@ -160,24 +160,21 @@ sub savegraph {
 
       delete @attr{qw|stroke fill xmlns xmlns:xlink|};
       delete $attr{id} if $attr{id} && $attr{id} !~ /^node_[vp]\d+$/;
-      $el eq 'path' || $el eq 'polygon'
-        ? $w->emptyTag("svg:$el", %attr)
-        : $w->startTag("svg:$el", %attr);
+      $w->tag("svg:$el", %attr, $el eq 'path' || $el eq 'polygon' ? undef : ());
     },
     End => sub {
       my($expat, $el) = @_;
       return if $el eq 'title' || $expat->in_element('title');
       return if $el eq 'polygon' && $expat->depth == 2;
-      $w->endTag("svg:$el") if $el ne 'path' && $el ne 'polygon';
+      $w->end("svg:$el") if $el ne 'path' && $el ne 'polygon';
     },
     Char => sub {
       my($expat, $str) = @_;
       return if $expat->in_element('title');
-      $w->characters($str) if $str !~ /^[\s\t\r\n]*$/s;
+      $w->txt($str) if $str !~ /^[\s\t\r\n]*$/s;
     }
   );
   $p->parsestring($_[HEAP]{svg});
-  $w->end();
 
   # save the processed SVG in the database and fetch graph ID
   $_[KERNEL]->post(pg => query => 'INSERT INTO relgraphs (svg) VALUES (?) RETURNING id', [ $svg ], 'finish');

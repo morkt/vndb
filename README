@@ -42,7 +42,6 @@ Requirements
       PerlIO::gzip
     RG:
       XML::Parser
-      XML::Writer
       graphviz           (/usr/bin/dot is used by default)
 
   util/skingen.pl
