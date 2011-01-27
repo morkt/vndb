@@ -178,7 +178,7 @@ sub dbSessionUpdateLastUsed {
 }
 
 
-# %options->{ uid id what results page }
+# %options->{ uid id what results page reverse }
 # what: titles
 sub dbNotifyGet {
   my($s, %o) = @_;
@@ -210,8 +210,8 @@ sub dbNotifyGet {
       FROM notifications n
       !s
       !W
-      ORDER BY n.id
-  |, join(', ', @select), join(' ', @join), \%where);
+      ORDER BY n.id !s
+  |, join(', ', @select), join(' ', @join), \%where, $o{reverse} ? 'DESC' : 'ASC');
   return wantarray ? ($r, $np) : $r;
 }
 

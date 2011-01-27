@@ -5,6 +5,7 @@
 	- Slightly re-organized lang.txt
 	- Fixed perl warning on /u+/votes batchedit with nothing selected
 	- Switched to TUWF
+	- Order "all notifications" with new notifications first
 	- Bugfix: Correctly randomize screenshots on homepage with filters
 	- Bugfix: Don't show NSFW screenshots on homepage with filters
 	- Bugfix-API: Use ~ for the get vn search filter instead of =

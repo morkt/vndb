@@ -586,6 +586,7 @@ sub notifies {
     results => 25,
     what => 'titles',
     read => $f->{r} == 1 ? undef : 0,
+    reverse => $f->{r} == 1,
   );
 
   $self->htmlHeader(title => mt('_usern_title'), noindex => 1);
