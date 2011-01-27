@@ -152,12 +152,7 @@ sub htmlFormPart {
       input type => 'hidden', id => $o{short}, name => $o{short}, value => $frm->{$o{short}}||'', class => 'dateinput';
     }
     if(/text/) {
-      (my $txt = $frm->{$o{short}}||'') =~ s/&/&amp;/;
-      $txt =~ s/</&lt;/;
-      $txt =~ s/>/&gt;/;
-      textarea name => $o{short}, id => $o{short}, rows => $o{rows}||5, cols => $o{cols}||60;
-       lit $txt;
-      end;
+      textarea name => $o{short}, id => $o{short}, rows => $o{rows}||5, cols => $o{cols}||60, $frm->{$o{short}}||'';
     }
    end;
   end;
@@ -232,16 +227,11 @@ sub htmlForm {
         }
 
         # edit summary
-        (my $txt = $options->{frm}{editsum}||'') =~ s/&/&amp;/;
-        $txt =~ s/</&lt;/;
-        $txt =~ s/>/&gt;/;
         h2;
          txt mt '_form_editsum';
          b class => 'standout', ' ('.mt('_inenglish').')';
         end;
-        textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50;
-         lit $txt;
-        end;
+        textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50, $options->{frm}{editsum}||'';
         br;
       }
       input type => 'submit', value => mt('_form_submit'), class => 'submit';
