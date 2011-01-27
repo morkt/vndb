@@ -69,7 +69,7 @@ sub tagpage {
         p mt '_tagp_pending_msg';
        end;
      }
-    end;
+    end 'div';
   }
 
   div class => 'mainbox';
@@ -87,7 +87,7 @@ sub tagpage {
       txt " > $t->{name}";
       br;
     }
-   end;
+   end 'p';
 
    if($t->{description}) {
      p class => 'description';
@@ -101,7 +101,7 @@ sub tagpage {
       lit xml_escape($_).'<br />' for (@{$t->{aliases}});
      end;
    }
-  end;
+  end 'div';
 
   _childtags($self, $t) if @{$t->{childs}};
 
@@ -118,7 +118,7 @@ sub tagpage {
        p; br; br; txt mt '_tagp_novn'; end;
      }
      p; br; txt mt '_tagp_cached'; end;
-    end;
+    end 'div';
     $self->htmlBrowseVN($list, $f, $np, "/g$t->{id}?m=$f->{m}", 1) if @$list;
   }
 
@@ -168,12 +168,12 @@ sub _childtags {
           end;
         }
        end;
-      end;
+      end 'li';
     }
-   end;
+   end 'ul';
    clearfloat;
    br;
-  end;
+  end 'div';
 }
 
 
@@ -325,7 +325,7 @@ sub taglist {
    if(!@$t) {
      p mt '_tagb_noresults';
    }
-  end;
+  end 'div';
   if(@$t) {
     $self->htmlBrowse(
       class    => 'taglist',
@@ -349,7 +349,7 @@ sub taglist {
             b class => 'grayedout', ' '.mt '_tagb_note_del' if $l->{state} == 1;
           }
          end;
-        end;
+        end 'tr';
       }
     );
   }
@@ -424,10 +424,10 @@ sub taglinks {
          a href => "/v$o->{id}", $o->{title};
         end;
       }
-     end;
+     end 'ul';
    }
    p mt '_taglink_fil_add' unless $f->{v} && $f->{u} && $f->{t};
-  end;
+  end 'div';
 
   $self->htmlBrowse(
     class    => 'taglinks',
@@ -546,7 +546,7 @@ sub vntagmod {
      li mt '_tagv_msg_cache';
     end;
    end;
-  end;
+  end 'div';
   $self->htmlForm({ action => "/v$vid/tagmod", nosubmit => 1 }, tagmod => [ mt('_tagv_frm_title'),
     [ hidden => short => 'taglinks', value => '' ],
     [ static => nolabel => 1, content => sub {
@@ -566,7 +566,7 @@ sub vntagmod {
          td class => 'tc_allspoil', mt '_tagv_col_spoiler';
          td class => 'tc_allwho',   '';
         end;
-       end;
+       end 'thead';
        tfoot; Tr;
         td colspan => 6;
          input type => 'submit', class => 'submit', value => mt('_tagv_save'), style => 'float: right';
@@ -577,7 +577,7 @@ sub vntagmod {
           lit mt '_tagv_addmsg';
          end;
         end;
-       end; end;
+       end; end 'tfoot';
        tbody id => 'tagtable';
         for my $t (sort { $a->{name} cmp $b->{name} } @$tags) {
           my $m = (grep $_->{tag} == $t->{id}, @$my)[0] || {};
@@ -603,8 +603,8 @@ sub vntagmod {
            end;
           end;
         }
-       end;
-      end;
+       end 'tbody';
+      end 'table';
     } ],
   ]);
   $self->htmlFooter;
@@ -682,8 +682,8 @@ sub tagindex {
      end;
     end;
 
-   end; # /tr
-  end; # /table
+   end 'tr';
+  end 'table';
   $self->htmlFooter;
 }
 

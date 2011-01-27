@@ -95,7 +95,7 @@ sub htmlMainTabs {
    li !$sel ? (class => 'tabselected') : ();
     a href => "/$id", $id;
    end;
-  end;
+  end 'ul';
 }
 
 
@@ -114,7 +114,7 @@ sub htmlDenied {
       p mt '_denied_noaccess_msg';
     }
    end;
-  end;
+  end 'div';
   $self->htmlFooter;
 }
 
@@ -140,7 +140,7 @@ sub htmlHiddenMessage {
      lit bb2html $editsum;
     end;
    end;
-  end;
+  end 'div';
   return $self->htmlFooter() || 1 if !$self->authCan('del');
   return 0;
 }
@@ -205,9 +205,9 @@ sub htmlRevision {
         [ ilock  => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
         @fields
       );
-     end;
+     end 'table';
    }
-  end;
+  end 'div';
 }
 
 sub revheader { # type, obj
@@ -297,7 +297,7 @@ sub htmlEditMessage {
       p mt '_editmsg_revert_msg', $num;
      end;
    }
-  end;
+  end 'div';
 }
 
 
@@ -347,7 +347,7 @@ sub htmlVoteStats {
        end;
       end;
     }
-   end;
+   end 'table';
 
    my $recent = $self->dbVoteGet(
      $type.'id' => $obj->{id},
@@ -381,7 +381,7 @@ sub htmlVoteStats {
          td $self->{l10n}->date($recent->[$_]{date});
         end;
       }
-     end;
+     end 'table';
    }
 
    clearfloat;
@@ -392,7 +392,7 @@ sub htmlVoteStats {
       p mt '_votestats_rank_rat', $obj->{r_ranking}, sprintf '%.2f', $obj->{c_rating};
      end;
    }
-  end;
+  end 'div';
 }
 
 
@@ -409,7 +409,7 @@ sub htmlSearchBox {
    end;
    input type => 'text', name => 'q', id => 'q', class => 'text', value => $v;
    input type => 'submit', class => 'submit', value => mt '_searchbox_submit';
-  end;
+  end 'fieldset';
 }
 
 

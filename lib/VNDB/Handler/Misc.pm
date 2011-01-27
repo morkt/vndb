@@ -60,7 +60,7 @@ sub homepage {
       end;
     }
    end;
-  end;
+  end 'div';
 
   table class => 'mainbox threelayout';
    Tr;
@@ -82,7 +82,7 @@ sub homepage {
         end;
       }
      end;
-    end;
+    end 'td';
 
     # Announcements
     td;
@@ -100,7 +100,7 @@ sub homepage {
         lit bb2html $post->{msg}, 150;
        end;
      }
-    end;
+    end 'td';
 
     # Recent posts
     td;
@@ -120,9 +120,9 @@ sub homepage {
         end;
       }
      end;
-    end;
+    end 'td';
 
-   end;
+   end 'tr';
    Tr;
 
     # Random visual novels
@@ -138,7 +138,7 @@ sub homepage {
         end;
       }
      end;
-    end;
+    end 'td';
 
     # Upcoming releases
     td;
@@ -158,7 +158,7 @@ sub homepage {
         end;
       }
      end;
-    end;
+    end 'td';
 
     # Just released
     td;
@@ -178,10 +178,10 @@ sub homepage {
         end;
       }
      end;
-    end;
+    end 'td';
 
-   end; # /tr
-  end; # /table
+   end 'tr';
+  end 'table';
 
   $self->htmlFooter;
 }
@@ -273,7 +273,7 @@ sub history {
       a $f->{r}  ? (class => 'optselected') : (), href => $u->(r => 1), mt '_hist_filter_increl';
      end;
    }
-  end;
+  end 'div';
 
   $self->htmlBrowseHist($list, $f, $np, $u->());
   $self->htmlFooter;
@@ -407,7 +407,7 @@ sub opensearch {
    tag 'Url', type => 'application/opensearchdescription+xml', rel => 'self', template => $self->{url}.'/opensearch.xml', undef;
    tag 'Query', role => 'example', searchTerms => 'Tsukihime', undef;
    tag 'moz:SearchForm', $self->{url}.'/v/all';
-  end;
+  end 'OpenSearchDescription';
 }
 
 

@@ -94,7 +94,7 @@ sub page {
       a href => $_->[1], mt "_prodpage_$_->[0]";
       txt ' - ' if $_ ne $links[$#links];
     }
-   end;
+   end 'p';
 
    if(@{$p->{relations}}) {
      my %rel;
@@ -110,7 +110,7 @@ sub page {
         }
         br;
       }
-     end;
+     end 'p';
    }
 
    if($p->{desc}) {
@@ -118,7 +118,7 @@ sub page {
       lit bb2html $p->{desc};
      end;
    }
-  end;
+  end 'div';
 
   _releases($self, $p);
 
@@ -187,11 +187,11 @@ sub _releases {
             txt ' ';
           }
          end;
-        end;
+        end 'tr';
       }
     }
-   end;
-  end;
+   end 'table';
+  end 'div';
 }
 
 
@@ -307,7 +307,7 @@ sub edit {
          a href => '#', mt '_pedit_rel_addbut';
         end;
        end;
-      end;
+      end 'table';
     }],
   ]);
   $self->htmlFooter;
@@ -392,7 +392,7 @@ sub list {
      }
    }
    clearfloat;
-  end;
+  end 'div';
   $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 'b');
   $self->htmlFooter;
 }

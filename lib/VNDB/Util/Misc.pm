@@ -122,7 +122,7 @@ sub ieCheck {
      .q|p    { color: #ddd; margin: 10px; font: 9pt "Tahoma"; }|
      .q|h1   { color: #258; font-size: 14pt; font-family: "Futura", "Century New Gothic", "Arial", Serif; font-weight: normal; margin: 10px 0 0 0; } |
      .q|a    { color: #fff }|;
-   end;
+   end 'head';
    body;
     div;
      h1 'Oops, we were too lazy to support your browser!';
@@ -139,8 +139,8 @@ sub ieCheck {
          .qq|<a href="/?i-still-want-access=1">open the site anyway</a>.|;
      end;
     end;
-   end;
-  end;
+   end 'body';
+  end 'html';
   return 0;
 }
 

@@ -210,7 +210,7 @@ sub votelist {
          option value => -1, 'revoke';
         end;
        end;
-      end;
+      end 'tr';
     }) : (),
   );
   end if $own;
@@ -269,7 +269,7 @@ sub wishlist {
         $_ == -1 ? mt '_wishlist_prio_all' : mt "_wish_$_"
       for (-1, @{$self->{wishlist_status}});
    end;
-  end;
+  end 'div';
 
   if($own) {
     my $code = $self->authGetCode("/u$uid/wish");
@@ -315,7 +315,7 @@ sub wishlist {
       end;
     }) : (),
   );
-  end if $own;
+  end 'form' if $own;
   $self->htmlFooter;
 }
 
@@ -404,7 +404,7 @@ sub vnlist {
     a href => $url->(t => -1), -1 == $f->{t} ? (class => 'optselected') : (), mt '_rlist_all';
     a href => $url->(t => $_), $_ == $f->{t} ? (class => 'optselected') : (), mt '_vnlist_status_'.$_ for @{$self->{vnlist_status}};
    end;
-  end;
+  end 'div';
 
   _vnlist_browse($self, $own, $list, $np, $f, $url, $uid);
   $self->htmlFooter;
@@ -458,7 +458,7 @@ sub _vnlist_browse {
         lit $txt;
        end;
        td class => 'tc8', $i->{vote} || '-';
-      end;
+      end 'tr';
 
       for (@{$i->{rels}}) {
         Tr class => "collapse relhid collapse_vid$i->{vid}".($n%2 ? '':' odd');
@@ -476,7 +476,7 @@ sub _vnlist_browse {
          end;
          td class => 'tc6', $_->{status} ? mt '_rlist_status_'.$_->{status} : '';
          td class => 'tc7_8', colspan => 2, '';
-        end;
+        end 'tr';
       }
     },
 
@@ -505,11 +505,11 @@ sub _vnlist_browse {
         input type => 'submit', value => mt '_rlist_update';
        end;
        td class => 'tc7_8', colspan => 2, mt '_rlist_releasenote';
-      end;
+      end 'tr';
     }) : (),
   );
 
-  end if $own;
+  end 'form' if $own;
 }
 
 1;

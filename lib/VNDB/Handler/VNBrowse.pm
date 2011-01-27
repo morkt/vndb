@@ -64,7 +64,7 @@ sub list {
    end;
    input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
   end;
-  end; # /form
+  end 'form';
 
   $self->htmlBrowseVN($list, $f, $np, "/v/$char?q=$quri;fil=$f->{fil}", $f->{fil} =~ /tag_inc-/);
   $self->htmlFooter(prefs => ['filter_vn']);

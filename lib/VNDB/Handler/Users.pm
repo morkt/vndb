@@ -113,8 +113,8 @@ sub userpage {
       }
      end;
     end;
-   end;
-  end;
+   end 'table';
+  end 'div';
 
   if(!$u->{hide_list} && $votes) {
     div class => 'mainbox';
@@ -534,7 +534,7 @@ sub list {
        td class => 'tc5';
         lit !$l->{c_tags} ? 0 : qq|<a href="/g/links?u=$l->{id}">$l->{c_tags}</a>|;
        end;
-      end;
+      end 'tr';
     },
   );
   $self->htmlFooter;
@@ -633,7 +633,7 @@ sub notifies {
             : 'item_edit'),
             sprintf('<i>%s</i>', xml_escape $l->{c_title}), sprintf('<i>%s</i>', xml_escape $l->{username});
          end;
-        end;
+        end 'tr';
       },
       footer => sub {
         Tr;
@@ -663,7 +663,7 @@ sub notifies {
     input type => 'submit', name => 'set', value => mt '_usern_set_submit';
    end;
   end;
-  end;
+  end 'form';
   $self->htmlFooter;
 }
 

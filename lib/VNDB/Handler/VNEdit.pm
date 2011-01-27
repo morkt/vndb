@@ -195,7 +195,7 @@ sub _form {
          $frm->{img_nsfw} ? (checked => 'checked') : ();
        label class => 'checkbox', for => 'img_nsfw', mt '_vnedit_image_nsfw_check';
        p mt '_vnedit_image_nsfw_msg';
-      end;
+      end 'div';
     }],
   ],
 
@@ -230,7 +230,7 @@ sub _form {
          a href => '#', mt '_vnedit_rel_addbut';
         end;
        end;
-      end;
+      end 'table';
     }],
   ],
 

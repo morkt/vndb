@@ -41,7 +41,7 @@ sub htmlFormError {
       li mt "_formerr_tpl_$rule", $field if $type eq 'template';
     }
    end;
-  end;
+  end 'div';
   end if $mainbox;
 }
 
@@ -155,7 +155,7 @@ sub htmlFormPart {
       textarea name => $o{short}, id => $o{short}, rows => $o{rows}||5, cols => $o{cols}||60, $frm->{$o{short}}||'';
     }
    end;
-  end;
+  end 'tr';
 }
 
 
@@ -190,7 +190,7 @@ sub htmlForm {
      li class => 'left';
       a href => '#all', id => 'jt_sel_all', mt '_form_tab_all';
      end;
-    end;
+    end 'ul';
   }
 
   # form subs
@@ -205,7 +205,7 @@ sub htmlForm {
        $self->htmlFormPart($options->{frm}, $_) for @$parts;
       end;
      end;
-    end;
+    end 'div';
   }
 
   # db mod / edit summary / submit button
@@ -236,10 +236,10 @@ sub htmlForm {
       }
       input type => 'submit', value => mt('_form_submit'), class => 'submit';
      end;
-    end;
+    end 'div';
   }
 
-  end;
+  end 'form';
 }
 
 

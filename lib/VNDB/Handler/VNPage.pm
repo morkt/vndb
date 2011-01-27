@@ -88,7 +88,7 @@ sub page {
          end;
        }
      }
-    end;
+    end 'div'; # /vnimg
 
     # general info
     table;
@@ -147,8 +147,8 @@ sub page {
       end;
      end;
 
-    end;
-   end;
+    end 'table';
+   end 'div';
    clearfloat;
 
    # tags
@@ -172,7 +172,7 @@ sub page {
       }
      end;
    }
-  end;
+  end 'div'; # /mainbox
 
   _releases($self, $v, $r);
   _stats($self, $v);
@@ -273,7 +273,7 @@ sub _producers {
         br;
       }
      end;
-    end;
+    end 'tr';
   }
 }
 
@@ -302,7 +302,7 @@ sub _relations {
      }
     end;
    end;
-  end;
+  end 'tr';
 }
 
 
@@ -337,7 +337,7 @@ sub _anime {
       }
     }
    end;
-  end;
+  end 'tr';
 }
 
 
@@ -381,7 +381,7 @@ sub _useroptions {
       end;
     }
    end;
-  end;
+  end 'tr';
 }
 
 
@@ -448,11 +448,11 @@ sub _releases {
             txt ' ';
           }
          end;
-        end;
+        end 'tr';
       }
     }
-   end;
-  end;
+   end 'table';
+  end 'div';
 }
 
 
@@ -491,7 +491,7 @@ sub _screenshots {
       }
      end;
    }
-  end;
+  end 'div';
 }
 
 

@@ -79,7 +79,7 @@ sub _menu {
       input type => 'submit', class => 'submit', value => 'Search';
      end;
     end;
-   end;
+   end 'div'; # /menubox
 
    div class => 'menubox';
     if($self->authInfo->{id}) {
@@ -121,7 +121,7 @@ sub _menu {
        end;
       end;
     }
-   end;
+   end 'div'; # /menubox
 
    div class => 'menubox';
     h2 mt '_menu_dbstats';
@@ -135,7 +135,7 @@ sub _menu {
      clearfloat;
     end;
    end;
-  end;
+  end 'div'; # /menulist
 }
 
 
@@ -160,7 +160,7 @@ sub htmlFooter { # %options => { prefs => [pref1,..] }
       txt ' | ';
       a href => $self->{source_url}, mt '_footer_source';
      end;
-    end; # /div maincontent
+    end 'div'; # /maincontent
 
     # insert users' preference data when required by JS
     if($o{prefs}) {
@@ -173,8 +173,8 @@ sub htmlFooter { # %options => { prefs => [pref1,..] }
       end;
     }
     script type => 'text/javascript', src => $self->{url_static}.'/f/js/'.$self->{l10n}->language_tag().'.js?'.$self->{version}, '';
-   end; # /body
-  end; # /html
+   end 'body';
+  end 'html';
 
   # write the SQL queries as a HTML comment when debugging is enabled
   if($self->debug) {

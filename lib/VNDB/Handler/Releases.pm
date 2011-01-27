@@ -250,10 +250,10 @@ sub _infotable {
         option value => -1, mt '_relinfo_user_del' if $rl;
        end;
       end;
-     end;
+     end 'tr';
    }
 
-  end;
+  end 'table';
 }
 
 
@@ -456,7 +456,7 @@ sub _form {
         option value => 3, mt '_redit_form_prod_both';
        end; end;
        td class => 'tc_add';  a id => 'producer_add', href => '#', mt '_redit_form_prod_addbut'; end;
-      end; end;
+      end; end 'table';
     }],
   ],
 
@@ -509,7 +509,7 @@ sub browse {
    end;
    input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
   end;
-  end;
+  end 'form';
 
   my $uri = sprintf '/r?q=%s;fil=%s', uri_escape($f->{q}), $f->{fil};
   $self->htmlBrowse(
@@ -541,7 +541,7 @@ sub browse {
         a href => "/r$l->{id}", title => $l->{original}||$l->{title}, shorten $l->{title}, 90;
         b class => 'grayedout', ' (patch)' if $l->{patch};
        end;
-      end;
+      end 'tr';
     },
   ) if @$list;
   if(($f->{q} || $f->{fil}) && !@$list) {

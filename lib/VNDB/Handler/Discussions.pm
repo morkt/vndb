@@ -46,7 +46,7 @@ sub thread {
       end;
     }
    end;
-  end;
+  end 'div';
 
   $self->htmlBrowseNavigate("/t$tid/", $page, [ $t->{count}, 25 ], 't', 1);
   div class => 'mainbox thread';
@@ -82,7 +82,7 @@ sub thread {
       end;
     }
    end;
-  end;
+  end 'div';
   $self->htmlBrowseNavigate("/t$tid/", $page, [ $t->{count}, 25 ], 'b', 1);
 
   if($t->{locked}) {
@@ -105,7 +105,7 @@ sub thread {
        input type => 'submit', value => mt('_thread_quickreply_full'), class => 'submit', name => 'fullreply';
       end;
      end;
-    end;
+    end 'form';
   } elsif(!$self->authCan('board')) {
     div class => 'mainbox';
      h1 mt '_thread_noreply_title';
@@ -319,7 +319,7 @@ sub board {
       a href => '/t/'.($iid ? $type.$iid : $type ne 'ge' ? 'db' : $type).'/new', mt '_disboard_startnew';
     }
    end;
-  end;
+  end 'div';
 
   _threadlist($self, $list, $f, $np, "/t/$type$iid", $type.$iid) if @$list;
 
@@ -400,7 +400,7 @@ sub _threadlist {
          lit $self->{l10n}->date($o->{ldate});
         end;
        end;
-      end;
+      end 'tr';
     }
   );
 }
