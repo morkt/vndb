@@ -34,8 +34,6 @@ Requirements
       DBD::Pg
       POE
       POE::Component::Pg (get it from http://g.blicky.net/poco-pg.git/)
-    Feed:
-      XML::Writer
     IRC:
       POE::Component::IRC
     Image:
