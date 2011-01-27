@@ -4,7 +4,7 @@ package VNDB::Handler::Misc;
 
 use strict;
 use warnings;
-use TUWF ':html', ':xml', 'xml_escape';
+use TUWF ':html', ':xml', 'xml_escape', 'uri_escape';
 use VNDB::Func;
 use POSIX 'strftime';
 

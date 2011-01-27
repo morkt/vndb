@@ -15,7 +15,8 @@ use POE qw|
 |;
 use POE::Component::IRC::Common ':ALL';
 use Time::HiRes 'time';
-use VNDBUtil 'normalize_query', 'uri_escape';
+use VNDBUtil 'normalize_query';
+use TUWF::Misc 'uri_escape';
 
 
 use constant {

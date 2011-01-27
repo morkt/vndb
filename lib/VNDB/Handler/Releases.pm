@@ -3,7 +3,7 @@ package VNDB::Handler::Releases;
 
 use strict;
 use warnings;
-use TUWF ':html';
+use TUWF ':html', 'uri_escape';
 use VNDB::Func;
 
 

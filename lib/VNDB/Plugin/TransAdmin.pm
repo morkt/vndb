@@ -16,7 +16,7 @@ package VNDB::Plugin::TransAdmin;
 
 use strict;
 use warnings;
-use TUWF ':html';
+use TUWF ':html', 'uri_escape';
 use LangFile;
 use VNDB::Func;
 
