@@ -430,22 +430,7 @@ sub htmlRGHeader {
     return 1;
   }
   $self->resHeader('Content-Type' => 'application/xhtml+xml; charset=UTF-8');
-
-  # This is a REALLY ugly hack, need find a proper solution in YAWF
-  # TODO: TUWF has a proper solution for this, convert this to use it
-  no warnings 'redefine';
-  my $sub = \&TUWF::XML::html;
-  *VNDB::Util::LayoutHTML::html = sub {
-     lit q|<!DOCTYPE html PUBLIC
-         "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"
-             "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">|;
-     tag 'html',
-       xmlns         => "http://www.w3.org/1999/xhtml",
-       'xmlns:svg'   => 'http://www.w3.org/2000/svg',
-       'xmlns:xlink' => 'http://www.w3.org/1999/xlink';
-  };
-  $self->htmlHeader(title => $title);
-  *VNDB::Util::LayoutHTML::html = $sub;
+  $self->htmlHeader(title => $title, svg => 1);
   $self->htmlMainTabs($type, $obj, 'rg');
   return 0;
 }

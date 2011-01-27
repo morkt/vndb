@@ -10,13 +10,17 @@ use VNDB::Func;
 our @EXPORT = qw|htmlHeader htmlFooter|;
 
 
-sub htmlHeader { # %options->{ title, noindex, search, feeds }
+sub htmlHeader { # %options->{ title, noindex, search, feeds, svg }
   my($self, %o) = @_;
   my $skin = $self->reqParam('skin') || $self->authPref('skin') || $self->{skin_default};
   $skin = $self->{skin_default} if !$self->{skins}{$skin} || !-d "$VNDB::ROOT/static/s/$skin";
 
   # heading
-  html;
+  html lang => $self->{l10n}->language_tag(), $o{svg} ? (
+    doctype => 'xhtml-math-svg',
+    'xmlns:svg'   => 'http://www.w3.org/2000/svg',
+    'xmlns:xlink' => 'http://www.w3.org/1999/xlink'
+  ) : ();
    head;
     title $o{title};
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
