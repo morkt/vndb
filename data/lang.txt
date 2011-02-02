@@ -6344,6 +6344,13 @@ cs : Plná velikost: [_1]
 hu : Teljes méret: [_1]
 nl : Volledige grootte: [_1]
 
+:_vnedit_scr_nonstandard
+en : WARNING: Odd resolution! Please check whether the image has been cropped correctly.
+ru*:
+cs*:
+hu*:
+nl : WAARSCHUWING: Vreemde resolutie! Controleer a.u.b. of de plaatje goed is gecropped.
+
 :_vnedit_scr_nsfw
 en : This screenshot is NSFW
 ru : Этот скриншот НБДР (NSFW)

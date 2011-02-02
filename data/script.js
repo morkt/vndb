@@ -136,7 +136,8 @@ function addBody(el) {
 function setContent() {
   setText(arguments[0], '');
   for(var i=1; i<arguments.length; i++)
-    arguments[0].appendChild(tag(arguments[i]));
+    if(arguments[i] != null)
+      arguments[0].appendChild(tag(arguments[i]));
 }
 function getText(obj) {
   return obj.textContent || obj.innerText || '';
@@ -1106,6 +1107,19 @@ function scrCheckStatus() {
         )
       );
 
+      // check full resolution with the list of DB-defined resolutions
+      var odd = true;
+      for(var j=0; j<resolutions.length && odd; j++) {
+        if(typeof resolutions[j][1] != 'object') {
+          if(resolutions[j][0] == dim)
+            odd = false;
+        } else {
+          for(var k=1; k<resolutions[j].length; k++)
+            if(resolutions[j][k][1] == dim)
+              odd = false;
+        }
+      }
+
       // content
       var rel = tag('select', {onchange: scrSerialize, 'class':'scr_relsel'});
       for(var j=0; j<scrRel.length; j++)
@@ -1116,6 +1130,7 @@ function scrCheckStatus() {
         ' (', tag('a', {href: '#', onclick:scrDel}, mt('_vnedit_scr_remove')), ')',
         tag('br', null),
         mt('_vnedit_scr_fullsize', dim),
+        odd ? tag('b', {'class':'standout', 'style':'font-weight: bold'}, ' '+mt('_vnedit_scr_nonstandard')) : null,
         tag('br', null),
         tag('br', null),
         tag('input', {type:'checkbox', onclick:scrSerialize, id:nsfwid, name:nsfwid, checked: tr.scr_nsfw>0, 'class':'scr_nsfw'}),
