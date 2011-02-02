@@ -46,6 +46,7 @@ TUWF::set(
   %O,
   pre_request_handler => \&reqinit,
   error_404_handler => \&handle404,
+  log_format => \&logformat,
   # for compatibility with YAWF
   validate_templates => {
     mail       => { regex => qr/^[^@<>]+@[^@.<>]+(?:\.[^@.<>]+)+$/ },
@@ -122,5 +123,14 @@ sub handle404 {
    end;
   end;
   $self->htmlFooter;
+}
+
+
+# log user IDs (necessary for determining performance issues, user preferences
+# have a lot of influence in this)
+sub logformat {
+  my($self, $uri, $msg) = @_;
+  sprintf "[%s] %s %s: %s\n", scalar localtime(), $uri,
+    $self->authInfo->{id} ? 'u'.$self->authInfo->{id} : '-', $msg;
 }
 
