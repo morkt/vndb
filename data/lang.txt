@@ -2453,6 +2453,14 @@ cs : Diskuse pro [_1]
 hu : [_1]-hoz kapcsolódó beszélgetések
 nl : Gerelateerde discussies voor [_1]
 
+# also used on the discussion board index (/t)
+:_disboard_item_all
+en : All boards
+ru*:
+cs*:
+hu*:
+nl : Alle fora
+
 :_disboard_rootlink
 en : Discussion board
 ru : Форум

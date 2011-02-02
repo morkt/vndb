@@ -11,7 +11,7 @@ use VNDB::Func;
 TUWF::register(
   qr{t([1-9]\d*)(?:/([1-9]\d*))?}    => \&thread,
   qr{t([1-9]\d*)\.([1-9]\d*)}        => \&redirect,
-  qr{t/(db|an|ge|[vpu])([1-9]\d*)?}  => \&board,
+  qr{t/(all|db|an|ge|[vpu])([1-9]\d*)?}  => \&board,
   qr{t([1-9]\d*)/reply}              => \&edit,
   qr{t([1-9]\d*)\.([1-9]\d*)/edit}   => \&edit,
   qr{t/(db|an|ge|[vpu])([1-9]\d*)?/new} => \&edit,
@@ -270,7 +270,7 @@ sub edit {
 sub board {
   my($self, $type, $iid) = @_;
   $iid ||= '';
-  return $self->resNotFound if $type =~ /(db|an|ge)/ && $iid;
+  return $self->resNotFound if $type =~ /(db|an|ge|all)/ && $iid;
 
   my $f = $self->formValidate(
     { get => 'p', required => 0, default => 1, template => 'int' },
@@ -283,10 +283,10 @@ sub board {
                    $self->dbVNGet(id => $iid)->[0];
   return $self->resNotFound if $iid && !$obj;
   my $ititle = $obj && ($obj->{title}||$obj->{name}||$obj->{username});
-  my $title = !$obj ? mt("_dboard_$type") : mt '_disboard_item_title', $ititle;
+  my $title = !$obj ? mt($type eq 'all' ? '_disboard_item_all' : "_dboard_$type") : mt '_disboard_item_title', $ititle;
 
   my($list, $np) = $self->dbThreadGet(
-    type => $type,
+    $type ne 'all' ? (type => $type) : (),
     $iid ? (iid => $iid) : (),
     results => 50,
     page => $f->{p},
@@ -302,7 +302,7 @@ sub board {
    p;
     a href => '/t', mt '_disboard_rootlink';
     txt ' > ';
-    a href => "/t/$type", mt "_dboard_$type";
+    a href => "/t/$type", mt $type eq 'all' ? '_disboard_item_all' : "_dboard_$type";
     if($iid) {
       txt ' > ';
       a style => 'font-weight: bold', href => "/t/$type$iid", "$type$iid";
@@ -316,7 +316,7 @@ sub board {
       br; br;
       a href => "/t/$type$iid/new", mt '_disboard_createyourown';
     } else {
-      a href => '/t/'.($iid ? $type.$iid : $type ne 'ge' ? 'db' : $type).'/new', mt '_disboard_startnew';
+      a href => '/t/'.($iid ? $type.$iid : $type ne 'ge' ? 'db' : $type).'/new', mt '_disboard_startnew' if $type ne 'all';
     }
    end;
   end 'div';
@@ -334,6 +334,7 @@ sub index {
   div class => 'mainbox';
    h1 mt '_disindex_title';
    p class => 'browseopts';
+    a href => '/t/all', mt '_disboard_item_all';
     a href => '/t/'.$_, mt "_dboard_$_"
       for (@{$self->{discussion_boards}});
    end;

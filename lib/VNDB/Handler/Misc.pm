@@ -105,7 +105,7 @@ sub homepage {
     # Recent posts
     td;
      h1;
-      a href => '/t', mt '_home_recentposts'; txt ' ';
+      a href => '/t/all', mt '_home_recentposts'; txt ' ';
       a href => '/feeds/posts.atom'; cssicon 'feed', mt '_atom_feed'; end;
      end;
      my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, sort => 'lastpost', reverse => 1, notusers => 1);
