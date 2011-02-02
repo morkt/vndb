@@ -1381,6 +1381,13 @@ cs : čeká na schválení
 hu : moderálásra vár
 nl : ongemodereerd
 
+:_js_ds_tag_nometa
+en : Can't use meta tags here!
+ru : Использование мета-тегов здесь запрещено!
+cs : Zde se nedají použít meta-tagy!
+hu : Itt nem használhatsz meta címkéket!
+nl : Meta tags kunnen hier niet gebruikt worden!
+
 
 # Filter selector
 
@@ -4571,13 +4578,6 @@ ru : Элемент не найден!
 cs : Předmět nenalezen!
 hu : A tárgy nem található!
 nl : Tag niet gevonden!
-
-:_tagv_nometa
-en : Can't use meta tags here!
-ru : Использование мета-тегов здесь запрещено!
-cs : Zde se nedají použít meta-tagy!
-hu : Itt nem használhatsz meta címkéket!
-nl : Meta tags kunnen hier niet gebruikt worden!
 
 :_tagv_double
 en : Tag is already present!

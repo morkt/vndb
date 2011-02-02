@@ -1331,7 +1331,7 @@ function tglAdd() {
     if(items.length < 1)
       return alert(mt('_tagv_notfound'));
     if(items[0].getAttribute('meta') == 'yes')
-      return alert(mt('_tagv_nometa'));
+      return alert(mt('_js_ds_tag_nometa'));
 
     var name = items[0].firstChild.nodeValue;
     var id = items[0].getAttribute('id');
@@ -2058,8 +2058,12 @@ function filFTagInput(name, label) {
       ));
     },
     function(item, obj) {
-      addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue);
-      filSelectField(obj);
+      if(item.getAttribute('meta') == 'yes')
+        alert(mt('_js_ds_tag_nometa'));
+      else {
+        addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue);
+        filSelectField(obj);
+      }
       return '';
     },
     function(o) { filSelectField(o); false }
