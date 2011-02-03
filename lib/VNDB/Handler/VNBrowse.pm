@@ -21,11 +21,11 @@ sub list {
     { get => 'p', required => 0, default => 1, template => 'int' },
     { get => 'q', required => 0, default => '' },
     { get => 'sq', required => 0, default => '' },
-    { get => 'fil',required => 0, default => '' },
+    { get => 'fil',required => 0 },
   );
   return $self->resNotFound if $f->{_err};
   $f->{q} ||= $f->{sq};
-  $f->{fil} = $self->authPref('filter_vn') if !grep $_ eq 'fil', $self->reqParam();
+  $f->{fil} //= $self->authPref('filter_vn');
   my %compat = _fil_compat($self);
 
   return $self->resRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')

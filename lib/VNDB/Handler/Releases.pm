@@ -484,10 +484,10 @@ sub browse {
     { get => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
     { get => 'q',  required => 0, default => '', maxlength => 500 },
     { get => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
-    { get => 'fil',required => 0, default => '' },
+    { get => 'fil',required => 0 },
   );
   return $self->resNotFound if $f->{_err};
-  $f->{fil} = $self->authPref('filter_release') if !grep $_ eq 'fil', $self->reqParam();
+  $f->{fil} //= $self->authPref('filter_release');
 
   my %compat = _fil_compat($self);
   my($list, $np) = !$f->{q} && !$f->{fil} && !keys %compat ? ([], 0) : $self->filFetchDB(release => $f->{fil}, \%compat, {
