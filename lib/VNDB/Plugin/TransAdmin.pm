@@ -42,8 +42,8 @@ sub tladmin {
   $lang ||= '';
   my $intro = $lang =~ s/intro//;
   return $self->resNotFound if $lang && ($lang eq 'en' || !grep $_ eq $lang, $self->{l10n}->languages);
-  my $sect = $self->reqParam('sect')||'';
-  my $doc = $self->reqParam('doc')||'';
+  my $sect = $self->reqGet('sect')||'';
+  my $doc = $self->reqGet('doc')||'';
 
   my $uid = $self->authInfo->{id};
   return $self->htmlDenied if !$uid || !$self->{transadmin}{$uid};
@@ -93,14 +93,14 @@ sub _savelang {
   push @read, $_ while (local $_ = $f->read);
   $f->close;
 
-  my @keys = $self->reqParam;
+  my @keys = $self->reqPost;
   $f = LangFile->new(write => $langfile);
   my $key;
   for my $l (@read) {
     $key = $l->[1] if $l->[0] eq 'key';
     if($l->[0] eq 'tl' && $l->[1] eq $lang && grep $key eq $_, @keys) {
-      $l->[2] = !$self->reqParam("check$key");
-      $l->[3] = $self->reqParam($key);
+      $l->[2] = !$self->reqPost("check$key");
+      $l->[3] = $self->reqPost($key);
       $l->[3] =~ s/\r?\n/\n/g;
       $l->[3] =~ s/\s+$//g;
     }
@@ -224,12 +224,7 @@ sub _section {
      end;
      div style => 'float: left';
       if($multi) {
-        $tl =~ s/&/&amp;/g;
-        $tl =~ s/</&lt;/g;
-        $tl =~ s/>/&gt;/g;
-        textarea name => $key, id => $key, rows => $multi+2, style => 'width: 700px; height: auto; white-space: nowrap; border: none', wrap => 'off';
-         lit $tl;
-        end;
+        textarea name => $key, id => $key, rows => $multi+2, style => 'width: 700px; height: auto; white-space: nowrap; border: none', wrap => 'off', $tl;
       } else {
         input type => 'text', class => 'text', name => $key, id => $key, value => $tl, style => 'width: 700px; border: none';
       }
@@ -256,7 +251,7 @@ sub _savedoc {
   my $en = join '', <$f>;
   close $f;
 
-  my $tl = $self->reqParam('tl');
+  my $tl = $self->reqPost('tl');
   $tl =~ s/\r?\n/\n/g;
 
   return -e $file && unlink $file if $tl eq $en;
@@ -298,10 +293,6 @@ sub _doc {
     $tl = join '', <$f>;
     close $f;
   }
-  $tl =~ s/&/&amp;/g;
-  $tl =~ s/</&lt;/g;
-  $tl =~ s/>/&gt;/g;
-
 
   form action => "/tladmin/$lang?doc=$doc", method => 'POST', 'accept-charset' => 'utf-8';
   div class => 'mainbox';
@@ -320,9 +311,7 @@ sub _doc {
     pre style => 'font: 12px Tahoma; border: none; background: none; margin: 0', $en;
    end;
    textarea name => 'tl', id => 'tl', rows => ($en =~ y/\n//),
-     style => 'border: none; float: left; width: 49%; white-space: nowrap', wrap => 'off';
-    lit $tl;
-   end;
+     style => 'border: none; float: left; width: 49%; white-space: nowrap', wrap => 'off', $tl;
    clearfloat;
    if(_allowed($self, $lang)) {
      br;

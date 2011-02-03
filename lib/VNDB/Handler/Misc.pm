@@ -22,7 +22,7 @@ TUWF::register(
   qr{u([1-9]\d*)/tags}, sub { $_[0]->resRedirect("/g/links?u=$_[1]", 'perm') },
   qr{(.*[^/]+)/+}, sub { $_[0]->resRedirect("/$_[1]", 'perm') },
   qr{([pv])},      sub { $_[0]->resRedirect("/$_[1]/all", 'perm') },
-  qr{v/search},    sub { $_[0]->resRedirect("/v/all?q=".uri_escape($_[0]->reqParam('q')||''), 'perm') },
+  qr{v/search},    sub { $_[0]->resRedirect("/v/all?q=".uri_escape($_[0]->reqGet('q')||''), 'perm') },
   qr{notes},       sub { $_[0]->resRedirect('/d8', 'perm') },
   qr{faq},         sub { $_[0]->resRedirect('/d6', 'perm') },
   qr{v([1-9]\d*)/(?:stats|scr)},

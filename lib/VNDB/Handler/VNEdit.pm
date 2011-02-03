@@ -86,7 +86,7 @@ sub edit {
 
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post')
-        if $vid && !$self->reqParam('img') && $image == $v->{image}
+        if $vid && !$self->reqPost('img') && $image == $v->{image}
           && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
       # perform the edit/add
@@ -123,7 +123,7 @@ sub edit {
 
 sub _uploadimage {
   my($self, $v, $frm) = @_;
-  return $v ? $frm->{previmage} : 0 if $frm->{_err} || !$self->reqParam('img');
+  return $v ? $frm->{previmage} : 0 if $frm->{_err} || !$self->reqPost('img');
 
   # save to temporary location
   my $tmp = sprintf '%s/static/cv/00/tmp.%d.jpg', $VNDB::ROOT, $$*int(rand(1000)+1);

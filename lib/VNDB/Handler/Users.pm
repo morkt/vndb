@@ -338,7 +338,7 @@ sub edit {
   # create the page
   $self->htmlHeader(title => mt('_usere_title'), noindex => 1);
   $self->htmlMainTabs('u', $u, 'edit');
-  if($self->reqParam('d')) {
+  if($self->reqGet('d')) {
     div class => 'mainbox';
      h1 mt '_usere_saved_title';
      div class => 'notice';
@@ -555,7 +555,7 @@ sub notifies {
 
   # changing the notification settings
   my $saved;
-  if($self->reqMethod() eq 'POST' && $self->reqParam('set')) {
+  if($self->reqMethod() eq 'POST' && $self->reqPost('set')) {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
       { post => 'notify_nodbedit', required => 0, default => 1, enum => [0,1] },
