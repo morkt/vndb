@@ -49,7 +49,7 @@ use warnings;
   package VNDB::L10N::en;
   use base 'VNDB::L10N';
   use POSIX 'strftime';
-  use YAWF 'xml_escape';
+  use TUWF::XML 'xml_escape';
   our %Lexicon;
 
   sub quant {

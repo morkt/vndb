@@ -3,11 +3,11 @@ package VNDB::Handler::Releases;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use TUWF ':html', 'uri_escape';
 use VNDB::Func;
 
 
-YAWF::register(
+TUWF::register(
   qr{r([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
   qr{(v)([1-9]\d*)/add}            => \&edit,
   qr{r}                            => \&browse,
@@ -24,7 +24,7 @@ sub page {
     what => 'vn extended producers platforms media'.($rev ? ' changes' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
-  return 404 if !$r->{id};
+  return $self->resNotFound if !$r->{id};
 
   $self->htmlHeader(title => $r->{title}, noindex => $rev);
   $self->htmlMainTabs('r', $r);
@@ -250,10 +250,10 @@ sub _infotable {
         option value => -1, mt '_relinfo_user_del' if $rl;
        end;
       end;
-     end;
+     end 'tr';
    }
 
-  end;
+  end 'table';
 }
 
 
@@ -272,11 +272,11 @@ sub edit {
   }
 
   my $r = $rid && $self->dbReleaseGet(id => $rid, what => 'vn extended producers platforms media changes', $rev ? (rev => $rev) : ())->[0];
-  return 404 if $rid && !$r->{id};
+  return $self->resNotFound if $rid && !$r->{id};
   $rev = undef if !$r || $r->{cid} == $r->{latest};
 
   my $v = $vid && $self->dbVNGet(id => $vid)->[0];
-  return 404 if $vid && !$v->{id};
+  return $self->resNotFound if $vid && !$v->{id};
 
   return $self->htmlDenied if !$self->authCan('edit')
     || $rid && ($r->{locked} && !$self->authCan('lock') || $r->{hidden} && !$self->authCan('del'));
@@ -298,31 +298,31 @@ sub edit {
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
-      { name => 'type',      enum => $self->{release_types} },
-      { name => 'patch',     required => 0, default => 0 },
-      { name => 'freeware',  required => 0, default => 0 },
-      { name => 'doujin',    required => 0, default => 0 },
-      { name => 'title',     maxlength => 250 },
-      { name => 'original',  required => 0, default => '', maxlength => 250 },
-      { name => 'gtin',      required => 0, default => '0',
+      { post => 'type',      enum => $self->{release_types} },
+      { post => 'patch',     required => 0, default => 0 },
+      { post => 'freeware',  required => 0, default => 0 },
+      { post => 'doujin',    required => 0, default => 0 },
+      { post => 'title',     maxlength => 250 },
+      { post => 'original',  required => 0, default => '', maxlength => 250 },
+      { post => 'gtin',      required => 0, default => '0',
         func => [ \&gtintype, 'Not a valid JAN/UPC/EAN code' ] },
-      { name => 'catalog',   required => 0, default => '', maxlength => 50 },
-      { name => 'languages', multi => 1, enum => $self->{languages} },
-      { name => 'website',   required => 0, default => '', maxlength => 250, template => 'url' },
-      { name => 'released',  required => 0, default => 0, template => 'int' },
-      { name => 'minage' ,   required => 0, default => -1, enum => $self->{age_ratings} },
-      { name => 'notes',     required => 0, default => '', maxlength => 10240 },
-      { name => 'platforms', required => 0, default => '', multi => 1, enum => $self->{platforms} },
-      { name => 'media',     required => 0, default => '' },
-      { name => 'resolution',required => 0, default => 0, enum => [ 0..$#{$self->{resolutions}} ] },
-      { name => 'voiced',    required => 0, default => 0, enum => $self->{voiced} },
-      { name => 'ani_story', required => 0, default => 0, enum => $self->{animated} },
-      { name => 'ani_ero',   required => 0, default => 0, enum => $self->{animated} },
-      { name => 'producers', required => 0, default => '' },
-      { name => 'vn',        maxlength => 5000 },
-      { name => 'editsum',   required  => 0, maxlength => 5000 },
-      { name => 'ihid',      required  => 0 },
-      { name => 'ilock',     required  => 0 },
+      { post => 'catalog',   required => 0, default => '', maxlength => 50 },
+      { post => 'languages', multi => 1, enum => $self->{languages} },
+      { post => 'website',   required => 0, default => '', maxlength => 250, template => 'url' },
+      { post => 'released',  required => 0, default => 0, template => 'int' },
+      { post => 'minage' ,   required => 0, default => -1, enum => $self->{age_ratings} },
+      { post => 'notes',     required => 0, default => '', maxlength => 10240 },
+      { post => 'platforms', required => 0, default => '', multi => 1, enum => $self->{platforms} },
+      { post => 'media',     required => 0, default => '' },
+      { post => 'resolution',required => 0, default => 0, enum => [ 0..$#{$self->{resolutions}} ] },
+      { post => 'voiced',    required => 0, default => 0, enum => $self->{voiced} },
+      { post => 'ani_story', required => 0, default => 0, enum => $self->{animated} },
+      { post => 'ani_ero',   required => 0, default => 0, enum => $self->{animated} },
+      { post => 'producers', required => 0, default => '' },
+      { post => 'vn',        maxlength => 5000 },
+      { post => 'editsum',   required  => 0, maxlength => 5000 },
+      { post => 'ihid',      required  => 0 },
+      { post => 'ilock',     required  => 0 },
     );
 
     push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{notes});
@@ -456,7 +456,7 @@ sub _form {
         option value => 3, mt '_redit_form_prod_both';
        end; end;
        td class => 'tc_add';  a id => 'producer_add', href => '#', mt '_redit_form_prod_addbut'; end;
-      end; end;
+      end; end 'table';
     }],
   ],
 
@@ -480,14 +480,14 @@ sub browse {
   my $self = shift;
 
   my $f = $self->formValidate(
-    { name => 'p',  required => 0, default => 1, template => 'int' },
-    { name => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
-    { name => 'q',  required => 0, default => '', maxlength => 500 },
-    { name => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
-    { name => 'fil',required => 0, default => '' },
+    { get => 'p',  required => 0, default => 1, template => 'int' },
+    { get => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
+    { get => 'q',  required => 0, default => '', maxlength => 500 },
+    { get => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
+    { get => 'fil',required => 0 },
   );
-  return 404 if $f->{_err};
-  $f->{fil} = $self->authPref('filter_release') if !grep $_ eq 'fil', $self->reqParam();
+  return $self->resNotFound if $f->{_err};
+  $f->{fil} //= $self->authPref('filter_release');
 
   my %compat = _fil_compat($self);
   my($list, $np) = !$f->{q} && !$f->{fil} && !keys %compat ? ([], 0) : $self->filFetchDB(release => $f->{fil}, \%compat, {
@@ -505,11 +505,11 @@ sub browse {
    h1 mt '_rbrowse_title';
    $self->htmlSearchBox('r', $f->{q});
    a id => 'filselect', href => '#r';
-    lit '<i>&#9656;</i> '.mt('_rbrowse_filters').'<i></i>';
+    lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
    end;
    input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
   end;
-  end;
+  end 'form';
 
   my $uri = sprintf '/r?q=%s;fil=%s', uri_escape($f->{q}), $f->{fil};
   $self->htmlBrowse(
@@ -541,7 +541,7 @@ sub browse {
         a href => "/r$l->{id}", title => $l->{original}||$l->{title}, shorten $l->{title}, 90;
         b class => 'grayedout', ' (patch)' if $l->{patch};
        end;
-      end;
+      end 'tr';
     },
   ) if @$list;
   if(($f->{q} || $f->{fil}) && !@$list) {
@@ -561,18 +561,18 @@ sub _fil_compat {
   my $self = shift;
   my %c;
   my $f = $self->formValidate(
-    { name => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
-    { name => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
-    { name => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
-    { name => 'tp', required => 0, default => '', enum => [ '', @{$self->{release_types}} ] },
-    { name => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
-    { name => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
-    { name => 'do', required => 0, default => 0, enum => [ 0..2 ] },
-    { name => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
-    { name => 'ma_a', required => 0, default => 0, enum => $self->{age_ratings} },
-    { name => 'mi', required => 0, default => 0, template => 'int' },
-    { name => 'ma', required => 0, default => 99999999, template => 'int' },
-    { name => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
+    { get => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
+    { get => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
+    { get => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
+    { get => 'tp', required => 0, default => '', enum => [ '', @{$self->{release_types}} ] },
+    { get => 'pa', required => 0, default => 0, enum => [ 0..2 ] },
+    { get => 'fw', required => 0, default => 0, enum => [ 0..2 ] },
+    { get => 'do', required => 0, default => 0, enum => [ 0..2 ] },
+    { get => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
+    { get => 'ma_a', required => 0, default => 0, enum => $self->{age_ratings} },
+    { get => 'mi', required => 0, default => 0, template => 'int' },
+    { get => 'ma', required => 0, default => 99999999, template => 'int' },
+    { get => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
   );
   return () if $f->{_err};
   $c{minage} = [ grep $_ >= 0 && ($f->{ma_m} ? $f->{ma_a} >= $_ : $f->{ma_a} <= $_), @{$self->{age_ratings}} ] if $f->{ma_a} || $f->{ma_m};

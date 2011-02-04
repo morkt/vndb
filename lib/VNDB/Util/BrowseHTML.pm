@@ -3,7 +3,7 @@ package VNDB::Util::BrowseHTML;
 
 use strict;
 use warnings;
-use YAWF ':html', 'xml_escape';
+use TUWF ':html', 'xml_escape';
 use Exporter 'import';
 use VNDB::Func;
 use POSIX 'ceil';
@@ -62,7 +62,7 @@ sub htmlBrowse {
         }
       }
      end;
-    end;
+    end 'thead';
 
    # footer
     if($opt{footer}) {
@@ -75,8 +75,8 @@ sub htmlBrowse {
     $opt{row}->($self, $_+1, $opt{items}[$_])
       for 0..$#{$opt{items}};
 
-   end;
-  end;
+   end 'table';
+  end 'div';
 
   # bottom navigation
   $self->htmlBrowseNavigate($opt{pageurl}, $opt{options}{p}, $opt{nextpage}, 'b');
@@ -117,7 +117,7 @@ sub htmlBrowseNavigate {
    $l > $nc+1 and $ell->(0);
    $l > $_    and $tab->(0, $p+$_, $p+$_) for (reverse 2..($nc>$l-2?$l-2:$nc-1));
    $l > 1     and $tab->(0, $p+1, mt('_browse_next').' &rsaquo;');
-  end;
+  end 'ul';
 }
 
 
@@ -154,7 +154,7 @@ sub htmlBrowseHist {
         a href => $revurl, title => $i->{ioriginal}, shorten $i->{ititle}, 80;
         b class => 'grayedout'; lit bb2html $i->{comments}, 150; end;
        end;
-      end;
+      end 'tr';
     },
   );
 }
@@ -205,7 +205,7 @@ sub htmlBrowseVN {
         txt sprintf '%.2f', $l->{c_rating}||0;
         b class => 'grayedout', sprintf ' (%d)', $l->{c_votecount};
        end;
-      end;
+      end 'tr';
     },
   );
 }

@@ -13,7 +13,6 @@ BEGIN { ($ROOT = abs_path $0) =~ s{/util/jsgen\.pl$}{}; }
 require $ROOT.'/data/global.pl';
 
 use lib "$ROOT/lib";
-use lib "$ROOT/yawf/lib";
 use LangFile;
 
 # The VNDB::L10N module is not really suited to be used outside the VNDB::*

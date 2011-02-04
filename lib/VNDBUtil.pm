@@ -8,7 +8,7 @@ use Exporter 'import';
 use Encode 'encode_utf8';
 use Unicode::Normalize 'NFKD';
 
-our @EXPORT = qw|shorten bb2html gtintype normalize normalize_titles normalize_query imgsize uri_escape|;
+our @EXPORT = qw|shorten bb2html gtintype normalize normalize_titles normalize_query imgsize|;
 
 
 sub shorten {
@@ -239,15 +239,6 @@ sub imgsize {
     $oh = $sh;
   }
   return (int $ow, int $oh);
-}
-
-
-# Same as URI::Escape::uri_escape_utf8(), only simpler and doesn't add extra
-# dependencies
-sub uri_escape {
-  local $_ = encode_utf8 shift;
-  s/([^A-Za-z0-9._~-])/sprintf '%%%02X', ord $1/eg;
-  return $_;
 }
 
 

@@ -9,6 +9,11 @@ our %O = (
   db_login  => [ 'dbi:Pg:dbname=vndb', 'vndb', 'passwd' ],
   debug     => 1,
   logfile   => $ROOT.'/data/log/vndb.log',
+  cookie_prefix   => 'vndb_',
+  cookie_defaults => {
+    domain => '.vndb.org',
+    path   => '/',
+  },
 );
 
 
@@ -18,8 +23,6 @@ our %S = (%S,
   url             => 'http://vndb.org',
   url_static      => 'http://s.vndb.org',
   skin_default    => 'angel',
-  cookie_domain   => '.vndb.org',
-  cookie_prefix   => 'vndb_',
   global_salt     => 'any-private-string-here',
   form_salt       => 'a-different-private-string-here',
   regen_static    => 0,

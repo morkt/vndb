@@ -3,11 +3,11 @@ package VNDB::Handler::Producers;
 
 use strict;
 use warnings;
-use YAWF ':html', ':xml', 'xml_escape';
+use TUWF ':html', ':xml', 'xml_escape', 'html_escape';
 use VNDB::Func;
 
 
-YAWF::register(
+TUWF::register(
   qr{p([1-9]\d*)/rg}               => \&rg,
   qr{p([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
   qr{p(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit|/new)}
@@ -21,7 +21,7 @@ sub rg {
   my($self, $pid) = @_;
 
   my $p = $self->dbProducerGet(id => $pid, what => 'relgraph')->[0];
-  return 404 if !$p->{id} || !$p->{rgraph};
+  return $self->resNotFound if !$p->{id} || !$p->{rgraph};
 
   my $title = mt '_prodrg_title', $p->{name};
   return if $self->htmlRGHeader($title, 'p', $p);
@@ -40,6 +40,7 @@ sub rg {
   $self->htmlFooter;
 }
 
+
 sub page {
   my($self, $pid, $rev) = @_;
 
@@ -48,7 +49,7 @@ sub page {
     what => 'extended relations'.($rev ? ' changes' : ''),
     $rev ? ( rev => $rev ) : ()
   )->[0];
-  return 404 if !$p->{id};
+  return $self->resNotFound if !$p->{id};
 
   $self->htmlHeader(title => $p->{name}, noindex => $rev);
   $self->htmlMainTabs(p => $p);
@@ -82,34 +83,34 @@ sub page {
    h2 class => 'alttitle', $p->{original} if $p->{original};
    p class => 'center';
     txt mt '_prodpage_langtype', mt("_lang_$p->{lang}"), mt "_ptype_$p->{type}";
-    txt "\n".mt '_prodpage_aliases', $p->{alias} if $p->{alias};
+    lit '<br />'.html_escape mt '_prodpage_aliases', $p->{alias} if $p->{alias};
 
     my @links = (
       $p->{website} ? [ 'homepage',  $p->{website} ] : (),
       $p->{l_wp}    ? [ 'wikipedia', "http://en.wikipedia.org/wiki/$p->{l_wp}" ] : (),
     );
-    txt "\n" if @links;
+    br if @links;
     for(@links) {
       a href => $_->[1], mt "_prodpage_$_->[0]";
       txt ' - ' if $_ ne $links[$#links];
     }
-   end;
+   end 'p';
 
    if(@{$p->{relations}}) {
      my %rel;
      push @{$rel{$_->{relation}}}, $_
        for (sort { $a->{name} cmp $b->{name} } @{$p->{relations}});
      p class => 'center';
-      txt "\n";
+      br;
       for my $r (sort { $self->{prod_relations}{$a}[0] <=> $self->{prod_relations}{$b}[0] } keys %rel) {
         txt mt("_prodrel_$r").': ';
         for (@{$rel{$r}}) {
           a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 40;
           txt ', ' if $_ ne $rel{$r}[$#{$rel{$r}}];
         }
-        txt "\n";
+        br;
       }
-     end;
+     end 'p';
    }
 
    if($p->{desc}) {
@@ -117,7 +118,7 @@ sub page {
       lit bb2html $p->{desc};
      end;
    }
-  end;
+  end 'div';
 
   _releases($self, $p);
 
@@ -186,11 +187,11 @@ sub _releases {
             txt ' ';
           }
          end;
-        end;
+        end 'tr';
       }
     }
-   end;
-  end;
+   end 'table';
+  end 'div';
 }
 
 
@@ -200,7 +201,7 @@ sub edit {
   my($self, $pid, $rev) = @_;
 
   my $p = $pid && $self->dbProducerGet(id => $pid, what => 'changes extended relations', $rev ? (rev => $rev) : ())->[0];
-  return 404 if $pid && !$p->{id};
+  return $self->resNotFound if $pid && !$p->{id};
   $rev = undef if !$p || $p->{cid} == $p->{latest};
 
   return $self->htmlDenied if !$self->authCan('edit')
@@ -216,18 +217,18 @@ sub edit {
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
-      { name => 'type',          enum      => $self->{producer_types} },
-      { name => 'name',          maxlength => 200 },
-      { name => 'original',      required  => 0, maxlength => 200,  default => '' },
-      { name => 'alias',         required  => 0, maxlength => 500,  default => '' },
-      { name => 'lang',          enum      => $self->{languages} },
-      { name => 'website',       required  => 0, maxlength => 250,  default => '', template => 'url' },
-      { name => 'l_wp',          required  => 0, maxlength => 150,  default => '' },
-      { name => 'desc',          required  => 0, maxlength => 5000, default => '' },
-      { name => 'prodrelations', required  => 0, maxlength => 5000, default => '' },
-      { name => 'editsum',       required  => 0, maxlength => 5000 },
-      { name => 'ihid',          required  => 0 },
-      { name => 'ilock',         required  => 0 },
+      { post => 'type',          enum      => $self->{producer_types} },
+      { post => 'name',          maxlength => 200 },
+      { post => 'original',      required  => 0, maxlength => 200,  default => '' },
+      { post => 'alias',         required  => 0, maxlength => 500,  default => '' },
+      { post => 'lang',          enum      => $self->{languages} },
+      { post => 'website',       required  => 0, maxlength => 250,  default => '', template => 'url' },
+      { post => 'l_wp',          required  => 0, maxlength => 150,  default => '' },
+      { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
+      { post => 'prodrelations', required  => 0, maxlength => 5000, default => '' },
+      { post => 'editsum',       required  => 0, maxlength => 5000 },
+      { post => 'ihid',          required  => 0 },
+      { post => 'ilock',         required  => 0 },
     );
     push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
     if(!$frm->{_err}) {
@@ -306,7 +307,7 @@ sub edit {
          a href => '#', mt '_pedit_rel_addbut';
         end;
        end;
-      end;
+      end 'table';
     }],
   ]);
   $self->htmlFooter;
@@ -344,10 +345,10 @@ sub list {
   my($self, $char) = @_;
 
   my $f = $self->formValidate(
-    { name => 'p', required => 0, default => 1, template => 'int' },
-    { name => 'q', required => 0, default => '' },
+    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'q', required => 0, default => '' },
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   my($list, $np) = $self->dbProducerGet(
     $char ne 'all' ? ( char => $char ) : (),
@@ -391,7 +392,7 @@ sub list {
      }
    }
    clearfloat;
-  end;
+  end 'div';
   $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 'b');
   $self->htmlFooter;
 }
@@ -401,8 +402,8 @@ sub list {
 sub pxml {
   my $self = shift;
 
-  my $q = $self->formValidate({ name => 'q', maxlength => 500 });
-  return 404 if $q->{_err};
+  my $q = $self->formValidate({ get => 'q', maxlength => 500 });
+  return $self->resNotFound if $q->{_err};
   $q = $q->{q};
 
   my($list, $np) = $self->dbProducerGet(

@@ -1,6 +1,18 @@
-2.17 - ?
+2.18 -
+
+2.17 - 2011-02-04
+	- Allow moderators to overrule VN tag votes
+	- Added 'released' release filter
+	- Changed order of the filter action buttons
+	- Slightly re-organized lang.txt
 	- Fixed perl warning on /u+/votes batchedit with nothing selected
 	- Don't update the 'date' when changing a VN vote
+	- Switched to TUWF
+	- Order "all notifications" with new notifications first
+	- Added /t/all - a listing of all recently replied to threads
+	- Added error message when selected meta tags on VN filters
+	- Display warning for non-standard resolutions of uploaded screenshots
+	- Don't save uploaded image to a temporary location before checks
 	- Bugfix: Correctly randomize screenshots on homepage with filters
 	- Bugfix: Don't show NSFW screenshots on homepage with filters
 	- Bugfix-API: Use ~ for the get vn search filter instead of =

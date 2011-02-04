@@ -3,20 +3,24 @@ package VNDB::Util::LayoutHTML;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use TUWF ':html';
 use Exporter 'import';
 use VNDB::Func;
 
 our @EXPORT = qw|htmlHeader htmlFooter|;
 
 
-sub htmlHeader { # %options->{ title, noindex, search, feeds }
+sub htmlHeader { # %options->{ title, noindex, search, feeds, svg }
   my($self, %o) = @_;
-  my $skin = $self->reqParam('skin') || $self->authPref('skin') || $self->{skin_default};
+  my $skin = $self->reqGet('skin') || $self->authPref('skin') || $self->{skin_default};
   $skin = $self->{skin_default} if !$self->{skins}{$skin} || !-d "$VNDB::ROOT/static/s/$skin";
 
   # heading
-  html;
+  html lang => $self->{l10n}->language_tag(), $o{svg} ? (
+    doctype => 'xhtml-math-svg',
+    'xmlns:svg'   => 'http://www.w3.org/2000/svg',
+    'xmlns:xlink' => 'http://www.w3.org/1999/xlink'
+  ) : ();
    head;
     title $o{title};
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
@@ -75,7 +79,7 @@ sub _menu {
       input type => 'submit', class => 'submit', value => 'Search';
      end;
     end;
-   end;
+   end 'div'; # /menubox
 
    div class => 'menubox';
     if($self->authInfo->{id}) {
@@ -117,7 +121,7 @@ sub _menu {
        end;
       end;
     }
-   end;
+   end 'div'; # /menubox
 
    div class => 'menubox';
     h2 mt '_menu_dbstats';
@@ -131,7 +135,7 @@ sub _menu {
      clearfloat;
     end;
    end;
-  end;
+  end 'div'; # /menulist
 }
 
 
@@ -143,7 +147,8 @@ sub htmlFooter { # %options => { prefs => [pref1,..] }
       if($q && $q->{vid}) {
         lit '"';
         a href => "/v$q->{vid}", style => 'text-decoration: none', $q->{quote};
-        txt qq|"\n|;
+        txt '"';
+        br;
       }
 
       txt "vndb $self->{version} | ";
@@ -155,7 +160,7 @@ sub htmlFooter { # %options => { prefs => [pref1,..] }
       txt ' | ';
       a href => $self->{source_url}, mt '_footer_source';
      end;
-    end; # /div maincontent
+    end 'div'; # /maincontent
 
     # insert users' preference data when required by JS
     if($o{prefs}) {
@@ -168,13 +173,13 @@ sub htmlFooter { # %options => { prefs => [pref1,..] }
       end;
     }
     script type => 'text/javascript', src => $self->{url_static}.'/f/js/'.$self->{l10n}->language_tag().'.js?'.$self->{version}, '';
-   end; # /body
-  end; # /html
+   end 'body';
+  end 'html';
 
   # write the SQL queries as a HTML comment when debugging is enabled
   if($self->debug) {
     lit "\n<!--\n SQL Queries:\n";
-    for (@{$self->{_YAWF}{DB}{queries}}) {
+    for (@{$self->{_TUWF}{DB}{queries}}) {
       my $q = !ref $_->[0] ? $_->[0] :
         $_->[0][0].(exists $_->[0][1] ? ' | "'.join('", "', map defined()?$_:'NULL', @{$_->[0]}[1..$#{$_->[0]}]).'"' : '');
       $q =~ s/^\s//g;

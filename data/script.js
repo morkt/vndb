@@ -136,7 +136,8 @@ function addBody(el) {
 function setContent() {
   setText(arguments[0], '');
   for(var i=1; i<arguments.length; i++)
-    arguments[0].appendChild(tag(arguments[i]));
+    if(arguments[i] != null)
+      arguments[0].appendChild(tag(arguments[i]));
 }
 function getText(obj) {
   return obj.textContent || obj.innerText || '';
@@ -216,7 +217,7 @@ function ivInit() {
       tag('b', {id:'ivimg'}, ''),
       tag('br', null),
       tag('a', {href:'#', id:'ivfull'}, ''),
-      tag('a', {href:'#', onclick: ivClose, id:'ivclose'}, mt('_js_iv_close')),
+      tag('a', {href:'#', onclick: ivClose, id:'ivclose'}, mt('_js_close')),
       tag('a', {href:'#', onclick: ivView, id:'ivprev'}, '« '+mt('_js_iv_prev')),
       tag('a', {href:'#', onclick: ivView, id:'ivnext'}, mt('_js_iv_next')+' »')
     ));
@@ -1106,6 +1107,19 @@ function scrCheckStatus() {
         )
       );
 
+      // check full resolution with the list of DB-defined resolutions
+      var odd = true;
+      for(var j=0; j<resolutions.length && odd; j++) {
+        if(typeof resolutions[j][1] != 'object') {
+          if(resolutions[j][0] == dim)
+            odd = false;
+        } else {
+          for(var k=1; k<resolutions[j].length; k++)
+            if(resolutions[j][k][1] == dim)
+              odd = false;
+        }
+      }
+
       // content
       var rel = tag('select', {onchange: scrSerialize, 'class':'scr_relsel'});
       for(var j=0; j<scrRel.length; j++)
@@ -1116,6 +1130,7 @@ function scrCheckStatus() {
         ' (', tag('a', {href: '#', onclick:scrDel}, mt('_vnedit_scr_remove')), ')',
         tag('br', null),
         mt('_vnedit_scr_fullsize', dim),
+        odd ? tag('b', {'class':'standout', 'style':'font-weight: bold'}, ' '+mt('_vnedit_scr_nonstandard')) : null,
         tag('br', null),
         tag('br', null),
         tag('input', {type:'checkbox', onclick:scrSerialize, id:nsfwid, name:nsfwid, checked: tr.scr_nsfw>0, 'class':'scr_nsfw'}),
@@ -1331,7 +1346,7 @@ function tglAdd() {
     if(items.length < 1)
       return alert(mt('_tagv_notfound'));
     if(items[0].getAttribute('meta') == 'yes')
-      return alert(mt('_tagv_nometa'));
+      return alert(mt('_js_ds_tag_nometa'));
 
     var name = items[0].firstChild.nodeValue;
     var id = items[0].getAttribute('id');
@@ -1344,9 +1359,13 @@ function tglAdd() {
     ddInit(spoil, 'tagmod', tglSpoilDD);
     spoil.onclick = tglSpoilNext;
 
+    var ismod = byClass(byId('tagtable').parentNode, 'td', 'tc_myover').length;
+
     byId('tagtable').appendChild(tag('tr', {id:'tgl_'+id},
       tag('td', {'class':'tc_tagname'}, tag('a', {href:'/g'+id}, name)),
-      vote, spoil,
+      vote,
+      ismod ? tag('td', {'class':'tc_myover'}, ' ') : null,
+      spoil,
       tag('td', {'class':'tc_allvote'}, ' '),
       tag('td', {'class':'tc_allspoil'}, ' '),
       tag('td', {'class':'tc_allwho'}, '')
@@ -1779,23 +1798,22 @@ function filLoad() {
     fil_cats[i] = a;
   }
 
-  // TODO: _rbrowse_ -> generalize (this isn't specific to the release browser)
   addBody(tag('div', { id: 'fil_div', 'class':'hidden' },
-    tag('a', {href:'#', onclick:filShow, 'class':'close'}, mt('_rbrowse_close')),
+    tag('a', {href:'#', onclick:filShow, 'class':'close'}, mt('_js_close')),
     tag('h3', l[0]),
     p,
     tag('b', {'class':'ruler'}, null),
     c,
     tag('b', {'class':'ruler'}, null),
-    PREF_CODE != '' ? tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_filsave'), onclick:filSaveDefault }) : null,
-    tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_apply'), onclick:function () {
+    tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_apply'), onclick:function () {
       var f = byId('fil');
       while(f.nodeName.toLowerCase() != 'form')
         f = f.parentNode;
       f.submit();
     }}),
-    tag('input', {type:'button', 'class':'submit', value: mt('_rbrowse_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} }),
-    tag('p', {id:'fil_savenote', 'class':'hidden'}, mt('_rbrowse_savenote'))
+    tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} }),
+    PREF_CODE != '' ? tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_save'), onclick:filSaveDefault }) : null,
+    tag('p', {id:'fil_savenote', 'class':'hidden'}, '')
   ));
   filSelectCat(1);
   byId('filselect').onclick = filShow;
@@ -1804,12 +1822,13 @@ function filLoad() {
 
 function filSaveDefault() {
   var but = this;
-  but.value = mt('_js_loading');
+  var note = byId('fil_savenote');
+  setText(note, mt('_js_loading'));
   but.enabled = false;
   setClass(byId('fil_savenote'), 'hidden', false);
   var type = byId('filselect').href.match(/#r$/) ? 'release' : 'vn';
   ajax('/xml/prefs.xml?formcode='+PREF_CODE+';key=filter_'+type+';value='+byId('fil').value, function (hr) {
-    but.value = mt('_rbrowse_filsave');
+    setText(note, mt('_js_fil_savenote'));
     but.enable = true;
   });
 }
@@ -1947,7 +1966,7 @@ function filFSelect(c, n, lines, opts) {
       s.appendChild(g);
     }
   }
-  return [ c, lines > 1 ? [ n, mt('_rbrowse_boolor') ] : n, s,
+  return [ c, lines > 1 ? [ n, mt('_js_fil_boolor') ] : n, s,
     function (c) {
       var l = [];
       for(var i=0; i<c.options.length; i++)
@@ -2054,8 +2073,12 @@ function filFTagInput(name, label) {
       ));
     },
     function(item, obj) {
-      addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue);
-      filSelectField(obj);
+      if(item.getAttribute('meta') == 'yes')
+        alert(mt('_js_ds_tag_nometa'));
+      else {
+        addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue);
+        filSelectField(obj);
+      }
       return '';
     },
     function(o) { filSelectField(o); false }
@@ -2104,7 +2127,8 @@ function filReleases() {
       filFOptions('freeware', mt('_rbrowse_freeware'),[ [1, mt('_rbrowse_freeware_yes')], [0, mt('_rbrowse_freeware_no')] ]),
       filFOptions('doujin',   mt('_rbrowse_doujin'),  [ [1, mt('_rbrowse_doujin_yes')],   [0, mt('_rbrowse_doujin_no')] ]),
       [ 'date_after',  mt('_rbrowse_dateafter'),  dateLoad(null, filSelectField), function (c) { return [c.date_val] }, dateSet ],
-      [ 'date_before', mt('_rbrowse_datebefore'), dateLoad(null, filSelectField), function (c) { return [c.date_val] }, dateSet ]
+      [ 'date_before', mt('_rbrowse_datebefore'), dateLoad(null, filSelectField), function (c) { return [c.date_val] }, dateSet ],
+      filFOptions('released', mt('_rbrowse_released'),[ [1, mt('_rbrowse_released_yes')], [0, mt('_rbrowse_released_no')] ])
     ],
     [ mt('_rbrowse_minage'),     filFSelect('minage',     mt('_rbrowse_minage'),     15, ages) ],
     [ mt('_rbrowse_language'),   filFSelect('lang',       mt('_rbrowse_language'),   20, lang) ],
@@ -2138,7 +2162,7 @@ function filVN() {
       filFOptions('hasani', mt('_vnbrowse_anime'), [[1, mt('_vnbrowse_anime_yes')],[0, mt('_vnbrowse_anime_no')]])
     ],
     [ mt('_vnbrowse_tags'),
-      [ '',       ' ',                   tag(mt('_vnbrowse_booland')) ],
+      [ '',       ' ',                   tag(mt('_js_fil_booland')) ],
       [ '',       ' ', PREF_CODE != '' ? tag(mt('_vnbrowse_tagactive')) : null ],
       filFTagInput('tag_inc', mt('_vnbrowse_taginc')),
       filFTagInput('tag_exc', mt('_vnbrowse_tagexc')),

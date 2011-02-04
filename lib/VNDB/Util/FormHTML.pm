@@ -3,7 +3,7 @@ package VNDB::Util::FormHTML;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use TUWF ':html';
 use Exporter 'import';
 use POSIX 'strftime';
 use VNDB::Func;
@@ -41,7 +41,7 @@ sub htmlFormError {
       li mt "_formerr_tpl_$rule", $field if $type eq 'template';
     }
    end;
-  end;
+  end 'div';
   end if $mainbox;
 }
 
@@ -152,15 +152,10 @@ sub htmlFormPart {
       input type => 'hidden', id => $o{short}, name => $o{short}, value => $frm->{$o{short}}||'', class => 'dateinput';
     }
     if(/text/) {
-      (my $txt = $frm->{$o{short}}||'') =~ s/&/&amp;/;
-      $txt =~ s/</&lt;/;
-      $txt =~ s/>/&gt;/;
-      textarea name => $o{short}, id => $o{short}, rows => $o{rows}||5, cols => $o{cols}||60;
-       lit $txt;
-      end;
+      textarea name => $o{short}, id => $o{short}, rows => $o{rows}||5, cols => $o{cols}||60, $frm->{$o{short}}||'';
     }
    end;
-  end;
+  end 'tr';
 }
 
 
@@ -195,7 +190,7 @@ sub htmlForm {
      li class => 'left';
       a href => '#all', id => 'jt_sel_all', mt '_form_tab_all';
      end;
-    end;
+    end 'ul';
   }
 
   # form subs
@@ -210,7 +205,7 @@ sub htmlForm {
        $self->htmlFormPart($options->{frm}, $_) for @$parts;
       end;
      end;
-    end;
+    end 'div';
   }
 
   # db mod / edit summary / submit button
@@ -227,27 +222,24 @@ sub htmlForm {
           input type => 'checkbox', name => 'ilock', id => 'ilock', value => 1, $options->{frm}{ilock} ? (checked => 'checked') : ();
           label for => 'ilock', mt '_form_ilock';
         }
-        txt "\n".mt('_form_hidlock_note')."\n" if $self->authCan('lock') || $self->authCan('del');
+        if($self->authCan('lock') || $self->authCan('del')) {
+          br; txt mt('_form_hidlock_note'); br;
+        }
 
         # edit summary
-        (my $txt = $options->{frm}{editsum}||'') =~ s/&/&amp;/;
-        $txt =~ s/</&lt;/;
-        $txt =~ s/>/&gt;/;
         h2;
          txt mt '_form_editsum';
          b class => 'standout', ' ('.mt('_inenglish').')';
         end;
-        textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50;
-         lit $txt;
-        end;
+        textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50, $options->{frm}{editsum}||'';
         br;
       }
       input type => 'submit', value => mt('_form_submit'), class => 'submit';
      end;
-    end;
+    end 'div';
   }
 
-  end;
+  end 'form';
 }
 
 

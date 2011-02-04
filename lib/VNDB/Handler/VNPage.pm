@@ -3,11 +3,11 @@ package VNDB::Handler::VNPage;
 
 use strict;
 use warnings;
-use YAWF ':html', 'xml_escape';
+use TUWF ':html', 'xml_escape';
 use VNDB::Func;
 
 
-YAWF::register(
+TUWF::register(
   qr{v/rand}                        => \&rand,
   qr{v([1-9]\d*)/rg}                => \&rg,
   qr{v([1-9]\d*)(?:\.([1-9]\d*))?}  => \&page,
@@ -24,7 +24,7 @@ sub rg {
   my($self, $vid) = @_;
 
   my $v = $self->dbVNGet(id => $vid, what => 'relgraph')->[0];
-  return 404 if !$v->{id} || !$v->{rgraph};
+  return $self->resNotFound if !$v->{id} || !$v->{rgraph};
 
   my $title = mt '_vnrg_title', $v->{title};
   return if $self->htmlRGHeader($title, 'v', $v);
@@ -50,7 +50,7 @@ sub page {
     what => 'extended anime relations screenshots rating ranking'.($rev ? ' changes' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
-  return 404 if !$v->{id};
+  return $self->resNotFound if !$v->{id};
 
   my $r = $self->dbReleaseGet(vid => $vid, what => 'producers platforms');
 
@@ -80,13 +80,15 @@ sub page {
        end;
        if($v->{img_nsfw}) {
          p id => 'nsfw_show', $self->authPref('show_nsfw') ? (style => 'display: none') : ();
-          txt mt('_vnpage_imgnsfw_msg')."\n\n";
+          txt mt('_vnpage_imgnsfw_msg');
+          br; br;
           a href => '#', mt '_vnpage_imgnsfw_show';
-          txt "\n\n".mt '_vnpage_imgnsfw_note';
+          br; br;
+          txt mt '_vnpage_imgnsfw_note';
          end;
        }
      }
-    end;
+    end 'div'; # /vnimg
 
     # general info
     table;
@@ -145,8 +147,8 @@ sub page {
       end;
      end;
 
-    end;
-   end;
+    end 'table';
+   end 'div';
    clearfloat;
 
    # tags
@@ -170,7 +172,7 @@ sub page {
       }
      end;
    }
-  end;
+  end 'div'; # /mainbox
 
   _releases($self, $v, $r);
   _stats($self, $v);
@@ -268,10 +270,10 @@ sub _producers {
           a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 30;
           txt ' & ' if $_ != $p[$#p];
         }
-        txt "\n";
+        br;
       }
      end;
-    end;
+    end 'tr';
   }
 }
 
@@ -300,7 +302,7 @@ sub _relations {
      }
     end;
    end;
-  end;
+  end 'tr';
 }
 
 
@@ -331,11 +333,11 @@ sub _anime {
         end;
         acronym title => $_->{title_kanji}||$_->{title_romaji}, shorten $_->{title_romaji}, 50;
         b ' ('.(defined $_->{type} ? mt("_animetype_$_->{type}").', ' : '').$_->{year}.')';
-        txt "\n";
+        br;
       }
     }
    end;
-  end;
+  end 'tr';
 }
 
 
@@ -379,7 +381,7 @@ sub _useroptions {
       end;
     }
    end;
-  end;
+  end 'tr';
 }
 
 
@@ -446,11 +448,11 @@ sub _releases {
             txt ' ';
           }
          end;
-        end;
+        end 'tr';
       }
     }
-   end;
-  end;
+   end 'table';
+  end 'div';
 }
 
 
@@ -489,7 +491,7 @@ sub _screenshots {
       }
      end;
    }
-  end;
+  end 'div';
 }
 
 

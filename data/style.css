@@ -87,6 +87,7 @@ p.locked {
   margin: 0!important;
 }
 b.grayedout { font-weight: normal; color: $grayedout$ }
+i.grayedout { font-style: normal; color: $grayedout$ }
 #maincontent h2 b {
   font: 11px "Tahoma";
   font-weight: normal;
@@ -951,6 +952,9 @@ div.uposts td.tc4 b { margin-left: 10px }
 
 .browse.taglinks .tc1 { width: 70px }
 .browse.taglinks .tc3 { width: 90px }
+.browse.taglinks .tc3 { width: 90px }
+.browse.taglinks .ignored .taglvl.taglvlsel { background-color: #222 }
+.browse.taglinks .ignored .taglvl.taglvl0 { color: $grayedout$!important }
 .browse.taglinks .setfil { font-size: 8px; padding-right: 3px }
 
 /***** VN tagmod *****/
@@ -961,6 +965,7 @@ table.tgl .tc_you { border-right: 1px solid $border$; border-left: 1px solid $bo
 table.tgl .tc_others { border-left: 1px solid $border$; width: 150px; text-align: center }
 table.tgl .tc_tagname { min-width: 200px; border-right: 1px solid $border$ }
 table.tgl .tc_myvote { padding-left: 30px!important }
+table.tgl .tc_myover { padding: 0!important }
 table.tgl .tc_myspoil { border-right: 1px solid $border$; padding-right: 30px!important; text-align: right; padding-left: 10px!important; cursor: pointer }
 table.tgl .tc_allvote { padding-left: 30px!important; }
 table.tgl .tc_allvote i { font-style: normal; font-size: 8px }

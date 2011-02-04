@@ -3,7 +3,7 @@ package VNDB::Func;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use TUWF ':html';
 use Exporter 'import';
 use POSIX 'strftime', 'ceil', 'floor';
 use VNDBUtil;
@@ -59,9 +59,8 @@ sub tagscore {
 
 
 # short wrapper around maketext()
-# (not thread-safe, in the same sense as YAWF::XML. But who cares about threads, anyway?)
 sub mt {
-  return $YAWF::OBJ->{l10n}->maketext(@_);
+  return $TUWF::OBJ->{l10n}->maketext(@_);
 }
 
 

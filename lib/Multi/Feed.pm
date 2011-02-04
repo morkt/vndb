@@ -8,7 +8,7 @@ package Multi::Feed;
 use strict;
 use warnings;
 use POE;
-use XML::Writer;
+use TUWF::XML;
 use POSIX 'strftime';
 use Time::HiRes 'time';
 use VNDBUtil 'bb2html';
@@ -104,33 +104,33 @@ sub write_atom { # num, res, feed, time
   }
 
   my $data;
-  my $x = XML::Writer->new(OUTPUT => \$data, DATA_MODE => 1, DATA_INDENT => 2);
-  $x->xmlDecl('UTF-8');
-  $x->startTag(feed => xmlns => 'http://www.w3.org/2005/Atom', 'xml:lang' => 'en', 'xml:base' => $VNDB::S{url}.'/');
-  $x->dataElement(title => $VNDB::S{atom_feeds}{$feed}[1]);
-  $x->dataElement(updated => datetime($updated));
-  $x->dataElement(id => $VNDB::S{url}.$VNDB::S{atom_feeds}{$feed}[2]);
-  $x->emptyTag(link => rel => 'self', type => 'application/atom+xml', href => "$VNDB::S{url}/feeds/$feed.atom");
-  $x->emptyTag(link => rel => 'alternate', type => 'text/html', href => $VNDB::S{atom_feeds}{$feed}[2]);
+  my $x = TUWF::XML->new(write => sub { $data .= shift }, pretty => 2);
+  $x->xml();
+  $x->tag(feed => xmlns => 'http://www.w3.org/2005/Atom', 'xml:lang' => 'en', 'xml:base' => $VNDB::S{url}.'/');
+  $x->tag(title => $VNDB::S{atom_feeds}{$feed}[1]);
+  $x->tag(updated => datetime($updated));
+  $x->tag(id => $VNDB::S{url}.$VNDB::S{atom_feeds}{$feed}[2]);
+  $x->tag(link => rel => 'self', type => 'application/atom+xml', href => "$VNDB::S{url}/feeds/$feed.atom", undef);
+  $x->tag(link => rel => 'alternate', type => 'text/html', href => $VNDB::S{atom_feeds}{$feed}[2], undef);
 
   for(@$r) {
-    $x->startTag('entry');
-    $x->dataElement(id => $VNDB::S{url}.$_->{id});
-    $x->dataElement(title => $_->{title});
-    $x->dataElement(updated => $_->{updated}?datetime($_->{updated}):datetime($_->{published}));
-    $x->dataElement(published => datetime($_->{published})) if $_->{published};
+    $x->tag('entry');
+    $x->tag(id => $VNDB::S{url}.$_->{id});
+    $x->tag(title => $_->{title});
+    $x->tag(updated => $_->{updated}?datetime($_->{updated}):datetime($_->{published}));
+    $x->tag(published => datetime($_->{published})) if $_->{published};
     if($_->{username}) {
-      $x->startTag('author');
-      $x->dataElement(name => $_->{username});
-      $x->dataElement(uri => '/u'.$_->{uid}) if $_->{uid};
-      $x->endTag('author');
+      $x->tag('author');
+      $x->tag(name => $_->{username});
+      $x->tag(uri => '/u'.$_->{uid}) if $_->{uid};
+      $x->end;
     }
-    $x->emptyTag(link => rel => 'alternate', type => 'text/html', href => $_->{id});
-    $x->dataElement(summary => bb2html($_->{summary}, 200), type => 'html') if $_->{summary};
-    $x->endTag('entry');
+    $x->tag(link => rel => 'alternate', type => 'text/html', href => $_->{id}, undef);
+    $x->tag('summary', type => 'html', bb2html($_->{summary}, 200)) if $_->{summary};
+    $x->end('entry');
   }
 
-  $x->endTag('feed');
+  $x->end('feed');
 
   open my $f, '>:utf8', "$VNDB::ROOT/www/feeds/$feed.atom" || die $!;
   print $f $data;

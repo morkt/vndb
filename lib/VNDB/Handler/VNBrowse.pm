@@ -3,11 +3,11 @@ package VNDB::Handler::VNBrowse;
 
 use strict;
 use warnings;
-use YAWF ':html';
+use TUWF ':html', 'uri_escape';
 use VNDB::Func;
 
 
-YAWF::register(
+TUWF::register(
   qr{v/([a-z0]|all)}  => \&list,
 );
 
@@ -16,16 +16,16 @@ sub list {
   my($self, $char) = @_;
 
   my $f = $self->formValidate(
-    { name => 's', required => 0, default => 'tagscore', enum => [ qw|title rel pop tagscore rating| ] },
-    { name => 'o', required => 0, enum => [ 'a','d' ] },
-    { name => 'p', required => 0, default => 1, template => 'int' },
-    { name => 'q', required => 0, default => '' },
-    { name => 'sq', required => 0, default => '' },
-    { name => 'fil',required => 0, default => '' },
+    { get => 's', required => 0, default => 'tagscore', enum => [ qw|title rel pop tagscore rating| ] },
+    { get => 'o', required => 0, enum => [ 'a','d' ] },
+    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'q', required => 0, default => '' },
+    { get => 'sq', required => 0, default => '' },
+    { get => 'fil',required => 0 },
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
   $f->{q} ||= $f->{sq};
-  $f->{fil} = $self->authPref('filter_vn') if !grep $_ eq 'fil', $self->reqParam();
+  $f->{fil} //= $self->authPref('filter_vn');
   my %compat = _fil_compat($self);
 
   return $self->resRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')
@@ -60,11 +60,11 @@ sub list {
    end;
 
    a id => 'filselect', href => '#v';
-    lit '<i>&#9656;</i> '.mt('_rbrowse_filters').'<i></i>'; # TODO: it's not *r*browse
+    lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
    end;
    input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
   end;
-  end; # /form
+  end 'form';
 
   $self->htmlBrowseVN($list, $f, $np, "/v/$char?q=$quri;fil=$f->{fil}", $f->{fil} =~ /tag_inc-/);
   $self->htmlFooter(prefs => ['filter_vn']);
@@ -75,9 +75,9 @@ sub _fil_compat {
   my $self = shift;
   my %c;
   my $f = $self->formValidate(
-    { name => 'ln', required => 0, multi => 1, enum => $self->{languages}, default => '' },
-    { name => 'pl', required => 0, multi => 1, enum => $self->{platforms}, default => '' },
-    { name => 'sp', required => 0, default => $self->reqCookie($self->{cookie_prefix}.'tagspoil') =~ /^([0-2])$/ ? $1 : 0, enum => [0..2] },
+    { get => 'ln', required => 0, multi => 1, enum => $self->{languages}, default => '' },
+    { get => 'pl', required => 0, multi => 1, enum => $self->{platforms}, default => '' },
+    { get => 'sp', required => 0, default => $self->reqCookie('tagspoil') =~ /^([0-2])$/ ? $1 : 0, enum => [0..2] },
   );
   return () if $f->{_err};
   $c{lang}     //= $f->{ln} if $f->{ln}[0];

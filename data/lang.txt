@@ -99,80 +99,9 @@ ends with ']'. The following options are supported:
 
 
 #############################################################################
-##                           Global strings                                ##
+##                          Database Values                                ##
 #############################################################################
 # data/global.pl - used in many places
-
-
-# Date/time format
-# See http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html for the formatting codes
-# (I recommend to keep the yyyy-mm-dd format, though, see http://www.cl.cam.ac.uk/~mgk25/iso-time.html)
-
-:_datetime_compact
-en : %Y-%m-%d
-ru : %d.%m.%Y
-cs : %Y-%m-%d
-hu :
-nl :
-
-:_datetime_full
-en : %Y-%m-%d at %R
-ru : %d.%m.%Y, %R
-cs : %Y-%m-%d v %R
-hu : %Y-%m-%d - %R-kor
-nl : %Y-%m-%d om %R
-
-
-# Age display
-
-:_age_years
-en : [_1] [quant,_1,year,years] ago
-ru : [_1] [quant,_1,год,года,лет] назад
-cs : před [_1] [quant,_1,rokem,roky,roky]
-hu : [_1] [quant,_1,éve,éve]
-nl : [_1] [quant,_1,jaar,jaren] geleden
-
-:_age_months
-en : [_1] [quant,_1,month,months] ago
-ru : [_1] [quant,_1,месяц,месяца,месяцев] назад
-cs : před [_1] [quant,_1,měsícem,měsíci,měsíci]
-hu : [_1] [quant,_1,hónapja,hónapja]
-nl : [_1] [quant,_1,maand,maanden] geleden
-
-:_age_weeks
-en : [_1] [quant,_1,week,weeks] ago
-ru : [_1] [quant,_1,неделя,недели,недель] назад
-cs : před [_1] [quant,_1,týdnem,týdny,týdny]
-hu : [_1] [quant,_1,hete,hete]
-nl : [_1] [quant,_1,week,weken] geleden
-
-:_age_days
-en : [_1] [quant,_1,day,days] ago
-ru : [_1] [quant,_1,день,дня,дней] назад
-cs : před [_1] [quant,_1,dnem,dny,dny]
-hu : [_1] [quant,_1,napja,napja]
-nl : [_1] [quant,_1,dag,dagen] geleden
-
-:_age_hours
-en : [_1] [quant,_1,hour,hours] ago
-ru : [_1] [quant,_1,час,часа,часов] назад
-cs : před [_1] [quant,_1,hodinou,hodinami,hodinami]
-hu : [_1] [quant,_1,órája,órája]
-nl : [_1] [quant,_1,uur,uren] geleden
-
-:_age_min
-en : [_1] min ago
-ru : [_1] [quant,_1,минута,минуты,минут] назад
-cs : před [_1] min
-hu : [_1] perce
-nl : [_1] min. geleden
-
-:_age_sec
-en : [_1] sec ago
-ru : [_1] [quant,_1,секунда,секунды,секунд] назад
-cs : před [_1] s
-hu : [_1] másodperce
-nl : [_1] sec. geleden
 
 
 # user ranks
@@ -1208,6 +1137,85 @@ hu : Lemondva
 nl : Opgegeven
 
 
+
+
+#############################################################################
+##                          Global UI strings                              ##
+#############################################################################
+# used in many places
+
+
+# Date/time format
+# See http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html for the formatting codes
+# (I recommend to keep the yyyy-mm-dd format, though, see http://www.cl.cam.ac.uk/~mgk25/iso-time.html)
+
+:_datetime_compact
+en : %Y-%m-%d
+ru : %d.%m.%Y
+cs : %Y-%m-%d
+hu :
+nl :
+
+:_datetime_full
+en : %Y-%m-%d at %R
+ru : %d.%m.%Y, %R
+cs : %Y-%m-%d v %R
+hu : %Y-%m-%d - %R-kor
+nl : %Y-%m-%d om %R
+
+
+# Age display
+
+:_age_years
+en : [_1] [quant,_1,year,years] ago
+ru : [_1] [quant,_1,год,года,лет] назад
+cs : před [_1] [quant,_1,rokem,roky,roky]
+hu : [_1] [quant,_1,éve,éve]
+nl : [_1] [quant,_1,jaar,jaren] geleden
+
+:_age_months
+en : [_1] [quant,_1,month,months] ago
+ru : [_1] [quant,_1,месяц,месяца,месяцев] назад
+cs : před [_1] [quant,_1,měsícem,měsíci,měsíci]
+hu : [_1] [quant,_1,hónapja,hónapja]
+nl : [_1] [quant,_1,maand,maanden] geleden
+
+:_age_weeks
+en : [_1] [quant,_1,week,weeks] ago
+ru : [_1] [quant,_1,неделя,недели,недель] назад
+cs : před [_1] [quant,_1,týdnem,týdny,týdny]
+hu : [_1] [quant,_1,hete,hete]
+nl : [_1] [quant,_1,week,weken] geleden
+
+:_age_days
+en : [_1] [quant,_1,day,days] ago
+ru : [_1] [quant,_1,день,дня,дней] назад
+cs : před [_1] [quant,_1,dnem,dny,dny]
+hu : [_1] [quant,_1,napja,napja]
+nl : [_1] [quant,_1,dag,dagen] geleden
+
+:_age_hours
+en : [_1] [quant,_1,hour,hours] ago
+ru : [_1] [quant,_1,час,часа,часов] назад
+cs : před [_1] [quant,_1,hodinou,hodinami,hodinami]
+hu : [_1] [quant,_1,órája,órája]
+nl : [_1] [quant,_1,uur,uren] geleden
+
+:_age_min
+en : [_1] min ago
+ru : [_1] [quant,_1,минута,минуты,минут] назад
+cs : před [_1] min
+hu : [_1] perce
+nl : [_1] min. geleden
+
+:_age_sec
+en : [_1] sec ago
+ru : [_1] [quant,_1,секунда,секунды,секунд] назад
+cs : před [_1] s
+hu : [_1] másodperce
+nl : [_1] sec. geleden
+
+
 # Age ratings
 
 :_minage_null
@@ -1242,182 +1250,7 @@ hu : (p.l. [_1])
 nl : (o.a. [_1])
 
 
-# Form messages
-
-:_formerr_e_login_failed
-en : Invalid username or password
-ru : Некорректное имя пользователя или пароль
-cs : Neplatné uživatelské jméno nebo heslo
-hu : Hibás felhasználónév vagy jelszó
-nl : Ongeldige gebruikersnaam of wachtwoord
-
-:_formerr_e_nomail
-en : No user found with that email address
-ru : Пользователя с такой электронной почтой не существует
-cs : Uživatel s touto e-mailovou adresou nebyl nalezen
-hu : Nem található felhasználó ezzel az email címmel
-nl : Geen gebruiker met dat email adres
-
-:_formerr_e_passmatch
-en : Passwords do not match
-ru : Пароли не совпадают
-cs : Hesla nejsou stejná
-hu : A jelszavak nem egyeznek meg
-nl : Wachtwoorden komen niet overeen
-
-:_formerr_e_usrexists
-en : Someone already has this username, please choose something else
-ru : Кто-то уже зарегистрировал такой ник, пожалуйста, выберите другой
-cs : Toto uživatelské jméno už je v užívání, vyberte prosím jiné
-hu : Már foglalt ez a felhasználónév, kérlek válassz másikat
-nl : Gebruikersnaam al bezet, probeer iets anders
-
-:_formerr_e_mailexists
-en : Someone already registered with that email address
-ru : Кто-то уже регистрировался с таким адресом электронной почты
-cs : Tuto e-mailovou adresu již někdo k registraci použil
-hu : Valaki már regisztrált ezzel az email címmel
-nl : Iemand heeft zich al geregistreerd met dat emailadres
-
-:_formerr_e_noimage
-en : Image must be in JPEG or PNG format
-ru : Изображение должно быть в формате JPEG или PNG
-cs : Obrázek musí být v JPEG nebo PNG formátu
-hu : A kép muszáj JPEG vagy PNG formátumba legyen
-nl : Plaatje moet in JPEG of PNG formaat zijn
-
-:_formerr_e_toolarge
-en : Image is too large, only 500kB allowed
-ru : Изображение слишком большое, 500 кб - максимально допустимый предел
-cs : Obrázek je moc velký, je povoleno pouze 500kB
-hu : A kép túl nagy, 500kb a megengedett
-nl : Plaatje is te groot, max. 500kB toegestaan
-
-:_formerr_e_oneaday
-en : You can only register one account from the same IP within 24 hours
-ru : Вы можете зарегистрировать учётную запись с одного и того же IP лишь по прошествии 24 часов
-cs : V rámci 24 hodin si lze z jedné IP adresy zaregistrovat pouze jeden účet
-hu : 24 óra alatt csak egy fiókot hozhatsz létre ugyanazzal az IP-vel
-nl : Per dag mag je maar één account aanmaken vanaf hetzelfde IP
-
-:_formerr_e_notanswer
-en : Question was not correctly answered. Are you sure you are a human?
-ru : Неправильный ответ. А вы точно человек?
-cs : Na otázku jste neodpověděli správně. Jste si jisti, že jste člověk?
-hu : A kérdésre a válasz helytelen. Biztos vagy benne, hogy ember vagy?
-nl : Vraag was incorrect beantwoord. Weet je zeker dat je een mens bent?
-
-:_formerr_e_nochanges
-en : No changes, please don't create an entry that is fully identical to another
-ru : Изменения отсутствуют, пожалуйста, не создавайте идентичных копий записей
-cs : Nenalezeny změny, netvořte prosím záznam, který je plně totožný s jiným
-hu : Nem történt változtatás, kérlek ne készíts egy bejegyzést ami teljesen megegyezik egy másikkal
-nl : Geen veranderingen aangebracht, maak a.u.b. geen item aan die exact hetzelfde is als een ander
-
-:_formerr_e_doublepost
-en : Please wait 30 seconds before making another post
-ru : Прежде чем публиковать очередное сообщение, пожалуйста, подождите 30 секунд
-cs : Před posláním dalšího příspěvku počkejte prosím 30 sekund
-hu : Kérlek várj 30 másodpercet mielőtt új hozzászólást küldesz
-nl : Wacht a.u.b. 30 seconden voordat je een nieuwe post maakt
-
-:_formerr_e_badeditsum
-en : Please read [url,/d5.4,the guidelines] on how to use the edit summary.
-ru : Пожалуйста, прочтите [url,/d5.4,руководство] о том, как использовать поле "Суммарно о правке".
-cs*:
-hu : Légyszíves olvasdd el a szerkesztési összegzés [url,/d5.4, útmutatóját].
-nl : Lees a.u.b. [url,/d5.4,de richtlijnen] over het gebruik van de samenvatting.
-
-:_formerr_title
-en : Error
-ru : Ошибка
-cs : Chyba
-hu : Hiba
-nl :
-
-:_formerr_subtitle
-en : Form could not be sent:
-ru : Невозможно отправить форму:
-cs : Dokument nemohl být odeslán:
-hu : Az űrlapot nem sikerült elküldeni:
-nl : Formulier kon niet verzonden worden:
-
-:_formerr_required
-en : [_1] is a required field!
-ru : [_1] - обязательное поле!
-cs : [_1] je pole, které musí být vyplněno!
-hu : [_1] kitöltése kötelező!
-nl : [_1] is een verplicht veld!
-
-:_formerr_minlength
-en : [_1]: should have at least [_2] characters
-ru : [_1]: [quant,_2,необходим,необходимы,необходимо] хотя бы [_2] [quant,_2,символ,символа,символов]
-cs : [_1]: musí mít minimálně [_2] znaků
-hu : [_1]: legalább [_2] karaktert kell tartalmazzon
-nl : [_1]: moet minimaal [_2] tekens bevatten
-
-:_formerr_maxlength
-en : [_1]: only [_2] characters allowed
-ru : [_1]: [quant,_2,разрешён,разрешены,разрешено] лишь [_2] [quant,_2,символ,символа,символов]
-cs : [_1]: je povoleno maximálně [_2] znaků
-hu : [_1]: csakis [_2] karakterek megengedettek
-nl : [_1]: maximaal [_2] tekens toegestaan
-
-:_formerr_enum
-en : [_1] must be one of the following: [_2]
-ru : Поле '[_1]' должно соответствовать одному из следующих значений: [_2]
-cs : [_1] musí být z následujícího seznamu: [_2]
-hu : [_1] muszáj az alábbiak közül valamelyik legyen: [_2]
-nl : [_1] moet één van het volgende zijn: [_2]
-
-:_formerr_wrongboard
-en : Wrong board: [_1]
-ru : Некорректная доска: [_1]
-cs : Špatný board: [_1]
-hu : Rossz alfórum: [_1]
-nl : Onbekend forum: [_1]
-
-:_formerr_tagexists
-en : Tag [url,_1,_2] already exists!
-ru : Тег [url,_1,_2] уже существует!
-cs : Tag [url,_1,_2] již existuje!
-hu : A(z) [url,_1,_2] címke már létezik!
-nl : Tag [url,_1,_2] bestaat al!
-
-:_formerr_tpl_mail
-en : Invalid email address
-ru : Некорректный адрес электронной почты
-cs : Neplatná e-mailová adresa
-hu : Érvénytelen email cím
-nl : Ongeldig emailadres
-
-:_formerr_tpl_url
-en : [_1]: Invalid URL
-ru : [_1]: Некорректная ссылка
-cs : [_1]: Neplatná URL
-hu : [_1]: Érvénytelen hivatkozás
-nl : [_1]: Ongeldige URL
-
-:_formerr_tpl_asciiprint
-en : [_1] may only contain ASCII characters
-ru : Поле '[_1]' может содержать лишь символы диапазона ASCII
-cs : [_1] smí obsahovat pouze znaky ASCII
-hu : [_1] kizárólag ASCII karaktereket tartalmazhat
-nl : [_1] mag alleen ASCII tekens bevatten
-
-:_formerr_tpl_int
-en : [_1]: Not a valid number
-ru : [_1] не является правильным числом
-cs : [_1]: Neplatné číslo
-hu : [_1]: Nem egy érvényes szám
-nl : [_1]: Geen geldig nummer
-
-:_formerr_tpl_pname
-en : [_1] can only contain lowercase alphanumeric characters and a hyphen, and must start with a character
-ru : Поле '[_1]' может содержать лишь символы буквенно-цифрового диапазона в нижнем регистре и чёрточку и должно начинаться с буквы
-cs : [_1] smí obsahovat pouze malá písmena, čísla a pomlčku, a musí začínat písmenem
-hu : [_1] egy karakterrel kell kezdődjön és csak kisbetűs alfanumerikus karaktereket és egy kötőjelet tartalmazhat
-nl : [_1] mag alleen kleine letters, cijfers of koppeltekens bevatten, en moet beginnen met een letter
+# misc. form stuff
 
 :_form_tab_all
 en : All items
@@ -1485,6 +1318,13 @@ cs : Nahrává se...
 hu : Betöltés...
 nl : Laden...
 
+:_js_close
+en : close
+ru : закрыть
+cs : zavřít
+hu : bezárás
+nl : sluiten
+
 :_js_date_year
 en : -year-
 ru : -год-
@@ -1512,13 +1352,6 @@ ru : Совпадений не найдено...
 cs : Žádné výsledky...
 hu : Nincs eredmény...
 nl : Geen resultaten...
-
-:_js_iv_close
-en : close
-ru : закрыть
-cs : zavřít
-hu : bezárás
-nl : sluiten
 
 :_js_iv_prev
 en : previous
@@ -1548,6 +1381,65 @@ cs : čeká na schválení
 hu : moderálásra vár
 nl : ongemodereerd
 
+:_js_ds_tag_nometa
+en : Can't use meta tags here!
+ru : Использование мета-тегов здесь запрещено!
+cs : Zde se nedají použít meta-tagy!
+hu : Itt nem használhatsz meta címkéket!
+nl : Meta tags kunnen hier niet gebruikt worden!
+
+
+# Filter selector
+
+:_js_fil_filters
+en : Filters
+ru : Фильтры
+cs : Filtry
+hu : Szűrők
+nl :
+
+:_js_fil_apply
+en : Apply
+ru : Применить
+cs : Použít
+hu : Alkalmaz
+nl : Zoek
+
+:_js_fil_reset
+en : Reset
+ru : Очистить
+cs : Vymazat
+hu : Törlés
+nl :
+
+:_js_fil_save
+en : Save as default
+ru : Запомнить по умолчанию
+cs*:
+hu : Mentés alapértelmezet ként
+nl : Opslaan als standaard
+
+:_js_fil_savenote
+en : Your saved filters will be applied automatically to several other parts of the site as well, such as the homepage. To change these filters, come back to this page and use the "Save as default" button again. To remove your saved filters, hit "Reset" and then save.
+ru : Сохранённые фильтры также будут автоматически применены к другим частям сайта, например, к заглавной странице. Для их изменения вновь откройте эту страницу и щёлкните кнопку "Запомнить по умолчанию". Чтобы избавиться от сохранённых фильтров, щёлкните "Сброс" и сохраните настройки.
+cs*:
+hu : Az általad lementet szűrők automatikusan alkalmazva lesznek a honlap többi részén is, mint pl. a főoldalon. Ha meg akarod változtatni ezeket a szűrőket, akkor gyere vissza erre az oldalra és klikkelj újra a "Mentés alapértelmezet ként" gombra. A szűrőket a "Törlés" gombbal tudod eltávolítani, majd mentsd le újra.
+nl : Je opgeslagen filters worden ook automatisch toegepast op een aantal andere delen van de site, waaronder de homepagina. Om deze filters te veranderen, ga terug naar deze pagina en gebruik de "Opslaan als standaard" knop weer. Om je opgeslagen filters te verwijderen, klik op "Reset" en sla je instellingen weer op.
+
+:_js_fil_boolor
+en : Boolean or, selecting more gives more results
+ru : логическое 'или', чем больше выбрано, тем больше даёт результатов
+cs : boolean nebo, výběr více dá více výsledků
+hu : Boole féle értékhalmaz(igaz/hamis), ha többet jelölsz be, több eredményt ad ki
+nl : Booleaanse 'of', meerdere selecties geven meer resultaten
+
+:_js_fil_booland
+en : Boolean and, selecting more gives less results
+ru : логическое 'и', чем больше выбрано, тем меньше даёт результатов
+cs : Boolean a, výběr více dá méně výsledků
+hu : Boole féle értékhalmaz(igaz/hamis), s ha többet választasz ki akkor kevesebb találatot ad
+nl : Booleaanse 'en', meerdere selecties geven minder resultaten
+
 
 # title of the syndication icon (this thing -> http://en.wikipedia.org/wiki/Atom_feed)
 
@@ -1557,6 +1449,42 @@ ru : Лента Atom
 cs : Atom Feed
 hu : Atom Hírfolyam
 nl :
+
+
+# Short message reminding the user to post in ENGLISH (Used at about every message/description input field)
+
+:_inenglish
+en : English please!
+ru : Пожалуйста, пишите на английском!
+cs : Prosíme, anglicky!
+hu : Kérlek angolul válaszolj!
+nl : Engels a.u.b.!
+
+
+# Messages about editing on the VN/Release/Producer pages (right beneath the tabs)
+
+:_itemmsg_locked
+en : Locked for editing
+ru : Правка заблокирована
+cs : Zamčeno pro editaci
+hu : Lezárva
+nl : Gesloten voor wijzigingen
+
+:_itemmsg_login
+en : You need to be [url,_1,logged in] to edit this page
+ru : Чтобы редактировать эту страницу, вы должны быть [url,_1,авторизованы]
+cs : Pro editaci této stránky musíte být [url,_1,přihlášen]
+hu : Be kell legyél [url,_1, jelentkezve], hogy szerkeszthesd ezt az oldalt
+nl : Je moet [url,_1,ingelogd] zijn om deze pagina te wijzigen
+
+:_itemmsg_denied
+en : You are not allowed to edit this page
+ru : Вам запрещено редактировать эту страницу
+cs : Nemáte oprávnění editovat tuto stránku
+hu : Nincs engedélyed, hogy szerkeszd ezt az oldalt
+nl : Je bent niet toegestaan om wijzigingen aan te brengen
+
+
 
 
 #############################################################################
@@ -2531,6 +2459,14 @@ ru : Темы, относящиеся к [_1]
 cs : Diskuse pro [_1]
 hu : [_1]-hoz kapcsolódó beszélgetések
 nl : Gerelateerde discussies voor [_1]
+
+# also used on the discussion board index (/t)
+:_disboard_item_all
+en : All boards
+ru*:
+cs*:
+hu*:
+nl : Alle fora
 
 :_disboard_rootlink
 en : Discussion board
@@ -3740,13 +3676,6 @@ nl : Sorry, geen items gevonden die aan je filters voldoen. Je kan wat filters u
 
      Houd er ook rekening mee dat we niet alle informatie hebben over alle uitgaven, dus filteren op o.a. schermresolutie zal alle uitgaven waarvan we dit niet weten niet weergeven, ook al heeft het wel wat je zoekt.
 
-:_rbrowse_filters
-en : Filters
-ru : Фильтры
-cs : Filtry
-hu : Szűrők
-nl :
-
 :_rbrowse_fil_title
 en : Release filters
 ru : Фильтры выпусков
@@ -3760,13 +3689,6 @@ ru : Общие
 cs : Obecné
 hu : Általános
 nl : Algemeen
-
-:_rbrowse_close
-en : close
-ru : закрыть
-cs : zavřít
-hu : bezár
-nl : sluiten
 
 :_rbrowse_type
 en : Release type
@@ -3852,6 +3774,27 @@ cs : Vydáno před
 hu : Kiadva előtt
 nl : Uitgegeven voor
 
+:_rbrowse_released
+en : Release date
+ru*:
+cs*:
+hu*:
+nl : Uitgavedatum
+
+:_rbrowse_released_yes
+en : Past (already released)
+ru*:
+cs*:
+hu*:
+nl : Verleden (al uitgegeven)
+
+:_rbrowse_released_no
+en : Future (to be released)
+ru*:
+cs*:
+hu*:
+nl : Toekomst (nog niet uitgegeven)
+
 :_rbrowse_minage
 en : Age rating
 ru : Возрастной рейтинг
@@ -3879,13 +3822,6 @@ ru : Разрешение экрана
 cs : Rozlišení obrazovky
 hu : Felbontás
 nl : Schermresolutie
-
-:_rbrowse_boolor
-en : Boolean or, selecting more gives more results
-ru : логическое 'или', чем больше выбрано, тем больше даёт результатов
-cs : boolean nebo, výběr více dá více výsledků
-hu : Boole féle értékhalmaz(igaz/hamis), ha többet jelölsz be, több eredményt ad ki
-nl : Booleaanse 'of', meerdere selecties geven meer resultaten
 
 :_rbrowse_platform
 en : Platform
@@ -3928,34 +3864,6 @@ ru : Анимация эро-сцен
 cs : Ero scény
 hu : Ero jelenetek
 nl : Erotische scenes
-
-:_rbrowse_filsave
-en : Save as default
-ru : Запомнить по умолчанию
-cs*:
-hu : Mentés alapértelmezet ként
-nl : Opslaan als standaard
-
-:_rbrowse_apply
-en : Apply
-ru : Применить
-cs : Použít
-hu : Alkalmaz
-nl : Zoek
-
-:_rbrowse_reset
-en : Reset
-ru : Очистить
-cs : Vymazat
-hu : Törlés
-nl :
-
-:_rbrowse_savenote
-en : Your saved filters will be applied automatically to several other parts of the site as well, such as the homepage. To change these filters, come back to this page and use the "Save as default" button again. To remove your saved filters, hit "Reset" and then save.
-ru : Сохранённые фильтры также будут автоматически применены к другим частям сайта, например, к заглавной странице. Для их изменения вновь откройте эту страницу и щёлкните кнопку "Запомнить по умолчанию". Чтобы избавиться от сохранённых фильтров, щёлкните "Сброс" и сохраните настройки.
-cs*:
-hu : Az általad lementet szűrők automatikusan alkalmazva lesznek a honlap többi részén is, mint pl. a főoldalon. Ha meg akarod változtatni ezeket a szűrőket, akkor gyere vissza erre az oldalra és klikkelj újra a "Mentés alapértelmezet ként" gombra. A szűrőket a "Törlés" gombbal tudod eltávolítani, majd mentsd le újra.
-nl : Je opgeslagen filters worden ook automatisch toegepast op een aantal andere delen van de site, waaronder de homepagina. Om deze filters te veranderen, ga terug naar deze pagina en gebruik de "Opslaan als standaard" knop weer. Om je opgeslagen filters te verwijderen, klik op "Reset" en sla je instellingen weer op.
 
 
 
@@ -4670,13 +4578,6 @@ ru : Элемент не найден!
 cs : Předmět nenalezen!
 hu : A tárgy nem található!
 nl : Tag niet gevonden!
-
-:_tagv_nometa
-en : Can't use meta tags here!
-ru : Использование мета-тегов здесь запрещено!
-cs : Zde se nedají použít meta-tagy!
-hu : Itt nem használhatsz meta címkéket!
-nl : Meta tags kunnen hier niet gebruikt worden!
 
 :_tagv_double
 en : Tag is already present!
@@ -5938,13 +5839,6 @@ cs : Tagy
 hu : Címkék
 nl :
 
-:_vnbrowse_booland
-en : Boolean and, selecting more gives less results
-ru : логическое 'и', чем больше выбрано, тем меньше даёт результатов
-cs : Boolean a, výběr více dá méně výsledků
-hu : Boole féle értékhalmaz(igaz/hamis), s ha többet választasz ki akkor kevesebb találatot ad
-nl : Booleaanse 'en', meerdere selecties geven minder resultaten
-
 :_vnbrowse_tagactive
 en : These filters are ignored on tag pages (when set as default).
 ru : Эти фильтры недействительны на страницах тегов (по умолчанию).
@@ -6449,6 +6343,13 @@ ru : Полный размер: [_1]
 cs : Plná velikost: [_1]
 hu : Teljes méret: [_1]
 nl : Volledige grootte: [_1]
+
+:_vnedit_scr_nonstandard
+en : WARNING: Odd resolution! Please check whether the image has been cropped correctly.
+ru*:
+cs*:
+hu*:
+nl : WAARSCHUWING: Vreemde resolutie! Controleer a.u.b. of de plaatje goed is gecropped.
 
 :_vnedit_scr_nsfw
 en : This screenshot is NSFW
@@ -7279,30 +7180,6 @@ nl : Je wijzigd een verouderde versie van deze [index,_1,visual novel,uitgave,pr
      Als je dit opslaat, zullen alle wijzigingen na deze revisie teruggedraait worden.
 
 
-# Messages about editing on the VN/Release/Producer pages (right beneath the tabs)
-
-:_itemmsg_locked
-en : Locked for editing
-ru : Правка заблокирована
-cs : Zamčeno pro editaci
-hu : Lezárva
-nl : Gesloten voor wijzigingen
-
-:_itemmsg_login
-en : You need to be [url,_1,logged in] to edit this page
-ru : Чтобы редактировать эту страницу, вы должны быть [url,_1,авторизованы]
-cs : Pro editaci této stránky musíte být [url,_1,přihlášen]
-hu : Be kell legyél [url,_1, jelentkezve], hogy szerkeszthesd ezt az oldalt
-nl : Je moet [url,_1,ingelogd] zijn om deze pagina te wijzigen
-
-:_itemmsg_denied
-en : You are not allowed to edit this page
-ru : Вам запрещено редактировать эту страницу
-cs : Nemáte oprávnění editovat tuto stránku
-hu : Nincs engedélyed, hogy szerkeszd ezt az oldalt
-nl : Je bent niet toegestaan om wijzigingen aan te brengen
-
-
 # User didn't pass the spam protection
 
 :_nospam_title
@@ -7344,16 +7221,6 @@ hu : Kérem nyomva meg a böngészője vissza gombját, frissítse az oldalt és
 nl : Ga terug naar de vorige pagina, vernieuw deze en probeer het opnieuw.
 
 
-# Short message reminding the user to post in ENGLISH (Used at about every message/description input field)
-
-:_inenglish
-en : English please!
-ru : Пожалуйста, пишите на английском!
-cs : Prosíme, anglicky!
-hu : Kérlek angolul válaszolj!
-nl : Engels a.u.b.!
-
-
 # No browser support to display the relation graphs
 
 :_rg_notsupp
@@ -7369,6 +7236,184 @@ ru : Ваш браузер настолько отстоен, что даже н
 cs : Váš prohlížeč je na nic, nepodporuje vykreslování našich krásných vztahových grafů.
 hu : A böngésződ szar, nem képes megjeleníteni a szép összefüggés grafikonunkat.
 nl : Je browser is troep, het heeft niet de benodigde functionaliteit om onze mooie grafiekjes weer te geven.
+
+
+# Form messages
+
+:_formerr_e_login_failed
+en : Invalid username or password
+ru : Некорректное имя пользователя или пароль
+cs : Neplatné uživatelské jméno nebo heslo
+hu : Hibás felhasználónév vagy jelszó
+nl : Ongeldige gebruikersnaam of wachtwoord
+
+:_formerr_e_nomail
+en : No user found with that email address
+ru : Пользователя с такой электронной почтой не существует
+cs : Uživatel s touto e-mailovou adresou nebyl nalezen
+hu : Nem található felhasználó ezzel az email címmel
+nl : Geen gebruiker met dat email adres
+
+:_formerr_e_passmatch
+en : Passwords do not match
+ru : Пароли не совпадают
+cs : Hesla nejsou stejná
+hu : A jelszavak nem egyeznek meg
+nl : Wachtwoorden komen niet overeen
+
+:_formerr_e_usrexists
+en : Someone already has this username, please choose something else
+ru : Кто-то уже зарегистрировал такой ник, пожалуйста, выберите другой
+cs : Toto uživatelské jméno už je v užívání, vyberte prosím jiné
+hu : Már foglalt ez a felhasználónév, kérlek válassz másikat
+nl : Gebruikersnaam al bezet, probeer iets anders
+
+:_formerr_e_mailexists
+en : Someone already registered with that email address
+ru : Кто-то уже регистрировался с таким адресом электронной почты
+cs : Tuto e-mailovou adresu již někdo k registraci použil
+hu : Valaki már regisztrált ezzel az email címmel
+nl : Iemand heeft zich al geregistreerd met dat emailadres
+
+:_formerr_e_noimage
+en : Image must be in JPEG or PNG format
+ru : Изображение должно быть в формате JPEG или PNG
+cs : Obrázek musí být v JPEG nebo PNG formátu
+hu : A kép muszáj JPEG vagy PNG formátumba legyen
+nl : Plaatje moet in JPEG of PNG formaat zijn
+
+:_formerr_e_toolarge
+en : Image is too large, only 500kB allowed
+ru : Изображение слишком большое, 500 кб - максимально допустимый предел
+cs : Obrázek je moc velký, je povoleno pouze 500kB
+hu : A kép túl nagy, 500kb a megengedett
+nl : Plaatje is te groot, max. 500kB toegestaan
+
+:_formerr_e_oneaday
+en : You can only register one account from the same IP within 24 hours
+ru : Вы можете зарегистрировать учётную запись с одного и того же IP лишь по прошествии 24 часов
+cs : V rámci 24 hodin si lze z jedné IP adresy zaregistrovat pouze jeden účet
+hu : 24 óra alatt csak egy fiókot hozhatsz létre ugyanazzal az IP-vel
+nl : Per dag mag je maar één account aanmaken vanaf hetzelfde IP
+
+:_formerr_e_notanswer
+en : Question was not correctly answered. Are you sure you are a human?
+ru : Неправильный ответ. А вы точно человек?
+cs : Na otázku jste neodpověděli správně. Jste si jisti, že jste člověk?
+hu : A kérdésre a válasz helytelen. Biztos vagy benne, hogy ember vagy?
+nl : Vraag was incorrect beantwoord. Weet je zeker dat je een mens bent?
+
+:_formerr_e_nochanges
+en : No changes, please don't create an entry that is fully identical to another
+ru : Изменения отсутствуют, пожалуйста, не создавайте идентичных копий записей
+cs : Nenalezeny změny, netvořte prosím záznam, který je plně totožný s jiným
+hu : Nem történt változtatás, kérlek ne készíts egy bejegyzést ami teljesen megegyezik egy másikkal
+nl : Geen veranderingen aangebracht, maak a.u.b. geen item aan die exact hetzelfde is als een ander
+
+:_formerr_e_doublepost
+en : Please wait 30 seconds before making another post
+ru : Прежде чем публиковать очередное сообщение, пожалуйста, подождите 30 секунд
+cs : Před posláním dalšího příspěvku počkejte prosím 30 sekund
+hu : Kérlek várj 30 másodpercet mielőtt új hozzászólást küldesz
+nl : Wacht a.u.b. 30 seconden voordat je een nieuwe post maakt
+
+:_formerr_e_badeditsum
+en : Please read [url,/d5.4,the guidelines] on how to use the edit summary.
+ru : Пожалуйста, прочтите [url,/d5.4,руководство] о том, как использовать поле "Суммарно о правке".
+cs*:
+hu : Légyszíves olvasdd el a szerkesztési összegzés [url,/d5.4, útmutatóját].
+nl : Lees a.u.b. [url,/d5.4,de richtlijnen] over het gebruik van de samenvatting.
+
+:_formerr_title
+en : Error
+ru : Ошибка
+cs : Chyba
+hu : Hiba
+nl :
+
+:_formerr_subtitle
+en : Form could not be sent:
+ru : Невозможно отправить форму:
+cs : Dokument nemohl být odeslán:
+hu : Az űrlapot nem sikerült elküldeni:
+nl : Formulier kon niet verzonden worden:
+
+:_formerr_required
+en : [_1] is a required field!
+ru : [_1] - обязательное поле!
+cs : [_1] je pole, které musí být vyplněno!
+hu : [_1] kitöltése kötelező!
+nl : [_1] is een verplicht veld!
+
+:_formerr_minlength
+en : [_1]: should have at least [_2] characters
+ru : [_1]: [quant,_2,необходим,необходимы,необходимо] хотя бы [_2] [quant,_2,символ,символа,символов]
+cs : [_1]: musí mít minimálně [_2] znaků
+hu : [_1]: legalább [_2] karaktert kell tartalmazzon
+nl : [_1]: moet minimaal [_2] tekens bevatten
+
+:_formerr_maxlength
+en : [_1]: only [_2] characters allowed
+ru : [_1]: [quant,_2,разрешён,разрешены,разрешено] лишь [_2] [quant,_2,символ,символа,символов]
+cs : [_1]: je povoleno maximálně [_2] znaků
+hu : [_1]: csakis [_2] karakterek megengedettek
+nl : [_1]: maximaal [_2] tekens toegestaan
+
+:_formerr_enum
+en : [_1] must be one of the following: [_2]
+ru : Поле '[_1]' должно соответствовать одному из следующих значений: [_2]
+cs : [_1] musí být z následujícího seznamu: [_2]
+hu : [_1] muszáj az alábbiak közül valamelyik legyen: [_2]
+nl : [_1] moet één van het volgende zijn: [_2]
+
+:_formerr_wrongboard
+en : Wrong board: [_1]
+ru : Некорректная доска: [_1]
+cs : Špatný board: [_1]
+hu : Rossz alfórum: [_1]
+nl : Onbekend forum: [_1]
+
+:_formerr_tagexists
+en : Tag [url,_1,_2] already exists!
+ru : Тег [url,_1,_2] уже существует!
+cs : Tag [url,_1,_2] již existuje!
+hu : A(z) [url,_1,_2] címke már létezik!
+nl : Tag [url,_1,_2] bestaat al!
+
+:_formerr_tpl_mail
+en : Invalid email address
+ru : Некорректный адрес электронной почты
+cs : Neplatná e-mailová adresa
+hu : Érvénytelen email cím
+nl : Ongeldig emailadres
+
+:_formerr_tpl_url
+en : [_1]: Invalid URL
+ru : [_1]: Некорректная ссылка
+cs : [_1]: Neplatná URL
+hu : [_1]: Érvénytelen hivatkozás
+nl : [_1]: Ongeldige URL
+
+:_formerr_tpl_asciiprint
+en : [_1] may only contain ASCII characters
+ru : Поле '[_1]' может содержать лишь символы диапазона ASCII
+cs : [_1] smí obsahovat pouze znaky ASCII
+hu : [_1] kizárólag ASCII karaktereket tartalmazhat
+nl : [_1] mag alleen ASCII tekens bevatten
+
+:_formerr_tpl_int
+en : [_1]: Not a valid number
+ru : [_1] не является правильным числом
+cs : [_1]: Neplatné číslo
+hu : [_1]: Nem egy érvényes szám
+nl : [_1]: Geen geldig nummer
+
+:_formerr_tpl_pname
+en : [_1] can only contain lowercase alphanumeric characters and a hyphen, and must start with a character
+ru : Поле '[_1]' может содержать лишь символы буквенно-цифрового диапазона в нижнем регистре и чёрточку и должно начинаться с буквы
+cs : [_1] smí obsahovat pouze malá písmena, čísla a pomlčku, a musí začínat písmenem
+hu : [_1] egy karakterrel kell kezdődjön és csak kisbetűs alfanumerikus karaktereket és egy kötőjelet tartalmazhat
+nl : [_1] mag alleen kleine letters, cijfers of koppeltekens bevatten, en moet beginnen met een letter
 
 
 # vim: set ft=none:

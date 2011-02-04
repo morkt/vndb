@@ -4,18 +4,17 @@ package VNDB::Handler::Misc;
 
 use strict;
 use warnings;
-use YAWF ':html', ':xml', 'xml_escape';
+use TUWF ':html', ':xml', 'xml_escape', 'uri_escape';
 use VNDB::Func;
 use POSIX 'strftime';
 
 
-YAWF::register(
+TUWF::register(
   qr{},                              \&homepage,
   qr{(?:([upvr])([1-9]\d*)/)?hist},  \&history,
   qr{d([1-9]\d*)},                   \&docpage,
   qr{setlang},                       \&setlang,
   qr{nospam},                        \&nospam,
-  qr{we-dont-like-ie},               \&iemessage,
   qr{xml/prefs\.xml},                \&prefs,
   qr{opensearch\.xml},               \&opensearch,
 
@@ -23,7 +22,7 @@ YAWF::register(
   qr{u([1-9]\d*)/tags}, sub { $_[0]->resRedirect("/g/links?u=$_[1]", 'perm') },
   qr{(.*[^/]+)/+}, sub { $_[0]->resRedirect("/$_[1]", 'perm') },
   qr{([pv])},      sub { $_[0]->resRedirect("/$_[1]/all", 'perm') },
-  qr{v/search},    sub { $_[0]->resRedirect("/v/all?q=".uri_escape($_[0]->reqParam('q')||''), 'perm') },
+  qr{v/search},    sub { $_[0]->resRedirect("/v/all?q=".uri_escape($_[0]->reqGet('q')||''), 'perm') },
   qr{notes},       sub { $_[0]->resRedirect('/d8', 'perm') },
   qr{faq},         sub { $_[0]->resRedirect('/d6', 'perm') },
   qr{v([1-9]\d*)/(?:stats|scr)},
@@ -61,7 +60,7 @@ sub homepage {
       end;
     }
    end;
-  end;
+  end 'div';
 
   table class => 'mainbox threelayout';
    Tr;
@@ -83,7 +82,7 @@ sub homepage {
         end;
       }
      end;
-    end;
+    end 'td';
 
     # Announcements
     td;
@@ -101,12 +100,12 @@ sub homepage {
         lit bb2html $post->{msg}, 150;
        end;
      }
-    end;
+    end 'td';
 
     # Recent posts
     td;
      h1;
-      a href => '/t', mt '_home_recentposts'; txt ' ';
+      a href => '/t/all', mt '_home_recentposts'; txt ' ';
       a href => '/feeds/posts.atom'; cssicon 'feed', mt '_atom_feed'; end;
      end;
      my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, sort => 'lastpost', reverse => 1, notusers => 1);
@@ -121,9 +120,9 @@ sub homepage {
         end;
       }
      end;
-    end;
+    end 'td';
 
-   end;
+   end 'tr';
    Tr;
 
     # Random visual novels
@@ -139,14 +138,14 @@ sub homepage {
         end;
       }
      end;
-    end;
+    end 'td';
 
     # Upcoming releases
     td;
      h1;
-      a href => strftime('/r?fil=date_after-%Y%m%d;o=a;s=released', gmtime), mt '_home_upcoming';
+      a href => '/r?fil=released-0;o=a;s=released', mt '_home_upcoming';
      end;
-     my $upcoming = $self->filFetchDB(release => undef, undef, {results => 10, unreleased => 1, what => 'platforms'});
+     my $upcoming = $self->filFetchDB(release => undef, undef, {results => 10, released => 0, what => 'platforms'});
      ul;
       for (@$upcoming) {
         li;
@@ -159,14 +158,14 @@ sub homepage {
         end;
       }
      end;
-    end;
+    end 'td';
 
     # Just released
     td;
      h1;
-      a href => strftime('/r?fil=date_before-%Y%m%d;o=d;s=released', gmtime), mt '_home_justreleased';
+      a href => '/r?fil=released-1;o=d;s=released', mt '_home_justreleased';
      end;
-     my $justrel = $self->filFetchDB(release => undef, undef, {results => 10, sort => 'released', reverse => 1, unreleased => 0, what => 'platforms'});
+     my $justrel = $self->filFetchDB(release => undef, undef, {results => 10, sort => 'released', reverse => 1, released => 1, what => 'platforms'});
      ul;
       for (@$justrel) {
         li;
@@ -179,10 +178,10 @@ sub homepage {
         end;
       }
      end;
-    end;
+    end 'td';
 
-   end; # /tr
-  end; # /table
+   end 'tr';
+  end 'table';
 
   $self->htmlFooter;
 }
@@ -194,14 +193,14 @@ sub history {
   $id ||= 0;
 
   my $f = $self->formValidate(
-    { name => 'p', required => 0, default => 1, template => 'int' },
-    { name => 'm', required => 0, default => !$type, enum => [ 0, 1 ] },
-    { name => 'h', required => 0, default => 0, enum => [ -1..1 ] },
-    { name => 't', required => 0, default => '', enum => [ 'v', 'r', 'p' ] },
-    { name => 'e', required => 0, default => 0, enum => [ -1..1 ] },
-    { name => 'r', required => 0, default => 0, enum => [ 0, 1 ] },
+    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'm', required => 0, default => !$type, enum => [ 0, 1 ] },
+    { get => 'h', required => 0, default => 0, enum => [ -1..1 ] },
+    { get => 't', required => 0, default => '', enum => [ 'v', 'r', 'p' ] },
+    { get => 'e', required => 0, default => 0, enum => [ -1..1 ] },
+    { get => 'r', required => 0, default => 0, enum => [ 0, 1 ] },
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   # get item object and title
   my $obj = $type eq 'u' ? $self->dbUserGet(uid => $id, what => 'hide_list')->[0] :
@@ -209,7 +208,7 @@ sub history {
             $type eq 'r' ? $self->dbReleaseGet(id => $id)->[0] :
             $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : undef;
   my $title = mt $type ? ('_hist_title_item', $obj->{title} || $obj->{name} || $obj->{username}) : '_hist_title';
-  return 404 if $type && !$obj->{id};
+  return $self->resNotFound if $type && !$obj->{id};
 
   # get the edit history
   my($list, $np) = $self->dbRevisionGet(
@@ -274,7 +273,7 @@ sub history {
       a $f->{r}  ? (class => 'optselected') : (), href => $u->(r => 1), mt '_hist_filter_increl';
      end;
    }
-  end;
+  end 'div';
 
   $self->htmlBrowseHist($list, $f, $np, $u->());
   $self->htmlFooter;
@@ -287,7 +286,7 @@ sub docpage {
   my $l = '.'.$self->{l10n}->language_tag();
   my $f = sprintf('%s/data/docs/%d', $VNDB::ROOT, $did);
   my $F;
-  open($F, '<:utf8', $f.$l) or open($F, '<:utf8', $f) or return 404;
+  open($F, '<:utf8', $f.$l) or open($F, '<:utf8', $f) or return $self->resNotFound;
   my @c = <$F>;
   close $F;
 
@@ -343,8 +342,8 @@ sub docpage {
 sub setlang {
   my $self = shift;
 
-  my $lang = $self->formValidate({name => 'lang', required => 1, enum => [ VNDB::L10N::languages ]});
-  return 404 if $lang->{_err};
+  my $lang = $self->formValidate({get => 'lang', required => 1, enum => [ VNDB::L10N::languages ]});
+  return $self->resNotFound if $lang->{_err};
   $lang = $lang->{lang};
 
   my $browser = VNDB::L10N->get_handle()->language_tag();
@@ -354,9 +353,7 @@ sub setlang {
   if($lang ne $self->{l10n}->language_tag()) {
     $self->authInfo->{id}
     ? $self->authPref(l10n => $lang eq $browser ? undef : $lang)
-    : $self->resHeader('Set-Cookie', sprintf 'l10n=%s; expires=%s; path=/; domain=%s',
-        $lang, $lang eq $browser ? 'Sat, 01-Jan-2000 00:00:00 GMT' : 'Sat, 01-Jan-2030 00:00:00 GMT',
-        $self->{cookie_domain});
+    : $self->resCookie(l10n => $lang eq $browser ? undef : $lang, expires => time()+31536000);
   }
 }
 
@@ -377,57 +374,15 @@ sub nospam {
 }
 
 
-sub iemessage {
-  my $self = shift;
-
-  if($self->reqParam('i-still-want-access')) {
-    (my $ref = $self->reqHeader('Referer') || '/') =~ s/^\Q$self->{url}//;
-    $ref = '/' if $ref eq '/we-dont-like-ie';
-    $self->resRedirect($ref, 'temp');
-    $self->resHeader('Set-Cookie', "ie-sucks=1; path=/; domain=$self->{cookie_domain}");
-    return;
-  }
-
-  html;
-   head;
-    title 'Your browser sucks';
-    style type => 'text/css',
-      q|body { background: black }|
-     .q|div  { position: absolute; left: 50%; top: 50%; width: 500px; margin-left: -250px; height: 180px; margin-top: -90px; background-color: #012; border: 1px solid #258; text-align: center; }|
-     .q|p    { color: #ddd; margin: 10px; font: 9pt "Tahoma"; }|
-     .q|h1   { color: #258; font-size: 14pt; font-family: "Futura", "Century New Gothic", "Arial", Serif; font-weight: normal; margin: 10px 0 0 0; } |
-     .q|a    { color: #fff }|;
-   end;
-   body;
-    div;
-     h1 'Oops, we were too lazy to support your browser!';
-     p;
-      lit qq|We decided to stop supporting Internet Explorer 6 and 7, as it's a royal pain in |
-         .qq|the ass to make our site look good in a browser that doesn't want to cooperate with us.<br />|
-         .qq|You can try one of the following free alternatives: |
-         .qq|<a href="http://www.mozilla.com/firefox/">Firefox</a>, |
-         .qq|<a href="http://www.opera.com/">Opera</a>, |
-         .qq|<a href="http://www.apple.com/safari/">Safari</a>, or |
-         .qq|<a href="http://www.google.com/chrome">Chrome</a>.<br /><br />|
-         .qq|If you're really stubborn about using Internet Explorer, upgrading to version 8 will also work.<br /><br />|
-         .qq|...and if you're mad, you can also choose to ignore this warning and |
-         .qq|<a href="/we-dont-like-ie?i-still-want-access=1">open the site anyway</a>.|;
-     end;
-    end;
-   end;
-  end;
-}
-
-
 sub prefs {
   my $self = shift;
   return if !$self->authCheckCode;
-  return 404 if !$self->authInfo->{id};
+  return $self->resNotFound if !$self->authInfo->{id};
   my $f = $self->formValidate(
-    { name => 'key',   enum => [qw|filter_vn filter_release|] },
-    { name => 'value', required => 0, maxlength => 2000 },
+    { get => 'key',   enum => [qw|filter_vn filter_release|] },
+    { get => 'value', required => 0, maxlength => 2000 },
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
   $self->authPref($f->{key}, $f->{value});
 
   # doesn't really matter what we return, as long as it's XML
@@ -452,7 +407,7 @@ sub opensearch {
    tag 'Url', type => 'application/opensearchdescription+xml', rel => 'self', template => $self->{url}.'/opensearch.xml', undef;
    tag 'Query', role => 'example', searchTerms => 'Tsukihime', undef;
    tag 'moz:SearchForm', $self->{url}.'/v/all';
-  end;
+  end 'OpenSearchDescription';
 }
 
 

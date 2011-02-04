@@ -3,7 +3,7 @@ package VNDB::Util::CommonHTML;
 
 use strict;
 use warnings;
-use YAWF ':html', 'xml_escape';
+use TUWF ':html', 'xml_escape', 'html_escape';
 use Exporter 'import';
 use Algorithm::Diff::Fast 'compact_diff';
 use VNDB::Func;
@@ -95,7 +95,7 @@ sub htmlMainTabs {
    li !$sel ? (class => 'tabselected') : ();
     a href => "/$id", $id;
    end;
-  end;
+  end 'ul';
 }
 
 
@@ -114,7 +114,7 @@ sub htmlDenied {
       p mt '_denied_noaccess_msg';
     }
    end;
-  end;
+  end 'div';
   $self->htmlFooter;
 }
 
@@ -140,7 +140,7 @@ sub htmlHiddenMessage {
      lit bb2html $editsum;
     end;
    end;
-  end;
+  end 'div';
   return $self->htmlFooter() || 1 if !$self->authCan('del');
   return 0;
 }
@@ -205,9 +205,9 @@ sub htmlRevision {
         [ ilock  => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
         @fields
       );
-     end;
+     end 'table';
    }
-  end;
+  end 'div';
 }
 
 sub revheader { # type, obj
@@ -233,8 +233,8 @@ sub revdiff {
 
   if($o{diff} && $ser1 && $ser2) {
     my $sep = ref $o{diff} ? qr/($o{diff})/ : qr//;
-    my @ser1 = $o{split} ? $o{split}->($ser1) : map xml_escape($_), split $sep, $ser1;
-    my @ser2 = $o{split} ? $o{split}->($ser2) : map xml_escape($_), split $sep, $ser2;
+    my @ser1 = $o{split} ? $o{split}->($ser1) : map html_escape($_), split $sep, $ser1;
+    my @ser2 = $o{split} ? $o{split}->($ser2) : map html_escape($_), split $sep, $ser2;
     return if $o{split} && $#ser1 == $#ser2 && !grep $ser1[$_] ne $ser2[$_], 0..$#ser1;
 
     $ser1 = $ser2 = '';
@@ -247,8 +247,8 @@ sub revdiff {
       $ser2 .= ($ser2?$o{join}:'').($i % 2 ? qq|<b class="diff_add">$b</b>| : $b) if $b ne '';
     }
   } elsif(!$o{htmlize}) {
-    $ser1 = xml_escape $ser1;
-    $ser2 = xml_escape $ser2;
+    $ser1 = html_escape $ser1;
+    $ser2 = html_escape $ser2;
   }
 
   $ser1 = mt '_revision_empty' if !$ser1 && $ser1 ne '0';
@@ -297,7 +297,7 @@ sub htmlEditMessage {
       p mt '_editmsg_revert_msg', $num;
      end;
    }
-  end;
+  end 'div';
 }
 
 
@@ -347,7 +347,7 @@ sub htmlVoteStats {
        end;
       end;
     }
-   end;
+   end 'table';
 
    my $recent = $self->dbVoteGet(
      $type.'id' => $obj->{id},
@@ -381,7 +381,7 @@ sub htmlVoteStats {
          td $self->{l10n}->date($recent->[$_]{date});
         end;
       }
-     end;
+     end 'table';
    }
 
    clearfloat;
@@ -392,7 +392,7 @@ sub htmlVoteStats {
       p mt '_votestats_rank_rat', $obj->{r_ranking}, sprintf '%.2f', $obj->{c_rating};
      end;
    }
-  end;
+  end 'div';
 }
 
 
@@ -409,7 +409,7 @@ sub htmlSearchBox {
    end;
    input type => 'text', name => 'q', id => 'q', class => 'text', value => $v;
    input type => 'submit', class => 'submit', value => mt '_searchbox_submit';
-  end;
+  end 'fieldset';
 }
 
 
@@ -430,21 +430,7 @@ sub htmlRGHeader {
     return 1;
   }
   $self->resHeader('Content-Type' => 'application/xhtml+xml; charset=UTF-8');
-
-  # This is a REALLY ugly hack, need find a proper solution in YAWF
-  no warnings 'redefine';
-  my $sub = \&YAWF::XML::html;
-  *YAWF::XML::html = sub () {
-     lit q|<!DOCTYPE html PUBLIC
-         "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"
-             "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">|;
-     tag 'html',
-       xmlns         => "http://www.w3.org/1999/xhtml",
-       'xmlns:svg'   => 'http://www.w3.org/2000/svg',
-       'xmlns:xlink' => 'http://www.w3.org/1999/xlink';
-  };
-  $self->htmlHeader(title => $title);
-  *YAWF::XML::html = $sub;
+  $self->htmlHeader(title => $title, svg => 1);
   $self->htmlMainTabs($type, $obj, 'rg');
   return 0;
 }

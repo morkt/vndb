@@ -103,6 +103,7 @@ BEGIN
     WITH RECURSIVE tags_vn_all(lvl, tag, vid, uid, vote, spoiler, meta) AS (
         SELECT 15, tag, vid, uid, vote, spoiler, false
         FROM tags_vn
+       WHERE NOT ignore
       UNION ALL
         SELECT lvl-1, tp.parent, ta.vid, ta.uid, ta.vote, ta.spoiler, t.meta
         FROM tags_vn_all ta

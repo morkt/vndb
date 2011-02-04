@@ -14,16 +14,15 @@ Requirements
     Linux, or an OS that resembles Linux. Chances are VNDB won't run on Windows.
     PostgreSQL 9.0+ (don't try older versions or other SQL databases, it won't work)
     perl 5.12 recommended, 5.10 may also work
-    A webserver that works with YAWF (lighttpd and Apache are known to work)
+    A webserver that works with TUWF (lighttpd and Apache are known to work)
 
   (perl 5.12 core modules are not listed.)
 
   util/vndb.pl:
     Algorithm::Diff::Fast
-    CGI::Minimal         (required by YAWF)
-    CGI::Cookie::XS      (required by YAWF)
     DBI
     DBD::Pg
+    TUWF                 (get it from http://g.blicky.net/tuwf.git/)
     FCGI                 (optional, for running as a FastCGI script)
     PerlIO::gzip         (optional, for output compression)
 
@@ -35,8 +34,6 @@ Requirements
       DBD::Pg
       POE
       POE::Component::Pg (get it from http://g.blicky.net/poco-pg.git/)
-    Feed:
-      XML::Writer
     IRC:
       POE::Component::IRC
     Image:
@@ -45,7 +42,6 @@ Requirements
       PerlIO::gzip
     RG:
       XML::Parser
-      XML::Writer
       graphviz           (/usr/bin/dot is used by default)
 
   util/skingen.pl

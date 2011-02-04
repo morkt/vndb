@@ -10,7 +10,7 @@ use Digest::SHA qw|sha1_hex sha256_hex|;
 use Time::HiRes;
 use Encode 'encode_utf8';
 use POSIX 'strftime';
-use YAWF ':html';
+use TUWF ':html';
 use VNDB::Func;
 
 
@@ -22,15 +22,15 @@ sub authInit {
   my $self = shift;
   $self->{_auth} = undef;
 
-  my $cookie = $self->reqCookie($self->{cookie_prefix}.'auth');
+  my $cookie = $self->reqCookie('auth');
   return 0 if !$cookie;
-  return _rmcookie($self) if length($cookie) < 41;
+  return $self->resCookie(auth => undef) if length($cookie) < 41;
   my $token = substr($cookie, 0, 40);
   my $uid  = substr($cookie, 40);
   $self->{_auth} = $uid =~ /^\d+$/ && $self->dbUserGet(uid => $uid, session => $token, what => 'extended notifycount prefs')->[0];
   # update the sessions.lastused column if lastused < now()'6 hours'
   $self->dbSessionUpdateLastUsed($uid, $token) if $self->{_auth} && $self->{_auth}{session_lastused} < time()-6*3600;
-  return _rmcookie($self) if !$self->{_auth};
+  return $self->resCookie(auth => undef) if !$self->{_auth};
 }
 
 
@@ -47,9 +47,8 @@ sub authLogin {
     my $cookie = $token . $self->{_auth}{id};
     $self->dbSessionAdd($self->{_auth}{id}, $token);
 
-    my $expstr = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime(time + 31536000)); # keep the cookie for 1 year
     $self->resRedirect($to, 'post');
-    $self->resHeader('Set-Cookie', "$self->{cookie_prefix}auth=$cookie; expires=$expstr; path=/; domain=$self->{cookie_domain}");
+    $self->resCookie(auth => $cookie, expires => time + 31536000); # keep the cookie for 1 year
     return 1;
   }
 
@@ -61,7 +60,7 @@ sub authLogin {
 sub authLogout {
   my $self = shift;
 
-  my $cookie = $self->reqCookie($self->{cookie_prefix}.'auth');
+  my $cookie = $self->reqCookie('auth');
   if ($cookie && length($cookie) >= 41) {
     my $token = substr($cookie, 0, 40);
     my $uid  = substr($cookie, 40);
@@ -69,11 +68,11 @@ sub authLogout {
   }
 
   $self->resRedirect('/', 'temp');
-  _rmcookie($self);
+  $self->resCookie(auth => undef);
 
   # set l10n cookie if the user has a preferred language set
   my $l10n = $self->authPref('l10n');
-  $self->resHeader('Set-Cookie', "l10n=$l10n; expires=Sat, 01-Jan-2030 00:00:00 GMT; path=/; domain=$self->{cookie_domain}") if $l10n;
+  $self->resCookie(l10n => $l10n, expires => time()+31536000) if $l10n; # keep 1 year
 }
 
 
@@ -138,13 +137,6 @@ sub authPreparePass{
   my $salt = join '', map chr(rand(93)+33), 1..9;
   my $hash = _authEncryptPass($self, $pass, $salt);
   return ($hash, $salt);
-}
-
-
-# removes the vndb_auth cookie
-sub _rmcookie {
-  $_[0]->resHeader('Set-Cookie',
-    "$_[0]->{cookie_prefix}auth= ; expires=Sat, 01-Jan-2000 00:00:00 GMT; path=/; domain=$_[0]->{cookie_domain}");
 }
 
 

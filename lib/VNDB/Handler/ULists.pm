@@ -3,11 +3,11 @@ package VNDB::Handler::ULists;
 
 use strict;
 use warnings;
-use YAWF ':html', ':xml';
+use TUWF ':html', ':xml';
 use VNDB::Func;
 
 
-YAWF::register(
+TUWF::register(
   qr{v([1-9]\d*)/vote},  \&vnvote,
   qr{v([1-9]\d*)/wish},  \&vnwish,
   qr{v([1-9]\d*)/list},  \&vnlist_e,
@@ -27,9 +27,9 @@ sub vnvote {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { name => 'v', enum => [ -1, 1..10 ] }
+    { get => 'v', enum => [ -1, 1..10 ] }
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   $self->dbVoteDel($uid, $id) if $f->{v} == -1;
   $self->dbVoteAdd($id, $uid, $f->{v}) if $f->{v} > 0;
@@ -46,9 +46,9 @@ sub vnwish {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { name => 's', enum => [ -1, @{$self->{wishlist_status}} ] }
+    { get => 's', enum => [ -1, @{$self->{wishlist_status}} ] }
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   $self->dbWishListDel($uid, $id) if $f->{s} == -1;
   $self->dbWishListAdd($id, $uid, $f->{s}) if $f->{s} != -1;
@@ -65,9 +65,9 @@ sub vnlist_e {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { name => 'e', enum => [ -1, @{$self->{vnlist_status}} ] }
+    { get => 'e', enum => [ -1, @{$self->{vnlist_status}} ] }
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   $self->dbVNListDel($uid, $id) if $f->{e} == -1;
   $self->dbVNListAdd($uid, $id, $f->{e}) if $f->{e} != -1;
@@ -82,9 +82,9 @@ sub rlist_e {
   my $rid = $id;
   if(!$rid) {
     my $f = $self->formValidate(
-      { name => 'id', required => 1, template => 'int' }
+      { get => 'id', required => 1, template => 'int' }
     );
-    return 404 if $f->{_err};
+    return $self->resNotFound if $f->{_err};
     $rid = $f->{id};
   }
 
@@ -93,9 +93,9 @@ sub rlist_e {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { name => 'e', required => 1, enum => [ -1, @{$self->{rlist_status}} ] }
+    { get => 'e', required => 1, enum => [ -1, @{$self->{rlist_status}} ] }
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   $self->dbRListDel($uid, $rid) if $f->{e} == -1;
   $self->dbRListAdd($uid, $rid, $f->{e}) if $f->{e} >= 0;
@@ -116,24 +116,24 @@ sub votelist {
   my($self, $type, $id) = @_;
 
   my $obj = $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : $self->dbUserGet(uid => $id, what => 'hide_list')->[0];
-  return 404 if !$obj->{id};
+  return $self->resNotFound if !$obj->{id};
 
   my $own = $type eq 'u' && $self->authInfo->{id} && $self->authInfo->{id} == $id;
-  return 404 if $type eq 'u' && !$own && !(!$obj->{hide_list} || $self->authCan('usermod'));
+  return $self->resNotFound if $type eq 'u' && !$own && !(!$obj->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
-    { name => 'p',  required => 0, default => 1, template => 'int' },
-    { name => 'o',  required => 0, default => 'd', enum => ['a', 'd'] },
-    { name => 's',  required => 0, default => 'date', enum => [qw|date title vote|] },
-    { name => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
+    { get => 'p',  required => 0, default => 1, template => 'int' },
+    { get => 'o',  required => 0, default => 'd', enum => ['a', 'd'] },
+    { get => 's',  required => 0, default => 'date', enum => [qw|date title vote|] },
+    { get => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   if($own && $self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { name => 'vid', required => 1, multi => 1, template => 'int' },
-      { name => 'batchedit', required => 1, enum => [ -2, -1, 1..10 ] },
+      { post => 'vid', required => 1, multi => 1, template => 'int' },
+      { post => 'batchedit', required => 1, enum => [ -2, -1, 1..10 ] },
     );
     my @vid = grep $_ && $_ > 0, @{$frm->{vid}};
     if(!$frm->{_err} && @vid && $frm->{batchedit} > -2) {
@@ -210,7 +210,7 @@ sub votelist {
          option value => -1, 'revoke';
         end;
        end;
-      end;
+      end 'tr';
     }) : (),
   );
   end if $own;
@@ -223,21 +223,21 @@ sub wishlist {
 
   my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
   my $u = $self->dbUserGet(uid => $uid, what => 'hide_list')->[0];
-  return 404 if !$u || !$own && !(!$u->{hide_list} || $self->authCan('usermod'));
+  return $self->resNotFound if !$u || !$own && !(!$u->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
-    { name => 'p', required => 0, default => 1, template => 'int' },
-    { name => 'o', required => 0, default => 'd', enum => [ 'a', 'd' ] },
-    { name => 's', required => 0, default => 'wstat', enum => [qw|title added wstat|] },
-    { name => 'f', required => 0, default => -1, enum => [ -1, @{$self->{wishlist_status}} ] },
+    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'o', required => 0, default => 'd', enum => [ 'a', 'd' ] },
+    { get => 's', required => 0, default => 'wstat', enum => [qw|title added wstat|] },
+    { get => 'f', required => 0, default => -1, enum => [ -1, @{$self->{wishlist_status}} ] },
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   if($own && $self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { name => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
-      { name => 'batchedit', required => 1, enum => [ -1, @{$self->{wishlist_status}} ] },
+      { post => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
+      { post => 'batchedit', required => 1, enum => [ -1, @{$self->{wishlist_status}} ] },
     );
     if(!$frm->{_err} && @{$frm->{sel}} && $frm->{sel}[0]) {
       $self->dbWishListDel($uid, $frm->{sel}) if $frm->{batchedit} == -1;
@@ -269,7 +269,7 @@ sub wishlist {
         $_ == -1 ? mt '_wishlist_prio_all' : mt "_wish_$_"
       for (-1, @{$self->{wishlist_status}});
    end;
-  end;
+  end 'div';
 
   if($own) {
     my $code = $self->authGetCode("/u$uid/wish");
@@ -315,7 +315,7 @@ sub wishlist {
       end;
     }) : (),
   );
-  end if $own;
+  end 'form' if $own;
   $self->htmlFooter;
 }
 
@@ -325,26 +325,26 @@ sub vnlist {
 
   my $own = $self->authInfo->{id} && $self->authInfo->{id} == $uid;
   my $u = $self->dbUserGet(uid => $uid, what => 'hide_list')->[0];
-  return 404 if !$u || !$own && !(!$u->{hide_list} || $self->authCan('usermod'));
+  return $self->resNotFound if !$u || !$own && !(!$u->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
-    { name => 'p',  required => 0, default => 1, template => 'int' },
-    { name => 'o',  required => 0, default => 'a', enum => [ 'a', 'd' ] },
-    { name => 's',  required => 0, default => 'title', enum => [ 'title', 'vote' ] },
-    { name => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
-    { name => 'v',  required => 0, default => 0, enum => [ -1..1  ] },
-    { name => 't',  required => 0, default => -1, enum => [ -1, @{$self->{vnlist_status}} ] },
+    { get => 'p',  required => 0, default => 1, template => 'int' },
+    { get => 'o',  required => 0, default => 'a', enum => [ 'a', 'd' ] },
+    { get => 's',  required => 0, default => 'title', enum => [ 'title', 'vote' ] },
+    { get => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
+    { get => 'v',  required => 0, default => 0, enum => [ -1..1  ] },
+    { get => 't',  required => 0, default => -1, enum => [ -1, @{$self->{vnlist_status}} ] },
   );
-  return 404 if $f->{_err};
+  return $self->resNotFound if $f->{_err};
 
   if($own && $self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { name => 'vid', required => 0, default => 0, multi => 1, template => 'int' },
-      { name => 'rid', required => 0, default => 0, multi => 1, template => 'int' },
-      { name => 'not', required => 0, default => '', maxlength => 2000 },
-      { name => 'vns', required => 1, enum => [ -2, -1, @{$self->{vnlist_status}}, 999 ] },
-      { name => 'rel', required => 1, enum => [ -2, -1, @{$self->{rlist_status}} ] },
+      { post => 'vid', required => 0, default => 0, multi => 1, template => 'int' },
+      { post => 'rid', required => 0, default => 0, multi => 1, template => 'int' },
+      { post => 'not', required => 0, default => '', maxlength => 2000 },
+      { post => 'vns', required => 1, enum => [ -2, -1, @{$self->{vnlist_status}}, 999 ] },
+      { post => 'rel', required => 1, enum => [ -2, -1, @{$self->{rlist_status}} ] },
     );
     my @vid = grep $_ > 0, @{$frm->{vid}};
     my @rid = grep $_ > 0, @{$frm->{rid}};
@@ -404,7 +404,7 @@ sub vnlist {
     a href => $url->(t => -1), -1 == $f->{t} ? (class => 'optselected') : (), mt '_rlist_all';
     a href => $url->(t => $_), $_ == $f->{t} ? (class => 'optselected') : (), mt '_vnlist_status_'.$_ for @{$self->{vnlist_status}};
    end;
-  end;
+  end 'div';
 
   _vnlist_browse($self, $own, $list, $np, $f, $url, $uid);
   $self->htmlFooter;
@@ -458,7 +458,7 @@ sub _vnlist_browse {
         lit $txt;
        end;
        td class => 'tc8', $i->{vote} || '-';
-      end;
+      end 'tr';
 
       for (@{$i->{rels}}) {
         Tr class => "collapse relhid collapse_vid$i->{vid}".($n%2 ? '':' odd');
@@ -476,7 +476,7 @@ sub _vnlist_browse {
          end;
          td class => 'tc6', $_->{status} ? mt '_rlist_status_'.$_->{status} : '';
          td class => 'tc7_8', colspan => 2, '';
-        end;
+        end 'tr';
       }
     },
 
@@ -505,11 +505,11 @@ sub _vnlist_browse {
         input type => 'submit', value => mt '_rlist_update';
        end;
        td class => 'tc7_8', colspan => 2, mt '_rlist_releasenote';
-      end;
+      end 'tr';
     }) : (),
   );
 
-  end if $own;
+  end 'form' if $own;
 }
 
 1;
