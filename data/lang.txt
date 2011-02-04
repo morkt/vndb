@@ -2463,7 +2463,7 @@ nl : Gerelateerde discussies voor [_1]
 # also used on the discussion board index (/t)
 :_disboard_item_all
 en : All boards
-ru*:
+ru : Все доски
 cs*:
 hu*:
 nl : Alle fora
@@ -3776,21 +3776,21 @@ nl : Uitgegeven voor
 
 :_rbrowse_released
 en : Release date
-ru*:
+ru : Статус выпуска
 cs*:
 hu*:
 nl : Uitgavedatum
 
 :_rbrowse_released_yes
 en : Past (already released)
-ru*:
+ru : Уже выпущен
 cs*:
 hu*:
 nl : Verleden (al uitgegeven)
 
 :_rbrowse_released_no
 en : Future (to be released)
-ru*:
+ru : Ещё не выпущен
 cs*:
 hu*:
 nl : Toekomst (nog niet uitgegeven)
@@ -6346,7 +6346,7 @@ nl : Volledige grootte: [_1]
 
 :_vnedit_scr_nonstandard
 en : WARNING: Odd resolution! Please check whether the image has been cropped correctly.
-ru*:
+ru : ВНИМАНИЕ: Странное разрешение! Проверьте, что изображение правильно обрезано.
 cs*:
 hu*:
 nl : WAARSCHUWING: Vreemde resolutie! Controleer a.u.b. of de plaatje goed is gecropped.
