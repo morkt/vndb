@@ -125,29 +125,17 @@ sub _uploadimage {
   my($self, $v, $frm) = @_;
   return $v ? $frm->{previmage} : 0 if $frm->{_err} || !$self->reqPost('img');
 
-  # save to temporary location
-  my $tmp = sprintf '%s/static/cv/00/tmp.%d.jpg', $VNDB::ROOT, $$*int(rand(1000)+1);
-  $self->reqSaveUpload('img', $tmp);
+  # perform some elementary checks
+  my $imgdata = $self->reqUploadRaw('img');
+  $frm->{_err} = [ 'noimage' ] if $imgdata !~ /^(\xff\xd8|\x89\x50)/; # JPG or PNG headers
+  $frm->{_err} = [ 'toolarge' ] if length($imgdata) > 512*1024;
+  return undef if $frm->{_err};
 
-  # perform some checks
-  my $l;
-  open(my $T, '<:raw:bytes', $tmp) || die $1;
-  read $T, $l, 2;
-  close($T);
-
-  $frm->{_err} = [ 'noimage' ] if $l ne pack('H*', 'ffd8') && $l ne pack('H*', '8950');
-  $frm->{_err} = [ 'toolarge' ] if -s $tmp > 512*1024;
-
-  if($frm->{_err}) {
-    unlink $tmp;
-    return undef;
-  }
-
-  # get image ID and move it to the correct location
+  # get image ID and save it, to be processed by Multi
   my $imgid = $self->dbVNImageId;
-  my $new = sprintf '%s/static/cv/%02d/%d.jpg', $VNDB::ROOT, $imgid%100, $imgid;
-  rename $tmp, $new or die $!;
-  chmod 0666, $new;
+  my $fn = sprintf '%s/static/cv/%02d/%d.jpg', $VNDB::ROOT, $imgid%100, $imgid;
+  $self->reqSaveUpload('img', $fn);
+  chmod 0666, $fn;
 
   return -1*$imgid;
 }
@@ -337,26 +325,20 @@ sub scrxml {
   # upload new screenshot
   my $num = $self->formValidate({get => 'upload', template => 'int'});
   return $self->resNotFound if $num->{_err};
-  my $tmp = sprintf '%s/static/sf/00/tmp.%d.jpg', $VNDB::ROOT, $$*int(rand(1000)+1);
-  $self->reqSaveUpload("scr_upl_file_$num->{upload}", $tmp);
+  my $param = "scr_upl_file_$num->{upload}";
 
+  # check for simple errors
   my $id = 0;
-  $id = -2 if !-s $tmp;
-  if(!$id) {
-    my $l;
-    open(my $T, '<:raw:bytes', $tmp) || die $1;
-    read $T, $l, 2;
-    close($T);
-    $id = -1 if $l ne pack('H*', 'ffd8') && $l ne pack('H*', '8950');
-  }
+  my $imgdata = $self->reqUploadRaw($param);
+  $id = -2 if !$imgdata;
+  $id = -1 if !$id && $imgdata !~ /^(\xff\xd8|\x89\x50)/; # JPG or PNG headers
 
-  if($id) {
-    unlink $tmp;
-  } else {
+  # no error? save and let Multi process it
+  if(!$id) {
     $id = $self->dbScreenshotAdd;
-    my $new = sprintf '%s/static/sf/%02d/%d.jpg', $VNDB::ROOT, $id%100, $id;
-    rename $tmp, $new or die $!;
-    chmod 0666, $new;
+    my $fn = sprintf '%s/static/sf/%02d/%d.jpg', $VNDB::ROOT, $id%100, $id;
+    $self->reqSaveUpload($param, $fn);
+    chmod 0666, $fn;
   }
 
   xml;

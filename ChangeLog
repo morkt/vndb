@@ -9,6 +9,7 @@
 	- Added /t/all - a listing of all recently replied to threads
 	- Added error message when selected meta tags on VN filters
 	- Display warning for non-standard resolutions of uploaded screenshots
+	- Don't save uploaded image to a temporary location before checks
 	- Bugfix: Correctly randomize screenshots on homepage with filters
 	- Bugfix: Don't show NSFW screenshots on homepage with filters
 	- Bugfix-API: Use ~ for the get vn search filter instead of =
