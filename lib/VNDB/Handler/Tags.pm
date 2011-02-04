@@ -204,6 +204,7 @@ sub tagedit {
       { post => 'name',        required => 1, maxlength => 250, regex => [ qr/^[^,]+$/, 'A comma is not allowed in tag names' ] },
       { post => 'state',       required => 0, default => 0,  enum => [ 0..2 ] },
       { post => 'cat',         required => 1, enum => $self->{tag_categories} },
+      { post => 'catrec',      required => 0 },
       { post => 'meta',        required => 0, default => 0 },
       { post => 'alias',       required => 0, maxlength => 1024, default => '', regex => [ qr/^[^,]+$/s, 'No comma allowed in aliases' ]  },
       { post => 'description', required => 0, maxlength => 10240, default => '' },
@@ -226,6 +227,7 @@ sub tagedit {
         $_ = $c->[0]{id};
       }
     }
+
     if(!$frm->{_err}) {
       $frm->{state} = $frm->{meta} = 0 if !$self->authCan('tagmod');
       my %opts = (
@@ -241,6 +243,7 @@ sub tagedit {
         $tag = $self->dbTagAdd(%opts);
       } else {
         $self->dbTagEdit($tag, %opts, upddate => $frm->{state} == 2 && $t->{state} != 2);
+        _set_childs_cat($self, $tag, $frm->{cat}) if $frm->{catrec};
       }
       $self->dbTagMerge($tag, @merge) if $self->authCan('tagmod') && @merge;
       $self->resRedirect("/g$tag", 'post');
@@ -283,6 +286,10 @@ sub tagedit {
     ) : (),
     [ select   => short => 'cat', name => mt('_tagedit_frm_cat'), options => [
       map [$_, mt "_tagcat_$_"], @{$self->{tag_categories}} ] ],
+    $self->authCan('tagmod') && $tag ? (
+      [ checkbox => short => 'catrec', name => mt '_tagedit_frm_catrec' ],
+      [ static => content => mt '_tagedit_frm_catrec_warn' ],
+    ) : (),
     [ textarea => short => 'alias',    name => mt('_tagedit_frm_alias'), cols => 30, rows => 4 ],
     [ textarea => short => 'description', name => mt '_tagedit_frm_desc' ],
     [ static   => content => mt '_tagedit_frm_desc_msg' ],
@@ -295,6 +302,27 @@ sub tagedit {
     ) : (),
   ]);
   $self->htmlFooter;
+}
+
+# recursively edit all child tags and set the category field
+# Note: this can be done more efficiently by doing everything in one UPDATE
+#  query, but that takes more code and this feature isn't used very often
+#  anyway.
+sub _set_childs_cat {
+  my($self, $tag, $cat) = @_;
+  my %done;
+
+  my $e;
+  $e = sub {
+    my $l = shift;
+    for (@$l) {
+      $self->dbTagEdit($_->{id}, cat => $cat) if !$done{$_->{id}}++;
+      $e->($_->{sub}) if $_->{sub};
+    }
+  };
+
+  my $childs = $self->dbTagTree($tag, 25);
+  $e->($childs);
 }
 
 

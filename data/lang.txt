@@ -4195,6 +4195,20 @@ cs*:
 hu*:
 nl : Categorie
 
+:_tagedit_frm_catrec
+en : Also edit all child tags to have this category
+ru*:
+cs*:
+hu*:
+nl : Zet deze categorie ook voor alle subtags
+
+:_tagedit_frm_catrec_warn
+en : WARNING: This will overwrite the category field for all child tags, this action can not be reverted!
+ru*:
+cs*:
+hu*:
+nl : WAARSCHUWING: Hiermee wordt het categoriefeld voor alle subtags overschreven, dit kan niet ongedaan worden gemaakt!
+
 :_tagedit_frm_alias
 en : Aliases
      (separated by newlines)

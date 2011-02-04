@@ -122,13 +122,17 @@ sub dbTagEdit {
 
   $self->dbExec('UPDATE tags !H WHERE id = ?', {
     $o{upddate} ? ('added = NOW()' => 1) : (),
-    map { +"$_ = ?" => $o{$_} } qw|name meta description state cat|
+    map exists($o{$_}) ? ("$_ = ?" => $o{$_}) : (), qw|name meta description state cat|
   }, $id);
-  $self->dbExec('DELETE FROM tags_aliases WHERE tag = ?', $id);
-  $self->dbExec('INSERT INTO tags_aliases (tag, alias) VALUES (?, ?)', $id, $_) for (@{$o{aliases}});
-  $self->dbExec('DELETE FROM tags_parents WHERE tag = ?', $id);
-  $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
-  $self->dbExec('DELETE FROM tags_vn WHERE tag = ?', $id) if $o{meta} || $o{state} == 1;
+  if($o{aliases}) {
+    $self->dbExec('DELETE FROM tags_aliases WHERE tag = ?', $id);
+    $self->dbExec('INSERT INTO tags_aliases (tag, alias) VALUES (?, ?)', $id, $_) for (@{$o{aliases}});
+  }
+  if($o{parents}) {
+    $self->dbExec('DELETE FROM tags_parents WHERE tag = ?', $id);
+    $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
+  }
+  $self->dbExec('DELETE FROM tags_vn WHERE tag = ?', $id) if $o{meta} || ($o{state} && $o{state} == 1);
 }
 
 
