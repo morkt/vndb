@@ -77,7 +77,7 @@ sub _fil_compat {
   my $f = $self->formValidate(
     { get => 'ln', required => 0, multi => 1, enum => $self->{languages}, default => '' },
     { get => 'pl', required => 0, multi => 1, enum => $self->{platforms}, default => '' },
-    { get => 'sp', required => 0, default => $self->reqCookie('tagspoil') =~ /^([0-2])$/ ? $1 : 0, enum => [0..2] },
+    { get => 'sp', required => 0, default => ($self->reqCookie('tagspoil')||'') =~ /^([0-2])$/ ? $1 : 0, enum => [0..2] },
   );
   return () if $f->{_err};
   $c{lang}     //= $f->{ln} if $f->{ln}[0];
