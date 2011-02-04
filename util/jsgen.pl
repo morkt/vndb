@@ -8,7 +8,7 @@ use Encode 'encode_utf8';
 use Cwd 'abs_path';
 eval { require JavaScript::Minifier::XS; };
 
-our($ROOT, %S);
+our($ROOT, %S, %O);
 BEGIN { ($ROOT = abs_path $0) =~ s{/util/jsgen\.pl$}{}; }
 require $ROOT.'/data/global.pl';
 
@@ -101,7 +101,7 @@ sub jsgen {
   l10n_load();
   my $common = '';
   $common .= sprintf "rlist_status = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlist_status}};
-  $common .= sprintf "cookie_prefix = '%s';\n", $S{cookie_prefix};
+  $common .= sprintf "cookie_prefix = '%s';\n", $O{cookie_prefix};
   $common .= sprintf "age_ratings = [ %s ];\n", join ',', @{$S{age_ratings}};
   $common .= sprintf "languages = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{languages}};
   $common .= sprintf "platforms = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{platforms}};
