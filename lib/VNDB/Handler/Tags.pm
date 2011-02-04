@@ -94,6 +94,11 @@ sub tagpage {
       lit bb2html $t->{description};
      end;
    }
+   p class => 'center';
+    b mt('_tagp_cat');
+    br;
+    txt mt("_tagcat_$t->{cat}");
+   end;
    if(@{$t->{aliases}}) {
      p class => 'center';
       b mt('_tagp_aliases');
@@ -198,6 +203,7 @@ sub tagedit {
     $frm = $self->formValidate(
       { post => 'name',        required => 1, maxlength => 250, regex => [ qr/^[^,]+$/, 'A comma is not allowed in tag names' ] },
       { post => 'state',       required => 0, default => 0,  enum => [ 0..2 ] },
+      { post => 'cat',         required => 1, enum => $self->{tag_categories} },
       { post => 'meta',        required => 0, default => 0 },
       { post => 'alias',       required => 0, maxlength => 1024, default => '', regex => [ qr/^[^,]+$/s, 'No comma allowed in aliases' ]  },
       { post => 'description', required => 0, maxlength => 10240, default => '' },
@@ -225,6 +231,7 @@ sub tagedit {
       my %opts = (
         name => $frm->{name},
         state => $frm->{state},
+        cat => $frm->{cat},
         description => $frm->{description},
         meta => $frm->{meta}?1:0,
         aliases => \@aliases,
@@ -242,7 +249,7 @@ sub tagedit {
   }
 
   if($tag) {
-    $frm->{$_} ||= $t->{$_} for (qw|name meta description state|);
+    $frm->{$_} ||= $t->{$_} for (qw|name meta description state cat|);
     $frm->{alias} ||= join "\n", @{$t->{aliases}};
     $frm->{parents} ||= join ', ', map $_->{name}, @{$t->{parents}};
   }
@@ -274,6 +281,8 @@ sub tagedit {
       $tag ?
         [ static => content => mt '_tagedit_frm_meta_warn' ] : (),
     ) : (),
+    [ select   => short => 'cat', name => mt('_tagedit_frm_cat'), options => [
+      map [$_, mt "_tagcat_$_"], @{$self->{tag_categories}} ] ],
     [ textarea => short => 'alias',    name => mt('_tagedit_frm_alias'), cols => 30, rows => 4 ],
     [ textarea => short => 'description', name => mt '_tagedit_frm_desc' ],
     [ static   => content => mt '_tagedit_frm_desc_msg' ],

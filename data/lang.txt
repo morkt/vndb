@@ -1137,6 +1137,29 @@ hu : Lemondva
 nl : Opgegeven
 
 
+# Tag categories
+
+:_tagcat_cont
+en : Content
+ru*:
+cs*:
+hu*:
+nl : Inhoud
+
+:_tagcat_ero
+en : Sexual content
+ru*:
+cs*:
+hu*:
+nl : Erotisch
+
+:_tagcat_tech
+en : Technical
+ru*:
+cs*:
+hu*:
+nl : Technisch
+
 
 
 #############################################################################
@@ -3930,6 +3953,13 @@ cs : Tagy
 hu : Címkék
 nl :
 
+:_tagp_cat
+en : Category
+ru*:
+cs*:
+hu*:
+nl : Categorie
+
 :_tagp_aliases
 en : Aliases
 ru : Прочие названия
@@ -4157,6 +4187,13 @@ ru : ПРЕДУПРЕЖДЕНИЕ: Если выбрать данную опци
 cs : VAROVÁNÍ: Zaškrtnutí této volby nebo výběr položky "Smazáno" jako stavu smaže automaticky tag u všech vizuálních novel!
 hu : FIGYELEM: Ezen opció bejelölése vagy a "Törölve" állapot kiválasztása véglegesen megsemmisít minden összefüggést a VN-ekel!
 nl : WAARSCHUWING: Als je deze optie selecteerd of als je de status op "verwijderd" zet zullen alle stemmen permanent verwijderd worden!
+
+:_tagedit_frm_cat
+en : Category
+ru*:
+cs*:
+hu*:
+nl : Categorie
 
 :_tagedit_frm_alias
 en : Aliases
