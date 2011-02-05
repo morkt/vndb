@@ -140,8 +140,8 @@ sub dbTagEdit {
 # returns the id of the new tag
 sub dbTagAdd {
   my($self, %o) = @_;
-  my $id = $self->dbRow('INSERT INTO tags (name, meta, description, state, addedby) VALUES (!l, ?) RETURNING id',
-    [ map $o{$_}, qw|name meta description state| ], $o{addedby}||$self->authInfo->{id}
+  my $id = $self->dbRow('INSERT INTO tags (name, meta, description, state, cat, addedby) VALUES (!l, ?) RETURNING id',
+    [ map $o{$_}, qw|name meta description state cat| ], $o{addedby}||$self->authInfo->{id}
   )->{id};
   $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
   $self->dbExec('INSERT INTO tags_aliases (tag, alias) VALUES (?, ?)', $id, $_) for (@{$o{aliases}});
