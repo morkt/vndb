@@ -616,35 +616,50 @@ sub vntagmod {
         end;
        end; end 'tfoot';
        tbody id => 'tagtable';
-        for my $t (sort { $a->{name} cmp $b->{name} } @$tags) {
-          my $m = (grep $_->{tag} == $t->{id}, @$my)[0] || {};
-          Tr id => "tgl_$t->{id}";
-           td class => 'tc_tagname'; a href => "/g$t->{id}", $t->{name}; end;
-           td class => 'tc_myvote',  $m->{vote}||0;
-           if($self->authCan('tagmod')) {
-             td class => 'tc_myover';
-              input type => 'checkbox', name => 'overrule', value => $t->{id},
-                $m->{vote} && !$m->{ignore} && $t->{overruled} ? (checked => 'checked') : ()
-                if $t->{cnt} > 1;
-             end;
-           }
-           td class => 'tc_myspoil', defined $m->{spoiler} ? $m->{spoiler} : -1;
-           td class => 'tc_allvote';
-            tagscore $t->{rating};
-            i $t->{overruled} ? (class => 'grayedout') : (), " ($t->{cnt})";
-            b class => 'standout', style => 'font-weight: bold', ' !' if $t->{overruled};
-           end;
-           td class => 'tc_allspoil', sprintf '%.2f', $t->{spoiler};
-           td class => 'tc_allwho';
-            a href => "/g/links?v=$vid;t=$t->{id}", mt '_tagv_who';
-           end;
-          end;
-        }
+        _tagmod_list($self, $vid, $tags, $my);
        end 'tbody';
       end 'table';
     } ],
   ]);
   $self->htmlFooter;
+}
+
+sub _tagmod_list {
+  my($self, $vid, $tags, $my) = @_;
+
+  my %my = map +($_->{tag} => $_), @$my;
+
+  for my $cat (@{$self->{tag_categories}}) {
+    my @tags = grep $_->{cat} eq $cat, @$tags;
+    next if !@tags;
+    Tr class => 'tagmod_cat';
+     td colspan => 7, mt "_tagcat_$cat";
+    end;
+    for my $t (@tags) {
+      my $m = $my{$t->{id}};
+      Tr id => "tgl_$t->{id}";
+       td class => 'tc_tagname'; a href => "/g$t->{id}", $t->{name}; end;
+       td class => 'tc_myvote',  $m->{vote}||0;
+       if($self->authCan('tagmod')) {
+         td class => 'tc_myover';
+          input type => 'checkbox', name => 'overrule', value => $t->{id},
+            $m->{vote} && !$m->{ignore} && $t->{overruled} ? (checked => 'checked') : ()
+            if $t->{cnt} > 1;
+         end;
+       }
+       td class => 'tc_myspoil', defined $m->{spoiler} ? $m->{spoiler} : -1;
+       td class => 'tc_allvote';
+        tagscore $t->{rating};
+        i $t->{overruled} ? (class => 'grayedout') : (), " ($t->{cnt})";
+        b class => 'standout', style => 'font-weight: bold', ' !' if $t->{overruled};
+       end;
+       td class => 'tc_allspoil', sprintf '%.2f', $t->{spoiler};
+       td class => 'tc_allwho';
+        a href => "/g/links?v=$vid;t=$t->{id}", mt '_tagv_who';
+       end;
+      end;
+    }
+  }
 }
 
 

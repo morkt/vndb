@@ -249,13 +249,13 @@ sub dbTagStats {
   }->{ $o{sort}||'name' }, $o{reverse} ? 'DESC' : 'ASC';
 
   my($r, $np) = $self->dbPage(\%o, qq|
-    SELECT t.id, t.name, count(*) as cnt, $rating as rating,
+    SELECT t.id, t.name, t.cat, count(*) as cnt, $rating as rating,
         COALESCE(avg(CASE WHEN tv.ignore THEN NULL ELSE tv.spoiler END), 0) as spoiler,
         bool_or(tv.ignore) AS overruled
       FROM tags t
       JOIN tags_vn tv ON tv.tag = t.id
       WHERE tv.vid = ?
-      GROUP BY t.id, t.name
+      GROUP BY t.id, t.name, t.cat
       !s
       ORDER BY !s|,
     $o{vid}, defined $o{minrating} ? "HAVING $rating > $o{minrating}" : '', $order

@@ -4569,6 +4569,13 @@ cs*:
 hu : Kicsoda?
 nl : Wie?
 
+:_tagv_newlyadded
+en : Newly added
+ru*:
+cs*:
+hu*:
+nl : Net toegevoegd
+
 :_tagv_save
 en : Save changes
 ru : Сохранить изменения

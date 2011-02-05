@@ -1257,6 +1257,8 @@ function tglLoad() {
   tglStripe();
   var trs = byName(byId('tagtable'), 'tr');
   for(var i=0; i<trs.length; i++) {
+    if(hasClass(trs[i], 'tagmod_cat'))
+      continue;
     var vote = byClass(trs[i], 'td', 'tc_myvote')[0];
     vote.tgl_vote = getText(vote)*1;
     tglVoteBar(vote);
@@ -1353,6 +1355,10 @@ function tglAdd() {
     if(byId('tgl_'+id))
       return alert(mt('_tagv_double'));
 
+    if(!byId('tagmod_newtags'))
+      byId('tagtable').appendChild(tag('tr', {'class':'tagmod_cat', id:'tagmod_newtags'},
+        tag('td', {colspan:7}, mt('_tagv_newlyadded'))));
+
     var vote = tag('td', {'class':'tc_myvote', tgl_vote: 2}, '');
     tglVoteBar(vote);
     var spoil = tag('td', {'class':'tc_myspoil', tgl_spoil: 0}, tglSpoilers[0]);
@@ -1385,6 +1391,8 @@ function tglSerialize() {
   var r = [];
   var l = byName(byId('tagtable'), 'tr');
   for(var i=0; i<l.length; i++) {
+    if(hasClass(l[i], 'tagmod_cat'))
+      continue;
     var vote = byClass(l[i], 'td', 'tc_myvote')[0].tgl_vote;
     if(vote != 0)
       r[r.length] = [

@@ -1,5 +1,6 @@
 2.18 -
 	- Added category field to tags (content/ero/technical)
+	- Group tags on /v+/tagmod by their category
 
 2.17 - 2011-02-04
 	- Allow moderators to overrule VN tag votes
