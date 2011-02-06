@@ -5897,6 +5897,13 @@ cs : Tagy
 hu : Címkék
 nl :
 
+:_vnbrowse_tagnothere
+en : Additional tag filters are not available on this page. Use the visual novel browser instead (available from the main menu -> visual novels).
+ru*:
+cs*:
+hu*:
+nl : Extra tag filters zijn niet aanwezig op deze pagina. Gebruik de visual novel browser voor deze functionaliteit (beschikbaar via het hoofdmenu -> visual novels).
+
 :_vnbrowse_tagactive
 en : These filters are ignored on tag pages (when set as default).
 ru : Эти фильтры недействительны на страницах тегов (по умолчанию).

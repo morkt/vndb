@@ -2193,7 +2193,9 @@ function filVN() {
       filFSelect( 'length', mt('_vnbrowse_length'), 6, len),
       filFOptions('hasani', mt('_vnbrowse_anime'), [[1, mt('_vnbrowse_anime_yes')],[0, mt('_vnbrowse_anime_no')]])
     ],
-    ontagpage ? null : [ mt('_vnbrowse_tags'),
+    ontagpage ? [ mt('_vnbrowse_tags'),
+      [ '', ' ', tag(mt('_vnbrowse_tagnothere')) ],
+    ] : [ mt('_vnbrowse_tags'),
       [ '',       ' ',                   tag(mt('_js_fil_booland')) ],
       [ '',       ' ', PREF_CODE != '' ? tag(mt('_vnbrowse_tagactive')) : null ],
       filFTagInput('tag_inc', mt('_vnbrowse_taginc')),
