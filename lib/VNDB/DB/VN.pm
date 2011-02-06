@@ -63,6 +63,8 @@ sub dbVNGet {
       'v.id !s IN(SELECT vid FROM wlists WHERE uid = ?)' => [ $o{ul_onwish} ? '' : 'NOT', $uid ] ) : (),
     $uid && defined $o{ul_voted} ? (
       'v.id !s IN(SELECT vid FROM votes WHERE uid = ?)' => [ $o{ul_voted} ? '' : 'NOT', $uid ] ) : (),
+    $uid && defined $o{ul_onlist} ? (
+      'v.id !s IN(SELECT vid FROM vnlists WHERE uid = ?)' => [ $o{ul_onlist} ? '' : 'NOT', $uid ] ) : (),
    # don't fetch hidden items unless we ask for an ID
     !$o{id} && !$o{rev} ? (
       'v.hidden = FALSE' => 0 ) : (),

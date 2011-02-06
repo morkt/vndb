@@ -6037,6 +6037,27 @@ cs*:
 hu*:
 nl : Op gestemd
 
+:_vnbrowse_ul_onlist
+en : VN list
+ru*:
+cs*:
+hu*:
+nl : VN lijst
+
+:_vnbrowse_ul_onlistno
+en : Not on my VN list
+ru*:
+cs*:
+hu*:
+nl : Niet op mijn VN lijst
+
+:_vnbrowse_ul_onlistyes
+en : On my VN list
+ru*:
+cs*:
+hu*:
+nl : Op mijn VN lijst
+
 
 # VN add/edit form (/v+/edit)
 

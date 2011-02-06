@@ -2210,7 +2210,8 @@ function filVN() {
       mt('_vnbrowse_ul'),
       filFOptions('ul_notblack', mt('_vnbrowse_ul_notblack'), [[1, mt('_vnbrowse_ul_notblackmsg')]]),
       filFOptions('ul_onwish',   mt('_vnbrowse_ul_onwish'), [[0, mt('_vnbrowse_ul_onwishno')],[1, mt('_vnbrowse_ul_onwishyes')]]),
-      filFOptions('ul_voted',    mt('_vnbrowse_ul_voted'), [[0, mt('_vnbrowse_ul_votedno')],[1, mt('_vnbrowse_ul_votedyes')]])
+      filFOptions('ul_voted',    mt('_vnbrowse_ul_voted'),  [[0, mt('_vnbrowse_ul_votedno')], [1, mt('_vnbrowse_ul_votedyes') ]]),
+      filFOptions('ul_onlist',   mt('_vnbrowse_ul_onlist'), [[0, mt('_vnbrowse_ul_onlistno')],[1, mt('_vnbrowse_ul_onlistyes')]])
     ],
   ];
 }
