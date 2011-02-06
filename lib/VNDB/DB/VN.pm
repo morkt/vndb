@@ -11,7 +11,7 @@ our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreen
 
 
 # Options: id, rev, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
-#   hasani, hasshot, results, page, what, sort, reverse
+#   hasani, hasshot, ul_notblack, ul_onwish, results, page, what, sort, reverse
 # What: extended anime relations screenshots relgraph rating ranking changes
 # Sort: id rel pop rating title tagscore rand
 sub dbVNGet {
@@ -26,6 +26,8 @@ sub dbVNGet {
   die "Invalid input for tagspoil or tag_inc at dbVNGet()\n" if
     grep !defined($_) || $_!~/^\d+$/, $o{tagspoil},
       !$o{tag_inc} ? () : (ref($o{tag_inc}) ? @{$o{tag_inc}} : $o{tag_inc});
+
+  my $uid = $self->authInfo->{id};
 
   my @where = (
     $o{id} ? (
@@ -55,6 +57,10 @@ sub dbVNGet {
       'v.id NOT IN(SELECT vid FROM tags_vn_inherit WHERE tag IN(!l))' => [ ref $o{tag_exc} ? $o{tag_exc} : [$o{tag_exc}] ] ) : (),
     $o{search} ? (
       map +('v.c_search like ?', "%$_%"), normalize_query($o{search})) : (),
+    $uid && $o{ul_notblack} ? (
+      'v.id NOT IN(SELECT vid FROM wlists WHERE uid = ? AND wstat = 3)' => $uid ) : (),
+    $uid && defined $o{ul_onwish} ? (
+      'v.id !s IN(SELECT vid FROM wlists WHERE uid = ?)' => [ $o{ul_onwish} ? '' : 'NOT', $uid ] ) : (),
    # don't fetch hidden items unless we ask for an ID
     !$o{id} && !$o{rev} ? (
       'v.hidden = FALSE' => 0 ) : (),

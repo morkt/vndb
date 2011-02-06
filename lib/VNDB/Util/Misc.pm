@@ -11,7 +11,7 @@ our @EXPORT = qw|filFetchDB ieCheck|;
 
 
 my %filfields = (
-  vn      => [qw|length hasani tag_inc tag_exc taginc tagexc tagspoil lang olang plat|],
+  vn      => [qw|length hasani tag_inc tag_exc taginc tagexc tagspoil lang olang plat ul_notblack ul_onwish|],
   release => [qw|type patch freeware doujin date_before date_after released minage lang olang resolution plat med voiced ani_story ani_ero|],
 );
 

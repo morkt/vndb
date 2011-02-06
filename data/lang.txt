@@ -5974,6 +5974,48 @@ cs : Platforma
 hu : Platformok
 nl :
 
+:_vnbrowse_ul
+en : My lists
+ru*:
+cs*:
+hu*:
+nl : Mijn lijsten
+
+:_vnbrowse_ul_notblack
+en : Blacklist
+ru*:
+cs*:
+hu*:
+nl :
+
+:_vnbrowse_ul_notblackmsg
+en : Exclude VNs on my blacklist
+ru*:
+cs*:
+hu*:
+nl : Sluit VNs op mijn blacklist uit
+
+:_vnbrowse_ul_onwish
+en : Wishlist
+ru*:
+cs*:
+hu*:
+nl : Wensenlijst
+
+:_vnbrowse_ul_onwishno
+en : Not on my wishlist
+ru*:
+cs*:
+hu*:
+nl : Niet op mijn wensenlijst
+
+:_vnbrowse_ul_onwishyes
+en : On my wishlist
+ru*:
+cs*:
+hu*:
+nl : Op mijn wensenlijst
+
 
 # VN add/edit form (/v+/edit)
 
