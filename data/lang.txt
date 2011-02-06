@@ -6016,6 +6016,27 @@ cs*:
 hu*:
 nl : Op mijn wensenlijst
 
+:_vnbrowse_ul_voted
+en : Voted
+ru*:
+cs*:
+hu*:
+nl : Gestemd
+
+:_vnbrowse_ul_votedno
+en : Not voted on
+ru*:
+cs*:
+hu*:
+nl : Niet op gestemd
+
+:_vnbrowse_ul_votedyes
+en : Voted on
+ru*:
+cs*:
+hu*:
+nl : Op gestemd
+
 
 # VN add/edit form (/v+/edit)
 

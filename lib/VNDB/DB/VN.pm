@@ -61,6 +61,8 @@ sub dbVNGet {
       'v.id NOT IN(SELECT vid FROM wlists WHERE uid = ? AND wstat = 3)' => $uid ) : (),
     $uid && defined $o{ul_onwish} ? (
       'v.id !s IN(SELECT vid FROM wlists WHERE uid = ?)' => [ $o{ul_onwish} ? '' : 'NOT', $uid ] ) : (),
+    $uid && defined $o{ul_voted} ? (
+      'v.id !s IN(SELECT vid FROM votes WHERE uid = ?)' => [ $o{ul_voted} ? '' : 'NOT', $uid ] ) : (),
    # don't fetch hidden items unless we ask for an ID
     !$o{id} && !$o{rev} ? (
       'v.hidden = FALSE' => 0 ) : (),

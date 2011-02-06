@@ -2209,7 +2209,8 @@ function filVN() {
     PREF_CODE == '' ? null : [
       mt('_vnbrowse_ul'),
       filFOptions('ul_notblack', mt('_vnbrowse_ul_notblack'), [[1, mt('_vnbrowse_ul_notblackmsg')]]),
-      filFOptions('ul_onwish',   mt('_vnbrowse_ul_onwish'), [[0, mt('_vnbrowse_ul_onwishno')],[1, mt('_vnbrowse_ul_onwishyes')]])
+      filFOptions('ul_onwish',   mt('_vnbrowse_ul_onwish'), [[0, mt('_vnbrowse_ul_onwishno')],[1, mt('_vnbrowse_ul_onwishyes')]]),
+      filFOptions('ul_voted',    mt('_vnbrowse_ul_voted'), [[0, mt('_vnbrowse_ul_votedno')],[1, mt('_vnbrowse_ul_votedyes')]])
     ],
   ];
 }
