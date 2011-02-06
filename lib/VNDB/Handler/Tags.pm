@@ -34,12 +34,14 @@ sub tagpage {
     { get => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
     { get => 'p', required => 0, default => 1, template => 'int' },
     { get => 'm', required => 0, default => -1, enum => [qw|0 1 2|] },
+    { get => 'fil', required => 0 },
   );
   return $self->resNotFound if $f->{_err};
   my $tagspoil = $self->reqCookie('tagspoil')||'';
   $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0 if $f->{m} == -1;
+  $f->{fil} //= $self->authPref('filter_vn');
 
-  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->filFetchDB(vn => undef, undef, {
+  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->filFetchDB(vn => $f->{fil}, undef, {
     what => 'rating',
     results => 50,
     page => $f->{p},
@@ -111,23 +113,32 @@ sub tagpage {
   _childtags($self, $t) if @{$t->{childs}};
 
   if(!$t->{meta} && $t->{state} == 2) {
+    form action => "/g$t->{id}", 'accept-charset' => 'UTF-8', method => 'get';
     div class => 'mainbox';
      a class => 'addnew', href => "/g/links?t=$tag", mt '_tagp_rawvotes';
      h1 mt '_tagp_vnlist';
+
      p class => 'browseopts';
-      a href => "/g$t->{id}?m=0", $f->{m} == 0 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 0);return true;", mt '_tagp_spoil0';
-      a href => "/g$t->{id}?m=1", $f->{m} == 1 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 1);return true;", mt '_tagp_spoil1';
-      a href => "/g$t->{id}?m=2", $f->{m} == 2 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 2);return true;", mt '_tagp_spoil2';
+      a href => "/g$t->{id}?fil=$f->{fil};m=0", $f->{m} == 0 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 0);return true;", mt '_tagp_spoil0';
+      a href => "/g$t->{id}?fil=$f->{fil};m=1", $f->{m} == 1 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 1);return true;", mt '_tagp_spoil1';
+      a href => "/g$t->{id}?fil=$f->{fil};m=2", $f->{m} == 2 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 2);return true;", mt '_tagp_spoil2';
      end;
+
+     a id => 'filselect', href => '#v';
+      lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+     end;
+     input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
+
      if(!@$list) {
        p; br; br; txt mt '_tagp_novn'; end;
      }
      p; br; txt mt '_tagp_cached'; end;
     end 'div';
-    $self->htmlBrowseVN($list, $f, $np, "/g$t->{id}?m=$f->{m}", 1) if @$list;
+    end 'form';
+    $self->htmlBrowseVN($list, $f, $np, "/g$t->{id}?fil=$f->{fil};m=$f->{m}", 1) if @$list;
   }
 
-  $self->htmlFooter;
+  $self->htmlFooter(prefs => ['filter_vn']);
 }
 
 

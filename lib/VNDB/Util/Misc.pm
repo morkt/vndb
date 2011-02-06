@@ -34,9 +34,6 @@ sub filFetchDB {
   my $prefname = 'filter_'.$type;
   my $pref = $self->authPref($prefname);
 
-  # simply call the DB if we're not applying filters
-  return $dbfunc->($self, %$pre, %$post) if !$pref && !$overwrite;
-
   my $filters = fil_parse $overwrite // $pref, @{$filfields{$type}};
 
   # compatibility
@@ -50,7 +47,7 @@ sub filFetchDB {
     exists($pre->{$_})     ? ($_ => $pre->{$_})     : (),
   ), @{$filfields{$type}}}) if defined $overwrite;
 
-  return $dbfunc->($self, %$pre, %$filters, %$post) if defined $overwrite;
+  return $dbfunc->($self, %$pre, %$filters, %$post) if defined $overwrite or !keys %$filters;;
 
   # since incorrect filters can throw a database error, we have to special-case
   # filters that originate from a preference setting, so that in case these are

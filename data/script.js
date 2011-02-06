@@ -1790,14 +1790,19 @@ function filLoad() {
 
   var p = tag('p', {'class':'browseopts'});
   var c = tag('div', null);
+  var idx = 0;
   for(var i=1; i<l.length; i++) {
+    if(!l[i])
+      continue;
+    idx++;
+
     // category link
-    var a = tag('a', { href: '#', onclick: filSelectCat, fil_num: i, fil_onshow:[] }, l[i][0]);
+    var a = tag('a', { href: '#', onclick: filSelectCat, fil_num: idx, fil_onshow:[] }, l[i][0]);
     p.appendChild(a);
     p.appendChild(tag(' '));
 
     // category contents
-    var t = tag('table', {'class':'formtable', fil_num: i}, null);
+    var t = tag('table', {'class':'formtable', fil_num: idx}, null);
     setClass(t, 'hidden', true);
     a.fil_t = t;
     for(var j=1; j<l[i].length; j++) {
@@ -1818,7 +1823,7 @@ function filLoad() {
     }
     c.appendChild(t);
 
-    fil_cats[i] = a;
+    fil_cats[idx] = a;
   }
 
   addBody(tag('div', { id: 'fil_div', 'class':'hidden' },
@@ -1944,6 +1949,8 @@ function filDeSerialize() {
       f[fn] = '';
   for(var fn in f) {
     var c = byId('fil_check_'+fn);
+    if(!c)
+      continue;
     c.checked = f[fn] == '' ? false : true;
     var v = f[fn].split('~');
     for(var i=0; i<v.length; i++)
@@ -2178,13 +2185,15 @@ function filVN() {
   for(var i=0; i<len.length; i++) // l10n /_vnlength_.+/
     len[i] = [ len[i], mt('_vnlength_'+len[i]) ];
 
+  var ontagpage = location.pathname.indexOf('/v/') < 0;
+
   return [
     mt('_vnbrowse_fil_title'),
     [ mt('_vnbrowse_general'),
       filFSelect( 'length', mt('_vnbrowse_length'), 6, len),
       filFOptions('hasani', mt('_vnbrowse_anime'), [[1, mt('_vnbrowse_anime_yes')],[0, mt('_vnbrowse_anime_no')]])
     ],
-    [ mt('_vnbrowse_tags'),
+    ontagpage ? null : [ mt('_vnbrowse_tags'),
       [ '',       ' ',                   tag(mt('_js_fil_booland')) ],
       [ '',       ' ', PREF_CODE != '' ? tag(mt('_vnbrowse_tagactive')) : null ],
       filFTagInput('tag_inc', mt('_vnbrowse_taginc')),
