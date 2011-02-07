@@ -4562,6 +4562,13 @@ cs : Spoiler
 hu : Spoiler
 nl :
 
+:_tagv_overruletip
+en : Tag overruled. All votes other than that of the moderator who overruled it will be ignored.
+ru*:
+cs*:
+hu*:
+nl : Tag overschreven. Alle stemmen, behalve die van de moderator die de tag heeft overschreven, zullen worden genegeerd.
+
 :_tagv_who
 en : Who?
 ru : Кто?

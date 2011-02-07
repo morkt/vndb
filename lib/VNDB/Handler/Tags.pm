@@ -662,7 +662,7 @@ sub _tagmod_list {
        td class => 'tc_allvote';
         tagscore $t->{rating};
         i $t->{overruled} ? (class => 'grayedout') : (), " ($t->{cnt})";
-        b class => 'standout', style => 'font-weight: bold', ' !' if $t->{overruled};
+        b class => 'standout', style => 'font-weight: bold', title => mt('_tagv_overruletip'), ' !' if $t->{overruled};
        end;
        td class => 'tc_allspoil', sprintf '%.2f', $t->{spoiler};
        td class => 'tc_allwho';
