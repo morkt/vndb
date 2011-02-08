@@ -1,0 +1,88 @@
+Permanent VN/release filters
+
+Last modified: 2011-01-01
+Status: Implemented
+
+
+Storage:
+- format: the usual filter string (as used in fil=X query string)
+- location: users_prefs, key = filter_(vn|release)
+
+
+How to fetch entries within Perl with the filters applied:
+  Special wrapper function for db(VN|Release)Get(), which does the following:
+
+  # compatibility checking/converting
+  function check_compat(fil, save):
+    if filters_contain_old_stuff then
+      fil = convert_old_stuff(filters)
+      if save then
+        save_preference(filter_vn, serialize_filter(filters))
+      end if
+    end if
+    return fil
+
+  function filVNGet(fil_overwrite, opts):
+    if (not logged_in or not filter_preference) and not fil_overwrite then
+      return dbFunc(opts)
+    end if
+
+    filters = check_compat(parse_filter(fil_overwrite || filter_preference), fil_overwrite?dontsave:save)
+
+    # incorrect filters can trigger an error, catch such an error and remove
+    # the preference if that was what caused the error
+    if(fil_overwrite) # preferences can't cause the error
+      return dbFunc(filters + opts);
+    else
+      try
+        create_sql_savepoint()
+        return dbFunc(filters + opts)
+      error
+        rollback_to_sql_savepoint()
+        results = dbFunc(opts)
+        # if the previous call also fails, the next command won't be executed
+        delete_filters_preference()
+        return results
+
+  A filReleaseGet() would do something similar. In fact, it might make sense
+  to combine it into a single function filFetchDB(type, fil, opts)
+  Filters can be disabled by adding a '<filter_name> => undef' to opts.
+
+
+All cases where the current code calls dbVNGet() should be checked and
+considered for replacing with the above fetching function. Some cases are:
+VN:
+- Random visual novels on homepage
+- "Random visual novel" menu link
+- VN browser
+  In this case the query string should overwrite preferences? Since
+  the preference is loaded in the filter selector as a default anyway
+- Tag page VN listing
+  The tag_inc and tag_exc filters should be disabled here?
+- Preferably also the random screenshots on the homepage. But this requires
+  some more code changes.
+Release:
+- "Upcoming releases" and "Just released" on homepage
+- Release browser
+  Same note as VN browser above
+
+
+Some cases that shouldn't be affected by the filter preferences:
+- Edit histories
+- User lists (votes, vnlist, wishlist)
+- Tag link browser
+- VN page release listing
+- VN page relations listing
+- Producer page VN/release listing
+- Release page VN listing
+- Database Statistics
+  (Even if they should, I wouldn't do it. Too heavy on server resources)
+
+
+User interface considerations:
+- An extra button "Save as default" will be added to the filter selector if
+  the visitor is logged in
+- Ideally, there should be some indication that filters were applied to all
+  places where they are used, with the possibility of changing them.
+  (this is going to to be a pain to implement :-/)
+

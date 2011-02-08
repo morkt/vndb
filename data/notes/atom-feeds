@@ -1,0 +1,26 @@
+Atom Feeds
+
+Last modified: 2010-11-13
+Status: Implemented
+
+
+New module: Multi::Feed
+Automatically generates and updates the following feeds:
+ www/feeds/
+   announcements.atom
+     Updated?: LISTEN 'newpost'; post.num = 1 and board = 'an'
+               (what about an edit of the annoucement title/content?)
+   changes.atom
+     Updated?: LISTEN 'changes'
+   posts.atom
+     Updated?: LISTEN 'newpost'
+               (what about edits of posts? title/contents can change...)
+   released.atom (not implemented)
+     Updated?: daily + LISTEN 'changes'; c.type = 'r'
+               (more restrictions can be added if the generation time of this feed is long)
+
+All feeds are updated once every 15 minutes; this is easier and less
+error-prone than the above notify solutions that differ for each feed.
+Assuming all feeds can be generated in one second, this takes
+(1/(15*60))*100 = ~0.1% of server CPU time on average.
+

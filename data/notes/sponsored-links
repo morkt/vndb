@@ -1,0 +1,108 @@
+Advertisements
+
+Last modified: 2011-01
+Status: Long-term plans / nothing implemented yet
+
+
+Idea: (semi-)large "Buy now" / "Download now" button on VN pages, linking
+either to the product on a webshop or displaying a dropdown list with
+available releases with links to webshops.
+
+A link to a webshop only appears if it has at least one release of the VN on
+their site, and the link always points directly to the product page, not to
+the search function or the homepage.
+
+A webshop link is internally linked to a release in the database, so we have
+all kinds of information including whether it's a download or package, and in
+what language it is.
+
+Preferably, the link also indicates the price and whether it is in stock.
+
+
+Possible parties interested in advertising:
+- J-List
+  Has an affiliate system that includes direct links
+  doesn't store JAN/UPC/catalog numbers
+- Play-asia
+  Has an affiliate system that includes direct links
+  stores JAN, UPC, and catalog numbers
+- Himeyashop / Erogeshop
+  Has no affiliate system but has shown interest in link exchanges in the past
+  Does not store JAN/UPC/catalog numbers
+  "Temporarily" closed, so probably not a good time to ask for ads?
+- DLSite English
+  Seems to have an affiliate system, haven't really looked at it yet
+  Most releases don't even have a JAN code or catalog number
+- MangaGamer
+  Rather specific "shop", but could count as one.
+  Has no affiliate system, but is planning to add one, as announced in
+    http://mangagamer.wordpress.com/2010/12/31/holidays-passing/
+  Releases don't have catalog numbers or EAN codes
+- Eroge-Europe.com
+  Seems to have an affiliate system, haven't really looked at it yet
+  Does not store JAN/UPC/catalog numbers
+- PaletWeb
+  Has no affiliate system
+  Does have JAN codes for a few titles, but inconsistent
+- CDJapan
+  Doesn't have that many VNs from what I've browsed, but still several
+  Has an affiliate system (seems to include direct links)
+  Has catalog numbers for most (all?) releases
+- Hendane!
+  Does not seem to have many VNs (3 or 4?)
+  Has no affiliate system
+  Does not have JAN or catalog numbers
+
+
+So who is going to update all those links?
+Three possibilities:
+
+1. Automatically
+   By matching JAN/EAN/UPC or catalog numbers from our database with the
+   information on the webshop, and fetching the information necessary for the
+   links.
+   Since Play-asia is the only one storing that kind of information, this
+   will be rather specific. We can't really expect all other parties to
+   update their system, and for DLSite and MangaGamer it would involve
+   creating (official) catalog numbers for each entry - which would be easy
+   for MG, but certainly not for DLSite.
+   Even if a shop stores it, we'd need fast and up-to-date access to it. We
+   have several thousand JAN codes in the database. If we want to make sure
+   our information is accurate and up-to-date we'd have to check for the
+   availability of each release each day. Doing this will most likely require
+   the other party to update their site with an API providing this
+   information. I somehow doubt they would...
+
+2. Let the advertiser add and update the info
+   Add an admin interface to the site allowing advertisers to add links to
+   their shop to release entries - also allowing them to indicate the price
+   and stock availability.
+   Since advertisers benefit from these links, we can assume that, if they
+   agree to do this, they will keep the info up-to-date.
+   However, for some reason I don't think many advertisers would want to
+   invest that much time in advertising on a single site.
+   Instead of the advertiser itself, it would also be possible to look for a
+   dedicated user to do this for them. Though somehow I doubt we'd find
+   someone like that, and I don't feel like doing that myself.
+
+3. Let our users add and update the info
+   Add webshop links to release entries. Since the price and stock
+   availability tend to change over time and our dear users are either pretty
+   slow on the uptake or too lazy to update VNDB, we can forget about any
+   other information besides the links. :-(
+   It might, however, be possible to automatically fetch the price and stock
+   information anyway since we have the URLs, but in that case the webshop
+   should either allow us to crawl quite a lot or provide an alternative
+   method.
+   Since the list of webshops we link to is not a static one - shops can be
+   added or removed after a while - we can expect these links to be edited
+   quite often, which could make a mess with the edit histories.
+   Alternatively, we could do it VGMdb-like: allow users to simply manage
+   links where the release is sold, regardless of whether they are
+   advertising on VNDB or not. This would still make it possible to
+   special-case advertisers and give them special treatment or fetch
+   additional information.
+
+I would greatly prefer option #1, but since that's not very practical option
+#3 (the VGMdb-like solution) is probably the best.
+

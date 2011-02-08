@@ -1,0 +1,117 @@
+User preference storage
+
+Last modified: 2011-02-06
+Status: Long-term plans / partially implemented
+
+
+up = SQL: users_prefs
+Preference             old storage method          Current storage method     Can be changed at
+- Interface language     Browser or cookie: l10n     Browser/up/cookie          Perl: Link in main menu (explicit)
+- Main skin              SQL: users.skin             up: skin                   Perl: Users' profile (explicit)
+- Additional CSS         SQL: users.customcss        up: customcss              Perl: Users' profile (explicit)
+- NSFW toggle            SQL: users.show_nsfw        up: show_nsfw              Perl: Users' profile (explicit)
+- List is private        SQL: users.show_list        up: hide_list              Perl: Users' profile (explicit)
+- Notify on announce     SQL: users.notify_announce  up: notify_announce        Perl: Users' notifications page (explicit)
+- Notify on DB edit      SQL: users.notify_dbedit    up: notify_nodbedit        Perl: Users' notifications page (explicit)
+- Tag spoil level        Cookie: tagspoil            Cookie: tagspoil           JS: VN pages, Tag pages, VN filter settings (all implicit)
+- Tag VN page cat        -                           Cookie: tagcat             JS: VN pages (implicit)
+- Producer page view     Cookie: prodrelexpand       Cookie: prodrelexpand      JS: Producer pages (implicit)
+- VN filters             -                           up: filter_vn              JS: VN filter settings (explicit)
+- Release filters        -                           up: filter_release         JS: Release filter settings (explicit)
+
+
+What do we want?
+- Ideally, all preferences are saved explicitly. That is, the user can
+  indicate whether the change of a preference is temporary or should be saved
+  as the new default.
+- Ideally, all preferences are stored on the server. This makes it easy to
+  convert the preference data on VNDB updates, without having to provide
+  backwards compatibility with old data. It also scales better than cookies.
+- Preferably, you don't have to have an account to set or change preferences.
+  In the case of the interface language it's quite important that users don't
+  have to be logged in. For other preferences it's not very important, but I
+  don't really like the idea of forcing people to create an account.
+- Preferably, the user can change each preference at the place where it makes
+  most sense:
+  - Default NSFW flag should be set when encountering an NSFW image
+  - Skin and custom CSS settings should be somewhere in the global page
+    layout (like the language setting currently is)
+  - The "my list is private" setting should be set when viewing your
+    wish/vote/VN list.
+    Although... this one might be okay on the profile page.
+  - Most other preferences already are at sensible locations
+  In particular, I don't like the idea of grouping all preferences on a
+  single "settings" or "profile" page. This is likely to become a mess (see
+  AniDB for a nice example), and users might not know something is available
+  as a preference (like how most users don't know VNDB has skins).
+- Don't store everything in separate columns of the users table. Most users
+  don't actually change their preferences from the defaults, so only saving
+  the non-default settings will save a significant amount of space. Bloating
+  the users table with information that is only ever accessed by the user
+  itself is also a bad idea - this table is used in a lot of joins and can be
+  browsed on with the user list.
+
+
+Concrete ideas:
+- (done)
+  User preferences can be stored in a separate table:
+  -- incomplete list of preference keys
+  CREATE prefs_key AS ENUM ('l10n', 'skin', 'customcss', 'show_nsfw',
+    'hide_list', 'notify_nodbedit', 'notify_announce');
+  CREATE TABLE users_prefs (
+    uid integer NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    key prefs_key NOT NULL,
+    value varchar NOT NULL,
+    PRIMARY KEY(uid, key)
+  );
+  This doesn't store the data in a properly normalized fashion, but is likely
+  easier to work with anyway.
+- (done)
+  Accessing the prefs table from Perl:
+  - authCheck() loads all of the users' preferences in a hash
+  - authPref($key) returns the value of the preference (from the hash)
+  - authPref($key, $val) sets the preference (in hash and DB)
+- (done)
+  Keep the interface language setting as-is for anonymous visitors.
+  For logged-in users:
+  - Store the users' preferred language in the database instead of cookie.
+  - Contrary to the cookie: do not automatically remove the db preference
+    even if it's the same as what the browser requests. This is to ensure
+    that a user gets the same language even when switching PCs.
+  - When a user logs in and the l10n cookie is set, copy its value into the
+    DB and remove the cookie.
+  - Similar with logging out: copy l10n setting to cookie (but keep the DB)
+  "What language to use" checking order: database, cookie, browser
+- (done - except some JS'ed preferences)
+  All other preferences can be moved to the users_prefs table. It is a lot of
+  work to correctly save and handle all preferences for anonymous visitors,
+  so let's stick with logged-in users for now to keep things simple.
+- (done - at least the abstraction)
+  Some preferences need to be read and modified in Javascript.
+  Reading:
+    Add global JS variable using inline <script> to the bottom of the page,
+    before loading the global JS file, and store the required preferences in
+    there for the JS code to read.
+    Since some preferences are specific to some pages, add an option to
+    htmlFooter() to indicate which preferences need to be added.
+  Writing:
+    AJAX call to some .xml page. This will kind-of force the input method to
+    be explicit, since with AJAX you need some kind UI interaction to
+    indicate when the save is successful. Implicit saving is an especially
+    bad idea with this approach since that might make a lot of AJAX calls.
+- Make implicit preference saving explicit:
+  - On producer pages, add a link 'Save as default' to the left of the
+    expand/collapse link when the user is logged in AND the current view is
+    different from the default.
+  - On VN pages: same for the spoiler level
+  - On Tag pages: same for spoiler level
+  - On VN filter settings: same for spoiler level
+  I'm not sure I like this idea... unless I can figure out a good abstraction
+  to nicely add those links with a single line of code.
+- Remove "Don't hide NSFW" checkbox from profile page and add similar "Save
+  as default" links to the VN page. Close to the "show/hide NSFW" at the
+  screenshots and "Flagged as NSFW" note at the VN image.
+- Add a "settings" icon to the user menu title box thing, and have it show a
+  CSS'ed window when clicked with settings for the skin and custom CSS.
+  Optionally with Javascripted previewing of the settings.
+
