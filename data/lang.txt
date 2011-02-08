@@ -558,7 +558,7 @@ nl : Voorganger
 en : Same setting
 ru : Тот же мир
 cs : Stejné zasazení
-hu : Egyforma környezet
+hu : Egyforma színhely
 nl : Gedeelde setting
 
 :_vnrel_alt
@@ -572,7 +572,7 @@ nl : Alternatieve versie
 en : Shares characters
 ru : Те же персонажи
 cs : Sdílí postavy
-hu : Megosztott szereplők
+hu : Megoszt szereplőket
 nl : Deelt figuren
 
 :_vnrel_side
@@ -648,42 +648,42 @@ nl : Voorheen
 en : Succeeded by
 ru : Унаследована
 cs : Nahrazeno
-hu : Utódja
+hu : Utána következik
 nl : Opgevolgd door
 
 :_prodrel_sub
 en : Subsidiary
 ru : Подразделение
 cs : Vedlejší
-hu : Alválalat
+hu : Leányvállalat
 nl : Dochterbedrijf
 
 :_prodrel_par
 en : Parent producer
 ru : Исходная компания
 cs : Mateřský producent
-hu : Fő készítő
+hu : Alapító készítő
 nl : Moederbedrijf
 
 :_prodrel_imp
 en : Imprint
 ru : Марка
 cs : Otisk
-hu : Megjelenési adatok
+hu : Impresszum
 nl :
 
 :_prodrel_ipa
 en : Parent brand
 ru : Исходный бренд
 cs : Mateřská značka
-hu : Szüllő márka
+hu : Alapító márka
 nl : Hoofdbrand
 
 :_prodrel_spa
 en : Spawned
 ru : Порождена
 cs : Stvořilo
-hu : Létrehozott
+hu : Leszármazott
 nl : Voortgebracht
 
 :_prodrel_ori
@@ -700,21 +700,21 @@ nl : Voortgebracht uit
 en : Complete
 ru : Полный
 cs : Kompletní
-hu : Kész játék
+hu : Teljesen kész
 nl : Compleet
 
 :_rtype_partial
 en : Partial
 ru : Частичный
 cs : Částečné
-hu : Félig kész játék
+hu : Részben kész
 nl : Partieel
 
 :_rtype_trial
 en : Trial
 ru : Триальный
 cs : Trial
-hu : Próba játék
+hu : Próba változat
 nl :
 
 
@@ -842,7 +842,7 @@ nl : laag
 en : blacklist
 ru : в чёрном списке
 cs : blacklist
-hu : fekete lista
+hu : feketelista
 nl :
 
 
@@ -883,28 +883,28 @@ nl : Onbekend
 en : Not voiced
 ru : Нет озвучки
 cs : Bez hlasu
-hu : Néma
+hu : Nincs beszéd
 nl : Niet ingesproken
 
 :_voiced_2
 en : Only ero scenes voiced
 ru : Озвучены лишь эросцены
 cs : S hlasem pouze v ero scénách
-hu : Csak az ero jeleneteknél van
+hu : Erotikus jeleneteknél van beszéd
 nl : Alleen erotische scenes ingesproken
 
 :_voiced_3
 en : Partially voiced
 ru : Частичная озвучка
 cs : Částečně s hlasem
-hu : Pár helyen van
+hu : Helyenként van beszéd
 nl : Deels ingesproken
 
 :_voiced_4
 en : Fully voiced
 ru : Озвучено полностью
 cs : Plně s hlasem
-hu : Van
+hu : Végig van beszéd
 nl : Volledig ingesproken
 
 
@@ -1077,7 +1077,7 @@ nl : Onbekend
 en : Pending
 ru : Ожидается
 cs : V čekání
-hu : Függő
+hu : Eldöntetlen
 nl : Bezig
 
 :_rlist_status_2
@@ -1143,21 +1143,21 @@ nl : Opgegeven
 en : Content
 ru*:
 cs*:
-hu*:
+hu : Tartalom
 nl : Inhoud
 
 :_tagcat_ero
 en : Sexual content
 ru*:
 cs*:
-hu*:
+hu : Szexuális tartalom
 nl : Erotisch
 
 :_tagcat_tech
 en : Technical
 ru*:
 cs*:
-hu*:
+hu : Technikai
 nl : Technisch
 
 
@@ -1504,7 +1504,7 @@ nl : Je moet [url,_1,ingelogd] zijn om deze pagina te wijzigen
 en : You are not allowed to edit this page
 ru : Вам запрещено редактировать эту страницу
 cs : Nemáte oprávnění editovat tuto stránku
-hu : Nincs engedélyed, hogy szerkeszd ezt az oldalt
+hu : Nincs engedélyed, ennek az oldalnak a szerkesztésére
 nl : Je bent niet toegestaan om wijzigingen aan te brengen
 
 
@@ -1591,7 +1591,7 @@ nl : Gebruikers
 en : Recent changes
 ru : Свежие правки
 cs : Poslední změny
-hu : Friss szerkesztések
+hu : Friss változtatások
 nl : Recente wijzigingen
 
 :_menu_discussion_board
@@ -2090,7 +2090,7 @@ nl : VNDB.org is een uitgebreide database voor informatie over visual novels.[br
 en : Recent Changes
 ru : Свежие правки
 cs : Poslední změny
-hu : Legútóbbi változtatások
+hu : Legfrissebb változtatások
 nl : Recente wijzigingen
 
 :_home_recentchanges_item
@@ -2155,7 +2155,7 @@ nl : Recentelijk uitgebracht
 en : Recent changes
 ru : Свежие правки
 cs : Poslední změny
-hu : Legutóbbi változtatások
+hu : Legfrissebb változtatások
 nl : Recente wijzigingen
 
 :_hist_title_item
@@ -2488,7 +2488,7 @@ nl : Gerelateerde discussies voor [_1]
 en : All boards
 ru : Все доски
 cs*:
-hu*:
+hu : Minden alfórum
 nl : Alle fora
 
 :_disboard_rootlink
@@ -2584,7 +2584,7 @@ nl : [_1], [_2]
 en : a.k.a. [_1]
 ru : a.k.a. [_1]
 cs : a.k.a. [_1]
-hu :
+hu : az az [_1]
 nl : alias
 
 :_prodpage_homepage
@@ -2598,7 +2598,7 @@ nl :
 en : Wikipedia
 ru : Википедия
 cs : Wikipedie
-hu :
+hu : Wikipédia
 nl :
 
 :_prodpage_rel
@@ -2672,14 +2672,14 @@ nl : Taal
 en : Website
 ru : Веб-сайт
 cs : Internetová stránka
-hu : Weboldal
+hu : Honlap
 nl :
 
 :_revfield_p_l_wp
 en : Wikipedia link
 ru : Ссылка на Википедию
 cs : Odkaz na Wikipedii
-hu :
+hu : Wikipédia webcím
 nl :
 
 :_revfield_p_desc
@@ -2783,7 +2783,7 @@ nl : Primare taal
 en : Website
 ru : Веб-сайт
 cs : Internetová stránka
-hu : Weboldal
+hu : Honlap
 nl :
 
 :_pedit_form_wikipedia
@@ -2979,7 +2979,7 @@ nl : Taal
 en : Website
 ru : Веб-сайт
 cs : Internetová stránka
-hu : Weboldal
+hu : Honlap
 nl :
 
 :_revfield_r_released
@@ -3227,7 +3227,7 @@ nl :
 en : Official website
 ru : Официальный веб-сайт
 cs : Oficiální stránky
-hu : Hivatalos weboldal
+hu : Hivatalos honlap
 nl : Officiële website
 
 :_relinfo_user
@@ -3370,7 +3370,7 @@ nl : Catalogusnummer
 en : Official website
 ru : Официальный веб-сайт
 cs : Oficiální stránky
-hu : Hivatalos weboldal
+hu : Hivatalos honlap
 nl : Officiële website
 
 :_redit_form_released
@@ -3801,21 +3801,21 @@ nl : Uitgegeven voor
 en : Release date
 ru : Статус выпуска
 cs*:
-hu*:
+hu : Kiadás ideje
 nl : Uitgavedatum
 
 :_rbrowse_released_yes
 en : Past (already released)
 ru : Уже выпущен
 cs*:
-hu*:
+hu : Múlt (már ki van adva)
 nl : Verleden (al uitgegeven)
 
 :_rbrowse_released_no
 en : Future (to be released)
 ru : Ещё не выпущен
 cs*:
-hu*:
+hu : Jövő (ki lesz majd adva)
 nl : Toekomst (nog niet uitgegeven)
 
 :_rbrowse_minage
@@ -3957,7 +3957,7 @@ nl :
 en : Category
 ru*:
 cs*:
-hu*:
+hu : Kategória
 nl : Categorie
 
 :_tagp_aliases
@@ -4192,21 +4192,21 @@ nl : WAARSCHUWING: Als je deze optie selecteerd of als je de status op "verwijde
 en : Category
 ru*:
 cs*:
-hu*:
+hu : Kategória
 nl : Categorie
 
 :_tagedit_frm_catrec
 en : Also edit all child tags to have this category
 ru*:
 cs*:
-hu*:
+hu : Az összes alcímkét is áthelyezni ebbe a kategóriába
 nl : Zet deze categorie ook voor alle subtags
 
 :_tagedit_frm_catrec_warn
 en : WARNING: This will overwrite the category field for all child tags, this action can not be reverted!
 ru*:
 cs*:
-hu*:
+hu : FIGYELEM: Ez az összes alcímkét felülírja a kategória mezőt, amit nem lehet lesz visszacsinálni!
 nl : WAARSCHUWING: Hiermee wordt het categoriefeld voor alle subtags overschreven, dit kan niet ongedaan worden gemaakt!
 
 :_tagedit_frm_alias
@@ -4566,7 +4566,7 @@ nl :
 en : Tag overruled. All votes other than that of the moderator who overruled it will be ignored.
 ru*:
 cs*:
-hu*:
+hu : A címkét átvette egy moderátor. Minden szavazat a moderátorén kivűl figyelmen kivűl lesz hagyva.
 nl : Tag overschreven. Alle stemmen, behalve die van de moderator die de tag heeft overschreven, zullen worden genegeerd.
 
 :_tagv_who
@@ -4580,7 +4580,7 @@ nl : Wie?
 en : Newly added
 ru*:
 cs*:
-hu*:
+hu : Újonnan hozzáadott
 nl : Net toegevoegd
 
 :_tagv_save
@@ -5908,7 +5908,7 @@ nl :
 en : Additional tag filters are not available on this page. Use the visual novel browser instead (available from the main menu -> visual novels).
 ru*:
 cs*:
-hu*:
+hu : További címke szűrők nem állnak rendelkezésre ezzen az oldalon. Használd a visual novel böngészőt (megtalálható a Menü -> Visual Novellek pontba).
 nl : Extra tag filters zijn niet aanwezig op deze pagina. Gebruik de visual novel browser voor deze functionaliteit (beschikbaar via het hoofdmenu -> visual novels).
 
 :_vnbrowse_tagactive
@@ -5985,84 +5985,84 @@ nl :
 en : My lists
 ru*:
 cs*:
-hu*:
+hu : A listám
 nl : Mijn lijsten
 
 :_vnbrowse_ul_notblack
 en : Blacklist
 ru*:
 cs*:
-hu*:
+hu : Feketelista
 nl :
 
 :_vnbrowse_ul_notblackmsg
 en : Exclude VNs on my blacklist
 ru*:
 cs*:
-hu*:
+hu : Hagyd ki azokat a VN-eket amelyek a feketelistámba bent vannak
 nl : Sluit VNs op mijn blacklist uit
 
 :_vnbrowse_ul_onwish
 en : Wishlist
 ru*:
 cs*:
-hu*:
+hu : Kivánságlista
 nl : Wensenlijst
 
 :_vnbrowse_ul_onwishno
 en : Not on my wishlist
 ru*:
 cs*:
-hu*:
+hu : Nincs a kivánságlistámba
 nl : Niet op mijn wensenlijst
 
 :_vnbrowse_ul_onwishyes
 en : On my wishlist
 ru*:
 cs*:
-hu*:
+hu : Benne van a kivánságlistámba
 nl : Op mijn wensenlijst
 
 :_vnbrowse_ul_voted
 en : Voted
 ru*:
 cs*:
-hu*:
+hu : Szavazva
 nl : Gestemd
 
 :_vnbrowse_ul_votedno
 en : Not voted on
 ru*:
 cs*:
-hu*:
+hu : Nem volt szavazva rá
 nl : Niet op gestemd
 
 :_vnbrowse_ul_votedyes
 en : Voted on
 ru*:
 cs*:
-hu*:
+hu : Volt szavazva rá
 nl : Op gestemd
 
 :_vnbrowse_ul_onlist
 en : VN list
 ru*:
 cs*:
-hu*:
+hu : VN lista
 nl : VN lijst
 
 :_vnbrowse_ul_onlistno
 en : Not on my VN list
 ru*:
 cs*:
-hu*:
+hu : Nincs a VN listámba
 nl : Niet op mijn VN lijst
 
 :_vnbrowse_ul_onlistyes
 en : On my VN list
 ru*:
 cs*:
-hu*:
+hu : Benne van a VN listámba
 nl : Op mijn VN lijst
 
 
@@ -6504,7 +6504,7 @@ nl : Volledige grootte: [_1]
 en : WARNING: Odd resolution! Please check whether the image has been cropped correctly.
 ru : ВНИМАНИЕ: Странное разрешение! Проверьте, что изображение правильно обрезано.
 cs*:
-hu*:
+hu : VIGYÁZAT: Furcsa felbontás! Kérlek ellenőrizd, hogy a kép jól lett-e kivágva.
 nl : WAARSCHUWING: Vreemde resolutie! Controleer a.u.b. of de plaatje goed is gecropped.
 
 :_vnedit_scr_nsfw
