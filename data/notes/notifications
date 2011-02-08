@@ -1,0 +1,20 @@
+Notifications
+
+Last modified: 2010-02-06
+Status: Implemented
+
+
++ = implemented
+- = planned
+
+Always:
++ pm         notify for a new post or thread in my discussion board
++ dbdel      notify for the deletion of an entry I made or edited
++ listdel    notify for the deletion of an entry I voted on / have in my release list / wishlist
+
+Option "Notify me about database entries I contributed to" (enabled by default)
++ dbedit     notify for each edit of an entry I made or edited
+
+Option "Notify me for site announcements" (disabled by default - too many notifications otherwise)
++ announce   notify for each new thread in the 'an' board
+

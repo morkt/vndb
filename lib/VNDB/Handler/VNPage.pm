@@ -156,7 +156,10 @@ sub page {
    if(@$t) {
      div id => 'tagops';
       # NOTE: order of these links is hardcoded in JS
-      a href => '#', class => 'tsel', mt '_vnpage_tags_spoil0';
+      a href => '#cont', lc mt '_tagcat_cont';
+      a href => '#ero',  lc mt '_tagcat_ero';
+      a href => '#tech', lc mt '_tagcat_tech';
+      a href => '#', class => 'sec tsel', mt '_vnpage_tags_spoil0';
       a href => '#', mt '_vnpage_tags_spoil1';
       a href => '#', mt '_vnpage_tags_spoil2';
       a href => '#', class => 'sec', mt '_vnpage_tags_summary';
@@ -164,7 +167,7 @@ sub page {
      end;
      div id => 'vntags';
       for (@$t) {
-        span class => sprintf 'tagspl%.0f %s', $_->{spoiler}, $_->{spoiler} > 0 ? 'hidden' : '';
+        span class => sprintf 'tagspl%.0f cat_%s %s', $_->{spoiler}, $_->{cat}, $_->{spoiler} > 0 ? 'hidden' : '';
          a href => "/g$_->{id}", style => sprintf('font-size: %dpx', $_->{rating}*3.5+6), $_->{name};
          b class => 'grayedout', sprintf ' %.1f', $_->{rating};
         end;

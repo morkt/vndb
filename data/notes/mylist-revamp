@@ -1,0 +1,86 @@
+RFC-01: Mylist revamp
+
+Last modified: 2010-12-19
+Status: Implemented
+
+
+CREATE TABLE vnlists (
+  uid integer NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+  vid integer NOT NULL REFERENCES vn (id),
+  status smallint NOT NULL DEFAULT 0,
+  added TIMESTAMPTZ NOT NULL DEFAULT NOW(), -- likely not used, but whatever
+  PRIMARY KEY(uid, vid)
+);
+
+-- after converting:
+ALTER TABLE rlists DROP COLUMN vstat;
+ALTER TABLE rlists ALTER COLUMN rstat RENAME TO status;
+
+vnlist.status: Unknown / Playing / Finished / Stalled / Dropped
+
+
+Converting from old rlists:
+  vstat = X for all releases -> status = X
+  vstat = (X\{unknown}) for all releases with vstat != unknown -> status = X
+  vstat = (stalled, dropped) for all releases with vstat != unknown -> status = stalled
+  vstat = (finished, stalled, dropped) for all releases with vstat != unknown -> status = finished
+  vstat = (playing, ..) for all releases with vstat != unknown -> status = playing
+Rephrased in easier terms:
+  status = first_present([playing, finished, stalled, dropped, unknown], @vstat)
+  Where first_present(<order>, <list>) returns the first item in <list> when using the order of <order>
+  Since the statusses are coincidentally defined as an integer with a mapping
+  in that order (with playing being the lowest number), we can simply say:
+    status = min(@vstat without unknown) || unknown
+
+
+Constraint:
+  For each row in rlists, there should be at least one corresponding row in
+  vnlists for at least one of the VNs linked to that release.
+  This will significantly simplify the the "show my VN list" query, and gives
+  the user the option to not add *all* VNs linked to the release to his list.
+
+  Example: the "Infinity Plus" release can be in your rlist, even when only
+    E17 is in your vnlist. As long as at least one of the infinity series is
+    in your vnlist.
+
+  How to enforce:
+  - When a row is deleted from vnlists, also remove all rows from rlists that
+    would otherwise not have a corresponding row in vnlists
+  - When a row is inserted to rlists and there is not yet a corresponding row
+    in vnlists, add a row in vnlists (with status=unknown) for each vn linked
+    to the release.
+    Alternatively it's possible to add only one of the linked vns, but since
+    we can't decide for the user which one he wants, let's just add all of
+    them.
+  - Deleting a row from rlists or inserting a row to vnlists will never cause
+    the constraint to be violated.
+  - Strictly, updating rlists.rid or vnlists.vid should also trigger a check,
+    but since those columns are never updated we can ignore that.
+
+  How to implement:
+  - Unfortunately it's not possible to use a real SQL CONSTRAINT for this,
+    due to the complexity of the references.
+  - SQL triggers would work. This is the easiest way to ensure the constraint
+    is enforced even when rows are inserted/deleted in rlists or vnlists from
+    within other triggers or constraints. (e.g. auto-delete vnlist entry when
+    VN is hidden or something - bad idea but whatever :P)
+    The triggers should probably be defined as CONSTRAINT TRIGGERs and be
+    DEFFERABLE. CONSTRAINT TRIGGERs because otherwise the "ON DELETE CASCADE"
+    on users.id might do too much work when a user is deleted. DEFFERABLE
+    because otherwise one would have to be careful when adding rlists rows
+    before vnlists rows. (Doesn't happen with the current code, but oh well)
+
+
+"My VN List" table layout:
+  H: |       |        | Title <sort>         | Status       | Releases* | Vote <sort> |
+  V: | check | expand |          title       | status       | releases  | vote        |
+  R: |       | check  | date | icons | title | <pad> status |           |             |
+  F: | <all> | <all>  | <select> <select> <send>            | <expl>                  |
+  C: |   1   |    2   |   3  |   4   |   5   |     6        |     7     |      8      |
+
+
+Misc. things to keep in mind:
+- Update 'listdel' notification to also check the vnlists table
+- Allow users to remove rows from vnlists and rlists even when the
+  corresponding vn/release entry is hidden.
+

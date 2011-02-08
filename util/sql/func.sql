@@ -763,7 +763,8 @@ BEGIN
       JOIN (
               SELECT id, title FROM vn_rev       WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
         UNION SELECT id, title FROM releases_rev WHERE TG_TABLE_NAME = 'releases' AND rid = NEW.id
-      ) x ON c.id = x.id;
+      ) x ON c.id = x.id
+     WHERE c.requester <> u.uid;
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;

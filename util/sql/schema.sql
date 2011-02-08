@@ -193,7 +193,8 @@ CREATE TABLE tags (
   added timestamptz NOT NULL DEFAULT NOW(),
   state smallint NOT NULL DEFAULT 0,
   c_vns integer NOT NULL DEFAULT 0,
-  addedby integer NOT NULL DEFAULT 0
+  addedby integer NOT NULL DEFAULT 0,
+  cat tag_category NOT NULL DEFAULT 'cont'
 );
 
 -- tags_aliases

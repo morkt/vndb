@@ -1,0 +1,55 @@
+Allow moderators to overrule a VN tag score
+
+Last modified: 2011-01-03
+Status: Implemented
+
+
+SQL implementation #1:
+  Extra column to tags_vn:
+    ALTER TABLE tags_vn ADD COLUMN overrule boolean NOT NULL DEFAULT false;
+  There can only be one row in tags_vn with the same (tag, vid) combination
+  when one is set with overrule = true; this row then automatically indicates
+  the final score and spoiler setting.
+  - Pro: This way none of the final score calculating functions will have to be
+    modified, and this won't incur an extra performance penalty.
+  - Con: the votes of all other users for that tag and VN will have to be
+    removed. This makes overruling a VN a non-reversible operation.
+  - Determining whether a score was forced by a mod: bool_or(tv.overwrite)
+  - Regular voting on an overruled tag is simply not allowed
+  - An other mod should be able to remove the overruled vote and replace it
+
+SQL implementation #2:
+  Extra column to tags_vn:
+    ALTER TABLE tags_vn ADD COLUMN ignore boolean NOT NULL DEFAULT false;
+  Any tag vote with the ignore flag set is ignored in the score calculation.
+  When a moderator "overrules" a score, all votes with that (tag, vid) will
+  have ignore=true, except the mods own vote.
+  - Pro: Far more flexible than #1, can be used to ignore individual votes.
+    However, using it for anything other than overruling will make it very
+    hard or even impossible to reliably implement the overruling feature, so
+    we'll have avoid making use of this flexibility.
+  - Pro: Votes of other users don't have to be removed
+  - Pro: Users can still add votes to the tag (although it will be ignored)
+  - Con: Requires special coding to automatically set new votes on ignore
+  - Con: Requires modifying score calculation functions, possibly slower
+  - Determining whether a score was forced by a mod: bool_or(tv.ignore)
+    (Assumes we don't use the added flexibility)
+
+Let's go with #2. Will be slightly more work; but at least it's less prone to
+irriversible moderation mistakes and more "friendly" to taggers.
+
+
+UI changes:
+  Add extra 'overrule' checkbox to the 'you' column for moderators.
+  - Checking this will take over the mods' tagvote and spoiler level and
+    ignore the votes of all others.
+  - Unchecking it will de-overrule the score
+  - When an overruled vote is removed by the mod (setting '-' as vote), the
+    tag is de-overruled again.
+
+  Add "overruled" indication to "others" column
+  - A red "!" next to the score column would work
+  - Simply indicates whether the score has been overruled by a mod
+
+  Add "ignored" / "not counted" indication to tag link browser
+

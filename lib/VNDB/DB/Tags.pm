@@ -39,7 +39,7 @@ sub dbTagGet {
       't.meta = ?' => $o{meta}?1:0 ) : (),
   );
   my @select = (
-    qw|t.id t.meta t.name t.description t.state t.c_vns|,
+    qw|t.id t.meta t.name t.description t.state t.cat t.c_vns|,
     q|extract('epoch' from t.added) as added|,
     $o{what} =~ /addedby/ ? ('t.addedby', 'u.username') : (),
   );
@@ -122,13 +122,17 @@ sub dbTagEdit {
 
   $self->dbExec('UPDATE tags !H WHERE id = ?', {
     $o{upddate} ? ('added = NOW()' => 1) : (),
-    map { +"$_ = ?" => $o{$_} } qw|name meta description state|
+    map exists($o{$_}) ? ("$_ = ?" => $o{$_}) : (), qw|name meta description state cat|
   }, $id);
-  $self->dbExec('DELETE FROM tags_aliases WHERE tag = ?', $id);
-  $self->dbExec('INSERT INTO tags_aliases (tag, alias) VALUES (?, ?)', $id, $_) for (@{$o{aliases}});
-  $self->dbExec('DELETE FROM tags_parents WHERE tag = ?', $id);
-  $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
-  $self->dbExec('DELETE FROM tags_vn WHERE tag = ?', $id) if $o{meta} || $o{state} == 1;
+  if($o{aliases}) {
+    $self->dbExec('DELETE FROM tags_aliases WHERE tag = ?', $id);
+    $self->dbExec('INSERT INTO tags_aliases (tag, alias) VALUES (?, ?)', $id, $_) for (@{$o{aliases}});
+  }
+  if($o{parents}) {
+    $self->dbExec('DELETE FROM tags_parents WHERE tag = ?', $id);
+    $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
+  }
+  $self->dbExec('DELETE FROM tags_vn WHERE tag = ?', $id) if $o{meta} || ($o{state} && $o{state} == 1);
 }
 
 
@@ -136,8 +140,8 @@ sub dbTagEdit {
 # returns the id of the new tag
 sub dbTagAdd {
   my($self, %o) = @_;
-  my $id = $self->dbRow('INSERT INTO tags (name, meta, description, state, addedby) VALUES (!l, ?) RETURNING id',
-    [ map $o{$_}, qw|name meta description state| ], $o{addedby}||$self->authInfo->{id}
+  my $id = $self->dbRow('INSERT INTO tags (name, meta, description, state, cat, addedby) VALUES (!l, ?) RETURNING id',
+    [ map $o{$_}, qw|name meta description state cat| ], $o{addedby}||$self->authInfo->{id}
   )->{id};
   $self->dbExec('INSERT INTO tags_parents (tag, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
   $self->dbExec('INSERT INTO tags_aliases (tag, alias) VALUES (?, ?)', $id, $_) for (@{$o{aliases}});
@@ -245,13 +249,13 @@ sub dbTagStats {
   }->{ $o{sort}||'name' }, $o{reverse} ? 'DESC' : 'ASC';
 
   my($r, $np) = $self->dbPage(\%o, qq|
-    SELECT t.id, t.name, count(*) as cnt, $rating as rating,
+    SELECT t.id, t.name, t.cat, count(*) as cnt, $rating as rating,
         COALESCE(avg(CASE WHEN tv.ignore THEN NULL ELSE tv.spoiler END), 0) as spoiler,
         bool_or(tv.ignore) AS overruled
       FROM tags t
       JOIN tags_vn tv ON tv.tag = t.id
       WHERE tv.vid = ?
-      GROUP BY t.id, t.name
+      GROUP BY t.id, t.name, t.cat
       !s
       ORDER BY !s|,
     $o{vid}, defined $o{minrating} ? "HAVING $rating > $o{minrating}" : '', $order

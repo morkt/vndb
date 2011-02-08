@@ -1137,6 +1137,29 @@ hu : Lemondva
 nl : Opgegeven
 
 
+# Tag categories
+
+:_tagcat_cont
+en : Content
+ru*:
+cs*:
+hu*:
+nl : Inhoud
+
+:_tagcat_ero
+en : Sexual content
+ru*:
+cs*:
+hu*:
+nl : Erotisch
+
+:_tagcat_tech
+en : Technical
+ru*:
+cs*:
+hu*:
+nl : Technisch
+
 
 
 #############################################################################
@@ -3930,6 +3953,13 @@ cs : Tagy
 hu : Címkék
 nl :
 
+:_tagp_cat
+en : Category
+ru*:
+cs*:
+hu*:
+nl : Categorie
+
 :_tagp_aliases
 en : Aliases
 ru : Прочие названия
@@ -4157,6 +4187,27 @@ ru : ПРЕДУПРЕЖДЕНИЕ: Если выбрать данную опци
 cs : VAROVÁNÍ: Zaškrtnutí této volby nebo výběr položky "Smazáno" jako stavu smaže automaticky tag u všech vizuálních novel!
 hu : FIGYELEM: Ezen opció bejelölése vagy a "Törölve" állapot kiválasztása véglegesen megsemmisít minden összefüggést a VN-ekel!
 nl : WAARSCHUWING: Als je deze optie selecteerd of als je de status op "verwijderd" zet zullen alle stemmen permanent verwijderd worden!
+
+:_tagedit_frm_cat
+en : Category
+ru*:
+cs*:
+hu*:
+nl : Categorie
+
+:_tagedit_frm_catrec
+en : Also edit all child tags to have this category
+ru*:
+cs*:
+hu*:
+nl : Zet deze categorie ook voor alle subtags
+
+:_tagedit_frm_catrec_warn
+en : WARNING: This will overwrite the category field for all child tags, this action can not be reverted!
+ru*:
+cs*:
+hu*:
+nl : WAARSCHUWING: Hiermee wordt het categoriefeld voor alle subtags overschreven, dit kan niet ongedaan worden gemaakt!
 
 :_tagedit_frm_alias
 en : Aliases
@@ -4511,12 +4562,26 @@ cs : Spoiler
 hu : Spoiler
 nl :
 
+:_tagv_overruletip
+en : Tag overruled. All votes other than that of the moderator who overruled it will be ignored.
+ru*:
+cs*:
+hu*:
+nl : Tag overschreven. Alle stemmen, behalve die van de moderator die de tag heeft overschreven, zullen worden genegeerd.
+
 :_tagv_who
 en : Who?
 ru : Кто?
 cs*:
 hu : Kicsoda?
 nl : Wie?
+
+:_tagv_newlyadded
+en : Newly added
+ru*:
+cs*:
+hu*:
+nl : Net toegevoegd
 
 :_tagv_save
 en : Save changes
@@ -5839,6 +5904,13 @@ cs : Tagy
 hu : Címkék
 nl :
 
+:_vnbrowse_tagnothere
+en : Additional tag filters are not available on this page. Use the visual novel browser instead (available from the main menu -> visual novels).
+ru*:
+cs*:
+hu*:
+nl : Extra tag filters zijn niet aanwezig op deze pagina. Gebruik de visual novel browser voor deze functionaliteit (beschikbaar via het hoofdmenu -> visual novels).
+
 :_vnbrowse_tagactive
 en : These filters are ignored on tag pages (when set as default).
 ru : Эти фильтры недействительны на страницах тегов (по умолчанию).
@@ -5908,6 +5980,90 @@ ru : Платформы
 cs : Platforma
 hu : Platformok
 nl :
+
+:_vnbrowse_ul
+en : My lists
+ru*:
+cs*:
+hu*:
+nl : Mijn lijsten
+
+:_vnbrowse_ul_notblack
+en : Blacklist
+ru*:
+cs*:
+hu*:
+nl :
+
+:_vnbrowse_ul_notblackmsg
+en : Exclude VNs on my blacklist
+ru*:
+cs*:
+hu*:
+nl : Sluit VNs op mijn blacklist uit
+
+:_vnbrowse_ul_onwish
+en : Wishlist
+ru*:
+cs*:
+hu*:
+nl : Wensenlijst
+
+:_vnbrowse_ul_onwishno
+en : Not on my wishlist
+ru*:
+cs*:
+hu*:
+nl : Niet op mijn wensenlijst
+
+:_vnbrowse_ul_onwishyes
+en : On my wishlist
+ru*:
+cs*:
+hu*:
+nl : Op mijn wensenlijst
+
+:_vnbrowse_ul_voted
+en : Voted
+ru*:
+cs*:
+hu*:
+nl : Gestemd
+
+:_vnbrowse_ul_votedno
+en : Not voted on
+ru*:
+cs*:
+hu*:
+nl : Niet op gestemd
+
+:_vnbrowse_ul_votedyes
+en : Voted on
+ru*:
+cs*:
+hu*:
+nl : Op gestemd
+
+:_vnbrowse_ul_onlist
+en : VN list
+ru*:
+cs*:
+hu*:
+nl : VN lijst
+
+:_vnbrowse_ul_onlistno
+en : Not on my VN list
+ru*:
+cs*:
+hu*:
+nl : Niet op mijn VN lijst
+
+:_vnbrowse_ul_onlistyes
+en : On my VN list
+ru*:
+cs*:
+hu*:
+nl : Op mijn VN lijst
 
 
 # VN add/edit form (/v+/edit)

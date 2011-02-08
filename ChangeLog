@@ -1,4 +1,11 @@
-2.18 -
+2.18 - 2011-02-08
+	- Added category field to tags (content/ero/technical)
+	- Group tags on /v+/tagmod by their category
+	- Added tag visibility options by category on /v+
+	- Added filter selector to tag pages (excl. tags tab)
+	- Added new VN filters: wish/blacklist, voted, on VN list
+	- Added tooltip to the overruled-exclamation-mark
+	- Bugfix: don't generate listdel notify for the user who deleted
 
 2.17 - 2011-02-04
 	- Allow moderators to overrule VN tag votes

@@ -34,12 +34,14 @@ sub tagpage {
     { get => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
     { get => 'p', required => 0, default => 1, template => 'int' },
     { get => 'm', required => 0, default => -1, enum => [qw|0 1 2|] },
+    { get => 'fil', required => 0 },
   );
   return $self->resNotFound if $f->{_err};
   my $tagspoil = $self->reqCookie('tagspoil')||'';
   $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0 if $f->{m} == -1;
+  $f->{fil} //= $self->authPref('filter_vn');
 
-  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->filFetchDB(vn => undef, undef, {
+  my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->filFetchDB(vn => $f->{fil}, undef, {
     what => 'rating',
     results => 50,
     page => $f->{p},
@@ -94,6 +96,11 @@ sub tagpage {
       lit bb2html $t->{description};
      end;
    }
+   p class => 'center';
+    b mt('_tagp_cat');
+    br;
+    txt mt("_tagcat_$t->{cat}");
+   end;
    if(@{$t->{aliases}}) {
      p class => 'center';
       b mt('_tagp_aliases');
@@ -106,23 +113,32 @@ sub tagpage {
   _childtags($self, $t) if @{$t->{childs}};
 
   if(!$t->{meta} && $t->{state} == 2) {
+    form action => "/g$t->{id}", 'accept-charset' => 'UTF-8', method => 'get';
     div class => 'mainbox';
      a class => 'addnew', href => "/g/links?t=$tag", mt '_tagp_rawvotes';
      h1 mt '_tagp_vnlist';
+
      p class => 'browseopts';
-      a href => "/g$t->{id}?m=0", $f->{m} == 0 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 0);return true;", mt '_tagp_spoil0';
-      a href => "/g$t->{id}?m=1", $f->{m} == 1 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 1);return true;", mt '_tagp_spoil1';
-      a href => "/g$t->{id}?m=2", $f->{m} == 2 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 2);return true;", mt '_tagp_spoil2';
+      a href => "/g$t->{id}?fil=$f->{fil};m=0", $f->{m} == 0 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 0);return true;", mt '_tagp_spoil0';
+      a href => "/g$t->{id}?fil=$f->{fil};m=1", $f->{m} == 1 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 1);return true;", mt '_tagp_spoil1';
+      a href => "/g$t->{id}?fil=$f->{fil};m=2", $f->{m} == 2 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 2);return true;", mt '_tagp_spoil2';
      end;
+
+     a id => 'filselect', href => '#v';
+      lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+     end;
+     input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
+
      if(!@$list) {
        p; br; br; txt mt '_tagp_novn'; end;
      }
      p; br; txt mt '_tagp_cached'; end;
     end 'div';
-    $self->htmlBrowseVN($list, $f, $np, "/g$t->{id}?m=$f->{m}", 1) if @$list;
+    end 'form';
+    $self->htmlBrowseVN($list, $f, $np, "/g$t->{id}?fil=$f->{fil};m=$f->{m}", 1) if @$list;
   }
 
-  $self->htmlFooter;
+  $self->htmlFooter(prefs => ['filter_vn']);
 }
 
 
@@ -198,6 +214,8 @@ sub tagedit {
     $frm = $self->formValidate(
       { post => 'name',        required => 1, maxlength => 250, regex => [ qr/^[^,]+$/, 'A comma is not allowed in tag names' ] },
       { post => 'state',       required => 0, default => 0,  enum => [ 0..2 ] },
+      { post => 'cat',         required => 1, enum => $self->{tag_categories} },
+      { post => 'catrec',      required => 0 },
       { post => 'meta',        required => 0, default => 0 },
       { post => 'alias',       required => 0, maxlength => 1024, default => '', regex => [ qr/^[^,]+$/s, 'No comma allowed in aliases' ]  },
       { post => 'description', required => 0, maxlength => 10240, default => '' },
@@ -220,11 +238,13 @@ sub tagedit {
         $_ = $c->[0]{id};
       }
     }
+
     if(!$frm->{_err}) {
       $frm->{state} = $frm->{meta} = 0 if !$self->authCan('tagmod');
       my %opts = (
         name => $frm->{name},
         state => $frm->{state},
+        cat => $frm->{cat},
         description => $frm->{description},
         meta => $frm->{meta}?1:0,
         aliases => \@aliases,
@@ -234,6 +254,7 @@ sub tagedit {
         $tag = $self->dbTagAdd(%opts);
       } else {
         $self->dbTagEdit($tag, %opts, upddate => $frm->{state} == 2 && $t->{state} != 2);
+        _set_childs_cat($self, $tag, $frm->{cat}) if $frm->{catrec};
       }
       $self->dbTagMerge($tag, @merge) if $self->authCan('tagmod') && @merge;
       $self->resRedirect("/g$tag", 'post');
@@ -242,7 +263,7 @@ sub tagedit {
   }
 
   if($tag) {
-    $frm->{$_} ||= $t->{$_} for (qw|name meta description state|);
+    $frm->{$_} ||= $t->{$_} for (qw|name meta description state cat|);
     $frm->{alias} ||= join "\n", @{$t->{aliases}};
     $frm->{parents} ||= join ', ', map $_->{name}, @{$t->{parents}};
   }
@@ -274,6 +295,12 @@ sub tagedit {
       $tag ?
         [ static => content => mt '_tagedit_frm_meta_warn' ] : (),
     ) : (),
+    [ select   => short => 'cat', name => mt('_tagedit_frm_cat'), options => [
+      map [$_, mt "_tagcat_$_"], @{$self->{tag_categories}} ] ],
+    $self->authCan('tagmod') && $tag ? (
+      [ checkbox => short => 'catrec', name => mt '_tagedit_frm_catrec' ],
+      [ static => content => mt '_tagedit_frm_catrec_warn' ],
+    ) : (),
     [ textarea => short => 'alias',    name => mt('_tagedit_frm_alias'), cols => 30, rows => 4 ],
     [ textarea => short => 'description', name => mt '_tagedit_frm_desc' ],
     [ static   => content => mt '_tagedit_frm_desc_msg' ],
@@ -286,6 +313,27 @@ sub tagedit {
     ) : (),
   ]);
   $self->htmlFooter;
+}
+
+# recursively edit all child tags and set the category field
+# Note: this can be done more efficiently by doing everything in one UPDATE
+#  query, but that takes more code and this feature isn't used very often
+#  anyway.
+sub _set_childs_cat {
+  my($self, $tag, $cat) = @_;
+  my %done;
+
+  my $e;
+  $e = sub {
+    my $l = shift;
+    for (@$l) {
+      $self->dbTagEdit($_->{id}, cat => $cat) if !$done{$_->{id}}++;
+      $e->($_->{sub}) if $_->{sub};
+    }
+  };
+
+  my $childs = $self->dbTagTree($tag, 25);
+  $e->($childs);
 }
 
 
@@ -579,35 +627,50 @@ sub vntagmod {
         end;
        end; end 'tfoot';
        tbody id => 'tagtable';
-        for my $t (sort { $a->{name} cmp $b->{name} } @$tags) {
-          my $m = (grep $_->{tag} == $t->{id}, @$my)[0] || {};
-          Tr id => "tgl_$t->{id}";
-           td class => 'tc_tagname'; a href => "/g$t->{id}", $t->{name}; end;
-           td class => 'tc_myvote',  $m->{vote}||0;
-           if($self->authCan('tagmod')) {
-             td class => 'tc_myover';
-              input type => 'checkbox', name => 'overrule', value => $t->{id},
-                $m->{vote} && !$m->{ignore} && $t->{overruled} ? (checked => 'checked') : ()
-                if $t->{cnt} > 1;
-             end;
-           }
-           td class => 'tc_myspoil', defined $m->{spoiler} ? $m->{spoiler} : -1;
-           td class => 'tc_allvote';
-            tagscore $t->{rating};
-            i $t->{overruled} ? (class => 'grayedout') : (), " ($t->{cnt})";
-            b class => 'standout', style => 'font-weight: bold', ' !' if $t->{overruled};
-           end;
-           td class => 'tc_allspoil', sprintf '%.2f', $t->{spoiler};
-           td class => 'tc_allwho';
-            a href => "/g/links?v=$vid;t=$t->{id}", mt '_tagv_who';
-           end;
-          end;
-        }
+        _tagmod_list($self, $vid, $tags, $my);
        end 'tbody';
       end 'table';
     } ],
   ]);
   $self->htmlFooter;
+}
+
+sub _tagmod_list {
+  my($self, $vid, $tags, $my) = @_;
+
+  my %my = map +($_->{tag} => $_), @$my;
+
+  for my $cat (@{$self->{tag_categories}}) {
+    my @tags = grep $_->{cat} eq $cat, @$tags;
+    next if !@tags;
+    Tr class => 'tagmod_cat';
+     td colspan => 7, mt "_tagcat_$cat";
+    end;
+    for my $t (@tags) {
+      my $m = $my{$t->{id}};
+      Tr id => "tgl_$t->{id}";
+       td class => 'tc_tagname'; a href => "/g$t->{id}", $t->{name}; end;
+       td class => 'tc_myvote',  $m->{vote}||0;
+       if($self->authCan('tagmod')) {
+         td class => 'tc_myover';
+          input type => 'checkbox', name => 'overrule', value => $t->{id},
+            $m->{vote} && !$m->{ignore} && $t->{overruled} ? (checked => 'checked') : ()
+            if $t->{cnt} > 1;
+         end;
+       }
+       td class => 'tc_myspoil', defined $m->{spoiler} ? $m->{spoiler} : -1;
+       td class => 'tc_allvote';
+        tagscore $t->{rating};
+        i $t->{overruled} ? (class => 'grayedout') : (), " ($t->{cnt})";
+        b class => 'standout', style => 'font-weight: bold', title => mt('_tagv_overruletip'), ' !' if $t->{overruled};
+       end;
+       td class => 'tc_allspoil', sprintf '%.2f', $t->{spoiler};
+       td class => 'tc_allwho';
+        a href => "/g/links?v=$vid;t=$t->{id}", mt '_tagv_who';
+       end;
+      end;
+    }
+  }
 }
 
 

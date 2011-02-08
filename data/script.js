@@ -474,7 +474,7 @@ function tvsInit() {
   var l = byName(byId('tagops'), 'a');
   for(var i=0;i<l.length; i++)
     l[i].onclick = tvsClick;
-  tvsSet(getCookie('tagspoil'), true);
+  tvsSet(getCookie('tagspoil'), true, (getCookie('tagcat')||'cont,tech').split(','));
 }
 
 function tvsClick() {
@@ -482,29 +482,43 @@ function tvsClick() {
   var l = byName(byId('tagops'), 'a');
   for(var i=0; i<l.length; i++)
     if(l[i] == this) {
-      if(i < 3) {
-        tvsSet(i, null);
-        setCookie('tagspoil', i);
-      } else
-        tvsSet(null, i == 3 ? true : false);
+      if(i < 3) { /* categories */
+        setClass(l[i], 'tsel', !hasClass(l[i], 'tsel'));
+        var c = tvsSet();
+        setCookie('tagcat', c.length ? c.join(',') : '-');
+      } else if(i < 6) { /* spoiler level */
+        tvsSet(i-3, null);
+        setCookie('tagspoil', i-3);
+      } else /* limit */
+        tvsSet(null, i == 6 ? true : false);
     }
   return false;
 }
 
-function tvsSet(lvl, lim) {
+function tvsSet(lvl, lim, cats) {
   /* set/get level and limit to/from the links */
   var l = byName(byId('tagops'), 'a');
+  var cat = cats || [];
   for(var i=0; i<l.length; i++) {
-    if(i < 3) { /* spoiler level */
+    if(i < 3) { /* categories */
+      var c = l[i].href.substr(l[i].href.indexOf('#')+1);
+      if(cats) {
+        for(var j=0; j<cats.length && c != cats[j]; j++) ;
+        setClass(l[i], 'tsel', j != cats.length);
+      } else {
+        if(hasClass(l[i], 'tsel'))
+          cat.push(c);
+      }
+    } else if(i < 6) { /* spoiler level */
       if(lvl != null)
-        setClass(l[i], 'tsel', i == lvl);
+        setClass(l[i], 'tsel', i-3 == lvl);
       if(lvl == null && hasClass(l[i], 'tsel'))
-        lvl = i;
-    } else { /* display limit (3 = summary) */
+        lvl = i-3;
+    } else { /* display limit (6 = summary) */
       if(lim != null)
-        setClass(l[i], 'tsel', lim == (i == 3));
+        setClass(l[i], 'tsel', lim == (i == 6));
       if(lim == null && hasClass(l[i], 'tsel'))
-        lim = i == 3;
+        lim = i == 6;
     }
   }
 
@@ -514,13 +528,14 @@ function tvsSet(lvl, lim) {
   var s=0;
   for(i=0;i<l.length;i++) {
     var thislvl = l[i].className.substr(6, 1);
-    if(thislvl <= lvl && s < lim) {
+    for(var j=0; j<cat.length && !hasClass(l[i], 'cat_'+cat[j]); j++) ;
+    if(thislvl <= lvl && s < lim && j != cat.length) {
       setClass(l[i], 'hidden', false);
       s++;
     } else
       setClass(l[i], 'hidden', true);
   }
-  return false;
+  return cat;
 }
 
 tvsInit();
@@ -1257,6 +1272,8 @@ function tglLoad() {
   tglStripe();
   var trs = byName(byId('tagtable'), 'tr');
   for(var i=0; i<trs.length; i++) {
+    if(hasClass(trs[i], 'tagmod_cat'))
+      continue;
     var vote = byClass(trs[i], 'td', 'tc_myvote')[0];
     vote.tgl_vote = getText(vote)*1;
     tglVoteBar(vote);
@@ -1353,6 +1370,10 @@ function tglAdd() {
     if(byId('tgl_'+id))
       return alert(mt('_tagv_double'));
 
+    if(!byId('tagmod_newtags'))
+      byId('tagtable').appendChild(tag('tr', {'class':'tagmod_cat', id:'tagmod_newtags'},
+        tag('td', {colspan:7}, mt('_tagv_newlyadded'))));
+
     var vote = tag('td', {'class':'tc_myvote', tgl_vote: 2}, '');
     tglVoteBar(vote);
     var spoil = tag('td', {'class':'tc_myspoil', tgl_spoil: 0}, tglSpoilers[0]);
@@ -1385,6 +1406,8 @@ function tglSerialize() {
   var r = [];
   var l = byName(byId('tagtable'), 'tr');
   for(var i=0; i<l.length; i++) {
+    if(hasClass(l[i], 'tagmod_cat'))
+      continue;
     var vote = byClass(l[i], 'td', 'tc_myvote')[0].tgl_vote;
     if(vote != 0)
       r[r.length] = [
@@ -1767,14 +1790,19 @@ function filLoad() {
 
   var p = tag('p', {'class':'browseopts'});
   var c = tag('div', null);
+  var idx = 0;
   for(var i=1; i<l.length; i++) {
+    if(!l[i])
+      continue;
+    idx++;
+
     // category link
-    var a = tag('a', { href: '#', onclick: filSelectCat, fil_num: i, fil_onshow:[] }, l[i][0]);
+    var a = tag('a', { href: '#', onclick: filSelectCat, fil_num: idx, fil_onshow:[] }, l[i][0]);
     p.appendChild(a);
     p.appendChild(tag(' '));
 
     // category contents
-    var t = tag('table', {'class':'formtable', fil_num: i}, null);
+    var t = tag('table', {'class':'formtable', fil_num: idx}, null);
     setClass(t, 'hidden', true);
     a.fil_t = t;
     for(var j=1; j<l[i].length; j++) {
@@ -1795,7 +1823,7 @@ function filLoad() {
     }
     c.appendChild(t);
 
-    fil_cats[i] = a;
+    fil_cats[idx] = a;
   }
 
   addBody(tag('div', { id: 'fil_div', 'class':'hidden' },
@@ -1921,6 +1949,8 @@ function filDeSerialize() {
       f[fn] = '';
   for(var fn in f) {
     var c = byId('fil_check_'+fn);
+    if(!c)
+      continue;
     c.checked = f[fn] == '' ? false : true;
     var v = f[fn].split('~');
     for(var i=0; i<v.length; i++)
@@ -2155,13 +2185,17 @@ function filVN() {
   for(var i=0; i<len.length; i++) // l10n /_vnlength_.+/
     len[i] = [ len[i], mt('_vnlength_'+len[i]) ];
 
+  var ontagpage = location.pathname.indexOf('/v/') < 0;
+
   return [
     mt('_vnbrowse_fil_title'),
     [ mt('_vnbrowse_general'),
       filFSelect( 'length', mt('_vnbrowse_length'), 6, len),
       filFOptions('hasani', mt('_vnbrowse_anime'), [[1, mt('_vnbrowse_anime_yes')],[0, mt('_vnbrowse_anime_no')]])
     ],
-    [ mt('_vnbrowse_tags'),
+    ontagpage ? [ mt('_vnbrowse_tags'),
+      [ '', ' ', tag(mt('_vnbrowse_tagnothere')) ],
+    ] : [ mt('_vnbrowse_tags'),
       [ '',       ' ',                   tag(mt('_js_fil_booland')) ],
       [ '',       ' ', PREF_CODE != '' ? tag(mt('_vnbrowse_tagactive')) : null ],
       filFTagInput('tag_inc', mt('_vnbrowse_taginc')),
@@ -2171,7 +2205,14 @@ function filVN() {
     ],
     [ mt('_vnbrowse_language'), filFSelect('lang', mt('_vnbrowse_language'), 20, lang) ],
     [ mt('_vnbrowse_olang'),    filFSelect('olang',mt('_vnbrowse_olang'),    20, lang) ],
-    [ mt('_vnbrowse_platform'), filFSelect('plat', mt('_vnbrowse_platform'), 20, plat) ]
+    [ mt('_vnbrowse_platform'), filFSelect('plat', mt('_vnbrowse_platform'), 20, plat) ],
+    PREF_CODE == '' ? null : [
+      mt('_vnbrowse_ul'),
+      filFOptions('ul_notblack', mt('_vnbrowse_ul_notblack'), [[1, mt('_vnbrowse_ul_notblackmsg')]]),
+      filFOptions('ul_onwish',   mt('_vnbrowse_ul_onwish'), [[0, mt('_vnbrowse_ul_onwishno')],[1, mt('_vnbrowse_ul_onwishyes')]]),
+      filFOptions('ul_voted',    mt('_vnbrowse_ul_voted'),  [[0, mt('_vnbrowse_ul_votedno')], [1, mt('_vnbrowse_ul_votedyes') ]]),
+      filFOptions('ul_onlist',   mt('_vnbrowse_ul_onlist'), [[0, mt('_vnbrowse_ul_onlistno')],[1, mt('_vnbrowse_ul_onlistyes')]])
+    ],
   ];
 }
 
