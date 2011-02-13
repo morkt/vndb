@@ -17,7 +17,7 @@ our @EXPORT = qw|
 
 # generates the "main tabs". These are the commonly used tabs for
 # 'objects', i.e. VN/producer/release entries and users
-# Arguments: u/v/r/p/g, object, currently selected item (empty=main)
+# Arguments: u/v/r/p/g/i, object, currently selected item (empty=main)
 sub htmlMainTabs {
   my($self, $type, $obj, $sel) = @_;
   $sel ||= '';
@@ -73,7 +73,7 @@ sub htmlMainTabs {
 
    if(   $type eq 'u'     && ($self->authInfo->{id} && $obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))
       || $type =~ /[vrp]/ && $self->authCan('edit') && (!$obj->{locked} || $self->authCan('lock')) && (!$obj->{hidden} || $self->authCan('del'))
-      || $type eq 'g'     && $self->authCan('tagmod')
+      || $type =~ /[gi]/  && $self->authCan('tagmod')
    ) {
      li $sel eq 'edit' ? (class => 'tabselected') : ();
       a href => "/$id/edit", mt '_mtabs_edit';

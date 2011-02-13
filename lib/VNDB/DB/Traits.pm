@@ -13,7 +13,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbTraitGet dbTraitTree dbTraitEdit dbTraitAdd|;
 
 
-# Options: id what results page sort reverse
+# Options: id noid name what results page sort reverse
 # what: parents childs(n) aliases addedby
 # sort: id name added
 sub dbTraitGet {
@@ -26,7 +26,10 @@ sub dbTraitGet {
   );
 
   my %where = (
-    $o{id} ? ('t.id = ?' => $o{id}) : (),
+    $o{id}   ? ('t.id = ?'  => $o{id}) : (),
+    $o{noid} ? ('t.id <> ?' => $o{noid}) : (),
+    $o{name} ? (
+      't.id = (SELECT id FROM traits LEFT JOIN traits_aliases ON id = trait WHERE lower(name) = ? OR lower(alias) = ? LIMIT 1)' => [ lc $o{name}, lc $o{name} ]) : (),
   );
 
   my @select = (

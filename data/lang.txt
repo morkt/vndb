@@ -4779,6 +4779,13 @@ cs*:
 hu*:
 nl : Dit kenmerk is nog niet goedgekeurd door een moderator.
 
+:_traitp_addchild
+en : Create child trait
+ru*:
+cs*:
+hu*:
+nl : Voeg een subkenmerk toe
+
 :_traitp_indexlink
 en : Traits
 ru*:
@@ -4806,6 +4813,133 @@ ru*:
 cs*:
 hu*:
 nl : nog [_1] [quant,_1,kenmerk,kenmerken]
+
+
+# Trait add/edit form (/i+/edit, /i+/add, /i/add)
+
+:_traite_title_add
+en : Add child trait to [_1]
+ru*:
+cs*:
+hu*:
+nl : Voeg subkenmerk toe aan [_1]
+
+:_traite_title_edit
+en : Edit trait: [_1]
+ru*:
+cs*:
+hu*:
+nl : Wijzig kenmerk [_1]
+
+:_traite_title_new
+en : Add new trait
+ru*:
+cs*:
+hu*:
+nl : Voeg nieuw kenmerk toe
+
+:_traite_req_title
+en : Requesting new trait
+ru*:
+cs*:
+hu*:
+nl : Vraag nieuwe trait aan
+
+:_traite_req_subtitle
+en : Your trait must be approved
+ru*:
+cs*:
+hu*:
+nl : Je kenmerk moet goedgekeurd worden
+
+:_traite_req_msg
+en : Because all traits have to be approved by moderators, it can take a while before your trait will show up in the listings or can be used on character entries.
+ru*:
+cs*:
+hu*:
+nl : Omdat alle kenmerken goedgekeurd moeten worden door een moderator, kan het even duren voordat je kenmerk te zien is op de site of gebruikt kan worden voor karakters.
+
+:_traite_frm_name
+en : Primary name
+ru : Основное название
+cs : Hlavní jméno
+hu : Elsődleges név
+nl : Primaire naam
+
+:_traite_frm_by
+en : Added by
+ru : Добавлено
+cs : Přidal
+hu : Hozzáadta
+nl : Toegevoegd door
+
+:_traite_frm_state
+en : State
+ru : Состояние
+cs : Stav
+hu : Állapot
+nl : Status
+
+:_traite_frm_state0
+en : Awaiting moderation
+ru : Ожидает модерации
+cs : Čeká na schválení
+hu : Moderálásra vár
+nl : Wacht op goedkeuring
+
+:_traite_frm_state1
+en : Deleted/hidden
+ru : Удалён/скрыт
+cs : Smazán/skryt
+hu : Rejtett/törölve
+nl : Verwijderd
+
+:_traite_frm_state2
+en : Approved
+ru : Одобрен
+cs : Schválen
+hu : Elfogadva
+nl : Goedgekeurd
+
+:_traite_frm_meta
+en : This is a meta trait (only to be used as parent for other traits, not for direct use with characters)
+ru*:
+cs*:
+hu*:
+nl : Dit is een metakenmerk (kan alleen gebruikt worden als houder voor andere kenmerken, niet voor karakters)
+
+:_traite_frm_alias
+en : Aliases
+     (separated by newlines)
+ru : Прочие названия
+     (каждое с новой строки)
+cs : Aliasy
+     (odděleny novou řádkou)
+hu : Más nevek
+     (új sorokkal elválasztva)
+nl : Aliassen
+     (gescheiden door enters)
+
+:_traite_frm_desc
+en : Description
+ru : Описание
+cs : Popis
+hu : Leírás
+nl : Beschrijving
+
+:_traite_frm_parents
+en : Parent traits
+ru*:
+cs*:
+hu*:
+nl : Hoofdkenmerk
+
+:_traite_frm_parents_msg
+en : Comma separated list of trait names to be used as parent for this trait.
+ru*:
+cs*:
+hu*:
+nl : Kommagescheiden lijst van hoofdkenmerken.
 
 
 

@@ -259,6 +259,9 @@ User interface considerations:
   Trait edit:
     URI: /i+/edit, /i/new
     The regular add/edit form.
+    - What to do with the linked characters when a trait is marked as deleted
+      or meta?  Batch-edit all character entries to remove the trait? Sounds
+      painful...
 
   Trait listing / overview:
     URI: /i
