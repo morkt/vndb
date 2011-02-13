@@ -78,18 +78,7 @@ sub tagpage {
    a class => 'addnew', href => "/g$tag/add", mt '_tagp_addchild' if $self->authCan('tag') && $t->{state} != 1;
    h1 $title;
 
-   p;
-    my @p = _parenttags(@{$t->{parents}});
-    for my $p (@p ? @p : []) {
-      a href => '/g', mt '_tagp_indexlink';
-      for (reverse @$p) {
-        txt ' > ';
-        a href => "/g$_->{id}", $_->{name};
-      }
-      txt " > $t->{name}";
-      br;
-    }
-   end 'p';
+   parenttags($t, mt('_tagp_indexlink'), 'g');
 
    if($t->{description}) {
      p class => 'description';
@@ -110,7 +99,7 @@ sub tagpage {
    }
   end 'div';
 
-  _childtags($self, $t) if @{$t->{childs}};
+  childtags($self, mt('_tagp_childs'), 'g', $t) if @{$t->{childs}};
 
   if(!$t->{meta} && $t->{state} == 2) {
     form action => "/g$t->{id}", 'accept-charset' => 'UTF-8', method => 'get';
@@ -139,57 +128,6 @@ sub tagpage {
   }
 
   $self->htmlFooter(prefs => ['filter_vn']);
-}
-
-
-# arg: tag hashref
-# returns: [ [ tag1, tag2, tag3 ], [ tag1, tag2, tag5 ] ]
-sub _parenttags {
-  my @r;
-  for my $t (@_) {
-    for (@{$t->{'sub'}}) {
-      push @r, [ $t, @$_ ] for _parenttags($_);
-    }
-    push @r, [$t] if !@{$t->{'sub'}};
-  }
-  return @r;
-}
-
-
-# used for on both /g and /g+
-sub _childtags {
-  my($self, $t, $index) = @_;
-
-  div class => 'mainbox';
-   h1 mt $index ? '_tagp_tree' : '_tagp_childs';
-   ul class => 'tagtree';
-    for my $p (sort { @{$b->{'sub'}} <=> @{$a->{'sub'}} } @{$t->{childs}}) {
-      li;
-       a href => "/g$p->{id}", $p->{name};
-       b class => 'grayedout', " ($p->{c_vns})" if $p->{c_vns};
-       end, next if !@{$p->{'sub'}};
-       ul;
-        for (0..$#{$p->{'sub'}}) {
-          last if $_ >= 5 && @{$p->{'sub'}} > 6;
-          li;
-           txt '> ';
-           a href => "/g$p->{sub}[$_]{id}", $p->{'sub'}[$_]{name};
-           b class => 'grayedout', " ($p->{sub}[$_]{c_vns})" if $p->{'sub'}[$_]{c_vns};
-          end;
-        }
-        if(@{$p->{'sub'}} > 6) {
-          li;
-           txt '> ';
-           a href => "/g$p->{id}", style => 'font-style: italic', mt '_tagp_moretags', @{$p->{'sub'}}-5;
-          end;
-        }
-       end;
-      end 'li';
-    }
-   end 'ul';
-   clearfloat;
-   br;
-  end 'div';
 }
 
 
@@ -687,7 +625,7 @@ sub tagindex {
   end;
 
   my $t = $self->dbTagTree(0, 2);
-  _childtags($self, {childs => $t}, 1);
+  childtags($self, mt('_tagp_tree'), 'g', {childs => $t});
 
   table class => 'mainbox threelayout';
    Tr;

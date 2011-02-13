@@ -1,0 +1,569 @@
+Character Database
+
+Last modified: 2011-02-13
+Status: Draft / incomplete
+
+
+*GLOBAL* data layout (ignoring any UI stuff or implementation details):
+
+  Format: (in case it's not obvious)
+  - field with a single value
+  - field with multiple values
+    - subfield - field for each value in the above field
+
+  New DB item: Trait (not versioned, moderated; similar to tags)
+  - name
+  - aliases
+  - description
+  - parents (multiple parents; similar to tags)
+  - state (new/approved/deleted; similar to tags)
+  - added by (similar to tags)
+
+  New DB item: Character (versioned) (without instances)
+  - name
+  - original name
+  - aliases / nicknames
+  - image
+  - description
+  - 3 sizes
+  - height and weight
+  - birthday (day and month only; year rarely known and hardly practical)
+  - list of traits
+    - trait ID
+    - spoiler flag
+  - list of VNs
+    - VN id
+    - release id
+    - spoiler flag ("the fact that this character appears in this game is a spoiler")
+    - role
+  - link to "main" character + spoiler indication
+
+  (UNUSED) New DB item: Character (versioned) (instance idea)
+  - aliases / nicknames (misc. not names of instances)
+  - default instance
+  - instances (at least one for each character)
+    - name
+    - original name
+    - image
+    - description
+    - spoiler flag
+    - 3 sizes
+    - age? birthday?
+    - list of traits
+      - trait ID
+      - spoiler level
+    - list of VNs
+      - VN id
+      - role (protagonist, primary character, side character, appears in)
+      - list of releases (none implies all)
+
+
+  "Same character" spoiler problems:
+    Case 1: (relatively common)
+      The characters themselves are not spoilers, but the fact that they are the same is.
+      Examples (ROT13):
+        Symphonic Rain:  Cubeav & Nevrggn
+        Fate/stay night: Nepure & Fuvebh
+      How to handle:
+        With instances: no solution found yet, other than not using instances
+        Without instances: character relation with spoiler flag set
+
+    Case 2: (not very uncommon)
+      The entire existence of a character is a spoiler.
+      Examples (ROT13):
+        Ever17: Oyvpx Jvaxry
+        Aoishiro: Arxngn? Lnfhuvzr?
+      How to handle:
+        With instances: make the instance a spoiler (would take care of everything)
+        Without instances: the relation with the VN should be marked a spoiler
+
+    Case 3: (pretty uncommon)
+      What appears to be a single character turns out to be multiple characters in the end.
+      (this one sucks...)
+      Examples:
+        Ever17: Xvq (Ubxhgb & Elbtb), Lbh ('Nxv naq 'Uneh)
+      How to handle:
+        With instances: (ugly, but does the trick)
+          make one character entry with two or three instances: one with what
+          the game wants you to believe and use other instances for the actual
+          characters (set to spoiler).
+        Without instances:
+          make a separate entry for each character that the game wants you to
+          believe is a single character, and separate entries for the actual
+          characters. link them together and to VNs with spoiler markins.
+
+
+  Traits vs. fields:
+  - Preferably, we'd put as much data in traits, since these are flexible
+  - However, we do want to have some basic information (e.g. gender, apparent
+    age) to be specified early on (e.g. with a dropdown selection). And we also
+    want them to be nicely ordered on the charpage (e.g. Gender: male).
+  - It would be nice if it were also possible to limit the selection of some
+    tags to only one for a specific category. E.g. A character can only have
+    one "Gender" trait. But this isn't all that important, since I doubt users
+    are *that* stupid and traits are part of the characters' revisioning
+    system, which means everything can be moderated quite easily.
+  - "Displaying everything nice on a characters' page"-solutions:
+    1. Table-layout with a "Parent: trait1, trait2" listing, where parent is
+       the top trait (i.e. without parents). Traits with multiple parents will
+       have to be listed multiple times.
+    2. Same as above, but add a boolean flag "category" to the traits. The
+       traits with this flag set will be used in the table instead of the
+       top-traits. This allows more flexibility of the trait tree, but is more
+       complex to implement.
+
+
+  Linking "same character"s together (without instances):
+  - It is possible to handle this with a regular char<->char "is the same as"
+    relation.  This can become annoying when there are many entries that are
+    the same. For example, if there are four characters (A-D), then there are
+    many different ways to link these together with that relation:
+    "Linked list"-style: A=B; B=A,C; C=B,D; D=C
+    "Binary Tree"-style: A=B,C; B=A,D; C=A; D=B
+    "Everything"-style: A=B,C,D; B=A,C,D; C=A,B,D; D=A,B,C
+    That is quite annoying, both to the user and in the code. :-(
+    On the upside, since every relation has a "spoiler" option, this does allow
+    some flexibility: A=B and C=D may be spoilers, but B=C does not have to be.
+  - An alternative approach: "parent"->"child" relations (let's call them
+    main->guise relations (thank you AniDB), since the CS terminology fails
+    here).
+    To explain: each "guise" character can be linked to a single "main"
+    character (with spoiler flag). As a restriction, this "main" character can
+    not itself be linked to an other character as "guise" again. This gives us
+    an easy structure to work with. With the above example, using "A" as "main"
+    character (and "->" is "links to"): A; B->A; C->A, D->A.
+    This approach is actually extremely similar to the idea of using instances:
+    the data structure created with these links is equivalent to the structure
+    with instances. The main differences are the implementation and the idea
+    that the "instances" themselves are centric rather than their "main
+    character".  This idea also prevents the issue of "same character spoiling:
+    case 1".
+
+
+  Misc. questions:
+  - How to handle cases where in an original release a character only played a
+    side role, while in a later release this character would get a route?
+    This isn't entirely uncommon... Possible solutions:
+    1. Allow a character to be linked to the same VN more than once with
+       different role and different releases. This solves the problem, but would
+       make it hard to generate a nice overview of all characters in a VN
+       (covering all its releases).
+    2. Move the "role" field as a subfield of the release links. This is
+       probably a better idea...
+    But I'm going with option 1 anyway, since is easier and more efficient.
+  - Similar to the above, are there cases where in an original release the
+    existance of a character is a spoiler, while in a later release it is not?
+    Can't think if any...
+  - "Has route" indication?
+    This obviously doesn't work for all VNs, since routes are not always linked
+    to characters. In the case that it does work, it should probably be a
+    subfield of the release links (see the "role" thing above).
+    Better yet, we should have a "route database". For the future. >_>
+  - "Age" field? Bad idea?
+    - May differ per release even when nothing else changed (hello JAST USA).
+      Can be handled by adding a new character and linking and stuff, but isn't
+      worth the trouble)
+    - Conflicting information. For example: When heroines are 1st grade high
+      school but it is stated in the beginning that "all characters are at
+      least 18 years old" 
+    - Just a bad idea in general, since there are quite a few fuckable
+      10-years-olds, and explicitely stating that is not a very nice thing.
+
+
+  Traits vs. VN tags (not very important for now):
+  - Ideally, some character traits would imply VN tags.
+  - For example: a VN that has a character linked to it with the "vampire"
+    trait, the VN should have the "Vampire" tag.
+  - Correctly implementing this would be hard, but it is possible to get Multi
+    to add auto-votes with some rules. This would require traits to have an
+    "implies" relation with tags.
+  - "Level" setting can be partly determined from the importance of the role of
+    the character. Though this will just be a wild guess.
+  - "Spoiler" setting is inherited, though unknown which level it should have.
+    The following might work:
+    tag spoiler = 0
+    tag spoiler +1 if the character-VN link is a spoiler
+    tag spoiler +1 if the tag-character link is a spoiler
+
+
+  Ever17 example (with instances, SPOILERS):
+    These examples are not technically correct, since the two "You"s are two
+    separate characters, and there is no such thing as "Kid". But the following
+    example would do the trick in a way that is neither spoilerous, nor
+    completely wrong.
+
+    You:
+      alias: You, Nakkyu
+      Instance #1:
+      |    name: Yubiseiharukana Tanaka
+      |     VNs: v17, all releases, primary character
+      | spoiler: no
+      Instance #2:
+      |    name: Yubiseiakikana Tanaka
+      |     VNs: v17, all releases, side character
+      | spoiler: yes
+
+    Kid:
+      alias: Kid
+      Instance #1:
+      |        name: Shounen
+      | description: Doesn't even remember his own name, dumbass! Protagonist in the 2034 routes.
+      |         VNs: v17, all releases, protagonist
+      |     spoiler: no
+      Instance #2:
+      |        name: Ryogo Kaburaki
+      | description: "kid" in 2017, "Takeshi" in 2034
+      |         VNs: v17, all releases, primary character
+      |     spoiler: yes
+      Instance #3:
+      |        name: Hokuto
+      | description: "kid" in 2034, son of Tsugumi and Takeshi
+      |         VNs: v17, all releases, protagonist
+      |     spoiler: yes
+
+    Without instances: make a separate character entry for each of the above
+    instances and set the appropriate spoiler flags.
+
+
+
+
+The term "instance":
+  To make things extra confusing, the term "instance" has two meanings:
+  1. In the above part (global data layout) and in Maou's original draft, it
+     refers to a special database entry of type "instance", separate from the type
+     "character".
+  2. In the rest of this document, I'm using it to mean a character entry which
+     has the "main character" field set. In the global data layout I used the term
+     "guise", but I believe "instance" is better.
+
+
+
+
+User interface considerations:
+
+  Pages to consider:
+  - trait page
+  - trait edit
+  - trait listing / overview
+  - character page
+  - character edit
+  - character listing / search
+  - VN page (list of characters)
+
+  Trait page:
+    URI: /i+
+    Similar to tag page: basic description + listing of characters.
+    The listing of characters includes all characters linked to child traits.
+    (same as with tags)
+
+  Trait edit:
+    URI: /i+/edit, /i/new
+    The regular add/edit form.
+
+  Trait listing / overview:
+    URI: /i
+    Just be creative with this, can be similar to the tag overview.
+
+  Character page:
+    URI: /c+
+    If the character is not an instance (i.e. it has no "main character"):
+      Display the information of the requested character, followed by that of
+      all instances linked to it. (spoilerous instances are hidden by default).
+    If the character is an instance:
+      - Display the information of the requested character, followed by a link
+        to its main character? (if it's not a spoiler of course).
+      - Or make no distinction between "Main character" and "instance", and
+        simply display all information or the main character and its other
+        instances on the same page? (similar to the main character page). This
+        is sligtly counter-intuitive when the relation between the instance and
+        its main character is a spoiler: in that case all the related entries
+        would be hidden, rather than only those of which their relation is a
+        spoiler. (See global data layout -> same character linking above for a
+        discussion).
+    Information display for a single character:
+        Name
+         (orig name)
+        [image] [table]
+        [description]
+      table:
+      |           Name: <name>
+      |  Original name: <orig>
+      |            ...
+      |  Visual novels: Role - VN title
+      |                 VN title 2
+      |                 > Role - release title
+      |                 > Role - other releases
+      | Trait group #1: Trait1, trait2, ..
+      | Trait group #2: ..
+
+  Character edit:
+    URI: /c+/edit
+    This requires some thinking...
+    - Batch-edit-with-instances:
+      Instances more often than not share quite a bit of information with each
+      other. When editing a character that is an instance or has instances, the
+      edit page should preferably contain the char-edit-form for all related
+      characters, and automatically link fields that are the same for all
+      instances together. E.g. each field could have a checkbox indicating
+      "same as main character", in which case editing the field in the main
+      character would update that of the instances as well.
+      This is slightly more annoying with traits, since this should be done on
+      a per-trait basis.
+    - VN-linking:
+      Just mirror the structure of the chars_traits table:
+       <VN title> <release dropdown> <spoiler checkbox> <role dropdown> 
+      A VN can be added more than once to select other releases. This isn't all
+      that intuitive, but is simple to implement and does the job.
+    - Trait linking interface? How will it work together with the
+      batch-edit-with-instances and copying over traits from the main
+      character?
+
+  Character listing / search:
+    URI: /c
+    Nothing special.
+
+  VN page (list of characters):
+    URI: /v+ (stays the same, obviously)
+    Add tabs above the "Releases" box with two items: "Main" and "Characters".
+    "Main": Displays the usual "Releases" / "User stats" / "Screenshots" boxes
+    "Characters": Displays a list of characters linked to that VN,
+    getchu-style. Spoilerous characters are hidden by default.
+    JS-tabs vs. new URI:
+      JS tabs are nicer, but require all character information to be sent with
+      each pageview on the VN page. This is heavy on the server and slows down
+      page loading. This can be avoided by loading the character data using
+      AJAX when the tab is opened, but I'm not very fond of using AJAX in this
+      way. So in that sense a separate URI may be a better idea. E.g. /v+/chars
+    Listing:
+      Order by role: protag -> main chars -> side -> etc
+      Display image + quite a bit of information for protag + main chars,
+      followed by a plain and simple (table) listing of "other characters".
+
+   Misc. stuff:
+   - Do we want to be able to search for VNs that have a character with a
+     certain trait? For example, to get a listing of all VNs that have a
+     "vampire" character. This will be very heavy on the server if it were
+     implemented without some form of caching, and may not be very useful if
+     you can't set other constraints as well (e.g. it must be a main character
+     in the VN).
+     People will definitely complain if they can't search on their "Genius
+     protagonist" tag anymore. >_>
+
+
+
+
+The SQL schema:
+
+  CREATE TABLE traits (
+    id SERIAL PRIMARY KEY,
+    name varchar(250) NOT NULL UNIQUE,
+    description text NOT NULL DEFAULT '',
+    meta boolean NOT NULL DEFAULT false,
+    added timestamptz NOT NULL DEFAULT NOW(),
+    state smallint NOT NULL DEFAULT 0,
+    addedby integer NOT NULL DEFAULT 0 REFERENCES users (id)
+  );
+
+  CREATE TABLE traits_aliases (
+    alias varchar(250) NOT NULL PRIMARY KEY,
+    trait integer NOT NULL REFERENCES traits (id)
+  );
+
+  CREATE TABLE traits_parents (
+    trait integer NOT NULL REFERENCES traits (id),
+    parent integer NOT NULL REFERENCES traits (id),
+    PRIMARY KEY(trait, parent)
+  );
+
+  CREATE TABLE chars (
+    id SERIAL PRIMARY KEY,
+    latest integer NOT NULL DEFAULT 0 REFERENCES chars_rev (id),
+    locked boolean NOT NULL DEFAULT FALSE,
+    hidden boolean NOT NULL DEFAULT FALSE
+  );
+
+  CREATE TABLE chars_rev (
+    id         integer  NOT NULL PRIMARY KEY REFERENCES changes (id),
+    cid        integer  NOT NULL REFERENCES chars (id),
+    name       varchar(250) NOT NULL DEFAULT '',
+    original   varchar(250) NOT NULL DEFAULT '',
+    alias      varchar(500) NOT NULL DEFAULT '',
+    image      integer  NOT NULL DEFAULT 0,
+    "desc"     text     NOT NULL DEFAULT '',
+    s_bust     smallint NOT NULL DEFAULT 0, -- in cm
+    s_waist    smallint NOT NULL DEFAULT 0,
+    s_hip      smallint NOT NULL DEFAULT 0,
+    b_month    smallint NOT NULL DEFAULT 0, -- birthday
+    b_day      smallint NOT NULL DEFAULT 0,
+    height     smallint NOT NULL DEFAULT 0, -- in cm
+    weight     smallint NOT NULL DEFAULT 0, -- in kg
+    main       integer  REFERENCES chars (id),
+    main_spoil boolean  NOT NULL DEFAULT false
+  );
+
+  CREATE TABLE chars_traits (
+    cid integer NOT NULL REFERENCES chars_rev (id),
+    tid integer NOT NULL REFERENCES traits (id),
+    spoil boolean NOT NULL DEFAULT false,   -- boolean or smallint?
+    PRIMARY KEY(cid, tid)
+  );
+
+  CREATE TABLE chars_vns (
+    cid integer NOT NULL REFERENCES chars_rev (id),
+    vid integer NOT NULL REFERENCES vn (id),
+    rid integer REFERENCES releases (id),   -- NULL = "all releases"
+    spoil boolean NOT NULL DEFAULT false,
+    role char_role NOT NULL DEFAULT 'main',
+    PRIMARY KEY(cid, vid, rid)
+  );
+
+  -- this one is probably required to speed up character-by-trait search.
+  -- Similar to chars_traits, but has two differences:
+  -- 1. all parent tags are included here
+  -- 2. unversioned. i.e. it links to the chars table instead of chars_rev.
+  CREATE TABLE chars_traits_inherit (
+    cid integer NOT NULL REFERENCES chars (id),
+    tid integer NOT NULL REFERENCES traits (id),
+    spoil boolean NOT NULL DEFAULT false,   -- boolean or smallint?
+    PRIMARY KEY(cid, tid)
+  );
+
+
+
+
+
+
+The original Maou draft (which I use as a sort of guideline / inspiration):
+
+  Each game has a list of characters.
+
+  Each "character" has:
+  0. an ID (cXXX)
+  1. a name (mandatory)
+  2. original (kanji/kana)
+  3. alias, nicknames
+  4. a portray/pic (if so desired, move to instance)
+  5. a list of instances (mandatory)
+
+  Instances:
+  0. an ID (iXXX)
+  1. a vn (mandatory)
+  2. a list of releases
+  3. a description - what it says on the label
+  4. a traitlist
+  5. a commentlist
+
+  Traits(have spoilerratings and inheritance, but are not votable):
+  1st Trait (mandatory when creating): Role - protagonist, Heroine, Side Character, Antagonist
+  2nd Trait ( " " " ): Sex - male, female, both?
+  following traits should describe the character, our current character tags could prolly be converted for that
+
+  commentlist: People can post (short) opinions about a character quickly... 
+  Users can edit/delete their own entries, mods can edit/delete everything.
+
+  Q: Why instances?
+  A: Characters often reappear in other games by the same company - works by
+    age are just one example. More often that not, they change between their
+    appearances - most obviously, their role changes, but their other
+    characteristics may also change to do artistic license, different PoV or
+    (gasp) character development. The alternative to this would be to add each
+    version as a new character and then link them together, but the end-result
+    would look rather silly for longer series IMHO. 
+
+  Q: How would adding a character work? How would adding new instances work?
+  A: When adding a character you'd create the first instance together with the
+    character. When you decide to add another instance, you start with the
+    currently selected instance as base - so you'd just have to make the
+    necessary adjustments.
+
+  Q: How would characters be displayed?
+  A: VN Characterlist (part of/accessible from the VN page): All characters of
+    the VN together, ordered Protagonist > Heroine > Sidekick > Antagonist, with
+    the applicable instance only.
+    Characterpage: Just a single character (think release page), toggle/dropdown
+    menu/whatever to switch between instances. Hide traits above a set
+    spoilerlevel (as we're doing with tags already).
+
+  Q: How would searching work?
+  A: Enter a combination of traits you're looking for (with exclusions - find
+    all swordwielding heroines that DO NOT have the "has rapescene" trait), get a
+    list of games that have the characters (instances) in question. If the trait
+    in question is a spoiler, the charactername shouldn't be displayed, else it
+    should be presented together with the VN.
+
+  Q: What about Seiyuu?
+  A: Just link to the corresponding entry in the StaffDB... <_<
+
+
+  Release-sensitive Instances:
+    Normally, the list contains all releases of the VN in question. (If a new
+    release is added it will be added to that list per default (if there are
+    multiple instances for that VN, it should be selectable from a dropdown
+    menu). Adding new instances for releases would work identical to adding a
+    new instance for another VN (with the difference that when you add an
+    instance to a release, all other instance remove said VN from their list).
+    If a character has multiple instances for a single VN, the applicable
+    releases would be displayed in the character list and the user would be
+    able to switch between the instances (similar to the character page).
+    The advantage of this is that it covers everything. The drawback is that it
+    is more work intensive and complex.
+    NOTE: Add only new instances for full versions, NOT for trials
+
+  List of Relations:
+  5 possibilities:
+  Instance <-> Instance, display on a simple map
+    if they're multiple instances, they're all displayed together with (<->
+    same character) relations between them
+  Instance <-> Instance, display on dynamic map
+    display each character once, but allow to switch between the various
+    instances while viewing the map, with the relations being redrawn based on
+    the relations the new instance (and instances being replaced/added based
+    where necessary)
+  Instance <-> Instance. display release-centric
+    first, display the relations of the instances that belong to the release
+    and connect them. Ignore any that don't belong to the release. Then draw
+    relations to instances which aren't part of the current VN. Allow to switch
+    between the various releases with different relation map easily)
+  Instance <-> Instance, display instances as a single character,
+    colourcode relations depending on what instances it applies to (with legend
+    for which colour belongs to what release/instances)
+  Character <-> Character, what it says
+    simplistic, not suitable for longer series and more complex universes
+
+  Examples:
+    c1
+    NAME: SAKURAI KEI
+    ORIGINAL: 櫻井螢
+    ALIAS:
+    PORTRAY: (prolly taken from the getchu page)
+    INSTANCES: i1, i2
+
+    i1
+    VN: v548
+    RELEASES: r1132, r1133
+    DESCRIPTION: 5th Seat, Leonhard August.
+    TRAITS: Antagonist Heroine, Female, Long Hair, Black Hair, Coodere, Lacks
+      Ending, Has Optional Sex eroscene, Swordwielding, Immortal (Spoiler 1),
+      Maou's Harem
+    COMMENTS: Maou(One of my favourite heroines, sadly she's lacking a route.)
+
+    i2
+    VN: v548
+    RELEASES: r3228
+    DESCRIPTION: 5th Seat, Leonhard August.
+    TRAITS: Antagonist Heroine, Female, Long Hair, Black Hair, Coodere, Has
+      Ending, Has Sex Scenes, Swordwielding, Immortal (Spoiler 1), Maou's Harem
+    COMMENTS: Maou(Perfect), RandomPerson(Interesting character)
+
+    really short traittree:
+      Traits(Role(Protagonist, Heroine (Antagonist Heroine - also child of
+      Antagonist)), Sidekick, Antagonist), Gender (Male, Female, Both, Other),
+      Appearance(Hair(Long Hair, Black Hair)), Personality(Deretypes(classic
+      Tsundere, Tsundere, Deredere, Coodere)),  Significance(Routes(Has End(Has
+      True End), Lacks End), Has Sex Scenes(Has Insignificant/Optional
+      eroscene, has rapescene (has unavoidable rapescene))), Relation(Sister,
+      Senpai, Osananajimi), Vocation(Fighting (Swordwielding, Knight), Hacker),
+      Other(Idiot Friend, Immortal, Maou's Harem)
+
+    Ok, just kidding about the Harem thing <_<
+

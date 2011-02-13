@@ -7,7 +7,7 @@ use TUWF ':html';
 use Exporter 'import';
 use POSIX 'strftime', 'ceil', 'floor';
 use VNDBUtil;
-our @EXPORT = (@VNDBUtil::EXPORT, qw| clearfloat cssicon tagscore mt minage fil_parse fil_serialize |);
+our @EXPORT = (@VNDBUtil::EXPORT, qw| clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags childtags |);
 
 
 # three ways to represent the same information
@@ -104,6 +104,75 @@ sub fil_serialize {
     $_.'-'.join '~', @v
   } grep defined($fil->{$_}), keys %$fil;
 }
+
+
+# generates a parent tags/traits listing
+sub parenttags {
+  my($t, $index, $type) = @_;
+  p;
+   my @p = _parenttags(@{$t->{parents}});
+   for my $p (@p ? @p : []) {
+     a href => "/$type", $index; #mt '_tagp_indexlink';
+     for (reverse @$p) {
+       txt ' > ';
+       a href => "/$type$_->{id}", $_->{name};
+     }
+     txt " > $t->{name}";
+     br;
+   }
+  end 'p';
+}
+
+# arg: tag/trait hashref
+# returns: [ [ tag1, tag2, tag3 ], [ tag1, tag2, tag5 ] ]
+sub _parenttags {
+  my @r;
+  for my $t (@_) {
+    for (@{$t->{'sub'}}) {
+      push @r, [ $t, @$_ ] for _parenttags($_);
+    }
+    push @r, [$t] if !@{$t->{'sub'}};
+  }
+  return @r;
+}
+
+
+# a child tags/traits box
+sub childtags {
+  my($self, $title, $type, $t) = @_;
+
+  div class => 'mainbox';
+   h1 $title;
+   ul class => 'tagtree';
+    for my $p (sort { @{$b->{'sub'}} <=> @{$a->{'sub'}} } @{$t->{childs}}) {
+      li;
+       a href => "/$type$p->{id}", $p->{name};
+       b class => 'grayedout', " ($p->{c_vns})" if $type eq 'g' && $p->{c_vns};
+       end, next if !@{$p->{'sub'}};
+       ul;
+        for (0..$#{$p->{'sub'}}) {
+          last if $_ >= 5 && @{$p->{'sub'}} > 6;
+          li;
+           txt '> ';
+           a href => "/$type$p->{sub}[$_]{id}", $p->{'sub'}[$_]{name};
+           b class => 'grayedout', " ($p->{sub}[$_]{c_vns})" if $type eq 'g' && $p->{'sub'}[$_]{c_vns};
+          end;
+        }
+        if(@{$p->{'sub'}} > 6) {
+          li;
+           txt '> ';
+           a href => "/$type$p->{id}", style => 'font-style: italic', mt $type eq 'g' ? '_tagp_moretags' : '_traitp_more', @{$p->{'sub'}}-5;
+          end;
+        }
+       end;
+      end 'li';
+    }
+   end 'ul';
+   clearfloat;
+   br;
+  end 'div';
+}
+
 
 1;
 

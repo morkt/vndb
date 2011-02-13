@@ -200,7 +200,7 @@ CREATE TABLE tags (
 -- tags_aliases
 CREATE TABLE tags_aliases (
   alias varchar(250) NOT NULL PRIMARY KEY,
-  tag integer NOT NULL,
+  tag integer NOT NULL
 );
 
 -- tags_parents

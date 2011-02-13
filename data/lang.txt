@@ -4735,6 +4735,82 @@ nl : Geweigerde tags
 
 
 #############################################################################
+##                              Trait page                                 ##
+#############################################################################
+# Handler::Traits
+
+
+# Trait page (/i+)
+
+:_traitp_title
+en : [index,_1,Meta trait,Trait]: [_2]
+ru*:
+cs*:
+hu*:
+nl : [index,_1,Metakenmerk,Kenmerk]: [_2]
+
+:_traitp_del_title
+en : Trait deleted
+ru*:
+cs*:
+hu*:
+nl : Verwijderd kenmerk
+
+:_traitp_del_msg
+en : This trait has been removed from the database, and cannot be used or re-added.
+     File a request on the [url,/t/db,discussion board] if you disagree with this.
+ru*:
+cs*:
+hu*:
+nl : Dit kenmerk is verwijderd uit de database, en kan hier niet gebruikt worden.
+     Open een topic op het [url,/t/db,forum] als je het hier niet mee eens bent.
+
+:_traitp_pending_title
+en : Waiting for approval
+ru : Ждёт одобрения
+cs : Čeká na schválení
+hu : Megerősítésre vár
+nl : Wacht op goedkeuring
+
+:_traitp_pending_msg
+en : This trait is waiting for a moderator to approve it.
+ru*:
+cs*:
+hu*:
+nl : Dit kenmerk is nog niet goedgekeurd door een moderator.
+
+:_traitp_indexlink
+en : Traits
+ru*:
+cs*:
+hu*:
+nl : Kenmerken
+
+:_traitp_aliases
+en : Aliases
+ru : Прочие названия
+cs : Aliasy
+hu : Más nevek
+nl : Aliassen
+
+:_traitp_childs
+en : Child traits
+ru*:
+cs*:
+hu*:
+nl : Subkenmerken
+
+:_traitp_more
+en : [_1] more [quant,_1,trait,traits]
+ru*:
+cs*:
+hu*:
+nl : nog [_1] [quant,_1,kenmerk,kenmerken]
+
+
+
+
+#############################################################################
 ##                          Personal User Lists                            ##
 #############################################################################
 # Handler::ULists
