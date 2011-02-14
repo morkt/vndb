@@ -8,10 +8,12 @@ use VNDB::Func;
 
 
 TUWF::register(
-  qr{i([1-9]\d*)},          \&traitpage,
-  qr{i([1-9]\d*)/(edit)},   \&traitedit,
-  qr{i([1-9]\d*)/(add)},    \&traitedit,
-  qr{i/new},                \&traitedit,
+  qr{i([1-9]\d*)},        \&traitpage,
+  qr{i([1-9]\d*)/(edit)}, \&traitedit,
+  qr{i([1-9]\d*)/(add)},  \&traitedit,
+  qr{i/new},              \&traitedit,
+  qr{i/list},             \&traitlist,
+  qr{i},                  \&traitindex,
 );
 
 
@@ -171,6 +173,142 @@ sub traitedit {
     [ static   => content => mt '_traite_frm_parents_msg' ],
   ]);
 
+  $self->htmlFooter;
+}
+
+
+sub traitlist {
+  my $self = shift;
+
+  my $f = $self->formValidate(
+    { get => 's', required => 0, default => 'name', enum => ['added', 'name'] },
+    { get => 'o', required => 0, default => 'a', enum => ['a', 'd'] },
+    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 't', required => 0, default => -1, enum => [ -1..2 ] },
+    { get => 'q', required => 0, default => '' },
+  );
+  return $self->resNotFound if $f->{_err};
+
+  my($t, $np) = $self->dbTraitGet(
+    sort => $f->{s}, reverse => $f->{o} eq 'd',
+    page => $f->{p},
+    results => 50,
+    state => $f->{t},
+    search => $f->{q}
+  );
+
+  $self->htmlHeader(title => mt '_traitb_title');
+  div class => 'mainbox';
+   h1 mt '_traitb_title';
+   form action => '/i/list', 'accept-charset' => 'UTF-8', method => 'get';
+    input type => 'hidden', name => 't', value => $f->{t};
+    $self->htmlSearchBox('i', $f->{q});
+   end;
+   p class => 'browseopts';
+    a href => "/i/list?q=$f->{q};t=-1", $f->{t} == -1 ? (class => 'optselected') : (), mt '_traitb_state-1';
+    a href => "/i/list?q=$f->{q};t=0", $f->{t} == 0 ? (class => 'optselected') : (), mt '_traitb_state0';
+    a href => "/i/list?q=$f->{q};t=1", $f->{t} == 1 ? (class => 'optselected') : (), mt '_traitb_state1';
+    a href => "/i/list?q=$f->{q};t=2", $f->{t} == 2 ? (class => 'optselected') : (), mt '_traitb_state2';
+   end;
+   if(!@$t) {
+     p mt '_traitb_noresults';
+   }
+  end 'div';
+  if(@$t) {
+    $self->htmlBrowse(
+      class    => 'taglist',
+      options  => $f,
+      nextpage => $np,
+      items    => $t,
+      pageurl  => "/i/list?t=$f->{t};q=$f->{q};s=$f->{s};o=$f->{o}",
+      sorturl  => "/i/list?t=$f->{t};q=$f->{q}",
+      header   => [
+        [ mt('_traitb_col_added'), 'added' ],
+        [ mt('_traitb_col_name'),  'name'  ],
+      ],
+      row => sub {
+        my($s, $n, $l) = @_;
+        Tr $n % 2 ? (class => 'odd') : ();
+         td class => 'tc1', $self->{l10n}->age($l->{added});
+         td class => 'tc3';
+          a href => "/i$l->{id}", $l->{name};
+          if($f->{t} == -1) {
+            b class => 'grayedout', ' '.mt '_traitb_note_awaiting' if $l->{state} == 0;
+            b class => 'grayedout', ' '.mt '_traitb_note_del' if $l->{state} == 1;
+          }
+         end;
+        end 'tr';
+      }
+    );
+  }
+  $self->htmlFooter;
+}
+
+
+sub traitindex {
+  my $self = shift;
+
+  $self->htmlHeader(title => mt '_traiti_title');
+  div class => 'mainbox';
+   a class => 'addnew', href => "/i/new", mt '_traiti_create' if $self->authCan('charedit');
+   h1 mt '_traiti_search';
+   form action => '/i/list', 'accept-charset' => 'UTF-8', method => 'get';
+    $self->htmlSearchBox('i', '');
+   end;
+  end;
+
+  my $t = $self->dbTraitTree(0, 2);
+  childtags($self, mt('_traiti_tree'), 'i', {childs => $t});
+
+  table class => 'mainbox threelayout';
+   Tr;
+
+    # Recently added
+    td;
+     a class => 'right', href => '/i/list', mt '_traiti_browseall';
+     my $r = $self->dbTraitGet(sort => 'added', reverse => 1, results => 10);
+     h1 mt '_traiti_recent';
+     ul;
+      for (@$r) {
+        li;
+         txt $self->{l10n}->age($_->{added});
+         txt ' ';
+         a href => "/i$_->{id}", $_->{name};
+        end;
+      }
+     end;
+    end;
+
+    # Popular
+    td;
+     h1 mt '_traiti_popular';
+     p 'TODO';
+    end;
+
+    # Moderation queue
+    td;
+     h1 mt '_traiti_queue';
+     $r = $self->dbTraitGet(state => 0, sort => 'added', reverse => 1, results => 10);
+     ul;
+      li mt '_traiti_queue_empty' if !@$r;
+      for (@$r) {
+        li;
+         txt $self->{l10n}->age($_->{added});
+         txt ' ';
+         a href => "/i$_->{id}", $_->{name};
+        end;
+      }
+      li;
+       br;
+       a href => '/i/list?t=0;o=d;s=added', mt '_traiti_queue_link';
+       txt ' - ';
+       a href => '/i/list?t=1;o=d;s=added', mt '_traiti_denied';
+      end;
+     end;
+    end;
+
+   end 'tr';
+  end 'table';
   $self->htmlFooter;
 }
 

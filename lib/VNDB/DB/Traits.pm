@@ -25,11 +25,19 @@ sub dbTraitGet {
     @_,
   );
 
+  $o{search} =~ s/%//g if $o{search};
+
   my %where = (
     $o{id}   ? ('t.id = ?'  => $o{id}) : (),
     $o{noid} ? ('t.id <> ?' => $o{noid}) : (),
     $o{name} ? (
       't.id = (SELECT id FROM traits LEFT JOIN traits_aliases ON id = trait WHERE lower(name) = ? OR lower(alias) = ? LIMIT 1)' => [ lc $o{name}, lc $o{name} ]) : (),
+    defined $o{state} && $o{state} != -1 ? (
+      't.state = ?' => $o{state} ) : (),
+    !defined $o{state} && !$o{id} && !$o{name} ? (
+      't.state = 2' => 1 ) : (),
+    $o{search} ? (
+      't.id IN (SELECT id FROM traits LEFT JOIN traits_aliases ON id = trait WHERE name ILIKE ? OR alias ILIKE ?)' => [ "%$o{search}%", "%$o{search}%" ] ) : (),
   );
 
   my @select = (

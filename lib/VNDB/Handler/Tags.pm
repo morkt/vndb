@@ -625,7 +625,7 @@ sub tagindex {
   end;
 
   my $t = $self->dbTagTree(0, 2);
-  childtags($self, mt('_tagp_tree'), 'g', {childs => $t});
+  childtags($self, mt('_tagidx_tree'), 'g', {childs => $t});
 
   table class => 'mainbox threelayout';
    Tr;

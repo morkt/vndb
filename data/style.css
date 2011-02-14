@@ -459,7 +459,7 @@ p#searchtabs a:hover, p#searchtabs a.sel {
   padding: 1px 5px 2px 5px;
   background: $secbg$ url($_boxbg$) repeat;
 }
-#q { width: 350px }
+#q { width: 450px }
 
 /* history browser */
 div.history table    { table-layout: fixed }
@@ -944,7 +944,7 @@ div.uposts td.tc4 b { margin-left: 10px }
 .tagvnlist .tc4 { padding: 0; }
 .tagvnlist .tc6 { text-align: right; padding-right: 10px; }
 
-/***** Tag list *****/
+/***** Tag/trait list (/g/list, /i/list) *****/
 
 .browse.taglist .tc1 { width: 80px }
 

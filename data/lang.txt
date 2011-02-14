@@ -1580,6 +1580,13 @@ cs : Tagy
 hu : Címkék
 nl :
 
+:_menu_traits
+en : Traits
+ru*:
+cs*:
+hu*:
+nl : Kenmerken
+
 :_menu_users
 en : Users
 ru : Пользователи
@@ -2018,6 +2025,13 @@ ru : Теги
 cs : Tagy
 hu : Címkék
 nl :
+
+:_searchbox_traits
+en : Traits
+ru*:
+cs*:
+hu*:
+nl : Kenmerken
 
 :_searchbox_users
 en : Users
@@ -3974,13 +3988,6 @@ cs : Závislé tagy
 hu : Alcímkék
 nl : Subtags
 
-:_tagp_tree
-en : Tag tree
-ru : Древо тега
-cs : Strom tagů
-hu : Címke fa
-nl : Taglijst
-
 :_tagp_moretags
 en : [_1] more [quant,_1,tag,tags]
 ru : ещё [_1] [quant,_1,тег,тега,тегов]
@@ -4675,6 +4682,13 @@ cs : Hledat tag
 hu : Címkék keresése
 nl : Zoek tags
 
+:_tagidx_tree
+en : Tag tree
+ru : Древо тега
+cs : Strom tagů
+hu : Címke fa
+nl : Taglijst
+
 :_tagidx_browseall
 en : Browse all tags
 ru : Обзор всех тегов
@@ -4815,7 +4829,7 @@ hu*:
 nl : nog [_1] [quant,_1,kenmerk,kenmerken]
 
 
-# Trait add/edit form (/i+/edit, /i+/add, /i/add)
+# Trait add/edit form (/i+/edit, /i+/add, /i/new)
 
 :_traite_title_add
 en : Add child trait to [_1]
@@ -4940,6 +4954,159 @@ ru*:
 cs*:
 hu*:
 nl : Kommagescheiden lijst van hoofdkenmerken.
+
+
+# Plain trait browser (/i/list)
+
+:_traitb_title
+en : Browse traits
+ru*:
+cs*:
+hu*:
+nl : Browse kenmerken
+
+:_traitb_state-1
+en : All
+ru : Все
+cs : Všechny
+hu : Mind
+nl : Alle
+
+:_traitb_state0
+en : Awaiting moderation
+ru : Ожидающие модерации
+cs : Čekající na schválení
+hu : Moderálásra vár
+nl : Wachtend op goedkeuring
+
+:_traitb_state1
+en : Deleted
+ru : Удалённые
+cs : Smazané
+hu : Törölve
+nl : Verwijderd
+
+:_traitb_state2
+en : Accepted
+ru : Одобренные
+cs : Přijaté
+hu : Elfogadva
+nl : Geaccepteerd
+
+:_traitb_noresults
+en : No results found
+ru : Совпадений не найдено
+cs : Nenalezeny žádné výsledky
+hu : Keresés sikertelen
+nl : Geen resultaten gevonden
+
+:_traitb_col_added
+en : Created
+ru : Созданы
+cs : Vytvořené
+hu : Létrehozva
+nl : Aangemaakt
+
+:_traitb_col_name
+en : Trait
+ru*:
+cs*:
+hu*:
+nl : Kenmerk
+
+:_traitb_note_awaiting
+en : awaiting moderation
+ru : ожидает модерации
+cs : čeká na schválení
+hu : moderálásra vár
+nl : wachtend op goedkeuring
+
+:_traitb_note_del
+en : deleted
+ru : удалён
+cs : smazán
+hu : törölve
+nl : verwijderd
+
+
+# Trait index (/g)
+
+:_traiti_title
+en : Trait index
+ru*:
+cs*:
+hu*:
+nl : Kenmerkenindex
+
+:_traiti_create
+en : Create new trait
+ru*:
+cs*:
+hu*:
+nl : Nieuw kenmerk
+
+:_traiti_search
+en : Search traits
+ru*:
+cs*:
+hu*:
+nl : Zoek kenmerken
+
+:_traiti_tree
+en : Trait tree
+ru*:
+cs*:
+hu*:
+nl : Kenmerkenlijst
+
+:_traiti_browseall
+en : Browse all traits
+ru*:
+cs*:
+hu*:
+nl : Browse alle kenmerken
+
+:_traiti_recent
+en : Recently added
+ru : Недавно добавлены
+cs : Poslední přidané
+hu : Nemrég hozzáadva
+nl : Recentelijk toegevoegd
+
+:_traiti_popular
+en : Popular traits
+ru*:
+cs*:
+hu*:
+nl : Populaire kenmerken
+
+:_traiti_queue
+en : Awaiting moderation
+ru : Ожидают модерации
+cs : Čekající na schválení
+hu : Moderálásra vár
+nl : Wacht op goedkeuring
+
+:_traiti_queue_empty
+en : Moderation queue empty! yay!
+ru : В очереди модерации пусто! Няа!
+cs : Fronta ke schválení prázdná! Jej!
+hu : Moderálásra váró lista üres! Hurrá!
+nl : Alles is gemodereerd! yay!
+
+:_traiti_queue_link
+en : Moderation queue
+ru : Очередь модерации
+cs : Fronta ke schválení
+hu : Moderálásra váró lista
+nl : Moderatiewachtrij
+
+:_traiti_denied
+en : Denied traits
+ru*:
+cs*:
+hu*:
+nl : Geweigerde kenmerken
 
 
 

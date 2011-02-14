@@ -405,6 +405,7 @@ sub htmlSearchBox {
     a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), mt '_searchbox_releases';
     a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), mt '_searchbox_producers';
     a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), mt '_searchbox_tags';
+    a href => '/i',     $sel eq 'i' ? (class => 'sel') : (), mt '_searchbox_traits';
     a href => '/u/all', $sel eq 'u' ? (class => 'sel') : (), mt '_searchbox_users';
    end;
    input type => 'text', name => 'q', id => 'q', class => 'text', value => $v;
