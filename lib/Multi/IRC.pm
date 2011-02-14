@@ -165,12 +165,14 @@ sub _start {
     newrevision => 'notify',
     newpost     => 'notify',
     newtag      => 'notify',
+    newtrait    => 'notify',
   );
   $_[HEAP]{notify}{$_[HEAP]{channels}[0]} = 1;
   # get last id/time for each notify item
   $_[KERNEL]->post(pg => query => q|SELECT
     (SELECT id FROM changes ORDER BY id DESC LIMIT 1) AS rev,
     (SELECT id FROM tags ORDER BY id DESC LIMIT 1) AS tag,
+    (SELECT id FROM traits ORDER BY id DESC LIMIT 1) AS tag,
     (SELECT date FROM threads_posts ORDER BY date DESC LIMIT 1) AS post|,
     undef, 'notify_init');
 
@@ -182,7 +184,7 @@ sub _start {
 
 sub shutdown {
   $irc->yield(shutdown => $_[ARG1]);
-  $_[KERNEL]->post(pg => unlisten => qw|newrevision newpost newtag|);
+  $_[KERNEL]->post(pg => unlisten => qw|newrevision newpost newtag newtrait|);
   $_[KERNEL]->delay('throttle_gc');
   $_[KERNEL]->delay('idlequote');
   $_[KERNEL]->alias_remove('irc');
@@ -269,6 +271,7 @@ sub notify_init { # num, res
   my $r = $_[ARG1][0];
   $_[HEAP]{lastrev} = $r->{rev};
   $_[HEAP]{lasttag} = $r->{tag};
+  $_[HEAP]{lasttrait} = $r->{trait};
   $_[HEAP]{lastpost} = $r->{post};
 }
 
@@ -294,6 +297,12 @@ sub notify { # name, pid, payload
     JOIN users u ON u.id = tp.uid
     WHERE tp.date > ? AND tp.num = 1
     ORDER BY tp.date|
+  : $_[ARG0] eq 'newtrait' ? q|SELECT
+      'i' AS type, t.id, t.name AS title, u.username, t.id AS lastrait
+    FROM traits t
+    JOIN users u ON u.id = t.addedby
+    WHERE t.id > ?
+    ORDER BY t.added|
   : q|SELECT
       'g' AS type, t.id, t.name AS title, u.username, t.id AS lasttag
     FROM tags t
@@ -308,9 +317,7 @@ sub notify { # name, pid, payload
 sub notify_result { # num, res
   return if $_[ARG0] < 1;
   my $r = $_[ARG1][$#{$_[ARG1]}];
-  $_[HEAP]{lastrev} = $r->{lastrev} if $r->{lastrev};
-  $_[HEAP]{lastpost} = $r->{lastpost} if $r->{lastpost};
-  $_[HEAP]{lasttag} = $r->{lasttag} if $r->{lasttag};
+  $r->{$_} and ($_[HEAP]{$_} = $r->{$_}) for (qw|lastrev lastpost lasttag lasttrait|);
   return if !keys %{$_[HEAP]{notify}};
   $_[KERNEL]->yield(formatid => $_[ARG0], $_[ARG1], [ [ keys %{$_[HEAP]{notify}} ], 1 ]);
 }
@@ -531,23 +538,24 @@ sub vndbid { # dest, msg
   for (split /[, ]/, $msg) {
     next if length > 15 or m{[a-z]{3,6}://}i; # weed out URLs and too long things
     push @id, /^(?:.*[^\w]|)([dvprt])([1-9][0-9]*)\.([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, $3 ] # x+.+
-           :  /^(?:.*[^\w]|)([dvprtug])([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();         # x+
+           :  /^(?:.*[^\w]|)([dvprtugi])([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();         # x+
   }
 
   for (@id) {
     my($t, $id, $rev) = @$_;
     next if throttle $_[HEAP], "$dest->[0].$t$id.$rev", 60;
 
-    # plain vn/user/producer/thread/tag/release
+    # plain vn/user/producer/thread/tag/trait/release
     $_[KERNEL]->post(pg => query => 'SELECT ?::text AS type, ?::integer AS id, '.(
       $t eq 'v' ? 'vr.title FROM vn_rev vr JOIN vn v ON v.latest = vr.id WHERE v.id = ?' :
       $t eq 'u' ? 'u.username AS title FROM users u WHERE u.id = ?' :
       $t eq 'p' ? 'pr.name AS title FROM producers_rev pr JOIN producers p ON p.latest = pr.id WHERE p.id = ?' :
       $t eq 't' ? 'title, '.GETBOARDS.' FROM threads t WHERE id = ?' :
       $t eq 'g' ? 'name AS title FROM tags WHERE id = ?' :
+      $t eq 'i' ? 'name AS title FROM traits WHERE id = ?' :
                   'rr.title FROM releases_rev rr JOIN releases r ON r.latest = rr.id WHERE r.id = ?'),
       [ $t, $id, $id ], 'formatid', [$dest]
-    ) if !$rev && $t =~ /[vprtug]/;
+    ) if !$rev && $t =~ /[vprtugi]/;
 
     # edit/insert of vn/release/producer or discussion board post
     $_[KERNEL]->post(pg => query => 'SELECT ?::text AS type, ?::integer AS id, ?::integer AS rev, '.(
@@ -596,6 +604,7 @@ sub formatid {
     p => 'producer',
     r => 'release',
     g => 'tag',
+    i => 'trait',
     t => 'thread',
   );
 

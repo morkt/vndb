@@ -24,3 +24,8 @@ CREATE TABLE traits_parents (
   PRIMARY KEY(trait, parent)
 );
 
+\i util/sql/func.sql
+
+CREATE TRIGGER insert_notify              AFTER  INSERT           ON traits        FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
+
+

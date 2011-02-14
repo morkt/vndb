@@ -590,7 +590,7 @@ $$ LANGUAGE plpgsql;
 
 
 
--- NOTIFY on insert into changes/posts/tags
+-- NOTIFY on insert into changes/posts/tags/trait
 CREATE OR REPLACE FUNCTION insert_notify() RETURNS trigger AS $$
 BEGIN
   IF TG_TABLE_NAME = 'changes' THEN
@@ -599,6 +599,8 @@ BEGIN
     NOTIFY newpost;
   ELSIF TG_TABLE_NAME = 'tags' THEN
     NOTIFY newtag;
+  ELSIF TG_TABLE_NAME = 'traits' THEN
+    NOTIFY newtrait;
   END IF;
   RETURN NULL;
 END;
