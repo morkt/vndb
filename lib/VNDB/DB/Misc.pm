@@ -27,7 +27,7 @@ sub dbStats {
 sub dbItemEdit {
   my($self, $type, $oid, %o) = @_;
 
-  my $fun = {qw|v vn r release p producer|}->{$type};
+  my $fun = {qw|v vn r release p producer c char|}->{$type};
   $self->dbExec('SELECT edit_!s_init(?)', $fun, $oid);
   $self->dbExec('UPDATE edit_revision !H', {
     'requester = ?' => $o{uid}||$self->authInfo->{id},
@@ -59,10 +59,10 @@ sub dbRevisionGet {
   $o{what} ||= '';
   $o{releases} = 0 if !$o{type} || $o{type} ne 'v' || !$o{iid};
 
-  my %tables = qw|v vn r releases p producers|;
+  my %tables = qw|v vn r releases p producers c chars|;
   # what types should we join?
   my @types = (
-    !$o{type} ? ('v', 'r', 'p') :
+    !$o{type} ? ('v', 'r', 'p', 'c') :
     $o{type} ne 'v' ? $o{type} :
     $o{releases} ? ('v', 'r') : 'v'
   );
@@ -102,7 +102,7 @@ sub dbRevisionGet {
     $o{what} =~ /user/ ? 'u.username' : (),
     $o{what} =~ /item/ ? (
       'COALESCE('.join(', ', map "${_}r.${_}id", @types).') AS iid',
-      'COALESCE('.join(', ', map $_ eq 'p' ? 'pr.name' : "${_}r.title", @types).') AS ititle',
+      'COALESCE('.join(', ', map /[pc]/ ? "${_}r.name" : "${_}r.title", @types).') AS ititle',
       'COALESCE('.join(', ', map "${_}r.original", @types).') AS ioriginal',
     ) : (),
   );

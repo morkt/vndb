@@ -24,8 +24,76 @@ CREATE TABLE traits_parents (
   PRIMARY KEY(trait, parent)
 );
 
-\i util/sql/func.sql
-
 CREATE TRIGGER insert_notify              AFTER  INSERT           ON traits        FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
 
+
+
+-- character database -> chars
+
+CREATE TYPE char_role AS ENUM ('main', 'primary', 'side', 'appears');
+
+CREATE TABLE chars (
+  id SERIAL PRIMARY KEY,
+  latest integer NOT NULL DEFAULT 0,
+  locked boolean NOT NULL DEFAULT FALSE,
+  hidden boolean NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE chars_rev (
+  id         integer  NOT NULL PRIMARY KEY REFERENCES changes (id),
+  cid        integer  NOT NULL REFERENCES chars (id),
+  name       varchar(250) NOT NULL DEFAULT '',
+  original   varchar(250) NOT NULL DEFAULT '',
+  alias      varchar(500) NOT NULL DEFAULT '',
+  image      integer  NOT NULL DEFAULT 0,
+  "desc"     text     NOT NULL DEFAULT '',
+  s_bust     smallint NOT NULL DEFAULT 0,
+  s_waist    smallint NOT NULL DEFAULT 0,
+  s_hip      smallint NOT NULL DEFAULT 0,
+  b_month    smallint NOT NULL DEFAULT 0,
+  b_day      smallint NOT NULL DEFAULT 0,
+  height     smallint NOT NULL DEFAULT 0,
+  weight     smallint NOT NULL DEFAULT 0,
+  main       integer  REFERENCES chars (id),
+  main_spoil boolean  NOT NULL DEFAULT false
+);
+ALTER TABLE chars ADD FOREIGN KEY (latest) REFERENCES chars_rev (id) DEFERRABLE INITIALLY DEFERRED;
+
+CREATE TABLE chars_traits (
+  cid integer NOT NULL REFERENCES chars_rev (id),
+  tid integer NOT NULL REFERENCES traits (id),
+  spoil smallint NOT NULL DEFAULT 0,
+  PRIMARY KEY(cid, tid)
+);
+
+CREATE TABLE chars_vns (
+  cid integer NOT NULL REFERENCES chars_rev (id),
+  vid integer NOT NULL REFERENCES vn (id),
+  rid integer REFERENCES releases (id),
+  spoil boolean NOT NULL DEFAULT false,
+  role char_role NOT NULL DEFAULT 'main',
+  PRIMARY KEY(cid, vid, rid)
+);
+
+
+
+-- allow characters to be versioned using the changes table
+
+CREATE TYPE dbentry_type_tmp AS ENUM ('v', 'r', 'p', 'c');
+ALTER TABLE changes ALTER COLUMN "type" TYPE dbentry_type_tmp USING "type"::text::dbentry_type_tmp;
+DROP FUNCTION edit_revtable(dbentry_type, integer);
+DROP TYPE dbentry_type;
+ALTER TYPE dbentry_type_tmp RENAME TO dbentry_type;
+
+
+-- load the updated functions
+
+\i util/sql/func.sql
+
+
+-- test
+--SELECT edit_char_init(null);
+--UPDATE edit_revision SET comments = 'New test entry', requester = 2, ip = '0.0.0.0';
+--UPDATE edit_char SET name = 'Phorni', original = 'フォーニ', "desc" = 'Sprite of Music';
+--SELECT edit_char_commit();
 

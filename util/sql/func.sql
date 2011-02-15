@@ -164,6 +164,7 @@ BEGIN
   INSERT INTO edit_revision (type, iid, ihid, ilock) VALUES (t,
     (       SELECT vid FROM vn_rev WHERE id = i
       UNION SELECT rid FROM releases_rev WHERE id = i
+      UNION SELECT cid FROM chars_rev WHERE id = i
       UNION SELECT pid FROM producers_rev WHERE id = i),
     COALESCE((SELECT ihid FROM changes WHERE id = i), FALSE),
     COALESCE((SELECT ilock FROM changes WHERE id = i), FALSE)
@@ -189,6 +190,7 @@ BEGIN
       JOIN (  SELECT id FROM vn_rev        WHERE t = 'v' AND vid = i
         UNION SELECT id FROM releases_rev  WHERE t = 'r' AND rid = i
         UNION SELECT id FROM producers_rev WHERE t = 'p' AND pid = i
+        UNION SELECT id FROM chars_rev     WHERE t = 'c' AND cid = i
       ) x(id) ON x.id = c.id
       ORDER BY c.id DESC
       LIMIT 1;
@@ -204,6 +206,7 @@ BEGIN
       WHEN 'v' THEN INSERT INTO vn        (latest) VALUES (0) RETURNING id INTO r.iid;
       WHEN 'r' THEN INSERT INTO releases  (latest) VALUES (0) RETURNING id INTO r.iid;
       WHEN 'p' THEN INSERT INTO producers (latest) VALUES (0) RETURNING id INTO r.iid;
+      WHEN 'c' THEN INSERT INTO chars     (latest) VALUES (0) RETURNING id INTO r.iid;
     END CASE;
   ELSE
     r.iid := i;
@@ -364,6 +367,46 @@ BEGIN
   INSERT INTO producers_rev SELECT r.cid, r.iid, type, name, original, website, lang, "desc", alias, l_wp FROM edit_producer;
   INSERT INTO producers_relations SELECT r.cid, pid, relation FROM edit_producer_relations;
   UPDATE producers SET latest = r.cid WHERE id = r.iid;
+  RETURN r;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- PLACEHOLDERS, not complete yet
+
+CREATE OR REPLACE FUNCTION edit_char_init(cid integer) RETURNS void AS $$
+BEGIN
+  BEGIN
+    CREATE TEMPORARY TABLE edit_char (LIKE chars_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_char DROP COLUMN id;
+    ALTER TABLE edit_char DROP COLUMN cid;
+  EXCEPTION WHEN duplicate_table THEN
+    TRUNCATE edit_char;
+  END;
+  PERFORM edit_revtable('c', cid);
+  -- new char
+  IF cid IS NULL THEN
+    INSERT INTO edit_char DEFAULT VALUES;
+  -- load revision
+  ELSE
+    INSERT INTO edit_char SELECT name, original, alias, image, "desc" FROM chars_rev WHERE id = cid;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION edit_char_commit() RETURNS edit_rettype AS $$
+DECLARE
+  r edit_rettype;
+BEGIN
+  IF (SELECT COUNT(*) FROM edit_char) <> 1 THEN
+    RAISE 'edit_char must have exactly one row!';
+  END IF;
+  SELECT INTO r * FROM edit_commit();
+  INSERT INTO chars_rev SELECT r.cid, r.iid, name, original, alias, image, "desc" FROM edit_char;
+  UPDATE chars SET latest = r.cid WHERE id = r.iid;
   RETURN r;
 END;
 $$ LANGUAGE plpgsql;
@@ -818,4 +861,5 @@ BEGIN
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
+
 

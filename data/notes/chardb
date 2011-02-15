@@ -1,6 +1,6 @@
 Character Database
 
-Last modified: 2011-02-13
+Last modified: 2011-02-14
 Status: Draft / incomplete
 
 
@@ -168,6 +168,11 @@ Status: Draft / incomplete
       least 18 years old" 
     - Just a bad idea in general, since there are quite a few fuckable
       10-years-olds, and explicitely stating that is not a very nice thing.
+  - External links?
+    - Wikipedia (en)?
+    - AniDB
+    - Animecharacterdatabase.com (crappy site, but people seem to use it?)
+    - MLA?
 
 
   Traits vs. VN tags (not very important for now):
@@ -356,6 +361,7 @@ User interface considerations:
 
 
 The SQL schema:
+  (outdated, see /util/updates/update_2.19.sql instead)
 
   CREATE TABLE traits (
     id SERIAL PRIMARY KEY,

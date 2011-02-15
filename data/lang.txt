@@ -7687,11 +7687,11 @@ hu : Nézz bele a [url,_1,szerkesztési előzményekbe], hogy lásd milyen vált
 nl : Browse de [url,_1,geschiedenis] van dit item voor wijzigingen gerelateerd aan wat je wil doen.
 
 :_editmsg_msg_search
-en : [url,_1,Search the database] to see if we already have information about this [index,_2,visual novel,release,producer].
-ru : [url,_1,Воспользуйтесь поиском], ведь вполне возможно, что у нас уже есть информация об [index,_2,этой новелле,этом выпуске,этой компании].
-cs : [url,_1,Prohledejte databázi], zda již nemáme informaci o [index,_2,této vizuální novele,tomto vydání,tomto producentovi].
-hu : [url,_1,Nézd át az adatbázist], hogy van-e már információ erről a [index,_2,visual novelről, kiadásról, készítőről].
-nl : [url,_1,Doorzoek de database] om te kijken of we al informatie hebben over deze [index,_2,visual novel,uitgave,producent].
+en : [url,_1,Search the database] to see if we already have information about this [index,_2,visual novel,release,producer,character].
+ru*: [url,_1,Воспользуйтесь поиском], ведь вполне возможно, что у нас уже есть информация об [index,_2,этой новелле,этом выпуске,этой компании].
+cs*: [url,_1,Prohledejte databázi], zda již nemáme informaci o [index,_2,této vizuální novele,tomto vydání,tomto producentovi].
+hu*: [url,_1,Nézd át az adatbázist], hogy van-e már információ erről a [index,_2,visual novelről, kiadásról, készítőről].
+nl : [url,_1,Doorzoek de database] om te kijken of we al informatie hebben over [index,_2,deze visual novel,deze uitgave,deze producent,dit kenmerk].
 
 :_editmsg_revert_title
 en : Reverting
@@ -7701,15 +7701,15 @@ hu : Visszaállítás
 nl : Terugdraaien
 
 :_editmsg_revert_msg
-en : You are editing an old revision of this [index,_1,visual novel,release,producer].
+en : You are editing an old revision of this [index,_1,visual novel,release,producer,character].
      If you save it, all changes made after this revision will be reverted!
-ru : Вы правите старую редакцию страницы [index,_1,новеллы,выпуска,компании].
+ru*: Вы правите старую редакцию страницы [index,_1,новеллы,выпуска,компании].
      Если вы сохраните её, все изменения, сделанные после этой правки будут утеряны!
-cs : Editujete starší verzi [index,_1,této vizuální novely,tohoto vydání,tohoto producenta].
+cs*: Editujete starší verzi [index,_1,této vizuální novely,tohoto vydání,tohoto producenta].
      Pokud ji uložíte, všechny změny provedené po této revizi budou vráceny!
-hu : Te egy régi átjavítását szerkeszted ennek a [index,_1,visual novelnek, kiadásnak, készítőnek].
+hu*: Te egy régi átjavítását szerkeszted ennek a [index,_1,visual novelnek, kiadásnak, készítőnek].
      Ha lemented, akkor minden szerkesztés amit ezután a javítás után végeztek megsemmisül!
-nl : Je wijzigd een verouderde versie van deze [index,_1,visual novel,uitgave,producent].
+nl : Je wijzigd een verouderde versie van [index,_1,deze visual novel,deze uitgave,deze producent,dit kenmerk].
      Als je dit opslaat, zullen alle wijzigingen na deze revisie teruggedraait worden.
 
 

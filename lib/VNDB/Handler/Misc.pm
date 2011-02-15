@@ -11,7 +11,7 @@ use POSIX 'strftime';
 
 TUWF::register(
   qr{},                              \&homepage,
-  qr{(?:([upvr])([1-9]\d*)/)?hist},  \&history,
+  qr{(?:([upvrc])([1-9]\d*)/)?hist}, \&history,
   qr{d([1-9]\d*)},                   \&docpage,
   qr{setlang},                       \&setlang,
   qr{nospam},                        \&nospam,
@@ -206,6 +206,7 @@ sub history {
   my $obj = $type eq 'u' ? $self->dbUserGet(uid => $id, what => 'hide_list')->[0] :
             $type eq 'p' ? $self->dbProducerGet(id => $id)->[0] :
             $type eq 'r' ? $self->dbReleaseGet(id => $id)->[0] :
+            $type eq 'c' ? $self->dbCharGet(id => $id)->[0] :
             $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : undef;
   my $title = mt $type ? ('_hist_title_item', $obj->{title} || $obj->{name} || $obj->{username}) : '_hist_title';
   return $self->resNotFound if $type && !$obj->{id};

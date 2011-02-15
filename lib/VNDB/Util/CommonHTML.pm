@@ -17,7 +17,7 @@ our @EXPORT = qw|
 
 # generates the "main tabs". These are the commonly used tabs for
 # 'objects', i.e. VN/producer/release entries and users
-# Arguments: u/v/r/p/g/i, object, currently selected item (empty=main)
+# Arguments: u/v/r/p/g/i/c, object, currently selected item (empty=main)
 sub htmlMainTabs {
   my($self, $type, $obj, $sel) = @_;
   $sel ||= '';
@@ -26,7 +26,7 @@ sub htmlMainTabs {
   return if $type eq 'g' && !$self->authCan('tagmod');
 
   ul class => 'maintabs';
-   if($type =~ /[uvrp]/) {
+   if($type =~ /[uvrpc]/) {
      li $sel eq 'hist' ? (class => 'tabselected') : ();
       a href => "/$id/hist", mt '_mtabs_hist';
      end;
@@ -73,6 +73,7 @@ sub htmlMainTabs {
 
    if(   $type eq 'u'     && ($self->authInfo->{id} && $obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))
       || $type =~ /[vrp]/ && $self->authCan('edit') && (!$obj->{locked} || $self->authCan('lock')) && (!$obj->{hidden} || $self->authCan('del'))
+      || $type eq 'c'     && $self->authCan('charedit') && (!$obj->{locked} || $self->authCan('lock')) && (!$obj->{hidden} || $self->authCan('del'))
       || $type =~ /[gi]/  && $self->authCan('tagmod')
    ) {
      li $sel eq 'edit' ? (class => 'tabselected') : ();
@@ -120,15 +121,16 @@ sub htmlDenied {
 
 
 # Generates message saying that the current item has been deleted,
-# Arguments: [pvr], obj
+# Arguments: [pvrc], obj
 # Returns 1 if the use doesn't have access to the page, 0 otherwise
 sub htmlHiddenMessage {
   my($self, $type, $obj) = @_;
   return 0 if !$obj->{hidden};
-  my $board = $type eq 'r' ? 'v'.$obj->{vn}[0]{vid} : $type.$obj->{id};
+  my $board = $type eq 'c' ? 'db' : $type eq 'r' ? 'v'.$obj->{vn}[0]{vid} : $type.$obj->{id};
   # fetch edit summary (not present in $obj because the changes aren't fetched)
   my $editsum = $type eq 'v' ? $self->dbVNGet(id => $obj->{id}, what => 'changes')->[0]{comments}
               : $type eq 'r' ? $self->dbReleaseGet(id => $obj->{id}, what => 'changes')->[0]{comments}
+              : $type eq 'c' ? $self->dbCharGet(id => $obj->{id}, what => 'changes')->[0]{comments}
                              : $self->dbProducerGet(id => $obj->{id}, what => 'changes')->[0]{comments};
   div class => 'mainbox';
    h1 $obj->{title}||$obj->{name};
@@ -147,7 +149,7 @@ sub htmlHiddenMessage {
 
 
 # Shows a revision, including diff if there is a previous revision.
-# Arguments: v|p|r, old revision, new revision, @fields
+# Arguments: v|p|r|c, old revision, new revision, @fields
 # Where @fields is a list of fields as arrayrefs with:
 #  [ shortname, displayname, %options ],
 #  Where %options:
@@ -266,8 +268,8 @@ sub revdiff {
 # Arguments: v/r/p, obj
 sub htmlEditMessage {
   my($self, $type, $obj, $title, $copy) = @_;
-  my $num        = {v => 0, r => 1, p => 2}->{$type};
-  my $guidelines = {v => 2, r => 3, p => 4}->{$type};
+  my $num        = {v => 0, r => 1, p => 2, c => 3}->{$type};
+  my $guidelines = {v => 2, r => 3, p => 4, c => 12}->{$type};
 
   div class => 'mainbox';
    h1 $title;
@@ -303,9 +305,10 @@ sub htmlEditMessage {
 
 # Generates a small message when the user can't edit the item,
 # or the item is locked.
-# Arguments: v/r/p, obj
+# Arguments: v/r/p/c, obj
 sub htmlItemMessage {
   my($self, $type, $obj) = @_;
+  # $type isn't being used at all... oh well.
 
   if($obj->{locked}) {
     p class => 'locked', mt '_itemmsg_locked';
