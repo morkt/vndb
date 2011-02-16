@@ -375,7 +375,7 @@ $$ LANGUAGE plpgsql;
 
 -- PLACEHOLDERS, not complete yet
 
-CREATE OR REPLACE FUNCTION edit_char_init(cid integer) RETURNS void AS $$
+CREATE OR REPLACE FUNCTION edit_char_init(hid integer) RETURNS void AS $$
 BEGIN
   BEGIN
     CREATE TEMPORARY TABLE edit_char (LIKE chars_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
@@ -384,13 +384,13 @@ BEGIN
   EXCEPTION WHEN duplicate_table THEN
     TRUNCATE edit_char;
   END;
-  PERFORM edit_revtable('c', cid);
+  PERFORM edit_revtable('c', hid);
   -- new char
-  IF cid IS NULL THEN
+  IF hid IS NULL THEN
     INSERT INTO edit_char DEFAULT VALUES;
   -- load revision
   ELSE
-    INSERT INTO edit_char SELECT name, original, alias, image, "desc" FROM chars_rev WHERE id = cid;
+    INSERT INTO edit_char SELECT name, original, alias, image, "desc" FROM chars_rev WHERE id = hid;
   END IF;
 END;
 $$ LANGUAGE plpgsql;
@@ -663,7 +663,7 @@ $$ LANGUAGE plpgsql;
 
 
 
--- update (vn|release|producer).(hidden|locked) on a new revision
+-- update (vn|release|producer|char).(hidden|locked) on a new revision
 -- NOTE: this is a /before/ trigger, it modifies NEW
 CREATE OR REPLACE FUNCTION update_hidlock() RETURNS trigger AS $$
 DECLARE

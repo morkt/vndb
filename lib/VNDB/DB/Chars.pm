@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbCharGet|;
+our @EXPORT = qw|dbCharGet dbCharRevisionInsert|;
 
 
 # options: id rev what results page
@@ -42,6 +42,17 @@ sub dbCharGet {
     join(', ', @select), join(' ', @join), \%where);
 
   return wantarray ? ($r, $np) : $r;
+}
+
+
+# Updates the edit_* tables, used from dbItemEdit()
+# Arguments: { columns in chars_rev },
+sub dbCharRevisionInsert {
+  my($self, $o) = @_;
+
+  my %set = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
+    qw|name original alias desc|;
+  $self->dbExec('UPDATE edit_char !H', \%set) if keys %set;
 }
 
 

@@ -286,7 +286,7 @@ sub htmlEditMessage {
     ul;
      li; lit mt '_editmsg_msg_guidelines', "/d$guidelines"; end;
      if($obj) {
-       li; lit mt '_editmsg_msg_discuss', $type eq 'r' ? "/t/v$obj->{vn}[0]{vid}" : "/t/$type$obj->{id}"; end;
+       li; lit mt '_editmsg_msg_discuss', $type eq 'c' ? '/t/db' : $type eq 'r' ? "/t/v$obj->{vn}[0]{vid}" : "/t/$type$obj->{id}"; end;
        li; lit mt '_editmsg_msg_history', "/$type$obj->{id}/hist"; end;
      } elsif($type ne 'r') {
        li; lit mt '_editmsg_msg_search', "/$type/all", $num; end;

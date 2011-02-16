@@ -4749,6 +4749,105 @@ nl : Geweigerde tags
 
 
 #############################################################################
+##                           Character pages                               ##
+#############################################################################
+# Handler::Chars
+
+
+# Character diff viewer (/c+.+)
+
+:_revfield_c_name
+en : Name
+ru*:
+cs*:
+hu*:
+nl : Naam
+
+:_revfield_c_original
+en : Original name
+ru*:
+cs*:
+hu*:
+nl : Originele naam
+
+:_revfield_c_alias
+en : Aliasses
+ru*:
+cs*:
+hu*:
+nl : Aliassen
+
+:_revfield_c_desc
+en : Description
+ru*:
+cs*:
+hu*:
+nl : Omschrijving
+
+
+# Add/edit character
+
+:_chare_title_edit
+en : Edit [_1]
+ru : Править [_1]
+cs : Editovat [_1]
+hu : [_1] szerkesztése
+nl : Wijzig [_1]
+
+:_chare_title_add
+en : Add new character
+ru*:
+cs*:
+hu*:
+nl : Nieuwe karakter
+
+:_chare_form_generalinfo
+en : General info
+ru : Основная информация
+cs : Obecné informace
+hu : Általános info
+nl : Algemene info
+
+:_chare_form_name
+en : Name (romaji)
+ru : Название (ромадзи)
+cs : Jméno (romaji)
+hu : Név (romaji)
+nl : Naam (romaji)
+
+:_chare_form_original
+en : Original name
+ru : Исходное название
+cs : Originální jméno
+hu : Eredeti név
+nl : Originele naam
+
+:_chare_form_original_note
+en : The original name of the character, leave blank if it is already in the Latin alphabet.
+ru*:
+cs*:
+hu*:
+nl : De werkelijke naam van het karakter, laat leeg als dit al in het Latijnse alphabet is.
+
+:_chare_form_alias
+en : Aliases
+ru : Прочие названия
+cs : Aliasy
+hu : Más nevek
+nl : Aliassen
+
+:_chare_form_alias_note
+en : (Un)official aliases, separated by a newline.
+ru*:
+cs*:
+hu*:
+nl : (In)officiele aliassen, elke alias op een aparte regel.
+
+
+
+
+
+#############################################################################
 ##                              Trait page                                 ##
 #############################################################################
 # Handler::Traits

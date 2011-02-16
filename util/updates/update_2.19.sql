@@ -85,6 +85,8 @@ DROP FUNCTION edit_revtable(dbentry_type, integer);
 DROP TYPE dbentry_type;
 ALTER TYPE dbentry_type_tmp RENAME TO dbentry_type;
 
+CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON chars         FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest) EXECUTE PROCEDURE update_hidlock();
+
 
 -- load the updated functions
 
