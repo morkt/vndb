@@ -75,6 +75,8 @@ CREATE TABLE chars_vns (
   PRIMARY KEY(cid, vid, rid)
 );
 
+CREATE SEQUENCE charimg_seq;
+
 
 
 -- allow characters to be versioned using the changes table
@@ -86,6 +88,7 @@ DROP TYPE dbentry_type;
 ALTER TYPE dbentry_type_tmp RENAME TO dbentry_type;
 
 CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON chars         FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest) EXECUTE PROCEDURE update_hidlock();
+CREATE TRIGGER chars_rev_image_notify     AFTER  INSERT OR UPDATE ON chars_rev     FOR EACH ROW WHEN (NEW.image < 0) EXECUTE PROCEDURE chars_rev_image_notify();
 
 
 -- load the updated functions

@@ -35,6 +35,10 @@ sub page {
       [ original  => diff => 1 ],
       [ alias     => diff => qr/[ ,\n\.]/ ],
       [ desc      => diff => qr/[ ,\n\.]/ ],
+      [ image     => htmlize => sub {
+        return $_[0] > 0 ? sprintf '<img src="%s/ch/%02d/%d.jpg" />', $self->{url_static}, $_[0]%100, $_[0]
+          : mt $_[0] < 0 ? '_chdiff_image_proc' : '_chdiff_image_none';
+      }],
     );
   }
 
@@ -42,6 +46,7 @@ sub page {
    $self->htmlItemMessage('c', $r);
    h1 $r->{name};
    h2 class => 'alttitle', $r->{original} if $r->{original};
+   img src => sprintf('%s/ch/%02d/%d.jpg', $self->{url_static}, $r->{image}%100, $r->{image}), alt => $r->{name} if $r->{image};
    if($r->{desc}) {
      p class => 'description';
       lit bb2html($r->{desc});
@@ -64,7 +69,7 @@ sub edit {
     || $id && ($r->{locked} && !$self->authCan('lock') || $r->{hidden} && !$self->authCan('del'));
 
   my %b4 = !$id ? () : (
-    (map { $_ => $r->{$_} } qw|name original alias desc ihid ilock|),
+    (map { $_ => $r->{$_} } qw|name original alias desc image ihid ilock|),
   );
   my $frm;
 
@@ -75,11 +80,16 @@ sub edit {
       { post => 'original',      required  => 0, maxlength => 200,  default => '' },
       { post => 'alias',         required  => 0, maxlength => 500,  default => '' },
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
+      { post => 'image',         required  => 0, default => 0,  template => 'int' },
       { post => 'editsum',       required  => 0, maxlength => 5000 },
       { post => 'ihid',          required  => 0 },
       { post => 'ilock',         required  => 0 },
     );
     push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
+
+    # handle image upload
+    $frm->{image} = _uploadimage($self, $r, $frm);
+
     if(!$frm->{_err}) {
       $frm->{ihid}  = $frm->{ihid} ?1:0;
       $frm->{ilock} = $frm->{ilock}?1:0;
@@ -99,16 +109,55 @@ sub edit {
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('c', $r, 'edit') if $r;
   $self->htmlEditMessage('c', $r, $title);
-  $self->htmlForm({ frm => $frm, action => $r ? "/c$id/edit" : '/c/new', editsum => 1 },
-  'chare_geninfo' => [ mt('_chare_form_generalinfo'),
-    [ input  => name => mt('_pedit_form_name'), short => 'name' ],
-    [ input  => name => mt('_pedit_form_original'), short => 'original' ],
-    [ static => content => mt('_pedit_form_original_note') ],
-    [ text   => name => mt('_pedit_form_alias'), short => 'alias', rows => 3 ],
-    [ static => content => mt('_pedit_form_alias_note') ],
-    [ text   => name => mt('_pedit_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
-  ]);
+  $self->htmlForm({ frm => $frm, action => $r ? "/c$id/edit" : '/c/new', editsum => 1, upload => 1 },
+  chare_geninfo => [ mt('_chare_form_generalinfo'),
+    [ input  => name => mt('_chare_form_name'), short => 'name' ],
+    [ input  => name => mt('_chare_form_original'), short => 'original' ],
+    [ static => content => mt('_chare_form_original_note') ],
+    [ text   => name => mt('_chare_form_alias'), short => 'alias', rows => 3 ],
+    [ static => content => mt('_chare_form_alias_note') ],
+    [ text   => name => mt('_chare_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
+  ],
+
+  chare_img => [ mt('_chare_image'), [ static => nolabel => 1, content => sub {
+    div class => 'img';
+     p mt '_chare_image_none' if !$frm->{image};
+     p mt '_chare_image_processing' if $frm->{image} && $frm->{image} < 0;
+     img src => sprintf("%s/ch/%02d/%d.jpg", $self->{url_static}, $frm->{image}%100, $frm->{image}) if $frm->{image} && $frm->{image} > 0;
+    end;
+
+    div;
+     h2 mt '_chare_image_id';
+     input type => 'text', class => 'text', name => 'image', id => 'image', value => $frm->{image};
+     p mt '_chare_image_id_msg';
+     br; br;
+
+     h2 mt '_chare_image_upload';
+     input type => 'file', class => 'text', name => 'img', id => 'img';
+     p mt('_chare_image_upload_msg');
+    end;
+  }]]);
   $self->htmlFooter;
+}
+
+
+sub _uploadimage {
+  my($self, $c, $frm) = @_;
+  return $c ? $frm->{image} : 0 if $frm->{_err} || !$self->reqPost('img');
+
+  # perform some elementary checks
+  my $imgdata = $self->reqUploadRaw('img');
+  $frm->{_err} = [ 'noimage' ] if $imgdata !~ /^(\xff\xd8|\x89\x50)/; # JPG or PNG headers
+  $frm->{_err} = [ 'toolarge' ] if length($imgdata) > 1024*1024;
+  return undef if $frm->{_err};
+
+  # get image ID and save it, to be processed by Multi
+  my $imgid = $self->dbCharImageId;
+  my $fn = sprintf '%s/static/ch/%02d/%d.jpg', $VNDB::ROOT, $imgid%100, $imgid;
+  $self->reqSaveUpload('img', $fn);
+  chmod 0666, $fn;
+
+  return -1*$imgid;
 }
 
 

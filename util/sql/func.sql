@@ -560,6 +560,13 @@ $$ LANGUAGE plpgsql;
 
 
 
+-- Send a notify when a new character image is uploaded
+CREATE OR REPLACE FUNCTION chars_rev_image_notify() RETURNS trigger AS $$
+  BEGIN NOTIFY charimage; RETURN NULL; END;
+$$ LANGUAGE plpgsql;
+
+
+
 -- Send a notify when a screenshot needs to be processed
 CREATE OR REPLACE FUNCTION screenshot_process_notify() RETURNS trigger AS $$
   BEGIN NOTIFY screenshot; RETURN NULL; END;

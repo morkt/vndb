@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbCharGet dbCharRevisionInsert|;
+our @EXPORT = qw|dbCharGet dbCharRevisionInsert dbCharImageId|;
 
 
 # options: id rev what results page
@@ -26,7 +26,7 @@ sub dbCharGet {
   );
 
   my @select = qw|c.id cr.name cr.original|;
-  push @select, qw|c.hidden c.locked cr.alias cr.desc| if $o{what} =~ /extended/;
+  push @select, qw|c.hidden c.locked cr.alias cr.desc cr.image| if $o{what} =~ /extended/;
   push @select, qw|h.requester h.comments c.latest u.username h.rev h.ihid h.ilock|, "extract('epoch' from h.added) as added", 'cr.id AS cid' if $o{what} =~ /changes/;
 
   my @join;
@@ -51,8 +51,14 @@ sub dbCharRevisionInsert {
   my($self, $o) = @_;
 
   my %set = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
-    qw|name original alias desc|;
+    qw|name original alias desc image|;
   $self->dbExec('UPDATE edit_char !H', \%set) if keys %set;
+}
+
+
+# fetches an ID for a new image
+sub dbCharImageId {
+  return shift->dbRow("SELECT nextval('charimg_seq') AS ni")->{ni};
 }
 
 

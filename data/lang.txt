@@ -4784,6 +4784,27 @@ cs*:
 hu*:
 nl : Omschrijving
 
+:_revfield_c_image
+en : Image
+ru*:
+cs*:
+hu*:
+nl : Plaatje
+
+:_chdiff_image_proc
+en : ~[processing~]
+ru : ~[обработка~]
+cs : ~[zpracovává se~]
+hu : ~[feldolgozás~]
+nl : ~[bewerken...~]
+
+:_chdiff_image_none
+en : No image
+ru : Нет изображения
+cs : Obrázek není
+hu : Nincs kép
+nl : Geen plaatje
+
 
 # Add/edit character
 
@@ -4842,6 +4863,55 @@ ru*:
 cs*:
 hu*:
 nl : (In)officiele aliassen, elke alias op een aparte regel.
+
+:_chare_image
+en : Image
+ru : Изображение
+cs : Obrázek
+hu : Kép
+nl : Plaatje
+
+:_chare_image_none
+en : No image uploaded yet
+ru : Изображения пока нет
+cs : Obrázek ještě nebyl nahrán
+hu : Még nincs kép feltöltve
+nl : Nog geen plaatje geupload
+
+:_chare_image_processing
+en : ~[processing image, please return in a few minutes~]
+ru : ~[обработка изображения, пожалуйста подождите несколько минут~]
+cs : ~[obrázek se zpracovává, vraťte se prosím za několik minut~]
+hu : ~[a kép feldolgozás alatt van, gyere vissza pár perc múlva~]
+nl : ~[bezig met het verwerken van het plaatje, kom a.u.b. terug in een paar minuten~]
+
+:_chare_image_id
+en : Image ID
+ru*:
+cs*:
+hu*:
+nl : Plaatje ID
+
+:_chare_image_id_msg
+en : Use a character image that is already on the server. Set to '0' to remove the current image.
+ru :
+cs :
+hu :
+nl : Gebruik een karakterplaatje dat al op de server staat. Gebruik '0' om een huidig plaatje te verwijderen.
+
+:_chare_image_upload
+en : Upload new image
+ru : Загрузить новое изображение
+cs : Nahrát nový obrázek
+hu : Tölts fel egy új képet
+nl : Upload nieuw plaatje
+
+:_chare_image_upload_msg
+en : Image must be in JPEG or PNG format and at most 1MiB. Images larger than 256x300 will automatically be resized. Image must be safe for work!
+ru*:
+cs*:
+hu*:
+nl : Plaatje moet in het JPEG of PNG formaat zijn, en moet kleiner zijn dan 1MiB. Plaatjes groter dan 256x300 worden automatisch verkleind. Het plaatje moet veilig zijn in een werkomgeving!
 
 
 
@@ -6670,6 +6740,13 @@ nl : Spatiegescheiden lijst van [url,http://anidb.net/,AniDB] anime IDs.
      Bijvoorbeeld: "1015 3348" voegt [url,http://anidb.net/a1015,Shingetsutan Tsukihime]
      en [url,http://anidb.net/a3348,Fate/stay night] toe als gerelateerde anime.[br]
      Houd er rekening mee dat het een aantal minuten kan duren voordat de animetitels zichtbaar worden op de VN pagina.
+
+:_chare_form_desc
+en : Description
+ru : Описание
+cs : Popis
+hu : Leírás
+nl : Omschrijving
 
 :_vnedit_image
 en : Image

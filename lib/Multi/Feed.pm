@@ -64,13 +64,14 @@ sub generate {
 
   # changes
   $_[KERNEL]->post(pg => query => q{
-    SELECT '/'||c.type||COALESCE(vr.vid, rr.rid, pr.pid)||'.'||c.rev AS id,
-       COALESCE(vr.title, rr.title, pr.name) AS title, extract('epoch' from c.added) AS updated,
+    SELECT '/'||c.type||COALESCE(vr.vid, rr.rid, pr.pid, cr.cid)||'.'||c.rev AS id,
+       COALESCE(vr.title, rr.title, pr.name, cr.name) AS title, extract('epoch' from c.added) AS updated,
        u.username, u.id AS uid, c.comments AS summary
     FROM changes c
      LEFT JOIN vn_rev vr ON c.type = 'v' AND c.id = vr.id
      LEFT JOIN releases_rev rr ON c.type = 'r' AND c.id = rr.id
      LEFT JOIN producers_rev pr ON c.type = 'p' AND c.id = pr.id
+     LEFT JOIN chars_rev cr ON c.type = 'c' AND c.id = cr.id
      JOIN users u ON u.id = c.requester
     WHERE c.requester <> 1
     ORDER BY c.id DESC

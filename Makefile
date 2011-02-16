@@ -43,7 +43,7 @@
 
 all: dirs js skins robots data/config.pl
 
-dirs: static/f/js static/cv static/sf static/st data/log www www/feeds
+dirs: static/f/js static/ch static/cv static/sf static/st data/log www www/feeds
 
 js: static/f/js/en.js
 
@@ -51,7 +51,7 @@ skins: static/s/*/style.css
 
 robots: dirs www/robots.txt static/robots.txt
 
-static/cv static/sf static/st:
+static/ch static/cv static/sf static/st:
 	mkdir $@;
 	for i in $$(seq -w 0 1 99); do mkdir "$@/$$i"; done
 
@@ -70,7 +70,7 @@ static/s/%/style.css: static/s/%/conf util/skingen.pl data/style.css
 
 chmod: all
 	chmod a+xrw static/f/js
-	chmod -R a-x+rwX static/{cv,sf,st}
+	chmod -R a-x+rwX static/{ch,cv,sf,st}
 	chmod a-x+rw static/s/*/{style.css,boxbg.png}
 
 chmod-tladmin:

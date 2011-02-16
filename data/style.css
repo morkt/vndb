@@ -852,6 +852,11 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 .relbrowse .tc3 { width: 85px; text-align: right; padding: 0; }
 
 
+/***** Char edit *****/
+#jt_box_chare_img div.img { float: left; height: 400px; padding-right: 20px; }
+#jt_box_chare_img h2 { margin: 0; }
+
+
 
 /***** Documentation pages *****/
 
