@@ -1141,21 +1141,21 @@ nl : Opgegeven
 
 :_tagcat_cont
 en : Content
-ru*:
+ru : Сюжет и сеттинг
 cs*:
 hu : Tartalom
 nl : Inhoud
 
 :_tagcat_ero
 en : Sexual content
-ru*:
+ru : Эросцены
 cs*:
 hu : Szexuális tartalom
 nl : Erotisch
 
 :_tagcat_tech
 en : Technical
-ru*:
+ru : Техническое
 cs*:
 hu : Technikai
 nl : Technisch
@@ -3955,7 +3955,7 @@ nl :
 
 :_tagp_cat
 en : Category
-ru*:
+ru : Категория
 cs*:
 hu : Kategória
 nl : Categorie
@@ -3976,7 +3976,7 @@ nl : Subtags
 
 :_tagp_tree
 en : Tag tree
-ru : Древо тега
+ru : Древо тегов
 cs : Strom tagů
 hu : Címke fa
 nl : Taglijst
@@ -4190,21 +4190,21 @@ nl : WAARSCHUWING: Als je deze optie selecteerd of als je de status op "verwijde
 
 :_tagedit_frm_cat
 en : Category
-ru*:
+ru : Категория
 cs*:
 hu : Kategória
 nl : Categorie
 
 :_tagedit_frm_catrec
 en : Also edit all child tags to have this category
-ru*:
+ru : Применить эту же категорию ко всем дочерним тегам
 cs*:
 hu : Az összes alcímkét is áthelyezni ebbe a kategóriába
 nl : Zet deze categorie ook voor alle subtags
 
 :_tagedit_frm_catrec_warn
 en : WARNING: This will overwrite the category field for all child tags, this action can not be reverted!
-ru*:
+ru : ВНИМАНИЕ: Категории всех дочерних тегов будут перезаписаны, это действие нельзя отменить!
 cs*:
 hu : FIGYELEM: Ez az összes alcímkét felülírja a kategória mezőt, amit nem lehet lesz visszacsinálni!
 nl : WAARSCHUWING: Hiermee wordt het categoriefeld voor alle subtags overschreven, dit kan niet ongedaan worden gemaakt!
@@ -4564,7 +4564,7 @@ nl :
 
 :_tagv_overruletip
 en : Tag overruled. All votes other than that of the moderator who overruled it will be ignored.
-ru*:
+ru : Тег зафиксирован модератором. Все голоса за него будут проигнорированы.
 cs*:
 hu : A címkét átvette egy moderátor. Minden szavazat a moderátorén kivűl figyelmen kivűl lesz hagyva.
 nl : Tag overschreven. Alle stemmen, behalve die van de moderator die de tag heeft overschreven, zullen worden genegeerd.
@@ -4578,7 +4578,7 @@ nl : Wie?
 
 :_tagv_newlyadded
 en : Newly added
-ru*:
+ru : Недавно добавленные
 cs*:
 hu : Újonnan hozzáadott
 nl : Net toegevoegd
@@ -5906,7 +5906,7 @@ nl :
 
 :_vnbrowse_tagnothere
 en : Additional tag filters are not available on this page. Use the visual novel browser instead (available from the main menu -> visual novels).
-ru*:
+ru : На этой странице дополнительные фильтры по тегам недоступны. Воспользуйтесь обзором новелл (Меню -> Новеллы).
 cs*:
 hu : További címke szűrők nem állnak rendelkezésre ezzen az oldalon. Használd a visual novel böngészőt (megtalálható a Menü -> Visual Novellek pontba).
 nl : Extra tag filters zijn niet aanwezig op deze pagina. Gebruik de visual novel browser voor deze functionaliteit (beschikbaar via het hoofdmenu -> visual novels).
@@ -5983,84 +5983,84 @@ nl :
 
 :_vnbrowse_ul
 en : My lists
-ru*:
+ru : Мои списки
 cs*:
 hu : A listám
 nl : Mijn lijsten
 
 :_vnbrowse_ul_notblack
 en : Blacklist
-ru*:
+ru : Чёрный список
 cs*:
 hu : Feketelista
 nl :
 
 :_vnbrowse_ul_notblackmsg
 en : Exclude VNs on my blacklist
-ru*:
+ru : Исключить новеллы из моего черного списка
 cs*:
 hu : Hagyd ki azokat a VN-eket amelyek a feketelistámba bent vannak
 nl : Sluit VNs op mijn blacklist uit
 
 :_vnbrowse_ul_onwish
 en : Wishlist
-ru*:
+ru : Список желаемого
 cs*:
 hu : Kivánságlista
 nl : Wensenlijst
 
 :_vnbrowse_ul_onwishno
 en : Not on my wishlist
-ru*:
+ru : Не в моём списке желаемого
 cs*:
 hu : Nincs a kivánságlistámba
 nl : Niet op mijn wensenlijst
 
 :_vnbrowse_ul_onwishyes
 en : On my wishlist
-ru*:
+ru : В моём списке желаемого
 cs*:
 hu : Benne van a kivánságlistámba
 nl : Op mijn wensenlijst
 
 :_vnbrowse_ul_voted
 en : Voted
-ru*:
+ru : Отданные голоса
 cs*:
 hu : Szavazva
 nl : Gestemd
 
 :_vnbrowse_ul_votedno
 en : Not voted on
-ru*:
+ru : Без моего голоса
 cs*:
 hu : Nem volt szavazva rá
 nl : Niet op gestemd
 
 :_vnbrowse_ul_votedyes
 en : Voted on
-ru*:
+ru : С моим голосом
 cs*:
 hu : Volt szavazva rá
 nl : Op gestemd
 
 :_vnbrowse_ul_onlist
 en : VN list
-ru*:
+ru : Список новелл
 cs*:
 hu : VN lista
 nl : VN lijst
 
 :_vnbrowse_ul_onlistno
 en : Not on my VN list
-ru*:
+ru : Не в моём списке новелл
 cs*:
 hu : Nincs a VN listámba
 nl : Niet op mijn VN lijst
 
 :_vnbrowse_ul_onlistyes
 en : On my VN list
-ru*:
+ru : В моём списке новелл
 cs*:
 hu : Benne van a VN listámba
 nl : Op mijn VN lijst
