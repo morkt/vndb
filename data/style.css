@@ -852,10 +852,21 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 .relbrowse .tc3 { width: 85px; text-align: right; padding: 0; }
 
 
-/***** Char edit *****/
-#jt_box_chare_img div.img { float: left; height: 400px; padding-right: 20px; }
-#jt_box_chare_img h2 { margin: 0; }
 
+/***** Char page *****/
+
+div.chardetails { margin: 0 auto; width: 800px; }
+div.charimg     { float: left; width: 250px; margin: 0 10px; text-align: center }
+div.charimg p   { text-align: center; padding: 0px; margin: 0; }
+.chardesc h2    { margin: 0!important; }
+.chardesc p     { padding: 0 0 0 5px; }
+div.chardetails table { float: left; width: 530px; }
+div.chardetails table td.key { width: 80px; }
+
+
+/***** Char edit *****/
+#jt_box_chare_img div.img { float: left; height: 300px; padding-right: 20px; }
+#jt_box_chare_img h2 { margin: 0; }
 
 
 /***** Documentation pages *****/

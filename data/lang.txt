@@ -4806,6 +4806,51 @@ hu : Nincs kép
 nl : Geen plaatje
 
 
+# Character page (/c+)
+
+:_charp_noimg
+en : No image uploaded yet
+ru : Нет загруженного изображения
+cs : Ještě nebyl nahrán žádný obrázek
+hu : Még nincs kép feltöltve
+nl : Nog geen plaatje geupload
+
+:_charp_imgproc
+en : ~[processing image, please return in a few minutes~]
+ru : ~[идёт обработка изображения, подождите несколько минут~]
+cs : ~[obrázek se zpracovává, prosíme, vraťte se za několik minut~]
+hu : ~[a kép feldolgozás alatt van, gyere vissza pár perc múlva~]
+nl : ~[plaatje wordt verwerkt, kom a.u.b. terug in een paar minuten~]
+
+:_charp_name
+en : Name
+ru*:
+cs*:
+hu*:
+nl : Naam
+
+:_charp_original
+en : Original name
+ru*:
+cs*:
+hu*:
+nl : Werkelijke naam
+
+:_charp_alias
+en : Aliases
+ru*:
+cs*:
+hu*:
+nl : Aliassen
+
+:_charp_description
+en : Description
+ru*:
+cs*:
+hu*:
+nl : Beschrijving
+
+
 # Add/edit character
 
 :_chare_title_edit

@@ -46,12 +46,56 @@ sub page {
    $self->htmlItemMessage('c', $r);
    h1 $r->{name};
    h2 class => 'alttitle', $r->{original} if $r->{original};
-   img src => sprintf('%s/ch/%02d/%d.jpg', $self->{url_static}, $r->{image}%100, $r->{image}), alt => $r->{name} if $r->{image};
-   if($r->{desc}) {
-     p class => 'description';
-      lit bb2html($r->{desc});
+
+   div class => 'chardetails';
+
+    # image
+    div class => 'charimg';
+     if(!$r->{image}) {
+       p mt '_charp_noimg';
+     } elsif($r->{image} < 0) {
+       p mt '_charp_imgproc';
+     } else {
+       img src => sprintf('%s/ch/%02d/%d.jpg', $self->{url_static}, $r->{image}%100, $r->{image}),
+         alt => $r->{name} if $r->{image};
+     }
+    end 'div';
+
+    # info table
+    table;
+     my $i = 0;
+     Tr ++$i % 2 ? (class => 'odd') : ();
+      td class => 'key', mt '_charp_name';
+      td $r->{name};
      end;
-   }
+     if($r->{original}) {
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td mt '_charp_original';
+        td $r->{original};
+       end;
+     }
+     if($r->{alias}) {
+       $r->{alias} =~ s/\n/, /g;
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td mt '_charp_alias';
+        td $r->{alias};
+       end;
+     }
+     if($r->{desc}) {
+       Tr;
+        td class => 'chardesc', colspan => 2;
+         h2 mt '_charp_description';
+         p;
+          lit bb2html $r->{desc};
+         end;
+        end;
+       end;
+     }
+    end 'table';
+
+   end;
+   clearfloat;
+
   end;
   $self->htmlFooter;
 }
