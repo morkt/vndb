@@ -4784,6 +4784,55 @@ cs*:
 hu*:
 nl : Omschrijving
 
+:_revfield_c_b_month
+en : Birthday - month
+ru*:
+cs*:
+hu*:
+nl : Verjaardag - maand
+
+:_revfield_c_b_day
+en : Birthday - day
+ru*:
+cs*:
+hu*:
+nl : Verjaardag - dag
+
+:_revfield_c_s_bust
+en : Bust
+ru*:
+cs*:
+hu*:
+nl : Borst
+
+:_revfield_c_s_waist
+en : Waist
+ru*:
+cs*:
+hu*:
+nl : Taille
+
+:_revfield_c_s_hip
+en : Hip
+ru*:
+cs*:
+hu*:
+nl :
+
+:_revfield_c_height
+en : Height
+ru*:
+cs*:
+hu*:
+nl : Lengte
+
+:_revfield_c_weight
+en : Weight
+ru*:
+cs*:
+hu*:
+nl : Gewicht
+
 :_revfield_c_image
 en : Image
 ru*:
@@ -4843,12 +4892,42 @@ cs*:
 hu*:
 nl : Aliassen
 
+:_charp_meas
+en : Measurements
+ru*:
+cs*:
+hu*:
+nl : Afmetingen
+
+:_charp_meas_h
+en : Height: [_1]cm
+ru*:
+cs*:
+hu*:
+nl : Lengte: [_1]cm
+
+:_charp_meas_w
+en : Weight: [_1]kg
+ru*:
+cs*:
+hu*:
+nl : Gewicht: [_1]kg
+
+# Bust/Waist/Hip
+:_charp_meas_bwh
+en : BWH: [_1]-[_2]-[_3]cm
+ru*:
+cs*:
+hu*:
+nl :
+
 :_charp_description
 en : Description
 ru*:
 cs*:
 hu*:
 nl : Beschrijving
+
 
 
 # Add/edit character
@@ -4908,6 +4987,69 @@ ru*:
 cs*:
 hu*:
 nl : (In)officiele aliassen, elke alias op een aparte regel.
+
+:_chare_form_desc
+en : Description
+ru : Описание
+cs : Popis
+hu : Leírás
+nl : Omschrijving
+
+:_chare_form_bday
+en : Birthday
+ru*:
+cs*:
+hu*:
+nl : Verjaardag
+
+:_chare_form_bday_fmt
+en : MM-DD (e.g. "01-26" for the 26th of Januari)
+ru*:
+cs*:
+hu*:
+nl : MM-DD (b.v. "01-26" voor 26 januari)
+
+:_chare_form_bday_err
+en : Birthday must be in MM-DD format.
+ru*:
+cs*:
+hu*:
+nl : Verjaardag moet in het MM-DD formaat zijn.
+
+:_chare_form_bust
+en : Bust
+ru*:
+cs*:
+hu*:
+nl : Borst
+
+:_chare_form_waist
+en : Waist
+ru*:
+cs*:
+hu*:
+nl : Taille
+
+:_chare_form_hip
+en : Hips
+ru*:
+cs*:
+hu*:
+nl : Hippen
+
+:_chare_form_height
+en : Height
+ru*:
+cs*:
+hu*:
+nl : Lengte
+
+:_chare_form_weight
+en : Weight
+ru*:
+cs*:
+hu*:
+nl : Gewicht
 
 :_chare_image
 en : Image
@@ -6786,7 +6928,7 @@ nl : Spatiegescheiden lijst van [url,http://anidb.net/,AniDB] anime IDs.
      en [url,http://anidb.net/a3348,Fate/stay night] toe als gerelateerde anime.[br]
      Houd er rekening mee dat het een aantal minuten kan duren voordat de animetitels zichtbaar worden op de VN pagina.
 
-:_chare_form_desc
+:_vnedit_form_desc
 en : Description
 ru : Описание
 cs : Popis

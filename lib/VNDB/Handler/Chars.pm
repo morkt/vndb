@@ -35,6 +35,13 @@ sub page {
       [ original  => diff => 1 ],
       [ alias     => diff => qr/[ ,\n\.]/ ],
       [ desc      => diff => qr/[ ,\n\.]/ ],
+      [ b_month   => serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ b_day     => serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ s_bust    => serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ s_waist   => serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ s_hip     => serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ height    => serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ weight    => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ image     => htmlize => sub {
         return $_[0] > 0 ? sprintf '<img src="%s/ch/%02d/%d.jpg" />', $self->{url_static}, $_[0]%100, $_[0]
           : mt $_[0] < 0 ? '_chdiff_image_proc' : '_chdiff_image_none';
@@ -81,6 +88,15 @@ sub page {
         td $r->{alias};
        end;
      }
+     if($r->{height} || $r->{weight} || $r->{s_bust} || $r->{s_waist} || $r->{s_hip}) {
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td mt '_charp_meas';
+        td join ', ',
+          $r->{s_bust} || $r->{s_waist} || $r->{s_hip} ? mt('_charp_meas_bwh', $r->{s_bust}||'??', $r->{s_waist}||'??', $r->{s_hip}||'??') : (),
+          $r->{height} ? mt('_charp_meas_h', $r->{height}) : (),
+          $r->{weight} ? mt('_charp_meas_w', $r->{weight}) : ();
+       end;
+     }
      if($r->{desc}) {
        Tr;
         td class => 'chardesc', colspan => 2;
@@ -113,7 +129,8 @@ sub edit {
     || $id && ($r->{locked} && !$self->authCan('lock') || $r->{hidden} && !$self->authCan('del'));
 
   my %b4 = !$id ? () : (
-    (map { $_ => $r->{$_} } qw|name original alias desc image ihid ilock|),
+    (map +($_ => $r->{$_}), qw|name original alias desc image ihid ilock s_bust s_waist s_hip height weight|),
+    bday => $r->{b_month} ? sprintf('%02d-%02d', $r->{b_month}, $r->{b_day}) : '',
   );
   my $frm;
 
@@ -125,6 +142,12 @@ sub edit {
       { post => 'alias',         required  => 0, maxlength => 500,  default => '' },
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { post => 'image',         required  => 0, default => 0,  template => 'int' },
+      { post => 'bday',          required  => 0, default => '', regex => [ qr/^\d{2}-\d{2}$/, mt('_chare_form_bday_err') ] },
+      { post => 's_bust',        required  => 0, default => 0, template => 'int' },
+      { post => 's_waist',       required  => 0, default => 0, template => 'int' },
+      { post => 's_hip',         required  => 0, default => 0, template => 'int' },
+      { post => 'height',        required  => 0, default => 0, template => 'int' },
+      { post => 'weight',        required  => 0, default => 0, template => 'int' },
       { post => 'editsum',       required  => 0, maxlength => 5000 },
       { post => 'ihid',          required  => 0 },
       { post => 'ilock',         required  => 0 },
@@ -137,6 +160,7 @@ sub edit {
     if(!$frm->{_err}) {
       $frm->{ihid}  = $frm->{ihid} ?1:0;
       $frm->{ilock} = $frm->{ilock}?1:0;
+      ($frm->{b_month}, $frm->{b_day}) = delete($frm->{bday}) =~ /^(\d{2})-(\d{2})$/ ? ($1, $2) : (0, 0);
 
       return $self->resRedirect("/c$id", 'post')
         if $id && !grep $frm->{$_} ne $b4{$_}, keys %b4;
@@ -161,6 +185,12 @@ sub edit {
     [ text   => name => mt('_chare_form_alias'), short => 'alias', rows => 3 ],
     [ static => content => mt('_chare_form_alias_note') ],
     [ text   => name => mt('_chare_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
+    [ input  => name => mt('_chare_form_bday'),  short => 'bday',   width => 100, post => ' '.mt('_chare_form_bday_fmt')  ],
+    [ input  => name => mt('_chare_form_bust'),  short => 's_bust', width => 50, post => ' cm' ],
+    [ input  => name => mt('_chare_form_waist'), short => 's_waist',width => 50, post => ' cm'  ],
+    [ input  => name => mt('_chare_form_hip'),   short => 's_hip',  width => 50, post => ' cm'  ],
+    [ input  => name => mt('_chare_form_height'),short => 'height', width => 50, post => ' cm' ],
+    [ input  => name => mt('_chare_form_weight'),short => 'weight', width => 50, post => ' kg' ],
   ],
 
   chare_img => [ mt('_chare_image'), [ static => nolabel => 1, content => sub {

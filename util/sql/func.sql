@@ -373,8 +373,6 @@ $$ LANGUAGE plpgsql;
 
 
 
--- PLACEHOLDERS, not complete yet
-
 CREATE OR REPLACE FUNCTION edit_char_init(hid integer) RETURNS void AS $$
 BEGIN
   BEGIN
@@ -390,7 +388,7 @@ BEGIN
     INSERT INTO edit_char DEFAULT VALUES;
   -- load revision
   ELSE
-    INSERT INTO edit_char SELECT name, original, alias, image, "desc" FROM chars_rev WHERE id = hid;
+    INSERT INTO edit_char SELECT name, original, alias, image, "desc", s_bust, s_waist, s_hip, b_month, b_day, height, weight FROM chars_rev WHERE id = hid;
   END IF;
 END;
 $$ LANGUAGE plpgsql;
@@ -405,7 +403,7 @@ BEGIN
     RAISE 'edit_char must have exactly one row!';
   END IF;
   SELECT INTO r * FROM edit_commit();
-  INSERT INTO chars_rev SELECT r.cid, r.iid, name, original, alias, image, "desc" FROM edit_char;
+  INSERT INTO chars_rev SELECT r.cid, r.iid, name, original, alias, image, "desc", s_bust, s_waist, s_hip, b_month, b_day, height, weight FROM edit_char;
   UPDATE chars SET latest = r.cid WHERE id = r.iid;
   RETURN r;
 END;
