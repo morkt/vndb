@@ -1161,6 +1161,52 @@ hu : Technikai
 nl : Technisch
 
 
+# Blood types
+
+:_bloodt_unknown
+en : Unknown
+ru*:
+cs*:
+hu*:
+nl : Onbekend
+
+:_bloodt_a
+en : A
+ru*:
+cs*:
+hu*:
+nl :
+
+:_bloodt_b
+en : B
+ru*:
+cs*:
+hu*:
+nl :
+
+:_bloodt_ab
+en : AB
+ru*:
+cs*:
+hu*:
+nl :
+
+:_bloodt_o
+en : O
+ru*:
+cs*:
+hu*:
+nl : O
+
+:_bloodt_other
+en : Other/fictional
+ru*:
+cs*:
+hu*:
+nl : Anders/fictief
+
+
+
 
 #############################################################################
 ##                          Global UI strings                              ##
@@ -4833,6 +4879,13 @@ cs*:
 hu*:
 nl : Gewicht
 
+:_revfield_c_bloodt
+en : Blood type
+ru*:
+cs*:
+hu*:
+nl : Bloedgroep
+
 :_revfield_c_image
 en : Image
 ru*:
@@ -4906,13 +4959,6 @@ cs*:
 hu*:
 nl : Lengte: [_1]cm
 
-:_charp_meas_w
-en : Weight: [_1]kg
-ru*:
-cs*:
-hu*:
-nl : Gewicht: [_1]kg
-
 # Bust/Waist/Hip
 :_charp_meas_bwh
 en : BWH: [_1]-[_2]-[_3]cm
@@ -4920,6 +4966,27 @@ ru*:
 cs*:
 hu*:
 nl :
+
+:_charp_weight
+en : Weight
+ru*:
+cs*:
+hu*:
+nl : Gewicht
+
+:_charp_bday
+en : Birthday
+ru*:
+cs*:
+hu*:
+nl : Verjaardag
+
+:_charp_bloodt
+en : Blood type
+ru*:
+cs*:
+hu*:
+nl : Bloedgroep
 
 :_charp_description
 en : Description
@@ -5050,6 +5117,13 @@ ru*:
 cs*:
 hu*:
 nl : Gewicht
+
+:_chare_form_bloodt
+en : Blood type
+ru*:
+cs*:
+hu*:
+nl : Bloedgroep
 
 :_chare_image
 en : Image

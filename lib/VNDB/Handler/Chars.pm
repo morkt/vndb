@@ -42,6 +42,7 @@ sub page {
       [ s_hip     => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ height    => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ weight    => serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ bloodt    => serialize => sub { mt "_bloodt_$_[0]" } ],
       [ image     => htmlize => sub {
         return $_[0] > 0 ? sprintf '<img src="%s/ch/%02d/%d.jpg" />', $self->{url_static}, $_[0]%100, $_[0]
           : mt $_[0] < 0 ? '_chdiff_image_proc' : '_chdiff_image_none';
@@ -88,13 +89,30 @@ sub page {
         td $r->{alias};
        end;
      }
-     if($r->{height} || $r->{weight} || $r->{s_bust} || $r->{s_waist} || $r->{s_hip}) {
+     if($r->{height} || $r->{s_bust} || $r->{s_waist} || $r->{s_hip}) {
        Tr ++$i % 2 ? (class => 'odd') : ();
         td mt '_charp_meas';
         td join ', ',
           $r->{s_bust} || $r->{s_waist} || $r->{s_hip} ? mt('_charp_meas_bwh', $r->{s_bust}||'??', $r->{s_waist}||'??', $r->{s_hip}||'??') : (),
-          $r->{height} ? mt('_charp_meas_h', $r->{height}) : (),
-          $r->{weight} ? mt('_charp_meas_w', $r->{weight}) : ();
+          $r->{height} ? mt('_charp_meas_h', $r->{height}) : ();
+       end;
+     }
+     if($r->{weight}) {
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td mt '_charp_weight';
+        td "$r->{weight} kg";
+       end;
+     }
+     if($r->{b_month} && $r->{b_day}) {
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td mt '_charp_bday';
+        td sprintf '%02d-%02d', $r->{b_month}, $r->{b_day};
+       end;
+     }
+     if($r->{bloodt} ne 'unknown') {
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td mt '_charp_bloodt';
+        td mt "_bloodt_$r->{bloodt}";
        end;
      }
      if($r->{desc}) {
@@ -129,7 +147,7 @@ sub edit {
     || $id && ($r->{locked} && !$self->authCan('lock') || $r->{hidden} && !$self->authCan('del'));
 
   my %b4 = !$id ? () : (
-    (map +($_ => $r->{$_}), qw|name original alias desc image ihid ilock s_bust s_waist s_hip height weight|),
+    (map +($_ => $r->{$_}), qw|name original alias desc image ihid ilock s_bust s_waist s_hip height weight bloodt|),
     bday => $r->{b_month} ? sprintf('%02d-%02d', $r->{b_month}, $r->{b_day}) : '',
   );
   my $frm;
@@ -148,6 +166,7 @@ sub edit {
       { post => 's_hip',         required  => 0, default => 0, template => 'int' },
       { post => 'height',        required  => 0, default => 0, template => 'int' },
       { post => 'weight',        required  => 0, default => 0, template => 'int' },
+      { post => 'bloodt',        required  => 0, default => 'unknown', enum => $self->{blood_types} },
       { post => 'editsum',       required  => 0, maxlength => 5000 },
       { post => 'ihid',          required  => 0 },
       { post => 'ilock',         required  => 0 },
@@ -191,6 +210,8 @@ sub edit {
     [ input  => name => mt('_chare_form_hip'),   short => 's_hip',  width => 50, post => ' cm'  ],
     [ input  => name => mt('_chare_form_height'),short => 'height', width => 50, post => ' cm' ],
     [ input  => name => mt('_chare_form_weight'),short => 'weight', width => 50, post => ' kg' ],
+    [ select => name => mt('_chare_form_bloodt'),short => 'bloodt', options => [
+       map [ $_, mt("_bloodt_$_") ], @{$self->{blood_types}} ] ],
   ],
 
   chare_img => [ mt('_chare_image'), [ static => nolabel => 1, content => sub {

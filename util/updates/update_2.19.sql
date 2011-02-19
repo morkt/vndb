@@ -31,6 +31,7 @@ CREATE TRIGGER insert_notify              AFTER  INSERT           ON traits     
 -- character database -> chars
 
 CREATE TYPE char_role AS ENUM ('main', 'primary', 'side', 'appears');
+CREATE TYPE blood_type AS ENUM ('unknown', 'a', 'b', 'ab', 'o', 'other');
 
 CREATE TABLE chars (
   id SERIAL PRIMARY KEY,
@@ -54,6 +55,7 @@ CREATE TABLE chars_rev (
   b_day      smallint NOT NULL DEFAULT 0,
   height     smallint NOT NULL DEFAULT 0,
   weight     smallint NOT NULL DEFAULT 0,
+  bloodt     blood_type NOT NULL DEFAULT 'unknown',
   main       integer  REFERENCES chars (id),
   main_spoil boolean  NOT NULL DEFAULT false
 );
@@ -87,13 +89,14 @@ DROP FUNCTION edit_revtable(dbentry_type, integer);
 DROP TYPE dbentry_type;
 ALTER TYPE dbentry_type_tmp RENAME TO dbentry_type;
 
-CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON chars         FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest) EXECUTE PROCEDURE update_hidlock();
-CREATE TRIGGER chars_rev_image_notify     AFTER  INSERT OR UPDATE ON chars_rev     FOR EACH ROW WHEN (NEW.image < 0) EXECUTE PROCEDURE chars_rev_image_notify();
-
 
 -- load the updated functions
 
 \i util/sql/func.sql
+
+
+CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON chars         FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest) EXECUTE PROCEDURE update_hidlock();
+CREATE TRIGGER chars_rev_image_notify     AFTER  INSERT OR UPDATE ON chars_rev     FOR EACH ROW WHEN (NEW.image < 0) EXECUTE PROCEDURE chars_rev_image_notify();
 
 
 -- test
