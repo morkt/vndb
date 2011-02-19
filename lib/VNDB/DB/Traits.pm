@@ -14,7 +14,7 @@ our @EXPORT = qw|dbTraitGet dbTraitTree dbTraitEdit dbTraitAdd|;
 
 
 # Options: id noid name what results page sort reverse
-# what: parents childs(n) aliases addedby
+# what: parents childs(n) addedby
 # sort: id name added
 sub dbTraitGet {
   my $self = shift;
@@ -29,19 +29,16 @@ sub dbTraitGet {
 
   my %where = (
     $o{id}   ? ('t.id = ?'  => $o{id}) : (),
-    $o{noid} ? ('t.id <> ?' => $o{noid}) : (),
-    $o{name} ? (
-      't.id = (SELECT id FROM traits LEFT JOIN traits_aliases ON id = trait WHERE lower(name) = ? OR lower(alias) = ? LIMIT 1)' => [ lc $o{name}, lc $o{name} ]) : (),
     defined $o{state} && $o{state} != -1 ? (
       't.state = ?' => $o{state} ) : (),
     !defined $o{state} && !$o{id} && !$o{name} ? (
       't.state = 2' => 1 ) : (),
     $o{search} ? (
-      't.id IN (SELECT id FROM traits LEFT JOIN traits_aliases ON id = trait WHERE name ILIKE ? OR alias ILIKE ?)' => [ "%$o{search}%", "%$o{search}%" ] ) : (),
+      't.name ILIKE ? OR t.alias ILIKE ?' => [ "%$o{search}%", "%$o{search}%" ] ) : (),
   );
 
   my @select = (
-    qw|t.id t.meta t.name t.description t.state|,
+    qw|t.id t.meta t.name t.description t.state t.alias|,
     q|extract('epoch' from t.added) as added|,
     $o{what} =~ /addedby/ ? ('t.addedby', 'u.username') : (),
   );
@@ -61,17 +58,6 @@ sub dbTraitGet {
       ORDER BY !s|,
     join(', ', @select), join(' ', @join), \%where, $order
   );
-
-  if(@$r && $o{what} =~ /aliases/) {
-    my %r = map {
-      $_->{aliases} = [];
-      ($_->{id}, $_->{aliases})
-    } @$r;
-
-    push @{$r{$_->{trait}}}, $_->{alias} for (@{$self->dbAll(q|
-      SELECT trait, alias FROM traits_aliases WHERE trait IN(!l)|, [ keys %r ]
-    )});
-  }
 
   if($o{what} =~ /parents\((\d+)\)/) {
     $_->{parents} = $self->dbTraitTree($_->{id}, $1, 1) for(@$r);
@@ -113,18 +99,14 @@ sub dbTraitTree {
 }
 
 
-# args: trait id, %options->{ columns in the traits table + parents + aliases }
+# args: trait id, %options->{ columns in the traits table + parents }
 sub dbTraitEdit {
   my($self, $id, %o) = @_;
 
   $self->dbExec('UPDATE traits !H WHERE id = ?', {
     $o{upddate} ? ('added = NOW()' => 1) : (),
-    map exists($o{$_}) ? ("$_ = ?" => $o{$_}) : (), qw|name meta description state|
+    map exists($o{$_}) ? ("$_ = ?" => $o{$_}) : (), qw|name meta description state alias|
   }, $id);
-  if($o{aliases}) {
-    $self->dbExec('DELETE FROM traits_aliases WHERE trait = ?', $id);
-    $self->dbExec('INSERT INTO traits_aliases (trait, alias) VALUES (?, ?)', $id, $_) for (@{$o{aliases}});
-  }
   if($o{parents}) {
     $self->dbExec('DELETE FROM traits_parents WHERE trait = ?', $id);
     $self->dbExec('INSERT INTO traits_parents (trait, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
@@ -136,11 +118,10 @@ sub dbTraitEdit {
 # returns the id of the new trait
 sub dbTraitAdd {
   my($self, %o) = @_;
-  my $id = $self->dbRow('INSERT INTO traits (name, meta, description, state, addedby) VALUES (!l, ?) RETURNING id',
-    [ map $o{$_}, qw|name meta description state| ], $o{addedby}||$self->authInfo->{id}
+  my $id = $self->dbRow('INSERT INTO traits (name, meta, description, state, alias, addedby) VALUES (!l, ?) RETURNING id',
+    [ map $o{$_}, qw|name meta description state alias| ], $o{addedby}||$self->authInfo->{id}
   )->{id};
   $self->dbExec('INSERT INTO traits_parents (trait, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
-  $self->dbExec('INSERT INTO traits_aliases (trait, alias) VALUES (?, ?)', $id, $_) for (@{$o{aliases}});
   return $id;
 }
 

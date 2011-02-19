@@ -5,17 +5,13 @@
 
 CREATE TABLE traits (
   id SERIAL PRIMARY KEY,
-  name varchar(250) NOT NULL UNIQUE,
+  name varchar(250) NOT NULL,
+  alias varchar(500) NOT NULL DEFAULT '',
   description text NOT NULL DEFAULT '',
   meta boolean NOT NULL DEFAULT false,
   added timestamptz NOT NULL DEFAULT NOW(),
   state smallint NOT NULL DEFAULT 0,
   addedby integer NOT NULL DEFAULT 0 REFERENCES users (id)
-);
-
-CREATE TABLE traits_aliases (
-  alias varchar(250) NOT NULL PRIMARY KEY,
-  trait integer NOT NULL REFERENCES traits (id)
 );
 
 CREATE TABLE traits_parents (
@@ -99,9 +95,50 @@ CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON chars      
 CREATE TRIGGER chars_rev_image_notify     AFTER  INSERT OR UPDATE ON chars_rev     FOR EACH ROW WHEN (NEW.image < 0) EXECUTE PROCEDURE chars_rev_image_notify();
 
 
--- test
---SELECT edit_char_init(null);
---UPDATE edit_revision SET comments = 'New test entry', requester = 2, ip = '0.0.0.0';
---UPDATE edit_char SET name = 'Phorni', original = 'フォーニ', "desc" = 'Sprite of Music';
---SELECT edit_char_commit();
+/* Debugging data *-/
+
+-- some traits, based on Echo's draft
+INSERT INTO traits (name, meta, state, addedby) VALUES
+  ('Hair', true, 2, 2),
+  ('Hair Color', true, 2, 2),
+  ('Auburn', false, 2, 2),
+  ('Black', false, 2, 2),
+  ('Blond', false, 2, 2),
+  ('Brown', false, 2, 2),
+  ('Hairstyle', true, 2, 2),
+  ('Bun', false, 2, 2),
+  ('Odango', false, 2, 2),
+  ('Ponytail', false, 2, 2),
+  ('Twin Tails', false, 2, 2),
+  ('Short', false, 2, 2),
+  ('Straight', false, 2, 2);
+INSERT INTO traits_parents (trait, parent) VALUES
+  (2, 1),
+  (3, 2),
+  (4, 2),
+  (5, 2),
+  (6, 2),
+  (7, 1),
+  (8, 7),
+  (9, 8),
+  (9, 11),
+  (10, 7),
+  (11, 10),
+  (12, 7),
+  (13, 7);
+
+
+-- phorni!
+SELECT edit_char_init(null);
+UPDATE edit_revision SET comments = 'New test entry', requester = 2, ip = '0.0.0.0';
+UPDATE edit_char SET name = 'Phorni', original = 'フォーニ', "desc" = 'Sprite of Music', height = 14;
+SELECT edit_char_commit();
+
+-- saya (incorrect test data)
+SELECT edit_char_init(null);
+UPDATE edit_revision SET comments = '2nd test entry', requester = 2, ip = '0.0.0.0';
+UPDATE edit_char SET name = 'Saya', original = '沙耶', "desc" = 'There is more than meets the eye!', alias = 'Cute monster', height = 140, weight = 52, s_bust = 41, s_waist = 38, s_hip = 40, b_month = 3, b_day = 15, bloodt = 'a';
+SELECT edit_char_commit();
+
+-- */
 

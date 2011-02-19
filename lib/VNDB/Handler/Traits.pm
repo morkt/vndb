@@ -3,7 +3,7 @@ package VNDB::Handler::Traits;
 
 use strict;
 use warnings;
-use TUWF ':html';
+use TUWF ':html', 'html_escape';
 use VNDB::Func;
 
 
@@ -20,7 +20,7 @@ TUWF::register(
 sub traitpage {
   my($self, $trait) = @_;
 
-  my $t = $self->dbTraitGet(id => $trait, what => 'parents(0) childs(2) aliases')->[0];
+  my $t = $self->dbTraitGet(id => $trait, what => 'parents(0) childs(2)')->[0];
   return $self->resNotFound if !$t;
 
   my $title = mt '_traitp_title', $t->{meta}?0:1, $t->{name};
@@ -57,11 +57,11 @@ sub traitpage {
       lit bb2html $t->{description};
      end;
    }
-   if(@{$t->{aliases}}) {
+   if($t->{alias}) {
      p class => 'center';
       b mt('_traitp_aliases');
       br;
-      lit xml_escape($_).'<br />' for (@{$t->{aliases}});
+      lit html_escape($t->{alias});
      end;
    }
   end 'div';
@@ -87,7 +87,7 @@ sub traitedit {
 
   return $self->htmlDenied if !$self->authCan('charedit') || $trait && !$self->authCan('tagmod');
 
-  my $t = $trait && $self->dbTraitGet(id => $trait, what => 'parents(1) aliases addedby')->[0];
+  my $t = $trait && $self->dbTraitGet(id => $trait, what => 'parents(1) addedby')->[0];
   return $self->resNotFound if $trait && !$t;
 
   if($self->reqMethod eq 'POST') {
@@ -98,21 +98,13 @@ sub traitedit {
       { post => 'meta',        required => 0, default => 0 },
       { post => 'alias',       required => 0, maxlength => 1024, default => '', regex => [ qr/^[^,]+$/s, 'No comma allowed in aliases' ]  },
       { post => 'description', required => 0, maxlength => 10240, default => '' },
-      { post => 'parents',     required => !$self->authCan('tagmod'), default => '' },
+      { post => 'parents',     required => !$self->authCan('tagmod'), default => '', regex => [ qr/^(?:$|(?:[1-9]\d*)(?: +[1-9]\d*)*)$/, 'Parent traits must be a space-separated list of trait IDs' ] },
     );
-    my @aliases = split /[\t\s]*\n[\t\s]*/, $frm->{alias};
-    my @parents = split /[\t\s]*,[\t\s]*/, $frm->{parents};
+    my @parents = split /[\t ]+/, $frm->{parents};
     if(!$frm->{_err}) {
-      my $c = $self->dbTraitGet(name => $frm->{name}, noid => $trait);
-      push @{$frm->{_err}}, [ 'name', 'tagexists', $c->[0] ] if @$c; # should be traitexists... but meh
-      for (@aliases) {
-        $c = $self->dbTraitGet(name => $_, noid => $trait);
-        push @{$frm->{_err}}, [ 'alias', 'tagexists', $c->[0] ] if @$c;
-      }
       for(@parents) {
-        $c = $self->dbTraitGet(name => $_, noid => $trait);
+        my $c = $self->dbTraitGet(id => $_);
         push @{$frm->{_err}}, [ 'parents', 'func', [ 0, mt '_tagedit_err_notfound', $_ ]] if !@$c;
-        $_ = $c->[0]{id};
       }
     }
 
@@ -123,7 +115,7 @@ sub traitedit {
         state => $frm->{state},
         description => $frm->{description},
         meta => $frm->{meta}?1:0,
-        aliases => \@aliases,
+        alias => $frm->{alias},
         parents => \@parents,
       );
       if(!$trait) {
@@ -137,9 +129,8 @@ sub traitedit {
   }
 
   if($t) {
-    $frm->{$_} ||= $t->{$_} for (qw|name meta description state|);
-    $frm->{alias} ||= join "\n", @{$t->{aliases}};
-    $frm->{parents} ||= join ', ', map $_->{name}, @{$t->{parents}};
+    $frm->{$_} ||= $t->{$_} for (qw|name meta description state alias|);
+    $frm->{parents} ||= join ' ', map $_->{id}, @{$t->{parents}};
   }
 
   my $title = $par ? mt('_traite_title_add', $par->{name}) : $t ? mt('_traite_title_edit', $t->{name}) : mt '_traite_title_new';

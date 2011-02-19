@@ -5379,11 +5379,11 @@ hu*:
 nl : Hoofdkenmerk
 
 :_traite_frm_parents_msg
-en : Comma separated list of trait names to be used as parent for this trait.
+en : List of trait IDs to be used as parent for this trait, separated by a space.
 ru*:
 cs*:
 hu*:
-nl : Kommagescheiden lijst van hoofdkenmerken.
+nl : Spatiegescheiden lijst van hoofdkenmerken (numerieke IDs).
 
 
 # Plain trait browser (/i/list)
