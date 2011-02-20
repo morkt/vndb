@@ -267,7 +267,18 @@ sub edit {
   }]],
 
   chare_traits => [ mt('_chare_traits'),
-    [ input => name => 'Traits (test)', short => 'traits' ],
+    [ hidden => short => 'traits' ],
+    [ static => nolabel => 1, content => sub {
+      h2 mt '_chare_traits_sel';
+      table; tbody id => 'traits_tbl';
+       Tr id => 'traits_loading'; td colspan => '3', mt('_js_loading'); end;
+      end; end;
+      h2 mt '_chare_traits_add';
+      table; Tr;
+       td class => 'tc_name'; input id => 'trait_input', type => 'text', class => 'text'; end;
+       td colspan => 2, '';
+      end; end 'table';
+    }],
   ]);
   $self->htmlFooter;
 }

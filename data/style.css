@@ -867,6 +867,11 @@ div.chardetails table td.key { width: 80px; }
 /***** Char edit *****/
 #jt_box_chare_img div.img { float: left; height: 300px; padding-right: 20px; }
 #jt_box_chare_img h2 { margin: 0; }
+#jt_box_chare_traits table  { margin-bottom: 10px; margin-left: 10px; }
+#jt_box_chare_traits h2     { margin: 0 0 3px 0px; }
+#jt_box_chare_traits td.tc_name { width: 200px }
+#jt_box_chare_traits td.tc_name input { width: 280px; }
+#jt_box_chare_traits td.tc_spoil { width: 80px; }
 
 
 /***** Documentation pages *****/

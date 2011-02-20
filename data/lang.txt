@@ -5170,6 +5170,41 @@ cs*:
 hu*:
 nl : Kenmerken
 
+:_chare_traits_sel
+en : Current traits
+ru*:
+cs*:
+hu*:
+nl : Huidige kenmerken
+
+:_chare_traits_add
+en : Add trait
+ru*:
+cs*:
+hu*:
+nl : Voeg kenmerk toe
+
+:_chare_traits_present
+en : Selected trait is already present.
+ru*:
+cs*:
+hu*:
+nl : Geselecteerd kenmerk is al aanwezig.
+
+:_chare_traits_nometa
+en : Meta traits can't be used here.
+ru*:
+cs*:
+hu*:
+nl : Metakenmerken kunnen hier niet gebruikt worden.
+
+:_chare_traits_empty
+en : No traits present yet.
+ru*:
+cs*:
+hu*:
+nl : Nog geen kenmerken aanwezig.
+
 
 
 

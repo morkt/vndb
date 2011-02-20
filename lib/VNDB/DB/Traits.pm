@@ -13,9 +13,9 @@ use Exporter 'import';
 our @EXPORT = qw|dbTraitGet dbTraitTree dbTraitEdit dbTraitAdd|;
 
 
-# Options: id noid name what results page sort reverse
+# Options: id what results page sort reverse
 # what: parents childs(n) addedby
-# sort: id name added
+# sort: id name groupname added
 sub dbTraitGet {
   my $self = shift;
   my %o = (
@@ -28,7 +28,7 @@ sub dbTraitGet {
   $o{search} =~ s/%//g if $o{search};
 
   my %where = (
-    $o{id}   ? ('t.id = ?'  => $o{id}) : (),
+    $o{id} ? ('t.id IN(!l)' => [ ref($o{id}) ? $o{id} : [$o{id}] ]) : (),
     defined $o{state} && $o{state} != -1 ? (
       't.state = ?' => $o{state} ) : (),
     !defined $o{state} && !$o{id} && !$o{name} ? (
@@ -48,6 +48,7 @@ sub dbTraitGet {
   my $order = sprintf {
     id    => 't.id %s',
     name  => 't.name %s',
+    groupname => 'tg.name %s NULLS FIRST, t.name %1$s',
     added => 't.added %s',
   }->{ $o{sort}||'id' }, $o{reverse} ? 'DESC' : 'ASC';
 

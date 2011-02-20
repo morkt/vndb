@@ -3,7 +3,7 @@ package VNDB::Handler::Traits;
 
 use strict;
 use warnings;
-use TUWF ':html', 'html_escape';
+use TUWF ':html', ':xml', 'html_escape';
 use VNDB::Func;
 
 
@@ -14,6 +14,7 @@ TUWF::register(
   qr{i/new},              \&traitedit,
   qr{i/list},             \&traitlist,
   qr{i},                  \&traitindex,
+  qr{xml/traits\.xml},    \&traitxml,
 );
 
 
@@ -326,6 +327,34 @@ sub traitindex {
    end 'tr';
   end 'table';
   $self->htmlFooter;
+}
+
+
+sub traitxml {
+  my $self = shift;
+
+  my $f = $self->formValidate(
+    { get => 'q', required => 0, maxlength => 500 },
+    { get => 'id', required => 0, multi => 1, template => 'int' },
+    { get => 'r', required => 0, default => 15, template => 'int', min => 1, max => 100 },
+  );
+  return $self->resNotFound if $f->{_err} || (!$f->{q} && !$f->{id} && !$f->{id}[0]);
+
+  my($list, $np) = $self->dbTraitGet(
+    !$f->{q} ? () : $f->{q} =~ /^i([1-9]\d*)/ ? (id => $1)  : (search => $f->{q}),
+    $f->{id} && $f->{id}[0] ? (id => $f->{id}) : (),
+    results => $f->{r},
+    page => 1,
+    sort => 'groupname'
+  );
+
+  $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
+  xml;
+  tag 'tags', more => $np ? 'yes' : 'no';
+   for(@$list) {
+     tag 'item', id => $_->{id}, meta => $_->{meta} ? 'yes' : 'no', group => $_->{group}||'', groupname => $_->{groupname}||'', state => $_->{state}, $_->{name};
+   }
+  end;
 }
 
 
