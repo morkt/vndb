@@ -4875,6 +4875,13 @@ cs*:
 hu*:
 nl : Plaatje
 
+:_revfield_c_traits
+en : Traits
+ru*:
+cs*:
+hu*:
+nl : Kenmerken
+
 :_chdiff_image_proc
 en : ~[processing~]
 ru : ~[обработка~]
@@ -5155,6 +5162,13 @@ ru*:
 cs*:
 hu*:
 nl : Plaatje moet in het JPEG of PNG formaat zijn, en moet kleiner zijn dan 1MiB. Plaatjes groter dan 256x300 worden automatisch verkleind. Het plaatje moet veilig zijn in een werkomgeving!
+
+:_chare_traits
+en : Traits
+ru*:
+cs*:
+hu*:
+nl : Kenmerken
 
 
 

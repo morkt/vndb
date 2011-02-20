@@ -47,6 +47,11 @@ sub page {
         return $_[0] > 0 ? sprintf '<img src="%s/ch/%02d/%d.jpg" />', $self->{url_static}, $_[0]%100, $_[0]
           : mt $_[0] < 0 ? '_chdiff_image_proc' : '_chdiff_image_none';
       }],
+      [ traits    => join => '<br />', split => sub {
+        map sprintf('%s<a href="/i%d">%s</a> (%s)', $_->{group}?qq|<b class="grayedout">$_->{groupname} / </b> |:'',
+            $_->{tid}, $_->{name}, mt("_spoil_$_->{spoil}")),
+          sort { ($a->{groupname}||$a->{name}) cmp ($b->{groupname}||$b->{name}) || $a->{name} cmp $b->{name} } @{$_[0]}
+      }],
     );
   }
 
@@ -115,6 +120,24 @@ sub page {
         td mt "_bloodt_$r->{bloodt}";
        end;
      }
+
+     # traits
+     # TODO: handle spoilers!
+     my %groups;
+     push @{$groups{ $_->{group}||$_->{tid} }}, $_ for(sort { $a->{name} cmp $b->{name} } @{$r->{traits}});
+     for my $g (sort { ($groups{$a}[0]{groupname}||$groups{$a}[0]{name}) cmp ($groups{$a}[0]{groupname}||$groups{$a}[0]{name}) } keys %groups) {
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td; a href => '/i'.($groups{$g}[0]{group}||$groups{$g}[0]{tid}), $groups{$g}[0]{groupname} || $groups{$g}[0]{name}; end;
+        td;
+         for (@{$groups{$g}}) {
+           txt ', ' if $_->{tid} != $groups{$g}[0]{tid};
+           a href => "/i$_->{tid}", $_->{name};
+         }
+        end;
+       end;
+     }
+
+     # description
      if($r->{desc}) {
        Tr;
         td class => 'chardesc', colspan => 2;
@@ -125,6 +148,7 @@ sub page {
         end;
        end;
      }
+
     end 'table';
 
    end;
@@ -139,7 +163,7 @@ sub page {
 sub edit {
   my($self, $id, $rev) = @_;
 
-  my $r = $id && $self->dbCharGet(id => $id, what => 'changes extended', $rev ? (rev => $rev) : ())->[0];
+  my $r = $id && $self->dbCharGet(id => $id, what => 'changes extended traits', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $id && !$r->{id};
   $rev = undef if !$r || $r->{cid} == $r->{latest};
 
@@ -149,6 +173,7 @@ sub edit {
   my %b4 = !$id ? () : (
     (map +($_ => $r->{$_}), qw|name original alias desc image ihid ilock s_bust s_waist s_hip height weight bloodt|),
     bday => $r->{b_month} ? sprintf('%02d-%02d', $r->{b_month}, $r->{b_day}) : '',
+    traits => join(' ', map sprintf('%d-%d', $_->{tid}, $_->{spoil}), @{$r->{traits}}),
   );
   my $frm;
 
@@ -167,6 +192,7 @@ sub edit {
       { post => 'height',        required  => 0, default => 0, template => 'int' },
       { post => 'weight',        required  => 0, default => 0, template => 'int' },
       { post => 'bloodt',        required  => 0, default => 'unknown', enum => $self->{blood_types} },
+      { post => 'traits',        required  => 0, default => '', regex => [ qr/^(?:[1-9]\d*-[0-2])(?: +[1-9]\d*-[0-2])*$/, 'Incorrect trait format.' ] },
       { post => 'editsum',       required  => 0, maxlength => 5000 },
       { post => 'ihid',          required  => 0 },
       { post => 'ilock',         required  => 0 },
@@ -177,12 +203,19 @@ sub edit {
     $frm->{image} = _uploadimage($self, $r, $frm);
 
     if(!$frm->{_err}) {
-      $frm->{ihid}  = $frm->{ihid} ?1:0;
-      $frm->{ilock} = $frm->{ilock}?1:0;
-      ($frm->{b_month}, $frm->{b_day}) = delete($frm->{bday}) =~ /^(\d{2})-(\d{2})$/ ? ($1, $2) : (0, 0);
+      # parse and normalize
+      my @traits = sort { $a->[0] <=> $b->[0] } map /^(\d+)-(\d+)$/&&[$1,$2], split / /, $frm->{traits};
+      $frm->{traits} = join(' ', map sprintf('%d-%d', @$_), @traits);
+      $frm->{ihid}   = $frm->{ihid} ?1:0;
+      $frm->{ilock}  = $frm->{ilock}?1:0;
 
+      # check for changes
       return $self->resRedirect("/c$id", 'post')
         if $id && !grep $frm->{$_} ne $b4{$_}, keys %b4;
+
+      # modify for dbCharRevisionInsert
+      ($frm->{b_month}, $frm->{b_day}) = delete($frm->{bday}) =~ /^(\d{2})-(\d{2})$/ ? ($1, $2) : (0, 0);
+      $frm->{traits} = \@traits;
 
       my $nrev = $self->dbItemEdit(c => $id ? $r->{cid} : undef, %$frm);
       return $self->resRedirect("/c$nrev->{iid}.$nrev->{rev}", 'post');
@@ -231,7 +264,11 @@ sub edit {
      input type => 'file', class => 'text', name => 'img', id => 'img';
      p mt('_chare_image_upload_msg');
     end;
-  }]]);
+  }]],
+
+  chare_traits => [ mt('_chare_traits'),
+    [ input => name => 'Traits (test)', short => 'traits' ],
+  ]);
   $self->htmlFooter;
 }
 

@@ -62,13 +62,18 @@ sub dbCharGet {
 
 
 # Updates the edit_* tables, used from dbItemEdit()
-# Arguments: { columns in chars_rev },
+# Arguments: { columns in chars_rev + traits },
 sub dbCharRevisionInsert {
   my($self, $o) = @_;
 
   my %set = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
     qw|name original alias desc image b_month b_day s_bust s_waist s_hip height weight bloodt|;
   $self->dbExec('UPDATE edit_char !H', \%set) if keys %set;
+
+  if($o->{traits}) {
+    $self->dbExec('DELETE FROM edit_char_traits');
+    $self->dbExec('INSERT INTO edit_char_traits (tid, spoil) VALUES (?,?)', $_->[0],$_->[1]) for (@{$o->{traits}});
+  }
 }
 
 
