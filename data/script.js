@@ -1254,7 +1254,7 @@ var tglSpoilers = [];
 
 function tglLoad() {
   for(var i=0; i<=3; i++)
-    tglSpoilers[i] = mt('_tagv_spoil'+i); // l10n /_tagv_spoil\d+/
+    tglSpoilers[i] = mt('_spoil_'+(i-1)); // l10n /_spoil_-?\d+/
 
   // tag dropdown search
   dsInit(byId('tagmod_tag'), '/xml/tags.xml?q=', function(item, tr) {

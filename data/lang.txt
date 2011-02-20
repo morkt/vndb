@@ -1554,6 +1554,37 @@ hu : Nincs engedélyed, ennek az oldalnak a szerkesztésére
 nl : Je bent niet toegestaan om wijzigingen aan te brengen
 
 
+# Spoiler levels
+
+:_spoil_-1
+en : neutral
+ru : нейтральный
+cs : neutrální
+hu : semleges
+nl : neutraal
+
+:_spoil_0
+en : no spoiler
+ru : без спойлеров
+cs : bez spoilerů
+hu : nem spoiler
+nl : geen spoiler
+
+:_spoil_1
+en : minor spoiler
+ru : лёгкий спойлер
+cs : menší spoilery
+hu : kisebb spoiler
+nl : geringe spoiler
+
+:_spoil_2
+en : major spoiler
+ru : жёсткий спойлер
+cs : všechny spoilery
+hu : nagyobb spoiler
+nl : grote spoiler
+
+
 
 
 #############################################################################
@@ -4514,27 +4545,6 @@ cs*:
 hu :
 nl :
 
-:_taglink_spoil0
-en : No spoiler
-ru : Без спойлера
-cs : Bez spoilerů
-hu : Nem spoiler
-nl : Geen spoiler
-
-:_taglink_spoil1
-en : Minor spoiler
-ru : Лёгкий спойлер
-cs : Menší spoilery
-hu : Kisebb spoiler
-nl : Geringe spoiler
-
-:_taglink_spoil2
-en : Major spoiler
-ru : Жёсткий спойлер
-cs : Všechny spoilery
-hu : Nagyobb spoiler
-nl : Grote spoiler
-
 
 # VN<->Tag voting (/v+/tagmod)
 
@@ -4661,34 +4671,6 @@ hu : Menj a [url,/g,cimke listára] ha szeretnél böngészni az összes rendelk
      Nem találod azt amelyiket keresed? [url,/g/new,Itt kérhetsz egy új címkét].
 nl : Zie de [url,/g,tag lijst] om te browsen door alle beschikbare tags.[br]
      Niet gevonden wat je zocht? [url,/g/new,Vraag een nieuwe tag aan].
-
-:_tagv_spoil0
-en : neutral
-ru : нейтральный
-cs : neutrální
-hu : semleges
-nl : neutraal
-
-:_tagv_spoil1
-en : no spoiler
-ru : без спойлеров
-cs : bez spoilerů
-hu : nem spoiler
-nl : geen spoiler
-
-:_tagv_spoil2
-en : minor spoiler
-ru : лёгкий спойлер
-cs : menší spoilery
-hu : kisebb spoiler
-nl : geringe spoiler
-
-:_tagv_spoil3
-en : major spoiler
-ru : жёсткий спойлер
-cs : všechny spoilery
-hu : nagyobb spoiler
-nl : grote spoiler
 
 :_tagv_notfound
 en : Item not found!

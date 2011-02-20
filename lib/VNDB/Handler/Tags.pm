@@ -447,7 +447,7 @@ sub taglinks {
         a href => $url->(t=>$l->{tag}), class => 'setfil', '> ' if !$f->{t};
         a href => "/g$l->{tag}", $l->{name};
        end;
-       td class => 'tc5', !defined $l->{spoiler} ? ' ' : mt "_taglink_spoil$l->{spoiler}";
+       td class => 'tc5', !defined $l->{spoiler} ? ' ' : mt "_spoil_$l->{spoiler}";
        td class => 'tc6';
         a href => $url->(v=>$l->{vid}), class => 'setfil', '> ' if !$f->{v};
         a href => "/v$l->{vid}", shorten $l->{title}, 50;
