@@ -19,7 +19,7 @@ sub page {
 
   my $r = $self->dbCharGet(
     id => $id,
-    what => 'extended'.($rev ? ' changes' : ''),
+    what => 'extended traits'.($rev ? ' changes' : ''),
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return $self->resNotFound if !$r->{id};
@@ -29,7 +29,7 @@ sub page {
   return if $self->htmlHiddenMessage('c', $r);
 
   if($rev) {
-    my $prev = $rev && $rev > 1 && $self->dbCharGet(id => $id, rev => $rev-1, what => 'changes extended')->[0];
+    my $prev = $rev && $rev > 1 && $self->dbCharGet(id => $id, rev => $rev-1, what => 'changes extended traits')->[0];
     $self->htmlRevision('c', $prev, $r,
       [ name      => diff => 1 ],
       [ original  => diff => 1 ],

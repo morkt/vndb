@@ -11,8 +11,10 @@ CREATE TABLE traits (
   meta boolean NOT NULL DEFAULT false,
   added timestamptz NOT NULL DEFAULT NOW(),
   state smallint NOT NULL DEFAULT 0,
-  addedby integer NOT NULL DEFAULT 0 REFERENCES users (id)
+  addedby integer NOT NULL DEFAULT 0 REFERENCES users (id),
+  "group" integer
 );
+ALTER TABLE traits ADD FOREIGN KEY ("group") REFERENCES traits (id);
 
 CREATE TABLE traits_parents (
   trait integer NOT NULL REFERENCES traits (id),
@@ -97,21 +99,22 @@ CREATE TRIGGER chars_rev_image_notify     AFTER  INSERT OR UPDATE ON chars_rev  
 
 /* Debugging data *-/
 
+
 -- some traits, based on Echo's draft
-INSERT INTO traits (name, meta, state, addedby) VALUES
-  ('Hair', true, 2, 2),
-  ('Hair Color', true, 2, 2),
-  ('Auburn', false, 2, 2),
-  ('Black', false, 2, 2),
-  ('Blond', false, 2, 2),
-  ('Brown', false, 2, 2),
-  ('Hairstyle', true, 2, 2),
-  ('Bun', false, 2, 2),
-  ('Odango', false, 2, 2),
-  ('Ponytail', false, 2, 2),
-  ('Twin Tails', false, 2, 2),
-  ('Short', false, 2, 2),
-  ('Straight', false, 2, 2);
+INSERT INTO traits (name, meta, state, addedby, "group") VALUES
+  ('Hair', true, 2, 2, NULL),
+  ('Hair Color', true, 2, 2, 1),
+  ('Auburn', false, 2, 2, 1),
+  ('Black', false, 2, 2, 1),
+  ('Blond', false, 2, 2, 1),
+  ('Brown', false, 2, 2, 1),
+  ('Hairstyle', true, 2, 2, 1),
+  ('Bun', false, 2, 2, 1),
+  ('Odango', false, 2, 2, 1),
+  ('Ponytail', false, 2, 2, 1),
+  ('Twin Tails', false, 2, 2, 1),
+  ('Short', false, 2, 2, 1),
+  ('Straight', false, 2, 2, 1);
 INSERT INTO traits_parents (trait, parent) VALUES
   (2, 1),
   (3, 2),
@@ -138,6 +141,7 @@ SELECT edit_char_commit();
 SELECT edit_char_init(null);
 UPDATE edit_revision SET comments = '2nd test entry', requester = 2, ip = '0.0.0.0';
 UPDATE edit_char SET name = 'Saya', original = '沙耶', "desc" = 'There is more than meets the eye!', alias = 'Cute monster', height = 140, weight = 52, s_bust = 41, s_waist = 38, s_hip = 40, b_month = 3, b_day = 15, bloodt = 'a';
+INSERT INTO edit_char_traits VALUES (4, 0), (12, 0);
 SELECT edit_char_commit();
 
 -- */

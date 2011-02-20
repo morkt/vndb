@@ -81,7 +81,7 @@ sub traitedit {
   if($act && $act eq 'add') {
     $par = $self->dbTraitGet(id => $trait)->[0];
     return $self->resNotFound if !$par;
-    $frm->{parents} = $par->{name};
+    $frm->{parents} = $par->{id};
     $trait = undef;
   }
 
@@ -101,10 +101,12 @@ sub traitedit {
       { post => 'parents',     required => !$self->authCan('tagmod'), default => '', regex => [ qr/^(?:$|(?:[1-9]\d*)(?: +[1-9]\d*)*)$/, 'Parent traits must be a space-separated list of trait IDs' ] },
     );
     my @parents = split /[\t ]+/, $frm->{parents};
+    my $group = undef;
     if(!$frm->{_err}) {
       for(@parents) {
         my $c = $self->dbTraitGet(id => $_);
         push @{$frm->{_err}}, [ 'parents', 'func', [ 0, mt '_tagedit_err_notfound', $_ ]] if !@$c;
+        $group //= $c->[0]{group}||$c->[0]{id} if @$c;
       }
     }
 
@@ -117,11 +119,13 @@ sub traitedit {
         meta => $frm->{meta}?1:0,
         alias => $frm->{alias},
         parents => \@parents,
+        group => $group,
       );
       if(!$trait) {
         $trait = $self->dbTraitAdd(%opts);
       } else {
         $self->dbTraitEdit($trait, %opts, upddate => $frm->{state} == 2 && $t->{state} != 2) if $trait;
+        _set_childs_group($self, $trait, $group||$trait) if ($group||0) != ($t->{group});
       }
       $self->resRedirect("/i$trait", 'post');
       return;
@@ -165,6 +169,22 @@ sub traitedit {
   ]);
 
   $self->htmlFooter;
+}
+
+# recursively edit all child traits and set the group field
+sub _set_childs_group {
+  my($self, $trait, $group) = @_;
+  my %done;
+
+  my $e;
+  $e = sub {
+    my $l = shift;
+    for (@$l) {
+      $self->dbTraitEdit($_->{id}, group => $group) if !$done{$_->{id}}++;
+      $e->($_->{sub}) if $_->{sub};
+    }
+  };
+  $e->($self->dbTraitTree($trait, 25));
 }
 
 
@@ -222,6 +242,9 @@ sub traitlist {
         Tr $n % 2 ? (class => 'odd') : ();
          td class => 'tc1', $self->{l10n}->age($l->{added});
          td class => 'tc3';
+          if($l->{group}) {
+            b class => 'grayedout', $l->{groupname}.' / ';
+          }
           a href => "/i$l->{id}", $l->{name};
           if($f->{t} == -1) {
             b class => 'grayedout', ' '.mt '_traitb_note_awaiting' if $l->{state} == 0;
@@ -264,6 +287,7 @@ sub traitindex {
         li;
          txt $self->{l10n}->age($_->{added});
          txt ' ';
+         b class => 'grayedout', $_->{groupname}.' / ' if $_->{group};
          a href => "/i$_->{id}", $_->{name};
         end;
       }
@@ -286,6 +310,7 @@ sub traitindex {
         li;
          txt $self->{l10n}->age($_->{added});
          txt ' ';
+         b class => 'grayedout', $_->{groupname}.' / ' if $_->{group};
          a href => "/i$_->{id}", $_->{name};
         end;
       }

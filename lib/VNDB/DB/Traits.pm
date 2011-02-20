@@ -38,11 +38,12 @@ sub dbTraitGet {
   );
 
   my @select = (
-    qw|t.id t.meta t.name t.description t.state t.alias|,
-    q|extract('epoch' from t.added) as added|,
+    qw|t.id t.meta t.name t.description t.state t.alias t."group" |,
+    'tg.name AS groupname', q|extract('epoch' from t.added) as added|,
     $o{what} =~ /addedby/ ? ('t.addedby', 'u.username') : (),
   );
   my @join = $o{what} =~ /addedby/ ? 'JOIN users u ON u.id = t.addedby' : ();
+  push @join, 'LEFT JOIN traits tg ON tg.id = t."group"';
 
   my $order = sprintf {
     id    => 't.id %s',
@@ -105,7 +106,7 @@ sub dbTraitEdit {
 
   $self->dbExec('UPDATE traits !H WHERE id = ?', {
     $o{upddate} ? ('added = NOW()' => 1) : (),
-    map exists($o{$_}) ? ("$_ = ?" => $o{$_}) : (), qw|name meta description state alias|
+    map exists($o{$_}) ? ("\"$_\" = ?" => $o{$_}) : (), qw|name meta description state alias group|
   }, $id);
   if($o{parents}) {
     $self->dbExec('DELETE FROM traits_parents WHERE trait = ?', $id);
@@ -118,8 +119,8 @@ sub dbTraitEdit {
 # returns the id of the new trait
 sub dbTraitAdd {
   my($self, %o) = @_;
-  my $id = $self->dbRow('INSERT INTO traits (name, meta, description, state, alias, addedby) VALUES (!l, ?) RETURNING id',
-    [ map $o{$_}, qw|name meta description state alias| ], $o{addedby}||$self->authInfo->{id}
+  my $id = $self->dbRow('INSERT INTO traits (name, meta, description, state, alias, "group", addedby) VALUES (!l, ?) RETURNING id',
+    [ map $o{$_}, qw|name meta description state alias group| ], $o{addedby}||$self->authInfo->{id}
   )->{id};
   $self->dbExec('INSERT INTO traits_parents (trait, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
   return $id;

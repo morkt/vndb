@@ -9,7 +9,7 @@ our @EXPORT = qw|dbCharGet dbCharRevisionInsert dbCharImageId|;
 
 
 # options: id rev what results page
-# what: extended changes
+# what: extended traits changes
 sub dbCharGet {
   my $self = shift;
   my %o = (
@@ -25,9 +25,9 @@ sub dbCharGet {
     $o{rev} ? ( 'h.rev = ?' => $o{rev} ) : (),
   );
 
-  my @select = qw|c.id cr.name cr.original|;
+  my @select = (qw|c.id cr.name cr.original|, 'cr.id AS cid');
   push @select, qw|c.hidden c.locked cr.alias cr.desc cr.image cr.b_month cr.b_day cr.s_bust cr.s_waist cr.s_hip cr.height cr.weight cr.bloodt| if $o{what} =~ /extended/;
-  push @select, qw|h.requester h.comments c.latest u.username h.rev h.ihid h.ilock|, "extract('epoch' from h.added) as added", 'cr.id AS cid' if $o{what} =~ /changes/;
+  push @select, qw|h.requester h.comments c.latest u.username h.rev h.ihid h.ilock|, "extract('epoch' from h.added) as added" if $o{what} =~ /changes/;
 
   my @join;
   push @join, $o{rev} ? 'JOIN chars c ON c.id = cr.cid' : 'JOIN chars c ON cr.id = c.latest';
@@ -39,7 +39,23 @@ sub dbCharGet {
       FROM chars_rev cr
       !s
       !W|,
-    join(', ', @select), join(' ', @join), \%where);
+    join(', ', @select), join(' ', @join), \%where
+  );
+
+  if(@$r && $o{what} =~ /traits/) {
+    my %r = map {
+      $_->{traits} = [];
+      ($_->{cid}, $_->{traits})
+    } @$r;
+
+    push @{$r{ delete $_->{cid} }}, $_ for (@{$self->dbAll(q|
+      SELECT ct.cid, ct.tid, ct.spoil, t.name, t."group", tg.name AS groupname
+        FROM chars_traits ct
+        JOIN traits t ON t.id = ct.tid
+        LEFT JOIN traits tg ON tg.id = t."group"
+       WHERE cid IN(!l)|, [ keys %r ]
+    )});
+  }
 
   return wantarray ? ($r, $np) : $r;
 }
