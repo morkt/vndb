@@ -76,27 +76,23 @@ sub page {
 
     # info table
     table;
-     my $i = 0;
-     Tr ++$i % 2 ? (class => 'odd') : ();
-      td class => 'key', mt '_charp_name';
-      td $r->{name};
+     Tr;
+      td colspan => 2;
+       b $r->{name};
+       b class => 'grayedout', style => 'margin-left: 10px', $r->{original} ;
+      end;
      end;
-     if($r->{original}) {
-       Tr ++$i % 2 ? (class => 'odd') : ();
-        td mt '_charp_original';
-        td $r->{original};
-       end;
-     }
+     my $i = 0;
      if($r->{alias}) {
        $r->{alias} =~ s/\n/, /g;
        Tr ++$i % 2 ? (class => 'odd') : ();
-        td mt '_charp_alias';
+        td class => 'key', mt '_charp_alias';
         td $r->{alias};
        end;
      }
      if($r->{height} || $r->{s_bust} || $r->{s_waist} || $r->{s_hip}) {
        Tr ++$i % 2 ? (class => 'odd') : ();
-        td mt '_charp_meas';
+        td class => 'key', mt '_charp_meas';
         td join ', ',
           $r->{s_bust} || $r->{s_waist} || $r->{s_hip} ? mt('_charp_meas_bwh', $r->{s_bust}||'??', $r->{s_waist}||'??', $r->{s_hip}||'??') : (),
           $r->{height} ? mt('_charp_meas_h', $r->{height}) : ();
@@ -104,19 +100,19 @@ sub page {
      }
      if($r->{weight}) {
        Tr ++$i % 2 ? (class => 'odd') : ();
-        td mt '_charp_weight';
+        td class => 'key', mt '_charp_weight';
         td "$r->{weight} kg";
        end;
      }
      if($r->{b_month} && $r->{b_day}) {
        Tr ++$i % 2 ? (class => 'odd') : ();
-        td mt '_charp_bday';
+        td class => 'key', mt '_charp_bday';
         td sprintf '%02d-%02d', $r->{b_month}, $r->{b_day};
        end;
      }
      if($r->{bloodt} ne 'unknown') {
        Tr ++$i % 2 ? (class => 'odd') : ();
-        td mt '_charp_bloodt';
+        td class => 'key', mt '_charp_bloodt';
         td mt "_bloodt_$r->{bloodt}";
        end;
      }
@@ -127,7 +123,7 @@ sub page {
      push @{$groups{ $_->{group}||$_->{tid} }}, $_ for(sort { $a->{name} cmp $b->{name} } @{$r->{traits}});
      for my $g (sort { ($groups{$a}[0]{groupname}||$groups{$a}[0]{name}) cmp ($groups{$a}[0]{groupname}||$groups{$a}[0]{name}) } keys %groups) {
        Tr ++$i % 2 ? (class => 'odd') : ();
-        td; a href => '/i'.($groups{$g}[0]{group}||$groups{$g}[0]{tid}), $groups{$g}[0]{groupname} || $groups{$g}[0]{name}; end;
+        td class => 'key'; a href => '/i'.($groups{$g}[0]{group}||$groups{$g}[0]{tid}), $groups{$g}[0]{groupname} || $groups{$g}[0]{name}; end;
         td;
          for (@{$groups{$g}}) {
            txt ', ' if $_->{tid} != $groups{$g}[0]{tid};

@@ -4913,20 +4913,6 @@ cs : ~[obrázek se zpracovává, prosíme, vraťte se za několik minut~]
 hu : ~[a kép feldolgozás alatt van, gyere vissza pár perc múlva~]
 nl : ~[plaatje wordt verwerkt, kom a.u.b. terug in een paar minuten~]
 
-:_charp_name
-en : Name
-ru*:
-cs*:
-hu*:
-nl : Naam
-
-:_charp_original
-en : Original name
-ru*:
-cs*:
-hu*:
-nl : Werkelijke naam
-
 :_charp_alias
 en : Aliases
 ru*:
