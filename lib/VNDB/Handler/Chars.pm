@@ -35,6 +35,7 @@ sub page {
       [ original  => diff => 1 ],
       [ alias     => diff => qr/[ ,\n\.]/ ],
       [ desc      => diff => qr/[ ,\n\.]/ ],
+      [ gender    => serialize => sub { mt "_gender_$_[0]" } ],
       [ b_month   => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ b_day     => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ s_bust    => serialize => sub { $_[0]||mt '_revision_empty' } ],
@@ -79,7 +80,10 @@ sub page {
      Tr;
       td colspan => 2;
        b $r->{name};
-       b class => 'grayedout', style => 'margin-left: 10px', $r->{original} ;
+       b class => 'grayedout', style => 'margin-left: 10px', $r->{original} if $r->{original};
+       use utf8;
+       b style => 'margin-left: 10px; font-size: 14px', {qw|m ♂ f ♀ b ♂♀|}->{$r->{gender}} if $r->{gender} ne 'unknown';
+       span style => 'margin-left: 10px', mt "_bloodt_$r->{bloodt}" if $r->{bloodt} ne 'unknown';
       end;
      end;
      my $i = 0;
@@ -108,12 +112,6 @@ sub page {
        Tr ++$i % 2 ? (class => 'odd') : ();
         td class => 'key', mt '_charp_bday';
         td sprintf '%02d-%02d', $r->{b_month}, $r->{b_day};
-       end;
-     }
-     if($r->{bloodt} ne 'unknown') {
-       Tr ++$i % 2 ? (class => 'odd') : ();
-        td class => 'key', mt '_charp_bloodt';
-        td mt "_bloodt_$r->{bloodt}";
        end;
      }
 
@@ -167,7 +165,7 @@ sub edit {
     || $id && ($r->{locked} && !$self->authCan('lock') || $r->{hidden} && !$self->authCan('del'));
 
   my %b4 = !$id ? () : (
-    (map +($_ => $r->{$_}), qw|name original alias desc image ihid ilock s_bust s_waist s_hip height weight bloodt|),
+    (map +($_ => $r->{$_}), qw|name original alias desc image ihid ilock s_bust s_waist s_hip height weight bloodt gender|),
     bday => $r->{b_month} ? sprintf('%02d-%02d', $r->{b_month}, $r->{b_day}) : '',
     traits => join(' ', map sprintf('%d-%d', $_->{tid}, $_->{spoil}), @{$r->{traits}}),
   );
@@ -180,6 +178,7 @@ sub edit {
       { post => 'original',      required  => 0, maxlength => 200,  default => '' },
       { post => 'alias',         required  => 0, maxlength => 500,  default => '' },
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
+      { post => 'gender',        required  => 0, default => 'unknown', enum => $self->{genders} },
       { post => 'image',         required  => 0, default => 0,  template => 'int' },
       { post => 'bday',          required  => 0, default => '', regex => [ qr/^\d{2}-\d{2}$/, mt('_chare_form_bday_err') ] },
       { post => 's_bust',        required  => 0, default => 0, template => 'int' },
@@ -237,6 +236,8 @@ sub edit {
     [ text   => name => mt('_chare_form_alias'), short => 'alias', rows => 3 ],
     [ static => content => mt('_chare_form_alias_note') ],
     [ text   => name => mt('_chare_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
+    [ select => name => mt('_chare_form_gender'),short => 'gender', options => [
+       map [ $_, mt("_gender_$_") ], @{$self->{genders}} ] ],
     [ input  => name => mt('_chare_form_bday'),  short => 'bday',   width => 100, post => ' '.mt('_chare_form_bday_fmt')  ],
     [ input  => name => mt('_chare_form_bust'),  short => 's_bust', width => 50, post => ' cm' ],
     [ input  => name => mt('_chare_form_waist'), short => 's_waist',width => 50, post => ' cm'  ],

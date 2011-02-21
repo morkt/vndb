@@ -32,6 +32,7 @@ ALTER TABLE tags RENAME c_vns TO c_items;
 
 CREATE TYPE char_role AS ENUM ('main', 'primary', 'side', 'appears');
 CREATE TYPE blood_type AS ENUM ('unknown', 'a', 'b', 'ab', 'o', 'other');
+CREATE TYPE gender AS ENUM ('unknown', 'm', 'f', 'b');
 
 CREATE TABLE chars (
   id SERIAL PRIMARY KEY,
@@ -56,6 +57,7 @@ CREATE TABLE chars_rev (
   height     smallint NOT NULL DEFAULT 0,
   weight     smallint NOT NULL DEFAULT 0,
   bloodt     blood_type NOT NULL DEFAULT 'unknown',
+  gender     gender NOT NULL DEFAULT 'unknown',
   main       integer  REFERENCES chars (id),
   main_spoil boolean  NOT NULL DEFAULT false
 );
@@ -116,15 +118,32 @@ INSERT INTO traits (name, meta, state, addedby, "group") VALUES
   ('Hair Color', true, 2, 2, 1),
   ('Auburn', false, 2, 2, 1),
   ('Black', false, 2, 2, 1),
-  ('Blond', false, 2, 2, 1),
+  ('Blond', false, 2, 2, 1), -- 5
   ('Brown', false, 2, 2, 1),
   ('Hairstyle', true, 2, 2, 1),
   ('Bun', false, 2, 2, 1),
   ('Odango', false, 2, 2, 1),
-  ('Ponytail', false, 2, 2, 1),
+  ('Ponytail', false, 2, 2, 1), -- 10
   ('Twin Tails', false, 2, 2, 1),
   ('Short', false, 2, 2, 1),
-  ('Straight', false, 2, 2, 1);
+  ('Straight', false, 2, 2, 1),
+  ('Eyes', true, 2, 2, NULL),
+  ('Color', true, 2, 2, 14), -- 15
+  ('Amber', false, 2, 2, 14),
+  ('Black', false, 2, 2, 14),
+  ('Red', false, 2, 2, 14),
+  ('Body', true, 2, 2, NULL),
+  ('Apparent age', true, 2, 2, 19), --20
+  ('Child', false, 2, 2, 19),
+  ('Teen', false, 2, 2, 19),
+  ('Young-Adult', false, 2, 2, 19),
+  ('Adult', false, 2, 2, 19),
+  ('Old', false, 2, 2, 19), -- 25
+  ('Body Type', true, 2, 2, 19),
+  ('Slim', false, 2, 2, 19),
+  ('Muscular', false, 2, 2, 19),
+  ('Overweight', false, 2, 2, 19),
+  ('Huge', false, 2, 2, 19); -- 30
 INSERT INTO traits_parents (trait, parent) VALUES
   (2, 1),
   (3, 2),
@@ -138,7 +157,22 @@ INSERT INTO traits_parents (trait, parent) VALUES
   (10, 7),
   (11, 10),
   (12, 7),
-  (13, 7);
+  (13, 7),
+  (15, 14),
+  (16, 15),
+  (17, 15),
+  (18, 15),
+  (20, 19),
+  (21, 20),
+  (22, 20),
+  (23, 20),
+  (24, 20),
+  (25, 20),
+  (26, 19),
+  (27, 26),
+  (28, 26),
+  (29, 26),
+  (30, 26);
 
 
 -- phorni!
@@ -151,7 +185,7 @@ SELECT edit_char_commit();
 SELECT edit_char_init(null);
 UPDATE edit_revision SET comments = '2nd test entry', requester = 2, ip = '0.0.0.0';
 UPDATE edit_char SET name = 'Saya', original = '沙耶', "desc" = 'There is more than meets the eye!', alias = 'Cute monster', height = 140, weight = 52, s_bust = 41, s_waist = 38, s_hip = 40, b_month = 3, b_day = 15, bloodt = 'a';
-INSERT INTO edit_char_traits VALUES (4, 0), (12, 0);
+INSERT INTO edit_char_traits VALUES (4, 0), (12, 2), (22, 0), (27, 0), (18, 1);
 SELECT edit_char_commit();
 
 SELECT traits_chars_calc();

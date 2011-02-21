@@ -107,6 +107,7 @@ our %S = (%S,
   rlist_status    => [ 0..4 ], # 2 = hardcoded 'OK'
   vnlist_status   => [ 0..4 ],
   blood_types     => [qw| unknown a b ab o other |],
+  genders         => [qw| unknown m f b |],
   atom_feeds => { # num_entries, title, id
     announcements => [ 10, 'VNDB Site Announcements', '/t/an' ],
     changes       => [ 25, 'VNDB Recent Changes', '/hist' ],

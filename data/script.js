@@ -1763,11 +1763,13 @@ function ctrLoad() {
   var v = {}; // tag id -> spoiler lookup table
   var q = []; // list of id=X parameters
   for(var i=0; i<l.length; i++) {
-    var m = l[i].split(/-/);
-    v[m[0]] = m[1];
-    q[i] = 'id='+m[0];
+    if(l[i]) {
+      var m = l[i].split(/-/);
+      v[m[0]] = m[1];
+      q[i] = 'id='+m[0];
+    }
   }
-  if(l.length > 0)
+  if(q.length > 0)
     ajax('/xml/traits.xml?'+q.join(';'), function (ht) {
       var t = ht.responseXML.getElementsByTagName('item');
       for(var i=0; i<t.length; i++)

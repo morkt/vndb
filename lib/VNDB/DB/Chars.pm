@@ -32,7 +32,7 @@ sub dbCharGet {
   );
 
   my @select = (qw|c.id cr.name cr.original|, 'cr.id AS cid');
-  push @select, qw|c.hidden c.locked cr.alias cr.desc cr.image cr.b_month cr.b_day cr.s_bust cr.s_waist cr.s_hip cr.height cr.weight cr.bloodt| if $o{what} =~ /extended/;
+  push @select, qw|c.hidden c.locked cr.alias cr.desc cr.image cr.b_month cr.b_day cr.s_bust cr.s_waist cr.s_hip cr.height cr.weight cr.bloodt cr.gender| if $o{what} =~ /extended/;
   push @select, qw|h.requester h.comments c.latest u.username h.rev h.ihid h.ilock|, "extract('epoch' from h.added) as added" if $o{what} =~ /changes/;
 
   my @join;
@@ -73,7 +73,7 @@ sub dbCharRevisionInsert {
   my($self, $o) = @_;
 
   my %set = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
-    qw|name original alias desc image b_month b_day s_bust s_waist s_hip height weight bloodt|;
+    qw|name original alias desc image b_month b_day s_bust s_waist s_hip height weight bloodt gender|;
   $self->dbExec('UPDATE edit_char !H', \%set) if keys %set;
 
   if($o->{traits}) {

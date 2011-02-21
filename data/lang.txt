@@ -1206,6 +1206,37 @@ hu*:
 nl : Anders/fictief
 
 
+# Genders
+
+:_gender_unknown
+en : Unknown or N/A
+ru*:
+cs*:
+hu*:
+nl : Onbekend of n.v.t.
+
+:_gender_m
+en : Male
+ru*:
+cs*:
+hu*:
+nl : Man
+
+:_gender_f
+en : Female
+ru*:
+cs*:
+hu*:
+nl : Vrouw
+
+:_gender_b
+en : Both
+ru*:
+cs*:
+hu*:
+nl : Beide
+
+
 
 
 #############################################################################
@@ -4812,6 +4843,13 @@ cs*:
 hu*:
 nl : Omschrijving
 
+:_revfield_c_gender
+en : Gender
+ru*:
+cs*:
+hu*:
+nl : Geslacht
+
 :_revfield_c_b_month
 en : Birthday - month
 ru*:
@@ -4956,13 +4994,6 @@ cs*:
 hu*:
 nl : Verjaardag
 
-:_charp_bloodt
-en : Blood type
-ru*:
-cs*:
-hu*:
-nl : Bloedgroep
-
 :_charp_description
 en : Description
 ru*:
@@ -5036,6 +5067,13 @@ ru : Описание
 cs : Popis
 hu : Leírás
 nl : Omschrijving
+
+:_chare_form_gender
+en : Gender
+ru*:
+cs*:
+hu*:
+nl : Geslacht
 
 :_chare_form_bday
 en : Birthday
