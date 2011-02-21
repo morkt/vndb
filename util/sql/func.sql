@@ -127,10 +127,44 @@ BEGIN
   -- recreate index
   CREATE INDEX tags_vn_inherit_tag_vid ON tags_vn_inherit (tag, vid);
   -- and update the VN count in the tags table
-  UPDATE tags SET c_vns = (SELECT COUNT(*) FROM tags_vn_inherit WHERE tag = id);
+  UPDATE tags SET c_items = (SELECT COUNT(*) FROM tags_vn_inherit WHERE tag = id);
   RETURN;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+-- recalculate traits_chars
+CREATE OR REPLACE FUNCTION traits_chars_calc() RETURNS void AS $$
+BEGIN
+  TRUNCATE traits_chars;
+  INSERT INTO traits_chars (tid, cid, spoil)
+    -- all char<->trait links of the latest revisions, including chars inherited from child traits
+    -- (also includes meta traits, because they could have a normal trait as parent)
+    WITH RECURSIVE traits_chars_all(lvl, tid, cid, spoiler, meta) AS (
+        SELECT 15, tid, c.id, spoil, false
+        FROM chars_traits ct
+        JOIN chars c ON c.latest = ct.cid
+       WHERE NOT c.hidden
+      UNION ALL
+        SELECT lvl-1, tp.parent, tc.cid, tc.spoiler, t.meta
+        FROM traits_chars_all tc
+        JOIN traits_parents tp ON tp.trait = tc.tid
+        JOIN traits t ON t.id = tp.parent
+        WHERE t.state = 2
+          AND tc.lvl > 0
+    )
+    -- now grouped by (tid, cid) and with meta traits filtered out
+    SELECT tid, cid, (CASE WHEN AVG(spoiler) > 1.3 THEN 2 WHEN AVG(spoiler) > 0.7 THEN 1 ELSE 0 END)::smallint AS spoiler
+    FROM traits_chars_all
+    WHERE NOT meta
+    GROUP BY tid, cid;
+  -- and update the VN count in the tags table
+  UPDATE traits SET c_items = (SELECT COUNT(*) FROM traits_chars WHERE tid = id);
+  RETURN;
+END;
+$$ LANGUAGE plpgsql;
+
 
 
 

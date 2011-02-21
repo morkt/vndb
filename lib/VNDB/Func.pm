@@ -147,7 +147,7 @@ sub childtags {
     for my $p (sort { @{$b->{'sub'}} <=> @{$a->{'sub'}} } @{$t->{childs}}) {
       li;
        a href => "/$type$p->{id}", $p->{name};
-       b class => 'grayedout', " ($p->{c_vns})" if $type eq 'g' && $p->{c_vns};
+       b class => 'grayedout', " ($p->{c_items})" if $p->{c_items};
        end, next if !@{$p->{'sub'}};
        ul;
         for (0..$#{$p->{'sub'}}) {
@@ -155,7 +155,7 @@ sub childtags {
           li;
            txt '> ';
            a href => "/$type$p->{sub}[$_]{id}", $p->{'sub'}[$_]{name};
-           b class => 'grayedout', " ($p->{sub}[$_]{c_vns})" if $type eq 'g' && $p->{'sub'}[$_]{c_vns};
+           b class => 'grayedout', " ($p->{sub}[$_]{c_items})" if $p->{'sub'}[$_]{c_items};
           end;
         }
         if(@{$p->{'sub'}} > 6) {

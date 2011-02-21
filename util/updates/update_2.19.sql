@@ -12,7 +12,8 @@ CREATE TABLE traits (
   added timestamptz NOT NULL DEFAULT NOW(),
   state smallint NOT NULL DEFAULT 0,
   addedby integer NOT NULL DEFAULT 0 REFERENCES users (id),
-  "group" integer
+  "group" integer,
+  c_items integer NOT NULL DEFAULT 0
 );
 ALTER TABLE traits ADD FOREIGN KEY ("group") REFERENCES traits (id);
 
@@ -24,6 +25,7 @@ CREATE TABLE traits_parents (
 
 CREATE TRIGGER insert_notify              AFTER  INSERT           ON traits        FOR EACH STATEMENT EXECUTE PROCEDURE insert_notify();
 
+ALTER TABLE tags RENAME c_vns TO c_items;
 
 
 -- character database -> chars
@@ -73,6 +75,14 @@ CREATE TABLE chars_vns (
   spoil boolean NOT NULL DEFAULT false,
   role char_role NOT NULL DEFAULT 'main',
   PRIMARY KEY(cid, vid, rid)
+);
+
+-- cache table
+CREATE TABLE traits_chars (
+  cid integer NOT NULL REFERENCES chars (id),
+  tid integer NOT NULL REFERENCES traits (id),
+  spoil smallint NOT NULL DEFAULT 0,
+  PRIMARY KEY(cid, tid)
 );
 
 CREATE SEQUENCE charimg_seq;
@@ -143,6 +153,8 @@ UPDATE edit_revision SET comments = '2nd test entry', requester = 2, ip = '0.0.0
 UPDATE edit_char SET name = 'Saya', original = '沙耶', "desc" = 'There is more than meets the eye!', alias = 'Cute monster', height = 140, weight = 52, s_bust = 41, s_waist = 38, s_hip = 40, b_month = 3, b_day = 15, bloodt = 'a';
 INSERT INTO edit_char_traits VALUES (4, 0), (12, 0);
 SELECT edit_char_commit();
+
+SELECT traits_chars_calc();
 
 -- */
 

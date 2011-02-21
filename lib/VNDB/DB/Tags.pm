@@ -5,12 +5,12 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbTagGet dbTagTree dbTagEdit dbTagAdd dbTagMerge dbTagLinks dbTagLinkEdit dbTagStats|;
+our @EXPORT = qw|dbTagGet dbTTTree dbTagEdit dbTagAdd dbTagMerge dbTagLinks dbTagLinkEdit dbTagStats|;
 
 
 # %options->{ id noid name search state meta page results what sort reverse  }
 # what: parents childs(n) aliases addedby
-# sort: id name added vns
+# sort: id name added items
 sub dbTagGet {
   my $self = shift;
   my %o = (
@@ -39,7 +39,7 @@ sub dbTagGet {
       't.meta = ?' => $o{meta}?1:0 ) : (),
   );
   my @select = (
-    qw|t.id t.meta t.name t.description t.state t.cat t.c_vns|,
+    qw|t.id t.meta t.name t.description t.state t.cat t.c_items|,
     q|extract('epoch' from t.added) as added|,
     $o{what} =~ /addedby/ ? ('t.addedby', 'u.username') : (),
   );
@@ -49,7 +49,7 @@ sub dbTagGet {
     id    => 't.id %s',
     name  => 't.name %s',
     added => 't.added %s',
-    vns   => 't.c_vns %s',
+    items => 't.c_items %s',
   }->{ $o{sort}||'id' }, $o{reverse} ? 'DESC' : 'ASC';
 
   my($r, $np) = $self->dbPage(\%o, q|
@@ -73,40 +73,41 @@ sub dbTagGet {
   }
 
   if($o{what} =~ /parents\((\d+)\)/) {
-    $_->{parents} = $self->dbTagTree($_->{id}, $1, 1) for(@$r);
+    $_->{parents} = $self->dbTTTree(tag => $_->{id}, $1, 1) for(@$r);
   }
 
   if($o{what} =~ /childs\((\d+)\)/) {
-    $_->{childs} = $self->dbTagTree($_->{id}, $1) for(@$r);
+    $_->{childs} = $self->dbTTTree(tag => $_->{id}, $1) for(@$r);
   }
 
   return wantarray ? ($r, $np) : $r;
 }
 
 
-# Walks the tag tree
+# Walks the tag/trait tree
+#  type = tag | trait
 #  id = tag to start with, or 0 to start with top-level tags
 #  lvl = max. recursion level
 #  back = false for parent->child, true for child->parent
-# Returns: [ { id, name, c_vns, sub => [ { id, name, c_vns, sub => [..] }, .. ] }, .. ]
-sub dbTagTree {
-  my($self, $id, $lvl, $back) = @_;
+# Returns: [ { id, name, c_items, sub => [ { id, name, c_items, sub => [..] }, .. ] }, .. ]
+sub dbTTTree {
+  my($self, $type, $id, $lvl, $back) = @_;
   $lvl ||= 15;
-  my $r = $self->dbAll(q|
-    WITH RECURSIVE tagtree(lvl, id, parent, name, c_vns) AS (
-        SELECT ?::integer, id, 0, name, c_vns
-        FROM tags
+  my $r = $self->dbAll(qq|
+    WITH RECURSIVE thetree(lvl, id, parent, name, c_items) AS (
+        SELECT ?::integer, id, 0, name, c_items
+        FROM ${type}s
         !W
       UNION ALL
-        SELECT tt.lvl-1, t.id, tt.id, t.name, t.c_vns
-        FROM tagtree tt
-        JOIN tags_parents tp ON !s
-        JOIN tags t ON !s
+        SELECT tt.lvl-1, t.id, tt.id, t.name, t.c_items
+        FROM thetree tt
+        JOIN ${type}s_parents tp ON !s
+        JOIN ${type}s t ON !s
         WHERE tt.lvl > 0
           AND t.state = 2
-    ) SELECT DISTINCT id, parent, name, c_vns FROM tagtree ORDER BY name|, $lvl,
-    $id ? {'id = ?' => $id} : {'NOT EXISTS(SELECT 1 FROM tags_parents WHERE tag = id)' => 1, 'state = 2' => 1},
-    !$back ? ('tp.parent = tt.id', 't.id = tp.tag') : ('tp.tag = tt.id', 't.id = tp.parent')
+    ) SELECT DISTINCT id, parent, name, c_items FROM thetree ORDER BY name|, $lvl,
+    $id ? {'id = ?' => $id} : {"NOT EXISTS(SELECT 1 FROM ${type}s_parents WHERE $type = id)" => 1, 'state = 2' => 1},
+    !$back ? ('tp.parent = tt.id', "t.id = tp.$type") : ("tp.$type = tt.id", 't.id = tp.parent')
   );
   for my $i (@$r) {
     $i->{'sub'} = [ grep $_->{parent} == $i->{id}, @$r ];

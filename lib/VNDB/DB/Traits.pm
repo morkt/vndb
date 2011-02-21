@@ -10,12 +10,12 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbTraitGet dbTraitTree dbTraitEdit dbTraitAdd|;
+our @EXPORT = qw|dbTraitGet dbTraitEdit dbTraitAdd|;
 
 
 # Options: id what results page sort reverse
 # what: parents childs(n) addedby
-# sort: id name groupname added
+# sort: id name groupname added items
 sub dbTraitGet {
   my $self = shift;
   my %o = (
@@ -38,7 +38,7 @@ sub dbTraitGet {
   );
 
   my @select = (
-    qw|t.id t.meta t.name t.description t.state t.alias t."group" |,
+    qw|t.id t.meta t.name t.description t.state t.alias t."group" t.c_items|,
     'tg.name AS groupname', q|extract('epoch' from t.added) as added|,
     $o{what} =~ /addedby/ ? ('t.addedby', 'u.username') : (),
   );
@@ -50,6 +50,7 @@ sub dbTraitGet {
     name  => 't.name %s',
     groupname => 'tg.name %s NULLS FIRST, t.name %1$s',
     added => 't.added %s',
+    items => 't.c_items %s',
   }->{ $o{sort}||'id' }, $o{reverse} ? 'DESC' : 'ASC';
 
   my($r, $np) = $self->dbPage(\%o, q|
@@ -62,42 +63,14 @@ sub dbTraitGet {
   );
 
   if($o{what} =~ /parents\((\d+)\)/) {
-    $_->{parents} = $self->dbTraitTree($_->{id}, $1, 1) for(@$r);
+    $_->{parents} = $self->dbTTTree(trait => $_->{id}, $1, 1) for(@$r);
   }
 
   if($o{what} =~ /childs\((\d+)\)/) {
-    $_->{childs} = $self->dbTraitTree($_->{id}, $1) for(@$r);
+    $_->{childs} = $self->dbTTTree(trait => $_->{id}, $1) for(@$r);
   }
 
   return wantarray ? ($r, $np) : $r;
-}
-
-
-# almost much equivalent to dbTagTree
-sub dbTraitTree {
-  my($self, $id, $lvl, $back) = @_;
-  $lvl ||= 15;
-  my $r = $self->dbAll(q|
-    WITH RECURSIVE traittree(lvl, id, parent, name) AS (
-        SELECT ?::integer, id, 0, name
-        FROM traits
-        !W
-      UNION ALL
-        SELECT tt.lvl-1, t.id, tt.id, t.name
-        FROM traittree tt
-        JOIN traits_parents tp ON !s
-        JOIN traits t ON !s
-        WHERE tt.lvl > 0
-          AND t.state = 2
-    ) SELECT DISTINCT id, parent, name FROM traittree ORDER BY name|, $lvl,
-    $id ? {'id = ?' => $id} : {'NOT EXISTS(SELECT 1 FROM traits_parents WHERE trait = id)' => 1, 'state = 2' => 1},
-    !$back ? ('tp.parent = tt.id', 't.id = tp.trait') : ('tp.trait = tt.id', 't.id = tp.parent')
-  );
-  for my $i (@$r) {
-    $i->{'sub'} = [ grep $_->{parent} == $i->{id}, @$r ];
-  }
-  my @r = grep !delete($_->{parent}), @$r;
-  return $id ? $r[0]{'sub'} : \@r;
 }
 
 

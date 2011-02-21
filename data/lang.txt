@@ -5289,6 +5289,20 @@ cs*:
 hu*:
 nl : nog [_1] [quant,_1,kenmerk,kenmerken]
 
+:_traitp_charlist
+en : Characters
+ru*:
+cs*:
+hu*:
+nl : Karakters
+
+:_traitp_nochars
+en : This trait has not been linked to any characters yet, or they were hidden because of your spoiler settings.
+ru*:
+cs*:
+hu*:
+nl : Dit kenmerk is nog niet gekoppeld aan een karakter, of deze worden niet weergegeven in verband met je spoilerinstelling.
+
 
 # Trait add/edit form (/i+/edit, /i+/add, /i/new)
 

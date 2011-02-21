@@ -33,12 +33,12 @@ sub tagpage {
     { get => 's', required => 0, default => 'tagscore', enum => [ qw|title rel pop tagscore rating| ] },
     { get => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
     { get => 'p', required => 0, default => 1, template => 'int' },
-    { get => 'm', required => 0, default => -1, enum => [qw|0 1 2|] },
+    { get => 'm', required => 0, default => undef, enum => [qw|0 1 2|] },
     { get => 'fil', required => 0 },
   );
   return $self->resNotFound if $f->{_err};
   my $tagspoil = $self->reqCookie('tagspoil')||'';
-  $f->{m} = $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0 if $f->{m} == -1;
+  $f->{m} //= $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0;
   $f->{fil} //= $self->authPref('filter_vn');
 
   my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->filFetchDB(vn => $f->{fil}, undef, {
@@ -270,7 +270,7 @@ sub _set_childs_cat {
     }
   };
 
-  my $childs = $self->dbTagTree($tag, 25);
+  my $childs = $self->dbTTTree(tag => $tag, 25);
   $e->($childs);
 }
 
@@ -624,7 +624,7 @@ sub tagindex {
    end;
   end;
 
-  my $t = $self->dbTagTree(0, 2);
+  my $t = $self->dbTTTree(tag => 0, 2);
   childtags($self, mt('_tagidx_tree'), 'g', {childs => $t});
 
   table class => 'mainbox threelayout';
@@ -649,13 +649,13 @@ sub tagindex {
     # Popular
     td;
      a class => 'addnew', href => "/g/links", mt '_tagidx_rawtags';
-     $r = $self->dbTagGet(sort => 'vns', reverse => 1, meta => 0, results => 10);
+     $r = $self->dbTagGet(sort => 'items', reverse => 1, meta => 0, results => 10);
      h1 mt '_tagidx_popular';
      ul;
       for (@$r) {
         li;
          a href => "/g$_->{id}", $_->{name};
-         txt " ($_->{c_vns})";
+         txt " ($_->{c_items})";
         end;
       }
      end;
@@ -702,14 +702,14 @@ sub fulltree {
        li;
         txt '> ';
         a href => "/g$_->{id}", $_->{name};
-        b class => 'grayedout', " ($_->{c_vns})" if $_->{c_vns};
+        b class => 'grayedout', " ($_->{c_items})" if $_->{c_items};
        end;
        $e->($_->{sub}) if $_->{sub};
      }
     end;
   };
 
-  my $tags = $self->dbTagTree(0, 25);
+  my $tags = $self->dbTTTree(tag => 0, 25);
   $self->htmlHeader(title => '[DEBUG] Tag tree', noindex => 1);
   div class => 'mainbox';
    h1 '[DEBUG] Tag tree';

@@ -24,6 +24,14 @@ sub traitpage {
   my $t = $self->dbTraitGet(id => $trait, what => 'parents(0) childs(2)')->[0];
   return $self->resNotFound if !$t;
 
+  my $f = $self->formValidate(
+    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'm', required => 0, default => undef, enum => [qw|0 1 2|] },
+  );
+  return $self->resNotFound if $f->{_err};
+  my $tagspoil = $self->reqCookie('tagspoil')||'';
+  $f->{m} //= $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0;
+
   my $title = mt '_traitp_title', $t->{meta}?0:1, $t->{name};
   $self->htmlHeader(title => $title, noindex => $t->{state} != 2);
   $self->htmlMainTabs('i', $t);
@@ -69,8 +77,50 @@ sub traitpage {
 
   childtags($self, mt('_traitp_childs'), 'i', $t) if @{$t->{childs}};
 
-  # TODO: list of characters
-  
+  if(!$t->{meta} && $t->{state} == 2) {
+    my($chars, $np) = $self->dbCharGet(
+      trait_inc => $trait,
+      traitspoil => $f->{m},
+      results => 50, page => $f->{p},
+    );
+
+    div class => 'mainbox';
+     h1 mt '_traitp_charlist';
+
+     p class => 'browseopts';
+      # Q: tagp!? A: lazyness >_>
+      a href => "/i$trait?m=0", $f->{m} == 0 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 0);return true;", mt '_tagp_spoil0';
+      a href => "/i$trait?m=1", $f->{m} == 1 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 1);return true;", mt '_tagp_spoil1';
+      a href => "/i$trait?m=2", $f->{m} == 2 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 2);return true;", mt '_tagp_spoil2';
+     end;
+
+     if(!@$chars) {
+       p; br; br; txt mt '_traitp_nochars'; end;
+     }
+     # not really cached at the moment
+     # p; br; txt mt '_traitp_cached'; end;
+    end 'div';
+
+    # TODO: proper table with info and such
+    $self->htmlBrowse(
+      class    => 'traitchars',
+      options  => $f,
+      nextpage => $np,
+      items    => $chars,
+      pageurl  => "/i$trait?m=$f->{m}",
+      sorturl  => "/i$trait?m=$f->{m}",
+      header   => [
+        [ 'Name'  ],
+      ],
+      row => sub {
+        my($s, $n, $l) = @_;
+        Tr $n%2?(class => 'odd') : ();
+         td class => 'tc1'; a href => "/c$l->{id}", $l->{name}; end;
+        end;
+      },
+    ) if @$chars;
+  }
+
   $self->htmlFooter;
 }
 
@@ -126,7 +176,10 @@ sub traitedit {
         $trait = $self->dbTraitAdd(%opts);
       } else {
         $self->dbTraitEdit($trait, %opts, upddate => $frm->{state} == 2 && $t->{state} != 2) if $trait;
-        _set_childs_group($self, $trait, $group||$trait) if ($group||0) != ($t->{group});
+        _set_childs_group($self, $trait, $group||$trait) if ($group||0) != ($t->{group}||0);
+
+        # TEMPORARY SOLUTION! I'll investigate more efficient solutions and incremental updates whenever I have more data
+        $self->dbExec('SELECT traits_chars_calc()');
       }
       $self->resRedirect("/i$trait", 'post');
       return;
@@ -185,7 +238,7 @@ sub _set_childs_group {
       $e->($_->{sub}) if $_->{sub};
     }
   };
-  $e->($self->dbTraitTree($trait, 25));
+  $e->($self->dbTTTree(trait => $trait, 25));
 }
 
 
@@ -272,7 +325,7 @@ sub traitindex {
    end;
   end;
 
-  my $t = $self->dbTraitTree(0, 2);
+  my $t = $self->dbTTTree(trait => 0, 2);
   childtags($self, mt('_traiti_tree'), 'i', {childs => $t});
 
   table class => 'mainbox threelayout';
@@ -298,7 +351,16 @@ sub traitindex {
     # Popular
     td;
      h1 mt '_traiti_popular';
-     p 'TODO';
+     ul;
+      $r = $self->dbTraitGet(sort => 'items', reverse => 1, results => 10);
+      for (@$r) {
+        li;
+         b class => 'grayedout', $_->{groupname}.' / ' if $_->{group};
+         a href => "/i$_->{id}", $_->{name};
+         txt " ($_->{c_items})";
+        end;
+      }
+     end;
     end;
 
     # Moderation queue

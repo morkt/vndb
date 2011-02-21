@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbCharGet dbCharRevisionInsert dbCharImageId|;
 
 
-# options: id rev what results page
+# options: id rev traitspoil trait_inc trait_exc what results page
 # what: extended traits changes
 sub dbCharGet {
   my $self = shift;
@@ -16,6 +16,7 @@ sub dbCharGet {
     page => 1,
     results => 10,
     what => '',
+    traitspoil => 0,
     @_
   );
 
@@ -23,6 +24,11 @@ sub dbCharGet {
     !$o{id} && !$o{rev} ? ( 'c.hidden = FALSE' => 1 ) : (),
     $o{id}  ? ( 'c.id = ?'  => $o{id} ) : (),
     $o{rev} ? ( 'h.rev = ?' => $o{rev} ) : (),
+    $o{trait_inc} ? (
+      'c.id IN(SELECT cid FROM traits_chars WHERE tid IN(!l) AND spoil <= ? GROUP BY cid HAVING COUNT(tid) = ?)',
+      [ ref $o{trait_inc} ? $o{trait_inc} : [$o{trait_inc}], $o{traitspoil}, ref $o{trait_inc} ? $#{$o{trait_inc}}+1 : 1 ]) : (),
+    $o{trait_exc} ? (
+      'c.id NOT IN(SELECT cid FROM traits_chars WHERE tid IN(!l))' => [ ref $o{trait_exc} ? $o{trait_exc} : [$o{trait_exc}] ] ) : (),
   );
 
   my @select = (qw|c.id cr.name cr.original|, 'cr.id AS cid');
