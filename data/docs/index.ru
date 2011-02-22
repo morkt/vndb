@@ -9,6 +9,6 @@
  <li><a href="/d9">Форум</a></li>
  <li><a href="/d6">ЧаВо</a></li>
  <li><a href="/d7">О нас</a></li>
- <li><a href="/d11">API базы данных</a></li>
- <li><a href="/d8">Разработка</a></li>
+ <li><a href="/d11">API базы данных (англ.)</a></li>
+ <li><a href="/d8">Разработка (англ.)</a></li>
 </ul>
