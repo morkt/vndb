@@ -1157,6 +1157,7 @@ div#fil_div {
   width: 16px;
   height: 14px;
   margin: 0 2px 0 0;
+  margin-top: 0px!important;
   overflow: hidden;
   display:-moz-inline-stack;
   display: inline-block;
@@ -1164,15 +1165,10 @@ div#fil_div {
   border: 0;
   text-decoration: none;
 }
-.icons {
-  margin-top: 0px!important;
-}
-.icons.lang {
-  width: 13px;
-  height: 11px;
-  opacity: 0.5;
-}
-.icons.feed { width: 12px; height: 12px }
+.icons.lang  { width: 13px; height: 11px; opacity: 0.5; }
+.icons.feed  { width: 12px; height: 12px }
+.icons.gen   { width: 14px; height: 14px }
+.icons.gen.b { width: 28px }
 .icons.rtcomplete, .icons.rtpartial, .icons.rttrial { width: 11px; }
 acronym.icons, acronym.uicons { cursor: default; }
 a .icons { cursor: pointer }
@@ -1186,6 +1182,10 @@ a .icons { cursor: pointer }
 .icons.ps3 { background-position:   0px -84px; }
 .icons.p98 { background-position:   0px -98px; }
 .icons.feed { background-position:  0px -112px; }
+
+.icons.gen.f,
+.icons.gen.b { background-position: -12px -112px; }
+.icons.gen.m { background-position: -26px -112px; }
 
 .icons.dvd { background-position: -16px   0px; }
 .icons.mac { background-position: -16px -14px; }

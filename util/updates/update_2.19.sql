@@ -31,7 +31,7 @@ ALTER TABLE tags RENAME c_vns TO c_items;
 -- character database -> chars
 
 CREATE TYPE char_role AS ENUM ('main', 'primary', 'side', 'appears');
-CREATE TYPE blood_type AS ENUM ('unknown', 'a', 'b', 'ab', 'o', 'other');
+CREATE TYPE blood_type AS ENUM ('unknown', 'a', 'b', 'ab', 'o');
 CREATE TYPE gender AS ENUM ('unknown', 'm', 'f', 'b');
 
 CREATE TABLE chars (
@@ -49,6 +49,7 @@ CREATE TABLE chars_rev (
   alias      varchar(500) NOT NULL DEFAULT '',
   image      integer  NOT NULL DEFAULT 0,
   "desc"     text     NOT NULL DEFAULT '',
+  gender     gender NOT NULL DEFAULT 'unknown',
   s_bust     smallint NOT NULL DEFAULT 0,
   s_waist    smallint NOT NULL DEFAULT 0,
   s_hip      smallint NOT NULL DEFAULT 0,
@@ -57,7 +58,6 @@ CREATE TABLE chars_rev (
   height     smallint NOT NULL DEFAULT 0,
   weight     smallint NOT NULL DEFAULT 0,
   bloodt     blood_type NOT NULL DEFAULT 'unknown',
-  gender     gender NOT NULL DEFAULT 'unknown',
   main       integer  REFERENCES chars (id),
   main_spoil boolean  NOT NULL DEFAULT false
 );
@@ -178,13 +178,13 @@ INSERT INTO traits_parents (trait, parent) VALUES
 -- phorni!
 SELECT edit_char_init(null);
 UPDATE edit_revision SET comments = 'New test entry', requester = 2, ip = '0.0.0.0';
-UPDATE edit_char SET name = 'Phorni', original = 'フォーニ', "desc" = 'Sprite of Music', height = 14;
+UPDATE edit_char SET name = 'Phorni', original = 'フォーニ', "desc" = 'Sprite of Music', height = 14, gender = 'f';
 SELECT edit_char_commit();
 
 -- saya (incorrect test data)
 SELECT edit_char_init(null);
 UPDATE edit_revision SET comments = '2nd test entry', requester = 2, ip = '0.0.0.0';
-UPDATE edit_char SET name = 'Saya', original = '沙耶', "desc" = 'There is more than meets the eye!', alias = 'Cute monster', height = 140, weight = 52, s_bust = 41, s_waist = 38, s_hip = 40, b_month = 3, b_day = 15, bloodt = 'a';
+UPDATE edit_char SET name = 'Saya', original = '沙耶', "desc" = 'There is more than meets the eye!', alias = 'Cute monster', height = 140, weight = 52, s_bust = 41, s_waist = 38, s_hip = 40, b_month = 3, b_day = 15, bloodt = 'a', gender = 'f';
 INSERT INTO edit_char_traits VALUES (4, 0), (12, 2), (22, 0), (27, 0), (18, 1);
 SELECT edit_char_commit();
 

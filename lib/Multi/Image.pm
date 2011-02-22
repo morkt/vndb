@@ -72,7 +72,7 @@ sub ch_process { # num, res
   my($ow, $oh) = ($im->Get('width'), $im->Get('height'));
   my($nw, $nh) = imgsize($ow, $oh, @{$VNDB::S{ch_size}});
   $im->Thumbnail(width => $nw, height => $nh);
-  $im->Set(quality => 80);
+  $im->Set(quality => 90);
   $im->Write($img);
 
   $_[KERNEL]->post(pg => do => 'UPDATE chars_rev SET image = image*-1 WHERE image = ?', [ -1*$id ]);

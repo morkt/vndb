@@ -1198,13 +1198,6 @@ cs*:
 hu*:
 nl : O
 
-:_bloodt_other
-en : Other/fictional
-ru*:
-cs*:
-hu*:
-nl : Anders/fictief
-
 
 # Genders
 
@@ -5083,7 +5076,7 @@ hu*:
 nl : Verjaardag
 
 :_chare_form_bday_fmt
-en : MM-DD (e.g. "01-26" for the 26th of Januari)
+en : MM-DD (e.g. "01-26" for the 26th of January)
 ru*:
 cs*:
 hu*:

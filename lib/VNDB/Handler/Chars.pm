@@ -79,11 +79,10 @@ sub page {
     table;
      Tr;
       td colspan => 2;
-       b $r->{name};
-       b class => 'grayedout', style => 'margin-left: 10px', $r->{original} if $r->{original};
-       use utf8;
-       b style => 'margin-left: 10px; font-size: 14px', {qw|m ♂ f ♀ b ♂♀|}->{$r->{gender}} if $r->{gender} ne 'unknown';
-       span style => 'margin-left: 10px', mt "_bloodt_$r->{bloodt}" if $r->{bloodt} ne 'unknown';
+       b style => 'margin-right: 10px', $r->{name};
+       b class => 'grayedout', style => 'margin-right: 10px', $r->{original} if $r->{original};
+       cssicon "gen $r->{gender}", mt "_gender_$r->{gender}" if $r->{gender} ne 'unknown';
+       span mt "_bloodt_$r->{bloodt}" if $r->{bloodt} ne 'unknown';
       end;
      end;
      my $i = 0;
