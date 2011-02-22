@@ -9,7 +9,7 @@ our @EXPORT = qw|dbCharGet dbCharRevisionInsert dbCharImageId|;
 
 
 # options: id rev traitspoil trait_inc trait_exc what results page
-# what: extended traits changes
+# what: extended traits vns changes
 sub dbCharGet {
   my $self = shift;
   my %o = (
@@ -48,27 +48,41 @@ sub dbCharGet {
     join(', ', @select), join(' ', @join), \%where
   );
 
-  if(@$r && $o{what} =~ /traits/) {
+  if(@$r && $o{what} =~ /(vns|traits)/) {
     my %r = map {
       $_->{traits} = [];
-      ($_->{cid}, $_->{traits})
+      $_->{vns} = [];
+      ($_->{cid}, $_)
     } @$r;
 
-    push @{$r{ delete $_->{cid} }}, $_ for (@{$self->dbAll(q|
-      SELECT ct.cid, ct.tid, ct.spoil, t.name, t."group", tg.name AS groupname
-        FROM chars_traits ct
-        JOIN traits t ON t.id = ct.tid
-        LEFT JOIN traits tg ON tg.id = t."group"
-       WHERE cid IN(!l)|, [ keys %r ]
-    )});
-  }
+    if($o{what} =~ /traits/) {
+      push @{$r{ delete $_->{cid} }{traits}}, $_ for (@{$self->dbAll(q|
+        SELECT ct.cid, ct.tid, ct.spoil, t.name, t."group", tg.name AS groupname
+          FROM chars_traits ct
+          JOIN traits t ON t.id = ct.tid
+          LEFT JOIN traits tg ON tg.id = t."group"
+         WHERE cid IN(!l)|, [ keys %r ]
+      )});
+    }
 
+    if($o{what} =~ /vns/) {
+      push @{$r{ delete $_->{cid} }{vns}}, $_ for (@{$self->dbAll(q|
+        SELECT cv.cid, cv.vid, cv.rid, cv.spoil, cv.role, vr.title AS vntitle, rr.title AS rtitle
+          FROM chars_vns cv
+          JOIN vn v ON cv.vid = v.id
+          JOIN vn_rev vr ON vr.id = v.latest
+          LEFT JOIN releases r ON cv.rid = r.id
+          LEFT JOIN releases_rev rr ON rr.id = r.latest
+         WHERE cv.cid IN(!l)|, [ keys %r ]
+      )});
+    }
+  }
   return wantarray ? ($r, $np) : $r;
 }
 
 
 # Updates the edit_* tables, used from dbItemEdit()
-# Arguments: { columns in chars_rev + traits },
+# Arguments: { columns in chars_rev + traits + vns },
 sub dbCharRevisionInsert {
   my($self, $o) = @_;
 
@@ -79,6 +93,10 @@ sub dbCharRevisionInsert {
   if($o->{traits}) {
     $self->dbExec('DELETE FROM edit_char_traits');
     $self->dbExec('INSERT INTO edit_char_traits (tid, spoil) VALUES (?,?)', $_->[0],$_->[1]) for (@{$o->{traits}});
+  }
+  if($o->{vns}) {
+    $self->dbExec('DELETE FROM edit_char_vns');
+    $self->dbExec('INSERT INTO edit_char_vns (vid, rid, spoil, role) VALUES(!l)', $_) for (@{$o->{vns}});
   }
 }
 

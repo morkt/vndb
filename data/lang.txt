@@ -1230,6 +1230,37 @@ hu*:
 nl : Beide
 
 
+# Character roles
+
+:_charrole_main
+en : Protagonist
+ru*:
+cs*:
+hu*:
+nl :
+
+:_charrole_primary
+en : Primary character
+ru*:
+cs*:
+hu*:
+nl : Belangrijke rol
+
+:_charrole_side
+en : Side character
+ru*:
+cs*:
+hu*:
+nl : Onbelangrijke rol
+
+:_charrole_appears
+en : Makes an appearance
+ru*:
+cs*:
+hu*:
+nl : Figurant
+
+
 
 
 #############################################################################
@@ -4913,6 +4944,13 @@ cs*:
 hu*:
 nl : Kenmerken
 
+:_revfield_c_vns
+en : Visual novels
+ru*:
+cs*:
+hu*:
+nl :
+
 :_chdiff_image_proc
 en : ~[processing~]
 ru : ~[обработка~]
@@ -5221,6 +5259,13 @@ ru*:
 cs*:
 hu*:
 nl : Nog geen kenmerken aanwezig.
+
+:_chare_vns
+en : Visual novels
+ru*:
+cs*:
+hu*:
+nl :
 
 
 

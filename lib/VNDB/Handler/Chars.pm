@@ -19,7 +19,7 @@ sub page {
 
   my $r = $self->dbCharGet(
     id => $id,
-    what => 'extended traits'.($rev ? ' changes' : ''),
+    what => 'extended traits vns'.($rev ? ' changes' : ''),
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return $self->resNotFound if !$r->{id};
@@ -29,7 +29,7 @@ sub page {
   return if $self->htmlHiddenMessage('c', $r);
 
   if($rev) {
-    my $prev = $rev && $rev > 1 && $self->dbCharGet(id => $id, rev => $rev-1, what => 'changes extended traits')->[0];
+    my $prev = $rev && $rev > 1 && $self->dbCharGet(id => $id, rev => $rev-1, what => 'changes extended traits vns')->[0];
     $self->htmlRevision('c', $prev, $r,
       [ name      => diff => 1 ],
       [ original  => diff => 1 ],
@@ -52,6 +52,11 @@ sub page {
         map sprintf('%s<a href="/i%d">%s</a> (%s)', $_->{group}?qq|<b class="grayedout">$_->{groupname} / </b> |:'',
             $_->{tid}, $_->{name}, mt("_spoil_$_->{spoil}")),
           sort { ($a->{groupname}||$a->{name}) cmp ($b->{groupname}||$b->{name}) || $a->{name} cmp $b->{name} } @{$_[0]}
+      }],
+      [ vns       => join => '<br />', split => sub {
+        map sprintf('<a href="/v%d">v%d</a> %s %s (%s)', $_->{vid}, $_->{vid},
+          $_->{rid}?sprintf('[<a href="/r%d">r%d</a>]', $_->{rid}, $_->{rid}):'',
+          mt("_charrole_$_->{role}"), mt("_spoil_$_->{spoil}")), @{$_[0]};
       }],
     );
   }
@@ -130,6 +135,42 @@ sub page {
        end;
      }
 
+     # vns
+     # TODO: handle spoilers!
+     if(@{$r->{vns}}) {
+       my %vns;
+       push @{$vns{$_->{vid}}}, $_ for(sort { !defined($a->{rid})?1:!defined($b->{rid})?-1:$a->{rtitle} cmp $b->{rtitle} } @{$r->{vns}});
+       Tr ++$i % 2 ? (class => 'odd') : ();
+        td class => 'key', 'Visual novels';
+        td;
+         my $first = 0;
+         for my $g (sort { $vns{$a}[0]{vntitle} cmp $vns{$b}[0]{vntitle} } keys %vns) {
+           br if $first++;
+           my @r = @{$vns{$g}};
+           # special case: all releases, no exceptions
+           if(@r == 1 && !$r[0]{rid}) {
+             txt mt("_charrole_$r[0]{role}").' - ';
+             a href => "/v$r[0]{vid}", $r[0]{vntitle};
+             next;
+           }
+           # otherwise, print VN title and list releases separately
+           a href => "/v$r[0]{vid}", $r[0]{vntitle};
+           for(@r) {
+             br;
+             b class => 'grayedout', '> ';
+             txt mt("_charrole_$_->{role}").' - ';
+             if($_->{rid}) {
+               b class => 'grayedout', "r$_->{rid}:";
+               a href => "/r$_->{rid}", $_->{rtitle};
+             } else {
+               txt 'All other releases';
+             }
+           }
+         }
+        end;
+       end;
+     }
+
      # description
      if($r->{desc}) {
        Tr;
@@ -156,7 +197,7 @@ sub page {
 sub edit {
   my($self, $id, $rev) = @_;
 
-  my $r = $id && $self->dbCharGet(id => $id, what => 'changes extended traits', $rev ? (rev => $rev) : ())->[0];
+  my $r = $id && $self->dbCharGet(id => $id, what => 'changes extended vns traits', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $id && !$r->{id};
   $rev = undef if !$r || $r->{cid} == $r->{latest};
 
@@ -166,7 +207,9 @@ sub edit {
   my %b4 = !$id ? () : (
     (map +($_ => $r->{$_}), qw|name original alias desc image ihid ilock s_bust s_waist s_hip height weight bloodt gender|),
     bday => $r->{b_month} ? sprintf('%02d-%02d', $r->{b_month}, $r->{b_day}) : '',
-    traits => join(' ', map sprintf('%d-%d', $_->{tid}, $_->{spoil}), @{$r->{traits}}),
+    traits => join(' ', map sprintf('%d-%d', $_->{tid}, $_->{spoil}), sort { $a->{tid} <=> $b->{tid} } @{$r->{traits}}),
+    vns => join(' ', map sprintf('%d-%d-%d-%s', $_->{vid}, $_->{rid}||0, $_->{spoil}, $_->{role}),
+      sort { $a->{vid} <=> $b->{vid} || ($a->{rid}||0) <=> ($b->{rid}||0) } @{$r->{vns}}),
   );
   my $frm;
 
@@ -187,6 +230,7 @@ sub edit {
       { post => 'weight',        required  => 0, default => 0, template => 'int' },
       { post => 'bloodt',        required  => 0, default => 'unknown', enum => $self->{blood_types} },
       { post => 'traits',        required  => 0, default => '', regex => [ qr/^(?:[1-9]\d*-[0-2])(?: +[1-9]\d*-[0-2])*$/, 'Incorrect trait format.' ] },
+      { post => 'vns',           required  => 0, default => '', regex => [ qr/^(?:[1-9]\d*-\d+-[0-2]-[a-z]+)(?: +[1-9]\d*-\d+-[0-2]-[a-z]+)*$/, 'Incorrect VN format.' ] },
       { post => 'editsum',       required  => 0, maxlength => 5000 },
       { post => 'ihid',          required  => 0 },
       { post => 'ilock',         required  => 0 },
@@ -199,7 +243,9 @@ sub edit {
     if(!$frm->{_err}) {
       # parse and normalize
       my @traits = sort { $a->[0] <=> $b->[0] } map /^(\d+)-(\d+)$/&&[$1,$2], split / /, $frm->{traits};
+      my @vns = sort { $a->[0] <=> $b->[0] || $a->[1] <=> $b->[1] }  map [split /-/], split / /, $frm->{vns};
       $frm->{traits} = join(' ', map sprintf('%d-%d', @$_), @traits);
+      $frm->{vns}    = join(' ', map sprintf('%d-%d-%d-%s', @$_), @vns);
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
 
@@ -210,6 +256,8 @@ sub edit {
       # modify for dbCharRevisionInsert
       ($frm->{b_month}, $frm->{b_day}) = delete($frm->{bday}) =~ /^(\d{2})-(\d{2})$/ ? ($1, $2) : (0, 0);
       $frm->{traits} = \@traits;
+      $_->[1]||=undef for (@vns);
+      $frm->{vns} = \@vns;
 
       my $nrev = $self->dbItemEdit(c => $id ? $r->{cid} : undef, %$frm);
 
@@ -279,6 +327,10 @@ sub edit {
        td colspan => 2, '';
       end; end 'table';
     }],
+  ],
+
+  chare_vns => [ mt('_chare_vns'),
+    [ input => short => 'vns', name => 'VNs (debug)' ],
   ]);
   $self->htmlFooter;
 }

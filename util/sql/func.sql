@@ -415,8 +415,10 @@ BEGIN
     ALTER TABLE edit_char DROP COLUMN cid;
     CREATE TEMPORARY TABLE edit_char_traits (LIKE chars_traits INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
     ALTER TABLE edit_char_traits DROP COLUMN cid;
+    CREATE TEMPORARY TABLE edit_char_vns (LIKE chars_vns INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_char_vns DROP COLUMN cid;
   EXCEPTION WHEN duplicate_table THEN
-    TRUNCATE edit_char, edit_char_traits;
+    TRUNCATE edit_char, edit_char_traits, edit_char_vns;
   END;
   PERFORM edit_revtable('c', hid);
   -- new char
@@ -426,6 +428,7 @@ BEGIN
   ELSE
     INSERT INTO edit_char SELECT name, original, alias, image, "desc", gender, s_bust, s_waist, s_hip, b_month, b_day, height, weight, bloodt FROM chars_rev WHERE id = hid;
     INSERT INTO edit_char_traits SELECT tid, spoil FROM chars_traits WHERE cid = hid;
+    INSERT INTO edit_char_vns SELECT vid, rid, spoil, role FROM chars_vns WHERE cid = hid;
   END IF;
 END;
 $$ LANGUAGE plpgsql;
@@ -442,6 +445,7 @@ BEGIN
   SELECT INTO r * FROM edit_commit();
   INSERT INTO chars_rev SELECT r.cid, r.iid, name, original, alias, image, "desc", gender, s_bust, s_waist, s_hip, b_month, b_day, height, weight, bloodt FROM edit_char;
   INSERT INTO chars_traits SELECT r.cid, tid, spoil FROM edit_char_traits;
+  INSERT INTO chars_vns SELECT r.cid, vid, rid, spoil, role FROM edit_char_vns;
   UPDATE chars SET latest = r.cid WHERE id = r.iid;
   RETURN r;
 END;

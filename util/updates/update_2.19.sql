@@ -73,11 +73,12 @@ CREATE TABLE chars_traits (
 CREATE TABLE chars_vns (
   cid integer NOT NULL REFERENCES chars_rev (id),
   vid integer NOT NULL REFERENCES vn (id),
-  rid integer REFERENCES releases (id),
-  spoil boolean NOT NULL DEFAULT false,
-  role char_role NOT NULL DEFAULT 'main',
-  PRIMARY KEY(cid, vid, rid)
+  rid integer NULL REFERENCES releases (id),
+  spoil smallint NOT NULL DEFAULT 0,
+  role char_role NOT NULL DEFAULT 'main'
 );
+-- primary key won't work when one column allows NULL
+CREATE UNIQUE INDEX chars_vns_pkey ON chars_vns (cid, vid, COALESCE(rid, 0));
 
 -- cache table
 CREATE TABLE traits_chars (
