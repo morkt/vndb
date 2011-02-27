@@ -13,6 +13,8 @@ CREATE TABLE traits (
   state smallint NOT NULL DEFAULT 0,
   addedby integer NOT NULL DEFAULT 0 REFERENCES users (id),
   "group" integer,
+  "order" smallint NOT NULL DEFAULT 0,
+  sexual boolean NOT NULL DEFAULT false,
   c_items integer NOT NULL DEFAULT 0
 );
 ALTER TABLE traits ADD FOREIGN KEY ("group") REFERENCES traits (id);

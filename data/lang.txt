@@ -5330,6 +5330,13 @@ cs*:
 hu*:
 nl : Kenmerken
 
+:_traitp_sexual
+en : Sexual content
+ru*:
+cs*:
+hu*:
+nl : Erotisch
+
 :_traitp_aliases
 en : Aliases
 ru : Прочие названия
@@ -5459,6 +5466,13 @@ cs*:
 hu*:
 nl : Dit is een metakenmerk (kan alleen gebruikt worden als houder voor andere kenmerken, niet voor karakters)
 
+:_traite_frm_sexual
+en : Indicates sexual content
+ru*:
+cs*:
+hu*:
+nl : Erotisch
+
 :_traite_frm_alias
 en : Aliases
      (separated by newlines)
@@ -5491,6 +5505,21 @@ ru*:
 cs*:
 hu*:
 nl : Spatiegescheiden lijst van hoofdkenmerken (numerieke IDs).
+
+:_traite_frm_gorder
+en : Group number
+ru*:
+cs*:
+hu*:
+nl : Groepnummer
+
+:_traite_frm_gorder_msg
+en : (Only used if this trait is a group. Used for ordering, lowest first)
+ru*:
+cs*:
+hu*:
+nl : (Alleen gebruikt als dit kenmerk een groep is. Gebruikt voor sorteren, laagste getal eerst)
+
 
 
 # Plain trait browser (/i/list)

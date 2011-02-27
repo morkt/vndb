@@ -50,8 +50,7 @@ sub page {
       }],
       [ traits    => join => '<br />', split => sub {
         map sprintf('%s<a href="/i%d">%s</a> (%s)', $_->{group}?qq|<b class="grayedout">$_->{groupname} / </b> |:'',
-            $_->{tid}, $_->{name}, mt("_spoil_$_->{spoil}")),
-          sort { ($a->{groupname}||$a->{name}) cmp ($b->{groupname}||$b->{name}) || $a->{name} cmp $b->{name} } @{$_[0]}
+            $_->{tid}, $_->{name}, mt("_spoil_$_->{spoil}")), @{$_[0]}
       }],
       [ vns       => join => '<br />', split => sub {
         map sprintf('<a href="/v%d">v%d</a> %s %s (%s)', $_->{vid}, $_->{vid},
@@ -120,10 +119,15 @@ sub page {
      }
 
      # traits
-     # TODO: handle spoilers!
+     # TODO: handle spoilers and 'sexual' traits
      my %groups;
-     push @{$groups{ $_->{group}||$_->{tid} }}, $_ for(sort { $a->{name} cmp $b->{name} } @{$r->{traits}});
-     for my $g (sort { ($groups{$a}[0]{groupname}||$groups{$a}[0]{name}) cmp ($groups{$a}[0]{groupname}||$groups{$a}[0]{name}) } keys %groups) {
+     my @groups;
+     for (@{$r->{traits}}) {
+       my $g = $_->{group}||$_->{tid};
+       push @groups, $g if !$groups{$g};
+       push @{$groups{ $g }}, $_
+     }
+     for my $g (@groups) {
        Tr ++$i % 2 ? (class => 'odd') : ();
         td class => 'key'; a href => '/i'.($groups{$g}[0]{group}||$groups{$g}[0]{tid}), $groups{$g}[0]{groupname} || $groups{$g}[0]{name}; end;
         td;

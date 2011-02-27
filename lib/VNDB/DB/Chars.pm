@@ -61,7 +61,8 @@ sub dbCharGet {
           FROM chars_traits ct
           JOIN traits t ON t.id = ct.tid
           LEFT JOIN traits tg ON tg.id = t."group"
-         WHERE cid IN(!l)|, [ keys %r ]
+         WHERE cid IN(!l)
+         ORDER BY tg."order", t.name|, [ keys %r ]
       )});
     }
 

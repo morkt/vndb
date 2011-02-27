@@ -66,6 +66,11 @@ sub traitpage {
       lit bb2html $t->{description};
      end;
    }
+   if($t->{sexual}) {
+     p class => 'center';
+      b mt '_traitp_sexual';
+     end;
+   }
    if($t->{alias}) {
      p class => 'center';
       b mt('_traitp_aliases');
@@ -147,9 +152,11 @@ sub traitedit {
       { post => 'name',        required => 1, maxlength => 250, regex => [ qr/^[^,]+$/, 'A comma is not allowed in trait names' ] },
       { post => 'state',       required => 0, default => 0,  enum => [ 0..2 ] },
       { post => 'meta',        required => 0, default => 0 },
+      { post => 'sexual',      required => 0, default => 0 },
       { post => 'alias',       required => 0, maxlength => 1024, default => '', regex => [ qr/^[^,]+$/s, 'No comma allowed in aliases' ]  },
       { post => 'description', required => 0, maxlength => 10240, default => '' },
       { post => 'parents',     required => !$self->authCan('tagmod'), default => '', regex => [ qr/^(?:$|(?:[1-9]\d*)(?: +[1-9]\d*)*)$/, 'Parent traits must be a space-separated list of trait IDs' ] },
+      { post => 'order',       required => 0, default => 0, template => 'int', min => 0 },
     );
     my @parents = split /[\t ]+/, $frm->{parents};
     my $group = undef;
@@ -168,7 +175,9 @@ sub traitedit {
         state => $frm->{state},
         description => $frm->{description},
         meta => $frm->{meta}?1:0,
+        sexual => $frm->{sexual}?1:0,
         alias => $frm->{alias},
+        order => $frm->{order},
         parents => \@parents,
         group => $group,
       );
@@ -187,7 +196,7 @@ sub traitedit {
   }
 
   if($t) {
-    $frm->{$_} ||= $t->{$_} for (qw|name meta description state alias|);
+    $frm->{$_} ||= $t->{$_} for (qw|name meta sexual description state alias order|);
     $frm->{parents} ||= join ' ', map $_->{id}, @{$t->{parents}};
   }
 
@@ -216,10 +225,12 @@ sub traitedit {
         map [$_, mt '_traite_frm_state'.$_], 0..2 ] ],
       [ checkbox => short => 'meta',     name => mt '_traite_frm_meta' ]
     ) : (),
+    [ checkbox => short => 'sexual',   name => mt '_traite_frm_sexual' ],
     [ textarea => short => 'alias',    name => mt('_traite_frm_alias'), cols => 30, rows => 4 ],
     [ textarea => short => 'description', name => mt '_traite_frm_desc' ],
     [ input    => short => 'parents',  name => mt '_traite_frm_parents' ],
     [ static   => content => mt '_traite_frm_parents_msg' ],
+    [ input    => short => 'order', name => mt('_traite_frm_gorder'), width => 50, post => ' '.mt('_traite_frm_gorder_msg') ],
   ]);
 
   $self->htmlFooter;
@@ -407,7 +418,7 @@ sub traitxml {
     $f->{id} && $f->{id}[0] ? (id => $f->{id}) : (),
     results => $f->{r},
     page => 1,
-    sort => 'groupname'
+    sort => 'group'
   );
 
   $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');

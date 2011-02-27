@@ -15,7 +15,7 @@ our @EXPORT = qw|dbTraitGet dbTraitEdit dbTraitAdd|;
 
 # Options: id what results page sort reverse
 # what: parents childs(n) addedby
-# sort: id name groupname added items
+# sort: id name name added items
 sub dbTraitGet {
   my $self = shift;
   my %o = (
@@ -38,8 +38,8 @@ sub dbTraitGet {
   );
 
   my @select = (
-    qw|t.id t.meta t.name t.description t.state t.alias t."group" t.c_items|,
-    'tg.name AS groupname', q|extract('epoch' from t.added) as added|,
+    qw|t.id t.meta t.name t.description t.state t.alias t."group" t."order" t.sexual t.c_items|,
+    'tg.name AS groupname', 'tg."order" AS grouporder', q|extract('epoch' from t.added) as added|,
     $o{what} =~ /addedby/ ? ('t.addedby', 'u.username') : (),
   );
   my @join = $o{what} =~ /addedby/ ? 'JOIN users u ON u.id = t.addedby' : ();
@@ -48,7 +48,7 @@ sub dbTraitGet {
   my $order = sprintf {
     id    => 't.id %s',
     name  => 't.name %s',
-    groupname => 'tg.name %s NULLS FIRST, t.name %1$s',
+    group => 'tg."order" %s, t.name %1$s',
     added => 't.added %s',
     items => 't.c_items %s',
   }->{ $o{sort}||'id' }, $o{reverse} ? 'DESC' : 'ASC';
@@ -80,7 +80,7 @@ sub dbTraitEdit {
 
   $self->dbExec('UPDATE traits !H WHERE id = ?', {
     $o{upddate} ? ('added = NOW()' => 1) : (),
-    map exists($o{$_}) ? ("\"$_\" = ?" => $o{$_}) : (), qw|name meta description state alias group|
+    map exists($o{$_}) ? ("\"$_\" = ?" => $o{$_}) : (), qw|name meta description state alias group order sexual|
   }, $id);
   if($o{parents}) {
     $self->dbExec('DELETE FROM traits_parents WHERE trait = ?', $id);
@@ -93,8 +93,8 @@ sub dbTraitEdit {
 # returns the id of the new trait
 sub dbTraitAdd {
   my($self, %o) = @_;
-  my $id = $self->dbRow('INSERT INTO traits (name, meta, description, state, alias, "group", addedby) VALUES (!l, ?) RETURNING id',
-    [ map $o{$_}, qw|name meta description state alias group| ], $o{addedby}||$self->authInfo->{id}
+  my $id = $self->dbRow('INSERT INTO traits (name, meta, description, state, alias, "group", "order", sexual, addedby) VALUES (!l, ?) RETURNING id',
+    [ map $o{$_}, qw|name meta description state alias group order sexual| ], $o{addedby}||$self->authInfo->{id}
   )->{id};
   $self->dbExec('INSERT INTO traits_parents (trait, parent) VALUES (?, ?)', $id, $_) for(@{$o{parents}});
   return $id;
