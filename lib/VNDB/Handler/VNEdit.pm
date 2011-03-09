@@ -128,7 +128,7 @@ sub _uploadimage {
   # perform some elementary checks
   my $imgdata = $self->reqUploadRaw('img');
   $frm->{_err} = [ 'noimage' ] if $imgdata !~ /^(\xff\xd8|\x89\x50)/; # JPG or PNG headers
-  $frm->{_err} = [ 'toolarge' ] if length($imgdata) > 512*1024;
+  $frm->{_err} = [ 'toolarge' ] if length($imgdata) > 5*1024*1024;
   return undef if $frm->{_err};
 
   # get image ID and save it, to be processed by Multi

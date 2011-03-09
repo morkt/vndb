@@ -6225,16 +6225,16 @@ nl : Upload nieuw plaatje
 
 :_vnedit_image_upload_msg
 en : Preferably the cover of the CD/DVD/package. Image must be in JPEG or PNG format
-     and at most 500kB. Images larger than 256x400 will automatically be resized.
-ru : Желательно, обложка CD/DVD/коробки. Изображение должно быть в формате
+     and at most 5MB. Images larger than 256x400 will automatically be resized.
+ru*: Желательно, обложка CD/DVD/коробки. Изображение должно быть в формате
      JPEG или PNG, и весить не более 500 Кб. Изображения размером более 256 на 400 точек
      будут автоматически уменьшены.
 cs : Pokud možno obálka CD/DVD/balení. Obrázek musí být ve formátu JPEG nebo PNG
-     a ne větší 500kB. Obrázek větší než 256x400 pixelů bude automaticky zmenšen.
+     a ne větší 5MB. Obrázek větší než 256x400 pixelů bude automaticky zmenšen.
 hu : Lehetőleg a CD/DVD/csomagolás borítóját. A képek muszáj JPEG vagy PNG formátumba
-     legyenek és maximum 500kb nagyok. 254x400-nál nagyobb képek automatikusan át lesznek
+     legyenek és maximum 5MB nagyok. 254x400-nál nagyobb képek automatikusan át lesznek
      méretezve.
-nl : Bij voorkeur de omslag van de CD of DVD. Plaatje moet in het JPEG of PNG formaat zijn, en moet kleiner zijn dan 500kB.
+nl : Bij voorkeur de omslag van de CD of DVD. Plaatje moet in het JPEG of PNG formaat zijn, en moet kleiner zijn dan 5MB.
      Plaatjes groter dan 256x400 worden automatisch verkleind.
 
 :_vnedit_image_nsfw
@@ -7439,11 +7439,11 @@ hu : A kép muszáj JPEG vagy PNG formátumba legyen
 nl : Plaatje moet in JPEG of PNG formaat zijn
 
 :_formerr_e_toolarge
-en : Image is too large, only 500kB allowed
-ru : Изображение слишком большое, 500 кб - максимально допустимый предел
-cs : Obrázek je moc velký, je povoleno pouze 500kB
-hu : A kép túl nagy, 500kb a megengedett
-nl : Plaatje is te groot, max. 500kB toegestaan
+en : Image is too large, only 5MB allowed
+ru*: Изображение слишком большое, 500 кб - максимально допустимый предел
+cs*: Obrázek je moc velký, je povoleno pouze MB
+hu*: A kép túl nagy, 5MB a megengedett
+nl : Plaatje is te groot, max. 5MB toegestaan
 
 :_formerr_e_oneaday
 en : You can only register one account from the same IP within 24 hours
