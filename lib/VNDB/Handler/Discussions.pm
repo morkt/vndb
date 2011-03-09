@@ -151,7 +151,8 @@ sub edit {
   # are we allowed to perform this action?
   return $self->htmlDenied if !$self->authCan('board')
     || ($tid && ($t->{locked} || $t->{hidden}) && !$self->authCan('boardmod'))
-    || ($num && $p->{uid} != $self->authInfo->{id} && !$self->authCan('boardmod'));
+    || ($num && $p->{uid} != $self->authInfo->{id} && !$self->authCan('boardmod'))
+    || ($num && $p->{uid} == $self->authInfo->{id} && $p->{hidden});
 
   # check form etc...
   my $frm;
