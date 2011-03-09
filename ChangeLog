@@ -1,5 +1,6 @@
 2.19 - ?
 	- Don't allow users to edit their post when it was deleted
+	- Auto-set category when creating new child tag
 
 2.18 - 2011-02-08
 	- Added category field to tags (content/ero/technical)
