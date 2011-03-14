@@ -44,6 +44,8 @@ sub page {
       [ height    => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ weight    => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ bloodt    => serialize => sub { mt "_bloodt_$_[0]" } ],
+      [ main      => htmlize => sub { $_[0] ? sprintf '<a href="/c%d">c%d</a>', $_[0], $_[0] : mt '_revision_empty' } ],
+      [ main_spoil=> serialize => sub { mt "_spoil_$_[0]" } ],
       [ image     => htmlize => sub {
         return $_[0] > 0 ? sprintf '<img src="%s/ch/%02d/%d.jpg" />', $self->{url_static}, $_[0]%100, $_[0]
           : mt $_[0] < 0 ? '_chdiff_image_proc' : '_chdiff_image_none';
@@ -209,7 +211,8 @@ sub edit {
     || $id && ($r->{locked} && !$self->authCan('lock') || $r->{hidden} && !$self->authCan('del'));
 
   my %b4 = !$id ? () : (
-    (map +($_ => $r->{$_}), qw|name original alias desc image ihid ilock s_bust s_waist s_hip height weight bloodt gender|),
+    (map +($_ => $r->{$_}), qw|name original alias desc image ihid ilock s_bust s_waist s_hip height weight bloodt gender main_spoil|),
+    main => $r->{main}||0,
     bday => $r->{b_month} ? sprintf('%02d-%02d', $r->{b_month}, $r->{b_day}) : '',
     traits => join(' ', map sprintf('%d-%d', $_->{tid}, $_->{spoil}), sort { $a->{tid} <=> $b->{tid} } @{$r->{traits}}),
     vns => join(' ', map sprintf('%d-%d-%d-%s', $_->{vid}, $_->{rid}||0, $_->{spoil}, $_->{role}),
@@ -233,6 +236,8 @@ sub edit {
       { post => 'height',        required  => 0, default => 0, template => 'int' },
       { post => 'weight',        required  => 0, default => 0, template => 'int' },
       { post => 'bloodt',        required  => 0, default => 'unknown', enum => $self->{blood_types} },
+      { post => 'main',          required  => 0, default => 0, template => 'int' },
+      { post => 'main_spoil',    required  => 0, default => 0, enum => [ 0..2 ] },
       { post => 'traits',        required  => 0, default => '', regex => [ qr/^(?:[1-9]\d*-[0-2])(?: +[1-9]\d*-[0-2])*$/, 'Incorrect trait format.' ] },
       { post => 'vns',           required  => 0, default => '', regex => [ qr/^(?:[1-9]\d*-\d+-[0-2]-[a-z]+)(?: +[1-9]\d*-\d+-[0-2]-[a-z]+)*$/, 'Incorrect VN format.' ] },
       { post => 'editsum',       required  => 0, maxlength => 5000 },
@@ -244,6 +249,13 @@ sub edit {
     # handle image upload
     $frm->{image} = _uploadimage($self, $r, $frm);
 
+    # validate main character
+    if(!$frm->{_err} && $frm->{main}) {
+      my $m = $self->dbCharGet(id => $frm->{main}, what => 'extended')->[0];
+      push @{$frm->{_err}}, 'mainchar' if !$m || $m->{id} == $r->{id} || $m->{main}
+        || $self->dbCharGet(instance => $r->{id})->[0];
+    }
+
     if(!$frm->{_err}) {
       # parse and normalize
       my @traits = sort { $a->[0] <=> $b->[0] } map /^(\d+)-(\d+)$/&&[$1,$2], split / /, $frm->{traits};
@@ -252,6 +264,7 @@ sub edit {
       $frm->{vns}    = join(' ', map sprintf('%d-%d-%d-%s', @$_), @vns);
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
+      $frm->{main_spoil} = 0 if !$frm->{main};
 
       # check for changes
       return $self->resRedirect("/c$id", 'post')
@@ -259,6 +272,7 @@ sub edit {
 
       # modify for dbCharRevisionInsert
       ($frm->{b_month}, $frm->{b_day}) = delete($frm->{bday}) =~ /^(\d{2})-(\d{2})$/ ? ($1, $2) : (0, 0);
+      $frm->{main} ||= undef;
       $frm->{traits} = \@traits;
       $_->[1]||=undef for (@vns);
       $frm->{vns} = \@vns;
@@ -291,12 +305,16 @@ sub edit {
        map [ $_, mt("_gender_$_") ], @{$self->{genders}} ] ],
     [ input  => name => mt('_chare_form_bday'),  short => 'bday',   width => 100, post => ' '.mt('_chare_form_bday_fmt')  ],
     [ input  => name => mt('_chare_form_bust'),  short => 's_bust', width => 50, post => ' cm' ],
-    [ input  => name => mt('_chare_form_waist'), short => 's_waist',width => 50, post => ' cm'  ],
-    [ input  => name => mt('_chare_form_hip'),   short => 's_hip',  width => 50, post => ' cm'  ],
+    [ input  => name => mt('_chare_form_waist'), short => 's_waist',width => 50, post => ' cm' ],
+    [ input  => name => mt('_chare_form_hip'),   short => 's_hip',  width => 50, post => ' cm' ],
     [ input  => name => mt('_chare_form_height'),short => 'height', width => 50, post => ' cm' ],
     [ input  => name => mt('_chare_form_weight'),short => 'weight', width => 50, post => ' kg' ],
     [ select => name => mt('_chare_form_bloodt'),short => 'bloodt', options => [
        map [ $_, mt("_bloodt_$_") ], @{$self->{blood_types}} ] ],
+    [ static => contents => '<br />' ],
+    [ input  => name => mt('_chare_form_main'),  short => 'main', width => 50, post => ' '.mt('_chare_form_main_note') ],
+    [ select => name => mt('_chare_form_main_spoil'), short => 'main_spoil', options => [
+       map [$_, mt("_spoil_$_")], 0..2 ] ],
   ],
 
   chare_img => [ mt('_chare_image'), [ static => nolabel => 1, content => sub {

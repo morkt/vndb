@@ -4930,6 +4930,20 @@ cs*:
 hu*:
 nl : Bloedgroep
 
+:_revfield_c_main
+en : Main character
+ru*:
+cs*:
+hu*:
+nl : Hoofdkarakter
+
+:_revfield_c_main_spoil
+en : Spoiler
+ru*:
+cs*:
+hu*:
+nl :
+
 :_revfield_c_image
 en : Image
 ru*:
@@ -5182,6 +5196,27 @@ ru*:
 cs*:
 hu*:
 nl : Bloedgroep
+
+:_chare_form_main
+en : Instance of
+ru*:
+cs*:
+hu*:
+nl : Instantie van
+
+:_chare_form_main_note
+en : ID of the main character - the character of which this is an instance of.
+ru*:
+cs*:
+hu*:
+nl : ID van het hoofdkarakter - het karakter waar dit een instantie van is.
+
+:_chare_form_main_spoil
+en : Spoiler
+ru*:
+cs*:
+hu*:
+nl :
 
 :_chare_image
 en : Image
@@ -8499,6 +8534,13 @@ ru : Пожалуйста, прочтите [url,/d5.4,руководство] �
 cs*:
 hu : Légyszíves olvasdd el a szerkesztési összegzés [url,/d5.4, útmutatóját].
 nl : Lees a.u.b. [url,/d5.4,de richtlijnen] over het gebruik van de samenvatting.
+
+:_formerr_e_mainchar
+en : Invalid main character. Make sure the ID is correct, that the main character itself is not an instance of an other character, and that this entry is not used as a main character elsewhere.
+ru*:
+cs*:
+hu*:
+nl : Ongeldig hoofdkaracter. Zorg ervoor dat het ID correct is, dat het hoofdkarakter zelf geen instantie is van een ander karakter, en dat dit karakter zelf ook niet ergens gebruikt wordt als hoofdkarakter.
 
 :_formerr_title
 en : Error

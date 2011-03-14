@@ -61,7 +61,7 @@ CREATE TABLE chars_rev (
   weight     smallint NOT NULL DEFAULT 0,
   bloodt     blood_type NOT NULL DEFAULT 'unknown',
   main       integer  REFERENCES chars (id),
-  main_spoil boolean  NOT NULL DEFAULT false
+  main_spoil smallint NOT NULL DEFAULT 0
 );
 ALTER TABLE chars ADD FOREIGN KEY (latest) REFERENCES chars_rev (id) DEFERRABLE INITIALLY DEFERRED;
 

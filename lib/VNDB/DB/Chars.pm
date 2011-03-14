@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbCharGet dbCharRevisionInsert dbCharImageId|;
 
 
-# options: id rev traitspoil trait_inc trait_exc what results page
+# options: id rev instance traitspoil trait_inc trait_exc what results page
 # what: extended traits vns changes
 sub dbCharGet {
   my $self = shift;
@@ -24,6 +24,7 @@ sub dbCharGet {
     !$o{id} && !$o{rev} ? ( 'c.hidden = FALSE' => 1 ) : (),
     $o{id}  ? ( 'c.id = ?'  => $o{id} ) : (),
     $o{rev} ? ( 'h.rev = ?' => $o{rev} ) : (),
+    $o{instance} ? ( 'cr.main = ?' => $o{instance} ) : (),
     $o{trait_inc} ? (
       'c.id IN(SELECT cid FROM traits_chars WHERE tid IN(!l) AND spoil <= ? GROUP BY cid HAVING COUNT(tid) = ?)',
       [ ref $o{trait_inc} ? $o{trait_inc} : [$o{trait_inc}], $o{traitspoil}, ref $o{trait_inc} ? $#{$o{trait_inc}}+1 : 1 ]) : (),
@@ -32,7 +33,7 @@ sub dbCharGet {
   );
 
   my @select = (qw|c.id cr.name cr.original|, 'cr.id AS cid');
-  push @select, qw|c.hidden c.locked cr.alias cr.desc cr.image cr.b_month cr.b_day cr.s_bust cr.s_waist cr.s_hip cr.height cr.weight cr.bloodt cr.gender| if $o{what} =~ /extended/;
+  push @select, qw|c.hidden c.locked cr.alias cr.desc cr.image cr.b_month cr.b_day cr.s_bust cr.s_waist cr.s_hip cr.height cr.weight cr.bloodt cr.gender cr.main cr.main_spoil| if $o{what} =~ /extended/;
   push @select, qw|h.requester h.comments c.latest u.username h.rev h.ihid h.ilock|, "extract('epoch' from h.added) as added" if $o{what} =~ /changes/;
 
   my @join;
@@ -88,7 +89,7 @@ sub dbCharRevisionInsert {
   my($self, $o) = @_;
 
   my %set = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
-    qw|name original alias desc image b_month b_day s_bust s_waist s_hip height weight bloodt gender|;
+    qw|name original alias desc image b_month b_day s_bust s_waist s_hip height weight bloodt gender main main_spoil|;
   $self->dbExec('UPDATE edit_char !H', \%set) if keys %set;
 
   if($o->{traits}) {
