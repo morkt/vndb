@@ -24,7 +24,7 @@ sub dbReleaseGet {
     !$o{id} && !$o{rev}     ? ( 'r.hidden = FALSE' => 0       ) : (),
     $o{id}                  ? ( 'r.id = ?'         => $o{id}  ) : (),
     $o{rev}                 ? ( 'c.rev = ?'        => $o{rev} ) : (),
-    $o{vid}                 ? ( 'rv.vid = ?'       => $o{vid} ) : (),
+    $o{vid}                 ? ( 'rv.vid IN(!l)'    => [ ref $o{vid} ? $o{vid} : [$o{vid}] ] ) : (),
     $o{pid}                 ? ( 'rp.pid = ?'       => $o{pid} ) : (),
     defined $o{patch}       ? ( 'rr.patch = ?'     => $o{patch}    == 1 ? 1 : 0) : (),
     defined $o{freeware}    ? ( 'rr.freeware = ?'  => $o{freeware} == 1 ? 1 : 0) : (),

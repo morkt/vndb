@@ -3,7 +3,7 @@ package VNDB::Handler::Releases;
 
 use strict;
 use warnings;
-use TUWF ':html', 'uri_escape';
+use TUWF ':html', ':xml', 'uri_escape';
 use VNDB::Func;
 
 
@@ -13,6 +13,7 @@ TUWF::register(
   qr{r}                            => \&browse,
   qr{r(?:([1-9]\d*)(?:\.([1-9]\d*))?/(edit|copy))}
     => \&edit,
+  qr{xml/releases.xml}             => \&relxml,
 );
 
 
@@ -587,6 +588,37 @@ sub _fil_compat {
   $c{freeware} = $f->{fw} == 2 ? 0 : 1 if $f->{fw};
   $c{doujin} = $f->{do} == 2 ? 0 : 1 if $f->{do};
   return %c;
+}
+
+
+sub relxml {
+  my $self = shift;
+
+  my $f = $self->formValidate(
+    { get => 'v', required => 1, multi => 1, mincount => 1, template => 'int' }
+  );
+  return $self->resNotFound if $f->{_err};
+
+  my $list = $self->dbReleaseGet(vid => $f->{v}, results => 100, what => 'vn');
+  my %vns = map +($_,0), @{$f->{v}};
+  for my $r (@$list) {
+    for my $v (@{$r->{vn}}) {
+      next if !exists $vns{$v->{vid}};
+      $vns{$v->{vid}} = [ $v ] if !$vns{$v->{vid}};
+      push @{$vns{$v->{vid}}}, $r;
+    }
+  }
+  $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
+  xml;
+  tag 'vns';
+   for (sort { $a->[0]{title} cmp $b->[0]{title} } values %vns) {
+     my $v = shift @$_;
+     tag 'vn', id => $v->{vid}, title => $v->{title};
+      tag 'release', id => $_->{id}, lang => join(',', @{$_->{languages}}), $_->{title}
+        for (@$_);
+     end;
+   }
+  end;
 }
 
 

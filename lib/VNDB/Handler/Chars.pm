@@ -141,6 +141,7 @@ sub page {
 
      # vns
      # TODO: handle spoilers!
+     # TODO: translate!
      if(@{$r->{vns}}) {
        my %vns;
        push @{$vns{$_->{vid}}}, $_ for(sort { !defined($a->{rid})?1:!defined($b->{rid})?-1:$a->{rtitle} cmp $b->{rtitle} } @{$r->{vns}});
@@ -334,7 +335,18 @@ sub edit {
   ],
 
   chare_vns => [ mt('_chare_vns'),
-    [ input => short => 'vns', name => 'VNs (debug)' ],
+    [ hidden => short => 'vns' ],
+    [ static => nolabel => 1, content => sub {
+      h2 'Selected visual novels';
+      table; tbody id => 'vns_tbl';
+       Tr id => 'vns_loading'; td colspan => '4', mt('_js_loading'); end;
+      end; end;
+      h2 'Add visual novel';
+      table; Tr;
+       td class => 'tc_vnadd'; input id => 'vns_input', type => 'text', class => 'text'; end;
+       td colspan => 3, '';
+      end; end;
+    }],
   ]);
   $self->htmlFooter;
 }

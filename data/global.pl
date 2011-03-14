@@ -108,6 +108,7 @@ our %S = (%S,
   vnlist_status   => [ 0..4 ],
   blood_types     => [qw| unknown a b ab o |],
   genders         => [qw| unknown m f b |],
+  char_roles      => [qw| main primary side appears |],
   atom_feeds => { # num_entries, title, id
     announcements => [ 10, 'VNDB Site Announcements', '/t/an' ],
     changes       => [ 25, 'VNDB Recent Changes', '/hist' ],

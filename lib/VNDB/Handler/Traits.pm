@@ -423,7 +423,7 @@ sub traitxml {
 
   $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
   xml;
-  tag 'tags', more => $np ? 'yes' : 'no';
+  tag 'traits', more => $np ? 'yes' : 'no';
    for(@$list) {
      tag 'item', id => $_->{id}, meta => $_->{meta} ? 'yes' : 'no', group => $_->{group}||'', groupname => $_->{groupname}||'', state => $_->{state}, $_->{name};
    }

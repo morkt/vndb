@@ -105,6 +105,7 @@ sub jsgen {
   $common .= sprintf "age_ratings = [ %s ];\n", join ',', @{$S{age_ratings}};
   $common .= sprintf "languages = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{languages}};
   $common .= sprintf "platforms = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{platforms}};
+  $common .= sprintf "char_roles = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{char_roles}};
   $common .= sprintf "media = [ %s ];\n", join ', ', map qq{"$_"}, sort keys %{$S{media}};
   $common .= sprintf "release_types = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{release_types}};
   $common .= sprintf "animated = [ %s ];\n", join ', ', @{$S{animated}};
