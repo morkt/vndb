@@ -5025,6 +5025,20 @@ cs*:
 hu*:
 nl : Verjaardag
 
+:_charp_vns
+en : Visual novels
+ru*:
+cs*:
+hu*:
+nl :
+
+:_charp_vns_other
+en : All other releases
+ru*:
+cs*:
+hu*:
+nl : Overige uitgaven
+
 :_charp_description
 en : Description
 ru*:
@@ -5266,6 +5280,62 @@ ru*:
 cs*:
 hu*:
 nl :
+
+:_chare_vns_sel
+en : Selected visual novels
+ru*:
+cs*:
+hu*:
+nl : Geselecteerde visual novels
+
+:_chare_vns_add
+en : Add visual novel
+ru*:
+cs*:
+hu*:
+nl : Voeg visual novel toe
+
+:_chare_vns_empty
+en : No visual novels selected.
+ru*:
+cs*:
+hu*:
+nl : Geen visual novels geselecteerd
+
+:_chare_vns_addrel
+en : add release
+ru*:
+cs*:
+hu*:
+nl : voeg uitgave toe
+
+:_chare_vns_other
+en : All / others
+ru*:
+cs*:
+hu*:
+nl : Alle / overige
+
+:_chare_vns_del
+en : remove
+ru*:
+cs*:
+hu*:
+nl : verwijder
+
+:_chare_vns_allrel
+en : All releases already selected.
+ru*:
+cs*:
+hu*:
+nl : Alle uitgaven al geselecteerd.
+
+:_chare_vns_exists
+en : VN already present.
+ru*:
+cs*:
+hu*:
+nl : VN is al geselecteerd.
 
 
 

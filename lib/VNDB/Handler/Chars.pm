@@ -141,12 +141,11 @@ sub page {
 
      # vns
      # TODO: handle spoilers!
-     # TODO: translate!
      if(@{$r->{vns}}) {
        my %vns;
        push @{$vns{$_->{vid}}}, $_ for(sort { !defined($a->{rid})?1:!defined($b->{rid})?-1:$a->{rtitle} cmp $b->{rtitle} } @{$r->{vns}});
        Tr ++$i % 2 ? (class => 'odd') : ();
-        td class => 'key', 'Visual novels';
+        td class => 'key', mt '_charp_vns';
         td;
          my $first = 0;
          for my $g (sort { $vns{$a}[0]{vntitle} cmp $vns{$b}[0]{vntitle} } keys %vns) {
@@ -168,7 +167,7 @@ sub page {
                b class => 'grayedout', "r$_->{rid}:";
                a href => "/r$_->{rid}", $_->{rtitle};
              } else {
-               txt 'All other releases';
+               txt mt '_charp_vns_other';
              }
            }
          }
@@ -337,11 +336,11 @@ sub edit {
   chare_vns => [ mt('_chare_vns'),
     [ hidden => short => 'vns' ],
     [ static => nolabel => 1, content => sub {
-      h2 'Selected visual novels';
+      h2 mt '_chare_vns_sel';
       table; tbody id => 'vns_tbl';
        Tr id => 'vns_loading'; td colspan => '4', mt('_js_loading'); end;
       end; end;
-      h2 'Add visual novel';
+      h2 mt '_chare_vns_add';
       table; Tr;
        td class => 'tc_vnadd'; input id => 'vns_input', type => 'text', class => 'text'; end;
        td colspan => 3, '';

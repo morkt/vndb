@@ -1887,8 +1887,6 @@ if(byId('traits_tbl'))
 
 /*  C H A R A C T E R   < - >   V N   L I N K I N G  (/c+/edit) */
 
-// TODO: translate!
-
 function cvnLoad() {
   // load current links
   var l = byId('vns').value.split(' ');
@@ -1940,7 +1938,7 @@ function cvnEmpty() {
   if(e && l.length > 1)
     t.removeChild(e);
   else if(!e && l.length < 1)
-    t.appendChild(tag('tr', {id:'vns_empty',colspan:3}, tag('td', 'No visual novels selected.')));
+    t.appendChild(tag('tr', {id:'vns_empty',colspan:3}, tag('td', mt('_chare_vns_empty'))));
 }
 
 function cvnVNAdd(vn, rel) {
@@ -1949,7 +1947,7 @@ function cvnVNAdd(vn, rel) {
   byId('vns_tbl').appendChild(tag('tr', {id:'cvn_v'+vid, cvn_vid:vid, cvn_rels:rels},
     tag('td', {'class':'tc_vn',colspan:4}, 'v'+vid+':',
       tag('a', {href:'/v'+vid}, vn.getAttribute('title')),
-      tag('i', '(', tag('a', {href:'#', onclick:cvnRelNew}, 'add release'), ')')
+      tag('i', '(', tag('a', {href:'#', onclick:cvnRelNew}, mt('_chare_vns_addrel')), ')')
     )
   ));
   if(rel)
@@ -1959,7 +1957,7 @@ function cvnVNAdd(vn, rel) {
 
 function cvnRelAdd(vid, rid, role, spoil) {
   var rels = byId('cvn_v'+vid).cvn_rels;
-  var rsel = tag('select', {onchange:cvnRelChange}, tag('option', {value:0}, 'All / others'));
+  var rsel = tag('select', {onchange:cvnRelChange}, tag('option', {value:0}, mt('_chare_vns_other')));
   for(var i=0; i<rels.length; i++) {
     var id = rels[i].getAttribute('id');
     rsel.appendChild(tag('option', {value: id, selected:id==rid},
@@ -1985,7 +1983,7 @@ function cvnRelAdd(vid, rid, role, spoil) {
     tag('td', {'class':'tc_rel'}, rsel),
     tag('td', {'class':'tc_rol'}, lsel),
     tag('td', {'class':'tc_spl'}, ssel),
-    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:cvnRelDel}, 'remove'))
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:cvnRelDel}, mt('_chare_vns_del')))
   ), last);
 }
 
@@ -2019,7 +2017,7 @@ function cvnRelNew() {
         break;
     }
     if(i == tr.cvn_rels.length) {
-      alert('All releases already selected');
+      alert(mt('_chare_vns_allrel'));
       return false;
     }
   }
@@ -2060,7 +2058,7 @@ function cvnFormAdd(item) {
 
     var id = items[0].getAttribute('id');
     if(byId('cvn_v'+id))
-      return alert(mt('VN already present.'));
+      return alert(mt('_chare_vns_exists'));
     cvnVNAdd(items[0], 1);
     cvnSerialize();
   }, 1);
