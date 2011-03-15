@@ -5060,6 +5060,13 @@ cs*:
 hu*:
 nl : Beschrijving
 
+:_charp_instances
+en : Other instances
+ru*:
+cs*:
+hu*:
+nl : Andere instanties
+
 
 
 # Add/edit character

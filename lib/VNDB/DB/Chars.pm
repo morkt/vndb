@@ -24,6 +24,7 @@ sub dbCharGet {
     !$o{id} && !$o{rev} ? ( 'c.hidden = FALSE' => 1 ) : (),
     $o{id}  ? ( 'c.id = ?'  => $o{id} ) : (),
     $o{rev} ? ( 'h.rev = ?' => $o{rev} ) : (),
+    $o{notid}    ? ( 'c.id <> ?'   => $o{notid} ) : (),
     $o{instance} ? ( 'cr.main = ?' => $o{instance} ) : (),
     $o{trait_inc} ? (
       'c.id IN(SELECT cid FROM traits_chars WHERE tid IN(!l) AND spoil <= ? GROUP BY cid HAVING COUNT(tid) = ?)',

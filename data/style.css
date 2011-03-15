@@ -862,6 +862,7 @@ div.charimg p   { text-align: center; padding: 0px; margin: 0; }
 .chardesc p     { padding: 0 0 0 5px; }
 div.chardetails table { float: left; width: 530px; }
 div.chardetails table td.key { width: 80px; }
+div.chardetails.charsep { padding-top: 5px; margin-top: 5px; border-top: 1px solid $border$ }
 
 
 /***** Char edit *****/

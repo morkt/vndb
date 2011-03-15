@@ -66,136 +66,160 @@ sub page {
    $self->htmlItemMessage('c', $r);
    h1 $r->{name};
    h2 class => 'alttitle', $r->{original} if $r->{original};
-
-   div class => 'chardetails';
-
-    # image
-    div class => 'charimg';
-     if(!$r->{image}) {
-       p mt '_charp_noimg';
-     } elsif($r->{image} < 0) {
-       p mt '_charp_imgproc';
-     } else {
-       img src => sprintf('%s/ch/%02d/%d.jpg', $self->{url_static}, $r->{image}%100, $r->{image}),
-         alt => $r->{name} if $r->{image};
-     }
-    end 'div';
-
-    # info table
-    table;
-     Tr;
-      td colspan => 2;
-       b style => 'margin-right: 10px', $r->{name};
-       b class => 'grayedout', style => 'margin-right: 10px', $r->{original} if $r->{original};
-       cssicon "gen $r->{gender}", mt "_gender_$r->{gender}" if $r->{gender} ne 'unknown';
-       span mt "_bloodt_$r->{bloodt}" if $r->{bloodt} ne 'unknown';
-      end;
-     end;
-     my $i = 0;
-     if($r->{alias}) {
-       $r->{alias} =~ s/\n/, /g;
-       Tr ++$i % 2 ? (class => 'odd') : ();
-        td class => 'key', mt '_charp_alias';
-        td $r->{alias};
-       end;
-     }
-     if($r->{height} || $r->{s_bust} || $r->{s_waist} || $r->{s_hip}) {
-       Tr ++$i % 2 ? (class => 'odd') : ();
-        td class => 'key', mt '_charp_meas';
-        td join ', ',
-          $r->{s_bust} || $r->{s_waist} || $r->{s_hip} ? mt('_charp_meas_bwh', $r->{s_bust}||'??', $r->{s_waist}||'??', $r->{s_hip}||'??') : (),
-          $r->{height} ? mt('_charp_meas_h', $r->{height}) : ();
-       end;
-     }
-     if($r->{weight}) {
-       Tr ++$i % 2 ? (class => 'odd') : ();
-        td class => 'key', mt '_charp_weight';
-        td "$r->{weight} kg";
-       end;
-     }
-     if($r->{b_month} && $r->{b_day}) {
-       Tr ++$i % 2 ? (class => 'odd') : ();
-        td class => 'key', mt '_charp_bday';
-        td sprintf '%02d-%02d', $r->{b_month}, $r->{b_day};
-       end;
-     }
-
-     # traits
-     # TODO: handle spoilers and 'sexual' traits
-     my %groups;
-     my @groups;
-     for (@{$r->{traits}}) {
-       my $g = $_->{group}||$_->{tid};
-       push @groups, $g if !$groups{$g};
-       push @{$groups{ $g }}, $_
-     }
-     for my $g (@groups) {
-       Tr ++$i % 2 ? (class => 'odd') : ();
-        td class => 'key'; a href => '/i'.($groups{$g}[0]{group}||$groups{$g}[0]{tid}), $groups{$g}[0]{groupname} || $groups{$g}[0]{name}; end;
-        td;
-         for (@{$groups{$g}}) {
-           txt ', ' if $_->{tid} != $groups{$g}[0]{tid};
-           a href => "/i$_->{tid}", $_->{name};
-         }
-        end;
-       end;
-     }
-
-     # vns
-     # TODO: handle spoilers!
-     if(@{$r->{vns}}) {
-       my %vns;
-       push @{$vns{$_->{vid}}}, $_ for(sort { !defined($a->{rid})?1:!defined($b->{rid})?-1:$a->{rtitle} cmp $b->{rtitle} } @{$r->{vns}});
-       Tr ++$i % 2 ? (class => 'odd') : ();
-        td class => 'key', mt '_charp_vns';
-        td;
-         my $first = 0;
-         for my $g (sort { $vns{$a}[0]{vntitle} cmp $vns{$b}[0]{vntitle} } keys %vns) {
-           br if $first++;
-           my @r = @{$vns{$g}};
-           # special case: all releases, no exceptions
-           if(@r == 1 && !$r[0]{rid}) {
-             txt mt("_charrole_$r[0]{role}").' - ';
-             a href => "/v$r[0]{vid}", $r[0]{vntitle};
-             next;
-           }
-           # otherwise, print VN title and list releases separately
-           a href => "/v$r[0]{vid}", $r[0]{vntitle};
-           for(@r) {
-             br;
-             b class => 'grayedout', '> ';
-             txt mt("_charrole_$_->{role}").' - ';
-             if($_->{rid}) {
-               b class => 'grayedout', "r$_->{rid}:";
-               a href => "/r$_->{rid}", $_->{rtitle};
-             } else {
-               txt mt '_charp_vns_other';
-             }
-           }
-         }
-        end;
-       end;
-     }
-
-     # description
-     if($r->{desc}) {
-       Tr;
-        td class => 'chardesc', colspan => 2;
-         h2 mt '_charp_description';
-         p;
-          lit bb2html $r->{desc};
-         end;
-        end;
-       end;
-     }
-
-    end 'table';
-
-   end;
-   clearfloat;
-
+   _chartable($self, $r);
   end;
+
+  # TODO: ordering of these instances?
+  my $inst = [];
+  if(!$r->{main}) {
+    $inst = $self->dbCharGet(instance => $r->{id}, what => 'extended traits vns');
+  } else {
+    $inst = $self->dbCharGet(instance => $r->{main}, notid => $r->{id}, what => 'extended traits vns');
+    push @$inst, $self->dbCharGet(id => $r->{main}, what => 'extended traits vns')->[0];
+  }
+  if(@$inst) {
+    div class => 'mainbox';
+     h1 mt '_charp_instances';
+     _chartable($self, $_, 1, $_ != $inst->[0]) for @$inst;
+    end;
+  }
+
   $self->htmlFooter;
+}
+
+
+sub _chartable {
+  my($self, $r, $link, $sep) = @_;
+
+  div class => 'chardetails'.($sep ? ' charsep' : '');
+
+   # image
+   div class => 'charimg';
+    if(!$r->{image}) {
+      p mt '_charp_noimg';
+    } elsif($r->{image} < 0) {
+      p mt '_charp_imgproc';
+    } else {
+      img src => sprintf('%s/ch/%02d/%d.jpg', $self->{url_static}, $r->{image}%100, $r->{image}),
+        alt => $r->{name} if $r->{image};
+    }
+   end 'div';
+
+   # info table
+   table;
+    Tr;
+     td colspan => 2;
+      if($link) {
+        a href => "/c$r->{id}", style => 'margin-right: 10px; font-weight: bold', $r->{name};
+      } else {
+        b style => 'margin-right: 10px', $r->{name};
+      }
+      b class => 'grayedout', style => 'margin-right: 10px', $r->{original} if $r->{original};
+      cssicon "gen $r->{gender}", mt "_gender_$r->{gender}" if $r->{gender} ne 'unknown';
+      span mt "_bloodt_$r->{bloodt}" if $r->{bloodt} ne 'unknown';
+     end;
+    end;
+    my $i = 0;
+    if($r->{alias}) {
+      $r->{alias} =~ s/\n/, /g;
+      Tr ++$i % 2 ? (class => 'odd') : ();
+       td class => 'key', mt '_charp_alias';
+       td $r->{alias};
+      end;
+    }
+    if($r->{height} || $r->{s_bust} || $r->{s_waist} || $r->{s_hip}) {
+      Tr ++$i % 2 ? (class => 'odd') : ();
+       td class => 'key', mt '_charp_meas';
+       td join ', ',
+         $r->{s_bust} || $r->{s_waist} || $r->{s_hip} ? mt('_charp_meas_bwh', $r->{s_bust}||'??', $r->{s_waist}||'??', $r->{s_hip}||'??') : (),
+         $r->{height} ? mt('_charp_meas_h', $r->{height}) : ();
+      end;
+    }
+    if($r->{weight}) {
+      Tr ++$i % 2 ? (class => 'odd') : ();
+       td class => 'key', mt '_charp_weight';
+       td "$r->{weight} kg";
+      end;
+    }
+    if($r->{b_month} && $r->{b_day}) {
+      Tr ++$i % 2 ? (class => 'odd') : ();
+       td class => 'key', mt '_charp_bday';
+       td sprintf '%02d-%02d', $r->{b_month}, $r->{b_day};
+      end;
+    }
+
+    # traits
+    # TODO: handle spoilers and 'sexual' traits
+    my %groups;
+    my @groups;
+    for (@{$r->{traits}}) {
+      my $g = $_->{group}||$_->{tid};
+      push @groups, $g if !$groups{$g};
+      push @{$groups{ $g }}, $_
+    }
+    for my $g (@groups) {
+      Tr ++$i % 2 ? (class => 'odd') : ();
+       td class => 'key'; a href => '/i'.($groups{$g}[0]{group}||$groups{$g}[0]{tid}), $groups{$g}[0]{groupname} || $groups{$g}[0]{name}; end;
+       td;
+        for (@{$groups{$g}}) {
+          txt ', ' if $_->{tid} != $groups{$g}[0]{tid};
+          a href => "/i$_->{tid}", $_->{name};
+        }
+       end;
+      end;
+    }
+
+    # vns
+    # TODO: handle spoilers!
+    if(@{$r->{vns}}) {
+      my %vns;
+      push @{$vns{$_->{vid}}}, $_ for(sort { !defined($a->{rid})?1:!defined($b->{rid})?-1:$a->{rtitle} cmp $b->{rtitle} } @{$r->{vns}});
+      Tr ++$i % 2 ? (class => 'odd') : ();
+       td class => 'key', mt '_charp_vns';
+       td;
+        my $first = 0;
+        for my $g (sort { $vns{$a}[0]{vntitle} cmp $vns{$b}[0]{vntitle} } keys %vns) {
+          br if $first++;
+          my @r = @{$vns{$g}};
+          # special case: all releases, no exceptions
+          if(@r == 1 && !$r[0]{rid}) {
+            txt mt("_charrole_$r[0]{role}").' - ';
+            a href => "/v$r[0]{vid}", $r[0]{vntitle};
+            next;
+          }
+          # otherwise, print VN title and list releases separately
+          a href => "/v$r[0]{vid}", $r[0]{vntitle};
+          for(@r) {
+            br;
+            b class => 'grayedout', '> ';
+            txt mt("_charrole_$_->{role}").' - ';
+            if($_->{rid}) {
+              b class => 'grayedout', "r$_->{rid}:";
+              a href => "/r$_->{rid}", $_->{rtitle};
+            } else {
+              txt mt '_charp_vns_other';
+            }
+          }
+        }
+       end;
+      end;
+    }
+
+    # description
+    if($r->{desc}) {
+      Tr;
+       td class => 'chardesc', colspan => 2;
+        h2 mt '_charp_description';
+        p;
+         lit bb2html $r->{desc};
+        end;
+       end;
+      end;
+    }
+
+   end 'table';
+  end;
+  clearfloat;
 }
 
 
@@ -311,7 +335,7 @@ sub edit {
     [ input  => name => mt('_chare_form_weight'),short => 'weight', width => 50, post => ' kg' ],
     [ select => name => mt('_chare_form_bloodt'),short => 'bloodt', options => [
        map [ $_, mt("_bloodt_$_") ], @{$self->{blood_types}} ] ],
-    [ static => contents => '<br />' ],
+    [ static => content => '<br />' ],
     [ input  => name => mt('_chare_form_main'),  short => 'main', width => 50, post => ' '.mt('_chare_form_main_note') ],
     [ select => name => mt('_chare_form_main_spoil'), short => 'main_spoil', options => [
        map [$_, mt("_spoil_$_")], 0..2 ] ],
