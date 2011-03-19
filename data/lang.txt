@@ -5099,6 +5099,13 @@ cs : Editovat [_1]
 hu : [_1] szerkesztése
 nl : Wijzig [_1]
 
+:_chare_title_copy
+en : Copy [_1]
+ru : Копирование [_1]
+cs : Kopírovat [_1]
+hu : [_1] másolása
+nl : Kopieer [_1]
+
 :_chare_title_add
 en : Add new character
 ru*:
@@ -8360,23 +8367,23 @@ nl : Dit item is uit de database verwijderd. Als je het hier niet mee eens bent
 # The warning/notice messages on edit pages
 
 :_editmsg_copy_title
-en : You're not editing a release!
-ru : Вы не редактируете выпуск, а копируете его!
-cs : Needitujete vydání!
-hu : Te most nem szerkesztesz egy kiadást!
-nl : Je bent geen uitgave aan het wijzigen!
+en : You're not editing a entry!
+ru*:
+cs*:
+hu*:
+nl : Je bent geen item aan het wijzigen!
 
 :_editmsg_copy_msg
-en : You're about to insert a new release into the database with information based on [_1].[br]
-     Hit the 'edit' tab on the right-top if you intended to edit the release instead of creating a new one.
-ru : Вы собираетесь создать новый выпуск, основанный на информации из [_1].[br]
+en : You're about to insert a new entry into the database with information based on [_1].[br]
+     Hit the 'edit' tab on the right-top if you intended to edit the entry instead of creating a new one.
+ru*: Вы собираетесь создать новый выпуск, основанный на информации из [_1].[br]
      Щёлкните вкладку 'правка' в правом верхнем углу, если собирались редактировать выпуск, а не создавать новый.
-cs : Chystáte se vložit nové vydání do databáze s informacemi založenými na vydání [_1].[br]
+cs*: Chystáte se vložit nové vydání do databáze s informacemi založenými na vydání [_1].[br]
      Pokud chcete editovat vydání místo toho, abyste vložili další vydání, přejděte na záložku 'editovat' v pravém horním rohu.
-hu : Te most ép arra készülsz, hogy egy új kiadást hozzál létre az adatbázisban, [_1]-ra alapozva az információkat.[br]
+hu*: Te most ép arra készülsz, hogy egy új kiadást hozzál létre az adatbázisban, [_1]-ra alapozva az információkat.[br]
      Klikkelj a 'szerkesztés' fülre a jobb felső sarokba ha egy új kiadás helyet, csak szerkeszteni akartad a meglévőt.
-nl : Je staat op het punt om een nieuwe uitgave toe te voegen aan de database, met informatie gebasseerd op [_1].[br]
-     Klik op de 'wijzig' tab rechtsboven als je bedoeling is om deze uitgave te wijzigen in plaats van een nieuwe aan te maken.
+nl : Je staat op het punt om een nieuw item toe te voegen aan de database, met informatie gebasseerd op [_1].[br]
+     Klik op de 'wijzig' tab rechtsboven als je bedoeling is om dit item te wijzigen in plaats van een nieuwe aan te maken.
 
 :_editmsg_msg_title
 en : Before editing:
@@ -8411,7 +8418,7 @@ en : [url,_1,Search the database] to see if we already have information about th
 ru*: [url,_1,Воспользуйтесь поиском], ведь вполне возможно, что у нас уже есть информация об [index,_2,этой новелле,этом выпуске,этой компании].
 cs*: [url,_1,Prohledejte databázi], zda již nemáme informaci o [index,_2,této vizuální novele,tomto vydání,tomto producentovi].
 hu*: [url,_1,Nézd át az adatbázist], hogy van-e már információ erről a [index,_2,visual novelről, kiadásról, készítőről].
-nl : [url,_1,Doorzoek de database] om te kijken of we al informatie hebben over [index,_2,deze visual novel,deze uitgave,deze producent,dit kenmerk].
+nl : [url,_1,Doorzoek de database] om te kijken of we al informatie hebben over [index,_2,deze visual novel,deze uitgave,deze producent,dit karakter].
 
 :_editmsg_revert_title
 en : Reverting
@@ -8429,7 +8436,7 @@ cs*: Editujete starší verzi [index,_1,této vizuální novely,tohoto vydání,
      Pokud ji uložíte, všechny změny provedené po této revizi budou vráceny!
 hu*: Te egy régi átjavítását szerkeszted ennek a [index,_1,visual novelnek, kiadásnak, készítőnek].
      Ha lemented, akkor minden szerkesztés amit ezután a javítás után végeztek megsemmisül!
-nl : Je wijzigd een verouderde versie van [index,_1,deze visual novel,deze uitgave,deze producent,dit kenmerk].
+nl : Je wijzigd een verouderde versie van [index,_1,deze visual novel,deze uitgave,deze producent,dit karakter].
      Als je dit opslaat, zullen alle wijzigingen na deze revisie teruggedraait worden.
 
 

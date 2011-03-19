@@ -11,7 +11,7 @@ our @EXPORT = ('charTable');
 
 TUWF::register(
   qr{c([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
-  qr{c(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit|/new)}
+  qr{c(?:([1-9]\d*)(?:\.([1-9]\d*))?/(edit|copy)|/new)}
     => \&edit,
 );
 
@@ -228,7 +228,10 @@ sub charTable {
 
 
 sub edit {
-  my($self, $id, $rev) = @_;
+  my($self, $id, $rev, $copy) = @_;
+
+  my $copy = $rev && $rev eq 'copy' || $copy && $copy eq 'copy';
+  $rev = undef if defined $rev && $rev !~ /^\d+$/;
 
   my $r = $id && $self->dbCharGet(id => $id, what => 'changes extended vns traits', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $id && !$r->{id};
@@ -283,10 +286,11 @@ sub edit {
         || $self->dbCharGet(instance => $r->{id})->[0];
     }
 
+    my(@traits, @vns);
     if(!$frm->{_err}) {
       # parse and normalize
-      my @traits = sort { $a->[0] <=> $b->[0] } map /^(\d+)-(\d+)$/&&[$1,$2], split / /, $frm->{traits};
-      my @vns = sort { $a->[0] <=> $b->[0] || $a->[1] <=> $b->[1] }  map [split /-/], split / /, $frm->{vns};
+      @traits = sort { $a->[0] <=> $b->[0] } map /^(\d+)-(\d+)$/&&[$1,$2], split / /, $frm->{traits};
+      @vns = sort { $a->[0] <=> $b->[0] || $a->[1] <=> $b->[1] }  map [split /-/], split / /, $frm->{vns};
       $frm->{traits} = join(' ', map sprintf('%d-%d', @$_), @traits);
       $frm->{vns}    = join(' ', map sprintf('%d-%d-%d-%s', @$_), @vns);
       $frm->{ihid}   = $frm->{ihid} ?1:0;
@@ -294,9 +298,12 @@ sub edit {
       $frm->{main_spoil} = 0 if !$frm->{main};
 
       # check for changes
-      return $self->resRedirect("/c$id", 'post')
-        if $id && !grep $frm->{$_} ne $b4{$_}, keys %b4;
+      my $same = $id && !grep $frm->{$_} ne $b4{$_}, keys %b4;
+      $self->resRedirect("/c$id", 'post') if !$copy && $same;
+      $frm->{_err} = ['nochanges'] if $copy && $same;
+    }
 
+    if(!$frm->{_err}) {
       # modify for dbCharRevisionInsert
       ($frm->{b_month}, $frm->{b_day}) = delete($frm->{bday}) =~ /^(\d{2})-(\d{2})$/ ? ($1, $2) : (0, 0);
       $frm->{main} ||= undef;
@@ -304,7 +311,7 @@ sub edit {
       $_->[1]||=undef for (@vns);
       $frm->{vns} = \@vns;
 
-      my $nrev = $self->dbItemEdit(c => $id ? $r->{cid} : undef, %$frm);
+      my $nrev = $self->dbItemEdit(c => !$copy && $id ? $r->{cid} : undef, %$frm);
 
       # TEMPORARY SOLUTION! I'll investigate more efficient solutions and incremental updates whenever I have more data
       $self->dbExec('SELECT traits_chars_calc()');
@@ -314,13 +321,14 @@ sub edit {
   }
 
   $frm->{$_} //= $b4{$_} for keys %b4;
-  $frm->{editsum} //= sprintf 'Reverted to revision c%d.%d', $id, $rev if $rev;
+  $frm->{editsum} //= sprintf 'Reverted to revision c%d.%d', $id, $rev if !$copy && $rev;
+  $frm->{editsum} = sprintf 'New character based on c%d.%d', $id, $r->{rev} if $copy;
 
-  my $title = mt $r ? ('_chare_title_edit', $r->{name}) : '_chare_title_add';
+  my $title = mt $r ? ($copy ? '_chare_title_copy' : '_chare_title_edit', $r->{name}) : '_chare_title_add';
   $self->htmlHeader(title => $title, noindex => 1);
-  $self->htmlMainTabs('c', $r, 'edit') if $r;
-  $self->htmlEditMessage('c', $r, $title);
-  $self->htmlForm({ frm => $frm, action => $r ? "/c$id/edit" : '/c/new', editsum => 1, upload => 1 },
+  $self->htmlMainTabs('c', $r, $copy ? 'copy' : 'edit') if $r;
+  $self->htmlEditMessage('c', $r, $title, $copy);
+  $self->htmlForm({ frm => $frm, action => $r ? "/c$id/".($copy ? 'copy' : 'edit') : '/c/new', editsum => 1, upload => 1 },
   chare_geninfo => [ mt('_chare_form_generalinfo'),
     [ input  => name => mt('_chare_form_name'), short => 'name' ],
     [ input  => name => mt('_chare_form_original'), short => 'original' ],

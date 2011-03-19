@@ -65,7 +65,7 @@ sub htmlMainTabs {
      end;
    }
 
-   if($type eq 'r' && $self->authCan('edit')) {
+   if($type =~ /[rc]/ && $self->authCan('edit')) {
      li $sel eq 'copy' ? (class => 'tabselected') : ();
       a href => "/$id/copy", mt '_mtabs_copy';
      end;
@@ -277,7 +277,7 @@ sub htmlEditMessage {
      div class => 'warning';
       h2 mt '_editmsg_copy_title';
       p;
-       lit mt '_editmsg_copy_msg', sprintf '<a href="/%s%d">%s</a>', $type, $obj->{id}, xml_escape $obj->{title};
+       lit mt '_editmsg_copy_msg', sprintf '<a href="/%s%d">%s</a>', $type, $obj->{id}, xml_escape $obj->{title}||$obj->{name};
       end;
      end;
    }
