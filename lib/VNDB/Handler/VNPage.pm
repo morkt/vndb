@@ -10,6 +10,7 @@ use VNDB::Func;
 TUWF::register(
   qr{v/rand}                        => \&rand,
   qr{v([1-9]\d*)/rg}                => \&rg,
+  qr{v([1-9]\d*)/(chars)}           => \&page,
   qr{v([1-9]\d*)(?:\.([1-9]\d*))?}  => \&page,
 );
 
@@ -44,6 +45,9 @@ sub rg {
 
 sub page {
   my($self, $vid, $rev) = @_;
+
+  my $char = $rev && $rev eq 'chars';
+  $rev = undef if $char;
 
   my $v = $self->dbVNGet(
     id => $vid,
@@ -177,9 +181,21 @@ sub page {
    }
   end 'div'; # /mainbox
 
-  _releases($self, $v, $r);
-  _stats($self, $v);
-  _screenshots($self, $v, $r) if @{$v->{screenshots}};
+  my $haschar = $self->dbVNHasChar($v->{id});
+  if($haschar) {
+    ul class => 'maintabs notfirst';
+     li class => 'left '.(!$char ? ' tabselected' : ''); a href => "/v$v->{id}", mt '_vnpage_tab_main'; end;
+     li class => 'left '.( $char ? ' tabselected' : ''); a href => "/v$v->{id}/chars", mt '_vnpage_tab_chars'; end;
+    end;
+  }
+
+  if(!$char) {
+    _releases($self, $v, $r);
+    _stats($self, $v);
+    _screenshots($self, $v, $r) if @{$v->{screenshots}};
+  } else {
+    _chars($self, $haschar, $v);
+  }
 
   $self->htmlFooter;
 }
@@ -510,6 +526,26 @@ sub _stats {
      $self->htmlVoteStats(v => $v, $stats);
    }
   end;
+}
+
+
+sub _chars {
+  my($self, $has, $v) = @_;
+  my $l = $has && $self->dbCharGet(vid => $v->{id}, what => "extended vns($v->{id}) traits");
+  return if !$has;
+  # TODO: spoiler handling + hide unimportant roles by default
+  my %done;
+  my %rol;
+  for my $r (@{$self->{char_roles}}) {
+    $rol{$r} = [ grep grep($_->{role} eq $r, @{$_->{vns}}) && !$done{$_->{id}}++, @$l ];
+  }
+  for my $r (@{$self->{char_roles}}) {
+    next if !@{$rol{$r}};
+    div class => 'mainbox';
+     h1 mt "_charrole_$r";
+     $self->charTable($_, 1, $_ != $rol{$r}[0], 1) for (@{$rol{$r}});
+    end;
+  }
 }
 
 

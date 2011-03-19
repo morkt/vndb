@@ -7,7 +7,7 @@ use Exporter 'import';
 use VNDB::Func 'gtintype', 'normalize_query';
 use Encode 'decode_utf8';
 
-our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom|;
+our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNHasChar|;
 
 
 # Options: id, rev, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
@@ -268,6 +268,13 @@ sub dbScreenshotRandom {
        )|, @vids).' ORDER BY position', @vids);
 }
 
+
+sub dbVNHasChar {
+  my($self, $vid) = @_;
+  return $self->dbRow(
+    'SELECT 1 AS exists FROM chars c JOIN chars_vns cv ON c.latest = cv.cid WHERE cv.vid = ?', $vid
+  )->{exists};
+}
 
 1;
 

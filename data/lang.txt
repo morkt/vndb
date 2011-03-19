@@ -5046,6 +5046,13 @@ cs*:
 hu*:
 nl :
 
+:_charp_releases
+en : Releases
+ru*:
+cs*:
+hu*:
+nl : Uitgaven
+
 :_charp_vns_other
 en : All other releases
 ru*:
@@ -8123,6 +8130,20 @@ ru : Убрать из списка
 cs*:
 hu : Eltávolítás a listából
 nl : Verwijder van lijst
+
+:_vnpage_tab_main
+en : main
+ru*:
+cs*:
+hu*:
+nl : primaire info
+
+:_vnpage_tab_chars
+en : cast
+ru*:
+cs*:
+hu*:
+nl : karakters
 
 :_vnpage_rel
 en : Releases

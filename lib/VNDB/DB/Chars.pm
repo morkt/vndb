@@ -26,6 +26,7 @@ sub dbCharGet {
     $o{rev} ? ( 'h.rev = ?' => $o{rev} ) : (),
     $o{notid}    ? ( 'c.id <> ?'   => $o{notid} ) : (),
     $o{instance} ? ( 'cr.main = ?' => $o{instance} ) : (),
+    $o{vid}      ? ( 'cr.id IN(SELECT cid FROM chars_vns WHERE vid = ?)' => $o{vid} ) : (),
     $o{trait_inc} ? (
       'c.id IN(SELECT cid FROM traits_chars WHERE tid IN(!l) AND spoil <= ? GROUP BY cid HAVING COUNT(tid) = ?)',
       [ ref $o{trait_inc} ? $o{trait_inc} : [$o{trait_inc}], $o{traitspoil}, ref $o{trait_inc} ? $#{$o{trait_inc}}+1 : 1 ]) : (),
@@ -68,7 +69,7 @@ sub dbCharGet {
       )});
     }
 
-    if($o{what} =~ /vns/) {
+    if($o{what} =~ /vns(?:\((\d+)\))?/) {
       push @{$r{ delete $_->{cid} }{vns}}, $_ for (@{$self->dbAll(q|
         SELECT cv.cid, cv.vid, cv.rid, cv.spoil, cv.role, vr.title AS vntitle, rr.title AS rtitle
           FROM chars_vns cv
@@ -76,7 +77,7 @@ sub dbCharGet {
           JOIN vn_rev vr ON vr.id = v.latest
           LEFT JOIN releases r ON cv.rid = r.id
           LEFT JOIN releases_rev rr ON rr.id = r.latest
-         WHERE cv.cid IN(!l)|, [ keys %r ]
+          !W|, { 'cv.cid IN(!l)' => [[keys %r]], $1 ? ('cv.vid = ?', $1) : () }
       )});
     }
   }
@@ -108,6 +109,7 @@ sub dbCharRevisionInsert {
 sub dbCharImageId {
   return shift->dbRow("SELECT nextval('charimg_seq') AS ni")->{ni};
 }
+
 
 
 1;

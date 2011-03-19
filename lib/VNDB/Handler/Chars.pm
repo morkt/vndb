@@ -4,8 +4,10 @@ package VNDB::Handler::Chars;
 use strict;
 use warnings;
 use TUWF ':html';
+use Exporter 'import';
 use VNDB::Func;
 
+our @EXPORT = ('charTable');
 
 TUWF::register(
   qr{c([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
@@ -66,10 +68,10 @@ sub page {
    $self->htmlItemMessage('c', $r);
    h1 $r->{name};
    h2 class => 'alttitle', $r->{original} if $r->{original};
-   _chartable($self, $r);
+   $self->charTable($r);
   end;
 
-  # TODO: ordering of these instances?
+  # TODO: ordering of these instances? + spoiler handling
   my $inst = [];
   if(!$r->{main}) {
     $inst = $self->dbCharGet(instance => $r->{id}, what => 'extended traits vns');
@@ -80,7 +82,7 @@ sub page {
   if(@$inst) {
     div class => 'mainbox';
      h1 mt '_charp_instances';
-     _chartable($self, $_, 1, $_ != $inst->[0]) for @$inst;
+     $self->charTable($_, 1, $_ != $inst->[0]) for @$inst;
     end;
   }
 
@@ -88,8 +90,9 @@ sub page {
 }
 
 
-sub _chartable {
-  my($self, $r, $link, $sep) = @_;
+# Also used from Handler::VNPage
+sub charTable {
+  my($self, $r, $link, $sep, $vn) = @_;
 
   div class => 'chardetails'.($sep ? ' charsep' : '');
 
@@ -171,26 +174,26 @@ sub _chartable {
 
     # vns
     # TODO: handle spoilers!
-    if(@{$r->{vns}}) {
+    if(@{$r->{vns}} && (!$vn || $vn && (@{$r->{vns}} > 1 || $r->{vns}[0]{rid}))) {
       my %vns;
       push @{$vns{$_->{vid}}}, $_ for(sort { !defined($a->{rid})?1:!defined($b->{rid})?-1:$a->{rtitle} cmp $b->{rtitle} } @{$r->{vns}});
       Tr ++$i % 2 ? (class => 'odd') : ();
-       td class => 'key', mt '_charp_vns';
+       td class => 'key', mt $vn ? '_charp_releases' : '_charp_vns';
        td;
         my $first = 0;
         for my $g (sort { $vns{$a}[0]{vntitle} cmp $vns{$b}[0]{vntitle} } keys %vns) {
           br if $first++;
           my @r = @{$vns{$g}};
           # special case: all releases, no exceptions
-          if(@r == 1 && !$r[0]{rid}) {
+          if(!$vn && @r == 1 && !$r[0]{rid}) {
             txt mt("_charrole_$r[0]{role}").' - ';
             a href => "/v$r[0]{vid}", $r[0]{vntitle};
             next;
           }
           # otherwise, print VN title and list releases separately
-          a href => "/v$r[0]{vid}", $r[0]{vntitle};
+          a href => "/v$r[0]{vid}", $r[0]{vntitle} if !$vn;
           for(@r) {
-            br;
+            br if !$vn || $_ != $r[0];
             b class => 'grayedout', '> ';
             txt mt("_charrole_$_->{role}").' - ';
             if($_->{rid}) {
