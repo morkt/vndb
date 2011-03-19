@@ -337,6 +337,7 @@ ul.maintabs li a {
   border: 1px solid $border$;
   border-bottom: none;
   background-color: $tabbg$;
+  color: $grayedout$;
 }
 ul.maintabs.notfirst li a,
 ul.maintabs.notfirst li b        { margin-top: 20px }
@@ -348,10 +349,10 @@ ul.maintabs li.left b            { float: left; margin-left: 0; margin-right: 10
 ul.maintabs li b                 { margin-left: -2px; margin-right: -7px }
 ul.maintabs li.left b            { margin-left: -7px; margin-right: -2px }
 ul.maintabs li.tabselected a,
-ul.maintabs li a:hover           { background-color: $_blendbg$; padding-bottom: 6px }
+ul.maintabs li a:hover           { background-color: $_blendbg$; color: $maintext$; padding-bottom: 6px }
 ul.maintabs.bottom li.tabselected a,
 ul.maintabs.bottom li a:hover    { padding-bottom: 2px; padding-top: 5px; margin-top: 9px }
-ul.maintabs.browsetabs li a      { margin-left: 5px }
+ul.maintabs.browsetabs li a      { margin-left: 5px; color: $maintext$ }
 ul.maintabs.browsetabs li.left a { margin-left: 0; margin-right: 5px }
 
 
