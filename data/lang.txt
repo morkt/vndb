@@ -2370,6 +2370,13 @@ cs : Pouze producenti
 hu : Csak készítők
 nl : Alleen producenten
 
+:_hist_filter_onlychars
+en : Only characters
+ru*:
+cs*:
+hu*:
+nl : Alleen karakters
+
 :_hist_filter_allactions
 en : Show all changes
 ru : Показать все изменения

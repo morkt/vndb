@@ -196,7 +196,7 @@ sub history {
     { get => 'p', required => 0, default => 1, template => 'int' },
     { get => 'm', required => 0, default => !$type, enum => [ 0, 1 ] },
     { get => 'h', required => 0, default => 0, enum => [ -1..1 ] },
-    { get => 't', required => 0, default => '', enum => [ 'v', 'r', 'p' ] },
+    { get => 't', required => 0, default => '', enum => [qw|v r p c|] },
     { get => 'e', required => 0, default => 0, enum => [ -1..1 ] },
     { get => 'r', required => 0, default => 0, enum => [ 0, 1 ] },
   );
@@ -261,6 +261,7 @@ sub history {
       a  $f->{t} eq 'v' ? (class => 'optselected') : (), href => $u->(t => 'v'), mt '_hist_filter_onlyvn';
       a  $f->{t} eq 'r' ? (class => 'optselected') : (), href => $u->(t => 'r'), mt '_hist_filter_onlyreleases';
       a  $f->{t} eq 'p' ? (class => 'optselected') : (), href => $u->(t => 'p'), mt '_hist_filter_onlyproducers';
+      a  $f->{t} eq 'c' ? (class => 'optselected') : (), href => $u->(t => 'c'), mt '_hist_filter_onlychars';
      end;
      p class => 'browseopts';
       a !$f->{e}       ? (class => 'optselected') : (), href => $u->(e =>  0), mt '_hist_filter_allactions';
