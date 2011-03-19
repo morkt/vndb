@@ -101,6 +101,7 @@ sub _menu {
        br;
        a href => '/v/new',    mt '_menu_addvn'; br;
        a href => '/p/new',    mt '_menu_addproducer'; br;
+       a href => '/c/new',    mt '_menu_addcharacter'; br;
        br;
        a href => "$uid/logout", mt '_menu_logout';
       end;

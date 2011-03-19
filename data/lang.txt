@@ -1827,6 +1827,13 @@ cs : Přidat producenta
 hu : Új készítő bejegyzése
 nl : Nieuwe producent
 
+:_menu_addcharacter
+en : Add Character
+ru*:
+cs*:
+hu*:
+nl : Nieuw karakter
+
 :_menu_logout
 en : Logout
 ru : Выйти
