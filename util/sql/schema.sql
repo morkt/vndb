@@ -25,6 +25,53 @@ CREATE TABLE changes (
   ilock boolean NOT NULL DEFAULT FALSE
 );
 
+-- chars
+CREATE TABLE chars (
+  id SERIAL PRIMARY KEY,
+  latest integer NOT NULL DEFAULT 0,
+  locked boolean NOT NULL DEFAULT FALSE,
+  hidden boolean NOT NULL DEFAULT FALSE
+);
+
+-- chars_rev
+CREATE TABLE chars_rev (
+  id         integer  NOT NULL PRIMARY KEY,
+  cid        integer  NOT NULL,
+  name       varchar(250) NOT NULL DEFAULT '',
+  original   varchar(250) NOT NULL DEFAULT '',
+  alias      varchar(500) NOT NULL DEFAULT '',
+  image      integer  NOT NULL DEFAULT 0,
+  "desc"     text     NOT NULL DEFAULT '',
+  gender     gender NOT NULL DEFAULT 'unknown',
+  s_bust     smallint NOT NULL DEFAULT 0,
+  s_waist    smallint NOT NULL DEFAULT 0,
+  s_hip      smallint NOT NULL DEFAULT 0,
+  b_month    smallint NOT NULL DEFAULT 0,
+  b_day      smallint NOT NULL DEFAULT 0,
+  height     smallint NOT NULL DEFAULT 0,
+  weight     smallint NOT NULL DEFAULT 0,
+  bloodt     blood_type NOT NULL DEFAULT 'unknown',
+  main       integer,
+  main_spoil smallint NOT NULL DEFAULT 0
+);
+
+-- chars_traits
+CREATE TABLE chars_traits (
+  cid integer NOT NULL,
+  tid integer NOT NULL,
+  spoil smallint NOT NULL DEFAULT 0,
+  PRIMARY KEY(cid, tid)
+);
+
+-- chars_vns
+CREATE TABLE chars_vns (
+  cid integer NOT NULL,
+  vid integer NOT NULL,
+  rid integer NULL,
+  spoil smallint NOT NULL DEFAULT 0,
+  role char_role NOT NULL DEFAULT 'main'
+);
+
 -- notifications
 CREATE TABLE notifications (
   id serial PRIMARY KEY NOT NULL,
@@ -192,7 +239,7 @@ CREATE TABLE tags (
   meta boolean NOT NULL DEFAULT FALSE,
   added timestamptz NOT NULL DEFAULT NOW(),
   state smallint NOT NULL DEFAULT 0,
-  c_vns integer NOT NULL DEFAULT 0,
+  c_items integer NOT NULL DEFAULT 0,
   addedby integer NOT NULL DEFAULT 0,
   cat tag_category NOT NULL DEFAULT 'cont'
 );
@@ -258,6 +305,37 @@ CREATE TABLE threads_boards (
   type character(2) NOT NULL DEFAULT 0,
   iid integer NOT NULL DEFAULT 0,
   PRIMARY KEY(tid, type, iid)
+);
+
+-- traits
+CREATE TABLE traits (
+  id SERIAL PRIMARY KEY,
+  name varchar(250) NOT NULL,
+  alias varchar(500) NOT NULL DEFAULT '',
+  description text NOT NULL DEFAULT '',
+  meta boolean NOT NULL DEFAULT false,
+  added timestamptz NOT NULL DEFAULT NOW(),
+  state smallint NOT NULL DEFAULT 0,
+  addedby integer NOT NULL DEFAULT 0,
+  "group" integer,
+  "order" smallint NOT NULL DEFAULT 0,
+  sexual boolean NOT NULL DEFAULT false,
+  c_items integer NOT NULL DEFAULT 0
+);
+
+-- traits_chars
+CREATE TABLE traits_chars (
+  cid integer NOT NULL,
+  tid integer NOT NULL,
+  spoil smallint NOT NULL DEFAULT 0,
+  PRIMARY KEY(cid, tid)
+);
+
+-- traits_parents
+CREATE TABLE traits_parents (
+  trait integer NOT NULL,
+  parent integer NOT NULL,
+  PRIMARY KEY(trait, parent)
 );
 
 -- users
@@ -375,6 +453,15 @@ CREATE TABLE wlists (
 
 
 ALTER TABLE changes             ADD FOREIGN KEY (requester) REFERENCES users         (id) ON DELETE SET DEFAULT;
+ALTER TABLE chars               ADD FOREIGN KEY (latest)    REFERENCES chars_rev     (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE chars_rev           ADD FOREIGN KEY (id)        REFERENCES changes       (id);
+ALTER TABLE chars_rev           ADD FOREIGN KEY (cid)       REFERENCES chars         (id);
+ALTER TABLE chars_rev           ADD FOREIGN KEY (main)      REFERENCES chars         (id);
+ALTER TABLE chars_traits        ADD FOREIGN KEY (cid)       REFERENCES chars_rev     (id);
+ALTER TABLE chars_traits        ADD FOREIGN KEY (tid)       REFERENCES traits        (id);
+ALTER TABLE chars_vns           ADD FOREIGN KEY (cid)       REFERENCES chars_rev     (id);
+ALTER TABLE chars_vns           ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
+ALTER TABLE chars_vns           ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
 ALTER TABLE notifications       ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE notifications       ADD FOREIGN KEY (c_byuser)  REFERENCES users         (id) ON DELETE SET DEFAULT;
 ALTER TABLE producers           ADD FOREIGN KEY (latest)    REFERENCES producers_rev (id) DEFERRABLE INITIALLY DEFERRED;
@@ -408,6 +495,12 @@ ALTER TABLE threads             ADD FOREIGN KEY (id, count) REFERENCES threads_p
 ALTER TABLE threads_posts       ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
 ALTER TABLE threads_posts       ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE SET DEFAULT;
 ALTER TABLE threads_boards      ADD FOREIGN KEY (tid)       REFERENCES threads       (id);
+ALTER TABLE traits              ADD FOREIGN KEY (addedby)   REFERENCES users         (id);
+ALTER TABLE traits              ADD FOREIGN KEY ("group")   REFERENCES traits        (id);
+ALTER TABLE traits_parents      ADD FOREIGN KEY (trait)     REFERENCES traits        (id);
+ALTER TABLE traits_parents      ADD FOREIGN KEY (parent)    REFERENCES traits        (id);
+ALTER TABLE traits_chars        ADD FOREIGN KEY (cid)       REFERENCES chars         (id);
+ALTER TABLE traits_chars        ADD FOREIGN KEY (tid)       REFERENCES traits        (id);
 ALTER TABLE users_prefs         ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE vn                  ADD FOREIGN KEY (latest)    REFERENCES vn_rev        (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE vn                  ADD FOREIGN KEY (rgraph)    REFERENCES relgraphs     (id);
@@ -428,7 +521,7 @@ ALTER TABLE wlists              ADD FOREIGN KEY (uid)       REFERENCES users    
 ALTER TABLE wlists              ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
 
 
-
 CREATE INDEX releases_vn_vid ON releases_vn (vid);
 CREATE INDEX tags_vn_date    ON tags_vn     (date);
+CREATE UNIQUE INDEX chars_vns_pkey ON chars_vns (cid, vid, COALESCE(rid, 0));
 

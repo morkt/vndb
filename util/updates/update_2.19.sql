@@ -1,5 +1,3 @@
--- These changes have not been synced with the /util/sql/ files yet.
-
 
 -- character database -> traits
 

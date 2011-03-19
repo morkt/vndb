@@ -26,6 +26,8 @@ my %subgraphs = (
   'Users'            => [qw| CCFFFF users votes rlists wlists vnlists sessions notifications users_prefs |],
   'Discussion board' => [qw| FFDCDC threads threads_boards threads_posts |],
   'Tags'             => [qw| FFC8C8 tags tags_aliases tags_parents tags_vn |],
+  'Traits'           => [qw| D1C2FF traits traits_parents traits_chars |],
+  'Characters'       => [qw| F0C2FF chars chars_rev chars_traits chars_vns |],
   'Misc'             => [qw| F5F5F5 changes anime screenshots stats_cache quotes relgraphs |],
 );
 
