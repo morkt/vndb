@@ -1691,6 +1691,13 @@ cs : Vizuální novely
 hu : Visual Novellek
 nl :
 
+:_menu_tags
+en : Tags
+ru : Теги
+cs : Tagy
+hu : Címkék
+nl :
+
 :_menu_releases
 en : Releases
 ru : Выпуски
@@ -1705,12 +1712,12 @@ cs : Producenti
 hu : Készítők
 nl : Producenten
 
-:_menu_tags
-en : Tags
-ru : Теги
-cs : Tagy
-hu : Címkék
-nl :
+:_menu_characters
+en : Characters
+ru*:
+cs*:
+hu*:
+nl : Karakters
 
 :_menu_traits
 en : Traits

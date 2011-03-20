@@ -63,10 +63,11 @@ sub _menu {
     div;
      a href => '/',      mt '_menu_home'; br;
      a href => '/v/all', mt '_menu_vn'; br;
+     b class => 'grayedout', '> '; a href => '/g', mt '_menu_tags'; br;
      a href => '/r',     mt '_menu_releases'; br;
      a href => '/p/all', mt '_menu_producers'; br;
-     a href => '/g',     mt '_menu_tags'; br;
-     a href => '/i',     mt '_menu_traits'; br;
+     a href => '/c/all', mt '_menu_characters'; br;
+     b class => 'grayedout', '> '; a href => '/i', mt '_menu_traits'; br;
      a href => '/u/all', mt '_menu_users'; br;
      a href => '/hist',  mt '_menu_recent_changes'; br;
      a href => '/t',     mt '_menu_discussion_board'; br;
