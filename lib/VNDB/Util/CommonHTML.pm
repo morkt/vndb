@@ -407,6 +407,7 @@ sub htmlSearchBox {
     a href => '/v/all', $sel eq 'v' ? (class => 'sel') : (), mt '_searchbox_vn';
     a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), mt '_searchbox_releases';
     a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), mt '_searchbox_producers';
+    a href => '/c/all', $sel eq 'c' ? (class => 'sel') : (), mt '_searchbox_chars';
     a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), mt '_searchbox_tags';
     a href => '/i',     $sel eq 'i' ? (class => 'sel') : (), mt '_searchbox_traits';
     a href => '/u/all', $sel eq 'u' ? (class => 'sel') : (), mt '_searchbox_users';

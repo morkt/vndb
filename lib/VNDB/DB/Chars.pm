@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbCharGet dbCharRevisionInsert dbCharImageId|;
 
 
-# options: id rev instance traitspoil trait_inc trait_exc what results page
+# options: id rev instance traitspoil trait_inc trait_exc char what results page
 # what: extended traits vns changes
 sub dbCharGet {
   my $self = shift;
@@ -20,6 +20,8 @@ sub dbCharGet {
     @_
   );
 
+  $o{search} =~ s/%//g if $o{search};
+
   my %where = (
     !$o{id} && !$o{rev} ? ( 'c.hidden = FALSE' => 1 ) : (),
     $o{id}  ? ( 'c.id = ?'  => $o{id} ) : (),
@@ -27,6 +29,12 @@ sub dbCharGet {
     $o{notid}    ? ( 'c.id <> ?'   => $o{notid} ) : (),
     $o{instance} ? ( 'cr.main = ?' => $o{instance} ) : (),
     $o{vid}      ? ( 'cr.id IN(SELECT cid FROM chars_vns WHERE vid = ?)' => $o{vid} ) : (),
+    $o{search} ? (
+      '(cr.name ILIKE ? OR cr.original ILIKE ? OR cr.alias ILIKE ?)', [ map '%%'.$o{search}.'%%', 1..3 ] ) : (),
+    $o{char} ? (
+      'LOWER(SUBSTR(cr.name, 1, 1)) = ?' => $o{char} ) : (),
+    defined $o{char} && !$o{char} ? (
+      '(ASCII(cr.name) < 97 OR ASCII(cr.name) > 122) AND (ASCII(cr.name) < 65 OR ASCII(cr.name) > 90)' => 1 ) : (),
     $o{trait_inc} ? (
       'c.id IN(SELECT cid FROM traits_chars WHERE tid IN(!l) AND spoil <= ? GROUP BY cid HAVING COUNT(tid) = ?)',
       [ ref $o{trait_inc} ? $o{trait_inc} : [$o{trait_inc}], $o{traitspoil}, ref $o{trait_inc} ? $#{$o{trait_inc}}+1 : 1 ]) : (),
@@ -34,8 +42,8 @@ sub dbCharGet {
       'c.id NOT IN(SELECT cid FROM traits_chars WHERE tid IN(!l))' => [ ref $o{trait_exc} ? $o{trait_exc} : [$o{trait_exc}] ] ) : (),
   );
 
-  my @select = (qw|c.id cr.name cr.original|, 'cr.id AS cid');
-  push @select, qw|c.hidden c.locked cr.alias cr.desc cr.image cr.b_month cr.b_day cr.s_bust cr.s_waist cr.s_hip cr.height cr.weight cr.bloodt cr.gender cr.main cr.main_spoil| if $o{what} =~ /extended/;
+  my @select = (qw|c.id cr.name cr.original cr.gender|, 'cr.id AS cid');
+  push @select, qw|c.hidden c.locked cr.alias cr.desc cr.image cr.b_month cr.b_day cr.s_bust cr.s_waist cr.s_hip cr.height cr.weight cr.bloodt cr.main cr.main_spoil| if $o{what} =~ /extended/;
   push @select, qw|h.requester h.comments c.latest u.username h.rev h.ihid h.ilock|, "extract('epoch' from h.added) as added" if $o{what} =~ /changes/;
 
   my @join;
@@ -47,7 +55,8 @@ sub dbCharGet {
     SELECT !s
       FROM chars_rev cr
       !s
-      !W|,
+      !W
+      ORDER BY cr.name|,
     join(', ', @select), join(' ', @join), \%where
   );
 

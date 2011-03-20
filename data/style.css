@@ -887,6 +887,15 @@ div.chardetails.charsep { padding-top: 5px; margin-top: 5px; border-top: 1px sol
 #jt_box_chare_vns td.tc_del { padding-left: 5px }
 #jt_box_chare_vns td.tc_vnadd input { width: 280px }
 
+/***** Char browse *****/
+
+div.charb table    { table-layout: fixed }
+div.charb td       { white-space: nowrap }
+div.charb td.tc1   { text-align: right; width: 40px; padding-left: 0!important; padding-bottom: 0 }
+div.charb td.tc2   { overflow: hidden }
+div.charb td.tc2 b { margin-left: 10px }
+div.charb td.tc2 b a { color: $grayedout$!important }
+
 
 /***** Documentation pages *****/
 

@@ -3,7 +3,7 @@ package VNDB::Handler::Chars;
 
 use strict;
 use warnings;
-use TUWF ':html';
+use TUWF ':html', 'uri_escape';
 use Exporter 'import';
 use VNDB::Func;
 
@@ -13,6 +13,7 @@ TUWF::register(
   qr{c([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
   qr{c(?:([1-9]\d*)(?:\.([1-9]\d*))?/(edit|copy)|/new)}
     => \&edit,
+  qr{c/([a-z0]|all)} => \&list,
 );
 
 
@@ -187,11 +188,11 @@ sub charTable {
           # special case: all releases, no exceptions
           if(!$vn && @r == 1 && !$r[0]{rid}) {
             txt mt("_charrole_$r[0]{role}").' - ';
-            a href => "/v$r[0]{vid}", $r[0]{vntitle};
+            a href => "/v$r[0]{vid}/chars", $r[0]{vntitle};
             next;
           }
           # otherwise, print VN title and list releases separately
-          a href => "/v$r[0]{vid}", $r[0]{vntitle} if !$vn;
+          a href => "/v$r[0]{vid}/chars", $r[0]{vntitle} if !$vn;
           for(@r) {
             br if !$vn || $_ != $r[0];
             b class => 'grayedout', '> ';
@@ -421,6 +422,81 @@ sub _uploadimage {
   chmod 0666, $fn;
 
   return -1*$imgid;
+}
+
+
+sub list {
+  my($self, $fch) = @_;
+
+  my $f = $self->formValidate(
+    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'q', required => 0, default => '' },
+  );
+  return $self->resNotFound if $f->{_err};
+
+  my($list, $np) = $self->dbCharGet(
+    $fch ne 'all' ? ( char => $fch ) : (),
+    $f->{q} ? ( search => $f->{q} ) : (),
+    results => 50,
+    page => $f->{p},
+    what => 'vns',
+  );
+
+  $self->htmlHeader(title => mt '_charb_title');
+
+  my $quri = uri_escape($f->{q});
+  div class => 'mainbox';
+   h1 mt '_charb_title';
+   form action => '/c/all', 'accept-charset' => 'UTF-8', method => 'get';
+    $self->htmlSearchBox('c', $f->{q});
+   end;
+   p class => 'browseopts';
+    for ('all', 'a'..'z', 0) {
+      a href => "/c/$_?q=$quri", $_ eq $fch ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+    }
+   end;
+  end;
+
+  if(!@$list) {
+    div class => 'mainbox';
+     h1 mt '_charb_noresults';
+     p mt '_charb_noresults_msg';
+    end;
+  }
+
+  my $uri = "/c/$fch?q=$quri";
+  @$list && $self->htmlBrowse(
+    class    => 'charb',
+    items    => $list,
+    options  => $f,
+    nextpage => $np,
+    pageurl  => $uri,
+    sorturl  => $uri,
+    header   => [ [ '' ], [ '' ] ],
+    row      => sub {
+      my($s, $n, $l) = @_;
+      Tr $n % 2 ? (class => 'odd') : ();
+       td class => 'tc1';
+        cssicon "gen $l->{gender}", mt "_gender_$l->{gender}" if $l->{gender} ne 'unknown';
+       end;
+       td class => 'tc2';
+        a href => "/c$l->{id}", title => $l->{original}||$l->{name}, shorten $l->{name}, 50;
+        b class => 'grayedout';
+         my $i = 1;
+         my %vns;
+         for (@{$l->{vns}}) {
+           next if $_->{spoil} || $vns{$_->{vid}}++;
+           last if $i++ > 4;
+           txt ', ' if $i > 2;
+           a href => "/v$_->{vid}/chars", title => $_->{vntitle}, shorten $_->{vntitle}, 30;
+         }
+        end;
+       end;
+      end;
+    }
+  );
+
+  $self->htmlFooter;
 }
 
 

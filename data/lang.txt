@@ -2158,6 +2158,13 @@ cs : Producenti
 hu : Keszítők
 nl : Producenten
 
+:_searchbox_chars
+en : Characters
+ru*:
+cs*:
+hu*:
+nl : Karakters
+
 :_searchbox_tags
 en : Tags
 ru : Теги
@@ -5406,6 +5413,31 @@ ru*:
 cs*:
 hu*:
 nl : VN is al geselecteerd.
+
+
+# Character browser (/c/*)
+
+:_charb_title
+en : Browse characters
+ru*:
+cs*:
+hu*:
+nl : Browse karakters
+
+:_charb_noresults
+en : No results
+ru*:
+cs*:
+hu*:
+nl : Geen resultaten
+
+:_charb_noresults_msg
+en : No characters found that matched your criteria.
+ru*:
+cs*:
+hu*:
+nl : Geen karakters gevonden die aan je kriteria voldoen.
+
 
 
 
