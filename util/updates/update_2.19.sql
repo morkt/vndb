@@ -180,7 +180,7 @@ INSERT INTO traits_parents (trait, parent) VALUES
 SELECT edit_char_init(null);
 UPDATE edit_revision SET comments = 'New test entry', requester = 2, ip = '0.0.0.0';
 UPDATE edit_char SET name = 'Phorni', original = 'フォーニ', "desc" = 'Sprite of Music', height = 14, gender = 'f';
-INSERT INTO edit_char_vns VALUES (38, 'primary', 0), (97, 'appears', 2);
+INSERT INTO edit_char_vns VALUES (38, null, 0, 'primary'), (97, null, 2, 'appears');
 SELECT edit_char_commit();
 
 -- saya (incorrect test data)
@@ -188,16 +188,16 @@ SELECT edit_char_init(null);
 UPDATE edit_revision SET comments = '2nd test entry', requester = 2, ip = '0.0.0.0';
 UPDATE edit_char SET name = 'Saya', original = '沙耶', "desc" = 'There is more than meets the eye!', alias = 'Cute monster', height = 140, weight = 52, s_bust = 41, s_waist = 38, s_hip = 40, b_month = 3, b_day = 15, bloodt = 'a', gender = 'f', main = 1;
 INSERT INTO edit_char_traits VALUES (4, 0), (12, 2), (22, 0), (27, 0), (18, 1);
-INSERT INTO edit_char_vns VALUES (97, 'primary', 0);
+INSERT INTO edit_char_vns VALUES (97, null, 0, 'primary');
 SELECT edit_char_commit();
 
 -- lafiel (not even a VN character...)
 SELECT edit_char_init(null);
 UPDATE edit_revision SET comments = '3rd test entry', requester = 2, ip = '0.0.0.0';
 UPDATE edit_char SET name = 'Abriel Nei Debrusc Borl Paryun Lafiel', original = 'アブリアル・ネイ＝ドゥブレスク・パリューニュ・ベール・パリュン・ラフィール',
-  alias = E'Ablïarsec néïc Dubreuscr Bœrh Parhynr Lamhirh\nLafiel', gender = 'f', height = 163, weight = 53, main = 1, desc = 'Not scary at all!';
+  alias = E'Ablïarsec néïc Dubreuscr Bœrh Parhynr Lamhirh\nLafiel', gender = 'f', height = 163, weight = 53, main = 1, "desc" = 'Not scary at all!';
 INSERT INTO edit_char_traits VALUES (13, 0), (17, 0), (22, 0);
-INSERT INTO edit_char_vns VALUES (97, 'primary', 0), (17, 2479, 'side', 1), (17, 626, 'primary', 2), (17, 0, 'appears', 0);
+INSERT INTO edit_char_vns VALUES (97, null, 0, 'primary'), (17, 2479, 1, 'side'), (17, 626, 2, 'primary'), (17, null, 0, 'appears');
 SELECT edit_char_commit();
 
 SELECT traits_chars_calc();

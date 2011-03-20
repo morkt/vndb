@@ -300,7 +300,7 @@ sub edit {
 
       # check for changes
       my $same = $id && !grep $frm->{$_} ne $b4{$_}, keys %b4;
-      $self->resRedirect("/c$id", 'post') if !$copy && $same;
+      return $self->resRedirect("/c$id", 'post') if !$copy && $same;
       $frm->{_err} = ['nochanges'] if $copy && $same;
     }
 
