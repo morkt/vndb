@@ -184,8 +184,8 @@ sub page {
   my $haschar = $self->dbVNHasChar($v->{id});
   if($haschar) {
     ul class => 'maintabs notfirst';
-     li class => 'left '.(!$char ? ' tabselected' : ''); a href => "/v$v->{id}", mt '_vnpage_tab_main'; end;
-     li class => 'left '.( $char ? ' tabselected' : ''); a href => "/v$v->{id}/chars", mt '_vnpage_tab_chars'; end;
+     li class => 'left '.(!$char ? ' tabselected' : ''); a href => "/v$v->{id}#main", name => 'main', mt '_vnpage_tab_main'; end;
+     li class => 'left '.( $char ? ' tabselected' : ''); a href => "/v$v->{id}/chars#chars", name => 'chars', mt '_vnpage_tab_chars'; end;
     end;
   }
 
