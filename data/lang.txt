@@ -1240,7 +1240,7 @@ hu*:
 nl :
 
 :_charrole_primary
-en : Primary character
+en : Main character
 ru*:
 cs*:
 hu*:
@@ -1286,6 +1286,93 @@ ru : %d.%m.%Y, %R
 cs : %Y-%m-%d v %R
 hu : %Y-%m-%d - %R-kor
 nl : %Y-%m-%d om %R
+
+
+# Months (used on char pages in _charp_bday_fmt)
+
+:_month_1
+en : January
+ru*:
+cs*:
+hu*:
+nl : januari
+
+:_month_2
+en : February
+ru*:
+cs*:
+hu*:
+nl : februari
+
+:_month_3
+en : March
+ru*:
+cs*:
+hu*:
+nl : maart
+
+:_month_4
+en : April
+ru*:
+cs*:
+hu*:
+nl : april
+
+:_month_5
+en : May
+ru*:
+cs*:
+hu*:
+nl : mei
+
+:_month_6
+en : June
+ru*:
+cs*:
+hu*:
+nl : juni
+
+:_month_7
+en : July
+ru*:
+cs*:
+hu*:
+nl : juli
+
+:_month_8
+en : August
+ru*:
+cs*:
+hu*:
+nl : augustus
+
+:_month_9
+en : September
+ru*:
+cs*:
+hu*:
+nl : september
+
+:_month_10
+en : October
+ru*:
+cs*:
+hu*:
+nl : oktober
+
+:_month_11
+en : November
+ru*:
+cs*:
+hu*:
+nl : november
+
+:_month_12
+en : December
+ru*:
+cs*:
+hu*:
+nl : december
 
 
 # Age display
@@ -5045,20 +5132,19 @@ cs*:
 hu*:
 nl : Lengte: [_1]cm
 
-# Bust/Waist/Hip
 :_charp_meas_bwh
-en : BWH: [_1]-[_2]-[_3]cm
+en : Bust-Waist-Hips: [_1]-[_2]-[_3]cm
 ru*:
 cs*:
 hu*:
-nl :
+nl : Borst-Taille-Heup: [_1]-[_2]-[_3]cm
 
-:_charp_weight
-en : Weight
+:_charp_meas_w
+en : Weight: [_1]kg
 ru*:
 cs*:
 hu*:
-nl : Gewicht
+nl : Gewicht: [_1]kg
 
 :_charp_bday
 en : Birthday
@@ -5066,6 +5152,14 @@ ru*:
 cs*:
 hu*:
 nl : Verjaardag
+
+# [_1]=day-of-month, as a number, [_2]=month string, as in _month_<num>
+:_charp_bday_fmt
+en : [_1] [_2]
+ru*:
+cs*:
+hu*:
+nl :
 
 :_charp_vns
 en : Visual novels
@@ -8199,7 +8293,7 @@ hu*:
 nl : primaire info
 
 :_vnpage_tab_chars
-en : cast
+en : characters
 ru*:
 cs*:
 hu*:

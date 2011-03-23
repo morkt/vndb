@@ -135,20 +135,15 @@ sub charTable {
       Tr ++$i % 2 ? (class => 'odd') : ();
        td class => 'key', mt '_charp_meas';
        td join ', ',
-         $r->{s_bust} || $r->{s_waist} || $r->{s_hip} ? mt('_charp_meas_bwh', $r->{s_bust}||'??', $r->{s_waist}||'??', $r->{s_hip}||'??') : (),
-         $r->{height} ? mt('_charp_meas_h', $r->{height}) : ();
-      end;
-    }
-    if($r->{weight}) {
-      Tr ++$i % 2 ? (class => 'odd') : ();
-       td class => 'key', mt '_charp_weight';
-       td "$r->{weight} kg";
+         $r->{height} ? mt('_charp_meas_h', $r->{height}) : (),
+         $r->{weight} ? mt('_charp_meas_w', $r->{weight}) : (),
+         $r->{s_bust} || $r->{s_waist} || $r->{s_hip} ? mt('_charp_meas_bwh', $r->{s_bust}||'??', $r->{s_waist}||'??', $r->{s_hip}||'??') : ();
       end;
     }
     if($r->{b_month} && $r->{b_day}) {
       Tr ++$i % 2 ? (class => 'odd') : ();
        td class => 'key', mt '_charp_bday';
-       td sprintf '%02d-%02d', $r->{b_month}, $r->{b_day};
+       td mt '_charp_bday_fmt', $r->{b_day}, mt "_month_$r->{b_month}";
       end;
     }
 
