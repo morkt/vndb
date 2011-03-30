@@ -70,36 +70,36 @@ sub dbRevisionGet {
 
   my %where = (
     $o{releases} ? (
-      q{((c.type = 'v' AND vr.vid = ?) OR (c.type = 'r' AND c.id = ANY(ARRAY(SELECT rv.rid FROM releases_vn rv WHERE rv.vid = ?))))} => [$o{iid}, $o{iid}],
+      q{((h.type = 'v' AND vr.vid = ?) OR (h.type = 'r' AND h.id = ANY(ARRAY(SELECT rv.rid FROM releases_vn rv WHERE rv.vid = ?))))} => [$o{iid}, $o{iid}],
     ) : (
       $o{type} ? (
-        'c.type = ?' => $o{type} ) : (),
+        'h.type = ?' => $o{type} ) : (),
       $o{iid} ? (
         '!sr.!sid = ?' => [ $o{type}, $o{type}, $o{iid} ] ) : (),
     ),
     $o{uid} ? (
-      'c.requester = ?' => $o{uid} ) : (),
+      'h.requester = ?' => $o{uid} ) : (),
     $o{auto} ? (
-      'c.requester !s 1' => $o{auto} < 0 ? '=' : '<>' ) : (),
+      'h.requester !s 1' => $o{auto} < 0 ? '=' : '<>' ) : (),
     $o{hidden} ? (
       '('.join(' OR ', map sprintf('%s.hidden IS NOT NULL AND %s %1$s.hidden', $_, $o{hidden} == 1 ? 'NOT' : ''), @types).')' => 1 ) : (),
     $o{edit} ? (
-      'c.rev !s 1' => $o{edit} < 0 ? '=' : '>' ) : (),
+      'h.rev !s 1' => $o{edit} < 0 ? '=' : '>' ) : (),
   );
 
   my @join = (
     $o{iid} || $o{what} =~ /item/ || $o{hidden} || $o{releases} ? (
-      map sprintf(q|LEFT JOIN %s_rev %sr ON c.type = '%2$s' AND c.id = %2$sr.id|, $tables{$_}, $_), @types
+      map sprintf(q|LEFT JOIN %s_rev %sr ON h.type = '%2$s' AND h.id = %2$sr.id|, $tables{$_}, $_), @types
     ) : (),
     $o{hidden} ? (
-      map sprintf(q|LEFT JOIN %s %s ON c.type = '%2$s' AND %2$sr.%2$sid = %2$s.id|, $tables{$_}, $_), @types
+      map sprintf(q|LEFT JOIN %s %s ON h.type = '%2$s' AND %2$sr.%2$sid = %2$s.id|, $tables{$_}, $_), @types
     ) : (),
-    $o{what} =~ /user/ ? 'JOIN users u ON c.requester = u.id' : (),
+    $o{what} =~ /user/ ? 'JOIN users u ON h.requester = u.id' : (),
   );
 
   my @select = (
-    qw|c.id c.type c.requester c.comments c.rev|,
-    q|extract('epoch' from c.added) as added|,
+    qw|h.id h.type h.requester h.comments h.rev|,
+    q|extract('epoch' from h.added) as added|,
     $o{what} =~ /user/ ? 'u.username' : (),
     $o{what} =~ /item/ ? (
       'COALESCE('.join(', ', map "${_}r.${_}id", @types).') AS iid',
@@ -110,10 +110,10 @@ sub dbRevisionGet {
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
-      FROM changes c
+      FROM changes h
       !s
       !W
-      ORDER BY c.id DESC|,
+      ORDER BY h.id DESC|,
     join(', ', @select), join(' ', @join), \%where
   );
   return wantarray ? ($r, $np) : $r;
