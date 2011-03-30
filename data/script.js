@@ -2738,6 +2738,30 @@ if(byId('expandall')) {
 }
 
 
+// charspoil handling (ugly)
+if(byId('charspoil_sel')) {
+  var k = byClass('charspoil');
+  var h = byName(byId('charspoil_sel'), 'a');
+  var setall = function(spoil) {
+    for(var i=0; i<k.length; i++)
+      setClass(k[i], 'hidden',
+        hasClass(k[i], 'charspoil_0') ? false :
+        hasClass(k[i], 'charspoil_1') ? spoil < 1 : spoil < 2);
+    for(var i=0; i<h.length; i++)
+      setClass(h[i], 'sel', spoil == i);
+  };
+  for(var i=0; i<h.length; i++) {
+    h[i].num = i;
+    h[i].onclick = function() {
+      setall(this.num);
+      setCookie('tagspoil', this.num);
+      return false;
+    };
+  };
+  setall(getCookie('tagspoil'));
+}
+
+
 // set note input box (/u+/list)
 if(byId('not') && byId('vns'))
   byId('vns').onchange = function () {

@@ -539,11 +539,24 @@ sub _chars {
   for my $r (@{$self->{char_roles}}) {
     $rol{$r} = [ grep grep($_->{role} eq $r, @{$_->{vns}}) && !$done{$_->{id}}++, @$l ];
   }
+  my $first = 0;
   for my $r (@{$self->{char_roles}}) {
     next if !@{$rol{$r}};
     div class => 'mainbox';
+     if(!$first++) {
+       p id => 'charspoil_sel';
+        a href => '#', class => 'sel', mt '_vnpage_tags_spoil0'; # _vnpage!?
+        a href => '#', mt '_vnpage_tags_spoil1';
+        a href => '#', mt '_vnpage_tags_spoil2';
+       end;
+     }
      h1 mt "_charrole_$r";
-     $self->charTable($_, 1, $_ != $rol{$r}[0], 1) for (@{$rol{$r}});
+     for my $c (@{$rol{$r}}) {
+       my $minspoil = 5;
+       $minspoil = $_->{vid} == $v->{id} && $_->{spoil} < $minspoil ? $_->{spoil} : $minspoil
+         for(@{$c->{vns}});
+       $self->charTable($c, 1, $c != $rol{$r}[0], 1, $minspoil);
+     }
     end;
   }
 }

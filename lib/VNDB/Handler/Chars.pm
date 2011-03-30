@@ -67,12 +67,17 @@ sub page {
 
   div class => 'mainbox';
    $self->htmlItemMessage('c', $r);
+   p id => 'charspoil_sel';
+    a href => '#', class => 'sel', mt '_vnpage_tags_spoil0'; # _vnpage!?
+    a href => '#', mt '_vnpage_tags_spoil1';
+    a href => '#', mt '_vnpage_tags_spoil2';
+   end;
    h1 $r->{name};
    h2 class => 'alttitle', $r->{original} if $r->{original};
    $self->charTable($r);
   end;
 
-  # TODO: ordering of these instances? + spoiler handling
+  # TODO: ordering of these instances?
   my $inst = [];
   if(!$r->{main}) {
     $inst = $self->dbCharGet(instance => $r->{id}, what => 'extended traits vns');
@@ -83,7 +88,7 @@ sub page {
   if(@$inst) {
     div class => 'mainbox';
      h1 mt '_charp_instances';
-     $self->charTable($_, 1, $_ != $inst->[0]) for @$inst;
+     $self->charTable($_, 1, $_ != $inst->[0], 0, !$r->{main} ? $_->{main_spoil} : $_->{main_spoil} > $r->{main_spoil} ? $_->{main_spoil} : $r->{main_spoil}) for @$inst;
     end;
   }
 
@@ -93,9 +98,10 @@ sub page {
 
 # Also used from Handler::VNPage
 sub charTable {
-  my($self, $r, $link, $sep, $vn) = @_;
+  my($self, $r, $link, $sep, $vn, $spoil) = @_;
+  $spoil ||= 0;
 
-  div class => 'chardetails'.($sep ? ' charsep' : '');
+  div class => 'chardetails '.charspoil($spoil).($sep ? ' charsep' : '');
 
    # image
    div class => 'charimg';
@@ -148,7 +154,7 @@ sub charTable {
     }
 
     # traits
-    # TODO: handle spoilers and 'sexual' traits
+    # TODO: handle 'sexual' traits
     my %groups;
     my @groups;
     for (@{$r->{traits}}) {
@@ -161,15 +167,16 @@ sub charTable {
        td class => 'key'; a href => '/i'.($groups{$g}[0]{group}||$groups{$g}[0]{tid}), $groups{$g}[0]{groupname} || $groups{$g}[0]{name}; end;
        td;
         for (@{$groups{$g}}) {
-          txt ', ' if $_->{tid} != $groups{$g}[0]{tid};
-          a href => "/i$_->{tid}", $_->{name};
+          span class => charspoil $_->{spoil};
+           txt ', ' if $_->{tid} != $groups{$g}[0]{tid};
+           a href => "/i$_->{tid}", $_->{name};
+          end;
         }
        end;
       end;
     }
 
     # vns
-    # TODO: handle spoilers!
     if(@{$r->{vns}} && (!$vn || $vn && (@{$r->{vns}} > 1 || $r->{vns}[0]{rid}))) {
       my %vns;
       push @{$vns{$_->{vid}}}, $_ for(sort { !defined($a->{rid})?1:!defined($b->{rid})?-1:$a->{rtitle} cmp $b->{rtitle} } @{$r->{vns}});
@@ -182,23 +189,31 @@ sub charTable {
           my @r = @{$vns{$g}};
           # special case: all releases, no exceptions
           if(!$vn && @r == 1 && !$r[0]{rid}) {
-            txt mt("_charrole_$r[0]{role}").' - ';
-            a href => "/v$r[0]{vid}/chars", $r[0]{vntitle};
+            span class => charspoil $r[0]{spoil};
+             txt mt("_charrole_$r[0]{role}").' - ';
+             a href => "/v$r[0]{vid}/chars", $r[0]{vntitle};
+            end;
             next;
           }
           # otherwise, print VN title and list releases separately
-          a href => "/v$r[0]{vid}/chars", $r[0]{vntitle} if !$vn;
-          for(@r) {
-            br if !$vn || $_ != $r[0];
-            b class => 'grayedout', '> ';
-            txt mt("_charrole_$_->{role}").' - ';
-            if($_->{rid}) {
-              b class => 'grayedout', "r$_->{rid}:";
-              a href => "/r$_->{rid}", $_->{rtitle};
-            } else {
-              txt mt '_charp_vns_other';
-            }
-          }
+          my $minspoil = 5;
+          $minspoil = $minspoil > $_->{spoil} ? $_->{spoil} : $minspoil for (@r);
+          span class => charspoil $minspoil;
+           a href => "/v$r[0]{vid}/chars", $r[0]{vntitle} if !$vn;
+           for(@r) {
+             span class => charspoil $_->{spoil};
+              br if !$vn || $_ != $r[0];
+              b class => 'grayedout', '> ';
+              txt mt("_charrole_$_->{role}").' - ';
+              if($_->{rid}) {
+                b class => 'grayedout', "r$_->{rid}:";
+                a href => "/r$_->{rid}", $_->{rtitle};
+              } else {
+                txt mt '_charp_vns_other';
+              }
+             end;
+           }
+          end;
         }
        end;
       end;

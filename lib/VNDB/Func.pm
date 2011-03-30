@@ -7,7 +7,7 @@ use TUWF ':html';
 use Exporter 'import';
 use POSIX 'strftime', 'ceil', 'floor';
 use VNDBUtil;
-our @EXPORT = (@VNDBUtil::EXPORT, qw| clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags childtags |);
+our @EXPORT = (@VNDBUtil::EXPORT, qw| clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags childtags charspoil |);
 
 
 # three ways to represent the same information
@@ -171,6 +171,12 @@ sub childtags {
    clearfloat;
    br;
   end 'div';
+}
+
+
+# generates the class elements for character spoiler hiding
+sub charspoil {
+  return "charspoil charspoil_$_[0]".($_[0] ? ' hidden' : '');
 }
 
 
