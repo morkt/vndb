@@ -606,6 +606,7 @@ sub formatid {
     v => 'visual novel',
     p => 'producer',
     r => 'release',
+    c => 'character',
     g => 'tag',
     i => 'trait',
     t => 'thread',
