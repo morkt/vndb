@@ -372,7 +372,7 @@ sub edit {
 
     div;
      h2 mt '_chare_image_id';
-     input type => 'text', class => 'text', name => 'image', id => 'image', value => $frm->{image};
+     input type => 'text', class => 'text', name => 'image', id => 'image', value => $frm->{image}||'';
      p mt '_chare_image_id_msg';
      br; br;
 
