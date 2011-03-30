@@ -1,3 +1,15 @@
+2.19 - 2011-03-30
+	- Character database:
+	  - New DB item (versioned): character, page: /c+
+	  - New DB item (not versioned): traits (like tags), page: /i+
+	  - New pages: trait listing/browser: /i/*
+	  - New pages: character browser: /c/*
+	  - VN pages updated with a characters tab
+	- Changed text color of inactive tabs
+	- Don't allow users to edit their post when it was deleted
+	- Auto-set category when creating new child tag
+	- Increased allowed size of VN cover image upload to 5MB
+
 2.18 - 2011-02-08
 	- Added category field to tags (content/ero/technical)
 	- Group tags on /v+/tagmod by their category

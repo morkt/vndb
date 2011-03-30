@@ -139,6 +139,7 @@ sub tagedit {
     $par = $self->dbTagGet(id => $tag)->[0];
     return $self->resNotFound if !$par;
     $frm->{parents} = $par->{name};
+    $frm->{cat} = $par->{cat};
     $tag = undef;
   }
 

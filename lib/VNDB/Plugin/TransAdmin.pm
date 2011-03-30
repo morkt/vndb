@@ -16,7 +16,7 @@ package VNDB::Plugin::TransAdmin;
 
 use strict;
 use warnings;
-use TUWF ':html', 'uri_escape';
+use TUWF ':html', 'uri_escape', 'html_escape';
 use LangFile;
 use VNDB::Func;
 
@@ -216,7 +216,9 @@ sub _section {
      my(undef, $key, $en, $sync, $tl) = @$l;
      b class => $sync ? 'grayedout' : 'standout', ":$key";
      br;
-     div style => 'margin-left: 25px; font: 12px Tahoma; width: 700px; overflow-x: auto; white-space: nowrap', $en;
+     div style => 'margin-left: 25px; font: 12px Tahoma; width: 700px; overflow-x: auto; white-space: nowrap';
+      lit html_escape $en;
+     end;
      my $multi = $en =~ y/\n//;
 
      div style => 'width: 23px; float: left; text-align: right';
