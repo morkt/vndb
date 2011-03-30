@@ -241,7 +241,7 @@ sub charTable {
 sub edit {
   my($self, $id, $rev, $copy) = @_;
 
-  my $copy = $rev && $rev eq 'copy' || $copy && $copy eq 'copy';
+  $copy = $rev && $rev eq 'copy' || $copy && $copy eq 'copy';
   $rev = undef if defined $rev && $rev !~ /^\d+$/;
 
   my $r = $id && $self->dbCharGet(id => $id, what => 'changes extended vns traits', $rev ? (rev => $rev) : ())->[0];
