@@ -531,7 +531,7 @@ sub _stats {
 
 sub _chars {
   my($self, $has, $v) = @_;
-  my $l = $has && $self->dbCharGet(vid => $v->{id}, what => "extended vns($v->{id}) traits");
+  my $l = $has && $self->dbCharGet(vid => $v->{id}, what => "extended vns($v->{id}) traits", results => 100);
   return if !$has;
   # TODO: spoiler handling + hide unimportant roles by default
   my %done;
