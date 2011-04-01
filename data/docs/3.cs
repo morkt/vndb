@@ -47,7 +47,8 @@
   na webshopech a obvykle se dá najít někde na obalu produktu.
  </dd><dt>Oficiální internetová stránka</dt><dd>
 URL oficiálních stránek pro tento produkt. Poznamenáme, že i když VNDB nepodporujepirátství, je povoleno odkázat na domovskou stránku či fórum, která tak činí, za předpokladu,
-že je to jediný <b>oficiální</b> zdroj informací pro toto vydání. </dd><dt>Datum vydání</dt><dd>
+že je to jediný <b>oficiální</b> zdroj informací pro toto vydání.
+</dd><dt>Datum vydání</dt><dd>
   Pro komerční hry datum prodeje.
   Pro vše ostatní datum, kdy bylo vydání poprvé dostupné.
   Pokud byla hra uvedena na internetové stránce, pak datum příspěvku, který ji oznámil.

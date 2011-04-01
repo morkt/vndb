@@ -4,6 +4,7 @@
  <li><a href="/d2">Vizuální novely</a></li>
  <li><a href="/d3">Vydání</a></li>
  <li><a href="/d4">Producenti</a></li>
+<li><a href="/d12">Postavy</a></li>
  <li><a href="/d10">Tagy</a></li>
  <li><b>O VNDB</b></li>
  <li><a href="/d9">Diskusní boardy</a></li>

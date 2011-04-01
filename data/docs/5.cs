@@ -57,16 +57,12 @@
 
 :SUB:Shrnutí editací
 <p>
- Editování jakékoliv stránky zahrnuje povinné pole "Shrnutí editace".
- <br />
- To vám umožňuje vysvětlit o čem je vaše editace bez zbytečného zahlcování hlavní stránky.
- <br />
+ Editování jakékoliv stránky zahrnuje povinné pole "Shrnutí editace". To vám
+umožňuje vysvětlit o čem je vaše editace bez zbytečného zahlcování hlavní stránky.
  Můžete se zmínit o tom, proč jste pozměnili kategorii, změnili odkaz, nebo ukázat,
- odkud jsou vaše informace (aby je další přispěvatelé mohli ověřit).
- <br />
- Možná chcete přidat vizuální novelu do databáze, ale nejste schopni pro ni najít
- další informace. Pokud to zde napíšete, snad je jiný přispěvatel jednou najde
- a stránku dokončí.
+ odkud jsou vaše informace (aby je další přispěvatelé mohli ověřit). Možná chcete
+přidat vizuální novelu do databáze, ale nejste schopni pro ni najít další informace.
+Pokud to zde napíšete, snad je jiný přispěvatel jednou najde a stránku dokončí.
 </p>
 
 

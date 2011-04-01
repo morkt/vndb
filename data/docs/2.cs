@@ -4,23 +4,23 @@
 :SUB:Kdy přidat vizuální novelu
 <p>
  Aby hra byla zahrnuta v této databázi, musí pro vyprávění příběhu konzistentně
- používat vyprávěcí styl. Příklady zahrnují popisy <a
+ používat<a
+ href="http://en.wikipedia.org/wiki/Narrative_mode">vyprávěcí styl</a>. Příklady zahrnují popisy <a
  href="http://s.vndb.org/sf/58/258.jpg">vizuální</a>, <a
  href="http://s.vndb.org/sf/63/2663.jpg">událostí</a>, <a
  href="http://s.vndb.org/sf/74/274.jpg">akcí postav</a> nebo <a
- href="http://s.vndb.org/sf/49/449.jpg">myšlenek</a>. Toto vyprávění musí být
- jednou ze známých metod prezentace vizuálních novel, jako jsou <a
+ href="http://s.vndb.org/sf/49/449.jpg">myšlenek</a>.<br />
+<br />
+Toto vyprávění musí být po značnou dobu nepřerušené* a azhrnovat
+ jednu ze známých metod prezentace vizuálních novel, jako jsou <a
  href="http://s.vndb.org/sf/40/3440.jpg">ADV</a>, <a
  href="http://s.vndb.org/sf/52/3152.jpg">NVL</a> a jejich <a
  href="http://s.vndb.org/sf/39/339.jpg">obdoby</a>.<br />
+*Nepřerušené herními prvky, ne výběry nebo jednoduchým pohybem na mapě.<br />
  <br />
- Hra, která 'působí' jako VN, i když plní jinou funkci než striktně vyprávění
- příběhu (jako například vysoce interaktivní simulace) se může jako VN kvalifikovat
- pokud je buď celá vyprávěna v ADV/NVL stylu nebo jsou její další herní prvky
- jasně podřízeny prvkům textovým (prezentovaným v ADV/NVL stylu) (např. akční scény
- v 3D hrách nemohou být podřízeny jejich textovým prvkům, jelikož vizuální prvky
- jsou jasně 'účelem' hry; 'podzemí' ve hrách Princess Maker, která mají jednoduchou
- grafiku a dají se všechna přeskočit, by podřízena byla).
+Poznámka: V některých speciálních případech může být hra přidána, i když nevyhovuje
+bodům výše. Toto rozhodnutí je ale rozhodnutím moderátorů. Nepřidávejte hru sami,
+pokud očekáváte, že bude výjimkou z pravidel výše.
 </p>
 
 :SUB:Obecné informace

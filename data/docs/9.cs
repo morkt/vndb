@@ -23,7 +23,7 @@
  <dt>db</dt><dd>
   Diskuse o VNDB. Toto je obecný board pro thready, které nejsou o žádné určité položce
   v databázi.
- </dd><dt>v#</dt><dd>
+</dd><dt>ge</dt><dd>Obecná diskuse. Jde o obecný board pro thready, které nespadají pod žádný jiný board. </dd><dt>v#</dt><dd>
   Pro diskuse o určité vizuální novele. Board <i>v17</i>, například, se používá
   pro všechny thready ohledně vizuální novely <a href="/v17">v17</a>.
  </dd><dt>p#</dt><dd>

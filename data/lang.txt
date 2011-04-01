@@ -789,7 +789,7 @@ nl : VNDB discussies
 :_dboard_ge
 en : General discussions
 ru : Общий форум
-cs*:
+cs : Obecná diskuse
 hu : Általános megbeszélések
 nl : Algemene discussies
 
@@ -851,21 +851,21 @@ nl :
 :_scrres_unknown
 en : Unknown / console / handheld
 ru : Неизвестно / консоль / наладонник
-cs*:
+cs : Neznámo / konzole / handheld
 hu : Ismeretlen / konzol / kézi
 nl : Onbekend / console / handheld
 
 :_scrres_nonstandard
 en : Non-standard
 ru : Нестандартное
-cs*:
+cs : Nestandardní
 hu : Nem-standard
 nl : Non-standaard
 
 :_scrres_ws
 en : widescreen
 ru : Широкий экран
-cs*:
+cs : širokoúhlé
 hu : szélesvásznú
 nl :
 
@@ -1142,21 +1142,21 @@ nl : Opgegeven
 :_tagcat_cont
 en : Content
 ru : Сюжет и сеттинг
-cs*:
+cs : Obsah
 hu : Tartalom
 nl : Inhoud
 
 :_tagcat_ero
 en : Sexual content
 ru : Эросцены
-cs*:
+cs : Erotický obsah
 hu : Szexuális tartalom
 nl : Erotisch
 
 :_tagcat_tech
 en : Technical
 ru : Техническое
-cs*:
+cs : Technické
 hu : Technikai
 nl : Technisch
 
@@ -1166,35 +1166,35 @@ nl : Technisch
 :_bloodt_unknown
 en : Unknown
 ru*:
-cs*:
+cs : Není znám
 hu*:
 nl : Onbekend
 
 :_bloodt_a
 en : A
 ru*:
-cs*:
+cs : A
 hu*:
 nl :
 
 :_bloodt_b
 en : B
 ru*:
-cs*:
+cs : B
 hu*:
 nl :
 
 :_bloodt_ab
 en : AB
 ru*:
-cs*:
+cs : AB
 hu*:
 nl :
 
 :_bloodt_o
 en : O
 ru*:
-cs*:
+cs :
 hu*:
 nl : O
 
@@ -1204,28 +1204,28 @@ nl : O
 :_gender_unknown
 en : Unknown or N/A
 ru*:
-cs*:
+cs : Neznámé
 hu*:
 nl : Onbekend of n.v.t.
 
 :_gender_m
 en : Male
 ru*:
-cs*:
+cs : Mužské
 hu*:
 nl : Man
 
 :_gender_f
 en : Female
 ru*:
-cs*:
+cs : Ženské
 hu*:
 nl : Vrouw
 
 :_gender_b
 en : Both
 ru*:
-cs*:
+cs : Obojí
 hu*:
 nl : Beide
 
@@ -1235,28 +1235,28 @@ nl : Beide
 :_charrole_main
 en : Protagonist
 ru*:
-cs*:
+cs : Protagonista
 hu*:
 nl :
 
 :_charrole_primary
 en : Main character
 ru*:
-cs*:
+cs : Hlavní postava
 hu*:
 nl : Belangrijke rol
 
 :_charrole_side
 en : Side character
 ru*:
-cs*:
+cs : Vedlejší postava
 hu*:
 nl : Onbelangrijke rol
 
 :_charrole_appears
 en : Makes an appearance
 ru*:
-cs*:
+cs : Epizodní postava
 hu*:
 nl : Figurant
 
@@ -1293,84 +1293,84 @@ nl : %Y-%m-%d om %R
 :_month_1
 en : January
 ru*:
-cs*:
+cs : leden
 hu*:
 nl : januari
 
 :_month_2
 en : February
 ru*:
-cs*:
+cs : únor
 hu*:
 nl : februari
 
 :_month_3
 en : March
 ru*:
-cs*:
+cs : březen
 hu*:
 nl : maart
 
 :_month_4
 en : April
 ru*:
-cs*:
+cs : duben
 hu*:
 nl : april
 
 :_month_5
 en : May
 ru*:
-cs*:
+cs : květen
 hu*:
 nl : mei
 
 :_month_6
 en : June
 ru*:
-cs*:
+cs : červen
 hu*:
 nl : juni
 
 :_month_7
 en : July
 ru*:
-cs*:
+cs : červenec
 hu*:
 nl : juli
 
 :_month_8
 en : August
 ru*:
-cs*:
+cs : srpen
 hu*:
 nl : augustus
 
 :_month_9
 en : September
 ru*:
-cs*:
+cs : září
 hu*:
 nl : september
 
 :_month_10
 en : October
 ru*:
-cs*:
+cs : říjen
 hu*:
 nl : oktober
 
 :_month_11
 en : November
 ru*:
-cs*:
+cs : listopad
 hu*:
 nl : november
 
 :_month_12
 en : December
 ru*:
-cs*:
+cs : prosinec
 hu*:
 nl : december
 
@@ -1626,14 +1626,14 @@ nl :
 :_js_fil_save
 en : Save as default
 ru : Запомнить по умолчанию
-cs*:
+cs : Uložit jako defaultní
 hu : Mentés alapértelmezet ként
 nl : Opslaan als standaard
 
 :_js_fil_savenote
 en : Your saved filters will be applied automatically to several other parts of the site as well, such as the homepage. To change these filters, come back to this page and use the "Save as default" button again. To remove your saved filters, hit "Reset" and then save.
 ru : Сохранённые фильтры также будут автоматически применены к другим частям сайта, например, к заглавной странице. Для их изменения вновь откройте эту страницу и щёлкните кнопку "Запомнить по умолчанию". Чтобы избавиться от сохранённых фильтров, щёлкните "Сброс" и сохраните настройки.
-cs*:
+cs : Vaše uložené filtry budou aplikovány také na několik dalších částí těchto stránek, například na domovskou stránku. Pro změnu těchto filtrů se vraťte na tuto stránku a použijte znovu tlačítko "Uložit jako defaultní". Pro odstranění uložených filtrů stiskněte tlačítko "Vymazat" a poté uložte.
 hu : Az általad lementet szűrők automatikusan alkalmazva lesznek a honlap többi részén is, mint pl. a főoldalon. Ha meg akarod változtatni ezeket a szűrőket, akkor gyere vissza erre az oldalra és klikkelj újra a "Mentés alapértelmezet ként" gombra. A szűrőket a "Törlés" gombbal tudod eltávolítani, majd mentsd le újra.
 nl : Je opgeslagen filters worden ook automatisch toegepast op een aantal andere delen van de site, waaronder de homepagina. Om deze filters te veranderen, ga terug naar deze pagina en gebruik de "Opslaan als standaard" knop weer. Om je opgeslagen filters te verwijderen, klik op "Reset" en sla je instellingen weer op.
 
@@ -1802,14 +1802,14 @@ nl : Producenten
 :_menu_characters
 en : Characters
 ru*:
-cs*:
+cs : Postavy
 hu*:
 nl : Karakters
 
 :_menu_traits
 en : Traits
 ru*:
-cs*:
+cs : Vlastnosti
 hu*:
 nl : Kenmerken
 
@@ -1875,7 +1875,7 @@ nl : Mijn Visual Novel lijst
 :_menu_myvotes
 en : My Votes
 ru : Мои отданные голоса
-cs*:
+cs : Mé hlasy
 hu : A szavazataim
 nl : Mijn Stemmen
 
@@ -1924,7 +1924,7 @@ nl : Nieuwe producent
 :_menu_addcharacter
 en : Add Character
 ru*:
-cs*:
+cs : Přidat postavu
 hu*:
 nl : Nieuw karakter
 
@@ -2058,7 +2058,7 @@ nl : wensenlijst
 :_mtabs_votes
 en : votes
 ru : голоса
-cs*:
+cs : hlasy
 hu : szavazatok
 nl : stemmen
 
@@ -2115,7 +2115,7 @@ nl : relaties
 :_browse_first
 en : first
 ru : первая
-cs*:
+cs : první
 hu : első
 nl : eerste
 
@@ -2136,7 +2136,7 @@ nl : volgende
 :_browse_last
 en : last
 ru : последняя
-cs*:
+cs : poslední
 hu : utolsó
 nl : laatste
 
@@ -2255,7 +2255,7 @@ nl : Producenten
 :_searchbox_chars
 en : Characters
 ru*:
-cs*:
+cs : Postavy
 hu*:
 nl : Karakters
 
@@ -2269,7 +2269,7 @@ nl :
 :_searchbox_traits
 en : Traits
 ru*:
-cs*:
+cs : Vlastnosti
 hu*:
 nl : Kenmerken
 
@@ -2481,7 +2481,7 @@ nl : Alleen producenten
 :_hist_filter_onlychars
 en : Only characters
 ru*:
-cs*:
+cs : Pouze postavy
 hu*:
 nl : Alleen karakters
 
@@ -2748,7 +2748,7 @@ nl : Gerelateerde discussies voor [_1]
 :_disboard_item_all
 en : All boards
 ru : Все доски
-cs*:
+cs : Všechny boardy
 hu : Minden alfórum
 nl : Alle fora
 
@@ -3515,7 +3515,7 @@ nl :
 :_relinfo_user_setstatus
 en : Set status
 ru : Установка статуса
-cs*:
+cs : Nastavit status
 hu : Állapot beállítása
 nl : Zet status
 
@@ -4061,21 +4061,21 @@ nl : Uitgegeven voor
 :_rbrowse_released
 en : Release date
 ru : Статус выпуска
-cs*:
+cs : Datum vydání
 hu : Kiadás ideje
 nl : Uitgavedatum
 
 :_rbrowse_released_yes
 en : Past (already released)
 ru : Уже выпущен
-cs*:
+cs : Minulost (již vydáno)
 hu : Múlt (már ki van adva)
 nl : Verleden (al uitgegeven)
 
 :_rbrowse_released_no
 en : Future (to be released)
 ru : Ещё не выпущен
-cs*:
+cs : Budoucnost (bude vydáno)
 hu : Jövő (ki lesz majd adva)
 nl : Toekomst (nog niet uitgegeven)
 
@@ -4217,7 +4217,7 @@ nl :
 :_tagp_cat
 en : Category
 ru : Категория
-cs*:
+cs : Kategorie
 hu : Kategória
 nl : Categorie
 
@@ -4252,7 +4252,7 @@ nl :
 :_tagp_rawvotes
 en : Recently tagged
 ru : Недавно отмеченные
-cs*:
+cs : Nedávno otagováno
 hu : Mostanában megcímkézve
 nl : Recentelijk getagged
 
@@ -4280,14 +4280,14 @@ nl : Laat alle spoilers zien
 :_tagp_novn
 en : This tag has not been linked to any visual novels yet, or they were hidden because of your spoiler settings or default filters.
 ru : Этот тег пока не содержит ссылок ни на одну новеллу, либо они скрыты из-за настроек отображения спойлеров, либо из-за фильтров.
-cs*: Tento tag ještě nebyl použit v žádné vizuální novele nebo byly tyto skryty kvůli nastavení spoilerů.
+cs : Tento tag ještě nebyl použit v žádné vizuální novele nebo byly tyto skryty kvůli nastavení spoilerů nebo defaultních filtrů.
 hu : Ez a címke még nincs egy visual novelhez se hozzárendelve, vagy pedig el lettek rejtve a spoiler-ek vagy az alapértelmezet szűrők beállítása során.
 nl : Deze tag is nog niet gekoppeld aan een visual novel, of deze worden niet weergegeven in verband met je spoiler- of filterinstelling.
 
 :_tagp_cached
 en : The list below also includes all visual novels linked to child tags. This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.
 ru : Данный список также содержит все новеллы, отмеченные дочерними тегами. Список кэшируется, поэтому до появления новеллы на этой странице может пройти до 24 часов.
-cs*: POZNÁMKA: Tento list se ukládá do cache, takže může trvat až 24 hodin po otagování vizuální novely do objevení se na této stránce.
+cs : Seznam níže také ukládá všechny vizuální novely provázané s dceřinnými tagy. Tento sezname se ukládá do cache, takže může trvat až 24 hodin po otagování vizuální novely do objevení se na této stránce.
 hu : A lent megtalálható lista tartalmazza az alcímkékhez hozzákapcsolt összes visual novel-t is. Ez a lista le van mentve a gyorsítótárba, beletelhet 24 órába míg a visual novelhez újonnan hozzárendelt címke megjelenik ezen az oldalon.
 nl : De volgende lijst bevat ook alle visual novels die gelinkt zijn aan subtags. Deze lijst is gecached, het kan 24 uur duren voordat een visual novel op deze pagina te zien is.
 
@@ -4445,21 +4445,21 @@ nl : WAARSCHUWING: Als je deze optie selecteerd of als je de status op "verwijde
 :_tagedit_frm_cat
 en : Category
 ru : Категория
-cs*:
+cs : Kategorie
 hu : Kategória
 nl : Categorie
 
 :_tagedit_frm_catrec
 en : Also edit all child tags to have this category
 ru : Применить эту же категорию ко всем дочерним тегам
-cs*:
+cs : Editovat také všechny dceřinné tagy aby obsahovaly tuto kategorii
 hu : Az összes alcímkét is áthelyezni ebbe a kategóriába
 nl : Zet deze categorie ook voor alle subtags
 
 :_tagedit_frm_catrec_warn
 en : WARNING: This will overwrite the category field for all child tags, this action can not be reverted!
 ru : ВНИМАНИЕ: Категории всех дочерних тегов будут перезаписаны, это действие нельзя отменить!
-cs*:
+cs : VAROVÁNÍ: Toto přepíše pole kategorie pro všechny dceřinné tagy, tato akce nepůjde vrátit!
 hu : FIGYELEM: Ez az összes alcímkét felülírja a kategória mezőt, amit nem lehet lesz visszacsinálni!
 nl : WAARSCHUWING: Hiermee wordt het categoriefeld voor alle subtags overschreven, dit kan niet ongedaan worden gemaakt!
 
@@ -4613,105 +4613,105 @@ nl : verwijderd
 :_taglink_title
 en : Tag link browser
 ru : Обзор прикреплённых тегов
-cs*:
+cs : Prohlížeč odkazů od tagů
 hu : Címke link böngésző
 nl :
 
 :_taglink_spoil_title
 en : Spoiler warning
 ru : Предупреждение о спойлерах
-cs*:
+cs : Upozornění na spoiler
 hu : Spoiler veszély
 nl : Spoiler waarschuwing
 
 :_taglink_spoil_msg
 en : This list displays the tag votes of individual users. Spoilery tags are not hidden, and may not even be correctly flagged as such.
 ru : Данный список отображает голоса отдельных пользователей по тегам. Теги-спойлеры не скрываются, и даже могут быть не помеченными как таковые.
-cs*:
+cs : Tento seznam obsahuje hlasy k tagům od jednotlivých uživatelů. Spoileroidní tagy nejsou skryté a ani nemusí být správně označeny jako spoileroidní.
 hu : Ez a lista tartalmazza az egyéni felhasználók által kiértékelt cimkék pontozását. Azok a címkék amelyeket tartalmazhatnak spoiler-t el vannak rejtve, vagy lehet, hogy nincsenek jól megjelölve.
 nl : Deze lijst bevat alle stemmen op tags van individuele gebruikers. Tags die spoiler kunnen zijn worden hier niet verborgen, and sommige tags hoeven niet eens correct gemarkeerd te zijn als spoiler.
 
 :_taglink_fil_active
 en : Active filters:
 ru : Активные фильтры:
-cs*:
+cs : Aktivní filtry:
 hu : Aktív szűrők:
 nl : Actieve filters:
 
 :_taglink_fil_remove
 en : remove
 ru : убрать
-cs*:
+cs : odstranit
 hu : eltávolít
 nl : verwijder
 
 :_taglink_fil_user
 en : User:
 ru : Пользователь:
-cs*:
+cs : Uživatel:
 hu : Felhasználó:
 nl : Gebruiker:
 
 :_taglink_fil_tag
 en : Tag:
 ru : Тег:
-cs*:
+cs : Tag:
 hu : Címke
 nl :
 
 :_taglink_fil_vn
 en : Visual novel:
 ru : Новелла:
-cs*:
+cs : Vizuální novela:
 hu :
 nl :
 
 :_taglink_fil_add
 en : Click the arrow beside a user, tag or VN to add it as a filter.
 ru : Щёлкните по стрелке рядом с именем пользователя, тегом или названием новеллы, чтобы отфильтровать по этому значению.
-cs*:
+cs : Klikněte na šipku vedle uživatele, tagu nebo VN pro přidání do filtru.
 hu : A felhasználó, címke vagy VN melleti nyílal berakhatód őket szűrőnek.
 nl : Gebruik het pijltje naast een gebruiker, tag of VN om het toe te voegen als filter.
 
 :_taglink_col_date
 en : Date
 ru : Дата
-cs*:
+cs : Datum
 hu : Dátum
 nl : Datum
 
 :_taglink_col_user
 en : User
 ru : Пользователь
-cs*:
+cs : Uživatel
 hu : Felhasználó
 nl : Gebruiker
 
 :_taglink_col_rating
 en : Rating
 ru : Рейтинг
-cs*:
+cs : Hodnocení
 hu : Értékelés
 nl : Score
 
 :_taglink_col_tag
 en : Tag
 ru : Тег
-cs*:
+cs : Tag
 hu : Címke
 nl :
 
 :_taglink_col_spoiler
 en : Spoiler
 ru : Спойлер
-cs*:
+cs : Spoiler
 hu :
 nl :
 
 :_taglink_col_vn
 en : Visual novel
 ru : Новелла
-cs*:
+cs : Vizuální novela
 hu :
 nl :
 
@@ -4798,21 +4798,21 @@ nl :
 :_tagv_overruletip
 en : Tag overruled. All votes other than that of the moderator who overruled it will be ignored.
 ru : Тег зафиксирован модератором. Все голоса за него будут проигнорированы.
-cs*:
+cs : Tag přehlasován. Všechny jiné hlasy než od moderátora, ktrý tag přehlasoval, budou ignorovány.
 hu : A címkét átvette egy moderátor. Minden szavazat a moderátorén kivűl figyelmen kivűl lesz hagyva.
 nl : Tag overschreven. Alle stemmen, behalve die van de moderator die de tag heeft overschreven, zullen worden genegeerd.
 
 :_tagv_who
 en : Who?
 ru : Кто?
-cs*:
+cs : Kdo?
 hu : Kicsoda?
 nl : Wie?
 
 :_tagv_newlyadded
 en : Newly added
 ru : Недавно добавленные
-cs*:
+cs : Nově přidáno
 hu : Újonnan hozzáadott
 nl : Net toegevoegd
 
@@ -4957,126 +4957,126 @@ nl : Geweigerde tags
 :_revfield_c_name
 en : Name
 ru*:
-cs*:
+cs : Jméno
 hu*:
 nl : Naam
 
 :_revfield_c_original
 en : Original name
 ru*:
-cs*:
+cs : Originální jméno
 hu*:
 nl : Originele naam
 
 :_revfield_c_alias
 en : Aliasses
 ru*:
-cs*:
+cs : Aliasy
 hu*:
 nl : Aliassen
 
 :_revfield_c_desc
 en : Description
 ru*:
-cs*:
+cs : Popis
 hu*:
 nl : Omschrijving
 
 :_revfield_c_gender
 en : Gender
 ru*:
-cs*:
+cs : Pohlaví
 hu*:
 nl : Geslacht
 
 :_revfield_c_b_month
 en : Birthday - month
 ru*:
-cs*:
+cs : Narozeniny - měsíc
 hu*:
 nl : Verjaardag - maand
 
 :_revfield_c_b_day
 en : Birthday - day
 ru*:
-cs*:
+cs : Narozeniny - den
 hu*:
 nl : Verjaardag - dag
 
 :_revfield_c_s_bust
 en : Bust
 ru*:
-cs*:
+cs : Hrudník
 hu*:
 nl : Borst
 
 :_revfield_c_s_waist
 en : Waist
 ru*:
-cs*:
+cs : Pas
 hu*:
 nl : Taille
 
 :_revfield_c_s_hip
 en : Hip
 ru*:
-cs*:
+cs : Boky
 hu*:
 nl :
 
 :_revfield_c_height
 en : Height
 ru*:
-cs*:
+cs : Výška
 hu*:
 nl : Lengte
 
 :_revfield_c_weight
 en : Weight
 ru*:
-cs*:
+cs : Váha
 hu*:
 nl : Gewicht
 
 :_revfield_c_bloodt
 en : Blood type
 ru*:
-cs*:
+cs : Krevní skupina
 hu*:
 nl : Bloedgroep
 
 :_revfield_c_main
 en : Main character
 ru*:
-cs*:
+cs : Hlavní postava
 hu*:
 nl : Hoofdkarakter
 
 :_revfield_c_main_spoil
 en : Spoiler
 ru*:
-cs*:
+cs : Spoiler
 hu*:
 nl :
 
 :_revfield_c_image
 en : Image
 ru*:
-cs*:
+cs : Obrázek
 hu*:
 nl : Plaatje
 
 :_revfield_c_traits
 en : Traits
 ru*:
-cs*:
+cs : Vlastnosti
 hu*:
 nl : Kenmerken
 
 :_revfield_c_vns
 en : Visual novels
 ru*:
-cs*:
+cs : Vizuální novely
 hu*:
 nl :
 
@@ -5114,42 +5114,42 @@ nl : ~[plaatje wordt verwerkt, kom a.u.b. terug in een paar minuten~]
 :_charp_alias
 en : Aliases
 ru*:
-cs*:
+cs : Aliasy
 hu*:
 nl : Aliassen
 
 :_charp_meas
 en : Measurements
 ru*:
-cs*:
+cs : Míry
 hu*:
 nl : Afmetingen
 
 :_charp_meas_h
 en : Height: [_1]cm
 ru*:
-cs*:
+cs : Výška: [_1]cm
 hu*:
 nl : Lengte: [_1]cm
 
 :_charp_meas_bwh
 en : Bust-Waist-Hips: [_1]-[_2]-[_3]cm
 ru*:
-cs*:
+cs : Hrudník-Pas-Boky: [_1]-[_2]_[_3]cm
 hu*:
 nl : Borst-Taille-Heup: [_1]-[_2]-[_3]cm
 
 :_charp_meas_w
 en : Weight: [_1]kg
 ru*:
-cs*:
+cs : Váha: [_1]kg
 hu*:
 nl : Gewicht: [_1]kg
 
 :_charp_bday
 en : Birthday
 ru*:
-cs*:
+cs : Narozeniny
 hu*:
 nl : Verjaardag
 
@@ -5157,42 +5157,42 @@ nl : Verjaardag
 :_charp_bday_fmt
 en : [_1] [_2]
 ru*:
-cs*:
+cs : [_1]. [_2].
 hu*:
 nl :
 
 :_charp_vns
 en : Visual novels
 ru*:
-cs*:
+cs : Vizuální novely
 hu*:
 nl :
 
 :_charp_releases
 en : Releases
 ru*:
-cs*:
+cs : Vydání
 hu*:
 nl : Uitgaven
 
 :_charp_vns_other
 en : All other releases
 ru*:
-cs*:
+cs : Všechna další vydání
 hu*:
 nl : Overige uitgaven
 
 :_charp_description
 en : Description
 ru*:
-cs*:
+cs : Popis
 hu*:
 nl : Beschrijving
 
 :_charp_instances
 en : Other instances
 ru*:
-cs*:
+cs : Další podoby
 hu*:
 nl : Andere instanties
 
@@ -5217,7 +5217,7 @@ nl : Kopieer [_1]
 :_chare_title_add
 en : Add new character
 ru*:
-cs*:
+cs : Přidat novou postavu
 hu*:
 nl : Nieuwe karakter
 
@@ -5245,7 +5245,7 @@ nl : Originele naam
 :_chare_form_original_note
 en : The original name of the character, leave blank if it is already in the Latin alphabet.
 ru*:
-cs*:
+cs : Původní jméno postavy, ponechte prázdné, pokud už bylo latinkou.
 hu*:
 nl : De werkelijke naam van het karakter, laat leeg als dit al in het Latijnse alphabet is.
 
@@ -5259,7 +5259,7 @@ nl : Aliassen
 :_chare_form_alias_note
 en : (Un)official aliases, separated by a newline.
 ru*:
-cs*:
+cs : (Ne)oficiální přezdívky, oddělené novým řádkem.
 hu*:
 nl : (In)officiele aliassen, elke alias op een aparte regel.
 
@@ -5273,91 +5273,91 @@ nl : Omschrijving
 :_chare_form_gender
 en : Gender
 ru*:
-cs*:
+cs : Pohlaví
 hu*:
 nl : Geslacht
 
 :_chare_form_bday
 en : Birthday
 ru*:
-cs*:
+cs : Narozeniny
 hu*:
 nl : Verjaardag
 
 :_chare_form_bday_fmt
 en : MM-DD (e.g. "01-26" for the 26th of January)
 ru*:
-cs*:
+cs : MM-DD (např. "01-26" pro 26. ledna)
 hu*:
 nl : MM-DD (b.v. "01-26" voor 26 januari)
 
 :_chare_form_bday_err
 en : Birthday must be in MM-DD format.
 ru*:
-cs*:
+cs : Narozeniny musí být ve formátu MM-DD.
 hu*:
 nl : Verjaardag moet in het MM-DD formaat zijn.
 
 :_chare_form_bust
 en : Bust
 ru*:
-cs*:
+cs : Hrudník
 hu*:
 nl : Borst
 
 :_chare_form_waist
 en : Waist
 ru*:
-cs*:
+cs : Pas
 hu*:
 nl : Taille
 
 :_chare_form_hip
 en : Hips
 ru*:
-cs*:
+cs : Boky
 hu*:
 nl : Hippen
 
 :_chare_form_height
 en : Height
 ru*:
-cs*:
+cs : Výška
 hu*:
 nl : Lengte
 
 :_chare_form_weight
 en : Weight
 ru*:
-cs*:
+cs : Váha
 hu*:
 nl : Gewicht
 
 :_chare_form_bloodt
 en : Blood type
 ru*:
-cs*:
+cs : Krevní skupina
 hu*:
 nl : Bloedgroep
 
 :_chare_form_main
 en : Instance of
 ru*:
-cs*:
+cs : Alter ego k
 hu*:
 nl : Instantie van
 
 :_chare_form_main_note
 en : ID of the main character - the character of which this is an instance of.
 ru*:
-cs*:
+cs : ID hlavní postavy - postavy, ke které je tato postava alter egem.
 hu*:
 nl : ID van het hoofdkarakter - het karakter waar dit een instantie van is.
 
 :_chare_form_main_spoil
 en : Spoiler
 ru*:
-cs*:
+cs : Spoiler
 hu*:
 nl :
 
@@ -5385,7 +5385,7 @@ nl : ~[bezig met het verwerken van het plaatje, kom a.u.b. terug in een paar min
 :_chare_image_id
 en : Image ID
 ru*:
-cs*:
+cs : ID obrázku
 hu*:
 nl : Plaatje ID
 
@@ -5406,112 +5406,112 @@ nl : Upload nieuw plaatje
 :_chare_image_upload_msg
 en : Image must be in JPEG or PNG format and at most 1MiB. Images larger than 256x300 will automatically be resized. Image must be safe for work!
 ru*:
-cs*:
+cs : Obrázek musí být ve formátu JPEG nebo PNG a mít maximální velikost 1MiB. Obrázky větší než 256x300 budou automaticky zmenšeny. Obrázek musí být přístupný dětem.
 hu*:
 nl : Plaatje moet in het JPEG of PNG formaat zijn, en moet kleiner zijn dan 1MiB. Plaatjes groter dan 256x300 worden automatisch verkleind. Het plaatje moet veilig zijn in een werkomgeving!
 
 :_chare_traits
 en : Traits
 ru*:
-cs*:
+cs : Vlastnosti
 hu*:
 nl : Kenmerken
 
 :_chare_traits_sel
 en : Current traits
 ru*:
-cs*:
+cs : Nynější vlastnosti
 hu*:
 nl : Huidige kenmerken
 
 :_chare_traits_add
 en : Add trait
 ru*:
-cs*:
+cs : Přidat vlastnost
 hu*:
 nl : Voeg kenmerk toe
 
 :_chare_traits_present
 en : Selected trait is already present.
 ru*:
-cs*:
+cs : vybraná vlastnost je již přítomna.
 hu*:
 nl : Geselecteerd kenmerk is al aanwezig.
 
 :_chare_traits_nometa
 en : Meta traits can't be used here.
 ru*:
-cs*:
+cs : meta vlastnosti se zde nedají použít.
 hu*:
 nl : Metakenmerken kunnen hier niet gebruikt worden.
 
 :_chare_traits_empty
 en : No traits present yet.
 ru*:
-cs*:
+cs : Nejsou přítomny žádné vlastnosti.
 hu*:
 nl : Nog geen kenmerken aanwezig.
 
 :_chare_vns
 en : Visual novels
 ru*:
-cs*:
+cs : Vizuální novely
 hu*:
 nl :
 
 :_chare_vns_sel
 en : Selected visual novels
 ru*:
-cs*:
+cs : Vybrané vizuální novely
 hu*:
 nl : Geselecteerde visual novels
 
 :_chare_vns_add
 en : Add visual novel
 ru*:
-cs*:
+cs : Přidat vizuální novelu
 hu*:
 nl : Voeg visual novel toe
 
 :_chare_vns_empty
 en : No visual novels selected.
 ru*:
-cs*:
+cs : Nebyla vybrána žádná vizuální novela.
 hu*:
 nl : Geen visual novels geselecteerd
 
 :_chare_vns_addrel
 en : add release
 ru*:
-cs*:
+cs : přidat vydání
 hu*:
 nl : voeg uitgave toe
 
 :_chare_vns_other
 en : All / others
 ru*:
-cs*:
+cs : Všechna / ostatní
 hu*:
 nl : Alle / overige
 
 :_chare_vns_del
 en : remove
 ru*:
-cs*:
+cs : odstranit
 hu*:
 nl : verwijder
 
 :_chare_vns_allrel
 en : All releases already selected.
 ru*:
-cs*:
+cs : Všechna vydání byla již vybrána.
 hu*:
 nl : Alle uitgaven al geselecteerd.
 
 :_chare_vns_exists
 en : VN already present.
 ru*:
-cs*:
+cs : VN je již přítomna.
 hu*:
 nl : VN is al geselecteerd.
 
@@ -5521,21 +5521,21 @@ nl : VN is al geselecteerd.
 :_charb_title
 en : Browse characters
 ru*:
-cs*:
+cs : Prohlížet postavy
 hu*:
 nl : Browse karakters
 
 :_charb_noresults
 en : No results
 ru*:
-cs*:
+cs : Žádné výsledky
 hu*:
 nl : Geen resultaten
 
 :_charb_noresults_msg
 en : No characters found that matched your criteria.
 ru*:
-cs*:
+cs : Žádné postavy odpovídající vašim požadavkům.
 hu*:
 nl : Geen karakters gevonden die aan je kriteria voldoen.
 
@@ -5555,14 +5555,14 @@ nl : Geen karakters gevonden die aan je kriteria voldoen.
 :_traitp_title
 en : [index,_1,Meta trait,Trait]: [_2]
 ru*:
-cs*:
+cs : [index,_1,Meta vlastnost,Vlastnost]: [_2]
 hu*:
 nl : [index,_1,Metakenmerk,Kenmerk]: [_2]
 
 :_traitp_del_title
 en : Trait deleted
 ru*:
-cs*:
+cs : Vlastnost smazána
 hu*:
 nl : Verwijderd kenmerk
 
@@ -5570,7 +5570,8 @@ nl : Verwijderd kenmerk
 en : This trait has been removed from the database, and cannot be used or re-added.
      File a request on the [url,/t/db,discussion board] if you disagree with this.
 ru*:
-cs*:
+cs : Tato vlastnost byla smazána z databáze a nemůže být použita či znovu přidána.
+     Vyplňte požadavek na [url,/t/db,diskusních boardech] pokud s tímto nesouhlasíte.
 hu*:
 nl : Dit kenmerk is verwijderd uit de database, en kan hier niet gebruikt worden.
      Open een topic op het [url,/t/db,forum] als je het hier niet mee eens bent.
@@ -5585,28 +5586,28 @@ nl : Wacht op goedkeuring
 :_traitp_pending_msg
 en : This trait is waiting for a moderator to approve it.
 ru*:
-cs*:
+cs : Tato vlastnost čeká na schválení moderátora.
 hu*:
 nl : Dit kenmerk is nog niet goedgekeurd door een moderator.
 
 :_traitp_addchild
 en : Create child trait
 ru*:
-cs*:
+cs : Vytvořit dceřinnou vlastnost
 hu*:
 nl : Voeg een subkenmerk toe
 
 :_traitp_indexlink
 en : Traits
 ru*:
-cs*:
+cs : Vlastnosti
 hu*:
 nl : Kenmerken
 
 :_traitp_sexual
 en : Sexual content
 ru*:
-cs*:
+cs : Erotický obsah
 hu*:
 nl : Erotisch
 
@@ -5620,28 +5621,28 @@ nl : Aliassen
 :_traitp_childs
 en : Child traits
 ru*:
-cs*:
+cs : Dceřinné vlastnosti
 hu*:
 nl : Subkenmerken
 
 :_traitp_more
 en : [_1] more [quant,_1,trait,traits]
 ru*:
-cs*:
+cs : [_1] více [quant,_1,vlastnost,vlastnosti]
 hu*:
 nl : nog [_1] [quant,_1,kenmerk,kenmerken]
 
 :_traitp_charlist
 en : Characters
 ru*:
-cs*:
+cs : Postavy
 hu*:
 nl : Karakters
 
 :_traitp_nochars
 en : This trait has not been linked to any characters yet, or they were hidden because of your spoiler settings.
 ru*:
-cs*:
+cs : Tato vlastnost ještě nebyla provázána s žádnými postavami nebo tyto byly schovány kvůli vašemu nastavení spoilerů.
 hu*:
 nl : Dit kenmerk is nog niet gekoppeld aan een karakter, of deze worden niet weergegeven in verband met je spoilerinstelling.
 
@@ -5651,42 +5652,42 @@ nl : Dit kenmerk is nog niet gekoppeld aan een karakter, of deze worden niet wee
 :_traite_title_add
 en : Add child trait to [_1]
 ru*:
-cs*:
+cs : Přidat dceřinnou vlastnost k vlastnosti [_1]
 hu*:
 nl : Voeg subkenmerk toe aan [_1]
 
 :_traite_title_edit
 en : Edit trait: [_1]
 ru*:
-cs*:
+cs : Editovat vlastnost: [_1]
 hu*:
 nl : Wijzig kenmerk [_1]
 
 :_traite_title_new
 en : Add new trait
 ru*:
-cs*:
+cs : Přidat novou vlastnost
 hu*:
 nl : Voeg nieuw kenmerk toe
 
 :_traite_req_title
 en : Requesting new trait
 ru*:
-cs*:
+cs : Vyžádat si novou vlastnost
 hu*:
 nl : Vraag nieuwe trait aan
 
 :_traite_req_subtitle
 en : Your trait must be approved
 ru*:
-cs*:
+cs : Vaše vlastnost musí být schválena
 hu*:
 nl : Je kenmerk moet goedgekeurd worden
 
 :_traite_req_msg
 en : Because all traits have to be approved by moderators, it can take a while before your trait will show up in the listings or can be used on character entries.
 ru*:
-cs*:
+cs : Jelikož nové vlastnosti musí být schváleny moderátorem, může chvilku trvat, než se vaše vlastnost ukáže v seznamech nebo bude moct být použita na záznamy postav.
 hu*:
 nl : Omdat alle kenmerken goedgekeurd moeten worden door een moderator, kan het even duren voordat je kenmerk te zien is op de site of gebruikt kan worden voor karakters.
 
@@ -5735,14 +5736,14 @@ nl : Goedgekeurd
 :_traite_frm_meta
 en : This is a meta trait (only to be used as parent for other traits, not for direct use with characters)
 ru*:
-cs*:
+cs : Toto je meta vlastnost (může být použita pouze jako mateřská pro ostatní vlastnosti, ne pro přímé užití u postav)
 hu*:
 nl : Dit is een metakenmerk (kan alleen gebruikt worden als houder voor andere kenmerken, niet voor karakters)
 
 :_traite_frm_sexual
 en : Indicates sexual content
 ru*:
-cs*:
+cs : Naznačuje erotický obsah
 hu*:
 nl : Erotisch
 
@@ -5768,28 +5769,28 @@ nl : Beschrijving
 :_traite_frm_parents
 en : Parent traits
 ru*:
-cs*:
+cs : Mateřské vlastnosti
 hu*:
 nl : Hoofdkenmerk
 
 :_traite_frm_parents_msg
 en : List of trait IDs to be used as parent for this trait, separated by a space.
 ru*:
-cs*:
+cs : Seznam ID vlastností, které mají být mateřskými k této vlastnosti, oddělených mezerou.
 hu*:
 nl : Spatiegescheiden lijst van hoofdkenmerken (numerieke IDs).
 
 :_traite_frm_gorder
 en : Group number
 ru*:
-cs*:
+cs : Číslo skupiny
 hu*:
 nl : Groepnummer
 
 :_traite_frm_gorder_msg
 en : (Only used if this trait is a group. Used for ordering, lowest first)
 ru*:
-cs*:
+cs : (Použito pouze pokud je tato vlastnost skupinou. Použito pro řazení, nejnižší první)
 hu*:
 nl : (Alleen gebruikt als dit kenmerk een groep is. Gebruikt voor sorteren, laagste getal eerst)
 
@@ -5800,7 +5801,7 @@ nl : (Alleen gebruikt als dit kenmerk een groep is. Gebruikt voor sorteren, laag
 :_traitb_title
 en : Browse traits
 ru*:
-cs*:
+cs : Prohlížet vlastnosti
 hu*:
 nl : Browse kenmerken
 
@@ -5849,7 +5850,7 @@ nl : Aangemaakt
 :_traitb_col_name
 en : Trait
 ru*:
-cs*:
+cs : Vlastnost
 hu*:
 nl : Kenmerk
 
@@ -5873,35 +5874,35 @@ nl : verwijderd
 :_traiti_title
 en : Trait index
 ru*:
-cs*:
+cs : Seznam vlastností
 hu*:
 nl : Kenmerkenindex
 
 :_traiti_create
 en : Create new trait
 ru*:
-cs*:
+cs : Vytvořit novou vlastnost
 hu*:
 nl : Nieuw kenmerk
 
 :_traiti_search
 en : Search traits
 ru*:
-cs*:
+cs : Hledat ve vlastnostech
 hu*:
 nl : Zoek kenmerken
 
 :_traiti_tree
 en : Trait tree
 ru*:
-cs*:
+cs : Strom vlastností
 hu*:
 nl : Kenmerkenlijst
 
 :_traiti_browseall
 en : Browse all traits
 ru*:
-cs*:
+cs : Prohlížet všechny vlastnosti
 hu*:
 nl : Browse alle kenmerken
 
@@ -5915,7 +5916,7 @@ nl : Recentelijk toegevoegd
 :_traiti_popular
 en : Popular traits
 ru*:
-cs*:
+cs : Populární vlastnosti
 hu*:
 nl : Populaire kenmerken
 
@@ -5943,7 +5944,7 @@ nl : Moderatiewachtrij
 :_traiti_denied
 en : Denied traits
 ru*:
-cs*:
+cs : Zamítnuté vlastnosti
 hu*:
 nl : Geweigerde kenmerken
 
@@ -6035,49 +6036,49 @@ nl : verwijder van wensenlijst
 :_votelist_title_vn
 en : Votes for [_1]
 ru : Голоса за [_1]
-cs*:
+cs : Hlasy pro vizuální novelu [_1]
 hu : [_1]-nak(nek) a szavazatai
 nl : Stemmen op [_1]
 
 :_votelist_title_user
 en : Votes by [_1]
 ru : Отданы [_1]
-cs*:
+cs : Hlasy uživatele [_1]
 hu : Szavazatok [_1]-tól(től)
 nl : Stemmen van [_1]
 
 :_votelist_novotes
 en : No votes to list. :-(
 ru : Не найдено ни одного голоса. T_T
-cs*:
+cs : Žádné hlasy k vypsání :-(
 hu : Nincs mit mutatni. :-(
 nl : Geen stemmen om weer te geven. :-(
 
 :_votelist_col_date
 en : Cast
 ru : Дата
-cs*:
+cs : Odhlasováno
 hu : Leadva
 nl : Gestemd
 
 :_votelist_col_vote
 en : Vote
 ru : Голос
-cs*:
+cs : Hlas
 hu : Szavazat
 nl : Stem
 
 :_votelist_col_vn
 en : Visual novel
 ru : Новелла
-cs*:
+cs : Vizuální novela
 hu :
 nl :
 
 :_votelist_col_user
 en : User
 ru : Пользователь
-cs*:
+cs : Uživatel
 hu : Felhasználó
 nl : Gebruiker
 
@@ -6130,7 +6131,7 @@ nl : Titel
 :_rlist_col_status
 en : Status
 ru : Статус
-cs*:
+cs : Status
 hu : Állapot
 nl :
 
@@ -6151,35 +6152,35 @@ nl : Stem
 :_rlist_withvn
 en : -- with selected VNs --
 ru : -- с указанными новеллами --
-cs*:
+cs : -- s vybranými VN --
 hu : -- a kiválasztott VN-ekkel együtt --
 nl : -- met geselecteerde VNs --
 
 :_rlist_withrel
 en : -- with selected releases --
 ru : -- с указанными выпусками --
-cs*:
+cs : -- s vybranými vydáními --
 hu : -- a kiválasztott kiadásokkal együtt --
 nl : -- met geselecteerde uitgaven --
 
 :_rlist_changestat
 en : Change status
 ru : Смена статуса
-cs*:
+cs : Změnit status
 hu : Állapot megváltoztatássa
 nl : Verander status
 
 :_rlist_setnote
 en : Set note
 ru : Установка заметки
-cs*:
+cs : Nastavit poznámku
 hu : Jegyzet beállítása
 nl : Verander notitie
 
 :_rlist_setnote_prompt
 en : Set notes (leave empty to remove note)
 ru : Установка заметок (оставьте поле пустым чтобы стереть заметку)
-cs*:
+cs : Nastavit poznámky (ponechte prázdné pro odstranění poznámky)
 hu : Jegyzetek beállítása (hagyd üresen ha törölni akarod a jegyzetet)
 nl : Verander notitie (laat leeg om de notitie te verwijderen)
 
@@ -6194,7 +6195,7 @@ nl : verwijder uit lijst
 :_rlist_update
 en : Update
 ru : Обновить
-cs*:
+cs : Aktualizovat
 hu : Frissítés
 nl :
 
@@ -6282,7 +6283,7 @@ nl : [_1] [quant,_1,stem,stemmen] op [_2] verschillende [quant,_2,tag,tags] en [
 :_userpage_tags_browse
 en : Browse tags
 ru : Просмотреть теги
-cs*:
+cs : Procházet tagy
 hu : Címkék böngészése
 nl :
 
@@ -6743,7 +6744,7 @@ nl : Opties
 :_usere_flist
 en : Don't allow other people to see my visual novel list ([url,_1,_1]), votes ([url,_2,_2]) and wishlist ([url,_3,_3])
 ru : Запретить другим участникам видеть мой список новелл ([url,_1,_1]), отданные голоса ([url,_2,_2]) и список желаемого ([url,_3,_3])
-cs*:
+cs : Nedovolit ostatním lidem vidět můj seznam vizuálních novel ([url,_1,_1]), hlasování ([url,_2,_2]) a wishlist ([url,_3,_3])
 hu : Ne engedd, hogy más emberek lássák a visual novel listámat ([url,_1,_1]), a szavazataimat ([url,_2,_2]) és a kívánságlistámat ([url,_3,_3])
 nl : Sta andere mensen niet toe om mijn visual novel lijst ([url,_1,_1]), stemmen ([url,_2,_2]) en wensenlijst ([url,_3,_3]) te zien
 
@@ -7123,21 +7124,21 @@ nl :
 :_vnbrowse_tagnothere
 en : Additional tag filters are not available on this page. Use the visual novel browser instead (available from the main menu -> visual novels).
 ru : На этой странице дополнительные фильтры по тегам недоступны. Воспользуйтесь обзором новелл (Меню -> Новеллы).
-cs*:
+cs : Další filtry tagů nejsou na této stránce dostupné. Použijte místo nich prohlížeč vizuálních novel (dostupný z hlavního menu -> vizuální novely).
 hu : További címke szűrők nem állnak rendelkezésre ezzen az oldalon. Használd a visual novel böngészőt (megtalálható a Menü -> Visual Novellek pontba).
 nl : Extra tag filters zijn niet aanwezig op deze pagina. Gebruik de visual novel browser voor deze functionaliteit (beschikbaar via het hoofdmenu -> visual novels).
 
 :_vnbrowse_tagactive
 en : These filters are ignored on tag pages (when set as default).
 ru : Эти фильтры недействительны на страницах тегов (по умолчанию).
-cs*:
+cs : Tyto filtry jsou na stránkách tagů ignorovány (když jsou nastaveny jako defaultní).
 hu : Ezzek a szűrők figyelmen kívűl maradnak a címke oldalakon (ha alapértelmezetnek vannak beállítva).
 nl : Deze filters worden genegeerd op tagpaginas (als ze gebruikt worden als standaardfilters).
 
 :_vnbrowse_tagrem
 en : remove
 ru : убрать
-cs*:
+cs : odstranit
 hu : eltávolítás
 nl : verwijder
 
@@ -7200,84 +7201,84 @@ nl :
 :_vnbrowse_ul
 en : My lists
 ru : Мои списки
-cs*:
+cs : Mé seznamy
 hu : A listám
 nl : Mijn lijsten
 
 :_vnbrowse_ul_notblack
 en : Blacklist
 ru : Чёрный список
-cs*:
+cs : Blacklist
 hu : Feketelista
 nl :
 
 :_vnbrowse_ul_notblackmsg
 en : Exclude VNs on my blacklist
 ru : Исключить новеллы из моего черного списка
-cs*:
+cs : Nezobrazovat VN z mého blacklistu
 hu : Hagyd ki azokat a VN-eket amelyek a feketelistámba bent vannak
 nl : Sluit VNs op mijn blacklist uit
 
 :_vnbrowse_ul_onwish
 en : Wishlist
 ru : Список желаемого
-cs*:
+cs : Wishlist
 hu : Kivánságlista
 nl : Wensenlijst
 
 :_vnbrowse_ul_onwishno
 en : Not on my wishlist
 ru : Не в моём списке желаемого
-cs*:
+cs : Kromě mého wishlistu
 hu : Nincs a kivánságlistámba
 nl : Niet op mijn wensenlijst
 
 :_vnbrowse_ul_onwishyes
 en : On my wishlist
 ru : В моём списке желаемого
-cs*:
+cs : V mém wishlistu
 hu : Benne van a kivánságlistámba
 nl : Op mijn wensenlijst
 
 :_vnbrowse_ul_voted
 en : Voted
 ru : Отданные голоса
-cs*:
+cs : Odhlasování
 hu : Szavazva
 nl : Gestemd
 
 :_vnbrowse_ul_votedno
 en : Not voted on
 ru : Без моего голоса
-cs*:
+cs : Neodhlasované
 hu : Nem volt szavazva rá
 nl : Niet op gestemd
 
 :_vnbrowse_ul_votedyes
 en : Voted on
 ru : С моим голосом
-cs*:
+cs : Odhlasované
 hu : Volt szavazva rá
 nl : Op gestemd
 
 :_vnbrowse_ul_onlist
 en : VN list
 ru : Список новелл
-cs*:
+cs : Seznam VN
 hu : VN lista
 nl : VN lijst
 
 :_vnbrowse_ul_onlistno
 en : Not on my VN list
 ru : Не в моём списке новелл
-cs*:
+cs : Kromě mého seznamu VN
 hu : Nincs a VN listámba
 nl : Niet op mijn VN lijst
 
 :_vnbrowse_ul_onlistyes
 en : On my VN list
 ru : В моём списке новелл
-cs*:
+cs : V mém seznamu VN
 hu : Benne van a VN listámba
 nl : Op mijn VN lijst
 
@@ -7726,7 +7727,7 @@ nl : Volledige grootte: [_1]
 :_vnedit_scr_nonstandard
 en : WARNING: Odd resolution! Please check whether the image has been cropped correctly.
 ru : ВНИМАНИЕ: Странное разрешение! Проверьте, что изображение правильно обрезано.
-cs*:
+cs : VAROVÁNÍ: Divné rozlišení! Zkontrolujte, prosím, zda je obrázek patřičně oříznutý.
 hu : VIGYÁZAT: Furcsa felbontás! Kérlek ellenőrizd, hogy a kép jól lett-e kivágva.
 nl : WAARSCHUWING: Vreemde resolutie! Controleer a.u.b. of de plaatje goed is gecropped.
 
@@ -8211,35 +8212,35 @@ nl : Je staat op het punt om deze visual novel een 10 te geven. Dit is een erg e
 :_vnpage_uopt_vnlisted
 en : VN list: [_1]
 ru : Список новелл: [_1]
-cs*:
+cs : Seznam VN: [_1]
 hu : VN lista: [_1]
 nl : VN-lijst: [_1]
 
 :_vnpage_uopt_novn
 en : not on your VN list
 ru : не в вашем списке
-cs*:
+cs : není ve vašem seznamu VN
 hu : nincs a VN listádba
 nl : niet in je VN-lijst
 
 :_vnpage_uopt_changevn
 en : Change status
 ru : Сменить статус
-cs*: Změnit status
+cs : Změnit status
 hu : Állapot megváltoztatássa
 nl : Wijzig status
 
 :_vnpage_uopt_addvn
 en : Add to VN list
 ru : Добавить в список
-cs*:
+cs : Přidat na seznam VN
 hu : Hozzáadás a VN listához
 nl : Voeg toe aan VN-lijst
 
 :_vnpage_uopt_delvn
 en : remove from VN list
 ru : убрать из списка
-cs*:
+cs : odstranit ze seznamu VN
 hu : eltávolítás a VN listából
 nl : Verwijder van VN-lijst
 
@@ -8281,21 +8282,21 @@ nl : Verwijder van wensenlijst
 :_vnpage_uopt_reldel
 en : Remove from list
 ru : Убрать из списка
-cs*:
+cs : Odstranit ze seznamu
 hu : Eltávolítás a listából
 nl : Verwijder van lijst
 
 :_vnpage_tab_main
 en : main
 ru*:
-cs*:
+cs : hlavní
 hu*:
 nl : primaire info
 
 :_vnpage_tab_chars
 en : characters
 ru*:
-cs*:
+cs : postavy
 hu*:
 nl : karakters
 
@@ -8400,7 +8401,7 @@ nl : Recente stemmen
 :_votestats_allvotes
 en : show all
 ru : показать всё
-cs*:
+cs : ukázat vše
 hu : mindegyik megjelenitése
 nl : alle stemmen
 
@@ -8502,7 +8503,7 @@ nl : Dit item is uit de database verwijderd. Als je het hier niet mee eens bent
 :_editmsg_copy_title
 en : You're not editing a entry!
 ru*:
-cs*:
+cs : Neupravujete záznam!
 hu*:
 nl : Je bent geen item aan het wijzigen!
 
@@ -8511,8 +8512,8 @@ en : You're about to insert a new entry into the database with information based
      Hit the 'edit' tab on the right-top if you intended to edit the entry instead of creating a new one.
 ru*: Вы собираетесь создать новый выпуск, основанный на информации из [_1].[br]
      Щёлкните вкладку 'правка' в правом верхнем углу, если собирались редактировать выпуск, а не создавать новый.
-cs*: Chystáte se vložit nové vydání do databáze s informacemi založenými na vydání [_1].[br]
-     Pokud chcete editovat vydání místo toho, abyste vložili další vydání, přejděte na záložku 'editovat' v pravém horním rohu.
+cs : Chystáte se vložit nový záznam do databáze s informacemi založenými na záznamu [_1].[br]
+     Použijte záložku "editovat" vpravo nahoře pokud jste hodlali upravit záznam a ne vytvořit záznam nový.
 hu*: Te most ép arra készülsz, hogy egy új kiadást hozzál létre az adatbázisban, [_1]-ra alapozva az információkat.[br]
      Klikkelj a 'szerkesztés' fülre a jobb felső sarokba ha egy új kiadás helyet, csak szerkeszteni akartad a meglévőt.
 nl : Je staat op het punt om een nieuw item toe te voegen aan de database, met informatie gebasseerd op [_1].[br]
@@ -8549,7 +8550,7 @@ nl : Browse de [url,_1,geschiedenis] van dit item voor wijzigingen gerelateerd a
 :_editmsg_msg_search
 en : [url,_1,Search the database] to see if we already have information about this [index,_2,visual novel,release,producer,character].
 ru*: [url,_1,Воспользуйтесь поиском], ведь вполне возможно, что у нас уже есть информация об [index,_2,этой новелле,этом выпуске,этой компании].
-cs*: [url,_1,Prohledejte databázi], zda již nemáme informaci o [index,_2,této vizuální novele,tomto vydání,tomto producentovi].
+cs : [url,_1,Prohledejte databázi], zda již nemáme informaci o [index,_2,této vizuální novele,tomto vydání,tomto producentovi,této postavě].
 hu*: [url,_1,Nézd át az adatbázist], hogy van-e már információ erről a [index,_2,visual novelről, kiadásról, készítőről].
 nl : [url,_1,Doorzoek de database] om te kijken of we al informatie hebben over [index,_2,deze visual novel,deze uitgave,deze producent,dit karakter].
 
@@ -8565,7 +8566,7 @@ en : You are editing an old revision of this [index,_1,visual novel,release,prod
      If you save it, all changes made after this revision will be reverted!
 ru*: Вы правите старую редакцию страницы [index,_1,новеллы,выпуска,компании].
      Если вы сохраните её, все изменения, сделанные после этой правки будут утеряны!
-cs*: Editujete starší verzi [index,_1,této vizuální novely,tohoto vydání,tohoto producenta].
+cs : Editujete starší verzi [index,_1,této vizuální novely,tohoto vydání,tohoto producenta,této postavy].
      Pokud ji uložíte, všechny změny provedené po této revizi budou vráceny!
 hu*: Te egy régi átjavítását szerkeszted ennek a [index,_1,visual novelnek, kiadásnak, készítőnek].
      Ha lemented, akkor minden szerkesztés amit ezután a javítás után végeztek megsemmisül!
@@ -8678,7 +8679,7 @@ nl : Plaatje moet in JPEG of PNG formaat zijn
 :_formerr_e_toolarge
 en : Image is too large, only 5MB allowed
 ru*: Изображение слишком большое, 500 кб - максимально допустимый предел
-cs*: Obrázek je moc velký, je povoleno pouze MB
+cs : Obrázek je moc velký, je povoleno pouze 5MB
 hu*: A kép túl nagy, 5MB a megengedett
 nl : Plaatje is te groot, max. 5MB toegestaan
 
@@ -8713,14 +8714,14 @@ nl : Wacht a.u.b. 30 seconden voordat je een nieuwe post maakt
 :_formerr_e_badeditsum
 en : Please read [url,/d5.4,the guidelines] on how to use the edit summary.
 ru : Пожалуйста, прочтите [url,/d5.4,руководство] о том, как использовать поле "Суммарно о правке".
-cs*:
+cs : Prosíme, přečtěte si [url,/d5.4,doporučení] ohledně užívání úprav shrnutí.
 hu : Légyszíves olvasdd el a szerkesztési összegzés [url,/d5.4, útmutatóját].
 nl : Lees a.u.b. [url,/d5.4,de richtlijnen] over het gebruik van de samenvatting.
 
 :_formerr_e_mainchar
 en : Invalid main character. Make sure the ID is correct, that the main character itself is not an instance of an other character, and that this entry is not used as a main character elsewhere.
 ru*:
-cs*:
+cs : Neplatná hlavní postava. Ujistěte se, že ID je správně, že hlavní postava není duplikátem jiné postavy a že tento záznam není použit jako hlavní postava někde jinde.
 hu*:
 nl : Ongeldig hoofdkaracter. Zorg ervoor dat het ID correct is, dat het hoofdkarakter zelf geen instantie is van een ander karakter, en dat dit karakter zelf ook niet ergens gebruikt wordt als hoofdkarakter.
 

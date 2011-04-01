@@ -24,8 +24,9 @@
   s tagem pro danou vizuální novelu souhlasíte.</li>
  <li>Některé tagy se mohou chovat jako spoiler co se děje VN týká, to může být označeno ohodnocením spoiler
   statusu. Je vysoce doporučeno nenechávat tento jako "Neutral", a opravdu se snažit poskytnout nějaké vodítko
-  ohledně toho, zda tasg vůbec není spoiler nebo zda vizuální novelu malinko prozrazuje.</li>
-</ul>
+  ohledně toho, zda tag vůbec není spoiler nebo zda vizuální novelu malinko prozrazuje.</li>
+<li>Tagy by měly odrážet věci, které zažíváte při hraní hry, i kdyby některé věci měly být ke koncipříběhu odhaleny jako lži nebo iluze.the story. V takových případech přidejte oba tagy, jak ty domněleses like this,špatné, tak ty, které popisují "správnou" situaci ke konci hry. Nezapomeňte pak označit ty "správné"
+tagy jako spoiler.</li></ul>
 
 
 :SUB:Doporučení k tagům
