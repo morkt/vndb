@@ -172,7 +172,7 @@ sub _start {
   $_[KERNEL]->post(pg => query => q|SELECT
     (SELECT id FROM changes ORDER BY id DESC LIMIT 1) AS rev,
     (SELECT id FROM tags ORDER BY id DESC LIMIT 1) AS tag,
-    (SELECT id FROM traits ORDER BY id DESC LIMIT 1) AS tag,
+    (SELECT id FROM traits ORDER BY id DESC LIMIT 1) AS trait,
     (SELECT date FROM threads_posts ORDER BY date DESC LIMIT 1) AS post|,
     undef, 'notify_init');
 
@@ -299,7 +299,7 @@ sub notify { # name, pid, payload
     WHERE tp.date > ? AND tp.num = 1
     ORDER BY tp.date|
   : $_[ARG0] eq 'newtrait' ? q|SELECT
-      'i' AS type, t.id, t.name AS title, u.username, t.id AS lastrait
+      'i' AS type, t.id, t.name AS title, u.username, t.id AS lasttrait
     FROM traits t
     JOIN users u ON u.id = t.addedby
     WHERE t.id > ?
