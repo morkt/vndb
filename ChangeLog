@@ -5,6 +5,7 @@
 	- Bugfix: display more than 10 characters on VN page
 	- Bugfix: removed Perl warning in Handler::Chars
 	- Bugfix: use the 'vnlists' table to calculate stats on user page
+	- Bugfix: allow adding/copying a char with instance field set
 
 2.19 - 2011-03-30
 	- Character database:

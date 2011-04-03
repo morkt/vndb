@@ -293,8 +293,8 @@ sub edit {
     # validate main character
     if(!$frm->{_err} && $frm->{main}) {
       my $m = $self->dbCharGet(id => $frm->{main}, what => 'extended')->[0];
-      push @{$frm->{_err}}, 'mainchar' if !$m || $m->{id} == $r->{id} || $m->{main}
-        || $self->dbCharGet(instance => $r->{id})->[0];
+      push @{$frm->{_err}}, 'mainchar' if !$m || $m->{main} || $r && !$copy &&
+        ($m->{id} == $r->{id} || $self->dbCharGet(instance => $r->{id})->[0]);
     }
 
     my(@traits, @vns);
