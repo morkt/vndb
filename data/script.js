@@ -1965,8 +1965,8 @@ function cvnRelAdd(vid, rid, role, spoil) {
   }
 
   var lsel = tag('select', {onchange:cvnSerialize});
-  for(var i=0; i<char_roles.length; i++)
-    lsel.appendChild(tag('option', {value: char_roles[i], selected:char_roles[i]==role}, char_roles[i]));
+  for(var i=0; i<char_roles.length; i++) // l10n /^_charrole_/
+    lsel.appendChild(tag('option', {value: char_roles[i], selected:char_roles[i]==role}, mt('_charrole_'+char_roles[i])));
 
   // l10n /_spoil_\d+/
   var ssel = tag('select', {onchange:cvnSerialize});

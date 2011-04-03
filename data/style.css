@@ -885,8 +885,8 @@ div.chardetails.charsep { padding-top: 5px; margin-top: 5px; border-top: 1px sol
 #jt_box_chare_vns td.tc_rel { width: 340px; padding-left: 15px }
 #jt_box_chare_vns td.tc_rel select { width: 340px; }
 #jt_box_chare_vns td.tc_rol,
+#jt_box_chare_vns td.tc_rol select { width: 150px }
 #jt_box_chare_vns td.tc_spl,
-#jt_box_chare_vns td.tc_rol select,
 #jt_box_chare_vns td.tc_spl select { width: 100px }
 #jt_box_chare_vns td.tc_del { padding-left: 5px }
 #jt_box_chare_vns td.tc_vnadd input { width: 280px }
