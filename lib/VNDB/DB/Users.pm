@@ -63,7 +63,7 @@ sub dbUserGet {
       '(SELECT COUNT(*) FROM notifications WHERE uid = u.id AND read IS NULL) AS notifycount' : (),
     $o{what} =~ /stats/ ? (
       '(SELECT COUNT(*) FROM rlists WHERE uid = u.id) AS releasecount',
-      '(SELECT COUNT(DISTINCT rv.vid) FROM rlists rl JOIN releases r ON rl.rid = r.id JOIN releases_vn rv ON rv.rid = r.latest WHERE uid = u.id) AS vncount',
+      '(SELECT COUNT(*) FROM vnlists WHERE uid = u.id) AS vncount',
       '(SELECT COUNT(*) FROM threads_posts WHERE uid = u.id) AS postcount',
       '(SELECT COUNT(*) FROM threads_posts WHERE uid = u.id AND num = 1) AS threadcount',
       '(SELECT COUNT(DISTINCT tag) FROM tags_vn WHERE uid = u.id) AS tagcount',

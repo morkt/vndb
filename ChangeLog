@@ -1,3 +1,11 @@
+2.20 - ?
+	- Bugfix: don't accidentally remove char traits when editing
+	- Bugfix: fixed possible SQL table name clash on history browser
+	- Bugfix: properly announce chars and traits in Multi::IRC
+	- Bugfix: display more than 10 characters on VN page
+	- Bugfix: removed Perl warning in Handler::Chars
+	- Bugfix: use the 'vnlists' table to calculate stats on user page
+
 2.19 - 2011-03-30
 	- Character database:
 	  - New DB item (versioned): character, page: /c+
