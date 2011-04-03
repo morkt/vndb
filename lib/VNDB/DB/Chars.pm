@@ -86,7 +86,9 @@ sub dbCharGet {
           JOIN vn_rev vr ON vr.id = v.latest
           LEFT JOIN releases r ON cv.rid = r.id
           LEFT JOIN releases_rev rr ON rr.id = r.latest
-          !W|, { 'cv.cid IN(!l)' => [[keys %r]], $1 ? ('cv.vid = ?', $1) : () }
+          !W
+          ORDER BY v.c_released|,
+        { 'cv.cid IN(!l)' => [[keys %r]], $1 ? ('cv.vid = ?', $1) : () }
       )});
     }
   }
