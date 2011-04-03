@@ -277,7 +277,7 @@ sub notify_init { # num, res
 
 
 sub notify { # name, pid, payload
-  my $k = $_[ARG0] eq 'newrevision' ? 'lastrev' : $_[ARG0] eq 'newpost' ? 'lastpost' : 'lasttag';
+  my $k = $_[ARG0] eq 'newrevision' ? 'lastrev' : $_[ARG0] eq 'newpost' ? 'lastpost' : $_[ARG0] eq 'newtrait' ? 'lasttrait' : 'lasttag';
   return if !$_[HEAP]{$k};
 
   my $q = $_[ARG0] eq 'newrevision' ? q|SELECT
