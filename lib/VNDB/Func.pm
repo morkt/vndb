@@ -139,12 +139,12 @@ sub _parenttags {
 
 # a child tags/traits box
 sub childtags {
-  my($self, $title, $type, $t) = @_;
+  my($self, $title, $type, $t, $order) = @_;
 
   div class => 'mainbox';
    h1 $title;
    ul class => 'tagtree';
-    for my $p (sort { @{$b->{'sub'}} <=> @{$a->{'sub'}} } @{$t->{childs}}) {
+    for my $p (sort { !$order ? @{$b->{'sub'}} <=> @{$a->{'sub'}} : $a->{$order} <=> $b->{$order} } @{$t->{childs}}) {
       li;
        a href => "/$type$p->{id}", $p->{name};
        b class => 'grayedout', " ($p->{c_items})" if $p->{c_items};

@@ -93,19 +93,21 @@ sub dbTagGet {
 sub dbTTTree {
   my($self, $type, $id, $lvl, $back) = @_;
   $lvl ||= 15;
+  my $xtra = $type eq 'trait' ? ', "order"' : '';
+  my $xtra2 = $type eq 'trait' ? ', t."order"' : '';
   my $r = $self->dbAll(qq|
     WITH RECURSIVE thetree(lvl, id, parent, name, c_items) AS (
-        SELECT ?::integer, id, 0, name, c_items
+        SELECT ?::integer, id, 0, name, c_items$xtra
         FROM ${type}s
         !W
       UNION ALL
-        SELECT tt.lvl-1, t.id, tt.id, t.name, t.c_items
+        SELECT tt.lvl-1, t.id, tt.id, t.name, t.c_items$xtra2
         FROM thetree tt
         JOIN ${type}s_parents tp ON !s
         JOIN ${type}s t ON !s
         WHERE tt.lvl > 0
           AND t.state = 2
-    ) SELECT DISTINCT id, parent, name, c_items FROM thetree ORDER BY name|, $lvl,
+    ) SELECT DISTINCT id, parent, name, c_items$xtra FROM thetree ORDER BY name|, $lvl,
     $id ? {'id = ?' => $id} : {"NOT EXISTS(SELECT 1 FROM ${type}s_parents WHERE $type = id)" => 1, 'state = 2' => 1},
     !$back ? ('tp.parent = tt.id', "t.id = tp.$type") : ("tp.$type = tt.id", 't.id = tp.parent')
   );

@@ -337,7 +337,7 @@ sub traitindex {
   end;
 
   my $t = $self->dbTTTree(trait => 0, 2);
-  childtags($self, mt('_traiti_tree'), 'i', {childs => $t});
+  childtags($self, mt('_traiti_tree'), 'i', {childs => $t}, 'order');
 
   table class => 'mainbox threelayout';
    Tr;
