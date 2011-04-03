@@ -6,6 +6,7 @@
 	- Bugfix: removed Perl warning in Handler::Chars
 	- Bugfix: use the 'vnlists' table to calculate stats on user page
 	- Bugfix: allow adding/copying a char with instance field set
+	- Bugfix: copy over search string when switching to trait search
 
 2.19 - 2011-03-30
 	- Character database:
