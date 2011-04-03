@@ -1808,7 +1808,7 @@ function ctrAdd(item, spoil) {
   var name = item.firstChild.nodeValue;
   var group = item.getAttribute('groupname');
   var sp = tag('td', {'class':'tc_spoil', onclick:ctrSpoilNext, ctr_spoil:spoil}, mt('_spoil_'+spoil));
-  ddInit(sp, 'tagmod', ctrSpoilDD);
+  ddInit(sp, 'left', ctrSpoilDD);
   byId('traits_tbl').appendChild(tag('tr', {ctr_id:id, ctr_spoiler:spoil},
     tag('td', {'class':'tc_name'},
       tag('b', {'class':'grayedout'}, group?group+' / ':''),
