@@ -163,13 +163,21 @@ sub charTable {
       push @{$groups{ $g }}, $_
     }
     for my $g (@groups) {
-      Tr ++$i % 2 ? (class => 'odd') : ();
+      my $minspoil = 5;
+      $minspoil = $minspoil > $_->{spoil} ? $_->{spoil} : $minspoil for(@{$groups{$g}});
+      Tr class => charspoil($minspoil).(++$i % 2 ? ' odd' : '');
        td class => 'key'; a href => '/i'.($groups{$g}[0]{group}||$groups{$g}[0]{tid}), $groups{$g}[0]{groupname} || $groups{$g}[0]{name}; end;
        td;
-        for (@{$groups{$g}}) {
-          span class => charspoil $_->{spoil};
-           txt ', ' if $_->{tid} != $groups{$g}[0]{tid};
-           a href => "/i$_->{tid}", $_->{name};
+        for (0..$#{$groups{$g}}) {
+          my $t = $groups{$g}[$_];
+          span class => charspoil $t->{spoil};
+           a href => "/i$t->{tid}", $t->{name};
+           # spoiler setting of the comma = max(current, min(@remaining_spoil))
+           # since it is in the current <span>, which has 'current', only the second part is relevant if it is > current
+           my $min_remaining = 5;
+           $min_remaining = $min_remaining > $groups{$g}[$_]{spoil} ? $groups{$g}[$_]{spoil} : $min_remaining for($_+1..$#{$groups{$g}});
+           span class => charspoil($min_remaining), ', ' if $min_remaining != 5 && $min_remaining > $t->{spoil};
+           txt ', ' if $min_remaining != 5 && $min_remaining <= $t->{spoil};
           end;
         }
        end;

@@ -13,6 +13,7 @@
 	- Bugfix: copy over search string when switching to trait search
 	- Bugfix: Use the translatable role names on char<->vn link form
 	- Bugfix: Prevent the spiol dd to hide the del link on char<->trait form
+	- Bugfix: Hide pointless groups and commas on spoiler-hidden trait display
 
 2.19 - 2011-03-30
 	- Character database:
