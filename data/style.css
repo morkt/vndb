@@ -107,11 +107,12 @@ b.todo { font-weight: normal; color: $statnok$ }
 }
 
 b.spoiler, b.spoiler a {
-  color: #000;
+  color: #000!important;
   background-color: #000;
   font-weight: normal;
 }
 b.spoiler_shown { font-weight: normal }
+b.spoiler_shown a { color: $link$!important }
 #maincontent div.quote {
   padding: 1px 5px;
   margin: 0px 10px;
