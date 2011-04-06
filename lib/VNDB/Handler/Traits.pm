@@ -86,7 +86,9 @@ sub traitpage {
     my($chars, $np) = $self->dbCharGet(
       trait_inc => $trait,
       traitspoil => $f->{m},
-      results => 50, page => $f->{p},
+      results => 50,
+      page => $f->{p},
+      what => 'vns',
     );
 
     div class => 'mainbox';
@@ -106,24 +108,7 @@ sub traitpage {
      # p; br; txt mt '_traitp_cached'; end;
     end 'div';
 
-    # TODO: proper table with info and such
-    $self->htmlBrowse(
-      class    => 'traitchars',
-      options  => $f,
-      nextpage => $np,
-      items    => $chars,
-      pageurl  => "/i$trait?m=$f->{m}",
-      sorturl  => "/i$trait?m=$f->{m}",
-      header   => [
-        [ 'Name'  ],
-      ],
-      row => sub {
-        my($s, $n, $l) = @_;
-        Tr $n%2?(class => 'odd') : ();
-         td class => 'tc1'; a href => "/c$l->{id}", $l->{name}; end;
-        end;
-      },
-    ) if @$chars;
+    @$chars && $self->charBrowseTable($chars, $np, $f, "/i$trait?m=$f->{m}");
   }
 
   $self->htmlFooter;

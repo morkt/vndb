@@ -1,6 +1,7 @@
 2.20 - ?
 	- Order the VNs listed on char browser by release date
 	- Order the traits groups on /i by their 'order' column
+	- Use same browsing-table on trait pages and char browser
 	- CSS: Hide links in [spoiler] tags
 	- Bugfix: don't accidentally remove char traits when editing
 	- Bugfix: fixed possible SQL table name clash on history browser

@@ -7,7 +7,7 @@ use TUWF ':html', 'uri_escape';
 use Exporter 'import';
 use VNDB::Func;
 
-our @EXPORT = ('charTable');
+our @EXPORT = ('charTable', 'charBrowseTable');
 
 TUWF::register(
   qr{c([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
@@ -474,8 +474,17 @@ sub list {
     end;
   }
 
-  my $uri = "/c/$fch?q=$quri";
-  @$list && $self->htmlBrowse(
+  @$list && $self->charBrowseTable($list, $np, $f, "/c/$fch?q=$quri");
+
+  $self->htmlFooter;
+}
+
+
+# Also used on Handler::Traits
+sub charBrowseTable {
+  my($self, $list, $np, $f, $uri) = @_;
+
+  $self->htmlBrowse(
     class    => 'charb',
     items    => $list,
     options  => $f,
@@ -504,9 +513,7 @@ sub list {
        end;
       end;
     }
-  );
-
-  $self->htmlFooter;
+  )
 }
 
 
