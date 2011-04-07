@@ -466,7 +466,9 @@ sub _vnlist_browse {
          td class => 'tc2';
           input type => 'checkbox', name => 'rid', value => $_->{rid} if $own;
          end;
-         td class => 'tc3', $self->{l10n}->datestr($_->{released});
+         td class => 'tc3';
+          lit $self->{l10n}->datestr($_->{released});
+         end;
          td class => 'tc4';
           cssicon "lang $_", mt "_lang_$_" for @{$_->{languages}};
           cssicon "rt$_->{type}", mt "_rtype_$_->{type}";
