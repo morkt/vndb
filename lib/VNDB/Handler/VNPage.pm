@@ -153,7 +153,7 @@ sub page {
 
     end 'table';
    end 'div';
-   clearfloat;
+   div class => 'clearfloat', style => 'height: 5px', ''; # otherwise the tabs below aren't positioned correctly
 
    # tags
    my $t = $self->dbTagStats(vid => $v->{id}, sort => 'rating', reverse => 1, minrating => 0, results => 999);
