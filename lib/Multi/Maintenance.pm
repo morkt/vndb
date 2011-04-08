@@ -18,13 +18,13 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown set_daily daily set_monthly monthly log_stats
-        vncache_inc tagcache vnpopularity vnrating cleangraphs cleansessions cleannotifications
+        vncache_inc tagcache traitcache vnpopularity vnrating cleangraphs cleansessions cleannotifications
         vncache_full usercache statscache logrotate
         vnsearch_check vnsearch_gettitles vnsearch_update
       |],
     ],
     heap => {
-      daily => [qw|vncache_inc tagcache vnpopularity vnrating cleangraphs cleansessions cleannotifications|],
+      daily => [qw|vncache_inc tagcache traitcache vnpopularity vnrating cleangraphs cleansessions cleannotifications|],
       monthly => [qw|vncache_full usercache statscache logrotate|],
       vnsearch_checkdelay => 3600,
       @_,
@@ -121,13 +121,19 @@ sub vncache_inc {
 
 
 sub tagcache {
-  # takes about 2 seconds max, still OK
+  # takes about 5 seconds max, still OK
   $_[KERNEL]->post(pg => do => 'SELECT tag_vn_calc()', undef, 'log_stats', 'tagcache');
 }
 
 
+sub traitcache {
+  # still takes less than a second
+  $_[KERNEL]->post(pg => do => 'SELECT traits_chars_calc()', undef, 'log_stats', 'traitcache');
+}
+
+
 sub vnpopularity {
-  # still takes at most 3 seconds. let's hope that doesn't increase...
+  # takes a bit more than 8 seconds, meh...
   $_[KERNEL]->post(pg => do => 'SELECT update_vnpopularity()', undef, 'log_stats', 'vnpopularity');
 }
 

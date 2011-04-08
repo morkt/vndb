@@ -5696,6 +5696,13 @@ cs : Tato vlastnost ještě nebyla provázána s žádnými postavami nebo tyto 
 hu : Ez a sajátosság még nincs hozzárendelve egy szereplőhöz se, vagy a spoiler beállításaid miatt, el vannak rejtve.
 nl : Dit kenmerk is nog niet gekoppeld aan een karakter, of deze worden niet weergegeven in verband met je spoilerinstelling.
 
+:_traitp_cached
+en : The list below also includes all characters linked to child traits. This list is cached, it can take up to 24 hours after a character has been edited for it to show up on this page.
+ru*:
+cs*:
+hu*:
+nl : De volgende lijst bevat ook alle karakters die gelinkt zijn aan subkenmerken. Deze lijst is gecached, het kan 24 uur duren voordat een karakter op deze pagina te zien is.
+
 
 # Trait add/edit form (/i+/edit, /i+/add, /i/new)
 

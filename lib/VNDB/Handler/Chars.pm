@@ -331,10 +331,6 @@ sub edit {
       $frm->{vns} = \@vns;
 
       my $nrev = $self->dbItemEdit(c => !$copy && $id ? $r->{cid} : undef, %$frm);
-
-      # TEMPORARY SOLUTION! I'll investigate more efficient solutions and incremental updates whenever I have more data
-      $self->dbExec('SELECT traits_chars_calc()');
-
       return $self->resRedirect("/c$nrev->{iid}.$nrev->{rev}", 'post');
     }
   }
