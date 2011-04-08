@@ -1068,7 +1068,7 @@ div.warning li, div.notice li {
 div.revision {
   padding-bottom: 10px!important;
 }
-div.revision div, div.revision table {
+div.revision div.rev, div.revision table {
   border: 1px solid $border$;
   margin: 0 auto;
   width: 90%;
@@ -1087,7 +1087,7 @@ div.revision table td {
 div.revision td.tcval {
   width: 44%;
 }
-div.revision div {
+div.revision div.rev {
   padding: 5px;
   text-align: center;
 }

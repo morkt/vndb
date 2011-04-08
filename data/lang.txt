@@ -2143,6 +2143,20 @@ nl : laatste
 
 # Revision pages
 
+:_revision_spoil_title
+en : SPOILER WARNING!
+ru*:
+cs*:
+hu*:
+nl : SPOILERWAARSCHUWING!
+
+:_revision_spoil_msg
+en : This revision page may contain major spoilers. You may want to view the [url,_1,final page] instead.
+ru*:
+cs*:
+hu*:
+nl : Deze revisiepagina kan spoilers bevatten. Je kan misschien beter de [url,_1,uiteindelijke pagina] openen.
+
 :_revision_previous
 en : earlier revision
 ru : более ранняя редакция
