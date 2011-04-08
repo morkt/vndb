@@ -239,6 +239,7 @@ sub wishlist {
       { post => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
       { post => 'batchedit', required => 1, enum => [ -1, @{$self->{wishlist_status}} ] },
     );
+    $frm->{sel} = [ grep $_, @{$frm->{sel}} ]; # weed out "select all" checkbox
     if(!$frm->{_err} && @{$frm->{sel}} && $frm->{sel}[0]) {
       $self->dbWishListDel($uid, $frm->{sel}) if $frm->{batchedit} == -1;
       $self->dbWishListAdd($frm->{sel}, $uid, $frm->{batchedit}) if $frm->{batchedit} >= 0;
@@ -303,6 +304,8 @@ sub wishlist {
     $own ? (footer => sub {
       Tr;
        td colspan => 3;
+        input type => 'checkbox', class => 'checkall', name => 'sel', value => 0;
+        txt ' ';
         Select name => 'batchedit', id => 'batchedit';
          option mt '_wishlist_select';
          optgroup label => mt '_wishlist_changeprio';

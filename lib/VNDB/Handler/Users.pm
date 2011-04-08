@@ -611,7 +611,7 @@ sub notifies {
       class    => 'notifies',
       pageurl  => "/u$uid/notifies?r=$f->{r}",
       header   => [
-        [ '<input type="checkbox" class="checkall" name="notifysel" value="0" />' ],
+        [ '' ],
         [ mt '_usern_col_type' ],
         [ mt '_usern_col_age' ],
         [ mt '_usern_col_id' ],
@@ -639,6 +639,8 @@ sub notifies {
       footer => sub {
         Tr;
          td colspan => 5;
+          input type => 'checkbox', class => 'checkall', name => 'notifysel', value => 0;
+          txt ' ';
           input type => 'submit', name => 'markread', value => mt '_usern_but_markread';
           input type => 'submit', name => 'remove', value => mt '_usern_but_remove';
           b class => 'grayedout', ' '.mt '_usern_autodel';
