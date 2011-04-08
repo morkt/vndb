@@ -130,7 +130,7 @@ sub _menu {
     h2 mt '_menu_dbstats';
     div;
      dl;
-      for (qw|vn releases producers users threads posts|) {
+      for (qw|vn releases producers chars tags traits users threads posts|) {
         dt mt "_menu_stat_$_";
         dd $self->{stats}{$_};
       }

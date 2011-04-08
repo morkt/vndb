@@ -6,6 +6,7 @@
 	- Generate dbedit/dbdel notifications on character edits
 	- CSS: Hide links in [spoiler] tags
 	- Added 'select' all to wishlist and moved 'select all' down on notifies
+	- Added char/tag/trait stats to database statistics box
 	- Bugfix: don't accidentally remove char traits when editing
 	- Bugfix: fixed possible SQL table name clash on history browser
 	- Bugfix: properly announce chars and traits in Multi::IRC

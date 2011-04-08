@@ -490,6 +490,9 @@ $$ LANGUAGE 'plpgsql';
 
 -- the stats_cache table
 CREATE OR REPLACE FUNCTION update_stats_cache() RETURNS TRIGGER AS $$
+DECLARE
+  unhidden boolean;
+  hidden boolean;
 BEGIN
   IF TG_OP = 'INSERT' THEN
     IF TG_TABLE_NAME = 'users' THEN
@@ -504,13 +507,20 @@ BEGIN
       END IF;
     END IF;
 
-  ELSIF TG_OP = 'UPDATE' AND TG_TABLE_NAME <> 'users' THEN
-    IF OLD.hidden = TRUE THEN
+  ELSIF TG_OP = 'UPDATE' THEN
+    IF TG_TABLE_NAME IN('tags', 'traits') THEN
+      unhidden := OLD.state <> 2 AND NEW.state = 2;
+      hidden := OLD.state = 2 AND NEW.state <> 2;
+    ELSE
+      unhidden := OLD.hidden AND NOT NEW.hidden;
+      hidden := NOT unhidden;
+    END IF;
+    IF unhidden THEN
       IF TG_TABLE_NAME = 'threads' THEN
         UPDATE stats_cache SET count = count+NEW.count WHERE section = 'threads_posts';
       END IF;
       UPDATE stats_cache SET count = count+1 WHERE section = TG_TABLE_NAME;
-    ELSIF OLD.hidden = FALSE THEN
+    ELSIF hidden THEN
       IF TG_TABLE_NAME = 'threads' THEN
         UPDATE stats_cache SET count = count-NEW.count WHERE section = 'threads_posts';
       END IF;

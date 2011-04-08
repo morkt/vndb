@@ -1985,6 +1985,27 @@ cs : Producenti
 hu : Készítők
 nl : Producenten
 
+:_menu_stat_chars
+en : Characters
+ru*:
+cs*:
+hu*:
+nl : Karakters
+
+:_menu_stat_tags
+en : VN Tags
+ru*:
+cs*:
+hu*:
+nl :
+
+:_menu_stat_traits
+en : Character traits
+ru*:
+cs*:
+hu*:
+nl : Karakter kenmerken
+
 :_menu_stat_users
 en : Users
 ru : Пользователей
