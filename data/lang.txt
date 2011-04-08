@@ -5431,6 +5431,13 @@ cs : Přidat vlastnost
 hu : Sajátosság hozzáadása
 nl : Voeg kenmerk toe
 
+:_chare_traits_del
+en : del
+ru*:
+cs*:
+hu*:
+nl :
+
 :_chare_traits_present
 en : Selected trait is already present.
 ru*:
@@ -5514,6 +5521,13 @@ ru*:
 cs : VN je již přítomna.
 hu : A VN már jelen van.
 nl : VN is al geselecteerd.
+
+:_chare_vns_relexists
+en : Release already present.
+ru*:
+cs*:
+hu*:
+nl : Uitgave is al geselecteerd.
 
 
 # Character browser (/c/*)

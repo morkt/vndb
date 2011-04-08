@@ -1814,7 +1814,7 @@ function ctrAdd(item, spoil) {
       tag('b', {'class':'grayedout'}, group?group+' / ':''),
       tag('a', {'href':'/i'+id}, name)),
     sp,
-    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:ctrDel}, 'del'))
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:ctrDel}, mt('_chare_traits_del')))
   ));
   ctrEmpty();
   ctrSerialize();
@@ -1994,7 +1994,7 @@ function cvnRelChange() {
   while(tr.nodeName.toLowerCase() != 'tr')
     tr = tr.parentNode;
   if(byId('cvn_v'+tr.cvn_vid+'r'+val)) {
-    alert('Release already selected.');
+    alert(mt('_chare_vns_relexists'));
     for(var i=0; i<this.options.length; i++)
       this.options[i].selected = this.options[i].value == tr.cvn_rid;
     return;
