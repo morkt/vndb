@@ -27,8 +27,7 @@ sub shorten {
 #  v+,  v+.+
 #  http://../
 sub bb2html {
-  my $raw = shift;
-  my $maxlength = shift;
+  my($raw, $maxlength, $charspoil) = @_;
   $raw =~ s/\r//g;
   return '' if !$raw && $raw ne "0";
 
@@ -76,7 +75,8 @@ sub bb2html {
           next;
         } elsif($tag eq '[spoiler]') {
           push @open, 'spoiler';
-          $result .= '<b class="spoiler">';
+          $result .= !$charspoil ? '<b class="spoiler">'
+            : '<b class="grayedout charspoil charspoil_-1">&lt;hidden by spoiler settings&gt;</b><span class="charspoil charspoil_2 hidden">';
           next;
         } elsif($tag eq '[quote]') {
           push @open, 'quote';
@@ -89,7 +89,7 @@ sub bb2html {
           $rmnewline = 1;
           next;
         } elsif($tag eq '[/spoiler]' && $open[$#open] eq 'spoiler') {
-          $result .= '</b>';
+          $result .= !$charspoil ? '</b>' : '</span>';
           pop @open;
           next;
         } elsif($tag eq '[/quote]' && $open[$#open] eq 'quote') {

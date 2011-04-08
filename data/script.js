@@ -2738,7 +2738,7 @@ if(byId('expandall')) {
 }
 
 
-// charspoil handling (ugly)
+// charspoil handling
 if(byId('charspoil_sel')) {
   var k = byClass('charspoil');
   var h = byName(byId('charspoil_sel'), 'a');
@@ -2746,6 +2746,7 @@ if(byId('charspoil_sel')) {
     for(var i=0; i<k.length; i++)
       setClass(k[i], 'hidden',
         hasClass(k[i], 'charspoil_0') ? false :
+        hasClass(k[i], 'charspoil_-1') ? spoil > 1 :
         hasClass(k[i], 'charspoil_1') ? spoil < 1 : spoil < 2);
     for(var i=0; i<h.length; i++)
       setClass(h[i], 'sel', spoil == i);

@@ -233,7 +233,7 @@ sub charTable {
        td class => 'chardesc', colspan => 2;
         h2 mt '_charp_description';
         p;
-         lit bb2html $r->{desc};
+         lit bb2html $r->{desc}, 0, 1;
         end;
        end;
       end;
