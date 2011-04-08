@@ -3,6 +3,7 @@
 	- Order the traits groups on /i by their 'order' column
 	- Use same browsing-table on trait pages and char browser
 	- Added spoiler warning to character revision pages
+	- Generate dbedit/dbdel notifications on character edits
 	- CSS: Hide links in [spoiler] tags
 	- Bugfix: don't accidentally remove char traits when editing
 	- Bugfix: fixed possible SQL table name clash on history browser
