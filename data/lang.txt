@@ -683,7 +683,7 @@ nl : Hoofdbrand
 en : Spawned
 ru : Порождена
 cs : Stvořilo
-hu : Leszármazott
+hu : Alapította
 nl : Voortgebracht
 
 :_prodrel_ori
@@ -1167,35 +1167,35 @@ nl : Technisch
 en : Unknown
 ru*:
 cs : Není znám
-hu*:
+hu : Ismeretlen
 nl : Onbekend
 
 :_bloodt_a
 en : A
 ru*:
 cs : A
-hu*:
+hu :
 nl :
 
 :_bloodt_b
 en : B
 ru*:
 cs : B
-hu*:
+hu :
 nl :
 
 :_bloodt_ab
 en : AB
 ru*:
 cs : AB
-hu*:
+hu :
 nl :
 
 :_bloodt_o
 en : O
 ru*:
 cs :
-hu*:
+hu :
 nl : O
 
 
@@ -1205,28 +1205,28 @@ nl : O
 en : Unknown or N/A
 ru*:
 cs : Neznámé
-hu*:
+hu : Ismeretlen vagy nincs
 nl : Onbekend of n.v.t.
 
 :_gender_m
 en : Male
 ru*:
 cs : Mužské
-hu*:
+hu : Férfi
 nl : Man
 
 :_gender_f
 en : Female
 ru*:
 cs : Ženské
-hu*:
+hu : Nő
 nl : Vrouw
 
 :_gender_b
 en : Both
 ru*:
 cs : Obojí
-hu*:
+hu : Mindkettő
 nl : Beide
 
 
@@ -1236,28 +1236,28 @@ nl : Beide
 en : Protagonist
 ru*:
 cs : Protagonista
-hu*:
+hu : Főszereplő
 nl :
 
 :_charrole_primary
 en : Main character
 ru*:
 cs : Hlavní postava
-hu*:
+hu : Szereplő
 nl : Belangrijke rol
 
 :_charrole_side
 en : Side character
 ru*:
 cs : Vedlejší postava
-hu*:
+hu : Mellékszereplő
 nl : Onbelangrijke rol
 
 :_charrole_appears
 en : Makes an appearance
 ru*:
 cs : Epizodní postava
-hu*:
+hu : Megjelenik
 nl : Figurant
 
 
@@ -1294,84 +1294,84 @@ nl : %Y-%m-%d om %R
 en : January
 ru*:
 cs : leden
-hu*:
+hu : Január
 nl : januari
 
 :_month_2
 en : February
 ru*:
 cs : únor
-hu*:
+hu : Február
 nl : februari
 
 :_month_3
 en : March
 ru*:
 cs : březen
-hu*:
+hu : Március
 nl : maart
 
 :_month_4
 en : April
 ru*:
 cs : duben
-hu*:
+hu : Április
 nl : april
 
 :_month_5
 en : May
 ru*:
 cs : květen
-hu*:
+hu : Május
 nl : mei
 
 :_month_6
 en : June
 ru*:
 cs : červen
-hu*:
+hu : Június
 nl : juni
 
 :_month_7
 en : July
 ru*:
 cs : červenec
-hu*:
+hu : Július
 nl : juli
 
 :_month_8
 en : August
 ru*:
 cs : srpen
-hu*:
+hu : Augusztus
 nl : augustus
 
 :_month_9
 en : September
 ru*:
 cs : září
-hu*:
+hu : Szeptember
 nl : september
 
 :_month_10
 en : October
 ru*:
 cs : říjen
-hu*:
+hu : Október
 nl : oktober
 
 :_month_11
 en : November
 ru*:
 cs : listopad
-hu*:
+hu :
 nl : november
 
 :_month_12
 en : December
 ru*:
 cs : prosinec
-hu*:
+hu :
 nl : december
 
 
@@ -1502,7 +1502,7 @@ nl : Gesloten
 en : Note: edit summary of the last edit should indicate the reason for the deletion or lock.
 ru : Замечание: если производится блокировка или удаление, поле "суммарно о правке" для последнего изменения должно содержать причину.
 cs : Poznámka: shrnutí poslední editace by mělo obshovat důvod smazání či zamčení.
-hu : Megjegyzés: az összegzése az utolsó szerkesztésnek foglalja magába a törlés vagy lezárás okát.
+hu : Megjegyzés: az utolsó szerkesztés összegzése foglalja magába a törlés vagy lezárás okát.
 nl : Opmerking: Samenvatting van de laatste wijziging geeft aan wat de reden was voor de verwijdering of sluiting.
 
 
@@ -1692,7 +1692,7 @@ nl : Je moet [url,_1,ingelogd] zijn om deze pagina te wijzigen
 en : You are not allowed to edit this page
 ru : Вам запрещено редактировать эту страницу
 cs : Nemáte oprávnění editovat tuto stránku
-hu : Nincs engedélyed, ennek az oldalnak a szerkesztésére
+hu : Nincs engedélyed ennek az oldalnak a szerkesztésére
 nl : Je bent niet toegestaan om wijzigingen aan te brengen
 
 
@@ -1803,14 +1803,14 @@ nl : Producenten
 en : Characters
 ru*:
 cs : Postavy
-hu*:
+hu : Szereplők
 nl : Karakters
 
 :_menu_traits
 en : Traits
 ru*:
 cs : Vlastnosti
-hu*:
+hu : Sajátosságok
 nl : Kenmerken
 
 :_menu_users
@@ -1925,7 +1925,7 @@ nl : Nieuwe producent
 en : Add Character
 ru*:
 cs : Přidat postavu
-hu*:
+hu : Új szereplő bejegyzése
 nl : Nieuw karakter
 
 :_menu_logout
@@ -2256,7 +2256,7 @@ nl : Producenten
 en : Characters
 ru*:
 cs : Postavy
-hu*:
+hu : Szereplők
 nl : Karakters
 
 :_searchbox_tags
@@ -2270,7 +2270,7 @@ nl :
 en : Traits
 ru*:
 cs : Vlastnosti
-hu*:
+hu : Sajátosságok
 nl : Kenmerken
 
 :_searchbox_users
@@ -2344,7 +2344,7 @@ nl : VNDB.org is een uitgebreide database voor informatie over visual novels.[br
 en : Recent Changes
 ru : Свежие правки
 cs : Poslední změny
-hu : Legfrissebb változtatások
+hu : Új szerkesztések
 nl : Recente wijzigingen
 
 :_home_recentchanges_item
@@ -2365,7 +2365,7 @@ nl : Aankondigingen
 en : Recent Posts
 ru : Недавние сообщения
 cs : Poslední příspěvky
-hu : Legfrissebb hozzászólások
+hu : Új hozzászólások
 nl : Recente berichten
 
 :_home_recentposts_item
@@ -2386,7 +2386,7 @@ nl :
 en : Upcoming releases
 ru : Грядущие выпуски
 cs : Nadcházející vydání
-hu : Hamarosan megjelenő kiadások
+hu : Hamarosan megjelennek
 nl : Komende uitgaven
 
 :_home_justreleased
@@ -2482,7 +2482,7 @@ nl : Alleen producenten
 en : Only characters
 ru*:
 cs : Pouze postavy
-hu*:
+hu : Csak szereplők
 nl : Alleen karakters
 
 :_hist_filter_allactions
@@ -2602,7 +2602,7 @@ nl : Laatst aangepast op [date,_1,full]
 en : Reply
 ru : Ответить
 cs : Odpovědět
-hu : Válasz
+hu : Válaszol
 nl : Reageer
 
 :_thread_noreply_locked
@@ -2630,7 +2630,7 @@ nl : Reageer
 en : Reply
 ru : Ответить
 cs : Odpovědět
-hu : Válasz
+hu : Válaszol
 nl : Reageer
 
 :_thread_quickreply_full
@@ -2964,7 +2964,7 @@ nl : Relaties
 en : Relation graph for [_1]
 ru : Схема отношений для [_1]
 cs : Graf vztahů pro producenta [_1]
-hu : [_1] összefüggés grafikonja
+hu : [_1] összefüggéseinek a grafikonja
 nl : Relaties voor [_1]
 
 
@@ -2981,7 +2981,7 @@ nl : Wijzig [_1]
 en : Add new producer
 ru : Добавление новой компании
 cs : Přidat nového producenta
-hu : Új készítő hozzáadása
+hu : Új készítő bejegyzése
 nl : Nieuwe producent
 
 :_pedit_form_generalinfo
@@ -3016,7 +3016,7 @@ nl : Originele naam
 en : The original name of the producer, leave blank if it is already in the Latin alphabet.
 ru : Исходное название компании, оставьте пустым, если оно уже в латинском алфавите.
 cs : Originální jméno producenta, ponechte prázdné, pokud již je v latince.
-hu : A készítő eredeti neve, hagyd üresen ha latin betűkből áll s már beírtad a "Név" mezőbe.
+hu : A készítő eredeti neve, ha latin betűkkel van írva akkor ne írd be ide még egyszer.
 nl : De werkelijke naam van de producent, laat leeg als dit al in het Latijnse alphabet is.
 
 :_pedit_form_alias
@@ -3079,7 +3079,7 @@ nl : Geselecteerde producenten
 en : Add producer
 ru : Добавить компанию
 cs : Přidat producenta
-hu : Készítő hozzáadása
+hu : Készítő bejegyzése
 nl : Nieuwe producent toevoegen
 
 :_pedit_rel_addbut
@@ -3107,7 +3107,7 @@ nl : Niks geselecteerd.
 en : Producer textbox should start with an ID (e.g. "p7:")
 ru : Строка компании должна начинаться с идентификатора (например, "p7:")
 cs : Textové pole producenta by mělo začínat ID (např. "p7:")
-hu : A Készítő szövegdoboz egy ID-val kell kezdődjön (pl. "p7:")
+hu : A Készítő szövegdoboz egy ID-val (azonosítóval) kell kezdődjön (pl. "p7:")
 nl : Producent input veld moet starten met een ID (b.v. "p7:")
 
 :_pedit_rel_notfound
@@ -3776,7 +3776,7 @@ nl : Geselecteerde producenten
 en : Add producer
 ru : Добавить компанию
 cs : Přidat producenta
-hu : Készitő hozzáadása
+hu : Készítő bejegyzése
 nl : Nieuwe producent
 
 :_redit_form_prod_dev
@@ -3804,7 +3804,7 @@ nl : Beide
 en : add
 ru : добавить
 cs : přidat
-hu : hozzáadd
+hu : bejegyez
 nl : voeg toe
 
 :_redit_form_prod_remove
@@ -3860,14 +3860,14 @@ nl : Geselecteerde visual novels
 en : Add visual novel
 ru : Добавить новеллу
 cs : Přidat vizuální novelu
-hu : Visual novel hozzáadása
+hu : Visual novel bejegyzése
 nl : Nieuwe visual novel
 
 :_redit_form_vn_addbut
 en : add
 ru : добавить
 cs : přidat
-hu : hozzáadd
+hu : bejegyez
 nl : voeg toe
 
 :_redit_form_vn_remove
@@ -3888,7 +3888,7 @@ nl : Niks geselecteerd.
 en : Visual novel textbox must start with an ID (e.g. v17)
 ru : Строка новеллы должна начинаться с идентификатора (например, v17)
 cs : Vizuální novela musí začínat ID (např. v17)
-hu : A Visual novel szövegdoboz muszáj egy ID-val kezdődjön (pl. v17)
+hu : A Visual novel szövegdoboz muszáj egy ID-val (azonosítóval) kezdődjön (pl. v17)
 nl : Visual novel titel moet beginnen met een ID (bijvoorbeeld "v17")
 
 :_redit_form_vn_notfound
@@ -4204,7 +4204,7 @@ nl : Deze tag is nog niet goedgekeurd door een moderator. Je kan het echter nog 
 en : Create child tag
 ru : Создать дочерний тег
 cs : Vytvořit závislý tag
-hu : Alcímke létrehozása
+hu : Alcímke bejegyzése
 nl : Voeg een subtag toe
 
 :_tagp_indexlink
@@ -4347,7 +4347,7 @@ nl : Wijzig tag [_1]
 en : Add new tag
 ru : Добавить новый тег
 cs : Přidat nový tag
-hu : Új címke készítése
+hu : Új címke bejegyzése
 nl : Voeg nieuwe tag toe
 
 :_tagedit_req_title
@@ -4397,7 +4397,7 @@ nl : Primaire naam
 en : Added by
 ru : Добавлено
 cs : Přidal
-hu : Hozzáadta
+hu : Bejegyezte
 nl : Toegevoegd door
 
 :_tagedit_frm_state
@@ -4432,7 +4432,7 @@ nl : Goedgekeurd
 en : This is a meta-tag (only to be used as parent for other tags, not for linking to VN entries)
 ru : Это мета-тег (его нельзя добавлять к новеллам, он может использоваться лишь как родитель для других тегов)
 cs : Toto je meta-tag (používá se pouze jako mateřský pro ostatní tagy, ne pro vlastní vizuální novely)
-hu : Ez itt egy meta-címke (csakis más címkék szülője ként használandó, nem pedig VN bejegyzésekhez)
+hu : Ez itt egy meta-címke (címkéket ír körül--csakis más címkék szülője ként használandó, VN bejegyzésekhez nem)
 nl : Dit is een metatag (kan alleen gebruikt worden als houder voor andere tags, niet voor visual novels)
 
 :_tagedit_frm_meta_warn
@@ -4583,7 +4583,7 @@ nl : Geen resultaten gevonden
 en : Created
 ru : Созданы
 cs : Vytvořené
-hu : Létrehozva
+hu : Bejegyezve
 nl : Aangemaakt
 
 :_tagb_col_name
@@ -4813,7 +4813,7 @@ nl : Wie?
 en : Newly added
 ru : Недавно добавленные
 cs : Nově přidáno
-hu : Újonnan hozzáadott
+hu : Újonnan bejegyzett
 nl : Net toegevoegd
 
 :_tagv_save
@@ -4827,7 +4827,7 @@ nl : Opslaan
 en : Add tag
 ru : Добавить тег
 cs : Přidat tag
-hu : Címke hozzáadása
+hu : Címke bejegyzése
 nl : Voeg toe
 
 :_tagv_addmsg
@@ -4863,14 +4863,14 @@ nl : Tag is al geselecteerd!
 en : Tag index
 ru : Список тегов
 cs : Seznam tagů
-hu : Címke index
+hu : Címke jegyzék
 nl :
 
 :_tagidx_create
 en : Create new tag
 ru : Создать новый тег
 cs : Vytvořit nový tag
-hu : Új címke létrehozása
+hu : Új címke bejegyzése
 nl : Nieuwe tag
 
 :_tagidx_search
@@ -4884,7 +4884,7 @@ nl : Zoek tags
 en : Tag tree
 ru : Древо тега
 cs : Strom тегов
-hu : Címke fa
+hu : Címke jegyzék
 nl : Taglijst
 
 :_tagidx_browseall
@@ -4898,7 +4898,7 @@ nl : Browse alle tags
 en : Recently added
 ru : Недавно добавлены
 cs : Poslední přidané
-hu : Nemrég hozzáadva
+hu : Nemrég bejegyezve
 nl : Recentelijk toegevoegd
 
 :_tagidx_popular
@@ -4926,7 +4926,7 @@ nl : Wacht op goedkeuring
 en : Moderation queue empty! yay!
 ru : В очереди модерации пусто! Няа!
 cs : Fronta ke schválení prázdná! Jej!
-hu : Moderálásra váró lista üres! Hurrá!
+hu : A moderálásra váró lista üres! Hurrá!
 nl : Alles is gemodereerd! yay!
 
 :_tagidx_queue_link
@@ -4958,126 +4958,126 @@ nl : Geweigerde tags
 en : Name
 ru*:
 cs : Jméno
-hu*:
+hu : Név
 nl : Naam
 
 :_revfield_c_original
 en : Original name
 ru*:
 cs : Originální jméno
-hu*:
+hu : Eredeti név
 nl : Originele naam
 
 :_revfield_c_alias
 en : Aliasses
 ru*:
 cs : Aliasy
-hu*:
+hu : Más nevek
 nl : Aliassen
 
 :_revfield_c_desc
 en : Description
 ru*:
 cs : Popis
-hu*:
+hu : Leírás
 nl : Omschrijving
 
 :_revfield_c_gender
 en : Gender
 ru*:
 cs : Pohlaví
-hu*:
+hu : Nem
 nl : Geslacht
 
 :_revfield_c_b_month
 en : Birthday - month
 ru*:
 cs : Narozeniny - měsíc
-hu*:
+hu : Születésnap - hónap
 nl : Verjaardag - maand
 
 :_revfield_c_b_day
 en : Birthday - day
 ru*:
 cs : Narozeniny - den
-hu*:
+hu : Születésnap - nap
 nl : Verjaardag - dag
 
 :_revfield_c_s_bust
 en : Bust
 ru*:
 cs : Hrudník
-hu*:
+hu : Mellbőség
 nl : Borst
 
 :_revfield_c_s_waist
 en : Waist
 ru*:
 cs : Pas
-hu*:
+hu : Derék
 nl : Taille
 
 :_revfield_c_s_hip
 en : Hip
 ru*:
 cs : Boky
-hu*:
+hu : Csípő
 nl :
 
 :_revfield_c_height
 en : Height
 ru*:
 cs : Výška
-hu*:
+hu : Magasság
 nl : Lengte
 
 :_revfield_c_weight
 en : Weight
 ru*:
 cs : Váha
-hu*:
+hu : Súly
 nl : Gewicht
 
 :_revfield_c_bloodt
 en : Blood type
 ru*:
 cs : Krevní skupina
-hu*:
+hu : Vércsoport
 nl : Bloedgroep
 
 :_revfield_c_main
 en : Main character
 ru*:
 cs : Hlavní postava
-hu*:
+hu : Szereplő
 nl : Hoofdkarakter
 
 :_revfield_c_main_spoil
 en : Spoiler
 ru*:
 cs : Spoiler
-hu*:
+hu :
 nl :
 
 :_revfield_c_image
 en : Image
 ru*:
 cs : Obrázek
-hu*:
+hu : Kép
 nl : Plaatje
 
 :_revfield_c_traits
 en : Traits
 ru*:
 cs : Vlastnosti
-hu*:
+hu : Sajátosságok
 nl : Kenmerken
 
 :_revfield_c_vns
 en : Visual novels
 ru*:
 cs : Vizuální novely
-hu*:
+hu : Visual novellek
 nl :
 
 :_chdiff_image_proc
@@ -5115,42 +5115,42 @@ nl : ~[plaatje wordt verwerkt, kom a.u.b. terug in een paar minuten~]
 en : Aliases
 ru*:
 cs : Aliasy
-hu*:
+hu : Más nevek
 nl : Aliassen
 
 :_charp_meas
 en : Measurements
 ru*:
 cs : Míry
-hu*:
+hu : Méretek
 nl : Afmetingen
 
 :_charp_meas_h
 en : Height: [_1]cm
 ru*:
 cs : Výška: [_1]cm
-hu*:
+hu : Magasság: [_1]cm
 nl : Lengte: [_1]cm
 
 :_charp_meas_bwh
 en : Bust-Waist-Hips: [_1]-[_2]-[_3]cm
 ru*:
 cs : Hrudník-Pas-Boky: [_1]-[_2]_[_3]cm
-hu*:
+hu : Mell-Derék-Csípő: [_1]-[_2]-[_3]cm
 nl : Borst-Taille-Heup: [_1]-[_2]-[_3]cm
 
 :_charp_meas_w
 en : Weight: [_1]kg
 ru*:
 cs : Váha: [_1]kg
-hu*:
+hu : Súly: [_1]kg
 nl : Gewicht: [_1]kg
 
 :_charp_bday
 en : Birthday
 ru*:
 cs : Narozeniny
-hu*:
+hu : Születésnap
 nl : Verjaardag
 
 # [_1]=day-of-month, as a number, [_2]=month string, as in _month_<num>
@@ -5158,42 +5158,42 @@ nl : Verjaardag
 en : [_1] [_2]
 ru*:
 cs : [_1]. [_2].
-hu*:
+hu :
 nl :
 
 :_charp_vns
 en : Visual novels
 ru*:
 cs : Vizuální novely
-hu*:
+hu : Visual novellek
 nl :
 
 :_charp_releases
 en : Releases
 ru*:
 cs : Vydání
-hu*:
+hu : Kiadások
 nl : Uitgaven
 
 :_charp_vns_other
 en : All other releases
 ru*:
 cs : Všechna další vydání
-hu*:
+hu : Más kiadások
 nl : Overige uitgaven
 
 :_charp_description
 en : Description
 ru*:
 cs : Popis
-hu*:
+hu : Leírás
 nl : Beschrijving
 
 :_charp_instances
 en : Other instances
 ru*:
 cs : Další podoby
-hu*:
+hu : Második én/hasonmás
 nl : Andere instanties
 
 
@@ -5218,7 +5218,7 @@ nl : Kopieer [_1]
 en : Add new character
 ru*:
 cs : Přidat novou postavu
-hu*:
+hu : Új szereplő bejegyzése
 nl : Nieuwe karakter
 
 :_chare_form_generalinfo
@@ -5246,7 +5246,7 @@ nl : Originele naam
 en : The original name of the character, leave blank if it is already in the Latin alphabet.
 ru*:
 cs : Původní jméno postavy, ponechte prázdné, pokud už bylo latinkou.
-hu*:
+hu : A szereplő eredeti neve, ha latin betűkkel van írva akkor ne írd be ide még egyszer.
 nl : De werkelijke naam van het karakter, laat leeg als dit al in het Latijnse alphabet is.
 
 :_chare_form_alias
@@ -5260,7 +5260,7 @@ nl : Aliassen
 en : (Un)official aliases, separated by a newline.
 ru*:
 cs : (Ne)oficiální přezdívky, oddělené novým řádkem.
-hu*:
+hu : (Nem)hivatalos elnevezések, külön sorba mindegyik.
 nl : (In)officiele aliassen, elke alias op een aparte regel.
 
 :_chare_form_desc
@@ -5274,91 +5274,91 @@ nl : Omschrijving
 en : Gender
 ru*:
 cs : Pohlaví
-hu*:
+hu : Nem
 nl : Geslacht
 
 :_chare_form_bday
 en : Birthday
 ru*:
 cs : Narozeniny
-hu*:
+hu : Születésnap
 nl : Verjaardag
 
 :_chare_form_bday_fmt
 en : MM-DD (e.g. "01-26" for the 26th of January)
 ru*:
 cs : MM-DD (např. "01-26" pro 26. ledna)
-hu*:
+hu : HH-NN (pl. a Január 26.-át így írd be -> "01-26")
 nl : MM-DD (b.v. "01-26" voor 26 januari)
 
 :_chare_form_bday_err
 en : Birthday must be in MM-DD format.
 ru*:
 cs : Narozeniny musí být ve formátu MM-DD.
-hu*:
+hu : A születésnap muszáj a HH-NN formátumba legyen.
 nl : Verjaardag moet in het MM-DD formaat zijn.
 
 :_chare_form_bust
 en : Bust
 ru*:
 cs : Hrudník
-hu*:
+hu : Mell
 nl : Borst
 
 :_chare_form_waist
 en : Waist
 ru*:
 cs : Pas
-hu*:
+hu : Derék
 nl : Taille
 
 :_chare_form_hip
 en : Hips
 ru*:
 cs : Boky
-hu*:
+hu : Csípő
 nl : Hippen
 
 :_chare_form_height
 en : Height
 ru*:
 cs : Výška
-hu*:
+hu : Magasság
 nl : Lengte
 
 :_chare_form_weight
 en : Weight
 ru*:
 cs : Váha
-hu*:
+hu : Súly
 nl : Gewicht
 
 :_chare_form_bloodt
 en : Blood type
 ru*:
 cs : Krevní skupina
-hu*:
+hu : Vércsoport
 nl : Bloedgroep
 
 :_chare_form_main
 en : Instance of
 ru*:
 cs : Alter ego k
-hu*:
+hu : Második énje/hasonmása
 nl : Instantie van
 
 :_chare_form_main_note
 en : ID of the main character - the character of which this is an instance of.
 ru*:
 cs : ID hlavní postavy - postavy, ke které je tato postava alter egem.
-hu*:
+hu : A szereplő ID-ja (azonosítója) - annak a karakteré akinek ez a hasonmása/második énje.
 nl : ID van het hoofdkarakter - het karakter waar dit een instantie van is.
 
 :_chare_form_main_spoil
 en : Spoiler
 ru*:
 cs : Spoiler
-hu*:
+hu :
 nl :
 
 :_chare_image
@@ -5386,14 +5386,14 @@ nl : ~[bezig met het verwerken van het plaatje, kom a.u.b. terug in een paar min
 en : Image ID
 ru*:
 cs : ID obrázku
-hu*:
+hu : Kép ID (azonosító)
 nl : Plaatje ID
 
 :_chare_image_id_msg
 en : Use a character image that is already on the server. Set to '0' to remove the current image.
 ru :
 cs :
-hu :
+hu : Használj egy olyan képet ami már megtalálható a szerveren. Ha '0'-ra állítod törölheted a jelenlegi képet.
 nl : Gebruik een karakterplaatje dat al op de server staat. Gebruik '0' om een huidig plaatje te verwijderen.
 
 :_chare_image_upload
@@ -5407,112 +5407,112 @@ nl : Upload nieuw plaatje
 en : Image must be in JPEG or PNG format and at most 1MiB. Images larger than 256x300 will automatically be resized. Image must be safe for work!
 ru*:
 cs : Obrázek musí být ve formátu JPEG nebo PNG a mít maximální velikost 1MiB. Obrázky větší než 256x300 budou automaticky zmenšeny. Obrázek musí být přístupný dětem.
-hu*:
+hu : A kép muszáj JPEG vagy PNG formátumba legyen és maximum 1MiB lehet a mérete. 256x300-nál nagyobb képek automatikusan át lesznek méretezve. A képnek muszáj munkabarátnak lenni!
 nl : Plaatje moet in het JPEG of PNG formaat zijn, en moet kleiner zijn dan 1MiB. Plaatjes groter dan 256x300 worden automatisch verkleind. Het plaatje moet veilig zijn in een werkomgeving!
 
 :_chare_traits
 en : Traits
 ru*:
 cs : Vlastnosti
-hu*:
+hu : Sajátosságok
 nl : Kenmerken
 
 :_chare_traits_sel
 en : Current traits
 ru*:
 cs : Nynější vlastnosti
-hu*:
+hu : Jelenlegi sajátosságok
 nl : Huidige kenmerken
 
 :_chare_traits_add
 en : Add trait
 ru*:
 cs : Přidat vlastnost
-hu*:
+hu : Sajátosság hozzáadása
 nl : Voeg kenmerk toe
 
 :_chare_traits_present
 en : Selected trait is already present.
 ru*:
 cs : vybraná vlastnost je již přítomna.
-hu*:
+hu : A kiválasztott sajátosság már hozzá van rendelve
 nl : Geselecteerd kenmerk is al aanwezig.
 
 :_chare_traits_nometa
 en : Meta traits can't be used here.
 ru*:
 cs : meta vlastnosti se zde nedají použít.
-hu*:
+hu : Meta-sajátosságokat nem lehet itt használni
 nl : Metakenmerken kunnen hier niet gebruikt worden.
 
 :_chare_traits_empty
 en : No traits present yet.
 ru*:
 cs : Nejsou přítomny žádné vlastnosti.
-hu*:
+hu : Még nincs hozzárendelve sajátosság.
 nl : Nog geen kenmerken aanwezig.
 
 :_chare_vns
 en : Visual novels
 ru*:
 cs : Vizuální novely
-hu*:
+hu : Visual novellek
 nl :
 
 :_chare_vns_sel
 en : Selected visual novels
 ru*:
 cs : Vybrané vizuální novely
-hu*:
+hu : Kiválasztott visual novellek
 nl : Geselecteerde visual novels
 
 :_chare_vns_add
 en : Add visual novel
 ru*:
 cs : Přidat vizuální novelu
-hu*:
+hu : Visual novel hozzárendelése
 nl : Voeg visual novel toe
 
 :_chare_vns_empty
 en : No visual novels selected.
 ru*:
 cs : Nebyla vybrána žádná vizuální novela.
-hu*:
+hu : Nincs kiválasztva visual novel
 nl : Geen visual novels geselecteerd
 
 :_chare_vns_addrel
 en : add release
 ru*:
 cs : přidat vydání
-hu*:
+hu : Kiadás hozzárendelése
 nl : voeg uitgave toe
 
 :_chare_vns_other
 en : All / others
 ru*:
 cs : Všechna / ostatní
-hu*:
+hu : Mind / mások
 nl : Alle / overige
 
 :_chare_vns_del
 en : remove
 ru*:
 cs : odstranit
-hu*:
+hu : eltávolít
 nl : verwijder
 
 :_chare_vns_allrel
 en : All releases already selected.
 ru*:
 cs : Všechna vydání byla již vybrána.
-hu*:
+hu : Már ki van jelölve az összes kiadás.
 nl : Alle uitgaven al geselecteerd.
 
 :_chare_vns_exists
 en : VN already present.
 ru*:
 cs : VN je již přítomna.
-hu*:
+hu : A VN már jelen van.
 nl : VN is al geselecteerd.
 
 
@@ -5522,21 +5522,21 @@ nl : VN is al geselecteerd.
 en : Browse characters
 ru*:
 cs : Prohlížet postavy
-hu*:
+hu : Szereplők böngészése
 nl : Browse karakters
 
 :_charb_noresults
 en : No results
 ru*:
 cs : Žádné výsledky
-hu*:
+hu : Nincs találat
 nl : Geen resultaten
 
 :_charb_noresults_msg
 en : No characters found that matched your criteria.
 ru*:
 cs : Žádné postavy odpovídající vašim požadavkům.
-hu*:
+hu : A kritériumaid alapján nem található szereplő.
 nl : Geen karakters gevonden die aan je kriteria voldoen.
 
 
@@ -5556,14 +5556,14 @@ nl : Geen karakters gevonden die aan je kriteria voldoen.
 en : [index,_1,Meta trait,Trait]: [_2]
 ru*:
 cs : [index,_1,Meta vlastnost,Vlastnost]: [_2]
-hu*:
+hu : [index,_1,Meta trait,Sajátosság]: [_2]
 nl : [index,_1,Metakenmerk,Kenmerk]: [_2]
 
 :_traitp_del_title
 en : Trait deleted
 ru*:
 cs : Vlastnost smazána
-hu*:
+hu : Sajátosság törölve
 nl : Verwijderd kenmerk
 
 :_traitp_del_msg
@@ -5572,7 +5572,8 @@ en : This trait has been removed from the database, and cannot be used or re-add
 ru*:
 cs : Tato vlastnost byla smazána z databáze a nemůže být použita či znovu přidána.
      Vyplňte požadavek na [url,/t/db,diskusních boardech] pokud s tímto nesouhlasíte.
-hu*:
+hu : Ez a sajátosság el lett távolítva az adatbázisból és nem lehet használni vagy újra bejegyezni.
+     Ha nem értesz egyet akkor ezt hangoztathatod a [url,/t/db,fórumon].
 nl : Dit kenmerk is verwijderd uit de database, en kan hier niet gebruikt worden.
      Open een topic op het [url,/t/db,forum] als je het hier niet mee eens bent.
 
@@ -5587,28 +5588,28 @@ nl : Wacht op goedkeuring
 en : This trait is waiting for a moderator to approve it.
 ru*:
 cs : Tato vlastnost čeká na schválení moderátora.
-hu*:
+hu : Ez a sajátosság egy moderátor jóváhagyására vár.
 nl : Dit kenmerk is nog niet goedgekeurd door een moderator.
 
 :_traitp_addchild
 en : Create child trait
 ru*:
 cs : Vytvořit dceřinnou vlastnost
-hu*:
+hu : Alárendelt sajátosság bejegyzése
 nl : Voeg een subkenmerk toe
 
 :_traitp_indexlink
 en : Traits
 ru*:
 cs : Vlastnosti
-hu*:
+hu : Sajátosságok
 nl : Kenmerken
 
 :_traitp_sexual
 en : Sexual content
 ru*:
 cs : Erotický obsah
-hu*:
+hu : Szexuális tartalom
 nl : Erotisch
 
 :_traitp_aliases
@@ -5622,28 +5623,28 @@ nl : Aliassen
 en : Child traits
 ru*:
 cs : Dceřinné vlastnosti
-hu*:
+hu : Alárendelt sajátosságok
 nl : Subkenmerken
 
 :_traitp_more
 en : [_1] more [quant,_1,trait,traits]
 ru*:
 cs : [_1] více [quant,_1,vlastnost,vlastnosti]
-hu*:
+hu : [_1] több [quant,_1,sajátosság,sajátosságok]
 nl : nog [_1] [quant,_1,kenmerk,kenmerken]
 
 :_traitp_charlist
 en : Characters
 ru*:
 cs : Postavy
-hu*:
+hu : Szereplők
 nl : Karakters
 
 :_traitp_nochars
 en : This trait has not been linked to any characters yet, or they were hidden because of your spoiler settings.
 ru*:
 cs : Tato vlastnost ještě nebyla provázána s žádnými postavami nebo tyto byly schovány kvůli vašemu nastavení spoilerů.
-hu*:
+hu : Ez a sajátosság még nincs hozzárendelve egy szereplőhöz se, vagy a spoiler beállításaid miatt, el vannak rejtve.
 nl : Dit kenmerk is nog niet gekoppeld aan een karakter, of deze worden niet weergegeven in verband met je spoilerinstelling.
 
 
@@ -5653,49 +5654,49 @@ nl : Dit kenmerk is nog niet gekoppeld aan een karakter, of deze worden niet wee
 en : Add child trait to [_1]
 ru*:
 cs : Přidat dceřinnou vlastnost k vlastnosti [_1]
-hu*:
+hu : Alárendelt sajátosság hozzáadása ehhez: [_1]
 nl : Voeg subkenmerk toe aan [_1]
 
 :_traite_title_edit
 en : Edit trait: [_1]
 ru*:
 cs : Editovat vlastnost: [_1]
-hu*:
+hu : Sajátosság szerkesztése: [_1]
 nl : Wijzig kenmerk [_1]
 
 :_traite_title_new
 en : Add new trait
 ru*:
 cs : Přidat novou vlastnost
-hu*:
+hu : Új sajátosság bejegyzése
 nl : Voeg nieuw kenmerk toe
 
 :_traite_req_title
 en : Requesting new trait
 ru*:
 cs : Vyžádat si novou vlastnost
-hu*:
+hu : Új sajátosság kérése
 nl : Vraag nieuwe trait aan
 
 :_traite_req_subtitle
 en : Your trait must be approved
 ru*:
 cs : Vaše vlastnost musí být schválena
-hu*:
+hu : A általad bejegyzett sajátosság jóváhagyásra vár.
 nl : Je kenmerk moet goedgekeurd worden
 
 :_traite_req_msg
 en : Because all traits have to be approved by moderators, it can take a while before your trait will show up in the listings or can be used on character entries.
 ru*:
 cs : Jelikož nové vlastnosti musí být schváleny moderátorem, může chvilku trvat, než se vaše vlastnost ukáže v seznamech nebo bude moct být použita na záznamy postav.
-hu*:
+hu : Mivel minden sajáttoságot jóvá kell hagyjanak a moderátorok, eltarthat egy ideig míg az általad bejegyzett sajátosság megjelenik a listákba vagy míg az hozzárendelhető lesz egy bejegyzett szereplőhöz.
 nl : Omdat alle kenmerken goedgekeurd moeten worden door een moderator, kan het even duren voordat je kenmerk te zien is op de site of gebruikt kan worden voor karakters.
 
 :_traite_frm_name
 en : Primary name
 ru : Основное название
 cs : Hlavní jméno
-hu : Elsődleges név
+hu : Elsődleges elnevezés
 nl : Primaire naam
 
 :_traite_frm_by
@@ -5737,14 +5738,14 @@ nl : Goedgekeurd
 en : This is a meta trait (only to be used as parent for other traits, not for direct use with characters)
 ru*:
 cs : Toto je meta vlastnost (může být použita pouze jako mateřská pro ostatní vlastnosti, ne pro přímé užití u postav)
-hu*:
+hu : Ez itt egy meta-sajátosság (sajátosságokat ír körül--csakis más sajátosság szülője ként használandó, szereplők mellé nem rendelhetők)
 nl : Dit is een metakenmerk (kan alleen gebruikt worden als houder voor andere kenmerken, niet voor karakters)
 
 :_traite_frm_sexual
 en : Indicates sexual content
 ru*:
 cs : Naznačuje erotický obsah
-hu*:
+hu : Szexuális tartalmat jelöl
 nl : Erotisch
 
 :_traite_frm_alias
@@ -5770,28 +5771,28 @@ nl : Beschrijving
 en : Parent traits
 ru*:
 cs : Mateřské vlastnosti
-hu*:
+hu : Szüllő sajátosság
 nl : Hoofdkenmerk
 
 :_traite_frm_parents_msg
 en : List of trait IDs to be used as parent for this trait, separated by a space.
 ru*:
 cs : Seznam ID vlastností, které mají být mateřskými k této vlastnosti, oddělených mezerou.
-hu*:
+hu : A listája azoknak sajátosság ID-knak (azonosítóknak) amelyeket szeretnéd, hogy ennek a sajátosságnak a szülei legyenek, szóközzel elváltasztva.
 nl : Spatiegescheiden lijst van hoofdkenmerken (numerieke IDs).
 
 :_traite_frm_gorder
 en : Group number
 ru*:
 cs : Číslo skupiny
-hu*:
+hu : Csoport sorszám
 nl : Groepnummer
 
 :_traite_frm_gorder_msg
 en : (Only used if this trait is a group. Used for ordering, lowest first)
 ru*:
 cs : (Použito pouze pokud je tato vlastnost skupinou. Použito pro řazení, nejnižší první)
-hu*:
+hu : (Csak akkor használjuk, ha ez a sajátosság egy csoport. Az érték egy sorszám és a legkisebb az első)
 nl : (Alleen gebruikt als dit kenmerk een groep is. Gebruikt voor sorteren, laagste getal eerst)
 
 
@@ -5802,7 +5803,7 @@ nl : (Alleen gebruikt als dit kenmerk een groep is. Gebruikt voor sorteren, laag
 en : Browse traits
 ru*:
 cs : Prohlížet vlastnosti
-hu*:
+hu : Sajátosságok böngészése
 nl : Browse kenmerken
 
 :_traitb_state-1
@@ -5851,7 +5852,7 @@ nl : Aangemaakt
 en : Trait
 ru*:
 cs : Vlastnost
-hu*:
+hu : Sajátosság
 nl : Kenmerk
 
 :_traitb_note_awaiting
@@ -5875,49 +5876,49 @@ nl : verwijderd
 en : Trait index
 ru*:
 cs : Seznam vlastností
-hu*:
+hu : Sajátosság jegyzék
 nl : Kenmerkenindex
 
 :_traiti_create
 en : Create new trait
 ru*:
 cs : Vytvořit novou vlastnost
-hu*:
+hu : Új sajátosság bejegyzése
 nl : Nieuw kenmerk
 
 :_traiti_search
 en : Search traits
 ru*:
 cs : Hledat ve vlastnostech
-hu*:
+hu : Sajátosságok keresése
 nl : Zoek kenmerken
 
 :_traiti_tree
 en : Trait tree
 ru*:
 cs : Strom vlastností
-hu*:
+hu : Sajátosság jegyzék
 nl : Kenmerkenlijst
 
 :_traiti_browseall
 en : Browse all traits
 ru*:
 cs : Prohlížet všechny vlastnosti
-hu*:
+hu : Sajátosságok böngészése
 nl : Browse alle kenmerken
 
 :_traiti_recent
 en : Recently added
 ru : Недавно добавлены
 cs : Poslední přidané
-hu : Nemrég hozzáadva
+hu : Újonnan bejegyezve
 nl : Recentelijk toegevoegd
 
 :_traiti_popular
 en : Popular traits
 ru*:
 cs : Populární vlastnosti
-hu*:
+hu : Népszerű sajátosságok
 nl : Populaire kenmerken
 
 :_traiti_queue
@@ -5931,7 +5932,7 @@ nl : Wacht op goedkeuring
 en : Moderation queue empty! yay!
 ru : В очереди модерации пусто! Няа!
 cs : Fronta ke schválení prázdná! Jej!
-hu : Moderálásra váró lista üres! Hurrá!
+hu : A moderálásra váró lista üres! Hurrá!
 nl : Alles is gemodereerd! yay!
 
 :_traiti_queue_link
@@ -5945,7 +5946,7 @@ nl : Moderatiewachtrij
 en : Denied traits
 ru*:
 cs : Zamítnuté vlastnosti
-hu*:
+hu : Elutasított sajátosságok
 nl : Geweigerde kenmerken
 
 
@@ -6005,7 +6006,7 @@ nl : Prioriteit
 en : Added
 ru : Добавлено
 cs : Přidáno
-hu : Hozzáadva
+hu : Bejegyezve
 nl : Toegevoegd
 
 :_wishlist_select
@@ -6174,14 +6175,14 @@ nl : Verander status
 en : Set note
 ru : Установка заметки
 cs : Nastavit poznámku
-hu : Jegyzet beállítása
+hu : Jegyzet létrehozzása
 nl : Verander notitie
 
 :_rlist_setnote_prompt
 en : Set notes (leave empty to remove note)
 ru : Установка заметок (оставьте поле пустым чтобы стереть заметку)
 cs : Nastavit poznámky (ponechte prázdné pro odstranění poznámky)
-hu : Jegyzetek beállítása (hagyd üresen ha törölni akarod a jegyzetet)
+hu : Jegyzetek létrehozzása (hagyd üresen ha törölni akarod a jegyzetet)
 nl : Verander notitie (laat leeg om de notitie te verwijderen)
 
 :_rlist_del
@@ -6776,7 +6777,7 @@ nl : Additionele [url,http://en.wikipedia.org/wiki/Cascading_Style_Sheets,CSS]
 en : Posts made by [_1]
 ru : Сообщения [_1]
 cs : Příspěvek od uživatele [_1]
-hu : Hozzászólás [_1] által
+hu : [_1] hozzászólásai
 nl : Posts van [_1]
 
 :_uposts_noresults
@@ -6894,7 +6895,7 @@ nl : Leeftijd
 en : ID
 ru : ID
 cs : ID
-hu :
+hu : ID (azonosító)
 nl :
 
 :_usern_col_act
@@ -7296,7 +7297,7 @@ nl : Wijzig [_1]
 en : Add a new visual novel
 ru : Добавление новой новеллы
 cs : Přidat novou vizuální novelu
-hu : Új visual novel hozzáadása
+hu : Új visual novel bejegyzése
 nl : Voeg nieuwe visual novel toe
 
 :_vnedit_geninfo
@@ -7324,7 +7325,7 @@ nl : Originele titel
 en : The original title of this visual novel, leave blank if it already is in the Latin alphabet.
 ru : Исходное название данной новеллы, оставьте пустым, если указано в латинском алфавите.
 cs : Originální název této vizuální novely, ponechte prázdné, pokud již je latinkou.
-hu : A visual novel eredeti címe, ha latin betűkkel van akkor ne írd be mégegyszer ide.
+hu : A visual novel eredeti címe, ha latin betűkkel van írva akkor ne írd be ide még egyszer.
 nl : De originele titel van deze visual novel, laat leeg als deze al in het Latijnse alfabet is.
 
 :_vnedit_alias
@@ -7530,7 +7531,7 @@ nl : van
 en : add
 ru : добавить
 cs : přidat
-hu : hozzáadd
+hu : bejegyez
 nl : toevoegen
 
 :_vnedit_rel_del
@@ -8290,14 +8291,14 @@ nl : Verwijder van lijst
 en : main
 ru*:
 cs : hlavní
-hu*:
+hu : Kiadások
 nl : primaire info
 
 :_vnpage_tab_chars
 en : characters
 ru*:
 cs : postavy
-hu*:
+hu : Szereplők
 nl : karakters
 
 :_vnpage_rel
@@ -8318,7 +8319,7 @@ nl : We hebben op dit moment nog geen informatie over uitgaven van deze visual n
 en : add release
 ru : добавить выпуск
 cs : přidat vydání
-hu : kiadás hozzáadása
+hu : kiadás bejegyzése
 nl : voeg uitgave toe
 
 :_vnpage_rel_patch
@@ -8504,7 +8505,7 @@ nl : Dit item is uit de database verwijderd. Als je het hier niet mee eens bent
 en : You're not editing a entry!
 ru*:
 cs : Neupravujete záznam!
-hu*:
+hu : Nem egy bejegyzést szerkesztel!
 nl : Je bent geen item aan het wijzigen!
 
 :_editmsg_copy_msg
@@ -8514,8 +8515,8 @@ ru*: Вы собираетесь создать новый выпуск, осн�
      Щёлкните вкладку 'правка' в правом верхнем углу, если собирались редактировать выпуск, а не создавать новый.
 cs : Chystáte se vložit nový záznam do databáze s informacemi založenými na záznamu [_1].[br]
      Použijte záložku "editovat" vpravo nahoře pokud jste hodlali upravit záznam a ne vytvořit záznam nový.
-hu*: Te most ép arra készülsz, hogy egy új kiadást hozzál létre az adatbázisban, [_1]-ra alapozva az információkat.[br]
-     Klikkelj a 'szerkesztés' fülre a jobb felső sarokba ha egy új kiadás helyet, csak szerkeszteni akartad a meglévőt.
+hu : Te most ép arra készülsz, hogy egy új bejegyzést hozzál létre az adatbázisban, [_1]-ra alapozva az információkat.[br]
+     Klikkelj a 'szerkesztés' fülre a jobb felső sarokba ha egy új bejegyzés helyet, csak szerkeszteni akartad a meglévőt.
 nl : Je staat op het punt om een nieuw item toe te voegen aan de database, met informatie gebasseerd op [_1].[br]
      Klik op de 'wijzig' tab rechtsboven als je bedoeling is om dit item te wijzigen in plaats van een nieuwe aan te maken.
 
@@ -8551,7 +8552,7 @@ nl : Browse de [url,_1,geschiedenis] van dit item voor wijzigingen gerelateerd a
 en : [url,_1,Search the database] to see if we already have information about this [index,_2,visual novel,release,producer,character].
 ru*: [url,_1,Воспользуйтесь поиском], ведь вполне возможно, что у нас уже есть информация об [index,_2,этой новелле,этом выпуске,этой компании].
 cs : [url,_1,Prohledejte databázi], zda již nemáme informaci o [index,_2,této vizuální novele,tomto vydání,tomto producentovi,této postavě].
-hu*: [url,_1,Nézd át az adatbázist], hogy van-e már információ erről a [index,_2,visual novelről, kiadásról, készítőről].
+hu : [url,_1,Nézd át az adatbázist], hogy van-e már információ erről a [index,_2,visual novelről, kiadásról, készítőről, szereplőről].
 nl : [url,_1,Doorzoek de database] om te kijken of we al informatie hebben over [index,_2,deze visual novel,deze uitgave,deze producent,dit karakter].
 
 :_editmsg_revert_title
@@ -8568,8 +8569,8 @@ ru*: Вы правите старую редакцию страницы [index,_
      Если вы сохраните её, все изменения, сделанные после этой правки будут утеряны!
 cs : Editujete starší verzi [index,_1,této vizuální novely,tohoto vydání,tohoto producenta,této postavy].
      Pokud ji uložíte, všechny změny provedené po této revizi budou vráceny!
-hu*: Te egy régi átjavítását szerkeszted ennek a [index,_1,visual novelnek, kiadásnak, készítőnek].
-     Ha lemented, akkor minden szerkesztés amit ezután a javítás után végeztek megsemmisül!
+hu : Te egy régi átjavítását szerkeszted ennek a [index,_1,visual novelnek, kiadásnak, készítőnek, szereplőnek].
+     Ha lemented, akkor minden szerkesztés amit ezután a javítás után végeztek kitörlődik!
 nl : Je wijzigd een verouderde versie van [index,_1,deze visual novel,deze uitgave,deze producent,dit karakter].
      Als je dit opslaat, zullen alle wijzigingen na deze revisie teruggedraait worden.
 
@@ -8680,7 +8681,7 @@ nl : Plaatje moet in JPEG of PNG formaat zijn
 en : Image is too large, only 5MB allowed
 ru*: Изображение слишком большое, 500 кб - максимально допустимый предел
 cs : Obrázek je moc velký, je povoleno pouze 5MB
-hu*: A kép túl nagy, 5MB a megengedett
+hu : A kép fájlmérete túl nagy, 5MB a megengedett
 nl : Plaatje is te groot, max. 5MB toegestaan
 
 :_formerr_e_oneaday
@@ -8722,7 +8723,7 @@ nl : Lees a.u.b. [url,/d5.4,de richtlijnen] over het gebruik van de samenvatting
 en : Invalid main character. Make sure the ID is correct, that the main character itself is not an instance of an other character, and that this entry is not used as a main character elsewhere.
 ru*:
 cs : Neplatná hlavní postava. Ujistěte se, že ID je správně, že hlavní postava není duplikátem jiné postavy a že tento záznam není použit jako hlavní postava někde jinde.
-hu*:
+hu : Érvénytelen főszereplő. Bizonyosodj meg, hogy helyes-e az azonosító (ID), hogy maga a főszereplő nem egy másik szereplő hasonmása/második énje, és hogy ez a bejegyzés máshol nincs főszereplőként használva.
 nl : Ongeldig hoofdkaracter. Zorg ervoor dat het ID correct is, dat het hoofdkarakter zelf geen instantie is van een ander karakter, en dat dit karakter zelf ook niet ergens gebruikt wordt als hoofdkarakter.
 
 :_formerr_title
