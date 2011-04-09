@@ -1,50 +1,15 @@
+*            { margin: 0; padding: 0; }
+body, td     { font: 11px "Tahoma"; }
+body         { $_bodybg$; color: $maintext$ }
+a            { color: $link$; text-decoration: none; }
+a:hover      { border-bottom: 1px dotted $maintext$; }
+table        { border-collapse: collapse; }
+table td     { vertical-align: top; padding: 3px; }
+table tr.odd { background: url($_boxbg$) repeat; }
+img          { border: none; }
 
-
-* {
-  margin: 0;
-  padding: 0;
-}
-
-body, td {
-  font: 11px "Tahoma";
-}
-body {
-  $_bodybg$;
-  color: $maintext$
-}
-a {
-  color: $maintext$;
-  text-decoration: none;
-}
-a:hover {
-  border-bottom: 1px dotted $maintext$;
-}
-table {
-  border-collapse: collapse;
-}
-table td {
-  vertical-align: top;
-  padding: 3px;
-}
-table tr.odd {
-  background: url($_boxbg$) repeat;
-}
-img {
-  border: none;
-}
-
-#bgright {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  $_bgright$
-}
-
-#header {
-  position: absolute;
-  top: 80px;
-  left: 400px;
-}
+#bgright { position: absolute; top: 0px; right: 0px; $_bgright$ }
+#header  { position: absolute; top: 80px; left: 400px; }
 #header h1, #header h1 a {
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
   font-size: 24px;
@@ -52,16 +17,8 @@ img {
   border: none!important;
   $_maintitle$
 }
-
-#footer {
-  margin: 15px auto 0 auto;
-  text-align: center;
-  color: $footer$;
-}
-#footer a {
-  color: $footer$;
-  text-decoration: underline;
-}
+#footer   { margin: 15px auto 0 auto; text-align: center; color: $footer$; }
+#footer a { color: $footer$; text-decoration: underline; }
 
 #debug {
   position: fixed;
@@ -77,42 +34,59 @@ img {
 #debug h2 { color: #f00!important; font-size: 20px; }
 #debug, #debug a { color: #fff!important; }
 
-ul, ol {
-  margin-left: 35px;
-}
-p.locked {
-  float: right;
-  color: $standout$;
-  font-style: italic;
-  margin: 0!important;
-}
-b.grayedout { font-weight: normal; color: $grayedout$ }
-i.grayedout { font-style: normal; color: $grayedout$ }
-#maincontent h2 b {
-  font: 11px "Tahoma";
-  font-weight: normal;
-}
-p.description {
-  margin: 10px 100px!important;
-}
-b.done { font-weight: normal; color: $statok$ }
-b.todo { font-weight: normal; color: $statnok$ }
 
-.clearfloat {
-  clear: both;
-  height: 0;
-}
-.hidden {
-  display: none!important
-}
+/* Warning/Notice Box */
+div.warning, div.notice       { margin: 5px 10%; padding: 15px; background-color: $warnbg$; border: 1px solid $warnborder$; }
+div.notice                    { background-color: $noticebg$; border: 1px solid $noticeborder$; }
+div.warning ul, div.notice ul { margin-left: 0; }
+div.warning li, div.notice li { margin-left: 20px; }
+div.warning h2, div.notice h2 { font-size: 11px; font-weight: bold; margin: 0; }
 
-b.spoiler, b.spoiler a {
-  color: #000!important;
-  background-color: #000;
-  font-weight: normal;
+/* dropdown box */
+#dd_box            { position: absolute; left: 0px; border: 1px solid $border$; background-color: $secbg$; z-index: 2 }
+#dd_box ul         { list-style-type: none; margin: 0; padding: 0 }
+#dd_box li b       { display: block; font-weight: normal; padding-left: 5px; }
+#dd_box li i       { display: block; font-style: normal; padding-left: 10px; padding-right: 5px }
+#dd_box li a       { display: block; padding-left: 10px; border: 0; padding-right: 5px }
+#dd_box li a:hover { background: url($_boxbg$) repeat }
+
+/* dropdown search */
+#ds_box {
+  position: absolute;
+  top: 0;
+  border: 1px solid $border$;
+  border-top: none;
+  background-color: $secbg$;
+  cursor: pointer;
+  z-index: 2
 }
+#ds_box b           { padding: 2px 0 0 10px; }
+#ds_box tr.selected { background: url($_boxbg$) repeat; }
+#ds_box table       { width: 100%; }
+
+
+
+/* general text formatting */
+
+ul, ol        { margin-left: 35px; }
+p.locked      { float: right; color: $standout$; font-style: italic; margin: 0!important; }
+b.grayedout   { font-weight: normal; color: $grayedout$ }
+i.grayedout   { font-style: normal; color: $grayedout$ }
+#maincontent h2 b { font: 11px "Tahoma"; font-weight: normal; }
+p.description { margin: 10px 100px!important; }
+b.done        { font-weight: normal; color: $statok$ }
+b.todo        { font-weight: normal; color: $statnok$ }
+p.center      { text-align: center; }
+b.future,
+b.standout,
+a.standout    { font-weight: normal; color: $standout$; }
+.clearfloat   { clear: both; height: 0; }
+.hidden       { display: none!important }
+.linethrough  { text-decoration: line-through }
+b.spoiler, b.spoiler a { color: #000!important; background-color: #000; font-weight: normal; }
 b.spoiler_shown { font-weight: normal }
 b.spoiler_shown a { color: $link$!important }
+
 #maincontent div.quote {
   padding: 1px 5px;
   margin: 0px 10px;
@@ -121,7 +95,6 @@ b.spoiler_shown a { color: $link$!important }
   border-left: 1px dotted $border$;
   text-align: left;
 }
-.linethrough { text-decoration: line-through }
 pre {
   padding:1px 5px;
   margin: 5px 15px;
@@ -136,13 +109,6 @@ pre {
 
 /***** general form markup *****/
 
-form, fieldset {
-  border: 0;
-  display: block;
-}
-legend {
-  display: none;
-}
 input.text, input.submit, select, textarea {
   background-color: $secbg$;
   color: $maintext$;
@@ -150,53 +116,46 @@ input.text, input.submit, select, textarea {
   font: 12px "Tahoma";
   margin: 1px;
 }
-optgroup option {
-  padding-left: 10px;
-  font-style: normal;
-}
-input.submit {
-  background: url($_boxbg$) repeat;
-  padding: 1px;
-}
-input.text, select {
-  width: 200px;
-}
-fieldset.submit {
-  width: 100%;
-  text-align: center;
-  margin: 5px;
-}
-fieldset.submit input {
-  width: 150px;
-}
-fieldset.submit h2 {
-  font-size: 11px!important;
-}
-fieldset.submit textarea {
-  margin: 0 20px 5px 20px;
-}
-table.formtable {
-  margin: 0 20px 20px 20px;
-}
-table.formtable td {
-  padding: 0;
-}
-table.formtable tr.newfield td {
-  padding-top: 5px;
-}
-table.formtable tr.newpart td {
-  padding-top: 20px;
-  font-weight: bold;
-}
-td.label, td.label label {
-  width: 90px;
-}
-td.label label {
-  display: block;
-}
-td.field label {
-  margin: 0 5px 0 5px;
-}
+form, fieldset           { border: 0; display: block; }
+legend                   { display: none; }
+optgroup option          { padding-left: 10px; font-style: normal; }
+input.submit             { background: url($_boxbg$) repeat; padding: 1px; }
+input.text, select       { width: 200px; }
+fieldset.submit          { width: 100%; text-align: center; margin: 5px; }
+fieldset.submit input    { width: 150px; }
+fieldset.submit h2       { font-size: 11px!important; }
+fieldset.submit textarea { margin: 0 20px 5px 20px; }
+td.label, td.label label { width: 90px; }
+td.label label           { display: block; }
+td.field label           { margin: 0 5px 0 5px; }
+table.formtable          { margin: 0 20px 20px 20px; }
+table.formtable td       { padding: 0; }
+table.formtable tr.newfield td { padding-top: 5px; }
+table.formtable tr.newpart td { padding-top: 20px; font-weight: bold; }
+
+
+
+
+/***** menu *****/
+
+
+#menulist a                  { color: $maintext$; text-decoration: none; }
+#menulist a:hover            { border-bottom: 1px dotted $maintext$; }
+#menulist                    { position: absolute; left: 30px; top: 190px; width: 150px; }
+#menulist div.menubox        { margin: 0 0 10px 0; border: 1px solid $border$; background: url($_boxbg$) repeat; }
+#menulist div.menubox div    { padding: 2px 7px; }
+#menulist h2                 { border-bottom: 1px solid $border$; background: url($_boxbg$) repeat; padding: 1px 3px; }
+#menulist h2, #menulist h2 a { font-size: 11px; color: $maintext$; }
+#menulist h2 #lang_select    { float: right; padding-top: 1px; }
+#menulist dt                 { display: block; float: left; width: 93px; font-style: italic; }
+#menulist dd                 { width: 40px; float: left; text-align: right; }
+#menulist p                  { text-align: center; }
+#menulist input.text         { width: 100px; margin-left: 15px; }
+#menulist input.submit       { width: 90px; margin-left: 20px; }
+#menulist #search input.text { width: 133px; margin: 0 0 3px 7px; font-style: italic; }
+#menulist #search input.submit { display: none; }
+#dd_box acronym              { margin: 2px 5px 2px 0!important; }
+#menulist .notifyget         { display: inline-block; width: 125px; padding: 4px; background: $warnbg$; border: 1px solid $warnborder$; }
 
 
 
@@ -211,114 +170,31 @@ td.field label {
   margin: 0;
   padding-bottom: 50px!important;
 }
-#maincontent h1, #maincontent h2 {
+.mainbox h1, .mainbox h2 {
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
   font-weight: normal;
   font-size: 13px;
 }
-#maincontent h1 {
-  color: $boxtitle$;
-  font-size: 19px;
-  margin: -5px 0 15px 0;
-}
-#maincontent h2.alttitle {
-  color: $alttitle$;
-  margin: -17px 0 15px 15px;
-  font-weight: normal;
-}
-#maincontent div.mainbox, #maincontent table.mainbox td {
+div.mainbox, table.mainbox td {
   border: 1px solid $border$;
   margin: 21px 0 -10px 0;
   padding: 5px;
   background: url($_boxbg$) repeat;
 }
-#maincontent .mainbox a {
-  color: $link$;
-}
-#maincontent p {
-  margin: 3px 20px;
-}
-#maincontent div div p, #maincontent div table p {
-  margin: 0;
-}
-#maincontent h2 {
-  font-weight: bold;
-  font-size: 14px;
-  margin: 10px 0 0 5px;
-}
-p.center {
-  text-align: center;
-}
-b.future, b.standout, a.standout {
-  font-weight: normal;
-  color: $standout$;
-}
+.mainbox h1          { color: $boxtitle$; font-size: 19px; margin: -5px 0 15px 0; }
+.mainbox h2.alttitle { color: $alttitle$; margin: -17px 0 15px 15px; font-weight: normal; }
+.mainbox p           { margin: 3px 20px; }
+.mainbox div div p,
+.mainbox div table p { margin: 0; }
+.mainbox h2          { font-weight: bold; font-size: 14px; margin: 10px 0 0 5px; }
 
-
-
-
-/***** menu *****/
-
-#menulist {
-  position: absolute;
-  left: 30px;
-  top: 190px;
-  width: 150px;
-}
-#menulist div.menubox {
-  margin: 0 0 10px 0;
-  border: 1px solid $border$;
-  background: url($_boxbg$) repeat;
-}
-#menulist div.menubox div {
-  padding: 2px 7px;
-}
-#menulist h2 {
-  border-bottom: 1px solid $border$;
-  background: url($_boxbg$) repeat;
-  padding: 1px 3px;
-}
-#menulist h2, #menulist h2 a {
-  font-size: 11px;
-  color: $maintext$;
-}
-#menulist h2 #lang_select {
-  float: right;
-  padding-top: 1px;
-}
-#menulist dt {
-  display: block;
-  float: left;
-  width: 93px;
-  font-style: italic;
-}
-#menulist dd {
-  width: 40px;
-  float: left;
-  text-align: right;
-}
-#menulist p {
-  text-align: center;
-}
-#menulist input.text {
-  width: 100px;
-  margin-left: 15px;
-}
-#menulist input.submit {
-  width: 90px;
-  margin-left: 20px;
-}
-#menulist #search input.text {
-  width: 133px;
-  margin: 0 0 3px 7px;
-  font-style: italic;
-}
-#menulist #search input.submit {
-  display: none;
-}
-#dd_box acronym { margin: 2px 5px 2px 0!important; }
-#menulist .notifyget { display: inline-block; width: 125px; padding: 4px; background: $warnbg$; border: 1px solid $warnborder$; }
-
+.mainbox.threelayout    { border-collapse: separate; border-spacing: 10px; margin: 10px -10px -20px -10px; min-width: 100%; }
+.mainbox.threelayout td { width: 32%; padding: 0 2px 10px 2px; }
+.mainbox.threelayout h1 { margin: 0; font-size: 14px; font-weight: bold; }
+.mainbox.threelayout h2 { font-size: 12px; margin-top: 3px; }
+.mainbox.threelayout a.right { float: right; }
+.mainbox.threelayout ul { list-style-type: none; margin-left: 10px; }
+.mainbox.threelayout h1 a { color: $boxtitle$; }
 
 
 
@@ -362,99 +238,33 @@ ul.maintabs.browsetabs li.left a { margin-left: 0; margin-right: 5px }
 
 /***** Homepage ******/
 
-#maincontent .mainbox.threelayout {
-  border-collapse: separate;
-  border-spacing: 10px;
-  margin: 10px -10px -20px -10px;
-  min-width: 100%;
-}
-#maincontent .mainbox.threelayout td {
-  width: 32%;
-  padding: 0 2px 10px 2px;
-}
-#maincontent .mainbox.threelayout h1 {
-  margin: 0;
-  font-size: 14px;
-  font-weight: bold;
-}
-#maincontent .mainbox.threelayout h2 {
-  font-size: 12px;
-  margin-top: 3px;
-}
-#maincontent .mainbox.threelayout a.right {
-  float: right;
-}
-#maincontent .mainbox.threelayout ul {
-  list-style-type: none;
-  margin-left: 10px;
-}
-p.screenshots {
-  text-align: center;
-  margin-top: 10px;
-  padding: 0;
-  height: 105px;
-}
-p.screenshots img {
-  margin: 2px;
-}
-#maincontent .mainbox.threelayout h1 a {
-  color: $boxtitle$;
-}
-a.feed { float: right }
-
+p.screenshots           { text-align: center; margin-top: 10px; padding: 0; height: 105px; }
+p.screenshots img       { margin: 2px; }
+a.feed                  { float: right }
 
 
 
 
 /***** Browsing ******/
 
-p.browseopts {
-  text-align: center;
-  padding: 2px;
-}
 p.browseopts a {
   padding: 1px 3px;
-  color: $maintext$!important;
+  color: $maintext$;
   border: 1px solid $border$;
   margin: 0 2px;
   white-space: nowrap;
 }
+p.browseopts                    { text-align: center; padding: 2px; }
 p.browseopts a.optselected,
-p.browseopts a:hover {
-  border: 0;
-  padding: 2px 4px;
-}
-#maincontent div.mainbox.browse {
-  padding: 0;
-}
-div.mainbox.browse table {
-  width: 100%;
-}
-div.mainbox.browse table td.tc1 {
-  padding-left: 25px;
-}
-table thead td {
-  font-weight: bold;
-  background-color: $secbg$;
-}
-fieldset.search {
-  display: block;
-  width: 100%;
-  text-align: center;
-  margin: 0 0 10px 0;
-}
-fieldset.search .submit {
-  padding: 0 1px;
-}
-p#searchtabs {
-  height: 12px;
-  padding-right: 70px;
-}
-p#searchtabs a {
-  padding: 2px 6px 2px 6px;
-  margin: 0 2px;
-  color: $maintext$!important;
-}
+p.browseopts a:hover            { border: 0; padding: 2px 4px; }
+div.mainbox.browse              { padding: 0; }
+div.mainbox.browse table        { width: 100%; }
+div.mainbox.browse table td.tc1 { padding-left: 25px; }
+table thead td                  { font-weight: bold; background-color: $secbg$; }
+fieldset.search                 { display: block; width: 100%; text-align: center; margin: 0 0 10px 0; }
+fieldset.search .submit         { padding: 0 1px; }
+p#searchtabs                    { height: 12px; padding-right: 70px; }
+p#searchtabs a                  { padding: 2px 6px 2px 6px; margin: 0 2px; color: $maintext$; }
 p#searchtabs a:hover, p#searchtabs a.sel {
   border: 1px solid $secborder$;
   border-bottom: none;
@@ -463,7 +273,10 @@ p#searchtabs a:hover, p#searchtabs a.sel {
 }
 #q { width: 450px }
 
+
+
 /* history browser */
+
 div.history table    { table-layout: fixed }
 div.history td       { white-space: nowrap }
 div.history td.tc1_1 { width: 60px; padding-left: 0; padding-right: 0; text-align: right }
@@ -476,66 +289,28 @@ div.history td.tc4 b { margin-left: 10px }
 
 
 
-
-
 /***** Discussions ******/
 
 /* threads page */
-#maincontent div.mainbox.thread {
-  padding: 0;
-}
-div.thread table {
-  width: 100%;
-}
-div.thread td {
-  border-bottom: 1px solid $border$;
-}
-div.thread td.tc1 {
-  width: 150px;
-  padding: 5px 10px;
-  border-right: 1px solid $border$;
-}
-div.thread td.tc2 {
-  padding: 10px 20px 10px 10px;
-}
-div.thread tr.deleted td {
-  padding: 1px 10px;
-}
-div.thread i.deleted {
-  font-style: normal;
-  color: $grayedout$;
-}
-div.thread i.lastmod {
-  float: right;
-  font-size: 10px;
-  color: $grayedout$;
-  margin: 0 -10px -5px 0;
-}
-div.thread i.edit {
-  float: right;
-  color: $grayedout$;
-  font-style: normal;
-  margin: -10px -10px 0 0;
-}
+#maincontent div.thread  { padding: 0; }
+div.thread table         { width: 100%; }
+div.thread td            { border-bottom: 1px solid $border$; }
+div.thread td.tc1        { width: 150px; padding: 5px 10px; border-right: 1px solid $border$; }
+div.thread td.tc2        { padding: 10px 20px 10px 10px; }
+div.thread tr.deleted td { padding: 1px 10px; }
+div.thread i.deleted     { font-style: normal; color: $grayedout$; }
+div.thread i.lastmod     { float: right; font-size: 10px; color: $grayedout$; margin: 0 -10px -5px 0; }
+div.thread i.edit        { float: right; color: $grayedout$; font-style: normal; margin: -10px -10px 0 0; }
 
 /* threads browser */
-div.mainbox.discussions td.tc4 {
-  text-align: right;
-}
-div.mainbox.discussions a.locked {
-  text-decoration: line-through;
-}
-div.mainbox.discussions b.boards {
-  padding-left: 10px;
-  font-weight: normal;
-}
-div.mainbox.discussions b.boards a {
-  color: $grayedout$!important;
-}
-div.discussions td.tc2 { width: 50px;  }
-div.discussions td.tc3 { width: 90px;  }
-div.discussions td.tc4 { width: 170px; }
-#maincontent h1.boxtitle, #maincontent h1.boxtitle a {
+div.mainbox.discussions td.tc4     { text-align: right; }
+div.mainbox.discussions a.locked   { text-decoration: line-through; }
+div.mainbox.discussions b.boards   { padding-left: 10px; font-weight: normal; }
+div.mainbox.discussions b.boards a { color: $grayedout$; }
+div.discussions td.tc2             { width: 50px;  }
+div.discussions td.tc3             { width: 90px;  }
+div.discussions td.tc4             { width: 170px; }
+h1.boxtitle, h1.boxtitle a {
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
   font-weight: bold;
   font-style: italic;
@@ -547,119 +322,41 @@ div.discussions td.tc4 { width: 170px; }
 
 
 
-
 /***** VN page *******/
 
-div.vndetails {
-  margin: 0 auto;
-  width: 800px;
-}
-div.vnimg {
-  float: left;
-  width: 250px;
-  margin: 0 10px;
-}
-div.vnimg i {
-  display: block;
-  width: 100%;
-  text-align: center;
-  font-size: 10px;
-}
-div.vnimg p {
-  text-align: center;
-  padding: 0px;
-  margin: 0;
-}
-.vndesc h2 {
-  margin: 5px 0 0 0!important;
-}
-.vndesc p {
-  padding: 0 0 0 5px;
-}
-p#nsfw_hid {
-  display: none;
-  cursor: pointer;
-}
-div.vndetails table {
-  float: left;
-  width: 530px;
-}
-div.vndetails table td.key {
-  width: 80px;
-}
-div.vndetails table dt {
-  float: left;
-  font-style: italic;
-}
-div.vndetails table dd {
-  margin-left: 90px;
-}
+div.vndetails                 { margin: 0 auto; width: 800px; }
+div.vnimg                     { float: left; width: 250px; margin: 0 10px; }
+div.vnimg i                   { display: block; width: 100%; text-align: center; font-size: 10px; }
+div.vnimg p                   { text-align: center; padding: 0px; margin: 0; }
+.vndesc h2                    { margin: 5px 0 0 0; }
+.vndesc p                     { padding: 0 0 0 5px; }
+p#nsfw_hid                    { display: none; cursor: pointer; }
+div.vndetails table           { float: left; width: 530px; }
+div.vndetails table td.key    { width: 80px; }
+div.vndetails table dt        { float: left; font-style: italic; }
+div.vndetails table dd        { margin-left: 90px; }
+div.vndetails td.relations dt { float: none; font-style: normal; }
+div.vndetails td.relations dd { margin-left: 15px; }
+div.vndetails td.anime b      { font-size: 8px; font-weight: normal; padding-right: 4px; }
+div#vntags                    { margin: 15px 30px 0 30px; border-top: 1px solid $border$; padding: 1px 5% 0 5%; text-align: center; }
+#vntags span                  { white-space: nowrap; margin-left: 15px; }
+#vntags b                     { color: $grayedout$; font-weight: normal; font-size: 8px }
+#tagops                       { float: right; text-align: right; width: auto; margin: 0 30px; }
+#tagops a                     { margin: 0 0 0 10px;  border: 0; outline: none }
+#tagops a.sec                 { border-left: 1px solid $border$; padding-left: 10px }
+#tagops a.tsel                { color: $maintext$; }
 
-div.vndetails td.relations dt {
-  float: none;
-  font-style: normal;
-}
-div.vndetails td.relations dd {
-  margin-left: 15px;
-}
-div.vndetails td.anime b {
-  font-size: 8px;
-  font-weight: normal;
-  padding-right: 4px;
-}
-div#vntags {
-  margin: 15px 30px 0 30px;
-  border-top: 1px solid $border$;
-  padding: 1px 5% 0 5%;
-  text-align: center;
-}
-#vntags span { white-space: nowrap; margin-left: 15px; }
-#vntags b { color: $grayedout$; font-weight: normal; font-size: 8px }
-#tagops {
-  float: right;
-  text-align: right;
-  width: auto;
-  margin: 0 30px;
-}
-#tagops a { margin: 0 0 0 10px;  border: 0; outline: none }
-#tagops a.sec { border-left: 1px solid $border$; padding-left: 10px }
-#maincontent #tagops a.tsel { color: $maintext$; }
-
-.releases table, #screenshots table {
-  width: 100%;
-}
-.releases tr.lang td, #screenshots tr.rel td {
-  background: url($_boxbg$) repeat;
-  font-weight: bold;
-}
-.releases td.tc1 {
-  padding-left: 30px;
-  width: 80px;
-}
-.releases td.tc2 {
-  text-align: center;
-  width: 50px;
-}
-.releases td.tc3 {
-  text-align: right;
-  padding: 0;
-  width: 90px;
-}
-.releases td.tc5 {
-  width: 70px;
-}
-.releases td.tc5 a {
-  color: $maintext$!important;
-  border: 0;
-}
-.releases td.tc6 {
-  text-align: right;
-  width: 25px;
-  padding: 0;
-}
-a.addnew {
-  float: right;
-}
+.releases table,
+#screenshots table     { width: 100%; }
+.releases tr.lang td,
+#screenshots tr.rel td { background: url($_boxbg$) repeat; font-weight: bold; }
+.releases td.tc1       { padding-left: 30px; width: 80px; }
+.releases td.tc2       { text-align: center; width: 50px; }
+.releases td.tc3       { text-align: right; padding: 0; width: 90px; }
+.releases td.tc5       { width: 70px; }
+.releases td.tc5 a     { color: $maintext$; border: 0; }
+.releases td.tc6       { text-align: right; width: 25px; padding: 0; }
+a.addnew               { float: right; }
 
 #screenshots p.rel {
   background: url($_boxbg$) repeat;
@@ -677,28 +374,19 @@ a.addnew {
 #screenshots p.nsfwtoggle { float: right; margin: 0; }
 
 
-#dd_box { position: absolute; left: 0px; border: 1px solid $border$; background-color: $secbg$; z-index: 2 }
-#dd_box ul { list-style-type: none; margin: 0; padding: 0 }
-#dd_box li b { display: block; font-weight: normal; padding-left: 5px; }
-#dd_box li i { display: block; font-style: normal; padding-left: 10px; padding-right: 5px }
-#dd_box li a { display: block; padding-left: 10px; color: $link$; border: 0; padding-right: 5px }
-#dd_box li a:hover { background: url($_boxbg$) repeat }
-
-
-
 
 /***** Vote stats ****/
 
-.votestats { width: 610px; margin: 0 auto; }
-.votegraph { float: left; margin-right: 20px }
+.votestats           { width: 610px; margin: 0 auto; }
+.votegraph           { float: left; margin-right: 20px }
 .votegraph td        { padding: 0 2px; }
 .votegraph td.number { text-align: right }
 .votegraph td div    { float: left; height: 14px; background-color: $border$; margin-right: 2px; padding: 0; }
-.votestats thead td { background: transparent; text-align: center; padding: 2px; }
+.votestats thead td  { background: transparent; text-align: center; padding: 2px; }
 .votestats tfoot td  { text-align: right }
-.votestats div { text-align: center; padding-top: 5px; }
+.votestats div       { text-align: center; padding-top: 5px; }
 
-.recentvotes { width: 300px }
+.recentvotes               { width: 300px }
 .recentvotes thead tr td b { font-weight: normal; padding-left: 5px }
 
 
@@ -715,52 +403,25 @@ a.addnew {
 #jt_box_vn_rel td.tc_vn input   { width: 280px; }
 #jt_box_vn_rel td.tc_rel select { width: 130px; }
 
-#ds_box {
-  position: absolute;
-  top: 0;
-  border: 1px solid $border$;
-  border-top: none;
-  background-color: $secbg$;
-  cursor: pointer;
-  z-index: 2
-}
-#ds_box b {
-  padding: 2px 0 0 10px;
-}
-#ds_box tr.selected {
-  background: url($_boxbg$) repeat;
-}
-#ds_box table {
-  width: 100%;
-}
-
-#jt_box_vn_img div.img {
-  float: left;
-  height: 400px;
-  padding-right: 20px;
-}
-#jt_box_vn_img h2 {
-  margin: 0;
-}
+#jt_box_vn_img div.img { float: left; height: 400px; padding-right: 20px; }
+#jt_box_vn_img h2      { margin: 0; }
 
 #jt_box_vn_scr table { width: 95% }
-#scr_table td { height: 108px; border-top: 1px solid #258; padding: 0; padding-right: 5px }
-#scr_table td.thumb { width: 136px; vertical-align: middle }
-#scr_table select { width: 400px; }
-div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px; position: absolute; display: none; left: 0; top: 0; }
-
-
+#scr_table td        { height: 108px; border-top: 1px solid #258; padding: 0; padding-right: 5px }
+#scr_table td.thumb  { width: 136px; vertical-align: middle }
+#scr_table select    { width: 400px; }
+div.scr_uploader     { visibility: hidden; overflow: hidden; width: 1px; height: 1px; position: absolute; display: none; left: 0; top: 0; }
 
 
 
 /****** VN browse ********/
 
 .vnbrowse thead .tc_s { padding-left: 30px }
-.vnbrowse .tc_s { width: 65px }
-.vnbrowse .tc2 { text-align: right; padding: 0; }
-.vnbrowse .tc3 { padding: 0; }
-.vnbrowse .tc5 { text-align: right; padding-right: 10px }
-.vnbrowse .tc6 { width: 80px }
+.vnbrowse .tc_s       { width: 65px }
+.vnbrowse .tc2        { text-align: right; padding: 0; }
+.vnbrowse .tc3        { padding: 0; }
+.vnbrowse .tc5        { text-align: right; padding-right: 10px }
+.vnbrowse .tc6        { width: 80px }
 #filselect {
   text-align: center;
   display: block;
@@ -788,22 +449,11 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 #prodrel td.tc6       { width:  25px; text-align: right; padding: 0; }
 #expandprodrel        { float: right; font-weight: bold; padding-bottom: 2px; border: none }
 
-.producerbrowse ul {
-  float: left;
-  margin-top: -5px;
-  margin-left: 3%;
-  width: 28%;
-}
-.producerbrowse ul li {
-  list-style-type: none;
-}
-.producerbrowse ul li acronym {
-  margin-right: 5px;
-  margin-top: 1px;
-}
-.producerbrowse {
-  padding-bottom: 10px!important
-}
+div.producerbrowse    { padding-bottom: 10px }
+.producerbrowse ul    { float: left; margin-top: -5px; margin-left: 3%; width: 28%; }
+.producerbrowse ul li { list-style-type: none; }
+.producerbrowse ul li acronym { margin-right: 5px; margin-top: 1px; }
+
 
 /***** Producer edit *****/
 
@@ -820,30 +470,27 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 
 /***** Release page *****/
 
-.release table {
-  width: 400px;
-  margin: 0 auto;
-}
-.release .key {
-  width: 70px;
-}
+.release table { width: 400px; margin: 0 auto; }
+.release .key  { width: 70px; }
 
-/* edit */
-.platforms {  padding-left: 20px; }
+
+/* Release edit */
+
+.platforms      {  padding-left: 20px; }
 .platforms span { display: block; float: left; width: 150px; }
 
-#jt_box_rel_format h2 { clear: left; padding-top: 10px; }
-#media_div select.qty { width: 90px; }
+#jt_box_rel_format h2    { clear: left; padding-top: 10px; }
+#media_div select.qty    { width: 90px; }
 #media_div select.medium { width: 150px }
-#media_div { padding-left: 20px; }
-#media_div span { display: block }
+#media_div               { padding-left: 20px; }
+#media_div span          { display: block }
 
 #jt_box_rel_vn h2,        #jt_box_rel_prod h2       { clear: left; padding-top: 10px; }
 #jt_box_rel_vn div,       #jt_box_rel_vn table,
 #jt_box_rel_prod div,     #jt_box_rel_prod table    { margin-left: 20px }
 #jt_box_rel_vn input,     #jt_box_rel_prod input    { margin-right: 10px; width: 295px }
 #jt_box_rel_vn .tc_title, #jt_box_rel_prod .tc_name { width: 310px; padding: 2px }
-#jt_box_rel_prod .tc_role select { width: 100px; margin-right: 10px; }
+#jt_box_rel_prod .tc_role select                    { width: 100px; margin-right: 10px; }
 
 
 
@@ -860,37 +507,39 @@ div.scr_uploader { visibility: hidden; overflow: hidden; width: 1px; height: 1px
 div.chardetails { margin: 0 auto; width: 800px; }
 div.charimg     { float: left; width: 250px; margin: 0 10px; text-align: center }
 div.charimg p   { text-align: center; padding: 0px; margin: 0; }
-.chardesc h2    { margin: 0!important; }
+.chardesc h2    { margin: 0; }
 .chardesc p     { padding: 0 0 0 5px; }
-div.chardetails table { float: left; width: 530px; }
+div.chardetails table        { float: left; width: 530px; }
 div.chardetails table td.key { width: 80px; }
-div.chardetails.charsep { padding-top: 5px; margin-top: 5px; border-top: 1px solid $border$ }
-#charspoil_sel { clear: right; float: right; }
-#charspoil_sel a { margin: 0 0 0 10px;  border: 0; outline: none }
-#maincontent #charspoil_sel a.sel { color: $maintext$; }
+div.chardetails.charsep      { padding-top: 5px; margin-top: 5px; border-top: 1px solid $border$ }
+#charspoil_sel       { clear: right; float: right; }
+#charspoil_sel a     { margin: 0 0 0 10px;  border: 0; outline: none }
+#charspoil_sel a.sel { color: $maintext$; }
 
 
 
 /***** Char edit *****/
+
 #jt_box_chare_img div.img { float: left; height: 300px; padding-right: 20px; }
-#jt_box_chare_img h2 { margin: 0; }
+#jt_box_chare_img h2      { margin: 0; }
 #jt_box_chare_traits table  { margin-bottom: 10px; margin-left: 10px; }
 #jt_box_chare_traits h2     { margin: 0 0 3px 0px; }
-#jt_box_chare_traits td.tc_name { width: 200px }
+#jt_box_chare_traits td.tc_name       { width: 200px }
 #jt_box_chare_traits td.tc_name input { width: 280px; }
-#jt_box_chare_traits td.tc_spoil { width: 80px; }
+#jt_box_chare_traits td.tc_spoil      { width: 80px; }
 #jt_box_chare_vns table  { margin-bottom: 10px; margin-left: 10px; }
 #jt_box_chare_vns h2     { margin: 0 0 3px 0px; }
-#jt_box_chare_vns td.tc_vn  { font-weight: bold; padding: 5px 0 3px 0 }
-#jt_box_chare_vns td.tc_vn i{ font-weight: normal; padding-left: 5px; font-style: normal  }
-#jt_box_chare_vns td.tc_rel { width: 340px; padding-left: 15px }
-#jt_box_chare_vns td.tc_rel select { width: 340px; }
+#jt_box_chare_vns td.tc_vn   { font-weight: bold; padding: 5px 0 3px 0 }
+#jt_box_chare_vns td.tc_vn i { font-weight: normal; padding-left: 5px; font-style: normal  }
+#jt_box_chare_vns td.tc_rel  { width: 340px; padding-left: 15px }
+#jt_box_chare_vns td.tc_rel select  { width: 340px; }
 #jt_box_chare_vns td.tc_rol,
-#jt_box_chare_vns td.tc_rol select { width: 150px }
+#jt_box_chare_vns td.tc_rol select  { width: 150px }
 #jt_box_chare_vns td.tc_spl,
-#jt_box_chare_vns td.tc_spl select { width: 100px }
-#jt_box_chare_vns td.tc_del { padding-left: 5px }
+#jt_box_chare_vns td.tc_spl select  { width: 100px }
+#jt_box_chare_vns td.tc_del         { padding-left: 5px }
 #jt_box_chare_vns td.tc_vnadd input { width: 280px }
+
 
 /***** Char browse *****/
 
@@ -902,19 +551,19 @@ div.charb td.tc2 b { margin-left: 10px }
 div.charb td.tc2 b a { color: $grayedout$!important }
 
 
+
 /***** Documentation pages *****/
 
-.docs { padding: 0 15% 20px 15%; }
-.docs h3 { margin-top: 30px; font-size: 14px }
-.docs h4 { margin-top: 15px; font-size: 12px }
-.docs dd { padding-bottom: 5px; margin-left: 120px; }
-.docs dt { float: left }
-.docs ul.index { display: block; float: right; width: 150px; padding: 2px; margin: 0 0 10px 5px; background: url($_boxbg$) repeat; border: 1px solid $border$; }
-.docs ul.index li { list-style-type: none; }
+.docs               { padding: 0 15% 20px 15%; }
+.docs h3            { margin-top: 30px; font-size: 14px }
+.docs h4            { margin-top: 15px; font-size: 12px }
+.docs dd            { padding-bottom: 5px; margin-left: 120px; }
+.docs dt            { float: left }
+.docs ul.index      { display: block; float: right; width: 150px; padding: 2px; margin: 0 0 10px 5px; background: url($_boxbg$) repeat; border: 1px solid $border$; }
+.docs ul.index li   { list-style-type: none; }
 .docs ul.index li a { margin: 0 0 0 10px; }
-.docs .retired { text-decoration: line-through; }
-.docs dt b { color: $grayedout$; font-weight: normal; font-style: normal; font-size: 12px; }
-
+.docs .retired      { text-decoration: line-through; }
+.docs dt b          { color: $grayedout$; font-weight: normal; font-style: normal; font-size: 12px; }
 
 
 
@@ -926,7 +575,7 @@ div.votelist td.tc2 { width: 50px; text-align: right; padding-right: 10px }
 
 /***** Wishlist browser ******/
 
-.wishlist .tc1 { padding-top: 0; padding-bottom: 0; }
+.wishlist .tc1     { padding-top: 0; padding-bottom: 0; }
 .wishlist tfoot td { padding: 0 0 0 25px }
 
 
@@ -940,33 +589,28 @@ div.votelist td.tc2 { width: 50px; text-align: right; padding-right: 10px }
 .browse.rlist .tc3_5 b { margin-left: 10px }
 .browse.rlist .tc4 { width: 60px; text-align: right; padding-top: 0; padding-bottom: 0 }
 .browse.rlist .tc6 { width: 100px }
-.browse.rlist .relhid .tc6 { padding-left: 15px; width: auto }
 .browse.rlist .tc7 { width: 90px }
 .browse.rlist .tc8 { width: 70px }
 .browse.rlist tfoot select { width: 200px }
+.browse.rlist .relhid .tc6 { padding-left: 15px; width: auto }
 
 
 /***** User notifications *****/
 
-.browse.notifies td.tc1 { width: 14px }
-.browse.notifies td.tc3 { width: 90px }
-.browse.notifies td.tc4 { width: 60px }
+.browse.notifies td.tc1       { width: 14px }
+.browse.notifies td.tc3       { width: 90px }
+.browse.notifies td.tc4       { width: 60px }
 .browse.notifies tbody td.tc5 { color: $grayedout$; cursor: pointer }
-.browse.notifies td.tc5 i { font-style: normal; color: $maintext$ }
-.browse.notifies .unread td { font-weight: bold }
-.browse.notifies tfoot td { padding: 0 0 0 25px }
+.browse.notifies td.tc5 i     { font-style: normal; color: $maintext$ }
+.browse.notifies .unread td   { font-weight: bold }
+.browse.notifies tfoot td     { padding: 0 0 0 25px }
 
 
 
 /***** Userpage *****/
 
-.userpage table {
-  width: 400px;
-  margin: 0 auto;
-}
-.userpage .key {
-  width: 70px;
-}
+.userpage table { width: 400px; margin: 0 auto; }
+.userpage .key  { width: 70px; }
 
 
 /***** User posts browser ****/
@@ -983,19 +627,21 @@ div.uposts td.tc4 b { margin-left: 10px }
 
 /***** Tag page *****/
 
-.tagtree { margin-left: 20px; margin-top: -20px; list-style-type: none; }
-.tagtree li { float: left; width: 200px; margin-top: 10px; }
-.tagtree li li { float: none; width: auto; margin-top: 0; }
-.tagtree ul { margin-left: 10px; list-style-type: none; }
+.tagtree        { margin-left: 20px; margin-top: -20px; list-style-type: none; }
+.tagtree li     { float: left; width: 200px; margin-top: 10px; }
+.tagtree li li  { float: none; width: auto; margin-top: 0; }
+.tagtree ul     { margin-left: 10px; list-style-type: none; }
 .tagvnlist .tc1 { width: 105px; }
 .tagvnlist .tc1 i { font-style: normal; font-size: 8px }
 .tagvnlist .tc3 { text-align: right; padding: 0; }
 .tagvnlist .tc4 { padding: 0; }
 .tagvnlist .tc6 { text-align: right; padding-right: 10px; }
 
+
 /***** Tag/trait list (/g/list, /i/list) *****/
 
 .browse.taglist .tc1 { width: 80px }
+
 
 /***** Tag links *****/
 
@@ -1006,68 +652,39 @@ div.uposts td.tc4 b { margin-left: 10px }
 .browse.taglinks .ignored .taglvl.taglvl0 { color: $grayedout$!important }
 .browse.taglinks .setfil { font-size: 8px; padding-right: 3px }
 
+
 /***** VN tagmod *****/
 
 #jt_box_tagmod .formtable table td { padding: 1px 5px }
-table.tgl tfoot td { padding-top: 20px!important; }
-table.tgl .tc_you { border-right: 1px solid $border$; border-left: 1px solid $border$; width: 150px; text-align: center }
-table.tgl .tc_others { border-left: 1px solid $border$; width: 150px; text-align: center }
-table.tgl .tc_tagname { min-width: 200px; border-right: 1px solid $border$ }
+table.tgl tfoot td          { padding-top: 20px!important; }
+table.tgl .tc_you           { border-right: 1px solid $border$; border-left: 1px solid $border$; width: 150px; text-align: center }
+table.tgl .tc_others        { border-left: 1px solid $border$; width: 150px; text-align: center }
+table.tgl .tc_tagname       { min-width: 200px; border-right: 1px solid $border$ }
 table.tgl tbody .tc_tagname { padding-left: 15px!important }
-table.tgl .tc_myvote { padding-left: 30px!important }
-table.tgl .tc_myover { padding: 0!important }
-table.tgl .tc_myspoil { border-right: 1px solid $border$; padding-right: 30px!important; text-align: right; padding-left: 10px!important; cursor: pointer }
-table.tgl .tc_allvote { padding-left: 30px!important; }
-table.tgl .tc_allvote i { font-style: normal; font-size: 8px }
-table.tgl .tc_allspoil { text-align: right; padding-right: 15px!important; }
-table.tgl .tagmod_cat td { font-weight: bold }
-.taglvl { display: block; float: left; width: 8px; height: 12px; border: 1px solid $border$; font-size: 1px; color: $maintext$!important }
-.taglvl0 { width: 15px; border: none!important; font-size: 10px; text-align: center; }
-div.taglvl0 { font-size: 8px; width: 20px!important }
-div.taglvl { border: none!important; width: 10px; height: 14px }
-a.taglvl:hover { border-bottom: 1px solid transparent!important }
+table.tgl .tc_myvote        { padding-left: 30px!important }
+table.tgl .tc_myover        { padding: 0!important }
+table.tgl .tc_myspoil       { border-right: 1px solid $border$; padding-right: 30px!important; text-align: right; padding-left: 10px!important; cursor: pointer }
+table.tgl .tc_allvote       { padding-left: 30px!important; }
+table.tgl .tc_allvote i     { font-style: normal; font-size: 8px }
+table.tgl .tc_allspoil      { text-align: right; padding-right: 15px!important; }
+table.tgl .tagmod_cat td    { font-weight: bold }
+.taglvl             { display: block; float: left; width: 8px; height: 12px; border: 1px solid $border$; font-size: 1px; color: $maintext$!important }
+.taglvl0            { width: 15px; border: none; font-size: 10px; text-align: center; }
+div.taglvl0         { font-size: 8px; width: 20px!important }
+div.taglvl          { border: none; width: 10px; height: 14px }
+a.taglvl:hover      { border-bottom: 1px solid transparent }
 .taglvlsel.taglvl-3 { background-color: #f00; border-color: #f00 }
 .taglvlsel.taglvl-2 { background-color: #f40; border-color: #f40 }
 .taglvlsel.taglvl-1 { background-color: #f80; border-color: #f80 }
-.taglvlsel.taglvl1 { background-color: #cf0; border-color: #cf0 }
-.taglvlsel.taglvl2 { background-color: #8f0; border-color: #8f0 }
-.taglvlsel.taglvl3 { background-color: #0f0; border-color: #0f0 }
-
-
-
-
-/***** Warning/Notice Box *****/
-
-div.warning, div.notice {
-  margin: 5px 10%;
-  padding: 15px;
-  background-color: $warnbg$;
-  border: 1px solid $warnborder$;
-}
-div.notice {
-  background-color: $noticebg$;
-  border: 1px solid $noticeborder$;
-}
-div.warning ul, div.notice ul {
-  margin-left: 0;
-}
-div.warning li, div.notice li {
-  margin-left: 20px;
-}
-#maincontent div.warning h2, #maincontent div.notice h2 {
-  font-size: 11px;
-  font-weight: bold;
-  margin: 0;
-}
+.taglvlsel.taglvl1  { background-color: #cf0; border-color: #cf0 }
+.taglvlsel.taglvl2  { background-color: #8f0; border-color: #8f0 }
+.taglvlsel.taglvl3  { background-color: #0f0; border-color: #0f0 }
 
 
 
 
 /****** Revision information ******/
 
-div.revision {
-  padding-bottom: 10px!important;
-}
 div.revision div.rev, div.revision table {
   border: 1px solid $border$;
   margin: 0 auto;
@@ -1075,41 +692,16 @@ div.revision div.rev, div.revision table {
   background-color: $secbg$;
   clear: both;
 }
-div.revision table thead tr td {
-  background-color: transparent!important;
-  text-align: center;
-  font-weight: normal;
-}
-div.revision table td {
-  border-right: 1px solid $border$;
-  padding: 5px;
-}
-div.revision td.tcval {
-  width: 44%;
-}
-div.revision div.rev {
-  padding: 5px;
-  text-align: center;
-}
-.diff_add {
-  font-weight: normal;
-  background-color: $diffadd$;
-}
-.diff_del {
-  font-weight: normal;
-  background-color: $diffdel$;
-}
-div.revision .next {
-  float: right;
-  margin-right: 5%;
-}
-div.revision .prev {
-  float: left;
-  margin-left: 5%;
-}
-div.revision .item {
-  text-align: center;
-}
+div.revision          { padding-bottom: 10px; }
+div.revision table thead tr td { background-color: transparent!important; text-align: center; font-weight: normal; }
+div.revision table td { border-right: 1px solid $border$; padding: 5px; }
+div.revision td.tcval { width: 44%; }
+div.revision div.rev  { padding: 5px; text-align: center; }
+.diff_add             { font-weight: normal; background-color: $diffadd$; }
+.diff_del             { font-weight: normal; background-color: $diffdel$; }
+div.revision .next    { float: right; margin-right: 5%; }
+div.revision .prev    { float: left; margin-left: 5%; }
+div.revision .item    { text-align: center; }
 
 
 
@@ -1124,12 +716,12 @@ div#iv_view {
   padding: 5px;
   text-align: center;
 }
-#iv_view a { border: 0; font-weight: bold; font-size: 12px }
+#iv_view a   { border: 0; font-weight: bold; font-size: 12px }
 #iv_view img { cursor: pointer }
-#ivclose { float: right; padding-left: 10px }
-#ivnext { padding-left: 5px; }
-#ivprev { padding-right: 5px; }
-#ivfull { float: left; padding-right: 10px; }
+#ivclose     { float: right; padding-left: 10px }
+#ivnext      { padding-left: 5px; }
+#ivprev      { padding-right: 5px; }
+#ivfull      { float: left; padding-right: 10px; }
 #ivimgload {
   position: absolute;
   display: block;
@@ -1145,7 +737,6 @@ div#iv_view {
 
 
 
-
 /****** filter selector *****/
 
 div#fil_div {
@@ -1158,23 +749,22 @@ div#fil_div {
   width: 600px;
   text-align: center;
 }
-#fil_div a.close { float: right; color: $link$; border: 0; font-weight: bold }
-#fil_div p.browseopts { padding: 2px 50px; line-height: 23px }
-#fil_div .browseopts a { outline: none }
+#fil_div a.close       { float: right; border: 0; font-weight: bold }
+#fil_div p.browseopts  { padding: 2px 50px; line-height: 23px }
+#fil_div .browseopts a { outline: none; color: $maintext$ }
 #fil_div .browseopts a.active { font-weight: bold }
-#fil_div b.ruler { display: block; margin: auto; width: 93%; height: 1px; border-bottom: 1px solid $border$; margin-bottom: 5px }
-#fil_div h3 { width: 100%; text-align: center; font-size: 11px }
-#fil_div table { width: 93%; text-align: left; margin: 0 auto 5px auto }
+#fil_div b.ruler       { display: block; margin: auto; width: 93%; height: 1px; border-bottom: 1px solid $border$; margin-bottom: 5px }
+#fil_div h3            { width: 100%; text-align: center; font-size: 11px }
+#fil_div table         { width: 93%; text-align: left; margin: 0 auto 5px auto }
 #fil_div table td.label label { width: 120px }
 #fil_div table td.label b { display: block; font-weight: normal; padding: 10px 5px 0 0 }
 #fil_div table td.check { width: 15px }
 #fil_div label.active { font-weight: bold }
-#fil_div .opts a      { border: 0; outline: none; color: $link$ }
+#fil_div .opts a      { border: 0; outline: none }
 #fil_div .opts b      { margin: 0 7px; font-weight: normal }
 #fil_div .opts a.tsel { color: $maintext$; }
-#filselect i { font-style: normal }
-#fil_div table ul { margin: 0 0 0 15px }
-#fil_div table ul a { color: $link$ }
+#filselect i        { font-style: normal }
+#fil_div table ul   { margin: 0 0 0 15px }
 
 
 
