@@ -338,6 +338,15 @@ div.vndetails table dd        { margin-left: 90px; }
 div.vndetails td.relations dt { float: none; font-style: normal; }
 div.vndetails td.relations dd { margin-left: 15px; }
 div.vndetails td.anime b      { font-size: 8px; font-weight: normal; padding-right: 4px; }
+
+td#buynow h1 { display: block; width: 100px; background: #bf9228; font-size: 13px; text-align: center; margin: -3px 0 0 0 }
+td#buynow h1 a { display: block; width: 100%; color: #fff; border: none; padding: 2px; font-weight: bold }
+td#buynow ul { background: #ffe095; width: 100%; margin: 0; border: 1px solid #bf9228 }
+td#buynow li { list-style-type: none; margin: 0 }
+td#buynow li a { display: block; width: 100%; color: #000; border: none }
+td#buynow li a:hover { background: #ffebba }
+td#buynow .pricenote { border: 0 }
+
 div#vntags                    { margin: 15px 30px 0 30px; border-top: 1px solid $border$; padding: 1px 5% 0 5%; text-align: center; }
 #vntags span                  { white-space: nowrap; margin-left: 15px; }
 #vntags b                     { color: $grayedout$; font-weight: normal; font-size: 8px }

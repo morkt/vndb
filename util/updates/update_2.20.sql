@@ -22,3 +22,22 @@ CREATE TRIGGER stats_cache_edit           AFTER  UPDATE           ON tags       
 CREATE TRIGGER stats_cache_new            AFTER  INSERT           ON traits        FOR EACH ROW WHEN (NEW.state = 2) EXECUTE PROCEDURE update_stats_cache();
 CREATE TRIGGER stats_cache_edit           AFTER  UPDATE           ON traits        FOR EACH ROW WHEN (OLD.state IS DISTINCT FROM NEW.state) EXECUTE PROCEDURE update_stats_cache();
 
+
+
+CREATE TABLE affiliate_links (
+  id SERIAL PRIMARY KEY,
+  rid integer NOT NULL REFERENCES releases (id),
+  hidden boolean NOT NULL DEFAULT false, -- to hide a link for some reason
+  priority smallint NOT NULL DEFAULT 0,  -- manual ordering when competing on a VN page, usually not necessary
+  affiliate smallint NOT NULL DEFAULT 0, -- index to a semi-static array in data/config.pl
+  url varchar NOT NULL,
+  version varchar NOT NULL DEFAULT '', -- "x edition" or "x version", default used is "<language> version"
+  lastfetch timestamptz, -- last update of price
+  price varchar NOT NULL DEFAULT '' -- formatted, including currency, e.g. "$50" or "€34.95 / $50.46"
+);
+
+CREATE INDEX affiliate_links_rid ON affiliate_links (rid) WHERE NOT hidden;
+
+--INSERT INTO affiliate_links (rid, priority, affiliate, url, version, lastfetch, price) VALUES
+--  (175, 1, 0, 'http://www.jbox.com/product/PCG4776', 'Original all-ages edition (Japanese)', NOW(), '$110.00'),
+--  (8124, 0, 0, 'http://www.jbox.com/product/PSPLB001', 'Converted edition (PSP, Japanese)', NOW(), '$78.00');

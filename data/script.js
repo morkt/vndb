@@ -2763,6 +2763,21 @@ if(byId('charspoil_sel')) {
 }
 
 
+// mouse-over price information / disclaimer
+if(byId('buynow')) {
+  var l = byClass(byId('buynow'), 'acronym', 'pricenote');
+  for(var i=0; i<l.length; i++) {
+    l[i].buynow_last = l[i].title;
+    l[i].title = null;
+    ddInit(l[i], 'bottom', function(acr) {
+      return tag('p', {onmouseover:ddHide, style:'padding: 3px'},
+        acr.buynow_last, tag('br', null), '* The displayed price only serves as an indication, actual price may differ.'
+      );
+    });
+  }
+}
+
+
 // set note input box (/u+/list)
 if(byId('not') && byId('vns'))
   byId('vns').onchange = function () {

@@ -141,6 +141,7 @@ sub page {
      _relations($self, \$i, $v) if @{$v->{relations}};
      _anime($self, \$i, $v) if @{$v->{anime}};
      _useroptions($self, \$i, $v) if $self->authInfo->{id};
+     _affiliate_links($self, $r);
 
      Tr;
       td class => 'vndesc', colspan => 2;
@@ -401,6 +402,35 @@ sub _useroptions {
     }
    end;
   end 'tr';
+}
+
+
+sub _affiliate_links {
+  my($self, $r) = @_;
+  return if !keys @$r;
+  my %r = map +($_->{id}, $_), @$r;
+  my $links = $self->dbAffiliateGet(rids => [ keys %r ]);
+  return if !@$links;
+
+  $links = [ sort { $b->{priority} <=> $a->{priority} } @$links ];
+  my $en = VNDB::L10N->get_handle('en');
+
+  Tr; td colspan => 2, id => 'buynow'; # don't call it "affiliate", most adblock filters have that included >_>
+   h1; a href => $links->[0]{url}, 'Buy now!'; end;
+   ul;
+    for my $link (@$links) {
+      li; a href => $link->{url};
+       use utf8;
+       txt '→ ';
+       txt $link->{version} || join(', ', map $en->maketext("_lang_$_"), @{$r{$link->{rid}}{languages}}).' version';
+       txt ' ';
+       acronym class => 'pricenote', title => sprintf('Last updated: %s.', $en->age($link->{lastfetch})), "for $link->{price}*"
+         if $link->{price};
+       txt " at $self->{affiliates}[$link->{affiliate}]{name}.";
+      end; end;
+    }
+   end;
+  end; end;
 }
 
 

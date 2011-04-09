@@ -1,5 +1,18 @@
 
 
+-- affiliate_links
+CREATE TABLE affiliate_links (
+  id SERIAL PRIMARY KEY,
+  rid integer NOT NULL,
+  hidden boolean NOT NULL DEFAULT false,
+  priority smallint NOT NULL DEFAULT 0,
+  affiliate smallint NOT NULL DEFAULT 0,
+  url varchar NOT NULL,
+  version varchar NOT NULL DEFAULT '',
+  lastfetch timestamptz,
+  price varchar NOT NULL DEFAULT ''
+);
+
 -- anime
 CREATE TABLE anime (
   id integer NOT NULL PRIMARY KEY,
@@ -452,6 +465,7 @@ CREATE TABLE wlists (
 
 
 
+ALTER TABLE affiliate_links     ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
 ALTER TABLE changes             ADD FOREIGN KEY (requester) REFERENCES users         (id) ON DELETE SET DEFAULT;
 ALTER TABLE chars               ADD FOREIGN KEY (latest)    REFERENCES chars_rev     (id) DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE chars_rev           ADD FOREIGN KEY (id)        REFERENCES changes       (id);
@@ -521,6 +535,7 @@ ALTER TABLE wlists              ADD FOREIGN KEY (uid)       REFERENCES users    
 ALTER TABLE wlists              ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
 
 
+CREATE INDEX affiliate_links_rid ON affiliate_links (rid) WHERE NOT hidden;
 CREATE INDEX releases_vn_vid ON releases_vn (vid);
 CREATE INDEX tags_vn_date    ON tags_vn     (date);
 CREATE UNIQUE INDEX chars_vns_pkey ON chars_vns (cid, vid, COALESCE(rid, 0));
