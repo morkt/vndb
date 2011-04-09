@@ -412,7 +412,7 @@ sub _affiliate_links {
   my $links = $self->dbAffiliateGet(rids => [ keys %r ]);
   return if !@$links;
 
-  $links = [ sort { $b->{priority} <=> $a->{priority} } @$links ];
+  $links = [ sort { $b->{priority}||$self->{affiliates}[$b->{affiliate}]{default_prio} <=> $a->{priority}||$self->{affiliates}[$a->{affiliate}]{default_prio} } @$links ];
   my $en = VNDB::L10N->get_handle('en');
 
   Tr; td colspan => 2, id => 'buynow'; # don't call it "affiliate", most adblock filters have that included >_>
@@ -489,6 +489,7 @@ sub _releases {
           }
          end;
          td class => 'tc6';
+          a href => "/affiliates/new?rid=$rel->{id}", 'a' if $self->authCan('affiliate');
           if($rel->{website}) {
             a href => $rel->{website}, rel => 'nofollow';
              cssicon 'ext', mt '_vnpage_rel_extlink';

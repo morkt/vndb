@@ -41,3 +41,4 @@ CREATE INDEX affiliate_links_rid ON affiliate_links (rid) WHERE NOT hidden;
 --INSERT INTO affiliate_links (rid, priority, affiliate, url, version, lastfetch, price) VALUES
 --  (175, 1, 0, 'http://www.jbox.com/product/PCG4776', 'Original all-ages edition (Japanese)', NOW(), '$110.00'),
 --  (8124, 0, 0, 'http://www.jbox.com/product/PSPLB001', 'Converted edition (PSP, Japanese)', NOW(), '$78.00');
+

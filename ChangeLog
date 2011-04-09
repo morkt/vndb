@@ -1,4 +1,5 @@
 2.20 - ?
+	- Added support for sponsored links on VN pages
 	- Order the VNs listed on char browser by release date
 	- Order the traits groups on /i by their 'order' column
 	- Use same browsing-table on trait pages and char browser
