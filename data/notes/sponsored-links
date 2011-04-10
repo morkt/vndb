@@ -1,7 +1,7 @@
 Advertisements
 
-Last modified: 2011-01
-Status: Long-term plans / nothing implemented yet
+Last modified: 2011-04-10
+Status: Implemented / Implementation may differ from these notes
 
 
 Idea: (semi-)large "Buy now" / "Download now" button on VN pages, linking
@@ -26,24 +26,18 @@ Possible parties interested in advertising:
 - Play-asia
   Has an affiliate system that includes direct links
   stores JAN, UPC, and catalog numbers
-- Himeyashop / Erogeshop
-  Has no affiliate system but has shown interest in link exchanges in the past
-  Does not store JAN/UPC/catalog numbers
-  "Temporarily" closed, so probably not a good time to ask for ads?
 - DLSite English
-  Seems to have an affiliate system, haven't really looked at it yet
+  Has an affiliate system that includes direct links
   Most releases don't even have a JAN code or catalog number
 - MangaGamer
   Rather specific "shop", but could count as one.
   Has no affiliate system, but is planning to add one, as announced in
     http://mangagamer.wordpress.com/2010/12/31/holidays-passing/
   Releases don't have catalog numbers or EAN codes
-- Eroge-Europe.com
-  Seems to have an affiliate system, haven't really looked at it yet
-  Does not store JAN/UPC/catalog numbers
 - PaletWeb
   Has no affiliate system
   Does have JAN codes for a few titles, but inconsistent
+  Rather messy website... finding/updating links will be a chore
 - CDJapan
   Doesn't have that many VNs from what I've browsed, but still several
   Has an affiliate system (seems to include direct links)
@@ -52,6 +46,13 @@ Possible parties interested in advertising:
   Does not seem to have many VNs (3 or 4?)
   Has no affiliate system
   Does not have JAN or catalog numbers
+- Himeyashop / Erogeshop (out of business?)
+  Has no affiliate system but has shown interest in link exchanges in the past
+  Does not store JAN/UPC/catalog numbers
+  "Temporarily" closed, so probably not a good time to ask for ads?
+- Eroge-Europe.com (out of business?)
+  Seems to have an affiliate system, haven't really looked at it yet
+  Does not store JAN/UPC/catalog numbers
 
 
 So who is going to update all those links?
@@ -102,7 +103,4 @@ Three possibilities:
    advertising on VNDB or not. This would still make it possible to
    special-case advertisers and give them special treatment or fetch
    additional information.
-
-I would greatly prefer option #1, but since that's not very practical option
-#3 (the VGMdb-like solution) is probably the best.
 

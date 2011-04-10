@@ -416,17 +416,20 @@ sub _affiliate_links {
   my $en = VNDB::L10N->get_handle('en');
 
   Tr; td colspan => 2, id => 'buynow'; # don't call it "affiliate", most adblock filters have that included >_>
-   h1; a href => $links->[0]{url}, 'Buy now!'; end;
+   h1; a rel => 'nofollow', href => $self->{affiliates}[$links->[0]{affiliate}]{link_format} ? $self->{affiliates}[$links->[0]{affiliate}]{link_format}->($links->[0]{url}) : $links->[0]{url}, 'Buy now!'; end;
    ul;
     for my $link (@$links) {
-      li; a href => $link->{url};
+      my $f = $self->{affiliates}[$link->{affiliate}];
+      li; a rel => 'nofollow', href => $f->{link_format} ? $f->{link_format}->($link->{url}) : $link->{url};
        use utf8;
        txt '→ ';
-       txt $link->{version} || join(', ', map $en->maketext("_lang_$_"), @{$r{$link->{rid}}{languages}}).' version';
+       txt $link->{version}
+         || ($f->{default_version} && $f->{default_version}->($self, $link, $r{$link->{rid}}))
+         || join(', ', map $en->maketext("_lang_$_"), @{$r{$link->{rid}}{languages}}).' version';
        txt ' ';
        acronym class => 'pricenote', title => sprintf('Last updated: %s.', $en->age($link->{lastfetch})), "for $link->{price}*"
          if $link->{price};
-       txt " at $self->{affiliates}[$link->{affiliate}]{name}.";
+       txt " at $f->{name}.";
       end; end;
     }
    end;
