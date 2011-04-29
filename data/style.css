@@ -184,8 +184,8 @@ div.mainbox, table.mainbox td {
 .mainbox h1          { color: $boxtitle$; font-size: 19px; margin: -5px 0 15px 0; }
 .mainbox h2.alttitle { color: $alttitle$; margin: -17px 0 15px 15px; font-weight: normal; }
 .mainbox p           { margin: 3px 20px; }
-.mainbox div div p,
-.mainbox div table p { margin: 0; }
+.mainbox div p,
+.mainbox table p     { margin: 0; }
 .mainbox h2          { font-weight: bold; font-size: 14px; margin: 10px 0 0 5px; }
 
 .mainbox.threelayout    { border-collapse: separate; border-spacing: 10px; margin: 10px -10px -20px -10px; min-width: 100%; }
