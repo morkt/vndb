@@ -9,23 +9,38 @@ use Exporter 'import';
 our @EXPORT = qw|dbAffiliateGet dbAffiliateEdit dbAffiliateDel dbAffiliateAdd|;
 
 
-# options: id rids affiliate hide_hidden
+# options: id rids affiliate hidden sort reverse
 # what: release
 sub dbAffiliateGet {
   my($self, %o) = @_;
+  $o{sort} ||= 'id';
+  $o{reverse} //= 0;
 
   my %where = (
     $o{id}                 ? ('id = ?' => $o{id}) : (),
     $o{rids}               ? ('rid IN(!l)'    => [$o{rids}]) : (),
     defined($o{affiliate}) ? ('affiliate = ?' => $o{affiliate}) : (),
-    $o{hide_hidden}        ? ('NOT hidden'    => 1) : (),
+    defined($o{hidden})    ? ('!s af.hidden'  => $o{hidden} ? '' : 'NOT') : (),
   );
 
   my $join = $o{what} ? 'JOIN releases r ON r.id = af.rid JOIN releases_rev rr ON rr.id = r.latest' : '';
   my $select = $o{what} ? ', rr.title' : '';
 
-  return $self->dbAll("SELECT af.id, af.rid, af.hidden, af.priority, af.affiliate, af.url, af.version, extract('epoch' from af.lastfetch) as lastfetch, af.price$select
-    FROM affiliate_links af $join !W", \%where);
+  my $order = sprintf {
+    id        => 'af.id %s',
+    rel       => 'rr.title %s',
+    prio      => 'af.priority %s',
+    url       => 'af.url %s',
+    lastfetch => 'af.lastfetch %s',
+  }->{$o{sort}}, $o{reverse} ? 'DESC' : 'ASC';
+
+  return $self->dbAll(qq|
+    SELECT af.id, af.rid, af.hidden, af.priority, af.affiliate, af.url, af.version,
+        extract('epoch' from af.lastfetch) as lastfetch, af.price$select
+      FROM affiliate_links af
+      $join
+      !W
+     ORDER BY !s|, \%where, $order);
 }
 
 

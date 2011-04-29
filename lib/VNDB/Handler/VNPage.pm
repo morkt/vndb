@@ -409,7 +409,7 @@ sub _affiliate_links {
   my($self, $r) = @_;
   return if !keys @$r;
   my %r = map +($_->{id}, $_), @$r;
-  my $links = $self->dbAffiliateGet(rids => [ keys %r ]);
+  my $links = $self->dbAffiliateGet(rids => [ keys %r ], hidden => 0);
   return if !@$links;
 
   $links = [ sort { $b->{priority}||$self->{affiliates}[$b->{affiliate}]{default_prio} <=> $a->{priority}||$self->{affiliates}[$a->{affiliate}]{default_prio} } @$links ];

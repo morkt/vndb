@@ -20,7 +20,10 @@ sub list {
 
   return $self->htmlDenied if !$self->authCan('affiliate');
   my $f = $self->formValidate(
-    { get => 'a', required => 0, enum => [ 0..$#{$self->{affiliates}} ] }
+    { get => 'a', required => 0, enum => [ 0..$#{$self->{affiliates}} ] },
+    { get => 'h', required => 0, default => 0, enum => [ -1..1 ] },
+    { get => 'o', required => 0, default => 'a', enum => ['a', 'd'] },
+    { get => 's', required => 0, default => 'rel', enum => [qw|rel prio url lastfetch|] },
   );
   return $self->resNotFound if $f->{_err};
 
@@ -29,18 +32,37 @@ sub list {
    h1 'Affiliate administration interface';
    p class => 'browseopts';
     a defined($f->{a}) && $f->{a} == $_ ? (class => 'optselected') : (), href => "/affiliates?a=$_", $self->{affiliates}[$_]{name}
-      for (0..$#{$self->{affiliates}});
+      for (grep $self->{affiliates}[$_], 0..$#{$self->{affiliates}});
    end;
+   if(defined $f->{a}) {
+     p class => 'browseopts';
+      a $f->{h} == -1 ? (class => 'optselected') : (), href => "/affiliates?a=$f->{a};h=-1",'all';
+      a $f->{h} ==  1 ? (class => 'optselected') : (), href => "/affiliates?a=$f->{a};h=1", 'hidden';
+      a $f->{h} ==  0 ? (class => 'optselected') : (), href => "/affiliates?a=$f->{a};h=0", 'non-hidden';
+     end;
+   }
   end;
 
   if(defined $f->{a}) {
-    my $list = $self->dbAffiliateGet(affiliate => $f->{a}, what => 'release');
+    my $list = $self->dbAffiliateGet(
+      affiliate => $f->{a}, hidden => $f->{h}==-1?undef:$f->{h},
+      what => 'release',
+      sort => $f->{s}, reverse => $f->{o} eq 'd'
+    );
     $self->htmlBrowse(
       items    => $list,
       nextpage => 0,
-      options  => {p=>0},
+      options  => {p=>0, %$f},
       pageurl  => '',
-      header   => [ ['Release'], ['Version'], ['Hid'], ['Prio'], ['URL'], ['Price'], [''] ],
+      sorturl  => "/affiliates?a=$f->{a}",
+      header   => [
+        ['Release', 'rel'],
+        ['Version'],
+        ['Hid'],
+        ['Prio', 'prio'],
+        ['Price / Lastfetch', 'lastfetch'],
+        ['', 'url' ]
+      ],
       row      => sub {
         my($s, $n, $l) = @_;
         Tr $n % 2 ? (class => 'odd') : ();
@@ -48,9 +70,10 @@ sub list {
          td class => 'tc2', $l->{version} || '<default>';
          td class => 'tc3', $l->{hidden} ? 'YES' : 'no';
          td class => 'tc4', $l->{priority};
-         td class => 'tc5'; a href => $l->{url}, $l->{url}; end;
-         td class => 'tc6', sprintf '%s / %s', $l->{price}, $l->{lastfetch} ? $self->{l10n}->age($l->{lastfetch}) : '-';
-         td class => 'tc7';
+         td class => 'tc5', sprintf '%s / %s', $l->{price}, $l->{lastfetch} ? $self->{l10n}->age($l->{lastfetch}) : '-';
+         td class => 'tc6';
+          a href => $l->{url}, 'link';
+          txt ' | ';
           a href => "/affiliates/edit/$l->{id}", 'edit';
           txt ' | ';
           a href => "/affiliates/del/$l->{id}?formcode=".$self->authGetCode("/affiliates/del/$l->{id}"), 'del';
@@ -111,7 +134,7 @@ sub edit {
     [ input  => short => 'priority', name => 'Priority', width => 50 ],
     [ check  => short => 'hidden', name => 'Hidden' ],
     [ select => short => 'affiliate', name => 'Affiliate', options => [ map
-        [ $_, $self->{affiliates}[$_]{name} ], 0..$#{$self->{affiliates}} ] ],
+        [ $_, $self->{affiliates}[$_]{name} ], grep $self->{affiliates}[$_], 0..$#{$self->{affiliates}} ] ],
     [ input  => short => 'url', name => 'URL', width => 400 ],
     [ input  => short => 'version', name => 'Version', width => 400 ],
   ]);

@@ -98,7 +98,7 @@ sub log_msg { # msg
 sub log { # level, msg
   (my $p = eval { $_[SENDER][2]{$_[CALLER_STATE]}[0] } || '') =~ s/^Multi:://;
   log_msg sprintf '%s::%s: %s', $p, $_[CALLER_STATE],
-    $_[ARG1] ? sprintf($_[ARG0], @_[ARG1..$#_]) : $_[ARG0];
+    $#_>ARG0 ? sprintf($_[ARG0], @_[ARG1..$#_]) : $_[ARG0];
 }
 
 

@@ -33,12 +33,9 @@ CREATE TABLE affiliate_links (
   url varchar NOT NULL,
   version varchar NOT NULL DEFAULT '', -- "x edition" or "x version", default used is "<language> version"
   lastfetch timestamptz, -- last update of price
-  price varchar NOT NULL DEFAULT '' -- formatted, including currency, e.g. "$50" or "€34.95 / $50.46"
+  price varchar NOT NULL DEFAULT '', -- formatted, including currency, e.g. "$50" or "€34.95 / $50.46"
+  data varchar NOT NULL DEFAULT '' -- to be used by a fetch bot, if any
 );
 
 CREATE INDEX affiliate_links_rid ON affiliate_links (rid) WHERE NOT hidden;
-
---INSERT INTO affiliate_links (rid, priority, affiliate, url, version, lastfetch, price) VALUES
---  (175, 1, 0, 'http://www.jbox.com/product/PCG4776', 'Original all-ages edition (Japanese)', NOW(), '$110.00'),
---  (8124, 0, 0, 'http://www.jbox.com/product/PSPLB001', 'Converted edition (PSP, Japanese)', NOW(), '$78.00');
 

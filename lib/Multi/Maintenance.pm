@@ -46,6 +46,7 @@ sub _start {
 sub shutdown {
   $_[KERNEL]->delay('daily');
   $_[KERNEL]->delay('monthly');
+  $_[KERNEL]->delay('vnsearch_check');
   $_[KERNEL]->alias_remove('maintenance');
 }
 

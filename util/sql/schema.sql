@@ -10,7 +10,8 @@ CREATE TABLE affiliate_links (
   url varchar NOT NULL,
   version varchar NOT NULL DEFAULT '',
   lastfetch timestamptz,
-  price varchar NOT NULL DEFAULT ''
+  price varchar NOT NULL DEFAULT '',
+  data varchar NOT NULL DEFAULT ''
 );
 
 -- anime

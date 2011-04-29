@@ -2771,7 +2771,9 @@ if(byId('buynow')) {
     l[i].title = null;
     ddInit(l[i], 'bottom', function(acr) {
       return tag('p', {onmouseover:ddHide, style:'padding: 3px'},
-        acr.buynow_last, tag('br', null), '* The displayed price only serves as an indication, actual price may differ.'
+        acr.buynow_last, tag('br', null),
+        '* The displayed price only serves as an indication and',
+        tag('br', null), 'usually excludes shipping. Actual price may differ.'
       );
     });
   }
