@@ -16,6 +16,7 @@
 	- Bugfix: Hide pointless groups and commas on spoiler-hidden trait display
 	- Bugfix: Properly format future dates on my vn list
 	- Bugfix: Properly position the sub-tabs on VN page without tags
+	- Bugfix: Allow unhiding of posts by mods
 
 2.19 - 2011-03-30
 	- Character database:

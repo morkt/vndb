@@ -152,7 +152,7 @@ sub edit {
   return $self->htmlDenied if !$self->authCan('board')
     || ($tid && ($t->{locked} || $t->{hidden}) && !$self->authCan('boardmod'))
     || ($num && $p->{uid} != $self->authInfo->{id} && !$self->authCan('boardmod'))
-    || ($num && $p->{uid} == $self->authInfo->{id} && $p->{hidden});
+    || ($num && $p->{hidden} && !$self->authCan('boardmod'));
 
   # check form etc...
   my $frm;
