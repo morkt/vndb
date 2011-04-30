@@ -7497,6 +7497,20 @@ cs : ~[obrázek se zpracovává, vraťte se prosím za několik minut~]
 hu : ~[a kép feldolgozás alatt van, gyere vissza pár perc múlva~]
 nl : ~[bezig met het verwerken van het plaatje, kom a.u.b. terug in een paar minuten~]
 
+:_vnedit_image_id
+en : Image ID
+ru*:
+cs*: ID obrázku
+hu*: Kép ID (azonosító)
+nl : Plaatje ID
+
+:_vnedit_image_id_msg
+en : Use a character image that is already on the server. Set to '0' to remove the current image.
+ru*:
+cs*:
+hu*: Használj egy olyan képet ami már megtalálható a szerveren. Ha '0'-ra állítod törölheted a jelenlegi képet.
+nl : Gebruik een karakterplaatje dat al op de server staat. Gebruik '0' om een huidig plaatje te verwijderen.
+
 :_vnedit_image_upload
 en : Upload new image
 ru : Загрузить новое изображение

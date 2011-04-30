@@ -28,7 +28,7 @@ sub edit {
   my $r = $v ? $self->dbReleaseGet(vid => $v->{id}) : [];
 
   my %b4 = !$vid ? () : (
-    (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn img_nsfw ihid ilock|),
+    (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn image img_nsfw ihid ilock|),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
     vnrelations => join('|||', map $_->{relation}.','.$_->{id}.','.($_->{official}?1:0).','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
     screenshots => join(' ', map sprintf('%d,%d,%d', $_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$v->{screenshots}}),
@@ -48,7 +48,7 @@ sub edit {
       { post => 'l_renai',     required => 0, default => '', maxlength => 100 },
       { post => 'l_vnn',       required => 0, default => $b4{l_vnn}||0,  template => 'int' },
       { post => 'anime',       required => 0, default => '' },
-      { post => 'previmage',   required => 0, default => 0,  template => 'int' },
+      { post => 'image',       required => 0, default => 0,  template => 'int' },
       { post => 'img_nsfw',    required => 0, default => 0 },
       { post => 'vnrelations', required => 0, default => '', maxlength => 5000 },
       { post => 'screenshots', required => 0, default => '', maxlength => 1000 },
@@ -60,7 +60,7 @@ sub edit {
     push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
 
     # handle image upload
-    my $image = _uploadimage($self, $v, $frm);
+    $frm->{image} = _uploadimage($self, $v, $frm);
 
     if(!$frm->{_err}) {
       # parse and re-sort fields that have multiple representations of the same information
@@ -86,15 +86,13 @@ sub edit {
 
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post')
-        if $vid && !$self->reqPost('img') && $image == $v->{image}
-          && !grep $frm->{$_} ne $b4{$_}, keys %b4;
+        if $vid && !grep $frm->{$_} ne $b4{$_}, keys %b4;
 
       # perform the edit/add
       my $nrev = $self->dbItemEdit(v => $vid ? $v->{cid} : undef,
-        (map { $_ => $frm->{$_} } qw|title original alias desc length l_wp l_encubed l_renai l_vnn editsum img_nsfw ihid ilock|),
+        (map { $_ => $frm->{$_} } qw|title original image alias desc length l_wp l_encubed l_renai l_vnn editsum img_nsfw ihid ilock|),
         anime => [ keys %$anime ],
         relations => $relations,
-        image => $image,
         screenshots => $screenshots,
       );
 
@@ -123,7 +121,7 @@ sub edit {
 
 sub _uploadimage {
   my($self, $v, $frm) = @_;
-  return $v ? $frm->{previmage} : 0 if $frm->{_err} || !$self->reqPost('img');
+  return $v ? $frm->{image} : 0 if $frm->{_err} || !$self->reqPost('img');
 
   # perform some elementary checks
   my $imgdata = $self->reqUploadRaw('img');
@@ -163,29 +161,31 @@ sub _form {
     [ static   => content => mt '_vnedit_anime_msg' ],
   ],
 
-  vn_img => [ mt('_vnedit_image'),
-    [ hidden => short => 'previmage', value => $v ? $v->{image} : 0 ],
-    [ static => nolabel => 1, content => sub {
-      div class => 'img';
-       p mt '_vnedit_image_none' if !$v || !$v->{image};
-       p mt '_vnedit_image_processing' if $v && $v->{image} < 0;
-       img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title} if $v && $v->{image} > 0;
-      end;
-      div;
+  vn_img => [ mt('_vnedit_image'), [ static => nolabel => 1, content => sub {
+    div class => 'img';
+     p mt '_vnedit_image_none' if !$v || !$v->{image};
+     p mt '_vnedit_image_processing' if $v && $v->{image} < 0;
+     img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title} if $v && $v->{image} > 0;
+    end;
 
-       h2 mt '_vnedit_image_upload';
-       input type => 'file', class => 'text', name => 'img', id => 'img';
-       p mt('_vnedit_image_upload_msg');
-       br; br; br;
+    div;
+     h2 mt '_vnedit_image_id';
+     input type => 'text', class => 'text', name => 'image', id => 'image', value => $frm->{image}||'';
+     p mt '_vnedit_image_id_msg';
+     br; br;
 
-       h2 mt '_vnedit_image_nsfw';
-       input type => 'checkbox', class => 'checkbox', id => 'img_nsfw', name => 'img_nsfw',
-         $frm->{img_nsfw} ? (checked => 'checked') : ();
-       label class => 'checkbox', for => 'img_nsfw', mt '_vnedit_image_nsfw_check';
-       p mt '_vnedit_image_nsfw_msg';
-      end 'div';
-    }],
-  ],
+     h2 mt '_vnedit_image_upload';
+     input type => 'file', class => 'text', name => 'img', id => 'img';
+     p mt('_vnedit_image_upload_msg');
+     br; br; br;
+
+     h2 mt '_vnedit_image_nsfw';
+     input type => 'checkbox', class => 'checkbox', id => 'img_nsfw', name => 'img_nsfw',
+       $frm->{img_nsfw} ? (checked => 'checked') : ();
+     label class => 'checkbox', for => 'img_nsfw', mt '_vnedit_image_nsfw_check';
+     p mt '_vnedit_image_nsfw_msg';
+    end 'div';
+  }]],
 
   vn_rel => [ mt('_vnedit_rel'),
     [ hidden   => short => 'vnrelations' ],
