@@ -14,6 +14,7 @@
 	- Added "Image ID" field to VN image uploader
 	- Added "All except characters" filter to history browser
 	- Cleaned up CSS code
+	- Cleaned up permissions
 	- Bugfix: don't accidentally remove char traits when editing
 	- Bugfix: fixed possible SQL table name clash on history browser
 	- Bugfix: properly announce chars and traits in Multi::IRC

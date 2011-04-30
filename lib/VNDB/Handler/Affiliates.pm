@@ -9,7 +9,7 @@ use VNDB::Func;
 
 TUWF::register(
   qr{affiliates} => \&list,
-  qr{affiliates/del/([1-9]\d*)} => \&del,
+  qr{affiliates/del/([1-9]\d*)} => \&linkdel,
   qr{affiliates/edit/([1-9]\d*)} => \&edit,
   qr{affiliates/new} => \&edit,
 );
@@ -86,7 +86,7 @@ sub list {
 }
 
 
-sub del {
+sub linkdel {
   my($self, $id) = @_;
   return $self->htmlDenied if !$self->authCan('affiliate');
   return if !$self->authCheckCode;

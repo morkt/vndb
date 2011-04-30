@@ -214,15 +214,11 @@ sub htmlForm {
      fieldset class => 'submit';
       if($options->{editsum}) {
         # hidden / locked checkbox
-        if($self->authCan('del')) {
+        if($self->authCan('dbmod')) {
           input type => 'checkbox', name => 'ihid', id => 'ihid', value => 1, $options->{frm}{ihid} ? (checked => 'checked') : ();
           label for => 'ihid', mt '_form_ihid';
-        }
-        if($self->authCan('lock')) {
           input type => 'checkbox', name => 'ilock', id => 'ilock', value => 1, $options->{frm}{ilock} ? (checked => 'checked') : ();
           label for => 'ilock', mt '_form_ilock';
-        }
-        if($self->authCan('lock') || $self->authCan('del')) {
           br; txt mt('_form_hidlock_note'); br;
         }
 

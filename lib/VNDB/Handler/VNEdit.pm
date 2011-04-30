@@ -23,7 +23,7 @@ sub edit {
   $rev = undef if !$vid || $v->{cid} == $v->{latest};
 
   return $self->htmlDenied if !$self->authCan('edit')
-    || $vid && ($v->{locked} && !$self->authCan('lock') || $v->{hidden} && !$self->authCan('del'));
+    || $vid && (($v->{locked} || $v->{hidden}) && !$self->authCan('dbmod'));
 
   my $r = $v ? $self->dbReleaseGet(vid => $v->{id}) : [];
 

@@ -257,7 +257,7 @@ sub edit {
   $rev = undef if !$r || $r->{cid} == $r->{latest};
 
   return $self->htmlDenied if !$self->authCan('charedit')
-    || $id && ($r->{locked} && !$self->authCan('lock') || $r->{hidden} && !$self->authCan('del'));
+    || $id && (($r->{locked} || $r->{hidden}) && !$self->authCan('dbmod'));
 
   my %b4 = !$id ? () : (
     (map +($_ => $r->{$_}), qw|name original alias desc image ihid ilock s_bust s_waist s_hip height weight bloodt gender main_spoil|),

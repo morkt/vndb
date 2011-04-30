@@ -205,7 +205,7 @@ sub edit {
   $rev = undef if !$p || $p->{cid} == $p->{latest};
 
   return $self->htmlDenied if !$self->authCan('edit')
-    || $pid && ($p->{locked} && !$self->authCan('lock') || $p->{hidden} && !$self->authCan('del'));
+    || $pid && (($p->{locked} || $p->{hidden}) && !$self->authCan('dbmod'));
 
   my %b4 = !$pid ? () : (
     (map { $_ => $p->{$_} } qw|type name original lang website desc alias ihid ilock|),

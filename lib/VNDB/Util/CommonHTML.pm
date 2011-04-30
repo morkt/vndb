@@ -72,8 +72,8 @@ sub htmlMainTabs {
    }
 
    if(   $type eq 'u'     && ($self->authInfo->{id} && $obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))
-      || $type =~ /[vrp]/ && $self->authCan('edit') && (!$obj->{locked} || $self->authCan('lock')) && (!$obj->{hidden} || $self->authCan('del'))
-      || $type eq 'c'     && $self->authCan('charedit') && (!$obj->{locked} || $self->authCan('lock')) && (!$obj->{hidden} || $self->authCan('del'))
+      || $type =~ /[vrp]/ && $self->authCan('edit') && ((!$obj->{locked} && !$obj->{hidden}) || $self->authCan('dbmod'))
+      || $type eq 'c'     && $self->authCan('charedit') && ((!$obj->{locked} && !$obj->{hidden}) || $self->authCan('dbmod'))
       || $type =~ /[gi]/  && $self->authCan('tagmod')
    ) {
      li $sel eq 'edit' ? (class => 'tabselected') : ();
@@ -143,7 +143,7 @@ sub htmlHiddenMessage {
     end;
    end;
   end 'div';
-  return $self->htmlFooter() || 1 if !$self->authCan('del');
+  return $self->htmlFooter() || 1 if !$self->authCan('dbmod');
   return 0;
 }
 

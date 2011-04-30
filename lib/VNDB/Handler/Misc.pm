@@ -250,7 +250,7 @@ sub history {
      end;
    }
    if(!$type || $type eq 'u') {
-     if($self->authCan('del')) {
+     if($self->authCan('dbmod')) {
        p class => 'browseopts';
         a $f->{h} == 1  ? (class => 'optselected') : (), href => $u->(h =>  1), mt '_hist_filter_hidedel';
         a $f->{h} == -1 ? (class => 'optselected') : (), href => $u->(h => -1), mt '_hist_filter_showdel';

@@ -32,13 +32,13 @@ our %S = (%S,
   ch_size         => [ 256, 300 ], # max. w*h of char images
   cv_size         => [ 256, 400 ], # max. w*h of cover images
   user_ranks      => [
-       # allowed actions                                                                 # DB number
-    [qw| hist                                                                        |], # 0
-    [qw| hist                                                                        |], # 1
-    [qw| hist board                                                                  |], # 2
-    [qw| hist board edit tag                                                         |], # 3
-    [qw| hist board boardmod edit charedit tag mod lock del tagmod                   |], # 4
-    [qw| hist board boardmod edit charedit tag mod lock del tagmod usermod affiliate |], # 5
+       # allowed actions                                                     # DB number
+    [qw|                                                                 |], # 0
+    [qw|                                                                 |], # 1
+    [qw| board                                                           |], # 2
+    [qw| board edit tag                                                  |], # 3
+    [qw| board boardmod edit charedit tag dbmod tagmod                   |], # 4
+    [qw| board boardmod edit charedit tag dbmod tagmod usermod affiliate |], # 5
   ],
   languages       => [qw|cs da de en es fi fr hu it ja ko nl no pl pt-br pt-pt ru sk sv tr vi zh|],
   producer_types  => [qw|co in ng|],
