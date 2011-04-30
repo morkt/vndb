@@ -420,12 +420,17 @@ sub _affiliate_links {
    ul;
     for my $link (@$links) {
       my $f = $self->{affiliates}[$link->{affiliate}];
+
+      my $rel = $r{$link->{rid}};
+      my $plat = grep($_ eq 'win', @{$rel->{platforms}}) ? '' : ' '.join(' and ', map $en->maketext("_plat_$_"), @{$rel->{platforms}});
+      my $version = join(', ', map $en->maketext("_lang_$_"), @{$rel->{languages}}).$plat.' version';
+
       li; a rel => 'nofollow', href => $f->{link_format} ? $f->{link_format}->($link->{url}) : $link->{url};
        use utf8;
        txt '→ ';
        txt $link->{version}
-         || ($f->{default_version} && $f->{default_version}->($self, $link, $r{$link->{rid}}))
-         || join(', ', map $en->maketext("_lang_$_"), @{$r{$link->{rid}}{languages}}).' version';
+         || ($f->{default_version} && $f->{default_version}->($self, $link, $rel))
+         || $version;
        txt ' ';
        acronym class => 'pricenote', title => sprintf('Last updated: %s.', $en->age($link->{lastfetch})), "for $link->{price}*"
          if $link->{price};

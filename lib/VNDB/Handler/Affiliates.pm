@@ -54,7 +54,7 @@ sub list {
       nextpage => 0,
       options  => {p=>0, %$f},
       pageurl  => '',
-      sorturl  => "/affiliates?a=$f->{a}",
+      sorturl  => "/affiliates?a=$f->{a};h=$f->{h}",
       header   => [
         ['Release', 'rel'],
         ['Version'],
