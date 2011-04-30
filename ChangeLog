@@ -15,6 +15,7 @@
 	- Added "All except characters" filter to history browser
 	- Cleaned up CSS code
 	- Cleaned up permissions
+	- Replaced user ranks with a permission system
 	- Bugfix: don't accidentally remove char traits when editing
 	- Bugfix: fixed possible SQL table name clash on history browser
 	- Bugfix: properly announce chars and traits in Multi::IRC

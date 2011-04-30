@@ -301,7 +301,7 @@ sub edit {
     $frm = $self->formValidate(
       $self->authCan('usermod') ? (
         { post => 'usrname',   template => 'pname', minlength => 2, maxlength => 15 },
-        { post => 'rank',      enum => [ 1..$#{$self->{user_ranks}} ] },
+        { post => 'perms',     required => 0, multi => 1, enum => [ keys %{$self->{permissions}} ] },
         { post => 'ign_votes', required => 0, default => 0 },
       ) : (),
       { post => 'mail',       template => 'mail' },
@@ -318,7 +318,10 @@ sub edit {
       $self->dbUserPrefSet($uid, $_ => $frm->{$_}) for (qw|skin customcss show_nsfw hide_list |);
       my %o;
       $o{username} = $frm->{usrname} if $frm->{usrname};
-      $o{rank} = $frm->{rank} if $frm->{rank};
+      if($self->authCan('usermod')) {
+        $o{perm} = 0;
+        $o{perm} += $self->{permissions}{$_} for(@{ delete $frm->{perms} });
+      }
       $o{mail} = $frm->{mail};
       ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->{usrpass}) if $frm->{usrpass};
       $o{ign_votes} = $frm->{ign_votes} ? 1 : 0 if $self->authCan('usermod');
@@ -330,8 +333,9 @@ sub edit {
   }
 
   # fill out default values
-  $frm->{usrname}    ||= $u->{username};
-  $frm->{$_} ||= $u->{$_} for(qw|rank mail|);
+  $frm->{usrname} ||= $u->{username};
+  $frm->{mail}    ||= $u->{mail};
+  $frm->{perms}   ||= [ grep $u->{perm} & $self->{permissions}{$_}, keys %{$self->{permissions}} ];
   $frm->{$_} //= $u->{prefs}{$_} for(qw|skin customcss show_nsfw hide_list|);
   $frm->{ign_votes} = $u->{ign_votes} if !defined $frm->{ign_votes};
 
@@ -350,8 +354,8 @@ sub edit {
     [ part   => title => mt '_usere_geninfo' ],
     $self->authCan('usermod') ? (
       [ input  => short => 'usrname', name => mt('_usere_username') ],
-      [ select => short => 'rank', name => mt('_usere_rank'), options => [
-        map [ $_, mt '_urank_'.$_ ], 1..$#{$self->{user_ranks}} ] ],
+      [ select => short => 'perms', name => mt('_usere_perm'), multi => 1, size => (scalar keys %{$self->{permissions}}), options => [
+        map [ $_, $_ ], sort keys %{$self->{permissions}} ] ],
       [ check  => short => 'ign_votes', name => mt '_usere_ignvotes' ],
     ) : (
       [ static => label => mt('_usere_username'), content => $frm->{usrname} ],

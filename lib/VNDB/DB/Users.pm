@@ -55,7 +55,7 @@ sub dbUserGet {
     qw|id username c_votes c_changes c_tags|,
     q|extract('epoch' from registered) as registered|,
     $o{what} =~ /extended/ ? (
-      qw|mail rank salt ign_votes|,
+      qw|mail perm salt ign_votes|,
       q|encode(passwd, 'hex') AS passwd|
     ) : (),
     $o{what} =~ /hide_list/ ? 'up.value AS hide_list' : (),
@@ -118,7 +118,7 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail rank salt ign_votes |);
+    for (qw| username mail perm salt ign_votes |);
   $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
     if defined $o{passwd};
 

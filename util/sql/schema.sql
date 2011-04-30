@@ -357,7 +357,7 @@ CREATE TABLE users (
   id SERIAL NOT NULL PRIMARY KEY,
   username varchar(20) NOT NULL UNIQUE,
   mail varchar(100) NOT NULL,
-  rank smallint NOT NULL DEFAULT 3,
+  perm smallint NOT NULL DEFAULT 1+4+16,
   passwd bytea NOT NULL DEFAULT '',
   registered timestamptz NOT NULL DEFAULT NOW(),
   c_votes integer NOT NULL DEFAULT 0,

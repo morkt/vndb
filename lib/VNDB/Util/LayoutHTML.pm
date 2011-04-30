@@ -89,7 +89,6 @@ sub _menu {
       my $nc = $self->authInfo->{notifycount};
       h2;
        a href => $uid, ucfirst $self->authInfo->{username};
-       txt ' ('.mt('_urank_'.$self->authInfo->{rank}).')';
       end;
       div;
        a href => "$uid/edit", mt '_menu_myprofile'; br;

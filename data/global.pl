@@ -31,15 +31,8 @@ our %S = (%S,
   scr_size        => [ 136, 102 ], # w*h of screenshot thumbnails
   ch_size         => [ 256, 300 ], # max. w*h of char images
   cv_size         => [ 256, 400 ], # max. w*h of cover images
-  user_ranks      => [
-       # allowed actions                                                     # DB number
-    [qw|                                                                 |], # 0
-    [qw|                                                                 |], # 1
-    [qw| board                                                           |], # 2
-    [qw| board edit tag                                                  |], # 3
-    [qw| board boardmod edit charedit tag dbmod tagmod                   |], # 4
-    [qw| board boardmod edit charedit tag dbmod tagmod usermod affiliate |], # 5
-  ],
+                     # bit flags
+  permissions     => {qw| board 1  boardmod 2  edit 4  charedit 8  tag 16  dbmod 32  tagmod 64  usermod 128  affiliate 256 |},
   languages       => [qw|cs da de en es fi fr hu it ja ko nl no pl pt-br pt-pt ru sk sv tr vi zh|],
   producer_types  => [qw|co in ng|],
   discussion_boards => [qw|an db ge v p u|], # <- note that some properties of these boards are hard-coded
@@ -136,5 +129,4 @@ our %M = (
 require $ROOT.'/data/config.pl' if -f $ROOT.'/data/config.pl';
 
 1;
-
 

@@ -104,51 +104,6 @@ ends with ']'. The following options are supported:
 # data/global.pl - used in many places
 
 
-# user ranks
-
-:_urank_0
-en : visitor
-ru : посетитель
-cs : návštěvník
-hu : vendég
-nl : bezoeker
-
-:_urank_1
-en : banned
-ru : забанен
-cs : zabanovaný
-hu : kicsapva
-nl : gebanned
-
-:_urank_2
-en : loser
-ru : лузер
-cs : loser
-hu : vesztes
-nl : sukkel
-
-:_urank_3
-en : user
-ru : пользователь
-cs : uživatel
-hu : felhasználó
-nl : gebruiker
-
-:_urank_4
-en : mod
-ru : модератор
-cs : moderátor
-hu : mod
-nl :
-
-:_urank_5
-en : admin
-ru : администратор
-cs : administrátor
-hu : admin
-nl :
-
-
 # languages
 
 :_lang_cs
@@ -6749,12 +6704,12 @@ cs : Uživatelské jméno
 hu : Felhasználónév
 nl : Gebruikersnaam
 
-:_usere_rank
-en : Rank
-ru : Ранг
-cs : Postavení
-hu : Rang
-nl :
+:_usere_perm
+en : Permissions
+ru*:
+cs*:
+hu*:
+nl : Permissies
 
 :_usere_ignvotes
 en : Ignore votes in VN statistics

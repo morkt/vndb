@@ -39,3 +39,16 @@ CREATE TABLE affiliate_links (
 
 CREATE INDEX affiliate_links_rid ON affiliate_links (rid) WHERE NOT hidden;
 
+
+
+-- rank -> permissions
+
+ALTER TABLE users RENAME rank TO perm;
+ALTER TABLE users ALTER COLUMN perm SET DEFAULT 1+4+16;
+UPDATE users SET perm = CASE
+  WHEN perm = 2 THEN 1
+  WHEN perm = 3 THEN 1+4+16
+  WHEN perm = 4 THEN 1+2+4+8+16+32+64
+  WHEN perm = 5 THEN 1+2+4+8+16+32+64+128+256
+  ELSE 0 END;
+
