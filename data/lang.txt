@@ -2520,6 +2520,13 @@ cs : Pouze postavy
 hu : Csak szereplők
 nl : Alleen karakters
 
+:_hist_filter_nochars
+en : All except characters
+ru*:
+cs*:
+hu*:
+nl : Alles behalve karakters
+
 :_hist_filter_allactions
 en : Show all changes
 ru : Показать все изменения

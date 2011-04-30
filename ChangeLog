@@ -12,6 +12,7 @@
 	- Toggle [spoiler] tag visibility with global setting rather than mouse-over
 	- Added "Add character" link to VN pages
 	- Added "Image ID" field to VN image uploader
+	- Added "All except characters" filter to history browser
 	- Cleaned up CSS code
 	- Bugfix: don't accidentally remove char traits when editing
 	- Bugfix: fixed possible SQL table name clash on history browser
