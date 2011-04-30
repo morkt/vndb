@@ -335,6 +335,10 @@ sub edit {
     }
   }
 
+  if(!$id) {
+    my $vid = $self->formValidate({ get => 'vid', required => 1, template => 'int'});
+    $frm->{vns} //= "$vid->{vid}-0-0-primary" if !$vid->{_err};
+  }
   $frm->{$_} //= $b4{$_} for keys %b4;
   $frm->{editsum} //= sprintf 'Reverted to revision c%d.%d', $id, $rev if !$copy && $rev;
   $frm->{editsum} = sprintf 'New character based on c%d.%d', $id, $r->{rev} if $copy;

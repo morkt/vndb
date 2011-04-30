@@ -8371,6 +8371,13 @@ cs : K této vizuální novele zatím nemáme informace o žádném vydání...
 hu : Még nincs információnk ennek a visual novelnek a kiadásairól...
 nl : We hebben op dit moment nog geen informatie over uitgaven van deze visual novel...
 
+:_vnpage_char_add
+en : add character
+ru*:
+cs*:
+hu*:
+nl : voeg karakter toe
+
 :_vnpage_rel_add
 en : add release
 ru : добавить выпуск

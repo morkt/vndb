@@ -10,6 +10,7 @@
 	- Added char/tag/trait stats to database statistics box
 	- Update traits_chars cache daily using Multi::Maintenance
 	- Toggle [spoiler] tag visibility with global setting rather than mouse-over
+	- Added "Add character" link to VN pages
 	- Cleaned up CSS code
 	- Bugfix: don't accidentally remove char traits when editing
 	- Bugfix: fixed possible SQL table name clash on history browser
