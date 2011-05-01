@@ -24,7 +24,7 @@ Requirements
   (perl 5.12 core modules are not listed.)
 
   util/vndb.pl:
-    Algorithm::Diff::Fast
+    Algorithm::Diff::XS
     DBI
     DBD::Pg
     TUWF                 (get it from http://g.blicky.net/tuwf.git/)
