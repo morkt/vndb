@@ -446,11 +446,15 @@ sub _releases {
   my($self, $v, $r) = @_;
 
   div class => 'mainbox releases';
-   p class => 'addnew';
-    a href => "/c/new?vid=$v->{id}", mt '_vnpage_char_add';
-    txt ' | ';
-    a href => "/v$v->{id}/add", mt '_vnpage_rel_add';
-   end;
+   if($self->authCan('edit')) {
+     p class => 'addnew';
+      if($self->authCan('charedit')) {
+        a href => "/c/new?vid=$v->{id}", mt '_vnpage_char_add';
+        txt ' | ';
+      }
+      a href => "/v$v->{id}/add", mt '_vnpage_rel_add';
+     end;
+   }
    h1 mt '_vnpage_rel';
    if(!@$r) {
      p mt '_vnpage_rel_none';

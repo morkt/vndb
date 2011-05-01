@@ -99,9 +99,13 @@ sub _menu {
        a href => "$uid/hist", mt '_menu_mychanges'; br;
        a href => '/g/links?u='.$self->authInfo->{id}, mt '_menu_mytags'; br;
        br;
-       a href => '/v/new',    mt '_menu_addvn'; br;
-       a href => '/p/new',    mt '_menu_addproducer'; br;
-       a href => '/c/new',    mt '_menu_addcharacter'; br;
+       if($self->authCan('edit')) {
+         a href => '/v/new',    mt '_menu_addvn'; br;
+         a href => '/p/new',    mt '_menu_addproducer'; br;
+       }
+       if($self->authCan('charedit')) {
+         a href => '/c/new',    mt '_menu_addcharacter'; br;
+       }
        br;
        a href => "$uid/logout", mt '_menu_logout';
       end;
