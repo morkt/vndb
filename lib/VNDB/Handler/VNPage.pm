@@ -141,7 +141,7 @@ sub page {
      _relations($self, \$i, $v) if @{$v->{relations}};
      _anime($self, \$i, $v) if @{$v->{anime}};
      _useroptions($self, \$i, $v) if $self->authInfo->{id};
-     _affiliate_links($self, $r);
+     _affiliate_links($self, \$i, $r);
 
      Tr;
       td class => 'vndesc', colspan => 2;
@@ -406,7 +406,7 @@ sub _useroptions {
 
 
 sub _affiliate_links {
-  my($self, $r) = @_;
+  my($self, $i, $r) = @_;
   return if !keys @$r;
   my %r = map +($_->{id}, $_), @$r;
   my $links = $self->dbAffiliateGet(rids => [ keys %r ], hidden => 0);
@@ -415,30 +415,29 @@ sub _affiliate_links {
   $links = [ sort { $b->{priority}||$self->{affiliates}[$b->{affiliate}]{default_prio} <=> $a->{priority}||$self->{affiliates}[$a->{affiliate}]{default_prio} } @$links ];
   my $en = VNDB::L10N->get_handle('en');
 
-  Tr; td colspan => 2, id => 'buynow'; # don't call it "affiliate", most adblock filters have that included >_>
-   h1; a rel => 'nofollow', href => $self->{affiliates}[$links->[0]{affiliate}]{link_format} ? $self->{affiliates}[$links->[0]{affiliate}]{link_format}->($links->[0]{url}) : $links->[0]{url}, 'Buy now!'; end;
-   ul;
+  Tr id => 'buynow', ++$$i % 2 ? (class => 'odd') : ();
+   td 'Available at';
+   td;
     for my $link (@$links) {
       my $f = $self->{affiliates}[$link->{affiliate}];
-
       my $rel = $r{$link->{rid}};
-      my $plat = grep($_ eq 'win', @{$rel->{platforms}}) ? '' : ' '.join(' and ', map $en->maketext("_plat_$_"), @{$rel->{platforms}});
-      my $version = join(', ', map $en->maketext("_lang_$_"), @{$rel->{languages}}).$plat.' version';
+      my $plat = join(' and ', map $en->maketext("_plat_$_"), @{$rel->{platforms}});
+      my $version = join(' and ', map $en->maketext("_lang_$_"), @{$rel->{languages}}).' '.$plat.' version';
 
-      li; a rel => 'nofollow', href => $f->{link_format} ? $f->{link_format}->($link->{url}) : $link->{url};
+      a rel => 'nofollow', href => $f->{link_format} ? $f->{link_format}->($link->{url}) : $link->{url};
        use utf8;
-       txt '→ ';
        txt $link->{version}
          || ($f->{default_version} && $f->{default_version}->($self, $link, $rel))
          || $version;
-       txt ' ';
-       acronym class => 'pricenote', title => sprintf('Last updated: %s.', $en->age($link->{lastfetch})), "for $link->{price}*"
+       txt " at $f->{name}";
+       acronym class => 'pricenote', title => sprintf('Last updated: %s.', $en->age($link->{lastfetch})), " for $link->{price}"
          if $link->{price};
-       txt " at $f->{name}.";
-      end; end;
+       txt ' »';
+      end;
+      br;
     }
    end;
-  end; end;
+  end;
 }
 
 
