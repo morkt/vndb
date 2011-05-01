@@ -280,7 +280,7 @@ sub edit {
   return $self->resNotFound if $vid && !$v->{id};
 
   return $self->htmlDenied if !$self->authCan('edit')
-    || $rid && ($r->{locked} && !$self->authCan('lock') || $r->{hidden} && !$self->authCan('del'));
+    || $rid && (($r->{locked} || $r->{hidden}) && !$self->authCan('dbmod'));
 
   my $vn = $rid ? $r->{vn} : [{ vid => $vid, title => $v->{title} }];
   my %b4 = !$rid ? () : (

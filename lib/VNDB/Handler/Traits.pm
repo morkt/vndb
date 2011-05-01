@@ -104,8 +104,7 @@ sub traitpage {
      if(!@$chars) {
        p; br; br; txt mt '_traitp_nochars'; end;
      }
-     # not really cached at the moment
-     # p; br; txt mt '_traitp_cached'; end;
+     p; br; txt mt '_traitp_cached'; end;
     end 'div';
 
     @$chars && $self->charBrowseTable($chars, $np, $f, "/i$trait?m=$f->{m}");
@@ -171,9 +170,6 @@ sub traitedit {
       } else {
         $self->dbTraitEdit($trait, %opts, upddate => $frm->{state} == 2 && $t->{state} != 2) if $trait;
         _set_childs_group($self, $trait, $group||$trait) if ($group||0) != ($t->{group}||0);
-
-        # TEMPORARY SOLUTION! I'll investigate more efficient solutions and incremental updates whenever I have more data
-        $self->dbExec('SELECT traits_chars_calc()');
       }
       $self->resRedirect("/i$trait", 'post');
       return;

@@ -233,7 +233,7 @@ sub charTable {
        td class => 'chardesc', colspan => 2;
         h2 mt '_charp_description';
         p;
-         lit bb2html $r->{desc};
+         lit bb2html $r->{desc}, 0, 1;
         end;
        end;
       end;
@@ -257,7 +257,7 @@ sub edit {
   $rev = undef if !$r || $r->{cid} == $r->{latest};
 
   return $self->htmlDenied if !$self->authCan('charedit')
-    || $id && ($r->{locked} && !$self->authCan('lock') || $r->{hidden} && !$self->authCan('del'));
+    || $id && (($r->{locked} || $r->{hidden}) && !$self->authCan('dbmod'));
 
   my %b4 = !$id ? () : (
     (map +($_ => $r->{$_}), qw|name original alias desc image ihid ilock s_bust s_waist s_hip height weight bloodt gender main_spoil|),
@@ -331,14 +331,14 @@ sub edit {
       $frm->{vns} = \@vns;
 
       my $nrev = $self->dbItemEdit(c => !$copy && $id ? $r->{cid} : undef, %$frm);
-
-      # TEMPORARY SOLUTION! I'll investigate more efficient solutions and incremental updates whenever I have more data
-      $self->dbExec('SELECT traits_chars_calc()');
-
       return $self->resRedirect("/c$nrev->{iid}.$nrev->{rev}", 'post');
     }
   }
 
+  if(!$id) {
+    my $vid = $self->formValidate({ get => 'vid', required => 1, template => 'int'});
+    $frm->{vns} //= "$vid->{vid}-0-0-primary" if !$vid->{_err};
+  }
   $frm->{$_} //= $b4{$_} for keys %b4;
   $frm->{editsum} //= sprintf 'Reverted to revision c%d.%d', $id, $rev if !$copy && $rev;
   $frm->{editsum} = sprintf 'New character based on c%d.%d', $id, $r->{rev} if $copy;

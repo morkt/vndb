@@ -196,7 +196,7 @@ sub history {
     { get => 'p', required => 0, default => 1, template => 'int' },
     { get => 'm', required => 0, default => !$type, enum => [ 0, 1 ] },
     { get => 'h', required => 0, default => 0, enum => [ -1..1 ] },
-    { get => 't', required => 0, default => '', enum => [qw|v r p c|] },
+    { get => 't', required => 0, default => '', enum => [qw|v r p c a|] },
     { get => 'e', required => 0, default => 0, enum => [ -1..1 ] },
     { get => 'r', required => 0, default => 0, enum => [ 0, 1 ] },
   );
@@ -216,7 +216,7 @@ sub history {
     what => 'item user',
     $type && $type ne 'u' ? ( type => $type, iid => $id ) : (),
     $type eq 'u' ? ( uid => $id ) : (),
-    $f->{t} ? ( type => $f->{t} ) : (),
+    $f->{t} ? ( type => $f->{t} eq 'a' ? [qw|v r p|] : $f->{t} ) : (),
     page => $f->{p},
     results => 50,
     auto => $f->{m},
@@ -250,7 +250,7 @@ sub history {
      end;
    }
    if(!$type || $type eq 'u') {
-     if($self->authCan('del')) {
+     if($self->authCan('dbmod')) {
        p class => 'browseopts';
         a $f->{h} == 1  ? (class => 'optselected') : (), href => $u->(h =>  1), mt '_hist_filter_hidedel';
         a $f->{h} == -1 ? (class => 'optselected') : (), href => $u->(h => -1), mt '_hist_filter_showdel';
@@ -262,6 +262,7 @@ sub history {
       a  $f->{t} eq 'r' ? (class => 'optselected') : (), href => $u->(t => 'r'), mt '_hist_filter_onlyreleases';
       a  $f->{t} eq 'p' ? (class => 'optselected') : (), href => $u->(t => 'p'), mt '_hist_filter_onlyproducers';
       a  $f->{t} eq 'c' ? (class => 'optselected') : (), href => $u->(t => 'c'), mt '_hist_filter_onlychars';
+      a  $f->{t} eq 'a' ? (class => 'optselected') : (), href => $u->(t => 'a'), mt '_hist_filter_nochars';
      end;
      p class => 'browseopts';
       a !$f->{e}       ? (class => 'optselected') : (), href => $u->(e =>  0), mt '_hist_filter_allactions';

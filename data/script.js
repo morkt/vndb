@@ -1814,7 +1814,7 @@ function ctrAdd(item, spoil) {
       tag('b', {'class':'grayedout'}, group?group+' / ':''),
       tag('a', {'href':'/i'+id}, name)),
     sp,
-    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:ctrDel}, 'del'))
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:ctrDel}, mt('_chare_traits_del')))
   ));
   ctrEmpty();
   ctrSerialize();
@@ -1994,7 +1994,7 @@ function cvnRelChange() {
   while(tr.nodeName.toLowerCase() != 'tr')
     tr = tr.parentNode;
   if(byId('cvn_v'+tr.cvn_vid+'r'+val)) {
-    alert('Release already selected.');
+    alert(mt('_chare_vns_relexists'));
     for(var i=0; i<this.options.length; i++)
       this.options[i].selected = this.options[i].value == tr.cvn_rid;
     return;
@@ -2738,7 +2738,7 @@ if(byId('expandall')) {
 }
 
 
-// charspoil handling (ugly)
+// charspoil handling
 if(byId('charspoil_sel')) {
   var k = byClass('charspoil');
   var h = byName(byId('charspoil_sel'), 'a');
@@ -2746,6 +2746,7 @@ if(byId('charspoil_sel')) {
     for(var i=0; i<k.length; i++)
       setClass(k[i], 'hidden',
         hasClass(k[i], 'charspoil_0') ? false :
+        hasClass(k[i], 'charspoil_-1') ? spoil > 1 :
         hasClass(k[i], 'charspoil_1') ? spoil < 1 : spoil < 2);
     for(var i=0; i<h.length; i++)
       setClass(h[i], 'sel', spoil == i);
@@ -2759,6 +2760,23 @@ if(byId('charspoil_sel')) {
     };
   };
   setall(getCookie('tagspoil'));
+}
+
+
+// mouse-over price information / disclaimer
+if(byId('buynow')) {
+  var l = byClass(byId('buynow'), 'acronym', 'pricenote');
+  for(var i=0; i<l.length; i++) {
+    l[i].buynow_last = l[i].title;
+    l[i].title = null;
+    ddInit(l[i], 'bottom', function(acr) {
+      return tag('p', {onmouseover:ddHide, style:'padding: 3px'},
+        acr.buynow_last, tag('br', null),
+        '* The displayed price only serves as an indication and',
+        tag('br', null), 'usually excludes shipping. Actual price may differ.'
+      );
+    });
+  }
 }
 
 

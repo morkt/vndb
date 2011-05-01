@@ -64,6 +64,7 @@ sub dbRevisionGet {
   # what types should we join?
   my @types = (
     !$o{type} ? ('v', 'r', 'p', 'c') :
+    ref($o{type}) ? @{$o{type}} :
     $o{type} ne 'v' ? $o{type} :
     $o{releases} ? ('v', 'r') : 'v'
   );
@@ -73,7 +74,7 @@ sub dbRevisionGet {
       q{((h.type = 'v' AND vr.vid = ?) OR (h.type = 'r' AND h.id = ANY(ARRAY(SELECT rv.rid FROM releases_vn rv WHERE rv.vid = ?))))} => [$o{iid}, $o{iid}],
     ) : (
       $o{type} ? (
-        'h.type = ?' => $o{type} ) : (),
+        'h.type IN(!l)' => [ ref($o{type})?$o{type}:[$o{type}] ] ) : (),
       $o{iid} ? (
         '!sr.!sid = ?' => [ $o{type}, $o{type}, $o{iid} ] ) : (),
     ),

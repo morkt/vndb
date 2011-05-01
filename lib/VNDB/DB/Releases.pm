@@ -12,7 +12,7 @@ our @EXPORT = qw|dbReleaseGet dbReleaseRevisionInsert|;
 
 # Options: id vid pid rev released page results what med sort reverse date_before date_after
 #   plat lang olang type minage search resolution freeware doujin voiced ani_story ani_ero
-# What: extended changes vn producers platforms media
+# What: extended changes vn producers platforms media affiliates
 # Sort: title released minage
 sub dbReleaseGet {
   my($self, %o) = @_;

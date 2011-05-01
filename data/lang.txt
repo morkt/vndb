@@ -104,51 +104,6 @@ ends with ']'. The following options are supported:
 # data/global.pl - used in many places
 
 
-# user ranks
-
-:_urank_0
-en : visitor
-ru : посетитель
-cs : návštěvník
-hu : vendég
-nl : bezoeker
-
-:_urank_1
-en : banned
-ru : забанен
-cs : zabanovaný
-hu : kicsapva
-nl : gebanned
-
-:_urank_2
-en : loser
-ru : лузер
-cs : loser
-hu : vesztes
-nl : sukkel
-
-:_urank_3
-en : user
-ru : пользователь
-cs : uživatel
-hu : felhasználó
-nl : gebruiker
-
-:_urank_4
-en : mod
-ru : модератор
-cs : moderátor
-hu : mod
-nl :
-
-:_urank_5
-en : admin
-ru : администратор
-cs : administrátor
-hu : admin
-nl :
-
-
 # languages
 
 :_lang_cs
@@ -1985,6 +1940,27 @@ cs : Producenti
 hu : Készítők
 nl : Producenten
 
+:_menu_stat_chars
+en : Characters
+ru*:
+cs*:
+hu*:
+nl : Karakters
+
+:_menu_stat_tags
+en : VN Tags
+ru*:
+cs*:
+hu*:
+nl :
+
+:_menu_stat_traits
+en : Character traits
+ru*:
+cs*:
+hu*:
+nl : Karakter kenmerken
+
 :_menu_stat_users
 en : Users
 ru : Пользователей
@@ -2142,6 +2118,20 @@ nl : laatste
 
 
 # Revision pages
+
+:_revision_spoil_title
+en : SPOILER WARNING!
+ru*:
+cs*:
+hu*:
+nl : SPOILERWAARSCHUWING!
+
+:_revision_spoil_msg
+en : This revision page may contain major spoilers. You may want to view the [url,_1,final page] instead.
+ru*:
+cs*:
+hu*:
+nl : Deze revisiepagina kan spoilers bevatten. Je kan misschien beter de [url,_1,uiteindelijke pagina] openen.
 
 :_revision_previous
 en : earlier revision
@@ -2484,6 +2474,13 @@ ru*:
 cs : Pouze postavy
 hu : Csak szereplők
 nl : Alleen karakters
+
+:_hist_filter_nochars
+en : All except characters
+ru*:
+cs*:
+hu*:
+nl : Alles behalve karakters
 
 :_hist_filter_allactions
 en : Show all changes
@@ -5431,6 +5428,13 @@ cs : Přidat vlastnost
 hu : Sajátosság hozzáadása
 nl : Voeg kenmerk toe
 
+:_chare_traits_del
+en : del
+ru*:
+cs*:
+hu*:
+nl :
+
 :_chare_traits_present
 en : Selected trait is already present.
 ru*:
@@ -5514,6 +5518,13 @@ ru*:
 cs : VN je již přítomna.
 hu : A VN már jelen van.
 nl : VN is al geselecteerd.
+
+:_chare_vns_relexists
+en : Release already present.
+ru*:
+cs*:
+hu*:
+nl : Uitgave is al geselecteerd.
 
 
 # Character browser (/c/*)
@@ -5646,6 +5657,13 @@ ru*:
 cs : Tato vlastnost ještě nebyla provázána s žádnými postavami nebo tyto byly schovány kvůli vašemu nastavení spoilerů.
 hu : Ez a sajátosság még nincs hozzárendelve egy szereplőhöz se, vagy a spoiler beállításaid miatt, el vannak rejtve.
 nl : Dit kenmerk is nog niet gekoppeld aan een karakter, of deze worden niet weergegeven in verband met je spoilerinstelling.
+
+:_traitp_cached
+en : The list below also includes all characters linked to child traits. This list is cached, it can take up to 24 hours after a character has been edited for it to show up on this page.
+ru*:
+cs*:
+hu*:
+nl : De volgende lijst bevat ook alle karakters die gelinkt zijn aan subkenmerken. Deze lijst is gecached, het kan 24 uur duren voordat een karakter op deze pagina te zien is.
 
 
 # Trait add/edit form (/i+/edit, /i+/add, /i/new)
@@ -6686,12 +6704,12 @@ cs : Uživatelské jméno
 hu : Felhasználónév
 nl : Gebruikersnaam
 
-:_usere_rank
-en : Rank
-ru : Ранг
-cs : Postavení
-hu : Rang
-nl :
+:_usere_perm
+en : Permissions
+ru*:
+cs*:
+hu*:
+nl : Permissies
 
 :_usere_ignvotes
 en : Ignore votes in VN statistics
@@ -7440,6 +7458,20 @@ ru : ~[обработка изображения, пожалуйста подо�
 cs : ~[obrázek se zpracovává, vraťte se prosím za několik minut~]
 hu : ~[a kép feldolgozás alatt van, gyere vissza pár perc múlva~]
 nl : ~[bezig met het verwerken van het plaatje, kom a.u.b. terug in een paar minuten~]
+
+:_vnedit_image_id
+en : Image ID
+ru*:
+cs*: ID obrázku
+hu*: Kép ID (azonosító)
+nl : Plaatje ID
+
+:_vnedit_image_id_msg
+en : Use a character image that is already on the server. Set to '0' to remove the current image.
+ru*:
+cs*:
+hu*: Használj egy olyan képet ami már megtalálható a szerveren. Ha '0'-ra állítod törölheted a jelenlegi képet.
+nl : Gebruik een karakterplaatje dat al op de server staat. Gebruik '0' om een huidig plaatje te verwijderen.
 
 :_vnedit_image_upload
 en : Upload new image
@@ -8314,6 +8346,13 @@ ru : У нас пока нет информации о выпусках этой
 cs : K této vizuální novele zatím nemáme informace o žádném vydání...
 hu : Még nincs információnk ennek a visual novelnek a kiadásairól...
 nl : We hebben op dit moment nog geen informatie over uitgaven van deze visual novel...
+
+:_vnpage_char_add
+en : add character
+ru*:
+cs*:
+hu*:
+nl : voeg karakter toe
 
 :_vnpage_rel_add
 en : add release

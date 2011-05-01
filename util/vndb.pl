@@ -52,7 +52,7 @@ TUWF::set(
     mail       => { regex => qr/^[^@<>]+@[^@.<>]+(?:\.[^@.<>]+)+$/ },
     url        => { regex => qr/^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/ },
     asciiprint => { regex => qr/^[\x20-\x7E]*$/ },
-    int        => { regex => qr/^-?\d+$/ },
+    int        => { regex => qr/^-?[0-9]+$/ },
     pname      => { regex => qr/^[a-z0-9-]*$/ },
   },
 );

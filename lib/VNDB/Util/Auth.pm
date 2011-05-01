@@ -88,8 +88,7 @@ sub authInfo {
 # a certain action. Argument is the action name as defined in global.pl
 sub authCan {
   my($self, $act) = @_;
-  my $r = $self->{_auth} ? $self->{_auth}{rank} : 0;
-  return scalar grep $_ eq $act, @{$self->{user_ranks}[$r]}[0..$#{$self->{user_ranks}[$r]}];
+  return $self->{_auth} ? $self->{_auth}{perm} & $self->{permissions}{$act} : 0;
 }
 
 
@@ -102,7 +101,7 @@ sub _authCheck {
   return 0 if !$user || length($user) > 15 || length($user) < 2 || !$pass;
 
   my $d = $self->dbUserGet(username => $user, what => 'extended notifycount')->[0];
-  return 0 if !defined $d->{id} || !$d->{rank};
+  return 0 if !$d->{id};
 
   if(_authEncryptPass($self, $pass, $d->{salt}) eq $d->{passwd}) {
     $self->{_auth} = $d;

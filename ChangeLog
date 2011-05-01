@@ -1,8 +1,21 @@
-2.20 - ?
+2.20 - 2011-05-01
+	- Added support for sponsored links on VN pages
 	- Order the VNs listed on char browser by release date
 	- Order the traits groups on /i by their 'order' column
 	- Use same browsing-table on trait pages and char browser
+	- Added spoiler warning to character revision pages
+	- Generate dbedit/dbdel notifications on character edits
 	- CSS: Hide links in [spoiler] tags
+	- Added 'select' all to wishlist and moved 'select all' down on notifies
+	- Added char/tag/trait stats to database statistics box
+	- Update traits_chars cache daily using Multi::Maintenance
+	- Toggle [spoiler] tag visibility with global setting rather than mouse-over
+	- Added "Add character" link to VN pages
+	- Added "Image ID" field to VN image uploader
+	- Added "All except characters" filter to history browser
+	- Cleaned up CSS code
+	- Cleaned up permissions
+	- Replaced user ranks with a permission system
 	- Bugfix: don't accidentally remove char traits when editing
 	- Bugfix: fixed possible SQL table name clash on history browser
 	- Bugfix: properly announce chars and traits in Multi::IRC
@@ -17,6 +30,8 @@
 	- Bugfix: Properly format future dates on my vn list
 	- Bugfix: Properly position the sub-tabs on VN page without tags
 	- Bugfix: Allow unhiding of posts by mods
+	- Bugfix: Forgot to make two JS strings translatable
+	- Bugfix: Don't allow unicode numbers as 'int' in formValidate
 
 2.19 - 2011-03-30
 	- Character database:

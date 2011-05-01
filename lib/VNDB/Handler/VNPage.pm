@@ -141,6 +141,7 @@ sub page {
      _relations($self, \$i, $v) if @{$v->{relations}};
      _anime($self, \$i, $v) if @{$v->{anime}};
      _useroptions($self, \$i, $v) if $self->authInfo->{id};
+     _affiliate_links($self, $r);
 
      Tr;
       td class => 'vndesc', colspan => 2;
@@ -404,11 +405,56 @@ sub _useroptions {
 }
 
 
+sub _affiliate_links {
+  my($self, $r) = @_;
+  return if !keys @$r;
+  my %r = map +($_->{id}, $_), @$r;
+  my $links = $self->dbAffiliateGet(rids => [ keys %r ], hidden => 0);
+  return if !@$links;
+
+  $links = [ sort { $b->{priority}||$self->{affiliates}[$b->{affiliate}]{default_prio} <=> $a->{priority}||$self->{affiliates}[$a->{affiliate}]{default_prio} } @$links ];
+  my $en = VNDB::L10N->get_handle('en');
+
+  Tr; td colspan => 2, id => 'buynow'; # don't call it "affiliate", most adblock filters have that included >_>
+   h1; a rel => 'nofollow', href => $self->{affiliates}[$links->[0]{affiliate}]{link_format} ? $self->{affiliates}[$links->[0]{affiliate}]{link_format}->($links->[0]{url}) : $links->[0]{url}, 'Buy now!'; end;
+   ul;
+    for my $link (@$links) {
+      my $f = $self->{affiliates}[$link->{affiliate}];
+
+      my $rel = $r{$link->{rid}};
+      my $plat = grep($_ eq 'win', @{$rel->{platforms}}) ? '' : ' '.join(' and ', map $en->maketext("_plat_$_"), @{$rel->{platforms}});
+      my $version = join(', ', map $en->maketext("_lang_$_"), @{$rel->{languages}}).$plat.' version';
+
+      li; a rel => 'nofollow', href => $f->{link_format} ? $f->{link_format}->($link->{url}) : $link->{url};
+       use utf8;
+       txt '→ ';
+       txt $link->{version}
+         || ($f->{default_version} && $f->{default_version}->($self, $link, $rel))
+         || $version;
+       txt ' ';
+       acronym class => 'pricenote', title => sprintf('Last updated: %s.', $en->age($link->{lastfetch})), "for $link->{price}*"
+         if $link->{price};
+       txt " at $f->{name}.";
+      end; end;
+    }
+   end;
+  end; end;
+}
+
+
 sub _releases {
   my($self, $v, $r) = @_;
 
   div class => 'mainbox releases';
-   a class => 'addnew', href => "/v$v->{id}/add", mt '_vnpage_rel_add';
+   if($self->authCan('edit')) {
+     p class => 'addnew';
+      if($self->authCan('charedit')) {
+        a href => "/c/new?vid=$v->{id}", mt '_vnpage_char_add';
+        txt ' | ';
+      }
+      a href => "/v$v->{id}/add", mt '_vnpage_rel_add';
+     end;
+   }
    h1 mt '_vnpage_rel';
    if(!@$r) {
      p mt '_vnpage_rel_none';
@@ -459,6 +505,7 @@ sub _releases {
           }
          end;
          td class => 'tc6';
+          a href => "/affiliates/new?rid=$rel->{id}", 'a' if $self->authCan('affiliate');
           if($rel->{website}) {
             a href => $rel->{website}, rel => 'nofollow';
              cssicon 'ext', mt '_vnpage_rel_extlink';
