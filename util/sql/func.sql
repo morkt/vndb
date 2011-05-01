@@ -499,7 +499,7 @@ BEGIN
       UPDATE stats_cache SET count = count+1 WHERE section = TG_TABLE_NAME;
     ELSE
       IF TG_TABLE_NAME = 'threads_posts' THEN
-        IF EXISTS(SELECT 1 FROM threads WHERE id = NEW.tid AND hidden = FALSE) THEN
+        IF EXISTS(SELECT 1 FROM threads WHERE id = NEW.tid AND threads.hidden = FALSE) THEN
           UPDATE stats_cache SET count = count+1 WHERE section = TG_TABLE_NAME;
         END IF;
       ELSE
