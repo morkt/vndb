@@ -114,6 +114,9 @@ sub edit {
       { post => 'affiliate',required => 1, enum => [0..$#{$self->{affiliates}}] },
       { post => 'url',      required => 1 },
       { post => 'version',  required => 0, default => '' },
+      { post => 'price',    required => 0, default => '' },
+      { post => 'lastfetch',required => 0, min => 0 },
+      { post => 'data',     required => 0, default => '' },
     );
     if(!$frm->{_err}) {
       $self->dbAffiliateEdit($id, %$frm) if $id;
@@ -123,7 +126,7 @@ sub edit {
   }
 
   if($id) {
-    $frm->{$_} = $r->{$_} for(qw|rid priority hidden affiliate url version|);
+    $frm->{$_} = $r->{$_} for(qw|rid priority hidden affiliate url version price lastfetch data|);
   } else {
     $frm->{rid} = $self->reqGet('rid');
   }
@@ -137,6 +140,9 @@ sub edit {
         [ $_, $self->{affiliates}[$_]{name} ], grep $self->{affiliates}[$_], 0..$#{$self->{affiliates}} ] ],
     [ input  => short => 'url', name => 'URL', width => 400 ],
     [ input  => short => 'version', name => 'Version', width => 400 ],
+    [ input  => short => 'price', name => 'Price' ],
+    [ input  => short => 'lastfetch', name => 'Lastfetch', post => ' UNIX timestamp' ],
+    [ input  => short => 'data', name => 'Data', width => 400 ],
   ]);
   $self->htmlFooter;
 }

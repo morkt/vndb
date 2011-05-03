@@ -430,7 +430,8 @@ sub _affiliate_links {
          || ($f->{default_version} && $f->{default_version}->($self, $link, $rel))
          || $version;
        txt " at $f->{name}";
-       acronym class => 'pricenote', title => sprintf('Last updated: %s.', $en->age($link->{lastfetch})), " for $link->{price}"
+       acronym class => 'pricenote', title =>
+           $link->{lastfetch} ? sprintf('Last updated: %s.', $en->age($link->{lastfetch})) : '', " for $link->{price}"
          if $link->{price};
        txt ' »';
       end;

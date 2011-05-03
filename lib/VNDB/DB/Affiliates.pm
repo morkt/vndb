@@ -36,7 +36,7 @@ sub dbAffiliateGet {
 
   return $self->dbAll(qq|
     SELECT af.id, af.rid, af.hidden, af.priority, af.affiliate, af.url, af.version,
-        extract('epoch' from af.lastfetch) as lastfetch, af.price$select
+        extract('epoch' from af.lastfetch) as lastfetch, af.price, af.data$select
       FROM affiliate_links af
       $join
       !W
@@ -53,15 +53,19 @@ sub dbAffiliateDel {
 sub dbAffiliateEdit {
   my($self, $id, %ops) = @_;
   my %set;
-  exists($ops{$_}) && ($set{"$_ = ?"} = $ops{$_}) for(qw|rid priority hidden affiliate url version|);
+  exists($ops{$_}) && ($set{"$_ = ?"} = $ops{$_}) for(qw|rid priority hidden affiliate url version price data|);
+  $set{"lastfetch = TIMESTAMP WITH TIME ZONE 'epoch' + ? * INTERVAL '1 second'"} = $ops{lastfetch} || $ops{lastfetch} eq '0' ? $ops{lastfetch} : undef if exists $ops{lastfetch};
   return if !keys %set;
   $self->dbExec('UPDATE affiliate_links !H WHERE id = ?', \%set, $id);
 }
 
+
 sub dbAffiliateAdd {
   my($self, %ops) = @_;
-  $self->dbExec('INSERT INTO affiliate_links (rid, priority, hidden, affiliate, url, version) VALUES(!l)',
-    [@ops{qw| rid priority hidden affiliate url version|}]);
+  $self->dbExec(q|INSERT INTO affiliate_links (rid, priority, hidden, affiliate, url, version, price, data, lastfetch)
+      VALUES(!l, TIMESTAMP WITH TIME ZONE 'epoch' + ? * INTERVAL '1 second')|,
+    [@ops{qw| rid priority hidden affiliate url version price data|}],
+    $ops{lastfetch} || $ops{lastfetch} eq '0' ? $ops{lastfetch} : undef);
 }
 
 
