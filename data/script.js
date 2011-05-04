@@ -91,9 +91,9 @@ function byName(){
 }
 function byClass() { // [class], [parent, class], [tagname, class], [parent, tagname, class]
   var par = typeof arguments[0] == 'object' ? arguments[0] : document;
-  var tag = arguments.length == 2 && typeof arguments[0] == 'string' ? arguments[0] : arguments.length == 3 ? arguments[1] : '*';
+  var t = arguments.length == 2 && typeof arguments[0] == 'string' ? arguments[0] : arguments.length == 3 ? arguments[1] : '*';
   var c = arguments[arguments.length-1];
-  var l = byName(par, tag);
+  var l = byName(par, t);
   var ret = [];
   for(var i=0; i<l.length; i++)
     if(hasClass(l[i], c))
@@ -337,7 +337,7 @@ function ddMouseMove(e) {
   if(box.dd_used) {
     var mouseX = e.pageX || (e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
     var mouseY = e.pageY || (e.clientY + document.body.scrollTop  + document.documentElement.scrollTop);
-    if((mouseX < ddx-10 || mouseX > ddx+box.offsetWidth+10 || mouseY < ddy-10 || mouseY > ddy+box.offsetHeight+10)
+    if((mouseX < box.dd_x-10 || mouseX > box.dd_x+box.offsetWidth+10 || mouseY < box.dd_y-10 || mouseY > box.dd_y+box.offsetHeight+10)
         || (lnk && lnk == box.dd_lnk))
       ddHide();
   }
@@ -374,6 +374,8 @@ function ddRefresh() {
     ddx += lnk.offsetWidth-35;
   if(lnk.dd_align == 'bottom')
     ddy += lnk.offsetHeight;
+  box.dd_x = ddx;
+  box.dd_y = ddy;
   box.style.left = ddx+'px';
   box.style.top = ddy+'px';
   return true;
@@ -1353,7 +1355,7 @@ function tglVoteBarSel(td, vote) {
 function tglAdd() {
   var tg = byId('tagmod_tag');
   var add = byId('tagmod_add');
-  tag.disabled = add.disabled = true;
+  tg.disabled = add.disabled = true;
   add.value = mt('_js_loading');
 
   ajax('/xml/tags.xml?q=name:'+encodeURIComponent(tg.value), function(hr) {
