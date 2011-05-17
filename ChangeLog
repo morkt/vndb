@@ -2,6 +2,7 @@
 	- Multi::Feed: Show full summary and refresh more often
 	- Switched back to Algorithm::Diff::XS
 	- Added secondary ordering on title on releases listing on VN page
+	- Added i+/c+ ID recognition to VN search
 	- Bugfix: Properly make i+ IDs linkable in bb2html()
 
 2.20 - 2011-05-01

@@ -29,7 +29,7 @@ sub list {
   my %compat = _fil_compat($self);
 
   return $self->resRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')
-    if $f->{q} && $f->{q} =~ /^([gvrptud])([0-9]+)(?:\.([0-9]+))?$/;
+    if $f->{q} && $f->{q} =~ /^([gvrptudci])([0-9]+)(?:\.([0-9]+))?$/;
 
   $f->{s} = 'title' if $f->{fil} !~ /tag_inc-/ && $f->{s} eq 'tagscore';
   $f->{o} = $f->{s} eq 'tagscore' ? 'd' : 'a' if !$f->{o};
