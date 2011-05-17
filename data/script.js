@@ -2586,7 +2586,7 @@ if(byId('votesel')) {
     if(s == 10 && !confirm(mt('_vnpage_uopt_10vote')))
       return;
     if(s)
-      location.href = location.href.replace(/\.[0-9]+/, '')+'/vote?formcode='+this.name+';v='+s;
+      location.href = location.href.replace(/#.*/, '').replace(/\/chars/, '').replace(/\.[0-9]+/, '')+'/vote?formcode='+this.name+';v='+s;
   };
 }
 
@@ -2639,7 +2639,7 @@ if(byId('nsfwhide')) {
 if(byId('wishsel')) {
   byId('wishsel').onchange = function() {
     if(this.selectedIndex != 0)
-      location.href = location.href.replace(/\.[0-9]+/, '')
+      location.href = location.href.replace(/#.*/, '').replace(/\/chars/, '').replace(/\.[0-9]+/, '')
         +'/wish?formcode='+this.name+';s='+this.options[this.selectedIndex].value;
   };
 }
@@ -2648,7 +2648,7 @@ if(byId('wishsel')) {
 if(byId('listsel')) {
   byId('listsel').onchange = function() {
     if(this.selectedIndex != 0)
-      location.href = location.href.replace(/\.[0-9]+/, '')
+      location.href = location.href.replace(/#.*/, '').replace(/\/chars/, '').replace(/\.[0-9]+/, '')
         +'/list?formcode='+this.name+';e='+this.options[this.selectedIndex].value;
   };
 }
