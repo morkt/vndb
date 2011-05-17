@@ -54,8 +54,8 @@ sub bb2html {
   };
 
   while($raw =~ m{(
-    ([tdvpric][1-9][0-9]*\.[1-9][0-9]*)       | # 2. exid
-    ([tdvprugc][1-9][0-9]*)                   | # 3. id
+    ([tdvprc][1-9][0-9]*\.[1-9][0-9]*)        | # 2. exid
+    ([tdvprcugi][1-9][0-9]*)                  | # 3. id
     (\[[^\s\]]+\])                            | # 4. tag
     ((?:https?|ftp)://[^><"\n\s\]\[]+[\d\w=/-]) # 5. url
   )}xg) {
