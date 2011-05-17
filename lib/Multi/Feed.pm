@@ -21,7 +21,7 @@ sub spawn {
       $p => [qw| _start shutdown generate write_atom log_stats |],
     ],
     heap => {
-      regenerate_interval => 900, # 15 min.
+      regenerate_interval => 600, # 10 min.
       stats_interval => 86400, # daily
       debug => 0,
       @_,
@@ -127,7 +127,7 @@ sub write_atom { # num, res, feed, time
       $x->end;
     }
     $x->tag(link => rel => 'alternate', type => 'text/html', href => $_->{id}, undef);
-    $x->tag('summary', type => 'html', bb2html($_->{summary}, 200)) if $_->{summary};
+    $x->tag('summary', type => 'html', bb2html $_->{summary}) if $_->{summary};
     $x->end('entry');
   }
 
