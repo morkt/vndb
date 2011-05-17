@@ -8821,6 +8821,13 @@ cs : Tag [url,_1,_2] již existuje!
 hu : A(z) [url,_1,_2] címke már létezik!
 nl : Tag [url,_1,_2] bestaat al!
 
+:_formerr_traitexists
+en : Trait [url,_1,_2] already exists within the same group.
+ru*:
+cs*:
+hu*:
+nl : Kenmerk [url,_1,_2] bestaat al in dezelfde groep.
+
 :_formerr_tpl_mail
 en : Invalid email address
 ru : Некорректный адрес электронной почты

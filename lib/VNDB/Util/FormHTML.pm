@@ -36,9 +36,14 @@ sub htmlFormError {
       li mt '_formerr_maxlength', $field, $rule if $type eq 'maxlength';
       li mt '_formerr_enum', $field, join ', ', @$rule if $type eq 'enum';
       li mt '_formerr_wrongboard', $rule if $type eq 'wrongboard';
-      li mt '_formerr_tagexists', "/g$rule->{id}", $rule->{name} if $type eq 'tagexists';
       li $rule->[1] if $type eq 'func' || $type eq 'regex';
       li mt "_formerr_tpl_$rule", $field if $type eq 'template';
+      if($type eq 'tagexists') {
+        li; lit mt '_formerr_tagexists', "/g$rule->{id}", $rule->{name}; end;
+      }
+      if($type eq 'traitexists') {
+        li; lit mt '_formerr_traitexists', "/i$rule->{id}", $rule->{name}; end;
+      }
     }
    end;
   end 'div';

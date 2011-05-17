@@ -13,7 +13,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbTraitGet dbTraitEdit dbTraitAdd|;
 
 
-# Options: id what results page sort reverse
+# Options: id noid search name state what results page sort reverse
 # what: parents childs(n) addedby
 # sort: id name name added items
 sub dbTraitGet {
@@ -28,13 +28,17 @@ sub dbTraitGet {
   $o{search} =~ s/%//g if $o{search};
 
   my %where = (
-    $o{id} ? ('t.id IN(!l)' => [ ref($o{id}) ? $o{id} : [$o{id}] ]) : (),
+    $o{id}    ? ( 't.id IN(!l)' => [ ref($o{id}) ? $o{id} : [$o{id}] ]) : (),
+    $o{group} ? ( 't.group = ?' => $o{group} ) : (),
+    $o{noid}  ? ( 't.id <> ?' => $o{noid} ) : (),
     defined $o{state} && $o{state} != -1 ? (
       't.state = ?' => $o{state} ) : (),
     !defined $o{state} && !$o{id} && !$o{name} ? (
       't.state = 2' => 1 ) : (),
     $o{search} ? (
       '(t.name ILIKE ? OR t.alias ILIKE ?)' => [ "%$o{search}%", "%$o{search}%" ] ) : (),
+    $o{name}  ? ( # TODO: This is terribly ugly, use an aliases table.
+      q{(LOWER(t.name) = LOWER(?) OR t.alias ~ ('(!sin)^'||?||'$'))} => [ $o{name}, '?', quotemeta $o{name} ] ) : (),
   );
 
   my @select = (

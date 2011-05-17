@@ -151,6 +151,14 @@ sub traitedit {
         $group //= $c->[0]{group}||$c->[0]{id} if @$c;
       }
     }
+    if(!$frm->{_err}) {
+      my $c = $self->dbTraitGet(name => $frm->{name}, noid => $trait, group => $group);
+      push @{$frm->{_err}}, [ 'name', 'traitexists', $c->[0] ] if @$c;
+      for (split /[\t\s]*\n[\t\s]*/, $frm->{alias}) {
+        $c = $self->dbTraitGet(name => $_, noid => $trait, group => $group);
+        push @{$frm->{_err}}, [ 'alias', 'traitexists', $c->[0] ] if @$c;
+      }
+    }
 
     if(!$frm->{_err}) {
       $frm->{state} = $frm->{meta} = 0 if !$self->authCan('tagmod');
