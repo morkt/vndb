@@ -7,6 +7,7 @@
 	- Bugfix: Make sure the user dropdown boxes work on /v+/chars
 	- Bugfix: dbTraitGet() filtering would not always work correctly
 	- Bugfix: Don't allow duplicate trait names/aliasses within the same group
+	- Bugfix: Don't throw error when adding character to VN without releases
 
 2.20 - 2011-05-01
 	- Added support for sponsored links on VN pages

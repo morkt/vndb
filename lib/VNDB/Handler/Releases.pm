@@ -612,6 +612,7 @@ sub relxml {
   xml;
   tag 'vns';
    for (sort { $a->[0]{title} cmp $b->[0]{title} } values %vns) {
+     next if !$_;
      my $v = shift @$_;
      tag 'vn', id => $v->{vid}, title => $v->{title};
       tag 'release', id => $_->{id}, lang => join(',', @{$_->{languages}}), $_->{title}

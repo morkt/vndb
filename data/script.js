@@ -1919,6 +1919,7 @@ function cvnLoad() {
         if(v[vid][0])
           cvnRelAdd(vid, 0, v[vid][0][0], v[vid][0][1]);
       }
+      cvnEmpty();
     }, 1);
   else
     cvnEmpty();
