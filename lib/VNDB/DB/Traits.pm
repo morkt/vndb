@@ -34,7 +34,7 @@ sub dbTraitGet {
     !defined $o{state} && !$o{id} && !$o{name} ? (
       't.state = 2' => 1 ) : (),
     $o{search} ? (
-      't.name ILIKE ? OR t.alias ILIKE ?' => [ "%$o{search}%", "%$o{search}%" ] ) : (),
+      '(t.name ILIKE ? OR t.alias ILIKE ?)' => [ "%$o{search}%", "%$o{search}%" ] ) : (),
   );
 
   my @select = (
