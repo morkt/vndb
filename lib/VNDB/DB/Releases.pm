@@ -83,7 +83,7 @@ sub dbReleaseGet {
   my $order = sprintf {
     title    => 'rr.title %s',
     minage   => 'rr.minage %s',
-    released => 'rr.released %s',
+    released => 'rr.released %s, rr.title %1$s',
   }->{ $o{sort}||'released' }, $o{reverse} ? 'DESC' : 'ASC';
 
   my($r, $np) = $self->dbPage(\%o, q|

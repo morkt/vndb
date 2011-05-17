@@ -1,6 +1,7 @@
 2.21 - ?
 	- Multi::Feed: Show full summary and refresh more often
 	- Switched back to Algorithm::Diff::XS
+	- Added secondary ordering on title on releases listing on VN page
 
 2.20 - 2011-05-01
 	- Added support for sponsored links on VN pages
