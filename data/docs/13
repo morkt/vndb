@@ -1,0 +1,46 @@
+:TITLE:How to Capture Screenshots
+
+:INC:index
+
+
+:SUB:Introduction
+Screenshots uploaded to VNDB must confirm to some strict guidelines. In
+particular, they should not have any window borders and must be in the correct
+resolution (precise to the pixel!). Uploading screenshots that do not confirm
+to these rules will likely result in them getting deleted shortly afterwards.
+This page is a tutorial on how to <b>correctly</b> capture screenshots using
+various tools. Only Irfanview is currently covered, but more may be added
+later.
+
+
+:SUB:IrfanView
+<ol>
+ <li>Download and install Irfanview from <a
+  href="http://www.irfanview.com/">irfanview.com</a>. Installation should be
+  fairly straight-forward.</li>
+ <li>Start Irfanview, you should get a window like <a
+  href="http://s004.radikal.ru/i207/1106/d1/cdf42582fc27.jpg">this</a>.</li>
+ <li>Hit the <i>C</i> key or go <i>Options -> Capture/Screenshot</i> to open
+  the <a href="http://s50.radikal.ru/i130/1106/93/415e05aa07db.jpg">capture
+  setup</a> window.</li>
+ <li>Check the "Foreground window - client area" selection box. This
+  option makes sure that you won't see any window borders and that the
+  screenshot is already correctly cropped.</li>
+ <li>Set a hot key. Irfanview uses Ctrl+F11 by default, but since the Ctrl
+  is usually assigned to skipping in most games, you will probably want to
+  change it. To do so, left-click on the key area and press the desired key
+  combination.  Alt+F11 should do the trick.</li>
+ <li>Check the "Save captured image as file", choose a destination folder and
+  select JPG in the "Save as" options.</li>
+ <li>Click "Options" to open the <a
+  href="http://i023.radikal.ru/1106/5d/385bb91bc059.jpg">JPEG save options</a>
+  window</li>
+ <li>Set the quality somewhere between 95 and 100.</li>
+ <li>Press "OK", and then press "Start" to close the capture setup window.</li>
+</ol>
+<br />
+Now go to the visual novel you want to capture and press the configured hot key
+at the desired moment. Irfanview will automatically capture and save the
+screenshot in the chosen directory. These screenshots are suitable for
+uploading to VNDB without further modifications.
+

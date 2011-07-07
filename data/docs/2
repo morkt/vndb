@@ -166,8 +166,11 @@
 
 
 :SUB:Screenshots
-Each visual novel entry can have at most 10 screenshots. Screenshots can be uploaded in JPEG
-and PNG format, and should always follow these guidelines:
+Each visual novel entry can have at most 10 screenshots. Screenshots can be
+uploaded in JPEG and PNG format. The uploaded screenshots are strictly
+moderated to follow the guidelines listed below. It is highly recommended to
+follow our <a href="/d13">instructions on creating good screenshots</a> if you
+don't want your efforts to go to waste.
 <ul>
  <li>All images must be in the highest native resolution of the VN. The native resolution
   is the resolution for which the bitmap images are made, this is 640x480 or 800x600 for most
