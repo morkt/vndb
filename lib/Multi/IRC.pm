@@ -412,12 +412,14 @@ sub cmd_p_results { # num, res, \@_
 sub cmd_quote {
   return $_[KERNEL]->yield(reply => $_[DEST], 'Stop abusing me, it\'s not like I enjoy spamming this channel!', $_[USER])
     if throttle $_[HEAP], "query-$_[USER]-$_[DEST][0]", 60, 3;
-  $_[KERNEL]->post(pg => query => q|SELECT quote FROM quotes ORDER BY random() LIMIT 1|, undef, 'cmd_quote_result', $_[DEST]);
+  $_[KERNEL]->post(pg => query => q|SELECT quote FROM quotes ORDER BY random() LIMIT 1|, undef, 'cmd_quote_result', [ $_[DEST], $_[USER] ] );
 }
 
 
-sub cmd_quote_result { # 1, res, dest
-  $_[KERNEL]->yield(reply => $_[ARG2] => $_[ARG1][0]{quote}) if $_[ARG0] > 0;
+sub cmd_quote_result { # 1, res, [ dest, user ]
+  return if $_[ARG0] < 1;
+  return $_[KERNEL]->post(circ => kick => $_[ARG2][0][0] => $_[ARG2][1] => $_[ARG1][0]{quote}) if $_[ARG2][0][0] =~ /^#/ && rand(5) <= 1;
+  $_[KERNEL]->yield(reply => $_[ARG2][0] => $_[ARG1][0]{quote});
 }
 
 
