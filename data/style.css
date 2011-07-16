@@ -786,7 +786,7 @@ div#fil_div {
   border: 0;
   text-decoration: none;
 }
-.icons.lang  { width: 13px; height: 11px; opacity: 0.5; }
+.icons.lang  { width: 13px; height: 11px }
 .icons.feed  { width: 12px; height: 12px }
 .icons.gen   { width: 14px; height: 14px }
 .icons.gen.b { width: 28px }
