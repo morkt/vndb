@@ -1005,11 +1005,11 @@ hu : Közepes[index,_1,, (10 - 30 óra), (Yume Miru Kusuri~, Cross†Channel~, C
 nl : Gemiddeld[index,_1,, (10 - 30 uur), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
 
 :_vnlength_4
-en : Long[index,_1,, (30 - 50 hours), (Tsukihime~, Ever17~, Utawarerumono)]
-ru : Большая[index,_1,, (30 - 50 часов), (Tsukihime~, Ever17~, Utawarerumono)]
-cs : Dlouhá[index,_1,, (30 - 50 hours), (Tsukihime~, Ever17~, Utawarerumono)]
-hu : Hosszú[index,_1,, (30 - 50 óra), (Tsukihime~, Ever17~, Utawarerumono)]
-nl : Lang[index,_1,, (30 - 50 uur), (Tsukihime~, Ever17~, Utawarerumono)]
+en : Long[index,_1,, (30 - 50 hours), (Tsukihime~, Ever17~, Demonbane)]
+ru : Большая[index,_1,, (30 - 50 часов), (Tsukihime~, Ever17~, Demonbane)]
+cs : Dlouhá[index,_1,, (30 - 50 hours), (Tsukihime~, Ever17~, Demonbane)]
+hu : Hosszú[index,_1,, (30 - 50 óra), (Tsukihime~, Ever17~, Demonbane)]
+nl : Lang[index,_1,, (30 - 50 uur), (Tsukihime~, Ever17~, Demonbane)]
 
 :_vnlength_5
 en : Very long[index,_1,, (> 50 hours), (Clannad~, Umineko~, Fate/Stay Night)]
