@@ -1944,21 +1944,21 @@ nl : Producenten
 en : Characters
 ru*:
 cs*:
-hu*:
+hu : Szereplők
 nl : Karakters
 
 :_menu_stat_tags
 en : VN Tags
 ru*:
 cs*:
-hu*:
+hu : VN Címkék
 nl :
 
 :_menu_stat_traits
 en : Character traits
 ru*:
 cs*:
-hu*:
+hu : Szereplő sajátosságok
 nl : Karakter kenmerken
 
 :_menu_stat_users
@@ -2123,14 +2123,14 @@ nl : laatste
 en : SPOILER WARNING!
 ru*:
 cs*:
-hu*:
+hu : SPOILER VESZÉLY!
 nl : SPOILERWAARSCHUWING!
 
 :_revision_spoil_msg
 en : This revision page may contain major spoilers. You may want to view the [url,_1,final page] instead.
 ru*:
 cs*:
-hu*:
+hu : Ez a javítás jelentős spoiler-eket tartalmazhat. Inkább nézd meg a [url,_1,végleges oldalt] e helyet.
 nl : Deze revisiepagina kan spoilers bevatten. Je kan misschien beter de [url,_1,uiteindelijke pagina] openen.
 
 :_revision_previous
@@ -2479,7 +2479,7 @@ nl : Alleen karakters
 en : All except characters
 ru*:
 cs*:
-hu*:
+hu : Szereplőkön kívül mindet
 nl : Alles behalve karakters
 
 :_hist_filter_allactions
@@ -5432,7 +5432,7 @@ nl : Voeg kenmerk toe
 en : del
 ru*:
 cs*:
-hu*:
+hu : töröl
 nl :
 
 :_chare_traits_present
@@ -5516,14 +5516,14 @@ nl : Alle uitgaven al geselecteerd.
 en : VN already present.
 ru*:
 cs : VN je již přítomna.
-hu : A VN már jelen van.
+hu : A VN már be van jegyezve
 nl : VN is al geselecteerd.
 
 :_chare_vns_relexists
 en : Release already present.
 ru*:
 cs*:
-hu*:
+hu : A kiadás már be van jegyezve
 nl : Uitgave is al geselecteerd.
 
 
@@ -5662,7 +5662,7 @@ nl : Dit kenmerk is nog niet gekoppeld aan een karakter, of deze worden niet wee
 en : The list below also includes all characters linked to child traits. This list is cached, it can take up to 24 hours after a character has been edited for it to show up on this page.
 ru*:
 cs*:
-hu*:
+hu : A lent található listában megtalálható az összes szereplő akik össze vannak kapcsolva alárendelt sajátosságokhoz. A lista le van mentve a gyorsítótárba ezért beletelhet 24 órába míg a szerkesztett szereplők feltűnnek az oldalon.
 nl : De volgende lijst bevat ook alle karakters die gelinkt zijn aan subkenmerken. Deze lijst is gecached, het kan 24 uur duren voordat een karakter op deze pagina te zien is.
 
 
@@ -6708,7 +6708,7 @@ nl : Gebruikersnaam
 en : Permissions
 ru*:
 cs*:
-hu*:
+hu : Engedélyek
 nl : Permissies
 
 :_usere_ignvotes
@@ -7463,14 +7463,14 @@ nl : ~[bezig met het verwerken van het plaatje, kom a.u.b. terug in een paar min
 en : Image ID
 ru*:
 cs*: ID obrázku
-hu*: Kép ID (azonosító)
+hu : Kép ID (azonosító)
 nl : Plaatje ID
 
 :_vnedit_image_id_msg
 en : Use a character image that is already on the server. Set to '0' to remove the current image.
 ru*:
 cs*:
-hu*: Használj egy olyan képet ami már megtalálható a szerveren. Ha '0'-ra állítod törölheted a jelenlegi képet.
+hu : Használj egy olyan szereplő képet ami már megtalálható a szerveren. Ha '0'-ra állítod törölheted a jelenlegi képet.
 nl : Gebruik een karakterplaatje dat al op de server staat. Gebruik '0' om een huidig plaatje te verwijderen.
 
 :_vnedit_image_upload
@@ -8351,7 +8351,7 @@ nl : We hebben op dit moment nog geen informatie over uitgaven van deze visual n
 en : add character
 ru*:
 cs*:
-hu*:
+hu : szereplő bejegyzése
 nl : voeg karakter toe
 
 :_vnpage_rel_add
