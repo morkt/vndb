@@ -219,7 +219,9 @@ sub traitedit {
     [ textarea => short => 'description', name => mt '_traite_frm_desc' ],
     [ input    => short => 'parents',  name => mt '_traite_frm_parents' ],
     [ static   => content => mt '_traite_frm_parents_msg' ],
-    [ input    => short => 'order', name => mt('_traite_frm_gorder'), width => 50, post => ' '.mt('_traite_frm_gorder_msg') ],
+    $self->authCan('tagmod') ? (
+      [ input    => short => 'order', name => mt('_traite_frm_gorder'), width => 50, post => ' '.mt('_traite_frm_gorder_msg') ],
+    ) : (),
   ]);
 
   $self->htmlFooter;
