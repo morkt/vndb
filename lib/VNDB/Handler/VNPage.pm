@@ -183,10 +183,18 @@ sub page {
   end 'div'; # /mainbox
 
   my $haschar = $self->dbVNHasChar($v->{id});
-  if($haschar) {
+  if($haschar || $self->authCan('edit')) {
     ul class => 'maintabs notfirst';
-     li class => 'left '.(!$char ? ' tabselected' : ''); a href => "/v$v->{id}#main", name => 'main', mt '_vnpage_tab_main'; end;
-     li class => 'left '.( $char ? ' tabselected' : ''); a href => "/v$v->{id}/chars#chars", name => 'chars', mt '_vnpage_tab_chars'; end;
+     if($haschar) {
+       li class => 'left '.(!$char ? ' tabselected' : ''); a href => "/v$v->{id}#main", name => 'main', mt '_vnpage_tab_main'; end;
+       li class => 'left '.( $char ? ' tabselected' : ''); a href => "/v$v->{id}/chars#chars", name => 'chars', mt '_vnpage_tab_chars'; end;
+     }
+     if($self->authCan('edit')) {
+       if($self->authCan('charedit')) {
+         li; a href => "/c/new?vid=$v->{id}", mt '_vnpage_char_add'; end;
+       }
+       li; a href => "/v$v->{id}/add", mt '_vnpage_rel_add'; end;
+     }
     end;
   }
 
@@ -446,15 +454,6 @@ sub _releases {
   my($self, $v, $r) = @_;
 
   div class => 'mainbox releases';
-   if($self->authCan('edit')) {
-     p class => 'addnew';
-      if($self->authCan('charedit')) {
-        a href => "/c/new?vid=$v->{id}", mt '_vnpage_char_add';
-        txt ' | ';
-      }
-      a href => "/v$v->{id}/add", mt '_vnpage_rel_add';
-     end;
-   }
    h1 mt '_vnpage_rel';
    if(!@$r) {
      p mt '_vnpage_rel_none';
