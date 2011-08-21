@@ -1,4 +1,5 @@
 2.21 - ?
+	- New resolution: 1280x960
 	- Multi::Feed: Show full summary and refresh more often
 	- Switched back to Algorithm::Diff::XS
 	- Added secondary ordering on title on releases listing on VN page
