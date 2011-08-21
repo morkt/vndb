@@ -1128,6 +1128,8 @@ function scrCheckStatus() {
 
       // check full resolution with the list of DB-defined resolutions
       var odd = true;
+      if(dim == '256x384') // special-case NDS resolution (not in the DB)
+        odd = false;
       for(var j=0; j<resolutions.length && odd; j++) {
         if(typeof resolutions[j][1] != 'object') {
           if(resolutions[j][0] == dim)

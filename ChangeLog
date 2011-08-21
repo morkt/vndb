@@ -4,6 +4,7 @@
 	- Switched back to Algorithm::Diff::XS
 	- Added secondary ordering on title on releases listing on VN page
 	- Added i+/c+ ID recognition to VN search
+	- JS: Don't consider 256x384 a "bad" screenshot resolution
 	- Bugfix: Properly make i+ IDs linkable in bb2html()
 	- Bugfix: Make sure the user dropdown boxes work on /v+/chars
 	- Bugfix: dbTraitGet() filtering would not always work correctly
