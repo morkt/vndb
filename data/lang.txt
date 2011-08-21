@@ -8709,6 +8709,13 @@ cs : Tuto e-mailovou adresu již někdo k registraci použil
 hu : Valaki már regisztrált ezzel az email címmel
 nl : Iemand heeft zich al geregistreerd met dat emailadres
 
+:_formerr_e_invalidimgid
+en : No image with that ID
+ru :
+cs :
+hu :
+nl : Geen plaatje met dat ID
+
 :_formerr_e_noimage
 en : Image must be in JPEG or PNG format
 ru : Изображение должно быть в формате JPEG или PNG

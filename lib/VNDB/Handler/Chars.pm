@@ -296,7 +296,7 @@ sub edit {
     push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
 
     # handle image upload
-    $frm->{image} = _uploadimage($self, $r, $frm);
+    $frm->{image} = _uploadimage($self, $frm);
 
     # validate main character
     if(!$frm->{_err} && $frm->{main}) {
@@ -424,8 +424,13 @@ sub edit {
 
 
 sub _uploadimage {
-  my($self, $c, $frm) = @_;
-  return $c ? $frm->{image} : 0 if $frm->{_err} || !$self->reqPost('img');
+  my($self, $frm) = @_;
+
+  if($frm->{_err} || !$self->reqPost('img')) {
+    return 0 if !$frm->{image};
+    push @{$frm->{_err}}, 'invalidimgid' if !-s sprintf '%s/static/ch/%02d/%d.jpg', $VNDB::ROOT, $frm->{image}%100, $frm->{image};
+    return $frm->{image};
+  }
 
   # perform some elementary checks
   my $imgdata = $self->reqUploadRaw('img');

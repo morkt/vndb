@@ -60,7 +60,7 @@ sub edit {
     push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
 
     # handle image upload
-    $frm->{image} = _uploadimage($self, $v, $frm);
+    $frm->{image} = _uploadimage($self, $frm);
 
     if(!$frm->{_err}) {
       # parse and re-sort fields that have multiple representations of the same information
@@ -120,8 +120,13 @@ sub edit {
 
 
 sub _uploadimage {
-  my($self, $v, $frm) = @_;
-  return $v ? $frm->{image} : 0 if $frm->{_err} || !$self->reqPost('img');
+  my($self, $frm) = @_;
+
+  if($frm->{_err} || !$self->reqPost('img')) {
+    return 0 if !$frm->{image};
+    push @{$frm->{_err}}, 'invalidimgid' if !-s sprintf '%s/static/cv/%02d/%d.jpg', $VNDB::ROOT, $frm->{image}%100, $frm->{image};
+    return $frm->{image};
+  }
 
   # perform some elementary checks
   my $imgdata = $self->reqUploadRaw('img');
@@ -163,9 +168,9 @@ sub _form {
 
   vn_img => [ mt('_vnedit_image'), [ static => nolabel => 1, content => sub {
     div class => 'img';
-     p mt '_vnedit_image_none' if !$v || !$v->{image};
-     p mt '_vnedit_image_processing' if $v && $v->{image} < 0;
-     img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title} if $v && $v->{image} > 0;
+     p mt '_vnedit_image_none' if !$frm->{image};
+     p mt '_vnedit_image_processing' if $frm->{image} < 0;
+     img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $frm->{image}%100, $frm->{image}) if $frm->{image} > 0;
     end;
 
     div;

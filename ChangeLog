@@ -9,6 +9,7 @@
 	- Bugfix: dbTraitGet() filtering would not always work correctly
 	- Bugfix: Don't allow duplicate trait names/aliasses within the same group
 	- Bugfix: Don't throw error when adding character to VN without releases
+	- Bugfix: Keep image id on failed (vn|char)add + validate image id
 
 2.20 - 2011-05-01
 	- Added support for sponsored links on VN pages
