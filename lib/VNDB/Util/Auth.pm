@@ -5,7 +5,6 @@ package VNDB::Util::Auth;
 use strict;
 use warnings;
 use Exporter 'import';
-use Digest::MD5 'md5_hex';
 use Digest::SHA qw|sha1_hex sha256_hex|;
 use Time::HiRes;
 use Encode 'encode_utf8';
@@ -101,17 +100,10 @@ sub _authCheck {
   return 0 if !$user || length($user) > 15 || length($user) < 2 || !$pass;
 
   my $d = $self->dbUserGet(username => $user, what => 'extended notifycount')->[0];
-  return 0 if !$d->{id};
+  return 0 if !$d->{id} || $d->{salt} =~ /^ *$/;
 
   if(_authEncryptPass($self, $pass, $d->{salt}) eq $d->{passwd}) {
     $self->{_auth} = $d;
-    return 1;
-  }
-  if(md5_hex($pass) eq $d->{passwd}) {
-    $self->{_auth} = $d;
-    my %o;
-    ($o{passwd}, $o{salt}) = authPreparePass($self, $pass);
-    $self->dbUserEdit($d->{id}, %o);
     return 1;
   }
 

@@ -405,7 +405,7 @@ sub login_res { # num, res, [ c, arg ]
   my($num, $res, $c, $arg) = (@_[ARG0, ARG1], $_[ARG2][0], $_[ARG2][1]);
 
   return cerr $c, auth => "No user with the name '$arg->{username}'" if $num == 0;
-  return cerr $c, auth => "Outdated password format, please relogin on $VNDB::S{url}/ and try again" if $res->[0]{salt} =~ /^ +$/;
+  return cerr $c, auth => "Account disabled" if $res->[0]{salt} =~ /^ +$/;
 
   my $encrypted = sha256_hex($VNDB::S{global_salt}.encode_utf8($arg->{password}).encode_utf8($res->[0]{salt}));
   return cerr $c, auth => "Wrong password for user '$arg->{username}'" if lc($encrypted) ne lc($res->[0]{passwd});
