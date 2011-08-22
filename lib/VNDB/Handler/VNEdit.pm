@@ -124,7 +124,7 @@ sub _uploadimage {
 
   if($frm->{_err} || !$self->reqPost('img')) {
     return 0 if !$frm->{image};
-    push @{$frm->{_err}}, 'invalidimgid' if !-s sprintf '%s/static/cv/%02d/%d.jpg', $VNDB::ROOT, $frm->{image}%100, $frm->{image};
+    push @{$frm->{_err}}, 'invalidimgid' if !-s imgpath(cv => $frm->{image});
     return $frm->{image};
   }
 
@@ -136,7 +136,7 @@ sub _uploadimage {
 
   # get image ID and save it, to be processed by Multi
   my $imgid = $self->dbVNImageId;
-  my $fn = sprintf '%s/static/cv/%02d/%d.jpg', $VNDB::ROOT, $imgid%100, $imgid;
+  my $fn = imgpath(cv => $imgid);
   $self->reqSaveUpload('img', $fn);
   chmod 0666, $fn;
 
@@ -170,7 +170,7 @@ sub _form {
     div class => 'img';
      p mt '_vnedit_image_none' if !$frm->{image};
      p mt '_vnedit_image_processing' if $frm->{image} < 0;
-     img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $frm->{image}%100, $frm->{image}) if $frm->{image} > 0;
+     img src => imgurl(cv => $frm->{image}) if $frm->{image} > 0;
     end;
 
     div;
@@ -341,7 +341,7 @@ sub scrxml {
   # no error? save and let Multi process it
   if(!$id) {
     $id = $self->dbScreenshotAdd;
-    my $fn = sprintf '%s/static/sf/%02d/%d.jpg', $VNDB::ROOT, $id%100, $id;
+    my $fn = imgpath(sf => $id);
     $self->reqSaveUpload($param, $fn);
     chmod 0666, $fn;
   }

@@ -50,7 +50,7 @@ sub page {
       [ main      => htmlize => sub { $_[0] ? sprintf '<a href="/c%d">c%d</a>', $_[0], $_[0] : mt '_revision_empty' } ],
       [ main_spoil=> serialize => sub { mt "_spoil_$_[0]" } ],
       [ image     => htmlize => sub {
-        return $_[0] > 0 ? sprintf '<img src="%s/ch/%02d/%d.jpg" />', $self->{url_static}, $_[0]%100, $_[0]
+        return $_[0] > 0 ? sprintf '<img src="%s" />', imgurl(ch => $_[0])
           : mt $_[0] < 0 ? '_chdiff_image_proc' : '_chdiff_image_none';
       }],
       [ traits    => join => '<br />', split => sub {
@@ -110,8 +110,7 @@ sub charTable {
     } elsif($r->{image} < 0) {
       p mt '_charp_imgproc';
     } else {
-      img src => sprintf('%s/ch/%02d/%d.jpg', $self->{url_static}, $r->{image}%100, $r->{image}),
-        alt => $r->{name} if $r->{image};
+      img src => imgurl(ch => $r->{image}), alt => $r->{name};
     }
    end 'div';
 
@@ -375,7 +374,7 @@ sub edit {
     div class => 'img';
      p mt '_chare_image_none' if !$frm->{image};
      p mt '_chare_image_processing' if $frm->{image} && $frm->{image} < 0;
-     img src => sprintf("%s/ch/%02d/%d.jpg", $self->{url_static}, $frm->{image}%100, $frm->{image}) if $frm->{image} && $frm->{image} > 0;
+     img src => imgurl(ch => $frm->{image}) if $frm->{image} && $frm->{image} > 0;
     end;
 
     div;
@@ -428,7 +427,7 @@ sub _uploadimage {
 
   if($frm->{_err} || !$self->reqPost('img')) {
     return 0 if !$frm->{image};
-    push @{$frm->{_err}}, 'invalidimgid' if !-s sprintf '%s/static/ch/%02d/%d.jpg', $VNDB::ROOT, $frm->{image}%100, $frm->{image};
+    push @{$frm->{_err}}, 'invalidimgid' if !-s imgpath(ch => $frm->{image});
     return $frm->{image};
   }
 
@@ -440,7 +439,7 @@ sub _uploadimage {
 
   # get image ID and save it, to be processed by Multi
   my $imgid = $self->dbCharImageId;
-  my $fn = sprintf '%s/static/ch/%02d/%d.jpg', $VNDB::ROOT, $imgid%100, $imgid;
+  my $fn = imgpath(ch => $imgid);
   $self->reqSaveUpload('img', $fn);
   chmod 0666, $fn;
 

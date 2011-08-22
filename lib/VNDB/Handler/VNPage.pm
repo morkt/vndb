@@ -79,7 +79,7 @@ sub page {
        p mt '_vnpage_imgproc';
      } else {
        p $v->{img_nsfw} ? (id => 'nsfw_hid', style => $self->authPref('show_nsfw') ? 'display: block' : '') : ();
-        img src => sprintf("%s/cv/%02d/%d.jpg", $self->{url_static}, $v->{image}%100, $v->{image}), alt => $v->{title};
+        img src => imgurl(cv => $v->{image}), alt => $v->{title};
         i mt '_vnpage_imgnsfw_foot' if $v->{img_nsfw};
        end;
        if($v->{img_nsfw}) {
@@ -245,15 +245,15 @@ sub _revision {
       return @r ? @r : (mt '_revision_empty');
     }],
     [ screenshots => join => '<br />', split => sub {
-      my @r = map sprintf('[%s] <a href="%s/sf/%02d/%d.jpg" rel="iv:%dx%d">%4$d</a> (%s)',
+      my @r = map sprintf('[%s] <a href="%s" rel="iv:%dx%d">%4$d</a> (%s)',
         $_->{rid} ? qq|<a href="/r$_->{rid}">r$_->{rid}</a>| : 'no release',
-        $self->{url_static}, $_->{id}%100, $_->{id}, $_->{width}, $_->{height},
+        imgurl(sf => $_->{id}), $_->{width}, $_->{height},
         mt($_->{nsfw} ? '_vndiff_nsfw_notsafe' : '_vndiff_nsfw_safe')
       ), @{$_[0]};
       return @r ? @r : (mt '_revision_empty');
     }],
     [ image       => htmlize => sub {
-      my $url = sprintf "%s/cv/%02d/%d.jpg", $self->{url_static}, $_[0]%100, $_[0];
+      my $url = imgurl(cv => $_[0]);
       if($_[0] > 0) {
         return $_[1]->{img_nsfw} && !$self->authPref('show_nsfw') ? "<a href=\"$url\">".mt('_vndiff_image_nsfw').'</a>' : "<img src=\"$url\" />";
       } else {
@@ -547,10 +547,10 @@ sub _screenshots {
      div class => 'scr';
       for (@scr) {
         my($w, $h) = imgsize($_->{width}, $_->{height}, @{$self->{scr_size}});
-        a href => sprintf('%s/sf/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}),
+        a href => imgurl(sf => $_->{id}),
           class => sprintf('scrlnk%s%s', $_->{nsfw} ? ' nsfw':'', $_->{nsfw}&&!$self->authPref('show_nsfw')?' hidden':''),
           rel => "iv:$_->{width}x$_->{height}:scr";
-         img src => sprintf('%s/st/%02d/%d.jpg', $self->{url_static}, $_->{id}%100, $_->{id}),
+         img src => imgurl(st => $_->{id}),
            width => $w, height => $h, alt => mt '_vnpage_scr_num', $_->{id};
         end;
       }

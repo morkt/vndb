@@ -1,11 +1,13 @@
 2.21 - ?
 	- New resolution: 1280x960
+	- New platforms: Android, Web and DB-PG
 	- Multi::Feed: Show full summary and refresh more often
 	- Switched back to Algorithm::Diff::XS
 	- Added secondary ordering on title on releases listing on VN page
 	- Added i+/c+ ID recognition to VN search
 	- JS: Don't consider 256x384 a "bad" screenshot resolution
 	- Changed location of 'add character/release' links on VN page
+	- Use generic imgurl() and imgpath() functions to generate image URLs/paths
 	- Bugfix: Properly make i+ IDs linkable in bb2html()
 	- Bugfix: Make sure the user dropdown boxes work on /v+/chars
 	- Bugfix: dbTraitGet() filtering would not always work correctly

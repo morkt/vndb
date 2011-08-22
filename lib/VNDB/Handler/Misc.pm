@@ -55,8 +55,7 @@ sub homepage {
     for (@$scr) {
       my($w, $h) = imgsize($_->{width}, $_->{height}, @{$self->{scr_size}});
       a href => "/v$_->{vid}", title => $_->{title};
-       img src => sprintf("%s/st/%02d/%d.jpg", $self->{url_static}, $_->{scr}%100, $_->{scr}),
-         alt => $_->{title}, width => $w, height => $h;
+       img src => imgurl(st => $_->{scr}), alt => $_->{title}, width => $w, height => $h;
       end;
     }
    end;

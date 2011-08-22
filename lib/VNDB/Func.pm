@@ -7,7 +7,10 @@ use TUWF ':html';
 use Exporter 'import';
 use POSIX 'strftime', 'ceil', 'floor';
 use VNDBUtil;
-our @EXPORT = (@VNDBUtil::EXPORT, qw| clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags childtags charspoil |);
+our @EXPORT = (@VNDBUtil::EXPORT, qw|
+  clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags
+  childtags charspoil imgpath imgurl
+|);
 
 
 # three ways to represent the same information
@@ -177,6 +180,18 @@ sub childtags {
 # generates the class elements for character spoiler hiding
 sub charspoil {
   return "charspoil charspoil_$_[0]".($_[0] ? ' hidden' : '');
+}
+
+
+# generates a local path to an image in static/
+sub imgpath { # <type>, <id>
+  return sprintf '%s/%s/%02d/%d.jpg', $VNDB::ROOT, $_[0], $_[1]%100, $_[1];
+}
+
+
+# generates a URL for an image in static/
+sub imgurl {
+  return sprintf '%s/%s/%02d/%d.jpg', $TUWF::OBJ->{url_static}, $_[0], $_[1]%100, $_[1];
 }
 
 
