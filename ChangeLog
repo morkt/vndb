@@ -8,6 +8,7 @@
 	- JS: Don't consider 256x384 a "bad" screenshot resolution
 	- Changed location of 'add character/release' links on VN page
 	- Use generic imgurl() and imgpath() functions to generate image URLs/paths
+	- Don't allow regular users to create more than 10 threads a day
 	- Bugfix: Properly make i+ IDs linkable in bb2html()
 	- Bugfix: Make sure the user dropdown boxes work on /v+/chars
 	- Bugfix: dbTraitGet() filtering would not always work correctly

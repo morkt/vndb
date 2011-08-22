@@ -178,6 +178,11 @@ sub edit {
     push @{$frm->{_err}}, 'doublepost' if !$num && !$frm->{_err} && $self->dbPostGet(
       uid => $self->authInfo->{id}, tid => $tid, mindate => time - 30, results => 1, $tid ? () : (num => 1))->[0]{num};
 
+    # Don't allow regular users to create more than 10 threads a day
+    push @{$frm->{_err}}, 'threadthrottle' if
+      !$tid && !$self->authCan('boardmod') &&
+      @{$self->dbPostGet(uid => $self->authInfo->{id}, mindate => time - 24*3600, num => 1)} >= 10;
+
     # parse and validate the boards
     my @boards;
     if(!$frm->{_err} && $frm->{boards}) {
