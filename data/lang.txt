@@ -300,12 +300,26 @@ cs : Apple iProduct
 hu : Apple iTermék
 nl :
 
+:_plat_and
+en : Android
+ru*:
+cs*:
+hu*:
+nl :
+
 :_plat_dvd
 en : DVD Player
 ru : DVD-плеер
 cs : DVD Přehrávač
 hu : DVD Lejátszó
 nl : DVD Speler
+
+:_plat_bdp
+en : Blu-ray Player
+ru*:
+cs*:
+hu*:
+nl : Blu-ray Speler
 
 :_plat_gba
 en : Game Boy Advance
@@ -403,6 +417,13 @@ en : Xbox 360
 ru : Xbox 360
 cs : Xbox 360
 hu :
+nl :
+
+:_plat_web
+en : Website
+ru*:
+cs*:
+hu*:
 nl :
 
 :_plat_oth
@@ -8711,9 +8732,9 @@ nl : Iemand heeft zich al geregistreerd met dat emailadres
 
 :_formerr_e_invalidimgid
 en : No image with that ID
-ru :
-cs :
-hu :
+ru*:
+cs*:
+hu*:
 nl : Geen plaatje met dat ID
 
 :_formerr_e_noimage
