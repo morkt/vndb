@@ -18,13 +18,13 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown set_daily daily set_monthly monthly log_stats
-        vncache_inc tagcache traitcache vnpopularity vnrating cleangraphs cleansessions cleannotifications
+        vncache_inc tagcache traitcache vnpopularity vnrating cleangraphs cleansessions cleannotifications rmuncomfirmusers
         vncache_full usercache statscache logrotate
         vnsearch_check vnsearch_gettitles vnsearch_update
       |],
     ],
     heap => {
-      daily => [qw|vncache_inc tagcache traitcache vnpopularity vnrating cleangraphs cleansessions cleannotifications|],
+      daily => [qw|vncache_inc tagcache traitcache vnpopularity vnrating cleangraphs cleansessions cleannotifications rmuncomfirmusers|],
       monthly => [qw|vncache_full usercache statscache logrotate|],
       vnsearch_checkdelay => 3600,
       @_,
@@ -175,6 +175,14 @@ sub cleannotifications {
     q|DELETE FROM notifications WHERE read < NOW()-'1 month'::interval|,
     undef, 'log_stats', 'cleannotifications');
 }
+
+
+sub rmuncomfirmusers {
+  $_[KERNEL]->post(pg => do =>
+    q|DELETE FROM users WHERE NOT email_confirmed AND registered < NOW()-'1 week'::interval|,
+    undef, 'log_stats', 'rmunconfirmusers');
+}
+
 
 
 #

@@ -118,7 +118,7 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail perm salt ign_votes |);
+    for (qw| username mail perm salt ign_votes email_confirmed |);
   $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
     if defined $o{passwd};
 
@@ -134,8 +134,8 @@ sub dbUserEdit {
 # username, pass(ecrypted), salt, mail, [ip]
 sub dbUserAdd {
   my($s, @o) = @_;
-  $s->dbExec(q|INSERT INTO users (username, passwd, salt, mail, ip) VALUES(?, decode(?, 'hex'), ?, ?, ?)|,
-    @o[0..3], $o[4]||$s->reqIP);
+  $s->dbRow(q|INSERT INTO users (username, passwd, salt, mail, ip) VALUES(?, decode(?, 'hex'), ?, ?, ?) RETURNING id|,
+    @o[0..3], $o[4]||$s->reqIP)->{id};
 }
 
 

@@ -16,6 +16,7 @@ TUWF::register(
   qr{u/newpass/sent}          => \&newpass_sent,
   qr{u([1-9]\d*)/setpass}     => \&setpass,
   qr{u/register}              => \&register,
+  qr{u/register/done}         => \&register_done,
   qr{u([1-9]\d*)/edit}        => \&edit,
   qr{u([1-9]\d*)/posts}       => \&posts,
   qr{u([1-9]\d*)/del(/[od])?} => \&delete,
@@ -220,10 +221,7 @@ sub newpass_sent {
   div class => 'mainbox';
    h1 mt '_newpass_sent_title';
    div class => 'notice';
-    h2 mt '_newpass_sent_subtitle';
-    p;
-     lit mt '_newpass_sent_msg';
-    end;
+    p mt '_newpass_sent_msg';
    end;
   end;
   $self->htmlFooter;
@@ -251,7 +249,7 @@ sub setpass {
     push @{$frm->{_err}}, 'passmatch' if $frm->{usrpass} ne $frm->{usrpass2};
 
     if(!$frm->{_err}) {
-      my %o;
+      my %o = (email_confirmed => 1);
       ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->{usrpass});
       $self->dbUserEdit($uid, %o);
       return $self->authLogin($u->{username}, $frm->{usrpass}, "/u$uid");
@@ -261,8 +259,8 @@ sub setpass {
   $self->htmlHeader(title => mt('_setpass_title', $u->{username}), noindex => 1);
   $self->htmlForm({ frm => $frm, action => "/u$u->{id}/setpass?t=$t" }, setpass => [ mt('_setpass_title', $u->{username}),
     [ static => nolabel => 1, content => mt '_setpass_msg' ],
-    [ passwd => short => 'usrpass',  name => mt('_register_password') ],
-    [ passwd => short => 'usrpass2', name => mt('_register_confirm') ],
+    [ passwd => short => 'usrpass',  name => mt('_setpass_password') ],
+    [ passwd => short => 'usrpass2', name => mt('_setpass_confirm') ],
   ]);
   $self->htmlFooter;
 }
@@ -278,46 +276,53 @@ sub register {
     $frm = $self->formValidate(
       { post => 'usrname',  template => 'pname', minlength => 2, maxlength => 15 },
       { post => 'mail',     template => 'mail' },
-      { post => 'usrpass',  minlength => 4, maxlength => 64, template => 'asciiprint' },
-      { post => 'usrpass2', minlength => 4, maxlength => 64, template => 'asciiprint' },
       { post => 'type',     regex => [ qr/^[1-3]$/ ] },
       { post => 'answer',   template => 'int' },
     );
     my $num = $self->{stats}{[qw|vn releases producers|]->[ $frm->{type} - 1 ]};
     push @{$frm->{_err}}, 'notanswer'  if !$frm->{_err} && ($frm->{answer} > $num || $frm->{answer} < $num*0.995);
-    push @{$frm->{_err}}, 'passmatch'  if $frm->{usrpass} ne $frm->{usrpass2};
     push @{$frm->{_err}}, 'usrexists'  if $frm->{usrname} eq 'anonymous' || !$frm->{_err} && $self->dbUserGet(username => $frm->{usrname})->[0]{id};
     push @{$frm->{_err}}, 'mailexists' if !$frm->{_err} && $self->dbUserGet(mail => $frm->{mail})->[0]{id};
     push @{$frm->{_err}}, 'oneaday'    if !$frm->{_err} && $self->dbUserGet(ip => $self->reqIP, registered => time-24*3600)->[0]{id};
 
     if(!$frm->{_err}) {
-      my ($pass, $salt) = $self->authPreparePass($frm->{usrpass});
-      $self->dbUserAdd($frm->{usrname}, $pass, $salt, $frm->{mail});
-      return $self->authLogin($frm->{usrname}, $frm->{usrpass}, '/');
+      my($token, $pass, $salt) = $self->authPrepareReset();
+      my $uid = $self->dbUserAdd($frm->{usrname}, $pass, $salt, $frm->{mail});
+      $self->mail(mt('_register_mail_body', $frm->{usrname}, "$self->{url}/u$uid/setpass?t=$token"),
+        To => $frm->{mail},
+        From => 'VNDB <noreply@vndb.org>',
+        Subject => mt('_register_mail_subject', $frm->{usrname}),
+      );
+      return $self->resRedirect('/u/register/done', 'post');
     }
   }
 
   $self->htmlHeader(title => mt('_register_title'), noindex => 1);
-  div class => 'mainbox';
-   h1 mt '_register_title';
-   h2 mt '_register_why';
-   p;
-    lit mt '_register_why_msg';
-   end;
-  end;
 
   my $type = $frm->{type} || floor(rand 3)+1;
-  $self->htmlForm({ frm => $frm, action => '/u/register' }, register => [ mt('_register_form_title'),
+  $self->htmlForm({ frm => $frm, action => '/u/register' }, register => [ mt('_register_title'),
     [ hidden => short => 'type', value => $type ],
     [ input  => short => 'usrname', name => mt '_register_username' ],
     [ static => content => mt '_register_username_msg' ],
     [ input  => short => 'mail', name => mt '_register_mail' ],
     [ static => content => mt('_register_mail_msg').'<br /><br />' ],
-    [ passwd => short => 'usrpass', name => mt('_register_password') ],
-    [ passwd => short => 'usrpass2', name => mt('_register_confirm') ],
     [ static => content => '<br /><br />'.mt('_register_question', $type-1) ],
     [ input  => short => 'answer', name => mt '_register_answer' ],
   ]);
+  $self->htmlFooter;
+}
+
+
+sub register_done {
+  my $self = shift;
+  return $self->resRedirect('/') if $self->authInfo->{id};
+  $self->htmlHeader(title => mt('_register_done_title'), noindex => 1);
+  div class => 'mainbox';
+   h1 mt '_register_done_title';
+   div class => 'notice';
+    p mt '_register_done_msg';
+   end;
+  end;
   $self->htmlFooter;
 }
 

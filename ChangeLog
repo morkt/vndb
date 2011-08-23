@@ -1,6 +1,8 @@
 2.21 - ?
 	- New resolution: 1280x960
 	- New platforms: Android, Web and DB-PG
+	- Added email confirmation to registration process
+	- Re-structured password reset feature
 	- Multi::Feed: Show full summary and refresh more often
 	- Switched back to Algorithm::Diff::XS
 	- Added secondary ordering on title on releases listing on VN page

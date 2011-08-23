@@ -6493,13 +6493,6 @@ cs : Nové heslo
 hu : Új jelszó
 nl : Nieuw wachtwoord
 
-:_newpass_sent_subtitle
-en : Password reset
-ru : Сбросить пароль
-cs : Změnit heslo
-hu : Jelszó visszaállitás
-nl : Wachtwoord gereset
-
 :_newpass_sent_msg
 en : Your password has been reset and instructions to set a new one should reach your mailbox in a few minutes.
 ru*:
@@ -6509,7 +6502,6 @@ nl : Je wachtwoord is gereset, en instructies om een nieuwe te zetten zullen bin
 
 
 # Set password page (/u+/setpass)
-# The labels before the input boxes are the same as _register_password and _register_confirm.
 
 :_setpass_title
 en : Set password for [_1]
@@ -6532,6 +6524,20 @@ cs*:
 hu*:
 nl : Nu kan je een wachtwoord instellen voor je account. Je wordt automatisch ingelogd nadat je wachtwoord is opgeslagen.
 
+:_setpass_password
+en : Password
+ru : Пароль
+cs : Heslo
+hu : Jelszó
+nl : Wachtwoord
+
+:_setpass_confirm
+en : Confirm password
+ru : Подтверждение пароля
+cs : Potvrdit heslo
+hu : Jelszó megerősítése
+nl : Herhaal wachtwoord
+
 
 # Register new account (/u/register)
 
@@ -6541,69 +6547,6 @@ ru : Создание учётной записи
 cs : Vytvořit účet
 hu : Új fiók létrehozása
 nl : Registreer een account
-
-:_register_why
-en : Why should I register?
-ru : Для чего нужна регистрация?
-cs : Proč bych se měl registrovat?
-hu : Miért kéne regisztráljak?
-nl : Waarom registreren?
-
-:_register_why_msg
-en : Creating an account is completely painless, the only thing we need to know is your prefered username
-     and a password. You can just use any email address that isn't yours, as we don't even confirm
-     that the address you gave us is really yours. Keep in mind, however, that you would probably
-     want to remember your password if you do choose to give us an invalid email address...[br]
-     [br]
-     Anyway, having an account here has a few advantages over being just a regular visitor[br]
-     - You can contribute to the database by editing any entries and adding new ones[br]
-     - Keep track of all visual novels and releases you have, you'd like to play, are playing, or have finished playing[br]
-     - Vote on the visual novels you liked or disliked[br]
-     - Contribute to the discussions on the boards
-ru : Создание учётной записи совершенно безопасно. Единственное, что нам от вас требуется - желаемое имя
-     пользователя и пароль. Вы можете ввести любой, даже абсолютно "левый" адрес электронной почты, поскольку
-     мы даже не проверяем его подлинность. Однако, помните, что если вы ненароком забудете свой пароль, да ещё
-     и ввели неправильный адрес...[br]
-     [br]
-     В общем, наличие учётной записи даёт несколько преимуществ перед простыми посетителями:[br]
-     - Вы можете помогать базе развиваться, редактируя любые страницы и добавляя новые[br]
-     - Следить за всеми новеллами и выпусками, которые у вас есть, в которые вы бы хотели сыграть, в которые играете, либо уже доиграли[br]
-     - Голосовать за понравившиеся или, наоборот, не понравившиеся новеллы[br]
-     - Вступать в обсуждения на ветках форума
-cs : Tvorba účtu je zcela bezbolestná, jediné údaje, které potřebujeme znát jsou uživatelské jméno, které chcete, a vaše heslo.
-     Můžete i použít e-mail, který není váš, jelikož ani neověřujeme, že jste nám zadali opravdu váš e-mail.
-     Pamatujte ale, že pokud jste zadali neplatnou e-mailovou adresu, pak byste si měli dobře zapamatovat vaše heslo...[br]
-     [br]
-     V každém případě, založení účtu vám přináší několik výhod oproti běžným návštěvníkům[br]
-     - Můžete přispívat do databáze editací všech dat a přidáváním dat nových[br]
-     - Mějte přehled o všech vizuálních novelách, které máte, chtěli byste hrát, hrajete, nebo jste dohráli[br]
-     - Hlasujte pro vizuální novely, které se vám líbily nebo nelíbily[br]
-     - Přispívejte do diskusí na boardech
-hu : Egy fiókot nagyon egyszerű készíteni, minden ami kell egy felhasználónév és egy jelszó. Bármilyen email címet használhatsz,
-     minket nem érdekel, hogy a tied vagy nem, mivel nincs külön aktiválás. Viszont ha nem jó emailt adsz meg nekünk
-     akkor jól vésd az eszedbe a jelszavad, különben nem tudunk neked segíteni ha elfelejted.[br]
-     [br]
-     Nos, a saját fiókkal rendelkezők több előnybe is részesülnek mint az egyszerű látogatók[br]
-     - Hozzájárulhatsz az adatbázis fejlődéséhez, hiszen szerkeszthetsz, vagy létrehozhatsz új bejegyzéseket[br]
-     - Nyomon követheted a tulajdonodban levő visual novellek, helyzetét, állapotát...mit játszol, melyiket fejezted már be stb.[br]
-     - Szavazhatsz a visual novellekre, melyek tetszettek, vagy ép meggyűlöltették magukat[br]
-     - Bekapcsolódhatsz a fórumba levő beszélgetésekbe
-nl : Een account aanmaken is volledig pijnloos, wij hebben alleen je gewenste gebruikersnaam en
-     een wachtwoord nodig. Je kan gerust een vals emailadres gebruiken, zolang je er maar rekening mee
-     houdt dat je wel een geldig emailadres nodig hebt als je je wachtwoord bent vergeten...[br]
-     [br]
-     Het hebben van een account geeft je een aantal voordelen:[br]
-     - Je kan verbeteringen doorvoeren in de database, en nieuwe items toevoegen[br]
-     - Je kan bijhouden welke visual novels en uitgaven je hebt, je nog wil spelen, of hebt gespeeld[br]
-     - Stemmen op visual novels die je leuk (of misschien wel walgelijk) vond[br]
-     - Meedoen aan de discussies op het forum
-
-:_register_form_title
-en : New account
-ru : Новая учётная запись
-cs : Nový účet
-hu : Új fiók
-nl : Nieuw account
 
 :_register_username
 en : Username
@@ -6638,20 +6581,6 @@ hu : Az email címed csakis akkor kerül használatba ha elveszted a jelszavad. 
 nl : Je emailadres wordt gebruikt als je je wachtwoord bent vergeten. We zullen je geen spam
      of nieuwsbrieven sturen tenzij je ons er expliciet om vraagt.
 
-:_register_password
-en : Password
-ru : Пароль
-cs : Heslo
-hu : Jelszó
-nl : Wachtwoord
-
-:_register_confirm
-en : Confirm password
-ru : Подтверждение пароля
-cs : Potvrdit heslo
-hu : Jelszó megerősítése
-nl : Herhaal wachtwoord
-
 :_register_question
 en : How many [index,_1,visual novels,releases,producers] do we have in the database? (Hint: look to your left)
 ru : Сколько [index,_1,новелл,выпусков,компаний] у нас в базе? (Подсказка: посмотрите слева)
@@ -6665,6 +6594,54 @@ ru : Ответ
 cs : Odpověď
 hu : Válasz
 nl : Antwoord
+
+:_register_mail_body
+en : Hello [_1]
+
+     Someone has registered an account on VNDB.org with your email address. To
+     confirm your registration, follow the link below.
+
+     [_2]
+
+     If you don't remember creating an account on VNDB.org recently, please
+     ignore this e-mail.
+
+     vndb.org
+ru*:
+cs*:
+hu*:
+nl : Hallo [_1],
+
+     Iemand heeft een account aangemaakt op VNDB.org met jouw emailadres. Om
+     verder te gaan met de registratie, volg de onderstaande link.
+
+     [_2]
+
+     Als je niet recentelijk een account hebt aangemaakt op VNDB.org, negeer
+     deze email dan.
+
+     vndb.org
+
+:_register_mail_subject
+en : Confirm registration for [_1]
+ru*:
+cs*:
+hu*:
+nl : Emailbevestiging voor [_1]
+
+:_register_done_title
+en : Account created
+ru*:
+cs*:
+hu*:
+nl : Account aangemaakt
+
+:_register_done_msg
+en : Your account has been created! In a few minutes, you should receive an email with instructions to set your password.
+ru*:
+cs*:
+hu*:
+nl : Je account is aangemaakt! Binnen een paar minuten krijg je een email met instructies om een wachtwoord in te stellen.
 
 
 # User edit (/u+/edit)
