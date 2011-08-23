@@ -185,7 +185,7 @@ sub charspoil {
 
 # generates a local path to an image in static/
 sub imgpath { # <type>, <id>
-  return sprintf '%s/%s/%02d/%d.jpg', $VNDB::ROOT, $_[0], $_[1]%100, $_[1];
+  return sprintf '%s/static/%s/%02d/%d.jpg', $VNDB::ROOT, $_[0], $_[1]%100, $_[1];
 }
 
 
