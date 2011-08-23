@@ -1,4 +1,6 @@
-2.21 - ?
+2.22 - ?
+
+2.21 - 2011-08-23
 	- New resolution: 1280x960
 	- New platforms: Android, Web and DB-PG
 	- Added email confirmation to registration process
