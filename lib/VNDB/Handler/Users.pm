@@ -14,6 +14,7 @@ TUWF::register(
   qr{u([1-9]\d*)/logout}      => \&logout,
   qr{u/newpass}               => \&newpass,
   qr{u/newpass/sent}          => \&newpass_sent,
+  qr{u([1-9]\d*)/setpass}     => \&setpass,
   qr{u/register}              => \&register,
   qr{u([1-9]\d*)/edit}        => \&edit,
   qr{u([1-9]\d*)/posts}       => \&posts,
@@ -187,12 +188,11 @@ sub newpass {
       $frm->{_err} = [ 'nomail' ] if !$u || !$u->{id};
     }
     if(!$frm->{_err}) {
-      my @chars = ( 'A'..'Z', 'a'..'z', 0..9 );
-      my $pass = join '', map $chars[int rand $#chars+1], 0..8;
       my %o;
-      ($o{passwd}, $o{salt}) = $self->authPreparePass($pass);
+      my $token;
+      ($token, $o{passwd}, $o{salt}) = $self->authPrepareReset();
       $self->dbUserEdit($u->{id}, %o);
-      $self->mail(mt('_newpass_mail_body', $u->{username}, $pass),
+      $self->mail(mt('_newpass_mail_body', $u->{username}, "$self->{url}/u$u->{id}/setpass?t=$token"),
         To => $frm->{mail},
         From => 'VNDB <noreply@vndb.org>',
         Subject => mt('_newpass_mail_subject', $u->{username}),
@@ -226,6 +226,44 @@ sub newpass_sent {
     end;
    end;
   end;
+  $self->htmlFooter;
+}
+
+
+sub setpass {
+  my($self, $uid) = @_;
+  return $self->resRedirect('/') if $self->authInfo->{id};
+
+  my $t = $self->formValidate({get => 't', regex => qr/^[a-f0-9]{40}$/i });
+  return $self->resNotFound if $t->{_err};
+  $t = $t->{t};
+
+  my $u = $self->dbUserGet(uid => $uid, what => 'extended')->[0];
+  return $self->resNotFound if !$u || !$self->authValidateReset($u, $t);
+
+  my $frm;
+  if($self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode("/u$u->{id}/setpass?t=$t");
+    $frm = $self->formValidate(
+      { post => 'usrpass',  minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { post => 'usrpass2', minlength => 4, maxlength => 64, template => 'asciiprint' },
+    );
+    push @{$frm->{_err}}, 'passmatch' if $frm->{usrpass} ne $frm->{usrpass2};
+
+    if(!$frm->{_err}) {
+      my %o;
+      ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->{usrpass});
+      $self->dbUserEdit($uid, %o);
+      return $self->authLogin($u->{username}, $frm->{usrpass}, "/u$uid");
+    }
+  }
+
+  $self->htmlHeader(title => mt('_setpass_title', $u->{username}), noindex => 1);
+  $self->htmlForm({ frm => $frm, action => "/u$u->{id}/setpass?t=$t" }, setpass => [ mt('_setpass_title', $u->{username}),
+    [ static => nolabel => 1, content => mt '_setpass_msg' ],
+    [ passwd => short => 'usrpass',  name => mt('_register_password') ],
+    [ passwd => short => 'usrpass2', name => mt('_register_confirm') ],
+  ]);
   $self->htmlFooter;
 }
 

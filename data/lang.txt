@@ -6420,64 +6420,32 @@ nl : Wachtwoord vergeten?
 :_newpass_mail_body
 en : Hello [_1]
 
-     Your password has been reset, you can now login at http://vndb.org/ with the
-     following information:
+     Your VNDB.org login has been disabled, you can now set a new password by following the link below:
 
-     Username: [_1]
-     Password: [_2]
+     [_2]
 
      Now don't forget your password again! :-)
 
      vndb.org
-ru : Привет, [_1]
-
-     Ваш пароль был сброшен, теперь вы можете пройти авторизацию на http://vndb.org/
-     со следующими данными:
-
-     Имя пользователя: [_1]
-     Ваш новый пароль: [_2]
-
-     Постарайтесь больше не забывать свой пароль! :-)
-
-     vndb.org
-cs : Zdravíme, [_1]
-
-     Vaše heslo bylo změněno, nyní se můžete přihlásit na http://vndb.org
-     s následujícími informacemi:
-
-     Uživatelské jmno: [_1]
-     Heslo: [_2]
-
-     A snažte se už heslo znovu nezapomenout! :-)
-hu : Üdv [_1]
-
-     A jelszavad vissza lett állítva, most már bejelentkezhetsz a http://vndb.org/ címen az
-     új adataiddal:
-
-     Felhasználónév: [_1]
-     Jelszó: [_2]
-
-     Legközelebb próbáld meg nem elfelejteni a jelszavad! :-)
-
-     vndb.org
+ru*:
+cs*:
+hu*:
 nl : Hallo [_1],
 
-     Je wachtwoord is gereset, je kan nu inloggen op http://vndb.org/ met de
-     volgende gegevens:
+     Je VNDB.org account is tijdelijk uitgeschakeld, je kan nu een nieuw wachtwoord instellen door de volgende link te volgen:
 
-     Gebruikersnaam: [_1]
-     Wachtwoord: [_2]
+     [_2]
 
      Vergeet je wachtwoord in de toekomst niet weer! :-)
 
      vndb.org
 
 :_newpass_mail_subject
-en : New password for [_1]
-ru : Новый пароль для [_1]
-cs : Nové heslo pro uživatele [_1]
-hu : Új jelszó [_1]-nak
-nl : Nieuw wachtwoord voor [_1]
+en : Password reset for [_1]
+ru*: Новый пароль для [_1]
+cs*: Nové heslo pro uživatele [_1]
+hu*: Új jelszó [_1]-nak
+nl : Wachtwoord gereset voor [_1]
 
 :_newpass_title
 en : Forgot password
@@ -6489,20 +6457,20 @@ nl : Wachtwoord vergeten
 :_newpass_msg
 en : Forgot your password and can't login to VNDB anymore?
      Don't worry! Just give us the email address you used to register on VNDB,
-     and we'll send you a new password within a few minutes!
-ru : Забыли пароль и больше не можете авторизоваться на VNDB?
+     and we'll send you instructions to set a new password within a few minutes!
+ru*: Забыли пароль и больше не можете авторизоваться на VNDB?
      Без паники! Всё что вам нужно - указать адрес электронной почты, который
      вы использовали для регистрации в VNDB, и мы вышлем вам новый пароль за
      считанные минуты!
-cs : Zapomněli jste své heslo a nemůžete se přihlásit na VNDB?
+cs*: Zapomněli jste své heslo a nemůžete se přihlásit na VNDB?
      Nebojte! Stačí zadat e-mailovou adresu, se kterou jste se na VNDB registrovali,
      a my vám do několika minut pošleme heslo nové!
-hu : Elfelejtetted a jelszavad és nem tudsz bejelentkezni a VNBD-be?
+hu*: Elfelejtetted a jelszavad és nem tudsz bejelentkezni a VNBD-be?
      Ne aggódj! Csak add meg nekünk az email címet amivel regisztráltál,
      s egy pár percen belül kapsz tőlünk egy új jelszót!
 nl : Je wachtwoord vergeten?
      Geen nood! Geef aan wat je emailadres was die je hebt gebruikt om je te registreren op VNDB,
-     en je krijgt binnen een paar minuten je nieuwe wachtwoord op je mail!
+     en je krijgt binnen een paar minuten instructies op je mail om een nieuw wachtwoord in te stellen!
 
 :_newpass_reset_title
 en : Reset password
@@ -6533,26 +6501,37 @@ hu : Jelszó visszaállitás
 nl : Wachtwoord gereset
 
 :_newpass_sent_msg
-en : Your password has been reset and your new password should reach your mailbox in a few minutes.[br]
-     You can always change your password again after logging in.[br]
-     [br]
-     [url,/u/login,Login] - [url,/,Home]
-ru : Ваш пароль был сброшен. Через несколько минут на ваш ящик прибудет письмо с новым паролем.[br]
-     Вы всегда можете изменить пароль после того, как прошли авторизацию.[br]
-     [br]
-     [url,/u/login,Вход] - [url,/,Главная]
-cs : Vaše heslo bylo změněno a vaše nové heslo by mělo být za několik minut doručeno do vaší schránky.[br]
-     Vždy můžete změnit vaše heslo po přihlášení.[br]
-     [br]
-     [url,/u/login,Přihlásit] - [url,/,Home]
-hu : A jelszavad vissza lett állítva s pár percen belül kapsz egy ujjat a postafiókodba.[br]
-     Miután bejelentkezel, nyugodtan megváltoztathatod a jelszavad amire akarod.[br]
-     [br]
-     [url,/u/login,Bejelentkezés] - [url,/,Kezdőlap]
-nl : Je wachtwoord is gereset, en je nieuwe wachtwoord zal binnen een paar minuten in je mailbox verschijnen.[br]
-     Je kan je wachtwoord na het inloggen altijd nog veranderen.[br]
-     [br]
-     [url,/u/login,Login] - [url,/,Home]
+en : Your password has been reset and instructions to set a new one should reach your mailbox in a few minutes.
+ru*:
+cs*:
+hu*:
+nl : Je wachtwoord is gereset, en instructies om een nieuwe te zetten zullen binnen een paar minuten in je mailbox verschijnen.
+
+
+# Set password page (/u+/setpass)
+# The labels before the input boxes are the same as _register_password and _register_confirm.
+
+:_setpass_title
+en : Set password for [_1]
+ru*:
+cs*:
+hu*:
+nl : Stel wachtwoord in voor [_1]
+
+:_setpass_title
+en : Set password for [_1]
+ru*:
+cs*:
+hu*:
+nl : Stel wachtwoord in voor [_1]
+
+:_setpass_msg
+en : Now you can set a password for your account. You will be logged in automatically after your password has been saved.
+ru*:
+cs*:
+hu*:
+nl : Nu kan je een wachtwoord instellen voor je account. Je wordt automatisch ingelogd nadat je wachtwoord is opgeslagen.
+
 
 # Register new account (/u/register)
 

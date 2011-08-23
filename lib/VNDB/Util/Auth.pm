@@ -13,7 +13,10 @@ use TUWF ':html';
 use VNDB::Func;
 
 
-our @EXPORT = qw| authInit authLogin authLogout authInfo authCan authPreparePass authGetCode authCheckCode authPref |;
+our @EXPORT = qw|
+  authInit authLogin authLogout authInfo authCan authPreparePass
+  authPrepareReset authValidateReset authGetCode authCheckCode authPref
+|;
 
 
 # initializes authentication information and checks the vndb_auth cookie
@@ -114,7 +117,7 @@ sub _authCheck {
 # Encryption algorithm for user passwords
 # Arguments: self, pass, salt
 # Returns: encrypted password (in hex)
-sub _authEncryptPass{
+sub _authEncryptPass {
   my($self, $pass, $salt, $bin) = @_;
   return sha256_hex($self->{global_salt} . encode_utf8($pass) . encode_utf8($salt));
 }
@@ -123,11 +126,32 @@ sub _authEncryptPass{
 # Prepares a plaintext password for database storage
 # Arguments: pass
 # Returns: list (pass, salt)
-sub authPreparePass{
+sub authPreparePass {
   my($self, $pass) = @_;
   my $salt = join '', map chr(rand(93)+33), 1..9;
   my $hash = _authEncryptPass($self, $pass, $salt);
   return ($hash, $salt);
+}
+
+
+# Generates a random token that can be used to reset the password.
+# Returns: token, token-encrypted, salt
+sub authPrepareReset {
+  my $self = shift;
+  my $token = sha1_hex(join('', Time::HiRes::gettimeofday()) . join('', map chr(rand(93)+33), 1..9));
+  my $salt = join '', map chr(rand(93)+33), 1..9;
+  my $token_e = sha1_hex(lc($token).$salt);
+  return ($token, $token_e, $salt);
+}
+
+
+# Checks whether the password reset token is valid.
+# Arguments: $u obj, token
+sub authValidateReset {
+  my($self, $u, $t) = @_;
+  return 0 if !$u->{salt} || !$u->{passwd} || length $u->{passwd} != 40
+    || lc sha1_hex(lc($t).$u->{salt}) ne lc $u->{passwd};
+  return 1;
 }
 
 
