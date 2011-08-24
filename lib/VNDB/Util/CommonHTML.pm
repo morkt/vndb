@@ -66,7 +66,7 @@ sub htmlMainTabs {
      end;
    }
 
-   if($type =~ /[rc]/ && $self->authCan('edit')) {
+   if($type eq 'r' && $self->authCan('edit') || $type eq 'c' && $self->authCan('charedit')) {
      li $sel eq 'copy' ? (class => 'tabselected') : ();
       a href => "/$id/copy", mt '_mtabs_copy';
      end;
@@ -328,7 +328,7 @@ sub htmlItemMessage {
     p class => 'locked';
      lit mt '_itemmsg_login', '/u/login';
     end;
-  } elsif(!$self->authCan('edit')) {
+  } elsif(!$self->authCan($type eq 'c' ? 'charedit' : 'edit')) {
     p class => 'locked', mt '_itemmsg_denied';
   }
 }
