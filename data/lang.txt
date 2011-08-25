@@ -8736,11 +8736,11 @@ hu : Kérlek várj 30 másodpercet mielőtt új hozzászólást küldesz
 nl : Wacht a.u.b. 30 seconden voordat je een nieuwe post maakt
 
 :_formerr_e_threadthrottle
-en : You can only create 10 threads every 24 hours
+en : You can only create 5 threads every 24 hours
 ru*:
 cs*:
 hu*:
-nl : Je mag maar 10 topics per 24 uur maken
+nl : Je mag maar 5 topics per 24 uur maken
 
 :_formerr_e_badeditsum
 en : Please read [url,/d5.4,the guidelines] on how to use the edit summary.

@@ -245,9 +245,9 @@ sub _revision {
       return @r ? @r : (mt '_revision_empty');
     }],
     [ screenshots => join => '<br />', split => sub {
-      my @r = map sprintf('[%s] <a href="%s" rel="iv:%dx%d">%4$d</a> (%s)',
+      my @r = map sprintf('[%s] <a href="%s" rel="iv:%dx%d">%d</a> (%s)',
         $_->{rid} ? qq|<a href="/r$_->{rid}">r$_->{rid}</a>| : 'no release',
-        imgurl(sf => $_->{id}), $_->{width}, $_->{height},
+        imgurl(sf => $_->{id}), $_->{width}, $_->{height}, $_->{id},
         mt($_->{nsfw} ? '_vndiff_nsfw_notsafe' : '_vndiff_nsfw_safe')
       ), @{$_[0]};
       return @r ? @r : (mt '_revision_empty');
