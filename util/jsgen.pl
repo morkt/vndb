@@ -111,6 +111,13 @@ sub jsgen {
   $common .= sprintf "animated = [ %s ];\n", join ', ', @{$S{animated}};
   $common .= sprintf "voiced = [ %s ];\n", join ', ', @{$S{voiced}};
   $common .= sprintf "vn_lengths = [ %s ];\n", join ', ', @{$S{vn_lengths}};
+  $common .= sprintf "blood_types = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{blood_types}};
+  $common .= sprintf "genders = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{genders}};
+  $common .= sprintf "bust_ranges = [ %s ];\n", join ', ', @{$S{bust_ranges}};
+  $common .= sprintf "waist_ranges = [ %s ];\n", join ', ', @{$S{waist_ranges}};
+  $common .= sprintf "hip_ranges = [ %s ];\n", join ', ', @{$S{hip_ranges}};
+  $common .= sprintf "height_ranges = [ %s ];\n", join ', ', @{$S{height_ranges}};
+  $common .= sprintf "weight_ranges = [ %s ];\n", join ', ', @{$S{weight_ranges}};
   $common .= sprintf "L10N_LANG = [ %s ];\n", join(', ', map
       sprintf('["%s","%s"]', $_, $lang{$_}{"_lang_$_"}||$lang{en}{"_lang_$_"}),
     VNDB::L10N::languages());

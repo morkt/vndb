@@ -1533,6 +1533,13 @@ cs : -dne-
 hu : -nap-
 nl : -dag-
 
+:_js_remove
+en : remove
+ru : убрать
+cs : odstranit
+hu : eltávolítás
+nl : verwijder
+
 :_js_ds_noresults
 en : No results...
 ru : Совпадений не найдено...
@@ -1574,6 +1581,27 @@ ru : Использование мета-тегов здесь запрещен�
 cs : Zde se nedají použít meta-tagy!
 hu : Itt nem használhatsz meta címkéket!
 nl : Meta tags kunnen hier niet gebruikt worden!
+
+:_js_ds_trait_meta
+en : meta
+ru*:
+cs*:
+hu*:
+nl :
+
+:_js_ds_trait_mod
+en : awaiting moderation
+ru*:
+cs*:
+hu*:
+nl : ongemodereerd
+
+:_js_ds_trait_nometa
+en : Can't use meta traits here!
+ru*:
+cs*:
+hu*:
+nl : Meta kenmerken kunnen hier niet gebruikt worden!
 
 
 # Filter selector
@@ -5571,8 +5599,152 @@ cs : Žádné postavy odpovídající vašim požadavkům.
 hu : A kritériumaid alapján nem található szereplő.
 nl : Geen karakters gevonden die aan je kriteria voldoen.
 
+:_charb_fil_title
+en : Character filters
+ru*:
+cs*:
+hu*:
+nl : Karakterfilters
 
+:_charb_general
+en : General
+ru*:
+cs*:
+hu*:
+nl : Algemeen
 
+:_charb_gender
+en : Gender
+ru*:
+cs*:
+hu*:
+nl : Geslacht
+
+:_charb_bust_min
+en : Bust min
+ru*:
+cs*:
+hu*:
+nl : Borst min
+
+:_charb_bust_max
+en : Bust max
+ru*:
+cs*:
+hu*:
+nl : Borst max
+
+:_charb_waist_min
+en : Waist min
+ru*:
+cs*:
+hu*:
+nl : Taille min
+
+:_charb_waist_max
+en : Waist max
+ru*:
+cs*:
+hu*:
+nl : Taille max
+
+:_charb_hip_min
+en : Hips min
+ru*:
+cs*:
+hu*:
+nl : Heupen min
+
+:_charb_hip_max
+en : Hips max
+ru*:
+cs*:
+hu*:
+nl : Heupen max
+
+:_charb_height_min
+en : Height min
+ru*:
+cs*:
+hu*:
+nl : Lengte min
+
+:_charb_height_max
+en : Height max
+ru*:
+cs*:
+hu*:
+nl : Lengte max
+
+:_charb_weight_min
+en : Weight min
+ru*:
+cs*:
+hu*:
+nl : Gewicht min
+
+:_charb_weight_max
+en : Weight max
+ru*:
+cs*:
+hu*:
+nl : Gewicht max
+
+:_charb_bloodt
+en : Blood type
+ru*:
+cs*:
+hu*:
+nl : Bloedgroep
+
+:_charb_traits
+en : Traits
+ru*:
+cs*:
+hu*:
+nl : Kenmerken
+
+:_charb_traitinc
+en : Traits to include
+ru*:
+cs*:
+hu*:
+nl : Kenmerken meenemen
+
+:_charb_traitexc
+en : Traits to exclude
+ru*:
+cs*:
+hu*:
+nl : Kenmerken uitsluiten
+
+:_charb_traitnothere
+en : Additional trait filters are not available on this page. Use the character browser instead (available from the main menu -> characters).
+ru*:
+cs*:
+hu*:
+nl : Extra kenmerkfilters zijn niet aanwezig op deze pagina. Gebruik de karakterbrowser voor deze functionaliteit (beschikbaar via het hoofdmenu -> karakters).
+
+:_charb_spoil0
+en : Hide spoilers
+ru*:
+cs*:
+hu*:
+nl : Verberg spoilers
+
+:_charb_spoil1
+en : Show minor spoilers
+ru*:
+cs*:
+hu*:
+nl : Toon geringe spoilers
+
+:_charb_spoil2
+en : Show major spoilers
+ru*:
+cs*:
+hu*:
+nl : Toon alle spoilers
 
 
 
@@ -7130,13 +7302,6 @@ ru : Эти фильтры недействительны на страница�
 cs : Tyto filtry jsou na stránkách tagů ignorovány (když jsou nastaveny jako defaultní).
 hu : Ezzek a szűrők figyelmen kívűl maradnak a címke oldalakon (ha alapértelmezetnek vannak beállítva).
 nl : Deze filters worden genegeerd op tagpaginas (als ze gebruikt worden als standaardfilters).
-
-:_vnbrowse_tagrem
-en : remove
-ru : убрать
-cs : odstranit
-hu : eltávolítás
-nl : verwijder
 
 :_vnbrowse_taginc
 en : Tags to include

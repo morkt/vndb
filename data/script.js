@@ -2124,7 +2124,9 @@ if(byId('jt_box_chare_vns'))
 var fil_cats; // [ <object with field->tr mapping>, <category-link1>, .. ]
 var fil_escape = "_ !\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~".split('');
 function filLoad() {
-  var l = byId('filselect').href.match(/#r$/) ? filReleases() : filVN();
+  var l = byId('filselect').href.match(/#r$/) ? filReleases()
+        : byId('filselect').href.match(/#c$/) ? filChars()
+        : filVN();
   fil_cats = [ new Object ];
 
   var p = tag('p', {'class':'browseopts'});
@@ -2179,7 +2181,8 @@ function filLoad() {
       f.submit();
     }}),
     tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} }),
-    PREF_CODE != '' ? tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_save'), onclick:filSaveDefault }) : null,
+    typeof PREFS != 'undefined' && ('filter_vn' in PREFS | 'filter_release' in PREFS) && PREF_CODE != '' ?
+      tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_save'), onclick:filSaveDefault }) : null,
     tag('p', {id:'fil_savenote', 'class':'hidden'}, '')
   ));
   filSelectCat(1);
@@ -2265,7 +2268,7 @@ function filSerialize() {
     if(r.length > 0 && r[0] != '')
       values[fil_cats[0][f].fil_code] = r.join('~');
   }
-  if(!values['tag_inc'])
+  if(!values['tag_inc'] && !values['trait_inc'])
     delete values['tagspoil'];
   var l = [];
   for(var f in values)
@@ -2379,14 +2382,16 @@ function filFOptions(c, n, opts, setfunc) {
   ];
 }
 
-function filFTagInput(name, label) {
+function filFTagInput(name, label, type) {
+  var src = type=='tag' ? '/xml/tags.xml' : '/xml/traits.xml';
+
   var visible = false;
   var remove = function() {
     ;
   };
   var addtag = function(ul, id, name) {
     ul.appendChild(tag('li', { fil_id: id },
-      tag('a', {href:'/g'+id}, name||'g'+id),
+      type=='tag' ? tag('a', {href:'/g'+id}, name||'g'+id) : tag('a', {href:'/i'+id}, name||'i'+id),
       ' (', tag('a', {href:'#',
         onclick:function () {
           // a -> li -> ul -> div
@@ -2395,7 +2400,7 @@ function filFTagInput(name, label) {
           filSelectField(ul.parentNode);
           return false
         }
-      }, mt('_vnbrowse_tagrem')), ')'
+      }, mt('_js_remove')), ')'
     ));
   }
   var fetch = function(c)   {
@@ -2421,7 +2426,7 @@ function filFTagInput(name, label) {
     txt.value = mt('_js_loading');
     txt.disabled = true;
     if(visible)
-      ajax('/xml/tags.xml?'+q.join(';'), function (hr) {
+      ajax(src+'?'+q.join(';'), function (hr) {
         var l = [];
         var items = hr.responseXML.getElementsByTagName('item');
         setText(ul, '');
@@ -2434,16 +2439,16 @@ function filFTagInput(name, label) {
   };
   var input = tag('input', {type:'text', 'class':'text', style:'width:300px', onfocus:filSelectField});
   var list = tag('ul', null);
-  dsInit(input, '/xml/tags.xml?q=',
+  dsInit(input, src+'?q=',
     function(item, tr) {
-      tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
-        item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_meta')) : null,
-        item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
+      tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40), // l10n /_js_ds_(tag|trait)_(meta|mod)/
+        item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_'+type+'_meta')) : null,
+        item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_'+type+'_mod')) : null
       ));
     },
     function(item, obj) {
-      if(item.getAttribute('meta') == 'yes')
-        alert(mt('_js_ds_tag_nometa'));
+      if(item.getAttribute('meta') == 'yes')  // l10n /_js_ds_(tag|trait)_nometa/
+        alert(mt('_js_ds_'+type+'_nometa'));
       else {
         addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue);
         filSelectField(obj);
@@ -2463,6 +2468,61 @@ function filFTagInput(name, label) {
     },
     function(c,v) { c.fil_val = v; fetch(c) },
     function(c) { visible = true; fetch(c); }
+  ];
+}
+
+function filChars() {
+  var gend = genders;
+  for(var i=0; i<gend.length; i++) // l10n /_gender_.+/
+    gend[i] = [ gend[i], mt('_gender_'+gend[i]) ];
+  var bust = bust_ranges;
+  for(var i=0; i<bust.length; i++)
+    bust[i] = [ bust[i], bust[i]+' cm' ];
+  var waist = waist_ranges;
+  for(var i=0; i<waist.length; i++)
+    waist[i] = [ waist[i], waist[i]+' cm' ];
+  var hip = hip_ranges;
+  for(var i=0; i<hip.length; i++)
+    hip[i] = [ hip[i], hip[i]+' cm' ];
+  var height = height_ranges;
+  for(var i=0; i<height.length; i++)
+    height[i] = [ height[i], height[i]+' cm' ];
+  var weight = weight_ranges;
+  for(var i=0; i<weight.length; i++)
+    weight[i] = [ weight[i], weight[i]+' kg' ];
+  var bloodt = blood_types;
+  for(var i=0; i<bloodt.length; i++) // l10n /_bloodt_.+/
+    bloodt[i] = [ bloodt[i], mt('_bloodt_'+bloodt[i]) ];
+
+  var ontraitpage = location.pathname.indexOf('/c/') < 0;
+
+  return [
+    mt('_charb_fil_title'),
+    [ mt('_charb_general'),
+      filFSelect('gender', mt('_charb_gender'), 4, gend),
+      filFSelect('bloodt', mt('_charb_bloodt'), 5, bloodt),
+      '',
+      filFSelect('bust_min', mt('_charb_bust_min'), 1, bust),
+      filFSelect('bust_max', mt('_charb_bust_max'), 1, bust),
+      filFSelect('waist_min', mt('_charb_waist_min'), 1, waist),
+      filFSelect('waist_max', mt('_charb_waist_max'), 1, waist),
+      filFSelect('hip_min', mt('_charb_hip_min'), 1, hip),
+      filFSelect('hip_max', mt('_charb_hip_max'), 1, hip),
+      '',
+      filFSelect('height_min', mt('_charb_height_min'), 1, height),
+      filFSelect('height_max', mt('_charb_height_max'), 1, height),
+      filFSelect('weight_min', mt('_charb_weight_min'), 1, weight),
+      filFSelect('weight_max', mt('_charb_weight_max'), 1, weight),
+    ],
+    ontraitpage ? [ mt('_charb_traits'),
+      [ '', ' ', tag(mt('_charb_traitnothere')) ],
+    ] : [ mt('_charb_traits'),
+      [ '', ' ', tag(mt('_js_fil_booland')) ],
+      filFTagInput('trait_inc', mt('_charb_traitinc'), 'trait'),
+      filFTagInput('trait_exc', mt('_charb_traitexc'), 'trait'),
+      filFOptions('tagspoil', ' ', [[0, mt('_charb_spoil0')],[1, mt('_charb_spoil1')],[2, mt('_charb_spoil2')]],
+        function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
+    ]
   ];
 }
 
@@ -2537,8 +2597,8 @@ function filVN() {
     ] : [ mt('_vnbrowse_tags'),
       [ '',       ' ',                   tag(mt('_js_fil_booland')) ],
       [ '',       ' ', PREF_CODE != '' ? tag(mt('_vnbrowse_tagactive')) : null ],
-      filFTagInput('tag_inc', mt('_vnbrowse_taginc')),
-      filFTagInput('tag_exc', mt('_vnbrowse_tagexc')),
+      filFTagInput('tag_inc', mt('_vnbrowse_taginc'), 'tag'),
+      filFTagInput('tag_exc', mt('_vnbrowse_tagexc'), 'tag'),
       filFOptions('tagspoil', ' ', [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]],
         function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
     ],
