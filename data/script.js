@@ -2326,6 +2326,61 @@ function filShow() {
   return false;
 }
 
+var curSlider = null;
+function filFSlider(c, n, min, max, def, unit) {
+  var bw = 200; var pw = 1;  // slidebar width and pointer width
+  var s = tag('p', {fil_val:def, 'class':'slider'});
+  var b = tag('div', {style:'width:'+(bw-2)+'px;', s:s});
+  var p = tag('div', {style:'width:'+pw+'px;', s:s});
+  var v = tag('span', def+' '+unit);
+  s.appendChild(b);
+  b.appendChild(p);
+  s.appendChild(v);
+
+  var set = function (e, v) {
+    var w = bw-pw-6;
+    var s,x;
+
+    if(v) {
+      s = e;
+      x = v[0] == '' ? def : parseInt(v[0]);
+      x = (x-min)*w/(max-min);
+    } else {
+      s = curSlider;
+      if(!e) e = window.event;
+      x = (!e) ? (def-min)*w/(max-min)
+        : (e.pageX || e.clientX + document.body.scrollLeft - document.body.clientLeft)-5;
+      var o = s.childNodes[0];
+      while(o.offsetParent) {
+        x -= o.offsetLeft;
+        o = o.offsetParent;
+      }
+    }
+
+    if(x<0) x = 0; if(x>w) x = w;
+    s.fil_val = min + Math.floor(x*(max-min)/w);
+    s.childNodes[1].innerHTML = s.fil_val+' '+unit;
+    s.childNodes[0].childNodes[0].style.left = x+'px';
+    return false;
+  }
+
+  b.onmousedown = p.onmousedown = function (e) {
+    curSlider = this.s;
+    curSlider.oldmousemove = document.onmousemove;
+    curSlider.oldmouseup = document.onmouseup;
+    document.onmouseup = function () {
+      document.onmousemove = curSlider.oldmousemove;
+      document.onmouseup = curSlider.oldmouseup;
+      filSelectField(curSlider);
+      return false;
+    }
+    document.onmousemove = set;
+    return set(e);
+  }
+
+  return [c, n, s, function (c) { return [ c.fil_val ]; }, set ];
+}
+
 function filFSelect(c, n, lines, opts) {
   var s = tag('select', {onfocus: filSelectField, onchange: filSerialize, multiple: lines > 1, size: lines});
   for(var i=0; i<opts.length; i++) {
@@ -2475,21 +2530,6 @@ function filChars() {
   var gend = genders;
   for(var i=0; i<gend.length; i++) // l10n /_gender_.+/
     gend[i] = [ gend[i], mt('_gender_'+gend[i]) ];
-  var bust = bust_ranges;
-  for(var i=0; i<bust.length; i++)
-    bust[i] = [ bust[i], bust[i]+' cm' ];
-  var waist = waist_ranges;
-  for(var i=0; i<waist.length; i++)
-    waist[i] = [ waist[i], waist[i]+' cm' ];
-  var hip = hip_ranges;
-  for(var i=0; i<hip.length; i++)
-    hip[i] = [ hip[i], hip[i]+' cm' ];
-  var height = height_ranges;
-  for(var i=0; i<height.length; i++)
-    height[i] = [ height[i], height[i]+' cm' ];
-  var weight = weight_ranges;
-  for(var i=0; i<weight.length; i++)
-    weight[i] = [ weight[i], weight[i]+' kg' ];
   var bloodt = blood_types;
   for(var i=0; i<bloodt.length; i++) // l10n /_bloodt_.+/
     bloodt[i] = [ bloodt[i], mt('_bloodt_'+bloodt[i]) ];
@@ -2502,17 +2542,17 @@ function filChars() {
       filFSelect('gender', mt('_charb_gender'), 4, gend),
       filFSelect('bloodt', mt('_charb_bloodt'), 5, bloodt),
       '',
-      filFSelect('bust_min', mt('_charb_bust_min'), 1, bust),
-      filFSelect('bust_max', mt('_charb_bust_max'), 1, bust),
-      filFSelect('waist_min', mt('_charb_waist_min'), 1, waist),
-      filFSelect('waist_max', mt('_charb_waist_max'), 1, waist),
-      filFSelect('hip_min', mt('_charb_hip_min'), 1, hip),
-      filFSelect('hip_max', mt('_charb_hip_max'), 1, hip),
+      filFSlider('bust_min', mt('_charb_bust_min'), 20, 120, 40, 'cm'),
+      filFSlider('bust_max', mt('_charb_bust_max'), 20, 120, 100, 'cm'),
+      filFSlider('waist_min', mt('_charb_waist_min'), 20, 120, 40, 'cm'),
+      filFSlider('waist_max', mt('_charb_waist_max'), 20, 120, 100, 'cm'),
+      filFSlider('hip_min', mt('_charb_hip_min'), 20, 120, 40, 'cm'),
+      filFSlider('hip_max', mt('_charb_hip_max'), 20, 120, 100, 'cm'),
       '',
-      filFSelect('height_min', mt('_charb_height_min'), 1, height),
-      filFSelect('height_max', mt('_charb_height_max'), 1, height),
-      filFSelect('weight_min', mt('_charb_weight_min'), 1, weight),
-      filFSelect('weight_max', mt('_charb_weight_max'), 1, weight),
+      filFSlider('height_min', mt('_charb_height_min'), 0, 300, 60, 'cm'),
+      filFSlider('height_max', mt('_charb_height_max'), 0, 300, 240, 'cm'),
+      filFSlider('weight_min', mt('_charb_weight_min'), 0, 400, 80, 'kg'),
+      filFSlider('weight_max', mt('_charb_weight_max'), 0, 400, 320, 'kg'),
     ],
     ontraitpage ? [ mt('_charb_traits'),
       [ '', ' ', tag(mt('_charb_traitnothere')) ],
