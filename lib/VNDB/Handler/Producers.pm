@@ -304,7 +304,7 @@ sub edit {
          end;
         end;
         td class => 'tc_add';
-         a href => '#', mt '_pedit_rel_addbut';
+         a href => '#', mt '_js_add';
         end;
        end;
       end 'table';

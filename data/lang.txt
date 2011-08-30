@@ -1540,6 +1540,13 @@ cs : odstranit
 hu : eltávolítás
 nl : verwijder
 
+:_js_add
+en : add
+ru : добавить
+cs : přidat
+hu : bejegyez
+nl : toevoegen
+
 :_js_ds_noresults
 en : No results...
 ru : Совпадений не найдено...
@@ -2117,14 +2124,6 @@ ru : правка
 cs : upravit
 hu : szerkesztés
 nl : wijzig
-
-# delete
-:_mtabs_del
-en : del
-ru : удалить
-cs : smazat
-hu : törlés
-nl : verwijder
 
 # VN relations
 :_mtabs_relations
@@ -3128,20 +3127,6 @@ cs : Přidat producenta
 hu : Készítő bejegyzése
 nl : Nieuwe producent toevoegen
 
-:_pedit_rel_addbut
-en : add
-ru : добавить
-cs : přidat
-hu : hozzáad
-nl : toevoegen
-
-:_pedit_rel_del
-en : remove
-ru : убрать
-cs : odebrat
-hu : eltávolít
-nl : verwijderen
-
 :_pedit_rel_none
 en : Nothing selected.
 ru : Ничего не выбрано.
@@ -3797,13 +3782,6 @@ cs : -médium-
 hu : -medium-
 nl :
 
-:_redit_form_med_remove
-en : remove
-ru : убрать
-cs : odebrat
-hu : eltávolítás
-nl : verwijder
-
 :_redit_form_prod
 en : Producers
 ru : Компании
@@ -3845,20 +3823,6 @@ ru : Оба
 cs : Obojí
 hu : Mindkettő
 nl : Beide
-
-:_redit_form_prod_addbut
-en : add
-ru : добавить
-cs : přidat
-hu : bejegyez
-nl : voeg toe
-
-:_redit_form_prod_remove
-en : remove
-ru : убрать
-cs : odebrat
-hu : eltávolít
-nl : verwijder
 
 :_redit_form_prod_none
 en : Nothing selected.
@@ -3908,20 +3872,6 @@ ru : Добавить новеллу
 cs : Přidat vizuální novelu
 hu : Visual novel bejegyzése
 nl : Nieuwe visual novel
-
-:_redit_form_vn_addbut
-en : add
-ru : добавить
-cs : přidat
-hu : bejegyez
-nl : voeg toe
-
-:_redit_form_vn_remove
-en : remove
-ru : убрать
-cs : odebrat
-hu : eltávolít
-nl : verwijder
 
 :_redit_form_vn_none
 en : Nothing selected.
@@ -4683,13 +4633,6 @@ ru : Активные фильтры:
 cs : Aktivní filtry:
 hu : Aktív szűrők:
 nl : Actieve filters:
-
-:_taglink_fil_remove
-en : remove
-ru : убрать
-cs : odstranit
-hu : eltávolít
-nl : verwijder
 
 :_taglink_fil_user
 en : User:
@@ -5477,13 +5420,6 @@ cs : Přidat vlastnost
 hu : Sajátosság hozzáadása
 nl : Voeg kenmerk toe
 
-:_chare_traits_del
-en : del
-ru*:
-cs*:
-hu : töröl
-nl :
-
 :_chare_traits_present
 en : Selected trait is already present.
 ru*:
@@ -5546,13 +5482,6 @@ ru*:
 cs : Všechna / ostatní
 hu : Mind / mások
 nl : Alle / overige
-
-:_chare_vns_del
-en : remove
-ru*:
-cs : odstranit
-hu : eltávolít
-nl : verwijder
 
 :_chare_vns_allrel
 en : All releases already selected.
@@ -7701,20 +7630,6 @@ cs : titulu
 hu : -
 nl : van
 
-:_vnedit_rel_addbut
-en : add
-ru : добавить
-cs : přidat
-hu : bejegyez
-nl : toevoegen
-
-:_vnedit_rel_del
-en : del
-ru : убрать
-cs : smazat
-hu : töröl
-nl : verwijder
-
 :_vnedit_rel_none
 en : No relations selected.
 ru : Отношений не выбрано.
@@ -7884,13 +7799,6 @@ ru : Скриншот #[_1]
 cs : Screenshot #[_1]
 hu : #[_1]-dik pillanatkép
 nl :
-
-:_vnedit_scr_remove
-en : remove
-ru : убрать
-cs : odebrat
-hu : eltávolítás
-nl : verwijder
 
 :_vnedit_scr_fullsize
 en : Full size: [_1]

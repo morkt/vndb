@@ -390,7 +390,7 @@ sub taglinks {
       if($f->{u}) {
         my $o = $self->dbUserGet(uid => $f->{u})->[0];
         li;
-         txt '['; a href => $url->(u=>0), mt '_taglink_fil_remove'; txt '] ';
+         txt '['; a href => $url->(u=>0), mt '_js_remove'; txt '] ';
          txt mt '_taglink_fil_user'; txt ' ';
          a href => "/u$o->{id}", $o->{username};
         end;
@@ -398,7 +398,7 @@ sub taglinks {
       if($f->{t}) {
         my $o = $self->dbTagGet(id => $f->{t})->[0];
         li;
-         txt '['; a href => $url->(t=>0), mt '_taglink_fil_remove'; txt '] ';
+         txt '['; a href => $url->(t=>0), mt '_js_remove'; txt '] ';
          txt mt '_taglink_fil_tag'; txt ' ';
          a href => "/g$o->{id}", $o->{name};
         end;
@@ -406,7 +406,7 @@ sub taglinks {
       if($f->{v}) {
         my $o = $self->dbVNGet(id => $f->{v})->[0];
         li;
-         txt '['; a href => $url->(v=>0), mt '_taglink_fil_remove'; txt '] ';
+         txt '['; a href => $url->(v=>0), mt '_js_remove'; txt '] ';
          txt mt '_taglink_fil_vn'; txt ' ';
          a href => "/v$o->{id}", $o->{title};
         end;

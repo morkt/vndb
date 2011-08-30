@@ -84,7 +84,7 @@ sub htmlMainTabs {
 
    if($type eq 'u' && $self->authCan('usermod')) {
      li $sel eq 'del' ? (class => 'tabselected') : ();
-      a href => "/$id/del", mt '_mtabs_del';
+      a href => "/$id/del", mt '_js_remove';
      end;
    }
 

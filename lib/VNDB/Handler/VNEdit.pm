@@ -220,7 +220,7 @@ sub _form {
         end;
         td class => 'tc_title', $v ? $v->{title} : '';
         td class => 'tc_add';
-         a href => '#', mt '_vnedit_rel_addbut';
+         a href => '#', mt '_js_add';
         end;
        end;
       end 'table';

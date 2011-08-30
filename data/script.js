@@ -819,7 +819,7 @@ function vnrAdd(rel, vid, official, title) {
       tag('label', {'for':'official_'+vid}, mt('_vnedit_rel_official')),
       sel, ' '+mt('_vnedit_rel_of')),
     tag('td', {'class':'tc_title'}, shorten(byId('title').value, 40)),
-    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:vnrDel}, mt('_vnedit_rel_del')))
+    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:vnrDel}, mt('_js_remove')))
   ));
 
   vnrEmpty();
@@ -880,7 +880,7 @@ function vnrFormAdd() {
   ajax('/xml/vn.xml?q='+encodeURIComponent(input), function(hr) {
     txt.disabled = sel.disabled = off.disabled = false;
     txt.value = '';
-    setText(lnk, mt('_vnedit_rel_addbut'));
+    setText(lnk, mt('_js_add'));
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
@@ -933,7 +933,7 @@ function medAdd(med, qty) {
     msel.appendChild(tag('option', {value:medTypes[i][0], selected: med==medTypes[i][0]}, medTypes[i][1]));
 
   byId('media_div').appendChild(tag('span', qsel, msel,
-    med != '' ? tag('input', {type: 'button', 'class':'submit', onclick:medDel, value:mt('_redit_form_med_remove')}) : null
+    med != '' ? tag('input', {type: 'button', 'class':'submit', onclick:medDel, value:mt('_js_remove')}) : null
   ));
 }
 
@@ -1148,7 +1148,7 @@ function scrCheckStatus() {
       var nsfwid = 'scr_sfw_'+tr.scr_id;
       setContent(byName(tr, 'td')[1],
         tag('b', mt('_vnedit_scr_id', tr.scr_id)),
-        ' (', tag('a', {href: '#', onclick:scrDel}, mt('_vnedit_scr_remove')), ')',
+        ' (', tag('a', {href: '#', onclick:scrDel}, mt('_js_remove')), ')',
         tag('br', null),
         mt('_vnedit_scr_fullsize', dim),
         odd ? tag('b', {'class':'standout', 'style':'font-weight: bold'}, ' '+mt('_vnedit_scr_nonstandard')) : null,
@@ -1454,7 +1454,7 @@ function rvnLoad() {
 function rvnAdd(id, title) {
   byId('vn_tbl').appendChild(tag('tr', {id:'rvn_'+id, rvn_id:id},
     tag('td', {'class':'tc_title'}, 'v'+id+':', tag('a', {href:'/v'+id}, shorten(title, 40))),
-    tag('td', {'class':'tc_rm'},    tag('a', {href:'#', onclick:rvnDel}, mt('_redit_form_vn_remove')))
+    tag('td', {'class':'tc_rm'},    tag('a', {href:'#', onclick:rvnDel}, mt('_js_remove')))
   ));
   rvnStripe();
   rvnEmpty();
@@ -1502,7 +1502,7 @@ function rvnFormAdd() {
   ajax('/xml/vn.xml?q='+encodeURIComponent(val), function(hr) {
     txt.disabled = false;
     txt.value = '';
-    setText(lnk, mt('_redit_form_vn_addbut'));
+    setText(lnk, mt('_js_add'));
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
@@ -1564,7 +1564,7 @@ function rprAdd(id, role, name) {
   byId('producer_tbl').appendChild(tag('tr', {id:'rpr_'+id, rpr_id:id},
     tag('td', {'class':'tc_name'}, 'p'+id+':', tag('a', {href:'/p'+id}, shorten(name, 40))),
     tag('td', {'class':'tc_role'}, rl),
-    tag('td', {'class':'tc_rm'},   tag('a', {href:'#', onclick:rprDel}, mt('_redit_form_prod_remove')))
+    tag('td', {'class':'tc_rm'},   tag('a', {href:'#', onclick:rprDel}, mt('_js_remove')))
   ));
   rprEmpty();
 }
@@ -1604,7 +1604,7 @@ function rprFormAdd() {
   ajax('/xml/producers.xml?q='+encodeURIComponent(val), function(hr) {
     txt.disabled = false;
     txt.value = '';
-    setText(lnk, mt('_redit_form_prod_addbut'));
+    setText(lnk, mt('_js_add'));
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
@@ -1676,7 +1676,7 @@ function prrAdd(rel, pid, title) {
   byId('relation_tbl').appendChild(tag('tr', {id:'relation_tr_'+pid},
     tag('td', {'class':'tc_prod' }, 'p'+pid+':', tag('a', {href:'/p'+pid}, shorten(title, 40))),
     tag('td', {'class':'tc_rel'  }, sel),
-    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:prrDel}, mt('_pedit_rel_del')))
+    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:prrDel}, mt('_js_remove')))
   ));
 
   prrEmpty();
@@ -1735,7 +1735,7 @@ function prrFormAdd() {
   ajax('/xml/producers.xml?q='+encodeURIComponent(input), function(hr) {
     txt.disabled = sel.disabled = false;
     txt.value = '';
-    setText(lnk, mt('_pedit_rel_addbut'));
+    setText(lnk, mt('_js_add'));
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
@@ -1818,7 +1818,7 @@ function ctrAdd(item, spoil) {
       tag('b', {'class':'grayedout'}, group?group+' / ':''),
       tag('a', {'href':'/i'+id}, name)),
     sp,
-    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:ctrDel}, mt('_chare_traits_del')))
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:ctrDel}, mt('_js_remove')))
   ));
   ctrEmpty();
   ctrSerialize();
@@ -1988,7 +1988,7 @@ function cvnRelAdd(vid, rid, role, spoil) {
     tag('td', {'class':'tc_rel'}, rsel),
     tag('td', {'class':'tc_rol'}, lsel),
     tag('td', {'class':'tc_spl'}, ssel),
-    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:cvnRelDel}, mt('_chare_vns_del')))
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:cvnRelDel}, mt('_js_remove')))
   ), last);
 }
 
