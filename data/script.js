@@ -2446,8 +2446,10 @@ function filFTagInput(name, label, type) {
   var remove = function() {
     ;
   };
-  var addtag = function(ul, id, name) {
-    ul.appendChild(tag('li', { fil_id: id },
+  var addtag = function(ul, id, name, group) {
+    ul.appendChild(
+      tag('li', { fil_id: id },
+      type=='trait' && group ? tag('b', {'class':'grayedout'}, group+' / ') : null,
       type=='tag' ? tag('a', {href:'/g'+id}, name||'g'+id) : tag('a', {href:'/i'+id}, name||'i'+id),
       ' (', tag('a', {href:'#',
         onclick:function () {
@@ -2488,7 +2490,7 @@ function filFTagInput(name, label, type) {
         var items = hr.responseXML.getElementsByTagName('item');
         setText(ul, '');
         for(var i=0; i<items.length; i++)
-          addtag(ul, items[i].getAttribute('id'), items[i].firstChild.nodeValue);
+          addtag(ul, items[i].getAttribute('id'), items[i].firstChild.nodeValue, items[i].getAttribute('groupname'));
         txt.value = '';
         txt.disabled = false;
         c.fil_val = null;
@@ -2498,7 +2500,10 @@ function filFTagInput(name, label, type) {
   var list = tag('ul', null);
   dsInit(input, src+'?q=',
     function(item, tr) {
-      tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40), // l10n /_js_ds_(tag|trait)_(meta|mod)/
+      var g = item.getAttribute('groupname');
+      tr.appendChild(tag('td',
+        type=='trait' && g ? tag('b', {'class':'grayedout'}, g+' / ') : null,
+        shorten(item.firstChild.nodeValue, 40),                                // l10n /_js_ds_(tag|trait)_(meta|mod)/
         item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_'+type+'_meta')) : null,
         item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_'+type+'_mod')) : null
       ));
@@ -2507,7 +2512,7 @@ function filFTagInput(name, label, type) {
       if(item.getAttribute('meta') == 'yes')  // l10n /_js_ds_(tag|trait)_nometa/
         alert(mt('_js_ds_'+type+'_nometa'));
       else {
-        addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue);
+        addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue, item.getAttribute('groupname'));
         filSelectField(obj);
       }
       return '';
