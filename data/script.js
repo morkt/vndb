@@ -2366,11 +2366,13 @@ function filFSlider(c, n, min, max, def, unit) {
 
   b.onmousedown = p.onmousedown = function (e) {
     curSlider = this.s;
-    curSlider.oldmousemove = document.onmousemove;
-    curSlider.oldmouseup = document.onmouseup;
+    if(!curSlider.oldmousemove) curSlider.oldmousemove = document.onmousemove;
+    if(!curSlider.oldmouseup) curSlider.oldmouseup = document.onmouseup;
     document.onmouseup = function () {
       document.onmousemove = curSlider.oldmousemove;
+      curSlider.oldmousemove = null;
       document.onmouseup = curSlider.oldmouseup;
+      curSlider.oldmouseup = null;
       filSelectField(curSlider);
       return false;
     }
