@@ -304,7 +304,7 @@ nl :
 en : Android
 ru*:
 cs*:
-hu*:
+hu :
 nl :
 
 :_plat_dvd
@@ -318,7 +318,7 @@ nl : DVD Speler
 en : Blu-ray Player
 ru*:
 cs*:
-hu*:
+hu : Blu-ray Lejátszó
 nl : Blu-ray Speler
 
 :_plat_gba
@@ -423,7 +423,7 @@ nl :
 en : Website
 ru*:
 cs*:
-hu*:
+hu : Honlap
 nl :
 
 :_plat_oth
@@ -496,7 +496,7 @@ nl :
 en : Nintendo Optical [quant,_1,Disk,Disks]
 ru : [quant,_1,оптический диск,оптических диска,оптических дисков] Nintendo
 cs : [quant,_1,Nintendo Optical Disk,Nintendo Optical Disky,Nintendo Optical Disků]
-hu : Nintendo Optical [quant,_1,Lemez,Lemezek]
+hu : Nintendo Optikai [quant,_1,Lemez,Lemez]
 nl :
 
 :_med_in
@@ -676,14 +676,14 @@ nl : Voortgebracht uit
 en : Complete
 ru : Полный
 cs : Kompletní
-hu : Teljesen kész
+hu : Kész
 nl : Compleet
 
 :_rtype_partial
 en : Partial
 ru : Частичный
 cs : Částečné
-hu : Részben kész
+hu : Félkész
 nl : Partieel
 
 :_rtype_trial
@@ -3373,7 +3373,7 @@ nl : Originele titel
 en : Type
 ru : Тип
 cs : Typ
-hu : Típus
+hu : Állapot
 nl :
 
 :_relinfo_type_format
@@ -3579,7 +3579,7 @@ nl : Algemene info
 en : Type
 ru : Тип
 cs : Typ
-hu : Típus
+hu : Állapot
 nl :
 
 :_redit_form_patch
@@ -3996,7 +3996,7 @@ nl : Algemeen
 en : Release type
 ru : Тип выпуска
 cs : Typ vydání
-hu : Kiadás típus
+hu*: Állapot
 nl : Type
 
 :_rbrowse_patch
@@ -4143,7 +4143,7 @@ nl :
 en : Voiced
 ru : Озвучка
 cs : S hlasem
-hu : Szinkronos
+hu*: Szinkron
 nl : Ingesproken
 
 :_rbrowse_animation
@@ -4930,7 +4930,7 @@ nl : Populaire tags
 en : Recently tagged
 ru : Недавно отмеченные
 cs :
-hu :
+hu : Nemrég felcímkézve
 nl : Recentelijk getagged
 
 :_tagidx_queue
@@ -6429,7 +6429,17 @@ en : Hello [_1]
      vndb.org
 ru*:
 cs*:
-hu*:
+hu : Üdv [_1]
+
+     A jelszavad vissza lett állítva, most már bejelentkezhetsz a http://vndb.org/ címen az
+     új adataiddal:
+
+     Felhasználónév: [_1]
+     Jelszó: [_2]
+
+     Legközelebb próbáld meg nem elfelejteni a jelszavad! :-)
+
+     vndb.org
 nl : Hallo [_1],
 
      Je VNDB.org account is tijdelijk uitgeschakeld, je kan nu een nieuw wachtwoord instellen door de volgende link te volgen:
@@ -6444,7 +6454,7 @@ nl : Hallo [_1],
 en : Password reset for [_1]
 ru*: Новый пароль для [_1]
 cs*: Nové heslo pro uživatele [_1]
-hu*: Új jelszó [_1]-nak
+hu : Új jelszó [_1]-nak
 nl : Wachtwoord gereset voor [_1]
 
 :_newpass_title
@@ -6465,7 +6475,7 @@ ru*: Забыли пароль и больше не можете авториз�
 cs*: Zapomněli jste své heslo a nemůžete se přihlásit na VNDB?
      Nebojte! Stačí zadat e-mailovou adresu, se kterou jste se na VNDB registrovali,
      a my vám do několika minut pošleme heslo nové!
-hu*: Elfelejtetted a jelszavad és nem tudsz bejelentkezni a VNBD-be?
+hu : Elfelejtetted a jelszavad és nem tudsz bejelentkezni a VNBD-be?
      Ne aggódj! Csak add meg nekünk az email címet amivel regisztráltál,
      s egy pár percen belül kapsz tőlünk egy új jelszót!
 nl : Je wachtwoord vergeten?
@@ -6497,7 +6507,7 @@ nl : Nieuw wachtwoord
 en : Your password has been reset and instructions to set a new one should reach your mailbox in a few minutes.
 ru*:
 cs*:
-hu*:
+hu : A jelszavad vissza lett állítva s pár percen belül kapsz egy ujjat a postafiókodba.[br]Miután bejelentkezel, nyugodtan megváltoztathatod a jelszavad amire akarod.[br][br][url,/u/login,Bejelentkezés] - [url,/,Kezdőlap]
 nl : Je wachtwoord is gereset, en instructies om een nieuwe te zetten zullen binnen een paar minuten in je mailbox verschijnen.
 
 
@@ -6507,21 +6517,21 @@ nl : Je wachtwoord is gereset, en instructies om een nieuwe te zetten zullen bin
 en : Set password for [_1]
 ru*:
 cs*:
-hu*:
+hu : [_1] jelszavának a beállítása
 nl : Stel wachtwoord in voor [_1]
 
 :_setpass_title
 en : Set password for [_1]
 ru*:
 cs*:
-hu*:
+hu : [_1] jelszavának a beállítása
 nl : Stel wachtwoord in voor [_1]
 
 :_setpass_msg
 en : Now you can set a password for your account. You will be logged in automatically after your password has been saved.
 ru*:
 cs*:
-hu*:
+hu : Mostmár tudsz a fiókodnak jelszavat beállítani. Miután a jelszavad el lesz mentve automatikusan be leszel jelentkezve.
 nl : Nu kan je een wachtwoord instellen voor je account. Je wordt automatisch ingelogd nadat je wachtwoord is opgeslagen.
 
 :_setpass_password
@@ -6609,7 +6619,16 @@ en : Hello [_1]
      vndb.org
 ru*:
 cs*:
-hu*:
+hu : Üdv [_1]
+
+     Valaki a te e-mail címedet használva fiókot nyitott a VNDB.org-on. Kövesd az alábbi visszaigazoló linket a regisztráció
+     befejezéséhez.
+
+     [_2]
+
+     Ha nem emlékeznél arra, hogy fiókot nyitottál volna a VNDB.org-on akkor kérlek hagyd figyelmen kívül ezt az e-mailt.
+
+     vndb.org
 nl : Hallo [_1],
 
      Iemand heeft een account aangemaakt op VNDB.org met jouw emailadres. Om
@@ -6626,21 +6645,21 @@ nl : Hallo [_1],
 en : Confirm registration for [_1]
 ru*:
 cs*:
-hu*:
+hu : [_1] regisztrációjának jóváhagyása
 nl : Emailbevestiging voor [_1]
 
 :_register_done_title
 en : Account created
 ru*:
 cs*:
-hu*:
+hu : Fiók létrehozva
 nl : Account aangemaakt
 
 :_register_done_msg
 en : Your account has been created! In a few minutes, you should receive an email with instructions to set your password.
 ru*:
 cs*:
-hu*:
+hu : A fiókod elkészült! Pár perc múlva fogsz kapni egy e-mailt utasításokkal a jelszavad beállításához.
 nl : Je account is aangemaakt! Binnen een paar minuten krijg je een email met instructies om een wachtwoord in te stellen.
 
 
@@ -7340,7 +7359,7 @@ ru : Список альтернативных названий или аббр�
 cs : Seznam alternativních názvů nebo zkratek. Jedna řádka pro každé alias.
      Může zahrnovat oba oficiální (japonský/anglický) názvy a neoficiální názvy používané na internetu.[br]
      Názvy vypsané ve vydáních by se sem přidávat neměly!
-hu : Alternatív címek vagy röviditések listája. Külön sorba minden elnevezést. Tartalmazhat hivatalos
+hu : Alternatív címek vagy rövidítések listája. Külön sorba minden elnevezést. Tartalmazhat hivatalos
      (japán/angol) címeket vagy nem hivatalosokat amelyet a netten használnak.[br]
      Azokat a címeket amelyek a kiadásokba be vannak írva ne írjátok ide be!
 nl : Lijst van alternatieve titels of afkortingen, één titel per regel. Kan zowel officiële
@@ -8690,7 +8709,7 @@ nl : Iemand heeft zich al geregistreerd met dat emailadres
 en : No image with that ID
 ru*:
 cs*:
-hu*:
+hu : Nem található kép ezzel az ID-val
 nl : Geen plaatje met dat ID
 
 :_formerr_e_noimage
@@ -8739,7 +8758,7 @@ nl : Wacht a.u.b. 30 seconden voordat je een nieuwe post maakt
 en : You can only create 5 threads every 24 hours
 ru*:
 cs*:
-hu*:
+hu : Csak 5 új témát lehet létrehozni 24 óra leforgássa alatt.
 nl : Je mag maar 5 topics per 24 uur maken
 
 :_formerr_e_badeditsum
@@ -8816,7 +8835,7 @@ nl : Tag [url,_1,_2] bestaat al!
 en : Trait [url,_1,_2] already exists within the same group.
 ru*:
 cs*:
-hu*:
+hu : [url,_1,_2] sajátosság(ok) már megtalálhatóak ugyanabban a csoportban.
 nl : Kenmerk [url,_1,_2] bestaat al in dezelfde groep.
 
 :_formerr_tpl_mail
