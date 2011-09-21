@@ -1,0 +1,71 @@
+:TITLE:Hersteller hinzufügen/bearbeiten
+:INC:index
+
+
+:SUB:Wann fügt man einen Hersteller hinzu
+<p>
+ Ein Herstellereintrag sollte angelegt werden, wenn du eine Veröffentlichung einer Visual Novel anlegst, die von
+ einem Hersteller erstellt wurde, der noch nicht in der Datenbank gelistet ist. Hersteller, die keine Veröffentlichungen
+ gelistet habe, könnten nach eine Weile gelöscht werden, lege also nur einen Eintrag an, wenn du ihn mit einer
+ Veröffentlichung verlinkst. Damit ein Hersteller gelistet wird, müssen sie mindestens ein vollständiges
+ Produkt veröffentlicht haben. Was für Übersetzungsprojekte bedeutet, dass die Gruppe nur als Hersteller hinzugefügt 
+ werden sollte, wenn sie das Projekt fertiggestellt haben.
+</p>
+
+
+:SUB:Allgemeine Informationen
+<dl>
+ <dt>Typ</dt><dd>
+  Der Typ des Herstellers.
+ </dd><dt>Name (Romaji)</dt><dd>
+  Der Name des Herstellers im westlichen Alphabet, wende <a href="/d5.1">Romanisierung</a>
+  an wenn der Originalname noch nicht im westlichen Alphabet ist. <a href="/d5.2">Großschreibung</a>
+  ist für dieses Feld auch wichtig.
+ </dd><dt>Originalname</dt><dd>
+  Wenn der Name (oben) romanisiert wurde, stelle sicher, dass der Originalname (wahrscheinlich 
+  auf Japanisch) hier angezeigt wird.
+ </dd><dt>Pseudonyme</dt><dd>
+  Andere Namen, unter denen der Hersteller bekannt ist. Mehrere Pseudonyme sollten durch ein Komma getrennt werden.
+ </dd><dt>Primärsprache</dt><dd>
+  Die Sprache, in der der Hersteller die meiste Zeit arbeitet. Standard ist Japanisch.
+ </dd><dt>Webseite</dt><dd>
+  Offizielle Homepage des Herstellers.
+ </dd><dt>Beschreibung</dt><dd>
+  Geschichte des Herstellers oder eine Beschreibung von der Art Spiele, die er macht.
+ </dd>
+</dl>
+
+
+:SUB:Beziehungen
+Diese Beziehungen geben an welche Hersteller mit anderen zusammengehörig
+sind und inwiefern. Die korrekte Beziehung auszuwählen kann ein wenig verwirrend 
+sein, siehe dir  im Zweifelsfall das Beziehungsdiagramm des Herstellereintrags an.
+Die folgenden Beziehungen sind definiert:
+<dl>
+ <dt>Ehemals</dt><dd>
+  Der derzeitige Hersteller war früher als anderer Hersteller bekannt. Dies kann aufgrund 
+  einer Namensänderung sein oder wenn der früherer Hersteller aufgelöst wurde und die gleichen
+  Leute erneut eingestellt wurden unter anderem Namen.
+ </dd><dt>Abgelöst von</dt><dd>
+  Gegenteil von <i>Ehemals</i> - ausgewählter Hersteller war ehemals als anderer Hersteller bekannt.
+ </dd><dt>Tochterunternehmen</dt><dd>
+  Ausgewählter Hersteller ist ein <a href="http://de.wikipedia.org/wiki/Tochterunternehmen">Tochterunternehmen</a>
+  des derzeitigen Herstellers.
+ </dd><dt>Mutterunternehmen</dt><dd>
+  Gegenteil von <i>Tochterunternehmen</i> - derzeitige Hersteller ist ein Tochterunternehmen des ausgewählten Herstellers.
+ </dd><dt>Imprint</dt><dd>
+  Ausgewählter Hersteller ist ein Imprint des derzeitigen Herstellers. Einfach gesagt, ein
+  "Imprint" ist ein anderer Name für die gleiche Gruppe von Leuten, wenn sie Spiele veröffentlichen.
+  Siehe <a href="http://de.wikipedia.org/wiki/Imprint">Wikipedia</a> für mehr Informationen.
+ </dd><dt>Ursprungsmarke</dt><dd>
+  Gegenteil von <i>Imprint</i> - derzeitiger Hersteller ist ein Imprint des ausgewählten Herstellers.
+ </dd><dt>Hervorgebracht von</dt><dd>
+  Der ausgewählte Hersteller wurde von früheren Mitarbeitern gegründet.
+  Der Unterschied zu der <i>Ehemals</i> Beziehung ist der, dass der Hersteller, von dem die
+  Mitarbeiter kamen, noch am Leben ist.
+ </dd><dt>Entstand aus</dt><dd>
+  Gegenteil von <i>Hervorgebracht von</i> - ausgewählter Hersteller wurde vom derzeitigen Hersteller übernommen.
+ </dd>
+</dl>
+
+
