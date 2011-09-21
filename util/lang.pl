@@ -150,6 +150,7 @@ sub stage {
   chdir "$ROOT/data";
   rename 'lang.txt', '.lang.txt.tmp' or die $!;
   `git checkout lang.txt`;
+  add $lang;
   merge $lang, '.lang.txt.tmp';
   `git add lang.txt`;
   rename '.lang.txt.tmp', 'lang.txt';
