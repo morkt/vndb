@@ -112,7 +112,7 @@ sub write_atom { # num, res, feed, time
   $x->tag(updated => datetime($updated));
   $x->tag(id => $VNDB::S{url}.$VNDB::S{atom_feeds}{$feed}[2]);
   $x->tag(link => rel => 'self', type => 'application/atom+xml', href => "$VNDB::S{url}/feeds/$feed.atom", undef);
-  $x->tag(link => rel => 'alternate', type => 'text/html', href => $VNDB::S{atom_feeds}{$feed}[2], undef);
+  $x->tag(link => rel => 'alternate', type => 'text/html', href => $VNDB::S{url}.$VNDB::S{atom_feeds}{$feed}[2], undef);
 
   for(@$r) {
     $x->tag('entry');
@@ -126,7 +126,7 @@ sub write_atom { # num, res, feed, time
       $x->tag(uri => '/u'.$_->{uid}) if $_->{uid};
       $x->end;
     }
-    $x->tag(link => rel => 'alternate', type => 'text/html', href => $_->{id}, undef);
+    $x->tag(link => rel => 'alternate', type => 'text/html', href => $VNDB::S{url}.$_->{id}, undef);
     $x->tag('summary', type => 'html', bb2html $_->{summary}) if $_->{summary};
     $x->end('entry');
   }
