@@ -123,7 +123,7 @@ sub write_atom { # num, res, feed, time
     if($_->{username}) {
       $x->tag('author');
       $x->tag(name => $_->{username});
-      $x->tag(uri => '/u'.$_->{uid}) if $_->{uid};
+      $x->tag(uri => $VNDB::S{url}.'/u'.$_->{uid}) if $_->{uid};
       $x->end;
     }
     $x->tag(link => rel => 'alternate', type => 'text/html', href => $VNDB::S{url}.$_->{id}, undef);
