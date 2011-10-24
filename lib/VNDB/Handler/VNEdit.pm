@@ -169,8 +169,8 @@ sub _form {
   vn_img => [ mt('_vnedit_image'), [ static => nolabel => 1, content => sub {
     div class => 'img';
      p mt '_vnedit_image_none' if !$frm->{image};
-     p mt '_vnedit_image_processing' if $frm->{image} < 0;
-     img src => imgurl(cv => $frm->{image}) if $frm->{image} > 0;
+     p mt '_vnedit_image_processing' if $frm->{image} && $frm->{image} < 0;
+     img src => imgurl(cv => $frm->{image}) if $frm->{image} && $frm->{image} > 0;
     end;
 
     div;
