@@ -2540,6 +2540,9 @@ function filChars() {
   var bloodt = blood_types;
   for(var i=0; i<bloodt.length; i++) // l10n /_bloodt_.+/
     bloodt[i] = [ bloodt[i], mt('_bloodt_'+bloodt[i]) ];
+  var roles = char_roles;
+  for(var i=0; i<roles.length; i++) // l10n /_charrole_.+/
+    roles[i] = [ roles[i], mt('_charrole_'+roles[i]) ];
 
   var ontraitpage = location.pathname.indexOf('/c/') < 0;
 
@@ -2569,7 +2572,8 @@ function filChars() {
       filFTagInput('trait_exc', mt('_charb_traitexc'), 'trait'),
       filFOptions('tagspoil', ' ', [[0, mt('_charb_spoil0')],[1, mt('_charb_spoil1')],[2, mt('_charb_spoil2')]],
         function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
-    ]
+    ],
+    [ mt('_charb_roles'), filFSelect('role', mt('_charb_roles'), 4, roles) ]
   ];
 }
 

@@ -9,7 +9,7 @@ our @EXPORT = qw|dbCharGet dbCharRevisionInsert dbCharImageId|;
 
 
 # options: id rev instance tagspoil trait_inc trait_exc char what results page gender bloodt
-#   bust_min bust_max waist_min waist_max hip_min hip_max height_min height_max weight_min weight_max
+#   bust_min bust_max waist_min waist_max hip_min hip_max height_min height_max weight_min weight_max role
 # what: extended traits vns changes
 sub dbCharGet {
   my $self = shift;
@@ -48,6 +48,9 @@ sub dbCharGet {
       'LOWER(SUBSTR(cr.name, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
       '(ASCII(cr.name) < 97 OR ASCII(cr.name) > 122) AND (ASCII(cr.name) < 65 OR ASCII(cr.name) > 90)' => 1 ) : (),
+    $o{role} ? (
+      'EXISTS(SELECT 1 FROM chars_vns cvi WHERE cvi.cid = cr.id AND cvi.role IN(!l))',
+      [ ref $o{role} ? $o{role} : [$o{role}] ] ) : (),
     $o{trait_inc} ? (
       'c.id IN(SELECT cid FROM traits_chars WHERE tid IN(!l) AND spoil <= ? GROUP BY cid HAVING COUNT(tid) = ?)',
       [ ref $o{trait_inc} ? $o{trait_inc} : [$o{trait_inc}], $o{tagspoil}, ref $o{trait_inc} ? $#{$o{trait_inc}}+1 : 1 ]) : (),
