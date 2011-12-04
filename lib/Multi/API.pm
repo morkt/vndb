@@ -390,7 +390,7 @@ sub login {
 
   if(exists $arg->{username}) {
     # fetch user info
-    $_[KERNEL]->post(pg => query => "SELECT rank, salt, encode(passwd, 'hex') as passwd FROM users WHERE username = ?",
+    $_[KERNEL]->post(pg => query => "SELECT salt, encode(passwd, 'hex') as passwd FROM users WHERE username = ?",
       [ $arg->{username} ], 'login_res', [ $c, $arg ]);
   } else {
     $c->{client} = $arg->{client};
