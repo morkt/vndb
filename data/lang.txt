@@ -1460,6 +1460,20 @@ cs : Potvrdit
 hu : Beküldés
 nl : Verstuur
 
+:_form_continue
+en : Continue
+ru*:
+cs*:
+hu*:
+nl : Verder
+
+:_form_continue_ign
+en : Continue and ignore duplicates
+ru*:
+cs*:
+hu*:
+nl : Ga verder en negeer dubbele items
+
 :_form_ihid
 en : Deleted
 ru : Удалено
@@ -7395,6 +7409,31 @@ ru : Добавление новой новеллы
 cs : Přidat novou vizuální novelu
 hu : Új visual novel bejegyzése
 nl : Voeg nieuwe visual novel toe
+
+:_vnedit_dup_title
+en : Possible duplicates found
+ru*:
+cs*:
+hu*:
+nl : Mogelijke dubbele items gevonden
+
+:_vnedit_dup_msg
+en : The following is a list of visual novels that match the title(s) you gave.
+     Please check this list to avoid creating a duplicate visual novel entry.
+     Be especially wary of items that have been deleted! To see why an entry
+     has been deleted, click on its title.[br]
+     [br]
+     To add the visual novel either way, hit the "Continue and ignore
+     duplicates" button below.
+ru*:
+cs*:
+hu*:
+nl : De onderstaande lijst bevat visual novels met een vergelijkbare titel.
+     Controleer deze lijst a.u.b. om te voorkomen dat je een visual novel dubbel toevoegt.
+     Wees helemaal op de hoede van items die verwijderd zijn! Om te zien waarom
+     iets verwijderd is, klik op de titel.[br]
+     [br]
+     Klik op de "Ga verder en negeer dubbele items" knop om alsnog verder te gaan.
 
 :_vnedit_geninfo
 en : General info

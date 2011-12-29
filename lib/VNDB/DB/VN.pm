@@ -11,7 +11,7 @@ our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreen
 
 
 # Options: id, rev, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
-#   hasani, hasshot, ul_notblack, ul_onwish, results, page, what, sort, reverse
+#   hasani, hasshot, ul_notblack, ul_onwish, results, page, what, sort, reverse, inc_hidden
 # What: extended anime relations screenshots relgraph rating ranking changes
 # Sort: id rel pop rating title tagscore rand
 sub dbVNGet {
@@ -66,7 +66,7 @@ sub dbVNGet {
     $uid && defined $o{ul_onlist} ? (
       'v.id !s IN(SELECT vid FROM vnlists WHERE uid = ?)' => [ $o{ul_onlist} ? '' : 'NOT', $uid ] ) : (),
    # don't fetch hidden items unless we ask for an ID
-    !$o{id} && !$o{rev} ? (
+    !$o{id} && !$o{rev} && !$o{inc_hidden} ? (
       'v.hidden = FALSE' => 0 ) : (),
    # optimize fetching random entries (only when there are no other filters present, otherwise this won't work well)
     $o{sort} eq 'rand' && $o{results} <= 10 && !grep(!/^(?:results|page|what|sort|tagspoil)$/, keys %o) ? (
