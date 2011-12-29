@@ -107,7 +107,7 @@ sub dbVNGet {
 
   my $order = sprintf {
     id       => 'id %s',
-    rel      => 'c_released %s',
+    rel      => 'c_released %s, title ASC',
     pop      => 'c_popularity %s NULLS LAST',
     rating   => 'c_rating %s NULLS LAST',
     title    => 'title %s',
