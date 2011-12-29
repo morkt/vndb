@@ -738,20 +738,16 @@ $$ LANGUAGE plpgsql;
 -- Check for updates to vn.c_search
 -- 1. NOTIFY is sent when vn.c_search goes from non-NULL to NULL
 -- vn.c_search is set to NULL when:
--- 2. UPDATE on VN with the hidden field going from TRUE to FALSE
--- 3. VN add/edit of which the title/original/alias fields differ from previous revision
--- 4. Release gets hidden or unhidden
--- 5. Release add/edit of which the title/original/vn fields differ from the previous revision
+-- 2. VN add/edit of which the title/original/alias fields differ from previous revision
+-- 3. Release gets hidden or unhidden
+-- 4. Release add/edit of which the title/original/vn fields differ from the previous revision
 CREATE OR REPLACE FUNCTION vn_vnsearch_notify() RETURNS trigger AS $$
 BEGIN
   IF TG_TABLE_NAME = 'vn' THEN
     -- 1.
-    IF NEW.c_search IS NULL AND NOT NEW.hidden THEN
+    IF NEW.c_search IS NULL THEN
       NOTIFY vnsearch;
     -- 2.
-    ELSIF NEW.hidden IS DISTINCT FROM OLD.hidden THEN
-      UPDATE vn SET c_search = NULL WHERE id = NEW.id;
-    -- 3.
     ELSIF NEW.latest IS DISTINCT FROM OLD.latest THEN
       IF EXISTS(SELECT 1 FROM vn_rev v1, vn_rev v2
         WHERE v1.id = OLD.latest AND v2.id = NEW.latest
@@ -761,7 +757,7 @@ BEGIN
       END IF;
     END IF;
   ELSIF TG_TABLE_NAME = 'releases' THEN
-    -- 4. & 5.
+    -- 3. & 4.
     IF NEW.hidden IS DISTINCT FROM OLD.hidden OR (
        NEW.latest IS DISTINCT FROM OLD.latest AND (
          EXISTS(
