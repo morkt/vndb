@@ -1,41 +1,65 @@
-:TITLE:Tagging system
-:INC:notfinished
+:TITLE:Tags & traits
 :INC:index
 
 
 :SUB:Introduction
-<i>TODO</i>
-
-
-:SUB:Tag voting
 <p>
- While everyone is pretty much free to link any tag to any visual novel, please keep the following
- in mind while voting:
+ VNDB has a system for tags and one for traits. Tags are used to categorize
+ <b>visual novels</b>, while traits tell something about <b>characters</b>. This
+ also makes them somewhat different in use. This page describes some general
+ guidelines and tips on using tags and traits.
+</p>
+
+
+
+:SUB:Tags
+<p>
+ Tags can be assigned to visual novel entries using a voting system. Every user
+ can add a tag to a visual novel by going to the "modify tags" tab of a visual
+ novel page.
+</p>
+
+:SUBSUB:Tag voting
+<p>Tags can be assigned a vote from -3 to 3. This vote should be interpreted as
+ follows:</p>
+<ol style="list-style-type: none; margin-left: 15px">
+ <li><b>-3</b>: This tag really doesn't apply to the VN.</li>
+ <li><b>-2</b> and <b>-1</b>: These not very often used, but can be useful to
+  show that you disagree, but are not 100% sure.</li>
+ <li><b>0</b>: It is possible to change your vote to '0' to remove it.</li>
+ <li><b>1</b>: The tag does apply to the visual novel, but is not too apparent
+  or only plays a minor role.</li>
+ <li><b>2</b>: The tag certainly applies to the visual novel.</li>
+ <li><b>3</b>: The tag applies and is very apparent or plays a major role.</li>
+</ol>
+<p><br />
+ While everyone is pretty much free to link any tag to any visual novel, please
+ keep the following in mind while voting:
 </p>
 <ul>
- <li>Read the description of each tag before you link it to a VN, some tags may not always mean what
-  you think they do.</li>
- <li>Try to be as specific as you can. For example, if a game has drama elements, rather than voting
-  on the "Drama" tag, try to look for a more specific child tag that describes what kind of drama a
-  player can expect.</li>
- <li>A rating between -3 and 3 can be given to a tag. A negative rating indicates that you disagree
-  with a tag, with -1 being "I wouldn't say this tag really applies" and -3 meaning you fully disagree
-  and the tag really doesn't apply at all. A positive rating works the opposite way, and indicates
-  that you do agree with it.</li>
- <li>Some tags can act as spoilers for the plot of a VN, this can be indicated by voting on the spoiler
-  status. It is highly recommended to not leave this as "Neutral", and really try to give an indication
-  of whether the tag is not a spoiler at all or does spoil a bit.</li>
- <li>Tags are supposed to reflect the things you'll be experiencing as you play the game, even if
-  some things might get revealed to be lies or illusions towards the end of the story. In cases like this,
-  add both the (arguably incorrect) tags and the tags describing the situation after the truth has been
-  revealed, making sure mark the "correct" tags as spoilers.</li>
+ <li>Read the description of each tag before you link it to a VN: some tags may
+  not always mean what you think they do.</li>
+ <li>Try to be as specific as you can. For example, if a game has drama
+  elements, rather than voting on the "Drama" tag, try to look for a more
+  specific child tag that describes what kind of drama a player can expect.</li>
+ <li>Some tags can act as spoilers for the plot of a VN, this can be indicated
+  by voting on the spoiler status. It is highly recommended to not leave this as
+  "Neutral", and really try to give an indication of whether the tag is not a
+  spoiler at all or does spoil a bit.</li>
+ <li>Tags are supposed to reflect the things you'll be experiencing as you play
+  the game, even if some things might get revealed to be lies or illusions
+  towards the end of the story. In cases like this, add both the (arguably
+  incorrect) tags and the tags describing the situation after the truth has been
+  revealed, making sure to mark the "correct" tags as spoilers.</li>
 </ul>
 
 
-:SUB:Tag guidelines
+:SUBSUB:Tag creation guidelines
 <p>
- New tags can be requested by everyone, but they'll have to be accepted by a moderator before
- the tags will be browsable. The following rules apply:
+ New tags can be requested by everyone, but they'll have to be accepted by a
+ moderator before the tags will be browsable. Applying the following guidelines
+ significantly increases the chances that your tag will be accepted and lowers
+ the workload of the moderator team.
 </p>
 <ul>
  <li>Tag names should be self-describing. While the meaning of a tag can be obvious if you look
@@ -50,4 +74,42 @@
  <li>The above rule also holds true for any other information about the VN itself which is (not yet)
   covered by VNDB, like staff or licensed state in a country.</li>
 </ul>
+
+
+
+:SUB:Traits
+<p>
+ Traits can be assigned to characters. Contrary to tags, traits can't be voted
+ on. Instead, traits are part of the editing system, and modifying the traits
+ for a certain character involves editing the character entry itself.
+</p>
+
+:SUBSUB:Assigning traits
+<p>
+ Unlike tags, traits don't have any "levels": a trait either applies to the
+ character or it does not. Here are some guidelines and tips when assigning
+ traits to characters:
+</p>
+<ul>
+ <li>If no traits are present yet and you're the first person to add traits,
+  please try to be as complete as possible. Browse through the <a
+  href="/i">trait tree</a> and try to find as many traits that apply to the
+  character as possible.</li>
+ <li>Spoilery traits should *always* be marked as such.</li>
+</ul>
+
+:SUBSUB:Trait creation
+<p>
+ Anyone can request new traits to be added to the database. However, these need
+ to be approved by a moderator before they can actually be assigned to a
+ character.<br /><br />
+ Traits are categorized into "groups", the top-most trait in the tree
+ defines in which group a trait is. Unlike tags, traits don't need to have a
+ globally unique name, but they must be unique and self-describing within the
+ same group. For example, there can be multiple traits with the name "Blue",
+ but one is in the "Hair" group while the other is in the "Eyes" group. So
+ make sure to keep the group in mind when naming a trait.<br /><br />
+ Read the descriptions of the various trait groups and meta traits to get a
+ feel on how they are supposed to be used.
+</p>
 

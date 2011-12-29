@@ -1,5 +1,149 @@
 :TITLE:Adding/Editing Characters
 :INC:index
+:INC:notfinished
 
-<i>to-do</i>
+
+:SUB:Introduction
+<p>
+ Characters represent persons, animals and things within a visual novel. Any
+ character in a visual novel, no matter how obscure their role is, may be added
+ to the database, although it is recommended to at least add the more important
+ characters first. When adding characters, try to be complete: That is, try to
+ add as many characters of a single visual novel, rather than adding a single
+ character to many VNs.
+</p>
+
+
+:SUB:Instances
+<i>todo: when and how to use instances.</i>
+
+
+:SUB:General info
+<dl>
+ <dt>Name (romaji)</dt><dd>
+  Name of the character, in the latin alphabet. Check out the <a
+  href="/d5">general editing guidelines</a> for information on name order and
+  romanization. Try to use the full name when known. If the full name is not
+  known, then use either the first or last name. If even that isn't known, use
+  the name that is most commonly used to refer to this character in the story.
+  In the case the character is never referred to with a name or title (e.g.
+  it's the protagonist), "Unnamed" can be used as name.<br />
+  In some cases the full name is a spoiler, see the chapter on instances above
+  for some ways to handle that.
+ </dd><dt>Original name</dt><dd>
+  The actual name of the character, in the case it is not officially in the
+  latin alphabet. Leave empty if it's the same as the "Name (romaji)". If
+  possible, try to include a space between the given name and the surname.
+ </dd><dt>Aliases</dt><dd>
+  Other names this character is known by, such as nick names used by other
+  characters within the story. Since this field does not have any option to
+  hide spoilers, you shouldn't include spoilery names here. It is possible to
+  mention such aliases with a [spoiler] tag in the description.
+ </dd><dt>Description</dt><dd>
+  A short description of the character. While it is advised to keep the
+  spoilers to a minimum, you can use the usual <a href="/d9.3">formatting
+  codes</a> such as [spoiler] to include spoilers while hiding them by default.
+  When using a description from external sources, check out the <a
+  href="/d5.5">general editing guidelines</a> for quoting rules.
+ </dd><dt>Gender</dt><dd>
+  Gender of the character. This is usually rather straightforward, but there
+  are some odd cases: (Reverse) traps should have their biological gender
+  filled out here. Futanari should be marked as "both".<br />
+  If the real gender is a spoiler, which is sometimes the case with traps,
+  leave this field at "Unknown". See the chapter on instances above if the
+  character "transforms" between a male and female version.
+ </dd><dt>Birthday</dt><dd>
+  Month and day of the character's birthday. Note that a year is not included.
+ </dd><dt>Bust / Waist / Hips</dt><dd>
+  <a href="http://en.wikipedia.org/wiki/BWH">BWH</a> measurements, if known.
+  This information should either come from the game itself or from a reliable
+  source (usually the official homepage). Don't try to guess these!<br />
+  If the official source does not provide this information as a natural number,
+  the number should rounded to allow its use in the database. If the official
+  information is not in the metric system, convert the numbers and round them
+  before entering.
+ </dd><dt>Height</dt><dd>
+  Height of the character, in cm. The above note on natural numbers and the
+  metric system also applies here.
+ </dd><dt>Weight</dt><dd>
+  Weight of the character, in kg. The above note on natural numbers and the
+  metric system also applies here.
+ </dd><dt>Blood type</dt><dd>
+  Blood type, if known and applicable. This makes little sense if the character
+  isn't a human.
+ </dd>
+</dl>
+
+
+:SUB:Image
+<p>
+ There is a lot of freedom with regards to uploading an image to a character
+ entry, but the following is a list of things to keep in mind:
+<ul>
+ <li>The image must be "safe for work", according to the <a href="/d2#4">VN
+  image guidelines</a>. You may add creative sensoring to make an image safe if
+  otherwise no image for the character is available.</li>
+ <li>The image must be official, i.e. it must be extracted from the VN itself
+  or from the official homepage. Fan art is definitely not allowed!</li>
+ <li>This image should be chosen from an image that is showing the most common
+  clothing and facial expression the character wears through the game.</li>
+ <li>Images using the in-game sprites (tachi-e) are preferred; Otherwise cuts
+  from CGs are also allowed.</li>
+ <li>The image must at least include the head (assuming it has one) and
+  shoulders of the character. Full-body shots are fine, but legs are generally
+  not that interesting yet cause the overall image to shrink dramatically.</li>
+ <li>The image will be cropped to 256x300, but it is recommended to do this
+  cropping manually before uploading to ensure that all character images of the
+  same VN have the same width. This consistency looks better on the character
+  listing on the VN page.</li>
+</ul>
+
+
+:SUB:Traits
+<p>
+ See the <a href="/d10">Tags &amp; traits</a> page for guidelines on the traits.
+</p>
+
+
+:SUB:Visual Novels
+<p>
+ A character should always be linked to at least one visual novel entry, but may
+ be linked with more when it appears in multiple visual novels.<br />
+ If a character appears in all releases of the visual novel, with the possible
+ exception of trial releases, then simply keep one release and leave it at "All
+ / others". In other situations, mention explicitely in which releases the
+ character appears and which role they have in that release. Multiple releases
+ can be added with the same role and spoiler information.<br />
+ If a characters' role or the entire existance of that character in the visual
+ novel is a spoiler, make sure to mark it as such.<br />
+ The following roles are available:
+</p>
+<dl>
+ <dt>Protagonist</dt><dd>
+  The (or "a") protagonist. The person through which the story is told. Note
+  that a significant portion of the story has to be told through the eyes of
+  the character for it to be considered a protagonist. Some visual novels may
+  switch perspectives for a (relatively) short amount of time, but this does
+  not always make the character a protagonist.
+ </dd><dt>Main character</dt><dd>
+  A character that plays a major role in the story or gets a lot of screen
+  time. In general, a herione with an own route always qualifies and so do
+  sidekicks/classmates that are very often seen.
+ </dd><dt>Side character</dt><dd>
+  A character that plays a minor role or does not get a lot of screen time.
+  This is often the case for characters that appear only in a single branch or
+  a single part of the story, although this is not a mandatory.
+ </dd><dt>Makes an appearance</dt><dd>
+  This role is used for characters that only appear in the story for a short
+  while and have only very little to no lines of dialog. Often used for <a
+  href="http://en.wikipedia.org/wiki/Cameo_appearance">cameo appearances</a>.
+ </dd>
+</dl>
+<p>
+ Note that there is no distinct line between these roles, and one could have
+ endless (and often rather pointless) discussions about the actual role of a
+ character. Simply assign the role that you think most naturally fits the
+ character. To get some inspiration, look around for characters in other visual
+ novels that play a somewhat similar role.
+</p>
 

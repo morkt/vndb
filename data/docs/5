@@ -72,16 +72,18 @@
 
 :SUB:Descriptions From External Sources
 <p>
- It is possible to add a description or notes to visual novel, producer and release entries
- in the database. While original descriptions are preferred, using descriptions from external
- resources is allowed, provided the source is properly credited. The preferred form to credit
- external resources is by adding the following template to the bottom of the description:<br />
+ It is possible to add a description or notes to visual novel, producer,
+ release and character entries in the database. While original descriptions are
+ preferred, using descriptions from external resources is allowed, provided the
+ source is properly credited. The preferred form to credit external resources
+ is by adding the following template to the bottom of the description:<br />
  [From [url=<b>URL</b>]<b>title or author</b>[/url]]<br />
- This would result in, for example, '[From <a href="http://en.wikipedia.org/Wiki/Ever17">Wikipedia</a>]'
- for descriptions taken from Wikipedia. If the description is not literally taken from the
- source but has some modifications, the 'From' should be replaced with something similar,
- indicating that it's modified, e.g. 'Edited from', 'Based on'.<br />
- As it is not allowed to provide links to websites providing or promoting illigal downloads,
- the URL part should be left out for such descriptions.
+ This would result in, for example, '[From <a
+ href="http://en.wikipedia.org/Wiki/Ever17">Wikipedia</a>]' for descriptions
+ taken from Wikipedia. If the description is not literally taken from the
+ source but has some modifications, the 'From' should be replaced with
+ something similar, indicating that it's modified, e.g. 'Edited from', 'Based
+ on'.<br />
+ As it is not allowed to provide links to websites providing or promoting
+ illigal downloads, the URL part should be left out for such descriptions.
 </p>
-
