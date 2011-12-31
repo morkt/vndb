@@ -13,11 +13,12 @@ our @EXPORT = qw|filFetchDB ieCheck|;
 my %filfields = (
   vn      => [qw|length hasani tag_inc tag_exc taginc tagexc tagspoil lang olang plat ul_notblack ul_onwish ul_voted ul_onlist|],
   release => [qw|type patch freeware doujin date_before date_after released minage lang olang resolution plat med voiced ani_story ani_ero|],
+  char    => [qw|gender bloodt bust_min bust_max waist_min waist_max hip_min hip_max height_min height_max weight_min weight_max trait_inc trait_exc tagspoil role|],
 );
 
 
 # Arguments:
-#   type ('vn' or 'release'),
+#   type ('vn', 'release' or 'char'),
 #   filter overwrite (string or undef),
 #     when defined, these filters will be used instead of the preferences,
 #     must point to a variable, will be modified in-place with the actually used filters
@@ -30,7 +31,7 @@ sub filFetchDB {
   my($self, $type, $overwrite, $pre, $post) = @_;
   $pre = {} if !$pre;
   $post = {} if !$post;
-  my $dbfunc = $self->can($type eq 'vn' ? 'dbVNGet' : 'dbReleaseGet');
+  my $dbfunc = $self->can($type eq 'vn' ? 'dbVNGet' : $type eq 'release' ? 'dbReleaseGet' : 'dbCharGet');
   my $prefname = 'filter_'.$type;
   my $pref = $self->authPref($prefname);
 

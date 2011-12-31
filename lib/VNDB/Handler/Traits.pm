@@ -27,6 +27,7 @@ sub traitpage {
   my $f = $self->formValidate(
     { get => 'p', required => 0, default => 1, template => 'int' },
     { get => 'm', required => 0, default => undef, enum => [qw|0 1 2|] },
+    { get => 'fil', required => 0, default => '' },
   );
   return $self->resNotFound if $f->{_err};
   my $tagspoil = $self->reqCookie('tagspoil')||'';
@@ -83,14 +84,15 @@ sub traitpage {
   childtags($self, mt('_traitp_childs'), 'i', $t) if @{$t->{childs}};
 
   if(!$t->{meta} && $t->{state} == 2) {
-    my($chars, $np) = $self->dbCharGet(
+    my($chars, $np) = $self->filFetchDB(char => $f->{fil}, {}, {
       trait_inc => $trait,
-      traitspoil => $f->{m},
+      tagspoil => $f->{m},
       results => 50,
       page => $f->{p},
       what => 'vns',
-    );
+    });
 
+    form action => "/i$t->{id}", 'accept-charset' => 'UTF-8', method => 'get';
     div class => 'mainbox';
      h1 mt '_traitp_charlist';
 
@@ -101,12 +103,17 @@ sub traitpage {
       a href => "/i$trait?m=2", $f->{m} == 2 ? (class => 'optselected') : (), onclick => "setCookie('tagspoil', 2);return true;", mt '_tagp_spoil2';
      end;
 
+     a id => 'filselect', href => '#c';
+      lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+     end;
+     input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
+
      if(!@$chars) {
        p; br; br; txt mt '_traitp_nochars'; end;
      }
      p; br; txt mt '_traitp_cached'; end;
     end 'div';
-
+    end 'form';
     @$chars && $self->charBrowseTable($chars, $np, $f, "/i$trait?m=$f->{m}");
   }
 

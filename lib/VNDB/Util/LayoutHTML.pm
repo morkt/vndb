@@ -100,7 +100,7 @@ sub _menu {
        a href => '/g/links?u='.$self->authInfo->{id}, mt '_menu_mytags'; br;
        br;
        if($self->authCan('edit')) {
-         a href => '/v/new',    mt '_menu_addvn'; br;
+         a href => '/v/add',    mt '_menu_addvn'; br;
          a href => '/p/new',    mt '_menu_addproducer'; br;
        }
        if($self->authCan('charedit')) {

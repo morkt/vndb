@@ -8,7 +8,8 @@ use Exporter 'import';
 our @EXPORT = qw|dbCharGet dbCharRevisionInsert dbCharImageId|;
 
 
-# options: id rev instance traitspoil trait_inc trait_exc char what results page
+# options: id rev instance tagspoil trait_inc trait_exc char what results page gender bloodt
+#   bust_min bust_max waist_min waist_max hip_min hip_max height_min height_max weight_min weight_max role
 # what: extended traits vns changes
 sub dbCharGet {
   my $self = shift;
@@ -16,7 +17,7 @@ sub dbCharGet {
     page => 1,
     results => 10,
     what => '',
-    traitspoil => 0,
+    tagspoil => 0,
     @_
   );
 
@@ -29,15 +30,30 @@ sub dbCharGet {
     $o{notid}    ? ( 'c.id <> ?'   => $o{notid} ) : (),
     $o{instance} ? ( 'cr.main = ?' => $o{instance} ) : (),
     $o{vid}      ? ( 'cr.id IN(SELECT cid FROM chars_vns WHERE vid = ?)' => $o{vid} ) : (),
+    defined $o{gender} ? ( 'cr.gender IN(!l)' => [ ref $o{gender} ? $o{gender} : [$o{gender}] ]) : (),
+    defined $o{bloodt} ? ( 'cr.bloodt IN(!l)' => [ ref $o{bloodt} ? $o{bloodt} : [$o{bloodt}] ]) : (),
+    defined $o{bust_min} ? ( 'cr.s_bust >= ?' => $o{bust_min} ) : (),
+    defined $o{bust_max} ? ( 'cr.s_bust <= ? AND cr.s_bust > 0' => $o{bust_max} ) : (),
+    defined $o{waist_min} ? ( 'cr.s_waist >= ?' => $o{waist_min} ) : (),
+    defined $o{waist_max} ? ( 'cr.s_waist <= ? AND cr.s_waist > 0' => $o{waist_max} ) : (),
+    defined $o{hip_min} ? ( 'cr.s_hip >= ?' => $o{hip_min} ) : (),
+    defined $o{hip_max} ? ( 'cr.s_hip <= ? AND cr.s_hip > 0' => $o{hip_max} ) : (),
+    defined $o{height_min} ? ( 'cr.height >= ?' => $o{height_min} ) : (),
+    defined $o{height_max} ? ( 'cr.height <= ? AND cr.height > 0' => $o{height_max} ) : (),
+    defined $o{weight_min} ? ( 'cr.weight >= ?' => $o{weight_min} ) : (),
+    defined $o{weight_max} ? ( 'cr.weight <= ? AND cr.weight > 0' => $o{weight_max} ) : (),
     $o{search} ? (
       '(cr.name ILIKE ? OR cr.original ILIKE ? OR cr.alias ILIKE ?)', [ map '%%'.$o{search}.'%%', 1..3 ] ) : (),
     $o{char} ? (
       'LOWER(SUBSTR(cr.name, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
       '(ASCII(cr.name) < 97 OR ASCII(cr.name) > 122) AND (ASCII(cr.name) < 65 OR ASCII(cr.name) > 90)' => 1 ) : (),
+    $o{role} ? (
+      'EXISTS(SELECT 1 FROM chars_vns cvi WHERE cvi.cid = cr.id AND cvi.role IN(!l))',
+      [ ref $o{role} ? $o{role} : [$o{role}] ] ) : (),
     $o{trait_inc} ? (
       'c.id IN(SELECT cid FROM traits_chars WHERE tid IN(!l) AND spoil <= ? GROUP BY cid HAVING COUNT(tid) = ?)',
-      [ ref $o{trait_inc} ? $o{trait_inc} : [$o{trait_inc}], $o{traitspoil}, ref $o{trait_inc} ? $#{$o{trait_inc}}+1 : 1 ]) : (),
+      [ ref $o{trait_inc} ? $o{trait_inc} : [$o{trait_inc}], $o{tagspoil}, ref $o{trait_inc} ? $#{$o{trait_inc}}+1 : 1 ]) : (),
     $o{trait_exc} ? (
       'c.id NOT IN(SELECT cid FROM traits_chars WHERE tid IN(!l))' => [ ref $o{trait_exc} ? $o{trait_exc} : [$o{trait_exc}] ] ) : (),
   );

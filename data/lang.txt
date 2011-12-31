@@ -1641,6 +1641,22 @@ hu : Beküldés
 nl : Verstuur
 de : Bestätigen
 
+:_form_continue
+en : Continue
+ru*:
+cs*:
+hu*:
+nl : Verder
+de*:
+
+:_form_continue_ign
+en : Continue and ignore duplicates
+ru*:
+cs*:
+hu*:
+nl : Ga verder en negeer dubbele items
+de*:
+
 :_form_ihid
 en : Deleted
 ru : Удалено
@@ -1724,6 +1740,22 @@ hu : -nap-
 nl : -dag-
 de : -Tag-
 
+:_js_remove
+en : remove
+ru : убрать
+cs : odstranit
+hu : eltávolítás
+nl : verwijder
+de : entfernen
+
+:_js_add
+en : add
+ru : добавить
+cs : přidat
+hu : bejegyez
+nl : toevoegen
+de : hinzufügen
+
 :_js_ds_noresults
 en : No results...
 ru : Совпадений не найдено...
@@ -1771,6 +1803,30 @@ cs : Zde se nedají použít meta-tagy!
 hu : Itt nem használhatsz meta címkéket!
 nl : Meta tags kunnen hier niet gebruikt worden!
 de : Meta-Tags können hier nicht genutzt werden!
+
+:_js_ds_trait_meta
+en : meta
+ru*:
+cs*:
+hu*:
+nl :
+de*:
+
+:_js_ds_trait_mod
+en : awaiting moderation
+ru*:
+cs*:
+hu*:
+nl : ongemodereerd
+de*:
+
+:_js_ds_trait_nometa
+en : Can't use meta traits here!
+ru*:
+cs*:
+hu*:
+nl : Meta kenmerken kunnen hier niet gebruikt worden!
+de*:
 
 
 # Filter selector
@@ -2353,15 +2409,6 @@ cs : upravit
 hu : szerkesztés
 nl : wijzig
 de : bearbeiten
-
-# delete
-:_mtabs_del
-en : del
-ru : удалить
-cs : smazat
-hu : törlés
-nl : verwijder
-de : löschen
 
 # VN relations
 :_mtabs_relations
@@ -3494,22 +3541,6 @@ hu : Készítő bejegyzése
 nl : Nieuwe producent toevoegen
 de : Hersteller hinzufügen
 
-:_pedit_rel_addbut
-en : add
-ru : добавить
-cs : přidat
-hu : hozzáad
-nl : toevoegen
-de : hinzufügen
-
-:_pedit_rel_del
-en : remove
-ru : убрать
-cs : odebrat
-hu : eltávolít
-nl : verwijderen
-de : entfernen
-
 :_pedit_rel_none
 en : Nothing selected.
 ru : Ничего не выбрано.
@@ -4256,14 +4287,6 @@ hu : -medium-
 nl :
 de : -Medium-
 
-:_redit_form_med_remove
-en : remove
-ru : убрать
-cs : odebrat
-hu : eltávolítás
-nl : verwijder
-de : entfernen
-
 :_redit_form_prod
 en : Producers
 ru : Компании
@@ -4311,22 +4334,6 @@ cs : Obojí
 hu : Mindkettő
 nl : Beide
 de : Beides
-
-:_redit_form_prod_addbut
-en : add
-ru : добавить
-cs : přidat
-hu : bejegyez
-nl : voeg toe
-de : hinzufügen
-
-:_redit_form_prod_remove
-en : remove
-ru : убрать
-cs : odebrat
-hu : eltávolít
-nl : verwijder
-de : entfernen
 
 :_redit_form_prod_none
 en : Nothing selected.
@@ -4383,22 +4390,6 @@ cs : Přidat vizuální novelu
 hu : Visual novel bejegyzése
 nl : Nieuwe visual novel
 de : Visual Novel hinzufügen
-
-:_redit_form_vn_addbut
-en : add
-ru : добавить
-cs : přidat
-hu : bejegyez
-nl : voeg toe
-de : hinzufügen
-
-:_redit_form_vn_remove
-en : remove
-ru : убрать
-cs : odebrat
-hu : eltávolít
-nl : verwijder
-de : entfernen
 
 :_redit_form_vn_none
 en : Nothing selected.
@@ -5267,14 +5258,6 @@ cs : Aktivní filtry:
 hu : Aktív szűrők:
 nl : Actieve filters:
 de : Aktive Filter:
-
-:_taglink_fil_remove
-en : remove
-ru : убрать
-cs : odstranit
-hu : eltávolít
-nl : verwijder
-de : entfernen
 
 :_taglink_fil_user
 en : User:
@@ -6171,14 +6154,6 @@ hu : Sajátosság hozzáadása
 nl : Voeg kenmerk toe
 de : Füge Eigenschaft hinzu
 
-:_chare_traits_del
-en : del
-ru*:
-cs*:
-hu : töröl
-nl :
-de : entfernen
-
 :_chare_traits_present
 en : Selected trait is already present.
 ru*:
@@ -6251,14 +6226,6 @@ hu : Mind / mások
 nl : Alle / overige
 de : Alle / andere
 
-:_chare_vns_del
-en : remove
-ru*:
-cs : odstranit
-hu : eltávolít
-nl : verwijder
-de : entfernen
-
 :_chare_vns_allrel
 en : All releases already selected.
 ru*:
@@ -6310,8 +6277,181 @@ hu : A kritériumaid alapján nem található szereplő.
 nl : Geen karakters gevonden die aan je kriteria voldoen.
 de : Keine Charaktere, die deinen Kriterien entsprechen, gefunden.
 
+:_charb_fil_title
+en : Character filters
+ru*:
+cs*:
+hu*:
+nl : Karakterfilters
+de*:
 
+:_charb_general
+en : General
+ru*:
+cs*:
+hu*:
+nl : Algemeen
+de*:
 
+:_charb_gender
+en : Gender
+ru*:
+cs*:
+hu*:
+nl : Geslacht
+de*:
+
+:_charb_bust_min
+en : Bust min
+ru*:
+cs*:
+hu*:
+nl : Borst min
+de*:
+
+:_charb_bust_max
+en : Bust max
+ru*:
+cs*:
+hu*:
+nl : Borst max
+de*:
+
+:_charb_waist_min
+en : Waist min
+ru*:
+cs*:
+hu*:
+nl : Taille min
+de*:
+
+:_charb_waist_max
+en : Waist max
+ru*:
+cs*:
+hu*:
+nl : Taille max
+de*:
+
+:_charb_hip_min
+en : Hips min
+ru*:
+cs*:
+hu*:
+nl : Heupen min
+de*:
+
+:_charb_hip_max
+en : Hips max
+ru*:
+cs*:
+hu*:
+nl : Heupen max
+de*:
+
+:_charb_height_min
+en : Height min
+ru*:
+cs*:
+hu*:
+nl : Lengte min
+de*:
+
+:_charb_height_max
+en : Height max
+ru*:
+cs*:
+hu*:
+nl : Lengte max
+de*:
+
+:_charb_weight_min
+en : Weight min
+ru*:
+cs*:
+hu*:
+nl : Gewicht min
+de*:
+
+:_charb_weight_max
+en : Weight max
+ru*:
+cs*:
+hu*:
+nl : Gewicht max
+de*:
+
+:_charb_bloodt
+en : Blood type
+ru*:
+cs*:
+hu*:
+nl : Bloedgroep
+de*:
+
+:_charb_traits
+en : Traits
+ru*:
+cs*:
+hu*:
+nl : Kenmerken
+de*:
+
+:_charb_traitinc
+en : Traits to include
+ru*:
+cs*:
+hu*:
+nl : Kenmerken meenemen
+de*:
+
+:_charb_traitexc
+en : Traits to exclude
+ru*:
+cs*:
+hu*:
+nl : Kenmerken uitsluiten
+de*:
+
+:_charb_traitnothere
+en : Additional trait filters are not available on this page. Use the character browser instead (available from the main menu -> characters).
+ru*:
+cs*:
+hu*:
+nl : Extra kenmerkfilters zijn niet aanwezig op deze pagina. Gebruik de karakterbrowser voor deze functionaliteit (beschikbaar via het hoofdmenu -> karakters).
+de*:
+
+:_charb_spoil0
+en : Hide spoilers
+ru*:
+cs*:
+hu*:
+nl : Verberg spoilers
+de*:
+
+:_charb_spoil1
+en : Show minor spoilers
+ru*:
+cs*:
+hu*:
+nl : Toon geringe spoilers
+de*:
+
+:_charb_spoil2
+en : Show major spoilers
+ru*:
+cs*:
+hu*:
+nl : Toon alle spoilers
+de*:
+
+:_charb_roles
+en : Roles
+ru*:
+cs*:
+hu*:
+nl : Rol
+de*:
 
 
 
@@ -8112,14 +8252,6 @@ hu : Ezzek a szűrők figyelmen kívűl maradnak a címke oldalakon (ha alapért
 nl : Deze filters worden genegeerd op tagpaginas (als ze gebruikt worden als standaardfilters).
 de : Diese Filter werden auf Tag-Seiten ignoriert (wenn als Standard eingestellt).
 
-:_vnbrowse_tagrem
-en : remove
-ru : убрать
-cs : odstranit
-hu : eltávolítás
-nl : verwijder
-de : entfernen
-
 :_vnbrowse_taginc
 en : Tags to include
 ru : Включить теги
@@ -8298,6 +8430,33 @@ cs : Přidat novou vizuální novelu
 hu : Új visual novel bejegyzése
 nl : Voeg nieuwe visual novel toe
 de : Neue Visual Novel hinzufügen
+
+:_vnedit_dup_title
+en : Possible duplicates found
+ru*:
+cs*:
+hu*:
+nl : Mogelijke dubbele items gevonden
+de*:
+
+:_vnedit_dup_msg
+en : The following is a list of visual novels that match the title(s) you gave.
+     Please check this list to avoid creating a duplicate visual novel entry.
+     Be especially wary of items that have been deleted! To see why an entry
+     has been deleted, click on its title.[br]
+     [br]
+     To add the visual novel either way, hit the "Continue and ignore
+     duplicates" button below.
+ru*:
+cs*:
+hu*:
+nl : De onderstaande lijst bevat visual novels met een vergelijkbare titel.
+     Controleer deze lijst a.u.b. om te voorkomen dat je een visual novel dubbel toevoegt.
+     Wees helemaal op de hoede van items die verwijderd zijn! Om te zien waarom
+     iets verwijderd is, klik op de titel.[br]
+     [br]
+     Klik op de "Ga verder en negeer dubbele items" knop om alsnog verder te gaan.
+de*:
 
 :_vnedit_geninfo
 en : General info
@@ -8577,22 +8736,6 @@ hu : -
 nl : van
 de : von
 
-:_vnedit_rel_addbut
-en : add
-ru : добавить
-cs : přidat
-hu : bejegyez
-nl : toevoegen
-de : hinzufügen
-
-:_vnedit_rel_del
-en : del
-ru : убрать
-cs : smazat
-hu : töröl
-nl : verwijder
-de : entfernen
-
 :_vnedit_rel_none
 en : No relations selected.
 ru : Отношений не выбрано.
@@ -8788,14 +8931,6 @@ cs : Screenshot #[_1]
 hu : #[_1]-dik pillanatkép
 nl :
 de : Screenshot #[_1]
-
-:_vnedit_scr_remove
-en : remove
-ru : убрать
-cs : odebrat
-hu : eltávolítás
-nl : verwijder
-de : entfernen
 
 :_vnedit_scr_fullsize
 en : Full size: [_1]

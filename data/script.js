@@ -819,7 +819,7 @@ function vnrAdd(rel, vid, official, title) {
       tag('label', {'for':'official_'+vid}, mt('_vnedit_rel_official')),
       sel, ' '+mt('_vnedit_rel_of')),
     tag('td', {'class':'tc_title'}, shorten(byId('title').value, 40)),
-    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:vnrDel}, mt('_vnedit_rel_del')))
+    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:vnrDel}, mt('_js_remove')))
   ));
 
   vnrEmpty();
@@ -880,7 +880,7 @@ function vnrFormAdd() {
   ajax('/xml/vn.xml?q='+encodeURIComponent(input), function(hr) {
     txt.disabled = sel.disabled = off.disabled = false;
     txt.value = '';
-    setText(lnk, mt('_vnedit_rel_addbut'));
+    setText(lnk, mt('_js_add'));
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
@@ -933,7 +933,7 @@ function medAdd(med, qty) {
     msel.appendChild(tag('option', {value:medTypes[i][0], selected: med==medTypes[i][0]}, medTypes[i][1]));
 
   byId('media_div').appendChild(tag('span', qsel, msel,
-    med != '' ? tag('input', {type: 'button', 'class':'submit', onclick:medDel, value:mt('_redit_form_med_remove')}) : null
+    med != '' ? tag('input', {type: 'button', 'class':'submit', onclick:medDel, value:mt('_js_remove')}) : null
   ));
 }
 
@@ -1148,7 +1148,7 @@ function scrCheckStatus() {
       var nsfwid = 'scr_sfw_'+tr.scr_id;
       setContent(byName(tr, 'td')[1],
         tag('b', mt('_vnedit_scr_id', tr.scr_id)),
-        ' (', tag('a', {href: '#', onclick:scrDel}, mt('_vnedit_scr_remove')), ')',
+        ' (', tag('a', {href: '#', onclick:scrDel}, mt('_js_remove')), ')',
         tag('br', null),
         mt('_vnedit_scr_fullsize', dim),
         odd ? tag('b', {'class':'standout', 'style':'font-weight: bold'}, ' '+mt('_vnedit_scr_nonstandard')) : null,
@@ -1454,7 +1454,7 @@ function rvnLoad() {
 function rvnAdd(id, title) {
   byId('vn_tbl').appendChild(tag('tr', {id:'rvn_'+id, rvn_id:id},
     tag('td', {'class':'tc_title'}, 'v'+id+':', tag('a', {href:'/v'+id}, shorten(title, 40))),
-    tag('td', {'class':'tc_rm'},    tag('a', {href:'#', onclick:rvnDel}, mt('_redit_form_vn_remove')))
+    tag('td', {'class':'tc_rm'},    tag('a', {href:'#', onclick:rvnDel}, mt('_js_remove')))
   ));
   rvnStripe();
   rvnEmpty();
@@ -1502,7 +1502,7 @@ function rvnFormAdd() {
   ajax('/xml/vn.xml?q='+encodeURIComponent(val), function(hr) {
     txt.disabled = false;
     txt.value = '';
-    setText(lnk, mt('_redit_form_vn_addbut'));
+    setText(lnk, mt('_js_add'));
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
@@ -1564,7 +1564,7 @@ function rprAdd(id, role, name) {
   byId('producer_tbl').appendChild(tag('tr', {id:'rpr_'+id, rpr_id:id},
     tag('td', {'class':'tc_name'}, 'p'+id+':', tag('a', {href:'/p'+id}, shorten(name, 40))),
     tag('td', {'class':'tc_role'}, rl),
-    tag('td', {'class':'tc_rm'},   tag('a', {href:'#', onclick:rprDel}, mt('_redit_form_prod_remove')))
+    tag('td', {'class':'tc_rm'},   tag('a', {href:'#', onclick:rprDel}, mt('_js_remove')))
   ));
   rprEmpty();
 }
@@ -1604,7 +1604,7 @@ function rprFormAdd() {
   ajax('/xml/producers.xml?q='+encodeURIComponent(val), function(hr) {
     txt.disabled = false;
     txt.value = '';
-    setText(lnk, mt('_redit_form_prod_addbut'));
+    setText(lnk, mt('_js_add'));
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
@@ -1676,7 +1676,7 @@ function prrAdd(rel, pid, title) {
   byId('relation_tbl').appendChild(tag('tr', {id:'relation_tr_'+pid},
     tag('td', {'class':'tc_prod' }, 'p'+pid+':', tag('a', {href:'/p'+pid}, shorten(title, 40))),
     tag('td', {'class':'tc_rel'  }, sel),
-    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:prrDel}, mt('_pedit_rel_del')))
+    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:prrDel}, mt('_js_remove')))
   ));
 
   prrEmpty();
@@ -1735,7 +1735,7 @@ function prrFormAdd() {
   ajax('/xml/producers.xml?q='+encodeURIComponent(input), function(hr) {
     txt.disabled = sel.disabled = false;
     txt.value = '';
-    setText(lnk, mt('_pedit_rel_addbut'));
+    setText(lnk, mt('_js_add'));
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
@@ -1818,7 +1818,7 @@ function ctrAdd(item, spoil) {
       tag('b', {'class':'grayedout'}, group?group+' / ':''),
       tag('a', {'href':'/i'+id}, name)),
     sp,
-    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:ctrDel}, mt('_chare_traits_del')))
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:ctrDel}, mt('_js_remove')))
   ));
   ctrEmpty();
   ctrSerialize();
@@ -1988,7 +1988,7 @@ function cvnRelAdd(vid, rid, role, spoil) {
     tag('td', {'class':'tc_rel'}, rsel),
     tag('td', {'class':'tc_rol'}, lsel),
     tag('td', {'class':'tc_spl'}, ssel),
-    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:cvnRelDel}, mt('_chare_vns_del')))
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:cvnRelDel}, mt('_js_remove')))
   ), last);
 }
 
@@ -2124,7 +2124,9 @@ if(byId('jt_box_chare_vns'))
 var fil_cats; // [ <object with field->tr mapping>, <category-link1>, .. ]
 var fil_escape = "_ !\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~".split('');
 function filLoad() {
-  var l = byId('filselect').href.match(/#r$/) ? filReleases() : filVN();
+  var l = byId('filselect').href.match(/#r$/) ? filReleases()
+        : byId('filselect').href.match(/#c$/) ? filChars()
+        : filVN();
   fil_cats = [ new Object ];
 
   var p = tag('p', {'class':'browseopts'});
@@ -2179,7 +2181,8 @@ function filLoad() {
       f.submit();
     }}),
     tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} }),
-    PREF_CODE != '' ? tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_save'), onclick:filSaveDefault }) : null,
+    typeof PREFS != 'undefined' && ('filter_vn' in PREFS | 'filter_release' in PREFS) && PREF_CODE != '' ?
+      tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_save'), onclick:filSaveDefault }) : null,
     tag('p', {id:'fil_savenote', 'class':'hidden'}, '')
   ));
   filSelectCat(1);
@@ -2265,7 +2268,7 @@ function filSerialize() {
     if(r.length > 0 && r[0] != '')
       values[fil_cats[0][f].fil_code] = r.join('~');
   }
-  if(!values['tag_inc'])
+  if(!values['tag_inc'] && !values['trait_inc'])
     delete values['tagspoil'];
   var l = [];
   for(var f in values)
@@ -2321,6 +2324,63 @@ function filShow() {
   div.style.top = ddy+'px';
 
   return false;
+}
+
+var curSlider = null;
+function filFSlider(c, n, min, max, def, unit) {
+  var bw = 200; var pw = 1;  // slidebar width and pointer width
+  var s = tag('p', {fil_val:def, 'class':'slider'});
+  var b = tag('div', {style:'width:'+(bw-2)+'px;', s:s});
+  var p = tag('div', {style:'width:'+pw+'px;', s:s});
+  var v = tag('span', def+' '+unit);
+  s.appendChild(b);
+  b.appendChild(p);
+  s.appendChild(v);
+
+  var set = function (e, v) {
+    var w = bw-pw-6;
+    var s,x;
+
+    if(v) {
+      s = e;
+      x = v[0] == '' ? def : parseInt(v[0]);
+      x = (x-min)*w/(max-min);
+    } else {
+      s = curSlider;
+      if(!e) e = window.event;
+      x = (!e) ? (def-min)*w/(max-min)
+        : (e.pageX || e.clientX + document.body.scrollLeft - document.body.clientLeft)-5;
+      var o = s.childNodes[0];
+      while(o.offsetParent) {
+        x -= o.offsetLeft;
+        o = o.offsetParent;
+      }
+    }
+
+    if(x<0) x = 0; if(x>w) x = w;
+    s.fil_val = min + Math.floor(x*(max-min)/w);
+    s.childNodes[1].innerHTML = s.fil_val+' '+unit;
+    s.childNodes[0].childNodes[0].style.left = x+'px';
+    return false;
+  }
+
+  b.onmousedown = p.onmousedown = function (e) {
+    curSlider = this.s;
+    if(!curSlider.oldmousemove) curSlider.oldmousemove = document.onmousemove;
+    if(!curSlider.oldmouseup) curSlider.oldmouseup = document.onmouseup;
+    document.onmouseup = function () {
+      document.onmousemove = curSlider.oldmousemove;
+      curSlider.oldmousemove = null;
+      document.onmouseup = curSlider.oldmouseup;
+      curSlider.oldmouseup = null;
+      filSelectField(curSlider);
+      return false;
+    }
+    document.onmousemove = set;
+    return set(e);
+  }
+
+  return [c, n, s, function (c) { return [ c.fil_val ]; }, set ];
 }
 
 function filFSelect(c, n, lines, opts) {
@@ -2379,14 +2439,18 @@ function filFOptions(c, n, opts, setfunc) {
   ];
 }
 
-function filFTagInput(name, label) {
+function filFTagInput(name, label, type) {
+  var src = type=='tag' ? '/xml/tags.xml' : '/xml/traits.xml';
+
   var visible = false;
   var remove = function() {
     ;
   };
-  var addtag = function(ul, id, name) {
-    ul.appendChild(tag('li', { fil_id: id },
-      tag('a', {href:'/g'+id}, name||'g'+id),
+  var addtag = function(ul, id, name, group) {
+    ul.appendChild(
+      tag('li', { fil_id: id },
+      type=='trait' && group ? tag('b', {'class':'grayedout'}, group+' / ') : null,
+      type=='tag' ? tag('a', {href:'/g'+id}, name||'g'+id) : tag('a', {href:'/i'+id}, name||'i'+id),
       ' (', tag('a', {href:'#',
         onclick:function () {
           // a -> li -> ul -> div
@@ -2395,7 +2459,7 @@ function filFTagInput(name, label) {
           filSelectField(ul.parentNode);
           return false
         }
-      }, mt('_vnbrowse_tagrem')), ')'
+      }, mt('_js_remove')), ')'
     ));
   }
   var fetch = function(c)   {
@@ -2421,12 +2485,12 @@ function filFTagInput(name, label) {
     txt.value = mt('_js_loading');
     txt.disabled = true;
     if(visible)
-      ajax('/xml/tags.xml?'+q.join(';'), function (hr) {
+      ajax(src+'?'+q.join(';'), function (hr) {
         var l = [];
         var items = hr.responseXML.getElementsByTagName('item');
         setText(ul, '');
         for(var i=0; i<items.length; i++)
-          addtag(ul, items[i].getAttribute('id'), items[i].firstChild.nodeValue);
+          addtag(ul, items[i].getAttribute('id'), items[i].firstChild.nodeValue, items[i].getAttribute('groupname'));
         txt.value = '';
         txt.disabled = false;
         c.fil_val = null;
@@ -2434,18 +2498,21 @@ function filFTagInput(name, label) {
   };
   var input = tag('input', {type:'text', 'class':'text', style:'width:300px', onfocus:filSelectField});
   var list = tag('ul', null);
-  dsInit(input, '/xml/tags.xml?q=',
+  dsInit(input, src+'?q=',
     function(item, tr) {
-      tr.appendChild(tag('td', shorten(item.firstChild.nodeValue, 40),
-        item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_meta')) : null,
-        item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
+      var g = item.getAttribute('groupname');
+      tr.appendChild(tag('td',
+        type=='trait' && g ? tag('b', {'class':'grayedout'}, g+' / ') : null,
+        shorten(item.firstChild.nodeValue, 40),                                // l10n /_js_ds_(tag|trait)_(meta|mod)/
+        item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_'+type+'_meta')) : null,
+        item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_'+type+'_mod')) : null
       ));
     },
     function(item, obj) {
-      if(item.getAttribute('meta') == 'yes')
-        alert(mt('_js_ds_tag_nometa'));
+      if(item.getAttribute('meta') == 'yes')  // l10n /_js_ds_(tag|trait)_nometa/
+        alert(mt('_js_ds_'+type+'_nometa'));
       else {
-        addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue);
+        addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue, item.getAttribute('groupname'));
         filSelectField(obj);
       }
       return '';
@@ -2463,6 +2530,50 @@ function filFTagInput(name, label) {
     },
     function(c,v) { c.fil_val = v; fetch(c) },
     function(c) { visible = true; fetch(c); }
+  ];
+}
+
+function filChars() {
+  var gend = genders;
+  for(var i=0; i<gend.length; i++) // l10n /_gender_.+/
+    gend[i] = [ gend[i], mt('_gender_'+gend[i]) ];
+  var bloodt = blood_types;
+  for(var i=0; i<bloodt.length; i++) // l10n /_bloodt_.+/
+    bloodt[i] = [ bloodt[i], mt('_bloodt_'+bloodt[i]) ];
+  var roles = char_roles;
+  for(var i=0; i<roles.length; i++) // l10n /_charrole_.+/
+    roles[i] = [ roles[i], mt('_charrole_'+roles[i]) ];
+
+  var ontraitpage = location.pathname.indexOf('/c/') < 0;
+
+  return [
+    mt('_charb_fil_title'),
+    [ mt('_charb_general'),
+      filFSelect('gender', mt('_charb_gender'), 4, gend),
+      filFSelect('bloodt', mt('_charb_bloodt'), 5, bloodt),
+      '',
+      filFSlider('bust_min', mt('_charb_bust_min'), 20, 120, 40, 'cm'),
+      filFSlider('bust_max', mt('_charb_bust_max'), 20, 120, 100, 'cm'),
+      filFSlider('waist_min', mt('_charb_waist_min'), 20, 120, 40, 'cm'),
+      filFSlider('waist_max', mt('_charb_waist_max'), 20, 120, 100, 'cm'),
+      filFSlider('hip_min', mt('_charb_hip_min'), 20, 120, 40, 'cm'),
+      filFSlider('hip_max', mt('_charb_hip_max'), 20, 120, 100, 'cm'),
+      '',
+      filFSlider('height_min', mt('_charb_height_min'), 0, 300, 60, 'cm'),
+      filFSlider('height_max', mt('_charb_height_max'), 0, 300, 240, 'cm'),
+      filFSlider('weight_min', mt('_charb_weight_min'), 0, 400, 80, 'kg'),
+      filFSlider('weight_max', mt('_charb_weight_max'), 0, 400, 320, 'kg'),
+    ],
+    ontraitpage ? [ mt('_charb_traits'),
+      [ '', ' ', tag(mt('_charb_traitnothere')) ],
+    ] : [ mt('_charb_traits'),
+      [ '', ' ', tag(mt('_js_fil_booland')) ],
+      filFTagInput('trait_inc', mt('_charb_traitinc'), 'trait'),
+      filFTagInput('trait_exc', mt('_charb_traitexc'), 'trait'),
+      filFOptions('tagspoil', ' ', [[0, mt('_charb_spoil0')],[1, mt('_charb_spoil1')],[2, mt('_charb_spoil2')]],
+        function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
+    ],
+    [ mt('_charb_roles'), filFSelect('role', mt('_charb_roles'), 4, roles) ]
   ];
 }
 
@@ -2537,8 +2648,8 @@ function filVN() {
     ] : [ mt('_vnbrowse_tags'),
       [ '',       ' ',                   tag(mt('_js_fil_booland')) ],
       [ '',       ' ', PREF_CODE != '' ? tag(mt('_vnbrowse_tagactive')) : null ],
-      filFTagInput('tag_inc', mt('_vnbrowse_taginc')),
-      filFTagInput('tag_exc', mt('_vnbrowse_tagexc')),
+      filFTagInput('tag_inc', mt('_vnbrowse_taginc'), 'tag'),
+      filFTagInput('tag_exc', mt('_vnbrowse_tagexc'), 'tag'),
       filFOptions('tagspoil', ' ', [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]],
         function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
     ],

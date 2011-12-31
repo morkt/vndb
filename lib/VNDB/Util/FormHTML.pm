@@ -165,10 +165,12 @@ sub htmlFormPart {
 
 
 # Generates a form, first argument is a hashref with global options, keys:
-#   frm     => the $frm as returned by formValidate,
-#   action  => The location the form should POST to (also used as form id)
-#   upload  => 1/0, adds an enctype.
-#   editsum => 1/0, adds an edit summary field before the submit button
+#   frm       => the $frm as returned by formValidate,
+#   action    => The location the form should POST to (also used as form id)
+#   upload    => 1/0, adds an enctype.
+#   nosubmit  => 1/0, hides the submit button
+#   editsum   => 1/0, adds an edit summary field before the submit button
+#   continue  => 2/1/0, replace submit button with continue buttons
 # The other arguments are a list of subforms in the form
 # of (subform-name => [form parts]). Each subform is shown as a
 # (JavaScript-powered) tab, and has it's own 'mainbox'. This function
@@ -235,7 +237,12 @@ sub htmlForm {
         textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50, $options->{frm}{editsum}||'';
         br;
       }
-      input type => 'submit', value => mt('_form_submit'), class => 'submit';
+      if(!$options->{continue}) {
+        input type => 'submit', value => mt('_form_submit'), class => 'submit';
+      } else {
+        input type => 'submit', value => mt('_form_continue'), class => 'submit';
+        input type => 'submit', name => 'continue_ign', value => mt('_form_continue_ign'), class => 'submit', style => 'width: auto' if $options->{continue} == 2;
+      }
      end;
     end 'div';
   }

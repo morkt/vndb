@@ -1,4 +1,9 @@
-2.22 - ?
+2.22 - 2011-12-31
+	- Added character filters
+	- Added duplicate checking form before creating a new VN entry
+	- Combined "remove" and "add" labels in a single lang.txt entry
+	- Added secondary order to VN browser when sorting on release date
+	- doc updates for the characters and traits
 
 2.21 - 2011-08-23
 	- New resolution: 1280x960

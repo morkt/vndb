@@ -451,33 +451,39 @@ sub list {
   my($self, $fch) = @_;
 
   my $f = $self->formValidate(
-    { get => 'p', required => 0, default => 1, template => 'int' },
-    { get => 'q', required => 0, default => '' },
+    { get => 'p',   required => 0, default => 1, template => 'int' },
+    { get => 'q',   required => 0, default => '' },
+    { get => 'fil', required => 0, default => '' },
   );
   return $self->resNotFound if $f->{_err};
 
-  my($list, $np) = $self->dbCharGet(
+  my($list, $np) = $self->filFetchDB(char => $f->{fil}, {}, {
     $fch ne 'all' ? ( char => $fch ) : (),
     $f->{q} ? ( search => $f->{q} ) : (),
     results => 50,
     page => $f->{p},
     what => 'vns',
-  );
+  });
 
   $self->htmlHeader(title => mt '_charb_title');
 
   my $quri = uri_escape($f->{q});
+  form action => '/c/all', 'accept-charset' => 'UTF-8', method => 'get';
   div class => 'mainbox';
    h1 mt '_charb_title';
-   form action => '/c/all', 'accept-charset' => 'UTF-8', method => 'get';
-    $self->htmlSearchBox('c', $f->{q});
-   end;
+   $self->htmlSearchBox('c', $f->{q});
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
       a href => "/c/$_?q=$quri", $_ eq $fch ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
     }
    end;
+
+   a id => 'filselect', href => '#c';
+    lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+   end;
+   input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
   end;
+  end 'form';
 
   if(!@$list) {
     div class => 'mainbox';

@@ -104,8 +104,7 @@ CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON chars      
 CREATE TRIGGER notify_announce            AFTER  INSERT           ON threads_posts FOR EACH ROW WHEN (NEW.num = 1) EXECUTE PROCEDURE notify_announce();
 
 CREATE TRIGGER vn_vnsearch_notify AFTER UPDATE ON vn FOR EACH ROW
-  WHEN (OLD.c_search IS NOT NULL AND NEW.c_search IS NULL AND NOT NEW.hidden
-     OR NEW.hidden IS DISTINCT FROM OLD.hidden
+  WHEN (OLD.c_search IS NOT NULL AND NEW.c_search IS NULL
      OR NEW.latest IS DISTINCT FROM OLD.latest
   ) EXECUTE PROCEDURE vn_vnsearch_notify();
 CREATE TRIGGER vn_vnsearch_notify AFTER UPDATE ON releases FOR EACH ROW

@@ -272,7 +272,7 @@ sub logrotate {
 
 sub vnsearch_check {
   $_[KERNEL]->call(pg => query =>
-    'SELECT id FROM vn WHERE NOT hidden AND c_search IS NULL LIMIT 1',
+    'SELECT id FROM vn WHERE c_search IS NULL LIMIT 1',
     undef, 'vnsearch_gettitles');
 }
 
@@ -303,7 +303,7 @@ sub vnsearch_update { # num, res, vid, time
   my @t = map +($_->{title}, $_->{original}), @$res;
   # alias fields are a bit special
   for (@$res) {
-    push @t, split /,/, $_->{alias} if $_->{alias};
+    push @t, split /[\n,]/, $_->{alias} if $_->{alias};
   }
   my $t = normalize_titles(@t);
   $_[KERNEL]->call(core => log => 'Updated search cache for v%d', $id);

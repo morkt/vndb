@@ -456,7 +456,7 @@ sub _form {
         option value => 2, selected => 'selected',  mt '_redit_form_prod_pub';
         option value => 3, mt '_redit_form_prod_both';
        end; end;
-       td class => 'tc_add';  a id => 'producer_add', href => '#', mt '_redit_form_prod_addbut'; end;
+       td class => 'tc_add';  a id => 'producer_add', href => '#', mt '_js_add'; end;
       end; end 'table';
     }],
   ],
@@ -469,7 +469,7 @@ sub _form {
       h2 mt('_redit_form_vn_add');
       div;
        input id => 'vn_input', type => 'text', class => 'text';
-       a href => '#', id => 'vn_add', mt '_redit_form_vn_addbut';
+       a href => '#', id => 'vn_add', mt '_js_add';
       end;
     }],
   ],
