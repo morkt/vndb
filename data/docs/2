@@ -89,7 +89,7 @@
  art of one of the releases. In some cases, especially with doujin games, if there is
  no official cover art available, a general image from the game's homepage or a
  screenshot of the game itself could be used instead.<br />
- Images can be uploaded in JPEG or PNG format, and should not be larger than 500kB.
+ Images can be uploaded in JPEG or PNG format, and should not be larger than 5 MiB.
  All images larger than 256x400px will automatically be resized to fit on the page.
  Keep in mind that this resizing is done in a seperate process, so you will not
  immediately see the image after uploading. This processing often takes just a few

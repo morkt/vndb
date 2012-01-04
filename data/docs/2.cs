@@ -83,7 +83,7 @@ pokud očekáváte, že bude výjimkou z pravidel výše.
  některého vydání. V některých případech, hlavně u doujin her, pokud není žádný
  oficiální art z obalu dostupný, může být použitý obecný obrázek ze stránek hry
  nebo screenshot ze hry samotné.<br />
- Obrázky mohou být nahrány v JPEG nebo PNG formátu a neměly by být větší 500kB.
+ Obrázky mohou být nahrány v JPEG nebo PNG formátu a neměly by být větší 5 MiB.
  Všechny obrázky větší 256x400 pixelů budou automaticky zmenšeny, aby na stránku
  pasovaly. Pamatujte, že zmenšení se děje odděleně, takže obrázek neuvidíte
  hned po nahrání. Tento proces obvykle zabere jen pár vteřin a obrázek by měl být

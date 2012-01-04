@@ -87,7 +87,7 @@ módot kell, hogy alkalmazza. Ez alatt értjük a <a
  Minden visual novelnek kéne legyen egy kép feltéve, lehetőleg egy hivatalos borítója
  valamelyik kiadásnak. Néhány esetben, főleg doujin játékoknál, ha nem létezik ilyen borító
  akkor egy kép a játék weboldaláról vagy egy pillanatkép a játékból is használható.<br />
- A képek csakis JPEG vagy PNG formátumba lehetnek s ne legyenek nagyobbak 500 kb-tól.
+ A képek csakis JPEG vagy PNG formátumba lehetnek s ne legyenek nagyobbak 5 MB-tól.
  Minden kép ami nagyobb 256x400 pixeltől automatikusan át lesz méretezve, hogy elférjen az
  oldalon. Tartsd észbe, hogy az átméretezés egy külön procedúra, szóval feltöltés után a kép
  nem fog egyből megjelenni. Viszont csak egy pár másodpercig kéne tartson, úgyhogy beküldés

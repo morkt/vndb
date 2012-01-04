@@ -7542,14 +7542,6 @@ hu : [_1] jelszavának a beállítása
 nl : Stel wachtwoord in voor [_1]
 de : Bestimme Passwort für [_1]
 
-:_setpass_title
-en : Set password for [_1]
-ru : Установить пароль для [_1]
-cs*:
-hu : [_1] jelszavának a beállítása
-nl : Stel wachtwoord in voor [_1]
-de : Bestimme Passwort für [_1]
-
 :_setpass_msg
 en : Now you can set a password for your account. You will be logged in automatically after your password has been saved.
 ru : Теперь вы можете установить новый пароль для вашего аккаунта. После сохранения пароля вы автоматически войдете на сайт.
@@ -9863,7 +9855,7 @@ de : Dieser Gegenstand wurde von der Datenbank gelöscht. Stelle eine Anfrage
 # The warning/notice messages on edit pages
 
 :_editmsg_copy_title
-en : You're not editing a entry!
+en : You're not editing an entry!
 ru : Это не редактирование записи!
 cs : Neupravujete záznam!
 hu : Nem egy bejegyzést szerkesztel!
