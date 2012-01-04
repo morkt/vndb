@@ -35,7 +35,7 @@ sub addform {
     if(!$frm->{_err} && !$frm->{continue_ign}) {
       $l = $self->dbVNGet(search => $frm->{title}, what => 'changes', results => 50, inc_hidden => 1);
       push @$l, @{$self->dbVNGet(search => $frm->{original}, what => 'changes', results => 50, inc_hidden => 1)} if $frm->{original};
-      $_ && push @$l, $self->dbVNGet(search => $_, what => 'changes', results => 50, inc_hidden => 1) for(split /\n/, $frm->{alias});
+      $_ && push @$l, @{$self->dbVNGet(search => $_, what => 'changes', results => 50, inc_hidden => 1)} for(split /\n/, $frm->{alias});
       my %ids = map +($_->{id}, $_), @$l;
       $l = [ map $ids{$_}, sort { $ids{$a}{title} cmp $ids{$b}{title} } keys %ids ];
     }
