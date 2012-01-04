@@ -14,22 +14,22 @@ macht. Nur IrfanView wird derzeit behandelt, aber mehr folgen später.
 :SUB:IrfanView
 <ol>
  <li>Lade IrfanView von <a
-  href="http://www.irfanview.com/">irfanview.com</a> herunter und installiere es. 
+  href="http://www.irfanview.com/">irfanview.com</a> herunter und installiere es.
  Die Installation sollte schnell abgeschlossen sein.</li>
  <li>Start IrfanView, du solltest ein Fenster bekommen wie <a
   href="http://s004.radikal.ru/i207/1106/d1/cdf42582fc27.jpg">dieses</a>.</li>
- <li>Drücke die <i>C</i>-Taste oder gehe unter <i>Optionen -> Fotografieren/Screenshot</i> um 
+ <li>Drücke die <i>C</i>-Taste oder gehe unter <i>Optionen -> Fotografieren/Screenshot</i> um
   das <a href="http://s50.radikal.ru/i130/1106/93/415e05aa07db.jpg">Fotografieren
   Einstellungen</a> Fenster zu öffnen.</li>
  <li>Wähle "Vordergrund-Fenster - Klient-Bereich". Diese Einstellung
   stellt sicher, dass keine Fensterrahmen angezeigt werden und dass der
   Screenshot schon richtig beschnitten ist.</li>
- <li>Setze ein Tastatur-Kürzel. IrfanView nutzt Strg+F11 als Standard, aber da die 
- meisten Spiele Strg zum Überspringen nutzen, möchtest du dies 
- wahrscheinlich ändern. Um dies zu tun, mache einen Linksklick 
+ <li>Setze ein Tastatur-Kürzel. IrfanView nutzt Strg+F11 als Standard, aber da die
+ meisten Spiele Strg zum Überspringen nutzen, möchtest du dies
+ wahrscheinlich ändern. Um dies zu tun, mache einen Linksklick
  auf den Tastenbereich und drücke die gewünschte Tastenkombination.
   Alt+F11 sollte es tun.</li>
- <li>Wähle "Automatisch als Datei speichern", wähle einen Zielordner und 
+ <li>Wähle "Automatisch als Datei speichern", wähle einen Zielordner und
   wähle JPG als Format.</li>
  <li>Klicke auf "Optionen" um das <a href="http://i023.radikal.ru/1106/5d/385bb91bc059.jpg">JPEG Speichern</a>
   Fenster zu öffnen.</li>

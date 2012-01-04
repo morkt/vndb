@@ -19,7 +19,7 @@
  *Nicht unterbrochen durch Gameplay Sequenzen, kann jedoch unterbrochen werden durch Auswahlmöglichkeiten oder
  einfache Kartenbewegungen.<br />
  <br />
- Anmerkung: In einigen speziellen Fällen kann ein Spiel hier hinzugefügt werden, selbst wenn es 
+ Anmerkung: In einigen speziellen Fällen kann ein Spiel hier hinzugefügt werden, selbst wenn es
  sich nicht an die obigen Punkte hält. Jedoch liegt dies an der Entscheidung durch Moderatoren.
  Füge selbst kein Spiel hinzu, von dem du denkst, dass es eine Ausnahme für die obigen Regeln ist.
 </p>
@@ -35,7 +35,7 @@
   Zeichensätze), füge den Originaltitel hier ein.
  </dd><dt>Pseudonyme</dt><dd>
   Visual Novels können unter vielen Namen bekannt sein, benutze dieses Feld, um alle Pseudonyme
-  und Akronyme, die im Internet genutzt werde, anzugeben. Offizielle Titel von Veröffentlichungen sollten 
+  und Akronyme, die im Internet genutzt werde, anzugeben. Offizielle Titel von Veröffentlichungen sollten
   hier nicht hinzugefügt werden, da diese bereits in den Veröffentlichungen gelistet sind.
  </dd><dt>Beschreibung</dt><dd>
   Kurze Beschreibung der Hauptgeschichte.
@@ -48,7 +48,7 @@
   Seiten (<a href="http://en.wikipedia.org/">Wikipedia</a>, <a href="http://novelnews.net/">
   Novelnews.net</a>, <a href="http://renai.us/">Renai.us</a> und
   <a href="http://visual-novels.net/">Visual-novels.net</a>),
-  suche nach einer Seite über das Spiel und finde die ID oder den Name der Seite um 
+  suche nach einer Seite über das Spiel und finde die ID oder den Name der Seite um
   die Textboxen auszufüllen. Spezifiziere nicht die gesamte URL, wir brauchen nur einen kleinen Teil
   davon!
  </dd><dt>Verwandter Anime</dt><dd>
@@ -69,7 +69,7 @@
   sorgen dafür.<br />
   Nachdem du eine neue AniDB ID hinzugefügt hast, sucht VNDB automatisch nach Informationen über den
   Anime und gibt sie auf der Seite an. Diese Aktion kann einige Minuten dauern - im schlimmsten Fall Stunden.
-  Nach dieser Zeit wirst du die ID des Animes sehen, aber nicht den Titel und Links zu AnimeNFO 
+  Nach dieser Zeit wirst du die ID des Animes sehen, aber nicht den Titel und Links zu AnimeNFO
   und Anime News Network. Es ist nicht möglich diese Informationen manuell hinzufügen
   dies wird automatisch gemacht!
  </dd>
@@ -102,38 +102,38 @@
  <li>Bikini, Unterhöschen und andere Unterwäsche sind nur jugendfrei wenn sie keine implizierte Andeutung
   auf sexuelle Anatomie zeigen</li>
  <li>Wenn die Pose des Charakters sexuell andeutend ist, zählt es als NSFW</li>
- <li>Wenn mehrere Charakter gezeigt werden, die Körperkontakt haben, der als 
+ <li>Wenn mehrere Charakter gezeigt werden, die Körperkontakt haben, der als
   sexueller Kontakt (oder Andeutungen) gesehen werden könnten, dann ist es auch NSFW.
  </li>
 </ul><p>
- Selbst mit diesen Richtlinien mag es nicht immer leicht sein zu erkennen ob ein Bild 
+ Selbst mit diesen Richtlinien mag es nicht immer leicht sein zu erkennen ob ein Bild
  jugendfrei ist oder nicht. Im Zweifelsfall immer NSFW wählen.
 </p>
 
 
 :SUB:Beziehungen
 <p>
- Visual Novel Beziehungen können genutzt werden um festzustellen welche Spiele verwandt mit 
+ Visual Novel Beziehungen können genutzt werden um festzustellen welche Spiele verwandt mit
  anderen sind.<br />
  Wenn du eine Beziehung hinzufügst, wird automatisch die umgekehrte Beziehung beim anderen
  Visual Novel hinzugefügt. Z. B. wenn du Spiel x als Nachfolger von Spiel y setzt, dann wird das
  Spiel y automatisch als Vorgänger von Spiel x gesetzt. Du musst nicht beide Spiele bearbeiten.<br />
- Nur spezifische <b>direkte</b> Beziehungen. Wenn das eine Spiel 1 eine Beziehung mit 
+ Nur spezifische <b>direkte</b> Beziehungen. Wenn das eine Spiel 1 eine Beziehung mit
  Spiel 2 hat und Spiel 2 eine Beziehung mit Spiel 3 hat, dann wird Spiel 3 nicht als Beziehung
  zu Spiel 1 gesetzt. Das mag sich am Anfang etwas verwirrend anhören, aber du wirst
- verstehen, wenn du dir die Beziehungsdiagramme ansiehst. Wenn du Beziehungen 
+ verstehen, wenn du dir die Beziehungsdiagramme ansiehst. Wenn du Beziehungen
  bearbeitest, versuche immer an die Beziehungen zwischen allen verwandten Spielen
- zu denken - wie im Diagramm gezeigt - anstatt dir nur den einen Visual Novel, den 
+ zu denken - wie im Diagramm gezeigt - anstatt dir nur den einen Visual Novel, den
  du bearbeitest, anzusehen.
  <br />
- Die "offiziell" Checkbox kann benutzt werden, um zu bestimmen ob die Beziehung 
+ Die "offiziell" Checkbox kann benutzt werden, um zu bestimmen ob die Beziehung
  offiziell ist oder nicht. Eine Beziehung ist offiziell, wenn beide Spiele von der gleichen
  Marke veröffentlicht wurden oder zumindest der Veröffentlicher der früheren Spiele
  die Erlaubnis gegeben hat, Nachfolger zu kreieren. Im Allgemeinen: Fandiscs und Spiele
  der gleichen Serie sind offiziell, während Fanfictions nicht offiziell sind.
  <br />
  Es gibt eine statische Liste von Beziehungen zum auswählen (wie unten beschrieben). Wie bei
- vielen Dingen, können Beziehungen zwischen Spielen in Wirklichkeit komplexer sein als diese 
+ vielen Dingen, können Beziehungen zwischen Spielen in Wirklichkeit komplexer sein als diese
  Optionen. Wähle einfach die Option, von der du denkst, dass sie am nächsten der Beschreibung
  der eigentlichen Beziehung kommt, wenn du nicht weißt, welche du wählen sollst.
 </p>
@@ -166,10 +166,10 @@
 
 
 :SUB:Screenshots
-Jeder Visual Novel Eintrag kann höchstens 10 Screenshots. Screenshots können 
+Jeder Visual Novel Eintrag kann höchstens 10 Screenshots. Screenshots können
 im JPEG und PNG Format hochgeladen werden. Die hochgeladenen Screenshots werden
 streng moderiert und sollten den unten stehenden Richtlinien folgen. Es wird sehr empfohlen,
-den <a href="/d13">Anweisungen für gute Screenshots</a> zu folgen wenn du 
+den <a href="/d13">Anweisungen für gute Screenshots</a> zu folgen wenn du
 nicht möchtest, dass deine Bemühungen umsonst waren.
 <ul>
  <li>Alle Bilder müssen in der höchsten Auflösung des VNs sein. Die übliche Auflösung
@@ -181,7 +181,7 @@ nicht möchtest, dass deine Bemühungen umsonst waren.
   massiv modifizierten Fensterrahmen, noch an deiner unglaublichen AGTH-Installation interessiert.</li>
  <li>Zumindest die Hälfte der Bilder sollten Screenshots von dem Spiel sein. Das heißt, sie sollten
   Charaktergrafiken enthalten oder eine Form von Dialog oder Benutzeroberfläche. Normale Event CG Bilder
-  ohne Text oder Benutzeroberflächen sind erlaubt um den Zeichenstil zu zeigen, aber sie sollten nicht 
+  ohne Text oder Benutzeroberflächen sind erlaubt um den Zeichenstil zu zeigen, aber sie sollten nicht
   über die anderen Screenshots dominieren. </li>
  <li>Das Hochladen von Screenshots mit erotischem Inhalt ist erlaubt, solange das Verhältnis von erotischen/nicht-erotischen
   Screenshots im erotischen/nicht-erotischen Verhältnis der VN selbst steht. Zum Beispiel,
