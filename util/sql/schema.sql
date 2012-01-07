@@ -538,7 +538,9 @@ ALTER TABLE wlists              ADD FOREIGN KEY (vid)       REFERENCES vn       
 
 
 CREATE INDEX affiliate_links_rid ON affiliate_links (rid) WHERE NOT hidden;
+CREATE INDEX releases_producers_rid ON releases_producers (rid);
 CREATE INDEX releases_vn_vid ON releases_vn (vid);
 CREATE INDEX tags_vn_date    ON tags_vn     (date);
+CREATE INDEX tags_vn_vid     ON tags_vn     (vid);
 CREATE UNIQUE INDEX chars_vns_pkey ON chars_vns (cid, vid, COALESCE(rid, 0));
 
