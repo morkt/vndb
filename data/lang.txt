@@ -1287,6 +1287,14 @@ hu : Ismeretlen
 nl : Onbekend
 de : Unbekannt
 
+:_bloodt_o
+en : O
+ru : 1
+cs :
+hu :
+nl :
+de : O
+
 :_bloodt_a
 en : A
 ru : 2
@@ -1310,14 +1318,6 @@ cs : AB
 hu :
 nl :
 de : AB
-
-:_bloodt_o
-en : O
-ru : 1
-cs :
-hu :
-nl : O
-de : O
 
 
 # Genders

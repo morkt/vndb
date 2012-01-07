@@ -4,7 +4,7 @@ package VNDB;
 our(%O, %S, $ROOT);
 
 
-# options for YAWF
+# options for TUWF
 our %O = (
   db_login  => [ 'dbi:Pg:dbname=vndb', 'vndb', 'passwd' ],
   debug     => 1,
@@ -100,7 +100,7 @@ our %S = (%S,
   wishlist_status => [ 0..3 ],
   rlist_status    => [ 0..4 ], # 2 = hardcoded 'OK'
   vnlist_status   => [ 0..4 ],
-  blood_types     => [qw| unknown a b ab o |],
+  blood_types     => [qw| unknown o a b ab |],
   genders         => [qw| unknown m f b |],
   char_roles      => [qw| main primary side appears |],
   atom_feeds => { # num_entries, title, id
