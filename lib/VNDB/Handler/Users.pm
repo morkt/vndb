@@ -363,7 +363,7 @@ sub edit {
       $o{username} = $frm->{usrname} if $frm->{usrname};
       if($self->authCan('usermod')) {
         $o{perm} = 0;
-        $o{perm} += $self->{permissions}{$_} for(@{ delete $frm->{perms} });
+        $o{perm} |= $self->{permissions}{$_} for(@{ delete $frm->{perms} });
       }
       $o{mail} = $frm->{mail};
       ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->{usrpass}) if $frm->{usrpass};
