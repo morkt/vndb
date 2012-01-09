@@ -195,3 +195,7 @@ update-2.22: all
 	${runpsql} < util/updates/update_2.22.sql
 	$(multi-start)
 
+update-2.23: all
+	$(multi-stop)
+	${runpsql} < util/updates/update_2.23.sql
+	$(multi-start)

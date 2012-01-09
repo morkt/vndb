@@ -266,6 +266,14 @@ hu : Török
 nl : Turks
 de : Türkisch
 
+:_lang_uk
+en : Ukrainian
+ru*:
+cs*:
+hu*:
+nl : Oekraïens
+de*:
+
 :_lang_vi
 en : Vietnamese
 ru : Вьетнамский
