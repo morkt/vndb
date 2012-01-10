@@ -2695,11 +2695,20 @@ if(byId('filselect'))
 if(byId('votesel')) {
   byId('votesel').onchange = function() {
     var s = this.options[this.selectedIndex].value;
+    if(s == -2)
+      s = prompt(mt('_vnpage_uopt_othervote'), '');
+    if(!s || s == -3)
+      return;
+    if(s != -1 && (!s.match(/^([1-9]|10)(\.[0-9])?$/) || s > 10 || s < 1)) {
+      alert(mt('_vnpage_uopt_invvote'));
+      this.selectedIndex = 0;
+      return;
+    }
     if(s == 1 && !confirm(mt('_vnpage_uopt_1vote')))
       return;
     if(s == 10 && !confirm(mt('_vnpage_uopt_10vote')))
       return;
-    if(s)
+    if(s > 0 || s == -1)
       location.href = location.href.replace(/#.*/, '').replace(/\/chars/, '').replace(/\.[0-9]+/, '')+'/vote?formcode='+this.name+';v='+s;
   };
 }

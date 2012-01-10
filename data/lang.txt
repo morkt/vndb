@@ -9496,6 +9496,30 @@ hu : visszavonás
 nl : intrekken
 de : wiederrufen
 
+:_vnpage_uopt_othvote
+en : Other
+ru*:
+cs*:
+hu*:
+nl : Anders
+de*:
+
+:_vnpage_uopt_othervote
+en : Please input your vote as a number between 1 and 10. One digit after the decimal is allowed, for example: 8.6 or 7.3.
+ru*:
+cs*:
+hu*:
+nl : Geef je stem op als een number tussen 1 en 10. Één getal achter de comma is toegestaan, bijvoorbeeld: 8.6 of 7.3.
+de*:
+
+:_vnpage_uopt_invvote
+en : Invalid number.
+ru*:
+cs*:
+hu*:
+nl : Ongeldig nummer.
+de*:
+
 :_vnpage_uopt_1vote
 en : You are about to give this visual novel a 1 out of 10. This is a rather extreme rating, meaning this game has absolutely nothing to offer, and that it's the worst game you have ever played.
      Are you really sure this visual novel matches that description?

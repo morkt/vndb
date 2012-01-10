@@ -9,7 +9,7 @@ use POSIX 'strftime', 'ceil', 'floor';
 use VNDBUtil;
 our @EXPORT = (@VNDBUtil::EXPORT, qw|
   clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags
-  childtags charspoil imgpath imgurl
+  childtags charspoil imgpath imgurl fmtvote
 |);
 
 
@@ -194,6 +194,11 @@ sub imgurl {
   return sprintf '%s/%s/%02d/%d.jpg', $TUWF::OBJ->{url_static}, $_[0], $_[1]%100, $_[1];
 }
 
+
+# Formats a vote number.
+sub fmtvote {
+  return !$_[0] ? '-' : $_[0] % 10 == 0 ? $_[0]/10 : sprintf '%.1f', $_[0]/10;
+}
 
 1;
 

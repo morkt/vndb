@@ -202,7 +202,7 @@ sub htmlBrowseVN {
        end;
        td class => 'tc5', sprintf '%.2f', ($l->{c_popularity}||0)*100;
        td class => 'tc6';
-        txt sprintf '%.2f', $l->{c_rating}||0;
+        txt sprintf '%.2f', ($l->{c_rating}||0)/10;
         b class => 'grayedout', sprintf ' (%d)', $l->{c_votecount};
        end;
       end 'tr';

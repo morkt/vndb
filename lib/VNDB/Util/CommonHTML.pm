@@ -338,11 +338,11 @@ sub htmlItemMessage {
 sub htmlVoteStats {
   my($self, $type, $obj, $stats) = @_;
 
-  my($max, $count, $total) = (0, 0);
+  my($max, $count, $total) = (0, 0, 0);
   for (0..$#$stats) {
-    $max = $stats->[$_] if $stats->[$_] > $max;
-    $count += $stats->[$_];
-    $total += $stats->[$_]*($_+1);
+    $max = $stats->[$_][0] if $stats->[$_][0] > $max;
+    $count += $stats->[$_][0];
+    $total += $stats->[$_][1];
   }
   div class => 'votestats';
    table class => 'votegraph';
@@ -350,15 +350,15 @@ sub htmlVoteStats {
      td colspan => 2, mt '_votestats_title';
     end; end;
     tfoot; Tr;
-     td colspan => 2, mt('_votestats_sum', $count, sprintf('%.2f', $total/$count))
-       .($type eq 'v' ? ' ('.mt('_vote_'.(ceil($total/$count-1)||1)).')' : '');
+     td colspan => 2, mt('_votestats_sum', $count, sprintf('%.2f', $total/$count/10))
+       .($type eq 'v' ? ' ('.mt('_vote_'.(ceil($total/$count/10-1)||1)).')' : '');
     end; end;
     for (reverse 0..$#$stats) {
       Tr;
       td class => 'number', $_+1;
        td class => 'graph';
-        div style => 'width: '.($stats->[$_] ? $stats->[$_]/$max*250 : 0).'px', ' ';
-        txt $stats->[$_];
+        div style => 'width: '.($stats->[$_][0]/$max*250).'px', ' ';
+        txt $stats->[$_][0];
        end;
       end;
     }
@@ -392,7 +392,7 @@ sub htmlVoteStats {
             a href => "/u$recent->[$_]{uid}", $recent->[$_]{username};
           }
          end;
-         td $recent->[$_]{vote};
+         td fmtvote $recent->[$_]{vote};
          td $self->{l10n}->date($recent->[$_]{date});
         end;
       }
@@ -404,7 +404,7 @@ sub htmlVoteStats {
      div;
       h3 mt '_votestats_rank_title';
       p mt '_votestats_rank_pop', $obj->{p_ranking}, sprintf '%.2f', ($obj->{c_popularity}||0)*100;
-      p mt '_votestats_rank_rat', $obj->{r_ranking}, sprintf '%.2f', $obj->{c_rating};
+      p mt '_votestats_rank_rat', $obj->{r_ranking}, sprintf '%.2f', $obj->{c_rating}/10;
      end;
    }
   end 'div';

@@ -235,17 +235,18 @@ sub dbVoteGet {
 
 
 # Arguments: (uid|vid), id, use_ignore_list
-# Returns an arrayref with 10 elements containing the number of votes for index+1
+# Returns an arrayref with 10 elements containing the [ count(vote), sum(vote) ]
+#   for votes in the range of ($index+0.5) .. ($index+1.4)
 sub dbVoteStats {
   my($self, $col, $id, $ign) = @_;
   my $u = $self->authInfo->{id};
-  my $r = [ qw| 0 0 0 0 0 0 0 0 0 0 | ];
-  $r->[$_->{vote}-1] = $_->{votes} for (@{$self->dbAll(q|
-    SELECT vote, COUNT(vote) as votes
+  my $r = [ map [0,0], 0..9 ];
+  $r->[$_->{idx}] = [ $_->{votes}, $_->{total} ] for (@{$self->dbAll(q|
+    SELECT (vote::numeric/10)::int-1 AS idx, COUNT(vote) as votes, SUM(vote) AS total
       FROM votes
       !s
       !W
-      GROUP BY vote|,
+      GROUP BY (vote::numeric/10)::int|,
     $ign ? 'JOIN users ON id = uid AND (NOT ign_votes'.($u?sprintf(' OR id = %d',$u):'').')' : '',
     $col ? { '!s = ?' => [ $col, $id ] } : {},
   )});

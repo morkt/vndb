@@ -76,10 +76,10 @@ sub userpage {
       } elsif($votes) {
         my($total, $count) = (0, 0);
         for (1..@$votes) {
-          $total += $_*$votes->[$_-1];
-          $count += $votes->[$_-1];
+          $count += $votes->[$_-1][0];
+          $total += $votes->[$_-1][1];
         }
-        lit mt '_userpage_votes_item', "/u$uid/votes", $count, sprintf '%.2f', $total/$count;
+        lit mt '_userpage_votes_item', "/u$uid/votes", $count, sprintf '%.2f', $total/$count/10;
       } else {
         txt '-';
       }

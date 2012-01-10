@@ -27,12 +27,12 @@ sub vnvote {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { get => 'v', enum => [ -1, 1..10 ] }
+    { get => 'v', regex => qr/^(-1|([1-9]|10)(\.[0-9])?)$/ }
   );
-  return $self->resNotFound if $f->{_err};
+  return $self->resNotFound if $f->{_err} || ($f->{v} != -1 && ($f->{v} > 10 || $f->{v} < 1));
 
   $self->dbVoteDel($uid, $id) if $f->{v} == -1;
-  $self->dbVoteAdd($id, $uid, $f->{v}) if $f->{v} > 0;
+  $self->dbVoteAdd($id, $uid, $f->{v}*10) if $f->{v} > 0;
 
   $self->resRedirect('/v'.$id, 'temp');
 }
@@ -138,7 +138,7 @@ sub votelist {
     my @vid = grep $_ && $_ > 0, @{$frm->{vid}};
     if(!$frm->{_err} && @vid && $frm->{batchedit} > -2) {
       $self->dbVoteDel($id, \@vid) if $frm->{batchedit} == -1;
-      $self->dbVoteAdd(\@vid, $id, $frm->{batchedit}) if $frm->{batchedit} >= 0;
+      $self->dbVoteAdd(\@vid, $id, $frm->{batchedit}*10) if $frm->{batchedit} > 0;
     }
   }
 
@@ -191,7 +191,7 @@ sub votelist {
         input type => 'checkbox', name => 'vid', value => $l->{vid} if $own;
         txt ' '.$self->{l10n}->date($l->{date});
        end;
-       td class => 'tc2', $l->{vote};
+       td class => 'tc2', fmtvote $l->{vote};
        td class => 'tc3';
         a href => $type eq 'v' ? ("/u$l->{uid}", $l->{username}) : ("/v$l->{vid}", shorten $l->{title}, 100);
        end;
@@ -460,7 +460,7 @@ sub _vnlist_browse {
         $txt = qq|<b class="todo">$txt</b>| if $obtained < $total;
         lit $txt;
        end;
-       td class => 'tc8', $i->{vote} || '-';
+       td class => 'tc8', fmtvote $i->{vote};
       end 'tr';
 
       for (@{$i->{rels}}) {

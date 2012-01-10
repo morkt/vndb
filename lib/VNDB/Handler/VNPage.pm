@@ -381,9 +381,10 @@ sub _useroptions {
    td;
     if($vote || !$wish) {
       Select id => 'votesel', name => $self->authGetCode("/v$v->{id}/vote");
-       option $vote ? mt '_vnpage_uopt_voted', $vote->{vote} : mt '_vnpage_uopt_novote';
+       option value => -3, $vote ? mt '_vnpage_uopt_voted', fmtvote($vote->{vote}) : mt '_vnpage_uopt_novote';
        optgroup label => $vote ? mt '_vnpage_uopt_changevote' : mt '_vnpage_uopt_dovote';
         option value => $_, "$_ (".mt("_vote_$_").')' for (reverse 1..10);
+        option value => -2, mt '_vnpage_uopt_othvote';
        end;
        option value => -1, mt '_vnpage_uopt_delvote' if $vote;
       end;
@@ -566,7 +567,7 @@ sub _stats {
   my $stats = $self->dbVoteStats(vid => $v->{id}, 1);
   div class => 'mainbox';
    h1 mt '_vnpage_stats';
-   if(!grep $_ > 0, @$stats) {
+   if(!grep $_->[0] > 0, @$stats) {
      p mt '_vnpage_stats_none';
    } else {
      $self->htmlVoteStats(v => $v, $stats);
