@@ -63,7 +63,7 @@
  <b>Переводчики</b><br />
  <dl>
   <dt>Чешский</dt><dd><a href="mailto:nya.chan.production@gmail.com">Nya-chan Production</a></dd>
-  <dt>Немецкий</dt><dd><a href="mailto:marcelweyers91@web.de">Marcel Weyers</a></dd>
+  <dt>Немецкий</dt><dd><a href="mailto:info@marcel-weyers.de">Marcel Weyers</a></dd>
   <dt>Венгерский</dt><dd><a href="mailto:bikmate@gmail.com">Bikfalvi Mate</a></dd>
   <dt>Голландский</dt><dd><a href="mailto:contact@vndb.org">Yorhel</a></dd>
   <dt>Русский</dt><dd><a href="mailto:just.some.silver.dragon@gmail.com">SilverDragon</a></dd>
