@@ -55,6 +55,7 @@
  <dl>
   <dt>Český</dt><dd><a href="mailto:nya.chan.production@gmail.com">Nya-chan Production</a></dd>
   <dt>Německy</dt><dd><a href="mailto:info@marcel-weyers.de">Marcel Weyers</a></dd>
+  <dt>Španělsky</dt><dd><a href="/u11964">ganchan</a></dd>
   <dt>Maďarský</dt><dd><a href="mailto:bikmate@gmail.com">Bikfalvi Máté</a></dd>
   <dt>Nizozemsky</dt><dd><a href="mailto:contact@vndb.org">Yorhel</a></dd>
   <dt>Ruský</dt><dd><a href="mailto:just.some.silver.dragon@gmail.com">SilverDragon</a></dd>
