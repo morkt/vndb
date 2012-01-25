@@ -665,7 +665,7 @@ sub notifies {
       ],
       row     => sub {
         my($s, $n, $l) = @_;
-        Tr class => $l->{read}?():(class => 'unread');
+        Tr $l->{read} ? () : (class => 'unread');
          td class => 'tc1';
           input type => 'checkbox', name => 'notifysel', value => "$l->{id}";
          end;
