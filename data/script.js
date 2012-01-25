@@ -1059,7 +1059,6 @@ function scrAdd(id, nsfw, rel) {
     )
   );
   byId('scr_table').appendChild(tr);
-  scrStripe();
   return tr;
 }
 
@@ -1091,13 +1090,6 @@ function scrLast() {
       tag('input', {type:'button', value:mt('_vnedit_scr_addbut'), 'class':'submit', onclick:scrUpload})
     )
   ));
-  scrStripe();
-}
-
-function scrStripe() {
-  var l = byName(byId('scr_table'), 'tr');
-  for(var i=0; i<l.length; i++)
-    setClass(l[i], 'odd', i%2==0);
 }
 
 function scrCheckStatus() {
@@ -1275,7 +1267,6 @@ function tglLoad() {
   byId('tagmod_add').onclick = tglAdd;
 
   // JS'ify the voting bar and spoiler setting
-  tglStripe();
   var trs = byName(byId('tagtable'), 'tr');
   for(var i=0; i<trs.length; i++) {
     if(hasClass(trs[i], 'tagmod_cat'))
@@ -1397,15 +1388,8 @@ function tglAdd() {
       tag('td', {'class':'tc_allspoil'}, ' '),
       tag('td', {'class':'tc_allwho'}, '')
     ));
-    tglStripe();
     tglSerialize();
   });
-}
-
-function tglStripe() {
-  var l = byName(byId('tagtable'), 'tr');
-  for(var i=0; i<l.length; i++)
-    setClass(l[i], 'odd', i%2);
 }
 
 function tglSerialize() {
@@ -1456,7 +1440,6 @@ function rvnAdd(id, title) {
     tag('td', {'class':'tc_title'}, 'v'+id+':', tag('a', {href:'/v'+id}, shorten(title, 40))),
     tag('td', {'class':'tc_rm'},    tag('a', {href:'#', onclick:rvnDel}, mt('_js_remove')))
   ));
-  rvnStripe();
   rvnEmpty();
 }
 
@@ -1467,7 +1450,6 @@ function rvnDel() {
   tr.parentNode.removeChild(tr);
   rvnEmpty();
   rvnSerialize();
-  rvnStripe();
   return false;
 }
 
@@ -1477,12 +1459,6 @@ function rvnEmpty() {
     tbl.appendChild(tag('tr', {id:'rvn_tr_none'}, tag('td', {colspan:2}, mt('_redit_form_vn_none'))));
   else if(byId('rvn_tr_none'))
     tbl.removeChild(byId('rvn_tr_none'));
-}
-
-function rvnStripe() {
-  var l = byName(byId('vn_tbl'), 'tr');
-  for(var i=0; i<l.length; i++)
-    setClass(l[i], 'odd', i%2);
 }
 
 function rvnFormAdd() {

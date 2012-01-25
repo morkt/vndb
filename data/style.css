@@ -5,8 +5,10 @@ a            { color: $link$; text-decoration: none; }
 a:hover      { border-bottom: 1px dotted $maintext$; }
 table        { border-collapse: collapse; }
 table td     { vertical-align: top; padding: 3px; }
-table tr.odd { background: url($_boxbg$) repeat; }
 img          { border: none; }
+
+table tr.odd,
+table.stripe tbody tr:nth-child(odd):not(.nostripe) { background: url($_boxbg$) repeat; }
 
 #bgright { position: absolute; top: 0px; right: 0px; $_bgright$ }
 #header  { position: absolute; top: 80px; left: 400px; }

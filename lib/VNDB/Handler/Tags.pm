@@ -327,7 +327,7 @@ sub taglist {
       ],
       row => sub {
         my($s, $n, $l) = @_;
-        Tr $n % 2 ? (class => 'odd') : ();
+        Tr;
          td class => 'tc1', $self->{l10n}->age($l->{added});
          td class => 'tc3';
           a href => "/g$l->{id}", $l->{name};
@@ -433,7 +433,7 @@ sub taglinks {
     ],
     row      => sub {
       my($s, $n, $l) = @_;
-      Tr $n % 2 ? (class => 'odd') : ();
+      Tr;
        td class => 'tc1';
         lit $self->{l10n}->date($l->{date});
        end;
@@ -537,7 +537,7 @@ sub vntagmod {
   $self->htmlForm({ action => "/v$vid/tagmod", nosubmit => 1 }, tagmod => [ mt('_tagv_frm_title'),
     [ hidden => short => 'taglinks', value => '' ],
     [ static => nolabel => 1, content => sub {
-      table class => 'tgl';
+      table class => 'tgl stripe';
        thead;
         Tr;
          td '';

@@ -115,29 +115,31 @@ sub charTable {
    end 'div';
 
    # info table
-   table;
-    Tr;
-     td colspan => 2;
-      if($link) {
-        a href => "/c$r->{id}", style => 'margin-right: 10px; font-weight: bold', $r->{name};
-      } else {
-        b style => 'margin-right: 10px', $r->{name};
-      }
-      b class => 'grayedout', style => 'margin-right: 10px', $r->{original} if $r->{original};
-      cssicon "gen $r->{gender}", mt "_gender_$r->{gender}" if $r->{gender} ne 'unknown';
-      span mt "_bloodt_$r->{bloodt}" if $r->{bloodt} ne 'unknown';
+   table class => 'stripe';
+    thead;
+     Tr;
+      td colspan => 2;
+       if($link) {
+         a href => "/c$r->{id}", style => 'margin-right: 10px; font-weight: bold', $r->{name};
+       } else {
+         b style => 'margin-right: 10px', $r->{name};
+       }
+       b class => 'grayedout', style => 'margin-right: 10px', $r->{original} if $r->{original};
+       cssicon "gen $r->{gender}", mt "_gender_$r->{gender}" if $r->{gender} ne 'unknown';
+       span mt "_bloodt_$r->{bloodt}" if $r->{bloodt} ne 'unknown';
+      end;
      end;
     end;
-    my $i = 0;
+
     if($r->{alias}) {
       $r->{alias} =~ s/\n/, /g;
-      Tr ++$i % 2 ? (class => 'odd') : ();
+      Tr;
        td class => 'key', mt '_charp_alias';
        td $r->{alias};
       end;
     }
     if($r->{height} || $r->{s_bust} || $r->{s_waist} || $r->{s_hip}) {
-      Tr ++$i % 2 ? (class => 'odd') : ();
+      Tr;
        td class => 'key', mt '_charp_meas';
        td join ', ',
          $r->{height} ? mt('_charp_meas_h', $r->{height}) : (),
@@ -146,7 +148,7 @@ sub charTable {
       end;
     }
     if($r->{b_month} && $r->{b_day}) {
-      Tr ++$i % 2 ? (class => 'odd') : ();
+      Tr;
        td class => 'key', mt '_charp_bday';
        td mt '_charp_bday_fmt', $r->{b_day}, mt "_month_$r->{b_month}";
       end;
@@ -154,6 +156,7 @@ sub charTable {
 
     # traits
     # TODO: handle 'sexual' traits
+    # TODO: fix striping of the table with hidden trait groups (due to spoilers)
     my %groups;
     my @groups;
     for (@{$r->{traits}}) {
@@ -164,7 +167,7 @@ sub charTable {
     for my $g (@groups) {
       my $minspoil = 5;
       $minspoil = $minspoil > $_->{spoil} ? $_->{spoil} : $minspoil for(@{$groups{$g}});
-      Tr class => charspoil($minspoil).(++$i % 2 ? ' odd' : '');
+      Tr class => charspoil($minspoil);
        td class => 'key'; a href => '/i'.($groups{$g}[0]{group}||$groups{$g}[0]{tid}), $groups{$g}[0]{groupname} || $groups{$g}[0]{name}; end;
        td;
         for (0..$#{$groups{$g}}) {
@@ -187,7 +190,7 @@ sub charTable {
     if(@{$r->{vns}} && (!$vn || $vn && (@{$r->{vns}} > 1 || $r->{vns}[0]{rid}))) {
       my %vns;
       push @{$vns{$_->{vid}}}, $_ for(sort { !defined($a->{rid})?1:!defined($b->{rid})?-1:$a->{rtitle} cmp $b->{rtitle} } @{$r->{vns}});
-      Tr ++$i % 2 ? (class => 'odd') : ();
+      Tr;
        td class => 'key', mt $vn ? '_charp_releases' : '_charp_vns';
        td;
         my $first = 0;
@@ -228,7 +231,7 @@ sub charTable {
 
     # description
     if($r->{desc}) {
-      Tr;
+      Tr class => 'nostripe';
        td class => 'chardesc', colspan => 2;
         h2 mt '_charp_description';
         p;
@@ -512,7 +515,7 @@ sub charBrowseTable {
     header   => [ [ '' ], [ '' ] ],
     row      => sub {
       my($s, $n, $l) = @_;
-      Tr $n % 2 ? (class => 'odd') : ();
+      Tr;
        td class => 'tc1';
         cssicon "gen $l->{gender}", mt "_gender_$l->{gender}" if $l->{gender} ne 'unknown';
        end;

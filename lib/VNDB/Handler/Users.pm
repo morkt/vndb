@@ -40,10 +40,9 @@ sub userpage {
   div class => 'mainbox userpage';
    h1 $title;
 
-   table;
-    my $i = 0;
+   table class => 'stripe';
 
-    Tr ++$i % 2 ? (class => 'odd') : ();
+    Tr;
      td class => 'key', mt '_userpage_username';
      td;
       txt ucfirst($u->{username}).' (';
@@ -52,12 +51,12 @@ sub userpage {
      end;
     end;
 
-    Tr ++$i % 2 ? (class => 'odd') : ();
+    Tr;
      td mt '_userpage_registered';
      td $self->{l10n}->date($u->{registered});
     end;
 
-    Tr ++$i % 2 ? (class => 'odd') : ();
+    Tr;
      td mt '_userpage_edits';
      td;
       if($u->{c_changes}) {
@@ -68,7 +67,7 @@ sub userpage {
      end;
     end;
 
-    Tr ++$i % 2 ? (class => 'odd') : ();
+    Tr;
      td mt '_userpage_votes';
      td;
       if($u->{hide_list}) {
@@ -86,7 +85,7 @@ sub userpage {
      end;
     end;
 
-    Tr ++$i % 2 ? (class => 'odd') : ();
+    Tr;
      td mt '_userpage_tags';
      td;
       if(!$u->{c_tags}) {
@@ -99,13 +98,13 @@ sub userpage {
      end;
     end;
 
-    Tr ++$i % 2 ? (class => 'odd') : ();
+    Tr;
      td mt '_userpage_list';
      td $u->{hide_list} ? mt('_userpage_hidden') :
        mt('_userpage_list_item', $u->{releasecount}, $u->{vncount});
     end;
 
-    Tr ++$i % 2 ? (class => 'odd') : ();
+    Tr;
      td mt '_userpage_forum';
      td;
       lit mt '_userpage_forum_item',$u->{postcount}, $u->{threadcount};
@@ -458,7 +457,7 @@ sub posts {
     ],
     row     => sub {
       my($s, $n, $l) = @_;
-      Tr $n % 2 ? (class => 'odd') : ();
+      Tr;
        td class => 'tc1'; a href => "/t$l->{tid}.$l->{num}", 't'.$l->{tid}; end;
        td class => 'tc2'; a href => "/t$l->{tid}.$l->{num}", '.'.$l->{num}; end;
        td class => 'tc3', $self->{l10n}->date($l->{date});
@@ -566,7 +565,7 @@ sub list {
     ],
     row     => sub {
       my($s, $n, $l) = @_;
-      Tr $n % 2 ? (class => 'odd') : ();
+      Tr;
        td class => 'tc1';
         a href => '/u'.$l->{id}, $l->{username};
        end;
@@ -666,7 +665,7 @@ sub notifies {
       ],
       row     => sub {
         my($s, $n, $l) = @_;
-        Tr class => join ' ', $n%2?'odd':'', $l->{read}?'':'unread';
+        Tr class => $l->{read}?():(class => 'unread');
          td class => 'tc1';
           input type => 'checkbox', name => 'notifysel', value => "$l->{id}";
          end;

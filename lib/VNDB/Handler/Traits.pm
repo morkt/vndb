@@ -302,7 +302,7 @@ sub traitlist {
       ],
       row => sub {
         my($s, $n, $l) = @_;
-        Tr $n % 2 ? (class => 'odd') : ();
+        Tr;
          td class => 'tc1', $self->{l10n}->age($l->{added});
          td class => 'tc3';
           if($l->{group}) {

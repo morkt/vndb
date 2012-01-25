@@ -50,12 +50,10 @@ sub thread {
 
   $self->htmlBrowseNavigate("/t$tid/", $page, [ $t->{count}, 25 ], 't', 1);
   div class => 'mainbox thread';
-   table;
+   table class => 'stripe';
     for my $i (0..$#$p) {
       local $_ = $p->[$i];
-      my $class = $i % 2 ? 'odd ' : '';
-      $class .= 'deleted' if $_->{hidden};
-      Tr class => $class;
+      Tr $_->{deleted} ? (class => 'deleted') : ();
        td class => 'tc1';
         a href => "/t$tid.$_->{num}", name => $_->{num}, "#$_->{num}";
         if(!$_->{hidden}) {
@@ -380,7 +378,7 @@ sub _threadlist {
     ],
     row      => sub {
       my($self, $n, $o) = @_;
-      Tr $n % 2 ? ( class => 'odd' ) : ();
+      Tr;
        td class => 'tc1';
         a $o->{locked} ? ( class => 'locked' ) : (), href => "/t$o->{id}", shorten $o->{title}, 50;
         b class => 'boards';

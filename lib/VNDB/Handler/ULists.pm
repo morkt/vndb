@@ -186,7 +186,7 @@ sub votelist {
     ],
     row      => sub {
       my($s, $n, $l) = @_;
-      Tr $n % 2 ? (class => 'odd') : ();
+      Tr;
        td class => 'tc1';
         input type => 'checkbox', name => 'vid', value => $l->{vid} if $own;
         txt ' '.$self->{l10n}->date($l->{date});
@@ -291,7 +291,7 @@ sub wishlist {
     ],
     row      => sub {
       my($s, $n, $i) = @_;
-      Tr $n % 2 == 0 ? (class => 'odd') : ();
+      Tr;
        td class => 'tc1';
         input type => 'checkbox', name => 'sel', value => $i->{vid}
           if $own;
@@ -440,7 +440,7 @@ sub _vnlist_browse {
     ],
     row      => sub {
       my($s, $n, $i) = @_;
-      Tr $n % 2 == 0 ? (class => 'odd') : ();
+      Tr class => 'nostripe'.($n%2 ? ' odd' : '');
        td class => 'tc1'; input type => 'checkbox', name => 'vid', value => $i->{vid} if $own; end;
        if(@{$i->{rels}}) {
          td class => 'tc2 collapse_but', id => "vid$i->{vid}"; lit '&#9656;'; end;
@@ -464,7 +464,7 @@ sub _vnlist_browse {
       end 'tr';
 
       for (@{$i->{rels}}) {
-        Tr class => "collapse relhid collapse_vid$i->{vid}".($n%2 ? '':' odd');
+        Tr class => "nostripe collapse relhid collapse_vid$i->{vid}".($n%2 ? ' odd':'');
          td class => 'tc1', '';
          td class => 'tc2';
           input type => 'checkbox', name => 'rid', value => $_->{rid} if $own;

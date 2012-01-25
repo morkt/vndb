@@ -89,10 +89,9 @@ sub page {
 
 sub _infotable {
   my($self, $r) = @_;
-  table;
-   my $i = 0;
+  table class => 'stripe';
 
-   Tr ++$i % 2 ? (class => 'odd') : ();
+   Tr;
     td class => 'key', mt '_relinfo_vnrel';
     td;
      for (@{$r->{vn}}) {
@@ -102,19 +101,19 @@ sub _infotable {
     end;
    end;
 
-   Tr ++$i % 2 ? (class => 'odd') : ();
+   Tr;
     td mt '_relinfo_title';
     td $r->{title};
    end;
 
    if($r->{original}) {
-     Tr ++$i % 2 ? (class => 'odd') : ();
+     Tr;
       td mt '_relinfo_original';
       td $r->{original};
      end;
    }
 
-   Tr ++$i % 2 ? (class => 'odd') : ();
+   Tr;
     td mt '_relinfo_type';
     td;
      cssicon "rt$r->{type}", mt "_rtype_$r->{type}";
@@ -122,7 +121,7 @@ sub _infotable {
     end;
    end;
 
-   Tr ++$i % 2 ? (class => 'odd') : ();
+   Tr;
     td mt '_relinfo_lang';
     td;
      for (@{$r->{languages}}) {
@@ -133,13 +132,13 @@ sub _infotable {
     end;
    end;
 
-   Tr ++$i % 2 ? (class => 'odd') : ();
+   Tr;
     td mt '_relinfo_publication';
     td mt $r->{patch} ? '_relinfo_pub_patch' : '_relinfo_pub_nopatch', $r->{freeware}?0:1, $r->{doujin}?0:1;
    end;
 
    if(@{$r->{platforms}}) {
-     Tr ++$i % 2 ? (class => 'odd') : ();
+     Tr;
       td mt '_relinfo_platform', scalar @{$r->{platforms}};
       td;
        for(@{$r->{platforms}}) {
@@ -152,7 +151,7 @@ sub _infotable {
    }
 
    if(@{$r->{media}}) {
-     Tr ++$i % 2 ? (class => 'odd') : ();
+     Tr;
       td mt '_relinfo_media', scalar @{$r->{media}};
       td join ', ', map
         $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1),
@@ -162,21 +161,21 @@ sub _infotable {
 
    if($r->{resolution}) {
      my $res = $self->{resolutions}[$r->{resolution}][0];
-     Tr ++$i % 2 ? (class => 'odd') : ();
+     Tr;
       td mt '_relinfo_resolution';
       td $res =~ /^_/ ? mt $res : $res;
      end;
    }
 
    if($r->{voiced}) {
-     Tr ++$i % 2 ? (class => 'odd') : ();
+     Tr;
       td mt '_relinfo_voiced';
       td mt '_voiced_'.$r->{voiced};
      end;
    }
 
    if($r->{ani_story} || $r->{ani_ero}) {
-     Tr ++$i % 2 ? (class => 'odd') : ();
+     Tr;
       td mt '_relinfo_ani';
       td join ', ',
         $r->{ani_story} ? mt('_relinfo_ani_story', mt '_animated_'.$r->{ani_story}):(),
@@ -184,7 +183,7 @@ sub _infotable {
      end;
    }
 
-   Tr ++$i % 2 ? (class => 'odd') : ();
+   Tr;
     td mt '_relinfo_released';
     td;
      lit $self->{l10n}->datestr($r->{released});
@@ -192,7 +191,7 @@ sub _infotable {
    end;
 
    if($r->{minage} >= 0) {
-     Tr ++$i % 2 ? (class => 'odd') : ();
+     Tr;
       td mt '_relinfo_minage';
       td minage $r->{minage};
      end;
@@ -201,7 +200,7 @@ sub _infotable {
    for my $t (qw|developer publisher|) {
      my @prod = grep $_->{$t}, @{$r->{producers}};
      if(@prod) {
-       Tr ++$i % 2 ? (class => 'odd') : ();
+       Tr;
         td mt "_relinfo_$t", scalar @prod;
         td;
          for (@prod) {
@@ -214,21 +213,21 @@ sub _infotable {
    }
 
    if($r->{gtin}) {
-     Tr ++$i % 2 ? (class => 'odd') : ();
+     Tr;
       td gtintype $r->{gtin};
       td $r->{gtin};
      end;
    }
 
    if($r->{catalog}) {
-     Tr ++$i % 2 ? (class => 'odd') : ();
+     Tr;
       td mt '_relinfo_catalog';
       td $r->{catalog};
      end;
    }
 
    if($r->{website}) {
-     Tr ++$i % 2 ? (class => 'odd') : ();
+     Tr;
       td mt '_relinfo_links';
       td;
        a href => $r->{website}, rel => 'nofollow', mt '_relinfo_website';
@@ -238,7 +237,7 @@ sub _infotable {
 
    if($self->authInfo->{id}) {
      my $rl = $self->dbRListGet(uid => $self->authInfo->{id}, rid => $r->{id})->[0];
-     Tr ++$i % 2 ? (class => 'odd') : ();
+     Tr;
       td mt '_relinfo_user';
       td;
        Select id => 'listsel', name => $self->authGetCode("/r$r->{id}/list");
@@ -465,7 +464,7 @@ sub _form {
     [ hidden => short => 'vn' ],
     [ static => nolabel => 1, content => sub {
       h2 mt('_redit_form_vn_sel');
-      table; tbody id => 'vn_tbl'; end; end;
+      table class => 'stripe'; tbody id => 'vn_tbl'; end; end;
       h2 mt('_redit_form_vn_add');
       div;
        input id => 'vn_input', type => 'text', class => 'text';
@@ -528,7 +527,7 @@ sub browse {
     ],
     row      => sub {
       my($s, $n, $l) = @_;
-      Tr $n % 2 ? (class => 'odd') : ();
+      Tr;
        td class => 'tc1';
         lit $self->{l10n}->datestr($l->{released});
        end;

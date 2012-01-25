@@ -65,7 +65,7 @@ sub list {
       ],
       row      => sub {
         my($s, $n, $l) = @_;
-        Tr $n % 2 ? (class => 'odd') : ();
+        Tr;
          td class => 'tc1'; a href => "/r$l->{rid}", shorten $l->{title}, 50; end;
          td class => 'tc2', $l->{version} || '<default>';
          td class => 'tc3', $l->{hidden} ? 'YES' : 'no';

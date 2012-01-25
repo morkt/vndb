@@ -294,7 +294,7 @@ sub _form {
        lit mt '_vnedit_scrmsg';
       end;
       br;
-      table;
+      table class => 'stripe';
        tbody id => 'scr_table', '';
       end;
       Select id => 'scr_rel', class => $self->{url_static};

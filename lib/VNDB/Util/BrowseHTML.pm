@@ -38,7 +38,7 @@ sub htmlBrowse {
   $self->htmlBrowseNavigate($opt{pageurl}, $opt{options}{p}, $opt{nextpage}, 't');
 
   div class => 'mainbox browse'.($opt{class} ? ' '.$opt{class} : '');
-   table;
+   table class => 'stripe';
 
    # header
     thead;
@@ -139,7 +139,7 @@ sub htmlBrowseHist {
       my($s, $n, $i) = @_;
       my $revurl = "/$i->{type}$i->{iid}.$i->{rev}";
 
-      Tr $n % 2 ? ( class => 'odd' ) : ();
+      Tr;
        td class => 'tc1_1';
         a href => $revurl, "$i->{type}$i->{iid}";
        end;
@@ -180,7 +180,7 @@ sub htmlBrowseVN {
     ],
     row     => sub {
       my($s, $n, $l) = @_;
-      Tr $n % 2 ? (class => 'odd') : ();
+      Tr;
        if($tagscore) {
          td class => 'tc_s';
           tagscore $l->{tagscore}, 0;

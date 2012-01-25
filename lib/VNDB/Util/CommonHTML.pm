@@ -195,7 +195,7 @@ sub htmlRevision {
 
    # otherwise, compare the two revisions
    else {
-     table;
+     table class => 'stripe';
       thead;
        Tr;
         td; lit '&nbsp;'; end;
@@ -211,8 +211,7 @@ sub htmlRevision {
         end;
        end;
       end;
-      my $i = 1;
-      revdiff(\$i, $type, $old, $new, @$_) for (
+      revdiff($type, $old, $new, @$_) for (
         [ ihid   => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
         [ ilock  => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
         @fields
@@ -233,7 +232,7 @@ sub revheader { # type, obj
 }
 
 sub revdiff {
-  my($i, $type, $old, $new, $short, %o) = @_;
+  my($type, $old, $new, $short, %o) = @_;
 
   $o{serialize} ||= $o{htmlize};
   $o{diff} = 1 if $o{split};
@@ -268,7 +267,7 @@ sub revdiff {
   $ser1 = mt '_revision_empty' if !$ser1 && $ser1 ne '0';
   $ser2 = mt '_revision_empty' if !$ser2 && $ser2 ne '0';
 
-  Tr $$i++ % 2 ? (class => 'odd') : ();
+  Tr;
    td mt $short eq 'ihid' || $short eq 'ilock' ? "_revfield_$short" : "_revfield_${type}_$short";
    td class => 'tcval'; lit $ser1; end;
    td class => 'tcval'; lit $ser2; end;
@@ -372,7 +371,7 @@ sub htmlVoteStats {
      hide_ign => $type eq 'v',
    );
    if(@$recent) {
-     table class => 'recentvotes';
+     table class => 'recentvotes stripe';
       thead; Tr;
        td colspan => 3;
         txt mt '_votestats_recent';
@@ -383,17 +382,17 @@ sub htmlVoteStats {
         end;
        end;
       end; end;
-      for (0..$#$recent) {
-        Tr $_ % 2 == 0 ? (class => 'odd') : ();
+      for (@$recent) {
+        Tr;
          td;
           if($type eq 'u') {
-            a href => "/v$recent->[$_]{vid}", title => $recent->[$_]{original}||$recent->[$_]{title}, shorten $recent->[$_]{title}, 40;
+            a href => "/v$_->{vid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 40;
           } else {
-            a href => "/u$recent->[$_]{uid}", $recent->[$_]{username};
+            a href => "/u$_->{uid}", $_->{username};
           }
          end;
-         td fmtvote $recent->[$_]{vote};
-         td $self->{l10n}->date($recent->[$_]{date});
+         td fmtvote $_->{vote};
+         td $self->{l10n}->date($_->{date});
         end;
       }
      end 'table';

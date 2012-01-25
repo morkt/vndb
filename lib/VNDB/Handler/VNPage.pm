@@ -95,27 +95,26 @@ sub page {
     end 'div'; # /vnimg
 
     # general info
-    table;
-     my $i = 0;
-     Tr ++$i % 2 ? (class => 'odd') : ();
+    table class => 'stripe';
+     Tr;
       td class => 'key', mt '_vnpage_vntitle';
       td $v->{title};
      end;
      if($v->{original}) {
-       Tr ++$i % 2 ? (class => 'odd') : ();
+       Tr;
         td mt '_vnpage_original';
         td $v->{original};
        end;
      }
      if($v->{alias}) {
        $v->{alias} =~ s/\n/, /g;
-       Tr ++$i % 2 ? (class => 'odd') : ();
+       Tr;
         td mt '_vnpage_alias';
         td $v->{alias};
        end;
      }
      if($v->{length}) {
-       Tr ++$i % 2 ? (class => 'odd') : ();
+       Tr;
         td mt '_vnpage_length';
         td mt '_vnlength_'.$v->{length}, 1;
        end;
@@ -126,7 +125,7 @@ sub page {
        $v->{l_renai} ?   [ 'renai',  'http://renai.us/game/%s.shtml', $v->{l_renai} ] : (),
      );
      if(@links) {
-       Tr ++$i % 2 ? (class => 'odd') : ();
+       Tr;
         td mt '_vnpage_links';
         td;
          for(@links) {
@@ -137,13 +136,13 @@ sub page {
        end;
      }
 
-     _producers($self, \$i, $r);
-     _relations($self, \$i, $v) if @{$v->{relations}};
-     _anime($self, \$i, $v) if @{$v->{anime}};
-     _useroptions($self, \$i, $v) if $self->authInfo->{id};
-     _affiliate_links($self, \$i, $r);
+     _producers($self, $r);
+     _relations($self, $v) if @{$v->{relations}};
+     _anime($self, $v) if @{$v->{anime}};
+     _useroptions($self, $v) if $self->authInfo->{id};
+     _affiliate_links($self, $r);
 
-     Tr;
+     Tr class => 'nostripe';
       td class => 'vndesc', colspan => 2;
        h2 mt '_vnpage_description';
        p;
@@ -266,7 +265,7 @@ sub _revision {
 
 
 sub _producers {
-  my($self, $i, $r) = @_;
+  my($self, $r) = @_;
 
   my %lang;
   my @lang = grep !$lang{$_}++, map @{$_->{languages}}, @$r;
@@ -274,7 +273,7 @@ sub _producers {
   if(grep $_->{developer}, map @{$_->{producers}}, @$r) {
     my %dev = map $_->{developer} ? ($_->{id} => $_) : (), map @{$_->{producers}}, @$r;
     my @dev = values %dev;
-    Tr ++$$i % 2 ? (class => 'odd') : ();
+    Tr;
      td mt "_vnpage_developer";
      td;
       for (@dev) {
@@ -286,7 +285,7 @@ sub _producers {
   }
 
   if(grep $_->{publisher}, map @{$_->{producers}}, @$r) {
-    Tr ++$$i % 2 ? (class => 'odd') : ();
+    Tr;
      td mt "_vnpage_publisher";
      td;
       for my $l (@lang) {
@@ -307,14 +306,14 @@ sub _producers {
 
 
 sub _relations {
-  my($self, $i, $v) = @_;
+  my($self, $v) = @_;
 
   my %rel;
   push @{$rel{$_->{relation}}}, $_
     for (sort { $a->{title} cmp $b->{title} } @{$v->{relations}});
 
 
-  Tr ++$$i % 2 ? (class => 'odd') : ();
+  Tr;
    td mt '_vnpage_relations';
    td class => 'relations';
     dl;
@@ -335,9 +334,9 @@ sub _relations {
 
 
 sub _anime {
-  my($self, $i, $v) = @_;
+  my($self, $v) = @_;
 
-  Tr ++$$i % 2 ? (class => 'odd') : ();
+  Tr;
    td mt '_vnpage_anime';
    td class => 'anime';
     for (sort { ($a->{year}||9999) <=> ($b->{year}||9999) } @{$v->{anime}}) {
@@ -370,13 +369,13 @@ sub _anime {
 
 
 sub _useroptions {
-  my($self, $i, $v) = @_;
+  my($self, $v) = @_;
 
   my $vote = $self->dbVoteGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
   my $list = $self->dbVNListGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
   my $wish = $self->dbWishListGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
 
-  Tr ++$$i % 2 ? (class => 'odd') : ();
+  Tr;
    td mt '_vnpage_uopt';
    td;
     if($vote || !$wish) {
@@ -415,7 +414,7 @@ sub _useroptions {
 
 
 sub _affiliate_links {
-  my($self, $i, $r) = @_;
+  my($self, $r) = @_;
   return if !keys @$r;
   my %r = map +($_->{id}, $_), @$r;
   my $links = $self->dbAffiliateGet(rids => [ keys %r ], hidden => 0);
@@ -424,7 +423,7 @@ sub _affiliate_links {
   $links = [ sort { $b->{priority}||$self->{affiliates}[$b->{affiliate}]{default_prio} <=> $a->{priority}||$self->{affiliates}[$a->{affiliate}]{default_prio} } @$links ];
   my $en = VNDB::L10N->get_handle('en');
 
-  Tr id => 'buynow', ++$$i % 2 ? (class => 'odd') : ();
+  Tr id => 'buynow';
    td 'Available at';
    td;
     for my $link (@$links) {
