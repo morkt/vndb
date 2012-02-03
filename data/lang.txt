@@ -290,7 +290,7 @@ es : Turco
 en : Ukrainian
 ru*:
 cs*:
-hu*:
+hu : Ukrán
 nl : Oekraïens
 de*:
 es : Ucraniano
@@ -1835,7 +1835,7 @@ es : Enviar
 en : Continue
 ru : Продолжить
 cs*:
-hu*:
+hu : Folytatás
 nl : Verder
 de : Fortsetzen
 es : Continuar
@@ -1844,7 +1844,7 @@ es : Continuar
 en : Continue and ignore duplicates
 ru : Продолжить и игнорировать дубликаты
 cs*:
-hu*:
+hu : Másolatok figyelmen kívül hagyássa és folytatás
 nl : Ga verder en negeer dubbele items
 de : Fortsetzen und Duplikate ignorieren
 es : Continuar e ignorar duplicados
@@ -2018,7 +2018,7 @@ es : ¡No puedes usar supra-etiquetas aquí!
 en : meta
 ru : мета
 cs*:
-hu*:
+hu :
 nl :
 de : meta
 es : meta
@@ -2027,7 +2027,7 @@ es : meta
 en : awaiting moderation
 ru : ожидает просмотра модератором
 cs*:
-hu*:
+hu : moderálásra vár
 nl : ongemodereerd
 de : Moderation ausstehend
 es : esperando moderación
@@ -2036,7 +2036,7 @@ es : esperando moderación
 en : Can't use meta traits here!
 ru : Использование мета-характеристик здесь запрещено!
 cs*:
-hu*:
+hu : Itt nem használhatsz meta sajátosságokat!
 nl : Meta kenmerken kunnen hier niet gebruikt worden!
 de : Meta-Tags können hier nicht genutzt werden!
 es : ¡No puedes usar supra-rasgos aquí!
@@ -7028,7 +7028,7 @@ es : No se han encontrado personajes que coincidan con tu criterio.
 en : Character filters
 ru : Фильтры персонажей
 cs*:
-hu*:
+hu : Szereplő szűrők
 nl : Karakterfilters
 de : Charaktereigenschaften
 es : Filtros para personajes
@@ -7037,7 +7037,7 @@ es : Filtros para personajes
 en : General
 ru : Общие
 cs*:
-hu*:
+hu : Általános
 nl : Algemeen
 de : Allgemein
 es : General
@@ -7046,7 +7046,7 @@ es : General
 en : Gender
 ru : Пол
 cs*:
-hu*:
+hu : Nem
 nl : Geslacht
 de : Geschlecht
 es : Género
@@ -7055,7 +7055,7 @@ es : Género
 en : Bust min
 ru : Грудь мин.
 cs*:
-hu*:
+hu : Mellbősség min.
 nl : Borst min
 de : Busen Min
 es : Pecho mín
@@ -7064,7 +7064,7 @@ es : Pecho mín
 en : Bust max
 ru : Грудь макс.
 cs*:
-hu*:
+hu : Mellbősség max.
 nl : Borst max
 de : Busen Max
 es : Pecho máx
@@ -7073,7 +7073,7 @@ es : Pecho máx
 en : Waist min
 ru : Талия мин.
 cs*:
-hu*:
+hu : Derék min.
 nl : Taille min
 de : Taille Min
 es : Cadera mín
@@ -7082,7 +7082,7 @@ es : Cadera mín
 en : Waist max
 ru : Талия макс.
 cs*:
-hu*:
+hu : Derék max.
 nl : Taille max
 de : Taille Max
 es : Cadera máx
@@ -7091,7 +7091,7 @@ es : Cadera máx
 en : Hips min
 ru : Бёдра мин.
 cs*:
-hu*:
+hu : Csípő min.
 nl : Heupen min
 de : Hüften Min
 es : Cintura mín
@@ -7100,7 +7100,7 @@ es : Cintura mín
 en : Hips max
 ru : Бёдра макс.
 cs*:
-hu*:
+hu : Csípő max.
 nl : Heupen max
 de : Hüften Max
 es : Cintura máx
@@ -7109,7 +7109,7 @@ es : Cintura máx
 en : Height min
 ru : Рост мин.
 cs*:
-hu*:
+hu : Magasság min.
 nl : Lengte min
 de : Größe Min
 es : Altura mín
@@ -7118,7 +7118,7 @@ es : Altura mín
 en : Height max
 ru : Рост макс.
 cs*:
-hu*:
+hu : Magasság max.
 nl : Lengte max
 de : Größe Max
 es : Altura máx
@@ -7127,7 +7127,7 @@ es : Altura máx
 en : Weight min
 ru : Вес мин.
 cs*:
-hu*:
+hu : Súly min.
 nl : Gewicht min
 de : Gewicht Min
 es : Peso mín
@@ -7136,7 +7136,7 @@ es : Peso mín
 en : Weight max
 ru : Вес макс.
 cs*:
-hu*:
+hu : Súly max.
 nl : Gewicht max
 de : Gewicht Max
 es : Peso máx
@@ -7145,7 +7145,7 @@ es : Peso máx
 en : Blood type
 ru : Группа крови
 cs*:
-hu*:
+hu : Vércsoport
 nl : Bloedgroep
 de : Bluttyp
 es : Grupo sanguíneo
@@ -7154,7 +7154,7 @@ es : Grupo sanguíneo
 en : Traits
 ru : Черты характера
 cs*:
-hu*:
+hu : Sajátosságok
 nl : Kenmerken
 de : Eigenschaften
 es : Rasgos
@@ -7163,7 +7163,7 @@ es : Rasgos
 en : Traits to include
 ru : Включить
 cs*:
-hu*:
+hu : Rendelkezett sajátosságok
 nl : Kenmerken meenemen
 de : Einzuschließende Eigenschaften
 es : Rasgos para incluir
@@ -7172,7 +7172,7 @@ es : Rasgos para incluir
 en : Traits to exclude
 ru : Исключить
 cs*:
-hu*:
+hu : Nem rendelkezett sajátosságok
 nl : Kenmerken uitsluiten
 de : Auszuschließende Eigenschaften
 es : Rasgos para excluir
@@ -7181,7 +7181,7 @@ es : Rasgos para excluir
 en : Additional trait filters are not available on this page. Use the character browser instead (available from the main menu -> characters).
 ru : Дополнительные фильтры по чертам характера здесь недоступны. Используйте обозреватель персонажей (доступный в меню -> персонажи).
 cs*:
-hu*:
+hu : Ezen az oldalon nem állnak rendelkezésre további sajátosság szűrők. Használd inkább a szereplő böngészőt (Menü -> Szereplők).
 nl : Extra kenmerkfilters zijn niet aanwezig op deze pagina. Gebruik de karakterbrowser voor deze functionaliteit (beschikbaar via het hoofdmenu -> karakters).
 de : Zusätzliche Eigenschaftsfilter sind auf dieser Seite nicht verfügbar. Nutze stattdessen den Charakterbrowser (verfügbar vom Hauptmenü -> Charaktere).
 es : Filtros adicionales para este rasgo no esta disponible en esta página. Usa el buscador de personajes en vez (disponible del Menú -> personajes).
@@ -7190,7 +7190,7 @@ es : Filtros adicionales para este rasgo no esta disponible en esta página. Usa
 en : Hide spoilers
 ru : Скрыть спойлеры
 cs*:
-hu*:
+hu : Spoilerek elrejtése
 nl : Verberg spoilers
 de : Verstecke Spoiler
 es : Esconder spoilers
@@ -7199,7 +7199,7 @@ es : Esconder spoilers
 en : Show minor spoilers
 ru : Показать лёгкие спойлеры
 cs*:
-hu*:
+hu : Kisebb spoilerek mutatása
 nl : Toon geringe spoilers
 de : Zeige kleine Spoiler
 es : Mostrar pequeños spoilers
@@ -7208,7 +7208,7 @@ es : Mostrar pequeños spoilers
 en : Show major spoilers
 ru : Показать все!
 cs*:
-hu*:
+hu : Nagyobb spoilerek mutatása
 nl : Toon alle spoilers
 de : Zeige große Spoiler
 es : Mostrar grandes spoilers
@@ -7217,7 +7217,7 @@ es : Mostrar grandes spoilers
 en : Roles
 ru : Роли
 cs*:
-hu*:
+hu : Szerepek
 nl : Rol
 de : Rollen
 es : Rol
@@ -9461,7 +9461,7 @@ es : Añadir una nueva novela visual
 en : Possible duplicates found
 ru : Найдены возможные дубликаты
 cs*:
-hu*:
+hu : Lehetséges másolatok találva
 nl : Mogelijke dubbele items gevonden
 de : Mögliche Duplikate gefunden
 es : Posible duplicado encontrado
@@ -9481,7 +9481,11 @@ ru : Ниже следует список новелл, названия кот�
      [br]
      Чтобы все равно создать запись, щелкните "Продолжить и игнорировать дубликаты" ниже.
 cs*:
-hu*:
+hu : Ezek a visual novelek egyeznek meg az általad megadott cím(mek)el.
+     Légy szíves nézd át a listát, hogy ne jegyezd meg ugyanazt a visual novelt még egyszer.
+     Különösen figyelj oda azokra amelyek le lettek törölve! Kattints a bejezés nevére, hogy megnézd miért le törölve.[br]
+     [br]
+     Ha mégis újra be szeretnéd jegyezni a visual novelt akkor kattints a "Másolatok figyelmen kívül hagyása folytatás" gombra.
 nl : De onderstaande lijst bevat visual novels met een vergelijkbare titel.
      Controleer deze lijst a.u.b. om te voorkomen dat je een visual novel dubbel toevoegt.
      Wees helemaal op de hoede van items die verwijderd zijn! Om te zien waarom
@@ -10643,7 +10647,7 @@ es : quitar
 en : Other
 ru*:
 cs*:
-hu*:
+hu : Egyéb
 nl : Anders
 de*:
 es : Otro
@@ -10652,7 +10656,7 @@ es : Otro
 en : Please input your vote as a number between 1 and 10. One digit after the decimal is allowed, for example: 8.6 or 7.3.
 ru*:
 cs*:
-hu*:
+hu : Kérlek, hogy a szavazatod egy szám legyen 1 és 10 közt. Engedélyezet a tizedespont után egy számjegyet használni, például: 8.6 vagy 7.3
 nl : Geef je stem op als een number tussen 1 en 10. Één getal achter de comma is toegestaan, bijvoorbeeld: 8.6 of 7.3.
 de*:
 es : Por favor pon tu voto con un número entre 1 y 10. Se permite un dígito para el decima, por ejemplo: 8.6 o 7.3.
@@ -10661,7 +10665,7 @@ es : Por favor pon tu voto con un número entre 1 y 10. Se permite un dígito pa
 en : Invalid number.
 ru*:
 cs*:
-hu*:
+hu : Érvénytelen szám.
 nl : Ongeldig nummer.
 de*:
 es : Número inválido
