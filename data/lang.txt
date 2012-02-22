@@ -8532,7 +8532,7 @@ cs : Kolik [index,_1,vizulních novel,vydání,producentů] máme v databázi? (
 hu : Mennyi [index,_1,visual novels,releases,producers] van az adatbázisunkba? (Tip: vess egy pillantást balra)
 nl : Hoeveel [index,_1,visual novels,uitgaven,producenten] hebben wij in de database? (Tip: zie links van de pagina)
 de : Wie viele [index,_1,Visual Novels,Veröffentlichungen,Hersteller] haben wir in unserer Datenbank? (Tipp: schaue zu deiner Linken)
-es : ¿Cuántos
+es*:
 
 :_register_answer
 en : Answer
