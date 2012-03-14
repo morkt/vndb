@@ -9703,7 +9703,7 @@ en : Use a VN image that is already on the server. Set to '0' to remove the curr
 ru : Использовать уже загруженное на сервер изображение персонажа. Укажите "0" (без кавычек), чтобы удалить текущее изображение.
 cs*:
 hu : Használj egy olyan szereplő képet ami már megtalálható a szerveren. Ha '0'-ra állítod törölheted a jelenlegi képet.
-nl : Gebruik een karakterplaatje dat al op de server staat. Gebruik '0' om een huidig plaatje te verwijderen.
+nl : Gebruik een VN plaatje dat al op de server staat. Gebruik '0' om een huidig plaatje te verwijderen.
 de : Verwende ein Charakterbild, dass bereits auf dem Server ist. Auf '0' setzen um das derzeitige Bild zu entfernen.
 es : Usar la imagen de un personaje que ya esta en el servidor. Pon '0' para quitar la imagen actual.
 
