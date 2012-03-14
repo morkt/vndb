@@ -197,7 +197,7 @@ sub _section {
    h1 $sect;
 
    if(_allowed($self, $lang)) {
-     h2 class => 'alttitle', "Don't forget to hit the 'save' button to make your changes permament!";
+     h2 class => 'alttitle', "Don't forget to hit the 'save' button to make your changes permanent!";
    } else {
      div class => 'warning';
       h2 'Read-only';

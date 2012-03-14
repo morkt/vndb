@@ -436,7 +436,7 @@ de : PC-98
 es : PC-98
 
 :_plat_psp
-en : Playstation Portable
+en : PlayStation Portable
 ru : Playstation Portable
 cs : Playstation Portable
 hu :
@@ -445,7 +445,7 @@ de : Playstation Portable
 es : PSP
 
 :_plat_ps1
-en : Playstation 1
+en : PlayStation 1
 ru : Playstation 1
 cs : Playstation 1
 hu :
@@ -454,7 +454,7 @@ de : Playstation 1
 es : Playstation 1
 
 :_plat_ps2
-en : Playstation 2
+en : PlayStation 2
 ru : Playstation 2
 cs : Playstation 2
 hu :
@@ -463,7 +463,7 @@ de : Playstation 2
 es : Playstation 2
 
 :_plat_ps3
-en : Playstation 3
+en : PlayStation 3
 ru : Playstation 3
 cs : Playstation 3
 hu :
@@ -6294,7 +6294,7 @@ de : Originalname
 es : Nombre original
 
 :_revfield_c_alias
-en : Aliasses
+en : Aliases
 ru : Алиасы
 cs : Aliasy
 hu : Más nevek
@@ -9699,7 +9699,7 @@ de : Bild ID
 es : ID de la imagen
 
 :_vnedit_image_id_msg
-en : Use a character image that is already on the server. Set to '0' to remove the current image.
+en : Use a VN image that is already on the server. Set to '0' to remove the current image.
 ru : Использовать уже загруженное на сервер изображение персонажа. Укажите "0" (без кавычек), чтобы удалить текущее изображение.
 cs*:
 hu : Használj egy olyan szereplő képet ami már megtalálható a szerveren. Ha '0'-ra állítod törölheted a jelenlegi képet.
@@ -11503,7 +11503,7 @@ de : [_1]: Keine gültige Nummer
 es : [_1]: Número no válido
 
 :_formerr_tpl_pname
-en : [_1] can only contain lowercase alphanumeric characters and a hyphen, and must start with a character
+en : [_1] can only contain lowercase alphanumeric characters and a hyphen, and must start with a letter
 ru : Поле '[_1]' может содержать лишь символы буквенно-цифрового диапазона в нижнем регистре и чёрточку и должно начинаться с буквы
 cs : [_1] smí obsahovat pouze malá písmena, čísla a pomlčku, a musí začínat písmenem
 hu : [_1] egy karakterrel kell kezdődjön és csak kisbetűs alfanumerikus karaktereket és egy kötőjelet tartalmazhat
