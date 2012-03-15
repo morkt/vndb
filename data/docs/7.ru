@@ -68,6 +68,7 @@
   <dt>Венгерский</dt><dd><a href="mailto:bikmate@gmail.com">Bikfalvi Mate</a></dd>
   <dt>Голландский</dt><dd><a href="mailto:contact@vndb.org">Yorhel</a></dd>
   <dt>Русский</dt><dd><a href="mailto:just.some.silver.dragon@gmail.com">SilverDragon</a></dd>
+  <dt>Турецкий</dt><dd><a href="http://erengy.com/">erengy</a></dd>
  </dl>
 
  <br />
