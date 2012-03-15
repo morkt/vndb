@@ -1,0 +1,56 @@
+:TITLE:Tartışma panosu
+:INC:index
+
+
+:SUB:Giriş
+<p>
+VNDB'nin bütünleşik tartışma panosu, doğal olarak, tartışmalar için kullanılabilir. Popüler veya ücretsiz forum yazılımları yerine kendi geliştirdiğimiz bir sistem kullandığımız için, bu pano alışkın olduklarınıza göre birkaç ufak farklılık içeriyor.
+</p>
+
+
+:SUB:Panolar
+<p>
+İlgi duyan herkesin gönderinizi bulabilmesi adına tüm başlıklar tartışmanın ne hakkında olduğunu belirten bir veya daha fazla 'pano' ile ilişkilendirilmiş durumda. Diğer forumlarla benzerlik gösterse de, burada veritabanındaki her öğenin kendi panosu var, ve bir başlığı birden fazla panoya bağlamak mümkün. Aşağıdaki panolar kullanılabilir:
+</p>
+<dl>
+<dt>db</dt><dd>
+VNDB tartışmaları: Bu pano site ve veritabanı hakkındaki tartışmalar için.
+</dd><dt>ge</dt><dd>
+Genel tartışma: Bu pano diğer panolara uymayan tartışmalar için.
+</dd><dt>v#</dt><dd>
+Belirli bir görsel romana ait tartışmalar için. Örneğin <i>v17</i> panosu, <a href="/v17">v17</a> ile ilgili tüm başlıkları içerir.
+</dd><dt>p#</dt><dd>
+<i>v#</i> ile aynı mantıkla, yapımcılar için.
+</dd><dt>u#</dt><dd>
+<i>u#</i> panosu sitedeki bir kullanıcıyı herhangi bir konuda bilgilendirmek, veya yaptığı bir düzenleme hakkında tartışmak için kullanılabilir. Diğer sitelerdeki 'özel mesaj' özelliğinden tek farkı, 'özel' olmaması...
+</dd><dt>an</dt><dd>
+Site duyuruları için. Yalnızca moderatörler başlık açabilir.
+</dd>
+</dl>
+
+
+:SUB:Biçimlendirme
+<p>
+İletinizi biçimlendirmek için aşağıdaki kodları kullanabilirsiniz:
+</p>
+<dl>
+<dt>X# veya X#.#</dt><dd>
+Kendi deyimimizle, 'VNDBID'. Bu sayılar bir harf (d, p, r, u veya v) ile başlar ve isteğe bağlı olarak bir nokta ve ikinci bir sayıyla devam eder. VNDBID'ler otomatik olarak sitedeki bir sayfaya giden bağlantılara dönüştürülür. Örneğin 'v4.4' yazarsanız '<a href="/v4.4">v4.4</a>' elde edersiniz.
+</dd><dt>URL</dt><dd>
+[url] kodu kullanılmadan yazılan tüm bağlantılar VNDBID'de olduğu gibi bir bağlantıya dönüştürülür. Örneğin 'http://vndb.org/' yazısı '<a href="http://vndb.org/">link</a>' olarak biçimlendirilir.
+</dd><dt>[url]</dt><dd>
+Klasik BBCode. Yalnızca <i>[url=link]link ismi[/url]</i> biçiminde kullanılabilir.<br />
+Örneğin '[url=/v]Görsel romanlar listesi[/url] ve [url=http://blicky.net]bir dış bağlantı[/url]' şu şekilde görüntülenir: '<a href="/v">Görsel romanlar listesi</a> ve <a href="http://blicky.net">bir dış bağlantı</a>'
+</dd><dt>[spoiler]</dt><dd>
+Herhangi bir görsel romanı henüz okumamış kullanıcıların keyfini kaçırmamak için [spoiler] kodunu kullanın.
+</dd><dt>[quote]</dt><dd>
+Başka kullanıcılardan alıntı yaparken, iletiyi [quote] .. [/quote] kodu içine alın. Popüler [quote=kaynak] kodu VNDB'de (henüz) çalışmamaktadır.
+</dd><dt>[raw]</dt><dd>
+Biçimlendirilmesini istemediklerinizi [raw] kodu içine yazarak biçimlendirme kodu yeteneklerinizi sergileyin. [raw] .. [/raw] kodu içine yazılan diğer tüm biçimlendirme kodları görmezden gelinecektir.
+</dd><dt>[code]</dt><dd>
+[raw] koduna benzer şekilde kullanılır, fakat [code] .. [/code] içine yazılan metin sabit genişlikli yazı tipiyle ve etrafında bir çerçeveyle birlikte görüntülenerek gönderinizin geri kalanından ayrılır.
+</dd>
+</dl>
+<p>
+Resimler için [img] kodu yok ve muhtemelen hiç olmayacak. Eğer ekran görüntüsü ve benzeri resimler eklemek istiyorsanız herhangi bir resim yükleme sitesine (ör. <a href="http://tinypic.com/" rel="nofollow">TinyPic</a>) yükleyin ve gönderinizde bağlantısını verin.
+</p>

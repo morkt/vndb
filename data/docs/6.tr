@@ -1,0 +1,71 @@
+:TITLE:Sıkça Sorulan Sorular
+:INC:index
+
+
+:SUB:Görsel roman nedir?
+<p>
+Görsel romanlar (visual novel) roman ile bilgisayar oyununun birleşimi olarak düşünülebilir: metin tabanlı geniş bir anlatıma sahip ve oyuncuya çok kısıtlı etkileşim olanağı sunan bilgisayar oyunlarıdır. Tipik bir görsel romanda yazılar anime tarzı bir arka plan resmi üzerinde, müzik eşliğinde görüntülenir. Genellikle oyuncu oyun boyunca hikâyenin gidişatını değiştiren birkaç soruyu yanıtlar, böylelikle bir görsel romanı ikinci oynayışında yaptığı farklı seçimler farklı bir olaylar dizisiyle sonuçlanır.<br />
+<br />
+Daha fazla bilgi için ilgili <a href="http://en.wikipedia.org/wiki/Visual_Novel">Wikipedia</a> sayfasını ya da <a href="http://gorselroman.net/2011/01/gorsel-romanlar/">gorselroman.net</a> üzerindeki makaleyi okuyabilirsiniz. Tür hakkında genel bir fikir sahibi olmak için <a href="http://altogether.insani.org/">al|together</a> tarafından sağlanan kısa görsel romanları deneyebilirsiniz.
+</p>
+
+
+:SUB:Peki ya Eroge, H-Game ve Dating Sim?
+<p>
+Eroge ya da H-game cinsel içerik barındıran Japon oyunlarına verilen genel addır. Birçok görsel roman bir eroge'dir ve birçok eroge bir görsel romandır, fakat bu bir kural değildir. Dating sim'in tanımıysa biraz daha belirsiz; görsel romanlarla genellikle aynı yapıda olsalar da istatistiğe dayalı bir oynanış sunarlar.<br />
+<br />
+"Görsel roman"ın tanımında çok net sınırlar çizilmiş değil. Çoğu eroge ve dating sim görsel romanlardan elementler içerse de, aslında bir görsel roman olmayabilir. VNDB bu konuda kendi kurallarını oluşturdu, daha fazla bilgi için <a href="/d2">kılavuz</a> sayfasına göz atın.
+</p>
+
+
+:SUB:Neden bir Görsel Roman Veritabanı?
+<p>
+İnternet büyük, çok büyük bir yer ama görsel romanlarla ilgili İngilizce kaynaklar oldukça kısıtlı. İngilizce bilen okuyucu kitlesinin başka türlü çok zor ulaşacağı bilgileri VNDB toparlayıp sunmaya çalışıyor. Böylelikle hayranları bilumum Japonca web sitesini dolaşmaktansa sevdikleri oyunları ve çevirilerini kolaylıkla takip edebiliyor.
+</p>
+
+
+:SUB:VNDB'ye nasıl yardımcı olabilirim?
+<p>
+VNDB'ye katkıda bulunmanın birçok yolu var. İlk olarak sitede yer alan tüm bilgileri özgürce düzenleyebilir, örneğin bir hata bulduğunuzda sayfanın sağ üst köşesindeki "düzenle" bağlantısına tıklayabilirsiniz. Ayrıca veritabanına yeni bilgiler (görsel romanlar, yapımcılar, yayımlar) ekleyebilirsiniz, fakat eklemeden önce sitede hâlihazırda var olup olmadığını öğrenmek için arama yaparsanız iyi olur.<br />
+<br />
+Web sitesinin kendisinin gelişimine yardımcı olmak veya eklenen yeni özellikleri tartışmak için <a href="/t">tartışma panosunu</a> kullanabilir ya da <a href="irc://irc.synirc.net/vndb">#vndb @ irc.synirc.net</a> üzerinden IRC'de bize katılabilirsiniz. Eğer IRC'ye alışkın değilseniz ya da bir istemci kurmaya üşeniyorsanız, <a href="http://cgiirc.synirc.net/?chan=%23vndb">web üzerinden</a> de chat'e katılmanız mümkün. Kendinize bir takma ad seçin ve Login'e basın yeter!
+</p>
+
+
+:SUB:Görsel romanları nereden indirebilirim?
+<p>
+Buradan değil. Sitemiz oyun indirmek için doğrudan bağlantı, torrent veya benzeri bir yol sunmuyor. Fakat yapımcıların resmi sitelerine giden bağlantılar sitemizde mevcut ki bazıları oyunlarının ücretsiz deneme sürümlerini ve hatta tamamını indirmenize izin verebilir.
+</p>
+
+
+:SUB:Bana bir görsel roman önerebilir misiniz?
+<p>
+Tartışma panosunda ya da IRC'de öneri istemek, çeşitli nedenlerden ötürü pek iyi bir fikir değil. Eğer çoğu insanın oynadığı görsel romanları arıyorsanız, <a href="/v/all?s=pop;o=d">popülerlik sıralamasına</a> bakın. Eğer genel olarak "iyi" veya "harika" olarak nitelendirilen yapımlarla ilgileniyorsanız, <a href="/v/all?s=rating;o=d">puan sıralamasına</a> bakın. Daha özel bir şeyin peşindeyseniz, <a href="/g">etiketlere</a> göz atın. Daha kişisel bir yanıt arayışındaysanız <a
+href="/u/all">kullanıcılarımızın</a> oylarını kendinizinkilerle karşılaştırabilir ve bu şekilde ne okuyacağınıza karar verebilirsiniz.
+</p>
+
+
+:SUB:Şu arkadaki kız kim?
+<p>
+Eğer bir VNDB hesabı oluşturmadıysanız veya profil ayarlarınızı kurcalamadıysanız, aradığınız yanıt <a href="/v1280">Angelic Serenade</a>. Eğer hesabınız varsa profil sayfanıza gidip hangi temayı kullandığınızı kontrol edebilirsiniz - temanın ismi kullanılan resmin nereden geldiğini de belirtiyor.
+</p>
+
+
+:SUB:Şöyle harika bir oyun buldum, ama İngilizce çevirisi yok!?
+<p>
+Mümkündür. Şunları aklınızda tutun: Öncelikle, veritabanımızda bir çeviri listelenmiyorsa *çok* büyük bir ihtimalle öyle bir çeviri yoktur, yapılmamıştır. Ayrıca, bu oyunları biz çevirmiyoruz ya da çevirileri biz koordine etmiyoruz, dolayısıyla burada çeviri isteğinde bulunmak hem manasız hem de açtığınız başlığın kilitlenmesi için güzel bir yol. Son olarak, görsel romanın sayısı bu topluluğun içindeki çevirmenlerden katbekat fazla. :-(
+</p>
+
+
+:SUB:VNDB'ye bağlantı verebilir miyim?
+<p>
+Elbette! Hatta VNDB'yi tanıtmakta kullanabileceğiniz birkaç simge de hazırladık. Sitemizdeki diğer resimlerin aksine, bu resimlere doğrudan bağlantı verebilirsiniz.<br />
+<img src="http://static.yorhel.nl/2008/vndb_88x31.gif" style="margin: 5px">
+<img src="http://static.yorhel.nl/2009/vndb1.gif" style="margin: 5px">
+<img src="http://static.yorhel.nl/2009/vndb2.jpg" style="margin: 5px">
+<img src="http://static.yorhel.nl/2009/vndb3.jpg" style="margin: 5px">
+<img src="http://static.yorhel.nl/2009/vndb4.jpg" style="margin: 5px">
+<img src="http://static.yorhel.nl/2009/vndb5.jpg" style="margin: 5px">
+<img src="http://static.yorhel.nl/2009/vndb6.jpg" style="margin: 5px"><br />
+Eğer bunlar ihtiyacınızı karşılamıyorsa, kendiniz bir tane yapmaktan çekinmeyin lütfen.
+</p>
