@@ -11,7 +11,7 @@ use warnings;
 
   # used for the language switch interface, language tags must
   # be the same as in the languages hash in global.pl
-  sub languages { qw{ cs de en es hu nl ru tr } }
+  sub languages { qw{ cs de en es hu nl ru tr uk } }
 
   sub maketext {
     my $r = eval { shift->SUPER::maketext(@_) };
@@ -176,6 +176,15 @@ use warnings;
     return $couple if ($num % 10) >= 2 && ($num % 10) <= 4 && !(($num % 100) >= 12 && ($num % 100) <= 14);
     return $lots;
   }
+}
+
+
+
+{
+  package VNDB::L10N::uk;
+  use base 'VNDB::L10N::en';
+  our %Lexicon;
+  *quant = \&VNDB::L10N::ru::quant;
 }
 
 

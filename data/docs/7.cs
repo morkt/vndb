@@ -60,6 +60,7 @@
   <dt>Nizozemsky</dt><dd><a href="mailto:contact@vndb.org">Yorhel</a></dd>
   <dt>Ruský</dt><dd><a href="mailto:just.some.silver.dragon@gmail.com">SilverDragon</a></dd>
   <dt>Turecky</dt><dd><a href="http://erengy.com/">erengy</a></dd>
+  <dt>Ukrainian</dt><dd><a href="http://deimos.org.ua/">Deimos</a></dd>
  </dl>
 
  <br />
