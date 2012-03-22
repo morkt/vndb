@@ -25,7 +25,7 @@ my $langfile = "$VNDB::ROOT/data/lang.txt";
 
 
 TUWF::register(
-  qr{tladmin(?:/([a-z]+))?} => \&tladmin
+  qr{tladmin(?:/([a-z-]+))?} => \&tladmin
 );
 
 
@@ -268,7 +268,7 @@ sub _savedoc {
 sub _docs {
   my($lang, $doc) = @_;
 
-  my @d = map /\.[a-z]{2}$/ || /\/(?:8|11)$/ ? () : s{^.+\/([^/]+)$}{$1} && $_, glob "$VNDB::ROOT/data/docs/*";
+  my @d = map /\.[a-z-]{2,5}$/ || /\/(?:8|11)$/ ? () : s{^.+\/([^/]+)$}{$1} && $_, glob "$VNDB::ROOT/data/docs/*";
 
   h2 class => 'alttitle', '...or a doc page';
   div style => 'margin: 0 40px';

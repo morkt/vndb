@@ -24,7 +24,10 @@ use warnings;
   sub loadfile {
     my %lang = do {
       no strict 'refs';
-      map +($_, \%{"VNDB::L10N::${_}::Lexicon"}), languages
+      map {
+        (my $n = $_) =~ s/-/_/g;
+        ($_, \%{"VNDB::L10N::${n}::Lexicon"})
+      } languages
     };
     my $r = LangFile->new(read => "$VNDB::ROOT/data/lang.txt");
     my $key;
