@@ -194,6 +194,17 @@ es : Húngaro
 tr : Macarca
 uk : Угорська
 
+:_lang_id
+en : Indonesian
+ru*:
+cs*:
+hu*:
+nl : Indonesisch
+de*:
+es*:
+tr*:
+uk*:
+
 :_lang_it
 en : Italian
 ru : Итальянский

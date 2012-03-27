@@ -859,6 +859,7 @@ a .icons { cursor: pointer }
 .icons.ko  { background-position: -61px -88px; }
 .icons.vi  { background-position: -61px -99px; }
 .icons.sk  { background-position: -61px -110px; }
+.icons.id  { background-position: -61px -121px; }
 
 
 /* Relation graph colors */
