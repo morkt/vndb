@@ -27,7 +27,7 @@ sub page {
   )->[0];
   return $self->resNotFound if !$r->{id};
 
-  $self->htmlHeader(title => $r->{name});
+  $self->htmlHeader(title => $r->{name}, noindex => $rev);
   $self->htmlMainTabs(c => $r);
   return if $self->htmlHiddenMessage('c', $r);
 
