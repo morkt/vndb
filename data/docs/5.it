@@ -1,0 +1,78 @@
+:TITLE:Guida alle modifiche
+:INC:index
+
+
+:SUB:Romanizzazione
+<p>
+ La maggior parte dell'utenza di VNDB parla Inglese. Creando la banca dati, assumiamo
+ che l'utenza non sia in grado di leggere o riconoscere caratteri al di fuori di quelli latini.
+ Perciò, la romanizzazione viene applicata a molti campi all'interno della banca dati: il titolo
+ della visual novel, pubblicazioni ed editori devono essere romanizzati se non sono già
+ nei caratteri latini.<br />
+ Per mantenere una certa consistenza, abbiamo deciso di usare il 
+ <a href="http://it.wikipedia.org/wiki/Sistema_Hepburn">Sistema Hepburn</a> per
+ tutti i campi. Ciò è anche consistente con la 
+ <a href="http://wiki.anidb.net/w/Romanisation">romanizzazione di AniDB</a>.
+ <br />
+ Per parole in Inglese (o altre lingue straniere) non in caratteri latini, la parola originale
+ va usata se è quelo l'effetto voluto. In ogni caso, le parole vanno romanizzate.
+</p>
+
+
+:SUB:Maiuscolo
+<p>
+ Ci sono dei casi in cui i nomi o titoli sono scritti o tutti maiuscoli o tutti minuscoli.
+ Se non esiste una ragione valida per questa scelta (es. non è un acronimo), allora
+ i nomi vanno convertiti in modo da seguire la regola normale (come descritto 
+ <a href="http://en.wikipedia.org/wiki/Capitalization">su Wikipedia</a>) prima di
+ inserirli nella banca dati.<br />
+ Ciò si applica solo ai titoli romanizzati e i titoli delle visual novel, il campo "Titolo originale" per
+ gli editori deve usare la scelta originale.
+</p>
+
+
+:SUB:Ordine del nome
+<p>
+ Nella maggior parte delle nazioni a lingua Inglese, i nomi sono nell'ordine "nome proprio,
+ cognome". Ciò è chiamato "Ordine Occidentale". In Inglese, usi il nome proprio con
+ persone che conosci bene, altrimenti usi il loro titolo e cognome.
+ <br />
+ In Giapponese (e alcune altre lingue), i nomi sono nell'ordine "cognome, nome proprio".
+ Questo è detto "Ordine Giapponese". In Giapponese ci si riferisce ad una persona usando il
+ nome e suffisso adatto.
+ <br />
+ Per aiutare le persone di lingua inglese, alcuni siti (es. wikipedia) scrive i nomi giapponesi
+ nell'ordine occidentale. Qui su vndb.org, preferiamo usare l'ordine originale usato nel gioco.
+ <br />
+ Perciò, se il gioco è giapponese con personaggi giapponesi, usa l'ordine giapponese.
+ <br />
+ Se il gioco è inglese, o il personaggio ha un nome straniero (Mary Smith), usa l'ordine
+ occidentale.
+</p> 
+
+
+:SUB:Riepilogo modifica
+<p>
+ Ogni modifica ad ogni pagina ha il campo obbligatorio "Riepilogo modifica", che ti permette
+ di spiegare il contenuto della tua modifica senza riempire la pagina principale. Puoi spiegare
+ perchè hai cambiato la descrizione, collegamento, o dove hai trovato le tue informazioni
+ (in modo che altri possano verificarle). Potresti voler aggiungere una visual novel ma non
+ essere in grado di trovare abbasatanza informazioni. Se lo specifichi in questo campo,
+ un altro utente completerà la pagina.
+</p>
+
+
+:SUB:Descrizioni tratte da fonti esterne
+<p>
+ E' possibile aggiungere descrizioni o note per visual novel, editori, pubblicazioni e personaggi.
+ Anche se sono preferite le descrizioni originali, è possibile usare descrizioni tratte da fonti
+ esterne se vengono citate a dovere. Per citare le fonti, aggiungi al termine della
+ descrizione questo template:<br />
+ [From [url=<b>URL</b>]<b>title or author</b>[/url]]<br />
+ Ciò risulterebbe, ad esempio, in, '[From <a
+ href="http://en.wikipedia.org/Wiki/Ever17">Wikipedia</a>]' per descrizioni tratte da
+ Wikipedia. Se la descrizione non è completamente presa da una fonte, ma è stata
+ modificata, 'From' va sostituito con qualcosa simile a 'Edited from' o 'Based on'.<br />
+ Dato che non è consentito aggiungere collegamenti a siti che promuovono download
+ illegali, in quei casi la parte URL va omessa.
+</p>

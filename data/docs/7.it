@@ -1,0 +1,76 @@
+:TITLE:Chi siamo
+:INC:index
+
+
+:SUB:Scopo
+<p>
+ Il nostro scopo principale è costruite una banca dati di informazioni su tutte le visual novel
+ esistenti, il più possibile aggiornata e completa. VNDB ambisce a diventare un centro in
+ cui cercare sia informazioni generalie che informazioni specifiche, come la disponibilità,
+ localizzazione ed editori.<br />
+ Scopo secondario è di promuovere questo meraviglioso medium chiamato visual novel a
+ un pubblico più grande, un pubblico non limitato dalla conoscenza della lingua giapponese,
+ ma chiunque interessato alla letteratura, anime, manga or giochi, indipendentemente
+ dalla loro posizione geografica o differenze culturali.
+</p>
+
+
+:SUB:Genesi
+<p>
+ Tutto è iniziato dopo che <a href="/u2">yorhel</a> finì di leggere <a href="/v17">Ever17</a>.
+ Impressionato da questo capolavoro, diverse domande frullarono nella sua mente: dopo
+ aver scoperto le visual novel, come mai gli ci vollero mesi per trovare questo gioco?
+ Come mai non ne aveva mai sentito parlare prima? Com'è possibile che una visual novel di
+ quella qualità passava inosservata nella maggior parte delle comunità su anime e giochi?
+ E ancora più importante: esistono altre visual novel come questa là fuori?<br />
+ <br />
+ VNDB è nato per rispondere all'ultima domanda. La completa mancanza di una risorsa centrale,
+ o anche di una semplice lista di visual novel, rendeva difficile scoprire nuovi giochi o avere
+ un'idea di cosa fosse disponibile. L'esistenza di un posto ben organizzato dove tutti potessero
+ offrire le proprie informazioni e conoscenze sulle visual novel avrebbe risolto questo problema.<br />
+ <br />
+ Dopo tre settimane di duro lavoro, la prima versione di VNDB vide la luce nel Settembre 2007.
+ L'oscurità e piccola dimensione della comunità sulle visual novel, unita alle funzioni basilari e
+ rigido sistema di contribuzione in uso allora, resero la crescita della banca dati lenta. Ma
+ con il tempo, più persone scoprirono VNDB, nuove funzioni avanzate furono introdotte,
+ con il risultato che più persone iniziarono a contribuire informazioni. L'introduzione del sistema
+ di contribuzione aperto e migliorato nel Febbraio 2008 motivò ancora più utenti ad aggiungere
+ informazioni, e nel Settembre 2008 - un anno dopo la prima versione di VNDB - la banca dati
+ contava più di 1000 visual novel e 2000 pubblicazioni, e continua ad aumentare in numero e
+ qualità ancora oggi.
+</p>
+
+
+:SUB:Credits
+<p>
+ <b>Sviluppo codice</b><br />
+ <dl>
+  <dt>Yorhel</dt><dd>Sviluppatore principale.</dd>
+  <dt>QCyph</dt><dd>Ha contribuito ai filtri personaggi.</dd>
+  <dt>3dB</dt><dd>Ha contribuito al codice di autentificazione utenti e risposte nell'area messaggi.</dd>
+ </dl>
+ <br />
+
+ <b>Traduzioni</b><br />
+ <dl>
+  <dt>Ceco</dt><dd><a href="mailto:nya.chan.production@gmail.com">Nya-chan Production</a></dd>
+  <dt>Tedesco</dt><dd><a href="mailto:info@marcel-weyers.de">Marcel Weyers</a></dd>
+  <dt>Spagnolo</dt><dd><a href="/u11964">ganchan</a></dd>
+  <dt>Ungherese</dt><dd><a href="mailto:bikmate@gmail.com">Bikfalvi Máté</a></dd>
+  <dt>Italiano</dt><dd><a href="mailto:sara.lupino@gmail.com">Sara Lupino</a></dd>
+  <dt>Olandese</dt><dd><a href="mailto:contact@vndb.org">Yorhel</a></dd>
+  <dt>Russo</dt><dd><a href="mailto:just.some.silver.dragon@gmail.com">SilverDragon</a></dd>
+  <dt>Turco</dt><dd><a href="http://erengy.com/">erengy</a></dd>
+  <dt>Ucraino</dt><dd><a href="http://deimos.org.ua/">Deimos</a></dd>
+ </dl>
+
+ <br />
+ <b>Skins</b>
+:SKINCONTRIB:
+ <br />
+
+ <b>Top 5 dei contributori</b>
+:TOP5CONTRIB:
+ ...e <a href="/u/all?o=d;s=changes">molti altri</a>.
+</p>
+

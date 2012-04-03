@@ -57,6 +57,7 @@
   <dt>Německy</dt><dd><a href="mailto:info@marcel-weyers.de">Marcel Weyers</a></dd>
   <dt>Španělsky</dt><dd><a href="/u11964">ganchan</a></dd>
   <dt>Maďarský</dt><dd><a href="mailto:bikmate@gmail.com">Bikfalvi Máté</a></dd>
+  <dt>Italsky</dt><dd><a href="mailto:sara.lupino@gmail.com">Sara Lupino</a></dd>
   <dt>Nizozemsky</dt><dd><a href="mailto:contact@vndb.org">Yorhel</a></dd>
   <dt>Ruský</dt><dd><a href="mailto:just.some.silver.dragon@gmail.com">SilverDragon</a></dd>
   <dt>Turecky</dt><dd><a href="http://erengy.com/">erengy</a></dd>

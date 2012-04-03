@@ -1,0 +1,69 @@
+:TITLE:Aggiungere/Modificare un Editore
+:INC:index
+
+
+:SUB:Quando aggiungere un editore
+<p>
+ Un nuovo editore va aggiunto nel caso in cui si stia creando una pagina per una visual novel
+ creata da un editore non ancora inserito all'interno della banca dati. Editori che non hanno
+ alcuna pubblicazione in elenco saranno rimossi dopo un certo periodo di tempo, perciò
+ aggiungine uno solo se hai intenzione di collegarlo ad una pubblicazione. Per poter mettere
+ un editore in elenco, devono aver completato almeno un gioco. Ciò significa che nel caso di progetti
+ di traduzione, aggiungi il gruppo come editore solo quando hanno completato il lavoro.
+</p>
+
+
+:SUB:Informazioni Generali
+<dl>
+ <dt>Tipo</dt><dd>
+  Tipo di editore.
+ </dd><dt>Nome (romaji)</dt><dd>
+  Il nome del produttore nell'alfabeto latino, usando le regole di <a href="/d5.1">romanizzazione</a>
+  nel caso in cui il nome originale non sia già nell'alfabeto latino. Anche le regole sulle <a href="/d5.2">maiuscole</a>
+  sono importanti per questo campo.
+ </dd><dt>Nome originale</dt><dd>
+  Se il nome (vedi sopra) è stato romanizzato, assicurati di scrivere quello originale (molto probabilmente
+  in giapponese) qui.
+ </dd><dt>Alias</dt><dd>
+  Altri nomi con cui l'editore è conosciuto. Più nomi vanno separati da una virgola.
+ </dd><dt>Lingua principale</dt><dd>
+  La lingua in cui l'editore solitamente lavora. Di default, è giapponese.
+ </dd><dt>Sito</dt><dd>
+  Sito ufficiale dell'editore.
+ </dd><dt>Descrizione</dt><dd>
+  La storia dell'editore, o una descrizione del tipo di giochi che creano.
+ </dd>
+</dl>
+
+
+:SUB:Relazioni
+Indicano quali editori sono collegati tra di loro e in quale modo. Scegliere la relazione
+corretta può essere confusionario, perciò controlla il grafico in caso di dubbio.
+Queste sono le relazioni definite:
+<dl>
+ <dt>Precedentemente</dt><dd>
+  L'editore attuale era noto come un altro editore in passato. Ciò puù essere dovuto
+  a un cambio di nome, o in seguito allo scioglimento della precedente azienda, e le stesse
+  persone hanno ricominciato sotto un altro nome.
+ </dd><dt>Subentrato ad</dt><dd>
+  Opposto di <i>Precedentemente</i> - l'editore selezionato era precedentemente conosciuto come l'attuale editore.
+ </dd><dt>Consociato</dt><dd>
+  L'editore selezionato è un <a href="http://it.wikipedia.org/wiki/Consociata">consociato</a>
+  dell'attuale editore.
+ </dd><dt>Produttore affiliato</dt><dd>
+  Opposto di <i>Consociato</i> - l'editore attuale è consociato dell'editore selezionato.
+ </dd><dt>Sigla</dt><dd>
+  L'editore selezionato è una sigla dell'editore corrente. In parole povere, "sigla" è un nome
+  alternativo per lo stesso gruppo di persone, usato quando pubblicano giochi.
+  Vedi <a href="http://en.wikipedia.org/wiki/Imprint">Wikipedia</a> per maggiori informazioni.
+ </dd><dt>Marchio affiliato</dt><dd>
+  Opposto di <i>Sigla</i>.
+ </dd><dt>Generato</dt><dd>
+  L'editore selezionato è nato da membri dell'editore attuale. La differenza con <i>Precedentemente</i>
+  è che l'editore da cui sono arrivati è ancora attivo.
+ </dd><dt>Originato da</dt><dd>
+  Opposto di <i>Generato</i>.
+ </dd>
+</dl>
+
+

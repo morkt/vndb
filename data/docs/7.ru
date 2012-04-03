@@ -66,6 +66,7 @@
   <dt>Немецкий</dt><dd><a href="mailto:info@marcel-weyers.de">Marcel Weyers</a></dd>
   <dt>Испанский</dt><dd><a href="/u11964">ganchan</a></dd>
   <dt>Венгерский</dt><dd><a href="mailto:bikmate@gmail.com">Bikfalvi Mate</a></dd>
+  <dt>Итальянский</dt><dd><a href="mailto:sara.lupino@gmail.com">Sara Lupino</a></dd>
   <dt>Голландский</dt><dd><a href="mailto:contact@vndb.org">Yorhel</a></dd>
   <dt>Русский</dt><dd><a href="mailto:just.some.silver.dragon@gmail.com">SilverDragon</a></dd>
   <dt>Турецкий</dt><dd><a href="http://erengy.com/">erengy</a></dd>

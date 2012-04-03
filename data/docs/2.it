@@ -1,0 +1,193 @@
+:TITLE:Aggiungere/Modificare una Visual Novel
+:INC:index
+
+:SUB:Quando aggiungere una visual novel
+<p>
+ Per poter essere incluso in questa banca dati, un gioco deve utilizzare la <a
+ href="http://it.wikipedia.org/wiki/Narratologia">narrazione</a>
+ per raccontare la storia. Esempi includono descrizioni di <a
+ href="http://s.vndb.org/sf/58/258.jpg">immagini</a>, <a
+ href="http://s.vndb.org/sf/63/2663.jpg">eventi</a>, <a
+ href="http://s.vndb.org/sf/74/274.jpg">azioni dei personaggi</a> o <a
+ href="http://s.vndb.org/sf/49/449.jpg">pensieri</a>.<br />
+ <br />
+ Questo storytelling deve essere continuo* per un lungo periodo e utilizzare
+ uno dei metodi di presentazione tipici delle Visual Novel come <a
+ href="http://s.vndb.org/sf/40/3440.jpg">ADV</a>, <a
+ href="http://s.vndb.org/sf/52/3152.jpg">NVL</a> e le loro <a
+ href="http://s.vndb.org/sf/39/339.jpg">variazioni</a>.<br />
+ *Non interrotto da sequenze interattive, non da scelte o movimenti sulla mappa.<br />
+ <br />
+ Nota: In alcuni casi speciali, un gioco può essere aggiunto anche se non rientra nei casi
+ sopraelencati. Però è una decisione dei moderatori. Non aggiungere giochi aspettandoti
+ che siano un'eccezione a queste regole.
+</p>
+
+:SUB:Informazioni generali
+<dl>
+ <dt>Titolo (romaji)</dt><dd>
+  Il titolo deve essere basato sul titolo della pubblicazione originale.<br />
+  Se il titolo è nell'alfabeto latino, usa le <a href="/d5.2">regole sulle maiuscole</a>.<br />
+  Altrimenti, quelle sulla <a href="/d5.1">romanizzazione</a>.
+ </dd><dt>Titolo originale</dt><dd>
+  Se il nome è in un alfabeto diverso, scrivi qui il nome originale.
+ </dd><dt>Alias</dt><dd>
+  Usa questo campo per aggiungere altri nomi e acronimi con cui il gioco è conosciuto.
+  Titoli officiali non vanno aggiunti qui, dato che sono già elencati nella pubblicazione.
+ </dd><dt>Descrizione</dt><dd>
+  Breve descrizione della storia.
+ </dd><dt>Lunghezza</dt><dd>
+  Una stima del tempo necessario per completare tutti i finali del gioco. Per determinarla,
+  è spesso consigliato ignorare il numero di ore e confrontare la visual novelcon altri giochi.
+  In fondo, è relativo.
+ </dd><dt>Link esterni</dt><dd>
+  Collegamenti ad altri siti su questa visual novel. Per prendere gli URL, vai su
+  sites (<a href="http://en.wikipedia.org/">Wikipedia</a>, <a href="http://novelnews.net/">
+  Novelnews.net</a>, <a href="http://renai.us/">Renai.us</a> e
+  <a href="http://visual-novels.net/">Visual-novels.net</a>),
+  cerca la pagina relativa al gioco, e determina il nome o ID della pagina e scrivilo nel campo
+  relativo. Non specificare l'intero URL, ci serve solo una piccola parte di esso!
+ </dd><dt>Anime correlati</dt><dd>
+  Alcune visual novel (ee. <a href="/v4">Clannad</a> e <a href="/v3">Utawarerumono</a>)
+  hanno degli adattamenti anime, e alcune visual novel sono state adattate da serie anime.
+  Usa questo campo per specificare queste relazioni.<br />
+  Gli anime vanno indicati usando il loro ID su <a href="http://anidb.net/">AniDB</a> .
+  Per aggiungere unanime, cercalo su AniDB e aggiungi il numero ID relativo (si trova nella
+  parte URL <i>aid=xxx</i>). Gli ID vanno separati da spazi.<br />
+  Se una visual novel ha già una relazione con un'altra visual novel, ed entrambe hanno
+  un adattamento anime, lo stesso anime non va aggiunto ad entrambi i giochi. Per
+  esempio, <a href="/v264">Da Capo</a> ha due adattamenti
+  (<a href="http://anidb.net/a837">837</a>, <a href="http://anidb.net/a2832">2832</a>),
+  e anche <a href="/v266">Da Capo II</a>. (<a href="http://anidb.net/a5419">5419</a>,
+  <a href="http://anidb.net/a5652">5652</a>) Ma le relazioni di Da Capo II non vanno
+  aggiunte a Da Capo e lo stesso vale per il contrario - il sistema interno di relazioni si prenderà
+  cura di ciò.<br />
+  Dopo aver segnato un nuovo ID AniDB, VNDB raccoglierà automaticamente le informazioni
+  e le presenterà sul sito. Questa azione può richiedere diversi minuti - o nel peggiore dei
+  casi - ore. In quel periodo di tempo vedrai il codice dell'anime, ma non il titolo nè i collegamenti
+  ad AnimeNFO e Anime News Network. Non è possibile aggiungere manualmente queste
+  informazioni, verrano prese automaticamente!
+ </dd>
+</dl>
+
+
+:SUB:Categorie
+<i>
+ Le categorie sono state sostituite dai tag. Questa parte è usata solo per preservare l'elenco.
+</i>
+
+
+:SUB:Immagine
+<p>
+ Tutte le visual novel devono avere un'immagine, possibilmente la copertina ufficiale
+ di una delle pubblicazioni. In alcuni casi, soprattuto per i giochi doujin, se non esiste una copertina
+ ufficiale, può essere usata un'immagine tratta dal sito ufficiale o dal gioco.<br />
+ Le immagini devono essere in formato JPEG o PNG, e non possono essere più grandi di 5 MiB.
+ Tutte le immagini più grandi di 256x400px saranno automaticamente ridotte.
+ Ricordati che la modifica dell'immagine viene effettuata in un processo a parte, quindi non
+ vedrai immediatamente l'immagine dopo averla caricata. Di solito questo processo richede
+ solo alcuni secondi, e l'immagine dovrebbe essere pronta poco dopo aver mandatato la modifica.
+ <br /><br />
+ L'avvertimento NSFW va aggiunto nel caso in cui la copertina non è appropriata ad un luogo di lavoro.
+ Per decidere se lo è o no, usa queste regole:
+</p><ul>
+ <li>Il nudo è appropriato solo se le parti sessuali sono coperte o nascoste</li>
+ <li>Bikini, mutande e altro intimo sono appropriati solo se non mostrano specificatamente
+  l'anatomia delle parti sessuali</li>
+ <li>Se la posa dei personaggi è molto suggestiva, è NSFW</li>
+ <li>Se sono mostrati più personaggi in contatto fisico, e questo contatto può essere
+  considerato (preliminare di) un contatto sessuale, allora è NSFW.
+ </li>
+ <li>NSFW è considerato solo sulla base delle immagini: immagini che contengono parole
+  suggestive ma non hanno altri elementi NSFW sono considerate appropriate.</li>
+</ul><p>
+ Anche seguendo queste regole può non essere sempre facile capire se un'immagine è
+ appropriata o no. Se in dubbio, scegli NSFW.
+</p>
+
+
+:SUB:Relazioni
+<p>
+ Le relazioni visual novel relations si usano per indicare come diversi giochi sono collegati
+ tra di loro.<br />
+ Quando aggiungi una relazione, la relazione opposta verrà aggiunta automaticamente.
+ Es. se aggiungi il gioco x come sequel del gioco y, il gioco y verrà automaticamente
+ aggiunto come prequel del gioco x. Non devi modificare entrambi i giochi.<br />
+ Specifica solo relazioni <b>dirette</b>. Se il gioco 1 ha una relazione con il gioco 2
+ e il gioco 2 ha una relazione con il gioco 3, allora al gioco 3 non va aggiunta la relazione
+ con il gioco 1. Può essere confusionario, ma capirai quando vedrai il grafico delle relazioni.
+ Quando modifichi le relazioni, cerca di pensare a tutte le relazioni tra tutti i giochi 
+ - come mostrato dal grafico - anzichè concentrarti soltanto sulla visual novel che stai
+ modificando.
+ <br />
+ La casella "ufficiale" va usata per indicare se la relazione è ufficiale o no.
+ Una relazione è considerata ufficiale se entrambi i giochi sono pubblicati dalla stessa azienda
+ o se l'editore del gioco precedente ha dato il permesso alla creazione del secondo gioco.
+ In generale: fandiscs e giochi delle stessa serie sono ufficiali, fan fiction no.
+ <br />
+ Esiste una lista da cui scegliere le relazioni (descritte sotto). Come per la maggior parte
+ degli eventi, le relazioni tra i giochi possono essere molto più complesse di quanto queste
+ opzioni permettano di descrivere. Scegli semplicemente l'opzione che meglio rappresenta
+ la relazione quando non sei sicuro di cosa scegliere.
+</p>
+<dl>
+ <dt>Sequel</dt><dd>
+  Continuazione della storia. &lt;=&gt;<i>Prequel</i>.
+ </dd><dt>Prequel</dt><dd>
+  La storia avviene prima della storia originale.&lt;=&gt;<i>Sequel</i>.
+ </dd><dt>Stessa ambientazione</dt><dd>
+  Stesso universo, mondo, realtà e linea temporale, ma personaggi completamente diversi.
+  Può essere difficile definire "ambientazione", ma di solito si intende che se i luoghi e gli oggetti,
+  che non esistono nel mondo reale ma che esistono in un gioco, esistono anche in un altro gioco
+  allora si può usare questa relazione.
+ </dd><dt>Versione alternativa</dt><dd>
+  Stessa ambientazione, stessi personaggi, ma la storia è diversa.
+ </dd><dt>Condivide personaggi</dt><dd>
+  Storia diversa, ma alcuni personaggi comuni.
+ </dd><dt>Side story</dt><dd>
+  La storia avviene durante la parent story. &lt;=&gt;<i>Parent story</i>
+ </dd><dt>Parent story</dt><dd>
+  Opposto di <i>Side story</i>.
+ </dd><dt>Stessa serie</dt><dd>
+  I giochi fanno parte della stessa serie.
+ </dd><dt>Fandisc</dt><dd>
+  <a href="http://en.wikipedia.org/wiki/Fan_disc">Fandisc</a>.
+ </dd><dt>Gioco originale</dt><dd>
+  Opposto di fandisc.
+ </dd>
+</dl>
+
+
+:SUB:Screenshots
+Tutte le visual novel possono avere al massimo 10 screenshots. Gli screenshots devono
+essere in formato JPEG o PNG. Le immagini vengono moderate in base alle regole elencate
+di seguito. Si raccomanda di seguire le regole su <a href="/d13">come creare screenshots</a>
+se non vuoi vedere il tuo lavoro sprecato.
+<ul>
+ <li>Tutte le immagini devono essere nella risoluzione massima nativa della VN. La risoluzione nativa
+  è la risoluzione per la quale le immagini sono state create, di solito 640x480 o 800x600.
+  Upscaling o downscaling, sia fatto dal gioco che utilizzando un programma di manipolazione
+  grafica, <b>non</b> sono ammessi!</li>
+ <li>Tutte le immagini devono essere screenshots del <b>gioco</b>, il che significa rimuovere
+  qualunque cornice prima di caricare le immagini. Non siamo interessati alle modifiche delle tue finestre
+  nè alla tua configurazione di AGTH.</li>
+ <li>Almeno metà delle immagini devono essere screenshots del gioco. Ovvero, devono
+  includere le immagini dei personaggi o dialogo o interfaccia utente. Semplici immagini CG
+  senza testo o interfaccia sono ammesse per mostrare lo stile artistico, ma non possono
+  dominare su tutti gli altri screenshots.</li>
+ <li>E' ammesso caricare screenshots con contenuto erotico, ma il rapporto tra screenshots erotici/non-erotici
+  deve essere in linea con il rapporto di scene erotiche/non-erotiche all'interno della VN. Per esempio,
+  se una VN da 10 ore ha solo 2 scene erotiche da 10 minuti, non è appropriato caricare più di 2 o 3
+  immagini erotiche. D'altra parte, se una VN è praticamente solo sesso, non ha senso caricare solo un'immagine
+  erotica. E' consigliato - anche per giochi solo sesso - mettere almeno un'immagine non erotica.</li>
+ <li>Mantieni gli spoiler al minimo. E' impossibile caricare immagini che evitano completamente di esserlo,
+  ma è possibile limitare i danni. Screenshots tratti dall'inizio del gioco sono preferiti, e immagini
+  tratte dalla fine della storia vanno bene sempre che non rivelino informazioni sulla storia.</li>
+ <li>Immagini NSFW devono essere segnalate come tali, vedi la guida sulle <a href="#4">immagini</a>.</li>
+ <li>Le immagini devono essere pulite: non devono contenere informazioni sul copyright, siti,
+  o altro testo non presente nell'immagine originale.</li>
+ <li>Le immagini devono essere tratte dalla pubblicazione inglese o da quella originale (giapponese).
+  Sono ammesse altre lingue, ma il numero delle immagini va tenuto basso.</li>
+ <li>Non caricare la stessa immagine in diverse lingue, questa non è una galleria di confronti.</li>
+</ul>
+

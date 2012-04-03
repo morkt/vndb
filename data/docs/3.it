@@ -1,0 +1,159 @@
+:TITLE:Aggiungere/Modificare una Pubblicazione
+:INC:index
+
+
+:SUB:Quando aggiungere una pubblicazione
+<p>
+ Una 'pubblicazione' è un prodotto - fisico o digitale - che contiene (parti di) la
+ visual novel. Questo esclude colonne sonore, drama CD, fandisks, e altri prodotti
+ che non contengono il gioco in sè.<br />
+ Tutte le pubblicazioni andrebbero aggiunte separatamente. Per esempio, un'edizione limitata e una regolare
+ non vanno combinate insieme, anche se hanno la stessa data di pubblicazione e
+ contenuti. Per giochi commerciali, le diverse pubblicazioni possono essere riconosciute
+ dai diversi numeri JAN/UPC/EAN.
+</p>
+
+
+:SUB:Informazioni Generali
+<dl>
+ <dt>Tipo</dt><dd>
+  Questa pubblicazione è completa, parziale o una demo?
+  Completa indica che il contenuto è completo.
+  Parziale significa che c'è la maggior parte del gioco, ma alcuni elementi devono
+  ancora essere pubblicati.
+  Demo sono versioni molto corte e gratuite, che permettono di provare il gioco
+  prima di acquistarlo. In alcuni casi, le demo non rappresentano il prodotto finale.<br />
+  Nel caso di una patch di traduzione, questo campo deve indicare se la patch traduce tutto
+  il gioco (Completa), o solo alcune parti (Parziale).
+ </dd><dt>Patch</dt><dd>
+  Spunta questa casella se la pubblicazione è una patch (di traduzione), da usare su un'altra
+  pubblicazione.
+ </dd><dt>Freeware</dt><dd>
+  Spunta questa casella se il gioco è scaricabile (o distribuito) gratuitamente.
+ </dd><dt>Doujin</dt><dd>
+  Pubblicato da un gruppo doujin, amatoriale o un individuo, e non un'azienda legale.
+  Questo campo viene ignorato se la pubblicazione è una patch.
+ </dd><dt>Titolo (romaji)</dt><dd>
+  Il nome della pubblicazione, nell'alfabeto latino (romanizzato o tradotto).
+ </dd><dt>Titolo originale</dt><dd>
+  Se il nome originale è diverso (solitamente a causa di un alfabeto diverso), scrivi il titolo
+  originale qui.
+ </dd><dt>Lingua</dt><dd>
+  In quale lingua è questa pubblicazione? Indica la lingua usata nella maggior parte del gioco.
+ </dd><dt>JAN/UPC/EAN</dt><dd>
+  Il codice <a href="http://en.wikipedia.org/wiki/Global_Trade_Item_Number">GTIN</a>
+  del prodotto. Anche chiamato "JAN" per pubblicazioni giapponesi, "UPC" per USA e Canada
+  ed "EAN" per l'Europa. Il sistema riconoscerà automaticamente il tipo dal codice e userà 
+  il termine appropriato nella pagina.
+ </dd><dt>Numero catalogo</dt><dd>
+  Numero catalogo assegnato dall'editore. Spesso utilizzato per identificare la pubblicazione
+  nei negozi online, si può trovare sulla confezione del gioco.
+ </dd><dt>Sito ufficiale</dt><dd>
+  URL del sito ufficiale del prodotto. Anche se VNDB non supporta la pirateria, è possibile
+  mettere il collegamento a un sito o forum che lo fa nel caso in cui sia l'unica fonte <b>ufficiale</b>
+  per questa pubblicazione.
+ </dd><dt>Data pubblicazione</dt><dd>
+  Per i giochi commerciali, il giorno in cui sono iniziate le vendite.
+  Per tutti gli altri, il giorno in cui il gioco è stato rilasciato.
+  Se è stato pubblicato su un sito, il giorno in cui la pagina è stata pubblicata.
+ </dd><dt>Fascia di età</dt><dd>
+  La minima fascia di età per la pubblicazione. Nella maggior parte dei casi, si trova sulla
+  confezione o sul sito del prodotto.
+ </dd><dt>Note</dt><dd>
+  Note varie e utili.
+  Di solito, extra (ma non i contenuti per aver ordinato in anticipo il gioco) e informazioni
+  sul progresso vanno qui.
+ </dd>
+</dl>
+
+
+:SUB:Formato
+<dl>
+ <dt>Risoluzione</dt><dd>
+  Risoluzione dello schermo primaria/nativa del gioco.
+ </dd><dt>Voci</dt><dd>
+  Indica se questa pubblicazione include doppiatori per le parti VN/ADV del gioco.
+  <i>Voci complete</i> indica che tutti i personaggi (di solito ad esclusione del protagonista
+  e alcuni personaggi secondari) sono doppiati in tutte le scene. <i>Voci solo nelle scene erotiche</i>
+  parla da sè, e <i>Voci parziali</i> va usato quando ci sono doppiatori, ma solo per i 
+  personaggi principali o solo in alcune scene.
+ </dd><dt>Animazione</dt><dd>
+  Esistono due opzioni separate per indicare se il gioco ha animazioni: una per la modalità
+  storia e una per le scene erotiche, se il gioco ne ha. Con <i>Animazioni semplici</i>,
+  si indicano effetti (di solito ripetuti) come foglie o neve che cadono nello sfondo o
+  animazioni facciali come battito delle ciglia e i movimenti della bocca.
+  <i>Scene completamente animate</i> indica scene animate in stile anime non ripetute.
+  Alcuni giochi sono interamente così, altri hanno solo alcune scene. Effetti come personaggi
+  che si muovono lungo lo schermo, ingrandimenti basilari e sfondi che si scuotno non
+  sono considerati animazioni. Anche piccoli giochi o altre parti interattive sono esclusi,
+  solo le parti di storia (ADV/VN) e le scene erotiche vanno prese in considerazione.
+ </dd>
+</dl>
+<p>
+ <b>NOTA</b>: Questi campi non hanno significato per le patch e vanno lasciati vuoti.
+ <br /><br />
+ <b>Piattaforma</b><br />
+ La piattaforma per la quale è stato pubblicato il gioco. Non include piattaforme emulate
+ (es. giochi Playstation 2 su Playstation 3) o WINE. DVD Player indica giochi che si possono
+ usare su normali lettori DVD (DVDPG) e non vanno confusi con il medium DVD.
+ <br /><br />
+ <b>Media</b>
+</p>
+<dl>
+ <dt>Blu-ray</dt><dd>
+  Blu-ray Disk, 30-60GB+. Richiede un lettore Blu-ray. Playstation 3 di solito usa
+  Blu-ray.
+ </dd><dt>CD</dt><dd>
+  CD-ROM, 700MB.
+ </dd><dt>DVD</dt><dd>
+  DVD5, 4.5GB, o DVD9, 9GB. Giochi DVDPG sono DVD.
+ </dd><dt>Floppy</dt><dd>
+  5 1/4" o 3 3/4", non più grande di 1.44MB.
+ </dd><dt>GD</dt><dd>
+  Giochi Dreamcast sono solitamente su dischi GD.
+ </dd><dt>Internet Download</dt><dd>
+  Qualunque pubblicazione che si ottiene scaricando da internet senza una copia fisica.
+ </dd><dt>Memory Card</dt><dd>
+  SD (Secure Digital) Card variante o MMC variante, Compact Flash o "USB Sticks".
+  La differenza tra queste e le Cartridge (sotto) è che le Memory Cards possono essere
+  sovrascritte (RW).
+ </dd><dt>Cartridge</dt><dd>
+  Vedi Memory Cards sopra. Solo lettura. Famicom (NES), Super Nintendo (SNES),
+  Game Boy Advanced (GBA) e Nintendo DS usano cartridge.
+ </dd><dt>Nintendo Optical Disk</dt><dd>
+  Disco ottico non-CD o DVD per varie console Nintendo.
+ </dd><dt>Altri</dt><dd>
+  Altri formati che non rientrano nelle altre categorie. Non può essere usato liberamente
+  e il suo uso va giustificato.
+ </dd><dt>UMD</dt><dd>
+  Universal Media Disk, 2.2GB. Playstation Portable usa questo formato.
+ </dd>
+</dl>
+
+
+:SUB:Editori
+<p>
+ Le aziende/gruppi/individui coinvolti nello sviluppo o pubblicazione. Non include i distributori.
+ Si possono scegliere i seguenti ruoli:
+ <dl>
+  <dt>Sviluppatore</dt><dd>
+   Il produttore coinvolto nella creazione del gioco, non necessariamente di questa specifica
+   pubblicazione. Tieni a mente che produttori che hanno apportato modifiche ma non hanno
+   creato il gioco NON vanno indicati come sviluppatori.
+  </dd><dt>Editore</dt><dd>
+   Il produttore responsabile della pubblicazione. Potrebbe aver apportato modifiche al gioco
+   (es. traduzione del testo o adattato ad una diversa piattaforma) ma non è coinvolto
+   nella fase di creazione del gioco.
+  </dd><dt>Entrambi</dt><dd>
+   Quando lo sviluppatore e l'editore sono la stessa azienda. Questo è di solito il caso per
+   giochi doujin e la prima pubblicazione di un gioco commerciale.
+  </dd>
+ </dl>
+</p>
+
+
+:SUB:Relazioni visual novel
+<p>
+ Le visual novel coperte da questa pubblicazione (parzialmente o completamente).
+</p>
+
