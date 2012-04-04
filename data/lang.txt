@@ -1648,7 +1648,7 @@ de : Sehr kurz[index,_1,, (< 2 Stunden), (OMGWTHOTL~, Jouka no Monshou~, The wor
 es : Muy corto[index,_1,, (< 2 horas), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
 tr : Çok kısa[index,_1,, (< 2 saat), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
 uk : Дуже коротка[index,_1,, (< 2 годин), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
-it : Molto corta[index,_1,, (< 2 hours), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
+it : Molto corta[index,_1,, (< 2 ore), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
 
 :_vnlength_2
 en : Short[index,_1,, (2 - 10 hours), (Narcissu~, Saya no Uta~, Planetarian)]
@@ -1660,7 +1660,7 @@ de : Kurz[index,_1,, (2 - 10 Stunden), (Narcissu~, Saya no Uta~, Planetarian)]
 es : Corto[index,_1,, (2 - 10 horas), (Narcissu~, Saya no Uta~, Planetarian)]
 tr : Kısa[index,_1,, (2 - 10 saat), (Narcissu~, Saya no Uta~, Planetarian)]
 uk : Коротка[index,_1,, (2 - 10 годин), (Narcissu~, Saya no Uta~, Planetarian)]
-it : Corta[index,_1,, (2 - 10 hours), (Narcissu~, Saya no Uta~, Planetarian)]
+it : Corta[index,_1,, (2 - 10 ore), (Narcissu~, Saya no Uta~, Planetarian)]
 
 :_vnlength_3
 en : Medium[index,_1,, (10 - 30 hours), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
@@ -1672,7 +1672,7 @@ de : Mittel[index,_1,, (10 - 30 Stunden), (Yume Miru Kusuri~, Cross†Channel~, 
 es : Medio[index,_1,, (10 - 30 horas), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
 tr : Orta[index,_1,, (10 - 30 saat), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
 uk : Середня[index,_1,, (10 - 30 годин), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
-it : Media[index,_1,, (10 - 30 hours), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
+it : Media[index,_1,, (10 - 30 ore), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
 
 :_vnlength_4
 en : Long[index,_1,, (30 - 50 hours), (Tsukihime~, Ever17~, Demonbane)]
@@ -1684,7 +1684,7 @@ de : Lang[index,_1,, (30 - 50 Stunden), (Tsukihime~, Ever17~, Demonbane)]
 es : Largo[index,_1,, (30 - 50 horas), (Tsukihime~, Ever17~, Demonbane)]
 tr : Uzun[index,_1,, (30 - 50 saat), (Tsukihime~, Ever17~, Demonbane)]
 uk : Довга[index,_1,, (30 - 50 годин), (Tsukihime~, Ever17~, Demonbane)]
-it : Lunga[index,_1,, (30 - 50 hours), (Tsukihime~, Ever17~, Demonbane)]
+it : Lunga[index,_1,, (30 - 50 ore), (Tsukihime~, Ever17~, Demonbane)]
 
 :_vnlength_5
 en : Very long[index,_1,, (> 50 hours), (Clannad~, Umineko~, Fate/Stay Night)]
@@ -1696,7 +1696,7 @@ de : Sehr lang[index,_1,, (> 50 Stunden), (Clannad~, Umineko~, Fate/Stay Night)]
 es : Muy largo[index,_1,, (> 50 horas), (Clannad~, Umineko~, Fate/Stay Night)]
 tr : Çok uzun[index,_1,, (> 50 saat), (Clannad~, Umineko~, Fate/Stay Night)]
 uk : Дуже довга[index,_1,, (> 50 годин), (Clannad~, Umineko~, Fate/Stay Night)]
-it : Molto lunga[index,_1,, (> 50 hours), (Clannad~, Umineko~, Fate/Stay Night)]
+it : Molto lunga[index,_1,, (> 50 ore), (Clannad~, Umineko~, Fate/Stay Night)]
 
 
 # VN list statuses
@@ -2222,7 +2222,7 @@ de : vor [_1] [quant,_1,Jahr,Jahren]
 es : hace [_1] [quant,_1,año,años]
 tr : [_1] yıl önce
 uk : [_1] [quant,_1,рік,роки,років] тому
-it : [_1] [quant,_1,year,years] fa
+it : [_1] [quant,_1,anno,anni] fa
 
 :_age_months
 en : [_1] [quant,_1,month,months] ago
@@ -2234,7 +2234,7 @@ de : vor [_1] [quant,_1,Monat,Monaten]
 es : hace [_1] [quant,_1,mes,meses]
 tr : [_1] ay önce
 uk : [_1] [quant,_1,місяць,місяці,місяців] тому
-it : [_1] [quant,_1,month,months] fa
+it : [_1] [quant,_1,mese,mesi] fa
 
 :_age_weeks
 en : [_1] [quant,_1,week,weeks] ago
@@ -2246,7 +2246,7 @@ de : vor [_1] [quant,_1,Woche,Wochen]
 es : hace [_1] [quant,_1,semana,semanas]
 tr : [_1] hafta önce
 uk : [_1] [quant,_1,тиждень,тижні,тижнів] тому
-it : [_1] [quant,_1,week,weeks] fa
+it : [_1] [quant,_1,settimana,settimane] fa
 
 :_age_days
 en : [_1] [quant,_1,day,days] ago
@@ -2258,7 +2258,7 @@ de : vor [_1] [quant,_1,Tag,Tagen]
 es : hace [_1] [quant,_1,día,días]
 tr : [_1] gün önce
 uk : [_1] [quant,_1,день,дні,днів] тому
-it : [_1] [quant,_1,day,days] fa
+it : [_1] [quant,_1,giorno,giorni] fa
 
 :_age_hours
 en : [_1] [quant,_1,hour,hours] ago
@@ -2270,7 +2270,7 @@ de : vor [_1] [quant,_1,Stunde,Stunden]
 es : hace [_1] [quant,_1,hora,horas]
 tr : [_1] saat önce
 uk : [_1] [quant,_1,година,години,годин] тому
-it : [_1] [quant,_1,hour,hours] fa
+it : [_1] [quant,_1,ora,ore] fa
 
 :_age_min
 en : [_1] min ago
@@ -2950,7 +2950,7 @@ de : Visual Novels
 es : Novelas visuales
 tr : Görsel romanlar
 uk : Візуальні Новели
-it : Visual novels
+it : Visual novel
 
 :_menu_tags
 en : Tags
@@ -2962,7 +2962,7 @@ de : Tags
 es : Etiqueta
 tr : Etiketler
 uk : Теги
-it : Tags
+it : Tag
 
 :_menu_releases
 en : Releases
@@ -3169,7 +3169,7 @@ de : Meine Tags
 es : Mis etiquetas
 tr : Etiketlerim
 uk : Мої теги
-it : I miei Tags
+it : I miei Tag
 
 :_menu_addvn
 en : Add Visual Novel
@@ -3278,7 +3278,7 @@ de : Visual Novels
 es : Novelas Visuales
 tr : Görsel romanlar
 uk : Візуальні новели
-it : Visual Novels
+it : Visual Novel
 
 :_menu_stat_releases
 en : Releases
@@ -3326,7 +3326,7 @@ de : VN Tags
 es : Etiquetas
 tr : Etiketler
 uk : Теги ВН
-it : VN Tags
+it : VN Tag
 
 :_menu_stat_traits
 en : Character traits
@@ -3767,7 +3767,7 @@ de : Visual Novels
 es : Novelas visuales
 tr : Görsel romanlar
 uk : Візуальна новела
-it : Visual novels
+it : Visual novel
 
 :_searchbox_releases
 en : Releases
@@ -3927,13 +3927,13 @@ uk : VNDB.org прагне бути всеосяжною базою даних �
      хочуть зіграти, а також проголосувати за будь-яку візуальну новелу.[br][br]
      Не вагайтеся, [url,/v/all,поблукайте по сайту], [url,/u/register,реєструйтеся]
      чи візьміть участь в обговореннях візуальних новел чи VNDB на наших [url,/t,дошках обговорення].
-it : VNDB.org ambisce a diventare una banca dati esaustiva di informazioni sulle visual novels.[br]
+it : VNDB.org ambisce a diventare una banca dati esaustiva di informazioni sulle visual novel.[br]
      Questo sito è costruito su una base wiki quindi chiunque può aggiungere e contribuire informazioni liberamente,
      permettendoci di creare la più grande, accurata e aggiornata banca dati di visual novel nel web.[br]
      Gli utenti registrati possono anche tenere una lista personale di giochi che vogliono giocare o che hanno già finito
-     e votare tutte le visual novels.[br][br]
+     e votare tutte le visual novel.[br][br]
      Sei libero di [url,/v/all,curiosare in giro], [url,/u/register,registrarti]
-     o partecipare alle discussioni su visual novels o VNDB nella nostra [url,/t,area messaggi].
+     o partecipare alle discussioni su visual novel o VNDB nella nostra [url,/t,area messaggi].
 
 
 :_home_recentchanges
@@ -4006,7 +4006,7 @@ de : Zufällige Visual Novels
 es : Novelas visuales aleatorias
 tr : Rastgele görsel romanlar
 uk : Випадкові візуальні новели
-it : Random visual novels
+it : Random visual novel
 
 :_home_upcoming
 en : Upcoming releases
@@ -6415,7 +6415,7 @@ de : Visual Novels
 es : Novelas visuales
 tr : Görsel romanlar
 uk : Візуальні новели
-it : Visual novels
+it : Visual novel
 
 :_redit_form_vn_sel
 en : Selected visual novels
@@ -6427,7 +6427,7 @@ de : Ausgewählte Visual Novels
 es : Novelas visuales seleccionados
 tr : Seçili görsel romanlar
 uk : Обрані візуальні новели
-it : Visual novels selezionate
+it : Visual novel selezionate
 
 :_redit_form_vn_add
 en : Add visual novel
@@ -7069,7 +7069,7 @@ de : Visual Novels
 es : Novelas visuales
 tr : Görsel romanlar
 uk : Візуальні новели
-it : Visual novels
+it : Visual novel
 
 :_tagp_rawvotes
 en : Recently tagged
@@ -7302,7 +7302,7 @@ uk : Через те, що усі теги мають бути схвалені 
      не одразу. Але ти можеш голосувати за тег навіть до того, як його буде схвалено.
      [br][br]
      Обов’язково прочитай [url,/d10,вказівки] перед створенням тегу.
-it : Dato che tutti i tag devono essere approvati dai moderatori, può passare del tempo prima che appaia nella lista dei tag o nelle pagine delle visual novels. Puoi comunque votare tag anche se non sono ancora stati approvati.
+it : Dato che tutti i tag devono essere approvati dai moderatori, può passare del tempo prima che appaia nella lista dei tag o nelle pagine delle visual novel. Puoi comunque votare tag anche se non sono ancora stati approvati.
      [br][br]
      Inoltre, assicurati di aver letto la [url,/d10,guida], in modo da sapere se il tuo tag verrà accettato o no.
 
@@ -8469,7 +8469,7 @@ de : Visual Novels
 es : Novelas visuales
 tr : Görsel romanlar
 uk : Візуальні новели
-it : Visual novels
+it : Visual novel
 
 :_chdiff_image_proc
 en : ~[processing~]
@@ -8617,7 +8617,7 @@ de : Visual Novels
 es : Novelas visuales
 tr : Görsel romanlar
 uk : Візуальні новели
-it : Visual novels
+it : Visual novel
 
 :_charp_releases
 en : Releases
@@ -8849,7 +8849,7 @@ de : Brust
 es : Pecho
 tr : Göğüs
 uk : Груди
-it : Seno
+it : Torace
 
 :_chare_form_waist
 en : Waist
@@ -11248,7 +11248,7 @@ de : Wie viele [index,_1,Visual Novels,Veröffentlichungen,Hersteller] haben wir
 es*:
 tr : Veritabanımızda kaç adet [index,_1,görsel roman,yayım,yapımcı] var? (İpucu: Solunuza bakın.)
 uk : Скільки [index,_1,візуальних новел,релізів,компаній] ми маємо в нашій базі даних? (Підказка: подивись ліворуч)
-it : Quanti [index,_1,visual novels,pubblicazioni,editori] ci sono? (Suggerimento: guarda a sinistra)
+it : Quanti [index,_1,visual novel,pubblicazioni,editori] ci sono? (Suggerimento: guarda a sinistra)
 
 :_register_answer
 en : Answer
