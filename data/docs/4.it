@@ -8,8 +8,8 @@
  creata da un editore non ancora inserito all'interno della banca dati. Editori che non hanno
  alcuna pubblicazione in elenco saranno rimossi dopo un certo periodo di tempo, perciò
  aggiungine uno solo se hai intenzione di collegarlo ad una pubblicazione. Per poter mettere
- un editore in elenco, devono aver completato almeno un gioco. Ciò significa che nel caso di progetti
- di traduzione, aggiungi il gruppo come editore solo quando hanno completato il lavoro.
+ un editore in elenco, l'editore deve aver completato almeno un gioco. Ciò significa che nel caso di progetti
+ di traduzione, il gruppo va aggiunto come editore solo quando ha completato il progetto.
 </p>
 
 

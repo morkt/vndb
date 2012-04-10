@@ -14,7 +14,7 @@
 
 
 :SUB:Instanze
-<i>todo: quando e come usare le istanze.</i>
+<i>da fare: quando e come usare le istanze.</i>
 
 
 :SUB:Informazioni generali
@@ -52,7 +52,7 @@
   si "trasforma" tra maschio e femmina.
  </dd><dt>Compleanno</dt><dd>
   Mese e giorno del compleanno del personaggio.
- </dd><dt>Seno / Vita / Fianchi</dt><dd>
+ </dd><dt>Torace / Vita / Fianchi</dt><dd>
   <a href="http://en.wikipedia.org/wiki/BWH">Le tre misure</a> se conosciute.
   Questa informazione deve venire direttamente dal gioco o da una fonte affidiabile
   (di solito il sito ufficiale). Non provare ad indovinare!<br />
@@ -62,7 +62,7 @@
  </dd><dt>Altezza</dt><dd>
   L'altezza del personaggio, in cm. La nota soprascritta su numeri naturali e sitema metrico
   vale anche qui.
- </dd><dt>Weight</dt><dd>
+ </dd><dt>Peso</dt><dd>
   Peso del personaggio, in kg. La nota soprascritta su numeri naturali e sitema metrico
   vale anche qui.
  </dd><dt>Gruppo sanguigno</dt><dd>

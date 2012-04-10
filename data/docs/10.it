@@ -22,8 +22,8 @@
 <p>E' possibile dare un voto compreso tra -3 e 3. Il voto va interpretato in questo modo:</p>
 <ol style="list-style-type: none; margin-left: 15px">
  <li><b>-3</b>: Il tag non caratterizza la VN.</li>
- <li><b>-2</b> e <b>-1</b>: Non sono molto usati, ma servono a mostrare che non
-  condividi, anche se non molto sicuro.</li>
+ <li><b>-2</b> e <b>-1</b>: Non sono molto usati, ma servono a mostrare che non sei
+  d'accordo, ma non al 100%.</li>
  <li><b>0</b>: Serve ad annullare il tuo voto.</li>
  <li><b>1</b>: Il tag caratterizza la VN, ma non in modo particolare.</li>
  <li><b>2</b>: Il tag caratterizza la VN.</li>

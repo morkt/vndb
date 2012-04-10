@@ -16,7 +16,8 @@
  href="http://s.vndb.org/sf/40/3440.jpg">ADV</a>, <a
  href="http://s.vndb.org/sf/52/3152.jpg">NVL</a> e le loro <a
  href="http://s.vndb.org/sf/39/339.jpg">variazioni</a>.<br />
- *Non interrotto da sequenze interattive, non da scelte o movimenti sulla mappa.<br />
+ *Ovvero non interrotto da sequenze interattive. Scelte o semplici movimenti sulla mappa
+ sono ammessi.<br />
  <br />
  Nota: In alcuni casi speciali, un gioco può essere aggiunto anche se non rientra nei casi
  sopraelencati. Però è una decisione dei moderatori. Non aggiungere giochi aspettandoti
@@ -158,30 +159,30 @@
 </dl>
 
 
-:SUB:Screenshots
-Tutte le visual novel possono avere al massimo 10 screenshots. Gli screenshots devono
+:SUB:Screenshot
+Tutte le visual novel possono avere al massimo 10 screenshot. Gli screenshot devono
 essere in formato JPEG o PNG. Le immagini vengono moderate in base alle regole elencate
-di seguito. Si raccomanda di seguire le regole su <a href="/d13">come creare screenshots</a>
+di seguito. Si raccomanda di seguire le regole su <a href="/d13">come creare screenshot</a>
 se non vuoi vedere il tuo lavoro sprecato.
 <ul>
  <li>Tutte le immagini devono essere nella risoluzione massima nativa della VN. La risoluzione nativa
   è la risoluzione per la quale le immagini sono state create, di solito 640x480 o 800x600.
   Upscaling o downscaling, sia fatto dal gioco che utilizzando un programma di manipolazione
   grafica, <b>non</b> sono ammessi!</li>
- <li>Tutte le immagini devono essere screenshots del <b>gioco</b>, il che significa rimuovere
+ <li>Tutte le immagini devono essere screenshot del <b>gioco</b>, il che significa rimuovere
   qualunque cornice prima di caricare le immagini. Non siamo interessati alle modifiche delle tue finestre
   nè alla tua configurazione di AGTH.</li>
- <li>Almeno metà delle immagini devono essere screenshots del gioco. Ovvero, devono
+ <li>Almeno metà delle immagini devono essere screenshot del gioco. Ovvero, devono
   includere le immagini dei personaggi o dialogo o interfaccia utente. Semplici immagini CG
   senza testo o interfaccia sono ammesse per mostrare lo stile artistico, ma non possono
-  dominare su tutti gli altri screenshots.</li>
- <li>E' ammesso caricare screenshots con contenuto erotico, ma il rapporto tra screenshots erotici/non-erotici
+  dominare su tutti gli altri screenshot.</li>
+ <li>E' ammesso caricare screenshot con contenuto erotico, ma il rapporto tra screenshot erotici/non-erotici
   deve essere in linea con il rapporto di scene erotiche/non-erotiche all'interno della VN. Per esempio,
   se una VN da 10 ore ha solo 2 scene erotiche da 10 minuti, non è appropriato caricare più di 2 o 3
   immagini erotiche. D'altra parte, se una VN è praticamente solo sesso, non ha senso caricare solo un'immagine
   erotica. E' consigliato - anche per giochi solo sesso - mettere almeno un'immagine non erotica.</li>
  <li>Mantieni gli spoiler al minimo. E' impossibile caricare immagini che evitano completamente di esserlo,
-  ma è possibile limitare i danni. Screenshots tratti dall'inizio del gioco sono preferiti, e immagini
+  ma è possibile limitare i danni. Screenshot tratti dall'inizio del gioco sono preferiti, e immagini
   tratte dalla fine della storia vanno bene sempre che non rivelino informazioni sulla storia.</li>
  <li>Immagini NSFW devono essere segnalate come tali, vedi la guida sulle <a href="#4">immagini</a>.</li>
  <li>Le immagini devono essere pulite: non devono contenere informazioni sul copyright, siti,

@@ -1,14 +1,14 @@
-:TITLE:Creare screenshots
+:TITLE:Creare screenshot
 
 :INC:index
 
 
 :SUB:Introduzione
-Screenshots caricati su VNDB devono aderire a delle regole specifiche. In
+Screenshot caricati su VNDB devono aderire a delle regole specifiche. In
 particolare, non devono avere margini di finestra e devono essere nella corretta
-risoluzione (precisa al pixel!). Caricare screenshots che non seguono
+risoluzione (precisa al pixel!). Caricare screenshot che non seguono
 queste regole risulterà nel vederli cancellati in breve tempo.
-Questa pagina è un tutorial su come creare <b>correttamente</b> screenshots usando
+Questa pagina è un tutorial su come creare <b>correttamente</b> screenshot usando
 diversi strumenti. Al momento, solo Irfanview è specificato, ma altri potrebbero
 essere aggiunti più avanti. (N.d.T. Le opzioni di IrfanView sono lasciate in Inglese)
 
@@ -38,7 +38,7 @@ essere aggiunti più avanti. (N.d.T. Le opzioni di IrfanView sono lasciate in In
  <li>Premi "OK", e poi "Start" per chiudere la finestra capture setup.</li>
 </ol>
 <br />
-Ora lancia la visual novel di cui vuoi creare screenshots e premi la hot key quando vuoi.
+Ora lancia la visual novel di cui vuoi creare screenshot e premi la hot key quando vuoi.
 Irfanview creerà automaticamente l'immagine e la salverà nella cartella che hai scelto.
 Le immagini così create possono essere caricate su VNDB senza ulteriori medifiche.
 

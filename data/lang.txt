@@ -2321,7 +2321,7 @@ de : 0+
 es : Todas las edades
 tr : Her yaş
 uk : Для всіх
-it : Per tutte le età
+it : Tutte le età
 
 # "Ages [_1] and up", but shorter
 :_minage_age
@@ -8349,7 +8349,7 @@ de : Brust
 es : Pecho
 tr : Göğüs
 uk : Груди
-it : Seno
+it : Torace
 
 :_revfield_c_s_waist
 en : Waist
@@ -13974,7 +13974,7 @@ de : ~[inoffiziell~]
 es : ~[no oficial~]
 tr : ~[gayriresmi~]
 uk : ~[неофіційно~]
-it : ~[non officiale~]
+it : ~[non ufficiale~]
 
 :_vnpage_anime
 en : Related anime
