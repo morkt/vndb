@@ -2675,11 +2675,12 @@ if(byId('votesel')) {
       s = prompt(mt('_vnpage_uopt_othervote'), '');
     if(!s || s == -3)
       return;
-    if(s != -1 && (!s.match(/^([1-9]|10)(\.[0-9])?$/) || s > 10 || s < 1)) {
+    if(s != -1 && (!s.match(/^([1-9]|10)([\.,][0-9])?$/) || s > 10 || s < 1)) {
       alert(mt('_vnpage_uopt_invvote'));
       this.selectedIndex = 0;
       return;
     }
+    s = s.replace(',', '.');
     if(s == 1 && !confirm(mt('_vnpage_uopt_1vote')))
       return;
     if(s == 10 && !confirm(mt('_vnpage_uopt_10vote')))
