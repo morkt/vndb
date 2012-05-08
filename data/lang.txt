@@ -204,7 +204,7 @@ it : Ungherese
 
 :_lang_id
 en : Indonesian
-ru*:
+ru : Индонезийский
 cs*:
 hu*:
 nl : Indonesisch
@@ -360,7 +360,7 @@ it : Turco
 
 :_lang_uk
 en : Ukrainian
-ru*:
+ru : Украинский
 cs*:
 hu : Ukrán
 nl : Oekraïens
@@ -557,7 +557,7 @@ it : PC-98
 
 :_plat_psp
 en : PlayStation Portable
-ru : Playstation Portable
+ru : PlayStation Portable
 cs : Playstation Portable
 hu :
 nl :
@@ -569,7 +569,7 @@ it : PlayStation Portable
 
 :_plat_ps1
 en : PlayStation 1
-ru : Playstation 1
+ru : PlayStation 1
 cs : Playstation 1
 hu :
 nl :
@@ -581,7 +581,7 @@ it : PlayStation 1
 
 :_plat_ps2
 en : PlayStation 2
-ru : Playstation 2
+ru : PlayStation 2
 cs : Playstation 2
 hu :
 nl :
@@ -593,7 +593,7 @@ it : PlayStation 2
 
 :_plat_ps3
 en : PlayStation 3
-ru : Playstation 3
+ru : PlayStation 3
 cs : Playstation 3
 hu :
 nl :
@@ -8281,7 +8281,7 @@ it : Nome originale
 
 :_revfield_c_alias
 en : Aliases
-ru : Алиасы
+ru : Псевдонимы
 cs : Aliasy
 hu : Más nevek
 nl : Aliassen
@@ -12811,7 +12811,7 @@ it : ID immagine
 
 :_vnedit_image_id_msg
 en : Use a VN image that is already on the server. Set to '0' to remove the current image.
-ru : Использовать уже загруженное на сервер изображение персонажа. Укажите "0" (без кавычек), чтобы удалить текущее изображение.
+ru : Использовать уже загруженное на сервер изображение. Укажите "0" (без кавычек), чтобы удалить текущее изображение.
 cs*:
 hu : Használj egy olyan szereplő képet ami már megtalálható a szerveren. Ha '0'-ra állítod törölheted a jelenlegi képet.
 nl : Gebruik een VN plaatje dat al op de server staat. Gebruik '0' om een huidig plaatje te verwijderen.
@@ -14074,7 +14074,7 @@ it : rimuovi
 
 :_vnpage_uopt_othvote
 en : Other
-ru*:
+ru : Дробный
 cs*:
 hu : Egyéb
 nl : Anders
@@ -14086,7 +14086,7 @@ it : Altro
 
 :_vnpage_uopt_othervote
 en : Please input your vote as a number between 1 and 10. One digit after the decimal is allowed, for example: 8.6 or 7.3.
-ru*:
+ru : Пожалуйста, введите ваш голос как значение между 1 и 10. Разрешена одна цифра после запятой, например 8.6 или 7.3
 cs*:
 hu : Kérlek, hogy a szavazatod egy szám legyen 1 és 10 közt. Engedélyezet a tizedespont után egy számjegyet használni, például: 8.6 vagy 7.3
 nl : Geef je stem op als een number tussen 1 en 10. Één getal achter de comma is toegestaan, bijvoorbeeld: 8.6 of 7.3.
@@ -14098,7 +14098,7 @@ it : Vota con un numero compreso tra 1 e 10. Puoi aggiungere un decimale, per es
 
 :_vnpage_uopt_invvote
 en : Invalid number.
-ru*:
+ru : Неверное число
 cs*:
 hu : Érvénytelen szám.
 nl : Ongeldig nummer.
@@ -14526,7 +14526,7 @@ it : Popolarità: classificato #[_1] con voto [_2]
 
 :_votestats_rank_rat
 en : Bayesian rating: ranked #[_1] with a rating of [_2]
-ru : Метод Байезия: #[_1] место с рейтингом [_2]
+ru : Байесовская оценка: #[_1] место с рейтингом [_2]
 cs : Bayesovo hodnocení: [_1]. místo se skóre [_2]
 hu : Bayes-i ranglista: [_1]. hely [_2]-s értékeléssel
 nl : Bayesian gemiddelde: geplaatst op #[_1] met een waardering van [_2]
