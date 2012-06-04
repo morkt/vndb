@@ -124,7 +124,7 @@ define runpsql
 endef
 
 
-sql-import):
+sql-import:
 	${runpsql} < util/sql/all.sql
 
 
