@@ -21,8 +21,8 @@ CREATE TABLE anime (
   ann_id integer,
   nfo_id varchar(200),
   type anime_type,
-  title_romaji,
-  title_kanji,
+  title_romaji varchar(250),
+  title_kanji varchar(250),
   lastfetch timestamptz
 );
 
