@@ -170,8 +170,8 @@ CREATE TABLE releases_platforms (
 
 -- releases_producers
 CREATE TABLE releases_producers (
-  rid integer NOT NULL,
   pid integer NOT NULL,
+  rid integer NOT NULL,
   developer boolean NOT NULL DEFAULT FALSE,
   publisher boolean NOT NULL DEFAULT TRUE,
   CHECK(developer OR publisher),
@@ -415,7 +415,6 @@ CREATE TABLE vn_rev (
   id integer NOT NULL PRIMARY KEY,
   vid integer NOT NULL DEFAULT 0,
   title varchar(250) NOT NULL DEFAULT '',
-  original varchar(250) NOT NULL DEFAULT '',
   alias varchar(500) NOT NULL DEFAULT '',
   img_nsfw boolean NOT NULL DEFAULT FALSE,
   length smallint NOT NULL DEFAULT 0,
@@ -424,7 +423,8 @@ CREATE TABLE vn_rev (
   l_vnn integer NOT NULL DEFAULT 0,
   image integer NOT NULL DEFAULT 0,
   l_encubed varchar(100) NOT NULL DEFAULT '',
-  l_renai varchar(100) NOT NULL DEFAULT ''
+  l_renai varchar(100) NOT NULL DEFAULT '',
+  original varchar(250) NOT NULL DEFAULT ''
 );
 
 -- vn_screenshots
@@ -432,7 +432,7 @@ CREATE TABLE vn_screenshots (
   vid integer NOT NULL DEFAULT 0,
   scr integer NOT NULL DEFAULT 0,
   nsfw boolean NOT NULL DEFAULT FALSE,
-  rid integer DEFAULT NULL,
+  rid integer,
   PRIMARY KEY(vid, scr)
 );
 
