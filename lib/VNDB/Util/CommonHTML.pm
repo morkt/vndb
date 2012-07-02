@@ -88,6 +88,12 @@ sub htmlMainTabs {
      end;
    }
 
+   if($type eq 'v') {
+    li $sel eq 'releases' ? (class => 'tabselected') : ();
+    a href => "/$id/releases", mt '_mtabs_releases';
+    end;
+   }
+
    if($type =~ /[vp]/ && $obj->{rgraph}) {
      li $sel eq 'rg' ? (class => 'tabselected') : ();
       a href => "/$id/rg", mt '_mtabs_relations';

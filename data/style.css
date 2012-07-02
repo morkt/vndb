@@ -418,6 +418,13 @@ div#vntags                    { margin: 15px 30px 0 30px; border-top: 1px solid 
 div.scr_uploader     { visibility: hidden; overflow: hidden; width: 1px; height: 1px; position: absolute; display: none; left: 0; top: 0; }
 
 
+/***** VN Release tab *****/
+
+.releases_compare table     { margin: 0 auto; }
+.releases_compare td        { margin: 0 auto; border: 1px solid $border$; }
+.releases_compare td.bg     { background: url($_boxbg$) repeat; }
+.releases_compare td.multi  { vertical-align:middle; }
+.releases_compare .key      { background: url($_boxbg$) repeat; }
 
 /****** VN browse ********/
 

@@ -3518,6 +3518,19 @@ tr : düzenle
 uk : редагувати
 it : modifica
 
+# VN releases
+:_mtabs_releases
+en : releases
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 # VN relations
 :_mtabs_relations
 en : relations
@@ -14319,6 +14332,30 @@ es : Estrenos
 tr : Yayımlar
 uk : Релізи
 it : Pubblicazioni
+
+:_vnpage_rel_title
+en : Releases for [_1]
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_vnpage_restrict_column_width
+en : Restrict column width
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnpage_rel_none
 en : We don't have any information about releases of this visual novel yet...
