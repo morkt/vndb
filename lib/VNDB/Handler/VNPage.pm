@@ -208,7 +208,7 @@ sub releases {
 
       td class   => $height{$column} > 1 ? 'multi' : $td_type,
          rowspan => $height{$column},
-         style   => $width{$column};
+         $width{$column} ? (style   => $width{$column}) : ();
       _write_release_string($self, $rel, $column);
       end 'td';
      } continue {
