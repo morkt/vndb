@@ -301,11 +301,11 @@ sub _compare_rel {
    return 1;
   } elsif ($variable eq 'type') {
    $last_rel->{type}     eq $rel->{type} &&
-   $last_rel->{patch}    == $rel->{patch}
+   !$last_rel->{patch}   == !$rel->{patch}
   } elsif ($variable eq 'publication') {
-   $last_rel->{patch}    == $rel->{patch} &&
-   $last_rel->{freeware} == $rel->{freeware} &&
-   $last_rel->{doujin}   == $rel->{doujin}
+   !$last_rel->{patch}   == !$rel->{patch} &&
+   !$last_rel->{freeware}== !$rel->{freeware} &&
+   !$last_rel->{doujin}  == !$rel->{doujin}
   } elsif ($variable eq 'notes') {
    $last_rel->{notes} eq $rel->{notes};
   } else {
