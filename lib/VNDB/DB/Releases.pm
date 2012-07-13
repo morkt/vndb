@@ -81,10 +81,16 @@ sub dbReleaseGet {
   );
 
   my $order = sprintf {
-    title    => 'rr.title %s',
-    minage   => 'rr.minage %s',
-    released => 'rr.released %s, rr.title %1$s',
-  }->{ $o{sort}||'released' }, $o{reverse} ? 'DESC' : 'ASC';
+    title       => 'rr.title %s,                                     rr.released %1$s',
+    type        => 'rr.patch %s, rr.type %1$s,                       rr.released %1$s, rr.title %1$s',
+    publication => 'rr.doujin %s, rr.freeware %1$s,   rr.patch %1$s, rr.released %1$s, rr.title %1$s',
+    resolution  => 'rr.resolution %s,                 rr.patch %2$s, rr.released %1$s, rr.title %1$s',
+    voiced      => 'rr.voiced %s,                     rr.patch %2$s, rr.released %1$s, rr.title %1$s',
+    ani_ero     => 'rr.ani_story %s, rr.ani_ero %1$s, rr.patch %2$s, rr.released %1$s, rr.title %1$s',
+    released    => 'rr.released %s,                                                    rr.title %1$s',
+    minage      => 'rr.minage %s,                                    rr.released %1$s, rr.title %1$s',
+    notes       => 'rr.notes %s,                                     rr.released %1$s, rr.title %1$s',
+  }->{ $o{sort}||'released' }, $o{reverse} ? 'DESC' : 'ASC', !$o{reverse} ? 'DESC' : 'ASC';
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s

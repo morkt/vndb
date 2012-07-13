@@ -14345,8 +14345,71 @@ tr*:
 uk*:
 it*:
 
+# All on/off buttons for VN release page
+
+:_all
+en : All
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_all_on
+en : All on
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_all_off
+en : All off
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_vnpage_restrict_column_width
 en : Restrict column width
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+# printed in release comparison table. Used to tell which columns which can't contain data for patches (such as resolution)
+:_vnpage_na_for_patches
+en : NA for patches
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_vnpage_release_unknown
+en : Unknown
 ru*:
 cs*:
 hu*:
