@@ -54,12 +54,13 @@ sub bb2html {
   };
 
   while($raw =~ m{(
-    ([tdvprc][1-9][0-9]*\.[1-9][0-9]*)        | # 2. exid
-    ([tdvprcugi][1-9][0-9]*)                  | # 3. id
-    (\[[^\s\]]+\])                            | # 4. tag
-    ((?:https?|ftp)://[^><"\n\s\]\[]+[\d\w=/-]) # 5. url
+    (d[1-9][0-9]*\.[1-9][0-9]*\.[1-9][0-9]*)  | # 2. longid
+    ([tdvprc][1-9][0-9]*\.[1-9][0-9]*)        | # 3. exid
+    ([tdvprcugi][1-9][0-9]*)                  | # 4. id
+    (\[[^\s\]]+\])                            | # 5. tag
+    ((?:https?|ftp)://[^><"\n\s\]\[]+[\d\w=/-]) # 6. url
   )}xg) {
-    my($match, $exid, $id, $tag, $url) = ($1, $2, $3, $4, $5);
+    my($match, $longid, $exid, $id, $tag, $url) = ($1, $2, $3, $4, $5, $6);
 
     # add string before the match
     $result .= $e->(substr $raw, $last, (pos($raw)-length($match))-$last);
@@ -114,10 +115,11 @@ sub bb2html {
         next;
       }
       # id
-      if(($id || $exid) && (!$result || substr($raw, $last-1-length($match), 1) !~ /[\w]/) && substr($raw, $last, 1) !~ /[\w]/) {
-        $length += length $match;
+      if(($id || $exid || $longid) && (!$result || substr($raw, $last-1-length($match), 1) !~ /[\w]/) && substr($raw, $last, 1) !~ /[\w]/) {
+        (my $lnk = $match) =~ s/^d(\d+)\.(\d+)\.(\d+)$/d$1#$2.$3/;
+        $length += length $lnk;
         last if $maxlength && $length > $maxlength;
-        $result .= sprintf '<a href="/%s">%1$s</a>', $match;
+        $result .= sprintf '<a href="/%s">%s</a>', $lnk, $match;
         next
       }
     }
