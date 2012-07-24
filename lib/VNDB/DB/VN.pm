@@ -12,7 +12,8 @@ our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreen
 
 # Options: id, rev, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
 #   hasani, hasshot, ul_notblack, ul_onwish, results, page, what, sort, reverse, inc_hidden
-# What: extended anime relations screenshots relgraph rating ranking changes
+# What: extended anime relations screenshots relgraph rating ranking changes wishlist vnlist
+#  Note: wishlist and vnlist are ignored (no db search) unless a user is logged in
 # Sort: id rel pop rating title tagscore rand
 sub dbVNGet {
   my($self, %o) = @_;
@@ -85,6 +86,14 @@ sub dbVNGet {
       'JOIN users u ON u.id = c.requester' : (),
     $o{what} =~ /relgraph/ ?
       'JOIN relgraphs vg ON vg.id = v.rgraph' : (),
+    $uid && $o{what} =~ /wishlist/ ?
+      'LEFT JOIN wlists wl ON wl.vid = v.id AND wl.uid = ' . $uid : (),
+    $uid && $o{what} =~ /vnlist/ ? (
+     'LEFT JOIN rlists rl
+           JOIN releases r     ON rl.rid = r.id
+           JOIN releases_vn rv ON rv.rid = r.latest
+         ON rv.vid = v.id AND rl.uid = ' . $uid,
+       ) : (),
   );
 
   my $tag_ids = $o{tag_inc} && join ',', ref $o{tag_inc} ? @{$o{tag_inc}} : $o{tag_inc};
@@ -99,6 +108,11 @@ sub dbVNGet {
     $o{what} =~ /ranking/ ? (
       '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_popularity > COALESCE(v.c_popularity, 0.0)) AS p_ranking',
       '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_rating > COALESCE(v.c_rating, 0.0)) AS r_ranking',
+    ) : (),
+    $uid && $o{what} =~ /wishlist/ ? 'wl.wstat' : (),
+    $uid && $o{what} =~ /vnlist/ ? (
+      'COUNT(rv.vid) AS userlist_all',
+      'SUM(CASE WHEN rl.status = 2 THEN 1 ELSE 0 END) AS userlist_obtained',
     ) : (),
     # TODO: optimize this, as it will be very slow when the selected tags match a lot of VNs (>1000)
     $tag_ids ?
@@ -115,13 +129,20 @@ sub dbVNGet {
     rand     => 'RANDOM()',
   }->{$o{sort}}, $o{reverse} ? 'DESC' : 'ASC';
 
+  my @group = (
+    qw|v.id vr.title vr.original vr.id|,
+    $uid && $o{what} =~ /wishlist/ ? 'wl.wstat'  : (),
+    $uid && $o{what} =~ /vnlist/   ? 'rl.status' : (),
+  );
+
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
       FROM vn_rev vr
       !s
       !W
+      GROUP BY !s
       ORDER BY !s|,
-    join(', ', @select), join(' ', @join), \@where, $order,
+    join(', ', @select), join(' ', @join), \@where, join(', ', @group), $order,
   );
 
   if($o{what} =~ /relgraph/) {

@@ -46,3 +46,9 @@ UPDATE vn SET c_rating = (SELECT (
     ((SELECT COUNT(vote)::real/COUNT(DISTINCT vid)::real FROM votes) + COUNT(uid)::real)
   ) FROM votes WHERE vid = id AND uid NOT IN(SELECT id FROM users WHERE ign_votes)
 );
+
+
+-- New enum types for user list display in VN list
+
+ALTER TYPE prefs_key ADD VALUE 'vn_list_own'  AFTER 'notify_announce';
+ALTER TYPE prefs_key ADD VALUE 'vn_list_wish' AFTER 'vn_list_own';

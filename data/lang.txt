@@ -12057,6 +12057,30 @@ tr : Görsel romanlara gözat
 uk : Огляд візуальних новел
 it : Sfoglia visual novel
 
+:_vnbrowse_vnlist
+en : User VN list
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_vnbrowse_wishlist
+en : Wishlist
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_vnbrowse_col_score
 en : Score
 ru : Рейтинг

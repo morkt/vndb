@@ -22,11 +22,27 @@ sub list {
     { get => 'q', required => 0, default => '' },
     { get => 'sq', required => 0, default => '' },
     { get => 'fil',required => 0 },
+    { get => 'vnlist', required => 0, default => 2, enum => [ '0', '1' ] }, # 2: use pref
+    { get => 'wish',   required => 0, default => 2, enum => [ '0', '1' ] }, # 2: use pref
   );
   return $self->resNotFound if $f->{_err};
   $f->{q} ||= $f->{sq};
   $f->{fil} //= $self->authPref('filter_vn');
   my %compat = _fil_compat($self);
+  my $uid = $self->authInfo->{id};
+
+  my $read_write_pref = sub {
+    my($type, $pref_name) = @_;
+
+    return 0 if !$uid; # no data to display anyway
+    return $self->authPref($pref_name)?1:0 if $f->{$type} == 2;
+
+    $self->authPref($pref_name => $f->{$type}?1:0) if ($self->authPref($pref_name)?1:0) != $f->{$type};
+    return $f->{$type};
+  };
+
+  $f->{vnlist} = $read_write_pref->('vnlist', 'vn_list_own');
+  $f->{wish}   = $read_write_pref->('wish',   'vn_list_wish');
 
   return $self->resRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')
     if $f->{q} && $f->{q} =~ /^([gvrptudci])([0-9]+)(?:\.([0-9]+))?$/;
@@ -35,7 +51,9 @@ sub list {
   $f->{o} = $f->{s} eq 'tagscore' ? 'd' : 'a' if !$f->{o};
 
   my($list, $np) = $self->filFetchDB(vn => $f->{fil}, \%compat, {
-    what => 'rating',
+    what =>               ' rating' .
+         ($f->{vnlist}  ? ' vnlist'   : '').
+         ($f->{wish}    ? ' wishlist' : ''),
     $char ne 'all' ? ( char => $char ) : (),
     $f->{q} ? ( search => $f->{q} ) : (),
     results => 50,
@@ -50,14 +68,30 @@ sub list {
 
   my $quri = uri_escape($f->{q});
   form action => '/v/all', 'accept-charset' => 'UTF-8', method => 'get';
+
+  # url generator
+  my $url = sub {
+    my($char, $toggle) = @_;
+
+    return '/v/' . $char . "?q=$quri;fil=$f->{fil}" .
+           ($toggle ? ';' . $toggle . '=' . ($f->{$toggle}?0:1)
+                    : '');
+  };
+
   div class => 'mainbox';
    h1 mt '_vnbrowse_title';
    $self->htmlSearchBox('v', $f->{q});
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => "/v/$_?q=$quri;fil=$f->{fil}", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+      a href => $url->($_), $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
     }
    end;
+   if($uid) {
+     p class => 'browseopts';
+      a href => $url->($char, 'vnlist'), $f->{vnlist} ? (class => 'optselected') : (), mt('_vnbrowse_vnlist');
+      a href => $url->($char, 'wish'  ), $f->{wish}   ? (class => 'optselected') : (), mt('_vnbrowse_wishlist');
+     end 'p';
+   }
 
    a id => 'filselect', href => '#v';
     lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';

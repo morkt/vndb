@@ -172,6 +172,8 @@ sub htmlBrowseVN {
     header   => [
       $tagscore ? [ mt('_vnbrowse_col_score'), 'tagscore', undef, 'tc_s' ] : (),
       [ mt('_vnbrowse_col_title'),       'title', undef, $tagscore ? 'tc_t' : 'tc1' ],
+      $f->{vnlist} ? [ '',               0,       undef, 'tc7' ] : (),
+      $f->{wish}   ? [ '',               0,       undef, 'tc8' ] : (),
       [ '',                              0,       undef, 'tc2' ],
       [ '',                              0,       undef, 'tc3' ],
       [ mt('_vnbrowse_col_released'),    'rel',   undef, 'tc4' ],
@@ -189,6 +191,12 @@ sub htmlBrowseVN {
        td class => $tagscore ? 'tc_t' : 'tc1';
         a href => '/v'.$l->{id}, title => $l->{original}||$l->{title}, shorten $l->{title}, 100;
        end;
+       if($f->{vnlist}) {
+         td class => 'tc7';
+          lit sprintf '<b class="%s">%d/%d</b>', $l->{userlist_obtained} == $l->{userlist_all} ? 'done' : 'todo', $l->{userlist_obtained}, $l->{userlist_all} if $l->{userlist_all};
+         end 'td';
+       }
+       td class => 'tc8', defined($l->{wstat}) ? mt "_wish_$l->{wstat}" : '' if $f->{wish};
        td class => 'tc2';
         $_ ne 'oth' && cssicon $_, mt "_plat_$_"
           for (sort split /\//, $l->{c_platforms});
