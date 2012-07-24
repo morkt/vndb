@@ -73,9 +73,8 @@ sub list {
   my $url = sub {
     my($char, $toggle) = @_;
 
-    return '/v/' . $char . "?q=$quri;fil=$f->{fil}" .
-           ($toggle ? ';' . $toggle . '=' . ($f->{$toggle}?0:1)
-                    : '');
+    return "/v/$char?q=$quri;fil=$f->{fil};s=$f->{s};o=$f->{o}" .
+           ($toggle ? ";$toggle=".($f->{$toggle}?0:1) : '');
   };
 
   div class => 'mainbox';
