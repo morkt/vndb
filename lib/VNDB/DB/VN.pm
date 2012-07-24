@@ -88,12 +88,15 @@ sub dbVNGet {
       'JOIN relgraphs vg ON vg.id = v.rgraph' : (),
     $uid && $o{what} =~ /wishlist/ ?
       'LEFT JOIN wlists wl ON wl.vid = v.id AND wl.uid = ' . $uid : (),
-    $uid && $o{what} =~ /vnlist/ ? (
-     'LEFT JOIN rlists rl
-           JOIN releases r     ON rl.rid = r.id
-           JOIN releases_vn rv ON rv.rid = r.latest
-         ON rv.vid = v.id AND rl.uid = ' . $uid,
-       ) : (),
+    $uid && $o{what} =~ /vnlist/ ? ("LEFT JOIN (
+       SELECT irv.vid, COUNT(*) AS userlist_all,
+              SUM(CASE WHEN irl.status = 2 THEN 1 ELSE 0 END) AS userlist_obtained
+         FROM rlists irl
+         JOIN releases ir     ON irl.rid = ir.id
+         JOIN releases_vn irv ON irv.rid = ir.latest
+        WHERE irl.uid = $uid
+        GROUP BY irv.vid
+     ) AS vnlist ON vnlist.vid = v.id") : (),
   );
 
   my $tag_ids = $o{tag_inc} && join ',', ref $o{tag_inc} ? @{$o{tag_inc}} : $o{tag_inc};
@@ -110,10 +113,7 @@ sub dbVNGet {
       '(SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_rating > COALESCE(v.c_rating, 0.0)) AS r_ranking',
     ) : (),
     $uid && $o{what} =~ /wishlist/ ? 'wl.wstat' : (),
-    $uid && $o{what} =~ /vnlist/ ? (
-      'COUNT(rv.vid) AS userlist_all',
-      'SUM(CASE WHEN rl.status = 2 THEN 1 ELSE 0 END) AS userlist_obtained',
-    ) : (),
+    $uid && $o{what} =~ /vnlist/ ? (qw|vnlist.userlist_all vnlist.userlist_obtained|) : (),
     # TODO: optimize this, as it will be very slow when the selected tags match a lot of VNs (>1000)
     $tag_ids ?
       qq|(SELECT AVG(tvh.rating) FROM tags_vn_inherit tvh WHERE tvh.tag IN($tag_ids) AND tvh.vid = v.id AND spoiler <= $o{tagspoil} GROUP BY tvh.vid) AS tagscore| : (),
@@ -129,20 +129,13 @@ sub dbVNGet {
     rand     => 'RANDOM()',
   }->{$o{sort}}, $o{reverse} ? 'DESC' : 'ASC';
 
-  my @group = (
-    qw|v.id vr.title vr.original vr.id|,
-    $uid && $o{what} =~ /wishlist/ ? 'wl.wstat'  : (),
-    $uid && $o{what} =~ /vnlist/   ? 'rl.status' : (),
-  );
-
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
       FROM vn_rev vr
       !s
       !W
-      GROUP BY !s
       ORDER BY !s|,
-    join(', ', @select), join(' ', @join), \@where, join(', ', @group), $order,
+    join(', ', @select), join(' ', @join), \@where, $order,
   );
 
   if($o{what} =~ /relgraph/) {
