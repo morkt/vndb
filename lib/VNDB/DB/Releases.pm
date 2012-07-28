@@ -87,7 +87,7 @@ sub dbReleaseGet {
     resolution  => 'rr.resolution %s,                 rr.patch %2$s, rr.released %1$s, rr.title %1$s',
     voiced      => 'rr.voiced %s,                     rr.patch %2$s, rr.released %1$s, rr.title %1$s',
     ani_ero     => 'rr.ani_story %s, rr.ani_ero %1$s, rr.patch %2$s, rr.released %1$s, rr.title %1$s',
-    released    => 'rr.released %s,                                                    rr.title %1$s',
+    released    => 'rr.released %s, r.id %1$s',
     minage      => 'rr.minage %s,                                    rr.released %1$s, rr.title %1$s',
     notes       => 'rr.notes %s,                                     rr.released %1$s, rr.title %1$s',
   }->{ $o{sort}||'released' }, $o{reverse} ? 'DESC' : 'ASC', !$o{reverse} ? 'DESC' : 'ASC';
