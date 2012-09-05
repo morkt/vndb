@@ -818,11 +818,12 @@ a .icons { cursor: pointer }
 .icons.ps3 { background-position:   0px -84px; }
 .icons.p98 { background-position:   0px -98px; }
 .icons.web { background-position:   0px -112px; }
-.icons.feed { background-position:  0px -126px; }
+.icons.n3d { background-position:   0px -126px; }
+.icons.feed { background-position:  0px -140px; }
 
 .icons.gen.f,
-.icons.gen.b { background-position: -12px -126px; }
-.icons.gen.m { background-position: -26px -126px; }
+.icons.gen.b { background-position: -12px -140px; }
+.icons.gen.m { background-position: -26px -140px; }
 
 .icons.dvd { background-position: -16px   0px; }
 .icons.mac { background-position: -16px -14px; }
@@ -833,6 +834,7 @@ a .icons { cursor: pointer }
 .icons.xb3 { background-position: -16px -84px; }
 .icons.sat { background-position: -16px -98px; }
 .icons.and { background-position: -16px -112px; }
+.icons.psv { background-position: -16px -126px; }
 
 .icons.rtcomplete { background-position: -32px   0px; }
 .icons.rtpartial  { background-position: -32px -14px; }

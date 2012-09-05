@@ -603,6 +603,18 @@ tr : PlayStation 3
 uk : PlayStation 3
 it : PlayStation 3
 
+:_plat_psv
+en : PlayStation Vita
+ru*:
+cs*:
+hu*:
+nl :
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_plat_drc
 en : Dreamcast
 ru : Dreamcast
@@ -650,6 +662,18 @@ es : Nintendo Wii
 tr : Nintendo Wii
 uk : Nintendo Wii
 it : Nintendo Wii
+
+:_plat_n3d
+en : Nintendo 3DS
+ru*:
+cs*:
+hu*:
+nl :
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_plat_xb3
 en : Xbox 360
