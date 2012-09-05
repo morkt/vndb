@@ -420,7 +420,7 @@ sub _form {
     [ static => nolabel => 1, content => sub {
       h2 mt '_redit_form_platforms';
       div class => 'platforms';
-       for my $p (sort @{$self->{platforms}}) {
+       for my $p (@{$self->{platforms}}) {
          span;
           input type => 'checkbox', name => 'platforms', value => $p, id => $p,
             $frm->{platforms} && grep($_ eq $p, @{$frm->{platforms}}) ? (checked => 'checked') : ();
