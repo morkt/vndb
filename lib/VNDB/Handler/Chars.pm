@@ -495,7 +495,7 @@ sub list {
     end;
   }
 
-  @$list && $self->charBrowseTable($list, $np, $f, "/c/$fch?q=$quri");
+  @$list && $self->charBrowseTable($list, $np, $f, "/c/$fch?q=$quri;fil=$f->{fil}");
 
   $self->htmlFooter;
 }
