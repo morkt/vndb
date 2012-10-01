@@ -208,7 +208,7 @@ ru : Индонезийский
 cs*:
 hu*:
 nl : Indonesisch
-de*:
+de : Indonesisch
 es*:
 tr*:
 uk*:
@@ -364,7 +364,7 @@ ru : Украинский
 cs*:
 hu : Ukrán
 nl : Oekraïens
-de*:
+de : Ukrainisch
 es : Ucraniano
 tr : Ukraynaca
 uk : Українська
@@ -561,7 +561,7 @@ ru : PlayStation Portable
 cs : Playstation Portable
 hu :
 nl :
-de : Playstation Portable
+de : PlayStation Portable
 es : PSP
 tr : PlayStation Portable
 uk : PlayStation Portable
@@ -573,7 +573,7 @@ ru : PlayStation 1
 cs : Playstation 1
 hu :
 nl :
-de : Playstation 1
+de : PlayStation 1
 es : Playstation 1
 tr : PlayStation 1
 uk : PlayStation 1
@@ -585,7 +585,7 @@ ru : PlayStation 2
 cs : Playstation 2
 hu :
 nl :
-de : Playstation 2
+de : PlayStation 2
 es : Playstation 2
 tr : PlayStation 2
 uk : PlayStation 2
@@ -597,7 +597,7 @@ ru : PlayStation 3
 cs : Playstation 3
 hu :
 nl :
-de : Playstation 3
+de : PlayStation 3
 es : Playstation 3
 tr : PlayStation 3
 uk : PlayStation 3
@@ -609,7 +609,7 @@ ru*:
 cs*:
 hu*:
 nl :
-de*:
+de : PlayStation Vita
 es*:
 tr*:
 uk*:
@@ -669,7 +669,7 @@ ru*:
 cs*:
 hu*:
 nl :
-de*:
+de : Nintendo 3DS
 es*:
 tr*:
 uk*:
@@ -3549,7 +3549,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Veröffentlichungen
 es*:
 tr*:
 uk*:
@@ -3941,10 +3941,10 @@ nl : VNDB.org is een uitgebreide database voor informatie over visual novels.[br
      die ze nog willen spelen of al gespeeld hebben, en kunnen hier op stemmen.[br]
      [url,/v/all,Browse] gerust eens rond, [url,/u/register,maak een account aan],
      of doe mee aan de discussies op ons [url,/t,forum].
-de : Das Ziel von VNDB.org ist es, eine umfangreiche Datenbank für Informationen rund um Visual Novels zu sein.[br]
-     Die Seite ist wie ein Wiki aufgebaut, das heißt, dass jeder Informationen uneingeschränkt in die Datenbank einfügen oder verändern kann, was uns hilft die größte, genaueste und aktuellste Visual Novel Datenbank im Internet zu erstellen.[br]
-     Registrierte Benutzer können außerdem eine persönliche Liste der Spiele verwalten, die sie spielen möchten oder bereits gespielt haben; Außerdem können sie alle Visual Novels bewerten.[br][br]
-     Du kannst dich gerne [url,/v/all,umsehen], [url,/u/register,einen Account erstellen] oder an den Diskussionen über Visual Novels oder die VNDB in unserem [url,/t,Forum] teilnehmen.
+de : Das Ziel von VNDB.org ist es, eine umfangreiche Datenbank für Informationen rund um Visual Novels zu erstellen.[br]
+     Die Seite ist wie ein Wiki aufgebaut, das heißt, dass jeder Informationen uneingeschränkt in die Datenbank einfügen oder verändern kann, was uns hilft die größte, genauste und aktuellste Visual Novel Datenbank im Internet zu erstellen.[br]
+     Registrierte Benutzer können außerdem eine persönliche Liste der Spiele verwalten, die sie spielen möchten oder bereits gespielt haben. Außerdem können sie alle Visual Novels bewerten.[br][br]
+     Du kannst dich gerne [url,/v/all,umsehen], [url,/u/register,registrieren] oder an den Diskussionen über Visual Novels oder die VNDB in unserem [url,/t,Forum] teilnehmen.
 es : VNDB.org trata de ser una base de datos de informaciones sobre las novelas visuales.[br]
      Esta página esta hecho como una wiki, es decir que cualquiera puede libremente, añadir y contribuir a la página,
      permitiéndonos crear la más grande, precisa y actualizada base de datos sobre las novelas visuales en la web.[br]
@@ -4267,7 +4267,7 @@ ru : Исключить правки выпусков
 cs : Výjmout editace vydání
 hu : Ezen kiadások szerkesztésének a kihagyása
 nl : Verberg wijzigingen van uitgaven
-de : Änderungen an Releases mit einschließen
+de : Änderungen an Veröffentlichungen ausschließen
 es : Excluir editaciones de estrenos
 tr : Yayım düzenlemelerini dışla
 uk : Виключити зміни у релізах
@@ -4279,7 +4279,7 @@ ru : Включить правки выпусков
 cs : Zahrnout editace vydání
 hu : Ezen kiadások szerkesztésének a mellékelése
 nl : Laat wijzigingen van uitgaven zien
-de : Änderungen an Releases aussen vor lassen
+de : Änderungen an Veröffentlichungen einbeziehen
 es : Incluir editaciones de estrenos
 tr : Yayım düzenlemelerini içer
 uk : Включити зміни у релізах
@@ -4924,7 +4924,7 @@ ru : Исходное название
 cs : Originální jméno
 hu : Eredeti név
 nl : Originele naam
-de : Originaler Name
+de : Originalname
 es : Nombre original
 tr : Özgün adı
 uk : Оригінальна назва
@@ -5631,7 +5631,7 @@ ru : Исходное название
 cs : Originální název
 hu : Eredeti cím
 nl : Originele titel
-de : Originaler Titel
+de : Originaltitel
 es : Título original
 tr : Özgün adı
 uk : Оригінальна назва
@@ -11001,7 +11001,7 @@ nl : Hallo [_1],
      vndb.org
 de : Hallo [_1]
 
-     Dein Passwort wurde zurückgesetzt, Du kannst Dich jetzt unter http://vndb.org/ mit den
+     Dein Passwort wurde zurückgesetzt, du kannst Dich jetzt unter http://vndb.org/ mit den
      folgenden Daten einloggen:
 
      Benutzername: [_1]
@@ -11091,7 +11091,7 @@ nl : Je wachtwoord vergeten?
      en je krijgt binnen een paar minuten instructies op je mail om een nieuw wachtwoord in te stellen!
 de : Du hast dein Passwort vergessen und kannst dich deshalb nicht mehr in der VNDB einloggen?
      Keine Sorge! Gib einfach die E-Mail Adresse an, mit der du dich bei der VNDB registriert hast,
-     und wir schicken Dir innerhalb weniger Minuten ein neues Passwort zu!
+     und wir schicken dir innerhalb weniger Minuten ein neues Passwort zu!
 es : ¿Has olvidado tu contraseña y no puedes conectarte a VNDB?
      ¡No te preocupes! Simplemente dinos el correo que has usado para registrarte
      en VNDB, y te enviaremos instrucciones para que pongas una nueva contraseña
@@ -11596,7 +11596,7 @@ ru : Запретить другим участникам видеть мой с
 cs : Nedovolit ostatním lidem vidět můj seznam vizuálních novel ([url,_1,_1]), hlasování ([url,_2,_2]) a wishlist ([url,_3,_3])
 hu : Ne engedd, hogy más emberek lássák a visual novel listámat ([url,_1,_1]), a szavazataimat ([url,_2,_2]) és a kívánságlistámat ([url,_3,_3])
 nl : Sta andere mensen niet toe om mijn visual novel lijst ([url,_1,_1]), stemmen ([url,_2,_2]) en wensenlijst ([url,_3,_3]) te zien
-de : Anderen Nutzen erlauben, meine Visual Novel Liste ([url,_1,_1]) und Wunschliste ([url,_2,_2]) zu betrachten
+de : Anderen Nutzen nicht erlauben, meine Visual Novel Liste ([url,_1,_1]), Bewertungen ([url,_2,_2])  und Wunschliste zu betrachten
 es : No permitir a otras personas ver mi lista de novelas visuales ([url,_1,_1]), votos ([url,_2,_2]) ni "quiero-lista" ([url,_3,_3])
 tr : Diğer kullanıcıların görsel roman listemi ([url,_1,_1]), oylarımı ([url,_2,_2]) ve istek listemi ([url,_3,_3]) görmesine izin verme
 uk : Не дозволяти іншим людям бачити мій список візуальних новел ([url,_1,_1]), голоси ([url,_2,_2]) та список бажань ([url,_3,_3])
@@ -12087,7 +12087,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Benutzer VN Liste
 es*:
 tr*:
 uk*:
@@ -12099,7 +12099,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Wunschliste
 es*:
 tr*:
 uk*:
@@ -12583,7 +12583,7 @@ de : Folgend ist eine Liste von Visual Novels, die dem/den Titel(n) entsprechen.
      Achte besonders auf Einträge, die gelöscht wurden! Um zu sehen warum ein Eintrag
      gelöscht wurde, klicke auf den Titel.[br]
      [br]
-     Um die Visual Novel trotzdem hinzuzufügen, drücke den "Fortsetzen und Duplikate ignorieren" Knopf unten.
+     Um die Visual Novel trotzdem hinzuzufügen, drücke den "Fortsetzen und Duplikate ignorieren" Button unten.
 es : La lista de novelas visuales que aparecen coinciden con el(los) título(s) que has dado.
      Por favor revisa la lista para evitar crear una entrada duplicada.
      ¡Ten especial cuidado con los que han sido eliminados! Para ver porque una entrada
@@ -13827,7 +13827,7 @@ ru : Название
 cs : Název
 hu : Cím
 nl : Titel
-de : Title
+de : Titel
 es : Título
 tr : Adı
 uk : Назва
@@ -14139,7 +14139,7 @@ ru : Дробный
 cs*:
 hu : Egyéb
 nl : Anders
-de*:
+de : Andere
 es : Otro
 tr : Diğer
 uk*:
@@ -14151,7 +14151,7 @@ ru : Пожалуйста, введите ваш голос как значен�
 cs*:
 hu : Kérlek, hogy a szavazatod egy szám legyen 1 és 10 közt. Engedélyezet a tizedespont után egy számjegyet használni, például: 8.6 vagy 7.3
 nl : Geef je stem op als een number tussen 1 en 10. Één getal achter de comma is toegestaan, bijvoorbeeld: 8.6 of 7.3.
-de*:
+de : Bitte geben Sie ihre Bewertung als Zahl zwischen 1 und 10 ein. Eine Stelle nach dem Punkt ist erlaubt, zum Beispiel: 8.6 oder 7.3.
 es : Por favor pon tu voto con un número entre 1 y 10. Se permite un dígito para el decima, por ejemplo: 8.6 o 7.3.
 tr : Lütfen 1 ile 10 arası bir numara girin. Ondalık basamak kullanabilirsiniz (ör: 8.6 veya 7.3).
 uk*:
@@ -14163,7 +14163,7 @@ ru : Неверное число
 cs*:
 hu : Érvénytelen szám.
 nl : Ongeldig nummer.
-de*:
+de : Ungültige Nummer.
 es : Número inválido
 tr : Geçersiz numara.
 uk*:
@@ -14180,7 +14180,7 @@ hu : Te most épp a 10-ből, 1-et adsz ennek a visual novelnek. Ez egy elég ext
      Biztos vagy benne, hogy ezt a visual novel azok közzé lehet sorolni?
 nl : Je staat op het punt om deze visual novel een 1 te geven. Dit is een erg extreme stem, en betekent dat dit spel helemaal niks te bieden geeft, en dat dit het walgelijkste spel is dat je ooit hebt gespeeld.
      Weet je zeker dat die omschrijving klopt met deze visual novel?
-de : Du bist dabei dieser Visual Novel eine 1 von 10 zu geben. Dies ist einer ziemlich extreme Bewertung und bedeutet, dass diese Spiel absolut nichts anzubieten hat und dass es das schlimmste Spiel ist, das du je gespielt hast.
+de : Du bist dabei dieser Visual Novel eine 1 von 10 zu geben. Dies ist einer ziemlich extreme Bewertung und bedeutet, dass dieses Spiel absolut nichts anzubieten hat und dass es das schlimmste Spiel ist, das du je gespielt hast.
      Bist du wirklich sicher, dass diese Visual Novel auf diese Beschreibung zutrifft?
 es : Estás apunto de dar a esta novela visual un 1 sobre 10. Esta es una puntuación extrema, diciendo que este juego no tiene nada que ofrecer, y que es el peor juego que hayas jugado.
      ¿Estás seguro de que esta novela visual coincide con esta descripción?
@@ -14387,7 +14387,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Veröffentlichungen für [_1]
 es*:
 tr*:
 uk*:
@@ -14401,7 +14401,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Alle
 es*:
 tr*:
 uk*:
@@ -14413,7 +14413,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Alle an
 es*:
 tr*:
 uk*:
@@ -14425,7 +14425,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Alle aus
 es*:
 tr*:
 uk*:
@@ -14437,7 +14437,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Tabellenbreite begrenzen
 es*:
 tr*:
 uk*:
@@ -14450,7 +14450,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : NA für Patches
 es*:
 tr*:
 uk*:
@@ -14462,7 +14462,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Unbekannt
 es*:
 tr*:
 uk*:
