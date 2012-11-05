@@ -114,7 +114,7 @@ sub traitpage {
      p; br; txt mt '_traitp_cached'; end;
     end 'div';
     end 'form';
-    @$chars && $self->charBrowseTable($chars, $np, $f, "/i$trait?m=$f->{m}");
+    @$chars && $self->charBrowseTable($chars, $np, $f, "/i$trait?m=$f->{m};fil=$f->{fil}");
   }
 
   $self->htmlFooter;
