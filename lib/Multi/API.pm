@@ -162,6 +162,11 @@ sub filtertosql {
   # type=bool and no processing done? convert bool to what DBD::Pg wants
   $values[0] = $values[0] ? 1 : 0 if $type eq 'bool' && !$o{process};
 
+  # Ensure that integers stay within their range
+  for($o{range} ? @values : ()) {
+    return cerr $c, filter => 'Integer out of range', %e if $_ < $o{range}[0] || $_ > $o{range}[1];
+  }
+
   # type=str, int and bool are now quite simple
   if(!ref $value) {
     $sql =~ s/:value:/push @$p, $values[0]; '?'/eg;
@@ -344,7 +349,7 @@ sub client_input {
       || exists($arg->[3]) && ref($arg->[3]) ne 'HASH';
     my $opt = $arg->[3] || {};
     return cerr $c, badarg => 'Invalid argument for the "page" option', field => 'page'
-      if defined($opt->{page}) && (ref($opt->{page}) || $opt->{page} !~ /^\d+$/ || $opt->{page} < 1);
+      if defined($opt->{page}) && (ref($opt->{page}) || $opt->{page} !~ /^\d+$/ || $opt->{page} < 1 || $opt->{page} > 1e3);
     return cerr $c, badarg => 'Invalid argument for the "results" option', field => 'results'
       if defined($opt->{results}) && (ref($opt->{results}) || $opt->{results} !~ /^\d+$/ || $opt->{results} < 1 || $opt->{results} > $_[HEAP]{max_results});
     return cerr $c, badarg => '"reverse" option must be boolean', field => 'reverse'
@@ -448,8 +453,8 @@ sub get_vn {
   my @placeholders;
   my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
     [ 'id',
-      [ 'int' => 'v.id :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|} ],
-      [ inta  => 'v.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, join => ',' ],
+      [ 'int' => 'v.id :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, range => [1,1e6] ],
+      [ inta  => 'v.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, range => [1,1e6], join => ',' ],
     ], [ 'title',
       [ str   => 'vr.title :op: :value:', {qw|= =  != <>|} ],
       [ str   => 'vr.title ILIKE :value:', {'~',1}, process => \'like' ],
@@ -470,8 +475,8 @@ sub get_vn {
       [ str   => ':op: (v.c_languages && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, process => \'lang' ],
       [ stra  => ':op: (v.c_languages && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, join => ',', process => \'lang' ],
     ], [ 'orig_lang',
-      [ str   => ':op: (v.c_olang && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'} ],
-      [ stra  => ':op: (v.c_olang && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, join => ',' ],
+      [ str   => ':op: (v.c_olang && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, process => \'lang' ],
+      [ stra  => ':op: (v.c_olang && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, join => ',', process => \'lang' ],
     ], [ 'search',
       [ str   => '(:value:)', {'~',1}, split => \&normalize_query,
                   join => ' AND ', serialize => 'v.c_search LIKE :value:', process => \'like' ],
@@ -584,12 +589,12 @@ sub get_release {
   my @placeholders;
   my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
     [ 'id',
-      [ 'int' => 'r.id :op: :value:', {qw|= =  != <>  > >  >= >=  < <  <= <=|} ],
-      [ inta  => 'r.id :op:(:value:)', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',' ],
+      [ 'int' => 'r.id :op: :value:', {qw|= =  != <>  > >  >= >=  < <  <= <=|}, range => [1,1e6] ],
+      [ inta  => 'r.id :op:(:value:)', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',', range => [1,1e6] ],
     ], [ 'vn',
-      [ 'int' => 'rr.id IN(SELECT rv.rid FROM releases_vn rv WHERE rv.vid = :value:)', {'=',1} ],
+      [ 'int' => 'rr.id IN(SELECT rv.rid FROM releases_vn rv WHERE rv.vid = :value:)', {'=',1}, range => [1,1e6] ],
     ], [ 'producer',
-      [ 'int' => 'rr.id IN(SELECT rp.rid FROM releases_producers rp WHERE rp.pid = :value:)', {'=',1} ],
+      [ 'int' => 'rr.id IN(SELECT rp.rid FROM releases_producers rp WHERE rp.pid = :value:)', {'=',1}, range => [1,1e6] ],
     ], [ 'title',
       [ str   => 'rr.title :op: :value:', {qw|= =  != <>|} ],
       [ str   => 'rr.title ILIKE :value:', {'~',1}, process => \'like' ],
@@ -607,7 +612,7 @@ sub get_release {
       [ str   => 'rr.type :op: :value:', {qw|= =  != <>|},
         process => sub { !grep($_ eq $_[0], @{$VNDB::S{release_types}}) ? \'No such release type' : $_[0] } ],
     ], [ 'gtin',
-      [ 'int' => 'rr.gtin :op: :value:', {qw|= =  != <>|} ],
+      [ 'int' => 'rr.gtin :op: :value:', {qw|= =  != <>|}, process => sub { length($_[0]) > 14 ? \'Too long GTIN code' : $_[0] } ],
     ], [ 'catalog',
       [ str   => 'rr.catalog :op: :value:', {qw|= =  != <>|} ],
     ], [ 'languages',
@@ -748,8 +753,8 @@ sub get_producer {
   my @placeholders;
   my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
     [ 'id',
-      [ 'int' => 'p.id :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|} ],
-      [ inta  => 'p.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, join => ',' ],
+      [ 'int' => 'p.id :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, range => [1,1e6] ],
+      [ inta  => 'p.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, join => ',', range => [1,1e6] ],
     ], [ 'name',
       [ str   => 'pr.name :op: :value:', {qw|= =  != <>|} ],
       [ str   => 'pr.name ILIKE :value:', {'~',1}, process => \'like' ],
