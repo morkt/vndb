@@ -935,7 +935,116 @@ however still required.<br />
   <td>uid</td>
   <td>integer</td>
   <td>=</td>
-  <td>This filter must be present, and must currently must be '0' (= logged in user)</td>
+  <td>This filter must be present, and currently must be '0' (= logged in user)</td>
+ </tr>
+</table>
+
+:SUBSUB:get vnlist
+<p>Provides access to the VN list of the logged in user. As such, this command is only available when logged in as a user.</p>
+<p>Returned members:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Member</td>
+  <td style="width: 50px">Flag</td>
+  <td style="width: 90px">Type</td>
+  <td style="width: 40px">null</td>
+  <td>Description</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>vn</td>
+  <td>basic</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>Visual Novel ID</td>
+ </tr>
+ <tr>
+  <td>status</td>
+  <td>basic</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>0=Unknown, 1=playing, 2=finished, 3=stalled, 4=dropped.</td>
+ </tr>
+ <tr class="odd">
+  <td>added</td>
+  <td>basic</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>Unix timestamp of when this item has been added.</td>
+ </tr>
+ <tr>
+  <td>notes</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>User-set notes</td>
+ </tr>
+</table>
+<p>The returned list is always sorted on the 'vn' field.</p><br />
+
+<p>The following filters are recognised:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Field</td>
+  <td style="width: 90px">Value</td>
+  <td style="width: 90px">Operators</td>
+  <td>&nbsp;</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>uid</td>
+  <td>integer</td>
+  <td>=</td>
+  <td>This filter must be present, and currently must be '0' (= logged in user)</td>
+ </tr>
+</table>
+
+:SUBSUB:get wishlist
+<p>Provides access to the wish list of the logged in user. As such, this command is only available when logged in as a user.</p>
+<p>Returned members:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Member</td>
+  <td style="width: 50px">Flag</td>
+  <td style="width: 90px">Type</td>
+  <td style="width: 40px">null</td>
+  <td>Description</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>vn</td>
+  <td>basic</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>Visual Novel ID</td>
+ </tr>
+ <tr>
+  <td>priority</td>
+  <td>basic</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>0=high, 1=medium, 2=low, 3=blacklist.</td>
+ </tr>
+ <tr class="odd">
+  <td>added</td>
+  <td>basic</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>Unix timestamp of when this item has been added.</td>
+ </tr>
+</table>
+<p>The returned list is always sorted on the 'vn' field.</p><br />
+
+<p>The following filters are recognised:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Field</td>
+  <td style="width: 90px">Value</td>
+  <td style="width: 90px">Operators</td>
+  <td>&nbsp;</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>uid</td>
+  <td>integer</td>
+  <td>=</td>
+  <td>This filter must be present, and currently must be '0' (= logged in user)</td>
  </tr>
 </table>
 
@@ -987,7 +1096,7 @@ however still required.<br />
 </p>
 <b>2.23</b>
 <ul>
- <li>Added 'get votelist'</li>
+ <li>Added new 'get' types: votelist, vnlist and wishlist</li>
 </ul>
 <b>2.15</b>
 <ul>

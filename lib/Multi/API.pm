@@ -41,7 +41,8 @@ sub spawn {
       $p => [qw|
         _start shutdown log server_error client_connect client_error client_input
         login login_res get_results get_vn get_vn_res get_release get_release_res
-        get_producer get_producer_res get_votelist get_votelist_res admin
+        get_producer get_producer_res get_votelist get_votelist_res get_vnlist
+        get_vnlist_res get_wishlist get_wishlist_res admin
       |],
     ],
     heap => {
@@ -365,7 +366,7 @@ sub client_input {
       filters => $arg->[2],
       opt => $opt,
     );
-    return cerr $c, 'gettype', "Unknown get type: '$arg->[0]'" if $arg->[0] !~ /^(?:vn|release|producer|votelist)$/;
+    return cerr $c, 'gettype', "Unknown get type: '$arg->[0]'" if $arg->[0] !~ /^(?:vn|release|producer|votelist|vnlist|wishlist)$/;
     return cerr $c, needlogin => 'Not logged in as a user' if $arg->[0] =~ /^list$/ && !$c->{uid};
     return $_[KERNEL]->yield("get_$arg->[0]", \%obj);
   }
@@ -874,6 +875,89 @@ sub get_votelist_res {
   $get->{list} = $res;
 
   $_[KERNEL]->yield(get_results => { %$get, type => 'votelist' });
+}
+
+
+sub get_vnlist {
+  my $get = $_[ARG0];
+
+  return cerr $get->{c}, getinfo => "Unknown info flag '$_'", flag => $_
+    for (grep !/^(basic)$/, @{$get->{info}});
+
+  my $select = "vid AS vn, status, extract('epoch' from added) AS added, notes";
+
+  my @placeholders;
+  my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
+    [ 'uid',
+      [ 'int' => 'uid :op: :value:', {qw|= =|}, process => sub { $_[0] eq '0' ? $get->{c}{uid} : \'uid filter must be 0' } ],
+    ]
+  ];
+  my $last = sqllast $get, 'vn', { vn => 'vid %s' };
+  return if !$where || !$last;
+
+  $_[KERNEL]->post(pg => query =>
+    qq|SELECT $select FROM vnlists WHERE $where $last|,
+    \@placeholders, 'get_vnlist_res', $get);
+}
+
+
+sub get_vnlist_res {
+  my($num, $res, $get, $time) = (@_[ARG0..$#_]);
+
+  $get->{time} += $time;
+  $get->{queries}++;
+
+  for (@$res) {
+    $_->{vn}*=1;
+    $_->{status}*=1;
+    $_->{added} = int $_->{added};
+    $_->{notes} ||= undef;
+  }
+  $get->{more} = pop(@$res)&&1 if @$res > $get->{opt}{results};
+  $get->{list} = $res;
+
+  $_[KERNEL]->yield(get_results => { %$get, type => 'vnlist' });
+}
+
+
+sub get_wishlist {
+  my $get = $_[ARG0];
+
+  return cerr $get->{c}, getinfo => "Unknown info flag '$_'", flag => $_
+    for (grep !/^(basic)$/, @{$get->{info}});
+
+  my $select = "vid AS vn, wstat AS priority, extract('epoch' from added) AS added";
+
+  my @placeholders;
+  my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
+    [ 'uid',
+      [ 'int' => 'uid :op: :value:', {qw|= =|}, process => sub { $_[0] eq '0' ? $get->{c}{uid} : \'uid filter must be 0' } ],
+    ]
+  ];
+  my $last = sqllast $get, 'vn', { vn => 'vid %s' };
+  return if !$where || !$last;
+
+  $_[KERNEL]->post(pg => query =>
+    qq|SELECT $select FROM wlists WHERE $where $last|,
+    \@placeholders, 'get_wishlist_res', $get);
+}
+
+
+sub get_wishlist_res {
+  my($num, $res, $get, $time) = (@_[ARG0..$#_]);
+
+  $get->{time} += $time;
+  $get->{queries}++;
+
+  for (@$res) {
+    $_->{vn}*=1;
+    $_->{priority}*=1;
+    $_->{added} = int $_->{added};
+  }
+  $get->{more} = pop(@$res)&&1 if @$res > $get->{opt}{results};
+  $get->{list} = $res;
+
+  $_[KERNEL]->yield(get_results => { %$get, type => 'wishlist' });
 }
 
 
