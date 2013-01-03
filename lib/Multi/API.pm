@@ -41,7 +41,7 @@ sub spawn {
       $p => [qw|
         _start shutdown log server_error client_connect client_error client_input
         login login_res get_results get_vn get_vn_res get_release get_release_res
-        get_producer get_producer_res admin
+        get_producer get_producer_res get_votelist get_votelist_res admin
       |],
     ],
     heap => {
@@ -365,7 +365,8 @@ sub client_input {
       filters => $arg->[2],
       opt => $opt,
     );
-    return cerr $c, 'gettype', "Unknown get type: '$arg->[0]'" if $arg->[0] !~ /^(?:vn|release|producer)$/;
+    return cerr $c, 'gettype', "Unknown get type: '$arg->[0]'" if $arg->[0] !~ /^(?:vn|release|producer|votelist)$/;
+    return cerr $c, needlogin => 'Not logged in as a user' if $arg->[0] =~ /^list$/ && !$c->{uid};
     return $_[KERNEL]->yield("get_$arg->[0]", \%obj);
   }
 
@@ -395,7 +396,7 @@ sub login {
 
   if(exists $arg->{username}) {
     # fetch user info
-    $_[KERNEL]->post(pg => query => "SELECT salt, encode(passwd, 'hex') as passwd FROM users WHERE username = ?",
+    $_[KERNEL]->post(pg => query => "SELECT id, salt, encode(passwd, 'hex') as passwd FROM users WHERE username = ?",
       [ $arg->{username} ], 'login_res', [ $c, $arg ]);
   } else {
     $c->{client} = $arg->{client};
@@ -415,13 +416,14 @@ sub login_res { # num, res, [ c, arg ]
   my $encrypted = sha256_hex($VNDB::S{global_salt}.encode_utf8($arg->{password}).encode_utf8($res->[0]{salt}));
   return cerr $c, auth => "Wrong password for user '$arg->{username}'" if lc($encrypted) ne lc($res->[0]{passwd});
 
+  $c->{uid} = $res->[0]{id};
   $c->{username} = $arg->{username};
   $c->{client} = $arg->{client};
   $c->{clientver} = $arg->{clientver};
 
   $c->{wheel}->put(['ok']);
   $_[KERNEL]->yield(log => $c,
-    'Successful login by %s using client "%s" ver. %s', $arg->{username}, $arg->{client}, $arg->{clientver});
+    'Successful login by %s (%s) using client "%s" ver. %s', $arg->{username}, $c->{uid}, $arg->{client}, $arg->{clientver});
 }
 
 
@@ -831,6 +833,47 @@ sub get_producer_res {
   # send results
   delete $_->{latest} for @{$get->{list}};
   $_[KERNEL]->yield(get_results => { %$get, type => 'producer' });
+}
+
+
+sub get_votelist {
+  my $get = $_[ARG0];
+
+  return cerr $get->{c}, getinfo => "Unknown info flag '$_'", flag => $_
+    for (grep !/^(basic)$/, @{$get->{info}});
+
+  my $select = "vid AS vn, vote, extract('epoch' from date) AS added";
+
+  my @placeholders;
+  my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
+    [ 'uid',
+      [ 'int' => 'uid :op: :value:', {qw|= =|}, process => sub { $_[0] eq '0' ? $get->{c}{uid} : \'uid filter must be 0' } ],
+    ]
+  ];
+  my $last = sqllast $get, 'vn', { vn => 'vid %s' };
+  return if !$where || !$last;
+
+  $_[KERNEL]->post(pg => query =>
+    qq|SELECT $select FROM votes WHERE $where $last|,
+    \@placeholders, 'get_votelist_res', $get);
+}
+
+
+sub get_votelist_res {
+  my($num, $res, $get, $time) = (@_[ARG0..$#_]);
+
+  $get->{time} += $time;
+  $get->{queries}++;
+
+  for (@$res) {
+    $_->{vn}*=1;
+    $_->{vote}*=1;
+    $_->{added} = int $_->{added};
+  }
+  $get->{more} = pop(@$res)&&1 if @$res > $get->{opt}{results};
+  $get->{list} = $res;
+
+  $_[KERNEL]->yield(get_results => { %$get, type => 'votelist' });
 }
 
 
