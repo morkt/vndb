@@ -7,6 +7,9 @@
   programmers. This API allows programs and websites to access (parts of) the
   VNDB database without actually visiting the website.
  <br /><br />
+ In addition to this real-time API, we also provide some information in the
+ form of <a href="/d14">database dumps</a>.
+ <br /><br />
 </p>
 
 <b>Design goals</b>
@@ -453,7 +456,11 @@ however still required.<br />
    score (number between 0 and 3),<br />
    spoiler level (integer, 0=none, 1=minor, 2=major)<br />
    Only tags with a positive score are included. Note that this list may be
-   relatively large - more than 50 tags for a VN is quite possible.
+   relatively large - more than 50 tags for a VN is quite possible.<br />
+   General information for each tag is available in the <a href="/d14.2">tags
+   dump</a>. Keep in mind that it is possible that a tag has only recently been
+   added and is not available in the dump yet, though this doesn't happen
+   often.
   </td>
  </tr>
 </table>
