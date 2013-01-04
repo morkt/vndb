@@ -441,6 +441,21 @@ however still required.<br />
    "original", string, original/official title, can be <b>null</b>.
   </td>
  </tr>
+ <tr>
+  <td>tags</td>
+  <td>tags</td>
+  <td>array of arrays</td>
+  <td>no</td>
+  <td>
+   (Possibly empty) list of tags linked to this VN. Each tag is represented as
+   an array with three elements:<br />
+   tag id (integer),<br />
+   score (number between 0 and 3),<br />
+   spoiler level (integer, 0=none, 1=minor, 2=major)<br />
+   Only tags with a positive score are included. Note that this list may be
+   relatively large - more than 50 tags for a VN is quite possible.
+  </td>
+ </tr>
 </table>
 <p>Sorting is possible on the 'id', 'title' and 'released' fields.</p><br />
 
@@ -1223,6 +1238,7 @@ however still required.<br />
  <li>Added new 'get' types: votelist, vnlist and wishlist</li>
  <li>Added 'set' command, with types: votelist, vnlist and wishlist</li>
  <li>New error id: 'settype'</li>
+ <li>Added "tags" flag and member to "get vn"</li>
 </ul>
 <b>2.15</b>
 <ul>

@@ -463,7 +463,7 @@ sub get_vn {
   my $get = $_[ARG0];
 
   return cerr $get->{c}, getinfo => "Unknown info flag '$_'", flag => $_
-    for (grep !/^(basic|details|anime|relations)$/, @{$get->{info}});
+    for (grep !/^(basic|details|anime|relations|tags)$/, @{$get->{info}});
 
   my $select = 'v.id, v.latest';
   $select .= ', vr.title, vr.original, v.c_released, v.c_languages::text[], v.c_olang::text[], v.c_platforms' if grep /basic/, @{$get->{info}};
@@ -576,6 +576,13 @@ sub get_vn_res {
     $get->{relations} = 1;
   }
 
+  elsif($get->{type} eq 'tags') {
+    for my $i (@{$get->{list}}) {
+      $i->{tags} = [ map [ $_->{id}*1, 1*sprintf('%.2f', $_->{score}), 1*sprintf('%.0f', $_->{spoiler}) ], grep $i->{id} == $_->{vid}, @$res ];
+    }
+    $get->{tags} = 1;
+  }
+
   # fetch more results
   my @ids = map $_->{latest}, @{$get->{list}};
   my $ids = join ',', map '?', @ids;
@@ -589,6 +596,11 @@ sub get_vn_res {
     SELECT vl.vid1, v.id, vl.relation, vr.title, vr.original FROM vn_relations vl
       JOIN vn v ON v.id = vl.vid2 JOIN vn_rev vr ON vr.id = v.latest WHERE vl.vid1 IN($ids) AND NOT v.hidden|,
     \@ids, 'get_vn_res', { %$get, type => 'relations' });
+
+  @ids && !$get->{tags} && grep(/tags/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+    SELECT vid, tag AS id, avg(CASE WHEN ignore THEN NULL ELSE vote END) as score, COALESCE(avg(CASE WHEN ignore THEN NULL ELSE spoiler END), 0) as spoiler
+      FROM tags_vn tv WHERE vid IN($ids) GROUP BY vid, id HAVING avg(CASE WHEN ignore THEN NULL ELSE vote END) > 0|,
+    [map $_->{id}, @{$get->{list}}], 'get_vn_res', { %$get, type => 'tags' });
 
   # send results
   delete $_->{latest} for @{$get->{list}};
