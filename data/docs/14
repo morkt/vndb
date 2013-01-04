@@ -21,63 +21,54 @@
 <table style="margin: 5px 2%; width: 95%">
  <thead><tr>
   <td style="width: 80px">Member</td>
-  <td style="width: 50px">Flag</td>
   <td style="width: 90px">Type</td>
   <td style="width: 40px">null</td>
   <td>Description</td>
  </tr></thead>
  <tr class="odd">
   <td>id</td>
-  <td>-</td>
   <td>integer</td>
   <td>no</td>
   <td>Tag ID</td>
  </tr>
  <tr>
   <td>name</td>
-  <td>basic</td>
   <td>string</td>
   <td>no</td>
   <td>Tag name</td>
  </tr>
  <tr class="odd">
   <td>description</td>
-  <td>basic</td>
   <td>string</td>
   <td>no</td>
   <td>Can include formatting codes as described in <a href="/d9.3">d9.3</a>.</td>
  </tr>
  <tr>
   <td>meta</td>
-  <td>basic</td>
   <td>bool</td>
   <td>no</td>
   <td>Whether this is a meta tag or not.</td>
  </tr>
  <tr class="odd">
   <td>vns</td>
-  <td>basic</td>
   <td>integer</td>
   <td>no</td>
   <td>Number of tagged VNs (including child tags)</td>
  </tr>
  <tr>
   <td>cat</td>
-  <td>basic</td>
   <td>string</td>
   <td>no</td>
   <td>Tag category/classification: "cont" for content, "ero" for sexual stuff, and "tech" for technical details.</td>
  </tr>
  <tr class="odd">
   <td>aliases</td>
-  <td>basic</td>
   <td>array of strings</td>
   <td>no</td>
   <td>(Possibly empty) list of alternative names.</td>
  </tr>
  <tr>
   <td>parents</td>
-  <td>basic</td>
   <td>array of integers</td>
   <td>no</td>
   <td>List of parent tags (empty for root tags).</td>
