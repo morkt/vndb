@@ -1142,6 +1142,28 @@ however still required.<br />
  visible when the web interface is used.
 </p>
 
+:SUBSUB:set wishlist
+<p>
+ This command facilitates adding, removing and modifying VNs from your
+ wishlist. The <i>identifier</i> argument is the visual novel ID, and the
+ following fields are recognized:
+</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Field</td>
+  <td style="width: 90px">Type</td>
+  <td>Description</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>priority</td>
+  <td>integer</td>
+  <td>Same as the 'priority' member returned by 'get wishlist'.</td>
+ </tr>
+</table>
+<p>
+ Sames notes about the 'added' member for 'set votelist' applies here.<br />
+</p>
+
 
 
 :SUB:The 'error' response
@@ -1192,7 +1214,8 @@ however still required.<br />
 <b>2.23</b>
 <ul>
  <li>Added new 'get' types: votelist, vnlist and wishlist</li>
- <li>Added 'set' command, with types: votelist, vnlist</li>
+ <li>Added 'set' command, with types: votelist, vnlist and wishlist</li>
+ <li>New error id: 'settype'<li>
 </ul>
 <b>2.15</b>
 <ul>
