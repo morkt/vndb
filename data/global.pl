@@ -116,6 +116,7 @@ our %M = (
   log_dir   => $ROOT.'/data/log',
   modules   => {
     #API         => {},  # disabled by default, not really needed
+    #APIDump     => {},
     Feed        => {},
     RG          => {},
     Image       => {},

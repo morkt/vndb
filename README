@@ -34,6 +34,9 @@ Requirements
   util/multi.pl:
     API:
       JSON::XS
+    APIDump:
+      JSON::XS
+      PerlIO::gzip
     Core:
       DBI
       DBD::Pg
