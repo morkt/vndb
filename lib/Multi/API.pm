@@ -42,7 +42,7 @@ sub spawn {
         _start shutdown log server_error client_connect client_error client_input
         login login_res get_results get_vn get_vn_res get_release get_release_res
         get_producer get_producer_res get_votelist get_votelist_res get_vnlist
-        get_vnlist_res get_wishlist get_wishlist_res admin
+        get_vnlist_res get_wishlist get_wishlist_res set_votelist set_return admin
       |],
     ],
     heap => {
@@ -369,6 +369,21 @@ sub client_input {
     return cerr $c, 'gettype', "Unknown get type: '$arg->[0]'" if $arg->[0] !~ /^(?:vn|release|producer|votelist|vnlist|wishlist)$/;
     return cerr $c, needlogin => 'Not logged in as a user' if $arg->[0] =~ /^list$/ && !$c->{uid};
     return $_[KERNEL]->yield("get_$arg->[0]", \%obj);
+  }
+
+  # handle set command
+  if($cmd eq 'set') {
+    return cerr $c, parse => 'Invalid arguments to set command' if @$arg < 2 || @$arg > 3 || ref($arg->[0])
+      || ref($arg->[1]) || $arg->[1] !~ /^\d+$/ || $arg->[1] < 1 || $arg->[1] > 1e6 || (defined($arg->[2]) && ref($arg->[2]) ne 'HASH');
+    return cerr $c, 'settype', "Unknown set type: '$arg->[0]'" if $arg->[0] !~ /^votelist$/;
+    return cerr $c, needlogin => 'Not logged in as a user' if !$c->{uid};
+    my %obj = (
+      c => $c,
+      type => $arg->[0],
+      id => $arg->[1],
+      opt => $arg->[2]
+    );
+    return $_[KERNEL]->yield("set_$arg->[0]", \%obj);
   }
 
   # unknown command
@@ -958,6 +973,37 @@ sub get_wishlist_res {
   $get->{list} = $res;
 
   $_[KERNEL]->yield(get_results => { %$get, type => 'wishlist' });
+}
+
+
+sub set_return {
+  my($num, $res, $obj, $time) = (@_[ARG0..$#_]);
+
+  # update sql throttle
+  $obj->{c}{throttle}[1] += $time*$_[HEAP]{throttle_sql}[0];
+
+  # send an 'ok'
+  $obj->{c}{wheel}->put(['ok']);
+  my $args = $obj->{opt} ? JSON::XS->new->encode($obj->{opt}) : 'delete';
+  $_[KERNEL]->yield(log => $obj->{c}, 'T:%4.0fms  set %s %s %s',
+    $time*1000, $obj->{type}, $obj->{id}, $args);
+}
+
+
+sub set_votelist {
+  my $obj = $_[ARG0];
+
+  return $_[KERNEL]->post(pg => do => 'DELETE FROM votes WHERE uid = ? AND vid = ?',
+    [ $obj->{c}{uid}, $obj->{id} ], 'set_return', $obj) if !$obj->{opt};
+
+  my $vote = $obj->{opt}{vote};
+  return cerr $obj->{c}, missing => 'No vote given', field => 'vote' if !defined $vote;
+  return cerr $obj->{c}, badarg => 'Invalid vote', field => 'vote' if $vote !~ /^\d+$/ || $vote < 10 || $vote > 100;
+
+  return $_[KERNEL]->post(pg => do => q{
+      WITH upsert AS (UPDATE votes SET vote = ? WHERE uid = ? AND vid = ? RETURNING vid)
+      INSERT INTO votes (uid, vid, vote) SELECT ?, ?, ? WHERE EXISTS(SELECT 1 FROM vn v WHERE v.id = ?) AND NOT EXISTS(SELECT 1 FROM upsert)
+    }, [ $vote, $obj->{c}{uid}, $obj->{id}, $obj->{c}{uid}, $obj->{id}, $vote, $obj->{id} ], 'set_return', $obj);
 }
 
 

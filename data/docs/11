@@ -1049,6 +1049,69 @@ however still required.<br />
 </table>
 
 
+:SUB:The 'set' command
+<p>
+ The set command can be used to modify stuff in the database. It can only be
+ used when logged in as a user. The command has the following syntax:
+</p>
+<pre>
+ set <b class="standout">type id fields</b>
+</pre>
+<p>
+ Here, <i>type</i> is similar to the type argument to the 'get' command,
+ <i>id</i> is the (integer) identifier of the database entry to change, and
+ <i>fields</i> is an object with the fields to set or modify. If the
+ <i>fields</i> object is not present, the set command works as a 'delete'. The
+ interpretation of the <i>id</i> and <i>fields</i> arguments depend on the
+ <i>type</i>, and are documented in the sections below.<br />
+ <br />
+ But before that, let me present some examples to get a feel on what the
+ previous paragraph meant. The following example adds a '10' vote on <a
+ href="/v17">v17</a>, or changes the vote to a 10 if a previous vote was
+ already present:
+</p>
+<pre>
+ set votelist 17 {"vote":100}
+</pre>
+<p>And here's how to remove the previous vote:</p>
+<pre>
+ set votelist 17
+</pre>
+<p>
+ 'set' replies with a simple 'ok' on success, or with an 'error' (see below) on
+ failure. Note that, due to my lazyness, no error is currently returned if the
+ identifier does not exist. So voting on a VN that does not exist will return
+ an 'ok', but no vote is actually added. This behaviour may change in the
+ future. Note that this API doesn't care whether the VN has been deleted or
+ not, so you can manage votes and stuff for deleted VNs (Which isn't very
+ helpful, because 'get vn' won't return a thing for deleted VNs).
+</p>
+
+:SUBSUB:set votelist
+<p>
+ This command facilitates adding, removing and modifying votes. The
+ <i>identifier</i> argument is the visual novel ID, and the following fields
+ are recognized:
+</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Field</td>
+  <td style="width: 90px">Type</td>
+  <td>Description</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>vote</td>
+  <td>integer</td>
+  <td>Same as the 'vote' member returned by 'get votelist', in the range 10 to 100. This field has no default; it must always be present.</td>
+ </tr>
+</table>
+<p>
+ The 'added' member returned by 'get votelist' is, as its name implies, only
+ set when the vote is added. Changing an existing vote will not update the
+ 'added' field.
+</p>
+
+
 
 :SUB:The 'error' response
 <p>
@@ -1068,7 +1131,7 @@ however still required.<br />
  defined:
 </p>
 <dl>
- <dt>parse</dt><dd>Syntax error or unknown command.</dd>
+ <dt>parse</dt><dd>Syntax error, unknown command or invalid argument type.</dd>
  <dt>missing</dt><dd>A JSON object argument is missing a required member. The name of which is given in the additional "field" member.</dd>
  <dt>badarg</dt><dd>A JSON value is of the wrong type or in the wrong format. The name of the incorrect field is given in a "field" member.</dd>
  <dt>needlogin</dt><dd>Need to be logged in to issue this command.</dd>
@@ -1085,6 +1148,7 @@ however still required.<br />
  <dt>gettype</dt><dd>(get) Unknown type argument to the 'get' command.</dd>
  <dt>getinfo</dt><dd>(get) Unknown info flag to the 'get' command. The name of the unrecognised flag is given in an additional "flag" member.</dd>
  <dt>filter</dt><dd>(get) Unknown filter field or invalid combination of field/operator/argument type. Includes three additional members: "field", "op" and "value" of the incorrect expression.</dd>
+ <dt>settype</dt><dd>(set) Unknown type argument to the 'set' command.</dd>
 </dl>
 
 
@@ -1097,6 +1161,7 @@ however still required.<br />
 <b>2.23</b>
 <ul>
  <li>Added new 'get' types: votelist, vnlist and wishlist</li>
+ <li>Added 'set' command, with types: votelist</li>
 </ul>
 <b>2.15</b>
 <ul>
