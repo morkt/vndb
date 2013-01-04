@@ -1079,7 +1079,7 @@ however still required.<br />
 </pre>
 <p>
  'set' replies with a simple 'ok' on success, or with an 'error' (see below) on
- failure. Note that, due to my lazyness, no error is currently returned if the
+ failure. Note that, due to my laziness, no error is currently returned if the
  identifier does not exist. So voting on a VN that does not exist will return
  an 'ok', but no vote is actually added. This behaviour may change in the
  future. Note that this API doesn't care whether the VN has been deleted or
@@ -1109,6 +1109,37 @@ however still required.<br />
  The 'added' member returned by 'get votelist' is, as its name implies, only
  set when the vote is added. Changing an existing vote will not update the
  'added' field.
+</p>
+
+:SUBSUB:set vnlist
+<p>
+ This command facilitates adding, removing and modifying your VN list. The
+ <i>identifier</i> argument is the visual novel ID, and the following fields
+ are recognized:
+</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Field</td>
+  <td style="width: 90px">Type</td>
+  <td>Description</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>status</td>
+  <td>integer</td>
+  <td>Same as the 'status' member returned by 'get vnlist'. Default: 0</td>
+ </tr>
+ <tr>
+  <td>notes</td>
+  <td>string</td>
+  <td>Same as the 'notes' member returned by 'get vnlist'. An empty string is considered equivalent to 'null'. A newline is currently not allowed because the web interface won't handle them well. Default: null.</td>
+ </tr>
+</table>
+<p>
+ Sames notes about the 'added' member for 'set votelist' applies here.<br />
+ Also note that, when removing a vnlist item, any releases associated with the
+ VN will be removed from the users' list as well. The release list
+ functionality is not currently exposed to the API, so this will only be
+ visible when the web interface is used.
 </p>
 
 
@@ -1161,7 +1192,7 @@ however still required.<br />
 <b>2.23</b>
 <ul>
  <li>Added new 'get' types: votelist, vnlist and wishlist</li>
- <li>Added 'set' command, with types: votelist</li>
+ <li>Added 'set' command, with types: votelist, vnlist</li>
 </ul>
 <b>2.15</b>
 <ul>
