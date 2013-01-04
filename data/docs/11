@@ -938,6 +938,11 @@ however still required.<br />
   <td>This filter must be present, and currently must be '0' (= logged in user)</td>
  </tr>
 </table>
+<p>
+ Note: It's possible that a user has voted on a VN that has been deleted. The
+ vote is still included this list, but a 'get vn' command on its id will not
+ return anything.
+</p>
 
 :SUBSUB:get vnlist
 <p>Provides access to the VN list of the logged in user. As such, this command is only available when logged in as a user.</p>
@@ -996,6 +1001,7 @@ however still required.<br />
   <td>This filter must be present, and currently must be '0' (= logged in user)</td>
  </tr>
 </table>
+<p>The note about deleted VNs for 'get votelist' also applies here.</p>
 
 :SUBSUB:get wishlist
 <p>Provides access to the wish list of the logged in user. As such, this command is only available when logged in as a user.</p>
@@ -1047,6 +1053,7 @@ however still required.<br />
   <td>This filter must be present, and currently must be '0' (= logged in user)</td>
  </tr>
 </table>
+<p>The note about deleted VNs for 'get votelist' also applies here.</p>
 
 
 :SUB:The 'set' command
@@ -1211,11 +1218,11 @@ however still required.<br />
  This section lists the changes made in each version of the VNDB code.
  Check out the <a href="/t/an">announcements board</a> for more information about updates.
 </p>
-<b>2.23</b>
+<b>2.23</b> <b class="grayedout">(Not officially "released" yet, but you can use these additions already)</b>
 <ul>
  <li>Added new 'get' types: votelist, vnlist and wishlist</li>
  <li>Added 'set' command, with types: votelist, vnlist and wishlist</li>
- <li>New error id: 'settype'<li>
+ <li>New error id: 'settype'</li>
 </ul>
 <b>2.15</b>
 <ul>
