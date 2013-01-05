@@ -603,13 +603,6 @@ $$ LANGUAGE plpgsql;
 
 
 
--- Send a notify when a new cover image is uploaded
-CREATE OR REPLACE FUNCTION vn_rev_image_notify() RETURNS trigger AS $$
-  BEGIN NOTIFY coverimage; RETURN NULL; END;
-$$ LANGUAGE plpgsql;
-
-
-
 -- Send a notify when a new character image is uploaded
 CREATE OR REPLACE FUNCTION chars_rev_image_notify() RETURNS trigger AS $$
   BEGIN NOTIFY charimage; RETURN NULL; END;

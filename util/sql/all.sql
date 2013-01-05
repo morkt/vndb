@@ -64,7 +64,6 @@ CREATE TRIGGER vn_anime_aid_edit          BEFORE UPDATE           ON vn_anime   
 
 CREATE TRIGGER anime_fetch_notify         AFTER  INSERT OR UPDATE ON anime         FOR EACH ROW WHEN (NEW.lastfetch IS NULL) EXECUTE PROCEDURE anime_fetch_notify();
 
-CREATE TRIGGER vn_rev_image_notify        AFTER  INSERT OR UPDATE ON vn_rev        FOR EACH ROW WHEN (NEW.image < 0) EXECUTE PROCEDURE vn_rev_image_notify();
 CREATE TRIGGER chars_rev_image_notify     AFTER  INSERT OR UPDATE ON chars_rev     FOR EACH ROW WHEN (NEW.image < 0) EXECUTE PROCEDURE chars_rev_image_notify();
 
 CREATE TRIGGER screenshot_process_notify  AFTER  INSERT OR UPDATE ON screenshots   FOR EACH ROW WHEN (NEW.processed = FALSE) EXECUTE PROCEDURE screenshot_process_notify();

@@ -12846,18 +12846,6 @@ tr : Henüz resim yüklenmemiş
 uk : Немає завантаженого зображення
 it : Nessuna immagine caricata
 
-:_vnedit_image_processing
-en : ~[processing image, please return in a few minutes~]
-ru : ~[обработка изображения, пожалуйста подождите несколько минут~]
-cs : ~[obrázek se zpracovává, vraťte se prosím za několik minut~]
-hu : ~[a kép feldolgozás alatt van, gyere vissza pár perc múlva~]
-nl : ~[bezig met het verwerken van het plaatje, kom a.u.b. terug in een paar minuten~]
-de : ~[Bild wird bearbeitet, bitte kehre in ein paar Minuten zurück~]
-es : ~[procesando imagen, por favor vuelve en unos minutos~]
-tr : ~[resim işleniyor, lütfen birkaç dakika sonra geri dönün~]
-uk : ~[обробка зображення, будь ласка, зачекайте кілька хвилин~]
-it : ~[immagine in elaborazione, controlla tra qualche minuto~]
-
 :_vnedit_image_id
 en : Image ID
 ru : ID изображения
@@ -13662,18 +13650,6 @@ tr : (NSFW)
 uk : (Небезбечно для роботи)
 it : (NSFW)
 
-:_vndiff_image_proc
-en : ~[processing~]
-ru : ~[обработка~]
-cs : ~[zpracovává se~]
-hu : ~[feldolgozás~]
-nl : ~[bewerken...~]
-de : ~[Bearbeitung~]
-es : ~[procesando~]
-tr : ~[işleniyor~]
-uk : ~[процес триває~]
-it : ~[in elaborazione~]
-
 :_vndiff_image_none
 en : No image
 ru : Нет изображения
@@ -13760,18 +13736,6 @@ es : Imagen no subida
 tr : Resim yüklenmemiş
 uk : Ще не завантажено жодного зображення
 it : Nessuna immagine
-
-:_vnpage_imgproc
-en : ~[processing image, please return in a few minutes~]
-ru : ~[идёт обработка изображения, подождите несколько минут~]
-cs : ~[obrázek se zpracovává, prosíme, vraťte se za několik minut~]
-hu : ~[a kép feldolgozás alatt van, gyere vissza pár perc múlva~]
-nl : ~[plaatje wordt verwerkt, kom a.u.b. terug in een paar minuten~]
-de : ~[Bild wird bearbeit, bitte kehre in ein paar Minuten zurück~]
-es : ~[procesando imagen, por favor vuelve en unos minutos~]
-tr : ~[resim işleniyor, lütfen birkaç dakika sonra geri dönün~]
-uk : ~[обробка зображення, будь ласка, зачекайте~]
-it : ~[immagine in elaborazione, controlla tra qualche minuto~]
 
 :_vnpage_imgnsfw_msg
 en : This image has been flagged as Not Safe For Work.

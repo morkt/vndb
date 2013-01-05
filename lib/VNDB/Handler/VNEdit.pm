@@ -4,6 +4,7 @@ package VNDB::Handler::VNEdit;
 use strict;
 use warnings;
 use TUWF ':html', ':xml';
+use Image::Magick;
 use VNDB::Func;
 
 
@@ -192,13 +193,22 @@ sub _uploadimage {
   $frm->{_err} = [ 'toolarge' ] if length($imgdata) > 5*1024*1024;
   return undef if $frm->{_err};
 
-  # get image ID and save it, to be processed by Multi
+  # resize/compress
+  my $im = Image::Magick->new;
+  $im->BlobToImage($imgdata);
+  $im->Set(magick => 'JPEG');
+  my($ow, $oh) = ($im->Get('width'), $im->Get('height'));
+  my($nw, $nh) = imgsize($ow, $oh, @{$self->{ch_size}});
+  $im->Thumbnail(width => $nw, height => $nh);
+  $im->Set(quality => 90);
+
+  # Get ID and save
   my $imgid = $self->dbVNImageId;
   my $fn = imgpath(cv => $imgid);
-  $self->reqSaveUpload('img', $fn);
+  $im->Write($fn);
   chmod 0666, $fn;
 
-  return -1*$imgid;
+  return $imgid;
 }
 
 
@@ -227,8 +237,7 @@ sub _form {
   vn_img => [ mt('_vnedit_image'), [ static => nolabel => 1, content => sub {
     div class => 'img';
      p mt '_vnedit_image_none' if !$frm->{image};
-     p mt '_vnedit_image_processing' if $frm->{image} && $frm->{image} < 0;
-     img src => imgurl(cv => $frm->{image}) if $frm->{image} && $frm->{image} > 0;
+     img src => imgurl(cv => $frm->{image}) if $frm->{image};
     end;
 
     div;

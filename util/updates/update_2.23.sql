@@ -52,3 +52,9 @@ UPDATE vn SET c_rating = (SELECT (
 
 ALTER TYPE prefs_key ADD VALUE 'vn_list_own'  AFTER 'notify_announce';
 ALTER TYPE prefs_key ADD VALUE 'vn_list_wish' AFTER 'vn_list_own';
+
+
+-- Image processing doesn't happen via Multi anymore, so no more notifications
+
+DROP TRIGGER vn_rev_image_notify ON vn_rev;
+DROP FUNCTION vn_rev_image_notify();

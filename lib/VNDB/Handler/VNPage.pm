@@ -540,8 +540,6 @@ sub page {
     div class => 'vnimg';
      if(!$v->{image}) {
        p mt '_vnpage_noimg';
-     } elsif($v->{image} < 0) {
-       p mt '_vnpage_imgproc';
      } else {
        p $v->{img_nsfw} ? (id => 'nsfw_hid', style => $self->authPref('show_nsfw') ? 'display: block' : '') : ();
         img src => imgurl(cv => $v->{image}), alt => $v->{title};
@@ -718,10 +716,10 @@ sub _revision {
     }],
     [ image       => htmlize => sub {
       my $url = imgurl(cv => $_[0]);
-      if($_[0] > 0) {
+      if($_[0]) {
         return $_[1]->{img_nsfw} && !$self->authPref('show_nsfw') ? "<a href=\"$url\">".mt('_vndiff_image_nsfw').'</a>' : "<img src=\"$url\" />";
       } else {
-        return mt $_[0] < 0 ? '_vndiff_image_proc' : '_vndiff_image_none';
+        return mt '_vndiff_image_none';
       }
     }],
     [ img_nsfw    => serialize => sub { mt $_[0] ? '_vndiff_nsfw_notsafe' : '_vndiff_nsfw_safe' } ],
