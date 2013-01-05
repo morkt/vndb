@@ -237,7 +237,7 @@ sub dbVNImageId {
 # insert a new screenshot and return it's ID
 sub dbScreenshotAdd {
   my($s, $width, $height) = @_;
-  return $s->dbRow(q|INSERT INTO screenshots (processed, width, height) VALUES (true, ?, ?) RETURNING id|, $width, $height)->{id};
+  return $s->dbRow(q|INSERT INTO screenshots (width, height) VALUES (?, ?) RETURNING id|, $width, $height)->{id};
 }
 
 

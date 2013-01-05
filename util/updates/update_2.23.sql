@@ -64,3 +64,5 @@ DROP FUNCTION chars_rev_image_notify();
 
 DROP TRIGGER screenshot_process_notify ON screenshots;
 DROP FUNCTION screenshot_process_notify();
+
+ALTER TABLE screenshots DROP COLUMN processed;

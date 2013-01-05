@@ -1006,11 +1006,11 @@ function scrLoad() {
   var scr = byId('screenshots').value.split(' ');
   for(i=0; i<scr.length && scr[i].length>1; i++) {
     var r = scr[i].split(',');
-    scrAdd(r[0], r[1], r[2]);
+    scrSet(scrAdd(r[0], r[1], r[2]), VNEDITSCR[r[0]][0], VNEDITSCR[r[0]][1]);
   }
 
+  ivInit();
   scrLast();
-  scrCheckStatus();
   scrSetSubmit();
 }
 
@@ -1046,12 +1046,12 @@ function scrURL(id, t) {
 }
 
 function scrAdd(id, nsfw, rel) {
-  // tr.scr_status = 0: done, 1: uploading, 2: waiting for thumbnail
+  // tr.scr_status = 0: done, 1: uploading
 
-  var tr = tag('tr', { id:'scr_tr_'+id, scr_id: id, scr_status: id?2:1, scr_rel: rel, scr_nsfw: nsfw},
+  var tr = tag('tr', { id:'scr_tr_'+id, scr_id: id, scr_status: 1, scr_rel: rel, scr_nsfw: nsfw},
     tag('td', { 'class': 'thumb'}, mt('_js_loading')),
     tag('td',
-      tag('b', id ? mt('_vnedit_scr_fetching') : mt('_vnedit_scr_uploading')),
+      tag('b', mt('_vnedit_scr_uploading')),
       tag('br', null),
       id ? null : mt('_vnedit_scr_upl_msg'),
       tag('br', null),
@@ -1062,11 +1062,56 @@ function scrAdd(id, nsfw, rel) {
   return tr;
 }
 
+function scrSet(tr, width, height) {
+  var dim = width+'x'+height;
+  tr.scr_status = 0;
+
+  // image
+  setContent(byName(tr, 'td')[0],
+    tag('a', {href: scrURL(tr.scr_id, 'f'), rel:'iv:'+dim+':edit'},
+      tag('img', {src: scrURL(tr.scr_id, 't')})
+    )
+  );
+
+  // check full resolution with the list of DB-defined resolutions
+  var odd = true;
+  if(dim == '256x384') // special-case NDS resolution (not in the DB)
+    odd = false;
+  for(var j=0; j<resolutions.length && odd; j++) {
+    if(typeof resolutions[j][1] != 'object') {
+      if(resolutions[j][0] == dim)
+        odd = false;
+    } else {
+      for(var k=1; k<resolutions[j].length; k++)
+        if(resolutions[j][k][1] == dim)
+          odd = false;
+    }
+  }
+
+  // content
+  var rel = tag('select', {onchange: scrSerialize, 'class':'scr_relsel'});
+  for(var j=0; j<scrRel.length; j++)
+    rel.appendChild(tag('option', {value: scrRel[j][0], selected: tr.scr_rel == scrRel[j][0]}, scrRel[j][1]));
+  var nsfwid = 'scr_sfw_'+tr.scr_id;
+  setContent(byName(tr, 'td')[1],
+    tag('b', mt('_vnedit_scr_id', tr.scr_id)),
+    ' (', tag('a', {href: '#', onclick:scrDel}, mt('_js_remove')), ')',
+    tag('br', null),
+    mt('_vnedit_scr_fullsize', dim),
+    odd ? tag('b', {'class':'standout', 'style':'font-weight: bold'}, ' '+mt('_vnedit_scr_nonstandard')) : null,
+    tag('br', null),
+    tag('br', null),
+    tag('input', {type:'checkbox', onclick:scrSerialize, id:nsfwid, name:nsfwid, checked: tr.scr_nsfw>0, 'class':'scr_nsfw'}),
+    tag('label', {'for':nsfwid}, mt('_vnedit_scr_nsfw')),
+    tag('br', null),
+    rel
+  );
+}
+
 function scrLast() {
   if(byId('scr_last'))
     byId('scr_table').removeChild(byId('scr_last'));
   var full = byName(byId('scr_table'), 'tr').length >= 10;
-
 
   var rel = tag('select', {onchange: function(){scrDefRel=this.options[this.selectedIndex].value}, 'class':'scr_relsel', 'id':'scradd_relsel'});
   for(var j=0; j<scrRel.length; j++)
@@ -1090,73 +1135,6 @@ function scrLast() {
       tag('input', {type:'button', value:mt('_vnedit_scr_addbut'), 'class':'submit', onclick:scrUpload})
     )
   ));
-}
-
-function scrCheckStatus() {
-  var ids = [];
-  var trs = byName(byId('scr_table'), 'tr');
-  for(var i=0; i<trs.length-1; i++)
-    if(trs[i].scr_status == 2)
-      ids[ids.length] = 'id='+trs[i].scr_id;
-  if(!ids.length)
-    return setTimeout(scrCheckStatus, 1000);
-
-  var ti = setTimeout(scrCheckStatus, 10000);
-  ajax('/xml/screenshots.xml?'+ids.join(';'), function(hr) {
-    var ls = hr.responseXML.getElementsByTagName('item');
-    for(var i=0; i<ls.length; i++) {
-      var tr = byId('scr_tr_'+ls[i].getAttribute('id'));
-      if(!tr || ls[i].getAttribute('processed') != '1')
-        continue;
-      tr.scr_status = 0; // ready
-
-      // image
-      var dim = ls[i].getAttribute('width')+'x'+ls[i].getAttribute('height');
-      setContent(byName(tr, 'td')[0],
-        tag('a', {href: scrURL(tr.scr_id, 'f'), rel:'iv:'+dim+':edit'},
-          tag('img', {src: scrURL(tr.scr_id, 't')})
-        )
-      );
-
-      // check full resolution with the list of DB-defined resolutions
-      var odd = true;
-      if(dim == '256x384') // special-case NDS resolution (not in the DB)
-        odd = false;
-      for(var j=0; j<resolutions.length && odd; j++) {
-        if(typeof resolutions[j][1] != 'object') {
-          if(resolutions[j][0] == dim)
-            odd = false;
-        } else {
-          for(var k=1; k<resolutions[j].length; k++)
-            if(resolutions[j][k][1] == dim)
-              odd = false;
-        }
-      }
-
-      // content
-      var rel = tag('select', {onchange: scrSerialize, 'class':'scr_relsel'});
-      for(var j=0; j<scrRel.length; j++)
-        rel.appendChild(tag('option', {value: scrRel[j][0], selected: tr.scr_rel == scrRel[j][0]}, scrRel[j][1]));
-      var nsfwid = 'scr_sfw_'+tr.scr_id;
-      setContent(byName(tr, 'td')[1],
-        tag('b', mt('_vnedit_scr_id', tr.scr_id)),
-        ' (', tag('a', {href: '#', onclick:scrDel}, mt('_js_remove')), ')',
-        tag('br', null),
-        mt('_vnedit_scr_fullsize', dim),
-        odd ? tag('b', {'class':'standout', 'style':'font-weight: bold'}, ' '+mt('_vnedit_scr_nonstandard')) : null,
-        tag('br', null),
-        tag('br', null),
-        tag('input', {type:'checkbox', onclick:scrSerialize, id:nsfwid, name:nsfwid, checked: tr.scr_nsfw>0, 'class':'scr_nsfw'}),
-        tag('label', {'for':nsfwid}, mt('_vnedit_scr_nsfw')),
-        tag('br', null),
-        rel
-      );
-    }
-    scrSerialize();
-    ivInit();
-    clearTimeout(ti);
-    setTimeout(scrCheckStatus, 1000);
-  });
 }
 
 function scrDel(what) {
@@ -1213,12 +1191,8 @@ function scrUploadComplete() {
       scrDel(tr);
     } else {
       tr.id = 'scr_tr_'+tr.scr_id;
-      tr.scr_status = 2;
-      setContent(byName(tr, 'td')[1],
-        tag('b', mt('_vnedit_scr_genthumb')),
-        tag('br', null),
-        mt('_vnedit_scr_genthumb_msg')
-      );
+      scrSet(tr, fr.window.document.getElementsByTagName('image')[0].getAttribute('width'), fr.window.document.getElementsByTagName('image')[0].getAttribute('height'));
+      ivInit();
     }
   }
 

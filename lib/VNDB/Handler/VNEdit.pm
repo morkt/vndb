@@ -299,6 +299,13 @@ sub _form {
   ) : (
     [ hidden => short => 'screenshots' ],
     [ static => nolabel => 1, content => sub {
+      script type => 'text/javascript';
+       # Screenshot resolutions
+       lit 'VNEDITSCR = {';
+        my @scr = map /^(\d+),/?$1:(), split / /, $frm->{screenshots};
+        lit join ',', map "$_->{id}:[$_->{width},$_->{height}]", @scr ? @{$self->dbScreenshotGet(\@scr)} : ();
+       lit '};';
+      end;
       div class => 'warning';
        lit mt '_vnedit_scrmsg';
       end;
@@ -380,19 +387,7 @@ sub scrxml {
   $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
 
   # fetch information about screenshots
-  if($self->reqMethod ne 'POST') {
-    my $ids = $self->formValidate(
-      { get => 'id', required => 1, template => 'int', multi => 1 }
-    );
-    return $self->resNotFound if $ids->{_err};
-    my $r = $self->dbScreenshotGet($ids->{id});
-
-    xml;
-    tag 'screenshots';
-     tag 'item', %$_, undef for (@$r);
-    end;
-    return;
-  }
+  die "This page can only be accessed as POST\n" if $self->reqMethod ne 'POST';
 
   # upload new screenshot
   my $num = $self->formValidate({get => 'upload', template => 'int'});
@@ -406,12 +401,13 @@ sub scrxml {
   $id = -1 if !$id && $imgdata !~ /^(\xff\xd8|\x89\x50)/; # JPG or PNG headers
 
   # no error? save and let Multi process it
+  my($ow, $oh);
   if(!$id) {
     my $im = Image::Magick->new;
     $im->BlobToImage($imgdata);
     $im->Set(magick => 'JPEG');
     $im->Set(quality => 90);
-    my($ow, $oh) = ($im->Get('width'), $im->Get('height'));
+    ($ow, $oh) = ($im->Get('width'), $im->Get('height'));
 
     $id = $self->dbScreenshotAdd($ow, $oh);
     my $fn = imgpath(sf => $id);
@@ -430,7 +426,7 @@ sub scrxml {
   xml;
   # blank stylesheet because some browsers don't allow JS access otherwise
   lit qq|<?xml-stylesheet href="$self->{url_static}/f/blank.css" type="text/css" ?>|;
-  tag 'image', id => $id, undef;
+  tag 'image', id => $id, $id > 0 ? (width => $ow, height => $oh) : (), undef;
 }
 
 
