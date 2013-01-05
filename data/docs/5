@@ -10,10 +10,11 @@
  to many fields in the database: The main title of visual novels, releases and
  producers should all be properly romanized if they arent in roman script
  already.<br />
- To keep the database consistent, we have decided to use
- <a href="http://en.wikipedia.org/wiki/Hepburn_romanization">Hepburn romanization</a>
- for all fields. This is also consistent with
- <a href="http://wiki.anidb.net/w/Romanisation">AniDBs romanization</a>.
+ To keep the database consistent, we have decided to use a mix of <a
+ href="http://en.wikipedia.org/wiki/Hepburn_romanization">Hepburn</a> and <a
+ href="http://en.wikipedia.org/wiki/Wapuro">Wapuro</a> for all fields. This is
+ also consistent with <a href="http://wiki.anidb.net/w/Romanisation">AniDBs
+ romanization</a>.
  <br />
  For English (or other foreign) words in a non-roman script, the original word
  should be used as long as it is the intended effect. If those words are in a

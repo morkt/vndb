@@ -15,7 +15,47 @@
 
 
 :SUB:Instances
-<i>todo: when and how to use instances.</i>
+<p>
+You can link two (or more) characters with an "instance relationship" when they are, in some way, the same person.
+</p>
+:SUBSUB: Where instances might be suitable
+<ul>
+  <li>The two characters seemed to be different people, but were actually the same person.
+    For example, <a href="/c7373">Arsene</a> and <a href="/c7374">Henriette</a>.</li>
+  <li>One of the characters is an older version of the other.</li>
+  <li>One character transforms into the other. There does not need to be a way for them to transform back.
+    For example, <a href="/c1022">Kaoru (Male)</a> and <a href="/c1023">Kaoru (Female)</a>.</li>
+  <li>The two characters are the same character in different universes, timelines or realities.
+    For example, Tohsaka Rin <a href="/c34">in Fate/stay night</a> and in <a href="/c3529">in Fate/extra</a>.</li>
+  <li>The two characters are the same character used by different developers. This may result in different interpretations of the character or different art styles.
+    For example, Emiya Shirou <a href="/c15">in Fate/stay night</a> and in <a href="/c4479">in Happy Valentines Day</a>.</li>
+  <li>Spoilers about the character need to be hidden. This may be done by
+    creating a character entry with incorrect or incomplete, but non-spoiling
+    information. This is linked to another entry for the same character with
+    complete, but spoiling information.</li>
+</ul>
+:SUBSUB:Where instances might not be suitable
+<ul>
+  <li>It is preferable to avoid using instances just to hide spoilers if other
+    methods would be effective. These methods include marking traits as spoilers
+    and hiding information within spoiler tags in the character description.</li>
+  <li>If the two characters to be linked by an instance are not sufficiently
+    different, they should just use one character entry.
+    For example, <a href="/c4287">Alice (lamia)</a> and <a href="http://s.vndb.org/sf/26/18226.jpg">Alice (human)</a>.</li>
+</ul>
+:SUBSUB:How to use instances
+<p>
+To link two (or more) characters with an instance relationship, you must choose
+one character to be the "main character". All others will be "instance
+characters". (Do not confuse this with a character's role in a visual novel.)
+Usually, the most often seen or least spoiling character should be the "main
+character".<br />
+Do not fill the "Instance of" field when editing the "main character", but fill
+it for the "instance characters". If the instance relation is a spoiler, make
+sure to mark it as such when editing the "instance characters". If the
+existence of a character in a visual novel is a spoiler, see the <a
+href="/d12#6">Visual Novels</a> section below.
+</p>
 
 
 :SUB:General info
