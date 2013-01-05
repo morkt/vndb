@@ -235,9 +235,9 @@ sub dbVNImageId {
 
 
 # insert a new screenshot and return it's ID
-# (no arguments required, as Multi is responsible for filling the entry with information)
 sub dbScreenshotAdd {
-  return shift->dbRow(q|INSERT INTO screenshots (processed) VALUES(false) RETURNING id|)->{id};
+  my($s, $width, $height) = @_;
+  return $s->dbRow(q|INSERT INTO screenshots (processed, width, height) VALUES (true, ?, ?) RETURNING id|, $width, $height)->{id};
 }
 
 

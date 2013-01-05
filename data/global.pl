@@ -119,7 +119,6 @@ our %M = (
     #APIDump     => {},
     Feed        => {},
     RG          => {},
-    Image       => {},
     #Anime       => {},  # disabled by default, requires AniDB username/pass
     Maintenance => {},
     #IRC         => {},  # disabled by default, no need to run an IRC bot when debugging

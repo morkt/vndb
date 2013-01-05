@@ -61,3 +61,6 @@ DROP FUNCTION vn_rev_image_notify();
 
 DROP TRIGGER chars_rev_image_notify ON chars_rev;
 DROP FUNCTION chars_rev_image_notify();
+
+DROP TRIGGER screenshot_process_notify ON screenshots;
+DROP FUNCTION screenshot_process_notify();

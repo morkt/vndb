@@ -45,8 +45,6 @@ Requirements
       POE::Component::Pg (get it from http://g.blicky.net/poco-pg.git/)
     IRC:
       POE::Component::IRC
-    Image:
-      Image::Magick
     Maintenance:
       PerlIO::gzip
     RG:

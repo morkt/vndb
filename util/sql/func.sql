@@ -603,13 +603,6 @@ $$ LANGUAGE plpgsql;
 
 
 
--- Send a notify when a screenshot needs to be processed
-CREATE OR REPLACE FUNCTION screenshot_process_notify() RETURNS trigger AS $$
-  BEGIN NOTIFY screenshot; RETURN NULL; END;
-$$ LANGUAGE plpgsql;
-
-
-
 -- Update vn.rgraph column and send notify when a relation graph needs to be regenerated
 -- 1. NOTIFY is sent on VN edit or insert or change in vn.rgraph, when rgraph = NULL and entries in vn_relations
 -- vn.rgraph is set to NULL when:

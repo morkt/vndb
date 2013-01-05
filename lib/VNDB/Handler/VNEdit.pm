@@ -407,9 +407,23 @@ sub scrxml {
 
   # no error? save and let Multi process it
   if(!$id) {
-    $id = $self->dbScreenshotAdd;
+    my $im = Image::Magick->new;
+    $im->BlobToImage($imgdata);
+    $im->Set(magick => 'JPEG');
+    $im->Set(quality => 90);
+    my($ow, $oh) = ($im->Get('width'), $im->Get('height'));
+
+    $id = $self->dbScreenshotAdd($ow, $oh);
     my $fn = imgpath(sf => $id);
-    $self->reqSaveUpload($param, $fn);
+    $im->Write($fn);
+    chmod 0666, $fn;
+
+    # thumbnail
+    my($nw, $nh) = imgsize($ow, $oh, @{$self->{scr_size}});
+    $im->Thumbnail(width => $nw, height => $nh);
+    $im->Set(quality => 90);
+    $fn = imgpath(st => $id);
+    $im->Write($fn);
     chmod 0666, $fn;
   }
 
