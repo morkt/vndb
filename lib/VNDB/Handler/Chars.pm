@@ -50,8 +50,7 @@ sub page {
       [ main      => htmlize => sub { $_[0] ? sprintf '<a href="/c%d">c%d</a>', $_[0], $_[0] : mt '_revision_empty' } ],
       [ main_spoil=> serialize => sub { mt "_spoil_$_[0]" } ],
       [ image     => htmlize => sub {
-        return $_[0] > 0 ? sprintf '<img src="%s" />', imgurl(ch => $_[0])
-          : mt $_[0] < 0 ? '_chdiff_image_proc' : '_chdiff_image_none';
+        return $_[0] ? sprintf '<img src="%s" />', imgurl(ch => $_[0]) : mt '_chdiff_image_none';
       }],
       [ traits    => join => '<br />', split => sub {
         map sprintf('%s<a href="/i%d">%s</a> (%s)', $_->{group}?qq|<b class="grayedout">$_->{groupname} / </b> |:'',
@@ -107,8 +106,6 @@ sub charTable {
    div class => 'charimg';
     if(!$r->{image}) {
       p mt '_charp_noimg';
-    } elsif($r->{image} < 0) {
-      p mt '_charp_imgproc';
     } else {
       img src => imgurl(ch => $r->{image}), alt => $r->{name};
     }
@@ -376,8 +373,7 @@ sub edit {
   chare_img => [ mt('_chare_image'), [ static => nolabel => 1, content => sub {
     div class => 'img';
      p mt '_chare_image_none' if !$frm->{image};
-     p mt '_chare_image_processing' if $frm->{image} && $frm->{image} < 0;
-     img src => imgurl(ch => $frm->{image}) if $frm->{image} && $frm->{image} > 0;
+     img src => imgurl(ch => $frm->{image}) if $frm->{image};
     end;
 
     div;
@@ -440,13 +436,22 @@ sub _uploadimage {
   $frm->{_err} = [ 'toolarge' ] if length($imgdata) > 1024*1024;
   return undef if $frm->{_err};
 
-  # get image ID and save it, to be processed by Multi
+  # resize/compress
+  my $im = Image::Magick->new;
+  $im->BlobToImage($imgdata);
+  $im->Set(magick => 'JPEG');
+  my($ow, $oh) = ($im->Get('width'), $im->Get('height'));
+  my($nw, $nh) = imgsize($ow, $oh, @{$self->{ch_size}});
+  $im->Thumbnail(width => $nw, height => $nh);
+  $im->Set(quality => 90);
+
+  # Get ID and save
   my $imgid = $self->dbCharImageId;
   my $fn = imgpath(ch => $imgid);
-  $self->reqSaveUpload('img', $fn);
+  $im->Write($fn);
   chmod 0666, $fn;
 
-  return -1*$imgid;
+  return $imgid;
 }
 
 

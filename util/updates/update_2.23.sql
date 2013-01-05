@@ -58,3 +58,6 @@ ALTER TYPE prefs_key ADD VALUE 'vn_list_wish' AFTER 'vn_list_own';
 
 DROP TRIGGER vn_rev_image_notify ON vn_rev;
 DROP FUNCTION vn_rev_image_notify();
+
+DROP TRIGGER chars_rev_image_notify ON chars_rev;
+DROP FUNCTION chars_rev_image_notify();

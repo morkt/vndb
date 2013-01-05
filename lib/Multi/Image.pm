@@ -18,11 +18,10 @@ sub spawn {
   POE::Session->create(
     package_states => [
       $p => [qw| _start
-        _start shutdown ch_check ch_process scr_check scr_process
+        _start shutdown scr_check scr_process
       |],
     ],
     heap => {
-      chpath  => $VNDB::ROOT.'/static/ch',
       sfpath  => $VNDB::ROOT.'/static/sf',
       stpath  => $VNDB::ROOT.'/static/st',
       check_delay => 3600,
@@ -35,48 +34,15 @@ sub spawn {
 sub _start {
   $_[KERNEL]->alias_set('image');
   $_[KERNEL]->sig(shutdown => 'shutdown');
-  $_[KERNEL]->post(pg => listen => charimage => 'ch_check', screenshot => 'scr_check');
-  $_[KERNEL]->yield('ch_check');
+  $_[KERNEL]->post(pg => listen => screenshot => 'scr_check');
   $_[KERNEL]->yield('scr_check');
 }
 
 
 sub shutdown {
   $_[KERNEL]->post(pg => unlisten => 'charimage', 'screenshot');
-  $_[KERNEL]->delay('ch_check');
   $_[KERNEL]->delay('scr_check');
   $_[KERNEL]->alias_remove('image');
-}
-
-
-sub ch_check {
-  $_[KERNEL]->delay('ch_check');
-  $_[KERNEL]->post(pg => query => 'SELECT image FROM chars_rev WHERE image < 0 LIMIT 1', undef, 'ch_process');
-}
-
-
-sub ch_process { # num, res
-  return $_[KERNEL]->delay(ch_check => $_[HEAP]{check_delay}) if $_[ARG0] == 0;
-
-  my $id = -1*$_[ARG1][0]{image};
-  my $start = time;
-  my $img = sprintf '%s/%02d/%d.jpg', $_[HEAP]{chpath}, $id%100, $id;
-  my $os = -s $img;
-
-  my $im = Image::Magick->new;
-  $im->Read($img);
-  $im->Set(magick => 'JPEG');
-  my($ow, $oh) = ($im->Get('width'), $im->Get('height'));
-  my($nw, $nh) = imgsize($ow, $oh, @{$VNDB::S{ch_size}});
-  $im->Thumbnail(width => $nw, height => $nh);
-  $im->Set(quality => 90);
-  $im->Write($img);
-
-  $_[KERNEL]->post(pg => do => 'UPDATE chars_rev SET image = image*-1 WHERE image = ?', [ -1*$id ]);
-  $_[KERNEL]->call(core => log => 'Processed character image %d in %.2fs: %.2fkB (%dx%d) -> %.2fkB (%dx%d)',
-    $id, time-$start, $os/1024, $ow, $oh, (-s $img)/1024, $nw, $nh);
-
-  $_[KERNEL]->yield('ch_check');
 }
 
 

@@ -198,7 +198,7 @@ sub _uploadimage {
   $im->BlobToImage($imgdata);
   $im->Set(magick => 'JPEG');
   my($ow, $oh) = ($im->Get('width'), $im->Get('height'));
-  my($nw, $nh) = imgsize($ow, $oh, @{$self->{ch_size}});
+  my($nw, $nh) = imgsize($ow, $oh, @{$self->{cv_size}});
   $im->Thumbnail(width => $nw, height => $nh);
   $im->Set(quality => 90);
 
