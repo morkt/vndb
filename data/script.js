@@ -1192,6 +1192,7 @@ function scrUploadComplete() {
     } else {
       tr.id = 'scr_tr_'+tr.scr_id;
       scrSet(tr, fr.window.document.getElementsByTagName('image')[0].getAttribute('width'), fr.window.document.getElementsByTagName('image')[0].getAttribute('height'));
+      scrSerialize();
       ivInit();
     }
   }
