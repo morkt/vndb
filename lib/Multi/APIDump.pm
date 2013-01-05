@@ -21,7 +21,7 @@ sub spawn {
     ],
     heap => {
       regenerate_interval => 86400, # daily min.
-      tagsfile => "$VNDB::ROOT/static/api/tags.json.gz",
+      tagsfile => "$VNDB::ROOT/www/api/tags.json.gz",
       @_,
     },
   );

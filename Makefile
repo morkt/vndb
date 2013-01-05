@@ -43,7 +43,7 @@
 
 all: dirs js skins robots data/config.pl
 
-dirs: static/api static/f/js static/ch static/cv static/sf static/st data/log www www/feeds
+dirs: static/f/js static/ch static/cv static/sf static/st data/log www www/feeds www/api
 
 js: static/f/js/en.js
 
@@ -55,7 +55,7 @@ static/ch static/cv static/sf static/st:
 	mkdir $@;
 	for i in $$(seq -w 0 1 99); do mkdir "$@/$$i"; done
 
-static/api static/f/js data/log www www/feeds:
+static/f/js data/log www www/feeds www/api:
 	mkdir $@
 
 static/f/js/en.js: data/script.js data/lang.txt util/jsgen.pl data/config.pl data/global.pl

@@ -11,7 +11,7 @@
 
 :SUB:Tags
 <p>
- <b>URL:</b> <a href="http://s.vndb.org/api/tags.json.gz">http://s.vndb.org/api/tags.json.gz</a><br />
+ <b>URL:</b> <a href="http://vndb.org/api/tags.json.gz">http://vndb.org/api/tags.json.gz</a><br />
  <b>Updated:</b> Every 24 hours.<br />
  <b>Size:</b> ~150 KiB compressed, ~520 KiB uncompressed.<br />
  This dump includes information about all (approved) VN tags in the JSON
