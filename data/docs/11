@@ -906,9 +906,167 @@ however still required.<br />
   <td>search</td>
   <td>string</td>
   <td>~</td>
-  <td>Not an actual field. Performs a search on the title, original and aliases fields.</td>
+  <td>Not an actual field. Performs a search on the name, original and aliases fields.</td>
  </tr>
 </table>
+
+:SUBSUB:get character
+<p>Returned members:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Member</td>
+  <td style="width: 50px">Flag</td>
+  <td style="width: 90px">Type</td>
+  <td style="width: 40px">null</td>
+  <td>Description</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>id</td>
+  <td>-</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>Character ID</td>
+ </tr>
+ <tr>
+  <td>name</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>no</td>
+  <td>(romaji) name</td>
+ </tr>
+ <tr class="odd">
+  <td>original</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Original (kana/kanji) name</td>
+ </tr>
+ <tr>
+  <td>gender</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>"m" (male), "f" (female) or "b" (both)</td>
+ </tr>
+ <tr class="odd">
+  <td>bloodt</td>
+  <td>basic</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Blood type, "a", "b", "ab" or "o"</td>
+ </tr>
+ <tr>
+  <td>birthday</td>
+  <td>basic</td>
+  <td>array</td>
+  <td>no</td>
+  <td>
+   Array of two numbers: day of the month (1-31) and the month (1-12). Either can be null.
+  </td>
+ </tr>
+ <tr class="odd">
+  <td>aliases</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Alternative names, separated with a newline.</td>
+ </tr>
+ <tr>
+  <td>description</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>Description/notes, can contain formatting codes as described in <a href="/d9.3">d9.3</a>. May also include [spoiler] tags!</td>
+ </tr>
+ <tr class="odd">
+  <td>image</td>
+  <td>details</td>
+  <td>string</td>
+  <td>yes</td>
+  <td>HTTP link to the character image. Always (supposed to be) SFW.</td>
+ </tr>
+ <tr>
+  <td>bust</td>
+  <td>meas</td>
+  <td>integer</td>
+  <td>yes</td>
+  <td>cm</td>
+ </tr>
+ <tr class="odd">
+  <td>waist</td>
+  <td>meas</td>
+  <td>integer</td>
+  <td>yes</td>
+  <td>cm</td>
+ </tr>
+ <tr>
+  <td>hip</td>
+  <td>meas</td>
+  <td>integer</td>
+  <td>yes</td>
+  <td>cm</td>
+ </tr>
+ <tr class="odd">
+  <td>height</td>
+  <td>meas</td>
+  <td>integer</td>
+  <td>yes</td>
+  <td>cm</td>
+ </tr>
+ <tr>
+  <td>weight</td>
+  <td>meas</td>
+  <td>integer</td>
+  <td>yes</td>
+  <td>kg</td>
+ </tr>
+ <tr class="odd">
+  <td>traits</td>
+  <td>traits</td>
+  <td>array of arrays</td>
+  <td>no</td>
+  <td>(Possibly empty) list of traits linked to this character. Each trait is
+    represented as an array of two elements: The trait id (integer) and the
+    spoiler level (integer, 0-2). General information for each trait is
+    available in the <a href="/d14.3">traits dump</a>.</td>
+ </tr>
+</table>
+<p>Sorting is possible on the 'id' and 'name' fields.</p><br />
+
+<p>The following filters are recognised:</p>
+<table style="margin: 5px 2%; width: 95%">
+ <thead><tr>
+  <td style="width: 80px">Field</td>
+  <td style="width: 90px">Value</td>
+  <td style="width: 90px">Operators</td>
+  <td>&nbsp;</td>
+ </tr></thead>
+ <tr class="odd">
+  <td>id</td>
+  <td>integer<br />array of integers</td>
+  <td>= != &gt; &gt;= &lt; &lt;=<br />= !=</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>name</td>
+  <td>string</td>
+  <td>= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr class="odd">
+  <td>original</td>
+  <td>null<br />string</td>
+  <td>= !=<br />= != ~</td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td>search</td>
+  <td>string</td>
+  <td>~</td>
+  <td>Not an actual field. Performs a search on the name, original and aliases fields.</td>
+ </tr>
+</table>
+
 
 :SUBSUB:get votelist
 <p>Provides access to the votes of the logged in user. As such, this command is only available when logged in as a user.</p>
@@ -1242,7 +1400,7 @@ however still required.<br />
 </p>
 <b>2.23</b> <b class="grayedout">(Not officially "released" yet, but you can use these additions already)</b>
 <ul>
- <li>Added new 'get' types: votelist, vnlist and wishlist</li>
+ <li>Added new 'get' types: character, votelist, vnlist and wishlist</li>
  <li>Added 'set' command, with types: votelist, vnlist and wishlist</li>
  <li>New error id: 'settype'</li>
  <li>Added "tags" flag and member to "get vn"</li>

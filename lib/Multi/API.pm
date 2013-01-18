@@ -41,9 +41,9 @@ sub spawn {
       $p => [qw|
         _start shutdown log server_error client_connect client_error client_input
         login login_res get_results get_vn get_vn_res get_release get_release_res
-        get_producer get_producer_res get_votelist get_votelist_res get_vnlist
-        get_vnlist_res get_wishlist get_wishlist_res set_votelist set_vnlist
-        set_wishlist set_return admin
+        get_producer get_producer_res get_character get_character_res get_votelist
+        get_votelist_res get_vnlist get_vnlist_res get_wishlist get_wishlist_res
+        set_votelist set_vnlist set_wishlist set_return admin
       |],
     ],
     heap => {
@@ -367,7 +367,7 @@ sub client_input {
       filters => $arg->[2],
       opt => $opt,
     );
-    return cerr $c, 'gettype', "Unknown get type: '$arg->[0]'" if $arg->[0] !~ /^(?:vn|release|producer|votelist|vnlist|wishlist)$/;
+    return cerr $c, 'gettype', "Unknown get type: '$arg->[0]'" if $arg->[0] !~ /^(?:vn|release|producer|character|votelist|vnlist|wishlist)$/;
     return cerr $c, needlogin => 'Not logged in as a user' if $arg->[0] =~ /^list$/ && !$c->{uid};
     return $_[KERNEL]->yield("get_$arg->[0]", \%obj);
   }
@@ -862,6 +862,98 @@ sub get_producer_res {
   # send results
   delete $_->{latest} for @{$get->{list}};
   $_[KERNEL]->yield(get_results => { %$get, type => 'producer' });
+}
+
+
+sub get_character {
+  my $get = $_[ARG0];
+
+  return cerr $get->{c}, getinfo => "Unknown info flag '$_'", flag => $_
+    for (grep !/^(basic|details|meas|traits)$/, @{$get->{info}});
+
+  my $select = 'c.id, c.latest';
+  $select .= ', cr.name, cr.original, cr.gender, cr.bloodt, cr.b_day, cr.b_month' if grep /basic/, @{$get->{info}};
+  $select .= ', cr.alias AS aliases, cr.image, cr."desc" AS description' if grep /details/, @{$get->{info}};
+  $select .= ', cr.s_bust AS bust, cr.s_waist AS waist, cr.s_hip AS hip, cr.height, cr.weight' if grep /meas/, @{$get->{info}};
+  # TODO: VNs + Instances
+
+  my @placeholders;
+  my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
+    [ 'id',
+      [ 'int' => 'c.id :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, range => [1,1e6] ],
+      [ inta  => 'c.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, range => [1,1e6], join => ',' ],
+    ], [ 'name',
+      [ str   => 'cr.name :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'cr.name ILIKE :value:', {'~',1}, process => \'like' ],
+    ], [ 'original',
+      [ undef,   "cr.original :op: ''", {qw|= =  != <>|} ],
+      [ str   => 'cr.original :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'cr.original ILIKE :value:', {'~',1}, process => \'like' ]
+    ], [ 'search',
+      [ str   => '(cr.name ILIKE :value: OR cr.original ILIKE :value: OR cr.alias ILIKE :value:)', {'~',1}, process => \'like' ],
+    ],
+    # TODO: More filters?
+  ];
+  my $last = sqllast $get, 'id', {
+    id => 'c.id %s',
+    name => 'cr.name %s',
+  };
+  return if !$last || !$where;
+
+  $_[KERNEL]->post(pg => query =>
+    qq|SELECT $select FROM chars c JOIN chars_rev cr ON c.latest = cr.id WHERE NOT c.hidden AND $where $last|,
+    \@placeholders, 'get_character_res', $get);
+}
+
+
+sub get_character_res {
+  my($num, $res, $get, $time) = (@_[ARG0..$#_]);
+
+  $get->{time} += $time;
+  $get->{queries}++;
+
+  # process the results
+  if(!$get->{type}) {
+    for (@$res) {
+      $_->{id}*=1;
+      if(grep /basic/, @{$get->{info}}) {
+        $_->{original} ||= undef;
+        $_->{gender}   = undef if $_->{gender} eq 'unknown';
+        $_->{bloodt}   = undef if $_->{bloodt} eq 'unknown';
+        $_->{birthday} = [ delete($_->{b_day})||undef, delete($_->{b_month})||undef ];
+      }
+      if(grep /details/, @{$get->{info}}) {
+        $_->{aliases}     ||= undef;
+        $_->{image}       = $_->{image} ? sprintf '%s/ch/%02d/%d.jpg', $VNDB::S{url_static}, $_->{image}%100, $_->{image} : undef;
+        $_->{description} ||= undef;
+      }
+      if(grep /meas/, @{$get->{info}}) {
+        my $e = $_;
+        $e->{$_} = $e->{$_} ? $e->{$_}*1 : undef for(qw|bust waist hip height weight|);
+      }
+    }
+    $get->{more} = pop(@$res)&&1 if @$res > $get->{opt}{results};
+    $get->{list} = $res;
+  }
+
+  elsif($get->{type} eq 'traits') {
+    for my $i (@{$get->{list}}) {
+      $i->{traits} = [ map [ $_->{tid}*1, $_->{spoil}*1 ], grep $i->{latest} == $_->{cid}, @$res ];
+    }
+    $get->{traits} = 1;
+  }
+
+  # fetch more results
+  my @ids = map $_->{latest}, @{$get->{list}};
+  my $ids = join ',', map '?', @ids;
+
+  @ids && !$get->{traits} && grep(/traits/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+    SELECT cid, tid, spoil FROM chars_traits WHERE cid IN($ids)|,
+    \@ids, 'get_character_res', { %$get, type => 'traits' });
+
+  # send results
+  delete $_->{latest} for @{$get->{list}};
+  $_[KERNEL]->yield(get_results => { %$get, type => 'character' });
 }
 
 
