@@ -141,8 +141,8 @@
 </table>
 <p>
  Unlike with tags, trait names and aliases are neither globally unique nor
- self-describing.  If you wish display a trait (name) to the user, you should
- do so in combination with its associated root trait. For example, <a
- href="/i112">i112</a> is often displayed as "Eyes > Green", to differentiate
- it with <a href="/i50">i50</a>, which is "Hair > Green".
+ self-describing.  If you wish to display a trait (name) to the user, you
+ should do so in combination with its associated root trait. For example,
+ <a href="/i112">i112</a> is often displayed as "Eyes > Green", to
+ differentiate it with <a href="/i50">i50</a>, which is "Hair > Green".
 </p>
