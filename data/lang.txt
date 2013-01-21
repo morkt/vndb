@@ -14531,7 +14531,7 @@ de : Bitte [url,/u/login,einloggen], oder [url,/u/register,einen Account erstell
 es : Por favor [url,/u/login,conéctate], o [url,/u/register,crea una cuenta] si no tienes una.
 tr : Lütfen [url,/u/login,giriş yapın], ya da eğer yoksa kendinize [url,/u/register,yeni bir hesap yaratın].
 uk : Будь ласка [url,/u/login,увійдіть] або [url,/u/register,зареєструйте акуант], якщо ви що цього не зробили.
-it : Per favore [url,/u/login,accedi, o [url,/u/register,registrati] se ancora non l'hai fatto.
+it : Per favore [url,/u/login,accedi], o [url,/u/register,registrati] se ancora non l'hai fatto.
 
 # logged in, but simply no access
 :_denied_noaccess_title
