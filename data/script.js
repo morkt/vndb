@@ -2541,6 +2541,7 @@ function filReleases() {
   var plat = platforms;
   for(var i=0; i<plat.length; i++) // l10n /_plat_.+/
     plat[i] = [ plat[i], mt('_plat_'+plat[i]) ];
+  plat.splice(0, 0, [ 'unk', mt('_unknown') ]);
   var med = media;
   for(var i=0; i<med.length; i++) // l10n /_med_.+/
     med[i] = [ med[i], mt('_med_'+med[i]) ];
