@@ -392,7 +392,7 @@ function rlDropDown(lnk) {
 
   var o = tag('ul', null);
   for(var i=0; i<rlist_status.length; i++) {
-    var val = mt('_rlist_status_'+rlist_status[i]); // l10n /_rlist_status_\d+/
+    var val = rlist_status[i] == 0 ? mt('_unknown') : mt('_rlist_status_'+rlist_status[i]); // l10n /_rlist_status_\d+/
     if(st == val)
       o.appendChild(tag('li', tag('i', val)));
     else
@@ -411,7 +411,7 @@ function rlMod() {
   ddHide();
   setContent(lnk, tag('b', {'class': 'grayedout'}, mt('_js_loading')));
   ajax('/xml/rlist.xml?formcode='+code+';id='+this.rl_rid+';e='+act, function(hr) {
-    setText(lnk, act == -1 ? '--' : mt('_rlist_status_'+act));
+    setText(lnk, act == -1 ? '--' : act == 0 ? mt('_unknown') : mt('_rlist_status_'+act));
   });
   return false;
 }
@@ -2490,7 +2490,7 @@ function filChars() {
     gend[i] = [ gend[i], mt('_gender_'+gend[i]) ];
   var bloodt = blood_types;
   for(var i=0; i<bloodt.length; i++) // l10n /_bloodt_.+/
-    bloodt[i] = [ bloodt[i], mt('_bloodt_'+bloodt[i]) ];
+    bloodt[i] = [ bloodt[i], bloodt[i] == 'unknown' ? mt('_unknown') : mt('_bloodt_'+bloodt[i]) ];
   var roles = char_roles;
   for(var i=0; i<roles.length; i++) // l10n /_charrole_.+/
     roles[i] = [ roles[i], mt('_charrole_'+roles[i]) ];
@@ -2534,7 +2534,7 @@ function filReleases() {
     types[i] = [ types[i], mt('_rtype_'+types[i]) ];
   var ages = age_ratings;
   for(var i=0; i<ages.length; i++)
-    ages[i] = [ ages[i], ages[i] == -1 ? mt('_minage_null') : ages[i] == 0 ? mt('_minage_all') : mt('_minage_age', ages[i]) ];
+    ages[i] = [ ages[i], ages[i] == -1 ? mt('_unknown') : ages[i] == 0 ? mt('_minage_all') : mt('_minage_age', ages[i]) ];
   var lang = languages;
   for(var i=0; i<lang.length; i++) // l10n /_lang_.+/
     lang[i] = [ lang[i], mt('_lang_'+lang[i]) ];
@@ -2546,10 +2546,10 @@ function filReleases() {
     med[i] = [ med[i], mt('_med_'+med[i]) ];
   var voi = voiced;
   for(var i=0; i<voi.length; i++) // l10n /_voiced_.+/
-    voi[i] = [ voi[i], mt('_voiced_'+voi[i]) ];
+    voi[i] = [ voi[i], voi[i] == 0 ? mt('_unknown') : mt('_voiced_'+voi[i]) ];
   var ani = animated;
   for(var i=0; i<ani.length; i++) // l10n /_animated_.+/
-    ani[i] = [ ani[i], mt('_animated_'+ani[i]) ];
+    ani[i] = [ ani[i], ani[i] == 0 ? mt('_unknown') : mt('_animated_'+ani[i]) ];
   return [
     mt('_rbrowse_fil_title'),
     [ mt('_rbrowse_general'),
@@ -2584,7 +2584,7 @@ function filVN() {
     plat[i] = [ plat[i], mt('_plat_'+plat[i]) ];
   var len = vn_lengths;
   for(var i=0; i<len.length; i++) // l10n /_vnlength_.+/
-    len[i] = [ len[i], mt('_vnlength_'+len[i]) ];
+    len[i] = [ len[i], len[i] == 0 ? mt('_unknown') : mt('_vnlength_'+len[i]) ];
 
   var ontagpage = location.pathname.indexOf('/v/') < 0;
 

@@ -474,33 +474,33 @@ sub _write_release_string {
                           cssicon "lang $_", mt "_lang_$_";
                           br if $_ ne $rel->{languages}[$#{$rel->{languages}}];
                          }
-                         txt mt '_vnpage_release_unknown' if !@{$rel->{languages}};
+                         txt mt '_unknown' if !@{$rel->{languages}};
                        }
    when ('publication'){ txt mt $rel->{patch} ? '_relinfo_pub_patch' : '_relinfo_pub_nopatch', $rel->{freeware}?0:1, $rel->{doujin}?0:1 }
    when ('platforms')  { for(@{$rel->{platforms}}) {
                           cssicon $_, mt "_plat_$_";
                           br if $_ ne $rel->{platforms}[$#{$rel->{platforms}}];
                          }
-                         txt mt '_vnpage_release_unknown' if !@{$rel->{platforms}};
+                         txt mt '_unknown' if !@{$rel->{platforms}};
                        }
    when ('media')      { for (@{$rel->{media}}) {
                          txt $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1);
                          br if $_ ne $rel->{media}[$#{$rel->{media}}];
                         }
-                        txt mt '_vnpage_release_unknown' if !@{$rel->{media}};
+                        txt mt '_unknown' if !@{$rel->{media}};
                        }
    when ('resolution') { if($rel->{resolution}) {
                           my $res = $self->{resolutions}[$rel->{resolution}][0];
                           txt $res =~ /^_/ ? mt $res : $res;
                          } else {
-                          txt mt '_vnpage_release_unknown';
+                          txt mt '_unknown';
                          }
                        }
-   when ('voiced')     { txt mt '_voiced_'.$rel->{voiced}; }
+   when ('voiced')     { txt mtvoiced $rel->{voiced}; }
    when ('ani_ero')    { txt join ', ',
-                         $rel->{ani_story} ? mt('_relinfo_ani_story', mt '_animated_'.$rel->{ani_story}):(),
-                         $rel->{ani_ero}   ? mt('_relinfo_ani_ero',   mt '_animated_'.$rel->{ani_ero}  ):();
-                         txt mt '_vnpage_release_unknown' if !$rel->{ani_story} && !$rel->{ani_ero};
+                         $rel->{ani_story} ? mt('_relinfo_ani_story', mtani $rel->{ani_story}):(),
+                         $rel->{ani_ero}   ? mt('_relinfo_ani_ero',   mtani $rel->{ani_ero}  ):();
+                         txt mt '_unknown' if !$rel->{ani_story} && !$rel->{ani_ero};
                        }
    when ('released')   { lit $self->{l10n}->datestr($rel->{released}) }
    when ('minage')     { txt minage $rel->{minage} }
@@ -579,7 +579,7 @@ sub page {
      if($v->{length}) {
        Tr;
         td mt '_vnpage_length';
-        td mt '_vnlength_'.$v->{length}, 1;
+        td mtvnlen $v->{length}, 1;
        end;
      }
      my @links = (
@@ -685,7 +685,7 @@ sub _revision {
     [ original    => diff => 1 ],
     [ alias       => diff => qr/[ ,\n\.]/ ],
     [ desc        => diff => qr/[ ,\n\.]/ ],
-    [ length      => serialize => sub { mt '_vnlength_'.$_[0] } ],
+    [ length      => serialize => \&mtvnlen ],
     [ l_wp        => htmlize => sub {
       $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
     }],
@@ -854,9 +854,9 @@ sub _useroptions {
     }
 
     Select id => 'listsel', name => $self->authGetCode("/v$v->{id}/list");
-     option $list ? mt '_vnpage_uopt_vnlisted', mt '_vnlist_status_'.$list->{status} : mt '_vnpage_uopt_novn';
+     option $list ? mt '_vnpage_uopt_vnlisted', mtvnlstat $list->{status} : mt '_vnpage_uopt_novn';
      optgroup label => $list ? mt '_vnpage_uopt_changevn' : mt '_vnpage_uopt_addvn';
-      option value => $_, mt "_vnlist_status_$_" for (@{$self->{rlist_status}});
+      option value => $_, mtrlstat $_ for (@{$self->{rlist_status}});
      end;
      option value => -1, mt '_vnpage_uopt_delvn' if $list;
     end;
@@ -961,7 +961,7 @@ sub _releases {
          td class => 'tc5';
           if($self->authInfo->{id}) {
             a href => "/r$rel->{id}", id => "rlsel_$rel->{id}", class => 'vnrlsel',
-             $rel->{ulist} ? mt '_rlist_status_'.$rel->{ulist}{status} : '--';
+             $rel->{ulist} ? mtrlstat $rel->{ulist}{status} : '--';
           } else {
             txt ' ';
           }

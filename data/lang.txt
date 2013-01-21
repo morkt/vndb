@@ -103,6 +103,20 @@ ends with ']'. The following options are supported:
 #############################################################################
 # data/global.pl - used in many places
 
+# Generic value to indicate a "this field is unknown".
+
+:_unknown
+en : Unknown
+ru : Неизвестно
+cs : Není známo
+hu : Ismeretlen
+nl : Onbekend
+de : Unbekannt
+es : Desconocido
+tr : Bilinmiyor
+uk : Невідомо
+it : Sconosciuto
+
 
 # languages
 
@@ -1401,18 +1415,6 @@ it : widescreen
 
 # 'Voiced' information for releases
 
-:_voiced_0
-en : Unknown
-ru : Неизвестно
-cs : Není známo
-hu : Ismeretlen
-nl : Onbekend
-de : Unbekannt
-es : Desconocido
-tr : Bilinmiyor
-uk : Невідомо
-it : Sconosciuto
-
 :_voiced_1
 en : Not voiced
 ru : Нет озвучки
@@ -1463,18 +1465,6 @@ it : Voci complete
 
 
 # 'Animated' information for releases
-
-:_animated_0
-en : Unknown
-ru : Неизвестно
-cs : Není známo
-hu : Ismeretlen
-nl : Onbekend
-de : Unbekannt
-es : Desconocido
-tr : Bilinmiyor
-uk : Невідомо
-it : Sconosciuto
 
 :_animated_1
 en : No animations
@@ -1650,18 +1640,6 @@ it : capolavoro
 
 # VN lengths
 
-:_vnlength_0
-en : Unknown
-ru : Неизвестно
-cs : Není známo
-hu : Ismeretlen
-nl : Onbekend
-de : Unbekannt
-es : Desconocido
-tr : Bilinmiyor
-uk : Невідомо
-it : Sconosciuta
-
 :_vnlength_1
 en : Very short[index,_1,, (< 2 hours), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
 ru : Крошечная[index,_1,, (< 2 часов), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
@@ -1725,18 +1703,6 @@ it : Molto lunga[index,_1,, (> 50 ore), (Clannad~, Umineko~, Fate/Stay Night)]
 
 # VN list statuses
 
-:_rlist_status_0
-en : Unknown
-ru : Неизвестно
-cs : Není známo
-hu : Ismeretlen
-nl : Onbekend
-de : Unbekannt
-es : Desconocido
-tr : Bilinmiyor
-uk : Невідомо
-it : Sconosciuto
-
 :_rlist_status_1
 en : Pending
 ru : Ожидается
@@ -1784,18 +1750,6 @@ es : Eliminado
 tr : Silindi
 uk : Видалена
 it : Cancellato
-
-:_vnlist_status_0
-en : Unknown
-ru : Неизвестно
-cs : Není známo
-hu : Ismeretlen
-nl : Onbekend
-de : Unbekannt
-es : Desconocido
-tr : Bilinmiyor
-uk : Невідомо
-it : Sconosciuto
 
 :_vnlist_status_1
 en : Playing
@@ -1886,18 +1840,6 @@ it : Tecnico
 
 
 # Blood types
-
-:_bloodt_unknown
-en : Unknown
-ru : Неизвестна
-cs : Není znám
-hu : Ismeretlen
-nl : Onbekend
-de : Unbekannt
-es : Desconocido
-tr : Bilinmiyor
-uk : Невідомо
-it : Sconosciuto
 
 :_bloodt_o
 en : O
@@ -2322,18 +2264,6 @@ it : [_1] sec fa
 
 
 # Age ratings
-
-:_minage_null
-en : Unknown
-ru : Неизвестно
-cs : Není známo
-hu : Ismeretlen
-nl : Onbekend
-de : Unbekannt
-es : Desconocido
-tr : Bilinmiyor
-uk : Невідомо
-it : Sconosciuto
 
 :_minage_all
 en : All ages
@@ -14333,18 +14263,6 @@ cs*:
 hu*:
 nl*:
 de : NA für Patches
-es*:
-tr*:
-uk*:
-it*:
-
-:_vnpage_release_unknown
-en : Unknown
-ru*:
-cs*:
-hu*:
-nl*:
-de : Unbekannt
 es*:
 tr*:
 uk*:

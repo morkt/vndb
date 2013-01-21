@@ -58,9 +58,9 @@ sub page {
         map $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1), @{$_[0]}
       } ],
       [ resolution => serialize => sub { my $r = $self->{resolutions}[$_[0]][0]; $r =~ /^_/ ? mt($r) : $r } ],
-      [ voiced     => serialize => sub { mt '_voiced_'.$_[0] } ],
-      [ ani_story  => serialize => sub { mt '_animated_'.$_[0] } ],
-      [ ani_ero    => serialize => sub { mt '_animated_'.$_[0] } ],
+      [ voiced     => serialize => \&mtvoiced ],
+      [ ani_story  => serialize => \&mtani ],
+      [ ani_ero    => serialize => \&mtani ],
       [ producers  => join => '<br />', split => sub {
         map sprintf('<a href="/p%d" title="%s">%s</a> (%s)', $_->{id}, $_->{original}||$_->{name}, shorten($_->{name}, 50),
           join(', ', $_->{developer} ? mt '_reldiff_developer' :(), $_->{publisher} ? mt '_reldiff_publisher' :())
@@ -170,7 +170,7 @@ sub _infotable {
    if($r->{voiced}) {
      Tr;
       td mt '_relinfo_voiced';
-      td mt '_voiced_'.$r->{voiced};
+      td mtvoiced $r->{voiced};
      end;
    }
 
@@ -178,8 +178,8 @@ sub _infotable {
      Tr;
       td mt '_relinfo_ani';
       td join ', ',
-        $r->{ani_story} ? mt('_relinfo_ani_story', mt '_animated_'.$r->{ani_story}):(),
-        $r->{ani_ero}   ? mt('_relinfo_ani_ero',   mt '_animated_'.$r->{ani_ero}  ):();
+        $r->{ani_story} ? mt('_relinfo_ani_story', mtani $r->{ani_story}):(),
+        $r->{ani_ero}   ? mt('_relinfo_ani_ero',   mtani $r->{ani_ero}  ):();
      end;
    }
 
@@ -242,9 +242,9 @@ sub _infotable {
       td;
        Select id => 'listsel', name => $self->authGetCode("/r$r->{id}/list");
         option value => -2, 
-          mt !$rl ? '_relinfo_user_notlist' : ('_relinfo_user_inlist', mt('_rlist_status_'.$rl->{status}));
+          mt !$rl ? '_relinfo_user_notlist' : ('_relinfo_user_inlist', mtrlstat $rl->{status});
         optgroup label => mt '_relinfo_user_setstatus';
-         option value => $_, mt '_rlist_status_'.$_
+         option value => $_, mtrlstat $_
            for (@{$self->{rlist_status}});
         end;
         option value => -1, mt '_relinfo_user_del' if $rl;
@@ -410,11 +410,11 @@ sub _form {
     [ select => short => 'resolution', name => mt('_redit_form_resolution'), options => [
       map [ $_, map /^_/?mt($_):$_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
     [ select => short => 'voiced',     name => mt('_redit_form_voiced'), options => [
-      map [ $_, mt '_voiced_'.$_ ], @{$self->{voiced}} ] ],
+      map [ $_, mtvoiced $_ ], @{$self->{voiced}} ] ],
     [ select => short => 'ani_story',  name => mt('_redit_form_ani_story'), options => [
-      map [ $_, mt '_animated_'.$_ ], @{$self->{animated}} ] ],
+      map [ $_, mtani $_ ], @{$self->{animated}} ] ],
     [ select => short => 'ani_ero',  name => mt('_redit_form_ani_ero'), options => [
-      map [ $_, $_ ? mt '_animated_'.$_ : mt('_redit_form_ani_ero_none') ], @{$self->{animated}} ] ],
+      map [ $_, $_ ? mtani $_ : mt('_redit_form_ani_ero_none') ], @{$self->{animated}} ] ],
     [ static => content => mt('_redit_form_ani_ero_note') ],
     [ hidden => short => 'media' ],
     [ static => nolabel => 1, content => sub {

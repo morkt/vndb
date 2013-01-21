@@ -224,7 +224,7 @@ sub _form {
     [ textarea => short => 'desc',      name => mt('_vnedit_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', rows => 10 ],
     [ static   => content => mt '_vnedit_desc_msg' ],
     [ select   => short => 'length',    name => mt('_vnedit_length'), width => 450, options =>
-      [ map [ $_ => mt '_vnlength_'.$_, 2 ], @{$self->{vn_lengths}} ] ],
+      [ map [ $_ => mtvnlen $_, 2 ], @{$self->{vn_lengths}} ] ],
 
     [ input    => short => 'l_wp',      name => mt('_vnedit_links'), pre => 'http://en.wikipedia.org/wiki/' ],
     [ input    => short => 'l_encubed', pre => 'http://novelnews.net/tag/', post => '/' ],

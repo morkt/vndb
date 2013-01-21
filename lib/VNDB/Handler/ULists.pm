@@ -405,7 +405,7 @@ sub vnlist {
    end;
    p class => 'browseopts';
     a href => $url->(t => -1), -1 == $f->{t} ? (class => 'optselected') : (), mt '_rlist_all';
-    a href => $url->(t => $_), $_ == $f->{t} ? (class => 'optselected') : (), mt '_vnlist_status_'.$_ for @{$self->{vnlist_status}};
+    a href => $url->(t => $_), $_ == $f->{t} ? (class => 'optselected') : (), mtvnlstat $_ for @{$self->{vnlist_status}};
    end;
   end 'div';
 
@@ -451,7 +451,7 @@ sub _vnlist_browse {
         a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, shorten $i->{title}, 70;
         b class => 'grayedout', $i->{notes} if $i->{notes};
        end;
-       td class => 'tc6', $i->{status} ? mt '_vnlist_status_'.$i->{status} : '';
+       td class => 'tc6', $i->{status} ? mtvnlstat $i->{status} : '';
        td class => 'tc7';
         my $obtained = grep $_->{status}==2, @{$i->{rels}};
         my $total = scalar @{$i->{rels}};
@@ -479,7 +479,7 @@ sub _vnlist_browse {
          td class => 'tc5';
           a href => "/r$_->{rid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;
          end;
-         td class => 'tc6', $_->{status} ? mt '_rlist_status_'.$_->{status} : '';
+         td class => 'tc6', $_->{status} ? mtrlstat $_->{status} : '';
          td class => 'tc7_8', colspan => 2, '';
         end 'tr';
       }
@@ -493,7 +493,7 @@ sub _vnlist_browse {
         Select id => 'vns', name => 'vns';
          option value => -2, mt '_rlist_withvn';
          optgroup label => mt '_rlist_changestat';
-          option value => $_, mt "_vnlist_status_$_"
+          option value => $_, mtvnlstat $_
             for (@{$self->{vnlist_status}});
          end;
          option value => 999, mt '_rlist_setnote';
@@ -502,7 +502,7 @@ sub _vnlist_browse {
         Select id => 'rel', name => 'rel';
          option value => -2, mt '_rlist_withrel';
          optgroup label => mt '_rlist_changestat';
-          option value => $_, mt "_rlist_status_$_"
+          option value => $_, mtrlstat $_
             for (@{$self->{rlist_status}});
          end;
          option value => -1, mt '_rlist_del';

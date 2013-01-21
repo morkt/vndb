@@ -46,7 +46,7 @@ sub page {
       [ s_hip     => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ height    => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ weight    => serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ bloodt    => serialize => sub { mt "_bloodt_$_[0]" } ],
+      [ bloodt    => serialize => \&mtbloodt ],
       [ main      => htmlize => sub { $_[0] ? sprintf '<a href="/c%d">c%d</a>', $_[0], $_[0] : mt '_revision_empty' } ],
       [ main_spoil=> serialize => sub { mt "_spoil_$_[0]" } ],
       [ image     => htmlize => sub {
@@ -123,7 +123,7 @@ sub charTable {
        }
        b class => 'grayedout', style => 'margin-right: 10px', $r->{original} if $r->{original};
        cssicon "gen $r->{gender}", mt "_gender_$r->{gender}" if $r->{gender} ne 'unknown';
-       span mt "_bloodt_$r->{bloodt}" if $r->{bloodt} ne 'unknown';
+       span mtbloodt $r->{bloodt} if $r->{bloodt} ne 'unknown';
       end;
      end;
     end;
@@ -363,7 +363,7 @@ sub edit {
     [ input  => name => mt('_chare_form_height'),short => 'height', width => 50, post => ' cm' ],
     [ input  => name => mt('_chare_form_weight'),short => 'weight', width => 50, post => ' kg' ],
     [ select => name => mt('_chare_form_bloodt'),short => 'bloodt', options => [
-       map [ $_, mt("_bloodt_$_") ], @{$self->{blood_types}} ] ],
+       map [ $_, mtbloodt $_ ], @{$self->{blood_types}} ] ],
     [ static => content => '<br />' ],
     [ input  => name => mt('_chare_form_main'),  short => 'main', width => 50, post => ' '.mt('_chare_form_main_note') ],
     [ select => name => mt('_chare_form_main_spoil'), short => 'main_spoil', options => [

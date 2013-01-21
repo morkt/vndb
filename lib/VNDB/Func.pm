@@ -10,6 +10,7 @@ use VNDBUtil;
 our @EXPORT = (@VNDBUtil::EXPORT, qw|
   clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags
   childtags charspoil imgpath imgurl fmtvote
+  mtvoiced mtani mtvnlen mtrlstat mtvnlstat mtbloodt
 |);
 
 
@@ -69,7 +70,7 @@ sub mt {
 
 sub minage {
   my($a, $ex) = @_;
-  my $str = $a == -1 ? mt '_minage_null' : !$a ? mt '_minage_all' : mt '_minage_age', $a;
+  my $str = $a == -1 ? mt '_unknown' : !$a ? mt '_minage_all' : mt '_minage_age', $a;
   $ex = !defined($a) ? '' : {
      0 => 'CERO A',
     12 => 'CERO B',
@@ -199,6 +200,16 @@ sub imgurl {
 sub fmtvote {
   return !$_[0] ? '-' : $_[0] % 10 == 0 ? $_[0]/10 : sprintf '%.1f', $_[0]/10;
 }
+
+
+# mt() wrappers for data-dependent translation strings that have a special
+# value for 'unknown'.
+sub mtvoiced { !$_[0] ? mt '_unknown' : mt '_voiced_'.$_[0]; }
+sub mtani    { !$_[0] ? mt '_unknown' : mt '_animated_'.$_[0]; }
+sub mtvnlen  { !$_[0] ? mt '_unknown' : mt '_vnlength_'.$_[0], $_[1]||0; }
+sub mtrlstat { !$_[0] ? mt '_unknown' : mt '_rlist_status_'.$_[0]; }
+sub mtvnlstat{ !$_[0] ? mt '_unknown' : mt '_vnlist_status_'.$_[0]; }
+sub mtbloodt { $_[0] eq 'unknown' ? mt '_unknown' : mt '_bloodt_'.$_[0]; }
 
 1;
 
