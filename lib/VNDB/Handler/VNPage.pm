@@ -685,7 +685,7 @@ sub _revision {
     [ original    => diff => 1 ],
     [ alias       => diff => qr/[ ,\n\.]/ ],
     [ desc        => diff => qr/[ ,\n\.]/ ],
-    [ length      => serialize => \&mtvnlen ],
+    [ length      => serialize => sub { mtvnlen $_[0] } ],
     [ l_wp        => htmlize => sub {
       $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
     }],
