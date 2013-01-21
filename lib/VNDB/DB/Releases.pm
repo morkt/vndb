@@ -20,6 +20,7 @@ sub dbReleaseGet {
   $o{page} ||= 1;
   $o{what} ||= '';
   $o{plat} = [ $o{plat} ] if $o{plat} && !ref $o{plat};
+  $o{med}  = [ $o{med}  ] if $o{med}  && !ref $o{med};
 
   my @where = (
     !$o{id} && !$o{rev}     ? ( 'r.hidden = FALSE' => 0       ) : (),
@@ -47,8 +48,10 @@ sub dbReleaseGet {
       grep(/^unk$/, @{$o{plat}}) ? 'NOT EXISTS(SELECT 1 FROM releases_platforms irp WHERE irp.rid = r.latest)' : (),
       grep(!/^unk$/, @{$o{plat}}) ? 'rr.id IN(SELECT irp.rid FROM releases_platforms irp JOIN releases ir ON ir.latest = irp.rid WHERE irp.platform IN(!l))' : (),
       ), [ [ grep !/^unk$/, @{$o{plat}} ] ]) : (),
-    $o{med} ? (
-      'rr.id IN(SELECT irm.rid FROM releases_media irm JOIN releases ir ON ir.latest = irm.rid WHERE irm.medium IN(!l))' => [ ref $o{med} ? $o{med} : [ $o{med} ] ] ) : (),
+    $o{med} ? (join(' OR ',
+      grep(/^unk$/, @{$o{med}}) ? 'NOT EXISTS(SELECT 1 FROM releases_media irm WHERE irm.rid = r.latest)' : (),
+      grep(!/^unk$/, @{$o{med}}) ? 'rr.id IN(SELECT irm.rid FROM releases_media irm JOIN releases ir ON ir.latest = irm.rid WHERE irm.medium IN(!l))' : ()
+      ), [ [ grep(!/^unk$/, @{$o{med}}) ] ]) : (),
   );
 
   if($o{search}) {

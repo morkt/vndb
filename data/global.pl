@@ -63,7 +63,7 @@ our %S = (%S,
   },
   age_ratings     => [-1, 0, 6..18],
   release_types   => [qw|complete partial trial|],
-  # The 'unk' platform is reserved for "unknown".
+  # The 'unk' platform and medium are reserved for "unknown".
   platforms       => [qw|win dos lin mac ios and dvd bdp gba msx nds nes p98 psp ps1 ps2 ps3 psv drc sat sfc wii n3d xb3 web oth|],
   media           => {
    #DB     qty?

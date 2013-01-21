@@ -2545,6 +2545,7 @@ function filReleases() {
   var med = media;
   for(var i=0; i<med.length; i++) // l10n /_med_.+/
     med[i] = [ med[i], mt('_med_'+med[i]) ];
+  med.splice(0, 0, [ 'unk', mt('_unknown') ]);
   var voi = voiced;
   for(var i=0; i<voi.length; i++) // l10n /_voiced_.+/
     voi[i] = [ voi[i], voi[i] == 0 ? mt('_unknown') : mt('_voiced_'+voi[i]) ];
