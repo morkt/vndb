@@ -856,7 +856,7 @@ sub _useroptions {
     Select id => 'listsel', name => $self->authGetCode("/v$v->{id}/list");
      option $list ? mt '_vnpage_uopt_vnlisted', mtvnlstat $list->{status} : mt '_vnpage_uopt_novn';
      optgroup label => $list ? mt '_vnpage_uopt_changevn' : mt '_vnpage_uopt_addvn';
-      option value => $_, mtrlstat $_ for (@{$self->{rlist_status}});
+      option value => $_, mtvnlstat $_ for (@{$self->{rlist_status}});
      end;
      option value => -1, mt '_vnpage_uopt_delvn' if $list;
     end;
