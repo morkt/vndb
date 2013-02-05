@@ -266,7 +266,7 @@ it : Coreano
 
 :_lang_nl
 en : Dutch
-ru : Голландский
+ru : Нидерландский
 cs : Nizozemsky
 hu : Holland
 nl : Nederlands
@@ -5617,7 +5617,7 @@ it : Pubblicazione
 
 :_relinfo_pub_nopatch
 en : [index,_1,Freeware,Non-free], [index,_2,doujin,commercial]
-ru : [index,_1,Freeware,Несвободная], [index,_2,додзинси,коммерческая]
+ru : [index,_1,Freeware,Несвободная], [index,_2,додзин,коммерческая]
 cs : [index,_1,Freeware,Non-free], [index,_2,doujin,komerční]
 hu : [index,_1,Freeware,Nem Freeware], [index,_2,doujin,kereskedelmi]
 nl : [index,_1,Freeware,Betaald], [index,_2,doujin,commercieel]
@@ -6672,7 +6672,7 @@ it : Doujin
 
 :_rbrowse_doujin_yes
 en : Only doujin releases
-ru : Только додзинси
+ru : Только додзин
 cs : Pouze doujin vydání
 hu : Csak doujin kiadások
 nl : Alleen doujin uitgaven
