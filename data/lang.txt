@@ -5302,7 +5302,7 @@ it : Freeware
 
 :_revfield_r_doujin
 en : Doujin
-ru : Додзинси
+ru : Додзин
 cs : Doujin
 hu :
 nl :
@@ -5956,7 +5956,7 @@ it : Freeware (disponibile gratuitamente)
 
 :_redit_form_doujin
 en : Doujin (self-published, not by a company)
-ru : Додзинси (выпущено самостоятельно, частным лицом)
+ru : Додзин (выпущено самостоятельно, частным лицом)
 cs : Doujin (publikováno samostatně, ne firmou)
 hu : Doujin (magán kiadás, nem egy cég által)
 nl : Doujin (zelf gepubliceert, niet onder een bedrijf)
@@ -6660,7 +6660,7 @@ it : Solo pubblicazioni non gratis
 
 :_rbrowse_doujin
 en : Doujin
-ru : Додзинси
+ru : Додзин
 cs : Doujin
 hu :
 nl :
