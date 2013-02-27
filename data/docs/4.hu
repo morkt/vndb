@@ -1,8 +1,8 @@
-:TITLE:Készítők hozzáadása/szerkesztése
+:TITLE:Készítők bejegyzése/szerkesztése
 :INC:index
 
 
-:SUB:Mikor adjunk hozzá egy új készítőt
+:SUB:Mikor jegyezzünk be egy új készítőt
 <p>
  Egy készítői bejegyzést akkor kell létrehozni mikor egy olyan visual novelt szeretnénk bejegyezni
  amelyiknek még nincs benne a készítője az adatbázisba. Az olyan készítők amelyeknek nincsenek
@@ -41,31 +41,31 @@ egymással és milyen ez a kapcsolat köztük. A megfelelő összefüggés kivá
 zavaros lehet, szóval, ha kételkedsz akkor villants egy pillantást a készítő összefüggés grafikonjára.
 Az alábbi összefüggés fajták az adottak:
 <dl>
- <dt>Előzőleg</dt><dd>
+ <dt>Megelőzi</dt><dd>
   A jelenlegi készítő régebben a kiválasztott készítő ként volt ismert. Ez azért lehet mert
   megváltoztatta a nevet, vagy feloszlott és ugyanaz a csapat újra kezdte egy más név alatt.
- </dd><dt>Felváltotta</dt><dd>
-  Az <i>Előzőleg</i> ellentéte - a kiválasztott készítő előzőleg úgy volt ismert mint a jelenlegi
+ </dd><dt>Követi</dt><dd>
+  A <i>Megelőzi</i> ellentéte - a kiválasztott készítő előzőleg úgy volt ismert mint a jelenlegi
   készítő.
  </dd><dt>Leányvállalat</dt><dd>
   A kiválasztott készítő <a href="http://en.wikipedia.org/wiki/Subsidiary">leányválalata</a> a
   jelenlegi készítőnek.
- </dd><dt>Fővállalat</dt><dd>
+ </dd><dt>Szülővállalat</dt><dd>
   Ellentéte a <i>leányvállalat</i>nak - a jelenlegi készítő leányvállalata a kiválasztott készítőnek
- </dd><dt>Impresszum</dt><dd>
-  A kiválasztott készítő impresszuma a jelenlegi készítőnek. Egyszerűbben mondva az "impresszum"
+ </dd><dt>Márkanév</dt><dd>
+  A kiválasztott készítő márkaneve egy másik készítőnek. Egyszerűbben mondva a "márkanév"
   egy másik név ugyanannak az embereknek a csoportjának, csak más név alatt adják ki a
   játékokat (X=Y, de X a készítő és Y a kiadó).
   Nézd meg a <a href="http://en.wikipedia.org/wiki/Imprint">Wikipedia</a>-t ha többet akarsz
   tudni.
- </dd><dt>Fő márka</dt><dd>
-  Az ellentéte az<i>Impresszum</i>nak - a jelenlegi készítő impresszuma a kiválasztott készítőnek.
- </dd><dt>Leszármazott</dt><dd>
-  A kiválasztott készítő a jelenlegi készítő volt tagjai alapították. A különbség az
-  <i>Előzőleg</i> összefüggés és e közt az, hogy itt még a működik az a készítő amelyikből
+ </dd><dt>Szülő márka</dt><dd>
+  Az ellentéte az<i>Márkanévnek</i>nak.
+ </dd><dt>Létrehozta</dt><dd>
+  A kiválasztott készítő a jelenlegi készítő volt tagjai alapították. A különbség a
+  <i>Megelőzi</i> összefüggés és e közt az, hogy itt még működik az a készítő amelyikből
   kikerültek az emberek.
- </dd><dt>Előd</dt><dd>
-  ellentéte a <i>Leszármazott</i>nak - a jelenlegi készítőből alakult a kiválasztott készítő.
+ </dd><dt>Létrehozó</dt><dd>
+  ellentéte a <i>Létrehoztá</i>nak - a jelenlegi készítőből alakult a kiválasztott készítő.
  </dd>
 </dl>
 

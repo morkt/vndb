@@ -1,8 +1,8 @@
-:TITLE:Kiadások szerkesztése/hozzáadása
+:TITLE:Kiadások bejegyzése/szerkesztése
 :INC:index
 
 
-:SUB:Mikor készítsünk új kiadás bejegyzést
+:SUB:Mikor jegyezzünk be egy új kiadást
 <p>
  A 'kiadás' egy termék - fizikai vagy digitális - ami tartalmazza a visual novelt(vagy annak részeit).
  Ebbe nem számítjuk bele a zene kiadásokat, dráma CD-ket, rajongó lemezeket és más terméket
@@ -134,7 +134,7 @@
  Forgalmazók nem tartoznak ide. Az állábi szerepeket lehet választani:
  <dl>
   <dt>Fejlesztő</dt><dd>
-   Ez a készítő részt vesz maga a játék fejleszétésében, de nem kell feltétlenül kell részt vegyen
+   Ez a készítő részt vesz maga a játék fejlesztésében, de nem kell feltétlenül kell részt vegyen
    ennek a kiadásnak a fejlesztésében is.
    Tartsd észbe, hogy azok a készítők amelyek csak változtatásokat vittek végbe a játékon, de
    nem maguk készítetek a játékot, NEM kell fejlesztőnek tekinteni.

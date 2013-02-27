@@ -1,0 +1,174 @@
+:TITLE:Szereplők bejegyzése/szerkesztése
+:INC:index
+:INC:notfinished
+
+
+:SUB:Bevezetés
+<p>
+A szereplők személyeket, állatokat és más tárgyakat jelképeznek egy visual novelben.
+Bármilyen szereplő függetlenül attól, hogy milyen fontosággal bír a történetben bejegyezhető
+az adatbázisba. Csak annyi az ajánlott, hogy a fontosabbakat rakjátok be először. Amikor
+új szereplőket jegyzel be próbálj minél részletesebb lenni: Vagyis próbálj meg minél több
+szereplőt betenni az adott visual novelből.
+</p>
+
+
+:SUB:Hasonmások
+<p>
+Összetudsz kapcsolni két vagy több szereplő egy úgymond "hasonmás összefüggésbe" amikor valamiféle képen ugyanaz a személy.
+</p>
+:SUBSUB: Mikor kell hasonmásokat használni
+<ul>
+  <li>A két szereplő különböző embereknek adták elő magukat de valójában ugyanaz a személy volt mind a kettő.
+   Például, <a href="/c7373">Arsene</a> és <a href="/c7374">Henriette</a>.</li>
+  <li>Az egyik szereplő egy öregebb énje egy másiknak.</li>
+  <li>Egy szereplő átváltozik egy másikra és nem feltétlenül kell tudjon visszaváltozni.
+    Például, <a href="/c1022">Kaoru (Male)</a> és <a href="/c1023">Kaoru (Female)</a>.</li>
+  <li>Két szereplő ugyanaz az a személy egy másik univerzumban, időben vagy valóságban.
+    Például, Tohsaka Rin <a href="/c34">Fate/stay night</a>-ba és <a href="/c3529">in Fate/extra</a>-ba.</li>
+  <li>Két szereplő ugyanaz a személy de más készítők használták őket. Ez azt eredményezheti, hogy pár szereplő új szerepet kap vagy megváltozik a rajzolási stílus.
+    Például, Emiya Shirou <a href="/c15">Fate/stay night</a>-ba és <a href="/c4479">Happy Valentines Day</a>-be.</li>
+  <li>Minden spoilert el kell rejteni ami a szereplőről szól. Ezt úgy lehet megcsinálni, hogy
+készítesz egy új bejegyzést ugyanarról a szereplőről hiányos de spoilermentes adatokkal. Ez majd hozzá lesz csatolva
+ugyanahhoz a szereplőhöz amelyiknek megvan minden adata.</li>
+</ul>
+:SUBSUB:Mikor nem kell hasonmásokat használni
+<ul>
+  <li>Jobb ha egy hasonmás helyet inkább alapból spoilernek jelölöd be a jellemzőket és a leírásnak részeit.</li>
+  <li>Ha két egy személy által játszott szereplő közt nem elegendő a különbség, hogy érdemes lenne egy új hasonmást bejegyezni
+akkor inkább ne tegyük azt.
+    Például, <a href="/c4287">Alice (lamia)</a> és<a href="http://s.vndb.org/sf/26/18226.jpg">Alice (human)</a>.</li>
+</ul>
+:SUBSUB:Hogyan használjuk a hasonmásokat
+<p>
+Ahhoz, hogy két vagy több szereplőt összekapcsoljunk egy hasonmás összefüggéssel
+el kell döntened, hogy melyik legyen a "fő" szereplő akire épül a többi. Mindegyik más
+"haszonmás szereplők" lesznek. (Ne keverd ezt össze a szereplő visual novelbeli szerepével.)
+Általában a legtöbbször látott szereplő kell legyen a "fő" szereplő. <br />
+A "fő" szereplőnél nem kell kitölteni a "Hasonmása" mezőt, de a "haszonmás szereplőknél" igen.
+Ha a kapcsolat spoiler akkor bizonyosodj meg, hogy ezt megjelölted mikor szerkeszted
+a "hasonmás szereplőt". A szereplő létezése a visual novelben maga a spoiler akkor
+nézd meg a lentebb megtalálható <a href="/d12#6">Visual Novelek</a> pontot.
+</p>
+
+
+:SUB:Általános tudnivalók
+<dl>
+ <dt>Név (romaji)</dt><dd>
+  A latin ábécé betűvel kiírva a neve. További információért nézd meg a <a
+  href="/d5">szerkesztési útmutatót</a>. Ha ismert akkor használd a teljes
+nevet. Ha nem tudod, akkor használd azt nevet amelyiken a legtöbbször 
+szólítják a történetben. Ha egy szereplőnek a történet során nem derül ki
+a neve vagy megszólítása akkor az "Unnamed" (Ismeretlen) szót kell beírni.<br />
+Néhány esetben a teljes név spoiler lehet. Nézd meg a fenti pontot, hogy mit
+kell ilyenkor csinálni.
+ </dd><dt>Eredeti név</dt><dd>
+A szereplő eredeti neve a saját nyelvén írva. Hagyd üresen ha megegyezik
+a "Név (romaji)"-val. Ha lehetséges akkor próbálj hagyni egy szóközt a kereszt
+és vezetéknevek közt.
+ </dd><dt>Nevek</dt><dd>
+Más ismert nevei a szereplőnek mint például becenevek, álnevek stb. Mivel
+itt nem lehet elrejteni a spoilereket inkább ne írj be egy nevet ha annak 
+számítana. Ilyenkor lehetőséged van ezeket a neveket megemlíteni a leírásban
+a [spoiler] kód használatával.
+ </dd><dt>Leírás</dt><dd>
+A szereplő rövid leírassa. Ajánlatot a spoilereket a minimumra csökkenteni
+de használhatod a <a href="/d9.3">formázási kódokat</a>, hogy elrejtsd őket.
+Ha külső forrásból használsz egy leírást akkor kövesd a <a  href="/d5.5">szerkesztési útmutatóba</a>
+leírt szabályokat.
+ </dd><dt>Nem</dt><dd>
+A szereplő neme. Ez általában nem okoz gondot de van pár eset mikor
+nem lehet megmondani biztosan: (Fordított) csapdáknak a biológiai nemüket
+kell megadni. Futanari szereplőknél be lehet jelölni mindkettőt. <br />
+Ha a valódi nem spoiler (mint az általában a csapdáknál szokott lenni) akkor
+"Ismeretlen"en kell hagyni. Nézd meg a fenti hasonmásokról szóló pontot
+ha a szereplő nemet vált a történet során.
+ </dd><dt>Születésnap</dt><dd>
+A szereplő születésének napja és hónapja. Évre nincs szükség.
+ </dd><dt>Mell / Derék / Csípő</dt><dd>
+Méretek. Az információ egy megbízható forrásból kell származzon mint például
+a játékból vagy a készítő honlapjáról. Ne próbáljátok ezt kitalálni!!<br />
+Ha egy hivatalos forrásba a méretek nem természetes számokkal vannak
+kifejezve akkor azokat fel kell kerekíteni. Ha nem a metrikus rendszerbe vannak
+megadva akkor át kell alakítani és felkerekíteni mielőtt ezt kitöltitek.
+ </dd><dt>Magasság</dt><dd>
+  A szereplő centiméterben megadott magassága. A fent említett szabályok a természetes
+számokról és a metrikus rendszerről itt is érvényesek.
+ </dd><dt>Súly</dt><dd>
+  A szereplő kilogrammba megadott súlya. A fent említett szabályok a természetes
+számokról és a metrikus rendszerről itt is érvényesek.
+ </dd><dt>Vércsoport</dt><dd>
+Ezt is meg kell adni ha tudott. Embereken kívül nem nagyon van értelme ennek.
+ </dd>
+</dl>
+
+
+:SUB:Kép
+<p>
+Nagy szabadságot kapunk a szereplő képek feltöltésekor a következő lista
+tartalmaz pár dolgot amit jó figyelembe venni:
+<ul>
+ <li>A <a href="/d2#4">VN szabályok szerint</a>a kép muszáj, hogy munkabarát legyen.
+Ha nincs a szereplőről munkabarát kép akkor nektek kell azt cenzúráznotok.</li>
+ <li>A kép muszáj hivatalos legyen, vagyis egyenesen a VN-ből legyen vagy a
+hivatalos honlapról. Fan rajzok tilosak!</li>
+ <li>A kép mutassa a szereplőt a leggyakoribb arckifejezésével és ruhájába.</li>
+ <li>Ha lehet akkor a kép a beszélő szereplőről legyen, de ha nincs más akkor jó
+egy jelenetből is ha ki van vágva.</li>
+ <li>A szereplőnek legalább a feje (ha van neki) és a válla kell, hogy látszódjon.
+Képek ahol látszik az egész test is jók de a lábak általában nem annyira érdekesek
+és csak lekicsinyítik a kép méretét.</li>
+ <li>A kép automatikusan le lesz vágva 256x300-as méretre, de azt ajánljuk, hogy
+inkább vágjátok ti méretre a képeket felöltés előtt. Ez az azért van így mert
+jól mutat a listába ha minden kép méret egyforma.</li>
+</ul>
+
+
+:SUB:Jellemzők
+<p>
+ Kövesd a <a href="/d10">Címkék és jellemzők</a> lapon található utasításokat.
+</p>
+
+
+:SUB:Visual Novelek
+<p>
+Egy szereplőnek mindig kapcsolatban kell legyen legalább egy visual novel 
+bejegyzéssel de ha szükséges akkor akár többel is.<br />
+Ha egy szereplő benne van egy VN mindegyik kiadásában az egyetlen kivétel 
+ami lehet az a demó, akkor egyszerűen válasz egy kiadást és hagyd a "Mind / mások" opción.
+Más helyzetekben pontosan jelöld meg, hogy melyik kiadásban szerepelnek és milyen
+szerepben. Több kiadást is össze tudsz kapcsolni megegyező szerepekkel és
+spoiler információval.<br />
+Ha szereplő szerepe vagy az létezése maga a spoiler akkor azt ne felejtsd
+megjelölni.<br /> <br />
+ Az alábbi szerepek közül lehet választani:<br /><br />
+</p>
+<dl>
+ <dt>Főszereplő</dt><dd>
+A személy akinek a szemszögéből játszódik a történet. A történet jelentős része
+a főszereplő szemein keresztül kell, hogy játszódjon. Néhány visual novel egy rövid
+időre átvált egy másik szereplőre, hogy egy másik szemszögből mutassa meg a történetet
+de azért ez még nem teszi őket főszereplőké.
+ </dd><dt>Szereplő</dt><dd>
+Egy szereplő aki fontos szerepet játszik a történetben vagy sokat látjuk a
+képernyőn. Általában egy hősnő a saját történetével, társak vagy osztálytársak
+akiket sokat láttunk ide sorolhatók.
+ </dd><dt>Mellékszereplő</dt><dd>
+Egy szereplő aki csak kis szerepet játszik a történetben vagy keveset látjuk a
+képernyőn. Ezek a szereplők legtöbb esetben a történet bizonyos részeiben bukkannak
+csak fel de nem mindig van így.
+ </dd><dt>Megjelenik</dt><dd>
+Ebbe a szerepbe azokat a szereplőket kell osztályozni akik nagyon kevés ideig
+vannak jelen és pár mondatnyi vagy abszolút semmi szövegük nincs. Ezt legtöbbször
+<a  href="http://hu.wikipedia.org/wiki/Cameoszerep">cameoszerepeknél</a> kell
+használni.
+ </dd>
+</dl>
+<p>
+Jegyezd meg, hogy nincs egy konkrét elválasztó vonal a szerepeket közt és
+egész nap tarthatnánk ezekről (értelmetlen) beszélgetéseket. Egyszerűen
+válaszd azt a szerepet amelyiket úgy gondolod, hogy illik a szereplőhöz. 
+Ahhoz, hogy megjöjjön az ihlet nézz körül a többi szereplők és a visual novelek
+közt kapcsolatok közt ha van kedved.
+</p>
+

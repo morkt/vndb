@@ -7,7 +7,7 @@
 A célunk egy nagy, átfogó és napra kész adatbázist létrehozni minden létező visual novelről.
 A VNDB központosítani akarja ezt és általános, praktikus információval akar szolgálni bármilyen
 visual novel, kiadás, honosítás és készítőről.<br />
-A másodlagos célunk, hogy terjesztsük a visual novelek gyönyörét egy szélesebb közönségnek,
+A másodlagos célunk, hogy terjesszük a visual novelek gyönyörét egy szélesebb közönségnek,
 egy olyan közönségnek amely nem csak azokra van leszűkítve akik tudnak japánul, hanem bárkinek
 akit érdekel az irodalom, anime, manga és játékok függetlenül attól, hogy hol laknak és, hogy milyen
 kultúra tagjai.
@@ -16,7 +16,7 @@ kultúra tagjai.
 
 :SUB:Genezis
 <p>
-Minden akkor kezdődöt mikor <a href="/u2">yorhel</a> befejezte az
+Minden akkor kezdődött mikor <a href="/u2">yorhel</a> befejezte az
  <a href="/v17">Ever17</a>-et. Mivel hihetetlenül le volt nyűgözve ettől a mesterműtől, több
 kérdés is felvillant a fejébe: Miután megtudod egy s mást a visual novelekről, megkérdezte magától,
 hogy miért is került neki
@@ -49,7 +49,9 @@ is növekszik.
  <b>Kód fejlesztés</b><br />
  <dl>
   <dt>Yorhel</dt><dd>Fő fejlesztő.</dd>
-  <dt>3dB</dt><dd>Írta a felhasználó hitelesítő kódot és bevezette a fórumba a hozzászólás szabályzó rendszert.</dd>
+  <dt>QCyph</dt><dd>Hozzájárulása: a szereplő szűrők.</dd>
+  <dt>3dB</dt><dd>Hozzájárulása: megírta a felhasználó hitelesítő kódot és bevezette a fórumba a hozzászólás szabályzó rendszert.</dd>
+  <dt>SpaceRanger</dt><dd>Hozzájárulása: a visual novel összehasonlító lap, a VN listába megtalálható felhasználó oszlopok és a dx.x.x link formatálas.</dd>
  </dl>
  <br />
 

@@ -8,9 +8,10 @@
  alapból azt feltételeztük, hogy ezek a rajongók nem tudnak vagy nem ismernek fel mást a latin
  betűkön kívül. Ezért sok helyen kell alkalmazni a romanizálást az adatbázisban: a címeknél,
  vagy a kiadások és készítőknél.<br />
- Ahhoz, hogy a dolgok simán menjenek a
+ Ahhoz, hogy a dolgok simán menjenek a két fajta romanizálást használunk. A
  <a href="http://en.wikipedia.org/wiki/Hepburn_romanization">Hepburn féle romanizálást</a>
- használjuk ami megegyezik azzal a fajta romanizálással amelyet az
+és a <a href="http://en.wikipedia.org/wiki/Wapuro">Wapuro</a> félét.
+ Ez megegyezik azzal a fajta romanizálással amelyet az
  <a href="http://wiki.anidb.net/w/Romanisation">AniDB</a> is használ.
  <br />
  Angol vagy más idegen nyelvű szavakat amelyek nem a római ábécé betűivel vannak írva, alakítsatok

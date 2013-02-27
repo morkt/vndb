@@ -220,7 +220,7 @@ it : Ungherese
 en : Indonesian
 ru : Индонезийский
 cs*:
-hu*:
+hu : Indonéz
 nl : Indonesisch
 de : Indonesisch
 es*:
@@ -621,7 +621,7 @@ it : PlayStation 3
 en : PlayStation Vita
 ru*:
 cs*:
-hu*:
+hu :
 nl :
 de : PlayStation Vita
 es*:
@@ -681,7 +681,7 @@ it : Nintendo Wii
 en : Nintendo 3DS
 ru*:
 cs*:
-hu*:
+hu :
 nl :
 de : Nintendo 3DS
 es*:
@@ -867,7 +867,7 @@ it : Altro
 en : Sequel
 ru : Продолжение
 cs : Pokračování
-hu : Folytatás
+hu : Következő rész
 nl : Vervolg
 de : Nachfolger
 es : Secuela
@@ -879,7 +879,7 @@ it : Sequel
 en : Prequel
 ru : Предыстория
 cs : Prequel
-hu : Előd
+hu : Előző rész
 nl : Voorganger
 de : Vorgänger
 es : Precuela
@@ -891,7 +891,7 @@ it : Prequel
 en : Same setting
 ru : Тот же мир
 cs : Stejné zasazení
-hu : Egyforma színhely
+hu : Azonos színhely
 nl : Gedeelde setting
 de : Gleicher Schauplatz
 es : Mismo escenario
@@ -951,7 +951,7 @@ it : Parent story
 en : Same series
 ru : Из той же серии
 cs : Stejná série
-hu : Ugyanaz a sorozat
+hu : Azonos sorozat
 nl : Zelfde serie
 de : Gleiche Serie
 es : Mismas series
@@ -990,7 +990,7 @@ it : Gioco originale
 en : Company
 ru : Компания
 cs : Společnost
-hu : Cég
+hu : Vállalat
 nl : Bedrijf
 de : Unternehmen
 es : Compañia
@@ -1029,7 +1029,7 @@ it : Gruppo amatoriale
 en : Formerly
 ru : Изначально
 cs : Dříve
-hu : Előzőleg
+hu : Megelőzi
 nl : Voorheen
 de : Ehemals
 es : Conocido como
@@ -1041,7 +1041,7 @@ it : Precedentemente
 en : Succeeded by
 ru : Унаследована
 cs : Nahrazeno
-hu : Utána következik
+hu : Követi
 nl : Opgevolgd door
 de : Abgelöst von
 es : Sucedido
@@ -1065,7 +1065,7 @@ it : Consociato
 en : Parent producer
 ru : Исходная компания
 cs : Mateřský producent
-hu : Alapító készítő
+hu : Szülővállalat
 nl : Moederbedrijf
 de : Mutterunternehmen
 es : Creador paralelo
@@ -1077,7 +1077,7 @@ it : Produttore affiliato
 en : Imprint
 ru : Марка
 cs : Otisk
-hu : Impresszum
+hu : Márkanév
 nl :
 de : Imprint
 es : Editorial
@@ -1089,7 +1089,7 @@ it : Sigla
 en : Parent brand
 ru : Исходный бренд
 cs : Mateřská značka
-hu : Alapító márka
+hu : Szülő márka
 nl : Hoofdbrand
 de : Ursprungsmarke
 es : Compañia paralela
@@ -1101,7 +1101,7 @@ it : Marchio affiliato
 en : Spawned
 ru : Порождена
 cs : Stvořilo
-hu : Alapította
+hu : Létrehozta
 nl : Voortgebracht
 de : Hervorgebracht von
 es : Engendra
@@ -1113,7 +1113,7 @@ it : Generato
 en : Originated from
 ru : Вышла из
 cs : Vzniklo z
-hu : Származik
+hu : Létrehozó
 nl : Voortgebracht uit
 de : Entstand aus
 es : Originado de
@@ -1290,7 +1290,7 @@ it : Discussioni generali
 en : Visual novels
 ru : Новеллы
 cs : Vizuální novely
-hu : Visual novellek
+hu : Visual novelek
 nl :
 de : Visual Novels
 es : Novelas visuales
@@ -1380,7 +1380,7 @@ it : lista nera
 en : Unknown / console / handheld
 ru : Неизвестно / консоль / наладонник
 cs : Neznámo / konzole / handheld
-hu : Ismeretlen / konzol / kézi
+hu : Ismeretlen / konzol / kézi eszköz
 nl : Onbekend / console / handheld
 de : Unbekannt / Konsole / Tragbares Gerät
 es : Desconocido / consola / de mano
@@ -1392,7 +1392,7 @@ it : Sconosciuta / console / portatile
 en : Non-standard
 ru : Нестандартное
 cs : Nestandardní
-hu : Nem-standard
+hu : Nem szokványos
 nl : Non-standaard
 de : Nicht-standard
 es : No estándar
@@ -1419,7 +1419,7 @@ it : widescreen
 en : Not voiced
 ru : Нет озвучки
 cs : Bez hlasu
-hu : Nincs beszéd
+hu : Nincs
 nl : Niet ingesproken
 de : Keine Sprachausgabe
 es : Sin voces
@@ -1431,7 +1431,7 @@ it : No voci
 en : Only ero scenes voiced
 ru : Озвучены лишь эросцены
 cs : S hlasem pouze v ero scénách
-hu : Erotikus jeleneteknél van beszéd
+hu : Erotikus részekbe van beszéd
 nl : Alleen erotische scenes ingesproken
 de : Nur H-Szenen mit Sprachausgabe
 es : Voces solo en las escenas eróticas
@@ -1443,7 +1443,7 @@ it : Voci solo nelle scene erotiche
 en : Partially voiced
 ru : Частичная озвучка
 cs : Částečně s hlasem
-hu : Helyenként van beszéd
+hu : Részben van beszéd
 nl : Deels ingesproken
 de : Teilweise Sprachausgabe
 es : Con voz (parcialmente)
@@ -1470,7 +1470,7 @@ it : Voci complete
 en : No animations
 ru : Без анимации
 cs : Bez animací
-hu : Nem animált
+hu : Nincs animáció
 nl : Geen animaties
 de : Keine Animationen
 es : Sin animaciones
@@ -1482,7 +1482,7 @@ it : Nessuna animazione
 en : Simple animations
 ru : Простая анимация
 cs : Jednoduché animace
-hu : Egyszerűen animált
+hu : Egyszerűen animáció
 nl : Simpele animaties
 de : Einfache Animationen
 es : Animaciones simples
@@ -1521,7 +1521,7 @@ it : Tutte le scene completamente animate
 en : worst ever
 ru : хуже некуда
 cs : absolutně nejhorší
-hu : iszonyú
+hu : legrosszabb
 nl : slechtst ooit
 de : Furchtbar
 es : pésimo
@@ -1569,7 +1569,7 @@ it : debole
 en : so-so
 ru : так себе
 cs : taktak
-hu : elmegy
+hu : tűrhető
 nl : gaat wel
 de : Mittelmäßig
 es : regular
@@ -1581,7 +1581,7 @@ it : abbastanza
 en : decent
 ru : неплохо
 cs : slušná
-hu : átlagos
+hu : elmegy
 nl : redelijk
 de : Annehmbar
 es : decente
@@ -1617,7 +1617,7 @@ it : molto buono
 en : excellent
 ru : отлично
 cs : skvělá
-hu : nagyszerű
+hu : kitűnő
 nl : geweldig
 de : Hervorragend
 es : excelente
@@ -1707,7 +1707,7 @@ it : Molto lunga[index,_1,, (> 50 ore), (Clannad~, Umineko~, Fate/Stay Night)]
 en : Pending
 ru : Ожидается
 cs : V čekání
-hu : Eldöntetlen
+hu : Függő
 nl : Bezig
 de : Vorgemerkt
 es : Pendiente
@@ -2395,7 +2395,7 @@ it : Chiuso
 en : Note: edit summary of the last edit should indicate the reason for the deletion or lock.
 ru : Замечание: если производится блокировка или удаление, поле "суммарно о правке" для последнего изменения должно содержать причину.
 cs : Poznámka: shrnutí poslední editace by mělo obshovat důvod smazání či zamčení.
-hu : Megjegyzés: az utolsó szerkesztés összegzése foglalja magába a törlés vagy lezárás okát.
+hu : Megjegyzés: az utolsó szerkesztés összegzése magába kell foglalja a törlés vagy lezárás okát.
 nl : Opmerking: Samenvatting van de laatste wijziging geeft aan wat de reden was voor de verwijdering of sluiting.
 de : Anmerkung: Die Bearbeitungszusammenfassung der letzten Bearbeitung sollte den Grund für die Entfernung oder die Sperrung enthalten)
 es : Nota: editar resumen de la última editaciones indican el motivo de que haya sido eliminado o cerrado.
@@ -2614,7 +2614,7 @@ it : in attesa di moderazione
 en : Can't use meta traits here!
 ru : Использование мета-характеристик здесь запрещено!
 cs*:
-hu : Itt nem használhatsz meta sajátosságokat!
+hu : Itt nem használhatsz meta-jellemzőket!
 nl : Meta kenmerken kunnen hier niet gebruikt worden!
 de : Meta-Tags können hier nicht genutzt werden!
 es : ¡No puedes usar supra-rasgos aquí!
@@ -2677,7 +2677,7 @@ it : Salva come default
 en : Your saved filters will be applied automatically to several other parts of the site as well, such as the homepage. To change these filters, come back to this page and use the "Save as default" button again. To remove your saved filters, hit "Reset" and then save.
 ru : Сохранённые фильтры также будут автоматически применены к другим частям сайта, например, к заглавной странице. Для их изменения вновь откройте эту страницу и щёлкните кнопку "Запомнить по умолчанию". Чтобы избавиться от сохранённых фильтров, щёлкните "Сброс" и сохраните настройки.
 cs : Vaše uložené filtry budou aplikovány také na několik dalších částí těchto stránek, například na domovskou stránku. Pro změnu těchto filtrů se vraťte na tuto stránku a použijte znovu tlačítko "Uložit jako defaultní". Pro odstranění uložených filtrů stiskněte tlačítko "Vymazat" a poté uložte.
-hu : Az általad lementet szűrők automatikusan alkalmazva lesznek a honlap többi részén is, mint pl. a főoldalon. Ha meg akarod változtatni ezeket a szűrőket, akkor gyere vissza erre az oldalra és klikkelj újra a "Mentés alapértelmezet ként" gombra. A szűrőket a "Törlés" gombbal tudod eltávolítani, majd mentsd le újra.
+hu : A kiválasztott szűrők a honlap többi részén is automatikusan alkalmazva lesznek, mint pl. a főoldalon. Ha meg akarod változtatni ezeket a szűrőket akkor gyere vissza erre az oldalra és kattints a "Mentés alapértelmezet ként" gombra. Ha el akarod távolítani a lementett szűrőket akkor adj egy kattintást a "Törlés" majd "Alkalmaz" gombokra.
 nl : Je opgeslagen filters worden ook automatisch toegepast op een aantal andere delen van de site, waaronder de homepagina. Om deze filters te veranderen, ga terug naar deze pagina en gebruik de "Opslaan als standaard" knop weer. Om je opgeslagen filters te verwijderen, klik op "Reset" en sla je instellingen weer op.
 de : Deine gespeicherten Filter werden automatisch auch auf andere Bereiche der Seite angewandt wie zum Beispiel die Startseite. Um diese Filter zu ändern komm bitte auf diese Seite zurück und nutze den "Als Standard speichern" Knopf erneut. Um deine gespeicherten Filter zu entfernen drücke "Zurücksetzen" und speichere anschließend.
 es : Tus filtros guardados seran aplicado automáticamente a otras partes del sitio también, como la página principal. Para cambiar estos filtros, ven a esta página y utiliza el botón "Guardar predeterminado" . Para quitar tus filtros guardados, da a "Resetear" y entonces guarda.
@@ -2701,7 +2701,7 @@ it : OR booleano, più selezioni danno più risultati
 en : Boolean and, selecting more gives less results
 ru : логическое 'и', чем больше выбрано, тем меньше даёт результатов
 cs : Boolean a, výběr více dá méně výsledků
-hu : Boole féle értékhalmaz(igaz/hamis), s ha többet választasz ki akkor kevesebb találatot ad
+hu : Boole féle értékhalmaz(igaz/hamis), ha többet választasz ki akkor kevesebb találatot ad
 nl : Booleaanse 'en', meerdere selecties geven minder resultaten
 de : Boolean und, mehr auswählen führt zu weniger Ergebnissen
 es : Booleano y, seleccionando más da menos resultados
@@ -2758,7 +2758,7 @@ it : Chiuso alle modifiche
 en : You need to be [url,_1,logged in] to edit this page
 ru : Чтобы редактировать эту страницу, вы должны быть [url,_1,авторизованы]
 cs : Pro editaci této stránky musíte být [url,_1,přihlášen]
-hu : Be kell legyél [url,_1, jelentkezve], hogy szerkeszthesd ezt az oldalt
+hu : Ahhoz, hogy tud szerkeszteni ezt az oldalt be kell legyél [url,_1, jelentkezve].
 nl : Je moet [url,_1,ingelogd] zijn om deze pagina te wijzigen
 de : Du musst [url,_1,eingeloggt sein], um diese Seite zu editieren
 es : Necesitas estar [url,_1,conectado] para editar esta página
@@ -2898,7 +2898,7 @@ it : Principale
 en : Visual novels
 ru : Новеллы
 cs : Vizuální novely
-hu : Visual Novellek
+hu : Visual Novelek
 nl :
 de : Visual Novels
 es : Novelas visuales
@@ -2958,7 +2958,7 @@ it : Personaggi
 en : Traits
 ru : Черты характера
 cs : Vlastnosti
-hu : Sajátosságok
+hu : Jellemzők
 nl : Kenmerken
 de : Eigenschaften
 es : Rasgos
@@ -2982,7 +2982,7 @@ it : Utenti
 en : Recent changes
 ru : Свежие правки
 cs : Poslední změny
-hu : Friss változtatások
+hu : Újdonságok
 nl : Recente wijzigingen
 de : Letzte Änderungen
 es : Cambios frecuentes
@@ -3018,7 +3018,7 @@ it : FAQ
 en : Random visual novel
 ru : Случайная новелла
 cs : Náhodná vizuální novela
-hu : Véletlenszerű VN
+hu : Véletlen visual novel
 nl :
 de : Zufällige Visual Novel
 es : Novela visual aleatoria
@@ -3226,7 +3226,7 @@ it : Statistiche Banca Dati
 en : Visual Novels
 ru : Новелл
 cs : Vizuální novely
-hu : Visual Novellek
+hu : Visual Novelek
 nl : Visual novels
 de : Visual Novels
 es : Novelas Visuales
@@ -3286,7 +3286,7 @@ it : VN Tag
 en : Character traits
 ru : Черт характера
 cs*:
-hu : Szereplő sajátosságok
+hu : Szereplő jellemzők
 nl : Karakter kenmerken
 de : Eigenschaften
 es : Rasgos
@@ -3477,7 +3477,7 @@ it : modifica
 en : releases
 ru*:
 cs*:
-hu*:
+hu : kiadások
 nl*:
 de : Veröffentlichungen
 es*:
@@ -3568,7 +3568,7 @@ it : ATTENZIONE SPOILER!
 en : This revision page may contain major spoilers. You may want to view the [url,_1,final page] instead.
 ru : Эта страница редакции может содержать жесткие спойлеры. Вы можете просмотреть [url,_1,текущую версию] страницы.
 cs*:
-hu : Ez a javítás jelentős spoiler-eket tartalmazhat. Inkább nézd meg a [url,_1,végleges oldalt] e helyet.
+hu : Ez a revízió jelentős spoiler-eket tartalmazhat. Inkább nézd meg a [url,_1,végleges oldalt] e helyet.
 nl : Deze revisiepagina kan spoilers bevatten. Je kan misschien beter de [url,_1,uiteindelijke pagina] openen.
 de : Die Revisionsseite könnte große Spoiler enthalten. Möchtest du dir nicht lieber stattdessen die [url,_1,fertige Seite] ansehen?
 es : Esta página de modificación puede contener spoilers importantes. Puede que prefieras ver la [url,_1,página final]
@@ -3580,7 +3580,7 @@ it : Questa revisione potrebbe contenere spoiler. Al suo posto, potresti voler g
 en : earlier revision
 ru : более ранняя редакция
 cs : dřívější revize
-hu : előző javítás
+hu : előző revízió
 nl : eerdere revisie
 de : frühere Revision
 es : Modificación anterior
@@ -3592,7 +3592,7 @@ it : revisione precedente
 en : later revision
 ru : более поздняя редакция
 cs : pozdější revize
-hu : következő javítás
+hu : következő revízió
 nl : latere revisie
 de : spätere Revision
 es : Modificación posterior
@@ -3604,7 +3604,7 @@ it : revisione successiva
 en : Revision [_1]
 ru : Редакция [_1]
 cs : Revize [_1]
-hu : Javítás - #[_1]
+hu : Revízió - #[_1]
 nl : Revisie [_1]
 de : Revision [_1]
 es : Modificación [_1]
@@ -3629,7 +3629,7 @@ it : Modifiche
 en : Edit summary of revision [_1]:
 ru : Суммарно о редакции [_1]:
 cs : Shrnutí editace revize[_1]:
-hu : A [_1]. javításban történt szerkesztések összefoglalása
+hu : A [_1]. revízióban történt szerkesztések összefoglalása
 nl : Samenvatting van revisie [_1]:
 de : Bearbeitungszusammenfassung der Revision [_1]:
 es : Editar resumen de modificaciones [_1]:
@@ -3728,7 +3728,7 @@ it : Bloccata
 en : Visual novels
 ru : Новеллы
 cs : Vizuální novely
-hu : Visual novellek
+hu : Visual novelek
 nl :
 de : Visual Novels
 es : Novelas visuales
@@ -3788,7 +3788,7 @@ it : Tag
 en : Traits
 ru : Черты характера
 cs : Vlastnosti
-hu : Sajátosságok
+hu : Jellemzők
 nl : Kenmerken
 de : Eigenschaften
 es : Rasgos
@@ -3855,13 +3855,13 @@ cs : VNDB.org se snaží být srozumitelnou databází informací o vizuálních
      a mohou hodnotit všechny vizuální novely.[br][br]
      Můžete jen tak [url,/v/all,brouzdat kolem], [url,/u/register,zaregistrovat si účet]
      nebo se účastnit diskusí o vizuálních novelách nebo VNDB na našem [url,/t,diskusním boardu].
-hu : A VNDB.org arra törekszik, hogy egy átfogó és információ dús adatbázist hozzon létre visual novellekről.[br]
+hu : A VNDB.org arra törekszik, hogy egy átfogó és információ dús adatbázist hozzon létre visual novelekről.[br]
      Ez az oldal úgy van felépítve mint egy wiki, s annak érdekében, hogy ez legyen a legnagyobb, legpontosabb
      és napra kész visual novel adatbázis a weben, mindenki szabadon hozzájárulhat a tartalom bővítéséhez.[br]
      Regisztrált felhasználók ugyanakkor listát vezethetnek azokról a játékokról amelyeket már játszottak,játszanak
      vagy épp játszani szeretnének, valamint szavazhatnak is az oldalon tálalható bármely novelre.[br][br]
      Bátran, [url,/v/all,nézz körül], [url,/u/register,regisztrálj az oldalra] vagy vegyél részt a visual
-     novellek és a VNDB-ről szóló eszmecserékbe a [url,/t,fórumon].
+     novelek és a VNDB-ről szóló eszmecserékbe a [url,/t,fórumon].
 nl : VNDB.org is een uitgebreide database voor informatie over visual novels.[br]
      Deze website is gemaakt als een wiki, wat inhoudt dat iedereen de vrijheid
      heeft om informatie aan de database toe te voegen en te verbeteren, zodat
@@ -3907,7 +3907,7 @@ it : VNDB.org ambisce a diventare una banca dati esaustiva di informazioni sulle
 en : Recent Changes
 ru : Свежие правки
 cs : Poslední změny
-hu : Új szerkesztések
+hu : Újdonságok
 nl : Recente wijzigingen
 de : Letzte Änderungen
 es : Cambios recientes
@@ -3967,7 +3967,7 @@ it : [age,_1] [_2] da [userstr,_3]
 en : Random visual novels
 ru : Случайные новеллы
 cs : Náhodné vizuální novely
-hu : Véletlenszerű visual novellek
+hu : Véletlen visual novelek
 nl :
 de : Zufällige Visual Novels
 es : Novelas visuales aleatorias
@@ -4012,7 +4012,7 @@ it : Ultime uscite
 en : Recent changes
 ru : Свежие правки
 cs : Poslední změny
-hu : Legfrissebb változtatások
+hu : Legújabb változások
 nl : Recente wijzigingen
 de : Letzte Änderungen
 es : Cambios recientes
@@ -4099,7 +4099,7 @@ it : Mostra tutti
 en : Only visual novels
 ru : Только новеллы
 cs : Pouze vizuální novely
-hu : Csak visual novellek
+hu : Csak visual novelek
 nl : Alleen Visual Novels
 de : Nur Visual Novels
 es : Sólo novelas visuales
@@ -4147,7 +4147,7 @@ it : Solo personaggi
 en : All except characters
 ru : Все, кроме персонажей
 cs*:
-hu : Szereplőkön kívül mindet
+hu : Szereplőkön kívül mindent
 nl : Alles behalve karakters
 de : Alle außer Charaktere
 es : Todo excepto personajes
@@ -4159,7 +4159,7 @@ it : Tutti tranne personaggi
 en : Show all changes
 ru : Показать все изменения
 cs : Ukázat všechny změny
-hu : Minden változtatás megjelenitése
+hu : Minden változás megjelenitése
 nl : Alle contributies
 de : Zeige alle Änderungen
 es : Mostrar todos los cambios
@@ -4223,7 +4223,7 @@ it : Includi modifiche a pubblicazioni
 en : Rev.
 ru : Ревизия
 cs : Rev.
-hu : Javítás
+hu : Revízió
 nl :
 de : Rev.
 es : Rev.
@@ -4366,7 +4366,7 @@ it : Questa discussione è stata chiusa, non è pìù possibile rispondervi
 en : You must be logged in to reply to this thread.
 ru : Вы должны быть авторизованы, чтобы ответить в эту тему.
 cs : Pro odpověď do tohoto threadu se musíte přihlásit.
-hu : Be kell legyél jelentkezve, hogy hozzászólhass a témához.
+hu : Ha hozzá akarsz szólni a témához be kell legyél jelentkezve.
 nl : Je moet ingelogd zijn om te kunnen reageren.
 de : Du musst eingeloggt sein um in diesem Tread etwas zu schreiben.
 es : Tienes que estar conectado para responder en este tema.
@@ -4489,7 +4489,7 @@ it : Categoria(e)
 en : Read [url,/d9.2,d9.2] for information about how to specify boards.
 ru : О том, как указывать доски, читайте в разделе [url,/d9.2,d9.2].
 cs : Přečtěte si [url,/d9.2,d9.2] pro informace jak určit správný board.
-hu : Lásd [url,/d9.2,d9.2], hogy hogy kell meghatározni az alfórumokat.
+hu : Lásd a [url,/d9.2,d9.2] pontot, hogy hogy kell meghatározni az alfórumokat.
 nl : Zie [url,/d9.2,d9.2] voor instructies over de fora.
 de : Lies [url,/d9.2,d9.2] für Informationen darüber, wie man Foren beschreibt.
 es : Lee [url,/d9.2,d9.2] para informaciones sobre los foros.
@@ -5847,7 +5847,7 @@ it : Status: [_1]
 en : Set status
 ru : Установка статуса
 cs : Nastavit status
-hu : Állapot beállítása
+hu : Állapot kiválasztása
 nl : Zet status
 de : Status bestimmen
 es : Poner estado
@@ -6196,7 +6196,7 @@ it : Sconosciuto / nessuna scena erotica
 en : Animation in erotic scenes, leave to unknown if there are no ero scenes.
 ru : Анимация в эротических сценах, не изменяйте поле если эросцены отсутствуют.
 cs : Animace v ero scénách, ponechte na Není známo, pokud novela nemá ero scény.
-hu : Az animált erotikus jeleneteket hagyd 'Ismeretlen'-en ha nem tartalmaz erotikus jelenetek.
+hu : Az animált erotikus jeleneteket hagyd 'Ismeretlen'-en ha nem tartalmaz erotikus jeleneteket.
 nl : Animatie in de erotische scenes, laat onbekend als er geen erotische scenes zijn.
 de : Animation in erotischen Szenen, unbekannt lassen wenn es keine Ero Szenen gibt.
 es : Animación en escenas eróticas, déjalo en desconocido si no hay escenas ero.
@@ -6376,7 +6376,7 @@ it : Produttore già selezionato!
 en : Visual novels
 ru : Новеллы
 cs : Vizuální novely
-hu : Visual novellek
+hu : Visual novelek
 nl :
 de : Visual Novels
 es : Novelas visuales
@@ -6388,7 +6388,7 @@ it : Visual novel
 en : Selected visual novels
 ru : Выбранные новеллы
 cs : Vybrané vizuální novely
-hu : Kiválasztot visual novellek
+hu : Kiválasztot visual novelek
 nl : Geselecteerde visual novels
 de : Ausgewählte Visual Novels
 es : Novelas visuales seleccionados
@@ -6531,7 +6531,7 @@ cs : Omlouváme se, nenalezli jsme nic, co by vyhovovalo vašemu nastavení filt
      Také nezapomeňte, že o všech vydáních nemáme všechny údaje. Takže pokud například vyfiltrujete rozlišení obrazovky, pak ve výsledcích nebudou všechna vydání, u kterých neznáme jejich rozlišení, i když by to mohla být právě vydání v rozlišení, o které se zajímáte.
 hu : Bocs, de ezekkel a szűrőkkel nem található semmi. Talán ki kéne kapcsolj egy párat, hogy több eredmény jöjjön ki.
 
-     Valamint, ne felejtsd el, hogy nincsen minden kiadásról elégséges információnk. Szóval ha bekapcsolod a felbontásra vonatkozó szűrőt, azokat nem mutatja amelyeknek nincs megadva a felbontásuk, még akkor is ha valójában annyi, mint amennyit te keresel.
+     Valamint, ne felejtsd el, hogy nincsen minden kiadásról elégséges adatunk. Szóval ha bekapcsolod a felbontásra vonatkozó szűrőt, azokat nem mutatja amelyeknek nincs megadva a felbontásuk, még akkor is ha valójában annyi, mint amennyit te keresel.
 nl : Sorry, geen items gevonden die aan je filters voldoen. Je kan wat filters uitschakelen om meer resultaten te krijgen.
 
      Houd er ook rekening mee dat we niet alle informatie hebben over alle uitgaven, dus filteren op o.a. schermresolutie zal alle uitgaven waarvan we dit niet weten niet weergeven, ook al heeft het wel wat je zoekt.
@@ -6578,7 +6578,7 @@ it : Generale
 en : Release type
 ru : Тип выпуска
 cs : Typ vydání
-hu*: Állapot
+hu : Állapot
 nl : Type
 de : Veröffentlichungstyp
 es : Tipo de estreno
@@ -6830,7 +6830,7 @@ it : Medium
 en : Voiced
 ru : Озвучка
 cs : S hlasem
-hu*: Szinkron
+hu : Szinkron
 nl : Ingesproken
 de : Sprachausgabe
 es : Con voz
@@ -6916,8 +6916,8 @@ ru : Данный тег удалён из базы данных, и более 
      Напишите на [url,/t/db,форуме], если вы с этим не согласны.
 cs : Tento tag byl smazán z databáze a nemůže být použit nebo znovu přidán.
      Pokud s tímto nesouhlasíte, napište žádost na [url,/t/db,diskusní board].
-hu : Ez a címke törölve lett az adatbázisból, s nem lehetséges visszaállítani vagy használni.
-     Tegyél panaszt a [url,/t/db,fórumon] ha nem értesz egyet.
+hu : Ez a címke ki lett törölve az adatbázisból ezért nem lehet használni vagy visszahozni.
+     Ha nem értesz egyet a döntéssel tegyél panaszt a [url,/t/db,fórumon].
 nl : Deze tag is verwijderd uit de database, en kan hier niet gebruikt worden.
      Open een topic op het [url,/t/db,forum] als je het hier niet mee eens bent.
 de : Dieser Tag wurde von der Datenbank gelöscht und kann nicht verwendet oder neu hinzugefügt werden.
@@ -7030,7 +7030,7 @@ it : [_1] [quant,_1,tag,tag] in più
 en : Visual novels
 ru : Новеллы
 cs : Vizuální novely
-hu : Visual novellek
+hu : Visual novelek
 nl :
 de : Visual Novels
 es : Novelas visuales
@@ -7102,7 +7102,7 @@ it : Questo tag non è ancora stato usato, o è stato nascosto a causa delle tue
 en : The list below also includes all visual novels linked to child tags. This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.
 ru : Данный список также содержит все новеллы, отмеченные дочерними тегами. Список кэшируется, поэтому до появления новеллы на этой странице может пройти до 24 часов.
 cs : Seznam níže také ukládá všechny vizuální novely provázané s dceřinnými tagy. Tento sezname se ukládá do cache, takže může trvat až 24 hodin po otagování vizuální novely do objevení se na této stránce.
-hu : A lent megtalálható lista tartalmazza az alcímkékhez hozzákapcsolt összes visual novel-t is. Ez a lista le van mentve a gyorsítótárba, beletelhet 24 órába míg a visual novelhez újonnan hozzárendelt címke megjelenik ezen az oldalon.
+hu : A lent megtalálható lista tartalmazza az alcímkékhez hozzákapcsolt összes visual novelt is. Ez a lista le van mentve a gyorsítótárba, beletelhet 24 órába míg a visual novelhez újonnan hozzárendelt címke megjelenik ezen az oldalon.
 nl : De volgende lijst bevat ook alle visual novels die gelinkt zijn aan subtags. Deze lijst is gecached, het kan 24 uur duren voordat een visual novel op deze pagina te zien is.
 de : Die untenstehende Liste schließt auch alle Visual Novels ein die mit Unter-Tags verknüpft sind. Diese Liste ist gecached, es kann bis zu 24 Stunden dauern bis ein getaggter Visual Novel auf dieser Seite angezeigt wird.
 es : Esta lista también incluye todas las novelas visuales enlazadas con subetiqueta. Esta lista esta cacheado, puede tardar 24 horas después de que una novela visual haya sido etiquetado para aparecer en esta página.
@@ -7246,10 +7246,10 @@ cs : Protože všechny tagy musí být schválené moderátorem, může chvilku 
      nebo na stránce vizuální novely. I před schválením ale můžete stále tag hodnotit.
      [br][br]
      Také se ujistěte, že jste přečetli [url,/d10,doporučení], abyste věděli, zda váš tag bude přidán nebo ne.
-hu : Mivel minden címkét külön el kell fogadjanak a moderátorok, beletarthat egy kis időbe míg azok megjelennek a listába
-     vagy a visual novellek oldalain. Viszont, akkor is tudsz egy címkére szavazni, ha még nincsen elfogadva.
+hu : Mivel minden címkét külön el kell fogadjanak a moderátorok, beletarthat egy kis időbe míg megjelennek a listába
+     vagy a visual novelek oldalain. Viszont, akkor is tudsz egy címkére szavazni, ha még nincsen elfogadva.
      [br][br]
-     Valamint, olvasd el az [url,/d10,útmutatót], ha biztosra akarsz menni, hogy a címkédet el fogják fogadni vagy nem.
+     Ha biztosra akarsz menni, hogy a címkédet el fogják fogadni vagy nem olvasd el az [url,/d10,útmutatót].
 nl : Omdat alle tags goedgekeurd moeten worden door een moderator, kan het even duren voordat je tag te zien is op de site.
      Je kan de tag echter al wel linken aan visual novels.
      [br][br]
@@ -7938,7 +7938,7 @@ it : Tag
 en : Rating
 ru : Рейтинг
 cs : Hodnocení
-hu : Osztályozás
+hu : Értékelés
 nl : Waardering
 de : Bewertung
 es : Puntuación
@@ -8025,7 +8025,7 @@ ru : Откройте [url,/g,список тегов] чтобы увидеть
      Не нашли что искали? Вы можете [url,/g/new,запросить новый тег].
 cs : Zkontrolujte [url,/g,list tagů] pro seznam všech dostupných tagů.[br]
      Nenašli jste, co jste hledali? [url,/g/new,Vyžádejte si nový tag].
-hu : Menj a [url,/g,cimke listára] ha szeretnél böngészni az összes rendelkezésre álló címke közt.[br]
+hu : Ha az összes rendelekzésre álló címke közt szeretnél böngészni akkor menj a [url,/g,címke listára].[br]
      Nem találod azt amelyiket keresed? [url,/g/new,Itt kérhetsz egy új címkét].
 nl : Zie de [url,/g,tag lijst] om te browsen door alle beschikbare tags.[br]
      Niet gevonden wat je zocht? [url,/g/new,Vraag een nieuwe tag aan].
@@ -8056,7 +8056,7 @@ it : Non trovato!
 en : Tag is already present!
 ru : Тег уже указан!
 cs : Tag už je přiřazen!
-hu : A címke már jelen van!
+hu : A címke már létezik!
 nl : Tag is al geselecteerd!
 de : Tag ist bereits vorhanden!
 es : ¡Etiqueta todavía presente!
@@ -8418,7 +8418,7 @@ it : Immagine
 en : Traits
 ru : Черты характера
 cs : Vlastnosti
-hu : Sajátosságok
+hu : Jellemzők
 nl : Kenmerken
 de : Eigenschaften
 es : Rasgos
@@ -8430,7 +8430,7 @@ it : Caratteristiche
 en : Visual novels
 ru : Новеллы
 cs : Vizuální novely
-hu : Visual novellek
+hu : Visual novelek
 nl :
 de : Visual Novels
 es : Novelas visuales
@@ -8554,7 +8554,7 @@ it : [_1] [_2]
 en : Visual novels
 ru : Новеллы
 cs : Vizuální novely
-hu : Visual novellek
+hu : Visual novelek
 nl :
 de : Visual Novels
 es : Novelas visuales
@@ -8602,7 +8602,7 @@ it : Descrizione
 en : Other instances
 ru : Другие воплощения
 cs : Další podoby
-hu : Második én/hasonmás
+hu : Hasonmások
 nl : Andere instanties
 de : Andere Instanzen
 es : Otros ejemplos
@@ -8858,7 +8858,7 @@ it : Gruppo sanguigno
 en : Instance of
 ru : Воплощение
 cs : Alter ego k
-hu : Második énje/hasonmása
+hu : Hasonmása
 nl : Instantie van
 de : Instanz von
 es : Por ejemplo
@@ -8870,7 +8870,7 @@ it : Istanza di
 en : ID of the main character - the character of which this is an instance of.
 ru : ID персонажа, воплощением которого является данный
 cs : ID hlavní postavy - postavy, ke které je tato postava alter egem.
-hu : A szereplő ID-ja (azonosítója) - annak a karakteré akinek ez a hasonmása/második énje.
+hu : A szereplő ID-ja (azonosítója) - annak a karakteré akinek ez a hasonmása.
 nl : ID van het hoofdkarakter - het karakter waar dit een instantie van is.
 de : ID des Hauptcharakters - der Charakter, dessen Instanz dies ist.
 es : ID del personaje principal - este personaje por el cual es el ejemplo de.
@@ -8966,7 +8966,7 @@ it : L'immagine deve essere in formato JPEG o PNG e non più grande di 1MB. Imma
 en : Traits
 ru : Черты характера
 cs : Vlastnosti
-hu : Sajátosságok
+hu : Jellemzők
 nl : Kenmerken
 de : Eigenschaften
 es : Rasgos
@@ -8978,7 +8978,7 @@ it : Caratteristiche
 en : Current traits
 ru : Текущие черты
 cs : Nynější vlastnosti
-hu : Jelenlegi sajátosságok
+hu : Jelenlegi jellemzők
 nl : Huidige kenmerken
 de : Derzeitige Eigenschaften
 es : Rasgos actuales
@@ -8990,7 +8990,7 @@ it : Caratteristiche attuali
 en : Add trait
 ru : Добавить черту
 cs : Přidat vlastnost
-hu : Sajátosság hozzáadása
+hu : Jellemző hozzáadása
 nl : Voeg kenmerk toe
 de : Füge Eigenschaft hinzu
 es : Añadir rasgo
@@ -9002,7 +9002,7 @@ it : Aggiungi caratteristica
 en : Selected trait is already present.
 ru : Выбранная черта уже добавлена
 cs : vybraná vlastnost je již přítomna.
-hu : A kiválasztott sajátosság már hozzá van rendelve
+hu : A kiválasztott jellemző már hozzá van rendelve
 nl : Geselecteerd kenmerk is al aanwezig.
 de : Ausgewählte Eigenschaft ist bereits vorhanden.
 es : El rasgo seleccionado ya esta aquí
@@ -9014,7 +9014,7 @@ it : La caratteristica selezionata è già presente.
 en : Meta traits can't be used here.
 ru : Нельзя использовать мета-черты
 cs : meta vlastnosti se zde nedají použít.
-hu : Meta-sajátosságokat nem lehet itt használni
+hu : Meta-jellemzőket itt nem lehet használni
 nl : Metakenmerken kunnen hier niet gebruikt worden.
 de : Meta-Eigenschaften können hier nicht genutzt werden.
 es : Los supra-rasgos no pueden ser usados aquí.
@@ -9026,7 +9026,7 @@ it : Non su possono usare meta traits qui.
 en : No traits present yet.
 ru : Черты ещё не были добавлены
 cs : Nejsou přítomny žádné vlastnosti.
-hu : Még nincs hozzárendelve sajátosság.
+hu : Még nincs hozzárendelve jellemző.
 nl : Nog geen kenmerken aanwezig.
 de : Keine Eigenschaft vorhanden bisher.
 es : Ningún rasgo aquí.
@@ -9038,7 +9038,7 @@ it : Nessuna caratteristica presente.
 en : Visual novels
 ru : Новеллы
 cs : Vizuální novely
-hu : Visual novellek
+hu : Visual novelek
 nl :
 de : Visual Novels
 es : Novelas visuales
@@ -9050,7 +9050,7 @@ it : Visual novels
 en : Selected visual novels
 ru : Выбранные новеллы
 cs : Vybrané vizuální novely
-hu : Kiválasztott visual novellek
+hu : Kiválasztott visual novelek
 nl : Geselecteerde visual novels
 de : Ausgewählte Visual Novels
 es : Seleccionar novelas visuales
@@ -9353,7 +9353,7 @@ it : Gruppo sanguigno
 en : Traits
 ru : Черты характера
 cs*:
-hu : Sajátosságok
+hu : Jellemzők
 nl : Kenmerken
 de : Eigenschaften
 es : Rasgos
@@ -9365,7 +9365,7 @@ it : Caratteristiche
 en : Traits to include
 ru : Включить
 cs*:
-hu : Rendelkezett sajátosságok
+hu : Keresendő jellemzők
 nl : Kenmerken meenemen
 de : Einzuschließende Eigenschaften
 es : Rasgos para incluir
@@ -9377,7 +9377,7 @@ it : Caratteristiche da includere
 en : Traits to exclude
 ru : Исключить
 cs*:
-hu : Nem rendelkezett sajátosságok
+hu : Kizárandó jellemzők
 nl : Kenmerken uitsluiten
 de : Auszuschließende Eigenschaften
 es : Rasgos para excluir
@@ -9389,7 +9389,7 @@ it : Caratteristiche da escludere
 en : Additional trait filters are not available on this page. Use the character browser instead (available from the main menu -> characters).
 ru : Дополнительные фильтры по чертам характера здесь недоступны. Используйте обозреватель персонажей (доступный в меню -> персонажи).
 cs*:
-hu : Ezen az oldalon nem állnak rendelkezésre további sajátosság szűrők. Használd inkább a szereplő böngészőt (Menü -> Szereplők).
+hu : Ezen az oldalon nem állnak rendelkezésre további jellemző szűrők. Használd inkább a szereplő böngészőt (Menü -> Szereplők).
 nl : Extra kenmerkfilters zijn niet aanwezig op deze pagina. Gebruik de karakterbrowser voor deze functionaliteit (beschikbaar via het hoofdmenu -> karakters).
 de : Zusätzliche Eigenschaftsfilter sind auf dieser Seite nicht verfügbar. Nutze stattdessen den Charakterbrowser (verfügbar vom Hauptmenü -> Charaktere).
 es : Filtros adicionales para este rasgo no esta disponible en esta página. Usa el buscador de personajes en vez (disponible del Menú -> personajes).
@@ -9459,7 +9459,7 @@ it : Ruoli
 en : [index,_1,Meta trait,Trait]: [_2]
 ru : [index,_1,Мета-черта,Черта]: [_2]
 cs : [index,_1,Meta vlastnost,Vlastnost]: [_2]
-hu : [index,_1,Meta trait,Sajátosság]: [_2]
+hu : [index,_1,Meta trait,Jellemző]: [_2]
 nl : [index,_1,Metakenmerk,Kenmerk]: [_2]
 de : [index,_1,Meta-Eigenschaft,Eigenschaft]: [_2]
 es : [index,_1,Meta rasgo,Rasgo]: [_2]
@@ -9471,7 +9471,7 @@ it : [index,_1,Meta trait,Trait]: [_2]
 en : Trait deleted
 ru : Черта удалена
 cs : Vlastnost smazána
-hu : Sajátosság törölve
+hu : Jellemző törölve
 nl : Verwijderd kenmerk
 de : Eigenschaft gelöscht
 es : Rasgo eliminado
@@ -9486,8 +9486,8 @@ ru : Эта черта была удалена из ВНДБ, и не может
      Если вы не согласны с этим, оставьте запрос на [url,/t/db/,форуме].
 cs : Tato vlastnost byla smazána z databáze a nemůže být použita či znovu přidána.
      Vyplňte požadavek na [url,/t/db,diskusních boardech] pokud s tímto nesouhlasíte.
-hu : Ez a sajátosság el lett távolítva az adatbázisból és nem lehet használni vagy újra bejegyezni.
-     Ha nem értesz egyet akkor ezt hangoztathatod a [url,/t/db,fórumon].
+hu : Ez a jellemző el lett távolítva az adatbázisból ezért nem lehet használni vagy visszahozni.
+     Ha nem értesz egyet a döntéssel tegyél panaszt a [url,/t/db,fórumon].
 nl : Dit kenmerk is verwijderd uit de database, en kan hier niet gebruikt worden.
      Open een topic op het [url,/t/db,forum] als je het hier niet mee eens bent.
 de : Diese Eigenschaft wurde von der Datenbank gelöscht und kann nicht verwendet oder neu hinzugefügt werden.
@@ -9516,7 +9516,7 @@ it : In attesa di approvazione
 en : This trait is waiting for a moderator to approve it.
 ru : Эта черта ожидает одобрения модератором.
 cs : Tato vlastnost čeká na schválení moderátora.
-hu : Ez a sajátosság egy moderátor jóváhagyására vár.
+hu : Ez a jellemző egy moderátor jóváhagyására vár.
 nl : Dit kenmerk is nog niet goedgekeurd door een moderator.
 de : Diese Eigenschaft wartet auf die Zulassung durch einen Moderator.
 es : Este rasgo esta esperando para que un moderador lo apruebe.
@@ -9528,7 +9528,7 @@ it : Questa caratteristica è in attesa di approvazione da parte di un moderator
 en : Create child trait
 ru : Создать дочернюю черту
 cs : Vytvořit dceřinnou vlastnost
-hu : Alárendelt sajátosság bejegyzése
+hu : Alárendelt jellemző bejegyzése
 nl : Voeg een subkenmerk toe
 de : Erstelle Unter-Eigenschaft
 es : Crear un subrasgo
@@ -9540,7 +9540,7 @@ it : Crea una caratteristica figlia
 en : Traits
 ru : Черты
 cs : Vlastnosti
-hu : Sajátosságok
+hu : Jellemzők
 nl : Kenmerken
 de : Eigenschaften
 es : Rasgos
@@ -9576,7 +9576,7 @@ it : Alias
 en : Child traits
 ru : Дочерние черты
 cs : Dceřinné vlastnosti
-hu : Alárendelt sajátosságok
+hu : Alárendelt jellemzők
 nl : Subkenmerken
 de : Unter-Eigenschaften
 es : Subrasgos
@@ -9588,7 +9588,7 @@ it : Caratteristiche figlie
 en : [_1] more [quant,_1,trait,traits]
 ru : ещё [_1] [quant,_1,черта,черты,черт]
 cs : [_1] více [quant,_1,vlastnost,vlastnosti]
-hu : [_1] több [quant,_1,sajátosság,sajátosságok]
+hu : [_1] több [quant,_1,jellemző,jellemzők]
 nl : nog [_1] [quant,_1,kenmerk,kenmerken]
 de : [_1] mehr [quant,_1,Eigenschaft,Eigenschaften]
 es : [_1] más [quant,_1,rasgo,rasgos]
@@ -9612,7 +9612,7 @@ it : Personaggi
 en : This trait has not been linked to any characters yet, or they were hidden because of your spoiler settings.
 ru : Эта черта ещё не была связана ни с одним персонажем, или они были скрыты из-за ваших настроек отображения спойлеров.
 cs : Tato vlastnost ještě nebyla provázána s žádnými postavami nebo tyto byly schovány kvůli vašemu nastavení spoilerů.
-hu : Ez a sajátosság még nincs hozzárendelve egy szereplőhöz se, vagy a spoiler beállításaid miatt, el vannak rejtve.
+hu : Ez a jellemző még nincs hozzárendelve egy szereplőhöz se, vagy a spoiler beállításaid miatt, el vannak rejtve.
 nl : Dit kenmerk is nog niet gekoppeld aan een karakter, of deze worden niet weergegeven in verband met je spoilerinstelling.
 de : Diese Eigenschaft wurde noch nicht mit Charakteren verknüpft oder sind aufgrund deiner Spoiler Einstellungen versteckt.
 es : Este rasgo no ha sido enlazado a ningún personaje todavía, o están escondidos por tus opciones sobre spoiler.
@@ -9624,7 +9624,7 @@ it : Questa caratteristica non è ancora stata utilizzata, o è nacosta a causa 
 en : The list below also includes all characters linked to child traits. This list is cached, it can take up to 24 hours after a character has been edited for it to show up on this page.
 ru : Этот список также включает всех персонажей, связанных с дочерними чертами. Этот список кешируется, и может пройти до 24 часов между редактированием персонажа и его появлением на этой странице.
 cs*:
-hu : A lent található listában megtalálható az összes szereplő akik össze vannak kapcsolva alárendelt sajátosságokhoz. A lista le van mentve a gyorsítótárba ezért beletelhet 24 órába míg a szerkesztett szereplők feltűnnek az oldalon.
+hu : A lenti listában megtalálható minden szereplő akihez hozzá vannak illesztve alárendelt jellemzők. A lista le van mentve a gyorsítótárba ezért beletelhet 24 órába míg a módosított szereplők feltűnnek az oldalon.
 nl : De volgende lijst bevat ook alle karakters die gelinkt zijn aan subkenmerken. Deze lijst is gecached, het kan 24 uur duren voordat een karakter op deze pagina te zien is.
 de : Die Liste unten enthält auch alle Charaktere, die mit Unter-Eigenschaften verlinkt sind. Die Liste ist gecached, es kann biszu 24 Stunden dauern bis ein bearbeitetet Charakter auf dieser Seite angezeigt wird.
 es : La lista de abajo incluye todos los personajes enlazados en subrasgos. Esta lista esta en caché, puede tardar hasta 24 horas después de que el personaje haya sido editado para que se muestre en esta página.
@@ -9639,7 +9639,7 @@ it : La lista include anche tutti i personaggi collegati alle caratteristiche fi
 en : Add child trait to [_1]
 ru : Добавление дочерней черты для [_1]
 cs : Přidat dceřinnou vlastnost k vlastnosti [_1]
-hu : Alárendelt sajátosság hozzáadása ehhez: [_1]
+hu : Alárendelt jellemző hozzáadása ehhez: [_1]
 nl : Voeg subkenmerk toe aan [_1]
 de : Füge Unter-Eigenschaft zu [_1] hinzu
 es : Añadir subrasgo a [_1]
@@ -9651,7 +9651,7 @@ it : Aggiungi caratteristica figlia a [_1]
 en : Edit trait: [_1]
 ru : Редактирование черты: [_1]
 cs : Editovat vlastnost: [_1]
-hu : Sajátosság szerkesztése: [_1]
+hu : Jellemző szerkesztése: [_1]
 nl : Wijzig kenmerk [_1]
 de : Bearbeite Eigenschaft: [_1]
 es : Editar rasgo: [_1]
@@ -9663,7 +9663,7 @@ it : Modifica caratteristica: [_1]
 en : Add new trait
 ru : Добавить новую черту
 cs : Přidat novou vlastnost
-hu : Új sajátosság bejegyzése
+hu : Új jellemző bejegyzése
 nl : Voeg nieuw kenmerk toe
 de : Füge neue Eigenschaft hinzu
 es : Añadir nuevo rasgo
@@ -9675,7 +9675,7 @@ it : Aggiungi nuova caratteristica
 en : Requesting new trait
 ru : Запрос новой черты
 cs : Vyžádat si novou vlastnost
-hu : Új sajátosság kérése
+hu : Új jellemző kérése
 nl : Vraag nieuwe trait aan
 de : Bitte um neue Eigenschaft
 es : Solicitar nuevo rasgo
@@ -9687,7 +9687,7 @@ it : Richiedi nuova caratteristica
 en : Your trait must be approved
 ru : Ваша черта должна быть одобрена
 cs : Vaše vlastnost musí být schválena
-hu : A általad bejegyzett sajátosság jóváhagyásra vár.
+hu : Az általad bejegyzett jellemző jóváhagyásra vár.
 nl : Je kenmerk moet goedgekeurd worden
 de : Deine Eigenschaft muss zugelassen werden
 es : Tu rasgo debe ser aprovado
@@ -9699,7 +9699,7 @@ it : La tua caratteristica deve essere approvata
 en : Because all traits have to be approved by moderators, it can take a while before your trait will show up in the listings or can be used on character entries.
 ru : В связи с тем, что все черты должны быть одобрены модераторами, может пройти некоторое время, прежде чем ваша черта появится в списках и может быть использована в записях персонажей.
 cs : Jelikož nové vlastnosti musí být schváleny moderátorem, může chvilku trvat, než se vaše vlastnost ukáže v seznamech nebo bude moct být použita na záznamy postav.
-hu : Mivel minden sajáttoságot jóvá kell hagyjanak a moderátorok, eltarthat egy ideig míg az általad bejegyzett sajátosság megjelenik a listákba vagy míg az hozzárendelhető lesz egy bejegyzett szereplőhöz.
+hu : Mivel minden jellemzőt jóvá kell hagyjanak a moderátorok, eltarthat egy ideig míg az általad bejegyzett megjelenik a listákba vagy míg az hozzárendelhető lesz egy bejegyzett szereplőhöz.
 nl : Omdat alle kenmerken goedgekeurd moeten worden door een moderator, kan het even duren voordat je kenmerk te zien is op de site of gebruikt kan worden voor karakters.
 de : Da alle Eigenschaften von Moderatoren zugelassen werden müssen, kann es eine Weile dauern, bevor deine Eigenschaft in den Listen aufaucht oder du sie für Charaktereinträge gebrauchen kannst.
 es : Porque todos los rasgos deben ser aprobados por los moderadores, puede tardar un poco antes que tu rasgo se muestre en las listas o que pueda ser usado en las entradas de los personajes.
@@ -9783,7 +9783,7 @@ it : Approvato
 en : This is a meta trait (only to be used as parent for other traits, not for direct use with characters)
 ru : Это мета-черта (может быть использована только в качестве родительской для других черт, не для использования с персонажами)
 cs : Toto je meta vlastnost (může být použita pouze jako mateřská pro ostatní vlastnosti, ne pro přímé užití u postav)
-hu : Ez itt egy meta-sajátosság (sajátosságokat ír körül--csakis más sajátosság szülője ként használandó, szereplők mellé nem rendelhetők)
+hu : Ez itt egy meta-jellemző (jellemzőket ír körül--csakis más jellemző szülője ként használandó, szereplők mellé nem rendelhetők)
 nl : Dit is een metakenmerk (kan alleen gebruikt worden als houder voor andere kenmerken, niet voor karakters)
 de : Dies ist eine Meta-Eigenschaft (nur als Überbegriff für andere Eigenschaften zu verwenden, nicht für die direkte Verlinkung mit Charakteren)
 es : Esto es un meta rasgo (solo puede ser usado como meta rasgo para otros rasgos, no para uso directo con personajes)
@@ -9841,7 +9841,7 @@ it : Descrizione
 en : Parent traits
 ru : Родительские черты
 cs : Mateřské vlastnosti
-hu : Szüllő sajátosság
+hu : Szüllő jellemző
 nl : Hoofdkenmerk
 de : Über-Tags
 es : Meta rasgo
@@ -9853,7 +9853,7 @@ it : Caratteristiche genitori
 en : List of trait IDs to be used as parent for this trait, separated by a space.
 ru : Список ID черт, которые будут использованы, как родительские, для этой черты, через пробел.
 cs : Seznam ID vlastností, které mají být mateřskými k této vlastnosti, oddělených mezerou.
-hu : A listája azoknak sajátosság ID-knak (azonosítóknak) amelyeket szeretnéd, hogy ennek a sajátosságnak a szülei legyenek, szóközzel elváltasztva.
+hu : A listája azoknak jellemző ID-knak (azonosítóknak) amelyeket szeretnéd, hogy ennek a jellemzőnek a szülei legyenek, szóközzel elváltasztva.
 nl : Spatiegescheiden lijst van hoofdkenmerken (numerieke IDs).
 de : Liste von Eigenschaften IDs, die als Über-Eigenschaft für diese Eigenschaft verwendet werden, getrennt durch ein Leerzeichen.
 es : Listado de la identificación de rasgos para ser usado como meta rasgo, separapo por un espacio.
@@ -9877,7 +9877,7 @@ it : Numero gruppo
 en : (Only used if this trait is a group. Used for ordering, lowest first)
 ru : (Используется, только если эта черта в группе, для сортировки, сначала меньшие)
 cs : (Použito pouze pokud je tato vlastnost skupinou. Použito pro řazení, nejnižší první)
-hu : (Csak akkor használjuk, ha ez a sajátosság egy csoport. Az érték egy sorszám és a legkisebb az első)
+hu : (Csak akkor használjuk, ha ez a jellemző egy csoport. Az érték egy sorszám és a legkisebb az első)
 nl : (Alleen gebruikt als dit kenmerk een groep is. Gebruikt voor sorteren, laagste getal eerst)
 de : (Nur genutzt wenn die Eigenschaft eine Gruppe ist. Zur Sortierung verwendet, niedrigste zuerst)
 es : (Usar solo si este rasgo es un grupo. Usado para ordenar, los de abajo primero)
@@ -9893,7 +9893,7 @@ it : (Usato solo se questa caratteristica è un gruppo. Usato per ordinare, il n
 en : Browse traits
 ru : Обзор черт характера
 cs : Prohlížet vlastnosti
-hu : Sajátosságok böngészése
+hu : Jellemzők böngészése
 nl : Browse kenmerken
 de : Durchsuche Eigenschaften
 es : Mirar rasgos
@@ -9977,7 +9977,7 @@ it : Creata
 en : Trait
 ru : Черта
 cs : Vlastnost
-hu : Sajátosság
+hu : Jellemző
 nl : Kenmerk
 de : Eigenschaft
 es : Rasgo
@@ -10016,7 +10016,7 @@ it : eliminata
 en : Trait index
 ru : Список черт характера
 cs : Seznam vlastností
-hu : Sajátosság jegyzék
+hu : Jellemzők
 nl : Kenmerkenindex
 de : Eigenschaften Verzeichnis
 es : Índice de rasgos
@@ -10028,7 +10028,7 @@ it : Indice caratteristiche
 en : Create new trait
 ru : Создать новую черту
 cs : Vytvořit novou vlastnost
-hu : Új sajátosság bejegyzése
+hu : Új jellemző bejegyzése
 nl : Nieuw kenmerk
 de : Erstelle neue Eigenschaft
 es : Creando un nuevo rasgo
@@ -10040,7 +10040,7 @@ it : Crea una nuova caratteristica
 en : Search traits
 ru : Поиск черт
 cs : Hledat ve vlastnostech
-hu : Sajátosságok keresése
+hu : Jellemzők keresése
 nl : Zoek kenmerken
 de : Suche Eigenschaften
 es : Búsqueda de rasgos
@@ -10052,7 +10052,7 @@ it : Cerca caratteristiche
 en : Trait tree
 ru : Дерево черт
 cs : Strom vlastností
-hu : Sajátosság jegyzék
+hu : Jellemző jegyzék
 nl : Kenmerkenlijst
 de : Eigenschaften Baum
 es : Árbol de rasgos
@@ -10064,7 +10064,7 @@ it : Albero delle caratteristiche
 en : Browse all traits
 ru : Обзор всех черт характера
 cs : Prohlížet všechny vlastnosti
-hu : Sajátosságok böngészése
+hu : Jellemzők böngészése
 nl : Browse alle kenmerken
 de : Durchsuche alle Eigenschaften
 es : Mirar todos los rasgos
@@ -10088,7 +10088,7 @@ it : Aggiunte di recente
 en : Popular traits
 ru : Популярные черты характера
 cs : Populární vlastnosti
-hu : Népszerű sajátosságok
+hu : Népszerű jellemzők
 nl : Populaire kenmerken
 de : Beliebte Eigenschaften
 es : Rasgos populares
@@ -10136,7 +10136,7 @@ it : Coda di moderazione
 en : Denied traits
 ru : Отклоненные черты
 cs : Zamítnuté vlastnosti
-hu : Elutasított sajátosságok
+hu : Visszautasított jellemzők
 nl : Geweigerde kenmerken
 de : Abgelehnte Eigenschaften
 es : Rasgos eliminados
@@ -10875,11 +10875,9 @@ ru : Здравствуйте, [_1].
 cs*:
 hu : Üdv [_1]
 
-     A jelszavad vissza lett állítva, most már bejelentkezhetsz a http://vndb.org/ címen az
-     új adataiddal:
+     A bejelentkezésed a VNDB.org-ra fel lett függesztve. A lenti linket követve kérhetsz magadnak egy új jelszót:
 
-     Felhasználónév: [_1]
-     Jelszó: [_2]
+     [_2]
 
      Legközelebb próbáld meg nem elfelejteni a jelszavad! :-)
 
@@ -11967,7 +11965,7 @@ it : Salva
 en : Browse visual novels
 ru : Обзор новелл
 cs : Procházet vizuální novely
-hu : Visual novellek böngészése
+hu : Visual novelek böngészése
 nl :
 de : Visual Novels durchsuchen
 es : Buscar novelas visuales
@@ -11979,7 +11977,7 @@ it : Sfoglia visual novel
 en : User VN list
 ru*:
 cs*:
-hu*:
+hu : VN listám
 nl*:
 de : Benutzer VN Liste
 es*:
@@ -11991,7 +11989,7 @@ it*:
 en : Wishlist
 ru*:
 cs*:
-hu*:
+hu : Kivánságlistám
 nl*:
 de : Wunschliste
 es*:
@@ -12147,7 +12145,7 @@ it : Tag
 en : Additional tag filters are not available on this page. Use the visual novel browser instead (available from the main menu -> visual novels).
 ru : На этой странице дополнительные фильтры по тегам недоступны. Воспользуйтесь обзором новелл (Меню -> Новеллы).
 cs : Další filtry tagů nejsou na této stránce dostupné. Použijte místo nich prohlížeč vizuálních novel (dostupný z hlavního menu -> vizuální novely).
-hu : További címke szűrők nem állnak rendelkezésre ezzen az oldalon. Használd a visual novel böngészőt (megtalálható a Menü -> Visual Novellek pontba).
+hu : További címke szűrők nem állnak rendelkezésre ezzen az oldalon. Használd a visual novel böngészőt (megtalálható a Menü -> Visual Novelek pontba).
 nl : Extra tag filters zijn niet aanwezig op deze pagina. Gebruik de visual novel browser voor deze functionaliteit (beschikbaar via het hoofdmenu -> visual novels).
 de : Zusätzliche Tag Filter sind auf dieser Seite nicht verfügbar. Durchsuche die Visual Novels stattdessen (verfügbar vom Hauptmenü -> Visual Novels).
 es : No esta disponible el filtrar etiquetas adicionales en esta páina. Utiliza el buscador de novelas visuales (disponible desde el Menú -> novelas visuales).
@@ -12462,7 +12460,7 @@ ru : Ниже следует список новелл, названия кот�
      Чтобы все равно создать запись, щелкните "Продолжить и игнорировать дубликаты" ниже.
 cs*:
 hu : Ezek a visual novelek egyeznek meg az általad megadott cím(mek)el.
-     Légy szíves nézd át a listát, hogy ne jegyezd meg ugyanazt a visual novelt még egyszer.
+     Légy szíves nézd át a listát, hogy nehogy bejegyez egy visual novelt még egyszer.
      Különösen figyelj oda azokra amelyek le lettek törölve! Kattints a bejezés nevére, hogy megnézd miért le törölve.[br]
      [br]
      Ha mégis újra be szeretnéd jegyezni a visual novelt akkor kattints a "Másolatok figyelmen kívül hagyása folytatás" gombra.
@@ -12644,7 +12642,7 @@ it : Lunghezza
 en : External links
 ru : Внешние ссылки
 cs : Externí odkazy
-hu : Külső hivatkozások
+hu : Külső linkek
 nl : Externe links
 de : Externe Links
 es : Enlace externo
@@ -12756,7 +12754,7 @@ it : ID immagine
 en : Use a VN image that is already on the server. Set to '0' to remove the current image.
 ru : Использовать уже загруженное на сервер изображение. Укажите "0" (без кавычек), чтобы удалить текущее изображение.
 cs*:
-hu : Használj egy olyan szereplő képet ami már megtalálható a szerveren. Ha '0'-ra állítod törölheted a jelenlegi képet.
+hu : Használj egy olyan VN képet ami már megtalálható a szerveren. Ha '0'-ra állítod törölheted a jelenlegi képet.
 nl : Gebruik een VN plaatje dat al op de server staat. Gebruik '0' om een huidig plaatje te verwijderen.
 de : Verwende ein Charakterbild, dass bereits auf dem Server ist. Auf '0' setzen um das derzeitige Bild zu entfernen.
 es : Usar la imagen de un personaje que ya esta en el servidor. Pon '0' para quitar la imagen actual.
@@ -12806,7 +12804,7 @@ it : Preferibilmente la copertina della confezione. L'immagine deve essere in fo
 en : NSFW
 ru : НБДР (NSFW)
 cs : NSFW
-hu : Nem Biztonságos
+hu : NSFW
 nl :
 de : NSFW
 es : +18
@@ -12818,7 +12816,7 @@ it : NSFW
 en : Not Safe For Work
 ru : Небезопасно для работы
 cs : Not Safe For Work
-hu : Nem munkabarát
+hu : Nem munkabarát (NSFW)
 nl : Niet geschikt voor op het werk
 de : Nicht jugendfrei
 es : +18
@@ -13228,7 +13226,7 @@ it : ATTENZIONE: La risoluzione è strana! Controlla che l'immagine sia stata ta
 en : This screenshot is NSFW
 ru : Этот скриншот НБДР (NSFW)
 cs : Tento screenshot je NSFW
-hu : Ez a pillanatkép NMB
+hu : Ez a pillanatkép NSFW
 nl : Dit screenshot is NSFW
 de : Dieser Screenshot ist NSFW
 es : Esta imagen es +18
@@ -13490,7 +13488,7 @@ it : Immagine
 en : (NSFW)
 ru : (НБДР|NSFW)
 cs : (NSFW)
-hu : (NMB)
+hu : (NSFW)
 nl :
 de : (NSFW)
 es : (NSFW)
@@ -13514,7 +13512,7 @@ it : Nessuna immagine
 en : Image NSFW
 ru : Изображение НБДР (NSFW)
 cs : Vhodnost obrázku
-hu : A kép NMB
+hu : A kép NSFW
 nl : Plaatje is veilig?
 de : Bild NSFW
 es : Imagen +18
@@ -13625,7 +13623,7 @@ it : (Questo avvertimento può essere disabilitato nel tuo account)
 en : Flagged as NSFW
 ru : Помечено как НБДР (NSFW)
 cs : Označeno jako NSFW
-hu : NMB-nek van bejelölve
+hu : NSFW-nek van bejelölve
 nl : Gemarkeerd als NSFW
 de : Markiert als NSFW
 es : Marcado como +18
@@ -14197,7 +14195,7 @@ it : Pubblicazioni
 en : Releases for [_1]
 ru*:
 cs*:
-hu*:
+hu : Kiadások: [_1]
 nl*:
 de : Veröffentlichungen für [_1]
 es*:
@@ -14211,7 +14209,7 @@ it*:
 en : All
 ru*:
 cs*:
-hu*:
+hu : Mind
 nl*:
 de : Alle
 es*:
@@ -14223,7 +14221,7 @@ it*:
 en : All on
 ru*:
 cs*:
-hu*:
+hu : Mind igen
 nl*:
 de : Alle an
 es*:
@@ -14235,7 +14233,7 @@ it*:
 en : All off
 ru*:
 cs*:
-hu*:
+hu : Mind nem
 nl*:
 de : Alle aus
 es*:
@@ -14247,7 +14245,7 @@ it*:
 en : Restrict column width
 ru*:
 cs*:
-hu*:
+hu : Korlátozd az oszlop szélességét
 nl*:
 de : Tabellenbreite begrenzen
 es*:
@@ -14260,7 +14258,7 @@ it*:
 en : NA for patches
 ru*:
 cs*:
-hu*:
+hu : Nincs adat mert egy patch
 nl*:
 de : NA für Patches
 es*:
@@ -14356,7 +14354,7 @@ it : [_1] di [_2] [quant,_2,screenshot,screenshots].
 en : show/hide NSFW
 ru : показать/скрыть НБДР (NSFW)
 cs : skrýt/zobrazit NSFW
-hu : megjelenít/elrejt NMB
+hu : megjelenít/elrejt NSFW
 nl : toon/verberg NSFW
 de : zeige/verstecke NSFW
 es : mostrar/ocultar +18
@@ -14513,7 +14511,7 @@ it : Accesso negato
 en : You need to be logged in to perform this action.
 ru : Для выполнения этого действия требуется авторизация.
 cs : Pro vykonání této akce se musíte přihlásit.
-hu : Be kell legyél jelentkezve ha ezt akarod csinálni.
+hu : Ha ezt szeretnéd csinálni akkor be kell jelentkezzél.
 nl : Je dient ingelogt te zijn om deze actie uit te kunnen voeren.
 de : Du musst eingeloggt sein, um diesen Vorgang durchzuführen.
 es : Necesitas estar conectado para poder hacer esta acción.
@@ -14525,7 +14523,7 @@ it : Devi effettuare l'accesso per fare questa azione.
 en : Please [url,/u/login,login], or [url,/u/register,create an account] if you don't have one yet.
 ru : Пожалуйста [url,/u/login,авторизуйтесь], либо [url,/u/register,создайте учётную запись], если таковой у вас нет.
 cs : Prosíme, [url,/u/login,přihlašte se], nebo si [url,/u/register,vytvořte účet], pokud ještě žádný nemáte.
-hu : Kérlek [url,/u/login,lépj be] vagy [url,/u/register,készíts egy fiókot] ha még nem volna.
+hu : Kérlek[url,/u/login,lépj be] vagy ha még nem volna akkor [url,/u/register,készíts egy fiókot].
 nl : [url,/u/login,Log a.u.b. in], of [url,/u/register,maak een nieuw account aan] als je er nog geen hebt.
 de : Bitte [url,/u/login,einloggen], oder [url,/u/register,einen Account erstellen], solltest du noch keinen haben.
 es : Por favor [url,/u/login,conéctate], o [url,/u/register,crea una cuenta] si no tienes una.
@@ -14617,7 +14615,7 @@ ru : Вы собираетесь создать новую запись, осн�
 cs : Chystáte se vložit nový záznam do databáze s informacemi založenými na záznamu [_1].[br]
      Použijte záložku "editovat" vpravo nahoře pokud jste hodlali upravit záznam a ne vytvořit záznam nový.
 hu : Te most ép arra készülsz, hogy egy új bejegyzést hozzál létre az adatbázisban, [_1]-ra alapozva az információkat.[br]
-     Klikkelj a 'szerkesztés' fülre a jobb felső sarokba ha egy új bejegyzés helyet, csak szerkeszteni akartad a meglévőt.
+     Kattints a 'szerkesztés' fülre a jobb felső sarokba ha egy új bejegyzés helyet, csak szerkeszteni akartad a meglévőt.
 nl : Je staat op het punt om een nieuw item toe te voegen aan de database, met informatie gebasseerd op [_1].[br]
      Klik op de 'wijzig' tab rechtsboven als je bedoeling is om dit item te wijzigen in plaats van een nieuwe aan te maken.
 de : Du bist dabei einen neuen Eintrag in die Datenbank mit den Informationen basierend auf [_1] einzugeben.[br]
@@ -14659,7 +14657,7 @@ it : Leggi la [url,_1,guida]!
 en : Check for any existing discussions on the [url,_1,discussion board]
 ru : Проверьте все существующие темы на [url,_1,форуме]
 cs : Podívejte se do existujících diskusí na [url,_1,diskusním boardu]
-hu : Keress bármilyen meglévő beszélgetésre a [url,_1,fórumon]
+hu : Keress a [url,_1,fórumba] bármilyen meglévő beszélgetésre
 nl : Browse het [url,_1,forum] voor gerelateerde discussies.
 de : Suche nach allen existierenden Diskussionen im [url,_1,Forum]
 es : Mira si hay temas existenetes en el [url,_1,discussion board]
@@ -14671,7 +14669,7 @@ it : Controlla se ci sono discussioni nell'[url,_1,area messaggi]
 en : Browse the [url,_1,edit history] for any recent changes related to what you want to change.
 ru : Просмотрите [url,_1,историю правок] на предмет недавних правок данных, которые вы хотите изменить.
 cs : Projděte [url,_1,historii editací] pro nedávné změny týkající se změn, které se chystáte provést.
-hu : Nézz bele a [url,_1,szerkesztési előzményekbe], hogy lásd milyen változtatások voltak mielőtt te is megváltoztatnál valamit.
+hu : Mielőtt te is megváltoztatnál valamit nézz bele a [url,_1,szerkesztési előzményekbe], hogy milyen változások voltak eddig.
 nl : Browse de [url,_1,geschiedenis] van dit item voor wijzigingen gerelateerd aan wat je wil doen.
 de : Durchsuche den [url,_1,Bearbeitungsverlauf] um alle kürzlichen Änderungen im Zusammenhang was du ändern möchtest zu sehen.
 es : Mirar la the [url,_1,historia de editaciones] para cualquier cambio relacionado con lo que quieres cambiar.
@@ -14710,8 +14708,8 @@ ru : Вы правите старую редакцию страницы [index,_
      Если вы сохраните её, все изменения, сделанные после этой правки, будут утеряны!
 cs : Editujete starší verzi [index,_1,této vizuální novely,tohoto vydání,tohoto producenta,této postavy].
      Pokud ji uložíte, všechny změny provedené po této revizi budou vráceny!
-hu : Te egy régi átjavítását szerkeszted ennek a [index,_1,visual novelnek, kiadásnak, készítőnek, szereplőnek].
-     Ha lemented, akkor minden szerkesztés amit ezután a javítás után végeztek kitörlődik!
+hu : Te egy régi revízióját szerkeszted ennek a [index,_1,visual novelnek, kiadásnak, készítőnek, szereplőnek].
+     Ha lemented, akkor minden szerkesztés kitörlődik amit ezután a revízió után végeztek!
 nl : Je wijzigd een verouderde versie van [index,_1,deze visual novel,deze uitgave,deze producent,dit karakter].
      Als je dit opslaat, zullen alle wijzigingen na deze revisie teruggedraait worden.
 de : Du bearbeitest eine alte Revision von dieser/diesem [index,_1,Visual Novel,Veröffentlichung,Hersteller,Charakter].
@@ -14732,7 +14730,7 @@ it : Stai modificando una vecchia revisione di questo [index,_1,visual novel,rel
 en : Could not send form
 ru : Невозможно отправить данные
 cs : Formulář nemohl být odeslán
-hu : Nem lehetett elküldeni a formulát
+hu : Az űrlapot nem lehetett elküldeni
 nl : Formulier kon niet verzonden worden
 de : Konnte das Formular nicht absenden
 es : El formulario no ha podido ser enviado
@@ -14756,7 +14754,7 @@ it : Errore
 en : The form could not be sent, please make sure you have Javascript enabled in your browser.
 ru : Не удалось отправить данные, пожалуйста убедитесь, что в вашем браузере включён Javascript.
 cs : Formulář nemohl být odeslán, ujistěte se, že máte ve svém prohlížeči povolen Javascript.
-hu : A formulát nem lehetett elküldeni, kérlek ellenőrizd, hogy engedélyezve van a JavaScript a böngésződbe.
+hu : Az űrlapot nem lehetett elküldeni. Ellenőrizd, hogy engedélyezve van a JavaScript a böngésződbe.
 nl : Formulier kon niet verzonden worden, zorg er voor dat Javascript aan staat in je browserinstellingen.
 de : Das Formular konnte nicht gesendet werden, bitte stelle sicher, dass du Javascript in deinem Browser aktiviert hast.
 es : El formulario no ha podido ser enviado, por favor asegurate de tener Javascript en tu navegador.
@@ -14783,7 +14781,7 @@ it : Il codice non è più valido
 en : Please hit the back-button of your browser, refresh the page and try again.
 ru : Пожалуйста, вернитесь назад, обновите страницу и попробуйте ещё раз.
 cs : Prosím stiskněte tlačítko Zpět ve vašem prohlížeči, obnovte stránku a zkuste to znovu.
-hu : Kérem nyomva meg a böngészője vissza gombját, frissítse az oldalt és próbálja újra.
+hu : Kérlek nyomd meg a böngésző vissza gombját, frissítsd az oldalt és próbáld újra.
 nl : Ga terug naar de vorige pagina, vernieuw deze en probeer het opnieuw.
 de : Bitte drücke den Zurück-Knopf in deinem Browser, aktualisiere die Seite und versuche es erneut.
 es : Por favor ve atrás, actualiza la página e inténtalo otra vez.
@@ -14933,7 +14931,7 @@ it : Puoi registrarti usando lo stesso IP solo una volta al giorno
 en : Question was not correctly answered. Are you sure you are a human?
 ru : Неправильный ответ. А вы точно человек?
 cs : Na otázku jste neodpověděli správně. Jste si jisti, že jste člověk?
-hu : A kérdésre a válasz helytelen. Biztos vagy benne, hogy ember vagy?
+hu : Helytelen a válasz. Biztos vagy benne, hogy ember vagy?
 nl : Vraag was incorrect beantwoord. Weet je zeker dat je een mens bent?
 de : Die Frage wurde nicht korrekt beantwortet. Bist du sicher, dass du menschlich bist?
 es : La pregunta no ha sido respondido correctamente. ¿Estás seguro que eres un humano?
@@ -14993,7 +14991,7 @@ it : Leggi la [url,/d5.4,guida] su come usare il riepilogo modifica
 en : Invalid main character. Make sure the ID is correct, that the main character itself is not an instance of an other character, and that this entry is not used as a main character elsewhere.
 ru : Неверный главный персонаж. Проверьте, что ID персонажа верный, сам персонаж не является воплощением какого-либо другого персонажа, и этот персонаж не используется в качестве главного где-нибудь ещё.
 cs : Neplatná hlavní postava. Ujistěte se, že ID je správně, že hlavní postava není duplikátem jiné postavy a že tento záznam není použit jako hlavní postava někde jinde.
-hu : Érvénytelen főszereplő. Bizonyosodj meg, hogy helyes-e az azonosító (ID), hogy maga a főszereplő nem egy másik szereplő hasonmása/második énje, és hogy ez a bejegyzés máshol nincs főszereplőként használva.
+hu : Érvénytelen szereplő. Bizonyosodj meg, hogy helyes-e az azonosító (ID), hogy maga a szereplő nem egy másik szereplő hasonmása, és hogy ez a bejegyzés máshol nincs szereplő ként használva.
 nl : Ongeldig hoofdkaracter. Zorg ervoor dat het ID correct is, dat het hoofdkarakter zelf geen instantie is van een ander karakter, en dat dit karakter zelf ook niet ergens gebruikt wordt als hoofdkarakter.
 de : Ungültiger Hauptcharakter. Stelle sicher, dass die ID korekkt ist, dass der Hauptcharakter nicht selbst eine Instanz eines anderen Charakters ist und dass dieser Eintrag nicht als Haupcharakter irgendwo sonst verwendet wird.
 es : Personaje principal inválido. Asgúrate que la ID es correcta, que el personaje principal no sea un ejemplo de otro personaje, y que la entrada no es usado como el personaje principal en ningún lado.
@@ -15101,7 +15099,7 @@ it : Il tag [url,_1,_2] esiste già!
 en : Trait [url,_1,_2] already exists within the same group.
 ru : Черта [url,_1,_2] уже существует в этой группе.
 cs*:
-hu : [url,_1,_2] sajátosság(ok) már megtalálhatóak ugyanabban a csoportban.
+hu : [url,_1,_2] jellemző(k) már megtalálhatóak ugyanabban a csoportban.
 nl : Kenmerk [url,_1,_2] bestaat al in dezelfde groep.
 de : Die Eigenschaft [url,_1,_2] gibt es bereits in der gleichen Gruppe.
 es : Rasgo [url,_1,_2] ya existe en el mismo grupo

@@ -43,18 +43,19 @@ anélkül, hogy több japán oldalt is átböngésszenek.
 </p>
 
 
-:SUB:Hogyan segíthetek a VNDB.nek?
+:SUB:Hogyan segíthetek a VNDB-nek?
 <p>
-Több féle képen is tudsz. Elsősorban szabadon szerkeszthetsz minden információt ami az oldalon
-található, szóval ha találsz valami hibát, csak klikkelj a "szerkesztés" linkre a jobb felső sarokban és
+Többféle képen is tudsz. Elsősorban szabadon szerkeszthetsz minden információt ami az oldalon
+található, szóval ha találsz valami hibát, csak kattints a "szerkesztés" linkre a jobb felső sarokban és
 orvosold azt. Új VN-ket vagy kiadást is adhatsz hozzá az adatbázishoz, csak előbb nézd meg, hogy nincs-e
 már róla bejegyzés, mert nem szeretjük a duplákat.<br />
- <br />Ha új funkciókról és az oldal fejlesztéséről akarsz beszélni akkor ugorj be a
+ <br />
+Ha új funkciókról és az oldal fejlesztéséről akarsz beszélni akkor ugorj be a
 <a href="/t">fórumba</a> vagy csatlakozz hozzánk az IRC-en a
 <a href="irc://irc.synirc.net/vndb">#vndb @ irc.synirc.net</a> címen.
 Ha nincsen IRC kliensed installálva és nem is akarsz akkor nem gond mert használhatod a
  <a href="http://cgiirc.synirc.net/?chan=%23vndb">Webchat</a>-et.
-Csak válasz egy nick-et és klikkelj a Login-ra.
+Csak válasz egy nick-et és kattints a Login-ra.
 </p>
 
 
@@ -75,6 +76,24 @@ verziókat vagy teljes játékokat tölthetsz le.
  akkor összehasonlíthatod a szavazati listádat a többi <a href="/u/all">felhasználóéval</a>
  s majd eldöntheted hogy mit is akarsz ezután olvasni.
 </p>
+
+:SUB: Ki az a lány a háttérképben?
+<p>
+Ha nincsen fiókod a VNDB-n és soha nem piszkáltad a profilod beállításait akkor a válasz a kérdésedre
+<a href="/c3005">Lasty Farson</a> az <a href="/v1280">Angelic Serenade</a> című VN-ből. 
+Viszont ha van fiókod akkor bemehetsz a beállításokhoz és megnézheted a skin nevét ami úgyszintén 
+megválaszolja a kérdésedet.
+</p>
+
+
+:SUB:Ez a játék nagyon bejön, de nincs angol kiadás!?
+<p>
+ Pech. Ilyenkor jó néhány dolgot tudni: először is, ha az adatbázisunkba nincs bejezés fordításról
+akkor *nagyon* nagy esély van rá, hogy az nem létezik, sehol. Másodszor, nem mi fordítjuk és irányítjuk a fordítások
+menetét. Fordítást kérni nálunk értelmetlen és biztos mód arra, hogy bezárják a témádat, továbbá a visual novelek száma
+jóval meghaladja a közösségben levő fordítók számát. :-(
+</p>
+
 
 :SUB:Linkelhetek a VNDB-re?
 <p>

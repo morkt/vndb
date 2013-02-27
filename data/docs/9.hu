@@ -20,6 +20,8 @@ rendelkezik s egy témát hozzá lehet kapcsolni több alfórumhoz is. Az alább
  <dt>db</dt><dd>
   VNDB Társalgó. Ez a hely ahova azok a témák kerülnek amelyek nem tartoznak egy bejegyzéshez
  sem.
+</dd><dt>ge</dt><dd>
+  Általános megbeszélések. Itt van minden ami nem tartozik a többi alfórumba.
  </dd><dt>v#</dt><dd>
   Arra használjuk, hogy egy bizonyos VN-ről beszéljünk. A <i>v17</i>-es alfórum pl. összekapcsolja
   az összes témát ami a <a href="/v17">v17</a>-es novelhez kapcsolódik.
