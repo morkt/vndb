@@ -121,7 +121,7 @@
   <td>Whether this is a meta trait or not.</td>
  </tr>
  <tr class="odd">
-  <td>vns</td>
+  <td>chars</td>
   <td>integer</td>
   <td>no</td>
   <td>Number of characters on which this trait and any child traits is used.</td>
