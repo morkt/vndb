@@ -42,7 +42,7 @@ sub dbUserGet {
     !$o{uid} && !$o{username} ? (
       'id > 0' => 1 ) : (),
     $o{ip} ? (
-      'ip = ?' => $o{ip} ) : (),
+      'ip !s ?' => [ $o{ip} =~ /\// ? '<<' : '=', $o{ip} ] ) : (),
     $o{registered} ? (
       'registered > to_timestamp(?)' => $o{registered} ) : (),
     $o{search} ? (
