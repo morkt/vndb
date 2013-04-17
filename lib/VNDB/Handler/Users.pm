@@ -434,6 +434,7 @@ sub posts {
   my $f = $self->formValidate(
     { get => 'p', required => 0, default => 1, template => 'int' }
   );
+  return $self->resNotFound if $f->{_err};
 
   my($posts, $np) = $self->dbPostGet(uid => $uid, hide => 1, what => 'thread', page => $f->{p}, sort => 'date', reverse => 1);
 
