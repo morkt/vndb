@@ -50,7 +50,7 @@ TUWF::set(
   # for compatibility with YAWF
   validate_templates => {
     mail       => { regex => qr/^[^@<>\s]+@[^@.<>\s]+(?:\.[^@.<>\s]+)+$/ },
-    url        => { regex => qr/^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/ },
+    url        => { regex => qr/^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:\/~\+\*#]*[\w\-\@?^=%&\/~\+#\*])?$/ },
     asciiprint => { regex => qr/^[\x20-\x7E]*$/ },
     int        => { regex => qr/^-?[0-9]+$/ },
     pname      => { regex => qr/^[a-z0-9-]*$/ },
