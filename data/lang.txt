@@ -11507,7 +11507,7 @@ uk : Відключити попередження про небезпечні �
 it : Disabilita avvertimenti per le immagini NSFW
 
 :_usere_skin
-en : Prefered skin
+en : Preferred skin
 ru : Предпочитаемая шкурка
 cs : Preferovaný skin
 hu : Előnybe részesített stílus
