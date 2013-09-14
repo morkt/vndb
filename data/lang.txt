@@ -545,6 +545,18 @@ tr : Game Boy Advance
 uk : Game Boy Advance
 it : Game Boy Advance
 
+:_plat_gbc
+en : Game Boy Color
+ru*:
+cs*:
+hu*:
+nl :
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_plat_msx
 en : MSX
 ru : MSX
@@ -581,6 +593,18 @@ tr : Famicom
 uk : Dendy
 it : Famicom
 
+:_plat_p88
+en : PC-88
+ru*:
+cs*:
+hu*:
+nl :
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_plat_p98
 en : PC-98
 ru : PC-98
@@ -592,6 +616,18 @@ es : PC-98
 tr : PC-98
 uk : PC-98
 it : PC-98
+
+:_plat_pcf
+en : PC-FX
+ru*:
+cs*:
+hu*:
+nl :
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_plat_psp
 en : PlayStation Portable
@@ -708,6 +744,18 @@ cs*:
 hu :
 nl :
 de : Nintendo 3DS
+es*:
+tr*:
+uk*:
+it*:
+
+:_plat_xb1
+en : Xbox
+ru*:
+cs*:
+hu*:
+nl :
+de*:
 es*:
 tr*:
 uk*:
