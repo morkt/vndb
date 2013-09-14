@@ -47,7 +47,7 @@ dirs: static/f/js static/ch static/cv static/sf static/st data/log www www/feeds
 
 js: static/f/js/en.js
 
-skins: static/s/*/style.css
+skins: $(shell ls static/s | sed -e 's/\(.\+\)/static\/s\/\1\/style.css/g')
 
 robots: dirs www/robots.txt static/robots.txt
 
