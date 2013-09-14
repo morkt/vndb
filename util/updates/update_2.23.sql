@@ -8,7 +8,7 @@ CREATE INDEX tags_vn_vid ON tags_vn (vid);
 -- Extra language for ukrainian and indonesian
 
 ALTER TYPE language RENAME TO language_old;
-CREATE TYPE language AS ENUM ('cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'hu', 'id', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt-pt', 'pt-br', 'ru', 'sk', 'sv', 'tr', 'uk', 'vi', 'zh'); 
+CREATE TYPE language AS ENUM ('ar', 'cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'he', 'hu', 'id', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt-pt', 'pt-br', 'ru', 'sk', 'sv', 'tr', 'uk', 'vi', 'zh');
 ALTER TABLE producers_rev ALTER COLUMN lang DROP DEFAULT;
 ALTER TABLE producers_rev ALTER COLUMN lang TYPE language USING lang::text::language;
 ALTER TABLE producers_rev ALTER COLUMN lang SET DEFAULT 'ja';

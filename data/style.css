@@ -858,6 +858,7 @@ a .icons { cursor: pointer }
 .icons.hu  { background-position: -48px -99px; }
 .icons.pt-br { background-position: -48px -110px; }
 .icons.uk  { background-position: -48px -121px; }
+.icons.ar  { background-position: -48px -132px; }
 
 .icons.nl  { background-position: -61px   0px; }
 .icons.no  { background-position: -61px -11px; }
@@ -871,6 +872,7 @@ a .icons { cursor: pointer }
 .icons.vi  { background-position: -61px -99px; }
 .icons.sk  { background-position: -61px -110px; }
 .icons.id  { background-position: -61px -121px; }
+.icons.he  { background-position: -61px -132px; }
 
 
 /* Relation graph colors */

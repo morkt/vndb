@@ -120,6 +120,18 @@ it : Sconosciuto
 
 # languages
 
+:_lang_ar
+en : Arabic
+ru*:
+cs*:
+hu*:
+nl : Arabisch
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_lang_cs
 en : Czech
 ru : Чешский
@@ -203,6 +215,18 @@ es : Francés
 tr : Fransızca
 uk : Французька
 it : Francese
+
+:_lang_he
+en : Hebrew
+ru*:
+cs*:
+hu*:
+nl : Hebreeuws
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_lang_hu
 en : Hungarian
