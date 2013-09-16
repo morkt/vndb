@@ -5,7 +5,7 @@ CREATE INDEX tags_vn_vid ON tags_vn (vid);
 
 
 
--- Extra language for ukrainian and indonesian
+-- Extra language for Arabic, Hebrew, Ukrainian and Indonesian
 
 ALTER TYPE language RENAME TO language_old;
 CREATE TYPE language AS ENUM ('ar', 'cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'he', 'hu', 'id', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt-pt', 'pt-br', 'ru', 'sk', 'sv', 'tr', 'uk', 'vi', 'zh');
@@ -66,3 +66,7 @@ DROP TRIGGER screenshot_process_notify ON screenshots;
 DROP FUNCTION screenshot_process_notify();
 
 ALTER TABLE screenshots DROP COLUMN processed;
+
+
+-- New resolution has been added at index 8
+UPDATE releases_rev SET resolution = resolution + 1 WHERE resolution >= 8 AND NOT EXISTS(SELECT 1 FROM releases_rev WHERE resolution >= 14);
