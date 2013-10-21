@@ -607,6 +607,7 @@ sub relxml {
       push @{$vns{$v->{vid}}}, $r;
     }
   }
+  !$vns{$_} && delete $vns{$_} for(keys %vns);
   $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
   xml;
   tag 'vns';
