@@ -1175,7 +1175,7 @@ ru : Порождена
 cs : Stvořilo
 hu : Létrehozta
 nl : Voortgebracht
-de : Hervorgebracht von
+de : Brachte hervor
 es : Engendra
 tr : Ortaya çıkardıkları
 uk : Породили
@@ -4428,7 +4428,7 @@ ru : Данная тема заблокирована, вы больше не м
 cs : Tento thread byl zamčen, již se do něj nedá odpovědět
 hu : A téma le van zárva, nem lehet rá válaszolni
 nl : Dit topic is gesloten, er kan niet meer op gereageerd worden
-de : Dieser Thread wurde gesperrt, du kannst ihn dort nichts mehr schreiben.
+de : Dieser Thread wurde gesperrt, du kannst hier leider nichts mehr schreiben.
 es : Este tema ha sido cerrado, ya no puedes responder más aquí
 tr : Bu başlık kilitli, artık yanıt yazamazsınız.
 uk : Тред закрито
