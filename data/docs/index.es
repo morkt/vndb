@@ -2,6 +2,7 @@
  <li><b>Normas</b></li>
  <li><a href="/d5">Editar normas</a></li>
  <li><a href="/d2">Novelas visuales</a></li>
+ <li><a href="/d15">Special Games</a></li>
  <li><a href="/d3">Estrenos</a></li>
  <li><a href="/d4">Creadores</a></li>
  <li><a href="/d12">Personajes</a></li>

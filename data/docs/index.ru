@@ -2,6 +2,7 @@
  <li><b>Рекомендации</b></li>
  <li><a href="/d5">Рекомендации по правке</a></li>
  <li><a href="/d2">Новеллы</a></li>
+ <li><a href="/d15">Special Games</a></li>
  <li><a href="/d3">Выпуски</a></li>
  <li><a href="/d4">Компании</a></li>
  <li><a href="/d12">Персонажи</a></li>

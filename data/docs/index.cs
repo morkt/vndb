@@ -2,6 +2,7 @@
  <li><b>Doporučení</b></li>
  <li><a href="/d5">Doporučení k editacím</a></li>
  <li><a href="/d2">Vizuální novely</a></li>
+ <li><a href="/d15">Special Games</a></li>
  <li><a href="/d3">Vydání</a></li>
  <li><a href="/d4">Producenti</a></li>
 <li><a href="/d12">Postavy</a></li>
