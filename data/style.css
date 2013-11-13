@@ -382,7 +382,7 @@ div#vntags                    { margin: 15px 30px 0 30px; border-top: 1px solid 
 
 /***** Vote stats ****/
 
-.votestats           { width: 610px; margin: 0 auto; }
+.votestats           { width: 620px; margin: 0 auto; }
 .votegraph           { float: left; margin-right: 20px }
 .votegraph td        { padding: 0 2px; }
 .votegraph td.number { text-align: right }
