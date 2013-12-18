@@ -8031,7 +8031,7 @@ uk : Спойлер
 it : Spoiler
 
 :_tagv_overruletip
-en : Tag overruled. All votes other than that of the moderator who overruled it will be ignored.
+en : Tag overruled. All votes other then that of the moderator who overruled it will be ignored.
 ru : Тег зафиксирован модератором. Все голоса за него будут проигнорированы.
 cs : Tag přehlasován. Všechny jiné hlasy než od moderátora, ktrý tag přehlasoval, budou ignorovány.
 hu : A címkét átvette egy moderátor. Minden szavazat a moderátorén kivűl figyelmen kivűl lesz hagyva.
