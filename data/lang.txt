@@ -128,7 +128,7 @@ hu*:
 nl : Arabisch
 de*:
 es*:
-tr*:
+tr : Arapça
 uk*:
 it*:
 
@@ -224,7 +224,7 @@ hu*:
 nl : Hebreeuws
 de*:
 es*:
-tr*:
+tr : İbranice
 uk*:
 it*:
 
@@ -248,7 +248,7 @@ hu : Indonéz
 nl : Indonesisch
 de : Indonesisch
 es*:
-tr*:
+tr : Endonezce
 uk*:
 it*:
 
@@ -553,7 +553,7 @@ hu*:
 nl :
 de*:
 es*:
-tr*:
+tr : Game Boy Color
 uk*:
 it*:
 
@@ -601,7 +601,7 @@ hu*:
 nl :
 de*:
 es*:
-tr*:
+tr : PC-88
 uk*:
 it*:
 
@@ -625,7 +625,7 @@ hu*:
 nl :
 de*:
 es*:
-tr*:
+tr : PC-FX
 uk*:
 it*:
 
@@ -685,7 +685,7 @@ hu :
 nl :
 de : PlayStation Vita
 es*:
-tr*:
+tr : PlayStation Vita
 uk*:
 it*:
 
@@ -745,7 +745,7 @@ hu :
 nl :
 de : Nintendo 3DS
 es*:
-tr*:
+tr : Nintendo 3DS
 uk*:
 it*:
 
@@ -757,7 +757,7 @@ hu*:
 nl :
 de*:
 es*:
-tr*:
+tr : Xbox
 uk*:
 it*:
 
@@ -3553,7 +3553,7 @@ hu : kiadások
 nl*:
 de : Veröffentlichungen
 es*:
-tr*:
+tr : yayımlar
 uk*:
 it*:
 
@@ -4067,7 +4067,7 @@ hu : Épp most jelentek meg
 nl : Recentelijk uitgebracht
 de : Kürzlich veröffentlicht
 es : Estrenos recientes
-tr : Yeni çkanlar
+tr : Yeni çıkanlar
 uk : Свіжі релізи
 it : Ultime uscite
 
@@ -12053,7 +12053,7 @@ hu : VN listám
 nl*:
 de : Benutzer VN Liste
 es*:
-tr*:
+tr : Kullanıcı VN listesi
 uk*:
 it*:
 
@@ -12065,7 +12065,7 @@ hu : Kivánságlistám
 nl*:
 de : Wunschliste
 es*:
-tr*:
+tr : İstek listesi
 uk*:
 it*:
 
@@ -14271,7 +14271,7 @@ hu : Kiadások: [_1]
 nl*:
 de : Veröffentlichungen für [_1]
 es*:
-tr*:
+tr : [_1] yayımları
 uk*:
 it*:
 
@@ -14285,7 +14285,7 @@ hu : Mind
 nl*:
 de : Alle
 es*:
-tr*:
+tr : Hepsi
 uk*:
 it*:
 
@@ -14297,7 +14297,7 @@ hu : Mind igen
 nl*:
 de : Alle an
 es*:
-tr*:
+tr : Hepsini aç
 uk*:
 it*:
 
@@ -14309,7 +14309,7 @@ hu : Mind nem
 nl*:
 de : Alle aus
 es*:
-tr*:
+tr : Hepsini kapa
 uk*:
 it*:
 
@@ -14321,7 +14321,7 @@ hu : Korlátozd az oszlop szélességét
 nl*:
 de : Tabellenbreite begrenzen
 es*:
-tr*:
+tr : Sütun genişliğini kısıtla
 uk*:
 it*:
 
@@ -14334,7 +14334,7 @@ hu : Nincs adat mert egy patch
 nl*:
 de : NA für Patches
 es*:
-tr*:
+tr : Yamalar için geçersiz
 uk*:
 it*:
 
