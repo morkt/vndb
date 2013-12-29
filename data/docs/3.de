@@ -19,10 +19,10 @@
  <dt>Typ</dt><dd>
   Ist diese Veröffentlichung eine Vollversion, eine Teilversion oder eine Testversion?
   Vollversionen enthalten alles.
-  Teilversionen enthalten das meiste von dem Spiel, aber einige Dinge warten noch 
+  Teilversionen enthalten das meiste von dem Spiel, aber einige Dinge warten noch
   auf die Veröffentlichung.
   Testversionen sind stark geschnitten und gratis Veröffentlichungen, damit man
-  das Spiel vor dem Kaufen austesten kann. Manchmal sind Testversionen für 
+  das Spiel vor dem Kaufen austesten kann. Manchmal sind Testversionen für
   Internetübertragungen geschnitten und repräsentieren nicht das komplette Produkt.<br />
   Im Falle eines Übersetzungspatchs, sollte der Typ angeben ob es das gesamte Spiel
   (Vollversion) oder nur einzelne Teile davon (Teilversion) übersetzt.
@@ -78,9 +78,9 @@
   spricht für sich selbst und <i>Teilweise Sprachausgabe</i> sollte gewählt werden, wenn es Sprachausgabe
   gibt, aber nur für den Hauptcharakter oder nur in einigen Szenen.
  </dd><dt>Animation</dt><dd>
-  Ob das Spiel Animationen enthält, kann in zwei Optionen spezifiziert werden: einmal für 
+  Ob das Spiel Animationen enthält, kann in zwei Optionen spezifiziert werden: einmal für
   den normalen Storymodus und einmal für Ero-Szenen, falls das Spiel solche hat. Mit <i>Einfache
-  Animationen</i> verbinden wir (üblicherweise wiederholende) Effekte wie fallende Blätter oder Schnee 
+  Animationen</i> verbinden wir (üblicherweise wiederholende) Effekte wie fallende Blätter oder Schnee
   im Hintergrund oder animierte Gesichtsausdrücke wie blinzelnde Augen und ein sich bewegender Mund.
   <i>Alle Szenen vollständig animiert</i> bezieht sich auf sich nicht-wiederholende Szenen im Anime-Stil. Einige Spiele
   sind komplett so, andere haben nur einige Szenen, die vollständig animiert sind. Effekte wie
@@ -94,7 +94,7 @@
  sollten bei diesen Veröffentlichungen leer gelassen werden.
  <br /><br />
  <b>Plattform</b><br />
- Die Plattform, für die das Produkt veröffentlicht wurde. Schließt keine emulierten Plattformen ein 
+ Die Plattform, für die das Produkt veröffentlicht wurde. Schließt keine emulierten Plattformen ein
  (z. B. Playstation 2 Spiele auf Playstation 3) oder WINE. DVD Player bezieht sich auf Spiele, die
  von einer normalen Video DVD (DVDPG) gespielt werden können und sollte nicht mit der DVD als Medium verwechselt werden.
  <br /><br />

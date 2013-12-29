@@ -294,7 +294,7 @@ ru : Нидерландский
 cs : Nizozemsky
 hu : Holland
 nl : Nederlands
-de : Holländisch
+de : Niederländisch
 es : Holandés
 tr : Hollandaca
 uk : Голландська
@@ -3143,7 +3143,7 @@ ru : Мои отданные голоса
 cs : Mé hlasy
 hu : A szavazataim
 nl : Mijn Stemmen
-de : Meine Votes
+de : Meine Bewertungen
 es : Mis Votos
 tr : Oylarım
 uk : Мої голоси

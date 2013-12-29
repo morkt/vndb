@@ -44,7 +44,7 @@
   werden. Es ist möglich solche Pseudonyme mit einem [spoiler] Tag in der Beschreibung
   anzugeben.
 </dd><dt>Beschreibung</dt><dd>
-  Eine kurze Beschreibung des Charakters. Während es empfohlen wird die
+  Eine kurze Beschreibung des Charakters. Wobei empfohlen wird die
   Spoiler auf einem Minimum zu halten, können die üblichen
   <a href="/d9.3">Formatierungscodes</a>, wie [spoiler] verwendet werden,
   um Spoiler einzubauen, die standardmäßig versteckt sind.
@@ -83,19 +83,19 @@
 
 :SUB:Bild
 <p>
- Es gibt eine Menge Freiheiten, wenn man Bild für einen Charakter hochlädt,
- aber bitte beachte die folgende Liste:
+ Es gibt eine Menge Freiheiten, wenn man ein Bild für einen Charakter hochlädt,
+ aber bitte beachte die folgende Regeln:
 <ul>
  <li>Das Bild muss jugendfrei sein, laut den <a href="/d2#4">VN
-  Bild Richtlinien</a>. Du kannst kreative Zensur hinzufügen um ein Bild jugendfrei
+  Bild Richtlinien</a>. Du kannst kreative Zensur hinzufügen, um ein Bild jugendfrei
   zu machen, wenn sonst kein Bild für den Charakter verfügbar ist.</li>
  <li>Das Bild muss offiziell sein, z. B. muss es von der VN selbst extrahiert sein oder von
   der offiziellen Homepage. Fan Art ist definitiv nicht erlaubt!</li>
  <li>Das Bild sollte die übliche Kleidung und Gesichtsausdruck des Charakters zeigen, die
-  er durch das Spiel trägt.</li>
- <li>Bilder von In-Game-Sprites (tachi-e) werden bevorzugt; Ansonsten sind
+  er am häufigsten im Spiel trägt.</li>
+ <li>Bilder von In-Game-Sprites (tachi-e) werden bevorzugt; ansonsten sind
   Ausschnitte von CGs auch erlaubt.</li>
- <li>Das Bild muss zumindest den Kopf (unter der Annahme, dass es einen hat) und
+ <li>Das Bild muss zumindest den Kopf (unter der Annahme, dass der Charakter einen hat) und
   die Schultern des Charakters zeigen. Ganzkörperbilder sind in Ordnung, aber Beine sind im
   Allgemeinen nicht so interessant und führen dazu, dass das gesamte Bild drastisch geschrumpft wird.</li>
  <li>Das Bild wird auf 256x300 geschnitten, aber es wird empfohlen, dies vorher manuell zu

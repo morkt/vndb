@@ -8,7 +8,7 @@
  einem Hersteller erstellt wurde, der noch nicht in der Datenbank gelistet ist. Hersteller, die keine Veröffentlichungen
  gelistet habe, könnten nach eine Weile gelöscht werden, lege also nur einen Eintrag an, wenn du ihn mit einer
  Veröffentlichung verlinkst. Damit ein Hersteller gelistet wird, müssen sie mindestens ein vollständiges
- Produkt veröffentlicht haben. Was für Übersetzungsprojekte bedeutet, dass die Gruppe nur als Hersteller hinzugefügt 
+ Produkt veröffentlicht haben. Was für Übersetzungsprojekte bedeutet, dass die Gruppe nur als Hersteller hinzugefügt
  werden sollte, wenn sie das Projekt fertiggestellt haben.
 </p>
 
@@ -22,7 +22,7 @@
   an wenn der Originalname noch nicht im westlichen Alphabet ist. <a href="/d5.2">Großschreibung</a>
   ist für dieses Feld auch wichtig.
  </dd><dt>Originalname</dt><dd>
-  Wenn der Name (oben) romanisiert wurde, stelle sicher, dass der Originalname (wahrscheinlich 
+  Wenn der Name (oben) romanisiert wurde, stelle sicher, dass der Originalname (wahrscheinlich
   auf Japanisch) hier angezeigt wird.
  </dd><dt>Pseudonyme</dt><dd>
   Andere Namen, unter denen der Hersteller bekannt ist. Mehrere Pseudonyme sollten durch ein Komma getrennt werden.
@@ -38,12 +38,12 @@
 
 :SUB:Beziehungen
 Diese Beziehungen geben an welche Hersteller mit anderen zusammengehörig
-sind und inwiefern. Die korrekte Beziehung auszuwählen kann ein wenig verwirrend 
+sind und inwiefern. Die korrekte Beziehung auszuwählen kann ein wenig verwirrend
 sein, siehe dir  im Zweifelsfall das Beziehungsdiagramm des Herstellereintrags an.
 Die folgenden Beziehungen sind definiert:
 <dl>
  <dt>Ehemals</dt><dd>
-  Der derzeitige Hersteller war früher als anderer Hersteller bekannt. Dies kann aufgrund 
+  Der derzeitige Hersteller war früher als anderer Hersteller bekannt. Dies kann aufgrund
   einer Namensänderung sein oder wenn der früherer Hersteller aufgelöst wurde und die gleichen
   Leute erneut eingestellt wurden unter anderem Namen.
  </dd><dt>Abgelöst von</dt><dd>

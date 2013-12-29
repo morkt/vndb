@@ -7,7 +7,7 @@
 Screenshots, die auf VNDB hochgeladen werden, müssen strenge Richtlinien befolgen.
 Das heißt, sie sollten keinen Fensterrand haben und müssen in der korrekten Auflösung
 vorliegen (pixelgenau!). Screenshots, die dies nicht erfüllen, werden mit hoher
-Wahrscheinlichkeit kurz danach wieder gelöscht. Diese Seite ist eine Anleitung
+Wahrscheinlichkeit kurz danach wieder gelöscht. Diese Seite ist eine Anleitung,
 wie man <b>korrekt</b> Screenshots mit verschiedenen Programmen
 macht. Nur IrfanView wird derzeit behandelt, aber mehr folgen später.
 
@@ -37,7 +37,7 @@ macht. Nur IrfanView wird derzeit behandelt, aber mehr folgen später.
  <li>Drücke "OK" und drücke dann "Start" um das Fotografieren Einstellungen Fenster zu schließen.</li>
 </ol>
 <br />
-Gehe nun in die Visual Novel von der du einen Screenshot möchtest und drücke deine
-bestimmtes Tastatur-Kürzel im gewünschten Moment. IrfanView speichert den Screenshot
+Gehe nun in die Visual Novel von der du einen Screenshot möchtest und drücke dein
+festgelegtes Tastatur-Kürzel im gewünschten Moment. IrfanView speichert den Screenshot
 automatisch im gewählten Ordner. Diese Screenshots sind zum Hochladen auf VNDB
 ohne weitere Bearbeitungen passend.
