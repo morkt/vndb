@@ -34,6 +34,7 @@ You can link two (or more) characters with an "instance relationship" when they 
     information. This is linked to another entry for the same character with
     complete, but spoiling information.</li>
 </ul>
+
 :SUBSUB:Where instances might not be suitable
 <ul>
   <li>It is preferable to avoid using instances just to hide spoilers if other
@@ -43,6 +44,7 @@ You can link two (or more) characters with an "instance relationship" when they 
     different, they should just use one character entry.
     For example, <a href="/c4287">Alice (lamia)</a> and <a href="http://s.vndb.org/sf/26/18226.jpg">Alice (human)</a>.</li>
 </ul>
+
 :SUBSUB:How to use instances
 <p>
 To link two (or more) characters with an instance relationship, you must choose
@@ -127,8 +129,8 @@ href="/d12#6">Visual Novels</a> section below.
   or from the official homepage. Fan art is definitely not allowed!</li>
  <li>This image should be chosen from an image that is showing the most common
   clothing and facial expression the character wears through the game.</li>
- <li>Images using the in-game sprites (tachi-e) are preferred; Otherwise cuts
-  from CGs are also allowed.</li>
+ <li>Screenshots of the in-game sprites (tachi-e) are preferred, including any
+   background art; Raw sprites or cuts from CGs are allowed, too.</li>
  <li>The image must at least include the head (assuming it has one) and
   shoulders of the character. Full-body shots are fine, but legs are generally
   not that interesting yet cause the overall image to shrink dramatically.</li>
