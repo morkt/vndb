@@ -1,63 +1,63 @@
-:TITLE:Tags & Eigenschaften
+:TITLE:Schlagworte und Eigenschaften
 :INC:index
 
 
 :SUB:Einführung
 <p>
- VNDB hat ein System für Tags und eines für Eigenschaften. Tags werden dafür genutzt,
+ VNDB hat ein System für Schlagworte und eins für Eigenschaften. Schlagworte werden dafür genutzt,
  <b>Visual Novels</b> zu kategorisieren, während Eigenschaften etwas über die <b>Charaktere</b> preisgeben. Dies
- unterscheidet sie im Einsatz. Diese Seite beschreibt einige allgemeine Richtlinien und Tipps, wie man Tags
- und Eigenschaften verwendet.
+ unterscheidet sie im Einsatz. Diese Seite beschreibt einige allgemeine Richtlinien und Tipps, wie man Schlagworte
+ und Eigenschaften verwenden sollte.
 </p>
 
-:SUB:Tags
+:SUB:Schlagworte
 <p>
- Tags können einer Visual Novel durch ein Bewertungssystem zugeordnet werden. Jeder Benutzer
- kann einen Tag zu einer Visual Novel hinzufügen, indem man auf die "Tags ändern" Schaltfläche einer Visual
- Novel Seite klickt.
+ Schlagworte können einer Visual Novel durch ein Bewertungssystem zugeordnet werden. Jeder Benutzer
+ kann ein Schlagworte zu einer Visual Novel hinzufügen, indem man auf die „Schlagworte bearbeiten“-Schaltfläche einer
+ Visual-Novel-Seite klickt.
 </p>
 
-:SUB:Tag Bewertung
+:SUB:Schlagwort Bewertung
 <p>
- Obwohl jeder ziemlich frei jegliche Tags mit jeglicher Visual Novel verlinken kann, sollte man folgende Dinge
+ Obwohl jeder ziemlich frei, jegliche Schlagworte mit jeglicher Visual Novel verlinken kann, sollte man folgende Dinge
  bei der Bewertung beachten:
 </p>
 <ul>
- <li>Lies die Beschreibung von jedem Tag bevor du es mit einer VN verlinkst, einige Tags könnten nicht
+ <li>Lies die Beschreibung von jedem Schlagwort, bevor du es mit einer VN verlinkst, einige Schlagworte könnten nicht
   immer das bedeuten, was du glaubst.</li>
  <li>Versuche so spezifisch zu sein, wie du kannst. Zum Beispiel wenn ein Spiel Drama-Elemente hat, kannst
-  du statt den "Drama" Tag zu bewerten, nach einem spezifischeren Unter-Tag suchen, der beschreibt welche
+  du statt des „Drama“-Schlagworts nach einem spezifischeren Unter-Schlagwort suchen, das beschreibt, welche
   Art Drama der Spieler erwarten kann.</li>
- <li>Eine Bewertung zwischen -3 und 3 kann einem Tag gegeben werden. Eine negative Bewertung zeigt,
-  dass du dem Tag widersprichst, wobei -1 bedeutet "Ich würde nicht sagen, dass dieser Tag wirklich zutrifft"
-  und -3 heißt, dass du vollständig widersprichst und dass der Tag ganz und gar nicht zutrifft. Eine positive
-  Bewertung funktioniert andersherum und zeigt, dass du dem Tag zustimmst.</li>
- <li>Einige Tags können als Spoiler auf die Handlung einer VN fungieren, dies kann angegeben werden durch
-  die Bewertung des Spoilerstatus. Es wird sehr empfohlen, dies nicht auf "Neutral" zu lassen und wirklich
-  eine Bewertung abzugeben, ob der Tag überhaupt nicht spoilert oder ein kleiner Spoiler ist.</li>
- <li>Tags sollen die Dinge reflektieren, die man erwarten kann, wenn man das Spiel spielt, selbst wenn
+ <li>Eine Bewertung zwischen -3 und 3 kann einem Schlagwort gegeben werden. Eine negative Bewertung zeigt,
+  dass du dem Schlagwort widersprichst, wobei -1 bedeutet:  „Ich würde nicht sagen, dass dieses Schlagwort wirklich zutrifft“
+  und -3 heißt, dass du vollständig widersprichst und dass das Schlagwort ganz und gar nicht zutrifft. Eine positive
+  Bewertung funktioniert andersherum und zeigt, dass du dem Schlagwort zustimmst.</li>
+ <li>Einige Schlagworte können als Spoiler auf die Handlung einer VN fungieren, dies kann angegeben werden durch
+  die Bewertung des Spoilerstatus. Es wird sehr empfohlen, dies nicht auf „Neutral“ zu lassen und wirklich
+  eine Bewertung abzugeben, ob das Schlagwort überhaupt nicht spoilert oder ein kleiner Spoiler ist.</li>
+ <li>Schlagworte sollen die Dinge reflektieren, die man erwarten kann, wenn man das Spiel spielt, selbst wenn
   einige Dinge gegen Ende als Lügen oder Illusionen enttarnt werden. In solchen Fällen
-  füge beide Tags hinzu (die wohl inkorrekten) und die Tags, die die Situation beschreiben, nachdem die
-  Wahrheit aufgedeckt wurde und stelle sicher, dass du die "korrekten" Tags als Spoiler markierst.</li>
+  füge beide Tags hinzu (die wohl inkorrekten) und die Schlagworte, die die Situation beschreiben, nachdem die
+  Wahrheit aufgedeckt wurde, und stelle sicher, dass du die „korrekten“ Schlagworte als Spoiler markierst.</li>
 </ul>
 
 
-:SUB:Tag Richtlinien
+:SUB:Schlagwortrichtlinien
 <p>
- Neue Tags können von jedem angefragt werden, aber bevor man sie finden kann, müssen sie von einem
+ Neue Schlagworte können von jedem angefragt werden, aber bevor man sie finden kann, müssen sie von einem
  Moderator zugelassen werden. Die folgenden Regeln gelten:
 </p>
 <ul>
- <li>Tag Namen sollten selbsterklärend sein. Während die Bedeutung eines Tags offensichtlich sein kann, wenn
-  man sich den Platz im Tag Baum ansieht, sind auf VN Seiten nur deren Namen sichtbar und nicht die
-  Über-Tags. Der Name sollte deshalb vollständig beschreiben was der Tag bedeutet und für was er
-  verwendet werden sollte. Zum Beispiel: Ein Tag um einen männlichen Protagonisten zu beschreiben
-  sollte als "Male protagonist" benannt werden, selbst wenn der Über-Tag "Characters &gt; Protagonist"
+ <li>Schlagwortnamen sollten selbsterklärend sein. Während die Bedeutung eines Schlagworts offensichtlich sein kann, wenn
+  man sich den Platz im Schlagwortbaum ansieht, sind auf VN-Seiten nur deren Namen sichtbar und nicht die
+  Über-Schlagworte. Der Name sollte deshalb vollständig beschreiben, was das Schlagwort bedeutet, und für was es
+  verwendet werden sollte. Zum Beispiel: Ein Schlagwort, um einen männlichen Protagonisten zu beschreiben,
+  sollte als „Male protagonist“ benannt werden, selbst wenn das Über-Schlagwort „Characters &gt; Protagonist“
  heißt.</li>
- <li>Tags sollten benutzt werden, um objektive Information eines VNs zu beschreiben. Subjektive Tags wie
-  "Awesome protagonist" sind nicht erlaubt, da jedes Individuum eine andere Meinung hat.</li>
- <li>Tags sollten nur Information abdecken, die VNDB selbst noch nicht abdeckt. Also sind Tags über
-  Veröffentlichungsinformationen oder die Länge eines VNs nicht erlaubt.</li>
+ <li>Schlagworte sollten benutzt werden, um objektive Information eines VNs zu beschreiben. Subjektive Schlagworte wie
+  „Awesome protagonist“ sind nicht erlaubt, da jedes Individuum eine andere Meinung hat.</li>
+ <li>Schlagworte sollten nur Information abdecken, die VNDB selbst noch nicht abdeckt. Also sind Schlagworte über
+  Veröffentlichungsinformationen oder die Länge einer VN nicht erlaubt.</li>
  <li>Die obige Regel trifft auch auf jegliche anderen Informationen über die VN zu, die (noch nicht)
   von VNDB abgedeckt werden, wie über den Stab oder Lizenzstatus in einem Land.</li>
 </ul>
@@ -66,7 +66,7 @@
 
 :SUB:Eigenschaften
 <p>
- Eigenschaften können Charakteren zugeteilt werden. Im Gegensatz zu Tags, können Eigenschaften
+ Eigenschaften können Charakteren zugeteilt werden. Im Gegensatz zu Schlagworten, können Eigenschaften
  nicht bewertet werden. Stattdessen sind Eigenschaften Bestandteil des Bearbeitungssystems und
  das Ändern von den Eigenschaften für einen bestimmten Charakter schließt die Bearbeitung
  des Charaktereintrags selbst ein.
@@ -74,29 +74,29 @@
 
 :SUBSUB:Eigenschaften zuteilen
 <p>
- Im Gegensatz zu Tags haben Eigenschaften keine "Level": eine Eigenschaft trifft entweder auf
+ Im Gegensatz zu Schlagworten haben Eigenschaften keine „Level“: Eine Eigenschaft trifft entweder auf
  den Charakter zu oder nicht. Hier sind einige Richtlinien und Tipps für das Zuteilen von
  Eigenschaften zu Charakteren:
 </p>
 <ul>
  <li>Wenn bisher keine Eigenschaften da sind und du die erste Person bist, die Eigenschaften
  hinzufügt, versuche so vollständig wie möglich zu sein. Durchsuche den <a
-  href="/i">Eigenschaftenbaum</a> und versuche so viele zutreffende Eigenschaften für den Charakter
+  href="/i">Eigenschaftenbaum</a> und versuche, so viele zutreffende Eigenschaften für den Charakter
  wie möglich zu finden.</li>
  <li>Spoiler Eigenschaften sollten *immer* als solche gekennzeichnet werden.</li>
 </ul>
 
 :SUBSUB:Eigenschaften erstellen
 <p>
- Jeder kann eine Anfrage stellen neue Eigenschaften der Datenbank hinzuzufügen. Jedoch müssen
+ Jeder kann eine Anfrage stellen, neue Eigenschaften der Datenbank hinzuzufügen. Jedoch müssen
  diese von einem Moderator zugelassen lassen werden, bevor sie einem Charakter zugeteilt werden
  können.<br /><br />
- Eigenschaften werden in "Gruppen" kategorisiert, die obere Eigenschaft in dem Baum
- definiert in welcher Gruppe eine Eigenschaft ist. Im Gegensatz zu Tags müssen Eigenschaften
+ Eigenschaften werden in „Gruppen“ kategorisiert, die obere Eigenschaft in dem Baum
+ definiert, in welcher Gruppe eine Eigenschaft ist. Im Gegensatz zu Schlagworten müssen Eigenschaften
  keinen gänzlich einzigartigen Namen besitzen, aber sie müssen eindeutig und selbsterklärend
- innerhalb der gleichen Gruppe sein. Zum Beispiel kann es mehrere Eigenschaften mit dem Namen "Blue"
- geben, aber eine ist in der "Hair" Gruppe, während eine andere in der "Eyes" Gruppe ist. Behalte also
- die Gruppe im Gedächtnis wenn du eine Eigenschaft benennst.<br /><br />
- Lies die Beschreibungen von den verschiedenen Eigenschaftsgruppen und Meta-Eigenschaften um ein
+ innerhalb der gleichen Gruppe sein. Zum Beispiel kann es mehrere Eigenschaften mit dem Namen „Blue“
+ geben, aber eine ist in der „Hair“-Gruppe, während eine andere in der „Eyes“-Gruppe ist. Behalte also
+ die Gruppe im Hinterkopf, wenn du eine Eigenschaft benennst.<br /><br />
+ Lies die Beschreibungen von den verschiedenen Eigenschaftsgruppen und Meta-Eigenschaften, um ein
  Gefühl dafür zu bekommen, wie sie verwendet werden sollten.
 </p>

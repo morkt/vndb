@@ -32,7 +32,10 @@ indicate that it has been checked.
 
 The text strings can contain some special formatting and text expansion codes.
 Such a code starts with '[', followed by a list of comma-separated options, and
-ends with ']'. The following options are supported:
+ends with ']'. To insert a literal '[', ']' in the text (or a ',' as an
+argument to a formatting code), prefix them with a '~'. E.g. to display
+"[bbcode]" on the site, type "~[bbcode~]". The following options are supported:
+
 
   [_x]
     Insert argument x in here. The arguments differ for each string, and come
@@ -126,7 +129,7 @@ ru*:
 cs*:
 hu*:
 nl : Arabisch
-de*:
+de : Arabisch
 es*:
 tr : Arapça
 uk*:
@@ -222,7 +225,7 @@ ru*:
 cs*:
 hu*:
 nl : Hebreeuws
-de*:
+de : Hebräisch
 es*:
 tr : İbranice
 uk*:
@@ -515,7 +518,7 @@ ru : DVD-плеер
 cs : DVD Přehrávač
 hu : DVD Lejátszó
 nl : DVD Speler
-de : DVD Spieler
+de : DVD-Spieler
 es : DVD Player
 tr : DVD oynatıcı
 uk : DVD Player
@@ -527,7 +530,7 @@ ru : Blu-ray-плеер
 cs*:
 hu : Blu-ray Lejátszó
 nl : Blu-ray Speler
-de : Blur-ray Player
+de : Blu-ray-Spieler
 es : Blu-ray Player
 tr : Blu-ray oynatıcı
 uk : Blu-ray Player
@@ -551,7 +554,7 @@ ru*:
 cs*:
 hu*:
 nl :
-de*:
+de : Game Boy Color
 es*:
 tr : Game Boy Color
 uk*:
@@ -599,7 +602,7 @@ ru*:
 cs*:
 hu*:
 nl :
-de*:
+de : PC-88
 es*:
 tr : PC-88
 uk*:
@@ -623,7 +626,7 @@ ru*:
 cs*:
 hu*:
 nl :
-de*:
+de : PC-FX
 es*:
 tr : PC-FX
 uk*:
@@ -755,7 +758,7 @@ ru*:
 cs*:
 hu*:
 nl :
-de*:
+de : Xbox
 es*:
 tr : Xbox
 uk*:
@@ -1454,7 +1457,7 @@ ru : Неизвестно / консоль / наладонник
 cs : Neznámo / konzole / handheld
 hu : Ismeretlen / konzol / kézi eszköz
 nl : Onbekend / console / handheld
-de : Unbekannt / Konsole / Tragbares Gerät
+de : Unbekannt/Konsole/Tragbares Gerät
 es : Desconocido / consola / de mano
 tr : Bilinmiyor / konsol / el konsolu
 uk : Невідома / консольна / портативний пристрій
@@ -1892,7 +1895,7 @@ ru : Эросцены
 cs : Erotický obsah
 hu : Szexuális tartalom
 nl : Erotisch
-de : Sexueller Inhalt
+de : Sexuelle Inhalte
 es : Contenido sexual
 tr : Cinsel içerik
 uk : Еротика
@@ -1970,7 +1973,7 @@ ru : Неизвестно
 cs : Neznámé
 hu : Ismeretlen vagy nincs
 nl : Onbekend of n.v.t.
-de : Unbekannt
+de : Unbekannt oder keins
 es : Desconocido o NS/NC
 tr : Bilinmiyor veya Yok
 uk : Невідомо
@@ -2508,7 +2511,7 @@ ru : Загрузка...
 cs : Nahrává se...
 hu : Betöltés...
 nl : Laden...
-de : Laden...
+de : Laden …
 es : Cargando...
 tr : Yükleniyor...
 uk : Завантаження…
@@ -2592,7 +2595,7 @@ ru : Совпадений не найдено...
 cs : Žádné výsledky...
 hu : Nincs eredmény...
 nl : Geen resultaten...
-de : Keine Ergebnisse...
+de : Keine Ergebnisse …
 es : Sin resultados...
 tr : Sonuç yok...
 uk : Жодних результатів…
@@ -2652,7 +2655,7 @@ ru : Использование мета-тегов здесь запрещен�
 cs : Zde se nedají použít meta-tagy!
 hu : Itt nem használhatsz meta címkéket!
 nl : Meta tags kunnen hier niet gebruikt worden!
-de : Meta-Tags können hier nicht genutzt werden!
+de : Meta-Schlagworte können hier nicht genutzt werden!
 es : ¡No puedes usar supra-etiquetas aquí!
 tr : Burada meta etiket kullanılamaz!
 uk : Не можна використовувати мета-теги тут!
@@ -2688,7 +2691,7 @@ ru : Использование мета-характеристик здесь �
 cs*:
 hu : Itt nem használhatsz meta-jellemzőket!
 nl : Meta kenmerken kunnen hier niet gebruikt worden!
-de : Meta-Tags können hier nicht genutzt werden!
+de : Meta-Schlagworte können hier nicht genutzt werden!
 es : ¡No puedes usar supra-rasgos aquí!
 tr : Burada meta etiket kullanılamaz!
 uk : Не можна використовувати мета-риси тут!
@@ -2751,7 +2754,7 @@ ru : Сохранённые фильтры также будут автомат�
 cs : Vaše uložené filtry budou aplikovány také na několik dalších částí těchto stránek, například na domovskou stránku. Pro změnu těchto filtrů se vraťte na tuto stránku a použijte znovu tlačítko "Uložit jako defaultní". Pro odstranění uložených filtrů stiskněte tlačítko "Vymazat" a poté uložte.
 hu : A kiválasztott szűrők a honlap többi részén is automatikusan alkalmazva lesznek, mint pl. a főoldalon. Ha meg akarod változtatni ezeket a szűrőket akkor gyere vissza erre az oldalra és kattints a "Mentés alapértelmezet ként" gombra. Ha el akarod távolítani a lementett szűrőket akkor adj egy kattintást a "Törlés" majd "Alkalmaz" gombokra.
 nl : Je opgeslagen filters worden ook automatisch toegepast op een aantal andere delen van de site, waaronder de homepagina. Om deze filters te veranderen, ga terug naar deze pagina en gebruik de "Opslaan als standaard" knop weer. Om je opgeslagen filters te verwijderen, klik op "Reset" en sla je instellingen weer op.
-de : Deine gespeicherten Filter werden automatisch auch auf andere Bereiche der Seite angewandt wie zum Beispiel die Startseite. Um diese Filter zu ändern komm bitte auf diese Seite zurück und nutze den "Als Standard speichern" Knopf erneut. Um deine gespeicherten Filter zu entfernen drücke "Zurücksetzen" und speichere anschließend.
+de : Deine gespeicherten Filter werden automatisch auch auf andere Bereiche der Seite angewandt wie zum Beispiel die Startseite. Um diese Filter zu ändern, kehre bitte auf diese Seite zurück und nutze die „Als Standard speichern“-Schaltfläche erneut. Um deine gespeicherten Filter zu entfernen, klicke auf „Zurücksetzen“ und speichere anschließend.
 es : Tus filtros guardados seran aplicado automáticamente a otras partes del sitio también, como la página principal. Para cambiar estos filtros, ven a esta página y utiliza el botón "Guardar predeterminado" . Para quitar tus filtros guardados, da a "Resetear" y entonces guarda.
 tr : Kaydettiğiniz süzgeç seçenekleri, ana sayfa da dahil olmak üzere, sitenin diğer bazı bölümlerinde de otomatik olarak uygulanacaktır. Değiştirmek isterseniz tekrar bu sayfaya dönüp "Varsayılan olarak kaydet" düğmesine basabilirsiniz. Kayıtlı süzgeç seçeneklerini silmek için "Sıfırla"ya basın ve kaydedin.
 uk : Твої збережені фільтри автоматично застосовуватимуться і до інших частин сайту, наприклад, до головної сторінки. Щоб змінити ці фільтри, повернись на цю сторінку і натисни «Зберегти як стандартне» знову. Щоб видалити збережені фільтри, натисни «Скинути» і збережи.
@@ -2763,7 +2766,7 @@ ru : логическое 'или', чем больше выбрано, тем �
 cs : boolean nebo, výběr více dá více výsledků
 hu : Boole féle értékhalmaz(igaz/hamis), ha többet jelölsz be, több eredményt ad ki
 nl : Booleaanse 'of', meerdere selecties geven meer resultaten
-de : Boolean oder, mehr auswählen führt zu mehr Ergebnissen
+de : Boolesch oder, mehr auswählen führt zu mehr Ergebnissen
 es : Booleano o, seleccionando más da más resultados.
 tr : Boolean OR (ne kadar seçim, o kadar fazla sonuç)
 uk : Логічне «або», чим більше їх обрано, тим більше результатів
@@ -2775,7 +2778,7 @@ ru : логическое 'и', чем больше выбрано, тем ме�
 cs : Boolean a, výběr více dá méně výsledků
 hu : Boole féle értékhalmaz(igaz/hamis), ha többet választasz ki akkor kevesebb találatot ad
 nl : Booleaanse 'en', meerdere selecties geven minder resultaten
-de : Boolean und, mehr auswählen führt zu weniger Ergebnissen
+de : Boolesch und, mehr auswählen führt zu weniger Ergebnissen
 es : Booleano y, seleccionando más da menos resultados
 tr : Boolean AND (ne kadar seçim, o kadar az sonuç)
 uk : Логічне «і», чим більше їх обрано, тим менше результатів
@@ -2820,7 +2823,7 @@ ru : Правка заблокирована
 cs : Zamčeno pro editaci
 hu : Lezárva
 nl : Gesloten voor wijzigingen
-de : Gesperrt zum Editieren
+de : Gesperrt zum Bearbeiten
 es : Cerrado para ser editado
 tr : Düzenlemeye karşı kilitli
 uk : Заблоковано від редагувань
@@ -2832,7 +2835,7 @@ ru : Чтобы редактировать эту страницу, вы дол�
 cs : Pro editaci této stránky musíte být [url,_1,přihlášen]
 hu : Ahhoz, hogy tud szerkeszteni ezt az oldalt be kell legyél [url,_1, jelentkezve].
 nl : Je moet [url,_1,ingelogd] zijn om deze pagina te wijzigen
-de : Du musst [url,_1,eingeloggt sein], um diese Seite zu editieren
+de : Du musst [url,_1,eingeloggt sein], um diese Seite zu bearbeiten
 es : Necesitas estar [url,_1,conectado] para editar esta página
 tr : Bu sayfayı düzenlemek için [url,_1,giriş] yapmalısınız.
 uk : Вам необхідно [url,_1,увійти], щоб редагувати цю сторінку
@@ -2844,7 +2847,7 @@ ru : Вам запрещено редактировать эту страниц�
 cs : Nemáte oprávnění editovat tuto stránku
 hu : Nincs engedélyed ennek az oldalnak a szerkesztésére
 nl : Je bent niet toegestaan om wijzigingen aan te brengen
-de : Du darfst diese Seite nicht editieren
+de : Du darfst diese Seite nicht bearbeiten
 es : No tienes permiso para editar esta página
 tr : Bu sayfayı düzenleme izniniz yok.
 uk : Ви не маєте права редагувати цю сторінку
@@ -2984,7 +2987,7 @@ ru : Теги
 cs : Tagy
 hu : Címkék
 nl :
-de : Tags
+de : Schlagworte
 es : Etiqueta
 tr : Etiketler
 uk : Теги
@@ -3131,7 +3134,7 @@ ru : Мой список новелл
 cs : Můj list vizuálních novel
 hu : A visual novel listám
 nl : Mijn Visual Novel lijst
-de : Meine Visual Novel Liste
+de : Meine Visual-Novel-Liste
 es : Mi Lista de Novelas Visuales
 tr : Görsel roman listem
 uk : Мій список новел
@@ -3191,7 +3194,7 @@ ru : Мои теги
 cs : Moje tagy
 hu : A címkéim
 nl : Mijn tags
-de : Meine Tags
+de : Meine Schlagworte
 es : Mis etiquetas
 tr : Etiketlerim
 uk : Мої теги
@@ -3269,7 +3272,7 @@ hu : Ha még nem [url,_1,regisztráltál], akkor most megteheted,[br]
      vagy netán [url,_2,elfelejtetted a jelszavad]?
 nl : Nog geen [url,_1,account],[br]
      of [url,_2,wachtwoord vergeten]?
-de : Noch [url,_1,keinen Account],[br]
+de : Noch [url,_1,kein Benutzerkonto],[br]
      oder [url,_2,das Passwort vergessen]?
 es : Necesitas [url,_1,registrarte],[br]
      o ¿[url,_2,has olvidado tu contraseña]?
@@ -3348,7 +3351,7 @@ ru : Тегов
 cs*:
 hu : VN Címkék
 nl :
-de : VN Tags
+de : VN-Schlagworte
 es : Etiquetas
 tr : Etiketler
 uk : Теги ВН
@@ -3487,7 +3490,7 @@ ru : голоса
 cs : hlasy
 hu : szavazatok
 nl : stemmen
-de : Votes
+de : Bewertungen
 es : votos
 tr : oylar
 uk : голоси
@@ -3512,7 +3515,7 @@ ru : править теги
 cs : změnit tagy
 hu : címkék módosítása
 nl : wijzig tags
-de : Tags ändern
+de : Schlagworte bearbeiten
 es : modificar etiquetas
 tr : etiketleri düzenle
 uk : змінити теги
@@ -3850,7 +3853,7 @@ ru : Теги
 cs : Tagy
 hu : Címkék
 nl :
-de : Tags
+de : Schlagworte
 es : Etiquetas
 tr : Etiketler
 uk : Теги
@@ -3944,9 +3947,9 @@ nl : VNDB.org is een uitgebreide database voor informatie over visual novels.[br
      [url,/v/all,Browse] gerust eens rond, [url,/u/register,maak een account aan],
      of doe mee aan de discussies op ons [url,/t,forum].
 de : Das Ziel von VNDB.org ist es, eine umfangreiche Datenbank für Informationen rund um Visual Novels zu erstellen.[br]
-     Die Seite ist wie ein Wiki aufgebaut, das heißt, dass jeder Informationen uneingeschränkt in die Datenbank einfügen oder verändern kann, was uns hilft die größte, genauste und aktuellste Visual Novel Datenbank im Internet zu erstellen.[br]
-     Registrierte Benutzer können außerdem eine persönliche Liste der Spiele verwalten, die sie spielen möchten oder bereits gespielt haben. Außerdem können sie alle Visual Novels bewerten.[br][br]
-     Du kannst dich gerne [url,/v/all,umsehen], [url,/u/register,registrieren] oder an den Diskussionen über Visual Novels oder die VNDB in unserem [url,/t,Forum] teilnehmen.
+     Die Seite ist wie ein Wiki aufgebaut, das heißt, dass jeder Informationen uneingeschränkt in die Datenbank einfügen oder verändern kann, was uns hilft, die größte, genauste und aktuellste Visual Novel Datenbank im Internet zu erstellen.[br]
+     Angemeldete Benutzer können außerdem eine persönliche Liste der Spiele verwalten, die sie spielen möchten oder bereits gespielt haben. Außerdem können sie alle Visual Novels bewerten.[br][br]
+     Du kannst dich gerne [url,/v/all,umsehen], [url,/u/register,anmelden] oder an den Diskussionen über Visual Novels oder die VNDB in unserem [url,/t,Forum] teilnehmen.
 es : VNDB.org trata de ser una base de datos de informaciones sobre las novelas visuales.[br]
      Esta página esta hecho como una wiki, es decir que cualquiera puede libremente, añadir y contribuir a la página,
      permitiéndonos crear la más grande, precisa y actualizada base de datos sobre las novelas visuales en la web.[br]
@@ -4428,7 +4431,7 @@ ru : Данная тема заблокирована, вы больше не м
 cs : Tento thread byl zamčen, již se do něj nedá odpovědět
 hu : A téma le van zárva, nem lehet rá válaszolni
 nl : Dit topic is gesloten, er kan niet meer op gereageerd worden
-de : Dieser Thread wurde gesperrt, du kannst hier leider nichts mehr schreiben.
+de : Dieses Thema wurde gesperrt, du kannst hier leider nichts mehr schreiben.
 es : Este tema ha sido cerrado, ya no puedes responder más aquí
 tr : Bu başlık kilitli, artık yanıt yazamazsınız.
 uk : Тред закрито
@@ -4476,7 +4479,7 @@ ru : В расширенный режим...
 cs : Rozšířený mód...
 hu : Haladó mód...
 nl : Geavanceerd...
-de : Erweitert...
+de : Erweitert …
 es : Avanzado...
 tr : Gelişmiş...
 uk : Розширений режим
@@ -4491,7 +4494,7 @@ ru : Начать новую тему
 cs : Založit nový thread
 hu : Új téma létrehozása
 nl : Start nieuw topic
-de : Erstelle neuen Thread
+de : Erstelle neues Thema
 es : Empezar nuevo tema
 tr : Yeni başlık aç
 uk : Почати новий тред
@@ -4539,7 +4542,7 @@ ru : Название темы
 cs : Název threadu
 hu : Téma cím
 nl : Topic titel
-de : Thread Titel
+de : Thematitel
 es : Título del tema
 tr : Başlık
 uk : Назва треду
@@ -4687,7 +4690,7 @@ ru : Связанных тем не найдено
 cs : Nenalezeny žádné diskuse
 hu : Nincs hozzá kapcsolódó téma
 nl : Geen gerelateerde topics gevonden
-de : Keine verwandten Threads gefunden
+de : Keine verwandten Themen gefunden
 es : No se han encontrado temas relacionados
 tr : İlgili başlık bulunamadı
 uk : Не знайдено пов’язаних тредів
@@ -4699,7 +4702,7 @@ ru : Почему бы не создать новую?
 cs : Proč jednu nevytvořite sami?
 hu : Miért ne kezdenél te egyet?
 nl : Maak er zelf één!
-de : Warum erstellst du nicht selbst einen?
+de : Warum erstellst du nicht selbst eins?
 es : ¿Por qué no creas uno tú?
 tr : Kendiniz bir tane açmaz mıydınız?
 uk : Чому б не створити самому?
@@ -4711,7 +4714,7 @@ ru : Начать новую тему
 cs : Začít nový thread
 hu : Új téma megnyitása
 nl : Start nieuw topic
-de : Erstelle neuen Thread
+de : Erstelle neues Thema
 es : Empezar un nuevo tema
 tr : Yeni başlık aç
 uk : Почати новий тред
@@ -4726,7 +4729,7 @@ ru : Корневая директория форума
 cs : Seznam diskusních boardů
 hu : Fórum kezdőoldal
 nl : Forum index
-de : Foren Verzeichnis
+de : Forenverzeichnis
 es : Índice de foro
 tr : Tartışma panosu dizini
 uk : Головна сторінка форуму
@@ -4765,7 +4768,7 @@ ru : Автор темы
 cs : První příspěvek
 hu : Létrehozta
 nl :
-de : Starter
+de : Ersteller
 es : Primer autor
 tr : Başlatan
 uk : Створив
@@ -5100,7 +5103,7 @@ ru : Исходное название компании, оставьте пус
 cs : Originální jméno producenta, ponechte prázdné, pokud již je v latince.
 hu : A készítő eredeti neve, ha latin betűkkel van írva akkor ne írd be ide még egyszer.
 nl : De werkelijke naam van de producent, laat leeg als dit al in het Latijnse alphabet is.
-de : Der Originalname des Produzenten, nicht ausfüllen wenn der Name bereits im westlichen Alphabet geschrieben ist.
+de : Der Originalname des Produzenten, nicht ausfüllen, wenn der Name bereits im westlichen Alphabet geschrieben ist.
 es : Nombre original del creador, déjalo en blanco si ya esta en alfabeto látino
 tr : Yapımcının orijinal ismi. Eğer hâlihazırda Latin alfabesiyle yazılmışsa boş bırakın.
 uk : Оригінальна назва візуальної новели, залиште поле порожнім, якщо назва вже записана латинкою.
@@ -5534,7 +5537,7 @@ ru : Озвучка
 cs : Hlas
 hu : Hangszínjáték
 nl : Ingesproken
-de : Synchronisiert
+de : Sprachausgabe
 es : Voces:
 tr : Seslendirme
 uk : Озвучення
@@ -5621,7 +5624,7 @@ ru : Название
 cs : Název
 hu : Cím
 nl : Titel
-de : Title
+de : Titel
 es : Título
 tr : Adı
 uk : Назва
@@ -6020,7 +6023,7 @@ ru : Freeware (т.е. распространяется бесплатно)
 cs : Freeware (tj. dostupný zdarma)
 hu : Freeware (vagyis ingyenes)
 nl : Freeware (gratis te verkrijgen)
-de : Freeware (sprich kostenlos verfügbar)
+de : Freeware (sprich: kostenlos verfügbar)
 es : Freeware (disponible sin ningún coste)
 tr : Ücretsiz (bedava)
 uk : Безкоштовно
@@ -6068,7 +6071,7 @@ ru : Исходное название данного выпуска, осавь
 cs : Originální název tohoto vydání, ponechte prázdné, pokud již je latinkou.
 hu : A kiadás eredeti neve, hagyd üresen ha latin betűkből áll s már beírtad a "Cím" mezőbe.
 nl : De originele titel van deze uitgave, laat leeg als deze al in het Latijnse alphabet is.
-de : Der Originaltitel dieser Veröffentlichung, nicht ausfüllen wenn der Titel bereits im westlichen Alphabet geschrieben ist.
+de : Der Originaltitel dieser Veröffentlichung, nicht ausfüllen, wenn der Titel bereits im westlichen Alphabet geschrieben ist.
 es : El título original de este estreno
 tr : Bu yayımın orijinal ismi. Eğer hâlihazırda Latin alfabesiyle yazılmışsa boş bırakın.
 uk : Оригінальна назва релізу, залиште порожнім, якщо назва вже записана латинкою
@@ -6140,7 +6143,7 @@ ru : Если месяц или день неизвестны, оставьте 
 cs : Ponechte měsíc či den prázdné, pokud jsou neznámé
 hu : Ha a hónap és nap ismeretlen akkor hagyd üresen a mezőt.
 nl : Laat maand of dag leeg als deze niet bekend zijn
-de : Lasse den Monat oder den Tag frei wenn sie unbekannt sind
+de : Lasse den Monat oder den Tag frei, wenn sie unbekannt sind
 es : Deja el mes o día en blanco si no se sabe
 tr : Eğer bilinmiyorsa ay veya gün değerlerini boş bırakın.
 uk : Залиште місяць та день порожніми, якщо вони невідомі
@@ -6181,7 +6184,7 @@ hu : Különböző észrevételek/megjegyzések, olyan infók amelyek nem illene
      Pl. : Cenzúrázott/Cenzúrázatlan, vagy, hogy melyik kiadásra vonatkozik a patch, stb.
 nl : Diverse opmerkingen, informatie die niet in de bovenstaande velden past.
      Bijvoorbeeld: gecensureerd of niet, of voor welke uitgave deze patch geldig is.
-de : Diverse Anmerkungen/Kommentar, Informationen die nicht in die obigen Felder passen.
+de : Diverse Anmerkungen/Kommentare, Informationen, die nicht in die obigen Felder passen.
      Z. B.: Zensiert/unzensiert oder für welche Veröffentlichung dieses Patch zutrifft.
 es : Notas/comentarios misceláneos, información que no sirve en los campos anteriores.
      Ej.: Censurado/ No censurado o para que estreno este patch
@@ -6258,7 +6261,7 @@ ru : Неизвестно / нет эросцен
 cs : Není známo / bez ero scén
 hu : Ismeretlen / nincs ero jelenet
 nl : Onbekend / geen erotische scenes
-de : Unbekannt / keine Ero Szenen
+de : Unbekannt/keine Ero Szenen
 es : Desconocido / sin escenas ero
 tr : Bilinmiyor / erotik sahne yok
 uk : Невідомо / еросцени відсутні
@@ -6270,7 +6273,7 @@ ru : Анимация в эротических сценах, не изменя�
 cs : Animace v ero scénách, ponechte na Není známo, pokud novela nemá ero scény.
 hu : Az animált erotikus jeleneteket hagyd 'Ismeretlen'-en ha nem tartalmaz erotikus jeleneteket.
 nl : Animatie in de erotische scenes, laat onbekend als er geen erotische scenes zijn.
-de : Animation in erotischen Szenen, unbekannt lassen wenn es keine Ero Szenen gibt.
+de : Animation in erotischen Szenen, unbekannt lassen, wenn es keine Ero Szenen gibt.
 es : Animación en escenas eróticas, déjalo en desconocido si no hay escenas ero.
 tr : Erotik sahnelerdeki animasyonlar için. Erotik sahne yoksa boş bırakın.
 uk : Анімація у еросценах, не редагуйте поле, якщо еросцени відсутні.
@@ -6607,7 +6610,7 @@ hu : Bocs, de ezekkel a szűrőkkel nem található semmi. Talán ki kéne kapcs
 nl : Sorry, geen items gevonden die aan je filters voldoen. Je kan wat filters uitschakelen om meer resultaten te krijgen.
 
      Houd er ook rekening mee dat we niet alle informatie hebben over alle uitgaven, dus filteren op o.a. schermresolutie zal alle uitgaven waarvan we dit niet weten niet weergeven, ook al heeft het wel wat je zoekt.
-de : Verzeihung, wir konnten durch deine Filter nichts finden. Du könntest einige Filter deaktivieren um mehr Ergebnisse zu erhalten.
+de : Verzeihung, wir konnten durch deine Filter nichts finden. Du könntest einige Filter deaktivieren, um mehr Ergebnisse zu erhalten.
      Außerdem haben wir nicht alle Informationen über alle Veröffentlichungen. Wenn du zum Beispiel nach einer Bildschirmauflösung filterst, werden alle Ergebnisse ausgeblendet, deren Auflösung wir nicht kennen, obwohl es sein könnte, dass es die Auflösung besitzt, nach der du suchst.
 es : Lo siento, no se ha podido encontrar nada a través de tus filtros. Puede que quieras quitar algunos filtros para conseguir más resultados.
 
@@ -6688,7 +6691,7 @@ ru : Только самостоятельные выпуски
 cs : Samostatné vydání
 hu : Önálló
 nl : Geen patch
-de : Standalone
+de : Allein lauffähig
 es : Standalone
 tr : Bağımsız
 uk : Самостійні релізи
@@ -6724,7 +6727,7 @@ ru : Только несвободные
 cs : Pouze placená vydání
 hu : Minden nem ingyenes kiadás
 nl : Alleen betaalde uitgaven
-de : Nur unfreie Veröffentlichungen
+de : Nur kostenpflichtige Veröffentlichungen
 es : Solo estrenos no gratuitos
 tr : Sadece ücretli yayımlar
 uk : Лише платні релізи
@@ -6963,7 +6966,7 @@ ru : [index,_1,Мета тег,Тег]: [_2]
 cs : [index,_1,Meta tag,Tag]: [_2]
 hu : [index,_1,Meta Címke,Címke]: [_2]
 nl :
-de : [index,_1,Meta-Tag,Tag]: [_2]
+de : [index,_1,Meta-Schlagwort,Schlagwort]: [_2]
 es : [index,_1,supra-etiqueta,Etiqueta]: [_2]
 tr : [index,_1,Meta etiket,Etiket]: [_2]
 uk : [index,_1,Мета-тег,Тег]: [_2]
@@ -6975,7 +6978,7 @@ ru : Тег удалён
 cs : Tag smazán
 hu : Címke törölve
 nl : Verwijderde tag
-de : Tag gelöscht
+de : Schlagwort gelöscht
 es : Etiqueta eliminada
 tr : Etiket silinmiş
 uk : Тег видалено
@@ -6992,8 +6995,8 @@ hu : Ez a címke ki lett törölve az adatbázisból ezért nem lehet használni
      Ha nem értesz egyet a döntéssel tegyél panaszt a [url,/t/db,fórumon].
 nl : Deze tag is verwijderd uit de database, en kan hier niet gebruikt worden.
      Open een topic op het [url,/t/db,forum] als je het hier niet mee eens bent.
-de : Dieser Tag wurde von der Datenbank gelöscht und kann nicht verwendet oder neu hinzugefügt werden.
-     Stelle eine Anfrage im [url,/t/db,Forum] wenn du damit nicht einverstanden bist.
+de : Dieses Schlagwort wurde von der Datenbank gelöscht und kann nicht verwendet oder neu hinzugefügt werden.
+     Stelle eine Anfrage im [url,/t/db,Forum], wenn du damit nicht einverstanden bist.
 es : Esta etiqueta ha sido eliminado de las base, y no puede ser usado ni reañadido.
 tr : Bu etiket veritabanından silinmiş; kullanılamaz veya yeniden eklenemez.
      Eğer bu karara katılmıyorsanız [url,/t/db,tartışma panosunda] bize bildirin.
@@ -7020,7 +7023,7 @@ ru : Данный тег ожидает одобрения модераторо�
 cs : Tento tag čeká na schválení moderátorem. Mezitím ho stále můžete používat jako normální tag.
 hu : Ez a címke arra vár, hogy egy moderátor elfogadja. Azonban használhatod bármely VN-nél nyugodtan akárcsak egy normális címkét.
 nl : Deze tag is nog niet goedgekeurd door een moderator. Je kan het echter nog wel linken aan visual novels.
-de : Dieser Tag wartet auf die Zulassung durch einen Moderator. Du kannst ihn trotzem benutzen um VNs damit zu taggen, wie mit einem normalen Tag.
+de : Dieses Schlagwort wartet auf die Zulassung durch einen Moderator. Du kannst es trotzem benutzen, um VNs damit zu verschlagworten, wie mit einem normalen Schlagwort.
 es : Esta etiqueta esta esperando que un moderador lo apruebe. Aún así puede usarlo para etiquetar las VN como harias con una etiqueta normal.
 tr : Bu etiket moderatör onayı bekliyor. Yine de normal bir etiket gibi görsel romanlarınızı etiketlemekte kullanabilirsiniz.
 uk : Цей тег очікує модерації. Ти можеш використовувати його для помічення VN, як будь-який звичайний тег
@@ -7032,7 +7035,7 @@ ru : Создать дочерний тег
 cs : Vytvořit závislý tag
 hu : Alcímke bejegyzése
 nl : Voeg een subtag toe
-de : Erstelle Unter-Tag
+de : Erstelle Unter-Schlagwort
 es : Crear una subetiqueta
 tr : Alt etiket yarat
 uk : Створити дочірній тег
@@ -7044,7 +7047,7 @@ ru : Теги
 cs : Tagy
 hu : Címkék
 nl :
-de : Tags
+de : Schlagworte
 es : Etiqueta
 tr : Etiketler
 uk : Теги
@@ -7080,7 +7083,7 @@ ru : Дочерние теги
 cs : Závislé tagy
 hu : Alcímkék
 nl : Subtags
-de : Unter-Tags
+de : Unter-Schlagworte
 es : subetiqueta
 tr : Alt etiketler
 uk : Дочірні теги
@@ -7092,7 +7095,7 @@ ru : ещё [_1] [quant,_1,тег,тега,тегов]
 cs : [_1] [quant,_1,další tag,další tagy,dalších tagů]
 hu : [_1] több [quant,_1,címke,címkék]
 nl : nog [_1] [quant,_1,tag,tags]
-de : [_1] mehr [quant,_1,Tag,Tags]
+de : [_1] mehr [quant,_1,Schlagwort,Schlagworte]
 es : [_1] more [quant,_1,etiqueta,etiquetas]
 tr : [_1] etiket daha
 uk : Ще [_1] [quant,_1,тег,теги,тегів]
@@ -7116,7 +7119,7 @@ ru : Недавно отмеченные
 cs : Nedávno otagováno
 hu : Mostanában megcímkézve
 nl : Recentelijk getagged
-de : Neu getagged
+de : Neu verschlagwortet
 es : Recientemente etiquetado
 tr : En son etiketlenenler
 uk : Нещодавно помічені
@@ -7164,7 +7167,7 @@ ru : Этот тег пока не содержит ссылок ни на од�
 cs : Tento tag ještě nebyl použit v žádné vizuální novele nebo byly tyto skryty kvůli nastavení spoilerů nebo defaultních filtrů.
 hu : Ez a címke még nincs egy visual novelhez se hozzárendelve, vagy pedig el lettek rejtve a spoiler-ek vagy az alapértelmezet szűrők beállítása során.
 nl : Deze tag is nog niet gekoppeld aan een visual novel, of deze worden niet weergegeven in verband met je spoiler- of filterinstelling.
-de : Dieser Tag wurde noch nicht mit Visual Noels verknüpft oder ist aufgrund deiner Spoiler Einstellungen oder deinen Standard Filtern versteckt.
+de : Dieses Schlagwort wurde noch nicht mit Visual Noels verknüpft oder ist aufgrund deiner Spoiler Einstellungen oder deinen Standard Filtern versteckt.
 es : Esta etiqueta no ha sido enlazada con ninguna novela visual, o esta oculta por tus opciones sobre spoilers, o por tus filtros.
 tr : Bu etiket henüz herhangi bir görsel romana bağlanmamış, ya da sonuçlar spoiler ayarınız veya varsayılan süzgeç seçimleriniz nedeniyle gizlenmiş.
 uk : Цим тегом ще не відмічена жодна візуальна новела або вони приховані через твої налаштування спойлерів чи стандартні налаштування
@@ -7176,7 +7179,7 @@ ru : Данный список также содержит все новеллы
 cs : Seznam níže také ukládá všechny vizuální novely provázané s dceřinnými tagy. Tento sezname se ukládá do cache, takže může trvat až 24 hodin po otagování vizuální novely do objevení se na této stránce.
 hu : A lent megtalálható lista tartalmazza az alcímkékhez hozzákapcsolt összes visual novelt is. Ez a lista le van mentve a gyorsítótárba, beletelhet 24 órába míg a visual novelhez újonnan hozzárendelt címke megjelenik ezen az oldalon.
 nl : De volgende lijst bevat ook alle visual novels die gelinkt zijn aan subtags. Deze lijst is gecached, het kan 24 uur duren voordat een visual novel op deze pagina te zien is.
-de : Die untenstehende Liste schließt auch alle Visual Novels ein die mit Unter-Tags verknüpft sind. Diese Liste ist gecached, es kann bis zu 24 Stunden dauern bis ein getaggter Visual Novel auf dieser Seite angezeigt wird.
+de : Die untenstehende Liste schließt auch alle Visual Novels ein, die mit Unter-Schlagworten verknüpft sind. Diese Liste ist gecached, es kann bis zu 24 Stunden dauern, bis eine verschlagwortete Visual Novel auf dieser Seite angezeigt wird.
 es : Esta lista también incluye todas las novelas visuales enlazadas con subetiqueta. Esta lista esta cacheado, puede tardar 24 horas después de que una novela visual haya sido etiquetado para aparecer en esta página.
 tr : Aşağıdaki liste alt etiketlere bağlı tüm görsel romanları da içerir. Bu liste önbellekte saklandığı için yeni etiketlenen yapımların görünmesi 24 saati bulabilir.
 uk : Список нижче також включає усі візуальні новели, відмічені дочірніми тегами. Перекешування свіжовідмічених візуальних новел може тривати до 24 годин.
@@ -7239,7 +7242,7 @@ ru : Тег '[_1]' не найден
 cs : Tag '[_1]' nenalezen
 hu : A(z) '[_1]' címke nem található
 nl : Tag '[_1]' niet gevonden
-de :  Tag '[_1]' nicht gefunden
+de :  Schlagwort '[_1]' nicht gefunden
 es : Etiqueta '[_1]' no encontrado
 tr : '[_1]' etiketi bulunamadı
 uk : Тег '[_1]' не знайдено
@@ -7251,7 +7254,7 @@ ru : Добавление дочернего тега для '[_1]'
 cs : Přidat závislý tag tagu [_1]
 hu : Alcímke hozzárendelése a(z) [_1] - hez
 nl : Voeg subtag toe aan [_1]
-de : Füge Unter-Tag zu [_1] hinzu
+de : Füge Unter-Schlagwort zu [_1] hinzu
 es : Añadir subetiqueta a [_1]
 tr : [_1] etiketine bir alt etiket ekle
 uk : Додати дочірній тег до [_1]
@@ -7263,7 +7266,7 @@ ru : Редактирование тега: [_1]
 cs : Editovat tag: [_1]
 hu : Címke szerkesztése: [_1]
 nl : Wijzig tag [_1]
-de : Bearbeite Tag: [_1]
+de : Bearbeite Schlagwort: [_1]
 es : Editar etiqueta: [_1]
 tr : [_1] etiketini düzenle
 uk : Редагувати тег: [_1]
@@ -7275,7 +7278,7 @@ ru : Добавить новый тег
 cs : Přidat nový tag
 hu : Új címke bejegyzése
 nl : Voeg nieuwe tag toe
-de : Füge neuen Tag hinzu
+de : Füge neues Schlagwort hinzu
 es : Añadir un nuevo etiqueta
 tr : Yeni etiket ekle
 uk : Додати новий тег
@@ -7287,7 +7290,7 @@ ru : Запрос нового тега
 cs : Požaduje se nový tag
 hu : Új címke kérése
 nl : Vraag nieuwe tag aan
-de : Bitte um neuen Tag
+de : Bitte um neues Schlagwort
 es : Solicitar una nueva etiqueta
 tr : Yeni etiket başvurusu
 uk : Запит нового тега
@@ -7299,7 +7302,7 @@ ru : Ваш тег должен быть одобрен
 cs : Váš tag musí být schválen
 hu : A címkédet előbb el kell fogadják
 nl : Je tag moet goedgekeurd worden
-de : Dein Tag muss zugelassen werden
+de : Dein Schlagwort muss zugelassen werden
 es : Esta etiqueta debe ser aprobado
 tr : Etiketiniz onaylanmalı
 uk : Твій тег має бути схвалено
@@ -7326,10 +7329,10 @@ nl : Omdat alle tags goedgekeurd moeten worden door een moderator, kan het even 
      Je kan de tag echter al wel linken aan visual novels.
      [br][br]
      Het wordt ook op prijs gesteld als je eerst de [url,/d10,richtlijnen] leest, zodat je kan voorspellen of je tag goedgekeurd gaat worden of niet.
-de : Da alle Tags von Moderatoren zugelassen werden müssen, kann es eine Weile dauern, bevor er in der Tagliste oder auf Visual Novel Seiten auftaucht.
-     Du kannst jedoch immer noch den Tag bewerten, selbst wenn er noch nicht zugelassen ist.
+de : Da alle Schlagworte von Moderatoren zugelassen werden müssen, kann es eine Weile dauern, bevor es in der Schlagwortliste oder auf Visual-Novel-Seiten auftaucht.
+     Du kannst jedoch immer noch das Schlagwort bewerten, selbst wenn es noch nicht zugelassen ist.
      [br][br]
-     Stelle außerdem sicher, dass du die [url,/d10,Richtlinien] gelesen hast, damit du vorhersehen kannst ob dein Tag akzeptiert wird oder nicht.
+     Stelle außerdem sicher, dass du die [url,/d10,Richtlinien] gelesen hast, damit du vorhersehen kannst, ob dein Schlagwort akzeptiert wird oder nicht.
 es : Porque todas las etiquetas deben ser aprobados por moderadores, puede tardar un poco antes de que muestre en
      la lista de etiqueta o en las páginas de novelas visuales. Todavía puedes votar a la etiqueta incluso aunque no haya
      sido aprobado.
@@ -7423,7 +7426,7 @@ ru : Это мета-тег (его нельзя добавлять к нове�
 cs : Toto je meta-tag (používá se pouze jako mateřský pro ostatní tagy, ne pro vlastní vizuální novely)
 hu : Ez itt egy meta-címke (címkéket ír körül--csakis más címkék szülője ként használandó, VN bejegyzésekhez nem)
 nl : Dit is een metatag (kan alleen gebruikt worden als houder voor andere tags, niet voor visual novels)
-de : Dies ist ein Meta-Tag (nur als Überbegriff für andere Tags zu verwenden, nicht für die Verlinkung zu VN Einträgen)
+de : Dies ist ein Meta-Schlagwort (nur als Überbegriff für andere Schlagworte zu verwenden, nicht für die Verlinkung zu VN Einträgen)
 es : Esta es una supra-etiqueta (solo para usado como matriz de otras etiquetas, no para enlazar con entrada VN)
 tr : Bu bir meta-etikettir (sadece diğer etiketlerin üstü olarak kullanılır, görsel romanlara bağlanmaz)
 uk : Це мета-тег (використовується лише як батьківський тег для інших тегів, не для відмічення новел)
@@ -7435,7 +7438,7 @@ ru : ПРЕДУПРЕЖДЕНИЕ: Если выбрать данную опци
 cs : VAROVÁNÍ: Zaškrtnutí této volby nebo výběr položky "Smazáno" jako stavu smaže automaticky tag u všech vizuálních novel!
 hu : FIGYELEM: Ezen opció bejelölése vagy a "Törölve" állapot kiválasztása véglegesen megsemmisít minden összefüggést a VN-ekel!
 nl : WAARSCHUWING: Als je deze optie selecteerd of als je de status op "verwijderd" zet zullen alle stemmen permanent verwijderd worden!
-de : WARNUNG: Das Aktivieren dieser Option oder die Auswahl von "Gelöscht" als Status löscht alle existierenden VN Beziehungen für immer.
+de : WARNUNG: Das Aktivieren dieser Option oder die Auswahl von „Gelöscht“ als Status löscht alle existierenden VN Beziehungen für immer.
 es : AVISO: Seleccionando esta opción seleccionando o seleccionando "Eliminado" como estado, seran permanentemente eliminados todas las relaciones existentes.
 tr : UYARI: Bu seçeneği işaretlediğinizde veya durumu "Silindi" olarak seçtiğinizde tüm görsel roman bağlantıları kalıcı olarak silinir!
 uk : УВАГА: Вибір цієї опції чи відмічення опції «Видалено» одразу ж знищить усі існуючи зв’язки з новелами!
@@ -7459,7 +7462,7 @@ ru : Применить эту же категорию ко всем дочер�
 cs : Editovat také všechny dceřinné tagy aby obsahovaly tuto kategorii
 hu : Az összes alcímkét is áthelyezni ebbe a kategóriába
 nl : Zet deze categorie ook voor alle subtags
-de : Bearbeite außerdem alle Unter-Tags um diese Kategorie zu haben
+de : Bearbeite außerdem alle Unter-Schlagworte, um diese Kategorie zu haben
 es : También editar todas las sub-etiquetas en esta categoria
 tr : Tüm alt etiketleri de bu kategoriye sahip olacak şekilde düzenle
 uk : Також перенести дочірні теги до цієї категорії
@@ -7471,7 +7474,7 @@ ru : ВНИМАНИЕ: Категории всех дочерних тегов �
 cs : VAROVÁNÍ: Toto přepíše pole kategorie pro všechny dceřinné tagy, tato akce nepůjde vrátit!
 hu : FIGYELEM: Ez az összes alcímkét felülírja a kategória mezőt, amit nem lehet lesz visszacsinálni!
 nl : WAARSCHUWING: Hiermee wordt het categoriefeld voor alle subtags overschreven, dit kan niet ongedaan worden gemaakt!
-de : WARNUNG: Dies wird das Kategoriefeld für alle Unter-Tags überschreiben, diese Aktion kann nicht rückgängig gemacht werden!
+de : WARNUNG: Dies wird das Kategoriefeld für alle Unter-Schlagworte überschreiben, diese Aktion kann nicht rückgängig gemacht werden!
 es : AVISO: Esto sobreescribira la categoría para todas las sub-etiquetas, ¡esta acción no puede ser revertida!
 tr : UYARI: Bu işlem tüm alt etiketlerin kategori bilgisini değiştirir ve geri alınamaz!
 uk : УВАГА: Це перепише поле «Категорія» усіх дочірніх тегів, цю дію не можна відмінити!
@@ -7517,7 +7520,7 @@ ru : Для пометки чего будет использоваться те
 cs : Pro co by měl být tag používán? Tagy s dobrým popisem usnadňují uživatelům jejich používání u vizuálních novel.
 hu : Mire és mikor használja valaki a címkét? Egy jó leírás megkönnyíti a felhasználók dolgát mikor hozzá akarják rendelni egy VN-hez.
 nl : Waar moet de tag voor gebruikt worden? Een goede beschrijving helpt gebruikers bij het stemmen.
-de : Für was sollte der Tag genutzt werden? Eine gute Beschreibung hilft Benutzern welche Tags sie zum Verknüpfen mit VNs benötigen.
+de : Für was soll das Schlagwort genutzt werden? Eine gute Beschreibung hilft Benutzern, welche Schlagworte sie zum Verknüpfen mit VNs benötigen.
 es : ¿Para qué debe ser usado una etiqueta? Teniendo una buena descripción ayuda a los usuarios a elegir que etiquetas enlazar con una VN.
 tr : Bu etiket hangi amaçla kullanılmalı? Düzgün açıklamalar kullanıcıların görsel roman etiketlemesini kolaylaştırır.
 uk : Для чого потрібен цей тег? Гарний опис допоможе користувачам при виборі тегів для новели.
@@ -7529,7 +7532,7 @@ ru : Родительские теги
 cs : Mateřské tagy
 hu : Szülő címkék
 nl : Hoofdtag
-de : Über-Tags
+de : Über-Schlagworte
 es : Supra-etiquetas
 tr : Üst etiketler
 uk : Батьківський тег
@@ -7541,7 +7544,7 @@ ru : Теги, которые будут задействованы для эт�
 cs : Seznam tagů, oddělených čárkou, které mají být použity jako mateřské pro tento tag
 hu : Vesszővel elválasztott címke nevek amelyek szülő ként szolgálnak ennek a címkének.
 nl : Kommagescheiden lijst van hoofdtags.
-de : Kommagetrennte Liste von Tagnamen, die als Über-Tag für diesen Tag genutzt werden.
+de : Kommagetrennte Liste von Schlagwortnamen, die als Über-Schlagwort für dieses Schlagwort genutzt werden.
 es : Lista separada por comas, sobre las etiquetas para usar como sub-etiquetas
 tr : Bu etiketin üstü olarak kullanılan etiketlerin adları. Virgülle ayırın.
 uk : Теги, які будуть батьківськими для цього тегу. Через кому.
@@ -7553,7 +7556,7 @@ ru : Объединение тегов
 cs : Sjednotit tagy
 hu : Címkék egyesítése
 nl : Combineer tags
-de : Tags zusammenfügen
+de : Schlagworte zusammenfügen
 es : Unir etiquetas
 tr : Etiketleri birleştir
 uk : Об’єднати теги
@@ -7565,7 +7568,7 @@ ru : Теги для объединения
 cs : Tagy ke sjednocení
 hu : Egyesítésre váró címkék
 nl : Tags
-de : Tags zum Zusammenfügen
+de : Schlagworte zum Zusammenfügen
 es : Etiquetas para unir
 tr : Birleştirilecek etiketler
 uk : Теги для об’єднання
@@ -7587,8 +7590,8 @@ hu : Egy lista, veszővel elválasztott címke nevekkel amelyeket egyesíteni ak
 nl : Kommagescheiden lijst van tags die gecombineerd worden in deze tag. Alle stemmen en aliassen worden overgenomen en de
      oude tags worden verwijderd. Laat dit veld leeg als je niet van plan bent tags te combineren.
      [br]WAARSCHUWING: deze actie kan niet ongedaan gemaakt worden!
-de : Trenne Tagnamen durch Kommas um sie mit diesem zusammenfügen. Alle Bewertungen und Pseudonyme/Namen werden zu diesem
-     Tag übertragen und der alte Tag wird gelöscht. Lasse dieses Feld einfach leer wenn du keine Zusammenführung machen willst.
+de : Trenne Schlagwortnamen durch Kommas, um sie mit diesem zusammenfügen. Alle Bewertungen und Pseudonyme/Namen werden zu diesem
+     Schlagwort übertragen und das alte Schlagwort wird gelöscht. Lasse dieses Feld einfach leer, wenn du keine Zusammenführung machen willst.
      [br]WARNUNG: Diese Aktion kann nicht rückgängig gemacht werde!
 es : Lista separada por comas, sobre las etiquetas para unir en esta. Todos los votos y alias/nombres seran movidos
      a esta etiqueta, y las etiquetas viejas setan eliminadas. Deja esto vacío si no quieres hacer una unión.
@@ -7610,7 +7613,7 @@ ru : Обзор тегов
 cs : Procházet tagy
 hu : Címkék böngészése
 nl :
-de : Durchsuche Tags
+de : Durchsuche Schlagworte
 es : Mirar etiquetas
 tr : Etiketlere gözat
 uk : Огляд тегів
@@ -7694,7 +7697,7 @@ ru : Тег
 cs : Tag
 hu : Címke
 nl :
-de : Tag
+de : Schlagwort
 es : Etiqueta
 tr : Etiket
 uk : Тег
@@ -7733,7 +7736,7 @@ ru : Обзор прикреплённых тегов
 cs : Prohlížeč odkazů od tagů
 hu : Címke link böngésző
 nl :
-de : Tag Link Browser
+de : Schlagwortlink Browser
 es : Mirar enlaces de etiquetas
 tr : Etiket bağlantısı gezgini
 uk : Огляд тегів
@@ -7757,7 +7760,7 @@ ru : Данный список отображает голоса отдельн�
 cs : Tento seznam obsahuje hlasy k tagům od jednotlivých uživatelů. Spoileroidní tagy nejsou skryté a ani nemusí být správně označeny jako spoileroidní.
 hu : Ez a lista tartalmazza az egyéni felhasználók által kiértékelt cimkék pontozását. Azok a címkék amelyeket tartalmazhatnak spoiler-t el vannak rejtve, vagy lehet, hogy nincsenek jól megjelölve.
 nl : Deze lijst bevat alle stemmen op tags van individuele gebruikers. Tags die spoiler kunnen zijn worden hier niet verborgen, and sommige tags hoeven niet eens correct gemarkeerd te zijn als spoiler.
-de : Diese Liste zeigt die Tagbewertungen von individuellen Benutzern. Spoiler Tags werden nicht versteckt und werden gegebenfalls nicht mal richtig als solche gekennzeichnet.
+de : Diese Liste zeigt die Schlagwortbewertungen von individuellen Benutzern. Spoiler-Schlagworte werden nicht versteckt und werden gegebenfalls nicht mal richtig als solche gekennzeichnet.
 es : Esta lista muestra los votos sobre las etiquetas de usuarios individuales. Etiquetas-spoiler no estan ocultas, e incluso puede que no sean marcadas correctamente como spoiler.
 tr : Bu liste kullanıcıların bireysel oylarını gösterir. Spoiler içeren etiketler açıktadır ve doğru işaretlenmemiş olabilir.
 uk : У цьому списку показані голоси окремих користувачів за теги. Теги-спойлери не приховані і навіть не можуть бути відмічені як такові.
@@ -7793,7 +7796,7 @@ ru : Тег:
 cs : Tag:
 hu : Címke
 nl :
-de : Tag:
+de : Schlagwort:
 es : Etiqueta:
 tr : Etiket:
 uk : Теги:
@@ -7817,7 +7820,7 @@ ru : Щёлкните по стрелке рядом с именем польз�
 cs : Klikněte na šipku vedle uživatele, tagu nebo VN pro přidání do filtru.
 hu : A felhasználó, címke vagy VN melleti nyílal berakhatód őket szűrőnek.
 nl : Gebruik het pijltje naast een gebruiker, tag of VN om het toe te voegen als filter.
-de : Drücke den Pfeil neben einem Benutzer, Tag oder VN um sie zu einem Filter hinzuzufügen.
+de : Drücke den Pfeil neben einem Benutzer, Schlagwort oder VN, um sie zu einem Filter hinzuzufügen.
 es : Haz clic a la flecha junto al usuario, etiqueta o VN para añadirlo como filtro.
 tr : Süzgeç olarak eklemek için bir kullanıcı, etiket veya görsel romanın yanındaki oka tıklayın.
 uk : Клацніть на стрілку навпроти користувача, тега чи новели, щоб додати як фільтр.
@@ -7865,7 +7868,7 @@ ru : Тег
 cs : Tag
 hu : Címke
 nl :
-de : Tag
+de : Schlagwort
 es : Etiqueta
 tr : Etiket
 uk : Тег
@@ -7904,7 +7907,7 @@ ru : Добавление/удаление тегов для [_1]
 cs : Přidat/odebrat tag pro novelu [_1]
 hu : Címke hozzáadása/törlése [_1]-hez
 nl : Beheer tags voor [_1]
-de : Tags für [_1] hinzufügen/entfernen
+de : Schlagworte für [_1] hinzufügen/entfernen
 es : Añadir/quitar etiquetas para [_1]
 tr : [_1] adlı yapıma etiket ekle/çıkar
 uk : Додати/видалити тег для [_1]
@@ -7916,7 +7919,7 @@ ru : Пометка тегами
 cs : Tagování
 hu : Címkézés
 nl : Tag tips
-de : Tagging
+de : Verschlagworten
 es : Etiquetando
 tr : Etiketleme
 uk : Тегування
@@ -7940,7 +7943,7 @@ ru : Не забудьте сохранить изменения, нажав с�
 cs : Nezapomeňte potvrdit tlačítko na spodku stránky, abyste uložili změny trvale.
 hu : Ne felejtsd el megnyomni a beküldés gombot a lap alján, hogy véglegesítsd a változtatásokat.
 nl : Vergeet niet op de 'Opslaan' knop te klikken nadat je wijzigingen hebt aangebracht.
-de : Vergiss nicht den Bestätigen-Knopf am Ende dieser Seite zu drücken um die Änderungen zu übernehmen.
+de : Vergiss nicht, die Bestätigen-Schaltfläche am Ende dieser Seite zu drücken, um die Änderungen zu übernehmen.
 es : No olvides dar al boton de aceptar abajo de la página para hacer tus cambios permanentes.
 tr : Yaptığınız değişiklikleri kalıcı hale getirmek için sayfanın altındaki kayıt düğmesine basın.
 uk : Не забудь клацнути на кнопку «підтвердити» внизу сторінки і переконатися, що зміни збереглися.
@@ -7952,7 +7955,7 @@ ru : Информация о некоторых тегах на данном с�
 cs : Některé informace o tazích na této stránce jsou v cache a může zabrat až hodinu než budou změny vidět.
 hu : Valamely címkékkel kapcsolatos információ le van mentve a gyorsítótárba, beletelhet egy órába is mire mindenhol láthatóvá válnak a változtatások.
 nl : Bepaalde taginformatie op de site wordt gecached, het kan soms even duren voordat je veranderingen overal zichtbaar zijn.
-de : Einige Tag Informationen auf dieser Seite sind gecached, es kann bis zu einer Stunde dauer, bis die Änderungen überall sichtbar werden.
+de : Einige Schlagwortinformationen auf dieser Seite sind gecached, es kann bis zu einer Stunde dauern, bis die Änderungen überall sichtbar werden.
 es : Alguna información de este sitio es cacheado, puede tardar hasta una hora para que tus cambios sean visibles para todo el mundo.
 tr : Sitedeki bazı etiket bilgileri önbellekte tutulduğu için değişikliklerin her yerde görünmesi bir saati bulabilir.
 uk : Деяка інформація щодо тегів ще не прокешована, може пройти до години часу перш ніж твої зміни стануть видимі усюди.
@@ -7964,7 +7967,7 @@ ru : Теги
 cs : Tagy
 hu : Címkék
 nl :
-de : Tags
+de : Schlagworte
 es : Etiquetas
 tr : Etiketler
 uk : Теги
@@ -8000,7 +8003,7 @@ ru : Тег
 cs : Tag
 hu : Címke
 nl :
-de : Tag
+de : Schlagwort
 es : Etiqueta
 tr : Etiket
 uk : Тег
@@ -8036,7 +8039,7 @@ ru : Тег зафиксирован модератором. Все голоса
 cs : Tag přehlasován. Všechny jiné hlasy než od moderátora, ktrý tag přehlasoval, budou ignorovány.
 hu : A címkét átvette egy moderátor. Minden szavazat a moderátorén kivűl figyelmen kivűl lesz hagyva.
 nl : Tag overschreven. Alle stemmen, behalve die van de moderator die de tag heeft overschreven, zullen worden genegeerd.
-de : Tag abgelehnt. Alle anderen Bewertungen außer des Moderators, der ihn abgelehnt hat, werden ignoriert.
+de : Schlagwort abgelehnt. Alle anderen Bewertungen außer des Moderators, der ihn abgelehnt hat, werden ignoriert.
 es : Etiqueta inválida. Todos los votos aparte del voto del moderador que lo ha inválidado seran ignorados.
 tr : Etiket reddedilmiş. Reddeden moderatörünki hariç tüm oylar görmezden gelinecektir.
 uk : Тег скасовано. Усі голоси за нього буде проігноровано.
@@ -8084,7 +8087,7 @@ ru : Добавить тег
 cs : Přidat tag
 hu : Címke bejegyzése
 nl : Voeg toe
-de : Füge Tag hinzu
+de : Füge Schlagwort hinzu
 es : Añadir etiqueta
 tr : Etiket ekle
 uk : Додати тег
@@ -8101,8 +8104,8 @@ hu : Ha az összes rendelekzésre álló címke közt szeretnél böngészni akk
      Nem találod azt amelyiket keresed? [url,/g/new,Itt kérhetsz egy új címkét].
 nl : Zie de [url,/g,tag lijst] om te browsen door alle beschikbare tags.[br]
      Niet gevonden wat je zocht? [url,/g/new,Vraag een nieuwe tag aan].
-de : Überprüfe die [url,/g,Tagliste] um alle verfügbaren Tags zu durchsuchen.[br]
-     Kannst du nicht finden, wonach du suchst? [url,/g/new,Frage nach einem neuen Tag].
+de : Überprüfe die [url,/g,Schlagwortliste], um alle verfügbaren Schlagworte zu durchsuchen.[br]
+     Kannst du nicht finden, wonach du suchst? [url,/g/new,Frage nach einem neuen Schlagwort].
 es : Mira la [url,/g,lista de etiquetas] para ver todos las etiquetas disponibles.[br]
      ¿No puedes encontrar lo que buscas? [url,/g/new,Solicita una nueva etiqueta].
 tr : Mevcut tüm etiketleri görmek için [url,/g,etiket listesine] bakın.[br]
@@ -8130,7 +8133,7 @@ ru : Тег уже указан!
 cs : Tag už je přiřazen!
 hu : A címke már létezik!
 nl : Tag is al geselecteerd!
-de : Tag ist bereits vorhanden!
+de : Schlagwort ist bereits vorhanden!
 es : ¡Etiqueta todavía presente!
 tr : Etiket zaten var!
 uk : Такий тег вже є!
@@ -8145,7 +8148,7 @@ ru : Список тегов
 cs : Seznam tagů
 hu : Címke jegyzék
 nl :
-de : Tag Verzeichnis
+de : Schlagwortverzeichnis
 es : Índice de etiqueta
 tr : Etiket dizini
 uk : Список тегів
@@ -8157,7 +8160,7 @@ ru : Создать новый тег
 cs : Vytvořit nový tag
 hu : Új címke bejegyzése
 nl : Nieuwe tag
-de : Erstelle neuen Tag
+de : Erstelle neues Schlagwort
 es : Crear una nueva etiqueta
 tr : Yeni etiket oluştur
 uk : Створити новий тег
@@ -8169,7 +8172,7 @@ ru : Поиск тегов
 cs : Hledat tag
 hu : Címkék keresése
 nl : Zoek tags
-de : Suche Tags
+de : Suche Schlagworte
 es : Buscar etiquetas
 tr : Etiket ara
 uk : Пошук тегів
@@ -8181,7 +8184,7 @@ ru : Древо тега
 cs : Strom тегов
 hu : Címke jegyzék
 nl : Taglijst
-de : Tag Baum
+de : Schlagwortbaum
 es : Árbol de etiquetas
 tr : Etiket ağacı
 uk : Дерево тегів
@@ -8193,7 +8196,7 @@ ru : Обзор всех тегов
 cs : Procházet všechny tagy
 hu : Összes címke böngészése
 nl : Browse alle tags
-de : Durchsuche alle Tags
+de : Durchsuche alle Schlagworte
 es : Ver todas las etiquetas
 tr : Tüm etiketlere gözat
 uk : Оглянути усі теги
@@ -8217,7 +8220,7 @@ ru : Популярные теги
 cs : Populární tagy
 hu : Népszerű címkék
 nl : Populaire tags
-de : Beliebte Tags
+de : Beliebte Schlagworte
 es : Etiquetas populares
 tr : Popüler etiketler
 uk : Популярні теги
@@ -8229,7 +8232,7 @@ ru : Недавно отмеченные
 cs :
 hu : Nemrég felcímkézve
 nl : Recentelijk getagged
-de : Neu getagged
+de : Neu verschlagwortet
 es : Recientemente etiquetado
 tr : Yeni etiketlenenler
 uk : Нещодавно відмічені
@@ -8253,7 +8256,7 @@ ru : В очереди модерации пусто! Няа!
 cs : Fronta ke schválení prázdná! Jej!
 hu : A moderálásra váró lista üres! Hurrá!
 nl : Alles is gemodereerd! yay!
-de : Moderationswarteschleife leer! Yeah!
+de : Moderationswarteschleife leer! Juhu!
 es : ¡Cola de moderación vacía! ¡bien!
 tr : Moderasyon sırası boş! Oley!
 uk : Черга модерації порожня! Ура!
@@ -8277,7 +8280,7 @@ ru : Отклонённые теги
 cs : Zamítnuté tagy
 hu : Megtagadott címkék
 nl : Geweigerde tags
-de : Abgelehnte Tags
+de : Abgelehnte Schlagworte
 es : Etiquetas denegadas
 tr : Reddedilen etiketler
 uk : Відхилені теги
@@ -8531,7 +8534,7 @@ ru : Нет загруженного изображения
 cs : Ještě nebyl nahrán žádný obrázek
 hu : Még nincs kép feltöltve
 nl : Nog geen plaatje geupload
-de : Kein Bild hochgeladen bisher
+de : Bisher kein Bild hochgeladen
 es : Ninguna imagen subida, todavía
 tr : Henüz resim yüklenmemiş
 uk : Ще не завантажено жодного зображення
@@ -8579,7 +8582,7 @@ ru : Три размера: [_1]-[_2]-[_3]
 cs : Hrudník-Pas-Boky: [_1]-[_2]_[_3]cm
 hu : Mell-Derék-Csípő: [_1]-[_2]-[_3]cm
 nl : Borst-Taille-Heup: [_1]-[_2]-[_3]cm
-de : Brust-Taille-Hüfte: [_1]-[_2]-[_3]cm
+de : Brust-Taille-Hüfte: [_1]-[_2]-[_3] cm
 es : Pecho-Cintura-Cadera: [_1]-[_2]-[_3]cm
 tr : Göğüs-Bel-Kalça: [_1]-[_2]-[_3]cm
 uk : Груди-талія-стегна: [_1]-[_2]-[_3]см
@@ -8591,7 +8594,7 @@ ru : Вес: [_1] кг.
 cs : Váha: [_1]kg
 hu : Súly: [_1]kg
 nl : Gewicht: [_1]kg
-de : Gewicht: [_1]kg
+de : Gewicht: [_1] kg
 es : Peso: [_1]kg
 tr : Kilo: [_1]kg
 uk : Вага: [_1]кг
@@ -8764,7 +8767,7 @@ ru : Имя персонажа на исходном языке новеллы, 
 cs : Původní jméno postavy, ponechte prázdné, pokud už bylo latinkou.
 hu : A szereplő eredeti neve, ha latin betűkkel van írva akkor ne írd be ide még egyszer.
 nl : De werkelijke naam van het karakter, laat leeg als dit al in het Latijnse alphabet is.
-de : Der Originalname des Charakters, nicht ausfüllen wenn der Name bereits im westlichen Alphabet geschrieben ist.
+de : Der Originalname des Charakters, nicht ausfüllen, wenn der Name bereits im westlichen Alphabet geschrieben ist.
 es : El nombre original del personaje, déjalo en blanco si ya esta en el alfabeto latino.
 tr : Karakterin orijinal ismi. Eğer hâlihazırda Latin alfabesiyle yazılmışsa boş bırakın.
 uk : Оригінальне ім’я персонажа, залиште поле порожнім, якщо воно вже записане латинкою
@@ -8944,7 +8947,7 @@ ru : ID персонажа, воплощением которого являет
 cs : ID hlavní postavy - postavy, ke které je tato postava alter egem.
 hu : A szereplő ID-ja (azonosítója) - annak a karakteré akinek ez a hasonmása.
 nl : ID van het hoofdkarakter - het karakter waar dit een instantie van is.
-de : ID des Hauptcharakters - der Charakter, dessen Instanz dies ist.
+de : ID des Hauptcharakters – der Charakter, dessen Instanz dies ist.
 es : ID del personaje principal - este personaje por el cual es el ejemplo de.
 tr : Örneği olduğu karakterin ID'si
 uk : ID головного персонажа, чиїм втіленням він є.
@@ -8980,7 +8983,7 @@ ru : Изображения пока нет
 cs : Obrázek ještě nebyl nahrán
 hu : Még nincs kép feltöltve
 nl : Nog geen plaatje geupload
-de : Kein Bild hochgeladen bisher
+de : Bisher kein Bild hochgeladen
 es : Imagen no subida
 tr : Henüz resim yüklenmemiş
 uk : Ще не завантажено жодного зображення
@@ -9004,7 +9007,7 @@ ru : Использовать изображение, уже загруженн�
 cs :
 hu : Használj egy olyan képet ami már megtalálható a szerveren. Ha '0'-ra állítod törölheted a jelenlegi képet.
 nl : Gebruik een karakterplaatje dat al op de server staat. Gebruik '0' om een huidig plaatje te verwijderen.
-de : Nutze ein Charakterbild, das bereits auf dem Server ist. Setze es auf '0' um das derzeige Bild zu entfernen.
+de : Nutze ein Charakterbild, das bereits auf dem Server ist. Setze es auf „0“, um das derzeige Bild zu entfernen.
 es : Usar la imagen de un personaje que ya esta en el servidor. Pon '0' para quitar la imagen actual.
 tr : Sunucuda bulunan bir karakter resmini kullanın. Şu anki resmi silmek için '0' olarak ayarlayın.
 uk : Викорисовувати зображення персонажу, що вже є на сервері. Поставте «0», щоб видалити поточне зображення.
@@ -9028,7 +9031,7 @@ ru : Изображение должно быть в формате JPEG или 
 cs : Obrázek musí být ve formátu JPEG nebo PNG a mít maximální velikost 1MiB. Obrázky větší než 256x300 budou automaticky zmenšeny. Obrázek musí být přístupný dětem.
 hu : A kép muszáj JPEG vagy PNG formátumba legyen és maximum 1MiB lehet a mérete. 256x300-nál nagyobb képek automatikusan át lesznek méretezve. A képnek muszáj munkabarátnak lenni!
 nl : Plaatje moet in het JPEG of PNG formaat zijn, en moet kleiner zijn dan 1MiB. Plaatjes groter dan 256x300 worden automatisch verkleind. Het plaatje moet veilig zijn in een werkomgeving!
-de : Bild muss im JPEG oder PNG Format sein und höchstens 1MB groß sein. Bilder, die größer als 256x300 sind, werden automatisch angepasst. Bild muss jugendfrei sein!
+de : Bild muss im JPEG oder PNG Format sein und darf höchstens 1 MB groß sein. Bilder, die größer als 256x300 sind, werden automatisch angepasst. Bild muss jugendfrei sein!
 es : La imagen debe ser en formato JPEG o PNG como mucho de 1MiB. Las imagenes mayores que 256x300 seran automáticamente cambiadas de tamaño. ¡La imagen debe ser apta para todos los públicos!
 tr : Resim JPEG veya PNG uzantılı ve en fazla 1MiB boyutunda olmalıdır. 256x300'den büyük resimler otomatik olarak küçültülür. Resimler NSFW olamaz!
 uk : Зображення має бути у форматі JPEG чи PNG, а розмір не перевищувати 1Мб. Зображення, більші за 256x300, будуть автоматично зменшені. Зображення має бути безпечним для роботи!
@@ -9100,7 +9103,7 @@ ru : Черты ещё не были добавлены
 cs : Nejsou přítomny žádné vlastnosti.
 hu : Még nincs hozzárendelve jellemző.
 nl : Nog geen kenmerken aanwezig.
-de : Keine Eigenschaft vorhanden bisher.
+de : Bisher keine Eigenschaft vorhanden.
 es : Ningún rasgo aquí.
 tr : Henüz bir nitelik belirlenmedi.
 uk : Ще немає жодних рис характеру.
@@ -9172,7 +9175,7 @@ ru : Все / другие
 cs : Všechna / ostatní
 hu : Mind / mások
 nl : Alle / overige
-de : Alle / andere
+de : Alle/andere
 es : Todos / otros
 tr : Hepsi / diğerleri
 uk : Усі / інші
@@ -9563,7 +9566,7 @@ hu : Ez a jellemző el lett távolítva az adatbázisból ezért nem lehet haszn
 nl : Dit kenmerk is verwijderd uit de database, en kan hier niet gebruikt worden.
      Open een topic op het [url,/t/db,forum] als je het hier niet mee eens bent.
 de : Diese Eigenschaft wurde von der Datenbank gelöscht und kann nicht verwendet oder neu hinzugefügt werden.
-     Stelle eine Anfrage im [url,/t/db,Forum] wenn du damit nicht einverstanden bist.
+     Stelle eine Anfrage im [url,/t/db,Forum], wenn du damit nicht einverstanden bist.
 es : Este rasgo ha sido eliminado de la base, y no puede ser usado ni reañadirse.
 tr : Bu nitelik veritabanından silinmiş; kullanılamaz veya yeniden eklenemez.
      Eğer bu karara katılmıyorsanız [url,/t/db,tartışma panosunda] bize bildirin.
@@ -9686,7 +9689,7 @@ ru : Эта черта ещё не была связана ни с одним п
 cs : Tato vlastnost ještě nebyla provázána s žádnými postavami nebo tyto byly schovány kvůli vašemu nastavení spoilerů.
 hu : Ez a jellemző még nincs hozzárendelve egy szereplőhöz se, vagy a spoiler beállításaid miatt, el vannak rejtve.
 nl : Dit kenmerk is nog niet gekoppeld aan een karakter, of deze worden niet weergegeven in verband met je spoilerinstelling.
-de : Diese Eigenschaft wurde noch nicht mit Charakteren verknüpft oder sind aufgrund deiner Spoiler Einstellungen versteckt.
+de : Diese Eigenschaft wurde noch nicht mit Charakteren verknüpft oder ist aufgrund deiner Spoiler Einstellungen versteckt.
 es : Este rasgo no ha sido enlazado a ningún personaje todavía, o están escondidos por tus opciones sobre spoiler.
 tr : Bu nitelik henüz herhangi bir karaktere bağlanmamış, ya da sonuçlar spoiler ayarınız nedeniyle gizlenmiş.
 uk : Цією рисою ще не відмічений жоден персонаж або вони приховані через твої налаштування спойлерів чи стандартні налаштування
@@ -9915,7 +9918,7 @@ ru : Родительские черты
 cs : Mateřské vlastnosti
 hu : Szüllő jellemző
 nl : Hoofdkenmerk
-de : Über-Tags
+de : Über-Eigenschaften
 es : Meta rasgo
 tr : Üst nitelikler
 uk : Батьківська риса
@@ -9927,7 +9930,7 @@ ru : Список ID черт, которые будут использован�
 cs : Seznam ID vlastností, které mají být mateřskými k této vlastnosti, oddělených mezerou.
 hu : A listája azoknak jellemző ID-knak (azonosítóknak) amelyeket szeretnéd, hogy ennek a jellemzőnek a szülei legyenek, szóközzel elváltasztva.
 nl : Spatiegescheiden lijst van hoofdkenmerken (numerieke IDs).
-de : Liste von Eigenschaften IDs, die als Über-Eigenschaft für diese Eigenschaft verwendet werden, getrennt durch ein Leerzeichen.
+de : Liste von Eigenschaften-IDs, die als Über-Eigenschaft für diese Eigenschaft verwendet werden, getrennt durch ein Leerzeichen.
 es : Listado de la identificación de rasgos para ser usado como meta rasgo, separapo por un espacio.
 tr : Bu niteliğin üstü olarak kullanılan niteliklerin ID'leri. Virgülle ayırın.
 uk : Список ID ріс, що використовуватимуться як батьківські для цієї, через пробіл
@@ -9951,7 +9954,7 @@ ru : (Используется, только если эта черта в гр�
 cs : (Použito pouze pokud je tato vlastnost skupinou. Použito pro řazení, nejnižší první)
 hu : (Csak akkor használjuk, ha ez a jellemző egy csoport. Az érték egy sorszám és a legkisebb az első)
 nl : (Alleen gebruikt als dit kenmerk een groep is. Gebruikt voor sorteren, laagste getal eerst)
-de : (Nur genutzt wenn die Eigenschaft eine Gruppe ist. Zur Sortierung verwendet, niedrigste zuerst)
+de : (Nur genutzt, wenn die Eigenschaft eine Gruppe ist. Zur Sortierung verwendet, niedrigste zuerst.)
 es : (Usar solo si este rasgo es un grupo. Usado para ordenar, los de abajo primero)
 tr : (Sadece bu nitelik bir grupsa kullanın. Sıralamada en düşük olan ilk gelir.)
 uk : (Використовується лише коли риса у групі. У сортуванні, він найменших)
@@ -10090,7 +10093,7 @@ ru : Список черт характера
 cs : Seznam vlastností
 hu : Jellemzők
 nl : Kenmerkenindex
-de : Eigenschaften Verzeichnis
+de : Eigenschaftenverzeichnis
 es : Índice de rasgos
 tr : Nitelik dizini
 uk : Усі риси
@@ -10126,7 +10129,7 @@ ru : Дерево черт
 cs : Strom vlastností
 hu : Jellemző jegyzék
 nl : Kenmerkenlijst
-de : Eigenschaften Baum
+de : Eigenschaftenbaum
 es : Árbol de rasgos
 tr : Nitelik ağacı
 uk : Дерево рис
@@ -10186,7 +10189,7 @@ ru : В очереди модерации пусто! Няа!
 cs : Fronta ke schválení prázdná! Jej!
 hu : A moderálásra váró lista üres! Hurrá!
 nl : Alles is gemodereerd! yay!
-de : Moderationswarteschleife leer! Yeah!
+de : Moderationswarteschleife leer! Juhu!
 es : ¡Cola de moderación vacío! ¡sí!
 tr : Onay sırası boş! Oley!
 uk : Черга модерації порожня! Ура!
@@ -10257,7 +10260,7 @@ ru : Список пуст...
 cs : Wishlist je prázdný...
 hu : A kívánságlista üres...
 nl : Wensenlijst leeg...
-de : Die Wunschliste ist leer...
+de : Die Wunschliste ist leer …
 es : La "Quiero-lista" esta vacía...
 tr : İstek listesi boş...
 uk : Список бажань порожній…
@@ -10381,7 +10384,7 @@ ru : Не найдено ни одного голоса. T_T
 cs : Žádné hlasy k vypsání :-(
 hu : Nincs mit mutatni. :-(
 nl : Geen stemmen om weer te geven. :-(
-de : Keine Bewertungen zum listen. :-(
+de : Keine Bewertungen zum Listen. :-(
 es : Sin votos en la lista. :(
 tr : Listelenecek oy yok. :-(
 uk : Жодних голосів.
@@ -10445,7 +10448,7 @@ ru : Мой список новелл
 cs : Můj list vizuálních novel
 hu : Visual novel listám
 nl : Mijn visual novel lijst
-de : Meine Visual Novel Liste
+de : Meine Visual-Novel-Liste
 es : Mi lista de novelas visuales
 tr : Görsel roman listem
 uk : Мій список новел
@@ -10457,7 +10460,7 @@ ru : Список новелл [_1]
 cs : List vizuálních novel uživatele [_1]
 hu : [_1] visual novel listája
 nl : Visual novel lijst van [_1]
-de : [_1]'s Visual Novel Liste
+de : [_1]s Visual-Novel-Liste
 es : La lista de novelas visuales de [_1]
 tr : [_1] kullanıcısının görsel roman listesi
 uk : Список новел [_1]
@@ -10601,7 +10604,7 @@ ru : Установка заметок (оставьте поле пустым �
 cs : Nastavit poznámky (ponechte prázdné pro odstranění poznámky)
 hu : Jegyzetek létrehozzása (hagyd üresen ha törölni akarod a jegyzetet)
 nl : Verander notitie (laat leeg om de notitie te verwijderen)
-de : Notiz machen (leer lassen um Notiz zu entfernen)
+de : Notiz machen (leer lassen, um Notiz zu entfernen)
 es : Poner anotación (dejarlo vacio para quitar la anotación)
 tr : Not belirler (notu silmek için boş bırakın)
 uk : Додати нотатки (залиште порожнім, щоб видалити нотатку)
@@ -10745,7 +10748,7 @@ ru : Теги
 cs : Tagy
 hu : Címkék
 nl :
-de : Tags
+de : Schlagworte
 es : Etiquetas
 tr : Etiketler
 uk : Теги
@@ -10769,7 +10772,7 @@ ru : Просмотреть теги
 cs : Procházet tagy
 hu : Címkék böngészése
 nl :
-de : Tags durchsuchen
+de : Schlagworte durchsuchen
 es : Mirar etiquetas
 tr : Etiketlere gözat
 uk : Огляд тегів
@@ -10841,7 +10844,7 @@ ru : Статистика по голосованиям
 cs : Statistiky hlasování
 hu : Szavazási statisztikák
 nl : Stemmen
-de : Vote Statistiken
+de : Bewertungsstatistiken
 es : Votos
 tr : Oylama istatistikleri
 uk : Статистика голосувань
@@ -10892,7 +10895,7 @@ ru : Нет учётной записи?
 cs : Ještě nemáte účet?
 hu : Nincs még fiókod?
 nl : Nog geen account?
-de : Noch keinen Account?
+de : Noch kein Benutzerkonto?
 es : ¿Aún no tienes cuenta?
 tr : Hesabınız yok mu?
 uk : Ще не зареєстровані?
@@ -10965,7 +10968,7 @@ nl : Hallo [_1],
      vndb.org
 de : Hallo [_1]
 
-     Dein Passwort wurde zurückgesetzt, du kannst Dich jetzt unter http://vndb.org/ mit den
+     Dein Passwort wurde zurückgesetzt, du kannst dich jetzt unter http://vndb.org/ mit den
      folgenden Daten einloggen:
 
      Benutzername: [_1]
@@ -11054,7 +11057,7 @@ nl : Je wachtwoord vergeten?
      Geen nood! Geef aan wat je emailadres was die je hebt gebruikt om je te registreren op VNDB,
      en je krijgt binnen een paar minuten instructies op je mail om een nieuw wachtwoord in te stellen!
 de : Du hast dein Passwort vergessen und kannst dich deshalb nicht mehr in der VNDB einloggen?
-     Keine Sorge! Gib einfach die E-Mail Adresse an, mit der du dich bei der VNDB registriert hast,
+     Keine Sorge! Gib einfach die E-Mail-Adresse an, mit der du dich bei der VNDB angemeldet hast,
      und wir schicken dir innerhalb weniger Minuten ein neues Passwort zu!
 es : ¿Has olvidado tu contraseña y no puedes conectarte a VNDB?
      ¡No te preocupes! Simplemente dinos el correo que has usado para registrarte
@@ -11138,7 +11141,7 @@ ru : Теперь вы можете установить новый пароль
 cs*:
 hu : Mostmár tudsz a fiókodnak jelszavat beállítani. Miután a jelszavad el lesz mentve automatikusan be leszel jelentkezve.
 nl : Nu kan je een wachtwoord instellen voor je account. Je wordt automatisch ingelogd nadat je wachtwoord is opgeslagen.
-de : Nun kannst du ein Passwort für dein Account bestimmen. Du wirst automatisch eingeloggt, nachdem dein Passwort gespeichert wurde.
+de : Nun kannst du ein Passwort für dein Benutzerkonto bestimmen. Du wirst automatisch eingeloggt, nachdem dein Passwort gespeichert wurde.
 es : Ahora ya puede poner una contaseña para tu cuenta. Automáticamente seras conectado, justo depués de que tu contraseña haya sido guardada.
 tr : Şimdi hesabınız için bir şifre belirleyebilirsiniz. Şifreniz kaydedildikten sonra otomatik olarak giriş yapacaksınız.
 uk : Тепер ти можеш встановити пароль для свого акуанту. Ти будеш входити автоматично після того, як твій пароль буде збережено.
@@ -11177,7 +11180,7 @@ ru : Создание учётной записи
 cs : Vytvořit účet
 hu : Új fiók létrehozása
 nl : Registreer een account
-de : Account erstellen
+de : Benutzerkonto erstellen
 es : Crear una cuenta
 tr : Hesap oluştur
 uk : Створити акуант
@@ -11230,7 +11233,7 @@ hu : Az email címed csakis akkor kerül használatba ha elveszted a jelszavad. 
      spam vagy hírleveleket küldeni, csakis ha te azt kifejezetten kéred tőlünk.
 nl : Je emailadres wordt gebruikt als je je wachtwoord bent vergeten. We zullen je geen spam
      of nieuwsbrieven sturen tenzij je ons er expliciet om vraagt.
-de : Deine E-Mail Adresse wird nur im Fall benötigt, dass du dein Passwort verlieren solltest. Wir werden niemals Spam oder Newsletter verschicken, außer wenn du uns ausdrücklich darum bittest.
+de : Deine E-Mail-Adresse wird nur benötigt, falls du dein Passwort verlieren solltest. Wir werden niemals Spam oder Newsletter verschicken, außer wenn du uns ausdrücklich darum bittest.
 es : Tu correo sólo sera usado en caso de que pierdas tu contraseña. Nunca te mandaremos
      spam o noticias a menos de que claramente lo hayas pedido.
 tr : E-posta adresiniz yalnızca şifrenizi unutmanız durumunda kullanılacaktır.
@@ -11245,7 +11248,7 @@ ru : Сколько [index,_1,новелл,выпусков,компаний] у
 cs : Kolik [index,_1,vizulních novel,vydání,producentů] máme v databázi? (Nápověda: podívejte se doleva)
 hu : Mennyi [index,_1,visual novels,releases,producers] van az adatbázisunkba? (Tip: vess egy pillantást balra)
 nl : Hoeveel [index,_1,visual novels,uitgaven,producenten] hebben wij in de database? (Tip: zie links van de pagina)
-de : Wie viele [index,_1,Visual Novels,Veröffentlichungen,Hersteller] haben wir in unserer Datenbank? (Tipp: schaue zu deiner Linken)
+de : Wie viele [index,_1,Visual Novels,Veröffentlichungen,Hersteller] haben wir in unserer Datenbank? (Tipp: Schaue zu deiner Linken.)
 es*:
 tr : Veritabanımızda kaç adet [index,_1,görsel roman,yayım,yapımcı] var? (İpucu: Solunuza bakın.)
 uk : Скільки [index,_1,візуальних новел,релізів,компаній] ми маємо в нашій базі даних? (Підказка: подивись ліворуч)
@@ -11310,13 +11313,13 @@ nl : Hallo [_1],
      vndb.org
 de : Hallo [_1]
 
-     Jemand hat einen Account auf VNDB.org mit deiner E-Mail Adresse angelegt. Um
+     Jemand hat ein Benutzerkonto auf VNDB.org mit deiner E-Mail-Adresse angelegt. Um
      die Anmeldung zu bestätigen, folge diesem Link:
 
      [_2]
 
-     Wenn du dich nicht daran erinnern kannst, kürzlich einen Account auf VNDB.org angelegt zu haben, bitte
-     ignoriere diese E-Mail.
+     Wenn du dich nicht daran erinnern kannst, kürzlich ein Benutzerkonto auf VNDB.org angelegt zu haben,
+     ignoriere diese E-Mail bitte.
 es : Hola [_1].
 
      Alquien ha creado una cuenta en VNDB.org con tu cuenta. Para confirmar
@@ -11377,7 +11380,7 @@ ru : Аккаунт создан
 cs*:
 hu : Fiók létrehozva
 nl : Account aangemaakt
-de : Account erstellt
+de : Benutzerkonto erstellt
 es : Cuenta creada
 tr : Hesap oluşturuldu
 uk : Акуант створено
@@ -11389,7 +11392,7 @@ ru : Ваш аккаунт создан! Через несколько мину�
 cs*:
 hu : A fiókod elkészült! Pár perc múlva fogsz kapni egy e-mailt utasításokkal a jelszavad beállításához.
 nl : Je account is aangemaakt! Binnen een paar minuten krijg je een email met instructies om een wachtwoord in te stellen.
-de : Dein Accout wurde erstellt! In ein paar Minuten solltest du eine E-Mail erhalten, mit Anweisungen um dein Passwort zu bestimmen.
+de : Dein Benutzerkonto wurde erstellt! In ein paar Minuten solltest du eine E-Mail erhalten, mit Anweisungen, um dein Passwort zu bestimmen.
 es : ¡Tu cuenta ha sido creada! En unos minutos, deberías recibir un correo con instrucciones para poner tu contraseña
 tr : Hesabınız oluşturuldu! Şifre belirlemek için gerekli e-posta birkaç dakika içinde elinize ulaşacaktır.
 uk : Твій акуант створено! За кілька хвилин тобі має надійти е-мейл з подальшими інструкціями як створити пароль.
@@ -11404,7 +11407,7 @@ ru : Моя учётная запись
 cs : Můj účet
 hu : Fiókom
 nl : Mijn account
-de : Mein Account
+de : Mein Benutzerkonto
 es : Mi cuenta
 tr : Hesabım
 uk : Мій акуант
@@ -11476,7 +11479,7 @@ ru : Игнорировать голосования в статистике н�
 cs : Ignorovat hlasy ve statistikách vizuálních novel
 hu : VN szavazatok figyelmen kívül hagyása a statisztikákban
 nl : Negeer stemmen in de VN statistieken
-de : Bewertungen in den VN Statistiken ignorieren
+de : Bewertungen in den VN-Statistiken ignorieren
 es : Ignorar votos en las estadísticas de VN
 tr : Görsel roman istatistiklerindeki oyları görmezden gel
 uk : Ігнорувати голоси у статистиці ВН.
@@ -11560,7 +11563,7 @@ ru : Запретить другим участникам видеть мой с
 cs : Nedovolit ostatním lidem vidět můj seznam vizuálních novel ([url,_1,_1]), hlasování ([url,_2,_2]) a wishlist ([url,_3,_3])
 hu : Ne engedd, hogy más emberek lássák a visual novel listámat ([url,_1,_1]), a szavazataimat ([url,_2,_2]) és a kívánságlistámat ([url,_3,_3])
 nl : Sta andere mensen niet toe om mijn visual novel lijst ([url,_1,_1]), stemmen ([url,_2,_2]) en wensenlijst ([url,_3,_3]) te zien
-de : Anderen Nutzen nicht erlauben, meine Visual Novel Liste ([url,_1,_1]), Bewertungen ([url,_2,_2])  und Wunschliste zu betrachten
+de : Anderen Nutzen nicht erlauben, meine Visual-Novel-Liste ([url,_1,_1]), Bewertungen ([url,_2,_2]) und Wunschliste zu betrachten
 es : No permitir a otras personas ver mi lista de novelas visuales ([url,_1,_1]), votos ([url,_2,_2]) ni "quiero-lista" ([url,_3,_3])
 tr : Diğer kullanıcıların görsel roman listemi ([url,_1,_1]), oylarımı ([url,_2,_2]) ve istek listemi ([url,_3,_3]) görmesine izin verme
 uk : Не дозволяти іншим людям бачити мій список візуальних новел ([url,_1,_1]), голоси ([url,_2,_2]) та список бажань ([url,_3,_3])
@@ -11584,7 +11587,7 @@ ru : Предпочитаемая шкурка
 cs : Preferovaný skin
 hu : Előnybe részesített stílus
 nl : Gewenste skin
-de : Bevorzugter Style
+de : Bevorzugter Stil
 es : Seleccionar skin
 tr : Tema tercihi
 uk : Бажаний скін
@@ -11722,7 +11725,7 @@ ru : Тегов
 cs : Tagy
 hu : Címkék
 nl :
-de : Tags
+de : Schlagworte
 es : Etiquetas
 tr : Etiketler
 uk : Теги
@@ -12207,7 +12210,7 @@ ru : Теги
 cs : Tagy
 hu : Címkék
 nl :
-de : Tags
+de : Schlagworte
 es : Etiquetas
 tr : Etiketler
 uk : Теги
@@ -12219,7 +12222,7 @@ ru : На этой странице дополнительные фильтры 
 cs : Další filtry tagů nejsou na této stránce dostupné. Použijte místo nich prohlížeč vizuálních novel (dostupný z hlavního menu -> vizuální novely).
 hu : További címke szűrők nem állnak rendelkezésre ezzen az oldalon. Használd a visual novel böngészőt (megtalálható a Menü -> Visual Novelek pontba).
 nl : Extra tag filters zijn niet aanwezig op deze pagina. Gebruik de visual novel browser voor deze functionaliteit (beschikbaar via het hoofdmenu -> visual novels).
-de : Zusätzliche Tag Filter sind auf dieser Seite nicht verfügbar. Durchsuche die Visual Novels stattdessen (verfügbar vom Hauptmenü -> Visual Novels).
+de : Zusätzliche Schlagwort-Filter sind auf dieser Seite nicht verfügbar. Durchsuche die Visual Novels stattdessen (verfügbar vom Hauptmenü -> Visual Novels).
 es : No esta disponible el filtrar etiquetas adicionales en esta páina. Utiliza el buscador de novelas visuales (disponible desde el Menú -> novelas visuales).
 tr : Ek etiket seçimleri bu sayfada geçerli değildir. Onun yerine görsel roman gezginini (ana menü -> görsel romanlar) kullanabilirsiniz.
 uk : На цій сторінці додаткові теги для фільтрів недоступні. Ви можете використовувати огляд візуальних новел (Меню —> Візуальні Новели)
@@ -12231,7 +12234,7 @@ ru : Эти фильтры недействительны на страница�
 cs : Tyto filtry jsou na stránkách tagů ignorovány (když jsou nastaveny jako defaultní).
 hu : Ezzek a szűrők figyelmen kívűl maradnak a címke oldalakon (ha alapértelmezetnek vannak beállítva).
 nl : Deze filters worden genegeerd op tagpaginas (als ze gebruikt worden als standaardfilters).
-de : Diese Filter werden auf Tag-Seiten ignoriert (wenn als Standard eingestellt).
+de : Diese Filter werden auf Schlagwort-Seiten ignoriert (wenn als Standard eingestellt).
 es : Estos filtros son ignorados en las páginas de etiquetas (cuando el ajuste esta en predeterminado)
 tr : Bu seçenekler (varsayılan olarak atandığında) etiket sayfalarında görmezden gelinir.
 uk : Ці фільтри ігноруються на сторінках тегів (якщо налаштування стандартні)
@@ -12243,7 +12246,7 @@ ru : Включить теги
 cs : Tagy k zahrnutí
 hu : Címkék beleszámítása
 nl : Tags meenemen
-de : Tags einschließen
+de : Schlagworte einschließen
 es : Etiquetas para incluir
 tr : İçerilecek etiketler
 uk : Включити теги
@@ -12255,7 +12258,7 @@ ru : Исключить теги
 cs : Tagy k vyjmutí
 hu : Címkék kihagyása
 nl : Tags uitsluiten
-de : Tags ausschließnen
+de : Schlagworte ausschließnen
 es : Etiquetas para excluir
 tr : Dışlanacak etiketler
 uk : Виключити теги
@@ -12543,11 +12546,11 @@ nl : De onderstaande lijst bevat visual novels met een vergelijkbare titel.
      [br]
      Klik op de "Ga verder en negeer dubbele items" knop om alsnog verder te gaan.
 de : Folgend ist eine Liste von Visual Novels, die dem/den Titel(n) entsprechen.
-     Bitte überprüfe diese Liste um das Anlegen eines doppelten Visual Novel Eintrags zu vermeiden.
-     Achte besonders auf Einträge, die gelöscht wurden! Um zu sehen warum ein Eintrag
+     Bitte überprüfe diese Liste, um das Anlegen eines doppelten Visual-Novel-Eintrags zu vermeiden.
+     Achte besonders auf Einträge, die gelöscht wurden! Um zu sehen, warum ein Eintrag
      gelöscht wurde, klicke auf den Titel.[br]
      [br]
-     Um die Visual Novel trotzdem hinzuzufügen, drücke den "Fortsetzen und Duplikate ignorieren" Button unten.
+     Um die Visual Novel trotzdem hinzuzufügen, drücke die „Fortsetzen und Duplikate ignorieren“-Schaltfläche unten.
 es : La lista de novelas visuales que aparecen coinciden con el(los) título(s) que has dado.
      Por favor revisa la lista para evitar crear una entrada duplicada.
      ¡Ten especial cuidado con los que han sido eliminados! Para ver porque una entrada
@@ -12688,8 +12691,8 @@ hu : A fő történet rövid leírása. Ne tartalmazzon spoilert és ha nem te �
      megemlíteni a forrást amit felhasználtál. (formázó kódok megengedettek)
 nl : Korte omschrijving van het verhaal. Pas a.u.b. op met spoilers, en vergeet niet om aan te geven waar
      de omschrijving vandaan komt als je deze niet zelf hebt geschreven. (opmaakcodes zijn toegestaan)
-de : Kurze Beschreibung der Hauptgeschichte. Bitte keine Spoiler und vergiss nicht die Quelle
-     anzugeben wenn du die Beschreibung nicht selbst geschrieben hast. (Formatierungscodes sind erlaubt)
+de : Kurze Beschreibung der Hauptgeschichte. Bitte keine Spoiler und vergiss nicht, die Quelle
+     anzugeben, wenn du die Beschreibung nicht selbst geschrieben hast. (Formatierungscodes sind erlaubt.)
 es : Descripción breve sobre la historia principal. Por favor no añadas spoilers, y no olvides poner
      la fuente en el caso de que no hayas escrito la descripción tu mismo. (códigos de formato estan permitidos)
 tr : Ana öykünün kısa bir özeti. Lütfen spoiler vermeyin ve eğer tanıtımı kendiniz yazmadıysanız
@@ -12758,7 +12761,7 @@ nl : Spatiegescheiden lijst van [url,http://anidb.net/,AniDB] anime IDs.
 de : Leerzeichengetrennte Liste von [url,http://anidb.net/,AniDB] Anime IDs.
      Z. B. "1015 3348" fügt [url,http://anidb.net/a1015,Shingetsutan Tsukihime]
      und [url,http://anidb.net/a3348,Fate/stay night] als verwandten Anime hinzu.[br]
-     Hinweis: Es kann einige Minuten dauern, bis die Animetitel auf der VN Seite angezeigt werden.
+     Hinweis: Es kann einige Minuten dauern, bis die Animetitel auf der VN-Seite angezeigt werden.
 es : Lista separada por sobre los ID de los animes [url,http://anidb.net/,AniDB].
      Ej. "1015 3348" añadira [url,http://anidb.net/a1015,Shingetsutan Tsukihime]
      y [url,http://anidb.net/a3348,Fate/stay night] como animes relacionados a la VN.[br]
@@ -12860,7 +12863,7 @@ hu : Lehetőleg a CD/DVD/csomagolás borítóját. A képek muszáj JPEG vagy PN
 nl : Bij voorkeur de omslag van de CD of DVD. Plaatje moet in het JPEG of PNG formaat zijn, en moet kleiner zijn dan 5MB.
      Plaatjes groter dan 256x400 worden automatisch verkleind.
 de : Bevorzugt das Cover der CD/DVD/Verpackung. Bild muss im JPEG oder PNG Format sein
-     und darf die Größe von 5MB nicht überschreiten. Bilder, die größer als 256x400 sein, werden automatisch
+     und darf die Größe von 5 MB nicht überschreiten. Bilder, die größer als 256x400 sein, werden automatisch
      angepasst.
 es : Preferiblemente, la cubierta del CD/DVD/paquete. La imagen debe ser en formato
      JPEG o PNG máximo de 5MB. Imágenes más grandes de 256x400 seran automáticamente
@@ -12902,7 +12905,7 @@ ru : Пожалуйста, поставьте эту галочку если и�
 cs : Prosíme, zaškrtněte tuto možnost, pokud obrázek obsahuje nahotu, gore nebo je jinak nevhodný pro pracovní prostředí.
 hu : Kérlek pipáld ezt be ha a kép tartalmaz meztelenséget, vért vagy más olyan elemet amely nem illik egy munkabarát környezetbe.
 nl : Selecteer deze optie als het plaatje erotische of aanstootgevende inhoud bevat.
-de : Bitte markiere diese Option wenn das Bild Nacktheit, Gewalt oder anderes enthält, das nicht jugendfrei ist.
+de : Bitte markiere diese Option, wenn das Bild Nacktheit, Gewalt oder anderes enthält, das nicht jugendfrei ist.
 es : Por favor, mira esta opción si la imagen contiene desnudos, gore, o que no sea apto en ambiente de trabajo/familiar.
 tr : Eğer resim çıplaklık veya vahşet içeriyorsa, ya da iş ortamında görüntülenmesi uygunsuzsa bu seçeneği işaretleyin.
 uk : Будь ласка, відміть цю опцію, якщо зображення містить оголення, кров або тим чи іншим способом неприйнятне для загального кола користувачів.
@@ -13088,9 +13091,9 @@ nl : Houd a.u.b. rekening met het volgende bij het uploaden van screenshots:[br]
 de : Bitte lasse Folgendes nicht außer Acht, wenn du Screenshots hochlädst:[br]
      - Screenshots müssen in der ursprünglichen Auflösung des Spiels sein,[br]
      - Entferne jegliche Fensterrahmen und stelle sicher, dass das Bild unmarkiert ist,[br]
-     - Lade keine Event CGs hoch.[br]
+     - Lade keine Ereignis-CGs hoch.[br]
      Bitte lies die [url,/d2#6,Richtlinien] für nähere Informationen.[br]
-     Stelle sicher das Formular abzuspeichern, nachdem das Hochladen abgeschlossen ist!
+     Stelle sicher, das Formular abzuspeichern, nachdem das Hochladen abgeschlossen ist!
 es : Por favor, ten en cuenta esto cuando subas imágenes:[br]
      -Las imágenes deben de ser de la misma resolución que el juego,[br]
      -Quita todos los bordes de la ventana y asegúrate que la imagen no esta marcada,[br]
@@ -13134,7 +13137,7 @@ ru : Прежде чем сохранить изменения, дождитес
 cs : Prosíme, počkejte na nahrání screenshotů před potvrzením změn.
 hu : Kérlek várj míg a pillanatképek feltöltődnek, mielőtt beküldenéd a forma lapot.
 nl : Wacht a.u.b. op het voltooien van de upload voordat je het formulier verzend.
-de : Bitte warte bis die Screenshots hochgeladen sind, bevor du abspeicherst.
+de : Bitte warte, bis die Screenshots hochgeladen sind, bevor du abspeicherst.
 es : Por favor espera que las imágenes se suban antes de enviar el formulario.
 tr : Formu göndermeden önce lütfen ekran görüntülerinin yüklenmesini bekleyin.
 uk : Будь ласка, дочекайтеся повного завантаження скріншотів перед збереженням змін.
@@ -13240,7 +13243,7 @@ ru : Изображение должно быть не более 5 Мегаба
 cs : Obrázek musí být menší 5MB a ve formátu PNG nebo JPEG.
 hu : A kép kisebb kell legyen mint 5MB és PNG vagy JPEG formátumba kell legyen.
 nl : Screenshot mag niet groter zijn dan 5MB, en in het PNG of JPEG formaat zijn.
-de : Bild muss kleiner als 5MB und im PNG oder JPEG Format sein.
+de : Bild muss kleiner als 5 MB und im PNG oder JPEG Format sein.
 es : Imagen debe ser menor de 5MB y en fórmato PNG o JPEG
 tr : Resim dosyası 5MB'tan küçük, ve JPEG veya PNG formatında olmalı.
 uk : Зображення має бути меншим за 5Мб і у форматі PNG чи JPEG.
@@ -13288,7 +13291,7 @@ ru : ВНИМАНИЕ: Странное разрешение! Проверьте
 cs : VAROVÁNÍ: Divné rozlišení! Zkontrolujte, prosím, zda je obrázek patřičně oříznutý.
 hu : VIGYÁZAT: Furcsa felbontás! Kérlek ellenőrizd, hogy a kép jól lett-e kivágva.
 nl : WAARSCHUWING: Vreemde resolutie! Controleer a.u.b. of de plaatje goed is gecropped.
-de : WARNUNG: Ungewöhnlich Auflösung! Bitte überprüfe ob das Bild korrekt beschnitten ist.
+de : WARNUNG: Ungewöhnliche Auflösung! Bitte überprüfe, ob das Bild korrekt beschnitten ist.
 es : AVISO: ¡Resolución extraña! Por favor comproba si la imagen ha sido subida correctamente.
 tr : UYARI: Sıradışı çözünürlük! Resmin düzgün kırpıldığından emin olun.
 uk : УВАГА: Дивна роздільна здатність! Будь ласка, перевірте, чи правильно ви обрізали зображення.
@@ -13300,7 +13303,7 @@ ru : Этот скриншот НБДР (NSFW)
 cs : Tento screenshot je NSFW
 hu : Ez a pillanatkép NSFW
 nl : Dit screenshot is NSFW
-de : Dieser Screenshot ist NSFW
+de : Dieser Screenshot ist nicht jugendfrei
 es : Esta imagen es +18
 tr : Bu ekran görüntüsü NSFW
 uk : Цей скріншот небезпечний для роботи.
@@ -13322,8 +13325,8 @@ hu : Hoppá! Úgy tűnik valami rosszul sült el...
 nl : Oops! Lijkt er op dat er iets mis ging...
      Zorg er voor dat het bestand dat je aan het uploaden bent kleiner is dan 5MB.
      Als dat het geval is, houd ons a.u.b. op de hoogte van deze bug.
-de : Hoppla! Es scheint etwas schief gelaufen zu sein...
-     Stelle sicher, dass die Datei, die du hochlädst, nicht größer als 5MB ist.
+de : Hoppla! Es scheint etwas schief gelaufen zu sein …
+     Stelle sicher, dass die Datei, die du hochlädst, nicht größer als 5 MB ist.
      Wenn dies nicht das Problem ist, bitte melde diesen Fehler.
 es : ¡Ups! Parece que algo ha ido mal...
      Asegúrate de que el archivo estas subiendo no exceda 5MB.
@@ -13478,7 +13481,7 @@ ru : Тег Encubed'а
 cs : Tag na Encubed
 hu : Encubed címke
 nl :
-de : Encubed Tag
+de : Encubed Schlagwort
 es : Etiqueta Encubed
 tr : Encubed etiketi
 uk : Тег Encubed
@@ -13562,7 +13565,7 @@ ru : (НБДР|NSFW)
 cs : (NSFW)
 hu : (NSFW)
 nl :
-de : (NSFW)
+de : (Nicht jugendfrei)
 es : (NSFW)
 tr : (NSFW)
 uk : (Небезбечно для роботи)
@@ -13586,7 +13589,7 @@ ru : Изображение НБДР (NSFW)
 cs : Vhodnost obrázku
 hu : A kép NSFW
 nl : Plaatje is veilig?
-de : Bild NSFW
+de : Bild nicht jugenfrei
 es : Imagen +18
 tr : Resim NSFW
 uk : Зображення небезпечне для роботи
@@ -13598,7 +13601,7 @@ ru : Безопасно
 cs : SFW
 hu : Munkabarát
 nl : Veilig
-de : Sicher
+de : Jugendfrei
 es : Seguro
 tr : Güvenli
 uk : Безпечне
@@ -13610,7 +13613,7 @@ ru : Небезопасно
 cs : NSFW
 hu : Nem munkabarát
 nl : Niet veilig
-de : Nicht sicher
+de : Nicht jugendfrei
 es : No seguro
 tr : Güvenli değil
 uk : Небезпечне
@@ -13649,7 +13652,7 @@ ru : Нет загруженного изображения
 cs : Ještě nebyl nahrán žádný obrázek
 hu : Még nincs kép feltöltve
 nl : Nog geen plaatje geupload
-de : Kein Bild hochgeladen bisher
+de : Bisher kein Bild hochgeladen
 es : Imagen no subida
 tr : Resim yüklenmemiş
 uk : Ще не завантажено жодного зображення
@@ -13685,7 +13688,7 @@ ru : (Это предупреждение можно отключить в на�
 cs : (Toto varování může být vypnuto ve vašem nastavení)
 hu : (Ezt a figyelmeztetést ki lehet kapcsolni a profilodba)
 nl : (Deze waarschuwing kan in je account uitgezet worden)
-de : (Diese Warnung kann in deinem Account deaktiviert werden)
+de : (Diese Warnung kann in deinem Benutzerkonto deaktiviert werden)
 es : (Este aviso puede ser desabilitado en tu cuenta)
 tr : (Bu uyarıyı hesabınızdan devre dışı bırakabilirsiniz)
 uk : (Це попередження можна вимнутив налаштування вашого акуанту)
@@ -13697,7 +13700,7 @@ ru : Помечено как НБДР (NSFW)
 cs : Označeno jako NSFW
 hu : NSFW-nek van bejelölve
 nl : Gemarkeerd als NSFW
-de : Markiert als NSFW
+de : Markiert als nicht jugendfrei
 es : Marcado como +18
 tr : NSFW olarak işaretli
 uk : Відмітити як Небезпечне для роботи
@@ -14062,7 +14065,7 @@ hu : Te most épp a 10-ből, 1-et adsz ennek a visual novelnek. Ez egy elég ext
      Biztos vagy benne, hogy ezt a visual novel azok közzé lehet sorolni?
 nl : Je staat op het punt om deze visual novel een 1 te geven. Dit is een erg extreme stem, en betekent dat dit spel helemaal niks te bieden geeft, en dat dit het walgelijkste spel is dat je ooit hebt gespeeld.
      Weet je zeker dat die omschrijving klopt met deze visual novel?
-de : Du bist dabei dieser Visual Novel eine 1 von 10 zu geben. Dies ist einer ziemlich extreme Bewertung und bedeutet, dass dieses Spiel absolut nichts anzubieten hat und dass es das schlimmste Spiel ist, das du je gespielt hast.
+de : Du bist dabei, dieser Visual Novel eine 1 von 10 zu geben. Dies ist einer ziemlich extreme Bewertung und bedeutet, dass dieses Spiel absolut nichts anzubieten hat und dass es das schlimmste Spiel ist, das du je gespielt hast.
      Bist du wirklich sicher, dass diese Visual Novel auf diese Beschreibung zutrifft?
 es : Estás apunto de dar a esta novela visual un 1 sobre 10. Esta es una puntuación extrema, diciendo que este juego no tiene nada que ofrecer, y que es el peor juego que hayas jugado.
      ¿Estás seguro de que esta novela visual coincide con esta descripción?
@@ -14084,8 +14087,8 @@ hu : Te most épp a 10-ből, 10-et adsz ennek a visual novelnek. Ez egy elég ex
      Általában rossz ötlet ha 3-nál több ilyen játékot tartasz a szavazási listádba, válasz óvatosan!
 nl : Je staat op het punt om deze visual novel een 10 te geven. Dit is een erg extreme stem, en betekent dat dit één van de beste visual novels die je ooit hebt gespeeld is, en dat de kans klein is dat je ooit iets beters zal vinden dan dit.
      Het is over het algemeen een slecht idee om meer dan drie spellen in je lijst een 10 te geven, wees zorgvuldig!
-de : Du bist dabei dieser Visual Novel eine 10 von 10 zu geben. Dies ist eine ziemlich extreme Bewertung und bedeutet, dass dies eine der besten Visual Novels ist, die du je gespielt hast und es unwahrscheinlich ist, dass eine andere Visual Novel da herankommt.
-     Es ist im Großen und Ganzen eine schlechte Idee mehr als drei Spiele in deiner Bewertungsliste mit dieser Bewertung zu haben, wähle mit Bedacht!
+de : Du bist dabei, dieser Visual Novel eine 10 von 10 zu geben. Dies ist eine ziemlich extreme Bewertung und bedeutet, dass dies eine der besten Visual Novels ist, die du je gespielt hast und es unwahrscheinlich ist, dass eine andere Visual Novel da herankommt.
+     Es ist im Großen und Ganzen eine schlechte Idee, mehr als drei Spiele in deiner Bewertungsliste mit dieser Bewertung zu haben, wähle mit Bedacht!
 es : Estás apunto de dar a esta novela visual un 10 sobre 10. Esta es una puntuación extrema, diciendo que estas es una de las mejores novelas visuales que has jugado y es improbable que otro juego pueda ser mejor que este.
      Generalmente es una mala idea tener más de tres juegos en tu lista de votación con esta puntuación. ¡Elige con cuidado!
 tr : Bu görsel romana 10 üzerinden 10 vermek üzeresiniz. Diğer bir deyişle ya bu şimdiye dek oynadığınız en iyi görsel romanlardan biri, ya da başka bir oyunun bunun üzerine çıkması neredeyse imkânsız.
@@ -14101,7 +14104,7 @@ ru : Список новелл: [_1]
 cs : Seznam VN: [_1]
 hu : VN lista: [_1]
 nl : VN-lijst: [_1]
-de : VN Liste: [_1]
+de : VN-Liste: [_1]
 es : lista VN: [_1]
 tr : VN listesi: [_1]
 uk : Список новел: [_1]
@@ -14113,7 +14116,7 @@ ru : не в вашем списке
 cs : není ve vašem seznamu VN
 hu : nincs a VN listádba
 nl : niet in je VN-lijst
-de : nicht auf deiner VN Liste
+de : nicht auf deiner VN-Liste
 es : no en tu lista VN
 tr : VN listenizde yok
 uk : Не у твоєму списку новел
@@ -14137,7 +14140,7 @@ ru : Добавить в список
 cs : Přidat na seznam VN
 hu : Hozzáadás a VN listához
 nl : Voeg toe aan VN-lijst
-de : Zur VN Liste hinzufügen
+de : Zur VN-Liste hinzufügen
 es : Añadir a la lista VN
 tr : VN listesine ekle
 uk : Додати до списку новел
@@ -14149,7 +14152,7 @@ ru : убрать из списка
 cs : odstranit ze seznamu VN
 hu : eltávolítás a VN listából
 nl : Verwijder van VN-lijst
-de : von VN Liste entfernen
+de : von VN-Liste entfernen
 es : quitar de la lista VN
 tr : VN listesinden çıkar
 uk : видалити зі списку новел
@@ -14344,7 +14347,7 @@ ru : У нас пока нет информации о выпусках этой
 cs : K této vizuální novele zatím nemáme informace o žádném vydání...
 hu : Még nincs információnk ennek a visual novelnek a kiadásairól...
 nl : We hebben op dit moment nog geen informatie over uitgaven van deze visual novel...
-de : Wir haben bisher keine Informationen über Veröffentlichungen dieser Visual Novel...
+de : Wir haben bisher keine Informationen über Veröffentlichungen dieser Visual Novel …
 es : Todacía no tenemos información alguna sobre estrenos en esta novela visual....
 tr : Bu görsel roman hakkında henüz bir bilgimiz yok...
 uk : Ми ще не маємо інформації щодо релізів цієї новели…
@@ -14428,7 +14431,7 @@ ru : показать/скрыть НБДР (NSFW)
 cs : skrýt/zobrazit NSFW
 hu : megjelenít/elrejt NSFW
 nl : toon/verberg NSFW
-de : zeige/verstecke NSFW
+de : zeige/verstecke nicht Jugendfreies
 es : mostrar/ocultar +18
 tr : NSFW olanları göster/gizle
 uk : Показати/сховати небезпечні для роботи
@@ -14464,7 +14467,7 @@ ru : Никто пока не голосовал за эту новеллу...
 cs : Pro tuto vizuální novelu ještě nikdo nehlasoval...
 hu : Még senki nem szavazot erre a visual novelre...
 nl : Niemand heeft nog op deze visual novel gestemd...
-de : Niemand hat diese Visual Novel bisher bewertet...
+de : Niemand hat diese Visual Novel bisher bewertet …
 es : Nadie ha votado esta novela visual todavía...
 tr : Bu görsel romanı henüz kimse oylamamış...
 uk : Ще ніхто не голосував за цю новелу…
@@ -14597,7 +14600,7 @@ ru : Пожалуйста [url,/u/login,авторизуйтесь], либо [u
 cs : Prosíme, [url,/u/login,přihlašte se], nebo si [url,/u/register,vytvořte účet], pokud ještě žádný nemáte.
 hu : Kérlek[url,/u/login,lépj be] vagy ha még nem volna akkor [url,/u/register,készíts egy fiókot].
 nl : [url,/u/login,Log a.u.b. in], of [url,/u/register,maak een nieuw account aan] als je er nog geen hebt.
-de : Bitte [url,/u/login,einloggen], oder [url,/u/register,einen Account erstellen], solltest du noch keinen haben.
+de : Bitte [url,/u/login,einloggen] oder [url,/u/register,ein Benutzerkonto erstellen], solltest du noch keins haben.
 es : Por favor [url,/u/login,conéctate], o [url,/u/register,crea una cuenta] si no tienes una.
 tr : Lütfen [url,/u/login,giriş yapın], ya da eğer yoksa kendinize [url,/u/register,yeni bir hesap yaratın].
 uk : Будь ласка [url,/u/login,увійдіть] або [url,/u/register,зареєструйте акуант], якщо ви що цього не зробили.
@@ -14622,7 +14625,7 @@ ru : Похоже, у вас нет прав для выполнения дей�
 cs : Zdá se, že nemáte potřebná práva pro vykonání akce, kterou chcete provést...
 hu : Úgy tűnik, hogy nem rendelkezel megfelelő jogokkal, hogy elvégezd azt a műveletet amit szerettél volna...
 nl : Het lijkt er op dat je niet genoeg rechten hebt om te doen wat je wilde doen...
-de : Es scheint als hättest du nicht die nötigen Rechte, um diesen Vorgang durchzuführen...
+de : Es scheint, als hättest du nicht die nötigen Rechte, um diesen Vorgang durchzuführen …
 es : Parece ser que no tienes los permisos adecuados para empeñar la acción que quieras hacer...
 tr : Görünüşe bakılırsa bu işlemi gerçekleştirmek için gereken yetkilere sahip değilsiniz...
 uk : Схоже, ви не маєте прав на здійснення того, що ви хочете здійснити…
@@ -14655,7 +14658,7 @@ hu : Ez a bejegyzés ki lett törölve az adatbázisból. Nyújtsd be egy kérv�
 nl : Dit item is uit de database verwijderd. Als je het hier niet mee eens bent
      kan je dit aankaarten op het [url,_1,forum].
 de : Dieser Gegenstand wurde von der Datenbank gelöscht. Stelle eine Anfrage
-     im [url,_1,Forum] um diese Seite wieder zurückzuholen.
+     im [url,_1,Forum], um diese Seite wieder zurückzuholen.
 es : Esta página ha sido eliminado de la base. Crea una petición en el [url,_1,foro]
      para deseliminar esta página.
 tr : Bu öğe veritabanından silinmiş. Sayfayı geri getirmek için [url,_1,tartışma panosunda]
@@ -14690,8 +14693,8 @@ hu : Te most ép arra készülsz, hogy egy új bejegyzést hozzál létre az ada
      Kattints a 'szerkesztés' fülre a jobb felső sarokba ha egy új bejegyzés helyet, csak szerkeszteni akartad a meglévőt.
 nl : Je staat op het punt om een nieuw item toe te voegen aan de database, met informatie gebasseerd op [_1].[br]
      Klik op de 'wijzig' tab rechtsboven als je bedoeling is om dit item te wijzigen in plaats van een nieuwe aan te maken.
-de : Du bist dabei einen neuen Eintrag in die Datenbank mit den Informationen basierend auf [_1] einzugeben.[br]
-     Drücke den "Bearbeiten" Tab oben rechts wenn du den Eintrag bearbeiten wolltest anstatt einen neuen anzulegen.
+de : Du bist dabei, einen neuen Eintrag in die Datenbank mit den Informationen basierend auf [_1] einzugeben.[br]
+     Drücke die „Bearbeiten“-Schaltfläche oben rechts, wenn du den Eintrag bearbeiten wolltest, anstatt einen neuen anzulegen.
 es : Estas a punto de insertar una nueva entrada en la base con información basado en [_1].[br]
      Ve a la pestaña de "editar" arriba a la derecha, si intentabas editar la entrada en vez de crear uno nuevo.
 tr : [_1] sayfasındaki bilgilere dayanarak veritabanına yeni bir girdi eklemek üzeresiniz.[br]
@@ -14743,7 +14746,7 @@ ru : Просмотрите [url,_1,историю правок] на предм
 cs : Projděte [url,_1,historii editací] pro nedávné změny týkající se změn, které se chystáte provést.
 hu : Mielőtt te is megváltoztatnál valamit nézz bele a [url,_1,szerkesztési előzményekbe], hogy milyen változások voltak eddig.
 nl : Browse de [url,_1,geschiedenis] van dit item voor wijzigingen gerelateerd aan wat je wil doen.
-de : Durchsuche den [url,_1,Bearbeitungsverlauf] um alle kürzlichen Änderungen im Zusammenhang was du ändern möchtest zu sehen.
+de : Durchsuche den [url,_1,Bearbeitungsverlauf], um alle kürzlichen Änderungen im Zusammenhang mit dem, was du ändern möchtest, zu sehen.
 es : Mirar la the [url,_1,historia de editaciones] para cualquier cambio relacionado con lo que quieres cambiar.
 tr : [url,_1,Düzenleme geçmişinde] yapmak istediğiniz değişiklikle ilgili bir düzenleme olup olmadığına bakın.
 uk : Огляньте [url,_1,історію редагувань], можливо вже були зміни, пов’язані з тим, що плануєте ви.
@@ -14755,7 +14758,7 @@ ru : [url,_1,Воспользуйтесь поиском], ведь вполне
 cs : [url,_1,Prohledejte databázi], zda již nemáme informaci o [index,_2,této vizuální novele,tomto vydání,tomto producentovi,této postavě].
 hu : [url,_1,Nézd át az adatbázist], hogy van-e már információ erről a [index,_2,visual novelről, kiadásról, készítőről, szereplőről].
 nl : [url,_1,Doorzoek de database] om te kijken of we al informatie hebben over [index,_2,deze visual novel,deze uitgave,deze producent,dit karakter].
-de : [url,_1,Durchsuche die Datenbank] um zu sehen, ob wir bereits Informationen über diese(n) [index,_2,Visual Novel,Veröffentlichung,Hersteller,Charakter].
+de : [url,_1,Durchsuche die Datenbank], um zu sehen, ob wir bereits Informationen über diese(n) [index,_2,Visual Novel,Veröffentlichung,Hersteller,Charakter] haben.
 es : [url,_1,Busca en la base] para ver si ya tenemos la información sobre [index,_2,esta novela visual,este estreno,este creador,este personaje].
 tr : Bu [index,_2,görsel roman,yayım,yapımcı,karakter] ile ilgili bir bilgimizin var olma ihtimaline karşı [url,_1,veritabanını arayın].
 uk : [url,_1,Пошукайте по базі даних], щоб дізнатися, чи є вже якась інформація щодо [index,_2,цієї відуальної новели,цього релізу,цієї компанії,цього персонажу].
@@ -14855,7 +14858,7 @@ ru : Пожалуйста, вернитесь назад, обновите ст�
 cs : Prosím stiskněte tlačítko Zpět ve vašem prohlížeči, obnovte stránku a zkuste to znovu.
 hu : Kérlek nyomd meg a böngésző vissza gombját, frissítsd az oldalt és próbáld újra.
 nl : Ga terug naar de vorige pagina, vernieuw deze en probeer het opnieuw.
-de : Bitte drücke den Zurück-Knopf in deinem Browser, aktualisiere die Seite und versuche es erneut.
+de : Bitte drücke die Zurück-Schaltfläche in deinem Browser, aktualisiere die Seite und versuche es erneut.
 es : Por favor ve atrás, actualiza la página e inténtalo otra vez.
 tr : Lütfen tarayıcınızın geri düğmesine basın, sayfayı yenileyin ve tekrar deneyin.
 uk : Будь ласка, натисніть «назад» у вашому браузері, перезавантажте сторінку і спробуйте ще раз.
@@ -14882,7 +14885,7 @@ ru : Ваш браузер настолько отстоен, что даже н
 cs : Váš prohlížeč je na nic, nepodporuje vykreslování našich krásných vztahových grafů.
 hu : A böngésződ szar, nem képes megjeleníteni a szép összefüggés grafikonunkat.
 nl : Je browser is troep, het heeft niet de benodigde functionaliteit om onze mooie grafiekjes weer te geven.
-de : Dein Browser taugt nichts, da er unsere tollen Verbindungsgrafiken nicht darstellen kann.
+de : Dein Browser taugt nichts, da er unsere tollen Beziehungsgrafiken nicht darstellen kann.
 es : Tu explorador es un asco, no tiene la funcionalidad para soportar nuestros bonitos gráficos.
 tr : Tarayıcınız dandik olduğu için bizim cici ilişki grafiğimizi çizebilecek yeteneğe sahip değil.
 uk : Твій браузер такий тупий, що навіть не може зобразити наші красиві графіки.
@@ -14909,7 +14912,7 @@ ru : Пользователя с такой электронной почтой 
 cs : Uživatel s touto e-mailovou adresou nebyl nalezen
 hu : Nem található felhasználó ezzel az email címmel
 nl : Geen gebruiker met dat email adres
-de : Es wurde kein Nutzer mit dieser E-Mail Adresse gefunden
+de : Es wurde kein Nutzer mit dieser E-Mail-Adresse gefunden
 es : No se ha encontrado usuario con este correo
 tr : Bu e-posta adresiyle kayıtlı bir kullanıcı bulunamadı
 uk : Не знайдено користувача з таким е-мейлом
@@ -14945,7 +14948,7 @@ ru : Кто-то уже регистрировался с таким адрес�
 cs : Tuto e-mailovou adresu již někdo k registraci použil
 hu : Valaki már regisztrált ezzel az email címmel
 nl : Iemand heeft zich al geregistreerd met dat emailadres
-de : Jemand hat sich bereits mit dieser E-Mail Adresse registriert
+de : Jemand hat sich bereits mit dieser E-Mail-Adresse angemeldet
 es : Ya hay alguien registrado con ese correo electrónico
 tr : Bu e-posta adresiyle önceden bir kayıt yapılmış
 uk : Хтось вже зареєстрував цю поштову скриню
@@ -14981,7 +14984,7 @@ ru : Изображение слишком большое, 5 МБ - максим
 cs : Obrázek je moc velký, je povoleno pouze 5MB
 hu : A kép fájlmérete túl nagy, 5MB a megengedett
 nl : Plaatje is te groot, max. 5MB toegestaan
-de : Das Bild ist zu groß, es sind nur 5MB erlaubt
+de : Das Bild ist zu groß, es sind nur 5 MB erlaubt
 es : La imagen es muy grande, máximo 5B
 tr : Resim çok büyük, en fazla 5MB olmalı
 uk : Зображення завелике, дозволено не більше 5Мб
@@ -14993,7 +14996,7 @@ ru : Вы можете зарегистрировать учётную запи�
 cs : V rámci 24 hodin si lze z jedné IP adresy zaregistrovat pouze jeden účet
 hu : 24 óra alatt csak egy fiókot hozhatsz létre ugyanazzal az IP-vel
 nl : Per dag mag je maar één account aanmaken vanaf hetzelfde IP
-de : Du kannst nur einen Account pro IP innerhalb von 24 Stunden registrieren
+de : Du kannst nur ein Benutzerkonto pro IP innerhalb von 24 Stunden anmelden
 es : Sólo puedes registrar una cuenta con el mismo IP en 24 horas
 tr : Aynı IP adresinden 24 saat içinde sadece bir hesap oluşturulabilir
 uk : З одного IP можна зареєструвати лише один акуант протягом 24 годин
@@ -15041,7 +15044,7 @@ ru : За 24 часа можно создавать максимум 5 тем
 cs*:
 hu : Csak 5 új témát lehet létrehozni 24 óra leforgássa alatt.
 nl : Je mag maar 5 topics per 24 uur maken
-de : Du kannst nur 5 Threads alle 24 Stunden erstellen
+de : Du kannst nur 5 Themen alle 24 Stunden erstellen
 es : Sólo puedes crear 5 temas cada 24 horas
 tr : 24 saat içinde en fazla 5 başlık açabilirsiniz
 uk : За 24 години можна створювати не більше, ніж 5 тредів
@@ -15053,7 +15056,7 @@ ru : Пожалуйста, прочтите [url,/d5.4,руководство] �
 cs : Prosíme, přečtěte si [url,/d5.4,doporučení] ohledně užívání úprav shrnutí.
 hu : Légyszíves olvasdd el a szerkesztési összegzés [url,/d5.4, útmutatóját].
 nl : Lees a.u.b. [url,/d5.4,de richtlijnen] over het gebruik van de samenvatting.
-de : Bitte lies [url,/d5.4,die Richtlinien] wie man die Zusammenfassung bearbeitet.
+de : Bitte lies [url,/d5.4,die Richtlinien] darüber, wie man die Zusammenfassung bearbeitet.
 es : Por favor lee [url,/d5.4,las normas] sobre como editar el mensaje.
 tr : Düzenleme özetinin kullanımı için lütfen [url,/d5.4,kılavuz] sayfasını okuyun.
 uk : Будь ласка, прочитайте [url,/d5.4,вказівки] про те, як використовувати «Сумарно по редагуванню»
@@ -15065,7 +15068,7 @@ ru : Неверный главный персонаж. Проверьте, чт�
 cs : Neplatná hlavní postava. Ujistěte se, že ID je správně, že hlavní postava není duplikátem jiné postavy a že tento záznam není použit jako hlavní postava někde jinde.
 hu : Érvénytelen szereplő. Bizonyosodj meg, hogy helyes-e az azonosító (ID), hogy maga a szereplő nem egy másik szereplő hasonmása, és hogy ez a bejegyzés máshol nincs szereplő ként használva.
 nl : Ongeldig hoofdkaracter. Zorg ervoor dat het ID correct is, dat het hoofdkarakter zelf geen instantie is van een ander karakter, en dat dit karakter zelf ook niet ergens gebruikt wordt als hoofdkarakter.
-de : Ungültiger Hauptcharakter. Stelle sicher, dass die ID korekkt ist, dass der Hauptcharakter nicht selbst eine Instanz eines anderen Charakters ist und dass dieser Eintrag nicht als Haupcharakter irgendwo sonst verwendet wird.
+de : Ungültiger Hauptcharakter. Stelle sicher, dass die ID korrekt ist, dass der Hauptcharakter nicht selbst eine Instanz eines anderen Charakters ist und dass dieser Eintrag nicht als Haupcharakter irgendwo sonst verwendet wird.
 es : Personaje principal inválido. Asgúrate que la ID es correcta, que el personaje principal no sea un ejemplo de otro personaje, y que la entrada no es usado como el personaje principal en ningún lado.
 tr : Geçersiz ana karakter. ID'nin doğruluğundan, ana karakterin bir başka karakterin örneği olmadığından, ve bu girdinin başka bir yerde ana karakter olarak kullanılmadığından emin olun.
 uk : Неправильний головний герой. Переконайтеся у правильності ID, головний персонаж — це не втілення іншого персонажа, і що цей запис не використовується в якості головного персонажа десь ще.
@@ -15161,7 +15164,7 @@ ru : Тег [url,_1,_2] уже существует!
 cs : Tag [url,_1,_2] již existuje!
 hu : A(z) [url,_1,_2] címke már létezik!
 nl : Tag [url,_1,_2] bestaat al!
-de : Den Tag [url,_1,_2] gibt es bereits!
+de : Das Schlagwort [url,_1,_2] gibt es bereits!
 es : ¡Rasgo [url,_1,_2] ya existe!
 tr : [url,_1,_2] etiketi zaten var!
 uk : Тег [url,_1,_2] вже існує!
@@ -15185,7 +15188,7 @@ ru : Некорректный адрес электронной почты
 cs : Neplatná e-mailová adresa
 hu : Érvénytelen email cím
 nl : Ongeldig emailadres
-de : Ungültige E-Mail Adresse
+de : Ungültige E-Mail-Adresse
 es : Correo electrónico inválido
 tr : Geçersiz e-posta adresi
 uk : Неправильна е-мейл адреса

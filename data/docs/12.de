@@ -8,43 +8,85 @@
  Charaktere repräsentieren Personen, Tiere und Dinge innerhalb einer Visual Novel. Jeder
  Charakter in einer Visual Novel, ungeachtet dessen wie unbedeutend seine Rolle sein mag, darf in die Datenbank
  aufgenommen werden, obwohl es empfohlen ist, die wichtigsten Charaktere zuerst hinzuzufügen.
- Wenn du Charaktere hinzufügst, versuche so lückenlos wie möglich zu sein: Das heißt versuche
+ Wenn du Charaktere hinzufügst, versuche, so lückenlos wie möglich zu sein: Das heißt, versuche,
  so viele Charaktere einer Visual Novel wie möglich hinzuzufügen, statt nur einen Charakter zu vielen VNs
  hinzuzufügen.
 </p>
 
 
 :SUB:Instanzen
-<i>todo: wann und wie Instanzen zu verwenden sind.</i>
+<p>
+Man kann zwei (oder mehr) Charaktere mit einer „Instanzbeziehung“ verknüpfen, wenn sie auf
+irgendeine Weise dieselbe Person sind.
+</p>
+:SUBSUB: Wo Instanzen angebracht sein könnten
+<ul>
+  <li>Zwei Charaktere scheinen verschiedene Personen zu sein, aber sind eigentlich ein und dieselbe.
+    Zum Beispiel <a href="/c7373">Arsene</a> und <a href="/c7374">Henriette</a>.</li>
+  <li>Einer der Charaktere ist eine ältere Version des anderen.</li>
+  <li>Ein Charakter verwandelt sich in den anderen. Es muss keinen Weg zur Rückverwandlung geben.
+    Zum Beispiel <a href="/c1022">Kaoru (Male)</a> nd <a href="/c1023">Kaoru (Female)</a>.</li>
+  <li>Die zwei Charaktere sind dieselbe Person in verschiedenen Universen, Zeitlinien oder Realitäten.
+    Zum Beispiel Tohsaka Rin <a href="/c34">Fate/stay night</a> und in <a href="/c3529">Fate/extra</a>.</li>
+  <li>Die zwei Charaktere sind dieselbe Person, die von unterschiedlichen Entwicklern genutzt wird. Dies könnte in verschiedene Interpretationen des Charakters oder verschiedene Grafikstile resultieren.
+    Zum Beispiel Emiya Shirou in <a href="/c15">Fate/stay night</a> und in <a href="/c4479">Happy Valentines Day</a>.</li>
+  <li>Spoiler über den Charakter sollten verborgen sein. Dies kann geschehen, indem man
+    einen Charaktereintrag mit inkorrekten oder unvollständigen, aber nicht spoilernden, Informationen
+    erstellt. Dies wird dann mit einem anderen Eintrag für denselben Charakter verknüpft, welcher
+    komplette, aber spoilernde, Informationen enthält.</li>
+</ul>
+:SUBSUB:Wo Instanzen nicht angebracht sein könnten
+<ul>
+  <li>Es ist wünschenswert, Instanzen zu vermeiden, nur um Spoiler zu verbergen,
+    wenn auch andere Methoden effektiv wären. Diese Methoden sind das Markieren von
+    Eigenschaften als Spoiler oder das Verbergen von Informationen in der Charakterbeschreibung
+    durch das Spoiler-Schlagwort.</li>
+  <li>Wenn zwei Charaktere, die durch eine Instanz verknüpft werden sollen, sich nicht
+    hinreichend unterscheiden, sollte man nur einen Charaktereintrag verwenden.
+    Zum Beispiel <a href="/c4287">Alice (lamia)</a> und <a href="http://s.vndb.org/sf/26/18226.jpg">Alice (human)</a>.</li>
+</ul>
+:SUBSUB:Wie verwendet man Instanzen
+<p>
+Um zwei (oder mehrere) Charakter mit einer Instanzbeziehung zu verknüpfen, muss
+ein Charakter als „Hauptcharakter“ ausgewählt werden. Alle anderen werden dann 
+„Instanzcharaktere“. (Nicht zu verwechseln mit der Charakterrolle in einer Visual Novel.)
+Für gewöhnlich ist der am häufigsten zu sehende oder am wenigsten spoilernde Charakter der 
+„Hauptcharakter“.<br />
+Fülle das „Instanz von“-Feld nicht beim Bearbeiten des „Hauptcharakters“ aus, sondern
+bei den „Instanzcharakteren“. Wenn die Instanzbeziehung ein Spoiler ist, stelle
+sicher, sie als solche zu kennzeichnen, wenn du die „Instanzcharaktere“ bearbeitest. 
+Wenn die Existenz eines Charakters in einer Visual Novel ein Spoiler ist, siehe den <a
+href="/d12#6">Visual Novels</a>-Abschnitt unten.
+</p>
 
 
 :SUB:Allgemeine Informationen
 <dl>
  <dt>Name (Romaji)</dt><dd>
-  Name des Charakters, im lateinischen Alphabet. Schaue in den <a
+  Name des Charakters im lateinischen Alphabet. Schaue in den <a
   href="/d5">allgemeinen Bearbeitungsrichtlinien</a> für Informationen
-  bezüglich Namensreihenfolge und Romanisierung. Versuche den vollständigen
+  bezüglich Namensreihenfolge und Romanisierung. Versuche, den vollständigen
   Namen zu verwenden, falls bekannt. Wenn der volle Name nicht bekannt ist,
   dann nutze entweder den Vor- oder Nachnamen. Wenn sogar dies nicht bekannt
   ist, dann nutze den Namen, der am häufigsten für den Charakter in der Geschichte
   verwendet wird. Im Falle, dass der Charakter nie mit einem Namen oder Titel in Verbindung
-  gebracht wird (z. B. wenn es der Protagonist ist), kann "Unnamed" als Name verwendet
+  gebracht wird (z. B. wenn es der Protagonist ist), kann „Unnamed“ als Name verwendet
   werden.<br />
   In einigen Fällen ist der vollständige Name ein Spoiler, siehe das Kapitel über Instanzen oben
-  für einige Wege wie dies handzuhaben ist.
+  für einige Wege, wie dies handzuhaben ist.
  </dd><dt>Originalname</dt><dd>
   Der tatsächliche Name des Charakters, im Falle dass er nicht offiziell im
   lateinischen Alphabet ist. Lasse dies leer, wenn es der gleiche Name wie
-  "Name (Romaji)" ist. Falls möglich, versuche Leerzeichen zwischen dem Vor-
+  „Name (Romaji)“ ist. Falls möglich, versuche, Leerzeichen zwischen dem Vor-
   und Nachnamen einzubauen.
  </dd><dt>Pseudonyme</dt><dd>
   Andere Namen, unter denen der Charakter bekannt ist, wie zum Beispiel Spitznamen,
   die von anderen Charakteren in der Geschichte verwendet werden. Da dieses Feld
-  keine Einstellung hat Spoiler zu verstecken, sollten keine Spoiler Namen hier verwendet
-  werden. Es ist möglich solche Pseudonyme mit einem [spoiler] Tag in der Beschreibung
+  keine Einstellung hat, Spoiler zu verstecken, sollten keine Spoiler-Namen hier verwendet
+  werden. Es ist möglich, solche Pseudonyme mit einem [spoiler]-Schlagwort in der Beschreibung
   anzugeben.
 </dd><dt>Beschreibung</dt><dd>
-  Eine kurze Beschreibung des Charakters. Wobei empfohlen wird die
+  Eine kurze Beschreibung des Charakters. Wobei empfohlen wird, die
   Spoiler auf einem Minimum zu halten, können die üblichen
   <a href="/d9.3">Formatierungscodes</a>, wie [spoiler] verwendet werden,
   um Spoiler einzubauen, die standardmäßig versteckt sind.
@@ -54,25 +96,25 @@
  </dd><dt>Geschlecht</dt><dd>
   Geschlecht des Charakters. Dies ist üblicherweise ziemlich unkompliziert, aber es gibt
   einige besondere Fälle: (Reverse) Traps sollten hier ihr biologisches Geschlecht eingetragen
-  haben. Futanari sollte als "beides" markiert werden.<br />
+  haben. Futanari sollte als „beides“ markiert werden.<br />
   Wenn das wahre Geschlecht ein Spoiler ist, was manchmal der Fall bei Traps ist,
-  lasse dieses Feld auf "Unbekannt". Siehe das Kapitel über Instanzen oben, wenn der
-  Charakter zwischen einer männlichen und einer weiblichen Version "transformiert".
+  lasse dieses Feld auf „Unbekannt“. Siehe das Kapitel über Instanzen oben, wenn der
+  Charakter zwischen einer männlichen und einer weiblichen Version „transformiert“.
  </dd><dt>Geburtstag</dt><dd>
   Monat und Tag des Geburtstags des Charakters. Merke, dass das Jahr nicht angegeben wird.
- </dd><dt>Brust / Taille / Hüfte</dt><dd>
+ </dd><dt>Brust/Taille/Hüfte</dt><dd>
   <a href="http://en.wikipedia.org/wiki/BWH">BWH</a> Maße, falls bekannt.
   Diese Informationen sollten entweder von dem Spiel selbst kommen oder von einer
-  verlässlichen Quelle (üblicherweise der offiziellen Homepage). Versuche hier nicht zu raten!<br />
+  verlässlichen Quelle (üblicherweise der offiziellen Homepage). Versuche hier, nicht zu bewerten!<br />
   Wenn die offizielle Quelle diese Informationen nicht als natürliche Zahlen angibt, sollten sie gerundet
-  werden, um in der Datenbank verwendet zu werden. Wenn die offiziellen Informationen nicht
+  werden, um in der Datenbank verwendet werden zu können. Wenn die offiziellen Informationen nicht
   im metrischen System angegeben sind, konvertiere diese Zahlen und runde sie, bevor du sie
   eingibst.
  </dd><dt>Größe</dt><dd>
-  Größe des Charakters, in cm. Die obige Bemerkung über natürliche Zahlen und das metrische
+  Größe des Charakters in cm. Die obige Bemerkung über natürliche Zahlen und das metrische
   System gelten auch hier.
  </dd><dt>Gewicht</dt><dd>
-  Gewicht des Charakters, in kg. Die obige Bemerkung über natürliche Zahlen und das metrische
+  Gewicht des Charakters in kg. Die obige Bemerkung über natürliche Zahlen und das metrische
   System gelten auch hier.
  </dd><dt>Bluttyp</dt><dd>
   Bluttyp, falls bekannt und anwendbar. Dies macht wenig Sinn, wenn der Charakter nicht
@@ -89,10 +131,10 @@
  <li>Das Bild muss jugendfrei sein, laut den <a href="/d2#4">VN
   Bild Richtlinien</a>. Du kannst kreative Zensur hinzufügen, um ein Bild jugendfrei
   zu machen, wenn sonst kein Bild für den Charakter verfügbar ist.</li>
- <li>Das Bild muss offiziell sein, z. B. muss es von der VN selbst extrahiert sein oder von
-  der offiziellen Homepage. Fan Art ist definitiv nicht erlaubt!</li>
- <li>Das Bild sollte die übliche Kleidung und Gesichtsausdruck des Charakters zeigen, die
-  er am häufigsten im Spiel trägt.</li>
+ <li>Das Bild muss offiziell sein. Das heißt, es muss von der VN selbst extrahiert sein oder von
+  der offiziellen Homepage. Fanart ist definitiv nicht erlaubt!</li>
+ <li>Das Bild sollte die übliche Kleidung und den üblichen Gesichtsausdruck des Charakters zeigen, so
+  wie er am häufigsten im Spiel zu sehen ist.</li>
  <li>Bilder von In-Game-Sprites (tachi-e) werden bevorzugt; ansonsten sind
   Ausschnitte von CGs auch erlaubt.</li>
  <li>Das Bild muss zumindest den Kopf (unter der Annahme, dass der Charakter einen hat) und
@@ -100,32 +142,32 @@
   Allgemeinen nicht so interessant und führen dazu, dass das gesamte Bild drastisch geschrumpft wird.</li>
  <li>Das Bild wird auf 256x300 geschnitten, aber es wird empfohlen, dies vorher manuell zu
   tun, um sicherzustellen, dass alle Charakterbilder der gleichen VN die gleiche Breite haben.
-  Diese Einheitlichkeit sieht in der Charakterliste auf der VN Seite besser aus.</li>
+  Diese Einheitlichkeit sieht in der Charakterliste auf der VN-Seite besser aus.</li>
 </ul>
 
 
 :SUB:Eigenschaften
 <p>
- Siehe die <a href="/d10">Tags &amp; Eigenschaften</a> Seite für die Richtlinien von Eigenschaften.
+ Siehe die <a href="/d10">Schlagworte und Eigenschaften</a> Seite für die Richtlinien von Eigenschaften.
 </p>
 
 
 :SUB:Visual Novels
 <p>
- Ein Charakter sollte immer mit mindestens einem Visual Novel Eintrag verknüpft sein,
+ Ein Charakter sollte immer mit mindestens einem Visual-Novel-Eintrag verknüpft sein,
  kann aber auch mit mehreren Visual Novels verlinkt sein, wenn er auch dort auftritt.<br />
  Wenn ein Charakter in allen Veröffentlichungen der Visual Novel auftritt, mit
  der möglichen Ausnahme der Testversion, dann behalte einfach eine Veröffentlichung
- und lasse es auf "Alle / andere". Gib in anderen Situationen explizit an, in welchen Veröffentlichungen
+ und lasse es auf „Alle/andere“. Gib in anderen Situationen explizit an, in welchen Veröffentlichungen
  der Charakter auftritt und welche Rolle er dort hat. Mehrere Veröffentlichungen können
- hinzugefügt werden mit der gleichen Rolle und Spoiler Informationen.<br />
+ hinzugefügt werden mit der gleichen Rolle und Spoiler-Informationen.<br />
  Wenn die Rolle eines Charakters oder die ganze Existenz des Charakters in der Visual Novel
  ein Spoiler ist, bitte markiere sie als solche.<br />
  Die folgenden Rollen sind verfügbar:
 </p>
 <dl>
  <dt>Protagonist</dt><dd>
-  Der (oder "ein") Protagonist. Die Person, durch die die Geschichte erzählt wird. Merke,
+  Der (oder „ein“) Protagonist. Die Person, durch die die Geschichte erzählt wird. Merke,
   dass ein Großteil der Geschichte durch die Augen des Charakters erzählt werden muss, um
   als Protagonist zu gelten. Einige Visual Novels wechseln Perspektiven für eine (relativ) kurze
   Zeit, aber dies mach den Charakter nicht immer zu einem Protagonisten.
