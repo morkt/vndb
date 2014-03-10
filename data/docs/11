@@ -463,6 +463,27 @@ however still required.<br />
    often.
   </td>
  </tr>
+ <tr class="odd">
+  <td>popularity</td>
+  <td>stats</td>
+  <td>number</td>
+  <td>no</td>
+  <td>Between 0 (unpopular) and 100 (most popular).</td>
+ </tr>
+ <tr>
+  <td>rating</td>
+  <td>stats</td>
+  <td>number</td>
+  <td>no</td>
+  <td>Bayesian rating, between 1 and 10.</td>
+ </tr>
+ <tr class="odd">
+  <td>votecount</td>
+  <td>stats</td>
+  <td>integer</td>
+  <td>no</td>
+  <td>Number of votes.</td>
+ </tr>
 </table>
 <p>Sorting is possible on the 'id', 'title' and 'released' fields.</p><br />
 
@@ -1404,6 +1425,7 @@ however still required.<br />
  <li>Added 'set' command, with types: votelist, vnlist and wishlist</li>
  <li>New error id: 'settype'</li>
  <li>Added "tags" flag and member to "get vn"</li>
+ <li>Added "stats" flag to "get vn"</li>
 </ul>
 <b>2.15</b>
 <ul>

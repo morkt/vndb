@@ -463,11 +463,12 @@ sub get_vn {
   my $get = $_[ARG0];
 
   return cerr $get->{c}, getinfo => "Unknown info flag '$_'", flag => $_
-    for (grep !/^(basic|details|anime|relations|tags)$/, @{$get->{info}});
+    for (grep !/^(basic|details|anime|relations|tags|stats)$/, @{$get->{info}});
 
   my $select = 'v.id, v.latest';
   $select .= ', vr.title, vr.original, v.c_released, v.c_languages::text[], v.c_olang::text[], v.c_platforms' if grep /basic/, @{$get->{info}};
   $select .= ', vr.image, vr.img_nsfw, vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai' if grep /details/, @{$get->{info}};
+  $select .= ', v.c_popularity, v.c_rating, v.c_votecount' if grep /stats/, @{$get->{info}};
 
   my @placeholders;
   my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
@@ -543,6 +544,11 @@ sub get_vn_res {
           renai     => delete($_->{l_renai})  ||undef
         };
         $_->{image} = $_->{image} ? sprintf '%s/cv/%02d/%d.jpg', $VNDB::S{url_static}, $_->{image}%100, $_->{image} : undef;
+      }
+      if(grep /stats/, @{$get->{info}}) {
+        $_->{popularity} = 1 * sprintf '%.2f', 100*delete($_->{c_popularity}) || 0;
+        $_->{rating}     = 1 * sprintf '%.2f', 0.1*delete($_->{c_rating}) || 0;
+        $_->{votecount}  = 1 * delete $_->{c_votecount};
       }
     }
     $get->{more} = pop(@$res)&&1 if @$res > $get->{opt}{results};
