@@ -546,8 +546,8 @@ sub get_vn_res {
         $_->{image} = $_->{image} ? sprintf '%s/cv/%02d/%d.jpg', $VNDB::S{url_static}, $_->{image}%100, $_->{image} : undef;
       }
       if(grep /stats/, @{$get->{info}}) {
-        $_->{popularity} = 1 * sprintf '%.2f', 100*delete($_->{c_popularity}) || 0;
-        $_->{rating}     = 1 * sprintf '%.2f', 0.1*delete($_->{c_rating}) || 0;
+        $_->{popularity} = 1 * sprintf '%.2f', 100*(delete $_->{c_popularity} or 0);
+        $_->{rating}     = 1 * sprintf '%.2f', 0.1*(delete $_->{c_rating} or 0);
         $_->{votecount}  = 1 * delete $_->{c_votecount};
       }
     }
