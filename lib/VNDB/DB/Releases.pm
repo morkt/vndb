@@ -44,14 +44,14 @@ sub dbReleaseGet {
       'rr.id IN(SELECT irl.rid FROM releases_lang irl JOIN releases ir ON ir.latest = irl.rid WHERE irl.lang IN(!l))' => [ ref $o{lang} ? $o{lang} : [ $o{lang} ] ] ) : (),
     $o{olang} ? (
       'rr.id IN(SELECT irv.rid FROM releases_vn irv JOIN releases ir ON ir.latest = irv.rid JOIN vn v ON irv.vid = v.id WHERE v.c_olang && ARRAY[!l]::language[])' => [ ref $o{olang} ? $o{olang} : [ $o{olang} ] ] ) : (),
-    $o{plat} ? (join(' OR ',
+    $o{plat} ? ('('.join(' OR ',
       grep(/^unk$/, @{$o{plat}}) ? 'NOT EXISTS(SELECT 1 FROM releases_platforms irp WHERE irp.rid = r.latest)' : (),
       grep(!/^unk$/, @{$o{plat}}) ? 'rr.id IN(SELECT irp.rid FROM releases_platforms irp JOIN releases ir ON ir.latest = irp.rid WHERE irp.platform IN(!l))' : (),
-      ), [ [ grep !/^unk$/, @{$o{plat}} ] ]) : (),
-    $o{med} ? (join(' OR ',
+      ).')', [ [ grep !/^unk$/, @{$o{plat}} ] ]) : (),
+    $o{med} ? ('('.join(' OR ',
       grep(/^unk$/, @{$o{med}}) ? 'NOT EXISTS(SELECT 1 FROM releases_media irm WHERE irm.rid = r.latest)' : (),
       grep(!/^unk$/, @{$o{med}}) ? 'rr.id IN(SELECT irm.rid FROM releases_media irm JOIN releases ir ON ir.latest = irm.rid WHERE irm.medium IN(!l))' : ()
-      ), [ [ grep(!/^unk$/, @{$o{med}}) ] ]) : (),
+      ).')', [ [ grep(!/^unk$/, @{$o{med}}) ] ]) : (),
   );
 
   if($o{search}) {
