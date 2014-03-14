@@ -3909,73 +3909,36 @@ it : Cerca!
 en : VNDB.org strives to be a comprehensive database for information about visual novels.[br]
      This website is built as a wiki, meaning that anyone can freely add and contribute information
      to the database, allowing us to create the largest, most accurate and most up-to-date visual novel
-     database on the web.[br]
-     Registered users are also able to keep track of a personal list of games they want to play or have finished
-     and they can vote on all visual novels.[br][br]
-     Feel free to [url,/v/all,browse around], [url,/u/register,register an account]
-     or to participate in the discussions about visual novels or VNDB on our [url,/t,discussion board].
+     database on the web.
 ru : VNDB.org стремится быть наиболее полной базой данных с информацией по интерактивным новеллам.[br]
      Данный сайт создан в стиле вики, то есть любой желающий может добавлять сюда информацию, тем самым позволяя
-     нам создать крупнейшую, наиболее точную и самую актуальную базу по интерактивным новеллам в сети.[br]
-     Зарегистрированные пользователи могут составлять списки желаемых и пройденных игр, а так же влиять на
-     их рейтинг.[br][br]
-     Если хотите, можете [url,/v/all,побродить по сайту], [url,/u/register,создать учётную запись] или
-     поучаствовать в обсуждении новелл (либо самой VNDB) на нашем [url,/t,форуме] (убедительная просьба писать
-     только на английском).
+     нам создать крупнейшую, наиболее точную и самую актуальную базу по интерактивным новеллам в сети.
 cs : VNDB.org se snaží být srozumitelnou databází informací o vizuálních novelách.[br]
      Tato stránka funguje na principu wikipedie, tedy kdokoliv může volně přispívat informacemi
      do databáze, což nám umožňuje tvořit největší, nejpřesnější a nejaktuálnější databázi
-     vizuálních novel na webu.[br]
-     Registrovaní uživatelé si také mohou vytvořit osobní list her, které chtějí hrát nebo dohráli
-     a mohou hodnotit všechny vizuální novely.[br][br]
-     Můžete jen tak [url,/v/all,brouzdat kolem], [url,/u/register,zaregistrovat si účet]
-     nebo se účastnit diskusí o vizuálních novelách nebo VNDB na našem [url,/t,diskusním boardu].
+     vizuálních novel na webu.
 hu : A VNDB.org arra törekszik, hogy egy átfogó és információ dús adatbázist hozzon létre visual novelekről.[br]
      Ez az oldal úgy van felépítve mint egy wiki, s annak érdekében, hogy ez legyen a legnagyobb, legpontosabb
-     és napra kész visual novel adatbázis a weben, mindenki szabadon hozzájárulhat a tartalom bővítéséhez.[br]
-     Regisztrált felhasználók ugyanakkor listát vezethetnek azokról a játékokról amelyeket már játszottak,játszanak
-     vagy épp játszani szeretnének, valamint szavazhatnak is az oldalon tálalható bármely novelre.[br][br]
-     Bátran, [url,/v/all,nézz körül], [url,/u/register,regisztrálj az oldalra] vagy vegyél részt a visual
-     novelek és a VNDB-ről szóló eszmecserékbe a [url,/t,fórumon].
+     és napra kész visual novel adatbázis a weben, mindenki szabadon hozzájárulhat a tartalom bővítéséhez.
 nl : VNDB.org is een uitgebreide database voor informatie over visual novels.[br]
      Deze website is gemaakt als een wiki, wat inhoudt dat iedereen de vrijheid
      heeft om informatie aan de database toe te voegen en te verbeteren, zodat
      we de grootste, naukeurigste en meest up-to-date visual novel database op het
-     internet kunnen maken.[br]
-     Geregistreerde gebruikers kunnen tevens een lijst bijhouden met visual novels
-     die ze nog willen spelen of al gespeeld hebben, en kunnen hier op stemmen.[br]
-     [url,/v/all,Browse] gerust eens rond, [url,/u/register,maak een account aan],
-     of doe mee aan de discussies op ons [url,/t,forum].
+     internet kunnen maken.
 de : Das Ziel von VNDB.org ist es, eine umfangreiche Datenbank für Informationen rund um Visual Novels zu erstellen.[br]
-     Die Seite ist wie ein Wiki aufgebaut, das heißt, dass jeder Informationen uneingeschränkt in die Datenbank einfügen oder verändern kann, was uns hilft, die größte, genauste und aktuellste Visual Novel Datenbank im Internet zu erstellen.[br]
-     Angemeldete Benutzer können außerdem eine persönliche Liste der Spiele verwalten, die sie spielen möchten oder bereits gespielt haben. Außerdem können sie alle Visual Novels bewerten.[br][br]
-     Du kannst dich gerne [url,/v/all,umsehen], [url,/u/register,anmelden] oder an den Diskussionen über Visual Novels oder die VNDB in unserem [url,/t,Forum] teilnehmen.
+     Die Seite ist wie ein Wiki aufgebaut, das heißt, dass jeder Informationen uneingeschränkt in die Datenbank einfügen oder verändern kann, was uns hilft, die größte, genauste und aktuellste Visual Novel Datenbank im Internet zu erstellen.
 es : VNDB.org trata de ser una base de datos de informaciones sobre las novelas visuales.[br]
      Esta página esta hecho como una wiki, es decir que cualquiera puede libremente, añadir y contribuir a la página,
-     permitiéndonos crear la más grande, precisa y actualizada base de datos sobre las novelas visuales en la web.[br]
-     Los usuarios registrados también pueden tener una lista de juegos que quieran jugar o que hayan terminado
-     y pueden votar cada novela visual.[br][br]
-     Sientéte libre de [url,/v/all,navegar], [url,/u/register,abrirte una cuenta]
-     o de participar en debates sobre las novelas o sobre VNDB en nuestro [url,/t,foro]
+     permitiéndonos crear la más grande, precisa y actualizada base de datos sobre las novelas visuales en la web.
 tr : VNDB.org görsel romanlara dair kapsamlı bir veritabanı oluşturmayı amaçlamaktadır.[br]
-     Bu site bir wiki olarak kurulmuştur, diğer bir deyişle veritabanına herkes özgürce katılımda bulunabilir ve böylelikle internetteki en doğru ve en güncel görsel roman veritabanını oluşturmamıza olanak sağlar.[br]
-     Kayıtlı kullanıcılar ek olarak, oynamak istedikleri ya da bitirdikleri oyunlara dair kişisel listelerini tutabilir ve tüm görsel romanları oylayabilir.[br][br]
-     Etrafta [url,/v/all,gezinmekten], siteye [url,/u/register,kaydolmaktan] ve [url,/t,tartışma panosunda] görsel romanlar veya VNDB hakkında görüş bildirmekten çekinmeyin.
+     Bu site bir wiki olarak kurulmuştur, diğer bir deyişle veritabanına herkes özgürce katılımda bulunabilir ve böylelikle internetteki en doğru ve en güncel görsel roman veritabanını oluşturmamıza olanak sağlar.
 uk : VNDB.org прагне бути всеосяжною базою даних для отримання інформації про візуальні новели.[br]
      Цей сайт побудований як Вікі, що означає, що кожен може вільно додавати й ділитися інформацією
      у базі даних, а це, в свою чергу, дозволяє нам створити найбільшу, найточнішу й найактуальнішу базу
-     даних по візуальним новелам в інтернеті.[br]
-     Зареєстровані користувачі також мають можливість складати власні списки новел, у які вони грали або
-     хочуть зіграти, а також проголосувати за будь-яку візуальну новелу.[br][br]
-     Не вагайтеся, [url,/v/all,поблукайте по сайту], [url,/u/register,реєструйтеся]
-     чи візьміть участь в обговореннях візуальних новел чи VNDB на наших [url,/t,дошках обговорення].
+     даних по візуальним новелам в інтернеті.
 it : VNDB.org ambisce a diventare una banca dati esaustiva di informazioni sulle visual novel.[br]
      Questo sito è costruito su una base wiki quindi chiunque può aggiungere e contribuire informazioni liberamente,
-     permettendoci di creare la più grande, accurata e aggiornata banca dati di visual novel nel web.[br]
-     Gli utenti registrati possono anche tenere una lista personale di giochi che vogliono giocare o che hanno già finito
-     e votare tutte le visual novel.[br][br]
-     Sei libero di [url,/v/all,curiosare in giro], [url,/u/register,registrarti]
-     o partecipare alle discussioni su visual novel o VNDB nella nostra [url,/t,area messaggi].
+     permettendoci di creare la più grande, accurata e aggiornata banca dati di visual novel nel web.
 
 
 :_home_recentchanges
