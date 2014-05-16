@@ -40,10 +40,11 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown log server_error client_connect client_error client_input
-        login login_res get_results get_vn get_vn_res get_release get_release_res
-        get_producer get_producer_res get_character get_character_res get_votelist
-        get_votelist_res get_vnlist get_vnlist_res get_wishlist get_wishlist_res
-        set_votelist set_vnlist set_wishlist set_return admin
+        login login_res dbstats dbstats_res get_results get_vn get_vn_res
+        get_release get_release_res get_producer get_producer_res get_character
+        get_character_res get_votelist get_votelist_res get_vnlist
+        get_vnlist_res get_wishlist get_wishlist_res set_votelist set_vnlist
+        set_wishlist set_return admin
       |],
     ],
     heap => {
@@ -344,6 +345,12 @@ sub client_input {
   return $_[KERNEL]->yield(login => $c, $arg) if $cmd eq 'login';
   return cerr $c, needlogin => 'Not logged in.' if !$c->{client};
 
+  # handle dbstats command
+  if($cmd eq 'dbstats') {
+    return cerr $c, parse => 'Invalid arguments to get command' if @$arg > 0;
+    return $_[KERNEL]->yield(dbstats => $c);
+  }
+
   # handle get command
   if($cmd eq 'get') {
     return cerr $c, parse => 'Invalid arguments to get command' if @$arg < 3 || @$arg > 4
@@ -441,6 +448,24 @@ sub login_res { # num, res, [ c, arg ]
   $c->{wheel}->put(['ok']);
   $_[KERNEL]->yield(log => $c,
     'Successful login by %s (%s) using client "%s" ver. %s', $arg->{username}, $c->{uid}, $arg->{client}, $arg->{clientver});
+}
+
+
+sub dbstats {
+  $_[KERNEL]->post(pg => query => "SELECT section, count FROM stats_cache",
+    undef, 'dbstats_res', $_[ARG0]);
+}
+
+
+sub dbstats_res {
+  my($num, $res, $c, $time) = (@_[ARG0..$#_]);
+  $c->{throttle}[1] += $time*$_[HEAP]{throttle_sql}[0];
+  my %stats = map {
+    $_->{section} =~ s/^threads_//;
+    ($_->{section}, 1*$_->{count})
+  } @$res;
+  $c->{wheel}->put([dbstats => \%stats]);
+  $_[KERNEL]->yield(log => $c, "T:%4.0fms  Q:1  R:%02d dbstats", $time*1000, $num);
 }
 
 

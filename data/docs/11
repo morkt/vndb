@@ -243,6 +243,32 @@ however still required.<br />
 </p>
 
 
+:SUB:The 'dbstats' command
+<p>
+ This command gives the global database statistics that are visible in the main
+ menu of the site. The command is simply:
+</p>
+<pre>
+ dbstats
+</pre>
+<p>And the response has the following format:</p>
+<pre>
+ dbstats <b class="standout">stats</b>
+</pre>
+<p>Where <i>stats</i> is a JSON object with integer values. Example response:</p>
+<pre>
+ dbstats {"users":49084,
+          "threads":3998,
+          "tags":1627,
+          "releases":28071,
+          "producers":3456,
+          "chars":14046,
+          "posts":52470,
+          "vn":13051,
+          "traits":1272}
+</pre>
+
+
 :SUB:The 'get' command
 <p>
  This command is used to fetch data from the database. It accepts 4 arguments:
@@ -1421,6 +1447,7 @@ however still required.<br />
 </p>
 <b>2.23</b> <b class="grayedout">(Not officially "released" yet, but you can use these additions already)</b>
 <ul>
+ <li>Added new 'dbstats' command</li>
  <li>Added new 'get' types: character, votelist, vnlist and wishlist</li>
  <li>Added 'set' command, with types: votelist, vnlist and wishlist</li>
  <li>New error id: 'settype'</li>
