@@ -8565,7 +8565,7 @@ it : Peso: [_1]kg
 
 :_charp_bday
 en : Birthday
-ru : День рождания
+ru : День рождения
 cs : Narozeniny
 hu : Születésnap
 nl : Verjaardag
