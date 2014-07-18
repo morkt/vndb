@@ -507,6 +507,9 @@ sub get_vn {
       [ undef,   "vr.original :op: ''", {qw|= =  != <>|} ],
       [ str   => 'vr.original :op: :value:', {qw|= =  != <>|} ],
       [ str   => 'vr.original ILIKE :value:', {'~',1}, process => \'like' ]
+    ], [ 'firstchar',
+      [ undef,   '(:op: ((ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)))', {'=', '', '!=', 'NOT'} ],
+      [ str   => 'LOWER(SUBSTR(vr.title, 1, 1)) :op: :value:' => {qw|= = != <>|}, process => sub { shift =~ /^([a-z])$/ ? $1 : \'Invalid character' } ],
     ], [ 'released',
       [ undef,   'v.c_released :op: 0', {qw|= =  != <>|} ],
       [ str   => 'v.c_released :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, process => \&parsedate ],

@@ -543,6 +543,17 @@ however still required.<br />
   <td>&nbsp;</td>
  </tr>
  <tr>
+  <td>firstchar</td>
+  <td>null<br />string</td>
+  <td>= !=<br />= !=</td>
+  <td>
+    Filter by the first character of the title, similar to the
+    <a href="http://vndb.org/v/all">VN browser interface</a>. The character
+    must either be a lowercase 'a' to 'z', or null to match all titles not
+    starting with an alphabetic character.
+   </td>
+ </tr>
+ <tr class="odd">
   <td>released</td>
   <td>null<br />date (string)</td>
   <td>= !=<br />= != &gt; &gt;= &lt; &lt;=</td>
@@ -551,25 +562,25 @@ however still required.<br />
    you want, use ranges instead, e.g. (released &gt; "2008" and released &lt;= "2009").
   </td>
  </tr>
- <tr class="odd">
+ <tr>
   <td>platforms</td>
   <td>null<br />string<br />array of strings</td>
   <td><br />= !=</td>
   <td>&nbsp;</td>
  </tr>
- <tr>
+ <tr class="odd">
   <td>languages</td>
   <td>null<br />string<br />array of strings</td>
   <td><br />= !=</td>
   <td>&nbsp;</td>
  </tr>
- <tr class="odd">
+ <tr>
   <td>orig_lang</td>
   <td>string<br />array of strings</td>
   <td>= !=</td>
   <td>&nbsp;</td>
  </tr>
- <tr>
+ <tr class="odd">
   <td>search</td>
   <td>string</td>
   <td>~</td>
@@ -1453,6 +1464,7 @@ however still required.<br />
  <li>New error id: 'settype'</li>
  <li>Added "tags" flag and member to "get vn"</li>
  <li>Added "stats" flag to "get vn"</li>
+ <li>Added "firstchar" filter to "get vn"</li>
 </ul>
 <b>2.15</b>
 <ul>
