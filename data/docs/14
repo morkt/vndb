@@ -13,7 +13,7 @@
 <p>
  <b>URL:</b> <a href="http://vndb.org/api/tags.json.gz">http://vndb.org/api/tags.json.gz</a><br />
  <b>Updated:</b> Every 24 hours.<br />
- <b>Size:</b> ~165 KiB compressed, ~580 KiB uncompressed.<br />
+ <b>Size:</b> ~190 KiB compressed, ~650 KiB uncompressed.<br />
  This dump includes information about all (approved) VN tags in the JSON
  format. The top-level type is an array of tags, and each tag is represented as
  an object with the following members:
@@ -84,7 +84,7 @@
 <p>
  <b>URL:</b> <a href="http://vndb.org/api/traits.json.gz">http://vndb.org/api/traits.json.gz</a><br />
  <b>Updated:</b> Every 24 hours.<br />
- <b>Size:</b> ~190 KiB compressed, ~610 KiB uncompressed.<br />
+ <b>Size:</b> ~220 KiB compressed, ~680 KiB uncompressed.<br />
  This dump includes information about all (approved) character traits in the
  JSON format. The top-level type is an array of traits, and each trait is
  represented as an object with the following members:

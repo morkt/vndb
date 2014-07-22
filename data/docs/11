@@ -64,7 +64,7 @@ server resources and prevent abuse of this service.</p>
 <br />
 <b>Connection info:</b>
 <dl>
- <dt>Host</dt><dd>api.vndb.org (primary), beta.vndb.org (available for testing)</dd>
+ <dt>Host</dt><dd>api.vndb.org</dd>
  <dt>Port (tcp)</dt><dd>19534 ('VN')</dd>
 </dl>
 
