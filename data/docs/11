@@ -1123,6 +1123,12 @@ however still required.<br />
   <td>~</td>
   <td>Not an actual field. Performs a search on the name, original and aliases fields.</td>
  </tr>
+ <tr class="odd">
+  <td>vn</td>
+  <td>id</td>
+  <td>=</td>
+  <td>Find characters linked to the given visual novel ID.</td>
+ </tr>
 </table>
 
 
@@ -1465,6 +1471,7 @@ however still required.<br />
  <li>Added "tags" flag and member to "get vn"</li>
  <li>Added "stats" flag to "get vn"</li>
  <li>Added "firstchar" filter to "get vn"</li>
+ <li>Added "vn" filter to "get character"</li>
 </ul>
 <b>2.15</b>
 <ul>

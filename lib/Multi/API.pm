@@ -925,7 +925,9 @@ sub get_character {
       [ str   => 'cr.original ILIKE :value:', {'~',1}, process => \'like' ]
     ], [ 'search',
       [ str   => '(cr.name ILIKE :value: OR cr.original ILIKE :value: OR cr.alias ILIKE :value:)', {'~',1}, process => \'like' ],
-    ],
+    ], [ 'vn',
+      [ 'int' => 'cr.id IN(SELECT cv.cid FROM chars_vns cv WHERE cv.vid = :value:)', {'=',1}, range => [1,1e6] ],
+    ]
     # TODO: More filters?
   ];
   my $last = sqllast $get, 'id', {
