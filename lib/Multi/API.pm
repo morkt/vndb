@@ -375,7 +375,6 @@ sub client_input {
       opt => $opt,
     );
     return cerr $c, 'gettype', "Unknown get type: '$arg->[0]'" if $arg->[0] !~ /^(?:vn|release|producer|character|votelist|vnlist|wishlist)$/;
-    return cerr $c, needlogin => 'Not logged in as a user' if $arg->[0] =~ /^list$/ && !$c->{uid};
     return $_[KERNEL]->yield("get_$arg->[0]", \%obj);
   }
 
@@ -1002,16 +1001,21 @@ sub get_votelist {
   my $select = "vid AS vn, vote, extract('epoch' from date) AS added";
 
   my @placeholders;
+  my $uid;
   my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
     [ 'uid',
-      [ 'int' => 'uid :op: :value:', {qw|= =|}, process => sub { $_[0] eq '0' ? $get->{c}{uid} : \'uid filter must be 0' } ],
+      [ 'int' => 'uid :op: :value:', {qw|= =|}, range => [0,1e6], process => sub { $uid = $_[0]; $_[0] || $get->{c}{uid} || 0 } ],
     ]
   ];
+
   my $last = sqllast $get, 'vn', { vn => 'vid %s' };
   return if !$where || !$last;
 
+  return cerr $get->{c}, needlogin => 'Not logged in as a user' if !$uid && !$get->{c}{uid};
+  $where = "($where) AND NOT EXISTS(SELECT 1 FROM users_prefs WHERE uid = v.uid AND key = 'hide_list')" if $uid;
+
   $_[KERNEL]->post(pg => query =>
-    qq|SELECT $select FROM votes WHERE $where $last|,
+    qq|SELECT $select FROM votes v WHERE $where $last|,
     \@placeholders, 'get_votelist_res', $get);
 }
 
@@ -1043,16 +1047,20 @@ sub get_vnlist {
   my $select = "vid AS vn, status, extract('epoch' from added) AS added, notes";
 
   my @placeholders;
+  my $uid;
   my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
     [ 'uid',
-      [ 'int' => 'uid :op: :value:', {qw|= =|}, process => sub { $_[0] eq '0' ? $get->{c}{uid} : \'uid filter must be 0' } ],
+      [ 'int' => 'uid :op: :value:', {qw|= =|}, range => [0,1e6], process => sub { $uid = $_[0]; $_[0] || $get->{c}{uid} || 0 } ],
     ]
   ];
   my $last = sqllast $get, 'vn', { vn => 'vid %s' };
   return if !$where || !$last;
 
+  return cerr $get->{c}, needlogin => 'Not logged in as a user' if !$uid && !$get->{c}{uid};
+  $where = "($where) AND NOT EXISTS(SELECT 1 FROM users_prefs WHERE uid = v.uid AND key = 'hide_list')" if $uid;
+
   $_[KERNEL]->post(pg => query =>
-    qq|SELECT $select FROM vnlists WHERE $where $last|,
+    qq|SELECT $select FROM vnlists v WHERE $where $last|,
     \@placeholders, 'get_vnlist_res', $get);
 }
 
@@ -1085,16 +1093,20 @@ sub get_wishlist {
   my $select = "vid AS vn, wstat AS priority, extract('epoch' from added) AS added";
 
   my @placeholders;
+  my $uid;
   my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
     [ 'uid',
-      [ 'int' => 'uid :op: :value:', {qw|= =|}, process => sub { $_[0] eq '0' ? $get->{c}{uid} : \'uid filter must be 0' } ],
+      [ 'int' => 'uid :op: :value:', {qw|= =|}, range => [0,1e6], process => sub { $uid = $_[0]; $_[0] || $get->{c}{uid} || 0 } ],
     ]
   ];
   my $last = sqllast $get, 'vn', { vn => 'vid %s' };
   return if !$where || !$last;
 
+  return cerr $get->{c}, needlogin => 'Not logged in as a user' if !$uid && !$get->{c}{uid};
+  $where = "($where) AND NOT EXISTS(SELECT 1 FROM users_prefs WHERE uid = w.uid AND key = 'hide_list')" if $uid;
+
   $_[KERNEL]->post(pg => query =>
-    qq|SELECT $select FROM wlists WHERE $where $last|,
+    qq|SELECT $select FROM wlists w WHERE $where $last|,
     \@placeholders, 'get_wishlist_res', $get);
 }
 

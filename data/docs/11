@@ -1127,7 +1127,9 @@ however still required.<br />
   <td>vn</td>
   <td>id</td>
   <td>=</td>
-  <td>Find characters linked to the given visual novel ID.</td>
+  <td>Find characters linked to the given visual novel ID. Note that this may
+    also include characters that are normally hidden by spoiler settings.
+  </td>
  </tr>
 </table>
 
@@ -1179,13 +1181,16 @@ however still required.<br />
   <td>uid</td>
   <td>integer</td>
   <td>=</td>
-  <td>This filter must be present, and currently must be '0' (= logged in user)</td>
+  <td>This filter must be present. The special value '0' is recognized as the currently logged in user.</td>
  </tr>
 </table>
 <p>
  Note: It's possible that a user has voted on a VN that has been deleted. The
  vote is still included this list, but a 'get vn' command on its id will not
- return anything.
+ return anything.<br />
+ Note#2: This command will not return any results for users who have their vote
+ list hidden from the public in their preferences, except when the user itself
+ has logged into the API and the uid filter is 0.
 </p>
 
 :SUBSUB:get vnlist
@@ -1245,7 +1250,7 @@ however still required.<br />
   <td>This filter must be present, and currently must be '0' (= logged in user)</td>
  </tr>
 </table>
-<p>The note about deleted VNs for 'get votelist' also applies here.</p>
+<p>The notes mentioned under 'get votelist' also apply here.</p>
 
 :SUBSUB:get wishlist
 <p>Provides access to the wish list of the logged in user. As such, this command is only available when logged in as a user.</p>
@@ -1297,7 +1302,7 @@ however still required.<br />
   <td>This filter must be present, and currently must be '0' (= logged in user)</td>
  </tr>
 </table>
-<p>The note about deleted VNs for 'get votelist' also applies here.</p>
+<p>The notes mentioned under 'get votelist' also apply here.</p>
 
 
 :SUB:The 'set' command
