@@ -52,11 +52,8 @@ sub shutdown {
 
 
 sub set_daily {
-  # run daily each day at 0:00 GMT
-  # (GMT because we're calculating on the UNIX timestamp, I can easily add an
-  #  offset if necessary, but it doesn't really matter what time this cron
-  #  runs, as long as it's run on a daily basis)
-  $_[KERNEL]->alarm(daily => int((time+3)/86400+1)*86400);
+  # run daily each day at 12:00 GMT
+  $_[KERNEL]->alarm(daily => int((time+3)/86400+1)*86400 + 12*3600);
 }
 
 
@@ -72,11 +69,11 @@ sub daily {
 
 
 sub set_monthly {
-  # Calculate the UNIX timestamp of 0:00 GMT of the first day of the next month.
+  # Calculate the UNIX timestamp of 12:00 GMT of the first day of the next month.
   # We do this by simply incrementing the timestamp with one day and checking gmtime()
   # for a month change. This might not be very reliable, but should be enough for
   # our purposes.
-  my $nextday = int((time+3)/86400+1)*86400;
+  my $nextday = int((time+3)/86400+1)*86400 + 12*3600;
   my $thismonth = (gmtime)[5]*100+(gmtime)[4]; # year*100 + month, for easy comparing
   $nextday += 86400 while (gmtime $nextday)[5]*100+(gmtime $nextday)[4] <= $thismonth;
   $_[KERNEL]->alarm(monthly => $nextday);
