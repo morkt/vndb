@@ -351,6 +351,18 @@ tr : Portekizce (Portekiz)
 uk : Португальська (Португалія)
 it : Portoghese (Portogallo)
 
+:_lang_ro
+en : Romanian
+ru*:
+cs*:
+hu*:
+nl : Roemeens
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_lang_ru
 en : Russian
 ru : Русский

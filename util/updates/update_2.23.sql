@@ -70,3 +70,6 @@ ALTER TABLE screenshots DROP COLUMN processed;
 
 -- New resolution has been added at index 8
 UPDATE releases_rev SET resolution = resolution + 1 WHERE resolution >= 8 AND NOT EXISTS(SELECT 1 FROM releases_rev WHERE resolution >= 14);
+
+-- New language: Romanian
+ALTER TYPE language ADD VALUE 'ro' AFTER 'pt-br';
