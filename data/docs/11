@@ -51,7 +51,8 @@ server resources and prevent abuse of this service.</p>
   Server will reply with a 'throttled' error with type="sql" upon reaching
   this limit.
  </li>
- <li>Each command returns at most 25 results.</li>
+ <li>Each command returns at most 25 results, with the exception of get
+   votelist/vnlist/wishlist, which returns at most 100 results.</li>
 </ul>
 <p>
  These limits may sound strict, but in practice you won't have to worry much

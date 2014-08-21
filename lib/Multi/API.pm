@@ -51,7 +51,8 @@ sub spawn {
       port => 19534,
       logfile => "$VNDB::M{log_dir}/api.log",
       conn_per_ip => 5,
-      max_results => 25,
+      max_results => 25, # For get vn/release/producer/character
+      max_results_lists => 100, # For get votelist/vnlist/wishlist
       default_results => 10,
       tcp_keepalive => [ 120, 60, 3 ], # time, intvl, probes
       throttle_cmd => [ 6, 100 ], # interval between each command, allowed burst
@@ -360,7 +361,8 @@ sub client_input {
     return cerr $c, badarg => 'Invalid argument for the "page" option', field => 'page'
       if defined($opt->{page}) && (ref($opt->{page}) || $opt->{page} !~ /^\d+$/ || $opt->{page} < 1 || $opt->{page} > 1e3);
     return cerr $c, badarg => 'Invalid argument for the "results" option', field => 'results'
-      if defined($opt->{results}) && (ref($opt->{results}) || $opt->{results} !~ /^\d+$/ || $opt->{results} < 1 || $opt->{results} > $_[HEAP]{max_results});
+      if defined($opt->{results}) && (ref($opt->{results}) || $opt->{results} !~ /^\d+$/ || $opt->{results} < 1
+          || $opt->{results} > ($arg->[0] =~ /list$/ ? $_[HEAP]{max_results_lists} : $_[HEAP]{max_results}));
     return cerr $c, badarg => '"reverse" option must be boolean', field => 'reverse'
       if defined($opt->{reverse}) && !JSON::XS::is_bool($opt->{reverse});
     return cerr $c, badarg => '"sort" option must be a string', field => 'sort'
