@@ -146,3 +146,17 @@
  <a href="/i112">i112</a> is often displayed as "Eyes > Green", to
  differentiate it with <a href="/i50">i50</a>, which is "Hair > Green".
 </p>
+
+
+:SUB:Votes
+<p>
+ <b>URL:</b> <a href="http://vndb.org/api/votes.gz">http://vndb.org/api/votes.gz</a><br />
+ <b>Updated:</b> Every 24 hours.<br />
+ <b>Size:</b> ~1.2 MiB compressed, ~3.5 MiB uncompressed.<br />
+ This dump contains the VN votes of all users who did not mark their vote list
+ as private. Votes from known duplicate accounts or from users who voted on
+ unreleased VNs are also not included.<br />
+ Each line in the file represents a single vote. Each line contains the VN id,
+ user ID and vote, separated by a space. Votes are as listed on the site,
+ multiplied by 10 (i.e. in the range of 10 - 100).
+</p>

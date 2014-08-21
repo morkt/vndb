@@ -17,12 +17,13 @@ sub spawn {
   my $p = shift;
   POE::Session->create(
     package_states => [
-      $p => [qw| _start shutdown tags_gen tags_write traits_gen traits_write writejson|],
+      $p => [qw| _start shutdown tags_gen tags_write traits_gen traits_write writejson votes_gen votes_write|],
     ],
     heap => {
       regenerate_interval => 86400, # daily min.
       tagsfile   => "$VNDB::ROOT/www/api/tags.json.gz",
       traitsfile => "$VNDB::ROOT/www/api/traits.json.gz",
+      votesfile  => "$VNDB::ROOT/www/api/votes.gz",
       @_,
     },
   );
@@ -33,6 +34,7 @@ sub _start {
   $_[KERNEL]->alias_set('apidump');
   $_[KERNEL]->yield('tags_gen');
   $_[KERNEL]->delay(traits_gen => 10);
+  $_[KERNEL]->delay(votes_gen => 20);
   $_[KERNEL]->sig(shutdown => 'shutdown');
 }
 
@@ -40,6 +42,7 @@ sub _start {
 sub shutdown {
   $_[KERNEL]->delay('tags_gen');
   $_[KERNEL]->delay('traits_gen');
+  $_[KERNEL]->delay('votes_gen');
   $_[KERNEL]->alias_remove('apidump');
 }
 
@@ -111,6 +114,36 @@ sub writejson {
   my $wt = time-$procstart;
   $_[KERNEL]->call(core => log => 'Wrote %s in %.2fs query + %.2fs write, size: %.1fkB, items: %d.',
     $file, $sqltime, $wt, (-s $file)/1024, scalar @$data);
+}
+
+sub votes_gen {
+  $_[KERNEL]->alarm(votes_gen => int((time+3)/$_[HEAP]{regenerate_interval}+1)*$_[HEAP]{regenerate_interval});
+
+  $_[KERNEL]->post(pg => query => q{
+    SELECT vv.vid||' '||vv.uid||' '||vv.vote as l
+      FROM votes vv
+      JOIN users u ON u.id = vv.uid
+      JOIN vn v ON v.id = vv.vid
+     WHERE NOT v.hidden
+       AND NOT u.ign_votes
+       AND NOT EXISTS(SELECT 1 FROM users_prefs up WHERE up.uid = u.id AND key = 'hide_list')
+  }, undef, 'votes_write');
+}
+
+
+sub votes_write {
+  my($res, $sqltime) = @_[ARG1,ARG3];
+  my $ws = time;
+
+  my $file = $_[HEAP]{votesfile};
+  open my $f, '>:gzip:utf8', "$file~" or die "Writing $file: $!";
+  printf $f "%s\n", $_->{l} for (@$res);
+  close $f;
+  rename "$file~", $file or die "Renaming $file: $!";
+
+  my $wt = time-$ws;
+  $_[KERNEL]->call(core => log => 'Wrote %s in %.2fs query + %.2fs write, size: %.1fkB, items: %d.',
+    $file, $sqltime, $wt, (-s $file)/1024, scalar @$res);
 }
 
 1;
