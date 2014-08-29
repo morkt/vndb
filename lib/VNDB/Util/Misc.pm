@@ -6,8 +6,9 @@ use warnings;
 use Exporter 'import';
 use TUWF ':html';
 use VNDB::Func;
+use Socket 'inet_pton', 'inet_ntop', 'AF_INET6';
 
-our @EXPORT = qw|filFetchDB ieCheck|;
+our @EXPORT = qw|filFetchDB ieCheck normIP|;
 
 
 my %filfields = (
@@ -142,6 +143,25 @@ sub ieCheck {
   return 0;
 }
 
+
+# Normalized IP address to use for duplicate detection/throttling. For IPv4
+# this is just the normal address, but for IPv6 this is the /48 subnet, with
+# the rest of the address zero'd.
+sub normIP {
+    my $s = shift;
+    my $ip = $s->reqIP();
+    return $ip if $ip !~ /:/;
+
+    # There's a whole bunch of IPv6 manipulation modules on CPAN, but many seem
+    # quite bloated and still don't offer the functionality to return an IP
+    # with its mask applied (admittedly not a common operation). The libc
+    # socket functions will do fine in parsing and formatting IPv6 addresses,
+    # and the actual masking is quite trivial in binary form.
+    $ip = inet_pton AF_INET6, $ip;
+    return '::' if !$ip;
+    $ip =~ s/^(.{6}).+$/$1 . "\0"x10/e;
+    return inet_ntop AF_INET6, $ip;
+}
 
 1;
 

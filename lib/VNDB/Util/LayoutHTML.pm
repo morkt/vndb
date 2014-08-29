@@ -110,21 +110,11 @@ sub _menu {
        a href => "$uid/logout", mt '_menu_logout';
       end;
     } else {
-      h2;
-       a href => '/u/login', mt '_menu_login';
-      end;
+      h2 mt '_menu_user';
       div;
-       form action => '/nospam?/u/login', id => 'loginform', method => 'post';
-        fieldset;
-         legend 'Login';
-         input type => 'text', class => 'text', id => 'username', name => 'usrname';
-         input type => 'password', class => 'text', id => 'userpass', name => 'usrpass';
-         input type => 'submit', class => 'submit', value => mt '_menu_login';
-        end;
-       end;
-       p;
-        lit mt '_menu_loginmsg', '/u/register', '/u/newpass';
-       end;
+       a href => '/u/login', mt '_menu_login'; br;
+       a href => '/u/newpass', mt '_menu_newpass'; br;
+       a href => '/u/register', mt '_menu_register'; br;
       end;
     }
    end 'div'; # /menubox

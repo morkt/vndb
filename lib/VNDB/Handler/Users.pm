@@ -142,6 +142,7 @@ sub login {
 
   my $frm;
   if($self->reqMethod eq 'POST') {
+    return if !$self->authCheckCode;
     $frm = $self->formValidate(
       { post => 'usrname', required => 1, minlength => 2, maxlength => 15 },
       { post => 'usrpass', required => 1, minlength => 4, maxlength => 64, template => 'asciiprint' },

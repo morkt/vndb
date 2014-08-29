@@ -3260,7 +3260,18 @@ tr : Çıkış
 uk : Вийти
 it : Esci
 
-# used for both the box title and submit button
+:_menu_user
+en : User menu
+ru*:
+cs*:
+hu*:
+nl : Gebruikersmenu
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_menu_login
 en : Login
 ru : Вход
@@ -3273,27 +3284,29 @@ tr : Giriş
 uk : Увійти
 it : Accedi
 
-:_menu_loginmsg
-en : Need to [url,_1,register],[br]
-     or [url,_2,forgot your password]?
-ru : Нужна [url,_1,регистрация],[br]
-     или [url,_2,забыли свой пароль]?
-cs : Potřebujete se [url,_1,přihlásit],[br]
-     nebo jste [url,_2,zapomněli heslo]?
-hu : Ha még nem [url,_1,regisztráltál], akkor most megteheted,[br]
-     vagy netán [url,_2,elfelejtetted a jelszavad]?
-nl : Nog geen [url,_1,account],[br]
-     of [url,_2,wachtwoord vergeten]?
-de : Noch [url,_1,kein Benutzerkonto],[br]
-     oder [url,_2,das Passwort vergessen]?
-es : Necesitas [url,_1,registrarte],[br]
-     o ¿[url,_2,has olvidado tu contraseña]?
-tr : [url,_1,Kayıt] olmak mı istemiştiniz?[br]
-     [url,_2,Şifrenizi] mi unuttunuz?
-uk : Тобі потрібна [url,_1,реєстрація],[br]
-     чи [url,_2,ти забув пароль]?
-it : Hai bisogno di [url,_1,registrarti],[br]
-     o [url,_2,hai dimenticato la tua password]?
+:_menu_newpass
+en : Password reset
+ru*:
+cs*:
+hu*:
+nl : Wachtwoord vergeten
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_menu_register
+en : Register
+ru*:
+cs*:
+hu*:
+nl : Registreren
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 # database statistics
 

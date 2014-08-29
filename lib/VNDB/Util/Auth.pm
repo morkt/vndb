@@ -165,7 +165,7 @@ sub authGetCode {
   my $self = shift;
   my $id = shift;
   my $time = (shift || time)/3600; # accuracy of an hour
-  my $uid = pack('N', $self->{_auth} ? $self->{_auth}{id} : 0);
+  my $uid = encode_utf8($self->{_auth} ? $self->{_auth}{id} : $self->normIP());
   return lc substr sha1_hex($self->{form_salt} . $uid . encode_utf8($id||'') . pack('N', int $time)), 0, 16;
 }
 
