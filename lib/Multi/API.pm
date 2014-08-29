@@ -14,7 +14,7 @@ use POE::Filter::VNDBAPI 'encode_filters';
 use Digest::SHA 'sha256_hex';
 use Encode 'encode_utf8';
 use Time::HiRes 'time'; # important for throttling
-use VNDBUtil 'normalize_query';
+use VNDBUtil 'normalize_query', 'norm_ip';
 use JSON::XS;
 
 
@@ -40,7 +40,7 @@ sub spawn {
     package_states => [
       $p => [qw|
         _start shutdown log server_error client_connect client_error client_input
-        login login_res dbstats dbstats_res get_results get_vn get_vn_res
+        login login_throttle login_res dbstats dbstats_res get_results get_vn get_vn_res
         get_release get_release_res get_producer get_producer_res get_character
         get_character_res get_votelist get_votelist_res get_vnlist
         get_vnlist_res get_wishlist get_wishlist_res set_votelist set_vnlist
@@ -420,9 +420,9 @@ sub login {
   return cerr $c, badarg => 'Invalid client version', field => 'clientver'  if $arg->{clientver} !~ /^[a-zA-Z0-9_.\/-]{1,25}$/;
 
   if(exists $arg->{username}) {
-    # fetch user info
-    $_[KERNEL]->post(pg => query => "SELECT id, salt, encode(passwd, 'hex') as passwd FROM users WHERE username = ?",
-      [ $arg->{username} ], 'login_res', [ $c, $arg ]);
+    # check login throttle
+    $_[KERNEL]->post(pg => query => "SELECT timeout FROM login_throttle WHERE ip = ?",
+      [ norm_ip($c->{ip}) ], 'login_throttle', [ $c, $arg ]);
   } else {
     $c->{client} = $arg->{client};
     $c->{clientver} = $arg->{clientver};
@@ -432,14 +432,36 @@ sub login {
 }
 
 
-sub login_res { # num, res, [ c, arg ]
+sub login_throttle {
   my($num, $res, $c, $arg) = (@_[ARG0, ARG1], $_[ARG2][0], $_[ARG2][1]);
+
+  my $tm = @$res && $res->[0]{timeout} > time ? $res->[0]{timeout} : time;
+  $tm = int $tm;
+  return cerr $c, auth => "Too many failed login attempts"
+    if $tm-time() > $VNDB::S{login_throttle}[1];
+
+  # fetch user info
+  $_[KERNEL]->post(pg => query => "SELECT id, salt, encode(passwd, 'hex') as passwd FROM users WHERE username = ?",
+    [ $arg->{username} ], 'login_res', [ $c, $arg, $tm ]);
+}
+
+
+sub login_res { # num, res, [ c, arg, tm ]
+  my($num, $res, $c, $arg, $tm) = (@_[ARG0, ARG1], $_[ARG2][0], $_[ARG2][1], $_[ARG2][2]);
 
   return cerr $c, auth => "No user with the name '$arg->{username}'" if $num == 0;
   return cerr $c, auth => "Account disabled" if $res->[0]{salt} =~ /^ +$/;
 
   my $encrypted = sha256_hex($VNDB::S{global_salt}.encode_utf8($arg->{password}).encode_utf8($res->[0]{salt}));
-  return cerr $c, auth => "Wrong password for user '$arg->{username}'" if lc($encrypted) ne lc($res->[0]{passwd});
+
+  if(lc($encrypted) ne lc($res->[0]{passwd})) {
+    $tm += $VNDB::S{login_throttle}[0];
+    $_[KERNEL]->post(pg => do => 'UPDATE login_throttle SET timeout = ? WHERE ip = ?', [ $tm, $c->{ip} ]);
+    $_[KERNEL]->post(pg => do =>
+      'INSERT INTO login_throttle (ip, timeout) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM login_throttle WHERE ip = ?)',
+      [  $c->{ip}, $tm, $c->{ip} ]);
+    return cerr $c, auth => "Wrong password for user '$arg->{username}'";
+  }
 
   $c->{uid} = $res->[0]{id};
   $c->{username} = $arg->{username};

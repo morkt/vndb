@@ -140,7 +140,7 @@ sub login {
 
   return $self->resRedirect('/') if $self->authInfo->{id};
 
-  my $tm = $self->dbThrottleGet($self->normIP);
+  my $tm = $self->dbThrottleGet(norm_ip($self->reqIP));
   if($tm-time() > $self->{login_throttle}[1]) {
     $self->htmlHeader(title => mt '_login_title');
     div class => 'mainbox';
@@ -167,7 +167,7 @@ sub login {
     if(!$frm->{_err}) {
       return if $self->authLogin($frm->{usrname}, $frm->{usrpass}, $ref);
       $frm->{_err} = [ 'login_failed' ];
-      $self->dbThrottleSet($self->normIP, $tm+$self->{login_throttle}[0]);
+      $self->dbThrottleSet(norm_ip($self->reqIP), $tm+$self->{login_throttle}[0]);
     }
   }
 
