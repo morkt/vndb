@@ -86,6 +86,12 @@ CREATE TABLE chars_vns (
   role char_role NOT NULL DEFAULT 'main'
 );
 
+-- login_throttle
+CREATE TABLE login_throttle (
+  ip inet NOT NULL PRIMARY KEY,
+  timeout bigint NOT NULL
+);
+
 -- notifications
 CREATE TABLE notifications (
   id serial PRIMARY KEY NOT NULL,

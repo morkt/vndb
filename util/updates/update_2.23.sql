@@ -73,3 +73,9 @@ UPDATE releases_rev SET resolution = resolution + 1 WHERE resolution >= 8 AND NO
 
 -- New language: Romanian
 ALTER TYPE language ADD VALUE 'ro' AFTER 'pt-br';
+
+-- Login attempt throttling
+CREATE TABLE login_throttle (
+  ip inet NOT NULL PRIMARY KEY,
+  timeout bigint NOT NULL
+);

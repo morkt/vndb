@@ -9,6 +9,7 @@ our @EXPORT = qw|
   dbUserGet dbUserEdit dbUserAdd dbUserDel dbUserPrefSet
   dbSessionAdd dbSessionDel dbSessionUpdateLastUsed
   dbNotifyGet dbNotifyMarkRead dbNotifyRemove
+  dbThrottleGet dbThrottleSet
 |;
 
 
@@ -229,6 +230,21 @@ sub dbNotifyRemove {
   $s->dbExec('DELETE FROM notifications WHERE id IN(!l)', \@_);
 }
 
+
+# ip
+sub dbThrottleGet {
+  my $s = shift;
+  my $t = $s->dbRow('SELECT timeout FROM login_throttle WHERE ip = ?', shift)->{timeout};
+  return $t && $t >= time ? $t : time;
+}
+
+# ip, timeout
+sub dbThrottleSet {
+  my($s, $ip, $timeout) = @_;
+  !$timeout ? $s->dbExec('DELETE FROM login_throttle WHERE ip = ?', $ip)
+   : $s->dbExec('UPDATE login_throttle SET timeout = ? WHERE ip = ?', $timeout, $ip)
+  || $s->dbExec('INSERT INTO login_throttle (ip, timeout) VALUES (?, ?)', $ip, $timeout);
+}
 
 1;
 

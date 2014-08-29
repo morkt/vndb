@@ -28,6 +28,7 @@ our %S = (%S,
   regen_static    => 0,
   source_url      => 'http://git.blicky.net/vndb.git/?h=master',
   admin_email     => 'contact@vndb.org',
+  login_throttle  => [ 24*3600/10, 24*3600 ], # interval between attempts, max burst (10 a day)
   scr_size        => [ 136, 102 ], # w*h of screenshot thumbnails
   ch_size         => [ 256, 300 ], # max. w*h of char images
   cv_size         => [ 256, 400 ], # max. w*h of cover images

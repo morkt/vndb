@@ -10865,6 +10865,34 @@ tr : Giriş
 uk : Увійсти
 it : Accedi
 
+:_login_throttle_title
+en : Maximum failed login attempts reached.
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_login_throttle_msg
+en : Login has been temporarily disabled for your IP address. You can wait a
+     few hours and try again, or you can try from a different IP address. If
+     you forgot your password, you can still use the [url,/u/newpass,password
+     reset] functionality. If you still have trouble logging in, send a mail
+     to [url,mailto:contact@vndb.org,contact@vndb.org].
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_login_username
 en : Username
 ru : Имя пользователя

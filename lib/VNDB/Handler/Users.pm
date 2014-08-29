@@ -140,6 +140,20 @@ sub login {
 
   return $self->resRedirect('/') if $self->authInfo->{id};
 
+  my $tm = $self->dbThrottleGet($self->normIP);
+  if($tm-time() > $self->{login_throttle}[1]) {
+    $self->htmlHeader(title => mt '_login_title');
+    div class => 'mainbox';
+     h1 mt '_login_title';
+     div class => 'warning';
+      h2 mt '_login_throttle_title';
+      p; lit mt '_login_throttle_msg'; end;
+     end;
+    end 'div';
+    $self->htmlFooter;
+    return;
+  }
+
   my $frm;
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
@@ -150,8 +164,11 @@ sub login {
 
     (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$self->{url}//;
     $ref = '/' if $ref =~ /^\/u\//;
-    return if !$frm->{_err} && $self->authLogin($frm->{usrname}, $frm->{usrpass}, $ref);
-    $frm->{_err} = [ 'login_failed' ] if !$frm->{_err};
+    if(!$frm->{_err}) {
+      return if $self->authLogin($frm->{usrname}, $frm->{usrpass}, $ref);
+      $frm->{_err} = [ 'login_failed' ];
+      $self->dbThrottleSet($self->normIP, $tm+$self->{login_throttle}[0]);
+    }
   }
 
   $self->htmlHeader(noindex => 1, title => mt '_login_title');
