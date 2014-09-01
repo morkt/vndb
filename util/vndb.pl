@@ -49,7 +49,7 @@ TUWF::set(
   log_format => \&logformat,
   # for compatibility with YAWF
   validate_templates => {
-    mail       => { regex => qr/^[^@<>\s,]+@[^@.<>\s,]+(?:\.[^@.<>\s,]+)+$/ },
+    mail       => { regex => qr/^[^@<>\s\(\),]+@[^@.<>\s\(\),]+(?:\.[^@.<>\s\(\),]+)+$/ },
     url        => { regex => qr/^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:\/~\+\*#]*[\w\-\@?^=%&\/~\+#\*])?$/ },
     asciiprint => { regex => qr/^[\x20-\x7E]*$/ },
     int        => { regex => qr/^-?[0-9]+$/ },
