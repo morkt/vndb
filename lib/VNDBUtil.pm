@@ -259,7 +259,7 @@ sub norm_ip {
     # and the actual masking is quite trivial in binary form.
     $ip = inet_pton AF_INET6, $ip;
     return '::' if !$ip;
-    $ip =~ s/^(.{6}).+$/$1 . "\0"x10/e;
+    $ip =~ s/^(.{6}).+$/$1 . "\0"x10/se;
     return inet_ntop AF_INET6, $ip;
 }
 
