@@ -77,7 +77,7 @@ BEGIN
   -- the following queries only update rows with popularity > 0, so make sure to reset all rows first
   UPDATE vn SET c_popularity = NULL;
   CREATE OR REPLACE TEMP VIEW tmp_pop1 (uid, vid, rank) AS
-      SELECT v.uid, v.vid, sqrt(count(*))::real
+      SELECT v.uid, v.vid, count(*)::real ^ 0.36788
         FROM votes v
         JOIN votes v2 ON v.uid = v2.uid AND v2.vote < v.vote
         JOIN users u ON u.id = v.uid AND NOT ign_votes
