@@ -102,8 +102,8 @@ sub log_stats { # num, res, action, time
 
 
 sub vncache_inc {
-  # takes about 50ms to 1s to complete, depending on how many
-  # releases have been released within the past 5 days
+  # takes about 500ms to 5s to complete, depending on how many releases have
+  # been released within the past 5 days
   $_[KERNEL]->post(pg => do => q|
     SELECT update_vncache(id)
       FROM (
@@ -119,25 +119,25 @@ sub vncache_inc {
 
 
 sub tagcache {
-  # takes about 5 seconds max, still OK
+  # takes about 9 seconds max, still OK
   $_[KERNEL]->post(pg => do => 'SELECT tag_vn_calc()', undef, 'log_stats', 'tagcache');
 }
 
 
 sub traitcache {
-  # still takes less than a second
+  # takes about 90 seconds, might want to optimize or split up
   $_[KERNEL]->post(pg => do => 'SELECT traits_chars_calc()', undef, 'log_stats', 'traitcache');
 }
 
 
 sub vnpopularity {
-  # takes a bit more than 8 seconds, meh...
+  # takes about 30 seconds
   $_[KERNEL]->post(pg => do => 'SELECT update_vnpopularity()', undef, 'log_stats', 'vnpopularity');
 }
 
 
 sub vnrating {
-  # takes less than a second, but can be performed in ranges as well when necessary
+  # takes about 25 seconds, can be performed in ranges as well when necessary
   $_[KERNEL]->post(pg => do => q|
     UPDATE vn SET
       c_rating = (SELECT (
@@ -195,15 +195,19 @@ sub cleanthrottle {
 
 
 sub vncache_full {
-  # this takes more than a minute to complete, and should only be necessary in the
+  # This takes about 4 to 5 minutes to complete, and should only be necessary in the
   # event that the daily vncache_inc cron hasn't been running for 5 subsequent days.
   $_[KERNEL]->post(pg => do => 'SELECT update_vncache(id) FROM vn', undef, 'log_stats', 'vncache_full');
 }
 
 
 sub usercache {
-  # Shouldn't really be necessary, except c_changes could be slightly off when hiding/unhiding DB items
-  # Currently takes about 25 seconds to complete.
+  # Shouldn't really be necessary, except c_changes could be slightly off when
+  # hiding/unhiding DB items.
+  # This query takes almost two hours to complete and tends to bring the entire
+  # site down with it, so it's been disabled for now. Can be performed in
+  # ranges though.
+  return;
   $_[KERNEL]->post(pg => do => q|UPDATE users SET
     c_votes = COALESCE(
       (SELECT COUNT(vid)
@@ -229,7 +233,7 @@ sub usercache {
 
 sub statscache {
   # Shouldn't really be necessary, the triggers in PgSQL should keep these up-to-date nicely.
-  # But it takes less than 100ms to complete, anyway
+  # But it takes less a second to complete, anyway.
   $_[KERNEL]->post(pg => do => $_) for(
     q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM users)-1 WHERE section = 'users'|,
     q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM vn        WHERE hidden = FALSE) WHERE section = 'vn'|,
