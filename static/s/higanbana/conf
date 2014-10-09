@@ -1,0 +1,32 @@
+////////////////////////////////////////////////////////////////
+// 'Higanbana no Saku Yoru ni' skin for VNDB.org              //
+// Created by Yirba <yirba AT spiderlilytranslations DOT com> //
+// Some portions (c)2011 Ryukishi07/07th Expansion            //
+////////////////////////////////////////////////////////////////
+
+name         Higanbana no Saku Yoru ni (maroon)
+userid       13885
+maintext     #ddd
+grayedout    #822
+standout     #ec4
+link         #d77
+statok       #0c0
+statnok      #c00
+footer       #722
+maintitle    #511
+boxtitle     #822
+alttitle     #fff
+bodybg       #000
+tabbg        #200
+secbg        #410d0d
+secborder    #a33
+border       #822
+boxbg        #331111bc
+imglefttop   bg.jpg
+imgrighttop  bgright.png
+diffadd      #354
+diffdel      #534
+warnbg       #534
+warnborder   #c00
+noticebg     #354
+noticeborder #0c0

@@ -1,0 +1,32 @@
+////////////////////////////////////////////////////////////////
+// 'AIR' skin for VNDB.org                                    //
+// Created by Yirba <yirba AT spiderlilytranslations DOT com> //
+// Some portions (c)2000 Key/VisualArt's                      //
+////////////////////////////////////////////////////////////////
+
+name         AIR (sky blue)
+userid       13885
+maintext     #222222
+grayedout    #77a9dd
+standout     #bb1511
+link         #226588
+statok       #33ff38
+statnok      #ff3833
+footer       #226588
+maintitle    #226588
+boxtitle     #77a9dd
+alttitle     #000000
+bodybg       #ffffff
+tabbg        #ddeeff
+secbg        #bed8f2
+secborder    #5677cc
+border       #77a9dd
+boxbg        #ccddeebc
+imglefttop   bg.jpg
+imgrighttop  bgright.png
+diffadd      #aaccbc
+diffdel      #ccaabb
+warnbg       #ccaabb
+warnborder   #ff3833
+noticebg     #aaccbc
+noticeborder #33ff38
