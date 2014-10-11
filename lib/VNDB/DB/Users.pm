@@ -234,7 +234,7 @@ sub dbNotifyRemove {
 # ip
 sub dbThrottleGet {
   my $s = shift;
-  my $t = $s->dbRow('SELECT timeout FROM login_throttle WHERE ip = ?', shift)->{timeout};
+  my $t = $s->dbRow("SELECT extract('epoch' from timeout) as timeout FROM login_throttle WHERE ip = ?", shift)->{timeout};
   return $t && $t >= time ? $t : time;
 }
 
@@ -242,8 +242,8 @@ sub dbThrottleGet {
 sub dbThrottleSet {
   my($s, $ip, $timeout) = @_;
   !$timeout ? $s->dbExec('DELETE FROM login_throttle WHERE ip = ?', $ip)
-   : $s->dbExec('UPDATE login_throttle SET timeout = ? WHERE ip = ?', $timeout, $ip)
-  || $s->dbExec('INSERT INTO login_throttle (ip, timeout) VALUES (?, ?)', $ip, $timeout);
+   : $s->dbExec('UPDATE login_throttle SET timeout = to_timestamp(?) WHERE ip = ?', $timeout, $ip)
+  || $s->dbExec('INSERT INTO login_throttle (ip, timeout) VALUES (?, to_timestamp(?))', $ip, $timeout);
 }
 
 1;

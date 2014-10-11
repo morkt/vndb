@@ -89,7 +89,7 @@ CREATE TABLE chars_vns (
 -- login_throttle
 CREATE TABLE login_throttle (
   ip inet NOT NULL PRIMARY KEY,
-  timeout bigint NOT NULL
+  timeout timestamptz NOT NULL
 );
 
 -- notifications

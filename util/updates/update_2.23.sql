@@ -79,3 +79,7 @@ CREATE TABLE login_throttle (
   ip inet NOT NULL PRIMARY KEY,
   timeout bigint NOT NULL
 );
+
+-- timeout is a timestamp...
+ALTER TABLE login_throttle ALTER COLUMN timeout TYPE timestamptz USING to_timestamp(timeout);
+

@@ -183,8 +183,8 @@ sub rmuncomfirmusers {
 
 sub cleanthrottle {
   $_[KERNEL]->post(pg => do =>
-    q|DELETE FROM login_throttle WHERE timeout < ?|,
-    [ time ], 'log_stats', 'cleanthrottle');
+    q|DELETE FROM login_throttle WHERE timeout < NOW()|,
+    undef, 'log_stats', 'cleanthrottle');
 }
 
 
