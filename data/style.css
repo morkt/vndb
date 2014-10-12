@@ -851,6 +851,9 @@ a .icons { cursor: pointer }
 .icons.xb1 { background-position: -32px -126px; }
 .icons.p88 { background-position: -32px -140px; }
 
+.icons.ps4 { background-position: -40px -154px; }
+.icons.xbo { background-position: -56px -154px; }
+
 .icons.cs  { background-position: -48px   0px; }
 .icons.da  { background-position: -48px -11px; }
 .icons.de  { background-position: -48px -22px; }

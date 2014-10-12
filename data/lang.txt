@@ -692,6 +692,18 @@ tr : PlayStation 3
 uk : PlayStation 3
 it : PlayStation 3
 
+:_plat_ps4
+en : PlayStation 4
+ru :
+cs :
+hu :
+nl :
+de :
+es :
+tr :
+uk :
+it :
+
 :_plat_psv
 en : PlayStation Vita
 ru*:
@@ -787,6 +799,18 @@ es : Xbox 360
 tr : Xbox 360
 uk : Xbox 360
 it : Xbox 360
+
+:_plat_xbo
+en : Xbox One
+ru :
+cs :
+hu :
+nl :
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_web
 en : Website
