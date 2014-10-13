@@ -160,6 +160,8 @@ sub filtertosql {
       $v = "%$v%";
     } elsif(${$o{process}} eq 'lang') {
       return cerr $c, filter => 'Invalid language code', %e if !grep $v eq $_, @{$VNDB::S{languages}};
+    } elsif(${$o{process}} eq 'plat') {
+      return cerr $c, filter => 'Invalid platform code', %e if !grep $v eq $_, @{$VNDB::S{platforms}};
     }
   }
 
@@ -514,7 +516,7 @@ sub get_vn {
     for (grep !/^(basic|details|anime|relations|tags|stats)$/, @{$get->{info}});
 
   my $select = 'v.id, v.latest';
-  $select .= ', vr.title, vr.original, v.c_released, v.c_languages::text[], v.c_olang::text[], v.c_platforms' if grep /basic/, @{$get->{info}};
+  $select .= ', vr.title, vr.original, v.c_released, v.c_languages::text[], v.c_olang::text[], v.c_platforms::text[]' if grep /basic/, @{$get->{info}};
   $select .= ', vr.image, vr.img_nsfw, vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai' if grep /details/, @{$get->{info}};
   $select .= ', v.c_popularity, v.c_rating, v.c_votecount' if grep /stats/, @{$get->{info}};
 
@@ -537,10 +539,9 @@ sub get_vn {
       [ undef,   'v.c_released :op: 0', {qw|= =  != <>|} ],
       [ str   => 'v.c_released :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, process => \&parsedate ],
     ], [ 'platforms',
-      [ undef,   "v.c_platforms :op: ''", {qw|= =  != <>|} ],
-      [ str   => 'v.c_platforms :op: :value:', {'=' => 'LIKE', '!=' => 'NOT LIKE'}, process => \'like' ],
-      [ stra  => '(:value:)', {'=', 1}, join => ' OR ',  serialize => 'v.c_platforms LIKE :value:', process => \'like' ],
-      [ stra  => '(:value:)', {'!=',1}, join => ' AND ', serialize => 'v.c_platforms NOT LIKE :value:', process => \'like' ],
+      [ undef,   "v.c_platforms :op: '{}'", {qw|= =  != <>|} ],
+      [ str   => ':op: (v.c_platforms && ARRAY[:value:]::platform[])', {'=' => '', '!=' => 'NOT'}, process => \'plat' ],
+      [ stra  => ':op: (v.c_platforms && ARRAY[:value:]::platform[])', {'=' => '', '!=' => 'NOT'}, join => ',', process => \'plat' ],
     ], [ 'languages',
       [ undef,   "v.c_languages :op: '{}'", {qw|= =  != <>|} ],
       [ str   => ':op: (v.c_languages && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, process => \'lang' ],
@@ -578,7 +579,7 @@ sub get_vn_res {
       $_->{id}*=1;
       if(grep /basic/, @{$get->{info}}) {
         $_->{original}  ||= undef;
-        $_->{platforms} = [ split /\//, delete $_->{c_platforms} ];
+        $_->{platforms} = delete $_->{c_platforms};
         $_->{languages} = delete $_->{c_languages};
         $_->{orig_lang} = delete $_->{c_olang};
         $_->{released}  = formatdate delete $_->{c_released};

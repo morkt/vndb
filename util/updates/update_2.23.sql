@@ -83,3 +83,12 @@ CREATE TABLE login_throttle (
 -- timeout is a timestamp...
 ALTER TABLE login_throttle ALTER COLUMN timeout TYPE timestamptz USING to_timestamp(timeout);
 
+
+-- platform from varchar to enum
+CREATE TYPE platform AS ENUM ('win', 'dos', 'lin', 'mac', 'ios', 'and', 'dvd', 'bdp', 'gba', 'gbc', 'msx', 'nds', 'nes', 'p88', 'p98', 'pcf', 'psp', 'ps1', 'ps2', 'ps3', 'ps4', 'psv', 'drc', 'sat', 'sfc', 'wii', 'n3d', 'xb1', 'xb3', 'xbo', 'web', 'oth');
+ALTER TABLE releases_platforms ALTER COLUMN platform DROP DEFAULT;
+ALTER TABLE releases_platforms ALTER COLUMN platform TYPE platform USING platform::platform;
+
+ALTER TABLE vn ALTER COLUMN c_platforms DROP DEFAULT;
+ALTER TABLE vn ALTER COLUMN c_platforms TYPE platform[] USING string_to_array(c_platforms, '/')::platform[];
+ALTER TABLE vn ALTER COLUMN c_platforms SET DEFAULT '{}';

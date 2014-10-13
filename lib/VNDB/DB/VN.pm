@@ -46,7 +46,7 @@ sub dbVNGet {
     $o{olang} ? (
       'v.c_olang && ARRAY[!l]::language[]' => [ ref $o{olang} ? $o{olang} : [$o{olang}] ]) : (),
     $o{plat} ? (
-      '('.join(' OR ', map "v.c_platforms ILIKE '%%$_%%'", ref $o{plat} ? @{$o{plat}} : $o{plat}).')' => 1 ) : (),
+      'v.c_platforms && ARRAY[!l]::platform[]' => [ ref $o{plat} ? $o{plat} : [$o{plat}] ]) : (),
     defined $o{hasani} ? (
       '!sEXISTS(SELECT 1 FROM vn_anime va WHERE va.vid = vr.id)' => [ $o{hasani} ? '' : 'NOT ' ]) : (),
     defined $o{hasshot} ? (
@@ -100,8 +100,8 @@ sub dbVNGet {
   );
 
   my $tag_ids = $o{tag_inc} && join ',', ref $o{tag_inc} ? @{$o{tag_inc}} : $o{tag_inc};
-  my @select = ( # see https://rt.cpan.org/Ticket/Display.html?id=54224 for the cast on c_languages
-    qw|v.id v.locked v.hidden v.c_released v.c_languages::text[] v.c_platforms vr.title vr.original v.rgraph|, 'vr.id AS cid',
+  my @select = ( # see https://rt.cpan.org/Ticket/Display.html?id=54224 for the cast on c_languages and c_platforms
+    qw|v.id v.locked v.hidden v.c_released v.c_languages::text[] v.c_platforms::text[] vr.title vr.original v.rgraph|, 'vr.id AS cid',
     $o{what} =~ /extended/ ? (
       qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai vr.l_vnn| ) : (),
     $o{what} =~ /changes/ ? (

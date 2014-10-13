@@ -54,7 +54,7 @@ CREATE OR REPLACE FUNCTION update_vncache(integer) RETURNS void AS $$
       GROUP BY rl2.lang
       ORDER BY rl2.lang
     ),
-    c_platforms = COALESCE(ARRAY_TO_STRING(ARRAY(
+    c_platforms = ARRAY(
       SELECT rp3.platform
       FROM releases_platforms rp3
       JOIN releases_rev rr3 ON rp3.rid = rr3.id
@@ -65,7 +65,8 @@ CREATE OR REPLACE FUNCTION update_vncache(integer) RETURNS void AS $$
       AND rr3.released <= TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer
       AND r3.hidden = FALSE
       GROUP BY rp3.platform
-      ORDER BY rp3.platform), '/'), '')
+      ORDER BY rp3.platform
+    )
   WHERE id = $1;
 $$ LANGUAGE sql;
 

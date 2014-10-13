@@ -170,7 +170,7 @@ CREATE TABLE releases_media (
 -- releases_platforms
 CREATE TABLE releases_platforms (
   rid integer NOT NULL DEFAULT 0,
-  platform character(3) NOT NULL DEFAULT 0,
+  platform platform NOT NULL,
   PRIMARY KEY(rid, platform)
 );
 
@@ -391,7 +391,7 @@ CREATE TABLE vn (
   rgraph integer,
   c_released integer NOT NULL DEFAULT 0,
   c_languages language[] NOT NULL DEFAULT '{}',
-  c_platforms varchar NOT NULL DEFAULT '',
+  c_platforms platform[] NOT NULL DEFAULT '{}',
   c_popularity real,
   c_rating real,
   c_votecount integer NOT NULL DEFAULT 0,

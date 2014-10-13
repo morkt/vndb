@@ -13,6 +13,7 @@ CREATE TYPE language          AS ENUM ('ar', 'cs', 'da', 'de', 'en', 'es', 'fi',
 CREATE TYPE medium            AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
 CREATE TYPE notification_ntype AS ENUM ('pm', 'dbdel', 'listdel', 'dbedit', 'announce');
 CREATE TYPE notification_ltype AS ENUM ('v', 'r', 'p', 'c', 't');
+CREATE TYPE platform          AS ENUM ('win', 'dos', 'lin', 'mac', 'ios', 'and', 'dvd', 'bdp', 'gba', 'gbc', 'msx', 'nds', 'nes', 'p88', 'p98', 'pcf', 'psp', 'ps1', 'ps2', 'ps3', 'ps4', 'psv', 'drc', 'sat', 'sfc', 'wii', 'n3d', 'xb1', 'xb3', 'xbo', 'web', 'oth');
 CREATE TYPE prefs_key         AS ENUM ('l10n', 'skin', 'customcss', 'filter_vn', 'filter_release', 'show_nsfw', 'hide_list', 'notify_nodbedit', 'notify_announce', 'vn_list_own', 'vn_list_wish');
 CREATE TYPE producer_relation AS ENUM ('old', 'new', 'sub', 'par', 'imp', 'ipa', 'spa', 'ori');
 CREATE TYPE release_type      AS ENUM ('complete', 'partial', 'trial');
