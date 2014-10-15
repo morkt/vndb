@@ -25,7 +25,7 @@ our %S = (%S,
   skin_default    => 'angel',
   global_salt     => 'any-private-string-here',
   form_salt       => 'a-different-private-string-here',
-  scrypt_args     => [ 131072, 8, 1 ], # N, r, p
+  scrypt_args     => [ 65536, 8, 1 ], # N, r, p
   scrypt_salt     => 'another-random-string',
   regen_static    => 0,
   source_url      => 'http://git.blicky.net/vndb.git/?h=master',
