@@ -7,6 +7,7 @@ use warnings;
 use Exporter 'import';
 use Digest::SHA qw|sha1 sha1_hex sha256|;
 use Crypt::URandom 'urandom';
+use Crypt::ScryptKDF 'scrypt_raw';
 use Encode 'encode_utf8';
 use TUWF ':html';
 use VNDB::Func;
@@ -107,9 +108,21 @@ sub _authCheck {
   return 0 if !$user || length($user) > 15 || length($user) < 2 || !$pass;
 
   my $d = $self->dbUserGet(username => $user, what => 'extended notifycount')->[0];
-  return 0 if !$d->{id} || length $d->{passwd} != 41;
+  return 0 if !$d->{id};
 
-  if($self->authPreparePass($pass, substr $d->{passwd}, 0, 9) eq $d->{passwd}) {
+  # Old-style hashes
+  if(length $d->{passwd} == 41) {
+    return 0 if _authPreparePassSha256($self, $pass, substr $d->{passwd}, 0, 9) ne $d->{passwd};
+    $self->{_auth} = $d;
+    # Update database with new hash format, now that we have the plain text password
+    $self->dbUserEdit($d->{id}, passwd => $self->authPreparePass($pass));
+    return 1;
+  }
+
+  # New scrypt hashes
+  if(length $d->{passwd} == 46) {
+    my($N, $r, $p, $salt) = unpack 'NCCa8', $d->{passwd};
+    return 0 if $self->authPreparePass($pass, $salt, $N, $r, $p) ne $d->{passwd};
     $self->{_auth} = $d;
     return 1;
   }
@@ -119,9 +132,20 @@ sub _authCheck {
 
 
 # Prepares a plaintext password for database storage
-# Arguments: pass, optionally salt
+# Arguments: pass, optionally: salt, N, r, p
 # Returns: encrypted password (as a binary string)
 sub authPreparePass {
+  my($self, $pass, $salt, $N, $r, $p) = @_;
+  ($N, $r, $p) = @{$self->{scrypt_args}} if !$N;
+  $salt ||= urandom(8);
+  return pack 'NCCa8a*', $N, $r, $p, $salt, scrypt_raw($pass, $self->{scrypt_salt} . $salt, $N, $r, $p, 32);
+}
+
+
+# Same as authPreparePass, but for the old sha256 hash.
+# Arguments: pass, optionally salt
+# Returns: encrypted password (as a binary string)
+sub _authPreparePassSha256 {
   my($self, $pass, $salt) = @_;
   $salt ||= encode_utf8(randomascii(9));
   return $salt.sha256($self->{global_salt} . encode_utf8($pass) . $salt);

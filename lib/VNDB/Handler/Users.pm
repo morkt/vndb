@@ -210,7 +210,6 @@ sub newpass {
       my $token;
       ($token, $o{passwd}) = $self->authPrepareReset();
       $self->dbUserEdit($u->{id}, %o);
-      #warn "$self->{url}/u$u->{id}/setpass?t=$token";
       $self->mail(mt('_newpass_mail_body', $u->{username}, "$self->{url}/u$u->{id}/setpass?t=$token"),
         To => $frm->{mail},
         From => 'VNDB <noreply@vndb.org>',
@@ -310,7 +309,6 @@ sub register {
     if(!$frm->{_err}) {
       my($token, $pass) = $self->authPrepareReset();
       my $uid = $self->dbUserAdd($frm->{usrname}, $pass, $frm->{mail});
-      warn "$self->{url}/u$uid/setpass?t=$token";
       $self->mail(mt('_register_mail_body', $frm->{usrname}, "$self->{url}/u$uid/setpass?t=$token"),
         To => $frm->{mail},
         From => 'VNDB <noreply@vndb.org>',
@@ -384,8 +382,8 @@ sub edit {
       $frm->{skin} = '' if $frm->{skin} eq $self->{skin_default};
       $self->dbUserPrefSet($uid, $_ => $frm->{$_}) for (qw|skin customcss show_nsfw hide_list |);
       my %o;
-      $o{username} = $frm->{usrname} if $frm->{usrname};
       if($self->authCan('usermod')) {
+        $o{username} = $frm->{usrname} if $frm->{usrname};
         $o{perm} = 0;
         $o{perm} |= $self->{permissions}{$_} for(@{ delete $frm->{perms} });
       }
@@ -393,9 +391,7 @@ sub edit {
       $o{passwd} = $self->authPreparePass($frm->{usrpass}) if $frm->{usrpass};
       $o{ign_votes} = $frm->{ign_votes} ? 1 : 0 if $self->authCan('usermod');
       $self->dbUserEdit($uid, %o);
-      $self->dbSessionDel($uid) if $frm->{usrpass};
-      return $self->resRedirect("/u$uid/edit?d=1", 'post') if $uid != $self->authInfo->{id} || !$frm->{usrpass};
-      return $self->authLogin($frm->{usrname}||$u->{username}, $frm->{usrpass}, "/u$uid/edit?d=1");
+      return $self->resRedirect("/u$uid/edit?d=1", 'post');
     }
   }
 
