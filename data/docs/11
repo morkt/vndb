@@ -1468,7 +1468,7 @@ however still required.<br />
  This section lists the changes made in each version of the VNDB code.
  Check out the <a href="/t/an">announcements board</a> for more information about updates.
 </p>
-<b>2.23</b> <b class="grayedout">(Not officially "released" yet, but you can use these additions already)</b>
+<b>2.23</b>
 <ul>
  <li>Added new 'dbstats' command</li>
  <li>Added new 'get' types: character, votelist, vnlist and wishlist</li>

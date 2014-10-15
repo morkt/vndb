@@ -28,6 +28,7 @@ Requirements
     DBI
     DBD::Pg
     Crypt::URandom
+    Crypt::ScryptKDF
     Image::Magick
     TUWF                 (get it from http://g.blicky.net/tuwf.git/)
     FCGI                 (optional, for running as a FastCGI script)
@@ -35,6 +36,7 @@ Requirements
 
   util/multi.pl:
     API:
+      Crypt::ScryptKDF
       JSON::XS
     APIDump:
       JSON::XS
