@@ -208,8 +208,9 @@ sub newpass {
     if(!$frm->{_err}) {
       my %o;
       my $token;
-      ($token, $o{passwd}, $o{salt}) = $self->authPrepareReset();
+      ($token, $o{passwd}) = $self->authPrepareReset();
       $self->dbUserEdit($u->{id}, %o);
+      #warn "$self->{url}/u$u->{id}/setpass?t=$token";
       $self->mail(mt('_newpass_mail_body', $u->{username}, "$self->{url}/u$u->{id}/setpass?t=$token"),
         To => $frm->{mail},
         From => 'VNDB <noreply@vndb.org>',
@@ -254,7 +255,7 @@ sub setpass {
   $t = $t->{t};
 
   my $u = $self->dbUserGet(uid => $uid, what => 'extended')->[0];
-  return $self->resNotFound if !$u || !$self->authValidateReset($u, $t);
+  return $self->resNotFound if !$u || !$self->authValidateReset($u->{passwd}, $t);
 
   my $frm;
   if($self->reqMethod eq 'POST') {
@@ -267,7 +268,7 @@ sub setpass {
 
     if(!$frm->{_err}) {
       my %o = (email_confirmed => 1);
-      ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->{usrpass});
+      $o{passwd} = $self->authPreparePass($frm->{usrpass});
       $self->dbUserEdit($uid, %o);
       return $self->authLogin($u->{username}, $frm->{usrpass}, "/u$uid");
     }
@@ -307,8 +308,9 @@ sub register {
     push @{$frm->{_err}}, 'oneaday'    if !$frm->{_err} && $self->dbUserGet(ip => $ip =~ /:/ ? "$ip/48" : $ip, registered => time-24*3600)->[0]{id};
 
     if(!$frm->{_err}) {
-      my($token, $pass, $salt) = $self->authPrepareReset();
-      my $uid = $self->dbUserAdd($frm->{usrname}, $pass, $salt, $frm->{mail});
+      my($token, $pass) = $self->authPrepareReset();
+      my $uid = $self->dbUserAdd($frm->{usrname}, $pass, $frm->{mail});
+      warn "$self->{url}/u$uid/setpass?t=$token";
       $self->mail(mt('_register_mail_body', $frm->{usrname}, "$self->{url}/u$uid/setpass?t=$token"),
         To => $frm->{mail},
         From => 'VNDB <noreply@vndb.org>',
@@ -388,7 +390,7 @@ sub edit {
         $o{perm} |= $self->{permissions}{$_} for(@{ delete $frm->{perms} });
       }
       $o{mail} = $frm->{mail};
-      ($o{passwd}, $o{salt}) = $self->authPreparePass($frm->{usrpass}) if $frm->{usrpass};
+      $o{passwd} = $self->authPreparePass($frm->{usrpass}) if $frm->{usrpass};
       $o{ign_votes} = $frm->{ign_votes} ? 1 : 0 if $self->authCan('usermod');
       $self->dbUserEdit($uid, %o);
       $self->dbSessionDel($uid) if $frm->{usrpass};

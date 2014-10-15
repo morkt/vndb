@@ -92,3 +92,9 @@ ALTER TABLE releases_platforms ALTER COLUMN platform TYPE platform USING platfor
 ALTER TABLE vn ALTER COLUMN c_platforms DROP DEFAULT;
 ALTER TABLE vn ALTER COLUMN c_platforms TYPE platform[] USING string_to_array(c_platforms, '/')::platform[];
 ALTER TABLE vn ALTER COLUMN c_platforms SET DEFAULT '{}';
+
+
+-- Merging passwd and salt
+--SELECT length(passwd), count(*) from users group by length(passwd);
+UPDATE users SET passwd = convert_to(salt, 'UTF-8') || passwd;
+ALTER TABLE users DROP COLUMN salt;

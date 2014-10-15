@@ -5,7 +5,7 @@ package VNDB::Util::Auth;
 use strict;
 use warnings;
 use Exporter 'import';
-use Digest::SHA qw|sha1_hex sha256_hex|;
+use Digest::SHA qw|sha1 sha1_hex sha256|;
 use Time::HiRes;
 use Encode 'encode_utf8';
 use POSIX 'strftime';
@@ -30,7 +30,7 @@ sub authInit {
   my $token = substr($cookie, 0, 40);
   my $uid  = substr($cookie, 40);
   $self->{_auth} = $uid =~ /^\d+$/ && $self->dbUserGet(uid => $uid, session => $token, what => 'extended notifycount prefs')->[0];
-  # update the sessions.lastused column if lastused < now()'6 hours'
+  # update the sessions.lastused column if lastused < now()-'6 hours'
   $self->dbSessionUpdateLastUsed($uid, $token) if $self->{_auth} && $self->{_auth}{session_lastused} < time()-6*3600;
   return $self->resCookie(auth => undef) if !$self->{_auth};
 }
@@ -103,9 +103,9 @@ sub _authCheck {
   return 0 if !$user || length($user) > 15 || length($user) < 2 || !$pass;
 
   my $d = $self->dbUserGet(username => $user, what => 'extended notifycount')->[0];
-  return 0 if !$d->{id} || $d->{salt} =~ /^ *$/;
+  return 0 if !$d->{id} || length $d->{passwd} != 41;
 
-  if(_authEncryptPass($self, $pass, $d->{salt}) eq $d->{passwd}) {
+  if($self->authPreparePass($pass, substr $d->{passwd}, 0, 9) eq $d->{passwd}) {
     $self->{_auth} = $d;
     return 1;
   }
@@ -114,43 +114,34 @@ sub _authCheck {
 }
 
 
-# Encryption algorithm for user passwords
-# Arguments: self, pass, salt
-# Returns: encrypted password (in hex)
-sub _authEncryptPass {
-  my($self, $pass, $salt, $bin) = @_;
-  return sha256_hex($self->{global_salt} . encode_utf8($pass) . encode_utf8($salt));
-}
-
-
 # Prepares a plaintext password for database storage
-# Arguments: pass
-# Returns: list (pass, salt)
+# Arguments: pass, optionally salt
+# Returns: encrypted password (as a binary string)
 sub authPreparePass {
-  my($self, $pass) = @_;
-  my $salt = join '', map chr(rand(93)+33), 1..9;
-  my $hash = _authEncryptPass($self, $pass, $salt);
-  return ($hash, $salt);
+  my($self, $pass, $salt) = @_;
+  $salt ||= encode_utf8(join '', map chr(rand(93)+33), 1..9);
+  return $salt.sha256($self->{global_salt} . encode_utf8($pass) . $salt);
 }
 
 
 # Generates a random token that can be used to reset the password.
-# Returns: token, token-encrypted, salt
+# Returns: token (hex string), token-encrypted (binary string)
 sub authPrepareReset {
   my $self = shift;
   my $token = sha1_hex(join('', Time::HiRes::gettimeofday()) . join('', map chr(rand(93)+33), 1..9));
   my $salt = join '', map chr(rand(93)+33), 1..9;
-  my $token_e = sha1_hex(lc($token).$salt);
-  return ($token, $token_e, $salt);
+  my $token_e = encode_utf8($salt) . sha1(lc($token).$salt);
+  return ($token, $token_e);
 }
 
 
 # Checks whether the password reset token is valid.
-# Arguments: $u obj, token
+# Arguments: passwd (binary string), token (hex string)
 sub authValidateReset {
-  my($self, $u, $t) = @_;
-  return 0 if !$u->{salt} || !$u->{passwd} || length $u->{passwd} != 40
-    || lc sha1_hex(lc($t).$u->{salt}) ne lc $u->{passwd};
+  my($self, $passwd, $token) = @_;
+  return 0 if length $passwd != 29;
+  my $salt = substr $passwd, 0, 9;
+  return 0 if $salt.sha1(lc($token).$salt) ne $passwd;
   return 1;
 }
 

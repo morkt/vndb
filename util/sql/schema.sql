@@ -363,13 +363,21 @@ CREATE TABLE users (
   username varchar(20) NOT NULL UNIQUE,
   mail varchar(100) NOT NULL,
   perm smallint NOT NULL DEFAULT 1+4+16,
+  -- Interpretation of the passwd column depends on its length:
+  -- * 29 bytes: Password reset token
+  --   First 9 bytes: salt (ASCII)
+  --   Latter 20 bytes: sha1(hex(token) + salt)
+  --   'token' is a sha1 digest obtained from random data.
+  -- * 41 bytes: Hashed/salted password
+  --   First 9 bytes: salt (ASCII)
+  --   Latter 32 bytes: sha256(global_salt + password + salt)
+  -- * Anything else: Invalid, account disabled.
   passwd bytea NOT NULL DEFAULT '',
   registered timestamptz NOT NULL DEFAULT NOW(),
   c_votes integer NOT NULL DEFAULT 0,
   c_changes integer NOT NULL DEFAULT 0,
   ip inet NOT NULL DEFAULT '0.0.0.0',
   c_tags integer NOT NULL DEFAULT 0,
-  salt character(9) NOT NULL DEFAULT '',
   ign_votes boolean NOT NULL DEFAULT FALSE,
   email_confirmed boolean NOT NULL DEFAULT FALSE
 );

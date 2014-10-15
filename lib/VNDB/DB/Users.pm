@@ -55,10 +55,7 @@ sub dbUserGet {
   my @select = (
     qw|id username c_votes c_changes c_tags|,
     q|extract('epoch' from registered) as registered|,
-    $o{what} =~ /extended/ ? (
-      qw|mail perm salt ign_votes|,
-      q|encode(passwd, 'hex') AS passwd|
-    ) : (),
+    $o{what} =~ /extended/ ? qw|mail perm ign_votes passwd| : (),
     $o{what} =~ /hide_list/ ? 'up.value AS hide_list' : (),
     $o{what} =~ /notifycount/ ?
       '(SELECT COUNT(*) FROM notifications WHERE uid = u.id AND read IS NULL) AS notifycount' : (),
@@ -119,9 +116,10 @@ sub dbUserEdit {
 
   my %h;
   defined $o{$_} && ($h{$_.' = ?'} = $o{$_})
-    for (qw| username mail perm salt ign_votes email_confirmed |);
-  $h{'passwd = decode(?, \'hex\')'} = $o{passwd}
+    for (qw| username mail perm ign_votes email_confirmed |);
+  $h{'passwd = decode(?, \'hex\')'} = unpack 'H*', $o{passwd}
     if defined $o{passwd};
+
 
   return if scalar keys %h <= 0;
   return $s->dbExec(q|
@@ -132,11 +130,11 @@ sub dbUserEdit {
 }
 
 
-# username, pass(ecrypted), salt, mail, [ip]
+# username, pass(ecrypted), mail, [ip]
 sub dbUserAdd {
   my($s, @o) = @_;
-  $s->dbRow(q|INSERT INTO users (username, passwd, salt, mail, ip) VALUES(?, decode(?, 'hex'), ?, ?, ?) RETURNING id|,
-    @o[0..3], $o[4]||$s->reqIP)->{id};
+  $s->dbRow(q|INSERT INTO users (username, passwd, mail, ip) VALUES(?, decode(?, 'hex'), ?, ?) RETURNING id|,
+    $o[0], unpack('H*', $o[1]), $o[2], $o[3]||$s->reqIP)->{id};
 }
 
 
