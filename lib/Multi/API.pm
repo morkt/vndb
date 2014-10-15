@@ -11,9 +11,10 @@ use Socket 'inet_ntoa', 'SO_KEEPALIVE', 'SOL_SOCKET', 'IPPROTO_TCP';
 use Errno 'ECONNABORTED', 'ECONNRESET';
 use POE 'Wheel::SocketFactory', 'Wheel::ReadWrite';
 use POE::Filter::VNDBAPI 'encode_filters';
-use Digest::SHA 'sha256_hex';
+use Digest::SHA 'sha256';
 use Encode 'encode_utf8';
 use Time::HiRes 'time'; # important for throttling
+use Crypt::ScryptKDF 'scrypt_raw';;
 use VNDBUtil 'normalize_query', 'norm_ip';
 use JSON::XS;
 
@@ -443,7 +444,7 @@ sub login_throttle {
     if $tm-time() > $VNDB::S{login_throttle}[1];
 
   # fetch user info
-  $_[KERNEL]->post(pg => query => "SELECT id, salt, encode(passwd, 'hex') as passwd FROM users WHERE username = ?",
+  $_[KERNEL]->post(pg => query => "SELECT id, passwd as passwd FROM users WHERE username = ?",
     [ $arg->{username} ], 'login_res', [ $c, $arg, $tm ]);
 }
 
@@ -451,12 +452,25 @@ sub login_throttle {
 sub login_res { # num, res, [ c, arg, tm ]
   my($num, $res, $c, $arg, $tm) = (@_[ARG0, ARG1], $_[ARG2][0], $_[ARG2][1], $_[ARG2][2]);
 
+  my $passwd = $res->[0]{passwd};
+  my $accepted = 0;
+
   return cerr $c, auth => "No user with the name '$arg->{username}'" if $num == 0;
-  return cerr $c, auth => "Account disabled" if $res->[0]{salt} =~ /^ +$/;
+  return cerr $c, auth => "Account disabled" if length $passwd != 41 && length $passwd != 46;
 
-  my $encrypted = sha256_hex($VNDB::S{global_salt}.encode_utf8($arg->{password}).encode_utf8($res->[0]{salt}));
+  # Old sha256
+  if(length $passwd == 41) {
+    my $salt = substr $passwd, 0, 9;
+    $accepted = sha256($VNDB::S{global_salt}.encode_utf8($arg->{password}).$salt) eq substr $passwd, 9;
+  }
 
-  if(lc($encrypted) ne lc($res->[0]{passwd})) {
+  # New scrypt
+  if(length $passwd == 46) {
+    my($N, $r, $p, $salt, $hash) = unpack 'NCCa8a*', $passwd;
+    $accepted = $hash eq scrypt_raw($arg->{password}, $VNDB::S{scrypt_salt} . $salt, $N, $r, $p, 32);
+  }
+
+  if(!$accepted) {
     $tm += $VNDB::S{login_throttle}[0];
     $_[KERNEL]->post(pg => do => 'UPDATE login_throttle SET timeout = to_timestamp(?) WHERE ip = ?', [ $tm, $c->{ip} ]);
     $_[KERNEL]->post(pg => do =>
