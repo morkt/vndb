@@ -458,9 +458,9 @@ sub login_res { # num, res, [ c, arg, tm ]
 
   if(lc($encrypted) ne lc($res->[0]{passwd})) {
     $tm += $VNDB::S{login_throttle}[0];
-    $_[KERNEL]->post(pg => do => 'UPDATE login_throttle SET timeout = ? WHERE ip = ?', [ $tm, $c->{ip} ]);
+    $_[KERNEL]->post(pg => do => 'UPDATE login_throttle SET timeout = to_timestamp(?) WHERE ip = ?', [ $tm, $c->{ip} ]);
     $_[KERNEL]->post(pg => do =>
-      'INSERT INTO login_throttle (ip, timeout) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM login_throttle WHERE ip = ?)',
+      'INSERT INTO login_throttle (ip, timeout) SELECT ?, to_timestamp(?) WHERE NOT EXISTS(SELECT 1 FROM login_throttle WHERE ip = ?)',
       [  $c->{ip}, $tm, $c->{ip} ]);
     return cerr $c, auth => "Wrong password for user '$arg->{username}'";
   }
