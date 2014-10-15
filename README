@@ -27,6 +27,7 @@ Requirements
     Algorithm::Diff::XS
     DBI
     DBD::Pg
+    Crypt::URandom
     Image::Magick
     TUWF                 (get it from http://g.blicky.net/tuwf.git/)
     FCGI                 (optional, for running as a FastCGI script)

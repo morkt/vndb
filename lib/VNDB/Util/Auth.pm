@@ -6,9 +6,8 @@ use strict;
 use warnings;
 use Exporter 'import';
 use Digest::SHA qw|sha1 sha1_hex sha256|;
-use Time::HiRes;
+use Crypt::URandom 'urandom';
 use Encode 'encode_utf8';
-use POSIX 'strftime';
 use TUWF ':html';
 use VNDB::Func;
 
@@ -17,6 +16,11 @@ our @EXPORT = qw|
   authInit authLogin authLogout authInfo authCan authPreparePass
   authPrepareReset authValidateReset authGetCode authCheckCode authPref
 |;
+
+
+sub randomascii {
+  return join '', map chr($_%92+33), unpack 'C*', urandom shift;
+}
 
 
 # initializes authentication information and checks the vndb_auth cookie
@@ -45,7 +49,7 @@ sub authLogin {
   my $to = shift;
 
   if(_authCheck($self, $user, $pass)) {
-    my $token = sha1_hex(join('', Time::HiRes::gettimeofday()) . join('', map chr(rand(93)+33), 1..9));
+    my $token = unpack 'H*', urandom(20);
     my $cookie = $token . $self->{_auth}{id};
     $self->dbSessionAdd($self->{_auth}{id}, $token);
 
@@ -119,7 +123,7 @@ sub _authCheck {
 # Returns: encrypted password (as a binary string)
 sub authPreparePass {
   my($self, $pass, $salt) = @_;
-  $salt ||= encode_utf8(join '', map chr(rand(93)+33), 1..9);
+  $salt ||= encode_utf8(randomascii(9));
   return $salt.sha256($self->{global_salt} . encode_utf8($pass) . $salt);
 }
 
@@ -128,8 +132,8 @@ sub authPreparePass {
 # Returns: token (hex string), token-encrypted (binary string)
 sub authPrepareReset {
   my $self = shift;
-  my $token = sha1_hex(join('', Time::HiRes::gettimeofday()) . join('', map chr(rand(93)+33), 1..9));
-  my $salt = join '', map chr(rand(93)+33), 1..9;
+  my $token = unpack 'H*', urandom(20);
+  my $salt = randomascii(9);
   my $token_e = encode_utf8($salt) . sha1(lc($token).$salt);
   return ($token, $token_e);
 }
