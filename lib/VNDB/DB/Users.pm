@@ -49,7 +49,7 @@ sub dbUserGet {
     $o{search} ? (
       'username ILIKE ?' => "%$o{search}%") : (),
     $o{session} ? (
-      q|s.token = decode(?, 'hex')| => $o{session} ) : (),
+      q|s.token = decode(?, 'hex')| => unpack 'H*', $o{session} ) : (),
   );
 
   my @select = (
@@ -156,7 +156,7 @@ sub dbUserPrefSet {
 # Adds a session to the database
 # uid, 40 character session token
 sub dbSessionAdd {
-  $_[0]->dbExec(q|INSERT INTO sessions (uid, token) VALUES(?, decode(?, 'hex'))|, @_[1,2]);
+  $_[0]->dbExec(q|INSERT INTO sessions (uid, token) VALUES(?, decode(?, 'hex'))|, $_[1], unpack 'H*', $_[2]);
 }
 
 
@@ -166,14 +166,14 @@ sub dbSessionAdd {
 sub dbSessionDel {
   my($s, @o) = @_;
   my %where = ('uid = ?' => $o[0]);
-  $where{"token = decode(?, 'hex')"} = $o[1] if $o[1];
+  $where{"token = decode(?, 'hex')"} = unpack 'H*', $o[1] if $o[1];
   $s->dbExec('DELETE FROM sessions !W', \%where);
 }
 
 
 # uid, token
 sub dbSessionUpdateLastUsed {
-  $_[0]->dbExec(q|UPDATE sessions SET lastused = NOW() WHERE uid = ? AND token = decode(?, 'hex')|, $_[1], $_[2]);
+  $_[0]->dbExec(q|UPDATE sessions SET lastused = NOW() WHERE uid = ? AND token = decode(?, 'hex')|, $_[1], unpack 'H*', $_[2]);
 }
 
 

@@ -24,20 +24,26 @@ sub randomascii {
 }
 
 
+# Fetches and parses the auth cookie.
+# Returns (uid, encrypted_token) on success, (0, '') on failure.
+sub parsecookie {
+  # Earlier versions of the auth cookie didn't have the dot separator, so that's optional.
+  return ($_[0]->reqCookie('auth')||'') =~ /^([a-zA-Z0-9]{40})\.?(\d+)$/ ? ($2, sha1 pack 'H*', $1) : (0, '');
+}
+
+
 # initializes authentication information and checks the vndb_auth cookie
 sub authInit {
   my $self = shift;
-  $self->{_auth} = undef;
 
-  my $cookie = $self->reqCookie('auth');
-  return 0 if !$cookie;
-  return $self->resCookie(auth => undef) if length($cookie) < 41;
-  my $token = substr($cookie, 0, 40);
-  my $uid  = substr($cookie, 40);
-  $self->{_auth} = $uid =~ /^\d+$/ && $self->dbUserGet(uid => $uid, session => $token, what => 'extended notifycount prefs')->[0];
+  my($uid, $token_e) = parsecookie($self);
+  $self->{_auth} = $uid && $self->dbUserGet(uid => $uid, session => $token_e, what => 'extended notifycount prefs')->[0];
+
   # update the sessions.lastused column if lastused < now()-'6 hours'
-  $self->dbSessionUpdateLastUsed($uid, $token) if $self->{_auth} && $self->{_auth}{session_lastused} < time()-6*3600;
-  return $self->resCookie(auth => undef) if !$self->{_auth};
+  $self->dbSessionUpdateLastUsed($uid, $token_e) if $self->{_auth} && $self->{_auth}{session_lastused} < time()-6*3600;
+
+  # Drop the cookie if it's not valid
+  $self->resCookie(auth => undef) if !$self->{_auth} && $self->reqCookie('auth');
 }
 
 
@@ -50,9 +56,9 @@ sub authLogin {
   my $to = shift;
 
   if(_authCheck($self, $user, $pass)) {
-    my $token = unpack 'H*', urandom(20);
-    my $cookie = $token . $self->{_auth}{id};
-    $self->dbSessionAdd($self->{_auth}{id}, $token);
+    my $token = urandom(20);
+    my $cookie = unpack('H*', $token).'.'.$self->{_auth}{id};
+    $self->dbSessionAdd($self->{_auth}{id}, sha1 $token);
 
     $self->resRedirect($to, 'post');
     $self->resCookie(auth => $cookie, expires => time + 31536000); # keep the cookie for 1 year
@@ -67,12 +73,8 @@ sub authLogin {
 sub authLogout {
   my $self = shift;
 
-  my $cookie = $self->reqCookie('auth');
-  if ($cookie && length($cookie) >= 41) {
-    my $token = substr($cookie, 0, 40);
-    my $uid  = substr($cookie, 40);
-    $self->dbSessionDel($uid, $token);
-  }
+  my($uid, $token_e) = parsecookie($self);
+  $self->dbSessionDel($uid, $token_e) if $uid;
 
   $self->resRedirect('/', 'temp');
   $self->resCookie(auth => undef);
