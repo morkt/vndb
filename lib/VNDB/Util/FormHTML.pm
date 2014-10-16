@@ -93,7 +93,7 @@ sub htmlFormPart {
       lit '&nbsp;';
      end;
      td class => 'field';
-      input type => 'checkbox', name => $o{short}, id => $o{short},
+      input type => 'checkbox', name => $o{short}, id => $o{short}, tabindex => 10,
         value => $o{value}||1, ($frm->{$o{short}}||0) eq ($o{value}||1) ? ( checked => 'checked' ) : ();
       label for => $o{short};
        lit $o{name};
@@ -120,12 +120,12 @@ sub htmlFormPart {
    td class => 'field', $o{nolabel} ? (colspan => 2) : ();
     if(/input/) {
       lit $o{pre} if $o{pre};
-      input type => 'text', class => 'text', name => $o{short}, id => $o{short},
+      input type => 'text', class => 'text', name => $o{short}, id => $o{short}, tabindex => 10,
         value => $frm->{$o{short}}||'', $o{width} ? (style => "width: $o{width}px") : ();
       lit $o{post} if $o{post};
     }
     if(/passwd/) {
-      input type => 'password', class => 'text', name => $o{short}, id => $o{short},
+      input type => 'password', class => 'text', name => $o{short}, id => $o{short}, tabindex => 10,
         value => $frm->{$o{short}}||'';
     }
     if(/static/) {
@@ -133,7 +133,8 @@ sub htmlFormPart {
     }
     if(/select/) {
       my $l='';
-      Select name => $o{short}, id => $o{short}, $o{width} ? (style => "width: $o{width}px") : (), $o{multi} ? (multiple => 'multiple', size => $o{size}||5) : ();
+      Select name => $o{short}, id => $o{short}, tabindex => 10,
+        $o{width} ? (style => "width: $o{width}px") : (), $o{multi} ? (multiple => 'multiple', size => $o{size}||5) : ();
        for my $p (@{$o{options}}) {
          if($p->[2] && $l ne $p->[2]) {
            end if $l;
@@ -148,16 +149,16 @@ sub htmlFormPart {
     }
     if(/radio/) {
       for my $p (@{$o{options}}) {
-        input type => 'radio', id => "$o{short}_$p->[0]", name => $o{short}, value => $p->[0],
+        input type => 'radio', id => "$o{short}_$p->[0]", name => $o{short}, value => $p->[0], tabindex => 10,
           defined $frm->{$o{short}} && $frm->{$o{short}} eq $p->[0] ? (checked => 'checked') : ();
         label for => "$o{short}_$p->[0]", $p->[1];
       }
     }
     if(/date/) {
-      input type => 'hidden', id => $o{short}, name => $o{short}, value => $frm->{$o{short}}||'', class => 'dateinput';
+      input type => 'hidden', id => $o{short}, name => $o{short}, value => $frm->{$o{short}}||'', tabindex => 10, class => 'dateinput';
     }
     if(/text/) {
-      textarea name => $o{short}, id => $o{short}, rows => $o{rows}||5, cols => $o{cols}||60, $frm->{$o{short}}||'';
+      textarea name => $o{short}, id => $o{short}, rows => $o{rows}||5, cols => $o{cols}||60, tabindex => 10, $frm->{$o{short}}||'';
     }
    end;
   end 'tr';
@@ -222,9 +223,11 @@ sub htmlForm {
       if($options->{editsum}) {
         # hidden / locked checkbox
         if($self->authCan('dbmod')) {
-          input type => 'checkbox', name => 'ihid', id => 'ihid', value => 1, $options->{frm}{ihid} ? (checked => 'checked') : ();
+          input type => 'checkbox', name => 'ihid', id => 'ihid', value => 1,
+            tabindex => 10, $options->{frm}{ihid} ? (checked => 'checked') : ();
           label for => 'ihid', mt '_form_ihid';
-          input type => 'checkbox', name => 'ilock', id => 'ilock', value => 1, $options->{frm}{ilock} ? (checked => 'checked') : ();
+          input type => 'checkbox', name => 'ilock', id => 'ilock', value => 1,
+            tabindex => 10, $options->{frm}{ilock} ? (checked => 'checked') : ();
           label for => 'ilock', mt '_form_ilock';
           br; txt mt('_form_hidlock_note'); br;
         }
@@ -238,10 +241,11 @@ sub htmlForm {
         br;
       }
       if(!$options->{continue}) {
-        input type => 'submit', value => mt('_form_submit'), class => 'submit';
+        input type => 'submit', value => mt('_form_submit'), class => 'submit', tabindex => 10;
       } else {
-        input type => 'submit', value => mt('_form_continue'), class => 'submit';
-        input type => 'submit', name => 'continue_ign', value => mt('_form_continue_ign'), class => 'submit', style => 'width: auto' if $options->{continue} == 2;
+        input type => 'submit', value => mt('_form_continue'), class => 'submit', tabindex => 10;
+        input type => 'submit', name => 'continue_ign', value => mt('_form_continue_ign'),
+          class => 'submit', style => 'width: auto', tabindex => 10 if $options->{continue} == 2;
       }
      end;
     end 'div';
