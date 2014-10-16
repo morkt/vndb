@@ -255,7 +255,7 @@ sub edit {
   return $self->resNotFound if $id && !$r->{id};
   $rev = undef if !$r || $r->{cid} == $r->{latest};
 
-  return $self->htmlDenied if !$self->authCan('charedit')
+  return $self->htmlDenied if !$self->authCan('edit')
     || $id && (($r->{locked} || $r->{hidden}) && !$self->authCan('dbmod'));
 
   my %b4 = !$id ? () : (

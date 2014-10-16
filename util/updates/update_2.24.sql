@@ -4,3 +4,7 @@
 -- CREATE EXTENSION pgcrypto;
 UPDATE sessions SET token = digest(token, 'sha1');
 -- DROP EXTENSION pgcrypto;
+
+
+-- No more 'charedit' permission flag
+UPDATE users SET perm = (perm & ~8);

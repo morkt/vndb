@@ -66,16 +66,15 @@ sub htmlMainTabs {
      end;
    }
 
-   if(($type eq 'r' && $self->authCan('edit') || $type eq 'c' && $self->authCan('charedit')) && $self->authInfo->{c_changes} > 0) {
+   if(($type =~ /[rc]/ && $self->authCan('edit')) && $self->authInfo->{c_changes} > 0) {
      li $sel eq 'copy' ? (class => 'tabselected') : ();
       a href => "/$id/copy", mt '_mtabs_copy';
      end;
    }
 
-   if(   $type eq 'u'     && ($self->authInfo->{id} && $obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))
-      || $type =~ /[vrp]/ && $self->authCan('edit') && ((!$obj->{locked} && !$obj->{hidden}) || $self->authCan('dbmod'))
-      || $type eq 'c'     && $self->authCan('charedit') && ((!$obj->{locked} && !$obj->{hidden}) || $self->authCan('dbmod'))
-      || $type =~ /[gi]/  && $self->authCan('tagmod')
+   if(   $type eq 'u'      && ($self->authInfo->{id} && $obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))
+      || $type =~ /[vrpc]/ && $self->authCan('edit') && ((!$obj->{locked} && !$obj->{hidden}) || $self->authCan('dbmod'))
+      || $type =~ /[gi]/   && $self->authCan('tagmod')
    ) {
      li $sel eq 'edit' ? (class => 'tabselected') : ();
       a href => "/$id/edit", mt '_mtabs_edit';
@@ -333,7 +332,7 @@ sub htmlItemMessage {
     p class => 'locked';
      lit mt '_itemmsg_login', '/u/login';
     end;
-  } elsif(!$self->authCan($type eq 'c' ? 'charedit' : 'edit')) {
+  } elsif(!$self->authCan('edit')) {
     p class => 'locked', mt '_itemmsg_denied';
   }
 }

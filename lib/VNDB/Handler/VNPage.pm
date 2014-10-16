@@ -652,9 +652,7 @@ sub page {
        li class => 'left '.( $char ? ' tabselected' : ''); a href => "/v$v->{id}/chars#chars", name => 'chars', mt '_vnpage_tab_chars'; end;
      }
      if($self->authCan('edit')) {
-       if($self->authCan('charedit')) {
-         li; a href => "/c/new?vid=$v->{id}", mt '_vnpage_char_add'; end;
-       }
+       li; a href => "/c/new?vid=$v->{id}", mt '_vnpage_char_add'; end;
        li; a href => "/v$v->{id}/add", mt '_vnpage_rel_add'; end;
      }
     end;

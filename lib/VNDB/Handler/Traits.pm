@@ -57,7 +57,7 @@ sub traitpage {
   }
 
   div class => 'mainbox';
-   a class => 'addnew', href => "/i$trait/add", mt '_traitp_addchild' if $self->authCan('charedit') && $t->{state} != 1;
+   a class => 'addnew', href => "/i$trait/add", mt '_traitp_addchild' if $self->authCan('edit') && $t->{state} != 1;
    h1 $title;
 
    parenttags($t, mt('_traitp_indexlink'), 'i');
@@ -132,7 +132,7 @@ sub traitedit {
     $trait = undef;
   }
 
-  return $self->htmlDenied if !$self->authCan('charedit') || $trait && !$self->authCan('tagmod');
+  return $self->htmlDenied if !$self->authCan('edit') || $trait && !$self->authCan('tagmod');
 
   my $t = $trait && $self->dbTraitGet(id => $trait, what => 'parents(1) addedby')->[0];
   return $self->resNotFound if $trait && !$t;
@@ -327,7 +327,7 @@ sub traitindex {
 
   $self->htmlHeader(title => mt '_traiti_title');
   div class => 'mainbox';
-   a class => 'addnew', href => "/i/new", mt '_traiti_create' if $self->authCan('charedit');
+   a class => 'addnew', href => "/i/new", mt '_traiti_create' if $self->authCan('edit');
    h1 mt '_traiti_search';
    form action => '/i/list', 'accept-charset' => 'UTF-8', method => 'get';
     $self->htmlSearchBox('i', '');
