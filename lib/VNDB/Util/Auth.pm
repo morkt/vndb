@@ -61,7 +61,7 @@ sub authLogin {
     $self->dbSessionAdd($self->{_auth}{id}, sha1 $token);
 
     $self->resRedirect($to, 'post');
-    $self->resCookie(auth => $cookie, expires => time + 31536000); # keep the cookie for 1 year
+    $self->resCookie(auth => $cookie, httponly => 1, expires => time + 31536000); # keep the cookie for 1 year
     return 1;
   }
 
