@@ -155,7 +155,7 @@ sub htmlFormPart {
       }
     }
     if(/date/) {
-      input type => 'hidden', id => $o{short}, name => $o{short}, value => $frm->{$o{short}}||'', tabindex => 10, class => 'dateinput';
+      input type => 'hidden', id => $o{short}, name => $o{short}, value => $frm->{$o{short}}||'', class => 'dateinput';
     }
     if(/text/) {
       textarea name => $o{short}, id => $o{short}, rows => $o{rows}||5, cols => $o{cols}||60, tabindex => 10, $frm->{$o{short}}||'';

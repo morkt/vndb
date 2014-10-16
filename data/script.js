@@ -550,18 +550,22 @@ tvsInit();
 /*  D A T E   I N P U T  */
 
 function dateLoad(obj, serfunc) {
-  var year = tag('select', {style: 'width: 70px', onfocus:serfunc, onchange: dateSerialize},
+  var year = tag('select', {style: 'width: 70px', onfocus:serfunc, onchange: dateSerialize, tabIndex: 10},
     tag('option', {value:0}, mt('_js_date_year')),
     tag('option', {value: 9999}, 'TBA')
   );
   for(var i=(new Date()).getFullYear()+5; i>=1980; i--)
     year.appendChild(tag('option', {value: i}, i));
 
-  var month = tag('select', {style: 'width: 70px', onfocus:serfunc, onchange: dateSerialize}, tag('option', {value:99}, mt('_js_date_month')));
+  var month = tag('select', {style: 'width: 70px', onfocus:serfunc, onchange: dateSerialize, tabIndex: 10},
+    tag('option', {value:99}, mt('_js_date_month'))
+  );
   for(var i=1; i<=12; i++)
     month.appendChild(tag('option', {value: i}, i));
 
-  var day = tag('select', {style: 'width: 70px', onfocus:serfunc, onchange: dateSerialize}, tag('option', {value:99}, mt('_js_date_day')));
+  var day = tag('select', {style: 'width: 70px', onfocus:serfunc, onchange: dateSerialize, tabIndex: 10},
+    tag('option', {value:99}, mt('_js_date_day'))
+  );
   for(var i=1; i<=31; i++)
     day.appendChild(tag('option', {value: i}, i));
 
