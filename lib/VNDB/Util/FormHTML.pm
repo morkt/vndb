@@ -237,7 +237,7 @@ sub htmlForm {
          txt mt '_form_editsum';
          b class => 'standout', ' ('.mt('_inenglish').')';
         end;
-        textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50, $options->{frm}{editsum}||'';
+        textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50, tabindex => 10, $options->{frm}{editsum}||'';
         br;
       }
       if(!$options->{continue}) {
