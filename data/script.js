@@ -2926,6 +2926,7 @@ if(byId('searchtabs')) {
   var f = function() {
     var str = byId('q').value;
     if(str.length > 1) {
+      this.href = this.href.split('?')[0];
       if(this.href.indexOf('/g') >= 0 || this.href.indexOf('/i') >= 0)
         this.href += '/list';
       this.href += '?q=' + encodeURIComponent(str);
