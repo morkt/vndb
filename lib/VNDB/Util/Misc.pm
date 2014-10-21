@@ -105,7 +105,8 @@ sub ieCheck {
     $self->reqHeader('User-Agent') !~ /MSIE [67]/ || $self->reqCookie('ie_sucks');
 
   if($self->reqGet('i-still-want-access')) {
-    (my $ref = $self->reqHeader('Referer') || '/') =~ s/^\Q$self->{url}//;
+    my $b = $self->reqBaseURI();
+    (my $ref = $self->reqHeader('Referer') || '/') =~ s/^\Q$b//;
     $self->resRedirect($ref, 'temp');
     $self->resCookie('ie_sucks' => 1);
     return;

@@ -350,7 +350,8 @@ sub setlang {
 
   my $browser = VNDB::L10N->get_handle()->language_tag();
 
-  (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$self->{url}//;
+  my $b = $self->reqBaseURI();
+  (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$b//;
   $self->resRedirect($ref, 'post');
   if($lang ne $self->{l10n}->language_tag()) {
     $self->authInfo->{id}
@@ -396,6 +397,7 @@ sub prefs {
 
 sub opensearch {
   my $self = shift;
+  my $h = $self->reqBaseURI();
   $self->resHeader('Content-Type' => 'application/opensearchdescription+xml');
   xml;
   tag 'OpenSearchDescription',
@@ -403,12 +405,12 @@ sub opensearch {
    tag 'ShortName', 'VNDB';
    tag 'LongName', 'VNDB.org visual novel search';
    tag 'Description', 'Search visual vovels on VNDB.org';
-   tag 'Image', width => 16, height => 16, type => 'image/x-icon', $self->{url}.'/favicon.ico'
+   tag 'Image', width => 16, height => 16, type => 'image/x-icon', "$h/favicon.ico"
      if -s "$VNDB::ROOT/www/favicon.ico";
-   tag 'Url', type => 'text/html', method => 'get', template => $self->{url}.'/v/all?q={searchTerms}', undef;
-   tag 'Url', type => 'application/opensearchdescription+xml', rel => 'self', template => $self->{url}.'/opensearch.xml', undef;
+   tag 'Url', type => 'text/html', method => 'get', template => "$h/v/all?q={searchTerms}", undef;
+   tag 'Url', type => 'application/opensearchdescription+xml', rel => 'self', template => "$h/opensearch.xml", undef;
    tag 'Query', role => 'example', searchTerms => 'Tsukihime', undef;
-   tag 'moz:SearchForm', $self->{url}.'/v/all';
+   tag 'moz:SearchForm', "$h/v/all";
   end 'OpenSearchDescription';
 }
 

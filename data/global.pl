@@ -20,7 +20,7 @@ our %O = (
 # VNDB-specific options (object_data)
 our %S = (%S,
   version         => `cd $VNDB::ROOT; git describe` =~ /^(.+)$/ && $1,
-  url             => 'http://vndb.org',
+  url             => 'http://vndb.org',   # Only used by Multi, web pages infer their own address
   url_static      => 'http://s.vndb.org',
   skin_default    => 'angel',
   global_salt     => 'any-private-string-here',

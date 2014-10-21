@@ -25,7 +25,7 @@ sub htmlHeader { # %options->{ title, noindex, search, feeds, svg }
     title $o{title};
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
     Link rel => 'stylesheet', href => $self->{url_static}.'/s/'.$skin.'/style.css?'.$self->{version}, type => 'text/css', media => 'all';
-    Link rel => 'search', type => 'application/opensearchdescription+xml', title => 'VNDB VN Search', href => $self->{url}.'/opensearch.xml';
+    Link rel => 'search', type => 'application/opensearchdescription+xml', title => 'VNDB VN Search', href => $self->reqBaseURI().'/opensearch.xml';
     if($self->authPref('customcss')) {
       (my $css = $self->authPref('customcss')) =~ s/\n/ /g;
       style type => 'text/css', $css;

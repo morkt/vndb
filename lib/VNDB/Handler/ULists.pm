@@ -101,7 +101,8 @@ sub rlist_e {
   $self->dbRListAdd($uid, $rid, $f->{e}) if $f->{e} >= 0;
 
   if($id) {
-    (my $ref = $self->reqHeader('Referer')||"/r$id") =~ s/^\Q$self->{url}//;
+    my $b = $self->reqBaseURI();
+    (my $ref = $self->reqHeader('Referer')||"/r$id") =~ s/^\Q$b//;
     $self->resRedirect($ref, 'temp');
   } else {
     # doesn't really matter what we return, as long as it's XML

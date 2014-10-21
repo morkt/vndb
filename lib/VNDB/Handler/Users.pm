@@ -162,7 +162,8 @@ sub login {
       { post => 'usrpass', required => 1, minlength => 4, maxlength => 64, template => 'asciiprint' },
     );
 
-    (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$self->{url}//;
+    my $b = $self->reqBaseURI();
+    (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$b//;
     $ref = '/' if $ref =~ /^\/u\//;
     if(!$frm->{_err}) {
       return if $self->authLogin($frm->{usrname}, $frm->{usrpass}, $ref);
@@ -210,7 +211,7 @@ sub newpass {
       my $token;
       ($token, $o{passwd}) = $self->authPrepareReset();
       $self->dbUserEdit($u->{id}, %o);
-      $self->mail(mt('_newpass_mail_body', $u->{username}, "$self->{url}/u$u->{id}/setpass?t=$token"),
+      $self->mail(mt('_newpass_mail_body', $u->{username}, $self->reqBaseURI()."/u$u->{id}/setpass?t=$token"),
         To => $frm->{mail},
         From => 'VNDB <noreply@vndb.org>',
         Subject => mt('_newpass_mail_subject', $u->{username}),
@@ -309,7 +310,7 @@ sub register {
     if(!$frm->{_err}) {
       my($token, $pass) = $self->authPrepareReset();
       my $uid = $self->dbUserAdd($frm->{usrname}, $pass, $frm->{mail});
-      $self->mail(mt('_register_mail_body', $frm->{usrname}, "$self->{url}/u$uid/setpass?t=$token"),
+      $self->mail(mt('_register_mail_body', $frm->{usrname}, $self->reqBaseURI()."/u$uid/setpass?t=$token"),
         To => $frm->{mail},
         From => 'VNDB <noreply@vndb.org>',
         Subject => mt('_register_mail_subject', $frm->{usrname}),
