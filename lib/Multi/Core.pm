@@ -7,18 +7,22 @@ package Multi::Core;
 
 use strict;
 use warnings;
-use POE;
-use POE::Component::Pg;
+use AnyEvent;
+use AnyEvent::Log;
+use AnyEvent::Pg::Pool;
 use DBI;
 use POSIX 'setsid', 'pause', 'SIGUSR1';
+use Exporter 'import';
+
+our @EXPORT = qw|PG|;
+our $PG;
 
 
-sub run {
-  my $p = shift;
+my $logger;
+my $pidfile;
 
-  die "PID file already exists\n" if -e "$VNDB::ROOT/data/multi.pid";
 
-  # fork
+sub daemon_init {
   my $pid = fork();
   die "fork(): $!" if !defined $pid or $pid < 0;
 
@@ -27,7 +31,7 @@ sub run {
     $SIG{CHLD} = sub { die "Initialization failed.\n"; };
     $SIG{ALRM} = sub { kill $pid, 9; die "Initialization timeout.\n"; };
     $SIG{USR1} = sub {
-      open my $P, '>', "$VNDB::ROOT/data/multi.pid" or kill($pid, 9) && die $!;
+      open my $P, '>', $pidfile or kill($pid, 9) && die $!;
       print $P $pid;
       close $P;
       exit;
@@ -36,45 +40,10 @@ sub run {
     pause();
     exit 1;
   }
-  $poe_kernel->has_forked();
-
-  # spawn our SQL handling session
-  my @db = @{$VNDB::O{db_login}};
-  my(@dsn) = DBI->parse_dsn($db[0]);
-  $dsn[2] = ($dsn[2]?$dsn[2].',':'').'pg_enable_utf8=>1';
-  $db[0] = "$dsn[0]:$dsn[1]($dsn[2]):$dsn[4]";
-  POE::Component::Pg->spawn(alias => 'pg', dsn => $db[0], user => $db[1], password => $db[2]);
-
-  # spawn the core session (which handles logging & external signals)
-  POE::Session->create(
-    package_states => [
-      $p => [qw| _start log pg_error sig_shutdown shutdown |],
-    ],
-  );
-
-  $poe_kernel->run();
 }
 
 
-sub _start {
-  $_[KERNEL]->alias_set('core');
-  $_[KERNEL]->call(core => log => 'Starting Multi '.$VNDB::S{version});
-  $_[KERNEL]->post(pg => register => error => 'pg_error');
-  $_[KERNEL]->post(pg => 'connect');
-  $_[KERNEL]->sig(INT => 'sig_shutdown');
-  $_[KERNEL]->sig(TERM => 'sig_shutdown');
-  $_[KERNEL]->sig('shutdown', 'shutdown');
-
-  # dynamically load and spawn modules
-  for (keys %{$VNDB::M{modules}}) {
-    my($mod, $args) = ($_, $VNDB::M{modules}{$_});
-    next if !$args || ref($args) ne 'HASH';
-    require "Multi/$mod.pm";
-    # I'm surprised the strict pagma isn't complaining about this
-    "Multi::$mod"->spawn(%$args);
-  }
-
-  # finish daemonizing
+sub daemon_done {
   kill SIGUSR1, getppid();
   setsid();
   chdir '/';
@@ -82,47 +51,61 @@ sub _start {
   open STDIN, '/dev/null';
   tie *STDOUT, 'Multi::Core::STDIO', 'STDOUT';
   tie *STDERR, 'Multi::Core::STDIO', 'STDERR';
+
+  AE::signal TERM => sub { unlink $pidfile };
+  AE::signal INT  => sub { unlink $pidfile };
 }
 
 
-# subroutine, not supposed to be called as a POE event
-sub log_msg { # msg
-  (my $msg = shift) =~ s/\n+$//;
-  open(my $F, '>>', $VNDB::M{log_dir}.'/multi.log');
-  printf $F "[%s] %s\n", scalar localtime, $msg;
-  close $F;
+sub load_pg {
+  my @db = @{$VNDB::O{db_login}};
+  my @dsn = DBI->parse_dsn($db[0]);
+  my %vars = split /[,=]/, $dsn[4];
+  $PG = AnyEvent::Pg::Pool->new(
+    {%vars, user => $db[1], password => $db[2], host => 'localhost'},
+    on_error => sub { die "Lost connection to PostgreSQL\n"; },
+    on_connect_error => sub { die "Lost connection to PostgreSQL\n"; },
+  );
+
+  # Test that we're connected, so that a connection failure results in a failure to start Multi.
+  my $cv = AE::cv;
+  my $w = $PG->push_query(
+    query => 'SELECT',
+    on_result => sub { $cv->send; },
+    on_error => sub { die "Connection to PostgreSQL has failed"; },
+  );
+  $cv->recv;
 }
 
 
-# the POE event
-sub log { # level, msg
-  (my $p = eval { $_[SENDER][2]{$_[CALLER_STATE]}[0] } || '') =~ s/^Multi:://;
-  log_msg sprintf '%s::%s: %s', $p, $_[CALLER_STATE],
-    $#_>ARG0 ? sprintf($_[ARG0], @_[ARG1..$#_]) : $_[ARG0];
+sub load_mods {
+  for(keys %{$VNDB::M{modules}}) {
+    my($mod, $args) = ($_, $VNDB::M{modules}{$_});
+    next if !$args || ref($args) ne 'HASH';
+    require "Multi/$mod.pm";
+    # I'm surprised the strict pagma isn't complaining about this
+    "Multi::$mod"->run(%$args);
+  }
 }
 
 
-sub pg_error { # ARG: command, errmsg, [ query, params, orig_session, event-args ]
-  my $s = $_[ARG2] ? sprintf ' (Session: %s, Query: "%s", Params: %s, Args: %s)',
-    join(', ', $_[KERNEL]->alias_list($_[ARG4])), $_[ARG2],
-    join(', ', $_[ARG3] ? map qq|"$_"|, @{$_[ARG3]} : '[none]'), $_[ARG5]||'' : '';
-  die sprintf 'SQL Error for command %s: %s%s', $_[ARG0], $_[ARG1], $s;
-}
+sub run {
+  my $p = shift;
+  $pidfile = "$VNDB::ROOT/data/multi.pid";
+  die "PID file already exists\n" if -e $pidfile;
 
+  AnyEvent::Log::ctx('Multi')->attach(
+    AnyEvent::Log::Ctx->new(log_to_file => "$VNDB::M{log_dir}/multi.log", level => 'trace')
+  );
 
-sub sig_shutdown {
-  # Multi modules should listen to the shutdown signal (but should never call sig_handled() on it!)
-  $_[KERNEL]->signal($_[SESSION], 'shutdown', 'SIG'.$_[ARG0]);
-  # consider this event as handled, so our process won't be killed directly
-  $_[KERNEL]->sig_handled();
-}
+  daemon_init;
+  load_pg;
+  load_mods;
+  daemon_done;
+  AE::log info => "Starting Multi $VNDB::S{version}";
 
-
-sub shutdown {
-  $_[KERNEL]->call(core => log => 'Shutting down (%s)', $_[ARG1]);
-  $_[KERNEL]->post(pg => 'shutdown');
-  $_[KERNEL]->alias_remove('core');
-  unlink "$VNDB::ROOT/data/multi.pid";
+  # Run forever
+  AE::cv->recv;
 }
 
 
@@ -136,8 +119,8 @@ sub WRITE     {
   # Surpress warning about STDIO being tied in POE::Wheel::Run::new().
   # the untie() is being performed in the child process, which doesn't effect
   # the parent process, so the tie() will still be in place where we want it.
-  return if $msg =~ /^Cannot redirect into tied STD(?:ERR|OUT)\.  Untying it/;
-  Multi::Core::log_msg($$s.': '.$msg);
+  #return if $msg =~ /^Cannot redirect into tied STD(?:ERR|OUT)\.  Untying it/;
+  AE::log warn => "$$s: $msg";
 }
 
 
