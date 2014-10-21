@@ -10,16 +10,21 @@ use warnings;
 use AnyEvent;
 use AnyEvent::Log;
 use AnyEvent::Pg::Pool;
+use Pg::PQ ':pgres';
 use DBI;
 use POSIX 'setsid', 'pause', 'SIGUSR1';
 use Exporter 'import';
 
-our @EXPORT = qw|PG|;
-our $PG;
+our @EXPORT = qw|pg pg_expect schedule|;
 
 
+my $PG;
 my $logger;
 my $pidfile;
+my @watch;
+
+
+sub pg() { $PG }
 
 
 sub daemon_init {
@@ -52,8 +57,8 @@ sub daemon_done {
   tie *STDOUT, 'Multi::Core::STDIO', 'STDOUT';
   tie *STDERR, 'Multi::Core::STDIO', 'STDERR';
 
-  AE::signal TERM => sub { unlink $pidfile };
-  AE::signal INT  => sub { unlink $pidfile };
+  push @watch, AE::signal TERM => sub { unlink $pidfile };
+  push @watch, AE::signal INT  => sub { unlink $pidfile };
 }
 
 
@@ -69,10 +74,9 @@ sub load_pg {
 
   # Test that we're connected, so that a connection failure results in a failure to start Multi.
   my $cv = AE::cv;
-  my $w = $PG->push_query(
-    query => 'SELECT',
-    on_result => sub { $cv->send; },
-    on_error => sub { die "Connection to PostgreSQL has failed"; },
+  my $w = pg->push_query(
+    query => 'SELECT 1',
+    on_result => sub { $_[2]->status == PGRES_TUPLES_OK ? $cv->send : die "Test query failed."; },
   );
   $cv->recv;
 }
@@ -97,6 +101,7 @@ sub run {
   AnyEvent::Log::ctx('Multi')->attach(
     AnyEvent::Log::Ctx->new(log_to_file => "$VNDB::M{log_dir}/multi.log", level => 'trace')
   );
+  $AnyEvent::Log::FILTER->level('fatal');
 
   daemon_init;
   load_pg;
@@ -106,6 +111,30 @@ sub run {
 
   # Run forever
   AE::cv->recv;
+}
+
+
+# Handy wrapper around AE::timer to schedule a function to be run at a fixed time.
+# Args: offset, interval, sub.
+# Eg. daily at 12:00 GMT: schedule 24*3600, 12*3600, sub { .. }.
+sub schedule {
+  my($o, $i, $s) = @_;
+  AE::timer($i - ((AE::time() + $o) % $i), $i, $s);
+}
+
+
+# Args: Pg::PQ::Result, expected
+#   expected =  0, PGRES_COMMAND_OK
+#   expected != 0, PGRES_TUPLES_OK
+# Logs any unexpected results and returns 0 if the expectations were met.
+sub pg_expect {
+  my($res, $exp) = @_;
+  return 0 if !$exp && $res->status == PGRES_COMMAND_OK;
+  return 0 if $exp && $res->status == PGRES_TUPLES_OK;
+  AE::log alert => $res->errorMessage
+    ? sprintf 'SQL error at %s:%d: %s', (caller)[0,2], $res->errorMessage
+    : sprintf 'Unexpected status at %s:%d: %s', (caller)[0,2], $res->statusMessage;
+  return 1;
 }
 
 
