@@ -1,9 +1,10 @@
 
 package VNDB::Handler::VNPage;
 
-use feature qw{ switch };
 use strict;
 use warnings;
+no warnings 'experimental::smartmatch';
+use feature qw{ switch };
 use TUWF ':html', 'xml_escape';
 use VNDB::Func;
 
