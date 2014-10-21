@@ -13,7 +13,6 @@ use POSIX 'strftime';
 use VNDBUtil 'bb2html';
 
 my %stats; # key = feed, value = [ count, total, max ]
-my @sched;
 
 
 sub run {
@@ -23,8 +22,8 @@ sub run {
     stats_interval => 86400, # daily
     @_
   );
-  push @sched, schedule 0, $o{regenerate_interval}, \&generate;
-  push @sched, schedule 0, $o{stats_interval}, \&stats;
+  push_watcher schedule 0, $o{regenerate_interval}, \&generate;
+  push_watcher schedule 0, $o{stats_interval}, \&stats;
 }
 
 

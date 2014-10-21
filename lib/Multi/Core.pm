@@ -15,16 +15,24 @@ use DBI;
 use POSIX 'setsid', 'pause', 'SIGUSR1';
 use Exporter 'import';
 
-our @EXPORT = qw|pg pg_expect schedule|;
+our @EXPORT = qw|pg pg_expect schedule push_watcher|;
 
 
 my $PG;
 my $logger;
 my $pidfile;
-my @watch;
+my $stopcv;
+my @watchers;
 
 
 sub pg() { $PG }
+
+
+# Pushes a watcher to the list of watchers that need to be kept alive for as
+# long as Multi keeps running.
+sub push_watcher {
+  push @watchers, shift;
+}
 
 
 sub daemon_init {
@@ -57,8 +65,8 @@ sub daemon_done {
   tie *STDOUT, 'Multi::Core::STDIO', 'STDOUT';
   tie *STDERR, 'Multi::Core::STDIO', 'STDERR';
 
-  push @watch, AE::signal TERM => sub { unlink $pidfile };
-  push @watch, AE::signal INT  => sub { unlink $pidfile };
+  push_watcher AE::signal TERM => sub { $stopcv->send };
+  push_watcher AE::signal INT  => sub { $stopcv->send };
 }
 
 
@@ -93,11 +101,25 @@ sub load_mods {
 }
 
 
+sub unload {
+  AE::log info => 'Shutting down';
+  @watchers = ();
+
+  for(keys %{$VNDB::M{modules}}) {
+    my($mod, $args) = ($_, $VNDB::M{modules}{$_});
+    next if !$args || ref($args) ne 'HASH';
+    no strict 'refs';
+    ${"Multi::$mod\::"}{unload} && "Multi::$mod"->unload();
+  }
+}
+
+
 sub run {
   my $p = shift;
   $pidfile = "$VNDB::ROOT/data/multi.pid";
   die "PID file already exists\n" if -e $pidfile;
 
+  $stopcv = AE::cv;
   AnyEvent::Log::ctx('Multi')->attach(
     AnyEvent::Log::Ctx->new(log_to_file => "$VNDB::M{log_dir}/multi.log", level => 'trace')
   );
@@ -109,8 +131,8 @@ sub run {
   daemon_done;
   AE::log info => "Starting Multi $VNDB::S{version}";
 
-  # Run forever
-  AE::cv->recv;
+  $stopcv->recv;
+  unload;
 }
 
 
