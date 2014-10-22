@@ -159,7 +159,7 @@ sub pg_expect {
   AE::log alert => !$res
     ? sprintf 'AnyEvent::Pg error at %s', $loc : $res->errorMessage
     ? sprintf 'SQL error at %s: %s', $loc, $res->errorMessage
-    : sprintf 'Unexpected status at : %s', $loc, $res->statusMessage;
+    : sprintf 'Unexpected status at %s: %s', $loc, $res->statusMessage;
   return 1;
 }
 
@@ -204,10 +204,6 @@ use base 'Tie::Handle';
 sub TIEHANDLE { return bless \"$_[1]", $_[0] }
 sub WRITE     {
   my($s, $msg) = @_;
-  # Surpress warning about STDIO being tied in POE::Wheel::Run::new().
-  # the untie() is being performed in the child process, which doesn't effect
-  # the parent process, so the tie() will still be in place where we want it.
-  #return if $msg =~ /^Cannot redirect into tied STD(?:ERR|OUT)\.  Untying it/;
   AE::log warn => "$$s: $msg";
 }
 
