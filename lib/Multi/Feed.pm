@@ -41,7 +41,7 @@ sub generate {
       ORDER BY t.id DESC
       LIMIT $1},
     args => [$VNDB::S{atom_feeds}{announcements}[0]],
-    on_result => sub { write_atom(announcements => $_[2], $a) },
+    on_result => sub { write_atom(announcements => @_[2,3], $a) },
   );
 
   # changes
@@ -60,7 +60,7 @@ sub generate {
       ORDER BY c.id DESC
       LIMIT $1},
     args => [$VNDB::S{atom_feeds}{changes}[0]],
-    on_result => sub { write_atom(changes => $_[2], $c); },
+    on_result => sub { write_atom(changes => @_[2,3], $c); },
   );
 
   # posts (this query isn't all that fast)
@@ -75,16 +75,15 @@ sub generate {
       ORDER BY tp.date DESC
       LIMIT $1},
     args => [$VNDB::S{atom_feeds}{posts}[0]],
-    on_result => sub { write_atom(posts => $_[2], $p); },
+    on_result => sub { write_atom(posts => @_[2,3], $p); },
   );
 }
 
 
 sub write_atom {
-  my($feed, $res) = @_;
+  my($feed, $res, $sqltime) = @_;
   return if pg_expect $res, 1;
 
-  my $sqltime = 0; # TODO: Figure out how to obtain this
   my $start = AE::time;
 
   my @r = $res->rowsAsHashes;
