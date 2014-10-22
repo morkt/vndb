@@ -68,7 +68,7 @@ sub generate {
        JOIN users u ON u.id = tp.uid
       WHERE NOT tp.hidden AND NOT t.hidden
       ORDER BY tp.date DESC
-      LIMIT ?$1},
+      LIMIT $1},
     [$VNDB::S{atom_feeds}{posts}[0]],
     sub { write_atom(posts => @_); };
 }

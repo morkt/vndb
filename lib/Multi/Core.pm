@@ -76,7 +76,7 @@ sub load_pg {
   my %vars = split /[,=]/, $dsn[4];
   $PG = AnyEvent::Pg::Pool->new(
     {%vars, user => $db[1], password => $db[2], host => 'localhost'},
-    timeout => 0, # Some maintenance queries can take a while to run...
+    timeout => 600, # Some maintenance queries can take a while to run...
     on_error => sub { die "Lost connection to PostgreSQL\n"; },
     on_connect_error => sub { die "Lost connection to PostgreSQL\n"; },
   );
@@ -146,18 +146,20 @@ sub schedule {
 }
 
 
-# Args: Pg::PQ::Result, expected
+# Args: Pg::PQ::Result, expected, identifier
 #   expected =  0, PGRES_COMMAND_OK
 #   expected != 0, PGRES_TUPLES_OK
+#   expected = undef, either of the above
 # Logs any unexpected results and returns 0 if the expectations were met.
 sub pg_expect {
-  my($res, $exp) = @_;
+  my($res, $exp, $id) = @_;
   return 0 if !$exp && $res && $res->status == PGRES_COMMAND_OK;
-  return 0 if $exp && $res && $res->status == PGRES_TUPLES_OK;
+  return 0 if ($exp || !defined $exp) && $res && $res->status == PGRES_TUPLES_OK;
+  my $loc = sprintf '%s:%d%s', (caller)[0,2], $id ? ":$id" : '';
   AE::log alert => !$res
-    ? sprintf 'AnyEvent::Pg error at %s:%d', (caller)[0,2] : $res->errorMessage
-    ? sprintf 'SQL error at %s:%d: %s', (caller)[0,2], $res->errorMessage
-    : sprintf 'Unexpected status at %s:%d: %s', (caller)[0,2], $res->statusMessage;
+    ? sprintf 'AnyEvent::Pg error at %s', $loc : $res->errorMessage
+    ? sprintf 'SQL error at %s: %s', $loc, $res->errorMessage
+    : sprintf 'Unexpected status at : %s', $loc, $res->statusMessage;
   return 1;
 }
 
