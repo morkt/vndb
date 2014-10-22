@@ -29,8 +29,7 @@ sub run {
 
 sub generate {
   # announcements
-  my $a; $a = pg->push_query(
-    query => q{
+  pg_cmd q{
       SELECT '/t'||t.id AS id, t.title, extract('epoch' from tp.date) AS published,
          extract('epoch' from tp.edited) AS updated, u.username, u.id AS uid, tp.msg AS summary
        FROM threads t
@@ -40,13 +39,11 @@ sub generate {
       WHERE NOT t.hidden
       ORDER BY t.id DESC
       LIMIT $1},
-    args => [$VNDB::S{atom_feeds}{announcements}[0]],
-    on_result => sub { write_atom(announcements => @_[2,3], $a) },
-  );
+    [$VNDB::S{atom_feeds}{announcements}[0]],
+    sub { write_atom(announcements => @_) };
 
   # changes
-  my $c; $c = pg->push_query(
-    query => q{
+  pg_cmd q{
       SELECT '/'||c.type||COALESCE(vr.vid, rr.rid, pr.pid, cr.cid)||'.'||c.rev AS id,
          COALESCE(vr.title, rr.title, pr.name, cr.name) AS title, extract('epoch' from c.added) AS updated,
          u.username, u.id AS uid, c.comments AS summary
@@ -59,13 +56,11 @@ sub generate {
       WHERE c.requester <> 1
       ORDER BY c.id DESC
       LIMIT $1},
-    args => [$VNDB::S{atom_feeds}{changes}[0]],
-    on_result => sub { write_atom(changes => @_[2,3], $c); },
-  );
+    [$VNDB::S{atom_feeds}{changes}[0]],
+    sub { write_atom(changes => @_); };
 
   # posts (this query isn't all that fast)
-  my $p; $p = pg->push_query(
-    query => q{
+  pg_cmd q{
       SELECT '/t'||t.id||'.'||tp.num AS id, t.title||' (#'||tp.num||')' AS title, extract('epoch' from tp.date) AS published,
          extract('epoch' from tp.edited) AS updated, u.username, u.id AS uid, tp.msg AS summary
        FROM threads_posts tp
@@ -73,10 +68,9 @@ sub generate {
        JOIN users u ON u.id = tp.uid
       WHERE NOT tp.hidden AND NOT t.hidden
       ORDER BY tp.date DESC
-      LIMIT $1},
-    args => [$VNDB::S{atom_feeds}{posts}[0]],
-    on_result => sub { write_atom(posts => @_[2,3], $p); },
-  );
+      LIMIT ?$1},
+    [$VNDB::S{atom_feeds}{posts}[0]],
+    sub { write_atom(posts => @_); };
 }
 
 

@@ -15,7 +15,7 @@ use DBI;
 use POSIX 'setsid', 'pause', 'SIGUSR1';
 use Exporter 'import';
 
-our @EXPORT = qw|pg pg_expect schedule push_watcher|;
+our @EXPORT = qw|pg pg_cmd pg_expect schedule push_watcher|;
 
 
 my $PG;
@@ -76,6 +76,7 @@ sub load_pg {
   my %vars = split /[,=]/, $dsn[4];
   $PG = AnyEvent::Pg::Pool->new(
     {%vars, user => $db[1], password => $db[2], host => 'localhost'},
+    timeout => 0, # Some maintenance queries can take a while to run...
     on_error => sub { die "Lost connection to PostgreSQL\n"; },
     on_connect_error => sub { die "Lost connection to PostgreSQL\n"; },
   );
@@ -151,12 +152,46 @@ sub schedule {
 # Logs any unexpected results and returns 0 if the expectations were met.
 sub pg_expect {
   my($res, $exp) = @_;
-  return 0 if !$exp && $res->status == PGRES_COMMAND_OK;
-  return 0 if $exp && $res->status == PGRES_TUPLES_OK;
-  AE::log alert => $res->errorMessage
+  return 0 if !$exp && $res && $res->status == PGRES_COMMAND_OK;
+  return 0 if $exp && $res && $res->status == PGRES_TUPLES_OK;
+  AE::log alert => !$res
+    ? sprintf 'AnyEvent::Pg error at %s:%d', (caller)[0,2] : $res->errorMessage
     ? sprintf 'SQL error at %s:%d: %s', (caller)[0,2], $res->errorMessage
     : sprintf 'Unexpected status at %s:%d: %s', (caller)[0,2], $res->statusMessage;
   return 1;
+}
+
+
+# Wrapper around pg->push_query().
+# Args: $query, \@args, sub {}
+# The sub will be called on either on_error or on_done, and has two args: The
+# result and the running time. Only a single on_result is expected. The result
+# argument is undef on error.
+# Unlike most AE watchers, this function does not return a watcher object and
+# can not be cancelled.
+sub pg_cmd {
+  my($q, $a, $s) = @_;
+  my $r;
+  my $w; $w = pg->push_query(
+    query => $q,
+    $a ? (args => $a) : (),
+    on_error => sub {
+      undef $w;
+      $s->(undef, 0);
+    },
+    on_result => sub {
+      if($r) {
+        AE::log warn => "Received more than one result for query: $q";
+        $s->(undef, 0);
+      } else {
+        $r = $_[2];
+      }
+    },
+    on_done => sub {
+      undef $w;
+      $s->($r, $_[2]);
+    },
+  );
 }
 
 
