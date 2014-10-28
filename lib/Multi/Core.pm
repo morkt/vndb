@@ -121,9 +121,13 @@ sub run {
   die "PID file already exists\n" if -e $pidfile;
 
   $stopcv = AE::cv;
-  AnyEvent::Log::ctx('Multi')->attach(
-    AnyEvent::Log::Ctx->new(log_to_file => "$VNDB::M{log_dir}/multi.log", level => 'trace')
-  );
+  AnyEvent::Log::ctx('Multi')->attach(AnyEvent::Log::Ctx->new(level => 'trace', log_to_file => $VNDB::M{log_dir}.'/multi.log'));
+  #log_cb => sub {
+  #  open(my $F, '>>:utf8', $VNDB::M{log_dir}.'/multi.log');
+  #  print $F $_[0];
+  #  close $F;
+  #  }
+  #));
   $AnyEvent::Log::FILTER->level('fatal');
 
   daemon_init;
@@ -169,29 +173,37 @@ sub pg_expect {
 # The sub will be called on either on_error or on_done, and has two args: The
 # result and the running time. Only a single on_result is expected. The result
 # argument is undef on error.
+# If no sub is provided or the sub argument is a string, a default sub will be
+# used that just calls pg_expect and logs any errors.
 # Unlike most AE watchers, this function does not return a watcher object and
 # can not be cancelled.
 sub pg_cmd {
   my($q, $a, $s) = @_;
   my $r;
+
+  my $sub = !$s || !ref $s ? do {
+    my $loc = sprintf '%s:%d%s', (caller)[0,2], $s ? ":$s" : '';
+    sub { pg_expect $_[0], undef, $loc }
+  } : $s;
+
   my $w; $w = pg->push_query(
     query => $q,
     $a ? (args => $a) : (),
     on_error => sub {
       undef $w;
-      $s->(undef, 0);
+      $sub->(undef, 0);
     },
     on_result => sub {
       if($r) {
         AE::log warn => "Received more than one result for query: $q";
-        $s->(undef, 0);
+        $sub->(undef, 0);
       } else {
         $r = $_[2];
       }
     },
     on_done => sub {
       undef $w;
-      $s->($r, $_[2]);
+      $sub->($r, $_[2]);
     },
   );
 }

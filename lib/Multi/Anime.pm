@@ -205,8 +205,7 @@ sub handlemsg {
   # we now know something about the anime we requested, update DB
   elsif($code == NO_SUCH_ANIME) {
     AE::log info => "No anime found with id = $C{aid}";
-    pg_cmd 'UPDATE anime SET lastfetch = NOW() WHERE id = ?',
-      [ $C{aid} ], sub { pg_expect $_[0], 0 };
+    pg_cmd 'UPDATE anime SET lastfetch = NOW() WHERE id = ?', [ $C{aid} ];
     $f = \&check_anime;
     $C{aid} = 0;
 
@@ -240,8 +239,7 @@ sub update_anime {
     SET id = $1, ann_id = $2, nfo_id = $3, year = $4, type = $5,
         title_romaji = $6, title_kanji = $7, lastfetch = NOW()
     WHERE id = $8',
-    [ @col, $C{aid} ],
-    sub { pg_expect $_[0], 0 };
+    [ @col, $C{aid} ];
   AE::log info => "Fetched anime info for a$C{aid}";
   AE::log warn => "a$C{aid} doesn't have a title or year!"
     if !$col[3] || !$col[5];
