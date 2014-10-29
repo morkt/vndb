@@ -196,6 +196,7 @@ sub pg_cmd {
     on_result => sub {
       if($r) {
         AE::log warn => "Received more than one result for query: $q";
+        undef $w;
         $sub->(undef, 0);
       } else {
         $r = $_[2];
@@ -203,7 +204,7 @@ sub pg_cmd {
     },
     on_done => sub {
       undef $w;
-      $sub->($r, $_[2]);
+      $sub->($r, AE::now-$_[1]->last_query_start_time);
     },
   );
 }
