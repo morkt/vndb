@@ -15,13 +15,14 @@ use DBI;
 use POSIX 'setsid', 'pause', 'SIGUSR1';
 use Exporter 'import';
 
-our @EXPORT = qw|pg pg_cmd pg_expect schedule push_watcher|;
+our @EXPORT = qw|pg pg_cmd pg_expect schedule push_watcher throttle|;
 
 
 my $PG;
 my $logger;
 my $pidfile;
 my $stopcv;
+my %throttle; # id => timeout
 my @watchers;
 
 
@@ -135,6 +136,7 @@ sub run {
   load_mods;
   daemon_done;
   AE::log info => "Starting Multi $VNDB::S{version}";
+  push_watcher(schedule(60, 10*60, \&throttle_gc));
 
   $stopcv->recv;
   unload;
@@ -208,6 +210,27 @@ sub pg_cmd {
     },
   );
 }
+
+
+# Generic throttling function, returns 1 if the action is throttled.
+# Using a weight of 0 will just check the throttle without affecting it.
+sub throttle {
+  my($config, $id, $weight) = @_;
+  my($interval, $burst) = @$config;
+  $weight ||= 1;
+  my $n = AE::now;
+  $throttle{$id} = $n if !$throttle{$id} || $throttle{$id} < $n;
+  return 1 if $throttle{$id}-$n > $burst*$interval;
+  $throttle{$id} += $interval*$weight;
+  return 0;
+}
+
+
+sub throttle_gc {
+  my $n = AE::now;
+  delete $throttle{$_} for grep $throttle{$_} < $n, keys %throttle;
+}
+
 
 
 # Tiny class for forwarding output for STDERR/STDOUT to the log file using tie().
