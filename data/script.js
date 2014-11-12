@@ -2667,7 +2667,7 @@ if(byId('votesel')) {
     if(s == 10 && !confirm(mt('_vnpage_uopt_10vote')))
       return;
     if(s > 0 || s == -1)
-      location.href = location.href.replace(/#.*/, '').replace(/\/chars/, '').replace(/\.[0-9]+/, '')+'/vote?formcode='+this.name+';v='+s;
+      location.href = location.href.replace(/#.*/, '').replace(/\/chars/, '').replace(/(v\d+)\.\d+/, '$1')+'/vote?formcode='+this.name+';v='+s;
   };
 }
 
