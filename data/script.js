@@ -2136,8 +2136,7 @@ function filLoad() {
       f.submit();
     }}),
     tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} }),
-    typeof PREFS != 'undefined' && ('filter_vn' in PREFS | 'filter_release' in PREFS) && PREF_CODE != '' ?
-      tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_save'), onclick:filSaveDefault }) : null,
+    byId('pref_code') ? tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_save'), onclick:filSaveDefault }) : null,
     tag('p', {id:'fil_savenote', 'class':'hidden'}, '')
   ));
   filSelectCat(1);
@@ -2152,7 +2151,7 @@ function filSaveDefault() {
   but.enabled = false;
   setClass(byId('fil_savenote'), 'hidden', false);
   var type = byId('filselect').href.match(/#r$/) ? 'release' : 'vn';
-  ajax('/xml/prefs.xml?formcode='+PREF_CODE+';key=filter_'+type+';value='+byId('fil').value, function (hr) {
+  ajax('/xml/prefs.xml?formcode='+byId('pref_code').title+';key=filter_'+type+';value='+byId('fil').value, function (hr) {
     setText(note, mt('_js_fil_savenote'));
     but.enable = true;
   });
@@ -2603,8 +2602,8 @@ function filVN() {
     ontagpage ? [ mt('_vnbrowse_tags'),
       [ '', ' ', tag(mt('_vnbrowse_tagnothere')) ],
     ] : [ mt('_vnbrowse_tags'),
-      [ '',       ' ',                   tag(mt('_js_fil_booland')) ],
-      [ '',       ' ', PREF_CODE != '' ? tag(mt('_vnbrowse_tagactive')) : null ],
+      [ '',       ' ',                     tag(mt('_js_fil_booland')) ],
+      [ '',       ' ', byId('pref_code') ? tag(mt('_vnbrowse_tagactive')) : null ],
       filFTagInput('tag_inc', mt('_vnbrowse_taginc'), 'tag'),
       filFTagInput('tag_exc', mt('_vnbrowse_tagexc'), 'tag'),
       filFOptions('tagspoil', ' ', [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]],
@@ -2613,7 +2612,7 @@ function filVN() {
     [ mt('_vnbrowse_language'), filFSelect('lang', mt('_vnbrowse_language'), 20, lang) ],
     [ mt('_vnbrowse_olang'),    filFSelect('olang',mt('_vnbrowse_olang'),    20, lang) ],
     [ mt('_vnbrowse_platform'), filFSelect('plat', mt('_vnbrowse_platform'), 20, plat) ],
-    PREF_CODE == '' ? null : [
+    !byId('pref_code') ? null : [
       mt('_vnbrowse_ul'),
       filFOptions('ul_notblack', mt('_vnbrowse_ul_notblack'), [[1, mt('_vnbrowse_ul_notblackmsg')]]),
       filFOptions('ul_onwish',   mt('_vnbrowse_ul_onwish'), [[0, mt('_vnbrowse_ul_onwishno')],[1, mt('_vnbrowse_ul_onwishyes')]]),

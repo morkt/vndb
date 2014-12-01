@@ -552,7 +552,7 @@ sub browse {
      end;
     end;
   }
-  $self->htmlFooter(prefs => [qw|filter_release|]);
+  $self->htmlFooter(pref_code => 1);
 }
 
 

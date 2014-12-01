@@ -133,7 +133,7 @@ sub _menu {
 }
 
 
-sub htmlFooter { # %options => { prefs => [pref1,..] }
+sub htmlFooter { # %options => { pref_code => 1 }
   my($self, %o) = @_;
      div id => 'footer';
 
@@ -156,16 +156,9 @@ sub htmlFooter { # %options => { prefs => [pref1,..] }
      end;
     end 'div'; # /maincontent
 
-    # insert users' preference data when required by JS
-    if($o{prefs}) {
-      script type => 'text/javascript';
-       txt sprintf "PREF_CODE='%s';", $self->authInfo->{id} ? $self->authGetCode('/xml/prefs.xml') : '';
-       txt 'PREFS={';
-       # assumes the preference value doesn't contain a '
-       txt join ',', map sprintf("'%s':'%s'", $_, $self->authPref($_)), @{$o{prefs}};
-       txt '};';
-      end;
-    }
+    # Abuse an empty noscript tag for the formcode to update a preference setting, if the page requires one.
+    noscript id => 'pref_code', title => $self->authGetCode('/xml/prefs.xml'), ''
+      if $o{pref_code} && $self->authInfo->{id};
     script type => 'text/javascript', src => $self->{url_static}.'/f/js/'.$self->{l10n}->language_tag().'.js?'.$self->{version}, '';
    end 'body';
   end 'html';

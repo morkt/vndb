@@ -127,7 +127,7 @@ sub tagpage {
     $self->htmlBrowseVN($list, $f, $np, "/g$t->{id}?fil=$f->{fil};m=$f->{m}", 1) if @$list;
   }
 
-  $self->htmlFooter(prefs => ['filter_vn']);
+  $self->htmlFooter(pref_code => 1);
 }
 
 

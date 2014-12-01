@@ -100,7 +100,7 @@ sub list {
   end 'form';
 
   $self->htmlBrowseVN($list, $f, $np, "/v/$char?q=$quri;fil=$f->{fil}", $f->{fil} =~ /tag_inc-/);
-  $self->htmlFooter(prefs => ['filter_vn']);
+  $self->htmlFooter(pref_code => 1);
 }
 
 
