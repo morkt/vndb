@@ -298,14 +298,13 @@ sub _form {
     [ static => nolabel => 1, content => mt '_vnedit_scrnorel' ],
   ) : (
     [ hidden => short => 'screenshots' ],
+    [ hidden => short => 'screensizes', value => do {
+      # Current screenshot resolutions, for use by Javascript
+      my @scr = map /^(\d+),/?$1:(), split / /, $frm->{screenshots};
+      my %scr = map +($_->{id}, "$_->{width},$_->{height}"), @{$self->dbScreenshotGet(\@scr)};
+      join ' ', map $scr{$_}, @scr;
+    }],
     [ static => nolabel => 1, content => sub {
-      script type => 'text/javascript';
-       # Screenshot resolutions
-       lit 'VNEDITSCR = {';
-        my @scr = map /^(\d+),/?$1:(), split / /, $frm->{screenshots};
-        lit join ',', map "$_->{id}:[$_->{width},$_->{height}]", @scr ? @{$self->dbScreenshotGet(\@scr)} : ();
-       lit '};';
-      end;
       div class => 'warning';
        lit mt '_vnedit_scrmsg';
       end;

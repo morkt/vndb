@@ -1008,9 +1008,11 @@ function scrLoad() {
 
   // load the current screenshots
   var scr = byId('screenshots').value.split(' ');
+  var siz = byId('screensizes').value.split(' ');
   for(i=0; i<scr.length && scr[i].length>1; i++) {
     var r = scr[i].split(',');
-    scrSet(scrAdd(r[0], r[1], r[2]), VNEDITSCR[r[0]][0], VNEDITSCR[r[0]][1]);
+    var s = siz[i].split(',');
+    scrSet(scrAdd(r[0], r[1], r[2]), s[0], s[1]);
   }
 
   ivInit();
