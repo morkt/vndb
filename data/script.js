@@ -2683,6 +2683,11 @@ if(byId('advselect')) {
   };
 }
 
+// Spoiler selection buttons on tag/trait browse pages
+if(byId('tagspoil_0')) byId('tagspoil_0').onclick = function() { setCookie('tagspoil', 0); return true; };
+if(byId('tagspoil_1')) byId('tagspoil_1').onclick = function() { setCookie('tagspoil', 1); return true; };
+if(byId('tagspoil_2')) byId('tagspoil_2').onclick = function() { setCookie('tagspoil', 2); return true; };
+
 // NSFW VN image toggle (/v+)
 if(byId('nsfw_show')) {
   var msg = byId('nsfw_show');
@@ -2733,6 +2738,16 @@ if(byId('listsel')) {
       location.href = location.href.replace(/#.*/, '').replace(/\/chars/, '').replace(/\.[0-9]+/, '')
         +'/list?formcode='+this.name+';e='+this.options[this.selectedIndex].value;
   };
+}
+
+// Notification list onclick
+if(byId('notifies')) {
+  var l = byClass(byId('notifies'), 'td', 'clickable');
+  for(var i=0; i<l.length; i++)
+    l[i].onclick = function() {
+      var baseurl = location.href.replace(/\/u([0-9]+)\/notifies.*$/, '/u$1/notify/');
+      location.href = baseurl + this.id.replace(/notify_/, '');
+    };
 }
 
 // BBCode spoiler tags

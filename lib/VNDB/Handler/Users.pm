@@ -673,7 +673,7 @@ sub notifies {
   my $code = $self->authGetCode("/u$uid/notifies");
 
   if(@$list) {
-    form action => "/u$uid/notifies?r=$f->{r};formcode=$code", method => 'post';
+    form action => "/u$uid/notifies?r=$f->{r};formcode=$code", method => 'post', id => 'notifies';
     $self->htmlBrowse(
       items    => $list,
       options  => $f,
@@ -698,7 +698,7 @@ sub notifies {
          td class => 'tc4';
           a href => "/u$uid/notify/$l->{id}", "$l->{ltype}$l->{iid}".($l->{subid}?".$l->{subid}":'');
          end;
-         td class => 'tc5', onclick => qq|javascript:location.href="/u$uid/notify/$l->{id}"|;
+         td class => 'tc5 clickable', id => "notify_$l->{id}";
           lit mt '_usern_n_'.(
             $l->{ltype} eq 't' ? ($l->{subid} == 1 ? 't_new' : 't_reply')
             : 'item_edit'),
