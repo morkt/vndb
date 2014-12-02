@@ -439,7 +439,6 @@ CREATE TABLE vn_rev (
   length smallint NOT NULL DEFAULT 0,
   "desc" text NOT NULL DEFAULT '',
   l_wp varchar(150) NOT NULL DEFAULT '',
-  l_vnn integer NOT NULL DEFAULT 0,
   image integer NOT NULL DEFAULT 0,
   l_encubed varchar(100) NOT NULL DEFAULT '',
   l_renai varchar(100) NOT NULL DEFAULT '',

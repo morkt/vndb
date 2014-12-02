@@ -103,7 +103,7 @@ sub dbVNGet {
   my @select = ( # see https://rt.cpan.org/Ticket/Display.html?id=54224 for the cast on c_languages and c_platforms
     qw|v.id v.locked v.hidden v.c_released v.c_languages::text[] v.c_platforms::text[] vr.title vr.original v.rgraph|, 'vr.id AS cid',
     $o{what} =~ /extended/ ? (
-      qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai vr.l_vnn| ) : (),
+      qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai| ) : (),
     $o{what} =~ /changes/ ? (
       qw|c.requester c.comments v.latest u.username c.rev c.ihid c.ilock|, q|extract('epoch' from c.added) as added|) : (),
     $o{what} =~ /relgraph/ ? 'vg.svg' : (),
@@ -203,7 +203,7 @@ sub dbVNRevisionInsert {
 
   $o->{img_nsfw} = $o->{img_nsfw}?1:0 if exists $o->{img_nsfw};
   my %set = map exists($o->{$_}) ? (qq|"$_" = ?| => $o->{$_}) : (),
-    qw|title original desc alias image img_nsfw length l_wp l_encubed l_renai l_vnn|;
+    qw|title original desc alias image img_nsfw length l_wp l_encubed l_renai|;
   $self->dbExec('UPDATE edit_vn !H', \%set) if keys %set;
 
   if($o->{screenshots}) {

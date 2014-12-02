@@ -8,3 +8,7 @@ UPDATE sessions SET token = digest(token, 'sha1');
 
 -- No more 'charedit' permission flag
 UPDATE users SET perm = (perm & ~8);
+
+
+-- Completely remove l_vnn column
+ALTER TABLE vn_rev DROP COLUMN l_vnn;

@@ -87,7 +87,7 @@ sub edit {
   my $r = $v ? $self->dbReleaseGet(vid => $v->{id}) : [];
 
   my %b4 = !$vid ? () : (
-    (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai l_vnn image img_nsfw ihid ilock|),
+    (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai image img_nsfw ihid ilock|),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
     vnrelations => join('|||', map $_->{relation}.','.$_->{id}.','.($_->{official}?1:0).','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
     screenshots => join(' ', map sprintf('%d,%d,%d', $_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$v->{screenshots}}),
@@ -105,7 +105,6 @@ sub edit {
       { post => 'l_wp',        required => 0, default => '', maxlength => 150 },
       { post => 'l_encubed',   required => 0, default => '', maxlength => 100 },
       { post => 'l_renai',     required => 0, default => '', maxlength => 100 },
-      { post => 'l_vnn',       required => 0, default => $b4{l_vnn}||0,  template => 'int' },
       { post => 'anime',       required => 0, default => '' },
       { post => 'image',       required => 0, default => 0,  template => 'int' },
       { post => 'img_nsfw',    required => 0, default => 0 },
@@ -149,7 +148,7 @@ sub edit {
 
       # perform the edit/add
       my $nrev = $self->dbItemEdit(v => $vid ? $v->{cid} : undef,
-        (map { $_ => $frm->{$_} } qw|title original image alias desc length l_wp l_encubed l_renai l_vnn editsum img_nsfw ihid ilock|),
+        (map { $_ => $frm->{$_} } qw|title original image alias desc length l_wp l_encubed l_renai editsum img_nsfw ihid ilock|),
         anime => [ keys %$anime ],
         relations => $relations,
         screenshots => $screenshots,
