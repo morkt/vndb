@@ -301,7 +301,7 @@ sub _form {
     [ hidden => short => 'screensizes', value => do {
       # Current screenshot resolutions, for use by Javascript
       my @scr = map /^(\d+),/?$1:(), split / /, $frm->{screenshots};
-      my %scr = map +($_->{id}, "$_->{width},$_->{height}"), @{$self->dbScreenshotGet(\@scr)};
+      my %scr = map +($_->{id}, "$_->{width},$_->{height}"), @scr ? @{$self->dbScreenshotGet(\@scr)} : ();
       join ' ', map $scr{$_}, @scr;
     }],
     [ static => nolabel => 1, content => sub {
