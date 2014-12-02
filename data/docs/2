@@ -92,9 +92,6 @@
  screenshot of the game itself could be used instead.<br />
  Images can be uploaded in JPEG or PNG format, and should not be larger than 5 MiB.
  All images larger than 256x400px will automatically be resized to fit on the page.
- Keep in mind that this resizing is done in a seperate process, so you will not
- immediately see the image after uploading. This processing often takes just a few
- seconds, and the image should be available shortly after you've submitted the form.
  <br /><br />
  The NSFW warning should be used in cases where the cover art is not safe for work.
  To determine what is safe for work and what is not, use the following guidelines:
