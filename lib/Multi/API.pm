@@ -7,81 +7,306 @@ package Multi::API;
 
 use strict;
 use warnings;
-use Socket 'inet_ntoa', 'SO_KEEPALIVE', 'SOL_SOCKET', 'IPPROTO_TCP';
-use Errno 'ECONNABORTED', 'ECONNRESET';
-use POE 'Wheel::SocketFactory', 'Wheel::ReadWrite';
+use Multi::Core;
+use AnyEvent::Socket;
+use AnyEvent::Handle;
 use POE::Filter::VNDBAPI 'encode_filters';
 use Digest::SHA 'sha256';
 use Encode 'encode_utf8';
-use Time::HiRes 'time'; # important for throttling
 use Crypt::ScryptKDF 'scrypt_raw';;
 use VNDBUtil 'normalize_query', 'norm_ip';
 use JSON::XS;
-
-
-# not exported by Socket, taken from netinet/tcp.h (specific to Linux, AFAIK)
-sub TCP_KEEPIDLE  () { 4 }
-sub TCP_KEEPINTVL () { 5 }
-sub TCP_KEEPCNT   () { 6 }
 
 
 # what our JSON encoder considers 'true' or 'false'
 sub TRUE  () { JSON::XS::true }
 sub FALSE () { JSON::XS::false }
 
+my %O = (
+  port => 19534,
+  logfile => "$VNDB::M{log_dir}/api.log",
+  conn_per_ip => 5,
+  max_results => 25, # For get vn/release/producer/character
+  max_results_lists => 100, # For get votelist/vnlist/wishlist
+  default_results => 10,
+  throttle_cmd => [ 6, 100 ], # interval between each command, allowed burst
+  throttle_sql => [ 60, 1 ], # sql time multiplier, allowed burst (in sql time)
+);
 
-# Global throttle hash, key = ip, value = [ cmd_time, sql_time ]
-# TODO: clean up items in this hash when ip isn't connected anymore and throttle times < current time
-my %throttle;
+
+my %C;
+my $connid = 0;
 
 
-sub spawn {
-  my $p = shift;
-  POE::Session->create(
-    package_states => [
-      $p => [qw|
-        _start shutdown log server_error client_connect client_error client_input
-        login login_throttle login_res dbstats dbstats_res get_results get_vn get_vn_res
-        get_release get_release_res get_producer get_producer_res get_character
-        get_character_res get_votelist get_votelist_res get_vnlist
-        get_vnlist_res get_wishlist get_wishlist_res set_votelist set_vnlist
-        set_wishlist set_return admin
-      |],
-    ],
-    heap => {
-      port => 19534,
-      logfile => "$VNDB::M{log_dir}/api.log",
-      conn_per_ip => 5,
-      max_results => 25, # For get vn/release/producer/character
-      max_results_lists => 100, # For get votelist/vnlist/wishlist
-      default_results => 10,
-      tcp_keepalive => [ 120, 60, 3 ], # time, intvl, probes
-      throttle_cmd => [ 6, 100 ], # interval between each command, allowed burst
-      throttle_sql => [ 60, 1 ], # sql time multiplier, allowed burst (in sql time)
-      ipbans => [],
-      @_,
-      c => {}, # open connections
-      s => {conn => 0, cmds => 0, cmd_err => 0}, # stats
-    },
-  );
+sub writelog {
+  my $c = ref $_[0] && shift;
+  my($msg, @args) = @_;
+  if(open(my $F, '>>:utf8', $O{logfile})) {
+    printf $F "[%s] %s: %s\n", scalar localtime,
+      $c ? sprintf '%d %s:%d', $c->{id}, $c->{ip}, $c->{port} : 'global',
+      @args ? sprintf $msg, @args : $msg;
+    close $F;
+  }
 }
 
 
-## Non-POE helper functions
+sub run {
+  shift;
+  %O = (%O, @_);
+
+  push_watcher tcp_server undef, $O{port}, \&newconn;
+  writelog 'API starting up on port %d', $O{port};
+}
+
+
+sub unload {
+  $C{$_}{h}->destroy() for keys %C;
+  %C = ();
+}
+
+
+sub newconn {
+  my $c = {
+    fh    => $_[0],
+    ip    => $_[1],
+    port  => $_[2],
+    id    => ++$connid,
+    cid   => norm_ip($_[1]),
+    filt  => POE::Filter::VNDBAPI->new(),
+  };
+
+  if($O{conn_per_ip} <= grep $c->{ip} eq $C{$_}{ip}, keys %C) {
+    writelog $c, 'Connection denied, limit of %d connections per IP reached', $O{conn_per_ip};
+    close $c->{fh};
+    return;
+  }
+
+  writelog $c, 'Connected';
+  $C{$connid} = $c;
+
+  $c->{h} = AnyEvent::Handle->new(
+    rbuf_max =>     50*1024, # Commands aren't very huge, a 50k read buffer should suffice.
+    wbuf_max => 5*1024*1024,
+    fh       => $c->{fh},
+    on_error => sub {
+      writelog $c, 'IO error: %s', $_[2];
+      $c->{h}->destroy;
+      delete $C{$c->{id}};
+    },
+    on_eof => sub {
+      writelog $c, 'Disconnected';
+      $c->{h}->destroy;
+      delete $C{$c->{id}};
+    },
+  );
+  cmd_read($c);
+}
+
+
+sub cres {
+  my($c, $msg, $log, @arg) = @_;
+  $msg = $c->{filt}->put([$msg])->[0];
+  $c->{h}->push_write($msg);
+  writelog $c, '[%2d/%4.0fms %5.0f] %s',
+    $c->{sqlq}, $c->{sqlt}*1000, length($msg),
+    @arg ? sprintf $log, @arg : $log;
+  cmd_read($c);
+}
+
 
 sub cerr {
   my($c, $id, $msg, %o) = @_;
+  cres $c, [ error => { id => $id, msg => $msg, %o } ], "Error: %s, %s", $id, $msg;
+}
 
-  # update stat counters
-  $c->{cmd_err}++;
-  $poe_kernel->get_active_session()->get_heap()->{s}{cmd_err}++;
 
-  # send error
-  $c->{wheel}->put([ error => { id => $id, msg => $msg, %o }]);
+# Wrapper around pg_cmd() that updates the SQL throttle for the client and
+# sends an error response if the query error'ed. The callback is not called on
+# error.
+sub cpg {
+  my($c, $q, $a, $cb) = @_;
+  pg_cmd $q, $a, sub {
+    my($res, $time) = @_;
+    $c->{sqlq}++;
+    $c->{sqlt} += $time;
+    return cerr $c, internal => 'SQL error' if pg_expect $res;
+    throttle $O{throttle_sql}, "api_sql_$c->{cid}", $time;
+    $cb->($res);
+  };
+}
 
-  # log
-  $poe_kernel->yield(log => $c, 'error: %s, %s', $id, $msg);
-  return undef;
+
+sub cmd_read {
+  my $c = shift;
+
+  # Prolly should make POE::Filter::VNDBAPI aware of AnyEvent::Handle stuff, so
+  # this code wouldn't require a few protocol specific chunks.
+  $c->{h}->push_read(line => "\x04", sub {
+    my $cmd = $c->{filt}->get([$_[1], "\x04"]);
+    die "No or too many commands in a single message" if @$cmd != 1;
+
+    my @arg;
+    ($cmd, @arg) = @{$cmd->[0]};
+
+    # log raw message (except login command, which may include a password)
+    (my $msg = $_[1]) =~ s/[\r\n]*/ /;
+    $msg =~ s/^[\s\r\n\t]+//;
+    $msg =~ s/[\s\r\n\t]+$//;
+    writelog $c, "< $msg" if $cmd && $cmd ne 'login';
+
+    # Stats for the current cmd
+    $c->{sqlt} = $c->{sqlq} = 0;
+
+    # parse error
+    return cerr $c, $arg[0]{id}, $arg[0]{msg} if !defined $cmd;
+
+    # check for thottle rule violation
+    for ('cmd', 'sql') {
+      my $left = throttle $O{"throttle_$_"}, "api_${_}_$c->{cid}", 0;
+      return cerr $c, throttled => 'Throttle limit reached.', type => $_,
+          minwait  => int(10*($left))/10+1,
+          fullwait => int(10*($left + $O{"throttle_$_"}[0] * $O{"throttle_$_"}[1]))/10+1
+        if $left;
+    }
+
+    # update commands/second throttle
+    throttle $O{throttle_cmd}, "api_cmd_$c->{cid}";
+    cmd_handle($c, $cmd, @arg);
+  });
+}
+
+
+sub cmd_handle {
+  my($c, $cmd, @arg) = @_;
+
+  # login
+  return login($c, @arg) if $cmd eq 'login';
+  return cerr $c, needlogin => 'Not logged in.' if !$c->{client};
+
+  # dbstats
+  if($cmd eq 'dbstats') {
+    return cerr $c, parse => 'Invalid arguments to get command' if @arg > 0;
+    return dbstats($c);
+  }
+
+  # get
+  if($cmd eq 'get') {
+    return get($c, @arg);
+  }
+
+#  # handle set command
+#  if($cmd eq 'set') {
+#    return cerr $c, parse => 'Invalid arguments to set command' if @$arg < 2 || @$arg > 3 || ref($arg->[0])
+#      || ref($arg->[1]) || $arg->[1] !~ /^\d+$/ || $arg->[1] < 1 || $arg->[1] > 1e6 || (defined($arg->[2]) && ref($arg->[2]) ne 'HASH');
+#    return cerr $c, 'settype', "Unknown set type: '$arg->[0]'" if $arg->[0] !~ /^(votelist|vnlist|wishlist)$/;
+#    return cerr $c, needlogin => 'Not logged in as a user' if !$c->{uid};
+#    my %obj = (
+#      c => $c,
+#      type => $arg->[0],
+#      id => $arg->[1],
+#      opt => $arg->[2]
+#    );
+#    return $_[KERNEL]->yield("set_$arg->[0]", \%obj);
+#  }
+#
+  # unknown command
+  cerr $c, 'parse', "Unknown command '$cmd'";
+}
+
+
+sub login {
+  my($c, @arg) = @_;
+
+  # validation (bah)
+  return cerr $c, parse => 'Argument to login must be a single JSON object' if @arg != 1 || ref($arg[0]) ne 'HASH';
+  my $arg = $arg[0];
+  return cerr $c, loggedin => 'Already logged in, please reconnect to start a new session' if $c->{client};
+
+  !exists $arg->{$_} && return cerr $c, missing => "Required field '$_' is missing", field => $_
+    for(qw|protocol client clientver|);
+  for(qw|protocol client clientver username password|) {
+    exists $arg->{$_} && !defined $arg->{$_} && return cerr $c, badarg  => "Field '$_' cannot be null", field => $_;
+    exists $arg->{$_} && ref $arg->{$_}      && return cerr $c, badarg  => "Field '$_' must be a scalar", field => $_;
+  }
+  return cerr $c, badarg => 'Unknown protocol version', field => 'protocol' if $arg->{protocol}  ne '1';
+  return cerr $c, badarg => 'The fields "username" and "password" must either both be present or both be missing.', field => 'username'
+    if exists $arg->{username} && !exists $arg->{password} || exists $arg->{password} && !exists $arg->{username};
+  return cerr $c, badarg => 'Invalid client name', field => 'client'        if $arg->{client}    !~ /^[a-zA-Z0-9 _-]{3,50}$/;
+  return cerr $c, badarg => 'Invalid client version', field => 'clientver'  if $arg->{clientver} !~ /^[a-zA-Z0-9_.\/-]{1,25}$/;
+
+  if(!exists $arg->{username}) {
+    $c->{client} = $arg->{client};
+    $c->{clientver} = $arg->{clientver};
+    cres $c, ['ok'], 'Login using client "%s" ver. %s', $c->{client}, $c->{clientver};
+    return;
+  }
+
+  login_auth($c, $arg);
+}
+
+
+sub login_auth {
+  my($c, $arg) = @_;
+
+  # check login throttle
+  cpg $c, 'SELECT extract(\'epoch\' from timeout) FROM login_throttle WHERE ip = $1', [ norm_ip($c->{ip}) ], sub {
+    my $tm = $_[0]->nRows ? $_[0]->value(0,0) : AE::time;
+    return cerr $c, auth => "Too many failed login attempts"
+      if $tm-AE::time() > $VNDB::S{login_throttle}[1];
+
+    # Fetch user info
+    cpg $c, 'SELECT id, encode(passwd, \'hex\') FROM users WHERE username = $1', [ $arg->{username} ], sub {
+      login_verify($c, $arg, $tm, $_[0]);
+    };
+  };
+}
+
+
+sub login_verify {
+  my($c, $arg, $tm, $res) = @_;
+
+  return cerr $c, auth => "No user with the name '$arg->{username}'" if $res->nRows == 0;
+
+  my $passwd = pack 'H*', $res->value(0,1);
+  my $uid = $res->value(0,0);
+  my $accepted = 0;
+
+  if(length $passwd == 41) { # Old sha256
+    my $salt = substr $passwd, 0, 9;
+    $accepted = sha256($VNDB::S{global_salt}.encode_utf8($arg->{password}).$salt) eq substr $passwd, 9;
+  } elsif(length $passwd == 46) { # New scrypt
+    my($N, $r, $p, $salt, $hash) = unpack 'NCCa8a*', $passwd;
+    $accepted = $hash eq scrypt_raw($arg->{password}, $VNDB::S{scrypt_salt} . $salt, $N, $r, $p, 32);
+  } else {
+    return cerr $c, auth => "Account disabled";
+  }
+
+  if($accepted) {
+    $c->{uid} = $uid;
+    $c->{username} = $arg->{username};
+    $c->{client} = $arg->{client};
+    $c->{clientver} = $arg->{clientver};
+    cres $c, ['ok'], 'Successful login by %s (%s) using client "%s" ver. %s', $arg->{username}, $c->{uid}, $c->{client}, $c->{clientver};
+
+  } else {
+    my @a = ( $tm + $VNDB::S{login_throttle}[0], norm_ip($c->{ip}) );
+    pg_cmd 'UPDATE login_throttle SET timeout = to_timestamp($1) WHERE ip = $2', \@a;
+    pg_cmd 'INSERT INTO login_throttle (ip, timeout) SELECT $2, to_timestamp($1) WHERE NOT EXISTS(SELECT 1 FROM login_throttle WHERE ip = $2)', \@a;
+    cerr $c, auth => "Wrong password for user '$arg->{username}'";
+  }
+}
+
+
+sub dbstats {
+  my $c = shift;
+
+  cpg $c, 'SELECT section, count FROM stats_cache', undef, sub {
+    my $res = shift;
+    cres $c, [ dbstats => { map {
+      $_->{section} =~ s/^threads_//;
+      ($_->{section}, 1*$_->{count})
+    } $res->rowsAsHashes } ], 'dbstats';
+  };
 }
 
 
@@ -101,669 +326,270 @@ sub parsedate {
 }
 
 
-# see the notes after __END__ for an explanation of what this function does
-sub filtertosql {
-  my($c, $p, $t, $field, $op, $value) = ($_[1], $_[2], $_[3], @{$_[0]});
-  my %e = ( field => $field, op => $op, value => $value );
-
-  # get the field that matches
-  $t = (grep $_->[0] eq $field, @$t)[0];
-  return cerr $c, filter => "Unknown field '$field'", %e if !$t;
-  $t = [ @$t[1..$#$t] ];
-
-  # get the type that matches
-  $t = (grep +(
-    # wrong operator? don't even look further!
-    !defined($_->[2]{$op}) ? 0
-    # undef
-    : !defined($_->[0]) ? !defined($value)
-    # int
-    : $_->[0] eq 'int'  ? (defined($value) && !ref($value) && $value =~ /^-?\d+$/)
-    # str
-    : $_->[0] eq 'str'  ? defined($value) && !ref($value)
-    # inta
-    : $_->[0] eq 'inta' ? ref($value) eq 'ARRAY' && @$value && !grep(!defined($_) || ref($_) || $_ !~ /^-?\d+$/, @$value)
-    # stra
-    : $_->[0] eq 'stra' ? ref($value) eq 'ARRAY' && @$value && !grep(!defined($_) || ref($_), @$value)
-    # bool
-    : $_->[0] eq 'bool' ? defined($value) && JSON::XS::is_bool($value)
-    # oops
-    : die "Invalid filter type $_->[0]"
-  ), @$t)[0];
-  return cerr $c, filter => 'Wrong field/operator/expression type combination', %e if !$t;
-
-  my($type, $sql, $ops, %o) = @$t;
-
-  # substistute :op: in $sql, which is the same for all types
-  $sql =~ s/:op:/$ops->{$op}/g;
-
-  # no further processing required for type=undef
-  return $sql if !defined $type;
-
-  # split a string into an array of strings
-  if($type eq 'str' && $o{split}) {
-    $value = [ $o{split}->($value) ];
-    # assume that this match failed if the function doesn't return anything useful
-    return 'false' if !@$value || grep(!defined($_) || ref($_), @$value);
-    $type = 'stra';
-  }
-
-  # pre-process the argument(s)
-  my @values = ref($value) eq 'ARRAY' ? @$value : $value;
-  for my $v (!$o{process} ? () : @values) {
-    if(!ref $o{process}) {
-      $v = sprintf $o{process}, $v;
-    } elsif(ref($o{process}) eq 'CODE') {
-      $v = $o{process}->($v);
-      return cerr $c, filter => $$v, %e if ref($v) eq 'SCALAR';
-    } elsif(${$o{process}} eq 'like') {
-      y/%//;
-      $v = "%$v%";
-    } elsif(${$o{process}} eq 'lang') {
-      return cerr $c, filter => 'Invalid language code', %e if !grep $v eq $_, @{$VNDB::S{languages}};
-    } elsif(${$o{process}} eq 'plat') {
-      return cerr $c, filter => 'Invalid platform code', %e if !grep $v eq $_, @{$VNDB::S{platforms}};
-    }
-  }
-
-  # type=bool and no processing done? convert bool to what DBD::Pg wants
-  $values[0] = $values[0] ? 1 : 0 if $type eq 'bool' && !$o{process};
-
-  # Ensure that integers stay within their range
-  for($o{range} ? @values : ()) {
-    return cerr $c, filter => 'Integer out of range', %e if $_ < $o{range}[0] || $_ > $o{range}[1];
-  }
-
-  # type=str, int and bool are now quite simple
-  if(!ref $value) {
-    $sql =~ s/:value:/push @$p, $values[0]; '?'/eg;
-    return $sql;
-  }
-
-  # and do some processing for type=stra and type=inta
-  my @parameters;
-  if($o{serialize}) {
-    for (@values) {
-      my $v = $o{serialize};
-      $v =~ s/:op:/$ops->{$op}/g;
-      $v =~ s/:value:/push @parameters, $_; '?'/eg;
-      $_ = $v;
-    }
-  } else {
-    @parameters = @values;
-    $_ = '?' for @values;
-  }
-  my $joined = join defined $o{join} ? $o{join} : '', @values;
-  $sql =~ s/:value:/push @$p, @parameters; $joined/eg;
-  return $sql;
+sub splitarray {
+  (my $s = shift) =~ s/^{(.+)}$/$1/;
+  return [ split /,/, $s ];
 }
 
 
-# generates the LIMIT/OFFSET/ORDER BY part of the queries
-sub sqllast { # $get, default sort field, hashref with sort fields and SQL variant
-  my($get, $def, $sort) = @_;
-
-  my $o = $get->{opt}{reverse} ? 'DESC' : 'ASC';
-  $get->{opt}{sort} = $def if !defined $get->{opt}{sort};
-  my $s = $sort->{$get->{opt}{sort}};
-  return cerr $get->{c}, badarg => 'Invalid sort field', field => 'sort' if !$s;
-  my $q = 'ORDER BY '.sprintf($s, $o);
-
-  $q .= sprintf ' LIMIT %d OFFSET %d', $get->{opt}{results}+1, $get->{opt}{results}*($get->{opt}{page}-1);
-  return $q;
-}
-
-
-## POE handlers
-
-sub _start {
-  $_[KERNEL]->alias_set('api');
-  $_[KERNEL]->sig(shutdown => 'shutdown');
-
-  # create listen socket
-  $_[HEAP]{listen} = POE::Wheel::SocketFactory->new(
-    BindPort     => $_[HEAP]{port},
-    Reuse        => 1,
-    FailureEvent => 'server_error',
-    SuccessEvent => 'client_connect',
-  );
-  $_[KERNEL]->yield(log => 0, 'API starting up on port %d', $_[HEAP]{port});
-}
-
-
-sub shutdown {
-  $_[KERNEL]->alias_remove('api');
-  $_[KERNEL]->yield(log => 0, 'API shutting down');
-  delete $_[HEAP]{listen};
-  delete $_[HEAP]{c}{$_}{wheel} for (keys %{$_[HEAP]{c}});
-}
-
-
-sub log {
-  my($c, $msg, @args) = @_[ARG0..$#_];
-  if(open(my $F, '>>', $_[HEAP]{logfile})) {
-    printf $F "[%s] %s: %s\n", scalar localtime,
-      $c ? sprintf '%d %s', $c->{wheel}->ID(), $c->{ip} : 'global',
-      @args ? sprintf $msg, @args : $msg;
-    close $F;
-  }
-}
-
-
-sub server_error {
-  return if $_[ARG0] eq 'accept' && $_[ARG1] == ECONNABORTED;
-  $_[KERNEL]->yield(log => 0, 'Server socket failed on %s: (%s) %s', @_[ ARG0..ARG2 ]);
-  $_[KERNEL]->call(core => log => 'API shutting down due to error.');
-  $_[KERNEL]->yield('shutdown');
-}
-
-
-sub client_connect {
-  my $ip = inet_ntoa($_[ARG1]);
-  my $sock = $_[ARG0];
-
-  $_[HEAP]{s}{conn}++;
-
-  return close $sock if grep $ip eq $_, @{$_[HEAP]{ipbans}};
-  if($_[HEAP]{conn_per_ip} <= grep $ip eq $_[HEAP]{c}{$_}{ip}, keys %{$_[HEAP]{c}}) {
-    $_[KERNEL]->yield(log => 0,
-      'Connect from %s denied, limit of %d connections per IP reached', $ip, $_[HEAP]{conn_per_ip});
-    close $sock;
-    return;
-  }
-
-  # set TCP keepalive (silently ignoring errors, it's not really important)
-  my $keep = $_[HEAP]{tcp_keepalive};
-  $keep && eval {
-    setsockopt($sock, SOL_SOCKET,  SO_KEEPALIVE,  1);
-    setsockopt($sock, IPPROTO_TCP, TCP_KEEPIDLE,  $keep->[0]);
-    setsockopt($sock, IPPROTO_TCP, TCP_KEEPINTVL, $keep->[1]);
-    setsockopt($sock, IPPROTO_TCP, TCP_KEEPCNT,   $keep->[2]);
-  };
-
-  # the wheel
-  my $w = POE::Wheel::ReadWrite->new(
-    Handle     => $sock,
-    Filter     => POE::Filter::VNDBAPI->new(),
-    ErrorEvent => 'client_error',
-    InputEvent => 'client_input',
-  );
-
-  # link this connection to the entry in %throttle (create if not exists)
-  $throttle{$ip} = [ time, time ] if !$throttle{$ip};
-
-  $_[HEAP]{c}{ $w->ID() } = {
-    wheel     => $w,
-    ip        => $ip,
-    connected => time,
-    cmds      => 0,
-    cmd_err   => 0,
-    throttle  => $throttle{$ip},
-    # username, client, clientver are added after logging in
-  };
-  $_[KERNEL]->yield(log => $_[HEAP]{c}{ $w->ID() }, 'Connected');
-}
-
-
-sub client_error { # func, errno, errmsg, wheelid
-  my $c = $_[HEAP]{c}{$_[ARG3]};
-  if($_[ARG0] eq 'read' && ($_[ARG1] == 0 || $_[ARG1] == ECONNRESET)) {
-    $_[KERNEL]->yield(log => $c, 'Disconnected');
-  } else {
-    $_[KERNEL]->yield(log => $c, 'SOCKET ERROR on operation %s: (%s) %s', @_[ARG0..ARG2]);
-  }
-  delete $_[HEAP]{c}{$_[ARG3]};
-}
-
-
-sub client_input {
-  my($arg, $id) = @_[ARG0,ARG1];
-  my $cmd = shift @$arg;
-  my $c = $_[HEAP]{c}{$id};
-
-  # stats
-  $_[HEAP]{s}{cmds}++;
-  $c->{cmds}++;
-
-  # parse error?
-  return cerr $c, $arg->[0]{id}, $arg->[0]{msg} if !defined $cmd;
-
-  # make sure the throttle values for this connection are at least the current time
-  my $time = time;
-  $_ < $time && ($_ = $time) for @{$c->{throttle}};
-
-  # check for thottle rule violation
-  my @limits = ('cmd', 'sql');
-  for (0..$#limits) {
-    my $threshold = $_[HEAP]{"throttle_$limits[$_]"}[0]*$_[HEAP]{"throttle_$limits[$_]"}[1];
-    return cerr $c, throttled => 'Throttle limit reached.', type => $limits[$_],
-        minwait  => int(10*($c->{throttle}[$_]-$time-$threshold))/10+1,
-        fullwait => int(10*($c->{throttle}[$_]-$time))/10+1
-      if $c->{throttle}[$_]-$time > $threshold;
-  }
-
-  # update commands/second throttle
-  $c->{throttle}[0] += $_[HEAP]{throttle_cmd}[0];
-
-  # handle login command
-  return $_[KERNEL]->yield(login => $c, $arg) if $cmd eq 'login';
-  return cerr $c, needlogin => 'Not logged in.' if !$c->{client};
-
-  # handle dbstats command
-  if($cmd eq 'dbstats') {
-    return cerr $c, parse => 'Invalid arguments to get command' if @$arg > 0;
-    return $_[KERNEL]->yield(dbstats => $c);
-  }
-
-  # handle get command
-  if($cmd eq 'get') {
-    return cerr $c, parse => 'Invalid arguments to get command' if @$arg < 3 || @$arg > 4
-      || ref($arg->[0]) || ref($arg->[1]) || ref($arg->[2]) ne 'POE::Filter::VNDBAPI::filter'
-      || exists($arg->[3]) && ref($arg->[3]) ne 'HASH';
-    my $opt = $arg->[3] || {};
-    return cerr $c, badarg => 'Invalid argument for the "page" option', field => 'page'
-      if defined($opt->{page}) && (ref($opt->{page}) || $opt->{page} !~ /^\d+$/ || $opt->{page} < 1 || $opt->{page} > 1e3);
-    return cerr $c, badarg => 'Invalid argument for the "results" option', field => 'results'
-      if defined($opt->{results}) && (ref($opt->{results}) || $opt->{results} !~ /^\d+$/ || $opt->{results} < 1
-          || $opt->{results} > ($arg->[0] =~ /list$/ ? $_[HEAP]{max_results_lists} : $_[HEAP]{max_results}));
-    return cerr $c, badarg => '"reverse" option must be boolean', field => 'reverse'
-      if defined($opt->{reverse}) && !JSON::XS::is_bool($opt->{reverse});
-    return cerr $c, badarg => '"sort" option must be a string', field => 'sort'
-      if defined($opt->{sort}) && ref($opt->{sort});
-    $opt->{page} = $opt->{page}||1;
-    $opt->{results} = $opt->{results}||$_[HEAP]{default_results};
-    $opt->{reverse} = defined($opt->{reverse}) && $opt->{reverse};
-    my %obj = (
-      c => $c,
-      info => [ split /,/, $arg->[1] ],
-      filters => $arg->[2],
-      opt => $opt,
-    );
-    return cerr $c, 'gettype', "Unknown get type: '$arg->[0]'" if $arg->[0] !~ /^(?:vn|release|producer|character|votelist|vnlist|wishlist)$/;
-    return $_[KERNEL]->yield("get_$arg->[0]", \%obj);
-  }
-
-  # handle set command
-  if($cmd eq 'set') {
-    return cerr $c, parse => 'Invalid arguments to set command' if @$arg < 2 || @$arg > 3 || ref($arg->[0])
-      || ref($arg->[1]) || $arg->[1] !~ /^\d+$/ || $arg->[1] < 1 || $arg->[1] > 1e6 || (defined($arg->[2]) && ref($arg->[2]) ne 'HASH');
-    return cerr $c, 'settype', "Unknown set type: '$arg->[0]'" if $arg->[0] !~ /^(votelist|vnlist|wishlist)$/;
-    return cerr $c, needlogin => 'Not logged in as a user' if !$c->{uid};
-    my %obj = (
-      c => $c,
-      type => $arg->[0],
-      id => $arg->[1],
-      opt => $arg->[2]
-    );
-    return $_[KERNEL]->yield("set_$arg->[0]", \%obj);
-  }
-
-  # unknown command
-  return cerr $c, 'parse', "Unknown command '$cmd'" if $cmd ne 'get';
-}
-
-
-sub login {
-  my($c, $arg) = @_[ARG0,ARG1];
-
-  # validation (bah)
-  return cerr $c, parse => 'Argument to login must be a single JSON object' if @$arg != 1 || ref($arg->[0]) ne 'HASH';
-  $arg = $arg->[0];
-  return cerr $c, loggedin => 'Already logged in, please reconnect to start a new session' if $c->{client};
-  for (qw|protocol client clientver username password|) {
-    $_ ne "username" && $_ ne "password" && !exists $arg->{$_} && return cerr $c, missing => "Required field '$_' is missing", field => $_;
-    exists $arg->{$_} && !defined $arg->{$_} && return cerr $c, badarg  => "Field '$_' cannot be null", field => $_;
-    # note that 'true' and 'false' are also refs
-    exists $arg->{$_} && ref $arg->{$_}      && return cerr $c, badarg  => "Field '$_' must be a scalar", field => $_;
-  }
-  return cerr $c, badarg => 'Unknown protocol version', field => 'protocol' if $arg->{protocol}  ne '1';
-  return cerr $c, badarg => 'The fields "username" and "password" must either both be present or both be missing.', field => 'username'
-    if exists $arg->{username} && !exists $arg->{password} || exists $arg->{password} && !exists $arg->{username};
-  return cerr $c, badarg => 'Invalid client name', field => 'client'        if $arg->{client}    !~ /^[a-zA-Z0-9 _-]{3,50}$/;
-  return cerr $c, badarg => 'Invalid client version', field => 'clientver'  if $arg->{clientver} !~ /^[a-zA-Z0-9_.\/-]{1,25}$/;
-
-  if(exists $arg->{username}) {
-    # check login throttle
-    $_[KERNEL]->post(pg => query => "SELECT timeout FROM login_throttle WHERE ip = ?",
-      [ norm_ip($c->{ip}) ], 'login_throttle', [ $c, $arg ]);
-  } else {
-    $c->{client} = $arg->{client};
-    $c->{clientver} = $arg->{clientver};
-    $c->{wheel}->put(['ok']);
-    $_[KERNEL]->yield(log => $c, 'Login using client "%s" ver. %s', $arg->{client}, $arg->{clientver});
-  }
-}
-
-
-sub login_throttle {
-  my($num, $res, $c, $arg) = (@_[ARG0, ARG1], $_[ARG2][0], $_[ARG2][1]);
-
-  my $tm = @$res && $res->[0]{timeout} > time ? $res->[0]{timeout} : time;
-  $tm = int $tm;
-  return cerr $c, auth => "Too many failed login attempts"
-    if $tm-time() > $VNDB::S{login_throttle}[1];
-
-  # fetch user info
-  $_[KERNEL]->post(pg => query => "SELECT id, passwd as passwd FROM users WHERE username = ?",
-    [ $arg->{username} ], 'login_res', [ $c, $arg, $tm ]);
-}
-
-
-sub login_res { # num, res, [ c, arg, tm ]
-  my($num, $res, $c, $arg, $tm) = (@_[ARG0, ARG1], $_[ARG2][0], $_[ARG2][1], $_[ARG2][2]);
-
-  my $passwd = $res->[0]{passwd};
-  my $accepted = 0;
-
-  return cerr $c, auth => "No user with the name '$arg->{username}'" if $num == 0;
-  return cerr $c, auth => "Account disabled" if length $passwd != 41 && length $passwd != 46;
-
-  # Old sha256
-  if(length $passwd == 41) {
-    my $salt = substr $passwd, 0, 9;
-    $accepted = sha256($VNDB::S{global_salt}.encode_utf8($arg->{password}).$salt) eq substr $passwd, 9;
-  }
-
-  # New scrypt
-  if(length $passwd == 46) {
-    my($N, $r, $p, $salt, $hash) = unpack 'NCCa8a*', $passwd;
-    $accepted = $hash eq scrypt_raw($arg->{password}, $VNDB::S{scrypt_salt} . $salt, $N, $r, $p, 32);
-  }
-
-  if(!$accepted) {
-    $tm += $VNDB::S{login_throttle}[0];
-    $_[KERNEL]->post(pg => do => 'UPDATE login_throttle SET timeout = to_timestamp(?) WHERE ip = ?', [ $tm, $c->{ip} ]);
-    $_[KERNEL]->post(pg => do =>
-      'INSERT INTO login_throttle (ip, timeout) SELECT ?, to_timestamp(?) WHERE NOT EXISTS(SELECT 1 FROM login_throttle WHERE ip = ?)',
-      [  $c->{ip}, $tm, $c->{ip} ]);
-    return cerr $c, auth => "Wrong password for user '$arg->{username}'";
-  }
-
-  $c->{uid} = $res->[0]{id};
-  $c->{username} = $arg->{username};
-  $c->{client} = $arg->{client};
-  $c->{clientver} = $arg->{clientver};
-
-  $c->{wheel}->put(['ok']);
-  $_[KERNEL]->yield(log => $c,
-    'Successful login by %s (%s) using client "%s" ver. %s', $arg->{username}, $c->{uid}, $arg->{client}, $arg->{clientver});
-}
-
-
-sub dbstats {
-  $_[KERNEL]->post(pg => query => "SELECT section, count FROM stats_cache",
-    undef, 'dbstats_res', $_[ARG0]);
-}
-
-
-sub dbstats_res {
-  my($num, $res, $c, $time) = (@_[ARG0..$#_]);
-  $c->{throttle}[1] += $time*$_[HEAP]{throttle_sql}[0];
-  my %stats = map {
-    $_->{section} =~ s/^threads_//;
-    ($_->{section}, 1*$_->{count})
-  } @$res;
-  $c->{wheel}->put([dbstats => \%stats]);
-  $_[KERNEL]->yield(log => $c, "T:%4.0fms  Q:1  R:%02d dbstats", $time*1000, $num);
-}
-
-
-sub get_results {
-  my $get = $_[ARG0]; # hashref, must contain: type, c, queries, time, list, info, filters, more, opt
-
-  # update sql throttle
-  $get->{c}{throttle}[1] += $get->{time}*$_[HEAP]{throttle_sql}[0];
-
-  # send and log
-  my $num = @{$get->{list}};
-  $get->{c}{wheel}->put([ results => { num => $num, more => $get->{more} ? TRUE : FALSE, items => $get->{list} }]);
-  $_[KERNEL]->yield(log => $get->{c}, "T:%4.0fms  Q:%d  R:%02d get %s %s %s {%s %s, page %d}",
-    $get->{time}*1000, $get->{queries}, $num, $get->{type}, join(',', @{$get->{info}}), encode_filters($get->{filters}),
-    $get->{opt}{sort}, $get->{opt}{reverse}?'desc':'asc', $get->{opt}{page});
-}
-
-
-sub get_vn {
-  my $get = $_[ARG0];
-
-  return cerr $get->{c}, getinfo => "Unknown info flag '$_'", flag => $_
-    for (grep !/^(basic|details|anime|relations|tags|stats)$/, @{$get->{info}});
-
-  my $select = 'v.id, v.latest';
-  $select .= ', vr.title, vr.original, v.c_released, v.c_languages::text[], v.c_olang::text[], v.c_platforms::text[]' if grep /basic/, @{$get->{info}};
-  $select .= ', vr.image, vr.img_nsfw, vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai' if grep /details/, @{$get->{info}};
-  $select .= ', v.c_popularity, v.c_rating, v.c_votecount' if grep /stats/, @{$get->{info}};
-
-  my @placeholders;
-  my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
-    [ 'id',
-      [ 'int' => 'v.id :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, range => [1,1e6] ],
-      [ inta  => 'v.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, range => [1,1e6], join => ',' ],
-    ], [ 'title',
-      [ str   => 'vr.title :op: :value:', {qw|= =  != <>|} ],
-      [ str   => 'vr.title ILIKE :value:', {'~',1}, process => \'like' ],
-    ], [ 'original',
-      [ undef,   "vr.original :op: ''", {qw|= =  != <>|} ],
-      [ str   => 'vr.original :op: :value:', {qw|= =  != <>|} ],
-      [ str   => 'vr.original ILIKE :value:', {'~',1}, process => \'like' ]
-    ], [ 'firstchar',
-      [ undef,   '(:op: ((ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)))', {'=', '', '!=', 'NOT'} ],
-      [ str   => 'LOWER(SUBSTR(vr.title, 1, 1)) :op: :value:' => {qw|= = != <>|}, process => sub { shift =~ /^([a-z])$/ ? $1 : \'Invalid character' } ],
-    ], [ 'released',
-      [ undef,   'v.c_released :op: 0', {qw|= =  != <>|} ],
-      [ str   => 'v.c_released :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, process => \&parsedate ],
-    ], [ 'platforms',
-      [ undef,   "v.c_platforms :op: '{}'", {qw|= =  != <>|} ],
-      [ str   => ':op: (v.c_platforms && ARRAY[:value:]::platform[])', {'=' => '', '!=' => 'NOT'}, process => \'plat' ],
-      [ stra  => ':op: (v.c_platforms && ARRAY[:value:]::platform[])', {'=' => '', '!=' => 'NOT'}, join => ',', process => \'plat' ],
-    ], [ 'languages',
-      [ undef,   "v.c_languages :op: '{}'", {qw|= =  != <>|} ],
-      [ str   => ':op: (v.c_languages && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, process => \'lang' ],
-      [ stra  => ':op: (v.c_languages && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, join => ',', process => \'lang' ],
-    ], [ 'orig_lang',
-      [ str   => ':op: (v.c_olang && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, process => \'lang' ],
-      [ stra  => ':op: (v.c_olang && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, join => ',', process => \'lang' ],
-    ], [ 'search',
-      [ str   => '(:value:)', {'~',1}, split => \&normalize_query,
-                  join => ' AND ', serialize => 'v.c_search LIKE :value:', process => \'like' ],
-    ],
-  ];
-  my $last = sqllast $get, 'id', {
+# sql     => str: Main sql query, three placeholders: select, where part, order by and limit clauses
+# select  => str: string to add to the select part of the main query
+# proc    => &sub->($row): called on each row of the main query
+# sorts   => { sort_key => sql_string }, %s is replaced with 'ASC/DESC' in sql_string
+# sortdef => str: default sort (as per 'sorts')
+# islist  => bool: Whether this is a vnlist/wishlist/votelist thing (determines max results)
+# flags   => {
+#   flag_name => {
+#     select    => str: string to add to the select part of the main query
+#     proc      => &sub->($row): same as parent proc
+#     fetchidx  => str: name of the field from the main query to get the id list from
+#     fetchsql  => str: SQL query to fetch more data. %s is replaced with the list of ID's based on fetchidx
+#     fatchproc => &sub->($rows, $fetchrows)
+#   }
+# }
+# filters => filters args for get_filters() (TODO: Document)
+my %GET_VN = (
+  sql     => 'SELECT %s FROM vn v JOIN vn_rev vr ON v.latest = vr.id WHERE NOT v.hidden AND (%s) %s',
+  select  => 'v.id, v.latest',
+  proc    => sub {
+    delete $_[0]{latest};
+    $_[0]{id} *= 1
+  },
+  sortdef => 'id',
+  sorts   => {
     id => 'v.id %s',
     title => 'vr.title %s',
     released => 'v.c_released %s',
-  };
-  return if !$last || !$where;
-
-  $_[KERNEL]->post(pg => query =>
-    qq|SELECT $select FROM vn v JOIN vn_rev vr ON v.latest = vr.id WHERE NOT v.hidden AND $where $last|,
-    \@placeholders, 'get_vn_res', $get);
-}
-
-
-sub get_vn_res {
-  my($num, $res, $get, $time) = (@_[ARG0..$#_]);
-
-  $get->{time} += $time;
-  $get->{queries}++;
-
-  # process the results
-  if(!$get->{type}) {
-    for (@$res) {
-      $_->{id}*=1;
-      if(grep /basic/, @{$get->{info}}) {
-        $_->{original}  ||= undef;
-        $_->{platforms} = delete $_->{c_platforms};
-        $_->{languages} = delete $_->{c_languages};
-        $_->{orig_lang} = delete $_->{c_olang};
-        $_->{released}  = formatdate delete $_->{c_released};
-      }
-      if(grep /details/, @{$get->{info}}) {
-        $_->{aliases}     ||= undef;
-        $_->{length}      *= 1;
-        $_->{length}      ||= undef;
-        $_->{description} ||= undef;
-        $_->{image_nsfw}  = delete($_->{img_nsfw}) ? TRUE : FALSE;
-        $_->{links} = {
-          wikipedia => delete($_->{l_wp})     ||undef,
-          encubed   => delete($_->{l_encubed})||undef,
-          renai     => delete($_->{l_renai})  ||undef
+  },
+  flags  => {
+    basic => {
+      select => 'vr.title, vr.original, v.c_released, v.c_languages, v.c_olang, v.c_platforms',
+      proc   => sub {
+        $_[0]{original}  ||= undef;
+        $_[0]{platforms} = splitarray delete $_[0]{c_platforms};
+        $_[0]{languages} = splitarray delete $_[0]{c_languages};
+        $_[0]{orig_lang} = splitarray delete $_[0]{c_olang};
+        $_[0]{released}  = formatdate delete $_[0]{c_released};
+      },
+    },
+    details => {
+      select => 'vr.image, vr.img_nsfw, vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai',
+      proc   => sub {
+        $_[0]{aliases}     ||= undef;
+        $_[0]{length}      *= 1;
+        $_[0]{length}      ||= undef;
+        $_[0]{description} ||= undef;
+        $_[0]{image_nsfw}  = delete($_[0]{img_nsfw}) =~ /t/ ? TRUE : FALSE;
+        $_[0]{links} = {
+          wikipedia => delete($_[0]{l_wp})     ||undef,
+          encubed   => delete($_[0]{l_encubed})||undef,
+          renai     => delete($_[0]{l_renai})  ||undef
         };
-        $_->{image} = $_->{image} ? sprintf '%s/cv/%02d/%d.jpg', $VNDB::S{url_static}, $_->{image}%100, $_->{image} : undef;
-      }
-      if(grep /stats/, @{$get->{info}}) {
-        $_->{popularity} = 1 * sprintf '%.2f', 100*(delete $_->{c_popularity} or 0);
-        $_->{rating}     = 1 * sprintf '%.2f', 0.1*(delete $_->{c_rating} or 0);
-        $_->{votecount}  = 1 * delete $_->{c_votecount};
-      }
-    }
-    $get->{more} = pop(@$res)&&1 if @$res > $get->{opt}{results};
-    $get->{list} = $res;
-  }
+        $_[0]{image} = $_[0]{image} ? sprintf '%s/cv/%02d/%d.jpg', $VNDB::S{url_static}, $_[0]{image}%100, $_[0]{image} : undef;
+      },
+    },
+    stats => {
+      select => 'v.c_popularity, v.c_rating, v.c_votecount',
+      proc => sub {
+        $_[0]{popularity} = 1 * sprintf '%.2f', 100*(delete $_[0]{c_popularity} or 0);
+        $_[0]{rating}     = 1 * sprintf '%.2f', 0.1*(delete $_[0]{c_rating} or 0);
+        $_[0]{votecount}  = 1 * delete $_[0]{c_votecount};
+      },
+    },
+    anime => {
+      fetch => [[ 'latest', 'SELECT va.vid, a.id, a.year, a.ann_id, a.nfo_id, a.type, a.title_romaji, a.title_kanji
+                     FROM anime a JOIN vn_anime va ON va.aid = a.id WHERE va.vid IN(%s)', sub { my($r, $n) = @_;
+        # link
+        for my $i (@$r) {
+          $i->{anime} = [ grep $i->{latest} == $_->{vid}, @$n ];
+        }
+        # cleanup
+        for (@$n) {
+          $_->{id}     *= 1;
+          $_->{year}   *= 1 if defined $_->{year};
+          $_->{ann_id} *= 1 if defined $_->{ann_id};
+          delete $_->{vid};
+        }
+      }]],
+    },
+    relations => {
+      fetchidx => 'latest',
+      fetchsql => 'SELECT vl.vid1, v.id, vl.relation, vr.title, vr.original FROM vn_relations vl
+                     JOIN vn v ON v.id = vl.vid2 JOIN vn_rev vr ON vr.id = v.latest WHERE vl.vid1 IN(%s) AND NOT v.hidden',
+      fetchproc => sub { my($r, $n) = @_;
+        for my $i (@$r) {
+          $i->{relations} = [ grep $i->{latest} == $_->{vid1}, @$n ];
+        }
+        for (@$n) {
+          $_->{id} *= 1;
+          $_->{original} ||= undef;
+          delete $_->{vid1};
+        }
+      },
+    },
+    tags => {
+      fetchidx => 'id',
+      fetchsql => 'SELECT vid, tag AS id, avg(CASE WHEN ignore THEN NULL ELSE vote END) as score,
+                          COALESCE(avg(CASE WHEN ignore THEN NULL ELSE spoiler END), 0) as spoiler
+                     FROM tags_vn tv WHERE vid IN(%s) GROUP BY vid, id
+                   HAVING avg(CASE WHEN ignore THEN NULL ELSE vote END) > 0',
+      fetchproc => sub { my($r, $n) = @_;
+        for my $i (@$r) {
+          $i->{tags} = [ map
+            [ $_->{id}*1, 1*sprintf('%.2f', $_->{score}), 1*sprintf('%.0f', $_->{spoiler}) ],
+            grep $i->{id} == $_->{vid}, @$n ];
+        }
+      },
+    },
+  },
+  filters => {
+    id => [
+      [ 'int' => 'v.id :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, range => [1,1e6] ],
+      [ inta  => 'v.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, range => [1,1e6], join => ',' ],
+    ],
+    title => [
+      [ str   => 'vr.title :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'vr.title ILIKE :value:', {'~',1}, process => \'like' ],
+    ],
+    original => [
+      [ undef,   "vr.original :op: ''", {qw|= =  != <>|} ],
+      [ str   => 'vr.original :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'vr.original ILIKE :value:', {'~',1}, process => \'like' ]
+    ],
+    firstchar => [
+      [ undef,   '(:op: ((ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)))', {'=', '', '!=', 'NOT'} ],
+      [ str   => 'LOWER(SUBSTR(vr.title, 1, 1)) :op: :value:' => {qw|= = != <>|}, process => sub { shift =~ /^([a-z])$/ ? $1 : \'Invalid character' } ],
+    ],
+    released => [
+      [ undef,   'v.c_released :op: 0', {qw|= =  != <>|} ],
+      [ str   => 'v.c_released :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, process => \&parsedate ],
+    ],
+    platforms => [
+      [ undef,   "v.c_platforms :op: '{}'", {qw|= =  != <>|} ],
+      [ str   => ':op: (v.c_platforms && ARRAY[:value:]::platform[])', {'=' => '', '!=' => 'NOT'}, process => \'plat' ],
+      [ stra  => ':op: (v.c_platforms && ARRAY[:value:]::platform[])', {'=' => '', '!=' => 'NOT'}, join => ',', process => \'plat' ],
+    ],
+    languages => [
+      [ undef,   "v.c_languages :op: '{}'", {qw|= =  != <>|} ],
+      [ str   => ':op: (v.c_languages && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, process => \'lang' ],
+      [ stra  => ':op: (v.c_languages && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, join => ',', process => \'lang' ],
+    ],
+    orig_lang => [
+      [ str   => ':op: (v.c_olang && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, process => \'lang' ],
+      [ stra  => ':op: (v.c_olang && ARRAY[:value:]::language[])', {'=' => '', '!=' => 'NOT'}, join => ',', process => \'lang' ],
+    ],
+    search => [
+      [ str   => '(:value:)', {'~',1}, split => \&normalize_query,
+                  join => ' AND ', serialize => 'v.c_search LIKE :value:', process => \'like' ],
+    ]
+  },
+);
 
-  elsif($get->{type} eq 'anime') {
-    # link
-    for my $i (@{$get->{list}}) {
-      $i->{anime} = [ grep $i->{latest} == $_->{vid}, @$res ];
-    }
-    # cleanup
-    for (@$res) {
-      $_->{id}     *= 1;
-      $_->{year}   *= 1 if defined $_->{year};
-      $_->{ann_id} *= 1 if defined $_->{ann_id};
-      delete $_->{vid};
-    }
-    $get->{anime} = 1;
-  }
+my %GET_RELEASE = (
+  sql     => 'SELECT %s FROM releases r JOIN releases_rev rr ON rr.id = r.latest WHERE NOT hidden AND (%s) %s',
+  select  => 'r.id, r.latest',
+  sortdef => 'id',
+  sorts   => {
+    id => 'r.id %s',
+    title => 'rr.title %s',
+    released => 'rr.released %s',
+  },
+  proc    => sub {
+    delete $_[0]{latest};
+    $_[0]{id} *= 1
+  },
+  flags => {
+    basic => {
+      select => 'rr.title, rr.original, rr.released, rr.type, rr.patch, rr.freeware, rr.doujin',
+      proc   => sub {
+        $_[0]{original} ||= undef;
+        $_[0]{released} = formatdate($_[0]{released});
+        $_[0]{patch}    = $_[0]{patch}    =~ /^t/ ? TRUE : FALSE;
+        $_[0]{freeware} = $_[0]{freeware} =~ /^t/ ? TRUE : FALSE;
+        $_[0]{doujin}   = $_[0]{doujin}   =~ /^t/ ? TRUE : FALSE;
+      },
+      fetchidx => 'latest',
+      fetchsql => 'SELECT rid, lang FROM releases_lang WHERE rid IN(%s)',
+      fetchproc => sub { my($n, $r) = @_;
+        for my $i (@$n) {
+          $i->{languages} = [ map $i->{latest} == $_->{rid} ? $_->{lang} : (), @$r ];
+        }
+      },
+    },
+    details => {
+      select => 'rr.website, rr.notes, rr.minage, rr.gtin, rr.catalog',
+      proc   => sub {
+        $_[0]{website}  ||= undef;
+        $_[0]{notes}    ||= undef;
+        $_[0]{minage}   = $_[0]{minage} < 0 ? undef : $_[0]{minage}*1;
+        $_[0]{gtin}     ||= undef;
+        $_[0]{catalog}  ||= undef;
+      },
+    },
 
-  elsif($get->{type} eq 'relations') {
-    for my $i (@{$get->{list}}) {
-      $i->{relations} = [ grep $i->{latest} == $_->{vid1}, @$res ];
-    }
-    for (@$res) {
-      $_->{id} *= 1;
-      $_->{original} ||= undef;
-      delete $_->{vid1};
-    }
-    $get->{relations} = 1;
-  }
+  @ids && !$get->{platforms} && grep(/details/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query =>
+    qq|SELECT rid, platform FROM releases_platforms WHERE rid IN($ids)|,
+    \@ids, 'get_release_res', { %$get, type => 'platforms' });
 
-  elsif($get->{type} eq 'tags') {
-    for my $i (@{$get->{list}}) {
-      $i->{tags} = [ map [ $_->{id}*1, 1*sprintf('%.2f', $_->{score}), 1*sprintf('%.0f', $_->{spoiler}) ], grep $i->{id} == $_->{vid}, @$res ];
-    }
-    $get->{tags} = 1;
-  }
+  @ids && !$get->{media} && grep(/details/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query =>
+    qq|SELECT rid, medium, qty FROM releases_media WHERE rid IN($ids)|,
+    \@ids, 'get_release_res', { %$get, type => 'media' });
 
-  # fetch more results
-  my @ids = map $_->{latest}, @{$get->{list}};
-  my $ids = join ',', map '?', @ids;
+  @ids && !$get->{vn} && grep(/vn/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+    SELECT rv.rid, v.id, vr.title, vr.original FROM releases_vn rv JOIN vn v ON v.id = rv.vid
+      JOIN vn_rev vr ON vr.id = v.latest WHERE NOT v.hidden AND rv.rid IN($ids)|,
+    \@ids, 'get_release_res', { %$get, type => 'vn' });
 
-  @ids && !$get->{anime} && grep(/anime/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
-    SELECT va.vid, a.id, a.year, a.ann_id, a.nfo_id, a.type, a.title_romaji, a.title_kanji
-      FROM anime a JOIN vn_anime va ON va.aid = a.id WHERE va.vid IN($ids)|,
-    \@ids, 'get_vn_res', { %$get, type => 'anime' });
-
-  @ids && !$get->{relations} && grep(/relations/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
-    SELECT vl.vid1, v.id, vl.relation, vr.title, vr.original FROM vn_relations vl
-      JOIN vn v ON v.id = vl.vid2 JOIN vn_rev vr ON vr.id = v.latest WHERE vl.vid1 IN($ids) AND NOT v.hidden|,
-    \@ids, 'get_vn_res', { %$get, type => 'relations' });
-
-  @ids && !$get->{tags} && grep(/tags/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
-    SELECT vid, tag AS id, avg(CASE WHEN ignore THEN NULL ELSE vote END) as score, COALESCE(avg(CASE WHEN ignore THEN NULL ELSE spoiler END), 0) as spoiler
-      FROM tags_vn tv WHERE vid IN($ids) GROUP BY vid, id HAVING avg(CASE WHEN ignore THEN NULL ELSE vote END) > 0|,
-    [map $_->{id}, @{$get->{list}}], 'get_vn_res', { %$get, type => 'tags' });
-
-  # send results
-  delete $_->{latest} for @{$get->{list}};
-  $_[KERNEL]->yield(get_results => { %$get, type => 'vn' });
-}
-
-
-sub get_release {
-  my $get = $_[ARG0];
-
-  return cerr $get->{c}, getinfo => "Unknown info flag '$_'", flag => $_ for (grep !/^(basic|details|vn|producers)$/, @{$get->{info}});
-
-  my $select = 'r.id, r.latest';
-  $select .= ', rr.title, rr.original, rr.released, rr.type, rr.patch, rr.freeware, rr.doujin' if grep /basic/, @{$get->{info}};
-  $select .= ', rr.website, rr.notes, rr.minage, rr.gtin, rr.catalog' if grep /details/, @{$get->{info}};
-
-  my @placeholders;
-  my $where = encode_filters $get->{filters}, \&filtertosql, $get->{c}, \@placeholders, [
-    [ 'id',
+  @ids && !$get->{producers} && grep(/producers/, @{$get->{info}}) && return $_[KERNEL]->post(pg => query => qq|
+    SELECT rp.rid, rp.developer, rp.publisher, p.id, pr.type, pr.name, pr.original FROM releases_producers rp
+      JOIN producers p ON p.id = rp.pid JOIN producers_rev pr ON pr.id = p.latest WHERE NOT p.hidden AND rp.rid IN($ids)|,
+    \@ids, 'get_release_res', { %$get, type => 'producers' });
+  },
+  filters => {
+    id => [
       [ 'int' => 'r.id :op: :value:', {qw|= =  != <>  > >  >= >=  < <  <= <=|}, range => [1,1e6] ],
       [ inta  => 'r.id :op:(:value:)', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',', range => [1,1e6] ],
-    ], [ 'vn',
+    ],
+    vn => [
       [ 'int' => 'rr.id IN(SELECT rv.rid FROM releases_vn rv WHERE rv.vid = :value:)', {'=',1}, range => [1,1e6] ],
-    ], [ 'producer',
+    ],
+    producer => [
       [ 'int' => 'rr.id IN(SELECT rp.rid FROM releases_producers rp WHERE rp.pid = :value:)', {'=',1}, range => [1,1e6] ],
-    ], [ 'title',
+    ],
+    title => [
       [ str   => 'rr.title :op: :value:', {qw|= =  != <>|} ],
       [ str   => 'rr.title ILIKE :value:', {'~',1}, process => \'like' ],
-    ], [ 'original',
+    ],
+    original => [
       [ undef,   "rr.original :op: ''", {qw|= =  != <>|} ],
       [ str   => 'rr.original :op: :value:', {qw|= =  != <>|} ],
       [ str   => 'rr.original ILIKE :value:', {'~',1}, process => \'like' ]
-    ], [ 'released',
+    ],
+    released => [
       [ undef,   'rr.released :op: 0', {qw|= =  != <>|} ],
       [ str   => 'rr.released :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, process => \&parsedate ],
-    ], [ 'patch',    [ bool  => 'rr.patch = :value:',    {'=',1} ],
-    ], [ 'freeware', [ bool  => 'rr.freeware = :value:', {'=',1} ],
-    ], [ 'doujin',   [ bool  => 'rr.doujin = :value:',   {'=',1} ],
-    ], [ 'type',
+    ],
+    patch    => [ [ bool => 'rr.patch = :value:',    {'=',1} ] ]
+    freeware => [ [ bool => 'rr.freeware = :value:', {'=',1} ] ],
+    doujin   => [ [ bool => 'rr.doujin = :value:',   {'=',1} ] ],
+    type => [
       [ str   => 'rr.type :op: :value:', {qw|= =  != <>|},
         process => sub { !grep($_ eq $_[0], @{$VNDB::S{release_types}}) ? \'No such release type' : $_[0] } ],
-    ], [ 'gtin',
+    ],
+    gtin => [
       [ 'int' => 'rr.gtin :op: :value:', {qw|= =  != <>|}, process => sub { length($_[0]) > 14 ? \'Too long GTIN code' : $_[0] } ],
-    ], [ 'catalog',
+    ],
+    catalog => [
       [ str   => 'rr.catalog :op: :value:', {qw|= =  != <>|} ],
-    ], [ 'languages',
+    ],
+    languages => [
       [ str   => 'rr.id :op:(SELECT rl.rid FROM releases_lang rl WHERE rl.lang = :value:)', {'=' => 'IN', '!=' => 'NOT IN'}, process => \'lang' ],
       [ stra  => 'rr.id :op:(SELECT rl.rid FROM releases_lang rl WHERE rl.lang IN(:value:))', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',', process => \'lang' ],
     ],
   ];
-  my $last = sqllast $get, 'id', {
-    id => 'r.id %s',
-    title => 'rr.title %s',
-    released => 'rr.released %s',
-  };
-  return if !$where || !$last;
-
-  $_[KERNEL]->post(pg => query =>
-    qq|SELECT $select FROM releases r JOIN releases_rev rr ON rr.id = r.latest WHERE $where AND NOT hidden $last|,
-    \@placeholders, 'get_release_res', $get);
-}
-
+);
 
 sub get_release_res {
-  my($num, $res, $get, $time) = (@_[ARG0..$#_]);
-
-  $get->{time} += $time;
-  $get->{queries}++;
-
-  # process the results
-  if(!$get->{type}) {
-    for (@$res) {
-      $_->{id}*=1;
-      if(grep /basic/, @{$get->{info}}) {
-        $_->{original} ||= undef;
-        $_->{released} = formatdate($_->{released});
-        $_->{patch}    = $_->{patch}    ? TRUE : FALSE;
-        $_->{freeware} = $_->{freeware} ? TRUE : FALSE;
-        $_->{doujin}   = $_->{doujin}   ? TRUE : FALSE;
-      }
-      if(grep /details/, @{$get->{info}}) {
-        $_->{website}  ||= undef;
-        $_->{notes}    ||= undef;
-        $_->{minage}   = $_->{minage} < 0 ? undef : $_->{minage}*1;
-        $_->{gtin}     ||= undef;
-        $_->{catalog}  ||= undef;
-      }
-    }
-    $get->{more} = pop(@$res)&&1 if @$res > $get->{opt}{results};
-    $get->{list} = $res;
-  }
   elsif($get->{type} eq 'languages') {
     for my $i (@{$get->{list}}) {
       $i->{languages} = [ map $i->{latest} == $_->{rid} ? $_->{lang} : (), @$res ];
@@ -842,6 +668,213 @@ sub get_release_res {
   $_[KERNEL]->yield(get_results => { %$get, type => 'release' });
 }
 
+
+my %GET = (
+  vn      => \%GET_VN,
+  release => \%GET_RELEASE,
+);
+
+
+sub get {
+  my($c, @arg) = @_;
+
+  return cerr $c, parse => 'Invalid arguments to get command' if @arg < 3 || @arg > 4
+    || ref($arg[0]) || ref($arg[1]) || ref($arg[2]) ne 'POE::Filter::VNDBAPI::filter'
+    || exists($arg[3]) && ref($arg[3]) ne 'HASH';
+  my $opt = $arg[3] || {};
+  return cerr $c, badarg => 'Invalid argument for the "page" option', field => 'page'
+    if defined($opt->{page}) && (ref($opt->{page}) || $opt->{page} !~ /^\d+$/ || $opt->{page} < 1 || $opt->{page} > 1e3);
+  return cerr $c, badarg => '"reverse" option must be boolean', field => 'reverse'
+    if defined($opt->{reverse}) && !JSON::XS::is_bool($opt->{reverse});
+
+  my $type = $GET{$arg[0]};
+  return cerr $c, 'gettype', "Unknown get type: '$arg[0]'" if !$type;
+  return cerr $c, badarg => 'Invalid argument for the "results" option', field => 'results'
+    if defined($opt->{results}) && (ref($opt->{results}) || $opt->{results} !~ /^\d+$/ || $opt->{results} < 1
+        || $opt->{results} > ($type->{islist} ? $O{max_results_lists} : $O{max_results}));
+  return cerr $c, badarg => 'Unknown sort field', field => 'sort'
+    if defined($opt->{sort}) && (ref($opt->{sort}) || !$type->{sorts}{$opt->{sort}});
+
+  my @flags = split /,/, $arg[1];
+  return cerr $c, getinfo => 'No info flags specified' if !@flags;
+  return cerr $c, getinfo => "Unknown info flag '$_'", flag => $_
+    for (grep !$type->{flags}{$_}, @flags);
+
+  $opt->{page} = $opt->{page}||1;
+  $opt->{results} = $opt->{results}||$O{default_results};
+  $opt->{sort} ||= $type->{sortdef};
+  $opt->{reverse} = defined($opt->{reverse}) && $opt->{reverse};
+
+  get_mainsql($c, $type, {type => $arg[0], info => \@flags, filters => $arg[2], opt => $opt});
+}
+
+
+sub get_filters {
+  my($c, $p, $t, $field, $op, $value) = ($_[1], $_[2], $_[3], @{$_[0]});
+  my %e = ( field => $field, op => $op, value => $value );
+
+  # get the field that matches
+  $t = $t->{$field};
+  return cerr $c, filter => "Unknown field '$field'", %e if !$t;
+
+  # get the type that matches
+  $t = (grep +(
+    # wrong operator? don't even look further!
+    !defined($_->[2]{$op}) ? 0
+    # undef
+    : !defined($_->[0]) ? !defined($value)
+    # int
+    : $_->[0] eq 'int'  ? (defined($value) && !ref($value) && $value =~ /^-?\d+$/)
+    # str
+    : $_->[0] eq 'str'  ? defined($value) && !ref($value)
+    # inta
+    : $_->[0] eq 'inta' ? ref($value) eq 'ARRAY' && @$value && !grep(!defined($_) || ref($_) || $_ !~ /^-?\d+$/, @$value)
+    # stra
+    : $_->[0] eq 'stra' ? ref($value) eq 'ARRAY' && @$value && !grep(!defined($_) || ref($_), @$value)
+    # bool
+    : $_->[0] eq 'bool' ? defined($value) && JSON::XS::is_bool($value)
+    # oops
+    : die "Invalid filter type $_->[0]"
+  ), @$t)[0];
+  return cerr $c, filter => 'Wrong field/operator/expression type combination', %e if !$t;
+
+  my($type, $sql, $ops, %o) = @$t;
+
+  # substistute :op: in $sql, which is the same for all types
+  $sql =~ s/:op:/$ops->{$op}/g;
+
+  # no further processing required for type=undef
+  return $sql if !defined $type;
+
+  # split a string into an array of strings
+  if($type eq 'str' && $o{split}) {
+    $value = [ $o{split}->($value) ];
+    # assume that this match failed if the function doesn't return anything useful
+    return 'false' if !@$value || grep(!defined($_) || ref($_), @$value);
+    $type = 'stra';
+  }
+
+  # pre-process the argument(s)
+  my @values = ref($value) eq 'ARRAY' ? @$value : $value;
+  for my $v (!$o{process} ? () : @values) {
+    if(!ref $o{process}) {
+      $v = sprintf $o{process}, $v;
+    } elsif(ref($o{process}) eq 'CODE') {
+      $v = $o{process}->($v);
+      return cerr $c, filter => $$v, %e if ref($v) eq 'SCALAR';
+    } elsif(${$o{process}} eq 'like') {
+      y/%//;
+      $v = "%$v%";
+    } elsif(${$o{process}} eq 'lang') {
+      return cerr $c, filter => 'Invalid language code', %e if !grep $v eq $_, @{$VNDB::S{languages}};
+    } elsif(${$o{process}} eq 'plat') {
+      return cerr $c, filter => 'Invalid platform code', %e if !grep $v eq $_, @{$VNDB::S{platforms}};
+    }
+  }
+
+  # type=bool and no processing done? convert bool to what DBD::Pg wants
+  $values[0] = $values[0] ? 1 : 0 if $type eq 'bool' && !$o{process};
+
+  # Ensure that integers stay within their range
+  for($o{range} ? @values : ()) {
+    return cerr $c, filter => 'Integer out of range', %e if $_ < $o{range}[0] || $_ > $o{range}[1];
+  }
+
+  # type=str, int and bool are now quite simple
+  if(!ref $value) {
+    $sql =~ s/:value:/push @$p, $values[0]; '$'.scalar @$p/eg;
+    return $sql;
+  }
+
+  # and do some processing for type=stra and type=inta
+  my @parameters;
+  if($o{serialize}) {
+    for(@values) {
+      my $v = $o{serialize};
+      $v =~ s/:op:/$ops->{$op}/g;
+      $v =~ s/:value:/push @$p, $_; '$'.scalar @$p/eg;
+      $_ = $v;
+    }
+  } else {
+    for(@values) {
+      push @$p, $_;
+      $_ = '$'.scalar @$p;
+    }
+  }
+  my $joined = join defined $o{join} ? $o{join} : '', @values;
+  $sql =~ s/:value:/$joined/eg;
+  return $sql;
+}
+
+
+sub get_mainsql {
+  my($c, $type, $get) = @_;
+
+  my $select = join ', ',
+    $type->{select} ? $type->{select} : (),
+    map $type->{flags}{$_}{select} ? $type->{flags}{$_}{select} : (), @{$get->{info}};
+
+  my @placeholders;
+  my $where = encode_filters $get->{filters}, \&get_filters, $get->{c}, \@placeholders, $type->{filters};
+
+  my $col = $type->{sorts}{ $get->{opt}{sort} };
+  my $last = sprintf 'ORDER BY %s LIMIT %d OFFSET %d',
+    sprintf($col, $get->{opt}{reverse} ? 'DESC' : 'ASC'),
+    $get->{opt}{results}+1, $get->{opt}{results}*($get->{opt}{page}-1);
+
+  cpg $c, sprintf($type->{sql}, $select, $where, $last), \@placeholders, sub {
+    my @res = $_[0]->rowsAsHashes;
+    $get->{more} = pop(@res)&&1 if @res > $get->{opt}{results};
+    $get->{list} = \@res;
+
+    get_fetch($c, $type, $get);
+  };
+}
+
+
+sub get_fetch {
+  my($c, $type, $get) = @_;
+
+  my %need = ( map $type->{flags}{$_}{fetchsql} ? ($_, $type->{flags}{$_}) : (), @{$get->{info}} );
+  return get_final($c, $type, $get) if !keys %need || !@{$get->{list}};
+
+  for my $n (keys %need) {
+    my @ids = map $_->{ $need{$n}{fetchidx} }, @{$get->{list}};
+    my $ids = join ',', map '$'.$_, 1..@ids;
+    cpg $c, sprintf($need{$n}{fetchsql}, $ids), \@ids, sub {
+      $get->{fetched}{$n} = [$_[0]->rowsAsHashes];
+      delete $need{$n};
+      get_final($c, $type, $get) if !keys %need;
+    };
+  }
+}
+
+
+sub get_final {
+  my($c, $type, $get) = @_;
+
+  # Run process callbacks (fetchprocs first, so that they have access to fields that may get deleted in later procs)
+  for my $n (grep $type->{flags}{$_}{fetchproc}, @{$get->{info}}) {
+    $type->{flags}{$n}{fetchproc}->($get->{list}, $get->{fetched}{$n});
+  }
+
+  for my $p (
+    $type->{proc} || (),
+    map $type->{flags}{$_}{proc} || (), @{$get->{info}}
+  ) {
+    $p->($_) for @{$get->{list}};
+  }
+
+  my $num = @{$get->{list}};
+  cres $c, [ results => { num => $num , more => $get->{more} ? TRUE : FALSE, items => $get->{list} }],
+    'R:%2d  get %s %s %s {%s %s, page %d}', $num, $get->{type}, join(',', @{$get->{info}}), encode_filters($get->{filters}),
+    $get->{opt}{sort}, $get->{opt}{reverse}?'desc':'asc', $get->{opt}{page};
+}
+
+
+1;
+
+__END__
 
 sub get_producer {
   my $get = $_[ARG0];
@@ -1279,72 +1312,4 @@ sub admin {
 
 
 1;
-
-
-__END__
-
-Filter definitions:
-
-  [ 'field name', [ type, 'sql string', { filterop => sqlop, .. }, %options{process serialize join} ] ]
-  type (does not have to be unique, to support multiple operators with different SQL but with the same type):
-    undef (null)
-    'str' (normal string)
-    'int' (normal int)
-    'stra' (array of strings)
-    'inra' (array of ints)
-    'bool'
-  sql string:
-    The relevant SQL string, with :op: and :value: subsistutions. :value: is not available for type=undef
-  split: (only when the type is str)
-    sub, splits the string into an array and further processes it as if it was of type 'stra'
-  join: (only used when type is an array)
-    scalar, join string used when joining multiple values.
-  serialize: (serializes the values before join()'ing, only for arrays)
-    scalar, :op: and :value: subsistution
-  process: (process the value(s) that will be passed to Pg)
-    scalar, %s subsitutes the value
-    sub, argument = value, returns new value
-    scalarref, template:
-      \'like' => sub { (local$_=shift)=~y/%//; lc "%$_%" }
-      \'lang' => sub { !grep($_ eq $_[0], @{$VNDB::S{languages}}) ? \'Invalid language' : $_[0] }
-
-  example for v.id:
-  [ 'id',
-    [ int  => 'v.id :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|} ],
-    [ inta => 'v.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, join => ',' ]
-  ]
-
-  example for vr.original:
-  [ 'original',
-    [ undef,   "vr.original :op: ''", {qw|= =  != <>|} ],
-    [ str   => 'vr.original :op: :value:', {qw|= =  != <>|} ],
-    [ str   => 'vr.original :op: :value:', {qw|~ ILIKE|}, process => \'like' ],
-  ]
-
-  example for v.c_platforms:
-  [ 'platforms',
-    [ undef,   "v.c_platforms :op: ''", {qw|= =  != <>|} ],
-    [ str   => 'v.c_platforms :op: :value:', {'=' => 'LIKE', '!=' => 'NOT LIKE'}, process => \'like' ],
-    [ stra  => '(:value:)', {'=' => 'LIKE', '!=' => 'NOT LIKE'}, join => ' or ', serialize => 'v.c_platforms :op: :value:', process => \'like' ],
-  ]
-
-  example for the VN search:
-  [ 'search', [ '(vr.title ILIKE :value:
-       OR vr.alias ILIKE :value:
-       OR v.id IN(
-         SELECT rv.vid
-         FROM releases r
-         JOIN releases_rev rr ON rr.id = r.latest
-         JOIN releases_vn rv ON rv.rid = rr.id
-         WHERE rr.title ILIKE :value:
-            OR rr.original ILIKE :value:
-     ))', {'~', 1}, process => \'like'
-  ]],
-
-  example for vn_anime (for the sake of the example...)
-  [ 'anime',
-    [ undef,  ':op:(SELECT 1 FROM vn_anime va WHERE va.vid = v.id)', {'=' => 'EXISTS', '!=' => 'NOT EXISTS'} ],
-    [ int  => 'v.id :op:(SELECT va.vid FROM vn_anime va WHERE va.aid = :value:)', {'=' => 'IN', '!=' => 'NOT IN'} ],
-    [ inta => 'v.id :op:(SELECT va.vid FROM vn_anime va WHERE va.aid IN(:value:))', {'=' => 'IN', '!=' => 'NOT IN'}, join => ','],
-  ]
 

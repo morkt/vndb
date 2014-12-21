@@ -212,15 +212,17 @@ sub pg_cmd {
 }
 
 
-# Generic throttling function, returns 1 if the action is throttled.
+# Generic throttling function, returns the time before the action can be
+# performed again if the action is throttled, or 0 if it's not throttled.
 # Using a weight of 0 will just check the throttle without affecting it.
 sub throttle {
   my($config, $id, $weight) = @_;
   my($interval, $burst) = @$config;
-  $weight ||= 1;
+  $weight //= 1;
   my $n = AE::now;
   $throttle{$id} = $n if !$throttle{$id} || $throttle{$id} < $n;
-  return 1 if $throttle{$id}-$n > $burst*$interval;
+  my $left = ($throttle{$id}-$n) - ($burst*$interval);
+  return $left if $left > 0;
   $throttle{$id} += $interval*$weight;
   return 0;
 }
