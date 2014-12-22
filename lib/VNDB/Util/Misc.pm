@@ -155,13 +155,13 @@ sub bbSubstLinks {
   return $msg unless %lookup;
   # lookup parsed links
   if ($lookup{v}) {
-    $links{"v$_->{id}"} = $_->{title} for (@{$self->dbVNTitles(keys %{$lookup{v}})});
+    $links{"v$_->{id}"} = $_->{title} for (@{$self->dbVNGet(id => [keys %{$lookup{v}}])});
   }
   if ($lookup{c}) {
-    $links{"c$_->{id}"} = $_->{name} for (@{$self->dbCharNames(keys %{$lookup{c}})});
+    $links{"c$_->{id}"} = $_->{name} for (@{$self->dbCharGet(id => [keys %{$lookup{c}}])});
   }
   if ($lookup{p}) {
-    $links{"p$_->{id}"} = $_->{name} for (@{$self->dbProducerNames(keys %{$lookup{p}})});
+    $links{"p$_->{id}"} = $_->{name} for (@{$self->dbProducerGet(id => [keys %{$lookup{p}}])});
   }
   if ($lookup{g}) {
     $links{"g$_->{id}"} = $_->{name} for (@{$self->dbTagGet(id => [keys %{$lookup{g}}])});

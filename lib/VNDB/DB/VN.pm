@@ -7,7 +7,7 @@ use Exporter 'import';
 use VNDB::Func 'gtintype', 'normalize_query';
 use Encode 'decode_utf8';
 
-our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNHasChar dbVNTitles|;
+our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNHasChar|;
 
 
 # Options: id, rev, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
@@ -32,7 +32,7 @@ sub dbVNGet {
 
   my @where = (
     $o{id} ? (
-      'v.id = ?' => $o{id} ) : (),
+      'v.id IN(!l)' => [ ref $o{id} ? $o{id} : [$o{id}] ] ) : (),
     $o{rev} ? (
       'c.rev = ?' => $o{rev} ) : (),
     $o{char} ? (
@@ -290,16 +290,6 @@ sub dbVNHasChar {
   )->{exists};
 }
 
-
-sub dbVNTitles {
-  my ($self, @vids) = @_;
-  return $self->dbAll(q|
-    SELECT v.id, vr.title
-      FROM vn v
-      JOIN vn_rev vr ON vr.id = v.latest
-      WHERE v.id IN (!l)|, \@vids
-  );
-}
 
 1;
 

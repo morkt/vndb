@@ -27,6 +27,9 @@ sub shorten {
 #  [code] .. [/code]
 #  v+,  v+.+
 #  http://../
+# XXX: Make sure to sync any changes in the formating with
+#   VNDB::Util::Misc::bbSubstLinks() if necessary. Or, alternatively, abstract
+#   parsing into a separate function as per http://beta.vndb.org/t5564.12
 sub bb2html {
   my($raw, $maxlength, $charspoil) = @_;
   $raw =~ s/\r//g;

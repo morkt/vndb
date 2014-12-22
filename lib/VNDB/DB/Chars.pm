@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbCharGet dbCharRevisionInsert dbCharImageId dbCharNames|;
+our @EXPORT = qw|dbCharGet dbCharRevisionInsert dbCharImageId|;
 
 
 # options: id rev instance tagspoil trait_inc trait_exc char what results page gender bloodt
@@ -25,7 +25,8 @@ sub dbCharGet {
 
   my %where = (
     !$o{id} && !$o{rev} ? ( 'c.hidden = FALSE' => 1 ) : (),
-    $o{id}  ? ( 'c.id = ?'  => $o{id} ) : (),
+    $o{id} ? (
+      'c.id IN(!l)' => [ ref $o{id} ? $o{id} : [$o{id}] ] ) : (),
     $o{rev} ? ( 'h.rev = ?' => $o{rev} ) : (),
     $o{notid}    ? ( 'c.id <> ?'   => $o{notid} ) : (),
     $o{instance} ? ( 'cr.main = ?' => $o{instance} ) : (),
@@ -135,17 +136,6 @@ sub dbCharRevisionInsert {
 # fetches an ID for a new image
 sub dbCharImageId {
   return shift->dbRow("SELECT nextval('charimg_seq') AS ni")->{ni};
-}
-
-
-sub dbCharNames {
-  my ($self, @ids) = @_;
-  return $self->dbAll(q|
-    SELECT c.id, cr.name
-      FROM chars c
-      JOIN chars_rev cr ON cr.id = c.latest
-      WHERE c.id IN (!l)|, \@ids
-  );
 }
 
 
