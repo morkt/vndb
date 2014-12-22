@@ -27,7 +27,7 @@ sub htmlMainTabs {
   return if $type eq 'g' && !$self->authCan('tagmod');
 
   ul class => 'maintabs';
-   if($type =~ /[uvrpc]/) {
+   if($type =~ /[uvrpcs]/) {
      li $sel eq 'hist' ? (class => 'tabselected') : ();
       a href => "/$id/hist", mt '_mtabs_hist';
      end;
@@ -73,7 +73,7 @@ sub htmlMainTabs {
    }
 
    if(   $type eq 'u'      && ($self->authInfo->{id} && $obj->{id} == $self->authInfo->{id} || $self->authCan('usermod'))
-      || $type =~ /[vrpc]/ && $self->authCan('edit') && ((!$obj->{locked} && !$obj->{hidden}) || $self->authCan('dbmod'))
+      || $type =~ /[vrpcs]/ && $self->authCan('edit') && ((!$obj->{locked} && !$obj->{hidden}) || $self->authCan('dbmod'))
       || $type =~ /[gi]/   && $self->authCan('tagmod')
    ) {
      li $sel eq 'edit' ? (class => 'tabselected') : ();
@@ -284,8 +284,8 @@ sub revdiff {
 # Arguments: v/r/p, obj
 sub htmlEditMessage {
   my($self, $type, $obj, $title, $copy) = @_;
-  my $num        = {v => 0, r => 1, p => 2, c => 3}->{$type};
-  my $guidelines = {v => 2, r => 3, p => 4, c => 12}->{$type};
+  my $num        = {v => 0, r => 1, p => 2, c => 3, 's' => 4}->{$type};
+  my $guidelines = {v => 2, r => 3, p => 4, c => 12, 's' => 16}->{$type};
 
   div class => 'mainbox';
    h1 $title;
@@ -423,6 +423,7 @@ sub htmlSearchBox {
     a href => '/v/all', $sel eq 'v' ? (class => 'sel') : (), mt '_searchbox_vn';
     a href => '/r',     $sel eq 'r' ? (class => 'sel') : (), mt '_searchbox_releases';
     a href => '/p/all', $sel eq 'p' ? (class => 'sel') : (), mt '_searchbox_producers';
+    a href => '/s/all', $sel eq 's' ? (class => 'sel') : (), mt '_searchbox_staff';
     a href => '/c/all', $sel eq 'c' ? (class => 'sel') : (), mt '_searchbox_chars';
     a href => '/g',     $sel eq 'g' ? (class => 'sel') : (), mt '_searchbox_tags';
     a href => '/i',     $sel eq 'i' ? (class => 'sel') : (), mt '_searchbox_traits';

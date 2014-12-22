@@ -7,7 +7,7 @@ use Exporter 'import';
 use VNDB::Func 'gtintype', 'normalize_query';
 use Encode 'decode_utf8';
 
-our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNHasChar|;
+our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNHasChar dbVNHasStaff|;
 
 
 # Options: id, rev, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
@@ -225,6 +225,13 @@ sub dbVNRevisionInsert {
     my $q = join ',', map '(?)', @{$o->{anime}};
     $self->dbExec("INSERT INTO edit_vn_anime (aid) VALUES $q", @{$o->{anime}}) if @{$o->{anime}};
   }
+
+  if($o->{credits}) {
+    $self->dbExec('DELETE FROM edit_vn_staff');
+    my $q = join ',', ('(?, ?, ?)') x @{$o->{credits}};
+    my @val = map @{$_}[0..2], @{$o->{credits}};
+    $self->dbExec("INSERT INTO edit_vn_staff (aid, role, note) VALUES $q", @val) if @val;
+  }
 }
 
 
@@ -289,6 +296,15 @@ sub dbVNHasChar {
     'SELECT 1 AS exists FROM chars c JOIN chars_vns cv ON c.latest = cv.cid WHERE cv.vid = ?', $vid
   )->{exists};
 }
+
+
+sub dbVNHasStaff {
+  my($self, $vid) = @_;
+  return $self->dbRow(
+    'SELECT 1 AS exists FROM vn v JOIN vn_staff vs ON v.latest = vs.vid WHERE v.id = ?', $vid
+  )->{exists};
+}
+
 
 1;
 

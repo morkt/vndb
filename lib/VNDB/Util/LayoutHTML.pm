@@ -66,6 +66,7 @@ sub _menu {
      b class => 'grayedout', '> '; a href => '/g', mt '_menu_tags'; br;
      a href => '/r',     mt '_menu_releases'; br;
      a href => '/p/all', mt '_menu_producers'; br;
+     a href => '/s/all', mt '_menu_staff'; br;
      a href => '/c/all', mt '_menu_characters'; br;
      b class => 'grayedout', '> '; a href => '/i', mt '_menu_traits'; br;
      a href => '/u/all', mt '_menu_users'; br;
@@ -102,6 +103,7 @@ sub _menu {
        if($self->authCan('edit')) {
          a href => '/v/add',    mt '_menu_addvn'; br;
          a href => '/p/new',    mt '_menu_addproducer'; br;
+         a href => '/s/new',    mt '_menu_addstaff'; br;
          a href => '/c/new',    mt '_menu_addcharacter'; br;
        }
        br;

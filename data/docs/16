@@ -1,0 +1,20 @@
+:TITLE:Adding/Editing Staff Members
+:INC:index
+
+:SUB:Introduction
+<p>
+ Add major staff members.
+</p>
+
+:SUB:General info
+<dl>
+ <dt>Name (romaji)</dt><dd>Person true name, in the latin alphabet.
+  Check out the <a href="/d5">general editing guidelines</a>
+  for information on name order and romanization. Try to use the full name when known.
+  <a href="/d5.1">Romanise</a> according to our guidelines.
+ </dd><dt>Original name</dt><dd>The actual name of the person, in the case it is not officially in the latin alphabet. Leave empty if it's the same as the "Name (romaji)". If possible, try to include a space between the given name and the surname.
+ </dd><dt>Staff note</dt><dd>Comment.
+ </dd><dt>Gender</dt><dd>.
+ </dd><dt>Primary language</dt><dd>.
+ </dd>
+</dl>

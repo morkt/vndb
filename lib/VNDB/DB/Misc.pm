@@ -27,7 +27,7 @@ sub dbStats {
 sub dbItemEdit {
   my($self, $type, $oid, %o) = @_;
 
-  my $fun = {qw|v vn r release p producer c char|}->{$type};
+  my $fun = {qw|v vn r release p producer c char s staff|}->{$type};
   $self->dbExec('SELECT edit_!s_init(?)', $fun, $oid);
   $self->dbExec('UPDATE edit_revision !H', {
     'requester = ?' => $o{uid}||$self->authInfo->{id},
@@ -41,6 +41,7 @@ sub dbItemEdit {
   $self->dbProducerRevisionInsert(\%o) if $type eq 'p';
   $self->dbReleaseRevisionInsert( \%o) if $type eq 'r';
   $self->dbCharRevisionInsert(    \%o) if $type eq 'c';
+  $self->dbStaffRevisionInsert(   \%o) if $type eq 's';
 
   return $self->dbRow('SELECT * FROM edit_!s_commit()', $fun);
 }
@@ -60,10 +61,10 @@ sub dbRevisionGet {
   $o{what} ||= '';
   $o{releases} = 0 if !$o{type} || $o{type} ne 'v' || !$o{iid};
 
-  my %tables = qw|v vn r releases p producers c chars|;
+  my %tables = qw|v vn r releases p producers c chars s staff|;
   # what types should we join?
   my @types = (
-    !$o{type} ? ('v', 'r', 'p', 'c') :
+    !$o{type} ? qw(v r p c s) :
     ref($o{type}) ? @{$o{type}} :
     $o{type} ne 'v' ? $o{type} :
     $o{releases} ? ('v', 'r') : 'v'
@@ -97,15 +98,17 @@ sub dbRevisionGet {
     ) : (),
     $o{what} =~ /user/ ? 'JOIN users u ON h.requester = u.id' : (),
   );
+  push @join, 'LEFT JOIN staff_alias sa ON sa.rid = sr.id AND sa.id = sr.aid' if grep /s/, @types;
 
+  my %tcolumns = qw(v vr.title r rr.title p pr.name c cr.name s sa.name);
   my @select = (
     qw|h.id h.type h.requester h.comments h.rev|,
     q|extract('epoch' from h.added) as added|,
     $o{what} =~ /user/ ? 'u.username' : (),
     $o{what} =~ /item/ ? (
       'COALESCE('.join(', ', map "${_}r.${_}id", @types).') AS iid',
-      'COALESCE('.join(', ', map /[pc]/ ? "${_}r.name" : "${_}r.title", @types).') AS ititle',
-      'COALESCE('.join(', ', map "${_}r.original", @types).') AS ioriginal',
+      'COALESCE('.join(', ', map $tcolumns{$_}, @types).') AS ititle',
+      'COALESCE('.join(', ', map /s/ ? 'sa.original' : "${_}r.original", @types).') AS ioriginal',
     ) : (),
   );
 

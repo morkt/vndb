@@ -13,7 +13,7 @@ TUWF::register(
   qr{v/rand}                        => \&rand,
   qr{v([1-9]\d*)/rg}                => \&rg,
   qr{v([1-9]\d*)/releases}          => \&releases,
-  qr{v([1-9]\d*)/(chars)}           => \&page,
+  qr{v([1-9]\d*)/(chars|staff)}     => \&page,
   qr{v([1-9]\d*)(?:\.([1-9]\d*))?}  => \&page,
 );
 
@@ -513,7 +513,8 @@ sub page {
   my($self, $vid, $rev) = @_;
 
   my $char = $rev && $rev eq 'chars';
-  $rev = undef if $char;
+  my $staff = $rev && $rev eq 'staff';
+  $rev = undef if $char || $staff;
 
   my $v = $self->dbVNGet(
     id => $vid,
@@ -646,25 +647,38 @@ sub page {
   end 'div'; # /mainbox
 
   my $haschar = $self->dbVNHasChar($v->{id});
-  if($haschar || $self->authCan('edit')) {
+  my $hasstaff = $self->dbVNHasStaff($v->{id});
+  if($haschar || $hasstaff || $self->authCan('edit')) {
     ul class => 'maintabs notfirst';
-     if($haschar) {
-       li class => 'left '.(!$char ? ' tabselected' : ''); a href => "/v$v->{id}#main", name => 'main', mt '_vnpage_tab_main'; end;
-       li class => 'left '.( $char ? ' tabselected' : ''); a href => "/v$v->{id}/chars#chars", name => 'chars', mt '_vnpage_tab_chars'; end;
+     if($haschar || $hasstaff) {
+       li class => 'left '.(!($char || $staff) && ' tabselected'); a href => "/v$v->{id}#main", name => 'main', mt '_vnpage_tab_main'; end;
+       if ($haschar) {
+         li class => 'left '.($char && ' tabselected'); a href => "/v$v->{id}/chars#chars", name => 'chars', mt '_vnpage_tab_chars'; end;
+       }
+       if ($hasstaff) {
+         li class => 'left '.($staff && ' tabselected'); a href => "/v$v->{id}/staff#staff", name => 'staff', mt '_vnpage_tab_staff'; end;
+       }
      }
      if($self->authCan('edit')) {
        li; a href => "/c/new?vid=$v->{id}", mt '_vnpage_char_add'; end;
+       if(!$v->{locked}) {
+         li;
+          a href => "/v$v->{id}/staff/edit", mt $hasstaff ? '_vnpage_staff_edit' : '_vnpage_staff_add';
+         end;
+       }
        li; a href => "/v$v->{id}/add", mt '_vnpage_rel_add'; end;
      }
     end;
   }
 
-  if(!$char) {
+  if($char) {
+    _chars($self, $haschar, $v);
+  } elsif ($staff) {
+    _staff($self, $hasstaff, $v);
+  } else {
     _releases($self, $v, $r);
     _stats($self, $v);
     _screenshots($self, $v, $r) if @{$v->{screenshots}};
-  } else {
-    _chars($self, $haschar, $v);
   }
 
   $self->htmlFooter;
@@ -1067,6 +1081,35 @@ sub _chars {
      }
     end;
   }
+}
+
+
+sub _staff {
+  my ($self, $has, $v) = @_;
+  my $l = $has && $self->dbStaffGet(vid => $v->{id}, results => 100);
+  return if !$has;
+  div class => 'mainbox';
+   table class => 'stripe';
+    thead;
+     Tr;
+      td class => 'tc1', mt '_staff_col_role';
+      td class => 'tc2', mt '_staff_col_credit';
+      td class => 'tc3', mt '_staff_col_note';
+     end;
+    end;
+    my $last_role = '';
+    for my $s (@$l) {
+      Tr;
+       td class => 'tc1', $s->{role} ne $last_role ? mt '_credit_'.$s->{role} : '';
+       td class => 'tc2';
+        a href => "/s$s->{id}", title => $s->{original}||$s->{name}, $s->{name};
+       end;
+       td class => 'tc3', $s->{note};
+      end;
+      $last_role = $s->{role};
+    }
+   end 'table';
+  end;
 }
 
 

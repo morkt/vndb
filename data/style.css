@@ -565,6 +565,36 @@ div.charb td.tc2 b { margin-left: 10px }
 div.charb td.tc2 b a { color: $grayedout$!important }
 
 
+/***** Staff browse *****/
+
+div.staffbrowse	   { padding-bottom: 10px }
+.staffbrowse ul    { float: left; margin-top: -5px; margin-left: 3%; width: 28%; }
+.staffbrowse ul li { list-style-type: none; }
+.staffbrowse ul li acronym { margin-right: 5px; margin-top: 1px; }
+div.staffinfo { position: relative; float: left; margin-right: 3%; }
+div.staffdesc { margin-bottom: 10px; }
+
+
+/***** Staff edit *****/
+
+#jt_box_vnstaffe_credits table,
+#jt_box_staffe_aliases table  { margin-bottom: 10px; }
+#jt_box_vnstaffe_credits h2,
+#jt_box_staffe_aliases h2     { margin: 0 0 3px 0px; }
+#jt_box_vnstaffe_credits td,
+#jt_box_staffe_aliases td     { padding: 1px 2px; vertical-align: middle; }
+#jt_box_vnstaffe_credits td.tc_role,
+#jt_box_vnstaffe_credits td.tc_role select { width: 120px }
+#jt_box_vnstaffe_credits td.tc_staff,
+#jt_box_staffe_aliases td.tc_name,
+#jt_box_staffe_aliases td.tc_original { width: 200px }
+#jt_box_vnstaffe_credits td.tc_staff input,
+#jt_box_staffe_aliases   td.tc_name input,
+#jt_box_staffe_aliases   td.tc_original input { width: 200px }
+#jt_box_vnstaffe_credits td.tc_note,
+#jt_box_vnstaffe_credits td.tc_note input { width: 250px }
+#jt_box_vnstaffe_credits td.tc_add,
+#jt_box_staffe_aliases   td.tc_add { width: 40px; text-align: left }
 
 /***** Documentation pages *****/
 

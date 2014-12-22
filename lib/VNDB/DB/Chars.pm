@@ -76,10 +76,11 @@ sub dbCharGet {
     join(', ', @select), join(' ', @join), \%where
   );
 
-  if(@$r && $o{what} =~ /(vns|traits)/) {
+  if(@$r && $o{what} =~ /vns|traits|seiyuu/) {
     my %r = map {
       $_->{traits} = [];
       $_->{vns} = [];
+      $_->{seiyuu} = [];
       ($_->{cid}, $_)
     } @$r;
 
@@ -105,6 +106,19 @@ sub dbCharGet {
           !W
           ORDER BY v.c_released|,
         { 'cv.cid IN(!l)' => [[keys %r]], $1 ? ('cv.vid = ?', $1) : () }
+      )});
+    }
+
+    if($o{what} =~ /seiyuu/) {
+      push @{$r{ delete $_->{cid} }{seiyuu}}, $_ for (@{$self->dbAll(q|
+        SELECT cs.cid, sr.sid, sa.name, sa.original, cs.note
+          FROM chars_seiyuu cs
+          JOIN staff_alias sa ON sa.id = cs.aid
+          JOIN staff_rev sr ON sr.id = sa.rid
+          JOIN staff s ON sr.id = s.latest
+          !W
+          ORDER BY sa.name|,
+        { 'cs.cid IN(!l)' => [[ keys %r ]], $o{vid} ? ('vid = ?' => $o{vid}) : () }
       )});
     }
   }

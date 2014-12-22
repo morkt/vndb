@@ -16,6 +16,8 @@
  *  tgl  -> VN tag linking
  *  tvs  -> VN page tag spoilers
  *  vnr  -> VN relation editor
+ *  vns  -> VN staff
+ *  sal  -> Staff aliases editor
  */
 
 /* Internationalization note:
@@ -2045,6 +2047,200 @@ if(byId('jt_box_chare_vns'))
   cvnLoad();
 
 
+
+
+/*  S T A F F (/s+/edit) */
+
+function salLoad () {
+  var aliases = byId('aliases').value.split('|||');
+  for (var i = 0; i < aliases.length && aliases[i].length > 1; i++) {
+    var al = aliases[i].split(',', 3);
+    salAdd(al[0], al[1], al[2]);
+  }
+  salEmpty();
+
+  // bind the add-link
+  byName(byClass(byId('alias_new'), 'td', 'tc_add')[0], 'a')[0].onclick = salFormAdd;
+  byName(byId('maincontent'), 'form')[0].onsubmit = salSerialize;
+}
+
+function salAdd(aid, name, original) {
+  byId('alias_tbl').appendChild(tag('tr', {id:'alias_tr_'+aid},
+    tag('td', {'class':'tc_name' },     tag('input', {type:'text', 'class':'text', value:name})),
+    tag('td', {'class':'tc_original' }, tag('input', {type:'text', 'class':'text', value:original})),
+    tag('td', {'class':'tc_add' },
+      tag('input', {type:'hidden', value:aid}),
+      tag('a', {href:'#', onclick:salDel}, mt('_js_remove')))
+  ));
+
+  salEmpty();
+}
+
+function salEmpty() {
+  var tbl = byId('alias_tbl');
+  if (byName(tbl, 'tr').length < 1)
+    tbl.appendChild(tag('tr', {id:'alias_tr_none'}, tag('td', {colspan:3}, mt('_sedit_form_alias_none'))));
+  else if (byId('alias_tr_none'))
+    tbl.removeChild(byId('alias_tr_none'));
+}
+
+function salSerialize() {
+  var tbl = byName(byId('alias_tbl'), 'tr');
+  var a = [];
+  for (var i = 0; i < tbl.length; ++i) {
+    if(tbl[i].id == 'alias_tr_none')
+      continue;
+    var name = byName(byClass(tbl[i], 'td', 'tc_name')[0], 'input')[0].value;
+    var orig = byName(byClass(tbl[i], 'td', 'tc_original')[0], 'input')[0].value;
+    var id   = byName(byClass(tbl[i], 'td', 'tc_add')[0], 'input')[0].value;
+    a[a.length] = [ id, name, orig ].join(',');
+  }
+  byId('aliases').value = a.join('|||');
+}
+
+function salDel() {
+  var tr = this;
+  while (tr.nodeName.toLowerCase() != 'tr')
+    tr = tr.parentNode;
+  byId('alias_tbl').removeChild(tr);
+  salSerialize();
+  salEmpty();
+  return false;
+}
+
+function salFormAdd() {
+  var alnew = byId('alias_new');
+  var name = byName(byClass(alnew, 'td', 'tc_name')[0],     'input')[0];
+  var orig = byName(byClass(alnew, 'td', 'tc_original')[0], 'input')[0];
+  if(name.value.length < 1)
+    return false;
+
+  salAdd(0, name.value, orig.value);
+  salSerialize();
+  name.value = '';
+  orig.value = '';
+  return false;
+}
+
+if(byId('jt_box_staffe_aliases'))
+  salLoad();
+
+
+
+
+/*  S T A F F   < - >   V N   L I N K I N G  (/v+/staff/edit) */
+
+function vnsLoad() {
+  var credits = byId('credits').value.split('|||');
+  var s = {}; // staff -> { aid: [ role, note ], .. }
+  var q = []; // list of a=X paramters
+  for (var i = 0; i < credits.length && credits[i].length > 1; i++) {
+    var c = credits[i].split('-', 3); // aid, role, note
+    if (!s[c[0]])
+      q.push('a='+c[0]);
+    s[c[0]] = [ c[1], c[2] ];
+  }
+  if (q.length > 0)
+    ajax('/xml/staff.xml?'+q.join(';'), function(hs) {
+      var staff = hs.responseXML.getElementsByTagName('item');
+      for (var i = 0; i < staff.length; i++) {
+        var aid = staff[i].getAttribute('aid');
+        if (s[aid])
+      vnsAdd (staff[i], s[aid][0], s[aid][1]);
+        else
+      vnsAdd (staff[i], 'staff', '');
+      }
+      vnsEmpty();
+    }, 1);
+  else
+    vnsEmpty();
+
+  byName(byId('maincontent'), 'form')[0].onsubmit = vnsSerialize;
+
+  // dropdown search
+  dsInit(byId('credit_input'), '/xml/staff.xml?q=', function(item, tr) {
+    tr.appendChild(tag('td', { style: 'text-align: right; padding-right: 5px'}, 's'+item.getAttribute('id')));
+    tr.appendChild(tag('td', item.firstChild.nodeValue));
+  }, vnsFormAdd);
+}
+
+function vnsAdd(staff, role, note) {
+  var sid = staff.getAttribute('id');
+  var aid = staff.getAttribute('aid');
+  var tbl = byId('credits_tbl');
+
+  var rlist = tag('select', {onchange:vnsSerialize});
+  for (var i = 0; i < staff_roles.length; i++) // l10n /^_credit_/
+    rlist.appendChild(tag('option', {value:staff_roles[i], selected:staff_roles[i]==role},
+      mt('_credit_'+staff_roles[i])));
+
+  var note = tag('input', {type:'text', 'class':'text'});
+  tbl.appendChild(tag('tr', {id:'vns_a'+aid},
+    tag('td', {'class':'tc_name'},
+      tag('input', {type:'hidden', value:aid}),
+      tag('a', {href:'/s'+sid}, staff.firstChild.nodeValue)),
+    tag('td', {'class':'tc_role'}, rlist),
+    tag('td', {'class':'tc_note'}, note),
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:vnsDel}, mt('_js_remove')))
+  ));
+  vnsEmpty();
+  vnsSerialize();
+}
+
+function vnsEmpty() {
+  var x = byId('credits_loading');
+  var tbody = byId('credits_tbl');
+  var tbl = tbody.parentNode;
+  var thead = byName(tbl, 'thead');
+  if(x)
+    tbody.removeChild(x);
+  if(byName(tbody, 'tr').length < 1) {
+    tbody.appendChild(tag('tr', {id:'credits_tr_none'},
+      tag('td', {colspan:4}, mt('_vnstaffe_none'))));
+    if (thead.length)
+      tbl.removeChild(thead[0]);
+  } else {
+    if(byId('credits_tr_none'))
+      tbody.removeChild(byId('credits_tr_none'));
+    if (thead.length < 1) {
+      thead = tag('thead', tag('tr',
+        tag('td', {'class':'tc_name'}, mt('_vnstaffe_form_staff')),
+        tag('td', {'class':'tc_role'}, mt('_vnstaffe_form_role')),
+        tag('td', {'class':'tc_note'}, mt('_vnstaffe_form_note'))));
+      tbl.insertBefore(thead, tbody);
+    }
+  }
+}
+
+function vnsSerialize() {
+  var l = byName(byId('credits_tbl'), 'tr');
+  var c = [];
+  for (var i = 0; i < l.length; i++) {
+    var aid = byName(byName(l[i], 'td')[0], 'input')[0].value;
+    var role = byName(byClass(l[i], 'tc_role')[0], 'select')[0];
+    var note = byName(byClass(l[i], 'tc_note')[0], 'input')[0];
+    c.push (aid+'-'+role.options[role.selectedIndex].value+'-'+note.value);
+  }
+  byId('credits').value = c.join('|||');
+}
+
+function vnsDel() {
+  var tr = this;
+  while (tr.nodeName.toLowerCase() != 'tr')
+    tr = tr.parentNode;
+  byId('credits_tbl').removeChild(tr);
+  vnsEmpty();
+  vnsSerialize();
+  return false;
+}
+
+function vnsFormAdd(item) {
+  vnsAdd(item, 'staff', '');
+  return '';
+}
+
+if(byId('jt_box_vnstaffe_credits'))
+  vnsLoad();
 
 
 

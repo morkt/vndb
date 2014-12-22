@@ -200,7 +200,8 @@ BEGIN
     (       SELECT vid FROM vn_rev WHERE id = i
       UNION SELECT rid FROM releases_rev WHERE id = i
       UNION SELECT cid FROM chars_rev WHERE id = i
-      UNION SELECT pid FROM producers_rev WHERE id = i),
+      UNION SELECT pid FROM producers_rev WHERE id = i
+      UNION SELECT sid FROM staff_rev WHERE id = i),
     COALESCE((SELECT ihid FROM changes WHERE id = i), FALSE),
     COALESCE((SELECT ilock FROM changes WHERE id = i), FALSE)
   );
@@ -226,6 +227,7 @@ BEGIN
         UNION SELECT id FROM releases_rev  WHERE t = 'r' AND rid = i
         UNION SELECT id FROM producers_rev WHERE t = 'p' AND pid = i
         UNION SELECT id FROM chars_rev     WHERE t = 'c' AND cid = i
+        UNION SELECT id FROM staff_rev     WHERE t = 's' AND sid = i
       ) x(id) ON x.id = c.id
       ORDER BY c.id DESC
       LIMIT 1;
@@ -242,6 +244,7 @@ BEGIN
       WHEN 'r' THEN INSERT INTO releases  (latest) VALUES (0) RETURNING id INTO r.iid;
       WHEN 'p' THEN INSERT INTO producers (latest) VALUES (0) RETURNING id INTO r.iid;
       WHEN 'c' THEN INSERT INTO chars     (latest) VALUES (0) RETURNING id INTO r.iid;
+      WHEN 's' THEN INSERT INTO staff     (latest) VALUES (0) RETURNING id INTO r.iid;
     END CASE;
   ELSE
     r.iid := i;
@@ -266,8 +269,10 @@ BEGIN
     ALTER TABLE edit_vn_relations RENAME COLUMN vid2 TO vid;
     CREATE TEMPORARY TABLE edit_vn_screenshots (LIKE vn_screenshots INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
     ALTER TABLE edit_vn_screenshots DROP COLUMN vid;
+    CREATE TEMPORARY TABLE edit_vn_staff (LIKE vn_staff INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_vn_staff DROP COLUMN vid;
   EXCEPTION WHEN duplicate_table THEN
-    TRUNCATE edit_vn, edit_vn_anime, edit_vn_relations, edit_vn_screenshots;
+    TRUNCATE edit_vn, edit_vn_anime, edit_vn_relations, edit_vn_screenshots, edit_vn_staff;
   END;
   PERFORM edit_revtable('v', cid);
   -- new VN, load defaults
@@ -279,6 +284,7 @@ BEGIN
     INSERT INTO edit_vn_anime SELECT aid FROM vn_anime WHERE vid = cid;
     INSERT INTO edit_vn_relations SELECT vid2, relation, official FROM vn_relations WHERE vid1 = cid;
     INSERT INTO edit_vn_screenshots SELECT scr, nsfw, rid FROM vn_screenshots WHERE vid = cid;
+    INSERT INTO edit_vn_staff SELECT aid, role, note FROM vn_staff WHERE vid = cid;
   END IF;
 END;
 $$ LANGUAGE plpgsql;
@@ -297,6 +303,7 @@ BEGIN
   INSERT INTO vn_anime SELECT r.cid, aid FROM edit_vn_anime;
   INSERT INTO vn_relations SELECT r.cid, vid, relation, official FROM edit_vn_relations;
   INSERT INTO vn_screenshots SELECT r.cid, scr, nsfw, rid FROM edit_vn_screenshots;
+  INSERT INTO vn_staff SELECT r.cid, aid, role, note FROM edit_vn_staff;
   UPDATE vn SET latest = r.cid WHERE id = r.iid;
   RETURN r;
 END;
@@ -448,6 +455,49 @@ BEGIN
   INSERT INTO chars_traits SELECT r.cid, tid, spoil FROM edit_char_traits;
   INSERT INTO chars_vns SELECT r.cid, vid, rid, spoil, role FROM edit_char_vns;
   UPDATE chars SET latest = r.cid WHERE id = r.iid;
+  RETURN r;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION edit_staff_init(cid integer) RETURNS void AS $$
+BEGIN
+  BEGIN
+    CREATE TEMPORARY TABLE edit_staff (LIKE staff_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_staff DROP COLUMN id;
+    ALTER TABLE edit_staff DROP COLUMN sid;
+    CREATE TEMPORARY TABLE edit_staff_aliases (LIKE staff_alias INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_staff_aliases DROP COLUMN rid;
+  EXCEPTION WHEN duplicate_table THEN
+    TRUNCATE edit_staff, edit_staff_aliases;
+  END;
+  PERFORM edit_revtable('s', cid);
+  -- new staff member
+  IF cid IS NULL THEN
+    INSERT INTO edit_staff (aid) VALUES (0);
+  -- load revision
+  ELSE
+    INSERT INTO edit_staff SELECT aid, image, gender, lang, "desc", l_wp FROM staff_rev WHERE id = cid;
+    INSERT INTO edit_staff_aliases SELECT id, name, original FROM staff_alias WHERE rid = cid;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION edit_staff_commit() RETURNS edit_rettype AS $$
+DECLARE
+  r edit_rettype;
+BEGIN
+  IF (SELECT COUNT(*) FROM edit_staff) <> 1 THEN
+    RAISE 'edit_staff must have exactly one row!';
+  END IF;
+  SELECT INTO r * FROM edit_commit();
+  INSERT INTO staff_alias (id, rid, name, original)
+    SELECT id, r.cid, name, original FROM edit_staff_aliases;
+  INSERT INTO staff_rev (id, sid, aid, image, gender, lang, "desc", l_wp)
+    SELECT r.cid, r.iid, aid, image, gender, lang, "desc", l_wp FROM edit_staff;
+  UPDATE staff SET latest = r.cid WHERE id = r.iid;
   RETURN r;
 END;
 $$ LANGUAGE plpgsql;

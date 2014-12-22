@@ -22,7 +22,7 @@ sub page {
 
   my $r = $self->dbCharGet(
     id => $id,
-    what => 'extended traits vns'.($rev ? ' changes' : ''),
+    what => 'extended traits vns seiyuu'.($rev ? ' changes' : ''),
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return $self->resNotFound if !$r->{id};
@@ -60,6 +60,9 @@ sub page {
         map sprintf('<a href="/v%d">v%d</a> %s %s (%s)', $_->{vid}, $_->{vid},
           $_->{rid}?sprintf('[<a href="/r%d">r%d</a>]', $_->{rid}, $_->{rid}):'',
           mt("_charrole_$_->{role}"), mt("_spoil_$_->{spoil}")), @{$_[0]};
+      }],
+      [ seiyuu    => join => '<br />', split => sub {
+        map sprintf('<a href="/s%d">%s</a>', $_->{sid}, $_->{name}), @{$_[0]}
       }],
     );
   }
@@ -221,6 +224,17 @@ sub charTable {
              end;
            }
           end;
+        }
+       end;
+      end;
+    }
+
+    if (@{$r->{seiyuu}}) {
+      Tr;
+       td class => 'key', mt '_charp_voice';
+       td;
+        for my $s (@{$r->{seiyuu}}) {
+          a href => "/s$s->{sid}", $s->{name}; br;
         }
        end;
       end;

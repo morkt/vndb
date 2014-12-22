@@ -3053,6 +3053,9 @@ tr : Yapımcılar
 uk : Компанії
 it : Editori
 
+:_menu_staff
+en : Staff
+
 :_menu_characters
 en : Characters
 ru : Персонажи
@@ -3259,6 +3262,9 @@ es : Añadir Creador
 tr : Yapımcı ekle
 uk : Додати компанію
 it : Aggiungi Editore
+
+:_menu_addstaff
+en : Add Staff
 
 :_menu_addcharacter
 en : Add Character
@@ -3883,6 +3889,9 @@ es : Creadores
 tr : Yapımcılar
 uk : Компанії
 it : Editori
+
+:_searchbox_staff
+en : Staff
 
 :_searchbox_chars
 en : Characters
@@ -5328,8 +5337,186 @@ tr : Sonuç bulunamadı
 uk : Нічого не знайдено
 it : Nessun risultato
 
+#############################################################################
+##                            Staff pages (/s/*)                           ##
+#############################################################################
+# Handler::Staff
 
+# Built-in credits
 
+:_credit_script
+en : Script writer
+
+:_credit_chardesign
+en : Character design
+
+:_credit_music
+en : Composer
+
+:_credit_director
+en : Director
+
+:_credit_art
+en : Artist
+
+:_credit_songs
+en : Vocals
+
+:_credit_voice
+en : Additional voices
+
+:_credit_staff
+en : Staff
+
+# Staff diff fields (/s+.+)
+
+:_revfield_s_name
+en : Name (romaji)
+
+:_revfield_s_original
+en : Original name
+
+:_revfield_s_gender
+en : Gender
+
+:_revfield_s_lang
+en : Language
+
+:_revfield_s_aliases
+en : Aliases
+
+:_revfield_s_l_wp
+en : Wikipedia link
+
+:_revfield_s_desc
+en : Description
+
+# Staff browser
+
+:_sbrowse_title
+en : Browse staff
+
+:_sbrowse_list
+en : Staff list
+
+:_sbrowse_searchres
+en : Search results
+
+:_sbrowse_noresults
+en : No results found
+
+:_staff_credits
+en : Credits
+
+:_staff_as
+en : as
+
+:_staff_gender
+en : Gender
+
+:_staff_language
+en : Language
+
+:_staff_aliases
+en : Aliases
+
+:_staff_l_wp
+en : Wikipedia
+
+:_staff_bio
+en : Info
+
+:_staff_col_title
+en : Title
+
+:_staff_col_released
+en : Released
+
+:_staff_col_role
+en : Role
+
+:_staff_col_credit
+en : Credit
+
+:_staff_col_note
+en : Note
+
+# Add/edit staff
+
+:_staffe_title_edit
+en : Edit [_1]
+
+:_staffe_title_add
+en : Add staff member
+
+:_staffe_form_generalinfo
+en : General info
+
+:_staffe_form_name
+en : Name (romaji)
+
+:_staffe_form_original
+en : Original name
+
+:_staffe_form_alias
+en : Alias (romaji)
+
+:_staffe_form_original_alias
+en : Original alias
+
+:_staffe_form_original_note
+en : The original name of the person, leave blank if it is already in the Latin alphabet.
+
+:_staffe_form_note
+en : Staff note
+
+:_staffe_form_gender
+en : Gender
+
+:_staffe_form_lang
+en : Primary language
+
+:_staffe_form_wikipedia
+en : Wikipedia link
+
+:_staffe_aliases
+en : Aliases
+
+:_staffe_aliases_sel
+en : Selected aliases
+
+:_staffe_aliases_add
+en : Add alias
+
+:_staffe_vns
+en : Visual novels
+
+:_sedit_form_alias_none
+en : None
+
+:_vnstaff_edit_title
+en : Edit staff of [_1]
+
+:_vnstaff_edit_credits
+en : Credits
+
+:_vnstaffe_form_staff
+en : Staff
+
+:_vnstaffe_form_role
+en : Credit
+
+:_vnstaffe_form_note
+en : Note
+
+:_vnstaffe_add
+en : Add staff
+
+:_vnstaffe_none
+en : None
+
+:_vnstaffe_credit_exists
+en : Credit already given.
 
 #############################################################################
 ##                           Release pages (/r/*)                          ##
@@ -8672,6 +8859,9 @@ es : Todos los otros estrenos
 tr : Diğer tüm yayımlar
 uk : Усі інші релізи
 it : Tutte le altre pubblicazioni
+
+:_charp_voice
+en : Voiced by
 
 :_charp_description
 en : Description
@@ -14294,6 +14484,9 @@ tr : karakterler
 uk : персонажі
 it : personaggi
 
+:_vnpage_tab_staff
+en : staff
+
 :_vnpage_rel
 en : Releases
 ru : Выпуски
@@ -14404,6 +14597,12 @@ es : añadir personaje
 tr : karakter ekle
 uk : додати персонажа
 it : aggiungi personaggio
+
+:_vnpage_staff_add
+en : add staff
+
+:_vnpage_staff_edit
+en : edit staff
 
 :_vnpage_rel_add
 en : add release
@@ -14793,7 +14992,7 @@ uk : Огляньте [url,_1,історію редагувань], можлив
 it : Controlla le [url,_1,attività] per eventuali modifiche recenti riguardo a ciò che vuoi cambiare.
 
 :_editmsg_msg_search
-en : [url,_1,Search the database] to see if we already have information about this [index,_2,visual novel,release,producer,character].
+en : [url,_1,Search the database] to see if we already have information about this [index,_2,visual novel,release,producer,character,person].
 ru : [url,_1,Воспользуйтесь поиском], ведь вполне возможно, что у нас уже есть информация об [index,_2,этой новелле,этом выпуске,этой компании,этом персонаже].
 cs : [url,_1,Prohledejte databázi], zda již nemáme informaci o [index,_2,této vizuální novele,tomto vydání,tomto producentovi,této postavě].
 hu : [url,_1,Nézd át az adatbázist], hogy van-e már információ erről a [index,_2,visual novelről, kiadásról, készítőről, szereplőről].
@@ -14817,7 +15016,7 @@ uk : Відновлення
 it : Ripristina
 
 :_editmsg_revert_msg
-en : You are editing an old revision of this [index,_1,visual novel,release,producer,character].
+en : You are editing an old revision of this [index,_1,visual novel,release,producer,character,person].
      If you save it, all changes made after this revision will be reverted!
 ru : Вы правите старую редакцию страницы [index,_1,новеллы,выпуска,компании,персонажа].
      Если вы сохраните её, все изменения, сделанные после этой правки, будут утеряны!
