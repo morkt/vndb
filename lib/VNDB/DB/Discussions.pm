@@ -4,6 +4,7 @@ package VNDB::DB::Discussions;
 use strict;
 use warnings;
 use Exporter 'import';
+use VNDB::Util::Misc 'bbSubstLinks';
 
 our @EXPORT = qw|dbThreadGet dbThreadEdit dbThreadAdd dbPostGet dbPostEdit dbPostAdd dbThreadCount|;
 
@@ -214,7 +215,7 @@ sub dbPostEdit {
   my($self, $tid, $num, %o) = @_;
 
   my %set = (
-    'msg = ?' => $o{msg},
+    'msg = ?' => bbSubstLinks($self, $o{msg}),
     'edited = to_timestamp(?)' => $o{lastmod},
     'hidden = ?' => $o{hidden}?1:0,
   );
@@ -236,6 +237,7 @@ sub dbPostAdd {
   my $num = $self->dbRow('SELECT num FROM threads_posts WHERE tid = ? ORDER BY num DESC LIMIT 1', $tid)->{num};
   $num = $num ? $num+1 : 1;
   $o{uid} ||= $self->authInfo->{id};
+  $o{msg} = bbSubstLinks($self, $o{msg});
 
   $self->dbExec(q|
     INSERT INTO threads_posts (tid, num, uid, msg)

@@ -116,7 +116,7 @@ sub bb2html {
         next;
       }
       # id
-      if(($id || $exid || $longid) && (!$result || substr($raw, $last-1-length($match), 1) !~ /[\w]/) && substr($raw, $last, 1) !~ /[\w]/) {
+      if(($id || $exid || $longid) && !grep(/url/, @open) && (!$result || substr($raw, $last-1-length($match), 1) !~ /[\w]/) && substr($raw, $last, 1) !~ /[\w]/) {
         (my $lnk = $match) =~ s/^d(\d+)\.(\d+)\.(\d+)$/d$1#$2.$3/;
         $length += length $lnk;
         last if $maxlength && $length > $maxlength;

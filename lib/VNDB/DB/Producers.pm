@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbProducerGet dbProducerRevisionInsert|;
+our @EXPORT = qw|dbProducerGet dbProducerRevisionInsert dbProducerNames|;
 
 
 # options: results, page, id, search, char, rev
@@ -91,6 +91,17 @@ sub dbProducerRevisionInsert {
     my @q = map +($_->[1], $_->[0]), @{$o->{relations}};
     $self->dbExec("INSERT INTO edit_producer_relations (pid, relation) VALUES $q", @q) if @q;
   }
+}
+
+
+sub dbProducerNames {
+  my($self, @ids) = @_;
+  return $self->dbAll(q|
+    SELECT p.id, pr.name
+      FROM producers p
+      JOIN producers_rev pr ON pr.id = p.latest
+      WHERE p.id IN (!l)|, \@ids
+  );
 }
 
 
