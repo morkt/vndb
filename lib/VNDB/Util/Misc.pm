@@ -149,7 +149,7 @@ sub bbSubstLinks {
 
   # pre-parse vndb links within message body
   my (%lookup, %links);
-  while ($msg =~ m/(?:^|\s)\K([vcpgi])([1-9][0-9]*)(?=$|\b[^.])/g) {
+  while ($msg =~ m/(?:^|\s)\K([vcpgi])([1-9][0-9]*)\b/g) {
     $lookup{$1}{$2} = 1;
   }
   return $msg unless %lookup;
@@ -173,7 +173,7 @@ sub bbSubstLinks {
   my($result, @open) = ('', 'first');
 
   while($msg =~ m{
-    (\b[tdvprcugi][1-9][0-9]*(?=$|\b[^.]))       | # 1. id
+    (\b[tdvprcugi][1-9][0-9]*(?:\.[1-9][0-9]*)?\b)| # 1. id
     (\[[^\s\]]+\])                               | # 2. tag
     ((?:https?|ftp)://[^><"\n\s\]\[]+[\d\w=/-])    # 3. url
   }x) {
