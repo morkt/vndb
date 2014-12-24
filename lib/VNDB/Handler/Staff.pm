@@ -11,7 +11,6 @@ TUWF::register(
   qr{s(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit|/new)}
     => \&edit,
   qr{s/([a-z0]|all)}               => \&list,
-  qr{v([1-9]\d*)/staff/edit}       => \&vn_edit,
   qr{xml/staff.xml}                => \&staffxml,
 );
 
@@ -136,7 +135,7 @@ sub page {
           td class => 'tc2'; a href => "/v$r->{vid}", title => $r->{t_original}, $r->{title}; end;
           td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
           td class => 'tc4';
-           lit '('.mt('_staff_as').$r->{name}.') ' if $r->{name} ne $s->{name};
+           lit '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
            lit $r->{note};
           end;
          end;
@@ -248,70 +247,6 @@ sub edit {
       end; end;
     }],
   ]);
-
-  $self->htmlFooter;
-}
-
-
-sub vn_edit {
-  my($self, $vid) = @_;
-
-  my $v = $self->dbVNGet(id => $vid, what => 'changes')->[0];
-  return $self->resNotFound if !$v->{id};
-
-  return $self->htmlDenied if !$self->authCan('edit')
-    || (($v->{locked} || $v->{hidden}) && !$self->authCan('dbmod'));
-
-  my $s = $self->dbStaffGet(vid => $vid);
-
-  my %b4 = (
-    vid => $vid,
-    credits => join('|||', map sprintf('%d-%s-%s', $_->{aid}, $_->{role}, $_->{note}), @$s),
-  );
-  my $frm;
-  if ($self->reqMethod eq 'POST') {
-    return if !$self->authCheckCode;
-    $frm = $self->formValidate (
-      { post => 'vid',           required  => 1, template => 'int' },
-      { post => 'credits',       required  => 0, maxlength => 5000, default => '' },
-    );
-    my @credits = map { /^(\d+)-([^-]+)-(.*)$/ ? [ $1, $2, $3 ]: () } split /\|\|\|/, $frm->{credits};
-    if (!$frm->{_err}) {
-      # parse and normalize
-      $frm->{credits}  = join('|||', map sprintf('%d-%s-%s', @$_), @credits);
-
-      return $self->resRedirect("/v$vid/staff#staff", 'post')
-        if !grep $frm->{$_} ne $b4{$_}, keys %b4;
-
-      $frm->{credits} = \@credits;
-      $frm->{editsum} = 'Edit staff';
-      my $nrev = $self->dbItemEdit ('v' => $v->{cid}, %$frm);
-      return $self->resRedirect("/v$nrev->{iid}.$nrev->{rev}", 'post');
-    }
-  }
-  $frm->{$_} //= $b4{$_} for keys %b4;
-
-  my $title = mt ('_vnstaff_edit_title', $v->{title});
-  $self->htmlHeader(title => $title, noindex => 1);
-  $self->htmlMainTabs('v', $v, 'edit');
-  $self->htmlEditMessage('v', $v, $title);
-
-  $self->htmlForm({ frm => $frm, action => "/v$vid/staff/edit" },
-    vnstaffe_credits => [ mt('_vnstaff_edit_credits'),
-      [ hidden => short => 'vid' ],
-      [ hidden => short => 'credits' ],
-      [ static => nolabel => 1, content => sub {
-        table; tbody id => 'credits_tbl';
-         Tr id => 'credits_loading'; td colspan => '4', mt('_js_loading'); end;
-        end; end;
-        h2 mt '_vnstaffe_add';
-        table; Tr;
-         td class => 'tc_staff';
-          input id => 'credit_input', type => 'text', class => 'text'; end;
-         td colspan => 3, '';
-        end; end;
-      }],
-    ]);
 
   $self->htmlFooter;
 }

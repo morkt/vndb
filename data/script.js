@@ -2096,6 +2096,7 @@ function salSerialize() {
     a[a.length] = [ id, name, orig ].join(',');
   }
   byId('aliases').value = a.join('|||');
+  return true;
 }
 
 function salDel() {
@@ -2146,9 +2147,9 @@ function vnsLoad() {
       for (var i = 0; i < staff.length; i++) {
         var aid = staff[i].getAttribute('aid');
         if (s[aid])
-      vnsAdd (staff[i], s[aid][0], s[aid][1]);
+          vnsAdd (staff[i], s[aid][0], s[aid][1]);
         else
-      vnsAdd (staff[i], 'staff', '');
+          vnsAdd (staff[i], 'staff', '');
       }
       vnsEmpty();
     }, 1);
@@ -2222,6 +2223,7 @@ function vnsSerialize() {
     c.push (aid+'-'+role.options[role.selectedIndex].value+'-'+note.value);
   }
   byId('credits').value = c.join('|||');
+  return true;
 }
 
 function vnsDel() {
@@ -2239,7 +2241,7 @@ function vnsFormAdd(item) {
   return '';
 }
 
-if(byId('jt_box_vnstaffe_credits'))
+if(byId('jt_box_vn_staff'))
   vnsLoad();
 
 

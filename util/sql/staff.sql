@@ -33,7 +33,8 @@ CREATE TABLE vn_staff (
     vid         integer NOT NULL, -- vn_rev reference
     aid         integer NOT NULL, -- staff_alias reference
     role        credit_type NOT NULL DEFAULT 'staff',
-    note        varchar(250) NOT NULL DEFAULT ''
+    note        varchar(250) NOT NULL DEFAULT '',
+    PRIMARY KEY (vid, aid, role)
 );
 
 CREATE TABLE chars_seiyuu (

@@ -51,7 +51,7 @@ sub dbStaffGet {
 #     ON vs.vid = vr.id OR cs.vid = v.id
 #   | if $o{vid};
 
-  my $select = 's.id, sr.aid, sa.name, sa.original, sr.gender, sr.lang, sr.id AS cid';
+  my $select = 's.id, sa.id AS aid, sa.name, sa.original, sr.gender, sr.lang, sr.id AS cid';
   $select .= ', sr.desc, sr.l_wp, s.hidden, s.locked' if $o{what} =~ /extended/;
   $select .= q|, extract('epoch' from c.added) as added, c.requester, c.comments, s.latest, u.username, c.rev, c.ihid, c.ilock| if $o{what} =~ /changes/;
   $select .= ', vs.role, vs.note' if $o{vid};

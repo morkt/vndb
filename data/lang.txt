@@ -5409,7 +5409,7 @@ en : No results found
 en : Credits
 
 :_staff_as
-en : as
+en : as [_1]
 
 :_staff_gender
 en : Gender
@@ -5493,12 +5493,6 @@ en : Visual novels
 
 :_sedit_form_alias_none
 en : None
-
-:_vnstaff_edit_title
-en : Edit staff of [_1]
-
-:_vnstaff_edit_credits
-en : Credits
 
 :_vnstaffe_form_staff
 en : Staff
@@ -13141,6 +13135,9 @@ tr : Eğer resim çıplaklık veya vahşet içeriyorsa, ya da iş ortamında gö
 uk : Будь ласка, відміть цю опцію, якщо зображення містить оголення, кров або тим чи іншим способом неприйнятне для загального кола користувачів.
 it : Scegli questa opzione se l'immagine contiene nudi, gore o è generalmente non adatta ad ambienti di lavoro.
 
+:_vnedit_credits
+en : Credits
+
 :_vnedit_rel
 en : Relations
 ru : Связи
@@ -13752,6 +13749,9 @@ es : Relaciones
 tr : İlişkiler
 uk : Зв’язки
 it : Relazioni
+
+:_revfield_v_credits
+en : Credits
 
 :_revfield_v_anime
 en : Anime

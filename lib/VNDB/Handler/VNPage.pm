@@ -518,7 +518,7 @@ sub page {
 
   my $v = $self->dbVNGet(
     id => $vid,
-    what => 'extended anime relations screenshots rating ranking'.($rev ? ' changes' : ''),
+    what => 'extended anime relations screenshots rating ranking'.($rev ? ' credits changes' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
   return $self->resNotFound if !$v->{id};
@@ -653,17 +653,17 @@ sub page {
      if($haschar || $hasstaff) {
        li class => 'left '.(!($char || $staff) && ' tabselected'); a href => "/v$v->{id}#main", name => 'main', mt '_vnpage_tab_main'; end;
        if ($haschar) {
-         li class => 'left '.($char && ' tabselected'); a href => "/v$v->{id}/chars#chars", name => 'chars', mt '_vnpage_tab_chars'; end;
+         li class => 'left '.($char ? ' tabselected' : ''); a href => "/v$v->{id}/chars#chars", name => 'chars', mt '_vnpage_tab_chars'; end;
        }
        if ($hasstaff) {
-         li class => 'left '.($staff && ' tabselected'); a href => "/v$v->{id}/staff#staff", name => 'staff', mt '_vnpage_tab_staff'; end;
+         li class => 'left '.($staff ? ' tabselected' : ''); a href => "/v$v->{id}/staff#staff", name => 'staff', mt '_vnpage_tab_staff'; end;
        }
      }
      if($self->authCan('edit')) {
        li; a href => "/c/new?vid=$v->{id}", mt '_vnpage_char_add'; end;
        if(!$v->{locked}) {
          li;
-          a href => "/v$v->{id}/staff/edit", mt $hasstaff ? '_vnpage_staff_edit' : '_vnpage_staff_add';
+          a href => "/v$v->{id}/edit#vn_staff", mt $hasstaff ? '_vnpage_staff_edit' : '_vnpage_staff_add';
          end;
        }
        li; a href => "/v$v->{id}/add", mt '_vnpage_rel_add'; end;
@@ -690,7 +690,7 @@ sub _revision {
   return if !$rev;
 
   my $prev = $rev && $rev > 1 && $self->dbVNGet(
-    id => $v->{id}, rev => $rev-1, what => 'extended anime relations screenshots changes'
+    id => $v->{id}, rev => $rev-1, what => 'extended anime relations screenshots credits changes'
   )->[0];
 
   $self->htmlRevision('v', $prev, $v,
@@ -707,6 +707,11 @@ sub _revision {
     }],
     [ l_renai     => htmlize => sub {
       $_[0] ? sprintf '<a href="http://renai.us/game/%s.shtml">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
+    }],
+    [ credits     => join => '<br />', split => sub {
+      my @r = map sprintf('<a href="/s%d" title="%s">%s</a> [%s]%s',
+        $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape($_->{name}), mt("_credit_$_->{role}"), $_->{note} ? ' ['.shorten($_->{note}, 20).']' : ''), sort { $a->{id} <=> $b->{id} } @{$_[0]};
+      return @r ? @r : (mt '_revision_empty');
     }],
     [ relations   => join => '<br />', split => sub {
       my @r = map sprintf('[%s] %s: <a href="/v%d" title="%s">%s</a>',

@@ -77,7 +77,7 @@ sub addform {
 sub edit {
   my($self, $vid, $rev, $nosubmit) = @_;
 
-  my $v = $vid && $self->dbVNGet(id => $vid, what => 'extended screenshots relations anime changes', $rev ? (rev => $rev) : ())->[0];
+  my $v = $vid && $self->dbVNGet(id => $vid, what => 'extended screenshots relations anime credits changes', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $vid && !$v->{id};
   $rev = undef if !$vid || $v->{cid} == $v->{latest};
 
@@ -88,6 +88,7 @@ sub edit {
 
   my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai image img_nsfw ihid ilock|),
+    credits => join('|||', map sprintf('%d-%s-%s', $_->{aid}, $_->{role}, $_->{note}), @{$v->{credits}}),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
     vnrelations => join('|||', map $_->{relation}.','.$_->{id}.','.($_->{official}?1:0).','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
     screenshots => join(' ', map sprintf('%d,%d,%d', $_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$v->{screenshots}}),
@@ -108,6 +109,7 @@ sub edit {
       { post => 'anime',       required => 0, default => '' },
       { post => 'image',       required => 0, default => 0,  template => 'int' },
       { post => 'img_nsfw',    required => 0, default => 0 },
+      { post => 'credits',     required => 0, default => '', maxlength => 5000 },
       { post => 'vnrelations', required => 0, default => '', maxlength => 5000 },
       { post => 'screenshots', required => 0, default => '', maxlength => 1000 },
       { post => 'editsum',     required => 0, maxlength => 5000 },
@@ -125,6 +127,7 @@ sub edit {
       my $anime = { map +($_=>1), grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} };
       my $relations = [ map { /^([a-z]+),([0-9]+),([01]),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3, $4 ] : () } split /\|\|\|/, $frm->{vnrelations} ];
       my $screenshots = [ map /^[0-9]+,[01],[0-9]+$/ ? [split /,/] : (), split / +/, $frm->{screenshots} ];
+      my $credits = [ map { /^(\d+)-([^-]+)-(.*)$/ ? [ $1, $2, $3 ]: () } split /\|\|\|/, $frm->{credits} ];
 
       $frm->{ihid} = $frm->{ihid}?1:0;
       $frm->{ilock} = $frm->{ilock}?1:0;
@@ -133,6 +136,16 @@ sub edit {
       $frm->{vnrelations} = join '|||', map $_->[0].','.$_->[1].','.($_->[2]?1:0).','.$_->[3], sort { $a->[1] <=> $b->[1]} @{$relations};
       $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
       $frm->{screenshots} = join ' ', map sprintf('%d,%d,%d', $_->[0], $_->[1]?1:0, $_->[2]), sort { $a->[0] <=> $b->[0] } @$screenshots;
+
+      # check for duplicate credits
+      my($checked_c, $last_c) = ([], []);
+      for my $c (sort { $a->[0] <=> $b->[0] || $a->[1] cmp $b->[1] } @$credits) {
+        # discard entries with identical name & role
+        next if $last_c->[0] == $c->[0] && $last_c->[1] eq $c->[1];
+        push @$checked_c, $c;
+        $last_c = $c;
+      }
+      $frm->{credits} = join '|||', map sprintf('%d-%s-%s', @$_), @$checked_c;
 
       # weed out duplicate aliases
       my %alias;
@@ -149,6 +162,7 @@ sub edit {
       # perform the edit/add
       my $nrev = $self->dbItemEdit(v => $vid ? $v->{cid} : undef,
         (map { $_ => $frm->{$_} } qw|title original image alias desc length l_wp l_encubed l_renai editsum img_nsfw ihid ilock|),
+        credits => $checked_c,
         anime => [ keys %$anime ],
         relations => $relations,
         screenshots => $screenshots,
@@ -256,6 +270,20 @@ sub _form {
      label class => 'checkbox', for => 'img_nsfw', mt '_vnedit_image_nsfw_check';
      p mt '_vnedit_image_nsfw_msg';
     end 'div';
+  }]],
+
+  vn_staff => [ mt('_vnedit_credits'),
+    [ hidden => short => 'credits' ],
+    [ static => nolabel => 1, content => sub {
+      table; tbody id => 'credits_tbl';
+       Tr id => 'credits_loading'; td colspan => '4', mt('_js_loading'); end;
+      end; end;
+      h2 mt '_vnstaffe_add';
+      table; Tr;
+       td class => 'tc_staff';
+        input id => 'credit_input', type => 'text', class => 'text'; end;
+       td colspan => 3, '';
+      end; end;
   }]],
 
   vn_rel => [ mt('_vnedit_rel'),

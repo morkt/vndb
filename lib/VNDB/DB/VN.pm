@@ -12,7 +12,7 @@ our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreen
 
 # Options: id, rev, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
 #   hasani, hasshot, ul_notblack, ul_onwish, results, page, what, sort, reverse, inc_hidden
-# What: extended anime relations screenshots relgraph rating ranking changes wishlist vnlist
+# What: extended anime credits relations screenshots relgraph rating ranking changes wishlist vnlist
 #  Note: wishlist and vnlist are ignored (no db search) unless a user is logged in
 # Sort: id rel pop rating title tagscore rand
 sub dbVNGet {
@@ -142,13 +142,27 @@ sub dbVNGet {
     $_->{svg} = decode_utf8($_->{svg}) for @$r;
   }
 
-  if(@$r && $o{what} =~ /(anime|relations|screenshots)/) {
+  if(@$r && $o{what} =~ /anime|relations|screenshots|credits/) {
     my %r = map {
       $r->[$_]{anime} = [];
+      $r->[$_]{credits} = [];
       $r->[$_]{relations} = [];
       $r->[$_]{screenshots} = [];
       ($r->[$_]{cid}, $_)
     } 0..$#$r;
+
+    if($o{what} =~ /credits/) {
+      push(@{$r->[$r{ delete $_->{vid} }]{credits}}, $_) for (@{$self->dbAll(q|
+        SELECT vs.vid, s.id, vs.aid, sa.name, sa.original, sr.gender, sr.lang, sr.id AS cid, vs.role, vs.note
+          FROM vn_staff vs
+          JOIN staff_alias sa ON vs.aid = sa.id
+          JOIN staff_rev sr ON sr.id = sa.rid
+          JOIN staff s ON sr.id = s.latest
+          WHERE vs.vid IN(!l)
+          ORDER BY vs.role ASC, sa.name ASC|,
+        [ keys %r ]
+      )});
+    }
 
     if($o{what} =~ /anime/) {
       push(@{$r->[$r{$_->{vid}}]{anime}}, $_) && delete $_->{vid} for (@{$self->dbAll(q|
