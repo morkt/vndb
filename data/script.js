@@ -2235,7 +2235,7 @@ function vnsSerialize() {
     var aid  = byName(byClass(l[i], 'tc_name')[0], 'input')[0];
     var role = byName(byClass(l[i], 'tc_role')[0], 'select')[0];
     var note = byName(byClass(l[i], 'tc_note')[0], 'input')[0].value;
-    note = note.replace(/|||+/g, '||');
+    note = note.replace(/\|\|\|+/g, '||');
     c.push (aid.value+'-'+role.value+'-'+note);
   }
   byId('credits').value = c.join('|||');
@@ -2401,7 +2401,7 @@ function vncSerialize() {
     var aid  = byName(byClass(l[i], 'tc_name')[0], 'input')[0];
     var role = byName(byClass(l[i], 'tc_char')[0], 'select')[0];
     var note = byName(byClass(l[i], 'tc_note')[0], 'input')[0].value;
-    note = note.replace(/|||+/g, '||');
+    note = note.replace(/\|\|\|+/g, '||');
     c.push (aid.value+'-'+role.value+'-'+note);
   }
   byId('seiyuu').value = c.join('|||');
