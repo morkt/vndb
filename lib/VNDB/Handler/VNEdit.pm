@@ -309,6 +309,21 @@ sub _form {
   $chars && @{$chars} ? (vn_cast => [ mt('_vnedit_cast'),
     [ hidden => short => 'seiyuu' ],
     [ static => nolabel => 1, content => sub {
+      my $import = $self->dbVNImportSeiyuu($v->{id}, [ map $_->{id}, @$chars ]);
+      if (@$import) {
+        script type => 'text/javascript';
+         lit 'var vncImportData = [';
+         lit join ',', map {
+           my $name = $_->{name};
+           $name =~ s/["\\]/\\$&/g; # escape quotes in names
+           sprintf('{cid:%d,sid:%d,aid:%d,name:"%s"}', $_->{cid}, $_->{sid}, $_->{aid}, $name);
+         } @$import;
+         lit '];';
+        end;
+        div id => 'cast_import';
+         a href => '#', title => mt('_vnedit_cast_import_title'), mt '_vnedit_cast_import';
+        end;
+      }
       table; tbody id => 'cast_tbl';
        Tr id => 'cast_loading'; td colspan => '4', mt '_js_loading'; end;
       end; end;

@@ -2142,23 +2142,27 @@ function onSubmit(form, handler) {
 
 function vnsLoad() {
   var credits = byId('credits').value.split('|||');
-  var s = {}; // staff -> { aid: [ role, note ], .. }
   var q = []; // list of a=X paramters
+  var s = {};
   for (var i = 0; i < credits.length && credits[i].length > 1; i++) {
     var c = credits[i].split('-', 3); // aid, role, note
-    if (!s[c[0]])
+    if (!s[c[0]]) {
       q.push('a='+c[0]);
-    s[c[0]] = [ c[1], c[2] ];
+      s[c[0]] = 1;
+    }
   }
   if (q.length > 0)
     ajax('/xml/staff.xml?'+q.join(';'), function(hs) {
       var staff = hs.responseXML.getElementsByTagName('item');
+      var l = {};
       for (var i = 0; i < staff.length; i++) {
         var aid = staff[i].getAttribute('aid');
-        if (s[aid])
-          vnsAdd (staff[i], s[aid][0], s[aid][1]);
-        else
-          vnsAdd (staff[i], 'staff', '');
+        l[aid] = staff[i];
+      }
+      for (var i = 0; i < credits.length; i++) {
+        var c = credits[i].split('-', 3);
+        if (l[c[0]])
+          vnsAdd (l[c[0]], c[1], c[2]);
       }
       vnsEmpty();
     }, 1);
@@ -2230,8 +2234,9 @@ function vnsSerialize() {
       continue;
     var aid  = byName(byClass(l[i], 'tc_name')[0], 'input')[0];
     var role = byName(byClass(l[i], 'tc_role')[0], 'select')[0];
-    var note = byName(byClass(l[i], 'tc_note')[0], 'input')[0];
-    c.push (aid.value+'-'+role.value+'-'+note.value);
+    var note = byName(byClass(l[i], 'tc_note')[0], 'input')[0].value;
+    note = note.replace(/|||+/g, '||');
+    c.push (aid.value+'-'+role.value+'-'+note);
   }
   byId('credits').value = c.join('|||');
   return true;
@@ -2262,27 +2267,36 @@ if(byId('jt_box_vn_staff'))
 
 function vncLoad() {
   var cast = byId('seiyuu').value.split('|||');
-  var s = {}; // seiyuu -> { aid: [ char, note ], .. }
   var q = []; // list of a=X parameters
+  var s = {};
   for (var i = 0; i < cast.length && cast[i].length > 1; i++) {
     var c = cast[i].split('-', 3); // aid, char, note
-    if (!s[c[0]])
+    if (!s[c[0]]) {
       q.push('a='+c[0]);
-    s[c[0]] = [ c[1], c[2] ];
+      s[c[0]] = 1;
+    }
   }
   if (q.length > 0)
     ajax('/xml/staff.xml?'+q.join(';'), function(hs) {
       var seiyuu = hs.responseXML.getElementsByTagName('item');
+      var s = {};
       for (var i = 0; i < seiyuu.length; i++) {
         var aid = seiyuu[i].getAttribute('aid');
-        if (s[aid])
-          vncAdd(seiyuu[i], s[aid][0], s[aid][1]);
+        s[aid] = seiyuu[i];
+      }
+      for (var i = 0; i < cast.length; i++) {
+        var c = cast[i].split('-', 3);
+        if (s[c[0]])
+          vncAdd(s[c[0]], c[1], c[2]);
       }
       vncEmpty();
     }, 1);
   else
     vncEmpty();
 
+  var cast_import = byId('cast_import');
+  if (cast_import)
+    byName(cast_import, 'a')[0].onclick = vncImport;
   onSubmit(byName(byId('maincontent'), 'form')[0], vncSerialize);
 
   // dropdown search
@@ -2290,6 +2304,35 @@ function vncLoad() {
     tr.appendChild(tag('td', { style: 'text-align: right; padding-right: 5px'}, 's'+item.getAttribute('id')));
     tr.appendChild(tag('td', item.firstChild.nodeValue));
   }, vncFormAdd);
+}
+
+function vncImport() {
+  if (typeof vncImportData === 'undefined')
+    return false;
+  var c = {};
+  for (var i = 0; i < vncImportData.length; i++) {
+    var s = vncImportData[i];
+    c[s.cid] = s;
+  }
+  // exclude already credited cast from import list
+  var l = byName(byId('cast_tbl'), 'tr');
+  for (var i = 0; i < l.length; i++) {
+    if(l[i].id == 'cast_tr_none')
+      continue;
+    var role = byName(byClass(l[i], 'tc_char')[0], 'select')[0].value;
+    if (role in c)
+      delete c[role];
+  }
+  for (var cid in c) {
+    if (!c.hasOwnProperty(cid))
+      continue;
+    var s = document.createElement('item');
+    s.appendChild(document.createTextNode(c[cid].name));
+    s.setAttribute('id', c[cid].sid);
+    s.setAttribute('aid', c[cid].aid);
+    vncAdd(s, cid, '');
+  }
+  return false;
 }
 
 function vncAdd(seiyuu, chr, note) {
@@ -2357,8 +2400,9 @@ function vncSerialize() {
       continue;
     var aid  = byName(byClass(l[i], 'tc_name')[0], 'input')[0];
     var role = byName(byClass(l[i], 'tc_char')[0], 'select')[0];
-    var note = byName(byClass(l[i], 'tc_note')[0], 'input')[0];
-    c.push (aid.value+'-'+role.value+'-'+note.value);
+    var note = byName(byClass(l[i], 'tc_note')[0], 'input')[0].value;
+    note = note.replace(/|||+/g, '||');
+    c.push (aid.value+'-'+role.value+'-'+note);
   }
   byId('seiyuu').value = c.join('|||');
   return true;

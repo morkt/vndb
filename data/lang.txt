@@ -5408,6 +5408,9 @@ en : No results found
 :_staff_credits
 en : Credits
 
+:_staff_voiced
+en : Voiced characters
+
 :_staff_as
 en : as [_1]
 
@@ -13150,6 +13153,12 @@ en : This message is a placeholder for concise guidelines regarding adding VN st
 :_vnedit_cast
 en : Cast
 
+:_vnedit_cast_import
+en : Import cast
+
+:_vnedit_cast_import_title
+en : Import character cast from related visual novels
+
 :_vnedit_cast_char
 en : Character
 
@@ -14633,6 +14642,12 @@ es : añadir personaje
 tr : karakter ekle
 uk : додати персонажа
 it : aggiungi personaggio
+
+:_vnpage_staff
+en : Staff
+
+:_vnpage_cast
+en : Cast of characters
 
 :_vnpage_staff_add
 en : add staff

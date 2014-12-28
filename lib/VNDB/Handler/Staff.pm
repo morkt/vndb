@@ -48,13 +48,13 @@ sub page {
     );
   }
 
-  div class => 'mainbox';
+  div class => 'mainbox staffpage';
    $self->htmlItemMessage('s', $s);
    div class => 'staffinfo';
     h1 $s->{name};
     h2 class => 'alttitle';
+     span style => 'margin-right: 10px', $s->{original} if $s->{original};
      cssicon "gen $s->{gender}", mt "_gender_$s->{gender}" if $s->{gender} ne 'unknown';
-     txt $s->{original} if $s->{original};
     end;
 
     # info table
@@ -102,61 +102,62 @@ sub page {
      end;
    }
 
-   if (@{$s->{roles}} || @{$s->{cast}}) {
-     div class => 'staffroles';
-     if (@{$s->{roles}}) {
-       table class => 'stripe';
-        thead;
-         Tr;
-          td class => 'tc1', mt '_staff_col_role';
-          td class => 'tc2', mt '_staff_col_title';
-          td class => 'tc3', mt '_staff_col_released';
-          td class => 'tc4', mt '_staff_col_note';
-         end;
-        end;
-        tbody;
-         foreach my $r (@{$s->{roles}}) {
-           Tr;
-            td class => 'tc1', mt '_credit_'.$r->{role};
-            td class => 'tc2'; a href => "/v$r->{vid}", title => $r->{t_original}, $r->{title}; end;
-            td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
-            td class => 'tc4';
-             lit '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
-             lit $r->{note};
-            end;
-           end;
-         }
+   div class => 'staffroles';
+    if (@{$s->{roles}}) {
+      h2 mt '_staff_credits';
+      table class => 'stripe';
+       thead;
+        Tr;
+         td class => 'tc1', mt '_staff_col_role';
+         td class => 'tc2', mt '_staff_col_title';
+         td class => 'tc3', mt '_staff_col_released';
+         td class => 'tc4', mt '_staff_col_note';
         end;
        end;
-     }
-     if (@{$s->{cast}}) {
-       table class => 'stripe';
-        thead;
-         Tr;
-          td class => 'tc1', mt '_staff_col_cast';
-          td class => 'tc2', mt '_staff_col_title';
-          td class => 'tc3', mt '_staff_col_released';
-          td class => 'tc4', mt '_staff_col_note';
-         end;
-        end;
-        tbody;
-         foreach my $r (@{$s->{cast}}) {
-           Tr;
-            td class => 'tc1'; a href => "/c$r->{cid}", $r->{c_name}; end;
-            td class => 'tc2'; a href => "/v$r->{vid}", title => $r->{t_original}, $r->{title}; end;
-            td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
-            td class => 'tc4';
-             lit '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
-             lit $r->{note};
-            end;
+       tbody;
+        foreach my $r (@{$s->{roles}}) {
+          Tr;
+           td class => 'tc1', mt '_credit_'.$r->{role};
+           td class => 'tc2'; a href => "/v$r->{vid}", title => $r->{t_original}, $r->{title}; end;
+           td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
+           td class => 'tc4';
+            txt '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
+            txt $r->{note};
            end;
-         }
+          end;
+        }
+       end;
+      end;
+      br;
+    }
+    if (@{$s->{cast}}) {
+      h2 mt '_staff_voiced';
+      table class => 'stripe';
+       thead;
+        Tr;
+         td class => 'tc1', mt '_staff_col_cast';
+         td class => 'tc2', mt '_staff_col_title';
+         td class => 'tc3', mt '_staff_col_released';
+         td class => 'tc4', mt '_staff_col_note';
         end;
        end;
-     }
-     end;
-   }
-  clearfloat;
+       tbody;
+        foreach my $r (@{$s->{cast}}) {
+          Tr;
+           td class => 'tc1'; a href => "/c$r->{cid}", title => $r->{c_original}, $r->{c_name}; end;
+           td class => 'tc2'; a href => "/v$r->{vid}", title => $r->{t_original}, $r->{title}; end;
+           td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
+           td class => 'tc4';
+            txt '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
+            txt $r->{note};
+           end;
+          end;
+        }
+       end;
+      end;
+    }
+   end;
+   clearfloat;
   end;
 
   $self->htmlFooter;
@@ -222,7 +223,7 @@ sub edit {
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('s', $s, 'edit') if $s;
   $self->htmlEditMessage('s', $s, $title);
-  $self->htmlForm({ frm => $frm, action => $s ? "/s$sid/edit" : '/s/new', editsum => 1, upload => 1 },
+  $self->htmlForm({ frm => $frm, action => $s ? "/s$sid/edit" : '/s/new', editsum => 1 },
   staffe_geninfo => [ mt('_staffe_form_generalinfo'),
     [ hidden => short => 'aid' ],
     [ input  => name => mt('_staffe_form_name'), short => 'name' ],
@@ -312,8 +313,8 @@ sub list {
         for ($perlist*$c..($perlist*($c+1))-1) {
           li;
             my $gender = $list->[$_]{gender};
-            cssicon "gen $gender", mt "_gender_$gender" if $gender ne 'unknown';
-#            cssicon 'lang '.$list->[$_]{lang}, mt "_lang_$list->[$_]{lang}";
+#            cssicon "gen $gender", mt "_gender_$gender" if $gender ne 'unknown';
+            cssicon 'lang '.$list->[$_]{lang}, mt "_lang_$list->[$_]{lang}";
             a href => "/s$list->[$_]{id}",
               title => $list->[$_]{original}, $list->[$_]{name};
           end;

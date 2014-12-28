@@ -76,6 +76,7 @@ sub dbStaffGet {
           JOIN vn_rev vr ON vr.id = vs.vid
           JOIN vn v ON v.latest = vr.id
           JOIN chars_rev cr ON cr.cid = vs.cid
+          JOIN chars c ON c.latest = cr.id
           JOIN staff_alias sa ON vs.aid = sa.id
           WHERE sa.rid IN(!l)
           ORDER BY v.c_released ASC, vr.title ASC|, [ keys %r ]

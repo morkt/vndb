@@ -1099,8 +1099,9 @@ sub _chars {
 
 sub _staff {
   my ($self, $v) = @_;
-  div class => 'mainbox';
-   if(@{$v->{credits}}) {
+  if(@{$v->{credits}}) {
+    div class => 'mainbox staff';
+     h1 mt '_vnpage_staff';
      my $has_notes = grep { $_->{note} } @{$v->{credits}};
      table class => 'stripe';
       thead;
@@ -1122,9 +1123,11 @@ sub _staff {
         $last_role = $s->{role};
       }
      end 'table';
-     br;
-   }
-   if(@{$v->{seiyuu}}) {
+    end;
+  }
+  if(@{$v->{seiyuu}}) {
+    div class => 'mainbox staff cast';
+     h1 mt '_vnpage_cast';
      my $has_notes  = grep { $_->{note} } @{$v->{seiyuu}};
      table class => 'stripe';
       thead;
@@ -1146,8 +1149,8 @@ sub _staff {
         end;
       }
      end 'table';
-   }
-  end;
+    end;
+  }
 }
 
 

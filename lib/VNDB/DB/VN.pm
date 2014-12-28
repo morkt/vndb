@@ -7,7 +7,7 @@ use Exporter 'import';
 use VNDB::Func 'gtintype', 'normalize_query';
 use Encode 'decode_utf8';
 
-our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNHasChar dbVNHasStaff|;
+our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNHasChar dbVNHasStaff dbVNImportSeiyuu|;
 
 
 # Options: id, rev, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
@@ -339,6 +339,21 @@ sub dbVNHasStaff {
   return $self->dbRow(
     'SELECT 1 AS exists FROM vn_staff vs FULL OUTER JOIN vn_seiyuu vsy ON vs.vid = vsy.vid JOIN vn v ON v.latest = vs.vid OR v.latest = vsy.vid WHERE v.id = ?', $vid
   )->{exists};
+}
+
+
+# returns seiyuus that voice characters referenced by $cids in VNs other than $vid
+sub dbVNImportSeiyuu {
+  my($self, $vid, $cids) = @_;
+  return $self->dbAll(q|
+    SELECT DISTINCT ON(cr.cid) cr.cid, cr.name AS c_name, s.id AS sid, sa.id AS aid, sa.name
+      FROM vn_seiyuu vs
+      JOIN vn v ON v.latest = vs.vid
+      JOIN chars c ON c.id = vs.cid
+      JOIN chars_rev cr ON cr.id = c.latest
+      JOIN staff_alias sa ON sa.id = vs.aid
+      JOIN staff s ON sa.rid = s.latest
+      WHERE vs.cid IN(!l) AND v.id <> ?|, $cids, $vid);
 }
 
 

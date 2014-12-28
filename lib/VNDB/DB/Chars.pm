@@ -111,12 +111,11 @@ sub dbCharGet {
 
     if($o{what} =~ /seiyuu/) {
       push @{$r{ delete $_->{cid} }{seiyuu}}, $_ for (@{$self->dbAll(q|
-        SELECT cr.id AS cid, sr.sid, sa.name, sa.original, vs.note, v.id AS vid, vr.title AS vntitle
+        SELECT cr.id AS cid, s.id AS sid, sa.name, sa.original, vs.note, v.id AS vid, vr.title AS vntitle
           FROM vn_seiyuu vs
           JOIN chars_rev cr ON cr.cid = vs.cid
           JOIN staff_alias sa ON sa.id = vs.aid
-          JOIN staff_rev sr ON sr.id = sa.rid
-          JOIN staff s ON sr.id = s.latest
+          JOIN staff s ON sa.rid = s.latest
           JOIN vn_rev vr ON vr.id = vs.vid
           JOIN vn v ON v.latest = vs.vid
           !W
