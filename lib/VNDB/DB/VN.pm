@@ -146,6 +146,7 @@ sub dbVNGet {
     my %r = map {
       $r->[$_]{anime} = [];
       $r->[$_]{credits} = [];
+      $r->[$_]{seiyuu} = [];
       $r->[$_]{relations} = [];
       $r->[$_]{screenshots} = [];
       ($r->[$_]{cid}, $_)
@@ -153,13 +154,27 @@ sub dbVNGet {
 
     if($o{what} =~ /credits/) {
       push(@{$r->[$r{ delete $_->{vid} }]{credits}}, $_) for (@{$self->dbAll(q|
-        SELECT vs.vid, s.id, vs.aid, sa.name, sa.original, sr.gender, sr.lang, sr.id AS cid, vs.role, vs.note
+        SELECT vs.vid, s.id, vs.aid, sa.name, sa.original, sr.gender, sr.lang, vs.role, vs.note
           FROM vn_staff vs
           JOIN staff_alias sa ON vs.aid = sa.id
           JOIN staff_rev sr ON sr.id = sa.rid
           JOIN staff s ON sr.id = s.latest
           WHERE vs.vid IN(!l)
           ORDER BY vs.role ASC, sa.name ASC|,
+        [ keys %r ]
+      )});
+      push(@{$r->[$r{ delete $_->{vid} }]{seiyuu}}, $_) for (@{$self->dbAll(q|
+        SELECT vs.vid, s.id, vs.aid, sa.name, sa.original, sr.gender, sr.lang, cr.cid, cr.name AS cname, vs.note
+          FROM vn_seiyuu vs
+          JOIN vn_rev vr ON vr.id = vs.vid
+          JOIN staff_alias sa ON vs.aid = sa.id
+          JOIN staff_rev sr ON sr.id = sa.rid
+          JOIN staff s ON sr.id = s.latest
+          JOIN chars c ON c.id = vs.cid
+          JOIN chars_rev cr ON cr.id = c.latest
+          JOIN chars_vns cv ON cv.cid = cr.id AND cv.vid = vr.vid
+          WHERE vs.vid IN(!l)
+          ORDER BY cv.role, cr.name|,
         [ keys %r ]
       )});
     }
@@ -246,6 +261,13 @@ sub dbVNRevisionInsert {
     my @val = map @{$_}[0..2], @{$o->{credits}};
     $self->dbExec("INSERT INTO edit_vn_staff (aid, role, note) VALUES $q", @val) if @val;
   }
+
+  if($o->{seiyuu}) {
+    $self->dbExec('DELETE FROM edit_vn_seiyuu');
+    my $q = join ',', ('(?, ?, ?)') x @{$o->{seiyuu}};
+    my @val = map @{$_}[0..2], @{$o->{seiyuu}};
+    $self->dbExec("INSERT INTO edit_vn_seiyuu (aid, cid, note) VALUES $q", @val) if @val;
+  }
 }
 
 
@@ -315,7 +337,7 @@ sub dbVNHasChar {
 sub dbVNHasStaff {
   my($self, $vid) = @_;
   return $self->dbRow(
-    'SELECT 1 AS exists FROM vn v JOIN vn_staff vs ON v.latest = vs.vid WHERE v.id = ?', $vid
+    'SELECT 1 AS exists FROM vn_staff vs FULL OUTER JOIN vn_seiyuu vsy ON vs.vid = vsy.vid JOIN vn v ON v.latest = vs.vid OR v.latest = vsy.vid WHERE v.id = ?', $vid
   )->{exists};
 }
 

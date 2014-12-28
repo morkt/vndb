@@ -256,6 +256,7 @@ $$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION edit_vn_init(cid integer) RETURNS void AS $$
+#variable_conflict use_variable
 BEGIN
   -- create tables, based on existing tables (so that the column types are always synchronised)
   BEGIN
@@ -271,8 +272,10 @@ BEGIN
     ALTER TABLE edit_vn_screenshots DROP COLUMN vid;
     CREATE TEMPORARY TABLE edit_vn_staff (LIKE vn_staff INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
     ALTER TABLE edit_vn_staff DROP COLUMN vid;
+    CREATE TEMPORARY TABLE edit_vn_seiyuu (LIKE vn_seiyuu INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE edit_vn_seiyuu DROP COLUMN vid;
   EXCEPTION WHEN duplicate_table THEN
-    TRUNCATE edit_vn, edit_vn_anime, edit_vn_relations, edit_vn_screenshots, edit_vn_staff;
+    TRUNCATE edit_vn, edit_vn_anime, edit_vn_relations, edit_vn_screenshots, edit_vn_staff, edit_vn_seiyuu;
   END;
   PERFORM edit_revtable('v', cid);
   -- new VN, load defaults
@@ -285,6 +288,7 @@ BEGIN
     INSERT INTO edit_vn_relations SELECT vid2, relation, official FROM vn_relations WHERE vid1 = cid;
     INSERT INTO edit_vn_screenshots SELECT scr, nsfw, rid FROM vn_screenshots WHERE vid = cid;
     INSERT INTO edit_vn_staff SELECT aid, role, note FROM vn_staff WHERE vid = cid;
+    INSERT INTO edit_vn_seiyuu SELECT aid, vs.cid, note FROM vn_seiyuu vs WHERE vid = cid;
   END IF;
 END;
 $$ LANGUAGE plpgsql;
@@ -304,6 +308,7 @@ BEGIN
   INSERT INTO vn_relations SELECT r.cid, vid, relation, official FROM edit_vn_relations;
   INSERT INTO vn_screenshots SELECT r.cid, scr, nsfw, rid FROM edit_vn_screenshots;
   INSERT INTO vn_staff SELECT r.cid, aid, role, note FROM edit_vn_staff;
+  INSERT INTO vn_seiyuu SELECT r.cid, aid, cid, note FROM edit_vn_seiyuu;
   UPDATE vn SET latest = r.cid WHERE id = r.iid;
   RETURN r;
 END;

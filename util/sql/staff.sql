@@ -37,12 +37,12 @@ CREATE TABLE vn_staff (
     PRIMARY KEY (vid, aid, role)
 );
 
-CREATE TABLE chars_seiyuu (
-    cid         integer NOT NULL, -- chars_rev reference
-    vid         integer NOT NULL, -- vn reference
+CREATE TABLE vn_seiyuu (
+    vid         integer NOT NULL, -- vn_rev reference
     aid         integer NOT NULL, -- staff_alias reference
+    cid         integer NOT NULL, -- chars reference
     note        varchar(250) NOT NULL DEFAULT '',
-    PRIMARY KEY (cid, vid, aid)
+    PRIMARY KEY (vid, aid, cid)
 );
 
 ALTER TABLE staff               ADD FOREIGN KEY (latest)    REFERENCES staff_rev     (id) DEFERRABLE INITIALLY DEFERRED;
@@ -51,10 +51,8 @@ ALTER TABLE staff_rev           ADD FOREIGN KEY (id)        REFERENCES changes  
 ALTER TABLE staff_rev           ADD FOREIGN KEY (sid)       REFERENCES staff         (id);
 ALTER TABLE staff_rev           ADD FOREIGN KEY (aid,id)    REFERENCES staff_alias   (id,rid);
 ALTER TABLE vn_staff            ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
-ALTER TABLE chars_seiyuu        ADD FOREIGN KEY (cid)       REFERENCES chars_rev     (id);
-ALTER TABLE chars_seiyuu        ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
+ALTER TABLE vn_seiyuu           ADD FOREIGN KEY (cid)       REFERENCES chars         (id);
+ALTER TABLE vn_seiyuu           ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
 
-CREATE INDEX chars_seiyuu_pkey  ON chars_seiyuu (cid, vid);
-CREATE INDEX chars_seiyuu_aid   ON chars_seiyuu (aid);
 CREATE INDEX vn_staff_vid       ON vn_staff (vid);
 CREATE INDEX vn_staff_aid       ON vn_staff (aid);

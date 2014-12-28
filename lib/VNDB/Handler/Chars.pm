@@ -61,9 +61,6 @@ sub page {
           $_->{rid}?sprintf('[<a href="/r%d">r%d</a>]', $_->{rid}, $_->{rid}):'',
           mt("_charrole_$_->{role}"), mt("_spoil_$_->{spoil}")), @{$_[0]};
       }],
-      [ seiyuu    => join => '<br />', split => sub {
-        map sprintf('<a href="/s%d">%s</a>', $_->{sid}, $_->{name}), @{$_[0]}
-      }],
     );
   }
 
@@ -233,8 +230,11 @@ sub charTable {
       Tr;
        td class => 'key', mt '_charp_voice';
        td;
-        for my $s (@{$r->{seiyuu}}) {
-          a href => "/s$s->{sid}", $s->{name}; br;
+        my $last_name = '';
+        for my $s (sort { $a->{name} cmp $b->{name} } @{$r->{seiyuu}}) {
+          next if $s->{name} eq $last_name;
+          a href => "/s$s->{sid}", title => $s->{original}||$s->{name}, $s->{name}; br;
+          $last_name = $s->{name};
         }
        end;
       end;

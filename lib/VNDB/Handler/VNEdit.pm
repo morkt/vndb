@@ -89,6 +89,7 @@ sub edit {
   my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai image img_nsfw ihid ilock|),
     credits => join('|||', map sprintf('%d-%s-%s', $_->{aid}, $_->{role}, $_->{note}), @{$v->{credits}}),
+    seiyuu => join('|||', map sprintf('%d-%d-%s', $_->{aid}, $_->{cid}, $_->{note}), @{$v->{seiyuu}}),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
     vnrelations => join('|||', map $_->{relation}.','.$_->{id}.','.($_->{official}?1:0).','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
     screenshots => join(' ', map sprintf('%d,%d,%d', $_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$v->{screenshots}}),
@@ -110,6 +111,7 @@ sub edit {
       { post => 'image',       required => 0, default => 0,  template => 'int' },
       { post => 'img_nsfw',    required => 0, default => 0 },
       { post => 'credits',     required => 0, default => '', maxlength => 5000 },
+      { post => 'seiyuu',      required => 0, default => '', maxlength => 5000 },
       { post => 'vnrelations', required => 0, default => '', maxlength => 5000 },
       { post => 'screenshots', required => 0, default => '', maxlength => 1000 },
       { post => 'editsum',     required => 0, maxlength => 5000 },
@@ -128,6 +130,7 @@ sub edit {
       my $relations = [ map { /^([a-z]+),([0-9]+),([01]),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3, $4 ] : () } split /\|\|\|/, $frm->{vnrelations} ];
       my $screenshots = [ map /^[0-9]+,[01],[0-9]+$/ ? [split /,/] : (), split / +/, $frm->{screenshots} ];
       my $credits = [ map { /^(\d+)-([^-]+)-(.*)$/ ? [ $1, $2, $3 ]: () } split /\|\|\|/, $frm->{credits} ];
+      my $seiyuu = [ map { /^(\d+)-(\d+)-(.*)$/ ? [ $1, $2, $3 ]: () } split /\|\|\|/, $frm->{seiyuu} ];
 
       $frm->{ihid} = $frm->{ihid}?1:0;
       $frm->{ilock} = $frm->{ilock}?1:0;
@@ -147,6 +150,14 @@ sub edit {
       }
       $frm->{credits} = join '|||', map sprintf('%d-%s-%s', @$_), @$checked_c;
 
+      my($checked_s, $last_s) = ([], []);
+      for my $s (sort { $a->[0] <=> $b->[0] || $a->[1] <=> $b->[1] } @$seiyuu) {
+        next if $last_s->[0] == $s->[0] && $last_s->[1] == $s->[1];
+        push @$checked_s, $s;
+        $last_s = $s;
+      }
+      $frm->{seiyuu} = join '|||', map sprintf('%d-%d-%s', @$_), @$checked_s;
+
       # weed out duplicate aliases
       my %alias;
       $frm->{alias} = join "\n", grep {
@@ -163,6 +174,7 @@ sub edit {
       my $nrev = $self->dbItemEdit(v => $vid ? $v->{cid} : undef,
         (map { $_ => $frm->{$_} } qw|title original image alias desc length l_wp l_encubed l_renai editsum img_nsfw ihid ilock|),
         credits => $checked_c,
+        seiyuu => $checked_s,
         anime => [ keys %$anime ],
         relations => $relations,
         screenshots => $screenshots,
@@ -227,6 +239,7 @@ sub _uploadimage {
 
 sub _form {
   my($self, $v, $frm, $r) = @_;
+  my $chars = $v && $self->dbCharGet(vid => $v->{id}, results => 50);
   $self->htmlForm({ frm => $frm, action => $v ? "/v$v->{id}/edit" : '/v/new', editsum => 1, upload => 1 },
   vn_geninfo => [ mt('_vnedit_geninfo'),
     [ input    => short => 'title',     name => mt '_vnedit_frm_title' ],
@@ -272,9 +285,13 @@ sub _form {
     end 'div';
   }]],
 
-  vn_staff => [ mt('_vnedit_credits'),
+  vn_staff => [ mt('_vnedit_staff'),
     [ hidden => short => 'credits' ],
     [ static => nolabel => 1, content => sub {
+      div class => 'warning';
+       lit mt '_vnedit_staff_msg';
+      end;
+      br;
       table; tbody id => 'credits_tbl';
        Tr id => 'credits_loading'; td colspan => '4', mt('_js_loading'); end;
       end; end;
@@ -285,6 +302,31 @@ sub _form {
        td colspan => 3, '';
       end; end;
   }]],
+
+  # Cast tab is only shown for VNs with some characters listed.
+  # There's no way to add voice actors in new VN edits since character list
+  # would be empty anyway.
+  $chars && @{$chars} ? (vn_cast => [ mt('_vnedit_cast'),
+    [ hidden => short => 'seiyuu' ],
+    [ static => nolabel => 1, content => sub {
+      table; tbody id => 'cast_tbl';
+       Tr id => 'cast_loading'; td colspan => '4', mt '_js_loading'; end;
+      end; end;
+      h2 mt '_vnedit_cast_add';
+      table; Tr;
+       td class => 'tc_char';
+        Select id =>'cast_chars';
+         option value => '', mt '_vnedit_cast_sel_char';
+         option value => $_->{id}, $_->{name} for @{$chars};
+        end;
+        txt ' '.mt '_vnedit_voiced_by';
+       end;
+       td class => 'tc_staff';
+        input id => 'cast_input', type => 'text', class => 'text';
+       end;
+       td colspan => 2, '';
+      end; end;
+    }]]) : (),
 
   vn_rel => [ mt('_vnedit_rel'),
     [ hidden   => short => 'vnrelations' ],

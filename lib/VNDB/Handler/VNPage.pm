@@ -518,7 +518,7 @@ sub page {
 
   my $v = $self->dbVNGet(
     id => $vid,
-    what => 'extended anime relations screenshots rating ranking'.($rev ? ' credits changes' : ''),
+    what => 'extended anime relations screenshots rating ranking'.($staff || $rev ? ' credits' : '').($rev ? ' changes' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
   return $self->resNotFound if !$v->{id};
@@ -674,7 +674,7 @@ sub page {
   if($char) {
     _chars($self, $haschar, $v);
   } elsif ($staff) {
-    _staff($self, $hasstaff, $v);
+    _staff($self, $v) if $hasstaff;
   } else {
     _releases($self, $v, $r);
     _stats($self, $v);
@@ -711,6 +711,14 @@ sub _revision {
     [ credits     => join => '<br />', split => sub {
       my @r = map sprintf('<a href="/s%d" title="%s">%s</a> [%s]%s',
         $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape($_->{name}), mt("_credit_$_->{role}"), $_->{note} ? ' ['.shorten($_->{note}, 20).']' : ''), sort { $a->{id} <=> $b->{id} } @{$_[0]};
+      return @r ? @r : (mt '_revision_empty');
+    }],
+    [ seiyuu      => join => '<br />', split => sub {
+      my @r = map sprintf('<a href="/s%d" title="%s">%s</a> %s%s',
+          $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape($_->{name}),
+          mt('_staff_as', xml_escape($_->{cname})),
+          $_->{note} ? ' ['.shorten($_->{note}, 20).']' : ''),
+        sort { $a->{id} <=> $b->{id} } @{$_[0]};
       return @r ? @r : (mt '_revision_empty');
     }],
     [ relations   => join => '<br />', split => sub {
@@ -1058,7 +1066,7 @@ sub _stats {
 
 sub _chars {
   my($self, $has, $v) = @_;
-  my $l = $has && $self->dbCharGet(vid => $v->{id}, what => "extended vns($v->{id}) traits", results => 100);
+  my $l = $has && $self->dbCharGet(vid => $v->{id}, what => "extended vns($v->{id}) seiyuu traits", results => 100);
   return if !$has;
   # TODO: spoiler handling + hide unimportant roles by default
   my %done;
@@ -1090,30 +1098,55 @@ sub _chars {
 
 
 sub _staff {
-  my ($self, $has, $v) = @_;
-  my $l = $has && $self->dbStaffGet(vid => $v->{id}, results => 100);
-  return if !$has;
+  my ($self, $v) = @_;
   div class => 'mainbox';
-   table class => 'stripe';
-    thead;
-     Tr;
-      td class => 'tc1', mt '_staff_col_role';
-      td class => 'tc2', mt '_staff_col_credit';
-      td class => 'tc3', mt '_staff_col_note';
-     end;
-    end;
-    my $last_role = '';
-    for my $s (@$l) {
-      Tr;
-       td class => 'tc1', $s->{role} ne $last_role ? mt '_credit_'.$s->{role} : '';
-       td class => 'tc2';
-        a href => "/s$s->{id}", title => $s->{original}||$s->{name}, $s->{name};
+   if(@{$v->{credits}}) {
+     my $has_notes = grep { $_->{note} } @{$v->{credits}};
+     table class => 'stripe';
+      thead;
+       Tr;
+        td class => 'tc1', mt '_staff_col_role';
+        td class => 'tc2', mt '_staff_col_credit';
+        td class => 'tc3', mt '_staff_col_note' if $has_notes;
        end;
-       td class => 'tc3', $s->{note};
       end;
-      $last_role = $s->{role};
-    }
-   end 'table';
+      my $last_role = '';
+      for my $s (@{$v->{credits}}) {
+        Tr;
+         td class => 'tc1', $s->{role} ne $last_role ? mt '_credit_'.$s->{role} : '';
+         td class => 'tc2';
+          a href => "/s$s->{id}", title => $s->{original}||$s->{name}, $s->{name};
+         end;
+         td class => 'tc3', $s->{note} if $has_notes;
+        end;
+        $last_role = $s->{role};
+      }
+     end 'table';
+     br;
+   }
+   if(@{$v->{seiyuu}}) {
+     my $has_notes  = grep { $_->{note} } @{$v->{seiyuu}};
+     table class => 'stripe';
+      thead;
+       Tr;
+        td class => 'tc1', mt '_staff_col_cast';
+        td class => 'tc2', mt '_staff_col_seiyuu';
+        td class => 'tc3', mt '_staff_col_note' if $has_notes;
+       end;
+      end;
+      for my $s (@{$v->{seiyuu}}) {
+        Tr;
+         td class => 'tc1';
+          a href => "/c$s->{cid}", $s->{cname};
+         end;
+         td class => 'tc2';
+          a href => "/s$s->{id}", title => $s->{original}||$s->{name}, $s->{name};
+         end;
+         td class => 'tc3', $s->{note} if $has_notes;
+        end;
+      }
+     end 'table';
+   }
   end;
 }
 

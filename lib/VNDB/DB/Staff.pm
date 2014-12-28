@@ -7,7 +7,7 @@ use Exporter 'import';
 
 our @EXPORT = qw|dbStaffGet dbStaffRevisionInsert|;
 
-# options: results, page, id, aid, vid, search, rev
+# options: results, page, id, aid, search, rev
 # what: extended changes roles aliases
 sub dbStaffGet {
   my $self = shift;
@@ -24,7 +24,6 @@ sub dbStaffGet {
     !$o{id} && !$o{rev} ? ( 's.hidden = FALSE' => 1 ) : (),
     $o{id}  ? ( ref $o{id}  ? ('s.id IN(!l)'  => [$o{id}])  : ('s.id = ?' => $o{id}) ) : (),
     $o{aid} ? ( ref $o{aid} ? ('sa.id IN(!l)' => [$o{aid}]) : ('sa.id = ?' => $o{aid}) ) : (),
-    $o{vid} ? ( 'vr.vid = ?' => $o{vid}) : (),
     $o{search} ?
       ( '(sa.name ILIKE ? OR sa.original ILIKE ?)', [ map '%%'.$o{search}.'%%', 1..2 ] ) : (),
     $o{char} ? ( 'LOWER(SUBSTR(sa.name, 1, 1)) = ?' => $o{char} ) : (),
@@ -38,25 +37,12 @@ sub dbStaffGet {
   push @join, 'JOIN staff_alias sa ON sa.rid = sr.id'.($o{id}?' AND sa.id = sr.aid':'');
   push @join, 'JOIN changes c ON c.id = sr.id' if $o{what} =~ /changes/ || $o{rev};
   push @join, 'JOIN users u ON u.id = c.requester' if $o{what} =~ /changes/;
-  push @join,
-    'JOIN vn_staff vs ON vs.aid = sa.id',
-    'JOIN vn_rev vr ON vs.vid = vr.id',
-    'JOIN vn v ON vr.id = v.latest' if $o{vid};
-# fetch both staff and seiyuu in one query
-#   push @join, q|
-#     LEFT JOIN vn_staff vs ON vs.aid = sa.id
-#     LEFT JOIN (chars_seiyuu cs JOIN chars c ON cs.cid = c.latest)
-#     ON cs.aid = sa.id
-#     JOIN (vn_rev vr JOIN vn v ON vr.id = v.latest)
-#     ON vs.vid = vr.id OR cs.vid = v.id
-#   | if $o{vid};
 
   my $select = 's.id, sa.id AS aid, sa.name, sa.original, sr.gender, sr.lang, sr.id AS cid';
   $select .= ', sr.desc, sr.l_wp, s.hidden, s.locked' if $o{what} =~ /extended/;
   $select .= q|, extract('epoch' from c.added) as added, c.requester, c.comments, s.latest, u.username, c.rev, c.ihid, c.ilock| if $o{what} =~ /changes/;
-  $select .= ', vs.role, vs.note' if $o{vid};
 
-  my $order = $o{vid} ? 'ORDER BY vs.role ASC, sa.name ASC' : 'ORDER BY sa.name ASC';
+  my $order = 'ORDER BY sa.name';
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
@@ -76,7 +62,7 @@ sub dbStaffGet {
     } @$r;
     if ($o{what} =~ /roles/) {
       push @{$r{ delete $_->{rid} }{roles}}, $_ for (@{$self->dbAll(q|
-        SELECT sa.rid, vr.vid, sa.name, v.c_released, vr.title, vr.original AS t_original, vs.role, vs.note
+        SELECT sa.rid, vr.vid, sa.name, sa.original, v.c_released, vr.title, vr.original AS t_original, vs.role, vs.note
           FROM vn_staff vs
           JOIN vn_rev vr ON vr.id = vs.vid
           JOIN vn v ON v.latest = vr.id
@@ -85,12 +71,12 @@ sub dbStaffGet {
           ORDER BY v.c_released ASC, vr.title ASC, vs.role ASC|, [ keys %r ]
       )});
       push @{$r{ delete $_->{rid} }{cast}}, $_ for (@{$self->dbAll(q|
-        SELECT sa.rid, vr.vid, sa.name, v.c_released, vr.title, vr.original AS t_original, cr.cid, cr.name AS c_name, cs.note
-          FROM chars_seiyuu cs
-          JOIN chars_rev cr ON cr.id = cs.cid
-          JOIN vn v ON v.id = cs.vid
-          JOIN vn_rev vr ON v.latest = vr.id
-          JOIN staff_alias sa ON cs.aid = sa.id
+        SELECT sa.rid, vr.vid, sa.name, sa.original, v.c_released, vr.title, vr.original AS t_original, cr.cid, cr.name AS c_name, cr.original AS c_original, vs.note
+          FROM vn_seiyuu vs
+          JOIN vn_rev vr ON vr.id = vs.vid
+          JOIN vn v ON v.latest = vr.id
+          JOIN chars_rev cr ON cr.cid = vs.cid
+          JOIN staff_alias sa ON vs.aid = sa.id
           WHERE sa.rid IN(!l)
           ORDER BY v.c_released ASC, vr.title ASC|, [ keys %r ]
       )});

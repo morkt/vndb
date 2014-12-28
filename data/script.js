@@ -17,6 +17,7 @@
  *  tvs  -> VN page tag spoilers
  *  vnr  -> VN relation editor
  *  vns  -> VN staff
+ *  vnc  -> VN cast
  *  sal  -> Staff aliases editor
  */
 
@@ -2129,7 +2130,15 @@ if(byId('jt_box_staffe_aliases'))
 
 
 
-/*  S T A F F   < - >   V N   L I N K I N G  (/v+/staff/edit) */
+/*  S T A F F   < - >   V N   L I N K I N G  (/v+/edit#vn_staff) */
+
+function onSubmit(form, handler) {
+  var prev_handler = form.onsubmit;
+  form.onsubmit = function(e) {
+    if (prev_handler) prev_handler(e);
+    handler(e);
+  }
+}
 
 function vnsLoad() {
   var credits = byId('credits').value.split('|||');
@@ -2156,7 +2165,7 @@ function vnsLoad() {
   else
     vnsEmpty();
 
-  byName(byId('maincontent'), 'form')[0].onsubmit = vnsSerialize;
+  onSubmit(byName(byId('maincontent'), 'form')[0], vnsSerialize);
 
   // dropdown search
   dsInit(byId('credit_input'), '/xml/staff.xml?q=', function(item, tr) {
@@ -2217,10 +2226,12 @@ function vnsSerialize() {
   var l = byName(byId('credits_tbl'), 'tr');
   var c = [];
   for (var i = 0; i < l.length; i++) {
-    var aid = byName(byName(l[i], 'td')[0], 'input')[0].value;
+    if(l[i].id == 'credits_tr_none')
+      continue;
+    var aid  = byName(byClass(l[i], 'tc_name')[0], 'input')[0];
     var role = byName(byClass(l[i], 'tc_role')[0], 'select')[0];
     var note = byName(byClass(l[i], 'tc_note')[0], 'input')[0];
-    c.push (aid+'-'+role.options[role.selectedIndex].value+'-'+note.value);
+    c.push (aid.value+'-'+role.value+'-'+note.value);
   }
   byId('credits').value = c.join('|||');
   return true;
@@ -2243,6 +2254,128 @@ function vnsFormAdd(item) {
 
 if(byId('jt_box_vn_staff'))
   vnsLoad();
+
+
+
+
+/*  V N  C H A R A C T E R S  C A S T (/v+/edit#vn_cast) */
+
+function vncLoad() {
+  var cast = byId('seiyuu').value.split('|||');
+  var s = {}; // seiyuu -> { aid: [ char, note ], .. }
+  var q = []; // list of a=X parameters
+  for (var i = 0; i < cast.length && cast[i].length > 1; i++) {
+    var c = cast[i].split('-', 3); // aid, char, note
+    if (!s[c[0]])
+      q.push('a='+c[0]);
+    s[c[0]] = [ c[1], c[2] ];
+  }
+  if (q.length > 0)
+    ajax('/xml/staff.xml?'+q.join(';'), function(hs) {
+      var seiyuu = hs.responseXML.getElementsByTagName('item');
+      for (var i = 0; i < seiyuu.length; i++) {
+        var aid = seiyuu[i].getAttribute('aid');
+        if (s[aid])
+          vncAdd(seiyuu[i], s[aid][0], s[aid][1]);
+      }
+      vncEmpty();
+    }, 1);
+  else
+    vncEmpty();
+
+  onSubmit(byName(byId('maincontent'), 'form')[0], vncSerialize);
+
+  // dropdown search
+  dsInit(byId('cast_input'), '/xml/staff.xml?q=', function(item, tr) {
+    tr.appendChild(tag('td', { style: 'text-align: right; padding-right: 5px'}, 's'+item.getAttribute('id')));
+    tr.appendChild(tag('td', item.firstChild.nodeValue));
+  }, vncFormAdd);
+}
+
+function vncAdd(seiyuu, chr, note) {
+  var sid = seiyuu.getAttribute('id');
+  var aid = seiyuu.getAttribute('aid');
+  var tbl = byId('cast_tbl');
+
+  var csel = byId('cast_chars').cloneNode(true);
+  csel.removeAttribute('id');
+  csel.value = chr;
+  var note = tag('input', {type:'text', 'class':'text'});
+
+  tbl.appendChild(tag('tr', {id:'vnc_a'+aid},
+    tag('td', {'class':'tc_char'}, csel),
+    tag('td', {'class':'tc_name'},
+      tag('input', {type:'hidden', value:aid}),
+      tag('a', {href:'/s'+sid}, seiyuu.firstChild.nodeValue)),
+    tag('td', {'class':'tc_note'}, note),
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:vncDel}, mt('_js_remove')))
+  ));
+  vncEmpty();
+  vncSerialize();
+}
+
+function vncFormAdd(item) {
+  var chr = byId('cast_chars').value;
+  if (chr)
+    vncAdd(item, chr, '');
+  else
+    alert(mt('_vnedit_cast_nochar'));
+  return '';
+}
+
+function vncEmpty() {
+  var x = byId('cast_loading');
+  var tbody = byId('cast_tbl');
+  var tbl = tbody.parentNode;
+  var thead = byName(tbl, 'thead');
+  if(x)
+    tbody.removeChild(x);
+  if(byName(tbody, 'tr').length < 1) {
+    tbody.appendChild(tag('tr', {id:'cast_tr_none'},
+      tag('td', {colspan:4}, mt('_vnstaffe_none'))));
+    if (thead.length)
+      tbl.removeChild(thead[0]);
+  } else {
+    if(byId('cast_tr_none'))
+      tbody.removeChild(byId('cast_tr_none'));
+    if (thead.length < 1) {
+      thead = tag('thead', tag('tr',
+        tag('td', {'class':'tc_char'}, mt('_vnedit_cast_char')),
+        tag('td', {'class':'tc_name'}, mt('_vnedit_cast_seiyuu')),
+        tag('td', {'class':'tc_note'}, mt('_vnedit_cast_note')),
+        tag('td', '')));
+      tbl.insertBefore(thead, tbody);
+    }
+  }
+}
+
+function vncSerialize() {
+  var l = byName(byId('cast_tbl'), 'tr');
+  var c = [];
+  for (var i = 0; i < l.length; i++) {
+    if(l[i].id == 'cast_tr_none')
+      continue;
+    var aid  = byName(byClass(l[i], 'tc_name')[0], 'input')[0];
+    var role = byName(byClass(l[i], 'tc_char')[0], 'select')[0];
+    var note = byName(byClass(l[i], 'tc_note')[0], 'input')[0];
+    c.push (aid.value+'-'+role.value+'-'+note.value);
+  }
+  byId('seiyuu').value = c.join('|||');
+  return true;
+}
+
+function vncDel() {
+  var tr = this;
+  while (tr.nodeName.toLowerCase() != 'tr')
+    tr = tr.parentNode;
+  byId('cast_tbl').removeChild(tr);
+  vncEmpty();
+  vncSerialize();
+  return false;
+}
+
+if(byId('jt_box_vn_cast'))
+  vncLoad();
 
 
 

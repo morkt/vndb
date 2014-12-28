@@ -5441,6 +5441,12 @@ en : Credit
 :_staff_col_note
 en : Note
 
+:_staff_col_cast
+en : Cast
+
+:_staff_col_seiyuu
+en : Seiyuu
+
 # Add/edit staff
 
 :_staffe_title_edit
@@ -13135,8 +13141,35 @@ tr : Eğer resim çıplaklık veya vahşet içeriyorsa, ya da iş ortamında gö
 uk : Будь ласка, відміть цю опцію, якщо зображення містить оголення, кров або тим чи іншим способом неприйнятне для загального кола користувачів.
 it : Scegli questa opzione se l'immagine contiene nudi, gore o è generalmente non adatta ad ambienti di lavoro.
 
-:_vnedit_credits
-en : Credits
+:_vnedit_staff
+en : Staff
+
+:_vnedit_staff_msg
+en : This message is a placeholder for concise guidelines regarding adding VN staff.
+
+:_vnedit_cast
+en : Cast
+
+:_vnedit_cast_char
+en : Character
+
+:_vnedit_cast_sel_char
+en : Select character
+
+:_vnedit_cast_nochar
+en : Select character first please.
+
+:_vnedit_cast_seiyuu
+en : Seiyuu
+
+:_vnedit_cast_note
+en : Note
+
+:_vnedit_voiced_by
+en : voiced by
+
+:_vnedit_cast_add
+en : Add cast
 
 :_vnedit_rel
 en : Relations
@@ -13752,6 +13785,9 @@ it : Relazioni
 
 :_revfield_v_credits
 en : Credits
+
+:_revfield_v_seiyuu
+en : Seiyuu
 
 :_revfield_v_anime
 en : Anime

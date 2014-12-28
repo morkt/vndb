@@ -104,44 +104,57 @@ sub page {
 
    if (@{$s->{roles}} || @{$s->{cast}}) {
      div class => 'staffroles';
-      table class => 'stripe';
-       thead;
-        Tr;
-         td class => 'tc1', mt '_staff_col_role';
-         td class => 'tc2', mt '_staff_col_title';
-         td class => 'tc3', mt '_staff_col_released';
-         td class => 'tc4', mt '_staff_col_note';
+     if (@{$s->{roles}}) {
+       table class => 'stripe';
+        thead;
+         Tr;
+          td class => 'tc1', mt '_staff_col_role';
+          td class => 'tc2', mt '_staff_col_title';
+          td class => 'tc3', mt '_staff_col_released';
+          td class => 'tc4', mt '_staff_col_note';
+         end;
+        end;
+        tbody;
+         foreach my $r (@{$s->{roles}}) {
+           Tr;
+            td class => 'tc1', mt '_credit_'.$r->{role};
+            td class => 'tc2'; a href => "/v$r->{vid}", title => $r->{t_original}, $r->{title}; end;
+            td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
+            td class => 'tc4';
+             lit '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
+             lit $r->{note};
+            end;
+           end;
+         }
         end;
        end;
-       foreach my $r (@{$s->{roles}}) {
+     }
+     if (@{$s->{cast}}) {
+       table class => 'stripe';
+        thead;
          Tr;
-          td class => 'tc1', mt '_credit_'.$r->{role};
-          td class => 'tc2'; a href => "/v$r->{vid}", title => $r->{t_original}, $r->{title}; end;
-          td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
-          td class => 'tc4';
-           lit '('.mt('_staff_as').$r->{name}.') ' if $r->{name} ne $s->{name};
-           lit $r->{note};
-          end;
+          td class => 'tc1', mt '_staff_col_cast';
+          td class => 'tc2', mt '_staff_col_title';
+          td class => 'tc3', mt '_staff_col_released';
+          td class => 'tc4', mt '_staff_col_note';
          end;
-       }
-       if (@{$s->{cast}}) {
-         Tr;
-          td class => 'tc1', colspan => 4; b mt '_staff_col_cast'; end;
-         end;
-       }
-       foreach my $r (@{$s->{cast}}) {
-         Tr;
-          td class => 'tc1'; a href => "/c$r->{cid}", $r->{c_name}; end;
-          td class => 'tc2'; a href => "/v$r->{vid}", title => $r->{t_original}, $r->{title}; end;
-          td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
-          td class => 'tc4';
-           lit '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
-           lit $r->{note};
-          end;
-         end;
-       }
-      end 'table';
-     end
+        end;
+        tbody;
+         foreach my $r (@{$s->{cast}}) {
+           Tr;
+            td class => 'tc1'; a href => "/c$r->{cid}", $r->{c_name}; end;
+            td class => 'tc2'; a href => "/v$r->{vid}", title => $r->{t_original}, $r->{title}; end;
+            td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
+            td class => 'tc4';
+             lit '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
+             lit $r->{note};
+            end;
+           end;
+         }
+        end;
+       end;
+     }
+     end;
    }
   clearfloat;
   end;
