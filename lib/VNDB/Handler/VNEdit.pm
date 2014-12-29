@@ -88,8 +88,8 @@ sub edit {
 
   my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai image img_nsfw ihid ilock|),
-    credits => join('|||', map sprintf('%d-%s-%s', $_->{aid}, $_->{role}, $_->{note}), @{$v->{credits}}),
-    seiyuu => join('|||', map sprintf('%d-%d-%s', $_->{aid}, $_->{cid}, $_->{note}), @{$v->{seiyuu}}),
+    credits => join('|||', map join('-', $_->{aid}, $_->{role}, $_->{note}), @{$v->{credits}}),
+    seiyuu => join('|||', map join('-', $_->{aid}, $_->{cid}, $_->{note}), @{$v->{seiyuu}}),
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
     vnrelations => join('|||', map $_->{relation}.','.$_->{id}.','.($_->{official}?1:0).','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
     screenshots => join(' ', map sprintf('%d,%d,%d', $_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$v->{screenshots}}),
@@ -239,7 +239,8 @@ sub _uploadimage {
 
 sub _form {
   my($self, $v, $frm, $r) = @_;
-  my $chars = $v && $self->dbCharGet(vid => $v->{id}, results => 50);
+  my $chars = $v ? $self->dbCharGet(vid => $v->{id}, results => 50) : [];
+  my $import = @$chars ? $self->dbVNImportSeiyuu($v->{id}, [ map $_->{id}, @$chars ]) : [];
   $self->htmlForm({ frm => $frm, action => $v ? "/v$v->{id}/edit" : '/v/new', editsum => 1, upload => 1 },
   vn_geninfo => [ mt('_vnedit_geninfo'),
     [ input    => short => 'title',     name => mt '_vnedit_frm_title' ],
@@ -306,20 +307,13 @@ sub _form {
   # Cast tab is only shown for VNs with some characters listed.
   # There's no way to add voice actors in new VN edits since character list
   # would be empty anyway.
-  $chars && @{$chars} ? (vn_cast => [ mt('_vnedit_cast'),
+  @{$chars} ? (vn_cast => [ mt('_vnedit_cast'),
     [ hidden => short => 'seiyuu' ],
+    [ hidden => short => 'castimpdata', value => do {
+        join '|||', map join('-', $_->{cid}, $_->{sid}, $_->{aid}, $_->{name}), @$import;
+    }],
     [ static => nolabel => 1, content => sub {
-      my $import = $self->dbVNImportSeiyuu($v->{id}, [ map $_->{id}, @$chars ]);
       if (@$import) {
-        script type => 'text/javascript';
-         lit 'var vncImportData = [';
-         lit join ',', map {
-           my $name = $_->{name};
-           $name =~ s/["\\]/\\$&/g; # escape quotes in names
-           sprintf('{cid:%d,sid:%d,aid:%d,name:"%s"}', $_->{cid}, $_->{sid}, $_->{aid}, $name);
-         } @$import;
-         lit '];';
-        end;
         div id => 'cast_import';
          a href => '#', title => mt('_vnedit_cast_import_title'), mt '_vnedit_cast_import';
         end;
