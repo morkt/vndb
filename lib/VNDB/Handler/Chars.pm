@@ -226,14 +226,16 @@ sub charTable {
       end;
     }
 
-    if (@{$r->{seiyuu}}) {
+    if(@{$r->{seiyuu}}) {
       Tr;
        td class => 'key', mt '_charp_voice';
        td;
         my $last_name = '';
         for my $s (sort { $a->{name} cmp $b->{name} } @{$r->{seiyuu}}) {
           next if $s->{name} eq $last_name;
-          a href => "/s$s->{sid}", title => $s->{original}||$s->{name}, $s->{name}; br;
+          a href => "/s$s->{sid}", title => $s->{original}||$s->{name}, $s->{name};
+          txt ' ('.$s->{note}.')' if $s->{note};
+          br;
           $last_name = $s->{name};
         }
        end;

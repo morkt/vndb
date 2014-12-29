@@ -60,10 +60,6 @@ sub page {
     # info table
     table class => 'stripe';
 
-#     Tr;
-#      td class => 'key', mt '_staff_gender';
-#      td mt "_gender_$s->{gender}";
-#     end;
      Tr;
       td class => 'key', mt '_staff_language';
       td mt "_lang_$s->{lang}";
@@ -93,38 +89,56 @@ sub page {
    end;
 
    # description
+   div class => 'staffdesc';
    if($s->{desc}) {
-     div class => 'staffdesc';
       h2 mt '_staff_bio';
       p;
        lit bb2html $s->{desc}, 0, 1;
       end;
-     end;
+      br;
    }
 
-   div class => 'staffroles';
     if (@{$s->{roles}}) {
       h2 mt '_staff_credits';
-      table class => 'stripe';
+      my $has_notes = grep { $_->{note} || $_->{name} ne $s->{name} } @{$s->{roles}};
+      table class => 'stripe staffroles';
        thead;
         Tr;
-         td class => 'tc1', mt '_staff_col_role';
          td class => 'tc2', mt '_staff_col_title';
          td class => 'tc3', mt '_staff_col_released';
-         td class => 'tc4', mt '_staff_col_note';
+         td class => 'tc1', mt '_staff_col_role';
+         td class => 'tc4', mt '_staff_col_note' if $has_notes;
         end;
        end;
        tbody;
-        foreach my $r (@{$s->{roles}}) {
+        my ($last_vid, $row_count);
+        for my $i (0..$#{$s->{roles}}) {
+          my $r = $s->{roles}->[$i];
+          if($r->{vid} != $last_vid) {
+            $row_count = 1;
+            for my $j (1+$i..$#{$s->{roles}}) {
+              last if $r->{vid} != $s->{roles}->[$j]->{vid};
+              ++$row_count;
+            }
+          }
           Tr;
+           if($last_vid != $r->{vid}) {
+             td class => 'tc2', $row_count > 1 ? (rowspan => $row_count) : ();
+               a href => "/v$r->{vid}", title => $r->{t_original}||$r->{title}, shorten $r->{title}, 100;
+             end;
+             td class => 'tc3', $row_count > 1 ? (rowspan => $row_count) : ();
+               lit $self->{l10n}->datestr($r->{c_released});
+             end;
+           }
            td class => 'tc1', mt '_credit_'.$r->{role};
-           td class => 'tc2'; a href => "/v$r->{vid}", title => $r->{t_original}, $r->{title}; end;
-           td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
-           td class => 'tc4';
-            txt '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
-            txt $r->{note};
-           end;
+           if($has_notes) {
+             td class => 'tc4';
+              txt '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
+              txt $r->{note};
+             end;
+           }
           end;
+          $last_vid = $r->{vid};
         }
        end;
       end;
@@ -132,25 +146,30 @@ sub page {
     }
     if (@{$s->{cast}}) {
       h2 mt '_staff_voiced';
-      table class => 'stripe';
+      my $has_notes = grep { $_->{note} || $_->{name} ne $s->{name} } @{$s->{cast}};
+      table class => 'stripe staffroles';
        thead;
         Tr;
-         td class => 'tc1', mt '_staff_col_cast';
          td class => 'tc2', mt '_staff_col_title';
          td class => 'tc3', mt '_staff_col_released';
-         td class => 'tc4', mt '_staff_col_note';
+         td class => 'tc1', mt '_staff_col_cast';
+         td class => 'tc4', mt '_staff_col_note' if $has_notes;
         end;
        end;
        tbody;
         foreach my $r (@{$s->{cast}}) {
           Tr;
-           td class => 'tc1'; a href => "/c$r->{cid}", title => $r->{c_original}, $r->{c_name}; end;
-           td class => 'tc2'; a href => "/v$r->{vid}", title => $r->{t_original}, $r->{title}; end;
-           td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
-           td class => 'tc4';
-            txt '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
-            txt $r->{note};
+           td class => 'tc2';
+            a href => "/v$r->{vid}", title => $r->{t_original}||$r->{title}, shorten $r->{title}, 100;
            end;
+           td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
+           td class => 'tc1'; a href => "/c$r->{cid}", title => $r->{c_original}, $r->{c_name}; end;
+           if($has_notes) {
+             td class => 'tc4';
+              txt '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
+              txt $r->{note};
+             end;
+           }
           end;
         }
        end;
@@ -199,7 +218,14 @@ sub edit {
     );
     push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
     my @aliases = map { /^(\d+),([^,]*),(.*)$/ ? [ $1, $2, $3 ]: () } split /\|\|\|/, $frm->{aliases};
-    if (!$frm->{_err}) {
+    for my $a (@aliases) {
+      # check for empty aliases
+      if($a->[1] =~ /^\s*$/) {
+        push @{$frm->{_err}}, ['alias_name', 'required'];
+        last;
+      }
+    }
+    if(!$frm->{_err}) {
       # parse and normalize
       $frm->{aliases}  = join('|||', map sprintf('%d,%s,%s', @$_), @aliases);
       $frm->{ihid}   = $frm->{ihid} ?1:0;
