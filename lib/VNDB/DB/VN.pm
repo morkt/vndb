@@ -169,12 +169,12 @@ sub dbVNGet {
           JOIN vn_rev vr ON vr.id = vs.vid
           JOIN staff_alias sa ON vs.aid = sa.id
           JOIN staff_rev sr ON sr.id = sa.rid
-          JOIN staff s ON sr.id = s.latest
+          JOIN staff s ON s.id = sr.sid AND sr.id = s.latest
           JOIN chars c ON c.id = vs.cid
           JOIN chars_rev cr ON cr.id = c.latest
-          JOIN chars_vns cv ON cv.cid = cr.id AND cv.vid = vr.vid
           WHERE s.hidden = FALSE AND vs.vid IN(!l)
-          ORDER BY cv.role, cr.name|,
+            AND cr.id IN(SELECT cv.cid FROM chars_vns cv WHERE cv.vid = vr.vid AND cv.cid = cr.id)
+          ORDER BY cr.name|,
         [ keys %r ]
       )});
     }
