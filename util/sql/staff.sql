@@ -56,3 +56,5 @@ ALTER TABLE vn_seiyuu           ADD FOREIGN KEY (vid)       REFERENCES vn_rev   
 
 CREATE INDEX vn_staff_vid       ON vn_staff (vid);
 CREATE INDEX vn_staff_aid       ON vn_staff (aid);
+
+CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON staff         FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest) EXECUTE PROCEDURE update_hidlock();

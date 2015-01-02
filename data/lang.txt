@@ -15532,5 +15532,8 @@ tr : [_1] sadece küçük harfler, rakamlar ve tire içerebilir; ve bir harf ile
 uk : Поле [_1] може складатися лише з маленьких літер латинки, цифр і рисок, і має починатися з літери
 it : [_1] può avere solo caratteri minuscoli e trattini, e deve iniziare con una lettera
 
+:_formerr_tpl_json
+en : [_1]: Malformed staff data
+
 
 # vim: set ft=none:

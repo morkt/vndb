@@ -159,7 +159,7 @@ sub dbVNGet {
           JOIN staff_alias sa ON vs.aid = sa.id
           JOIN staff_rev sr ON sr.id = sa.rid
           JOIN staff s ON sr.id = s.latest
-          WHERE vs.vid IN(!l)
+          WHERE s.hidden = FALSE AND vs.vid IN(!l)
           ORDER BY vs.role ASC, sa.name ASC|,
         [ keys %r ]
       )});
@@ -173,7 +173,7 @@ sub dbVNGet {
           JOIN chars c ON c.id = vs.cid
           JOIN chars_rev cr ON cr.id = c.latest
           JOIN chars_vns cv ON cv.cid = cr.id AND cv.vid = vr.vid
-          WHERE vs.vid IN(!l)
+          WHERE s.hidden = FALSE AND vs.vid IN(!l)
           ORDER BY cv.role, cr.name|,
         [ keys %r ]
       )});

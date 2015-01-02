@@ -274,7 +274,7 @@ p#searchtabs a:hover, p#searchtabs a.sel {
   padding: 1px 5px 2px 5px;
   background: $secbg$ url($_boxbg$) repeat;
 }
-#q { width: 450px }
+#q { width: 600px }
 
 
 
@@ -576,8 +576,7 @@ div.staffbrowse	   { padding-bottom: 10px }
 .staffdesc h2, .staffroles h2 { margin: 0; padding: 5px 0; }
 .staffdesc { display: table; margin-bottom: 10px; }
 .staffdesc p { padding: 0 5px; }
-.staffroles td { white-space: nowrap; padding-left: 20px; padding-right: 20px; }
-.staffroles td.tc1 { min-width: 100px; }
+.staffroles td { padding-left: 20px; padding-right: 20px; }
 .staffroles td.tc2 { min-width: 100px; }
 
 

@@ -119,8 +119,11 @@ sub dbCharGet {
           JOIN vn_rev vr ON vr.id = vs.vid
           JOIN vn v ON v.latest = vs.vid
           !W
-          ORDER BY v.c_released, sa.name|,
-        { 'cr.id IN(!l)' => [[ keys %r ]], $o{vid} ? ('v.id = ?' => $o{vid}) : () }
+          ORDER BY v.c_released, sa.name|, {
+            's.hidden = FALSE' => 1,
+            'cr.id IN(!l)' => [[ keys %r ]],
+            $o{vid} ? ('v.id = ?' => $o{vid}) : (),
+          }
       )});
     }
   }

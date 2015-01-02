@@ -6,10 +6,12 @@ use warnings;
 use TUWF ':html';
 use Exporter 'import';
 use POSIX 'strftime', 'ceil', 'floor';
+use JSON::XS;
 use VNDBUtil;
 our @EXPORT = (@VNDBUtil::EXPORT, qw|
   clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags
   childtags charspoil imgpath imgurl fmtvote
+  jsonEncode jsonDecode script_json
   mtvoiced mtani mtvnlen mtrlstat mtvnlstat mtbloodt
 |);
 
@@ -199,6 +201,28 @@ sub imgurl {
 # Formats a vote number.
 sub fmtvote {
   return !$_[0] ? '-' : $_[0] % 10 == 0 ? $_[0]/10 : sprintf '%.1f', $_[0]/10;
+}
+
+
+my $JSON; # cache
+
+# JSON::XS::encode_json converts input to utf8, whereas these functions
+# operate on wide character strings.
+sub jsonEncode ($) {
+  ($JSON ||= JSON::XS->new)->encode(@_);
+}
+
+sub jsonDecode ($) {
+  ($JSON ||= JSON::XS->new)->decode(@_);
+}
+
+# Insert JSON-encoded data as script, arguments: id, object
+sub script_json {
+  script id => $_[0], type => 'application/json';
+   my $js = jsonEncode $_[1];
+   $js =~ s/</\\u003C/g; # escape HTML tags like </script> and <!--
+   lit $js;
+  end;
 }
 
 

@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use TUWF qw(:html :xml xml_escape);
 use VNDB::Func;
+use List::Util qw(first);
 
 TUWF::register(
   qr{s([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
@@ -43,7 +44,7 @@ sub page {
 #        return $_[0] ? sprintf '<img src="%s" />', imgurl(ch => $_[0]) : mt '_stdiff_image_none';
 #      }],
       [ aliases   => join => '<br />', split => sub {
-        map sprintf('%s%s', $_->{name}, $_->{original} ? ' ('.$_->{original}.')' : ''), @{$_[0]};
+        map xml_escape(sprintf('%s%s', $_->{name}, $_->{original} ? ' ('.$_->{original}.')' : '')), @{$_[0]};
       }],
     );
   }
@@ -100,7 +101,7 @@ sub page {
 
     if (@{$s->{roles}}) {
       h2 mt '_staff_credits';
-      my $has_notes = grep { $_->{note} || $_->{name} ne $s->{name} } @{$s->{roles}};
+      my $has_notes = first { $_->{note} || $_->{name} ne $s->{name} } @{$s->{roles}};
       table class => 'stripe staffroles';
        thead;
         Tr;
@@ -146,7 +147,7 @@ sub page {
     }
     if (@{$s->{cast}}) {
       h2 mt '_staff_voiced';
-      my $has_notes = grep { $_->{note} || $_->{name} ne $s->{name} } @{$s->{cast}};
+      my $has_notes = first { $_->{note} || $_->{name} ne $s->{name} } @{$s->{cast}};
       table class => 'stripe staffroles';
        thead;
         Tr;
@@ -195,8 +196,10 @@ sub edit {
 
   my %b4 = !$sid ? () : (
     (map { $_ => $s->{$_} } qw|aid name original gender lang desc l_wp ihid ilock|),
-    aliases => join('|||', map sprintf('%d,%s,%s', $_->{id}, $_->{name}, $_->{original}),
-      sort { $a->{name} <=> $b->{name} } @{$s->{aliases}}),
+    aliases => jsonEncode [
+      map +{ aid => $_->{id}, name => $_->{name}, orig => $_->{original} },
+      sort { $a->{name} <=> $b->{name} } @{$s->{aliases}}
+    ],
   );
   my $frm;
 
@@ -217,25 +220,29 @@ sub edit {
       { post => 'ilock',         required  => 0 },
     );
     push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
-    my @aliases = map { /^(\d+),([^,]*),(.*)$/ ? [ $1, $2, $3 ]: () } split /\|\|\|/, $frm->{aliases};
-    for my $a (@aliases) {
-      # check for empty aliases
-      if($a->[1] =~ /^\s*$/) {
-        push @{$frm->{_err}}, ['alias_name', 'required'];
-        last;
+
+    my $aliases = eval { jsonDecode $frm->{aliases} };
+    push @{$frm->{_err}}, [ 'aliases', 'template', 'json' ] if $@;
+    if(!$frm->{_err}) {
+      for my $a (@$aliases) {
+        # check for empty aliases
+        if($a->{name} =~ /^\s*$/) {
+          push @{$frm->{_err}}, ['alias_name', 'required'];
+          last;
+        }
       }
     }
     if(!$frm->{_err}) {
       # parse and normalize
-      $frm->{aliases}  = join('|||', map sprintf('%d,%s,%s', @$_), @aliases);
+      $frm->{aliases} = jsonEncode $aliases;
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
 
       return $self->resRedirect("/s$sid", 'post')
-        if $sid && !grep $frm->{$_} ne $b4{$_}, keys %b4;
+        if $sid && !first { $frm->{$_} ne $b4{$_} } keys %b4;
     }
     if(!$frm->{_err}) {
-      $frm->{aliases} = \@aliases;
+      $frm->{aliases} = [ map [ @{$_}{qw|aid name orig|} ], @$aliases ];
       my $nrev = $self->dbItemEdit ('s' => $sid ? $s->{cid} : undef, %$frm);
       return $self->resRedirect("/s$nrev->{iid}.$nrev->{rev}", 'post');
     }

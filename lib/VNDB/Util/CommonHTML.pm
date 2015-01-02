@@ -137,6 +137,7 @@ sub htmlHiddenMessage {
   my $editsum = $type eq 'v' ? $self->dbVNGet(id => $obj->{id}, what => 'changes')->[0]{comments}
               : $type eq 'r' ? $self->dbReleaseGet(id => $obj->{id}, what => 'changes')->[0]{comments}
               : $type eq 'c' ? $self->dbCharGet(id => $obj->{id}, what => 'changes')->[0]{comments}
+              : $type eq 's' ? $self->dbStaffGet(id => $obj->{id}, what => 'changes')->[0]{comments}
                              : $self->dbProducerGet(id => $obj->{id}, what => 'changes')->[0]{comments};
   div class => 'mainbox';
    h1 $obj->{title}||$obj->{name};

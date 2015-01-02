@@ -88,8 +88,14 @@ sub edit {
 
   my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai image img_nsfw ihid ilock|),
-    credits => join('|||', map join('-', $_->{aid}, $_->{role}, $_->{note}), @{$v->{credits}}),
-    seiyuu => join('|||', map join('-', $_->{aid}, $_->{cid}, $_->{note}), @{$v->{seiyuu}}),
+    credits => jsonEncode [
+      map { my $c = $_; +{ map { $_ => $c->{$_} } qw|aid role note| } }
+      sort { $a->{aid} <=> $b->{aid} || $a->{role} cmp $b->{role} } @{$v->{credits}}
+    ],
+    seiyuu => jsonEncode [
+      map { my $c = $_; +{ map { $_ => $c->{$_} } qw|aid cid note| } }
+      sort { $a->{aid} <=> $b->{aid} || $a->{cid} <=> $b->{cid} } @{$v->{seiyuu}}
+    ],
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
     vnrelations => join('|||', map $_->{relation}.','.$_->{id}.','.($_->{official}?1:0).','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
     screenshots => join(' ', map sprintf('%d,%d,%d', $_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$v->{screenshots}}),
@@ -124,13 +130,35 @@ sub edit {
     # handle image upload
     $frm->{image} = _uploadimage($self, $frm) if !$nosubmit;
 
+    my (@credits, @seiyuu);
+    if(!$nosubmit && !$frm->{_err}) {
+      eval { # catch json decoding errors
+        my $raw_c = $frm->{credits} ? jsonDecode $frm->{credits} : [];
+        my $raw_s = $frm->{seiyuu}  ? jsonDecode $frm->{seiyuu}  : [];
+
+        # check for duplicate credits
+        my $last_c;
+        for my $c (sort { $a->{aid} <=> $b->{aid} || $a->{role} cmp $b->{role} } @$raw_c) {
+          # discard entries with identical name & role
+          next if $last_c->{aid} == $c->{aid} && $last_c->{role} eq $c->{role};
+          push @credits, $c;
+          $last_c = $c;
+        }
+
+        my $last_s;
+        for my $s (sort { $a->{aid} <=> $b->{aid} || $a->{cid} <=> $b->{cid} } @$raw_s) {
+          next if $last_s->{aid} == $s->{aid} && $last_s->{cid} == $s->{cid};
+          push @seiyuu, $s;
+          $last_s = $s;
+        }
+      };
+      push @{$frm->{_err}}, [ 'credits', 'template', 'json' ] if $@;
+    }
     if(!$nosubmit && !$frm->{_err}) {
       # parse and re-sort fields that have multiple representations of the same information
       my $anime = { map +($_=>1), grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} };
       my $relations = [ map { /^([a-z]+),([0-9]+),([01]),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3, $4 ] : () } split /\|\|\|/, $frm->{vnrelations} ];
       my $screenshots = [ map /^[0-9]+,[01],[0-9]+$/ ? [split /,/] : (), split / +/, $frm->{screenshots} ];
-      my $credits = [ map { /^(\d+)-([^-]+)-(.*)$/ ? [ $1, $2, $3 ]: () } split /\|\|\|/, $frm->{credits} ];
-      my $seiyuu = [ map { /^(\d+)-(\d+)-(.*)$/ ? [ $1, $2, $3 ]: () } split /\|\|\|/, $frm->{seiyuu} ];
 
       $frm->{ihid} = $frm->{ihid}?1:0;
       $frm->{ilock} = $frm->{ilock}?1:0;
@@ -139,24 +167,8 @@ sub edit {
       $frm->{vnrelations} = join '|||', map $_->[0].','.$_->[1].','.($_->[2]?1:0).','.$_->[3], sort { $a->[1] <=> $b->[1]} @{$relations};
       $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
       $frm->{screenshots} = join ' ', map sprintf('%d,%d,%d', $_->[0], $_->[1]?1:0, $_->[2]), sort { $a->[0] <=> $b->[0] } @$screenshots;
-
-      # check for duplicate credits
-      my($checked_c, $last_c) = ([], []);
-      for my $c (sort { $a->[0] <=> $b->[0] || $a->[1] cmp $b->[1] } @$credits) {
-        # discard entries with identical name & role
-        next if $last_c->[0] == $c->[0] && $last_c->[1] eq $c->[1];
-        push @$checked_c, $c;
-        $last_c = $c;
-      }
-      $frm->{credits} = join '|||', map sprintf('%d-%s-%s', @$_), @$checked_c;
-
-      my($checked_s, $last_s) = ([], []);
-      for my $s (sort { $a->[0] <=> $b->[0] || $a->[1] <=> $b->[1] } @$seiyuu) {
-        next if $last_s->[0] == $s->[0] && $last_s->[1] == $s->[1];
-        push @$checked_s, $s;
-        $last_s = $s;
-      }
-      $frm->{seiyuu} = join '|||', map sprintf('%d-%d-%s', @$_), @$checked_s;
+      $frm->{credits} = jsonEncode \@credits;
+      $frm->{seiyuu} = jsonEncode \@seiyuu;
 
       # weed out duplicate aliases
       my %alias;
@@ -173,8 +185,8 @@ sub edit {
       # perform the edit/add
       my $nrev = $self->dbItemEdit(v => $vid ? $v->{cid} : undef,
         (map { $_ => $frm->{$_} } qw|title original image alias desc length l_wp l_encubed l_renai editsum img_nsfw ihid ilock|),
-        credits => $checked_c,
-        seiyuu => $checked_s,
+        credits => [ map [ @{$_}{qw|aid role note|} ], @credits ],
+        seiyuu => [ map [ @{$_}{qw|aid cid note|} ], @seiyuu ],
         anime => [ keys %$anime ],
         relations => $relations,
         screenshots => $screenshots,
@@ -289,6 +301,13 @@ sub _form {
   vn_staff => [ mt('_vnedit_staff'),
     [ hidden => short => 'credits' ],
     [ static => nolabel => 1, content => sub {
+      # propagate staff ids and names to javascript
+      my %staff_data;
+      for my $c (@{$v->{credits}}, @{$v->{seiyuu}}) {
+        $staff_data{$c->{aid}} //= { map +($_ => $c->{$_}), qw|id aid name| };
+      }
+      script_json staffdata => \%staff_data if %staff_data;
+
       div class => 'warning';
        lit mt '_vnedit_staff_msg';
       end;
@@ -309,11 +328,11 @@ sub _form {
   # would be empty anyway.
   @{$chars} ? (vn_cast => [ mt('_vnedit_cast'),
     [ hidden => short => 'seiyuu' ],
-    [ hidden => short => 'castimpdata', value => do {
-        join '|||', map join('-', $_->{cid}, $_->{sid}, $_->{aid}, $_->{name}), @$import;
-    }],
     [ static => nolabel => 1, content => sub {
       if (@$import) {
+        script_json castimpdata => [
+          map { my $c = $_; +{ map { $_ => $c->{$_} } qw|cid sid aid name| } } @$import
+        ];
         div id => 'cast_import';
          a href => '#', title => mt('_vnedit_cast_import_title'), mt '_vnedit_cast_import';
         end;
