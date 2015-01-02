@@ -225,6 +225,7 @@ sub edit {
     push @{$frm->{_err}}, [ 'aliases', 'template', 'json' ] if $@;
     if(!$frm->{_err}) {
       for my $a (@$aliases) {
+        $a->{aid} *= 1; # normalize to a number so that the comparison works.
         # check for empty aliases
         if($a->{name} =~ /^\s*$/) {
           push @{$frm->{_err}}, ['alias_name', 'required'];

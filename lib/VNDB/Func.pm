@@ -204,16 +204,18 @@ sub fmtvote {
 }
 
 
-my $JSON; # cache
+# JSON::XS::encode_json converts input to utf8, whereas the below functions
+# operate on wide character strings. Canonicalization is enabled to allow for
+# proper comparison of serialized objects.
+my $JSON = JSON::XS->new;
+$JSON->canonical(1);
 
-# JSON::XS::encode_json converts input to utf8, whereas these functions
-# operate on wide character strings.
 sub jsonEncode ($) {
-  ($JSON ||= JSON::XS->new)->encode(@_);
+  $JSON->encode(@_);
 }
 
 sub jsonDecode ($) {
-  ($JSON ||= JSON::XS->new)->decode(@_);
+  $JSON->decode(@_);
 }
 
 # Insert JSON-encoded data as script, arguments: id, object
