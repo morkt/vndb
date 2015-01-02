@@ -112,7 +112,7 @@ sub page {
         end;
        end;
        tbody;
-        my ($last_vid, $row_count);
+        my($last_vid, $row_count) = (0);
         for my $i (0..$#{$s->{roles}}) {
           my $r = $s->{roles}->[$i];
           if($r->{vid} != $last_vid) {
