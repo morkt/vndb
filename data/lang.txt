@@ -5362,9 +5362,6 @@ en : Artist
 :_credit_songs
 en : Vocals
 
-:_credit_voice
-en : Additional voices
-
 :_credit_staff
 en : Staff
 
