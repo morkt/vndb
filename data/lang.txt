@@ -5491,16 +5491,13 @@ en : Wikipedia link
 :_staffe_aliases
 en : Aliases
 
-:_staffe_aliases_sel
-en : Selected aliases
-
 :_staffe_aliases_add
 en : Add alias
 
-:_staffe_vns
-en : Visual novels
+:_staffe_alias_required
+en : Specify romanized spelling of the alias.
 
-:_sedit_form_alias_none
+:_staffe_aliases_none
 en : None
 
 :_vnstaffe_form_staff
@@ -5517,9 +5514,6 @@ en : Add staff
 
 :_vnstaffe_none
 en : None
-
-:_vnstaffe_credit_exists
-en : Credit already given.
 
 #############################################################################
 ##                           Release pages (/r/*)                          ##

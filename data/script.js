@@ -204,6 +204,9 @@ function mt() {
   return val;
 }
 
+function jsonParse(s) {
+  return s ? JSON.parse(s) : '';
+}
 
 
 
@@ -2053,12 +2056,9 @@ if(byId('jt_box_chare_vns'))
 /*  S T A F F (/s+/edit) */
 
 function salLoad () {
-  var src = byId('aliases').value;
-  if(src) {
-    var aliases = JSON.parse(src);
-    for (var i = 0; i < aliases.length; i++) {
-      salAdd(aliases[i].aid, aliases[i].name, aliases[i].orig);
-    }
+  var aliases = jsonParse(byId('aliases').value) || [];
+  for(var i = 0; i < aliases.length; i++) {
+    salAdd(aliases[i].aid, aliases[i].name, aliases[i].orig);
   }
   salEmpty();
 
@@ -2082,7 +2082,7 @@ function salAdd(aid, name, original) {
 function salEmpty() {
   var tbl = byId('alias_tbl');
   if (byName(tbl, 'tr').length < 1)
-    tbl.appendChild(tag('tr', {id:'alias_tr_none'}, tag('td', {colspan:3}, mt('_sedit_form_alias_none'))));
+    tbl.appendChild(tag('tr', {id:'alias_tr_none'}, tag('td', {colspan:3}, mt('_staffe_aliases_none'))));
   else if (byId('alias_tr_none'))
     tbl.removeChild(byId('alias_tr_none'));
 }
@@ -2096,7 +2096,7 @@ function salSerialize() {
     var name = byName(byClass(tbl[i], 'td', 'tc_name')[0], 'input')[0].value;
     var orig = byName(byClass(tbl[i], 'td', 'tc_original')[0], 'input')[0].value;
     var id   = byName(byClass(tbl[i], 'td', 'tc_add')[0], 'input')[0].value;
-    a.push({ aid:id, name:name, orig:orig });
+    a.push({ aid:Number(id), name:name, orig:orig });
   }
   byId('aliases').value = JSON.stringify(a);
   return true;
@@ -2117,7 +2117,7 @@ function salFormAdd() {
   var name = byName(byClass(alnew, 'td', 'tc_name')[0],     'input')[0];
   var orig = byName(byClass(alnew, 'td', 'tc_original')[0], 'input')[0];
   if(name.value.length < 1)
-    return false;
+    return alert(mt('_staffe_alias_required'));
 
   salAdd(0, name.value, orig.value);
   salSerialize();
@@ -2147,20 +2147,12 @@ function onSubmit(form, handler) {
 }
 
 function vnsLoad() {
-  var staff_data = getText(byId('staffdata')||{});
-  if (staff_data)
-    vnsStaffData = JSON.parse(staff_data);
-  else
-    vnsStaffData = {};
-
-  var src = byId('credits').value;
-  if(src) {
-    var credits = JSON.parse(src);
-    for (var i = 0; i < credits.length; i++) {
-      var aid = credits[i].aid;
-      if (vnsStaffData[aid])
-	vnsAdd(vnsStaffData[aid], credits[i].role, credits[i].note);
-    }
+  vnsStaffData = jsonParse(getText(byId('staffdata')||{})) || {};
+  var credits = jsonParse(byId('credits').value) || [];
+  for(var i = 0; i < credits.length; i++) {
+    var aid = credits[i].aid;
+    if(vnsStaffData[aid])
+      vnsAdd(vnsStaffData[aid], credits[i].role, credits[i].note);
   }
   vnsEmpty();
 
@@ -2261,25 +2253,20 @@ if(byId('jt_box_vn_staff'))
 var vncImportData = [];
 
 function vncLoad() {
-  var src = byId('seiyuu').value;
-  if(src) {
-    var cast = JSON.parse(src);
-    for (var i = 0; i < cast.length; i++) {
-      var aid = cast[i].aid;
-      if (vnsStaffData[aid]) // vnsStaffData is filled by vnsLoad()
-	vncAdd(vnsStaffData[aid], cast[i].cid, cast[i].note);
-    }
+  var cast = jsonParse(byId('seiyuu').value) || [];
+  for(var i = 0; i < cast.length; i++) {
+    var aid = cast[i].aid;
+    if(vnsStaffData[aid]) // vnsStaffData is filled by vnsLoad()
+      vncAdd(vnsStaffData[aid], cast[i].cid, cast[i].note);
   }
   vncEmpty();
 
-  vncImportData = [];
   var cast_import = byId('cast_import');
-  if (cast_import) {
-    var imp_data = getText(byId('castimpdata')||{});
-    if (imp_data) {
-      vncImportData = JSON.parse(imp_data);
+  if(cast_import) {
+    vncImportData = jsonParse(getText(byId('castimpdata')||{})) || [];
+    if(vncImportData.length)
       byName(cast_import, 'a')[0].onclick = vncImport;
-    } else
+    else
       cast_import.style.display = 'none';
   }
   onSubmit(byName(byId('maincontent'), 'form')[0], vncSerialize);

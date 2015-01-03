@@ -222,7 +222,7 @@ sub edit {
     push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
 
     my $aliases = eval { jsonDecode $frm->{aliases} };
-    push @{$frm->{_err}}, [ 'aliases', 'template', 'json' ] if $@;
+    push @{$frm->{_err}}, [ 'aliases', 'template', 'json' ] if $@ || ref $aliases ne 'ARRAY';
     if(!$frm->{_err}) {
       for my $a (@$aliases) {
         $a->{aid} *= 1; # normalize to a number so that the comparison works.
