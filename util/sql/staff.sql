@@ -18,7 +18,10 @@ CREATE TABLE staff_rev (
     gender      gender  NOT NULL DEFAULT 'unknown',
     lang        language NOT NULL DEFAULT 'ja',
     "desc"      text    NOT NULL DEFAULT '',
-    l_wp        varchar(150) NOT NULL DEFAULT ''
+    l_wp        varchar(150) NOT NULL DEFAULT '',
+    l_site      varchar(250) NOT NULL DEFAULT '',
+    l_twitter   varchar(16) NOT NULL DEFAULT '',
+    l_anidb     integer
 );
 
 CREATE TABLE staff_alias (

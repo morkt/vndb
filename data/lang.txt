@@ -5385,6 +5385,15 @@ en : Aliases
 :_revfield_s_l_wp
 en : Wikipedia link
 
+:_revfield_s_l_site
+en : Official page
+
+:_revfield_s_l_twitter
+en : Twitter account
+
+:_revfield_s_l_anidb
+en : AniDB creator ID
+
 :_revfield_s_desc
 en : Description
 
@@ -5420,8 +5429,20 @@ en : Language
 :_staff_aliases
 en : Aliases
 
+:_staff_links
+en : Links
+
 :_staff_l_wp
 en : Wikipedia
+
+:_staff_l_site
+en : Official page
+
+:_staff_l_twitter
+en : Twitter
+
+:_staff_l_anidb
+en : AniDB
 
 :_staff_bio
 en : Info
@@ -5471,7 +5492,8 @@ en : Alias (romaji)
 en : Original alias
 
 :_staffe_form_original_note
-en : The original name of the person, leave blank if it is already in the Latin alphabet.
+en : The original name of the person, leave blank if it is already in the Latin alphabet.[br]
+     For japanese names, do not include a space between the given name and the surname.
 
 :_staffe_form_note
 en : Staff note
@@ -5484,6 +5506,18 @@ en : Primary language
 
 :_staffe_form_wikipedia
 en : Wikipedia link
+
+:_staffe_form_site
+en : Official page
+
+:_staffe_form_twitter
+en : Twitter username
+
+:_staffe_form_tw_err
+en : Invalid twitter username
+
+:_staffe_form_anidb
+en : AniDB creator ID
 
 :_staffe_aliases
 en : Aliases
@@ -13139,7 +13173,16 @@ it : Scegli questa opzione se l'immagine contiene nudi, gore o è generalmente n
 en : Staff
 
 :_vnedit_staff_msg
-en : This message is a placeholder for concise guidelines regarding adding VN staff.
+en : Please adhere to the folowing guidelines:[br]
+     - Preferably add major staff only.[br]
+     - Use "Staff" option with accompanying note for any additional minor roles.[br]
+     - If someone performed several important jobs, add multiple entries with different major roles.[br]
+     - Don't add a person as "Staff" if he/she is already credited with some of the major
+       roles. Add note instead.[br]
+     - Voice actors should be added under the "Cast" tab (available only if VN has any
+       characters listed).[br]
+     - If database doesn't contain particular name yet, add corresponding entry
+       [url,/s/new,here], but check for aliases first.
 
 :_vnedit_cast
 en : Cast

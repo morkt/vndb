@@ -36,13 +36,13 @@ sub page {
       [ original  => diff => 1 ],
       [ gender    => serialize => sub { mt "_gender_$_[0]" } ],
       [ lang      => serialize => sub { "$_[0] (".mt("_lang_$_[0]").')' } ],
+      [ l_site    => diff => 1 ],
       [ l_wp      => htmlize => sub {
         $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
       }],
+      [ l_twitter => diff => 1 ],
+      [ l_anidb   => serialize => sub { $_[0] // '' } ],
       [ desc      => diff => qr/[ ,\n\.]/ ],
-#      [ image     => htmlize => sub {
-#        return $_[0] ? sprintf '<img src="%s" />', imgurl(ch => $_[0]) : mt '_stdiff_image_none';
-#      }],
       [ aliases   => join => '<br />', split => sub {
         map xml_escape(sprintf('%s%s', $_->{name}, $_->{original} ? ' ('.$_->{original}.')' : '')), @{$_[0]};
       }],
@@ -79,10 +79,20 @@ sub page {
         end;
        end;
      }
-     if ($s->{l_wp}) {
+     my @links = (
+       $s->{l_site} ?    [ 'site',    $s->{l_site} ] : (),
+       $s->{l_wp} ?      [ 'wp',      "http://en.wikipedia.org/wiki/$s->{l_wp}" ] : (),
+       $s->{l_twitter} ? [ 'twitter', "https://twitter.com/$s->{l_twitter}" ] : (),
+       $s->{l_anidb} ?   [ 'anidb',   "http://anidb.net/cr$s->{l_anidb}" ] : (),
+     );
+     if(@links) {
        Tr;
-        td colspan => 2;
-         a href => "http://en.wikipedia.org/wiki/$s->{l_wp}", mt '_staff_l_wp';
+        td class => 'key', mt '_staff_links';
+        td;
+         for(@links) {
+           a href => $_->[1], mt "_staff_l_$_->[0]";
+           br if $_ != $links[$#links];
+         }
         end;
        end;
      }
@@ -195,10 +205,10 @@ sub edit {
     || $sid && (($s->{locked} || $s->{hidden}) && !$self->authCan('dbmod'));
 
   my %b4 = !$sid ? () : (
-    (map { $_ => $s->{$_} } qw|aid name original gender lang desc l_wp ihid ilock|),
+    (map { $_ => $s->{$_} } qw|aid name original gender lang desc l_wp l_site l_twitter l_anidb ihid ilock|),
     aliases => jsonEncode [
       map +{ aid => $_->{id}, name => $_->{name}, orig => $_->{original} },
-      sort { $a->{name} <=> $b->{name} } @{$s->{aliases}}
+      sort { $a->{name} cmp $b->{name} } @{$s->{aliases}}
     ],
   );
   my $frm;
@@ -213,6 +223,9 @@ sub edit {
       { post => 'gender',        required  => 0, default => 'unknown', enum => [qw|unknown m f|] },
       { post => 'lang',          enum      => $self->{languages} },
       { post => 'l_wp',          required  => 0, maxlength => 150,  default => '' },
+      { post => 'l_site',        required => 0, template => 'url', maxlength => 250, default => '' },
+      { post => 'l_twitter',     required => 0, maxlength => 16, default => '', regex => [ qr/^\S+$/, mt('_staffe_form_tw_err') ] },
+      { post => 'l_anidb',       required => 0, template => 'int', default => undef },
       { post => 'image',         required  => 0, default => 0, template => 'int' },
       { post => 'aliases',       required  => 0, maxlength => 5000, default => '' },
       { post => 'editsum',       required  => 0, maxlength => 5000 },
@@ -235,12 +248,12 @@ sub edit {
     }
     if(!$frm->{_err}) {
       # parse and normalize
-      $frm->{aliases} = jsonEncode $aliases;
+      $frm->{aliases} = jsonEncode [ sort { $a->{name} cmp $b->{name} } @$aliases ];
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
 
       return $self->resRedirect("/s$sid", 'post')
-        if $sid && !first { $frm->{$_} ne $b4{$_} } keys %b4;
+        if $sid && !first { ($frm->{$_}//'') ne ($b4{$_}//'') } keys %b4;
     }
     if(!$frm->{_err}) {
       $frm->{aliases} = [ map [ @{$_}{qw|aid name orig|} ], @$aliases ];
@@ -268,7 +281,10 @@ sub edit {
        map [ $_, mt("_gender_$_") ], qw(unknown m f) ] ],
     [ select => name => mt('_staffe_form_lang'), short => 'lang',
       options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
+    [ input  => name => mt('_staffe_form_site'), short => 'l_site' ],
     [ input  => name => mt('_staffe_form_wikipedia'), short => 'l_wp', pre => 'http://en.wikipedia.org/wiki/' ],
+    [ input  => name => mt('_staffe_form_twitter'), short => 'l_twitter' ],
+    [ input  => name => mt('_staffe_form_anidb'), short => 'l_anidb' ],
     [ static => content => '<br />' ],
   ],
 
@@ -347,7 +363,6 @@ sub list {
         for ($perlist*$c..($perlist*($c+1))-1) {
           li;
             my $gender = $list->[$_]{gender};
-#            cssicon "gen $gender", mt "_gender_$gender" if $gender ne 'unknown';
             cssicon 'lang '.$list->[$_]{lang}, mt "_lang_$list->[$_]{lang}";
             a href => "/s$list->[$_]{id}",
               title => $list->[$_]{original}, $list->[$_]{name};

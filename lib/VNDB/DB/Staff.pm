@@ -39,7 +39,7 @@ sub dbStaffGet {
   push @join, 'JOIN users u ON u.id = c.requester' if $o{what} =~ /changes/;
 
   my $select = 's.id, sa.id AS aid, sa.name, sa.original, sr.gender, sr.lang, sr.id AS cid';
-  $select .= ', sr.desc, sr.l_wp, s.hidden, s.locked' if $o{what} =~ /extended/;
+  $select .= ', sr.desc, sr.l_wp, sr.l_site, sr.l_twitter, sr.l_anidb, s.hidden, s.locked' if $o{what} =~ /extended/;
   $select .= q|, extract('epoch' from c.added) as added, c.requester, c.comments, s.latest, u.username, c.rev, c.ihid, c.ilock| if $o{what} =~ /changes/;
 
   my $order = 'ORDER BY sa.name';
@@ -113,7 +113,7 @@ sub dbStaffRevisionInsert {
   }
 
   my %staff = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
-    qw|aid image gender lang desc l_wp|;
+    qw|aid image gender lang desc l_wp l_site l_twitter l_anidb|;
   $self->dbExec('UPDATE edit_staff !H', \%staff) if %staff;
   for my $alias (@{$o->{aliases}}) {
     if ($alias->[0]) {
