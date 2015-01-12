@@ -483,7 +483,7 @@ BEGIN
     INSERT INTO edit_staff (aid) VALUES (0);
   -- load revision
   ELSE
-    INSERT INTO edit_staff SELECT aid, image, gender, lang, "desc", l_wp, l_site, l_twitter, l_anidb FROM staff_rev WHERE id = cid;
+    INSERT INTO edit_staff SELECT aid, gender, lang, "desc", l_wp, l_site, l_twitter, l_anidb FROM staff_rev WHERE id = cid;
     INSERT INTO edit_staff_aliases SELECT id, name, original FROM staff_alias WHERE rid = cid;
   END IF;
 END;
@@ -500,8 +500,8 @@ BEGIN
   SELECT INTO r * FROM edit_commit();
   INSERT INTO staff_alias (id, rid, name, original)
     SELECT id, r.cid, name, original FROM edit_staff_aliases;
-  INSERT INTO staff_rev (id, sid, aid, image, gender, lang, "desc", l_wp, l_site, l_twitter, l_anidb)
-    SELECT r.cid, r.iid, aid, image, gender, lang, "desc", l_wp, l_site, l_twitter, l_anidb FROM edit_staff;
+  INSERT INTO staff_rev (id, sid, aid, gender, lang, "desc", l_wp, l_site, l_twitter, l_anidb)
+    SELECT r.cid, r.iid, aid, gender, lang, "desc", l_wp, l_site, l_twitter, l_anidb FROM edit_staff;
   UPDATE staff SET latest = r.cid WHERE id = r.iid;
   RETURN r;
 END;

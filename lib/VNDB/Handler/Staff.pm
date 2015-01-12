@@ -225,7 +225,6 @@ sub edit {
       { post => 'l_site',        required => 0, template => 'url', maxlength => 250, default => '' },
       { post => 'l_twitter',     required => 0, maxlength => 16, default => '', regex => [ qr/^\S+$/, mt('_staffe_form_tw_err') ] },
       { post => 'l_anidb',       required => 0, template => 'int', default => undef },
-      { post => 'image',         required  => 0, default => 0, template => 'int' },
       { post => 'aliases',       required  => 0, maxlength => 5000, default => '' },
       { post => 'editsum',       required  => 0, maxlength => 5000 },
       { post => 'ihid',          required  => 0 },

@@ -14,7 +14,6 @@ CREATE TABLE staff_rev (
     id          integer NOT NULL PRIMARY KEY,
     sid         integer NOT NULL, -- references staff
     aid         integer NOT NULL, -- true name, references staff_alias
-    image       integer NOT NULL DEFAULT 0,
     gender      gender  NOT NULL DEFAULT 'unknown',
     lang        language NOT NULL DEFAULT 'ja',
     "desc"      text    NOT NULL DEFAULT '',

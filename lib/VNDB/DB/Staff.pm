@@ -113,7 +113,7 @@ sub dbStaffRevisionInsert {
   }
 
   my %staff = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
-    qw|aid image gender lang desc l_wp l_site l_twitter l_anidb|;
+    qw|aid gender lang desc l_wp l_site l_twitter l_anidb|;
   $self->dbExec('UPDATE edit_staff !H', \%staff) if %staff;
   for my $alias (@{$o->{aliases}}) {
     if ($alias->[0]) {
