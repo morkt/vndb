@@ -282,12 +282,14 @@ sub notify { # name, pid, payload
 
   my $q = $_[ARG0] eq 'newrevision' ? q|SELECT
       c.type, c.rev, c.comments, c.id AS lastrev,
-      COALESCE(vr.vid, rr.rid, pr.pid, cr.cid) AS id, COALESCE(vr.title, rr.title, pr.name, cr.name) AS title, u.username
+      COALESCE(vr.vid, rr.rid, pr.pid, cr.cid, sr.sid) AS id, COALESCE(vr.title, rr.title, pr.name, cr.name, sa.name) AS title, u.username
     FROM changes c
     LEFT JOIN vn_rev vr ON c.type = 'v' AND c.id = vr.id
     LEFT JOIN releases_rev rr ON c.type = 'r' AND c.id = rr.id
     LEFT JOIN producers_rev pr ON c.type = 'p' AND c.id = pr.id
     LEFT JOIN chars_rev cr ON c.type = 'c' AND c.id = cr.id
+    LEFT JOIN staff_rev sr ON c.type = 's' AND c.id = sr.id
+    LEFT JOIN staff_alias sa ON c.type = 's' AND sa.id = sr.aid AND sa.rid = c.id
     JOIN users u ON u.id = c.requester
     WHERE c.id > ? AND c.requester <> 1
     ORDER BY c.added|
@@ -540,8 +542,8 @@ sub vndbid { # dest, msg
   my @id; # [ type, id, ref ]
   for (split /[, ]/, $msg) {
     next if length > 15 or m{[a-z]{3,6}://}i; # weed out URLs and too long things
-    push @id, /^(?:.*[^\w]|)([dvprtc])([1-9][0-9]*)\.([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, $3 ] # x+.+
-           :  /^(?:.*[^\w]|)([dvprtugic])([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();        # x+
+    push @id, /^(?:.*[^\w]|)([dvprtcs])([1-9][0-9]*)\.([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, $3 ] # x+.+
+           :  /^(?:.*[^\w]|)([dvprtugics])([1-9][0-9]*)(?:[^\w].*|)$/ ? [ $1, $2, 0 ] : ();        # x+
   }
 
   for (@id) {
@@ -554,12 +556,13 @@ sub vndbid { # dest, msg
       $t eq 'u' ? 'u.username AS title FROM users u WHERE u.id = ?' :
       $t eq 'p' ? 'pr.name AS title FROM producers_rev pr JOIN producers p ON p.latest = pr.id WHERE p.id = ?' :
       $t eq 'c' ? 'cr.name AS title FROM chars_rev cr JOIN chars c ON c.latest = cr.id WHERE c.id = ?' :
+      $t eq 's' ? 'sa.name AS title FROM staff_rev sr JOIN staff s ON s.latest = sr.id JOIN staff_alias sa ON sa.id = sr.aid AND sa.rid = s.latest WHERE s.id = ?' :
       $t eq 't' ? 'title, '.GETBOARDS.' FROM threads t WHERE id = ?' :
       $t eq 'g' ? 'name AS title FROM tags WHERE id = ?' :
       $t eq 'i' ? 'name AS title FROM traits WHERE id = ?' :
                   'rr.title FROM releases_rev rr JOIN releases r ON r.latest = rr.id WHERE r.id = ?'),
       [ $t, $id, $id ], 'formatid', [$dest]
-    ) if !$rev && $t =~ /[vprtugic]/;
+    ) if !$rev && $t =~ /[vprtugics]/;
 
     # edit/insert of vn/release/producer or discussion board post
     $_[KERNEL]->post(pg => query => 'SELECT ?::text AS type, ?::integer AS id, ?::integer AS rev, '.(
@@ -567,9 +570,10 @@ sub vndbid { # dest, msg
       $t eq 'r' ? 'rr.title, u.username, c.comments FROM changes c JOIN releases_rev rr ON c.id = rr.id JOIN users u ON u.id = c.requester WHERE rr.rid = ? AND c.rev = ?' :
       $t eq 'p' ? 'pr.name AS title, u.username, c.comments FROM changes c JOIN producers_rev pr ON c.id = pr.id JOIN users u ON u.id = c.requester WHERE pr.pid = ? AND c.rev = ?' :
       $t eq 'c' ? 'cr.name AS title, u.username, h.comments FROM changes h JOIN chars_rev cr ON h.id = cr.id JOIN users u ON u.id = h.requester WHERE cr.cid = ? AND h.rev = ?' :
+      $t eq 's' ? 'sa.name AS title, u.username, c.comments FROM changes c JOIN staff_rev sr ON c.id = sr.id JOIN users u ON u.id = c.requester JOIN staff_alias sa ON sa.id = sr.aid AND sa.rid = sr.id WHERE sr.sid = ? AND c.rev = ?' :
                   't.title, u.username, '.GETBOARDS.' FROM threads t JOIN threads_posts tp ON tp.tid = t.id JOIN users u ON u.id = tp.uid WHERE t.id = ? AND tp.num = ?'),
       [ $t, $id, $rev, $id, $rev], 'formatid', [$dest]
-    ) if $rev && $t =~ /[vprtc]/;
+    ) if $rev && $t =~ /[vprtcs]/;
 
     # documentation page (need to parse the doc pages manually here)
     if($t eq 'd') {
@@ -609,6 +613,7 @@ sub formatid {
     p => 'producer',
     r => 'release',
     c => 'character',
+    s => 'staff',
     g => 'tag',
     i => 'trait',
     t => 'thread',
