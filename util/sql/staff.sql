@@ -1,6 +1,7 @@
 -- database schema for staff/seiyuu
 
 ALTER TYPE dbentry_type ADD VALUE 's';
+ALTER TYPE notification_ltype ADD VALUE 's';
 CREATE TYPE credit_type AS ENUM ('script', 'chardesign', 'music', 'director', 'art', 'songs', 'staff');
 
 CREATE TABLE staff (
@@ -60,3 +61,6 @@ CREATE INDEX vn_staff_vid       ON vn_staff (vid);
 CREATE INDEX vn_staff_aid       ON vn_staff (aid);
 
 CREATE TRIGGER hidlock_update             BEFORE UPDATE           ON staff         FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest) EXECUTE PROCEDURE update_hidlock();
+
+CREATE TRIGGER notify_dbdel               AFTER  UPDATE           ON staff         FOR EACH ROW WHEN (NOT OLD.hidden AND NEW.hidden) EXECUTE PROCEDURE notify_dbdel();
+CREATE TRIGGER notify_dbedit              AFTER  UPDATE           ON staff         FOR EACH ROW WHEN (OLD.latest IS DISTINCT FROM NEW.latest AND NOT NEW.hidden) EXECUTE PROCEDURE notify_dbedit();

@@ -848,7 +848,7 @@ CREATE OR REPLACE FUNCTION notify_dbdel() RETURNS trigger AS $$
 BEGIN
   INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
     SELECT DISTINCT 'dbdel'::notification_ntype,
-           (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' WHEN 'releases' THEN 'r' WHEN 'producers' THEN 'p' ELSE 'c' END)::notification_ltype,
+           (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' WHEN 'releases' THEN 'r' WHEN 'producers' THEN 'p' WHEN 'staff' THEN 's' ELSE 'c' END)::notification_ltype,
            h.requester, NEW.id, h2.rev, x.title, h2.requester
       -- look for changes of the deleted entry
       -- this method may look a bit unintuitive, but it's way faster than doing LEFT JOINs
@@ -865,6 +865,9 @@ BEGIN
         UNION SELECT cr.id, cr2.name FROM chars_rev cr
                 JOIN chars c ON c.id = cr.cid JOIN chars_rev cr2 ON cr2.id = c.latest
                WHERE TG_TABLE_NAME = 'chars' AND cr.cid = NEW.id
+        UNION SELECT sr.id, sa.name FROM staff_rev sr
+                JOIN staff s ON s.id = sr.sid JOIN staff_rev sr2 ON sr2.id = s.latest JOIN staff_alias sa ON sa.id = sr2.aid AND sa.rid = sr2.id
+               WHERE TG_TABLE_NAME = 'staff' AND sr.sid = NEW.id
       ) x(id, title) ON h.id = x.id
       -- join info about the deletion itself
       JOIN changes h2 ON h2.id = NEW.latest
@@ -912,7 +915,7 @@ CREATE OR REPLACE FUNCTION notify_dbedit() RETURNS trigger AS $$
 BEGIN
   INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
     SELECT DISTINCT 'dbedit'::notification_ntype,
-           (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' WHEN 'releases' THEN 'r' WHEN 'producers' THEN 'p' ELSE 'c' END)::notification_ltype,
+           (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' WHEN 'releases' THEN 'r' WHEN 'producers' THEN 'p' WHEN 'staff' THEN 's' ELSE 'c' END)::notification_ltype,
            h.requester, NEW.id, h2.rev, x.title, h2.requester
       -- look for changes of the edited entry
       FROM changes h
@@ -928,6 +931,9 @@ BEGIN
         UNION SELECT cr.id, cr2.name FROM chars_rev cr
                 JOIN chars c ON c.id = cr.cid JOIN chars_rev cr2 ON cr2.id = c.latest
                WHERE TG_TABLE_NAME = 'chars' AND cr.cid = NEW.id
+        UNION SELECT sr.id, sa.name FROM staff_rev sr
+                JOIN staff s ON s.id = sr.sid JOIN staff_rev sr2 ON sr2.id = s.latest JOIN staff_alias sa ON sa.id = sr2.aid AND sa.rid = sr2.id
+               WHERE TG_TABLE_NAME = 'staff' AND sr.sid = NEW.id
       ) x(id, title) ON h.id = x.id
       -- join info about the deletion itself
       JOIN changes h2 ON h2.id = NEW.latest
