@@ -85,6 +85,7 @@ sub edit {
     || $vid && (($v->{locked} || $v->{hidden}) && !$self->authCan('dbmod'));
 
   my $r = $v ? $self->dbReleaseGet(vid => $v->{id}) : [];
+  my $chars = $v ? $self->dbCharGet(vid => $v->{id}, results => 50) : [];
 
   my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai image img_nsfw ihid ilock|),
@@ -145,11 +146,17 @@ sub edit {
           $last_c = $c;
         }
 
-        my $last_s;
-        for my $s (sort { $a->{aid} <=> $b->{aid} || $a->{cid} <=> $b->{cid} } @$raw_s) {
-          next if $last_s->{aid} == $s->{aid} && $last_s->{cid} == $s->{cid};
-          push @seiyuu, $s;
-          $last_s = $s;
+        # if character list is empty, any seiyuu data will be discarded
+        if (@$chars && @$raw_s) {
+          my %vn_chars = map +($_->{id} => 1), @$chars;
+          my $last_s;
+          for my $s (sort { $a->{aid} <=> $b->{aid} || $a->{cid} <=> $b->{cid} } @$raw_s) {
+            next unless exists $vn_chars{$s->{cid}}; # weed out odd characters
+            next if $last_s->{aid} == $s->{aid} && $last_s->{cid} == $s->{cid};
+            $s->{cid} += 0; # force numeric conversion
+            push @seiyuu, $s;
+            $last_s = $s;
+          }
         }
       };
       push @{$frm->{_err}}, [ 'credits', 'template', 'json' ] if $@;
@@ -210,7 +217,7 @@ sub edit {
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
   $self->htmlEditMessage('v', $v, $title);
-  _form($self, $v, $frm, $r);
+  _form($self, $v, $frm, $r, $chars);
   $self->htmlFooter;
 }
 
@@ -250,8 +257,7 @@ sub _uploadimage {
 
 
 sub _form {
-  my($self, $v, $frm, $r) = @_;
-  my $chars = $v ? $self->dbCharGet(vid => $v->{id}, results => 50) : [];
+  my($self, $v, $frm, $r, $chars) = @_;
   my $import = @$chars ? $self->dbVNImportSeiyuu($v->{id}, [ map $_->{id}, @$chars ]) : [];
   $self->htmlForm({ frm => $frm, action => $v ? "/v$v->{id}/edit" : '/v/new', editsum => 1, upload => 1 },
   vn_geninfo => [ mt('_vnedit_geninfo'),

@@ -12,7 +12,7 @@ TUWF::register(
   qr{s(?:([1-9]\d*)(?:\.([1-9]\d*))?/edit|/new)}
     => \&edit,
   qr{s/([a-z0]|all)}               => \&list,
-  qr{xml/staff.xml}                => \&staffxml,
+  qr{xml/staff\.xml}               => \&staffxml,
 );
 
 sub page {
@@ -205,7 +205,7 @@ sub edit {
     || $sid && (($s->{locked} || $s->{hidden}) && !$self->authCan('dbmod'));
 
   my %b4 = !$sid ? () : (
-    (map { $_ => $s->{$_} } qw|aid name original gender lang desc l_wp l_site l_twitter l_anidb ihid ilock|),
+    (map { $_ => $s->{$_} } qw|name original gender lang desc l_wp l_site l_twitter l_anidb ihid ilock|),
     aliases => jsonEncode [
       map +{ aid => $_->{id}, name => $_->{name}, orig => $_->{original} },
       sort { $a->{name} cmp $b->{name} } @{$s->{aliases}}
@@ -216,7 +216,6 @@ sub edit {
   if ($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     $frm = $self->formValidate (
-      { post => 'aid',           required  => 0, template => 'int' },
       { post => 'name',          maxlength => 200 },
       { post => 'original',      required  => 0, maxlength => 200,  default => '' },
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
@@ -234,29 +233,33 @@ sub edit {
     );
     push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
 
-    my $aliases = eval { jsonDecode $frm->{aliases} };
-    push @{$frm->{_err}}, [ 'aliases', 'template', 'json' ] if $@ || ref $aliases ne 'ARRAY';
+    my @aliases;
+    my $raw_a = eval { jsonDecode $frm->{aliases} };
+    push @{$frm->{_err}}, [ 'aliases', 'template', 'json' ] if $@ || ref $raw_a ne 'ARRAY';
     if(!$frm->{_err}) {
-      for my $a (@$aliases) {
-        $a->{aid} *= 1; # normalize to a number so that the comparison works.
+      my %old_aliases = $sid ? ( map +($_->{id} => 1), @{$s->{aliases}} ) : ();
+      for my $a (sort { $a->{name} cmp $b->{name} } @$raw_a) {
         # check for empty aliases
         if($a->{name} =~ /^\s*$/) {
           push @{$frm->{_err}}, ['alias_name', 'required'];
           last;
         }
+        # normalize alias id to a number so that the comparison works
+        # or reset it to zero for newly added aliases.
+        $a->{aid} *= $old_aliases{$a->{aid}} ? 1 : 0;
+        push @aliases, $a;
       }
     }
     if(!$frm->{_err}) {
-      # parse and normalize
-      $frm->{aliases} = jsonEncode [ sort { $a->{name} cmp $b->{name} } @$aliases ];
+      $frm->{aliases} = jsonEncode \@aliases;
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
+      $frm->{aid}    = $s->{aid} if $sid;
 
       return $self->resRedirect("/s$sid", 'post')
         if $sid && !first { ($frm->{$_}//'') ne ($b4{$_}//'') } keys %b4;
-    }
-    if(!$frm->{_err}) {
-      $frm->{aliases} = [ map [ @{$_}{qw|aid name orig|} ], @$aliases ];
+
+      $frm->{aliases} = [ map [ @{$_}{qw|aid name orig|} ], @aliases ];
       my $nrev = $self->dbItemEdit ('s' => $sid ? $s->{cid} : undef, %$frm);
       return $self->resRedirect("/s$nrev->{iid}.$nrev->{rev}", 'post');
     }
@@ -272,7 +275,6 @@ sub edit {
   $self->htmlEditMessage('s', $s, $title);
   $self->htmlForm({ frm => $frm, action => $s ? "/s$sid/edit" : '/s/new', editsum => 1 },
   staffe_geninfo => [ mt('_staffe_form_generalinfo'),
-    [ hidden => short => 'aid' ],
     [ input  => name => mt('_staffe_form_name'), short => 'name' ],
     [ input  => name => mt('_staffe_form_original'), short => 'original' ],
     [ static => content => mt('_staffe_form_original_note') ],
