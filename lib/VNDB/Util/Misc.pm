@@ -153,27 +153,28 @@ sub bbSubstLinks {
     $lookup{$1}{$2} = 1;
   }
   return $msg unless %lookup;
+  my @opt = (results => 50);
   # lookup parsed links
   if ($lookup{v}) {
-    $links{"v$_->{id}"} = $_->{title} for (@{$self->dbVNGet(id => [keys %{$lookup{v}}])});
+    $links{"v$_->{id}"} = $_->{title} for (@{$self->dbVNGet(id => [keys %{$lookup{v}}], @opt)});
   }
   if ($lookup{c}) {
-    $links{"c$_->{id}"} = $_->{name} for (@{$self->dbCharGet(id => [keys %{$lookup{c}}])});
+    $links{"c$_->{id}"} = $_->{name} for (@{$self->dbCharGet(id => [keys %{$lookup{c}}], @opt)});
   }
   if ($lookup{p}) {
-    $links{"p$_->{id}"} = $_->{name} for (@{$self->dbProducerGet(id => [keys %{$lookup{p}}])});
+    $links{"p$_->{id}"} = $_->{name} for (@{$self->dbProducerGet(id => [keys %{$lookup{p}}], @opt)});
   }
   if ($lookup{g}) {
-    $links{"g$_->{id}"} = $_->{name} for (@{$self->dbTagGet(id => [keys %{$lookup{g}}])});
+    $links{"g$_->{id}"} = $_->{name} for (@{$self->dbTagGet(id => [keys %{$lookup{g}}], @opt)});
   }
   if ($lookup{i}) {
-    $links{"i$_->{id}"} = $_->{name} for (@{$self->dbTraitGet(id => [keys %{$lookup{i}}])});
+    $links{"i$_->{id}"} = $_->{name} for (@{$self->dbTraitGet(id => [keys %{$lookup{i}}], @opt)});
   }
   return $msg unless %links;
   my($result, @open) = ('', 'first');
 
   while($msg =~ m{
-    (\b[tdvprcugi][1-9][0-9]*(?:\.[1-9][0-9]*)?\b)| # 1. id
+    (?:\b([tdvprcugi][1-9]\d*)(?:\.[1-9]\d*)?\b) | # 1. id
     (\[[^\s\]]+\])                               | # 2. tag
     ((?:https?|ftp)://[^><"\n\s\]\[]+[\d\w=/-])    # 3. url
   }x) {
@@ -198,8 +199,8 @@ sub bbSubstLinks {
         } elsif($tag eq '[/url]' && $open[$#open] eq 'url') {
           pop @open;
         }
-      } elsif($id && !grep(/^(?:quote|url)/, @open) && $links{$match}) {
-        $match = sprintf '[url=/%s]%s[/url]', $match, $links{$match};
+      } elsif($id && !grep(/^(?:quote|url)/, @open) && $links{$id}) {
+        $match = sprintf '[url=/%s]%s[/url]', $match, $links{$id};
       }
     }
     pop @open if($tag && $open[$#open] eq 'raw'  && lc$tag eq '[/raw]');
