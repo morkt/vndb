@@ -1732,7 +1732,7 @@ function ctrLoad() {
     }
   }
   if(q.length > 0)
-    ajax('/xml/traits.xml?r=100;'+q.join(';'), function (ht) {
+    ajax('/xml/traits.xml?r=200;'+q.join(';'), function (ht) {
       var t = ht.responseXML.getElementsByTagName('item');
       for(var i=0; i<t.length; i++)
         ctrAdd(t[i], v[t[i].getAttribute('id')]);

@@ -407,7 +407,7 @@ sub traitxml {
   my $f = $self->formValidate(
     { get => 'q', required => 0, maxlength => 500 },
     { get => 'id', required => 0, multi => 1, template => 'int' },
-    { get => 'r', required => 0, default => 15, template => 'int', min => 1, max => 100 },
+    { get => 'r', required => 0, default => 15, template => 'int', min => 1, max => 200 },
   );
   return $self->resNotFound if $f->{_err} || (!$f->{q} && !$f->{id} && !$f->{id}[0]);
 
