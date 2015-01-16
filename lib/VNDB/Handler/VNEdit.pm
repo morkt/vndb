@@ -85,7 +85,7 @@ sub edit {
     || $vid && (($v->{locked} || $v->{hidden}) && !$self->authCan('dbmod'));
 
   my $r = $v ? $self->dbReleaseGet(vid => $v->{id}) : [];
-  my $chars = $v ? $self->dbCharGet(vid => $v->{id}, results => 50) : [];
+  my $chars = $v ? $self->dbCharGet(vid => $v->{id}, results => 100) : [];
 
   my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai image img_nsfw ihid ilock|),
@@ -137,11 +137,18 @@ sub edit {
         my $raw_c = $frm->{credits} ? jsonDecode $frm->{credits} : [];
         my $raw_s = $frm->{seiyuu}  ? jsonDecode $frm->{seiyuu}  : [];
 
+        # ensure submitted alias IDs exist within database
+        my @alist = map $_->{aid}, @$raw_c, @$raw_s;
+        my %staff = @alist ? map +($_->{aid} => 1), @{$self->dbStaffGet(aid => \@alist)} : ();
+        return unless %staff; # exit from the eval block if staff list is empty
+
         # check for duplicate credits
-        my $last_c;
+        my $last_c = { aid => 0, role => '' };
         for my $c (sort { $a->{aid} <=> $b->{aid} || $a->{role} cmp $b->{role} } @$raw_c) {
+          next unless exists $staff{$c->{aid}};
           # discard entries with identical name & role
           next if $last_c->{aid} == $c->{aid} && $last_c->{role} eq $c->{role};
+          $c->{aid} += 0;
           push @credits, $c;
           $last_c = $c;
         }
@@ -149,11 +156,12 @@ sub edit {
         # if character list is empty, any seiyuu data will be discarded
         if (@$chars && @$raw_s) {
           my %vn_chars = map +($_->{id} => 1), @$chars;
-          my $last_s;
+          my $last_s = { aid => 0, cid => 0 };
           for my $s (sort { $a->{aid} <=> $b->{aid} || $a->{cid} <=> $b->{cid} } @$raw_s) {
-            next unless exists $vn_chars{$s->{cid}}; # weed out odd characters
+            next unless $staff{$s->{aid}} && $vn_chars{$s->{cid}}; # weed out odd credits
             next if $last_s->{aid} == $s->{aid} && $last_s->{cid} == $s->{cid};
             $s->{cid} += 0; # force numeric conversion
+            $s->{aid} += 0;
             push @seiyuu, $s;
             $last_s = $s;
           }
