@@ -2841,6 +2841,7 @@ if(byId('expandall')) {
 if(byId('charspoil_sel')) {
   var k = byClass('charspoil');
   var h = byName(byId('charspoil_sel'), 'a');
+  var t = byClass('table', 'stripe');
   var setall = function(spoil) {
     for(var i=0; i<k.length; i++)
       setClass(k[i], 'hidden',
@@ -2849,6 +2850,18 @@ if(byId('charspoil_sel')) {
         hasClass(k[i], 'charspoil_1') ? spoil < 1 : spoil < 2);
     for(var i=0; i<h.length; i++)
       setClass(h[i], 'sel', spoil == i);
+    if(k.length) {
+      for(var i=0; i<t.length; i++) {
+        var b = byName(t[i], 'tbody');
+        if(!b.length) continue;
+        setClass(t[i], 'stripe', false);
+        var r = 1;
+        var rows = byName(b[0], 'tr');
+        for(var j=0; j<rows.length; j++)
+          if(!hasClass(rows[j], 'nostripe') && !hasClass(rows[j], 'hidden'))
+            setClass(rows[j], 'odd', r++&1);
+      }
+    }
   };
   for(var i=0; i<h.length; i++) {
     h[i].num = i;
