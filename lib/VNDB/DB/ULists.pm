@@ -101,18 +101,17 @@ sub dbVNListList {
     );
 
     if(@$rel) {
-      my %rel = map {
-        $_->{languages}=[];
-        $_->{latest}, $_->{languages}
-      } @$rel;
-
+      my %rel = map { $_->{latest} => [] } @$rel;
       push(@{$rel{$_->{rid}}}, $_->{lang}) for (@{$self->dbAll(q|
         SELECT rid, lang
           FROM releases_lang
           WHERE rid IN(!l)|,
         [ keys %rel ]
       )});
-      push @{$vns{$_->{vid}}}, $_ for @$rel;
+      for(@$rel) {
+        $_->{languages} = $rel{$_->{latest}};
+        push @{$vns{$_->{vid}}}, $_;
+      }
     }
   }
 
