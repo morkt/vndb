@@ -647,6 +647,7 @@ sub page {
 
   my $haschar = $self->dbVNHasChar($v->{id});
   if($haschar || $self->authCan('edit')) {
+    clearfloat; # fix tabs placement when tags are hidden
     ul class => 'maintabs notfirst';
      if($haschar) {
        li class => 'left '.(!$char ? ' tabselected' : ''); a href => "/v$v->{id}#main", name => 'main', mt '_vnpage_tab_main'; end;
