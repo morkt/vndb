@@ -27,7 +27,7 @@ sub dbProducerGet {
     $o{id} ? (
       'p.id = ?' => $o{id} ) : (),
     $o{search} ? (
-      '(pr.name ILIKE ? OR pr.original ILIKE ? OR pr.alias ILIKE ?)', [ map '%%'.$o{search}.'%%', 1..3 ] ) : (),
+      '(pr.name ILIKE ? OR pr.original ILIKE ? OR pr.alias ILIKE ?)', [ map '%'.$o{search}.'%', 1..3 ] ) : (),
     $o{char} ? (
       'LOWER(SUBSTR(pr.name, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (

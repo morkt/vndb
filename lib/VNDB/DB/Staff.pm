@@ -30,7 +30,7 @@ sub dbStaffGet {
         # japanese character.
         # note: more precise regex would be /[\p{Hiragana}\p{Katakana}\p{Han}]/
         ( q|(sa.original LIKE ? OR translate(sa.original,' ','') LIKE ?)| => [ '%'.$o{search}.'%', ($o{search} =~ s/\s+//gr).'%' ] ) :
-        ( '(sa.name ILIKE ? OR sa.original ILIKE ?)' => [ map '%%'.$o{search}.'%%', 1..2 ] ) : (),
+        ( '(sa.name ILIKE ? OR sa.original ILIKE ?)' => [ map '%'.$o{search}.'%', 1..2 ] ) : (),
     $o{char} ? ( 'LOWER(SUBSTR(sa.name, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ?
       ( '(ASCII(sa.name) < 97 OR ASCII(sa.name) > 122) AND (ASCII(sa.name) < 65 OR ASCII(sa.name) > 90)' => 1 ) : (),

@@ -43,7 +43,7 @@ sub dbCharGet {
     defined $o{weight_min} ? ( 'cr.weight >= ?' => $o{weight_min} ) : (),
     defined $o{weight_max} ? ( 'cr.weight <= ? AND cr.weight > 0' => $o{weight_max} ) : (),
     $o{search} ? (
-      '(cr.name ILIKE ? OR cr.original ILIKE ? OR cr.alias ILIKE ?)', [ map '%%'.$o{search}.'%%', 1..3 ] ) : (),
+      '(cr.name ILIKE ? OR cr.original ILIKE ? OR cr.alias ILIKE ?)', [ map '%'.$o{search}.'%', 1..3 ] ) : (),
     $o{char} ? (
       'LOWER(SUBSTR(cr.name, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
