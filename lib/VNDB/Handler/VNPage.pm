@@ -3,7 +3,7 @@ package VNDB::Handler::VNPage;
 
 use strict;
 use warnings;
-no warnings 'experimental::smartmatch';
+no if $] >= 5.018, warnings => 'experimental::smartmatch';
 use feature qw{ switch };
 use TUWF ':html', 'xml_escape';
 use VNDB::Func;
