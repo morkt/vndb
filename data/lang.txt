@@ -5427,7 +5427,7 @@ en : Gender
 en : Language
 
 :_staff_aliases
-en : Aliases
+en : [quant,_1,Alias,Aliases]
 
 :_staff_links
 en : Links

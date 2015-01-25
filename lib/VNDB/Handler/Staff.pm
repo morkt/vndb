@@ -67,13 +67,16 @@ sub page {
      end;
      if (@{$s->{aliases}}) {
        Tr;
-        td class => 'key', mt '_staff_aliases';
+        td class => 'key', mt('_staff_aliases', scalar @{$s->{aliases}});
         td;
-         p;
+         table class => 'aliases';
           foreach my $alias (@{$s->{aliases}}) {
-            txt $alias->{name};
-            txt ' ('.$alias->{original}.')' if $alias->{original};
-            br;
+            Tr class => 'nostripe';
+             td $alias->{original} ? () : (colspan => 2), class => 'key';
+              txt $alias->{name};
+             end;
+             td $alias->{original} if $alias->{original};
+            end;
           }
          end;
         end;
@@ -101,13 +104,13 @@ sub page {
 
    # description
    div class => 'staffdesc';
-   if($s->{desc}) {
+    if($s->{desc}) {
       h2 mt '_staff_bio';
       p;
        lit bb2html $s->{desc}, 0, 1;
       end;
       br;
-   }
+    }
 
     if (@{$s->{roles}}) {
       h2 mt '_staff_credits';
@@ -201,7 +204,7 @@ sub edit {
   return $self->resNotFound if $sid && !$s->{id};
   $rev = undef if !$s || $s->{cid} == $s->{latest};
 
-  return $self->htmlDenied if !$self->authCan('edit')
+  return $self->htmlDenied if !$self->authCan('staffedit')
     || $sid && (($s->{locked} || $s->{hidden}) && !$self->authCan('dbmod'));
 
   my %b4 = !$sid ? () : (

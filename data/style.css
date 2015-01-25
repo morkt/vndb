@@ -578,6 +578,8 @@ div.staffbrowse	   { padding-bottom: 10px }
 .staffdesc p { padding: 0 5px; }
 .staffroles td { padding-left: 20px; padding-right: 20px; }
 .staffroles td.tc2 { min-width: 100px; }
+table.aliases td { padding: 0 5px; }
+table.aliases td.key { padding: 0 5px 0 0; }
 
 
 /***** Staff display *****/
