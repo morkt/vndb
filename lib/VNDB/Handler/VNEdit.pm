@@ -139,7 +139,7 @@ sub edit {
 
         # ensure submitted alias IDs exist within database
         my @alist = map $_->{aid}, @$raw_c, @$raw_s;
-        my %staff = @alist ? map +($_->{aid} => 1), @{$self->dbStaffGet(aid => \@alist)} : ();
+        my %staff = @alist ? map +($_->{aid} => 1), @{$self->dbStaffGet(aid => \@alist, results => 200)} : ();
         return unless %staff; # exit from the eval block if staff list is empty
 
         # check for duplicate credits
