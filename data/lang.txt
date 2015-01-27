@@ -4227,6 +4227,9 @@ tr : Sadece yapımcılar
 uk : Лише компанії
 it : Solo editori
 
+:_hist_filter_onlystaff
+en : Only staff
+
 :_hist_filter_onlychars
 en : Only characters
 ru : Только персонажи

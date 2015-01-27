@@ -45,7 +45,7 @@ sub list {
   $f->{wish}   = $read_write_pref->('wish',   'vn_list_wish');
 
   return $self->resRedirect('/'.$1.$2.(!$3 ? '' : $1 eq 'd' ? '#'.$3 : '.'.$3), 'temp')
-    if $f->{q} && $f->{q} =~ /^([gvrptudci])([0-9]+)(?:\.([0-9]+))?$/;
+    if $f->{q} && $f->{q} =~ /^([gvrptudcis])([0-9]+)(?:\.([0-9]+))?$/;
 
   $f->{s} = 'title' if $f->{fil} !~ /tag_inc-/ && $f->{s} eq 'tagscore';
   $f->{o} = $f->{s} eq 'tagscore' ? 'd' : 'a' if !$f->{o};

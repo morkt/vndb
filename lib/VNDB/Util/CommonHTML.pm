@@ -132,7 +132,7 @@ sub htmlDenied {
 sub htmlHiddenMessage {
   my($self, $type, $obj) = @_;
   return 0 if !$obj->{hidden};
-  my $board = $type eq 'c' ? 'db' : $type eq 'r' ? 'v'.$obj->{vn}[0]{vid} : $type.$obj->{id};
+  my $board = $type =~ /[cs]/ ? 'db' : $type eq 'r' ? 'v'.$obj->{vn}[0]{vid} : $type.$obj->{id};
   # fetch edit summary (not present in $obj because the changes aren't fetched)
   my $editsum = $type eq 'v' ? $self->dbVNGet(id => $obj->{id}, what => 'changes')->[0]{comments}
               : $type eq 'r' ? $self->dbReleaseGet(id => $obj->{id}, what => 'changes')->[0]{comments}
@@ -303,7 +303,7 @@ sub htmlEditMessage {
     ul;
      li; lit mt '_editmsg_msg_guidelines', "/d$guidelines"; end;
      if($obj) {
-       li; lit mt '_editmsg_msg_discuss', $type eq 'c' ? '/t/db' : $type eq 'r' ? "/t/v$obj->{vn}[0]{vid}" : "/t/$type$obj->{id}"; end;
+       li; lit mt '_editmsg_msg_discuss', $type =~ /[cs]/ ? '/t/db' : $type eq 'r' ? "/t/v$obj->{vn}[0]{vid}" : "/t/$type$obj->{id}"; end;
        li; lit mt '_editmsg_msg_history', "/$type$obj->{id}/hist"; end;
      } elsif($type ne 'r') {
        li; lit mt '_editmsg_msg_search', "/$type/all", $num; end;
