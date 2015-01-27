@@ -13176,16 +13176,9 @@ it : Scegli questa opzione se l'immagine contiene nudi, gore o è generalmente n
 en : Staff
 
 :_vnedit_staff_msg
-en : Please adhere to the folowing guidelines:[br]
-     - Preferably add major staff only.[br]
-     - Use "Staff" option with accompanying note for any additional minor roles.[br]
-     - If someone performed several important jobs, add multiple entries with different major roles.[br]
-     - Don't add a person as "Staff" if he/she is already credited with some of the major
-       roles. Add note instead.[br]
-     - Voice actors should be added under the "Cast" tab (available only if VN has any
-       characters listed).[br]
-     - If database doesn't contain particular name yet, add corresponding entry
-       [url,/s/new,here], but check for aliases first.
+en : Please check the [url,/d2.3,staff editing guidelines]. You can
+     [url,/s/new,create a new staff entry] if it is not in the database yet,
+     but please [url,/s/all,check for aliasses first].
 
 :_vnedit_cast
 en : Cast

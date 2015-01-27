@@ -77,12 +77,36 @@
 </dl>
 
 
-:SUB:Categories
-<i>
- The category system has been replaced with tags. This section is a placeholder to preserve
- numbering.
-</i>
+:SUB:Staff & Cast
+<p>It's possible to link VN entries to <a href="/d16">staff entries</a> in the
+staff and cast tabs.</p>
 
+:SUBSUB:Staff
+<p>
+ The staff tab lists the people or groups involved in the creation of the
+ visual novel. The following roles can be used:
+</p>
+<dl>
+ <dt>Script writer</dt><dd>&nbsp;</dd>
+ <dt>Character design</dt><dd>&nbsp;</dd>
+ <dt>Composer</dt><dd>&nbsp;</dd>
+ <dt>Director</dt><dd>&nbsp;</dd>
+ <dt>Artist</dt><dd>&nbsp;</dd>
+ <dt>Vocals</dt><dd>Vocals used in the music. Not to be used for voice actors of characters, these should be listed under <a href="/d2.3.2">cast</a> instead.</dd>
+ <dt>Staff</dt><dd>Used for any additional minor roles, use the "notes" field to indicate the staff's involvement.</dd>
+</dl>
+<p>A few guidelines:</p>
+<ul>
+ <li>Add major staff only.</li>
+ <li>If someone performed several important jobs, add multiple entries with different major roles.</li>
+ <li>Don't add a person as "Staff" if he/she is already credited with some of the major roles. Mention this in the notes field instead.</li>
+</ul>
+
+:SUBSUB:Cast
+<p>
+ The cast tab lists the voice actors for each character. This tab is only
+ available when characters have been linked to the visual novel.
+</p>
 
 :SUB:Image
 <p>

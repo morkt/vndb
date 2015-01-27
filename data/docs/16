@@ -16,9 +16,9 @@
   information on name order and romanization. <a href="/d5.1">Romanise</a> according to our
   guidelines.
  </dd><dt>Original name</dt><dd>
-  The actual name of the person, in the case it is not officially in the latin alphabet.
-  Leave empty if it's the same as the "Name (romaji)". To simplify database searches, do not
-  include a space between the given name and the surname.
+  The actual name of the person, in the case it is not officially in the latin
+  alphabet.  Leave empty if it's the same as the "Name (romaji)". If possible,
+  try to include a space between the given name and the surname.
  </dd><dt>Gender</dt><dd>
   Person's gender, if known.
  </dd><dt>Primary language</dt><dd>

@@ -1,5 +1,6 @@
 :TITLE:Přidání/editace vizuální novely
 :INC:index
+:INC:incomplete
 
 :SUB:Kdy přidat vizuální novelu
 <p>
