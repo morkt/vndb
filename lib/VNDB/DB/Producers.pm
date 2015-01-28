@@ -25,7 +25,7 @@ sub dbProducerGet {
     !$o{id} && !$o{rev} ? (
       'p.hidden = FALSE' => 1 ) : (),
     $o{id} ? (
-      'p.id = ?' => $o{id} ) : (),
+      'p.id IN(!l)' => [ ref $o{id} ? $o{id} : [$o{id}] ] ) : (),
     $o{search} ? (
       '(pr.name ILIKE ? OR pr.original ILIKE ? OR pr.alias ILIKE ?)', [ map '%'.$o{search}.'%', 1..3 ] ) : (),
     $o{char} ? (

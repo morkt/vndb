@@ -215,7 +215,7 @@ sub edit {
 
       # create/edit post
       my %post = (
-        msg => $frm->{msg},
+        msg => $self->bbSubstLinks($frm->{msg}),
         hidden => $num != 1 && $frm->{hidden},
         lastmod => !$num || $frm->{nolastmod} ? 0 : time,
       );

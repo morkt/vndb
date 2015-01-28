@@ -25,7 +25,8 @@ sub dbCharGet {
 
   my %where = (
     !$o{id} && !$o{rev} ? ( 'c.hidden = FALSE' => 1 ) : (),
-    $o{id}  ? ( 'c.id = ?'  => $o{id} ) : (),
+    $o{id} ? (
+      'c.id IN(!l)' => [ ref $o{id} ? $o{id} : [$o{id}] ] ) : (),
     $o{rev} ? ( 'h.rev = ?' => $o{rev} ) : (),
     $o{notid}    ? ( 'c.id <> ?'   => $o{notid} ) : (),
     $o{instance} ? ( 'cr.main = ?' => $o{instance} ) : (),
@@ -155,7 +156,6 @@ sub dbCharRevisionInsert {
 sub dbCharImageId {
   return shift->dbRow("SELECT nextval('charimg_seq') AS ni")->{ni};
 }
-
 
 
 1;

@@ -3,7 +3,7 @@ package VNDB::Handler::VNPage;
 
 use strict;
 use warnings;
-no warnings 'experimental::smartmatch';
+no if $] >= 5.018, warnings => 'experimental::smartmatch';
 use feature qw{ switch };
 use TUWF ':html', 'xml_escape';
 use VNDB::Func;
@@ -649,6 +649,7 @@ sub page {
   my $haschar = $self->dbVNHasChar($v->{id});
   my $hasstaff = $self->dbVNHasStaff($v->{id});
   if($haschar || $hasstaff || $self->authCan('edit')) {
+    clearfloat; # fix tabs placement when tags are hidden
     ul class => 'maintabs notfirst';
      if($haschar || $hasstaff) {
        li class => 'left '.(!($char || $staff) && ' tabselected'); a href => "/v$v->{id}#main", name => 'main', mt '_vnpage_tab_main'; end;

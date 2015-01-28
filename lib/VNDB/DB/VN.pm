@@ -32,7 +32,7 @@ sub dbVNGet {
 
   my @where = (
     $o{id} ? (
-      'v.id = ?' => $o{id} ) : (),
+      'v.id IN(!l)' => [ ref $o{id} ? $o{id} : [$o{id}] ] ) : (),
     $o{rev} ? (
       'c.rev = ?' => $o{rev} ) : (),
     $o{char} ? (
