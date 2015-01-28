@@ -329,6 +329,7 @@ sub edit {
       $frm->{vns}    = join(' ', map sprintf('%d-%d-%d-%s', @$_), @vns);
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
+      $frm->{desc}   = $self->bbSubstLinks($frm->{desc});
       $frm->{main_spoil} = 0 if !$frm->{main};
 
       # check for changes

@@ -238,6 +238,7 @@ sub edit {
       # normalize
       $frm->{ihid} = $frm->{ihid}?1:0;
       $frm->{ilock} = $frm->{ilock}?1:0;
+      $frm->{desc} = $self->bbSubstLinks($frm->{desc});
       $relations = [] if $frm->{ihid};
       $frm->{prodrelations} = join '|||', map $_->[0].','.$_->[1].','.$_->[2], sort { $a->[1] <=> $b->[1]} @{$relations};
 

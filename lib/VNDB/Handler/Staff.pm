@@ -257,6 +257,7 @@ sub edit {
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
       $frm->{aid}    = $s->{aid} if $sid;
+      $frm->{desc}   = $self->bbSubstLinks($frm->{desc});
 
       return $self->resRedirect("/s$sid", 'post')
         if $sid && !first { ($frm->{$_}//'') ne ($b4{$_}//'') } keys %b4;
