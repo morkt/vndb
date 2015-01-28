@@ -5495,8 +5495,7 @@ en : Alias (romaji)
 en : Original alias
 
 :_staffe_form_original_note
-en : The original name of the person, leave blank if it is already in the Latin alphabet.[br]
-     For japanese names, do not include a space between the given name and the surname.
+en : The original name of the person, leave blank if it is already in the Latin alphabet.
 
 :_staffe_form_note
 en : Staff note
