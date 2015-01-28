@@ -244,6 +244,37 @@ CREATE TABLE sessions (
   PRIMARY KEY (uid, token)
 );
 
+-- staff
+CREATE TABLE staff (
+  id SERIAL NOT NULL PRIMARY KEY,
+  latest integer NOT NULL DEFAULT 0,
+  locked boolean NOT NULL DEFAULT FALSE,
+  hidden boolean NOT NULL DEFAULT FALSE
+);
+
+-- staff_alias
+CREATE TABLE staff_alias (
+  id SERIAL NOT NULL,
+  rid integer,
+  name varchar(200) NOT NULL DEFAULT '',
+  original varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (id, rid)
+);
+
+-- staff_rev
+CREATE TABLE staff_rev (
+  id integer NOT NULL PRIMARY KEY,
+  sid integer NOT NULL,
+  aid integer NOT NULL,
+  gender gender  NOT NULL DEFAULT 'unknown',
+  lang language NOT NULL DEFAULT 'ja',
+  "desc" text NOT NULL DEFAULT '',
+  l_wp varchar(150) NOT NULL DEFAULT '',
+  l_site varchar(250) NOT NULL DEFAULT '',
+  l_twitter varchar(16) NOT NULL DEFAULT '',
+  l_anidb integer
+);
+
 -- stats_cache
 CREATE TABLE stats_cache (
   section varchar(25) NOT NULL PRIMARY KEY,
@@ -454,6 +485,23 @@ CREATE TABLE vn_screenshots (
   PRIMARY KEY(vid, scr)
 );
 
+-- vn_seiyuu
+CREATE TABLE vn_seiyuu (
+  vid integer NOT NULL,
+  aid integer NOT NULL,
+  cid integer NOT NULL,
+  note varchar(250) NOT NULL DEFAULT '',
+  PRIMARY KEY (vid, aid, cid)
+);
+
+-- vn_staff
+CREATE TABLE vn_staff (
+  vid integer NOT NULL,
+  aid integer NOT NULL,
+  role credit_type NOT NULL DEFAULT 'staff',
+  note varchar(250) NOT NULL DEFAULT '',
+  PRIMARY KEY (vid, aid, role)
+);
 
 -- vnlists
 CREATE TABLE vnlists (
@@ -518,6 +566,11 @@ ALTER TABLE releases_vn         ADD FOREIGN KEY (vid)       REFERENCES vn       
 ALTER TABLE rlists              ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE rlists              ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
 ALTER TABLE sessions            ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
+ALTER TABLE staff               ADD FOREIGN KEY (latest)    REFERENCES staff_rev     (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE staff_alias         ADD FOREIGN KEY (rid)       REFERENCES staff_rev     (id) DEFERRABLE INITIALLY DEFERRED;
+ALTER TABLE staff_rev           ADD FOREIGN KEY (id)        REFERENCES changes       (id);
+ALTER TABLE staff_rev           ADD FOREIGN KEY (sid)       REFERENCES staff         (id);
+ALTER TABLE staff_rev           ADD FOREIGN KEY (aid,id)    REFERENCES staff_alias   (id,rid);
 ALTER TABLE tags                ADD FOREIGN KEY (addedby)   REFERENCES users         (id) ON DELETE SET DEFAULT;
 ALTER TABLE tags_aliases        ADD FOREIGN KEY (tag)       REFERENCES tags          (id);
 ALTER TABLE tags_parents        ADD FOREIGN KEY (tag)       REFERENCES tags          (id);
@@ -547,6 +600,9 @@ ALTER TABLE vn_rev              ADD FOREIGN KEY (vid)       REFERENCES vn       
 ALTER TABLE vn_screenshots      ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
 ALTER TABLE vn_screenshots      ADD FOREIGN KEY (scr)       REFERENCES screenshots   (id);
 ALTER TABLE vn_screenshots      ADD FOREIGN KEY (rid)       REFERENCES releases      (id);
+ALTER TABLE vn_seiyuu           ADD FOREIGN KEY (cid)       REFERENCES chars         (id);
+ALTER TABLE vn_seiyuu           ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
+ALTER TABLE vn_staff            ADD FOREIGN KEY (vid)       REFERENCES vn_rev        (id);
 ALTER TABLE vnlists             ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE vnlists             ADD FOREIGN KEY (vid)       REFERENCES vn            (id);
 ALTER TABLE votes               ADD FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
@@ -560,5 +616,7 @@ CREATE INDEX releases_producers_rid ON releases_producers (rid);
 CREATE INDEX releases_vn_vid ON releases_vn (vid);
 CREATE INDEX tags_vn_date    ON tags_vn     (date);
 CREATE INDEX tags_vn_vid     ON tags_vn     (vid);
+CREATE INDEX vn_staff_vid    ON vn_staff    (vid);
+CREATE INDEX vn_staff_aid    ON vn_staff    (aid);
 CREATE UNIQUE INDEX chars_vns_pkey ON chars_vns (cid, vid, COALESCE(rid, 0));
 
