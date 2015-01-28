@@ -3055,6 +3055,15 @@ it : Editori
 
 :_menu_staff
 en : Staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_menu_characters
 en : Characters
@@ -3265,6 +3274,15 @@ it : Aggiungi Editore
 
 :_menu_addstaff
 en : Add Staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_menu_addcharacter
 en : Add Character
@@ -3892,6 +3910,15 @@ it : Editori
 
 :_searchbox_staff
 en : Staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_searchbox_chars
 en : Characters
@@ -4229,6 +4256,15 @@ it : Solo editori
 
 :_hist_filter_onlystaff
 en : Only staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_hist_filter_onlychars
 en : Only characters
@@ -5349,204 +5385,789 @@ it : Nessun risultato
 
 :_credit_script
 en : Script writer
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_credit_chardesign
 en : Character design
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_credit_music
 en : Composer
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_credit_director
 en : Director
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_credit_art
 en : Artist
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_credit_songs
 en : Vocals
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_credit_staff
 en : Staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 # Staff diff fields (/s+.+)
 
 :_revfield_s_name
 en : Name (romaji)
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_revfield_s_original
 en : Original name
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_revfield_s_gender
 en : Gender
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_revfield_s_lang
 en : Language
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_revfield_s_aliases
 en : Aliases
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_revfield_s_l_wp
 en : Wikipedia link
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_revfield_s_l_site
 en : Official page
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_revfield_s_l_twitter
 en : Twitter account
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_revfield_s_l_anidb
 en : AniDB creator ID
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_revfield_s_desc
 en : Description
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 # Staff browser
 
 :_sbrowse_title
 en : Browse staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_sbrowse_list
 en : Staff list
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_sbrowse_searchres
 en : Search results
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_sbrowse_noresults
 en : No results found
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_credits
 en : Credits
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_voiced
 en : Voiced characters
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_as
 en : as [_1]
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_gender
 en : Gender
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_language
 en : Language
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_aliases
 en : [quant,_1,Alias,Aliases]
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_links
 en : Links
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_l_wp
 en : Wikipedia
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_l_site
 en : Official page
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_l_twitter
 en : Twitter
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_l_anidb
 en : AniDB
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_bio
 en : Info
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_col_title
 en : Title
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_col_released
 en : Released
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_col_role
 en : Role
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_col_credit
 en : Credit
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_col_note
 en : Note
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_col_cast
 en : Cast
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staff_col_seiyuu
 en : Seiyuu
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 # Add/edit staff
 
 :_staffe_title_edit
 en : Edit [_1]
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_title_add
 en : Add staff member
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_generalinfo
 en : General info
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_name
 en : Name (romaji)
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_original
 en : Original name
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_alias
 en : Alias (romaji)
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_original_alias
 en : Original alias
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_original_note
 en : The original name of the person, leave blank if it is already in the Latin alphabet.
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_note
 en : Staff note
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_gender
 en : Gender
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_lang
 en : Primary language
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_wikipedia
 en : Wikipedia link
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_site
 en : Official page
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_twitter
 en : Twitter username
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_tw_err
 en : Invalid twitter username
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_form_anidb
 en : AniDB creator ID
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_aliases
 en : Aliases
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_aliases_add
 en : Add alias
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_alias_required
 en : Specify romanized spelling of the alias.
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_staffe_aliases_none
 en : None
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnstaffe_form_staff
 en : Staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnstaffe_form_role
 en : Credit
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnstaffe_form_note
 en : Note
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnstaffe_add
 en : Add staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnstaffe_none
 en : None
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 #############################################################################
 ##                           Release pages (/r/*)                          ##
@@ -8892,6 +9513,15 @@ it : Tutte le altre pubblicazioni
 
 :_charp_voice
 en : Voiced by
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_charp_description
 en : Description
@@ -13173,41 +13803,149 @@ it : Scegli questa opzione se l'immagine contiene nudi, gore o è generalmente n
 
 :_vnedit_staff
 en : Staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnedit_staff_msg
 en : Please check the [url,/d2.3,staff editing guidelines]. You can
      [url,/s/new,create a new staff entry] if it is not in the database yet,
      but please [url,/s/all,check for aliasses first].
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnedit_cast
 en : Cast
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnedit_cast_import
 en : Import cast
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnedit_cast_import_title
 en : Import character cast from related visual novels
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnedit_cast_char
 en : Character
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnedit_cast_sel_char
 en : Select character
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnedit_cast_nochar
 en : Select character first please.
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnedit_cast_seiyuu
 en : Seiyuu
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnedit_cast_note
 en : Note
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnedit_voiced_by
 en : voiced by
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnedit_cast_add
 en : Add cast
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnedit_rel
 en : Relations
@@ -13823,9 +14561,27 @@ it : Relazioni
 
 :_revfield_v_credits
 en : Credits
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_revfield_v_seiyuu
 en : Seiyuu
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_revfield_v_anime
 en : Anime
@@ -14560,6 +15316,15 @@ it : personaggi
 
 :_vnpage_tab_staff
 en : staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnpage_rel
 en : Releases
@@ -14674,15 +15439,51 @@ it : aggiungi personaggio
 
 :_vnpage_staff
 en : Staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnpage_cast
 en : Cast of characters
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnpage_staff_add
 en : add staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnpage_staff_edit
 en : edit staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_vnpage_rel_add
 en : add release
@@ -15563,6 +16364,15 @@ it : [_1] può avere solo caratteri minuscoli e trattini, e deve iniziare con un
 
 :_formerr_tpl_json
 en : [_1]: Malformed staff data
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 
 # vim: set ft=none:
