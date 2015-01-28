@@ -149,7 +149,7 @@ sub bbSubstLinks {
 
   # pre-parse vndb links within message body
   my (%lookup, %links);
-  while ($msg =~ m/(?:^|\s)\K([vcpgi])([1-9][0-9]*)\b/g) {
+  while ($msg =~ m/(?:^|\s)\K([vcpgis])([1-9][0-9]*)\b/g) {
     $lookup{$1}{$2} = 1;
   }
   return $msg unless %lookup;
@@ -170,13 +170,16 @@ sub bbSubstLinks {
   if ($lookup{i}) {
     $links{"i$_->{id}"} = $_->{name} for (@{$self->dbTraitGet(id => [keys %{$lookup{i}}], @opt)});
   }
+  if ($lookup{s}) {
+    $links{"s$_->{id}"} = $_->{name} for (@{$self->dbStaffGet(id => [keys %{$lookup{s}}], @opt)});
+  }
   return $msg unless %links;
   my($result, @open) = ('', 'first');
 
   while($msg =~ m{
-    (?:\b([tdvprcugi][1-9]\d*)(?:\.[1-9]\d*)?\b) | # 1. id
-    (\[[^\s\]]+\])                               | # 2. tag
-    ((?:https?|ftp)://[^><"\n\s\]\[]+[\d\w=/-])    # 3. url
+    (?:\b([tdvprcugis][1-9]\d*)(?:\.[1-9]\d*)?\b) | # 1. id
+    (\[[^\s\]]+\])                                | # 2. tag
+    ((?:https?|ftp)://[^><"\n\s\]\[]+[\d\w=/-])     # 3. url
   }x) {
     my($match, $id, $tag) = ($&, $1, $2);
     $result .= $`;
