@@ -1126,10 +1126,11 @@ sub _staff {
      end 'table';
     end;
   }
-  if(@{$v->{seiyuu}}) {
+  my @seiyuu = grep !$_->{spoil}, @{$v->{seiyuu}};
+  if(@seiyuu) {
     div class => 'mainbox staff cast';
      h1 mt '_vnpage_cast';
-     my $has_notes  = grep { $_->{note} } @{$v->{seiyuu}};
+     my $has_notes  = grep { $_->{note} } @seiyuu;
      table class => 'stripe';
       thead;
        Tr;
@@ -1138,7 +1139,8 @@ sub _staff {
         td class => 'tc3', mt '_staff_col_note' if $has_notes;
        end;
       end;
-      for my $s (@{$v->{seiyuu}}) {
+      for my $s (@seiyuu) {
+        next if $s->{spoil};
         Tr;
          td class => 'tc1';
           a href => "/c$s->{cid}", $s->{cname};
