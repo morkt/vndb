@@ -113,7 +113,7 @@ our %S = (%S,
     changes       => [ 25, 'VNDB Recent Changes', '/hist' ],
     posts         => [ 25, 'VNDB Recent Posts', '/t' ],
   },
-  staff_roles     => [qw|script chardesign music director art songs staff|],
+  staff_roles     => [qw|scenario script chardesign music director art songs staff|],
 );
 
 

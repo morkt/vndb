@@ -5383,8 +5383,20 @@ it : Nessun risultato
 
 # Built-in credits
 
+:_credit_scenario
+en : Scenario
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_credit_script
-en : Script writer
+en : Script
 ru*:
 cs*:
 hu*:
