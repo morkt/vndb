@@ -182,6 +182,17 @@ function setClass(obj, c, set) {
   obj.className = n.join(' ');
 }
 
+function onSubmit(form, handler) {
+  var prev_handler = form.onsubmit;
+  form.onsubmit = function(e) {
+    if(prev_handler)
+      if(!prev_handler(e))
+        return false;
+    return handler(e);
+  }
+}
+
+
 function shorten(v, l) {
   return v.length > l ? v.substr(0, l-3)+'...' : v;
 }
@@ -1030,8 +1041,7 @@ function scrSetSubmit() {
   var frm = byId('screenshots');
   while(frm.nodeName.toLowerCase() != 'form')
     frm = frm.parentNode;
-  oldfunc = frm.onsubmit;
-  frm.onsubmit = function() {
+  onSubmit(frm, function() {
     var loading = 0;
     var norelease = 0;
     var l = byName(byId('scr_table'), 'tr');
@@ -1048,9 +1058,9 @@ function scrSetSubmit() {
     } else if(norelease) {
       alert(mt('_vnedit_scr_frmnorel'));
       return false;
-    } else if(oldfunc)
-      return oldfunc();
-  };
+    }
+    return true;
+  });
 }
 
 function scrURL(id, t) {
@@ -2137,14 +2147,6 @@ if(byId('jt_box_staffe_aliases'))
 // vnsStaffData maps alias id to staff data { NNN: { id: ..., aid: NNN, name: ...} }
 // used to fill form fields instead of ajax queries in vnsLoad() and vncLoad()
 var vnsStaffData = {};
-
-function onSubmit(form, handler) {
-  var prev_handler = form.onsubmit;
-  form.onsubmit = function(e) {
-    if (prev_handler) prev_handler(e);
-    return handler(e);
-  }
-}
 
 function vnsLoad() {
   vnsStaffData = jsonParse(getText(byId('staffdata')||{})) || {};
