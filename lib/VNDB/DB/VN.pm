@@ -330,7 +330,7 @@ sub dbScreenshotRandom {
 sub dbVNHasChar {
   my($self, $vid) = @_;
   return $self->dbRow(
-    'SELECT 1 AS exists FROM chars c JOIN chars_vns cv ON c.latest = cv.cid WHERE cv.vid = ?', $vid
+    'SELECT 1 AS exists FROM chars c JOIN chars_vns cv ON c.latest = cv.cid WHERE cv.vid = ? AND NOT c.hidden', $vid
   )->{exists};
 }
 
