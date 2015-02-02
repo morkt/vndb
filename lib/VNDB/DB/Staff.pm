@@ -7,7 +7,7 @@ use Exporter 'import';
 
 our @EXPORT = qw|dbStaffGet dbStaffRevisionInsert|;
 
-# options: results, page, id, aid, search, rev
+# options: results, page, id, aid, search, rev, truename, role, gender
 # what: extended changes roles aliases
 sub dbStaffGet {
   my $self = shift;
@@ -17,6 +17,16 @@ sub dbStaffGet {
     what => '',
     @_
   );
+  my(@roles, $seiyuu);
+  if(defined $o{role}) {
+    if(ref $o{role}) {
+      $seiyuu = grep /^seiyuu$/, @{$o{role}};
+      @roles = grep !/^seiyuu$/, @{$o{role}};
+    } else {
+      $seiyuu = $o{role} eq 'seiyuu';
+      @roles = $o{role} unless $seiyuu;
+    }
+  }
 
   $o{search} =~ s/%//g if $o{search};
 
@@ -24,6 +34,14 @@ sub dbStaffGet {
     !$o{id} && !$o{rev} ? ( 's.hidden = FALSE' => 1 ) : (),
     $o{id}  ? ( ref $o{id}  ? ('s.id IN(!l)'  => [$o{id}])  : ('s.id = ?' => $o{id}) ) : (),
     $o{aid} ? ( ref $o{aid} ? ('sa.id IN(!l)' => [$o{aid}]) : ('sa.id = ?' => $o{aid}) ) : (),
+    $o{truename} ? ( 'sr.aid = sa.id' => 1 ) : (),
+    defined $o{gender} ? ( 'sr.gender IN(!l)' => [ ref $o{gender} ? $o{gender} : [$o{gender}] ]) : (),
+    defined $o{role} ? (
+      '('.join(' OR ',
+        @roles ? ( 'EXISTS(SELECT 1 FROM vn_staff vs WHERE vs.aid = sa.id AND vs.role IN(!l))' ) : (),
+        $seiyuu ? ( 'EXISTS(SELECT 1 FROM vn_seiyuu vsy WHERE vsy.aid = sa.id)' ) : ()
+      ).')' => ( @roles ? [ \@roles ] : 1 ),
+    ) : (),
     $o{search} ?
       $o{search} =~ /[\x{3000}-\x{9fff}\x{ff00}-\x{ff9f}]/ ?
         # match against 'original' column only if search string contains any

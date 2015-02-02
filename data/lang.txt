@@ -5479,6 +5479,30 @@ tr*:
 uk*:
 it*:
 
+:_credit_seiyuu
+en : Voice actor
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_credit_other
+en : Other
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 # Staff diff fields (/s+.+)
 
 :_revfield_s_name
@@ -5641,6 +5665,90 @@ it*:
 
 :_sbrowse_noresults
 en : No results found
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_sbrowse_fil_title
+en : Staff filters
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_sbrowse_general
+en : General
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_sbrowse_roles
+en : Roles
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_sbrowse_gender
+en : Gender
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_sbrowse_names
+en : Names
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_sbrowse_names_primary
+en : Pimary names only
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_sbrowse_names_all
+en : Include aliases
 ru*:
 cs*:
 hu*:

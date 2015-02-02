@@ -3,7 +3,7 @@ package VNDB::Handler::Staff;
 
 use strict;
 use warnings;
-use TUWF qw(:html :xml xml_escape);
+use TUWF qw(:html :xml uri_escape xml_escape);
 use VNDB::Func;
 use List::Util qw(first);
 
@@ -138,7 +138,7 @@ sub page {
           Tr;
            if($last_vid != $r->{vid}) {
              td class => 'tc2', $row_count > 1 ? (rowspan => $row_count) : ();
-               a href => "/v$r->{vid}", title => $r->{t_original}||$r->{title}, shorten $r->{title}, 100;
+               a href => "/v$r->{vid}", title => $r->{t_original}||$r->{title}, shorten $r->{title}, 60;
              end;
              td class => 'tc3', $row_count > 1 ? (rowspan => $row_count) : ();
                lit $self->{l10n}->datestr($r->{c_released});
@@ -174,7 +174,7 @@ sub page {
         foreach my $r (@{$s->{cast}}) {
           Tr;
            td class => 'tc2';
-            a href => "/v$r->{vid}", title => $r->{t_original}||$r->{title}, shorten $r->{title}, 100;
+            a href => "/v$r->{vid}", title => $r->{t_original}||$r->{title}, shorten $r->{title}, 60;
            end;
            td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
            td class => 'tc1'; a href => "/c$r->{cid}", title => $r->{c_original}, $r->{c_name}; end;
@@ -327,34 +327,43 @@ sub list {
   my $f = $self->formValidate(
     { get => 'p', required => 0, default => 1, template => 'int' },
     { get => 'q', required => 0, default => '' },
+    { get => 'fil', required => 0, default => '' },
   );
   return $self->resNotFound if $f->{_err};
 
-  my ($list, $np) = $self->dbStaffGet(
+  my ($list, $np) = $self->filFetchDB(staff => $f->{fil}, {}, {
     $char ne 'all' ? ( char => $char ) : (),
     $f->{q} ? ( search => $f->{q} ) : (),
     results => 150,
     page => $f->{p}
-  );
+  });
 
   return $self->resRedirect('/s'.$list->[0]{id}, 'temp')
-    if $f->{q} && @$list == 1 && $f->{p} == 1;
+    if $f->{q} && @$list == 1 && $f->{p} == 1 && !$f->{fil};
+
+  my $quri = join(';', $f->{q} ? 'q='.uri_escape($f->{q}) : (), $f->{fil} ? "fil=$f->{fil}" : ());
+  $quri = '?'.$quri if $quri;
+  my $pageurl = "/s/$char$quri";
 
   $self->htmlHeader(title => mt '_sbrowse_title');
 
-  div class => 'mainbox';
+  form action => '/s/all', 'accept-charset' => 'UTF-8', method => 'get';
+   div class => 'mainbox';
     h1 mt '_sbrowse_title';
-    form action => '/s/all', 'accept-charset' => 'UTF-8', method => 'get';
-      $self->htmlSearchBox('s', $f->{q});
-    end;
+    $self->htmlSearchBox('s', $f->{q});
     p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => "/s/$_", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+      a href => "/s/$_$quri", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
     }
     end;
-  end;
 
-  my $pageurl = "/s/$char" . ($f->{q} ? "?q=$f->{q}" : '');
+    a id => 'filselect', href => '#s';
+     lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+    end;
+    input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
+   end;
+  end 'form';
+
   $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 't');
   div class => 'mainbox staffbrowse';
     h1 mt $f->{q} ? '_sbrowse_searchres' : '_sbrowse_list';

@@ -2425,6 +2425,7 @@ var fil_escape = "_ !\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~".split('');
 function filLoad() {
   var l = byId('filselect').href.match(/#r$/) ? filReleases()
         : byId('filselect').href.match(/#c$/) ? filChars()
+        : byId('filselect').href.match(/#s$/) ? filStaff()
         : filVN();
   fil_cats = [ new Object ];
 
@@ -2963,6 +2964,31 @@ function filVN() {
       filFOptions('ul_voted',    mt('_vnbrowse_ul_voted'),  [[0, mt('_vnbrowse_ul_votedno')], [1, mt('_vnbrowse_ul_votedyes') ]]),
       filFOptions('ul_onlist',   mt('_vnbrowse_ul_onlist'), [[0, mt('_vnbrowse_ul_onlistno')],[1, mt('_vnbrowse_ul_onlistyes')]])
     ],
+  ];
+}
+
+function filStaff() {
+  var gend = [
+    ['unknown', mt('_gender_unknown')],
+    ['m', mt('_gender_m')],
+    ['f', mt('_gender_f')],
+  ];
+  var roles = [];
+  for(var i=0; i<staff_roles.length; i++) { // l10n /_credit_.+/
+    if(staff_roles[i] == 'staff') {
+      roles.push(['seiyuu', mt('_credit_seiyuu')]);
+      roles.push(['staff', mt('_credit_other')]);
+    } else
+      roles.push([ staff_roles[i], mt('_credit_'+staff_roles[i]) ]);
+  }
+  return [
+    mt('_sbrowse_fil_title'),
+    [ mt('_sbrowse_general'),
+      filFOptions('truename', mt('_sbrowse_names'), [[1, mt('_sbrowse_names_primary')],[0, mt('_sbrowse_names_all')]]),
+      filFSelect('role', mt('_sbrowse_roles'), roles.length, roles),
+      '',
+      filFSelect('gender', mt('_sbrowse_gender'), gend.length, gend),
+    ]
   ];
 }
 
