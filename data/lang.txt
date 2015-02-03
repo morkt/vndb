@@ -5736,7 +5736,7 @@ uk*:
 it*:
 
 :_sbrowse_names_primary
-en : Pimary names only
+en : Primary names only
 ru*:
 cs*:
 hu*:

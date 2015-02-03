@@ -360,7 +360,14 @@ sub _form {
        td class => 'tc_char';
         Select id =>'cast_chars';
          option value => '', mt '_vnedit_cast_sel_char';
-         option value => $_->{id}, $_->{name} for @{$chars};
+         for my $i (0..$#$chars) {
+           my($name, $id) = @{$chars->[$i]}{qw|name id|};
+           # append character IDs to coinciding names
+           # (assume dbCharGet sorted characters by name)
+           $name .= ' - c'.$id if $name eq ($chars->[$i+1]{name}//'')
+                               .. $name ne ($chars->[$i+1]{name}//'');
+           option value => $id, $name;
+         }
         end;
         txt ' '.mt '_vnedit_voiced_by';
        end;

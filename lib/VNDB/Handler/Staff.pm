@@ -339,7 +339,8 @@ sub list {
   });
 
   return $self->resRedirect('/s'.$list->[0]{id}, 'temp')
-    if $f->{q} && @$list == 1 && $f->{p} == 1 && !$f->{fil};
+    if $f->{q} && @$list && (!first { $_->{id} != $list->[0]{id} } @$list) && $f->{p} == 1 && !$f->{fil};
+    # redirect to the staff page if all results refer to the same entry
 
   my $quri = join(';', $f->{q} ? 'q='.uri_escape($f->{q}) : (), $f->{fil} ? "fil=$f->{fil}" : ());
   $quri = '?'.$quri if $quri;
