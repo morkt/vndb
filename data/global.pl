@@ -41,6 +41,7 @@ our %S = (%S,
   discussion_boards => [qw|an db ge v p u|], # <- note that some properties of these boards are hard-coded
   vn_lengths      => [ 0..5 ],
   anime_types     => [qw|tv ova mov oth web spe mv|],
+  board_edit_time => 7*24*3600,
   vn_relations    => {
   # id   => [ order, reverse ]
     seq  => [ 0, 'preq' ],

@@ -19,6 +19,13 @@ TUWF::register(
 );
 
 
+sub caneditpost {
+  my($self, $post) = @_;
+  return $self->authCan('boardmod') ||
+    ($self->authInfo->{id} && $post->{uid} == $self->authInfo->{id} && !$post->{hidden} && time()-$post->{date} < $self->{board_edit_time})
+}
+
+
 sub thread {
   my($self, $tid, $page) = @_;
   $page ||= 1;
@@ -63,7 +70,7 @@ sub thread {
         }
        end;
        td class => 'tc2';
-        if($self->authCan('boardmod') || $self->authInfo->{id} && $_->{uid} == $self->authInfo->{id} && !$_->{hidden}) {
+        if(caneditpost($self, $_)) {
           i class => 'edit';
            txt '< ';
            a href => "/t$tid.$_->{num}/edit", mt '_thread_editpost';
@@ -149,8 +156,7 @@ sub edit {
   # are we allowed to perform this action?
   return $self->htmlDenied if !$self->authCan('board')
     || ($tid && ($t->{locked} || $t->{hidden}) && !$self->authCan('boardmod'))
-    || ($num && $p->{uid} != $self->authInfo->{id} && !$self->authCan('boardmod'))
-    || ($num && $p->{hidden} && !$self->authCan('boardmod'));
+    || ($num && !caneditpost($self, $p));
 
   # check form etc...
   my $frm;
