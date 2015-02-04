@@ -38,8 +38,8 @@ sub dbStaffGet {
     defined $o{gender} ? ( 'sr.gender IN(!l)' => [ ref $o{gender} ? $o{gender} : [$o{gender}] ]) : (),
     defined $o{role} ? (
       '('.join(' OR ',
-        @roles ? ( 'EXISTS(SELECT 1 FROM vn_staff vs WHERE vs.aid = sa.id AND vs.role IN(!l))' ) : (),
-        $seiyuu ? ( 'EXISTS(SELECT 1 FROM vn_seiyuu vsy WHERE vsy.aid = sa.id)' ) : ()
+        @roles ? ( 'EXISTS(SELECT 1 FROM vn_staff vs JOIN vn v ON v.latest = vs.vid WHERE vs.aid = sa.id AND vs.role IN(!l))' ) : (),
+        $seiyuu ? ( 'EXISTS(SELECT 1 FROM vn_seiyuu vsy JOIN vn v ON v.latest = vsy.vid WHERE vsy.aid = sa.id)' ) : ()
       ).')' => ( @roles ? [ \@roles ] : 1 ),
     ) : (),
     $o{search} ?
