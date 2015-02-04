@@ -165,7 +165,7 @@ sub dbVNGet {
       )});
       push(@{$r->[$r{ delete $_->{vid} }]{seiyuu}}, $_) for (@{$self->dbAll(q|
         SELECT vs.vid, s.id, vs.aid, sa.name, sa.original, sr.gender, sr.lang, cr.cid, cr.name AS cname, vs.note,
-            NOT EXISTS(SELECT 1 FROM chars_vns cv WHERE cv.vid = vr.vid AND cv.cid = cr.id AND cv.spoil = 0) as spoil
+            (SELECT MAX(spoil) FROM chars_vns cv WHERE cv.vid = vr.vid AND cv.cid = cr.id) AS spoil
           FROM vn_seiyuu vs
           JOIN vn_rev vr ON vr.id = vs.vid
           JOIN staff_alias sa ON vs.aid = sa.id

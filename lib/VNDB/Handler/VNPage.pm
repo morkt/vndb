@@ -1126,11 +1126,18 @@ sub _staff {
      end 'table';
     end;
   }
-  my @seiyuu = grep !$_->{spoil}, @{$v->{seiyuu}};
-  if(@seiyuu) {
+  if(@{$v->{seiyuu}}) {
+    my($has_spoilers, $has_notes);
+    $has_spoilers ||= $_->{spoil}, $has_notes ||= $_->{note} for @{$v->{seiyuu}};
     div class => 'mainbox staff cast';
+     if($has_spoilers) {
+       p id => 'charspoil_sel';
+        a href => '#', class => 'sel', mt '_vnpage_tags_spoil0';
+        a href => '#', mt '_vnpage_tags_spoil1';
+        a href => '#', mt '_vnpage_tags_spoil2';
+       end;
+     }
      h1 mt '_vnpage_cast';
-     my $has_notes  = grep { $_->{note} } @seiyuu;
      table class => 'stripe';
       thead;
        Tr;
@@ -1139,9 +1146,8 @@ sub _staff {
         td class => 'tc3', mt '_staff_col_note' if $has_notes;
        end;
       end;
-      for my $s (@seiyuu) {
-        next if $s->{spoil};
-        Tr;
+      for my $s (@{$v->{seiyuu}}) {
+        Tr $has_spoilers ? (class => charspoil($s->{spoil})) : ();
          td class => 'tc1';
           a href => "/c$s->{cid}", $s->{cname};
          end;
