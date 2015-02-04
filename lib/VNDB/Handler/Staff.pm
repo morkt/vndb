@@ -246,6 +246,7 @@ sub edit {
           push @{$frm->{_err}}, ['alias_name', 'required'];
           last;
         }
+        s/^\s+|\s+$//g for ($a->{name}, $a->{orig});
         # normalize alias id to a number so that the comparison works
         # or reset it to zero for newly added aliases.
         $a->{aid} *= $old_aliases{$a->{aid}} ? 1 : 0;
