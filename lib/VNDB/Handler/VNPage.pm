@@ -710,8 +710,10 @@ sub _revision {
       $_[0] ? sprintf '<a href="http://renai.us/game/%s.shtml">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
     }],
     [ credits     => join => '<br />', split => sub {
-      my @r = map sprintf('<a href="/s%d" title="%s">%s</a> [%s]%s',
-        $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape($_->{name}), mt("_credit_$_->{role}"), $_->{note} ? ' ['.xml_escape($_->{note}).']' : ''), sort { $a->{id} <=> $b->{id} } @{$_[0]};
+      my @r = map sprintf('<a href="/s%d" title="%s">%s</a> [%s]%s', $_->{id},
+          xml_escape($_->{original}||$_->{name}), xml_escape($_->{name}), mt("_credit_$_->{role}"),
+          $_->{note} ? ' ['.xml_escape($_->{note}).']' : ''),
+        sort { $a->{id} <=> $b->{id} || $a->{role} cmp $b->{role} } @{$_[0]};
       return @r ? @r : (mt '_revision_empty');
     }],
     [ seiyuu      => join => '<br />', split => sub {
@@ -719,7 +721,7 @@ sub _revision {
           $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape($_->{name}),
           mt('_staff_as', xml_escape($_->{cname})),
           $_->{note} ? ' ['.xml_escape($_->{note}).']' : ''),
-        sort { $a->{id} <=> $b->{id} } @{$_[0]};
+        sort { $a->{id} <=> $b->{id} || $a->{cid} <=> $b->{cid} || $a->{note} cmp $b->{note} } @{$_[0]};
       return @r ? @r : (mt '_revision_empty');
     }],
     [ relations   => join => '<br />', split => sub {
