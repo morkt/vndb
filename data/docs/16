@@ -10,19 +10,28 @@
 
 :SUB:General info
 <dl>
- <dt>Name (romaji)</dt><dd>
-  Person's true name, in the latin alphabet. If true name is unknown, fill in the most
-  widely used alias. Check out the <a href="/d5">general editing guidelines</a> for
-  information on name order and romanization. <a href="/d5.1">Romanise</a> according to our
-  guidelines.
- </dd><dt>Original name</dt><dd>
-  The actual name of the person, in the case it is not officially in the latin
-  alphabet.  Leave empty if it's the same as the "Name (romaji)". If possible,
-  try to include a space between the given name and the surname.
+ <dt>Names</dt><dd>
+  People involved in visual novels production are often hide behind multiple
+  aliases. These aliases could be listed here. Add only aliases that are
+  actually used in VN credits.  Sometimes names with different Japanese spelling
+  are romanized equally. You may add such aliases, but then original spelling
+  should be used when name is being looked up in the VN staff edit form.<br />
+  <br />
+  One of the aliases can be selected as the primary name of the staff entry.
+  Typically this is either the person's true name (if known, and if the person
+  has used their true name in the context of VNs) or, alternatively, the most
+  widely used alias.<br />
+  <br />
+  For each alias, the romaji field should contain the name in Latin alphabet.
+  The original name should contain the name as it is written in the original
+  script, and should be left blank if the name is already in the Latin
+  alphabet. Check out the <a href="/d5">general editing guidelines</a> for
+  information on name order and romanization. If possible, try to include a
+  space between the given name and the surname.
  </dd><dt>Gender</dt><dd>
   Person's gender, if known.
  </dd><dt>Primary language</dt><dd>
-  Native language, japanese by default.
+  Native language, Japanese by default.
  </dd><dt>Staff note</dt><dd>
   Brief note describing biography, occupation and production companies affiliations, if any.
   It's fine to leave this field empty if there's nothing much known about the person in question.
@@ -33,12 +42,3 @@
   not specify the full URL for additional links, we only need a small part of it!
  </dd>
 </dl>
-
-:SUB:Aliases
-<p>
- People involved in visual novels production are often hide behind multiple aliases. These
- aliases could be listed here. Add only aliases that are actually used in VN credits.
- Sometimes names with different japanese spelling are romanized equally. You may add such
- aliases, but then original spelling should be used when name is being looked up in the VN
- staff edit form.
-</p>
