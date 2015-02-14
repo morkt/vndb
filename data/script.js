@@ -2066,47 +2066,62 @@ if(byId('jt_box_chare_vns'))
 /*  S T A F F (/s+/edit) */
 
 function salLoad () {
+  byId('alias_tbl').appendChild(tag('tr', {id:'alias_new'},
+    tag('td', null),
+    tag('td', {colspan:3}, tag('a', {href:'#', onclick:salFormAdd}, mt('_staffe_aliases_add')))));
+
+  salAdd(byId('primary').value||0, byId('name').value, byId('original').value);
   var aliases = jsonParse(byId('aliases').value) || [];
   for(var i = 0; i < aliases.length; i++) {
     salAdd(aliases[i].aid, aliases[i].name, aliases[i].orig);
   }
-  salEmpty();
 
-  // bind the add-link
-  byName(byClass(byId('alias_new'), 'td', 'tc_add')[0], 'a')[0].onclick = salFormAdd;
   byName(byId('maincontent'), 'form')[0].onsubmit = salSerialize;
 }
 
 function salAdd(aid, name, original) {
-  byId('alias_tbl').appendChild(tag('tr', {id:'alias_tr_'+aid},
+  var tbl = byId('alias_tbl');
+  var first = tbl.rows.length <= 1;
+  tbl.insertBefore(tag('tr', first ? {id:'primary_name'} : null,
+    tag('td', {'class':'tc_id' },
+      tag('input', {type:'radio', name:'primary_id', value:aid, checked:first, onchange:salPrimary})),
     tag('td', {'class':'tc_name' },     tag('input', {type:'text', 'class':'text', value:name})),
     tag('td', {'class':'tc_original' }, tag('input', {type:'text', 'class':'text', value:original})),
-    tag('td', {'class':'tc_add' },
-      tag('input', {type:'hidden', value:aid}),
-      tag('a', {href:'#', onclick:salDel}, mt('_js_remove')))
-  ));
-
-  salEmpty();
+    tag('td', {'class':'tc_add' }, !first ?
+      tag('a', {href:'#', onclick:salDel}, mt('_js_remove')) : null)
+  ), byId('alias_new'));
 }
 
-function salEmpty() {
-  var tbl = byId('alias_tbl');
-  if (byName(tbl, 'tr').length < 1)
-    tbl.appendChild(tag('tr', {id:'alias_tr_none'}, tag('td', {colspan:3}, mt('_staffe_aliases_none'))));
-  else if (byId('alias_tr_none'))
-    tbl.removeChild(byId('alias_tr_none'));
+function salPrimary() {
+  var prev = byId('primary_name')
+  prev.removeAttribute('id');
+  byClass(prev, 'td', 'tc_add')[0].appendChild(tag('a', {href:'#', onclick:salDel}, mt('_js_remove')));
+  var tr = this;
+  while (tr && tr.nodeName.toLowerCase() != 'tr')
+    tr = tr.parentNode;
+  tr.setAttribute('id', 'primary_name');
+  var td = byClass(tr, 'td', 'tc_add')[0];
+  while (td.firstChild)
+    td.removeChild(td.firstChild);
+
+  return salSerialize();
 }
 
 function salSerialize() {
   var tbl = byName(byId('alias_tbl'), 'tr');
   var a = [];
   for (var i = 0; i < tbl.length; ++i) {
-    if(tbl[i].id == 'alias_tr_none')
+    if(tbl[i].id == 'alias_new')
       continue;
+    var id   = byName(byClass(tbl[i], 'td', 'tc_id')[0], 'input')[0].value;
     var name = byName(byClass(tbl[i], 'td', 'tc_name')[0], 'input')[0].value;
     var orig = byName(byClass(tbl[i], 'td', 'tc_original')[0], 'input')[0].value;
-    var id   = byName(byClass(tbl[i], 'td', 'tc_add')[0], 'input')[0].value;
-    a.push({ aid:Number(id), name:name, orig:orig });
+    if(tbl[i].id == 'primary_name') {
+      byId('name').value = name;
+      byId('original').value = orig;
+      byId('primary').value = id;
+    } else
+      a.push({ aid:Number(id), name:name, orig:orig });
   }
   byId('aliases').value = JSON.stringify(a);
   return true;
@@ -2114,29 +2129,21 @@ function salSerialize() {
 
 function salDel() {
   var tr = this;
-  while (tr.nodeName.toLowerCase() != 'tr')
+  while (tr && tr.nodeName.toLowerCase() != 'tr')
     tr = tr.parentNode;
-  byId('alias_tbl').removeChild(tr);
+  var tbl = byId('alias_tbl');
+  tbl.removeChild(tr);
   salSerialize();
-  salEmpty();
   return false;
 }
 
 function salFormAdd() {
-  var alnew = byId('alias_new');
-  var name = byName(byClass(alnew, 'td', 'tc_name')[0],     'input')[0];
-  var orig = byName(byClass(alnew, 'td', 'tc_original')[0], 'input')[0];
-  if(name.value.length < 1)
-    return alert(mt('_staffe_alias_required'));
-
-  salAdd(0, name.value, orig.value);
-  salSerialize();
-  name.value = '';
-  orig.value = '';
+  salAdd(0, '', '');
+  byName(byClass(byId('alias_new').previousSibling, 'td', 'tc_name')[0], 'input')[0].focus();
   return false;
 }
 
-if(byId('jt_box_staffe_aliases'))
+if(byId('jt_box_staffe_geninfo'))
   salLoad();
 
 

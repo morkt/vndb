@@ -209,6 +209,7 @@ sub edit {
 
   my %b4 = !$sid ? () : (
     (map { $_ => $s->{$_} } qw|name original gender lang desc l_wp l_site l_twitter l_anidb ihid ilock|),
+    primary => $s->{aid},
     aliases => jsonEncode [
       map +{ aid => $_->{id}, name => $_->{name}, orig => $_->{original} },
       sort { $a->{name} cmp $b->{name} } @{$s->{aliases}}
@@ -221,6 +222,7 @@ sub edit {
     $frm = $self->formValidate (
       { post => 'name',          maxlength => 200 },
       { post => 'original',      required  => 0, maxlength => 200,  default => '' },
+      { post => 'primary',       required  => 0, template => 'int', default => 0 },
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { post => 'gender',        required  => 0, default => 'unknown', enum => [qw|unknown m f|] },
       { post => 'lang',          enum      => $self->{languages} },
@@ -239,7 +241,9 @@ sub edit {
     my $raw_a = eval { jsonDecode $frm->{aliases} };
     push @{$frm->{_err}}, [ 'aliases', 'template', 'json' ] if $@ || ref $raw_a ne 'ARRAY';
     if(!$frm->{_err}) {
-      my %old_aliases = $sid ? ( map +($_->{id} => 1), @{$s->{aliases}} ) : ();
+      my %old_aliases = $sid ? ( map +($_->{id} => 1), @{$self->dbStaffAliasIds($sid)} ) : ();
+      $frm->{primary} = 0 unless exists $old_aliases{$frm->{primary}};
+
       for my $a (sort { $a->{name} cmp $b->{name} } @$raw_a) {
         # check for empty aliases
         if($a->{name} =~ /^\s*$/) {
@@ -257,7 +261,7 @@ sub edit {
       $frm->{aliases} = jsonEncode \@aliases;
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
-      $frm->{aid}    = $s->{aid} if $sid;
+      $frm->{aid}    = $frm->{primary} if $sid;
       $frm->{desc}   = $self->bbSubstLinks($frm->{desc});
 
       return $self->resRedirect("/s$sid", 'post')
@@ -279,9 +283,23 @@ sub edit {
   $self->htmlEditMessage('s', $s, $title);
   $self->htmlForm({ frm => $frm, action => $s ? "/s$sid/edit" : '/s/new', editsum => 1 },
   staffe_geninfo => [ mt('_staffe_form_generalinfo'),
-    [ input  => name => mt('_staffe_form_name'), short => 'name' ],
-    [ input  => name => mt('_staffe_form_original'), short => 'original' ],
-    [ static => content => mt('_staffe_form_original_note') ],
+    [ hidden => short => 'name' ],
+    [ hidden => short => 'original' ],
+    [ hidden => short => 'primary' ],
+    [ hidden => short => 'aliases' ],
+    [ static => label => mt('_staffe_form_names'), content => sub {
+      table id => 'names';
+       thead; Tr;
+        td class => 'tc_id'; end;
+        td class => 'tc_name', mt '_staffe_form_name';
+        td class => 'tc_original', mt '_staffe_form_original'; td; end;
+       end; end;
+       tbody id => 'alias_tbl';
+        # filled with javascript
+       end;
+      end;
+    }],
+    [ static => content => '<br />' ],
     [ text   => name => mt('_staffe_form_note').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 4 ],
     [ select => name => mt('_staffe_form_gender'),short => 'gender', options => [
        map [ $_, mt("_gender_$_") ], qw(unknown m f) ] ],
@@ -292,30 +310,6 @@ sub edit {
     [ input  => name => mt('_staffe_form_twitter'), short => 'l_twitter' ],
     [ input  => name => mt('_staffe_form_anidb'), short => 'l_anidb' ],
     [ static => content => '<br />' ],
-  ],
-
-  staffe_aliases => [ mt('_staffe_aliases'),
-    [ hidden => short => 'aliases' ],
-    [ static => nolabel => 1, content => sub {
-      table;
-       thead; Tr;
-        td class => 'tc_name', mt '_staffe_form_alias';
-        td class => 'tc_original', mt '_staffe_form_original_alias'; td; end;
-       end; end;
-       tbody id => 'alias_tbl';
-        # filled with javascript
-       end;
-      end;
-      h2 mt '_staffe_aliases_add';
-      table; Tr id => 'alias_new';
-       td class => 'tc_name';
-        input id => 'alias_name', type => 'text', class => 'text'; end;
-       td class => 'tc_original';
-        input id => 'alias_original', type => 'text', class => 'text'; end;
-       td class => 'tc_add';
-        a href => '#', mt '_js_add'; end;
-      end; end;
-    }],
   ]);
 
   $self->htmlFooter;

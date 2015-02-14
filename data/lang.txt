@@ -6038,7 +6038,7 @@ uk*:
 it*:
 
 :_staffe_form_original
-en : Original name
+en : Original
 ru*:
 cs*:
 hu*:
@@ -6049,20 +6049,8 @@ tr*:
 uk*:
 it*:
 
-:_staffe_form_alias
-en : Alias (romaji)
-ru*:
-cs*:
-hu*:
-nl*:
-de*:
-es*:
-tr*:
-uk*:
-it*:
-
-:_staffe_form_original_alias
-en : Original alias
+:_staffe_form_names
+en : Names
 ru*:
 cs*:
 hu*:
@@ -6195,30 +6183,6 @@ it*:
 
 :_staffe_aliases_add
 en : Add alias
-ru*:
-cs*:
-hu*:
-nl*:
-de*:
-es*:
-tr*:
-uk*:
-it*:
-
-:_staffe_alias_required
-en : Specify romanized spelling of the alias.
-ru*:
-cs*:
-hu*:
-nl*:
-de*:
-es*:
-tr*:
-uk*:
-it*:
-
-:_staffe_aliases_none
-en : None
 ru*:
 cs*:
 hu*:

@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbStaffGet dbStaffRevisionInsert|;
+our @EXPORT = qw|dbStaffGet dbStaffRevisionInsert dbStaffAliasIds|;
 
 # options: results, page, id, aid, search, rev, truename, role, gender
 # what: extended changes roles aliases
@@ -146,6 +146,17 @@ sub dbStaffRevisionInsert {
         $alias->[1], $alias->[2]);
     }
   }
+}
+
+
+# returns alias IDs that are and were related to the given staff ID
+sub dbStaffAliasIds {
+  my($self, $sid) = @_;
+  return $self->dbAll(q|
+    SELECT DISTINCT sa.id
+      FROM staff_alias sa
+      JOIN staff_rev sr ON sr.id = sa.rid
+      WHERE sr.sid = ?|, $sid);
 }
 
 1;
