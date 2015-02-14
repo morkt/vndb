@@ -38,8 +38,8 @@ sub dbStaffGet {
     defined $o{gender} ? ( 'sr.gender IN(!l)' => [ ref $o{gender} ? $o{gender} : [$o{gender}] ]) : (),
     defined $o{role} ? (
       '('.join(' OR ',
-        @roles ? ( 'EXISTS(SELECT 1 FROM vn_staff vs JOIN vn v ON v.latest = vs.vid WHERE vs.aid = sa.id AND vs.role IN(!l))' ) : (),
-        $seiyuu ? ( 'EXISTS(SELECT 1 FROM vn_seiyuu vsy JOIN vn v ON v.latest = vsy.vid WHERE vsy.aid = sa.id)' ) : ()
+        @roles ? ( 'EXISTS(SELECT 1 FROM vn_staff vs JOIN vn v ON v.latest = vs.vid WHERE vs.aid = sa.id AND vs.role IN(!l) AND NOT v.hidden)' ) : (),
+        $seiyuu ? ( 'EXISTS(SELECT 1 FROM vn_seiyuu vsy JOIN vn v ON v.latest = vsy.vid WHERE vsy.aid = sa.id AND NOT v.hidden)' ) : ()
       ).')' => ( @roles ? [ \@roles ] : 1 ),
     ) : (),
     $o{search} ?
@@ -90,7 +90,7 @@ sub dbStaffGet {
           JOIN vn_rev vr ON vr.id = vs.vid
           JOIN vn v ON v.latest = vr.id
           JOIN staff_alias sa ON vs.aid = sa.id
-          WHERE sa.rid IN(!l)
+          WHERE sa.rid IN(!l) AND NOT v.hidden
           ORDER BY v.c_released ASC, vr.title ASC, vs.role ASC|, [ keys %r ]
       )});
       push @{$r{ delete $_->{rid} }{cast}}, $_ for (@{$self->dbAll(q|
@@ -101,7 +101,7 @@ sub dbStaffGet {
           JOIN chars_rev cr ON cr.cid = vs.cid
           JOIN chars c ON c.latest = cr.id
           JOIN staff_alias sa ON vs.aid = sa.id
-          WHERE sa.rid IN(!l)
+          WHERE sa.rid IN(!l) AND NOT v.hidden
           ORDER BY v.c_released ASC, vr.title ASC|, [ keys %r ]
       )});
     }
