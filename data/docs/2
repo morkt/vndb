@@ -79,7 +79,12 @@
 
 :SUB:Staff & Cast
 <p>It's possible to link VN entries to <a href="/d16">staff entries</a> in the
-staff and cast tabs.</p>
+staff and cast tabs.<br /><br />
+In both tabs, staff aliases can be selected by searching for their romanized or
+original names. To match an exact name instead of performing a search, prefix
+the name with '='. If the name is not in the database yet, you need to <a
+href="/d16">add it</a> first.
+</p>
 
 :SUBSUB:Staff
 <p>
