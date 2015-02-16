@@ -7,7 +7,7 @@ use Exporter 'import';
 
 our @EXPORT = qw|dbStaffGet dbStaffRevisionInsert dbStaffAliasIds|;
 
-# options: results, page, id, aid, search, rev, truename, role, gender
+# options: results, page, id, aid, search, exact, rev, truename, role, gender
 # what: extended changes roles aliases
 sub dbStaffGet {
   my $self = shift;
@@ -42,6 +42,7 @@ sub dbStaffGet {
         $seiyuu ? ( 'EXISTS(SELECT 1 FROM vn_seiyuu vsy JOIN vn v ON v.latest = vsy.vid WHERE vsy.aid = sa.id AND NOT v.hidden)' ) : ()
       ).')' => ( @roles ? [ \@roles ] : 1 ),
     ) : (),
+    $o{exact} ? ( '(sa.name = ? OR sa.original = ?)' => [ ($o{exact}) x 2 ] ) : (),
     $o{search} ?
       $o{search} =~ /[\x{3000}-\x{9fff}\x{ff00}-\x{ff9f}]/ ?
         # match against 'original' column only if search string contains any

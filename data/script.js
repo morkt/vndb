@@ -2263,6 +2263,17 @@ var vncImportData = [];
 
 function vncLoad() {
   var cast = jsonParse(byId('seiyuu').value) || [];
+  var copt = byId('cast_chars').options;
+  var chars = {};
+  for(var i = 0; i < copt.length; i++) {
+    if(copt[i].value)
+      chars[copt[i].value] = copt[i].text;
+  }
+  cast.sort(function(a, b) {
+    if(chars[a.cid] < chars[b.cid]) return -1;
+    if(chars[a.cid] > chars[b.cid]) return 1;
+    return 0;
+  });
   for(var i = 0; i < cast.length; i++) {
     var aid = cast[i].aid;
     if(vnsStaffData[aid]) // vnsStaffData is filled by vnsLoad()

@@ -5772,7 +5772,7 @@ uk*:
 it*:
 
 :_staff_voiced
-en : Voiced characters
+en : Voiced characters ([_1])
 ru*:
 cs*:
 hu*:
@@ -6039,6 +6039,18 @@ it*:
 
 :_staffe_form_original
 en : Original
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_staffe_form_different
+en : You may choose a different primary name.
 ru*:
 cs*:
 hu*:

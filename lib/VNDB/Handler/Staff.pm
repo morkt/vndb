@@ -159,7 +159,7 @@ sub page {
       br;
     }
     if (@{$s->{cast}}) {
-      h2 mt '_staff_voiced';
+      h2 mt('_staff_voiced', scalar @{$s->{cast}});
       my $has_notes = first { $_->{note} || $_->{name} ne $s->{name} } @{$s->{cast}};
       table class => 'stripe staffroles';
        thead;
@@ -287,6 +287,8 @@ sub edit {
     [ hidden => short => 'original' ],
     [ hidden => short => 'primary' ],
     [ hidden => short => 'aliases' ],
+    $sid && @{$s->{aliases}} ?
+      [ static => content => mt('_staffe_form_different') ] : (),
     [ static => label => mt('_staffe_form_names'), content => sub {
       table id => 'names';
        thead; Tr;
@@ -401,6 +403,7 @@ sub staffxml {
   my($list, $np) = $self->dbStaffGet(
     @{$q->{s}} ? (id => $q->{s}) :
     @{$q->{a}} ? (aid => $q->{a}) :
+    $q->{q} =~ /^=(.+)/ ? (exact => $1) :
     $q->{q} =~ /^s([1-9]\d*)/ ? (id => $1) :
     (search => $q->{q}),
     results => 10,
