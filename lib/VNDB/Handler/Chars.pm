@@ -79,10 +79,10 @@ sub page {
   # TODO: ordering of these instances?
   my $inst = [];
   if(!$r->{main}) {
-    $inst = $self->dbCharGet(instance => $r->{id}, what => 'extended traits vns');
+    $inst = $self->dbCharGet(instance => $r->{id}, what => 'extended traits vns seiyuu');
   } else {
-    $inst = $self->dbCharGet(instance => $r->{main}, notid => $r->{id}, what => 'extended traits vns');
-    push @$inst, $self->dbCharGet(id => $r->{main}, what => 'extended traits vns')->[0];
+    $inst = $self->dbCharGet(instance => $r->{main}, notid => $r->{id}, what => 'extended traits vns seiyuu');
+    push @$inst, $self->dbCharGet(id => $r->{main}, what => 'extended traits vns seiyuu')->[0];
   }
   if(@$inst) {
     div class => 'mainbox';
