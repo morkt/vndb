@@ -115,7 +115,7 @@ sub page {
     if (@{$s->{roles}}) {
       h2 mt '_staff_credits';
       my $has_notes = first { $_->{note} || $_->{name} ne $s->{name} } @{$s->{roles}};
-      table class => 'stripe staffroles';
+      table class => 'staffroles';
        thead;
         Tr;
          td class => 'tc2', mt '_staff_col_title';
@@ -125,17 +125,18 @@ sub page {
         end;
        end;
        tbody;
-        my($last_vid, $row_count) = (0);
+        my($last_vid, $row_count, $num) = (0) x 3;
         for my $i (0..$#{$s->{roles}}) {
           my $r = $s->{roles}->[$i];
           if($r->{vid} != $last_vid) {
+            ++$num;
             $row_count = 1;
             for my $j (1+$i..$#{$s->{roles}}) {
               last if $r->{vid} != $s->{roles}->[$j]->{vid};
               ++$row_count;
             }
           }
-          Tr;
+          Tr $num&1 ? (class => 'odd') : ();
            if($last_vid != $r->{vid}) {
              td class => 'tc2', $row_count > 1 ? (rowspan => $row_count) : ();
                a href => "/v$r->{vid}", title => $r->{t_original}||$r->{title}, shorten $r->{title}, 60;
