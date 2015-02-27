@@ -456,11 +456,11 @@ sub _uploadimage {
   # resize/compress
   my $im = Image::Magick->new;
   $im->BlobToImage($imgdata);
-  $im->Set(magick => 'JPEG');
   my($ow, $oh) = ($im->Get('width'), $im->Get('height'));
   my($nw, $nh) = imgsize($ow, $oh, @{$self->{ch_size}});
   $im->Thumbnail(width => $nw, height => $nh);
-  $im->Set(quality => 90);
+  $im = $im->Flatten;
+  $im->Set(magick => 'JPEG', quality => 90);
 
   # Get ID and save
   my $imgid = $self->dbCharImageId;
