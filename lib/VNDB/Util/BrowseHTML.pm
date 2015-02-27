@@ -123,6 +123,7 @@ sub htmlBrowseNavigate {
 
 sub htmlBrowseHist {
   my($self, $list, $f, $np, $url) = @_;
+  my $bbcode = BBCode::Convert->new(maxlength => 150, oneline => 1);
   $self->htmlBrowse(
     items    => $list,
     options  => $f,
@@ -152,7 +153,7 @@ sub htmlBrowseHist {
        end;
        td class => 'tc4';
         a href => $revurl, title => $i->{ioriginal}, shorten $i->{ititle}, 80;
-        b class => 'grayedout'; lit bb2html $i->{comments}, 150; end;
+        b class => 'grayedout'; lit $bbcode->parse($i->{comments}); end;
        end;
       end 'tr';
     },
