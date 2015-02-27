@@ -8,6 +8,7 @@ use Exporter 'import';
 use Encode 'encode_utf8';
 use Unicode::Normalize 'NFKD';
 use Socket 'inet_pton', 'inet_ntop', 'AF_INET', 'AF_INET6';
+use BBCode::Convert;
 
 our @EXPORT = qw|shorten bb2html gtintype normalize normalize_titles normalize_query imgsize norm_ip|;
 
@@ -18,7 +19,7 @@ sub shorten {
 }
 
 
-# Arguments: input, and optionally the maximum length
+# Arguments: input, [optionally] the maximum length and character spoiler flag
 # Parses:
 #  [url=..] [/url]
 #  [raw] .. [/raw]
@@ -27,135 +28,12 @@ sub shorten {
 #  [code] .. [/code]
 #  v+,  v+.+
 #  http://../
-# XXX: Make sure to sync any changes in the formating with
-#   VNDB::Util::Misc::bbSubstLinks() if necessary. Or, alternatively, abstract
-#   parsing into a separate function as per http://beta.vndb.org/t5564.12
 sub bb2html {
-  my($raw, $maxlength, $charspoil) = @_;
-  $raw =~ s/\r//g;
-  return '' if !$raw && $raw ne "0";
-
-  my($result, $last, $length, $rmnewline, @open) = ('', 0, 0, 0, 'first');
-
-  # escapes, returns string, and takes care of $length and $maxlength; also
-  # takes care to remove newlines and double spaces when necessary
-  my $e = sub {
-    local $_ = shift;
-    s/^\n//         if $rmnewline && $rmnewline--;
-    s/\n{5,}/\n\n/g if $open[$#open] ne 'code';
-    s/  +/ /g       if $open[$#open] ne 'code';
-    $length += length $_;
-    if($maxlength && $length > $maxlength) {
-      $_ = substr($_, 0, $maxlength-$length);
-      s/[ \.,:;]+[^ \.,:;]*$//; # cleanly cut off on word boundary
-    }
-    s/&/&amp;/g;
-    s/>/&gt;/g;
-    s/</&lt;/g;
-    s/\n/<br \/>/g if !$maxlength;
-    s/\n/ /g       if $maxlength;
-    return $_;
-  };
-
-  while($raw =~ m{(
-    (d[1-9][0-9]*\.[1-9][0-9]*\.[1-9][0-9]*)  | # 2. longid
-    ([tdvprcs][1-9][0-9]*\.[1-9][0-9]*)       | # 3. exid
-    ([tdvprcsugi][1-9][0-9]*)                 | # 4. id
-    (\[[^\s\]]+\])                            | # 5. tag
-    ((?:https?|ftp)://[^><"\n\s\]\[]+[\d\w=/-]) # 6. url
-  )}xg) {
-    my($match, $longid, $exid, $id, $tag, $url) = ($1, $2, $3, $4, $5, $6);
-
-    # add string before the match
-    $result .= $e->(substr $raw, $last, (pos($raw)-length($match))-$last);
-    last if $maxlength && $length > $maxlength;
-    $last = pos $raw;
-
-    if($open[$#open] ne 'raw' && $open[$#open] ne 'code') {
-      # handle tags
-      if($tag) {
-        $tag = lc $tag;
-        if($tag eq '[raw]') {
-          push @open, 'raw';
-          next;
-        } elsif($tag eq '[spoiler]') {
-          push @open, 'spoiler';
-          $result .= !$charspoil ? '<b class="spoiler">'
-            : '<b class="grayedout charspoil charspoil_-1">&lt;hidden by spoiler settings&gt;</b><span class="charspoil charspoil_2 hidden">';
-          next;
-        } elsif($tag eq '[quote]') {
-          push @open, 'quote';
-          $result .= '<div class="quote">' if !$maxlength;
-          $rmnewline = 1;
-          next;
-        } elsif($tag eq '[code]') {
-          push @open, 'code';
-          $result .= '<pre>' if !$maxlength;
-          $rmnewline = 1;
-          next;
-        } elsif($tag eq '[/spoiler]' && $open[$#open] eq 'spoiler') {
-          $result .= !$charspoil ? '</b>' : '</span>';
-          pop @open;
-          next;
-        } elsif($tag eq '[/quote]' && $open[$#open] eq 'quote') {
-          $result .= '</div>' if !$maxlength;
-          $rmnewline = 1;
-          next;
-        } elsif($tag eq '[/url]' && $open[$#open] eq 'url') {
-          $result .= '</a>';
-          pop @open;
-          next;
-        } elsif($match =~ s{\[url=((https?://|/)[^\]>]+)\]}{<a href="$1" rel="nofollow">}i) {
-          $result .= $match;
-          push @open, 'url';
-          next;
-        }
-      }
-      # handle URLs
-      if($url && !grep(/url/, @open)) {
-        $length += 4;
-        last if $maxlength && $length > $maxlength;
-        $result .= sprintf '<a href="%s" rel="nofollow">link</a>', $url;
-        next;
-      }
-      # id
-      if(($id || $exid || $longid) && !grep(/url/, @open) && (!$result || substr($raw, $last-1-length($match), 1) !~ /[\w]/) && substr($raw, $last, 1) !~ /[\w]/) {
-        (my $lnk = $match) =~ s/^d(\d+)\.(\d+)\.(\d+)$/d$1#$2.$3/;
-        $length += length $lnk;
-        last if $maxlength && $length > $maxlength;
-        $result .= sprintf '<a href="/%s">%s</a>', $lnk, $match;
-        next
-      }
-    }
-
-    if($tag && $open[$#open] eq 'raw' && lc$tag eq '[/raw]') {
-      pop @open;
-      next;
-    }
-
-    if($tag && $open[$#open] eq 'code' && lc$tag eq '[/code]') {
-      $result .= '</pre>' if !$maxlength;
-      pop @open;
-      next;
-    }
-
-    # We'll only get here when the bbcode input isn't correct or something else
-    # didn't work out. In that case, just output whatever we've matched.
-    $result .= $e->($match);
-    last if $maxlength && $length > $maxlength;
-  }
-
-  # the last unmatched part, just escape and output
-  $result .= $e->(substr $raw, $last);
-
-  # close open tags
-  while((local $_ = pop @open) ne 'first') {
-    $result .= $_ eq 'url' ? '</a>' : $_ eq 'spoiler' ? '</b>' : '';
-    $result .= $_ eq 'quote' ? '</div>' : $_ eq 'code' ? '</pre>' : '' if !$maxlength;
-  }
-  $result .= '...' if $maxlength && $length > $maxlength;
-
-  return $result;
+  my($raw, $m, $c) = @_;
+  my $interp = BBCode::Convert->new(
+    charspoil => $c, $m ? (maxlength => $m, oneline => 1) : ()
+  );
+  return $interp->parse($raw);
 }
 
 

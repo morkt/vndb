@@ -467,6 +467,7 @@ sub posts {
    }
   end;
 
+  my $bbcode = BBCode::Convert->new(maxlength => 150, oneline => 1);
   $self->htmlBrowse(
     items    => $posts,
     class    => 'uposts',
@@ -487,7 +488,7 @@ sub posts {
        td class => 'tc3', $self->{l10n}->date($l->{date});
        td class => 'tc4';
         a href => "/t$l->{tid}.$l->{num}", $l->{title};
-        b class => 'grayedout'; lit bb2html $l->{msg}, 150; end;
+        b class => 'grayedout'; lit $bbcode->parse($l->{msg}); end;
        end;
       end;
     },

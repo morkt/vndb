@@ -58,6 +58,7 @@ sub thread {
   $self->htmlBrowseNavigate("/t$tid/", $page, [ $t->{count}, 25 ], 't', 1);
   div class => 'mainbox thread';
    table class => 'stripe';
+    my $bbcode = BBCode::Convert->new;
     for my $i (0..$#$p) {
       local $_ = $p->[$i];
       Tr $_->{deleted} ? (class => 'deleted') : ();
@@ -80,7 +81,7 @@ sub thread {
         if($_->{hidden}) {
           i class => 'deleted', mt '_thread_deletedpost';
         } else {
-          lit bb2html $_->{msg};
+          lit $bbcode->parse($_->{msg});
           i class => 'lastmod', mt '_thread_lastmodified', $_->{edited} if $_->{edited};
         }
        end;
