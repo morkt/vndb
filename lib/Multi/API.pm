@@ -975,7 +975,7 @@ sub get_mainsql {
 
   my $sql = $type->{sql};
   return cerr $c, needlogin => 'Not logged in as a user' if !$sql && !$c->{uid};
-  $sql = $type->{sqluser} if $c->{uid};
+  $sql = $type->{sqluser} if $c->{uid} && $type->{sqluser};
 
   cpg $c, sprintf($sql, $select, $where, $last, $c->{uid}), \@placeholders, sub {
     my @res = $_[0]->rowsAsHashes;
