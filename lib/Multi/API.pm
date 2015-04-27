@@ -195,21 +195,11 @@ sub cmd_handle {
     return get($c, @arg);
   }
 
-#  # handle set command
-#  if($cmd eq 'set') {
-#    return cerr $c, parse => 'Invalid arguments to set command' if @$arg < 2 || @$arg > 3 || ref($arg->[0])
-#      || ref($arg->[1]) || $arg->[1] !~ /^\d+$/ || $arg->[1] < 1 || $arg->[1] > 1e6 || (defined($arg->[2]) && ref($arg->[2]) ne 'HASH');
-#    return cerr $c, 'settype', "Unknown set type: '$arg->[0]'" if $arg->[0] !~ /^(votelist|vnlist|wishlist)$/;
-#    return cerr $c, needlogin => 'Not logged in as a user' if !$c->{uid};
-#    my %obj = (
-#      c => $c,
-#      type => $arg->[0],
-#      id => $arg->[1],
-#      opt => $arg->[2]
-#    );
-#    return $_[KERNEL]->yield("set_$arg->[0]", \%obj);
-#  }
-#
+  # set
+  if($cmd eq 'set') {
+    return set($c, @arg);
+  }
+
   # unknown command
   cerr $c, 'parse', "Unknown command '$cmd'";
 }
@@ -1040,81 +1030,92 @@ sub get_final {
 }
 
 
-1;
 
-__END__
+sub set {
+  my($c, @arg) = @_;
+
+  my %types = (
+    votelist => \&set_votelist,
+    vnlist   => \&set_vnlist,
+    wishlist => \&set_wishlist,
+  );
+
+  return cerr $c, parse => 'Invalid arguments to set command' if @arg < 2 || @arg > 3 || ref($arg[0])
+    || ref($arg[1]) || $arg[1] !~ /^\d+$/ || $arg[1] < 1 || $arg[1] > 1e6 || (defined($arg[2]) && ref($arg[2]) ne 'HASH');
+  return cerr $c, 'settype', "Unknown set type: '$arg[0]'" if !$types{$arg[0]};
+  return cerr $c, needlogin => 'Not logged in as a user' if !$c->{uid};
+
+  my %obj = (
+    c    => $c,
+    type => $arg[0],
+    id   => $arg[1],
+    opt  => $arg[2]
+  );
+  $types{$obj{type}}->($c, \%obj);
+}
 
 
-sub set_return {
-  my($num, $res, $obj, $time) = (@_[ARG0..$#_]);
+# Wrapper around cpg that calls cres for a set command. First argument is the $obj created in set().
+sub setpg {
+  my($obj, $sql, $a) = @_;
 
-  # update sql throttle
-  $obj->{c}{throttle}[1] += $time*$_[HEAP]{throttle_sql}[0];
-
-  # send an 'ok'
-  $obj->{c}{wheel}->put(['ok']);
-  my $args = $obj->{opt} ? JSON::XS->new->encode($obj->{opt}) : 'delete';
-  $_[KERNEL]->yield(log => $obj->{c}, 'T:%4.0fms  set %s %s %s',
-    $time*1000, $obj->{type}, $obj->{id}, $args);
+  cpg $obj->{c}, $sql, $a, sub {
+    my $args = $obj->{opt} ? JSON::XS->new->encode($obj->{opt}) : 'delete';
+    cres $obj->{c}, ['ok'], 'R:%2d  set %s %d %s', $_[0]->cmdRows(), $obj->{type}, $obj->{id}, $args;
+  };
 }
 
 
 sub set_votelist {
-  my $obj = $_[ARG0];
+  my($c, $obj) = @_;
 
-  return $_[KERNEL]->post(pg => do => 'DELETE FROM votes WHERE uid = ? AND vid = ?',
-    [ $obj->{c}{uid}, $obj->{id} ], 'set_return', $obj) if !$obj->{opt};
+  return setpg $obj, 'DELETE FROM votes WHERE uid = $1 AND vid = $2',
+    [ $c->{uid}, $obj->{id} ] if !$obj->{opt};
 
   my($ev, $vv) = (exists($obj->{opt}{vote}), $obj->{opt}{vote});
-  return cerr $obj->{c}, missing => 'No vote given', field => 'vote' if !$ev;
-  return cerr $obj->{c}, badarg => 'Invalid vote', field => 'vote' if ref($vv) || !defined($vv) || $vv !~ /^\d+$/ || $vv < 10 || $vv > 100;
+  return cerr $c, missing => 'No vote given', field => 'vote' if !$ev;
+  return cerr $c, badarg => 'Invalid vote', field => 'vote' if ref($vv) || !defined($vv) || $vv !~ /^\d+$/ || $vv < 10 || $vv > 100;
 
-  return $_[KERNEL]->post(pg => do => q{
-      WITH upsert AS (UPDATE votes SET vote = ? WHERE uid = ? AND vid = ? RETURNING vid)
-      INSERT INTO votes (uid, vid, vote) SELECT ?, ?, ? WHERE EXISTS(SELECT 1 FROM vn v WHERE v.id = ?) AND NOT EXISTS(SELECT 1 FROM upsert)
-    }, [ $vv, $obj->{c}{uid}, $obj->{id}, $obj->{c}{uid}, $obj->{id}, $vv, $obj->{id} ], 'set_return', $obj);
+  setpg $obj, 'WITH upsert AS (UPDATE votes SET vote = $1 WHERE uid = $2 AND vid = $3 RETURNING vid)
+      INSERT INTO votes (vote, uid, vid) SELECT $1, $2, $3 WHERE EXISTS(SELECT 1 FROM vn v WHERE v.id = $3) AND NOT EXISTS(SELECT 1 FROM upsert)',
+    [ $vv, $c->{uid}, $obj->{id} ];
 }
 
 
 sub set_vnlist {
-  my $obj = $_[ARG0];
+  my($c, $obj) = @_;
 
-  return $_[KERNEL]->post(pg => do => 'DELETE FROM vnlists WHERE uid = ? AND vid = ?',
-    [ $obj->{c}{uid}, $obj->{id} ], 'set_return', $obj) if !$obj->{opt};
+  return setpg $obj, 'DELETE FROM vnlists WHERE uid = $1 AND vid = $2',
+    [ $c->{uid}, $obj->{id} ] if !$obj->{opt};
 
   my($es, $en, $vs, $vn) = (exists($obj->{opt}{status}), exists($obj->{opt}{notes}), $obj->{opt}{status}, $obj->{opt}{notes});
-  return cerr $obj->{c}, missing => 'No status or notes given', field => 'status,notes' if !$es && !$en;
-  return cerr $obj->{c}, badarg => 'Invalid status', field => 'status' if $es && (!defined($vs) || ref($vs) || $vs !~ /^[0-4]$/);
-  return cerr $obj->{c}, badarg => 'Invalid notes', field => 'notes' if $en && (ref($vn) || (defined($vn) && $vn =~ /[\r\n]/));
+  return cerr $c, missing => 'No status or notes given', field => 'status,notes' if !$es && !$en;
+  return cerr $c, badarg => 'Invalid status', field => 'status' if $es && (!defined($vs) || ref($vs) || $vs !~ /^[0-4]$/);
+  return cerr $c, badarg => 'Invalid notes', field => 'notes' if $en && (ref($vn) || (defined($vn) && $vn =~ /[\r\n]/));
 
   $vs ||= 0;
   $vn ||= '';
 
-  my $set = join ', ', $es ? 'status = ?' : (), $en ? 'notes = ?' : ();
-  my @set = ($es ? $vs : (), $en ? $vn : ());
-
-  return $_[KERNEL]->post(pg => do => qq{
-      WITH upsert AS (UPDATE vnlists SET $set WHERE uid = ? AND vid = ? RETURNING vid)
-      INSERT INTO vnlists (uid, vid, status, notes) SELECT ?, ?, ?, ? WHERE EXISTS(SELECT 1 FROM vn v WHERE v.id = ?) AND NOT EXISTS(SELECT 1 FROM upsert)
-    }, [ @set, $obj->{c}{uid}, $obj->{id}, $obj->{c}{uid}, $obj->{id}, $vs, $vn, $obj->{id} ], 'set_return', $obj);
+  my $set = join ', ', $es ? 'status = $3' : (), $en ? 'notes = $4' : ();
+  setpg $obj, 'WITH upsert AS (UPDATE vnlists SET '.$set.' WHERE uid = $1 AND vid = $2 RETURNING vid)
+      INSERT INTO vnlists (uid, vid, status, notes) SELECT $1, $2, $3, $4 WHERE EXISTS(SELECT 1 FROM vn v WHERE v.id = $2) AND NOT EXISTS(SELECT 1 FROM upsert)',
+    [ $c->{uid}, $obj->{id}, $vs, $vn ];
 }
 
 
 sub set_wishlist {
-  my $obj = $_[ARG0];
+  my($c, $obj) = @_;
 
-  return $_[KERNEL]->post(pg => do => 'DELETE FROM wlists WHERE uid = ? AND vid = ?',
-    [ $obj->{c}{uid}, $obj->{id} ], 'set_return', $obj) if !$obj->{opt};
+  return setpg $obj, 'DELETE FROM wlists WHERE uid = $1 AND vid = $2',
+    [ $c->{uid}, $obj->{id} ] if !$obj->{opt};
 
   my($ep, $vp) = (exists($obj->{opt}{priority}), $obj->{opt}{priority});
-  return cerr $obj->{c}, missing => 'No priority given', field => 'priority' if !$ep;
-  return cerr $obj->{c}, badarg => 'Invalid priority', field => 'priority' if ref($vp) || !defined($vp) || $vp !~ /^[0-3]$/;
+  return cerr $c, missing => 'No priority given', field => 'priority' if !$ep;
+  return cerr $c, badarg => 'Invalid priority', field => 'priority' if ref($vp) || !defined($vp) || $vp !~ /^[0-3]$/;
 
-  return $_[KERNEL]->post(pg => do => q{
-      WITH upsert AS (UPDATE wlists SET wstat = ? WHERE uid = ? AND vid = ? RETURNING vid)
-      INSERT INTO wlists (uid, vid, wstat) SELECT ?, ?, ? WHERE EXISTS(SELECT 1 FROM vn v WHERE v.id = ?) AND NOT EXISTS(SELECT 1 FROM upsert)
-    }, [ $vp, $obj->{c}{uid}, $obj->{id}, $obj->{c}{uid}, $obj->{id}, $vp, $obj->{id} ], 'set_return', $obj);
+  setpg $obj, 'WITH upsert AS (UPDATE wlists SET wstat = $1 WHERE uid = $2 AND vid = $3 RETURNING vid)
+      INSERT INTO wlists (wstat, uid, vid) SELECT $1, $2, $3 WHERE EXISTS(SELECT 1 FROM vn v WHERE v.id = $3) AND NOT EXISTS(SELECT 1 FROM upsert)',
+    [ $vp, $c->{uid}, $obj->{id} ];
 }
 
 1;
-
