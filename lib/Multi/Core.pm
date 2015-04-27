@@ -183,6 +183,8 @@ sub pg_cmd {
   my($q, $a, $s) = @_;
   my $r;
 
+  #AE::log debug => sprintf "%s:%d: %s | %s", (caller)[0,2], $q, $a ? join ', ', @$a : '';
+
   my $sub = !$s || !ref $s ? do {
     my $loc = sprintf '%s:%d%s', (caller)[0,2], $s ? ":$s" : '';
     sub { pg_expect $_[0], undef, $loc }
