@@ -36,6 +36,7 @@ my $LIGHT_GREY = "\x0315";
 
 
 my $irc;
+my $connecttimer;
 my @quotew;
 my %lastnotify;
 
@@ -43,6 +44,7 @@ my %lastnotify;
 my %O = (
   nick => 'Multi_test'.$$,
   server => 'irc.synirc.net',
+  port => 6667,
   ircname => 'VNDB.org Multi',
   channels => [ '#vndb' ],
   masters => [ 'Yorhel!~Ayo@your.hell' ],
@@ -61,7 +63,7 @@ sub run {
   set_logger();
   set_quotew($_) for (0..$#{$O{channels}});
   set_notify();
-  $irc->connect($O{server}, 6667, { nick => $O{nick}, user => 'u1', real => $O{ircname} });
+  ircconnect();
 }
 
 
@@ -69,7 +71,21 @@ sub unload {
   @quotew = ();
   # TODO: Wait until we've nicely disconnected?
   $irc->disconnect('Closing...');
+  undef $connecttimer;
   undef $irc;
+}
+
+
+sub ircconnect {
+  $irc->connect($O{server}, $O{port}, { nick => $O{nick}, user => 'u1', real => $O{ircname} });
+}
+
+
+sub reconnect {
+  $connecttimer = AE::timer 60, 0, sub {
+    ircconnect();
+    undef $connecttimer;
+  };
 }
 
 
@@ -92,15 +108,22 @@ sub set_quotew {
 
 
 sub set_cbs {
+  $irc->reg_cb(connect => sub {
+    return if !$_[1];
+    AE::log warn => "IRC connection error: $_[1]";
+    reconnect();
+  });
   $irc->reg_cb(registered => sub {
-    AE::log warn => "IRC connection error: $_[1]" if $_[1];
-    AE::log info => 'Connected to IRC' if !$_[1];
+    AE::log info => 'Connected to IRC';
+    $irc->enable_ping(60);
     $irc->send_msg(PRIVMSG => NickServ => "IDENTIFY $O{pass}") if $O{pass} && $irc->is_my_nick($O{nick});
     $irc->send_msg(JOIN => join ',', @{$O{channels}});
   });
 
-  # TODO: Do we need to reconnect manually?
-  $irc->reg_cb(disconnect => sub { AE::log info => 'Disconnected from IRC'; });
+  $irc->reg_cb(disconnect => sub {
+    AE::log info => 'Disconnected from IRC';
+    reconnect();
+  });
 
   #$irc->reg_cb(read => sub {
   #  require Data::Dumper;
