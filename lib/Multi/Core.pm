@@ -122,7 +122,7 @@ sub run {
   die "PID file already exists\n" if -e $pidfile;
 
   $stopcv = AE::cv;
-  AnyEvent::Log::ctx('Multi')->attach(AnyEvent::Log::Ctx->new(level => 'trace', log_to_file => $VNDB::M{log_dir}.'/multi.log'));
+  AnyEvent::Log::ctx('Multi')->attach(AnyEvent::Log::Ctx->new(level => $VNDB::M{log_level}, log_to_file => $VNDB::M{log_dir}.'/multi.log'));
   #log_cb => sub {
   #  open(my $F, '>>:utf8', $VNDB::M{log_dir}.'/multi.log');
   #  print $F $_[0];
