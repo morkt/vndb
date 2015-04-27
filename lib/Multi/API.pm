@@ -318,7 +318,7 @@ sub parsedate {
 
 
 sub splitarray {
-  (my $s = shift) =~ s/^{(.+)}$/$1/;
+  (my $s = shift) =~ s/^{(.*)}$/$1/;
   return [ split /,/, $s ];
 }
 
@@ -566,8 +566,8 @@ my %GET_RELEASE = (
           for (@$r) {
             $_->{id}*=1;
             $_->{original}  ||= undef;
-            $_->{developer} = $_->{developer} ? TRUE : FALSE;
-            $_->{publisher} = $_->{publisher} ? TRUE : FALSE;
+            $_->{developer} = $_->{developer} =~ /^t/ ? TRUE : FALSE;
+            $_->{publisher} = $_->{publisher} =~ /^t/ ? TRUE : FALSE;
             delete $_->{rid};
           }
         }
@@ -711,7 +711,7 @@ my %GET_CHARACTER = (
         $_[0]{original} ||= undef;
         $_[0]{gender}   = undef if $_[0]{gender} eq 'unknown';
         $_[0]{bloodt}   = undef if $_[0]{bloodt} eq 'unknown';
-        $_[0]{birthday} = [ delete($_[0]{b_day})||undef, delete($_[0]{b_month})||undef ];
+        $_[0]{birthday} = [ delete($_[0]{b_day})*1||undef, delete($_[0]{b_month})*1||undef ];
       },
     },
     details => {
@@ -768,6 +768,7 @@ my $UID_FILTER =
       sub { my($uid, $c) = @_; !$uid && !$c->{uid} ? \'Not logged in.' : $uid || $c->{uid} } ];
 
 my %GET_VOTELIST = (
+  islist  => 1,
   sql     => "SELECT %s FROM votes v WHERE (%s) AND NOT EXISTS(SELECT 1 FROM users_prefs WHERE uid = v.uid AND key = 'hide_list') %s",
   sqluser => q{SELECT %1$s FROM votes v WHERE (%2$s) AND (uid = %4$d OR NOT EXISTS(SELECT 1 FROM users_prefs WHERE uid = v.uid AND key = 'hide_list')) %3$s},
   select  => "vid as vn, vote, extract('epoch' from date) AS added",
@@ -783,6 +784,7 @@ my %GET_VOTELIST = (
 );
 
 my %GET_VNLIST = (
+  islist  => 1,
   sql     => "SELECT %s FROM vnlists v WHERE (%s) AND NOT EXISTS(SELECT 1 FROM users_prefs WHERE uid = v.uid AND key = 'hide_list') %s",
   sqluser => q{SELECT %1$s FROM vnlists v WHERE (%2$s) AND (uid = %4$d OR NOT EXISTS(SELECT 1 FROM users_prefs WHERE uid = v.uid AND key = 'hide_list')) %3$s},
   select  => "vid as vn, status, extract('epoch' from added) AS added, notes",
@@ -799,6 +801,7 @@ my %GET_VNLIST = (
 );
 
 my %GET_WISHLIST = (
+  islist  => 1,
   sql     => "SELECT %s FROM wlists w WHERE (%s) AND NOT EXISTS(SELECT 1 FROM users_prefs WHERE uid = w.uid AND key = 'hide_list') %s",
   sqluser => q{SELECT %1$s FROM wlists w WHERE (%2$s) AND (uid = %4$d OR NOT EXISTS(SELECT 1 FROM users_prefs WHERE uid = w.uid AND key = 'hide_list')) %3$s},
   select  => "vid AS vn, wstat AS priority, extract('epoch' from added) AS added",
