@@ -121,6 +121,7 @@ our %S = (%S,
 # Multi-specific options (Multi also uses some options in %S and %O)
 our %M = (
   log_dir   => $ROOT.'/data/log',
+  log_level => 'trace',
   modules   => {
     #API         => {},  # disabled by default, not really needed
     #APIDump     => {},

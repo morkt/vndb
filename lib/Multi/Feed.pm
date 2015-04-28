@@ -7,101 +7,84 @@ package Multi::Feed;
 
 use strict;
 use warnings;
-use POE;
 use TUWF::XML;
+use Multi::Core;
 use POSIX 'strftime';
-use Time::HiRes 'time';
 use VNDBUtil 'bb2html';
 
+my %stats; # key = feed, value = [ count, total, max ]
 
-sub spawn {
+
+sub run {
   my $p = shift;
-  POE::Session->create(
-    package_states => [
-      $p => [qw| _start shutdown generate write_atom log_stats |],
-    ],
-    heap => {
-      regenerate_interval => 600, # 10 min.
-      stats_interval => 86400, # daily
-      debug => 0,
-      @_,
-      stats => {}, # key = feed, value = [ count, total, max ]
-    },
+  my %o = (
+    regenerate_interval => 600, # 10 min.
+    stats_interval => 86400, # daily
+    @_
   );
-}
-
-
-sub _start {
-  $_[KERNEL]->alias_set('feed');
-  $_[KERNEL]->yield('generate');
-  $_[KERNEL]->alarm(log_stats => int((time+3)/$_[HEAP]{stats_interval}+1)*$_[HEAP]{stats_interval});
-  $_[KERNEL]->sig(shutdown => 'shutdown');
-}
-
-
-sub shutdown {
-  $_[KERNEL]->delay('generate');
-  $_[KERNEL]->delay('log_stats');
-  $_[KERNEL]->alias_remove('feed');
+  push_watcher schedule 0, $o{regenerate_interval}, \&generate;
+  push_watcher schedule 0, $o{stats_interval}, \&stats;
 }
 
 
 sub generate {
-  $_[KERNEL]->alarm(generate => int((time+3)/$_[HEAP]{regenerate_interval}+1)*$_[HEAP]{regenerate_interval});
-
   # announcements
-  $_[KERNEL]->post(pg => query => q{
-    SELECT '/t'||t.id AS id, t.title, extract('epoch' from tp.date) AS published,
-       extract('epoch' from tp.edited) AS updated, u.username, u.id AS uid, tp.msg AS summary
-     FROM threads t
-     JOIN threads_posts tp ON tp.tid = t.id AND tp.num = 1
-     JOIN threads_boards tb ON tb.tid = t.id AND tb.type = 'an'
-     JOIN users u ON u.id = tp.uid
-    WHERE NOT t.hidden
-    ORDER BY t.id DESC
-    LIMIT ?}, [ $VNDB::S{atom_feeds}{announcements}[0] ], 'write_atom', 'announcements'
-  );
+  pg_cmd q{
+      SELECT '/t'||t.id AS id, t.title, extract('epoch' from tp.date) AS published,
+         extract('epoch' from tp.edited) AS updated, u.username, u.id AS uid, tp.msg AS summary
+       FROM threads t
+       JOIN threads_posts tp ON tp.tid = t.id AND tp.num = 1
+       JOIN threads_boards tb ON tb.tid = t.id AND tb.type = 'an'
+       JOIN users u ON u.id = tp.uid
+      WHERE NOT t.hidden
+      ORDER BY t.id DESC
+      LIMIT $1},
+    [$VNDB::S{atom_feeds}{announcements}[0]],
+    sub { write_atom(announcements => @_) };
 
   # changes
-  $_[KERNEL]->post(pg => query => q{
-    SELECT '/'||c.type||COALESCE(vr.vid, rr.rid, pr.pid, cr.cid, sr.sid)||'.'||c.rev AS id,
-       COALESCE(vr.title, rr.title, pr.name, cr.name, sa.name) AS title, extract('epoch' from c.added) AS updated,
-       u.username, u.id AS uid, c.comments AS summary
-    FROM changes c
-     LEFT JOIN vn_rev vr ON c.type = 'v' AND c.id = vr.id
-     LEFT JOIN releases_rev rr ON c.type = 'r' AND c.id = rr.id
-     LEFT JOIN producers_rev pr ON c.type = 'p' AND c.id = pr.id
-     LEFT JOIN chars_rev cr ON c.type = 'c' AND c.id = cr.id
-     LEFT JOIN staff_rev sr ON c.type = 's' AND c.id = sr.id
-     LEFT JOIN staff_alias sa ON sa.rid = sr.id AND sa.id = sr.aid
-     JOIN users u ON u.id = c.requester
-    WHERE c.requester <> 1
-    ORDER BY c.id DESC
-    LIMIT ?}, [ $VNDB::S{atom_feeds}{changes}[0] ], 'write_atom', 'changes'
-  );
+  pg_cmd q{
+      SELECT '/'||c.type||COALESCE(vr.vid, rr.rid, pr.pid, cr.cid, sr.sid)||'.'||c.rev AS id,
+         COALESCE(vr.title, rr.title, pr.name, cr.name, sa.name) AS title, extract('epoch' from c.added) AS updated,
+         u.username, u.id AS uid, c.comments AS summary
+      FROM changes c
+       LEFT JOIN vn_rev vr ON c.type = 'v' AND c.id = vr.id
+       LEFT JOIN releases_rev rr ON c.type = 'r' AND c.id = rr.id
+       LEFT JOIN producers_rev pr ON c.type = 'p' AND c.id = pr.id
+       LEFT JOIN chars_rev cr ON c.type = 'c' AND c.id = cr.id
+       LEFT JOIN staff_rev sr ON c.type = 's' AND c.id = sr.id
+       LEFT JOIN staff_alias sa ON sa.rid = sr.id AND sa.id = sr.aid
+       JOIN users u ON u.id = c.requester
+      WHERE c.requester <> 1
+      ORDER BY c.id DESC
+      LIMIT $1},
+    [$VNDB::S{atom_feeds}{changes}[0]],
+    sub { write_atom(changes => @_); };
 
   # posts (this query isn't all that fast)
-  $_[KERNEL]->post(pg => query => q{
-    SELECT '/t'||t.id||'.'||tp.num AS id, t.title||' (#'||tp.num||')' AS title, extract('epoch' from tp.date) AS published,
-       extract('epoch' from tp.edited) AS updated, u.username, u.id AS uid, tp.msg AS summary
-     FROM threads_posts tp
-     JOIN threads t ON t.id = tp.tid
-     JOIN users u ON u.id = tp.uid
-    WHERE NOT tp.hidden AND NOT t.hidden
-    ORDER BY tp.date DESC
-    LIMIT ?}, [ $VNDB::S{atom_feeds}{posts}[0] ], 'write_atom', 'posts'
-  );
+  pg_cmd q{
+      SELECT '/t'||t.id||'.'||tp.num AS id, t.title||' (#'||tp.num||')' AS title, extract('epoch' from tp.date) AS published,
+         extract('epoch' from tp.edited) AS updated, u.username, u.id AS uid, tp.msg AS summary
+       FROM threads_posts tp
+       JOIN threads t ON t.id = tp.tid
+       JOIN users u ON u.id = tp.uid
+      WHERE NOT tp.hidden AND NOT t.hidden
+      ORDER BY tp.date DESC
+      LIMIT $1},
+    [$VNDB::S{atom_feeds}{posts}[0]],
+    sub { write_atom(posts => @_); };
 }
 
 
-sub write_atom { # num, res, feed, time
-  my $r = $_[ARG1];
-  my $feed = $_[ARG2];
+sub write_atom {
+  my($feed, $res, $sqltime) = @_;
+  return if pg_expect $res, 1;
 
-  my $start = time;
+  my $start = AE::time;
 
+  my @r = $res->rowsAsHashes;
   my $updated = 0;
-  for(@$r) {
+  for(@r) {
     $updated = $_->{published} if $_->{published} && $_->{published} > $updated;
     $updated = $_->{updated} if $_->{updated} && $_->{updated} > $updated;
   }
@@ -116,11 +99,11 @@ sub write_atom { # num, res, feed, time
   $x->tag(link => rel => 'self', type => 'application/atom+xml', href => "$VNDB::S{url}/feeds/$feed.atom", undef);
   $x->tag(link => rel => 'alternate', type => 'text/html', href => $VNDB::S{url}.$VNDB::S{atom_feeds}{$feed}[2], undef);
 
-  for(@$r) {
+  for(@r) {
     $x->tag('entry');
     $x->tag(id => $VNDB::S{url}.$_->{id});
     $x->tag(title => $_->{title});
-    $x->tag(updated => $_->{updated}?datetime($_->{updated}):datetime($_->{published}));
+    $x->tag(updated => datetime($_->{updated} || $_->{published}));
     $x->tag(published => datetime($_->{published})) if $_->{published};
     if($_->{username}) {
       $x->tag('author');
@@ -139,31 +122,28 @@ sub write_atom { # num, res, feed, time
   print $f $data;
   close $f;
 
-  $_[HEAP]{debug} && $_[KERNEL]->call(core => log => 'Wrote %s.atom (%d entries, sql:%4dms, perl:%4dms)',
-    $feed, scalar(@$r), $_[ARG3]*1000, (time-$start)*1000);
+  AE::log debug => sprintf 'Wrote %16s.atom (%d entries, sql:%4dms, perl:%4dms)',
+    $feed, scalar(@r), $sqltime*1000, (AE::time-$start)*1000;
 
-  $_[HEAP]{stats}{$feed} = [ 0, 0, 0 ] if !$_[HEAP]{stats}{$feed};
-  my $time = ((time-$start)+$_[ARG3])*1000;
-  $_[HEAP]{stats}{$feed}[0]++;
-  $_[HEAP]{stats}{$feed}[1] += $time;
-  $_[HEAP]{stats}{$feed}[2] = $time if $_[HEAP]{stats}{$feed}[2] < $time;
+  my $time = ((AE::time-$start)+$sqltime)*1000;
+  $stats{$feed} = [ 0, 0, 0 ] if !$stats{$feed};
+  $stats{$feed}[0]++;
+  $stats{$feed}[1] += $time;
+  $stats{$feed}[2] = $time if $stats{$feed}[2] < $time;
 }
 
 
-sub log_stats {
-  $_[KERNEL]->alarm(log_stats => int((time+3)/$_[HEAP]{stats_interval}+1)*$_[HEAP]{stats_interval});
-
-  for (keys %{$_[HEAP]{stats}}) {
-    my $v = $_[HEAP]{stats}{$_};
+sub stats {
+  for (keys %stats) {
+    my $v = $stats{$_};
     next if !$v->[0];
-    $_[KERNEL]->call(core => log => 'Stats summary for %s.atom: total:%5dms, avg:%4dms, max:%4dms, size: %.1fkB',
-      $_, $v->[1], $v->[1]/$v->[0], $v->[2], (-s "$VNDB::ROOT/www/feeds/$_.atom")/1024);
+    AE::log info => sprintf 'Stats summary for %16s.atom: total:%5dms, avg:%4dms, max:%4dms, size: %.1fkB',
+      $_, $v->[1], $v->[1]/$v->[0], $v->[2], (-s "$VNDB::ROOT/www/feeds/$_.atom")/1024;
   }
-  $_[HEAP]{stats} = {};
+  %stats = ();
 }
 
 
-# non-POE helper function
 sub datetime {
   strftime('%Y-%m-%dT%H:%M:%SZ', gmtime shift);
 }

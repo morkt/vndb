@@ -17,11 +17,11 @@ Requirements
 
   global requirements:
     Linux, or an OS that resembles Linux. Chances are VNDB won't run on Windows.
-    PostgreSQL 9.1+ (don't try older versions or other SQL databases, it won't work)
-    perl 5.16 recommended, 5.10+ may also work
+    PostgreSQL 9.3+ (don't try older versions or other SQL databases, it won't work)
+    perl 5.20 recommended, 5.10+ may also work
     A webserver that works with TUWF (lighttpd and Apache are known to work)
 
-  (perl 5.16 core modules are not listed.)
+  (perl 5.20 core modules are not listed.)
 
   util/vndb.pl:
     Algorithm::Diff::XS
@@ -30,7 +30,7 @@ Requirements
     Crypt::URandom
     Crypt::ScryptKDF
     Image::Magick
-    TUWF                 (get it from http://g.blicky.net/tuwf.git/)
+    TUWF
     FCGI                 (optional, for running as a FastCGI script)
     PerlIO::gzip         (optional, for output compression)
 
@@ -43,11 +43,10 @@ Requirements
       PerlIO::gzip
     Core:
       DBI
-      DBD::Pg
-      POE
-      POE::Component::Pg (get it from http://g.blicky.net/poco-pg.git/)
+      AnyEvent
+      AnyEvent::Pg
     IRC:
-      POE::Component::IRC
+      AnyEvent::IRC
     Maintenance:
       PerlIO::gzip
     RG:
