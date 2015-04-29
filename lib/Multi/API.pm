@@ -12,7 +12,7 @@ use AnyEvent::Socket;
 use AnyEvent::Handle;
 use POE::Filter::VNDBAPI 'encode_filters';
 use Digest::SHA 'sha256';
-use Encode 'encode_utf8';
+use Encode 'encode_utf8', 'decode_utf8';
 use Crypt::ScryptKDF 'scrypt_raw';;
 use VNDBUtil 'normalize_query', 'norm_ip';
 use JSON::XS;
@@ -153,7 +153,7 @@ sub cmd_read {
     (my $msg = $_[1]) =~ s/[\r\n]*/ /;
     $msg =~ s/^[\s\r\n\t]+//;
     $msg =~ s/[\s\r\n\t]+$//;
-    writelog $c, "< $msg" if $cmd && $cmd ne 'login';
+    writelog $c, decode_utf8 "< $msg" if $cmd && $cmd ne 'login';
 
     # Stats for the current cmd
     $c->{sqlt} = $c->{sqlq} = 0;

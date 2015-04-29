@@ -13,6 +13,7 @@ use AnyEvent::IRC::Util 'prefix_nick';
 use VNDBUtil 'normalize_query';
 use TUWF::Misc 'uri_escape';
 use POSIX 'strftime';
+use Encode 'decode_utf8', 'encode_utf8';
 
 
 # long subquery used in several places
@@ -93,7 +94,7 @@ sub send_quote {
   my $chan = shift;
   pg_cmd 'SELECT quote FROM quotes ORDER BY random() LIMIT 1', undef, sub {
     return if pg_expect $_[0], 1 or !$_[0]->nRows;
-    $irc->send_msg(PRIVMSG => $chan, $_[0]->value(0,0));
+    $irc->send_msg(PRIVMSG => $chan, encode_utf8 $_[0]->value(0,0));
   };
 }
 
@@ -145,7 +146,7 @@ sub set_logger {
   my $l = sub {
     my($chan, $msg, @arg) = @_;
     return if !grep $chan eq $_, @{$O{channels}};
-    open my $F, '>>:utf8', "$VNDB::M{log_dir}/$chan" or die $!;
+    open my $F, '>>', "$VNDB::M{log_dir}/$chan" or die $!;
     print $F strftime('%Y-%m-%d %H:%M:%S', localtime).' '.sprintf($msg, @arg)."\n";
   };
 
@@ -259,7 +260,7 @@ sub formatid {
     push @msg, $c."@ $NORMAL$LIGHT_GREY$VNDB::S{url}/$id$NORMAL";
 
     # now post it
-    $irc->send_msg(PRIVMSG => $dest, join ' ', @msg);
+    $irc->send_msg(PRIVMSG => $dest, encode_utf8 join ' ', @msg);
   }
 }
 
@@ -475,7 +476,7 @@ eval => [ 1, 1, sub {
   if(@l > 5 || length(join ' ', @l) > 400) {
     $irc->send_msg(PRIVMSG => $_[1], 'Output too large, refusing to spam chat (and too lazy to use a pastebin).');
   } else {
-    $irc->send_msg(PRIVMSG => $_[1], "eval: $_") for @l;
+    $irc->send_msg(PRIVMSG => $_[1], encode_utf8("eval: ".$_)) for @l;
   }
 }],
 
@@ -488,6 +489,7 @@ die => [ 1, 1, sub {
 # Returns 1 if there was a valid command (or something that looked like it)
 sub command {
   my($nick, $chan, $msg) = @_;
+  $msg = decode_utf8($msg);
 
   my $me = $irc->nick();
   my $addressed = !$irc->is_channel_name($chan) || $msg =~ s/^\s*\Q$me\E[:,;.!?~]?\s*//;
