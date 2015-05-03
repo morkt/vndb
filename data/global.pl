@@ -34,8 +34,8 @@ our %S = (%S,
   scr_size        => [ 136, 102 ], # w*h of screenshot thumbnails
   ch_size         => [ 256, 300 ], # max. w*h of char images
   cv_size         => [ 256, 400 ], # max. w*h of cover images
-                     # bit flags (Flag 8 was used for charedit, currently free for re-use)
-  permissions     => {qw| board 1  boardmod 2  edit 4  staffedit 8  tag 16  dbmod 32  tagmod 64  usermod 128  affiliate 256 |},
+                     # bit flags (Flag 8 was used for staffedit)
+  permissions     => {qw| board 1  boardmod 2  edit 4  staffedit 4  tag 16  dbmod 32  tagmod 64  usermod 128  affiliate 256 |},
   languages       => [qw|ar cs da de en es fi fr he hu id it ja ko nl no pl pt-br pt-pt ro ru sk sv tr uk vi zh|],
   producer_types  => [qw|co in ng|],
   discussion_boards => [qw|an db ge v p u|], # <- note that some properties of these boards are hard-coded
