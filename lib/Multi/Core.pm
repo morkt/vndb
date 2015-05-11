@@ -122,13 +122,13 @@ sub run {
   die "PID file already exists\n" if -e $pidfile;
 
   $stopcv = AE::cv;
-  AnyEvent::Log::ctx('Multi')->attach(AnyEvent::Log::Ctx->new(level => $VNDB::M{log_level}, log_to_file => $VNDB::M{log_dir}.'/multi.log'));
-  #log_cb => sub {
-  #  open(my $F, '>>:utf8', $VNDB::M{log_dir}.'/multi.log');
-  #  print $F $_[0];
-  #  close $F;
-  #  }
-  #));
+  AnyEvent::Log::ctx('Multi')->attach(AnyEvent::Log::Ctx->new(level => $VNDB::M{log_level}, # log_to_file => $VNDB::M{log_dir}.'/multi.log'));
+    # Don't use log_to_file, it doesn't accept perl's unicode strings (and, in fact, crashes on them without logging anything).
+    log_cb => sub {
+      open(my $F, '>>:utf8', $VNDB::M{log_dir}.'/multi.log');
+      print $F $_[0];
+    }
+  ));
   $AnyEvent::Log::FILTER->level('fatal');
 
   daemon_init;

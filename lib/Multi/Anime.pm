@@ -10,6 +10,7 @@ use warnings;
 use Multi::Core;
 use AnyEvent::Socket;
 use AnyEvent::Util;
+use Encode 'decode_utf8', 'encode_utf8';
 
 
 sub LOGIN_ACCEPTED         () { 200 }
@@ -37,7 +38,7 @@ my %O = (
   client => 'multi',
   clientver => 1,
   # Misc settings
-  msgdelay => 10,
+  msgdelay => 30,
   timeout => 30,
   timeoutdelay => 0.4, # $delay = $msgdelay ** (1 + $tm*$timeoutdelay)
   maxtimeoutdelay => 2*3600,
@@ -98,7 +99,7 @@ sub unload {
 
 sub check_anime {
   return if $C{aid};
-  pg_cmd 'SELECT id FROM anime WHERE lastfetch IS NULL OR lastfetch < NOW() - $1::interval LIMIT 1', [ $O{cachetime} ], sub {
+  pg_cmd 'SELECT id FROM anime WHERE lastfetch IS NULL OR lastfetch < NOW() - $1::interval ORDER BY lastfetch DESC NULLS FIRST LIMIT 1', [ $O{cachetime} ], sub {
     my $res = shift;
     return if pg_expect $res, 1 or $C{aid} or !$res->rows;
     $C{aid} = $res->value(0,0);
@@ -132,7 +133,8 @@ sub nextcmd {
   # anyway.
   my $cmd = fmtcmd(%cmd);
   AE::log debug => "Sending command: $cmd";
-  my $n = syswrite $C{sock}, fmtcmd(%cmd);
+  $cmd = encode_utf8 $cmd;
+  my $n = syswrite $C{sock}, $cmd;
   AE::log warn => sprintf "Didn't write command: only sent %d of %d bytes: %s", $n, length($cmd), $! if $n != length($cmd);
 
   $C{tw} = AE::timer $O{timeout}, 0, \&handletimeout;
@@ -158,6 +160,7 @@ sub receivemsg {
   my $n = sysread $C{sock}, $buf, 4096;
   return AE::log warn => "sysread() failed: $!" if $n < 0;
 
+  $buf = decode_utf8 $buf;
   my $time = AE::now-$C{lm};
   AE::log debug => sprintf "Received message in %.2fs: %s", $time, $buf;
 
@@ -205,7 +208,7 @@ sub handlemsg {
   # we now know something about the anime we requested, update DB
   elsif($code == NO_SUCH_ANIME) {
     AE::log info => "No anime found with id = $C{aid}";
-    pg_cmd 'UPDATE anime SET lastfetch = NOW() WHERE id = ?', [ $C{aid} ];
+    pg_cmd 'UPDATE anime SET lastfetch = NOW() WHERE id = $1', [ $C{aid} ];
     $f = \&check_anime;
     $C{aid} = 0;
 
