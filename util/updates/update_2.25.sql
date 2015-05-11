@@ -18,3 +18,5 @@ ALTER TYPE platform ADD VALUE 'fmt' BEFORE 'gba';
 ALTER TYPE platform ADD VALUE 'pce' BEFORE 'pcf';
 ALTER TYPE platform ADD VALUE 'x68' BEFORE 'xb1';
 
+-- New language
+ALTER TYPE language ADD VALUE 'ca' BEFORE 'cs';

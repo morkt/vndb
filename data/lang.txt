@@ -135,6 +135,18 @@ tr : Arapça
 uk*:
 it*:
 
+:_lang_ca
+en : Catalan
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_lang_cs
 en : Czech
 ru : Чешский
