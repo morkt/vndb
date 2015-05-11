@@ -12,3 +12,9 @@ UPDATE vn_staff vs SET note = CASE WHEN note = '' THEN 'Scripting' ELSE note || 
 DELETE FROM vn_staff WHERE role = 'script';
 COMMIT;
 
+
+-- Some new (or, well, old) platforms
+ALTER TYPE platform ADD VALUE 'fmt' BEFORE 'gba';
+ALTER TYPE platform ADD VALUE 'pce' BEFORE 'pcf';
+ALTER TYPE platform ADD VALUE 'x68' BEFORE 'xb1';
+

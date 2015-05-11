@@ -548,6 +548,18 @@ tr : Blu-ray oynatıcı
 uk : Blu-ray Player
 it : Blu-ray Player
 
+:_plat_fmt
+en : FM Towns
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_plat_gba
 en : Game Boy Advance
 ru : Game Boy Advance
@@ -631,6 +643,18 @@ es : PC-98
 tr : PC-98
 uk : PC-98
 it : PC-98
+
+:_plat_pce
+en : PC Engine
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_plat_pcf
 en : PC-FX
@@ -773,6 +797,18 @@ nl :
 de : Nintendo 3DS
 es*:
 tr : Nintendo 3DS
+uk*:
+it*:
+
+:_plat_x68
+en : X68000
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
 uk*:
 it*:
 
