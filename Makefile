@@ -1,51 +1,60 @@
 # all (default)
-#   Same as `make dirs js skins robots`
+#   Same as `make dirs js icons skins robots`
 #
 # dirs
-# 	Creates the required directories not present in git
+#   Creates the required directories not present in git
 #
 # js
-# 	Generates the Javascript code
+#   Generates the Javascript code
+#
+# icons
+#   Generates the CSS icon sprites
 #
 # skins
-# 	Generates the CSS code
+#   Generates the CSS code
 #
 # robots
-# 	Ensures that www/robots.txt and static/robots.txt exist. Can be modified to
-# 	suit your needs.
+#   Ensures that www/robots.txt and static/robots.txt exist. Can be modified to
+#   suit your needs.
 #
 # chmod
-# 	For when the http process is run from a different user than the files are
-# 	chown'ed to. chmods all files and directories written to from vndb.pl.
-# 	(including the stylesheets and javascript code, so these can be auto-updated)
+#   For when the http process is run from a different user than the files are
+#   chown'ed to. chmods all files and directories written to from vndb.pl.
+#
+# chmod-autoupdate
+#   As chmod, but also chmods all files that may need to be updated from a
+#   normal 'make' run. Should be used when the regen_static option is enabled
+#   and the http process is run from a different user.
 #
 # chmod-tladmin
-# 	The TransAdmin plugin also needs write access to some files
+#   The TransAdmin plugin also needs write access to some files
 #
 # multi-start, multi-stop, multi-restart:
-# 	Start/stop/restart the Multi daemon. Provided for convenience, a proper initscript
-# 	probably makes more sense.
+#   Start/stop/restart the Multi daemon. Provided for convenience, a proper initscript
+#   probably makes more sense.
 #
-#	sql-import
-#		Imports util/sql/all.sql into your (presumably empty) database
+# sql-import
+#   Imports util/sql/all.sql into your (presumably empty) database
 #
-#	update-<version>
-#		Updates all non-versioned items from the version before to <version>.
+# update-<version>
+#   Updates all non-versioned items from the version before to <version>.
 #
 # NOTE: This Makefile has only been tested using a recent version of GNU make
-#   in a relatively up-to-date Arch Linux environment, and may not work in other
-#   environments. Patches to improve the portability are always welcome.
+#   in a relatively up-to-date Arch/Gentoo Linux environment, and may not work in
+#   other environments. Patches to improve the portability are always welcome.
 
 
-.PHONY: all dirs js skins robots chmod chmod-tladmin multi-stop multi-start multi-restart sql-import\
+.PHONY: all dirs js icons skins robots chmod chmod-tladmin multi-stop multi-start multi-restart sql-import\
 	update-2.10 update-2.11 update-2.12 update-2.13 update-2.14 update-2.15 update-2.16 update-2.17\
-	update-2.18 update-2.19 update-2.20 update-2.21 update-2.22
+	update-2.18 update-2.19 update-2.20 update-2.21 update-2.22 update-2.23
 
 all: dirs js skins robots data/config.pl
 
 dirs: static/f/js static/ch static/cv static/sf static/st data/log www www/feeds www/api
 
 js: static/f/js/en.js
+
+icons: data/icons/icons.css
 
 skins: $(shell ls static/s | sed -e 's/\(.\+\)/static\/s\/\1\/style.css/g')
 
@@ -61,7 +70,10 @@ static/f/js data/log www www/feeds www/api:
 static/f/js/en.js: data/script.js data/lang.txt util/jsgen.pl data/config.pl data/global.pl
 	util/jsgen.pl
 
-static/s/%/style.css: static/s/%/conf util/skingen.pl data/style.css
+data/icons/icons.css: data/icons/*.png data/icons/*/*.png util/spritegen.pl
+	util/spritegen.pl
+
+static/s/%/style.css: static/s/%/conf util/skingen.pl data/style.css data/icons/icons.css
 	util/skingen.pl $*
 
 %/robots.txt:
@@ -69,11 +81,13 @@ static/s/%/style.css: static/s/%/conf util/skingen.pl data/style.css
 	echo 'Disallow: /' >> $@
 
 chmod: all
-	chmod a+xrw static/f/js
 	chmod -R a-x+rwX static/{ch,cv,sf,st}
-	chmod a-x+rw static/s/*/{style.css,boxbg.png}
 
-chmod-tladmin:
+chmod-autoupdate: chmod
+	chmod a+xrw static/f static/f/js data/icons
+	chmod -f a-x+rw static/s/*/{style.css,boxbg.png} static/f/icons.png
+
+chmod-tladmin: chmod
 	chmod a-x+rwX data/lang.txt data/docs data/docs/*\.*
 
 

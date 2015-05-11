@@ -60,6 +60,10 @@ Requirements
   util/jsgen.pl
     JavaScript::Minifier::XS (optional, minimizes JS output)
 
+  util/spritegen.pl
+    Image::Magick
+    pngcrush             (optional)
+
 
 Contact
 

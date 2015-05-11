@@ -18,10 +18,18 @@ use SkinFile;
 require $ROOT.'/data/global.pl';
 
 
+my $iconcss = do {
+  open my $F, '<', "$ROOT/data/icons/icons.css" or die $!;
+  local $/=undef;
+  <$F>;
+};
+
+
 sub writeskin { # $name
   my $name = shift;
   my $skin = SkinFile->new("$ROOT/static/s", $name);
   my %o = map +($_ => $skin->get($_)), $skin->get;
+  $o{iconcss} = $iconcss;
 
   # get the right top image
   if($o{imgrighttop}) {
