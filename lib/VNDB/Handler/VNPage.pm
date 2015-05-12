@@ -999,7 +999,7 @@ sub _releases {
           a href => "/affiliates/new?rid=$rel->{id}", 'a' if $self->authCan('affiliate');
           if($rel->{website}) {
             a href => $rel->{website}, rel => 'nofollow';
-             cssicon 'ext', mt '_vnpage_rel_extlink';
+             cssicon 'external', mt '_vnpage_rel_extlink';
             end;
           } else {
             txt ' ';

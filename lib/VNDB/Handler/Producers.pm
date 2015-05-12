@@ -181,7 +181,7 @@ sub _releases {
          td class => 'tc6';
           if($rel->{website}) {
             a href => $rel->{website}, rel => 'nofollow';
-             cssicon 'ext', mt '_vnpage_rel_extlink';
+             cssicon 'external', mt '_vnpage_rel_extlink';
             end;
           } else {
             txt ' ';
