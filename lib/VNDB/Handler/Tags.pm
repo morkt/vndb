@@ -512,6 +512,9 @@ sub vntagmod {
         $update{$t} = [ $new{$t}[0], $new{$t}[1] ];
       }
     }
+    # remove tags in the deleted state.
+    delete $insert{$_->{id}} for(keys %insert ? @{$self->dbTagGet(id => [ keys %insert ], state => 1)} : ());
+
     $self->dbTagLinkEdit($self->authInfo->{id}, $vid, \%insert, \%update, \%delete, \%overrule);
 
     # need to re-fetch the tags and tag links, as these have been modified
