@@ -35,7 +35,7 @@ sub htmlBrowse {
   $opt{sorturl} .= $opt{sorturl} =~ /\?/ ? ';' : '?' if $opt{sorturl};
 
   # top navigation
-  $self->htmlBrowseNavigate($opt{pageurl}, $opt{options}{p}, $opt{nextpage}, 't');
+  $self->htmlBrowseNavigate($opt{pageurl}, $opt{options}{p}, $opt{nextpage}, 't') if $opt{pageurl};
 
   div class => 'mainbox browse'.($opt{class} ? ' '.$opt{class} : '');
    table class => 'stripe';
@@ -79,7 +79,7 @@ sub htmlBrowse {
   end 'div';
 
   # bottom navigation
-  $self->htmlBrowseNavigate($opt{pageurl}, $opt{options}{p}, $opt{nextpage}, 'b');
+  $self->htmlBrowseNavigate($opt{pageurl}, $opt{options}{p}, $opt{nextpage}, 'b') if $opt{pageurl};
 }
 
 

@@ -15,6 +15,7 @@ TUWF::register(
   qr{xml/staff\.xml}               => \&staffxml,
 );
 
+
 sub page {
   my($self, $id, $rev) = @_;
 
@@ -51,150 +52,127 @@ sub page {
 
   div class => 'mainbox staffpage';
    $self->htmlItemMessage('s', $s);
-   div class => 'staffinfo';
-    h1 $s->{name};
-    h2 class => 'alttitle';
-     span style => 'margin-right: 10px', $s->{original} if $s->{original};
-     cssicon "gen $s->{gender}", mt "_gender_$s->{gender}" if $s->{gender} ne 'unknown';
-    end;
+   h1 $s->{name};
+   h2 class => 'alttitle', $s->{original} if $s->{original};
 
-    # info table
-    table class => 'stripe';
-
+   # info table
+   table class => 'stripe';
+    thead;
      Tr;
-      td class => 'key', mt '_staff_language';
-      td mt "_lang_$s->{lang}";
+      td colspan => 2;
+       b style => 'margin-right: 10px', $s->{name};
+       b class => 'grayedout', style => 'margin-right: 10px', $s->{original} if $s->{original};
+       cssicon "gen $s->{gender}", mt "_gender_$s->{gender}" if $s->{gender} ne 'unknown';
+      end;
      end;
-     if (@{$s->{aliases}}) {
-       Tr;
-        td class => 'key', mt('_staff_aliases', scalar @{$s->{aliases}});
-        td;
-         table class => 'aliases';
-          foreach my $alias (@{$s->{aliases}}) {
-            Tr class => 'nostripe';
-             td $alias->{original} ? () : (colspan => 2), class => 'key';
-              txt $alias->{name};
-             end;
-             td $alias->{original} if $alias->{original};
+    end;
+    Tr;
+     td class => 'key', mt '_staff_language';
+     td mt "_lang_$s->{lang}";
+    end;
+    if(@{$s->{aliases}}) {
+      Tr;
+       td class => 'key', mt('_staff_aliases', scalar @{$s->{aliases}});
+       td;
+        table class => 'aliases';
+         for my $alias (@{$s->{aliases}}) {
+           Tr class => 'nostripe';
+            td $alias->{original} ? () : (colspan => 2), class => 'key';
+             txt $alias->{name};
             end;
-          }
-         end;
-        end;
-       end;
-     }
-     my @links = (
-       $s->{l_site} ?    [ 'site',    $s->{l_site} ] : (),
-       $s->{l_wp} ?      [ 'wp',      "http://en.wikipedia.org/wiki/$s->{l_wp}" ] : (),
-       $s->{l_twitter} ? [ 'twitter', "https://twitter.com/$s->{l_twitter}" ] : (),
-       $s->{l_anidb} ?   [ 'anidb',   "http://anidb.net/cr$s->{l_anidb}" ] : (),
-     );
-     if(@links) {
-       Tr;
-        td class => 'key', mt '_staff_links';
-        td;
-         for(@links) {
-           a href => $_->[1], mt "_staff_l_$_->[0]";
-           br if $_ != $links[$#links];
+            td $alias->{original} if $alias->{original};
+           end;
          }
         end;
        end;
-     }
-    end 'table';
-   end;
+      end;
+    }
+    my @links = (
+      $s->{l_site} ?    [ 'site',    $s->{l_site} ] : (),
+      $s->{l_wp} ?      [ 'wp',      "http://en.wikipedia.org/wiki/$s->{l_wp}" ] : (),
+      $s->{l_twitter} ? [ 'twitter', "https://twitter.com/$s->{l_twitter}" ] : (),
+      $s->{l_anidb} ?   [ 'anidb',   "http://anidb.net/cr$s->{l_anidb}" ] : (),
+    );
+    if(@links) {
+      Tr;
+       td class => 'key', mt '_staff_links';
+       td;
+        for(@links) {
+          a href => $_->[1], mt "_staff_l_$_->[0]";
+          br if $_ != $links[$#links];
+        }
+       end;
+      end;
+    }
+   end 'table';
 
    # description
-   div class => 'staffdesc';
-    if($s->{desc}) {
-      h2 mt '_staff_bio';
-      p;
-       lit bb2html $s->{desc}, 0, 1;
-      end;
-      br;
-    }
-
-    if (@{$s->{roles}}) {
-      h2 mt '_staff_credits';
-      my $has_notes = first { $_->{note} || $_->{name} ne $s->{name} } @{$s->{roles}};
-      table class => 'staffroles';
-       thead;
-        Tr;
-         td class => 'tc2', mt '_staff_col_title';
-         td class => 'tc3', mt '_staff_col_released';
-         td class => 'tc1', mt '_staff_col_role';
-         td class => 'tc4', mt '_staff_col_note' if $has_notes;
-        end;
-       end;
-       tbody;
-        my($last_vid, $row_count, $num) = (0) x 3;
-        for my $i (0..$#{$s->{roles}}) {
-          my $r = $s->{roles}->[$i];
-          if($r->{vid} != $last_vid) {
-            ++$num;
-            $row_count = 1;
-            for my $j (1+$i..$#{$s->{roles}}) {
-              last if $r->{vid} != $s->{roles}->[$j]->{vid};
-              ++$row_count;
-            }
-          }
-          Tr $num&1 ? (class => 'odd') : ();
-           if($last_vid != $r->{vid}) {
-             td class => 'tc2', $row_count > 1 ? (rowspan => $row_count) : ();
-               a href => "/v$r->{vid}", title => $r->{t_original}||$r->{title}, shorten $r->{title}, 60;
-             end;
-             td class => 'tc3', $row_count > 1 ? (rowspan => $row_count) : ();
-               lit $self->{l10n}->datestr($r->{c_released});
-             end;
-           }
-           td class => 'tc1', mt '_credit_'.$r->{role};
-           if($has_notes) {
-             td class => 'tc4';
-              txt '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
-              txt $r->{note};
-             end;
-           }
-          end;
-          $last_vid = $r->{vid};
-        }
-       end;
-      end;
-      br;
-    }
-    if (@{$s->{cast}}) {
-      h2 mt('_staff_voiced', scalar @{$s->{cast}});
-      my $has_notes = first { $_->{note} || $_->{name} ne $s->{name} } @{$s->{cast}};
-      table class => 'stripe staffroles';
-       thead;
-        Tr;
-         td class => 'tc2', mt '_staff_col_title';
-         td class => 'tc3', mt '_staff_col_released';
-         td class => 'tc1', mt '_staff_col_cast';
-         td class => 'tc4', mt '_staff_col_note' if $has_notes;
-        end;
-       end;
-       tbody;
-        foreach my $r (@{$s->{cast}}) {
-          Tr;
-           td class => 'tc2';
-            a href => "/v$r->{vid}", title => $r->{t_original}||$r->{title}, shorten $r->{title}, 60;
-           end;
-           td class => 'tc3'; lit $self->{l10n}->datestr($r->{c_released}); end;
-           td class => 'tc1'; a href => "/c$r->{cid}", title => $r->{c_original}, $r->{c_name}; end;
-           if($has_notes) {
-             td class => 'tc4';
-              txt '('.mt('_staff_as', $r->{name}).') ' if $r->{name} ne $s->{name};
-              txt $r->{note};
-             end;
-           }
-          end;
-        }
-       end;
-      end;
-    }
+   p class => 'description';
+    lit bb2html $s->{desc}, 0, 1;
    end;
-   clearfloat;
   end;
 
+  _roles($self, $s);
+  _cast($self, $s);
   $self->htmlFooter;
+}
+
+
+sub _roles {
+  my($self, $s) = @_;
+  return if !@{$s->{roles}};
+
+  h1 class => 'boxtitle', mt '_staff_credits';
+  $self->htmlBrowse(
+    items    => $s->{roles},
+    class    => 'staffroles',
+    header   => [
+      [ mt '_staff_col_title' ],
+      [ mt '_staff_col_released' ],
+      [ mt '_staff_col_role' ],
+      [ mt '_staff_col_as' ],
+      [ mt '_staff_col_note' ],
+    ],
+    row     => sub {
+      my($r, $n, $l) = @_;
+      Tr;
+       td class => 'tc1'; a href => "/v$l->{vid}", title => $l->{t_original}||$l->{title}, shorten $l->{title}, 60; end;
+       td class => 'tc2'; lit $self->{l10n}->datestr($l->{c_released}); end;
+       td class => 'tc3', mt '_credit_'.$l->{role};
+       td class => 'tc4', title => $l->{original}||$l->{name}, $l->{name};
+       td class => 'tc5', $l->{note};
+      end;
+    },
+  );
+}
+
+
+sub _cast {
+  my($self, $s) = @_;
+  return if !@{$s->{cast}};
+
+  h1 class => 'boxtitle', mt '_staff_voiced', scalar @{$s->{cast}};
+  $self->htmlBrowse(
+    items    => $s->{cast},
+    class    => 'staffroles',
+    header   => [
+      [ mt '_staff_col_title' ],
+      [ mt '_staff_col_released' ],
+      [ mt '_staff_col_cast' ],
+      [ mt '_staff_col_as' ],
+      [ mt '_staff_col_note' ],
+    ],
+    row     => sub {
+      my($r, $n, $l) = @_;
+      Tr;
+       td class => 'tc1'; a href => "/v$l->{vid}", title => $l->{t_original}||$l->{title}, shorten $l->{title}, 60; end;
+       td class => 'tc2'; lit $self->{l10n}->datestr($l->{c_released}); end;
+       td class => 'tc3'; a href => "/c$l->{cid}", title => $l->{c_original}, $l->{c_name}; end;
+       td class => 'tc4', title => $l->{original}||$l->{name}, $l->{name};
+       td class => 'tc5', $l->{note};
+      end;
+    },
+  );
 }
 
 

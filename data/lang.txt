@@ -5831,8 +5831,8 @@ tr*:
 uk*:
 it*:
 
-:_staff_as
-en : as [_1]
+:_staff_col_as
+en : As
 ru*:
 cs*:
 hu*:
@@ -5929,18 +5929,6 @@ it*:
 
 :_staff_l_anidb
 en : AniDB
-ru*:
-cs*:
-hu*:
-nl*:
-de*:
-es*:
-tr*:
-uk*:
-it*:
-
-:_staff_bio
-en : Info
 ru*:
 cs*:
 hu*:
