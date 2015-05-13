@@ -5831,6 +5831,18 @@ tr*:
 uk*:
 it*:
 
+:_staff_as
+en : as [_1]
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_staff_col_as
 en : As
 ru*:
