@@ -137,6 +137,7 @@ my %monthlies = (
   stats_rel   => q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM releases  WHERE hidden = FALSE) WHERE section = 'releases'|,
   stats_prod  => q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM producers WHERE hidden = FALSE) WHERE section = 'producers'|,
   stats_chars => q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM chars     WHERE hidden = FALSE) WHERE section = 'chars'|,
+  stats_chars => q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM staff     WHERE hidden = FALSE) WHERE section = 'staff'|,
   stats_tags  => q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM tags      WHERE state = 2)      WHERE section = 'tags'|,
   stats_trait => q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM traits    WHERE state = 2)      WHERE section = 'traits'|,
   stats_thread=> q|UPDATE stats_cache SET count = (SELECT COUNT(*) FROM threads   WHERE hidden = FALSE) WHERE section = 'threads'|,

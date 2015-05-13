@@ -3466,6 +3466,18 @@ tr : Karakterler
 uk : Персонажі
 it : Personaggi
 
+:_menu_stat_staff
+en : Staff
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_menu_stat_tags
 en : VN Tags
 ru : Тегов
