@@ -20,3 +20,12 @@ ALTER TYPE platform ADD VALUE 'x68' BEFORE 'xb1';
 
 -- New language
 ALTER TYPE language ADD VALUE 'ca' BEFORE 'cs';
+
+
+-- Reorder credit_type (and remove 'script')
+ALTER TYPE credit_type RENAME TO credit_type2;
+CREATE TYPE credit_type AS ENUM ('scenario', 'chardesign', 'art', 'music', 'songs', 'director', 'staff');
+ALTER TABLE vn_staff ALTER role DROP DEFAULT;
+ALTER TABLE vn_staff ALTER role TYPE credit_type USING role::text::credit_type;
+ALTER TABLE vn_staff ALTER role SET DEFAULT 'staff';
+DROP TYPE credit_type2;
