@@ -466,75 +466,75 @@ it : Cinese
 
 :_plat_win
 en : Windows
-ru : Windows
-cs : Windows
+ru :
+cs :
 hu :
 nl :
-de : Windows
-es : Windows
-tr : Windows
-uk : Windows
-it : Windows
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_dos
 en : DOS
-ru : DOS
-cs : DOS
+ru :
+cs :
 hu :
 nl :
-de : DOS
-es : DOS
-tr : DOS
-uk : DOS
-it : DOS
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_lin
 en : Linux
-ru : Linux
-cs : Linux
+ru :
+cs :
 hu :
 nl :
-de : Linux
-es : Linux
-tr : Linux
-uk : Linux
-it : Linux
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_mac
 en : Mac OS
-ru : Mac OS
-cs : Mac OS
+ru :
+cs :
 hu :
 nl :
-de : Mac OS
+de :
 es : Mac Os
-tr : Mac OS
-uk : Mac OS
-it : Mac OS
+tr :
+uk :
+it :
 
 :_plat_ios
 en : Apple iProduct
 ru : Apple iИзделие
-cs : Apple iProduct
+cs :
 hu : Apple iTermék
 nl :
 de : Apple iProdukt
 es : iProducto de Apple
 tr : Apple iOS
-uk : Apple iProduct
-it : Apple iProduct
+uk :
+it :
 
 :_plat_and
 en : Android
-ru : Android
+ru :
 cs*:
 hu :
 nl :
-de : Android
+de :
 es : Androir
-tr : Android
-uk : Android
-it : Android
+tr :
+uk :
+it :
 
 :_plat_dvd
 en : DVD Player
@@ -543,10 +543,10 @@ cs : DVD Přehrávač
 hu : DVD Lejátszó
 nl : DVD Speler
 de : DVD-Spieler
-es : DVD Player
+es :
 tr : DVD oynatıcı
-uk : DVD Player
-it : DVD Player
+uk :
+it :
 
 :_plat_bdp
 en : Blu-ray Player
@@ -555,10 +555,10 @@ cs*:
 hu : Blu-ray Lejátszó
 nl : Blu-ray Speler
 de : Blu-ray-Spieler
-es : Blu-ray Player
+es :
 tr : Blu-ray oynatıcı
-uk : Blu-ray Player
-it : Blu-ray Player
+uk :
+it :
 
 :_plat_fmt
 en : FM Towns
@@ -574,15 +574,15 @@ it*:
 
 :_plat_gba
 en : Game Boy Advance
-ru : Game Boy Advance
-cs : Game Boy Advance
+ru :
+cs :
 hu :
 nl :
-de : Game Boy Advance
-es : Game Boy Advance
-tr : Game Boy Advance
-uk : Game Boy Advance
-it : Game Boy Advance
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_gbc
 en : Game Boy Color
@@ -590,47 +590,47 @@ ru*:
 cs*:
 hu*:
 nl :
-de : Game Boy Color
+de :
 es*:
-tr : Game Boy Color
+tr :
 uk*:
 it*:
 
 :_plat_msx
 en : MSX
-ru : MSX
-cs : MSX
+ru :
+cs :
 hu :
 nl :
-de : MSX
-es : MSX
-tr : MSX
-uk : MSX
-it : MSX
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_nds
 en : Nintendo DS
-ru : Nintendo DS
-cs : Nintendo DS
+ru :
+cs :
 hu :
 nl :
-de : Nintendo DS
-es : Nintendo DS
-tr : Nintendo DS
-uk : Nintendo DS
-it : Nintendo DS
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_nes
 en : Famicom
 ru : Famicom (Dendy)
-cs : Famicom
+cs :
 hu :
 nl :
 de : NES
 es : Nintendo Nes
-tr : Famicom
+tr :
 uk : Dendy
-it : Famicom
+it :
 
 :_plat_p88
 en : PC-88
@@ -638,23 +638,23 @@ ru*:
 cs*:
 hu*:
 nl :
-de : PC-88
+de :
 es*:
-tr : PC-88
+tr :
 uk*:
 it*:
 
 :_plat_p98
 en : PC-98
-ru : PC-98
-cs : PC-98
+ru :
+cs :
 hu :
 nl :
-de : PC-98
-es : PC-98
-tr : PC-98
-uk : PC-98
-it : PC-98
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_pce
 en : PC Engine
@@ -674,59 +674,59 @@ ru*:
 cs*:
 hu*:
 nl :
-de : PC-FX
+de :
 es*:
-tr : PC-FX
+tr :
 uk*:
 it*:
 
 :_plat_psp
 en : PlayStation Portable
-ru : PlayStation Portable
+ru :
 cs : Playstation Portable
 hu :
 nl :
-de : PlayStation Portable
+de :
 es : PSP
-tr : PlayStation Portable
-uk : PlayStation Portable
-it : PlayStation Portable
+tr :
+uk :
+it :
 
 :_plat_ps1
 en : PlayStation 1
-ru : PlayStation 1
+ru :
 cs : Playstation 1
 hu :
 nl :
-de : PlayStation 1
+de :
 es : Playstation 1
-tr : PlayStation 1
-uk : PlayStation 1
-it : PlayStation 1
+tr :
+uk :
+it :
 
 :_plat_ps2
 en : PlayStation 2
-ru : PlayStation 2
+ru :
 cs : Playstation 2
 hu :
 nl :
-de : PlayStation 2
+de :
 es : Playstation 2
-tr : PlayStation 2
-uk : PlayStation 2
-it : PlayStation 2
+tr :
+uk :
+it :
 
 :_plat_ps3
 en : PlayStation 3
-ru : PlayStation 3
+ru :
 cs : Playstation 3
 hu :
 nl :
-de : PlayStation 3
+de :
 es : Playstation 3
-tr : PlayStation 3
-uk : PlayStation 3
-it : PlayStation 3
+tr :
+uk :
+it :
 
 :_plat_ps4
 en : PlayStation 4
@@ -746,59 +746,59 @@ ru*:
 cs*:
 hu :
 nl :
-de : PlayStation Vita
+de :
 es*:
-tr : PlayStation Vita
+tr :
 uk*:
 it*:
 
 :_plat_drc
 en : Dreamcast
-ru : Dreamcast
-cs : Dreamcast
+ru :
+cs :
 hu :
 nl :
-de : Dreamcast
-es : Dreamcast
-tr : Dreamcast
-uk : Dreamcast
-it : Dreamcast
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_sat
 en : Sega Saturn
-ru : Sega Saturn
-cs : Sega Saturn
+ru :
+cs :
 hu :
 nl :
-de : Sega Saturn
-es : Sega Saturn
-tr : Sega Saturn
-uk : Sega Saturn
-it : Sega Saturn
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_sfc
 en : Super Nintendo
-ru : Super Nintendo
-cs : Super Nintendo
+ru :
+cs :
 hu :
 nl :
-de : Super Nintendo
-es : Super Nintendo
-tr : Super Nintendo
-uk : Super Nintendo
-it : Super Nintendo
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_wii
 en : Nintendo Wii
-ru : Nintendo Wii
-cs : Nintendo Wii
+ru :
+cs :
 hu :
 nl :
-de : Nintendo Wii
-es : Nintendo Wii
-tr : Nintendo Wii
-uk : Nintendo Wii
-it : Nintendo Wii
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_n3d
 en : Nintendo 3DS
@@ -806,9 +806,9 @@ ru*:
 cs*:
 hu :
 nl :
-de : Nintendo 3DS
+de :
 es*:
-tr : Nintendo 3DS
+tr :
 uk*:
 it*:
 
@@ -830,23 +830,23 @@ ru*:
 cs*:
 hu*:
 nl :
-de : Xbox
+de :
 es*:
-tr : Xbox
+tr :
 uk*:
 it*:
 
 :_plat_xb3
 en : Xbox 360
-ru : Xbox 360
-cs : Xbox 360
+ru :
+cs :
 hu :
 nl :
-de : Xbox 360
-es : Xbox 360
-tr : Xbox 360
-uk : Xbox 360
-it : Xbox 360
+de :
+es :
+tr :
+uk :
+it :
 
 :_plat_xbo
 en : Xbox One
@@ -870,7 +870,7 @@ de : Webseite
 es : Página Web
 tr : Web sitesi
 uk : Вебсайт
-it : Website
+it :
 
 :_plat_oth
 en : Other
@@ -893,11 +893,11 @@ ru : [quant,_1,CD,CD,CD]
 cs : [quant,_1,CD,CD,CD]
 hu : [quant,_1,CD,CD]
 nl :
-de : [quant,_1,CD,CDs]
-es : [quant,_1,CD,CDs]
+de :
+es :
 tr : CD
 uk*:
-it : [quant,_1,CD,CDs]
+it :
 
 :_med_dvd
 en : [quant,_1,DVD,DVDs]
@@ -905,11 +905,11 @@ ru : [quant,_1,DVD,DVD,DVD]
 cs : [quant,_1,DVD,DVD,DVD]
 hu : [quant,_1,DVD,DVD]
 nl :
-de : [quant,_1,DVD,DVDs]
-es : [quant,_1,DVD,DVDs]
+de :
+es :
 tr : DVD
 uk : [quant,_1,DVD,DVD]
-it : [quant,_1,DVD,DVDs]
+it :
 
 :_med_gdr
 en : [quant,_1,GD-ROM,GD-ROMs]
@@ -917,11 +917,11 @@ ru : [quant,_1,GD-ROM,GD-ROM,GD-ROM]
 cs : [quant,_1,GD-ROM,GD-ROMy,GD-ROMů]
 hu : [quant,_1,GD-ROM,GD-ROM]
 nl :
-de : [quant,_1,GD-ROM,GD-ROMs]
-es : [quant,_1,GD-ROM,GD-ROMs]
+de :
+es :
 tr : GD-ROM
 uk : [quant,_1,GD-ROM,GD-ROM]
-it : [quant,_1,GD-ROM,GD-ROMs]
+it :
 
 :_med_blr
 en : [quant,_1,Blu-ray disc,Blu-ray discs]
@@ -933,7 +933,7 @@ de : [quant,_1,Blu-ray Disc,Blu-ray Discs]
 es : [quant,_1,disco Blu-ray,discos Blu-ray discs]
 tr : Blu-ray disk
 uk : [quant,_1,Blu-ray,Blu-ray]
-it : [quant,_1,Blu-ray disc,Blu-ray discs]
+it :
 
 :_med_flp
 en : [quant,_1,Floppy,Floppies]
@@ -945,7 +945,7 @@ de : [quant,_1,Diskette,Disketten]
 es : [quant,_1,Disquete,Disquetes]
 tr : Disket
 uk : [quant,_1,Дискета,Дискет]
-it : [quant,_1,Floppy,Floppies]
+it :
 
 :_med_mrt
 en : [quant,_1,Cartridge,Cartridges]
@@ -957,7 +957,7 @@ de : [quant,_1,Kassette,Kassetten]
 es : [quant,_1,Videocinta,Videocintas]
 tr : Kartuş
 uk : [quant,_1,Картридж,Картриджі]
-it : [quant,_1,Cartridge,Cartridges]
+it :
 
 :_med_mem
 en : [quant,_1,Memory card,Memory cards]
@@ -969,7 +969,7 @@ de : [quant,_1,Speicherkarte,Speicherkarten]
 es : [quant,_1,Tarjeta de memoria,Tarjetas de memorias]
 tr : Hafıza kartı
 uk : [quant,_1,Карта пам’яті,Карти пам’яті]
-it : [quant,_1,Memory card,Memory cards]
+it :
 
 :_med_umd
 en : [quant,_1,UMD,UMDs]
@@ -977,11 +977,11 @@ ru : [quant,_1,UMD,UMD,UMD]
 cs : [quant,_1,UMD,UMD,UMD]
 hu : [quant,_1,UMD,UMD]
 nl :
-de : [quant,_1,UMD,UMDs]
-es : [quant,_1,UMD,UMDs]
+de :
+es :
 tr : UMD
 uk : [quant,_1,UMD,UMD]
-it : [quant,_1,UMD,UMDs]
+it :
 
 :_med_nod
 en : Nintendo Optical [quant,_1,Disk,Disks]
@@ -989,11 +989,11 @@ ru : [quant,_1,оптический диск,оптических диска,о�
 cs : [quant,_1,Nintendo Optical Disk,Nintendo Optical Disky,Nintendo Optical Disků]
 hu : Nintendo Optikai [quant,_1,Lemez,Lemez]
 nl :
-de : Nintendo Optical [quant,_1,Disk,Disks]
+de :
 es : Nintendo Optical [quant,_1,Disc,Discs]
 tr : Nintendo Optik Disk
 uk : Оптичний диск Nintendo [quant,_1,Диск,Диски]
-it : Nintendo Optical [quant,_1,Disk,Disks]
+it :
 
 :_med_in
 en : Internet download
@@ -1005,7 +1005,7 @@ de : Internet Download
 es : Descargar de internet
 tr : İnternetten indirilebilir
 uk : Розповсюдження через інтернет
-it : Internet download
+it :
 
 :_med_otc
 en : Other
@@ -1032,19 +1032,19 @@ de : Nachfolger
 es : Secuela
 tr : Devam yapımı
 uk : Сіквел
-it : Sequel
+it :
 
 :_vnrel_preq
 en : Prequel
 ru : Предыстория
-cs : Prequel
+cs :
 hu : Előző rész
 nl : Voorganger
 de : Vorgänger
 es : Precuela
 tr : Ön yapım
 uk : Приквел
-it : Prequel
+it :
 
 :_vnrel_set
 en : Same setting
@@ -1092,7 +1092,7 @@ de : Nebengeschichte
 es : Historia coétanea
 tr : Yan öykü
 uk : Побічна історія
-it : Side story
+it :
 
 :_vnrel_par
 en : Parent story
@@ -1104,7 +1104,7 @@ de : Hauptgeschichte
 es : Historia paralela
 tr : Ana öykü
 uk : Основна історія
-it : Parent story
+it :
 
 :_vnrel_ser
 en : Same series
@@ -1124,11 +1124,11 @@ ru : Фандиск
 cs : Fandisk
 hu : Rajongó lemez
 nl :
-de : Fandisc
-es : Fandisc
+de :
+es :
 tr : Fandisk
 uk : Фандиск
-it : Fandisc
+it :
 
 :_vnrel_orig
 en : Original game
@@ -1164,7 +1164,7 @@ cs : Jednotlivec
 hu : Magánszemély
 nl : Individueel
 de : Einzelperson
-es : Individual
+es :
 tr : Birey
 uk : Приватна особа
 it : Individuo
@@ -1238,7 +1238,7 @@ ru : Марка
 cs : Otisk
 hu : Márkanév
 nl :
-de : Imprint
+de :
 es : Editorial
 tr : Ticari isimler
 uk : Марка
@@ -1310,7 +1310,7 @@ it : Parziale
 :_rtype_trial
 en : Trial
 ru : Триальный
-cs : Trial
+cs :
 hu : Próba változat
 nl :
 de : Testversion
@@ -1337,13 +1337,13 @@ it : Serie TV
 :_animetype_ova
 en : OVA
 ru : ОВА
-cs : OVA
+cs :
 hu :
 nl :
-de : OVA
-es : OVA
-tr : OVA
-uk : OVA
+de :
+es :
+tr :
+uk :
 it : OAV
 
 :_animetype_mov
@@ -1377,10 +1377,10 @@ cs : Internet
 hu :
 nl :
 de : Internet
-es : Web
-tr : Web
+es :
+tr :
 uk : Веб
-it : Web
+it :
 
 :_animetype_spe
 en : TV Special
@@ -1455,7 +1455,7 @@ de : Visual Novels
 es : Novelas visuales
 tr : Görsel romanlar
 uk : Візуальні новели
-it : Visual novels
+it :
 
 :_dboard_p
 en : Producers
@@ -1523,7 +1523,7 @@ it : basso
 :_wish_3
 en : blacklist
 ru : в чёрном списке
-cs : blacklist
+cs :
 hu : feketelista
 nl :
 de : Schwarze Liste
@@ -1557,7 +1557,7 @@ de : Nicht-standard
 es : No estándar
 tr : Standart dışı
 uk : Нестандартна
-it : Non-standard
+it :
 
 :_scrres_ws
 en : widescreen
@@ -1569,7 +1569,7 @@ de : Breitbildschirm
 es : Panorámico
 tr : geniş ekran
 uk : Широкоекранна
-it : widescreen
+it :
 
 
 # 'Voiced' information for releases
@@ -2006,47 +2006,47 @@ ru : 1
 cs :
 hu :
 nl :
-de : O
-es : O
-tr : O
+de :
+es :
+tr :
 uk : 1
-it : O
+it :
 
 :_bloodt_a
 en : A
 ru : 2
-cs : A
+cs :
 hu :
 nl :
-de : A
-es : A
-tr : A
+de :
+es :
+tr :
 uk : 2
-it : A
+it :
 
 :_bloodt_b
 en : B
 ru : 3
-cs : B
+cs :
 hu :
 nl :
-de : B
-es : B
-tr : B
+de :
+es :
+tr :
 uk : 3
-it : B
+it :
 
 :_bloodt_ab
 en : AB
 ru : 4
-cs : AB
+cs :
 hu :
 nl :
-de : AB
-es : AB
-tr : AB
+de :
+es :
+tr :
 uk : 4
-it : AB
+it :
 
 
 # Genders
@@ -2108,7 +2108,7 @@ ru : Протагонист
 cs : Protagonista
 hu : Főszereplő
 nl :
-de : Protagonist
+de :
 es : Protagonista
 tr : Başkahraman
 uk : Партагоніст
@@ -2166,14 +2166,14 @@ it : Appare
 :_datetime_compact
 en : %Y-%m-%d
 ru : %d.%m.%Y
-cs : %Y-%m-%d
+cs :
 hu :
 nl :
-de : %Y-%m-%d
-es : %Y-%m-%d
-tr : %Y-%m-%d
+de :
+es :
+tr :
 uk : %d.%m.%Y
-it : %Y-%m-%d
+it :
 
 :_datetime_full
 en : %Y-%m-%d at %R
@@ -2232,7 +2232,7 @@ ru : апреля
 cs : duben
 hu : Április
 nl : april
-de : April
+de :
 es : Abril
 tr : Nisan
 uk : квітня
@@ -2280,7 +2280,7 @@ ru : августа
 cs : srpen
 hu : Augusztus
 nl : augustus
-de : August
+de :
 es : Agostp
 tr : Ağustos
 uk : серпня
@@ -2292,7 +2292,7 @@ ru : сентября
 cs : září
 hu : Szeptember
 nl : september
-de : September
+de :
 es : Septiembre
 tr : Eylül
 uk : вересня
@@ -2316,7 +2316,7 @@ ru : ноября
 cs : listopad
 hu :
 nl : november
-de : November
+de :
 es : Noviembre
 tr : Kasım
 uk : листопада
@@ -2439,15 +2439,15 @@ it : Tutte le età
 # "Ages [_1] and up", but shorter
 :_minage_age
 en : [_1]+
-ru : [_1]+
-cs : [_1]+
-hu : [_1]+
+ru :
+cs :
+hu :
 nl :
-de : [_1]+
+de :
 es : +[_1]
-tr : [_1]+
-uk : [_1]+
-it : [_1]+
+tr :
+uk :
+it :
 
 # [_1] is an example of an age rating, like 'CERO A', 'CERO D', etc.
 # this string is appended to the other _minage_* strings
@@ -2712,14 +2712,14 @@ it : successivo
 :_js_ds_tag_meta
 en : meta
 ru : мета
-cs : meta
+cs :
 hu :
 nl :
-de : meta
-es : meta
-tr : meta
+de :
+es :
+tr :
 uk : мета
-it : meta
+it :
 
 :_js_ds_tag_mod
 en : awaiting moderation
@@ -2751,11 +2751,11 @@ ru : мета
 cs*:
 hu :
 nl :
-de : meta
-es : meta
-tr : meta
+de :
+es :
+tr :
 uk : мета
-it : meta
+it :
 
 :_js_ds_trait_mod
 en : awaiting moderation
@@ -2818,7 +2818,7 @@ de : Zurücksetzen
 es : Resetear
 tr : Sıfırla
 uk : Скинути
-it : Reset
+it :
 
 :_js_fil_save
 en : Save as default
@@ -2874,14 +2874,14 @@ it : AND booleano, più selezioni danno meno risultati
 :_atom_feed
 en : Atom Feed
 ru : Лента Atom
-cs : Atom Feed
+cs :
 hu : Atom Hírfolyam
 nl :
-de : Atom Feed
-es : Atom Feed
+de :
+es :
 tr : Atom beslemesi
 uk : Стрічка Atom
-it : Atom Feed
+it :
 
 
 # Short message reminding the user to post in ENGLISH (Used at about every message/description input field)
@@ -2946,8 +2946,8 @@ ru : нейтральный
 cs : neutrální
 hu : semleges
 nl : neutraal
-de : neutral
-es : neutral
+de :
+es :
 tr : belirsiz
 uk : нейтрально
 it : neutrale
@@ -3002,7 +3002,7 @@ it : spoiler maggiori
 # Main title of the site, used on header of each page and as title on the homepage
 :_site_title
 en : The Visual Novel Database
-ru : The Visual Novel Database
+ru :
 cs : Databáze Vizuálních Novel
 hu : A Visual Novel Adatbázis
 nl : De Visual Novel Database
@@ -3032,19 +3032,19 @@ it : TUTTE
 :_menu
 en : Menu
 ru : Меню
-cs : Menu
+cs :
 hu : Menü
 nl :
 de : Menü
 es : Menú
 tr : Menü
 uk : Меню
-it : Menu
+it :
 
 :_menu_home
 en : Home
 ru : Главная
-cs : Home
+cs :
 hu : Kezdőlap
 nl :
 de : Index
@@ -3176,14 +3176,14 @@ it : Area messaggi
 :_menu_faq
 en : FAQ
 ru : ЧаВо
-cs : FAQ
+cs :
 hu : GYIK
 nl :
-de : FAQ
+de :
 es : PUF (FAQ)
 tr : SSS
 uk : ЧаПи
-it : FAQ
+it :
 
 :_menu_randvn
 en : Random visual novel
@@ -3195,7 +3195,7 @@ de : Zufällige Visual Novel
 es : Novela visual aleatoria
 tr : Rastgele görsel roman
 uk : Випадкова новела
-it : Random visual novel
+it :
 
 :_menu_emptysearch
 en : search
@@ -3374,7 +3374,7 @@ ru : Вход
 cs : Přihlášení
 hu : Bejelentkezés
 nl : Inloggen
-de : Login
+de :
 es : Entrar
 tr : Giriş
 uk : Увійти
@@ -3424,7 +3424,7 @@ ru : Новелл
 cs : Vizuální novely
 hu : Visual Novelek
 nl : Visual novels
-de : Visual Novels
+de :
 es : Novelas Visuales
 tr : Görsel romanlar
 uk : Візуальні новели
@@ -3596,7 +3596,7 @@ it : messaggi
 :_mtabs_wishlist
 en : wishlist
 ru : список желаемого
-cs : wishlist
+cs :
 hu : kivánságlista
 nl : wensenlijst
 de : Wunschliste
@@ -3802,7 +3802,7 @@ ru : Редакция [_1]
 cs : Revize [_1]
 hu : Revízió - #[_1]
 nl : Revisie [_1]
-de : Revision [_1]
+de :
 es : Modificación [_1]
 tr : Revizyon [_1]
 uk : Редакція [_1]
@@ -3888,10 +3888,10 @@ cs : Ne
 hu : Nem
 nl : Nee
 de : Nein
-es : No
+es :
 tr : Hayır
 uk : Ні
-it : No
+it :
 
 :_revfield_ihid
 en : Deleted
@@ -4405,14 +4405,14 @@ it : Includi modifiche a pubblicazioni
 :_hist_col_rev
 en : Rev.
 ru : Ревизия
-cs : Rev.
+cs :
 hu : Revízió
 nl :
-de : Rev.
-es : Rev.
-tr : Rev.
+de :
+es :
+tr :
 uk : Ревізія
-it : Rev.
+it :
 
 :_hist_col_date
 en : Date
@@ -4702,7 +4702,7 @@ de : Thema
 es : Tema
 tr : Başlık
 uk : Тема
-it : Topic
+it :
 
 :_postedit_form_hidden
 en : Hidden
@@ -4914,22 +4914,22 @@ cs : [_2], [_1]
 hu :
 nl : [_1], [_2]
 de : [_1], [_2]
-es : [_1] [_2]
+es :
 tr : [_2], Ana dili: [_1]
-uk : [_1] [_2]
+uk :
 it : [_2] [_1]
 
 :_prodpage_aliases
 en : a.k.a. [_1]
-ru : a.k.a. [_1]
-cs : a.k.a. [_1]
+ru :
+cs :
 hu : az az [_1]
 nl : alias
-de : a.k.a. [_1]
-es : a.k.a. [_1]
+de :
+es :
 tr : namıdiğer [_1]
 uk : Також відома, як [_1]
-it : a.k.a. [_1]
+it :
 
 :_prodpage_homepage
 en : Homepage
@@ -4937,7 +4937,7 @@ ru : Домашняя страничка
 cs : Domovská stránka
 hu : Weboldal
 nl :
-de : Homepage
+de :
 es : Portada
 tr : Ana sayfa
 uk : Сайт
@@ -4949,11 +4949,11 @@ ru : Википедия
 cs : Wikipedie
 hu : Wikipédia
 nl :
-de : Wikipedia
-es : Wikipedia
-tr : Wikipedia
+de :
+es :
+tr :
 uk : Вікіпедія
-it : Wikipedia
+it :
 
 :_prodpage_rel
 en : Releases
@@ -5049,7 +5049,7 @@ ru : Прочие названия
 cs : Aliasy
 hu : Más nevezések
 nl : Aliassen
-de : Aliases
+de :
 es : Alias
 tr : Diğer adları
 uk : Альтернативні назви
@@ -6336,38 +6336,38 @@ it : Tipo
 :_revfield_r_patch
 en : Patch
 ru : Патч
-cs : Patch
+cs :
 hu :
 nl :
-de : Patch
-es : Patch
+de :
+es :
 tr : Yama
 uk : Патч
-it : Patch
+it :
 
 :_revfield_r_freeware
 en : Freeware
-ru : Freeware
-cs : Freeware
+ru :
+cs :
 hu :
 nl :
-de : Freeware
-es : Freeware
+de :
+es :
 tr : Ücretsiz
 uk : Безкоштовно
-it : Freeware
+it :
 
 :_revfield_r_doujin
 en : Doujin
 ru : Додзин
-cs : Doujin
+cs :
 hu :
 nl :
-de : Doujin
-es : Doujin
-tr : Doujin
+de :
+es :
+tr :
 uk : Любительська робота
-it : Doujin
+it :
 
 :_revfield_r_title
 en : Title (romaji)
@@ -6395,15 +6395,15 @@ it : Titolo originale
 
 :_revfield_r_gtin
 en : JAN/UPC/EAN
-ru : JAN/UPC/EAN
-cs : JAN/UPC/EAN
+ru :
+cs :
 hu :
 nl :
-de : JAN/UPC/EAN
-es : JAN/UPC/EAN
-tr : JAN/UPC/EAN
-uk : JAN/UPC/EAN
-it : JAN/UPC/EAN
+de :
+es :
+tr :
+uk :
+it :
 
 :_revfield_r_catalog
 en : Catalog number
@@ -6499,7 +6499,7 @@ de : Medien
 es : Medio
 tr : Ortam
 uk : Носії
-it : Media
+it :
 
 :_revfield_r_resolution
 en : Resolution
@@ -6639,14 +6639,14 @@ it : Tipo
 :_relinfo_type_format
 en : [_1][index,_2,, patch]
 ru : [_1][index,_2,, патч]
-cs : [_1][index,_2,, patch]
+cs :
 hu :
 nl : [_1][index,_2,,~, patch]
 de : [_1][index,_2,, Patch]
-es : [_1][index,_2,, patch]
+es :
 tr : [_1][index,_2,, yama]
 uk : [_1][index,_2,, патч]
-it : [_1][index,_2,, patch]
+it :
 
 :_relinfo_lang
 en : Language
@@ -6687,7 +6687,7 @@ it : [index,_1,Freeware,Non gratis], [index,_2,doujin,commerciale]
 :_relinfo_pub_patch
 en : [index,_1,Freeware,Non-free]
 ru : [index,_1,Freeware,Несвободная]
-cs : [index,_1,Freeware,Non-free]
+cs :
 hu : [index,_1,Freeware,Nem Freeware]
 nl : [index,_1,Freeware,Betaald]
 de : [index,_1,Freeware,Nicht-frei]
@@ -6706,7 +6706,7 @@ de : [quant,_1,Plattform,Plattformen]
 es : [quant,_1,Platforma,Platformas]
 tr : Platform
 uk : [quant,_1,Платформа,Платформи,Платформ]
-it : [quant,_1,Platform,Platforms]
+it :
 
 :_relinfo_media
 en : [quant,_1,Medium,Media]
@@ -6718,7 +6718,7 @@ de : [quant,_1,Medium,Medien]
 es : [quant,_1,Medio,Medios]
 tr : Ortam
 uk : [quant,_1,Носій,Носії,Носіїв]
-it : [quant,_1,Medium,Media]
+it :
 
 :_relinfo_resolution
 en : Resolution
@@ -6762,7 +6762,7 @@ ru : Сюжет: [_1]
 cs : Příběh: [_1]
 hu : Történet: [_1]
 nl : Verhaal: [_1]
-de : Story: [_1]
+de :
 es : Historia: [_1]
 tr : Öykü: [_1]
 uk : Сюжет: [_1]
@@ -6846,7 +6846,7 @@ ru : Ссылки
 cs : Odkazy
 hu : Hivatkozások
 nl :
-de : Links
+de :
 es : Enlaces
 tr : Bağlantılar
 uk : Посилання
@@ -6891,14 +6891,14 @@ it : non nella tua lista
 :_relinfo_user_inlist
 en : Status: [_1]
 ru : Статус: [_1]
-cs : Status: [_1]
+cs :
 hu : Állapot: [_1]
 nl :
-de : Status: [_1]
+de :
 es : Estado: [_1]
 tr : Durum: [_1]
 uk : Статус: [_1]
-it : Status: [_1]
+it :
 
 :_relinfo_user_setstatus
 en : Set status
@@ -7073,15 +7073,15 @@ it : Lingua(e)
 
 :_redit_form_gtin
 en : JAN/UPC/EAN
-ru : JAN/UPC/EAN
-cs : JAN/UPC/EAN
+ru :
+cs :
 hu :
 nl :
-de : JAN/UPC/EAN
-es : JAN/UPC/EAN
-tr : JAN/UPC/EAN
-uk : JAN/UPC/EAN
-it : JAN/UPC/EAN
+de :
+es :
+tr :
+uk :
+it :
 
 :_redit_form_catalog
 en : Catalog number
@@ -7183,7 +7183,7 @@ ru : Формат
 cs : Formát
 hu : Formátúm
 nl : Formaat
-de : Format
+de :
 es : Formato
 tr : Biçim
 uk : Формат
@@ -7283,7 +7283,7 @@ de : Medien
 es : Medio
 tr : Ortam
 uk : Носії
-it : Media
+it :
 
 :_redit_form_med_quantity
 en : -quantity-
@@ -7301,13 +7301,13 @@ it : -quantità-
 en : -medium-
 ru : -носитель-
 cs : -médium-
-hu : -medium-
+hu :
 nl :
 de : -Medium-
 es : -medio-
 tr : -ortam-
 uk : -носій-
-it : -medium-
+it :
 
 :_redit_form_prod
 en : Producers
@@ -7558,7 +7558,7 @@ ru : Название
 cs : Název
 hu : Cím
 nl : Titel
-de : Title
+de :
 es : Título
 tr : Adı
 uk : Назва
@@ -7626,7 +7626,7 @@ cs : Obecné
 hu : Általános
 nl : Algemeen
 de : Allgemein
-es : General
+es :
 tr : Genel
 uk : Загальні
 it : Generale
@@ -7658,14 +7658,14 @@ it : Status patch
 :_rbrowse_patch_yes
 en : Patch
 ru : Только патчи
-cs : Patch
-hu : Patch
+cs :
+hu :
 nl :
-de : Patch
-es : Patch
+de :
+es :
 tr : Yama
 uk : Патч
-it : Patch
+it :
 
 :_rbrowse_patch_no
 en : Standalone
@@ -7674,22 +7674,22 @@ cs : Samostatné vydání
 hu : Önálló
 nl : Geen patch
 de : Allein lauffähig
-es : Standalone
+es :
 tr : Bağımsız
 uk : Самостійні релізи
 it : Indipendente
 
 :_rbrowse_freeware
 en : Freeware
-ru : Freeware
-cs : Freeware
+ru :
+cs :
 hu :
 nl :
-de : Freeware
-es : Freeware
+de :
+es :
 tr : Ücretsiz
 uk : Безкоштовні
-it : Freeware
+it :
 
 :_rbrowse_freeware_yes
 en : Only freeware
@@ -7718,14 +7718,14 @@ it : Solo pubblicazioni non gratis
 :_rbrowse_doujin
 en : Doujin
 ru : Додзин
-cs : Doujin
+cs :
 hu :
 nl :
-de : Doujin
-es : Doujin
-tr : Doujin
+de :
+es :
+tr :
 uk : Любительські роботи
-it : Doujin
+it :
 
 :_rbrowse_doujin_yes
 en : Only doujin releases
@@ -7864,10 +7864,10 @@ en : Platform
 ru : Платформы
 cs : Platforma
 hu : Platformok
-nl : Platform
+nl :
 de : Plattform
 es : Plataforma
-tr : Platform
+tr :
 uk : Платформа
 it : Piattaforma
 
@@ -7877,11 +7877,11 @@ ru : Носители
 cs : Médium
 hu : Médium
 nl :
-de : Medium
+de :
 es : Medio
 tr : Ortam
 uk : Носій
-it : Medium
+it :
 
 :_rbrowse_voiced
 en : Voiced
@@ -7913,7 +7913,7 @@ ru : Сюжетная анимация
 cs : Příběh
 hu : Történet
 nl : Verhaal
-de : Story
+de :
 es : Historia
 tr : Öykü
 uk : Сюжет
@@ -7945,14 +7945,14 @@ it : Scene erotiche
 :_tagp_title
 en : [index,_1,Meta tag,Tag]: [_2]
 ru : [index,_1,Мета тег,Тег]: [_2]
-cs : [index,_1,Meta tag,Tag]: [_2]
+cs :
 hu : [index,_1,Meta Címke,Címke]: [_2]
 nl :
 de : [index,_1,Meta-Schlagwort,Schlagwort]: [_2]
 es : [index,_1,supra-etiqueta,Etiqueta]: [_2]
 tr : [index,_1,Meta etiket,Etiket]: [_2]
 uk : [index,_1,Мета-тег,Тег]: [_2]
-it : [index,_1,Meta tag,Tag]: [_2]
+it :
 
 :_tagp_del_title
 en : Tag deleted
@@ -8676,14 +8676,14 @@ it : Creato
 :_tagb_col_name
 en : Tag
 ru : Тег
-cs : Tag
+cs :
 hu : Címke
 nl :
 de : Schlagwort
 es : Etiqueta
 tr : Etiket
 uk : Тег
-it : Tag
+it :
 
 :_tagb_note_awaiting
 en : awaiting moderation
@@ -8722,7 +8722,7 @@ de : Schlagwortlink Browser
 es : Mirar enlaces de etiquetas
 tr : Etiket bağlantısı gezgini
 uk : Огляд тегів
-it : Tag link browser
+it :
 
 :_taglink_spoil_title
 en : Spoiler warning
@@ -8775,14 +8775,14 @@ it : Utente:
 :_taglink_fil_tag
 en : Tag:
 ru : Тег:
-cs : Tag:
+cs :
 hu : Címke
 nl :
 de : Schlagwort:
 es : Etiqueta:
 tr : Etiket:
 uk : Теги:
-it : Tag:
+it :
 
 :_taglink_fil_vn
 en : Visual novel:
@@ -8794,7 +8794,7 @@ de : Visual Novel:
 es : Novela visual:
 tr : Görsel roman:
 uk : Візуальні новели:
-it : Visual novel:
+it :
 
 :_taglink_fil_add
 en : Click the arrow beside a user, tag or VN to add it as a filter.
@@ -8847,26 +8847,26 @@ it : Voto
 :_taglink_col_tag
 en : Tag
 ru : Тег
-cs : Tag
+cs :
 hu : Címke
 nl :
 de : Schlagwort
 es : Etiqueta
 tr : Etiket
 uk : Тег
-it : Tag
+it :
 
 :_taglink_col_spoiler
 en : Spoiler
 ru : Спойлер
-cs : Spoiler
+cs :
 hu :
 nl :
-de : Spoiler
-es : Spoiler
-tr : Spoiler
+de :
+es :
+tr :
 uk : Спойлер
-it : Spoiler
+it :
 
 :_taglink_col_vn
 en : Visual novel
@@ -8878,7 +8878,7 @@ de : Visual Novel
 es : Novela visual
 tr : Görsel roman
 uk : Візуальна новела
-it : Visual novel
+it :
 
 
 # VN<->Tag voting (/v+/tagmod)
@@ -8905,7 +8905,7 @@ de : Verschlagworten
 es : Etiquetando
 tr : Etiketleme
 uk : Тегування
-it : Tagging
+it :
 
 :_tagv_msg_guidelines
 en : Make sure you have read the [url,/d10,guidelines]!
@@ -8982,14 +8982,14 @@ it : Altri
 :_tagv_col_tag
 en : Tag
 ru : Тег
-cs : Tag
+cs :
 hu : Címke
 nl :
 de : Schlagwort
 es : Etiqueta
 tr : Etiket
 uk : Тег
-it : Tag
+it :
 
 :_tagv_col_rating
 en : Rating
@@ -9006,14 +9006,14 @@ it : Voto
 :_tagv_col_spoiler
 en : Spoiler
 ru : Спойлер
-cs : Spoiler
-hu : Spoiler
+cs :
+hu :
 nl :
-de : Spoiler
-es : Spoiler
-tr : Spoiler
+de :
+es :
+tr :
 uk : Спойлер
-it : Spoiler
+it :
 
 :_tagv_overruletip
 en : Tag overruled. All votes other than that of the moderator who overruled it will be ignored.
@@ -9170,7 +9170,7 @@ de : Schlagwortbaum
 es : Árbol de etiquetas
 tr : Etiket ağacı
 uk : Дерево тегів
-it : Tag tree
+it :
 
 :_tagidx_browseall
 en : Browse all tags
@@ -9285,7 +9285,7 @@ ru : Имя
 cs : Jméno
 hu : Név
 nl : Naam
-de : Name
+de :
 es : Nombre
 tr : Adı
 uk : Ім’я
@@ -9450,14 +9450,14 @@ it : Protagonista
 :_revfield_c_main_spoil
 en : Spoiler
 ru : Спойлер
-cs : Spoiler
+cs :
 hu :
 nl :
-de : Spoiler
-es : Spoiler
-tr : Spoiler
+de :
+es :
+tr :
 uk : Спойлер
-it : Spoiler
+it :
 
 :_revfield_c_image
 en : Image
@@ -9597,15 +9597,15 @@ it : Compleanno
 # [_1]=day-of-month, as a number, [_2]=month string, as in _month_<num>
 :_charp_bday_fmt
 en : [_1] [_2]
-ru : [_1] [_2]
+ru :
 cs : [_1]. [_2].
 hu :
 nl :
-de : [_1] [_2]
-es : [_1] [_2]
-tr : [_1] [_2]
-uk : [_1] [_2]
-it : [_1] [_2]
+de :
+es :
+tr :
+uk :
+it :
 
 :_charp_vns
 en : Visual novels
@@ -9950,14 +9950,14 @@ it : ID del personaggio principale - il personaggio di cui questo è un'istanza.
 :_chare_form_main_spoil
 en : Spoiler
 ru : Спойлер
-cs : Spoiler
+cs :
 hu :
 nl :
-de : Spoiler
-es : Spoiler
-tr : Spoiler
+de :
+es :
+tr :
 uk : Спойлер
-it : Spoiler
+it :
 
 :_chare_image
 en : Image
@@ -10113,7 +10113,7 @@ de : Visual Novels
 es : Novelas visuales
 tr : Görsel romanlar
 uk : Візуальні новели.
-it : Visual novels
+it :
 
 :_chare_vns_sel
 en : Selected visual novels
@@ -10269,7 +10269,7 @@ cs*:
 hu : Általános
 nl : Algemeen
 de : Allgemein
-es : General
+es :
 tr : Genel
 uk : Основні
 it : Generale
@@ -10534,7 +10534,7 @@ de : [index,_1,Meta-Eigenschaft,Eigenschaft]: [_2]
 es : [index,_1,Meta rasgo,Rasgo]: [_2]
 tr : [index,_1,Meta nitelik,Nitelik]: [_2]
 uk : [index,_1,Мета-риси,Риси]: [_2]
-it : [index,_1,Meta trait,Trait]: [_2]
+it :
 
 :_traitp_del_title
 en : Trait deleted
@@ -11418,7 +11418,7 @@ de : Visual Novel
 es : Novela visual
 tr : Görsel roman
 uk : Візуальна новела
-it : Visual novel
+it :
 
 :_votelist_col_user
 en : User
@@ -11511,10 +11511,10 @@ it : Titolo
 :_rlist_col_status
 en : Status
 ru : Статус
-cs : Status
+cs :
 hu : Állapot
 nl :
-de : Status
+de :
 es : Estado
 tr : Durum
 uk : Статус
@@ -11933,7 +11933,7 @@ de : Passwort
 es : Contraseña
 tr : Şifre
 uk : Пароль
-it : Password
+it :
 
 :_login_forgotpass
 en : Forgot your password?
@@ -12116,7 +12116,7 @@ de : E-Mail
 es : Correo
 tr : E-posta
 uk : Е-мейл
-it : Email
+it :
 
 :_newpass_sent_title
 en : New password
@@ -12179,7 +12179,7 @@ de : Passwort
 es : Contraseña
 tr : Şifre
 uk : Пароль
-it : Password
+it :
 
 :_setpass_confirm
 en : Confirm password
@@ -12242,7 +12242,7 @@ de : E-Mail
 es : Correo
 tr : E-posta
 uk : Е-мейл
-it : Email
+it :
 
 :_register_mail_msg
 en : Your email address will only be used in case you lose your password. We will never send
@@ -12517,7 +12517,7 @@ de : E-Mail
 es : Correo
 tr : E-posta
 uk : Е-мейл
-it : Email
+it :
 
 :_usere_changepass
 en : Change password
@@ -12553,7 +12553,7 @@ de : Passwort
 es : Contraseña
 tr : Şifre
 uk : Пароль
-it : Password
+it :
 
 :_usere_confirm
 en : Confirm password
@@ -12830,15 +12830,15 @@ it : Arrivata
 
 :_usern_col_id
 en : ID
-ru : ID
-cs : ID
+ru :
+cs :
 hu : ID (azonosító)
 nl :
-de : ID
-es : ID
-tr : ID
-uk : ID
-it : ID
+de :
+es :
+tr :
+uk :
+it :
 
 :_usern_col_act
 en : Action
@@ -13173,7 +13173,7 @@ cs : Obecné
 hu : Általános
 nl : Algemeen
 de : Allgemein
-es : General
+es :
 tr : Genel
 uk : Загальне
 it : Generale
@@ -13193,14 +13193,14 @@ it : Lunghezza
 :_vnbrowse_anime
 en : Anime
 ru : Аниме
-cs : Anime
+cs :
 hu :
 nl :
-de : Anime
-es : Anime
-tr : Anime
+de :
+es :
+tr :
 uk : Аніме
-it : Anime
+it :
 
 :_vnbrowse_anime_yes
 en : Has anime
@@ -13354,7 +13354,7 @@ hu : Platformok
 nl :
 de : Plattform
 es : Plataforma
-tr : Platform
+tr :
 uk : Платформа
 it : Piattaforma
 
@@ -13373,7 +13373,7 @@ it : Le mie liste
 :_vnbrowse_ul_notblack
 en : Blacklist
 ru : Чёрный список
-cs : Blacklist
+cs :
 hu : Feketelista
 nl :
 de : Schwarze Liste
@@ -13397,7 +13397,7 @@ it : Escludi VN dalla mia lista nera
 :_vnbrowse_ul_onwish
 en : Wishlist
 ru : Список желаемого
-cs : Wishlist
+cs :
 hu : Kivánságlista
 nl : Wensenlijst
 de : Wunschliste
@@ -13750,14 +13750,14 @@ it : Link esterni
 :_vnedit_anime
 en : Anime
 ru : Аниме
-cs : Anime
+cs :
 hu : Kapcsolódó anime
 nl :
-de : Anime
-es : Anime
-tr : Anime
+de :
+es :
+tr :
 uk : Аніме
-it : Anime
+it :
 
 :_vnedit_anime_msg
 en : Whitespace separated list of [url,http://anidb.net/,AniDB] anime IDs.
@@ -13900,24 +13900,24 @@ it : Preferibilmente la copertina della confezione. L'immagine deve essere in fo
 :_vnedit_image_nsfw
 en : NSFW
 ru : НБДР (NSFW)
-cs : NSFW
-hu : NSFW
+cs :
+hu :
 nl :
-de : NSFW
+de :
 es : +18
-tr : NSFW
+tr :
 uk : Небезпечне зображення (NSFW)
-it : NSFW
+it :
 
 :_vnedit_image_nsfw_check
 en : Not Safe For Work
 ru : Небезопасно для работы
-cs : Not Safe For Work
+cs :
 hu : Nem munkabarát (NSFW)
 nl : Niet geschikt voor op het werk
 de : Nicht jugendfrei
 es : +18
-tr : Not Safe For Work
+tr :
 uk : Небезпечно для роботи
 it : Not Safe For Work (non appropriato, non sicuro al lavoro)
 
@@ -14207,11 +14207,11 @@ ru : Скриншоты
 cs : Screenshoty
 hu : Pillanatképek
 nl :
-de : Screenshots
+de :
 es : Imágenes
 tr : Ekran görüntüleri
 uk : Скріншоти
-it : Screenshots
+it :
 
 :_vnedit_scrnorel
 en : No releases in the database yet. Screenshots can only be uploaded after a release has been added.
@@ -14432,14 +14432,14 @@ it : Carica!
 :_vnedit_scr_id
 en : Screenshot #[_1]
 ru : Скриншот #[_1]
-cs : Screenshot #[_1]
+cs :
 hu : #[_1]-dik pillanatkép
 nl :
-de : Screenshot #[_1]
+de :
 es : Imagen #[_1]
 tr : Ekran görüntüsü #[_1]
 uk : Скріншот #[_1]
-it : Screenshot #[_1]
+it :
 
 :_vnedit_scr_fullsize
 en : Full size: [_1]
@@ -14598,14 +14598,14 @@ it : Titolo originale
 :_revfield_v_alias
 en : Alias
 ru : Прочие названия
-cs : Alias
+cs :
 hu : Más nevek
 nl :
 de : Pseudoynm
-es : Alias
+es :
 tr : Diğer adı
 uk : Альтернативні назви
-it : Alias
+it :
 
 :_revfield_v_desc
 en : Description
@@ -14653,7 +14653,7 @@ de : Encubed Schlagwort
 es : Etiqueta Encubed
 tr : Encubed etiketi
 uk : Тег Encubed
-it : Encubed tag
+it :
 
 :_revfield_v_l_renai
 en : Renai.us link
@@ -14718,14 +14718,14 @@ it*:
 :_revfield_v_anime
 en : Anime
 ru : Аниме
-cs : Anime
+cs :
 hu :
 nl :
-de : Anime
-es : Anime
-tr : Anime
+de :
+es :
+tr :
 uk : Аніме
-it : Anime
+it :
 
 :_revfield_v_screenshots
 en : Screenshots
@@ -14733,11 +14733,11 @@ ru : Скриншоты
 cs : Screenshoty
 hu : Pillanatképek
 nl :
-de : Screenshots
+de :
 es : Imágenes
 tr : Ekran görüntüleri
 uk : Скріншоти
-it : Screenshots
+it :
 
 :_revfield_v_image
 en : Image
@@ -14754,14 +14754,14 @@ it : Immagine
 :_vndiff_image_nsfw
 en : (NSFW)
 ru : (НБДР|NSFW)
-cs : (NSFW)
-hu : (NSFW)
+cs :
+hu :
 nl :
 de : (Nicht jugendfrei)
-es : (NSFW)
-tr : (NSFW)
+es :
+tr :
 uk : (Небезбечно для роботи)
-it : (NSFW)
+it :
 
 :_vndiff_image_none
 en : No image
@@ -14952,7 +14952,7 @@ ru : Ссылки
 cs : Odkazy
 hu : Linkek
 nl :
-de : Links
+de :
 es : Enlace
 tr : Bağlantılar
 uk : Посилання
@@ -14964,35 +14964,35 @@ ru : Википедия
 cs : Wikipedie
 hu :
 nl :
-de : Wikipedia
-es : Wikipedia
-tr : Wikipedia
+de :
+es :
+tr :
 uk : Вікіпедія
-it : Wikipedia
+it :
 
 :_vnpage_l_encubed
 en : Encubed
-ru : Encubed
-cs : Encubed
+ru :
+cs :
 hu :
 nl :
-de : Encubed
-es : Encubed
-tr : Encubed
-uk : Encubed
-it : Encubed
+de :
+es :
+tr :
+uk :
+it :
 
 :_vnpage_l_renai
 en : Renai.us
-ru : Renai.us
-cs : Renai.us
+ru :
+cs :
 hu :
 nl :
-de : Renai.us
-es : Renai.us
-tr : Renai.us
-uk : Renai.us
-it : Renai.us
+de :
+es :
+tr :
+uk :
+it :
 
 :_vnpage_description
 en : Description
@@ -15353,7 +15353,7 @@ it : rimuovi dalla lista VN
 :_vnpage_uopt_wishlisted
 en : wishlist: [_1]
 ru : список желаемого: [_1]
-cs : wishlist: [_1]
+cs :
 hu : Kivánságlista: [_1]
 nl : wensenlijst: [_1]
 de : Wunschliste: [_1]
@@ -15632,14 +15632,14 @@ it : aggiungi pubblicazione
 :_vnpage_rel_patch
 en : (patch)
 ru : (патч)
-cs : (patch)
+cs :
 hu :
 nl :
 de : (Patch)
-es : (patch)
+es :
 tr : (yama)
 uk : (патч)
-it : (patch)
+it :
 
 :_vnpage_rel_extlink
 en : External link
@@ -15659,11 +15659,11 @@ ru : Скриншоты
 cs : Screenshoty
 hu : Pillanatképek
 nl :
-de : Screenshots
+de :
 es : Imágenes
 tr : Ekran görüntüleri
 uk : Скріншоти
-it : Screenshots
+it :
 
 :_vnpage_scr_showing
 en : Showing [_1] out of [_2] [quant,_2,screenshot,screenshots].
@@ -15692,14 +15692,14 @@ it : mostra/nascondi NSFW
 :_vnpage_scr_num
 en : Screenshot #[_1]
 ru : Скриншот #[_1]
-cs : Screenshot #[_1]
+cs :
 hu : Pillanatkép #[_1]
 nl :
-de : Screenshot #[_1]
+de :
 es : Imagen #[_1]
 tr : Ekran görüntüsü #[_1]
 uk : Скріншот #[_1]
-it : Screenshot #[_1]
+it :
 
 :_vnpage_stats
 en : User stats
@@ -16072,7 +16072,7 @@ cs : Chyba
 hu : Hiba
 nl :
 de : Fehler
-es : Error
+es :
 tr : Hata
 uk : Помилка
 it : Errore
@@ -16333,7 +16333,7 @@ cs : Chyba
 hu : Hiba
 nl :
 de : Fehler
-es : Error
+es :
 tr : Hata
 uk : Помилка
 it : Errore

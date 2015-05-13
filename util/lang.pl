@@ -36,6 +36,14 @@ $0 merge <lang> <file>
 $0 reorder <lang1>,<lang2>,..
   Re-orders the translation lines in lang.txt using the specified order.
 
+$0 cleanup
+  Higher-level cleanup/canonicalization. Does a bunch of things:
+  - Adds empty translation lines for languages present in the first key but not in other keys.
+  - Removes translation lines for languages not present in the first key.
+  - Reorders all translations to be in the same order as the first key.
+  - Removes translations that are equivalent to the English text.
+  TL;DR: Uses the first key in lang.txt as a template for all other keys.
+
 $0 stage <lang>
   Puts all changes of <lang> into the git index, and leaves everything else untouched.
 __
@@ -145,6 +153,41 @@ sub reorder {
 }
 
 
+sub cleanup {
+  my $r = LangFile->new(read => $langtxt);
+  my $w = LangFile->new(write => "$langtxt~");
+  my $key;      # current key, undef if not in a TL part
+  my %tl;       # translations of the current key
+  my @template; # languages and order of the first key
+  my $havetemp; # set when @template is complete
+  while((my $l = $r->read)) {
+    if($key && $l->[0] ne 'tl') {
+      $havetemp = 1;
+      for(@template) {
+        if(!$tl{$_}) {
+          $w->write('tl', $_, 0, '');
+        } elsif($_ ne 'en' && $tl{$_}[3] eq $tl{en}[3]) {
+          $w->write('tl', $_, 1, '');
+        } else {
+          $w->write(@{$tl{$_}});
+        }
+      }
+      $key = undef;
+      %tl = ();
+    }
+    $key = $l->[1] if $l->[0] eq 'key';
+    $w->write(@$l) unless $l->[0] eq 'tl';
+    if($l->[0] eq 'tl') {
+      $tl{$l->[1]} = $l;
+      push @template, $l->[1] if !$havetemp;
+    }
+  }
+  $r->close;
+  $w->close;
+  rename "$langtxt~", $langtxt or die $!;
+}
+
+
 sub stage {
   my $lang = shift;
   chdir "$ROOT/data";
@@ -164,5 +207,6 @@ add @ARGV if $act eq 'add';
 only @ARGV if $act eq 'only';
 merge @ARGV if $act eq 'merge';
 reorder @ARGV if $act eq 'reorder';
+cleanup @ARGV if $act eq 'cleanup';
 stage @ARGV if $act eq 'stage';
 
