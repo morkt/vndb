@@ -10,6 +10,7 @@ package VNDB;
   xml_pretty    => 0,
   log_queries   => 0,
   debug         => 1,
+  cookie_defaults => { path => '/' },
 );
 
 %S = (
