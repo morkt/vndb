@@ -51,6 +51,10 @@
  </dl>
  <br />
 
+ <b>Special users</b><br />
+:MODERATORS:
+ <br />
+
  <b>Překlady</b><br />
  <dl>
   <dt>Český</dt><dd><a href="mailto:nya.chan.production@gmail.com">Nya-chan Production</a></dd>
@@ -67,9 +71,4 @@
  <br />
  <b>Skiny</b>
 :SKINCONTRIB:
- <br />
-
- <b>5 nejaktivnějších přispívajících</b>
-:TOP5CONTRIB:
- ...a <a href="/u/all?o=d;s=changes">mnoho dalších</a>.
 </p>

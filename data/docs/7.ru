@@ -61,6 +61,10 @@
  </dl>
  <br />
 
+ <b>Special users</b><br />
+:MODERATORS:
+ <br />
+
  <b>Переводчики</b><br />
  <dl>
   <dt>Чешский</dt><dd><a href="mailto:nya.chan.production@gmail.com">Nya-chan Production</a></dd>
@@ -77,10 +81,5 @@
  <br />
  <b>Дизайнеры шкурок</b>
 :SKINCONTRIB:
- <br />
-
- <b>Пятёрка лучших контрибьютеров</b>
-:TOP5CONTRIB:
- ...и <a href="/u/all?o=d;s=changes">многие другие</a>.
 </p>
 

@@ -315,11 +315,15 @@ sub docpage {
       close $F;
       $ii;
     }e;
-    s{^:TOP5CONTRIB:$}{
-      my $l = $self->dbUserGet(results => 6, sort => 'changes', reverse => 1);
-      '<dl>'.join('', map $_->{id} == 1 ? () :
-        sprintf('<dt><a href="/u%d">%s</a></dt><dd>%d</dd>', $_->{id}, $_->{username}, $_->{c_changes}),
-      @$l).'</dl>';
+    s{^:MODERATORS:$}{
+      my $l = $self->dbUserGet(results => 100, sort => 'id', notperm => $self->{default_perm}, what => 'extended');
+      my $admin = 0;
+      $admin += $_ for values %{$self->{permissions}};
+      '<dl>'.join('', map {
+        my $u = $_;
+        my $p = $u->{perm} >= $admin ? 'admin' : join ', ', sort map +($u->{perm} &~ $self->{default_perm}) & $self->{permissions}{$_} ? $_ : (), keys %{$self->{permissions}};
+        $p ? sprintf('<dt><a href="/u%d">%s</a></dt><dd>%s</dd>', $_->{id}, $_->{username}, $p) : ()
+      } @$l).'</dl>';
     }e;
     s{^:SKINCONTRIB:$}{
       my %users;

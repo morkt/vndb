@@ -13,7 +13,7 @@ our @EXPORT = qw|
 |;
 
 
-# %options->{ username passwd mail session uid ip registered search results page what sort reverse }
+# %options->{ username passwd mail session uid ip registered search results page what sort reverse notperm }
 # what: notifycount stats extended prefs hide_list
 # sort: username registered votes changes tags
 sub dbUserGet {
@@ -50,6 +50,8 @@ sub dbUserGet {
       'username ILIKE ?' => "%$o{search}%") : (),
     $o{session} ? (
       q|s.token = decode(?, 'hex')| => unpack 'H*', $o{session} ) : (),
+    $o{notperm} ? (
+      'perm & ~(?::smallint) > 0' => $o{notperm} ) : (),
   );
 
   my @select = (
@@ -77,6 +79,7 @@ sub dbUserGet {
   );
 
   my $order = sprintf {
+    id => 'u.id %s',
     username => 'u.username %s',
     registered => 'u.registered %s',
     votes => 'up.value NULLS FIRST, u.c_votes %s',
