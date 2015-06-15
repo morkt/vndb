@@ -146,7 +146,7 @@ sub set_logger {
   my $l = sub {
     my($chan, $msg, @arg) = @_;
     return if !grep $chan eq $_, @{$O{channels}};
-    open my $F, '>>', "$VNDB::M{log_dir}/$chan" or die $!;
+    open my $F, '>>', "$VNDB::M{log_dir}/$chan.log" or die $!;
     print $F strftime('%Y-%m-%d %H:%M:%S', localtime).' '.sprintf($msg, @arg)."\n";
   };
 
@@ -154,13 +154,11 @@ sub set_logger {
     my(undef, $nick, $chan) = @_;
     $l->($chan, '--> %s (%s) joins %s', $nick, $irc->nick_ident($nick)||'', $chan);
   });
-  $irc->reg_cb(part => sub {
-    my(undef, $nick, $chan, undef $msg) = @_;
-    $l->($chan, '<-- %s (%s) quits (%s)', $nick, $irc->nick_ident($nick)||'', $msg);
-  });
-  $irc->reg_cb(kick => sub {
-    my(undef, $nick, $chan, undef, $msg, $kicker) = @_;
-    $l->($chan, '<-- %s kicks %s from %s (%s)', $kicker, $nick, $chan, $msg);
+  $irc->reg_cb(channel_remove => sub {
+    my(undef, $msg, $chan, @nicks) = @_;
+    return if !defined $msg;
+    $msg = $msg->{params}[$#{$msg->{params}}]||'';
+    $l->($chan, '<-- %s (%s) quits (%s)', $_, $irc->nick_ident($_)||'', $msg) for(@nicks);
   });
   $irc->reg_cb(channel_change => sub {
     my(undef, undef, $chan, $old, $new) = @_;
