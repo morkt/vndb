@@ -101,7 +101,7 @@ sub send_quote {
 
 sub set_quotew {
   my $idx = shift;
-  $quotew[$idx] = AE::timer +(4*3600)+rand()*(30*3600), 0, sub {
+  $quotew[$idx] = AE::timer +(8*3600)+rand()*(40*3600), 0, sub {
     send_quote($O{channels}[$idx]) if $irc->registered;
     set_quotew($idx);
   };
