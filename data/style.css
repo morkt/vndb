@@ -574,6 +574,8 @@ div.staffbrowse	   { padding-bottom: 10px }
 .staffpage table.stripe { width: 400px; margin: 0 auto; }
 .staffpage .key  { width: 70px; }
 .staffroles td.tc2 { white-space: nowrap; width: 80px }
+.staffroles td.tc3 { white-space: nowrap; width: 100px }
+.staffroles td.tc4 { white-space: nowrap; padding-right: 10px }
 table.aliases td { padding: 0 5px; }
 table.aliases td.key { padding: 0 5px 0 0; width: auto }
 
