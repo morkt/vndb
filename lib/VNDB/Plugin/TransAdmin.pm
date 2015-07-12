@@ -40,7 +40,6 @@ sub tladmin {
   my($self, $lang) = @_;
 
   $lang ||= '';
-  my $intro = $lang =~ s/intro//;
   return $self->resNotFound if $lang && ($lang eq 'en' || !grep $_ eq $lang, $self->{l10n}->languages);
   my $sect = $self->reqGet('sect')||'';
   my $doc = $self->reqGet('doc')||'';
@@ -64,7 +63,7 @@ sub tladmin {
 
   $self->htmlHeader(title => 'Quick-and-dirty Translation Editor', noindex => 1);
   div class => 'mainbox';
-   a class => 'addnew', href => '/tladmin/intro', 'README';
+   a class => 'addnew', href => '/d17', 'README';
    h1 'Quick-and-dirty Translation Editor';
    h2 class => 'alttitle', 'Step #1: Choose a language';
    p class => 'browseopts';
@@ -75,7 +74,6 @@ sub tladmin {
    _docs($lang, $doc) if $lang;
   end;
 
-  _intro() if $intro;
   _section($self, $lang, $sect, $page) if $lang && $sect;
   _doc($self, $lang, $doc) if $lang && $doc;
 
@@ -152,18 +150,6 @@ sub _readlang {
   }
   $f->close;
   return (\@sect, \@page);
-}
-
-
-sub _intro {
-  my $f = LangFile->new(read => $langfile);
-  my $intro = $f->read;
-  $intro = join "\n", @$intro[1..$#$intro];
-  $f->close;
-  div class => 'mainbox';
-   h1 'Introduction to the language file';
-   pre style => 'padding: 0; margin: 0; background: none; border: none', $intro;
-  end;
 }
 
 

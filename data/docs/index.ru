@@ -5,6 +5,7 @@
  <li><a href="/d15">Special Games</a></li>
  <li><a href="/d3">Выпуски</a></li>
  <li><a href="/d4">Компании</a></li>
+ <li><a href="/d16">Staff</a></li>
  <li><a href="/d12">Персонажи</a></li>
  <li><a href="/d10">Теги и черты</a></li>
  <li><a href="/d13">Как делать скриншоты</a></li>
@@ -13,5 +14,7 @@
  <li><a href="/d6">ЧаВо</a></li>
  <li><a href="/d7">О нас</a></li>
  <li><a href="/d11">API базы данных (англ.)</a></li>
+ <li><a href="/d14">Database Dumps</a></li>
  <li><a href="/d8">Разработка (англ.)</a></li>
+ <li><a href="/d17">Interface Translation</a></li>
 </ul>

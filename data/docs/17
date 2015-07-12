@@ -1,0 +1,141 @@
+:TITLE:VNDB Interface Translation
+:INC:index
+
+:SUB:Introduction
+<p>
+ Translation of the VNDB interface happens in roughly the following steps: 
+</p>
+<ol>
+ <li>You contact Yorhel that you're interested in maintaining a translation
+   into some language.</li>
+ <li>You will be granted access to the translation admin (see below) so you can
+   translate stuff.</li>
+ <li>When you're done (or, when you feel you've translated enough to have a
+   useful translation), you can contact Yorhel again and he can move the
+   translation to the main website.</li>
+</ol>
+<p>
+ Be warned that VNDB has quite a lot of text to translate, so doing a full
+ translation might take some time. Also keep in mind that the translations will
+ need to be kept up-to-date when changes to the site are made.
+</p>
+
+
+:SUB:Translation Admin
+<p>
+ The translation admin interface is available on a separate installation of
+ VNDB. It can be reached on the following URL:<br />
+ <a href="http://vndbtl.blicky.net/tladmin">http://vndbtl.blicky.net/tladmin</a><br />
+ That VNDB installation is completely separated from the main VNDB, so you're
+ free to modify things and screw around as much as you like. The changes to the
+ database are not saved and may be reverted at any time.<br /><br />
+ Make sure to log in to the site if you wish to modify the translation. Changes
+ to the translations are saved locally and are directly visible on the test
+ site. The changes are not automatically moved on to the main VNDB. You can
+ notify Yorhel to move the edited translation to the main website.
+ <br /><br />
+ <b class="standout">IMPORTANT</b>: When editing translations, make sure to
+ save often. It would really suck if you spend an hour translating everything
+ on a page, and then forget to save it. Or if you accidentally leave the page
+ and can't get back with your changes intact. Or if you wanted to save but the
+ server is suddenly having some issues. Whatever happens, be sure to hit the
+ "Save" button once every few minutes to limit any trouble!
+</p>
+
+:SUBSUB:Sections
+<p>
+ All the interface text of VNDB is grouped into several <i>sections</i>.
+ Selecting a section allows you to view/edit the individual translation lines.
+ <br /><br />
+ If the translation of a line is the same as the English text, the text box of
+ the translation can be left blank. Blank fields are automatically replaced
+ with the English text on the site.
+ <br /><br />
+ Always try to find each translated line used on the actual site and see if it
+ looks good in context. Sometimes there are limits to the length of a line and
+ the layout will look bad if the translation is too long. At other times you
+ might notice that the translation is used in a very different context than you
+ had thought.
+ <br /><br />
+<b>Checkbox</b><br />
+ There is a checkbox next to each translation line. This is used for
+ administrative purposes and can be used to signal which lines still need to be
+ (re)translated. When the English line is modified, or when a new line is
+ added, this checkbox will be set. After updating the translation you can unset
+ it to mark the line as finished. When, and whether, to unmark the checkbox is
+ up to you as translator. The checkboxes are not used for any other purpose
+ than to help you keep track of a to-do list. The numbers next to the section
+ links at the top indicate how many lines are still checked in that section
+ versus the total number of lines.
+ <br /><br />
+<b>Formatting</b><br />
+ Some lines have special formatting codes in them. In most cases you can just
+ copy the codes from the original text into the translation and translate
+ anything that looks like actual text. Here's a list of the currently used
+ formatting codes:
+</p>
+<dl>
+ <dt>[_#] ([_1], [_2], etc)</dt><dd>Placeholder for something that will be replaced in
+   the code. You can usually guess from the context what it will be replaced
+   with, otherwise it is often explained in the comments.</dd>
+ <dt>[age,_#]</dt><dd>Formats a date/time as an age, like "5 days ago".</dd>
+ <dt>[br]</dt><dd>Line break</dd>
+ <dt>[date,_#]</dt><dd>Formats a date</dd>
+ <dt>[date,_#,full]</dt><dd>Formats a date/time</dd>
+ <dt>[datestr,_#]</dt><dd>Formats a release date</dd>
+ <dt>[url,_#,title]</dt><dd>Formats a link. The title part needs to be translated, the rest should be the same as the original text.</dd>
+ <dt>[user,_#]</dt><dd>Formats a username</dd>
+ <dt>[index,_#,..]</dt><dd>This code will select one of its items to be
+   displayed. For example, "[index,_1,Meta trait,Trait]" is a placeholder for
+   either "Meta trait" or "Trait". Both texts should be translated and should
+   make sense in the context of the line.</dd>
+ <dt>[quant,_#,..]</dt><dd>This one is important. It is used to handle words
+   that need to be different depending on a certain number. For example,
+   English has only singular and plural forms, so "[quant,_1,vote,votes]" is
+   used to select the right word depending on whether it's about a single or
+   multiple votes. Czech has three possible forms, so that becomes
+   "[quant,_1,hlas,hlasy,hlasů]". This formatting code can be used in any
+   scenario where there is a number, even if the English line is not it.
+ </dd>
+</dl>
+
+
+:SUBSUB:Doc pages
+<p>
+ Doc pages are pages like the FAQ, guidelines and other stuff. These can be
+ translated by editing the document on the right. Doc pages are written in HTML
+ and have a few special codes like :TITLE:, :INC:, etc. You don't have to worry
+ much about this, just make sure that if there's any codes on the original
+ document on the left, the same codes are used in the translated document on
+ the right. It helps to keep the line-breaks at the same point in the
+ translated document as in the original document, so that it's easy to follow
+ which lines correspond to each other.
+ <br /><br />
+ Doc pages always start with a <b>:TITLE:</b> on the first line and a
+ <b>:INC:index</b> on the second. In the translated document it's also possible
+ to add a special <b>:INC:incomplete</b> line to indicate that the translation
+ is not yet finished or not synchronized with the English version. This line is
+ added whenever the English version of the doc page has been changed, and makes
+ it easy to see which documents need to be updated. After ensuring that the
+ translation has been synchronised, you can remove the <b>:INC:incomplete</b>
+ line from the document.
+ <br /><br />
+ For convenience, in the doc page selection there is a <b
+ class="standout">!!</b> indicator next to the doc page to indicate that it has
+ not been translated yet, or that it still has a <b>:INC:incomplete</b> line.
+ Unfortunately, this indicator is not added when one of the <i>incomplete</i>,
+ <i>index</i> or <i>notfinished</i> pages is modified. Be sure to regularly
+ check the <i>index</i> page for any additions!
+ <br /><br />
+ When updating an existing translation for a doc page that has recently been
+ modified, it may be useful to see what has been changed exactly. The "Recent
+ changes" link at the top-right of the box will bring you to the edit history
+ of the English version of the doc page.
+ <br /><br />
+ The following doc pages are not available for translation:
+</p>
+<ul>
+ <li><a href="/d8">d8</a>: Status and stuff about the VNDB roadmap. Used to change too often to be worth translating.</li>
+ <li><a href="/d11">d11</a> &amp; <a href="/d14">d14</a>: Documentation intended for developers, they should learn English.</li>
+ <li><a href="/d17">d17</a>: This page. Only useful to (potential) translators, English shouldn't be a problem.</li>
+</ul>

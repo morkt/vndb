@@ -17,83 +17,9 @@ Here's an example of a line:
   ru : Возрастной рейтинг
   nl*:
 
-In this example, "_relinfo_minage" is the 'key', and the lines following are
-the translations.  If a line does not have a translation for a particular
-language, the system will fall back to the English version (i.e. the string
-that starts with 'en :').
-
-Because VNDB is in constant development, changes to the interface text are
-inevitable, and the translations will get out of sync with the English text
-very quickly. To indicate which lines should be synchronised to their English
-counterparts, and asterisk is used between the language tag and the colon, as
-used in the above examples. As soon as a line is retranslated or synchronised
-again by the translator, (s)he should replace the asterick with a space to
-indicate that it has been checked.
-
-The text strings can contain some special formatting and text expansion codes.
-Such a code starts with '[', followed by a list of comma-separated options, and
-ends with ']'. To insert a literal '[', ']' in the text (or a ',' as an
-argument to a formatting code), prefix them with a '~'. E.g. to display
-"[bbcode]" on the site, type "~[bbcode~]". The following options are supported:
-
-
-  [_x]
-    Insert argument x in here. The arguments differ for each string, and come
-    from the VNDB code. The English line would give an indication of the
-    supported arguments.
-
-  [age,{arg}]
-    Formats the date/time '{arg}' into an age string, e.g. '3 days ago'. Commonly
-    used as '[age,_1]'.
-
-  [br]
-    The classic HTML <br>, used to force a line break into the text.
-
-  [date,{arg}]
-    Formats the date '{arg}' into a readable date. Usually used as: [date,_1].
-
-  [date,{arg},full]
-    Formats the date and time '{arg}' into something readable. Usually used as:
-      [date,_1,full]
-
-  [datestr,{arg}]
-    Similar to [date], but used for release dates. (These are slightly different
-    from normal dates, as the month or year can be unknown).
-
-  [index,{idx},{list},..]
-    Displays the item in {list} numbered by {idx}. Often used when the same
-    sentence is used for different types of information. E.g.:
-      [index,_1,visual novel,release,producer]
-
-  [monthstr,{arg}]
-    Similar to [datestr], but doesn't display the day, only month+year.
-
-  [quant,{num},{singular},{plural}] (English)
-    Takes the correct form of a word depending on the quantity specified by {num}.
-    E.g.:
-      2 [quant,2,room,rooms]
-    Will be displayed as:
-      2 rooms
-    {num} is usually an argument (which is variable), otherwise it wouldn't
-    make much sense to use this format.
-
-  [quant,{num},{singular},{multi},{many}] (Russian)
-    Same as the english [quant] as above, but has three forms for a word
-    instead of two.
-
-  [quant,{num},{singular},{normative},{genetive}] (Czech)
-    Same as the english [quant] as above, but has three forms for a word
-    instead of two.
-
-  [url,{url},{title}]
-    Formats a link to another page, where {url} is the location of the page
-    and {title} the link title. {url} is usually an argument, e.g.:
-      [url,_1,discussion board]
-
-  [user,{arg}]
-    Formats a username+id into a link to the userpage.
-
-
+This file can be edited by hand, but it's more convenient to use the
+translation administration interface. See https://vndb.org/d17 for more
+information.
 
 (Actual processing of this file begins after the following line)
 /intro

@@ -5,6 +5,7 @@
  <li><a href="/d15">Özel oyunlar</a></li>
  <li><a href="/d3">Yayımlar</a></li>
  <li><a href="/d4">Yapımcılar</a></li>
+ <li><a href="/d16">Staff</a></li>
  <li><a href="/d12">Karakterler</a></li>
  <li><a href="/d10">Etiketler &amp; nitelikler</a></li>
  <li><a href="/d13">Ekran görüntüsü yakalama</a></li>
@@ -15,4 +16,5 @@
  <li><a href="/d11">Veritabanı API</a></li>
  <li><a href="/d14">Veritabanı dökümleri</a></li>
  <li><a href="/d8">Geliştirme</a></li>
+ <li><a href="/d17">Interface Translation</a></li>
 </ul>
