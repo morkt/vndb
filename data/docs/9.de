@@ -5,8 +5,8 @@
 :SUB:Einführung
 <p>
  VNDB hat ein schön integriertes Forum, das für Diskussionen genutzt werden kann.
- Da wir keine beliebte oder gratis Forensoftware benutzen und stattdessen 
- selbst etwas geschrieben haben, hat dieses Forum einige kleine Unterschiede 
+ Da wir keine beliebte oder gratis Forensoftware benutzen und stattdessen
+ selbst etwas geschrieben haben, hat dieses Forum einige kleine Unterschiede
  zu den beliebten Foren, die du gewohnt bist.
 </p>
 
@@ -14,15 +14,15 @@
 :SUB:Foren
 <p>
  Um sicherzustellen, dass interessierte Leute deinen Post finden können, haben alle Themen
- Beziehungen zu einem oder mehren „Foren“, die definieren, worum es in der Diskussion geht. Dies ist ähnlich 
- zu anderen Foren, aber hier hat jeder Gegenstand in der DB sein eigenes Forum und 
+ Beziehungen zu einem oder mehren „Foren“, die definieren, worum es in der Diskussion geht. Dies ist ähnlich
+ zu anderen Foren, aber hier hat jeder Gegenstand in der DB sein eigenes Forum und
  es ist möglich, ein Thema mit mehr als einem Forum zu verlinken. Die folgenden Foren können genutzt werden:
 </p>
 <dl>
  <dt>db</dt><dd>
   VNDB Diskussionen. Dieses Forum ist für Diskussionen über die Datenbank und die Seite.
  </dd><dt>ge</dt><dd>
-  Allgemeine Diskussionen. Dies ist ein allgemeines Forum für Themen, die nicht in andere 
+  Allgemeine Diskussionen. Dies ist ein allgemeines Forum für Themen, die nicht in andere
   Foren passen.
  </dd><dt>v#</dt><dd>
   Für Diskussionen über eine bestimmte Visual Novel. Das Forum <i>v17</i> zum Beispiel
@@ -31,8 +31,8 @@
   Das Gleiche wie <i>v#</i>, nur für Hersteller.
  </dd><dt>u#</dt><dd>
   Das <i>u#</i> Forum kann genutzt werden, um einen Benutzer auf dieser Seite
-  zu benachrichtigen, dass er/sie etwas sehen muss oder mitdiskutieren muss 
-  über eine Bearbeitung, die er/sie gemacht hat. Dies ist ähnlich zu dem 
+  zu benachrichtigen, dass er/sie etwas sehen muss oder mitdiskutieren muss
+  über eine Bearbeitung, die er/sie gemacht hat. Dies ist ähnlich zu dem
   „Privatnachricht“-System auf den meisten Seiten, nur dass es nicht „privat“ ist …
  </dd><dt>an</dt><dd>
   Genutzt für Seitenankündigungen. Nur für Moderatoren.
@@ -50,30 +50,30 @@
   und die optional von einem Punkt oder einer zweiten Nummer gefolgt werden. VNDBIDs werden automatisch in
   Links zu der Seite auf der Webseite konvertiert. Zum Beispiel führt das Eintippen von 'v4.4' zu '<a href="/v4.4">v4.4</a>'.
  </dd><dt>URL</dt><dd>
-  Jede URL (ohne den Gebrauch des [url]-Schlagworts, siehe unten) wird zu einem Link konvertiert, ähnlich den 
+  Jede URL (ohne den Gebrauch der [url]-Kennzeichnung, siehe unten) wird zu einem Link konvertiert, ähnlich den
   VNDBIDs. Beispiel: 'http://vndb.org/' wird zu '<a href="http://vndb.org/">Link</a>' formatiert.
  </dd><dt>[url]</dt><dd>
-  Der klassische BBCode [url]-Schlagwort. Kann nur in der Form von <i>[url=link]Link Titel[/url]</i> genutzt werden.<br />
+  Die klassische BBCode [url]-Kennzeichnung. Kann nur in der Form von <i>[url=link]Link Titel[/url]</i> genutzt werden.<br />
   Z. B. '[url=/v]Liste von Visual Novels[/url] und [url=http://blicky.net/]eine externe Webseite[/url]'
   werden angezeigt als '<a href="/v">Liste von Visual Novels</a> und <a href="http://blicky.net/">ene externe Webseite</a>'
  </dd><dt>[spoiler]</dt><dd>
-  Das [spoiler]-Schlagwort sollte verwendet werden, um Informationen zu verstecken, die den Spielspaß für 
-  Leute, die den Visual Novel noch nicht kennen, verringern könnten.
+  Die [spoiler]-Kennzeichnung sollte verwendet werden, um Informationen zu verstecken, die den Spielspaß für
+  Leute, die die Visual Novel noch nicht kennen, verringern könnten.
  </dd><dt>[quote]</dt><dd>
   Wenn du andere Leute zitierst, platziere die zitierte Nachricht zwischen einen [quote] .. [/quote] Block. Bitte
   nimm zur Kenntnis, dass die beliebte [quote=source]-Syntax auf VNDB (noch) nicht funktioniert.
  </dd><dt>[raw]</dt><dd>
-  Zeige deine Formatierungscode-Fähigkeiten, indem du alles, was du nicht formatiert haben möchtest, in ein [raw]
-  Schlagwort steckst. Alle oben genannten Formatierungscodes werden innerhalb eines [raw] .. [/raw] Blocks ignoriert.
+  Zeige deine Formatierungscode-Fähigkeiten, indem du alles, was du nicht formatiert haben möchtest, in eine [raw]
+  Kennzeichnung steckst. Alle oben genannten Formatierungscodes werden innerhalb eines [raw] .. [/raw] Blocks ignoriert.
  </dd><dt>[code]</dt><dd>
-  Ähnlich zu [raw], mit Ausnahme, dass der Text innerhalb des [code] .. [/code] Blocks 
+  Ähnlich zu [raw], mit Ausnahme, dass der Text innerhalb des [code] .. [/code] Blocks
   in einer Schrift mit fester Breite formatiert wird und von einem schönen Kasten umrandet wird,
   um ihn von dem Rest deines Posts abzuheben.
  </dd>
 </dl>
 <p>
- Es gibt kein [img]-Schlagwort und es wird auch wahrscheinlich niemals eins geben, wenn du 
- Screenshots oder andere Bilder einfügen möchtest, lade sie bitte auf einen externen Hostingservice hoch 
+ Es gibt keine [img]-Kennzeichnung und es wird auch wahrscheinlich niemals eine geben, wenn du
+ Screenshots oder andere Bilder einfügen möchtest, lade sie bitte auf einen externen Hostingservice hoch
  (z. B. <a href="http://tinypic.com/" rel="nofollow">TinyPic</a>) und verlinke zu ihnen in deinem Post.
 </p>
 

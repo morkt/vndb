@@ -295,7 +295,7 @@ ru*:
 cs*:
 hu*:
 nl : Roemeens
-de*:
+de : Rumänisch
 es*:
 tr*:
 uk*:
@@ -3288,7 +3288,7 @@ ru*:
 cs*:
 hu*:
 nl : Gebruikersmenu
-de*:
+de : Benutzermenü
 es*:
 tr*:
 uk*:
@@ -3312,7 +3312,7 @@ ru*:
 cs*:
 hu*:
 nl : Wachtwoord vergeten
-de*:
+de : Passwort zurücksetzen
 es*:
 tr*:
 uk*:
@@ -3324,7 +3324,7 @@ ru*:
 cs*:
 hu*:
 nl : Registreren
-de*:
+de : Registrieren
 es*:
 tr*:
 uk*:
@@ -4405,7 +4405,7 @@ ru : На доске
 cs : Přispěno v
 hu : Közzétéve:
 nl : Gepost in
-de : Geposted in
+de : Gepostet in
 es : Puesto en
 tr : Gönderim yeri
 uk : На дошці
@@ -4489,7 +4489,7 @@ ru : Вы должны быть авторизованы, чтобы ответ�
 cs : Pro odpověď do tohoto threadu se musíte přihlásit.
 hu : Ha hozzá akarsz szólni a témához be kell legyél jelentkezve.
 nl : Je moet ingelogd zijn om te kunnen reageren.
-de : Du musst eingeloggt sein um in diesem Tread etwas zu schreiben.
+de : Du musst eingeloggt sein, um in diesem Tread etwas zu schreiben.
 es : Tienes que estar conectado para responder en este tema.
 tr : Bu başlığı yanıtlamak için giriş yapmalısınız.
 uk : Треба увійти, щоб відповісти у треді.
@@ -7915,7 +7915,7 @@ hu : Ez a címke ki lett törölve az adatbázisból ezért nem lehet használni
      Ha nem értesz egyet a döntéssel tegyél panaszt a [url,/t/db,fórumon].
 nl : Deze tag is verwijderd uit de database, en kan hier niet gebruikt worden.
      Open een topic op het [url,/t/db,forum] als je het hier niet mee eens bent.
-de : Dieses Schlagwort wurde von der Datenbank gelöscht und kann nicht verwendet oder neu hinzugefügt werden.
+de : Dieses Schlagwort wurde aus der Datenbank gelöscht und kann nicht verwendet oder neu hinzugefügt werden.
      Stelle eine Anfrage im [url,/t/db,Forum], wenn du damit nicht einverstanden bist.
 es : Esta etiqueta ha sido eliminado de las base, y no puede ser usado ni reañadido.
 tr : Bu etiket veritabanından silinmiş; kullanılamaz veya yeniden eklenemez.
@@ -8087,7 +8087,7 @@ ru : Этот тег пока не содержит ссылок ни на од�
 cs : Tento tag ještě nebyl použit v žádné vizuální novele nebo byly tyto skryty kvůli nastavení spoilerů nebo defaultních filtrů.
 hu : Ez a címke még nincs egy visual novelhez se hozzárendelve, vagy pedig el lettek rejtve a spoiler-ek vagy az alapértelmezet szűrők beállítása során.
 nl : Deze tag is nog niet gekoppeld aan een visual novel, of deze worden niet weergegeven in verband met je spoiler- of filterinstelling.
-de : Dieses Schlagwort wurde noch nicht mit Visual Noels verknüpft oder ist aufgrund deiner Spoiler Einstellungen oder deinen Standard Filtern versteckt.
+de : Dieses Schlagwort wurde noch nicht mit Visual Novels verknüpft oder ist aufgrund deiner Spoiler-Einstellungen oder deinen Standard-Filtern verborgen.
 es : Esta etiqueta no ha sido enlazada con ninguna novela visual, o esta oculta por tus opciones sobre spoilers, o por tus filtros.
 tr : Bu etiket henüz herhangi bir görsel romana bağlanmamış, ya da sonuçlar spoiler ayarınız veya varsayılan süzgeç seçimleriniz nedeniyle gizlenmiş.
 uk : Цим тегом ще не відмічена жодна візуальна новела або вони приховані через твої налаштування спойлерів чи стандартні налаштування
@@ -8210,7 +8210,7 @@ ru : Запрос нового тега
 cs : Požaduje se nový tag
 hu : Új címke kérése
 nl : Vraag nieuwe tag aan
-de : Bitte um neues Schlagwort
+de : Neues Schlagwort anfordern
 es : Solicitar una nueva etiqueta
 tr : Yeni etiket başvurusu
 uk : Запит нового тега
@@ -8680,7 +8680,7 @@ ru : Данный список отображает голоса отдельн�
 cs : Tento seznam obsahuje hlasy k tagům od jednotlivých uživatelů. Spoileroidní tagy nejsou skryté a ani nemusí být správně označeny jako spoileroidní.
 hu : Ez a lista tartalmazza az egyéni felhasználók által kiértékelt cimkék pontozását. Azok a címkék amelyeket tartalmazhatnak spoiler-t el vannak rejtve, vagy lehet, hogy nincsenek jól megjelölve.
 nl : Deze lijst bevat alle stemmen op tags van individuele gebruikers. Tags die spoiler kunnen zijn worden hier niet verborgen, and sommige tags hoeven niet eens correct gemarkeerd te zijn als spoiler.
-de : Diese Liste zeigt die Schlagwortbewertungen von individuellen Benutzern. Spoiler-Schlagworte werden nicht versteckt und werden gegebenfalls nicht mal richtig als solche gekennzeichnet.
+de : Diese Liste zeigt die Schlagwortbewertungen von individuellen Benutzern. Spoiler-Schlagworte werden nicht verborgen und werden gegebenfalls nicht korrekt als solche gekennzeichnet.
 es : Esta lista muestra los votos sobre las etiquetas de usuarios individuales. Etiquetas-spoiler no estan ocultas, e incluso puede que no sean marcadas correctamente como spoiler.
 tr : Bu liste kullanıcıların bireysel oylarını gösterir. Spoiler içeren etiketler açıktadır ve doğru işaretlenmemiş olabilir.
 uk : У цьому списку показані голоси окремих користувачів за теги. Теги-спойлери не приховані і навіть не можуть бути відмічені як такові.
@@ -8995,7 +8995,7 @@ ru : Сохранить изменения
 cs : Uložit změny
 hu : Változtatások mentése
 nl : Opslaan
-de : Speichere Änderungen
+de : Änderungen speichern
 es : Guardar cambios
 tr : Değişiklikleri kaydet
 uk : Зберегти зміни
@@ -9025,7 +9025,7 @@ hu : Ha az összes rendelekzésre álló címke közt szeretnél böngészni akk
 nl : Zie de [url,/g,tag lijst] om te browsen door alle beschikbare tags.[br]
      Niet gevonden wat je zocht? [url,/g/new,Vraag een nieuwe tag aan].
 de : Überprüfe die [url,/g,Schlagwortliste], um alle verfügbaren Schlagworte zu durchsuchen.[br]
-     Kannst du nicht finden, wonach du suchst? [url,/g/new,Frage nach einem neuen Schlagwort].
+     Kannst du nicht finden, wonach du suchst? [url,/g/new,Fordere ein neues Schlagwort an].
 es : Mira la [url,/g,lista de etiquetas] para ver todos las etiquetas disponibles.[br]
      ¿No puedes encontrar lo que buscas? [url,/g/new,Solicita una nueva etiqueta].
 tr : Mevcut tüm etiketleri görmek için [url,/g,etiket listesine] bakın.[br]
@@ -11815,7 +11815,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Maximale Login-Versuche erreichte.
 es*:
 tr*:
 uk*:
@@ -11831,7 +11831,10 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Der Login wurde für deine IP-Adresse vorübergehend deaktiviert. Du kannst ein paar Stunden warten
+     und es dann erneut versuchen oder es von einer anderen IP-Adresse probieren. Wenn du dein Passwort
+     vergessen hast, kannst du trotzdem die Funktion [url,/u/newpass,Passwort zurücksetzen] verwenden.
+     Wenn du immer noch Probleme beim Einloggen hast, schick eine E-Mail an: [url,mailto:contact@vndb.org,contact@vndb.org].
 es*:
 tr*:
 uk*:
