@@ -31,6 +31,7 @@ TUWF::register(
 
 sub _allowed {
   my($self, $lang) = @_;
+  return 0 if !$self->authInfo->{id};
   my $a = $self->{transadmin}{ $self->authInfo->{id} };
   return $a eq 'all' || $a eq $lang || ref($a) eq 'ARRAY' && grep $_ eq $lang, @$a;
 }
@@ -43,9 +44,6 @@ sub tladmin {
   return $self->resNotFound if $lang && ($lang eq 'en' || !grep $_ eq $lang, $self->{l10n}->languages);
   my $sect = $self->reqGet('sect')||'';
   my $doc = $self->reqGet('doc')||'';
-
-  my $uid = $self->authInfo->{id};
-  return $self->htmlDenied if !$uid || !$self->{transadmin}{$uid};
 
   if(!-w $langfile || !-w "$VNDB::ROOT/data/docs" || grep /\.[a-z]{2}$/ && !-w $_, glob "$VNDB::ROOT/data/docs/*") {
     $self->htmlHeader(title => 'Language file not writable', noindex => 1);
@@ -191,6 +189,8 @@ sub _section {
      end;
    }
 
+   my @disabled = _allowed($self, $lang) ? () : (disabled => 'disabled');
+
    for my $l (@$page) {
      if($l->[0] eq 'comment') {
        pre style => 'padding: 0; margin: 0; background: none; border: none';
@@ -208,13 +208,15 @@ sub _section {
      my $multi = $en =~ y/\n//;
 
      div style => 'width: 23px; float: left; text-align: right';
-      input type => 'checkbox', name => "check$key", id => "check$key", !$sync ? (checked => 'checked') : ();
+      input type => 'checkbox', name => "check$key", id => "check$key", !$sync ? (checked => 'checked') : (), @disabled;
      end;
      div style => 'float: left';
       if($multi) {
-        textarea name => $key, id => $key, rows => $multi+2, style => 'width: 700px; height: auto; white-space: nowrap; border: none', wrap => 'off', $tl;
+        textarea name => $key, id => $key, rows => $multi+2, @disabled,
+          style => 'width: 700px; height: auto; white-space: nowrap; border: none', wrap => 'off', $tl;
       } else {
-        input type => 'text', class => 'text', name => $key, id => $key, value => $tl, style => 'width: 700px; border: none';
+        input type => 'text', class => 'text', name => $key, id => $key, value => $tl,
+          style => 'width: 700px; border: none', @disabled;
       }
      end;
      clearfloat;
@@ -254,14 +256,21 @@ sub _savedoc {
 sub _docs {
   my($lang, $doc) = @_;
 
-  my @d = map /\.[a-z-]{2,5}$/ || /\/(?:8|11)$/ ? () : s{^.+\/([^/]+)$}{$1} && $_, glob "$VNDB::ROOT/data/docs/*";
+  my @d = map /\.[a-z-]{2,5}$/ || /\/(?:8|11|14|17)$/ ? () : s{^.+\/([^/]+)$}{$1} && $_, glob "$VNDB::ROOT/data/docs/*";
 
   h2 class => 'alttitle', '...or a doc page';
   div style => 'margin: 0 40px';
    for (sort { $a =~ /^\d+$/ && $b =~ /^\d+$/ ? $a <=> $b : $a cmp $b } @d) {
-     div style => 'float: left; width: 60px;';
+     my $incomplete = 1;
+     if(open my $F, '<:utf8', "$VNDB::ROOT/data/docs/$_.$lang") {
+       # If there's no ':INC:incomplete' on the first 10 lines, assume the doc page to be fully translated and synced.
+       $incomplete = grep +((<$F>||'') =~ /^:INC:incomplete/), 1..10;
+     }
+     div style => 'float: left; width: 90px;';
       a href => "/tladmin/$lang?doc=$_", $_ if $_ ne $doc;
       txt $_ if $_ eq $doc;
+      txt " ";
+      b class => 'standout', "!!" if $incomplete;
      end;
    }
    clearfloat;
@@ -284,6 +293,7 @@ sub _doc {
 
   form action => "/tladmin/$lang?doc=$doc", method => 'POST', 'accept-charset' => 'utf-8';
   div class => 'mainbox';
+   a class => 'addnew', style => 'margin-left: 20px', href => "http://g.blicky.net/vndb.git/log/data/docs/$doc", 'Recent changes';
    a class => 'addnew', href => "/d$doc", "View current page" if $doc =~ /^\d+$/;
    h1 "Translating page $doc";
    h2 class => 'alttitle', 'Left = English, Right = translation';
@@ -298,8 +308,8 @@ sub _doc {
    div style => 'width: 48%; margin-right: 10px; overflow-y: auto; float: left';
     pre style => 'font: 12px Tahoma; border: none; background: none; margin: 0', $en;
    end;
-   textarea name => 'tl', id => 'tl', rows => ($en =~ y/\n//),
-     style => 'border: none; float: left; width: 49%; white-space: nowrap', wrap => 'off', $tl;
+   textarea name => 'tl', id => 'tl', rows => ($en =~ y/\n//), _allowed($self, $lang) ? () : (disabled => 'disabled'),
+     style => 'border: none; float: left; width: 49%; white-space: pre', wrap => 'off', $tl;
    clearfloat;
    if(_allowed($self, $lang)) {
      br;
