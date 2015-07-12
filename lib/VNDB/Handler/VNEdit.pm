@@ -252,7 +252,12 @@ sub _uploadimage {
   $im->Set(magick => 'JPEG');
   my($ow, $oh) = ($im->Get('width'), $im->Get('height'));
   my($nw, $nh) = imgsize($ow, $oh, @{$self->{cv_size}});
-  $im->Thumbnail(width => $nw, height => $nh);
+  $im = $im->Flatten;
+  if($ow != $nw || $oh != $nh) {
+    $im->GaussianBlur(geometry => '0.5x0.5');
+    $im->Resize(width => $nw, height => $nh);
+    $im->UnsharpMask(radius => 0, sigma => 0.75, amount => 0.75, threshold => 0.008);
+  }
   $im->Set(quality => 90);
 
   # Get ID and save
