@@ -188,7 +188,7 @@ cs*:
 hu : Indonéz
 nl : Indonesisch
 de : Indonesisch
-es*:
+es*: Indonesio
 tr : Endonezce
 uk*:
 it*:
@@ -625,7 +625,7 @@ cs : Playstation 1
 hu :
 nl :
 de :
-es : Playstation 1
+es :
 tr :
 uk :
 it :
@@ -637,7 +637,7 @@ cs : Playstation 2
 hu :
 nl :
 de :
-es : Playstation 2
+es :
 tr :
 uk :
 it :
@@ -649,7 +649,7 @@ cs : Playstation 3
 hu :
 nl :
 de :
-es : Playstation 3
+es :
 tr :
 uk :
 it :
@@ -733,7 +733,7 @@ cs*:
 hu :
 nl :
 de :
-es*:
+es :
 tr :
 uk*:
 it*:
@@ -3082,7 +3082,7 @@ cs : Poslední změny
 hu : Újdonságok
 nl : Recente wijzigingen
 de : Letzte Änderungen
-es : Cambios frecuentes
+es : Cambios recientes
 tr : Son değişiklikler
 uk : Останні зміни
 it : Cambiamenti recenti
@@ -12212,7 +12212,7 @@ cs : Kolik [index,_1,vizulních novel,vydání,producentů] máme v databázi? (
 hu : Mennyi [index,_1,visual novels,releases,producers] van az adatbázisunkba? (Tip: vess egy pillantást balra)
 nl : Hoeveel [index,_1,visual novels,uitgaven,producenten] hebben wij in de database? (Tip: zie links van de pagina)
 de : Wie viele [index,_1,Visual Novels,Veröffentlichungen,Hersteller] haben wir in unserer Datenbank? (Tipp: Schaue zu deiner Linken.)
-es*:
+es : ¿Cuántas [index,_1,novelas visuales,estrenos,creadores] tenemos en la base de datos? (Pista: mira a tu izquierda)
 tr : Veritabanımızda kaç adet [index,_1,görsel roman,yayım,yapımcı] var? (İpucu: Solunuza bakın.)
 uk : Скільки [index,_1,візуальних новел,релізів,компаній] ми маємо в нашій базі даних? (Підказка: подивись ліворуч)
 it : Quanti [index,_1,visual novel,pubblicazioni,editori] ci sono? (Suggerimento: guarda a sinistra)
@@ -14942,7 +14942,7 @@ cs : Popis
 hu : Leírás
 nl : Omschrijving
 de : Beschreibung
-es : Describpción
+es : Descripción
 tr : Tanıtım
 uk : Опис
 it : Descrizione
