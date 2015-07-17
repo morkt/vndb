@@ -458,7 +458,8 @@ sub _uploadimage {
   $im->BlobToImage($imgdata);
   my($ow, $oh) = ($im->Get('width'), $im->Get('height'));
   my($nw, $nh) = imgsize($ow, $oh, @{$self->{ch_size}});
-  $im = $im->Flatten;
+  $im->Set(background => '#ffffff');
+  $im->Set(alpha => 'Remove');
   if($ow != $nw || $oh != $nh) {
     $im->GaussianBlur(geometry => '0.5x0.5');
     $im->Resize(width => $nw, height => $nh);
