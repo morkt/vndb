@@ -213,7 +213,7 @@ sub _section {
      div style => 'float: left';
       if($multi) {
         textarea name => $key, id => $key, rows => $multi+2, @disabled,
-          style => 'width: 700px; height: auto; white-space: nowrap; border: none', wrap => 'off', $tl;
+          style => 'width: 700px; height: auto; white-space: pre; border: none', wrap => 'off', $tl;
       } else {
         input type => 'text', class => 'text', name => $key, id => $key, value => $tl,
           style => 'width: 700px; border: none', @disabled;
