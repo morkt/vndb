@@ -36,7 +36,7 @@ sub set_monthly {
   my $nextday = int((time+3)/86400+1)*86400 + 12*3600;
   my $thismonth = (gmtime)[5]*100+(gmtime)[4]; # year*100 + month, for easy comparing
   $nextday += 86400 while (gmtime $nextday)[5]*100+(gmtime $nextday)[4] <= $thismonth;
-  $monthly = AE::timer $nextday, 0, \&monthly;
+  $monthly = AE::timer $nextday-time(), 0, \&monthly;
 }
 
 
