@@ -350,19 +350,19 @@ sub docpage {
 sub setlang {
   my $self = shift;
 
-  my $lang = $self->formValidate({get => 'lang', required => 1, enum => [ VNDB::L10N::languages ]});
-  return $self->resNotFound if $lang->{_err};
-  $lang = $lang->{lang};
+  my $frm = $self->formValidate(
+    {get => 'lang', required => 1, enum => [ VNDB::L10N::languages ]},
+    {get => 'ref', required => 0, default => '/'}
+  );
+  return $self->resNotFound if $frm->{_err};
 
   my $browser = VNDB::L10N->get_handle()->language_tag();
 
-  my $b = $self->reqBaseURI();
-  (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$b//;
-  $self->resRedirect($ref, 'post');
-  if($lang ne $self->{l10n}->language_tag()) {
+  $self->resRedirect($frm->{ref}, 'post');
+  if($frm->{lang} ne $self->{l10n}->language_tag()) {
     $self->authInfo->{id}
-    ? $self->authPref(l10n => $lang eq $browser ? undef : $lang)
-    : $self->resCookie(l10n => $lang eq $browser ? undef : $lang, expires => time()+31536000);
+    ? $self->authPref(l10n => $frm->{lang} eq $browser ? undef : $frm->{lang})
+    : $self->resCookie(l10n => $frm->{lang} eq $browser ? undef : $frm->{lang}, expires => time()+31536000);
   }
 }
 
