@@ -65,14 +65,15 @@ sub vnlist_e {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { get => 'e', enum => [ -1, @{$self->{vnlist_status}} ] }
+    { get => 'e', enum => [ -1, @{$self->{vnlist_status}} ] },
+    { get => 'ref', required => 0, default => "/v$id" }
   );
   return $self->resNotFound if $f->{_err};
 
   $self->dbVNListDel($uid, $id) if $f->{e} == -1;
   $self->dbVNListAdd($uid, $id, $f->{e}) if $f->{e} != -1;
 
-  $self->resRedirect('/v'.$id, 'temp');
+  $self->resRedirect($f->{ref}, 'temp');
 }
 
 
@@ -93,7 +94,8 @@ sub rlist_e {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { get => 'e', required => 1, enum => [ -1, @{$self->{rlist_status}} ] }
+    { get => 'e', required => 1, enum => [ -1, @{$self->{rlist_status}} ] },
+    { get => 'ref', required => 0, default => "/r$rid" }
   );
   return $self->resNotFound if $f->{_err};
 
@@ -101,9 +103,7 @@ sub rlist_e {
   $self->dbRListAdd($uid, $rid, $f->{e}) if $f->{e} >= 0;
 
   if($id) {
-    my $b = $self->reqBaseURI();
-    (my $ref = $self->reqHeader('Referer')||"/r$id") =~ s/^\Q$b//;
-    $self->resRedirect($ref, 'temp');
+    $self->resRedirect($f->{ref}, 'temp');
   } else {
     # doesn't really matter what we return, as long as it's XML
     $self->resHeader('Content-type' => 'text/xml');

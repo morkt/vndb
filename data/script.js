@@ -3122,7 +3122,7 @@ if(byId('listsel')) {
   byId('listsel').onchange = function() {
     if(this.selectedIndex != 0)
       location.href = location.href.replace(/#.*/, '').replace(/\/(chars|staff)/, '').replace(/\.[0-9]+/, '')
-        +'/list?formcode='+this.name+';e='+this.options[this.selectedIndex].value;
+        +'/list?formcode='+this.name+';e='+this.options[this.selectedIndex].value+';ref='+encodeURIComponent(location.pathname+location.search);
   };
 }
 
