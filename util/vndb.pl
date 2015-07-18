@@ -97,9 +97,6 @@ sub reqinit {
   $self->resCookie(l10n => undef) if $rmcookie;
   $self->{l10n} = $handle;
 
-  # check for IE
-  return 0 if !$self->ieCheck;
-
   # load some stats (used for about all pageviews, anyway)
   $self->{stats} = $self->dbStats;
 
