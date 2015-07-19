@@ -1,6 +1,5 @@
 :TITLE:Charaktere hinzufügen/bearbeiten
 :INC:index
-:INC:notfinished
 
 
 :SUB:Einführung
@@ -48,13 +47,13 @@ irgendeine Weise dieselbe Person sind.
 :SUBSUB:Wie verwendet man Instanzen
 <p>
 Um zwei (oder mehrere) Charakter mit einer Instanzbeziehung zu verknüpfen, muss
-ein Charakter als „Hauptcharakter“ ausgewählt werden. Alle anderen werden dann 
+ein Charakter als „Hauptcharakter“ ausgewählt werden. Alle anderen werden dann
 „Instanzcharaktere“. (Nicht zu verwechseln mit der Charakterrolle in einer Visual Novel.)
-Für gewöhnlich ist der am häufigsten zu sehende oder am wenigsten spoilernde Charakter der 
+Für gewöhnlich ist der am häufigsten zu sehende oder am wenigsten spoilernde Charakter der
 „Hauptcharakter“.<br />
 Fülle das „Instanz von“-Feld nicht beim Bearbeiten des „Hauptcharakters“ aus, sondern
 bei den „Instanzcharakteren“. Wenn die Instanzbeziehung ein Spoiler ist, stelle
-sicher, sie als solche zu kennzeichnen, wenn du die „Instanzcharaktere“ bearbeitest. 
+sicher, sie als solche zu kennzeichnen, wenn du die „Instanzcharaktere“ bearbeitest.
 Wenn die Existenz eines Charakters in einer Visual Novel ein Spoiler ist, siehe den <a
 href="/d12#6">Visual Novels</a>-Abschnitt unten.
 </p>

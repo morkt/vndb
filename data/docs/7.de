@@ -6,9 +6,9 @@
 <p>
  Unser primäres Ziel ist es, eine große, umfangreiche und aktuelle Datenbank für
  Informationen über alle existierende Visual Novels zu erstellen. VNDB soll ein
- zentraler Ort sein, um allgemeine Information über die Visual Novels selbst, 
+ zentraler Ort sein, um allgemeine Information über die Visual Novels selbst,
  sowie andere praktische Information wie verfügbare Veröffentlichungen,
- Lokalisierung und Hersteller, nachzuschlagen.<br />
+ Lokalisierungen und Hersteller, nachzuschlagen.<br />
  Unser sekundäres Ziel ist es, das wundervolle Medium namens Visual Novel einem
  breiterem Publikum näherzubringen; einem Publikum, das nicht nur für Leute ist,
  die Japanisch verstehen können, sondern für jeden, der interessiert an Literatur, Animes,
@@ -20,25 +20,25 @@
 :SUB:Entstehung
 <p>
  Es begann alles direkt nachdem <a href="/u2">yorhel</a> <a href="/v17">Ever17</a>
- fertig gelesen hatte. Tief beeindruckt von dem Meisterwerk, kamen ihm viele Fragen  
- in den Kopf: Nachdem er viel über Visual Novels gelernt hatte, fragte er sich, warum es 
+ fertig gelesen hatte. Tief beeindruckt von dem Meisterwerk, kamen ihm viele Fragen
+ in den Kopf: Nachdem er viel über Visual Novels gelernt hatte, fragte er sich, warum es
  mehrere Monate dauerte, bis er das Spiel gefunden hatte. Warum hatte er nicht
  vorher davon gehört? Wie kann eine Visual Novel von solcher Qualität an allen
  online Anime- und Spielcommunitys vorbeigehen? Und noch wichtiger:
  Gibt es da draußen noch mehr solcher Visual Novels wie diese?<br />
  <br />
- VNDB wurde geboren, um diese letzte Fragen zu beantworten. Das komplette Fehlen 
- einer zentralen Quelle oder einfach nur einer einfachen Liste von Visual Novels, 
+ VNDB wurde geboren, um diese letzte Fragen zu beantworten. Das komplette Fehlen
+ einer zentralen Quelle oder einfach nur einer einfachen Liste von Visual Novels,
  machten es sehr schwer, neue Spiele zu finden oder einen guten Überblick zu bekommen,
  was verfügbar ist. Einen zentralen und gut organisierten Ort zu haben, wo jeder
  Information und Wissen über Visual Novels teilen kann, würde dieses Problem lösen.<br />
  <br />
- Nach drei kurzen Wochen harter Arbeit erblickte im September 2007 die erste Version von VNDB das 
- Licht der Welt. Die verborgene und kleine Fangemeinschaft der Visual Novels, kombiniert 
+ Nach drei kurzen Wochen harter Arbeit erblickte im September 2007 die erste Version von VNDB das
+ Licht der Welt. Die verborgene und kleine Fangemeinschaft der Visual Novels, kombiniert
  mit dem Minimum an Funktionalitäten und dem unflexiblem Beitragssystem zu der Zeit,
- sorgten dafür, dass die Datenbank nur langsam anwuchs. Aber mit der Zeit lernten 
- mehr Leute VNDB kennen, neue und erweiterte Funktionalitäten wurden eingeführt 
- und als Reaktion fügten mehr Besucher Informationen hinzu. Die Einführung eines 
+ sorgten dafür, dass die Datenbank nur langsam anwuchs. Aber mit der Zeit lernten
+ mehr Leute VNDB kennen, neue und erweiterte Funktionalitäten wurden eingeführt
+ und als Reaktion fügten mehr Besucher Informationen hinzu. Die Einführung eines
  verbesserten und offenen Beitragssystem im Februar 2008 motivierte noch mehr Benutzer
  Informationen hinzuzufügen und im September 2008 – einem Jahre nach der ersten
  Version von VNDB – katalogisiert die Datenbank mehr als 1.000 Visual Novels und 2.000
@@ -53,11 +53,12 @@
   <dt>Yorhel</dt><dd>Hauptentwickler.</dd>
   <dt>3dB</dt><dd>Hat den derzeitigen Benutzerauthentifizierungscode geschrieben und die Post-Drossel im Forum integriert.</dd>
   <dt>SpaceRanger</dt><dd>Hat die Vergleichsseite für Visual-Novel-Veröffentlichungen, Benutzerlistenspalten zur VN-Liste und dx.x.x-Link-Formartierung hinzugefügt.</dd>
+  <dt>morkt</dt><dd>Hat die Stab-Datenbank hinzugefügt und Verbesserungen am BBCode vorgenommen.</dd>
  </dl>
  <br />
 
- <b>Special users</b><br />
-:MODERATORS:
+ <b>Besonderer Benutzers</b><br />
+:MODERATOREN:
  <br />
 
  <b>Übersetzungen</b><br />

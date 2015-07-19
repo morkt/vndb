@@ -17,9 +17,21 @@
  Visual-Novel-Seite klickt.
 </p>
 
-:SUB:Schlagwort Bewertung
-<p>
- Obwohl jeder ziemlich frei, jegliche Schlagworte mit jeglicher Visual Novel verlinken kann, sollte man folgende Dinge
+:SUB:Schlagwort-Bewertung
+<p>Schlagworte können mit einer Bewertung von -3 bis 3 markiert werden. Diese Bewertung
+ sollte wie folgt interpretiert werden</p>
+<ol style="list-style-type: none; margin-left: 15px">
+ <li><b>-3</b>: Dieses Schlagwort trifft überhaupt nicht auf die VN zu.</li>
+ <li><b>-2</b> und <b>-1</b>: Diese werden nicht oft verwendet, aber können
+anzeigen, dass zu nicht zustimmst, aber nicht zu 100 % sicher bist.</li>
+ <li><b>0</b>: Es ist möglich, deine Bewertung auf '0' zu ändern, um sie zu entfernen.</li>
+ <li><b>1</b>: Das Schlagwort trifft auf auf die Visual Novel zu, aber ist nicht allzu
+gewichtig oder spielt nur eine untergeordnete Rolle.</li>
+ <li><b>2</b>: Das Schlagwort trifft mit Sicherheit auf die Visual Novel zu.</li>
+ <li><b>3</b>: Das Schlagwort trifft zu und spielt eine gewichtige oder große Rolle.</li>
+</ol>
+<p><br />
+ Obwohl es jedem ziemlich freisteht, jegliche Schlagworte mit jeglicher Visual Novel zu verlinken, sollte man folgende Dinge
  bei der Bewertung beachten:
 </p>
 <ul>

@@ -6,9 +6,9 @@
 <p>
  Die Hauptzielgruppe von VNDB sind englischsprachige Fans von Visual Novels. Beim
  Erstellen der Datenbank gehen wir davon aus, dass die Zielgruppe nichts erkennen kann, was
- nicht in der westlichen Schreibweise geschrieben ist. Daher wird Romanisierung in vielen 
+ nicht in der westlichen Schreibweise geschrieben ist. Daher wird Romanisierung in vielen
  Bereichen der Datenbank angewandt: Die Haupttitel von Visual Novels, Veröffentlichungen und
- Herstellern sollten alle richtig romanisiert werden, wenn sie nicht bereits in der westlichen 
+ Herstellern sollten alle richtig romanisiert werden, wenn sie nicht bereits in der westlichen
  Schreibweise stehen.<br />
  Um die Datenbank einheitlich zu halten, haben wir uns dafür entschieden die
  <a href="http://de.wikipedia.org/wiki/Hepburn-System">Hepburn Romanisierung</a>
@@ -23,23 +23,23 @@
 
 :SUB:Großschreibung
 <p>
- Es kommt gelegentlich vor, dass offizielle Titel oder Namen entweder ganz 
+ Es kommt gelegentlich vor, dass offizielle Titel oder Namen entweder ganz
  mit Großbuchstaben oder Kleinbuchstaben geschrieben werden. Wenn es dafür keinen wirklichen
- Grund für diese Schreibweise gibt (z. B. wenn es kein Akronym ist), sollten diese Titel und Namen 
- in der korrekten englischen Schreibweise konvertiert werden (wie beschrieben 
+ Grund für diese Schreibweise gibt (z. B. wenn es kein Akronym ist), sollten diese Titel und Namen
+ in der korrekten englischen Schreibweise konvertiert werden (wie beschrieben
  <a href="http://de.wikipedia.org/wiki/Großschreibung">auf Wikipedia</a>), bevor sie
  in die Datenbank eingetragen werden.<br />
- Dies gilt nur für die romanisierten Titel und Haupttitel eines Visual-Novel-Eintrags, 
- das „Originaltitel“ Feld von Hersteller- und Veröffentlichungsfeldern sollte 
+ Dies gilt nur für die romanisierten Titel und Haupttitel eines Visual-Novel-Eintrags,
+ das „Originaltitel“ Feld von Hersteller- und Veröffentlichungsfeldern sollte
  die offizielle Schreibung nutzen.
 </p>
 
 
 :SUB:Namensreihenfolge
 <p>
- In den meisten englischsprachigen Ländern stehen die Namen in der „Vorname, Nachname“ 
- Reihenfolge. Dies wird die „westliche Reihenfolge“ genannt. In der englischen Sprache kann 
- man jemandem beim Vornamen nennen, wenn man die Person gut kennt, ansonsten wird 
+ In den meisten englischsprachigen Ländern stehen die Namen in der „Vorname, Nachname“
+ Reihenfolge. Dies wird die „westliche Reihenfolge“ genannt. In der englischen Sprache kann
+ man jemandem beim Vornamen nennen, wenn man die Person gut kennt, ansonsten wird
  der Titel oder der Familienname benutzt.
  <br />
  Im Japanischen (und auch einigen anderen Sprachen) stehen die Namen in der „Nachname, Vorname“
@@ -47,24 +47,24 @@
  mit einem der beiden Namen ansprechen und dabei ein passendes Suffix benutzen.
  <br />
  Um englischsprachigen Leuten zu helfen, nutzen einige Ressourcen (z. B. Wikipedia) japanische Namen
- in westlicher Reihenfolge. Hier auf vndb.org bevorzugen wir die Reihenfolge, die das originale 
+ in westlicher Reihenfolge. Hier auf vndb.org bevorzugen wir die Reihenfolge, die das originale
  Spiel verwendet.
  <br />
  Das heißt, wenn es ursprünglich ein japanisches Spiel mit japanischen Charakternamen war,
  nutze die japanische Reihenfolge.
  <br />
- Wenn das Spiel ursprünglich auf Englisch ist oder ein Charakter einen komplett ausländischen 
+ Wenn das Spiel ursprünglich auf Englisch ist oder ein Charakter einen komplett ausländischen
  Namen hat (Mary Smith), nutze die westliche Reihenfolge.
-</p> 
+</p>
 
 
 :SUB:Bearbeitungszusammenfassung
 <p>
  Jede Bearbeitung auf irgendeiner Seite hat ein benötigtes „Bearbeitungszusammenfassung“-Kästchen, dies
  erlaubt dir zu erklären, worum es in deiner Bearbeitung geht, ohne auf der Hauptseite für Verwirrung zu sorgen.
- Du kannst sagen, warum du die Beschreibung verändert hast, einen Link gewechselt hast oder zeigen, woher du 
+ Du kannst sagen, warum du die Beschreibung verändert hast, einen Link gewechselt hast oder zeigen, woher du
  einige Informationen erhalten hast (damit andere Beitragende es bestätigen können).
- Vielleicht möchtest du eine Visual Novel in die Datenbank eintragen, kannst aber nicht mehr Information 
+ Vielleicht möchtest du eine Visual Novel in die Datenbank eintragen, kannst aber nicht mehr Information
  über sie herausfinden. Wenn du es hier bekanntgibst, können andere Beitragende den Eintrag fertigstellen.
 (Denk daran, dass die Zusammenfassung auf Englisch geschrieben sein sollte.)
 </p>
@@ -73,8 +73,8 @@
 :SUB:Beschreibungen von externen Quellen
 <p>
  Es ist möglich, eine Beschreibung oder Anmerkungen zu einer Visual Novel, Hersteller und
- Veröffentlichung in der Datenbank hinzuzufügen. Während eigene Beschreibungen bevorzugt 
- werden, ist das Verwenden von externen Quellen erlaubt, solange die Quelle richtig angegeben 
+ Veröffentlichung in der Datenbank hinzuzufügen. Während eigene Beschreibungen bevorzugt
+ werden, ist das Verwenden von externen Quellen erlaubt, solange die Quelle richtig angegeben
  wird. Die bevorzugte Form, eine externe Quelle anzugeben, ist, die folgende Vorlage am Ende
  der Beschreibung einzufügen:<br />
  [From [url=<b>URL</b>]<b>Titel oder Autor</b>[/url]]<br />

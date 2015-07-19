@@ -1,18 +1,17 @@
 :TITLE:Visual Novel hinzufügen/bearbeiten
 :INC:index
-:INC:incomplete
 
-:SUB:Wann fügt man eine Visual Novel hinzu
+:SUB:Wann man eine Visual Novel hinzufügt
 <p>
- Damit sie in dieser Datenbank aufgenommen wird, muss das Spiel in der <a
- href="http://en.wikipedia.org/wiki/Erzählperspektive">Erzählperspektive</a>
+ Damit es in dieser Datenbank aufgenommen wird, muss das Spiel in der <a
+ href="http://de.wikipedia.org/wiki/Erzählperspektive">Erzählperspektive</a>
  geschrieben sein. Beispiele dafür sind <a
  href="http://s.vndb.org/sf/58/258.jpg">Anschauungsmaterial</a>, <a
  href="http://s.vndb.org/sf/63/2663.jpg">Ereignisse</a>, <a
  href="http://s.vndb.org/sf/74/274.jpg">Charakteraktionen</a> oder <a
  href="http://s.vndb.org/sf/49/449.jpg">Gedanken</a>.<br />
  <br />
- Diese Erzählung darf eine bedeutende Länge lang nicht unterbrochen sein* und 
+ Diese Erzählung darf eine bedeutende Länge lang nicht unterbrochen sein* und
  muss einer der bekannten Visual-Novel-Präsentationsmethoden enthalten, wie zum Beispiel <a
  href="http://s.vndb.org/sf/40/3440.jpg">ADV</a>, <a
  href="http://s.vndb.org/sf/52/3152.jpg">NVL</a> und deren <a
@@ -21,7 +20,7 @@
  einfache Kartenbewegungen.<br />
  <br />
  Anmerkung: In einigen speziellen Fällen kann ein Spiel hier hinzugefügt werden, selbst wenn es
- sich nicht an die obigen Punkte hält. Jedoch liegt dies an der Entscheidung durch Moderatoren.
+ nicht den obigen Punkte entspricht. Jedoch obliegt dies der Entscheidung durch Moderatoren.
  Füge selbst kein Spiel hinzu, von dem du denkst, dass es eine Ausnahme für die obigen Regeln ist.
 </p>
 
@@ -71,22 +70,51 @@
   Nachdem du eine neue AniDB-ID hinzugefügt hast, sucht VNDB automatisch nach Informationen über den
   Anime und gibt sie auf der Seite an. Diese Aktion kann einige Minuten dauern – im schlimmsten Fall Stunden.
   Nach dieser Zeit wirst du die ID des Animes sehen, aber nicht den Titel und Links zu AnimeNFO
-  und Anime News Network. Es ist nicht möglich diese Informationen manuell hinzufügen, 
+  und Anime News Network. Es ist nicht möglich diese Informationen manuell hinzufügen,
   dies wird automatisch gemacht!
  </dd>
 </dl>
 
 
-:SUB:Kategorien
-<i>
- Das Kategorien-System wurde durch Schlagworte ersetzt. Dieser Abschnitt ist ein Platzhalter um die Nummerierung
- beizubehalten.
-</i>
+:SUB:Stab & Synchronsprecher
+<p>Es ist möglich, unter Stab und Sprecher VN-Einträge mit
+<a href="/d16">Stab-Einträgen</a> zu verbinden.<br /><br />
+In beiden Registerreitern können Stab-Pseudonyme ausgewählt werden,
+indem man nach romanisierten oder Originalnamen such. Um einen exakten Namen
+zuzuweisen, anstatt nach einem Namen zu suchen, stelle dem Namen
+ein '=' voran. Wenn der Name noch nicht in der Datenbank existiert, musst du <a
+href="/d16">ihn hinzufügen</a>.
+</p>
 
+:SUBSUB:Stab
+<p>
+ Der Stab-Registerreiter listet die Personen oder Gruppen, die an
+der Visual Novel beteiligt waren. Die folgenden Rollen können genutzt werden:
+</p>
+<dl>
+ <dt>Szenario</dt><dd>&nbsp;</dd>
+ <dt>Charakterdesign</dt><dd>&nbsp;</dd>
+ <dt>Komponist</dt><dd>&nbsp;</dd>
+ <dt>Leiter</dt><dd>&nbsp;</dd>
+ <dt>Künstler</dt><dd>&nbsp;</dd>
+ <dt>Gesang</dt><dd>Gesang in der Musik. Nicht für die Verwendungen von Synchronsprechern für Charaktere; diese sollten unter <a href="/d2.3.2">Sprecher</a> gelistet werden.</dd>
+ <dt>Stab</dt><dd>Für zusätzliche kleinere Rollen, verwende das „Anmerkungen“-Feld, um die Beteiligung zu spezifizieren.</dd>
+</dl>
+<p>Ein paar Richtlinien:</p>
+<ul>
+ <li>Füge nur wichtige Stab-Mitglieder hinzu.</li>
+ <li>Wenn jemand mehrere Aufgaben übernommen hat, füge mehrere Einträge mit unterschiedlichen Rollen hinzu.</li>
+</ul>
+
+:SUBSUB:Sprecher
+<p>
+ Der Sprecher-Registerreiter listet die Synchronsprecher für jeden Charakter. Dieser Registerreiter
+ist nur verfügbar, wenn Charaktere mit der Visual Novel verknüpft wurden.
+</p>
 
 :SUB:Bild
 <p>
- Jede Visual Novel sollte ein Bild haben, bevorzugt eins der offiziellen Covers
+ Jede Visual Novel sollte ein Bild haben, bevorzugt eins der offiziellen Cover
  von einer Veröffentlichung. In einigen Fällen, besonders bei Doujin-Spielen, wenn es kein
  offizielles Cover gibt, kann stattdessen ein allgemeines Bild von der Spielwebseite oder ein
  Screenshot von dem Spiel selbst genutzt werden.<br />
@@ -120,17 +148,17 @@
  Visual Novel hinzugefügt. Wenn du zum Beispiel Spiel x als Nachfolger von Spiel y setzt, dann wird das
  Spiel y automatisch als Vorgänger von Spiel x gesetzt. Du musst nicht beide Spiele bearbeiten.<br />
  Nur spezifische <b>direkte</b> Beziehungen. Wenn das eine Spiel 1 eine Beziehung mit
- Spiel 2 hat und Spiel 2 eine Beziehung mit Spiel 3 hat, dann wird Spiel 3 nicht in Verbindung mit 
+ Spiel 2 hat und Spiel 2 eine Beziehung mit Spiel 3 hat, dann wird Spiel 3 nicht in Verbindung mit
  Spiel 1 gesetzt. Das mag sich am Anfang etwas verwirrend anhören, aber du wirst es
  verstehen, wenn du dir die Beziehungsdiagramme ansiehst. Wenn du Beziehungen
  bearbeitest, versuche immer an die Beziehungen zwischen allen verwandten Spielen
- zu denken – wie im Diagramm gezeigt – anstatt dir nur die eine Visual Novel, die 
+ zu denken – wie im Diagramm gezeigt – anstatt dir nur die eine Visual Novel, die
  du bearbeitest, anzusehen.
  <br />
  Die „offiziell“ Checkbox kann benutzt werden, um zu bestimmen, ob die Beziehung
  offiziell ist oder nicht. Eine Beziehung ist offiziell, wenn beide Spiele von der gleichen
  Marke veröffentlicht wurden oder zumindest der Veröffentlicher der früheren Spiele
- die Erlaubnis gegeben hat, Nachfolger zu kreieren. Im Allgemeinen: Fandiscs und Spiele
+ die Erlaubnis gegeben hat, Nachfolger zu kreieren. Im Allgemeinen gilt: Fandiscs und Spiele
  der gleichen Serie sind offiziell, während Fanfictions nicht offiziell sind.
  <br />
  Es gibt eine statische Liste von Beziehungen zum Auswählen (wie unten beschrieben). Wie bei

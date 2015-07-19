@@ -67,7 +67,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Katalanisch
 es*:
 tr*:
 uk*:
@@ -492,7 +492,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -588,7 +588,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -744,7 +744,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -3033,7 +3033,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab
 es*:
 tr*:
 uk*:
@@ -3252,7 +3252,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab hinzufügen
 es*:
 tr*:
 uk*:
@@ -3398,7 +3398,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab
 es*:
 tr*:
 uk*:
@@ -3900,7 +3900,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab
 es*:
 tr*:
 uk*:
@@ -4246,7 +4246,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Nur Stab
 es*:
 tr*:
 uk*:
@@ -5375,7 +5375,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Szenario
 es*:
 tr*:
 uk*:
@@ -5387,7 +5387,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Charakterdesign
 es*:
 tr*:
 uk*:
@@ -5399,7 +5399,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Komponist
 es*:
 tr*:
 uk*:
@@ -5411,7 +5411,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Leiter
 es*:
 tr*:
 uk*:
@@ -5423,7 +5423,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Künstler
 es*:
 tr*:
 uk*:
@@ -5435,7 +5435,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Gesang
 es*:
 tr*:
 uk*:
@@ -5447,7 +5447,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab
 es*:
 tr*:
 uk*:
@@ -5459,7 +5459,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Synchronsprecher
 es*:
 tr*:
 uk*:
@@ -5471,7 +5471,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Anderes
 es*:
 tr*:
 uk*:
@@ -5485,7 +5485,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Name (Romaji)
 es*:
 tr*:
 uk*:
@@ -5497,7 +5497,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Originalname
 es*:
 tr*:
 uk*:
@@ -5509,7 +5509,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Geschlecht
 es*:
 tr*:
 uk*:
@@ -5521,7 +5521,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Sprache
 es*:
 tr*:
 uk*:
@@ -5533,7 +5533,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Pseudonyme
 es*:
 tr*:
 uk*:
@@ -5545,7 +5545,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Wikipedia-Link
 es*:
 tr*:
 uk*:
@@ -5557,7 +5557,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Offizielle Seite
 es*:
 tr*:
 uk*:
@@ -5569,7 +5569,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Twitter-Profil
 es*:
 tr*:
 uk*:
@@ -5581,7 +5581,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : AniDB-ID
 es*:
 tr*:
 uk*:
@@ -5593,7 +5593,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Beschreibung
 es*:
 tr*:
 uk*:
@@ -5607,7 +5607,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab durchsuchen
 es*:
 tr*:
 uk*:
@@ -5619,7 +5619,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stabliste
 es*:
 tr*:
 uk*:
@@ -5631,7 +5631,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Suchergebnisse
 es*:
 tr*:
 uk*:
@@ -5643,7 +5643,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Keine Ergebnisse gefunden
 es*:
 tr*:
 uk*:
@@ -5655,7 +5655,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab-Filter
 es*:
 tr*:
 uk*:
@@ -5667,7 +5667,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Allgemein
 es*:
 tr*:
 uk*:
@@ -5679,7 +5679,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Rollen
 es*:
 tr*:
 uk*:
@@ -5691,7 +5691,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Geschlecht
 es*:
 tr*:
 uk*:
@@ -5703,7 +5703,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Namen
 es*:
 tr*:
 uk*:
@@ -5715,7 +5715,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Nur Hauptnamen
 es*:
 tr*:
 uk*:
@@ -5727,7 +5727,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Pseudonyme einschließen
 es*:
 tr*:
 uk*:
@@ -5739,7 +5739,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -5751,7 +5751,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Gesprochene Charaktere ([_1])
 es*:
 tr*:
 uk*:
@@ -5763,7 +5763,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : als [_1]
 es*:
 tr*:
 uk*:
@@ -5775,7 +5775,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Als
 es*:
 tr*:
 uk*:
@@ -5787,7 +5787,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Geschlecht
 es*:
 tr*:
 uk*:
@@ -5799,7 +5799,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Sprache
 es*:
 tr*:
 uk*:
@@ -5811,7 +5811,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : [quant,_1,Pseudonym,Pseudonyme]
 es*:
 tr*:
 uk*:
@@ -5823,7 +5823,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -5835,7 +5835,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -5847,7 +5847,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Offizielle Seite
 es*:
 tr*:
 uk*:
@@ -5859,7 +5859,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -5871,7 +5871,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -5883,7 +5883,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Titel
 es*:
 tr*:
 uk*:
@@ -5895,7 +5895,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Veröffentlicht
 es*:
 tr*:
 uk*:
@@ -5907,7 +5907,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Rolle
 es*:
 tr*:
 uk*:
@@ -5919,7 +5919,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -5931,7 +5931,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Anmerkung
 es*:
 tr*:
 uk*:
@@ -5943,7 +5943,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Sprecher
 es*:
 tr*:
 uk*:
@@ -5955,7 +5955,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -5969,7 +5969,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Bearbeiten [_1]
 es*:
 tr*:
 uk*:
@@ -5981,7 +5981,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab-Mitglied hinzufügen
 es*:
 tr*:
 uk*:
@@ -5993,7 +5993,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Allgemeine Informationen
 es*:
 tr*:
 uk*:
@@ -6005,7 +6005,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Name (Romaji)
 es*:
 tr*:
 uk*:
@@ -6017,7 +6017,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -6029,7 +6029,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Du kannst einen anderen Hauptnamen auswählen.
 es*:
 tr*:
 uk*:
@@ -6041,7 +6041,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Namen
 es*:
 tr*:
 uk*:
@@ -6053,7 +6053,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Der Originalname der Person. Freilassen, wenn er bereits im Lateinischen Alphabet steht.
 es*:
 tr*:
 uk*:
@@ -6065,7 +6065,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab-Anmerkung
 es*:
 tr*:
 uk*:
@@ -6077,7 +6077,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Geschlecht
 es*:
 tr*:
 uk*:
@@ -6089,7 +6089,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Hauptsprache
 es*:
 tr*:
 uk*:
@@ -6101,7 +6101,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Wikipedia-Link
 es*:
 tr*:
 uk*:
@@ -6113,7 +6113,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Offizielle Seite
 es*:
 tr*:
 uk*:
@@ -6125,7 +6125,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Twitter-Benutzername
 es*:
 tr*:
 uk*:
@@ -6137,7 +6137,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Ungültiger Twitter-Benutzername
 es*:
 tr*:
 uk*:
@@ -6149,7 +6149,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : AniDB-ID
 es*:
 tr*:
 uk*:
@@ -6161,7 +6161,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Pseudonyme
 es*:
 tr*:
 uk*:
@@ -6173,7 +6173,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Pseudonym hinzufügen
 es*:
 tr*:
 uk*:
@@ -6185,7 +6185,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab
 es*:
 tr*:
 uk*:
@@ -6197,7 +6197,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -6209,7 +6209,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Anmerkung
 es*:
 tr*:
 uk*:
@@ -6221,7 +6221,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab hinzufügen
 es*:
 tr*:
 uk*:
@@ -6233,7 +6233,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Keine
 es*:
 tr*:
 uk*:
@@ -6469,7 +6469,7 @@ ru : Сюжетная анимация
 cs : Animace příběhu
 hu : Történet animáció
 nl : Verhaalanimatie
-de : Story Animationen
+de : Story-Animationen
 es : Animaciones de historia
 tr : Animasyon
 uk : Сюжетна анімація
@@ -6481,7 +6481,7 @@ ru : Анимация эросцен
 cs : Ero animace
 hu : Ero jelenet animáció
 nl : Erotische animatie
-de : Ero Animationen
+de : Ero-Animationen
 es : Animaciones eróticas
 tr : Erotik animasyon
 uk : Ероанімація
@@ -6712,7 +6712,7 @@ ru : Эросцены: [_1]
 cs : Ero scény: [_1]
 hu : Ero jelenetek: [_1]
 nl : Erotische scenes: [_1]
-de : Ero Szenen: [_1]
+de : Ero-Szenen: [_1]
 es : Escena erótica: [_1]
 tr : Erotik sahneler: [_1]
 uk : Еросцени: [_1]
@@ -7157,7 +7157,7 @@ ru : Сюжетная анимация
 cs : Animace příběhu
 hu : Történet animáció
 nl : Verhaalanimatie
-de : Story Animationen
+de : Story-Animationen
 es : Historia animada
 tr : Öykü animasyonu
 uk : Сюжетна анімація
@@ -7169,7 +7169,7 @@ ru : Анимация эросцен
 cs : Ero animace
 hu : Ero jelenet animáció
 nl : Erotische animatie
-de : Ero Animationen
+de : Ero-Animationen
 es : Ero-animación
 tr : Erotik animasyon
 uk : Ероанімація
@@ -7496,7 +7496,7 @@ ru : Название
 cs : Název
 hu : Cím
 nl : Titel
-de :
+de : Titel
 es : Título
 tr : Adı
 uk : Назва
@@ -7851,7 +7851,7 @@ ru : Сюжетная анимация
 cs : Příběh
 hu : Történet
 nl : Verhaal
-de :
+de : Geschichte
 es : Historia
 tr : Öykü
 uk : Сюжет
@@ -7863,7 +7863,7 @@ ru : Анимация эро-сцен
 cs : Ero scény
 hu : Ero jelenetek
 nl : Erotische scenes
-de : Ero Szenen
+de : Ero-Szenen
 es : Escenas ero
 tr : Erotik sahneler
 uk : Еросцени
@@ -9587,7 +9587,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Gesprochen von
 es*:
 tr*:
 uk*:
@@ -13017,7 +13017,7 @@ ru*:
 cs*:
 hu : VN listám
 nl*:
-de : Benutzer VN Liste
+de : Benutzer VN-Liste
 es*:
 tr : Kullanıcı VN listesi
 uk*:
@@ -13880,7 +13880,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab
 es*:
 tr*:
 uk*:
@@ -13894,7 +13894,9 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Bitte schau dir die [url,/d2.3,Stabbearbeitungsrichtlinien] an. Du kannst einen
+     [url,/s/new,neuen Stabeintrag anlegen], wenn er noch nicht in der Datenbank existiert,
+     aber bitte [url,/s/all,prüfe zuerst auf Pseudonyme].
 es*:
 tr*:
 uk*:
@@ -13906,7 +13908,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Synchronsprecher
 es*:
 tr*:
 uk*:
@@ -13918,7 +13920,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Sprecher importieren
 es*:
 tr*:
 uk*:
@@ -13930,7 +13932,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Sprecher von verwandten Visual Novels importieren
 es*:
 tr*:
 uk*:
@@ -13942,7 +13944,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Charakter
 es*:
 tr*:
 uk*:
@@ -13954,7 +13956,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Charakter auswählen
 es*:
 tr*:
 uk*:
@@ -13966,7 +13968,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Bitte zuerst Charakter auswählen.
 es*:
 tr*:
 uk*:
@@ -13978,7 +13980,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -13990,7 +13992,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Anmerkung
 es*:
 tr*:
 uk*:
@@ -14002,7 +14004,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : gesprochen von
 es*:
 tr*:
 uk*:
@@ -14014,7 +14016,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Synchronsprecher hinzufügen
 es*:
 tr*:
 uk*:
@@ -14638,7 +14640,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -14650,7 +14652,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de :
 es*:
 tr*:
 uk*:
@@ -15393,7 +15395,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab
 es*:
 tr*:
 uk*:
@@ -15516,7 +15518,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab
 es*:
 tr*:
 uk*:
@@ -15528,7 +15530,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Sprecher der Charaktere
 es*:
 tr*:
 uk*:
@@ -15540,7 +15542,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab hinzufügen
 es*:
 tr*:
 uk*:
@@ -15552,7 +15554,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Stab bearbeiten
 es*:
 tr*:
 uk*:
@@ -16441,7 +16443,7 @@ ru*:
 cs*:
 hu*:
 nl*:
-de*:
+de : Ungültige Stabdaten
 es*:
 tr*:
 uk*:
