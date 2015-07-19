@@ -2029,40 +2029,40 @@ it : Entrambi
 # Character roles
 
 :_charrole_main
-en : Protagonist
-ru : Протагонист
-cs : Protagonista
-hu : Főszereplő
-nl :
-de :
-es : Protagonista
-tr : Başkahraman
-uk : Партагоніст
-it : Protagonista
+en : [quant,_1,Protagonist,Protagonists]
+ru*: Протагонист
+cs*: Protagonista
+hu*: Főszereplő
+nl*:
+de*:
+es*: Protagonista
+tr*: Başkahraman
+uk*: Партагоніст
+it*: Protagonista
 
 :_charrole_primary
-en : Main character
-ru : Главный персонаж
-cs : Hlavní postava
-hu : Szereplő
-nl : Belangrijke rol
-de : Hauptcharakter
-es : Personaje principal
-tr : Ana karakter
-uk : Головний персонаж
-it : Personaggio principale
+en : Main [quant,_1,character,characters]
+ru*: Главный персонаж
+cs*: Hlavní postava
+hu*: Szereplő
+nl*: Belangrijke rol
+de*: Hauptcharakter
+es*: Personaje principal
+tr*: Ana karakter
+uk*: Головний персонаж
+it*: Personaggio principale
 
 :_charrole_side
-en : Side character
-ru : Второстепенный персонаж
-cs : Vedlejší postava
-hu : Mellékszereplő
-nl : Onbelangrijke rol
-de : Nebencharakter
-es : Personaje secundario
-tr : Yan karakter
-uk : Персонаж другого плану
-it : Personaggio secondario
+en : Side [quant,_1,character,characters]
+ru*: Второстепенный персонаж
+cs*: Vedlejší postava
+hu*: Mellékszereplő
+nl*: Onbelangrijke rol
+de*: Nebencharakter
+es*: Personaje secundario
+tr*: Yan karakter
+uk*: Персонаж другого плану
+it*: Personaggio secondario
 
 :_charrole_appears
 en : Makes an appearance

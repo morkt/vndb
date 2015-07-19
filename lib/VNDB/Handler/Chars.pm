@@ -59,7 +59,7 @@ sub page {
       [ vns       => join => '<br />', split => sub {
         map sprintf('<a href="/v%d">v%d</a> %s %s (%s)', $_->{vid}, $_->{vid},
           $_->{rid}?sprintf('[<a href="/r%d">r%d</a>]', $_->{rid}, $_->{rid}):'',
-          mt("_charrole_$_->{role}"), mt("_spoil_$_->{spoil}")), @{$_[0]};
+          mt("_charrole_$_->{role}", 1), mt("_spoil_$_->{spoil}")), @{$_[0]};
       }],
     );
   }
@@ -197,7 +197,7 @@ sub charTable {
           # special case: all releases, no exceptions
           if(!$vn && @r == 1 && !$r[0]{rid}) {
             span class => charspoil $r[0]{spoil};
-             txt mt("_charrole_$r[0]{role}").' - ';
+             txt mt("_charrole_$r[0]{role}", 1).' - ';
              a href => "/v$r[0]{vid}/chars", $r[0]{vntitle};
             end;
             next;
@@ -211,7 +211,7 @@ sub charTable {
              span class => charspoil $_->{spoil};
               br if !$vn || $_ != $r[0];
               b class => 'grayedout', '> ';
-              txt mt("_charrole_$_->{role}").' - ';
+              txt mt("_charrole_$_->{role}", 1).' - ';
               if($_->{rid}) {
                 b class => 'grayedout', "r$_->{rid}:";
                 a href => "/r$_->{rid}", $_->{rtitle};

@@ -1088,7 +1088,7 @@ sub _chars {
         a href => '#', mt '_vnpage_tags_spoil2';
        end;
      }
-     h1 mt "_charrole_$r";
+     h1 mt "_charrole_$r", scalar @{$rol{$r}};
      for my $c (@{$rol{$r}}) {
        my $minspoil = 5;
        $minspoil = $_->{vid} == $v->{id} && $_->{spoil} < $minspoil ? $_->{spoil} : $minspoil
