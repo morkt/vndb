@@ -154,6 +154,8 @@ sub login {
     return;
   }
 
+  my $ref = $self->formValidate({ param => 'ref', required => 0, default => '/'})->{ref};
+
   my $frm;
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
@@ -162,9 +164,6 @@ sub login {
       { post => 'usrpass', required => 1, minlength => 4, maxlength => 64, template => 'asciiprint' },
     );
 
-    my $b = $self->reqBaseURI();
-    (my $ref = $self->reqHeader('Referer')||'/') =~ s/^\Q$b//;
-    $ref = '/' if $ref =~ /^\/u\//;
     if(!$frm->{_err}) {
       return if $self->authLogin($frm->{usrname}, $frm->{usrpass}, $ref);
       $frm->{_err} = [ 'login_failed' ];
@@ -174,6 +173,7 @@ sub login {
 
   $self->htmlHeader(noindex => 1, title => mt '_login_title');
   $self->htmlForm({ frm => $frm, action => '/u/login' }, login => [ mt('_login_title'),
+    [ hidden => short => 'ref', value => $ref ],
     [ input  => short => 'usrname', name => mt '_login_username' ],
     [ static => content => '<a href="/u/register">'.mt('_login_register').'</a>' ],
     [ passwd => short => 'usrpass', name => mt '_login_password' ],
