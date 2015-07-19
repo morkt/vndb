@@ -231,16 +231,14 @@ function ivInit() {
       init++;
       l[i].onclick = ivView;
     }
-  if(init && !byId('iv_overlay')) {
-    addBody(tag('div', {id:'iv_overlay','class':'hidden', onclick: ivClose},
-      tag('div', {id: 'iv_view', onclick: function(e) { e.stopPropagation() }},
-        tag('b', {id:'ivimg'}, ''),
-        tag('br', null),
-        tag('a', {href:'#', id:'ivfull'}, ''),
-        tag('a', {href:'#', onclick: ivClose, id:'ivclose'}, mt('_js_close')),
-        tag('a', {href:'#', onclick: ivView, id:'ivprev'}, '« '+mt('_js_iv_prev')),
-        tag('a', {href:'#', onclick: ivView, id:'ivnext'}, mt('_js_iv_next')+' »')
-      )
+  if(init && !byId('iv_view')) {
+    addBody(tag('div', {id: 'iv_view','class':'hidden'},
+      tag('b', {id:'ivimg'}, ''),
+      tag('br', null),
+      tag('a', {href:'#', id:'ivfull'}, ''),
+      tag('a', {href:'#', onclick: ivClose, id:'ivclose'}, mt('_js_close')),
+      tag('a', {href:'#', onclick: ivView, id:'ivprev'}, '« '+mt('_js_iv_prev')),
+      tag('a', {href:'#', onclick: ivView, id:'ivnext'}, mt('_js_iv_next')+' »')
     ));
     addBody(tag('b', {id:'ivimgload','class':'hidden'}, mt('_js_loading')));
   }
@@ -250,7 +248,6 @@ function ivView(what) {
   what = what && what.rel ? what : this;
   var u = what.href;
   var opt = what.rel.split(':');
-  var overlay = byId('iv_overlay');
   var view = byId('iv_view');
   var next = byId('ivnext');
   var prev = byId('ivprev');
@@ -280,6 +277,7 @@ function ivView(what) {
   var h = Math.floor(opt[1].split('x')[1]);
   var ww = typeof(window.innerWidth) == 'number' ? window.innerWidth : document.documentElement.clientWidth;
   var wh = typeof(window.innerHeight) == 'number' ? window.innerHeight : document.documentElement.clientHeight;
+  var st = typeof(window.pageYOffset) == 'number' ? window.pageYOffset : document.body && document.body.scrollTop ? document.body.scrollTop : document.documentElement.scrollTop;
   if(w+100 > ww || h+70 > wh) {
     full.href = u;
     setText(full, w+'x'+h);
@@ -298,24 +296,23 @@ function ivView(what) {
   dw = dw < 200 ? 200 : dw;
 
   // update document
-  setClass(overlay, 'hidden', false);
-  setContent(byId('ivimg'), tag('img', {src:u,
-    onclick: function() { next.rel ? ivView(next) : ivClose() },
+  setClass(view, 'hidden', false);
+  setContent(byId('ivimg'), tag('img', {src:u, onclick:ivClose,
     onload: function() { setClass(byId('ivimgload'), 'hidden', true); },
     style: 'width: '+w+'px; height: '+h+'px'
   }));
   view.style.width = dw+'px';
   view.style.height = dh+'px';
   view.style.left = ((ww - dw) / 2 - 10)+'px';
-  view.style.top = ((wh - dh) / 2)+'px';
+  view.style.top = ((wh - dh) / 2 + st - 20)+'px';
   byId('ivimgload').style.left = ((ww - 100) / 2 - 10)+'px';
-  byId('ivimgload').style.top = ((wh - 20) / 2 )+'px';
+  byId('ivimgload').style.top = ((wh - 20) / 2 + st)+'px';
   setClass(byId('ivimgload'), 'hidden', false);
   return false;
 }
 
 function ivClose() {
-  setClass(byId('iv_overlay'), 'hidden', true);
+  setClass(byId('iv_view'), 'hidden', true);
   setClass(byId('ivimgload'), 'hidden', true);
   setText(byId('ivimg'), '');
   return false;

@@ -771,25 +771,14 @@ div.revision .item    { text-align: center; }
 
 /****** Image Viewer *****/
 
-div#iv_overlay {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom; 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-}
 div#iv_view {
-  position: fixed;
+  position: absolute;
   top: 0px;
   left: 0px;
   background: url($_boxbg$) repeat;
   border: 1px solid $border$;
   padding: 5px;
   text-align: center;
-  z-index: 11;
 }
 #iv_view a   { border: 0; font-weight: bold; font-size: 12px }
 #iv_view img { cursor: pointer }
@@ -798,7 +787,7 @@ div#iv_view {
 #ivprev      { padding-right: 5px; }
 #ivfull      { float: left; padding-right: 10px; }
 #ivimgload {
-  position: fixed;
+  position: absolute;
   display: block;
   left: 0;
   top: 0;
@@ -808,7 +797,6 @@ div#iv_view {
   text-align: center;
   border: 1px solid #ccc;
   color: #000;
-  z-index: 12;
 }
 
 
