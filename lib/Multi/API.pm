@@ -30,7 +30,8 @@ my %O = (
   max_results_lists => 100, # For get votelist/vnlist/wishlist
   default_results => 10,
   throttle_cmd => [ 6, 100 ], # interval between each command, allowed burst
-  throttle_sql => [ 60, 1 ], # sql time multiplier, allowed burst (in sql time)
+  throttle_sql => [ 60, 1 ],  # sql time multiplier, allowed burst (in sql time)
+  throttle_thr => [ 2, 10 ],  # interval between "throttled" replies, allowed burst
 );
 
 
@@ -164,10 +165,19 @@ sub cmd_read {
     # check for thottle rule violation
     for ('cmd', 'sql') {
       my $left = throttle $O{"throttle_$_"}, "api_${_}_$c->{cid}", 0;
+      next if !$left;
+
+      # Too many throttle rule violations? Misbehaving client, disconnect.
+      if(throttle $O{throttle_thr}, "api_thr_$c->{cid}") {
+        writelog $c, 'Too many throttled replies, disconnecting.';
+        $c->{h}->destroy;
+        delete $C{$c->{id}};
+        return;
+      }
+
       return cerr $c, throttled => 'Throttle limit reached.', type => $_,
           minwait  => int(10*($left))/10+1,
-          fullwait => int(10*($left + $O{"throttle_$_"}[0] * $O{"throttle_$_"}[1]))/10+1
-        if $left;
+          fullwait => int(10*($left + $O{"throttle_$_"}[0] * $O{"throttle_$_"}[1]))/10+1;
     }
 
     # update commands/second throttle
