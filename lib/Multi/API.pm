@@ -55,7 +55,11 @@ sub run {
   shift;
   %O = (%O, @_);
 
-  push_watcher tcp_server undef, $O{port}, \&newconn;
+  push_watcher tcp_server '::', $O{port}, \&newconn;
+  # The following tcp_server will fail if the above already bound to IPv4.
+  eval {
+    push_watcher tcp_server 0, $O{port}, \&newconn;
+  };
   writelog 'API starting up on port %d', $O{port};
 }
 
