@@ -495,7 +495,7 @@ function tvsInit() {
   var l = byName(byId('tagops'), 'a');
   for(var i=0;i<l.length; i++)
     l[i].onclick = tvsClick;
-  tvsSet(getCookie('tagspoil'));
+  tvsSet();
 }
 
 function tvsClick() {
@@ -507,10 +507,9 @@ function tvsClick() {
         setClass(l[i], 'tsel', !hasClass(l[i], 'tsel'));
         tvsSet();
       } else if(i < 6) { /* spoiler level */
-        tvsSet(i-3, null);
-        setCookie('tagspoil', i-3);
+        tvsSet(i-3);
       } else /* limit */
-        tvsSet(null, i == 6 ? true : false);
+        tvsSet(null, i == 6);
     }
   return false;
 }
@@ -2729,12 +2728,10 @@ function filFSelect(c, n, lines, opts) {
   ];
 }
 
-function filFOptions(c, n, opts, setfunc) {
+function filFOptions(c, n, opts) {
   var p = tag('p', {'class':'opts', fil_val:opts[0][0]});
   var sel = function (e) {
     var o = typeof e == 'string' ? e : this.fil_n;
-    if(setfunc)
-      o = setfunc(o);
     var l = byName(p, 'a');
     for(var i=0; i<l.length; i++)
       setClass(l[i], 'tsel', l[i].fil_n+'' == o+'');
@@ -2885,8 +2882,7 @@ function filChars() {
       [ '', ' ', tag(mt('_js_fil_booland')) ],
       filFTagInput('trait_inc', mt('_charb_traitinc'), 'trait'),
       filFTagInput('trait_exc', mt('_charb_traitexc'), 'trait'),
-      filFOptions('tagspoil', ' ', [[0, mt('_spoilset_0')],[1, mt('_spoilset_1')],[2, mt('_spoilset_2')]],
-        function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
+      filFOptions('tagspoil', ' ', [[0, mt('_spoilset_0')],[1, mt('_spoilset_1')],[2, mt('_spoilset_2')]]),
     ],
     [ mt('_charb_roles'), filFSelect('role', mt('_charb_roles'), 4, roles) ]
   ];
@@ -2967,8 +2963,7 @@ function filVN() {
       [ '',       ' ', byId('pref_code') ? tag(mt('_vnbrowse_tagactive')) : null ],
       filFTagInput('tag_inc', mt('_vnbrowse_taginc'), 'tag'),
       filFTagInput('tag_exc', mt('_vnbrowse_tagexc'), 'tag'),
-      filFOptions('tagspoil', ' ', [[0, mt('_spoilset_0')],[1, mt('_spoilset_1')],[2, mt('_spoilset_2')]],
-        function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
+      filFOptions('tagspoil', ' ', [[0, mt('_spoilset_0')],[1, mt('_spoilset_1')],[2, mt('_spoilset_2')]])
     ],
     [ mt('_vnbrowse_language'), filFSelect('lang', mt('_vnbrowse_language'), 20, lang) ],
     [ mt('_vnbrowse_olang'),    filFSelect('olang',mt('_vnbrowse_olang'),    20, lang) ],
@@ -3066,11 +3061,6 @@ if(byId('advselect')) {
     return false;
   };
 }
-
-// Spoiler selection buttons on tag/trait browse pages
-if(byId('tagspoil_0')) byId('tagspoil_0').onclick = function() { setCookie('tagspoil', 0); return true; };
-if(byId('tagspoil_1')) byId('tagspoil_1').onclick = function() { setCookie('tagspoil', 1); return true; };
-if(byId('tagspoil_2')) byId('tagspoil_2').onclick = function() { setCookie('tagspoil', 2); return true; };
 
 // NSFW VN image toggle (/v+)
 if(byId('nsfw_show')) {
@@ -3247,15 +3237,17 @@ if(byId('charspoil_sel')) {
       }
     }
   };
+  var set = 0;
   for(var i=0; i<h.length; i++) {
     h[i].num = i;
     h[i].onclick = function() {
       setall(this.num);
-      setCookie('tagspoil', this.num);
       return false;
     };
+    if(hasClass(h[i], 'sel'))
+      set = i;
   };
-  setall(getCookie('tagspoil'));
+  setall(set);
 }
 
 

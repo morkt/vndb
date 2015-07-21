@@ -66,10 +66,9 @@ sub page {
 
   div class => 'mainbox';
    $self->htmlItemMessage('c', $r);
+   my $spoil = $self->authPref('spoilers')||0;
    p id => 'charspoil_sel';
-    a href => '#', class => 'sel', mt '_spoilset_0';
-    a href => '#', mt '_spoilset_1';
-    a href => '#', mt '_spoilset_2';
+    a href => '#', $spoil == $_ ? (class => 'sel') : (), mt "_spoilset_$_" for (0..2);
    end;
    h1 $r->{name};
    h2 class => 'alttitle', $r->{original} if $r->{original};
@@ -487,7 +486,9 @@ sub list {
   );
   return $self->resNotFound if $f->{_err};
 
-  my($list, $np) = $self->filFetchDB(char => $f->{fil}, {}, {
+  my($list, $np) = $self->filFetchDB(char => $f->{fil}, {
+    tagspoil => $self->authPref('spoilers')||0,
+  }, {
     $fch ne 'all' ? ( char => $fch ) : (),
     $f->{q} ? ( search => $f->{q} ) : (),
     results => 50,

@@ -50,7 +50,10 @@ sub list {
   $f->{s} = 'title' if $f->{fil} !~ /tag_inc-/ && $f->{s} eq 'tagscore';
   $f->{o} = $f->{s} eq 'tagscore' ? 'd' : 'a' if !$f->{o};
 
-  my($list, $np) = $self->filFetchDB(vn => $f->{fil}, \%compat, {
+  my($list, $np) = $self->filFetchDB(vn => $f->{fil}, {
+    %compat,
+    tagspoil => $self->authPref('spoilers')||0,
+  }, {
     what =>               ' rating' .
          ($f->{vnlist}  ? ' vnlist'   : '').
          ($f->{wish}    ? ' wishlist' : ''),

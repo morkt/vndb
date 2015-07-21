@@ -33,12 +33,10 @@ sub tagpage {
     { get => 's', required => 0, default => 'tagscore', enum => [ qw|title rel pop tagscore rating| ] },
     { get => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
     { get => 'p', required => 0, default => 1, template => 'int' },
-    { get => 'm', required => 0, default => undef, enum => [qw|0 1 2|] },
+    { get => 'm', required => 0, default => $self->authPref('spoilers') || 0, enum => [qw|0 1 2|] },
     { get => 'fil', required => 0 },
   );
   return $self->resNotFound if $f->{_err};
-  my $tagspoil = $self->reqCookie('tagspoil')||'';
-  $f->{m} //= $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0;
   $f->{fil} //= $self->authPref('filter_vn');
 
   my($list, $np) = $t->{meta} || $t->{state} != 2 ? ([],0) : $self->filFetchDB(vn => $f->{fil}, undef, {
@@ -108,9 +106,9 @@ sub tagpage {
      h1 mt '_tagp_vnlist';
 
      p class => 'browseopts';
-      a href => "/g$t->{id}?fil=$f->{fil};m=0", $f->{m} == 0 ? (class => 'optselected') : (), id => 'tagspoil_0', mt '_spoilset_0';
-      a href => "/g$t->{id}?fil=$f->{fil};m=1", $f->{m} == 1 ? (class => 'optselected') : (), id => 'tagspoil_1', mt '_spoilset_1';
-      a href => "/g$t->{id}?fil=$f->{fil};m=2", $f->{m} == 2 ? (class => 'optselected') : (), id => 'tagspoil_2', mt '_spoilset_2';
+      a href => "/g$t->{id}?fil=$f->{fil};m=0", $f->{m} == 0 ? (class => 'optselected') : (), mt '_spoilset_0';
+      a href => "/g$t->{id}?fil=$f->{fil};m=1", $f->{m} == 1 ? (class => 'optselected') : (), mt '_spoilset_1';
+      a href => "/g$t->{id}?fil=$f->{fil};m=2", $f->{m} == 2 ? (class => 'optselected') : (), mt '_spoilset_2';
      end;
 
      a id => 'filselect', href => '#v';

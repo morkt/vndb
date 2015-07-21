@@ -26,12 +26,10 @@ sub traitpage {
 
   my $f = $self->formValidate(
     { get => 'p', required => 0, default => 1, template => 'int' },
-    { get => 'm', required => 0, default => undef, enum => [qw|0 1 2|] },
+    { get => 'm', required => 0, default => $self->authPref('spoilers')||0, enum => [qw|0 1 2|] },
     { get => 'fil', required => 0, default => '' },
   );
   return $self->resNotFound if $f->{_err};
-  my $tagspoil = $self->reqCookie('tagspoil')||'';
-  $f->{m} //= $tagspoil =~ /^[0-2]$/ ? $tagspoil : 0;
 
   my $title = mt '_traitp_title', $t->{meta}?0:1, $t->{name};
   $self->htmlHeader(title => $title, noindex => $t->{state} != 2);
@@ -97,9 +95,9 @@ sub traitpage {
      h1 mt '_traitp_charlist';
 
      p class => 'browseopts';
-      a href => "/i$trait?m=0", $f->{m} == 0 ? (class => 'optselected') : (), id => 'tagspoil_0', mt '_spoilset_0';
-      a href => "/i$trait?m=1", $f->{m} == 1 ? (class => 'optselected') : (), id => 'tagspoil_1', mt '_spoilset_1';
-      a href => "/i$trait?m=2", $f->{m} == 2 ? (class => 'optselected') : (), id => 'tagspoil_2', mt '_spoilset_2';
+      a href => "/i$trait?m=0", $f->{m} == 0 ? (class => 'optselected') : (), mt '_spoilset_0';
+      a href => "/i$trait?m=1", $f->{m} == 1 ? (class => 'optselected') : (), mt '_spoilset_1';
+      a href => "/i$trait?m=2", $f->{m} == 2 ? (class => 'optselected') : (), mt '_spoilset_2';
      end;
 
      a id => 'filselect', href => '#c';

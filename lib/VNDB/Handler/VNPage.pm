@@ -627,9 +627,10 @@ sub page {
       # NOTE: order of these links is hardcoded in JS
       my $tags_cat = $self->authPref('tags_cat') || $self->{default_tags_cat};
       a href => "#$_", $tags_cat =~ /\Q$_/ ? (class => 'tsel') : (), lc mt "_tagcat_$_" for qw|cont ero tech|;
-      a href => '#', class => 'sec tsel', lc mt '_spoilset_0';
-      a href => '#', lc mt '_spoilset_1';
-      a href => '#', lc mt '_spoilset_2';
+      my $spoiler = $self->authPref('spoilers') || 0;
+      a href => '#', class => 'sec'.($spoiler == 0 ? ' tsel' : ''), lc mt '_spoilset_0';
+      a href => '#', $spoiler == 1 ? (class => 'tsel') : (), lc mt '_spoilset_1';
+      a href => '#', $spoiler == 2 ? (class => 'tsel') : (), lc mt '_spoilset_2';
       a href => '#', class => 'sec'.($self->authPref('tags_all') ? '': ' tsel'), mt '_vnpage_tags_summary';
       a href => '#', $self->authPref('tags_all') ? (class => 'tsel') : (), mt '_vnpage_tags_all';
      end;
@@ -1070,7 +1071,6 @@ sub _chars {
   my($self, $has, $v) = @_;
   my $l = $has && $self->dbCharGet(vid => $v->{id}, what => "extended vns($v->{id}) seiyuu traits", results => 100);
   return if !$has;
-  # TODO: spoiler handling + hide unimportant roles by default
   my %done;
   my %rol;
   for my $r (@{$self->{char_roles}}) {
@@ -1081,10 +1081,9 @@ sub _chars {
     next if !@{$rol{$r}};
     div class => 'mainbox';
      if(!$first++) {
+       my $spoil = $self->authPref('spoilers')||0;
        p id => 'charspoil_sel';
-        a href => '#', class => 'sel', mt '_spoilset_0';
-        a href => '#', mt '_spoilset_1';
-        a href => '#', mt '_spoilset_2';
+        a href => '#', $spoil == $_ ? (class => 'sel') : (), mt "_spoilset_$_" for (0..2);
        end;
      }
      h1 mt "_charrole_$r", scalar @{$rol{$r}};
@@ -1132,10 +1131,9 @@ sub _staff {
     $has_spoilers ||= $_->{spoil}, $has_notes ||= $_->{note} for @{$v->{seiyuu}};
     div class => 'mainbox staff cast';
      if($has_spoilers) {
+       my $spoil = $self->authPref('spoilers')||0;
        p id => 'charspoil_sel';
-        a href => '#', class => 'sel', mt '_spoilset_0';
-        a href => '#', mt '_spoilset_1';
-        a href => '#', mt '_spoilset_2';
+        a href => '#', $spoil == $_ ? (class => 'sel') : (), mt "_spoilset_$_" for (0..2);
        end;
      }
      h1 mt '_vnpage_cast';

@@ -376,6 +376,7 @@ sub edit {
       { post => 'show_nsfw',  required => 0, default => 0,  enum => [0,1] },
       { post => 'tags_all',   required => 0, default => 0,  enum => [0,1] },
       { post => 'tags_cat',   required => 0, multi => 1, enum => [qw|cont ero tech|] },
+      { post => 'spoilers',   required => 0, default => 0, enum => [0..2] },
       { post => 'skin',       required => 0, default => $self->{skin_default}, enum => [ keys %{$self->{skins}} ] },
       { post => 'customcss',  required => 0, maxlength => 2000, default => '' },
     );
@@ -383,7 +384,7 @@ sub edit {
       if ($frm->{usrpass} || $frm->{usrpass2}) && (!$frm->{usrpass} || !$frm->{usrpass2} || $frm->{usrpass} ne $frm->{usrpass2});
     if(!$frm->{_err}) {
       $frm->{skin} = '' if $frm->{skin} eq $self->{skin_default};
-      $self->dbUserPrefSet($uid, $_ => $frm->{$_}) for (qw|skin customcss show_nsfw tags_all hide_list |);
+      $self->dbUserPrefSet($uid, $_ => $frm->{$_}) for (qw|skin customcss show_nsfw tags_all hide_list spoilers|);
 
       my $tags_cat = join(',', sort @{$frm->{tags_cat}}) || 'none';
       $self->dbUserPrefSet($uid, tags_cat => $tags_cat eq $self->{default_tags_cat} ? '' : $tags_cat);
@@ -405,7 +406,7 @@ sub edit {
   $frm->{usrname} ||= $u->{username};
   $frm->{mail}    ||= $u->{mail};
   $frm->{perms}   ||= [ grep $u->{perm} & $self->{permissions}{$_}, keys %{$self->{permissions}} ];
-  $frm->{$_} //= $u->{prefs}{$_} for(qw|skin customcss show_nsfw tags_all hide_list|);
+  $frm->{$_} //= $u->{prefs}{$_} for(qw|skin customcss show_nsfw tags_all hide_list spoilers|);
   $frm->{tags_cat} ||= [ split /,/, $u->{prefs}{tags_cat}||$self->{default_tags_cat} ];
   $frm->{ign_votes} = $u->{ign_votes} if !defined $frm->{ign_votes};
   $frm->{skin}    ||= $self->{skin_default};
@@ -442,8 +443,8 @@ sub edit {
     [ check  => short => 'hide_list', name => mt '_usere_flist', "/u$uid/list", "/u$uid/votes", "/u$uid/wish" ],
     [ check  => short => 'show_nsfw', name => mt '_usere_fnsfw' ],
     [ check  => short => 'tags_all', name => mt '_usere_ftags' ],
-    [ select => short => 'tags_cat', name => mt('_usere_tagcats'), multi => 1, size => 3, options => [
-       map [ $_, mt '_tagcat_'.$_ ], qw|cont ero tech| ] ],
+    [ select => short => 'tags_cat', name => mt('_usere_tagcats'), multi => 1, size => 3, options => [ map [ $_, mt '_tagcat_'.$_ ], qw|cont ero tech| ] ],
+    [ select => short => 'spoilers', name => mt('_usere_spoilers'), options => [ map [ $_, mt '_spoilset_'.$_ ], 0..2 ] ],
     [ select => short => 'skin', name => mt('_usere_skin'), width => 300, options => [
       map [ $_, $self->{skins}{$_}[0].($self->debug?" [$_]":'') ], sort { $self->{skins}{$a}[0] cmp $self->{skins}{$b}[0] } keys %{$self->{skins}} ] ],
     [ textarea => short => 'customcss', name => mt '_usere_css' ],

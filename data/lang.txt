@@ -12534,6 +12534,18 @@ tr*:
 uk*:
 it*:
 
+:_usere_spoilers
+en : Spoiler level
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_usere_skin
 en : Preferred skin
 ru : Предпочитаемая шкурка
