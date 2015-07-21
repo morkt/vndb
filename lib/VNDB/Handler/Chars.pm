@@ -67,9 +67,9 @@ sub page {
   div class => 'mainbox';
    $self->htmlItemMessage('c', $r);
    p id => 'charspoil_sel';
-    a href => '#', class => 'sel', mt '_vnpage_tags_spoil0'; # _vnpage!?
-    a href => '#', mt '_vnpage_tags_spoil1';
-    a href => '#', mt '_vnpage_tags_spoil2';
+    a href => '#', class => 'sel', mt '_spoilset_0';
+    a href => '#', mt '_spoilset_1';
+    a href => '#', mt '_spoilset_2';
    end;
    h1 $r->{name};
    h2 class => 'alttitle', $r->{original} if $r->{original};

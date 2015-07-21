@@ -627,9 +627,9 @@ sub page {
       # NOTE: order of these links is hardcoded in JS
       my $tags_cat = $self->authPref('tags_cat') || $self->{default_tags_cat};
       a href => "#$_", $tags_cat =~ /\Q$_/ ? (class => 'tsel') : (), lc mt "_tagcat_$_" for qw|cont ero tech|;
-      a href => '#', class => 'sec tsel', mt '_vnpage_tags_spoil0';
-      a href => '#', mt '_vnpage_tags_spoil1';
-      a href => '#', mt '_vnpage_tags_spoil2';
+      a href => '#', class => 'sec tsel', lc mt '_spoilset_0';
+      a href => '#', lc mt '_spoilset_1';
+      a href => '#', lc mt '_spoilset_2';
       a href => '#', class => 'sec'.($self->authPref('tags_all') ? '': ' tsel'), mt '_vnpage_tags_summary';
       a href => '#', $self->authPref('tags_all') ? (class => 'tsel') : (), mt '_vnpage_tags_all';
      end;
@@ -1082,9 +1082,9 @@ sub _chars {
     div class => 'mainbox';
      if(!$first++) {
        p id => 'charspoil_sel';
-        a href => '#', class => 'sel', mt '_vnpage_tags_spoil0'; # _vnpage!?
-        a href => '#', mt '_vnpage_tags_spoil1';
-        a href => '#', mt '_vnpage_tags_spoil2';
+        a href => '#', class => 'sel', mt '_spoilset_0';
+        a href => '#', mt '_spoilset_1';
+        a href => '#', mt '_spoilset_2';
        end;
      }
      h1 mt "_charrole_$r", scalar @{$rol{$r}};
@@ -1133,9 +1133,9 @@ sub _staff {
     div class => 'mainbox staff cast';
      if($has_spoilers) {
        p id => 'charspoil_sel';
-        a href => '#', class => 'sel', mt '_vnpage_tags_spoil0';
-        a href => '#', mt '_vnpage_tags_spoil1';
-        a href => '#', mt '_vnpage_tags_spoil2';
+        a href => '#', class => 'sel', mt '_spoilset_0';
+        a href => '#', mt '_spoilset_1';
+        a href => '#', mt '_spoilset_2';
        end;
      }
      h1 mt '_vnpage_cast';

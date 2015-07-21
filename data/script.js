@@ -2885,7 +2885,7 @@ function filChars() {
       [ '', ' ', tag(mt('_js_fil_booland')) ],
       filFTagInput('trait_inc', mt('_charb_traitinc'), 'trait'),
       filFTagInput('trait_exc', mt('_charb_traitexc'), 'trait'),
-      filFOptions('tagspoil', ' ', [[0, mt('_charb_spoil0')],[1, mt('_charb_spoil1')],[2, mt('_charb_spoil2')]],
+      filFOptions('tagspoil', ' ', [[0, mt('_spoilset_0')],[1, mt('_spoilset_1')],[2, mt('_spoilset_2')]],
         function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
     ],
     [ mt('_charb_roles'), filFSelect('role', mt('_charb_roles'), 4, roles) ]
@@ -2967,7 +2967,7 @@ function filVN() {
       [ '',       ' ', byId('pref_code') ? tag(mt('_vnbrowse_tagactive')) : null ],
       filFTagInput('tag_inc', mt('_vnbrowse_taginc'), 'tag'),
       filFTagInput('tag_exc', mt('_vnbrowse_tagexc'), 'tag'),
-      filFOptions('tagspoil', ' ', [[0, mt('_vnbrowse_spoil0')],[1, mt('_vnbrowse_spoil1')],[2, mt('_vnbrowse_spoil2')]],
+      filFOptions('tagspoil', ' ', [[0, mt('_spoilset_0')],[1, mt('_spoilset_1')],[2, mt('_spoilset_2')]],
         function (o) { var s = getCookie('tagspoil'); if(o+'' == '') return s == null ? 0 : s; setCookie('tagspoil', o); return o})
     ],
     [ mt('_vnbrowse_language'), filFSelect('lang', mt('_vnbrowse_language'), 20, lang) ],

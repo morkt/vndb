@@ -2915,6 +2915,44 @@ uk : максимальний спойлер
 it : spoiler maggiori
 
 
+# Spoiler settings
+
+:_spoilset_0
+en : Hide spoilers
+ru*: скрыть спойлеры
+cs*: skrýt spoilery
+hu*: spoilerek elrejtése
+nl : Verberg spoilers
+de*: verstecke Spoiler
+es*: ocultar spoilers
+tr*: spoiler'ları gizle
+uk*: сховати спойлери
+it*: nascondi spoiler
+
+:_spoilset_1
+en : Show minor spoilers
+ru*: показать лёгкие спойлеры
+cs*: ukázat menší spoilery
+hu*: kisebb spoilerek megjelenítése
+nl : Toon geringe spoilers
+de*: zeige kleine Spoiler
+es*: mostrar pequeños spoilers
+tr*: küçük spoiler'ları göster
+uk*: показати мінімальні спойлери
+it*: mostra spoiler minori
+
+:_spoilset_2
+en : Spoil me!
+ru*: показать все!
+cs*: prozraď mi vše!
+hu*: rontsd el nekem!
+nl : Spoil mij!
+de*: zeige alle Spoiler
+es*: ¡dame spoilers!
+tr*: hepsini göster!
+uk*: заспойлерити все!
+it*: mostra spoiler!
+
 
 
 #############################################################################
@@ -8045,42 +8083,6 @@ tr : En son etiketlenenler
 uk : Нещодавно помічені
 it : Classificati di recente
 
-:_tagp_spoil0
-en : Hide spoilers
-ru : Скрыть спойлеры
-cs : Skrýt spoilery
-hu : Spoilerek elrejtése
-nl : Verberg spoilers
-de : Verstecke Spoiler
-es : Esconder spoilers
-tr : Spoiler'ları gizle
-uk : Сховати спойлери
-it : Nascondi spoiler
-
-:_tagp_spoil1
-en : Show minor spoilers
-ru : Показать лёгкие спойлеры
-cs : Ukázat menší spoilery
-hu : Kisebb spoilerek megjelenítése
-nl : Laat geringe spoilers zien
-de : Zeige kleine Spoiler
-es : Mostrar pequeños spoilers
-tr : Küçük spoiler'ları göster
-uk : Показати мінімальні спойлери
-it : Mostra spoiler minori
-
-:_tagp_spoil2
-en : Show major spoilers
-ru : Показать жёсткие спойлеры
-cs : Ukázat všechny spoilery
-hu : Nagyobb spoilerek megjelenítése
-nl : Laat alle spoilers zien
-de : Zeige große Spoiler
-es : Mostrar grandes spoilers
-tr : Büyük spoiler'ları göster
-uk : Показати максимальні спойлери
-it : Mostra spoiler maggiori
-
 :_tagp_novn
 en : This tag has not been linked to any visual novels yet, or they were hidden because of your spoiler settings or default filters.
 ru : Этот тег пока не содержит ссылок ни на одну новеллу, либо они скрыты из-за настроек отображения спойлеров, либо из-за фильтров.
@@ -10403,42 +10405,6 @@ es : Filtros adicionales para este rasgo no esta disponible en esta página. Usa
 tr : Ek nitelik seçimleri bu sayfada geçerli değildir. Onun yerine karakter gezginini (ana menü -> karakterler) kullanabilirsiniz.
 uk : На цій сторінці додаткові риси характеру для фільтрів недоступні. Ви можете використовувати огляд персонажів (Меню —> Персонажі)
 it : Altri filtri non presenti in questa pagina. Usa il browser personaggi (menù principale -> personaggi).
-
-:_charb_spoil0
-en : Hide spoilers
-ru : Скрыть спойлеры
-cs*:
-hu : Spoilerek elrejtése
-nl : Verberg spoilers
-de : Verstecke Spoiler
-es : Esconder spoilers
-tr : Spoiler'ları gizle
-uk : Сховати спойлери
-it : Nascondi spoiler
-
-:_charb_spoil1
-en : Show minor spoilers
-ru : Показать лёгкие спойлеры
-cs*:
-hu : Kisebb spoilerek mutatása
-nl : Toon geringe spoilers
-de : Zeige kleine Spoiler
-es : Mostrar pequeños spoilers
-tr : Küçük spoiler'ları göster
-uk : Показати мінімальні спойлери
-it : Mostra spoiler minori
-
-:_charb_spoil2
-en : Show major spoilers
-ru : Показать все!
-cs*:
-hu : Nagyobb spoilerek mutatása
-nl : Toon alle spoilers
-de : Zeige große Spoiler
-es : Mostrar grandes spoilers
-tr : Büyük spoiler'ları göster
-uk : Показати максимальні спойлери
-it : Mostra spoiler maggiori
 
 :_charb_roles
 en : Roles
@@ -13251,42 +13217,6 @@ tr : Dışlanacak etiketler
 uk : Виключити теги
 it : Tag da escludere
 
-:_vnbrowse_spoil0
-en : Hide spoilers
-ru : Скрыть спойлеры
-cs : Skrýt spoilery
-hu : Spoilerek elrejtése
-nl : Verberg spoilers
-de : Verstecke Spoiler
-es : Esconder spoilers
-tr : Spoiler'ları gizle
-uk : Сховати спойлери
-it : Nascondi spoiler
-
-:_vnbrowse_spoil1
-en : Show minor spoilers
-ru : Показать лёгкие спойлеры
-cs : Ukázat menší spoilery
-hu : Kisebb spoilerek megjelenítése
-nl : Toon geringe spoilers
-de : Zeige kleine Spoiler
-es : Mostrar pequeños spoilers
-tr : Küçük spoiler'ları göster
-uk : Показати мінімальні спойлери
-it : Mostra spoiler minori
-
-:_vnbrowse_spoil2
-en : Show major spoilers
-ru : Показать жёсткие спойлеры
-cs : Ukázat všechny spoilery
-hu : Nagyobb spoilerek megjelenítése
-nl : Toon alle spoilers
-de : Zeige große Spoiler
-es : Motrar grandes spoilers
-tr : Büyük spoiler'ları göster
-uk : Показати максимальні спойлери
-it : Mostra spoiler maggiori
-
 :_vnbrowse_language
 en : Language
 ru : Языки
@@ -14972,42 +14902,6 @@ es : Descripción
 tr : Tanıtım
 uk : Опис
 it : Descrizione
-
-:_vnpage_tags_spoil0
-en : hide spoilers
-ru : скрыть спойлеры
-cs : skrýt spoilery
-hu : spoilerek elrejtése
-nl : verberg spoilers
-de : verstecke Spoiler
-es : ocultar spoilers
-tr : spoiler'ları gizle
-uk : сховати спойлери
-it : nascondi spoiler
-
-:_vnpage_tags_spoil1
-en : show minor spoilers
-ru : показать лёгкие спойлеры
-cs : ukázat menší spoilery
-hu : kisebb spoilerek megjelenítése
-nl : laat geringe spoilers zien
-de : zeige kleine Spoiler
-es : mostrar pequeños spoilers
-tr : küçük spoiler'ları göster
-uk : показати мінімальні спойлери
-it : mostra spoiler minori
-
-:_vnpage_tags_spoil2
-en : spoil me!
-ru : показать все!
-cs : prozraď mi vše!
-hu : rontsd el nekem!
-nl : spoil mij!
-de : zeige alle Spoiler
-es : ¡dame spoilers!
-tr : hepsini göster!
-uk : заспойлерити все!
-it : mostra spoiler!
 
 :_vnpage_tags_summary
 en : summary

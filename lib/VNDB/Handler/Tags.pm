@@ -108,9 +108,9 @@ sub tagpage {
      h1 mt '_tagp_vnlist';
 
      p class => 'browseopts';
-      a href => "/g$t->{id}?fil=$f->{fil};m=0", $f->{m} == 0 ? (class => 'optselected') : (), id => 'tagspoil_0', mt '_tagp_spoil0';
-      a href => "/g$t->{id}?fil=$f->{fil};m=1", $f->{m} == 1 ? (class => 'optselected') : (), id => 'tagspoil_1', mt '_tagp_spoil1';
-      a href => "/g$t->{id}?fil=$f->{fil};m=2", $f->{m} == 2 ? (class => 'optselected') : (), id => 'tagspoil_2', mt '_tagp_spoil2';
+      a href => "/g$t->{id}?fil=$f->{fil};m=0", $f->{m} == 0 ? (class => 'optselected') : (), id => 'tagspoil_0', mt '_spoilset_0';
+      a href => "/g$t->{id}?fil=$f->{fil};m=1", $f->{m} == 1 ? (class => 'optselected') : (), id => 'tagspoil_1', mt '_spoilset_1';
+      a href => "/g$t->{id}?fil=$f->{fil};m=2", $f->{m} == 2 ? (class => 'optselected') : (), id => 'tagspoil_2', mt '_spoilset_2';
      end;
 
      a id => 'filselect', href => '#v';
