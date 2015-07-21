@@ -374,6 +374,7 @@ sub edit {
       { post => 'usrpass2',   required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
       { post => 'hide_list',  required => 0, default => 0,  enum => [0,1] },
       { post => 'show_nsfw',  required => 0, default => 0,  enum => [0,1] },
+      { post => 'tags_all',   required => 0, default => 0,  enum => [0,1] },
       { post => 'skin',       required => 0, default => $self->{skin_default}, enum => [ keys %{$self->{skins}} ] },
       { post => 'customcss',  required => 0, maxlength => 2000, default => '' },
     );
@@ -381,7 +382,7 @@ sub edit {
       if ($frm->{usrpass} || $frm->{usrpass2}) && (!$frm->{usrpass} || !$frm->{usrpass2} || $frm->{usrpass} ne $frm->{usrpass2});
     if(!$frm->{_err}) {
       $frm->{skin} = '' if $frm->{skin} eq $self->{skin_default};
-      $self->dbUserPrefSet($uid, $_ => $frm->{$_}) for (qw|skin customcss show_nsfw hide_list |);
+      $self->dbUserPrefSet($uid, $_ => $frm->{$_}) for (qw|skin customcss show_nsfw tags_all hide_list |);
       my %o;
       if($self->authCan('usermod')) {
         $o{username} = $frm->{usrname} if $frm->{usrname};
@@ -400,7 +401,7 @@ sub edit {
   $frm->{usrname} ||= $u->{username};
   $frm->{mail}    ||= $u->{mail};
   $frm->{perms}   ||= [ grep $u->{perm} & $self->{permissions}{$_}, keys %{$self->{permissions}} ];
-  $frm->{$_} //= $u->{prefs}{$_} for(qw|skin customcss show_nsfw hide_list|);
+  $frm->{$_} //= $u->{prefs}{$_} for(qw|skin customcss show_nsfw tags_all hide_list|);
   $frm->{ign_votes} = $u->{ign_votes} if !defined $frm->{ign_votes};
   $frm->{skin}    ||= $self->{skin_default};
 
@@ -435,6 +436,7 @@ sub edit {
     [ part   => title => mt '_usere_options' ],
     [ check  => short => 'hide_list', name => mt '_usere_flist', "/u$uid/list", "/u$uid/votes", "/u$uid/wish" ],
     [ check  => short => 'show_nsfw', name => mt '_usere_fnsfw' ],
+    [ check  => short => 'tags_all', name => mt '_usere_ftags' ],
     [ select => short => 'skin', name => mt('_usere_skin'), width => 300, options => [
       map [ $_, $self->{skins}{$_}[0].($self->debug?" [$_]":'') ], sort { $self->{skins}{$a}[0] cmp $self->{skins}{$b}[0] } keys %{$self->{skins}} ] ],
     [ textarea => short => 'customcss', name => mt '_usere_css' ],

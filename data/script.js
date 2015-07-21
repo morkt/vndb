@@ -495,7 +495,7 @@ function tvsInit() {
   var l = byName(byId('tagops'), 'a');
   for(var i=0;i<l.length; i++)
     l[i].onclick = tvsClick;
-  tvsSet(getCookie('tagspoil'), true, (getCookie('tagcat')||'cont,tech').split(','));
+  tvsSet(getCookie('tagspoil'), hasClass(l[6], 'tsel'), (getCookie('tagcat')||'cont,tech').split(','));
 }
 
 function tvsClick() {

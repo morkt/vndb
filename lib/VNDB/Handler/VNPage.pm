@@ -631,8 +631,8 @@ sub page {
       a href => '#', class => 'sec tsel', mt '_vnpage_tags_spoil0';
       a href => '#', mt '_vnpage_tags_spoil1';
       a href => '#', mt '_vnpage_tags_spoil2';
-      a href => '#', class => 'sec', mt '_vnpage_tags_summary';
-      a href => '#', mt '_vnpage_tags_all';
+      a href => '#', class => 'sec'.($self->authPref('tags_all') ? '': ' tsel'), mt '_vnpage_tags_summary';
+      a href => '#', $self->authPref('tags_all') ? (class => 'tsel') : (), mt '_vnpage_tags_all';
      end;
      div id => 'vntags';
       for (@$t) {
