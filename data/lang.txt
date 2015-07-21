@@ -12556,6 +12556,18 @@ tr*:
 uk*:
 it*:
 
+:_usere_tagcats
+en : Tag categories
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_usere_skin
 en : Preferred skin
 ru : Предпочитаемая шкурка

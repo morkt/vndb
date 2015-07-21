@@ -37,6 +37,7 @@ our %S = (%S,
                      # bit flags (Flag 8 was used for staffedit)
   permissions     => {qw| board 1  boardmod 2  edit 4  staffedit 4  tag 16  dbmod 32  tagmod 64  usermod 128  affiliate 256 |},
   default_perm    => 1+4+16, # Keep synchronised with the default value of users.perm
+  default_tags_cat=> 'cont,tech',
   languages       => [qw|ar ca cs da de en es fi fr he hu id it ja ko nl no pl pt-br pt-pt ro ru sk sv tr uk vi zh|],
   producer_types  => [qw|co in ng|],
   discussion_boards => [qw|an db ge v p u|], # <- note that some properties of these boards are hard-coded

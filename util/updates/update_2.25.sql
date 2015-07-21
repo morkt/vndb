@@ -40,4 +40,5 @@ UPDATE stats_cache SET count = (SELECT COUNT(*) FROM staff     WHERE hidden = FA
 
 -- New preferences
 ALTER TYPE prefs_key ADD VALUE 'tags_all';
+ALTER TYPE prefs_key ADD VALUE 'tags_cat';
 

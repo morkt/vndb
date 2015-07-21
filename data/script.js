@@ -495,7 +495,7 @@ function tvsInit() {
   var l = byName(byId('tagops'), 'a');
   for(var i=0;i<l.length; i++)
     l[i].onclick = tvsClick;
-  tvsSet(getCookie('tagspoil'), hasClass(l[6], 'tsel'), (getCookie('tagcat')||'cont,tech').split(','));
+  tvsSet(getCookie('tagspoil'));
 }
 
 function tvsClick() {
@@ -505,8 +505,7 @@ function tvsClick() {
     if(l[i] == this) {
       if(i < 3) { /* categories */
         setClass(l[i], 'tsel', !hasClass(l[i], 'tsel'));
-        var c = tvsSet();
-        setCookie('tagcat', c.length ? c.join(',') : '-');
+        tvsSet();
       } else if(i < 6) { /* spoiler level */
         tvsSet(i-3, null);
         setCookie('tagspoil', i-3);
@@ -556,7 +555,6 @@ function tvsSet(lvl, lim, cats) {
     } else
       setClass(l[i], 'hidden', true);
   }
-  return cat;
 }
 
 tvsInit();

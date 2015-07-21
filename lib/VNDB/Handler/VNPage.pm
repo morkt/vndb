@@ -625,9 +625,8 @@ sub page {
    if(@$t) {
      div id => 'tagops';
       # NOTE: order of these links is hardcoded in JS
-      a href => '#cont', lc mt '_tagcat_cont';
-      a href => '#ero',  lc mt '_tagcat_ero';
-      a href => '#tech', lc mt '_tagcat_tech';
+      my $tags_cat = $self->authPref('tags_cat') || $self->{default_tags_cat};
+      a href => "#$_", $tags_cat =~ /\Q$_/ ? (class => 'tsel') : (), lc mt "_tagcat_$_" for qw|cont ero tech|;
       a href => '#', class => 'sec tsel', mt '_vnpage_tags_spoil0';
       a href => '#', mt '_vnpage_tags_spoil1';
       a href => '#', mt '_vnpage_tags_spoil2';
