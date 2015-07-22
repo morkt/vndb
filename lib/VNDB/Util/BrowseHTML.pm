@@ -54,8 +54,8 @@ sub htmlBrowse {
              lit $opt{header}[$_][0];
              if($opt{header}[$_][1]) {
                lit ' ';
-               lit $opt{options}{s} eq $opt{header}[$_][1] && $opt{options}{o} eq 'a' ? "\x{25B4}" : qq|<a href="$opt{sorturl}o=a;s=$opt{header}[$_][1]">\x{25B4}</a>|;
-               lit $opt{options}{s} eq $opt{header}[$_][1] && $opt{options}{o} eq 'd' ? "\x{25BE}" : qq|<a href="$opt{sorturl}o=d;s=$opt{header}[$_][1]">\x{25BE}</a>|;
+               $opt{options}{s} eq $opt{header}[$_][1] && $opt{options}{o} eq 'a' ? lit "\x{25B4}" : a href => "$opt{sorturl}o=a;s=$opt{header}[$_][1]", "\x{25B4}";
+               $opt{options}{s} eq $opt{header}[$_][1] && $opt{options}{o} eq 'd' ? lit "\x{25BE}" : a href => "$opt{sorturl}o=d;s=$opt{header}[$_][1]", "\x{25BE}";
              }
             end;
           }
