@@ -5819,18 +5819,6 @@ tr*:
 uk*:
 it*:
 
-:_staff_gender
-en : Gender
-ru*:
-cs*:
-hu*:
-nl*:
-de : Geschlecht
-es*:
-tr*:
-uk*:
-it*:
-
 :_staff_language
 en : Language
 ru*:
@@ -6085,18 +6073,6 @@ tr*:
 uk*:
 it*:
 
-:_staffe_form_original_note
-en : The original name of the person, leave blank if it is already in the Latin alphabet.
-ru*:
-cs*:
-hu*:
-nl*:
-de : Der Originalname der Person. Freilassen, wenn er bereits im Lateinischen Alphabet steht.
-es*:
-tr*:
-uk*:
-it*:
-
 :_staffe_form_note
 en : Staff note
 ru*:
@@ -6188,18 +6164,6 @@ cs*:
 hu*:
 nl*:
 de : AniDB-ID
-es*:
-tr*:
-uk*:
-it*:
-
-:_staffe_aliases
-en : Aliases
-ru*:
-cs*:
-hu*:
-nl*:
-de : Pseudonyme
 es*:
 tr*:
 uk*:
@@ -8106,54 +8070,6 @@ es : Esta lista también incluye todas las novelas visuales enlazadas con subeti
 tr : Aşağıdaki liste alt etiketlere bağlı tüm görsel romanları da içerir. Bu liste önbellekte saklandığı için yeni etiketlenen yapımların görünmesi 24 saati bulabilir.
 uk : Список нижче також включає усі візуальні новели, відмічені дочірніми тегами. Перекешування свіжовідмічених візуальних новел може тривати до 24 годин.
 it : La lista seguente include tutte le visual novel legate a tag figli. Possono occorrere fino a 24 ore prima che una visual novel appaia in questa pagina dopo essere stata classificata.
-
-:_tagp_vncol_score
-en : Score
-ru : Балл
-cs : Skóre
-hu : Pontozás
-nl :
-de : Punktzahl
-es : Puntuación
-tr : Puan
-uk : Оцінка
-it : Voto
-
-:_tagp_vncol_title
-en : Title
-ru : Название
-cs : Název
-hu : Cím
-nl : Titel
-de : Titel
-es : Título
-tr : Adı
-uk : Назва
-it : Titolo
-
-:_tagp_vncol_rel
-en : Released
-ru : Выпуск
-cs : Vydáno
-hu : Kiadva
-nl : Datum
-de : Veröffentlicht
-es : Estrenado
-tr : Yayım tarihi
-uk : Випущено
-it : Pubblicato
-
-:_tagp_vncol_pop
-en : Popularity
-ru : Популярность
-cs : Popularita
-hu : Népszerűség
-nl : Populariteit
-de : Popularität
-es : Popularidad
-tr : Popülerlik
-uk : Популярність
-it : Popolarità
 
 
 # Tag add/edit form (/g+/edit, /g+/add, /g/add)
@@ -13706,18 +13622,6 @@ it : Lista di anime ID presi da [url,http://anidb.net/,AniDB] separati da uno sp
      Es. "1015 3348" aggiungerà [url,http://anidb.net/a1015,Shingetsutan Tsukihime] e
      [url,http://anidb.net/a3348,Fate/stay night] come anime correlati.[br]
 
-:_vnedit_form_desc
-en : Description
-ru : Описание
-cs : Popis
-hu : Leírás
-nl : Omschrijving
-de : Beschreibung
-es : Descripción
-tr : Tanıtım
-uk : Опис
-it : Descrizione
-
 :_vnedit_image
 en : Image
 ru : Изображение
@@ -14575,18 +14479,6 @@ es : Enlace Renai.us
 tr : Renai.us bağlantısı
 uk : Лінк на Renai.us
 it : Renai.us
-
-:_revfield_v_l_vnn
-en : V-N.net link
-ru : Ссылка V-N.net
-cs : Odkaz na V-N.net
-hu :
-nl :
-de : V-N.net Link
-es : enlace V-N.net
-tr : V-N.net bağlantısı
-uk : Лінк на V-N.net
-it : V-N.net
 
 :_revfield_v_relations
 en : Relations
