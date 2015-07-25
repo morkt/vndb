@@ -318,7 +318,7 @@ sub docpage {
     s{^:MODERATORS:$}{
       my $l = $self->dbUserGet(results => 100, sort => 'id', notperm => $self->{default_perm}, what => 'extended');
       my $admin = 0;
-      $admin += $_ for values %{$self->{permissions}};
+      $admin |= $_ for values %{$self->{permissions}};
       '<dl>'.join('', map {
         my $u = $_;
         my $p = $u->{perm} >= $admin ? 'admin' : join ', ', sort map +($u->{perm} &~ $self->{default_perm}) & $self->{permissions}{$_} ? $_ : (), keys %{$self->{permissions}};
