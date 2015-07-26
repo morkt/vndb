@@ -45,6 +45,147 @@ sub rg {
   $self->htmlFooter;
 }
 
+
+# Description of each column, field:
+#   id:            Identifier used in URLs
+#   sort_field:    Name of the field when sorting
+#   what:          Required dbReleaseGet 'what' flag
+#   column_string: String to use as column header
+#   column_width:  Maximum width (in pixels) of the column in 'restricted width' mode
+#   button_string: String to use for the hide/unhide button
+#   na_for_patch:  When the field is N/A for patch releases
+#   default:       Set when it's visible by default
+#   has_data:      Subroutine called with a release object, should return true if the release has data for the column
+#   draw:          Subroutine called with a release object, should draw its column contents
+my @rel_cols = (
+  {    # Title
+    id            => 'tit',
+    sort_field    => 'title',
+    column_string => '_relinfo_title',
+    draw          => sub { a href => "/r$_[0]{id}", shorten $_[0]{title}, 60 },
+  }, { # Type
+    id            => 'typ',
+    sort_field    => 'type',
+    button_string => '_relinfo_type',
+    default       => 1,
+    draw          => sub { cssicon "rt$_[0]{type}", mt "_rtype_$_[0]{type}"; txt mt '_vnpage_rel_patch' if $_[0]{patch} },
+  }, { # Languages
+    id            => 'lan',
+    button_string => '_relinfo_lang',
+    default       => 1,
+    has_data      => sub { !!@{$_[0]{languages}} },
+    draw          => sub {
+      for(@{$_[0]{languages}}) {
+        cssicon "lang $_", mt "_lang_$_";
+        br if $_ ne $_[0]{languages}[$#{$_[0]{languages}}];
+      }
+    },
+  }, { # Publication
+    id            => 'pub',
+    sort_field    => 'publication',
+    column_string => '_relinfo_publication',
+    column_width  => 70,
+    button_string => '_relinfo_publication',
+    default       => 1,
+    what          => 'extended',
+    draw          => sub { txt mt $_[0]{patch} ? '_relinfo_pub_patch' : '_relinfo_pub_nopatch', $_[0]{freeware}?0:1, $_[0]{doujin}?0:1 },
+  }, { # Platforms
+    id             => 'pla',
+    button_string => '_redit_form_platforms',
+    default       => 1,
+    what          => 'platforms',
+    has_data      => sub { !!@{$_[0]{platforms}} },
+    draw          => sub {
+      for(@{$_[0]{platforms}}) {
+        cssicon $_, mt "_plat_$_";
+        br if $_ ne $_[0]{platforms}[$#{$_[0]{platforms}}];
+      }
+      txt mt '_unknown' if !@{$_[0]{platforms}};
+    },
+  }, { # Media
+    id            => 'med',
+    column_string => '_redit_form_media',
+    button_string => '_redit_form_media',
+    what          => 'media',
+    has_data      => sub { !!@{$_[0]{media}} },
+    draw          => sub {
+      for(@{$_[0]{media}}) {
+        txt $TUWF::OBJ->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1);
+        br if $_ ne $_[0]{platforms}[$#{$_[0]{platforms}}];
+      }
+      txt mt '_unknown' if !@{$_[0]{media}};
+    },
+  }, { # Resolution
+    id            => 'res',
+    sort_field    => 'resolution',
+    column_string => '_relinfo_resolution',
+    button_string => '_relinfo_resolution',
+    na_for_patch  => 1,
+    default       => 1,
+    what          => 'extended',
+    has_data      => sub { !!$_[0]{resolution} },
+    draw          => sub {
+      if($_[0]{resolution}) {
+        my $res = $TUWF::OBJ->{resolutions}[$_[0]{resolution}][0];
+        txt $res =~ /^_/ ? mt $res : $res;
+      } else {
+        txt mt '_unknown';
+      }
+    },
+  }, { # Voiced
+    id            => 'voi',
+    sort_field    => 'voiced',
+    column_string => '_relinfo_voiced',
+    column_width  => 70,
+    button_string => '_relinfo_voiced',
+    na_for_patch  => 1,
+    default       => 1,
+    what          => 'extended',
+    has_data      => sub { !!$_[0]{voiced} },
+    draw          => sub { txt mtvoiced $_[0]{voiced} },
+  }, { # Animation
+    id            => 'ani',
+    sort_field    => 'animation',
+    column_string => '_relinfo_ani',
+    column_width  => 110,
+    button_string => '_relinfo_ani',
+    na_for_patch  => '1',
+    what          => 'extended',
+    has_data      => sub { !!($_[0]{ani_story} || $_[0]{ani_ero}) },
+    draw          => sub {
+      txt join ', ',
+        $_[0]{ani_story} ? mt('_relinfo_ani_story', mtani $_[0]{ani_story}):(),
+        $_[0]{ani_ero}   ? mt('_relinfo_ani_ero',   mtani $_[0]{ani_ero}  ):();
+      txt mt '_unknown' if !$_[0]{ani_story} && !$_[0]{ani_ero};
+    },
+  }, { # Released
+    id            => 'rel',
+    sort_field    => 'released',
+    column_string => '_relinfo_released',
+    button_string => '_relinfo_released',
+    default       => 1,
+    draw          => sub { lit $TUWF::OBJ->{l10n}->datestr($_[0]{released}) },
+  }, { # Age rating
+    id            => 'min',
+    sort_field    => 'minage',
+    button_string => '_relinfo_minage',
+    default       => 1,
+    has_data      => sub { $_[0]{minage} != -1 },
+    draw          => sub { txt minage $_[0]{minage} },
+  }, { # Notes
+    id            => 'not',
+    sort_field    => 'notes',
+    column_string => '_redit_form_notes',
+    column_width  => 400,
+    button_string => '_redit_form_notes',
+    default       => 1,
+    what          => 'extended',
+    has_data      => sub { !!$_[0]{notes} },
+    draw          => sub { lit bb2html $_[0]{notes} },
+  }
+);
+
+
 sub releases {
   my($self, $vid) = @_;
 
@@ -54,460 +195,138 @@ sub releases {
 
   my $title = mt('_vnpage_rel_title', $v->{title});
   $self->htmlHeader(title => $title);
-
   $self->htmlMainTabs('v', $v, 'releases');
 
-  # the order of buttons and columns
-  my @columb_list = (    'type',
-                         'languages',
-                         'publication',
-                         'platforms',
-                         'media',
-                         'resolution',
-                         'voiced',
-                         'ani_ero',
-                         'released',
-                         'minage',
-                         'notes');
-
-  # All data specific to the individual columns
-  my %c = (
-   'title'       => { column_string => '_relinfo_title',
-                    },
-   'type'        => { button_string => '_relinfo_type',
-                    },
-   'languages'   => { button_string => '_relinfo_lang',
-                      unsortable    => 'true',
-                    },
-   'publication' => { column_string => '_relinfo_publication',
-                      column_width  => 'max-width: 70px',
-                      button_string => '_relinfo_publication',
-                    },
-   'platforms'   => { button_string => '_redit_form_platforms',
-                      unsortable    => 'true',
-                    },
-   'media'       => { column_string => '_redit_form_media',
-                      button_string => '_redit_form_media',
-                      unsortable    => 'true',
-                    },
-   'resolution'  => { column_string => '_relinfo_resolution',
-                      button_string => '_relinfo_resolution',
-                      na_for_patch  => '1',
-                    },
-   'voiced'      => { column_string => '_relinfo_voiced',
-                      column_width  => 'max-width: 70px',
-                      button_string => '_relinfo_voiced',
-                      na_for_patch  => '1',
-                    },
-   'ani_ero'     => { column_string => '_relinfo_ani',
-                      column_width  => 'max-width: 110px',
-                      button_string => '_relinfo_ani',
-                      na_for_patch  => '1',
-                    },
-   'released'    => { column_string => '_relinfo_released',
-                      button_string => '_relinfo_released',
-                    },
-   'minage'      => { button_string => '_relinfo_minage',
-                    },
-   'notes'       => { column_string => '_redit_form_notes',
-                      column_width  => 'max-width: 400px',
-                      button_string => '_redit_form_notes',
-                    },
-   'legend'      => { unsortable    => 'true',
-                    },
-  );
-
   my $f = $self->formValidate(
-   { get => 'typ',  required => 0, default => '1', enum => [ '0', '1' ] }, # type
-   { get => 'lan',  required => 0, default => '1', enum => [ '0', '1' ] }, # language
-   { get => 'pub',  required => 0, default => '1', enum => [ '0', '1' ] }, # publication
-   { get => 'pla',  required => 0, default => '1', enum => [ '0', '1' ] }, # platform
-   { get => 'med',  required => 0, default => '0', enum => [ '0', '1' ] }, # media
-   { get => 'res',  required => 0, default => '1', enum => [ '0', '1' ] }, # resolution
-   { get => 'voi',  required => 0, default => '1', enum => [ '0', '1' ] }, # voiced
-   { get => 'ani',  required => 0, default => '0', enum => [ '0', '1' ] }, # animation
-   { get => 'rel',  required => 0, default => '1', enum => [ '0', '1' ] }, # released
-   { get => 'min',  required => 0, default => '1', enum => [ '0', '1' ] }, # min age
-   { get => 'not',  required => 0, default => '1', enum => [ '0', '1' ] }, # notes
-   { get => 'cw',   required => 0, default => '0', enum => [ '0', '1' ] }, # restrict column width
-   { get => 'o',    required => 0, default => '0', enum => [ '0', '1' ] }, # sort order
-   { get => 's',    required => 0, default => 'released', enum => [ grep !$c{$_}{unsortable}, keys %c ]}, # sort by column
-   { get => 'os',   required => 0, default => 'all',      enum => [ 'all',  @{$self->{platforms}} ]    }, # filter by os
-   { get => 'lang', required => 0, default => 'all',      enum => [ 'all',  @{$self->{languages}} ]    }, # filter by language
+    map({ get => $_->{id}, required => 0, default => $_->{default}||0, enum => [0,1] }, grep $_->{button_string}, @rel_cols),
+    { get => 'cw',   required => 0, default => 0, enum => [0,1] },
+    { get => 'o',    required => 0, default => 0, enum => [0,1] },
+    { get => 's',    required => 0, default => 'released', enum => [ map $_->{sort_field}, grep $_->{sort_field}, @rel_cols ]},
+    { get => 'os',   required => 0, default => 'all',      enum => [ 'all', @{$self->{platforms}} ] },
+    { get => 'lang', required => 0, default => 'all',      enum => [ 'all', @{$self->{languages}} ] },
   );
   return $self->resNotFound if $f->{_err};
 
-  # Get the releases
-  # Setup $what_string to use only the bare minimum to reduce database load
-  my $what_string = '';
-  $what_string .= ' extended'  if $f->{pub}||$f->{res}||$f->{voi}||$f->{ani}||$f->{not};
-  $what_string .= ' platforms' if $f->{pla};
-  $what_string .= ' media'     if $f->{med};
-  my $r = $self->dbReleaseGet(vid => $vid, what => $what_string, sort => $f->{s}, reverse => $f->{o});
+  # Get the release info
+  my %what = map +($_->{what}, 1), grep $_->{what} && $f->{$_->{id}}, @rel_cols;
+  my $r = $self->dbReleaseGet(vid => $vid, what => join(' ', keys %what), sort => $f->{s}, reverse => $f->{o});
 
   # url generator
   my $url = sub {
-   my($type, $new_val, $new_sort_type) = @_;
-
-   # create a link, which includes all settings in $f
-   my $generated_url = "/v$vid/releases?";
-   foreach ( keys %$f ) {
-    if ($_ eq 's' && $type eq 'o' ) {
-     # changing o changes s as well
-     $generated_url .= ';s=' . $new_sort_type;
-     next;
-    }
-    $generated_url .= ';' . $_ . '='.($type eq $_ ? $new_val : $f->{$_});
-   }
-   return $generated_url;
+    my %u = (%$f, @_);
+    return "/v$vid/releases?".join(';', map "$_=$u{$_}", sort keys %u);
   };
 
   div class => 'mainbox releases_compare';
    h1 $title;
 
    if(!@$r) {
-     # No releases to write in table
-     # End before drawing anything in the table
      td mt '_vnpage_rel_none';
    } else {
-
-    # change all column hide/show status to $new_val while keeping the rest of the settings untouched
-    my $all_url = sub {
-     my($new_val) = @_;
-
-     my $generated_url = "/v$vid/releases?";
-     foreach my $key ( keys %$f ) {
-      # Note all columns have a length of 3 while non-columns have lengths different from 3
-      $generated_url .= ';' . $key . '='. (length($key) == 3 ? $new_val : $f->{$key});
-     }
-     return $generated_url;
-    };
-
-    my $get_lang_plat_list = sub {
-     my($type) = @_;
-
-     my @return_array = ();
-     for my $rel (@$r) {
-       for my $element (@{$rel->{$type}}) {
-         push(@return_array, $element) if not (grep $_ eq $element, @return_array);
-        }
-      }
-     return sort(@return_array); # sort to make order consistent
-    };
-
-    my $all_selected = sub {
-     my($value) = @_;
-
-     for (@columb_list) {
-      if (!$f->{substr($_,0,3)} != !$value) {
-       return 0;
-      }
-     }
-     return 1;
-    };
-
-    # Language and platform drawing code is almost identical. Skip writing it twice
-    my $plat_lang_draw = sub {
-     my($row, $option, $lang) = @_;
-
-     if (!$f->{substr($row, 0, 3)}) {
-      # Column is hidden
-      # Do not display row of platforms/flags as they aren't read from the database
-      # Set filter to all as it makes no sense to try to filter by hidden and potientially unread data
-      $f->{$option} = 'all';
-      return;
-     }
-
-     p class => 'browseopts';
-     foreach ( 'all', $get_lang_plat_list->($row)) {
-      a href => $url->($option, $_),                            $_ eq $f->{$option} ? (class => 'optselected') : ();
-      $_ eq 'all' ? txt mt '_all' :
-      cssicon "$lang $_", mt '_' . substr($row, 0, 4) . '_' . $_;
-      end 'a';
-     };
-     end 'p';
-    };
-
-    p class => 'browseopts';
-     foreach ( @columb_list ) {
-      my $short_name = substr($_, 0, 3);
-      a href => $url->($short_name, $f->{$short_name} ? 0 : 1), $f->{$short_name}   ? (class => 'optselected') : (), mt $c{$_}{button_string};
-     };
-    end;
-    p class => 'browseopts';
-    a href => $all_url->(1),                                    $all_selected->(1)  ? (class => 'optselected') : (), mt '_all_on';
-    a href => $all_url->(0),                                    $all_selected->(0)  ? (class => 'optselected') : (), mt '_all_off';
-     a href => $url->('cw', $f->{cw} ? 0 : 1),                  $f->{cw}            ? (class => 'optselected') : (), mt '_vnpage_restrict_column_width';
-    end;
-
-    $plat_lang_draw->('platforms', 'os',    ''   );
-    $plat_lang_draw->('languages', 'lang', 'lang');
+     _releases_buttons($self, $f, $url, $r);
    }
   end 'div';
-  if(!@$r) {
-   $self->htmlFooter;
-   return;
-  }
 
-  # Remove all releases which fails to meet the platform and language filter settings
-  my $counter = 0;
-  while ($counter <= $#$r) {
-   my $rel = @$r[$counter];
-   if (($f->{os}   eq 'all' || $f->{os}   ~~ $rel->{platforms}) &&
-       ($f->{lang} eq 'all' || $f->{lang} ~~ $rel->{languages}) ){
-    $counter++;
-   } else {
-    splice @$r, $counter, 1;
-   }
+  _releases_table($self, $f, $url, $r) if @$r;
+  $self->htmlFooter;
+}
+
+
+sub _releases_buttons {
+  my($self, $f, $url, $r) = @_;
+
+  # Column visibility
+  p class => 'browseopts';
+   a href => $url->($_->{id}, $f->{$_->{id}} ? 0 : 1), $f->{$_->{id}} ? (class => 'optselected') : (), mt $_->{button_string}
+     for (grep $_->{button_string}, @rel_cols);
+  end;
+
+  # Misc options
+  my $all_selected   = !grep $_->{button_string} && !$f->{$_->{id}}, @rel_cols;
+  my $all_unselected = !grep $_->{button_string} &&  $f->{$_->{id}}, @rel_cols;
+  my $all_url = sub { $url->(map +($_->{id},$_[0]), grep $_->{button_string}, @rel_cols); };
+  p class => 'browseopts';
+   a href => $all_url->(1),                  $all_selected   ? (class => 'optselected') : (), mt '_all_on';
+   a href => $all_url->(0),                  $all_unselected ? (class => 'optselected') : (), mt '_all_off';
+   a href => $url->('cw', $f->{cw} ? 0 : 1), $f->{cw}        ? (class => 'optselected') : (), mt '_vnpage_restrict_column_width';
+  end;
+
+  # Platform/language filters
+  my $plat_lang_draw = sub {
+    my($row, $option, $l10nprefix, $csscat) = @_;
+    my %opts = map +($_,1), map @{$_->{$row}}, @$r;
+    return if !keys %opts;
+    p class => 'browseopts';
+     for('all', sort keys %opts) {
+       a href => $url->($option, $_), $_ eq $f->{$option} ? (class => 'optselected') : ();
+        $_ eq 'all' ? txt mt '_all' : cssicon "$csscat $_", mt $l10nprefix.$_;
+       end 'a';
+     }
+    end 'p';
   };
+  $plat_lang_draw->('platforms', 'os',  '_plat_', '')     if $f->{pla};
+  $plat_lang_draw->('languages', 'lang','_lang_', 'lang') if $f->{lan};
+}
+
+
+sub _releases_table {
+  my($self, $f, $url, $r) = @_;
+
+  # Apply language and platform filters
+  my @r = grep +
+    ($f->{os}   eq 'all' || ($_->{platforms} && grep $_ eq $f->{os}, @{$_->{platforms}})) &&
+    ($f->{lang} eq 'all' || ($_->{languages} && grep $_ eq $f->{lang}, @{$_->{languages}})), @$r;
+
+  # Figure out which columns to display
+  my @col;
+  for my $c (@rel_cols) {
+    next if $c->{button_string} && !$f->{$c->{id}}; # Hidden by settings
+    push @col, $c if !@r || !$c->{has_data} || grep $c->{has_data}->($_), @r; # Must have relevant data
+  }
 
   div class => 'mainbox releases_compare';
    table;
 
-    $counter = 0;
-    my @column_types = ( 'title' );
-    foreach ( @columb_list ) {
-     next if not $f->{substr($_, 0, 3)}; # skip columns unselected in f
-     if (_column_is_in_use($r, $_)){
-      push(@column_types, $_);
-      $counter++;
-      if ($counter == 3) {
-       $counter = 0;
-       push(@column_types, 'legend');
-       # Legend adds a narrow column, which is hardcoded with rowspan => 1
-       # This gives each block the same colour as the titles, which should help read the spreadsheet
-      }
-     }
-    }
-
-    # Draw the top/key row based on @column_types
     thead;
      Tr;
-      foreach my $column_type (@column_types) {
-       td class => 'key';
-        txt mt $c{$column_type}{column_string} if $c{$column_type}{column_string};
-        if (!$c{$column_type}{unsortable}) {
-         for(0..1) {
-          # draw the assending/decending arrows
-          # draw it in a a container with a link unless it is the already selected one
-          my $make_link = !($f->{s} eq $column_type && $f->{o} == $_);
-          a href => $url->('o', $_, $column_type) if $make_link;
-           lit $_ ? "\x{25BE}" : "\x{25B4}";
-          end 'a' if $make_link;
+      for my $c (@col) {
+        td class => 'key';
+         txt mt $c->{column_string} if $c->{column_string};
+         for($c->{sort_field} ? (0,1) : ()) {
+           my $active = $f->{s} eq $c->{sort_field} && !$f->{o} == !$_;
+           a href => $url->(o => $_, s => $c->{sort_field}) if !$active;
+            lit $_ ? "\x{25BE}" : "\x{25B4}";
+           end 'a' if !$active;
          }
-        }
-       end 'td';
+        end 'td';
       }
      end 'tr';
     end 'thead';
 
-    my $td_type      = 0;
-    my $column_width = 0;
-    my @height = ((0) x $#column_types);
-
-    for my $r_index (0 .. $#{$r}) {
-     my $rel = @$r[$r_index];
-     Tr;
-     for my $column_index (0 .. $#column_types) {
-      next if $height[$column_index] || $column_width; # already drawn multicell box
-
-      my $column = $column_types[$column_index];
-
-      # assume a height of 1, then add 1 for each following release with identical setting in $column
-      $height[$column_index] = 1;
-      while ($r_index + $height[$column_index] <= $#{$r} &&                                                    # end of release array not reached
-             _compare_rel(@$r[$r_index + $height[$column_index]], $rel, $column, $c{$column}{na_for_patch})) { # $column are identical in both releases
-       $height[$column_index]++;
-      }
-
-      $column_width = 1;
-      if ($c{$column}{na_for_patch} && $rel->{patch}) {
-       my $skipped_legend = 0;
-       while (($column_index + $column_width + $skipped_legend) <= $#column_types &&                # end array not reached
-             (($c{$column_types[$column_index + $column_width + $skipped_legend]}{na_for_patch}) || # column with no data for patches
-               $column_types[$column_index + $column_width + $skipped_legend] eq 'legend' )) {      # ignore legends
-        if ($column_types[$column_index + $column_width + $skipped_legend] eq 'legend') {
-         # column just right of a patch cell is a legend
-         # remember this and continue to check
-         $skipped_legend = 1;
-        } else {
-         if ($skipped_legend) {
-          # last column was a legend
-          # include this one in the patch cell since the columns on both sides will be included in the patch cell
-          $height[$column_index + $column_width] = $height[$column_index];
-          $column_width++;
-          $skipped_legend = 0;
+    for my $r (@r) {
+      Tr;
+       # Combine "N/A for patches" columns
+       my $cspan = 1;
+       for my $c (0..$#col) {
+         if($r->{patch} && $col[$c]{na_for_patch} && $c < $#col && $col[$c+1]{na_for_patch}) {
+           $cspan++;
+           next;
          }
-         $height[$column_index + $column_width] = $height[$column_index];
-         $column_width++;
-        }
+         td $cspan > 1 ? (colspan => $cspan) : ();
+          if($r->{patch} && $col[$c]{na_for_patch}) {
+            txt mt '_vnpage_na_for_patches';
+          } else {
+            $col[$c]{draw}->($r);
+          }
+         end;
+         $cspan = 1;
        }
-      }
-
-      td class   => $height[$column_index] > 1 ? 'multi' : ($td_type ? 'bg' : 'normal'),
-         rowspan => $height[$column_index],
-         colspan => $column_width,
-         $column_width > 1 ? ( align => 'center' ) : (),
-         $c{$column}{column_width} && $f->{cw} ? (style => $c{$column}{column_width}) : ();
-      if ($c{$column}{na_for_patch} && $rel->{patch}) {
-       txt mt '_vnpage_na_for_patches';
-      } else {
-       _write_release_string($self, $rel, $column);
-      }
-      end 'td';
-     } continue {
-      $height[$column_index]-- if $height[$column_index];
-      $column_width--          if $column_width;
-     }
-     end 'tr';
-    } continue {
-     # Toggle td_type
-     # This will provide the same effect as stripe table class,
-     #  except rowspan settings will not cause the columns to go out of sync
-     $td_type = !$td_type;
+      end;
     }
    end 'table';
   end 'div';
-  $self->htmlFooter;
 }
 
-sub _column_is_in_use {
-  my($r, $column_type) = @_;
-
-  for my $rel (@$r) {
-   given ($column_type) {
-    # Some types should always be printet. Title is always needed
-    # Some types contains info even when unset (like non-free commercial publications)
-    when ('title')      { return 1                                       }
-    when ('type')       { return 1                                       }
-    when ('languages')  { return 1 if @{$rel->{languages}}               }
-    when ('publication'){ return 1                                       }
-    when ('platforms')  { return 1 if @{$rel->{platforms}}               }
-    when ('media')      { return 1 if @{$rel->{media}}                   }
-    when ('resolution') { return 1 if $rel->{resolution}                 }
-    when ('voiced')     { return 1 if $rel->{voiced}                     }
-    when ('ani_ero')    { return 1 if $rel->{ani_story}||$rel->{ani_ero} }
-    when ('released')   { return 1                                       }
-    when ('minage')     { return 1 if $rel->{minage} != -1               }
-    when ('notes')      { return 1 if $rel->{notes}                      }
-   }
-  }
-  # No release has data set in the column in question and return value should be false
-  # However every row should be drawn (true) in case all releases are filtered out
-  return !@$r;
-}
-
-## Compare a specific variable in two releases
-#  Returns true if $variable is identical in both releases
-sub _compare_rel {
-  my($last_rel, $rel, $variable, $patch_na_var) = @_;
-
-  if ($patch_na_var) {
-   return 0 if !$rel->{patch} != !$last_rel->{patch};
-   return 1 if  $rel->{patch} &&  $last_rel->{patch};
-  }
-
-  if ($variable eq 'resolution' || $variable eq 'voiced' || $variable eq 'released' || $variable eq 'minage') {
-   return $last_rel->{$variable} == $rel->{$variable}
-  } elsif ($variable eq 'ani_ero') {
-   return $last_rel->{ani_story} eq $rel->{ani_story} &&
-          $last_rel->{ani_ero}   eq $rel->{ani_ero};
-  } elsif ($variable eq 'media' || $variable eq 'platforms' || $variable eq 'languages'){
-   if (scalar @{$last_rel->{$variable}} != scalar @{$rel->{$variable}}) {
-    # last_rel and rel can't be identical if they even fail to have the same length of arrays
-    # No need to check anything else
-    return 0;
-   }
-   if (scalar @{$last_rel->{$variable}} == 0) {
-    # Both are empty
-    return 1;
-   }
-
-   # check for each item in last_rel to find an identical item in rel
-   for my $item_a (@{$last_rel->{$variable}}) {
-    my $test_var = 0;
-    for my $item_b (@{$rel->{$variable}}) {
-     if ($variable eq 'media') {
-      if ($item_a->{medium} eq $item_b->{medium} &&
-        $item_a->{qty}    == $item_b->{qty}){
-       $test_var = 1;
-      }
-     } elsif ($item_a eq $item_b){
-       $test_var = 1;
-     }
-    }
-    if ($test_var == 0) {
-     # no match
-     # $item_a from $last_rel is not present in $rel
-     return 0;
-    }
-   }
-   # everything from last_rel is found in rel
-   return 1;
-  } elsif ($variable eq 'type') {
-   return  $last_rel->{type}     eq  $rel->{type} &&
-          !$last_rel->{patch}    == !$rel->{patch}
-  } elsif ($variable eq 'publication') {
-   return !$last_rel->{patch}    == !$rel->{patch} &&
-          !$last_rel->{freeware} == !$rel->{freeware} &&
-          !$last_rel->{doujin}   == !$rel->{doujin}
-  } elsif ($variable eq 'notes') {
-   return  $last_rel->{notes}    eq  $rel->{notes};
-  }
-  # Any line reaching this has no code to compare.
-  # Treat everything as unique and return 0.
-  # Note: certain types like title ends up here by design
-  return 0;
-}
-
-## Draw the text/icon for a release
-#  Draw the string for $variable in release $rel
-#  No code to tell where to draw. Caller is responsible for setup of Tr, td and similar
-sub _write_release_string {
-  my($self, $rel, $variable) = @_;
-
-  given ($variable) {
-   when ('title')      { a href => "/r$rel->{id}", shorten $rel->{title}, 60 }
-   when ('type')       { cssicon "rt$rel->{type}", mt "_rtype_$rel->{type}";
-                         txt mt '_vnpage_rel_patch' if $rel->{patch};
-                       }
-   when ('languages')  { for (@{$rel->{languages}}) {
-                          cssicon "lang $_", mt "_lang_$_";
-                          br if $_ ne $rel->{languages}[$#{$rel->{languages}}];
-                         }
-                         txt mt '_unknown' if !@{$rel->{languages}};
-                       }
-   when ('publication'){ txt mt $rel->{patch} ? '_relinfo_pub_patch' : '_relinfo_pub_nopatch', $rel->{freeware}?0:1, $rel->{doujin}?0:1 }
-   when ('platforms')  { for(@{$rel->{platforms}}) {
-                          cssicon $_, mt "_plat_$_";
-                          br if $_ ne $rel->{platforms}[$#{$rel->{platforms}}];
-                         }
-                         txt mt '_unknown' if !@{$rel->{platforms}};
-                       }
-   when ('media')      { for (@{$rel->{media}}) {
-                         txt $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1);
-                         br if $_ ne $rel->{media}[$#{$rel->{media}}];
-                        }
-                        txt mt '_unknown' if !@{$rel->{media}};
-                       }
-   when ('resolution') { if($rel->{resolution}) {
-                          my $res = $self->{resolutions}[$rel->{resolution}][0];
-                          txt $res =~ /^_/ ? mt $res : $res;
-                         } else {
-                          txt mt '_unknown';
-                         }
-                       }
-   when ('voiced')     { txt mtvoiced $rel->{voiced}; }
-   when ('ani_ero')    { txt join ', ',
-                         $rel->{ani_story} ? mt('_relinfo_ani_story', mtani $rel->{ani_story}):(),
-                         $rel->{ani_ero}   ? mt('_relinfo_ani_ero',   mtani $rel->{ani_ero}  ):();
-                         txt mt '_unknown' if !$rel->{ani_story} && !$rel->{ani_ero};
-                       }
-   when ('released')   { lit $self->{l10n}->datestr($rel->{released}) }
-   when ('minage')     { txt minage $rel->{minage} }
-   when ('notes')      { lit bb2html "$rel->{notes}"; }
-  }
-}
 
 sub page {
   my($self, $vid, $rev) = @_;
