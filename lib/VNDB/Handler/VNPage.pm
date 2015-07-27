@@ -3,8 +3,6 @@ package VNDB::Handler::VNPage;
 
 use strict;
 use warnings;
-no if $] >= 5.018, warnings => 'experimental::smartmatch';
-use feature qw{ switch };
 use TUWF ':html', 'xml_escape';
 use VNDB::Func;
 
@@ -111,7 +109,7 @@ my @rel_cols = (
     draw          => sub {
       for(@{$_[0]{media}}) {
         txt $TUWF::OBJ->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1);
-        br if $_ ne $_[0]{platforms}[$#{$_[0]{platforms}}];
+        br if $_ ne $_[0]{media}[$#{$_[0]{media}}];
       }
       txt mt '_unknown' if !@{$_[0]{media}};
     },
@@ -145,7 +143,7 @@ my @rel_cols = (
     draw          => sub { txt mtvoiced $_[0]{voiced} },
   }, { # Animation
     id            => 'ani',
-    sort_field    => 'animation',
+    sort_field    => 'ani_ero',
     column_string => '_relinfo_ani',
     column_width  => 110,
     button_string => '_relinfo_ani',
@@ -312,7 +310,8 @@ sub _releases_table {
            $cspan++;
            next;
          }
-         td $cspan > 1 ? (colspan => $cspan) : ();
+         td $cspan > 1 ? (colspan => $cspan) : (),
+            $col[$c]{column_width} && $f->{cw} ? (style => "max-width: $col[$c]{column_width}px") : ();
           if($r->{patch} && $col[$c]{na_for_patch}) {
             txt mt '_vnpage_na_for_patches';
           } else {
