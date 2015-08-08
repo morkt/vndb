@@ -898,12 +898,7 @@ sub _chars {
   for my $r (@{$self->{char_roles}}) {
     next if !@{$rol{$r}};
     div class => 'mainbox';
-     if(!$first++) {
-       my $spoil = $self->authPref('spoilers')||0;
-       p id => 'charspoil_sel';
-        a href => '#', $spoil == $_ ? (class => 'sel') : (), mt "_spoilset_$_" for (0..2);
-       end;
-     }
+     $self->charOps(1) if !$first++;
      h1 mt "_charrole_$r", scalar @{$rol{$r}};
      for my $c (@{$rol{$r}}) {
        my $minspoil = 5;
@@ -948,12 +943,7 @@ sub _staff {
     my($has_spoilers, $has_notes);
     $has_spoilers ||= $_->{spoil}, $has_notes ||= $_->{note} for @{$v->{seiyuu}};
     div class => 'mainbox staff cast';
-     if($has_spoilers) {
-       my $spoil = $self->authPref('spoilers')||0;
-       p id => 'charspoil_sel';
-        a href => '#', $spoil == $_ ? (class => 'sel') : (), mt "_spoilset_$_" for (0..2);
-       end;
-     }
+     $self->charOps(0) if $has_spoilers;
      h1 mt '_vnpage_cast';
      table class => 'stripe';
       thead;

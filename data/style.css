@@ -526,9 +526,10 @@ div.charimg p   { text-align: center; padding: 0px; margin: 0; }
 div.chardetails table        { float: left; width: 530px; }
 div.chardetails table td.key { width: 80px; }
 div.chardetails.charsep      { padding-top: 5px; margin-top: 5px; border-top: 1px solid $border$ }
-#charspoil_sel       { clear: right; float: right; }
-#charspoil_sel a     { margin: 0 0 0 10px;  border: 0; outline: none }
-#charspoil_sel a.sel { color: $maintext$; }
+#charops       { clear: right; float: right; }
+#charops a     { margin: 0 0 0 10px;  border: 0; outline: none }
+#charops a.sel { color: $maintext$; }
+#charops a.sec { border-left: 1px solid $border$; padding-left: 10px }
 
 
 

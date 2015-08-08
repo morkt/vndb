@@ -87,7 +87,7 @@ sub dbCharGet {
 
     if($o{what} =~ /traits/) {
       push @{$r{ delete $_->{cid} }{traits}}, $_ for (@{$self->dbAll(q|
-        SELECT ct.cid, ct.tid, ct.spoil, t.name, t."group", tg.name AS groupname
+        SELECT ct.cid, ct.tid, ct.spoil, t.name, t.sexual, t."group", tg.name AS groupname
           FROM chars_traits ct
           JOIN traits t ON t.id = ct.tid
           LEFT JOIN traits tg ON tg.id = t."group"

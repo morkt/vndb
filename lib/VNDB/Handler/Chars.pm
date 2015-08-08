@@ -7,7 +7,7 @@ use TUWF ':html', 'uri_escape';
 use Exporter 'import';
 use VNDB::Func;
 
-our @EXPORT = ('charTable', 'charBrowseTable');
+our @EXPORT = ('charOps', 'charTable', 'charBrowseTable');
 
 TUWF::register(
   qr{c([1-9]\d*)(?:\.([1-9]\d*))?} => \&page,
@@ -66,10 +66,7 @@ sub page {
 
   div class => 'mainbox';
    $self->htmlItemMessage('c', $r);
-   my $spoil = $self->authPref('spoilers')||0;
-   p id => 'charspoil_sel';
-    a href => '#', $spoil == $_ ? (class => 'sel') : (), mt "_spoilset_$_" for (0..2);
-   end;
+   $self->charOps(1);
    h1 $r->{name};
    h2 class => 'alttitle', $r->{original} if $r->{original};
    $self->charTable($r);
@@ -91,6 +88,17 @@ sub page {
   }
 
   $self->htmlFooter;
+}
+
+
+sub charOps {
+  my($self, $sexual) = @_;
+  my $spoil = $self->authPref('spoilers')||0;
+  p id => 'charops';
+   # Note: Order of these links is hardcoded in JS
+   a href => '#', $spoil == $_ ? (class => 'sel') : (), mt "_spoilset_$_" for (0..2);
+   a href => '#', class => 'sec sel', mt '_charp_sexual' if $sexual;
+  end;
 }
 
 
@@ -151,8 +159,6 @@ sub charTable {
     }
 
     # traits
-    # TODO: handle 'sexual' traits
-    # TODO: fix striping of the table with hidden trait groups (due to spoilers)
     my %groups;
     my @groups;
     for (@{$r->{traits}}) {
@@ -162,20 +168,19 @@ sub charTable {
     }
     for my $g (@groups) {
       my $minspoil = 5;
-      $minspoil = $minspoil > $_->{spoil} ? $_->{spoil} : $minspoil for(@{$groups{$g}});
-      Tr class => charspoil($minspoil);
+      my $fullsex = 1;
+      for(@{$groups{$g}}) {
+        $minspoil = $minspoil > $_->{spoil} ? $_->{spoil} : $minspoil;
+        $fullsex = 0 if !$_->{sexual};
+      }
+      Tr class => charspoil($minspoil).($fullsex ? ' sexual' : '');
        td class => 'key'; a href => '/i'.($groups{$g}[0]{group}||$groups{$g}[0]{tid}), $groups{$g}[0]{groupname} || $groups{$g}[0]{name}; end;
        td;
         for (0..$#{$groups{$g}}) {
           my $t = $groups{$g}[$_];
-          span class => charspoil $t->{spoil};
+          span class => charspoil($t->{spoil}).($t->{sexual} ? ' sexual' : '');
+           span ', ';
            a href => "/i$t->{tid}", $t->{name};
-           # spoiler setting of the comma = max(current, min(@remaining_spoil))
-           # since it is in the current <span>, which has 'current', only the second part is relevant if it is > current
-           my $min_remaining = 5;
-           $min_remaining = $min_remaining > $groups{$g}[$_]{spoil} ? $groups{$g}[$_]{spoil} : $min_remaining for($_+1..$#{$groups{$g}});
-           span class => charspoil($min_remaining), ', ' if $min_remaining != 5 && $min_remaining > $t->{spoil};
-           txt ', ' if $min_remaining != 5 && $min_remaining <= $t->{spoil};
           end;
         }
        end;

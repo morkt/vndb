@@ -9378,6 +9378,18 @@ tr : Henüz resim yüklenmemiş
 uk : Ще не завантажено жодного зображення
 it : Nessuna immagine caricata
 
+:_charp_sexual
+en : Show sexual traits
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_charp_alias
 en : Aliases
 ru : Алиасы

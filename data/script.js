@@ -3211,44 +3211,71 @@ if(byId('expandall')) {
 }
 
 
-// charspoil handling
-if(byId('charspoil_sel')) {
+// char spoil/sexual preferences
+if(byId('charops')) { (function() {
   var k = byClass('charspoil');
-  var h = byName(byId('charspoil_sel'), 'a');
+  var h = byName(byId('charops'), 'a');
   var t = byClass('table', 'stripe');
-  var setall = function(spoil) {
+  var spoil;
+  var sexual;
+  var fixcomma = function(c) {
+    var l = byName(c, 'span');
+    var first = 1;
+    for(var i=0; i<l.length; i+=2)
+      if(!hasClass(l[i], 'hidden')) {
+        setClass(l[i+1], 'hidden', first);
+        first = 0;
+      }
+  };
+  var restripe = function() {
+    for(var i=0; i<t.length; i++) {
+      var b = byName(t[i], 'tbody');
+      if(!b.length)
+        continue;
+      setClass(t[i], 'stripe', false);
+      var r = 1;
+      var rows = byName(b[0], 'tr');
+      for(var j=0; j<rows.length; j++)
+        if(!hasClass(rows[j], 'nostripe') && !hasClass(rows[j], 'hidden')) {
+          if(hasClass(rows[j], 'charspoil'))
+            fixcomma(byName(rows[j], 'td')[1]);
+          setClass(rows[j], 'odd', r++&1);
+        }
+    }
+  };
+  var setall = function() {
     for(var i=0; i<k.length; i++)
       setClass(k[i], 'hidden',
+        !sexual && hasClass(k[i], 'sexual') ? true :
         hasClass(k[i], 'charspoil_0') ? false :
         hasClass(k[i], 'charspoil_-1') ? spoil > 1 :
         hasClass(k[i], 'charspoil_1') ? spoil < 1 : spoil < 2);
-    for(var i=0; i<h.length; i++)
+    for(var i=0; i<3; i++)
       setClass(h[i], 'sel', spoil == i);
-    if(k.length) {
-      for(var i=0; i<t.length; i++) {
-        var b = byName(t[i], 'tbody');
-        if(!b.length) continue;
-        setClass(t[i], 'stripe', false);
-        var r = 1;
-        var rows = byName(b[0], 'tr');
-        for(var j=0; j<rows.length; j++)
-          if(!hasClass(rows[j], 'nostripe') && !hasClass(rows[j], 'hidden'))
-            setClass(rows[j], 'odd', r++&1);
-      }
-    }
+    if(h[3])
+      setClass(h[3], 'sel', sexual);
+    if(k.length)
+      restripe();
+    return false;
   };
-  var set = 0;
-  for(var i=0; i<h.length; i++) {
+  for(var i=0; i<3; i++) {
     h[i].num = i;
     h[i].onclick = function() {
-      setall(this.num);
-      return false;
+      spoil = this.num;
+      return setall();
     };
     if(hasClass(h[i], 'sel'))
-      set = i;
+      spoil = i;
   };
-  setall(set);
-}
+  if(h[3]) {
+    h[3].onclick = function() {
+      sexual = !sexual;
+      return setall();
+    };
+    sexual = hasClass(h[3], 'sel');
+  }
+  setall();
+})(); }
 
 
 // mouse-over price information / disclaimer
