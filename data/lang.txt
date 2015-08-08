@@ -12438,6 +12438,18 @@ tr : NSFW resimler için gösterilen uyarıyı devre dışı bırak
 uk : Відключити попередження про небезпечні зображення.
 it : Disabilita avvertimenti per le immagini NSFW
 
+:_usere_fsextraits
+en : Show sexual traits by default on character pages.
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_usere_ftags
 en : Show all tags by default on visual novel pages.
 ru*:

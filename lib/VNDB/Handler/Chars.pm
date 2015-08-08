@@ -97,7 +97,7 @@ sub charOps {
   p id => 'charops';
    # Note: Order of these links is hardcoded in JS
    a href => '#', $spoil == $_ ? (class => 'sel') : (), mt "_spoilset_$_" for (0..2);
-   a href => '#', class => 'sec sel', mt '_charp_sexual' if $sexual;
+   a href => '#', class => 'sec'.($self->authPref('traits_sexual') ? ' sel' : ''), mt '_charp_sexual' if $sexual;
   end;
 }
 
@@ -173,12 +173,12 @@ sub charTable {
         $minspoil = $minspoil > $_->{spoil} ? $_->{spoil} : $minspoil;
         $fullsex = 0 if !$_->{sexual};
       }
-      Tr class => charspoil($minspoil).($fullsex ? ' sexual' : '');
+      Tr class => charspoil($minspoil).($fullsex ? ' sexual hidden' : '');
        td class => 'key'; a href => '/i'.($groups{$g}[0]{group}||$groups{$g}[0]{tid}), $groups{$g}[0]{groupname} || $groups{$g}[0]{name}; end;
        td;
         for (0..$#{$groups{$g}}) {
           my $t = $groups{$g}[$_];
-          span class => charspoil($t->{spoil}).($t->{sexual} ? ' sexual' : '');
+          span class => charspoil($t->{spoil}).($t->{sexual} ? ' sexual hidden' : '');
            span ', ';
            a href => "/i$t->{tid}", $t->{name};
           end;
