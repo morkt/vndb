@@ -3218,14 +3218,16 @@ if(byId('charops')) { (function() {
   var t = byClass('table', 'stripe');
   var spoil;
   var sexual;
-  var fixcomma = function(c) {
-    var l = byName(c, 'span');
+  // Fixes the commas between trait names and the hidden status of the entire row
+  var fixrow = function(c) {
+    var l = byName(byName(c, 'td')[1], 'span');
     var first = 1;
     for(var i=0; i<l.length; i+=2)
       if(!hasClass(l[i], 'hidden')) {
         setClass(l[i+1], 'hidden', first);
         first = 0;
       }
+    setClass(c, 'hidden', first);
   };
   var restripe = function() {
     for(var i=0; i<t.length; i++) {
@@ -3235,12 +3237,12 @@ if(byId('charops')) { (function() {
       setClass(t[i], 'stripe', false);
       var r = 1;
       var rows = byName(b[0], 'tr');
-      for(var j=0; j<rows.length; j++)
-        if(!hasClass(rows[j], 'nostripe') && !hasClass(rows[j], 'hidden')) {
-          if(hasClass(rows[j], 'charspoil'))
-            fixcomma(byName(rows[j], 'td')[1]);
+      for(var j=0; j<rows.length; j++) {
+        if(hasClass(rows[j], 'traitrow'))
+          fixrow(rows[j]);
+        if(!hasClass(rows[j], 'nostripe') && !hasClass(rows[j], 'hidden'))
           setClass(rows[j], 'odd', r++&1);
-        }
+      }
     }
   };
   var setall = function() {

@@ -167,13 +167,7 @@ sub charTable {
       push @{$groups{ $g }}, $_
     }
     for my $g (@groups) {
-      my $minspoil = 5;
-      my $fullsex = 1;
-      for(@{$groups{$g}}) {
-        $minspoil = $minspoil > $_->{spoil} ? $_->{spoil} : $minspoil;
-        $fullsex = 0 if !$_->{sexual};
-      }
-      Tr class => charspoil($minspoil).($fullsex ? ' sexual hidden' : '');
+      Tr class => 'traitrow';
        td class => 'key'; a href => '/i'.($groups{$g}[0]{group}||$groups{$g}[0]{tid}), $groups{$g}[0]{groupname} || $groups{$g}[0]{name}; end;
        td;
         for (0..$#{$groups{$g}}) {
