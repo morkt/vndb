@@ -97,6 +97,18 @@ sub resolutions {
 }
 
 
+# Reads main.js and any included files.
+sub readjs {
+  my $f = shift || 'main.js';
+  open my $JS, '<:utf8', "$ROOT/data/js/$f" or die $!;
+  local $/ = undef;
+  local $_ = <$JS>;
+  close $JS;
+  s{^//include (.+)$}{readjs($1)}meg;
+  $_;
+}
+
+
 sub jsgen {
   l10n_load();
   my $common = '';
@@ -119,9 +131,7 @@ sub jsgen {
       sprintf('["%s","%s"]', $_, $lang{$_}{"_lang_$_"}||$lang{en}{"_lang_$_"}),
     VNDB::L10N::languages());
 
-  open my $JS, '<:utf8', "$ROOT/data/script.js" or die $!;
-  my $js .= join '', <$JS>;
-  close $JS;
+  my $js = readjs 'main.js';
 
   for my $l (VNDB::L10N::languages()) {
     my($head, $body) = l10n($l, $js);

@@ -67,7 +67,7 @@ static/ch static/cv static/sf static/st:
 static/f/js data/log www www/feeds www/api:
 	mkdir $@
 
-static/f/js/en.js: data/script.js data/lang.txt util/jsgen.pl data/config.pl data/global.pl
+static/f/js/en.js: data/js/*.js data/lang.txt util/jsgen.pl data/config.pl data/global.pl
 	util/jsgen.pl
 
 data/icons/icons.css: data/icons/*.png data/icons/*/*.png util/spritegen.pl
