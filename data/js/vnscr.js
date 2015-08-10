@@ -160,6 +160,7 @@ function scrDel(what) {
   byId('scr_table').removeChild(tr);
   scrSerialize();
   scrLast();
+  ivInit();
   return false;
 }
 
