@@ -248,8 +248,8 @@ if(byId('lang_select')) {
   var curlang = byName(d, 'acronym')[0].className.substr(11, 2);
   ddInit(d, 'bottom', function(lnk) {
     var lst = tag('ul', null);
-    for(var i=0; i<L10N_LANG.length; i++) {
-      var ln = L10N_LANG[i];
+    for(var i=0; i<VARS.l10n_lang.length; i++) {
+      var ln = VARS.l10n_lang[i];
       var icon = tag('acronym', {'class':'icons lang '+ln[0]}, ' ');
       lst.appendChild(tag('li', {'class':'lang_selector'}, curlang == ln[0]
         ? tag('i', icon, mt('_lang_'+ln[0]))

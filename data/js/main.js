@@ -48,6 +48,7 @@
  *   sal  -> Staff aliases editor
  */
 
+VARS = /*VARS*/;
 
 // Reusable library functions
 //include lib.js

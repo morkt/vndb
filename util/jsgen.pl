@@ -6,6 +6,7 @@ use strict;
 use warnings;
 use Encode 'encode_utf8';
 use Cwd 'abs_path';
+use JSON::XS;
 eval { require JavaScript::Minifier::XS; };
 
 our($ROOT, %S, %O);
@@ -55,45 +56,62 @@ sub l10n {
     }
   #eg;
 
-  # generate header
-  my $r = "L10N_STR = {\n";
-  my $first = 1;
+  my %keys;
   for my $key (sort keys %{$lang{$lang}}) {
     next if !grep $key =~ /$_/, @keys;
-    $r .= ",\n" if !$first;
-    $first = 0;
     my $val = $lang{$lang}{$key} || $lang{'en'}{$key};
     $val =~ s/"/\\"/g;
     $val =~ s/\n/\\n/g;
     $val =~ s/\[index,.+$// if $key =~ /^_vnlength_/; # special casing the VN lengths, since the JS mt() doesn't handle [index]
-    $r .= sprintf qq|  %s: "%s"|, $key !~ /^[a-z0-9_]+$/ ? "'$key'" : $key, $val;
+    $keys{$key} = $val;
   }
-  $r .= "\n};";
-  return ("$r\n", $js);
+  (\%keys, $js);
 }
 
 
 # screen resolution information, suitable for usage in filFSelect()
 sub resolutions {
   my $ln = shift;
-  my $res_cat = '';
-  my $resolutions = '';
-  my $comma = 0;
+  my $cat = '';
+  my @r;
+  my $push = \@r;
   for my $i (0..$#{$S{resolutions}}) {
     my $r = $S{resolutions}[$i];
-    if($res_cat ne $r->[1]) {
-      my $cat = $r->[1] =~ /^_/ ? $lang{$ln}{$r->[1]}||$lang{'en'}{$r->[1]} : $r->[1];
-      $resolutions .= ']' if $res_cat;
-      $resolutions .= ",['$cat',";
-      $res_cat = $r->[1];
-      $comma = 0;
+    if($cat ne $r->[1]) {
+      push @r, [$r->[1] =~ /^_/ ? $lang{$ln}{$r->[1]}||$lang{'en'}{$r->[1]} : $r->[1]];
+      $cat = $r->[1];
+      $push = $r[$#r];
     }
     my $n = $r->[0] =~ /^_/ ? $lang{$ln}{$r->[0]}||$lang{'en'}{$r->[0]} : $r->[0];
-    $resolutions .= ($comma ? ',' : '')."[$i,'$n']";
-    $comma = 1;
+    push @$push, [$i, $n];
   }
-  $resolutions .= ']' if $res_cat;
-  return "resolutions = [ $resolutions ];\n";
+  \@r
+}
+
+
+sub vars {
+  my($lang, $l10n) = @_;
+  my %vars = (
+    rlist_status  => $S{rlist_status},
+    cookie_prefix => $O{cookie_prefix},
+    age_ratings   => $S{age_ratings},
+    languages     => $S{languages},
+    platforms     => $S{platforms},
+    char_roles    => $S{char_roles},
+    media         => [sort keys %{$S{media}}],
+    release_types => $S{release_types},
+    animated      => $S{animated},
+    voiced        => $S{voiced},
+    vn_lengths    => $S{vn_lengths},
+    blood_types   => $S{blood_types},
+    genders       => $S{genders},
+    char_roles    => $S{char_roles},
+    staff_roles   => $S{staff_roles},
+    resolutions   => scalar resolutions($lang),
+    l10n_lang     => [ map [ $_, $lang{$_}{"_lang_$_"}||$lang{en}{"_lang_$_"} ], VNDB::L10N::languages() ],
+    l10n_str      => $l10n,
+  );
+  JSON::XS->new->encode(\%vars);
 }
 
 
@@ -110,39 +128,19 @@ sub readjs {
 
 
 sub jsgen {
-  l10n_load();
-  my $common = '';
-  $common .= sprintf "rlist_status = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlist_status}};
-  $common .= sprintf "cookie_prefix = '%s';\n", $O{cookie_prefix};
-  $common .= sprintf "age_ratings = [ %s ];\n", join ',', @{$S{age_ratings}};
-  $common .= sprintf "languages = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{languages}};
-  $common .= sprintf "platforms = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{platforms}};
-  $common .= sprintf "char_roles = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{char_roles}};
-  $common .= sprintf "media = [ %s ];\n", join ', ', map qq{"$_"}, sort keys %{$S{media}};
-  $common .= sprintf "release_types = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{release_types}};
-  $common .= sprintf "animated = [ %s ];\n", join ', ', @{$S{animated}};
-  $common .= sprintf "voiced = [ %s ];\n", join ', ', @{$S{voiced}};
-  $common .= sprintf "vn_lengths = [ %s ];\n", join ', ', @{$S{vn_lengths}};
-  $common .= sprintf "blood_types = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{blood_types}};
-  $common .= sprintf "genders = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{genders}};
-  $common .= sprintf "char_roles = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{char_roles}};
-  $common .= sprintf "staff_roles = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{staff_roles}};
-  $common .= sprintf "L10N_LANG = [ %s ];\n", join(', ', map
-      sprintf('["%s","%s"]', $_, $lang{$_}{"_lang_$_"}||$lang{en}{"_lang_$_"}),
-    VNDB::L10N::languages());
-
   my $js = readjs 'main.js';
 
   for my $l (VNDB::L10N::languages()) {
-    my($head, $body) = l10n($l, $js);
-    $head .= resolutions($l);
+    my($l10n, $body) = l10n($l, $js);
+    $body =~ s{/\*VARS\*/}{vars($l, $l10n)}eg;
+
     # JavaScript::Minifier::XS doesn't correctly handle perl's unicode, so manually encode
-    my $content = encode_utf8($head . $common . $body);
+    my $content = encode_utf8($body);
     open my $NEWJS, '>', "$ROOT/static/f/js/$l.js" or die $!;
     print $NEWJS $JavaScript::Minifier::XS::VERSION ? JavaScript::Minifier::XS::minify($content) : $content;
     close $NEWJS;
   }
 }
 
+l10n_load;
 jsgen;
-

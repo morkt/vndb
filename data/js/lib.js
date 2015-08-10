@@ -27,11 +27,11 @@ function ajax(url, func, async) {
 function setCookie(n,v) {
   var date = new Date();
   date.setTime(date.getTime()+(365*24*60*60*1000));
-  document.cookie = cookie_prefix+n+'='+v+'; expires='+date.toGMTString()+'; path=/';
+  document.cookie = VARS.cookie_prefix+n+'='+v+'; expires='+date.toGMTString()+'; path=/';
 }
 function getCookie(n) {
   var l = document.cookie.split(';');
-  n = cookie_prefix+n;
+  n = VARS.cookie_prefix+n;
   for(var i=0; i<l.length; i++) {
     var c = l[i];
     while(c.charAt(0) == ' ')
@@ -169,10 +169,10 @@ function shorten(v, l) {
 /* maketext function, less powerful than the Perl equivalent:
  * - Only supports [_n], ~[, ~]
  * - When it finds [quant,_n,..], it will only return the first argument (and doesn't support ~ in an argument)
- * assumes that a TL structure called 'L10N_STR' is defined in the header of this file */
+ */
 function mt() {
   var key = arguments[0];
-  var val = L10N_STR[key] ? L10N_STR[key] : key;
+  var val = VARS.l10n_str[key] ? VARS.l10n_str[key] : key;
   for(var i=1; i<arguments.length; i++) {
     var expr = '[_'+i+']';
     while(val.indexOf(expr) >= 0)

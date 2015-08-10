@@ -25,9 +25,9 @@ function vnsAdd(staff, role, note) {
   var tbl = byId('credits_tbl');
 
   var rlist = tag('select', {onchange:vnsSerialize});
-  for (var i = 0; i < staff_roles.length; i++) // l10n /^_credit_/
-    rlist.appendChild(tag('option', {value:staff_roles[i], selected:staff_roles[i]==role},
-      mt('_credit_'+staff_roles[i])));
+  for (var i = 0; i < VARS.staff_roles.length; i++) // l10n /^_credit_/
+    rlist.appendChild(tag('option', {value:VARS.staff_roles[i], selected:VARS.staff_roles[i]==role},
+      mt('_credit_'+VARS.staff_roles[i])));
 
   tbl.appendChild(tag('tr', {id:'vns_a'+staff.aid},
     tag('td', {'class':'tc_name'},

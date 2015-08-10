@@ -436,13 +436,13 @@ function filFTagInput(name, label, type) {
 }
 
 function filChars() {
-  var gend = genders;
+  var gend = VARS.genders;
   for(var i=0; i<gend.length; i++) // l10n /_gender_.+/
     gend[i] = [ gend[i], mt('_gender_'+gend[i]) ];
-  var bloodt = blood_types;
+  var bloodt = VARS.blood_types;
   for(var i=0; i<bloodt.length; i++) // l10n /_bloodt_.+/
     bloodt[i] = [ bloodt[i], bloodt[i] == 'unknown' ? mt('_unknown') : mt('_bloodt_'+bloodt[i]) ];
-  var roles = char_roles;
+  var roles = VARS.char_roles;
   for(var i=0; i<roles.length; i++) // l10n /_charrole_.+/
     roles[i] = [ roles[i], mt('_charrole_'+roles[i]) ];
 
@@ -479,27 +479,27 @@ function filChars() {
 }
 
 function filReleases() {
-  var types = release_types;
+  var types = VARS.release_types;
   for(var i=0; i<types.length; i++) // l10n /_rtype_.+/
     types[i] = [ types[i], mt('_rtype_'+types[i]) ];
-  var ages = age_ratings;
+  var ages = VARS.age_ratings;
   for(var i=0; i<ages.length; i++)
     ages[i] = [ ages[i], ages[i] == -1 ? mt('_unknown') : ages[i] == 0 ? mt('_minage_all') : mt('_minage_age', ages[i]) ];
-  var lang = languages;
+  var lang = VARS.languages;
   for(var i=0; i<lang.length; i++) // l10n /_lang_.+/
     lang[i] = [ lang[i], mt('_lang_'+lang[i]) ];
-  var plat = platforms;
+  var plat = VARS.platforms;
   for(var i=0; i<plat.length; i++) // l10n /_plat_.+/
     plat[i] = [ plat[i], mt('_plat_'+plat[i]) ];
   plat.splice(0, 0, [ 'unk', mt('_unknown') ]);
-  var med = media;
+  var med = VARS.media;
   for(var i=0; i<med.length; i++) // l10n /_med_.+/
     med[i] = [ med[i], mt('_med_'+med[i]) ];
   med.splice(0, 0, [ 'unk', mt('_unknown') ]);
-  var voi = voiced;
+  var voi = VARS.voiced;
   for(var i=0; i<voi.length; i++) // l10n /_voiced_.+/
     voi[i] = [ voi[i], voi[i] == 0 ? mt('_unknown') : mt('_voiced_'+voi[i]) ];
-  var ani = animated;
+  var ani = VARS.animated;
   for(var i=0; i<ani.length; i++) // l10n /_animated_.+/
     ani[i] = [ ani[i], ani[i] == 0 ? mt('_unknown') : mt('_animated_'+ani[i]) ];
   return [
@@ -516,7 +516,7 @@ function filReleases() {
     [ mt('_rbrowse_minage'),     filFSelect('minage',     mt('_rbrowse_minage'),     15, ages) ],
     [ mt('_rbrowse_language'),   filFSelect('lang',       mt('_rbrowse_language'),   20, lang) ],
     [ mt('_rbrowse_olang'),      filFSelect('olang',      mt('_rbrowse_olang'),      20, lang) ],
-    [ mt('_rbrowse_resolution'), filFSelect('resolution', mt('_rbrowse_resolution'), 15, resolutions) ],
+    [ mt('_rbrowse_resolution'), filFSelect('resolution', mt('_rbrowse_resolution'), 15, VARS.resolutions) ],
     [ mt('_rbrowse_platform'),   filFSelect('plat',       mt('_rbrowse_platform'),   20, plat) ],
     [ mt('_rbrowse_medium'),     filFSelect('med',        mt('_rbrowse_medium'),     10, med)  ],
     [ mt('_rbrowse_voiced'),     filFSelect('voiced',     mt('_rbrowse_voiced'),      5, voi)  ],
@@ -528,13 +528,13 @@ function filReleases() {
 }
 
 function filVN() {
-  var lang = languages;
+  var lang = VARS.languages;
   for(var i=0; i<lang.length; i++) // l10n /_lang_.+/
     lang[i] = [ lang[i], mt('_lang_'+lang[i]) ];
-  var plat = platforms;
+  var plat = VARS.platforms;
   for(var i=0; i<plat.length; i++) // l10n /_plat_.+/
     plat[i] = [ plat[i], mt('_plat_'+plat[i]) ];
-  var len = vn_lengths;
+  var len = VARS.vn_lengths;
   for(var i=0; i<len.length; i++) // l10n /_vnlength_.+/
     len[i] = [ len[i], len[i] == 0 ? mt('_unknown') : mt('_vnlength_'+len[i]) ];
 
@@ -575,12 +575,12 @@ function filStaff() {
     ['f', mt('_gender_f')],
   ];
   var roles = [];
-  for(var i=0; i<staff_roles.length; i++) { // l10n /_credit_.+/
-    if(staff_roles[i] == 'staff') {
+  for(var i=0; i<VARS.staff_roles.length; i++) { // l10n /_credit_.+/
+    if(VARS.staff_roles[i] == 'staff') {
       roles.push(['seiyuu', mt('_credit_seiyuu')]);
       roles.push(['staff', mt('_credit_other')]);
     } else
-      roles.push([ staff_roles[i], mt('_credit_'+staff_roles[i]) ]);
+      roles.push([ VARS.staff_roles[i], mt('_credit_'+VARS.staff_roles[i]) ]);
   }
   return [
     mt('_sbrowse_fil_title'),

@@ -90,13 +90,13 @@ function scrSet(tr, width, height) {
   var odd = true;
   if(dim == '256x384') // special-case NDS resolution (not in the DB)
     odd = false;
-  for(var j=0; j<resolutions.length && odd; j++) {
-    if(typeof resolutions[j][1] != 'object') {
-      if(resolutions[j][0] == dim)
+  for(var j=0; j<VARS.resolutions.length && odd; j++) {
+    if(typeof VARS.resolutions[j][1] != 'object') {
+      if(VARS.resolutions[j][0] == dim)
         odd = false;
     } else {
-      for(var k=1; k<resolutions[j].length; k++)
-        if(resolutions[j][k][1] == dim)
+      for(var k=1; k<VARS.resolutions[j].length; k++)
+        if(VARS.resolutions[j][k][1] == dim)
           odd = false;
     }
   }
