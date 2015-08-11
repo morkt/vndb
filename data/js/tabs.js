@@ -1,39 +1,51 @@
-function jtInit() {
-  if(!byId('jt_select'))
-    return;
-  var sel = '';
-  var first = '';
-  var l = byName(byId('jt_select'), 'a');
-  if(l.length < 1)
-    return;
-  for(var i=0; i<l.length; i++) {
-    l[i].onclick = jtSel;
-    if(!first)
-      first = l[i].id;
-    if(location.hash && l[i].id == 'jt_sel_'+location.hash.substr(1))
-      sel = l[i].id;
+/* Javascript tabs. General usage:
+ *
+ *   <ul id="jt_select">
+ *    <li><a href="#<name>" id="jt_sel_<name>">..</a></li>
+ *    ..
+ *   </ul>
+ *
+ * Can then be used to show/hide the following box:
+ *
+ *   <div id="jt_box_<name>"> .. </div>
+ *
+ * The name of the active box will be set to and (at page load) read from
+ * location.hash. The parent node of the active link will get the 'tabselected'
+ * class. A link with the special name "all" will display all boxes associated
+ * with jt_select links.
+ *
+ * Only one jt_select list-of-tabs can be used on a single page.
+ */
+(function(){
+  var links = byId('jt_select') ? byName(byId('jt_select'), 'a') : [];
+
+  function init() {
+    var sel;
+    var first;
+    for(var i=0; i<links.length; i++) {
+      links[i].onclick = function() { set(this.id); return false };
+      if(!first)
+        first = links[i].id;
+      if(location.hash && links[i].id == 'jt_sel_'+location.hash.substr(1))
+        sel = links[i].id;
+    }
+    if(first)
+      set(sel||first, 1);
   }
-  if(!sel)
-    sel = first;
-  jtSel(sel, 1);
-}
 
-function jtSel(which, nolink) {
-  which = typeof(which) == 'string' ? which : which && which.id ? which.id : this.id;
-  which = which.substr(7);
+  function set(which, nolink) {
+    which = which.substr(7);
 
-  var l = byName(byId('jt_select'), 'a');
-  for(var i=0;i<l.length;i++) {
-    var name = l[i].id.substr(7);
-    if(name != 'all')
-      byId('jt_box_'+name).style.display = name == which || which == 'all' ? 'block' : 'none';
-    var tab = l[i].parentNode;
-    setClass(tab, 'tabselected', name == which);
+    for(var i=0; i<links.length; i++) {
+      var name = links[i].id.substr(7);
+      if(name != 'all')
+        setClass(byId('jt_box_'+name), 'hidden', which != 'all' && which != name);
+      setClass(links[i].parentNode, 'tabselected', name == which);
+    }
+
+    if(!nolink)
+      location.href = '#'+which;
   }
 
-  if(!nolink)
-    location.href = '#'+which;
-  return false;
-}
-
-jtInit();
+  init();
+})()
