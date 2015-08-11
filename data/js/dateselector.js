@@ -84,4 +84,4 @@
     load(l[i]);
 
   window.dateLoad = load;
-})()
+})();

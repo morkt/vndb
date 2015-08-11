@@ -1,16 +1,13 @@
-var expanded_icon = '▾';
-var collapsed_icon = '▸';
+var expanded_icon = '▾',
+    collapsed_icon = '▸';
 
 
-var http_request = false;
 function ajax(url, func, async) {
-  if(!async && http_request)
-    http_request.abort();
-  var req = (window.ActiveXObject) ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
-  if(req == null)
-    return alert("Your browser does not support the functionality this website requires.");
+  if(!async && ajax.req)
+    ajax.req.abort();
+  var req = window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
   if(!async)
-    http_request = req;
+    ajax.req = req;
   req.onreadystatechange = function() {
     if(!req || req.readyState != 4 || !req.responseText)
       return;
