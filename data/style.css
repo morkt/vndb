@@ -1,5 +1,5 @@
 *            { margin: 0; padding: 0; }
-body, td     { font: 11px "Tahoma", "Arial"; }
+body, td     { font: 11px "Tahoma", "Arial", sans-serif; }
 body         { $_bodybg$; color: $maintext$ }
 a            { color: $link$; text-decoration: none; }
 a:hover      { border-bottom: 1px dotted $maintext$; }
@@ -74,7 +74,7 @@ ul, ol        { margin-left: 35px; }
 p.locked      { float: right; color: $standout$; font-style: italic; margin: 0!important; }
 b.grayedout   { font-weight: normal; color: $grayedout$ }
 i.grayedout   { font-style: normal; color: $grayedout$ }
-#maincontent h2 b { font: 11px "Tahoma", "Arial"; font-weight: normal; }
+#maincontent h2 b { font: 11px "Tahoma", "Arial", sans-serif; font-weight: normal; }
 p.description { margin: 10px 100px!important; }
 b.done        { font-weight: normal; color: $statok$ }
 b.todo        { font-weight: normal; color: $statnok$ }
@@ -115,7 +115,7 @@ input.text, input.submit, select, textarea {
   background-color: $secbg$;
   color: $maintext$;
   border: 1px solid $secborder$;
-  font: 12px "Tahoma", "Arial";
+  font: 12px "Tahoma", "Arial", sans-serif;
   margin: 1px;
 }
 form, fieldset           { border: 0; display: block; }
@@ -868,7 +868,7 @@ svg .border { fill: none; stroke: $border$ }
 svg .edge polygon.border { fill: $border$ }
 svg .nodebg { fill: $tabbg$; stroke: $tabbg$ }
 svg text { fill: $maintext$ }
-svg .edge text { font: 8px "Tahoma", "Arial" }
+svg .edge text { font: 8px "Tahoma", "Arial", sans-serif }
 #graph_current .border { stroke: $warnborder$ }
 #graph_current .nodebg { stroke: $warnborder$; fill: $warnbg$ }
 
