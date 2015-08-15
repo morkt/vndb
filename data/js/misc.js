@@ -252,7 +252,7 @@ if(byId('lang_select')) {
       var ln = VARS.l10n_lang[i];
       var icon = tag('acronym', {'class':'icons lang '+ln[0]}, ' ');
       lst.appendChild(tag('li', {'class':'lang_selector'}, curlang == ln[0]
-        ? tag('i', icon, mt('_lang_'+ln[0]))
+        ? tag('i', icon, ln[1])
         : tag('a', {href:'/setlang?lang='+ln[0]+';ref='+encodeURIComponent(location.pathname+location.search)}, icon, ln[1])
       ));
     }

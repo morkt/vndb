@@ -106,7 +106,7 @@ our %S = (%S,
   voiced          => [ 0..4 ],
   animated        => [ 0..4 ],
   wishlist_status => [ 0..3 ],
-  rlist_status    => [ 0..4 ], # 2 = hardcoded 'OK'
+  rlist_status    => [ 0..4 ], # 0 = hardcoded "unknown", 2 = hardcoded 'OK'. List must not have gaps
   vnlist_status   => [ 0..4 ],
   blood_types     => [qw| unknown o a b ab |],
   genders         => [qw| unknown m f b |],

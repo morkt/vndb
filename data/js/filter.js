@@ -442,9 +442,6 @@ function filChars() {
   var bloodt = VARS.blood_types;
   for(var i=0; i<bloodt.length; i++) // l10n /_bloodt_.+/
     bloodt[i] = [ bloodt[i], bloodt[i] == 'unknown' ? mt('_unknown') : mt('_bloodt_'+bloodt[i]) ];
-  var roles = VARS.char_roles;
-  for(var i=0; i<roles.length; i++) // l10n /_charrole_.+/
-    roles[i] = [ roles[i], mt('_charrole_'+roles[i]) ];
 
   var ontraitpage = location.pathname.indexOf('/c/') < 0;
 
@@ -474,7 +471,7 @@ function filChars() {
       filFTagInput('trait_exc', mt('_charb_traitexc'), 'trait'),
       filFOptions('tagspoil', ' ', [[0, mt('_spoilset_0')],[1, mt('_spoilset_1')],[2, mt('_spoilset_2')]]),
     ],
-    [ mt('_charb_roles'), filFSelect('role', mt('_charb_roles'), 4, roles) ]
+    [ mt('_charb_roles'), filFSelect('role', mt('_charb_roles'), 4, VARS.char_roles) ]
   ];
 }
 
@@ -482,15 +479,7 @@ function filReleases() {
   var types = VARS.release_types;
   for(var i=0; i<types.length; i++) // l10n /_rtype_.+/
     types[i] = [ types[i], mt('_rtype_'+types[i]) ];
-  var ages = VARS.age_ratings;
-  for(var i=0; i<ages.length; i++)
-    ages[i] = [ ages[i], ages[i] == -1 ? mt('_unknown') : ages[i] == 0 ? mt('_minage_all') : mt('_minage_age', ages[i]) ];
-  var lang = VARS.languages;
-  for(var i=0; i<lang.length; i++) // l10n /_lang_.+/
-    lang[i] = [ lang[i], mt('_lang_'+lang[i]) ];
   var plat = VARS.platforms;
-  for(var i=0; i<plat.length; i++) // l10n /_plat_.+/
-    plat[i] = [ plat[i], mt('_plat_'+plat[i]) ];
   plat.splice(0, 0, [ 'unk', mt('_unknown') ]);
   var med = VARS.media;
   for(var i=0; i<med.length; i++) // l10n /_med_.+/
@@ -513,9 +502,9 @@ function filReleases() {
       [ 'date_before', mt('_rbrowse_datebefore'), dateLoad(null, filSelectField), function (c) { return [c.date_val] }, function(o,v) { o.dateSet(v) } ],
       filFOptions('released', mt('_rbrowse_released'),[ [1, mt('_rbrowse_released_yes')], [0, mt('_rbrowse_released_no')] ])
     ],
-    [ mt('_rbrowse_minage'),     filFSelect('minage',     mt('_rbrowse_minage'),     15, ages) ],
-    [ mt('_rbrowse_language'),   filFSelect('lang',       mt('_rbrowse_language'),   20, lang) ],
-    [ mt('_rbrowse_olang'),      filFSelect('olang',      mt('_rbrowse_olang'),      20, lang) ],
+    [ mt('_rbrowse_minage'),     filFSelect('minage',     mt('_rbrowse_minage'),     15, VARS.age_ratings) ],
+    [ mt('_rbrowse_language'),   filFSelect('lang',       mt('_rbrowse_language'),   20, VARS.languages) ],
+    [ mt('_rbrowse_olang'),      filFSelect('olang',      mt('_rbrowse_olang'),      20, VARS.languages) ],
     [ mt('_rbrowse_resolution'), filFSelect('resolution', mt('_rbrowse_resolution'), 15, VARS.resolutions) ],
     [ mt('_rbrowse_platform'),   filFSelect('plat',       mt('_rbrowse_platform'),   20, plat) ],
     [ mt('_rbrowse_medium'),     filFSelect('med',        mt('_rbrowse_medium'),     10, med)  ],
@@ -528,12 +517,6 @@ function filReleases() {
 }
 
 function filVN() {
-  var lang = VARS.languages;
-  for(var i=0; i<lang.length; i++) // l10n /_lang_.+/
-    lang[i] = [ lang[i], mt('_lang_'+lang[i]) ];
-  var plat = VARS.platforms;
-  for(var i=0; i<plat.length; i++) // l10n /_plat_.+/
-    plat[i] = [ plat[i], mt('_plat_'+plat[i]) ];
   var len = VARS.vn_lengths;
   for(var i=0; i<len.length; i++) // l10n /_vnlength_.+/
     len[i] = [ len[i], len[i] == 0 ? mt('_unknown') : mt('_vnlength_'+len[i]) ];
@@ -555,9 +538,9 @@ function filVN() {
       filFTagInput('tag_exc', mt('_vnbrowse_tagexc'), 'tag'),
       filFOptions('tagspoil', ' ', [[0, mt('_spoilset_0')],[1, mt('_spoilset_1')],[2, mt('_spoilset_2')]])
     ],
-    [ mt('_vnbrowse_language'), filFSelect('lang', mt('_vnbrowse_language'), 20, lang) ],
-    [ mt('_vnbrowse_olang'),    filFSelect('olang',mt('_vnbrowse_olang'),    20, lang) ],
-    [ mt('_vnbrowse_platform'), filFSelect('plat', mt('_vnbrowse_platform'), 20, plat) ],
+    [ mt('_vnbrowse_language'), filFSelect('lang', mt('_vnbrowse_language'), 20, VARS.languages) ],
+    [ mt('_vnbrowse_olang'),    filFSelect('olang',mt('_vnbrowse_olang'),    20, VARS.languages) ],
+    [ mt('_vnbrowse_platform'), filFSelect('plat', mt('_vnbrowse_platform'), 20, VARS.platforms) ],
     !byId('pref_code') ? null : [
       mt('_vnbrowse_ul'),
       filFOptions('ul_notblack', mt('_vnbrowse_ul_notblack'), [[1, mt('_vnbrowse_ul_notblackmsg')]]),

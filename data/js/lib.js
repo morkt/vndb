@@ -167,22 +167,16 @@ window.shorten = function(v, l) {
 };
 
 
-/* maketext function, less powerful than the Perl equivalent:
- * - Only supports [_n], ~[, ~]
- * - When it finds [quant,_n,..], it will only return the first argument (and doesn't support ~ in an argument)
- */
+/* maketext function. Less powerful than the Perl equivalent, as it only
+ * supports [_n], ~[ and ~]. jsgen.pl is responsible for weeding out the other
+ * codes. */
 window.mt = function() {
   var key = arguments[0];
-  var val = VARS.l10n_str[key] ? VARS.l10n_str[key] : key;
-  for(var i=1; i<arguments.length; i++) {
-    var expr = '[_'+i+']';
-    while(val.indexOf(expr) >= 0)
-      val = val.replace(expr, arguments[i]);
-  }
-  val = val.replace(/\[quant,_\d+\,([^,]+)[^\]]+\]/g, "$1");
-  while(val.indexOf('~[') >= 0 || val.indexOf('~]') >= 0)
-    val = val.replace('~[', '[').replace('~]', ']');
-  return val;
+  var val = VARS.l10n_str[key] || key;
+  // BUG: ~[_1] will get replaced. We don't have a string like that, so whatever.
+  for(var i=1; i<arguments.length; i++)
+    val = val.replace(new RegExp('\[_'+i+'\]', 'g'), arguments[i]);
+  return val.replace(/~\[/g, '[').replace(/~\]/g, ']');
 };
 
 

@@ -37,6 +37,40 @@ sub l10n_load {
 }
 
 
+# Remove formatting codes from L10N strings that the Javascript mt() does not support.
+#   [quant,_n,x,..] -> x
+#   [index,_n,x,..] -> x
+# [_n] is supported by Javascript mt(). It is left alone if no arguments are
+# given, otherwise it is replaced. All other codes result in an error.
+sub l10nstr {
+  my($lang, $key, @args) = @_;
+  local $_ = $lang{$lang}{$key} || $lang{'en'}{$key} || '';
+
+  # Simplify parsing
+  s/~\[/JSGEN_QBEGIN/g;
+  s/~]/JSGEN_QENDBR/g;
+  s/~,/JSGEN_QCOMMA/g;
+
+  # Replace quant/index
+  s/\[(?:quant|index),_[0-9]+,([^,\]]*)[^\]]*\]/$1/g;
+
+  # Replace [_n]
+  for my $i (0..$#args) {
+    my $v = $i+1;
+    s/\[_$v\]/$args[$i]/g;
+  }
+
+  # Check for unhandled codes
+  die "Unsupported formatting code in $lang:$key\n" if /\[[^_]/;
+
+  # Convert back
+  s/JSGEN_QBEGIN/~[/g;
+  s/JSGEN_QENDBR/~]/g;
+  s/JSGEN_QCOMMA/,/g; # No need to escape, at this point there are no codes with arguments
+  $_;
+}
+
+
 sub l10n {
   my($lang, $js) = @_;
 
@@ -44,14 +78,15 @@ sub l10n {
   my @keys;
   $js =~ s{(?:mt\('([a-z0-9_]+)'([,\)])|l10n /([^/]+)/)}#
     my($k, $s, $q) = ($1, $2, $3);
-    my $v = $k ? $lang{$lang}{$k} || $lang{'en'}{$k} : '';
-    if($q) { $q ne '<perl regex>' && push @keys, qr/$q/; '' }
-    elsif($s eq ')' && $v && $v !~ /[\~\[\]]/) {
+    my $v = $k && l10nstr($lang, $k);
+    if($q) {
+      $q ne '<perl regex>' && push @keys, qr/$q/; ''
+    } elsif($s eq ')' && $v && $v !~ /[\~\[\]]/) {
       $v =~ s/"/\\"/g;
       $v =~ s/\n/\\n/g;
       qq{"$v"}
     } else {
-      push @keys, quotemeta($k);
+      push @keys, '^'.quotemeta($k).'$';
       "mt('$k'$s"
     }
   #eg;
@@ -59,11 +94,7 @@ sub l10n {
   my %keys;
   for my $key (sort keys %{$lang{$lang}}) {
     next if !grep $key =~ /$_/, @keys;
-    my $val = $lang{$lang}{$key} || $lang{'en'}{$key};
-    $val =~ s/"/\\"/g;
-    $val =~ s/\n/\\n/g;
-    $val =~ s/\[index,.+$// if $key =~ /^_vnlength_/; # special casing the VN lengths, since the JS mt() doesn't handle [index]
-    $keys{$key} = $val;
+    $keys{$key} = l10nstr($lang, $key);
   }
   (\%keys, $js);
 }
@@ -78,11 +109,11 @@ sub resolutions {
   for my $i (0..$#{$S{resolutions}}) {
     my $r = $S{resolutions}[$i];
     if($cat ne $r->[1]) {
-      push @r, [$r->[1] =~ /^_/ ? $lang{$ln}{$r->[1]}||$lang{'en'}{$r->[1]} : $r->[1]];
+      push @r, [$r->[1] =~ /^_/ ? l10nstr($ln, $r->[1]) : $r->[1]];
       $cat = $r->[1];
       $push = $r[$#r];
     }
-    my $n = $r->[0] =~ /^_/ ? $lang{$ln}{$r->[0]}||$lang{'en'}{$r->[0]} : $r->[0];
+    my $n = $r->[0] =~ /^_/ ? l10nstr($ln, $r->[0]) : $r->[0];
     push @$push, [$i, $n];
   }
   \@r
@@ -92,12 +123,12 @@ sub resolutions {
 sub vars {
   my($lang, $l10n) = @_;
   my %vars = (
-    rlist_status  => $S{rlist_status},
+    rlist_status  => [ map l10nstr($lang, $_?"_rlist_status_$_":'_unknown'), @{$S{rlist_status}} ],
     cookie_prefix => $O{cookie_prefix},
-    age_ratings   => $S{age_ratings},
-    languages     => $S{languages},
-    platforms     => $S{platforms},
-    char_roles    => $S{char_roles},
+    age_ratings   => [ map [ $_, l10nstr($lang, $_ == -1 ? ('_unknown') : $_ == 0 ? ('_minage_all') : ('_minage_age', $_)) ], @{$S{age_ratings}} ],
+    languages     => [ map [ $_, l10nstr($lang, "_lang_$_") ], @{$S{languages}} ],
+    platforms     => [ map [ $_, l10nstr($lang, "_plat_$_") ], @{$S{platforms}} ],
+    char_roles    => [ map [ $_, l10nstr($lang, "_charrole_$_") ], @{$S{char_roles}} ],
     media         => [sort keys %{$S{media}}],
     release_types => $S{release_types},
     animated      => $S{animated},
@@ -105,10 +136,9 @@ sub vars {
     vn_lengths    => $S{vn_lengths},
     blood_types   => $S{blood_types},
     genders       => $S{genders},
-    char_roles    => $S{char_roles},
     staff_roles   => $S{staff_roles},
     resolutions   => scalar resolutions($lang),
-    l10n_lang     => [ map [ $_, $lang{$_}{"_lang_$_"}||$lang{en}{"_lang_$_"} ], VNDB::L10N::languages() ],
+    l10n_lang     => [ map [ $_, l10nstr($_, "_lang_$_") ], VNDB::L10N::languages() ],
     l10n_str      => $l10n,
   );
   JSON::XS->new->encode(\%vars);
