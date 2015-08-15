@@ -1,13 +1,14 @@
-var expanded_icon = '▾',
-    collapsed_icon = '▸';
+window.expanded_icon = '▾',
+window.collapsed_icon = '▸';
 
 
-function ajax(url, func, async) {
-  if(!async && ajax.req)
-    ajax.req.abort();
+var ajax_req;
+window.ajax = function(url, func, async) {
+  if(!async && ajax_req)
+    ajax_req.abort();
   var req = window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
   if(!async)
-    ajax.req = req;
+    ajax_req = req;
   req.onreadystatechange = function() {
     if(!req || req.readyState != 4 || !req.responseText)
       return;
@@ -18,15 +19,16 @@ function ajax(url, func, async) {
   url += (url.indexOf('?')>=0 ? ';' : '?')+(Math.floor(Math.random()*999)+1);
   req.open('GET', url, true);
   req.send(null);
-}
+};
 
 
-function setCookie(n,v) {
+window.setCookie = function(n,v) {
   var date = new Date();
   date.setTime(date.getTime()+(365*24*60*60*1000));
   document.cookie = VARS.cookie_prefix+n+'='+v+'; expires='+date.toGMTString()+'; path=/';
-}
-function getCookie(n) {
+};
+
+window.getCookie = function(n) {
   var l = document.cookie.split(';');
   n = VARS.cookie_prefix+n;
   for(var i=0; i<l.length; i++) {
@@ -37,18 +39,20 @@ function getCookie(n) {
       return c.substring(n.length+1,c.length);
   }
   return null;
-}
+};
 
 
-function byId(n) {
+window.byId = function(n) {
   return document.getElementById(n)
-}
-function byName(){
+};
+
+window.byName = function(){
   var d = arguments.length > 1 ? arguments[0] : document;
   var n = arguments.length > 1 ? arguments[1] : arguments[0];
   return d.getElementsByTagName(n);
-}
-function byClass() { // [class], [parent, class], [tagname, class], [parent, tagname, class]
+};
+
+window.byClass = function() { // [class], [parent, class], [tagname, class], [parent, tagname, class]
   var par = typeof arguments[0] == 'object' ? arguments[0] : document;
   var t = arguments.length == 2 && typeof arguments[0] == 'string' ? arguments[0] : arguments.length == 3 ? arguments[1] : '*';
   var c = arguments[arguments.length-1];
@@ -58,7 +62,7 @@ function byClass() { // [class], [parent, class], [tagname, class], [parent, tag
     if(hasClass(l[i], c))
       ret[ret.length] = l[i];
   return ret;
-}
+};
 
 
 /* wrapper around DOM element creation
@@ -66,7 +70,7 @@ function byClass() { // [class], [parent, class], [tagname, class], [parent, tag
  * tag('tagname', tag(), 'string', ..) -> createElement(), appendChild(), ..
  * tag('tagname', { class: 'meh', title: 'Title' }) -> createElement(), setAttribute()..
  * tag('tagname', { <attributes> }, <elements>) -> create, setattr, append */
-function tag() {
+window.tag = function() {
   if(arguments.length == 1)
     return typeof arguments[0] != 'object' ? document.createTextNode(arguments[0]) : arguments[0];
   var el = typeof document.createElementNS != 'undefined'
@@ -86,53 +90,53 @@ function tag() {
       el.appendChild(tag(arguments[i]));
   }
   return el;
-}
+};
 
 
-function addBody(el) {
+window.addBody = function(el) {
   if(document.body.appendChild)
     document.body.appendChild(el);
   else if(document.documentElement.appendChild)
     document.documentElement.appendChild(el);
   else if(document.appendChild)
     document.appendChild(el);
-}
+};
 
-function setContent() {
+window.setContent = function() {
   setText(arguments[0], '');
   for(var i=1; i<arguments.length; i++)
     if(arguments[i] != null)
       arguments[0].appendChild(tag(arguments[i]));
-}
+};
 
-function getText(obj) {
+window.getText = function(obj) {
   return obj.textContent || obj.innerText || '';
-}
+};
 
-function setText(obj, txt) {
+window.setText = function(obj, txt) {
   if(obj.textContent != null)
     obj.textContent = txt;
   else
     obj.innerText = txt;
-}
+};
 
 
-function listClass(obj) {
+window.listClass = function(obj) {
   var n = obj.className;
   if(!n)
     return [];
   return n.split(/ /);
-}
+};
 
-function hasClass(obj, c) {
+window.hasClass = function(obj, c) {
   var l = listClass(obj);
   for(var i=0; i<l.length; i++)
     if(l[i] == c)
       return true;
   return false;
-}
+};
 
-function setClass(obj, c, set) {
+window.setClass = function(obj, c, set) {
   var l = listClass(obj);
   var n = [];
   if(set) {
@@ -145,9 +149,9 @@ function setClass(obj, c, set) {
         n[n.length] = l[i];
   }
   obj.className = n.join(' ');
-}
+};
 
-function onSubmit(form, handler) {
+window.onSubmit = function(form, handler) {
   var prev_handler = form.onsubmit;
   form.onsubmit = function(e) {
     if(prev_handler)
@@ -155,19 +159,19 @@ function onSubmit(form, handler) {
         return false;
     return handler(e);
   }
-}
+};
 
 
-function shorten(v, l) {
+window.shorten = function(v, l) {
   return v.length > l ? v.substr(0, l-3)+'...' : v;
-}
+};
 
 
 /* maketext function, less powerful than the Perl equivalent:
  * - Only supports [_n], ~[, ~]
  * - When it finds [quant,_n,..], it will only return the first argument (and doesn't support ~ in an argument)
  */
-function mt() {
+window.mt = function() {
   var key = arguments[0];
   var val = VARS.l10n_str[key] ? VARS.l10n_str[key] : key;
   for(var i=1; i<arguments.length; i++) {
@@ -179,9 +183,9 @@ function mt() {
   while(val.indexOf('~[') >= 0 || val.indexOf('~]') >= 0)
     val = val.replace('~[', '[').replace('~]', ']');
   return val;
-}
+};
 
 
-function jsonParse(s) {
+window.jsonParse = function(s) {
   return s ? JSON.parse(s) : '';
-}
+};

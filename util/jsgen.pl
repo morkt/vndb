@@ -122,7 +122,7 @@ sub readjs {
   local $/ = undef;
   local $_ = <$JS>;
   close $JS;
-  s{^//include (.+)$}{readjs($1)}meg;
+  s{^//include (.+)$}{'(function(){'.readjs($1).'})();'}meg;
   $_;
 }
 

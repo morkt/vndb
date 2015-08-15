@@ -20,35 +20,17 @@
  *
  *   In the case of an mt('<key>') without any extra arguments, the entire
  *   function call may be replaced by the TL string.
- *
- *
- * Currently, most of the JS code dumps its functions and variables in the
- * global namespace. This should be fixed, but for now, these are the prefixes
- * being used:
- *
- *   ctr  -> Character <-> trait linking
- *   cvn  -> Character <-> VN linking
- *   date -> Date selector
- *   dd   -> dropdown
- *   ds   -> dropdown search
- *   fil  -> Filter selector
- *   iv   -> image viewer
- *   jt   -> Javascript Tabs
- *   med  -> Release media selector
- *   prr  -> Producer relation editor
- *   rl   -> Release List dropdown
- *   rpr  -> Release <-> producer linking
- *   rvn  -> Release <-> visual novel linking
- *   scr  -> VN screenshot uploader
- *   tgl  -> VN tag linking
- *   tvs  -> VN page tag spoilers
- *   vnr  -> VN relation editor
- *   vns  -> VN staff
- *   vnc  -> VN cast
- *   sal  -> Staff aliases editor
  */
 
+// Variables from jsgen.pl
 VARS = /*VARS*/;
+
+/* The include directives below automatically wrap the file contents inside an
+ * anonymous function, so each file has its own local namespace. Included files
+ * can't access variables or functions from other files, unless these variables
+ * are explicitely shared in DOM objects or (more commonly) the global 'window'
+ * object.
+ */
 
 // Reusable library functions
 //include lib.js
