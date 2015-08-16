@@ -1,11 +1,4 @@
-var medTypes = [ ];
 function medLoad() {
-  // load the medTypes and clear the div
-  var sel = byName(byId('media_div'), 'select')[0].options;
-  for(var i=0; i<sel.length; i++)
-    medTypes[medTypes.length] = [ sel[i].value, getText(sel[i]), !hasClass(sel[i], 'noqty') ];
-  setText(byId('media_div'), '');
-
   // load the selected media
   var med = byId('media').value.split(',');
   for(var i=0; i<med.length && med[i].length > 1; i++)
@@ -22,8 +15,8 @@ function medAdd(med, qty) {
   var msel = tag('select', {'class':'medium', onchange: med == '' ? medFormAdd : medSerialize});
   if(med == '')
     msel.appendChild(tag('option', {value:''}, mt('_redit_form_med_medium')));
-  for(var i=0; i<medTypes.length; i++)
-    msel.appendChild(tag('option', {value:medTypes[i][0], selected: med==medTypes[i][0]}, medTypes[i][1]));
+  for(var i=0; i<VARS.media.length; i++)
+    msel.appendChild(tag('option', {value:VARS.media[i][0], selected: med==VARS.media[i][0]}, VARS.media[i][1]));
 
   byId('media_div').appendChild(tag('span', qsel, msel,
     med != '' ? tag('input', {type: 'button', 'class':'submit', onclick:medDel, value:mt('_js_remove')}) : null
@@ -61,12 +54,12 @@ function medSerialize() {
     var qty = byClass(meds[i], 'select', 'qty')[0];
 
     /* correct quantity if necessary */
-    if(medTypes[med.selectedIndex][2] && !qty.selectedIndex)
+    if(VARS.media[med.selectedIndex][2] && !qty.selectedIndex)
       qty.selectedIndex = 1;
-    if(!medTypes[med.selectedIndex][2] && qty.selectedIndex)
+    if(!VARS.media[med.selectedIndex][2] && qty.selectedIndex)
       qty.selectedIndex = 0;
 
-    r[r.length] = medTypes[med.selectedIndex][0] + ' ' + qty.selectedIndex;
+    r[r.length] = VARS.media[med.selectedIndex][0] + ' ' + qty.selectedIndex;
   }
   byId('media').value = r.join(',');
 }

@@ -436,20 +436,13 @@ function filFTagInput(name, label, type) {
 }
 
 function filChars() {
-  var gend = VARS.genders;
-  for(var i=0; i<gend.length; i++) // l10n /_gender_.+/
-    gend[i] = [ gend[i], mt('_gender_'+gend[i]) ];
-  var bloodt = VARS.blood_types;
-  for(var i=0; i<bloodt.length; i++) // l10n /_bloodt_.+/
-    bloodt[i] = [ bloodt[i], bloodt[i] == 'unknown' ? mt('_unknown') : mt('_bloodt_'+bloodt[i]) ];
-
   var ontraitpage = location.pathname.indexOf('/c/') < 0;
 
   return [
     mt('_charb_fil_title'),
     [ mt('_charb_general'),
-      filFSelect('gender', mt('_charb_gender'), 4, gend),
-      filFSelect('bloodt', mt('_charb_bloodt'), 5, bloodt),
+      filFSelect('gender', mt('_charb_gender'), 4, VARS.genders),
+      filFSelect('bloodt', mt('_charb_bloodt'), 5, VARS.blood_types),
       '',
       filFSlider('bust_min', mt('_charb_bust_min'), 20, 120, 40, 'cm'),
       filFSlider('bust_max', mt('_charb_bust_max'), 20, 120, 100, 'cm'),
@@ -476,25 +469,14 @@ function filChars() {
 }
 
 function filReleases() {
-  var types = VARS.release_types;
-  for(var i=0; i<types.length; i++) // l10n /_rtype_.+/
-    types[i] = [ types[i], mt('_rtype_'+types[i]) ];
   var plat = VARS.platforms;
   plat.splice(0, 0, [ 'unk', mt('_unknown') ]);
   var med = VARS.media;
-  for(var i=0; i<med.length; i++) // l10n /_med_.+/
-    med[i] = [ med[i], mt('_med_'+med[i]) ];
   med.splice(0, 0, [ 'unk', mt('_unknown') ]);
-  var voi = VARS.voiced;
-  for(var i=0; i<voi.length; i++) // l10n /_voiced_.+/
-    voi[i] = [ voi[i], voi[i] == 0 ? mt('_unknown') : mt('_voiced_'+voi[i]) ];
-  var ani = VARS.animated;
-  for(var i=0; i<ani.length; i++) // l10n /_animated_.+/
-    ani[i] = [ ani[i], ani[i] == 0 ? mt('_unknown') : mt('_animated_'+ani[i]) ];
   return [
     mt('_rbrowse_fil_title'),
     [ mt('_rbrowse_general'),
-      filFOptions('type',     mt('_rbrowse_type'),    types),
+      filFOptions('type',     mt('_rbrowse_type'),    VARS.release_types),
       filFOptions('patch',    mt('_rbrowse_patch'),   [ [1, mt('_rbrowse_patch_yes')],    [0, mt('_rbrowse_patch_no')] ]),
       filFOptions('freeware', mt('_rbrowse_freeware'),[ [1, mt('_rbrowse_freeware_yes')], [0, mt('_rbrowse_freeware_no')] ]),
       filFOptions('doujin',   mt('_rbrowse_doujin'),  [ [1, mt('_rbrowse_doujin_yes')],   [0, mt('_rbrowse_doujin_no')] ]),
@@ -508,25 +490,21 @@ function filReleases() {
     [ mt('_rbrowse_resolution'), filFSelect('resolution', mt('_rbrowse_resolution'), 15, VARS.resolutions) ],
     [ mt('_rbrowse_platform'),   filFSelect('plat',       mt('_rbrowse_platform'),   20, plat) ],
     [ mt('_rbrowse_medium'),     filFSelect('med',        mt('_rbrowse_medium'),     10, med)  ],
-    [ mt('_rbrowse_voiced'),     filFSelect('voiced',     mt('_rbrowse_voiced'),      5, voi)  ],
+    [ mt('_rbrowse_voiced'),     filFSelect('voiced',     mt('_rbrowse_voiced'),      5, VARS.voiced)  ],
     [ mt('_rbrowse_animation'),
-      filFSelect('ani_story', mt('_rbrowse_ani_story'), 5, ani),
-      filFSelect('ani_ero',   mt('_rbrowse_ani_ero'),   5, ani)
+      filFSelect('ani_story', mt('_rbrowse_ani_story'), 5, VARS.animated),
+      filFSelect('ani_ero',   mt('_rbrowse_ani_ero'),   5, VARS.animated)
     ]
   ];
 }
 
 function filVN() {
-  var len = VARS.vn_lengths;
-  for(var i=0; i<len.length; i++) // l10n /_vnlength_.+/
-    len[i] = [ len[i], len[i] == 0 ? mt('_unknown') : mt('_vnlength_'+len[i]) ];
-
   var ontagpage = location.pathname.indexOf('/v/') < 0;
 
   return [
     mt('_vnbrowse_fil_title'),
     [ mt('_vnbrowse_general'),
-      filFSelect( 'length', mt('_vnbrowse_length'), 6, len),
+      filFSelect( 'length', mt('_vnbrowse_length'), 6, VARS.vn_lengths),
       filFOptions('hasani', mt('_vnbrowse_anime'), [[1, mt('_vnbrowse_anime_yes')],[0, mt('_vnbrowse_anime_no')]])
     ],
     ontagpage ? [ mt('_vnbrowse_tags'),
@@ -557,14 +535,15 @@ function filStaff() {
     ['m', mt('_gender_m')],
     ['f', mt('_gender_f')],
   ];
-  var roles = [];
-  for(var i=0; i<VARS.staff_roles.length; i++) { // l10n /_credit_.+/
-    if(VARS.staff_roles[i] == 'staff') {
-      roles.push(['seiyuu', mt('_credit_seiyuu')]);
-      roles.push(['staff', mt('_credit_other')]);
-    } else
-      roles.push([ VARS.staff_roles[i], mt('_credit_'+VARS.staff_roles[i]) ]);
-  }
+
+  // Insert seiyuu into the list of roles, before the "staff" role.
+  var roles = VARS.staff_roles;
+  for(var i=0; i<roles.length; i++)
+    if(roles[i][0] == 'staff') {
+      roles.splice(i, 0, ['seiyuu', mt('_credit_seiyuu')]);
+      break;
+    }
+
   return [
     mt('_sbrowse_fil_title'),
     [ mt('_sbrowse_general'),
