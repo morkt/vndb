@@ -1,9 +1,6 @@
 
 package VNDB;
 
-our(%O, %S, $ROOT);
-
-
 # options for TUWF
 our %O = (
   db_login  => [ 'dbi:Pg:dbname=vndb', 'vndb', 'passwd' ],
@@ -18,7 +15,8 @@ our %O = (
 
 
 # VNDB-specific options (object_data)
-our %S = (%S,
+our %S;
+%S = (%S,
   version         => `cd $VNDB::ROOT; git describe` =~ /^(.+)$/ && $1,
   url             => 'http://vndb.org',   # Only used by Multi, web pages infer their own address
   url_static      => 'http://s.vndb.org',
@@ -133,6 +131,12 @@ our %M = (
     Maintenance => {},
     #IRC         => {},  # disabled by default, no need to run an IRC bot when debugging
   },
+);
+
+
+# Options for jsgen.pl
+our %JSGEN = (
+  compress => undef,
 );
 
 

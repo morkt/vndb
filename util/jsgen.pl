@@ -7,7 +7,6 @@ use warnings;
 use Encode 'encode_utf8';
 use Cwd 'abs_path';
 use JSON::XS;
-eval { require JavaScript::Minifier::XS; };
 
 our($ROOT, %S, %O);
 BEGIN { ($ROOT = abs_path $0) =~ s{/util/jsgen\.pl$}{}; }
@@ -157,18 +156,42 @@ sub readjs {
 }
 
 
+sub save {
+  my($f, $body) = @_;
+  my $content = encode_utf8($body);
+
+  unlink "$f~";
+  if(!$VNDB::JSGEN{compress}) {
+    open my $F, '>', "$f~" or die $!;
+    print $F $content;
+    close $F;
+
+  } elsif($VNDB::JSGEN{compress} eq 'JavaScript::Minifier::XS') {
+    require JavaScript::Minifier::XS;
+    open my $F, '>', "$f~" or die $!;
+    print $F JavaScript::Minifier::XS::minify($content);
+    close $F;
+
+  } elsif($VNDB::JSGEN{compress} =~ /^\|/) { # External command
+    (my $cmd = $VNDB::JSGEN{compress}) =~ s/^\|//;
+    open my $C, '|-', "$cmd >'$f~'" or die $!;
+    print $C $content;
+    close $C or die $!;
+
+  } else {
+    die "Unrecognized compression option: '$VNDB::JSGEN{compress}'\n";
+  }
+
+  rename "$f~", $f or die $!;
+}
+
 sub jsgen {
   my $js = readjs 'main.js';
 
   for my $l (VNDB::L10N::languages()) {
     my($l10n, $body) = l10n($l, $js);
     $body =~ s{/\*VARS\*/}{vars($l, $l10n)}eg;
-
-    # JavaScript::Minifier::XS doesn't correctly handle perl's unicode, so manually encode
-    my $content = encode_utf8($body);
-    open my $NEWJS, '>', "$ROOT/static/f/js/$l.js" or die $!;
-    print $NEWJS $JavaScript::Minifier::XS::VERSION ? JavaScript::Minifier::XS::minify($content) : $content;
-    close $NEWJS;
+    save "$ROOT/static/f/js/$l.js", $body;
   }
 }
 

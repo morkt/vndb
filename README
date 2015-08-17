@@ -61,6 +61,7 @@ Requirements
   util/jsgen.pl
     JSON::XS
     JavaScript::Minifier::XS (optional, minimizes JS output)
+    uglifyjs                 (optional, slower but better JS compression)
 
   util/spritegen.pl
     Image::Magick

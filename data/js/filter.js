@@ -345,9 +345,6 @@ function filFTagInput(name, label, type) {
   var src = type=='tag' ? '/xml/tags.xml' : '/xml/traits.xml';
 
   var visible = false;
-  var remove = function() {
-    ;
-  };
   var addtag = function(ul, id, name, group) {
     ul.appendChild(
       tag('li', { fil_id: id },
@@ -388,7 +385,6 @@ function filFTagInput(name, label, type) {
     txt.disabled = true;
     if(visible)
       ajax(src+'?'+q.join(';'), function (hr) {
-        var l = [];
         var items = hr.responseXML.getElementsByTagName('item');
         setText(ul, '');
         for(var i=0; i<items.length; i++)
@@ -419,7 +415,7 @@ function filFTagInput(name, label, type) {
       }
       return '';
     },
-    function(o) { filSelectField(o); false }
+    function(o) { filSelectField(o) }
   );
 
   return [
