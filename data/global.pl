@@ -140,6 +140,13 @@ our %JSGEN = (
 );
 
 
+# Options for spritegen.pl
+our %SPRITEGEN = (
+  slow => 0,
+  pngcrush => undef,
+);
+
+
 # allow the settings to be overwritten in config.pl
 require $ROOT.'/data/config.pl' if -f $ROOT.'/data/config.pl';
 

@@ -40,3 +40,7 @@ package VNDB;
 # Uncomment the compression method to use for the generated Javascript (or just leave as-is to disable compression)
 #$JSGEN{compress} = 'JavaScript::Minifier::XS';
 #$JSGEN{compress} = "|/usr/bin/uglifyjs --compress --mangle";
+
+# Uncomment to generate an extra small icons.png (note: setting both pngcrush and slow options really is slow)
+#$SPRITEGEN{pngcrush} = '/usr/bin/pngcrush';
+#$SPRITEGEN{slow} = 1;
