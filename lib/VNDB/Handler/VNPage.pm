@@ -361,12 +361,12 @@ sub page {
      if(!$v->{image}) {
        p mt '_vnpage_noimg';
      } else {
-       p $v->{img_nsfw} ? (id => 'nsfw_hid', style => $self->authPref('show_nsfw') ? 'display: block' : '') : ();
+       p $v->{img_nsfw} ? (id => 'nsfw_hid', $self->authPref('show_nsfw') ? () : (class => 'hidden')) : ();
         img src => imgurl(cv => $v->{image}), alt => $v->{title};
         i mt '_vnpage_imgnsfw_foot' if $v->{img_nsfw};
        end;
        if($v->{img_nsfw}) {
-         p id => 'nsfw_show', $self->authPref('show_nsfw') ? (style => 'display: none') : ();
+         p id => 'nsfw_show', $self->authPref('show_nsfw') ? (class => 'hidden') : ();
           txt mt('_vnpage_imgnsfw_msg');
           br; br;
           a href => '#', mt '_vnpage_imgnsfw_show';

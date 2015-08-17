@@ -529,6 +529,8 @@ sub scrxml {
   if(!$id) {
     my $im = Image::Magick->new;
     $im->BlobToImage($imgdata);
+    $im->Set(background => '#000000');
+    $im->Set(alpha => 'Remove');
     $im->Set(magick => 'JPEG');
     $im->Set(quality => 90);
     ($ow, $oh) = ($im->Get('width'), $im->Get('height'));

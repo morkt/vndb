@@ -23,7 +23,7 @@ package VNDB;
 );
 
 
-# Uncomment to disable certain features of Multi
+# Uncomment to enable certain features of Multi
 
 #$M{modules}{API} = {};
 #$M{modules}{APIDump} = {};
@@ -35,3 +35,8 @@ package VNDB;
 #  pass    => '<nickserv-password>',
 #  masters => [ 'yorhel!~Ayo@your.hell' ],
 #};
+
+
+# Uncomment the compression method to use for the generated Javascript (or just leave as-is to disable compression)
+#$JSGEN{compress} = 'JavaScript::Minifier::XS';
+#$JSGEN{compress} = "|/usr/bin/uglifyjs --compress --mangle";

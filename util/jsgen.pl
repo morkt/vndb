@@ -6,7 +6,7 @@ use strict;
 use warnings;
 use Encode 'encode_utf8';
 use Cwd 'abs_path';
-eval { require JavaScript::Minifier::XS; };
+use JSON::XS;
 
 our($ROOT, %S, %O);
 BEGIN { ($ROOT = abs_path $0) =~ s{/util/jsgen\.pl$}{}; }
@@ -36,6 +36,40 @@ sub l10n_load {
 }
 
 
+# Remove formatting codes from L10N strings that the Javascript mt() does not support.
+#   [quant,_n,x,..] -> x
+#   [index,_n,x,..] -> x
+# [_n] is supported by Javascript mt(). It is left alone if no arguments are
+# given, otherwise it is replaced. All other codes result in an error.
+sub l10nstr {
+  my($lang, $key, @args) = @_;
+  local $_ = $lang{$lang}{$key} || $lang{'en'}{$key} || '';
+
+  # Simplify parsing
+  s/~\[/JSGEN_QBEGIN/g;
+  s/~]/JSGEN_QENDBR/g;
+  s/~,/JSGEN_QCOMMA/g;
+
+  # Replace quant/index
+  s/\[(?:quant|index),_[0-9]+,([^,\]]*)[^\]]*\]/$1/g;
+
+  # Replace [_n]
+  for my $i (0..$#args) {
+    my $v = $i+1;
+    s/\[_$v\]/$args[$i]/g;
+  }
+
+  # Check for unhandled codes
+  die "Unsupported formatting code in $lang:$key\n" if /\[[^_]/;
+
+  # Convert back
+  s/JSGEN_QBEGIN/~[/g;
+  s/JSGEN_QENDBR/~]/g;
+  s/JSGEN_QCOMMA/,/g; # No need to escape, at this point there are no codes with arguments
+  $_;
+}
+
+
 sub l10n {
   my($lang, $js) = @_;
 
@@ -43,96 +77,123 @@ sub l10n {
   my @keys;
   $js =~ s{(?:mt\('([a-z0-9_]+)'([,\)])|l10n /([^/]+)/)}#
     my($k, $s, $q) = ($1, $2, $3);
-    my $v = $k ? $lang{$lang}{$k} || $lang{'en'}{$k} : '';
-    if($q) { $q ne '<perl regex>' && push @keys, qr/$q/; '' }
-    elsif($s eq ')' && $v && $v !~ /[\~\[\]]/) {
+    my $v = $k && l10nstr($lang, $k);
+    if($q) {
+      $q ne '<perl regex>' && push @keys, qr/$q/; ''
+    } elsif($s eq ')' && $v && $v !~ /[\~\[\]]/) {
       $v =~ s/"/\\"/g;
       $v =~ s/\n/\\n/g;
       qq{"$v"}
     } else {
-      push @keys, quotemeta($k);
+      push @keys, '^'.quotemeta($k).'$';
       "mt('$k'$s"
     }
   #eg;
 
-  # generate header
-  my $r = "L10N_STR = {\n";
-  my $first = 1;
+  my %keys;
   for my $key (sort keys %{$lang{$lang}}) {
     next if !grep $key =~ /$_/, @keys;
-    $r .= ",\n" if !$first;
-    $first = 0;
-    my $val = $lang{$lang}{$key} || $lang{'en'}{$key};
-    $val =~ s/"/\\"/g;
-    $val =~ s/\n/\\n/g;
-    $val =~ s/\[index,.+$// if $key =~ /^_vnlength_/; # special casing the VN lengths, since the JS mt() doesn't handle [index]
-    $r .= sprintf qq|  %s: "%s"|, $key !~ /^[a-z0-9_]+$/ ? "'$key'" : $key, $val;
+    $keys{$key} = l10nstr($lang, $key);
   }
-  $r .= "\n};";
-  return ("$r\n", $js);
+  (\%keys, $js);
 }
 
 
 # screen resolution information, suitable for usage in filFSelect()
 sub resolutions {
   my $ln = shift;
-  my $res_cat = '';
-  my $resolutions = '';
-  my $comma = 0;
+  my $cat = '';
+  my @r;
+  my $push = \@r;
   for my $i (0..$#{$S{resolutions}}) {
     my $r = $S{resolutions}[$i];
-    if($res_cat ne $r->[1]) {
-      my $cat = $r->[1] =~ /^_/ ? $lang{$ln}{$r->[1]}||$lang{'en'}{$r->[1]} : $r->[1];
-      $resolutions .= ']' if $res_cat;
-      $resolutions .= ",['$cat',";
-      $res_cat = $r->[1];
-      $comma = 0;
+    if($cat ne $r->[1]) {
+      push @r, [$r->[1] =~ /^_/ ? l10nstr($ln, $r->[1]) : $r->[1]];
+      $cat = $r->[1];
+      $push = $r[$#r];
     }
-    my $n = $r->[0] =~ /^_/ ? $lang{$ln}{$r->[0]}||$lang{'en'}{$r->[0]} : $r->[0];
-    $resolutions .= ($comma ? ',' : '')."[$i,'$n']";
-    $comma = 1;
+    my $n = $r->[0] =~ /^_/ ? l10nstr($ln, $r->[0]) : $r->[0];
+    push @$push, [$i, $n];
   }
-  $resolutions .= ']' if $res_cat;
-  return "resolutions = [ $resolutions ];\n";
+  \@r
 }
 
+
+sub vars {
+  my($lang, $l10n) = @_;
+  my %vars = (
+    rlist_status  => [ map l10nstr($lang, $_?"_rlist_status_$_":'_unknown'), @{$S{rlist_status}} ],
+    cookie_prefix => $O{cookie_prefix},
+    age_ratings   => [ map [ $_, l10nstr($lang, $_ == -1 ? ('_unknown') : $_ == 0 ? ('_minage_all') : ('_minage_age', $_)) ], @{$S{age_ratings}} ],
+    languages     => [ map [ $_, l10nstr($lang, "_lang_$_") ], @{$S{languages}} ],
+    platforms     => [ map [ $_, l10nstr($lang, "_plat_$_") ], @{$S{platforms}} ],
+    char_roles    => [ map [ $_, l10nstr($lang, "_charrole_$_") ], @{$S{char_roles}} ],
+    media         => [ map [ $_, l10nstr($lang, "_med_$_"), $S{media}{$_} ], sort keys %{$S{media}} ],
+    release_types => [ map [ $_, l10nstr($lang, "_rtype_$_") ], @{$S{release_types}} ],
+    animated      => [ map [ 1*$_, l10nstr($lang, $_?"_animated_$_":'_unknown' ) ], @{$S{animated}} ],
+    voiced        => [ map [ 1*$_, l10nstr($lang, $_?"_voiced_$_":'_unknown' ) ], @{$S{voiced}} ],
+    vn_lengths    => [ map [ 1*$_, l10nstr($lang, $_?"_vnlength_$_":'_unknown' ) ], @{$S{vn_lengths}} ],
+    blood_types   => [ map [ $_, l10nstr($lang, $_ eq 'unknown' ? '_unknown' : "_bloodt_$_") ], @{$S{blood_types}} ],
+    genders       => [ map [ $_, l10nstr($lang, "_gender_$_") ], @{$S{genders}} ],
+    staff_roles   => [ map [ $_, l10nstr($lang, "_credit_$_") ], @{$S{staff_roles}} ],
+    resolutions   => scalar resolutions($lang),
+    l10n_lang     => [ map [ $_, l10nstr($_, "_lang_$_") ], VNDB::L10N::languages() ],
+    l10n_str      => $l10n,
+  );
+  JSON::XS->new->encode(\%vars);
+}
+
+
+# Reads main.js and any included files.
+sub readjs {
+  my $f = shift || 'main.js';
+  open my $JS, '<:utf8', "$ROOT/data/js/$f" or die $!;
+  local $/ = undef;
+  local $_ = <$JS>;
+  close $JS;
+  s{^//include (.+)$}{'(function(){'.readjs($1).'})();'}meg;
+  $_;
+}
+
+
+sub save {
+  my($f, $body) = @_;
+  my $content = encode_utf8($body);
+
+  unlink "$f~";
+  if(!$VNDB::JSGEN{compress}) {
+    open my $F, '>', "$f~" or die $!;
+    print $F $content;
+    close $F;
+
+  } elsif($VNDB::JSGEN{compress} eq 'JavaScript::Minifier::XS') {
+    require JavaScript::Minifier::XS;
+    open my $F, '>', "$f~" or die $!;
+    print $F JavaScript::Minifier::XS::minify($content);
+    close $F;
+
+  } elsif($VNDB::JSGEN{compress} =~ /^\|/) { # External command
+    (my $cmd = $VNDB::JSGEN{compress}) =~ s/^\|//;
+    open my $C, '|-', "$cmd >'$f~'" or die $!;
+    print $C $content;
+    close $C or die $!;
+
+  } else {
+    die "Unrecognized compression option: '$VNDB::JSGEN{compress}'\n";
+  }
+
+  rename "$f~", $f or die $!;
+}
 
 sub jsgen {
-  l10n_load();
-  my $common = '';
-  $common .= sprintf "rlist_status = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{rlist_status}};
-  $common .= sprintf "cookie_prefix = '%s';\n", $O{cookie_prefix};
-  $common .= sprintf "age_ratings = [ %s ];\n", join ',', @{$S{age_ratings}};
-  $common .= sprintf "languages = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{languages}};
-  $common .= sprintf "platforms = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{platforms}};
-  $common .= sprintf "char_roles = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{char_roles}};
-  $common .= sprintf "media = [ %s ];\n", join ', ', map qq{"$_"}, sort keys %{$S{media}};
-  $common .= sprintf "release_types = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{release_types}};
-  $common .= sprintf "animated = [ %s ];\n", join ', ', @{$S{animated}};
-  $common .= sprintf "voiced = [ %s ];\n", join ', ', @{$S{voiced}};
-  $common .= sprintf "vn_lengths = [ %s ];\n", join ', ', @{$S{vn_lengths}};
-  $common .= sprintf "blood_types = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{blood_types}};
-  $common .= sprintf "genders = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{genders}};
-  $common .= sprintf "char_roles = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{char_roles}};
-  $common .= sprintf "staff_roles = [ %s ];\n", join ', ', map qq{"$_"}, @{$S{staff_roles}};
-  $common .= sprintf "L10N_LANG = [ %s ];\n", join(', ', map
-      sprintf('["%s","%s"]', $_, $lang{$_}{"_lang_$_"}||$lang{en}{"_lang_$_"}),
-    VNDB::L10N::languages());
-
-  open my $JS, '<:utf8', "$ROOT/data/script.js" or die $!;
-  my $js .= join '', <$JS>;
-  close $JS;
+  my $js = readjs 'main.js';
 
   for my $l (VNDB::L10N::languages()) {
-    my($head, $body) = l10n($l, $js);
-    $head .= resolutions($l);
-    # JavaScript::Minifier::XS doesn't correctly handle perl's unicode, so manually encode
-    my $content = encode_utf8($head . $common . $body);
-    open my $NEWJS, '>', "$ROOT/static/f/js/$l.js" or die $!;
-    print $NEWJS $JavaScript::Minifier::XS::VERSION ? JavaScript::Minifier::XS::minify($content) : $content;
-    close $NEWJS;
+    my($l10n, $body) = l10n($l, $js);
+    $body =~ s{/\*VARS\*/}{vars($l, $l10n)}eg;
+    save "$ROOT/static/f/js/$l.js", $body;
   }
 }
 
+l10n_load;
 jsgen;
-

@@ -433,12 +433,7 @@ sub _form {
       end;
 
       h2 mt '_redit_form_media';
-      div id => 'media_div';
-       Select;
-        option value => $_, class => $self->{media}{$_} ? 'qty' : 'noqty', mt "_med_$_", 1
-          for (sort keys %{$self->{media}});
-       end;
-      end;
+      div id => 'media_div', '';
     }],
   ],
 

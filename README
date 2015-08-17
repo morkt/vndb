@@ -30,6 +30,7 @@ Requirements
     Crypt::URandom
     Crypt::ScryptKDF
     Image::Magick
+    JSON::XS
     TUWF
     FCGI                 (optional, for running as a FastCGI script)
     PerlIO::gzip         (optional, for output compression)
@@ -58,7 +59,9 @@ Requirements
     CSS::Minifier::XS    (optional, minimizes CSS output)
 
   util/jsgen.pl
+    JSON::XS
     JavaScript::Minifier::XS (optional, minimizes JS output)
+    uglifyjs                 (optional, slower but better JS compression)
 
   util/spritegen.pl
     Image::Magick

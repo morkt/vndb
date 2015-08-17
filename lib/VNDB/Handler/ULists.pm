@@ -27,14 +27,15 @@ sub vnvote {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { get => 'v', regex => qr/^(-1|([1-9]|10)(\.[0-9])?)$/ }
+    { get => 'v', regex => qr/^(-1|([1-9]|10)(\.[0-9])?)$/ },
+    { get => 'ref', required => 0, default => "/v$id" }
   );
   return $self->resNotFound if $f->{_err} || ($f->{v} != -1 && ($f->{v} > 10 || $f->{v} < 1));
 
   $self->dbVoteDel($uid, $id) if $f->{v} == -1;
   $self->dbVoteAdd($id, $uid, $f->{v}*10) if $f->{v} > 0;
 
-  $self->resRedirect('/v'.$id, 'temp');
+  $self->resRedirect($f->{ref}, 'temp');
 }
 
 
@@ -46,14 +47,15 @@ sub vnwish {
 
   return if !$self->authCheckCode;
   my $f = $self->formValidate(
-    { get => 's', enum => [ -1, @{$self->{wishlist_status}} ] }
+    { get => 's', enum => [ -1, @{$self->{wishlist_status}} ] },
+    { get => 'ref', required => 0, default => "/v$id" }
   );
   return $self->resNotFound if $f->{_err};
 
   $self->dbWishListDel($uid, $id) if $f->{s} == -1;
   $self->dbWishListAdd($id, $uid, $f->{s}) if $f->{s} != -1;
 
-  $self->resRedirect('/v'.$id, 'temp');
+  $self->resRedirect($f->{ref}, 'temp');
 }
 
 
