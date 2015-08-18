@@ -1,14 +1,15 @@
 // vnsStaffData maps alias id to staff data { NNN: { id: ..., aid: NNN, name: ...} }
 // used to fill form fields instead of ajax queries in vnsLoad() and vncLoad()
-var vnsStaffData = {};
+// Also used by vncast.js
+window.vnsStaffData = {};
 
 function vnsLoad() {
-  vnsStaffData = jsonParse(getText(byId('staffdata')||{})) || {};
+  window.vnsStaffData = jsonParse(getText(byId('staffdata')||{})) || {};
   var credits = jsonParse(byId('credits').value) || [];
   for(var i = 0; i < credits.length; i++) {
     var aid = credits[i].aid;
-    if(vnsStaffData[aid])
-      vnsAdd(vnsStaffData[aid], credits[i].role, credits[i].note);
+    if(window.vnsStaffData[aid])
+      vnsAdd(window.vnsStaffData[aid], credits[i].role, credits[i].note);
   }
   vnsEmpty();
 
