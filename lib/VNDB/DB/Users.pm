@@ -28,8 +28,10 @@ sub dbUserGet {
 
   $o{search} =~ s/%// if $o{search};
   my %where = (
-    $o{username} ? (
+    $o{username} && !ref($o{username}) ? (
       'username = ?' => $o{username} ) : (),
+    $o{username} && ref($o{username}) ? (
+      'username IN(!l)' => [ $o{username} ]) : (),
     $o{firstchar} ? (
       'SUBSTRING(username from 1 for 1) = ?' => $o{firstchar} ) : (),
     !$o{firstchar} && defined $o{firstchar} ? (

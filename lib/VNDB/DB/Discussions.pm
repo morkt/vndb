@@ -171,8 +171,10 @@ sub dbPostGet {
       'tp.tid = ?' => $o{tid} ) : (),
     $o{num} ? (
       'tp.num = ?' => $o{num} ) : (),
-    $o{uid} ? (
+    $o{uid} && !ref $o{uid} ? (
       'tp.uid = ?' => $o{uid} ) : (),
+    $o{uid} && ref $o{uid} ? (
+      'tp.uid IN(!l)' => [ $o{uid} ] ) : (),
     $o{mindate} ? (
       'tp.date > to_timestamp(?)' => $o{mindate} ) : (),
     $o{hide} ? (

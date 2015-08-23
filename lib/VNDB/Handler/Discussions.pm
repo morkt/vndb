@@ -342,6 +342,11 @@ sub index {
 
   $self->htmlHeader(title => mt('_disindex_title'), noindex => 1, feeds => [ 'posts', 'announcements' ]);
   div class => 'mainbox';
+   div style => 'float: right';
+    a href => '/t/search';
+     lit '&raquo; Board search &laquo;'; # XXX mt '_board_search'
+    end;
+   end;
    h1 mt '_disindex_title';
    p class => 'browseopts';
     a href => '/t/all', mt '_disboard_item_all';
