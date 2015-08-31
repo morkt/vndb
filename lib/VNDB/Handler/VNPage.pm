@@ -207,7 +207,7 @@ sub releases {
 
   # Get the release info
   my %what = map +($_->{what}, 1), grep $_->{what} && $f->{$_->{id}}, @rel_cols;
-  my $r = $self->dbReleaseGet(vid => $vid, what => join(' ', keys %what), sort => $f->{s}, reverse => $f->{o});
+  my $r = $self->dbReleaseGet(vid => $vid, what => join(' ', keys %what), sort => $f->{s}, reverse => $f->{o}, results => 200);
 
   # url generator
   my $url = sub {
@@ -341,7 +341,7 @@ sub page {
   )->[0];
   return $self->resNotFound if !$v->{id};
 
-  my $r = $self->dbReleaseGet(vid => $vid, what => 'producers platforms');
+  my $r = $self->dbReleaseGet(vid => $vid, what => 'producers platforms', results => 200);
 
   $self->htmlHeader(title => $v->{title}, noindex => $rev);
   $self->htmlMainTabs('v', $v);
