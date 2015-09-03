@@ -175,7 +175,7 @@ window.mt = function() {
   var val = VARS.l10n_str[key] || key;
   // BUG: ~[_1] will get replaced. We don't have a string like that, so whatever.
   for(var i=1; i<arguments.length; i++)
-    val = val.replace(new RegExp('\[_'+i+'\]', 'g'), arguments[i]);
+    val = val.replace(new RegExp('\\[_'+i+'\\]', 'g'), arguments[i]);
   return val.replace(/~\[/g, '[').replace(/~\]/g, ']');
 };
 
