@@ -241,7 +241,7 @@ ul.maintabs.browsetabs li.left a { margin-left: 0; margin-right: 5px }
 
 /***** Homepage ******/
 
-p.screenshots           { text-align: center; margin-top: 10px; padding: 0; height: 105px; }
+p.screenshots           { text-align: center; margin-top: 10px; padding: 0; height: 105px; overflow: hidden }
 p.screenshots img       { margin: 2px; }
 a.feed                  { float: right }
 
