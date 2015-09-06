@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw|dbThreadGet dbThreadEdit dbThreadAdd dbPostGet dbPostEdit dbPostAdd dbThreadCount|;
 
 
-# Options: id, type, iid, results, page, what, notusers, sort, reverse
+# Options: id, type, iid, results, page, what, notusers, search, sort, reverse
 # What: boards, boardtitles, firstpost, lastpost
 # Sort: id lastpost
 sub dbThreadGet {
@@ -17,18 +17,25 @@ sub dbThreadGet {
   $o{page} ||= 1;
   $o{what} ||= '';
 
-  my %where = (
+  my @where = (
     $o{id} ? (
       't.id = ?' => $o{id} ) : (),
     !$o{id} ? (
       't.hidden = FALSE' => 0 ) : (),
     $o{type} && !$o{iid} ? (
-      't.id IN(SELECT tid FROM threads_boards WHERE type = ?)' => $o{type} ) : (),
+      't.id IN(SELECT tid FROM threads_boards WHERE type IN(!l))' => [ ref $o{type} ? $o{type} : [ $o{type} ] ] ) : (),
     $o{type} && $o{iid} ? (
       'tb.type = ?' => $o{type}, 'tb.iid = ?' => $o{iid} ) : (),
     $o{notusers} ? (
       't.id NOT IN(SELECT tid FROM threads_boards WHERE type = \'u\')' => 1) : (),
   );
+
+  if($o{search}) {
+    for (split /[ -,._]/, $o{search}) {
+      s/%//g;
+      push @where, 't.title ilike ?', "%$_%" if length($_) > 0;
+    }
+  }
 
   my @select = (
     qw|t.id t.title t.count t.locked t.hidden|,
@@ -60,7 +67,7 @@ sub dbThreadGet {
       !s
       !W
       ORDER BY !s|,
-    join(', ', @select), join(' ', @join), \%where, $order
+    join(', ', @select), join(' ', @join), \@where, $order
   );
 
   if($o{what} =~ /(boards|boardtitles)/ && $#$r >= 0) {
@@ -158,7 +165,7 @@ sub dbThreadCount {
 }
 
 
-# Options: tid, num, what, uid, mindate, hide, page, results, sort, reverse
+# Options: tid, num, what, uid, mindate, hide, search, type, page, results, sort, reverse
 # what: user thread
 sub dbPostGet {
   my($self, %o) = @_;
@@ -179,6 +186,10 @@ sub dbPostGet {
       'tp.hidden = FALSE' => 1 ) : (),
     $o{hide} && $o{what} =~ /thread/ ? (
       't.hidden = FALSE' => 1 ) : (),
+    $o{search} ? (
+      q{to_tsvector('english', strip_bb_tags(msg)) @@ to_tsquery(?)} => $o{search}) : (),
+    $o{type} ? (
+      'tp.tid = ANY(ARRAY(SELECT tid FROM threads_boards WHERE type IN(!l)))' => [ ref $o{type} ? $o{type} : [ $o{type} ] ] ) : (),
   );
 
   my @select = (

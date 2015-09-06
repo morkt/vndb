@@ -3,7 +3,7 @@ package VNDB::Handler::Discussions;
 
 use strict;
 use warnings;
-use TUWF ':html', 'xml_escape';
+use TUWF ':html', 'xml_escape', 'uri_escape';
 use POSIX 'ceil';
 use VNDB::Func;
 
@@ -15,6 +15,7 @@ TUWF::register(
   qr{t([1-9]\d*)/reply}              => \&edit,
   qr{t([1-9]\d*)\.([1-9]\d*)/edit}   => \&edit,
   qr{t/(db|an|ge|[vpu])([1-9]\d*)?/new} => \&edit,
+  qr{t/search}                       => \&search,
   qr{t}                              => \&index,
 );
 
@@ -341,12 +342,18 @@ sub index {
   my $self = shift;
 
   $self->htmlHeader(title => mt('_disindex_title'), noindex => 1, feeds => [ 'posts', 'announcements' ]);
-  div class => 'mainbox';
-   h1 mt '_disindex_title';
-   p class => 'browseopts';
-    a href => '/t/all', mt '_disboard_item_all';
-    a href => '/t/'.$_, mt "_dboard_$_"
-      for (@{$self->{discussion_boards}});
+  form action => '/t/search', method => 'get';
+   div class => 'mainbox';
+    h1 mt '_disindex_title';
+    fieldset class => 'search';
+     input type => 'text', name => 'bq', id => 'bq', class => 'text';
+     input type => 'submit', class => 'submit', value => mt '_searchbox_submit';
+    end 'fieldset';
+    p class => 'browseopts';
+     a href => '/t/all', mt '_disboard_item_all';
+     a href => '/t/'.$_, mt "_dboard_$_"
+       for (@{$self->{discussion_boards}});
+    end;
    end;
   end;
 
@@ -364,6 +371,104 @@ sub index {
     _threadlist($self, $list, {p=>1}, 0, "/t", $_);
   }
 
+  $self->htmlFooter;
+}
+
+
+sub search {
+  my $self = shift;
+
+  my $frm = $self->formValidate(
+    { get => 'bq', required => 0, maxlength => 100 },
+    { get => 'b',  required => 0, multi => 1, enum => $self->{discussion_boards} },
+    { get => 't',  required => 0 },
+    { get => 'p',  required => 0, default => 1, template => 'int' },
+  );
+  return $self->resNotFound if $frm->{_err};
+
+  $self->htmlHeader(title => mt('_dissearch_title'), noindex => 1);
+  $self->htmlForm({ frm => $frm, action => '/t/search', method => 'get', nosubmit => 1 }, 'boardsearch' => [mt('_dissearch_title'),
+    [ input  => short => 'bq', name => mt('_dissearch_query') ],
+    [ check  => short => 't',  name => mt('_dissearch_titleonly') ],
+    [ select => short => 'b',  name => mt('_dissearch_boards'), multi => 1, size => scalar @{$self->{discussion_boards}},
+      options => [ map [$_,mt("_dboard_$_")], @{$self->{discussion_boards}} ] ],
+    [ static => content => sub {
+      input type => 'submit', class => 'submit', tabindex => 10, value => mt '_searchbox_submit';
+    } ],
+  ]);
+  return $self->htmlFooter if !$frm->{bq};
+
+  my %boards = map +($_,1), @{$frm->{b}};
+  %boards = () if keys %boards == @{$self->{discussion_boards}};
+
+  my($l, $np);
+  if($frm->{t}) {
+    ($l, $np) = $self->dbThreadGet(
+      keys %boards ? ( type => [keys %boards] ) : (),
+      search => $frm->{bq},
+      results => 50,
+      page => $frm->{p},
+      what => 'firstpost lastpost boardtitles',
+      sort => 'lastpost', reverse => 1,
+    );
+  } else {
+    # TODO: Allow or-matching too. But what syntax?
+    (my $ts = $frm->{bq}) =~ y{+|&:*()="';!?$%^\\[]{}<>~` }{ }s;
+    $ts =~ s/ / & /g;
+    $ts =~ y/-/!/;
+    ($l, $np) = $self->dbPostGet(
+      keys %boards ? ( type => [keys %boards] ) : (),
+      search => $ts,
+      results => 20,
+      page => $frm->{p},
+      hide => 1,
+      what => 'thread user',
+      sort => 'date', reverse => 1,
+    );
+  }
+
+  my $url = '/t/search?'.join ';', 'bq='.uri_escape($frm->{bq}), $frm->{t} ? 't=1' : (), map "b=$_", keys %boards;
+  if(!@$l) {
+    div class => 'mainbox';
+     h1 mt '_dissearch_noresults_title';
+     p mt '_dissearch_noresults_msg';
+    end;
+  } elsif($frm->{t}) {
+    _threadlist($self, $l, $frm, $np, $url, 'all');
+  } else {
+    $self->htmlBrowse(
+      items    => $l,
+      options  => $frm,
+      nextpage => $np,
+      pageurl  => $url,
+      class    => 'postsearch',
+      header   => [
+        sub { td class => 'tc1_1', ''; td class => 'tc1_2', ''; },
+        [ mt '_dissearch_col_date' ],
+        [ mt '_dissearch_col_user' ],
+        [ mt '_dissearch_col_msg' ],
+      ],
+      row     => sub {
+        my($s, $n, $l) = @_;
+        my $link = "/t$l->{tid}.$l->{num}";
+        Tr;
+         td class => 'tc1_1'; a href => $link, 't'.$l->{tid}; end;
+         td class => 'tc1_2'; a href => $link, '.'.$l->{num}; end;
+         td class => 'tc2', $self->{l10n}->date($l->{date});
+         td class => 'tc3'; lit $self->{l10n}->userstr($l->{uid}, $l->{username}); end;
+         td class => 'tc4';
+          div class => 'title';
+           a href => $link, $l->{title};
+          end;
+          # TODO: ts_headline() or something like it.
+          div class => 'thread';
+           lit bb2html($l->{msg}, 300);
+          end;
+         end;
+        end;
+      }
+    );
+  }
   $self->htmlFooter;
 }
 

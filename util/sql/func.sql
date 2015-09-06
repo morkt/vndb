@@ -11,6 +11,12 @@
 -- with that, either.
 
 
+-- strip_bb_tags(text) - simple utility function to aid full-text searching
+CREATE OR REPLACE FUNCTION strip_bb_tags(t text) RETURNS text AS $$
+  SELECT regexp_replace(t, '\[(?:url=[^\]]+|/?(?:spoiler|quote|raw|code|url))\]', ' ', 'g');
+$$ LANGUAGE sql IMMUTABLE;
+
+
 
 -- update_vncache(id) - updates the c_* columns in the vn table
 CREATE OR REPLACE FUNCTION update_vncache(integer) RETURNS void AS $$

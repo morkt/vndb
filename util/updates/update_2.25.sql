@@ -49,3 +49,11 @@ ALTER TYPE prefs_key ADD VALUE 'traits_sexual';
 CREATE TYPE board_type        AS ENUM ('an', 'db', 'ge', 'v', 'p', 'u');
 ALTER TABLE threads_boards ALTER COLUMN type DROP DEFAULT;
 ALTER TABLE threads_boards ALTER COLUMN type TYPE board_type USING trim(type)::board_type;
+
+
+-- Full-text board search
+CREATE OR REPLACE FUNCTION strip_bb_tags(t text) RETURNS text AS $$
+  SELECT regexp_replace(t, '\[(?:url=[^\]]+|/?(?:spoiler|quote|raw|code|url))\]', ' ', 'g');
+$$ LANGUAGE sql IMMUTABLE;
+
+CREATE INDEX threads_posts_ts ON threads_posts USING gin(to_tsvector('english', strip_bb_tags(msg)));

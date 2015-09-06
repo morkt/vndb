@@ -4820,7 +4820,118 @@ uk : Головна сторінка форуму
 it : Indice area messaggi
 
 
-# Thread list (on discussion board index and board browser)
+# Discussion board search
+
+:_dissearch_title
+en : Search the discussion board
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_dissearch_query
+en : Query
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_dissearch_titleonly
+en : Only search thread titles
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_dissearch_boards
+en : Boars
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_dissearch_noresults_title
+en : No results
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_dissearch_noresults_msg
+en : No threads or messages found matching your criteria.
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_dissearch_col_date
+en : Date
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_dissearch_col_user
+en : User
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_dissearch_col_msg
+en : Message
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+
+# Thread list (on discussion board index, search and board browser)
 
 :_threadlist_col_topic
 en : Topic

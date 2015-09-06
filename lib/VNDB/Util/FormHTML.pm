@@ -168,6 +168,7 @@ sub htmlFormPart {
 # Generates a form, first argument is a hashref with global options, keys:
 #   frm       => the $frm as returned by formValidate,
 #   action    => The location the form should POST to (also used as form id)
+#   method    => post/get
 #   upload    => 1/0, adds an enctype.
 #   nosubmit  => 1/0, hides the submit button
 #   editsum   => 1/0, adds an edit summary field before the submit button
@@ -178,7 +179,7 @@ sub htmlFormPart {
 # automatically calls htmlFormError and adds a 'formcode' field.
 sub htmlForm {
   my($self, $options, @subs) = @_;
-  form action => '/nospam?'.$options->{action}, method => 'post', 'accept-charset' => 'utf-8',
+  form action => '/nospam?'.$options->{action}, method => $options->{method}||'post', 'accept-charset' => 'utf-8',
     $options->{upload} ? (enctype => 'multipart/form-data') : ();
 
   div class => 'hidden';

@@ -275,6 +275,7 @@ p#searchtabs a:hover, p#searchtabs a.sel {
   background: $secbg$ url($_boxbg$) repeat;
 }
 #q { width: 600px }
+#bq { width: 300px }
 
 
 
@@ -313,6 +314,10 @@ div.mainbox.discussions b.boards a { color: $grayedout$; }
 div.discussions td.tc2             { width: 50px;  }
 div.discussions td.tc3             { width: 90px;  }
 div.discussions td.tc4             { width: 170px; }
+div.postsearch td.tc1_1           { width: 60px; padding-left: 0; padding-right: 0; text-align: right }
+div.postsearch td.tc1_2           { width: 25px; padding-left: 0 }
+div.postsearch td.tc2             { width: 65px;  }
+div.postsearch td.tc3             { width: 90px; }
 h1.boxtitle, h1.boxtitle a {
   font-family: "Futura", "Century New Gothic", "Arial", Serif;
   font-weight: bold;

@@ -123,6 +123,10 @@ CREATE SEQUENCE covers_seq;
 CREATE SEQUENCE charimg_seq;
 
 
+-- Discussion board search index (can't put this in schema.sql because it refers to func.sql)
+CREATE INDEX threads_posts_ts ON threads_posts USING gin(to_tsvector('english', strip_bb_tags(msg)));
+
+
 -- Rows that are assumed to be available
 INSERT INTO users (id, username, mail, perm) VALUES (0, 'deleted', 'del@vndb.org', 0);
 INSERT INTO users (username, mail, perm)     VALUES ('multi', 'multi@vndb.org', 0);
