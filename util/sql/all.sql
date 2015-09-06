@@ -5,6 +5,7 @@
 
 CREATE TYPE anime_type        AS ENUM ('tv', 'ova', 'mov', 'oth', 'web', 'spe', 'mv');
 CREATE TYPE blood_type        AS ENUM ('unknown', 'a', 'b', 'ab', 'o');
+CREATE TYPE board_type        AS ENUM ('an', 'db', 'ge', 'v', 'p', 'u');
 CREATE TYPE char_role         AS ENUM ('main', 'primary', 'side', 'appears');
 CREATE TYPE credit_type       AS ENUM ('scenario', 'chardesign', 'art', 'music', 'songs', 'director', 'staff');
 CREATE TYPE dbentry_type      AS ENUM ('v', 'r', 'p', 'c', 's');

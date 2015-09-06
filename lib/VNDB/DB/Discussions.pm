@@ -70,7 +70,7 @@ sub dbThreadGet {
     } 0..$#$r;
 
     if($o{what} =~ /boards/) {
-      ($_->{type}=~s/ +//||1) && push(@{$r->[$r{$_->{tid}}]{boards}}, [ $_->{type}, $_->{iid} ]) for (@{$self->dbAll(q|
+      push(@{$r->[$r{$_->{tid}}]{boards}}, [ $_->{type}, $_->{iid} ]) for (@{$self->dbAll(q|
         SELECT tid, type, iid
           FROM threads_boards
           WHERE tid IN(!l)|,
@@ -78,7 +78,7 @@ sub dbThreadGet {
       )});
     }
     if($o{what} =~ /boardtitles/) {
-      ($_->{type}=~s/ +//||1) && push(@{$r->[$r{$_->{tid}}]{boards}}, $_) for (@{$self->dbAll(q|
+      push(@{$r->[$r{$_->{tid}}]{boards}}, $_) for (@{$self->dbAll(q|
         SELECT tb.tid, tb.type, tb.iid, COALESCE(u.username, vr.title, pr.name) AS title, COALESCE(u.username, vr.original, pr.original) AS original
           FROM threads_boards tb
           LEFT JOIN vn v ON tb.type = 'v' AND v.id = tb.iid

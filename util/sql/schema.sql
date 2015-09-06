@@ -352,7 +352,7 @@ CREATE TABLE threads_posts (
 -- threads_boards
 CREATE TABLE threads_boards (
   tid integer NOT NULL DEFAULT 0,
-  type character(2) NOT NULL DEFAULT 0,
+  type board_type NOT NULL,
   iid integer NOT NULL DEFAULT 0,
   PRIMARY KEY(tid, type, iid)
 );

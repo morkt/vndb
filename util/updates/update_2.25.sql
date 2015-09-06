@@ -44,3 +44,8 @@ ALTER TYPE prefs_key ADD VALUE 'tags_cat';
 ALTER TYPE prefs_key ADD VALUE 'spoilers';
 ALTER TYPE prefs_key ADD VALUE 'traits_sexual';
 
+
+-- Convert threads_boards.type to enum
+CREATE TYPE board_type        AS ENUM ('an', 'db', 'ge', 'v', 'p', 'u');
+ALTER TABLE threads_boards ALTER COLUMN type DROP DEFAULT;
+ALTER TABLE threads_boards ALTER COLUMN type TYPE board_type USING trim(type)::board_type;
