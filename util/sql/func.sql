@@ -13,9 +13,15 @@
 
 -- strip_bb_tags(text) - simple utility function to aid full-text searching
 CREATE OR REPLACE FUNCTION strip_bb_tags(t text) RETURNS text AS $$
-  SELECT regexp_replace(t, '\[(?:url=[^\]]+|/?(?:spoiler|quote|raw|code|url))\]', ' ', 'g');
+  SELECT regexp_replace(t, '\[(?:url=[^\]]+|/?(?:spoiler|quote|raw|code|url))\]', ' ', 'gi');
 $$ LANGUAGE sql IMMUTABLE;
 
+
+-- BUG: Since this isn't a full bbcode parser, [spoiler] tags inside [raw] or [code] are still considered spoilers.
+CREATE OR REPLACE FUNCTION strip_spoilers(t text) RETURNS text AS $$
+  -- The website doesn't require the [spoiler] tag to be closed, the outer replace catches that case.
+  SELECT regexp_replace(regexp_replace(t, '\[spoiler\].*?\[/spoiler\]', ' ', 'ig'), '\[spoiler\].*', ' ', 'i');
+$$ LANGUAGE sql IMMUTABLE;
 
 
 -- update_vncache(id) - updates the c_* columns in the vn table

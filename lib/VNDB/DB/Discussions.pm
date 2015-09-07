@@ -193,9 +193,10 @@ sub dbPostGet {
   );
 
   my @select = (
-    qw|tp.num tp.msg tp.hidden|, q|extract('epoch' from tp.date) as date|, q|extract('epoch' from tp.edited) as edited|,
+    qw|tp.tid tp.num tp.hidden|, q|extract('epoch' from tp.date) as date|, q|extract('epoch' from tp.edited) as edited|,
+    $o{search} ? () : 'tp.msg',
     $o{what} =~ /user/ ? qw|tp.uid u.username| : (),
-    $o{what} =~ /thread/ ? (qw|tp.tid t.title|, 't.hidden AS thread_hidden') : (),
+    $o{what} =~ /thread/ ? ('t.title', 't.hidden AS thread_hidden') : (),
   );
   my @join = (
     $o{what} =~ /user/ ? 'JOIN users u ON u.id = tp.uid' : (),
@@ -215,6 +216,23 @@ sub dbPostGet {
       ORDER BY !s|,
     join(', ', @select), join(' ', @join), \%where, $order
   );
+
+  # Get headlines in a separate query
+  if($o{search} && $#$r) {
+    my %r = map {
+      ($r->[$_]{tid}.'.'.$r->[$_]{num}, $_)
+    } 0..$#$r;
+    my $where = join ' or ', ('(tid = ? and num = ?)')x@$r;
+    my @where = map +($_->{tid},$_->{num}), @$r;
+    my $h = join ',', map "$_=$o{headline}{$_}", $o{headline} ? keys %{$o{headline}} : ();
+
+    $r->[$r{$_->{tid}.'.'.$_->{num}}]{headline} = $_->{headline} for (@{$self->dbAll(qq|
+      SELECT tid, num, ts_headline('english', strip_bb_tags(strip_spoilers(msg)), to_tsquery(?), ?) as headline
+        FROM threads_posts
+        WHERE $where|,
+      $o{search}, $h, @where
+    )});
+  }
 
   return wantarray ? ($r, $np) : $r;
 }

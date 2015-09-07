@@ -415,7 +415,7 @@ sub search {
     # TODO: Allow or-matching too. But what syntax?
     (my $ts = $frm->{bq}) =~ y{+|&:*()="';!?$%^\\[]{}<>~` }{ }s;
     $ts =~ s/ / & /g;
-    $ts =~ y/-/!/;
+    $ts =~ s/(^| )-([^ ]+)/ !$1 /;
     ($l, $np) = $self->dbPostGet(
       keys %boards ? ( type => [keys %boards] ) : (),
       search => $ts,
@@ -424,6 +424,13 @@ sub search {
       hide => 1,
       what => 'thread user',
       sort => 'date', reverse => 1,
+      headline => {
+        # HACK: The bbcodes are stripped from the original messages when
+        # creating the headline, so they are guaranteed not to show up in the
+        # message. This means we can re-use them for highlighting without
+        # worrying that they conflict with the message contents.
+        MaxFragments => 2, MinWords => 15, MaxWords => 40, StartSel => '[raw]', StopSel => '[/raw]', FragmentDelimiter => '[code]',
+      },
     );
   }
 
@@ -460,9 +467,12 @@ sub search {
           div class => 'title';
            a href => $link, $l->{title};
           end;
-          # TODO: ts_headline() or something like it.
+          my $h = xml_escape $l->{headline};
+          $h =~ s/\[raw\]/<b class="standout">/g;
+          $h =~ s/\[\/raw\]/<\/b>/g;
+          $h =~ s/\[code\]/<b class="grayedout">...<\/b><br \/>/g;
           div class => 'thread';
-           lit bb2html($l->{msg}, 300);
+           lit $h;
           end;
          end;
         end;
