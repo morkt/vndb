@@ -218,7 +218,7 @@ sub dbPostGet {
   );
 
   # Get headlines in a separate query
-  if($o{search} && $#$r) {
+  if($o{search} && @$r) {
     my %r = map {
       ($r->[$_]{tid}.'.'.$r->[$_]{num}, $_)
     } 0..$#$r;

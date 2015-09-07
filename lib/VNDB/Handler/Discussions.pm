@@ -415,7 +415,7 @@ sub search {
     # TODO: Allow or-matching too. But what syntax?
     (my $ts = $frm->{bq}) =~ y{+|&:*()="';!?$%^\\[]{}<>~` }{ }s;
     $ts =~ s/ / & /g;
-    $ts =~ s/(^| )-([^ ]+)/ !$1 /;
+    $ts =~ s/(?:^| )-([^ ]+)/ !$1 /;
     ($l, $np) = $self->dbPostGet(
       keys %boards ? ( type => [keys %boards] ) : (),
       search => $ts,
