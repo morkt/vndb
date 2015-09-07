@@ -387,7 +387,7 @@ sub search {
   return $self->resNotFound if $frm->{_err};
 
   $self->htmlHeader(title => mt('_dissearch_title'), noindex => 1);
-  $self->htmlForm({ frm => $frm, action => '/t/search', method => 'get', nosubmit => 1 }, 'boardsearch' => [mt('_dissearch_title'),
+  $self->htmlForm({ frm => $frm, action => '/t/search', method => 'get', nosubmit => 1, noformcode => 1 }, 'boardsearch' => [mt('_dissearch_title'),
     [ input  => short => 'bq', name => mt('_dissearch_query') ],
     [ check  => short => 't',  name => mt('_dissearch_titleonly') ],
     [ select => short => 'b',  name => mt('_dissearch_boards'), multi => 1, size => scalar @{$self->{discussion_boards}},

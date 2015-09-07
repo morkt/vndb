@@ -173,6 +173,7 @@ sub htmlFormPart {
 #   nosubmit  => 1/0, hides the submit button
 #   editsum   => 1/0, adds an edit summary field before the submit button
 #   continue  => 2/1/0, replace submit button with continue buttons
+#   noformcode=> 1/0, remove the formcode field
 # The other arguments are a list of subforms in the form
 # of (subform-name => [form parts]). Each subform is shown as a
 # (JavaScript-powered) tab, and has it's own 'mainbox'. This function
@@ -182,9 +183,11 @@ sub htmlForm {
   form action => '/nospam?'.$options->{action}, method => $options->{method}||'post', 'accept-charset' => 'utf-8',
     $options->{upload} ? (enctype => 'multipart/form-data') : ();
 
-  div class => 'hidden';
-   input type => 'hidden', name => 'formcode', value => $self->authGetCode($options->{action});
-  end;
+  if(!$options->{noformcode}) {
+    div class => 'hidden';
+     input type => 'hidden', name => 'formcode', value => $self->authGetCode($options->{action});
+    end;
+  }
 
   $self->htmlFormError($options->{frm}, 1);
 
