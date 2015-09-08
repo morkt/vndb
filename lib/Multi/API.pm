@@ -93,6 +93,7 @@ sub newconn {
     rbuf_max =>     50*1024, # Commands aren't very huge, a 50k read buffer should suffice.
     wbuf_max => 5*1024*1024,
     fh       => $c->{fh},
+    keepalive=> 1,
     on_error => sub {
       writelog $c, 'IO error: %s', $_[2];
       $c->{h}->destroy;
