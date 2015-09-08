@@ -4859,7 +4859,7 @@ uk*:
 it*:
 
 :_dissearch_boards
-en : Boars
+en : Boards
 ru*:
 cs*:
 hu*:
