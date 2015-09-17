@@ -308,29 +308,38 @@ sub board {
   $self->htmlHeader(title => $title, noindex => 1, feeds => [ $type eq 'an' ? 'announcements' : 'posts' ]);
 
   $self->htmlMainTabs($type, $obj, 'disc') if $iid;
-  div class => 'mainbox';
-   h1 $title;
-   p;
-    a href => '/t', mt '_disboard_rootlink';
-    txt ' > ';
-    a href => "/t/$type", mt $type eq 'all' ? '_disboard_item_all' : "_dboard_$type";
-    if($iid) {
-      txt ' > ';
-      a style => 'font-weight: bold', href => "/t/$type$iid", "$type$iid";
-      txt ':';
-      a href => "/$type$iid", $ititle;
+  form action => '/t/search', method => 'get';
+   div class => 'mainbox';
+    h1 $title;
+    p;
+     a href => '/t', mt '_disboard_rootlink';
+     txt ' > ';
+     a href => "/t/$type", mt $type eq 'all' ? '_disboard_item_all' : "_dboard_$type";
+     if($iid) {
+       txt ' > ';
+       a style => 'font-weight: bold', href => "/t/$type$iid", "$type$iid";
+       txt ':';
+       a href => "/$type$iid", $ititle;
+     }
+    end;
+    if(!$iid) {
+      fieldset class => 'search';
+       input type => 'text', name => 'bq', id => 'bq', class => 'text';
+       input type => 'hidden', name => 'b', value => $type if $type ne 'all';
+       input type => 'submit', class => 'submit', value => mt '_searchbox_submit';
+      end 'fieldset';
     }
-   end;
-   p class => 'center';
-    if(!@$list) {
-      b mt '_disboard_nothreads';
-      br; br;
-      a href => "/t/$type$iid/new", mt '_disboard_createyourown';
-    } else {
-      a href => '/t/'.($iid ? $type.$iid : $type ne 'ge' ? 'db' : $type).'/new', mt '_disboard_startnew' if $type ne 'all';
-    }
-   end;
-  end 'div';
+    p class => 'center';
+     if(!@$list) {
+       b mt '_disboard_nothreads';
+       br; br;
+       a href => "/t/$type$iid/new", mt '_disboard_createyourown';
+     } else {
+       a href => '/t/'.($iid ? $type.$iid : $type ne 'ge' ? 'db' : $type).'/new', mt '_disboard_startnew' if $type ne 'all';
+     }
+    end;
+   end 'div';
+  end 'form';
 
   _threadlist($self, $list, $f, $np, "/t/$type$iid", $type.$iid) if @$list;
 
