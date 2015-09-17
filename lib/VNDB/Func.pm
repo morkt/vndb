@@ -3,7 +3,7 @@ package VNDB::Func;
 
 use strict;
 use warnings;
-use TUWF ':html';
+use TUWF ':html', 'kv_validate';
 use Exporter 'import';
 use POSIX 'strftime', 'ceil', 'floor';
 use JSON::XS;
@@ -11,7 +11,7 @@ use VNDBUtil;
 our @EXPORT = (@VNDBUtil::EXPORT, qw|
   clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags
   childtags charspoil imgpath imgurl fmtvote
-  jsonEncode jsonDecode script_json
+  jsonEncode jsonDecode script_json json_validate
   mtvoiced mtani mtvnlen mtrlstat mtvnlstat mtbloodt
 |);
 
@@ -225,6 +225,32 @@ sub script_json {
    $js =~ s/</\\u003C/g; # escape HTML tags like </script> and <!--
    lit $js;
   end;
+}
+
+
+# Special validation function for simple JSON structures as form fields. It can
+# only validate arrays of key-value objects. The key-value objects are then
+# validated using kv_validate.
+# Returns the parsed json object on success, undef on error and sets $frm->{_err}.
+# Doesn't provide a user-friendly error message if validation fails. It's the
+# responsibility of the JS code to handle the interface with the user.
+sub json_validate {
+  my($frm, $name, @fields) = @_;
+  my $data = eval { jsonDecode $frm->{$name} };
+  goto error if $@ || ref $data ne 'ARRAY';
+  my %known_fields = map +($_->{field},1), @fields;
+  for my $i (0..$#$data) {
+    goto error if ref $data->[$i] ne 'HASH';
+    # Require that all keys are known and have a scalar value.
+    goto error if grep !$known_fields{$_} || ref($data->[$i]{$_}), keys %{$data->[$i]};
+    $data->[$i] = kv_validate({ field => sub { $data->[$i]{shift()} } }, $TUWF::OBJ->{_TUWF}{validate_templates}, \@fields);
+    goto error if $data->[$i]{_err};
+  }
+
+  return $data;
+error:
+  push @{$frm->{_err}}, [ 'aliases', 'template', 'json' ] ;
+  return undef;
 }
 
 

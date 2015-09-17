@@ -126,7 +126,7 @@ sub dbStaffRevisionInsert {
   my($self, $o) = @_;
 
   $self->dbExec('DELETE FROM edit_staff_aliases');
-  if ($o->{aid}) {
+  if($o->{aid}) {
     $self->dbExec(q|
       INSERT INTO edit_staff_aliases (id, name, original) VALUES (?, ?, ?)|,
       $o->{aid}, $o->{name}, $o->{original});
@@ -139,12 +139,11 @@ sub dbStaffRevisionInsert {
   my %staff = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
     qw|aid gender lang desc l_wp l_site l_twitter l_anidb|;
   $self->dbExec('UPDATE edit_staff !H', \%staff) if %staff;
-  for my $alias (@{$o->{aliases}}) {
-    if ($alias->[0]) {
-      $self->dbExec('INSERT INTO edit_staff_aliases (id, name, original) VALUES (!l)', $alias);
+  for my $a (@{$o->{aliases}}) {
+    if($a->{aid}) {
+      $self->dbExec('INSERT INTO edit_staff_aliases (id, name, original) VALUES (!l)', [ @{$a}{qw|aid name orig|} ]);
     } else {
-      $self->dbExec('INSERT INTO edit_staff_aliases (name, original) VALUES (?, ?)',
-        $alias->[1], $alias->[2]);
+      $self->dbExec('INSERT INTO edit_staff_aliases (name, original) VALUES (?, ?)', $a->{name}, $a->{orig});
     }
   }
 }

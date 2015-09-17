@@ -215,29 +215,23 @@ sub edit {
       { post => 'ilock',         required  => 0 },
     );
     push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
+    my $aliases = json_validate($frm, 'aliases',
+      { field => 'name', required => 1, maxlength => 200 },
+      { field => 'orig', required => 0, maxlength => 200, default => '' },
+      { field => 'aid',  required => 0, template => 'int', default => 0 },
+    );
 
-    my @aliases;
-    my $raw_a = eval { jsonDecode $frm->{aliases} };
-    push @{$frm->{_err}}, [ 'aliases', 'template', 'json' ] if $@ || ref $raw_a ne 'ARRAY';
     if(!$frm->{_err}) {
+      $aliases = [ sort { $a->{name} cmp $b->{name} } @$aliases ];
       my %old_aliases = $sid ? ( map +($_->{id} => 1), @{$self->dbStaffAliasIds($sid)} ) : ();
       $frm->{primary} = 0 unless exists $old_aliases{$frm->{primary}};
 
-      for my $a (sort { $a->{name} cmp $b->{name} } @$raw_a) {
-        # check for empty aliases
-        if($a->{name} =~ /^\s*$/) {
-          push @{$frm->{_err}}, ['alias_name', 'required'];
-          last;
-        }
-        s/^\s+|\s+$//g for ($a->{name}, $a->{orig});
-        # normalize alias id to a number so that the comparison works
-        # or reset it to zero for newly added aliases.
-        $a->{aid} *= $old_aliases{$a->{aid}} ? 1 : 0;
-        push @aliases, $a;
-      }
+      # normalize alias id to a number so that the comparison works
+      # or reset it to zero for newly added aliases.
+      $_->{aid} *= $old_aliases{$_->{aid}} ? 1 : 0 for (sort { $a->{name} cmp $b->{name} } @$aliases);
     }
     if(!$frm->{_err}) {
-      $frm->{aliases} = jsonEncode \@aliases;
+      $frm->{aliases} = jsonEncode $aliases;
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
       $frm->{aid}    = $frm->{primary} if $sid;
@@ -246,7 +240,7 @@ sub edit {
       return $self->resRedirect("/s$sid", 'post')
         if $sid && !first { ($frm->{$_}//'') ne ($b4{$_}//'') } keys %b4;
 
-      $frm->{aliases} = [ map [ @{$_}{qw|aid name orig|} ], @aliases ];
+      $frm->{aliases} = $aliases;
       my $nrev = $self->dbItemEdit ('s' => $sid ? $s->{cid} : undef, %$frm);
       return $self->resRedirect("/s$nrev->{iid}.$nrev->{rev}", 'post');
     }
