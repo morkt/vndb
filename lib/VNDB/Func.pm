@@ -11,7 +11,7 @@ use VNDBUtil;
 our @EXPORT = (@VNDBUtil::EXPORT, qw|
   clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags
   childtags charspoil imgpath imgurl fmtvote
-  jsonEncode jsonDecode script_json json_validate
+  json_encode json_decode script_json json_validate
   mtvoiced mtani mtvnlen mtrlstat mtvnlstat mtbloodt
 |);
 
@@ -210,18 +210,18 @@ sub fmtvote {
 my $JSON = JSON::XS->new;
 $JSON->canonical(1);
 
-sub jsonEncode ($) {
+sub json_encode ($) {
   $JSON->encode(@_);
 }
 
-sub jsonDecode ($) {
+sub json_decode ($) {
   $JSON->decode(@_);
 }
 
 # Insert JSON-encoded data as script, arguments: id, object
 sub script_json {
   script id => $_[0], type => 'application/json';
-   my $js = jsonEncode $_[1];
+   my $js = json_encode $_[1];
    $js =~ s/</\\u003C/g; # escape HTML tags like </script> and <!--
    lit $js;
   end;
@@ -236,7 +236,7 @@ sub script_json {
 # responsibility of the JS code to handle the interface with the user.
 sub json_validate {
   my($frm, $name, @fields) = @_;
-  my $data = eval { jsonDecode $frm->{$name} };
+  my $data = eval { json_decode $frm->{$name} };
   goto error if $@ || ref $data ne 'ARRAY';
   my %known_fields = map +($_->{field},1), @fields;
   for my $i (0..$#$data) {

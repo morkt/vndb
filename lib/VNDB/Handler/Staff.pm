@@ -189,7 +189,7 @@ sub edit {
   my %b4 = !$sid ? () : (
     (map { $_ => $s->{$_} } qw|name original gender lang desc l_wp l_site l_twitter l_anidb ihid ilock|),
     primary => $s->{aid},
-    aliases => jsonEncode [
+    aliases => json_encode [
       map +{ aid => $_->{id}, name => $_->{name}, orig => $_->{original} },
       sort { $a->{name} cmp $b->{name} } @{$s->{aliases}}
     ],
@@ -231,7 +231,7 @@ sub edit {
       $_->{aid} *= $old_aliases{$_->{aid}} ? 1 : 0 for (sort { $a->{name} cmp $b->{name} } @$aliases);
     }
     if(!$frm->{_err}) {
-      $frm->{aliases} = jsonEncode $aliases;
+      $frm->{aliases} = json_encode $aliases;
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
       $frm->{aid}    = $frm->{primary} if $sid;

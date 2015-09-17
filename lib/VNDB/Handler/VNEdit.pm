@@ -89,11 +89,11 @@ sub edit {
 
   my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai image img_nsfw ihid ilock|),
-    credits => jsonEncode [
+    credits => json_encode [
       map { my $c = $_; +{ map { $_ => $c->{$_} } qw|aid role note| } }
       sort { $a->{aid} <=> $b->{aid} || $a->{role} cmp $b->{role} } @{$v->{credits}}
     ],
-    seiyuu => jsonEncode [
+    seiyuu => json_encode [
       map { my $c = $_; +{ map { $_ => $c->{$_} } qw|aid cid note| } }
       sort { $a->{aid} <=> $b->{aid} || $a->{cid} <=> $b->{cid} } @{$v->{seiyuu}}
     ],
@@ -134,8 +134,8 @@ sub edit {
     my (@credits, @seiyuu);
     if(!$nosubmit && !$frm->{_err}) {
       eval { # catch json decoding errors
-        my $raw_c = $frm->{credits} ? jsonDecode $frm->{credits} : [];
-        my $raw_s = $frm->{seiyuu}  ? jsonDecode $frm->{seiyuu}  : [];
+        my $raw_c = $frm->{credits} ? json_decode $frm->{credits} : [];
+        my $raw_s = $frm->{seiyuu}  ? json_decode $frm->{seiyuu}  : [];
 
         # ensure submitted alias IDs exist within database
         my @alist = map $_->{aid}, @$raw_c, @$raw_s;
@@ -183,8 +183,8 @@ sub edit {
       $frm->{vnrelations} = join '|||', map $_->[0].','.$_->[1].','.($_->[2]?1:0).','.$_->[3], sort { $a->[1] <=> $b->[1]} @{$relations};
       $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
       $frm->{screenshots} = join ' ', map sprintf('%d,%d,%d', $_->[0], $_->[1]?1:0, $_->[2]), sort { $a->[0] <=> $b->[0] } @$screenshots;
-      $frm->{credits} = jsonEncode \@credits;
-      $frm->{seiyuu} = jsonEncode \@seiyuu;
+      $frm->{credits} = json_encode \@credits;
+      $frm->{seiyuu} = json_encode \@seiyuu;
 
       # weed out duplicate aliases
       my %alias;
