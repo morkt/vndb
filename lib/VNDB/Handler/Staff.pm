@@ -201,7 +201,7 @@ sub edit {
     $frm = $self->formValidate (
       { post => 'name',          maxlength => 200 },
       { post => 'original',      required  => 0, maxlength => 200,  default => '' },
-      { post => 'primary',       required  => 0, template => 'id', default => 0 },
+      { post => 'primary',       required  => 0, template => 'uint', default => 0 },
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { post => 'gender',        required  => 0, default => 'unknown', enum => [qw|unknown m f|] },
       { post => 'lang',          enum      => $self->{languages} },
