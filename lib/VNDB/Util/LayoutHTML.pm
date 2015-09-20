@@ -115,8 +115,7 @@ sub _menu {
     } else {
       h2 mt '_menu_user';
       div;
-       # XXX: Using %ENV here is ugly, this should be abstracted in TUWF.
-       my $ref = uri_escape '/'.$self->reqPath().($ENV{QUERY_STRING} ? '?'.decode_utf8($ENV{QUERY_STRING}) : '');
+       my $ref = uri_escape $self->reqPath().$self->reqQuery();
        a href => "/u/login?ref=$ref", mt '_menu_login'; br;
        a href => '/u/newpass', mt '_menu_newpass'; br;
        a href => '/u/register', mt '_menu_register'; br;

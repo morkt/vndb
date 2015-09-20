@@ -200,7 +200,7 @@ sub authGetCode {
 # form-id is not given, the path of the current requests is used.
 sub authCheckCode {
   my $self = shift;
-  my $id = shift || '/'.$self->reqPath();
+  my $id = shift || $self->reqPath();
   my $code = shift || $self->reqParam('formcode');
   return _incorrectcode($self) if !$code || $code !~ qr/^[0-9a-f]{16}$/;
   my $time = time;
