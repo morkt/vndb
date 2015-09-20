@@ -121,11 +121,10 @@ sub edit {
       { post => 'seiyuu',      required => 0, default => '[]', maxlength => 5000 },
       { post => 'vnrelations', required => 0, default => '', maxlength => 5000 },
       { post => 'screenshots', required => 0, default => '', maxlength => 1000 },
-      { post => 'editsum',     required => 0, maxlength => 5000 },
+      { post => 'editsum',     required => !$nosubmit, template => 'editsum' },
       { post => 'ihid',        required => 0 },
       { post => 'ilock',       required => 0 },
     );
-    push @{$frm->{_err}}, 'badeditsum' if !$nosubmit && (!$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc}));
     my $raw_c = !$frm->{_err} && json_validate($frm, 'credits',
       { field => 'aid',  required => 1, template => 'id' },
       { field => 'role', required => 1, enum => $self->{staff_roles} },

@@ -304,8 +304,7 @@ sub edit {
       { post => 'doujin',    required => 0, default => 0 },
       { post => 'title',     maxlength => 250 },
       { post => 'original',  required => 0, default => '', maxlength => 250 },
-      { post => 'gtin',      required => 0, default => '0',
-        func => [ \&gtintype, 'Not a valid JAN/UPC/EAN code' ] },
+      { post => 'gtin',      required => 0, default => '0', template => 'gtin' },
       { post => 'catalog',   required => 0, default => '', maxlength => 50 },
       { post => 'languages', multi => 1, enum => $self->{languages} },
       { post => 'website',   required => 0, default => '', maxlength => 250, template => 'weburl' },
@@ -320,12 +319,11 @@ sub edit {
       { post => 'ani_ero',   required => 0, default => 0, enum => $self->{animated} },
       { post => 'producers', required => 0, default => '' },
       { post => 'vn',        maxlength => 5000 },
-      { post => 'editsum',   required  => 0, maxlength => 5000 },
+      { post => 'editsum',   template => 'editsum' },
       { post => 'ihid',      required  => 0 },
       { post => 'ilock',     required  => 0 },
     );
 
-    push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{notes});
     push @{$frm->{_err}}, [ 'released', 'required', 1 ] if !$frm->{released};
 
     my($media, $producers, $new_vn);

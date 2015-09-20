@@ -17,6 +17,7 @@ use lib $ROOT.'/lib';
 
 use TUWF ':html';
 use VNDB::L10N;
+use VNDBUtil 'gtintype';
 use SkinFile;
 
 
@@ -51,6 +52,8 @@ TUWF::set(
     id    => { template => 'uint', min => 1, max => 1<<40 },
     page  => { template => 'uint', max => 1000 },
     uname => { regex => qr/^[a-z0-9-]*$/, minlength => 2, maxlength => 15 },
+    gtin  => { func => \&gtintype },
+    editsum => { maxlength => 5000, minlength => 2 },
   },
 );
 TUWF::load_recursive('VNDB::Util', 'VNDB::DB', 'VNDB::Handler');

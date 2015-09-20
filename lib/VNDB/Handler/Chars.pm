@@ -302,11 +302,10 @@ sub edit {
       { post => 'main_spoil',    required  => 0, default => 0, enum => [ 0..2 ] },
       { post => 'traits',        required  => 0, default => '', regex => [ qr/^(?:[1-9]\d*-[0-2])(?: +[1-9]\d*-[0-2])*$/, 'Incorrect trait format.' ] },
       { post => 'vns',           required  => 0, default => '', regex => [ qr/^(?:[1-9]\d*-\d+-[0-2]-[a-z]+)(?: +[1-9]\d*-\d+-[0-2]-[a-z]+)*$/, 'Incorrect VN format.' ] },
-      { post => 'editsum',       required  => 0, maxlength => 5000 },
+      { post => 'editsum',       template => 'editsum' },
       { post => 'ihid',          required  => 0 },
       { post => 'ilock',         required  => 0 },
     );
-    push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
 
     # handle image upload
     $frm->{image} = _uploadimage($self, $frm);

@@ -210,11 +210,10 @@ sub edit {
       { post => 'l_twitter',     required => 0, maxlength => 16, default => '', regex => [ qr/^\S+$/, mt('_staffe_form_tw_err') ] },
       { post => 'l_anidb',       required => 0, template => 'id', default => undef },
       { post => 'aliases',       required  => 0, maxlength => 5000, default => '' },
-      { post => 'editsum',       required  => 0, maxlength => 5000 },
+      { post => 'editsum',       template => 'editsum' },
       { post => 'ihid',          required  => 0 },
       { post => 'ilock',         required  => 0 },
     );
-    push @{$frm->{_err}}, 'badeditsum' if !$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc});
     my $aliases = json_validate($frm, 'aliases',
       { field => 'name', required => 1, maxlength => 200 },
       { field => 'orig', required => 0, maxlength => 200, default => '' },

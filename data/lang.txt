@@ -16202,18 +16202,6 @@ tr : 24 saat içinde en fazla 5 başlık açabilirsiniz
 uk : За 24 години можна створювати не більше, ніж 5 тредів
 it : Puoi creare solo 5 discussioni al giorno
 
-:_formerr_e_badeditsum
-en : Please read [url,/d5.4,the guidelines] on how to use the edit summary.
-ru : Пожалуйста, прочтите [url,/d5.4,руководство] о том, как использовать поле "Суммарно о правке".
-cs : Prosíme, přečtěte si [url,/d5.4,doporučení] ohledně užívání úprav shrnutí.
-hu : Légyszíves olvasdd el a szerkesztési összegzés [url,/d5.4, útmutatóját].
-nl : Lees a.u.b. [url,/d5.4,de richtlijnen] over het gebruik van de samenvatting.
-de : Bitte lies [url,/d5.4,die Richtlinien] darüber, wie man die Zusammenfassung bearbeitet.
-es : Por favor lee [url,/d5.4,las normas] sobre como editar el mensaje.
-tr : Düzenleme özetinin kullanımı için lütfen [url,/d5.4,kılavuz] sayfasını okuyun.
-uk : Будь ласка, прочитайте [url,/d5.4,вказівки] про те, як використовувати «Сумарно по редагуванню»
-it : Leggi la [url,/d5.4,guida] su come usare il riepilogo modifica
-
 :_formerr_e_mainchar
 en : Invalid main character. Make sure the ID is correct, that the main character itself is not an instance of an other character, and that this entry is not used as a main character elsewhere.
 ru : Неверный главный персонаж. Проверьте, что ID персонажа верный, сам персонаж не является воплощением какого-либо другого персонажа, и этот персонаж не используется в качестве главного где-нибудь ещё.
@@ -16393,6 +16381,30 @@ es*: [_1] puede contener caracteres alfanúmerico en minúscula y un guión, y d
 tr*: [_1] sadece küçük harfler, rakamlar ve tire içerebilir; ve bir harf ile başlamalıdır
 uk*: Поле [_1] може складатися лише з маленьких літер латинки, цифр і рисок, і має починатися з літери
 it*: [_1] può avere solo caratteri minuscoli e trattini, e deve iniziare con una lettera
+
+:_formerr_tpl_gtin
+en : Invalid JAN/UPC/EAN
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_formerr_tpl_editsum
+en : Please read [url,/d5.4,the guidelines] on how to use the edit summary.
+ru : Пожалуйста, прочтите [url,/d5.4,руководство] о том, как использовать поле "Суммарно о правке".
+cs : Prosíme, přečtěte si [url,/d5.4,doporučení] ohledně užívání úprav shrnutí.
+hu : Légyszíves olvasdd el a szerkesztési összegzés [url,/d5.4, útmutatóját].
+nl : Lees a.u.b. [url,/d5.4,de richtlijnen] over het gebruik van de samenvatting.
+de : Bitte lies [url,/d5.4,die Richtlinien] darüber, wie man die Zusammenfassung bearbeitet.
+es : Por favor lee [url,/d5.4,las normas] sobre como editar el mensaje.
+tr : Düzenleme özetinin kullanımı için lütfen [url,/d5.4,kılavuz] sayfasını okuyun.
+uk : Будь ласка, прочитайте [url,/d5.4,вказівки] про те, як використовувати «Сумарно по редагуванню»
+it : Leggi la [url,/d5.4,guida] su come usare il riepilogo modifica
 
 :_formerr_tpl_json
 en : [_1]: Malformed staff data
