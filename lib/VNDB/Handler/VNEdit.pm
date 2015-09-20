@@ -117,12 +117,12 @@ sub edit {
       { post => 'anime',       required => 0, default => '' },
       { post => 'image',       required => 0, default => 0,  template => 'id' },
       { post => 'img_nsfw',    required => 0, default => 0 },
-      { post => 'credits', template => 'json', json_fields => [
+      { post => 'credits', required => 0, template => 'json', json_fields => [
         { field => 'aid',  required => 1, template => 'id' },
         { field => 'role', required => 1, enum => $self->{staff_roles} },
         { field => 'note', required => 0, maxlength => 250, default => '' },
       ]},
-      { post => 'seiyuu', template => 'json', json_fields => [
+      { post => 'seiyuu', required => 0, template => 'json', json_fields => [
         { field => 'aid',  required => 1, template => 'id' },
         { field => 'cid',  required => 1, template => 'id' },
         { field => 'note', required => 0, maxlength => 250, default => '' },

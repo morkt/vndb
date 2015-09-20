@@ -55,7 +55,7 @@ TUWF::set(
     uname => { regex => qr/^[a-z0-9-]*$/, minlength => 2, maxlength => 15 },
     gtin  => { func => \&gtintype },
     editsum => { maxlength => 5000, minlength => 2 },
-    json  => { func => \&json_validate, inherit => ['json_fields'], default => [] },
+    json  => { func => \&json_validate, inherit => ['json_fields'], default => '[]' },
   },
 );
 TUWF::load_recursive('VNDB::Util', 'VNDB::DB', 'VNDB::Handler');
