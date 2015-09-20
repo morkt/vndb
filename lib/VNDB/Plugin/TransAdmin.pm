@@ -89,7 +89,7 @@ sub _savelang {
   push @read, $_ while (local $_ = $f->read);
   $f->close;
 
-  my @keys = $self->reqPost;
+  my @keys = $self->reqPosts;
   $f = LangFile->new(write => $langfile);
   my $key;
   for my $l (@read) {
