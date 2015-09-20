@@ -201,7 +201,7 @@ sub votelist {
     $own ? (footer => sub {
       Tr;
        td colspan => 3, class => 'tc1';
-        input type => 'checkbox', class => 'checkall', name => 'vid', value => -1;
+        input type => 'checkbox', class => 'checkall', name => 'vid', value => 0;
         txt ' ';
         Select name => 'batchedit', id => 'batchedit';
          option value => -2, '-- with selected --';
@@ -488,8 +488,8 @@ sub _vnlist_browse {
 
     $own ? (footer => sub {
       Tr;
-       td class => 'tc1'; input type => 'checkbox', name => 'vid', value => -1, class => 'checkall'; end;
-       td class => 'tc2'; input type => 'checkbox', name => 'rid', value => -1, class => 'checkall'; end;
+       td class => 'tc1'; input type => 'checkbox', name => 'vid', value => 0, class => 'checkall'; end;
+       td class => 'tc2'; input type => 'checkbox', name => 'rid', value => 0, class => 'checkall'; end;
        td class => 'tc3_6', colspan => 4;
         Select id => 'vns', name => 'vns';
          option value => -2, mt '_rlist_withvn';

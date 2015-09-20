@@ -50,7 +50,7 @@ TUWF::set(
   error_404_handler => \&handle404,
   log_format => \&logformat,
   validate_templates => {
-    id    => { template => 'uint', min => 1, max => 1<<40 },
+    id    => { template => 'uint', max => 1<<40 },
     page  => { template => 'uint', max => 1000 },
     uname => { regex => qr/^[a-z0-9-]*$/, minlength => 2, maxlength => 15 },
     gtin  => { func => \&gtintype },
