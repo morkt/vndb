@@ -201,14 +201,14 @@ sub edit {
     $frm = $self->formValidate (
       { post => 'name',          maxlength => 200 },
       { post => 'original',      required  => 0, maxlength => 200,  default => '' },
-      { post => 'primary',       required  => 0, template => 'int', default => 0 },
+      { post => 'primary',       required  => 0, template => 'id', default => 0 },
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { post => 'gender',        required  => 0, default => 'unknown', enum => [qw|unknown m f|] },
       { post => 'lang',          enum      => $self->{languages} },
       { post => 'l_wp',          required  => 0, maxlength => 150,  default => '' },
-      { post => 'l_site',        required => 0, template => 'url', maxlength => 250, default => '' },
+      { post => 'l_site',        required => 0, template => 'weburl', maxlength => 250, default => '' },
       { post => 'l_twitter',     required => 0, maxlength => 16, default => '', regex => [ qr/^\S+$/, mt('_staffe_form_tw_err') ] },
-      { post => 'l_anidb',       required => 0, template => 'int', default => undef },
+      { post => 'l_anidb',       required => 0, template => 'id', default => undef },
       { post => 'aliases',       required  => 0, maxlength => 5000, default => '' },
       { post => 'editsum',       required  => 0, maxlength => 5000 },
       { post => 'ihid',          required  => 0 },
@@ -218,7 +218,7 @@ sub edit {
     my $aliases = json_validate($frm, 'aliases',
       { field => 'name', required => 1, maxlength => 200 },
       { field => 'orig', required => 0, maxlength => 200, default => '' },
-      { field => 'aid',  required => 0, template => 'int', default => 0 },
+      { field => 'aid',  required => 0, template => 'id', default => 0 },
     );
 
     if(!$frm->{_err}) {
@@ -226,8 +226,7 @@ sub edit {
       my %old_aliases = $sid ? ( map +($_->{id} => 1), @{$self->dbStaffAliasIds($sid)} ) : ();
       $frm->{primary} = 0 unless exists $old_aliases{$frm->{primary}};
 
-      # normalize alias id to a number so that the comparison works
-      # or reset it to zero for newly added aliases.
+      # reset aid to zero for newly added aliases.
       $_->{aid} *= $old_aliases{$_->{aid}} ? 1 : 0 for (sort { $a->{name} cmp $b->{name} } @$aliases);
     }
     if(!$frm->{_err}) {
@@ -295,7 +294,7 @@ sub list {
   my ($self, $char) = @_;
 
   my $f = $self->formValidate(
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
     { get => 'q', required => 0, default => '' },
     { get => 'fil', required => 0, default => '' },
   );
@@ -367,8 +366,8 @@ sub staffxml {
   my $self = shift;
 
   my $q = $self->formValidate(
-    { get => 'a', required => 0, multi => 1, template => 'int' },
-    { get => 's', required => 0, multi => 1, template => 'int' },
+    { get => 'a', required => 0, multi => 1, template => 'id' },
+    { get => 's', required => 0, multi => 1, template => 'id' },
     { get => 'q', required => 0, maxlength => 500 },
   );
   return $self->resNotFound if $q->{_err} || !(@{$q->{s}} || @{$q->{a}} || $q->{q});

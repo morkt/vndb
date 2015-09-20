@@ -18,7 +18,7 @@ sub list {
   my $f = $self->formValidate(
     { get => 's', required => 0, default => 'tagscore', enum => [ qw|title rel pop tagscore rating| ] },
     { get => 'o', required => 0, enum => [ 'a','d' ] },
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
     { get => 'q', required => 0, default => '' },
     { get => 'sq', required => 0, default => '' },
     { get => 'fil',required => 0 },

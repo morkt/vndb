@@ -308,8 +308,8 @@ sub edit {
         func => [ \&gtintype, 'Not a valid JAN/UPC/EAN code' ] },
       { post => 'catalog',   required => 0, default => '', maxlength => 50 },
       { post => 'languages', multi => 1, enum => $self->{languages} },
-      { post => 'website',   required => 0, default => '', maxlength => 250, template => 'url' },
-      { post => 'released',  required => 0, default => 0, template => 'int' },
+      { post => 'website',   required => 0, default => '', maxlength => 250, template => 'weburl' },
+      { post => 'released',  required => 0, default => 0, template => 'uint' },
       { post => 'minage' ,   required => 0, default => -1, enum => $self->{age_ratings} },
       { post => 'notes',     required => 0, default => '', maxlength => 10240 },
       { post => 'platforms', required => 0, default => '', multi => 1, enum => $self->{platforms} },
@@ -475,7 +475,7 @@ sub browse {
   my $self = shift;
 
   my $f = $self->formValidate(
-    { get => 'p',  required => 0, default => 1, template => 'int' },
+    { get => 'p',  required => 0, default => 1, template => 'page' },
     { get => 'o',  required => 0, default => 'a', enum => ['a', 'd'] },
     { get => 'q',  required => 0, default => '', maxlength => 500 },
     { get => 's',  required => 0, default => 'title', enum => [qw|released minage title|] },
@@ -565,8 +565,8 @@ sub _fil_compat {
     { get => 'do', required => 0, default => 0, enum => [ 0..2 ] },
     { get => 'ma_m', required => 0, default => 0, enum => [ 0, 1 ] },
     { get => 'ma_a', required => 0, default => 0, enum => $self->{age_ratings} },
-    { get => 'mi', required => 0, default => 0, template => 'int' },
-    { get => 'ma', required => 0, default => 99999999, template => 'int' },
+    { get => 'mi', required => 0, default => 0, template => 'uint' },
+    { get => 'ma', required => 0, default => 99999999, template => 'uint' },
     { get => 're', required => 0, multi => 1, default => 0, enum => [ 1..$#{$self->{resolutions}} ] },
   );
   return () if $f->{_err};
@@ -589,7 +589,7 @@ sub relxml {
   my $self = shift;
 
   my $f = $self->formValidate(
-    { get => 'v', required => 1, multi => 1, mincount => 1, template => 'int' }
+    { get => 'v', required => 1, multi => 1, mincount => 1, template => 'id' }
   );
   return $self->resNotFound if $f->{_err};
 

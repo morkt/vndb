@@ -161,7 +161,7 @@ sub login {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
       { post => 'usrname', required => 1, minlength => 2, maxlength => 15 },
-      { post => 'usrpass', required => 1, minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { post => 'usrpass', required => 1, minlength => 4, maxlength => 64, template => 'ascii' },
     );
 
     if(!$frm->{_err}) {
@@ -199,9 +199,7 @@ sub newpass {
   my($frm, $u);
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
-    $frm = $self->formValidate(
-      { post => 'mail', required => 1, template => 'mail' },
-    );
+    $frm = $self->formValidate({ post => 'mail', template => 'email' });
     if(!$frm->{_err}) {
       $u = $self->dbUserGet(mail => $frm->{mail})->[0];
       $frm->{_err} = [ 'nomail' ] if !$u || !$u->{id};
@@ -261,8 +259,8 @@ sub setpass {
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode("/u$u->{id}/setpass?t=$t");
     $frm = $self->formValidate(
-      { post => 'usrpass',  minlength => 4, maxlength => 64, template => 'asciiprint' },
-      { post => 'usrpass2', minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { post => 'usrpass',  minlength => 4, maxlength => 64, template => 'ascii' },
+      { post => 'usrpass2', minlength => 4, maxlength => 64, template => 'ascii' },
     );
     push @{$frm->{_err}}, 'passmatch' if $frm->{usrpass} ne $frm->{usrpass2};
 
@@ -292,10 +290,10 @@ sub register {
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
-      { post => 'usrname',  template => 'pname', minlength => 2, maxlength => 15 },
-      { post => 'mail',     template => 'mail' },
-      { post => 'type',     regex => [ qr/^[1-3]$/ ] },
-      { post => 'answer',   template => 'int' },
+      { post => 'usrname',  template => 'uname' },
+      { post => 'mail',     template => 'email' },
+      { post => 'type',     enum => [1..3] },
+      { post => 'answer',   template => 'uint' },
     );
     my $num = $self->{stats}{[qw|vn releases producers|]->[ $frm->{type} - 1 ]};
     push @{$frm->{_err}}, 'notanswer'  if !$frm->{_err} && ($frm->{answer} > $num || $frm->{answer} < $num*0.995);
@@ -365,13 +363,13 @@ sub edit {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
       $self->authCan('usermod') ? (
-        { post => 'usrname',   template => 'pname', minlength => 2, maxlength => 15 },
+        { post => 'usrname',   template => 'uname' },
         { post => 'perms',     required => 0, multi => 1, enum => [ keys %{$self->{permissions}} ] },
         { post => 'ign_votes', required => 0, default => 0 },
       ) : (),
-      { post => 'mail',       template => 'mail' },
-      { post => 'usrpass',    required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
-      { post => 'usrpass2',   required => 0, minlength => 4, maxlength => 64, template => 'asciiprint' },
+      { post => 'mail',       template => 'email' },
+      { post => 'usrpass',    required => 0, minlength => 4, maxlength => 64, template => 'ascii' },
+      { post => 'usrpass2',   required => 0, minlength => 4, maxlength => 64, template => 'ascii' },
       { post => 'hide_list',  required => 0, default => 0,  enum => [0,1] },
       { post => 'show_nsfw',  required => 0, default => 0,  enum => [0,1] },
       { post => 'traits_sexual', required => 0, default => 0,  enum => [0,1] },
@@ -463,7 +461,7 @@ sub posts {
   return $self->resNotFound if !$u->{id};
 
   my $f = $self->formValidate(
-    { get => 'p', required => 0, default => 1, template => 'int' }
+    { get => 'p', required => 0, default => 1, template => 'page' }
   );
   return $self->resNotFound if $f->{_err};
 
@@ -557,7 +555,7 @@ sub list {
   my $f = $self->formValidate(
     { get => 's', required => 0, default => 'username', enum => [ qw|username registered votes changes tags| ] },
     { get => 'o', required => 0, default => 'a', enum => [ 'a','d' ] },
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
     { get => 'q', required => 0, default => '', maxlength => 50 },
   );
   return $self->resNotFound if $f->{_err};
@@ -630,7 +628,7 @@ sub notifies {
   return $self->htmlDenied if !$u->{id} || $uid != $u->{id};
 
   my $f = $self->formValidate(
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
     { get => 'r', required => 0, default => 0, enum => [0,1] },
   );
   return $self->resNotFound if $f->{_err};
@@ -651,7 +649,7 @@ sub notifies {
   } elsif($self->reqMethod() eq 'POST') {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { post => 'notifysel', multi => 1, required => 0, template => 'int' },
+      { post => 'notifysel', multi => 1, required => 0, template => 'id' },
       { post => 'markread', required => 0 },
       { post => 'remove', required => 0 }
     );

@@ -290,15 +290,15 @@ sub edit {
       { post => 'alias',         required  => 0, maxlength => 500,  default => '' },
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { post => 'gender',        required  => 0, default => 'unknown', enum => $self->{genders} },
-      { post => 'image',         required  => 0, default => 0,  template => 'int' },
+      { post => 'image',         required  => 0, default => 0,  template => 'id' },
       { post => 'bday',          required  => 0, default => '', regex => [ qr/^\d{2}-\d{2}$/, mt('_chare_form_bday_err') ] },
-      { post => 's_bust',        required  => 0, default => 0, template => 'int' },
-      { post => 's_waist',       required  => 0, default => 0, template => 'int' },
-      { post => 's_hip',         required  => 0, default => 0, template => 'int' },
-      { post => 'height',        required  => 0, default => 0, template => 'int' },
-      { post => 'weight',        required  => 0, default => 0, template => 'int' },
+      { post => 's_bust',        required  => 0, default => 0, template => 'uint', max => 32767 },
+      { post => 's_waist',       required  => 0, default => 0, template => 'uint', max => 32767 },
+      { post => 's_hip',         required  => 0, default => 0, template => 'uint', max => 32767 },
+      { post => 'height',        required  => 0, default => 0, template => 'uint', max => 32767 },
+      { post => 'weight',        required  => 0, default => 0, template => 'uint', max => 32767 },
       { post => 'bloodt',        required  => 0, default => 'unknown', enum => $self->{blood_types} },
-      { post => 'main',          required  => 0, default => 0, template => 'int' },
+      { post => 'main',          required  => 0, default => 0, template => 'id' },
       { post => 'main_spoil',    required  => 0, default => 0, enum => [ 0..2 ] },
       { post => 'traits',        required  => 0, default => '', regex => [ qr/^(?:[1-9]\d*-[0-2])(?: +[1-9]\d*-[0-2])*$/, 'Incorrect trait format.' ] },
       { post => 'vns',           required  => 0, default => '', regex => [ qr/^(?:[1-9]\d*-\d+-[0-2]-[a-z]+)(?: +[1-9]\d*-\d+-[0-2]-[a-z]+)*$/, 'Incorrect VN format.' ] },
@@ -350,7 +350,7 @@ sub edit {
   }
 
   if(!$id) {
-    my $vid = $self->formValidate({ get => 'vid', required => 1, template => 'int'});
+    my $vid = $self->formValidate({ get => 'vid', required => 1, template => 'id'});
     $frm->{vns} //= "$vid->{vid}-0-0-primary" if !$vid->{_err};
   }
   $frm->{$_} //= $b4{$_} for keys %b4;
@@ -479,7 +479,7 @@ sub list {
   my($self, $fch) = @_;
 
   my $f = $self->formValidate(
-    { get => 'p',   required => 0, default => 1, template => 'int' },
+    { get => 'p',   required => 0, default => 1, template => 'page' },
     { get => 'q',   required => 0, default => '' },
     { get => 'fil', required => 0, default => '' },
   );

@@ -192,7 +192,7 @@ sub history {
   $id ||= 0;
 
   my $f = $self->formValidate(
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
     { get => 'm', required => 0, default => !$type, enum => [ 0, 1 ] },
     { get => 'h', required => 0, default => 0, enum => [ -1..1 ] },
     { get => 't', required => 0, default => '', enum => [qw|v r p c s a|] },

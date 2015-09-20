@@ -284,7 +284,7 @@ sub board {
   return $self->resNotFound if $type =~ /(db|an|ge|all)/ && $iid;
 
   my $f = $self->formValidate(
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
   );
   return $self->resNotFound if $f->{_err};
 
@@ -391,7 +391,7 @@ sub search {
     { get => 'bq', required => 0, maxlength => 100 },
     { get => 'b',  required => 0, multi => 1, enum => $self->{discussion_boards} },
     { get => 't',  required => 0 },
-    { get => 'p',  required => 0, default => 1, template => 'int' },
+    { get => 'p',  required => 0, default => 1, template => 'page' },
   );
   return $self->resNotFound if $frm->{_err};
 

@@ -84,9 +84,7 @@ sub rlist_e {
 
   my $rid = $id;
   if(!$rid) {
-    my $f = $self->formValidate(
-      { get => 'id', required => 1, template => 'int' }
-    );
+    my $f = $self->formValidate({ get => 'id', required => 1, template => 'id' });
     return $self->resNotFound if $f->{_err};
     $rid = $f->{id};
   }
@@ -125,7 +123,7 @@ sub votelist {
   return $self->resNotFound if $type eq 'u' && !$own && !(!$obj->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
-    { get => 'p',  required => 0, default => 1, template => 'int' },
+    { get => 'p',  required => 0, default => 1, template => 'page' },
     { get => 'o',  required => 0, default => 'd', enum => ['a', 'd'] },
     { get => 's',  required => 0, default => 'date', enum => [qw|date title vote|] },
     { get => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
@@ -135,7 +133,7 @@ sub votelist {
   if($own && $self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { post => 'vid', required => 1, multi => 1, template => 'int' },
+      { post => 'vid', required => 1, multi => 1, template => 'id' },
       { post => 'batchedit', required => 1, enum => [ -2, -1, 1..10 ] },
     );
     my @vid = grep $_ && $_ > 0, @{$frm->{vid}};
@@ -229,7 +227,7 @@ sub wishlist {
   return $self->resNotFound if !$u || !$own && !(!$u->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
     { get => 'o', required => 0, default => 'd', enum => [ 'a', 'd' ] },
     { get => 's', required => 0, default => 'wstat', enum => [qw|title added wstat|] },
     { get => 'f', required => 0, default => -1, enum => [ -1, @{$self->{wishlist_status}} ] },
@@ -239,7 +237,7 @@ sub wishlist {
   if($own && $self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { post => 'sel', required => 0, default => 0, multi => 1, template => 'int' },
+      { post => 'sel', required => 0, default => 0, multi => 1, template => 'id' },
       { post => 'batchedit', required => 1, enum => [ -1, @{$self->{wishlist_status}} ] },
     );
     $frm->{sel} = [ grep $_, @{$frm->{sel}} ]; # weed out "select all" checkbox
@@ -334,7 +332,7 @@ sub vnlist {
   return $self->resNotFound if !$u || !$own && !(!$u->{hide_list} || $self->authCan('usermod'));
 
   my $f = $self->formValidate(
-    { get => 'p',  required => 0, default => 1, template => 'int' },
+    { get => 'p',  required => 0, default => 1, template => 'page' },
     { get => 'o',  required => 0, default => 'a', enum => [ 'a', 'd' ] },
     { get => 's',  required => 0, default => 'title', enum => [ 'title', 'vote' ] },
     { get => 'c',  required => 0, default => 'all', enum => [ 'all', 'a'..'z', 0 ] },
@@ -346,8 +344,8 @@ sub vnlist {
   if($own && $self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
-      { post => 'vid', required => 0, default => 0, multi => 1, template => 'int' },
-      { post => 'rid', required => 0, default => 0, multi => 1, template => 'int' },
+      { post => 'vid', required => 0, default => 0, multi => 1, template => 'id' },
+      { post => 'rid', required => 0, default => 0, multi => 1, template => 'id' },
       { post => 'not', required => 0, default => '', maxlength => 2000 },
       { post => 'vns', required => 1, enum => [ -2, -1, @{$self->{vnlist_status}}, 999 ] },
       { post => 'rel', required => 1, enum => [ -2, -1, @{$self->{rlist_status}} ] },

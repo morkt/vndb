@@ -47,13 +47,10 @@ TUWF::set(
   pre_request_handler => \&reqinit,
   error_404_handler => \&handle404,
   log_format => \&logformat,
-  # for compatibility with YAWF
   validate_templates => {
-    mail       => { regex => qr/^[^@<>\s\(\),]+@[^@.<>\s\(\),]+(?:\.[^@.<>\s\(\),]+)+$/ },
-    url        => { regex => qr/^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:\/~\+\*#]*[\w\-\@?^=%&\/~\+#\*])?$/ },
-    asciiprint => { regex => qr/^[\x20-\x7E]*$/ },
-    int        => { regex => qr/^-?[0-9]+$/ },
-    pname      => { regex => qr/^[a-z0-9-]*$/ },
+    id    => { template => 'uint', min => 1, max => 1<<40 },
+    page  => { template => 'uint', max => 1000 },
+    uname => { regex => qr/^[a-z0-9-]*$/, minlength => 2, maxlength => 15 },
   },
 );
 TUWF::load_recursive('VNDB::Util', 'VNDB::DB', 'VNDB::Handler');

@@ -115,7 +115,7 @@ sub edit {
       { post => 'l_encubed',   required => 0, default => '', maxlength => 100 },
       { post => 'l_renai',     required => 0, default => '', maxlength => 100 },
       { post => 'anime',       required => 0, default => '' },
-      { post => 'image',       required => 0, default => 0,  template => 'int' },
+      { post => 'image',       required => 0, default => 0,  template => 'id' },
       { post => 'img_nsfw',    required => 0, default => 0 },
       { post => 'credits',     required => 0, default => '[]', maxlength => 5000 },
       { post => 'seiyuu',      required => 0, default => '[]', maxlength => 5000 },
@@ -127,13 +127,13 @@ sub edit {
     );
     push @{$frm->{_err}}, 'badeditsum' if !$nosubmit && (!$frm->{editsum} || lc($frm->{editsum}) eq lc($frm->{desc}));
     my $raw_c = !$frm->{_err} && json_validate($frm, 'credits',
-      { field => 'aid',  required => 1, template => 'int' },
+      { field => 'aid',  required => 1, template => 'id' },
       { field => 'role', required => 1, enum => $self->{staff_roles} },
       { field => 'note', required => 0, maxlength => 300, default => '' },
     );
     my $raw_s = !$frm->{_err} && json_validate($frm, 'seiyuu',
-      { field => 'aid',  required => 1, template => 'int' },
-      { field => 'cid',  required => 1, template => 'int' },
+      { field => 'aid',  required => 1, template => 'id' },
+      { field => 'cid',  required => 1, template => 'id' },
       { field => 'note', required => 0, maxlength => 300, default => '' },
     );
 
@@ -152,7 +152,6 @@ sub edit {
         next unless exists $staff{$c->{aid}};
         # discard entries with identical name & role
         next if $last_c->{aid} == $c->{aid} && $last_c->{role} eq $c->{role};
-        $c->{aid} += 0;
         push @credits, $c;
         $last_c = $c;
       }
@@ -164,8 +163,6 @@ sub edit {
         for my $s (sort { $a->{aid} <=> $b->{aid} || $a->{cid} <=> $b->{cid} } @$raw_s) {
           next unless $staff{$s->{aid}} && $vn_chars{$s->{cid}}; # weed out odd credits
           next if $last_s->{aid} == $s->{aid} && $last_s->{cid} == $s->{cid};
-          $s->{cid} += 0; # force numeric conversion
-          $s->{aid} += 0;
           push @seiyuu, $s;
           $last_s = $s;
         }
@@ -516,7 +513,7 @@ sub scrxml {
   die "This page can only be accessed as POST\n" if $self->reqMethod ne 'POST';
 
   # upload new screenshot
-  my $num = $self->formValidate({get => 'upload', template => 'int'});
+  my $num = $self->formValidate({get => 'upload', template => 'uint'});
   return $self->resNotFound if $num->{_err};
   my $param = "scr_upl_file_$num->{upload}";
 

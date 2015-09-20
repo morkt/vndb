@@ -32,7 +32,7 @@ sub tagpage {
   my $f = $self->formValidate(
     { get => 's', required => 0, default => 'tagscore', enum => [ qw|title rel pop tagscore rating| ] },
     { get => 'o', required => 0, default => 'd', enum => [ 'a','d' ] },
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
     { get => 'm', required => 0, default => $self->authPref('spoilers') || 0, enum => [qw|0 1 2|] },
     { get => 'fil', required => 0 },
   );
@@ -280,7 +280,7 @@ sub taglist {
   my $f = $self->formValidate(
     { get => 's', required => 0, default => 'name', enum => ['added', 'name'] },
     { get => 'o', required => 0, default => 'a', enum => ['a', 'd'] },
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
     { get => 't', required => 0, default => -1, enum => [ -1..2 ] },
     { get => 'q', required => 0, default => '' },
   );
@@ -346,12 +346,12 @@ sub taglinks {
   my $self = shift;
 
   my $f = $self->formValidate(
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
     { get => 'o', required => 0, default => 'd', enum => ['a', 'd'] },
     { get => 's', required => 0, default => 'date', enum => [qw|date tag|] },
-    { get => 'v', required => 0, default => 0, template => 'int' },
-    { get => 'u', required => 0, default => 0, template => 'int' },
-    { get => 't', required => 0, default => 0, template => 'int' },
+    { get => 'v', required => 0, default => 0, template => 'id' },
+    { get => 'u', required => 0, default => 0, template => 'id' },
+    { get => 't', required => 0, default => 0, template => 'id' },
   );
   return $self->resNotFound if $f->{_err} || $f->{p} > 100;
 
@@ -473,7 +473,7 @@ sub vntagmod {
     return if !$self->authCheckCode;
     my $frm = $self->formValidate(
       { post => 'taglinks', required => 0, default => '', maxlength => 10240, regex => [ qr/^[1-9][0-9]*,-?[1-3],-?[0-2]( [1-9][0-9]*,-?[1-3],-?[0-2])*$/, 'meh' ] },
-      { post => 'overrule', required => 0, multi => 1, template => 'int' },
+      { post => 'overrule', required => 0, multi => 1, template => 'id' },
     );
     return $self->resNotFound if $frm->{_err};
 
@@ -726,7 +726,7 @@ sub tagxml {
 
   my $f = $self->formValidate(
     { get => 'q', required => 0, maxlength => 500 },
-    { get => 'id', required => 0, multi => 1, template => 'int' },
+    { get => 'id', required => 0, multi => 1, template => 'id' },
   );
   return $self->resNotFound if $f->{_err} || (!$f->{q} && !$f->{id} && !$f->{id}[0]);
 

@@ -16334,7 +16334,7 @@ tr : Aynı grupta [url,_1,_2] niteliği zaten var.
 uk : Риса [url,_1,_2] вже існує в цій групі
 it : La caratteristica [url,_1,_2] esiste già all'interno dello stesso gruppo.
 
-:_formerr_tpl_mail
+:_formerr_tpl_email
 en : Invalid email address
 ru : Некорректный адрес электронной почты
 cs : Neplatná e-mailová adresa
@@ -16346,7 +16346,7 @@ tr : Geçersiz e-posta adresi
 uk : Неправильна е-мейл адреса
 it : Indirizzo email non valido
 
-:_formerr_tpl_url
+:_formerr_tpl_weburl
 en : [_1]: Invalid URL
 ru : [_1]: Некорректная ссылка
 cs : [_1]: Neplatná URL
@@ -16358,7 +16358,7 @@ tr : [_1]: Geçersiz URL
 uk : [_1]: Неправильний URL
 it : [_1]: URL non valido
 
-:_formerr_tpl_asciiprint
+:_formerr_tpl_ascii
 en : [_1] may only contain ASCII characters
 ru : Поле '[_1]' может содержать лишь символы диапазона ASCII
 cs : [_1] smí obsahovat pouze znaky ASCII
@@ -16382,17 +16382,17 @@ tr : [_1]: Geçersiz sayı
 uk : [_1]: Неправильний номер
 it : [_1]: Non è un numero valido
 
-:_formerr_tpl_pname
-en : [_1] can only contain lowercase alphanumeric characters and a hyphen, and must start with a letter
-ru : Поле '[_1]' может содержать лишь символы буквенно-цифрового диапазона в нижнем регистре и чёрточку и должно начинаться с буквы
-cs : [_1] smí obsahovat pouze malá písmena, čísla a pomlčku, a musí začínat písmenem
-hu : [_1] egy karakterrel kell kezdődjön és csak kisbetűs alfanumerikus karaktereket és egy kötőjelet tartalmazhat
-nl : [_1] mag alleen kleine letters, cijfers of koppeltekens bevatten, en moet beginnen met een letter
-de : [_1] darf nur aus kleingeschriebenen Buchstaben, Zahlen und Bindestrichen bestehen und muss mit einem Buchstaben anfangen
-es : [_1] puede contener caracteres alfanúmerico en minúscula y un guión, y debe empezar por un carácter
-tr : [_1] sadece küçük harfler, rakamlar ve tire içerebilir; ve bir harf ile başlamalıdır
-uk : Поле [_1] може складатися лише з маленьких літер латинки, цифр і рисок, і має починатися з літери
-it : [_1] può avere solo caratteri minuscoli e trattini, e deve iniziare con una lettera
+:_formerr_tpl_uname
+en*: [_1] can only contain lowercase alphanumeric characters and a hyphen
+ru*: Поле '[_1]' может содержать лишь символы буквенно-цифрового диапазона в нижнем регистре и чёрточку и должно начинаться с буквы
+cs*: [_1] smí obsahovat pouze malá písmena, čísla a pomlčku, a musí začínat písmenem
+hu*: [_1] egy karakterrel kell kezdődjön és csak kisbetűs alfanumerikus karaktereket és egy kötőjelet tartalmazhat
+nl : [_1] mag alleen kleine letters, cijfers of koppeltekens bevatten
+de*: [_1] darf nur aus kleingeschriebenen Buchstaben, Zahlen und Bindestrichen bestehen und muss mit einem Buchstaben anfangen
+es*: [_1] puede contener caracteres alfanúmerico en minúscula y un guión, y debe empezar por un carácter
+tr*: [_1] sadece küçük harfler, rakamlar ve tire içerebilir; ve bir harf ile başlamalıdır
+uk*: Поле [_1] може складатися лише з маленьких літер латинки, цифр і рисок, і має починатися з літери
+it*: [_1] può avere solo caratteri minuscoli e trattini, e deve iniziare con una lettera
 
 :_formerr_tpl_json
 en : [_1]: Malformed staff data

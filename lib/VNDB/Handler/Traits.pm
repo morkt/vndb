@@ -25,7 +25,7 @@ sub traitpage {
   return $self->resNotFound if !$t;
 
   my $f = $self->formValidate(
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
     { get => 'm', required => 0, default => $self->authPref('spoilers')||0, enum => [qw|0 1 2|] },
     { get => 'fil', required => 0, default => '' },
   );
@@ -144,7 +144,7 @@ sub traitedit {
       { post => 'alias',       required => 0, maxlength => 1024, default => '', regex => [ qr/^[^,]+$/s, 'No comma allowed in aliases' ]  },
       { post => 'description', required => 0, maxlength => 10240, default => '' },
       { post => 'parents',     required => !$self->authCan('tagmod'), default => '', regex => [ qr/^(?:$|(?:[1-9]\d*)(?: +[1-9]\d*)*)$/, 'Parent traits must be a space-separated list of trait IDs' ] },
-      { post => 'order',       required => 0, default => 0, template => 'int', min => 0 },
+      { post => 'order',       required => 0, default => 0, template => 'uint' },
     );
     my @parents = split /[\t ]+/, $frm->{parents};
     my $group = undef;
@@ -254,7 +254,7 @@ sub traitlist {
   my $f = $self->formValidate(
     { get => 's', required => 0, default => 'name', enum => ['added', 'name'] },
     { get => 'o', required => 0, default => 'a', enum => ['a', 'd'] },
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
     { get => 't', required => 0, default => -1, enum => [ -1..2 ] },
     { get => 'q', required => 0, default => '' },
   );
@@ -403,8 +403,8 @@ sub traitxml {
 
   my $f = $self->formValidate(
     { get => 'q', required => 0, maxlength => 500 },
-    { get => 'id', required => 0, multi => 1, template => 'int' },
-    { get => 'r', required => 0, default => 15, template => 'int', min => 1, max => 200 },
+    { get => 'id', required => 0, multi => 1, template => 'id' },
+    { get => 'r', required => 0, default => 15, template => 'uint', min => 1, max => 200 },
   );
   return $self->resNotFound if $f->{_err} || (!$f->{q} && !$f->{id} && !$f->{id}[0]);
 

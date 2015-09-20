@@ -108,14 +108,14 @@ sub edit {
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
-      { post => 'rid',      required => 1, template => 'int' },
+      { post => 'rid',      required => 1, template => 'id' },
       { post => 'priority', required => 0, default => 0, template => 'int' },
       { post => 'hidden',   required => 0, default => 0, enum => [0,1] },
       { post => 'affiliate',required => 1, enum => [0..$#{$self->{affiliates}}] },
       { post => 'url',      required => 1 },
       { post => 'version',  required => 0, default => '' },
       { post => 'price',    required => 0, default => '' },
-      { post => 'lastfetch',required => 0, min => 0 },
+      { post => 'lastfetch',required => 0, template => 'uint' },
       { post => 'data',     required => 0, default => '' },
     );
     if(!$frm->{_err}) {

@@ -222,7 +222,7 @@ sub edit {
       { post => 'original',      required  => 0, maxlength => 200,  default => '' },
       { post => 'alias',         required  => 0, maxlength => 500,  default => '' },
       { post => 'lang',          enum      => $self->{languages} },
-      { post => 'website',       required  => 0, maxlength => 250,  default => '', template => 'url' },
+      { post => 'website',       required  => 0, maxlength => 250,  default => '', template => 'weburl' },
       { post => 'l_wp',          required  => 0, maxlength => 150,  default => '' },
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { post => 'prodrelations', required  => 0, maxlength => 5000, default => '' },
@@ -346,7 +346,7 @@ sub list {
   my($self, $char) = @_;
 
   my $f = $self->formValidate(
-    { get => 'p', required => 0, default => 1, template => 'int' },
+    { get => 'p', required => 0, default => 1, template => 'page' },
     { get => 'q', required => 0, default => '' },
   );
   return $self->resNotFound if $f->{_err};
