@@ -209,26 +209,25 @@ sub edit {
       { post => 'l_site',        required => 0, template => 'weburl', maxlength => 250, default => '' },
       { post => 'l_twitter',     required => 0, maxlength => 16, default => '', regex => [ qr/^\S+$/, mt('_staffe_form_tw_err') ] },
       { post => 'l_anidb',       required => 0, template => 'id', default => undef },
-      { post => 'aliases',       required  => 0, maxlength => 5000, default => '' },
+      { post => 'aliases',       template => 'json', json_fields => [
+        { field => 'name', required => 1, maxlength => 200 },
+        { field => 'orig', required => 0, maxlength => 200, default => '' },
+        { field => 'aid',  required => 0, template => 'uint', default => 0 },
+      ]},
       { post => 'editsum',       template => 'editsum' },
       { post => 'ihid',          required  => 0 },
       { post => 'ilock',         required  => 0 },
     );
-    my $aliases = json_validate($frm, 'aliases',
-      { field => 'name', required => 1, maxlength => 200 },
-      { field => 'orig', required => 0, maxlength => 200, default => '' },
-      { field => 'aid',  required => 0, template => 'id', default => 0 },
-    );
 
     if(!$frm->{_err}) {
+      my $aliases = json_decode $frm->{aliases};
       $aliases = [ sort { $a->{name} cmp $b->{name} } @$aliases ];
       my %old_aliases = $sid ? ( map +($_->{id} => 1), @{$self->dbStaffAliasIds($sid)} ) : ();
       $frm->{primary} = 0 unless exists $old_aliases{$frm->{primary}};
 
       # reset aid to zero for newly added aliases.
       $_->{aid} *= $old_aliases{$_->{aid}} ? 1 : 0 for (sort { $a->{name} cmp $b->{name} } @$aliases);
-    }
-    if(!$frm->{_err}) {
+
       $frm->{aliases} = json_encode $aliases;
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;

@@ -15,8 +15,9 @@ BEGIN { ($ROOT = abs_path $0) =~ s{/util/vndb\.pl$}{}; }
 use lib $ROOT.'/lib';
 
 
-use TUWF ':html';
+use TUWF ':html', 'kv_validate';
 use VNDB::L10N;
+use VNDB::Func 'json_encode', 'json_decode';
 use VNDBUtil 'gtintype';
 use SkinFile;
 
@@ -54,6 +55,7 @@ TUWF::set(
     uname => { regex => qr/^[a-z0-9-]*$/, minlength => 2, maxlength => 15 },
     gtin  => { func => \&gtintype },
     editsum => { maxlength => 5000, minlength => 2 },
+    json  => { func => \&json_validate, inherit => ['json_fields'], default => [] },
   },
 );
 TUWF::load_recursive('VNDB::Util', 'VNDB::DB', 'VNDB::Handler');
@@ -131,3 +133,24 @@ sub logformat {
     $self->authInfo->{id} ? 'u'.$self->authInfo->{id} : '-', $msg;
 }
 
+
+# Special validation function for simple JSON structures as form fields. It can
+# only validate arrays of key-value objects. The key-value objects are then
+# validated using kv_validate.
+sub json_validate {
+  my($val, $opts) = @_;
+  my $fields = $opts->{json_fields};
+  my $data = eval { json_decode $val };
+  return 0 if $@ || ref $data ne 'ARRAY';
+  my %known_fields = map +($_->{field},1), @$fields;
+  for my $i (0..$#$data) {
+    return 0 if ref $data->[$i] ne 'HASH';
+    # Require that all keys are known and have a scalar value.
+    return 0 if grep !$known_fields{$_} || ref($data->[$i]{$_}), keys %{$data->[$i]};
+    $data->[$i] = kv_validate({ field => sub { $data->[$i]{shift()} } }, $TUWF::OBJ->{_TUWF}{validate_templates}, $fields);
+    return 0 if $data->[$i]{_err};
+  }
+
+  $_[0] = json_encode $data;
+  return 1;
+}

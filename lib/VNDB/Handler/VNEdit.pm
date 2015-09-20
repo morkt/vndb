@@ -117,38 +117,37 @@ sub edit {
       { post => 'anime',       required => 0, default => '' },
       { post => 'image',       required => 0, default => 0,  template => 'id' },
       { post => 'img_nsfw',    required => 0, default => 0 },
-      { post => 'credits',     required => 0, default => '[]', maxlength => 5000 },
-      { post => 'seiyuu',      required => 0, default => '[]', maxlength => 5000 },
+      { post => 'credits', template => 'json', json_fields => [
+        { field => 'aid',  required => 1, template => 'id' },
+        { field => 'role', required => 1, enum => $self->{staff_roles} },
+        { field => 'note', required => 0, maxlength => 250, default => '' },
+      ]},
+      { post => 'seiyuu', template => 'json', json_fields => [
+        { field => 'aid',  required => 1, template => 'id' },
+        { field => 'cid',  required => 1, template => 'id' },
+        { field => 'note', required => 0, maxlength => 250, default => '' },
+      ]},
       { post => 'vnrelations', required => 0, default => '', maxlength => 5000 },
       { post => 'screenshots', required => 0, default => '', maxlength => 1000 },
       { post => 'editsum',     required => !$nosubmit, template => 'editsum' },
       { post => 'ihid',        required => 0 },
       { post => 'ilock',       required => 0 },
     );
-    my $raw_c = !$frm->{_err} && json_validate($frm, 'credits',
-      { field => 'aid',  required => 1, template => 'id' },
-      { field => 'role', required => 1, enum => $self->{staff_roles} },
-      { field => 'note', required => 0, maxlength => 300, default => '' },
-    );
-    my $raw_s = !$frm->{_err} && json_validate($frm, 'seiyuu',
-      { field => 'aid',  required => 1, template => 'id' },
-      { field => 'cid',  required => 1, template => 'id' },
-      { field => 'note', required => 0, maxlength => 300, default => '' },
-    );
-
     # handle image upload
     $frm->{image} = _uploadimage($self, $frm) if !$nosubmit;
 
+    my $raw_c = !$frm->{_err} && json_decode $frm->{credits};
+    my $raw_s = !$frm->{_err} && json_decode $frm->{seiyuu};
     my (@credits, @seiyuu);
     if(!$nosubmit && !$frm->{_err}) {
       # ensure submitted alias IDs exist within database
       my @alist = map $_->{aid}, @$raw_c, @$raw_s;
-      my %staff = @alist ? map +($_->{aid} => 1), @{$self->dbStaffGet(aid => \@alist, results => 200)} : ();
+      my %staff = @alist ? map +($_->{aid}, 1), @{$self->dbStaffGet(aid => \@alist, results => 200)} : ();
 
       # check for duplicate credits
       my $last_c = { aid => 0, role => '' };
       for my $c (sort { $a->{aid} <=> $b->{aid} || $a->{role} cmp $b->{role} } @$raw_c) {
-        next unless exists $staff{$c->{aid}};
+        next unless exists $staff{0+$c->{aid}};
         # discard entries with identical name & role
         next if $last_c->{aid} == $c->{aid} && $last_c->{role} eq $c->{role};
         push @credits, $c;
@@ -160,7 +159,7 @@ sub edit {
         my %vn_chars = map +($_->{id} => 1), @$chars;
         my $last_s = { aid => 0, cid => 0 };
         for my $s (sort { $a->{aid} <=> $b->{aid} || $a->{cid} <=> $b->{cid} } @$raw_s) {
-          next unless $staff{$s->{aid}} && $vn_chars{$s->{cid}}; # weed out odd credits
+          next unless $staff{0+$s->{aid}} && $vn_chars{0+$s->{cid}}; # weed out odd credits
           next if $last_s->{aid} == $s->{aid} && $last_s->{cid} == $s->{cid};
           push @seiyuu, $s;
           $last_s = $s;

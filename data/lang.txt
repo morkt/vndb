@@ -16407,12 +16407,12 @@ uk : Будь ласка, прочитайте [url,/d5.4,вказівки] пр
 it : Leggi la [url,/d5.4,guida] su come usare il riepilogo modifica
 
 :_formerr_tpl_json
-en : [_1]: Malformed staff data
+en : [_1]: Malformed data or invalid input
 ru*:
 cs*:
 hu*:
 nl*:
-de : Ungültige Stabdaten
+de*:
 es*:
 tr*:
 uk*:
