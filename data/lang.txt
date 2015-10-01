@@ -16298,6 +16298,18 @@ tr : Yanlış pano: [_1]
 uk : Неправильна дошка: [_1]
 it : Area sbagliata: [_1]
 
+:_formerr_existingalias
+en : Duplicate alias '[_1]', or the alias is already used as a release title
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_formerr_tagexists
 en : Tag [url,_1,_2] already exists!
 ru : Тег [url,_1,_2] уже существует!

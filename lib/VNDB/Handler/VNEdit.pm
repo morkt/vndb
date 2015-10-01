@@ -167,6 +167,14 @@ sub edit {
       }
     }
     if(!$nosubmit && !$frm->{_err}) {
+      # normalize aliases
+      $frm->{alias} = join "\n", map { s/^ +//g; s/ +$//g; $_?($_):() } split /\n/, $frm->{alias};
+      # throw error on duplicate/existing aliases
+      my %alias = map +(lc($_),1), $frm->{title}, $frm->{original}, map +($_->{title}, $_->{original}), @$r;
+      my @e = map $alias{ lc($_) }++ ? [ 'alias', 'existingalias', $_ ] : (), split /\n/, $frm->{alias};
+      $frm->{_err} = \@e if @e;
+    }
+    if(!$nosubmit && !$frm->{_err}) {
       # parse and re-sort fields that have multiple representations of the same information
       my $anime = { map +($_=>1), grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} };
       my $relations = [ map { /^([a-z]+),([0-9]+),([01]),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3, $4 ] : () } split /\|\|\|/, $frm->{vnrelations} ];
@@ -182,14 +190,6 @@ sub edit {
       $frm->{screenshots} = join ' ', map sprintf('%d,%d,%d', $_->[0], $_->[1]?1:0, $_->[2]), sort { $a->[0] <=> $b->[0] } @$screenshots;
       $frm->{credits} = json_encode \@credits;
       $frm->{seiyuu} = json_encode \@seiyuu;
-
-      # weed out duplicate aliases
-      my %alias;
-      $frm->{alias} = join "\n", grep {
-        my $a = lc $_;
-        $a && !$alias{$a}++ && $a ne lc($frm->{title}) && $a ne lc($frm->{original})
-          && !grep $a eq lc($_->{title}) || $a eq lc($_->{original}), @$r;
-      } map { s/^ +//g; s/ +$//g; $_ } split /\n/, $frm->{alias};
 
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post')

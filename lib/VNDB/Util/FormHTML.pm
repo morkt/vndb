@@ -38,9 +38,10 @@ sub htmlFormError {
       li mt '_formerr_maxlength', $field, $rule if $type eq 'maxlength';
       li mt '_formerr_enum', $field, join ', ', @$rule if $type eq 'enum';
       li mt '_formerr_wrongboard', $rule if $type eq 'wrongboard';
+      li mt '_formerr_existingalias', $rule if $type eq 'existingalias';
       li $rule->[1] if $type eq 'func' || $type eq 'regex';
       if($type eq 'template') {
-        $rule = 'int' if $rule eq 'num' || $rule eq 'uint';
+        $rule = 'int' if $rule eq 'num' || $rule eq 'uint' || $rule eq 'page' || $rule eq 'id';
         li; lit mt "_formerr_tpl_$rule", $field; end;
       }
       if($type eq 'tagexists') {
