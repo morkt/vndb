@@ -195,8 +195,9 @@ sub normalize {
   s/\pM//g;
   # remove some characters that have no significance when searching
   use utf8;
-  tr/\r\n\t ,_\-.~:[]()%+!?&#$"'`♥★☆♪†「」『』【】・”//d;
+  tr/\r\n\t ,_\-.~:[]()%+!?#$"'`♥★☆♪†「」『』【】・‟”‛’‘‚„«‹»›//d;
   tr/@/a/;
+  s/&/and/;
   # remove commonly used release titles ("x Edition" and "x Version")
   # this saves some space and speeds up the search
   s/(?:

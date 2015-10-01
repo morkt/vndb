@@ -63,3 +63,7 @@ CREATE OR REPLACE FUNCTION strip_spoilers(t text) RETURNS text AS $$
   -- The website doesn't require the [spoiler] tag to be closed, the outer replace catches that case.
   SELECT regexp_replace(regexp_replace(t, '\[spoiler\].*?\[/spoiler\]', ' ', 'ig'), '\[spoiler\].*', ' ', 'i');
 $$ LANGUAGE sql IMMUTABLE;
+
+
+-- Changes to search normalization
+UPDATE vn SET c_search = NULL;
