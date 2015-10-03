@@ -239,7 +239,7 @@ sub dbVNRevisionInsert {
   if($o->{screenshots}) {
     $self->dbExec('DELETE FROM edit_vn_screenshots');
     my $q = join ',', map '(?, ?, ?)', @{$o->{screenshots}};
-    my @val = map +($_->[0], $_->[1]?1:0, $_->[2]), @{$o->{screenshots}};
+    my @val = map +($_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$o->{screenshots}};
     $self->dbExec("INSERT INTO edit_vn_screenshots (scr, nsfw, rid) VALUES $q", @val) if @val;
   }
 

@@ -99,7 +99,10 @@ sub edit {
     ],
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
     vnrelations => join('|||', map $_->{relation}.','.$_->{id}.','.($_->{official}?1:0).','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
-    screenshots => join(' ', map sprintf('%d,%d,%d', $_->{id}, $_->{nsfw}?1:0, $_->{rid}), @{$v->{screenshots}}),
+    screenshots => json_encode [
+      map +{ id => $_->{id}, nsfw => $_->{nsfw}?1:0, rid => $_->{rid} },
+      sort { $a->{id} <=> $b->{id} } @{$v->{screenshots}}
+    ]
   );
 
   my $frm;
@@ -128,7 +131,11 @@ sub edit {
         { field => 'note', required => 0, maxlength => 250, default => '' },
       ]},
       { post => 'vnrelations', required => 0, default => '', maxlength => 5000 },
-      { post => 'screenshots', required => 0, default => '', maxlength => 1000 },
+      { post => 'screenshots', required => 0, template => 'json', json_fields => [
+        { field => 'id',   required => 1, template => 'id' },
+        { field => 'rid',  required => 1, template => 'id' },
+        { field => 'nsfw', required => 1, template => 'uint', enum => [0,1] },
+      ]},
       { post => 'editsum',     required => !$nosubmit, template => 'editsum' },
       { post => 'ihid',        required => 0 },
       { post => 'ilock',       required => 0 },
@@ -178,7 +185,7 @@ sub edit {
       # parse and re-sort fields that have multiple representations of the same information
       my $anime = { map +($_=>1), grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} };
       my $relations = [ map { /^([a-z]+),([0-9]+),([01]),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3, $4 ] : () } split /\|\|\|/, $frm->{vnrelations} ];
-      my $screenshots = [ map /^[0-9]+,[01],[0-9]+$/ ? [split /,/] : (), split / +/, $frm->{screenshots} ];
+      my $screenshots = json_decode $frm->{screenshots};
 
       $frm->{ihid} = $frm->{ihid}?1:0;
       $frm->{ilock} = $frm->{ilock}?1:0;
@@ -187,7 +194,7 @@ sub edit {
       $frm->{anime} = join ' ', sort { $a <=> $b } keys %$anime;
       $frm->{vnrelations} = join '|||', map $_->[0].','.$_->[1].','.($_->[2]?1:0).','.$_->[3], sort { $a->[1] <=> $b->[1]} @{$relations};
       $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
-      $frm->{screenshots} = join ' ', map sprintf('%d,%d,%d', $_->[0], $_->[1]?1:0, $_->[2]), sort { $a->[0] <=> $b->[0] } @$screenshots;
+      $frm->{screenshots} = json_encode [ sort { $a->{id} <=> $b->{id} } @$screenshots ];
       $frm->{credits} = json_encode \@credits;
       $frm->{seiyuu} = json_encode \@seiyuu;
 
@@ -420,22 +427,21 @@ sub _form {
     [ static => nolabel => 1, content => mt '_vnedit_scrnorel' ],
   ) : (
     [ hidden => short => 'screenshots' ],
-    [ hidden => short => 'screensizes', value => do {
-      # Current screenshot resolutions, for use by Javascript
-      my @scr = map /^(\d+),/?$1:(), split / /, $frm->{screenshots};
-      my %scr = map +($_->{id}, "$_->{width},$_->{height}"), @scr ? @{$self->dbScreenshotGet(\@scr)} : ();
-      join ' ', map $scr{$_}, @scr;
-    }],
     [ static => nolabel => 1, content => sub {
+      my @scr = map $_->{id}, @{ json_decode $frm->{screenshots} };
+      my %scr = map +($_->{id}, [ $_->{width}, $_->{height}]), @scr ? @{$self->dbScreenshotGet(\@scr)} : ();
+      my @rels = map [ $_->{id}, sprintf '[%s] %s (r%d)', join(',', @{$_->{languages}}), $_->{title}, $_->{id} ], @$r;
+      script_json screendata => {
+        size => \%scr,
+        rel => \@rels,
+        staticurl => $self->{url_static},
+      };
       div class => 'warning';
        lit mt '_vnedit_scrmsg';
       end;
       br;
       table class => 'stripe';
        tbody id => 'scr_table', '';
-      end;
-      Select id => 'scr_rel', class => $self->{url_static};
-       option value => $_->{id}, sprintf '[%s] %s (r%d)', join(',', @{$_->{languages}}), $_->{title}, $_->{id} for (@$r);
       end;
     }],
   )]
@@ -504,24 +510,15 @@ sub vnxml {
 # handles uploading screenshots and fetching information about them
 sub scrxml {
   my $self = shift;
-  return $self->htmlDenied if !$self->authCan('edit');
-  $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
-
-  # fetch information about screenshots
-  die "This page can only be accessed as POST\n" if $self->reqMethod ne 'POST';
+  return $self->htmlDenied if !$self->authCan('edit') || $self->reqMethod ne 'POST';
 
   # upload new screenshot
-  my $num = $self->formValidate({get => 'upload', template => 'uint'});
-  return $self->resNotFound if $num->{_err};
-  my $param = "scr_upl_file_$num->{upload}";
-
-  # check for simple errors
   my $id = 0;
-  my $imgdata = $self->reqUploadRaw($param);
+  my $imgdata = $self->reqUploadRaw('file');
   $id = -2 if !$imgdata;
   $id = -1 if !$id && $imgdata !~ /^(\xff\xd8|\x89\x50)/; # JPG or PNG headers
 
-  # no error? save and let Multi process it
+  # no error? process it
   my($ow, $oh);
   if(!$id) {
     my $im = Image::Magick->new;
@@ -546,9 +543,8 @@ sub scrxml {
     chmod 0666, $fn;
   }
 
+  $self->resHeader('Content-type' => 'text/xml; charset=UTF-8');
   xml;
-  # blank stylesheet because some browsers don't allow JS access otherwise
-  lit qq|<?xml-stylesheet href="$self->{url_static}/f/blank.css" type="text/css" ?>|;
   tag 'image', id => $id, $id > 0 ? (width => $ow, height => $oh) : (), undef;
 }
 

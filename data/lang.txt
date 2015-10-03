@@ -14501,6 +14501,18 @@ uk : Помилка завантаження!
 it : Caricamento fallito!
      Nessun file selezionato, o un file vuoto?
 
+:_vnedit_scr_errtoomany
+en : Too many files selected. The total number of screenshots may not exceed 10.
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 
 # VN Relation graph page (/v+/rg)
 

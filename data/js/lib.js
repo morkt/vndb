@@ -3,10 +3,10 @@ window.collapsed_icon = '▸';
 
 
 var ajax_req;
-window.ajax = function(url, func, async) {
+window.ajax = function(url, func, async, body) {
   if(!async && ajax_req)
     ajax_req.abort();
-  var req = window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
+  var req = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
   if(!async)
     ajax_req = req;
   req.onreadystatechange = function() {
@@ -16,9 +16,11 @@ window.ajax = function(url, func, async) {
       return alert('Whoops, error! :(');
     func(req);
   };
-  url += (url.indexOf('?')>=0 ? ';' : '?')+(Math.floor(Math.random()*999)+1);
-  req.open('GET', url, true);
-  req.send(null);
+  if(!body)
+    url += (url.indexOf('?')>=0 ? ';' : '?')+(Math.floor(Math.random()*999)+1);
+  req.open(body ? 'POST' : 'GET', url, true);
+  req.send(body);
+  return req;
 };
 
 
