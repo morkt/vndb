@@ -55,7 +55,7 @@ TUWF::set(
     uname => { regex => qr/^[a-z0-9-]*$/, minlength => 2, maxlength => 15 },
     gtin  => { func => \&gtintype },
     editsum => { maxlength => 5000, minlength => 2 },
-    json  => { func => \&json_validate, inherit => ['json_fields'], default => '[]' },
+    json  => { func => \&json_validate, inherit => ['json_fields'], default => [] },
   },
 );
 TUWF::load_recursive('VNDB::Util', 'VNDB::DB', 'VNDB::Handler');
@@ -141,6 +141,7 @@ sub json_validate {
   my($val, $opts) = @_;
   my $fields = $opts->{json_fields};
   my $data = eval { json_decode $val };
+  $_[0] = $@ ? [] : $data;
   return 0 if $@ || ref $data ne 'ARRAY';
   my %known_fields = map +($_->{field},1), @$fields;
   for my $i (0..$#$data) {
@@ -150,7 +151,5 @@ sub json_validate {
     $data->[$i] = kv_validate({ field => sub { $data->[$i]{shift()} } }, $TUWF::OBJ->{_TUWF}{validate_templates}, $fields);
     return 0 if $data->[$i]{_err};
   }
-
-  $_[0] = json_encode $data;
   return 1;
 }

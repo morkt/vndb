@@ -259,14 +259,14 @@ sub dbVNRevisionInsert {
   if($o->{credits}) {
     $self->dbExec('DELETE FROM edit_vn_staff');
     my $q = join ',', ('(?, ?, ?)') x @{$o->{credits}};
-    my @val = map @{$_}[0..2], @{$o->{credits}};
+    my @val = map +($_->{aid}, $_->{role}, $_->{note}), @{$o->{credits}};
     $self->dbExec("INSERT INTO edit_vn_staff (aid, role, note) VALUES $q", @val) if @val;
   }
 
   if($o->{seiyuu}) {
     $self->dbExec('DELETE FROM edit_vn_seiyuu');
     my $q = join ',', ('(?, ?, ?)') x @{$o->{seiyuu}};
-    my @val = map @{$_}[0..2], @{$o->{seiyuu}};
+    my @val = map +($_->{aid}, $_->{cid}, $_->{note}), @{$o->{seiyuu}};
     $self->dbExec("INSERT INTO edit_vn_seiyuu (aid, cid, note) VALUES $q", @val) if @val;
   }
 }

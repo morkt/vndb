@@ -13,6 +13,7 @@ our @EXPORT = (@VNDBUtil::EXPORT, qw|
   childtags charspoil imgpath imgurl fmtvote
   json_encode json_decode script_json
   mtvoiced mtani mtvnlen mtrlstat mtvnlstat mtbloodt
+  form_compare
 |);
 
 
@@ -236,6 +237,23 @@ sub mtvnlen  { !$_[0] ? mt '_unknown' : mt '_vnlength_'.$_[0], $_[1]||0; }
 sub mtrlstat { !$_[0] ? mt '_unknown' : mt '_rlist_status_'.$_[0]; }
 sub mtvnlstat{ !$_[0] ? mt '_unknown' : mt '_vnlist_status_'.$_[0]; }
 sub mtbloodt { $_[0] eq 'unknown' ? mt '_unknown' : mt '_bloodt_'.$_[0]; }
+
+
+# Compare the keys in %$old with the keys in %$new. Returns 1 if a difference was found, 0 otherwise.
+sub form_compare {
+  my($old, $new) = @_;
+  for my $k (keys %$old) {
+    my($o, $n) = ($old->{$k}, $new->{$k});
+    return 1 if !defined $n || ref $o ne ref $n;
+    if(!ref $o) {
+      return 1 if $o ne $n;
+    } else { # 'json' template
+      return 1 if @$o != @$n;
+      return 1 if grep form_compare($o->[$_], $n->[$_]), 0..$#$o;
+    }
+  }
+  return 0;
+}
 
 1;
 

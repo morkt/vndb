@@ -189,7 +189,7 @@ sub edit {
   my %b4 = !$sid ? () : (
     (map { $_ => $s->{$_} } qw|name original gender lang desc l_wp l_site l_twitter l_anidb ihid ilock|),
     primary => $s->{aid},
-    aliases => json_encode [
+    aliases => [
       map +{ aid => $_->{id}, name => $_->{name}, orig => $_->{original} },
       sort { $a->{name} cmp $b->{name} } @{$s->{aliases}}
     ],
@@ -220,24 +220,20 @@ sub edit {
     );
 
     if(!$frm->{_err}) {
-      my $aliases = json_decode $frm->{aliases};
-      $aliases = [ sort { $a->{name} cmp $b->{name} } @$aliases ];
+      my $aliases = [ sort { $a->{name} cmp $b->{name} } @{$frm->{aliases}} ];
       my %old_aliases = $sid ? ( map +($_->{id} => 1), @{$self->dbStaffAliasIds($sid)} ) : ();
       $frm->{primary} = 0 unless exists $old_aliases{$frm->{primary}};
 
       # reset aid to zero for newly added aliases.
       $_->{aid} *= $old_aliases{$_->{aid}} ? 1 : 0 for (sort { $a->{name} cmp $b->{name} } @$aliases);
 
-      $frm->{aliases} = json_encode $aliases;
+      $frm->{aliases} = $aliases;
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
       $frm->{aid}    = $frm->{primary} if $sid;
       $frm->{desc}   = $self->bbSubstLinks($frm->{desc});
+      return $self->resRedirect("/s$sid", 'post') if $sid && !form_compare(\%b4, $frm);
 
-      return $self->resRedirect("/s$sid", 'post')
-        if $sid && !first { ($frm->{$_}//'') ne ($b4{$_}//'') } keys %b4;
-
-      $frm->{aliases} = $aliases;
       my $nrev = $self->dbItemEdit ('s' => $sid ? $s->{cid} : undef, %$frm);
       return $self->resRedirect("/s$nrev->{iid}.$nrev->{rev}", 'post');
     }
@@ -256,7 +252,7 @@ sub edit {
     [ hidden => short => 'name' ],
     [ hidden => short => 'original' ],
     [ hidden => short => 'primary' ],
-    [ hidden => short => 'aliases' ],
+    [ json   => short => 'aliases' ],
     $sid && @{$s->{aliases}} ?
       [ static => content => mt('_staffe_form_different') ] : (),
     [ static => label => mt('_staffe_form_names'), content => sub {

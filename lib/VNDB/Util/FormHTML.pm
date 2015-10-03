@@ -62,6 +62,7 @@ sub htmlFormError {
 # and all other elements forming a hash with options specific to that type.
 # Type      Options
 #  hidden    short, (value)
+#  json      short, (value)   # Same as hidden, but value is passed through json_encode()
 #  input     short, name, (width, pre, post)
 #  passwd    short, name
 #  static    content, (label, nolabel)
@@ -71,16 +72,16 @@ sub htmlFormError {
 #  text      name, short, (rows, cols)
 #  date      name, short
 #  part      title
-# TODO: Find a way to write this function in a readable way...
 sub htmlFormPart {
   my($self, $frm, $fp) = @_;
   my($type, %o) = @$fp;
   local $_ = $type;
 
-  if(/hidden/) {
+  if(/hidden/ || /json/) {
     Tr class => 'hidden';
      td colspan => 2;
-      input type => 'hidden', id => $o{short}, name => $o{short}, value => $o{value}||$frm->{$o{short}}||'';
+      my $val = $o{value}||$frm->{$o{short}};
+      input type => 'hidden', id => $o{short}, name => $o{short}, value => /json/ ? json_encode($val||[]) : $val||'';
      end;
     end;
     return

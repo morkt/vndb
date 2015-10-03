@@ -89,17 +89,17 @@ sub edit {
 
   my %b4 = !$vid ? () : (
     (map { $_ => $v->{$_} } qw|title original desc alias length l_wp l_encubed l_renai image img_nsfw ihid ilock|),
-    credits => json_encode [
+    credits => [
       map { my $c = $_; +{ map { $_ => $c->{$_} } qw|aid role note| } }
       sort { $a->{aid} <=> $b->{aid} || $a->{role} cmp $b->{role} } @{$v->{credits}}
     ],
-    seiyuu => json_encode [
+    seiyuu => [
       map { my $c = $_; +{ map { $_ => $c->{$_} } qw|aid cid note| } }
       sort { $a->{aid} <=> $b->{aid} || $a->{cid} <=> $b->{cid} } @{$v->{seiyuu}}
     ],
     anime => join(' ', sort { $a <=> $b } map $_->{id}, @{$v->{anime}}),
     vnrelations => join('|||', map $_->{relation}.','.$_->{id}.','.($_->{official}?1:0).','.$_->{title}, sort { $a->{id} <=> $b->{id} } @{$v->{relations}}),
-    screenshots => json_encode [
+    screenshots => [
       map +{ id => $_->{id}, nsfw => $_->{nsfw}?1:0, rid => $_->{rid} },
       sort { $a->{id} <=> $b->{id} } @{$v->{screenshots}}
     ]
@@ -143,17 +143,15 @@ sub edit {
     # handle image upload
     $frm->{image} = _uploadimage($self, $frm) if !$nosubmit;
 
-    my $raw_c = !$frm->{_err} && json_decode $frm->{credits};
-    my $raw_s = !$frm->{_err} && json_decode $frm->{seiyuu};
     my (@credits, @seiyuu);
     if(!$nosubmit && !$frm->{_err}) {
       # ensure submitted alias IDs exist within database
-      my @alist = map $_->{aid}, @$raw_c, @$raw_s;
+      my @alist = map $_->{aid}, @{$frm->{credits}}, @{$frm->{seiyuu}};
       my %staff = @alist ? map +($_->{aid}, 1), @{$self->dbStaffGet(aid => \@alist, results => 200)} : ();
 
       # check for duplicate credits
       my $last_c = { aid => 0, role => '' };
-      for my $c (sort { $a->{aid} <=> $b->{aid} || $a->{role} cmp $b->{role} } @$raw_c) {
+      for my $c (sort { $a->{aid} <=> $b->{aid} || $a->{role} cmp $b->{role} } @{$frm->{credits}}) {
         next unless exists $staff{0+$c->{aid}};
         # discard entries with identical name & role
         next if $last_c->{aid} == $c->{aid} && $last_c->{role} eq $c->{role};
@@ -162,10 +160,10 @@ sub edit {
       }
 
       # if character list is empty, any seiyuu data will be discarded
-      if (@$chars && @$raw_s) {
+      if (@$chars && @{$frm->{seiyuu}}) {
         my %vn_chars = map +($_->{id} => 1), @$chars;
         my $last_s = { aid => 0, cid => 0 };
-        for my $s (sort { $a->{aid} <=> $b->{aid} || $a->{cid} <=> $b->{cid} } @$raw_s) {
+        for my $s (sort { $a->{aid} <=> $b->{aid} || $a->{cid} <=> $b->{cid} } @{$frm->{seiyuu}}) {
           next unless $staff{0+$s->{aid}} && $vn_chars{0+$s->{cid}}; # weed out odd credits
           next if $last_s->{aid} == $s->{aid} && $last_s->{cid} == $s->{cid};
           push @seiyuu, $s;
@@ -185,7 +183,6 @@ sub edit {
       # parse and re-sort fields that have multiple representations of the same information
       my $anime = { map +($_=>1), grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} };
       my $relations = [ map { /^([a-z]+),([0-9]+),([01]),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3, $4 ] : () } split /\|\|\|/, $frm->{vnrelations} ];
-      my $screenshots = json_decode $frm->{screenshots};
 
       $frm->{ihid} = $frm->{ihid}?1:0;
       $frm->{ilock} = $frm->{ilock}?1:0;
@@ -194,22 +191,18 @@ sub edit {
       $frm->{anime} = join ' ', sort { $a <=> $b } keys %$anime;
       $frm->{vnrelations} = join '|||', map $_->[0].','.$_->[1].','.($_->[2]?1:0).','.$_->[3], sort { $a->[1] <=> $b->[1]} @{$relations};
       $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
-      $frm->{screenshots} = json_encode [ sort { $a->{id} <=> $b->{id} } @$screenshots ];
-      $frm->{credits} = json_encode \@credits;
-      $frm->{seiyuu} = json_encode \@seiyuu;
+      $frm->{screenshots} = [ sort { $a->{id} <=> $b->{id} } @{$frm->{screenshots}} ];
+      $frm->{credits} = \@credits;
+      $frm->{seiyuu} = \@seiyuu;
 
       # nothing changed? just redirect
-      return $self->resRedirect("/v$vid", 'post')
-        if $vid && !grep $frm->{$_} ne $b4{$_}, keys %b4;
+      return $self->resRedirect("/v$vid", 'post') if $vid && !form_compare(\%b4, $frm);
 
       # perform the edit/add
       my $nrev = $self->dbItemEdit(v => $vid ? $v->{cid} : undef,
-        (map { $_ => $frm->{$_} } qw|title original image alias desc length l_wp l_encubed l_renai editsum img_nsfw ihid ilock|),
-        credits => [ map [ @{$_}{qw|aid role note|} ], @credits ],
-        seiyuu => [ map [ @{$_}{qw|aid cid note|} ], @seiyuu ],
+        (map { $_ => $frm->{$_} } qw|title original image alias desc length l_wp l_encubed l_renai editsum img_nsfw ihid ilock credits seiyuu screenshots|),
         anime => [ keys %$anime ],
         relations => $relations,
-        screenshots => $screenshots,
       );
 
       # update reverse relations & relation graph
@@ -324,7 +317,7 @@ sub _form {
   }]],
 
   vn_staff => [ mt('_vnedit_staff'),
-    [ hidden => short => 'credits' ],
+    [ json   => short => 'credits' ],
     [ static => nolabel => 1, content => sub {
       # propagate staff ids and names to javascript
       my %staff_data;
@@ -352,7 +345,7 @@ sub _form {
   # There's no way to add voice actors in new VN edits since character list
   # would be empty anyway.
   @{$chars} ? (vn_cast => [ mt('_vnedit_cast'),
-    [ hidden => short => 'seiyuu' ],
+    [ json   => short => 'seiyuu' ],
     [ static => nolabel => 1, content => sub {
       if (@$import) {
         script_json castimpdata => [
@@ -426,9 +419,9 @@ sub _form {
   vn_scr => [ mt('_vnedit_scr'), !@$r ? (
     [ static => nolabel => 1, content => mt '_vnedit_scrnorel' ],
   ) : (
-    [ hidden => short => 'screenshots' ],
+    [ json   => short => 'screenshots' ],
     [ static => nolabel => 1, content => sub {
-      my @scr = map $_->{id}, @{ json_decode $frm->{screenshots} };
+      my @scr = map $_->{id}, @{$frm->{screenshots}};
       my %scr = map +($_->{id}, [ $_->{width}, $_->{height}]), @scr ? @{$self->dbScreenshotGet(\@scr)} : ();
       my @rels = map [ $_->{id}, sprintf '[%s] %s (r%d)', join(',', @{$_->{languages}}), $_->{title}, $_->{id} ], @$r;
       script_json screendata => {
