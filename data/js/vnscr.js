@@ -199,5 +199,5 @@ function upload() {
   return false;
 }
 
-if(byId('jt_box_vn_scr'))
+if(byId('jt_box_vn_scr') && byId('screenshots'))
   init();

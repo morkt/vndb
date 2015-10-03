@@ -4,7 +4,7 @@
 window.vnsStaffData = {};
 
 function vnsLoad() {
-  window.vnsStaffData = jsonParse(getText(byId('staffdata')||{})) || {};
+  window.vnsStaffData = jsonParse(getText(byId('staffdata'))) || {};
   var credits = jsonParse(byId('credits').value) || [];
   for(var i = 0; i < credits.length; i++) {
     var aid = credits[i].aid;

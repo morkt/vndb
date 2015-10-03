@@ -324,7 +324,7 @@ sub _form {
       for my $c (@{$v->{credits}}, @{$v->{seiyuu}}) {
         $staff_data{$c->{aid}} //= { map +($_ => $c->{$_}), qw|id aid name| };
       }
-      script_json staffdata => \%staff_data if %staff_data;
+      script_json staffdata => \%staff_data;
 
       div class => 'warning';
        lit mt '_vnedit_staff_msg';
