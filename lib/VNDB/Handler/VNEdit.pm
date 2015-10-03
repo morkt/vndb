@@ -120,18 +120,18 @@ sub edit {
       { post => 'anime',       required => 0, default => '' },
       { post => 'image',       required => 0, default => 0,  template => 'id' },
       { post => 'img_nsfw',    required => 0, default => 0 },
-      { post => 'credits', required => 0, template => 'json', json_fields => [
+      { post => 'credits', required => 0, template => 'json', json_unique => ['aid','role'], json_sort => ['aid','role'], json_fields => [
         { field => 'aid',  required => 1, template => 'id' },
         { field => 'role', required => 1, enum => $self->{staff_roles} },
         { field => 'note', required => 0, maxlength => 250, default => '' },
       ]},
-      { post => 'seiyuu', required => 0, template => 'json', json_fields => [
+      { post => 'seiyuu', required => 0, template => 'json', json_unique => ['aid','cid'], json_sort => ['aid','cid'], json_fields => [
         { field => 'aid',  required => 1, template => 'id' },
         { field => 'cid',  required => 1, template => 'id' },
         { field => 'note', required => 0, maxlength => 250, default => '' },
       ]},
       { post => 'vnrelations', required => 0, default => '', maxlength => 5000 },
-      { post => 'screenshots', required => 0, template => 'json', json_fields => [
+      { post => 'screenshots', required => 0, template => 'json', json_maxitems => 10, json_unique => 'id', json_sort => 'id', json_fields => [
         { field => 'id',   required => 1, template => 'id' },
         { field => 'rid',  required => 1, template => 'id' },
         { field => 'nsfw', required => 1, template => 'uint', enum => [0,1] },
@@ -143,34 +143,6 @@ sub edit {
     # handle image upload
     $frm->{image} = _uploadimage($self, $frm) if !$nosubmit;
 
-    my (@credits, @seiyuu);
-    if(!$nosubmit && !$frm->{_err}) {
-      # ensure submitted alias IDs exist within database
-      my @alist = map $_->{aid}, @{$frm->{credits}}, @{$frm->{seiyuu}};
-      my %staff = @alist ? map +($_->{aid}, 1), @{$self->dbStaffGet(aid => \@alist, results => 200)} : ();
-
-      # check for duplicate credits
-      my $last_c = { aid => 0, role => '' };
-      for my $c (sort { $a->{aid} <=> $b->{aid} || $a->{role} cmp $b->{role} } @{$frm->{credits}}) {
-        next unless exists $staff{0+$c->{aid}};
-        # discard entries with identical name & role
-        next if $last_c->{aid} == $c->{aid} && $last_c->{role} eq $c->{role};
-        push @credits, $c;
-        $last_c = $c;
-      }
-
-      # if character list is empty, any seiyuu data will be discarded
-      if (@$chars && @{$frm->{seiyuu}}) {
-        my %vn_chars = map +($_->{id} => 1), @$chars;
-        my $last_s = { aid => 0, cid => 0 };
-        for my $s (sort { $a->{aid} <=> $b->{aid} || $a->{cid} <=> $b->{cid} } @{$frm->{seiyuu}}) {
-          next unless $staff{0+$s->{aid}} && $vn_chars{0+$s->{cid}}; # weed out odd credits
-          next if $last_s->{aid} == $s->{aid} && $last_s->{cid} == $s->{cid};
-          push @seiyuu, $s;
-          $last_s = $s;
-        }
-      }
-    }
     if(!$nosubmit && !$frm->{_err}) {
       # normalize aliases
       $frm->{alias} = join "\n", map { s/^ +//g; s/ +$//g; $_?($_):() } split /\n/, $frm->{alias};
@@ -184,6 +156,13 @@ sub edit {
       my $anime = { map +($_=>1), grep /^[0-9]+$/, split /[ ,]+/, $frm->{anime} };
       my $relations = [ map { /^([a-z]+),([0-9]+),([01]),(.+)$/ && (!$vid || $2 != $vid) ? [ $1, $2, $3, $4 ] : () } split /\|\|\|/, $frm->{vnrelations} ];
 
+      # Ensure submitted alias / character IDs exist within database
+      my @alist = map $_->{aid}, @{$frm->{credits}}, @{$frm->{seiyuu}};
+      my %staff = @alist ? map +($_->{aid}, 1), @{$self->dbStaffGet(aid => \@alist, results => 200)} : ();
+      my %vn_chars = map +($_->{id} => 1), @$chars;
+      $frm->{credits} = [ grep $staff{$_->{aid}}, @{$frm->{credits}} ];
+      $frm->{seiyuu} = [ grep $staff{$_->{aid}} && $vn_chars{$_->{cid}}, @$chars ? @{$frm->{seiyuu}} : () ];
+
       $frm->{ihid} = $frm->{ihid}?1:0;
       $frm->{ilock} = $frm->{ilock}?1:0;
       $frm->{desc} = $self->bbSubstLinks($frm->{desc});
@@ -192,8 +171,6 @@ sub edit {
       $frm->{vnrelations} = join '|||', map $_->[0].','.$_->[1].','.($_->[2]?1:0).','.$_->[3], sort { $a->[1] <=> $b->[1]} @{$relations};
       $frm->{img_nsfw} = $frm->{img_nsfw} ? 1 : 0;
       $frm->{screenshots} = [ sort { $a->{id} <=> $b->{id} } @{$frm->{screenshots}} ];
-      $frm->{credits} = \@credits;
-      $frm->{seiyuu} = \@seiyuu;
 
       # nothing changed? just redirect
       return $self->resRedirect("/v$vid", 'post') if $vid && !form_compare(\%b4, $frm);
