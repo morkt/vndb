@@ -127,7 +127,7 @@ CREATE TABLE producers_relations (
 CREATE TABLE producers_rev (
   id integer NOT NULL PRIMARY KEY,
   pid integer NOT NULL DEFAULT 0,
-  type character(2) NOT NULL DEFAULT 'co',
+  type producer_type NOT NULL DEFAULT 'co',
   name varchar(200) NOT NULL DEFAULT '',
   original varchar(200) NOT NULL DEFAULT '',
   website varchar(250) NOT NULL DEFAULT '',
