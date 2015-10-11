@@ -1,4 +1,3 @@
-
 -- A small note on the function naming scheme:
 --   edit_*      -> revision insertion abstraction functions
 --   *_notify    -> functions issuing a PgSQL NOTIFY statement
