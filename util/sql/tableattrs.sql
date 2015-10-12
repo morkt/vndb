@@ -77,6 +77,7 @@ ALTER TABLE wlists              ADD CONSTRAINT wlists_vid_fkey               FOR
 
 
 CREATE        INDEX affiliate_links_rid    ON affiliate_links (rid) WHERE NOT hidden;
+CREATE        INDEX notifications_uid      ON notifications (uid);
 CREATE        INDEX releases_producers_rid ON releases_producers (rid);
 CREATE        INDEX releases_vn_vid        ON releases_vn (vid);
 CREATE        INDEX tags_vn_date           ON tags_vn (date);

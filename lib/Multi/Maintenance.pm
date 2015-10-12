@@ -93,6 +93,8 @@ my %dailies = (
 
   cleansessions      => q|DELETE FROM sessions       WHERE lastused   < NOW()-'1 month'::interval|,
   cleannotifications => q|DELETE FROM notifications  WHERE read       < NOW()-'1 month'::interval|,
+  cleannotifications2=> q|DELETE FROM notifications  WHERE id IN (
+    SELECT id FROM (SELECT id, row_number() OVER (PARTITION BY uid ORDER BY id DESC) > 500 from notifications) AS x(id,del) WHERE x.del)|,
   rmunconfirmusers   => q|DELETE FROM users          WHERE registered < NOW()-'1 week'::interval AND NOT email_confirmed|,
   cleanthrottle      => q|DELETE FROM login_throttle WHERE timeout    < NOW()|,
 );

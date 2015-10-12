@@ -74,3 +74,7 @@ CREATE TYPE producer_type     AS ENUM ('co', 'in', 'ng');
 ALTER TABLE producers_rev ALTER COLUMN type DROP DEFAULT;
 ALTER TABLE producers_rev ALTER COLUMN type TYPE producer_type USING type::producer_type;
 ALTER TABLE producers_rev ALTER COLUMN type SET DEFAULT 'co';
+
+
+-- Extra index
+CREATE INDEX notifications_uid ON notifications (uid);
