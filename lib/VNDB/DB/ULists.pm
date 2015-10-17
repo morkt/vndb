@@ -59,22 +59,21 @@ sub dbVNListList {
     'vl.uid = ?' => $o{uid},
     defined($o{voted}) ? ('vo.vote !s NULL' => $o{voted} ? 'IS NOT' : 'IS') : (),
     defined($o{status})? ('vl.status = ?' => $o{status}) : (),
-    $o{char}           ? ('LOWER(SUBSTR(vr.title, 1, 1)) = ?' => $o{char} ) : (),
+    $o{char}           ? ('LOWER(SUBSTR(v.title, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
-      '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
+      '(ASCII(v.title) < 97 OR ASCII(v.title) > 122) AND (ASCII(v.title) < 65 OR ASCII(v.title) > 90)' => 1 ) : (),
   );
 
   my $order = sprintf {
-    title => 'vr.title %s',
-    vote  => 'vo.vote %s NULLS LAST, vr.title ASC',
+    title => 'v.title %s',
+    vote  => 'vo.vote %s NULLS LAST, v.title ASC',
   }->{ $o{sort}||'title' }, $o{reverse} ? 'DESC' : 'ASC';
 
   # execute query
   my($r, $np) = $self->dbPage(\%o, qq|
-    SELECT vr.vid, vr.title, vr.original, vl.status, vl.notes, COALESCE(vo.vote, 0) AS vote
+    SELECT vl.vid, v.title, v.original, vl.status, vl.notes, COALESCE(vo.vote, 0) AS vote
       FROM vnlists vl
       JOIN vn v ON v.id = vl.vid
-      JOIN vn_rev vr ON vr.id = v.latest
       LEFT JOIN votes vo ON vo.vid = vl.vid AND vo.uid = vl.uid
       !W
       ORDER BY !s|,
@@ -89,27 +88,26 @@ sub dbVNListList {
     } @$r;
 
     my $rel = $self->dbAll(q|
-      SELECT rv.vid, rr.rid, r.latest, rr.title, rr.original, rr.released, rr.type, rl.status
+      SELECT rv.vid, rl.rid, r.title, r.original, r.released, r.type, rl.status
         FROM rlists rl
         JOIN releases r ON rl.rid = r.id
-        JOIN releases_rev rr ON rr.id = r.latest
-        JOIN releases_vn rv ON rv.rid = r.latest
+        JOIN releases_vn rv ON rv.id = r.id
         WHERE rl.uid = ?
           AND rv.vid IN(!l)
-        ORDER BY rr.released ASC|,
+        ORDER BY r.released ASC|,
       $o{uid}, [ keys %vns ]
     );
 
     if(@$rel) {
-      my %rel = map { $_->{latest} => [] } @$rel;
-      push(@{$rel{$_->{rid}}}, $_->{lang}) for (@{$self->dbAll(q|
-        SELECT rid, lang
+      my %rel = map { $_->{rid} => [] } @$rel;
+      push(@{$rel{$_->{id}}}, $_->{lang}) for (@{$self->dbAll(q|
+        SELECT id, lang
           FROM releases_lang
-          WHERE rid IN(!l)|,
+          WHERE id IN(!l)|,
         [ keys %rel ]
       )});
       for(@$rel) {
-        $_->{languages} = $rel{$_->{latest}};
+        $_->{languages} = $rel{$_->{rid}};
         push @{$vns{$_->{vid}}}, $_;
       }
     }
@@ -189,9 +187,9 @@ sub dbVoteGet {
     $o{vid} ? ( 'n.vid = ?' => $o{vid} ) : (),
     $o{hide} ? ( 'NOT EXISTS(SELECT 1 FROM users_prefs WHERE uid = n.uid AND key = \'hide_list\')' => 1 ) : (),
     $o{hide_ign} ? ( '(NOT u.ign_votes OR u.id = ?)' => $self->authInfo->{id}||0 ) : (),
-    $o{vn_char}  ? ( 'LOWER(SUBSTR(vr.title, 1, 1)) = ?' => $o{vn_char} ) : (),
+    $o{vn_char}  ? ( 'LOWER(SUBSTR(v.title, 1, 1)) = ?' => $o{vn_char} ) : (),
     defined $o{vn_char} && !$o{vn_char} ? (
-      '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
+      '(ASCII(v.title) < 97 OR ASCII(v.title) > 122) AND (ASCII(v.title) < 65 OR ASCII(v.title) > 90)' => 1 ) : (),
     $o{user_char} ? ( 'LOWER(SUBSTR(u.username, 1, 1)) = ?' => $o{user_char} ) : (),
     defined $o{user_char} && !$o{user_char} ? (
       '(ASCII(u.username) < 97 OR ASCII(u.username) > 122) AND (ASCII(u.username) < 65 OR ASCII(u.username) > 90)' => 1 ) : (),
@@ -200,13 +198,12 @@ sub dbVoteGet {
   my @select = (
     qw|n.vid n.vote n.uid|, q|extract('epoch' from n.date) as date|,
     $o{what} =~ /user/ ? ('u.username') : (),
-    $o{what} =~ /vn/ ? (qw|vr.title vr.original|) : (),
+    $o{what} =~ /vn/ ? (qw|v.title v.original|) : (),
   );
 
   my @join = (
     $o{what} =~ /vn/ ? (
       'JOIN vn v ON v.id = n.vid',
-      'JOIN vn_rev vr ON vr.id = v.latest'
     ) : (),
     $o{what} =~ /user/ || $o{hide} ? (
       'JOIN users u ON u.id = n.uid'
@@ -216,8 +213,8 @@ sub dbVoteGet {
   my $order = sprintf {
     date     => 'n.date %s',
     username => 'u.username %s',
-    title    => 'vr.title %s',
-    vote     => 'n.vote %s'.($o{what} =~ /vn/ ? ', vr.title ASC' : $o{what} =~ /user/ ? ', u.username ASC' : ''),
+    title    => 'v.title %s',
+    vote     => 'n.vote %s'.($o{what} =~ /vn/ ? ', v.title ASC' : $o{what} =~ /user/ ? ', u.username ASC' : ''),
   }->{$o{sort}}, $o{reverse} ? 'DESC' : 'ASC';
 
   my($r, $np) = $self->dbPage(\%o, q|
@@ -302,15 +299,14 @@ sub dbWishListGet {
   my $select = q|wl.vid, wl.wstat, extract('epoch' from wl.added) AS added|;
   my @join;
   if($o{what} =~ /vn/) {
-    $select .= ', vr.title, vr.original';
-    push @join, 'JOIN vn v ON v.id = wl.vid',
-    'JOIN vn_rev vr ON vr.id = v.latest';
+    $select .= ', v.title, v.original';
+    push @join, 'JOIN vn v ON v.id = wl.vid';
   }
 
   my $order = sprintf  {
-    title => 'vr.title %s',
+    title => 'v.title %s',
     added => 'wl.added %s',
-    wstat => 'wl.wstat %2$s, vr.title ASC',
+    wstat => 'wl.wstat %2$s, v.title ASC',
   }->{ $o{sort}||'added' }, $o{reverse} ? 'DESC' : 'ASC', $o{reverse} ? 'ASC' : 'DESC';
 
   my($r, $np) = $self->dbPage(\%o, q|

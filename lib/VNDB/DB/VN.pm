@@ -7,12 +7,12 @@ use Exporter 'import';
 use VNDB::Func 'gtintype', 'normalize_query';
 use Encode 'decode_utf8';
 
-our @EXPORT = qw|dbVNGet dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNHasChar dbVNHasStaff dbVNImportSeiyuu|;
+our @EXPORT = qw|dbVNGet dbVNGetRev dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNHasChar dbVNHasStaff dbVNImportSeiyuu|;
 
 
-# Options: id, rev, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
+# Options: id, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
 #   hasani, hasshot, ul_notblack, ul_onwish, results, page, what, sort, reverse, inc_hidden
-# What: extended anime credits relations screenshots relgraph rating ranking changes wishlist vnlist
+# What: extended anime credits relations screenshots relgraph rating ranking wishlist vnlist
 #  Note: wishlist and vnlist are ignored (no db search) unless a user is logged in
 # Sort: id rel pop rating title tagscore rand
 sub dbVNGet {
@@ -33,14 +33,12 @@ sub dbVNGet {
   my @where = (
     $o{id} ? (
       'v.id IN(!l)' => [ ref $o{id} ? $o{id} : [$o{id}] ] ) : (),
-    $o{rev} ? (
-      'c.rev = ?' => $o{rev} ) : (),
     $o{char} ? (
-      'LOWER(SUBSTR(vr.title, 1, 1)) = ?' => $o{char} ) : (),
+      'LOWER(SUBSTR(v.title, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
-      '(ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)' => 1 ) : (),
+      '(ASCII(v.title) < 97 OR ASCII(v.title) > 122) AND (ASCII(v.title) < 65 OR ASCII(v.title) > 90)' => 1 ) : (),
     defined $o{length} ? (
-      'vr.length IN(!l)' => [ ref $o{length} ? $o{length} : [$o{length}] ]) : (),
+      'v.length IN(!l)' => [ ref $o{length} ? $o{length} : [$o{length}] ]) : (),
     $o{lang} ? (
       'v.c_languages && ARRAY[!l]::language[]' => [ ref $o{lang} ? $o{lang} : [$o{lang}] ]) : (),
     $o{olang} ? (
@@ -48,9 +46,9 @@ sub dbVNGet {
     $o{plat} ? (
       'v.c_platforms && ARRAY[!l]::platform[]' => [ ref $o{plat} ? $o{plat} : [$o{plat}] ]) : (),
     defined $o{hasani} ? (
-      '!sEXISTS(SELECT 1 FROM vn_anime va WHERE va.vid = vr.id)' => [ $o{hasani} ? '' : 'NOT ' ]) : (),
+      '!sEXISTS(SELECT 1 FROM vn_anime va WHERE va.id = v.id)' => [ $o{hasani} ? '' : 'NOT ' ]) : (),
     defined $o{hasshot} ? (
-      '!sEXISTS(SELECT 1 FROM vn_screenshots vs WHERE vs.vid = vr.id)' => [ $o{hasshot} ? '' : 'NOT ' ]) : (),
+      '!sEXISTS(SELECT 1 FROM vn_screenshots vs WHERE vs.id = v.id)' => [ $o{hasshot} ? '' : 'NOT ' ]) : (),
     $o{tag_inc} ? (
       'v.id IN(SELECT vid FROM tags_vn_inherit WHERE tag IN(!l) AND spoiler <= ? GROUP BY vid HAVING COUNT(tag) = ?)',
       [ ref $o{tag_inc} ? $o{tag_inc} : [$o{tag_inc}], $o{tagspoil}, ref $o{tag_inc} ? $#{$o{tag_inc}}+1 : 1 ]) : (),
@@ -66,24 +64,14 @@ sub dbVNGet {
       'v.id !s IN(SELECT vid FROM votes WHERE uid = ?)' => [ $o{ul_voted} ? '' : 'NOT', $uid ] ) : (),
     $uid && defined $o{ul_onlist} ? (
       'v.id !s IN(SELECT vid FROM vnlists WHERE uid = ?)' => [ $o{ul_onlist} ? '' : 'NOT', $uid ] ) : (),
-   # don't fetch hidden items unless we ask for an ID
-    !$o{id} && !$o{rev} && !$o{inc_hidden} ? (
+    !$o{id} && !$o{inc_hidden} ? (
       'v.hidden = FALSE' => 0 ) : (),
-   # optimize fetching random entries (only when there are no other filters present, otherwise this won't work well)
+    # optimize fetching random entries (only when there are no other filters present, otherwise this won't work well)
     $o{sort} eq 'rand' && $o{results} <= 10 && !grep(!/^(?:results|page|what|sort|tagspoil)$/, keys %o) ? (
-      sprintf 'v.id IN(SELECT floor(random() * last_value)::integer
-           FROM generate_series(1,20), (SELECT last_value FROM vn_id_seq) s1
-          LIMIT 20)' ) : (),
+      'v.id IN(SELECT floor(random() * last_value)::integer FROM generate_series(1,20), (SELECT MAX(id) AS last_value FROM vn) s1 LIMIT 20)' ) : (),
   );
 
   my @join = (
-    $o{rev} ?
-      'JOIN vn v ON v.id = vr.vid' :
-      'JOIN vn v ON vr.id = v.latest',
-    $o{rev} || $o{what} =~ /changes/ ?
-      'JOIN changes c ON c.id = vr.id' : (),
-    $o{what} =~ /changes/ ?
-      'JOIN users u ON u.id = c.requester' : (),
     $o{what} =~ /relgraph/ ?
       'JOIN relgraphs vg ON vg.id = v.rgraph' : (),
     $uid && $o{what} =~ /wishlist/ ?
@@ -92,8 +80,7 @@ sub dbVNGet {
        SELECT irv.vid, COUNT(*) AS userlist_all,
               SUM(CASE WHEN irl.status = 2 THEN 1 ELSE 0 END) AS userlist_obtained
          FROM rlists irl
-         JOIN releases ir     ON irl.rid = ir.id
-         JOIN releases_vn irv ON irv.rid = ir.latest
+         JOIN releases_vn irv ON irv.id = irl.rid
         WHERE irl.uid = $uid
         GROUP BY irv.vid
      ) AS vnlist ON vnlist.vid = v.id") : (),
@@ -101,11 +88,9 @@ sub dbVNGet {
 
   my $tag_ids = $o{tag_inc} && join ',', ref $o{tag_inc} ? @{$o{tag_inc}} : $o{tag_inc};
   my @select = ( # see https://rt.cpan.org/Ticket/Display.html?id=54224 for the cast on c_languages and c_platforms
-    qw|v.id v.locked v.hidden v.c_released v.c_languages::text[] v.c_platforms::text[] vr.title vr.original v.rgraph|, 'vr.id AS cid',
+    qw|v.id v.locked v.hidden v.c_released v.c_languages::text[] v.c_platforms::text[] v.title v.original v.rgraph|,
     $o{what} =~ /extended/ ? (
-      qw|vr.alias vr.image vr.img_nsfw vr.length vr.desc vr.l_wp vr.l_encubed vr.l_renai| ) : (),
-    $o{what} =~ /changes/ ? (
-      qw|c.requester c.comments v.latest u.username c.rev c.ihid c.ilock|, q|extract('epoch' from c.added) as added|) : (),
+      qw|v.alias v.image v.img_nsfw v.length v.desc v.l_wp v.l_encubed v.l_renai| ) : (),
     $o{what} =~ /relgraph/ ? 'vg.svg' : (),
     $o{what} =~ /rating/ ? (qw|v.c_popularity v.c_rating v.c_votecount|) : (),
     $o{what} =~ /ranking/ ? (
@@ -120,100 +105,128 @@ sub dbVNGet {
   );
 
   my $order = sprintf {
-    id       => 'id %s',
-    rel      => 'c_released %s, title ASC',
-    pop      => 'c_popularity %s NULLS LAST',
-    rating   => 'c_rating %s NULLS LAST',
-    title    => 'title %s',
+    id       => 'v.id %s',
+    rel      => 'v.c_released %s, v.title ASC',
+    pop      => 'v.c_popularity %s NULLS LAST',
+    rating   => 'v.c_rating %s NULLS LAST',
+    title    => 'v.title %s',
     tagscore => 'tagscore %s',
     rand     => 'RANDOM()',
   }->{$o{sort}}, $o{reverse} ? 'DESC' : 'ASC';
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
-      FROM vn_rev vr
+      FROM vn v
       !s
       !W
       ORDER BY !s|,
     join(', ', @select), join(' ', @join), \@where, $order,
   );
 
-  if($o{what} =~ /relgraph/) {
-    $_->{svg} = decode_utf8($_->{svg}) for @$r;
-  }
+  return _enrich($self, $r, $np, 0, $o{what});
+}
 
-  if(@$r && $o{what} =~ /anime|relations|screenshots|credits/) {
+
+sub dbVNGetRev {
+  my $self = shift;
+  my %o = (what => '', @_);
+
+  $o{rev} ||= $self->dbRow('SELECT MAX(rev) AS rev FROM changes WHERE type = \'v\' AND itemid = ?', $o{id})->{rev};
+
+  # XXX: Too much duplication with code in dbVNGet() here. Can we combine some code here?
+  my $uid = $self->authInfo->{id};
+
+  my $select = 'c.itemid AS id, vo.c_released, vo.c_languages::text[], vo.c_platforms::text[], v.title, v.original, vo.rgraph';
+  $select .= ', extract(\'epoch\' from c.added) as added, c.requester, c.comments, u.username, c.rev, c.ihid, c.ilock';
+  $select .= ', c.id AS cid, NOT EXISTS(SELECT 1 FROM changes c2 WHERE c2.type = c.type AND c2.itemid = c.itemid AND c2.rev = c.rev+1) AS lastrev';
+  $select .= ', v.alias, v.image, v.img_nsfw, v.length, v.desc, v.l_wp, v.l_encubed, v.l_renai, vo.hidden, vo.locked' if $o{what} =~ /extended/;
+  $select .= ', vo.c_popularity, vo.c_rating, vo.c_votecount' if $o{what} =~ /rating/;
+  $select .= ', (SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_popularity > COALESCE(vo.c_popularity, 0.0)) AS p_ranking'
+            .', (SELECT COUNT(*)+1 FROM vn iv WHERE iv.hidden = false AND iv.c_rating > COALESCE(vo.c_rating, 0.0)) AS r_ranking' if $o{what} =~ /ranking/;
+
+  my $r = $self->dbAll(q|
+    SELECT !s
+      FROM changes c
+      JOIN vn vo ON vo.id = c.itemid
+      JOIN vn_hist v ON v.chid = c.id
+      JOIN users u ON u.id = c.requester
+      WHERE c.type = 'v' AND c.itemid = ? AND c.rev = ?|,
+    $select, $o{id}, $o{rev}
+  );
+
+  return _enrich($self, $r, 0, 1, $o{what});
+}
+
+
+sub _enrich {
+  my($self, $r, $np, $rev, $what) = @_;
+
+  if(@$r && $what =~ /anime|relations|screenshots|credits/) {
+    my($col, $hist, $colname) = $rev ? ('cid', '_hist', 'chid') : ('id', '', 'id');
     my %r = map {
       $r->[$_]{anime} = [];
       $r->[$_]{credits} = [];
       $r->[$_]{seiyuu} = [];
       $r->[$_]{relations} = [];
       $r->[$_]{screenshots} = [];
-      ($r->[$_]{cid}, $_)
+      ($r->[$_]{$col}, $_)
     } 0..$#$r;
 
-    if($o{what} =~ /credits/) {
-      push(@{$r->[$r{ delete $_->{vid} }]{credits}}, $_) for (@{$self->dbAll(q|
-        SELECT vs.vid, s.id, vs.aid, sa.name, sa.original, sr.gender, sr.lang, vs.role, vs.note
-          FROM vn_staff vs
-          JOIN staff_alias sa ON vs.aid = sa.id
-          JOIN staff_rev sr ON sr.id = sa.rid
-          JOIN staff s ON sr.id = s.latest
-          WHERE s.hidden = FALSE AND vs.vid IN(!l)
-          ORDER BY vs.role ASC, sa.name ASC|,
+    if($what =~ /credits/) {
+      push(@{$r->[$r{ delete $_->{xid} }]{credits}}, $_) for (@{$self->dbAll("
+        SELECT vs.$colname AS xid, s.id, vs.aid, sa.name, sa.original, s.gender, s.lang, vs.role, vs.note
+          FROM vn_staff$hist vs
+          JOIN staff_alias sa ON vs.aid = sa.aid
+          JOIN staff s ON s.id = sa.id
+          WHERE s.hidden = FALSE AND vs.$colname IN(!l)
+          ORDER BY vs.role ASC, sa.name ASC",
         [ keys %r ]
       )});
-      push(@{$r->[$r{ delete $_->{vid} }]{seiyuu}}, $_) for (@{$self->dbAll(q|
-        SELECT vs.vid, s.id, vs.aid, sa.name, sa.original, sr.gender, sr.lang, cr.cid, cr.name AS cname, vs.note,
-            (SELECT MAX(spoil) FROM chars_vns cv WHERE cv.vid = vr.vid AND cv.cid = cr.id) AS spoil
-          FROM vn_seiyuu vs
-          JOIN vn_rev vr ON vr.id = vs.vid
-          JOIN staff_alias sa ON vs.aid = sa.id
-          JOIN staff_rev sr ON sr.id = sa.rid
-          JOIN staff s ON s.id = sr.sid AND sr.id = s.latest
+
+      # The seiyuu query needs the VN id to get the VN<->Char spoiler level.
+      # Obtaining this ID is different when using the hist table.
+      my($vid, $join) = $rev ? ('h.itemid', 'JOIN changes h ON h.id = vs.chid') : ('vs.id', '');
+      push(@{$r->[$r{ delete $_->{xid} }]{seiyuu}}, $_) for (@{$self->dbAll("
+        SELECT vs.$colname AS xid, s.id, vs.aid, sa.name, sa.original, s.gender, s.lang, c.id AS cid, c.name AS cname, vs.note,
+            (SELECT MAX(spoil) FROM chars_vns cv WHERE cv.vid = $vid AND cv.id = c.id) AS spoil
+          FROM vn_seiyuu$hist vs
+          JOIN staff_alias sa ON vs.aid = sa.aid
+          JOIN staff s ON s.id = sa.id
           JOIN chars c ON c.id = vs.cid
-          JOIN chars_rev cr ON cr.id = c.latest
-          WHERE s.hidden = FALSE AND vs.vid IN(!l)
-            AND cr.id IN(SELECT cv.cid FROM chars_vns cv WHERE cv.vid = vr.vid AND cv.cid = cr.id)
-          ORDER BY cr.name|,
+          $join
+          WHERE s.hidden = FALSE AND vs.$colname IN(!l)
+          ORDER BY c.name",
         [ keys %r ]
       )});
     }
 
-    if($o{what} =~ /anime/) {
-      push(@{$r->[$r{$_->{vid}}]{anime}}, $_) && delete $_->{vid} for (@{$self->dbAll(q|
-        SELECT va.vid, a.id, a.year, a.ann_id, a.nfo_id, a.type, a.title_romaji, a.title_kanji, extract('epoch' from a.lastfetch) AS lastfetch
-          FROM vn_anime va
+    if($what =~ /anime/) {
+      push(@{$r->[$r{ delete $_->{xid} }]{anime}}, $_) for (@{$self->dbAll("
+        SELECT va.$colname AS xid, a.id, a.year, a.ann_id, a.nfo_id, a.type, a.title_romaji, a.title_kanji, extract('epoch' from a.lastfetch) AS lastfetch
+          FROM vn_anime$hist va
           JOIN anime a ON va.aid = a.id
-          WHERE va.vid IN(!l)|,
+          WHERE va.$colname IN(!l)",
         [ keys %r ]
       )});
     }
 
-    if($o{what} =~ /relations/) {
-      push(@{$r->[$r{$_->{vid1}}]{relations}}, {
-        relation => $_->{relation},
-        official => $_->{official},
-        id => $_->{vid2},
-        title => $_->{title},
-        original => $_->{original},
-      }) for(@{$self->dbAll(q|
-        SELECT rel.vid1, rel.vid2, rel.relation, rel.official, vr.title, vr.original
-          FROM vn_relations rel
-          JOIN vn v ON rel.vid2 = v.id
-          JOIN vn_rev vr ON v.latest = vr.id
-          WHERE rel.vid1 IN(!l)|,
+    if($what =~ /relations/) {
+      push(@{$r->[$r{ delete $_->{xid} }]{relations}}, $_) for(@{$self->dbAll("
+        SELECT rel.$colname AS xid, rel.vid AS id, rel.relation, rel.official, v.title, v.original
+          FROM vn_relations$hist rel
+          JOIN vn v ON rel.vid = v.id
+          WHERE rel.$colname IN(!l)",
         [ keys %r ]
       )});
     }
 
-    if($o{what} =~ /screenshots/) {
-      push(@{$r->[$r{$_->{vid}}]{screenshots}}, $_) && delete $_->{vid} for (@{$self->dbAll(q|
-        SELECT vs.vid, s.id, vs.nsfw, vs.rid, s.width, s.height
-          FROM vn_screenshots vs
+    if($what =~ /screenshots/) {
+      push(@{$r->[$r{ delete $_->{xid} }]{screenshots}}, $_) for (@{$self->dbAll("
+        SELECT vs.$colname AS xid, s.id, vs.nsfw, vs.rid, s.width, s.height
+          FROM vn_screenshots$hist vs
           JOIN screenshots s ON vs.scr = s.id
-          WHERE vs.vid IN(!l)
-          ORDER BY vs.scr|,
+          WHERE vs.$colname IN(!l)
+          ORDER BY vs.scr",
         [ keys %r ]
       )});
     }
@@ -296,41 +309,36 @@ sub dbScreenshotGet {
 sub dbScreenshotRandom {
   my($self, @vids) = @_;
   return $self->dbAll(q|
-    SELECT s.id AS scr, s.width, s.height, vr.vid, vr.title
+    SELECT s.id AS scr, s.width, s.height, v.id AS vid, v.title
       FROM screenshots s
       JOIN vn_screenshots vs ON vs.scr = s.id
-      JOIN vn_rev vr ON vr.id = vs.vid
-      JOIN vn v ON v.id = vr.vid AND v.latest = vs.vid
+      JOIN vn v ON v.id = vs.id
      WHERE NOT v.hidden AND NOT vs.nsfw
        AND s.id IN(
          SELECT floor(random() * last_value)::integer
-           FROM generate_series(1,20), (SELECT last_value FROM screenshots_id_seq) s1
+           FROM generate_series(1,20), (SELECT MAX(id) AS last_value FROM screenshots) s1
           LIMIT 20
        )
      LIMIT 4|
   ) if !@vids;
   # this query is faster than it looks
   return $self->dbAll(join(' UNION ALL ', map
-    q|SELECT s.id AS scr, s.width, s.height, vr.vid, vr.title, RANDOM() AS position
-        FROM vn v
-        JOIN vn_rev vr ON vr.id = v.latest
-        JOIN vn_screenshots vs ON vs.vid = v.latest
+    q|SELECT s.id AS scr, s.width, s.height, v.id AS vid, v.title, RANDOM() AS position
+        FROM (
+         SELECT vs2.id, vs2.scr FROM vn_screenshots vs2
+          WHERE vs2.id = ? AND NOT vs2.nsfw
+          ORDER BY RANDOM() LIMIT 1
+        ) vs
+        JOIN vn v ON v.id = vs.id
         JOIN screenshots s ON s.id = vs.scr
-       WHERE v.id = ? AND s.id = (
-         SELECT vs2.scr
-          FROM vn_screenshots vs2
-          JOIN vn v2 ON v2.latest = vs2.vid
-         WHERE v2.id = v.id AND NOT vs2.nsfw
-         ORDER BY RANDOM()
-         LIMIT 1
-       )|, @vids).' ORDER BY position', @vids);
+     |, @vids).' ORDER BY position', @vids);
 }
 
 
 sub dbVNHasChar {
   my($self, $vid) = @_;
   return $self->dbRow(
-    'SELECT 1 AS exists FROM chars c JOIN chars_vns cv ON c.latest = cv.cid WHERE cv.vid = ? AND NOT c.hidden', $vid
+    'SELECT 1 AS exists FROM chars c JOIN chars_vns cv ON c.id = cv.id WHERE cv.vid = ? AND NOT c.hidden', $vid
   )->{exists};
 }
 
@@ -338,7 +346,7 @@ sub dbVNHasChar {
 sub dbVNHasStaff {
   my($self, $vid) = @_;
   return $self->dbRow(
-    'SELECT 1 AS exists FROM vn_staff vs FULL OUTER JOIN vn_seiyuu vsy ON vs.vid = vsy.vid JOIN vn v ON v.latest = vs.vid OR v.latest = vsy.vid WHERE v.id = ?', $vid
+    'SELECT 1 AS exists FROM vn_staff vs FULL OUTER JOIN vn_seiyuu vsy ON vs.id = vsy.id WHERE vs.id = ?', $vid
   )->{exists};
 }
 
@@ -347,16 +355,12 @@ sub dbVNHasStaff {
 sub dbVNImportSeiyuu {
   my($self, $vid, $cids) = @_;
   return $self->dbAll(q|
-    SELECT DISTINCT ON(cr.cid) cr.cid, cr.name AS c_name, s.id AS sid, sa.id AS aid, sa.name
+    SELECT DISTINCT ON(c.id) c.id AS cid, c.name AS c_name, sa.id AS sid, sa.aid, sa.name
       FROM vn_seiyuu vs
-      JOIN vn v ON v.latest = vs.vid
       JOIN chars c ON c.id = vs.cid
-      JOIN chars_rev cr ON cr.id = c.latest
-      JOIN staff_alias sa ON sa.id = vs.aid
-      JOIN staff s ON sa.rid = s.latest
-      WHERE vs.cid IN(!l) AND v.id <> ?|, $cids, $vid);
+      JOIN staff_alias sa ON sa.aid = vs.aid
+      WHERE vs.cid IN(!l) AND vs.id <> ?|, $cids, $vid);
 }
 
 
 1;
-

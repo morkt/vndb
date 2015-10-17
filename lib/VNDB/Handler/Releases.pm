@@ -20,9 +20,10 @@ TUWF::register(
 sub page {
   my($self, $rid, $rev) = @_;
 
-  my $r = $self->dbReleaseGet(
+  my $method = $rev ? 'dbReleaseGetRev' : 'dbReleaseGet';
+  my $r = $self->$method(
     id => $rid,
-    what => 'vn extended producers platforms media'.($rev ? ' changes' : ''),
+    what => 'vn extended producers platforms media',
     $rev ? (rev => $rev) : (),
   )->[0];
   return $self->resNotFound if !$r->{id};
@@ -32,7 +33,7 @@ sub page {
   return if $self->htmlHiddenMessage('r', $r);
 
   if($rev) {
-    my $prev = $rev && $rev > 1 && $self->dbReleaseGet(
+    my $prev = $rev && $rev > 1 && $self->dbReleaseGetRev(
       id => $rid, rev => $rev-1,
       what => 'vn extended producers platforms media changes'
     )->[0];
@@ -271,9 +272,9 @@ sub edit {
     $rid = 0;
   }
 
-  my $r = $rid && $self->dbReleaseGet(id => $rid, what => 'vn extended producers platforms media changes', $rev ? (rev => $rev) : ())->[0];
+  my $r = $rid && $self->dbReleaseGetRev(id => $rid, what => 'vn extended producers platforms media', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $rid && !$r->{id};
-  $rev = undef if !$r || $r->{cid} == $r->{latest};
+  $rev = undef if !$r || $r->{lastrev};
 
   my $v = $vid && $self->dbVNGet(id => $vid)->[0];
   return $self->resNotFound if $vid && !$v->{id};

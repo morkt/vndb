@@ -102,6 +102,7 @@ CREATE        INDEX tags_vn_date           ON tags_vn (date);
 CREATE        INDEX tags_vn_vid            ON tags_vn (vid);
 CREATE        INDEX threads_posts_ts       ON threads_posts USING gin(to_tsvector('english', strip_bb_tags(msg)));
 CREATE        INDEX vn_staff_aid           ON vn_staff (aid);
+CREATE        INDEX vn_seiyuu_aid          ON vn_seiyuu (aid);
 CREATE UNIQUE INDEX changes_itemrev        ON changes (type, itemid, rev);
 CREATE UNIQUE INDEX chars_vns_pkey         ON chars_vns (id, vid, COALESCE(rid, 0));
 CREATE UNIQUE INDEX chars_vns_hist_pkey    ON chars_vns_hist (chid, vid, COALESCE(rid, 0));

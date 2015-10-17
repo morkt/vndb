@@ -187,8 +187,7 @@ my @rel_cols = (
 sub releases {
   my($self, $vid) = @_;
 
-  my $v = $self->dbVNGet(
-     id => $vid)->[0];
+  my $v = $self->dbVNGet(id => $vid)->[0];
   return $self->resNotFound if !$v->{id};
 
   my $title = mt('_vnpage_rel_title', $v->{title});
@@ -334,9 +333,10 @@ sub page {
   my $staff = $rev && $rev eq 'staff';
   $rev = undef if $char || $staff;
 
-  my $v = $self->dbVNGet(
+  my $method = $rev ? 'dbVNGetRev' : 'dbVNGet';
+  my $v = $self->$method(
     id => $vid,
-    what => 'extended anime relations screenshots rating ranking'.($staff || $rev ? ' credits' : '').($rev ? ' changes' : ''),
+    what => 'extended anime relations screenshots rating ranking'.($staff || $rev ? ' credits' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
   return $self->resNotFound if !$v->{id};
@@ -508,8 +508,8 @@ sub _revision {
   my($self, $v, $rev) = @_;
   return if !$rev;
 
-  my $prev = $rev && $rev > 1 && $self->dbVNGet(
-    id => $v->{id}, rev => $rev-1, what => 'extended anime relations screenshots credits changes'
+  my $prev = $rev && $rev > 1 && $self->dbVNGetRev(
+    id => $v->{id}, rev => $rev-1, what => 'extended anime relations screenshots credits'
   )->[0];
 
   $self->htmlRevision('v', $prev, $v,

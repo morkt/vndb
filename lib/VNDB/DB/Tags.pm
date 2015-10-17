@@ -184,11 +184,11 @@ sub dbTagLinks {
 
   my @select = (
     qw|tv.tag tv.vid tv.uid tv.vote tv.spoiler tv.ignore|, "EXTRACT('epoch' from tv.date) AS date",
-    $o{what} =~ /details/ ? (qw|vr.title u.username t.name|) : (),
+    $o{what} =~ /details/ ? (qw|v.title u.username t.name|) : (),
   );
 
   my @join = $o{what} =~ /details/ ? (
-    'JOIN vn v ON v.id = tv.vid JOIN vn_rev vr ON vr.id = v.latest',
+    'JOIN vn v ON v.id = tv.vid',
     'JOIN users u ON u.id = tv.uid',
     'JOIN tags t ON t.id = tv.tag'
   ) : ();
@@ -196,7 +196,7 @@ sub dbTagLinks {
   my $order = !$o{sort} ? '' : 'ORDER BY '.{
     username => 'u.username',
     date     => 'tv.date',
-    title    => 'vr.title',
+    title    => 'v.title',
     tag      => 't.name',
   }->{$o{sort}}.($o{reverse} ? ' DESC' : ' ASC');
 

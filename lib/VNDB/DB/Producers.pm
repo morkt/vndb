@@ -5,11 +5,11 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbProducerGet dbProducerRevisionInsert|;
+our @EXPORT = qw|dbProducerGet dbProducerGetRev dbProducerRevisionInsert|;
 
 
-# options: results, page, id, search, char, rev
-# what: extended changes relations relgraph
+# options: results, page, id, search, char
+# what: extended relations relgraph
 sub dbProducerGet {
   my $self = shift;
   my %o = (
@@ -22,52 +22,79 @@ sub dbProducerGet {
   $o{search} =~ s/%//g if $o{search};
 
   my %where = (
-    !$o{id} && !$o{rev} ? (
+    !$o{id} ? (
       'p.hidden = FALSE' => 1 ) : (),
     $o{id} ? (
       'p.id IN(!l)' => [ ref $o{id} ? $o{id} : [$o{id}] ] ) : (),
     $o{search} ? (
-      '(pr.name ILIKE ? OR pr.original ILIKE ? OR pr.alias ILIKE ?)', [ map '%'.$o{search}.'%', 1..3 ] ) : (),
+      '(p.name ILIKE ? OR p.original ILIKE ? OR p.alias ILIKE ?)', [ map '%'.$o{search}.'%', 1..3 ] ) : (),
     $o{char} ? (
-      'LOWER(SUBSTR(pr.name, 1, 1)) = ?' => $o{char} ) : (),
+      'LOWER(SUBSTR(p.name, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ? (
-      '(ASCII(pr.name) < 97 OR ASCII(pr.name) > 122) AND (ASCII(pr.name) < 65 OR ASCII(pr.name) > 90)' => 1 ) : (),
-    $o{rev} ? (
-      'c.rev = ?' => $o{rev} ) : (),
+      '(ASCII(p.name) < 97 OR ASCII(p.name) > 122) AND (ASCII(p.name) < 65 OR ASCII(p.name) > 90)' => 1 ) : (),
   );
 
-  my @join;
-  push @join, $o{rev} ? 'JOIN producers p ON p.id = pr.pid' : 'JOIN producers p ON pr.id = p.latest';
-  push @join, 'JOIN changes c ON c.id = pr.id' if $o{what} =~ /changes/ || $o{rev};
-  push @join, 'JOIN users u ON u.id = c.requester' if $o{what} =~ /changes/;
-  push @join, 'JOIN relgraphs pg ON pg.id = p.rgraph' if $o{what} =~ /relgraph/;
+  my $join = $o{what} =~ /relgraph/ ? 'JOIN relgraphs pg ON pg.id = p.rgraph' : '';
 
-  my $select = 'p.id, pr.type, pr.name, pr.original, pr.lang, pr.id AS cid, p.rgraph';
-  $select .= ', pr.desc, pr.alias, pr.website, pr.l_wp, p.hidden, p.locked' if $o{what} =~ /extended/;
-  $select .= q|, extract('epoch' from c.added) as added, c.requester, c.comments, p.latest, pr.id AS cid, u.username, c.rev, c.ihid, c.ilock| if $o{what} =~ /changes/;
+  my $select = 'p.id, p.type, p.name, p.original, p.lang, p.rgraph';
+  $select .= ', p.desc, p.alias, p.website, p.l_wp, p.hidden, p.locked' if $o{what} =~ /extended/;
   $select .= ', pg.svg' if $o{what} =~ /relgraph/;
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
-      FROM producers_rev pr
+      FROM producers p
       !s
       !W
-      ORDER BY pr.name ASC|,
-    $select, join(' ', @join), \%where,
+      ORDER BY p.name ASC|,
+    $select, $join, \%where,
   );
 
-  if(@$r && $o{what} =~ /relations/) {
+  return _enrich($self, $r, $np, 0, $o{what});
+}
+
+
+# options: id, rev, what
+# what: extended relations
+sub dbProducerGetRev {
+  my $self = shift;
+  my %o = (what => '', @_);
+
+  $o{rev} ||= $self->dbRow('SELECT MAX(rev) AS rev FROM changes WHERE type = \'p\' AND itemid = ?', $o{id})->{rev};
+
+  my $select = 'c.itemid AS id, p.type, p.name, p.original, p.lang, po.rgraph';
+  $select .= ', extract(\'epoch\' from c.added) as added, c.requester, c.comments, u.username, c.rev, c.ihid, c.ilock';
+  $select .= ', c.id AS cid, NOT EXISTS(SELECT 1 FROM changes c2 WHERE c2.type = c.type AND c2.itemid = c.itemid AND c2.rev = c.rev+1) AS lastrev';
+  $select .= ', p.desc, p.alias, p.website, p.l_wp, po.hidden, po.locked' if $o{what} =~ /extended/;
+
+  my $r = $self->dbAll(q|
+    SELECT !s
+      FROM changes c
+      JOIN producers po ON po.id = c.itemid
+      JOIN producers_hist p ON p.chid = c.id
+      JOIN users u ON u.id = c.requester
+      WHERE c.type = 'p' AND c.itemid = ? AND c.rev = ?|,
+    $select, $o{id}, $o{rev}
+  );
+
+  return _enrich($self, $r, 0, 1, $o{what});
+}
+
+
+sub _enrich {
+  my($self, $r, $np, $rev, $what) = @_;
+
+  if(@$r && $what =~ /relations/) {
+    my($col, $hist, $colname) = $rev ? ('cid', '_hist', 'chid') : ('id', '', 'id');
     my %r = map {
       $r->[$_]{relations} = [];
-      ($r->[$_]{cid}, $_)
+      ($r->[$_]{$col}, $_)
     } 0..$#$r;
 
-    push @{$r->[$r{$_->{pid1}}]{relations}}, $_ for(@{$self->dbAll(q|
-      SELECT rel.pid1, rel.pid2 AS id, rel.relation, pr.name, pr.original
-        FROM producers_relations rel
-        JOIN producers p ON rel.pid2 = p.id
-        JOIN producers_rev pr ON p.latest = pr.id
-        WHERE rel.pid1 IN(!l)|,
+    push @{$r->[$r{$_->{xid}}]{relations}}, $_ for(@{$self->dbAll(qq|
+      SELECT rel.$colname AS xid, rel.pid AS id, rel.relation, p.name, p.original
+        FROM producers_relations$hist rel
+        JOIN producers p ON rel.pid = p.id
+        WHERE rel.$colname IN(!l)|,
       [ keys %r ]
     )});
   }

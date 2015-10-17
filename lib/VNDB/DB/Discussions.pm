@@ -86,12 +86,10 @@ sub dbThreadGet {
     }
     if($o{what} =~ /boardtitles/) {
       push(@{$r->[$r{$_->{tid}}]{boards}}, $_) for (@{$self->dbAll(q|
-        SELECT tb.tid, tb.type, tb.iid, COALESCE(u.username, vr.title, pr.name) AS title, COALESCE(u.username, vr.original, pr.original) AS original
+        SELECT tb.tid, tb.type, tb.iid, COALESCE(u.username, v.title, p.name) AS title, COALESCE(u.username, v.original, p.original) AS original
           FROM threads_boards tb
           LEFT JOIN vn v ON tb.type = 'v' AND v.id = tb.iid
-          LEFT JOIN vn_rev vr ON vr.id = v.latest
           LEFT JOIN producers p ON tb.type = 'p' AND p.id = tb.iid
-          LEFT JOIN producers_rev pr ON pr.id = p.latest
           LEFT JOIN users u ON tb.type = 'u' AND u.id = tb.iid
           WHERE tb.tid IN(!l)|,
         [ keys %r ]

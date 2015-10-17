@@ -23,12 +23,12 @@ sub dbAffiliateGet {
     defined($o{hidden})    ? ('!s af.hidden'  => $o{hidden} ? '' : 'NOT') : (),
   );
 
-  my $join = $o{what} ? 'JOIN releases r ON r.id = af.rid JOIN releases_rev rr ON rr.id = r.latest' : '';
-  my $select = $o{what} ? ', rr.title' : '';
+  my $join = $o{what} ? 'JOIN releases r ON r.id = af.rid' : '';
+  my $select = $o{what} ? ', r.title' : '';
 
   my $order = sprintf {
     id        => 'af.id %s',
-    rel       => 'rr.title %s',
+    rel       => 'r.title %s',
     prio      => 'af.priority %s',
     url       => 'af.url %s',
     lastfetch => 'af.lastfetch %s',

@@ -47,10 +47,8 @@ sub dbItemEdit {
 }
 
 
-# Options: type, iid, uid, auto, hidden, edit, page, results, what, releases
+# Options: type, itemid, uid, auto, hidden, edit, page, results, what, releases
 # what: item user
-# Not very fast in each situation. Can be further optimized by: putting indexes
-# on *_rev.?id, or by caching iid, ititle and ihidden in the changes table.
 sub dbRevisionGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -59,7 +57,7 @@ sub dbRevisionGet {
   $o{hidden} ||= 0;
   $o{edit} ||= 0;   # 0:both, -1:new, 1:edits
   $o{what} ||= '';
-  $o{releases} = 0 if !$o{type} || $o{type} ne 'v' || !$o{iid};
+  $o{releases} = 0 if !$o{type} || $o{type} ne 'v' || !$o{itemid};
 
   my %tables = qw|v vn r releases p producers c chars s staff|;
   # what types should we join?
@@ -72,43 +70,44 @@ sub dbRevisionGet {
 
   my %where = (
     $o{releases} ? (
-      q{((h.type = 'v' AND vr.vid = ?) OR (h.type = 'r' AND h.id = ANY(ARRAY(SELECT rv.rid FROM releases_vn rv WHERE rv.vid = ?))))} => [$o{iid}, $o{iid}],
+      # This selects all changes of releases that are currently linked to the VN, not release revisions that are linked to the VN.
+      # The latter seems more useful, but is also a lot more expensive.
+      q{((h.type = 'v' AND h.itemid = ?) OR (h.type = 'r' AND h.itemid = ANY(ARRAY(SELECT rv.id FROM releases_vn rv WHERE rv.vid = ?))))} => [$o{itemid}, $o{itemid}],
     ) : (
       $o{type} ? (
         'h.type IN(!l)' => [ ref($o{type})?$o{type}:[$o{type}] ] ) : (),
-      $o{iid} ? (
-        '!sr.!sid = ?' => [ $o{type}, $o{type}, $o{iid} ] ) : (),
+      $o{itemid} ? (
+        'h.itemid = ?' => [ $o{itemid} ] ) : (),
     ),
     $o{uid} ? (
       'h.requester = ?' => $o{uid} ) : (),
     $o{auto} ? (
       'h.requester !s 1' => $o{auto} < 0 ? '=' : '<>' ) : (),
     $o{hidden} ? (
-      '('.join(' OR ', map sprintf('%s.hidden IS NOT NULL AND %s %1$s.hidden', $_, $o{hidden} == 1 ? 'NOT' : ''), @types).')' => 1 ) : (),
+      ($o{hidden} == 1 ? 'NOT' : '').' COALESCE('.join(',', map "${_}.hidden", @types).')' => 1 ) : (),
     $o{edit} ? (
       'h.rev !s 1' => $o{edit} < 0 ? '=' : '>' ) : (),
   );
 
   my @join = (
-    $o{iid} || $o{what} =~ /item/ || $o{hidden} || $o{releases} ? (
-      map sprintf(q|LEFT JOIN %s_rev %sr ON h.type = '%2$s' AND h.id = %2$sr.id|, $tables{$_}, $_), @types
+    $o{what} =~ /item/ || $o{hidden} ? (
+      map sprintf(q|LEFT JOIN %s_hist %sh ON h.type = '%2$s' AND h.id = %2$sh.chid|, $tables{$_}, $_), @types
     ) : (),
     $o{hidden} ? (
-      map sprintf(q|LEFT JOIN %s %s ON h.type = '%2$s' AND %2$sr.%2$sid = %2$s.id|, $tables{$_}, $_), @types
+      map sprintf(q|LEFT JOIN %s %s ON h.type = '%2$s' AND h.itemid = %2$s.id|, $tables{$_}, $_), @types
     ) : (),
     $o{what} =~ /user/ ? 'JOIN users u ON h.requester = u.id' : (),
   );
-  push @join, 'LEFT JOIN staff_alias sa ON sa.rid = sr.id AND sa.id = sr.aid' if grep /s/, @types;
+  push @join, 'LEFT JOIN staff_alias_hist sah ON sah.chid = h.id AND sah.aid = sh.aid' if grep /s/, @types;
 
-  my %tcolumns = qw(v vr.title r rr.title p pr.name c cr.name s sa.name);
+  my %tcolumns = qw(v vh.title r rh.title p ph.name c ch.name s sah.name);
   my @select = (
-    qw|h.id h.type h.requester h.comments h.rev|,
+    qw|h.id h.type h.itemid h.requester h.comments h.rev|,
     q|extract('epoch' from h.added) as added|,
     $o{what} =~ /user/ ? 'u.username' : (),
     $o{what} =~ /item/ ? (
-      'COALESCE('.join(', ', map "${_}r.${_}id", @types).') AS iid',
       'COALESCE('.join(', ', map $tcolumns{$_}, @types).') AS ititle',
-      'COALESCE('.join(', ', map /s/ ? 'sa.original' : "${_}r.original", @types).') AS ioriginal',
+      'COALESCE('.join(', ', map /s/ ? 'sah.original' : "${_}h.original", @types).') AS ioriginal',
     ) : (),
   );
 

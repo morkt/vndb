@@ -19,9 +19,10 @@ TUWF::register(
 sub page {
   my($self, $id, $rev) = @_;
 
-  my $s = $self->dbStaffGet(
+  my $method = $rev ? 'dbStaffGetRev' : 'dbStaffGet';
+  my $s = $self->$method(
     id => $id,
-    what => 'extended aliases roles'.($rev ? ' changes' : ''),
+    what => 'extended aliases roles',
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return $self->resNotFound if !$s->{id};
@@ -31,7 +32,7 @@ sub page {
   return if $self->htmlHiddenMessage('s', $s);
 
   if($rev) {
-    my $prev = $rev && $rev > 1 && $self->dbStaffGet(id => $id, rev => $rev-1, what => 'changes extended aliases')->[0];
+    my $prev = $rev && $rev > 1 && $self->dbStaffGetRev(id => $id, rev => $rev-1, what => 'extended aliases')->[0];
     $self->htmlRevision('s', $prev, $s,
       [ name      => diff => 1 ],
       [ original  => diff => 1 ],
@@ -179,9 +180,9 @@ sub _cast {
 sub edit {
   my($self, $sid, $rev) = @_;
 
-  my $s = $sid && $self->dbStaffGet(id => $sid, what => 'changes extended aliases', $rev ? (rev => $rev) : ())->[0];
+  my $s = $sid && $self->dbStaffGetRev(id => $sid, what => 'extended aliases', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $sid && !$s->{id};
-  $rev = undef if !$s || $s->{cid} == $s->{latest};
+  $rev = undef if !$s || $s->{lastrev};
 
   return $self->htmlDenied if !$self->authCan('staffedit')
     || $sid && (($s->{locked} || $s->{hidden}) && !$self->authCan('dbmod'));
@@ -384,4 +385,3 @@ sub staffxml {
 }
 
 1;
-__END__

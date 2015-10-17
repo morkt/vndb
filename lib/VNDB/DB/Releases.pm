@@ -7,12 +7,12 @@ use POSIX 'strftime';
 use Exporter 'import';
 use VNDB::Func 'gtintype';
 
-our @EXPORT = qw|dbReleaseGet dbReleaseRevisionInsert|;
+our @EXPORT = qw|dbReleaseGet dbReleaseGetRev dbReleaseRevisionInsert|;
 
 
-# Options: id vid pid rev released page results what med sort reverse date_before date_after
+# Options: id vid pid released page results what med sort reverse date_before date_after
 #   plat lang olang type minage search resolution freeware doujin voiced ani_story ani_ero
-# What: extended changes vn producers platforms media affiliates
+# What: extended vn producers platforms media affiliates
 # Sort: title released minage
 sub dbReleaseGet {
   my($self, %o) = @_;
@@ -23,34 +23,33 @@ sub dbReleaseGet {
   $o{med}  = [ $o{med}  ] if $o{med}  && !ref $o{med};
 
   my @where = (
-    !$o{id} && !$o{rev}     ? ( 'r.hidden = FALSE' => 0       ) : (),
+    !$o{id}                 ? ( 'r.hidden = FALSE' => 0       ) : (),
     $o{id}                  ? ( 'r.id = ?'         => $o{id}  ) : (),
-    $o{rev}                 ? ( 'c.rev = ?'        => $o{rev} ) : (),
     $o{vid}                 ? ( 'rv.vid IN(!l)'    => [ ref $o{vid} ? $o{vid} : [$o{vid}] ] ) : (),
     $o{pid}                 ? ( 'rp.pid = ?'       => $o{pid} ) : (),
-    defined $o{patch}       ? ( 'rr.patch = ?'     => $o{patch}    == 1 ? 1 : 0) : (),
-    defined $o{freeware}    ? ( 'rr.freeware = ?'  => $o{freeware} == 1 ? 1 : 0) : (),
-    defined $o{doujin}      ? ( 'rr.doujin = ?'    => $o{doujin}   == 1 ? 1 : 0) : (),
-    defined $o{type}        ? ( 'rr.type = ?'      => $o{type} ) : (),
-    defined $o{date_before} ? ( 'rr.released <= ?' => $o{date_before} ) : (),
-    defined $o{date_after}  ? ( 'rr.released >= ?' => $o{date_after} ) : (),
-    defined $o{minage}      ? ( 'rr.minage IN(!l)'     => [ ref $o{minage}     ? $o{minage}     : [$o{minage}]     ] ) : (),
-    defined $o{resolution}  ? ( 'rr.resolution IN(!l)' => [ ref $o{resolution} ? $o{resolution} : [$o{resolution}] ] ) : (),
-    defined $o{voiced}      ? ( 'rr.voiced IN(!l)'     => [ ref $o{voiced}     ? $o{voiced}     : [$o{voiced}]     ] ) : (),
-    defined $o{ani_story}   ? ( 'rr.ani_story IN(!l)'  => [ ref $o{ani_story}  ? $o{ani_story}  : [$o{ani_story}]  ] ) : (),
-    defined $o{ani_ero}     ? ( 'rr.ani_ero IN(!l)'    => [ ref $o{ani_ero}    ? $o{ani_ero}    : [$o{ani_ero}]    ] ) : (),
-    defined $o{released}    ? ( 'rr.released !s ?' => [ $o{released} ? '<=' : '>', strftime('%Y%m%d', gmtime) ] ) : (),
+    defined $o{patch}       ? ( 'r.patch = ?'      => $o{patch}    == 1 ? 1 : 0) : (),
+    defined $o{freeware}    ? ( 'r.freeware = ?'   => $o{freeware} == 1 ? 1 : 0) : (),
+    defined $o{doujin}      ? ( 'r.doujin = ?'     => $o{doujin}   == 1 ? 1 : 0) : (),
+    defined $o{type}        ? ( 'r.type = ?'       => $o{type} ) : (),
+    defined $o{date_before} ? ( 'r.released <= ?'  => $o{date_before} ) : (),
+    defined $o{date_after}  ? ( 'r.released >= ?'  => $o{date_after} ) : (),
+    defined $o{minage}      ? ( 'r.minage IN(!l)'     => [ ref $o{minage}     ? $o{minage}     : [$o{minage}]     ] ) : (),
+    defined $o{resolution}  ? ( 'r.resolution IN(!l)' => [ ref $o{resolution} ? $o{resolution} : [$o{resolution}] ] ) : (),
+    defined $o{voiced}      ? ( 'r.voiced IN(!l)'     => [ ref $o{voiced}     ? $o{voiced}     : [$o{voiced}]     ] ) : (),
+    defined $o{ani_story}   ? ( 'r.ani_story IN(!l)'  => [ ref $o{ani_story}  ? $o{ani_story}  : [$o{ani_story}]  ] ) : (),
+    defined $o{ani_ero}     ? ( 'r.ani_ero IN(!l)'    => [ ref $o{ani_ero}    ? $o{ani_ero}    : [$o{ani_ero}]    ] ) : (),
+    defined $o{released}    ? ( 'r.released !s ?'  => [ $o{released} ? '<=' : '>', strftime('%Y%m%d', gmtime) ] ) : (),
     $o{lang} ? (
-      'rr.id IN(SELECT irl.rid FROM releases_lang irl JOIN releases ir ON ir.latest = irl.rid WHERE irl.lang IN(!l))' => [ ref $o{lang} ? $o{lang} : [ $o{lang} ] ] ) : (),
+      'r.id IN(SELECT irl.id FROM releases_lang irl WHERE irl.lang IN(!l))' => [ ref $o{lang} ? $o{lang} : [ $o{lang} ] ] ) : (),
     $o{olang} ? (
-      'rr.id IN(SELECT irv.rid FROM releases_vn irv JOIN releases ir ON ir.latest = irv.rid JOIN vn v ON irv.vid = v.id WHERE v.c_olang && ARRAY[!l]::language[])' => [ ref $o{olang} ? $o{olang} : [ $o{olang} ] ] ) : (),
+      'r.id IN(SELECT irv.id FROM releases_vn irv JOIN vn v ON irv.vid = v.id WHERE v.c_olang && ARRAY[!l]::language[])' => [ ref $o{olang} ? $o{olang} : [ $o{olang} ] ] ) : (),
     $o{plat} ? ('('.join(' OR ',
-      grep(/^unk$/, @{$o{plat}}) ? 'NOT EXISTS(SELECT 1 FROM releases_platforms irp WHERE irp.rid = r.latest)' : (),
-      grep(!/^unk$/, @{$o{plat}}) ? 'rr.id IN(SELECT irp.rid FROM releases_platforms irp JOIN releases ir ON ir.latest = irp.rid WHERE irp.platform IN(!l))' : (),
+      grep(/^unk$/, @{$o{plat}}) ? 'NOT EXISTS(SELECT 1 FROM releases_platforms irp WHERE irp.id = r.id)' : (),
+      grep(!/^unk$/, @{$o{plat}}) ? 'r.id IN(SELECT irp.id FROM releases_platforms irp WHERE irp.platform IN(!l))' : (),
       ).')', [ [ grep !/^unk$/, @{$o{plat}} ] ]) : (),
     $o{med} ? ('('.join(' OR ',
-      grep(/^unk$/, @{$o{med}}) ? 'NOT EXISTS(SELECT 1 FROM releases_media irm WHERE irm.rid = r.latest)' : (),
-      grep(!/^unk$/, @{$o{med}}) ? 'rr.id IN(SELECT irm.rid FROM releases_media irm JOIN releases ir ON ir.latest = irm.rid WHERE irm.medium IN(!l))' : ()
+      grep(/^unk$/, @{$o{med}}) ? 'NOT EXISTS(SELECT 1 FROM releases_media irm WHERE irm.id = r.id)' : (),
+      grep(!/^unk$/, @{$o{med}}) ? 'r.id IN(SELECT irm.id FROM releases_media irm WHERE irm.medium IN(!l))' : ()
       ).')', [ [ grep(!/^unk$/, @{$o{med}}) ] ]) : (),
   );
 
@@ -58,110 +57,135 @@ sub dbReleaseGet {
     for (split /[ -,._]/, $o{search}) {
       s/%//g;
       if(/^\d+$/ && gtintype($_)) {
-        push @where, 'rr.gtin = ?', $_;
+        push @where, 'r.gtin = ?', $_;
       } elsif(length($_) > 0) {
         $_ = "%$_%";
-        push @where, '(rr.title ILIKE ? OR rr.original ILIKE ? OR rr.catalog = ?)',
+        push @where, '(r.title ILIKE ? OR r.original ILIKE ? OR r.catalog = ?)',
           [ $_, $_, $_ ];
       }
     }
   }
 
   my @join = (
-    $o{rev} ? 'JOIN releases r ON r.id = rr.rid' : 'JOIN releases r ON rr.id = r.latest',
-    $o{vid} ? 'JOIN releases_vn rv ON rv.rid = rr.id' : (),
-    $o{pid} ? 'JOIN releases_producers rp ON rp.rid = rr.id' : (),
-    $o{what} =~ /changes/ || $o{rev} ? (
-      'JOIN changes c ON c.id = rr.id',
-      'JOIN users u ON u.id = c.requester'
-    ) : (),
+    $o{vid} ? 'JOIN releases_vn rv ON rv.id = r.id' : (),
+    $o{pid} ? 'JOIN releases_producers rp ON rp.id = r.id' : (),
   );
 
   my @select = (
-    qw|r.id rr.title rr.original rr.website rr.released rr.minage rr.type rr.patch|,
-    'rr.id AS cid',
-    $o{what} =~ /extended/ ? qw|rr.notes rr.catalog rr.gtin rr.resolution rr.voiced rr.freeware rr.doujin rr.ani_story rr.ani_ero r.hidden r.locked| : (),
-    $o{what} =~ /changes/ ?
-      (qw|c.requester c.comments r.latest u.username c.rev c.ihid c.ilock|, q|extract('epoch' from c.added) as added|) : (),
+    qw|r.id r.title r.original r.website r.released r.minage r.type r.patch|,
+    $o{what} =~ /extended/ ? qw|r.notes r.catalog r.gtin r.resolution r.voiced r.freeware r.doujin r.ani_story r.ani_ero r.hidden r.locked| : (),
     $o{pid} ? ('rp.developer', 'rp.publisher') : (),
   );
 
   my $order = sprintf {
-    title       => 'rr.title %s,                                     rr.released %1$s',
-    type        => 'rr.patch %s, rr.type %1$s,                       rr.released %1$s, rr.title %1$s',
-    publication => 'rr.doujin %s, rr.freeware %1$s,   rr.patch %1$s, rr.released %1$s, rr.title %1$s',
-    resolution  => 'rr.resolution %s,                 rr.patch %2$s, rr.released %1$s, rr.title %1$s',
-    voiced      => 'rr.voiced %s,                     rr.patch %2$s, rr.released %1$s, rr.title %1$s',
-    ani_ero     => 'rr.ani_story %s, rr.ani_ero %1$s, rr.patch %2$s, rr.released %1$s, rr.title %1$s',
-    released    => 'rr.released %s, r.id %1$s',
-    minage      => 'rr.minage %s,                                    rr.released %1$s, rr.title %1$s',
-    notes       => 'rr.notes %s,                                     rr.released %1$s, rr.title %1$s',
+    title       => 'r.title %s,                                   r.released %1$s',
+    type        => 'r.patch %s, r.type %1$s,                      r.released %1$s, r.title %1$s',
+    publication => 'r.doujin %s, r.freeware %1$s,   r.patch %1$s, r.released %1$s, r.title %1$s',
+    resolution  => 'r.resolution %s,                r.patch %2$s, r.released %1$s, r.title %1$s',
+    voiced      => 'r.voiced %s,                    r.patch %2$s, r.released %1$s, r.title %1$s',
+    ani_ero     => 'r.ani_story %s, r.ani_ero %1$s, r.patch %2$s, r.released %1$s, r.title %1$s',
+    released    => 'r.released %s, r.id %1$s',
+    minage      => 'r.minage %s,                                  r.released %1$s, r.title %1$s',
+    notes       => 'r.notes %s,                                   r.released %1$s, r.title %1$s',
   }->{ $o{sort}||'released' }, $o{reverse} ? 'DESC' : 'ASC', !$o{reverse} ? 'DESC' : 'ASC';
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
-      FROM releases_rev rr
+      FROM releases r
       !s
       !W
       ORDER BY !s|,
     join(', ', @select), join(' ', @join), \@where, $order
   );
 
+  return _enrich($self, $r, $np, 0, $o{what});
+}
+
+
+# options: id, rev, what
+# what: extended vn producers platforms media affiliates
+sub dbReleaseGetRev {
+  my $self = shift;
+  my %o = (what => '', @_);
+
+  $o{rev} ||= $self->dbRow('SELECT MAX(rev) AS rev FROM changes WHERE type = \'r\' AND itemid = ?', $o{id})->{rev};
+
+  my $select = 'c.itemid AS id, r.title, r.original, r.website, r.released, r.minage, r.type, r.patch';
+  $select .= ', r.notes, r.catalog, r.gtin, r.resolution, r.voiced, r.freeware, r.doujin, r.ani_story, r.ani_ero, ro.hidden, ro.locked' if $o{what} =~ /extended/;
+  $select .= ', extract(\'epoch\' from c.added) as added, c.requester, c.comments, u.username, c.rev, c.ihid, c.ilock';
+  $select .= ', c.id AS cid, NOT EXISTS(SELECT 1 FROM changes c2 WHERE c2.type = c.type AND c2.itemid = c.itemid AND c2.rev = c.rev+1) AS lastrev';
+
+  my $r = $self->dbAll(q|
+    SELECT !s
+      FROM changes c
+      JOIN releases ro ON ro.id = c.itemid
+      JOIN releases_hist r ON r.chid = c.id
+      JOIN users u ON u.id = c.requester
+      WHERE c.type = 'r' AND c.itemid = ? AND c.rev = ?|,
+    $select, $o{id}, $o{rev}
+  );
+
+  return _enrich($self, $r, 0, 1, $o{what});
+}
+
+
+sub _enrich {
+  my($self, $r, $np, $rev, $what) = @_;
+
   if(@$r) {
+    my($col, $hist, $colname) = $rev ? ('cid', '_hist', 'chid') : ('id', '', 'id');
     my %r = map {
       $r->[$_]{producers} = [];
       $r->[$_]{platforms} = [];
       $r->[$_]{media} = [];
       $r->[$_]{vn} = [];
       $r->[$_]{languages} = [];
-      ($r->[$_]{cid}, $_)
+      ($r->[$_]{$col}, $_)
     } 0..$#$r;
 
-    push(@{$r->[$r{$_->{rid}}]{languages}}, $_->{lang}) for (@{$self->dbAll(q|
-      SELECT rid, lang
-        FROM releases_lang
-        WHERE rid IN(!l)|,
+    push(@{$r->[$r{$_->{xid}}]{languages}}, $_->{lang}) for (@{$self->dbAll("
+      SELECT $colname AS xid, lang
+        FROM releases_lang$hist
+        WHERE $colname IN(!l)",
       [ keys %r ]
     )});
 
-    if($o{what} =~ /vn/) {
-      push(@{$r->[$r{$_->{rid}}]{vn}}, $_) for (@{$self->dbAll(q|
-        SELECT rv.rid, vr.vid, vr.title, vr.original
-          FROM releases_vn rv
+    if($what =~ /vn/) {
+      push(@{$r->[$r{$_->{xid}}]{vn}}, $_) for (@{$self->dbAll("
+        SELECT rv.$colname AS xid, v.id AS vid, v.title, v.original
+          FROM releases_vn$hist rv
           JOIN vn v ON v.id = rv.vid
-          JOIN vn_rev vr ON vr.id = v.latest
-          WHERE rv.rid IN(!l)
-          ORDER BY vr.title|,
+          WHERE rv.$colname IN(!l)
+          ORDER BY v.title",
         [ keys %r ]
       )});
     }
 
-    if($o{what} =~ /producers/) {
-      push(@{$r->[$r{$_->{rid}}]{producers}}, $_) for (@{$self->dbAll(q|
-        SELECT rp.rid, rp.developer, rp.publisher, p.id, pr.name, pr.original, pr.type
-          FROM releases_producers rp
+    if($what =~ /producers/) {
+      push(@{$r->[$r{$_->{xid}}]{producers}}, $_) for (@{$self->dbAll("
+        SELECT rp.$colname AS xid, rp.developer, rp.publisher, p.id, p.name, p.original, p.type
+          FROM releases_producers$hist rp
           JOIN producers p ON rp.pid = p.id
-          JOIN producers_rev pr ON pr.id = p.latest
-          WHERE rp.rid IN(!l)
-          ORDER BY pr.name|,
+          WHERE rp.$colname IN(!l)
+          ORDER BY p.name",
         [ keys %r ]
       )});
     }
 
-    if($o{what} =~ /platforms/) {
-      push(@{$r->[$r{$_->{rid}}]{platforms}}, $_->{platform}) for (@{$self->dbAll(q|
-        SELECT rid, platform
-          FROM releases_platforms
-          WHERE rid IN(!l)|,
+    if($what =~ /platforms/) {
+      push(@{$r->[$r{$_->{xid}}]{platforms}}, $_->{platform}) for (@{$self->dbAll("
+        SELECT $colname AS xid, platform
+          FROM releases_platforms$hist
+          WHERE $colname IN(!l)",
         [ keys %r ]
       )});
     }
 
-    if($o{what} =~ /media/) {
-      push(@{$r->[$r{$_->{rid}}]{media}}, $_) for (@{$self->dbAll(q|
-        SELECT rid, medium, qty
-          FROM releases_media
-          WHERE rid IN(!l)|,
+    if($what =~ /media/) {
+      push(@{$r->[$r{$_->{xid}}]{media}}, $_) for (@{$self->dbAll("
+        SELECT $colname AS xid, medium, qty
+          FROM releases_media$hist
+          WHERE $colname IN(!l)",
         [ keys %r ]
       )});
     }

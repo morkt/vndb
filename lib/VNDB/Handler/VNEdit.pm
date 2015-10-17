@@ -79,7 +79,7 @@ sub edit {
 
   my $v = $vid && $self->dbVNGet(id => $vid, what => 'extended screenshots relations anime credits changes', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $vid && !$v->{id};
-  $rev = undef if !$vid || $v->{cid} == $v->{latest};
+  $rev = undef if !$vid || $v->{lastrev};
 
   return $self->htmlDenied if !$self->authCan('edit')
     || $vid && (($v->{locked} || $v->{hidden}) && !$self->authCan('dbmod'));

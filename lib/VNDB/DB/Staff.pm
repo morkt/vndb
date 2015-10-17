@@ -5,9 +5,9 @@ use strict;
 use warnings;
 use Exporter 'import';
 
-our @EXPORT = qw|dbStaffGet dbStaffRevisionInsert dbStaffAliasIds|;
+our @EXPORT = qw|dbStaffGet dbStaffGetRev dbStaffRevisionInsert dbStaffAliasIds|;
 
-# options: results, page, id, aid, search, exact, rev, truename, role, gender
+# options: results, page, id, aid, search, exact, truename, role, gender
 # what: extended changes roles aliases
 sub dbStaffGet {
   my $self = shift;
@@ -31,15 +31,15 @@ sub dbStaffGet {
   $o{search} =~ s/%//g if $o{search};
 
   my %where = (
-    !$o{id} && !$o{rev} ? ( 's.hidden = FALSE' => 1 ) : (),
+    !$o{id} ? ( 's.hidden = FALSE' => 1 ) : (),
     $o{id}  ? ( ref $o{id}  ? ('s.id IN(!l)'  => [$o{id}])  : ('s.id = ?' => $o{id}) ) : (),
     $o{aid} ? ( ref $o{aid} ? ('sa.id IN(!l)' => [$o{aid}]) : ('sa.id = ?' => $o{aid}) ) : (),
-    $o{truename} ? ( 'sr.aid = sa.id' => 1 ) : (),
-    defined $o{gender} ? ( 'sr.gender IN(!l)' => [ ref $o{gender} ? $o{gender} : [$o{gender}] ]) : (),
+    $o{id} || $o{truename} ? ( 's.aid = sa.aid' => 1 ) : (),
+    defined $o{gender} ? ( 's.gender IN(!l)' => [ ref $o{gender} ? $o{gender} : [$o{gender}] ]) : (),
     defined $o{role} ? (
       '('.join(' OR ',
-        @roles ? ( 'EXISTS(SELECT 1 FROM vn_staff vs JOIN vn v ON v.latest = vs.vid WHERE vs.aid = sa.id AND vs.role IN(!l) AND NOT v.hidden)' ) : (),
-        $seiyuu ? ( 'EXISTS(SELECT 1 FROM vn_seiyuu vsy JOIN vn v ON v.latest = vsy.vid WHERE vsy.aid = sa.id AND NOT v.hidden)' ) : ()
+        @roles ? ( 'EXISTS(SELECT 1 FROM vn_staff vs JOIN vn v ON v.id = vs.id WHERE vs.aid = sa.aid AND vs.role IN(!l) AND NOT v.hidden)' ) : (),
+        $seiyuu ? ( 'EXISTS(SELECT 1 FROM vn_seiyuu vsy JOIN vn v ON v.id = vsy.id WHERE vsy.aid = sa.aid AND NOT v.hidden)' ) : ()
       ).')' => ( @roles ? [ \@roles ] : 1 ),
     ) : (),
     $o{exact} ? ( '(sa.name = ? OR sa.original = ?)' => [ ($o{exact}) x 2 ] ) : (),
@@ -53,72 +53,99 @@ sub dbStaffGet {
     $o{char} ? ( 'LOWER(SUBSTR(sa.name, 1, 1)) = ?' => $o{char} ) : (),
     defined $o{char} && !$o{char} ?
       ( '(ASCII(sa.name) < 97 OR ASCII(sa.name) > 122) AND (ASCII(sa.name) < 65 OR ASCII(sa.name) > 90)' => 1 ) : (),
-    $o{rev} ? ( 'c.rev = ?' => $o{rev} ) : (),
   );
 
-  my @join;
-  push @join, 'JOIN staff s ON '.($o{rev} ? 's.id = sr.sid' : 'sr.id = s.latest');
-  push @join, 'JOIN staff_alias sa ON sa.rid = sr.id'.($o{id}?' AND sa.id = sr.aid':'');
-  push @join, 'JOIN changes c ON c.id = sr.id' if $o{what} =~ /changes/ || $o{rev};
-  push @join, 'JOIN users u ON u.id = c.requester' if $o{what} =~ /changes/;
-
-  my $select = 's.id, sa.id AS aid, sa.name, sa.original, sr.gender, sr.lang, sr.id AS cid';
-  $select .= ', sr.desc, sr.l_wp, sr.l_site, sr.l_twitter, sr.l_anidb, s.hidden, s.locked' if $o{what} =~ /extended/;
-  $select .= q|, extract('epoch' from c.added) as added, c.requester, c.comments, s.latest, u.username, c.rev, c.ihid, c.ilock| if $o{what} =~ /changes/;
-
-  my $order = 'ORDER BY sa.name';
+  my $select = 's.id, sa.aid, sa.name, sa.original, s.gender, s.lang';
+  $select .= ', s.desc, s.l_wp, s.l_site, s.l_twitter, s.l_anidb, s.hidden, s.locked' if $o{what} =~ /extended/;
 
   my($r, $np) = $self->dbPage(\%o, q|
     SELECT !s
-      FROM staff_rev sr
-      !s
+      FROM staff s
+      JOIN staff_alias sa ON sa.id = s.id
       !W
-      !s|,
-    $select, join(' ', @join), \%where, $order
+      ORDER BY sa.name|,
+    $select, \%where
   );
 
-  if (@$r && $o{what} =~ /roles|aliases/) {
+  return _enrich($self, $r, $np, 0, $o{what});
+}
+
+
+sub dbStaffGetRev {
+  my $self = shift;
+  my %o = (what => '', @_);
+
+  $o{rev} ||= $self->dbRow('SELECT MAX(rev) AS rev FROM changes WHERE type = \'s\' AND itemid = ?', $o{id})->{rev};
+
+  my $select = 'c.itemid AS id, sa.aid, sa.name, sa.original, s.gender, s.lang';
+  $select .= ', extract(\'epoch\' from c.added) as added, c.requester, c.comments, u.username, c.rev, c.ihid, c.ilock';
+  $select .= ', c.id AS cid, NOT EXISTS(SELECT 1 FROM changes c2 WHERE c2.type = c.type AND c2.itemid = c.itemid AND c2.rev = c.rev+1) AS lastrev';
+  $select .= ', s.desc, s.l_wp, s.l_site, s.l_twitter, s.l_anidb, so.hidden, so.locked' if $o{what} =~ /extended/;
+
+  my $r = $self->dbAll(q|
+    SELECT !s
+      FROM changes c
+      JOIN staff so ON so.id = c.itemid
+      JOIN staff_hist s ON s.chid = c.id
+      JOIN staff_alias_hist sa ON sa.chid = c.id AND s.aid = sa.aid
+      JOIN users u ON u.id = c.requester
+      WHERE c.type = 's' AND c.itemid = ? AND c.rev = ?|,
+    $select, $o{id}, $o{rev}
+  );
+
+  return _enrich($self, $r, 0, 1, $o{what});
+}
+
+
+sub _enrich {
+  my($self, $r, $np, $rev, $what) = @_;
+
+  # Role info is linked to VN revisions, so is independent of the selected staff revision
+  if(@$r && $what =~ /roles/) {
     my %r = map {
       $_->{roles} = [];
       $_->{cast} = [];
-      $_->{aliases} = [];
-      ($_->{cid}, $_);
+      ($_->{id}, $_);
     } @$r;
-    if ($o{what} =~ /roles/) {
-      push @{$r{ delete $_->{rid} }{roles}}, $_ for (@{$self->dbAll(q|
-        SELECT sa.rid, vr.vid, sa.name, sa.original, v.c_released, vr.title, vr.original AS t_original, vs.role, vs.note
-          FROM vn_staff vs
-          JOIN vn_rev vr ON vr.id = vs.vid
-          JOIN vn v ON v.latest = vr.id
-          JOIN staff_alias sa ON vs.aid = sa.id
-          WHERE sa.rid IN(!l) AND NOT v.hidden
-          ORDER BY v.c_released ASC, vr.title ASC, vs.role ASC|, [ keys %r ]
-      )});
-      push @{$r{ delete $_->{rid} }{cast}}, $_ for (@{$self->dbAll(q|
-        SELECT sa.rid, vr.vid, sa.name, sa.original, v.c_released, vr.title, vr.original AS t_original, cr.cid, cr.name AS c_name, cr.original AS c_original, vs.note
-          FROM vn_seiyuu vs
-          JOIN vn_rev vr ON vr.id = vs.vid
-          JOIN vn v ON v.latest = vr.id
-          JOIN chars_rev cr ON cr.cid = vs.cid
-          JOIN chars c ON c.latest = cr.id
-          JOIN staff_alias sa ON vs.aid = sa.id
-          WHERE sa.rid IN(!l) AND NOT v.hidden
-          ORDER BY v.c_released ASC, vr.title ASC|, [ keys %r ]
-      )});
-    }
-    if ($o{what} =~ /aliases/) {
-      push @{$r{ delete $_->{rid} }{aliases}}, $_ for (@{$self->dbAll(q|
-        SELECT sa.id, sa.rid, sa.name, sa.original
-          FROM staff_alias sa
-          JOIN staff_rev sr ON sr.id = sa.rid
-          WHERE sr.id IN(!l) AND sr.aid <> sa.id
-          ORDER BY sa.name ASC|, [ keys %r ]
-      )});
-    }
+
+    push @{$r{ delete $_->{id} }{roles}}, $_ for (@{$self->dbAll(q|
+      SELECT sa.id, v.id AS vid, sa.name, sa.original, v.c_released, v.title, v.original AS t_original, vs.role, vs.note
+        FROM vn_staff vs
+        JOIN vn v ON v.id = vs.id
+        JOIN staff_alias sa ON vs.aid = sa.aid
+        WHERE sa.id IN(!l) AND NOT v.hidden
+        ORDER BY v.c_released ASC, v.title ASC, vs.role ASC|, [ keys %r ]
+    )});
+    push @{$r{ delete $_->{id} }{cast}}, $_ for (@{$self->dbAll(q|
+      SELECT sa.id, v.id AS vid, sa.name, sa.original, v.c_released, v.title, v.original AS t_original, c.id AS cid, c.name AS c_name, c.original AS c_original, vs.note
+        FROM vn_seiyuu vs
+        JOIN vn v ON v.id = vs.id
+        JOIN chars c ON c.id = vs.cid
+        JOIN staff_alias sa ON vs.aid = sa.aid
+        WHERE sa.id IN(!l) AND NOT v.hidden
+        ORDER BY v.c_released ASC, v.title ASC|, [ keys %r ]
+    )});
+  }
+
+  if(@$r && $what =~ /aliases/) {
+    my ($col, $hist, $colname) = $rev ? ('cid', '_hist', 'chid') : ('id', '', 'id');
+    my %r = map {
+      $_->{aliases} = [];
+      ($_->{$col}, $_);
+    } @$r;
+
+    push @{$r{ delete $_->{xid} }{aliases}}, $_ for (@{$self->dbAll("
+      SELECT s.$colname AS xid, sa.aid, sa.name, sa.original
+        FROM staff_alias$hist sa
+        JOIN staff$hist s ON s.$colname = sa.$colname
+        WHERE s.$colname IN(!l) AND s.aid <> sa.aid
+        ORDER BY sa.name ASC", [ keys %r ]
+    )});
   }
 
   return wantarray ? ($r, $np) : $r;
 }
+
 
 # Updates the edit_* tables, used from dbItemEdit()
 # Arguments: { columns in staff_rev and staff_alias},
@@ -153,10 +180,10 @@ sub dbStaffRevisionInsert {
 sub dbStaffAliasIds {
   my($self, $sid) = @_;
   return $self->dbAll(q|
-    SELECT DISTINCT sa.id
-      FROM staff_alias sa
-      JOIN staff_rev sr ON sr.id = sa.rid
-      WHERE sr.sid = ?|, $sid);
+    SELECT DISTINCT sa.aid
+      FROM changes c
+      JOIN staff_alias_hist sa ON sa.chid = c.id
+      WHERE c.type = \'s\' AND c.itemid = ?|, $sid);
 }
 
 1;
