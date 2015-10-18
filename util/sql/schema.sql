@@ -528,3 +528,27 @@ CREATE TABLE wlists (
   added timestamptz NOT NULL DEFAULT NOW(),
   PRIMARY KEY(uid, vid)
 );
+
+CREATE TABLE polls (
+  id SERIAL PRIMARY KEY,
+  tid integer UNIQUE NOT NULL DEFAULT 0, -- references threads
+  question varchar(100) NOT NULL DEFAULT '',
+  max_options smallint NOT NULL DEFAULT 1,
+  preview boolean NOT NULL DEFAULT FALSE,
+  recast boolean NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE polls_options (
+  id SERIAL PRIMARY KEY,
+  pid integer NOT NULL REFERENCES polls (id) ON DELETE CASCADE,
+  option varchar(100) NOT NULL
+);
+
+CREATE TABLE polls_votes (
+  pid integer NOT NULL REFERENCES polls (id) ON DELETE CASCADE,
+  uid integer NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+  optid integer NOT NULL REFERENCES polls_options (id) ON DELETE CASCADE,
+  PRIMARY KEY (pid, uid, optid)
+);
+
+ALTER TABLE polls ADD FOREIGN KEY (tid) REFERENCES threads (id) ON DELETE CASCADE;

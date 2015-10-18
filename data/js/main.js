@@ -48,6 +48,7 @@ VARS = /*VARS*/;
 //include charops.js
 //include filter.js
 //include misc.js
+//include polls.js
 
 // VN editing (/v+/edit)
 //include vnrel.js
