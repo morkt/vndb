@@ -110,13 +110,13 @@ sub dbProducerRevisionInsert {
 
   my %set = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
     qw|name original website l_wp type lang desc alias|;
-  $self->dbExec('UPDATE edit_producer !H', \%set) if keys %set;
+  $self->dbExec('UPDATE edit_producers !H', \%set) if keys %set;
 
   if($o->{relations}) {
-    $self->dbExec('DELETE FROM edit_producer_relations');
+    $self->dbExec('DELETE FROM edit_producers_relations');
     my $q = join ',', map '(?,?)', @{$o->{relations}};
     my @q = map +($_->[1], $_->[0]), @{$o->{relations}};
-    $self->dbExec("INSERT INTO edit_producer_relations (pid, relation) VALUES $q", @q) if @q;
+    $self->dbExec("INSERT INTO edit_producers_relations (pid, relation) VALUES $q", @q) if @q;
   }
 }
 

@@ -203,38 +203,38 @@ sub dbReleaseRevisionInsert {
   my %set = map exists($o->{$_}) ? ("$_ = ?", $o->{$_}) : (),
     qw|title original gtin catalog website released notes minage type
        patch resolution voiced freeware doujin ani_story ani_ero|;
-  $self->dbExec('UPDATE edit_release !H', \%set) if keys %set;
+  $self->dbExec('UPDATE edit_releases !H', \%set) if keys %set;
 
   if($o->{languages}) {
-    $self->dbExec('DELETE FROM edit_release_lang');
+    $self->dbExec('DELETE FROM edit_releases_lang');
     my $q = join ',', map '(?)', @{$o->{languages}};
-    $self->dbExec("INSERT INTO edit_release_lang (lang) VALUES $q", @{$o->{languages}}) if @{$o->{languages}};
+    $self->dbExec("INSERT INTO edit_releases_lang (lang) VALUES $q", @{$o->{languages}}) if @{$o->{languages}};
   }
 
   if($o->{producers}) {
-    $self->dbExec('DELETE FROM edit_release_producers');
+    $self->dbExec('DELETE FROM edit_releases_producers');
     my $q = join ',', map '(?,?,?)', @{$o->{producers}};
     my @q = map +($_->[0], $_->[1]?1:0, $_->[2]?1:0), @{$o->{producers}};
-    $self->dbExec("INSERT INTO edit_release_producers (pid, developer, publisher) VALUES $q", @q) if @q;
+    $self->dbExec("INSERT INTO edit_releases_producers (pid, developer, publisher) VALUES $q", @q) if @q;
   }
 
   if($o->{platforms}) {
-    $self->dbExec('DELETE FROM edit_release_platforms');
+    $self->dbExec('DELETE FROM edit_releases_platforms');
     my $q = join ',', map '(?)', @{$o->{platforms}};
-    $self->dbExec("INSERT INTO edit_release_platforms (platform) VALUES $q", @{$o->{platforms}}) if @{$o->{platforms}};
+    $self->dbExec("INSERT INTO edit_releases_platforms (platform) VALUES $q", @{$o->{platforms}}) if @{$o->{platforms}};
   }
 
   if($o->{vn}) {
-    $self->dbExec('DELETE FROM edit_release_vn');
+    $self->dbExec('DELETE FROM edit_releases_vn');
     my $q = join ',', map '(?)', @{$o->{vn}};
-    $self->dbExec("INSERT INTO edit_release_vn (vid) VALUES $q", @{$o->{vn}}) if @{$o->{vn}};
+    $self->dbExec("INSERT INTO edit_releases_vn (vid) VALUES $q", @{$o->{vn}}) if @{$o->{vn}};
   }
 
   if($o->{media}) {
-    $self->dbExec('DELETE FROM edit_release_media');
+    $self->dbExec('DELETE FROM edit_releases_media');
     my $q = join ',', map '(?,?)', @{$o->{media}};
     my @q = map +($_->[0], $_->[1]), @{$o->{media}};
-    $self->dbExec("INSERT INTO edit_release_media (medium, qty) VALUES $q", @q) if @q;
+    $self->dbExec("INSERT INTO edit_releases_media (medium, qty) VALUES $q", @q) if @q;
   }
 }
 

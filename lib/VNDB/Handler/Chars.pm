@@ -344,8 +344,8 @@ sub edit {
       $_->[1]||=undef for (@vns);
       $frm->{vns} = \@vns;
 
-      my $nrev = $self->dbItemEdit(c => !$copy && $id ? $r->{cid} : undef, %$frm);
-      return $self->resRedirect("/c$nrev->{iid}.$nrev->{rev}", 'post');
+      my $nrev = $self->dbItemEdit(c => !$copy && $id ? ($r->{id}, $r->{rev}) : (undef, undef), %$frm);
+      return $self->resRedirect("/c$nrev->{itemid}.$nrev->{rev}", 'post');
     }
   }
 

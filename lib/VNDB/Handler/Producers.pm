@@ -247,16 +247,16 @@ sub edit {
 
       $frm->{relations} = $relations;
       $frm->{l_wp} = undef if !$frm->{l_wp};
-      my $nrev = $self->dbItemEdit(p => $pid ? $p->{cid} : undef, %$frm);
+      my $nrev = $self->dbItemEdit(p => $pid||undef, $pid ? $p->{rev} : undef, %$frm);
 
       # update reverse relations
       if(!$pid && $#$relations >= 0 || $pid && $frm->{prodrelations} ne $b4{prodrelations}) {
         my %old = $pid ? (map { $_->{id} => $_->{relation} } @{$p->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations;
-        _updreverse($self, \%old, \%new, $nrev->{iid}, $nrev->{rev});
+        _updreverse($self, \%old, \%new, $nrev->{itemid}, $nrev->{rev});
       }
 
-      return $self->resRedirect("/p$nrev->{iid}.$nrev->{rev}", 'post');
+      return $self->resRedirect("/p$nrev->{itemid}.$nrev->{rev}", 'post');
     }
   }
 
@@ -333,7 +333,7 @@ sub _updreverse {
     my $r = $self->dbProducerGetRev(id => $i, what => 'relations')->[0];
     my @newrel = map $_->{id} != $pid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
     push @newrel, [ $upd{$i}, $pid ] if $upd{$i};
-    $self->dbItemEdit(p => $r->{cid},
+    $self->dbItemEdit(p => $i, $r->{rev},
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision p$pid.$rev",
       uid => 1,

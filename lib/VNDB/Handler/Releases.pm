@@ -350,7 +350,7 @@ sub edit {
     }
 
     if(!$frm->{_err}) {
-      my $nrev = $self->dbItemEdit(r => !$copy && $rid ? $r->{cid} : undef,
+      my $nrev = $self->dbItemEdit(r => !$copy && $rid ? ($r->{id}, $r->{rev}) : (undef, undef),
         (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released minage
           notes platforms resolution editsum patch voiced freeware doujin ani_story ani_ero ihid ilock|),
         vn        => $new_vn,
@@ -358,7 +358,7 @@ sub edit {
         media     => $media,
       );
 
-      return $self->resRedirect("/r$nrev->{iid}.$nrev->{rev}", 'post');
+      return $self->resRedirect("/r$nrev->{itemid}.$nrev->{rev}", 'post');
     }
   }
 

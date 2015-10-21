@@ -77,7 +77,7 @@ sub addform {
 sub edit {
   my($self, $vid, $rev, $nosubmit) = @_;
 
-  my $v = $vid && $self->dbVNGet(id => $vid, what => 'extended screenshots relations anime credits changes', $rev ? (rev => $rev) : ())->[0];
+  my $v = $vid && $self->dbVNGetRev(id => $vid, what => 'extended screenshots relations anime credits changes', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $vid && !$v->{id};
   $rev = undef if !$vid || $v->{lastrev};
 
@@ -176,7 +176,7 @@ sub edit {
       return $self->resRedirect("/v$vid", 'post') if $vid && !form_compare(\%b4, $frm);
 
       # perform the edit/add
-      my $nrev = $self->dbItemEdit(v => $vid ? $v->{cid} : undef,
+      my $nrev = $self->dbItemEdit(v => $vid ? ($v->{id}, $v->{rev}) : (undef, undef),
         (map { $_ => $frm->{$_} } qw|title original image alias desc length l_wp l_encubed l_renai editsum img_nsfw ihid ilock credits seiyuu screenshots|),
         anime => [ keys %$anime ],
         relations => $relations,
@@ -186,10 +186,10 @@ sub edit {
       if(!$vid && $#$relations >= 0 || $vid && $frm->{vnrelations} ne $b4{vnrelations}) {
         my %old = $vid ? (map +($_->{id} => [ $_->{relation}, $_->{official} ]), @{$v->{relations}}) : ();
         my %new = map +($_->[1] => [ $_->[0], $_->[2] ]), @$relations;
-        _updreverse($self, \%old, \%new, $nrev->{iid}, $nrev->{rev});
+        _updreverse($self, \%old, \%new, $nrev->{itemid}, $nrev->{rev});
       }
 
-      return $self->resRedirect("/v$nrev->{iid}.$nrev->{rev}", 'post');
+      return $self->resRedirect("/v$nrev->{itemid}.$nrev->{rev}", 'post');
     }
   }
 
@@ -422,7 +422,7 @@ sub _form {
 
 # Update reverse relations and regenerate relation graph
 # Arguments: %old. %new, vid, rev
-#  %old,%new -> { vid2 => [ relation, official ], .. }
+#  %old,%new -> { vid => [ relation, official ], .. }
 #    from the perspective of vid
 #  rev is of the related edit
 sub _updreverse {
@@ -441,10 +441,10 @@ sub _updreverse {
 
   # edit all related VNs
   for my $i (keys %upd) {
-    my $r = $self->dbVNGet(id => $i, what => 'relations')->[0];
+    my $r = $self->dbVNGetRev(id => $i, what => 'relations')->[0];
     my @newrel = map $_->{id} != $vid ? [ $_->{relation}, $_->{id}, $_->{official} ] : (), @{$r->{relations}};
     push @newrel, [ $upd{$i}[0], $vid, $upd{$i}[1] ] if $upd{$i};
-    $self->dbItemEdit(v => $r->{cid},
+    $self->dbItemEdit(v => $r->{id}, $r->{rev},
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision v$vid.$rev",
       uid => 1, # Multi

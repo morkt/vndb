@@ -152,15 +152,15 @@ sub _enrich {
 sub dbStaffRevisionInsert {
   my($self, $o) = @_;
 
-  $self->dbExec('DELETE FROM edit_staff_aliases');
+  $self->dbExec('DELETE FROM edit_staff_alias');
   if($o->{aid}) {
     $self->dbExec(q|
-      INSERT INTO edit_staff_aliases (id, name, original) VALUES (?, ?, ?)|,
+      INSERT INTO edit_staff_alias (aid, name, original) VALUES (?, ?, ?)|,
       $o->{aid}, $o->{name}, $o->{original});
   } else {
     $o->{aid} = $self->dbRow(q|
-      INSERT INTO edit_staff_aliases (name, original) VALUES (?, ?) RETURNING id|,
-      $o->{name}, $o->{original})->{id};
+      INSERT INTO edit_staff_alias (name, original) VALUES (?, ?) RETURNING aid|,
+      $o->{name}, $o->{original})->{aid};
   }
 
   my %staff = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
@@ -168,9 +168,9 @@ sub dbStaffRevisionInsert {
   $self->dbExec('UPDATE edit_staff !H', \%staff) if %staff;
   for my $a (@{$o->{aliases}}) {
     if($a->{aid}) {
-      $self->dbExec('INSERT INTO edit_staff_aliases (id, name, original) VALUES (!l)', [ @{$a}{qw|aid name orig|} ]);
+      $self->dbExec('INSERT INTO edit_staff_alias (aid, name, original) VALUES (!l)', [ @{$a}{qw|aid name orig|} ]);
     } else {
-      $self->dbExec('INSERT INTO edit_staff_aliases (name, original) VALUES (?, ?)', $a->{name}, $a->{orig});
+      $self->dbExec('INSERT INTO edit_staff_alias (name, original) VALUES (?, ?)', $a->{name}, $a->{orig});
     }
   }
 }
@@ -183,7 +183,7 @@ sub dbStaffAliasIds {
     SELECT DISTINCT sa.aid
       FROM changes c
       JOIN staff_alias_hist sa ON sa.chid = c.id
-      WHERE c.type = \'s\' AND c.itemid = ?|, $sid);
+      WHERE c.type = 's' AND c.itemid = ?|, $sid);
 }
 
 1;

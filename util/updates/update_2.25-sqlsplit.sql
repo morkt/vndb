@@ -31,6 +31,15 @@ ALTER TABLE vn_screenshots      RENAME TO vn_screenshots_old;
 ALTER TABLE vn_seiyuu           RENAME TO vn_seiyuu_old;
 ALTER TABLE vn_staff            RENAME TO vn_staff_old;
 
+-- XXX: The names of these sequences depend on how the corresponding tables
+-- were generated. The names below are the ones in the production database.
+ALTER SEQUENCE changes_id_seq     RENAME TO changes_id_seq_old;
+ALTER SEQUENCE chars_id_seq       RENAME TO chars_id_seq_old;
+ALTER SEQUENCE producers_id_seq   RENAME TO producers_id_seq_old;
+ALTER SEQUENCE releases_id_seq    RENAME TO releases_id_seq_old;
+ALTER SEQUENCE staff_alias_id_seq RENAME TO staff_alias_id_seq_old;
+ALTER SEQUENCE staff_id_seq       RENAME TO staff_id_seq_old;
+ALTER SEQUENCE vn_id_seq          RENAME TO vn_id_seq_old;
 
 \i util/sql/schema.sql
 
@@ -183,6 +192,14 @@ INSERT INTO vn_staff_hist SELECT vid, aid, role, note
   FROM vn_staff_old;
 
 
+SELECT setval('changes_id_seq',      nextval('changes_id_seq_old'));
+SELECT setval('chars_id_seq',        nextval('chars_id_seq_old'));
+SELECT setval('producers_id_seq',    nextval('producers_id_seq_old'));
+SELECT setval('releases_id_seq',     nextval('releases_id_seq_old'));
+SELECT setval('staff_alias_aid_seq', nextval('staff_alias_id_seq_old')); -- note the change from id to aid
+SELECT setval('staff_id_seq',        nextval('staff_id_seq_old'));
+SELECT setval('vn_id_seq',           nextval('vn_id_seq_old'));
+
 
 -- Dropping all tables with CASCADE causes all foreign key references to and
 -- from the tables to be dropped as well. This is exactly what we want, so we
@@ -214,3 +231,27 @@ DROP TABLE vn_seiyuu_old CASCADE;
 DROP TABLE vn_staff_old CASCADE;
 
 \i util/sql/tableattrs.sql
+
+DROP FUNCTION edit_revtable(dbentry_type, integer);
+DROP FUNCTION edit_vn_init(integer);
+DROP FUNCTION edit_vn_commit();
+DROP FUNCTION edit_release_init(integer);
+DROP FUNCTION edit_release_commit();
+DROP FUNCTION edit_producer_init(integer);
+DROP FUNCTION edit_producer_commit();
+DROP FUNCTION edit_char_init(integer);
+DROP FUNCTION edit_char_commit();
+DROP FUNCTION edit_staff_init(integer);
+DROP FUNCTION edit_staff_commit();
+DROP FUNCTION release_vncache_update();
+DROP FUNCTION notify_dbdel();
+DROP FUNCTION notify_dbedit();
+DROP FUNCTION notify_listdel();
+DROP FUNCTION update_hidlock();
+
+DROP TYPE edit_rettype CASCADE;
+CREATE TYPE edit_rettype      AS (itemid integer, chid integer, rev integer);
+
+\i util/sql/func.sql
+\i util/sql/editfunc.sql
+\i util/sql/triggers.sql

@@ -14,4 +14,5 @@
 /static/st
 /static/robots.txt
 /static/api
+/util/sql/editfunc.sql
 /www/

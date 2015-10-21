@@ -165,15 +165,15 @@ sub dbCharRevisionInsert {
 
   my %set = map exists($o->{$_}) ? (qq|"$_" = ?|, $o->{$_}) : (),
     qw|name original alias desc image b_month b_day s_bust s_waist s_hip height weight bloodt gender main main_spoil|;
-  $self->dbExec('UPDATE edit_char !H', \%set) if keys %set;
+  $self->dbExec('UPDATE edit_chars !H', \%set) if keys %set;
 
   if($o->{traits}) {
-    $self->dbExec('DELETE FROM edit_char_traits');
-    $self->dbExec('INSERT INTO edit_char_traits (tid, spoil) VALUES (?,?)', $_->[0],$_->[1]) for (@{$o->{traits}});
+    $self->dbExec('DELETE FROM edit_chars_traits');
+    $self->dbExec('INSERT INTO edit_chars_traits (tid, spoil) VALUES (?,?)', $_->[0],$_->[1]) for (@{$o->{traits}});
   }
   if($o->{vns}) {
-    $self->dbExec('DELETE FROM edit_char_vns');
-    $self->dbExec('INSERT INTO edit_char_vns (vid, rid, spoil, role) VALUES(!l)', $_) for (@{$o->{vns}});
+    $self->dbExec('DELETE FROM edit_chars_vns');
+    $self->dbExec('INSERT INTO edit_chars_vns (vid, rid, spoil, role) VALUES(!l)', $_) for (@{$o->{vns}});
   }
 }
 

@@ -191,7 +191,7 @@ sub edit {
     (map { $_ => $s->{$_} } qw|name original gender lang desc l_wp l_site l_twitter l_anidb ihid ilock|),
     primary => $s->{aid},
     aliases => [
-      map +{ aid => $_->{id}, name => $_->{name}, orig => $_->{original} },
+      map +{ aid => $_->{aid}, name => $_->{name}, orig => $_->{original} },
       sort { $a->{name} cmp $b->{name} || $a->{original} cmp $b->{original} } @{$s->{aliases}}
     ],
   );
@@ -221,7 +221,7 @@ sub edit {
     );
 
     if(!$frm->{_err}) {
-      my %old_aliases = $sid ? ( map +($_->{id} => 1), @{$self->dbStaffAliasIds($sid)} ) : ();
+      my %old_aliases = $sid ? ( map +($_->{aid} => 1), @{$self->dbStaffAliasIds($sid)} ) : ();
       $frm->{primary} = 0 unless exists $old_aliases{$frm->{primary}};
 
       # reset aid to zero for newly added aliases.
@@ -233,8 +233,8 @@ sub edit {
       $frm->{desc}   = $self->bbSubstLinks($frm->{desc});
       return $self->resRedirect("/s$sid", 'post') if $sid && !form_compare(\%b4, $frm);
 
-      my $nrev = $self->dbItemEdit ('s' => $sid ? $s->{cid} : undef, %$frm);
-      return $self->resRedirect("/s$nrev->{iid}.$nrev->{rev}", 'post');
+      my $nrev = $self->dbItemEdit(s => $sid ? ($s->{id}, $s->{rev}) : (undef, undef), %$frm);
+      return $self->resRedirect("/s$nrev->{itemid}.$nrev->{rev}", 'post');
     }
   }
 

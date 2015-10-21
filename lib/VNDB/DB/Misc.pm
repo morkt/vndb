@@ -21,14 +21,13 @@ sub dbStats {
 
 
 # Inserts a new revision into the database
-# Arguments: type [vrp], revision id, %options->{ editsum uid ihid ilock + db[item]RevisionInsert }
-#  revision id = changes.id of the revision this edit is based on, undef to create a new DB item
-# Returns: { iid, cid, rev }
+# Arguments: type [vrp], itemid, rev, %options->{ editsum uid ihid ilock + db[item]RevisionInsert }
+#  rev = changes.rev of the revision this edit is based on, undef to create a new DB item
+# Returns: { itemid, chid, rev }
 sub dbItemEdit {
-  my($self, $type, $oid, %o) = @_;
+  my($self, $type, $itemid, $rev, %o) = @_;
 
-  my $fun = {qw|v vn r release p producer c char s staff|}->{$type};
-  $self->dbExec('SELECT edit_!s_init(?)', $fun, $oid);
+  $self->dbExec('SELECT edit_!s_init(?, ?)', $type, $itemid, $rev);
   $self->dbExec('UPDATE edit_revision !H', {
     'requester = ?' => $o{uid}||$self->authInfo->{id},
     'ip = ?'        => $self->reqIP,
@@ -43,7 +42,7 @@ sub dbItemEdit {
   $self->dbCharRevisionInsert(    \%o) if $type eq 'c';
   $self->dbStaffRevisionInsert(   \%o) if $type eq 's';
 
-  return $self->dbRow('SELECT * FROM edit_!s_commit()', $fun);
+  return $self->dbRow('SELECT * FROM edit_!s_commit()', $type);
 }
 
 
