@@ -18,12 +18,10 @@ use Encode 'decode_utf8', 'encode_utf8';
 
 # long subquery used in several places
 my $GETBOARDS = q{array_to_string(array(
-      SELECT tb.type||COALESCE(':'||COALESCE(u.username, vr.title, pr.name), '')
+      SELECT tb.type||COALESCE(':'||COALESCE(u.username, v.title, p.name), '')
       FROM threads_boards tb
       LEFT JOIN vn v ON tb.type = 'v' AND v.id = tb.iid
-      LEFT JOIN vn_rev vr ON vr.id = v.latest
       LEFT JOIN producers p ON tb.type = 'p' AND p.id = tb.iid
-      LEFT JOIN producers_rev pr ON pr.id = p.latest
       LEFT JOIN users u ON tb.type = 'u' AND u.id = tb.iid
       WHERE tb.tid = t.id
       ORDER BY tb.type, tb.iid
@@ -279,24 +277,24 @@ sub handleid {
 
   # plain vn/user/producer/thread/tag/trait/release
   pg_cmd 'SELECT $1::text AS type, $2::integer AS id, '.(
-    $t eq 'v' ? 'vr.title FROM vn_rev vr JOIN vn v ON v.latest = vr.id WHERE v.id = $2' :
+    $t eq 'v' ? 'v.title FROM vn v WHERE v.id = $2' :
     $t eq 'u' ? 'u.username AS title FROM users u WHERE u.id = $2' :
-    $t eq 'p' ? 'pr.name AS title FROM producers_rev pr JOIN producers p ON p.latest = pr.id WHERE p.id = $2' :
-    $t eq 'c' ? 'cr.name AS title FROM chars_rev cr JOIN chars c ON c.latest = cr.id WHERE c.id = $2' :
-    $t eq 's' ? 'sa.name AS title FROM staff_rev sr JOIN staff s ON s.latest = sr.id JOIN staff_alias sa ON sa.id = sr.aid AND sa.rid = s.latest WHERE s.id = $2' :
+    $t eq 'p' ? 'p.name AS title FROM producers p WHERE p.id = $2' :
+    $t eq 'c' ? 'c.name AS title FROM chars c WHERE c.id = $2' :
+    $t eq 's' ? 'sa.name AS title FROM staff s JOIN staff_alias sa ON sa.aid = s.aid AND sa.id = s.id WHERE s.id = $2' :
     $t eq 't' ? 'title, '.$GETBOARDS.' FROM threads t WHERE id = $2' :
     $t eq 'g' ? 'name AS title FROM tags WHERE id = $2' :
     $t eq 'i' ? 'name AS title FROM traits WHERE id = $2' :
-                'rr.title FROM releases_rev rr JOIN releases r ON r.latest = rr.id WHERE r.id = $2'),
+                'r.title FROM releases r WHERE r.id = $2'),
     [ $t, $id ], $c if !$rev && $t =~ /[vprtugics]/;
 
   # edit/insert of vn/release/producer or discussion board post
   pg_cmd 'SELECT $1::text AS type, $2::integer AS id, $3::integer AS rev, '.(
-    $t eq 'v' ? 'vr.title, u.username, c.comments FROM changes c JOIN vn_rev vr ON c.id = vr.id JOIN users u ON u.id = c.requester WHERE vr.vid = $2 AND c.rev = $3' :
-    $t eq 'r' ? 'rr.title, u.username, c.comments FROM changes c JOIN releases_rev rr ON c.id = rr.id JOIN users u ON u.id = c.requester WHERE rr.rid = $2 AND c.rev = $3' :
-    $t eq 'p' ? 'pr.name AS title, u.username, c.comments FROM changes c JOIN producers_rev pr ON c.id = pr.id JOIN users u ON u.id = c.requester WHERE pr.pid = $2 AND c.rev = $3' :
-    $t eq 'c' ? 'cr.name AS title, u.username, h.comments FROM changes h JOIN chars_rev cr ON h.id = cr.id JOIN users u ON u.id = h.requester WHERE cr.cid = $2 AND h.rev = $3' :
-    $t eq 's' ? 'sa.name AS title, u.username, c.comments FROM changes c JOIN staff_rev sr ON c.id = sr.id JOIN users u ON u.id = c.requester JOIN staff_alias sa ON sa.id = sr.aid AND sa.rid = sr.id WHERE sr.sid = $2 AND c.rev = $3' :
+    $t eq 'v' ? 'vh.title, u.username, c.comments FROM changes c JOIN vn_hist vh ON c.id = vh.chid JOIN users u ON u.id = c.requester WHERE c.type = \'v\' AND c.itemid = $2 AND c.rev = $3' :
+    $t eq 'r' ? 'rh.title, u.username, c.comments FROM changes c JOIN releases_hist rh ON c.id = rh.chid JOIN users u ON u.id = c.requester WHERE c.type = \'r\' AND c.itemid = $2 AND c.rev = $3' :
+    $t eq 'p' ? 'ph.name AS title, u.username, c.comments FROM changes c JOIN producers_hist ph ON c.id = ph.chid JOIN users u ON u.id = c.requester WHERE c.type = \'p\' AND c.itemid = $2 AND c.rev = $3' :
+    $t eq 'c' ? 'ch.name AS title, u.username, c.comments FROM changes c JOIN chars_hist ch ON c.id = ch.chid JOIN users u ON u.id = c.requester WHERE c.type = \'c\' AND c.itemid = $2 AND c.rev = $3' :
+    $t eq 's' ? 'sah.name AS title, u.username, c.comments FROM changes c JOIN staff_hist sh ON c.id = sh.chid JOIN users u ON u.id = c.requester JOIN staff_alias_hist sah ON sah.chid = c.id AND sah.aid = sh.aid WHERE c.type = \'s\' AND c.itemid = $2 AND c.rev = $3' :
                 't.title, u.username, '.$GETBOARDS.' FROM threads t JOIN threads_posts tp ON tp.tid = t.id JOIN users u ON u.id = tp.uid WHERE t.id = $2 AND tp.num = $3'),
     [ $t, $id, $rev], $c if $rev && $t =~ /[vprtcs]/;
 
@@ -341,15 +339,15 @@ sub notify {
 
   my $q = {
   rev => q{
-    SELECT c.type, c.rev, c.comments, c.id AS lastid,
-      COALESCE(vr.vid, rr.rid, pr.pid, cr.cid, sr.sid) AS id, COALESCE(vr.title, rr.title, pr.name, cr.name, sa.name) AS title, u.username
+    SELECT c.type, c.rev, c.comments, c.id AS lastid, c.itemid AS id,
+      COALESCE(vh.title, rh.title, ph.name, ch.name, sah.name) AS title, u.username
     FROM changes c
-    LEFT JOIN vn_rev vr ON c.type = 'v' AND c.id = vr.id
-    LEFT JOIN releases_rev rr ON c.type = 'r' AND c.id = rr.id
-    LEFT JOIN producers_rev pr ON c.type = 'p' AND c.id = pr.id
-    LEFT JOIN chars_rev cr ON c.type = 'c' AND c.id = cr.id
-    LEFT JOIN staff_rev sr ON c.type = 's' AND c.id = sr.id
-    LEFT JOIN staff_alias sa ON c.type = 's' AND sa.id = sr.aid AND sa.rid = c.id
+    LEFT JOIN vn_hist vh ON c.type = 'v' AND c.id = vh.chid
+    LEFT JOIN releases_hist rh ON c.type = 'r' AND c.id = rh.chid
+    LEFT JOIN producers_hist ph ON c.type = 'p' AND c.id = ph.chid
+    LEFT JOIN chars_hist ch ON c.type = 'c' AND c.id = ch.chid
+    LEFT JOIN staff_hist sh ON c.type = 's' AND c.id = sh.chid
+    LEFT JOIN staff_alias_hist sah ON c.type = 's' AND sah.aid = sh.aid AND sah.chid = c.id
     JOIN users u ON u.id = c.requester
     WHERE c.id > $1 AND c.requester <> 1
     ORDER BY c.id},
@@ -409,13 +407,12 @@ vn => [ 0, 0, sub {
   return $irc->send_msg(PRIVMSG => $chan,
     "Couldn't do anything with that search query, you might want to add quotes or use longer words.") if !@q;
 
-  my $w = join ' AND ', map "v.c_search LIKE \$$_", 1..@q;
+  my $w = join ' AND ', map "c_search LIKE \$$_", 1..@q;
   pg_cmd qq{
-    SELECT 'v'::text AS type, v.id, vr.title
-      FROM vn v
-      JOIN vn_rev vr ON vr.id = v.latest
-     WHERE NOT v.hidden AND $w
-     ORDER BY vr.title
+    SELECT 'v'::text AS type, id, title
+      FROM vn
+     WHERE NOT hidden AND $w
+     ORDER BY title
      LIMIT 6
   }, [ map "%$_%", @q ], sub {
     my $res = shift;
@@ -431,11 +428,10 @@ p => [ 0, 0, sub {
   my($nick, $chan, $q) = @_;
   return $irc->send_msg(PRIVMSG => $chan, 'You forgot the search query, dummy~~!') if !$q;
   pg_cmd q{
-    SELECT 'p'::text AS type, p.id, pr.name AS title
+    SELECT 'p'::text AS type, id, name AS title
     FROM producers p
-    JOIN producers_rev pr ON pr.id = p.latest
-    WHERE p.hidden = FALSE AND (pr.name ILIKE $1 OR pr.original ILIKE $1 OR pr.alias ILIKE $1)
-    ORDER BY pr.name
+    WHERE hidden = FALSE AND (name ILIKE $1 OR original ILIKE $1 OR alias ILIKE $1)
+    ORDER BY name
     LIMIT 6
   }, [ "%$q%" ], sub {
     my $res = shift;
@@ -449,18 +445,17 @@ p => [ 0, 0, sub {
 
 scr => [ 0, 0, sub {
   my($nick, $chan, $q) = @_;
-  return $irc->send_msg(PRIVMSG => $chan.
+  return $irc->send_msg(PRIVMSG => $chan,
      q|Sorry, I failed to comprehend which screenshot you'd like me to lookup for you,|
     .q| please understand that Yorhel was not willing to supply me with mind reading capabilities.|)
-    if $q !~ /([0-9]+)\.jpg/;
+    if !$q || $q !~ /([0-9]+)\.jpg/;
   $q = $1;
   pg_cmd q{
-    SELECT 'v'::text AS type, v.id, vr.title
-      FROM vn v
-      JOIN vn_rev vr ON vr.id = v.latest
-      JOIN vn_rev vr2 ON vr2.vid = v.id
-      JOIN vn_screenshots vs ON vs.vid = vr2.id
-     WHERE vs.scr = $1 LIMIT 1
+    SELECT 'v'::text AS type, v.id, v.title
+      FROM changes c
+      JOIN vn_screenshots_hist vsh ON vsh.chid = c.id
+      JOIN vn v ON v.id = c.itemid
+     WHERE vsh.scr = $1 LIMIT 1
   }, [ $q ], sub {
     my $res = shift;
     return if pg_expect $res, 1;

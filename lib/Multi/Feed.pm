@@ -44,16 +44,16 @@ sub generate {
 
   # changes
   pg_cmd q{
-      SELECT '/'||c.type||COALESCE(vr.vid, rr.rid, pr.pid, cr.cid, sr.sid)||'.'||c.rev AS id,
-         COALESCE(vr.title, rr.title, pr.name, cr.name, sa.name) AS title, extract('epoch' from c.added) AS updated,
+      SELECT '/'||c.type||COALESCE(v.id, r.id, p.id, c.id, s.id)||'.'||c.rev AS id,
+         COALESCE(v.title, r.title, p.name, ca.name, sa.name) AS title, extract('epoch' from c.added) AS updated,
          u.username, u.id AS uid, c.comments AS summary
       FROM changes c
-       LEFT JOIN vn_rev vr ON c.type = 'v' AND c.id = vr.id
-       LEFT JOIN releases_rev rr ON c.type = 'r' AND c.id = rr.id
-       LEFT JOIN producers_rev pr ON c.type = 'p' AND c.id = pr.id
-       LEFT JOIN chars_rev cr ON c.type = 'c' AND c.id = cr.id
-       LEFT JOIN staff_rev sr ON c.type = 's' AND c.id = sr.id
-       LEFT JOIN staff_alias sa ON sa.rid = sr.id AND sa.id = sr.aid
+       LEFT JOIN vn v ON c.type = 'v' AND c.itemid = v.id
+       LEFT JOIN releases r ON c.type = 'r' AND c.itemid = r.id
+       LEFT JOIN producers p ON c.type = 'p' AND c.itemid = p.id
+       LEFT JOIN chars ca ON c.type = 'c' AND c.itemid = ca.id
+       LEFT JOIN staff s ON c.type = 's' AND c.itemid = s.id
+       LEFT JOIN staff_alias sa ON sa.id = s.id AND sa.aid = s.aid
        JOIN users u ON u.id = c.requester
       WHERE c.requester <> 1
       ORDER BY c.id DESC
