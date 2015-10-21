@@ -46,8 +46,7 @@ sub dbItemEdit {
 }
 
 
-# Options: type, itemid, uid, auto, hidden, edit, page, results, what, releases
-# what: item user
+# Options: type, itemid, uid, auto, hidden, edit, page, results, releases
 sub dbRevisionGet {
   my($self, %o) = @_;
   $o{results} ||= 10;
@@ -55,69 +54,57 @@ sub dbRevisionGet {
   $o{auto} ||= 0;   # 0:show, -1:only, 1:hide
   $o{hidden} ||= 0;
   $o{edit} ||= 0;   # 0:both, -1:new, 1:edits
-  $o{what} ||= '';
   $o{releases} = 0 if !$o{type} || $o{type} ne 'v' || !$o{itemid};
-
-  my %tables = qw|v vn r releases p producers c chars s staff|;
-  # what types should we join?
-  my @types = (
-    !$o{type} ? qw(v r p c s) :
-    ref($o{type}) ? @{$o{type}} :
-    $o{type} ne 'v' ? $o{type} :
-    $o{releases} ? ('v', 'r') : 'v'
-  );
 
   my %where = (
     $o{releases} ? (
       # This selects all changes of releases that are currently linked to the VN, not release revisions that are linked to the VN.
       # The latter seems more useful, but is also a lot more expensive.
-      q{((h.type = 'v' AND h.itemid = ?) OR (h.type = 'r' AND h.itemid = ANY(ARRAY(SELECT rv.id FROM releases_vn rv WHERE rv.vid = ?))))} => [$o{itemid}, $o{itemid}],
+      q{((c.type = 'v' AND c.itemid = ?) OR (c.type = 'r' AND c.itemid = ANY(ARRAY(SELECT rv.id FROM releases_vn rv WHERE rv.vid = ?))))} => [$o{itemid}, $o{itemid}],
     ) : (
       $o{type} ? (
-        'h.type IN(!l)' => [ ref($o{type})?$o{type}:[$o{type}] ] ) : (),
+        'c.type IN(!l)' => [ ref($o{type})?$o{type}:[$o{type}] ] ) : (),
       $o{itemid} ? (
-        'h.itemid = ?' => [ $o{itemid} ] ) : (),
+        'c.itemid = ?' => [ $o{itemid} ] ) : (),
     ),
     $o{uid} ? (
-      'h.requester = ?' => $o{uid} ) : (),
+      'c.requester = ?' => $o{uid} ) : (),
     $o{auto} ? (
-      'h.requester !s 1' => $o{auto} < 0 ? '=' : '<>' ) : (),
+      'c.requester !s 1' => $o{auto} < 0 ? '=' : '<>' ) : (),
     $o{hidden} ? (
-      ($o{hidden} == 1 ? 'NOT' : '').' COALESCE('.join(',', map "${_}.hidden", @types).')' => 1 ) : (),
+     '!s EXISTS(SELECT 1 FROM changes c2 WHERE c2.type = c.type AND c2.itemid = c.itemid AND c2.ihid AND'.
+        ' c2.rev = (SELECT MAX(c3.rev) FROM changes c3 WHERE c3.type = c.type AND c3.itemid = c.itemid))' => $o{hidden} == 1 ? 'NOT' : '') : (),
     $o{edit} ? (
-      'h.rev !s 1' => $o{edit} < 0 ? '=' : '>' ) : (),
-  );
-
-  my @join = (
-    $o{what} =~ /item/ || $o{hidden} ? (
-      map sprintf(q|LEFT JOIN %s_hist %sh ON h.type = '%2$s' AND h.id = %2$sh.chid|, $tables{$_}, $_), @types
-    ) : (),
-    $o{hidden} ? (
-      map sprintf(q|LEFT JOIN %s %s ON h.type = '%2$s' AND h.itemid = %2$s.id|, $tables{$_}, $_), @types
-    ) : (),
-    $o{what} =~ /user/ ? 'JOIN users u ON h.requester = u.id' : (),
-  );
-  push @join, 'LEFT JOIN staff_alias_hist sah ON sah.chid = h.id AND sah.aid = sh.aid' if grep /s/, @types;
-
-  my %tcolumns = qw(v vh.title r rh.title p ph.name c ch.name s sah.name);
-  my @select = (
-    qw|h.id h.type h.itemid h.requester h.comments h.rev|,
-    q|extract('epoch' from h.added) as added|,
-    $o{what} =~ /user/ ? 'u.username' : (),
-    $o{what} =~ /item/ ? (
-      'COALESCE('.join(', ', map $tcolumns{$_}, @types).') AS ititle',
-      'COALESCE('.join(', ', map /s/ ? 'sah.original' : "${_}h.original", @types).') AS ioriginal',
-    ) : (),
+      'c.rev !s 1' => $o{edit} < 0 ? '=' : '>' ) : (),
   );
 
   my($r, $np) = $self->dbPage(\%o, q|
-    SELECT !s
-      FROM changes h
-      !s
+    SELECT c.id, c.type, c.itemid, c.requester, c.comments, c.rev, extract('epoch' from c.added) as added, u.username
+      FROM changes c
+      JOIN users u ON c.requester = u.id
       !W
-      ORDER BY h.id DESC|,
-    join(', ', @select), join(' ', @join), \%where
+      ORDER BY c.id DESC|, \%where
   );
+
+  # I couldn't find a way to fetch the titles the main query above without slowing it down considerably, so let's just do it this way.
+  if(@$r) {
+    my %r = map +($_->{id}, $_), @$r;
+    my $w = join ' OR ', ('(type = ? AND id = ?)') x @$r;
+    my @w = map +($_->{type}, $_->{id}), @$r;
+
+    $r{ $_->{id} }{ititle} = $_->{title}, $r{ $_->{id} }{ioriginal} = $_->{original} for(@{$self->dbAll("
+        SELECT id, title, original FROM (
+                    SELECT 'v'::dbentry_type, chid, title, original FROM vn_hist
+          UNION ALL SELECT 'r'::dbentry_type, chid, title, original FROM releases_hist
+          UNION ALL SELECT 'p'::dbentry_type, chid, name,  original FROM producers_hist
+          UNION ALL SELECT 'c'::dbentry_type, chid, name,  original FROM chars_hist
+          UNION ALL SELECT 's'::dbentry_type, sh.chid, name, original FROM staff_hist sh JOIN staff_alias_hist sah ON sah.chid = sh.chid AND sah.aid = sh.aid
+        ) x(type, id, title, original)
+        WHERE $w
+      ", @w
+    )});
+  }
+
   return wantarray ? ($r, $np) : $r;
 }
 
