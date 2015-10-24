@@ -101,7 +101,9 @@ CREATE        INDEX staff_alias_id         ON staff_alias (id);
 CREATE        INDEX tags_vn_date           ON tags_vn (date);
 CREATE        INDEX tags_vn_inherit_tag_vid ON tags_vn_inherit (tag, vid);
 CREATE        INDEX tags_vn_vid            ON tags_vn (vid);
-CREATE        INDEX threads_posts_ts       ON threads_posts USING gin(to_tsvector('english', strip_bb_tags(msg)));
+CREATE        INDEX threads_posts_ts       ON threads_posts USING gin(bb_tsvector(msg));
+CREATE        INDEX threads_posts_date     ON threads_posts (date);
+CREATE        INDEX threads_posts_uid      ON threads_posts (uid); -- Only really used on /u+ pages to get stats
 CREATE        INDEX vn_staff_aid           ON vn_staff (aid);
 CREATE        INDEX vn_seiyuu_aid          ON vn_seiyuu (aid);
 CREATE UNIQUE INDEX changes_itemrev        ON changes (type, itemid, rev);

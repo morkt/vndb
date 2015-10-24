@@ -230,7 +230,7 @@ DROP TABLE vn_screenshots_old CASCADE;
 DROP TABLE vn_seiyuu_old CASCADE;
 DROP TABLE vn_staff_old CASCADE;
 
-\i util/sql/tableattrs.sql
+DROP INDEX threads_posts_ts;
 
 DROP FUNCTION edit_revtable(dbentry_type, integer);
 DROP FUNCTION edit_vn_init(integer);
@@ -254,4 +254,5 @@ CREATE TYPE edit_rettype      AS (itemid integer, chid integer, rev integer);
 
 \i util/sql/func.sql
 \i util/sql/editfunc.sql
+\i util/sql/tableattrs.sql
 \i util/sql/triggers.sql

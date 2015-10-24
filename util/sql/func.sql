@@ -15,6 +15,14 @@ CREATE OR REPLACE FUNCTION strip_bb_tags(t text) RETURNS text AS $$
   SELECT regexp_replace(t, '\[(?:url=[^\]]+|/?(?:spoiler|quote|raw|code|url))\]', ' ', 'gi');
 $$ LANGUAGE sql IMMUTABLE;
 
+-- Wrapper around to_tsvector() and strip_bb_tags(), implemented in plpgsql and
+-- with an associated cost function to make it opaque to the query planner and
+-- ensure the query planner realizes that this function is _slow_.
+CREATE OR REPLACE FUNCTION bb_tsvector(t text) RETURNS tsvector AS $$
+BEGIN
+  RETURN to_tsvector('english', strip_bb_tags(t));
+END;
+$$ LANGUAGE plpgsql IMMUTABLE COST 500;
 
 -- BUG: Since this isn't a full bbcode parser, [spoiler] tags inside [raw] or [code] are still considered spoilers.
 CREATE OR REPLACE FUNCTION strip_spoilers(t text) RETURNS text AS $$
