@@ -33,7 +33,7 @@ sub dbStaffGet {
   my %where = (
     !$o{id} ? ( 's.hidden = FALSE' => 1 ) : (),
     $o{id}  ? ( ref $o{id}  ? ('s.id IN(!l)'  => [$o{id}])  : ('s.id = ?' => $o{id}) ) : (),
-    $o{aid} ? ( ref $o{aid} ? ('sa.id IN(!l)' => [$o{aid}]) : ('sa.id = ?' => $o{aid}) ) : (),
+    $o{aid} ? ( ref $o{aid} ? ('sa.aid IN(!l)' => [$o{aid}]) : ('sa.aid = ?' => $o{aid}) ) : (),
     $o{id} || $o{truename} ? ( 's.aid = sa.aid' => 1 ) : (),
     defined $o{gender} ? ( 's.gender IN(!l)' => [ ref $o{gender} ? $o{gender} : [$o{gender}] ]) : (),
     defined $o{role} ? (
