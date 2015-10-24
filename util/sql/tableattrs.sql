@@ -94,18 +94,24 @@ ALTER TABLE wlists                   ADD CONSTRAINT wlists_vid_fkey             
 
 
 CREATE        INDEX affiliate_links_rid    ON affiliate_links (rid) WHERE NOT hidden;
+CREATE        INDEX chars_main             ON chars (main) WHERE main IS NOT NULL AND NOT hidden; -- Only used on /c+
+CREATE        INDEX chars_vns_vid          ON chars_vns (vid);
 CREATE        INDEX notifications_uid      ON notifications (uid);
 CREATE        INDEX releases_producers_pid ON releases_producers (pid);
 CREATE        INDEX releases_vn_vid        ON releases_vn (vid);
 CREATE        INDEX staff_alias_id         ON staff_alias (id);
 CREATE        INDEX tags_vn_date           ON tags_vn (date);
 CREATE        INDEX tags_vn_inherit_tag_vid ON tags_vn_inherit (tag, vid);
+CREATE        INDEX tags_vn_uid            ON tags_vn (uid);
 CREATE        INDEX tags_vn_vid            ON tags_vn (vid);
-CREATE        INDEX threads_posts_ts       ON threads_posts USING gin(bb_tsvector(msg));
 CREATE        INDEX threads_posts_date     ON threads_posts (date);
+CREATE        INDEX threads_posts_ts       ON threads_posts USING gin(bb_tsvector(msg));
 CREATE        INDEX threads_posts_uid      ON threads_posts (uid); -- Only really used on /u+ pages to get stats
+CREATE        INDEX vn_seiyuu_aid          ON vn_seiyuu (aid); -- Only used on /s+?
+CREATE        INDEX vn_seiyuu_cid          ON vn_seiyuu (cid); -- Only used on /c+?
 CREATE        INDEX vn_staff_aid           ON vn_staff (aid);
-CREATE        INDEX vn_seiyuu_aid          ON vn_seiyuu (aid);
+CREATE        INDEX votes_date             ON votes (date desc); -- Mainly used on /v+ pages, other pages don't really need it
+CREATE        INDEX votes_uid              ON votes (uid);
 CREATE UNIQUE INDEX changes_itemrev        ON changes (type, itemid, rev);
 CREATE UNIQUE INDEX chars_vns_pkey         ON chars_vns (id, vid, COALESCE(rid, 0));
 CREATE UNIQUE INDEX chars_vns_hist_pkey    ON chars_vns_hist (chid, vid, COALESCE(rid, 0));
