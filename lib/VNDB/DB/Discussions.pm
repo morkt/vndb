@@ -193,7 +193,7 @@ sub dbPostGet {
     $o{search} ? (
       'bb_tsvector(msg) @@ to_tsquery(?)' => $o{search}) : (),
     $o{type} ? (
-      'tp.tid = ANY(ARRAY(SELECT tid FROM threads_boards WHERE type IN(!l)))' => [ ref $o{type} ? $o{type} : [ $o{type} ] ] ) : (),
+      'tp.tid IN(SELECT tid FROM threads_boards WHERE type IN(!l))' => [ ref $o{type} ? $o{type} : [ $o{type} ] ] ) : (),
   );
 
   my @select = (
