@@ -238,11 +238,11 @@ sub dbVoteStats {
   my $u = $self->authInfo->{id};
   my $r = [ map [0,0], 0..9 ];
   $r->[$_->{idx}] = [ $_->{votes}, $_->{total} ] for (@{$self->dbAll(q|
-    SELECT (vote::float/10)::int-1 AS idx, COUNT(vote) as votes, SUM(vote) AS total
+    SELECT (vote::numeric/10)::int-1 AS idx, COUNT(vote) as votes, SUM(vote) AS total
       FROM votes
       !s
       !W
-      GROUP BY (vote::float/10)::int|,
+      GROUP BY (vote::numeric/10)::int|,
     $ign ? 'JOIN users ON id = uid AND (NOT ign_votes'.($u?sprintf(' OR id = %d',$u):'').')' : '',
     $col ? { '!s = ?' => [ $col, $id ] } : {},
   )});
