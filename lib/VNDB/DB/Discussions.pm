@@ -27,7 +27,7 @@ sub dbThreadGet {
     $o{type} && $o{iid} ? (
       'tb.type = ?' => $o{type}, 'tb.iid = ?' => $o{iid} ) : (),
     $o{notusers} ? (
-      't.id <> ANY(ARRAY(SELECT tid FROM threads_boards WHERE type = \'u\'))' => 1) : (),
+      'NOT EXISTS(SELECT 1 FROM threads_boards WHERE type = \'u\' AND tid = t.id)' => 1) : (),
   );
 
   if($o{search}) {
