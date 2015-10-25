@@ -387,7 +387,7 @@ CREATE TABLE staff ( -- dbentry_type=s
   id         SERIAL PRIMARY KEY,
   locked     boolean NOT NULL DEFAULT FALSE,
   hidden     boolean NOT NULL DEFAULT FALSE,
-  aid        integer NOT NULL, -- staff_alias.aid
+  aid        integer NOT NULL DEFAULT 0, -- staff_alias.aid
   gender     gender NOT NULL DEFAULT 'unknown',
   lang       language NOT NULL DEFAULT 'ja',
   "desc"     text NOT NULL DEFAULT '',
@@ -400,7 +400,7 @@ CREATE TABLE staff ( -- dbentry_type=s
 -- staff_hist
 CREATE TABLE staff_hist (
   chid       integer NOT NULL PRIMARY KEY,
-  aid        integer NOT NULL, -- Can't refer to staff_alias.id, because the alias might have been deleted
+  aid        integer NOT NULL DEFAULT 0, -- Can't refer to staff_alias.id, because the alias might have been deleted
   gender     gender NOT NULL DEFAULT 'unknown',
   lang       language NOT NULL DEFAULT 'ja',
   "desc"     text NOT NULL DEFAULT '',

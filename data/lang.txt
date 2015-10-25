@@ -16226,6 +16226,18 @@ tr : Geçersiz ana karakter. ID'nin doğruluğundan, ana karakterin bir başka k
 uk : Неправильний головний герой. Переконайтеся у правильності ID, головний персонаж — це не втілення іншого персонажа, і що цей запис не використовується в якості головного персонажа десь ще.
 it : Personaggio principale non valido. Assicurati che ID sia corretto, che il personaggio non sia un'instanza di un altro personaggio, e che questa pagina non è utilizzata come personaggio principale da un'altra parte.
 
+:_formerr_e_usedalias
+en : Can't remove an alias that is still linked to a VN.
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_formerr_title
 en : Error
 ru : Ошибка

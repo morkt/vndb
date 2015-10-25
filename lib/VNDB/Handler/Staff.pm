@@ -180,7 +180,7 @@ sub _cast {
 sub edit {
   my($self, $sid, $rev) = @_;
 
-  my $s = $sid && $self->dbStaffGetRev(id => $sid, what => 'extended aliases', $rev ? (rev => $rev) : ())->[0];
+  my $s = $sid && $self->dbStaffGetRev(id => $sid, what => 'extended aliases roles', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $sid && !$s->{id};
   $rev = undef if !$s || $s->{lastrev};
 
@@ -227,6 +227,12 @@ sub edit {
       # reset aid to zero for newly added aliases.
       $_->{aid} *= $old_aliases{$_->{aid}} ? 1 : 0 for(@{$frm->{aliases}});
 
+      # Make sure no aliases that have been linked to a VN are removed.
+      my %new_aliases = map +($_, 1), grep $_, $frm->{primary}, map $_->{aid}, @{$frm->{aliases}};
+      $frm->{_err} = [ 'usedalias' ] if grep !$new_aliases{$_->{aid}}, @{$s->{roles}}, @{$self->{cast}};
+    }
+
+    if(!$frm->{_err}) {
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
       $frm->{aid}    = $frm->{primary} if $sid;

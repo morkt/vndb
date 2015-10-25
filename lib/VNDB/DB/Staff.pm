@@ -109,7 +109,7 @@ sub _enrich {
     } @$r;
 
     push @{$r{ delete $_->{id} }{roles}}, $_ for (@{$self->dbAll(q|
-      SELECT sa.id, v.id AS vid, sa.name, sa.original, v.c_released, v.title, v.original AS t_original, vs.role, vs.note
+      SELECT sa.id, sa.aid, v.id AS vid, sa.name, sa.original, v.c_released, v.title, v.original AS t_original, vs.role, vs.note
         FROM vn_staff vs
         JOIN vn v ON v.id = vs.id
         JOIN staff_alias sa ON vs.aid = sa.aid
@@ -117,7 +117,7 @@ sub _enrich {
         ORDER BY v.c_released ASC, v.title ASC, vs.role ASC|, [ keys %r ]
     )});
     push @{$r{ delete $_->{id} }{cast}}, $_ for (@{$self->dbAll(q|
-      SELECT sa.id, v.id AS vid, sa.name, sa.original, v.c_released, v.title, v.original AS t_original, c.id AS cid, c.name AS c_name, c.original AS c_original, vs.note
+      SELECT sa.id, sa.aid, v.id AS vid, sa.name, sa.original, v.c_released, v.title, v.original AS t_original, c.id AS cid, c.name AS c_name, c.original AS c_original, vs.note
         FROM vn_seiyuu vs
         JOIN vn v ON v.id = vs.id
         JOIN chars c ON c.id = vs.cid
