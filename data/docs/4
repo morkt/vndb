@@ -3,14 +3,19 @@
 
 
 :SUB:When to add a producer
-<p>
- A producer entry should be created when adding a release of a visual novel made by a
- producer not yet listed in the database. Producers that don't have any releases listed
- in the database may be deleted after a while, so only create an entry if you're going to
- link it to a release. For a producer to be listed, they're required to have at least
- released one completed product. Which means that for translation projects, only add the
- group as a producer when they've actually finished a project.
-</p>
+<p>A producer entry may be created in one of the following scenarios:</p>
+<ol>
+<li>When it is needed to link the developer or publisher to a release entry.
+In this case, the producer is required to have released at least one completed
+product.  This means that translation projects and starting developers may only
+be added when they've actually finished a project.</li>
+<li>When it is needed to link two or more producer entries together to provide
+a correct view of the relations between producers. The producer entries that
+are being linked together should qualify for the first criteria, and need to be
+linked to at least one release entry.</li>
+</ol>
+<p>Producer entries that do not qualify for either rule may be deleted after a
+while.</p>
 
 
 :SUB:General info

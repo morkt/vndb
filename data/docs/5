@@ -7,9 +7,9 @@
  The main audience of VNDB are the English speaking fans of visual novels. In
  creating the database, we assume the intended audience can't read or recognise
  anything not written in the roman script. Therefore, romanization is applied
- to many fields in the database: The main title of visual novels, releases and
- producers should all be properly romanized if they arent in roman script
- already.<br />
+ to many fields in the database: The main title of visual novels, releases,
+ producers and characters should all be properly romanized if they arent in
+ roman script already.<br />
  To keep the database consistent, we have decided to use a mix of <a
  href="http://en.wikipedia.org/wiki/Hepburn_romanization">Hepburn</a> and <a
  href="http://en.wikipedia.org/wiki/Wapuro">Wapuro</a> for all fields. This is
@@ -24,15 +24,15 @@
 
 :SUB:Capitalization
 <p>
- It occasionally happens that official titles or names are either entirely in
- uppercase or lowercase characters. If there is no real reason for this choice
- of capitalization (e.g. it's not an acronym), these titles and names should be
- properly converted to normal English capitalization (as described
- <a href="http://en.wikipedia.org/wiki/Capitalization">on Wikipedia</a>) before
+ It occasionally happens that official titles are either entirely in uppercase
+ or lowercase characters. If there is no real reason for this choice of
+ capitalization (e.g. it's not an acronym), these titles should be properly
+ converted to normal English capitalization (as described <a
+ href="http://en.wikipedia.org/wiki/Capitalization">on Wikipedia</a>) before
  being entered in the database.<br />
- This only applies to the romanized titles and the main title of a visual novel
- entry, the 'Original title' field of producer and release entries should still
- use the official capitalization.
+ This only applies to the main title of a visual novel entry, the 'Original
+ title' field and the title/name fields of other database entries (including
+ release entries) should use the official capitalization wherever possible.
 </p>
 
 
