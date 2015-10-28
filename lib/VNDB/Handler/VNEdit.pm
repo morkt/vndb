@@ -250,8 +250,8 @@ sub _form {
   my $import = @$chars ? $self->dbVNImportSeiyuu($v->{id}, [ map $_->{id}, @$chars ]) : [];
   $self->htmlForm({ frm => $frm, action => $v ? "/v$v->{id}/edit" : '/v/new', editsum => 1, upload => 1 },
   vn_geninfo => [ mt('_vnedit_geninfo'),
-    [ input    => short => 'title',     name => mt '_vnedit_frm_title' ],
-    [ input    => short => 'original',  name => mt '_vnedit_original' ],
+    [ input    => short => 'title',     name => mt('_vnedit_frm_title'), width => 450 ],
+    [ input    => short => 'original',  name => mt('_vnedit_original'), width => 450 ],
     [ static   => content => mt '_vnedit_original_msg' ],
     [ textarea => short => 'alias',     name => mt('_vnedit_alias'), rows => 4 ],
     [ static   => content => mt '_vnedit_alias_msg' ],
