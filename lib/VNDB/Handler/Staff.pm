@@ -184,7 +184,7 @@ sub edit {
   return $self->resNotFound if $sid && !$s->{id};
   $rev = undef if !$s || $s->{lastrev};
 
-  return $self->htmlDenied if !$self->authCan('staffedit')
+  return $self->htmlDenied if !$self->authCan('edit')
     || $sid && (($s->{locked} || $s->{hidden}) && !$self->authCan('dbmod'));
 
   my %b4 = !$sid ? () : (

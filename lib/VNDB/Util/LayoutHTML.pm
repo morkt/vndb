@@ -104,9 +104,7 @@ sub _menu {
        if($self->authCan('edit')) {
          a href => '/v/add',    mt '_menu_addvn'; br;
          a href => '/p/new',    mt '_menu_addproducer'; br;
-         if($self->authCan('staffedit')) {
-           a href => '/s/new',    mt '_menu_addstaff'; br;
-         }
+         a href => '/s/new',    mt '_menu_addstaff'; br;
          a href => '/c/new',    mt '_menu_addcharacter'; br;
        }
        br;
