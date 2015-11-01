@@ -21,8 +21,7 @@ our %S;
   url             => 'http://vndb.org',   # Only used by Multi, web pages infer their own address
   url_static      => 'http://s.vndb.org',
   skin_default    => 'angel',
-  global_salt     => 'any-private-string-here',
-  form_salt       => 'a-different-private-string-here',
+  form_salt       => 'a-private-string-here',
   scrypt_args     => [ 65536, 8, 1 ], # N, r, p
   scrypt_salt     => 'another-random-string',
   regen_static    => 0,

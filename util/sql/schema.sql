@@ -551,9 +551,6 @@ CREATE TABLE users (
   --   First 9 bytes: salt (ASCII)
   --   Latter 20 bytes: sha1(hex(token) + salt)
   --   'token' is a sha1 digest obtained from random data.
-  -- * 41 bytes: sha256 password
-  --   First 9 bytes: salt (ASCII)
-  --   Latter 32 bytes: sha256(global_salt + password + salt)
   -- * 46 bytes: scrypt password
   --   4 bytes: N (big endian)
   --   1 byte: r

@@ -11,7 +11,6 @@ use Multi::Core;
 use AnyEvent::Socket;
 use AnyEvent::Handle;
 use POE::Filter::VNDBAPI 'encode_filters';
-use Digest::SHA 'sha256';
 use Encode 'encode_utf8', 'decode_utf8';
 use Crypt::ScryptKDF 'scrypt_raw';;
 use VNDBUtil 'normalize_query', 'norm_ip';
@@ -277,10 +276,7 @@ sub login_verify {
   my $uid = $res->value(0,0);
   my $accepted = 0;
 
-  if(length $passwd == 41) { # Old sha256
-    my $salt = substr $passwd, 0, 9;
-    $accepted = sha256($VNDB::S{global_salt}.encode_utf8($arg->{password}).$salt) eq substr $passwd, 9;
-  } elsif(length $passwd == 46) { # New scrypt
+  if(length $passwd == 46) { # scrypt
     my($N, $r, $p, $salt, $hash) = unpack 'NCCa8a*', $passwd;
     $accepted = $hash eq scrypt_raw($arg->{password}, $VNDB::S{scrypt_salt} . $salt, $N, $r, $p, 32);
   } else {
