@@ -76,7 +76,7 @@ sub _menu {
     form action => '/v/all', method => 'get', id => 'search';
      fieldset;
       legend 'Search';
-      input type => 'text', class => 'text', id => 'sq', name => 'sq', value => $o{search}, placeholder => mt('_menu_emptysearch');
+      input type => 'text', class => 'text', id => 'sq', name => 'sq', value => $o{search}||'', placeholder => mt('_menu_emptysearch');
       input type => 'submit', class => 'submit', value => 'Search';
      end;
     end;
