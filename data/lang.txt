@@ -2839,18 +2839,6 @@ tr : Düzenlemeye karşı kilitli
 uk : Заблоковано від редагувань
 it : Chiuso alle modifiche
 
-:_itemmsg_login
-en : You need to be [url,_1,logged in] to edit this page
-ru : Чтобы редактировать эту страницу, вы должны быть [url,_1,авторизованы]
-cs : Pro editaci této stránky musíte být [url,_1,přihlášen]
-hu : Ahhoz, hogy tud szerkeszteni ezt az oldalt be kell legyél [url,_1, jelentkezve].
-nl : Je moet [url,_1,ingelogd] zijn om deze pagina te wijzigen
-de : Du musst [url,_1,eingeloggt sein], um diese Seite zu bearbeiten
-es : Necesitas estar [url,_1,conectado] para editar esta página
-tr : Bu sayfayı düzenlemek için [url,_1,giriş] yapmalısınız.
-uk : Вам необхідно [url,_1,увійти], щоб редагувати цю сторінку
-it : Devi effettuare [url,_1,l'accesso] per modificare questa pagina
-
 :_itemmsg_denied
 en : You are not allowed to edit this page
 ru : Вам запрещено редактировать эту страницу

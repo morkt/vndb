@@ -329,11 +329,7 @@ sub htmlItemMessage {
 
   if($obj->{locked}) {
     p class => 'locked', mt '_itemmsg_locked';
-  } elsif(!$self->authInfo->{id}) {
-    p class => 'locked';
-     lit mt '_itemmsg_login', '/u/login';
-    end;
-  } elsif(!$self->authCan('edit')) {
+  } elsif($self->authInfo->{id} && !$self->authCan('edit')) {
     p class => 'locked', mt '_itemmsg_denied';
   }
 }
