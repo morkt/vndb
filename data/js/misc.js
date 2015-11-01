@@ -1,18 +1,3 @@
-// search box
-byId('sq').onfocus = function () {
-  if(this.value == mt('_menu_emptysearch')) {
-    this.value = '';
-    this.style.fontStyle = 'normal'
-  }
-};
-byId('sq').onblur = function () {
-  if(this.value.length < 1) {
-    this.value = mt('_menu_emptysearch');
-    this.style.fontStyle = 'italic'
-  }
-};
-
-
 function ulist_redirect(type, path, formcode, args) {
   var r = new RegExp('/('+type+'[0-9]+).*$');
   location.href = location.href.replace(r, '/$1')+path
