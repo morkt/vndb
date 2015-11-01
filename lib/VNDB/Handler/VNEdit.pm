@@ -64,8 +64,8 @@ sub addform {
 
   $self->htmlForm({ frm => $frm, action => '/v/add', continue => @$l ? 2 : 1 },
   vn_add => [ mt('_vnedit_title_add'),
-    [ input    => short => 'title',     name => mt '_vnedit_frm_title' ],
-    [ input    => short => 'original',  name => mt '_vnedit_original' ],
+    [ input    => short => 'title',     name => mt('_vnedit_frm_title'), width => 450 ],
+    [ input    => short => 'original',  name => mt('_vnedit_original'), width => 450 ],
     [ static   => content => mt '_vnedit_original_msg' ],
     [ textarea => short => 'alias',     name => mt('_vnedit_alias'), rows => 4 ],
     [ static   => content => mt '_vnedit_alias_msg' ],
