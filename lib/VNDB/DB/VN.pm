@@ -123,6 +123,7 @@ sub dbVNGet {
     join(', ', @select), join(' ', @join), \@where, $order,
   );
 
+  $_->{svg} && ($_->{svg} = decode_utf8($_->{svg})) for (@$r);
   return _enrich($self, $r, $np, 0, $o{what});
 }
 

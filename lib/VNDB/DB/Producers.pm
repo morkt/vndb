@@ -4,6 +4,7 @@ package VNDB::DB::Producers;
 use strict;
 use warnings;
 use Exporter 'import';
+use Encode 'decode_utf8';
 
 our @EXPORT = qw|dbProducerGet dbProducerGetRev dbProducerRevisionInsert|;
 
@@ -49,6 +50,7 @@ sub dbProducerGet {
     $select, $join, \%where,
   );
 
+  $_->{svg} && ($_->{svg} = decode_utf8($_->{svg})) for (@$r);
   return _enrich($self, $r, $np, 0, $o{what});
 }
 
