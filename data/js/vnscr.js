@@ -98,7 +98,7 @@ function loaded(tr, id, width, height) {
   tr.scr_loading = 0;
 
   setContent(byName(tr, 'td')[0],
-    tag('a', {href: URL(tr.scr_id, 'f'), rel:'iv:'+dim+':edit'},
+    tag('a', {href: URL(tr.scr_id, 'f'), 'data-iv':dim+':edit'},
       tag('img', {src: URL(tr.scr_id, 't')})
     )
   );

@@ -554,7 +554,7 @@ sub _revision {
       return @r ? @r : (mt '_revision_empty');
     }],
     [ screenshots => join => '<br />', split => sub {
-      my @r = map sprintf('[%s] <a href="%s" rel="iv:%dx%d">%d</a> (%s)',
+      my @r = map sprintf('[%s] <a href="%s" data-iv="%dx%d">%d</a> (%s)',
         $_->{rid} ? qq|<a href="/r$_->{rid}">r$_->{rid}</a>| : 'no release',
         imgurl(sf => $_->{id}), $_->{width}, $_->{height}, $_->{id},
         mt($_->{nsfw} ? '_vndiff_nsfw_notsafe' : '_vndiff_nsfw_safe')
@@ -859,7 +859,7 @@ sub _screenshots {
         my($w, $h) = imgsize($_->{width}, $_->{height}, @{$self->{scr_size}});
         a href => imgurl(sf => $_->{id}),
           class => sprintf('scrlnk%s%s', $_->{nsfw} ? ' nsfw':'', $_->{nsfw}&&!$self->authPref('show_nsfw')?' hidden':''),
-          rel => "iv:$_->{width}x$_->{height}:scr";
+          'data-iv' => "$_->{width}x$_->{height}:scr";
          img src => imgurl(st => $_->{id}),
            width => $w, height => $h, alt => mt '_vnpage_scr_num', $_->{id};
         end;

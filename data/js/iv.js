@@ -1,14 +1,14 @@
 /* Simple image viewer widget. Usage:
  *
- *   <a href="full_image.jpg" rel="iv:{width}x{height}:{category}">..</a>
+ *   <a href="full_image.jpg" data-iv="{width}x{height}:{category}">..</a>
  *
  * Clicking on the above link will cause the image viewer to open
  * full_image.jpg. The {category} part can be empty or absent. If it is not
  * empty, next/previous links will show up to point to the other images within
  * the same category.
  *
- * ivInit() should be called when links with "iv:" tags are dynamically added
- * or removed from the DOM.
+ * ivInit() should be called when links with "data-iv" attributes are
+ * dynamically added or removed from the DOM.
  */
 
 // Cache of image categories and the list of associated link objects. Used to
@@ -21,10 +21,10 @@ function init() {
   var l = byName('a');
   for(var i=0;i<l.length;i++) {
     var o = l[i];
-    if(o.rel.substr(0,3) == 'iv:' && o.id != 'ivprev' && o.id != 'ivnext') {
+    if(o.getAttribute('data-iv') && o.id != 'ivprev' && o.id != 'ivnext') {
       n++;
       o.onclick = show;
-      var cat = o.rel.split(':')[2];
+      var cat = o.getAttribute('data-iv').split(':')[1];
       if(cat) {
         if(!cats[cat])
           cats[cat] = [];
@@ -60,23 +60,23 @@ function fixnav(lnk, cat, i, dir) {
   var a = cat ? findnav(cat, i, dir) : 0;
   lnk.style.visibility = a ? 'visible' : 'hidden';
   lnk.href             = a ? a.href    : '#';
-  lnk.rel              = a ? a.rel     : '';
   lnk.iv_i             = a ? a.iv_i    : 0;
+  lnk.setAttribute('data-iv', a ? a.getAttribute('data-iv') : '');
 }
 
 function show() {
   var u = this.href;
-  var opt = this.rel.split(':');
+  var opt = this.getAttribute('data-iv').split(':');
   var idx = this.iv_i;
   var view = byId('iv_view');
   var full = byId('ivfull');
 
-  fixnav(byId('ivprev'), opt[2], idx, -1);
-  fixnav(byId('ivnext'), opt[2], idx, 1);
+  fixnav(byId('ivprev'), opt[1], idx, -1);
+  fixnav(byId('ivnext'), opt[1], idx, 1);
 
   // calculate dimensions
-  var w = Math.floor(opt[1].split('x')[0]);
-  var h = Math.floor(opt[1].split('x')[1]);
+  var w = Math.floor(opt[0].split('x')[0]);
+  var h = Math.floor(opt[0].split('x')[1]);
   var ww = typeof(window.innerWidth) == 'number' ? window.innerWidth : document.documentElement.clientWidth;
   var wh = typeof(window.innerHeight) == 'number' ? window.innerHeight : document.documentElement.clientHeight;
   var st = typeof(window.pageYOffset) == 'number' ? window.pageYOffset : document.body && document.body.scrollTop ? document.body.scrollTop : document.documentElement.scrollTop;

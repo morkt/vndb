@@ -83,7 +83,7 @@ window.tag = function() {
       continue;
     if(typeof arguments[i] == 'object' && !arguments[i].appendChild) {
       for(attr in arguments[i]) {
-        if(attr == 'style')
+        if(attr == 'style' || attr.match(/^data-/))
           el.setAttribute(attr, arguments[i][attr]);
         else
           el[ attr == 'class' ? 'className' : attr == 'for' ? 'htmlFor' : attr ] = arguments[i][attr];
