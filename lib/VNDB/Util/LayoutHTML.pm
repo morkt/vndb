@@ -17,11 +17,8 @@ sub htmlHeader { # %options->{ title, noindex, search, feeds, svg }
   $skin = $self->{skin_default} if !$self->{skins}{$skin} || !-d "$VNDB::ROOT/static/s/$skin";
 
   # heading
-  html lang => $self->{l10n}->language_tag(), $o{svg} ? (
-    doctype => 'xhtml-math-svg',
-    'xmlns:svg'   => 'http://www.w3.org/2000/svg',
-    'xmlns:xlink' => 'http://www.w3.org/1999/xlink'
-  ) : ();
+  lit '<!DOCTYPE HTML>';
+  tag 'html', lang => $self->{l10n}->language_tag();
    head;
     title $o{title};
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';

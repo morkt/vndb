@@ -204,12 +204,12 @@ sub htmlRevision {
      table class => 'stripe';
       thead;
        Tr;
-        td; lit '&nbsp;'; end;
+        td; lit '&#xa0;'; end;
         td; revheader($self, $type, $old); end;
         td; revheader($self, $type, $new); end;
        end;
        Tr;
-        td; lit '&nbsp;'; end;
+        td; lit '&#xa0;'; end;
         td colspan => 2;
          b mt '_revision_edit_summary', $new->{rev};
          br; br;
@@ -439,6 +439,7 @@ sub htmlSearchBox {
 sub htmlRGHeader {
   my($self, $title, $type, $obj) = @_;
 
+  # This used to be a good test for inline SVG support, but I'm not sure it is nowadays.
   if(($self->reqHeader('Accept')||'') !~ /application\/xhtml\+xml/) {
     $self->htmlHeader(title => $title);
     $self->htmlMainTabs($type, $obj, 'rg');
@@ -452,8 +453,7 @@ sub htmlRGHeader {
     $self->htmlFooter;
     return 1;
   }
-  $self->resHeader('Content-Type' => 'application/xhtml+xml; charset=UTF-8');
-  $self->htmlHeader(title => $title, svg => 1);
+  $self->htmlHeader(title => $title);
   $self->htmlMainTabs($type, $obj, 'rg');
   return 0;
 }

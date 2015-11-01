@@ -256,8 +256,6 @@ sub processgraph {
 
   # Before saving the SVG output, we'll modify it a little:
   # - Remove comments
-  # - Add svg: prefix to all tags
-  # - Remove xmlns declarations (this is set in the html)
   # - Remove <title> elements (unused)
   # - Remove id attributes (unused)
   # - Remove first <polygon> element (emulates the background color)
@@ -274,15 +272,15 @@ sub processgraph {
       $attr{class} = 'border' if $attr{stroke} && $attr{stroke} eq '#111111';
       $attr{class} = 'nodebg' if $attr{fill} && $attr{fill} eq '#222222';
 
-      delete @attr{qw|stroke fill xmlns xmlns:xlink|};
+      delete @attr{qw|stroke fill|};
       delete $attr{id} if $attr{id} && $attr{id} !~ /^node_[vp]\d+$/;
-      $w->tag("svg:$el", %attr, $el eq 'path' || $el eq 'polygon' ? undef : ());
+      $w->tag($el, %attr, $el eq 'path' || $el eq 'polygon' ? undef : ());
     },
     End => sub {
       my($expat, $el) = @_;
       return if $el eq 'title' || $expat->in_element('title');
       return if $el eq 'polygon' && $expat->depth == 2;
-      $w->end("svg:$el") if $el ne 'path' && $el ne 'polygon';
+      $w->end($el) if $el ne 'path' && $el ne 'polygon';
     },
     Char => sub {
       my($expat, $str) = @_;

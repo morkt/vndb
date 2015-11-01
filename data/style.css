@@ -156,7 +156,7 @@ table.formtable tr.newpart td { padding-top: 20px; font-weight: bold; }
 #menulist input.submit       { width: 90px; margin-left: 20px; }
 #menulist #search input.text { width: 133px; margin: 0 0 3px 7px; font-style: italic; }
 #menulist #search input.submit { display: none; }
-#dd_box acronym              { margin: 2px 5px 2px 0!important; }
+#dd_box abbr                 { margin: 2px 5px 2px 0!important; }
 #menulist .notifyget         { display: inline-block; width: 125px; padding: 4px; background: $warnbg$; border: 1px solid $warnborder$; }
 
 
@@ -471,7 +471,7 @@ div.scr_uploader     { visibility: hidden; overflow: hidden; width: 1px; height:
 div.producerbrowse    { padding-bottom: 10px }
 .producerbrowse ul    { float: left; margin-top: -5px; margin-left: 3%; width: 28%; }
 .producerbrowse ul li { list-style-type: none; }
-.producerbrowse ul li acronym { margin-right: 5px; margin-top: 1px; }
+.producerbrowse ul li abbr { margin-right: 5px; margin-top: 1px; }
 
 
 /***** Producer edit *****/
@@ -576,7 +576,7 @@ div.charb td.tc2 b a { color: $grayedout$!important }
 div.staffbrowse	   { padding-bottom: 10px }
 .staffbrowse ul    { float: left; margin-top: -5px; margin-left: 3%; width: 28%; }
 .staffbrowse ul li { list-style-type: none; margin-bottom: 2px; }
-.staffbrowse ul li acronym { margin-right: 5px; margin-top: 1px; }
+.staffbrowse ul li abbr { margin-right: 5px; margin-top: 1px; }
 .staffpage table.stripe { width: 400px; margin: 0 auto; }
 .staffpage .key  { width: 70px; }
 .staffroles td.tc2 { white-space: nowrap; width: 80px }
@@ -862,7 +862,7 @@ div#fil_div {
 .icons.gen   { width: 14px; height: 14px }
 .icons.gen.b { width: 28px }
 .icons.rtcomplete, .icons.rtpartial, .icons.rttrial { width: 11px; }
-acronym.icons, acronym.uicons { cursor: default; }
+abbr.icons, abbr.uicons { cursor: default; }
 a .icons { cursor: pointer }
 .icons.oth { background: none; }
 $iconcss$

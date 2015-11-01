@@ -97,7 +97,7 @@ sub htmlFormPart {
   if(/check/) {
     Tr class => 'newfield';
      td class => 'label';
-      lit '&nbsp;';
+      lit '&#xa0;';
      end;
      td class => 'field';
       input type => 'checkbox', name => $o{short}, id => $o{short}, tabindex => 10,
@@ -120,7 +120,7 @@ sub htmlFormPart {
       } elsif($o{label}) {
         txt $o{label};
       } else {
-        lit '&nbsp;';
+        lit '&#xa0;';
       }
      end;
    }

@@ -668,7 +668,7 @@ sub _anime {
          }
          txt '] ';
         end;
-        acronym title => $_->{title_kanji}||$_->{title_romaji}, shorten $_->{title_romaji}, 50;
+        abbr title => $_->{title_kanji}||$_->{title_romaji}, shorten $_->{title_romaji}, 50;
         b ' ('.(defined $_->{type} ? mt("_animetype_$_->{type}").', ' : '').$_->{year}.')';
         br;
       }
@@ -748,7 +748,7 @@ sub _affiliate_links {
          || ($f->{default_version} && $f->{default_version}->($self, $link, $rel))
          || $version;
        txt " at $f->{name}";
-       acronym class => 'pricenote', title =>
+       abbr class => 'pricenote', title =>
            $link->{lastfetch} ? sprintf('Last updated: %s.', $en->age($link->{lastfetch})) : '', " for $link->{price}"
          if $link->{price};
        txt ' »';
