@@ -347,7 +347,7 @@ sub dbVNHasChar {
 sub dbVNHasStaff {
   my($self, $vid) = @_;
   return $self->dbRow(
-    'SELECT 1 AS exists FROM vn_staff vs FULL OUTER JOIN vn_seiyuu vsy ON vs.id = vsy.id WHERE vs.id = ?', $vid
+    'SELECT 1 AS exists FROM vn_staff WHERE id = ? UNION ALL SELECT 1 FROM vn_seiyuu WHERE id = ? LIMIT 1', $vid, $vid
   )->{exists};
 }
 
