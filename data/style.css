@@ -285,7 +285,7 @@ div.history table    { table-layout: fixed }
 div.history td       { white-space: nowrap }
 div.history td.tc1_1 { width: 60px; padding-left: 0; padding-right: 0; text-align: right }
 div.history td.tc1_2 { width: 25px; padding-left: 0 }
-div.history td.tc2   { width: 65px }
+div.history td.tc2   { width: 120px }
 div.history td.tc3   { width: 90px }
 div.history td.tc4   { overflow: hidden }
 div.history td.tc4 b { margin-left: 10px }
@@ -313,7 +313,7 @@ div.mainbox.discussions b.boards   { padding-left: 10px; font-weight: normal; }
 div.mainbox.discussions b.boards a { color: $grayedout$; }
 div.discussions td.tc2             { width: 50px;  }
 div.discussions td.tc3             { width: 90px;  }
-div.discussions td.tc4             { width: 170px; }
+div.discussions td.tc4             { width: 210px; }
 div.postsearch td.tc1_1           { width: 60px; padding-left: 0; padding-right: 0; text-align: right }
 div.postsearch td.tc1_2           { width: 25px; padding-left: 0 }
 div.postsearch td.tc2             { width: 65px;  }

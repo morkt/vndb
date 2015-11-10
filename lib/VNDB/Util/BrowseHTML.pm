@@ -146,7 +146,7 @@ sub htmlBrowseHist {
        td class => 'tc1_2';
         a href => $revurl, ".$i->{rev}";
        end;
-       td class => 'tc2', $self->{l10n}->date($i->{added});
+       td class => 'tc2', $self->{l10n}->date($i->{added}, 'full');
        td class => 'tc3';
         lit $self->{l10n}->userstr($i);
        end;

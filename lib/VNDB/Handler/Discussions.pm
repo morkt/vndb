@@ -532,7 +532,7 @@ sub _threadlist {
         lit $self->{l10n}->userstr($o->{luid}, $o->{lusername});
         lit ' @ ';
         a href => "/t$o->{id}.$o->{count}";
-         lit $self->{l10n}->date($o->{ldate});
+         lit $self->{l10n}->date($o->{ldate}, 'full');
         end;
        end;
       end 'tr';
