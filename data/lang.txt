@@ -4575,6 +4575,9 @@ en : View results
 :_poll_total_votes
 en : [_1] [quant,_1,vote,votes] total
 
+:_poll_error
+en : Poll error
+
 
 # Post edit/reply/new thread form
 
