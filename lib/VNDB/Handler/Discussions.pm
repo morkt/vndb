@@ -177,7 +177,7 @@ sub edit {
         { post => 'boards', maxlength => 50 },
         { post => 'poll_q', required => 0, maxlength => 100 },
         { post => 'poll_opt', required => 0, maxlength => 100*$self->{poll_options} },
-        { post => 'poll_max', required => 0, default => 1, min => 1, max => $self->{poll_options} },
+        { post => 'poll_max', required => 0, default => 1, template => 'uint', min => 1, max => $self->{poll_options} },
         { post => 'poll_preview', required => 0 },
         { post => 'poll_recast', required => 0 },
       ) : (),
@@ -341,28 +341,29 @@ sub edit {
 sub vote {
   my($self, $tid, $page) = @_;
   return $self->htmlDenied if !$self->authCan('board');
+  return if !$self->authCheckCode;
 
-  my $f = $self->formValidate(
-    { post => 'option', multi => 1, template => 'int' }
-  );
-  return $self->resNotFound if $f->{_err};
-
-  my $url = '/t'.$tid.($page//'');
+  my $url = '/t'.$tid.($page ? "/$page" : '');
   my $poll = $self->dbPollGet(tid => $tid);
-  return $self->resNotFound if !%$poll || @{$f->{option}} > $poll->{max_options};
+  return $self->resNotFound if !%$poll;
 
   # user has already voted and poll doesn't allow to change a vote.
   return $self->resRedirect($url, 'post') if @{$poll->{user}} && !$poll->{recast};
 
-  my %options = map +($_->{id} => 1), @{$poll->{options}};
-  # validate user choice.
-  my %choices;
-  for(@{$f->{option}}) {
-    return $self->resNotFound if !exists $options{$_};
-    $choices{$_} = 1;
+  my $f = $self->formValidate({
+    post => 'option', multi => 1, enum => [ map $_->{id}, @{$poll->{options}} ],
+  });
+  if(!$f->{_err} && (!@{$f->{option}} || @{$f->{option}} > $poll->{max_options})) {
+    push @{$f->{_err}}, 'poll';
+  }
+  if($f->{_err}) {
+    $self->htmlHeader(title => mt '_poll_error');
+    $self->htmlFormError($f, 1);
+    $self->htmlFooter;
+    return;
   }
 
-  $self->dbPollVote($poll->{id}, uid => $self->authInfo->{id}, options => [ keys %choices ]) if %choices;
+  $self->dbPollVote($poll->{id}, uid => $self->authInfo->{id}, options => $f->{option});
   $self->resRedirect($url, 'post');
 }
 
@@ -641,35 +642,33 @@ sub _poll {
   div class => 'mainbox poll';
    form action => $url.'/vote', method => 'post';
     h1 class => 'question', $poll->{question} if $poll->{question};
+    input type => 'hidden', name => 'formcode', value => $self->authGetCode($url.'/vote');
     table class => 'votebooth';
-     if(!$self->authCan('board')) {
-       tfoot; Tr; td class => 'tc1', colspan => 3;
-        b class => 'standout', mt('_poll_novote_login');
-       end; end; end;
-     } else {
-       my $allow_vote = !%own_votes || $poll->{recast};
-       if($allow_vote && $poll->{max_options} > 1) {
-         thead; Tr; td colspan => 3;
-          i mt('_poll_choose', $poll->{max_options});
-         end; end; end;
-       }
-       tfoot; Tr;
-        td class => 'tc1';
-         input type => 'submit', class => 'submit', value => mt('_poll_vote') if $allow_vote;
-        end;
-        td class => 'tc2', colspan => 2;
-         if($poll->{preview} || %own_votes) {
-           if(!$poll->{votes}) {
-             i mt('_poll_no_votes');
-           } elsif(!$preview && !%own_votes) {
-             a href => $url.'?pollview=1', id => 'pollpreview', mt('_poll_results');
-           } else {
-             txt mt('_poll_total_votes', $poll->{votes});
-           }
-         }
-        end;
-       end; end;
-     }
+      my $allow_vote = $self->authCan('board') && (!%own_votes || $poll->{recast});
+      if($allow_vote && $poll->{max_options} > 1) {
+        thead; Tr; td colspan => 3;
+         i mt('_poll_choose', $poll->{max_options});
+        end; end; end;
+      }
+      tfoot; Tr;
+       td class => 'tc1';
+        input type => 'submit', class => 'submit', value => mt('_poll_vote') if $allow_vote;
+        if(!$self->authCan('board')) {
+          b class => 'standout', mt('_poll_novote_login');
+        }
+       end;
+       td class => 'tc2', colspan => 2;
+        if($poll->{preview} || %own_votes) {
+          if(!$poll->{votes}) {
+            i mt('_poll_no_votes');
+          } elsif(!$preview && !%own_votes) {
+            a href => $url.'?pollview=1', id => 'pollpreview', mt('_poll_results');
+          } else {
+            txt mt('_poll_total_votes', $poll->{votes});
+          }
+        }
+       end;
+      end; end;
      tbody;
       my $max = max map $_->{votes}, @{$poll->{options}};
       my $show_graph = $max && (%own_votes || $preview);
@@ -678,8 +677,10 @@ sub _poll {
         my $own = exists $own_votes{$opt->{id}} ? ' own' : '';
         Tr $own ? (class => 'odd') : ();
          td class => 'tc1';
-          input type => $poll->{max_options} > 1 ? 'checkbox' : 'radio', name => 'option', class => 'option', value => $opt->{id}, $own ? (checked => '') : () if !%own_votes || $poll->{recast};
-          span class => 'option'.$own, $opt->{option};
+          label;
+           input type => $poll->{max_options} > 1 ? 'checkbox' : 'radio', name => 'option', class => 'option', value => $opt->{id}, $own ? (checked => '') : () if $allow_vote;
+           span class => 'option'.$own, $opt->{option};
+          end;
          end;
          if($show_graph) {
            td class => 'tc2';
