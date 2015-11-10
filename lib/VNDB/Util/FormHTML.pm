@@ -34,6 +34,8 @@ sub htmlFormError {
       if($type eq 'required') {
         li; lit mt $field eq 'editsum' ?'_formerr_tpl_editsum' : '_formerr_required', $field; end;
       }
+      li mt '_formerr_min', $field, $rule if $type eq 'min';
+      li mt '_formerr_max', $field, $rule if $type eq 'max';
       li mt '_formerr_minlength', $field, $rule if $type eq 'minlength';
       li mt '_formerr_maxlength', $field, $rule if $type eq 'maxlength';
       li mt '_formerr_enum', $field, join ', ', @$rule if $type eq 'enum';

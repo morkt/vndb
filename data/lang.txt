@@ -4556,6 +4556,27 @@ es : Avanzado...
 tr : Gelişmiş...
 uk : Розширений режим
 it : Avanzate...
+ 
+:_poll_novote_login
+en : You must be logged in to be able to vote.
+
+:_poll_choose
+en : You may choose up to [_1] options
+
+:_poll_vote
+en : Vote
+
+:_poll_no_votes
+en : Nobody voted yet.
+
+:_poll_results
+en : View results
+
+:_poll_total_votes
+en : [_1] [quant,_1,vote,votes] total
+
+:_poll_error
+en : Poll error
 
 
 # Post edit/reply/new thread form
@@ -4715,6 +4736,30 @@ es : Mirar [url,/d9.3,d9.3] para ver los formatos permitidos
 tr : Biçimlendirme kodları için [url,/d9.3,d9.3]'e bakınız.
 uk : Правила розмітки читай у [url,/d9.3,d9.3].
 it : Vedi [url,/d9.3,d9.3] per i codici di formattazione
+ 
+:_postedit_form_poll_add
+en : Add poll
+
+:_postedit_form_poll_q
+en : Poll question
+
+:_postedit_form_poll_warning
+en : All votes will be reset if any changes to the poll fields are made!
+
+:_postedit_form_poll_opt
+en : Poll options
+
+:_postedit_form_poll_optmax
+en : one per line,[br][_1] max
+
+:_postedit_form_poll_max
+en : Number of options voter is allowed to choose
+
+:_postedit_form_poll_view
+en : Allow users to view poll results before voting
+
+:_postedit_form_poll_recast
+en : Allow users to change their vote
 
 
 # Browsing threads by board (/t/{board_id})
@@ -4968,6 +5013,9 @@ es : Último mensaje
 tr : Son gönderi
 uk : Останнє повідомлення
 it : Ultimo messaggio
+ 
+:_threadlist_poll
+en : poll
 
 
 
@@ -16261,6 +16309,9 @@ es : Personaje principal inválido. Asgúrate que la ID es correcta, que el pers
 tr : Geçersiz ana karakter. ID'nin doğruluğundan, ana karakterin bir başka karakterin örneği olmadığından, ve bu girdinin başka bir yerde ana karakter olarak kullanılmadığından emin olun.
 uk : Неправильний головний герой. Переконайтеся у правильності ID, головний персонаж — це не втілення іншого персонажа, і що цей запис не використовується в якості головного персонажа десь ще.
 it : Personaggio principale non valido. Assicurati che ID sia corretto, che il personaggio non sia un'instanza di un altro personaggio, e che questa pagina non è utilizzata come personaggio principale da un'altra parte.
+ 
+:_formerr_e_poll
+en : Inappropriate number of options in a poll.
 
 :_formerr_e_usedalias
 en : Can't remove an alias that is still linked to a VN.
@@ -16309,6 +16360,12 @@ es : ¡[_1] es un campo requerido!
 tr : [_1] alanı gereklidir!
 uk : [_1] — обов’язкове поле!
 it : [_1] è un campo obbligatorio!
+ 
+:_formerr_min
+en : [_1]: minimum number is [_2]
+
+:_formerr_max
+en : [_1]: maximum number is [_2]
 
 :_formerr_minlength
 en : [_1]: should have at least [_2] characters

@@ -114,6 +114,7 @@ our %S;
     posts         => [ 25, 'VNDB Recent Posts', '/t' ],
   },
   staff_roles     => [qw|scenario chardesign art music songs director staff|],
+  poll_options    => 20, # max number of options in discussion board polls
 );
 
 

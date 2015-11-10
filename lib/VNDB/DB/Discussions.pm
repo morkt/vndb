@@ -40,6 +40,7 @@ sub dbThreadGet {
   my @select = (
     qw|t.id t.title t.count t.locked t.hidden|,
     $o{what} =~ /lastpost/  ? ('tpl.uid AS luid', q|EXTRACT('epoch' from tpl.date) AS ldate|, 'ul.username AS lusername') : (),
+    'p.id AS poll',
   );
 
   my @join = (
@@ -49,6 +50,7 @@ sub dbThreadGet {
     ) : (),
     $o{type} && $o{iid} ?
       'JOIN threads_boards tb ON tb.tid = t.id' : (),
+    'LEFT JOIN polls p ON p.tid = t.id',
   );
 
   my $order = sprintf {
