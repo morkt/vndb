@@ -19,9 +19,10 @@ TUWF::register(
 sub page {
   my($self, $id, $rev) = @_;
 
-  my $s = $self->dbStaffGet(
+  my $method = $rev ? 'dbStaffGetRev' : 'dbStaffGet';
+  my $s = $self->$method(
     id => $id,
-    what => 'extended aliases roles'.($rev ? ' changes' : ''),
+    what => 'extended aliases roles',
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return $self->resNotFound if !$s->{id};
@@ -31,7 +32,7 @@ sub page {
   return if $self->htmlHiddenMessage('s', $s);
 
   if($rev) {
-    my $prev = $rev && $rev > 1 && $self->dbStaffGet(id => $id, rev => $rev-1, what => 'changes extended aliases')->[0];
+    my $prev = $rev && $rev > 1 && $self->dbStaffGetRev(id => $id, rev => $rev-1, what => 'extended aliases')->[0];
     $self->htmlRevision('s', $prev, $s,
       [ name      => diff => 1 ],
       [ original  => diff => 1 ],
@@ -179,18 +180,18 @@ sub _cast {
 sub edit {
   my($self, $sid, $rev) = @_;
 
-  my $s = $sid && $self->dbStaffGet(id => $sid, what => 'changes extended aliases', $rev ? (rev => $rev) : ())->[0];
+  my $s = $sid && $self->dbStaffGetRev(id => $sid, what => 'extended aliases roles', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $sid && !$s->{id};
-  $rev = undef if !$s || $s->{cid} == $s->{latest};
+  $rev = undef if !$s || $s->{lastrev};
 
-  return $self->htmlDenied if !$self->authCan('staffedit')
+  return $self->htmlDenied if !$self->authCan('edit')
     || $sid && (($s->{locked} || $s->{hidden}) && !$self->authCan('dbmod'));
 
   my %b4 = !$sid ? () : (
     (map { $_ => $s->{$_} } qw|name original gender lang desc l_wp l_site l_twitter l_anidb ihid ilock|),
     primary => $s->{aid},
     aliases => [
-      map +{ aid => $_->{id}, name => $_->{name}, orig => $_->{original} },
+      map +{ aid => $_->{aid}, name => $_->{name}, orig => $_->{original} },
       sort { $a->{name} cmp $b->{name} || $a->{original} cmp $b->{original} } @{$s->{aliases}}
     ],
   );
@@ -220,20 +221,26 @@ sub edit {
     );
 
     if(!$frm->{_err}) {
-      my %old_aliases = $sid ? ( map +($_->{id} => 1), @{$self->dbStaffAliasIds($sid)} ) : ();
+      my %old_aliases = $sid ? ( map +($_->{aid} => 1), @{$self->dbStaffAliasIds($sid)} ) : ();
       $frm->{primary} = 0 unless exists $old_aliases{$frm->{primary}};
 
       # reset aid to zero for newly added aliases.
       $_->{aid} *= $old_aliases{$_->{aid}} ? 1 : 0 for(@{$frm->{aliases}});
 
+      # Make sure no aliases that have been linked to a VN are removed.
+      my %new_aliases = map +($_, 1), grep $_, $frm->{primary}, map $_->{aid}, @{$frm->{aliases}};
+      $frm->{_err} = [ 'usedalias' ] if grep !$new_aliases{$_->{aid}}, @{$s->{roles}}, @{$self->{cast}};
+    }
+
+    if(!$frm->{_err}) {
       $frm->{ihid}   = $frm->{ihid} ?1:0;
       $frm->{ilock}  = $frm->{ilock}?1:0;
       $frm->{aid}    = $frm->{primary} if $sid;
       $frm->{desc}   = $self->bbSubstLinks($frm->{desc});
       return $self->resRedirect("/s$sid", 'post') if $sid && !form_compare(\%b4, $frm);
 
-      my $nrev = $self->dbItemEdit ('s' => $sid ? $s->{cid} : undef, %$frm);
-      return $self->resRedirect("/s$nrev->{iid}.$nrev->{rev}", 'post');
+      my $nrev = $self->dbItemEdit(s => $sid ? ($s->{id}, $s->{rev}) : (undef, undef), %$frm);
+      return $self->resRedirect("/s$nrev->{itemid}.$nrev->{rev}", 'post');
     }
   }
 
@@ -384,4 +391,3 @@ sub staffxml {
 }
 
 1;
-__END__

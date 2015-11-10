@@ -23,11 +23,11 @@ sub dbThreadGet {
     !$o{id} ? (
       't.hidden = FALSE' => 0 ) : (),
     $o{type} && !$o{iid} ? (
-      't.id IN(SELECT tid FROM threads_boards WHERE type IN(!l))' => [ ref $o{type} ? $o{type} : [ $o{type} ] ] ) : (),
+      'EXISTS(SELECT 1 FROM threads_boards WHERE tid = t.id AND type IN(!l))' => [ ref $o{type} ? $o{type} : [ $o{type} ] ] ) : (),
     $o{type} && $o{iid} ? (
       'tb.type = ?' => $o{type}, 'tb.iid = ?' => $o{iid} ) : (),
     $o{notusers} ? (
-      't.id NOT IN(SELECT tid FROM threads_boards WHERE type = \'u\')' => 1) : (),
+      'NOT EXISTS(SELECT 1 FROM threads_boards WHERE type = \'u\' AND tid = t.id)' => 1) : (),
   );
 
   if($o{search}) {
@@ -39,16 +39,11 @@ sub dbThreadGet {
 
   my @select = (
     qw|t.id t.title t.count t.locked t.hidden|,
-    $o{what} =~ /firstpost/ ? ('tpf.uid AS fuid', q|EXTRACT('epoch' from tpf.date) AS fdate|, 'uf.username AS fusername') : (),
     $o{what} =~ /lastpost/  ? ('tpl.uid AS luid', q|EXTRACT('epoch' from tpl.date) AS ldate|, 'ul.username AS lusername') : (),
     'p.id AS poll',
   );
 
   my @join = (
-    $o{what} =~ /firstpost/ ? (
-      'JOIN threads_posts tpf ON tpf.tid = t.id AND tpf.num = 1',
-      'JOIN users uf ON uf.id = tpf.uid'
-    ) : (),
     $o{what} =~ /lastpost/ ? (
       'JOIN threads_posts tpl ON tpl.tid = t.id AND tpl.num = t.count',
       'JOIN users ul ON ul.id = tpl.uid'
@@ -86,14 +81,23 @@ sub dbThreadGet {
         [ keys %r ]
       )});
     }
+
+    if($o{what} =~ /firstpost/) {
+      do { my $x = $r->[$r{$_->{tid}}]; $x->{fuid} = $_->{uid}; $x->{fdate} = $_->{date}; $x->{fusername} = $_->{username} } for (@{$self->dbAll(q|
+        SELECT tpf.tid, tpf.uid, EXTRACT('epoch' from tpf.date) AS date, uf.username
+          FROM threads_posts tpf
+          JOIN users uf ON tpf.uid = uf.id
+          WHERE tpf.num = 1 AND tpf.tid IN(!l)|,
+        [ keys %r ]
+      )});
+    }
+
     if($o{what} =~ /boardtitles/) {
       push(@{$r->[$r{$_->{tid}}]{boards}}, $_) for (@{$self->dbAll(q|
-        SELECT tb.tid, tb.type, tb.iid, COALESCE(u.username, vr.title, pr.name) AS title, COALESCE(u.username, vr.original, pr.original) AS original
+        SELECT tb.tid, tb.type, tb.iid, COALESCE(u.username, v.title, p.name) AS title, COALESCE(u.username, v.original, p.original) AS original
           FROM threads_boards tb
           LEFT JOIN vn v ON tb.type = 'v' AND v.id = tb.iid
-          LEFT JOIN vn_rev vr ON vr.id = v.latest
           LEFT JOIN producers p ON tb.type = 'p' AND p.id = tb.iid
-          LEFT JOIN producers_rev pr ON pr.id = p.latest
           LEFT JOIN users u ON tb.type = 'u' AND u.id = tb.iid
           WHERE tb.tid IN(!l)|,
         [ keys %r ]
@@ -189,9 +193,9 @@ sub dbPostGet {
     $o{hide} && $o{what} =~ /thread/ ? (
       't.hidden = FALSE' => 1 ) : (),
     $o{search} ? (
-      q{to_tsvector('english', strip_bb_tags(msg)) @@ to_tsquery(?)} => $o{search}) : (),
+      'bb_tsvector(msg) @@ to_tsquery(?)' => $o{search}) : (),
     $o{type} ? (
-      'tp.tid = ANY(ARRAY(SELECT tid FROM threads_boards WHERE type IN(!l)))' => [ ref $o{type} ? $o{type} : [ $o{type} ] ] ) : (),
+      'tp.tid IN(SELECT tid FROM threads_boards WHERE type IN(!l))' => [ ref $o{type} ? $o{type} : [ $o{type} ] ] ) : (),
   );
 
   my @select = (

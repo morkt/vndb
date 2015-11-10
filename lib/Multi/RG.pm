@@ -40,9 +40,9 @@ sub check_rg {
 
   AE::log debug => 'Checking for new graphs to create.';
   pg_cmd q|
-      SELECT 'v', v.id FROM vn v JOIN vn_relations vr ON vr.vid1 = v.latest WHERE rgraph IS NULL AND hidden = FALSE
+      SELECT 'v', v.id FROM vn v JOIN vn_relations vr ON vr.id = v.id WHERE v.rgraph IS NULL AND v.hidden = FALSE
     UNION
-      SELECT 'p', p.id FROM producers p JOIN producers_relations pr ON pr.pid1 = p.latest WHERE rgraph IS NULL AND hidden = FALSE
+      SELECT 'p', p.id FROM producers p JOIN producers_relations pr ON pr.id = p.id WHERE p.rgraph IS NULL AND p.hidden = FALSE
     LIMIT 1|, undef, \&creategraph;
 }
 
@@ -69,8 +69,8 @@ sub getrelid {
   my $id = shift;
   AE::log debug => "Fetching relations for $C{type}$id";
   pg_cmd $C{type} eq 'v'
-    ? 'SELECT vid2, relation, official FROM vn v JOIN vn_relations vr ON vr.vid1 = v.latest WHERE v.id = $1'
-    : 'SELECT pid2, relation FROM producers p JOIN producers_relations pr ON pr.pid1 = p.latest WHERE p.id = $1',
+    ? 'SELECT vid, relation, official FROM vn_relations WHERE id = $1'
+    : 'SELECT pid, relation FROM producers_relations WHERE id = $1',
     [ $id ], sub { getrel($id, @_) };
 }
 
@@ -104,8 +104,8 @@ sub getrel { # id, res, time
   my $ids = join(', ', map '$'.$_, 1..@ids);
   AE::log debug => "Fetching node information for $C{type}:".join ', ', @ids;
   pg_cmd $C{type} eq 'v'
-    ? "SELECT v.id, vr.title, v.c_released AS date, array_to_string(v.c_languages, '/') AS lang FROM vn v JOIN vn_rev vr ON vr.id = v.latest WHERE v.id IN($ids) ORDER BY v.c_released"
-    : "SELECT p.id, pr.name, pr.lang, pr.type FROM producers p JOIN producers_rev pr ON pr.id = p.latest WHERE p.id IN($ids) ORDER BY pr.name",
+    ? "SELECT id, title, c_released AS date, array_to_string(c_languages, '/') AS lang FROM vn WHERE id IN($ids) ORDER BY c_released"
+    : "SELECT id, name, lang, type FROM producers WHERE id IN($ids) ORDER BY name",
     [ @ids ], \&builddot;
 }
 
@@ -256,8 +256,6 @@ sub processgraph {
 
   # Before saving the SVG output, we'll modify it a little:
   # - Remove comments
-  # - Add svg: prefix to all tags
-  # - Remove xmlns declarations (this is set in the html)
   # - Remove <title> elements (unused)
   # - Remove id attributes (unused)
   # - Remove first <polygon> element (emulates the background color)
@@ -274,15 +272,15 @@ sub processgraph {
       $attr{class} = 'border' if $attr{stroke} && $attr{stroke} eq '#111111';
       $attr{class} = 'nodebg' if $attr{fill} && $attr{fill} eq '#222222';
 
-      delete @attr{qw|stroke fill xmlns xmlns:xlink|};
+      delete @attr{qw|stroke fill|};
       delete $attr{id} if $attr{id} && $attr{id} !~ /^node_[vp]\d+$/;
-      $w->tag("svg:$el", %attr, $el eq 'path' || $el eq 'polygon' ? undef : ());
+      $w->tag($el, %attr, $el eq 'path' || $el eq 'polygon' ? undef : ());
     },
     End => sub {
       my($expat, $el) = @_;
       return if $el eq 'title' || $expat->in_element('title');
       return if $el eq 'polygon' && $expat->depth == 2;
-      $w->end("svg:$el") if $el ne 'path' && $el ne 'polygon';
+      $w->end($el) if $el ne 'path' && $el ne 'polygon';
     },
     Char => sub {
       my($expat, $str) = @_;

@@ -137,11 +137,11 @@ sub htmlBrowseHist {
     ],
     row      => sub {
       my($s, $n, $i) = @_;
-      my $revurl = "/$i->{type}$i->{iid}.$i->{rev}";
+      my $revurl = "/$i->{type}$i->{itemid}.$i->{rev}";
 
       Tr;
        td class => 'tc1_1';
-        a href => $revurl, "$i->{type}$i->{iid}";
+        a href => $revurl, "$i->{type}$i->{itemid}";
        end;
        td class => 'tc1_2';
         a href => $revurl, ".$i->{rev}";

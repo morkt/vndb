@@ -187,8 +187,7 @@ my @rel_cols = (
 sub releases {
   my($self, $vid) = @_;
 
-  my $v = $self->dbVNGet(
-     id => $vid)->[0];
+  my $v = $self->dbVNGet(id => $vid)->[0];
   return $self->resNotFound if !$v->{id};
 
   my $title = mt('_vnpage_rel_title', $v->{title});
@@ -334,9 +333,10 @@ sub page {
   my $staff = $rev && $rev eq 'staff';
   $rev = undef if $char || $staff;
 
-  my $v = $self->dbVNGet(
+  my $method = $rev ? 'dbVNGetRev' : 'dbVNGet';
+  my $v = $self->$method(
     id => $vid,
-    what => 'extended anime relations screenshots rating ranking'.($staff || $rev ? ' credits' : '').($rev ? ' changes' : ''),
+    what => 'extended anime relations screenshots rating ranking'.($staff || $rev ? ' credits' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
   return $self->resNotFound if !$v->{id};
@@ -508,8 +508,8 @@ sub _revision {
   my($self, $v, $rev) = @_;
   return if !$rev;
 
-  my $prev = $rev && $rev > 1 && $self->dbVNGet(
-    id => $v->{id}, rev => $rev-1, what => 'extended anime relations screenshots credits changes'
+  my $prev = $rev && $rev > 1 && $self->dbVNGetRev(
+    id => $v->{id}, rev => $rev-1, what => 'extended anime relations screenshots credits'
   )->[0];
 
   $self->htmlRevision('v', $prev, $v,
@@ -554,7 +554,7 @@ sub _revision {
       return @r ? @r : (mt '_revision_empty');
     }],
     [ screenshots => join => '<br />', split => sub {
-      my @r = map sprintf('[%s] <a href="%s" rel="iv:%dx%d">%d</a> (%s)',
+      my @r = map sprintf('[%s] <a href="%s" data-iv="%dx%d">%d</a> (%s)',
         $_->{rid} ? qq|<a href="/r$_->{rid}">r$_->{rid}</a>| : 'no release',
         imgurl(sf => $_->{id}), $_->{width}, $_->{height}, $_->{id},
         mt($_->{nsfw} ? '_vndiff_nsfw_notsafe' : '_vndiff_nsfw_safe')
@@ -668,7 +668,7 @@ sub _anime {
          }
          txt '] ';
         end;
-        acronym title => $_->{title_kanji}||$_->{title_romaji}, shorten $_->{title_romaji}, 50;
+        abbr title => $_->{title_kanji}||$_->{title_romaji}, shorten $_->{title_romaji}, 50;
         b ' ('.(defined $_->{type} ? mt("_animetype_$_->{type}").', ' : '').$_->{year}.')';
         br;
       }
@@ -748,7 +748,7 @@ sub _affiliate_links {
          || ($f->{default_version} && $f->{default_version}->($self, $link, $rel))
          || $version;
        txt " at $f->{name}";
-       acronym class => 'pricenote', title =>
+       abbr class => 'pricenote', title =>
            $link->{lastfetch} ? sprintf('Last updated: %s.', $en->age($link->{lastfetch})) : '', " for $link->{price}"
          if $link->{price};
        txt ' »';
@@ -859,7 +859,7 @@ sub _screenshots {
         my($w, $h) = imgsize($_->{width}, $_->{height}, @{$self->{scr_size}});
         a href => imgurl(sf => $_->{id}),
           class => sprintf('scrlnk%s%s', $_->{nsfw} ? ' nsfw':'', $_->{nsfw}&&!$self->authPref('show_nsfw')?' hidden':''),
-          rel => "iv:$_->{width}x$_->{height}:scr";
+          'data-iv' => "$_->{width}x$_->{height}:scr";
          img src => imgurl(st => $_->{id}),
            width => $w, height => $h, alt => mt '_vnpage_scr_num', $_->{id};
         end;

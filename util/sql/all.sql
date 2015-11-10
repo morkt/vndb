@@ -9,7 +9,7 @@ CREATE TYPE board_type        AS ENUM ('an', 'db', 'ge', 'v', 'p', 'u');
 CREATE TYPE char_role         AS ENUM ('main', 'primary', 'side', 'appears');
 CREATE TYPE credit_type       AS ENUM ('scenario', 'chardesign', 'art', 'music', 'songs', 'director', 'staff');
 CREATE TYPE dbentry_type      AS ENUM ('v', 'r', 'p', 'c', 's');
-CREATE TYPE edit_rettype      AS (iid integer, cid integer, rev integer);
+CREATE TYPE edit_rettype      AS (itemid integer, chid integer, rev integer);
 CREATE TYPE gender            AS ENUM ('unknown', 'm', 'f', 'b');
 CREATE TYPE language          AS ENUM ('ar', 'ca', 'cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'he', 'hu', 'id', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt-pt', 'pt-br', 'ro', 'ru', 'sk', 'sv', 'tr', 'uk', 'vi', 'zh');
 CREATE TYPE medium            AS ENUM ('cd', 'dvd', 'gdr', 'blr', 'flp', 'mrt', 'mem', 'umd', 'nod', 'in', 'otc');
@@ -32,6 +32,10 @@ CREATE TYPE vn_relation       AS ENUM ('seq', 'preq', 'set', 'alt', 'char', 'sid
 -- functions
 
 \i util/sql/func.sql
+
+-- auto-generated editing functions
+
+\i util/sql/editfunc.sql
 
 -- constraints & indices
 

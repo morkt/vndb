@@ -98,10 +98,10 @@ sub unload {
 
 
 sub check_anime {
-  return if $C{aid};
+  return if $C{aid} || $C{tw};
   pg_cmd 'SELECT id FROM anime WHERE lastfetch IS NULL OR lastfetch < NOW() - $1::interval ORDER BY lastfetch DESC NULLS FIRST LIMIT 1', [ $O{cachetime} ], sub {
     my $res = shift;
-    return if pg_expect $res, 1 or $C{aid} or !$res->rows;
+    return if pg_expect $res, 1 or $C{aid} or $C{tw} or !$res->rows;
     $C{aid} = $res->value(0,0);
     nextcmd();
   };

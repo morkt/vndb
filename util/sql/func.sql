@@ -15,6 +15,14 @@ CREATE OR REPLACE FUNCTION strip_bb_tags(t text) RETURNS text AS $$
   SELECT regexp_replace(t, '\[(?:url=[^\]]+|/?(?:spoiler|quote|raw|code|url))\]', ' ', 'gi');
 $$ LANGUAGE sql IMMUTABLE;
 
+-- Wrapper around to_tsvector() and strip_bb_tags(), implemented in plpgsql and
+-- with an associated cost function to make it opaque to the query planner and
+-- ensure the query planner realizes that this function is _slow_.
+CREATE OR REPLACE FUNCTION bb_tsvector(t text) RETURNS tsvector AS $$
+BEGIN
+  RETURN to_tsvector('english', strip_bb_tags(t));
+END;
+$$ LANGUAGE plpgsql IMMUTABLE COST 500;
 
 -- BUG: Since this isn't a full bbcode parser, [spoiler] tags inside [raw] or [code] are still considered spoilers.
 CREATE OR REPLACE FUNCTION strip_spoilers(t text) RETURNS text AS $$
@@ -23,60 +31,56 @@ CREATE OR REPLACE FUNCTION strip_spoilers(t text) RETURNS text AS $$
 $$ LANGUAGE sql IMMUTABLE;
 
 
--- update_vncache(id) - updates the c_* columns in the vn table
+-- update_vncache(id) - updates some c_* columns in the vn table
 CREATE OR REPLACE FUNCTION update_vncache(integer) RETURNS void AS $$
   UPDATE vn SET
-    c_released = COALESCE((SELECT
-      MIN(rr1.released)
-      FROM releases_rev rr1
-      JOIN releases r1 ON rr1.id = r1.latest
-      JOIN releases_vn rv1 ON rr1.id = rv1.rid
-      WHERE rv1.vid = vn.id
-      AND rr1.type <> 'trial'
-      AND r1.hidden = FALSE
-      AND rr1.released <> 0
-      GROUP BY rv1.vid
+    c_released = COALESCE((
+      SELECT MIN(r.released)
+        FROM releases r
+        JOIN releases_vn rv ON r.id = rv.id
+       WHERE rv.vid = $1
+         AND r.type <> 'trial'
+         AND r.hidden = FALSE
+         AND r.released <> 0
+      GROUP BY rv.vid
     ), 0),
     c_olang = ARRAY(
       SELECT lang
         FROM releases_lang
-       WHERE rid = (
-        SELECT r.latest
+       WHERE id = (
+        SELECT r.id
           FROM releases_vn rv
-          JOIN releases r ON rv.rid = r.latest
-          JOIN releases_rev rr ON rr.id = r.latest AND rr.rid = r.id
-         WHERE rr.released > 0
+          JOIN releases r ON rv.id = r.id
+         WHERE r.released > 0
            AND NOT r.hidden
            AND rv.vid = $1
-         ORDER BY rr.released
+         ORDER BY r.released
          LIMIT 1
        )
     ),
     c_languages = ARRAY(
-      SELECT rl2.lang
-      FROM releases_rev rr2
-      JOIN releases_lang rl2 ON rl2.rid = rr2.id
-      JOIN releases r2 ON rr2.id = r2.latest
-      JOIN releases_vn rv2 ON rr2.id = rv2.rid
-      WHERE rv2.vid = vn.id
-      AND rr2.type <> 'trial'
-      AND rr2.released <= TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer
-      AND r2.hidden = FALSE
-      GROUP BY rl2.lang
-      ORDER BY rl2.lang
+      SELECT rl.lang
+        FROM releases_lang rl
+        JOIN releases r ON r.id = rl.id
+        JOIN releases_vn rv ON r.id = rv.id
+       WHERE rv.vid = $1
+         AND r.type <> 'trial'
+         AND r.released <= TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer
+         AND r.hidden = FALSE
+      GROUP BY rl.lang
+      ORDER BY rl.lang
     ),
     c_platforms = ARRAY(
-      SELECT rp3.platform
-      FROM releases_platforms rp3
-      JOIN releases_rev rr3 ON rp3.rid = rr3.id
-      JOIN releases r3 ON rp3.rid = r3.latest
-      JOIN releases_vn rv3 ON rp3.rid = rv3.rid
-      WHERE rv3.vid = vn.id
-      AND rr3.type <> 'trial'
-      AND rr3.released <= TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer
-      AND r3.hidden = FALSE
-      GROUP BY rp3.platform
-      ORDER BY rp3.platform
+      SELECT rp.platform
+        FROM releases_platforms rp
+        JOIN releases r ON rp.id = r.id
+        JOIN releases_vn rv ON rp.id = rv.id
+       WHERE rv.vid = $1
+        AND r.type <> 'trial'
+        AND r.released <= TO_CHAR('today'::timestamp, 'YYYYMMDD')::integer
+        AND r.hidden = FALSE
+      GROUP BY rp.platform
+      ORDER BY rp.platform
     )
   WHERE id = $1;
 $$ LANGUAGE sql;
@@ -154,9 +158,9 @@ BEGIN
     -- all char<->trait links of the latest revisions, including chars inherited from child traits
     -- (also includes meta traits, because they could have a normal trait as parent)
     WITH RECURSIVE traits_chars_all(lvl, tid, cid, spoiler, meta) AS (
-        SELECT 15, tid, c.id, spoil, false
+        SELECT 15, tid, ct.id, spoil, false
         FROM chars_traits ct
-        JOIN chars c ON c.latest = ct.cid
+        JOIN chars c ON c.id = ct.id
        WHERE NOT c.hidden
       UNION ALL
         SELECT lvl-1, tp.parent, tc.cid, tc.spoiler, t.meta
@@ -186,18 +190,18 @@ $$ LANGUAGE plpgsql;
 --           revision insertion abstraction             --
 ----------------------------------------------------------
 
+-- The two functions below are utility functions used by the item-specific functions in editfunc.sql
 
--- IMPORTANT: these functions will need to be updated on each change in the DB structure
---   of the relevant tables
-
-
--- create temporary table for generic revision info
-CREATE OR REPLACE FUNCTION edit_revtable(t dbentry_type, i integer) RETURNS void AS $$
+-- create temporary table for generic revision info, and returns the chid of the revision being edited (or NULL).
+CREATE OR REPLACE FUNCTION edit_revtable(xtype dbentry_type, xitemid integer, xrev integer) RETURNS integer AS $$
+DECLARE
+  ret integer;
+  x record;
 BEGIN
   BEGIN
     CREATE TEMPORARY TABLE edit_revision (
       type dbentry_type NOT NULL,
-      iid integer,
+      itemid integer,
       requester integer,
       ip inet,
       comments text,
@@ -207,15 +211,9 @@ BEGIN
   EXCEPTION WHEN duplicate_table THEN
     TRUNCATE edit_revision;
   END;
-  INSERT INTO edit_revision (type, iid, ihid, ilock) VALUES (t,
-    (       SELECT vid FROM vn_rev WHERE id = i
-      UNION SELECT rid FROM releases_rev WHERE id = i
-      UNION SELECT cid FROM chars_rev WHERE id = i
-      UNION SELECT pid FROM producers_rev WHERE id = i
-      UNION SELECT sid FROM staff_rev WHERE id = i),
-    COALESCE((SELECT ihid FROM changes WHERE id = i), FALSE),
-    COALESCE((SELECT ilock FROM changes WHERE id = i), FALSE)
-  );
+  SELECT INTO x id, ihid, ilock FROM changes c WHERE type = xtype AND itemid = xitemid AND rev = xrev;
+  INSERT INTO edit_revision (type, itemid, ihid, ilock) VALUES (xtype, xitemid, COALESCE(x.ihid, FALSE), COALESCE(x.ilock, FALSE));
+  RETURN x.id;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -223,302 +221,142 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION edit_commit() RETURNS edit_rettype AS $$
 DECLARE
-  r edit_rettype;
-  t dbentry_type;
-  i integer;
+  ret edit_rettype;
+  xtype dbentry_type;
 BEGIN
-  SELECT type INTO t FROM edit_revision;
-  SELECT iid INTO i FROM edit_revision;
+  SELECT type INTO xtype FROM edit_revision;
+  SELECT itemid INTO ret.itemid FROM edit_revision;
   -- figure out revision number
-  IF i IS NULL THEN
-    r.rev := 1;
-  ELSE
-    SELECT c.rev+1 INTO r.rev FROM changes c
-      JOIN (  SELECT id FROM vn_rev        WHERE t = 'v' AND vid = i
-        UNION SELECT id FROM releases_rev  WHERE t = 'r' AND rid = i
-        UNION SELECT id FROM producers_rev WHERE t = 'p' AND pid = i
-        UNION SELECT id FROM chars_rev     WHERE t = 'c' AND cid = i
-        UNION SELECT id FROM staff_rev     WHERE t = 's' AND sid = i
-      ) x(id) ON x.id = c.id
-      ORDER BY c.id DESC
-      LIMIT 1;
+  SELECT MAX(rev)+1 INTO ret.rev FROM changes WHERE type = xtype AND itemid = ret.itemid;
+  SELECT COALESCE(ret.rev, 1) INTO ret.rev;
+  -- insert DB item
+  IF ret.itemid IS NULL THEN
+    CASE xtype
+      WHEN 'v' THEN INSERT INTO vn        DEFAULT VALUES RETURNING id INTO ret.itemid;
+      WHEN 'r' THEN INSERT INTO releases  DEFAULT VALUES RETURNING id INTO ret.itemid;
+      WHEN 'p' THEN INSERT INTO producers DEFAULT VALUES RETURNING id INTO ret.itemid;
+      WHEN 'c' THEN INSERT INTO chars     DEFAULT VALUES RETURNING id INTO ret.itemid;
+      WHEN 's' THEN INSERT INTO staff     DEFAULT VALUES RETURNING id INTO ret.itemid;
+    END CASE;
   END IF;
   -- insert change
-  INSERT INTO changes (type, requester, ip, comments, ihid, ilock, rev)
-    SELECT t, requester, ip, comments, ihid, ilock, r.rev
-    FROM edit_revision
-    RETURNING id INTO r.cid;
-  -- insert DB item
-  IF i IS NULL THEN
-    CASE t
-      WHEN 'v' THEN INSERT INTO vn        (latest) VALUES (0) RETURNING id INTO r.iid;
-      WHEN 'r' THEN INSERT INTO releases  (latest) VALUES (0) RETURNING id INTO r.iid;
-      WHEN 'p' THEN INSERT INTO producers (latest) VALUES (0) RETURNING id INTO r.iid;
-      WHEN 'c' THEN INSERT INTO chars     (latest) VALUES (0) RETURNING id INTO r.iid;
-      WHEN 's' THEN INSERT INTO staff     (latest) VALUES (0) RETURNING id INTO r.iid;
-    END CASE;
-  ELSE
-    r.iid := i;
-  END IF;
-  RETURN r;
+  INSERT INTO changes (type, itemid, rev, requester, ip, comments, ihid, ilock)
+    SELECT type, ret.itemid, ret.rev, requester, ip, comments, ihid, ilock FROM edit_revision RETURNING id INTO ret.chid;
+  RETURN ret;
 END;
 $$ LANGUAGE plpgsql;
 
 
 
-CREATE OR REPLACE FUNCTION edit_vn_init(cid integer) RETURNS void AS $$
-#variable_conflict use_variable
-BEGIN
-  -- create tables, based on existing tables (so that the column types are always synchronised)
-  BEGIN
-    CREATE TEMPORARY TABLE edit_vn (LIKE vn_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_vn DROP COLUMN id;
-    ALTER TABLE edit_vn DROP COLUMN vid;
-    CREATE TEMPORARY TABLE edit_vn_anime (LIKE vn_anime INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_vn_anime DROP COLUMN vid;
-    CREATE TEMPORARY TABLE edit_vn_relations (LIKE vn_relations INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_vn_relations DROP COLUMN vid1;
-    ALTER TABLE edit_vn_relations RENAME COLUMN vid2 TO vid;
-    CREATE TEMPORARY TABLE edit_vn_screenshots (LIKE vn_screenshots INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_vn_screenshots DROP COLUMN vid;
-    CREATE TEMPORARY TABLE edit_vn_staff (LIKE vn_staff INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_vn_staff DROP COLUMN vid;
-    CREATE TEMPORARY TABLE edit_vn_seiyuu (LIKE vn_seiyuu INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_vn_seiyuu DROP COLUMN vid;
-  EXCEPTION WHEN duplicate_table THEN
-    TRUNCATE edit_vn, edit_vn_anime, edit_vn_relations, edit_vn_screenshots, edit_vn_staff, edit_vn_seiyuu;
-  END;
-  PERFORM edit_revtable('v', cid);
-  -- new VN, load defaults
-  IF cid IS NULL THEN
-    INSERT INTO edit_vn DEFAULT VALUES;
-  -- otherwise, load revision
-  ELSE
-    INSERT INTO edit_vn SELECT title, alias, img_nsfw, length, "desc", l_wp, image, l_encubed, l_renai, original FROM vn_rev WHERE id = cid;
-    INSERT INTO edit_vn_anime SELECT aid FROM vn_anime WHERE vid = cid;
-    INSERT INTO edit_vn_relations SELECT vid2, relation, official FROM vn_relations WHERE vid1 = cid;
-    INSERT INTO edit_vn_screenshots SELECT scr, nsfw, rid FROM vn_screenshots WHERE vid = cid;
-    INSERT INTO edit_vn_staff SELECT aid, role, note FROM vn_staff WHERE vid = cid;
-    INSERT INTO edit_vn_seiyuu SELECT aid, vs.cid, note FROM vn_seiyuu vs WHERE vid = cid;
-  END IF;
-END;
-$$ LANGUAGE plpgsql;
-
-
-
-CREATE OR REPLACE FUNCTION edit_vn_commit() RETURNS edit_rettype AS $$
+-- Check for stuff to be done when an item has been changed
+CREATE OR REPLACE FUNCTION edit_committed(xtype dbentry_type, xedit edit_rettype) RETURNS void AS $$
 DECLARE
-  r edit_rettype;
+  xoldchid integer;
 BEGIN
-  IF (SELECT COUNT(*) FROM edit_vn) <> 1 THEN
-    RAISE 'edit_vn must have exactly one row!';
+  SELECT id INTO xoldchid FROM changes WHERE type = xtype AND itemid = xedit.itemid AND rev = xedit.rev-1;
+
+  -- Set producers.rgraph to NULL and notify when:
+  -- 1. There's a new producer entry with some relations
+  -- 2. The producer name/type/language has changed
+  -- 3. The producer relations have been changed
+  IF xtype = 'p' THEN
+    IF -- 1.
+         (xoldchid IS NULL AND EXISTS(SELECT 1 FROM producers_relations_hist WHERE chid = xedit.chid))
+      OR (xoldchid IS NOT NULL AND (
+        -- 2.
+           EXISTS(SELECT 1 FROM producers_hist p1, producers_hist p2 WHERE (p2.name <> p1.name OR p2.type <> p1.type OR p2.lang <> p1.lang) AND p1.chid = xoldchid AND p2.chid = xedit.chid)
+        -- 3.
+        OR EXISTS(SELECT pid, relation FROM producers_relations_hist WHERE chid = xoldchid   EXCEPT SELECT pid, relation FROM producers_relations_hist WHERE chid = xedit.chid)
+        OR EXISTS(SELECT pid, relation FROM producers_relations_hist WHERE chid = xedit.chid EXCEPT SELECT pid, relation FROM producers_relations_hist WHERE chid = xoldchid)
+      ))
+    THEN
+      UPDATE producers SET rgraph = NULL WHERE id = xedit.itemid;
+      NOTIFY relgraph; -- This notify is not done by the producer_relgraph_notify trigger for new entries or if rgraph was already NULL
+    END IF;
   END IF;
-  SELECT INTO r * FROM edit_commit();
-  INSERT INTO vn_rev SELECT r.cid, r.iid, title, alias, img_nsfw, length, "desc", l_wp, image, l_encubed, l_renai, original FROM edit_vn;
-  INSERT INTO vn_anime SELECT r.cid, aid FROM edit_vn_anime;
-  INSERT INTO vn_relations SELECT r.cid, vid, relation, official FROM edit_vn_relations;
-  INSERT INTO vn_screenshots SELECT r.cid, scr, nsfw, rid FROM edit_vn_screenshots;
-  INSERT INTO vn_staff SELECT r.cid, aid, role, note FROM edit_vn_staff;
-  INSERT INTO vn_seiyuu SELECT r.cid, aid, cid, note FROM edit_vn_seiyuu;
-  UPDATE vn SET latest = r.cid WHERE id = r.iid;
-  RETURN r;
-END;
-$$ LANGUAGE plpgsql;
 
-
-
-CREATE OR REPLACE FUNCTION edit_release_init(cid integer) RETURNS void AS $$
-BEGIN
-  -- temp. tables
-  BEGIN
-    CREATE TEMPORARY TABLE edit_release (LIKE releases_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_release DROP COLUMN id;
-    ALTER TABLE edit_release DROP COLUMN rid;
-    CREATE TEMPORARY TABLE edit_release_lang (LIKE releases_lang INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_release_lang DROP COLUMN rid;
-    CREATE TEMPORARY TABLE edit_release_media (LIKE releases_media INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_release_media DROP COLUMN rid;
-    CREATE TEMPORARY TABLE edit_release_platforms (LIKE releases_platforms INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_release_platforms DROP COLUMN rid;
-    CREATE TEMPORARY TABLE edit_release_producers (LIKE releases_producers INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_release_producers DROP COLUMN rid;
-    CREATE TEMPORARY TABLE edit_release_vn (LIKE releases_vn INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_release_vn DROP COLUMN rid;
-  EXCEPTION WHEN duplicate_table THEN
-    TRUNCATE edit_release, edit_release_lang, edit_release_media, edit_release_platforms, edit_release_producers, edit_release_vn;
-  END;
-  PERFORM edit_revtable('r', cid);
-  -- new release
-  IF cid IS NULL THEN
-    INSERT INTO edit_release DEFAULT VALUES;
-  -- load revision
-  ELSE
-    INSERT INTO edit_release SELECT title, original, type, website, released, notes, minage, gtin, patch, catalog, resolution, voiced, freeware, doujin, ani_story, ani_ero FROM releases_rev WHERE id = cid;
-    INSERT INTO edit_release_lang SELECT lang FROM releases_lang WHERE rid = cid;
-    INSERT INTO edit_release_media SELECT medium, qty FROM releases_media WHERE rid = cid;
-    INSERT INTO edit_release_platforms SELECT platform FROM releases_platforms WHERE rid = cid;
-    INSERT INTO edit_release_producers SELECT pid, developer, publisher FROM releases_producers WHERE rid = cid;
-    INSERT INTO edit_release_vn SELECT vid FROM releases_vn WHERE rid = cid;
+  -- Set vn.rgraph to NULL and notify when:
+  -- 1. There's a new vn entry with some relations
+  -- 2. The vn title has changed
+  -- 3. The vn relations have been changed
+  IF xtype = 'v' THEN
+    IF -- 1.
+         (xoldchid IS NULL AND EXISTS(SELECT 1 FROM vn_relations_hist WHERE chid = xedit.chid))
+      OR (xoldchid IS NOT NULL AND (
+        -- 2.
+           EXISTS(SELECT 1 FROM vn_hist v1, vn_hist v2 WHERE v2.title <> v1.title AND v1.chid = xoldchid AND v2.chid = xedit.chid)
+        -- 3.
+        OR EXISTS(SELECT vid, relation, official FROM vn_relations_hist WHERE chid = xoldchid   EXCEPT SELECT vid, relation, official FROM vn_relations_hist WHERE chid = xedit.chid)
+        OR EXISTS(SELECT vid, relation, official FROM vn_relations_hist WHERE chid = xedit.chid EXCEPT SELECT vid, relation, official FROM vn_relations_hist WHERE chid = xoldchid)
+      ))
+    THEN
+      UPDATE vn SET rgraph = NULL WHERE id = xedit.itemid;
+      NOTIFY relgraph;
+    END IF;
   END IF;
-END;
-$$ LANGUAGE plpgsql;
 
-
-
-CREATE OR REPLACE FUNCTION edit_release_commit() RETURNS edit_rettype AS $$
-DECLARE
-  r edit_rettype;
-BEGIN
-  IF (SELECT COUNT(*) FROM edit_release) <> 1 THEN
-    RAISE 'edit_release must have exactly one row!';
-  ELSIF NOT EXISTS(SELECT 1 FROM edit_release_vn) THEN
-    RAISE 'edit_release_vn must have at least one row!';
+  -- Set c_search to NULL and notify when
+  -- 1. A new VN entry is created
+  -- 2. The vn title/original/alias has changed
+  IF xtype = 'v' THEN
+    IF -- 1.
+       xoldchid IS NULL OR
+       -- 2.
+       EXISTS(SELECT 1 FROM vn_hist v1, vn_hist v2 WHERE (v2.title <> v1.title OR v2.original <> v1.original OR v2.alias <> v1.alias) AND v1.chid = xoldchid AND v2.chid = xedit.chid)
+    THEN
+      UPDATE vn SET c_search = NULL WHERE id = xedit.itemid;
+      NOTIFY vnsearch;
+    END IF;
   END IF;
-  SELECT INTO r * FROM edit_commit();
-  INSERT INTO releases_rev SELECT r.cid, r.iid, title, original, type, website, released, notes, minage, gtin, patch, catalog, resolution, voiced, freeware, doujin, ani_story, ani_ero FROM edit_release;
-  INSERT INTO releases_lang SELECT r.cid, lang FROM edit_release_lang;
-  INSERT INTO releases_media SELECT r.cid, medium, qty FROM edit_release_media;
-  INSERT INTO releases_platforms SELECT r.cid, platform FROM edit_release_platforms;
-  INSERT INTO releases_producers SELECT pid, r.cid, developer, publisher FROM edit_release_producers;
-  INSERT INTO releases_vn SELECT r.cid, vid FROM edit_release_vn;
-  UPDATE releases SET latest = r.cid WHERE id = r.iid;
-  RETURN r;
-END;
-$$ LANGUAGE plpgsql;
 
-
-
-CREATE OR REPLACE FUNCTION edit_producer_init(cid integer) RETURNS void AS $$
-BEGIN
-  BEGIN
-    CREATE TEMPORARY TABLE edit_producer (LIKE producers_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_producer DROP COLUMN id;
-    ALTER TABLE edit_producer DROP COLUMN pid;
-    CREATE TEMPORARY TABLE edit_producer_relations (LIKE producers_relations INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_producer_relations DROP COLUMN pid1;
-    ALTER TABLE edit_producer_relations RENAME COLUMN pid2 TO pid;
-  EXCEPTION WHEN duplicate_table THEN
-    TRUNCATE edit_producer, edit_producer_relations;
-  END;
-  PERFORM edit_revtable('p', cid);
-  -- new producer
-  IF cid IS NULL THEN
-    INSERT INTO edit_producer DEFAULT VALUES;
-  -- load revision
-  ELSE
-    INSERT INTO edit_producer SELECT type, name, original, website, lang, "desc", alias, l_wp FROM producers_rev WHERE id = cid;
-    INSERT INTO edit_producer_relations SELECT pid2, relation FROM producers_relations WHERE pid1 = cid;
+  -- Set related vn.c_search columns to NULL and notify when
+  -- 1. A new release is created
+  -- 2. A release has been hidden or unhidden
+  -- 3. The release title/original has changed
+  -- 4. The releases_vn table differs from a previous revision
+  IF xtype = 'r' THEN
+    IF -- 1.
+       xoldchid IS NULL OR
+       -- 2.
+       EXISTS(SELECT 1 FROM changes c1, changes c2 WHERE c1.ihid IS DISTINCT FROM c2.ihid AND c1.id = xedit.chid AND c2.id = xoldchid) OR
+       -- 3.
+       EXISTS(SELECT 1 FROM releases_hist r1, releases_hist r2 WHERE (r2.title <> r1.title OR r2.original <> r1.original) AND r1.chid = xoldchid AND r2.chid = xedit.chid) OR
+       -- 4.
+       EXISTS(SELECT vid FROM releases_vn_hist WHERE chid = xoldchid   EXCEPT SELECT vid FROM releases_vn_hist WHERE chid = xedit.chid) OR
+       EXISTS(SELECT vid FROM releases_vn_hist WHERE chid = xedit.chid EXCEPT SELECT vid FROM releases_vn_hist WHERE chid = xoldchid)
+    THEN
+      UPDATE vn SET c_search = NULL WHERE id IN(SELECT vid FROM releases_vn_hist WHERE chid IN(xedit.chid, xoldchid));
+      NOTIFY vnsearch;
+    END IF;
   END IF;
-END;
-$$ LANGUAGE plpgsql;
 
-
-
-CREATE OR REPLACE FUNCTION edit_producer_commit() RETURNS edit_rettype AS $$
-DECLARE
-  r edit_rettype;
-BEGIN
-  IF (SELECT COUNT(*) FROM edit_producer) <> 1 THEN
-    RAISE 'edit_producer must have exactly one row!';
+  -- Call update_vncache() for related VNs when a release has been created or edited
+  -- (This could be made more specific, but update_vncache() is fast enough that it's not worth the complexity)
+  IF xtype = 'r' THEN
+    PERFORM update_vncache(vid) FROM (
+      SELECT DISTINCT vid FROM releases_vn_hist WHERE chid IN(xedit.chid, xoldchid)
+    ) AS v(vid);
   END IF;
-  SELECT INTO r * FROM edit_commit();
-  INSERT INTO producers_rev SELECT r.cid, r.iid, type, name, original, website, lang, "desc", alias, l_wp FROM edit_producer;
-  INSERT INTO producers_relations SELECT r.cid, pid, relation FROM edit_producer_relations;
-  UPDATE producers SET latest = r.cid WHERE id = r.iid;
-  RETURN r;
-END;
-$$ LANGUAGE plpgsql;
 
+  -- Call notify_dbdel() if an entry has been deleted
+  -- Call notify_listdel() if a vn/release entry has been deleted
+  IF xoldchid IS NOT NULL
+     AND EXISTS(SELECT 1 FROM changes WHERE id = xoldchid AND NOT ihid)
+     AND EXISTS(SELECT 1 FROM changes WHERE id = xedit.chid AND ihid)
+  THEN
+    PERFORM notify_dbdel(xtype, xedit);
+    IF xtype = 'v' OR xtype = 'r' THEN
+      PERFORM notify_listdel(xtype, xedit);
+    END IF;
+  END IF;
 
-
-CREATE OR REPLACE FUNCTION edit_char_init(hid integer) RETURNS void AS $$
-BEGIN
-  BEGIN
-    CREATE TEMPORARY TABLE edit_char (LIKE chars_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_char DROP COLUMN id;
-    ALTER TABLE edit_char DROP COLUMN cid;
-    CREATE TEMPORARY TABLE edit_char_traits (LIKE chars_traits INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_char_traits DROP COLUMN cid;
-    CREATE TEMPORARY TABLE edit_char_vns (LIKE chars_vns INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_char_vns DROP COLUMN cid;
-  EXCEPTION WHEN duplicate_table THEN
-    TRUNCATE edit_char, edit_char_traits, edit_char_vns;
-  END;
-  PERFORM edit_revtable('c', hid);
-  -- new char
-  IF hid IS NULL THEN
-    INSERT INTO edit_char DEFAULT VALUES;
-  -- load revision
-  ELSE
-    INSERT INTO edit_char SELECT name, original, alias, image, "desc", gender, s_bust, s_waist, s_hip, b_month, b_day, height, weight, bloodt, main, main_spoil FROM chars_rev WHERE id = hid;
-    INSERT INTO edit_char_traits SELECT tid, spoil FROM chars_traits WHERE cid = hid;
-    INSERT INTO edit_char_vns SELECT vid, rid, spoil, role FROM chars_vns WHERE cid = hid;
+  -- Call notify_dbedit() if a non-hidden entry has been edited
+  IF xoldchid IS NOT NULL AND EXISTS(SELECT 1 FROM changes WHERE id = xedit.chid AND NOT ihid)
+  THEN
+    PERFORM notify_dbedit(xtype, xedit);
   END IF;
 END;
 $$ LANGUAGE plpgsql;
-
-
-
-CREATE OR REPLACE FUNCTION edit_char_commit() RETURNS edit_rettype AS $$
-DECLARE
-  r edit_rettype;
-BEGIN
-  IF (SELECT COUNT(*) FROM edit_char) <> 1 THEN
-    RAISE 'edit_char must have exactly one row!';
-  END IF;
-  SELECT INTO r * FROM edit_commit();
-  INSERT INTO chars_rev SELECT r.cid, r.iid, name, original, alias, image, "desc", gender, s_bust, s_waist, s_hip, b_month, b_day, height, weight, bloodt, main, main_spoil FROM edit_char;
-  INSERT INTO chars_traits SELECT r.cid, tid, spoil FROM edit_char_traits;
-  INSERT INTO chars_vns SELECT r.cid, vid, rid, spoil, role FROM edit_char_vns;
-  UPDATE chars SET latest = r.cid WHERE id = r.iid;
-  RETURN r;
-END;
-$$ LANGUAGE plpgsql;
-
-
-
-CREATE OR REPLACE FUNCTION edit_staff_init(cid integer) RETURNS void AS $$
-BEGIN
-  BEGIN
-    CREATE TEMPORARY TABLE edit_staff (LIKE staff_rev INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_staff DROP COLUMN id;
-    ALTER TABLE edit_staff DROP COLUMN sid;
-    CREATE TEMPORARY TABLE edit_staff_aliases (LIKE staff_alias INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
-    ALTER TABLE edit_staff_aliases DROP COLUMN rid;
-  EXCEPTION WHEN duplicate_table THEN
-    TRUNCATE edit_staff, edit_staff_aliases;
-  END;
-  PERFORM edit_revtable('s', cid);
-  -- new staff member
-  IF cid IS NULL THEN
-    INSERT INTO edit_staff (aid) VALUES (0);
-  -- load revision
-  ELSE
-    INSERT INTO edit_staff SELECT aid, gender, lang, "desc", l_wp, l_site, l_twitter, l_anidb FROM staff_rev WHERE id = cid;
-    INSERT INTO edit_staff_aliases SELECT id, name, original FROM staff_alias WHERE rid = cid;
-  END IF;
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE FUNCTION edit_staff_commit() RETURNS edit_rettype AS $$
-DECLARE
-  r edit_rettype;
-BEGIN
-  IF (SELECT COUNT(*) FROM edit_staff) <> 1 THEN
-    RAISE 'edit_staff must have exactly one row!';
-  END IF;
-  SELECT INTO r * FROM edit_commit();
-  INSERT INTO staff_alias (id, rid, name, original)
-    SELECT id, r.cid, name, original FROM edit_staff_aliases;
-  INSERT INTO staff_rev (id, sid, aid, gender, lang, "desc", l_wp, l_site, l_twitter, l_anidb)
-    SELECT r.cid, r.iid, aid, gender, lang, "desc", l_wp, l_site, l_twitter, l_anidb FROM edit_staff;
-  UPDATE staff SET latest = r.cid WHERE id = r.iid;
-  RETURN r;
-END;
-$$ LANGUAGE plpgsql;
-
-
 
 
 
@@ -627,18 +465,17 @@ CREATE OR REPLACE FUNCTION update_vnlist_rlist() RETURNS trigger AS $$
 BEGIN
   -- 1.
   IF TG_TABLE_NAME = 'vnlists' THEN
-    DELETE FROM rlists WHERE uid = OLD.uid AND rid IN(SELECT r.id
+    DELETE FROM rlists WHERE uid = OLD.uid AND rid IN(SELECT rv.id
       -- fetch all related rows in rlists
       FROM releases_vn rv
-      JOIN releases r ON r.latest = rv.rid
-      JOIN rlists rl ON rl.rid = r.id
+      JOIN rlists rl ON rl.rid = rv.id
      WHERE rv.vid = OLD.vid AND rl.uid = OLD.uid
        -- and test for a corresponding row in vnlists
        AND NOT EXISTS(
         SELECT 1
           FROM releases_vn rvi
           JOIN vnlists vl ON vl.vid = rvi.vid AND uid = OLD.uid
-         WHERE rvi.rid = r.latest
+         WHERE rvi.id = rv.id
        ));
 
   -- 2.
@@ -646,15 +483,13 @@ BEGIN
    INSERT INTO vnlists (uid, vid) SELECT NEW.uid, rv.vid
      -- all VNs linked to the release
       FROM releases_vn rv
-      JOIN releases r ON rv.rid = r.latest
-     WHERE r.id = NEW.rid
+     WHERE rv.id = NEW.rid
        -- but only if there are no corresponding rows in vnlists yet
        AND NOT EXISTS(
         SELECT 1
           FROM releases_vn rvi
-          JOIN releases ri ON rvi.rid = ri.latest
           JOIN vnlists vl ON vl.vid = rvi.vid
-         WHERE ri.id = NEW.rid AND vl.uid = NEW.uid
+         WHERE rvi.id = NEW.rid AND vl.uid = NEW.uid
        );
   END IF;
   RETURN NULL;
@@ -670,33 +505,16 @@ $$ LANGUAGE plpgsql;
 
 
 
--- Update vn.rgraph column and send notify when a relation graph needs to be regenerated
--- 1. NOTIFY is sent on VN edit or insert or change in vn.rgraph, when rgraph = NULL and entries in vn_relations
--- vn.rgraph is set to NULL when:
--- 2. UPDATE on vn where c_released or c_languages has changed
--- 3. VN edit of which the title differs from previous revision
--- 4. VN edit with items in vn_relations that differ from previous
+-- 1. Send a notify when vn.rgraph is set to NULL, and there are related entries in vn_relations
+-- 2. Set rgraph to NULL when c_languages or c_released has changed
 CREATE OR REPLACE FUNCTION vn_relgraph_notify() RETURNS trigger AS $$
 BEGIN
-  -- 1.
-  IF NEW.rgraph IS DISTINCT FROM OLD.rgraph OR NEW.latest IS DISTINCT FROM OLD.latest THEN
-    IF NEW.rgraph IS NULL AND EXISTS(SELECT 1 FROM vn_relations WHERE vid1 = NEW.latest) THEN
+  IF EXISTS(SELECT 1 FROM vn_relations WHERE id = NEW.id) THEN
+    -- 1.
+    IF NEW.rgraph IS NULL THEN
       NOTIFY relgraph;
-    END IF;
-  END IF;
-  IF NEW.rgraph IS NOT NULL THEN
-    IF
-      -- 2.
-         OLD.c_released  IS DISTINCT FROM NEW.c_released
-      OR OLD.c_languages IS DISTINCT FROM NEW.c_languages
-      OR OLD.latest <> 0 AND OLD.latest IS DISTINCT FROM NEW.latest AND (
-        -- 3.
-           EXISTS(SELECT 1 FROM vn_rev v1, vn_rev v2 WHERE v2.title <> v1.title AND v1.id = OLD.latest AND v2.id = NEW.latest)
-        -- 4. (not-really-readable method of comparing two query results)
-        OR EXISTS(SELECT vid2, relation, official FROM vn_relations WHERE vid1 = OLD.latest EXCEPT SELECT vid2, relation, official FROM vn_relations WHERE vid1 = NEW.latest)
-        OR (SELECT COUNT(*) FROM vn_relations WHERE vid1 = OLD.latest) <> (SELECT COUNT(*) FROM vn_relations WHERE vid1 = NEW.latest)
-      )
-    THEN
+    -- 2.
+    ELSE
       UPDATE vn SET rgraph = NULL WHERE id = NEW.id;
     END IF;
   END IF;
@@ -705,30 +523,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-
--- Same as above for producers, with slight differences in the steps:
--- There is no 2, and
--- 3 = Producer edit of which the name, language or type differs from the previous revision
+-- Send a notify when producers.rgraph is set to NULL, and there are related entries in producers_relations
 CREATE OR REPLACE FUNCTION producer_relgraph_notify() RETURNS trigger AS $$
 BEGIN
-  -- 1.
-  IF NEW.rgraph IS DISTINCT FROM OLD.rgraph OR NEW.latest IS DISTINCT FROM OLD.latest THEN
-    IF NEW.rgraph IS NULL AND EXISTS(SELECT 1 FROM producers_relations WHERE pid1 = NEW.latest) THEN
-      NOTIFY relgraph;
-    END IF;
-  END IF;
-  IF NEW.rgraph IS NOT NULL THEN
-    -- 2.
-    IF OLD.latest <> 0 AND OLD.latest IS DISTINCT FROM NEW.latest AND (
-        -- 3.
-           EXISTS(SELECT 1 FROM producers_rev p1, producers_rev p2 WHERE (p2.name <> p1.name OR p2.type <> p1.type OR p2.lang <> p1.lang) AND p1.id = OLD.latest AND p2.id = NEW.latest)
-        -- 4. (not-really-readable method of comparing two query results)
-        OR EXISTS(SELECT p1.pid2, p1.relation FROM producers_relations p1 WHERE p1.pid1 = OLD.latest EXCEPT SELECT p2.pid2, p2.relation FROM producers_relations p2 WHERE p2.pid1 = NEW.latest)
-        OR (SELECT COUNT(*) FROM producers_relations WHERE pid1 = OLD.latest) <> (SELECT COUNT(*) FROM producers_relations WHERE pid1 = NEW.latest)
-      )
-    THEN
-      UPDATE producers SET rgraph = NULL WHERE id = NEW.id;
-    END IF;
+  IF EXISTS(SELECT 1 FROM producers_relations WHERE id = NEW.id) THEN
+    NOTIFY relgraph;
   END IF;
   RETURN NULL;
 END;
@@ -754,80 +553,16 @@ $$ LANGUAGE plpgsql;
 
 
 
--- call update_vncache() when a release is added, edited, hidden or unhidden
-CREATE OR REPLACE FUNCTION release_vncache_update() RETURNS trigger AS $$
-BEGIN
-  PERFORM update_vncache(vid) FROM (
-    SELECT DISTINCT vid FROM releases_vn WHERE rid = OLD.latest OR rid = NEW.latest
-  ) AS v(vid);
-  RETURN NULL;
-END;
-$$ LANGUAGE plpgsql;
-
-
-
--- update (vn|release|producer|char).(hidden|locked) on a new revision
--- NOTE: this is a /before/ trigger, it modifies NEW
-CREATE OR REPLACE FUNCTION update_hidlock() RETURNS trigger AS $$
-DECLARE
-  r record;
-BEGIN
-  SELECT INTO r ihid, ilock FROM changes WHERE id = NEW.latest;
-  NEW.hidden := r.ihid;
-  NEW.locked := r.ilock;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-
-
--- Check for updates to vn.c_search
--- 1. NOTIFY is sent when vn.c_search goes from non-NULL to NULL
--- vn.c_search is set to NULL when:
--- 2. VN add/edit of which the title/original/alias fields differ from previous revision
--- 3. Release gets hidden or unhidden
--- 4. Release add/edit of which the title/original/vn fields differ from the previous revision
+-- Send a vnsearch notification when the c_search column is set to NULL.
 CREATE OR REPLACE FUNCTION vn_vnsearch_notify() RETURNS trigger AS $$
-BEGIN
-  IF TG_TABLE_NAME = 'vn' THEN
-    -- 1.
-    IF NEW.c_search IS NULL THEN
-      NOTIFY vnsearch;
-    -- 2.
-    ELSIF NEW.latest IS DISTINCT FROM OLD.latest THEN
-      IF EXISTS(SELECT 1 FROM vn_rev v1, vn_rev v2
-        WHERE v1.id = OLD.latest AND v2.id = NEW.latest
-          AND (v1.title IS DISTINCT FROM v2.title OR v1.original IS DISTINCT FROM v2.original OR v1.alias IS DISTINCT FROM v2.alias)
-      ) THEN
-        UPDATE vn SET c_search = NULL WHERE id = NEW.id;
-      END IF;
-    END IF;
-  ELSIF TG_TABLE_NAME = 'releases' THEN
-    -- 3. & 4.
-    IF NEW.hidden IS DISTINCT FROM OLD.hidden OR (
-       NEW.latest IS DISTINCT FROM OLD.latest AND (
-         EXISTS(
-          SELECT 1 FROM releases_rev r1, releases_rev r2
-           WHERE r1.id = OLD.latest AND r2.id = NEW.latest
-             AND (r1.title IS DISTINCT FROM r2.title OR r1.original IS DISTINCT FROM r2.original)
-         )
-         OR EXISTS(SELECT vid FROM releases_vn WHERE rid = OLD.latest EXCEPT SELECT vid FROM releases_vn WHERE rid = NEW.latest)
-         OR (SELECT COUNT(*) FROM releases_vn WHERE rid = OLD.latest) <> (SELECT COUNT(*) FROM releases_vn WHERE rid = NEW.latest)
-    )) THEN
-      UPDATE vn SET c_search = NULL WHERE id IN(SELECT vid FROM releases_vn WHERE rid = OLD.latest OR rid = NEW.latest);
-    END IF;
-  END IF;
-  RETURN NULL;
-END;
+  BEGIN NOTIFY vnsearch; RETURN NULL; END;
 $$ LANGUAGE plpgsql;
-
 
 
 
 
 ----------------------------------------------------------
 --                notification functions                --
---          (these are, in fact, also triggers)         --
 ----------------------------------------------------------
 
 
@@ -854,107 +589,70 @@ END;
 $$ LANGUAGE plpgsql;
 
 
--- called on UPDATE vn / producers / releases / chars when (NOT OLD.hidden AND NEW.hidden)
-CREATE OR REPLACE FUNCTION notify_dbdel() RETURNS trigger AS $$
-BEGIN
+
+-- called when an entry has been deleted
+CREATE OR REPLACE FUNCTION notify_dbdel(xtype dbentry_type, xedit edit_rettype) RETURNS void AS $$
   INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
-    SELECT DISTINCT 'dbdel'::notification_ntype,
-           (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' WHEN 'releases' THEN 'r' WHEN 'producers' THEN 'p' WHEN 'staff' THEN 's' ELSE 'c' END)::notification_ltype,
-           h.requester, NEW.id, h2.rev, x.title, h2.requester
-      -- look for changes of the deleted entry
+    SELECT DISTINCT 'dbdel'::notification_ntype, xtype::text::notification_ltype, h.requester, xedit.itemid, xedit.rev, x.title, h2.requester
+      FROM changes h
+      -- join info about the deletion itself
+      JOIN changes h2 ON h2.id = xedit.chid
+      -- Fetch the latest name/title of the entry
       -- this method may look a bit unintuitive, but it's way faster than doing LEFT JOINs
-      FROM changes h
-      JOIN (  SELECT vr.id, vr2.title FROM vn_rev vr
-                JOIN vn v ON v.id = vr.vid JOIN vn_rev vr2 ON vr2.id = v.latest
-               WHERE TG_TABLE_NAME = 'vn' AND vr.vid = NEW.id
-        UNION SELECT rr.id, rr2.title FROM releases_rev rr
-                JOIN releases r ON r.id = rr.rid JOIN releases_rev rr2 ON rr2.id = r.latest
-               WHERE TG_TABLE_NAME = 'releases'  AND rr.rid = NEW.id
-        UNION SELECT pr.id, pr2.name FROM producers_rev pr
-                JOIN producers p ON p.id = pr.pid JOIN producers_rev pr2 ON pr2.id = p.latest
-               WHERE TG_TABLE_NAME = 'producers' AND pr.pid = NEW.id
-        UNION SELECT cr.id, cr2.name FROM chars_rev cr
-                JOIN chars c ON c.id = cr.cid JOIN chars_rev cr2 ON cr2.id = c.latest
-               WHERE TG_TABLE_NAME = 'chars' AND cr.cid = NEW.id
-        UNION SELECT sr.id, sa.name FROM staff_rev sr
-                JOIN staff s ON s.id = sr.sid JOIN staff_rev sr2 ON sr2.id = s.latest JOIN staff_alias sa ON sa.id = sr2.aid AND sa.rid = sr2.id
-               WHERE TG_TABLE_NAME = 'staff' AND sr.sid = NEW.id
-      ) x(id, title) ON h.id = x.id
-      -- join info about the deletion itself
-      JOIN changes h2 ON h2.id = NEW.latest
-     WHERE h.requester <> 1 -- exclude Multi
-       -- exclude the user who deleted the entry
-       AND h.requester <> h2.requester;
-  RETURN NULL;
-END;
-$$ LANGUAGE plpgsql;
+      JOIN (  SELECT v.title FROM vn v WHERE xtype = 'v' AND v.id = xedit.itemid
+        UNION SELECT r.title FROM releases r WHERE xtype = 'r' AND r.id = xedit.itemid
+        UNION SELECT p.name  FROM producers p WHERE xtype = 'p' AND p.id = xedit.itemid
+        UNION SELECT c.name  FROM chars c WHERE xtype = 'c' AND c.id = xedit.itemid
+        UNION SELECT sa.name FROM staff s JOIN staff_alias sa ON sa.aid = s.aid WHERE xtype = 's' AND s.id = xedit.itemid
+      ) x(title) ON true
+     WHERE h.type = xtype AND h.itemid = xedit.itemid
+       AND h.requester <> 1 -- exclude Multi
+       AND h.requester <> h2.requester; -- exclude the user who deleted the entry
+$$ LANGUAGE sql;
 
 
--- called on UPDATE vn / releases when (NOT OLD.hidden AND NEW.hidden)
-CREATE OR REPLACE FUNCTION notify_listdel() RETURNS trigger AS $$
-BEGIN
+
+-- Called when a non-deleted item has been edited.
+CREATE OR REPLACE FUNCTION notify_dbedit(xtype dbentry_type, xedit edit_rettype) RETURNS void AS $$
   INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
-    SELECT DISTINCT 'listdel'::notification_ntype,
-           (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' ELSE 'r' END)::notification_ltype,
-           u.uid, NEW.id, c.rev, x.title, c.requester
-      -- look for users who should get this notify
-      FROM (
-        -- voted on the VN
-              SELECT uid FROM votes   WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
-        -- VN in vnlist
-        UNION SELECT uid FROM vnlists WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
-        -- VN in wishlist
-        UNION SELECT uid FROM wlists  WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
-        -- release in release list
-        UNION SELECT uid FROM rlists  WHERE TG_TABLE_NAME = 'releases' AND rid = NEW.id
-      ) u
-      -- fetch info about this edit
-      JOIN changes c ON c.id = NEW.latest
-      JOIN (
-              SELECT id, title FROM vn_rev       WHERE TG_TABLE_NAME = 'vn' AND vid = NEW.id
-        UNION SELECT id, title FROM releases_rev WHERE TG_TABLE_NAME = 'releases' AND rid = NEW.id
-      ) x ON c.id = x.id
-     WHERE c.requester <> u.uid;
-  RETURN NULL;
-END;
-$$ LANGUAGE plpgsql;
-
-
--- called on UPDATE vn / producers / releases / chars when (OLD.latest IS DISTINCT FROM NEW.latest AND NOT NEW.hidden)
--- this trigger is very similar to notify_dbdel()
-CREATE OR REPLACE FUNCTION notify_dbedit() RETURNS trigger AS $$
-BEGIN
-  INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
-    SELECT DISTINCT 'dbedit'::notification_ntype,
-           (CASE TG_TABLE_NAME WHEN 'vn' THEN 'v' WHEN 'releases' THEN 'r' WHEN 'producers' THEN 'p' WHEN 'staff' THEN 's' ELSE 'c' END)::notification_ltype,
-           h.requester, NEW.id, h2.rev, x.title, h2.requester
-      -- look for changes of the edited entry
+    SELECT DISTINCT 'dbedit'::notification_ntype, xtype::text::notification_ltype, h.requester, xedit.itemid, xedit.rev, x.title, h2.requester
       FROM changes h
-      JOIN (  SELECT vr.id, vr2.title FROM vn_rev vr
-                JOIN vn v ON v.id = vr.vid JOIN vn_rev vr2 ON vr2.id = v.latest
-               WHERE TG_TABLE_NAME = 'vn' AND vr.vid = NEW.id
-        UNION SELECT rr.id, rr2.title FROM releases_rev rr
-                JOIN releases r ON r.id = rr.rid JOIN releases_rev rr2 ON rr2.id = r.latest
-               WHERE TG_TABLE_NAME = 'releases'  AND rr.rid = NEW.id
-        UNION SELECT pr.id, pr2.name FROM producers_rev pr
-                JOIN producers p ON p.id = pr.pid JOIN producers_rev pr2 ON pr2.id = p.latest
-               WHERE TG_TABLE_NAME = 'producers' AND pr.pid = NEW.id
-        UNION SELECT cr.id, cr2.name FROM chars_rev cr
-                JOIN chars c ON c.id = cr.cid JOIN chars_rev cr2 ON cr2.id = c.latest
-               WHERE TG_TABLE_NAME = 'chars' AND cr.cid = NEW.id
-        UNION SELECT sr.id, sa.name FROM staff_rev sr
-                JOIN staff s ON s.id = sr.sid JOIN staff_rev sr2 ON sr2.id = s.latest JOIN staff_alias sa ON sa.id = sr2.aid AND sa.rid = sr2.id
-               WHERE TG_TABLE_NAME = 'staff' AND sr.sid = NEW.id
-      ) x(id, title) ON h.id = x.id
-      -- join info about the deletion itself
-      JOIN changes h2 ON h2.id = NEW.latest
-      -- exclude the user who edited the entry
-     WHERE h.requester <> h2.requester
+      -- join info about the edit itself
+      JOIN changes h2 ON h2.id = xedit.chid
+      -- Fetch the latest name/title of the entry
+      JOIN (  SELECT v.title FROM vn v WHERE xtype = 'v' AND v.id = xedit.itemid
+        UNION SELECT r.title FROM releases r WHERE xtype = 'r' AND r.id = xedit.itemid
+        UNION SELECT p.name  FROM producers p WHERE xtype = 'p' AND p.id = xedit.itemid
+        UNION SELECT c.name  FROM chars c WHERE xtype = 'c' AND c.id = xedit.itemid
+        UNION SELECT sa.name FROM staff s JOIN staff_alias sa ON sa.aid = s.aid WHERE xtype = 's' AND s.id = xedit.itemid
+      ) x(title) ON true
+     WHERE h.type = xtype AND h.itemid = xedit.itemid
+       AND h.requester <> h2.requester -- exclude the user who edited the entry
        -- exclude users who don't want this notify
        AND NOT EXISTS(SELECT 1 FROM users_prefs up WHERE uid = h.requester AND key = 'notify_nodbedit');
-  RETURN NULL;
-END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE sql;
+
+
+
+-- called when a VN/release entry has been deleted
+CREATE OR REPLACE FUNCTION notify_listdel(xtype dbentry_type, xedit edit_rettype) RETURNS void AS $$
+  INSERT INTO notifications (ntype, ltype, uid, iid, subid, c_title, c_byuser)
+    SELECT DISTINCT 'listdel'::notification_ntype, xtype::text::notification_ltype, u.uid, xedit.itemid, xedit.rev, x.title, c.requester
+      -- look for users who should get this notify
+      FROM (
+              SELECT uid FROM votes   WHERE xtype = 'v' AND vid = xedit.itemid
+        UNION SELECT uid FROM vnlists WHERE xtype = 'v' AND vid = xedit.itemid
+        UNION SELECT uid FROM wlists  WHERE xtype = 'v' AND vid = xedit.itemid
+        UNION SELECT uid FROM rlists  WHERE xtype = 'r' AND rid = xedit.itemid
+      ) u
+      -- fetch info about this edit
+      JOIN changes c ON c.id = xedit.chid
+      JOIN (
+              SELECT title FROM vn       WHERE xtype = 'v' AND id = xedit.itemid
+        UNION SELECT title FROM releases WHERE xtype = 'r' AND id = xedit.itemid
+      ) x ON true
+     WHERE c.requester <> u.uid;
+$$ LANGUAGE sql;
 
 
 -- called on INSERT INTO threads_posts when (NEW.num = 1)

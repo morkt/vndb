@@ -48,7 +48,7 @@
 	update-2.10 update-2.11 update-2.12 update-2.13 update-2.14 update-2.15 update-2.16 update-2.17\
 	update-2.18 update-2.19 update-2.20 update-2.21 update-2.22 update-2.23
 
-all: dirs js skins robots data/config.pl
+all: dirs js skins robots data/config.pl util/sql/editfunc.sql
 
 dirs: static/f/js static/ch static/cv static/sf static/st data/log www www/feeds www/api
 
@@ -59,6 +59,9 @@ icons: data/icons/icons.css
 skins: $(shell ls static/s | sed -e 's/\(.\+\)/static\/s\/\1\/style.css/g')
 
 robots: dirs www/robots.txt static/robots.txt
+
+util/sql/editfunc.sql: util/sqleditfunc.pl util/sql/schema.sql
+	util/sqleditfunc.pl
 
 static/ch static/cv static/sf static/st:
 	mkdir $@;
@@ -138,7 +141,7 @@ define runpsql
 endef
 
 
-sql-import:
+sql-import: util/sql/editfunc.sql
 	${runpsql} < util/sql/all.sql
 
 

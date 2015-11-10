@@ -20,9 +20,10 @@ TUWF::register(
 sub page {
   my($self, $rid, $rev) = @_;
 
-  my $r = $self->dbReleaseGet(
+  my $method = $rev ? 'dbReleaseGetRev' : 'dbReleaseGet';
+  my $r = $self->$method(
     id => $rid,
-    what => 'vn extended producers platforms media'.($rev ? ' changes' : ''),
+    what => 'vn extended producers platforms media',
     $rev ? (rev => $rev) : (),
   )->[0];
   return $self->resNotFound if !$r->{id};
@@ -32,7 +33,7 @@ sub page {
   return if $self->htmlHiddenMessage('r', $r);
 
   if($rev) {
-    my $prev = $rev && $rev > 1 && $self->dbReleaseGet(
+    my $prev = $rev && $rev > 1 && $self->dbReleaseGetRev(
       id => $rid, rev => $rev-1,
       what => 'vn extended producers platforms media changes'
     )->[0];
@@ -271,9 +272,9 @@ sub edit {
     $rid = 0;
   }
 
-  my $r = $rid && $self->dbReleaseGet(id => $rid, what => 'vn extended producers platforms media changes', $rev ? (rev => $rev) : ())->[0];
+  my $r = $rid && $self->dbReleaseGetRev(id => $rid, what => 'vn extended producers platforms media', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $rid && !$r->{id};
-  $rev = undef if !$r || $r->{cid} == $r->{latest};
+  $rev = undef if !$r || $r->{lastrev};
 
   my $v = $vid && $self->dbVNGet(id => $vid)->[0];
   return $self->resNotFound if $vid && !$v->{id};
@@ -349,7 +350,7 @@ sub edit {
     }
 
     if(!$frm->{_err}) {
-      my $nrev = $self->dbItemEdit(r => !$copy && $rid ? $r->{cid} : undef,
+      my $nrev = $self->dbItemEdit(r => !$copy && $rid ? ($r->{id}, $r->{rev}) : (undef, undef),
         (map { $_ => $frm->{$_} } qw| type title original gtin catalog languages website released minage
           notes platforms resolution editsum patch voiced freeware doujin ani_story ani_ero ihid ilock|),
         vn        => $new_vn,
@@ -357,7 +358,7 @@ sub edit {
         media     => $media,
       );
 
-      return $self->resRedirect("/r$nrev->{iid}.$nrev->{rev}", 'post');
+      return $self->resRedirect("/r$nrev->{itemid}.$nrev->{rev}", 'post');
     }
   }
 
@@ -388,8 +389,8 @@ sub _form {
     [ check  => short => 'patch',     name => mt('_redit_form_patch') ],
     [ check  => short => 'freeware',  name => mt('_redit_form_freeware') ],
     [ check  => short => 'doujin',    name => mt('_redit_form_doujin') ],
-    [ input  => short => 'title',     name => mt('_redit_form_title'),    width => 300 ],
-    [ input  => short => 'original',  name => mt('_redit_form_original'), width => 300 ],
+    [ input  => short => 'title',     name => mt('_redit_form_title'),    width => 450 ],
+    [ input  => short => 'original',  name => mt('_redit_form_original'), width => 450 ],
     [ static => content => mt '_redit_form_original_note' ],
     [ select => short => 'languages', name => mt('_redit_form_languages'), multi => 1,
       options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],

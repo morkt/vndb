@@ -11,7 +11,6 @@ use Multi::Core;
 use AnyEvent::Socket;
 use AnyEvent::Handle;
 use POE::Filter::VNDBAPI 'encode_filters';
-use Digest::SHA 'sha256';
 use Encode 'encode_utf8', 'decode_utf8';
 use Crypt::ScryptKDF 'scrypt_raw';;
 use VNDBUtil 'normalize_query', 'norm_ip';
@@ -277,10 +276,7 @@ sub login_verify {
   my $uid = $res->value(0,0);
   my $accepted = 0;
 
-  if(length $passwd == 41) { # Old sha256
-    my $salt = substr $passwd, 0, 9;
-    $accepted = sha256($VNDB::S{global_salt}.encode_utf8($arg->{password}).$salt) eq substr $passwd, 9;
-  } elsif(length $passwd == 46) { # New scrypt
+  if(length $passwd == 46) { # scrypt
     my($N, $r, $p, $salt, $hash) = unpack 'NCCa8a*', $passwd;
     $accepted = $hash eq scrypt_raw($arg->{password}, $VNDB::S{scrypt_salt} . $salt, $N, $r, $p, 32);
   } else {
@@ -359,8 +355,8 @@ sub splitarray {
 # }
 # filters => filters args for get_filters() (TODO: Document)
 my %GET_VN = (
-  sql     => 'SELECT %s FROM vn v JOIN vn_rev vr ON v.latest = vr.id WHERE NOT v.hidden AND (%s) %s',
-  select  => 'v.id, v.latest',
+  sql     => 'SELECT %s FROM vn v WHERE NOT v.hidden AND (%s) %s',
+  select  => 'v.id',
   proc    => sub {
     delete $_[0]{latest};
     $_[0]{id} *= 1
@@ -368,12 +364,12 @@ my %GET_VN = (
   sortdef => 'id',
   sorts   => {
     id => 'v.id %s',
-    title => 'vr.title %s',
+    title => 'v.title %s',
     released => 'v.c_released %s',
   },
   flags  => {
     basic => {
-      select => 'vr.title, vr.original, v.c_released, v.c_languages, v.c_olang, v.c_platforms',
+      select => 'v.title, v.original, v.c_released, v.c_languages, v.c_olang, v.c_platforms',
       proc   => sub {
         $_[0]{original}  ||= undef;
         $_[0]{platforms} = splitarray delete $_[0]{c_platforms};
@@ -383,7 +379,7 @@ my %GET_VN = (
       },
     },
     details => {
-      select => 'vr.image, vr.img_nsfw, vr.alias AS aliases, vr.length, vr.desc AS description, vr.l_wp, vr.l_encubed, vr.l_renai',
+      select => 'v.image, v.img_nsfw, v.alias AS aliases, v.length, v.desc AS description, v.l_wp, v.l_encubed, v.l_renai',
       proc   => sub {
         $_[0]{aliases}     ||= undef;
         $_[0]{length}      *= 1;
@@ -407,12 +403,12 @@ my %GET_VN = (
       },
     },
     anime => {
-      fetch => [[ 'latest', 'SELECT va.vid, a.id, a.year, a.ann_id, a.nfo_id, a.type, a.title_romaji, a.title_kanji
-                     FROM anime a JOIN vn_anime va ON va.aid = a.id WHERE va.vid IN(%s)',
+      fetch => [[ 'id', 'SELECT va.id AS vid, a.id, a.year, a.ann_id, a.nfo_id, a.type, a.title_romaji, a.title_kanji
+                     FROM anime a JOIN vn_anime va ON va.aid = a.id WHERE va.id IN(%s)',
         sub { my($r, $n) = @_;
           # link
           for my $i (@$r) {
-            $i->{anime} = [ grep $i->{latest} == $_->{vid}, @$n ];
+            $i->{anime} = [ grep $i->{id} == $_->{vid}, @$n ];
           }
           # cleanup
           for (@$n) {
@@ -425,16 +421,16 @@ my %GET_VN = (
       ]],
     },
     relations => {
-      fetch => [[ 'latest', 'SELECT vl.vid1, v.id, vl.relation, vr.title, vr.original FROM vn_relations vl
-                     JOIN vn v ON v.id = vl.vid2 JOIN vn_rev vr ON vr.id = v.latest WHERE vl.vid1 IN(%s) AND NOT v.hidden',
+      fetch => [[ 'id', 'SELECT vr.id AS vid, v.id, vr.relation, v.title, v.original FROM vn_relations vr
+                     JOIN vn v ON v.id = vr.vid WHERE vr.id IN(%s)',
         sub { my($r, $n) = @_;
           for my $i (@$r) {
-            $i->{relations} = [ grep $i->{latest} == $_->{vid1}, @$n ];
+            $i->{relations} = [ grep $i->{id} == $_->{vid}, @$n ];
           }
           for (@$n) {
             $_->{id} *= 1;
             $_->{original} ||= undef;
-            delete $_->{vid1};
+            delete $_->{vid};
           }
         }
       ]],
@@ -460,17 +456,17 @@ my %GET_VN = (
       [ inta  => 'v.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, range => [1,1e6], join => ',' ],
     ],
     title => [
-      [ str   => 'vr.title :op: :value:', {qw|= =  != <>|} ],
-      [ str   => 'vr.title ILIKE :value:', {'~',1}, process => \'like' ],
+      [ str   => 'v.title :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'v.title ILIKE :value:', {'~',1}, process => \'like' ],
     ],
     original => [
-      [ undef,   "vr.original :op: ''", {qw|= =  != <>|} ],
-      [ str   => 'vr.original :op: :value:', {qw|= =  != <>|} ],
-      [ str   => 'vr.original ILIKE :value:', {'~',1}, process => \'like' ]
+      [ undef,   "v.original :op: ''", {qw|= =  != <>|} ],
+      [ str   => 'v.original :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'v.original ILIKE :value:', {'~',1}, process => \'like' ]
     ],
     firstchar => [
-      [ undef,   '(:op: ((ASCII(vr.title) < 97 OR ASCII(vr.title) > 122) AND (ASCII(vr.title) < 65 OR ASCII(vr.title) > 90)))', {'=', '', '!=', 'NOT'} ],
-      [ str   => 'LOWER(SUBSTR(vr.title, 1, 1)) :op: :value:' => {qw|= = != <>|}, process => sub { shift =~ /^([a-z])$/ ? $1 : \'Invalid character' } ],
+      [ undef,   '(:op: ((ASCII(v.title) < 97 OR ASCII(v.title) > 122) AND (ASCII(v.title) < 65 OR ASCII(v.title) > 90)))', {'=', '', '!=', 'NOT'} ],
+      [ str   => 'LOWER(SUBSTR(v.title, 1, 1)) :op: :value:' => {qw|= = != <>|}, process => sub { shift =~ /^([a-z])$/ ? $1 : \'Invalid character' } ],
     ],
     released => [
       [ undef,   'v.c_released :op: 0', {qw|= =  != <>|} ],
@@ -498,13 +494,13 @@ my %GET_VN = (
 );
 
 my %GET_RELEASE = (
-  sql     => 'SELECT %s FROM releases r JOIN releases_rev rr ON rr.id = r.latest WHERE NOT hidden AND (%s) %s',
-  select  => 'r.id, r.latest',
+  sql     => 'SELECT %s FROM releases r WHERE NOT hidden AND (%s) %s',
+  select  => 'r.id',
   sortdef => 'id',
   sorts   => {
     id => 'r.id %s',
-    title => 'rr.title %s',
-    released => 'rr.released %s',
+    title => 'r.title %s',
+    released => 'r.released %s',
   },
   proc    => sub {
     delete $_[0]{latest};
@@ -512,7 +508,7 @@ my %GET_RELEASE = (
   },
   flags => {
     basic => {
-      select => 'rr.title, rr.original, rr.released, rr.type, rr.patch, rr.freeware, rr.doujin',
+      select => 'r.title, r.original, r.released, r.type, r.patch, r.freeware, r.doujin',
       proc   => sub {
         $_[0]{original} ||= undef;
         $_[0]{released} = formatdate($_[0]{released});
@@ -520,16 +516,16 @@ my %GET_RELEASE = (
         $_[0]{freeware} = $_[0]{freeware} =~ /^t/ ? TRUE : FALSE;
         $_[0]{doujin}   = $_[0]{doujin}   =~ /^t/ ? TRUE : FALSE;
       },
-      fetch => [[ 'latest', 'SELECT rid, lang FROM releases_lang WHERE rid IN(%s)',
+      fetch => [[ 'id', 'SELECT id, lang FROM releases_lang WHERE id IN(%s)',
         sub { my($n, $r) = @_;
           for my $i (@$n) {
-            $i->{languages} = [ map $i->{latest} == $_->{rid} ? $_->{lang} : (), @$r ];
+            $i->{languages} = [ map $i->{id} == $_->{id} ? $_->{lang} : (), @$r ];
           }
         },
       ]],
     },
     details => {
-      select => 'rr.website, rr.notes, rr.minage, rr.gtin, rr.catalog',
+      select => 'r.website, r.notes, r.minage, r.gtin, r.catalog',
       proc   => sub {
         $_[0]{website}  ||= undef;
         $_[0]{notes}    ||= undef;
@@ -538,30 +534,30 @@ my %GET_RELEASE = (
         $_[0]{catalog}  ||= undef;
       },
       fetch => [
-        [ 'latest', 'SELECT rid, platform FROM releases_platforms WHERE rid IN(%s)',
+        [ 'id', 'SELECT id, platform FROM releases_platforms WHERE id IN(%s)',
           sub { my($n, $r) = @_;
             for my $i (@$n) {
-               $i->{platforms} = [ map $i->{latest} == $_->{rid} ? $_->{platform} : (), @$r ];
+               $i->{platforms} = [ map $i->{id} == $_->{id} ? $_->{platform} : (), @$r ];
             }
           } ],
-        [ 'latest', 'SELECT rid, medium, qty FROM releases_media WHERE rid IN(%s)',
+        [ 'id', 'SELECT id, medium, qty FROM releases_media WHERE id IN(%s)',
           sub { my($n, $r) = @_;
             for my $i (@$n) {
-              $i->{media} = [ grep $i->{latest} == $_->{rid}, @$r ];
+              $i->{media} = [ grep $i->{id} == $_->{id}, @$r ];
             }
             for (@$r) {
-              delete $_->{rid};
+              delete $_->{id};
               $_->{qty} = $VNDB::S{media}{$_->{medium}} ? $_->{qty}*1 : undef;
             }
           } ],
       ]
     },
     vn => {
-      fetch => [[ 'latest', 'SELECT rv.rid, v.id, vr.title, vr.original FROM releases_vn rv JOIN vn v ON v.id = rv.vid
-                    JOIN vn_rev vr ON vr.id = v.latest WHERE NOT v.hidden AND rv.rid IN(%s)',
+      fetch => [[ 'id', 'SELECT rv.id AS rid, v.id, v.title, v.original FROM releases_vn rv JOIN vn v ON v.id = rv.vid
+                    WHERE NOT v.hidden AND rv.id IN(%s)',
         sub { my($n, $r) = @_;
           for my $i (@$n) {
-            $i->{vn} = [ grep $i->{latest} == $_->{rid}, @$r ];
+            $i->{vn} = [ grep $i->{id} == $_->{rid}, @$r ];
           }
           for (@$r) {
             $_->{id}*=1;
@@ -572,11 +568,11 @@ my %GET_RELEASE = (
       ]],
     },
     producers => {
-      fetch => [[ 'latest', 'SELECT rp.rid, rp.developer, rp.publisher, p.id, pr.type, pr.name, pr.original FROM releases_producers rp
-                    JOIN producers p ON p.id = rp.pid JOIN producers_rev pr ON pr.id = p.latest WHERE NOT p.hidden AND rp.rid IN(%s)',
+      fetch => [[ 'id', 'SELECT rp.id AS rid, rp.developer, rp.publisher, p.id, p.type, p.name, p.original FROM releases_producers rp
+                    JOIN producers p ON p.id = rp.pid WHERE NOT p.hidden AND rp.id IN(%s)',
         sub { my($n, $r) = @_;
           for my $i (@$n) {
-            $i->{producers} = [ grep $i->{latest} == $_->{rid}, @$r ];
+            $i->{producers} = [ grep $i->{id} == $_->{rid}, @$r ];
           }
           for (@$r) {
             $_->{id}*=1;
@@ -595,47 +591,47 @@ my %GET_RELEASE = (
       [ inta  => 'r.id :op:(:value:)', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',', range => [1,1e6] ],
     ],
     vn => [
-      [ 'int' => 'rr.id IN(SELECT rv.rid FROM releases_vn rv WHERE rv.vid = :value:)', {'=',1}, range => [1,1e6] ],
+      [ 'int' => 'r.id IN(SELECT rv.id FROM releases_vn rv WHERE rv.vid = :value:)', {'=',1}, range => [1,1e6] ],
     ],
     producer => [
-      [ 'int' => 'rr.id IN(SELECT rp.rid FROM releases_producers rp WHERE rp.pid = :value:)', {'=',1}, range => [1,1e6] ],
+      [ 'int' => 'r.id IN(SELECT rp.id FROM releases_producers rp WHERE rp.pid = :value:)', {'=',1}, range => [1,1e6] ],
     ],
     title => [
-      [ str   => 'rr.title :op: :value:', {qw|= =  != <>|} ],
-      [ str   => 'rr.title ILIKE :value:', {'~',1}, process => \'like' ],
+      [ str   => 'r.title :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'r.title ILIKE :value:', {'~',1}, process => \'like' ],
     ],
     original => [
-      [ undef,   "rr.original :op: ''", {qw|= =  != <>|} ],
-      [ str   => 'rr.original :op: :value:', {qw|= =  != <>|} ],
-      [ str   => 'rr.original ILIKE :value:', {'~',1}, process => \'like' ]
+      [ undef,   "r.original :op: ''", {qw|= =  != <>|} ],
+      [ str   => 'r.original :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'r.original ILIKE :value:', {'~',1}, process => \'like' ]
     ],
     released => [
-      [ undef,   'rr.released :op: 0', {qw|= =  != <>|} ],
-      [ str   => 'rr.released :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, process => \&parsedate ],
+      [ undef,   'r.released :op: 0', {qw|= =  != <>|} ],
+      [ str   => 'r.released :op: :value:', {qw|= =  != <>  > >  < <  <= <=  >= >=|}, process => \&parsedate ],
     ],
-    patch    => [ [ bool => 'rr.patch = :value:',    {'=',1} ] ],
-    freeware => [ [ bool => 'rr.freeware = :value:', {'=',1} ] ],
-    doujin   => [ [ bool => 'rr.doujin = :value:',   {'=',1} ] ],
+    patch    => [ [ bool => 'r.patch = :value:',    {'=',1} ] ],
+    freeware => [ [ bool => 'r.freeware = :value:', {'=',1} ] ],
+    doujin   => [ [ bool => 'r.doujin = :value:',   {'=',1} ] ],
     type => [
-      [ str   => 'rr.type :op: :value:', {qw|= =  != <>|},
+      [ str   => 'r.type :op: :value:', {qw|= =  != <>|},
         process => sub { !grep($_ eq $_[0], @{$VNDB::S{release_types}}) ? \'No such release type' : $_[0] } ],
     ],
     gtin => [
-      [ 'int' => 'rr.gtin :op: :value:', {qw|= =  != <>|}, process => sub { length($_[0]) > 14 ? \'Too long GTIN code' : $_[0] } ],
+      [ 'int' => 'r.gtin :op: :value:', {qw|= =  != <>|}, process => sub { length($_[0]) > 14 ? \'Too long GTIN code' : $_[0] } ],
     ],
     catalog => [
-      [ str   => 'rr.catalog :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'r.catalog :op: :value:', {qw|= =  != <>|} ],
     ],
     languages => [
-      [ str   => 'rr.id :op:(SELECT rl.rid FROM releases_lang rl WHERE rl.lang = :value:)', {'=' => 'IN', '!=' => 'NOT IN'}, process => \'lang' ],
-      [ stra  => 'rr.id :op:(SELECT rl.rid FROM releases_lang rl WHERE rl.lang IN(:value:))', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',', process => \'lang' ],
+      [ str   => 'r.id :op:(SELECT rl.id FROM releases_lang rl WHERE rl.lang = :value:)', {'=' => 'IN', '!=' => 'NOT IN'}, process => \'lang' ],
+      [ stra  => 'r.id :op:(SELECT rl.id FROM releases_lang rl WHERE rl.lang IN(:value:))', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',', process => \'lang' ],
     ],
   },
 );
 
 my %GET_PRODUCER = (
-  sql     => 'SELECT %s FROM producers p JOIN producers_rev pr ON p.latest = pr.id WHERE NOT p.hidden AND (%s) %s',
-  select  => 'p.id, p.latest',
+  sql     => 'SELECT %s FROM producers p WHERE NOT p.hidden AND (%s) %s',
+  select  => 'p.id',
   proc    => sub {
     delete $_[0]{latest};
     $_[0]{id} *= 1
@@ -643,17 +639,17 @@ my %GET_PRODUCER = (
   sortdef => 'id',
   sorts   => {
     id => 'p.id %s',
-    name => 'pr.name %s',
+    name => 'p.name %s',
   },
   flags  => {
     basic => {
-      select => 'pr.type, pr.name, pr.original, pr.lang AS language',
+      select => 'p.type, p.name, p.original, p.lang AS language',
       proc => sub {
         $_[0]{original}    ||= undef;
       },
     },
     details => {
-      select => 'pr.website, pr.l_wp, pr.desc AS description, pr.alias AS aliases',
+      select => 'p.website, p.l_wp, p.desc AS description, p.alias AS aliases',
       proc => sub {
         $_[0]{description} ||= undef;
         $_[0]{aliases}     ||= undef;
@@ -664,16 +660,16 @@ my %GET_PRODUCER = (
       },
     },
     relations => {
-      fetch => [[ 'latest', 'SELECT pl.pid1, p.id, pl.relation, pr.name, pr.original FROM producers_relations pl
-                    JOIN producers p ON p.id = pl.pid2 JOIN producers_rev pr ON pr.id = p.latest WHERE pl.pid1 IN(%s) AND NOT p.hidden',
+      fetch => [[ 'id', 'SELECT pl.id AS pid, p.id, pl.relation, p.name, p.original FROM producers_relations pl
+                    JOIN producers p ON p.id = pl.pid WHERE pl.id IN(%s)',
         sub { my($n, $r) = @_;
           for my $i (@$n) {
-            $i->{relations} = [ grep $i->{latest} == $_->{pid1}, @$r ];
+            $i->{relations} = [ grep $i->{id} == $_->{pid}, @$r ];
           }
           for (@$r) {
             $_->{id}*=1;
             $_->{original} ||= undef;
-            delete $_->{pid1};
+            delete $_->{pid};
           }
         },
       ]],
@@ -685,31 +681,31 @@ my %GET_PRODUCER = (
       [ inta  => 'p.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, join => ',', range => [1,1e6] ],
     ],
     name => [
-      [ str   => 'pr.name :op: :value:', {qw|= =  != <>|} ],
-      [ str   => 'pr.name ILIKE :value:', {'~',1}, process => \'like' ],
+      [ str   => 'p.name :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'p.name ILIKE :value:', {'~',1}, process => \'like' ],
     ],
     original => [
-      [ undef,   "pr.original :op: ''", {qw|= =  != <>|} ],
-      [ str   => 'pr.original :op: :value:', {qw|= =  != <>|} ],
-      [ str   => 'pr.original ILIKE :value:', {'~',1}, process => \'like' ]
+      [ undef,   "p.original :op: ''", {qw|= =  != <>|} ],
+      [ str   => 'p.original :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'p.original ILIKE :value:', {'~',1}, process => \'like' ]
     ],
     type => [
-      [ str   => 'pr.type :op: :value:', {qw|= =  != <>|},
+      [ str   => 'p.type :op: :value:', {qw|= =  != <>|},
         process => sub { !grep($_ eq $_[0], @{$VNDB::S{producer_types}}) ? \'No such producer type' : $_[0] } ],
     ],
     language => [
-      [ str   => 'pr.lang :op: :value:', {qw|= =  != <>|}, process => \'lang' ],
-      [ stra  => 'pr.lang :op:(:value:)', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',', process => \'lang' ],
+      [ str   => 'p.lang :op: :value:', {qw|= =  != <>|}, process => \'lang' ],
+      [ stra  => 'p.lang :op:(:value:)', {'=' => 'IN', '!=' => 'NOT IN'}, join => ',', process => \'lang' ],
     ],
     search => [
-      [ str   => '(pr.name ILIKE :value: OR pr.original ILIKE :value: OR pr.alias ILIKE :value:)', {'~',1}, process => \'like' ],
+      [ str   => '(p.name ILIKE :value: OR p.original ILIKE :value: OR p.alias ILIKE :value:)', {'~',1}, process => \'like' ],
     ],
   },
 );
 
 my %GET_CHARACTER = (
-  sql     => 'SELECT %s FROM chars c JOIN chars_rev cr ON c.latest = cr.id WHERE NOT c.hidden AND (%s) %s',
-  select  => 'c.id, c.latest',
+  sql     => 'SELECT %s FROM chars c WHERE NOT c.hidden AND (%s) %s',
+  select  => 'c.id',
   proc    => sub {
     delete $_[0]{latest};
     $_[0]{id} *= 1
@@ -717,11 +713,11 @@ my %GET_CHARACTER = (
   sortdef => 'id',
   sorts   => {
     id => 'c.id %s',
-    name => 'cr.name %s',
+    name => 'c.name %s',
   },
   flags  => {
     basic => {
-      select => 'cr.name, cr.original, cr.gender, cr.bloodt, cr.b_day, cr.b_month',
+      select => 'c.name, c.original, c.gender, c.bloodt, c.b_day, c.b_month',
       proc => sub {
         $_[0]{original} ||= undef;
         $_[0]{gender}   = undef if $_[0]{gender} eq 'unknown';
@@ -730,7 +726,7 @@ my %GET_CHARACTER = (
       },
     },
     details => {
-      select => 'cr.alias AS aliases, cr.image, cr."desc" AS description',
+      select => 'c.alias AS aliases, c.image, c."desc" AS description',
       proc => sub {
         $_[0]{aliases}     ||= undef;
         $_[0]{image}       = $_[0]{image} ? sprintf '%s/ch/%02d/%d.jpg', $VNDB::S{url_static}, $_[0]{image}%100, $_[0]{image} : undef;
@@ -738,16 +734,16 @@ my %GET_CHARACTER = (
       },
     },
     meas => {
-      select => 'cr.s_bust AS bust, cr.s_waist AS waist, cr.s_hip AS hip, cr.height, cr.weight',
+      select => 'c.s_bust AS bust, c.s_waist AS waist, c.s_hip AS hip, c.height, c.weight',
       proc => sub {
         $_[0]{$_} = $_[0]{$_} ? $_[0]{$_}*1 : undef for(qw|bust waist hip height weight|);
       },
     },
     traits => {
-      fetch => [[ 'latest', 'SELECT cid, tid, spoil FROM chars_traits WHERE cid IN(%s)',
+      fetch => [[ 'id', 'SELECT id, tid, spoil FROM chars_traits WHERE id IN(%s)',
         sub { my($n, $r) = @_;
           for my $i (@$n) {
-            $i->{traits} = [ map [ $_->{tid}*1, $_->{spoil}*1 ], grep $i->{latest} == $_->{cid}, @$r ];
+            $i->{traits} = [ map [ $_->{tid}*1, $_->{spoil}*1 ], grep $i->{id} == $_->{id}, @$r ];
           }
         },
       ]],
@@ -759,19 +755,19 @@ my %GET_CHARACTER = (
       [ inta  => 'c.id :op:(:value:)', {'=' => 'IN', '!= ' => 'NOT IN'}, range => [1,1e6], join => ',' ],
     ],
     name => [
-      [ str   => 'cr.name :op: :value:', {qw|= =  != <>|} ],
-      [ str   => 'cr.name ILIKE :value:', {'~',1}, process => \'like' ],
+      [ str   => 'c.name :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'c.name ILIKE :value:', {'~',1}, process => \'like' ],
     ],
     original => [
-      [ undef,   "cr.original :op: ''", {qw|= =  != <>|} ],
-      [ str   => 'cr.original :op: :value:', {qw|= =  != <>|} ],
-      [ str   => 'cr.original ILIKE :value:', {'~',1}, process => \'like' ]
+      [ undef,   "c.original :op: ''", {qw|= =  != <>|} ],
+      [ str   => 'c.original :op: :value:', {qw|= =  != <>|} ],
+      [ str   => 'c.original ILIKE :value:', {'~',1}, process => \'like' ]
     ],
     search => [
-      [ str   => '(cr.name ILIKE :value: OR cr.original ILIKE :value: OR cr.alias ILIKE :value:)', {'~',1}, process => \'like' ],
+      [ str   => '(c.name ILIKE :value: OR c.original ILIKE :value: OR c.alias ILIKE :value:)', {'~',1}, process => \'like' ],
     ],
     vn => [
-      [ 'int' => 'cr.id IN(SELECT cv.cid FROM chars_vns cv WHERE cv.vid = :value:)', {'=',1}, range => [1,1e6] ],
+      [ 'int' => 'c.id IN(SELECT cv.id FROM chars_vns cv WHERE cv.vid = :value:)', {'=',1}, range => [1,1e6] ],
     ],
   },
 );

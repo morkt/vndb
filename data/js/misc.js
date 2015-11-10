@@ -1,18 +1,3 @@
-// search box
-byId('sq').onfocus = function () {
-  if(this.value == mt('_menu_emptysearch')) {
-    this.value = '';
-    this.style.fontStyle = 'normal'
-  }
-};
-byId('sq').onblur = function () {
-  if(this.value.length < 1) {
-    this.value = mt('_menu_emptysearch');
-    this.style.fontStyle = 'italic'
-  }
-};
-
-
 function ulist_redirect(type, path, formcode, args) {
   var r = new RegExp('/('+type+'[0-9]+).*$');
   location.href = location.href.replace(r, '/$1')+path
@@ -210,7 +195,7 @@ if(byId('batchedit'))
 // mouse-over price information / disclaimer
 (function(){
   if(byId('buynow')) {
-    var l = byClass(byId('buynow'), 'acronym', 'pricenote');
+    var l = byClass(byId('buynow'), 'abbr', 'pricenote');
     for(var i=0; i<l.length; i++) {
       l[i].buynow_last = l[i].title;
       l[i].title = null;
@@ -257,12 +242,12 @@ if(byId('not') && byId('vns'))
 // Language selector
 (function(){
   var d = byId('lang_select');
-  var flag = byName(d, 'acronym')[0];
+  var flag = byName(d, 'abbr')[0];
   ddInit(d, 'bottom', function(lnk) {
     var lst = tag('ul', null);
     for(var i=0; i<VARS.l10n_lang.length; i++) {
       var ln = VARS.l10n_lang[i];
-      var icon = tag('acronym', {'class':'icons lang '+ln[0]}, ' ');
+      var icon = tag('abbr', {'class':'icons lang '+ln[0]}, ' ');
       lst.appendChild(tag('li', {'class':'lang_selector'}, hasClass(flag, ln[0])
         ? tag('i', icon, ln[1])
         : tag('a', {href:'/setlang?lang='+ln[0]+';ref='+encodeURIComponent(location.pathname+location.search)}, icon, ln[1])

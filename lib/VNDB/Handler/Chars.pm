@@ -20,9 +20,10 @@ TUWF::register(
 sub page {
   my($self, $id, $rev) = @_;
 
-  my $r = $self->dbCharGet(
+  my $method = $rev ? 'dbCharGetRev' : 'dbCharGet';
+  my $r = $self->$method(
     id => $id,
-    what => 'extended traits vns seiyuu'.($rev ? ' changes' : ''),
+    what => 'extended traits vns seiyuu',
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return $self->resNotFound if !$r->{id};
@@ -32,7 +33,7 @@ sub page {
   return if $self->htmlHiddenMessage('c', $r);
 
   if($rev) {
-    my $prev = $rev && $rev > 1 && $self->dbCharGet(id => $id, rev => $rev-1, what => 'changes extended traits vns')->[0];
+    my $prev = $rev && $rev > 1 && $self->dbCharGetRev(id => $id, rev => $rev-1, what => 'extended traits vns')->[0];
     $self->htmlRevision('c', $prev, $r,
       [ name      => diff => 1 ],
       [ original  => diff => 1 ],
@@ -265,9 +266,9 @@ sub edit {
   $copy = $rev && $rev eq 'copy' || $copy && $copy eq 'copy';
   $rev = undef if defined $rev && $rev !~ /^\d+$/;
 
-  my $r = $id && $self->dbCharGet(id => $id, what => 'changes extended vns traits', $rev ? (rev => $rev) : ())->[0];
+  my $r = $id && $self->dbCharGetRev(id => $id, what => 'extended vns traits', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $id && !$r->{id};
-  $rev = undef if !$r || $r->{cid} == $r->{latest};
+  $rev = undef if !$r || $r->{lastrev};
 
   return $self->htmlDenied if !$self->authCan('edit')
     || $id && (($r->{locked} || $r->{hidden}) && !$self->authCan('dbmod'));
@@ -343,8 +344,8 @@ sub edit {
       $_->[1]||=undef for (@vns);
       $frm->{vns} = \@vns;
 
-      my $nrev = $self->dbItemEdit(c => !$copy && $id ? $r->{cid} : undef, %$frm);
-      return $self->resRedirect("/c$nrev->{iid}.$nrev->{rev}", 'post');
+      my $nrev = $self->dbItemEdit(c => !$copy && $id ? ($r->{id}, $r->{rev}) : (undef, undef), %$frm);
+      return $self->resRedirect("/c$nrev->{itemid}.$nrev->{rev}", 'post');
     }
   }
 

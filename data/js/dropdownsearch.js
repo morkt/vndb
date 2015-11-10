@@ -41,6 +41,7 @@ function box() {
 function init(obj, url, trfunc, serfunc, retfunc) {
   obj.setAttribute('autocomplete', 'off');
   obj.onkeydown = keydown;
+  obj.onclick = obj.onchange = obj.oninput = function() { return textchanged(obj); };
   obj.onblur = blur;
   obj.ds_returnFunc = retfunc;
   obj.ds_trFunc = trfunc;
@@ -48,6 +49,7 @@ function init(obj, url, trfunc, serfunc, retfunc) {
   obj.ds_searchURL = url;
   obj.ds_selectedId = 0;
   obj.ds_dosearch = null;
+  obj.ds_lastVal = obj.value;
 }
 
 function blur() {
@@ -65,7 +67,7 @@ function setselected(obj, id) {
 
 function setvalue(obj) {
   if(obj.ds_selectedId != 0)
-    obj.value = obj.ds_serFunc(byId('ds_box_'+obj.ds_selectedId).ds_itemData, obj);
+    obj.value = obj.ds_lastVal = obj.ds_serFunc(byId('ds_box_'+obj.ds_selectedId).ds_itemData, obj);
   if(obj.ds_returnFunc)
     obj.ds_returnFunc(obj);
 
@@ -110,6 +112,21 @@ function updown(obj, up) {
   return false;
 }
 
+function textchanged(obj) {
+  // Ignore this event if the text hasn't actually changed.
+  if(obj.ds_lastVal == obj.value)
+    return true;
+  obj.ds_lastVal = obj.value;
+
+  // perform search after a timeout
+  if(obj.ds_dosearch)
+    clearTimeout(obj.ds_dosearch);
+  obj.ds_dosearch = setTimeout(function() {
+    search(obj);
+  }, 500);
+  return true;
+}
+
 function keydown(ev) {
   var c = document.layers ? ev.which : document.all ? event.keyCode : ev.keyCode;
   var obj = this;
@@ -123,14 +140,7 @@ function keydown(ev) {
   if(c == 38 || c == 40) // up / down
     return updown(obj, c == 38);
 
-  // perform search after a timeout
-  if(obj.ds_dosearch)
-    clearTimeout(obj.ds_dosearch);
-  obj.ds_dosearch = setTimeout(function() {
-    search(obj);
-  }, 500);
-
-  return true;
+  return textchanged(obj);
 }
 
 function search(obj) {

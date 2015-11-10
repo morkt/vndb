@@ -17,11 +17,8 @@ sub htmlHeader { # %options->{ title, noindex, search, feeds, svg }
   $skin = $self->{skin_default} if !$self->{skins}{$skin} || !-d "$VNDB::ROOT/static/s/$skin";
 
   # heading
-  html lang => $self->{l10n}->language_tag(), $o{svg} ? (
-    doctype => 'xhtml-math-svg',
-    'xmlns:svg'   => 'http://www.w3.org/2000/svg',
-    'xmlns:xlink' => 'http://www.w3.org/1999/xlink'
-  ) : ();
+  lit '<!DOCTYPE HTML>';
+  tag 'html', lang => $self->{l10n}->language_tag();
    head;
     title $o{title};
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
@@ -79,7 +76,7 @@ sub _menu {
     form action => '/v/all', method => 'get', id => 'search';
      fieldset;
       legend 'Search';
-      input type => 'text', class => 'text', id => 'sq', name => 'sq', value => $o{search}||mt('_menu_emptysearch');
+      input type => 'text', class => 'text', id => 'sq', name => 'sq', value => $o{search}||'', placeholder => mt('_menu_emptysearch');
       input type => 'submit', class => 'submit', value => 'Search';
      end;
     end;
@@ -104,9 +101,7 @@ sub _menu {
        if($self->authCan('edit')) {
          a href => '/v/add',    mt '_menu_addvn'; br;
          a href => '/p/new',    mt '_menu_addproducer'; br;
-         if($self->authCan('staffedit')) {
-           a href => '/s/new',    mt '_menu_addstaff'; br;
-         }
+         a href => '/s/new',    mt '_menu_addstaff'; br;
          a href => '/c/new',    mt '_menu_addcharacter'; br;
        }
        br;

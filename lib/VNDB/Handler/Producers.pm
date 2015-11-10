@@ -44,9 +44,10 @@ sub rg {
 sub page {
   my($self, $pid, $rev) = @_;
 
-  my $p = $self->dbProducerGet(
+  my $method = $rev ? 'dbProducerGetRev' : 'dbProducerGet';
+  my $p = $self->$method(
     id => $pid,
-    what => 'extended relations'.($rev ? ' changes' : ''),
+    what => 'extended relations',
     $rev ? ( rev => $rev ) : ()
   )->[0];
   return $self->resNotFound if !$p->{id};
@@ -56,7 +57,7 @@ sub page {
   return if $self->htmlHiddenMessage('p', $p);
 
   if($rev) {
-    my $prev = $rev && $rev > 1 && $self->dbProducerGet(id => $pid, rev => $rev-1, what => 'changes extended relations')->[0];
+    my $prev = $rev && $rev > 1 && $self->dbProducerGetRev(id => $pid, rev => $rev-1, what => 'extended relations')->[0];
     $self->htmlRevision('p', $prev, $p,
       [ type      => serialize => sub { mt "_ptype_$_[0]" } ],
       [ name      => diff => 1 ],
@@ -200,9 +201,9 @@ sub _releases {
 sub edit {
   my($self, $pid, $rev) = @_;
 
-  my $p = $pid && $self->dbProducerGet(id => $pid, what => 'changes extended relations', $rev ? (rev => $rev) : ())->[0];
+  my $p = $pid && $self->dbProducerGetRev(id => $pid, what => 'extended relations', rev => $rev)->[0];
   return $self->resNotFound if $pid && !$p->{id};
-  $rev = undef if !$p || $p->{cid} == $p->{latest};
+  $rev = undef if !$p || $p->{lastrev};
 
   return $self->htmlDenied if !$self->authCan('edit')
     || $pid && (($p->{locked} || $p->{hidden}) && !$self->authCan('dbmod'));
@@ -246,16 +247,16 @@ sub edit {
 
       $frm->{relations} = $relations;
       $frm->{l_wp} = undef if !$frm->{l_wp};
-      my $nrev = $self->dbItemEdit(p => $pid ? $p->{cid} : undef, %$frm);
+      my $nrev = $self->dbItemEdit(p => $pid||undef, $pid ? $p->{rev} : undef, %$frm);
 
       # update reverse relations
       if(!$pid && $#$relations >= 0 || $pid && $frm->{prodrelations} ne $b4{prodrelations}) {
         my %old = $pid ? (map { $_->{id} => $_->{relation} } @{$p->{relations}}) : ();
         my %new = map { $_->[1] => $_->[0] } @$relations;
-        _updreverse($self, \%old, \%new, $nrev->{iid}, $nrev->{rev});
+        _updreverse($self, \%old, \%new, $nrev->{itemid}, $nrev->{rev});
       }
 
-      return $self->resRedirect("/p$nrev->{iid}.$nrev->{rev}", 'post');
+      return $self->resRedirect("/p$nrev->{itemid}.$nrev->{rev}", 'post');
     }
   }
 
@@ -329,10 +330,10 @@ sub _updreverse {
 
   # edit all related producers
   for my $i (keys %upd) {
-    my $r = $self->dbProducerGet(id => $i, what => 'relations')->[0];
+    my $r = $self->dbProducerGetRev(id => $i, what => 'relations')->[0];
     my @newrel = map $_->{id} != $pid ? [ $_->{relation}, $_->{id} ] : (), @{$r->{relations}};
     push @newrel, [ $upd{$i}, $pid ] if $upd{$i};
-    $self->dbItemEdit(p => $r->{cid},
+    $self->dbItemEdit(p => $i, $r->{rev},
       relations => \@newrel,
       editsum => "Reverse relation update caused by revision p$pid.$rev",
       uid => 1,

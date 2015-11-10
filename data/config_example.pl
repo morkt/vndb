@@ -17,9 +17,8 @@ package VNDB;
   %S,
   url          => 'http://your.site.root/',
   url_static   => 'http://your.static.site.root/',
-  global_salt  => '<some long unique string>',
-  form_salt    => '<another unique string>',
-  scrypt_salt  => '<yet another unique string>',
+  form_salt    => '<some unique string>',
+  scrypt_salt  => '<another unique string>',
 );
 
 

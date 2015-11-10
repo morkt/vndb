@@ -33,6 +33,7 @@ sub userpage {
   return $self->resNotFound if !$u->{id};
 
   my $votes = $u->{c_votes} && $self->dbVoteStats(uid => $uid);
+  my $list_visible = !$u->{hide_list} || ($self->authInfo->{id}||0) == $u->{id} || $self->authCan('usermod');
 
   my $title = mt '_userpage_title', $u->{username};
   $self->htmlHeader(title => $title, noindex => 1);
@@ -70,7 +71,7 @@ sub userpage {
     Tr;
      td mt '_userpage_votes';
      td;
-      if($u->{hide_list}) {
+      if(!$list_visible) {
         txt mt '_userpage_hidden';
       } elsif($votes) {
         my($total, $count) = (0, 0);
@@ -100,7 +101,7 @@ sub userpage {
 
     Tr;
      td mt '_userpage_list';
-     td $u->{hide_list} ? mt('_userpage_hidden') :
+     td !$list_visible ? mt('_userpage_hidden') :
        mt('_userpage_list_item', $u->{releasecount}, $u->{vncount});
     end;
 
@@ -117,7 +118,7 @@ sub userpage {
    end 'table';
   end 'div';
 
-  if(!$u->{hide_list} && $votes) {
+  if($votes && $list_visible) {
     div class => 'mainbox';
      h1 mt '_userpage_votestats';
      $self->htmlVoteStats(u => $u, $votes);
@@ -125,7 +126,7 @@ sub userpage {
   }
 
   if($u->{c_changes}) {
-    my $list = $self->dbRevisionGet(what => 'item user', uid => $uid, results => 5);
+    my $list = $self->dbRevisionGet(uid => $uid, results => 5);
     h1 class => 'boxtitle';
      a href => "/u$uid/hist", mt '_userpage_changes';
     end;

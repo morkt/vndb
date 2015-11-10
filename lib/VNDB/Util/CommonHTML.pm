@@ -133,12 +133,12 @@ sub htmlHiddenMessage {
   my($self, $type, $obj) = @_;
   return 0 if !$obj->{hidden};
   my $board = $type =~ /[cs]/ ? 'db' : $type eq 'r' ? 'v'.$obj->{vn}[0]{vid} : $type.$obj->{id};
-  # fetch edit summary (not present in $obj because the changes aren't fetched)
-  my $editsum = $type eq 'v' ? $self->dbVNGet(id => $obj->{id}, what => 'changes')->[0]{comments}
-              : $type eq 'r' ? $self->dbReleaseGet(id => $obj->{id}, what => 'changes')->[0]{comments}
-              : $type eq 'c' ? $self->dbCharGet(id => $obj->{id}, what => 'changes')->[0]{comments}
-              : $type eq 's' ? $self->dbStaffGet(id => $obj->{id}, what => 'changes')->[0]{comments}
-                             : $self->dbProducerGet(id => $obj->{id}, what => 'changes')->[0]{comments};
+  # fetch edit summary (not present in $obj, requires the db*GetRev() methods)
+  my $editsum = $type eq 'v' ? $self->dbVNGetRev(id => $obj->{id})->[0]{comments}
+              : $type eq 'r' ? $self->dbReleaseGetRev(id => $obj->{id})->[0]{comments}
+              : $type eq 'c' ? $self->dbCharGetRev(id => $obj->{id})->[0]{comments}
+              : $type eq 's' ? $self->dbStaffGetRev(id => $obj->{id})->[0]{comments}
+                             : $self->dbProducerGetRev(id => $obj->{id})->[0]{comments};
   div class => 'mainbox';
    h1 $obj->{title}||$obj->{name};
    div class => 'warning';
@@ -183,7 +183,7 @@ sub htmlRevision {
    a class => 'prev', href => sprintf('/%s%d.%d', $type, $new->{id}, $new->{rev}-1), '<- '.mt '_revision_previous'
      if $new->{rev} > 1;
    a class => 'next', href => sprintf('/%s%d.%d', $type, $new->{id}, $new->{rev}+1), mt('_revision_next').' ->'
-     if $new->{cid} != $new->{latest};
+     if !$new->{lastrev};
    p class => 'center';
     a href => "/$type$new->{id}", "$type$new->{id}";
    end;
@@ -204,12 +204,12 @@ sub htmlRevision {
      table class => 'stripe';
       thead;
        Tr;
-        td; lit '&nbsp;'; end;
+        td; lit '&#xa0;'; end;
         td; revheader($self, $type, $old); end;
         td; revheader($self, $type, $new); end;
        end;
        Tr;
-        td; lit '&nbsp;'; end;
+        td; lit '&#xa0;'; end;
         td colspan => 2;
          b mt '_revision_edit_summary', $new->{rev};
          br; br;
@@ -310,7 +310,7 @@ sub htmlEditMessage {
      }
     end;
    end;
-   if($obj && $obj->{latest} != $obj->{cid}) {
+   if($obj && !$obj->{lastrev}) {
      div class => 'warning';
       h2 mt '_editmsg_revert_title';
       p mt '_editmsg_revert_msg', $num;
@@ -329,11 +329,7 @@ sub htmlItemMessage {
 
   if($obj->{locked}) {
     p class => 'locked', mt '_itemmsg_locked';
-  } elsif(!$self->authInfo->{id}) {
-    p class => 'locked';
-     lit mt '_itemmsg_login', '/u/login';
-    end;
-  } elsif(!$self->authCan('edit')) {
+  } elsif($self->authInfo->{id} && !$self->authCan('edit')) {
     p class => 'locked', mt '_itemmsg_denied';
   }
 }
@@ -439,6 +435,7 @@ sub htmlSearchBox {
 sub htmlRGHeader {
   my($self, $title, $type, $obj) = @_;
 
+  # This used to be a good test for inline SVG support, but I'm not sure it is nowadays.
   if(($self->reqHeader('Accept')||'') !~ /application\/xhtml\+xml/) {
     $self->htmlHeader(title => $title);
     $self->htmlMainTabs($type, $obj, 'rg');
@@ -452,8 +449,7 @@ sub htmlRGHeader {
     $self->htmlFooter;
     return 1;
   }
-  $self->resHeader('Content-Type' => 'application/xhtml+xml; charset=UTF-8');
-  $self->htmlHeader(title => $title, svg => 1);
+  $self->htmlHeader(title => $title);
   $self->htmlMainTabs($type, $obj, 'rg');
   return 0;
 }

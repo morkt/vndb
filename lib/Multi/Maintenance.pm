@@ -53,17 +53,15 @@ sub log_res {
 
 
 my %dailies = (
-  # takes about 500ms to 5s to complete, depending on how many releases have
-  # been released within the past 5 days
+  # takes about 50ms to 500ms to complete, depending on how many releases have been released within the past 5 days
   vncache_inc => q|
     SELECT update_vncache(id)
       FROM (
         SELECT DISTINCT rv.vid
           FROM releases r
-          JOIN releases_rev rr ON rr.id = r.latest
-          JOIN releases_vn rv ON rv.rid = r.latest
-         WHERE rr.released  > TO_CHAR(NOW() - '5 days'::interval, 'YYYYMMDD')::integer
-           AND rr.released <= TO_CHAR(NOW(), 'YYYYMMDD')::integer
+          JOIN releases_vn rv ON rv.id = r.id
+         WHERE r.released  > TO_CHAR(NOW() - '5 days'::interval, 'YYYYMMDD')::integer
+           AND r.released <= TO_CHAR(NOW(), 'YYYYMMDD')::integer
       ) AS r(id)|,
 
   # takes about 9 seconds max, still OK
@@ -75,7 +73,7 @@ my %dailies = (
   # takes about 30 seconds
   vnpopularity => 'SELECT update_vnpopularity()',
 
-  # takes about 25 seconds, can be performed in ranges as well when necessary
+  # takes about 1 second, can be performed in ranges as well when necessary
   vnrating => q|
     UPDATE vn SET
       c_rating = (SELECT (
@@ -126,9 +124,7 @@ sub daily {
 
 
 my %monthlies = (
-  # This takes about 4 to 5 minutes to complete, and should only be necessary
-  # in the event that the daily vncache_inc cron hasn't been running for 5
-  # subsequent days.
+  # This only takes about 3 seconds to complete
   vncache_full => 'SELECT update_vncache(id) FROM vn',
 
   # These shouldn't really be necessary, the triggers in PgSQL should keep
@@ -202,18 +198,9 @@ sub vnsearch_check {
     return if pg_expect $res, 1 or !$res->rows;
 
     my $id = $res->value(0,0);
-    pg_cmd q|SELECT vr.title, vr.original, vr.alias
-        FROM vn v
-        JOIN vn_rev vr ON vr.id = v.latest
-       WHERE v.id = $1
-      UNION
-      SELECT rr.title, rr.original, NULL
-        FROM releases r
-        JOIN releases_rev rr ON rr.id = r.latest
-        JOIN releases_vn rv ON rv.rid = r.latest
-       WHERE rv.vid = $1
-         AND NOT r.hidden
-    |, [ $id ], sub { vnsearch_update($id, @_) };
+    pg_cmd q|SELECT title, original, alias FROM vn WHERE id = $1
+       UNION SELECT r.title, r.original, NULL FROM releases r JOIN releases_vn rv ON rv.id = r.id WHERE rv.vid = $1 AND NOT r.hidden|,
+       [ $id ], sub { vnsearch_update($id, @_) };
   };
 }
 

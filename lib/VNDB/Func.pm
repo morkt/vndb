@@ -31,8 +31,8 @@ sub clearfloat {
 
 # Draws a CSS icon, arguments: class, title
 sub cssicon {
-  acronym class => "icons $_[0]", title => $_[1];
-   lit '&nbsp;';
+  abbr class => "icons $_[0]", title => $_[1];
+   lit '&#xa0;';
   end;
 }
 

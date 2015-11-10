@@ -70,12 +70,12 @@ sub homepage {
       a href => '/hist', mt '_home_recentchanges'; txt ' ';
       a href => '/feeds/changes.atom'; cssicon 'feed', mt '_atom_feed'; end;
      end;
-     my $changes = $self->dbRevisionGet(what => 'item user', results => 10, auto => 1);
+     my $changes = $self->dbRevisionGet(results => 10, auto => 1);
      ul;
       for (@$changes) {
         li;
          lit mt '_home_recentchanges_item', $_->{type},
-          sprintf('<a href="%s" title="%s">%s</a>', "/$_->{type}$_->{iid}.$_->{rev}",
+          sprintf('<a href="%s" title="%s">%s</a>', "/$_->{type}$_->{itemid}.$_->{rev}",
             xml_escape($_->{ioriginal}||$_->{ititle}), xml_escape shorten $_->{ititle}, 33),
           $_;
         end;
@@ -213,8 +213,7 @@ sub history {
 
   # get the edit history
   my($list, $np) = $self->dbRevisionGet(
-    what => 'item user',
-    $type && $type ne 'u' ? ( type => $type, iid => $id ) : (),
+    $type && $type ne 'u' ? ( type => $type, itemid => $id ) : (),
     $type eq 'u' ? ( uid => $id ) : (),
     $f->{t} ? ( type => $f->{t} eq 'a' ? [qw|v r p|] : $f->{t} ) : (),
     page => $f->{p},
