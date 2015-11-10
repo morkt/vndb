@@ -11,7 +11,7 @@ our @EXPORT = qw|filFetchDB bbSubstLinks|;
 
 
 my %filfields = (
-  vn      => [qw|length hasani tag_inc tag_exc taginc tagexc tagspoil lang olang plat ul_notblack ul_onwish ul_voted ul_onlist|],
+  vn      => [qw|length hasani hasshot tag_inc tag_exc taginc tagexc tagspoil lang olang plat ul_notblack ul_onwish ul_voted ul_onlist|],
   release => [qw|type patch freeware doujin date_before date_after released minage lang olang resolution plat med voiced ani_story ani_ero|],
   char    => [qw|gender bloodt bust_min bust_max waist_min waist_max hip_min hip_max height_min height_max weight_min weight_max trait_inc trait_exc tagspoil role|],
   staff   => [qw|gender role truename lang|],

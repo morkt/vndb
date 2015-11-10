@@ -13220,6 +13220,42 @@ tr : Animesi yok
 uk : Не має аніме
 it : Non ha un anime
 
+:_vnbrowse_screenshots
+en : Screenshots
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_vnbrowse_screenshots_yes
+en : Has screenshot
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
+:_vnbrowse_screenshots_no
+en : Does not have a screenshot
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_vnbrowse_tags
 en : Tags
 ru : Теги

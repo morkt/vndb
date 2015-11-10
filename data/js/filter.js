@@ -501,7 +501,8 @@ function filVN() {
     mt('_vnbrowse_fil_title'),
     [ mt('_vnbrowse_general'),
       filFSelect( 'length', mt('_vnbrowse_length'), 6, VARS.vn_lengths),
-      filFOptions('hasani', mt('_vnbrowse_anime'), [[1, mt('_vnbrowse_anime_yes')],[0, mt('_vnbrowse_anime_no')]])
+      filFOptions('hasani', mt('_vnbrowse_anime'),       [[1, mt('_vnbrowse_anime_yes')],      [0, mt('_vnbrowse_anime_no')]]),
+      filFOptions('hasshot',mt('_vnbrowse_screenshots'), [[1, mt('_vnbrowse_screenshots_yes')],[0, mt('_vnbrowse_screenshots_no')]])
     ],
     ontagpage ? [ mt('_vnbrowse_tags'),
       [ '', ' ', tag(mt('_vnbrowse_tagnothere')) ],
