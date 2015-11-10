@@ -36,6 +36,7 @@ sub dbStaffGet {
     $o{aid} ? ( ref $o{aid} ? ('sa.aid IN(!l)' => [$o{aid}]) : ('sa.aid = ?' => $o{aid}) ) : (),
     $o{id} || $o{truename} ? ( 's.aid = sa.aid' => 1 ) : (),
     defined $o{gender} ? ( 's.gender IN(!l)' => [ ref $o{gender} ? $o{gender} : [$o{gender}] ]) : (),
+    defined $o{lang}   ? ( 's.lang IN(!l)'   => [ ref $o{lang}   ? $o{lang}   : [$o{lang}]   ]) : (),
     defined $o{role} ? (
       '('.join(' OR ',
         @roles ? ( 'EXISTS(SELECT 1 FROM vn_staff vs JOIN vn v ON v.id = vs.id WHERE vs.aid = sa.aid AND vs.role IN(!l) AND NOT v.hidden)' ) : (),

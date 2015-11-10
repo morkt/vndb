@@ -547,7 +547,8 @@ function filStaff() {
       filFSelect('role', mt('_sbrowse_roles'), roles.length, roles),
       '',
       filFSelect('gender', mt('_sbrowse_gender'), gend.length, gend),
-    ]
+    ],
+    [ mt('_sbrowse_language'),   filFSelect('lang',       mt('_sbrowse_language'),   20, VARS.languages) ],
   ];
 }
 

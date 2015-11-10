@@ -5870,6 +5870,18 @@ tr*:
 uk*:
 it*:
 
+:_sbrowse_language
+en : Language
+ru : Языки
+cs : Jazyk
+hu : Nyelvek
+nl : Taal
+de : Sprache
+es : Idioma
+tr : Dili
+uk : Мова
+it : Lingua
+
 :_staff_credits
 en : Credits
 ru*:
