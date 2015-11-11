@@ -486,7 +486,26 @@ CREATE TABLE threads (
   title varchar(50) NOT NULL DEFAULT '',
   locked boolean NOT NULL DEFAULT FALSE,
   hidden boolean NOT NULL DEFAULT FALSE,
-  count smallint NOT NULL DEFAULT 0
+  count smallint NOT NULL DEFAULT 0,
+  poll_question varchar(100),
+  poll_max_options smallint NOT NULL DEFAULT 1,
+  poll_preview boolean NOT NULL DEFAULT FALSE,
+  poll_recast boolean NOT NULL DEFAULT FALSE
+);
+
+-- threads_poll_options
+CREATE TABLE threads_poll_options (
+  id     SERIAL PRIMARY KEY,
+  tid    integer NOT NULL,
+  option varchar(100) NOT NULL
+);
+
+-- threads_poll_votes
+CREATE TABLE threads_poll_votes (
+  tid   integer NOT NULL,
+  uid   integer NOT NULL,
+  optid integer NOT NULL,
+  PRIMARY KEY (tid, uid, optid)
 );
 
 -- threads_posts
@@ -730,27 +749,3 @@ CREATE TABLE wlists (
   added timestamptz NOT NULL DEFAULT NOW(),
   PRIMARY KEY(uid, vid)
 );
-
-CREATE TABLE polls (
-  id SERIAL PRIMARY KEY,
-  tid integer UNIQUE NOT NULL DEFAULT 0, -- references threads
-  question varchar(100) NOT NULL DEFAULT '',
-  max_options smallint NOT NULL DEFAULT 1,
-  preview boolean NOT NULL DEFAULT FALSE,
-  recast boolean NOT NULL DEFAULT FALSE
-);
-
-CREATE TABLE polls_options (
-  id SERIAL PRIMARY KEY,
-  pid integer NOT NULL REFERENCES polls (id) ON DELETE CASCADE,
-  option varchar(100) NOT NULL
-);
-
-CREATE TABLE polls_votes (
-  pid integer NOT NULL REFERENCES polls (id) ON DELETE CASCADE,
-  uid integer NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-  optid integer NOT NULL REFERENCES polls_options (id) ON DELETE CASCADE,
-  PRIMARY KEY (pid, uid, optid)
-);
-
-ALTER TABLE polls ADD FOREIGN KEY (tid) REFERENCES threads (id) ON DELETE CASCADE;

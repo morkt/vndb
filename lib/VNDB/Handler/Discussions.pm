@@ -33,13 +33,11 @@ sub thread {
   my($self, $tid, $page) = @_;
   $page ||= 1;
 
-  my $t = $self->dbThreadGet(id => $tid, what => 'boardtitles')->[0];
+  my $t = $self->dbThreadGet(id => $tid, what => 'boardtitles poll')->[0];
   return $self->resNotFound if !$t->{id} || $t->{hidden} && !$self->authCan('boardmod');
 
   my $p = $self->dbPostGet(tid => $tid, results => 25, page => $page, what => 'user');
   return $self->resNotFound if !$p->[0];
-
-  my $poll = $self->dbPollGet(id => $t->{poll}, what => 'votes') if $t->{poll};
 
   $self->htmlHeader(title => $t->{title}, noindex => 1);
   div class => 'mainbox';
@@ -60,7 +58,7 @@ sub thread {
    end;
   end 'div';
 
-  _poll($self, "/t$tid".($page > 1 ? "/$page" : ''), $poll) if $poll;
+  _poll($self, $t, "/t$tid".($page > 1 ? "/$page" : '')) if $t->{haspoll};
 
   $self->htmlBrowseNavigate("/t$tid/", $page, [ $t->{count}, 25 ], 't', 1);
   div class => 'mainbox thread';
@@ -154,13 +152,11 @@ sub edit {
   }
 
   # get thread and post, if any
-  my $t = $tid && $self->dbThreadGet(id => $tid, what => 'boards')->[0];
+  my $t = $tid && $self->dbThreadGet(id => $tid, what => 'boards poll')->[0];
   return $self->resNotFound if $tid && !$t->{id};
 
   my $p = $num && $self->dbPostGet(tid => $tid, num => $num, what => 'user')->[0];
   return $self->resNotFound if $num && !$p->{num};
-
-  $t->{poll} = $self->dbPollGet(id => $t->{poll}) if $tid && $t->{poll};
 
   # are we allowed to perform this action?
   return $self->htmlDenied if !$self->authCan('board')
@@ -171,15 +167,19 @@ sub edit {
   my $frm;
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
+    my $haspoll = $self->reqPost('poll') && 1;
     $frm = $self->formValidate(
       !$tid || $num == 1 ? (
         { post => 'title', maxlength => 50 },
         { post => 'boards', maxlength => 50 },
-        { post => 'poll_q', required => 0, maxlength => 100 },
-        { post => 'poll_opt', required => 0, maxlength => 100*$self->{poll_options} },
-        { post => 'poll_max', required => 0, default => 1, template => 'uint', min => 1, max => $self->{poll_options} },
-        { post => 'poll_preview', required => 0 },
-        { post => 'poll_recast', required => 0 },
+        $haspoll ? (
+          { post => 'poll', required => 0 },
+          { post => 'poll_question', required => 1, maxlength => 100 },
+          { post => 'poll_options', required => 1, maxlength => 100*$self->{poll_options} },
+          { post => 'poll_max_options', required => 1, default => 1, template => 'uint', min => 1, max => $self->{poll_options} },
+          { post => 'poll_preview', required => 0 },
+          { post => 'poll_recast', required => 0 },
+        ) : (),
       ) : (),
       $self->authCan('boardmod') ? (
         { post => 'locked', required => 0 },
@@ -219,19 +219,12 @@ sub edit {
     }
 
     # validate poll options
-    my %poll;
-    if(!$frm->{_err} && $frm->{poll_opt}) {
-      # split by lines, trimming whitespace
-      my @options = split /\s*\n\s*/, $frm->{poll_opt};
-      %poll = (
-        question  => $frm->{poll_q},
-        preview   => $frm->{poll_preview}?1:0,
-        recast    => $frm->{poll_recast}?1:0,
-        options   => \@options,
-        max_options => $frm->{poll_max},
-      );
-      push @{$frm->{_err}}, [ 'poll_max', 'max', scalar @options ] if @options > 1 && @options < $poll{max_options};
-      push @{$frm->{_err}}, 'poll' if @options > $self->{poll_options} || @options < 2;
+    my @poll_options;
+    if(!$frm->{_err} && $haspoll) {
+      @poll_options = split /\s*\n\s*/, $frm->{poll_options};
+      push @{$frm->{_err}}, [ 'poll_options', 'mincount', 2 ] if @poll_options < 2;
+      push @{$frm->{_err}}, [ 'poll_options', 'maxcount', $frm->{poll_max_options} ] if @poll_options > $self->{poll_options};
+      push @{$frm->{_err}}, [ 'poll_max_options', 'template', 'uint' ] if @poll_options > 1 && @poll_options < $frm->{poll_max_options};
     }
 
     if(!$frm->{_err}) {
@@ -239,24 +232,28 @@ sub edit {
 
       # create/edit thread
       if(!$tid || $num == 1) {
+        my $pollchange = $haspoll && (!$t
+          || ($t->{poll_question}||'') ne $frm->{poll_question}
+          ||  $t->{poll_max_options} != $frm->{poll_max_options}
+          || join("\n", map $_->[1], @{$t->{poll_options}}) ne join("\n", @poll_options)
+        );
         my %thread = (
           title => $frm->{title},
           boards => \@boards,
           hidden => $frm->{hidden},
           locked => $frm->{locked},
+          poll_preview => $frm->{poll_preview}||0,
+          poll_recast  => $frm->{poll_recast}||0,
+          !$haspoll ? (
+            poll_question => undef  # Make sure any existing poll gets deleted
+          ) : $pollchange ? (
+            poll_question    => $frm->{poll_question},
+            poll_max_options => $frm->{poll_max_options},
+            poll_options     => \@poll_options
+          ) : (),
         );
         $self->dbThreadEdit($tid, %thread)  if $tid;
         $ntid = $self->dbThreadAdd(%thread) if !$tid;
-        if(%poll) {
-          $poll{tid} = $ntid;
-          if($tid && $t->{poll}) {
-            my $same = (!first { !($t->{poll}{$_} ~~ $poll{$_}) } qw|question preview recast max_options|)
-                    && [ map $_->{option}, @{$t->{poll}{options}} ] ~~ $poll{options};
-            $self->dbPollEdit($t->{poll}{id}, %poll) unless $same;
-          } else {
-            $self->dbPollAdd(%poll);
-          }
-        }
       }
 
       # create/edit post
@@ -279,20 +276,22 @@ sub edit {
     if($num == 1) {
       $frm->{boards} ||= join ' ', sort map $_->[1]?$_->[0].$_->[1]:$_->[0], @{$t->{boards}};
       $frm->{title} ||= $t->{title};
-      $frm->{locked}  = $t->{locked} if !exists $frm->{locked};
-      $frm->{hidden}  = $t->{hidden} if !exists $frm->{hidden};
-      if($t->{poll}) {
-        $frm->{poll_q}   ||= $t->{poll}{question};
-        $frm->{poll_max} ||= $t->{poll}{max_options};
-        $frm->{poll_preview} = $t->{poll}{preview} if !exists $frm->{poll_preview};
-        $frm->{poll_recast}  = $t->{poll}{recast}  if !exists $frm->{poll_recast};
-        $frm->{poll_opt} ||= join "\n", map $_->{option}, @{$t->{poll}{options}};
+      $frm->{locked}  //= $t->{locked};
+      $frm->{hidden}  //= $t->{hidden};
+      if($t->{haspoll}) {
+        $frm->{poll}     //= 1;
+        $frm->{poll_question}   ||= $t->{poll_question};
+        $frm->{poll_max_options} ||= $t->{poll_max_options};
+        $frm->{poll_preview} //= $t->{poll_preview};
+        $frm->{poll_recast}  //= $t->{poll_recast};
+        $frm->{poll_options} ||= join "\n", map $_->[1], @{$t->{poll_options}};
       }
     }
   }
   delete $frm->{_err} unless ref $frm->{_err};
   $frm->{boards} ||= $board;
-  $frm->{poll_max} ||= 1;
+  $frm->{poll_preview} //= 1;
+  $frm->{poll_max_options} ||= 1;
 
   # generate html
   my $url = !$tid ? "/t/$board/new" : !$num ? "/t$tid/reply" : "/t$tid.$num/edit";
@@ -321,17 +320,16 @@ sub edit {
     [ text   => name => mt('_postedit_form_msg').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'msg', rows => 25, cols => 75 ],
     [ static => content => mt('_postedit_form_msg_format') ],
     (!$tid || $num == 1) ? (
-      [ input => short => 'poll_q', name => mt('_postedit_form_poll_q'), width => 250 ],
-      $num && $frm->{poll_opt} ? (
+      [ static => content => '<br />' ],
+      [ check => short => 'poll', name => mt('_postedit_form_poll_add') ],
+      $num && $frm->{poll_question} ? (
         [ static => content => '<b class="standout">'.mt('_postedit_form_poll_warning').'</b>' ]
       ) : (),
-      [ text  => short => 'poll_opt', name => mt('_postedit_form_poll_opt').'<br /><i>'.mt('_postedit_form_poll_optmax', $self->{poll_options}).'</i>', rows => 8, cols => 35 ],
-      [ input => short => 'poll_max', width => 16, post => ' '.mt('_postedit_form_poll_max') ],
+      [ input => short => 'poll_question', name => mt('_postedit_form_poll_q'), width => 250 ],
+      [ text  => short => 'poll_options', name => mt('_postedit_form_poll_opt').'<br /><i>'.mt('_postedit_form_poll_optmax', $self->{poll_options}).'</i>', rows => 8, cols => 35 ],
+      [ input => short => 'poll_max_options',width => 16, post => ' '.mt('_postedit_form_poll_max') ],
       [ check => short => 'poll_preview', name => mt('_postedit_form_poll_view') ],
       [ check => short => 'poll_recast',  name => mt('_postedit_form_poll_recast') ],
-      !$frm->{poll_opt} ? (
-        [ static => content => '<br /><a id="poll_add" class="hidden" href="#poll_q">'.mt('_postedit_form_poll_add').'</a>' ]
-      ) : (),
     ) : (),
   ]);
   $self->htmlFooter;
@@ -344,18 +342,16 @@ sub vote {
   return if !$self->authCheckCode;
 
   my $url = '/t'.$tid.($page ? "/$page" : '');
-  my $poll = $self->dbPollGet(tid => $tid);
-  return $self->resNotFound if !%$poll;
+  my $t = $self->dbThreadGet(id => $tid, what => 'poll')->[0];
+  return $self->resNotFound if !$t;
 
   # user has already voted and poll doesn't allow to change a vote.
-  return $self->resRedirect($url, 'post') if @{$poll->{user}} && !$poll->{recast};
+  my $voted = ($self->dbPollStats($tid))[2][0];
+  return $self->resRedirect($url, 'post') if $voted && !$t->{poll_recast};
 
-  my $f = $self->formValidate({
-    post => 'option', multi => 1, enum => [ map $_->{id}, @{$poll->{options}} ],
-  });
-  if(!$f->{_err} && (!@{$f->{option}} || @{$f->{option}} > $poll->{max_options})) {
-    push @{$f->{_err}}, 'poll';
-  }
+  my $f = $self->formValidate(
+    { post => 'option', multi => 1, mincount => 1, maxcount => $t->{poll_max_options}, enum => [ map $_->[0], @{$t->{poll_options}} ] }
+  );
   if($f->{_err}) {
     $self->htmlHeader(title => mt '_poll_error');
     $self->htmlFormError($f, 1);
@@ -363,7 +359,7 @@ sub vote {
     return;
   }
 
-  $self->dbPollVote($poll->{id}, uid => $self->authInfo->{id}, options => $f->{option});
+  $self->dbPollVote($t->{id}, $self->authInfo->{id}, @{$f->{option}});
   $self->resRedirect($url, 'post');
 }
 
@@ -601,7 +597,7 @@ sub _threadlist {
       Tr;
        td class => 'tc1';
         a $o->{locked} ? ( class => 'locked' ) : (), href => "/t$o->{id}";
-         span class => 'pollflag', '['.mt('_threadlist_poll').']' if $o->{poll};
+         span class => 'pollflag', '['.mt('_threadlist_poll').']' if $o->{haspoll};
          txt shorten $o->{title}, 50;
         end;
         b class => 'boards';
@@ -635,59 +631,61 @@ sub _threadlist {
 
 
 sub _poll {
-  my($self, $url, $poll) = @_;
-  my %own_votes = map +($_ => 1), @{$poll->{user}} if @{$poll->{user}};
-  my $preview = !%own_votes && $self->reqGet('pollview') && $poll->{preview};
+  my($self, $t, $url) = @_;
+  my($num_votes, $stats, $own_votes) = $self->dbPollStats($t->{id});
+  my %own_votes = map +($_ => 1), @$own_votes;
+  my $preview = !@$own_votes && $self->reqGet('pollview') && $t->{poll_preview};
+  my $allow_vote = $self->authCan('board') && (!@$own_votes || $t->{poll_recast});
 
   div class => 'mainbox poll';
    form action => $url.'/vote', method => 'post';
-    h1 class => 'question', $poll->{question} if $poll->{question};
-    input type => 'hidden', name => 'formcode', value => $self->authGetCode($url.'/vote');
+    h1 class => 'question', $t->{poll_question};
+    input type => 'hidden', name => 'formcode', value => $self->authGetCode($url.'/vote') if $allow_vote;
     table class => 'votebooth';
-      my $allow_vote = $self->authCan('board') && (!%own_votes || $poll->{recast});
-      if($allow_vote && $poll->{max_options} > 1) {
-        thead; Tr; td colspan => 3;
-         i mt('_poll_choose', $poll->{max_options});
-        end; end; end;
-      }
-      tfoot; Tr;
-       td class => 'tc1';
-        input type => 'submit', class => 'submit', value => mt('_poll_vote') if $allow_vote;
-        if(!$self->authCan('board')) {
-          b class => 'standout', mt('_poll_novote_login');
-        }
-       end;
-       td class => 'tc2', colspan => 2;
-        if($poll->{preview} || %own_votes) {
-          if(!$poll->{votes}) {
-            i mt('_poll_no_votes');
-          } elsif(!$preview && !%own_votes) {
-            a href => $url.'?pollview=1', id => 'pollpreview', mt('_poll_results');
-          } else {
-            txt mt('_poll_total_votes', $poll->{votes});
-          }
-        }
-       end;
-      end; end;
+     if($allow_vote && $t->{poll_max_options} > 1) {
+       thead; Tr; td colspan => 3;
+        i mt('_poll_choose', $t->{poll_max_options});
+       end; end; end;
+     }
+     tfoot; Tr;
+      td class => 'tc1';
+       input type => 'submit', class => 'submit', value => mt('_poll_vote') if $allow_vote;
+       if(!$self->authCan('board')) {
+         b class => 'standout', mt('_poll_novote_login');
+       }
+      end;
+      td class => 'tc2', colspan => 2;
+       if($t->{poll_preview} || @$own_votes) {
+         if(!$num_votes) {
+           i mt('_poll_no_votes');
+         } elsif(!$preview && !@$own_votes) {
+           a href => $url.'?pollview=1', id => 'pollpreview', mt('_poll_results');
+         } else {
+           txt mt('_poll_total_votes', $num_votes);
+         }
+       }
+      end;
+     end; end;
      tbody;
-      my $max = max map $_->{votes}, @{$poll->{options}};
-      my $show_graph = $max && (%own_votes || $preview);
+      my $max = max values %$stats;
+      my $show_graph = $max && (@$own_votes || $preview);
       my $graph_width = 200;
-      for my $opt (@{$poll->{options}}) {
-        my $own = exists $own_votes{$opt->{id}} ? ' own' : '';
+      for my $opt (@{$t->{poll_options}}) {
+        my $votes = $stats->{$opt->[0]};
+        my $own = exists $own_votes{$opt->[0]} ? ' own' : '';
         Tr $own ? (class => 'odd') : ();
          td class => 'tc1';
           label;
-           input type => $poll->{max_options} > 1 ? 'checkbox' : 'radio', name => 'option', class => 'option', value => $opt->{id}, $own ? (checked => '') : () if $allow_vote;
-           span class => 'option'.$own, $opt->{option};
+           input type => $t->{poll_max_options} > 1 ? 'checkbox' : 'radio', name => 'option', class => 'option', value => $opt->[0], $own ? (checked => '') : () if $allow_vote;
+           span class => 'option'.$own, $opt->[1];
           end;
          end;
          if($show_graph) {
            td class => 'tc2';
-            div class => 'graph', style => sprintf('width: %dpx', $opt->{votes}/$max*$graph_width), ' ';
-            div class => 'number', $opt->{votes};
+            div class => 'graph', style => sprintf('width: %dpx', ($votes||0)/$max*$graph_width), ' ';
+            div class => 'number', $votes;
            end;
-           td class => 'tc3', sprintf('%.3g%%', $poll->{votes} ? $opt->{votes}/$poll->{votes}*100 : 0);
+           td class => 'tc3', sprintf('%.3g%%', $votes ? $votes/$num_votes*100 : 0);
          } else {
            td class => 'tc2', colspan => 2, '';
          }
