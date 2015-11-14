@@ -110,7 +110,7 @@ sub dbVNGet {
     pop      => 'v.c_popularity %s NULLS LAST',
     rating   => 'v.c_rating %s NULLS LAST',
     title    => 'v.title %s',
-    tagscore => 'tagscore %s',
+    tagscore => 'tagscore %s, v.title ASC',
     rand     => 'RANDOM()',
   }->{$o{sort}}, $o{reverse} ? 'DESC' : 'ASC';
 
