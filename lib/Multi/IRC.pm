@@ -397,7 +397,7 @@ list => [ 0, 0, sub {
     $irc->is_channel_name($_[1]) ? 'This is not a warez channel!' : 'I am not a warez bot!');
 }],
 
-quote => [ 0, 0, sub { send_quote($_[1]) } ],
+quote => [ 1, 0, sub { send_quote($_[1]) } ],
 
 vn => [ 0, 0, sub {
   my($nick, $chan, $q) = @_;
@@ -502,7 +502,7 @@ sub command {
   }
 
   my $id = lc $irc->nick_ident($nick);
-  if($cmd->[1] && !grep $id eq lc $_, @{$O{masters}}) {
+  if($cmd->[0] && !grep $id eq lc $_, @{$O{masters}}) {
     $irc->send_msg(PRIVMSG => $chan, 'I am not your master!');
     return 1;
   }
