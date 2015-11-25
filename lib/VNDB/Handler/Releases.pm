@@ -319,7 +319,7 @@ sub edit {
       { post => 'ani_story', required => 0, default => 0, enum => $self->{animated} },
       { post => 'ani_ero',   required => 0, default => 0, enum => $self->{animated} },
       { post => 'producers', required => 0, default => '' },
-      { post => 'vn',        maxlength => 5000 },
+      { post => 'vn',        maxlength => 50000 },
       { post => 'editsum',   template => 'editsum' },
       { post => 'ihid',      required  => 0 },
       { post => 'ilock',     required  => 0 },
