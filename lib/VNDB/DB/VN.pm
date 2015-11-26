@@ -7,7 +7,7 @@ use Exporter 'import';
 use VNDB::Func 'gtintype', 'normalize_query';
 use Encode 'decode_utf8';
 
-our @EXPORT = qw|dbVNGet dbVNGetRev dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNHasChar dbVNHasStaff dbVNImportSeiyuu|;
+our @EXPORT = qw|dbVNGet dbVNGetRev dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNHasChar dbVNImportSeiyuu|;
 
 
 # Options: id, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
@@ -340,14 +340,6 @@ sub dbVNHasChar {
   my($self, $vid) = @_;
   return $self->dbRow(
     'SELECT 1 AS exists FROM chars c JOIN chars_vns cv ON c.id = cv.id WHERE cv.vid = ? AND NOT c.hidden', $vid
-  )->{exists};
-}
-
-
-sub dbVNHasStaff {
-  my($self, $vid) = @_;
-  return $self->dbRow(
-    'SELECT 1 AS exists FROM vn_staff WHERE id = ? UNION ALL SELECT 1 FROM vn_seiyuu WHERE id = ? LIMIT 1', $vid, $vid
   )->{exists};
 }
 

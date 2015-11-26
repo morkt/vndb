@@ -11,7 +11,8 @@ TUWF::register(
   qr{v/rand}                        => \&rand,
   qr{v([1-9]\d*)/rg}                => \&rg,
   qr{v([1-9]\d*)/releases}          => \&releases,
-  qr{v([1-9]\d*)/(chars|staff)}     => \&page,
+  qr{v([1-9]\d*)/chars}             => \&page,
+  qr{v([1-9]\d*)/staff}             => sub { $_[0]->resRedirect("/v$_[1]#staff") },
   qr{v([1-9]\d*)(?:\.([1-9]\d*))?}  => \&page,
 );
 
@@ -330,13 +331,12 @@ sub page {
   my($self, $vid, $rev) = @_;
 
   my $char = $rev && $rev eq 'chars';
-  my $staff = $rev && $rev eq 'staff';
-  $rev = undef if $char || $staff;
+  $rev = undef if $char;
 
   my $method = $rev ? 'dbVNGetRev' : 'dbVNGet';
   my $v = $self->$method(
     id => $vid,
-    what => 'extended anime relations screenshots rating ranking'.($staff || $rev ? ' credits' : ''),
+    what => 'extended anime relations screenshots rating ranking credits',
     $rev ? (rev => $rev) : (),
   )->[0];
   return $self->resNotFound if !$v->{id};
@@ -465,26 +465,15 @@ sub page {
   end 'div'; # /mainbox
 
   my $haschar = $self->dbVNHasChar($v->{id});
-  my $hasstaff = $self->dbVNHasStaff($v->{id});
-  if($haschar || $hasstaff || $self->authCan('edit')) {
+  if($haschar || $self->authCan('edit')) {
     clearfloat; # fix tabs placement when tags are hidden
     ul class => 'maintabs notfirst';
-     if($haschar || $hasstaff) {
-       li class => 'left '.(!($char || $staff) && ' tabselected'); a href => "/v$v->{id}#main", name => 'main', mt '_vnpage_tab_main'; end;
-       if ($haschar) {
-         li class => 'left '.($char ? ' tabselected' : ''); a href => "/v$v->{id}/chars#chars", name => 'chars', mt '_vnpage_tab_chars'; end;
-       }
-       if ($hasstaff) {
-         li class => 'left '.($staff ? ' tabselected' : ''); a href => "/v$v->{id}/staff#staff", name => 'staff', mt '_vnpage_tab_staff'; end;
-       }
+     if($haschar) {
+       li class => 'left '.(!$char ? ' tabselected' : ''); a href => "/v$v->{id}#main", name => 'main', mt '_vnpage_tab_main'; end;
+       li class => 'left '.($char  ? ' tabselected' : ''); a href => "/v$v->{id}/chars#chars", name => 'chars', mt '_vnpage_tab_chars'; end;
      }
      if($self->authCan('edit')) {
        li; a href => "/c/new?vid=$v->{id}", mt '_vnpage_char_add'; end;
-       if(!$v->{locked}) {
-         li;
-          a href => "/v$v->{id}/edit#vn_staff", mt $hasstaff ? '_vnpage_staff_edit' : '_vnpage_staff_add';
-         end;
-       }
        li; a href => "/v$v->{id}/add", mt '_vnpage_rel_add'; end;
      }
     end;
@@ -492,10 +481,9 @@ sub page {
 
   if($char) {
     _chars($self, $haschar, $v);
-  } elsif ($staff) {
-    _staff($self, $v) if $hasstaff;
   } else {
     _releases($self, $v, $r);
+    _staff($self, $v);
     _stats($self, $v);
     _screenshots($self, $v, $r) if @{$v->{screenshots}};
   }
@@ -914,29 +902,22 @@ sub _chars {
 sub _staff {
   my ($self, $v) = @_;
   if(@{$v->{credits}}) {
-    div class => 'mainbox staff';
+    div class => 'mainbox staff', id => 'staff';
      h1 mt '_vnpage_staff';
-     my $has_notes = grep { $_->{note} } @{$v->{credits}};
-     table class => 'stripe';
-      thead;
-       Tr;
-        td class => 'tc1', mt '_staff_col_role';
-        td class => 'tc2', mt '_staff_col_credit';
-        td class => 'tc3', mt '_staff_col_note' if $has_notes;
+     for my $r (@{$self->{staff_roles}}) {
+       my @s = grep $_->{role} eq $r, @{$v->{credits}};
+       next if !@s;
+       ul;
+        li; b mt '_credit_'.$r; end;
+        for(@s) {
+          li;
+           a href => "/s$_->{id}", title => $_->{original}||$_->{name}, $_->{name};
+           b class => 'grayedout', $_->{note} if $_->{note};
+          end;
+        }
        end;
-      end;
-      my $last_role = '';
-      for my $s (@{$v->{credits}}) {
-        Tr;
-         td class => 'tc1', $s->{role} ne $last_role ? mt '_credit_'.$s->{role} : '';
-         td class => 'tc2';
-          a href => "/s$s->{id}", title => $s->{original}||$s->{name}, $s->{name};
-         end;
-         td class => 'tc3', $s->{note} if $has_notes;
-        end;
-        $last_role = $s->{role};
-      }
-     end 'table';
+     }
+     clearfloat;
     end;
   }
   if(@{$v->{seiyuu}}) {

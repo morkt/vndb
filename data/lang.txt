@@ -6242,18 +6242,6 @@ tr*:
 uk*:
 it*:
 
-:_staff_col_credit
-en : Credit
-ru*:
-cs*:
-hu*:
-nl*:
-de :
-es*:
-tr*:
-uk*:
-it*:
-
 :_staff_col_note
 en : Note
 ru*:
@@ -15586,18 +15574,6 @@ tr : karakterler
 uk : персонажі
 it : personaggi
 
-:_vnpage_tab_staff
-en : staff
-ru*:
-cs*:
-hu*:
-nl*:
-de : Stab
-es*:
-tr*:
-uk*:
-it*:
-
 :_vnpage_rel
 en : Releases
 ru : Выпуски
@@ -15728,30 +15704,6 @@ cs*:
 hu*:
 nl*:
 de : Sprecher der Charaktere
-es*:
-tr*:
-uk*:
-it*:
-
-:_vnpage_staff_add
-en : add staff
-ru*:
-cs*:
-hu*:
-nl*:
-de : Stab hinzufügen
-es*:
-tr*:
-uk*:
-it*:
-
-:_vnpage_staff_edit
-en : edit staff
-ru*:
-cs*:
-hu*:
-nl*:
-de : Stab bearbeiten
 es*:
 tr*:
 uk*:
