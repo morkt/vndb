@@ -300,7 +300,7 @@ sub edit {
                          '_postedit_edit';
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlForm({ frm => $frm, action => $url }, 'postedit' => [$title,
-    [ static => label => mt('_postedit_form_username'), content => $self->{l10n}->userstr($self->authInfo->{id}, $self->authInfo->{username}) ],
+    [ static => label => mt('_postedit_form_username'), content => $self->{l10n}->userstr($p ? ($p->{uid}, $p->{username}) : ($self->authInfo->{id}, $self->authInfo->{username})) ],
     !$tid || $num == 1 ? (
       [ input  => short => 'title', name => mt('_postedit_form_title') ],
       [ input  => short => 'boards',  name => mt('_postedit_form_boards') ],
