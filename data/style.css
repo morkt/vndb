@@ -612,6 +612,23 @@ div.staff li b.grayedout { margin-left: 10px }
 div.staff td.tc1,
 div.staff td.tc2 { white-space: nowrap; padding-left: 20px; padding-right: 20px; }
 
+div.cast_list b.grayedout { margin-left: 10px }
+div.cast_list .char_bubble {
+  background: url($_boxbg$) repeat;
+  display: inline-block;
+  text-align: left;
+  vertical-align: top;
+  width: 300px;
+  margin: 3px;
+  padding: 3px 10px;
+}
+div.cast_list .char_bubble .name {
+  font-weight: bold;
+  white-space: nowrap;
+  border-bottom: 1px solid $border$;
+  margin-bottom: 3px;
+}
+
 
 /***** Staff edit *****/
 

@@ -921,31 +921,37 @@ sub _staff {
     end;
   }
   if(@{$v->{seiyuu}}) {
-    my($has_spoilers, $has_notes);
-    $has_spoilers ||= $_->{spoil}, $has_notes ||= $_->{note} for @{$v->{seiyuu}};
+    my($has_spoilers, %cast);
+    # %cast hash serves only one purpose: in the rare case of several voice
+    # actors voicing single character it groups them all together.
+    for(@{$v->{seiyuu}}) {
+      $has_spoilers ||= $_->{spoil};
+      push @{$cast{$_->{cid}}}, $_;
+    }
     div class => 'mainbox staff cast';
      $self->charOps(0) if $has_spoilers;
      h1 mt '_vnpage_cast';
-     table class => 'stripe';
-      thead;
-       Tr;
-        td class => 'tc1', mt '_staff_col_cast';
-        td class => 'tc2', mt '_staff_col_seiyuu';
-        td class => 'tc3', mt '_staff_col_note' if $has_notes;
-       end;
-      end;
-      for my $s (@{$v->{seiyuu}}) {
-        Tr $has_spoilers ? (class => charspoil($s->{spoil})) : ();
-         td class => 'tc1';
-          a href => "/c$s->{cid}", $s->{cname};
+     div class => 'cast_list';
+      # i wonder whether it's better to just ask database for character list instead
+      # of doing this manual group/sort
+      for my $cid (sort { $cast{$a}[0]{cname} cmp $cast{$b}[0]{cname} } keys %cast) {
+        my $s = $cast{$cid};
+        div class => 'char_bubble'.($has_spoilers ? ' '.charspoil($s->[0]{spoil}) : '');
+         div class => 'name';
+          a href => "/c$cid", $s->[0]{cname};
          end;
-         td class => 'tc2';
-          a href => "/s$s->{id}", title => $s->{original}||$s->{name}, $s->{name};
+         div class => 'actor';
+          txt mt '_charp_voice';
+          @{$s} > 1 ? br : txt ' ';
+          for(@{$s}) {
+            a href => "/s$_->{id}", title => $_->{original}||$_->{name}, $_->{name};
+            b class => 'grayedout', $_->{note} if $_->{note};
+            br;
+          }
          end;
-         td class => 'tc3', $s->{note} if $has_notes;
         end;
       }
-     end 'table';
+     end;
     end;
   }
 }
