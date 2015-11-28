@@ -77,7 +77,7 @@ sub addform {
 sub edit {
   my($self, $vid, $rev, $nosubmit) = @_;
 
-  my $v = $vid && $self->dbVNGetRev(id => $vid, what => 'extended screenshots relations anime credits changes', $rev ? (rev => $rev) : ())->[0];
+  my $v = $vid && $self->dbVNGetRev(id => $vid, what => 'extended screenshots relations anime staff seiyuu changes', $rev ? (rev => $rev) : ())->[0];
   return $self->resNotFound if $vid && !$v->{id};
   $rev = undef if !$vid || $v->{lastrev};
 

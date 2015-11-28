@@ -609,11 +609,13 @@ table.aliases td.key { padding: 0 5px 0 0; width: auto }
 div.staff ul { list-style: none; margin: 5px 15px; float: left; min-width: 300px }
 div.staff li b.grayedout { margin-left: 10px }
 
-div.staff td.tc1,
-div.staff td.tc2 { white-space: nowrap; padding-left: 20px; padding-right: 20px; }
-
-div.cast_list b.grayedout { margin-left: 10px }
-div.cast_list .char_bubble {
+div.charsum_list { text-align: center }
+div.charsum_list .name { white-space: nowrap; }
+div.charsum_list .name  a { font-weight: bold }
+div.charsum_list .name  i { float: right }
+div.charsum_list .actor { border-top: 1px solid $border$; padding-top: 3px }
+div.charsum_list .actor b.grayedout { margin-left: 10px }
+div.charsum_list .charsum_bubble {
   background: url($_boxbg$) repeat;
   display: inline-block;
   text-align: left;
@@ -621,12 +623,6 @@ div.cast_list .char_bubble {
   width: 300px;
   margin: 3px;
   padding: 3px 10px;
-}
-div.cast_list .char_bubble .name {
-  font-weight: bold;
-  white-space: nowrap;
-  border-bottom: 1px solid $border$;
-  margin-bottom: 3px;
 }
 
 

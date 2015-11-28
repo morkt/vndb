@@ -15697,13 +15697,13 @@ tr*:
 uk*:
 it*:
 
-:_vnpage_cast
-en : Cast of characters
+:_vnpage_charsum
+en : Character summary
 ru*:
 cs*:
 hu*:
 nl*:
-de : Sprecher der Charaktere
+de*:
 es*:
 tr*:
 uk*:

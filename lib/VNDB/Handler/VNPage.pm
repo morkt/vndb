@@ -336,7 +336,7 @@ sub page {
   my $method = $rev ? 'dbVNGetRev' : 'dbVNGet';
   my $v = $self->$method(
     id => $vid,
-    what => 'extended anime relations screenshots rating ranking credits',
+    what => 'extended anime relations screenshots rating ranking staff'.($rev ? ' seiyuu' : ''),
     $rev ? (rev => $rev) : (),
   )->[0];
   return $self->resNotFound if !$v->{id};
@@ -464,11 +464,11 @@ sub page {
    }
   end 'div'; # /mainbox
 
-  my $haschar = $self->dbVNHasChar($v->{id});
-  if($haschar || $self->authCan('edit')) {
+  my $chars = $self->dbCharGet(vid => $v->{id}, what => "seiyuu vns($v->{id})".($char ? ' extended traits' : ''), results => 100);
+  if(@$chars || $self->authCan('edit')) {
     clearfloat; # fix tabs placement when tags are hidden
     ul class => 'maintabs notfirst';
-     if($haschar) {
+     if(@$chars) {
        li class => 'left '.(!$char ? ' tabselected' : ''); a href => "/v$v->{id}#main", name => 'main', mt '_vnpage_tab_main'; end;
        li class => 'left '.($char  ? ' tabselected' : ''); a href => "/v$v->{id}/chars#chars", name => 'chars', mt '_vnpage_tab_chars'; end;
      }
@@ -480,10 +480,11 @@ sub page {
   }
 
   if($char) {
-    _chars($self, $haschar, $v);
+    _chars($self, $chars, $v);
   } else {
     _releases($self, $v, $r);
     _staff($self, $v);
+    _charsum($self, $chars, $v);
     _stats($self, $v);
     _screenshots($self, $v, $r) if @{$v->{screenshots}};
   }
@@ -497,7 +498,7 @@ sub _revision {
   return if !$rev;
 
   my $prev = $rev && $rev > 1 && $self->dbVNGetRev(
-    id => $v->{id}, rev => $rev-1, what => 'extended anime relations screenshots credits'
+    id => $v->{id}, rev => $rev-1, what => 'extended anime relations screenshots staff seiyuu'
   )->[0];
 
   $self->htmlRevision('v', $prev, $v,
@@ -873,10 +874,18 @@ sub _stats {
 }
 
 
+sub _charspoillvl {
+  my($vid, $c) = @_;
+  my $minspoil = 5;
+  $minspoil = $_->{vid} == $vid && $_->{spoil} < $minspoil ? $_->{spoil} : $minspoil
+    for(@{$c->{vns}});
+  return $minspoil;
+}
+
+
 sub _chars {
-  my($self, $has, $v) = @_;
-  my $l = $has && $self->dbCharGet(vid => $v->{id}, what => "extended vns($v->{id}) seiyuu traits", results => 100);
-  return if !$has;
+  my($self, $l, $v) = @_;
+  return if !@$l;
   my %done;
   my %rol;
   for my $r (@{$self->{char_roles}}) {
@@ -888,72 +897,75 @@ sub _chars {
     div class => 'mainbox';
      $self->charOps(1) if !$first++;
      h1 mt "_charrole_$r", scalar @{$rol{$r}};
-     for my $c (@{$rol{$r}}) {
-       my $minspoil = 5;
-       $minspoil = $_->{vid} == $v->{id} && $_->{spoil} < $minspoil ? $_->{spoil} : $minspoil
-         for(@{$c->{vns}});
-       $self->charTable($c, 1, $c != $rol{$r}[0], 1, $minspoil);
-     }
+     $self->charTable($_, 1, $_ != $rol{$r}[0], 1, _charspoillvl $v->{id}, $_) for (@{$rol{$r}});
     end;
   }
 }
 
 
-sub _staff {
-  my ($self, $v) = @_;
-  if(@{$v->{credits}}) {
-    div class => 'mainbox staff', id => 'staff';
-     h1 mt '_vnpage_staff';
-     for my $r (@{$self->{staff_roles}}) {
-       my @s = grep $_->{role} eq $r, @{$v->{credits}};
-       next if !@s;
-       ul;
-        li; b mt '_credit_'.$r; end;
-        for(@s) {
-          li;
-           a href => "/s$_->{id}", title => $_->{original}||$_->{name}, $_->{name};
-           b class => 'grayedout', $_->{note} if $_->{note};
-          end;
-        }
-       end;
-     }
-     clearfloat;
-    end;
-  }
-  if(@{$v->{seiyuu}}) {
-    my($has_spoilers, %cast);
-    # %cast hash serves only one purpose: in the rare case of several voice
-    # actors voicing single character it groups them all together.
-    for(@{$v->{seiyuu}}) {
-      $has_spoilers ||= $_->{spoil};
-      push @{$cast{$_->{cid}}}, $_;
+sub _charsum {
+  my($self, $l, $v) = @_;
+  return if !@$l;
+
+  my(@l, %done, $has_spoilers);
+  for my $r (@{$self->{char_roles}}) {
+    last if $r eq 'appears';
+    for (grep grep($_->{role} eq $r, @{$_->{vns}}) && !$done{$_->{id}}++, @$l) {
+      $_->{role} = $r;
+      $has_spoilers = $has_spoilers || _charspoillvl $v->{id}, $_;
+      push @l, $_;
     }
-    div class => 'mainbox staff cast';
-     $self->charOps(0) if $has_spoilers;
-     h1 mt '_vnpage_cast';
-     div class => 'cast_list';
-      # i wonder whether it's better to just ask database for character list instead
-      # of doing this manual group/sort
-      for my $cid (sort { $cast{$a}[0]{cname} cmp $cast{$b}[0]{cname} } keys %cast) {
-        my $s = $cast{$cid};
-        div class => 'char_bubble'.($has_spoilers ? ' '.charspoil($s->[0]{spoil}) : '');
-         div class => 'name';
-          a href => "/c$cid", $s->[0]{cname};
-         end;
+  }
+
+  div class => 'mainbox charsum';
+   $self->charOps(0) if $has_spoilers;
+   h1 mt '_vnpage_charsum';
+   div class => 'charsum_list';
+    for my $c (@l) {
+      div class => 'charsum_bubble'.($has_spoilers ? ' '.charspoil(_charspoillvl $v->{id}, $c) : '');
+       div class => 'name';
+        i mt '_charrole_'.$c->{role}, 1;
+        a href => "/c$c->{id}", title => $c->{original}||$c->{name}, $c->{name};
+       end;
+       if(@{$c->{seiyuu}}) {
          div class => 'actor';
           txt mt '_charp_voice';
-          @{$s} > 1 ? br : txt ' ';
-          for(@{$s}) {
-            a href => "/s$_->{id}", title => $_->{original}||$_->{name}, $_->{name};
-            b class => 'grayedout', $_->{note} if $_->{note};
+          @{$c->{seiyuu}} > 1 ? br : txt ' ';
+          for my $s (sort { $a->{name} cmp $b->{name} } @{$c->{seiyuu}}) {
+            a href => "/s$s->{sid}", title => $s->{original}||$s->{name}, $s->{name};
+            b class => 'grayedout', $s->{note} if $s->{note};
             br;
           }
          end;
+       }
+      end;
+    }
+   end;
+  end;
+}
+
+
+sub _staff {
+  my ($self, $v) = @_;
+  return if !@{$v->{credits}};
+
+  div class => 'mainbox staff', id => 'staff';
+   h1 mt '_vnpage_staff';
+   for my $r (@{$self->{staff_roles}}) {
+     my @s = grep $_->{role} eq $r, @{$v->{credits}};
+     next if !@s;
+     ul;
+      li; b mt '_credit_'.$r; end;
+      for(@s) {
+        li;
+         a href => "/s$_->{id}", title => $_->{original}||$_->{name}, $_->{name};
+         b class => 'grayedout', $_->{note} if $_->{note};
         end;
       }
      end;
-    end;
-  }
+   }
+   clearfloat;
+  end;
 }
 
 

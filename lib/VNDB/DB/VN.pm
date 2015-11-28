@@ -7,12 +7,12 @@ use Exporter 'import';
 use VNDB::Func 'gtintype', 'normalize_query';
 use Encode 'decode_utf8';
 
-our @EXPORT = qw|dbVNGet dbVNGetRev dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNHasChar dbVNImportSeiyuu|;
+our @EXPORT = qw|dbVNGet dbVNGetRev dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNImportSeiyuu|;
 
 
 # Options: id, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
 #   hasani, hasshot, ul_notblack, ul_onwish, results, page, what, sort, reverse, inc_hidden
-# What: extended anime credits relations screenshots relgraph rating ranking wishlist vnlist
+# What: extended anime staff seiyuu relations screenshots relgraph rating ranking wishlist vnlist
 #  Note: wishlist and vnlist are ignored (no db search) unless a user is logged in
 # Sort: id rel pop rating title tagscore rand
 sub dbVNGet {
@@ -162,7 +162,7 @@ sub dbVNGetRev {
 sub _enrich {
   my($self, $r, $np, $rev, $what) = @_;
 
-  if(@$r && $what =~ /anime|relations|screenshots|credits/) {
+  if(@$r && $what =~ /anime|relations|screenshots|staff|seiyuu/) {
     my($col, $hist, $colname) = $rev ? ('cid', '_hist', 'chid') : ('id', '', 'id');
     my %r = map {
       $r->[$_]{anime} = [];
@@ -173,7 +173,7 @@ sub _enrich {
       ($r->[$_]{$col}, $_)
     } 0..$#$r;
 
-    if($what =~ /credits/) {
+    if($what =~ /staff/) {
       push(@{$r->[$r{ delete $_->{xid} }]{credits}}, $_) for (@{$self->dbAll("
         SELECT vs.$colname AS xid, s.id, vs.aid, sa.name, sa.original, s.gender, s.lang, vs.role, vs.note
           FROM vn_staff$hist vs
@@ -183,7 +183,9 @@ sub _enrich {
           ORDER BY vs.role ASC, sa.name ASC",
         [ keys %r ]
       )});
+    }
 
+    if($what =~ /seiyuu/) {
       # The seiyuu query needs the VN id to get the VN<->Char spoiler level.
       # Obtaining this ID is different when using the hist table.
       my($vid, $join) = $rev ? ('h.itemid', 'JOIN changes h ON h.id = vs.chid') : ('vs.id', '');
@@ -333,14 +335,6 @@ sub dbScreenshotRandom {
         JOIN vn v ON v.id = vs.id
         JOIN screenshots s ON s.id = vs.scr
      |, @vids).' ORDER BY position', @vids);
-}
-
-
-sub dbVNHasChar {
-  my($self, $vid) = @_;
-  return $self->dbRow(
-    'SELECT 1 AS exists FROM chars c JOIN chars_vns cv ON c.id = cv.id WHERE cv.vid = ? AND NOT c.hidden', $vid
-  )->{exists};
 }
 
 
