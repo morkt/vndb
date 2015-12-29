@@ -66,7 +66,8 @@ server resources and prevent abuse of this service.</p>
 <b>Connection info:</b>
 <dl>
  <dt>Host</dt><dd>api.vndb.org</dd>
- <dt>Port (tcp)</dt><dd>19534 ('VN')</dd>
+ <dt>Port (plain tcp)</dt><dd>19534 ('VN')</dd>
+ <dt>Port (TLS)</dt><dd>19535<br />For improved security, make sure to verify that the certificate is valid for 'api.vndb.org' and is signed by a trusted root (in particular, by <a href="https://letsencrypt.org/certificates/">Let's Encrypt</a>).</dd>
 </dl>
 
 <br />
@@ -239,8 +240,9 @@ however still required.<br />
 </dl>
 <p>
  The server replies with either 'ok' (no arguments), or 'error' (see below).
- Note that logging in using a username or password is optional, but some
- commands are only available when logged in.
+ Note that logging in using a username and password is optional, but some
+ commands are only available when logged in. It is strongly recommended to
+ connect with TLS when logging in with a username and password.
 </p>
 
 
@@ -1465,6 +1467,10 @@ however still required.<br />
  This section lists the changes made in each version of the VNDB code.
  Check out the <a href="/t/an">announcements board</a> for more information about updates.
 </p>
+<b>2.25</b>
+<ul>
+ <li>Added support for TLS</li>
+</ul>
 <b>2.23</b>
 <ul>
  <li>Added new 'dbstats' command</li>

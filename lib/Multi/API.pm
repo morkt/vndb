@@ -23,6 +23,7 @@ sub FALSE () { JSON::XS::false }
 
 my %O = (
   port => 19534,
+  tls_port => 19535,  # Only used when tls_options is set
   logfile => "$VNDB::M{log_dir}/api.log",
   conn_per_ip => 5,
   max_results => 25, # For get vn/release/producer/character
@@ -31,6 +32,7 @@ my %O = (
   throttle_cmd => [ 6, 100 ], # interval between each command, allowed burst
   throttle_sql => [ 60, 1 ],  # sql time multiplier, allowed burst (in sql time)
   throttle_thr => [ 2, 10 ],  # interval between "throttled" replies, allowed burst
+  tls_options => undef, # Set to AnyEvent::TLS options to enable TLS
 );
 
 
@@ -43,7 +45,7 @@ sub writelog {
   my($msg, @args) = @_;
   if(open(my $F, '>>:utf8', $O{logfile})) {
     printf $F "[%s] %s: %s\n", scalar localtime,
-      $c ? sprintf '%d %s:%d', $c->{id}, $c->{ip}, $c->{port} : 'global',
+      $c ? sprintf('%d %s:%d%s', $c->{id}, $c->{ip}, $c->{port}, $c->{tls} ? 'S' : '') : 'global',
       @args ? sprintf $msg, @args : $msg;
     close $F;
   }
@@ -54,12 +56,20 @@ sub run {
   shift;
   %O = (%O, @_);
 
-  push_watcher tcp_server '::', $O{port}, \&newconn;
+  push_watcher tcp_server '::', $O{port}, sub { newconn(0, @_) };;
   # The following tcp_server will fail if the above already bound to IPv4.
   eval {
-    push_watcher tcp_server 0, $O{port}, \&newconn;
+    push_watcher tcp_server 0, $O{port}, sub { newconn(0, @_) };
   };
-  writelog 'API starting up on port %d', $O{port};
+
+  if($O{tls_options}) {
+    push_watcher tcp_server '::', $O{tls_port}, sub { newconn(1, @_) };
+    eval {
+      push_watcher tcp_server 0, $O{tls_port}, sub { newconn(1, @_) };
+    };
+  }
+
+  writelog 'API starting up on port %d (TLS %s)', $O{port}, $O{tls_options} ? "on port $O{tls_port}" : 'disabled';
 }
 
 
@@ -71,11 +81,12 @@ sub unload {
 
 sub newconn {
   my $c = {
-    fh    => $_[0],
-    ip    => $_[1],
-    port  => $_[2],
+    tls   => $_[0],
+    fh    => $_[1],
+    ip    => $_[2],
+    port  => $_[3],
     id    => ++$connid,
-    cid   => norm_ip($_[1]),
+    cid   => norm_ip($_[2]),
     filt  => POE::Filter::VNDBAPI->new(),
   };
 
@@ -103,6 +114,10 @@ sub newconn {
       $c->{h}->destroy;
       delete $C{$c->{id}};
     },
+    $c->{tls} ? (
+      tls => 'accept',
+      tls_ctx => $O{tls_options},
+    ) : (),
   );
   cmd_read($c);
 }
