@@ -8126,41 +8126,41 @@ tr : Seslendirme
 uk : Озвучення
 it : Voci
 
-:_rbrowse_animation
-en : Animation
-ru : Анимация
-cs : Animace
-hu : Animáció
-nl : Animatie
-de : Animationen
-es : Animación
-tr : Animasyon
-uk : Анімація
-it : Animazioni
+:_rbrowse_misc
+en : Misc
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_rbrowse_ani_story
-en : Story
-ru : Сюжетная анимация
-cs : Příběh
-hu : Történet
-nl : Verhaal
-de : Geschichte
-es : Historia
-tr : Öykü
-uk : Сюжет
-it : Storia
+en : Story animation
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_rbrowse_ani_ero
-en : Ero scenes
-ru : Анимация эро-сцен
-cs : Ero scény
-hu : Ero jelenetek
-nl : Erotische scenes
-de : Ero-Szenen
-es : Escenas ero
-tr : Erotik sahneler
-uk : Еросцени
-it : Scene erotiche
+en : Ero animation
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 
 

@@ -848,7 +848,7 @@ div#iv_view {
   text-align: center;
 }
 .fil_div a.close       { float: right; border: 0; font-weight: bold }
-.fil_div p.browseopts  { padding: 2px 50px; line-height: 23px }
+.fil_div p.browseopts  { padding: 2px 20px; line-height: 23px }
 .fil_div .browseopts a { outline: none; color: $maintext$ }
 .fil_div .browseopts a.active { font-weight: bold }
 .fil_div b.ruler       { display: block; margin: auto; width: 93%; height: 1px; border-bottom: 1px solid $border$; margin-bottom: 5px }

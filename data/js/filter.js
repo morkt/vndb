@@ -553,9 +553,9 @@ function filReleases() {
       [ mt('_rbrowse_olang'),    filFSelect('olang',      mt('_rbrowse_olang'),      20, VARS.languages) ],
     [ mt('_rbrowse_resolution'), filFSelect('resolution', mt('_rbrowse_resolution'), 15, VARS.resolutions) ],
     [ mt('_rbrowse_platform'),   filFSelect('plat',       mt('_rbrowse_platform'),   20, plat) ],
-    [ mt('_rbrowse_medium'),     filFSelect('med',        mt('_rbrowse_medium'),     10, med)  ],
-    [ mt('_rbrowse_voiced'),     filFSelect('voiced',     mt('_rbrowse_voiced'),      5, VARS.voiced)  ],
-    [ mt('_rbrowse_animation'),
+    [ mt('_rbrowse_misc'),
+      filFSelect('med',       mt('_rbrowse_medium'),   10, med),
+      filFSelect('voiced',    mt('_rbrowse_voiced'),    5, VARS.voiced),
       filFSelect('ani_story', mt('_rbrowse_ani_story'), 5, VARS.animated),
       filFSelect('ani_ero',   mt('_rbrowse_ani_ero'),   5, VARS.animated)
     ]
