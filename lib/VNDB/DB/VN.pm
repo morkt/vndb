@@ -3,6 +3,7 @@ package VNDB::DB::VN;
 
 use strict;
 use warnings;
+use TUWF 'sqlprint';
 use Exporter 'import';
 use VNDB::Func 'gtintype', 'normalize_query';
 use Encode 'decode_utf8';
@@ -11,7 +12,7 @@ our @EXPORT = qw|dbVNGet dbVNGetRev dbVNRevisionInsert dbVNImageId dbScreenshotA
 
 
 # Options: id, char, search, length, lang, olang, plat, tag_inc, tag_exc, tagspoil,
-#   hasani, hasshot, ul_notblack, ul_onwish, results, page, what, sort, reverse, inc_hidden
+#   hasani, hasshot, ul_notblack, ul_onwish, results, page, what, sort, reverse, inc_hidden, release
 # What: extended anime staff seiyuu relations screenshots relgraph rating ranking wishlist vnlist
 #  Note: wishlist and vnlist are ignored (no db search) unless a user is logged in
 # Sort: id rel pop rating title tagscore rand
@@ -70,6 +71,13 @@ sub dbVNGet {
     $o{sort} eq 'rand' && $o{results} <= 10 && !grep(!/^(?:results|page|what|sort|tagspoil)$/, keys %o) ? (
       'v.id IN(SELECT floor(random() * last_value)::integer FROM generate_series(1,20), (SELECT MAX(id) AS last_value FROM vn) s1 LIMIT 20)' ) : (),
   );
+
+  if($o{release}) {
+    my($q, @p) = sqlprint
+      'v.id IN(SELECT rv.vid FROM releases r JOIN releases_vn rv ON rv.id = r.id !W)',
+      [ 'NOT r.hidden' => 1, $self->dbReleaseFilters(%{$o{release}}), ];
+    push @where, $q, \@p;
+  }
 
   my @join = (
     $o{what} =~ /relgraph/ ?

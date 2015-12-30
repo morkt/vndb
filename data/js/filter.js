@@ -1,7 +1,7 @@
 /* Filter box definition:
  * [ <title>,
  *   [ <category_name>,
- *     [ <fieldcode>, <fieldname>, <fieldcontents>, <fieldreadfunc>, <fieldwritefunc> ], ..
+ *     [ <fieldcode>, <fieldname>, <fieldcontents>, <fieldreadfunc>, <fieldwritefunc>, <fieldshowfunc> ], ..
  *   ], ..
  * ]
  * Where:
@@ -12,6 +12,7 @@
  *  <fieldcontents>   tag() object, or an array of tag() objects
  *  <fieldreadfunc>   function reference. argument: <fieldcontents>; must return data to be used in the filter format
  *  <fieldwritefunc>  function reference, argument: <fieldcontents>, data from filter format; must update the contents with the passed data
+ *  <fieldshowfunc>   function reference, argument: <fieldcontents>, called when the field is displayed
  *
  * Filter string format:
  *  <field>-<value1>~<value2>.<field2>-<value>.<field3>-<value1>~<value2>
@@ -25,210 +26,276 @@
  * For boolean fields, the <value> is either 0 or 1.
  */
 
-var fil_cats; // [ <object with field->tr mapping>, <category-link1>, .. ]
 var fil_escape = "_ !\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~".split('');
-function filLoad() {
-  var l = byId('filselect').href.match(/#r$/) ? filReleases()
-        : byId('filselect').href.match(/#c$/) ? filChars()
-        : byId('filselect').href.match(/#s$/) ? filStaff()
-        : filVN();
-  fil_cats = [ new Object ];
+var fil_objs = [];
 
+function getObj(obj) {
+    while(!obj.fil_fields)
+        obj = obj.parentNode;
+    return obj;
+}
+
+
+function filLoad(lnk, serobj) {
+  var type = lnk.href.match(/#r$/) ? 'r' : lnk.href.match(/#c$/) ? 'c' : lnk.href.match(/#s$/) ? 's' : 'v';
+  var l = {r: filReleases, c: filChars, s: filStaff, v: filVN}[type]();
+
+  var fields = {};
   var p = tag('p', {'class':'browseopts'});
   var c = tag('div', null);
   var idx = 0;
   for(var i=1; i<l.length; i++) {
     if(!l[i])
       continue;
-    idx++;
 
     // category link
-    var a = tag('a', { href: '#', onclick: filSelectCat, fil_num: idx, fil_onshow:[] }, l[i][0]);
+    var a = tag('a', { href: '#', onclick: selectCat, fil_onshow:[] }, l[i][0]);
     p.appendChild(a);
     p.appendChild(tag(' '));
 
     // category contents
-    var t = tag('table', {'class':'formtable', fil_num: idx}, null);
-    setClass(t, 'hidden', true);
+    var t = tag('table', {'class':'formtable hidden', fil_a: a}, null);
     a.fil_t = t;
     for(var j=1; j<l[i].length; j++) {
       var fd = l[i][j];
       var lab = typeof fd[1] == 'object' ? fd[1][0] : fd[1];
-      var f = tag('tr', {'class':'newfield', fil_code: fd[0], fil_contents: fd[2], fil_readfunc: fd[3], fil_writefunc: fd[4]},
-        fd[0] ? tag('td', {'class':'check'}, tag('input', {type:'checkbox', id:'fil_check_'+fd[0], 'class':fd[1]==' '?'hidden':'', name:'fil_check_'+fd[0], onclick: filSelectField })) : tag('td', null),
+      var name = 'fil_check_'+type+'_'+fd[0];
+      var f = tag('tr', {'class':'newfield', fil_code: fd[0], fil_readfunc: fd[3], fil_writefunc: fd[4]},
+        // Checkbox
+        fd[0] ? tag('td', {'class':'check'},
+            tag('input', {type:'checkbox', id:name, name:name, 'class': 'enabled_check'+(fd[1]==' '?' hidden':''), onclick: selectField }))
+          : tag('td', null),
+        // Label
         fd[1] ? tag('td', {'class':'label'},
-          tag('label', {'for':'fil_check_'+fd[0]}, lab),
+          tag('label', {'for':name}, lab),
           typeof fd[1] == 'object' ? tag('b', fd[1][1]) : null
         ) : null,
+        // Contents
         tag('td', {'class':'cont' }, fd[2]));
       if(fd[0])
-        fil_cats[0][fd[0]] = f;
+        fields[fd[0]] = f;
       if(fd[5])
-        a.fil_onshow.push([ fd[5], f.fil_contents ]);
+        a.fil_onshow.push([ fd[5], fd[2] ]);
       t.appendChild(f);
     }
     c.appendChild(t);
-
-    fil_cats[idx] = a;
+    idx++;
   }
 
-  addBody(tag('div', { id: 'fil_div', 'class':'hidden' },
-    tag('a', {href:'#', onclick:filShow, 'class':'close'}, mt('_js_close')),
+  var savenote = tag('p', {'class':'hidden'}, '')
+  var obj = tag('div', {
+      'class': 'fil_div hidden',
+      fil_fields: fields,
+      fil_cats: byName(p, 'a'),
+      fil_savenote: savenote,
+      fil_serobj: serobj,
+      fil_lnk: lnk,
+      fil_type: type
+    },
+    tag('a', {href:'#', onclick:show, 'class':'close'}, mt('_js_close')),
     tag('h3', l[0]),
     p,
     tag('b', {'class':'ruler'}, null),
     c,
     tag('b', {'class':'ruler'}, null),
     tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_apply'), onclick:function () {
-      var f = byId('fil');
+      var f = serobj;
       while(f.nodeName.toLowerCase() != 'form')
         f = f.parentNode;
       f.submit();
     }}),
-    tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_reset'), onclick:function () { byId('fil').value = ''; filDeSerialize()} }),
-    byId('pref_code') ? tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_save'), onclick:filSaveDefault }) : null,
-    tag('p', {id:'fil_savenote', 'class':'hidden'}, '')
-  ));
-  filSelectCat(1);
-  byId('filselect').onclick = filShow;
-  filDeSerialize();
+    tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_reset'), onclick:function () { serobj.value = ''; deSerialize(obj) } }),
+    byId('pref_code') && lnk.id != 'rfilselect' ? tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_save'), onclick:saveDefault }) : null,
+    savenote
+  );
+  lnk.fil_obj = obj;
+  lnk.onclick = show;
+
+  addBody(obj);
+  fil_objs.push(obj);
+  deSerialize(obj);
+  selectCat(obj.fil_cats[0]);
 }
 
-function filSaveDefault() {
+
+function saveDefault() {
   var but = this;
-  var note = byId('fil_savenote');
+  var obj = getObj(this);
+  var note = obj.fil_savenote;
   setText(note, mt('_js_loading'));
   but.enabled = false;
-  setClass(byId('fil_savenote'), 'hidden', false);
-  var type = byId('filselect').href.match(/#r$/) ? 'release' : 'vn';
-  ajax('/xml/prefs.xml?formcode='+byId('pref_code').title+';key=filter_'+type+';value='+byId('fil').value, function (hr) {
+  setClass(note, 'hidden', false);
+  var type = obj.fil_type == 'r' ? 'release' : 'vn';
+  ajax('/xml/prefs.xml?formcode='+byId('pref_code').title+';key=filter_'+type+';value='+obj.fil_serobj.value, function (hr) {
     setText(note, mt('_js_fil_savenote'));
     but.enable = true;
   });
 }
 
-function filSelectCat(n) {
-  setClass(byId('fil_savenote'), 'hidden', true);
-  n = this.fil_num ? this.fil_num : n;
-  for(var i=1; i<fil_cats.length; i++) {
-    setClass(fil_cats[i], 'optselected', i == n);
-    setClass(fil_cats[i].fil_t, 'hidden', i != n);
+
+function selectCat(n) {
+  var lnk = n.fil_onshow ? n : this;
+  var obj = getObj(lnk);
+  setClass(obj.fil_savenote, 'hidden', true);
+  for(var i=0; i<obj.fil_cats.length; i++) {
+    var n = obj.fil_cats[i];
+    setClass(n, 'optselected', n == lnk);
+    setClass(n.fil_t, 'hidden', n != lnk);
   }
-  for(var i=0; i<fil_cats[n].fil_onshow.length; i++)
-    fil_cats[n].fil_onshow[i][0](fil_cats[n].fil_onshow[i][1]);
+  for(var i=0; i<lnk.fil_onshow.length; i++)
+    lnk.fil_onshow[i][0](lnk.fil_onshow[i][1]);
   return false
 }
 
-function filSelectField(obj) {
-  var t = obj && obj.parentNode ? obj : this;
-  setClass(byId('fil_savenote'), 'hidden', true);
+
+function selectField(f) {
+  if(!f.parentNode)
+      f = this;
+  setClass(getObj(f).fil_savenote, 'hidden', true);
+
   // update checkbox and label
-  var o = t;
+  var o = f;
   while(o.nodeName.toLowerCase() != 'tr')
     o = o.parentNode;
-  var c = byId('fil_check_'+o.fil_code);
-  if(c != t)
+  var c = byClass(o, 'enabled_check')[0];
+  if(c != f)
     c.checked = true;
-  if(hasClass(c, 'hidden'))
+  if(hasClass(c, 'hidden')) // When there's no label (e.g. tagspoil selector)
     c.checked = true;
-  setClass(byName(o, 'label')[0], 'active', c.checked);
+  var l = byName(o, 'label')[0];
+  if(l)
+    setClass(l, 'active', c.checked);
 
   // update category link
   while(o.nodeName.toLowerCase() != 'table')
     o = o.parentNode;
-  var l = byName(o, 'input');
+  var l = byName(o, 'tr');
   var n=0;
-  for(var i=0; i<l.length; i++)
-    if(l[i].type == 'checkbox' && l[i].id.substr(0, 10) == 'fil_check_' && !hasClass(l[i], 'hidden') && l[i].checked)
+  for(var i=0; i<l.length; i++) {
+    var ch = byClass(l[i], 'enabled_check')[0];
+    if(ch && !hasClass(ch, 'hidden') && ch.checked)
       n++;
-  setClass(fil_cats[o.fil_num], 'active', n>0);
+  }
+  setClass(o.fil_a, 'active', n>0);
 
   // serialize
-  filSerialize();
+  serialize(getObj(o));
   return true;
 }
 
-function filSerialize() {
+
+function escapeVal(val) {
+  var r = [];
+  for(var h=0; h<val.length; h++) {
+    var vs = (''+val[h]).split('');
+    r[h] = '';
+
+    // this isn't a very fast escaping method, blame JavaScript for inflexible search/replace support
+    for(var i=0; i<vs.length; i++) {
+      for(var j=0; j<fil_escape.length; j++)
+        if(vs[i] == fil_escape[j])
+          break;
+      r[h] += j == fil_escape.length ? vs[i] : '_'+(j<10?'0'+j:j);
+    }
+  }
+
+  return r[0] == '' ? '' : r.join('~');
+}
+
+
+function serialize(obj) {
+  if(!obj.fil_fields)
+    obj = getObj(this);
   var num = 0;
   var values = {};
-  for(var f in fil_cats[0]) {
-    if(!byId('fil_check_'+f).checked)
+
+  for(var f in obj.fil_fields) {
+    var fo = obj.fil_fields[f];
+    var ch = byClass(fo, 'enabled_check')[0];
+    if(!ch || !ch.checked)
       continue;
-    if(!hasClass(byId('fil_check_'+f), 'hidden'))
+    if(!hasClass(ch, 'hidden'))
       num++;
-    var v = fil_cats[0][f].fil_readfunc(fil_cats[0][f].fil_contents);
-    var r = [];
-    for(var h=0; h<v.length; h++) {
-      var vs = (''+v[h]).split('');
-      r[h] = '';
-      // this isn't a very fast escaping method, blame JavaScript for inflexible search/replace support
-      for(var i=0; i<vs.length; i++) {
-        for(var j=0; j<fil_escape.length; j++)
-          if(vs[i] == fil_escape[j])
-            break;
-        r[h] += j == fil_escape.length ? vs[i] : '_'+(j<10?'0'+j:j);
-      }
-    }
-    if(r.length > 0 && r[0] != '')
-      values[fil_cats[0][f].fil_code] = r.join('~');
+
+    var v = escapeVal(fo.fil_readfunc(byClass(fo, 'cont')[0].childNodes[0]));
+    if(v != '')
+      values[fo.fil_code] = v;
   }
+
   if(!values['tag_inc'] && !values['trait_inc'])
     delete values['tagspoil'];
+
   var l = [];
   for(var f in values)
     l.push(f+'-'+values[f]);
-  byId('fil').value = l.join('.');
-  setText(byName(byId('filselect'), 'i')[1], num > 0 ? ' ('+num+')' : '');
+
+  obj.fil_serobj.value = l.join('.');
+  setText(byName(obj.fil_lnk, 'i')[1], num > 0 ? ' ('+num+')' : '');
 }
 
-function filDeSerialize() {
-  var d = byId('fil').value;
+
+function deSerialize(obj) {
+  var d = obj.fil_serobj.value;
   var fs = d.split('.');
-  var f = new Object;
+
+  var f = {};
   for(var i=0; i<fs.length; i++) {
     var v = fs[i].split('-');
-    if(fil_cats[0][v[0]])
+    if(obj.fil_fields[v[0]])
       f[v[0]] = v[1];
   }
-  for(var fn in fil_cats[0])
+
+  for(var fn in obj.fil_fields)
     if(!f[fn])
       f[fn] = '';
   for(var fn in f) {
-    var c = byId('fil_check_'+fn);
+    var c = byClass(obj.fil_fields[fn], 'enabled_check')[0];
     if(!c)
       continue;
-    c.checked = f[fn] == '' ? false : true;
+    c.checked = f[fn] != '';
+
     var v = f[fn].split('~');
     for(var i=0; i<v.length; i++)
       v[i] = v[i].replace(/_([0-9]{2})/g, function (a, e) { return fil_escape[Math.floor(e)] });
-    fil_cats[0][fn].fil_writefunc(fil_cats[0][fn].fil_contents, v);
-    // not very efficient: filSelectField() does a lot of things that can be
+
+    obj.fil_fields[fn].fil_writefunc(byClass(obj.fil_fields[fn], 'cont')[0].childNodes[0], v);
+    // not very efficient: selectField() does a lot of things that can be
     //  batched after all fields have been updated, and in some cases the
-    //  writefunc() triggers the same filSelectField() as well
-    filSelectField(c);
+    //  writefunc() triggers the same selectField() as well
+    selectField(c);
   }
 }
 
-function filShow() {
-  var div = byId('fil_div');
-  var hid = !hasClass(div, 'hidden');
-  setClass(div, 'hidden', hid);
-  setText(byName(byId('filselect'), 'i')[0], hid ? collapsed_icon : expanded_icon);
-  setClass(byId('fil_savenote'), 'hidden', true);
 
-  var o = this;
+function show() {
+  var obj = this.fil_obj || getObj(this);
+
+  // Hide other filter objects
+  for(var i=0; i<fil_objs.length; i++)
+    if(fil_objs[i] != obj) {
+      setClass(fil_objs[i], 'hidden', true);
+      setText(byName(fil_objs[i].fil_lnk, 'i')[0], collapsed_icon);
+    }
+
+  var hid = !hasClass(obj, 'hidden');
+  setClass(obj, 'hidden', hid);
+  setText(byName(obj.fil_lnk, 'i')[0], hid ? collapsed_icon : expanded_icon);
+  setClass(obj.fil_savenote, 'hidden', true);
+
+  var o = obj.fil_lnk;
   ddx = ddy = 0;
   do {
     ddx += o.offsetLeft;
     ddy += o.offsetTop;
   } while(o = o.offsetParent);
-  ddy += this.offsetHeight+2;
-  ddx += (this.offsetWidth-div.offsetWidth)/2;
-  div.style.left = ddx+'px';
-  div.style.top = ddy+'px';
+  ddy += obj.fil_lnk.offsetHeight+2;
+  ddx += (obj.fil_lnk.offsetWidth-obj.offsetWidth)/2;
+  obj.style.left = ddx+'px';
+  obj.style.top = ddy+'px';
 
   return false;
 }
+
 
 var curSlider = null;
 function filFSlider(c, n, min, max, def, unit) {
@@ -277,7 +344,7 @@ function filFSlider(c, n, min, max, def, unit) {
       curSlider.oldmousemove = null;
       document.onmouseup = curSlider.oldmouseup;
       curSlider.oldmouseup = null;
-      filSelectField(curSlider);
+      selectField(curSlider);
       return false;
     }
     document.onmousemove = set;
@@ -288,7 +355,7 @@ function filFSlider(c, n, min, max, def, unit) {
 }
 
 function filFSelect(c, n, lines, opts) {
-  var s = tag('select', {onfocus: filSelectField, onchange: filSerialize, multiple: lines > 1, size: lines});
+  var s = tag('select', {onfocus: selectField, onchange: serialize, multiple: lines > 1, size: lines});
   for(var i=0; i<opts.length; i++) {
     if(typeof opts[i][1] != 'object')
       s.appendChild(tag('option', {name: opts[i][0]}, opts[i][1]));
@@ -327,7 +394,7 @@ function filFOptions(c, n, opts) {
       setClass(l[i], 'tsel', l[i].fil_n+'' == o+'');
     p.fil_val = o;
     if(typeof e != 'string')
-      filSelectField(p);
+      selectField(p);
     return false
   };
   for(var i=0; i<opts.length; i++) {
@@ -355,7 +422,7 @@ function filFTagInput(name, label, type) {
           // a -> li -> ul -> div
           var ul = this.parentNode.parentNode;
           ul.removeChild(this.parentNode);
-          filSelectField(ul.parentNode);
+          selectField(ul.parentNode);
           return false
         }
       }, mt('_js_remove')), ')'
@@ -394,7 +461,7 @@ function filFTagInput(name, label, type) {
         c.fil_val = null;
       }, 1);
   };
-  var input = tag('input', {type:'text', 'class':'text', style:'width:300px', onfocus:filSelectField});
+  var input = tag('input', {type:'text', 'class':'text', style:'width:300px', onfocus:selectField});
   var list = tag('ul', null);
   dsInit(input, src+'?q=',
     function(item, tr) {
@@ -411,11 +478,11 @@ function filFTagInput(name, label, type) {
         alert(mt('_js_ds_'+type+'_nometa'));
       else {
         addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue, item.getAttribute('groupname'));
-        filSelectField(obj);
+        selectField(obj);
       }
       return '';
     },
-    function(o) { filSelectField(o) }
+    function(o) { selectField(o) }
   );
 
   return [
@@ -476,13 +543,14 @@ function filReleases() {
       filFOptions('patch',    mt('_rbrowse_patch'),   [ [1, mt('_rbrowse_patch_yes')],    [0, mt('_rbrowse_patch_no')] ]),
       filFOptions('freeware', mt('_rbrowse_freeware'),[ [1, mt('_rbrowse_freeware_yes')], [0, mt('_rbrowse_freeware_no')] ]),
       filFOptions('doujin',   mt('_rbrowse_doujin'),  [ [1, mt('_rbrowse_doujin_yes')],   [0, mt('_rbrowse_doujin_no')] ]),
-      [ 'date_after',  mt('_rbrowse_dateafter'),  dateLoad(null, filSelectField), function (c) { return [c.date_val] }, function(o,v) { o.dateSet(v) } ],
-      [ 'date_before', mt('_rbrowse_datebefore'), dateLoad(null, filSelectField), function (c) { return [c.date_val] }, function(o,v) { o.dateSet(v) } ],
+      [ 'date_after',  mt('_rbrowse_dateafter'),  dateLoad(null, selectField), function (c) { return [c.date_val] }, function(o,v) { o.dateSet(v) } ],
+      [ 'date_before', mt('_rbrowse_datebefore'), dateLoad(null, selectField), function (c) { return [c.date_val] }, function(o,v) { o.dateSet(v) } ],
       filFOptions('released', mt('_rbrowse_released'),[ [1, mt('_rbrowse_released_yes')], [0, mt('_rbrowse_released_no')] ])
     ],
     [ mt('_rbrowse_minage'),     filFSelect('minage',     mt('_rbrowse_minage'),     15, VARS.age_ratings) ],
     [ mt('_rbrowse_language'),   filFSelect('lang',       mt('_rbrowse_language'),   20, VARS.languages) ],
-    [ mt('_rbrowse_olang'),      filFSelect('olang',      mt('_rbrowse_olang'),      20, VARS.languages) ],
+    byId('rfilselect') ? null :
+      [ mt('_rbrowse_olang'),    filFSelect('olang',      mt('_rbrowse_olang'),      20, VARS.languages) ],
     [ mt('_rbrowse_resolution'), filFSelect('resolution', mt('_rbrowse_resolution'), 15, VARS.resolutions) ],
     [ mt('_rbrowse_platform'),   filFSelect('plat',       mt('_rbrowse_platform'),   20, plat) ],
     [ mt('_rbrowse_medium'),     filFSelect('med',        mt('_rbrowse_medium'),     10, med)  ],
@@ -554,4 +622,6 @@ function filStaff() {
 }
 
 if(byId('filselect'))
-  filLoad();
+  filLoad(byId('filselect'), byId('fil'));
+if(byId('rfilselect'))
+  filLoad(byId('rfilselect'), byId('rfil'));

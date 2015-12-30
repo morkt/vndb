@@ -7,26 +7,15 @@ use POSIX 'strftime';
 use Exporter 'import';
 use VNDB::Func 'gtintype';
 
-our @EXPORT = qw|dbReleaseGet dbReleaseGetRev dbReleaseRevisionInsert|;
+our @EXPORT = qw|dbReleaseFilters dbReleaseGet dbReleaseGetRev dbReleaseRevisionInsert|;
 
 
-# Options: id vid pid released page results what med sort reverse date_before date_after
-#   plat lang olang type minage search resolution freeware doujin voiced ani_story ani_ero
-# What: extended vn producers platforms media affiliates
-# Sort: title released minage
-sub dbReleaseGet {
+# Release filters shared by dbReleaseGet and dbVNGet
+sub dbReleaseFilters {
   my($self, %o) = @_;
-  $o{results} ||= 50;
-  $o{page} ||= 1;
-  $o{what} ||= '';
   $o{plat} = [ $o{plat} ] if $o{plat} && !ref $o{plat};
   $o{med}  = [ $o{med}  ] if $o{med}  && !ref $o{med};
-
-  my @where = (
-    !$o{id}                 ? ( 'r.hidden = FALSE' => 0       ) : (),
-    $o{id}                  ? ( 'r.id = ?'         => $o{id}  ) : (),
-    $o{vid}                 ? ( 'rv.vid IN(!l)'    => [ ref $o{vid} ? $o{vid} : [$o{vid}] ] ) : (),
-    $o{pid}                 ? ( 'rp.pid = ?'       => $o{pid} ) : (),
+  return (
     defined $o{patch}       ? ( 'r.patch = ?'      => $o{patch}    == 1 ? 1 : 0) : (),
     defined $o{freeware}    ? ( 'r.freeware = ?'   => $o{freeware} == 1 ? 1 : 0) : (),
     defined $o{doujin}      ? ( 'r.doujin = ?'     => $o{doujin}   == 1 ? 1 : 0) : (),
@@ -51,6 +40,26 @@ sub dbReleaseGet {
       grep(/^unk$/, @{$o{med}}) ? 'NOT EXISTS(SELECT 1 FROM releases_media irm WHERE irm.id = r.id)' : (),
       grep(!/^unk$/, @{$o{med}}) ? 'r.id IN(SELECT irm.id FROM releases_media irm WHERE irm.medium IN(!l))' : ()
       ).')', [ [ grep(!/^unk$/, @{$o{med}}) ] ]) : (),
+  );
+}
+
+
+# Options: id vid pid released page results what med sort reverse date_before date_after
+#   plat lang olang type minage search resolution freeware doujin voiced ani_story ani_ero
+# What: extended vn producers platforms media affiliates
+# Sort: title released minage
+sub dbReleaseGet {
+  my($self, %o) = @_;
+  $o{results} ||= 50;
+  $o{page} ||= 1;
+  $o{what} ||= '';
+
+  my @where = (
+    !$o{id}                 ? ( 'r.hidden = FALSE' => 0       ) : (),
+    $o{id}                  ? ( 'r.id = ?'         => $o{id}  ) : (),
+    $o{vid}                 ? ( 'rv.vid IN(!l)'    => [ ref $o{vid} ? $o{vid} : [$o{vid}] ] ) : (),
+    $o{pid}                 ? ( 'rp.pid = ?'       => $o{pid} ) : (),
+    $self->dbReleaseFilters(%o),
   );
 
   if($o{search}) {

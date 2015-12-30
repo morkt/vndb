@@ -100,8 +100,10 @@ sub traitpage {
       a href => "/i$trait?m=2", $f->{m} == 2 ? (class => 'optselected') : (), mt '_spoilset_2';
      end;
 
-     a id => 'filselect', href => '#c';
-      lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+     p class => 'filselect';
+      a id => 'filselect', href => '#c';
+       lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+      end;
      end;
      input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
 

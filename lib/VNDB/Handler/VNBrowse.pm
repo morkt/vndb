@@ -22,6 +22,7 @@ sub list {
     { get => 'q', required => 0, default => '' },
     { get => 'sq', required => 0, default => '' },
     { get => 'fil',required => 0 },
+    { get => 'rfil', required => 0, default => '' },
     { get => 'vnlist', required => 0, default => 2, enum => [ '0', '1' ] }, # 2: use pref
     { get => 'wish',   required => 0, default => 2, enum => [ '0', '1' ] }, # 2: use pref
   );
@@ -50,6 +51,9 @@ sub list {
   $f->{s} = 'title' if $f->{fil} !~ /tag_inc-/ && $f->{s} eq 'tagscore';
   $f->{o} = $f->{s} eq 'tagscore' ? 'd' : 'a' if !$f->{o};
 
+  my $rfil = fil_parse $f->{rfil}, @{$VNDB::Util::Misc::filfields{release}};
+  $f->{rfil} = fil_serialize $rfil, @{$VNDB::Util::Misc::filfields{release}};
+
   my($list, $np) = $self->filFetchDB(vn => $f->{fil}, {
     %compat,
     tagspoil => $self->authPref('spoilers')||0,
@@ -57,8 +61,9 @@ sub list {
     what =>               ' rating' .
          ($f->{vnlist}  ? ' vnlist'   : '').
          ($f->{wish}    ? ' wishlist' : ''),
-    $char ne 'all' ? ( char => $char ) : (),
-    $f->{q} ? ( search => $f->{q} ) : (),
+    $char ne 'all' ? ( char    => $char   ) : (),
+    $f->{q}        ? ( search  => $f->{q} ) : (),
+    keys %$rfil    ? ( release => $rfil   ) : (),
     results => 50,
     page => $f->{p},
     sort => $f->{s}, reverse => $f->{o} eq 'd',
@@ -76,7 +81,7 @@ sub list {
   my $url = sub {
     my($char, $toggle) = @_;
 
-    return "/v/$char?q=$quri;fil=$f->{fil};s=$f->{s};o=$f->{o}" .
+    return "/v/$char?q=$quri;fil=$f->{fil};rfil=$f->{rfil};s=$f->{s};o=$f->{o}" .
            ($toggle ? ";$toggle=".($f->{$toggle}?0:1) : '');
   };
 
@@ -95,14 +100,20 @@ sub list {
      end 'p';
    }
 
-   a id => 'filselect', href => '#v';
-    lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+   p class => 'filselect';
+    a id => 'filselect', href => '#v';
+     lit '<i>&#9656;</i> '.mt('_vnbrowse_fil_title').'<i></i>';
+    end;
+    a id => 'rfilselect', href => '#r';
+     lit '<i>&#9656;</i> '.mt('_rbrowse_fil_title').'<i></i>';
+    end;
    end;
    input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
+   input type => 'hidden', class => 'hidden', name => 'rfil', id => 'rfil', value => $f->{rfil};
   end;
   end 'form';
 
-  $self->htmlBrowseVN($list, $f, $np, "/v/$char?q=$quri;fil=$f->{fil}", $f->{fil} =~ /tag_inc-/);
+  $self->htmlBrowseVN($list, $f, $np, "/v/$char?q=$quri;fil=$f->{fil};rfil=$f->{rfil}", $f->{fil} =~ /tag_inc-/);
   $self->htmlFooter(pref_code => 1);
 }
 
