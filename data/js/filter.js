@@ -41,6 +41,7 @@ function filLoad(lnk, serobj) {
   var l = {r: filReleases, c: filChars, s: filStaff, v: filVN}[type]();
 
   var fields = {};
+  var cats = [];
   var p = tag('p', {'class':'browseopts'});
   var c = tag('div', null);
   var idx = 0;
@@ -50,6 +51,7 @@ function filLoad(lnk, serobj) {
 
     // category link
     var a = tag('a', { href: '#', onclick: selectCat, fil_onshow:[] }, l[i][0]);
+    cats.push(a);
     p.appendChild(a);
     p.appendChild(tag(' '));
 
@@ -86,7 +88,7 @@ function filLoad(lnk, serobj) {
   var obj = tag('div', {
       'class': 'fil_div hidden',
       fil_fields: fields,
-      fil_cats: byName(p, 'a'),
+      fil_cats: cats,
       fil_savenote: savenote,
       fil_serobj: serobj,
       fil_lnk: lnk,
