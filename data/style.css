@@ -104,6 +104,7 @@ pre {
   border-right: none;
   border-left: 1px solid $border$;
   background: url($_boxbg$) repeat;
+  overflow-x: auto;
 }
 
 
@@ -297,7 +298,7 @@ div.history td.tc4 b { margin-left: 10px }
 
 /* threads page */
 #maincontent div.thread  { padding: 0; }
-div.thread table         { width: 100%; }
+div.thread table         { width: 100%; table-layout: fixed }
 div.thread td            { border-bottom: 1px solid $border$; }
 div.thread td.tc1        { width: 150px; padding: 5px 10px; border-right: 1px solid $border$; }
 div.thread td.tc2        { padding: 10px 20px 10px 10px; }
