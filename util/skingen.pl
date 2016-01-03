@@ -72,9 +72,15 @@ sub writeskin { # $name
   my $css = join '', <$CSS>;
   close $CSS;
   $css =~ s/\$$_\$/$o{$_}/g for (keys %o);
-  open my $SKIN, '>', "$ROOT/static/s/$name/style.css" or die $!;
+
+  my $f = "$ROOT/static/s/$name/style.css";
+  open my $SKIN, '>', "$f~" or die $!;
   print $SKIN $CSS::Minifier::XS::VERSION ? CSS::Minifier::XS::minify($css) : $css;
   close $SKIN;
+
+  rename "$f~", $f;
+
+  `$VNDB::SKINGEN{gzip} -c '$f' >'$f.gz'` if $VNDB::SKINGEN{gzip};
 }
 
 

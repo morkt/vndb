@@ -183,6 +183,8 @@ sub save {
   }
 
   rename "$f~", $f or die $!;
+
+  `$VNDB::JSGEN{gzip} -c '$f' >'$f.gz'` if $VNDB::JSGEN{gzip};
 }
 
 sub jsgen {

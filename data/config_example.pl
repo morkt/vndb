@@ -40,6 +40,11 @@ package VNDB;
 #$JSGEN{compress} = 'JavaScript::Minifier::XS';
 #$JSGEN{compress} = "|/usr/bin/uglifyjs --compress --mangle";
 
-# Uncomment to generate an extra small icons.png (note: setting both pngcrush and slow options really is slow)
-#$SPRITEGEN{pngcrush} = '/usr/bin/pngcrush';
+# Uncomment to create pre-compressed css and js files using zopfli
+#$JSGEN{gzip} = $SKINGEN{gzip} = "/usr/bin/zopfli";
+
+# Uncomment to generate an extra small icons.png
+# (note: using zopflipng or pngcrush with the slow option is *really* slow, but compresses awesomely)
+#$SPRITEGEN{crush} = '/usr/bin/pngcrush -q';
+#$SPRITEGEN{crush} = '/usr/bin/zopflipng -m --lossy_transparent';
 #$SPRITEGEN{slow} = 1;

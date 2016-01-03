@@ -60,7 +60,11 @@ sub genstrip {
     $i->{y} = $h;
     $h += $i->{h};
   }
-  return $h;
+
+  # Recalculate the (actually used) width
+  $w = 0;
+  $w < $_->{x}+$_->{w} && ($w = $_->{x}+$_->{w}) for (@img);
+  ($w, $h);
 }
 
 
@@ -78,33 +82,25 @@ sub minstrip {
     $minwidth = $_->{w} if $_->{w} > $minwidth;
     $maxwidth += $_->{w};
   }
-  my $optw;
-  my $optsize = 1e10;
-  for my $w ($minwidth..$maxwidth) {
-    my $size = genstrip($w)*$w;
+
+  my($optsize, $w, $h, $optw, $opth) = (1e9, $maxwidth);
+  while($w >= $minwidth) {
+    ($w, $h) = genstrip($w);
     # Optimize for file size rather than pixel count if slow is set
-    $size = img() if $VNDB::SPRITEGEN{slow};
+    my $size = $VNDB::SPRITEGEN{slow} ? img($w, $h) : $w*$h;
     if($size < $optsize) {
       $optw = $w;
+      $opth = $h;
       $optsize = $size;
     }
+    $w--;
   }
   genstrip($optw);
 }
 
 
-sub calcdim {
-  my($w, $h) = (0,0);
-  for (@img) {
-    $w = $_->{x}+$_->{w} if $w < $_->{x}+$_->{w};
-    $h = $_->{y}+$_->{h} if $h < $_->{y}+$_->{h};
-  }
-  ($w, $h)
-}
-
-
 sub img {
-  my($w, $h) = calcdim;
+  my($w, $h) = @_;
   my $img = Image::Magick->new;
   print $img->Set(size => "${w}x$h");
   print $img->ReadImage('canvas:rgba(0,0,0,0)');
@@ -115,8 +111,8 @@ sub img {
   print $img->Write("png32:$ticons");
   undef $img;
 
-  if($VNDB::SPRITEGEN{pngcrush}) {
-    `$VNDB::SPRITEGEN{pngcrush} -q "$ticons" "$ticons~"`;
+  if($VNDB::SPRITEGEN{crush}) {
+    `$VNDB::SPRITEGEN{crush} "$ticons" "$ticons~"`;
     rename "$ticons~", $ticons or die $!;
   }
 
@@ -144,7 +140,6 @@ sub css {
 }
 
 
-minstrip;
-img;
+img minstrip;
 css;
 rename $ticons, $icons or die $!;

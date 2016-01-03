@@ -137,13 +137,19 @@ our %M = (
 # Options for jsgen.pl
 our %JSGEN = (
   compress => undef,
+  gzip => undef,
 );
 
 
 # Options for spritegen.pl
 our %SPRITEGEN = (
   slow => 0,
-  pngcrush => undef,
+  crush => undef,
+);
+
+# Options for skingen.pl
+our %SKINGEN = (
+  gzip => undef,
 );
 
 
