@@ -50,6 +50,7 @@ my %O = (
   throt_sameid => [ 60, 0 ], # spamming the same vndbid
   throt_vndbid => [ 5,  5 ], # spamming vndbids in general
   throt_cmd    => [ 10, 2 ], # handling commands from a single user
+  nick_check_interval => 600,
 );
 
 
@@ -63,6 +64,23 @@ sub run {
   set_quotew($_) for (0..$#{$O{channels}});
   set_notify();
   ircconnect();
+
+  # Watchdog to see if we still have our nick.
+  push_watcher schedule 0, $O{nick_check_interval}, sub {
+    return if !$irc->is_connected() || $irc->is_my_nick($O{nick});
+    $irc->send_msg(PRIVMSG => NickServ => "GHOST $O{nick} $O{pass}");
+    my $t; $t = AE::timer 5, 0, sub {
+      undef $t;
+      return if !$irc->is_connected() || $irc->is_my_nick($O{nick});
+      AE::log warn => 'Lost our nick, trying to reclaim.';
+      $irc->send_msg(NICK => $O{nick});
+      $t = AE::timer 5, 0, sub {
+        undef $t;
+        return if !$irc->is_connected() || !$irc->is_my_nick($O{nick});
+        $irc->send_msg(PRIVMSG => NickServ => "IDENTIFY $O{pass}");
+      };
+    };
+  } if $O{pass};
 }
 
 
