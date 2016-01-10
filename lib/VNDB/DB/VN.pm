@@ -6,7 +6,6 @@ use warnings;
 use TUWF 'sqlprint';
 use Exporter 'import';
 use VNDB::Func 'gtintype', 'normalize_query';
-use Encode 'decode_utf8';
 
 our @EXPORT = qw|dbVNGet dbVNGetRev dbVNRevisionInsert dbVNImageId dbScreenshotAdd dbScreenshotGet dbScreenshotRandom dbVNImportSeiyuu|;
 
@@ -131,7 +130,6 @@ sub dbVNGet {
     join(', ', @select), join(' ', @join), \@where, $order,
   );
 
-  $_->{svg} && ($_->{svg} = decode_utf8($_->{svg})) for (@$r);
   return _enrich($self, $r, $np, 0, $o{what});
 }
 
