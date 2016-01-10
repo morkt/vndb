@@ -80,7 +80,10 @@ sub writeskin { # $name
 
   rename "$f~", $f;
 
-  `$VNDB::SKINGEN{gzip} -c '$f' >'$f.gz'` if $VNDB::SKINGEN{gzip};
+  if($VNDB::SKINGEN{gzip}) {
+    `$VNDB::SKINGEN{gzip} -c '$f' >'$f.gz~'`;
+    rename "$f.gz~", "$f.gz";
+  }
 }
 
 
