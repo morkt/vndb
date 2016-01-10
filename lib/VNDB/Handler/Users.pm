@@ -166,6 +166,7 @@ sub login {
     );
 
     if(!$frm->{_err}) {
+      $frm->{usrname} = lc $frm->{usrname};
       return if $self->authLogin($frm->{usrname}, $frm->{usrpass}, $ref);
       $frm->{_err} = [ 'login_failed' ];
       $self->dbThrottleSet(norm_ip($self->reqIP), $tm+$self->{login_throttle}[0]);
@@ -269,7 +270,7 @@ sub setpass {
       my %o = (email_confirmed => 1);
       $o{passwd} = $self->authPreparePass($frm->{usrpass});
       $self->dbUserEdit($uid, %o);
-      return $self->authLogin($u->{username}, $frm->{usrpass}, "/u$uid");
+      return $self->authCreateSession($u->{username}, "/u$uid");
     }
   }
 
@@ -369,6 +370,7 @@ sub edit {
         { post => 'ign_votes', required => 0, default => 0 },
       ) : (),
       { post => 'mail',       template => 'email' },
+      { post => 'curpass',    required => 0, minlength => 4, maxlength => 64, template => 'ascii', default => '' },
       { post => 'usrpass',    required => 0, minlength => 4, maxlength => 64, template => 'ascii' },
       { post => 'usrpass2',   required => 0, minlength => 4, maxlength => 64, template => 'ascii' },
       { post => 'hide_list',  required => 0, default => 0,  enum => [0,1] },
@@ -382,6 +384,10 @@ sub edit {
     );
     push @{$frm->{_err}}, 'passmatch'
       if ($frm->{usrpass} || $frm->{usrpass2}) && (!$frm->{usrpass} || !$frm->{usrpass2} || $frm->{usrpass} ne $frm->{usrpass2});
+    push @{$frm->{_err}}, 'invalidpass'
+      if !($self->authInfo->{id} != $u->{id} && $self->authCan('usermod'))
+          && ($frm->{usrpass} || $frm->{usrpass2}) && !$self->authCheck($u->{username}, $frm->{curpass});
+
     if(!$frm->{_err}) {
       $frm->{skin} = '' if $frm->{skin} eq $self->{skin_default};
       $self->dbUserPrefSet($uid, $_ => $frm->{$_}) for (qw|skin customcss show_nsfw traits_sexual tags_all hide_list spoilers|);
@@ -410,6 +416,7 @@ sub edit {
   $frm->{tags_cat} ||= [ split /,/, $u->{prefs}{tags_cat}||$self->{default_tags_cat} ];
   $frm->{ign_votes} = $u->{ign_votes} if !defined $frm->{ign_votes};
   $frm->{skin}    ||= $self->{skin_default};
+  $frm->{usrpass} = $frm->{usrpass2} = $frm->{curpass} = '';
 
   # create the page
   $self->htmlHeader(title => mt('_usere_title'), noindex => 1);
@@ -436,6 +443,7 @@ sub edit {
 
     [ part   => title => mt '_usere_changepass' ],
     [ static => content => mt '_usere_changepass_msg' ],
+    [ passwd => short => 'curpass', name => mt '_usere_curpass' ],
     [ passwd => short => 'usrpass', name => mt '_usere_password' ],
     [ passwd => short => 'usrpass2', name => mt '_usere_confirm' ],
 

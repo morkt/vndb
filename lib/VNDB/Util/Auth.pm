@@ -14,7 +14,7 @@ use VNDB::Func;
 
 
 our @EXPORT = qw|
-  authInit authLogin authLogout authInfo authCan authPreparePass
+  authInit authLogin authLogout authInfo authCan authPreparePass authCreateSession authCheck
   authPrepareReset authValidateReset authGetCode authCheckCode authPref
 |;
 
@@ -50,22 +50,31 @@ sub authInit {
 # login, arguments: user, password, url-to-redirect-to-on-success
 # returns 1 on success (redirected), 0 otherwise (no reply sent)
 sub authLogin {
-  my $self = shift;
-  my $user = lc(scalar shift);
-  my $pass = shift;
-  my $to = shift;
+  my($self, $user, $pass, $to) = @_;
 
-  if(_authCheck($self, $user, $pass)) {
-    my $token = urandom(20);
-    my $cookie = unpack('H*', $token).'.'.$self->{_auth}{id};
-    $self->dbSessionAdd($self->{_auth}{id}, sha1 $token);
-
-    $self->resRedirect($to, 'post');
-    $self->resCookie(auth => $cookie, httponly => 1, expires => time + 31536000); # keep the cookie for 1 year
+  if($self->authCheck($user, $pass)) {
+    $self->authCreateSession($user, $to);
     return 1;
   }
 
   return 0;
+}
+
+
+# Args: user, url-to-redirect-to-on-success
+# Should only be called if the user is already authenticated (i.e. after authCheck or when the user just confirmed his email address).
+sub authCreateSession {
+  my($self, $user, $to) = @_;
+
+  $self->{_auth} = $self->dbUserGet(username => $user, what => 'extended notifycount')->[0] if $user;
+  die "No valid user!" if !$self->{_auth}{id};
+
+  my $token = urandom(20);
+  my $cookie = unpack('H*', $token).'.'.$self->{_auth}{id};
+  $self->dbSessionAdd($self->{_auth}{id}, sha1 $token);
+
+  $self->resRedirect($to, 'post');
+  $self->resCookie(auth => $cookie, httponly => 1, expires => time + 31536000); # keep the cookie for 1 year
 }
 
 
@@ -104,7 +113,7 @@ sub authCan {
 # Checks for a valid login and writes information in _auth
 # Arguments: user, pass
 # Returns: 1 if login is valid, 0 otherwise
-sub _authCheck {
+sub authCheck {
   my($self, $user, $pass) = @_;
 
   return 0 if !$user || length($user) > 15 || length($user) < 2 || !$pass;

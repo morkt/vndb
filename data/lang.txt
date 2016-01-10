@@ -12669,17 +12669,29 @@ tr : Şimdiki şifrenizi korumak için boş bırakın
 uk : Залиш порожнім, якщо не хочеш міняти пароль
 it : Lascia vuoto se vuoi mantere la tua password attuale
 
+:_usere_curpass
+en : Current Password
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
+
 :_usere_password
-en : Password
-ru : Пароль
-cs : Heslo
-hu : Jelszó
-nl : Wachtwoord
-de : Passwort
-es : Contraseña
-tr : Şifre
-uk : Пароль
-it :
+en : New Password
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_usere_confirm
 en : Confirm password
@@ -16273,6 +16285,18 @@ es : La contraseña no coincide
 tr : Şifreler eşleşmiyor
 uk : Пароль не підходить
 it : Le password non combaciano
+
+:_formerr_e_invalidpass
+en : Invalid password
+ru*:
+cs*:
+hu*:
+nl*:
+de*:
+es*:
+tr*:
+uk*:
+it*:
 
 :_formerr_e_usrexists
 en : Someone already has this username, please choose something else
