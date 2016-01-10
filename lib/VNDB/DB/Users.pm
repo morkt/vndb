@@ -35,7 +35,7 @@ sub dbUserGet {
     !$o{firstchar} && defined $o{firstchar} ? (
       'ASCII(username) < 97 OR ASCII(username) > 122' => 1 ) : (),
     $o{mail} ? (
-      'mail = ?' => $o{mail} ) : (),
+      'LOWER(mail) = LOWER(?)' => $o{mail} ) : (),
     $o{uid} && !ref($o{uid}) ? (
       'id = ?' => $o{uid} ) : (),
     $o{uid} && ref($o{uid}) ? (
