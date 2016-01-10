@@ -43,12 +43,14 @@ my %O = (
   timeoutdelay => 0.4, # $delay = $msgdelay ** (1 + $tm*$timeoutdelay)
   maxtimeoutdelay => 2*3600,
   check_delay => 3600,
+  resolve_delay => 3*3600,
   cachetime => '3 months',
 );
 
 
 my %C = (
   sock => undef,
+  io => undef,
   tw => undef,# timer guard
   s => '',    # session key, '' = not logged in
   tm => 0,    # number of repeated timeouts
@@ -74,26 +76,35 @@ sub run {
   %O = (%O, @_);
   die "No AniDB user/pass configured!" if !$O{user} || !$O{pass};
 
-  AnyEvent::Socket::resolve_sockaddr $O{apihost}, $O{apiport}, 'udp', 0, undef, sub {
-    my($fam, $type, $proto, $saddr) = @{$_[0]};
-    socket $C{sock}, $fam, $type, $proto or die "Can't create UDP socket: $!";
-    connect $C{sock}, $saddr or die "Can't connect() UDP socket: $!";
-    fh_nonblocking $C{sock}, 1;
-
-    my($p, $h) = AnyEvent::Socket::unpack_sockaddr($saddr);
-    AE::log info => sprintf "AniDB API client started, communicating with %s:%d", format_address($h), $p;
-
-    push_watcher pg->listen(anime => on_notify => \&check_anime);
-    push_watcher schedule 0, $O{check_delay}, \&check_anime;
-    push_watcher AE::io $C{sock}, 0, \&receivemsg;
-
-    check_anime();
-  };
+  push_watcher schedule 0, $O{resolve_delay}, \&resolve;
+  resolve();
 }
 
 
 sub unload {
   undef $C{tw};
+}
+
+
+sub resolve {
+  AnyEvent::Socket::resolve_sockaddr $O{apihost}, $O{apiport}, 'udp', 0, undef, sub {
+    my($fam, $type, $proto, $saddr) = @{$_[0]};
+    my $sock;
+    socket $sock, $fam, $type, $proto or die "Can't create UDP socket: $!";
+    connect $sock, $saddr or die "Can't connect() UDP socket: $!";
+    fh_nonblocking $sock, 1;
+
+    if(!$C{sock}) {
+      my($p, $h) = AnyEvent::Socket::unpack_sockaddr($saddr);
+      AE::log info => sprintf "AniDB API client started, communicating with %s:%d", format_address($h), $p if !$C{sock};
+      push_watcher pg->listen(anime => on_notify => \&check_anime);
+      push_watcher schedule 0, $O{check_delay}, \&check_anime;
+      check_anime();
+    }
+
+    $C{sock} = $sock;
+    $C{io} = AE::io $C{sock}, 0, \&receivemsg;
+  };
 }
 
 
