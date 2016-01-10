@@ -917,7 +917,7 @@ sub _charsum {
     }
   }
 
-  div class => 'mainbox charsum';
+  div class => 'mainbox charsum summarize';
    $self->charOps(0) if $has_spoilers;
    h1 mt '_vnpage_charsum';
    div class => 'charsum_list';
@@ -949,7 +949,7 @@ sub _staff {
   my ($self, $v) = @_;
   return if !@{$v->{credits}};
 
-  div class => 'mainbox staff', id => 'staff';
+  div class => 'mainbox staff summarize', 'data-summarize-height' => 100, id => 'staff';
    h1 mt '_vnpage_staff';
    for my $r (@{$self->{staff_roles}}) {
      my @s = grep $_->{role} eq $r, @{$v->{credits}};

@@ -108,7 +108,6 @@ if(byId('nsfwhide'))
 
 
 // vndb.org domain check
-// (let's just keep this untranslatable, nobody cares anyway ^^)
 if(location.hostname != 'vndb.org') {
   addBody(tag('div', {id:'debug'},
     tag('h2', 'This is not VNDB!'),
@@ -117,6 +116,33 @@ if(location.hostname != 'vndb.org') {
     '.'
   ));
 }
+
+
+// 'more' / 'less' summarization of some boxes on VN pages
+(function(){
+  function set(o, h) {
+    var a = tag('a', {href:'#', summarizeOn:false}, '');
+    var toggle = function() {
+      a.summarizeOn = !a.summarizeOn;
+      o.style.maxHeight = a.summarizeOn ? h+'px' : null;
+      o.style.overflowY = a.summarizeOn ? 'hidden' : null;
+      setText(a, a.summarizeOn ? '⇓ more ⇓' : '⇑ less ⇑');
+      return false;
+    };
+    a.onclick = toggle;
+    var t = tag('div', {'class':'summarize_more'}, a);
+    l[i].parentNode.insertBefore(t, l[i].nextSibling);
+    toggle();
+  }
+
+  var l = byClass(document, 'summarize');
+
+  for(var i=0; i<l.length; i++) {
+    var h = Math.floor(l[i].getAttribute('data-summarize-height') || 150);
+    if(l[i].offsetHeight > h+30)
+      set(l[i], h);
+  }
+})();
 
 
 // make some fields readonly when patch flag is set (/r+/edit)
