@@ -509,6 +509,9 @@ sub search {
   } else {
     # TODO: Allow or-matching too. But what syntax?
     (my $ts = $frm->{bq}) =~ y{+|&:*()="';!?$%^\\[]{}<>~` }{ }s;
+    $ts =~ s/ +/ /;
+    $ts =~ s/^ //;
+    $ts =~ s/ $//;
     $ts =~ s/ / & /g;
     $ts =~ s/(?:^| )-([^ ]+)/ !$1 /;
     ($l, $np) = $self->dbPostGet(
