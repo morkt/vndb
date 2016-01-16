@@ -195,9 +195,13 @@ sub normalize {
   s/\pM//g;
   # remove some characters that have no significance when searching
   use utf8;
-  tr/\r\n\t ,_\-.~～〜∼῀:[]()%+!?#$"'`♥★☆♪†「」『』【】・‟”‛’‘‚„«‹»›//d;
+  tr/\r\n\t,_\-.~～〜∼῀:[]()%+!?#$"'`♥★☆♪†「」『』【】・‟”‛’‘‚„«‹»›//d;
   tr/@/a/;
   s/&/and/;
+  # Consider wo and o the same thing (when used as separate word)
+  s/(?:^| )o(?:$| )/wo/g;
+  # Remove spaces. We're doing substring search, so let it cross word boundary to find more stuff
+  tr/ //d;
   # remove commonly used release titles ("x Edition" and "x Version")
   # this saves some space and speeds up the search
   s/(?:
@@ -225,6 +229,10 @@ sub normalize_titles {
 
 sub normalize_query {
   my $q = NFKD shift;
+  # Consider wo and o the same thing (when used as separate word). Has to be
+  # done here (in addition to normalize()) to make it work in combination with
+  # double quote search.
+  $q =~ s/(^| )o($| )/$1wo$2/ig;
   # remove spaces within quotes, so that it's considered as one search word
   $q =~ s/"([^"]+)"/(my $s=$1)=~y{ }{}d;$s/ge;
   # split into search words, normalize, and remove too short words
