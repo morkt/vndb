@@ -11,7 +11,7 @@ use warnings;
 
   # used for the language switch interface, language tags must
   # be the same as in the languages hash in global.pl
-  sub languages { qw{ cs de en es hu it nl ru tr uk } }
+  sub languages { qw{ en } }
 
   sub maketext {
     my $r = eval { shift->SUPER::maketext(@_) };
@@ -125,96 +125,6 @@ use warnings;
   # <br />
   sub br { return '<br />' }
 }
-
-
-
-{
-  package VNDB::L10N::cs;
-  use base 'VNDB::L10N::en';
-  our %Lexicon;
-
-  sub quant {
-    my($self, $num, $single, $couple, $lots) = @_;
-    return $lots   if ($num % 100) >= 11 && ($num % 100) <= 14;
-    return $single if ($num % 10) == 1;
-    return $couple if ($num % 10) >= 2 && ($num % 10) <= 4;
-    return $lots;
-  }
-}
-
-
-
-{
-  package VNDB::L10N::de;
-  use base 'VNDB::L10N::en';
-  our %Lexicon;
-}
-
-
-
-{
-  package VNDB::L10N::hu;
-  use base 'VNDB::L10N::en';
-  our %Lexicon;
-}
-
-
-
-{
-  package VNDB::L10N::nl;
-  use base 'VNDB::L10N::en';
-  our %Lexicon;
-}
-
-
-
-{
-  package VNDB::L10N::ru;
-  use base 'VNDB::L10N::en';
-  our %Lexicon;
-
-  sub quant {
-    my($self, $num, $single, $couple, $lots) = @_;
-    return $single if ($num % 10) == 1 && ($num % 100) != 11;
-    return $couple if ($num % 10) >= 2 && ($num % 10) <= 4 && !(($num % 100) >= 12 && ($num % 100) <= 14);
-    return $lots;
-  }
-}
-
-
-
-{
-  package VNDB::L10N::uk;
-  use base 'VNDB::L10N::en';
-  our %Lexicon;
-  *quant = \&VNDB::L10N::ru::quant;
-}
-
-
-
-{
-  package VNDB::L10N::es;
-  use base 'VNDB::L10N::en';
-  our %Lexicon;
-}
-
-
-
-{
-  package VNDB::L10N::it;
-  use base 'VNDB::L10N::en';
-  our %Lexicon;
-}
-
-
-
-{
-  package VNDB::L10N::tr;
-  use base 'VNDB::L10N::en';
-  our %Lexicon;
-}
-
-
 
 1;
 

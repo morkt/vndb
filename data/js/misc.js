@@ -265,26 +265,6 @@ if(byId('not') && byId('vns'))
 })();
 
 
-// Language selector
-(function(){
-  var d = byId('lang_select');
-  var flag = byName(d, 'abbr')[0];
-  ddInit(d, 'bottom', function(lnk) {
-    var lst = tag('ul', null);
-    for(var i=0; i<VARS.l10n_lang.length; i++) {
-      var ln = VARS.l10n_lang[i];
-      var icon = tag('abbr', {'class':'icons lang '+ln[0]}, ' ');
-      lst.appendChild(tag('li', {'class':'lang_selector'}, hasClass(flag, ln[0])
-        ? tag('i', icon, ln[1])
-        : tag('a', {href:'/setlang?lang='+ln[0]+';ref='+encodeURIComponent(location.pathname+location.search)}, icon, ln[1])
-      ));
-    }
-    return lst;
-  });
-  d.onclick = function() {return false};
-})();
-
-
 // "check all" checkbox
 (function(){
   function set() {

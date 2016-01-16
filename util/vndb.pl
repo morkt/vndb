@@ -68,36 +68,8 @@ sub reqinit {
   # check authentication cookies
   $self->authInit;
 
-  # Determine language
-  my $cookie = $self->reqCookie('l10n');
-  $cookie = '' if !$cookie || !grep $_ eq $cookie, VNDB::L10N::languages;
-  my $handle = VNDB::L10N->get_handle(); # falls back to English
-  my $browser = $handle->language_tag();
-  my $rmcookie = 0;
-
-  # when logged in, the setting is kept in the DB even if it's the same as what
-  # the browser requests. This is to ensure a user gets the same language even
-  # when switching PCs
-  if($self->authInfo->{id}) {
-    my $db = $self->authPref('l10n');
-    if($db && !grep $_ eq $db, VNDB::L10N::languages) {
-      $self->authPref(l10n => undef);
-      $db = '';
-    }
-    $rmcookie = 1 if $cookie;
-    if(!$db && $cookie && $cookie ne $browser) {
-      $self->authPref(l10n => $cookie);
-      $db = $cookie;
-    }
-    $handle = VNDB::L10N->get_handle($db) if $db && $db ne $browser;
-  }
-
-  else {
-    $rmcookie = 1 if $cookie && $cookie eq $browser;
-    $handle = VNDB::L10N->get_handle($cookie) if $cookie && $browser ne $cookie;
-  }
-  $self->resCookie(l10n => undef) if $rmcookie;
-  $self->{l10n} = $handle;
+  # Set language to English
+  $self->{l10n} = VNDB::L10N->get_handle('en');
 
   # load some stats (used for about all pageviews, anyway)
   $self->{stats} = $self->dbStats;

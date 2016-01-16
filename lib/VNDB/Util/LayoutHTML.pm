@@ -18,7 +18,7 @@ sub htmlHeader { # %options->{ title, noindex, search, feeds, svg }
 
   # heading
   lit '<!DOCTYPE HTML>';
-  tag 'html', lang => $self->{l10n}->language_tag();
+  tag 'html', lang => 'en';
    head;
     title $o{title};
     Link rel => 'shortcut icon', href => '/favicon.ico', type => 'image/x-icon';
@@ -53,9 +53,6 @@ sub _menu {
 
    div class => 'menubox';
     h2;
-     a href => "#", id => 'lang_select';
-      cssicon "lang ".$self->{l10n}->language_tag(), mt "_lang_".$self->{l10n}->language_tag();
-     end;
      txt mt '_menu';
     end;
     div;
@@ -160,7 +157,7 @@ sub htmlFooter { # %options => { pref_code => 1 }
     # Abuse an empty noscript tag for the formcode to update a preference setting, if the page requires one.
     noscript id => 'pref_code', title => $self->authGetCode('/xml/prefs.xml'), ''
       if $o{pref_code} && $self->authInfo->{id};
-    script type => 'text/javascript', src => $self->{url_static}.'/f/js/'.$self->{l10n}->language_tag().'.js?'.$self->{version}, '';
+    script type => 'text/javascript', src => $self->{url_static}.'/f/js/en.js?'.$self->{version}, '';
    end 'body';
   end 'html';
 
