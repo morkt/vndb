@@ -13,7 +13,6 @@ TUWF::register(
   qr{},                              \&homepage,
   qr{(?:([upvrcs])([1-9]\d*)/)?hist},\&history,
   qr{d([1-9]\d*)},                   \&docpage,
-  qr{setlang},                       \&setlang,
   qr{nospam},                        \&nospam,
   qr{xml/prefs\.xml},                \&prefs,
   qr{opensearch\.xml},               \&opensearch,
@@ -150,8 +149,8 @@ sub homepage {
         li;
          lit $self->{l10n}->datestr($_->{released});
          txt ' ';
-         cssicon $_, mt "_plat_$_" for (@{$_->{platforms}});
-         cssicon "lang $_", mt "_lang_$_" for (@{$_->{languages}});
+         cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
+         cssicon "lang $_", $self->{languages}{$_} for (@{$_->{languages}});
          txt ' ';
          a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
         end;
@@ -170,8 +169,8 @@ sub homepage {
         li;
          lit $self->{l10n}->datestr($_->{released});
          txt ' ';
-         cssicon $_, mt "_plat_$_" for (@{$_->{platforms}});
-         cssicon "lang $_", mt "_lang_$_" for (@{$_->{languages}});
+         cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
+         cssicon "lang $_", $self->{languages} for (@{$_->{languages}});
          txt ' ';
          a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
         end;
@@ -343,26 +342,6 @@ sub docpage {
    end;
   end;
   $self->htmlFooter;
-}
-
-
-sub setlang {
-  my $self = shift;
-
-  my $frm = $self->formValidate(
-    {get => 'lang', required => 1, enum => [ VNDB::L10N::languages ]},
-    {get => 'ref', required => 0, default => '/'}
-  );
-  return $self->resNotFound if $frm->{_err};
-
-  my $browser = VNDB::L10N->get_handle()->language_tag();
-
-  $self->resRedirect($frm->{ref}, 'post');
-  if($frm->{lang} ne $self->{l10n}->language_tag()) {
-    $self->authInfo->{id}
-    ? $self->authPref(l10n => $frm->{lang} eq $browser ? undef : $frm->{lang})
-    : $self->resCookie(l10n => $frm->{lang} eq $browser ? undef : $frm->{lang}, expires => time()+31536000);
-  }
 }
 
 

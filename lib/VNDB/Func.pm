@@ -10,9 +10,9 @@ use JSON::XS;
 use VNDBUtil;
 our @EXPORT = (@VNDBUtil::EXPORT, qw|
   clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags
-  childtags charspoil imgpath imgurl fmtvote
+  childtags charspoil imgpath imgurl fmtvote fmtmedia fmtvnlen
   json_encode json_decode script_json
-  mtvoiced mtani mtvnlen mtrlstat mtvnlstat mtbloodt
+  mtvoiced mtani mtrlstat mtvnlstat mtbloodt
   form_compare
 |);
 
@@ -204,6 +204,24 @@ sub fmtvote {
   return !$_[0] ? '-' : $_[0] % 10 == 0 ? $_[0]/10 : sprintf '%.1f', $_[0]/10;
 }
 
+# Formats a media string ("1 CD", "2 CDs", "Internet download", etc)
+sub fmtmedia {
+  my($med, $qty) = @_;
+  $med = $TUWF::OBJ->{media}{$med};
+  join ' ',
+    ($med->[0] ? ($qty) : ()),
+    $med->[ $med->[0] && $qty > 1 ? 2 : 1 ];
+}
+
+# Formats a VN length (xtra = 1 for time indication, 2 for examples)
+sub fmtvnlen {
+  my($len, $xtra) = @_;
+  $len = $TUWF::OBJ->{vn_lengths}[$len];
+  $len->[0].
+    ($xtra && $xtra == 1 && $len->[1] ? " ($len->[1])" : '').
+    ($xtra && $xtra == 2 && $len->[2] ? " ($len->[2])" : '');
+}
+
 
 # JSON::XS::encode_json converts input to utf8, whereas the below functions
 # operate on wide character strings. Canonicalization is enabled to allow for
@@ -233,7 +251,6 @@ sub script_json {
 # value for 'unknown'.
 sub mtvoiced { !$_[0] ? mt '_unknown' : mt '_voiced_'.$_[0]; }
 sub mtani    { !$_[0] ? mt '_unknown' : mt '_animated_'.$_[0]; }
-sub mtvnlen  { !$_[0] ? mt '_unknown' : mt '_vnlength_'.$_[0], $_[1]||0; }
 sub mtrlstat { !$_[0] ? mt '_unknown' : mt '_rlist_status_'.$_[0]; }
 sub mtvnlstat{ !$_[0] ? mt '_unknown' : mt '_vnlist_status_'.$_[0]; }
 sub mtbloodt { $_[0] eq 'unknown' ? mt '_unknown' : mt '_bloodt_'.$_[0]; }

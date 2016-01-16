@@ -198,11 +198,11 @@ sub htmlBrowseVN {
        }
        td class => 'tc8', defined($l->{wstat}) ? mt "_wish_$l->{wstat}" : '' if $f->{wish};
        td class => 'tc2';
-        $_ ne 'oth' && cssicon $_, mt "_plat_$_"
+        $_ ne 'oth' && cssicon $_, $self->{platforms}{$_}
           for (sort @{$l->{c_platforms}});
        end;
        td class => 'tc3';
-        cssicon "lang $_", mt "_lang_$_"
+        cssicon "lang $_", $self->{languages}{$_}
           for (reverse sort @{$l->{c_languages}});
        end;
        td class => 'tc4';

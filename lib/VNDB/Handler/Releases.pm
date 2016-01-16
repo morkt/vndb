@@ -41,7 +41,7 @@ sub page {
       [ vn         => join => '<br />', split => sub {
         map sprintf('<a href="/v%d" title="%s">%s</a>', $_->{vid}, $_->{original}||$_->{title}, shorten $_->{title}, 50), @{$_[0]};
       } ],
-      [ type       => serialize => sub { mt "_rtype_$_[0]" } ],
+      [ 'type' ],
       [ patch      => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
       [ freeware   => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
       [ doujin     => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
@@ -49,16 +49,14 @@ sub page {
       [ original   => diff => 1 ],
       [ gtin       => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ catalog    => serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ languages  => join => ', ', split => sub { map mt("_lang_$_"), @{$_[0]} } ],
+      [ languages  => join => ', ', split => sub { map $self->{languages}{$_}, @{$_[0]} } ],
       [ 'website' ],
       [ released   => htmlize   => sub { $self->{l10n}->datestr($_[0]) } ],
       [ minage     => serialize => \&minage ],
       [ notes      => diff => qr/[ ,\n\.]/ ],
-      [ platforms  => join => ', ', split => sub { map mt("_plat_$_"), @{$_[0]} } ],
-      [ media      => join => ', ', split => sub {
-        map $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1), @{$_[0]}
-      } ],
-      [ resolution => serialize => sub { my $r = $self->{resolutions}[$_[0]][0]; $r =~ /^_/ ? mt($r) : $r } ],
+      [ platforms  => join => ', ', split => sub { map $self->{platforms}{$_}, @{$_[0]} } ],
+      [ media      => join => ', ', split => sub { map fmtmedia($_->{medium}, $_->{qty}), @{$_[0]} } ],
+      [ resolution => serialize => sub { $self->{resolutions}[$_[0]][0]; } ],
       [ voiced     => serialize => \&mtvoiced ],
       [ ani_story  => serialize => \&mtani ],
       [ ani_ero    => serialize => \&mtani ],
@@ -117,8 +115,8 @@ sub _infotable {
    Tr;
     td mt '_relinfo_type';
     td;
-     cssicon "rt$r->{type}", mt "_rtype_$r->{type}";
-     txt ' '.mt '_relinfo_type_format', mt("_rtype_$r->{type}"), $r->{patch}?1:0;
+     cssicon "rt$r->{type}", $r->{type};
+     txt ' '.mt '_relinfo_type_format', ucfirst($r->{type}), $r->{patch}?1:0;
     end;
    end;
 
@@ -126,8 +124,8 @@ sub _infotable {
     td mt '_relinfo_lang';
     td;
      for (@{$r->{languages}}) {
-       cssicon "lang $_", mt "_lang_$_";
-       txt ' '.mt("_lang_$_");
+       cssicon "lang $_", $self->{languages}{$_};
+       txt ' '.$self->{languages}{$_};
        br if $_ ne $r->{languages}[$#{$r->{languages}}];
      }
     end;
@@ -143,8 +141,8 @@ sub _infotable {
       td mt '_relinfo_platform', scalar @{$r->{platforms}};
       td;
        for(@{$r->{platforms}}) {
-         cssicon $_, mt "_plat_$_";
-         txt ' '.mt("_plat_$_");
+         cssicon $_, $self->{platforms}{$_};
+         txt ' '.$self->{platforms}{$_};
          br if $_ ne $r->{platforms}[$#{$r->{platforms}}];
        }
       end;
@@ -154,17 +152,14 @@ sub _infotable {
    if(@{$r->{media}}) {
      Tr;
       td mt '_relinfo_media', scalar @{$r->{media}};
-      td join ', ', map
-        $self->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1),
-        @{$r->{media}};
+      td join ', ', map fmtmedia($_->{medium}, $_->{qty}), @{$r->{media}};
      end;
    }
 
    if($r->{resolution}) {
-     my $res = $self->{resolutions}[$r->{resolution}][0];
      Tr;
       td mt '_relinfo_resolution';
-      td $res =~ /^_/ ? mt $res : $res;
+      td $self->{resolutions}[$r->{resolution}][0];
      end;
    }
 
@@ -307,12 +302,12 @@ sub edit {
       { post => 'original',  required => 0, default => '', maxlength => 250 },
       { post => 'gtin',      required => 0, default => '0', template => 'gtin' },
       { post => 'catalog',   required => 0, default => '', maxlength => 50 },
-      { post => 'languages', multi => 1, enum => $self->{languages} },
+      { post => 'languages', multi => 1, enum => [ keys %{$self->{languages}} ] },
       { post => 'website',   required => 0, default => '', maxlength => 250, template => 'weburl' },
       { post => 'released',  required => 0, default => 0, template => 'uint' },
       { post => 'minage' ,   required => 0, default => -1, enum => $self->{age_ratings} },
       { post => 'notes',     required => 0, default => '', maxlength => 10240 },
-      { post => 'platforms', required => 0, default => '', multi => 1, enum => $self->{platforms} },
+      { post => 'platforms', required => 0, default => '', multi => 1, enum => [ keys %{$self->{platforms}} ] },
       { post => 'media',     required => 0, default => '' },
       { post => 'resolution',required => 0, default => 0, enum => [ 0..$#{$self->{resolutions}} ] },
       { post => 'voiced',    required => 0, default => 0, enum => $self->{voiced} },
@@ -385,7 +380,7 @@ sub _form {
   $self->htmlForm({ frm => $frm, action => $r ? "/r$r->{id}/".($copy ? 'copy' : 'edit') : "/v$v->{id}/add", editsum => 1 },
   rel_geninfo => [ mt('_redit_form_geninfo'),
     [ select => short => 'type',      name => mt('_redit_form_type'),
-      options => [ map [ $_, mt "_rtype_$_" ], @{$self->{release_types}} ] ],
+      options => [ map [ $_, $_ ], @{$self->{release_types}} ] ],
     [ check  => short => 'patch',     name => mt('_redit_form_patch') ],
     [ check  => short => 'freeware',  name => mt('_redit_form_freeware') ],
     [ check  => short => 'doujin',    name => mt('_redit_form_doujin') ],
@@ -393,7 +388,7 @@ sub _form {
     [ input  => short => 'original',  name => mt('_redit_form_original'), width => 450 ],
     [ static => content => mt '_redit_form_original_note' ],
     [ select => short => 'languages', name => mt('_redit_form_languages'), multi => 1,
-      options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
+      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
     [ input  => short => 'gtin',      name => mt('_redit_form_gtin') ],
     [ input  => short => 'catalog',   name => mt('_redit_form_catalog') ],
     [ input  => short => 'website',   name => mt('_redit_form_website') ],
@@ -407,7 +402,7 @@ sub _form {
 
   rel_format => [ mt('_redit_form_format'),
     [ select => short => 'resolution', name => mt('_redit_form_resolution'), options => [
-      map [ $_, map /^_/?mt($_):$_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
+      map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
     [ select => short => 'voiced',     name => mt('_redit_form_voiced'), options => [
       map [ $_, mtvoiced $_ ], @{$self->{voiced}} ] ],
     [ select => short => 'ani_story',  name => mt('_redit_form_ani_story'), options => [
@@ -419,13 +414,13 @@ sub _form {
     [ static => nolabel => 1, content => sub {
       h2 mt '_redit_form_platforms';
       div class => 'platforms';
-       for my $p (@{$self->{platforms}}) {
+       for my $p (sort keys %{$self->{platforms}}) {
          span;
           input type => 'checkbox', name => 'platforms', value => $p, id => $p,
             $frm->{platforms} && grep($_ eq $p, @{$frm->{platforms}}) ? (checked => 'checked') : ();
           label for => $p;
-           cssicon $p, mt "_plat_$p";
-           txt ' '.mt("_plat_$p");
+           cssicon $p, $self->{platforms}{$p};
+           txt ' '.$self->{platforms}{$p};;
           end;
          end;
        }
@@ -529,9 +524,9 @@ sub browse {
        end;
        td class => 'tc2', $l->{minage} < 0 ? '' : minage $l->{minage};
        td class => 'tc3';
-        $_ ne 'oth' && cssicon $_, mt "_plat_$_" for (@{$l->{platforms}});
-        cssicon "lang $_", mt "_lang_$_" for (@{$l->{languages}});
-        cssicon "rt$l->{type}", mt "_rtype_$l->{type}";
+        $_ ne 'oth' && cssicon $_, $self->{platforms}{$_} for (@{$l->{platforms}});
+        cssicon "lang $_", $self->{languages}{$_} for (@{$l->{languages}});
+        cssicon "rt$l->{type}", mt $l->{type};
        end;
        td class => 'tc4';
         a href => "/r$l->{id}", title => $l->{original}||$l->{title}, shorten $l->{title}, 90;
@@ -557,8 +552,8 @@ sub _fil_compat {
   my $self = shift;
   my %c;
   my $f = $self->formValidate(
-    { get => 'ln', required => 0, multi => 1, default => '', enum => $self->{languages} },
-    { get => 'pl', required => 0, multi => 1, default => '', enum => $self->{platforms} },
+    { get => 'ln', required => 0, multi => 1, default => '', enum => [ keys %{$self->{languages}} ] },
+    { get => 'pl', required => 0, multi => 1, default => '', enum => [ keys %{$self->{platforms}} ] },
     { get => 'me', required => 0, multi => 1, default => '', enum => [ keys %{$self->{media}} ] },
     { get => 'tp', required => 0, default => '', enum => [ '', @{$self->{release_types}} ] },
     { get => 'pa', required => 0, default => 0, enum => [ 0..2 ] },

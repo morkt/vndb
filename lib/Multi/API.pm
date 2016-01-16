@@ -562,7 +562,7 @@ my %GET_RELEASE = (
             }
             for (@$r) {
               delete $_->{id};
-              $_->{qty} = $VNDB::S{media}{$_->{medium}} ? $_->{qty}*1 : undef;
+              $_->{qty} = $VNDB::S{media}{$_->{medium}}[0] ? $_->{qty}*1 : undef;
             }
           } ],
       ]
@@ -706,7 +706,7 @@ my %GET_PRODUCER = (
     ],
     type => [
       [ str   => 'p.type :op: :value:', {qw|= =  != <>|},
-        process => sub { !grep($_ eq $_[0], @{$VNDB::S{producer_types}}) ? \'No such producer type' : $_[0] } ],
+        process => sub { !$VNDB::S{producer_types}{$_[0]} ? \'No such producer type' : $_[0] } ],
     ],
     language => [
       [ str   => 'p.lang :op: :value:', {qw|= =  != <>|}, process => \'lang' ],
@@ -945,9 +945,9 @@ sub get_filters {
       y/%//;
       $v = "%$v%";
     } elsif(${$o{process}} eq 'lang') {
-      return cerr $c, filter => 'Invalid language code', %e if !grep $v eq $_, @{$VNDB::S{languages}};
+      return cerr $c, filter => 'Invalid language code', %e if !$VNDB::S{languages}{$v};
     } elsif(${$o{process}} eq 'plat') {
-      return cerr $c, filter => 'Invalid platform code', %e if !grep $v eq $_, @{$VNDB::S{platforms}};
+      return cerr $c, filter => 'Invalid platform code', %e if !$VNDB::S{platforms}{$v};
     }
   }
 

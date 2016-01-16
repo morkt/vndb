@@ -474,8 +474,8 @@ sub _vnlist_browse {
           lit $self->{l10n}->datestr($_->{released});
          end;
          td class => 'tc4';
-          cssicon "lang $_", mt "_lang_$_" for @{$_->{languages}};
-          cssicon "rt$_->{type}", mt "_rtype_$_->{type}";
+          cssicon "lang $_", $self->{languages}{$_} for @{$_->{languages}};
+          cssicon "rt$_->{type}", $_->{type};
          end;
          td class => 'tc5';
           a href => "/r$_->{rid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 50;

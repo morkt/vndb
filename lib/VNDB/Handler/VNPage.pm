@@ -33,6 +33,7 @@ sub rg {
   return if $self->htmlRGHeader($title, 'v', $v);
 
   $v->{svg} =~ s/id="node_v$vid"/id="graph_current"/;
+  # TODO: The relation string can be properly interned in the SVG now
   $v->{svg} =~ s/\$___(_vnrel_[a-z]+)____\$/mt $1/eg;
 
   div class => 'mainbox';
@@ -67,7 +68,7 @@ my @rel_cols = (
     sort_field    => 'type',
     button_string => '_relinfo_type',
     default       => 1,
-    draw          => sub { cssicon "rt$_[0]{type}", mt "_rtype_$_[0]{type}"; txt mt '_vnpage_rel_patch' if $_[0]{patch} },
+    draw          => sub { cssicon "rt$_[0]{type}", $_[0]{type}; txt mt '_vnpage_rel_patch' if $_[0]{patch} },
   }, { # Languages
     id            => 'lan',
     button_string => '_relinfo_lang',
@@ -75,7 +76,7 @@ my @rel_cols = (
     has_data      => sub { !!@{$_[0]{languages}} },
     draw          => sub {
       for(@{$_[0]{languages}}) {
-        cssicon "lang $_", mt "_lang_$_";
+        cssicon "lang $_", $TUWF::OBJ->{languages}{$_};
         br if $_ ne $_[0]{languages}[$#{$_[0]{languages}}];
       }
     },
@@ -96,7 +97,7 @@ my @rel_cols = (
     has_data      => sub { !!@{$_[0]{platforms}} },
     draw          => sub {
       for(@{$_[0]{platforms}}) {
-        cssicon $_, mt "_plat_$_";
+        cssicon $_, $TUWF::OBJ->{platforms}{$_};
         br if $_ ne $_[0]{platforms}[$#{$_[0]{platforms}}];
       }
       txt mt '_unknown' if !@{$_[0]{platforms}};
@@ -109,7 +110,7 @@ my @rel_cols = (
     has_data      => sub { !!@{$_[0]{media}} },
     draw          => sub {
       for(@{$_[0]{media}}) {
-        txt $TUWF::OBJ->{media}{$_->{medium}} ? $_->{qty}.' '.mt("_med_$_->{medium}", $_->{qty}) : mt("_med_$_->{medium}",1);
+        txt fmtmedia($_->{medium}, $_->{qty});
         br if $_ ne $_[0]{media}[$#{$_[0]{media}}];
       }
       txt mt '_unknown' if !@{$_[0]{media}};
@@ -125,8 +126,7 @@ my @rel_cols = (
     has_data      => sub { !!$_[0]{resolution} },
     draw          => sub {
       if($_[0]{resolution}) {
-        my $res = $TUWF::OBJ->{resolutions}[$_[0]{resolution}][0];
-        txt $res =~ /^_/ ? mt $res : $res;
+        txt $TUWF::OBJ->{resolutions}[$_[0]{resolution}][0];
       } else {
         txt mt '_unknown';
       }
@@ -200,8 +200,8 @@ sub releases {
     { get => 'cw',   required => 0, default => 0, enum => [0,1] },
     { get => 'o',    required => 0, default => 0, enum => [0,1] },
     { get => 's',    required => 0, default => 'released', enum => [ map $_->{sort_field}, grep $_->{sort_field}, @rel_cols ]},
-    { get => 'os',   required => 0, default => 'all',      enum => [ 'all', @{$self->{platforms}} ] },
-    { get => 'lang', required => 0, default => 'all',      enum => [ 'all', @{$self->{languages}} ] },
+    { get => 'os',   required => 0, default => 'all',      enum => [ 'all', keys %{$self->{platforms}} ] },
+    { get => 'lang', required => 0, default => 'all',      enum => [ 'all', keys %{$self->{languages}} ] },
   );
   return $self->resNotFound if $f->{_err};
 
@@ -251,19 +251,19 @@ sub _releases_buttons {
 
   # Platform/language filters
   my $plat_lang_draw = sub {
-    my($row, $option, $l10nprefix, $csscat) = @_;
+    my($row, $option, $txt, $csscat) = @_;
     my %opts = map +($_,1), map @{$_->{$row}}, @$r;
     return if !keys %opts;
     p class => 'browseopts';
      for('all', sort keys %opts) {
        a href => $url->($option, $_), $_ eq $f->{$option} ? (class => 'optselected') : ();
-        $_ eq 'all' ? txt mt '_all' : cssicon "$csscat $_", mt $l10nprefix.$_;
+        $_ eq 'all' ? txt mt '_all' : cssicon "$csscat $_", $txt->{$_};
        end 'a';
      }
     end 'p';
   };
-  $plat_lang_draw->('platforms', 'os',  '_plat_', '')     if $f->{pla};
-  $plat_lang_draw->('languages', 'lang','_lang_', 'lang') if $f->{lan};
+  $plat_lang_draw->('platforms', 'os',  $self->{platforms}, '')     if $f->{pla};
+  $plat_lang_draw->('languages', 'lang',$self->{languages}, 'lang') if $f->{lan};
 }
 
 
@@ -399,7 +399,7 @@ sub page {
      if($v->{length}) {
        Tr;
         td mt '_vnpage_length';
-        td mtvnlen $v->{length}, 1;
+        td fmtvnlen $v->{length}, 1;
        end;
      }
      my @links = (
@@ -506,7 +506,7 @@ sub _revision {
     [ original    => diff => 1 ],
     [ alias       => diff => qr/[ ,\n\.]/ ],
     [ desc        => diff => qr/[ ,\n\.]/ ],
-    [ length      => serialize => sub { mtvnlen $_[0] } ],
+    [ length      => serialize => sub { fmtvnlen $_[0] } ],
     [ l_wp        => htmlize => sub {
       $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
     }],
@@ -591,7 +591,7 @@ sub _producers {
         my %p = map $_->{publisher} ? ($_->{id} => $_) : (), map @{$_->{producers}}, grep grep($_ eq $l, @{$_->{languages}}), @$r;
         my @p = values %p;
         next if !@p;
-        cssicon "lang $l", mt "_lang_$l";
+        cssicon "lang $l", $self->{languages}{$l};
         for (@p) {
           a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 30;
           txt ' & ' if $_ != $p[$#p];
@@ -658,7 +658,7 @@ sub _anime {
          txt '] ';
         end;
         abbr title => $_->{title_kanji}||$_->{title_romaji}, shorten $_->{title_romaji}, 50;
-        b ' ('.(defined $_->{type} ? mt("_animetype_$_->{type}").', ' : '').$_->{year}.')';
+        b ' ('.(defined $_->{type} ? $self->{anime_types}{$_->{type}}.', ' : '').$_->{year}.')';
         br;
       }
     }
@@ -728,8 +728,8 @@ sub _affiliate_links {
     for my $link (@$links) {
       my $f = $self->{affiliates}[$link->{affiliate}];
       my $rel = $r{$link->{rid}};
-      my $plat = join(' and ', map $en->maketext("_plat_$_"), @{$rel->{platforms}});
-      my $version = join(' and ', map $en->maketext("_lang_$_"), @{$rel->{languages}}).' '.$plat.' version';
+      my $plat = join(' and ', map $self->{platforms}{$_}, @{$rel->{platforms}});
+      my $version = join(' and ', map $self->{languages}{$_}, @{$rel->{languages}}).' '.$plat.' version';
 
       a rel => 'nofollow', href => $f->{link_format} ? $f->{link_format}->($link->{url}) : $link->{url};
        use utf8;
@@ -775,8 +775,8 @@ sub _releases {
     for my $l (@lang) {
       Tr class => 'lang';
        td colspan => 6;
-        cssicon "lang $l", mt "_lang_$l";
-        txt mt "_lang_$l";
+        cssicon "lang $l", $self->{languages}{$l};
+        txt $self->{languages}{$l};
        end;
       end;
       for my $rel (grep grep($_ eq $l, @{$_->{languages}}), @$r) {
@@ -786,9 +786,9 @@ sub _releases {
          td class => 'tc3';
           for (sort @{$rel->{platforms}}) {
             next if $_ eq 'oth';
-            cssicon $_, mt "_plat_$_";
+            cssicon $_, $self->{platforms}{$_};
           }
-          cssicon "rt$rel->{type}", mt "_rtype_$rel->{type}";
+          cssicon "rt$rel->{type}", $rel->{type};
          end;
          td class => 'tc4';
           a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
@@ -840,7 +840,7 @@ sub _screenshots {
      my @scr = grep $_->{rid} && $rel->{id} == $_->{rid}, @{$v->{screenshots}};
      next if !@scr;
      p class => 'rel';
-      cssicon "lang $_", mt "_lang_$_" for (@{$rel->{languages}});
+      cssicon "lang $_", $self->{languages}{$_} for (@{$rel->{languages}});
       a href => "/r$rel->{id}", $rel->{title};
      end;
      div class => 'scr';

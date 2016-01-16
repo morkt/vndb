@@ -38,239 +38,6 @@ information.
 en : Unknown
 
 
-# languages
-
-:_lang_ar
-en : Arabic
-
-:_lang_ca
-en : Catalan
-
-:_lang_cs
-en : Czech
-
-:_lang_da
-en : Danish
-
-:_lang_de
-en : German
-
-:_lang_en
-en : English
-
-:_lang_es
-en : Spanish
-
-:_lang_fi
-en : Finnish
-
-:_lang_fr
-en : French
-
-:_lang_he
-en : Hebrew
-
-:_lang_hu
-en : Hungarian
-
-:_lang_id
-en : Indonesian
-
-:_lang_it
-en : Italian
-
-:_lang_ja
-en : Japanese
-
-:_lang_ko
-en : Korean
-
-:_lang_nl
-en : Dutch
-
-:_lang_no
-en : Norwegian
-
-:_lang_pl
-en : Polish
-
-:_lang_pt-br
-en : Portuguese (Brazil)
-
-:_lang_pt-pt
-en : Portuguese (Portugal)
-
-:_lang_ro
-en : Romanian
-
-:_lang_ru
-en : Russian
-
-:_lang_sk
-en : Slovak
-
-:_lang_sv
-en : Swedish
-
-:_lang_tr
-en : Turkish
-
-:_lang_uk
-en : Ukrainian
-
-:_lang_vi
-en : Vietnamese
-
-:_lang_zh
-en : Chinese
-
-
-# platforms
-#  most of these probably don't need TL in most languages, but some
-#  languages (i.e. Japanese) do use different names for products
-
-:_plat_win
-en : Windows
-
-:_plat_dos
-en : DOS
-
-:_plat_lin
-en : Linux
-
-:_plat_mac
-en : Mac OS
-
-:_plat_ios
-en : Apple iProduct
-
-:_plat_and
-en : Android
-
-:_plat_dvd
-en : DVD Player
-
-:_plat_bdp
-en : Blu-ray Player
-
-:_plat_fmt
-en : FM Towns
-
-:_plat_gba
-en : Game Boy Advance
-
-:_plat_gbc
-en : Game Boy Color
-
-:_plat_msx
-en : MSX
-
-:_plat_nds
-en : Nintendo DS
-
-:_plat_nes
-en : Famicom
-
-:_plat_p88
-en : PC-88
-
-:_plat_p98
-en : PC-98
-
-:_plat_pce
-en : PC Engine
-
-:_plat_pcf
-en : PC-FX
-
-:_plat_psp
-en : PlayStation Portable
-
-:_plat_ps1
-en : PlayStation 1
-
-:_plat_ps2
-en : PlayStation 2
-
-:_plat_ps3
-en : PlayStation 3
-
-:_plat_ps4
-en : PlayStation 4
-
-:_plat_psv
-en : PlayStation Vita
-
-:_plat_drc
-en : Dreamcast
-
-:_plat_sat
-en : Sega Saturn
-
-:_plat_sfc
-en : Super Nintendo
-
-:_plat_wii
-en : Nintendo Wii
-
-:_plat_n3d
-en : Nintendo 3DS
-
-:_plat_x68
-en : X68000
-
-:_plat_xb1
-en : Xbox
-
-:_plat_xb3
-en : Xbox 360
-
-:_plat_xbo
-en : Xbox One
-
-:_plat_web
-en : Website
-
-:_plat_oth
-en : Other
-
-
-# Release media
-
-:_med_cd
-en : [quant,_1,CD,CDs]
-
-:_med_dvd
-en : [quant,_1,DVD,DVDs]
-
-:_med_gdr
-en : [quant,_1,GD-ROM,GD-ROMs]
-
-:_med_blr
-en : [quant,_1,Blu-ray disc,Blu-ray discs]
-
-:_med_flp
-en : [quant,_1,Floppy,Floppies]
-
-:_med_mrt
-en : [quant,_1,Cartridge,Cartridges]
-
-:_med_mem
-en : [quant,_1,Memory card,Memory cards]
-
-:_med_umd
-en : [quant,_1,UMD,UMDs]
-
-:_med_nod
-en : Nintendo Optical [quant,_1,Disk,Disks]
-
-:_med_in
-en : Internet download
-
-:_med_otc
-en : Other
-
-
 # VN relations
 
 :_vnrel_seq
@@ -304,18 +71,6 @@ en : Fandisc
 en : Original game
 
 
-# producer types
-
-:_ptype_co
-en : Company
-
-:_ptype_in
-en : Individual
-
-:_ptype_ng
-en : Amateur group
-
-
 # producer relations
 
 :_prodrel_old
@@ -341,42 +96,6 @@ en : Spawned
 
 :_prodrel_ori
 en : Originated from
-
-
-# release types
-
-:_rtype_complete
-en : Complete
-
-:_rtype_partial
-en : Partial
-
-:_rtype_trial
-en : Trial
-
-
-# Anime types
-
-:_animetype_tv
-en : TV Series
-
-:_animetype_ova
-en : OVA
-
-:_animetype_mov
-en : Movie
-
-:_animetype_oth
-en : Other
-
-:_animetype_web
-en : Web
-
-:_animetype_spe
-en : TV Special
-
-:_animetype_mv
-en : Music Video
 
 
 # Discussion board types
@@ -413,18 +132,6 @@ en : low
 
 :_wish_3
 en : blacklist
-
-
-# screen resolutions
-
-:_scrres_unknown
-en : Unknown / console / handheld
-
-:_scrres_nonstandard
-en : Non-standard
-
-:_scrres_ws
-en : widescreen
 
 
 # 'Voiced' information for releases
@@ -488,24 +195,6 @@ en : excellent
 
 :_vote_10
 en : masterpiece
-
-
-# VN lengths
-
-:_vnlength_1
-en : Very short[index,_1,, (< 2 hours), (OMGWTFOTL~, Jouka no Monshou~, The world to reverse)]
-
-:_vnlength_2
-en : Short[index,_1,, (2 - 10 hours), (Narcissu~, Saya no Uta~, Planetarian)]
-
-:_vnlength_3
-en : Medium[index,_1,, (10 - 30 hours), (Yume Miru Kusuri~, Cross†Channel~, Crescendo)]
-
-:_vnlength_4
-en : Long[index,_1,, (30 - 50 hours), (Tsukihime~, Ever17~, Demonbane)]
-
-:_vnlength_5
-en : Very long[index,_1,, (> 50 hours), (Clannad~, Umineko~, Fate/Stay Night)]
 
 
 # VN list statuses

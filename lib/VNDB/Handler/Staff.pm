@@ -37,7 +37,7 @@ sub page {
       [ name      => diff => 1 ],
       [ original  => diff => 1 ],
       [ gender    => serialize => sub { mt "_gender_$_[0]" } ],
-      [ lang      => serialize => sub { "$_[0] (".mt("_lang_$_[0]").')' } ],
+      [ lang      => serialize => sub { "$_[0] ($self->{languages}{$_[0]})" } ],
       [ l_site    => diff => 1 ],
       [ l_wp      => htmlize => sub {
         $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
@@ -69,7 +69,7 @@ sub page {
     end;
     Tr;
      td class => 'key', mt '_staff_language';
-     td mt "_lang_$s->{lang}";
+     td $self->{languages}{$s->{lang}};
     end;
     if(@{$s->{aliases}}) {
       Tr;
@@ -205,7 +205,7 @@ sub edit {
       { post => 'primary',       required  => 0, template => 'id', default => 0 },
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { post => 'gender',        required  => 0, default => 'unknown', enum => [qw|unknown m f|] },
-      { post => 'lang',          enum      => $self->{languages} },
+      { post => 'lang',          enum      => [ keys %{$self->{languages}} ] },
       { post => 'l_wp',          required  => 0, maxlength => 150,  default => '' },
       { post => 'l_site',        required => 0, template => 'weburl', maxlength => 250, default => '' },
       { post => 'l_twitter',     required => 0, maxlength => 16, default => '', regex => [ qr/^\S+$/, mt('_staffe_form_tw_err') ] },
@@ -277,7 +277,7 @@ sub edit {
     [ select => name => mt('_staffe_form_gender'),short => 'gender', options => [
        map [ $_, mt("_gender_$_") ], qw(unknown m f) ] ],
     [ select => name => mt('_staffe_form_lang'), short => 'lang',
-      options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
+      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
     [ input  => name => mt('_staffe_form_site'), short => 'l_site' ],
     [ input  => name => mt('_staffe_form_wikipedia'), short => 'l_wp', pre => 'http://en.wikipedia.org/wiki/' ],
     [ input  => name => mt('_staffe_form_twitter'), short => 'l_twitter' ],
@@ -348,7 +348,7 @@ sub list {
         for ($perlist*$c..($perlist*($c+1))-1) {
           li;
             my $gender = $list->[$_]{gender};
-            cssicon 'lang '.$list->[$_]{lang}, mt "_lang_$list->[$_]{lang}";
+            cssicon 'lang '.$list->[$_]{lang}, $self->{languages}{$list->[$_]{lang}};
             a href => "/s$list->[$_]{id}",
               title => $list->[$_]{original}, $list->[$_]{name};
           end;

@@ -1,6 +1,8 @@
 
 package VNDB;
 
+use utf8;
+
 # options for TUWF
 our %O = (
   db_login  => [ 'dbi:Pg:dbname=vndb', 'vndb', 'passwd' ],
@@ -35,13 +37,62 @@ our %S;
   permissions     => {qw| board 1  boardmod 2  edit 4  tag 16  dbmod 32  tagmod 64  usermod 128  affiliate 256 |},
   default_perm    => 1+4+16, # Keep synchronised with the default value of users.perm
   default_tags_cat=> 'cont,tech',
-  languages       => [qw|ar ca cs da de en es fi fr he hu id it ja ko nl no pl pt-br pt-pt ro ru sk sv tr uk vi zh|],
-  producer_types  => [qw|co in ng|],
+  languages       => {grep !/^ *$/, split /[\s\r\n]*([^ ]+) +(.+)/, q{
+    ar Arabic
+    ca Catalan
+    cs Czech
+    da Danish
+    de German
+    en English
+    es Spanish
+    fi Finnish
+    fr French
+    he Hebrew
+    hu Hungarian
+    id Indonesian
+    it Italian
+    ja Japanese
+    ko Korean
+    nl Dutch
+    no Norwegian
+    pl Polish
+    pt-br Portuguese (Brazil)
+    pt-pt Portuguese (Portugal)
+    ro Romanian
+    ru Russian
+    sk Slovak
+    sv Swedish
+    tr Turkish
+    uk Ukrainian
+    vi Vietnamese
+    zh Chinese
+  }},
+  producer_types  => {
+    co => 'Company',
+    in => 'Individual',
+    ng => 'Amateur group',
+  },
   discussion_boards => [qw|an db ge v p u|], # <- note that some properties of these boards are hard-coded
-  vn_lengths      => [ 0..5 ],
-  anime_types     => [qw|tv ova mov oth web spe mv|],
+  vn_lengths => [
+    # name          time             examples
+    [ 'Unknown',    '',              ''                                                  ],
+    [ 'Very short', '< 2 hours',     'OMGWTFOTL, Jouka no Monshou, The world to reverse' ],
+    [ 'Short',      '2 - 10 hours',  'Narcissu, Saya no Uta, Planetarian'                ],
+    [ 'Medium',     '10 - 30 hours', 'Yume Miru Kusuri, Cross†Channel, Crescendo'        ],
+    [ 'Long',       '30 - 50 hours', 'Tsukihime, Ever17, Demonbane'                      ],
+    [ 'Very long',  '> 50 hours',    'Clannad, Umineko, Fate/Stay Night'                 ],
+  ],
+  anime_types => {
+    tv  => 'TV Series',
+    ova => 'OVA',
+    mov => 'Movie',
+    oth => 'Other',
+    web => 'Web',
+    spe => 'TV Special',
+    mv  => 'Music Video',
+  },
   board_edit_time => 7*24*3600,
-  vn_relations    => {
+  vn_relations => {
   # id   => [ order, reverse ]
     seq  => [ 0, 'preq' ],
     preq => [ 1, 'seq'  ],
@@ -67,37 +118,73 @@ our %S;
   age_ratings     => [-1, 0, 6..18],
   release_types   => [qw|complete partial trial|],
   # The 'unk' platform and medium are reserved for "unknown".
-  platforms       => [qw|win dos lin mac ios and dvd bdp fmt gba gbc msx nds nes p88 p98 pce pcf psp ps1 ps2 ps3 ps4 psv drc sat sfc wii n3d x68 xb1 xb3 xbo web oth|],
+  platforms       => {grep !/^ *$/, split /[\s\r\n]*([^ ]+) +(.+)/, q{
+    win Windows
+    dos DOS
+    lin Linux
+    mac Mac OS
+    ios Apple iProduct
+    and Android
+    dvd DVD Player
+    bdp Blu-ray Player
+    fmt FM Towns
+    gba Game Boy Advance
+    gbc Game Boy Color
+    msx MSX
+    nds Nintendo DS
+    nes Famicom
+    p88 PC-88
+    p98 PC-98
+    pce PC Engine
+    pcf PC-FX
+    psp PlayStation Portable
+    ps1 PlayStation 1
+    ps2 PlayStation 2
+    ps3 PlayStation 3
+    ps4 PlayStation 4
+    psv PlayStation Vita
+    drc Dreamcast
+    sat Sega Saturn
+    sfc Super Nintendo
+    wii Nintendo Wii
+    n3d Nintendo 3DS
+    x68 X68000
+    xb1 Xbox
+    xb3 Xbox 360
+    xbo Xbox One
+    web Website
+    oth Other
+  }},
   media           => {
-   #DB     qty?
-    cd  => 1,
-    dvd => 1,
-    gdr => 1,
-    blr => 1,
-    flp => 1,
-    mrt => 1,
-    mem => 1,
-    umd => 1,
-    nod => 1,
-    in  => 0,
-    otc => 0
+   #DB     qty  txt                      plural (if qty)
+    cd  => [ 1, 'CD',                    'CDs'                    ],
+    dvd => [ 1, 'DVD',                   'DVDs'                   ],
+    gdr => [ 1, 'GD-ROM',                'GD-ROMs'                ],
+    blr => [ 1, 'Blu-ray disc',          'Blu-ray discs'          ],
+    flp => [ 1, 'Floppy',                'Floppies'               ],
+    mrt => [ 1, 'Cartridge',             'Cartridges'             ],
+    mem => [ 1, 'Memory card',           'Memory cards'           ],
+    umd => [ 1, 'UMD',                   'UMDs'                   ],
+    nod => [ 1, 'Nintendo Optical Disc', 'Nintendo Optical Discs' ],
+    in  => [ 0, 'Internet download',     ''                       ],
+    otc => [ 0, 'Other',                 ''                       ],
   },
   resolutions     => [
-    [ '_scrres_unknown', '' ],
-    [ '_scrres_nonstandard', '' ],
+    [ 'Unknown / console / handheld', '' ],
+    [ 'Non-standard', '' ],
     [ '640x480',      '4:3' ],
     [ '800x600',      '4:3' ],
     [ '1024x768',     '4:3' ],
     [ '1280x960',     '4:3' ],
     [ '1600x1200',    '4:3' ],
-    [ '640x400',      '_scrres_ws' ],
-    [ '960x600',      '_scrres_ws' ],
-    [ '1024x576',     '_scrres_ws' ],
-    [ '1024x600',     '_scrres_ws' ],
-    [ '1024x640',     '_scrres_ws' ],
-    [ '1280x720',     '_scrres_ws' ],
-    [ '1280x800',     '_scrres_ws' ],
-    [ '1920x1080',    '_scrres_ws' ],
+    [ '640x400',      'widescreen' ],
+    [ '960x600',      'widescreen' ],
+    [ '1024x576',     'widescreen' ],
+    [ '1024x600',     'widescreen' ],
+    [ '1024x640',     'widescreen' ],
+    [ '1280x720',     'widescreen' ],
+    [ '1280x800',     'widescreen' ],
+    [ '1920x1080',    'widescreen' ],
   ],
   tag_categories  => [ qw|cont ero tech| ],
   voiced          => [ 0..4 ],

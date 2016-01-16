@@ -27,9 +27,10 @@ sub rg {
   return if $self->htmlRGHeader($title, 'p', $p);
 
   $p->{svg} =~ s/id="node_p$pid"/id="graph_current"/;
+  # TODO: These strings can be properly interned in the SVG now
   $p->{svg} =~ s/\$___(_prodrel_[a-z]+)____\$/mt $1/eg;
-  $p->{svg} =~ s/\$(_lang_[a-z]+)_\$/mt $1/eg;
-  $p->{svg} =~ s/\$(_ptype_[a-z]+)_\$/mt $1/eg;
+  $p->{svg} =~ s/\$_lang_([a-z-]+)_\$/$self->{languages}{$1}/eg;
+  $p->{svg} =~ s/\$_ptype_([a-z]+)_\$/$self->{producer_types}{$1}/eg;
 
   div class => 'mainbox';
    h1 $title;
@@ -59,11 +60,11 @@ sub page {
   if($rev) {
     my $prev = $rev && $rev > 1 && $self->dbProducerGetRev(id => $pid, rev => $rev-1, what => 'extended relations')->[0];
     $self->htmlRevision('p', $prev, $p,
-      [ type      => serialize => sub { mt "_ptype_$_[0]" } ],
+      [ type      => serialize => sub { $self->{producer_types}{$_[0]} } ],
       [ name      => diff => 1 ],
       [ original  => diff => 1 ],
       [ alias     => diff => qr/[ ,\n\.]/ ],
-      [ lang      => serialize => sub { "$_[0] (".mt("_lang_$_[0]").')' } ],
+      [ lang      => serialize => sub { "$_[0] ($self->{languages}{$_[0]})" } ],
       [ website   => diff => 1 ],
       [ l_wp      => htmlize => sub {
         $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
@@ -83,7 +84,7 @@ sub page {
    h1 $p->{name};
    h2 class => 'alttitle', $p->{original} if $p->{original};
    p class => 'center';
-    txt mt '_prodpage_langtype', mt("_lang_$p->{lang}"), mt "_ptype_$p->{type}";
+    txt mt '_prodpage_langtype', $self->{languages}{$p->{lang}}, $self->{producer_types}{$p->{type}};
     lit '<br />'.html_escape mt '_prodpage_aliases', $p->{alias} if $p->{alias};
 
     my @links = (
@@ -168,10 +169,10 @@ sub _releases {
          td class => 'tc3';
           for (sort @{$rel->{platforms}}) {
             next if $_ eq 'oth';
-            cssicon $_, mt "_plat_$_";
+            cssicon $_, $self->{platforms}{$_};
           }
-          cssicon "lang $_", mt "_lang_$_" for (@{$rel->{languages}});
-          cssicon "rt$rel->{type}", mt "_rtype_$rel->{type}";
+          cssicon "lang $_", $self->{languages}{$_} for (@{$rel->{languages}});
+          cssicon "rt$rel->{type}", $rel->{type};
          end;
          td class => 'tc4';
           a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
@@ -218,11 +219,11 @@ sub edit {
   if($self->reqMethod eq 'POST') {
     return if !$self->authCheckCode;
     $frm = $self->formValidate(
-      { post => 'type',          enum      => $self->{producer_types} },
+      { post => 'type',          enum      => [ keys %{$self->{producer_types}} ] },
       { post => 'name',          maxlength => 200 },
       { post => 'original',      required  => 0, maxlength => 200,  default => '' },
       { post => 'alias',         required  => 0, maxlength => 500,  default => '' },
-      { post => 'lang',          enum      => $self->{languages} },
+      { post => 'lang',          enum      => [ keys %{$self->{languages}} ] },
       { post => 'website',       required  => 0, maxlength => 250,  default => '', template => 'weburl' },
       { post => 'l_wp',          required  => 0, maxlength => 150,  default => '' },
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
@@ -271,14 +272,14 @@ sub edit {
   $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 },
   'pedit_geninfo' => [ mt('_pedit_form_generalinfo'),
     [ select => name => mt('_pedit_form_type'), short => 'type',
-      options => [ map [ $_, mt "_ptype_$_" ], sort @{$self->{producer_types}} ] ],
+      options => [ map [ $_, $self->{producer_types}{$_} ], sort keys %{$self->{producer_types}} ] ],
     [ input  => name => mt('_pedit_form_name'), short => 'name' ],
     [ input  => name => mt('_pedit_form_original'), short => 'original' ],
     [ static => content => mt('_pedit_form_original_note') ],
     [ input  => name => mt('_pedit_form_alias'), short => 'alias', width => 400 ],
     [ static => content => mt('_pedit_form_alias_note') ],
     [ select => name => mt('_pedit_form_lang'), short => 'lang',
-      options => [ map [ $_, "$_ (".mt("_lang_$_").')' ], sort @{$self->{languages}} ] ],
+      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
     [ input  => name => mt('_pedit_form_website'), short => 'website' ],
     [ input  => name => mt('_pedit_form_wikipedia'), short => 'l_wp', pre => 'http://en.wikipedia.org/wiki/' ],
     [ text   => name => mt('_pedit_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
@@ -385,7 +386,7 @@ sub list {
        ul;
        for ($perlist*$c..($perlist*($c+1))-1) {
          li;
-          cssicon 'lang '.$list->[$_]{lang}, mt "_lang_$list->[$_]{lang}";
+          cssicon 'lang '.$list->[$_]{lang}, $self->{languages}{$list->[$_]{lang}};
           a href => "/p$list->[$_]{id}", title => $list->[$_]{original}, $list->[$_]{name};
          end;
        }
