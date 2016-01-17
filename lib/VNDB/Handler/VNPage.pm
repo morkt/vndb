@@ -141,7 +141,7 @@ my @rel_cols = (
     default       => 1,
     what          => 'extended',
     has_data      => sub { !!$_[0]{voiced} },
-    draw          => sub { txt mtvoiced $_[0]{voiced} },
+    draw          => sub { txt $TUWF::OBJ->{voiced}[$_[0]{voiced}] },
   }, { # Animation
     id            => 'ani',
     sort_field    => 'ani_ero',
@@ -153,8 +153,8 @@ my @rel_cols = (
     has_data      => sub { !!($_[0]{ani_story} || $_[0]{ani_ero}) },
     draw          => sub {
       txt join ', ',
-        $_[0]{ani_story} ? mt('_relinfo_ani_story', mtani $_[0]{ani_story}):(),
-        $_[0]{ani_ero}   ? mt('_relinfo_ani_ero',   mtani $_[0]{ani_ero}  ):();
+        $_[0]{ani_story} ? mt('_relinfo_ani_story', $TOWF::OBJ->{animated}[$_[0]{ani_story}]):(),
+        $_[0]{ani_ero}   ? mt('_relinfo_ani_ero',   $TOWF::OBJ->{animated}[$_[0]{ani_ero}]  ):();
       txt mt '_unknown' if !$_[0]{ani_story} && !$_[0]{ani_ero};
     },
   }, { # Released
@@ -444,7 +444,7 @@ sub page {
      div id => 'tagops';
       # NOTE: order of these links is hardcoded in JS
       my $tags_cat = $self->authPref('tags_cat') || $self->{default_tags_cat};
-      a href => "#$_", $tags_cat =~ /\Q$_/ ? (class => 'tsel') : (), lc mt "_tagcat_$_" for qw|cont ero tech|;
+      a href => "#$_", $tags_cat =~ /\Q$_/ ? (class => 'tsel') : (), lc $self->{tag_categories}{$_} for sort keys %{$self->{tag_categories}};
       my $spoiler = $self->authPref('spoilers') || 0;
       a href => '#', class => 'sec'.($spoiler == 0 ? ' tsel' : ''), lc mt '_spoilset_0';
       a href => '#', $spoiler == 1 ? (class => 'tsel') : (), lc mt '_spoilset_1';
@@ -690,9 +690,9 @@ sub _useroptions {
     }
 
     Select id => 'listsel', name => $self->authGetCode("/v$v->{id}/list");
-     option $list ? mt '_vnpage_uopt_vnlisted', mtvnlstat $list->{status} : mt '_vnpage_uopt_novn';
+     option $list ? mt '_vnpage_uopt_vnlisted', $self->{vnlist_status}[$list->{status}] : mt '_vnpage_uopt_novn';
      optgroup label => $list ? mt '_vnpage_uopt_changevn' : mt '_vnpage_uopt_addvn';
-      option value => $_, mtvnlstat $_ for (@{$self->{rlist_status}});
+      option value => $_, $self->{vnlist_status}[$_] for (0..$#{$self->{vnlist_status}});
      end;
      option value => -1, mt '_vnpage_uopt_delvn' if $list;
     end;
@@ -700,9 +700,9 @@ sub _useroptions {
 
     if(!$vote || $wish) {
       Select id => 'wishsel', name => $self->authGetCode("/v$v->{id}/wish");
-       option $wish ? mt '_vnpage_uopt_wishlisted', mt '_wish_'.$wish->{wstat} : mt '_vnpage_uopt_nowish';
+       option $wish ? mt '_vnpage_uopt_wishlisted', $self->{wishlist_status}[$wish->{wstat}] : mt '_vnpage_uopt_nowish';
        optgroup label => $wish ? mt '_vnpage_uopt_changewish' : mt '_vnpage_uopt_addwish';
-        option value => $_, mt "_wish_$_" for (@{$self->{wishlist_status}});
+        option value => $_, $self->{wishlist_status}[$_] for (0..$#{$self->{wishlist_status}});
        end;
        option value => -1, mt '_vnpage_uopt_delwish' if $wish;
       end;
@@ -797,7 +797,7 @@ sub _releases {
          td class => 'tc5';
           if($self->authInfo->{id}) {
             a href => "/r$rel->{id}", id => "rlsel_$rel->{id}", class => 'vnrlsel',
-             $rel->{ulist} ? mtrlstat $rel->{ulist}{status} : '--';
+             $rel->{ulist} ? $self->{rlist_status}[ $rel->{ulist}{status} ] : '--';
           } else {
             txt ' ';
           }

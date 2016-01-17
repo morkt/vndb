@@ -12,7 +12,7 @@ our @EXPORT = (@VNDBUtil::EXPORT, qw|
   clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags
   childtags charspoil imgpath imgurl fmtvote fmtmedia fmtvnlen
   json_encode json_decode script_json
-  mtvoiced mtani mtrlstat mtvnlstat mtbloodt
+  mtbloodt
   form_compare
 |);
 
@@ -249,10 +249,6 @@ sub script_json {
 
 # mt() wrappers for data-dependent translation strings that have a special
 # value for 'unknown'.
-sub mtvoiced { !$_[0] ? mt '_unknown' : mt '_voiced_'.$_[0]; }
-sub mtani    { !$_[0] ? mt '_unknown' : mt '_animated_'.$_[0]; }
-sub mtrlstat { !$_[0] ? mt '_unknown' : mt '_rlist_status_'.$_[0]; }
-sub mtvnlstat{ !$_[0] ? mt '_unknown' : mt '_vnlist_status_'.$_[0]; }
 sub mtbloodt { $_[0] eq 'unknown' ? mt '_unknown' : mt '_bloodt_'.$_[0]; }
 
 

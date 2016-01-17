@@ -120,7 +120,7 @@ sub resolutions {
 sub vars {
   my($lang, $l10n) = @_;
   my %vars = (
-    rlist_status  => [ map l10nstr($lang, $_?"_rlist_status_$_":'_unknown'), @{$S{rlist_status}} ],
+    rlist_status  => $S{rlist_status},
     cookie_prefix => $O{cookie_prefix},
     age_ratings   => [ map [ $_, l10nstr($lang, $_ == -1 ? ('_unknown') : $_ == 0 ? ('_minage_all') : ('_minage_age', $_)) ], @{$S{age_ratings}} ],
     languages     => [ map [ $_, $S{languages}{$_} ], sort keys %{$S{languages}} ],
@@ -128,8 +128,8 @@ sub vars {
     char_roles    => [ map [ $_, l10nstr($lang, "_charrole_$_") ], @{$S{char_roles}} ],
     media         => [ map [ $_, $S{media}{$_}[1], $S{media}{$_}[0] ], sort keys %{$S{media}} ],
     release_types => [ map [ $_, ucfirst $_ ], @{$S{release_types}} ],
-    animated      => [ map [ 1*$_, l10nstr($lang, $_?"_animated_$_":'_unknown' ) ], @{$S{animated}} ],
-    voiced        => [ map [ 1*$_, l10nstr($lang, $_?"_voiced_$_":'_unknown' ) ], @{$S{voiced}} ],
+    animated      => [ map [ $_, $S{animated}[$_] ], 0..$#{$S{animated}} ],
+    voiced        => [ map [ $_, $S{voiced}[$_] ], 0..$#{$S{voiced}} ],
     vn_lengths    => [ map [ $_, $S{vn_lengths}[$_][0] ], 0..$#{$S{vn_lengths}} ],
     blood_types   => [ map [ $_, l10nstr($lang, $_ eq 'unknown' ? '_unknown' : "_bloodt_$_") ], @{$S{blood_types}} ],
     genders       => [ map [ $_, l10nstr($lang, "_gender_$_") ], @{$S{genders}} ],

@@ -119,51 +119,6 @@ en : Producers
 en : Users
 
 
-# Wishlist statuses
-
-:_wish_0
-en : high
-
-:_wish_1
-en : medium
-
-:_wish_2
-en : low
-
-:_wish_3
-en : blacklist
-
-
-# 'Voiced' information for releases
-
-:_voiced_1
-en : Not voiced
-
-:_voiced_2
-en : Only ero scenes voiced
-
-:_voiced_3
-en : Partially voiced
-
-:_voiced_4
-en : Fully voiced
-
-
-# 'Animated' information for releases
-
-:_animated_1
-en : No animations
-
-:_animated_2
-en : Simple animations
-
-:_animated_3
-en : Some fully animated scenes
-
-:_animated_4
-en : All scenes fully animated
-
-
 # Rating indications
 
 :_vote_1
@@ -195,45 +150,6 @@ en : excellent
 
 :_vote_10
 en : masterpiece
-
-
-# VN list statuses
-
-:_rlist_status_1
-en : Pending
-
-:_rlist_status_2
-en : Obtained
-
-:_rlist_status_3
-en : On loan
-
-:_rlist_status_4
-en : Deleted
-
-:_vnlist_status_1
-en : Playing
-
-:_vnlist_status_2
-en : Finished
-
-:_vnlist_status_3
-en : Stalled
-
-:_vnlist_status_4
-en : Dropped
-
-
-# Tag categories
-
-:_tagcat_cont
-en : Content
-
-:_tagcat_ero
-en : Sexual content
-
-:_tagcat_tech
-en : Technical
 
 
 # Blood types

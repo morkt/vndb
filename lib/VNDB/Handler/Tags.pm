@@ -86,7 +86,7 @@ sub tagpage {
    p class => 'center';
     b mt('_tagp_cat');
     br;
-    txt mt("_tagcat_$t->{cat}");
+    txt $self->{tag_categories}{$t->{cat}};
    end;
    if(@{$t->{aliases}}) {
      p class => 'center';
@@ -153,7 +153,7 @@ sub tagedit {
     $frm = $self->formValidate(
       { post => 'name',        required => 1, maxlength => 250, regex => [ qr/^[^,]+$/, 'A comma is not allowed in tag names' ] },
       { post => 'state',       required => 0, default => 0,  enum => [ 0..2 ] },
-      { post => 'cat',         required => 1, enum => $self->{tag_categories} },
+      { post => 'cat',         required => 1, enum => [ keys %{$self->{tag_categories}} ] },
       { post => 'catrec',      required => 0 },
       { post => 'meta',        required => 0, default => 0 },
       { post => 'alias',       required => 0, maxlength => 1024, default => '', regex => [ qr/^[^,]+$/s, 'No comma allowed in aliases' ]  },
@@ -235,7 +235,7 @@ sub tagedit {
         [ static => content => mt '_tagedit_frm_meta_warn' ] : (),
     ) : (),
     [ select   => short => 'cat', name => mt('_tagedit_frm_cat'), options => [
-      map [$_, mt "_tagcat_$_"], @{$self->{tag_categories}} ] ],
+      map [$_, $self->{tag_categories}{$_}], sort keys %{$self->{tag_categories}} ] ],
     $self->authCan('tagmod') && $tag ? (
       [ checkbox => short => 'catrec', name => mt '_tagedit_frm_catrec' ],
       [ static => content => mt '_tagedit_frm_catrec_warn' ],
@@ -582,11 +582,11 @@ sub _tagmod_list {
 
   my %my = map +($_->{tag} => $_), @$my;
 
-  for my $cat (@{$self->{tag_categories}}) {
+  for my $cat (sort keys %{$self->{tag_categories}}) {
     my @tags = grep $_->{cat} eq $cat, @$tags;
     next if !@tags;
     Tr class => 'tagmod_cat';
-     td colspan => 7, mt "_tagcat_$cat";
+     td colspan => 7, $self->{tag_categories}{$cat};
     end;
     for my $t (@tags) {
       my $m = $my{$t->{id}};

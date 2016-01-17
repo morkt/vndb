@@ -196,7 +196,7 @@ sub htmlBrowseVN {
           lit sprintf '<b class="%s">%d/%d</b>', $l->{userlist_obtained} == $l->{userlist_all} ? 'done' : 'todo', $l->{userlist_obtained}, $l->{userlist_all} if $l->{userlist_all};
          end 'td';
        }
-       td class => 'tc8', defined($l->{wstat}) ? mt "_wish_$l->{wstat}" : '' if $f->{wish};
+       td class => 'tc8', defined($l->{wstat}) ? $self->{wishlist_status}[$l->{wstat}] : '' if $f->{wish};
        td class => 'tc2';
         $_ ne 'oth' && cssicon $_, $self->{platforms}{$_}
           for (sort @{$l->{c_platforms}});

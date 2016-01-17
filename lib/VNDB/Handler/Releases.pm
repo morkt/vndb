@@ -57,9 +57,9 @@ sub page {
       [ platforms  => join => ', ', split => sub { map $self->{platforms}{$_}, @{$_[0]} } ],
       [ media      => join => ', ', split => sub { map fmtmedia($_->{medium}, $_->{qty}), @{$_[0]} } ],
       [ resolution => serialize => sub { $self->{resolutions}[$_[0]][0]; } ],
-      [ voiced     => serialize => \&mtvoiced ],
-      [ ani_story  => serialize => \&mtani ],
-      [ ani_ero    => serialize => \&mtani ],
+      [ voiced     => serialize => sub { $self->{voiced}[$_[0]] } ],
+      [ ani_story  => serialize => sub { $self->{animated}[$_[0]] } ],
+      [ ani_ero    => serialize => sub { $self->{animated}[$_[0]] } ],
       [ producers  => join => '<br />', split => sub {
         map sprintf('<a href="/p%d" title="%s">%s</a> (%s)', $_->{id}, $_->{original}||$_->{name}, shorten($_->{name}, 50),
           join(', ', $_->{developer} ? mt '_reldiff_developer' :(), $_->{publisher} ? mt '_reldiff_publisher' :())
@@ -166,7 +166,7 @@ sub _infotable {
    if($r->{voiced}) {
      Tr;
       td mt '_relinfo_voiced';
-      td mtvoiced $r->{voiced};
+      td $self->{voiced}[$r->{voiced}];
      end;
    }
 
@@ -174,8 +174,8 @@ sub _infotable {
      Tr;
       td mt '_relinfo_ani';
       td join ', ',
-        $r->{ani_story} ? mt('_relinfo_ani_story', mtani $r->{ani_story}):(),
-        $r->{ani_ero}   ? mt('_relinfo_ani_ero',   mtani $r->{ani_ero}  ):();
+        $r->{ani_story} ? mt('_relinfo_ani_story', $self->{animated}[$r->{ani_story}]):(),
+        $r->{ani_ero}   ? mt('_relinfo_ani_ero',   $self->{animated}[$r->{ani_ero}]  ):();
      end;
    }
 
@@ -238,10 +238,10 @@ sub _infotable {
       td;
        Select id => 'listsel', name => $self->authGetCode("/r$r->{id}/list");
         option value => -2, 
-          mt !$rl ? '_relinfo_user_notlist' : ('_relinfo_user_inlist', mtrlstat $rl->{status});
+          mt !$rl ? '_relinfo_user_notlist' : ('_relinfo_user_inlist', $self->{rlist_status}[$rl->{status}]);
         optgroup label => mt '_relinfo_user_setstatus';
-         option value => $_, mtrlstat $_
-           for (@{$self->{rlist_status}});
+         option value => $_, $self->{rlist_status}[$_]
+           for (0..$#{$self->{rlist_status}});
         end;
         option value => -1, mt '_relinfo_user_del' if $rl;
        end;
@@ -310,9 +310,9 @@ sub edit {
       { post => 'platforms', required => 0, default => '', multi => 1, enum => [ keys %{$self->{platforms}} ] },
       { post => 'media',     required => 0, default => '' },
       { post => 'resolution',required => 0, default => 0, enum => [ 0..$#{$self->{resolutions}} ] },
-      { post => 'voiced',    required => 0, default => 0, enum => $self->{voiced} },
-      { post => 'ani_story', required => 0, default => 0, enum => $self->{animated} },
-      { post => 'ani_ero',   required => 0, default => 0, enum => $self->{animated} },
+      { post => 'voiced',    required => 0, default => 0, enum => [ 0..$#{$self->{voiced}} ] },
+      { post => 'ani_story', required => 0, default => 0, enum => [ 0..$#{$self->{animated}} ] },
+      { post => 'ani_ero',   required => 0, default => 0, enum => [ 0..$#{$self->{animated}} ] },
       { post => 'producers', required => 0, default => '' },
       { post => 'vn',        maxlength => 50000 },
       { post => 'editsum',   template => 'editsum' },
@@ -404,11 +404,11 @@ sub _form {
     [ select => short => 'resolution', name => mt('_redit_form_resolution'), options => [
       map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
     [ select => short => 'voiced',     name => mt('_redit_form_voiced'), options => [
-      map [ $_, mtvoiced $_ ], @{$self->{voiced}} ] ],
+      map [ $_, $self->{voiced}[$_] ], 0..$#{$self->{voiced}} ] ],
     [ select => short => 'ani_story',  name => mt('_redit_form_ani_story'), options => [
-      map [ $_, mtani $_ ], @{$self->{animated}} ] ],
+      map [ $_, $self->{animated}[$_] ], 0..$#{$self->{animated}} ] ],
     [ select => short => 'ani_ero',  name => mt('_redit_form_ani_ero'), options => [
-      map [ $_, $_ ? mtani $_ : mt('_redit_form_ani_ero_none') ], @{$self->{animated}} ] ],
+      map [ $_, $_ ? $self->{animated}[$_] : mt('_redit_form_ani_ero_none') ], 0..$#{$self->{animated}} ] ],
     [ static => content => mt('_redit_form_ani_ero_note') ],
     [ hidden => short => 'media' ],
     [ static => nolabel => 1, content => sub {
@@ -526,7 +526,7 @@ sub browse {
        td class => 'tc3';
         $_ ne 'oth' && cssicon $_, $self->{platforms}{$_} for (@{$l->{platforms}});
         cssicon "lang $_", $self->{languages}{$_} for (@{$l->{languages}});
-        cssicon "rt$l->{type}", mt $l->{type};
+        cssicon "rt$l->{type}", $l->{type};
        end;
        td class => 'tc4';
         a href => "/r$l->{id}", title => $l->{original}||$l->{title}, shorten $l->{title}, 90;

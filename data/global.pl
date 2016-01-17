@@ -186,12 +186,17 @@ our %S;
     [ '1280x800',     'widescreen' ],
     [ '1920x1080',    'widescreen' ],
   ],
-  tag_categories  => [ qw|cont ero tech| ],
-  voiced          => [ 0..4 ],
-  animated        => [ 0..4 ],
-  wishlist_status => [ 0..3 ],
-  rlist_status    => [ 0..4 ], # 0 = hardcoded "unknown", 2 = hardcoded 'OK'. List must not have gaps
-  vnlist_status   => [ 0..4 ],
+  tag_categories  => {
+    cont => 'Content',
+    ero  => 'Sexual content',
+    tech => 'Technical',
+  },
+  # The voiced, animated, and *_status fields are stored in the database by their (numeric) index.
+  voiced          => [ 'Unknown', 'Not voiced', 'Only ero scenes voiced', 'Partially voiced', 'Fully voiced' ],
+  animated        => [ 'Unknown', 'No animations', 'Simple animations', 'Some fully animated scenes', 'All scenes fully animated' ],
+  wishlist_status => [ 'high', 'medium', 'low', 'blacklist' ],
+  rlist_status    => [ 'Unknown', 'Pending', 'Obtained', 'On loan', 'Deleted' ], # 0 = hardcoded "unknown", 2 = hardcoded 'OK'
+  vnlist_status   => [ 'Unknown', 'Playing', 'Finished', 'Stalled', 'Dropped' ],
   blood_types     => [qw| unknown o a b ab |],
   genders         => [qw| unknown m f b |],
   char_roles      => [qw| main primary side appears |],
