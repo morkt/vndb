@@ -597,19 +597,11 @@ function filVN() {
 }
 
 function filStaff() {
-  var gend = [
-    ['unknown', mt('_gender_unknown')],
-    ['m', mt('_gender_m')],
-    ['f', mt('_gender_f')],
-  ];
+  var gend = VARS.genders.slice(0, 3);
 
   // Insert seiyuu into the list of roles, before the "staff" role.
   var roles = VARS.staff_roles;
-  for(var i=0; i<roles.length; i++)
-    if(roles[i][0] == 'staff') {
-      roles.splice(i, 0, ['seiyuu', mt('_credit_seiyuu')]);
-      break;
-    }
+  roles.splice(-1, 0, ['seiyuu', 'Voice actor']);
 
   return [
     mt('_sbrowse_fil_title'),

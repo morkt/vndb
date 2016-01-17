@@ -81,7 +81,18 @@ our %S;
     in => 'Individual',
     ng => 'Amateur group',
   ),
-  discussion_boards => [qw|an db ge v p u|], # <- note that some properties of these boards are hard-coded
+  # Some discussion board properties are hardcoded, e.g.:
+  # - number of rows to show on /t
+  # - whether it needs mod access
+  # - whether it needs to be linked to a DB item.
+  discussion_boards => ordhash(
+    an => 'Announcements',
+    db => 'VNDB discussions',
+    ge => 'General discussions',
+    v  => 'Visual novels',
+    p  => 'Producers',
+    u  => 'Users',
+  ),
   vn_lengths => [
     # name          time             examples
     [ 'Unknown',    '',              ''                                                  ],
@@ -200,21 +211,33 @@ our %S;
     ero  => 'Sexual content',
     tech => 'Technical',
   ),
-  # The voiced, animated, and *_status fields are stored in the database by their (numeric) index.
   voiced          => [ 'Unknown', 'Not voiced', 'Only ero scenes voiced', 'Partially voiced', 'Fully voiced' ],
   animated        => [ 'Unknown', 'No animations', 'Simple animations', 'Some fully animated scenes', 'All scenes fully animated' ],
   wishlist_status => [ 'high', 'medium', 'low', 'blacklist' ],
   rlist_status    => [ 'Unknown', 'Pending', 'Obtained', 'On loan', 'Deleted' ], # 0 = hardcoded "unknown", 2 = hardcoded 'OK'
   vnlist_status   => [ 'Unknown', 'Playing', 'Finished', 'Stalled', 'Dropped' ],
-  blood_types     => [qw| unknown o a b ab |],
-  genders         => [qw| unknown m f b |],
-  char_roles      => [qw| main primary side appears |],
+  blood_types     => ordhash(qw{unknown Unknown o O a A b B ab AB}),
+  genders         => ordhash(unknown => 'Unknown or N/A', qw{m Male  f Female  b Both}),
+  char_roles      => ordhash(
+    main    => 'Protagonist',
+    primary => 'Main character',
+    side    => 'Side character',
+    appears => 'Makes an appearance'
+  ),
   atom_feeds => { # num_entries, title, id
     announcements => [ 10, 'VNDB Site Announcements', '/t/an' ],
     changes       => [ 25, 'VNDB Recent Changes', '/hist' ],
     posts         => [ 25, 'VNDB Recent Posts', '/t' ],
   },
-  staff_roles     => [qw|scenario chardesign art music songs director staff|],
+  staff_roles     => ordhash(
+    scenario   => 'Scenario',
+    chardesign => 'Character design',
+    art        => 'Artist',
+    music      => 'Composer',
+    songs      => 'Vocals',
+    director   => 'Director',
+    staff      => 'Staff',
+  ),
   poll_options    => 20, # max number of options in discussion board polls
 );
 

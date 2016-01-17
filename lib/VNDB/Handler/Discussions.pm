@@ -46,7 +46,7 @@ sub thread {
    ul;
     for (sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$t->{boards}}) {
       li;
-       a href => "/t/$_->{type}", mt "_dboard_$_->{type}";
+       a href => "/t/$_->{type}", $self->{discussion_boards}{$_->{type}};
        if($_->{iid}) {
          txt ' > ';
          a style => 'font-weight: bold', href => "/t/$_->{type}$_->{iid}", "$_->{type}$_->{iid}";
@@ -208,7 +208,7 @@ sub edit {
         my($ty, $id) = ($1, $2) if /^([a-z]{1,2})([0-9]*)$/;
         push @boards, [ $ty, $id ];
         push @{$frm->{_err}}, [ 'boards', 'wrongboard', $_ ] if
-             !$ty || !grep($_ eq $ty, @{$self->{discussion_boards}})
+             !$ty || !$self->{discussion_boards}{$ty}
           || $ty eq 'an' && ($id || !$self->authCan('boardmod'))
           || $ty eq 'db' && $id
           || $ty eq 'ge' && $id
@@ -380,7 +380,7 @@ sub board {
                    $self->dbVNGet(id => $iid)->[0];
   return $self->resNotFound if $iid && !$obj;
   my $ititle = $obj && ($obj->{title}||$obj->{name}||$obj->{username});
-  my $title = !$obj ? mt($type eq 'all' ? '_disboard_item_all' : "_dboard_$type") : mt '_disboard_item_title', $ititle;
+  my $title = !$obj ? $self->{discussion_boards}{$type} || 'All boards' : mt '_disboard_item_title', $ititle;
 
   my($list, $np) = $self->dbThreadGet(
     $type ne 'all' ? (type => $type) : (),
@@ -400,7 +400,7 @@ sub board {
     p;
      a href => '/t', mt '_disboard_rootlink';
      txt ' > ';
-     a href => "/t/$type", mt $type eq 'all' ? '_disboard_item_all' : "_dboard_$type";
+     a href => "/t/$type", $self->{discussion_boards}{$type}||'All boards';
      if($iid) {
        txt ' > ';
        a style => 'font-weight: bold', href => "/t/$type$iid", "$type$iid";
@@ -445,14 +445,14 @@ sub index {
      input type => 'submit', class => 'submit', value => mt '_searchbox_submit';
     end 'fieldset';
     p class => 'browseopts';
-     a href => '/t/all', mt '_disboard_item_all';
-     a href => '/t/'.$_, mt "_dboard_$_"
-       for (@{$self->{discussion_boards}});
+     a href => '/t/all', 'All boards';
+     a href => '/t/'.$_, $self->{discussion_boards}{$_}
+       for (keys %{$self->{discussion_boards}});
     end;
    end;
   end;
 
-  for (@{$self->{discussion_boards}}) {
+  for (keys %{$self->{discussion_boards}}) {
     my $list = $self->dbThreadGet(
       type => $_,
       results => /^(db|v|ge)$/ ? 10 : 5,
@@ -461,7 +461,7 @@ sub index {
       sort => 'lastpost', reverse => 1,
     );
     h1 class => 'boxtitle';
-     a href => "/t/$_", mt "_dboard_$_";
+     a href => "/t/$_", $self->{discussion_boards}{$_};
     end;
     _threadlist($self, $list, {p=>1}, 0, "/t", $_);
   }
@@ -475,7 +475,7 @@ sub search {
 
   my $frm = $self->formValidate(
     { get => 'bq', required => 0, maxlength => 100 },
-    { get => 'b',  required => 0, multi => 1, enum => $self->{discussion_boards} },
+    { get => 'b',  required => 0, multi => 1, enum => [ keys %{$self->{discussion_boards}} ] },
     { get => 't',  required => 0 },
     { get => 'p',  required => 0, default => 1, template => 'page' },
   );
@@ -485,8 +485,8 @@ sub search {
   $self->htmlForm({ frm => $frm, action => '/t/search', method => 'get', nosubmit => 1, noformcode => 1 }, 'boardsearch' => [mt('_dissearch_title'),
     [ input  => short => 'bq', name => mt('_dissearch_query') ],
     [ check  => short => 't',  name => mt('_dissearch_titleonly') ],
-    [ select => short => 'b',  name => mt('_dissearch_boards'), multi => 1, size => scalar @{$self->{discussion_boards}},
-      options => [ map [$_,mt("_dboard_$_")], @{$self->{discussion_boards}} ] ],
+    [ select => short => 'b',  name => mt('_dissearch_boards'), multi => 1, size => scalar keys %{$self->{discussion_boards}},
+      options => [ map [$_,$self->{discussion_boards}{$_}], keys %{$self->{discussion_boards}} ] ],
     [ static => content => sub {
       input type => 'submit', class => 'submit', tabindex => 10, value => mt '_searchbox_submit';
     } ],
@@ -494,7 +494,7 @@ sub search {
   return $self->htmlFooter if !$frm->{bq};
 
   my %boards = map +($_,1), @{$frm->{b}};
-  %boards = () if keys %boards == @{$self->{discussion_boards}};
+  %boards = () if keys %boards == keys %{$self->{discussion_boards}};
 
   my($l, $np);
   if($frm->{t}) {
@@ -610,8 +610,8 @@ sub _threadlist {
            last if $i++ > 4;
            txt ', ' if $i > 2;
            a href => "/t/$_->{type}".($_->{iid}||''),
-             title => $_->{original}||mt("_dboard_$_->{type}"),
-             shorten $_->{title}||mt("_dboard_$_->{type}"), 30;
+             title => $_->{original}||$self->{discussion_boards}{$_->{type}},
+             shorten $_->{title}||$self->{discussion_boards}{$_->{type}}, 30;
          }
          txt ', ...' if @boards > 4;
         end;

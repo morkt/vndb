@@ -516,7 +516,7 @@ sub _revision {
     }],
     [ credits     => join => '<br />', split => sub {
       my @r = map sprintf('<a href="/s%d" title="%s">%s</a> [%s]%s', $_->{id},
-          xml_escape($_->{original}||$_->{name}), xml_escape($_->{name}), mt("_credit_$_->{role}"),
+          xml_escape($_->{original}||$_->{name}), xml_escape($_->{name}), xml_escape($self->{staff_roles}{$_->{role}}),
           $_->{note} ? ' ['.xml_escape($_->{note}).']' : ''),
         sort { $a->{id} <=> $b->{id} || $a->{role} cmp $b->{role} } @{$_[0]};
       return @r ? @r : (mt '_revision_empty');
@@ -886,15 +886,15 @@ sub _chars {
   return if !@$l;
   my %done;
   my %rol;
-  for my $r (@{$self->{char_roles}}) {
+  for my $r (keys %{$self->{char_roles}}) {
     $rol{$r} = [ grep grep($_->{role} eq $r, @{$_->{vns}}) && !$done{$_->{id}}++, @$l ];
   }
   my $first = 0;
-  for my $r (@{$self->{char_roles}}) {
+  for my $r (keys %{$self->{char_roles}}) {
     next if !@{$rol{$r}};
     div class => 'mainbox';
      $self->charOps(1) if !$first++;
-     h1 mt "_charrole_$r", scalar @{$rol{$r}};
+     h1 $self->{char_roles}{$r};
      $self->charTable($_, 1, $_ != $rol{$r}[0], 1, _charspoillvl $v->{id}, $_) for (@{$rol{$r}});
     end;
   }
@@ -906,7 +906,7 @@ sub _charsum {
   return if !@$l;
 
   my(@l, %done, $has_spoilers);
-  for my $r (@{$self->{char_roles}}) {
+  for my $r (keys %{$self->{char_roles}}) {
     last if $r eq 'appears';
     for (grep grep($_->{role} eq $r, @{$_->{vns}}) && !$done{$_->{id}}++, @$l) {
       $_->{role} = $r;
@@ -922,7 +922,7 @@ sub _charsum {
     for my $c (@l) {
       div class => 'charsum_bubble'.($has_spoilers ? ' '.charspoil(_charspoillvl $v->{id}, $c) : '');
        div class => 'name';
-        i mt '_charrole_'.$c->{role}, 1;
+        i $self->{char_roles}{$c->{role}};
         a href => "/c$c->{id}", title => $c->{original}||$c->{name}, $c->{name};
        end;
        if(@{$c->{seiyuu}}) {
@@ -949,11 +949,11 @@ sub _staff {
 
   div class => 'mainbox staff summarize', 'data-summarize-height' => 100, id => 'staff';
    h1 mt '_vnpage_staff';
-   for my $r (@{$self->{staff_roles}}) {
+   for my $r (keys %{$self->{staff_roles}}) {
      my @s = grep $_->{role} eq $r, @{$v->{credits}};
      next if !@s;
      ul;
-      li; b mt '_credit_'.$r; end;
+      li; b $self->{staff_roles}{$r}; end;
       for(@s) {
         li;
          a href => "/s$_->{id}", title => $_->{original}||$_->{name}, $_->{name};

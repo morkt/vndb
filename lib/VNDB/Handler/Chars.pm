@@ -39,7 +39,7 @@ sub page {
       [ original  => diff => 1 ],
       [ alias     => diff => qr/[ ,\n\.]/ ],
       [ desc      => diff => qr/[ ,\n\.]/ ],
-      [ gender    => serialize => sub { mt "_gender_$_[0]" } ],
+      [ gender    => serialize => sub { $self->{genders}{$_[0]} } ],
       [ b_month   => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ b_day     => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ s_bust    => serialize => sub { $_[0]||mt '_revision_empty' } ],
@@ -47,7 +47,7 @@ sub page {
       [ s_hip     => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ height    => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ weight    => serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ bloodt    => serialize => \&mtbloodt ],
+      [ bloodt    => serialize => sub { $self->{blood_types}{$_[0]} } ],
       [ main      => htmlize => sub { $_[0] ? sprintf '<a href="/c%d">c%d</a>', $_[0], $_[0] : mt '_revision_empty' } ],
       [ main_spoil=> serialize => sub { mt "_spoil_$_[0]" } ],
       [ image     => htmlize => sub {
@@ -60,7 +60,7 @@ sub page {
       [ vns       => join => '<br />', split => sub {
         map sprintf('<a href="/v%d">v%d</a> %s %s (%s)', $_->{vid}, $_->{vid},
           $_->{rid}?sprintf('[<a href="/r%d">r%d</a>]', $_->{rid}, $_->{rid}):'',
-          mt("_charrole_$_->{role}", 1), mt("_spoil_$_->{spoil}")), @{$_[0]};
+          $self->{char_roles}{$_->{role}}, mt("_spoil_$_->{spoil}")), @{$_[0]};
       }],
     );
   }
@@ -130,8 +130,8 @@ sub charTable {
          b style => 'margin-right: 10px', $r->{name};
        }
        b class => 'grayedout', style => 'margin-right: 10px', $r->{original} if $r->{original};
-       cssicon "gen $r->{gender}", mt "_gender_$r->{gender}" if $r->{gender} ne 'unknown';
-       span mtbloodt $r->{bloodt} if $r->{bloodt} ne 'unknown';
+       cssicon "gen $r->{gender}", $self->{genders}{$r->{gender}} if $r->{gender} ne 'unknown';
+       span $self->{blood_types}{$r->{bloodt}} if $r->{bloodt} ne 'unknown';
       end;
      end;
     end;
@@ -196,7 +196,7 @@ sub charTable {
           # special case: all releases, no exceptions
           if(!$vn && @r == 1 && !$r[0]{rid}) {
             span class => charspoil $r[0]{spoil};
-             txt mt("_charrole_$r[0]{role}", 1).' - ';
+             txt $self->{char_roles}{$r[0]{role}}.' - ';
              a href => "/v$r[0]{vid}/chars", $r[0]{vntitle};
             end;
             next;
@@ -210,7 +210,7 @@ sub charTable {
              span class => charspoil $_->{spoil};
               br if !$vn || $_ != $r[0];
               b class => 'grayedout', '> ';
-              txt mt("_charrole_$_->{role}", 1).' - ';
+              txt $self->{char_roles}{$_->{role}}.' - ';
               if($_->{rid}) {
                 b class => 'grayedout', "r$_->{rid}:";
                 a href => "/r$_->{rid}", $_->{rtitle};
@@ -290,7 +290,7 @@ sub edit {
       { post => 'original',      required  => 0, maxlength => 200,  default => '' },
       { post => 'alias',         required  => 0, maxlength => 500,  default => '' },
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
-      { post => 'gender',        required  => 0, default => 'unknown', enum => $self->{genders} },
+      { post => 'gender',        required  => 0, default => 'unknown', enum => [ keys %{$self->{genders}} ] },
       { post => 'image',         required  => 0, default => 0,  template => 'id' },
       { post => 'bday',          required  => 0, default => '', regex => [ qr/^\d{2}-\d{2}$/, mt('_chare_form_bday_err') ] },
       { post => 's_bust',        required  => 0, default => 0, template => 'uint', max => 32767 },
@@ -298,7 +298,7 @@ sub edit {
       { post => 's_hip',         required  => 0, default => 0, template => 'uint', max => 32767 },
       { post => 'height',        required  => 0, default => 0, template => 'uint', max => 32767 },
       { post => 'weight',        required  => 0, default => 0, template => 'uint', max => 32767 },
-      { post => 'bloodt',        required  => 0, default => 'unknown', enum => $self->{blood_types} },
+      { post => 'bloodt',        required  => 0, default => 'unknown', enum => [ keys %{$self->{blood_types}} ] },
       { post => 'main',          required  => 0, default => 0, template => 'id' },
       { post => 'main_spoil',    required  => 0, default => 0, enum => [ 0..2 ] },
       { post => 'traits',        required  => 0, default => '', regex => [ qr/^(?:[1-9]\d*-[0-2])(?: +[1-9]\d*-[0-2])*$/, 'Incorrect trait format.' ] },
@@ -370,7 +370,7 @@ sub edit {
     [ static => content => mt('_chare_form_alias_note') ],
     [ text   => name => mt('_chare_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
     [ select => name => mt('_chare_form_gender'),short => 'gender', options => [
-       map [ $_, mt("_gender_$_") ], @{$self->{genders}} ] ],
+       map [ $_, $self->{genders}{$_} ], keys %{$self->{genders}} ] ],
     [ input  => name => mt('_chare_form_bday'),  short => 'bday',   width => 100, post => ' '.mt('_chare_form_bday_fmt')  ],
     [ input  => name => mt('_chare_form_bust'),  short => 's_bust', width => 50, post => ' cm' ],
     [ input  => name => mt('_chare_form_waist'), short => 's_waist',width => 50, post => ' cm' ],
@@ -378,7 +378,7 @@ sub edit {
     [ input  => name => mt('_chare_form_height'),short => 'height', width => 50, post => ' cm' ],
     [ input  => name => mt('_chare_form_weight'),short => 'weight', width => 50, post => ' kg' ],
     [ select => name => mt('_chare_form_bloodt'),short => 'bloodt', options => [
-       map [ $_, mtbloodt $_ ], @{$self->{blood_types}} ] ],
+       map [ $_, $self->{blood_types}{$_} ], keys %{$self->{blood_types}} ] ],
     [ static => content => '<br />' ],
     [ input  => name => mt('_chare_form_main'),  short => 'main', width => 50, post => ' '.mt('_chare_form_main_note') ],
     [ select => name => mt('_chare_form_main_spoil'), short => 'main_spoil', options => [
@@ -546,7 +546,7 @@ sub charBrowseTable {
       my($s, $n, $l) = @_;
       Tr;
        td class => 'tc1';
-        cssicon "gen $l->{gender}", mt "_gender_$l->{gender}" if $l->{gender} ne 'unknown';
+        cssicon "gen $l->{gender}", mt $self->{genders}{$l->{gender}} if $l->{gender} ne 'unknown';
        end;
        td class => 'tc2';
         a href => "/c$l->{id}", title => $l->{original}||$l->{name}, shorten $l->{name}, 50;

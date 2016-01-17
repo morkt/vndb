@@ -36,7 +36,7 @@ sub page {
     $self->htmlRevision('s', $prev, $s,
       [ name      => diff => 1 ],
       [ original  => diff => 1 ],
-      [ gender    => serialize => sub { mt "_gender_$_[0]" } ],
+      [ gender    => serialize => sub { $self->{genders}{$_[0]} } ],
       [ lang      => serialize => sub { "$_[0] ($self->{languages}{$_[0]})" } ],
       [ l_site    => diff => 1 ],
       [ l_wp      => htmlize => sub {
@@ -63,7 +63,7 @@ sub page {
       td colspan => 2;
        b style => 'margin-right: 10px', $s->{name};
        b class => 'grayedout', style => 'margin-right: 10px', $s->{original} if $s->{original};
-       cssicon "gen $s->{gender}", mt "_gender_$s->{gender}" if $s->{gender} ne 'unknown';
+       cssicon "gen $s->{gender}", $self->{genders}{$s->{gender}} if $s->{gender} ne 'unknown';
       end;
      end;
     end;
@@ -139,7 +139,7 @@ sub _roles {
       Tr;
        td class => 'tc1'; a href => "/v$l->{vid}", title => $l->{t_original}||$l->{title}, shorten $l->{title}, 60; end;
        td class => 'tc2'; lit $self->{l10n}->datestr($l->{c_released}); end;
-       td class => 'tc3', mt '_credit_'.$l->{role};
+       td class => 'tc3', $self->{staff_roles}{$l->{role}};
        td class => 'tc4', title => $l->{original}||$l->{name}, $l->{name};
        td class => 'tc5', $l->{note};
       end;
@@ -275,7 +275,7 @@ sub edit {
     [ static => content => '<br />' ],
     [ text   => name => mt('_staffe_form_note').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 4 ],
     [ select => name => mt('_staffe_form_gender'),short => 'gender', options => [
-       map [ $_, mt("_gender_$_") ], qw(unknown m f) ] ],
+       map [ $_, $self->{genders}{$_} ], qw(unknown m f) ] ],
     [ select => name => mt('_staffe_form_lang'), short => 'lang',
       options => [ map [ $_, "$_ ($self->{languages}{$_})" ], keys %{$self->{languages}} ] ],
     [ input  => name => mt('_staffe_form_site'), short => 'l_site' ],

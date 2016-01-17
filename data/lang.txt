@@ -38,27 +38,6 @@ information.
 en : Unknown
 
 
-# Discussion board types
-
-:_dboard_an
-en : Announcements
-
-:_dboard_db
-en : VNDB Discussions
-
-:_dboard_ge
-en : General discussions
-
-:_dboard_v
-en : Visual novels
-
-:_dboard_p
-en : Producers
-
-:_dboard_u
-en : Users
-
-
 # Rating indications
 
 :_vote_1
@@ -90,51 +69,6 @@ en : excellent
 
 :_vote_10
 en : masterpiece
-
-
-# Blood types
-
-:_bloodt_o
-en : O
-
-:_bloodt_a
-en : A
-
-:_bloodt_b
-en : B
-
-:_bloodt_ab
-en : AB
-
-
-# Genders
-
-:_gender_unknown
-en : Unknown or N/A
-
-:_gender_m
-en : Male
-
-:_gender_f
-en : Female
-
-:_gender_b
-en : Both
-
-
-# Character roles
-
-:_charrole_main
-en : [quant,_1,Protagonist,Protagonists]
-
-:_charrole_primary
-en : Main [quant,_1,character,characters]
-
-:_charrole_side
-en : Side [quant,_1,character,characters]
-
-:_charrole_appears
-en : Makes an appearance
 
 
 
@@ -1171,34 +1105,6 @@ en : No results found
 #############################################################################
 # Handler::Staff
 
-# Built-in credits
-
-:_credit_scenario
-en : Scenario
-
-:_credit_chardesign
-en : Character design
-
-:_credit_music
-en : Composer
-
-:_credit_director
-en : Director
-
-:_credit_art
-en : Artist
-
-:_credit_songs
-en : Vocals
-
-:_credit_staff
-en : Staff
-
-:_credit_seiyuu
-en : Voice actor
-
-:_credit_other
-en : Other
 
 # Staff diff fields (/s+.+)
 

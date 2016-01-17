@@ -12,7 +12,6 @@ our @EXPORT = (@VNDBUtil::EXPORT, qw|
   clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags
   childtags charspoil imgpath imgurl fmtvote fmtmedia fmtvnlen
   json_encode json_decode script_json
-  mtbloodt
   form_compare
 |);
 
@@ -246,10 +245,6 @@ sub script_json {
   end;
 }
 
-
-# mt() wrappers for data-dependent translation strings that have a special
-# value for 'unknown'.
-sub mtbloodt { $_[0] eq 'unknown' ? mt '_unknown' : mt '_bloodt_'.$_[0]; }
 
 
 # Compare the keys in %$old with the keys in %$new. Returns 1 if a difference was found, 0 otherwise.
