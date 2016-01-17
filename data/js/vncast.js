@@ -75,7 +75,7 @@ function vncAdd(seiyuu, chr, note) {
       tag('input', {type:'hidden', value:seiyuu.aid}),
       tag('a', {href:'/s'+seiyuu.id}, seiyuu.name)),
     tag('td', {'class':'tc_note'}, tag('input', {type:'text', 'class':'text', value:note})),
-    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:vncDel}, mt('_js_remove')))
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:vncDel}, 'remove'))
   ));
   vncEmpty();
   vncSerialize();
@@ -87,7 +87,7 @@ function vncFormAdd(item) {
     var s = { id:item.getAttribute('id'), aid:item.getAttribute('aid'), name:item.firstChild.nodeValue };
     vncAdd(s, chr, '');
   } else
-    alert(mt('_vnedit_cast_nochar'));
+    alert('Select character first please.');
   return '';
 }
 
@@ -100,7 +100,7 @@ function vncEmpty() {
     tbody.removeChild(x);
   if(byName(tbody, 'tr').length < 1) {
     tbody.appendChild(tag('tr', {id:'cast_tr_none'},
-      tag('td', {colspan:4}, mt('_vnstaffe_none'))));
+      tag('td', {colspan:4}, 'None')));
     if (thead.length)
       tbl.removeChild(thead[0]);
   } else {
@@ -108,9 +108,9 @@ function vncEmpty() {
       tbody.removeChild(byId('cast_tr_none'));
     if (thead.length < 1) {
       thead = tag('thead', tag('tr',
-        tag('td', {'class':'tc_char'}, mt('_vnedit_cast_char')),
-        tag('td', {'class':'tc_name'}, mt('_vnedit_cast_seiyuu')),
-        tag('td', {'class':'tc_note'}, mt('_vnedit_cast_note')),
+        tag('td', {'class':'tc_char'}, 'Character'),
+        tag('td', {'class':'tc_name'}, 'Seiyuu'),
+        tag('td', {'class':'tc_note'}, 'Note'),
         tag('td', '')));
       tbl.insertBefore(thead, tbody);
     }

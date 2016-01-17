@@ -12,18 +12,22 @@ if(byId('votesel'))
   byId('votesel').onchange = function() {
     var s = this.options[this.selectedIndex].value;
     if(s == -2)
-      s = prompt(mt('_vnpage_uopt_othervote'), '');
+      s = prompt('Please input your vote as a number between 1 and 10. One digit after the decimal is allowed, for example: 8.6 or 7.3.', '');
     if(!s || s == -3)
       return;
     if(s != -1 && (!s.match(/^([1-9]|10)([\.,][0-9])?$/) || s > 10 || s < 1)) {
-      alert(mt('_vnpage_uopt_invvote'));
+      alert('Invalid number.');
       this.selectedIndex = 0;
       return;
     }
     s = s.replace(',', '.');
-    if(s == 1 && !confirm(mt('_vnpage_uopt_1vote')))
+    if(s == 1 && !confirm('You are about to give this visual novel a 1 out of 10.'+
+        ' This is a rather extreme rating, meaning this game has absolutely nothing to offer, and that it\'s the worst game you have ever played.'+
+        ' Are you really sure this visual novel matches that description?'))
       return;
-    if(s == 10 && !confirm(mt('_vnpage_uopt_10vote')))
+    if(s == 10 && !confirm('You are about to give this visual novel a 10 out of 10.'+
+        ' This is a rather extreme rating, meaning this is one of the best visual novels you\'ve ever played and it\'s unlikely that any other game could ever be better than this one.'+
+        ' It is generally a bad idea to have more than three games in your vote list with this rating, choose carefully!'))
       return;
     if(s > 0 || s == -1)
       ulist_redirect('v', '/vote', this.name, 'v='+s);
@@ -241,7 +245,7 @@ if(byId('batchedit'))
 if(byId('not') && byId('vns'))
   byId('vns').onchange = function () {
     if(this.options[this.selectedIndex].value == 999)
-      byId('not').value = prompt(mt('_rlist_setnote_prompt'), '');
+      byId('not').value = prompt('Set notes (leave empty to remove note)', '');
     return true;
   };
 
@@ -253,7 +257,7 @@ if(byId('not') && byId('vns'))
     return;
   function setexpand() {
     var exp = !(getCookie('prodrelexpand') == 1);
-    setText(lnk, exp ? mt('_js_collapse') : mt('_js_expand'));
+    setText(lnk, exp ? 'collapse' : 'expand');
     setClass(byId('prodrel'), 'collapse', !exp);
   };
   lnk.onclick = function () {

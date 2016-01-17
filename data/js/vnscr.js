@@ -5,7 +5,7 @@ var staticUrl;
 function init() {
   var data = jsonParse(getText(byId('screendata'))) || {};
   rels = data.rel;
-  rels.unshift([ 0, mt('_vnedit_scr_selrel') ]);
+  rels.unshift([ 0, '-- select release --' ]);
   staticUrl = data.staticurl;
 
   var scr = jsonParse(byId('screenshots').value) || {};
@@ -39,9 +39,9 @@ function handleSubmit() {
       r.push({ rid: l[i].scr_rid, nsfw: l[i].scr_nsfw, id: l[i].scr_id });
 
   if(loading)
-    alert(mt('_vnedit_scr_frmloading'));
+    alert('Please wait for the screenshots to be uploaded before submitting the form.');
   else if(norelease)
-    alert(mt('_vnedit_scr_frmnorel'));
+    alert('Please select the appropriate release for every screenshot.');
   else
     byId('screenshots').value = JSON.stringify(r);
   return !loading && !norelease;
@@ -61,13 +61,13 @@ function URL(id, t) {
 // Need to run addLast() after this function
 function add(nsfw, rid) {
   var tr = tag('tr', { scr_id: 0, scr_loading: 1, scr_rid: rid, scr_nsfw: nsfw?1:0},
-    tag('td', { 'class': 'thumb'}, mt('_js_loading')),
+    tag('td', { 'class': 'thumb'}, 'Loading...'),
     tag('td',
-      tag('b', mt('_vnedit_scr_uploading')),
+      tag('b', 'Uploading screenshot'),
       tag('br', null),
-      mt('_vnedit_scr_upl_msg'),
+      'This can take a while, depending on the file size and your upload speed.',
       tag('br', null),
-      tag('a', {href:'#', onclick:del}, mt('_vnedit_scr_cancel'))
+      tag('a', {href:'#', onclick:del}, 'cancel')
     )
   );
   byId('scr_table').appendChild(tr);
@@ -108,15 +108,16 @@ function loaded(tr, id, width, height) {
 
   var nsfwid = 'scr_nsfw_'+id;
   setContent(byName(tr, 'td')[1],
-    tag('b', mt('_vnedit_scr_id', id)),
-    ' (', tag('a', {href: '#', onclick:del}, mt('_js_remove')), ')',
+    tag('b', 'Screenshot #'+id),
+    ' (', tag('a', {href: '#', onclick:del}, 'remove'), ')',
     tag('br', null),
-    mt('_vnedit_scr_fullsize', dim),
-    oddDim(dim) ? tag('b', {'class':'standout', 'style':'font-weight: bold'}, ' '+mt('_vnedit_scr_nonstandard')) : null,
+    'Full size: '+dim,
+    !oddDim(dim) ? null : tag('b', {'class':'standout', 'style':'font-weight: bold'},
+      ' WARNING: Odd resolution! Please check whether the image has been cropped correctly.'),
     tag('br', null),
     tag('br', null),
     tag('input', {type:'checkbox', name:nsfwid, id:nsfwid, checked: tr.scr_nsfw!=0, onclick: function() { tr.scr_nsfw = this.checked?1:0 }, 'class':'scr_nsfw'}),
-    tag('label', {'for':nsfwid}, mt('_vnedit_scr_nsfw')),
+    tag('label', {'for':nsfwid}, 'This screenshot is NSFW'),
     tag('br', null),
     rel
   );
@@ -134,19 +135,19 @@ function addLast() {
   byId('scr_table').appendChild(tag('tr', {id:'scr_last'},
     tag('td', {'class': 'thumb'}),
     full ? tag('td',
-      tag('b', mt('_vnedit_scr_full')),
+      tag('b', 'Enough screenshots'),
       tag('br', null),
-      mt('_vnedit_scr_full_msg')
+      'The limit of 10 screenshots per visual novel has been reached.\nIf you want to add a new screenshot, please remove an existing one first.'
     ) : tag('td',
-      tag('b', mt('_vnedit_scr_add')),
+      tag('b', 'Add screenshot'),
       tag('br', null),
-      mt('_vnedit_scr_imgnote'),
+      'Image must be smaller than 5MB and in PNG or JPEG format.',
       tag('br', null),
       rel,
       tag('br', null),
       tag('input', {name:'scr_upload', id:'scr_upload', type:'file', 'class':'text', multiple:true}),
       tag('br', null),
-      tag('input', {type:'button', value:mt('_vnedit_scr_addbut'), 'class':'submit', onclick:upload})
+      tag('input', {type:'button', value:'Upload!', 'class':'submit', onclick:upload})
     )
   ));
 }
@@ -173,7 +174,9 @@ function uploadFile(f) {
     var img = hr.responseXML.getElementsByTagName('image')[0];
     var id = img.getAttribute('id');
     if(id < 0) {
-      alert(fname + ":\n" + (id == -1 ? mt('_vnedit_scr_errformat') : mt('_vnedit_scr_errempty')));
+      alert(fname + ":\n" + (
+         id == -1 ? 'Upload failed!\nOnly JPEG or PNG images are accepted.'
+                  : 'Upload failed!\nNo file selected, or an empty file?'));
       del(tr);
     } else {
       loaded(tr, id, img.getAttribute('width'), img.getAttribute('height'));
@@ -186,10 +189,10 @@ function upload() {
   var files = byId('scr_upload').files;
 
   if(files.length < 1) {
-    alert(mt('_vnedit_scr_errempty'));
+    alert('Upload failed!\nNo file selected, or an empty file?');
     return false;
   } else if(files.length + byName(byId('scr_table'), 'tr').length - 1 > 10) {
-    alert(mt('_vnedit_scr_errtoomany'));
+    alert('Too many files selected. The total number of screenshots may not exceed 10.');
     return false;
   }
 

@@ -28,7 +28,7 @@ function prrAdd(rel, pid, title) {
   byId('relation_tbl').appendChild(tag('tr', {id:'relation_tr_'+pid},
     tag('td', {'class':'tc_prod' }, 'p'+pid+':', tag('a', {href:'/p'+pid}, shorten(title, 40))),
     tag('td', {'class':'tc_rel'  }, sel),
-    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:prrDel}, mt('_js_remove')))
+    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:prrDel}, 'remove'))
   ));
 
   prrEmpty();
@@ -37,7 +37,7 @@ function prrAdd(rel, pid, title) {
 function prrEmpty() {
   var tbl = byId('relation_tbl');
   if(byName(tbl, 'tr').length < 1)
-    tbl.appendChild(tag('tr', {id:'relation_tr_none'}, tag('td', {colspan:4}, mt('_pedit_rel_none'))));
+    tbl.appendChild(tag('tr', {id:'relation_tr_none'}, tag('td', {colspan:4}, 'Nothing selected.')));
   else if(byId('relation_tr_none'))
     tbl.removeChild(byId('relation_tr_none'));
 }
@@ -76,26 +76,26 @@ function prrFormAdd() {
   var input = txt.value;
 
   if(!input.match(/^p[0-9]+/)) {
-    alert(mt('_pedit_rel_findformat'));
+    alert('Producer textbox should start with an ID (e.g. "p7:")');
     return false;
   }
 
   txt.disabled = sel.disabled = true;
-  txt.value = mt('_js_loading');
-  setText(lnk, mt('_js_loading'));
+  txt.value = 'Loading...';
+  setText(lnk, 'Loading...');
 
   ajax('/xml/producers.xml?q='+encodeURIComponent(input), function(hr) {
     txt.disabled = sel.disabled = false;
     txt.value = '';
-    setText(lnk, mt('_js_add'));
+    setText(lnk, 'add');
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
-      return alert(mt('_pedit_rel_notfound'));
+      return alert('Producer not found');
 
     var id = items[0].getAttribute('id');
     if(byId('relation_tr_'+id))
-      return alert(mt('_pedit_rel_double'));
+      return alert('Producer already selected!');
 
     prrAdd(sel.options[sel.selectedIndex].value, id, items[0].firstChild.nodeValue);
     sel.selectedIndex = 0;

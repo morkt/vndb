@@ -50,7 +50,7 @@ function cvnEmpty() {
   if(e && l.length > 1)
     t.removeChild(e);
   else if(!e && l.length < 1)
-    t.appendChild(tag('tr', {id:'vns_empty',colspan:3}, tag('td', mt('_chare_vns_empty'))));
+    t.appendChild(tag('tr', {id:'vns_empty',colspan:3}, tag('td', 'No visual novels selected.')));
 }
 
 function cvnVNAdd(vn, rel) {
@@ -59,7 +59,7 @@ function cvnVNAdd(vn, rel) {
   byId('vns_tbl').appendChild(tag('tr', {id:'cvn_v'+vid, cvn_vid:vid, cvn_rels:rels},
     tag('td', {'class':'tc_vn',colspan:4}, 'v'+vid+':',
       tag('a', {href:'/v'+vid}, vn.getAttribute('title')),
-      tag('i', '(', tag('a', {href:'#', onclick:cvnRelNew}, mt('_chare_vns_addrel')), ')')
+      tag('i', '(', tag('a', {href:'#', onclick:cvnRelNew}, 'add release'), ')')
     )
   ));
   if(rel)
@@ -69,7 +69,7 @@ function cvnVNAdd(vn, rel) {
 
 function cvnRelAdd(vid, rid, role, spoil) {
   var rels = byId('cvn_v'+vid).cvn_rels;
-  var rsel = tag('select', {onchange:cvnRelChange}, tag('option', {value:0}, mt('_chare_vns_other')));
+  var rsel = tag('select', {onchange:cvnRelChange}, tag('option', {value:0}, 'All / others'));
   for(var i=0; i<rels.length; i++) {
     var id = rels[i].getAttribute('id');
     rsel.appendChild(tag('option', {value: id, selected:id==rid},
@@ -80,10 +80,9 @@ function cvnRelAdd(vid, rid, role, spoil) {
   for(var i=0; i<VARS.char_roles.length; i++)
     lsel.appendChild(tag('option', {value: VARS.char_roles[i][0], selected:VARS.char_roles[i][0]==role}, VARS.char_roles[i][1]));
 
-  // l10n /_spoil_\d+/
   var ssel = tag('select', {onchange:cvnSerialize});
   for(var i=0; i<3; i++)
-    ssel.appendChild(tag('option', {value:i, selected:i==spoil}, mt('_spoil_'+i)));
+    ssel.appendChild(tag('option', {value:i, selected:i==spoil}, fmtspoil(i)));
 
   var tbl = byId('vns_tbl');
   var l = byName(tbl, 'tr');
@@ -95,7 +94,7 @@ function cvnRelAdd(vid, rid, role, spoil) {
     tag('td', {'class':'tc_rel'}, rsel),
     tag('td', {'class':'tc_rol'}, lsel),
     tag('td', {'class':'tc_spl'}, ssel),
-    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:cvnRelDel}, mt('_js_remove')))
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:cvnRelDel}, 'remove'))
   ), last);
 }
 
@@ -106,7 +105,7 @@ function cvnRelChange() {
   while(tr.nodeName.toLowerCase() != 'tr')
     tr = tr.parentNode;
   if(byId('cvn_v'+tr.cvn_vid+'r'+val)) {
-    alert(mt('_chare_vns_relexists'));
+    alert('Release already present.');
     for(var i=0; i<this.options.length; i++)
       this.options[i].selected = this.options[i].value == tr.cvn_rid;
     return;
@@ -129,7 +128,7 @@ function cvnRelNew() {
         break;
     }
     if(i == tr.cvn_rels.length) {
-      alert(mt('_chare_vns_allrel'));
+      alert('All releases already selected.');
       return false;
     }
   }
@@ -170,11 +169,11 @@ function cvnFormAdd(item) {
 
     var id = items[0].getAttribute('id');
     if(byId('cvn_v'+id))
-      return alert(mt('_chare_vns_exists'));
+      return alert('VN already present.');
     cvnVNAdd(items[0], 1);
     cvnSerialize();
   }, 1);
-  return mt('_js_loading');
+  return 'Loading...';
 }
 
 function cvnSerialize() {

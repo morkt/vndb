@@ -8,18 +8,18 @@ function medLoad() {
 }
 
 function medAdd(med, qty) {
-  var qsel = tag('select', {'class':'qty', onchange:medSerialize}, tag('option', {value:0}, mt('_redit_form_med_quantity')));
+  var qsel = tag('select', {'class':'qty', onchange:medSerialize}, tag('option', {value:0}, '-quantity-'));
   for(var i=1; i<=20; i++)
     qsel.appendChild(tag('option', {value:i, selected: qty==i}, i));
 
   var msel = tag('select', {'class':'medium', onchange: med == '' ? medFormAdd : medSerialize});
   if(med == '')
-    msel.appendChild(tag('option', {value:''}, mt('_redit_form_med_medium')));
+    msel.appendChild(tag('option', {value:''}, '-medium-'));
   for(var i=0; i<VARS.media.length; i++)
     msel.appendChild(tag('option', {value:VARS.media[i][0], selected: med==VARS.media[i][0]}, VARS.media[i][1]));
 
   byId('media_div').appendChild(tag('span', qsel, msel,
-    med != '' ? tag('input', {type: 'button', 'class':'submit', onclick:medDel, value:mt('_js_remove')}) : null
+    med != '' ? tag('input', {type: 'button', 'class':'submit', onclick:medDel, value:'remove'}) : null
   ));
 }
 

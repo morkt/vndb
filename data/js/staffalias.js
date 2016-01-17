@@ -1,7 +1,7 @@
 function salLoad () {
   byId('alias_tbl').appendChild(tag('tr', {id:'alias_new'},
     tag('td', null),
-    tag('td', {colspan:3}, tag('a', {href:'#', onclick:salFormAdd}, mt('_staffe_aliases_add')))));
+    tag('td', {colspan:3}, tag('a', {href:'#', onclick:salFormAdd}, 'Add alias'))));
 
   salAdd(byId('primary').value||0, byId('name').value, byId('original').value);
   var aliases = jsonParse(byId('aliases').value) || [];
@@ -21,14 +21,14 @@ function salAdd(aid, name, original) {
     tag('td', {'class':'tc_name' },     tag('input', {type:'text', 'class':'text', value:name})),
     tag('td', {'class':'tc_original' }, tag('input', {type:'text', 'class':'text', value:original})),
     tag('td', {'class':'tc_add' }, !first ?
-      tag('a', {href:'#', onclick:salDel}, mt('_js_remove')) : null)
+      tag('a', {href:'#', onclick:salDel}, 'remove') : null)
   ), byId('alias_new'));
 }
 
 function salPrimary() {
   var prev = byId('primary_name')
   prev.removeAttribute('id');
-  byClass(prev, 'td', 'tc_add')[0].appendChild(tag('a', {href:'#', onclick:salDel}, mt('_js_remove')));
+  byClass(prev, 'td', 'tc_add')[0].appendChild(tag('a', {href:'#', onclick:salDel}, 'remove'));
   var tr = this;
   while (tr && tr.nodeName.toLowerCase() != 'tr')
     tr = tr.parentNode;

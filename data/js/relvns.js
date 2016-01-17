@@ -19,7 +19,7 @@ function rvnLoad() {
 function rvnAdd(id, title) {
   byId('vn_tbl').appendChild(tag('tr', {id:'rvn_'+id, rvn_id:id},
     tag('td', {'class':'tc_title'}, 'v'+id+':', tag('a', {href:'/v'+id}, shorten(title, 40))),
-    tag('td', {'class':'tc_rm'},    tag('a', {href:'#', onclick:rvnDel}, mt('_js_remove')))
+    tag('td', {'class':'tc_rm'},    tag('a', {href:'#', onclick:rvnDel}, 'remove'))
   ));
   rvnEmpty();
 }
@@ -37,7 +37,7 @@ function rvnDel() {
 function rvnEmpty() {
   var tbl = byId('vn_tbl');
   if(byName(tbl, 'tr').length < 1)
-    tbl.appendChild(tag('tr', {id:'rvn_tr_none'}, tag('td', {colspan:2}, mt('_redit_form_vn_none'))));
+    tbl.appendChild(tag('tr', {id:'rvn_tr_none'}, tag('td', {colspan:2}, 'Nothing selected.')));
   else if(byId('rvn_tr_none'))
     tbl.removeChild(byId('rvn_tr_none'));
 }
@@ -48,26 +48,26 @@ function rvnFormAdd() {
   var val = txt.value;
 
   if(!val.match(/^v[0-9]+/)) {
-    alert(mt('_redit_form_vn_vnformat'));
+    alert('Visual novel textbox must start with an ID (e.g. v17)');
     return false;
   }
 
   txt.disabled = true;
-  txt.value = mt('_js_loading');
-  setText(lnk, mt('_js_loading'));
+  txt.value = 'Loading...';
+  setText(lnk, 'Loading...');
 
   ajax('/xml/vn.xml?q='+encodeURIComponent(val), function(hr) {
     txt.disabled = false;
     txt.value = '';
-    setText(lnk, mt('_js_add'));
+    setText(lnk, 'add');
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
-      return alert(mt('_redit_form_vn_notfound'));
+      return alert('Visual novel not found!');
 
     var id = items[0].getAttribute('id');
     if(byId('rvn_'+id))
-      return alert(mt('_redit_form_vn_double'));
+      return alert('VN already selected!');
 
     rvnAdd(id, items[0].firstChild.nodeValue);
     rvnSerialize();

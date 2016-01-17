@@ -36,7 +36,7 @@ function vnsAdd(staff, role, note) {
       tag('a', {href:'/s'+staff.id}, staff.name)),
     tag('td', {'class':'tc_role'}, rlist),
     tag('td', {'class':'tc_note'}, tag('input', {type:'text', 'class':'text', value:note})),
-    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:vnsDel}, mt('_js_remove')))
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:vnsDel}, 'remove'))
   ));
   vnsEmpty();
   vnsSerialize();
@@ -51,7 +51,7 @@ function vnsEmpty() {
     tbody.removeChild(x);
   if(byName(tbody, 'tr').length < 1) {
     tbody.appendChild(tag('tr', {id:'credits_tr_none'},
-      tag('td', {colspan:4}, mt('_vnstaffe_none'))));
+      tag('td', {colspan:4}, 'None')));
     if (thead.length)
       tbl.removeChild(thead[0]);
   } else {
@@ -59,9 +59,9 @@ function vnsEmpty() {
       tbody.removeChild(byId('credits_tr_none'));
     if (thead.length < 1) {
       thead = tag('thead', tag('tr',
-        tag('td', {'class':'tc_name'}, mt('_vnstaffe_form_staff')),
-        tag('td', {'class':'tc_role'}, mt('_vnstaffe_form_role')),
-        tag('td', {'class':'tc_note'}, mt('_vnstaffe_form_note')),
+        tag('td', {'class':'tc_name'}, 'Staff'),
+        tag('td', {'class':'tc_role'}, 'Credit'),
+        tag('td', {'class':'tc_note'}, 'Note'),
         tag('td', '')));
       tbl.insertBefore(thead, tbody);
     }

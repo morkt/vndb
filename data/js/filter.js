@@ -94,20 +94,20 @@ function filLoad(lnk, serobj) {
       fil_lnk: lnk,
       fil_type: type
     },
-    tag('a', {href:'#', onclick:show, 'class':'close'}, mt('_js_close')),
+    tag('a', {href:'#', onclick:show, 'class':'close'}, 'close'),
     tag('h3', l[0]),
     p,
     tag('b', {'class':'ruler'}, null),
     c,
     tag('b', {'class':'ruler'}, null),
-    tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_apply'), onclick:function () {
+    tag('input', {type:'button', 'class':'submit', value: 'Apply', onclick:function () {
       var f = serobj;
       while(f.nodeName.toLowerCase() != 'form')
         f = f.parentNode;
       f.submit();
     }}),
-    tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_reset'), onclick:function () { serobj.value = ''; deSerialize(obj) } }),
-    byId('pref_code') && lnk.id != 'rfilselect' ? tag('input', {type:'button', 'class':'submit', value: mt('_js_fil_save'), onclick:saveDefault }) : null,
+    tag('input', {type:'button', 'class':'submit', value: 'Reset', onclick:function () { serobj.value = ''; deSerialize(obj) } }),
+    byId('pref_code') && lnk.id != 'rfilselect' ? tag('input', {type:'button', 'class':'submit', value: 'Save as default', onclick:saveDefault }) : null,
     savenote
   );
   lnk.fil_obj = obj;
@@ -124,12 +124,14 @@ function saveDefault() {
   var but = this;
   var obj = getObj(this);
   var note = obj.fil_savenote;
-  setText(note, mt('_js_loading'));
+  setText(note, 'Loading...');
   but.enabled = false;
   setClass(note, 'hidden', false);
   var type = obj.fil_type == 'r' ? 'release' : 'vn';
   ajax('/xml/prefs.xml?formcode='+byId('pref_code').title+';key=filter_'+type+';value='+obj.fil_serobj.value, function (hr) {
-    setText(note, mt('_js_fil_savenote'));
+    setText(note, 'Your saved filters will be applied automatically to several other parts of the site as well, such as the homepage.'+
+      ' To change these filters, come back to this page and use the "Save as default" button again.'+
+      ' To remove your saved filters, hit "Reset" and then save.');
     but.enable = true;
   });
 }
@@ -368,7 +370,7 @@ function filFSelect(c, n, lines, opts) {
       s.appendChild(g);
     }
   }
-  return [ c, lines > 1 ? [ n, mt('_js_fil_boolor') ] : n, s,
+  return [ c, lines > 1 ? [ n, 'Boolean or, selecting more gives more results' ] : n, s,
     function (c) {
       var l = [];
       for(var i=0; i<c.options.length; i++)
@@ -427,7 +429,7 @@ function filFTagInput(name, label, type) {
           selectField(ul.parentNode);
           return false
         }
-      }, mt('_js_remove')), ')'
+      }, 'remove'), ')'
     ));
   }
   var fetch = function(c)   {
@@ -450,7 +452,7 @@ function filFTagInput(name, label, type) {
       if(!visible)
         addtag(ul, v[i]);
     }
-    txt.value = mt('_js_loading');
+    txt.value = 'Loading...';
     txt.disabled = true;
     if(visible)
       ajax(src+'?'+q.join(';'), function (hr) {
@@ -470,14 +472,14 @@ function filFTagInput(name, label, type) {
       var g = item.getAttribute('groupname');
       tr.appendChild(tag('td',
         type=='trait' && g ? tag('b', {'class':'grayedout'}, g+' / ') : null,
-        shorten(item.firstChild.nodeValue, 40),                                // l10n /_js_ds_(tag|trait)_(meta|mod)/
-        item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_'+type+'_meta')) : null,
-        item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' '+mt('_js_ds_'+type+'_mod')) : null
+        shorten(item.firstChild.nodeValue, 40),
+        item.getAttribute('meta') == 'yes' ? tag('b', {'class': 'grayedout'}, ' meta') : null,
+        item.getAttribute('state') == 0    ? tag('b', {'class': 'grayedout'}, ' awaiting moderation') : null
       ));
     },
     function(item, obj) {
-      if(item.getAttribute('meta') == 'yes')  // l10n /_js_ds_(tag|trait)_nometa/
-        alert(mt('_js_ds_'+type+'_nometa'));
+      if(item.getAttribute('meta') == 'yes')
+        alert('Can\'t use meta '+type+'s here!');
       else {
         addtag(byName(obj.parentNode, 'ul')[0], item.getAttribute('id'), item.firstChild.nodeValue, item.getAttribute('groupname'));
         selectField(obj);
@@ -504,62 +506,62 @@ function filChars() {
   var ontraitpage = location.pathname.indexOf('/c/') < 0;
 
   return [
-    mt('_charb_fil_title'),
-    [ mt('_charb_general'),
-      filFSelect('gender', mt('_charb_gender'), 4, VARS.genders),
-      filFSelect('bloodt', mt('_charb_bloodt'), 5, VARS.blood_types),
+    'Character filters',
+    [ 'General',
+      filFSelect('gender',     'Gender',     4, VARS.genders),
+      filFSelect('bloodt',     'Blood type', 5, VARS.blood_types),
       '',
-      filFSlider('bust_min', mt('_charb_bust_min'), 20, 120, 40, 'cm'),
-      filFSlider('bust_max', mt('_charb_bust_max'), 20, 120, 100, 'cm'),
-      filFSlider('waist_min', mt('_charb_waist_min'), 20, 120, 40, 'cm'),
-      filFSlider('waist_max', mt('_charb_waist_max'), 20, 120, 100, 'cm'),
-      filFSlider('hip_min', mt('_charb_hip_min'), 20, 120, 40, 'cm'),
-      filFSlider('hip_max', mt('_charb_hip_max'), 20, 120, 100, 'cm'),
+      filFSlider('bust_min',   'Bust min',  20, 120, 40,  'cm'),
+      filFSlider('bust_max',   'Bust max',  20, 120, 100, 'cm'),
+      filFSlider('waist_min',  'Waist min', 20, 120, 40,  'cm'),
+      filFSlider('waist_max',  'Waist max', 20, 120, 100, 'cm'),
+      filFSlider('hip_min',    'Hips min',  20, 120, 40,  'cm'),
+      filFSlider('hip_max',    'Hips max',  20, 120, 100, 'cm'),
       '',
-      filFSlider('height_min', mt('_charb_height_min'), 0, 300, 60, 'cm'),
-      filFSlider('height_max', mt('_charb_height_max'), 0, 300, 240, 'cm'),
-      filFSlider('weight_min', mt('_charb_weight_min'), 0, 400, 80, 'kg'),
-      filFSlider('weight_max', mt('_charb_weight_max'), 0, 400, 320, 'kg'),
+      filFSlider('height_min', 'Height min', 0, 300, 60,  'cm'),
+      filFSlider('height_max', 'Height max', 0, 300, 240, 'cm'),
+      filFSlider('weight_min', 'Weight min', 0, 400, 80,  'kg'),
+      filFSlider('weight_max', 'Weight max', 0, 400, 320, 'kg'),
     ],
-    ontraitpage ? [ mt('_charb_traits'),
-      [ '', ' ', tag(mt('_charb_traitnothere')) ],
-    ] : [ mt('_charb_traits'),
-      [ '', ' ', tag(mt('_js_fil_booland')) ],
-      filFTagInput('trait_inc', mt('_charb_traitinc'), 'trait'),
-      filFTagInput('trait_exc', mt('_charb_traitexc'), 'trait'),
-      filFOptions('tagspoil', ' ', [[0, mt('_spoilset_0')],[1, mt('_spoilset_1')],[2, mt('_spoilset_2')]]),
+    ontraitpage ? [ 'Traits',
+      [ '', ' ', tag('Additional trait filters are not available on this page. Use the character browser instead (available from the main menu -> characters).') ],
+    ] : [ 'Traits',
+      [ '', ' ', tag('Boolean and, selecting more gives less results') ],
+      filFTagInput('trait_inc', 'Traits to include', 'trait'),
+      filFTagInput('trait_exc', 'Traits to exclude', 'trait'),
+      filFOptions('tagspoil', ' ', [[0, 'Hide spoilers'],[1, 'Show minor spoilers'],[2, 'Spoil me!']]),
     ],
-    [ mt('_charb_roles'), filFSelect('role', mt('_charb_roles'), 4, VARS.char_roles) ]
+    [ 'Roles', filFSelect('role', 'Roles', 4, VARS.char_roles) ]
   ];
 }
 
 function filReleases() {
   var plat = VARS.platforms;
-  plat.splice(0, 0, [ 'unk', mt('_unknown') ]);
+  plat.splice(0, 0, [ 'unk', 'Unknown' ]);
   var med = VARS.media;
-  med.splice(0, 0, [ 'unk', mt('_unknown') ]);
+  med.splice(0, 0, [ 'unk', 'Unknown' ]);
   return [
-    mt('_rbrowse_fil_title'),
-    [ mt('_rbrowse_general'),
-      filFOptions('type',     mt('_rbrowse_type'),    VARS.release_types),
-      filFOptions('patch',    mt('_rbrowse_patch'),   [ [1, mt('_rbrowse_patch_yes')],    [0, mt('_rbrowse_patch_no')] ]),
-      filFOptions('freeware', mt('_rbrowse_freeware'),[ [1, mt('_rbrowse_freeware_yes')], [0, mt('_rbrowse_freeware_no')] ]),
-      filFOptions('doujin',   mt('_rbrowse_doujin'),  [ [1, mt('_rbrowse_doujin_yes')],   [0, mt('_rbrowse_doujin_no')] ]),
-      [ 'date_after',  mt('_rbrowse_dateafter'),  dateLoad(null, selectField), function (c) { return [c.date_val] }, function(o,v) { o.dateSet(v) } ],
-      [ 'date_before', mt('_rbrowse_datebefore'), dateLoad(null, selectField), function (c) { return [c.date_val] }, function(o,v) { o.dateSet(v) } ],
-      filFOptions('released', mt('_rbrowse_released'),[ [1, mt('_rbrowse_released_yes')], [0, mt('_rbrowse_released_no')] ])
+    'Release filters',
+    [ 'General',
+      filFOptions('type',     'Release type',    VARS.release_types),
+      filFOptions('patch',    'Patch status',    [ [1, 'Patch'], [0, 'Standalone'] ]),
+      filFOptions('freeware', 'Freeware',        [ [1, 'Only freeware'], [0, 'Only non-free releases'] ]),
+      filFOptions('doujin',   'Doujin',          [ [1, 'Only doujin releases'], [0, 'Only commercial releases'] ]),
+      [ 'date_after',  'Released after',  dateLoad(null, selectField), function (c) { return [c.date_val] }, function(o,v) { o.dateSet(v) } ],
+      [ 'date_before', 'Released before', dateLoad(null, selectField), function (c) { return [c.date_val] }, function(o,v) { o.dateSet(v) } ],
+      filFOptions('released', 'Release date',    [ [1, 'Past (already released)'], [0, 'Future (to be released)'] ])
     ],
-    [ mt('_rbrowse_minage'),     filFSelect('minage',     mt('_rbrowse_minage'),     15, VARS.age_ratings) ],
-    [ mt('_rbrowse_language'),   filFSelect('lang',       mt('_rbrowse_language'),   20, VARS.languages) ],
+    [ 'Age rating',           filFSelect('minage',     'Age rating',        15, VARS.age_ratings) ],
+    [ 'Language',             filFSelect('lang',       'Language',          20, VARS.languages) ],
     byId('rfilselect') ? null :
-      [ mt('_rbrowse_olang'),    filFSelect('olang',      mt('_rbrowse_olang'),      20, VARS.languages) ],
-    [ mt('_rbrowse_resolution'), filFSelect('resolution', mt('_rbrowse_resolution'), 15, VARS.resolutions) ],
-    [ mt('_rbrowse_platform'),   filFSelect('plat',       mt('_rbrowse_platform'),   20, plat) ],
-    [ mt('_rbrowse_misc'),
-      filFSelect('med',       mt('_rbrowse_medium'),   10, med),
-      filFSelect('voiced',    mt('_rbrowse_voiced'),    5, VARS.voiced),
-      filFSelect('ani_story', mt('_rbrowse_ani_story'), 5, VARS.animated),
-      filFSelect('ani_ero',   mt('_rbrowse_ani_ero'),   5, VARS.animated)
+      [ 'Original language',    filFSelect('olang',    'Original language', 20, VARS.languages) ],
+    [ 'Screen resolution',    filFSelect('resolution', 'Screen resolution', 15, VARS.resolutions) ],
+    [ 'Platform',             filFSelect('plat',       'Platform',          20, plat) ],
+    [ 'Misc',
+      filFSelect('med',       'Medium',         10, med),
+      filFSelect('voiced',    'Voiced',          5, VARS.voiced),
+      filFSelect('ani_story', 'Story animation', 5, VARS.animated),
+      filFSelect('ani_ero',   'Ero animation',   5, VARS.animated)
     ]
   ];
 }
@@ -568,30 +570,30 @@ function filVN() {
   var ontagpage = location.pathname.indexOf('/v/') < 0;
 
   return [
-    mt('_vnbrowse_fil_title'),
-    [ mt('_vnbrowse_general'),
-      filFSelect( 'length', mt('_vnbrowse_length'), 6, VARS.vn_lengths),
-      filFOptions('hasani', mt('_vnbrowse_anime'),       [[1, mt('_vnbrowse_anime_yes')],      [0, mt('_vnbrowse_anime_no')]]),
-      filFOptions('hasshot',mt('_vnbrowse_screenshots'), [[1, mt('_vnbrowse_screenshots_yes')],[0, mt('_vnbrowse_screenshots_no')]])
+    'Visual Novel Filters',
+    [ 'General',
+      filFSelect( 'length', 'Length', 6, VARS.vn_lengths),
+      filFOptions('hasani', 'Anime',       [[1, 'Has anime'],     [0, 'Does not have anime']]),
+      filFOptions('hasshot','Screenshots', [[1, 'Has screenshot'],[0, 'Does not have a screenshot']])
     ],
-    ontagpage ? [ mt('_vnbrowse_tags'),
-      [ '', ' ', tag(mt('_vnbrowse_tagnothere')) ],
-    ] : [ mt('_vnbrowse_tags'),
-      [ '',       ' ',                     tag(mt('_js_fil_booland')) ],
-      [ '',       ' ', byId('pref_code') ? tag(mt('_vnbrowse_tagactive')) : null ],
-      filFTagInput('tag_inc', mt('_vnbrowse_taginc'), 'tag'),
-      filFTagInput('tag_exc', mt('_vnbrowse_tagexc'), 'tag'),
-      filFOptions('tagspoil', ' ', [[0, mt('_spoilset_0')],[1, mt('_spoilset_1')],[2, mt('_spoilset_2')]])
+    ontagpage ? [ 'Tags',
+      [ '', ' ', tag('Additional tag filters are not available on this page. Use the visual novel browser instead (available from the main menu -> visual novels).') ],
+    ] : [ 'Tags',
+      [ '',       ' ',                     tag('Boolean and, selecting more gives less results') ],
+      [ '',       ' ', byId('pref_code') ? tag('These filters are ignored on tag pages (when set as default).') : null ],
+      filFTagInput('tag_inc', 'Tags to include', 'tag'),
+      filFTagInput('tag_exc', 'Tags to exclude', 'tag'),
+      filFOptions('tagspoil', ' ', [[0, 'Hide spoilers'],[1, 'Show minor spoilers'],[2, 'Spoil me!']])
     ],
-    [ mt('_vnbrowse_language'), filFSelect('lang', mt('_vnbrowse_language'), 20, VARS.languages) ],
-    [ mt('_vnbrowse_olang'),    filFSelect('olang',mt('_vnbrowse_olang'),    20, VARS.languages) ],
-    [ mt('_vnbrowse_platform'), filFSelect('plat', mt('_vnbrowse_platform'), 20, VARS.platforms) ],
+    [ 'Language',          filFSelect('lang', 'Language',          20, VARS.languages) ],
+    [ 'Original language', filFSelect('olang','Original language', 20, VARS.languages) ],
+    [ 'Platform',          filFSelect('plat', 'Platform',          20, VARS.platforms) ],
     !byId('pref_code') ? null : [
-      mt('_vnbrowse_ul'),
-      filFOptions('ul_notblack', mt('_vnbrowse_ul_notblack'), [[1, mt('_vnbrowse_ul_notblackmsg')]]),
-      filFOptions('ul_onwish',   mt('_vnbrowse_ul_onwish'), [[0, mt('_vnbrowse_ul_onwishno')],[1, mt('_vnbrowse_ul_onwishyes')]]),
-      filFOptions('ul_voted',    mt('_vnbrowse_ul_voted'),  [[0, mt('_vnbrowse_ul_votedno')], [1, mt('_vnbrowse_ul_votedyes') ]]),
-      filFOptions('ul_onlist',   mt('_vnbrowse_ul_onlist'), [[0, mt('_vnbrowse_ul_onlistno')],[1, mt('_vnbrowse_ul_onlistyes')]])
+      'My lists',
+      filFOptions('ul_notblack', 'Blacklist', [[1, 'Exclude VNs on my blacklist']]),
+      filFOptions('ul_onwish',   'Wishlist',  [[0, 'Not on my wishlist'],[1, 'On my wishlist']]),
+      filFOptions('ul_voted',    'Voted',     [[0, 'Not voted on'], [1, 'Voted on' ]]),
+      filFOptions('ul_onlist',   'VN list',   [[0, 'Not on my VN list'],[1, 'On my VN list']])
     ],
   ];
 }
@@ -604,14 +606,14 @@ function filStaff() {
   roles.splice(-1, 0, ['seiyuu', 'Voice actor']);
 
   return [
-    mt('_sbrowse_fil_title'),
-    [ mt('_sbrowse_general'),
-      filFOptions('truename', mt('_sbrowse_names'), [[1, mt('_sbrowse_names_primary')],[0, mt('_sbrowse_names_all')]]),
-      filFSelect('role', mt('_sbrowse_roles'), roles.length, roles),
+    'Staff filters',
+    [ 'General',
+      filFOptions('truename', 'Names', [[1, 'Primary names only'],[0, 'Include aliases']]),
+      filFSelect('role', 'Roles', roles.length, roles),
       '',
-      filFSelect('gender', mt('_sbrowse_gender'), gend.length, gend),
+      filFSelect('gender', 'Gender', gend.length, gend),
     ],
-    [ mt('_sbrowse_language'),   filFSelect('lang',       mt('_sbrowse_language'),   20, VARS.languages) ],
+    [ 'Language',   filFSelect('lang',       'Language',   20, VARS.languages) ],
   ];
 }
 

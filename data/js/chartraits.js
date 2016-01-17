@@ -1,5 +1,3 @@
-// l10n /_spoil_-?\d+/
-
 function ctrLoad() {
   // load current traits
   var l = byId('traits').value.split(' ');
@@ -28,7 +26,7 @@ function ctrLoad() {
     tr.appendChild(tag('td', { style: 'text-align: right; padding-right: 5px'}, 'i'+item.getAttribute('id')));
     tr.appendChild(tag('td',
       tag('b', {'class':'grayedout'}, g), item.firstChild.nodeValue,
-      tag('b', {'class':'grayedout'}, item.getAttribute('meta')=='yes' ? mt('_js_ds_tag_meta') : '')));
+      tag('b', {'class':'grayedout'}, item.getAttribute('meta')=='yes' ? 'meta' : '')));
   }, ctrFormAdd);
 }
 
@@ -42,21 +40,21 @@ function ctrEmpty() {
   if(e && l.length > 1)
     t.removeChild(e);
   else if(!e && l.length < 1)
-    t.appendChild(tag('tr', {id:'traits_empty',colspan:3}, tag('td', mt('_chare_traits_empty'))));
+    t.appendChild(tag('tr', {id:'traits_empty',colspan:3}, tag('td', 'No traits present yet.')));
 }
 
 function ctrAdd(item, spoil) {
   var id = item.getAttribute('id');
   var name = item.firstChild.nodeValue;
   var group = item.getAttribute('groupname');
-  var sp = tag('td', {'class':'tc_spoil', onclick:ctrSpoilNext, ctr_spoil:spoil}, mt('_spoil_'+spoil));
+  var sp = tag('td', {'class':'tc_spoil', onclick:ctrSpoilNext, ctr_spoil:spoil}, fmtspoil(spoil));
   ddInit(sp, 'left', ctrSpoilDD);
   byId('traits_tbl').appendChild(tag('tr', {ctr_id:id, ctr_spoiler:spoil},
     tag('td', {'class':'tc_name'},
       tag('b', {'class':'grayedout'}, group?group+' / ':''),
       tag('a', {'href':'/i'+id}, name)),
     sp,
-    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:ctrDel}, mt('_js_remove')))
+    tag('td', {'class':'tc_del'}, tag('a', {href:'#', onclick:ctrDel}, 'remove'))
   ));
   ctrEmpty();
   ctrSerialize();
@@ -68,9 +66,9 @@ function ctrFormAdd(item) {
     if(l[i].ctr_id && l[i].ctr_id == item.getAttribute('id'))
       break;
   if(i < l.length)
-    alert(mt('_chare_traits_present'));
+    alert('Selected trait is already present.');
   else if(item.getAttribute('meta') == 'yes')
-    alert(mt('_chare_traits_nometa'));
+    alert('Meta traits can\'t be used here.');
   else
     ctrAdd(item, 0);
   return '';
@@ -79,7 +77,7 @@ function ctrFormAdd(item) {
 function ctrSpoilNext() {
   if(++this.ctr_spoil > 2)
     this.ctr_spoil = 0;
-  setText(this, mt('_spoil_'+this.ctr_spoil));
+  setText(this, fmtspoil(this.ctr_spoil));
   ddRefresh();
   ctrSerialize();
 }
@@ -88,15 +86,15 @@ function ctrSpoilDD(lnk) {
   var lst = tag('ul', null);
   for(var i=0; i<=2; i++)
     lst.appendChild(tag('li', i == lnk.ctr_spoil
-      ? tag('i', mt('_spoil_'+i))
-      : tag('a', {href: '#', onclick:ctrSpoilSet, ctr_td:lnk, ctr_sp:i}, mt('_spoil_'+i))
+      ? tag('i', fmtspoil(i))
+      : tag('a', {href: '#', onclick:ctrSpoilSet, ctr_td:lnk, ctr_sp:i}, fmtspoil(i))
     ));
   return lst;
 }
 
 function ctrSpoilSet() {
   this.ctr_td.ctr_spoil = this.ctr_sp;
-  setText(this.ctr_td, mt('_spoil_'+this.ctr_sp));
+  setText(this.ctr_td, fmtspoil(this.ctr_sp));
   ddHide();
   ctrSerialize();
   return false;

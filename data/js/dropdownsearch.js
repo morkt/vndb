@@ -32,7 +32,7 @@ var boxobj;
 
 function box() {
   if(!boxobj) {
-    boxobj = tag('div', {id: 'ds_box', 'class':'hidden'}, tag('b', mt('_js_loading')));
+    boxobj = tag('div', {id: 'ds_box', 'class':'hidden'}, tag('b', 'Loading...'));
     addBody(boxobj);
   }
   return boxobj;
@@ -72,7 +72,7 @@ function setvalue(obj) {
     obj.ds_returnFunc(obj);
 
   setClass(box(), 'hidden', true);
-  setContent(box(), tag('b', mt('_js_loading')));
+  setContent(box(), tag('b', 'Loading...'));
   setselected(obj, 0);
   if(obj.ds_dosearch) {
     clearTimeout(obj.ds_dosearch);
@@ -153,7 +153,7 @@ function search(obj) {
   // hide the ds_box div if the search string is too short
   if(val.length < 2) {
     setClass(b, 'hidden', true);
-    setContent(b, tag('b', mt('_js_loading')));
+    setContent(b, tag('b', 'Loading...'));
     setselected(obj, 0);
     return;
   }
@@ -181,7 +181,7 @@ function results(hr, obj) {
   var lst = hr.responseXML.getElementsByTagName('item');
   var b = box();
   if(lst.length < 1) {
-    setContent(b, tag('b', mt('_js_ds_noresults')));
+    setContent(b, tag('b', 'No results...'));
     setselected(obj, 0);
     return;
   }

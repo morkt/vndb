@@ -169,17 +169,9 @@ window.shorten = function(v, l) {
 };
 
 
-/* maketext function. Less powerful than the Perl equivalent, as it only
- * supports [_n], ~[ and ~]. jsgen.pl is responsible for weeding out the other
- * codes. */
-window.mt = function() {
-  var key = arguments[0];
-  var val = VARS.l10n_str[key] || key;
-  // BUG: ~[_1] will get replaced. We don't have a string like that, so whatever.
-  for(var i=1; i<arguments.length; i++)
-    val = val.replace(new RegExp('\\[_'+i+'\\]', 'g'), arguments[i]);
-  return val.replace(/~\[/g, '[').replace(/~\]/g, ']');
-};
+window.fmtspoil = function(s) {
+  return ['neutral', 'no spoiler', 'minor spoiler', 'major spoiler'][s+1];
+}
 
 
 window.jsonParse = function(s) {

@@ -21,20 +21,20 @@ function load(obj, serfunc) {
   var selops = {style: 'width: 70px', onfocus:serfunc, onchange: serialize, tabIndex: 10};
 
   var year = tag('select', selops,
-    tag('option', {value:0}, mt('_js_date_year')),
+    tag('option', {value:0}, '-year-'),
     tag('option', {value:9999}, 'TBA')
   );
   for(i=(new Date()).getFullYear()+5; i>=1980; i--)
     year.appendChild(tag('option', {value: i}, i));
 
   var month = tag('select', selops,
-    tag('option', {value:99}, mt('_js_date_month'))
+    tag('option', {value:99}, '-month-')
   );
   for(i=1; i<=12; i++)
     month.appendChild(tag('option', {value: i}, i));
 
   var day = tag('select', selops,
-    tag('option', {value:99}, mt('_js_date_day'))
+    tag('option', {value:99}, '-day-')
   );
   for(i=1; i<=31; i++)
     day.appendChild(tag('option', {value: i}, i));

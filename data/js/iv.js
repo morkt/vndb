@@ -39,11 +39,11 @@ function init() {
       tag('b', {id:'ivimg'}, ''),
       tag('br', null),
       tag('a', {href:'#', id:'ivfull'}, ''),
-      tag('a', {href:'#', onclick: close, id:'ivclose'}, mt('_js_close')),
-      tag('a', {href:'#', onclick: show, id:'ivprev'}, '« '+mt('_js_iv_prev')),
-      tag('a', {href:'#', onclick: show, id:'ivnext'}, mt('_js_iv_next')+' »')
+      tag('a', {href:'#', onclick: close, id:'ivclose'}, 'close'),
+      tag('a', {href:'#', onclick: show, id:'ivprev'}, '« previous'),
+      tag('a', {href:'#', onclick: show, id:'ivnext'}, 'next »')
     ));
-    addBody(tag('b', {id:'ivimgload','class':'hidden'}, mt('_js_loading')));
+    addBody(tag('b', {id:'ivimgload','class':'hidden'}, 'Loading...'));
   }
 }
 

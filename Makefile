@@ -50,9 +50,9 @@
 
 all: dirs js skins robots data/config.pl util/sql/editfunc.sql
 
-dirs: static/f/js static/ch static/cv static/sf static/st data/log www www/feeds www/api
+dirs: static/ch static/cv static/sf static/st data/log www www/feeds www/api
 
-js: static/f/js/en.js
+js: static/f/vndb.js
 
 icons: data/icons/icons.css
 
@@ -67,10 +67,10 @@ static/ch static/cv static/sf static/st:
 	mkdir $@;
 	for i in $$(seq -w 0 1 99); do mkdir "$@/$$i"; done
 
-static/f/js data/log www www/feeds www/api:
+data/log www www/feeds www/api:
 	mkdir $@
 
-static/f/js/en.js: data/js/*.js data/lang.txt util/jsgen.pl data/config.pl data/global.pl
+static/f/vndb.js: data/js/*.js util/jsgen.pl data/config.pl data/global.pl
 	util/jsgen.pl
 
 data/icons/icons.css: data/icons/*.png data/icons/*/*.png util/spritegen.pl
@@ -87,7 +87,7 @@ chmod: all
 	chmod -R a-x+rwX static/{ch,cv,sf,st}
 
 chmod-autoupdate: chmod
-	chmod a+xrw static/f static/f/js data/icons
+	chmod a+xrw static/f data/icons
 	chmod -f a-x+rw static/s/*/{style.css,boxbg.png} static/f/icons.png
 
 chmod-tladmin: chmod

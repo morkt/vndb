@@ -2,14 +2,14 @@ var tglSpoilers = [];
 
 function tglLoad() {
   for(var i=0; i<=3; i++)
-    tglSpoilers[i] = mt('_spoil_'+(i-1)); // l10n /_spoil_-?\d+/
+    tglSpoilers[i] = fmtspoil(i-1);
 
   // tag dropdown search
   dsInit(byId('tagmod_tag'), '/xml/tags.xml?q=', function(item, tr) {
     tr.appendChild(tag('td',
       shorten(item.firstChild.nodeValue, 40),
-      item.getAttribute('meta') == 'yes' ? tag('b', {'class':'grayedout'}, ' '+mt('_js_ds_tag_meta')) :
-      item.getAttribute('state') == 0    ? tag('b', {'class':'grayedout'}, ' '+mt('_js_ds_tag_mod')) : null
+      item.getAttribute('meta') == 'yes' ? tag('b', {'class':'grayedout'}, ' meta') :
+      item.getAttribute('state') == 0    ? tag('b', {'class':'grayedout'}, ' awaiting moderation') : null
     ));
   }, function(item) {
     return item.firstChild.nodeValue;
@@ -99,27 +99,27 @@ function tglAdd() {
   var tg = byId('tagmod_tag');
   var add = byId('tagmod_add');
   tg.disabled = add.disabled = true;
-  add.value = mt('_js_loading');
+  add.value = 'Loading...';
 
   ajax('/xml/tags.xml?q=name:'+encodeURIComponent(tg.value), function(hr) {
     tg.disabled = add.disabled = false;
     tg.value = '';
-    add.value = mt('_tagv_add');
+    add.value = 'Add tag';
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
-      return alert(mt('_tagv_notfound'));
+      return alert('Item not found!');
     if(items[0].getAttribute('meta') == 'yes')
-      return alert(mt('_js_ds_tag_nometa'));
+      return alert('Can\'t use meta tags here!');
 
     var name = items[0].firstChild.nodeValue;
     var id = items[0].getAttribute('id');
     if(byId('tgl_'+id))
-      return alert(mt('_tagv_double'));
+      return alert('Tag is already present!');
 
     if(!byId('tagmod_newtags'))
       byId('tagtable').appendChild(tag('tr', {'class':'tagmod_cat', id:'tagmod_newtags'},
-        tag('td', {colspan:7}, mt('_tagv_newlyadded'))));
+        tag('td', {colspan:7}, 'Newly added')));
 
     var vote = tag('td', {'class':'tc_myvote', tgl_vote: 2}, '');
     tglVoteBar(vote);

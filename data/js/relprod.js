@@ -27,7 +27,7 @@ function rprAdd(id, role, name) {
   byId('producer_tbl').appendChild(tag('tr', {id:'rpr_'+id, rpr_id:id},
     tag('td', {'class':'tc_name'}, 'p'+id+':', tag('a', {href:'/p'+id}, shorten(name, 40))),
     tag('td', {'class':'tc_role'}, rl),
-    tag('td', {'class':'tc_rm'},   tag('a', {href:'#', onclick:rprDel}, mt('_js_remove')))
+    tag('td', {'class':'tc_rm'},   tag('a', {href:'#', onclick:rprDel}, 'remove'))
   ));
   rprEmpty();
 }
@@ -45,7 +45,7 @@ function rprDel() {
 function rprEmpty() {
   var tbl = byId('producer_tbl');
   if(byName(tbl, 'tr').length < 1)
-    tbl.appendChild(tag('tr', {id:'rpr_tr_none'}, tag('td', {colspan:2}, mt('_redit_form_prod_none'))));
+    tbl.appendChild(tag('tr', {id:'rpr_tr_none'}, tag('td', {colspan:2}, 'Nothing selected.')));
   else if(byId('rpr_tr_none'))
     tbl.removeChild(byId('rpr_tr_none'));
 }
@@ -56,26 +56,26 @@ function rprFormAdd() {
   var val = txt.value;
 
   if(!val.match(/^p[0-9]+/)) {
-    alert(mt('_redit_form_prod_pformat'));
+    alert('Producer textbox must start with an ID (e.g. p17)');
     return false;
   }
 
   txt.disabled = true;
-  txt.value = mt('_js_loading');
-  setText(lnk, mt('_js_loading'));
+  txt.value = 'Loading...';
+  setText(lnk, 'Loading...');
 
   ajax('/xml/producers.xml?q='+encodeURIComponent(val), function(hr) {
     txt.disabled = false;
     txt.value = '';
-    setText(lnk, mt('_js_add'));
+    setText(lnk, 'add');
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
-      return alert(mt('_redit_form_prod_notfound'));
+      return alert('Producer not found!');
 
     var id = items[0].getAttribute('id');
     if(byId('rpr_'+id))
-      return alert(mt('_redit_form_prod_double'));
+      return alert('Producer already selected!');
 
     var role = byId('producer_role');
     role = role[role.selectedIndex].value;

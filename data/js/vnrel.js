@@ -35,12 +35,12 @@ function vnrAdd(rel, vid, official, title) {
   byId('relation_tbl').appendChild(tag('tr', {id:'relation_tr_'+vid},
     tag('td', {'class':'tc_vn'   }, 'v'+vid+':', tag('a', {href:'/v'+vid}, shorten(title, 40))),
     tag('td', {'class':'tc_rel'  },
-      mt('_vnedit_rel_isa')+' ',
+      'is an ',
       tag('input', {type: 'checkbox', onclick:vnrSerialize, id:'official_'+vid, checked:official}),
-      tag('label', {'for':'official_'+vid}, mt('_vnedit_rel_official')),
-      sel, ' '+mt('_vnedit_rel_of')),
+      tag('label', {'for':'official_'+vid}, 'official'),
+      sel, ' of'),
     tag('td', {'class':'tc_title'}, shorten(byId('title').value, 40)),
-    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:vnrDel}, mt('_js_remove')))
+    tag('td', {'class':'tc_add'  }, tag('a', {href:'#', onclick:vnrDel}, 'remove'))
   ));
 
   vnrEmpty();
@@ -49,7 +49,7 @@ function vnrAdd(rel, vid, official, title) {
 function vnrEmpty() {
   var tbl = byId('relation_tbl');
   if(byName(tbl, 'tr').length < 1)
-    tbl.appendChild(tag('tr', {id:'relation_tr_none'}, tag('td', {colspan:4}, mt('_vnedit_rel_none'))));
+    tbl.appendChild(tag('tr', {id:'relation_tr_none'}, tag('td', {colspan:4}, 'No relations selected.')));
   else if(byId('relation_tr_none'))
     tbl.removeChild(byId('relation_tr_none'));
 }
@@ -90,26 +90,26 @@ function vnrFormAdd() {
   var input = txt.value;
 
   if(!input.match(/^v[0-9]+/)) {
-    alert(mt('_vnedit_rel_findformat'));
+    alert('Visual novel textbox must start with an ID (e.g. v17)');
     return false;
   }
 
   txt.disabled = sel.disabled = off.disabled = true;
-  txt.value = mt('_js_loading');
-  setText(lnk, mt('_js_loading'));
+  txt.value = 'Loading...';
+  setText(lnk, 'Loading...');
 
   ajax('/xml/vn.xml?q='+encodeURIComponent(input), function(hr) {
     txt.disabled = sel.disabled = off.disabled = false;
     txt.value = '';
-    setText(lnk, mt('_js_add'));
+    setText(lnk, 'add');
 
     var items = hr.responseXML.getElementsByTagName('item');
     if(items.length < 1)
-      return alert(mt('_vnedit_rel_novn'));
+      return alert('Visual novel not found!');
 
     var id = items[0].getAttribute('id');
     if(byId('relation_tr_'+id))
-      return alert(mt('_vnedit_rel_double'));
+      return alert('This visual novel has already been selected!');
 
     vnrAdd(sel.options[sel.selectedIndex].value, id, off.checked, items[0].firstChild.nodeValue);
     sel.selectedIndex = 0;
