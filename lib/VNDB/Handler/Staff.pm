@@ -277,7 +277,7 @@ sub edit {
     [ select => name => mt('_staffe_form_gender'),short => 'gender', options => [
        map [ $_, mt("_gender_$_") ], qw(unknown m f) ] ],
     [ select => name => mt('_staffe_form_lang'), short => 'lang',
-      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
+      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], keys %{$self->{languages}} ] ],
     [ input  => name => mt('_staffe_form_site'), short => 'l_site' ],
     [ input  => name => mt('_staffe_form_wikipedia'), short => 'l_wp', pre => 'http://en.wikipedia.org/wiki/' ],
     [ input  => name => mt('_staffe_form_twitter'), short => 'l_twitter' ],

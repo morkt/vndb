@@ -442,7 +442,7 @@ sub page {
      div id => 'tagops';
       # NOTE: order of these links is hardcoded in JS
       my $tags_cat = $self->authPref('tags_cat') || $self->{default_tags_cat};
-      a href => "#$_", $tags_cat =~ /\Q$_/ ? (class => 'tsel') : (), lc $self->{tag_categories}{$_} for sort keys %{$self->{tag_categories}};
+      a href => "#$_", $tags_cat =~ /\Q$_/ ? (class => 'tsel') : (), lc $self->{tag_categories}{$_} for keys %{$self->{tag_categories}};
       my $spoiler = $self->authPref('spoilers') || 0;
       a href => '#', class => 'sec'.($spoiler == 0 ? ' tsel' : ''), lc mt '_spoilset_0';
       a href => '#', $spoiler == 1 ? (class => 'tsel') : (), lc mt '_spoilset_1';
@@ -532,7 +532,7 @@ sub _revision {
     [ relations   => join => '<br />', split => sub {
       my @r = map sprintf('[%s] %s: <a href="/v%d" title="%s">%s</a>',
         mt($_->{official} ? '_vndiff_rel_official' : '_vndiff_rel_unofficial'),
-        $self->{vn_relations}{$_->{relation}}[2], $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
+        $self->{vn_relations}{$_->{relation}}[1], $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
       ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
       return @r ? @r : (mt '_revision_empty');
     }],
@@ -615,7 +615,7 @@ sub _relations {
    td class => 'relations';
     dl;
      for(sort keys %rel) {
-       dt $self->{vn_relations}{$_}[2];
+       dt $self->{vn_relations}{$_}[1];
        dd;
         for (@{$rel{$_}}) {
           b class => 'grayedout', mt('_vnpage_relations_unofficial').' ' if !$_->{official};

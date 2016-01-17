@@ -2,6 +2,15 @@
 package VNDB;
 
 use utf8;
+use strict;
+use warnings;
+use Tie::IxHash;
+
+our $ROOT;
+
+# Convenient wrapper to create an ordered hash
+sub ordhash { my %x; tie %x, 'Tie::IxHash', @_; \%x }
+
 
 # options for TUWF
 our %O = (
@@ -19,7 +28,7 @@ our %O = (
 # VNDB-specific options (object_data)
 our %S;
 %S = (%S,
-  version         => `cd $VNDB::ROOT; git describe` =~ /^(.+)$/ && $1,
+  version         => `cd $ROOT; git describe` =~ /^(.+)$/ && $1,
   url             => 'http://vndb.org',   # Only used by Multi, web pages infer their own address
   url_static      => 'http://s.vndb.org',
   skin_default    => 'angel',
@@ -37,7 +46,7 @@ our %S;
   permissions     => {qw| board 1  boardmod 2  edit 4  tag 16  dbmod 32  tagmod 64  usermod 128  affiliate 256 |},
   default_perm    => 1+4+16, # Keep synchronised with the default value of users.perm
   default_tags_cat=> 'cont,tech',
-  languages       => {grep !/^ *$/, split /[\s\r\n]*([^ ]+) +(.+)/, q{
+  languages       => ordhash(grep !/^ *$/, split /[\s\r\n]*([^ ]+) +(.+)/, q{
     ar Arabic
     ca Catalan
     cs Czech
@@ -66,12 +75,12 @@ our %S;
     uk Ukrainian
     vi Vietnamese
     zh Chinese
-  }},
-  producer_types  => {
+  }),
+  producer_types  => ordhash(
     co => 'Company',
     in => 'Individual',
     ng => 'Amateur group',
-  },
+  ),
   discussion_boards => [qw|an db ge v p u|], # <- note that some properties of these boards are hard-coded
   vn_lengths => [
     # name          time             examples
@@ -92,33 +101,33 @@ our %S;
     mv  => 'Music Video',
   },
   board_edit_time => 7*24*3600,
-  vn_relations => {
-  # id   => [ order, reverse, txt ]
-    seq  => [ 0, 'preq', 'Sequel'              ],
-    preq => [ 1, 'seq',  'Prequel'             ],
-    set  => [ 2, 'set',  'Same setting'        ],
-    alt  => [ 3, 'alt',  'Alternative version' ],
-    char => [ 4, 'char', 'Shares characters'   ],
-    side => [ 5, 'par',  'Side story'          ],
-    par  => [ 6, 'side', 'Parent story'        ],
-    ser  => [ 7, 'ser',  'Same series'         ],
-    fan  => [ 8, 'orig', 'Fandisc'             ],
-    orig => [ 9, 'fan',  'Original game'       ],
-  },
-  prod_relations  => {
-    'old' => [ 0, 'new', 'Formerly'        ],
-    'new' => [ 1, 'old', 'Succeeded by'    ],
-    'spa' => [ 2, 'ori', 'Subsidiary'      ],
-    'ori' => [ 3, 'spa', 'Parent producer' ],
-    'sub' => [ 4, 'par', 'Imprint'         ],
-    'par' => [ 5, 'sub', 'Parent brand'    ],
-    'imp' => [ 6, 'ipa', 'Spawned'         ],
-    'ipa' => [ 7, 'imp', 'Originated from' ],
-  },
+  vn_relations => ordhash(
+  # id   => [ reverse, txt ]
+    seq  => [ 'preq', 'Sequel'              ],
+    preq => [ 'seq',  'Prequel'             ],
+    set  => [ 'set',  'Same setting'        ],
+    alt  => [ 'alt',  'Alternative version' ],
+    char => [ 'char', 'Shares characters'   ],
+    side => [ 'par',  'Side story'          ],
+    par  => [ 'side', 'Parent story'        ],
+    ser  => [ 'ser',  'Same series'         ],
+    fan  => [ 'orig', 'Fandisc'             ],
+    orig => [ 'fan',  'Original game'       ],
+  ),
+  prod_relations  => ordhash(
+    'old' => [ 'new', 'Formerly'        ],
+    'new' => [ 'old', 'Succeeded by'    ],
+    'spa' => [ 'ori', 'Subsidiary'      ],
+    'ori' => [ 'spa', 'Parent producer' ],
+    'sub' => [ 'par', 'Imprint'         ],
+    'par' => [ 'sub', 'Parent brand'    ],
+    'imp' => [ 'ipa', 'Spawned'         ],
+    'ipa' => [ 'imp', 'Originated from' ],
+  ),
   age_ratings     => [-1, 0, 6..18],
   release_types   => [qw|complete partial trial|],
   # The 'unk' platform and medium are reserved for "unknown".
-  platforms       => {grep !/^ *$/, split /[\s\r\n]*([^ ]+) +(.+)/, q{
+  platforms       => ordhash(grep !/^ *$/, split /[\s\r\n]*([^ ]+) +(.+)/, q{
     win Windows
     dos DOS
     lin Linux
@@ -154,8 +163,8 @@ our %S;
     xbo Xbox One
     web Website
     oth Other
-  }},
-  media           => {
+  }),
+  media           => ordhash(
    #DB     qty  txt                      plural (if qty)
     cd  => [ 1, 'CD',                    'CDs'                    ],
     dvd => [ 1, 'DVD',                   'DVDs'                   ],
@@ -168,7 +177,7 @@ our %S;
     nod => [ 1, 'Nintendo Optical Disc', 'Nintendo Optical Discs' ],
     in  => [ 0, 'Internet download',     ''                       ],
     otc => [ 0, 'Other',                 ''                       ],
-  },
+  ),
   resolutions     => [
     [ 'Unknown / console / handheld', '' ],
     [ 'Non-standard', '' ],
@@ -186,11 +195,11 @@ our %S;
     [ '1280x800',     'widescreen' ],
     [ '1920x1080',    'widescreen' ],
   ],
-  tag_categories  => {
+  tag_categories  => ordhash(
     cont => 'Content',
     ero  => 'Sexual content',
     tech => 'Technical',
-  },
+  ),
   # The voiced, animated, and *_status fields are stored in the database by their (numeric) index.
   voiced          => [ 'Unknown', 'Not voiced', 'Only ero scenes voiced', 'Partially voiced', 'Fully voiced' ],
   animated        => [ 'Unknown', 'No animations', 'Simple animations', 'Some fully animated scenes', 'All scenes fully animated' ],

@@ -388,7 +388,7 @@ sub _form {
     [ input  => short => 'original',  name => mt('_redit_form_original'), width => 450 ],
     [ static => content => mt '_redit_form_original_note' ],
     [ select => short => 'languages', name => mt('_redit_form_languages'), multi => 1,
-      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
+      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], keys %{$self->{languages}} ] ],
     [ input  => short => 'gtin',      name => mt('_redit_form_gtin') ],
     [ input  => short => 'catalog',   name => mt('_redit_form_catalog') ],
     [ input  => short => 'website',   name => mt('_redit_form_website') ],

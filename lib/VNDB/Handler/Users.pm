@@ -453,7 +453,7 @@ sub edit {
     [ check  => short => 'traits_sexual', name => mt '_usere_fsextraits' ],
     [ check  => short => 'tags_all', name => mt '_usere_ftags' ],
     [ select => short => 'tags_cat', name => mt('_usere_tagcats'), multi => 1, size => 3,
-      options => [ map [ $_, $self->{tag_categories}{$_} ], sort keys %{$self->{tag_categories}} ] ],
+      options => [ map [ $_, $self->{tag_categories}{$_} ], keys %{$self->{tag_categories}} ] ],
     [ select => short => 'spoilers', name => mt('_usere_spoilers'), options => [ map [ $_, mt '_spoilset_'.$_ ], 0..2 ] ],
     [ select => short => 'skin', name => mt('_usere_skin'), width => 300, options => [
       map [ $_, $self->{skins}{$_}[0].($self->debug?" [$_]":'') ], sort { $self->{skins}{$a}[0] cmp $self->{skins}{$b}[0] } keys %{$self->{skins}} ] ],

@@ -235,7 +235,7 @@ sub tagedit {
         [ static => content => mt '_tagedit_frm_meta_warn' ] : (),
     ) : (),
     [ select   => short => 'cat', name => mt('_tagedit_frm_cat'), options => [
-      map [$_, $self->{tag_categories}{$_}], sort keys %{$self->{tag_categories}} ] ],
+      map [$_, $self->{tag_categories}{$_}], keys %{$self->{tag_categories}} ] ],
     $self->authCan('tagmod') && $tag ? (
       [ checkbox => short => 'catrec', name => mt '_tagedit_frm_catrec' ],
       [ static => content => mt '_tagedit_frm_catrec_warn' ],
@@ -582,7 +582,7 @@ sub _tagmod_list {
 
   my %my = map +($_->{tag} => $_), @$my;
 
-  for my $cat (sort keys %{$self->{tag_categories}}) {
+  for my $cat (keys %{$self->{tag_categories}}) {
     my @tags = grep $_->{cat} eq $cat, @$tags;
     next if !@tags;
     Tr class => 'tagmod_cat';

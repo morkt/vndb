@@ -68,7 +68,7 @@ sub page {
       [ desc      => diff => qr/[ ,\n\.]/ ],
       [ relations   => join => '<br />', split => sub {
         my @r = map sprintf('%s: <a href="/p%d" title="%s">%s</a>',
-          $self->{prod_relations}{$_->{relation}}[2], $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape shorten $_->{name}, 40
+          $self->{prod_relations}{$_->{relation}}[1], $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape shorten $_->{name}, 40
         ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
         return @r ? @r : (mt '_revision_empty');
       }],
@@ -100,8 +100,9 @@ sub page {
        for (sort { $a->{name} cmp $b->{name} } @{$p->{relations}});
      p class => 'center';
       br;
-      for my $r (sort { $self->{prod_relations}{$a}[0] <=> $self->{prod_relations}{$b}[0] } keys %rel) {
-        txt $self->{prod_relations}{$r}[2].': ';
+      for my $r (keys %{$self->{prod_relations}}) {
+        next if !$rel{$r};
+        txt $self->{prod_relations}{$r}[1].': ';
         for (@{$rel{$r}}) {
           a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 40;
           txt ', ' if $_ ne $rel{$r}[$#{$rel{$r}}];
@@ -268,14 +269,14 @@ sub edit {
   $self->htmlForm({ frm => $frm, action => $pid ? "/p$pid/edit" : '/p/new', editsum => 1 },
   'pedit_geninfo' => [ mt('_pedit_form_generalinfo'),
     [ select => name => mt('_pedit_form_type'), short => 'type',
-      options => [ map [ $_, $self->{producer_types}{$_} ], sort keys %{$self->{producer_types}} ] ],
+      options => [ map [ $_, $self->{producer_types}{$_} ], keys %{$self->{producer_types}} ] ],
     [ input  => name => mt('_pedit_form_name'), short => 'name' ],
     [ input  => name => mt('_pedit_form_original'), short => 'original' ],
     [ static => content => mt('_pedit_form_original_note') ],
     [ input  => name => mt('_pedit_form_alias'), short => 'alias', width => 400 ],
     [ static => content => mt('_pedit_form_alias_note') ],
     [ select => name => mt('_pedit_form_lang'), short => 'lang',
-      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], sort keys %{$self->{languages}} ] ],
+      options => [ map [ $_, "$_ ($self->{languages}{$_})" ], keys %{$self->{languages}} ] ],
     [ input  => name => mt('_pedit_form_website'), short => 'website' ],
     [ input  => name => mt('_pedit_form_wikipedia'), short => 'l_wp', pre => 'http://en.wikipedia.org/wiki/' ],
     [ text   => name => mt('_pedit_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
@@ -297,8 +298,8 @@ sub edit {
         end;
         td class => 'tc_rel';
          Select;
-          option value => $_, $self->{prod_relations}{$_}[2]
-            for (sort { $self->{prod_relations}{$a}[0] <=> $self->{prod_relations}{$b}[0] } keys %{$self->{prod_relations}});
+          option value => $_, $self->{prod_relations}{$_}[1]
+            for (keys %{$self->{prod_relations}});
          end;
         end;
         td class => 'tc_add';
@@ -320,7 +321,7 @@ sub _updreverse {
     if(exists $$old{$_} and !exists $$new{$_}) {
       $upd{$_} = undef;
     } elsif((!exists $$old{$_} and exists $$new{$_}) || ($$old{$_} ne $$new{$_})) {
-      $upd{$_} = $self->{prod_relations}{$$new{$_}}[1];
+      $upd{$_} = $self->{prod_relations}{$$new{$_}}[0];
     }
   }
   return if !keys %upd;

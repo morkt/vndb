@@ -86,7 +86,7 @@ sub getrel { # id, res, time
     my($xid, $xrel, $xoff) = @$_;
     $xoff = 0 if $xoff && $xoff =~ /^f/;
 
-    $C{rels}{$id.'-'.$xid} = [ $VNDB::S{ $C{type} eq 'v' ? 'vn_relations' : 'prod_relations' }{$xrel}[1], $xoff ] if $id < $xid;
+    $C{rels}{$id.'-'.$xid} = [ $VNDB::S{ $C{type} eq 'v' ? 'vn_relations' : 'prod_relations' }{$xrel}[0], $xoff ] if $id < $xid;
     $C{rels}{$xid.'-'.$id} = [ $xrel, $xoff ] if $id > $xid;
 
     # New node? Get its relations too.
@@ -179,10 +179,10 @@ sub gv_vnrels {
     # [older game] -> [newer game]
     if($_->[5] > $_->[4]) {
       ($_->[0], $_->[1]) = ($_->[1], $_->[0]);
-      $_->[2] = $VNDB::S{vn_relations}{$_->[2]}[1];
+      $_->[2] = $VNDB::S{vn_relations}{$_->[2]}[0];
     }
-    my $rel = $VNDB::S{vn_relations}{$_->[2]}[2];
-    my $rev = $VNDB::S{vn_relations}{ $VNDB::S{vn_relations}{$_->[2]}[1] }[2];
+    my $rel = $VNDB::S{vn_relations}{$_->[2]}[1];
+    my $rev = $VNDB::S{vn_relations}{ $VNDB::S{vn_relations}{$_->[2]}[0] }[1];
     my $style = $_->[3] ? '' : ', style="dotted"';
     my $label = $rev ne $rel
       ? qq|headlabel = "$rel" taillabel = "${rev}" $style|
@@ -226,8 +226,8 @@ sub gv_prodrels {
     my $p1 = $prods->{$1};
     my $p2 = $prods->{$2};
 
-    my $rel = $VNDB::S{prod_relations}{$rels->{$_}[0]}[2];
-    my $rev = $VNDB::S{prod_relations}{ $VNDB::S{prod_relations}{$rels->{$_}[0]}[1] }[2];
+    my $rel = $VNDB::S{prod_relations}{$rels->{$_}[0]}[1];
+    my $rev = $VNDB::S{prod_relations}{ $VNDB::S{prod_relations}{$rels->{$_}[0]}[0] }[1];
     my $label = $rev ne $rel
       ? qq|headlabel = "$rev", taillabel = "$rel"|
       : qq|label = "$rel"|;

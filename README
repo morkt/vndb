@@ -23,27 +23,25 @@ Requirements
 
   (perl 5.20 core modules are not listed.)
 
-  util/vndb.pl:
-    Algorithm::Diff::XS
-    DBI
-    DBD::Pg
-    Crypt::URandom
+  General:
     Crypt::ScryptKDF
+    Crypt::URandom
+    DBD::Pg
+    DBI
     Image::Magick
     JSON::XS
+    Tie::IxHash
+
+  util/vndb.pl:
+    Algorithm::Diff::XS
     TUWF
     FCGI                 (optional, for running as a FastCGI script)
     PerlIO::gzip         (optional, for output compression)
 
   util/multi.pl:
-    API:
-      Crypt::ScryptKDF
-      JSON::XS
     APIDump:
-      JSON::XS
       PerlIO::gzip
     Core:
-      DBI
       AnyEvent
       AnyEvent::Pg
     IRC:
@@ -55,16 +53,13 @@ Requirements
       graphviz           (/usr/bin/dot is used by default)
 
   util/skingen.pl
-    Image::Magick
     CSS::Minifier::XS    (optional, minimizes CSS output)
 
   util/jsgen.pl
-    JSON::XS
     JavaScript::Minifier::XS (optional, minimizes JS output)
     uglifyjs                 (optional, slower but better JS compression)
 
   util/spritegen.pl
-    Image::Magick
     pngcrush             (optional)
 
 
