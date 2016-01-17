@@ -33,8 +33,6 @@ sub rg {
   return if $self->htmlRGHeader($title, 'v', $v);
 
   $v->{svg} =~ s/id="node_v$vid"/id="graph_current"/;
-  # TODO: The relation string can be properly interned in the SVG now
-  $v->{svg} =~ s/\$___(_vnrel_[a-z]+)____\$/mt $1/eg;
 
   div class => 'mainbox';
    h1 $title;
@@ -534,7 +532,7 @@ sub _revision {
     [ relations   => join => '<br />', split => sub {
       my @r = map sprintf('[%s] %s: <a href="/v%d" title="%s">%s</a>',
         mt($_->{official} ? '_vndiff_rel_official' : '_vndiff_rel_unofficial'),
-        mt("_vnrel_$_->{relation}"), $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
+        $self->{vn_relations}{$_->{relation}}[2], $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
       ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
       return @r ? @r : (mt '_revision_empty');
     }],
@@ -617,7 +615,7 @@ sub _relations {
    td class => 'relations';
     dl;
      for(sort keys %rel) {
-       dt mt "_vnrel_$_";
+       dt $self->{vn_relations}{$_}[2];
        dd;
         for (@{$rel{$_}}) {
           b class => 'grayedout', mt('_vnpage_relations_unofficial').' ' if !$_->{official};

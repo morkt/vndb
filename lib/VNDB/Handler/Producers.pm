@@ -27,10 +27,6 @@ sub rg {
   return if $self->htmlRGHeader($title, 'p', $p);
 
   $p->{svg} =~ s/id="node_p$pid"/id="graph_current"/;
-  # TODO: These strings can be properly interned in the SVG now
-  $p->{svg} =~ s/\$___(_prodrel_[a-z]+)____\$/mt $1/eg;
-  $p->{svg} =~ s/\$_lang_([a-z-]+)_\$/$self->{languages}{$1}/eg;
-  $p->{svg} =~ s/\$_ptype_([a-z]+)_\$/$self->{producer_types}{$1}/eg;
 
   div class => 'mainbox';
    h1 $title;
@@ -72,7 +68,7 @@ sub page {
       [ desc      => diff => qr/[ ,\n\.]/ ],
       [ relations   => join => '<br />', split => sub {
         my @r = map sprintf('%s: <a href="/p%d" title="%s">%s</a>',
-          mt("_prodrel_$_->{relation}"), $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape shorten $_->{name}, 40
+          $self->{prod_relations}{$_->{relation}}[2], $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape shorten $_->{name}, 40
         ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
         return @r ? @r : (mt '_revision_empty');
       }],
@@ -105,7 +101,7 @@ sub page {
      p class => 'center';
       br;
       for my $r (sort { $self->{prod_relations}{$a}[0] <=> $self->{prod_relations}{$b}[0] } keys %rel) {
-        txt mt("_prodrel_$r").': ';
+        txt $self->{prod_relations}{$r}[2].': ';
         for (@{$rel{$r}}) {
           a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 40;
           txt ', ' if $_ ne $rel{$r}[$#{$rel{$r}}];
@@ -301,7 +297,7 @@ sub edit {
         end;
         td class => 'tc_rel';
          Select;
-          option value => $_, mt "_prodrel_$_"
+          option value => $_, $self->{prod_relations}{$_}[2]
             for (sort { $self->{prod_relations}{$a}[0] <=> $self->{prod_relations}{$b}[0] } keys %{$self->{prod_relations}});
          end;
         end;

@@ -379,7 +379,7 @@ sub _form {
          input type => 'checkbox', id => 'official', checked => 'checked';
          label for => 'official', mt '_vnedit_rel_official';
          Select;
-          option value => $_, mt "_vnrel_$_"
+          option value => $_, $self->{vn_relations}{$_}[2]
             for (sort { $self->{vn_relations}{$a}[0] <=> $self->{vn_relations}{$b}[0] } keys %{$self->{vn_relations}});
          end;
          txt ' '.mt '_vnedit_rel_of';

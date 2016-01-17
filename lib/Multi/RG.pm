@@ -181,11 +181,12 @@ sub gv_vnrels {
       ($_->[0], $_->[1]) = ($_->[1], $_->[0]);
       $_->[2] = $VNDB::S{vn_relations}{$_->[2]}[1];
     }
-    my $rev = $VNDB::S{vn_relations}{$_->[2]}[1];
+    my $rel = $VNDB::S{vn_relations}{$_->[2]}[2];
+    my $rev = $VNDB::S{vn_relations}{ $VNDB::S{vn_relations}{$_->[2]}[1] }[2];
     my $style = $_->[3] ? '' : ', style="dotted"';
-    my $label = $rev ne $_->[2]
-      ? qq|headlabel = "\$____vnrel_$_->[2]____\$" taillabel = "\$____vnrel_${rev}____\$" $style|
-      : qq|label = "\$____vnrel_$_->[2]____\$" $style|;
+    my $label = $rev ne $rel
+      ? qq|headlabel = "$rel" taillabel = "${rev}" $style|
+      : qq|label = "$rel" $style|;
     $r .= qq|\tv$$_[1] -- v$$_[0] [ $label ]\n|;
   }
   $r;
@@ -209,9 +210,10 @@ sub gv_prodnode {
     qq|\tp%d [ id = "node_p%1\$d", URL = "/p%1\$d", tooltip = "%s", label=<|.
       q|<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" CELLBORDER="1" BGCOLOR="#222222">|.
         q|<TR><TD COLSPAN="2" ALIGN="CENTER" CELLPADDING="2"><FONT POINT-SIZE="%d">  %s  </FONT></TD></TR>|.
-        q|<TR><TD ALIGN="CENTER"> $_lang_%s_$ </TD><TD ALIGN="CENTER"> $_ptype_%s_$ </TD></TR>|.
+        q|<TR><TD ALIGN="CENTER"> %s </TD><TD ALIGN="CENTER"> %s </TD></TR>|.
       qq|</TABLE>> ]\n|,
-    $n->{id}, encode_utf8($tooltip), $O{fsize}[2], encode_utf8($name), $n->{lang}, $n->{type};
+    $n->{id}, encode_utf8($tooltip), $O{fsize}[2], encode_utf8($name),
+      $VNDB::S{languages}{$n->{lang}}, $VNDB::S{producer_types}{$n->{type}};
 }
 
 
@@ -224,10 +226,11 @@ sub gv_prodrels {
     my $p1 = $prods->{$1};
     my $p2 = $prods->{$2};
 
-    my $rev = $VNDB::S{prod_relations}{$rels->{$_}[0]}[1];
-    my $label = $rev ne $rels->{$_}[0]
-      ? qq|headlabel = "\$____prodrel_${rev}____\$", taillabel = "\$____prodrel_$rels->{$_}[0]____\$"|
-      : qq|label = "\$____prodrel_$rels->{$_}[0]____\$"|;
+    my $rel = $VNDB::S{prod_relations}{$rels->{$_}[0]}[2];
+    my $rev = $VNDB::S{prod_relations}{ $VNDB::S{prod_relations}{$rels->{$_}[0]}[1] }[2];
+    my $label = $rev ne $rel
+      ? qq|headlabel = "$rev", taillabel = "$rel"|
+      : qq|label = "$rel"|;
     $r .= qq|\tp$p1->{id} -- p$p2->{id} [ $label ]\n|;
   }
   $r;

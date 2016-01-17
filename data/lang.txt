@@ -38,66 +38,6 @@ information.
 en : Unknown
 
 
-# VN relations
-
-:_vnrel_seq
-en : Sequel
-
-:_vnrel_preq
-en : Prequel
-
-:_vnrel_set
-en : Same setting
-
-:_vnrel_alt
-en : Alternative version
-
-:_vnrel_char
-en : Shares characters
-
-:_vnrel_side
-en : Side story
-
-:_vnrel_par
-en : Parent story
-
-:_vnrel_ser
-en : Same series
-
-:_vnrel_fan
-en : Fandisc
-
-:_vnrel_orig
-en : Original game
-
-
-# producer relations
-
-:_prodrel_old
-en : Formerly
-
-:_prodrel_new
-en : Succeeded by
-
-:_prodrel_sub
-en : Subsidiary
-
-:_prodrel_par
-en : Parent producer
-
-:_prodrel_imp
-en : Imprint
-
-:_prodrel_ipa
-en : Parent brand
-
-:_prodrel_spa
-en : Spawned
-
-:_prodrel_ori
-en : Originated from
-
-
 # Discussion board types
 
 :_dboard_an
