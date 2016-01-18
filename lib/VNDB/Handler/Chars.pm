@@ -546,7 +546,7 @@ sub charBrowseTable {
       my($s, $n, $l) = @_;
       Tr;
        td class => 'tc1';
-        cssicon "gen $l->{gender}", mt $self->{genders}{$l->{gender}} if $l->{gender} ne 'unknown';
+        cssicon "gen $l->{gender}", $self->{genders}{$l->{gender}} if $l->{gender} ne 'unknown';
        end;
        td class => 'tc2';
         a href => "/c$l->{id}", title => $l->{original}||$l->{name}, shorten $l->{name}, 50;

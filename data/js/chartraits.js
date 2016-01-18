@@ -6,7 +6,7 @@ function ctrLoad() {
   for(var i=0; i<l.length; i++) {
     if(l[i]) {
       var m = l[i].split(/-/);
-      v[m[0]] = m[1];
+      v[m[0]] = Math.floor(m[1]);
       q[i] = 'id='+m[0];
     }
   }
