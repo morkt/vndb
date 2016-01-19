@@ -3,14 +3,15 @@ package VNDB::Func;
 
 use strict;
 use warnings;
-use TUWF ':html', 'kv_validate';
+use TUWF ':html', 'kv_validate', 'xml_escape';
 use Exporter 'import';
 use POSIX 'strftime', 'ceil', 'floor';
 use JSON::XS;
 use VNDBUtil;
 our @EXPORT = (@VNDBUtil::EXPORT, qw|
   clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags
-  childtags charspoil imgpath imgurl fmtvote fmtmedia fmtvnlen
+  childtags charspoil imgpath imgurl
+  fmtvote fmtmedia fmtvnlen fmtage fmtdatestr fmtdate fmtuser
   json_encode json_decode script_json
   form_compare
 |);
@@ -72,7 +73,7 @@ sub mt {
 
 sub minage {
   my($a, $ex) = @_;
-  my $str = $a == -1 ? mt '_unknown' : !$a ? mt '_minage_all' : mt '_minage_age', $a;
+  my $str = $a == -1 ? 'Unknown' : !$a ? 'All ages' : sprintf '%d+', $a;
   $ex = !defined($a) ? '' : {
      0 => 'CERO A',
     12 => 'CERO B',
@@ -81,7 +82,7 @@ sub minage {
     18 => 'CERO Z',
   }->{$a} if $ex;
   return $str if !$ex;
-  return $str.' '.mt('_minage_example', $ex);
+  return "$str (e.g. $ex)";
 }
 
 
@@ -118,7 +119,7 @@ sub parenttags {
   p;
    my @p = _parenttags(@{$t->{parents}});
    for my $p (@p ? @p : []) {
-     a href => "/$type", $index; #mt '_tagp_indexlink';
+     a href => "/$type", $index;
      for (reverse @$p) {
        txt ' > ';
        a href => "/$type$_->{id}", $_->{name};
@@ -165,9 +166,11 @@ sub childtags {
           end;
         }
         if(@{$p->{'sub'}} > 6) {
+          my $c = @{$p->{'sub'}}-5;
           li;
            txt '> ';
-           a href => "/$type$p->{id}", style => 'font-style: italic', mt $type eq 'g' ? '_tagp_moretags' : '_traitp_more', @{$p->{'sub'}}-5;
+           a href => "/$type$p->{id}", style => 'font-style: italic',
+             sprintf '%d more %s%s', $c, $type eq 'g' ? 'tag' : 'trait', $c==1 ? '' : 's';
           end;
         }
        end;
@@ -220,6 +223,56 @@ sub fmtvnlen {
     ($xtra && $xtra == 1 && $len->[1] ? " ($len->[1])" : '').
     ($xtra && $xtra == 2 && $len->[2] ? " ($len->[2])" : '');
 }
+
+# Formats a UNIX timestamp as a '<number> <unit> ago' string
+sub fmtage {
+  my $a = time-shift;
+  my($t, $single, $plural) =
+    $a > 60*60*24*365*2       ? ( $a/60/60/24/365,      'year',  'years'  ) :
+    $a > 60*60*24*(365/12)*2  ? ( $a/60/60/24/(365/12), 'month', 'months' ) :
+    $a > 60*60*24*7*2         ? ( $a/60/60/24/7,        'week',  'weeks'  ) :
+    $a > 60*60*24*2           ? ( $a/60/60/24,          'day',   'days'   ) :
+    $a > 60*60*2              ? ( $a/60/60,             'hour',  'hours'  ) :
+    $a > 60*2                 ? ( $a/60,                'min',   'min'    ) :
+                                ( $a,                   'sec',   'sec'    );
+  $t = sprintf '%d', $t;
+  sprintf '%d %s ago', $t, $t == 1 ? $single : $plural;
+}
+
+# argument: database release date format (yyyymmdd)
+#  y = 0000 -> unknown
+#  y = 9999 -> TBA
+#  m = 99   -> month+day unknown
+#  d = 99   -> day unknown
+# return value: (unknown|TBA|yyyy|yyyy-mm|yyyy-mm-dd)
+#  if date > now: <b class="future">str</b>
+sub fmtdatestr {
+  my $date = sprintf '%08d', shift||0;
+  my $future = $date > strftime '%Y%m%d', gmtime;
+  my($y, $m, $d) = ($1, $2, $3) if $date =~ /^([0-9]{4})([0-9]{2})([0-9]{2})$/;
+
+  my $str = $y == 0 ? 'unknown' : $y == 9999 ? 'TBA' :
+    $m == 99 ? sprintf('%04d', $y) :
+    $d == 99 ? sprintf('%04d-%02d', $y, $m) :
+               sprintf('%04d-%02d-%02d', $y, $m, $d);
+
+  return $str if !$future;
+  return qq|<b class="future">$str</b>|;
+}
+
+# argument: unix timestamp and optional format (compact/full)
+sub fmtdate {
+  my($t, $f) = @_;
+  return strftime '%Y-%m-%d', gmtime $t if !$f || $f eq 'compact';
+  return strftime '%Y-%m-%d at %R', gmtime $t;
+}
+
+# Arguments: (uid, username), or a hashref containing that info
+sub fmtuser {
+  my($id,$n) = ref($_[0]) eq 'HASH' ? ($_[0]{uid}||$_[0]{requester}, $_[0]{username}) : @_;
+  return !$id ? '[deleted]' : sprintf '<a href="/u%d">%s</a>', $id, xml_escape $n;
+}
+
 
 
 # JSON::XS::encode_json converts input to utf8, whereas the below functions

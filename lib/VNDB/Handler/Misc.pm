@@ -147,7 +147,7 @@ sub homepage {
      ul;
       for (@$upcoming) {
         li;
-         lit $self->{l10n}->datestr($_->{released});
+         lit fmtdatestr $_->{released};
          txt ' ';
          cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
          cssicon "lang $_", $self->{languages}{$_} for (@{$_->{languages}});
@@ -167,7 +167,7 @@ sub homepage {
      ul;
       for (@$justrel) {
         li;
-         lit $self->{l10n}->datestr($_->{released});
+         lit fmtdatestr $_->{released};
          txt ' ';
          cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
          cssicon "lang $_", $self->{languages} for (@{$_->{languages}});

@@ -53,63 +53,17 @@ use warnings;
   use base 'VNDB::L10N';
   use POSIX 'strftime';
   use TUWF::XML 'xml_escape';
+  require VNDB::Func;
   our %Lexicon;
 
   sub quant {
     return $_[1]==1 ? $_[2] : $_[3];
   }
 
-  # Argument: unix timestamp
-  # Returns: age
-  sub age {
-    my($self, $time) = @_;
-    my $a = time-$time;
-    my @f =
-      $a > 60*60*24*365*2       ? ( $a/60/60/24/365,      'years'  ) :
-      $a > 60*60*24*(365/12)*2  ? ( $a/60/60/24/(365/12), 'months' ) :
-      $a > 60*60*24*7*2         ? ( $a/60/60/24/7,        'weeks'  ) :
-      $a > 60*60*24*2           ? ( $a/60/60/24,          'days'   ) :
-      $a > 60*60*2              ? ( $a/60/60,             'hours'  ) :
-      $a > 60*2                 ? ( $a/60,                'min'    ) :
-                                  ( $a,                   'sec'    );
-    return $self->maketext("_age_$f[1]", int $f[0]);
-  }
-
-  # argument: unix timestamp and optional format (compact/full)
-  sub date {
-    my($s, $t, $f) = @_;
-    return strftime $s->maketext('_datetime_compact'), gmtime $t if !$f || $f eq 'compact';
-    return strftime $s->maketext('_datetime_full'), gmtime $t;
-  }
-
-  # argument: database release date format (yyyymmdd)
-  #  y = 0000 -> unknown
-  #  y = 9999 -> TBA
-  #  m = 99   -> month+day unknown
-  #  d = 99   -> day unknown
-  # return value: (unknown|TBA|yyyy|yyyy-mm|yyyy-mm-dd)
-  #  if date > now: <b class="future">str</b>
-  sub datestr {
-    my $self = shift;
-    my $date = sprintf '%08d', shift||0;
-    my $future = $date > strftime '%Y%m%d', gmtime;
-    my($y, $m, $d) = ($1, $2, $3) if $date =~ /^([0-9]{4})([0-9]{2})([0-9]{2})$/;
-
-    my $str = $y == 0 ? 'unknown' : $y == 9999 ? 'TBA' :
-      $m == 99 ? sprintf('%04d', $y) :
-      $d == 99 ? sprintf('%04d-%02d', $y, $m) :
-                 sprintf('%04d-%02d-%02d', $y, $m, $d);
-
-    return $str if !$future;
-    return qq|<b class="future">$str</b>|;
-  }
-
-  # Arguments: (uid, username), or a hashref containing that info
-  sub userstr {
-    my $self = shift;
-    my($id,$n) = ref($_[0])eq'HASH'?($_[0]{uid}||$_[0]{requester}, $_[0]{username}):@_;
-    return !$id ? '[deleted]' : '<a href="/u'.$id.'">'.$n.'</a>';
-  }
+  sub age     { VNDB::Func::fmtage($_[1]) }
+  sub date    { VNDB::Func::fmtdate($_[1], $_[2]) }
+  sub datestr { VNDB::Func::fmtdatestr($_[1]) }
+  sub userstr { VNDB::Func::fmtuser($_[1], $_[2]) }
 
   # Arguments: index, @list. returns $list[index]
   sub index {

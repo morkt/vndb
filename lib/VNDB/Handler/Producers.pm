@@ -151,7 +151,7 @@ sub _releases {
     for my $v (@vn) {
       Tr class => 'vn';
        td colspan => 6;
-        i; lit $self->{l10n}->datestr($vn{$v->{vid}}[0]{released}); end;
+        i; lit fmtdatestr $vn{$v->{vid}}[0]{released}; end;
         a href => "/v$v->{vid}", title => $v->{original}, $v->{title};
         span '('.join(', ',
            (grep($_->{developer}, @{$vn{$v->{vid}}}) ? mt '_prodpage_dev' : ()),
@@ -161,7 +161,7 @@ sub _releases {
       end;
       for my $rel (@{$vn{$v->{vid}}}) {
         Tr class => 'rel';
-         td class => 'tc1'; lit $self->{l10n}->datestr($rel->{released}); end;
+         td class => 'tc1'; lit fmtdatestr $rel->{released}; end;
          td class => 'tc2', $rel->{minage} < 0 ? '' : minage $rel->{minage};
          td class => 'tc3';
           for (sort @{$rel->{platforms}}) {

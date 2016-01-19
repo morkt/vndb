@@ -138,7 +138,7 @@ sub _roles {
       my($r, $n, $l) = @_;
       Tr;
        td class => 'tc1'; a href => "/v$l->{vid}", title => $l->{t_original}||$l->{title}, shorten $l->{title}, 60; end;
-       td class => 'tc2'; lit $self->{l10n}->datestr($l->{c_released}); end;
+       td class => 'tc2'; lit fmtdatestr $l->{c_released}; end;
        td class => 'tc3', $self->{staff_roles}{$l->{role}};
        td class => 'tc4', title => $l->{original}||$l->{name}, $l->{name};
        td class => 'tc5', $l->{note};
@@ -167,7 +167,7 @@ sub _cast {
       my($r, $n, $l) = @_;
       Tr;
        td class => 'tc1'; a href => "/v$l->{vid}", title => $l->{t_original}||$l->{title}, shorten $l->{title}, 60; end;
-       td class => 'tc2'; lit $self->{l10n}->datestr($l->{c_released}); end;
+       td class => 'tc2'; lit fmtdatestr $l->{c_released}; end;
        td class => 'tc3'; a href => "/c$l->{cid}", title => $l->{c_original}, $l->{c_name}; end;
        td class => 'tc4', title => $l->{original}||$l->{name}, $l->{name};
        td class => 'tc5', $l->{note};

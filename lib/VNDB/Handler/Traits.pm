@@ -215,7 +215,7 @@ sub traitedit {
     [ input    => short => 'name',     name => mt '_traite_frm_name' ],
     $self->authCan('tagmod') ? (
       $t ?
-        [ static   => label => mt('_traite_frm_by'), content => $self->{l10n}->userstr($t->{addedby}, $t->{username}) ] : (),
+        [ static   => label => mt('_traite_frm_by'), content => fmtuser($t->{addedby}, $t->{username}) ] : (),
       [ select   => short => 'state',    name => mt('_traite_frm_state'), options => [
         map [$_, mt '_traite_frm_state'.$_], 0..2 ] ],
       [ checkbox => short => 'meta',     name => mt '_traite_frm_meta' ]
@@ -302,7 +302,7 @@ sub traitlist {
       row => sub {
         my($s, $n, $l) = @_;
         Tr;
-         td class => 'tc1', $self->{l10n}->age($l->{added});
+         td class => 'tc1', fmtage $l->{added};
          td class => 'tc3';
           if($l->{group}) {
             b class => 'grayedout', $l->{groupname}.' / ';
@@ -347,7 +347,7 @@ sub traitindex {
      ul;
       for (@$r) {
         li;
-         txt $self->{l10n}->age($_->{added});
+         txt fmtage $_->{added};
          txt ' ';
          b class => 'grayedout', $_->{groupname}.' / ' if $_->{group};
          a href => "/i$_->{id}", $_->{name};
@@ -379,7 +379,7 @@ sub traitindex {
       li mt '_traiti_queue_empty' if !@$r;
       for (@$r) {
         li;
-         txt $self->{l10n}->age($_->{added});
+         txt fmtage $_->{added};
          txt ' ';
          b class => 'grayedout', $_->{groupname}.' / ' if $_->{group};
          a href => "/i$_->{id}", $_->{name};

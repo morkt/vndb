@@ -190,7 +190,7 @@ sub votelist {
       Tr;
        td class => 'tc1';
         input type => 'checkbox', name => 'vid', value => $l->{vid} if $own;
-        txt ' '.$self->{l10n}->date($l->{date});
+        txt ' '.fmtdate $l->{date};
        end;
        td class => 'tc2', fmtvote $l->{vote};
        td class => 'tc3';
@@ -299,7 +299,7 @@ sub wishlist {
         a href => "/v$i->{vid}", title => $i->{original}||$i->{title}, ' '.shorten $i->{title}, 70;
        end;
        td class => 'tc2', $self->{wishlist_status}[$i->{wstat}];
-       td class => 'tc3', $self->{l10n}->date($i->{added}, 'compact');
+       td class => 'tc3', fmtdate $i->{added}, 'compact';
       end;
     },
     $own ? (footer => sub {
@@ -471,7 +471,7 @@ sub _vnlist_browse {
           input type => 'checkbox', name => 'rid', value => $_->{rid} if $own;
          end;
          td class => 'tc3';
-          lit $self->{l10n}->datestr($_->{released});
+          lit fmtdatestr $_->{released};
          end;
          td class => 'tc4';
           cssicon "lang $_", $self->{languages}{$_} for @{$_->{languages}};

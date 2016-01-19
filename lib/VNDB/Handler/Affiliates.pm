@@ -70,7 +70,7 @@ sub list {
          td class => 'tc2', $l->{version} || '<default>';
          td class => 'tc3', $l->{hidden} ? 'YES' : 'no';
          td class => 'tc4', $l->{priority};
-         td class => 'tc5', sprintf '%s / %s', $l->{price}, $l->{lastfetch} ? $self->{l10n}->age($l->{lastfetch}) : '-';
+         td class => 'tc5', sprintf '%s / %s', $l->{price}, $l->{lastfetch} ? fmtage($l->{lastfetch}) : '-';
          td class => 'tc6';
           a href => $l->{url}, 'link';
           txt ' | ';

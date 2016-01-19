@@ -71,7 +71,7 @@ sub thread {
         if(!$_->{hidden}) {
           lit ' '.mt "_thread_byuser", $_;
           br;
-          lit $self->{l10n}->date($_->{date}, 'full');
+          txt fmtdate $_->{date}, 'full';
         }
        end;
        td class => 'tc2';
@@ -300,7 +300,7 @@ sub edit {
                          '_postedit_edit';
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlForm({ frm => $frm, action => $url }, 'postedit' => [$title,
-    [ static => label => mt('_postedit_form_username'), content => $self->{l10n}->userstr($p ? ($p->{uid}, $p->{username}) : ($self->authInfo->{id}, $self->authInfo->{username})) ],
+    [ static => label => mt('_postedit_form_username'), content => fmtuser($p ? ($p->{uid}, $p->{username}) : ($self->authInfo->{id}, $self->authInfo->{username})) ],
     !$tid || $num == 1 ? (
       [ input  => short => 'title', name => mt('_postedit_form_title') ],
       [ input  => short => 'boards',  name => mt('_postedit_form_boards') ],
@@ -559,8 +559,8 @@ sub search {
         Tr;
          td class => 'tc1_1'; a href => $link, 't'.$l->{tid}; end;
          td class => 'tc1_2'; a href => $link, '.'.$l->{num}; end;
-         td class => 'tc2', $self->{l10n}->date($l->{date});
-         td class => 'tc3'; lit $self->{l10n}->userstr($l->{uid}, $l->{username}); end;
+         td class => 'tc2', fmtdate $l->{date};
+         td class => 'tc3'; lit fmtuser $l->{uid}, $l->{username}; end;
          td class => 'tc4';
           div class => 'title';
            a href => $link, $l->{title};
@@ -618,14 +618,12 @@ sub _threadlist {
        end;
        td class => 'tc2', $o->{count}-1;
        td class => 'tc3';
-        lit $self->{l10n}->userstr($o->{fuid}, $o->{fusername});
+        lit fmtuser $o->{fuid}, $o->{fusername};
        end;
        td class => 'tc4';
-        lit $self->{l10n}->userstr($o->{luid}, $o->{lusername});
+        lit fmtuser $o->{luid}, $o->{lusername};
         lit ' @ ';
-        a href => "/t$o->{id}.$o->{count}";
-         lit $self->{l10n}->date($o->{ldate}, 'full');
-        end;
+        a href => "/t$o->{id}.$o->{count}", fmtdate $o->{ldate}, 'full';
        end;
       end 'tr';
     }

@@ -79,17 +79,6 @@ en : masterpiece
 # used in many places
 
 
-# Date/time format
-# See http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html for the formatting codes
-# (I recommend to keep the yyyy-mm-dd format, though, see http://www.cl.cam.ac.uk/~mgk25/iso-time.html)
-
-:_datetime_compact
-en : %Y-%m-%d
-
-:_datetime_full
-en : %Y-%m-%d at %R
-
-
 # Months (used on char pages in _charp_bday_fmt)
 
 :_month_1
@@ -127,30 +116,6 @@ en : November
 
 :_month_12
 en : December
-
-
-# Age display
-
-:_age_years
-en : [_1] [quant,_1,year,years] ago
-
-:_age_months
-en : [_1] [quant,_1,month,months] ago
-
-:_age_weeks
-en : [_1] [quant,_1,week,weeks] ago
-
-:_age_days
-en : [_1] [quant,_1,day,days] ago
-
-:_age_hours
-en : [_1] [quant,_1,hour,hours] ago
-
-:_age_min
-en : [_1] min ago
-
-:_age_sec
-en : [_1] sec ago
 
 
 # Age ratings

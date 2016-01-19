@@ -146,9 +146,9 @@ sub htmlBrowseHist {
        td class => 'tc1_2';
         a href => $revurl, ".$i->{rev}";
        end;
-       td class => 'tc2', $self->{l10n}->date($i->{added}, 'full');
+       td class => 'tc2', fmtdate $i->{added}, 'full';
        td class => 'tc3';
-        lit $self->{l10n}->userstr($i);
+        lit fmtuser $i;
        end;
        td class => 'tc4';
         a href => $revurl, title => $i->{ioriginal}, shorten $i->{ititle}, 80;
@@ -206,7 +206,7 @@ sub htmlBrowseVN {
           for (reverse sort @{$l->{c_languages}});
        end;
        td class => 'tc4';
-        lit $self->{l10n}->datestr($l->{c_released});
+        lit fmtdatestr $l->{c_released};
        end;
        td class => 'tc5', sprintf '%.2f', ($l->{c_popularity}||0)*100;
        td class => 'tc6';

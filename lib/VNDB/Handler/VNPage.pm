@@ -161,7 +161,7 @@ my @rel_cols = (
     column_string => '_relinfo_released',
     button_string => '_relinfo_released',
     default       => 1,
-    draw          => sub { lit $TUWF::OBJ->{l10n}->datestr($_[0]{released}) },
+    draw          => sub { lit fmtdatestr $_[0]{released} },
   }, { # Age rating
     id            => 'min',
     sort_field    => 'minage',
@@ -718,7 +718,6 @@ sub _affiliate_links {
   return if !@$links;
 
   $links = [ sort { $b->{priority}||$self->{affiliates}[$b->{affiliate}]{default_prio} <=> $a->{priority}||$self->{affiliates}[$a->{affiliate}]{default_prio} } @$links ];
-  my $en = VNDB::L10N->get_handle('en');
 
   Tr id => 'buynow';
    td 'Available at';
@@ -736,7 +735,7 @@ sub _affiliate_links {
          || $version;
        txt " at $f->{name}";
        abbr class => 'pricenote', title =>
-           $link->{lastfetch} ? sprintf('Last updated: %s.', $en->age($link->{lastfetch})) : '', " for $link->{price}"
+           $link->{lastfetch} ? sprintf('Last updated: %s.', fmtage($link->{lastfetch})) : '', " for $link->{price}"
          if $link->{price};
        txt ' »';
       end;
@@ -779,7 +778,7 @@ sub _releases {
       end;
       for my $rel (grep grep($_ eq $l, @{$_->{languages}}), @$r) {
         Tr;
-         td class => 'tc1'; lit $self->{l10n}->datestr($rel->{released}); end;
+         td class => 'tc1'; lit fmtdatestr $rel->{released}; end;
          td class => 'tc2', $rel->{minage} < 0 ? '' : minage $rel->{minage};
          td class => 'tc3';
           for (sort @{$rel->{platforms}}) {

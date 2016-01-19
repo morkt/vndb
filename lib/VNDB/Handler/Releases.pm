@@ -51,7 +51,7 @@ sub page {
       [ catalog    => serialize => sub { $_[0]||mt '_revision_empty' } ],
       [ languages  => join => ', ', split => sub { map $self->{languages}{$_}, @{$_[0]} } ],
       [ 'website' ],
-      [ released   => htmlize   => sub { $self->{l10n}->datestr($_[0]) } ],
+      [ released   => htmlize   => \&fmtdatestr ],
       [ minage     => serialize => \&minage ],
       [ notes      => diff => qr/[ ,\n\.]/ ],
       [ platforms  => join => ', ', split => sub { map $self->{platforms}{$_}, @{$_[0]} } ],
@@ -182,7 +182,7 @@ sub _infotable {
    Tr;
     td mt '_relinfo_released';
     td;
-     lit $self->{l10n}->datestr($r->{released});
+     lit fmtdatestr $r->{released};
     end;
    end;
 
@@ -520,7 +520,7 @@ sub browse {
       my($s, $n, $l) = @_;
       Tr;
        td class => 'tc1';
-        lit $self->{l10n}->datestr($l->{released});
+        lit fmtdatestr $l->{released};
        end;
        td class => 'tc2', $l->{minage} < 0 ? '' : minage $l->{minage};
        td class => 'tc3';

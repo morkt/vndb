@@ -54,7 +54,7 @@ sub userpage {
 
     Tr;
      td mt '_userpage_registered';
-     td $self->{l10n}->date($u->{registered});
+     td fmtdate $u->{registered};
     end;
 
     Tr;
@@ -504,7 +504,7 @@ sub posts {
       Tr;
        td class => 'tc1'; a href => "/t$l->{tid}.$l->{num}", 't'.$l->{tid}; end;
        td class => 'tc2'; a href => "/t$l->{tid}.$l->{num}", '.'.$l->{num}; end;
-       td class => 'tc3', $self->{l10n}->date($l->{date});
+       td class => 'tc3', fmtdate $l->{date};
        td class => 'tc4';
         a href => "/t$l->{tid}.$l->{num}", $l->{title};
         b class => 'grayedout'; lit bb2html $l->{msg}, 150; end;
@@ -613,7 +613,7 @@ sub list {
        td class => 'tc1';
         a href => '/u'.$l->{id}, $l->{username};
        end;
-       td class => 'tc2', $self->{l10n}->date($l->{registered});
+       td class => 'tc2', fmtdate $l->{registered};
        td class => 'tc3'.($l->{hide_list} && $self->authCan('usermod') ? ' linethrough' : '');
         lit $l->{hide_list} && !$self->authCan('usermod') ? '-' : !$l->{c_votes} ? 0 :
           qq|<a href="/u$l->{id}/votes">$l->{c_votes}</a>|;
@@ -714,7 +714,7 @@ sub notifies {
           input type => 'checkbox', name => 'notifysel', value => "$l->{id}";
          end;
          td class => 'tc2', mt "_usern_type_$l->{ntype}";
-         td class => 'tc3', $self->{l10n}->age($l->{date});
+         td class => 'tc3', fmtage $l->{date};
          td class => 'tc4';
           a href => "/u$uid/notify/$l->{id}", "$l->{ltype}$l->{iid}".($l->{subid}?".$l->{subid}":'');
          end;

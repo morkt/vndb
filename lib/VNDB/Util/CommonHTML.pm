@@ -394,7 +394,7 @@ sub htmlVoteStats {
           }
          end;
          td fmtvote $_->{vote};
-         td $self->{l10n}->date($_->{date});
+         td fmtdate $_->{date};
         end;
       }
      end 'table';

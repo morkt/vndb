@@ -227,7 +227,7 @@ sub tagedit {
     [ input    => short => 'name',     name => mt '_tagedit_frm_name' ],
     $self->authCan('tagmod') ? (
       $tag ?
-        [ static   => label => mt('_tagedit_frm_by'), content => $self->{l10n}->userstr($t->{addedby}, $t->{username}) ] : (),
+        [ static   => label => mt('_tagedit_frm_by'), content => fmtuser($t->{addedby}, $t->{username}) ] : (),
       [ select   => short => 'state',    name => mt('_tagedit_frm_state'), options => [
         map [$_, mt '_tagedit_frm_state'.$_], 0..2 ] ],
       [ checkbox => short => 'meta',     name => mt '_tagedit_frm_meta' ],
@@ -328,7 +328,7 @@ sub taglist {
       row => sub {
         my($s, $n, $l) = @_;
         Tr;
-         td class => 'tc1', $self->{l10n}->age($l->{added});
+         td class => 'tc1', fmtage $l->{added};
          td class => 'tc3';
           a href => "/g$l->{id}", $l->{name};
           if($f->{t} == -1) {
@@ -434,9 +434,7 @@ sub taglinks {
     row      => sub {
       my($s, $n, $l) = @_;
       Tr;
-       td class => 'tc1';
-        lit $self->{l10n}->date($l->{date});
-       end;
+       td class => 'tc1', fmtdate $l->{date};
        td class => 'tc2';
         a href => $url->(u=>$l->{uid}), class => 'setfil', '> ' if !$f->{u};
         a href => "/u$l->{uid}", $l->{username};
@@ -642,7 +640,7 @@ sub tagindex {
      ul;
       for (@$r) {
         li;
-         txt $self->{l10n}->age($_->{added});
+         txt fmtage $_->{added};
          txt ' ';
          a href => "/g$_->{id}", $_->{name};
         end;
@@ -673,7 +671,7 @@ sub tagindex {
       li mt '_tagidx_queue_empty' if !@$r;
       for (@$r) {
         li;
-         txt $self->{l10n}->age($_->{added});
+         txt fmtage $_->{added};
          txt ' ';
          a href => "/g$_->{id}", $_->{name};
         end;
