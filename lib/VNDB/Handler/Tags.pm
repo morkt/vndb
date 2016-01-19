@@ -165,12 +165,9 @@ sub tagedit {
     my @parents = split /[\t\s]*,[\t\s]*/, $frm->{parents};
     my @merge = split /[\t\s]*,[\t\s]*/, $frm->{merge};
     if(!$frm->{_err}) {
-      my $c = $self->dbTagGet(name => $frm->{name}, noid => $tag);
-      push @{$frm->{_err}}, [ 'name', 'tagexists', $c->[0] ] if @$c;
-      for (@aliases) {
-        $c = $self->dbTagGet(name => $_, noid => $tag);
-        push @{$frm->{_err}}, [ 'alias', 'tagexists', $c->[0] ] if @$c;
-      }
+      my @dups = @{$self->dbTagGet(name => $frm->{name}, noid => $tag)};
+      push @dups, @{$self->dbTagGet(name => $_, noid => $tag)} for @aliases;
+      push @{$frm->{_err}}, \sprintf 'Tag <a href="/g%d">%s</a> already exists!', $_->{id}, xml_escape $_->{name} for @dups;
       for(@parents, @merge) {
         my $c = $self->dbTagGet(name => $_, noid => $tag);
         push @{$frm->{_err}}, [ 'parents', 'func', [ 0, mt '_tagedit_err_notfound', $_ ]] if !@$c;

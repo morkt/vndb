@@ -36,7 +36,7 @@ sub htmlHeader { # %options->{ title, noindex, search, feeds, svg }
     div id => 'bgright', ' ';
     div id => 'header';
      h1;
-      a href => '/', lc mt '_site_title';
+      a href => '/', 'the visual novel database';
      end;
     end;
 
@@ -53,27 +53,27 @@ sub _menu {
 
    div class => 'menubox';
     h2;
-     txt mt '_menu';
+     txt 'Menu';
     end;
     div;
-     a href => '/',      mt '_menu_home'; br;
-     a href => '/v/all', mt '_menu_vn'; br;
-     b class => 'grayedout', '> '; a href => '/g', mt '_menu_tags'; br;
-     a href => '/r',     mt '_menu_releases'; br;
-     a href => '/p/all', mt '_menu_producers'; br;
-     a href => '/s/all', mt '_menu_staff'; br;
-     a href => '/c/all', mt '_menu_characters'; br;
-     b class => 'grayedout', '> '; a href => '/i', mt '_menu_traits'; br;
-     a href => '/u/all', mt '_menu_users'; br;
-     a href => '/hist',  mt '_menu_recent_changes'; br;
-     a href => '/t',     mt '_menu_discussion_board'; br;
-     a href => '/d6',    mt '_menu_faq'; br;
-     a href => '/v/rand', mt '_menu_randvn';
+     a href => '/',      'Home'; br;
+     a href => '/v/all', 'Visual novels'; br;
+     b class => 'grayedout', '> '; a href => '/g', 'Tags'; br;
+     a href => '/r',     'Releases'; br;
+     a href => '/p/all', 'Producers'; br;
+     a href => '/s/all', 'Staff'; br;
+     a href => '/c/all', 'Characters'; br;
+     b class => 'grayedout', '> '; a href => '/i', 'Traits'; br;
+     a href => '/u/all', 'Users'; br;
+     a href => '/hist',  'Recent changes'; br;
+     a href => '/t',     'Discussion board'; br;
+     a href => '/d6',    'FAQ'; br;
+     a href => '/v/rand','Random visual novel';
     end;
     form action => '/v/all', method => 'get', id => 'search';
      fieldset;
       legend 'Search';
-      input type => 'text', class => 'text', id => 'sq', name => 'sq', value => $o{search}||'', placeholder => mt('_menu_emptysearch');
+      input type => 'text', class => 'text', id => 'sq', name => 'sq', value => $o{search}||'', placeholder => 'search';
       input type => 'submit', class => 'submit', value => 'Search';
      end;
     end;
@@ -87,42 +87,48 @@ sub _menu {
        a href => $uid, ucfirst $self->authInfo->{username};
       end;
       div;
-       a href => "$uid/edit", mt '_menu_myprofile'; br;
-       a href => "$uid/list", mt '_menu_myvnlist'; br;
-       a href => "$uid/votes",mt '_menu_myvotes'; br;
-       a href => "$uid/wish", mt '_menu_mywishlist'; br;
-       a href => "$uid/notifies", $nc ? (class => 'notifyget') : (), mt('_menu_mynotifications').($nc?" ($nc)":''); br;
-       a href => "$uid/hist", mt '_menu_mychanges'; br;
-       a href => '/g/links?u='.$self->authInfo->{id}, mt '_menu_mytags'; br;
+       a href => "$uid/edit", 'My Profile'; br;
+       a href => "$uid/list", 'My Visual Novel List'; br;
+       a href => "$uid/votes",'My Votes'; br;
+       a href => "$uid/wish", 'My Wishlist'; br;
+       a href => "$uid/notifies", $nc ? (class => 'notifyget') : (), 'My Notifications'.($nc?" ($nc)":''); br;
+       a href => "$uid/hist", 'My Recent Changes'; br;
+       a href => '/g/links?u='.$self->authInfo->{id}, 'My Tags'; br;
        br;
        if($self->authCan('edit')) {
-         a href => '/v/add',    mt '_menu_addvn'; br;
-         a href => '/p/new',    mt '_menu_addproducer'; br;
-         a href => '/s/new',    mt '_menu_addstaff'; br;
-         a href => '/c/new',    mt '_menu_addcharacter'; br;
+         a href => '/v/add',    'Add Visual Novel'; br;
+         a href => '/p/new',    'Add Producer'; br;
+         a href => '/s/new',    'Add Staff'; br;
+         a href => '/c/new',    'Add Character'; br;
        }
        br;
-       a href => "$uid/logout", mt '_menu_logout';
+       a href => "$uid/logout", 'Logout';
       end;
     } else {
-      h2 mt '_menu_user';
+      h2 'User menu';
       div;
        my $ref = uri_escape $self->reqPath().$self->reqQuery();
-       a href => "/u/login?ref=$ref", mt '_menu_login'; br;
-       a href => '/u/newpass', mt '_menu_newpass'; br;
-       a href => '/u/register', mt '_menu_register'; br;
+       a href => "/u/login?ref=$ref", 'Login'; br;
+       a href => '/u/newpass', 'Password reset'; br;
+       a href => '/u/register', 'Register'; br;
       end;
     }
    end 'div'; # /menubox
 
    div class => 'menubox';
-    h2 mt '_menu_dbstats';
+    h2 'Database Statistics';
     div;
      dl;
-      for (qw|vn releases producers chars staff tags traits users threads posts|) {
-        dt mt "_menu_stat_$_";
-        dd $self->{stats}{$_};
-      }
+      dt 'Visual Novels';   dd $self->{stats}{vn};
+      dt 'Releases';        dd $self->{stats}{releases};
+      dt 'Producers';       dd $self->{stats}{producers};
+      dt 'Characters';      dd $self->{stats}{chars};
+      dt 'Staff';           dd $self->{stats}{staff};
+      dt 'VN Tags';         dd $self->{stats}{tags};
+      dt 'Character Traits';dd $self->{stats}{traits};
+      dt 'Users';           dd $self->{stats}{users};
+      dt 'Threads';         dd $self->{stats}{threads};
+      dt 'Posts';           dd $self->{stats}{posts};
      end;
      clearfloat;
     end;
@@ -144,13 +150,13 @@ sub htmlFooter { # %options => { pref_code => 1 }
       }
 
       txt "vndb $self->{version} | ";
-      a href => '/d7', mt '_footer_aboutus';
+      a href => '/d7', 'about us';
       txt ' | ';
       a href => 'irc://irc.synirc.net/vndb', '#vndb';
       txt ' | ';
       a href => "mailto:$self->{admin_email}", $self->{admin_email};
       txt ' | ';
-      a href => $self->{source_url}, mt '_footer_source';
+      a href => $self->{source_url}, 'source';
      end;
     end 'div'; # /maincontent
 

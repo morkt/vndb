@@ -87,10 +87,6 @@ sub authLogout {
 
   $self->resRedirect('/', 'temp');
   $self->resCookie(auth => undef);
-
-  # set l10n cookie if the user has a preferred language set
-  my $l10n = $self->authPref('l10n');
-  $self->resCookie(l10n => $l10n, expires => time()+31536000) if $l10n; # keep 1 year
 }
 
 
@@ -204,12 +200,12 @@ sub authCheckCode {
 sub _incorrectcode {
   my $self = shift;
   $self->resInit;
-  $self->htmlHeader(title => mt '_formcode_title', noindex => 1);
+  $self->htmlHeader(title => 'Validation code expired', noindex => 1);
 
   div class => 'mainbox';
-   h1 mt '_formcode_title';
+   h1 'Validation code expired';
    div class => 'warning';
-    p mt '_formcode_msg';
+    p 'Please hit the back-button of your browser, refresh the page and try again.';
    end;
   end;
 

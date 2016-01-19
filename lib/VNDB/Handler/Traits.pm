@@ -3,7 +3,7 @@ package VNDB::Handler::Traits;
 
 use strict;
 use warnings;
-use TUWF ':html', ':xml', 'html_escape';
+use TUWF ':html', ':xml', 'html_escape', 'xml_escape';
 use VNDB::Func;
 
 
@@ -158,12 +158,9 @@ sub traitedit {
       }
     }
     if(!$frm->{_err}) {
-      my $c = $self->dbTraitGet(name => $frm->{name}, noid => $trait, group => $group);
-      push @{$frm->{_err}}, [ 'name', 'traitexists', $c->[0] ] if @$c;
-      for (split /[\t\s]*\n[\t\s]*/, $frm->{alias}) {
-        $c = $self->dbTraitGet(name => $_, noid => $trait, group => $group);
-        push @{$frm->{_err}}, [ 'alias', 'traitexists', $c->[0] ] if @$c;
-      }
+      my @dups = @{$self->dbTraitGet(name => $frm->{name}, noid => $trait, group => $group)};
+      push @dups, @{$self->dbTraitGet(name => $_, noid => $trait, group => $group)} for split /[\t\s]*\n[\t\s]*/, $frm->{alias};
+      push @{$frm->{_err}}, \sprintf 'Trait <a href="/c%d">%s</a> already exists within the same group.', $_->{id}, xml_escape $_->{name} for @dups;
     }
 
     if(!$frm->{_err}) {

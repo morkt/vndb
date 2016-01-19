@@ -35,29 +35,29 @@ sub page {
   if($rev) {
     my $prev = $rev && $rev > 1 && $self->dbCharGetRev(id => $id, rev => $rev-1, what => 'extended traits vns')->[0];
     $self->htmlRevision('c', $prev, $r,
-      [ name      => diff => 1 ],
-      [ original  => diff => 1 ],
-      [ alias     => diff => qr/[ ,\n\.]/ ],
-      [ desc      => diff => qr/[ ,\n\.]/ ],
-      [ gender    => serialize => sub { $self->{genders}{$_[0]} } ],
-      [ b_month   => serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ b_day     => serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ s_bust    => serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ s_waist   => serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ s_hip     => serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ height    => serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ weight    => serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ bloodt    => serialize => sub { $self->{blood_types}{$_[0]} } ],
-      [ main      => htmlize => sub { $_[0] ? sprintf '<a href="/c%d">c%d</a>', $_[0], $_[0] : mt '_revision_empty' } ],
-      [ main_spoil=> serialize => sub { mt "_spoil_$_[0]" } ],
-      [ image     => htmlize => sub {
+      [ name      => 'Name',          diff => 1 ],
+      [ original  => 'Original name', diff => 1 ],
+      [ alias     => 'Aliases',       diff => qr/[ ,\n\.]/ ],
+      [ desc      => 'Description',   diff => qr/[ ,\n\.]/ ],
+      [ gender    => 'Gender',        serialize => sub { $self->{genders}{$_[0]} } ],
+      [ b_month   => 'Birthday/month',serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ b_day     => 'Birthday/day',  serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ s_bust    => 'Bust',          serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ s_waist   => 'Waist',         serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ s_hip     => 'Hip',           serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ height    => 'Height',        serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ weight    => 'Weight',        serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ bloodt    => 'Blood type',    serialize => sub { $self->{blood_types}{$_[0]} } ],
+      [ main      => 'Main character',htmlize => sub { $_[0] ? sprintf '<a href="/c%d">c%d</a>', $_[0], $_[0] : mt '_revision_empty' } ],
+      [ main_spoil=> 'Spoiler',       serialize => sub { mt "_spoil_$_[0]" } ],
+      [ image     => 'Image', htmlize => sub {
         return $_[0] ? sprintf '<img src="%s" />', imgurl(ch => $_[0]) : mt '_chdiff_image_none';
       }],
-      [ traits    => join => '<br />', split => sub {
+      [ traits    => 'Traits', join => '<br />', split => sub {
         map sprintf('%s<a href="/i%d">%s</a> (%s)', $_->{group}?qq|<b class="grayedout">$_->{groupname} / </b> |:'',
             $_->{tid}, $_->{name}, mt("_spoil_$_->{spoil}")), @{$_[0]}
       }],
-      [ vns       => join => '<br />', split => sub {
+      [ vns       => 'Visual novels', join => '<br />', split => sub {
         map sprintf('<a href="/v%d">v%d</a> %s %s (%s)', $_->{vid}, $_->{vid},
           $_->{rid}?sprintf('[<a href="/r%d">r%d</a>]', $_->{rid}, $_->{rid}):'',
           $self->{char_roles}{$_->{role}}, mt("_spoil_$_->{spoil}")), @{$_[0]};
@@ -314,8 +314,10 @@ sub edit {
     # validate main character
     if(!$frm->{_err} && $frm->{main}) {
       my $m = $self->dbCharGet(id => $frm->{main}, what => 'extended')->[0];
-      push @{$frm->{_err}}, 'mainchar' if !$m || $m->{main} || $r && !$copy &&
-        ($m->{id} == $r->{id} || $self->dbCharGet(instance => $r->{id})->[0]);
+      push @{$frm->{_err}}, 'Invalid main character. Make sure the ID is correct,'
+          .' that the main character itself is not an instance of an other character,'
+          .' and that this entry is not used as a main character elsewhere.'
+        if !$m || $m->{main} || $r && !$copy && ($m->{id} == $r->{id} || $self->dbCharGet(instance => $r->{id})->[0]);
     }
 
     my(@traits, @vns);
@@ -333,7 +335,7 @@ sub edit {
       # check for changes
       my $same = $id && !grep $frm->{$_} ne $b4{$_}, keys %b4;
       return $self->resRedirect("/c$id", 'post') if !$copy && $same;
-      $frm->{_err} = ['nochanges'] if $copy && $same;
+      $frm->{_err} = ["No changes, please don't create an entry that is fully identical to another"] if $copy && $same;
     }
 
     if(!$frm->{_err}) {
@@ -441,14 +443,14 @@ sub _uploadimage {
 
   if($frm->{_err} || !$self->reqPost('img')) {
     return 0 if !$frm->{image};
-    push @{$frm->{_err}}, 'invalidimgid' if !-s imgpath(ch => $frm->{image});
+    push @{$frm->{_err}}, 'No image with that ID' if !-s imgpath(ch => $frm->{image});
     return $frm->{image};
   }
 
   # perform some elementary checks
   my $imgdata = $self->reqUploadRaw('img');
-  $frm->{_err} = [ 'noimage' ] if $imgdata !~ /^(\xff\xd8|\x89\x50)/; # JPG or PNG headers
-  $frm->{_err} = [ 'toolarge' ] if length($imgdata) > 1024*1024;
+  $frm->{_err} = [ 'Image must be in JPEG or PNG format' ] if $imgdata !~ /^(\xff\xd8|\x89\x50)/; # JPG or PNG headers
+  $frm->{_err} = [ 'Image is too large, only 1MB allowed' ] if length($imgdata) > 1024*1024;
   return undef if $frm->{_err};
 
   # resize/compress

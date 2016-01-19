@@ -168,7 +168,7 @@ sub login {
     if(!$frm->{_err}) {
       $frm->{usrname} = lc $frm->{usrname};
       return if $self->authLogin($frm->{usrname}, $frm->{usrpass}, $ref);
-      $frm->{_err} = [ 'login_failed' ];
+      $frm->{_err} = [ 'Invalid username or password' ];
       $self->dbThrottleSet(norm_ip($self->reqIP), $tm+$self->{login_throttle}[0]);
     }
   }
@@ -204,7 +204,7 @@ sub newpass {
     $frm = $self->formValidate({ post => 'mail', template => 'email' });
     if(!$frm->{_err}) {
       $u = $self->dbUserGet(mail => $frm->{mail})->[0];
-      $frm->{_err} = [ 'nomail' ] if !$u || !$u->{id};
+      $frm->{_err} = [ 'No user found with that email address' ] if !$u || !$u->{id};
     }
     if(!$frm->{_err}) {
       my %o;
@@ -264,7 +264,7 @@ sub setpass {
       { post => 'usrpass',  minlength => 4, maxlength => 64, template => 'ascii' },
       { post => 'usrpass2', minlength => 4, maxlength => 64, template => 'ascii' },
     );
-    push @{$frm->{_err}}, 'passmatch' if $frm->{usrpass} ne $frm->{usrpass2};
+    push @{$frm->{_err}}, 'Passwords do not match' if $frm->{usrpass} ne $frm->{usrpass2};
 
     if(!$frm->{_err}) {
       my %o = (email_confirmed => 1);
@@ -298,14 +298,18 @@ sub register {
       { post => 'answer',   template => 'uint' },
     );
     my $num = $self->{stats}{[qw|vn releases producers|]->[ $frm->{type} - 1 ]};
-    push @{$frm->{_err}}, 'notanswer'  if !$frm->{_err} && ($frm->{answer} > $num || $frm->{answer} < $num*0.995);
-    push @{$frm->{_err}}, 'usrexists'  if $frm->{usrname} eq 'anonymous' || !$frm->{_err} && $self->dbUserGet(username => $frm->{usrname})->[0]{id};
-    push @{$frm->{_err}}, 'mailexists' if !$frm->{_err} && $self->dbUserGet(mail => $frm->{mail})->[0]{id};
+    push @{$frm->{_err}}, 'Question was not correctly answered. Are you sure you are a human?'
+      if !$frm->{_err} && ($frm->{answer} > $num || $frm->{answer} < $num*0.995);
+    push @{$frm->{_err}}, 'Someone already has this username, please choose another name'
+      if $frm->{usrname} eq 'anonymous' || !$frm->{_err} && $self->dbUserGet(username => $frm->{usrname})->[0]{id};
+    push @{$frm->{_err}}, 'Someone already registered with that email address'
+      if !$frm->{_err} && $self->dbUserGet(mail => $frm->{mail})->[0]{id};
 
     # Use /32 match for IPv4 and /48 for IPv6. The /48 is fairly broad, so some
     # users may have to wait a bit before they can register...
     my $ip = $self->reqIP;
-    push @{$frm->{_err}}, 'oneaday'    if !$frm->{_err} && $self->dbUserGet(ip => $ip =~ /:/ ? "$ip/48" : $ip, registered => time-24*3600)->[0]{id};
+    push @{$frm->{_err}}, 'You can only register one account from the same IP within 24 hours'
+      if !$frm->{_err} && $self->dbUserGet(ip => $ip =~ /:/ ? "$ip/48" : $ip, registered => time-24*3600)->[0]{id};
 
     if(!$frm->{_err}) {
       my($token, $pass) = $self->authPrepareReset();
@@ -382,9 +386,9 @@ sub edit {
       { post => 'skin',       required => 0, default => $self->{skin_default}, enum => [ keys %{$self->{skins}} ] },
       { post => 'customcss',  required => 0, maxlength => 2000, default => '' },
     );
-    push @{$frm->{_err}}, 'passmatch'
+    push @{$frm->{_err}}, 'Passwords do not match'
       if ($frm->{usrpass} || $frm->{usrpass2}) && (!$frm->{usrpass} || !$frm->{usrpass2} || $frm->{usrpass} ne $frm->{usrpass2});
-    push @{$frm->{_err}}, 'invalidpass'
+    push @{$frm->{_err}}, 'Invalid password'
       if !($self->authInfo->{id} != $u->{id} && $self->authCan('usermod'))
           && ($frm->{usrpass} || $frm->{usrpass2}) && !$self->authCheck($u->{username}, $frm->{curpass});
 

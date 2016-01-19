@@ -34,18 +34,18 @@ sub page {
   if($rev) {
     my $prev = $rev && $rev > 1 && $self->dbStaffGetRev(id => $id, rev => $rev-1, what => 'extended aliases')->[0];
     $self->htmlRevision('s', $prev, $s,
-      [ name      => diff => 1 ],
-      [ original  => diff => 1 ],
-      [ gender    => serialize => sub { $self->{genders}{$_[0]} } ],
-      [ lang      => serialize => sub { "$_[0] ($self->{languages}{$_[0]})" } ],
-      [ l_site    => diff => 1 ],
-      [ l_wp      => htmlize => sub {
+      [ name      => 'Name (romaji)',    diff => 1 ],
+      [ original  => 'Original name',    diff => 1 ],
+      [ gender    => 'Gender',           serialize => sub { $self->{genders}{$_[0]} } ],
+      [ lang      => 'Language',         serialize => sub { "$_[0] ($self->{languages}{$_[0]})" } ],
+      [ l_site    => 'Official page',    diff => 1 ],
+      [ l_wp      => 'Wikipedia link',   htmlize => sub {
         $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
       }],
-      [ l_twitter => diff => 1 ],
-      [ l_anidb   => serialize => sub { $_[0] // '' } ],
-      [ desc      => diff => qr/[ ,\n\.]/ ],
-      [ aliases   => join => '<br />', split => sub {
+      [ l_twitter => 'Twitter account',  diff => 1 ],
+      [ l_anidb   => 'AniDB creator ID', serialize => sub { $_[0] // '' } ],
+      [ desc      => 'Description',      diff => qr/[ ,\n\.]/ ],
+      [ aliases   => 'Aliases',          join => '<br />', split => sub {
         map xml_escape(sprintf('%s%s', $_->{name}, $_->{original} ? ' ('.$_->{original}.')' : '')), @{$_[0]};
       }],
     );
@@ -229,7 +229,8 @@ sub edit {
 
       # Make sure no aliases that have been linked to a VN are removed.
       my %new_aliases = map +($_, 1), grep $_, $frm->{primary}, map $_->{aid}, @{$frm->{aliases}};
-      $frm->{_err} = [ 'usedalias' ] if grep !$new_aliases{$_->{aid}}, @{$s->{roles}}, @{$self->{cast}};
+      $frm->{_err} = [ "Can't remove an alias that is still linked to a VN." ]
+        if grep !$new_aliases{$_->{aid}}, @{$s->{roles}}, @{$self->{cast}};
     }
 
     if(!$frm->{_err}) {

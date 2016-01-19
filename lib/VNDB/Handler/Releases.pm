@@ -38,29 +38,29 @@ sub page {
       what => 'vn extended producers platforms media changes'
     )->[0];
     $self->htmlRevision('r', $prev, $r,
-      [ vn         => join => '<br />', split => sub {
+      [ vn         => 'Relations',       join => '<br />', split => sub {
         map sprintf('<a href="/v%d" title="%s">%s</a>', $_->{vid}, $_->{original}||$_->{title}, shorten $_->{title}, 50), @{$_[0]};
       } ],
-      [ 'type' ],
-      [ patch      => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
-      [ freeware   => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
-      [ doujin     => serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
-      [ title      => diff => 1 ],
-      [ original   => diff => 1 ],
-      [ gtin       => serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ catalog    => serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ languages  => join => ', ', split => sub { map $self->{languages}{$_}, @{$_[0]} } ],
-      [ 'website' ],
-      [ released   => htmlize   => \&fmtdatestr ],
-      [ minage     => serialize => \&minage ],
-      [ notes      => diff => qr/[ ,\n\.]/ ],
-      [ platforms  => join => ', ', split => sub { map $self->{platforms}{$_}, @{$_[0]} } ],
-      [ media      => join => ', ', split => sub { map fmtmedia($_->{medium}, $_->{qty}), @{$_[0]} } ],
-      [ resolution => serialize => sub { $self->{resolutions}[$_[0]][0]; } ],
-      [ voiced     => serialize => sub { $self->{voiced}[$_[0]] } ],
-      [ ani_story  => serialize => sub { $self->{animated}[$_[0]] } ],
-      [ ani_ero    => serialize => sub { $self->{animated}[$_[0]] } ],
-      [ producers  => join => '<br />', split => sub {
+      [ type       => 'Type' ],
+      [ patch      => 'Patch',           serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
+      [ freeware   => 'Freeware',        serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
+      [ doujin     => 'Doujin',          serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
+      [ title      => 'Title (romaji)',  diff => 1 ],
+      [ original   => 'Original title',  diff => 1 ],
+      [ gtin       => 'JAN/UPC/EAN',     serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ catalog    => 'Catalog number',  serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ languages  => 'Language',        join => ', ', split => sub { map $self->{languages}{$_}, @{$_[0]} } ],
+      [ website    => 'Website' ],
+      [ released   => 'Release date',    htmlize   => \&fmtdatestr ],
+      [ minage     => 'Age rating',      serialize => \&minage ],
+      [ notes      => 'Notes',           diff => qr/[ ,\n\.]/ ],
+      [ platforms  => 'Platforms',       join => ', ', split => sub { map $self->{platforms}{$_}, @{$_[0]} } ],
+      [ media      => 'Media',           join => ', ', split => sub { map fmtmedia($_->{medium}, $_->{qty}), @{$_[0]} } ],
+      [ resolution => 'Resolution',      serialize => sub { $self->{resolutions}[$_[0]][0]; } ],
+      [ voiced     => 'Voiced',          serialize => sub { $self->{voiced}[$_[0]] } ],
+      [ ani_story  => 'Story animation', serialize => sub { $self->{animated}[$_[0]] } ],
+      [ ani_ero    => 'Ero animation',   serialize => sub { $self->{animated}[$_[0]] } ],
+      [ producers  => 'Producers',       join => '<br />', split => sub {
         map sprintf('<a href="/p%d" title="%s">%s</a> (%s)', $_->{id}, $_->{original}||$_->{name}, shorten($_->{name}, 50),
           join(', ', $_->{developer} ? mt '_reldiff_developer' :(), $_->{publisher} ? mt '_reldiff_publisher' :())
         ), @{$_[0]};
@@ -341,7 +341,7 @@ sub edit {
           (join(',', sort @{$b4{languages}}) eq join(',', sort @{$frm->{languages}})) &&
           !grep !/^(platforms|producers|vn|languages)$/ && $frm->{$_} ne $b4{$_}, keys %b4;
       return $self->resRedirect("/r$rid", 'post') if !$copy && $same;
-      $frm->{_err} = [ 'nochanges' ] if $copy && $same;
+      $frm->{_err} = [ "No changes, please don't create an entry that is fully identical to another" ] if $copy && $same;
     }
 
     if(!$frm->{_err}) {

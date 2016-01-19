@@ -107,16 +107,16 @@ sub htmlBrowseNavigate {
   my $nc = 5; # max. number of buttons on each side
 
   ul class => 'maintabs browsetabs ' . ($al eq 't' ? 'notfirst' : 'bottom');
-   $p > 2     and ref $np and $tab->(1, 1, '&laquo; '.mt '_browse_first');
+   $p > 2     and ref $np and $tab->(1, 1, '&laquo; first');
    $p > $nc+1 and ref $np and $ell->(1);
    $p > $_    and ref $np and $tab->(1, $p-$_, $p-$_) for (reverse 2..($nc>$p-2?$p-2:$nc-1));
-   $p > 1                 and $tab->(1, $p-1, '&lsaquo; '.mt '_browse_previous');
+   $p > 1                 and $tab->(1, $p-1, '&lsaquo; previous');
 
    my $l = ceil($cnt/$pp)-$p+1;
-   $l > 2     and $tab->(0, $l+$p-1, mt('_browse_last').' &raquo;');
+   $l > 2     and $tab->(0, $l+$p-1, 'last &raquo;');
    $l > $nc+1 and $ell->(0);
    $l > $_    and $tab->(0, $p+$_, $p+$_) for (reverse 2..($nc>$l-2?$l-2:$nc-1));
-   $l > 1     and $tab->(0, $p+1, mt('_browse_next').' &rsaquo;');
+   $l > 1     and $tab->(0, $p+1, 'next &rsaquo;');
   end 'ul';
 }
 
@@ -130,10 +130,10 @@ sub htmlBrowseHist {
     pageurl  => $url,
     class    => 'history',
     header   => [
-      sub { td class => 'tc1_1', mt '_hist_col_rev'; td class => 'tc1_2', ''; },
-      [ mt '_hist_col_date' ],
-      [ mt '_hist_col_user' ],
-      [ mt '_hist_col_page' ],
+      sub { td class => 'tc1_1', 'Rev.'; td class => 'tc1_2', ''; },
+      [ 'Date' ],
+      [ 'User' ],
+      [ 'Page' ],
     ],
     row      => sub {
       my($s, $n, $i) = @_;
@@ -170,15 +170,15 @@ sub htmlBrowseVN {
     pageurl  => "$url;o=$f->{o};s=$f->{s}",
     sorturl  => $url,
     header   => [
-      $tagscore ? [ mt('_vnbrowse_col_score'), 'tagscore', undef, 'tc_s' ] : (),
-      [ mt('_vnbrowse_col_title'),       'title', undef, $tagscore ? 'tc_t' : 'tc1' ],
+      $tagscore ? [ 'Score', 'tagscore', undef, 'tc_s' ] : (),
+      [ 'Title',       'title', undef, $tagscore ? 'tc_t' : 'tc1' ],
       $f->{vnlist} ? [ '',               0,       undef, 'tc7' ] : (),
       $f->{wish}   ? [ '',               0,       undef, 'tc8' ] : (),
       [ '',                              0,       undef, 'tc2' ],
       [ '',                              0,       undef, 'tc3' ],
-      [ mt('_vnbrowse_col_released'),    'rel',   undef, 'tc4' ],
-      [ mt('_vnbrowse_col_popularity'),  'pop',   undef, 'tc5' ],
-      [ mt('_vnbrowse_col_rating'),      'rating', undef, 'tc6' ],
+      [ 'Released',    'rel',   undef, 'tc4' ],
+      [ 'Popularity',  'pop',   undef, 'tc5' ],
+      [ 'Rating',      'rating', undef, 'tc6' ],
     ],
     row     => sub {
       my($s, $n, $l) = @_;

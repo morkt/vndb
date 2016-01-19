@@ -11,7 +11,7 @@ use VNDBUtil;
 our @EXPORT = (@VNDBUtil::EXPORT, qw|
   clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags
   childtags charspoil imgpath imgurl
-  fmtvote fmtmedia fmtvnlen fmtage fmtdatestr fmtdate fmtuser
+  fmtvote fmtmedia fmtvnlen fmtage fmtdatestr fmtdate fmtuser fmtrating
   json_encode json_decode script_json
   form_compare
 |);
@@ -271,6 +271,20 @@ sub fmtdate {
 sub fmtuser {
   my($id,$n) = ref($_[0]) eq 'HASH' ? ($_[0]{uid}||$_[0]{requester}, $_[0]{username}) : @_;
   return !$id ? '[deleted]' : sprintf '<a href="/u%d">%s</a>', $id, xml_escape $n;
+}
+
+# Turn a (natural number) vote into a rating indication
+sub fmtrating {
+  ['worst ever',
+   'awful',
+   'bad',
+   'weak',
+   'so-so',
+   'decent',
+   'good',
+   'very good',
+   'excellent',
+   'masterpiece']->[shift()-1];
 }
 
 

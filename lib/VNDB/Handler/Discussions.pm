@@ -193,11 +193,11 @@ sub edit {
     $frm->{_err} = 1 if $frm->{fullreply};
 
     # check for double-posting
-    push @{$frm->{_err}}, 'doublepost' if !$num && !$frm->{_err} && $self->dbPostGet(
+    push @{$frm->{_err}}, 'Please wait 30 seconds before making another post' if !$num && !$frm->{_err} && $self->dbPostGet(
       uid => $self->authInfo->{id}, tid => $tid, mindate => time - 30, results => 1, $tid ? () : (num => 1))->[0]{num};
 
     # Don't allow regular users to create more than 10 threads a day
-    push @{$frm->{_err}}, 'threadthrottle' if
+    push @{$frm->{_err}}, 'You can only create 5 threads every 24 hours' if
       !$tid && !$self->authCan('boardmod') &&
       @{$self->dbPostGet(uid => $self->authInfo->{id}, mindate => time - 24*3600, num => 1)} >= 5;
 
@@ -207,7 +207,7 @@ sub edit {
       for (split /[ ,]/, $frm->{boards}) {
         my($ty, $id) = ($1, $2) if /^([a-z]{1,2})([0-9]*)$/;
         push @boards, [ $ty, $id ];
-        push @{$frm->{_err}}, [ 'boards', 'wrongboard', $_ ] if
+        push @{$frm->{_err}}, "Wrong board: $_" if
              !$ty || !$self->{discussion_boards}{$ty}
           || $ty eq 'an' && ($id || !$self->authCan('boardmod'))
           || $ty eq 'db' && $id

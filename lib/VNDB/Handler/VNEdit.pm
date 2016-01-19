@@ -148,7 +148,7 @@ sub edit {
       $frm->{alias} = join "\n", map { s/^ +//g; s/ +$//g; $_?($_):() } split /\n/, $frm->{alias};
       # throw error on duplicate/existing aliases
       my %alias = map +(lc($_),1), $frm->{title}, $frm->{original}, map +($_->{title}, $_->{original}), @$r;
-      my @e = map $alias{ lc($_) }++ ? [ 'alias', 'existingalias', $_ ] : (), split /\n/, $frm->{alias};
+      my @e = map $alias{ lc($_) }++ ? "Duplicate alias '$_', or the alias is already used as a release title" : (), split /\n/, $frm->{alias};
       $frm->{_err} = \@e if @e;
     }
     if(!$nosubmit && !$frm->{_err}) {
@@ -210,14 +210,14 @@ sub _uploadimage {
 
   if($frm->{_err} || !$self->reqPost('img')) {
     return 0 if !$frm->{image};
-    push @{$frm->{_err}}, 'invalidimgid' if !-s imgpath(cv => $frm->{image});
+    push @{$frm->{_err}}, 'No image with that ID' if !-s imgpath(cv => $frm->{image});
     return $frm->{image};
   }
 
   # perform some elementary checks
   my $imgdata = $self->reqUploadRaw('img');
-  $frm->{_err} = [ 'noimage' ] if $imgdata !~ /^(\xff\xd8|\x89\x50)/; # JPG or PNG headers
-  $frm->{_err} = [ 'toolarge' ] if length($imgdata) > 5*1024*1024;
+  $frm->{_err} = [ 'Image must be in JPEG or PNG format' ] if $imgdata !~ /^(\xff\xd8|\x89\x50)/; # JPG or PNG headers
+  $frm->{_err} = [ 'Image is too large, only 5MB allowed' ] if length($imgdata) > 5*1024*1024;
   return undef if $frm->{_err};
 
   # resize/compress

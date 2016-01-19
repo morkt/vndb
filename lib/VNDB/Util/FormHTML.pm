@@ -20,37 +20,41 @@ sub htmlFormError {
   return if !$frm->{_err};
   if($mainbox) {
     div class => 'mainbox';
-     h1 mt '_formerr_title';
+     h1 'Error';
   }
   div class => 'warning';
-   h2 mt '_formerr_subtitle';
+   h2 'Form could not be sent:';
    ul;
     for my $e (@{$frm->{_err}}) {
       if(!ref $e) {
-        li; lit mt '_formerr_e_'.$e; end;
+        li $e;
+        next;
+      }
+      if(ref $e eq 'SCALAR') {
+        li; lit $$e; end;
         next;
       }
       my($field, $type, $rule) = @$e;
-      if($type eq 'required') {
-        li; lit mt $field eq 'editsum' ?'_formerr_tpl_editsum' : '_formerr_required', $field; end;
-      }
-      li mt '_formerr_mincount', $field, $rule if $type eq 'mincount';
-      li mt '_formerr_maxcount', $field, $rule if $type eq 'maxcount';
-      li mt '_formerr_minlength', $field, $rule if $type eq 'minlength';
-      li mt '_formerr_maxlength', $field, $rule if $type eq 'maxlength';
-      li mt '_formerr_enum', $field, join ', ', @$rule if $type eq 'enum';
-      li mt '_formerr_wrongboard', $rule if $type eq 'wrongboard';
-      li mt '_formerr_existingalias', $rule if $type eq 'existingalias';
+      ($type, $rule) = ('template', 'editsum') if $type eq 'required' && $field eq 'editsum';
+
+      li "$field is a required field" if $type eq 'required';;
+      li "$field: minimum number of values is $rule" if $type eq 'mincount';
+      li "$field: maximum number of values is $rule" if $type eq 'maxcount';
+      li "$field: should have at least $rule characters" if $type eq 'minlength';
+      li "$field: only $rule characters allowed" if $type eq 'maxlength';
+      li "$field must be one of the following: ".join(', ', @$rule) if $type eq 'enum';
       li $rule->[1] if $type eq 'func' || $type eq 'regex';
       if($type eq 'template') {
-        $rule = 'int' if $rule eq 'num' || $rule eq 'uint' || $rule eq 'page' || $rule eq 'id';
-        li; lit mt "_formerr_tpl_$rule", $field; end;
-      }
-      if($type eq 'tagexists') {
-        li; lit mt '_formerr_tagexists', "/g$rule->{id}", $rule->{name}; end;
-      }
-      if($type eq 'traitexists') {
-        li; lit mt '_formerr_traitexists', "/i$rule->{id}", $rule->{name}; end;
+        li "$field: Invalid number" if $rule eq 'int' || $rule eq 'num' || $rule eq 'uint' || $rule eq 'page' || $rule eq 'id';
+        li "$field: Invalid URL" if $rule eq 'weburl';
+        li "$field: only ASCII characters allowed" if $rule eq 'ascii';
+        li "Invalid email address" if $rule eq 'email';
+        li "$field may only contain lowercase alphanumeric characters and a hyphen" if $rule eq 'uname';
+        li 'Invalid JAN/UPC/EAN' if $rule eq 'gtin';
+        li "$field: Malformed data or invalid input" if $rule eq 'json';
+        if($rule eq 'editsum') {
+          li; lit 'Please read <a href="/d5.4">the guidelines</a> on how to use the edit summary.'; end;
+        }
       }
     }
    end;
@@ -209,7 +213,7 @@ sub htmlForm {
        end;
      }
      li class => 'left';
-      a href => '#all', id => 'jt_sel_all', mt '_form_tab_all';
+      a href => '#all', id => 'jt_sel_all', 'All items';
      end;
     end 'ul';
   }
@@ -238,26 +242,26 @@ sub htmlForm {
         if($self->authCan('dbmod')) {
           input type => 'checkbox', name => 'ihid', id => 'ihid', value => 1,
             tabindex => 10, $options->{frm}{ihid} ? (checked => 'checked') : ();
-          label for => 'ihid', mt '_form_ihid';
+          label for => 'ihid', 'Deleted';
           input type => 'checkbox', name => 'ilock', id => 'ilock', value => 1,
             tabindex => 10, $options->{frm}{ilock} ? (checked => 'checked') : ();
-          label for => 'ilock', mt '_form_ilock';
-          br; txt mt('_form_hidlock_note'); br;
+          label for => 'ilock', 'Locked';
+          br; txt 'Note: edit summary of the last edit should indicate the reason for the deletion.'; br;
         }
 
         # edit summary
         h2;
-         txt mt '_form_editsum';
-         b class => 'standout', ' ('.mt('_inenglish').')';
+         txt 'Edit summary';
+         b class => 'standout', ' (English please!)';
         end;
         textarea name => 'editsum', id => 'editsum', rows => 4, cols => 50, tabindex => 10, $options->{frm}{editsum}||'';
         br;
       }
       if(!$options->{continue}) {
-        input type => 'submit', value => mt('_form_submit'), class => 'submit', tabindex => 10;
+        input type => 'submit', value => 'Submit', class => 'submit', tabindex => 10;
       } else {
-        input type => 'submit', value => mt('_form_continue'), class => 'submit', tabindex => 10;
-        input type => 'submit', name => 'continue_ign', value => mt('_form_continue_ign'),
+        input type => 'submit', value => 'Continue', class => 'submit', tabindex => 10;
+        input type => 'submit', name => 'continue_ign', value => 'Continue and ignore duplicates',
           class => 'submit', style => 'width: auto', tabindex => 10 if $options->{continue} == 2;
       }
      end;

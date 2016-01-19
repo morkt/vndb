@@ -56,17 +56,17 @@ sub page {
   if($rev) {
     my $prev = $rev && $rev > 1 && $self->dbProducerGetRev(id => $pid, rev => $rev-1, what => 'extended relations')->[0];
     $self->htmlRevision('p', $prev, $p,
-      [ type      => serialize => sub { $self->{producer_types}{$_[0]} } ],
-      [ name      => diff => 1 ],
-      [ original  => diff => 1 ],
-      [ alias     => diff => qr/[ ,\n\.]/ ],
-      [ lang      => serialize => sub { "$_[0] ($self->{languages}{$_[0]})" } ],
-      [ website   => diff => 1 ],
-      [ l_wp      => htmlize => sub {
+      [ type      => 'Type',          serialize => sub { $self->{producer_types}{$_[0]} } ],
+      [ name      => 'Name (romaji)', diff => 1 ],
+      [ original  => 'Original name', diff => 1 ],
+      [ alias     => 'Aliases',       diff => qr/[ ,\n\.]/ ],
+      [ lang      => 'Language',      serialize => sub { "$_[0] ($self->{languages}{$_[0]})" } ],
+      [ website   => 'Website',       diff => 1 ],
+      [ l_wp      => 'Wikipedia link',htmlize => sub {
         $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
       }],
-      [ desc      => diff => qr/[ ,\n\.]/ ],
-      [ relations   => join => '<br />', split => sub {
+      [ desc      => 'Description', diff => qr/[ ,\n\.]/ ],
+      [ relations => 'Relations',   join => '<br />', split => sub {
         my @r = map sprintf('%s: <a href="/p%d" title="%s">%s</a>',
           $self->{prod_relations}{$_->{relation}}[1], $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape shorten $_->{name}, 40
         ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
