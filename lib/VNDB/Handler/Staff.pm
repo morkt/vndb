@@ -40,7 +40,7 @@ sub page {
       [ lang      => 'Language',         serialize => sub { "$_[0] ($self->{languages}{$_[0]})" } ],
       [ l_site    => 'Official page',    diff => 1 ],
       [ l_wp      => 'Wikipedia link',   htmlize => sub {
-        $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
+        $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : '[empty]'
       }],
       [ l_twitter => 'Twitter account',  diff => 1 ],
       [ l_anidb   => 'AniDB creator ID', serialize => sub { $_[0] // '' } ],
@@ -68,12 +68,12 @@ sub page {
      end;
     end;
     Tr;
-     td class => 'key', mt '_staff_language';
+     td class => 'key', 'Language';
      td $self->{languages}{$s->{lang}};
     end;
     if(@{$s->{aliases}}) {
       Tr;
-       td class => 'key', mt('_staff_aliases', scalar @{$s->{aliases}});
+       td class => 'key', @{$s->{aliases}} == 1 ? 'Alias' : 'Aliases';
        td;
         table class => 'aliases';
          for my $alias (@{$s->{aliases}}) {
@@ -89,17 +89,17 @@ sub page {
       end;
     }
     my @links = (
-      $s->{l_site} ?    [ 'site',    $s->{l_site} ] : (),
-      $s->{l_wp} ?      [ 'wp',      "http://en.wikipedia.org/wiki/$s->{l_wp}" ] : (),
-      $s->{l_twitter} ? [ 'twitter', "https://twitter.com/$s->{l_twitter}" ] : (),
-      $s->{l_anidb} ?   [ 'anidb',   "http://anidb.net/cr$s->{l_anidb}" ] : (),
+      $s->{l_site} ?    [ 'Official page', $s->{l_site} ] : (),
+      $s->{l_wp} ?      [ 'Wikipedia',    "http://en.wikipedia.org/wiki/$s->{l_wp}" ] : (),
+      $s->{l_twitter} ? [ 'Twitter',      "https://twitter.com/$s->{l_twitter}" ] : (),
+      $s->{l_anidb} ?   [ 'AniDB',        "http://anidb.net/cr$s->{l_anidb}" ] : (),
     );
     if(@links) {
       Tr;
-       td class => 'key', mt '_staff_links';
+       td class => 'key', 'Links';
        td;
         for(@links) {
-          a href => $_->[1], mt "_staff_l_$_->[0]";
+          a href => $_->[1], $_->[0];
           br if $_ != $links[$#links];
         }
        end;
@@ -123,16 +123,16 @@ sub _roles {
   my($self, $s) = @_;
   return if !@{$s->{roles}};
 
-  h1 class => 'boxtitle', mt '_staff_credits';
+  h1 class => 'boxtitle', 'Credits';
   $self->htmlBrowse(
     items    => $s->{roles},
     class    => 'staffroles',
     header   => [
-      [ mt '_staff_col_title' ],
-      [ mt '_staff_col_released' ],
-      [ mt '_staff_col_role' ],
-      [ mt '_staff_col_as' ],
-      [ mt '_staff_col_note' ],
+      [ 'Title' ],
+      [ 'Released' ],
+      [ 'Role' ],
+      [ 'As' ],
+      [ 'Note' ],
     ],
     row     => sub {
       my($r, $n, $l) = @_;
@@ -152,16 +152,16 @@ sub _cast {
   my($self, $s) = @_;
   return if !@{$s->{cast}};
 
-  h1 class => 'boxtitle', mt '_staff_voiced', scalar @{$s->{cast}};
+  h1 class => 'boxtitle', sprintf 'Voiced characters (%d)', scalar @{$s->{cast}};
   $self->htmlBrowse(
     items    => $s->{cast},
     class    => 'staffroles',
     header   => [
-      [ mt '_staff_col_title' ],
-      [ mt '_staff_col_released' ],
-      [ mt '_staff_col_cast' ],
-      [ mt '_staff_col_as' ],
-      [ mt '_staff_col_note' ],
+      [ 'Title' ],
+      [ 'Released' ],
+      [ 'Cast' ],
+      [ 'As' ],
+      [ 'Note' ],
     ],
     row     => sub {
       my($r, $n, $l) = @_;
@@ -208,7 +208,7 @@ sub edit {
       { post => 'lang',          enum      => [ keys %{$self->{languages}} ] },
       { post => 'l_wp',          required  => 0, maxlength => 150,  default => '' },
       { post => 'l_site',        required => 0, template => 'weburl', maxlength => 250, default => '' },
-      { post => 'l_twitter',     required => 0, maxlength => 16, default => '', regex => [ qr/^\S+$/, mt('_staffe_form_tw_err') ] },
+      { post => 'l_twitter',     required => 0, maxlength => 16, default => '', regex => [ qr/^\S+$/, 'Invalid twitter username' ] },
       { post => 'l_anidb',       required => 0, template => 'id', default => undef },
       { post => 'aliases',       template => 'json', json_sort => ['name','orig'], json_fields => [
         { field => 'name', required => 1, maxlength => 200 },
@@ -249,24 +249,24 @@ sub edit {
   $frm->{editsum} //= sprintf 'Reverted to revision s%d.%d', $sid, $rev if $rev;
   $frm->{lang} = 'ja' if !$sid && !defined $frm->{lang};
 
-  my $title = mt $s ? ('_staffe_title_edit', $s->{name}) : '_staffe_title_add';
+  my $title = $s ? "Edit $s->{name}" : 'Add staff member';
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('s', $s, 'edit') if $s;
   $self->htmlEditMessage('s', $s, $title);
   $self->htmlForm({ frm => $frm, action => $s ? "/s$sid/edit" : '/s/new', editsum => 1 },
-  staffe_geninfo => [ mt('_staffe_form_generalinfo'),
+  staffe_geninfo => [ 'General info',
     [ hidden => short => 'name' ],
     [ hidden => short => 'original' ],
     [ hidden => short => 'primary' ],
     [ json   => short => 'aliases' ],
     $sid && @{$s->{aliases}} ?
-      [ static => content => mt('_staffe_form_different') ] : (),
-    [ static => label => mt('_staffe_form_names'), content => sub {
+      [ static => content => 'You may choose a different primary name.' ] : (),
+    [ static => label => 'Names', content => sub {
       table id => 'names';
        thead; Tr;
         td class => 'tc_id'; end;
-        td class => 'tc_name', mt '_staffe_form_name';
-        td class => 'tc_original', mt '_staffe_form_original'; td; end;
+        td class => 'tc_name', 'Name (romaji)';
+        td class => 'tc_original', 'Original'; td; end;
        end; end;
        tbody id => 'alias_tbl';
         # filled with javascript
@@ -274,15 +274,15 @@ sub edit {
       end;
     }],
     [ static => content => '<br />' ],
-    [ text   => name => mt('_staffe_form_note').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 4 ],
-    [ select => name => mt('_staffe_form_gender'),short => 'gender', options => [
+    [ text   => name => 'Staff note<br /><b class="standout">English please!</b>', short => 'desc', rows => 4 ],
+    [ select => name => 'Gender',short => 'gender', options => [
        map [ $_, $self->{genders}{$_} ], qw(unknown m f) ] ],
-    [ select => name => mt('_staffe_form_lang'), short => 'lang',
+    [ select => name => 'Primary language', short => 'lang',
       options => [ map [ $_, "$_ ($self->{languages}{$_})" ], keys %{$self->{languages}} ] ],
-    [ input  => name => mt('_staffe_form_site'), short => 'l_site' ],
-    [ input  => name => mt('_staffe_form_wikipedia'), short => 'l_wp', pre => 'http://en.wikipedia.org/wiki/' ],
-    [ input  => name => mt('_staffe_form_twitter'), short => 'l_twitter' ],
-    [ input  => name => mt('_staffe_form_anidb'), short => 'l_anidb' ],
+    [ input  => name => 'Official page', short => 'l_site' ],
+    [ input  => name => 'Wikipedia link', short => 'l_wp', pre => 'http://en.wikipedia.org/wiki/' ],
+    [ input  => name => 'Twitter username', short => 'l_twitter' ],
+    [ input  => name => 'AniDB creator ID', short => 'l_anidb' ],
     [ static => content => '<br />' ],
   ]);
 
@@ -315,21 +315,21 @@ sub list {
   $quri = '?'.$quri if $quri;
   my $pageurl = "/s/$char$quri";
 
-  $self->htmlHeader(title => mt '_sbrowse_title');
+  $self->htmlHeader(title => 'Browse staff');
 
   form action => '/s/all', 'accept-charset' => 'UTF-8', method => 'get';
    div class => 'mainbox';
-    h1 mt '_sbrowse_title';
+    h1 'Browse staff';
     $self->htmlSearchBox('s', $f->{q});
     p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => "/s/$_$quri", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+      a href => "/s/$_$quri", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? 'ALL' : $_ ? uc $_ : '#';
     }
     end;
 
     p class => 'filselect';
      a id => 'filselect', href => '#s';
-      lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+      lit '<i>&#9656;</i> Filters<i></i>';
      end;
     end;
     input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
@@ -338,9 +338,9 @@ sub list {
 
   $self->htmlBrowseNavigate($pageurl, $f->{p}, $np, 't');
   div class => 'mainbox staffbrowse';
-    h1 mt $f->{q} ? '_sbrowse_searchres' : '_sbrowse_list';
+    h1 $f->{q} ? 'Search results' : 'Staff list';
     if(!@$list) {
-      p mt '_sbrowse_noresults';
+      p 'No results found';
     } else {
       # spread the results over 3 equivalent-sized lists
       my $perlist = @$list/3 < 1 ? 1 : @$list/3;

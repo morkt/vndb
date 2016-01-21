@@ -35,7 +35,7 @@ sub userpage {
   my $votes = $u->{c_votes} && $self->dbVoteStats(uid => $uid);
   my $list_visible = !$u->{hide_list} || ($self->authInfo->{id}||0) == $u->{id} || $self->authCan('usermod');
 
-  my $title = mt '_userpage_title', $u->{username};
+  my $title = "$u->{username}'s profile";
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('u', $u);
   div class => 'mainbox userpage';
@@ -44,7 +44,7 @@ sub userpage {
    table class => 'stripe';
 
     Tr;
-     td class => 'key', mt '_userpage_username';
+     td class => 'key', 'Username';
      td;
       txt ucfirst($u->{username}).' (';
       a href => "/u$uid", "u$uid";
@@ -53,12 +53,12 @@ sub userpage {
     end;
 
     Tr;
-     td mt '_userpage_registered';
+     td 'Registered';
      td fmtdate $u->{registered};
     end;
 
     Tr;
-     td mt '_userpage_edits';
+     td 'Edits';
      td;
       if($u->{c_changes}) {
         a href => "/u$uid/hist", $u->{c_changes};
@@ -69,17 +69,18 @@ sub userpage {
     end;
 
     Tr;
-     td mt '_userpage_votes';
+     td 'Votes';
      td;
       if(!$list_visible) {
-        txt mt '_userpage_hidden';
+        txt 'hidden';
       } elsif($votes) {
         my($total, $count) = (0, 0);
         for (1..@$votes) {
           $count += $votes->[$_-1][0];
           $total += $votes->[$_-1][1];
         }
-        lit mt '_userpage_votes_item', "/u$uid/votes", $count, sprintf '%.2f', $total/$count/10;
+        a href => "/u$uid/votes", $count;
+        txt sprintf ' (%.2f average)', $total/$count/10;
       } else {
         txt '-';
       }
@@ -87,31 +88,36 @@ sub userpage {
     end;
 
     Tr;
-     td mt '_userpage_tags';
+     td 'Tags';
      td;
       if(!$u->{c_tags}) {
         txt '-';
       } else {
-        txt mt '_userpage_tags_item', $u->{c_tags}, $u->{tagcount}, $u->{tagvncount};
-        txt ' ';
-        a href => "/g/links?u=$uid"; lit mt('_userpage_tags_browse').' &raquo;'; end;
+        txt sprintf '%d vote%s on %d distinct tag%s and %d visual novel%s. ',
+          $u->{c_tags},     $u->{c_tags}     == 1 ? '' : 's',
+          $u->{tagcount},   $u->{tagcount}   == 1 ? '' : 's',
+          $u->{tagvncount}, $u->{tagvncount} == 1 ? '' : 's';
+        a href => "/g/links?u=$uid"; lit 'Browse tags &raquo;'; end;
       }
      end;
     end;
 
     Tr;
-     td mt '_userpage_list';
-     td !$list_visible ? mt('_userpage_hidden') :
-       mt('_userpage_list_item', $u->{releasecount}, $u->{vncount});
+     td 'List stats';
+     td !$list_visible ? 'hidden' :
+       sprintf '%d release%s of %d visual novel%s.',
+         $u->{releasecount}, $u->{releasecount} == 1 ? '' : 's',
+         $u->{vncount},      $u->{vncount}      == 1 ? '' : 's';
     end;
 
     Tr;
-     td mt '_userpage_forum';
+     td 'Forum stats';
      td;
-      lit mt '_userpage_forum_item',$u->{postcount}, $u->{threadcount};
+      txt sprintf '%d post%s, %d new thread%s. ',
+        $u->{postcount},   $u->{postcount}   == 1 ? '' : 's',
+        $u->{threadcount}, $u->{threadcount} == 1 ? '' : 's';
       if($u->{postcount}) {
-        txt ' ';
-        a href => "/u$uid/posts"; lit mt('_userpage_forum_browse').' &raquo;'; end;
+        a href => "/u$uid/posts"; lit 'Browse posts &raquo;'; end;
       }
      end;
     end;
@@ -120,7 +126,7 @@ sub userpage {
 
   if($votes && $list_visible) {
     div class => 'mainbox';
-     h1 mt '_userpage_votestats';
+     h1 'Vote statistics';
      $self->htmlVoteStats(u => $u, $votes);
     end;
   }
@@ -128,7 +134,7 @@ sub userpage {
   if($u->{c_changes}) {
     my $list = $self->dbRevisionGet(uid => $uid, results => 5);
     h1 class => 'boxtitle';
-     a href => "/u$uid/hist", mt '_userpage_changes';
+     a href => "/u$uid/hist", 'Recent changes';
     end;
     $self->htmlBrowseHist($list, { p => 1 }, 0, "/u$uid/hist");
   }
@@ -143,12 +149,19 @@ sub login {
 
   my $tm = $self->dbThrottleGet(norm_ip($self->reqIP));
   if($tm-time() > $self->{login_throttle}[1]) {
-    $self->htmlHeader(title => mt '_login_title');
+    $self->htmlHeader(title => 'Login');
     div class => 'mainbox';
-     h1 mt '_login_title';
+     h1 'Login';
      div class => 'warning';
-      h2 mt '_login_throttle_title';
-      p; lit mt '_login_throttle_msg'; end;
+      h2 'Maximum failed login attempts reached.';
+      p;
+       txt 'Login has been temporarily disabled for your IP address. You can wait a few hours and try again,'
+          .' or you can try from a different IP address. If you forgot your password, you can still use the ';
+       a href => '/u/newpass', 'password reset';
+       txt ' functionality. If you still have trouble logging in, send a mail to ';
+       a href => 'mailto:contact@vndb.org', 'contact@vndb.org';
+       txt '.';
+      end;
      end;
     end 'div';
     $self->htmlFooter;
@@ -173,13 +186,13 @@ sub login {
     }
   }
 
-  $self->htmlHeader(noindex => 1, title => mt '_login_title');
-  $self->htmlForm({ frm => $frm, action => '/u/login' }, login => [ mt('_login_title'),
+  $self->htmlHeader(noindex => 1, title => 'Login');
+  $self->htmlForm({ frm => $frm, action => '/u/login' }, login => [ 'Login',
     [ hidden => short => 'ref', value => $ref ],
-    [ input  => short => 'usrname', name => mt '_login_username' ],
-    [ static => content => '<a href="/u/register">'.mt('_login_register').'</a>' ],
-    [ passwd => short => 'usrpass', name => mt '_login_password' ],
-    [ static => content => '<a href="/u/newpass">'.mt('_login_forgotpass').'</a>' ],
+    [ input  => short => 'usrname', name => 'Username' ],
+    [ static => content => '<a href="/u/register">No account yet?</a>' ],
+    [ passwd => short => 'usrpass', name => 'Password' ],
+    [ static => content => '<a href="/u/newpass">Forgot your password?</a>' ],
   ]);
   $self->htmlFooter;
 }
@@ -211,22 +224,28 @@ sub newpass {
       my $token;
       ($token, $o{passwd}) = $self->authPrepareReset();
       $self->dbUserEdit($u->{id}, %o);
-      $self->mail(mt('_newpass_mail_body', $u->{username}, $self->reqBaseURI()."/u$u->{id}/setpass?t=$token"),
+      my $body = sprintf
+         "Hello %s,\n\nYour VNDB.org login has been disabled, you can now set a new password by following the link below:\n\n"
+        ."%s\n\nNow don't forget your password again! :-)\n\nvndb.org",
+        $u->{username}, $self->reqBaseURI()."/u$u->{id}/setpass?t=$token";
+      $self->mail($body,
         To => $frm->{mail},
         From => 'VNDB <noreply@vndb.org>',
-        Subject => mt('_newpass_mail_subject', $u->{username}),
+        Subject => "Password reset for $u->{username}",
       );
       return $self->resRedirect('/u/newpass/sent', 'post');
     }
   }
 
-  $self->htmlHeader(title => mt('_newpass_title'), noindex => 1);
+  $self->htmlHeader(title => 'Forgot password', noindex => 1);
   div class => 'mainbox';
-   h1 mt '_newpass_title';
-   p mt '_newpass_msg';
+   h1 'Forgot password';
+   p 'Forgot your password and can\'t login to VNDB anymore?'
+    .' Don\'t worry! Just give us the email address you used to register on VNDB,'
+    .' and we\'ll send you instructions to set a new password within a few minutes!';
   end;
-  $self->htmlForm({ frm => $frm, action => '/u/newpass' }, newpass => [ mt('_newpass_reset_title'),
-    [ input  => short => 'mail', name => mt '_newpass_mail' ],
+  $self->htmlForm({ frm => $frm, action => '/u/newpass' }, newpass => [ 'Reset password',
+    [ input  => short => 'mail', name => 'Email' ],
   ]);
   $self->htmlFooter;
 }
@@ -235,11 +254,11 @@ sub newpass {
 sub newpass_sent {
   my $self = shift;
   return $self->resRedirect('/') if $self->authInfo->{id};
-  $self->htmlHeader(title => mt('_newpass_sent_title'), noindex => 1);
+  $self->htmlHeader(title => 'New password', noindex => 1);
   div class => 'mainbox';
-   h1 mt '_newpass_sent_title';
+   h1 'New password';
    div class => 'notice';
-    p mt '_newpass_sent_msg';
+    p 'Your password has been reset and instructions to set a new one should reach your mailbox in a few minutes.';
    end;
   end;
   $self->htmlFooter;
@@ -274,11 +293,12 @@ sub setpass {
     }
   }
 
-  $self->htmlHeader(title => mt('_setpass_title', $u->{username}), noindex => 1);
-  $self->htmlForm({ frm => $frm, action => "/u$u->{id}/setpass?t=$t" }, setpass => [ mt('_setpass_title', $u->{username}),
-    [ static => nolabel => 1, content => mt '_setpass_msg' ],
-    [ passwd => short => 'usrpass',  name => mt('_setpass_password') ],
-    [ passwd => short => 'usrpass2', name => mt('_setpass_confirm') ],
+  $self->htmlHeader(title => "Set password for $u->{username}", noindex => 1);
+  $self->htmlForm({ frm => $frm, action => "/u$u->{id}/setpass?t=$t" }, setpass => [ "Set password for $u->{username}",
+    [ static => nolabel => 1, content => 'Now you can set a password for your account.'
+        .' You will be logged in automatically after your password has been saved.' ],
+    [ passwd => short => 'usrpass',  name => 'Password' ],
+    [ passwd => short => 'usrpass2', name => 'Confirm password' ],
   ]);
   $self->htmlFooter;
 }
@@ -299,7 +319,7 @@ sub register {
     );
     my $num = $self->{stats}{[qw|vn releases producers|]->[ $frm->{type} - 1 ]};
     push @{$frm->{_err}}, 'Question was not correctly answered. Are you sure you are a human?'
-      if !$frm->{_err} && ($frm->{answer} > $num || $frm->{answer} < $num*0.995);
+      if !$frm->{_err} && ($frm->{answer} > $num*1.005 || $frm->{answer} < $num*0.995);
     push @{$frm->{_err}}, 'Someone already has this username, please choose another name'
       if $frm->{usrname} eq 'anonymous' || !$frm->{_err} && $self->dbUserGet(username => $frm->{usrname})->[0]{id};
     push @{$frm->{_err}}, 'Someone already registered with that email address'
@@ -314,26 +334,34 @@ sub register {
     if(!$frm->{_err}) {
       my($token, $pass) = $self->authPrepareReset();
       my $uid = $self->dbUserAdd($frm->{usrname}, $pass, $frm->{mail});
-      $self->mail(mt('_register_mail_body', $frm->{usrname}, $self->reqBaseURI()."/u$uid/setpass?t=$token"),
+      my $body = sprintf "Hello %s,\n\n"
+        ."Someone has registered an account on VNDB.org with your email address. To confirm your registration, follow the link below.\n\n"
+        ."%s\n\n"
+        ."If you don't remember creating an account on VNDB.org recently, please ignore this e-mail.\n\n"
+        ."vndb.org",
+        $frm->{usrname}, $self->reqBaseURI()."/u$uid/setpass?t=$token";
+      $self->mail($body,
         To => $frm->{mail},
         From => 'VNDB <noreply@vndb.org>',
-        Subject => mt('_register_mail_subject', $frm->{usrname}),
+        Subject => "Confirm registration for $frm->{usrname}",
       );
       return $self->resRedirect('/u/register/done', 'post');
     }
   }
 
-  $self->htmlHeader(title => mt('_register_title'), noindex => 1);
+  $self->htmlHeader(title => 'Create an account', noindex => 1);
 
   my $type = $frm->{type} || floor(rand 3)+1;
-  $self->htmlForm({ frm => $frm, action => '/u/register' }, register => [ mt('_register_title'),
+  $self->htmlForm({ frm => $frm, action => '/u/register' }, register => [ 'Create an account',
     [ hidden => short => 'type', value => $type ],
-    [ input  => short => 'usrname', name => mt '_register_username' ],
-    [ static => content => mt '_register_username_msg' ],
-    [ input  => short => 'mail', name => mt '_register_mail' ],
-    [ static => content => mt('_register_mail_msg').'<br /><br />' ],
-    [ static => content => '<br /><br />'.mt('_register_question', $type-1) ],
-    [ input  => short => 'answer', name => mt '_register_answer' ],
+    [ input  => short => 'usrname', name => 'Username' ],
+    [ static => content => 'Preferred username. Must be lowercase and can only consist of alphanumeric characters.' ],
+    [ input  => short => 'mail', name => 'Email' ],
+    [ static => content => 'Your email address will only be used in case you lose your password.'
+        .' We will never send spam or newsletters unless you explicitly ask us for it or we get hacked.<br /><br />' ],
+    [ static => content => sprintf '<br /><br />How many %s do we have in the database? (Hint: look to your left)',
+        ['visual novels', 'releases', 'producers']->[$type-1] ],
+    [ input  => short => 'answer', name => 'Answer' ],
   ]);
   $self->htmlFooter;
 }
@@ -342,11 +370,11 @@ sub register {
 sub register_done {
   my $self = shift;
   return $self->resRedirect('/') if $self->authInfo->{id};
-  $self->htmlHeader(title => mt('_register_done_title'), noindex => 1);
+  $self->htmlHeader(title => 'Account created', noindex => 1);
   div class => 'mainbox';
-   h1 mt '_register_done_title';
+   h1 'Account created';
    div class => 'notice';
-    p mt '_register_done_msg';
+    p 'Your account has been created! In a few minutes, you should receive an email with instructions to set your password.';
    end;
   end;
   $self->htmlFooter;
@@ -423,45 +451,48 @@ sub edit {
   $frm->{usrpass} = $frm->{usrpass2} = $frm->{curpass} = '';
 
   # create the page
-  $self->htmlHeader(title => mt('_usere_title'), noindex => 1);
+  $self->htmlHeader(title => 'My account', noindex => 1);
   $self->htmlMainTabs('u', $u, 'edit');
   if($self->reqGet('d')) {
     div class => 'mainbox';
-     h1 mt '_usere_saved_title';
+     h1 'Settings saved';
      div class => 'notice';
-      p mt '_usere_saved_msg';
+      p 'Settings successfully saved.';
      end;
     end
   }
-  $self->htmlForm({ frm => $frm, action => "/u$uid/edit" }, useredit => [ mt('_usere_title'),
-    [ part   => title => mt '_usere_geninfo' ],
+  $self->htmlForm({ frm => $frm, action => "/u$uid/edit" }, useredit => [ 'My account',
+    [ part   => title => 'General info' ],
     $self->authCan('usermod') ? (
-      [ input  => short => 'usrname', name => mt('_usere_username') ],
-      [ select => short => 'perms', name => mt('_usere_perm'), multi => 1, size => (scalar keys %{$self->{permissions}}), options => [
+      [ input  => short => 'usrname', name => 'Username' ],
+      [ select => short => 'perms', name => 'Permissions', multi => 1, size => (scalar keys %{$self->{permissions}}), options => [
         map [ $_, $_ ], sort keys %{$self->{permissions}} ] ],
-      [ check  => short => 'ign_votes', name => mt '_usere_ignvotes' ],
+      [ check  => short => 'ign_votes', name => 'Ignore votes in VN statistics' ],
     ) : (
-      [ static => label => mt('_usere_username'), content => $frm->{usrname} ],
+      [ static => label => 'Username', content => $frm->{usrname} ],
     ),
-    [ input  => short => 'mail', name => mt '_usere_mail' ],
+    [ input  => short => 'mail', name => 'Email' ],
 
-    [ part   => title => mt '_usere_changepass' ],
-    [ static => content => mt '_usere_changepass_msg' ],
-    [ passwd => short => 'curpass', name => mt '_usere_curpass' ],
-    [ passwd => short => 'usrpass', name => mt '_usere_password' ],
-    [ passwd => short => 'usrpass2', name => mt '_usere_confirm' ],
+    [ part   => title => 'Change password' ],
+    [ static => content => 'Leave blank to keep your current password' ],
+    [ passwd => short => 'curpass', name => 'Current Password' ],
+    [ passwd => short => 'usrpass', name => 'New Password' ],
+    [ passwd => short => 'usrpass2', name => 'Confirm password' ],
 
-    [ part   => title => mt '_usere_options' ],
-    [ check  => short => 'hide_list', name => mt '_usere_flist', "/u$uid/list", "/u$uid/votes", "/u$uid/wish" ],
-    [ check  => short => 'show_nsfw', name => mt '_usere_fnsfw' ],
-    [ check  => short => 'traits_sexual', name => mt '_usere_fsextraits' ],
-    [ check  => short => 'tags_all', name => mt '_usere_ftags' ],
-    [ select => short => 'tags_cat', name => mt('_usere_tagcats'), multi => 1, size => 3,
+    [ part   => title => 'Options' ],
+    [ check  => short => 'hide_list', name =>
+       qq{Don't allow other people to see my visual novel list (<a href="/u$uid/list">/u$uid/list</a>),
+          votes (<a href="/u$uid/votes">/u$uid/votes</a>) and wishlist (<a href="/u$uid/wish">/u$uid/wish</a>).} ],
+    [ check  => short => 'show_nsfw', name => 'Disable warnings for images that are not safe for work.' ],
+    [ check  => short => 'traits_sexual', name => 'Show sexual traits by default on character pages.' ],
+    [ check  => short => 'tags_all', name => 'Show all tags by default on visual novel pages.' ],
+    [ select => short => 'tags_cat', name => 'Tag categories', multi => 1, size => 3,
       options => [ map [ $_, $self->{tag_categories}{$_} ], keys %{$self->{tag_categories}} ] ],
-    [ select => short => 'spoilers', name => mt('_usere_spoilers'), options => [ map [ $_, mt '_spoilset_'.$_ ], 0..2 ] ],
-    [ select => short => 'skin', name => mt('_usere_skin'), width => 300, options => [
+    [ select => short => 'spoilers', name => 'Spoiler level', options => [
+       [0, 'Hide spoilers'], [1, 'Show only minor spoilers'], [2, 'Show all spoilers']  ]],
+    [ select => short => 'skin', name => 'Preferred skin', width => 300, options => [
       map [ $_, $self->{skins}{$_}[0].($self->debug?" [$_]":'') ], sort { $self->{skins}{$a}[0] cmp $self->{skins}{$b}[0] } keys %{$self->{skins}} ] ],
-    [ textarea => short => 'customcss', name => mt '_usere_css' ],
+    [ textarea => short => 'customcss', name => 'Additional <a href="http://en.wikipedia.org/wiki/Cascading_Style_Sheets">CSS</a>' ],
   ]);
   $self->htmlFooter;
 }
@@ -481,13 +512,13 @@ sub posts {
 
   my($posts, $np) = $self->dbPostGet(uid => $uid, hide => 1, what => 'thread', page => $f->{p}, sort => 'date', reverse => 1);
 
-  my $title = mt '_uposts_title', $u->{username};
+  my $title = "Posts made by $u->{username}";
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs(u => $u, 'posts');
   div class => 'mainbox';
    h1 $title;
    if(!@$posts) {
-     p mt '_uposts_noresults', $u->{username};
+     p "$u->{username} hasn't made any posts yet.";
    }
   end;
 
@@ -500,8 +531,8 @@ sub posts {
     header   => [
       [ '' ],
       [ '' ],
-      [ mt '_uposts_col_date' ],
-      [ mt '_uposts_col_title' ],
+      [ 'Date' ],
+      [ 'Title' ],
     ],
     row     => sub {
       my($s, $n, $l) = @_;
@@ -574,16 +605,16 @@ sub list {
   );
   return $self->resNotFound if $f->{_err};
 
-  $self->htmlHeader(noindex => 1, title => mt '_ulist_title');
+  $self->htmlHeader(noindex => 1, title => 'Browse users');
 
   div class => 'mainbox';
-   h1 mt '_ulist_title';
+   h1 'Browse users';
    form action => '/u/all', 'accept-charset' => 'UTF-8', method => 'get';
     $self->htmlSearchBox('u', $f->{q});
    end;
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => "/u/$_", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+      a href => "/u/$_", $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? 'ALL' : $_ ? uc $_ : '#';
     }
    end;
   end;
@@ -605,11 +636,11 @@ sub list {
     pageurl  => "/u/$char?o=$f->{o};s=$f->{s};q=$f->{q}",
     sorturl  => "/u/$char?q=$f->{q}",
     header   => [
-      [ mt('_ulist_col_username'),   'username'   ],
-      [ mt('_ulist_col_registered'), 'registered' ],
-      [ mt('_ulist_col_votes'),      'votes'      ],
-      [ mt('_ulist_col_edits'),      'changes'    ],
-      [ mt('_ulist_col_tags'),       'tags'       ],
+      [ 'Username',   'username'   ],
+      [ 'Registered', 'registered' ],
+      [ 'Votes',      'votes'      ],
+      [ 'Edits',      'changes'    ],
+      [ 'Tags',       'tags'       ],
     ],
     row     => sub {
       my($s, $n, $l) = @_;
@@ -683,18 +714,26 @@ sub notifies {
     reverse => $f->{r} == 1,
   );
 
-  $self->htmlHeader(title => mt('_usern_title'), noindex => 1);
+  $self->htmlHeader(title => 'My notifications', noindex => 1);
   $self->htmlMainTabs(u => $u);
   div class => 'mainbox';
-   h1 mt '_usern_title';
+   h1 'My notifications';
    p class => 'browseopts';
-    a !$f->{r} ? (class => 'optselected') : (), href => "/u$uid/notifies?r=0", mt '_usern_o_unread';
-    a  $f->{r} ? (class => 'optselected') : (), href => "/u$uid/notifies?r=1", mt '_usern_o_alsoread';
+    a !$f->{r} ? (class => 'optselected') : (), href => "/u$uid/notifies?r=0", 'Unread notifications';
+    a  $f->{r} ? (class => 'optselected') : (), href => "/u$uid/notifies?r=1", 'All notifications';
    end;
-   p mt '_usern_nonotifies' if !@$list;
+   p 'No notifications!' if !@$list;
   end;
 
   my $code = $self->authGetCode("/u$uid/notifies");
+
+  my %ntypes = (
+    pm       => 'Private Message',
+    dbdel    => 'Entry you contributed to has been deleted',
+    listdel  => 'VN in your (wish)list has been deleted',
+    dbedit   => 'Entry you contributed to has been edited',
+    announce => 'Site announcement',
+  );
 
   if(@$list) {
     form action => "/u$uid/notifies?r=$f->{r};formcode=$code", method => 'post', id => 'notifies';
@@ -706,10 +745,10 @@ sub notifies {
       pageurl  => "/u$uid/notifies?r=$f->{r}",
       header   => [
         [ '' ],
-        [ mt '_usern_col_type' ],
-        [ mt '_usern_col_age' ],
-        [ mt '_usern_col_id' ],
-        [ mt '_usern_col_act' ],
+        [ 'Type' ],
+        [ 'Age' ],
+        [ 'ID' ],
+        [ 'Action' ],
       ],
       row     => sub {
         my($s, $n, $l) = @_;
@@ -717,16 +756,17 @@ sub notifies {
          td class => 'tc1';
           input type => 'checkbox', name => 'notifysel', value => "$l->{id}";
          end;
-         td class => 'tc2', mt "_usern_type_$l->{ntype}";
+         td class => 'tc2', $ntypes{$l->{ntype}};
          td class => 'tc3', fmtage $l->{date};
          td class => 'tc4';
           a href => "/u$uid/notify/$l->{id}", "$l->{ltype}$l->{iid}".($l->{subid}?".$l->{subid}":'');
          end;
          td class => 'tc5 clickable', id => "notify_$l->{id}";
-          lit mt '_usern_n_'.(
-            $l->{ltype} eq 't' ? ($l->{subid} == 1 ? 't_new' : 't_reply')
-            : 'item_edit'),
-            sprintf('<i>%s</i>', xml_escape $l->{c_title}), sprintf('<i>%s</i>', xml_escape $l->{username});
+          lit sprintf
+              $l->{ltype} ne 't' ? 'Edit of %s by %s' :
+              $l->{subid} == 1   ? 'New thread %s by %s' : 'Reply to %s by %s',
+            sprintf('<i>%s</i>', xml_escape $l->{c_title}),
+            sprintf('<i>%s</i>', xml_escape $l->{username});
          end;
         end 'tr';
       },
@@ -735,9 +775,9 @@ sub notifies {
          td colspan => 5;
           input type => 'checkbox', class => 'checkall', name => 'notifysel', value => 0;
           txt ' ';
-          input type => 'submit', name => 'markread', value => mt '_usern_but_markread';
-          input type => 'submit', name => 'remove', value => mt '_usern_but_remove';
-          b class => 'grayedout', ' '.mt '_usern_autodel';
+          input type => 'submit', name => 'markread', value => 'mark selected read';
+          input type => 'submit', name => 'remove', value => 'remove selected';
+          b class => 'grayedout', ' (Read notifications are automatically removed after one month)';
          end;
         end;
       }
@@ -747,17 +787,19 @@ sub notifies {
 
   form method => 'post', action => "/u$uid/notifies?formcode=$code";
   div class => 'mainbox';
-   h1 mt '_usern_set_title';
-   div class => 'notice', mt '_usern_set_saved' if $saved;
+   h1 'Settings';
+   div class => 'notice', 'Settings successfully saved.' if $saved;
    p;
     for('nodbedit', 'announce') {
-      my $def = $_ eq 'nodbedit'? 0 : 1;
+      my $def = $_ eq 'nodbedit' ? 0 : 1;
       input type => 'checkbox', name => "notify_$_", id => "notify_$_", value => $def,
         ($self->authPref("notify_$_")||0) == $def ? (checked => 'checked') : ();
-      label for => "notify_$_", ' '.mt("_usern_set_$_");
+      label for => "notify_$_", $_ eq 'nodbedit'
+        ? ' Notify me about edits of database entries I contributed to.'
+        : ' Notify me about site announcements.';
       br;
     }
-    input type => 'submit', name => 'set', value => mt '_usern_set_submit';
+    input type => 'submit', name => 'set', value => 'Save';
    end;
   end;
   end 'form';

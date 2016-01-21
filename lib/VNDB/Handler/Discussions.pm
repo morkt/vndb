@@ -42,7 +42,7 @@ sub thread {
   $self->htmlHeader(title => $t->{title}, noindex => 1);
   div class => 'mainbox';
    h1 $t->{title};
-   h2 mt '_thread_postedin';
+   h2 'Posted in';
    ul;
     for (sort { $a->{type}.$a->{iid} cmp $b->{type}.$b->{iid} } @{$t->{boards}}) {
       li;
@@ -69,7 +69,7 @@ sub thread {
        td class => 'tc1';
         a href => "/t$tid.$_->{num}", name => $_->{num}, "#$_->{num}";
         if(!$_->{hidden}) {
-          lit ' '.mt "_thread_byuser", $_;
+          lit ' by '.fmtuser($_);
           br;
           txt fmtdate $_->{date}, 'full';
         }
@@ -78,15 +78,15 @@ sub thread {
         if(caneditpost($self, $_)) {
           i class => 'edit';
            txt '< ';
-           a href => "/t$tid.$_->{num}/edit", mt '_thread_editpost';
+           a href => "/t$tid.$_->{num}/edit", 'edit';
            txt ' >';
           end;
         }
         if($_->{hidden}) {
-          i class => 'deleted', mt '_thread_deletedpost';
+          i class => 'deleted', 'Post deleted.';
         } else {
           lit bb2html $_->{msg};
-          i class => 'lastmod', mt '_thread_lastmodified', $_->{edited} if $_->{edited};
+          i class => 'lastmod', 'Last modified on '.fmtdate($_->{edited}, 'full') if $_->{edited};
         }
        end;
       end;
@@ -97,8 +97,8 @@ sub thread {
 
   if($t->{locked}) {
     div class => 'mainbox';
-     h1 mt '_thread_noreply_title';
-     p class => 'center', mt '_thread_noreply_locked';
+     h1 'Reply';
+     p class => 'center', 'This thread has been locked, you can\'t reply to it anymore';
     end;
   } elsif($t->{count} <= $page*25 && $self->authCan('board')) {
     form action => "/t$tid/reply", method => 'post', 'accept-charset' => 'UTF-8';
@@ -106,20 +106,20 @@ sub thread {
       fieldset class => 'submit';
        input type => 'hidden', class => 'hidden', name => 'formcode', value => $self->authGetCode("/t$tid/reply");
        h2;
-        txt mt '_thread_quickreply_title';
-        b class => 'standout', ' ('.mt('_inenglish').')';
+        txt 'Quick reply';
+        b class => 'standout', ' (English please!)';
        end;
        textarea name => 'msg', id => 'msg', rows => 4, cols => 50, '';
        br;
-       input type => 'submit', value => mt('_thread_quickreply_submit'), class => 'submit';
-       input type => 'submit', value => mt('_thread_quickreply_full'), class => 'submit', name => 'fullreply';
+       input type => 'submit', value => 'Reply', class => 'submit';
+       input type => 'submit', value => 'Go advanced...', class => 'submit', name => 'fullreply';
       end;
      end;
     end 'form';
   } elsif(!$self->authCan('board')) {
     div class => 'mainbox';
-     h1 mt '_thread_noreply_title';
-     p class => 'center', mt '_thread_noreply_login';
+     h1 'Reply';
+     p class => 'center', 'You must be logged in to reply to this thread.';
     end;
   }
 
@@ -295,41 +295,41 @@ sub edit {
 
   # generate html
   my $url = !$tid ? "/t/$board/new" : !$num ? "/t$tid/reply" : "/t$tid.$num/edit";
-  my $title = mt !$tid ? '_postedit_newthread' :
-                 !$num ? ('_postedit_replyto', $t->{title}) :
-                         '_postedit_edit';
+  my $title = !$tid ? 'Start new thread' :
+              !$num ? "Reply to $t->{title}" :
+                      'Edit post';
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlForm({ frm => $frm, action => $url }, 'postedit' => [$title,
-    [ static => label => mt('_postedit_form_username'), content => fmtuser($p ? ($p->{uid}, $p->{username}) : ($self->authInfo->{id}, $self->authInfo->{username})) ],
+    [ static => label => 'Username', content => fmtuser($p ? ($p->{uid}, $p->{username}) : ($self->authInfo->{id}, $self->authInfo->{username})) ],
     !$tid || $num == 1 ? (
-      [ input  => short => 'title', name => mt('_postedit_form_title') ],
-      [ input  => short => 'boards',  name => mt('_postedit_form_boards') ],
-      [ static => content => mt('_postedit_form_boards_info') ],
+      [ input  => short => 'title', name => 'Thread title' ],
+      [ input  => short => 'boards',  name => 'Board(s)' ],
+      [ static => content => 'Read <a href="/d9.2">d9.2</a> for information about how to specify boards.' ],
       $self->authCan('boardmod') ? (
-        [ check => name => mt('_postedit_form_locked'), short => 'locked' ],
+        [ check => name => 'Locked', short => 'locked' ],
       ) : (),
     ) : (
-      [ static => label => mt('_postedit_form_topic'), content => qq|<a href="/t$tid">|.xml_escape($t->{title}).'</a>' ],
+      [ static => label => 'Topic', content => qq|<a href="/t$tid">|.xml_escape($t->{title}).'</a>' ],
     ),
     $self->authCan('boardmod') ? (
-      [ check => name => mt('_postedit_form_hidden'), short => 'hidden' ],
+      [ check => name => 'Hidden', short => 'hidden' ],
       $num ? (
-        [ check => name => mt('_postedit_form_nolastmod'), short => 'nolastmod' ],
+        [ check => name => 'Don\'t update last modified field', short => 'nolastmod' ],
       ) : (),
     ) : (),
-    [ text   => name => mt('_postedit_form_msg').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'msg', rows => 25, cols => 75 ],
-    [ static => content => mt('_postedit_form_msg_format') ],
+    [ text   => name => 'Message<br /><b class="standout">English please!</b>', short => 'msg', rows => 25, cols => 75 ],
+    [ static => content => 'See <a href="/d9.3">d9.3</a> for the allowed formatting codes' ],
     (!$tid || $num == 1) ? (
       [ static => content => '<br />' ],
-      [ check => short => 'poll', name => mt('_postedit_form_poll_add') ],
+      [ check => short => 'poll', name => 'Add poll' ],
       $num && $frm->{poll_question} ? (
-        [ static => content => '<b class="standout">'.mt('_postedit_form_poll_warning').'</b>' ]
+        [ static => content => '<b class="standout">All votes will be reset if any changes to the poll fields are made!</b>' ]
       ) : (),
-      [ input => short => 'poll_question', name => mt('_postedit_form_poll_q'), width => 250 ],
-      [ text  => short => 'poll_options', name => mt('_postedit_form_poll_opt').'<br /><i>'.mt('_postedit_form_poll_optmax', $self->{poll_options}).'</i>', rows => 8, cols => 35 ],
-      [ input => short => 'poll_max_options',width => 16, post => ' '.mt('_postedit_form_poll_max') ],
-      [ check => short => 'poll_preview', name => mt('_postedit_form_poll_view') ],
-      [ check => short => 'poll_recast',  name => mt('_postedit_form_poll_recast') ],
+      [ input => short => 'poll_question', name => 'Poll question', width => 250 ],
+      [ text  => short => 'poll_options', name => "Poll options<br /><i>one per line,<br />$self->{poll_options} max</i>", rows => 8, cols => 35 ],
+      [ input => short => 'poll_max_options',width => 16, post => ' Number of options voter is allowed to choose' ],
+      [ check => short => 'poll_preview', name => 'Allow users to view poll results before voting' ],
+      [ check => short => 'poll_recast',  name => 'Allow users to change their vote' ],
     ) : (),
   ]);
   $self->htmlFooter;
@@ -353,7 +353,7 @@ sub vote {
     { post => 'option', multi => 1, mincount => 1, maxcount => $t->{poll_max_options}, enum => [ map $_->[0], @{$t->{poll_options}} ] }
   );
   if($f->{_err}) {
-    $self->htmlHeader(title => mt '_poll_error');
+    $self->htmlHeader(title => 'Poll error');
     $self->htmlFormError($f, 1);
     $self->htmlFooter;
     return;
@@ -380,7 +380,7 @@ sub board {
                    $self->dbVNGet(id => $iid)->[0];
   return $self->resNotFound if $iid && !$obj;
   my $ititle = $obj && ($obj->{title}||$obj->{name}||$obj->{username});
-  my $title = !$obj ? $self->{discussion_boards}{$type} || 'All boards' : mt '_disboard_item_title', $ititle;
+  my $title = !$obj ? $self->{discussion_boards}{$type} || 'All boards' : "Related discussions for $ititle";
 
   my($list, $np) = $self->dbThreadGet(
     $type ne 'all' ? (type => $type) : (),
@@ -398,7 +398,7 @@ sub board {
    div class => 'mainbox';
     h1 $title;
     p;
-     a href => '/t', mt '_disboard_rootlink';
+     a href => '/t', 'Discussion board';
      txt ' > ';
      a href => "/t/$type", $self->{discussion_boards}{$type}||'All boards';
      if($iid) {
@@ -412,16 +412,16 @@ sub board {
       fieldset class => 'search';
        input type => 'text', name => 'bq', id => 'bq', class => 'text';
        input type => 'hidden', name => 'b', value => $type if $type ne 'all';
-       input type => 'submit', class => 'submit', value => mt '_searchbox_submit';
+       input type => 'submit', class => 'submit', value => 'Search!';
       end 'fieldset';
     }
     p class => 'center';
      if(!@$list) {
-       b mt '_disboard_nothreads';
+       b 'No related threads found';
        br; br;
-       a href => "/t/$type$iid/new", mt '_disboard_createyourown';
+       a href => "/t/$type$iid/new", 'Why not create one yourself?';
      } else {
-       a href => '/t/'.($iid ? $type.$iid : $type ne 'ge' ? 'db' : $type).'/new', mt '_disboard_startnew' if $type ne 'all';
+       a href => '/t/'.($iid ? $type.$iid : $type ne 'ge' ? 'db' : $type).'/new', 'Start a new thread' if $type ne 'all';
      }
     end;
    end 'div';
@@ -436,13 +436,13 @@ sub board {
 sub index {
   my $self = shift;
 
-  $self->htmlHeader(title => mt('_disindex_title'), noindex => 1, feeds => [ 'posts', 'announcements' ]);
+  $self->htmlHeader(title => 'Discussion board index', noindex => 1, feeds => [ 'posts', 'announcements' ]);
   form action => '/t/search', method => 'get';
    div class => 'mainbox';
-    h1 mt '_disindex_title';
+    h1 'Discussion board index';
     fieldset class => 'search';
      input type => 'text', name => 'bq', id => 'bq', class => 'text';
-     input type => 'submit', class => 'submit', value => mt '_searchbox_submit';
+     input type => 'submit', class => 'submit', value => 'Search!';
     end 'fieldset';
     p class => 'browseopts';
      a href => '/t/all', 'All boards';
@@ -481,14 +481,14 @@ sub search {
   );
   return $self->resNotFound if $frm->{_err};
 
-  $self->htmlHeader(title => mt('_dissearch_title'), noindex => 1);
-  $self->htmlForm({ frm => $frm, action => '/t/search', method => 'get', nosubmit => 1, noformcode => 1 }, 'boardsearch' => [mt('_dissearch_title'),
-    [ input  => short => 'bq', name => mt('_dissearch_query') ],
-    [ check  => short => 't',  name => mt('_dissearch_titleonly') ],
-    [ select => short => 'b',  name => mt('_dissearch_boards'), multi => 1, size => scalar keys %{$self->{discussion_boards}},
+  $self->htmlHeader(title => 'Search the discussion board', noindex => 1);
+  $self->htmlForm({ frm => $frm, action => '/t/search', method => 'get', nosubmit => 1, noformcode => 1 }, 'boardsearch' => ['Search the discussion board',
+    [ input  => short => 'bq', name => 'Query' ],
+    [ check  => short => 't',  name => 'Only search thread titles' ],
+    [ select => short => 'b',  name => 'Boards', multi => 1, size => scalar keys %{$self->{discussion_boards}},
       options => [ map [$_,$self->{discussion_boards}{$_}], keys %{$self->{discussion_boards}} ] ],
     [ static => content => sub {
-      input type => 'submit', class => 'submit', tabindex => 10, value => mt '_searchbox_submit';
+      input type => 'submit', class => 'submit', tabindex => 10, value => 'Search!';
     } ],
   ]);
   return $self->htmlFooter if !$frm->{bq};
@@ -535,8 +535,8 @@ sub search {
   my $url = '/t/search?'.join ';', 'bq='.uri_escape($frm->{bq}), $frm->{t} ? 't=1' : (), map "b=$_", keys %boards;
   if(!@$l) {
     div class => 'mainbox';
-     h1 mt '_dissearch_noresults_title';
-     p mt '_dissearch_noresults_msg';
+     h1 'No results';
+     p 'No threads or messages found matching your criteria.';
     end;
   } elsif($frm->{t}) {
     _threadlist($self, $l, $frm, $np, $url, 'all');
@@ -549,9 +549,9 @@ sub search {
       class    => 'postsearch',
       header   => [
         sub { td class => 'tc1_1', ''; td class => 'tc1_2', ''; },
-        [ mt '_dissearch_col_date' ],
-        [ mt '_dissearch_col_user' ],
-        [ mt '_dissearch_col_msg' ],
+        [ 'Date' ],
+        [ 'User' ],
+        [ 'Message' ],
       ],
       row     => sub {
         my($s, $n, $l) = @_;
@@ -590,17 +590,17 @@ sub _threadlist {
     pageurl  => $url,
     class    => 'discussions',
     header   => [
-      [ mt '_threadlist_col_topic'    ],
-      [ mt '_threadlist_col_replies'  ],
-      [ mt '_threadlist_col_starter'  ],
-      [ mt '_threadlist_col_lastpost' ],
+      [ 'Topic'    ],
+      [ 'Replies'  ],
+      [ 'Starter'  ],
+      [ 'Last post' ],
     ],
     row      => sub {
       my($self, $n, $o) = @_;
       Tr;
        td class => 'tc1';
         a $o->{locked} ? ( class => 'locked' ) : (), href => "/t$o->{id}";
-         span class => 'pollflag', '['.mt('_threadlist_poll').']' if $o->{haspoll};
+         span class => 'pollflag', '[poll]' if $o->{haspoll};
          txt shorten $o->{title}, 50;
         end;
         b class => 'boards';
@@ -645,24 +645,24 @@ sub _poll {
     table class => 'votebooth';
      if($allow_vote && $t->{poll_max_options} > 1) {
        thead; Tr; td colspan => 3;
-        i mt('_poll_choose', $t->{poll_max_options});
+        i "You may choose up to $t->{poll_max_options} options";
        end; end; end;
      }
      tfoot; Tr;
       td class => 'tc1';
-       input type => 'submit', class => 'submit', value => mt('_poll_vote') if $allow_vote;
+       input type => 'submit', class => 'submit', value => 'Vote' if $allow_vote;
        if(!$self->authCan('board')) {
-         b class => 'standout', mt('_poll_novote_login');
+         b class => 'standout', 'You must be logged in to be able to vote.';
        }
       end;
       td class => 'tc2', colspan => 2;
        if($t->{poll_preview} || @$own_votes) {
          if(!$num_votes) {
-           i mt('_poll_no_votes');
+           i 'Nobody voted yet.';
          } elsif(!$preview && !@$own_votes) {
-           a href => $url.'?pollview=1', id => 'pollpreview', mt('_poll_results');
+           a href => $url.'?pollview=1', id => 'pollpreview', 'View results';
          } else {
-           txt mt('_poll_total_votes', $num_votes);
+           txt sprintf '%d vote%s total', $num_votes, $num_votes == 1 ? '' : 's';
          }
        }
       end;

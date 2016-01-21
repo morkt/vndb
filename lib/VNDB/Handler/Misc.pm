@@ -35,12 +35,16 @@ TUWF::register(
 
 sub homepage {
   my $self = shift;
-  $self->htmlHeader(title => mt('_site_title'), feeds => [ keys %{$self->{atom_feeds}} ]);
+  $self->htmlHeader(title => 'The Visual Novel Database', feeds => [ keys %{$self->{atom_feeds}} ]);
 
   div class => 'mainbox';
-   h1 mt '_site_title';
+   h1 'The Visual Novel Database';
    p class => 'description';
-    lit mt '_home_intro';
+    txt 'VNDB.org strives to be a comprehensive database for information about visual novels.';
+    br;
+    txt 'This website is built as a wiki, meaning that anyone can freely add'
+      .' and contribute information to the database, allowing us to create the'
+      .' largest, most accurate and most up-to-date visual novel database on the web.';
    end;
 
    # with filters applied it's signifcantly slower, so special-code the situations with and without filters
@@ -66,17 +70,16 @@ sub homepage {
     # Recent changes
     td;
      h1;
-      a href => '/hist', mt '_home_recentchanges'; txt ' ';
-      a href => '/feeds/changes.atom'; cssicon 'feed', mt '_atom_feed'; end;
+      a href => '/hist', 'Recent Changes'; txt ' ';
+      a href => '/feeds/changes.atom'; cssicon 'feed', 'Atom Feed'; end;
      end;
      my $changes = $self->dbRevisionGet(results => 10, auto => 1);
      ul;
       for (@$changes) {
         li;
-         lit mt '_home_recentchanges_item', $_->{type},
-          sprintf('<a href="%s" title="%s">%s</a>', "/$_->{type}$_->{itemid}.$_->{rev}",
-            xml_escape($_->{ioriginal}||$_->{ititle}), xml_escape shorten $_->{ititle}, 33),
-          $_;
+         txt "$_->{type}:";
+         a href => "/$_->{type}$_->{itemid}.$_->{rev}", title => $_->{ioriginal}||$_->{ititle}, shorten $_->{ititle}, 33;
+         lit " by ".fmtuser($_);
         end;
       }
      end;
@@ -86,8 +89,8 @@ sub homepage {
     td;
      my $an = $self->dbThreadGet(type => 'an', sort => 'id', reverse => 1, results => 2);
      h1;
-      a href => '/t/an', mt '_home_announcements'; txt ' ';
-      a href => '/feeds/announcements.atom'; cssicon 'feed', mt '_atom_feed'; end;
+      a href => '/t/an', 'Announcements'; txt ' ';
+      a href => '/feeds/announcements.atom'; cssicon 'feed', 'Atom Feed'; end;
      end;
      for (@$an) {
        my $post = $self->dbPostGet(tid => $_->{id}, num => 1)->[0];
@@ -103,18 +106,17 @@ sub homepage {
     # Recent posts
     td;
      h1;
-      a href => '/t/all', mt '_home_recentposts'; txt ' ';
-      a href => '/feeds/posts.atom'; cssicon 'feed', mt '_atom_feed'; end;
+      a href => '/t/all', 'Recent Posts'; txt ' ';
+      a href => '/feeds/posts.atom'; cssicon 'feed', 'Atom Feed'; end;
      end;
      my $posts = $self->dbThreadGet(what => 'lastpost boardtitles', results => 10, sort => 'lastpost', reverse => 1, notusers => 1);
      ul;
       for (@$posts) {
         my $boards = join ', ', map $self->{discussion_boards}{$_->{type}}.($_->{iid}?' > '.$_->{title}:''), @{$_->{boards}};
         li;
-         lit mt '_home_recentposts_item', $_->{ldate},
-          sprintf('<a href="%s" title="%s">%s</a>', "/t$_->{id}.$_->{count}",
-            xml_escape("Posted in $boards"), xml_escape shorten $_->{title}, 25),
-          {uid => $_->{luid}, username => $_->{lusername}};
+         txt fmtage($_->{ldate}).' ';
+         a href => "/t$_->{id}.$_->{count}", title => "Posted in $boards", shorten $_->{title}, 25;
+         lit ' by '.fmtuser($_->{luid}, $_->{lusername});
         end;
       }
      end;
@@ -126,7 +128,7 @@ sub homepage {
     # Random visual novels
     td;
      h1;
-      a href => '/v/rand', mt '_home_randomvn';
+      a href => '/v/rand', 'Random visual novels';
      end;
      my $random = $self->filFetchDB(vn => undef, undef, {results => 10, sort => 'rand'});
      ul;
@@ -141,7 +143,7 @@ sub homepage {
     # Upcoming releases
     td;
      h1;
-      a href => '/r?fil=released-0;o=a;s=released', mt '_home_upcoming';
+      a href => '/r?fil=released-0;o=a;s=released', 'Upcoming releases';
      end;
      my $upcoming = $self->filFetchDB(release => undef, undef, {results => 10, released => 0, what => 'platforms'});
      ul;
@@ -161,7 +163,7 @@ sub homepage {
     # Just released
     td;
      h1;
-      a href => '/r?fil=released-1;o=d;s=released', mt '_home_justreleased';
+      a href => '/r?fil=released-1;o=d;s=released', 'Just released';
      end;
      my $justrel = $self->filFetchDB(release => undef, undef, {results => 10, sort => 'released', reverse => 1, released => 1, what => 'platforms'});
      ul;
@@ -207,7 +209,7 @@ sub history {
             $type eq 'c' ? $self->dbCharGet(id => $id)->[0] :
             $type eq 's' ? $self->dbStaffGet(id => $id)->[0] :
             $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : undef;
-  my $title = mt $type ? ('_hist_title_item', $obj->{title} || $obj->{name} || $obj->{username}) : '_hist_title';
+  my $title = $type ? 'Edit history of '.($obj->{title} || $obj->{name} || $obj->{username}) : 'Recent changes';
   return $self->resNotFound if $type && !$obj->{id};
 
   # get the edit history
@@ -243,36 +245,36 @@ sub history {
    h1 $title;
    if($type ne 'u') {
      p class => 'browseopts';
-      a !$f->{m} ? (class => 'optselected') : (), href => $u->(m => 0), mt '_hist_filter_showauto';
-      a  $f->{m} ? (class => 'optselected') : (), href => $u->(m => 1), mt '_hist_filter_hideauto';
+      a !$f->{m} ? (class => 'optselected') : (), href => $u->(m => 0), 'Show automated edits';
+      a  $f->{m} ? (class => 'optselected') : (), href => $u->(m => 1), 'Hide automated edits';
      end;
    }
    if(!$type || $type eq 'u') {
      if($self->authCan('dbmod')) {
        p class => 'browseopts';
-        a $f->{h} == 1  ? (class => 'optselected') : (), href => $u->(h =>  1), mt '_hist_filter_hidedel';
-        a $f->{h} == -1 ? (class => 'optselected') : (), href => $u->(h => -1), mt '_hist_filter_showdel';
+        a $f->{h} == 1  ? (class => 'optselected') : (), href => $u->(h =>  1), 'Hide deleted items';
+        a $f->{h} == -1 ? (class => 'optselected') : (), href => $u->(h => -1), 'Show deleted items';
        end;
      }
      p class => 'browseopts';
-      a !$f->{t}        ? (class => 'optselected') : (), href => $u->(t => ''),  mt '_hist_filter_alltypes';
-      a  $f->{t} eq 'v' ? (class => 'optselected') : (), href => $u->(t => 'v'), mt '_hist_filter_onlyvn';
-      a  $f->{t} eq 'r' ? (class => 'optselected') : (), href => $u->(t => 'r'), mt '_hist_filter_onlyreleases';
-      a  $f->{t} eq 'p' ? (class => 'optselected') : (), href => $u->(t => 'p'), mt '_hist_filter_onlyproducers';
-      a  $f->{t} eq 's' ? (class => 'optselected') : (), href => $u->(t => 's'), mt '_hist_filter_onlystaff';
-      a  $f->{t} eq 'c' ? (class => 'optselected') : (), href => $u->(t => 'c'), mt '_hist_filter_onlychars';
-      a  $f->{t} eq 'a' ? (class => 'optselected') : (), href => $u->(t => 'a'), mt '_hist_filter_nochars';
+      a !$f->{t}        ? (class => 'optselected') : (), href => $u->(t => ''),  'Show all items';
+      a  $f->{t} eq 'v' ? (class => 'optselected') : (), href => $u->(t => 'v'), 'Only visual novels';
+      a  $f->{t} eq 'r' ? (class => 'optselected') : (), href => $u->(t => 'r'), 'Only releases';
+      a  $f->{t} eq 'p' ? (class => 'optselected') : (), href => $u->(t => 'p'), 'Only producers';
+      a  $f->{t} eq 's' ? (class => 'optselected') : (), href => $u->(t => 's'), 'Only staff';
+      a  $f->{t} eq 'c' ? (class => 'optselected') : (), href => $u->(t => 'c'), 'Only characters';
+      a  $f->{t} eq 'a' ? (class => 'optselected') : (), href => $u->(t => 'a'), 'All except characters';
      end;
      p class => 'browseopts';
-      a !$f->{e}       ? (class => 'optselected') : (), href => $u->(e =>  0), mt '_hist_filter_allactions';
-      a  $f->{e} == 1  ? (class => 'optselected') : (), href => $u->(e =>  1), mt '_hist_filter_onlyedits';
-      a  $f->{e} == -1 ? (class => 'optselected') : (), href => $u->(e => -1), mt '_hist_filter_onlynew';
+      a !$f->{e}       ? (class => 'optselected') : (), href => $u->(e =>  0), 'Show all changes';
+      a  $f->{e} == 1  ? (class => 'optselected') : (), href => $u->(e =>  1), 'Only edits';
+      a  $f->{e} == -1 ? (class => 'optselected') : (), href => $u->(e => -1), 'Only newly created pages';
      end;
    }
    if($type eq 'v') {
      p class => 'browseopts';
-      a !$f->{r} ? (class => 'optselected') : (), href => $u->(r => 0), mt '_hist_filter_exrel';
-      a $f->{r}  ? (class => 'optselected') : (), href => $u->(r => 1), mt '_hist_filter_increl';
+      a !$f->{r} ? (class => 'optselected') : (), href => $u->(r => 0), 'Exclude edits of releases';
+      a $f->{r}  ? (class => 'optselected') : (), href => $u->(r => 1), 'Include edits of releases';
      end;
    }
   end 'div';
@@ -285,10 +287,9 @@ sub history {
 sub docpage {
   my($self, $did) = @_;
 
-  my $l = '.'.$self->{l10n}->language_tag();
   my $f = sprintf('%s/data/docs/%d', $VNDB::ROOT, $did);
   my $F;
-  open($F, '<:utf8', $f.$l) or open($F, '<:utf8', $f) or return $self->resNotFound;
+  open($F, '<:utf8', $f) or return $self->resNotFound;
   my @c = <$F>;
   close $F;
 
@@ -308,7 +309,7 @@ sub docpage {
     }e;
     s{^:INC:(.+)\r?\n$}{
       $f = sprintf('%s/data/docs/%s', $VNDB::ROOT, $1);
-      open($F, '<:utf8', $f.$l) or open($F, '<:utf8', $f) or die $!;
+      open($F, '<:utf8', $f) or die $!;
       my $ii = join('', <$F>);
       close $F;
       $ii;
@@ -347,13 +348,13 @@ sub docpage {
 
 sub nospam {
   my $self = shift;
-  $self->htmlHeader(title => mt '_nospam_title', noindex => 1);
+  $self->htmlHeader(title => 'Could not send form', noindex => 1);
 
   div class => 'mainbox';
-   h1 mt '_nospam_title';
+   h1 'Could not send form';
    div class => 'warning';
-    h2 mt '_nospam_subtitle';
-    p mt '_nospam_msg';
+    h2 'Error';
+    p 'The form could not be sent, please make sure you have Javascript enabled in your browser.';
    end;
   end;
 

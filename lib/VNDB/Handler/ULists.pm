@@ -155,17 +155,17 @@ sub votelist {
     $f->{c} ne 'all' ? ($type eq 'u' ? 'vn_char' : 'user_char', $f->{c}) : (),
   );
 
-  my $title = mt $type eq 'v' ? '_votelist_title_vn' : '_votelist_title_user', $obj->{title} || $obj->{username};
+  my $title = $type eq 'v' ? "Votes for $obj->{title}" : "Votes by $obj->{username}";
   $self->htmlHeader(noindex => 1, title => $title);
   $self->htmlMainTabs($type => $obj, 'votes');
   div class => 'mainbox';
    h1 $title;
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => "/$type$id/votes?c=$_", $_ eq $f->{c} ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+      a href => "/$type$id/votes?c=$_", $_ eq $f->{c} ? (class => 'optselected') : (), $_ eq 'all' ? 'ALL' : $_ ? uc $_ : '#';
     }
    end;
-   p mt '_votelist_novotes' if !@$list;
+   p 'No votes to list. :-(' if !@$list;
   end;
 
   if($own) {
@@ -181,9 +181,9 @@ sub votelist {
     pageurl  => "/$type$id/votes?c=$f->{c};o=$f->{o};s=$f->{s}",
     sorturl  => "/$type$id/votes?c=$f->{c}",
     header   => [
-      [ mt('_votelist_col_date'),  'date'  ],
-      [ mt('_votelist_col_vote'),  'vote'  ],
-      [ mt('_votelist_col_'.($type eq 'v'?'user':'vn')), 'title' ],
+      [ 'Cast',  'date'  ],
+      [ 'Vote',  'vote'  ],
+      [ $type eq 'v' ? 'User' : 'Visual novel', 'title' ],
     ],
     row      => sub {
       my($s, $n, $l) = @_;
@@ -206,7 +206,7 @@ sub votelist {
         Select name => 'batchedit', id => 'batchedit';
          option value => -2, '-- with selected --';
          optgroup label => 'Change vote';
-          option value => $_, "$_ (".mt("_vote_$_").')' for (reverse 1..10);
+          option value => $_, sprintf '%d (%s)', $_, fmtrating $_ for (reverse 1..10);
          end;
          option value => -1, 'revoke';
         end;
@@ -256,19 +256,19 @@ sub wishlist {
     page => $f->{p},
   );
 
-  my $title = $own ? mt('_wishlist_title_my') : mt('_wishlist_title_other', $u->{username});
+  my $title = $own ? 'My wishlist' : "$u->{username}'s wishlist";
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('u', $u, 'wish');
   div class => 'mainbox';
    h1 $title;
    if(!@$list && $f->{f} == -1) {
-      p mt '_wishlist_noresults';
+      p 'Wishlist empty...';
      end;
      return $self->htmlFooter;
    }
    p class => 'browseopts';
     a $f->{f} == $_ ? (class => 'optselected') : (), href => "/u$uid/wish?f=$_",
-        $_ == -1 ? mt '_wishlist_prio_all' : $self->{wishlist_status}[$_]
+        $_ == -1 ? 'All priorities' : $self->{wishlist_status}[$_]
       for (-1..$#{$self->{wishlist_status}});
    end;
   end 'div';
@@ -286,9 +286,9 @@ sub wishlist {
     pageurl  => "/u$uid/wish?f=$f->{f};o=$f->{o};s=$f->{s}",
     sorturl  => "/u$uid/wish?f=$f->{f}",
     header   => [
-      [ mt('_wishlist_col_title') => 'title' ],
-      [ mt('_wishlist_col_prio')  => 'wstat' ],
-      [ mt('_wishlist_col_added') => 'added' ],
+      [ 'Title' => 'title' ],
+      [ 'Priority'  => 'wstat' ],
+      [ 'Added' => 'added' ],
     ],
     row      => sub {
       my($s, $n, $i) = @_;
@@ -308,12 +308,12 @@ sub wishlist {
         input type => 'checkbox', class => 'checkall', name => 'sel', value => 0;
         txt ' ';
         Select name => 'batchedit', id => 'batchedit';
-         option mt '_wishlist_select';
-         optgroup label => mt '_wishlist_changeprio';
+         option '-- with selected --';
+         optgroup label => 'Change priority';
           option value => $_, $self->{wishlist_status}[$_]
             for (0..$#{$self->{wishlist_status}});
          end;
-         option value => -1, mt '_wishlist_remove';
+         option value => -1, 'remove from wishlist';
         end;
        end;
       end;
@@ -373,7 +373,7 @@ sub vnlist {
     $f->{t} >= 0 ? (status => $f->{t}) : (),
   );
 
-  my $title = $own ? mt '_rlist_title_my' : mt '_rlist_title_other', $u->{username};
+  my $title = $own ? 'My visual novel list' : "$u->{username}'s visual novel list";
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('u', $u, 'list');
 
@@ -396,16 +396,16 @@ sub vnlist {
    h1 $title;
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => $url->(c => $_), $_ eq $f->{c} ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+      a href => $url->(c => $_), $_ eq $f->{c} ? (class => 'optselected') : (), $_ eq 'all' ? 'ALL' : $_ ? uc $_ : '#';
     }
    end;
    p class => 'browseopts';
-    a href => $url->(v =>  0),  0 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_all';
-    a href => $url->(v =>  1),  1 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_voted_only';
-    a href => $url->(v => -1), -1 == $f->{v} ? (class => 'optselected') : (), mt '_rlist_voted_none';
+    a href => $url->(v =>  0),  0 == $f->{v} ? (class => 'optselected') : (), 'All';
+    a href => $url->(v =>  1),  1 == $f->{v} ? (class => 'optselected') : (), 'Only voted';
+    a href => $url->(v => -1), -1 == $f->{v} ? (class => 'optselected') : (), 'Hide voted';
    end;
    p class => 'browseopts';
-    a href => $url->(t => -1), -1 == $f->{t} ? (class => 'optselected') : (), mt '_rlist_all';
+    a href => $url->(t => -1), -1 == $f->{t} ? (class => 'optselected') : (), 'All';
     a href => $url->(t => $_), $_ == $f->{t} ? (class => 'optselected') : (), $self->{vnlist_status}[$_] for 0..$#{$self->{vnlist_status}};
    end;
   end 'div';
@@ -433,11 +433,11 @@ sub _vnlist_browse {
     header   => [
       [ '' ],
       sub { td class => 'tc2', id => 'expandall'; lit '&#9656;'; end; },
-      [ mt('_rlist_col_title') => 'title' ],
+      [ 'Title' => 'title' ],
       [ '' ], [ '' ],
-      [ mt('_rlist_col_status') ],
-      [ mt('_rlist_col_releases').'*' ],
-      [ mt('_rlist_col_vote')  => 'vote'  ],
+      [ 'Status' ],
+      [ 'Releases*' ],
+      [ 'Vote'  => 'vote'  ],
     ],
     row      => sub {
       my($s, $n, $i) = @_;
@@ -492,25 +492,25 @@ sub _vnlist_browse {
        td class => 'tc2'; input type => 'checkbox', name => 'rid', value => 0, class => 'checkall'; end;
        td class => 'tc3_6', colspan => 4;
         Select id => 'vns', name => 'vns';
-         option value => -2, mt '_rlist_withvn';
-         optgroup label => mt '_rlist_changestat';
+         option value => -2, '-- with selected VNs --';
+         optgroup label => 'Change status';
           option value => $_, $self->{vnlist_status}[$_]
             for (0..$#{$self->{vnlist_status}});
          end;
-         option value => 999, mt '_rlist_setnote';
-         option value => -1, mt '_rlist_del';
+         option value => 999, 'Set note';
+         option value => -1, 'remove from list';
         end;
         Select id => 'rel', name => 'rel';
-         option value => -2, mt '_rlist_withrel';
-         optgroup label => mt '_rlist_changestat';
+         option value => -2, '-- with selected releases --';
+         optgroup label => 'Change status';
           option value => $_, $self->{rlist_status}[$_]
             for (0..$#{$self->{rlist_status}});
          end;
-         option value => -1, mt '_rlist_del';
+         option value => -1, 'remove from list';
         end;
-        input type => 'submit', value => mt '_rlist_update';
+        input type => 'submit', value => 'Update';
        end;
-       td class => 'tc7_8', colspan => 2, mt '_rlist_releasenote';
+       td class => 'tc7_8', colspan => 2, '* Obtained/total';
       end 'tr';
     }) : (),
   );

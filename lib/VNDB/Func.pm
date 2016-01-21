@@ -11,7 +11,7 @@ use VNDBUtil;
 our @EXPORT = (@VNDBUtil::EXPORT, qw|
   clearfloat cssicon tagscore mt minage fil_parse fil_serialize parenttags
   childtags charspoil imgpath imgurl
-  fmtvote fmtmedia fmtvnlen fmtage fmtdatestr fmtdate fmtuser fmtrating
+  fmtvote fmtmedia fmtvnlen fmtage fmtdatestr fmtdate fmtuser fmtrating fmtspoil
   json_encode json_decode script_json
   form_compare
 |);
@@ -285,6 +285,14 @@ sub fmtrating {
    'very good',
    'excellent',
    'masterpiece']->[shift()-1];
+}
+
+# Turn a spoiler level into a string
+sub fmtspoil {
+  ['neutral',
+   'no spoiler',
+   'minor spoiler',
+   'major spoiler']->[shift()+1];
 }
 
 

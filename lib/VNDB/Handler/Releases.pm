@@ -42,13 +42,13 @@ sub page {
         map sprintf('<a href="/v%d" title="%s">%s</a>', $_->{vid}, $_->{original}||$_->{title}, shorten $_->{title}, 50), @{$_[0]};
       } ],
       [ type       => 'Type' ],
-      [ patch      => 'Patch',           serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
-      [ freeware   => 'Freeware',        serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
-      [ doujin     => 'Doujin',          serialize => sub { mt $_[0] ? '_revision_yes' : '_revision_no' } ],
+      [ patch      => 'Patch',           serialize => sub { $_[0] ? 'Yes' : 'No' } ],
+      [ freeware   => 'Freeware',        serialize => sub { $_[0] ? 'Yes' : 'No' } ],
+      [ doujin     => 'Doujin',          serialize => sub { $_[0] ? 'Yes' : 'No' } ],
       [ title      => 'Title (romaji)',  diff => 1 ],
       [ original   => 'Original title',  diff => 1 ],
-      [ gtin       => 'JAN/UPC/EAN',     serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ catalog    => 'Catalog number',  serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ gtin       => 'JAN/UPC/EAN',     serialize => sub { $_[0]||'[empty]' } ],
+      [ catalog    => 'Catalog number',  serialize => sub { $_[0]||'[empty]' } ],
       [ languages  => 'Language',        join => ', ', split => sub { map $self->{languages}{$_}, @{$_[0]} } ],
       [ website    => 'Website' ],
       [ released   => 'Release date',    htmlize   => \&fmtdatestr ],
@@ -62,7 +62,7 @@ sub page {
       [ ani_ero    => 'Ero animation',   serialize => sub { $self->{animated}[$_[0]] } ],
       [ producers  => 'Producers',       join => '<br />', split => sub {
         map sprintf('<a href="/p%d" title="%s">%s</a> (%s)', $_->{id}, $_->{original}||$_->{name}, shorten($_->{name}, 50),
-          join(', ', $_->{developer} ? mt '_reldiff_developer' :(), $_->{publisher} ? mt '_reldiff_publisher' :())
+          join(', ', $_->{developer} ? 'developer' :(), $_->{publisher} ? 'publisher' :())
         ), @{$_[0]};
       } ],
     );
@@ -91,7 +91,7 @@ sub _infotable {
   table class => 'stripe';
 
    Tr;
-    td class => 'key', mt '_relinfo_vnrel';
+    td class => 'key', 'Relation';
     td;
      for (@{$r->{vn}}) {
        a href => "/v$_->{vid}", title => $_->{original}||$_->{title}, shorten $_->{title}, 60;
@@ -101,27 +101,27 @@ sub _infotable {
    end;
 
    Tr;
-    td mt '_relinfo_title';
+    td 'Title';
     td $r->{title};
    end;
 
    if($r->{original}) {
      Tr;
-      td mt '_relinfo_original';
+      td 'Original title';
       td $r->{original};
      end;
    }
 
    Tr;
-    td mt '_relinfo_type';
+    td 'Type';
     td;
      cssicon "rt$r->{type}", $r->{type};
-     txt ' '.mt '_relinfo_type_format', ucfirst($r->{type}), $r->{patch}?1:0;
+     txt sprintf ' %s%s', ucfirst($r->{type}), $r->{patch} ? ', patch' : '';
     end;
    end;
 
    Tr;
-    td mt '_relinfo_lang';
+    td 'Language';
     td;
      for (@{$r->{languages}}) {
        cssicon "lang $_", $self->{languages}{$_};
@@ -132,13 +132,15 @@ sub _infotable {
    end;
 
    Tr;
-    td mt '_relinfo_publication';
-    td mt $r->{patch} ? '_relinfo_pub_patch' : '_relinfo_pub_nopatch', $r->{freeware}?0:1, $r->{doujin}?0:1;
+    td 'Publication';
+    td join ', ',
+      $r->{freeware} ? 'Freeware' : 'Non-free',
+      $r->{patch} ? () : ($r->{doujin} ? 'doujin' : 'commercial');
    end;
 
    if(@{$r->{platforms}}) {
      Tr;
-      td mt '_relinfo_platform', scalar @{$r->{platforms}};
+      td 'Platorm'.(@{$r->{platforms}} == 1 ? '' : 's');
       td;
        for(@{$r->{platforms}}) {
          cssicon $_, $self->{platforms}{$_};
@@ -151,36 +153,36 @@ sub _infotable {
 
    if(@{$r->{media}}) {
      Tr;
-      td mt '_relinfo_media', scalar @{$r->{media}};
+      td @{$r->{media}} == 1 ? 'Medium' : 'Media';
       td join ', ', map fmtmedia($_->{medium}, $_->{qty}), @{$r->{media}};
      end;
    }
 
    if($r->{resolution}) {
      Tr;
-      td mt '_relinfo_resolution';
+      td 'Resolution';
       td $self->{resolutions}[$r->{resolution}][0];
      end;
    }
 
    if($r->{voiced}) {
      Tr;
-      td mt '_relinfo_voiced';
+      td 'Voiced';
       td $self->{voiced}[$r->{voiced}];
      end;
    }
 
    if($r->{ani_story} || $r->{ani_ero}) {
      Tr;
-      td mt '_relinfo_ani';
+      td 'Animation';
       td join ', ',
-        $r->{ani_story} ? mt('_relinfo_ani_story', $self->{animated}[$r->{ani_story}]):(),
-        $r->{ani_ero}   ? mt('_relinfo_ani_ero',   $self->{animated}[$r->{ani_ero}]  ):();
+        $r->{ani_story} ? "Story: $self->{animated}[$r->{ani_story}]" : (),
+        $r->{ani_ero}   ? "Ero scenes: $self->{animated}[$r->{ani_ero}]" : ();
      end;
    }
 
    Tr;
-    td mt '_relinfo_released';
+    td 'Released';
     td;
      lit fmtdatestr $r->{released};
     end;
@@ -188,7 +190,7 @@ sub _infotable {
 
    if($r->{minage} >= 0) {
      Tr;
-      td mt '_relinfo_minage';
+      td 'Age rating';
       td minage $r->{minage};
      end;
    }
@@ -197,7 +199,7 @@ sub _infotable {
      my @prod = grep $_->{$t}, @{$r->{producers}};
      if(@prod) {
        Tr;
-        td mt "_relinfo_$t", scalar @prod;
+        td ucfirst($t).(@prod == 1 ? '' : 's');
         td;
          for (@prod) {
            a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 60;
@@ -217,16 +219,16 @@ sub _infotable {
 
    if($r->{catalog}) {
      Tr;
-      td mt '_relinfo_catalog';
+      td 'Catalog no.';
       td $r->{catalog};
      end;
    }
 
    if($r->{website}) {
      Tr;
-      td mt '_relinfo_links';
+      td 'Links';
       td;
-       a href => $r->{website}, rel => 'nofollow', mt '_relinfo_website';
+       a href => $r->{website}, rel => 'nofollow', 'Official website';
       end;
      end;
    }
@@ -234,16 +236,15 @@ sub _infotable {
    if($self->authInfo->{id}) {
      my $rl = $self->dbRListGet(uid => $self->authInfo->{id}, rid => $r->{id})->[0];
      Tr;
-      td mt '_relinfo_user';
+      td 'User options';
       td;
        Select id => 'listsel', name => $self->authGetCode("/r$r->{id}/list");
-        option value => -2, 
-          mt !$rl ? '_relinfo_user_notlist' : ('_relinfo_user_inlist', $self->{rlist_status}[$rl->{status}]);
-        optgroup label => mt '_relinfo_user_setstatus';
+        option value => -2, !$rl ? 'not on your list' : "Status: $self->{rlist_status}[$rl->{status}]";
+        optgroup label => 'Set status';
          option value => $_, $self->{rlist_status}[$_]
            for (0..$#{$self->{rlist_status}});
         end;
-        option value => -1, mt '_relinfo_user_del' if $rl;
+        option value => -1, 'remove from list' if $rl;
        end;
       end;
      end 'tr';
@@ -364,7 +365,7 @@ sub edit {
   $frm->{title} = $v->{title} if !defined $frm->{title} && !$r;
   $frm->{original} = $v->{original} if !defined $frm->{original} && !$r;
 
-  my $title = mt $rid ? ($copy ? '_redit_title_copy' : '_redit_title_edit', $r->{title}) : ('_redit_title_add', $v->{title});
+  my $title = !$rid ? "Add release to $v->{title}" : $copy ? "Copy $r->{title}" : "Edit $r->{title}";
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('r', $r, $copy ? 'copy' : 'edit') if $rid;
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
@@ -378,41 +379,43 @@ sub _form {
   my($self, $r, $v, $frm, $copy) = @_;
 
   $self->htmlForm({ frm => $frm, action => $r ? "/r$r->{id}/".($copy ? 'copy' : 'edit') : "/v$v->{id}/add", editsum => 1 },
-  rel_geninfo => [ mt('_redit_form_geninfo'),
-    [ select => short => 'type',      name => mt('_redit_form_type'),
+  rel_geninfo => [ 'General info',
+    [ select => short => 'type',      name => 'Type',
       options => [ map [ $_, $_ ], @{$self->{release_types}} ] ],
-    [ check  => short => 'patch',     name => mt('_redit_form_patch') ],
-    [ check  => short => 'freeware',  name => mt('_redit_form_freeware') ],
-    [ check  => short => 'doujin',    name => mt('_redit_form_doujin') ],
-    [ input  => short => 'title',     name => mt('_redit_form_title'),    width => 450 ],
-    [ input  => short => 'original',  name => mt('_redit_form_original'), width => 450 ],
-    [ static => content => mt '_redit_form_original_note' ],
-    [ select => short => 'languages', name => mt('_redit_form_languages'), multi => 1,
+    [ check  => short => 'patch',     name => 'This release is a patch to another release.' ],
+    [ check  => short => 'freeware',  name => 'Freeware (i.e. available at no cost)' ],
+    [ check  => short => 'doujin',    name => 'Doujin (self-published, not by a company)' ],
+    [ input  => short => 'title',     name => 'Title (romaji)',    width => 450 ],
+    [ input  => short => 'original',  name => 'Original title', width => 450 ],
+    [ static => content => 'The original title of this release, leave blank if it already is in the Latin alphabet.' ],
+    [ select => short => 'languages', name => 'Language(s)', multi => 1,
       options => [ map [ $_, "$_ ($self->{languages}{$_})" ], keys %{$self->{languages}} ] ],
-    [ input  => short => 'gtin',      name => mt('_redit_form_gtin') ],
-    [ input  => short => 'catalog',   name => mt('_redit_form_catalog') ],
-    [ input  => short => 'website',   name => mt('_redit_form_website') ],
-    [ date   => short => 'released',  name => mt('_redit_form_released') ],
-    [ static => content => mt('_redit_form_released_note') ],
-    [ select => short => 'minage', name => mt('_redit_form_minage'),
+    [ input  => short => 'gtin',      name => 'JAN/UPC/EAN' ],
+    [ input  => short => 'catalog',   name => 'Catalog number' ],
+    [ input  => short => 'website',   name => 'Official website' ],
+    [ date   => short => 'released',  name => 'Release date' ],
+    [ static => content => 'Leave month or day blank if they are unknown' ],
+    [ select => short => 'minage', name => 'Age rating',
       options => [ map [ $_, minage $_, 1 ], @{$self->{age_ratings}} ] ],
-    [ textarea => short => 'notes', name => mt('_redit_form_notes').'<br /><b class="standout">'.mt('_inenglish').'</b>' ],
-    [ static => content => mt('_redit_form_notes_note') ],
+    [ textarea => short => 'notes', name => 'Notes<br /><b class="standout">English please!</b>' ],
+    [ static => content =>
+       'Miscellaneous notes/comments, information that does not fit in the above fields.'
+      .' E.g.: Censored/uncensored or for which releases this patch applies.' ],
   ],
 
-  rel_format => [ mt('_redit_form_format'),
-    [ select => short => 'resolution', name => mt('_redit_form_resolution'), options => [
+  rel_format => [ 'Format',
+    [ select => short => 'resolution', name => 'Resolution', options => [
       map [ $_, @{$self->{resolutions}[$_]} ], 0..$#{$self->{resolutions}} ] ],
-    [ select => short => 'voiced',     name => mt('_redit_form_voiced'), options => [
+    [ select => short => 'voiced',     name => 'Voiced', options => [
       map [ $_, $self->{voiced}[$_] ], 0..$#{$self->{voiced}} ] ],
-    [ select => short => 'ani_story',  name => mt('_redit_form_ani_story'), options => [
+    [ select => short => 'ani_story',  name => 'Story animation', options => [
       map [ $_, $self->{animated}[$_] ], 0..$#{$self->{animated}} ] ],
-    [ select => short => 'ani_ero',  name => mt('_redit_form_ani_ero'), options => [
-      map [ $_, $_ ? $self->{animated}[$_] : mt('_redit_form_ani_ero_none') ], 0..$#{$self->{animated}} ] ],
-    [ static => content => mt('_redit_form_ani_ero_note') ],
+    [ select => short => 'ani_ero',  name => 'Ero animation', options => [
+      map [ $_, $_ ? $self->{animated}[$_] : 'Unknown / no ero scenes' ], 0..$#{$self->{animated}} ] ],
+    [ static => content => 'Animation in erotic scenes, leave to unknown if there are no ero scenes.' ],
     [ hidden => short => 'media' ],
     [ static => nolabel => 1, content => sub {
-      h2 mt '_redit_form_platforms';
+      h2 'Platforms';
       div class => 'platforms';
        for my $p (sort keys %{$self->{platforms}}) {
          span;
@@ -426,38 +429,38 @@ sub _form {
        }
       end;
 
-      h2 mt '_redit_form_media';
+      h2 'Media';
       div id => 'media_div', '';
     }],
   ],
 
-  rel_prod => [ mt('_redit_form_prod'),
+  rel_prod => [ 'Producers',
     [ hidden => short => 'producers' ],
     [ static => nolabel => 1, content => sub {
-      h2 mt('_redit_form_prod_sel');
+      h2 'Selected producers';
       table; tbody id => 'producer_tbl'; end; end;
-      h2 mt('_redit_form_prod_add');
+      h2 'Add producer';
       table; Tr;
        td class => 'tc_name'; input id => 'producer_input', type => 'text', class => 'text'; end;
        td class => 'tc_role'; Select id => 'producer_role';
-        option value => 1, mt '_redit_form_prod_dev';
-        option value => 2, selected => 'selected',  mt '_redit_form_prod_pub';
-        option value => 3, mt '_redit_form_prod_both';
+        option value => 1, 'Developer';
+        option value => 2, selected => 'selected',  'Publisher';
+        option value => 3, 'Both';
        end; end;
-       td class => 'tc_add';  a id => 'producer_add', href => '#', mt '_js_add'; end;
+       td class => 'tc_add';  a id => 'producer_add', href => '#', 'add'; end;
       end; end 'table';
     }],
   ],
 
-  rel_vn => [ mt('_redit_form_vn'),
+  rel_vn => [ 'Visual novels',
     [ hidden => short => 'vn' ],
     [ static => nolabel => 1, content => sub {
-      h2 mt('_redit_form_vn_sel');
+      h2 'Selected visual novels';
       table class => 'stripe'; tbody id => 'vn_tbl'; end; end;
-      h2 mt('_redit_form_vn_add');
+      h2 'Add visual novel';
       div;
        input id => 'vn_input', type => 'text', class => 'text';
-       a href => '#', id => 'vn_add', mt '_js_add';
+       a href => '#', id => 'vn_add', 'add';
       end;
     }],
   ],
@@ -487,15 +490,15 @@ sub browse {
     $f->{q} ? ( search => $f->{q} ) : (),
   });
 
-  $self->htmlHeader(title => mt('_rbrowse_title'));
+  $self->htmlHeader(title => 'Browse releases');
 
   form method => 'get', action => '/r', 'accept-charset' => 'UTF-8';
   div class => 'mainbox';
-   h1 mt '_rbrowse_title';
+   h1 'Browse releases';
    $self->htmlSearchBox('r', $f->{q});
    p class => 'filselect';
     a id => 'filselect', href => '#r';
-     lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+     lit '<i>&#9656;</i> Filters<i></i>';
     end;
    end;
    input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
@@ -511,10 +514,10 @@ sub browse {
     pageurl  => "$uri;s=$f->{s};o=$f->{o}",
     sorturl  => $uri,
     header   => [
-      [ mt('_rbrowse_col_released'), 'released' ],
-      [ mt('_rbrowse_col_minage'),   'minage' ],
+      [ 'Released', 'released' ],
+      [ 'Rating',   'minage' ],
       [ '',         '' ],
-      [ mt('_rbrowse_col_title'),    'title' ],
+      [ 'Title',    'title' ],
     ],
     row      => sub {
       my($s, $n, $l) = @_;
@@ -537,9 +540,15 @@ sub browse {
   ) if @$list;
   if(($f->{q} || $f->{fil}) && !@$list) {
     div class => 'mainbox';
-     h1 mt '_rbrowse_noresults_title';
+     h1 'No results found';
      div class => 'notice';
-      p mt '_rbrowse_noresults_msg';
+      p;
+       txt 'Sorry, couldn\'t find anything that comes through your filters. You might want to disable a few filters to get more results.';
+       br; br;
+       txt 'Also, keep in mind that we don\'t have all information about all releases.'
+          .' So e.g. filtering on screen resolution will exclude all releases of which we don\'t know it\'s resolution,'
+          .' even though it might in fact be in the resolution you\'re looking for.';
+      end
      end;
     end;
   }

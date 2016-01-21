@@ -44,12 +44,18 @@ sub addform {
     return edit($self, undef, undef, 1) if !@$l && !$frm->{_err};
   }
 
-  $self->htmlHeader(title => mt('_vnedit_title_add'), noindex => 1);
+  $self->htmlHeader(title => 'Add a new visual novel', noindex => 1);
   if(@$l) {
     div class => 'mainbox';
-     h1 mt '_vnedit_dup_title';
+     h1 'Possible duplicates found';
      div class => 'warning';
-      p; lit mt '_vnedit_dup_msg'; end;
+      p;
+       txt 'The following is a list of visual novels that match the title(s) you gave.'
+         .' Please check this list to avoid creating a duplicate visual novel entry.'
+         .' Be especially wary of items that have been deleted! To see why an entry has been deleted, click on its title.';
+       br; br;
+       txt 'To add the visual novel anyway, hit the "Continue and ignore duplicates" button below.';
+      end;
      end;
      ul;
       for(@$l) {
@@ -63,12 +69,12 @@ sub addform {
   }
 
   $self->htmlForm({ frm => $frm, action => '/v/add', continue => @$l ? 2 : 1 },
-  vn_add => [ mt('_vnedit_title_add'),
-    [ input    => short => 'title',     name => mt('_vnedit_frm_title'), width => 450 ],
-    [ input    => short => 'original',  name => mt('_vnedit_original'), width => 450 ],
-    [ static   => content => mt '_vnedit_original_msg' ],
-    [ textarea => short => 'alias',     name => mt('_vnedit_alias'), rows => 4 ],
-    [ static   => content => mt '_vnedit_alias_msg' ],
+  vn_add => [ 'Add a new visual novel',
+    [ input    => short => 'title',     name => 'Title (romaji)', width => 450 ],
+    [ input    => short => 'original',  name => 'Original title', width => 450 ],
+    [ static   => content => 'The original title of this visual novel, leave blank if it already is in the Latin alphabet.' ],
+    [ textarea => short => 'alias',     name => 'Aliases', rows => 4 ],
+    [ static   => content => 'List of alternative titles or abbreviations. One line for each alias.' ],
   ]);
   $self->htmlFooter;
 }
@@ -196,7 +202,7 @@ sub edit {
   !exists $frm->{$_} && ($frm->{$_} = $b4{$_}) for (keys %b4);
   $frm->{editsum} = sprintf 'Reverted to revision v%d.%d', $vid, $rev if $rev && !defined $frm->{editsum};
 
-  my $title = $vid ? mt('_vnedit_title_edit', $v->{title}) : mt '_vnedit_title_add';
+  my $title = $vid ? "Edit $v->{title}" : 'Add a new visual novel';
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('v', $v, 'edit') if $vid;
   $self->htmlEditMessage('v', $v, $title);
@@ -249,51 +255,61 @@ sub _form {
   my($self, $v, $frm, $r, $chars) = @_;
   my $import = @$chars ? $self->dbVNImportSeiyuu($v->{id}, [ map $_->{id}, @$chars ]) : [];
   $self->htmlForm({ frm => $frm, action => $v ? "/v$v->{id}/edit" : '/v/new', editsum => 1, upload => 1 },
-  vn_geninfo => [ mt('_vnedit_geninfo'),
-    [ input    => short => 'title',     name => mt('_vnedit_frm_title'), width => 450 ],
-    [ input    => short => 'original',  name => mt('_vnedit_original'), width => 450 ],
-    [ static   => content => mt '_vnedit_original_msg' ],
-    [ textarea => short => 'alias',     name => mt('_vnedit_alias'), rows => 4 ],
-    [ static   => content => mt '_vnedit_alias_msg' ],
-    [ textarea => short => 'desc',      name => mt('_vnedit_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', rows => 10 ],
-    [ static   => content => mt '_vnedit_desc_msg' ],
-    [ select   => short => 'length',    name => mt('_vnedit_length'), width => 450, options =>
+  vn_geninfo => [ 'General info',
+    [ input    => short => 'title',     name => 'Title (romaji)', width => 450 ],
+    [ input    => short => 'original',  name => 'Original title', width => 450 ],
+    [ static   => content => 'The original title of this visual novel, leave blank if it already is in the Latin alphabet.' ],
+    [ textarea => short => 'alias',     name => 'Aliases', rows => 4 ],
+    [ static   => content =>
+        'List of alternative titles or abbreviations. One line for each alias.'
+       .' Can include both official (japanese/english) titles and unofficial titles used around net.<br />'
+       .' Titles that are listed in the releases should not be added here!' ],
+    [ textarea => short => 'desc',      name => 'Description<br /><b class="standout">English please!</b>', rows => 10 ],
+    [ static   => content =>
+        'Short description of the main story. Please do not include spoilers, and don\'t forget to list'
+       .' the source in case you didn\'t write the description yourself. Formatting codes are allowed.' ],
+    [ select   => short => 'length',    name => 'Length', width => 450, options =>
       [ map [ $_ => fmtvnlen $_, 2 ], 0..$#{$self->{vn_lengths}} ] ],
 
-    [ input    => short => 'l_wp',      name => mt('_vnedit_links'), pre => 'http://en.wikipedia.org/wiki/' ],
+    [ input    => short => 'l_wp',      name => 'External links', pre => 'http://en.wikipedia.org/wiki/' ],
     [ input    => short => 'l_encubed', pre => 'http://novelnews.net/tag/', post => '/' ],
     [ input    => short => 'l_renai',   pre => 'http://renai.us/game/', post => '.shtml' ],
 
-    [ input    => short => 'anime',     name => mt '_vnedit_anime' ],
-    [ static   => content => mt '_vnedit_anime_msg' ],
+    [ input    => short => 'anime',     name => 'Anime' ],
+    [ static   => content =>
+        'Whitespace separated list of <a href="http://anidb.net/">AniDB</a> anime IDs.'
+       .' E.g. "1015 3348" will add <a href="http://anidb.net/a1015">Shingetsutan Tsukihime</a>'
+       .' and <a href="http://anidb.net/a3348">Fate/stay night</a> as related anime.<br />'
+       .' Note: It can take a few minutes for the anime titles to appear on the VN page.' ],
   ],
 
-  vn_img => [ mt('_vnedit_image'), [ static => nolabel => 1, content => sub {
+  vn_img => [ 'Image', [ static => nolabel => 1, content => sub {
     div class => 'img';
-     p mt '_vnedit_image_none' if !$frm->{image};
+     p 'No image uploaded yet' if !$frm->{image};
      img src => imgurl(cv => $frm->{image}) if $frm->{image};
     end;
 
     div;
-     h2 mt '_vnedit_image_id';
+     h2 'Image ID';
      input type => 'text', class => 'text', name => 'image', id => 'image', value => $frm->{image}||'';
-     p mt '_vnedit_image_id_msg';
+     p 'Use a VN image that is already on the server. Set to \'0\' to remove the current image.';
      br; br;
 
-     h2 mt '_vnedit_image_upload';
+     h2 'Upload new image';
      input type => 'file', class => 'text', name => 'img', id => 'img';
-     p mt('_vnedit_image_upload_msg');
+     p 'Preferably the cover of the CD/DVD/package. Image must be in JPEG or PNG format'
+      .' and at most 5MB. Images larger than 256x400 will automatically be resized.';
      br; br; br;
 
-     h2 mt '_vnedit_image_nsfw';
+     h2 'NSFW';
      input type => 'checkbox', class => 'checkbox', id => 'img_nsfw', name => 'img_nsfw',
        $frm->{img_nsfw} ? (checked => 'checked') : ();
-     label class => 'checkbox', for => 'img_nsfw', mt '_vnedit_image_nsfw_check';
-     p mt '_vnedit_image_nsfw_msg';
+     label class => 'checkbox', for => 'img_nsfw', 'Not Safe For Work';
+     p 'Please check this option if the image contains nudity, gore, or is otherwise not safe in a work-friendly environment.';
     end 'div';
   }]],
 
-  vn_staff => [ mt('_vnedit_staff'),
+  vn_staff => [ 'Staff',
     [ json   => short => 'credits' ],
     [ static => nolabel => 1, content => sub {
       # propagate staff ids and names to javascript
@@ -304,13 +320,15 @@ sub _form {
       script_json staffdata => \%staff_data;
 
       div class => 'warning';
-       lit mt '_vnedit_staff_msg';
+       lit 'Please check the <a href="/d2.3">staff editing guidelines</a>. You can'
+         .' <a href="/s/new">create a new staff entry</a> if it is not in the database yet,'
+         .' but please <a href="/s/all">check for aliasses first</a>.';
       end;
       br;
       table; tbody id => 'credits_tbl';
-       Tr id => 'credits_loading'; td colspan => '4', mt('_js_loading'); end;
+       Tr id => 'credits_loading'; td colspan => '4', 'Loading...'; end;
       end; end;
-      h2 mt '_vnstaffe_add';
+      h2 'Add staff';
       table; Tr;
        td class => 'tc_staff';
         input id => 'credit_input', type => 'text', class => 'text'; end;
@@ -321,7 +339,7 @@ sub _form {
   # Cast tab is only shown for VNs with some characters listed.
   # There's no way to add voice actors in new VN edits since character list
   # would be empty anyway.
-  @{$chars} ? (vn_cast => [ mt('_vnedit_cast'),
+  @{$chars} ? (vn_cast => [ 'Cast',
     [ json   => short => 'seiyuu' ],
     [ static => nolabel => 1, content => sub {
       if (@$import) {
@@ -329,17 +347,17 @@ sub _form {
           map { my $c = $_; +{ map { $_ => $c->{$_} } qw|cid sid aid name| } } @$import
         ];
         div id => 'cast_import';
-         a href => '#', title => mt('_vnedit_cast_import_title'), mt '_vnedit_cast_import';
+         a href => '#', title => 'Import character cast from related visual novels', 'Import cast';
         end;
       }
       table; tbody id => 'cast_tbl';
-       Tr id => 'cast_loading'; td colspan => '4', mt '_js_loading'; end;
+       Tr id => 'cast_loading'; td colspan => '4', 'Loading...'; end;
       end; end;
-      h2 mt '_vnedit_cast_add';
+      h2 'Add cast';
       table; Tr;
        td class => 'tc_char';
         Select id =>'cast_chars';
-         option value => '', mt '_vnedit_cast_sel_char';
+         option value => '', 'Select character';
          for my $i (0..$#$chars) {
            my($name, $id) = @{$chars->[$i]}{qw|name id|};
            # append character IDs to coinciding names
@@ -349,7 +367,7 @@ sub _form {
            option value => $id, $name;
          }
         end;
-        txt ' '.mt '_vnedit_voiced_by';
+        txt ' voiced by';
        end;
        td class => 'tc_staff';
         input id => 'cast_input', type => 'text', class => 'text';
@@ -358,43 +376,43 @@ sub _form {
       end; end;
     }]]) : (),
 
-  vn_rel => [ mt('_vnedit_rel'),
+  vn_rel => [ 'Relations',
     [ hidden   => short => 'vnrelations' ],
     [ static   => nolabel => 1, content => sub {
-      h2 mt '_vnedit_rel_sel';
+      h2 'Selected relations';
       table;
        tbody id => 'relation_tbl';
         # to be filled using javascript
        end;
       end;
 
-      h2 mt '_vnedit_rel_add';
+      h2 'Add relation';
       table;
        Tr id => 'relation_new';
         td class => 'tc_vn';
          input type => 'text', class => 'text';
         end;
         td class => 'tc_rel';
-         txt mt('_vnedit_rel_isa').' ';
+         txt 'is an ';
          input type => 'checkbox', id => 'official', checked => 'checked';
-         label for => 'official', mt '_vnedit_rel_official';
+         label for => 'official', 'official';
          Select;
           option value => $_, $self->{vn_relations}{$_}[1]
             for (keys %{$self->{vn_relations}});
          end;
-         txt ' '.mt '_vnedit_rel_of';
+         txt ' of';
         end;
         td class => 'tc_title', $v ? $v->{title} : '';
         td class => 'tc_add';
-         a href => '#', mt '_js_add';
+         a href => '#', 'add';
         end;
        end;
       end 'table';
     }],
   ],
 
-  vn_scr => [ mt('_vnedit_scr'), !@$r ? (
-    [ static => nolabel => 1, content => mt '_vnedit_scrnorel' ],
+  vn_scr => [ 'Screenshots', !@$r ? (
+    [ static => nolabel => 1, content => 'No releases in the database yet. Screenshots can only be uploaded after a release has been added.' ],
   ) : (
     [ json   => short => 'screenshots' ],
     [ static => nolabel => 1, content => sub {
@@ -407,7 +425,12 @@ sub _form {
         staticurl => $self->{url_static},
       };
       div class => 'warning';
-       lit mt '_vnedit_scrmsg';
+       lit 'Please keep the following in mind when uploading screenshots:<br />'
+          .'- Screenshots have to be in the native resolution of the game,<br />'
+          .'- Remove any window borders and make sure the image is unmarked,<br />'
+          .'- Don\'t only upload event CGs.<br />'
+          .'Please read the <a href="/d2#6">guidelines</a> for more information.<br />'
+          .'Make sure to submit the form after the upload has finished!';
       end;
       br;
       table class => 'stripe';

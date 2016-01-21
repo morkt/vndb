@@ -72,7 +72,7 @@ sub list {
   $self->resRedirect('/v'.$list->[0]{id}, 'temp')
     if $f->{q} && @$list == 1 && $f->{p} == 1;
 
-  $self->htmlHeader(title => mt('_vnbrowse_title'), search => $f->{q});
+  $self->htmlHeader(title => 'Browse visual novels', search => $f->{q});
 
   my $quri = uri_escape($f->{q});
   form action => '/v/all', 'accept-charset' => 'UTF-8', method => 'get';
@@ -86,26 +86,26 @@ sub list {
   };
 
   div class => 'mainbox';
-   h1 mt '_vnbrowse_title';
+   h1 'Browse visual novels';
    $self->htmlSearchBox('v', $f->{q});
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => $url->($_), $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+      a href => $url->($_), $_ eq $char ? (class => 'optselected') : (), $_ eq 'all' ? 'ALL' : $_ ? uc $_ : '#';
     }
    end;
    if($uid) {
      p class => 'browseopts';
-      a href => $url->($char, 'vnlist'), $f->{vnlist} ? (class => 'optselected') : (), mt('_vnbrowse_vnlist');
-      a href => $url->($char, 'wish'  ), $f->{wish}   ? (class => 'optselected') : (), mt('_vnbrowse_wishlist');
+      a href => $url->($char, 'vnlist'), $f->{vnlist} ? (class => 'optselected') : (), 'User VN list';
+      a href => $url->($char, 'wish'  ), $f->{wish}   ? (class => 'optselected') : (), 'Wishlist';
      end 'p';
    }
 
    p class => 'filselect';
     a id => 'filselect', href => '#v';
-     lit '<i>&#9656;</i> '.mt('_vnbrowse_fil_title').'<i></i>';
+     lit '<i>&#9656;</i> Visual Novel Filters<i></i>';
     end;
     a id => 'rfilselect', href => '#r';
-     lit '<i>&#9656;</i> '.mt('_rbrowse_fil_title').'<i></i>';
+     lit '<i>&#9656;</i> Release filters<i></i>';
     end;
    end;
    input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};

@@ -29,7 +29,7 @@ sub rg {
   my $v = $self->dbVNGet(id => $vid, what => 'relgraph')->[0];
   return $self->resNotFound if !$v->{id} || !$v->{rgraph};
 
-  my $title = mt '_vnrg_title', $v->{title};
+  my $title = "Relation graph for $v->{title}";
   return if $self->htmlRGHeader($title, 'v', $v);
 
   $v->{svg} =~ s/id="node_v$vid"/id="graph_current"/;
@@ -59,17 +59,17 @@ my @rel_cols = (
   {    # Title
     id            => 'tit',
     sort_field    => 'title',
-    column_string => '_relinfo_title',
+    column_string => 'Title',
     draw          => sub { a href => "/r$_[0]{id}", shorten $_[0]{title}, 60 },
   }, { # Type
     id            => 'typ',
     sort_field    => 'type',
-    button_string => '_relinfo_type',
+    button_string => 'Type',
     default       => 1,
-    draw          => sub { cssicon "rt$_[0]{type}", $_[0]{type}; txt mt '_vnpage_rel_patch' if $_[0]{patch} },
+    draw          => sub { cssicon "rt$_[0]{type}", $_[0]{type}; txt '(patch)' if $_[0]{patch} },
   }, { # Languages
     id            => 'lan',
-    button_string => '_relinfo_lang',
+    button_string => 'Language',
     default       => 1,
     has_data      => sub { !!@{$_[0]{languages}} },
     draw          => sub {
@@ -81,15 +81,15 @@ my @rel_cols = (
   }, { # Publication
     id            => 'pub',
     sort_field    => 'publication',
-    column_string => '_relinfo_publication',
+    column_string => 'Publication',
     column_width  => 70,
-    button_string => '_relinfo_publication',
+    button_string => 'Publication',
     default       => 1,
     what          => 'extended',
-    draw          => sub { txt mt $_[0]{patch} ? '_relinfo_pub_patch' : '_relinfo_pub_nopatch', $_[0]{freeware}?0:1, $_[0]{doujin}?0:1 },
+    draw          => sub { txt join ', ', $_[0]{freeware} ? 'Freeware' : 'Non-free', $_[0]{patch} ? () : ($_[0]{doujin} ? 'doujin' : 'commercial') },
   }, { # Platforms
     id             => 'pla',
-    button_string => '_redit_form_platforms',
+    button_string => 'Platforms',
     default       => 1,
     what          => 'platforms',
     has_data      => sub { !!@{$_[0]{platforms}} },
@@ -98,12 +98,12 @@ my @rel_cols = (
         cssicon $_, $TUWF::OBJ->{platforms}{$_};
         br if $_ ne $_[0]{platforms}[$#{$_[0]{platforms}}];
       }
-      txt mt '_unknown' if !@{$_[0]{platforms}};
+      txt 'Unknown' if !@{$_[0]{platforms}};
     },
   }, { # Media
     id            => 'med',
-    column_string => '_redit_form_media',
-    button_string => '_redit_form_media',
+    column_string => 'Media',
+    button_string => 'Media',
     what          => 'media',
     has_data      => sub { !!@{$_[0]{media}} },
     draw          => sub {
@@ -111,13 +111,13 @@ my @rel_cols = (
         txt fmtmedia($_->{medium}, $_->{qty});
         br if $_ ne $_[0]{media}[$#{$_[0]{media}}];
       }
-      txt mt '_unknown' if !@{$_[0]{media}};
+      txt 'Unknown' if !@{$_[0]{media}};
     },
   }, { # Resolution
     id            => 'res',
     sort_field    => 'resolution',
-    column_string => '_relinfo_resolution',
-    button_string => '_relinfo_resolution',
+    column_string => 'Resolution',
+    button_string => 'Resolution',
     na_for_patch  => 1,
     default       => 1,
     what          => 'extended',
@@ -126,15 +126,15 @@ my @rel_cols = (
       if($_[0]{resolution}) {
         txt $TUWF::OBJ->{resolutions}[$_[0]{resolution}][0];
       } else {
-        txt mt '_unknown';
+        txt 'Unknown';
       }
     },
   }, { # Voiced
     id            => 'voi',
     sort_field    => 'voiced',
-    column_string => '_relinfo_voiced',
+    column_string => 'Voiced',
     column_width  => 70,
-    button_string => '_relinfo_voiced',
+    button_string => 'Voiced',
     na_for_patch  => 1,
     default       => 1,
     what          => 'extended',
@@ -143,38 +143,38 @@ my @rel_cols = (
   }, { # Animation
     id            => 'ani',
     sort_field    => 'ani_ero',
-    column_string => '_relinfo_ani',
+    column_string => 'Animation',
     column_width  => 110,
-    button_string => '_relinfo_ani',
+    button_string => 'Animation',
     na_for_patch  => '1',
     what          => 'extended',
     has_data      => sub { !!($_[0]{ani_story} || $_[0]{ani_ero}) },
     draw          => sub {
       txt join ', ',
-        $_[0]{ani_story} ? mt('_relinfo_ani_story', $TOWF::OBJ->{animated}[$_[0]{ani_story}]):(),
-        $_[0]{ani_ero}   ? mt('_relinfo_ani_ero',   $TOWF::OBJ->{animated}[$_[0]{ani_ero}]  ):();
-      txt mt '_unknown' if !$_[0]{ani_story} && !$_[0]{ani_ero};
+        $_[0]{ani_story} ? "Story: $TUWF::OBJ->{animated}[$_[0]{ani_story}]"   :(),
+        $_[0]{ani_ero}   ? "Ero scenes: $TUWF::OBJ->{animated}[$_[0]{ani_ero}]":();
+      txt 'Unknown' if !$_[0]{ani_story} && !$_[0]{ani_ero};
     },
   }, { # Released
     id            => 'rel',
     sort_field    => 'released',
-    column_string => '_relinfo_released',
-    button_string => '_relinfo_released',
+    column_string => 'Released',
+    button_string => 'Released',
     default       => 1,
     draw          => sub { lit fmtdatestr $_[0]{released} },
   }, { # Age rating
     id            => 'min',
     sort_field    => 'minage',
-    button_string => '_relinfo_minage',
+    button_string => 'Age rating',
     default       => 1,
     has_data      => sub { $_[0]{minage} != -1 },
     draw          => sub { txt minage $_[0]{minage} },
   }, { # Notes
     id            => 'not',
     sort_field    => 'notes',
-    column_string => '_redit_form_notes',
+    column_string => 'Notes',
     column_width  => 400,
-    button_string => '_redit_form_notes',
+    button_string => 'Notes',
     default       => 1,
     what          => 'extended',
     has_data      => sub { !!$_[0]{notes} },
@@ -189,7 +189,7 @@ sub releases {
   my $v = $self->dbVNGet(id => $vid)->[0];
   return $self->resNotFound if !$v->{id};
 
-  my $title = mt('_vnpage_rel_title', $v->{title});
+  my $title = "Releases for $v->{title}";
   $self->htmlHeader(title => $title);
   $self->htmlMainTabs('v', $v, 'releases');
 
@@ -217,7 +217,7 @@ sub releases {
    h1 $title;
 
    if(!@$r) {
-     td mt '_vnpage_rel_none';
+     td 'We don\'t have any information about releases of this visual novel yet...';
    } else {
      _releases_buttons($self, $f, $url, $r);
    }
@@ -233,7 +233,7 @@ sub _releases_buttons {
 
   # Column visibility
   p class => 'browseopts';
-   a href => $url->($_->{id}, $f->{$_->{id}} ? 0 : 1), $f->{$_->{id}} ? (class => 'optselected') : (), mt $_->{button_string}
+   a href => $url->($_->{id}, $f->{$_->{id}} ? 0 : 1), $f->{$_->{id}} ? (class => 'optselected') : (), $_->{button_string}
      for (grep $_->{button_string}, @rel_cols);
   end;
 
@@ -242,9 +242,9 @@ sub _releases_buttons {
   my $all_unselected = !grep $_->{button_string} &&  $f->{$_->{id}}, @rel_cols;
   my $all_url = sub { $url->(map +($_->{id},$_[0]), grep $_->{button_string}, @rel_cols); };
   p class => 'browseopts';
-   a href => $all_url->(1),                  $all_selected   ? (class => 'optselected') : (), mt '_all_on';
-   a href => $all_url->(0),                  $all_unselected ? (class => 'optselected') : (), mt '_all_off';
-   a href => $url->('cw', $f->{cw} ? 0 : 1), $f->{cw}        ? (class => 'optselected') : (), mt '_vnpage_restrict_column_width';
+   a href => $all_url->(1),                  $all_selected   ? (class => 'optselected') : (), 'All on';
+   a href => $all_url->(0),                  $all_unselected ? (class => 'optselected') : (), 'All off';
+   a href => $url->('cw', $f->{cw} ? 0 : 1), $f->{cw}        ? (class => 'optselected') : (), 'Restrict column width';
   end;
 
   # Platform/language filters
@@ -255,7 +255,7 @@ sub _releases_buttons {
     p class => 'browseopts';
      for('all', sort keys %opts) {
        a href => $url->($option, $_), $_ eq $f->{$option} ? (class => 'optselected') : ();
-        $_ eq 'all' ? txt mt '_all' : cssicon "$csscat $_", $txt->{$_};
+        $_ eq 'all' ? txt 'All' : cssicon "$csscat $_", $txt->{$_};
        end 'a';
      }
     end 'p';
@@ -287,7 +287,7 @@ sub _releases_table {
      Tr;
       for my $c (@col) {
         td class => 'key';
-         txt mt $c->{column_string} if $c->{column_string};
+         txt $c->{column_string} if $c->{column_string};
          for($c->{sort_field} ? (0,1) : ()) {
            my $active = $f->{s} eq $c->{sort_field} && !$f->{o} == !$_;
            a href => $url->(o => $_, s => $c->{sort_field}) if !$active;
@@ -311,7 +311,7 @@ sub _releases_table {
          td $cspan > 1 ? (colspan => $cspan) : (),
             $col[$c]{column_width} && $f->{cw} ? (style => "max-width: $col[$c]{column_width}px") : ();
           if($r->{patch} && $col[$c]{na_for_patch}) {
-            txt mt '_vnpage_na_for_patches';
+            txt 'NA for patches';
           } else {
             $col[$c]{draw}->($r);
           }
@@ -357,19 +357,19 @@ sub page {
     # image
     div class => 'vnimg';
      if(!$v->{image}) {
-       p mt '_vnpage_noimg';
+       p 'No image uploaded yet';
      } else {
        p $v->{img_nsfw} ? (id => 'nsfw_hid', $self->authPref('show_nsfw') ? () : (class => 'hidden')) : ();
         img src => imgurl(cv => $v->{image}), alt => $v->{title};
-        i mt '_vnpage_imgnsfw_foot' if $v->{img_nsfw};
+        i 'Flagged as NSFW' if $v->{img_nsfw};
        end;
        if($v->{img_nsfw}) {
          p id => 'nsfw_show', $self->authPref('show_nsfw') ? (class => 'hidden') : ();
-          txt mt('_vnpage_imgnsfw_msg');
+          txt 'This image has been flagged as Not Safe For Work.';
           br; br;
-          a href => '#', mt '_vnpage_imgnsfw_show';
+          a href => '#', 'Show me anyway';
           br; br;
-          txt mt '_vnpage_imgnsfw_note';
+          txt '(This warning can be disabled in your account)';
          end;
        }
      }
@@ -378,39 +378,39 @@ sub page {
     # general info
     table class => 'stripe';
      Tr;
-      td class => 'key', mt '_vnpage_vntitle';
+      td class => 'key', 'Title';
       td $v->{title};
      end;
      if($v->{original}) {
        Tr;
-        td mt '_vnpage_original';
+        td 'Original title';
         td $v->{original};
        end;
      }
      if($v->{alias}) {
        $v->{alias} =~ s/\n/, /g;
        Tr;
-        td mt '_vnpage_alias';
+        td 'Aliases';
         td $v->{alias};
        end;
      }
      if($v->{length}) {
        Tr;
-        td mt '_vnpage_length';
+        td 'Length';
         td fmtvnlen $v->{length}, 1;
        end;
      }
      my @links = (
-       $v->{l_wp} ?      [ 'wp', 'http://en.wikipedia.org/wiki/%s', $v->{l_wp} ] : (),
-       $v->{l_encubed} ? [ 'encubed',   'http://novelnews.net/tag/%s/', $v->{l_encubed} ] : (),
-       $v->{l_renai} ?   [ 'renai',  'http://renai.us/game/%s.shtml', $v->{l_renai} ] : (),
+       $v->{l_wp} ?      [ 'Wikipedia', 'http://en.wikipedia.org/wiki/%s', $v->{l_wp} ] : (),
+       $v->{l_encubed} ? [ 'Encubed',   'http://novelnews.net/tag/%s/', $v->{l_encubed} ] : (),
+       $v->{l_renai} ?   [ 'Renai.us',  'http://renai.us/game/%s.shtml', $v->{l_renai} ] : (),
      );
      if(@links) {
        Tr;
-        td mt '_vnpage_links';
+        td 'Links';
         td;
          for(@links) {
-           a href => sprintf($_->[1], $_->[2]), mt "_vnpage_l_$_->[0]";
+           a href => sprintf($_->[1], $_->[2]), $_->[0];
            txt ', ' if $_ ne $links[$#links];
          }
         end;
@@ -425,7 +425,7 @@ sub page {
 
      Tr class => 'nostripe';
       td class => 'vndesc', colspan => 2;
-       h2 mt '_vnpage_description';
+       h2 'Description';
        p;
         lit $v->{desc} ? bb2html $v->{desc} : '-';
        end;
@@ -444,11 +444,11 @@ sub page {
       my $tags_cat = $self->authPref('tags_cat') || $self->{default_tags_cat};
       a href => "#$_", $tags_cat =~ /\Q$_/ ? (class => 'tsel') : (), lc $self->{tag_categories}{$_} for keys %{$self->{tag_categories}};
       my $spoiler = $self->authPref('spoilers') || 0;
-      a href => '#', class => 'sec'.($spoiler == 0 ? ' tsel' : ''), lc mt '_spoilset_0';
-      a href => '#', $spoiler == 1 ? (class => 'tsel') : (), lc mt '_spoilset_1';
-      a href => '#', $spoiler == 2 ? (class => 'tsel') : (), lc mt '_spoilset_2';
-      a href => '#', class => 'sec'.($self->authPref('tags_all') ? '': ' tsel'), mt '_vnpage_tags_summary';
-      a href => '#', $self->authPref('tags_all') ? (class => 'tsel') : (), mt '_vnpage_tags_all';
+      a href => '#', class => 'sec'.($spoiler == 0 ? ' tsel' : ''), lc 'Hide spoilers';
+      a href => '#', $spoiler == 1 ? (class => 'tsel') : (), lc 'Show minor spoilers';
+      a href => '#', $spoiler == 2 ? (class => 'tsel') : (), lc 'Spoil me!';
+      a href => '#', class => 'sec'.($self->authPref('tags_all') ? '': ' tsel'), 'summary';
+      a href => '#', $self->authPref('tags_all') ? (class => 'tsel') : (), 'all';
      end;
      div id => 'vntags';
       for (@$t) {
@@ -467,12 +467,12 @@ sub page {
     clearfloat; # fix tabs placement when tags are hidden
     ul class => 'maintabs notfirst';
      if(@$chars) {
-       li class => 'left '.(!$char ? ' tabselected' : ''); a href => "/v$v->{id}#main", name => 'main', mt '_vnpage_tab_main'; end;
-       li class => 'left '.($char  ? ' tabselected' : ''); a href => "/v$v->{id}/chars#chars", name => 'chars', mt '_vnpage_tab_chars'; end;
+       li class => 'left '.(!$char ? ' tabselected' : ''); a href => "/v$v->{id}#main", name => 'main', 'main'; end;
+       li class => 'left '.($char  ? ' tabselected' : ''); a href => "/v$v->{id}/chars#chars", name => 'chars', 'characters'; end;
      }
      if($self->authCan('edit')) {
-       li; a href => "/c/new?vid=$v->{id}", mt '_vnpage_char_add'; end;
-       li; a href => "/v$v->{id}/add", mt '_vnpage_rel_add'; end;
+       li; a href => "/c/new?vid=$v->{id}", 'add character'; end;
+       li; a href => "/v$v->{id}/add", 'add release'; end;
      }
     end;
   }
@@ -506,57 +506,56 @@ sub _revision {
     [ desc        => 'Description',    diff => qr/[ ,\n\.]/ ],
     [ length      => 'Length',         serialize => sub { fmtvnlen $_[0] } ],
     [ l_wp        => 'Wikipedia link', htmlize => sub {
-      $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
+      $_[0] ? sprintf '<a href="http://en.wikipedia.org/wiki/%s">%1$s</a>', xml_escape $_[0] : '[empty]'
     }],
     [ l_encubed   => 'Encubed tag', htmlize => sub {
-      $_[0] ? sprintf '<a href="http://novelnews.net/tag/%s/">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
+      $_[0] ? sprintf '<a href="http://novelnews.net/tag/%s/">%1$s</a>', xml_escape $_[0] : '[empty]'
     }],
     [ l_renai     => 'Renai.us link', htmlize => sub {
-      $_[0] ? sprintf '<a href="http://renai.us/game/%s.shtml">%1$s</a>', xml_escape $_[0] : mt '_revision_nolink'
+      $_[0] ? sprintf '<a href="http://renai.us/game/%s.shtml">%1$s</a>', xml_escape $_[0] : '[empty]'
     }],
     [ credits     => 'Credits', join => '<br />', split => sub {
       my @r = map sprintf('<a href="/s%d" title="%s">%s</a> [%s]%s', $_->{id},
           xml_escape($_->{original}||$_->{name}), xml_escape($_->{name}), xml_escape($self->{staff_roles}{$_->{role}}),
           $_->{note} ? ' ['.xml_escape($_->{note}).']' : ''),
         sort { $a->{id} <=> $b->{id} || $a->{role} cmp $b->{role} } @{$_[0]};
-      return @r ? @r : (mt '_revision_empty');
+      return @r ? @r : ('[empty]');
     }],
     [ seiyuu      => 'Seiyuu', join => '<br />', split => sub {
-      my @r = map sprintf('<a href="/s%d" title="%s">%s</a> %s%s',
-          $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape($_->{name}),
-          mt('_staff_as', xml_escape($_->{cname})),
+      my @r = map sprintf('<a href="/s%d" title="%s">%s</a> as %s%s',
+          $_->{id}, xml_escape($_->{original}||$_->{name}), xml_escape($_->{name}), xml_escape($_->{cname}),
           $_->{note} ? ' ['.xml_escape($_->{note}).']' : ''),
         sort { $a->{id} <=> $b->{id} || $a->{cid} <=> $b->{cid} || $a->{note} cmp $b->{note} } @{$_[0]};
-      return @r ? @r : (mt '_revision_empty');
+      return @r ? @r : ('[empty]');
     }],
     [ relations   => 'Relations', join => '<br />', split => sub {
       my @r = map sprintf('[%s] %s: <a href="/v%d" title="%s">%s</a>',
-        mt($_->{official} ? '_vndiff_rel_official' : '_vndiff_rel_unofficial'),
-        $self->{vn_relations}{$_->{relation}}[1], $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
+        $_->{official} ? 'official' : 'unofficial', $self->{vn_relations}{$_->{relation}}[1],
+        $_->{id}, xml_escape($_->{original}||$_->{title}), xml_escape shorten $_->{title}, 40
       ), sort { $a->{id} <=> $b->{id} } @{$_[0]};
-      return @r ? @r : (mt '_revision_empty');
+      return @r ? @r : ('[empty]');
     }],
     [ anime       => 'Anime', join => ', ', split => sub {
       my @r = map sprintf('<a href="http://anidb.net/a%d">a%1$d</a>', $_->{id}), sort { $a->{id} <=> $b->{id} } @{$_[0]};
-      return @r ? @r : (mt '_revision_empty');
+      return @r ? @r : ('[empty]');
     }],
     [ screenshots => 'Screenshots', join => '<br />', split => sub {
       my @r = map sprintf('[%s] <a href="%s" data-iv="%dx%d">%d</a> (%s)',
         $_->{rid} ? qq|<a href="/r$_->{rid}">r$_->{rid}</a>| : 'no release',
         imgurl(sf => $_->{id}), $_->{width}, $_->{height}, $_->{id},
-        mt($_->{nsfw} ? '_vndiff_nsfw_notsafe' : '_vndiff_nsfw_safe')
+        $_->{nsfw} ? 'Not safe' : 'Safe'
       ), @{$_[0]};
-      return @r ? @r : (mt '_revision_empty');
+      return @r ? @r : ('[empty]');
     }],
     [ image       => 'Image', htmlize => sub {
       my $url = imgurl(cv => $_[0]);
       if($_[0]) {
-        return $_[1]->{img_nsfw} && !$self->authPref('show_nsfw') ? "<a href=\"$url\">".mt('_vndiff_image_nsfw').'</a>' : "<img src=\"$url\" />";
+        return $_[1]->{img_nsfw} && !$self->authPref('show_nsfw') ? "<a href=\"$url\">(NSFW)</a>" : "<img src=\"$url\" />";
       } else {
-        return mt '_vndiff_image_none';
+        return 'No image';
       }
     }],
-    [ img_nsfw    => 'Image NSFW', serialize => sub { mt $_[0] ? '_vndiff_nsfw_notsafe' : '_vndiff_nsfw_safe' } ],
+    [ img_nsfw    => 'Image NSFW', serialize => sub { $_[0] ? 'Not safe' : 'Safe' } ],
   );
 }
 
@@ -571,7 +570,7 @@ sub _producers {
     my %dev = map $_->{developer} ? ($_->{id} => $_) : (), map @{$_->{producers}}, @$r;
     my @dev = values %dev;
     Tr;
-     td mt "_vnpage_developer";
+     td 'Developer';
      td;
       for (@dev) {
         a href => "/p$_->{id}", title => $_->{original}||$_->{name}, shorten $_->{name}, 30;
@@ -583,7 +582,7 @@ sub _producers {
 
   if(grep $_->{publisher}, map @{$_->{producers}}, @$r) {
     Tr;
-     td mt "_vnpage_publisher";
+     td 'Publishers';
      td;
       for my $l (@lang) {
         my %p = map $_->{publisher} ? ($_->{id} => $_) : (), map @{$_->{producers}}, grep grep($_ eq $l, @{$_->{languages}}), @$r;
@@ -611,14 +610,14 @@ sub _relations {
 
 
   Tr;
-   td mt '_vnpage_relations';
+   td 'Relations';
    td class => 'relations';
     dl;
      for(sort keys %rel) {
        dt $self->{vn_relations}{$_}[1];
        dd;
         for (@{$rel{$_}}) {
-          b class => 'grayedout', mt('_vnpage_relations_unofficial').' ' if !$_->{official};
+          b class => 'grayedout', '[unofficial] ' if !$_->{official};
           a href => "/v$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 40;
           br;
         }
@@ -634,12 +633,12 @@ sub _anime {
   my($self, $v) = @_;
 
   Tr;
-   td mt '_vnpage_anime';
+   td 'Related anime';
    td class => 'anime';
     for (sort { ($a->{year}||9999) <=> ($b->{year}||9999) } @{$v->{anime}}) {
       if(!$_->{lastfetch} || !$_->{year} || !$_->{title_romaji}) {
         b;
-         lit mt '_vnpage_anime_noinfo', $_->{id}, "http://anidb.net/a$_->{id}";
+         lit sprintf '[no information available at this time: <a href="http://anidb.net/a%d">%1$d</a>]', $_->{id};
         end;
       } else {
         b;
@@ -673,36 +672,36 @@ sub _useroptions {
   my $wish = $self->dbWishListGet(uid => $self->authInfo->{id}, vid => $v->{id})->[0];
 
   Tr;
-   td mt '_vnpage_uopt';
+   td 'User options';
    td;
     if($vote || !$wish) {
       Select id => 'votesel', name => $self->authGetCode("/v$v->{id}/vote");
-       option value => -3, $vote ? mt '_vnpage_uopt_voted', fmtvote($vote->{vote}) : mt '_vnpage_uopt_novote';
-       optgroup label => $vote ? mt '_vnpage_uopt_changevote' : mt '_vnpage_uopt_dovote';
-        option value => $_, "$_ (".mt("_vote_$_").')' for (reverse 1..10);
-        option value => -2, mt '_vnpage_uopt_othvote';
+       option value => -3, $vote ? 'your vote: '.fmtvote($vote->{vote}) : 'not voted yet';
+       optgroup label => $vote ? 'Change vote' : 'Vote';
+        option value => $_, "$_ (".fmtrating($_).')' for (reverse 1..10);
+        option value => -2, 'Other';
        end;
-       option value => -1, mt '_vnpage_uopt_delvote' if $vote;
+       option value => -1, 'revoke' if $vote;
       end;
       br;
     }
 
     Select id => 'listsel', name => $self->authGetCode("/v$v->{id}/list");
-     option $list ? mt '_vnpage_uopt_vnlisted', $self->{vnlist_status}[$list->{status}] : mt '_vnpage_uopt_novn';
-     optgroup label => $list ? mt '_vnpage_uopt_changevn' : mt '_vnpage_uopt_addvn';
+     option $list ? "VN list: $self->{vnlist_status}[$list->{status}]" : 'not on your VN list';
+     optgroup label => $list ? 'Change status' : 'Add to VN list';
       option value => $_, $self->{vnlist_status}[$_] for (0..$#{$self->{vnlist_status}});
      end;
-     option value => -1, mt '_vnpage_uopt_delvn' if $list;
+     option value => -1, 'remove from VN list' if $list;
     end;
     br;
 
     if(!$vote || $wish) {
       Select id => 'wishsel', name => $self->authGetCode("/v$v->{id}/wish");
-       option $wish ? mt '_vnpage_uopt_wishlisted', $self->{wishlist_status}[$wish->{wstat}] : mt '_vnpage_uopt_nowish';
-       optgroup label => $wish ? mt '_vnpage_uopt_changewish' : mt '_vnpage_uopt_addwish';
+       option $wish ? "wishlist: $self->{wishlist_status}[$wish->{wstat}]" : 'not on your wishlist';
+       optgroup label => $wish ? 'Change status' : 'Add to wishlist';
         option value => $_, $self->{wishlist_status}[$_] for (0..$#{$self->{wishlist_status}});
        end;
-       option value => -1, mt '_vnpage_uopt_delwish' if $wish;
+       option value => -1, 'remove from wishlist' if $wish;
       end;
     }
    end;
@@ -750,9 +749,9 @@ sub _releases {
   my($self, $v, $r) = @_;
 
   div class => 'mainbox releases';
-   h1 mt '_vnpage_rel';
+   h1 'Releases';
    if(!@$r) {
-     p mt '_vnpage_rel_none';
+     p 'We don\'t have any information about releases of this visual novel yet...';
      end;
      return;
    }
@@ -789,7 +788,7 @@ sub _releases {
          end;
          td class => 'tc4';
           a href => "/r$rel->{id}", title => $rel->{original}||$rel->{title}, $rel->{title};
-          b class => 'grayedout', ' '.mt '_vnpage_rel_patch' if $rel->{patch};
+          b class => 'grayedout', ' (patch)' if $rel->{patch};
          end;
          td class => 'tc5';
           if($self->authInfo->{id}) {
@@ -803,7 +802,7 @@ sub _releases {
           a href => "/affiliates/new?rid=$rel->{id}", 'a' if $self->authCan('affiliate');
           if($rel->{website}) {
             a href => $rel->{website}, rel => 'nofollow';
-             cssicon 'external', mt '_vnpage_rel_extlink';
+             cssicon 'external', 'External link';
             end;
           } else {
             txt ' ';
@@ -823,15 +822,14 @@ sub _screenshots {
 
    if(grep $_->{nsfw}, @{$v->{screenshots}}) {
      p class => 'nsfwtoggle';
-      lit mt '_vnpage_scr_showing',
-        sprintf('<i id="nsfwshown">%d</i>', $self->authPref('show_nsfw') ? scalar @{$v->{screenshots}} : scalar grep(!$_->{nsfw}, @{$v->{screenshots}})),
-        scalar @{$v->{screenshots}};
-      txt " ";
-      a href => '#', id => "nsfwhide", mt '_vnpage_scr_nsfwhide';
+      txt 'Showing ';
+      i id => 'nsfwshown', $self->authPref('show_nsfw') ? scalar @{$v->{screenshots}} : scalar grep(!$_->{nsfw}, @{$v->{screenshots}});
+      txt sprintf ' out of %d screenshot%s. ', scalar @{$v->{screenshots}}, @{$v->{screenshots}} == 1 ? '' : 's';
+      a href => '#', id => "nsfwhide", 'show/hide NSFW';
      end;
    }
 
-   h1 mt '_vnpage_scr';
+   h1 'Screenshots';
 
    for my $rel (@$r) {
      my @scr = grep $_->{rid} && $rel->{id} == $_->{rid}, @{$v->{screenshots}};
@@ -847,7 +845,7 @@ sub _screenshots {
           class => sprintf('scrlnk%s%s', $_->{nsfw} ? ' nsfw':'', $_->{nsfw}&&!$self->authPref('show_nsfw')?' hidden':''),
           'data-iv' => "$_->{width}x$_->{height}:scr";
          img src => imgurl(st => $_->{id}),
-           width => $w, height => $h, alt => mt '_vnpage_scr_num', $_->{id};
+           width => $w, height => $h, alt => "Screenshot #$_->{id}";
         end;
       }
      end;
@@ -861,9 +859,9 @@ sub _stats {
 
   my $stats = $self->dbVoteStats(vid => $v->{id}, 1);
   div class => 'mainbox';
-   h1 mt '_vnpage_stats';
+   h1 'User stats';
    if(!grep $_->[0] > 0, @$stats) {
-     p mt '_vnpage_stats_none';
+     p 'Nobody has voted on this visual novel yet...';
    } else {
      $self->htmlVoteStats(v => $v, $stats);
    }
@@ -916,7 +914,7 @@ sub _charsum {
 
   div class => 'mainbox charsum summarize';
    $self->charOps(0) if $has_spoilers;
-   h1 mt '_vnpage_charsum';
+   h1 'Character summary';
    div class => 'charsum_list';
     for my $c (@l) {
       div class => 'charsum_bubble'.($has_spoilers ? ' '.charspoil(_charspoillvl $v->{id}, $c) : '');
@@ -926,7 +924,7 @@ sub _charsum {
        end;
        if(@{$c->{seiyuu}}) {
          div class => 'actor';
-          txt mt '_charp_voice';
+          txt 'Voiced by';
           @{$c->{seiyuu}} > 1 ? br : txt ' ';
           for my $s (sort { $a->{name} cmp $b->{name} } @{$c->{seiyuu}}) {
             a href => "/s$s->{sid}", title => $s->{original}||$s->{name}, $s->{name};
@@ -947,7 +945,7 @@ sub _staff {
   return if !@{$v->{credits}};
 
   div class => 'mainbox staff summarize', 'data-summarize-height' => 100, id => 'staff';
-   h1 mt '_vnpage_staff';
+   h1 'Staff';
    for my $r (keys %{$self->{staff_roles}}) {
      my @s = grep $_->{role} eq $r, @{$v->{credits}};
      next if !@s;

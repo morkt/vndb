@@ -49,7 +49,7 @@ sub tagpage {
     tag_exc => undef,
   });
 
-  my $title = mt '_tagp_title', $t->{meta}?0:1, $t->{name};
+  my $title = ($t->{meta} ? 'Meta tag: ' : 'Tag: ').$t->{name};
   $self->htmlHeader(title => $title, noindex => $t->{state} != 2);
   $self->htmlMainTabs('g', $t);
 
@@ -58,25 +58,29 @@ sub tagpage {
      h1 $title;
      if($t->{state} == 1) {
        div class => 'warning';
-        h2 mt '_tagp_del_title';
+        h2 'Tag deleted';
         p;
-         lit mt '_tagp_del_msg';
+         txt 'This tag has been removed from the database, and cannot be used or re-added.';
+         br;
+         txt 'File a request on the ';
+         a href => '/t/db', 'discussion board';
+         txt ' if you disagree with this.';
         end;
        end;
      } else {
        div class => 'notice';
-        h2 mt '_tagp_pending_title';
-        p mt '_tagp_pending_msg';
+        h2 'Waiting for approval';
+        p 'This tag is waiting for a moderator to approve it. You can still use it to tag VNs as you would with a normal tag.';
        end;
      }
     end 'div';
   }
 
   div class => 'mainbox';
-   a class => 'addnew', href => "/g$tag/add", mt '_tagp_addchild' if $self->authCan('tag') && $t->{state} != 1;
+   a class => 'addnew', href => "/g$tag/add", 'Create child tag' if $self->authCan('tag') && $t->{state} != 1;
    h1 $title;
 
-   parenttags($t, mt('_tagp_indexlink'), 'g');
+   parenttags($t, 'Tags', 'g');
 
    if($t->{description}) {
      p class => 'description';
@@ -84,44 +88,44 @@ sub tagpage {
      end;
    }
    p class => 'center';
-    b mt('_tagp_cat');
+    b 'Category';
     br;
     txt $self->{tag_categories}{$t->{cat}};
    end;
    if(@{$t->{aliases}}) {
      p class => 'center';
-      b mt('_tagp_aliases');
+      b 'Aliases';
       br;
       lit xml_escape($_).'<br />' for (@{$t->{aliases}});
      end;
    }
   end 'div';
 
-  childtags($self, mt('_tagp_childs'), 'g', $t) if @{$t->{childs}};
+  childtags($self, 'Child tags', 'g', $t) if @{$t->{childs}};
 
   if(!$t->{meta} && $t->{state} == 2) {
     form action => "/g$t->{id}", 'accept-charset' => 'UTF-8', method => 'get';
     div class => 'mainbox';
-     a class => 'addnew', href => "/g/links?t=$tag", mt '_tagp_rawvotes';
-     h1 mt '_tagp_vnlist';
+     a class => 'addnew', href => "/g/links?t=$tag", 'Recently tagged';
+     h1 'Visual novels';
 
      p class => 'browseopts';
-      a href => "/g$t->{id}?fil=$f->{fil};m=0", $f->{m} == 0 ? (class => 'optselected') : (), mt '_spoilset_0';
-      a href => "/g$t->{id}?fil=$f->{fil};m=1", $f->{m} == 1 ? (class => 'optselected') : (), mt '_spoilset_1';
-      a href => "/g$t->{id}?fil=$f->{fil};m=2", $f->{m} == 2 ? (class => 'optselected') : (), mt '_spoilset_2';
+      a href => "/g$t->{id}?fil=$f->{fil};m=0", $f->{m} == 0 ? (class => 'optselected') : (), 'Hide spoilers';
+      a href => "/g$t->{id}?fil=$f->{fil};m=1", $f->{m} == 1 ? (class => 'optselected') : (), 'Show minor spoilers';
+      a href => "/g$t->{id}?fil=$f->{fil};m=2", $f->{m} == 2 ? (class => 'optselected') : (), 'Spoil me!';
      end;
 
      p class => 'filselect';
       a id => 'filselect', href => '#v';
-       lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+       lit '<i>&#9656;</i> Filters<i></i>';
       end;
      end;
      input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
 
      if(!@$list) {
-       p; br; br; txt mt '_tagp_novn'; end;
+       p; br; br; txt 'This tag has not been linked to any visual novels yet, or they were hidden because of your spoiler settings or default filters.'; end;
      }
-     p; br; txt mt '_tagp_cached'; end;
+     p; br; txt 'The list below also includes all visual novels linked to child tags. This list is cached, it can take up to 24 hours after a visual novel has been tagged for it to show up on this page.'; end;
     end 'div';
     end 'form';
     $self->htmlBrowseVN($list, $f, $np, "/g$t->{id}?fil=$f->{fil};m=$f->{m}", 1) if @$list;
@@ -170,7 +174,7 @@ sub tagedit {
       push @{$frm->{_err}}, \sprintf 'Tag <a href="/g%d">%s</a> already exists!', $_->{id}, xml_escape $_->{name} for @dups;
       for(@parents, @merge) {
         my $c = $self->dbTagGet(name => $_, noid => $tag);
-        push @{$frm->{_err}}, [ 'parents', 'func', [ 0, mt '_tagedit_err_notfound', $_ ]] if !@$c;
+        push @{$frm->{_err}}, "Tag '$_' not found" if !@$c;
         $_ = $c->[0]{id};
       }
     }
@@ -204,48 +208,57 @@ sub tagedit {
     $frm->{parents} ||= join ', ', map $_->{name}, @{$t->{parents}};
   }
 
-  my $title = $par ? mt('_tagedit_title_add', $par->{name}) : $tag ? mt('_tagedit_title_edit', $t->{name}) : mt '_tagedit_title_new';
+  my $title = $par ? "Add child tag to $par->{name}" : $tag ? "Edit tag: $t->{name}" : 'Add new tag';
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('g', $par || $t, 'edit') if $t || $par;
 
   if(!$self->authCan('tagmod')) {
     div class => 'mainbox';
-     h1 mt '_tagedit_req_title';
+     h1 'Requesting new tag';
      div class => 'notice';
-      h2 mt '_tagedit_req_subtitle';
+      h2 'Your tag must be approved';
       p;
-       lit mt '_tagedit_req_msg';
+       txt 'Because all tags have to be approved by moderators, it can take a while before it will show up in the tag list'
+          .' or on visual novel pages. You can still vote on tag even if it has not been approved yet, though.';
+       br; br;
+       txt 'Also, make sure you\'ve read the ';
+       a href => '/d10', 'guidelines';
+       txt ' so you can predict whether your tag will be accepted or not.';
       end;
      end;
     end;
   }
 
   $self->htmlForm({ frm => $frm, action => $par ? "/g$par->{id}/add" : $tag ? "/g$tag/edit" : '/g/new' }, 'tagedit' => [ $title,
-    [ input    => short => 'name',     name => mt '_tagedit_frm_name' ],
+    [ input    => short => 'name',     name => 'Primary name' ],
     $self->authCan('tagmod') ? (
       $tag ?
-        [ static   => label => mt('_tagedit_frm_by'), content => fmtuser($t->{addedby}, $t->{username}) ] : (),
-      [ select   => short => 'state',    name => mt('_tagedit_frm_state'), options => [
-        map [$_, mt '_tagedit_frm_state'.$_], 0..2 ] ],
-      [ checkbox => short => 'meta',     name => mt '_tagedit_frm_meta' ],
+        [ static   => label => 'Added by', content => fmtuser($t->{addedby}, $t->{username}) ] : (),
+      [ select   => short => 'state',    name => 'State', options => [
+        [0, 'Awaiting moderation'], [1, 'Deleted/hidden'], [2, 'Approved']  ] ],
+      [ checkbox => short => 'meta',     name => 'This is a meta-tag (only to be used as parent for other tags, not for linking to VN entries)' ],
       $tag ?
-        [ static => content => mt '_tagedit_frm_meta_warn' ] : (),
+        [ static => content => 'WARNING: Checking this option or selecting "Deleted" as state will permanently delete all existing VN relations!' ] : (),
     ) : (),
-    [ select   => short => 'cat', name => mt('_tagedit_frm_cat'), options => [
+    [ select   => short => 'cat', name => 'Category', options => [
       map [$_, $self->{tag_categories}{$_}], keys %{$self->{tag_categories}} ] ],
     $self->authCan('tagmod') && $tag ? (
-      [ checkbox => short => 'catrec', name => mt '_tagedit_frm_catrec' ],
-      [ static => content => mt '_tagedit_frm_catrec_warn' ],
+      [ checkbox => short => 'catrec', name => 'Also edit all child tags to have this category' ],
+      [ static => content => 'WARNING: This will overwrite the category field for all child tags, this action can not be reverted!' ],
     ) : (),
-    [ textarea => short => 'alias',    name => mt('_tagedit_frm_alias'), cols => 30, rows => 4 ],
-    [ textarea => short => 'description', name => mt '_tagedit_frm_desc' ],
-    [ static   => content => mt '_tagedit_frm_desc_msg' ],
-    [ input    => short => 'parents',  name => mt '_tagedit_frm_parents' ],
-    [ static   => content => mt '_tagedit_frm_parents_msg' ],
+    [ textarea => short => 'alias',    name => "Aliases\n(separated by newlines)", cols => 30, rows => 4 ],
+    [ textarea => short => 'description', name => 'Description' ],
+    [ static   => content => 'What should the tag be used for? Having a good description helps users choose which tags to link to a VN.' ],
+    [ input    => short => 'parents',  name => 'Parent tags' ],
+    [ static   => content => 'Comma separated list of tag names to be used as parent for this tag.' ],
     $self->authCan('tagmod') ? (
-      [ part   => title => mt '_tagedit_frm_merge' ],
-      [ input  => short => 'merge', name => mt '_tagedit_frm_merge_tags' ],
-      [ static => content => mt '_tagedit_frm_merge_msg' ],
+      [ part   => title => 'Merge tags' ],
+      [ input  => short => 'merge', name => 'Tags to merge' ],
+      [ static => content =>
+          'Comma separated list of tag names to merge into this one.'
+         .' All votes and aliases/names will be moved over to this tag, and the old tags will be deleted.'
+         .' Just leave this field empty if you don\'t intend to do a merge.'
+         .'<br />WARNING: this action cannot be undone!' ],
     ) : (),
   ]);
   $self->htmlFooter;
@@ -293,21 +306,21 @@ sub taglist {
     search => $f->{q}
   );
 
-  $self->htmlHeader(title => mt '_tagb_title');
+  $self->htmlHeader(title => 'Browse tags');
   div class => 'mainbox';
-   h1 mt '_tagb_title';
+   h1 'Browse tags';
    form action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
     input type => 'hidden', name => 't', value => $f->{t};
     $self->htmlSearchBox('g', $f->{q});
    end;
    p class => 'browseopts';
-    a href => "/g/list?q=$f->{q};t=-1", $f->{t} == -1 ? (class => 'optselected') : (), mt '_tagb_state-1';
-    a href => "/g/list?q=$f->{q};t=0", $f->{t} == 0 ? (class => 'optselected') : (), mt '_tagb_state0';
-    a href => "/g/list?q=$f->{q};t=1", $f->{t} == 1 ? (class => 'optselected') : (), mt '_tagb_state1';
-    a href => "/g/list?q=$f->{q};t=2", $f->{t} == 2 ? (class => 'optselected') : (), mt '_tagb_state2';
+    a href => "/g/list?q=$f->{q};t=-1", $f->{t} == -1 ? (class => 'optselected') : (), 'All';
+    a href => "/g/list?q=$f->{q};t=0", $f->{t} == 0 ? (class => 'optselected') : (), 'Awaiting moderation';
+    a href => "/g/list?q=$f->{q};t=1", $f->{t} == 1 ? (class => 'optselected') : (), 'Deleted';
+    a href => "/g/list?q=$f->{q};t=2", $f->{t} == 2 ? (class => 'optselected') : (), 'Accepted';
    end;
    if(!@$t) {
-     p mt '_tagb_noresults';
+     p 'No results found';
    }
   end 'div';
   if(@$t) {
@@ -319,8 +332,8 @@ sub taglist {
       pageurl  => "/g/list?t=$f->{t};q=$f->{q};s=$f->{s};o=$f->{o}",
       sorturl  => "/g/list?t=$f->{t};q=$f->{q}",
       header   => [
-        [ mt('_tagb_col_added'), 'added' ],
-        [ mt('_tagb_col_name'),  'name'  ],
+        [ 'Created', 'added' ],
+        [ 'Tag',  'name'  ],
       ],
       row => sub {
         my($s, $n, $l) = @_;
@@ -329,8 +342,8 @@ sub taglist {
          td class => 'tc3';
           a href => "/g$l->{id}", $l->{name};
           if($f->{t} == -1) {
-            b class => 'grayedout', ' '.mt '_tagb_note_awaiting' if $l->{state} == 0;
-            b class => 'grayedout', ' '.mt '_tagb_note_del' if $l->{state} == 1;
+            b class => 'grayedout', ' awaiting moderation' if $l->{state} == 0;
+            b class => 'grayedout', ' deleted' if $l->{state} == 1;
           }
          end;
         end 'tr';
@@ -371,46 +384,46 @@ sub taglinks {
     return '/g/links'.($qs?"?$qs":'')
   };
 
-  $self->htmlHeader(noindex => 1, title => mt '_taglink_title');
+  $self->htmlHeader(noindex => 1, title => 'Tag link browser');
   div class => 'mainbox';
-   h1 mt '_taglink_title';
+   h1 'Tag link browser';
 
    div class => 'warning';
-    h2 mt '_taglink_spoil_title';
-    p mt '_taglink_spoil_msg';
+    h2 'Spoiler warning';
+    p 'This list displays the tag votes of individual users. Spoilery tags are not hidden, and may not even be correctly flagged as such.';
    end;
    br;
 
    if($f->{u} || $f->{t} || $f->{v}) {
-     p mt '_taglink_fil_active';
+     p 'Active filters:';
      ul;
       if($f->{u}) {
         my $o = $self->dbUserGet(uid => $f->{u})->[0];
         li;
-         txt '['; a href => $url->(u=>0), mt '_js_remove'; txt '] ';
-         txt mt '_taglink_fil_user'; txt ' ';
+         txt '['; a href => $url->(u=>0), 'remove'; txt '] ';
+         txt 'User:'; txt ' ';
          a href => "/u$o->{id}", $o->{username};
         end;
       }
       if($f->{t}) {
         my $o = $self->dbTagGet(id => $f->{t})->[0];
         li;
-         txt '['; a href => $url->(t=>0), mt '_js_remove'; txt '] ';
-         txt mt '_taglink_fil_tag'; txt ' ';
+         txt '['; a href => $url->(t=>0), 'remove'; txt '] ';
+         txt 'Tag:'; txt ' ';
          a href => "/g$o->{id}", $o->{name};
         end;
       }
       if($f->{v}) {
         my $o = $self->dbVNGet(id => $f->{v})->[0];
         li;
-         txt '['; a href => $url->(v=>0), mt '_js_remove'; txt '] ';
-         txt mt '_taglink_fil_vn'; txt ' ';
+         txt '['; a href => $url->(v=>0), 'remove'; txt '] ';
+         txt 'Visual novel:'; txt ' ';
          a href => "/v$o->{id}", $o->{title};
         end;
       }
      end 'ul';
    }
-   p mt '_taglink_fil_add' unless $f->{v} && $f->{u} && $f->{t};
+   p 'Click the arrow beside a user, tag or VN to add it as a filter.' unless $f->{v} && $f->{u} && $f->{t};
   end 'div';
 
   $self->htmlBrowse(
@@ -421,12 +434,12 @@ sub taglinks {
     pageurl  => $url->(),
     sorturl  => $url->(s=>0,o=>0),
     header   => [
-      [ mt('_taglink_col_date'),   'date' ],
-      [ mt('_taglink_col_user')   ],
-      [ mt('_taglink_col_rating') ],
-      [ mt('_taglink_col_tag'),    'tag' ],
-      [ mt('_taglink_col_spoiler') ],
-      [ mt('_taglink_col_vn'),     ],
+      [ 'Date',   'date' ],
+      [ 'User'    ],
+      [ 'Rating'  ],
+      [ 'Tag',    'tag' ],
+      [ 'Spoiler' ],
+      [ 'Visual novel' ],
     ],
     row      => sub {
       my($s, $n, $l) = @_;
@@ -443,7 +456,7 @@ sub taglinks {
         a href => $url->(t=>$l->{tag}), class => 'setfil', '> ' if !$f->{t};
         a href => "/g$l->{tag}", $l->{name};
        end;
-       td class => 'tc5', !defined $l->{spoiler} ? ' ' : mt "_spoil_$l->{spoiler}";
+       td class => 'tc5', !defined $l->{spoiler} ? ' ' : fmtspoil $l->{spoiler};
        td class => 'tc6';
         a href => $url->(v=>$l->{vid}), class => 'setfil', '> ' if !$f->{v};
         a href => "/v$l->{vid}", shorten $l->{title}, 50;
@@ -518,48 +531,50 @@ sub vntagmod {
   }
 
 
-  my $title = mt '_tagv_title', $v->{title};
+  my $title = "Add/remove tags for $v->{title}";
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('v', $v, 'tagmod');
   div class => 'mainbox';
    h1 $title;
    div class => 'notice';
-    h2 mt '_tagv_msg_title';
+    h2 'Tagging';
     ul;
-     li; lit mt '_tagv_msg_guidelines'; end;
-     li mt '_tagv_msg_submit';
-     li mt '_tagv_msg_cache';
+     li; txt 'Make sure you have read the '; a href => '/d10', 'guidelines'; txt '!'; end;
+     li 'Don\'t forget to hit the submit button on the bottom of the page to make your changes permanent.';
+     li 'Some tag information on the site is cached, it can take up to an hour for your changes to be visible everywhere.';
     end;
    end;
   end 'div';
-  $self->htmlForm({ action => "/v$vid/tagmod", nosubmit => 1 }, tagmod => [ mt('_tagv_frm_title'),
+  $self->htmlForm({ action => "/v$vid/tagmod", nosubmit => 1 }, tagmod => [ 'Tags',
     [ hidden => short => 'taglinks', value => '' ],
     [ static => nolabel => 1, content => sub {
       table class => 'tgl stripe';
        thead;
         Tr;
          td '';
-         td colspan => $self->authCan('tagmod') ? 3 : 2, class => 'tc_you', mt '_tagv_col_you';
-         td colspan => 3, class => 'tc_others', mt '_tagv_col_others';
+         td colspan => $self->authCan('tagmod') ? 3 : 2, class => 'tc_you', 'You';
+         td colspan => 3, class => 'tc_others', 'Others';
         end;
         Tr;
-         td class => 'tc_tagname',  mt '_tagv_col_tag';
-         td class => 'tc_myvote',   mt '_tagv_col_rating';
+         td class => 'tc_tagname',  'Tag';
+         td class => 'tc_myvote',   'Rating';
          td class => 'tc_myover',   'O' if $self->authCan('tagmod');
-         td class => 'tc_myspoil',  mt '_tagv_col_spoiler';
-         td class => 'tc_allvote',  mt '_tagv_col_rating';
-         td class => 'tc_allspoil', mt '_tagv_col_spoiler';
+         td class => 'tc_myspoil',  'Spoiler';
+         td class => 'tc_allvote',  'Rating';
+         td class => 'tc_allspoil', 'Spoiler';
          td class => 'tc_allwho',   '';
         end;
        end 'thead';
        tfoot; Tr;
         td colspan => 6;
-         input type => 'submit', class => 'submit', value => mt('_tagv_save'), style => 'float: right';
+         input type => 'submit', class => 'submit', value => 'Save changes', style => 'float: right';
          input id => 'tagmod_tag', type => 'text', class => 'text', value => '';
-         input id => 'tagmod_add', type => 'button', class => 'submit', value => mt '_tagv_add';
+         input id => 'tagmod_add', type => 'button', class => 'submit', value => 'Add tag';
          br;
          p;
-          lit mt '_tagv_addmsg';
+          txt 'Check the '; a href => '/g', 'tag list'; txt ' to browse all available tags.';
+          br;
+          txt 'Can\'t find what you\'re looking for? '; a href => '/g/new', 'Request a new tag'; txt '.';
          end;
         end;
        end; end 'tfoot';
@@ -599,11 +614,11 @@ sub _tagmod_list {
        td class => 'tc_allvote';
         tagscore $t->{rating};
         i $t->{overruled} ? (class => 'grayedout') : (), " ($t->{cnt})";
-        b class => 'standout', style => 'font-weight: bold', title => mt('_tagv_overruletip'), ' !' if $t->{overruled};
+        b class => 'standout', style => 'font-weight: bold', title => 'Tag overruled. All votes other than that of the moderator who overruled it will be ignored.', ' !' if $t->{overruled};
        end;
        td class => 'tc_allspoil', sprintf '%.2f', $t->{spoiler};
        td class => 'tc_allwho';
-        a href => "/g/links?v=$vid;t=$t->{id}", mt '_tagv_who';
+        a href => "/g/links?v=$vid;t=$t->{id}", 'Who?';
        end;
       end;
     }
@@ -614,26 +629,26 @@ sub _tagmod_list {
 sub tagindex {
   my $self = shift;
 
-  $self->htmlHeader(title => mt '_tagidx_title');
+  $self->htmlHeader(title => 'Tag index');
   div class => 'mainbox';
-   a class => 'addnew', href => "/g/new", mt '_tagidx_create' if $self->authCan('tag');
-   h1 mt '_tagidx_search';
+   a class => 'addnew', href => "/g/new", 'Create new tag' if $self->authCan('tag');
+   h1 'Search tags';
    form action => '/g/list', 'accept-charset' => 'UTF-8', method => 'get';
     $self->htmlSearchBox('g', '');
    end;
   end;
 
   my $t = $self->dbTTTree(tag => 0, 2);
-  childtags($self, mt('_tagidx_tree'), 'g', {childs => $t});
+  childtags($self, 'Tag tree', 'g', {childs => $t});
 
   table class => 'mainbox threelayout';
    Tr;
 
     # Recently added
     td;
-     a class => 'right', href => '/g/list', mt '_tagidx_browseall';
+     a class => 'right', href => '/g/list', 'Browse all tags';
      my $r = $self->dbTagGet(sort => 'added', reverse => 1, results => 10, state => 2);
-     h1 mt '_tagidx_recent';
+     h1 'Recently added';
      ul;
       for (@$r) {
         li;
@@ -647,9 +662,9 @@ sub tagindex {
 
     # Popular
     td;
-     a class => 'addnew', href => "/g/links", mt '_tagidx_rawtags';
+     a class => 'addnew', href => "/g/links", 'Recently tagged';
      $r = $self->dbTagGet(sort => 'items', reverse => 1, meta => 0, results => 10);
-     h1 mt '_tagidx_popular';
+     h1 'Popular tags';
      ul;
       for (@$r) {
         li;
@@ -662,10 +677,10 @@ sub tagindex {
 
     # Moderation queue
     td;
-     h1 mt '_tagidx_queue';
+     h1 'Awaiting moderation';
      $r = $self->dbTagGet(state => 0, sort => 'added', reverse => 1, results => 10);
      ul;
-      li mt '_tagidx_queue_empty' if !@$r;
+      li 'Moderation queue empty! yay!' if !@$r;
       for (@$r) {
         li;
          txt fmtage $_->{added};
@@ -675,9 +690,9 @@ sub tagindex {
       }
       li;
        br;
-       a href => '/g/list?t=0;o=d;s=added', mt '_tagidx_queue_link';
+       a href => '/g/list?t=0;o=d;s=added', 'Moderation queue';
        txt ' - ';
-       a href => '/g/list?t=1;o=d;s=added', mt '_tagidx_denied';
+       a href => '/g/list?t=1;o=d;s=added', 'Denied tags';
       end;
      end;
     end;

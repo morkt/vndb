@@ -40,27 +40,27 @@ sub page {
       [ alias     => 'Aliases',       diff => qr/[ ,\n\.]/ ],
       [ desc      => 'Description',   diff => qr/[ ,\n\.]/ ],
       [ gender    => 'Gender',        serialize => sub { $self->{genders}{$_[0]} } ],
-      [ b_month   => 'Birthday/month',serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ b_day     => 'Birthday/day',  serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ s_bust    => 'Bust',          serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ s_waist   => 'Waist',         serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ s_hip     => 'Hip',           serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ height    => 'Height',        serialize => sub { $_[0]||mt '_revision_empty' } ],
-      [ weight    => 'Weight',        serialize => sub { $_[0]||mt '_revision_empty' } ],
+      [ b_month   => 'Birthday/month',serialize => sub { $_[0]||'[empty]' } ],
+      [ b_day     => 'Birthday/day',  serialize => sub { $_[0]||'[empty]' } ],
+      [ s_bust    => 'Bust',          serialize => sub { $_[0]||'[empty]' } ],
+      [ s_waist   => 'Waist',         serialize => sub { $_[0]||'[empty]' } ],
+      [ s_hip     => 'Hip',           serialize => sub { $_[0]||'[empty]' } ],
+      [ height    => 'Height',        serialize => sub { $_[0]||'[empty]' } ],
+      [ weight    => 'Weight',        serialize => sub { $_[0]||'[empty]' } ],
       [ bloodt    => 'Blood type',    serialize => sub { $self->{blood_types}{$_[0]} } ],
-      [ main      => 'Main character',htmlize => sub { $_[0] ? sprintf '<a href="/c%d">c%d</a>', $_[0], $_[0] : mt '_revision_empty' } ],
-      [ main_spoil=> 'Spoiler',       serialize => sub { mt "_spoil_$_[0]" } ],
+      [ main      => 'Main character',htmlize => sub { $_[0] ? sprintf '<a href="/c%d">c%d</a>', $_[0], $_[0] : '[empty]' } ],
+      [ main_spoil=> 'Spoiler',       serialize => \&fmtspoil ],
       [ image     => 'Image', htmlize => sub {
-        return $_[0] ? sprintf '<img src="%s" />', imgurl(ch => $_[0]) : mt '_chdiff_image_none';
+        return $_[0] ? sprintf '<img src="%s" />', imgurl(ch => $_[0]) : 'No image';
       }],
       [ traits    => 'Traits', join => '<br />', split => sub {
         map sprintf('%s<a href="/i%d">%s</a> (%s)', $_->{group}?qq|<b class="grayedout">$_->{groupname} / </b> |:'',
-            $_->{tid}, $_->{name}, mt("_spoil_$_->{spoil}")), @{$_[0]}
+            $_->{tid}, $_->{name}, fmtspoil $_->{spoil}), @{$_[0]}
       }],
       [ vns       => 'Visual novels', join => '<br />', split => sub {
         map sprintf('<a href="/v%d">v%d</a> %s %s (%s)', $_->{vid}, $_->{vid},
           $_->{rid}?sprintf('[<a href="/r%d">r%d</a>]', $_->{rid}, $_->{rid}):'',
-          $self->{char_roles}{$_->{role}}, mt("_spoil_$_->{spoil}")), @{$_[0]};
+          $self->{char_roles}{$_->{role}}, fmtspoil $_->{spoil}), @{$_[0]};
       }],
     );
   }
@@ -83,7 +83,7 @@ sub page {
   }
   if(@$inst) {
     div class => 'mainbox';
-     h1 mt '_charp_instances';
+     h1 'Other instances';
      $self->charTable($_, 1, $_ != $inst->[0], 0, !$r->{main} ? $_->{main_spoil} : $_->{main_spoil} > $r->{main_spoil} ? $_->{main_spoil} : $r->{main_spoil}) for @$inst;
     end;
   }
@@ -97,8 +97,8 @@ sub charOps {
   my $spoil = $self->authPref('spoilers')||0;
   p id => 'charops';
    # Note: Order of these links is hardcoded in JS
-   a href => '#', $spoil == $_ ? (class => 'sel') : (), mt "_spoilset_$_" for (0..2);
-   a href => '#', class => 'sec'.($self->authPref('traits_sexual') ? ' sel' : ''), mt '_charp_sexual' if $sexual;
+   a href => '#', $spoil == $_ ? (class => 'sel') : (), ['Hide spoilers', 'Show minor spoilers', 'Spoil me!']->[$_] for (0..2);
+   a href => '#', class => 'sec'.($self->authPref('traits_sexual') ? ' sel' : ''), 'Show sexual traits' if $sexual;
   end;
 }
 
@@ -113,7 +113,7 @@ sub charTable {
    # image
    div class => 'charimg';
     if(!$r->{image}) {
-      p mt '_charp_noimg';
+      p 'No image uploaded yet';
     } else {
       img src => imgurl(ch => $r->{image}), alt => $r->{name};
     }
@@ -139,23 +139,24 @@ sub charTable {
     if($r->{alias}) {
       $r->{alias} =~ s/\n/, /g;
       Tr;
-       td class => 'key', mt '_charp_alias';
+       td class => 'key', 'Aliases';
        td $r->{alias};
       end;
     }
     if($r->{height} || $r->{s_bust} || $r->{s_waist} || $r->{s_hip}) {
       Tr;
-       td class => 'key', mt '_charp_meas';
+       td class => 'key', 'Measurements';
        td join ', ',
-         $r->{height} ? mt('_charp_meas_h', $r->{height}) : (),
-         $r->{weight} ? mt('_charp_meas_w', $r->{weight}) : (),
-         $r->{s_bust} || $r->{s_waist} || $r->{s_hip} ? mt('_charp_meas_bwh', $r->{s_bust}||'??', $r->{s_waist}||'??', $r->{s_hip}||'??') : ();
+         $r->{height} ? "Height: $r->{height}cm" : (),
+         $r->{weight} ? "Weight: $r->{weight}kg" : (),
+         $r->{s_bust} || $r->{s_waist} || $r->{s_hip} ?
+           sprintf 'Bust-Waist-Hips: %s-%s-%scm', $r->{s_bust}||'??', $r->{s_waist}||'??', $r->{s_hip}||'??' : ();
       end;
     }
     if($r->{b_month} && $r->{b_day}) {
       Tr;
-       td class => 'key', mt '_charp_bday';
-       td mt '_charp_bday_fmt', $r->{b_day}, mt "_month_$r->{b_month}";
+       td class => 'key', 'Birthday';
+       td $r->{b_day}.' '.[qw{January February March April May June July August September October November December}]->[$r->{b_month}-1];
       end;
     }
 
@@ -187,7 +188,7 @@ sub charTable {
       my %vns;
       push @{$vns{$_->{vid}}}, $_ for(sort { !defined($a->{rid})?1:!defined($b->{rid})?-1:$a->{rtitle} cmp $b->{rtitle} } @{$r->{vns}});
       Tr;
-       td class => 'key', mt $vn ? '_charp_releases' : '_charp_vns';
+       td class => 'key', $vn ? 'Releases' : 'Visual novels';
        td;
         my $first = 0;
         for my $g (sort { $vns{$a}[0]{vntitle} cmp $vns{$b}[0]{vntitle} } keys %vns) {
@@ -215,7 +216,7 @@ sub charTable {
                 b class => 'grayedout', "r$_->{rid}:";
                 a href => "/r$_->{rid}", $_->{rtitle};
               } else {
-                txt mt '_charp_vns_other';
+                txt 'All other releases';
               }
              end;
            }
@@ -227,7 +228,7 @@ sub charTable {
 
     if(@{$r->{seiyuu}}) {
       Tr;
-       td class => 'key', mt '_charp_voice';
+       td class => 'key', 'Voiced by';
        td;
         my $last_name = '';
         for my $s (sort { $a->{name} cmp $b->{name} } @{$r->{seiyuu}}) {
@@ -245,7 +246,7 @@ sub charTable {
     if($r->{desc}) {
       Tr class => 'nostripe';
        td class => 'chardesc', colspan => 2;
-        h2 mt '_charp_description';
+        h2 'Description';
         p;
          lit bb2html $r->{desc}, 0, 1;
         end;
@@ -292,7 +293,7 @@ sub edit {
       { post => 'desc',          required  => 0, maxlength => 5000, default => '' },
       { post => 'gender',        required  => 0, default => 'unknown', enum => [ keys %{$self->{genders}} ] },
       { post => 'image',         required  => 0, default => 0,  template => 'id' },
-      { post => 'bday',          required  => 0, default => '', regex => [ qr/^\d{2}-\d{2}$/, mt('_chare_form_bday_err') ] },
+      { post => 'bday',          required  => 0, default => '', regex => [ qr/^(?:[01]?[0-9])-(?:[0123]?[0-9])$/, 'Birthday must be in MM-DD format.' ] },
       { post => 's_bust',        required  => 0, default => 0, template => 'uint', max => 32767 },
       { post => 's_waist',       required  => 0, default => 0, template => 'uint', max => 32767 },
       { post => 's_hip',         required  => 0, default => 0, template => 'uint', max => 32767 },
@@ -359,60 +360,60 @@ sub edit {
   $frm->{editsum} //= sprintf 'Reverted to revision c%d.%d', $id, $rev if !$copy && $rev;
   $frm->{editsum} = sprintf 'New character based on c%d.%d', $id, $r->{rev} if $copy;
 
-  my $title = mt $r ? ($copy ? '_chare_title_copy' : '_chare_title_edit', $r->{name}) : '_chare_title_add';
+  my $title = !$r ? 'Add new character' : $copy ? "Copy $r->{name}" : "Edit $r->{name}";
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('c', $r, $copy ? 'copy' : 'edit') if $r;
   $self->htmlEditMessage('c', $r, $title, $copy);
   $self->htmlForm({ frm => $frm, action => $r ? "/c$id/".($copy ? 'copy' : 'edit') : '/c/new', editsum => 1, upload => 1 },
-  chare_geninfo => [ mt('_chare_form_generalinfo'),
-    [ input  => name => mt('_chare_form_name'), short => 'name' ],
-    [ input  => name => mt('_chare_form_original'), short => 'original' ],
-    [ static => content => mt('_chare_form_original_note') ],
-    [ text   => name => mt('_chare_form_alias'), short => 'alias', rows => 3 ],
-    [ static => content => mt('_chare_form_alias_note') ],
-    [ text   => name => mt('_chare_form_desc').'<br /><b class="standout">'.mt('_inenglish').'</b>', short => 'desc', rows => 6 ],
-    [ select => name => mt('_chare_form_gender'),short => 'gender', options => [
+  chare_geninfo => [ 'General info',
+    [ input  => name => 'Name (romaji)', short => 'name' ],
+    [ input  => name => 'Original name', short => 'original' ],
+    [ static => content => 'The original name of the character, leave blank if it is already in the Latin alphabet.' ],
+    [ text   => name => 'Aliases', short => 'alias', rows => 3 ],
+    [ static => content => '(Un)official aliases, separated by a newline.' ],
+    [ text   => name => 'Description<br /><b class="standout">English please!</b>', short => 'desc', rows => 6 ],
+    [ select => name => 'Gender',short => 'gender', options => [
        map [ $_, $self->{genders}{$_} ], keys %{$self->{genders}} ] ],
-    [ input  => name => mt('_chare_form_bday'),  short => 'bday',   width => 100, post => ' '.mt('_chare_form_bday_fmt')  ],
-    [ input  => name => mt('_chare_form_bust'),  short => 's_bust', width => 50, post => ' cm' ],
-    [ input  => name => mt('_chare_form_waist'), short => 's_waist',width => 50, post => ' cm' ],
-    [ input  => name => mt('_chare_form_hip'),   short => 's_hip',  width => 50, post => ' cm' ],
-    [ input  => name => mt('_chare_form_height'),short => 'height', width => 50, post => ' cm' ],
-    [ input  => name => mt('_chare_form_weight'),short => 'weight', width => 50, post => ' kg' ],
-    [ select => name => mt('_chare_form_bloodt'),short => 'bloodt', options => [
+    [ input  => name => 'Birthday',  short => 'bday',   width => 100,post => ' MM-DD (e.g. "01-26" for the 26th of January)'  ],
+    [ input  => name => 'Bust',      short => 's_bust', width => 50, post => ' cm' ],
+    [ input  => name => 'Waist',     short => 's_waist',width => 50, post => ' cm' ],
+    [ input  => name => 'Hips',      short => 's_hip',  width => 50, post => ' cm' ],
+    [ input  => name => 'Height',    short => 'height', width => 50, post => ' cm' ],
+    [ input  => name => 'Weight',    short => 'weight', width => 50, post => ' kg' ],
+    [ select => name => 'Blood type',short => 'bloodt', options => [
        map [ $_, $self->{blood_types}{$_} ], keys %{$self->{blood_types}} ] ],
     [ static => content => '<br />' ],
-    [ input  => name => mt('_chare_form_main'),  short => 'main', width => 50, post => ' '.mt('_chare_form_main_note') ],
-    [ select => name => mt('_chare_form_main_spoil'), short => 'main_spoil', options => [
-       map [$_, mt("_spoil_$_")], 0..2 ] ],
+    [ input  => name => 'Instance of',short => 'main', width => 50, post => ' ID of the main character - the character of which this is an instance of.' ],
+    [ select => name => 'Spoiler',  short => 'main_spoil', options => [
+       map [$_, fmtspoil $_], 0..2 ] ],
   ],
 
-  chare_img => [ mt('_chare_image'), [ static => nolabel => 1, content => sub {
+  chare_img => [ 'Image', [ static => nolabel => 1, content => sub {
     div class => 'img';
-     p mt '_chare_image_none' if !$frm->{image};
+     p 'No image uploaded yet' if !$frm->{image};
      img src => imgurl(ch => $frm->{image}) if $frm->{image};
     end;
 
     div;
-     h2 mt '_chare_image_id';
+     h2 'Image ID';
      input type => 'text', class => 'text', name => 'image', id => 'image', value => $frm->{image}||'';
-     p mt '_chare_image_id_msg';
+     p 'Use a character image that is already on the server. Set to \'0\' to remove the current image.';
      br; br;
 
-     h2 mt '_chare_image_upload';
+     h2 'Upload new image';
      input type => 'file', class => 'text', name => 'img', id => 'img';
-     p mt('_chare_image_upload_msg');
+     p 'Image must be in JPEG or PNG format and at most 1MiB. Images larger than 256x300 will automatically be resized. Image must be safe for work!';
     end;
   }]],
 
-  chare_traits => [ mt('_chare_traits'),
+  chare_traits => [ 'Traits',
     [ hidden => short => 'traits' ],
     [ static => nolabel => 1, content => sub {
-      h2 mt '_chare_traits_sel';
+      h2 'Current traits';
       table; tbody id => 'traits_tbl';
-       Tr id => 'traits_loading'; td colspan => '3', mt('_js_loading'); end;
+       Tr id => 'traits_loading'; td colspan => '3', 'Loading...'; end;
       end; end;
-      h2 mt '_chare_traits_add';
+      h2 'Add trait';
       table; Tr;
        td class => 'tc_name'; input id => 'trait_input', type => 'text', class => 'text'; end;
        td colspan => 2, '';
@@ -420,14 +421,14 @@ sub edit {
     }],
   ],
 
-  chare_vns => [ mt('_chare_vns'),
+  chare_vns => [ 'Visual novels',
     [ hidden => short => 'vns' ],
     [ static => nolabel => 1, content => sub {
-      h2 mt '_chare_vns_sel';
+      h2 'Selected visual novels';
       table; tbody id => 'vns_tbl';
-       Tr id => 'vns_loading'; td colspan => '4', mt('_js_loading'); end;
+       Tr id => 'vns_loading'; td colspan => '4', 'Loading...'; end;
       end; end;
-      h2 mt '_chare_vns_add';
+      h2 'Add visual novel';
       table; Tr;
        td class => 'tc_vnadd'; input id => 'vns_input', type => 'text', class => 'text'; end;
        td colspan => 3, '';
@@ -497,22 +498,22 @@ sub list {
     what => 'vns',
   });
 
-  $self->htmlHeader(title => mt '_charb_title');
+  $self->htmlHeader(title => 'Browse characters');
 
   my $quri = uri_escape($f->{q});
   form action => '/c/all', 'accept-charset' => 'UTF-8', method => 'get';
   div class => 'mainbox';
-   h1 mt '_charb_title';
+   h1 'Browse characters';
    $self->htmlSearchBox('c', $f->{q});
    p class => 'browseopts';
     for ('all', 'a'..'z', 0) {
-      a href => "/c/$_?q=$quri", $_ eq $fch ? (class => 'optselected') : (), $_ eq 'all' ? mt('_char_all') : $_ ? uc $_ : '#';
+      a href => "/c/$_?q=$quri", $_ eq $fch ? (class => 'optselected') : (), $_ eq 'all' ? 'ALL' : $_ ? uc $_ : '#';
     }
    end;
 
    p class => 'filselect';
     a id => 'filselect', href => '#c';
-     lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+     lit '<i>&#9656;</i> Filters<i></i>';
     end;
    end;
    input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
@@ -521,8 +522,8 @@ sub list {
 
   if(!@$list) {
     div class => 'mainbox';
-     h1 mt '_charb_noresults';
-     p mt '_charb_noresults_msg';
+     h1 'No results';
+     p 'No characters found that matched your criteria.';
     end;
   }
 

@@ -31,7 +31,7 @@ sub traitpage {
   );
   return $self->resNotFound if $f->{_err};
 
-  my $title = mt '_traitp_title', $t->{meta}?0:1, $t->{name};
+  my $title = sprintf '%s: %s', $t->{meta} ? 'Meta trait' : 'Trait', $t->{name};
   $self->htmlHeader(title => $title, noindex => $t->{state} != 2);
   $self->htmlMainTabs('i', $t);
 
@@ -40,25 +40,27 @@ sub traitpage {
      h1 $title;
      if($t->{state} == 1) {
        div class => 'warning';
-        h2 mt '_traitp_del_title';
+        h2 'Trait deleted';
         p;
-         lit mt '_traitp_del_msg';
+         txt 'This trait has been removed from the database, and cannot be used or re-added. File a request on the ';
+         a href => '/t/db', 'discussion board';
+         txt ' if you disagree with this.';
         end;
        end;
      } else {
        div class => 'notice';
-        h2 mt '_traitp_pending_title';
-        p mt '_traitp_pending_msg';
+        h2 'Waiting for approval';
+        p 'This trait is waiting for a moderator to approve it.';
        end;
      }
     end 'div';
   }
 
   div class => 'mainbox';
-   a class => 'addnew', href => "/i$trait/add", mt '_traitp_addchild' if $self->authCan('edit') && $t->{state} != 1;
+   a class => 'addnew', href => "/i$trait/add", 'Create child trait' if $self->authCan('edit') && $t->{state} != 1;
    h1 $title;
 
-   parenttags($t, mt('_traitp_indexlink'), 'i');
+   parenttags($t, 'Traits', 'i');
 
    if($t->{description}) {
      p class => 'description';
@@ -67,19 +69,19 @@ sub traitpage {
    }
    if($t->{sexual}) {
      p class => 'center';
-      b mt '_traitp_sexual';
+      b 'Sexual content';
      end;
    }
    if($t->{alias}) {
      p class => 'center';
-      b mt('_traitp_aliases');
+      b 'Aliases';
       br;
       lit html_escape($t->{alias});
      end;
    }
   end 'div';
 
-  childtags($self, mt('_traitp_childs'), 'i', $t) if @{$t->{childs}};
+  childtags($self, 'Child traits', 'i', $t) if @{$t->{childs}};
 
   if(!$t->{meta} && $t->{state} == 2) {
     my($chars, $np) = $self->filFetchDB(char => $f->{fil}, {}, {
@@ -92,25 +94,25 @@ sub traitpage {
 
     form action => "/i$t->{id}", 'accept-charset' => 'UTF-8', method => 'get';
     div class => 'mainbox';
-     h1 mt '_traitp_charlist';
+     h1 'Characters';
 
      p class => 'browseopts';
-      a href => "/i$trait?m=0", $f->{m} == 0 ? (class => 'optselected') : (), mt '_spoilset_0';
-      a href => "/i$trait?m=1", $f->{m} == 1 ? (class => 'optselected') : (), mt '_spoilset_1';
-      a href => "/i$trait?m=2", $f->{m} == 2 ? (class => 'optselected') : (), mt '_spoilset_2';
+      a href => "/i$trait?m=0", $f->{m} == 0 ? (class => 'optselected') : (), 'Hide spoilers';
+      a href => "/i$trait?m=1", $f->{m} == 1 ? (class => 'optselected') : (), 'Show minor spoilers';
+      a href => "/i$trait?m=2", $f->{m} == 2 ? (class => 'optselected') : (), 'Spoil me!';
      end;
 
      p class => 'filselect';
       a id => 'filselect', href => '#c';
-       lit '<i>&#9656;</i> '.mt('_js_fil_filters').'<i></i>';
+       lit '<i>&#9656;</i> Filters<i></i>';
       end;
      end;
      input type => 'hidden', class => 'hidden', name => 'fil', id => 'fil', value => $f->{fil};
 
      if(!@$chars) {
-       p; br; br; txt mt '_traitp_nochars'; end;
+       p; br; br; txt 'This trait has not been linked to any characters yet, or they were hidden because of your spoiler settings.'; end;
      }
-     p; br; txt mt '_traitp_cached'; end;
+     p; br; txt 'The list below also includes all characters linked to child traits. This list is cached, it can take up to 24 hours after a character has been edited for it to show up on this page.'; end;
     end 'div';
     end 'form';
     @$chars && $self->charBrowseTable($chars, $np, $f, "/i$trait?m=$f->{m};fil=$f->{fil}");
@@ -153,7 +155,7 @@ sub traitedit {
     if(!$frm->{_err}) {
       for(@parents) {
         my $c = $self->dbTraitGet(id => $_);
-        push @{$frm->{_err}}, [ 'parents', 'func', [ 0, mt '_tagedit_err_notfound', $_ ]] if !@$c;
+        push @{$frm->{_err}}, "Trait '$_' not found" if !@$c;
         $group //= $c->[0]{group}||$c->[0]{id} if @$c;
       }
     }
@@ -192,38 +194,38 @@ sub traitedit {
     $frm->{parents} ||= join ' ', map $_->{id}, @{$t->{parents}};
   }
 
-  my $title = $par ? mt('_traite_title_add', $par->{name}) : $t ? mt('_traite_title_edit', $t->{name}) : mt '_traite_title_new';
+  my $title = $par ? "Add child trait to $par->{name}" : $t ? "Edit trait: $t->{name}" : 'Add new trait';
   $self->htmlHeader(title => $title, noindex => 1);
   $self->htmlMainTabs('i', $par || $t, 'edit') if $t || $par;
 
   if(!$self->authCan('tagmod')) {
     div class => 'mainbox';
-     h1 mt '_traite_req_title';
+     h1 'Requesting new trait';
      div class => 'notice';
-      h2 mt '_traite_req_subtitle';
+      h2 'Your trait must be approved';
       p;
-       lit mt '_traite_req_msg';
+       lit 'Because all traits have to be approved by moderators, it can take a while before your trait will show up in the listings or can be used on character entries.';
       end;
      end;
     end;
   }
 
   $self->htmlForm({ frm => $frm, action => $par ? "/i$par->{id}/add" : $t ? "/i$trait/edit" : '/i/new' }, 'traitedit' => [ $title,
-    [ input    => short => 'name',     name => mt '_traite_frm_name' ],
+    [ input    => short => 'name',     name => 'Primary name' ],
     $self->authCan('tagmod') ? (
       $t ?
-        [ static   => label => mt('_traite_frm_by'), content => fmtuser($t->{addedby}, $t->{username}) ] : (),
-      [ select   => short => 'state',    name => mt('_traite_frm_state'), options => [
-        map [$_, mt '_traite_frm_state'.$_], 0..2 ] ],
-      [ checkbox => short => 'meta',     name => mt '_traite_frm_meta' ]
+        [ static   => label => 'Added by', content => fmtuser($t->{addedby}, $t->{username}) ] : (),
+      [ select   => short => 'state',    name => 'State', options => [
+        [0,'Awaiting moderation'], [1,'Deleted/hidden'], [2,'Approved'] ] ],
+      [ checkbox => short => 'meta',     name => 'This is a meta trait (only to be used as parent for other traits, not for direct use with characters)' ]
     ) : (),
-    [ checkbox => short => 'sexual',   name => mt '_traite_frm_sexual' ],
-    [ textarea => short => 'alias',    name => mt('_traite_frm_alias'), cols => 30, rows => 4 ],
-    [ textarea => short => 'description', name => mt '_traite_frm_desc' ],
-    [ input    => short => 'parents',  name => mt '_traite_frm_parents' ],
-    [ static   => content => mt '_traite_frm_parents_msg' ],
+    [ checkbox => short => 'sexual',   name => 'Indicates sexual content' ],
+    [ textarea => short => 'alias',    name => "Aliases\n(Separated by newlines)", cols => 30, rows => 4 ],
+    [ textarea => short => 'description', name => 'Description' ],
+    [ input    => short => 'parents',  name => 'Parent traits' ],
+    [ static   => content => 'List of trait IDs to be used as parent for this trait, separated by a space.' ],
     $self->authCan('tagmod') ? (
-      [ input    => short => 'order', name => mt('_traite_frm_gorder'), width => 50, post => ' '.mt('_traite_frm_gorder_msg') ],
+      [ input    => short => 'order', name => 'Group number', width => 50, post => ' (Only used if this trait is a group. Used for ordering, lowest first)' ],
     ) : (),
   ]);
 
@@ -267,21 +269,21 @@ sub traitlist {
     search => $f->{q}
   );
 
-  $self->htmlHeader(title => mt '_traitb_title');
+  $self->htmlHeader(title => 'Browse traits');
   div class => 'mainbox';
-   h1 mt '_traitb_title';
+   h1 'Browse traits';
    form action => '/i/list', 'accept-charset' => 'UTF-8', method => 'get';
     input type => 'hidden', name => 't', value => $f->{t};
     $self->htmlSearchBox('i', $f->{q});
    end;
    p class => 'browseopts';
-    a href => "/i/list?q=$f->{q};t=-1", $f->{t} == -1 ? (class => 'optselected') : (), mt '_traitb_state-1';
-    a href => "/i/list?q=$f->{q};t=0", $f->{t} == 0 ? (class => 'optselected') : (), mt '_traitb_state0';
-    a href => "/i/list?q=$f->{q};t=1", $f->{t} == 1 ? (class => 'optselected') : (), mt '_traitb_state1';
-    a href => "/i/list?q=$f->{q};t=2", $f->{t} == 2 ? (class => 'optselected') : (), mt '_traitb_state2';
+    a href => "/i/list?q=$f->{q};t=-1", $f->{t} == -1 ? (class => 'optselected') : (), 'All';
+    a href => "/i/list?q=$f->{q};t=0", $f->{t} == 0 ? (class => 'optselected') : (), 'Awaiting moderation';
+    a href => "/i/list?q=$f->{q};t=1", $f->{t} == 1 ? (class => 'optselected') : (), 'Deleted';
+    a href => "/i/list?q=$f->{q};t=2", $f->{t} == 2 ? (class => 'optselected') : (), 'Accepted';
    end;
    if(!@$t) {
-     p mt '_traitb_noresults';
+     p 'No results found';
    }
   end 'div';
   if(@$t) {
@@ -293,8 +295,8 @@ sub traitlist {
       pageurl  => "/i/list?t=$f->{t};q=$f->{q};s=$f->{s};o=$f->{o}",
       sorturl  => "/i/list?t=$f->{t};q=$f->{q}",
       header   => [
-        [ mt('_traitb_col_added'), 'added' ],
-        [ mt('_traitb_col_name'),  'name'  ],
+        [ 'Created', 'added' ],
+        [ 'Trait',  'name'  ],
       ],
       row => sub {
         my($s, $n, $l) = @_;
@@ -306,8 +308,8 @@ sub traitlist {
           }
           a href => "/i$l->{id}", $l->{name};
           if($f->{t} == -1) {
-            b class => 'grayedout', ' '.mt '_traitb_note_awaiting' if $l->{state} == 0;
-            b class => 'grayedout', ' '.mt '_traitb_note_del' if $l->{state} == 1;
+            b class => 'grayedout', ' awaiting moderation' if $l->{state} == 0;
+            b class => 'grayedout', ' deleted' if $l->{state} == 1;
           }
          end;
         end 'tr';
@@ -321,26 +323,26 @@ sub traitlist {
 sub traitindex {
   my $self = shift;
 
-  $self->htmlHeader(title => mt '_traiti_title');
+  $self->htmlHeader(title => 'Trait index');
   div class => 'mainbox';
-   a class => 'addnew', href => "/i/new", mt '_traiti_create' if $self->authCan('edit');
-   h1 mt '_traiti_search';
+   a class => 'addnew', href => "/i/new", 'Create new trait' if $self->authCan('edit');
+   h1 'Search traits';
    form action => '/i/list', 'accept-charset' => 'UTF-8', method => 'get';
     $self->htmlSearchBox('i', '');
    end;
   end;
 
   my $t = $self->dbTTTree(trait => 0, 2);
-  childtags($self, mt('_traiti_tree'), 'i', {childs => $t}, 'order');
+  childtags($self, 'Trait tree', 'i', {childs => $t}, 'order');
 
   table class => 'mainbox threelayout';
    Tr;
 
     # Recently added
     td;
-     a class => 'right', href => '/i/list', mt '_traiti_browseall';
+     a class => 'right', href => '/i/list', 'Browse all traits';
      my $r = $self->dbTraitGet(sort => 'added', reverse => 1, results => 10);
-     h1 mt '_traiti_recent';
+     h1 'Recently added';
      ul;
       for (@$r) {
         li;
@@ -355,7 +357,7 @@ sub traitindex {
 
     # Popular
     td;
-     h1 mt '_traiti_popular';
+     h1 'Popular traits';
      ul;
       $r = $self->dbTraitGet(sort => 'items', reverse => 1, results => 10);
       for (@$r) {
@@ -370,10 +372,10 @@ sub traitindex {
 
     # Moderation queue
     td;
-     h1 mt '_traiti_queue';
+     h1 'Awaiting moderation';
      $r = $self->dbTraitGet(state => 0, sort => 'added', reverse => 1, results => 10);
      ul;
-      li mt '_traiti_queue_empty' if !@$r;
+      li 'Moderation queue empty! yay!' if !@$r;
       for (@$r) {
         li;
          txt fmtage $_->{added};
@@ -384,9 +386,9 @@ sub traitindex {
       }
       li;
        br;
-       a href => '/i/list?t=0;o=d;s=added', mt '_traiti_queue_link';
+       a href => '/i/list?t=0;o=d;s=added', 'Moderation queue';
        txt ' - ';
-       a href => '/i/list?t=1;o=d;s=added', mt '_traiti_denied';
+       a href => '/i/list?t=1;o=d;s=added', 'Denied traits';
       end;
      end;
     end;
