@@ -16,7 +16,6 @@ use lib $ROOT.'/lib';
 
 
 use TUWF ':html', 'kv_validate';
-use VNDB::L10N;
 use VNDB::Func 'json_decode';
 use VNDBUtil 'gtintype';
 use SkinFile;
@@ -29,10 +28,6 @@ our(%O, %S);
 # NOTE: $S{skins} can be modified in data/config.pl, allowing deletion of skins or forcing only one skin
 my $skin = SkinFile->new("$ROOT/static/s");
 $S{skins} = { map +($_ => [ $skin->get($_, 'name'), $skin->get($_, 'userid') ]), $skin->list };
-
-
-# load lang.dat
-VNDB::L10N::loadfile();
 
 
 # load settings from global.pl
@@ -67,9 +62,6 @@ sub reqinit {
 
   # check authentication cookies
   $self->authInit;
-
-  # Set language to English
-  $self->{l10n} = VNDB::L10N->get_handle('en');
 
   # load some stats (used for about all pageviews, anyway)
   $self->{stats} = $self->dbStats;

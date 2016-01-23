@@ -26,9 +26,6 @@
 #   normal 'make' run. Should be used when the regen_static option is enabled
 #   and the http process is run from a different user.
 #
-# chmod-tladmin
-#   The TransAdmin plugin also needs write access to some files
-#
 # multi-start, multi-stop, multi-restart:
 #   Start/stop/restart the Multi daemon. Provided for convenience, a proper initscript
 #   probably makes more sense.
@@ -44,7 +41,7 @@
 #   other environments. Patches to improve the portability are always welcome.
 
 
-.PHONY: all dirs js icons skins robots chmod chmod-tladmin multi-stop multi-start multi-restart sql-import\
+.PHONY: all dirs js icons skins robots chmod multi-stop multi-start multi-restart sql-import\
 	update-2.10 update-2.11 update-2.12 update-2.13 update-2.14 update-2.15 update-2.16 update-2.17\
 	update-2.18 update-2.19 update-2.20 update-2.21 update-2.22 update-2.23
 
@@ -89,9 +86,6 @@ chmod: all
 chmod-autoupdate: chmod
 	chmod a+xrw static/f data/icons
 	chmod -f a-x+rw static/s/*/{style.css,boxbg.png} static/f/icons.png
-
-chmod-tladmin: chmod
-	chmod a-x+rwX data/lang.txt data/docs data/docs/*\.*
 
 
 # may wait indefinitely, ^C and kill -9 in that case
