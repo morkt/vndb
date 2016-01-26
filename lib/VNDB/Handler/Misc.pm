@@ -209,8 +209,8 @@ sub history {
             $type eq 'c' ? $self->dbCharGet(id => $id)->[0] :
             $type eq 's' ? $self->dbStaffGet(id => $id)->[0] :
             $type eq 'v' ? $self->dbVNGet(id => $id)->[0] : undef;
-  my $title = $type ? 'Edit history of '.($obj->{title} || $obj->{name} || $obj->{username}) : 'Recent changes';
   return $self->resNotFound if $type && !$obj->{id};
+  my $title = $type ? 'Edit history of '.($obj->{title} || $obj->{name} || $obj->{username}) : 'Recent changes';
 
   # get the edit history
   my($list, $np) = $self->dbRevisionGet(
