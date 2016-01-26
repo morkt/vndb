@@ -1,29 +1,56 @@
 :TITLE:Adding/Editing a Visual Novel
 :INC:index
 
-:SUB:When to add a visual novel
+:SUB:What can be added to the database
 <p>
- To be included in this database, a game needs to use the <a
- href="http://en.wikipedia.org/wiki/Narrative_mode">novel narrative</a>
- consistently for telling its story. Examples include describing <a
- href="http://s.vndb.org/sf/58/258.jpg">visuals</a>, <a
- href="http://s.vndb.org/sf/63/2663.jpg">events</a>, <a
- href="http://s.vndb.org/sf/74/274.jpg">character actions</a> or <a
- href="http://s.vndb.org/sf/49/449.jpg">thoughts</a>.<br />
+ For a game to qualify for inclusion in the database, it must meet one of the
+ following two requirements:<br /><br />
+</p>
+
+<ol>
+<li>Visual Novels that have the following characteristics:
+ <ul>
+  <li>Choices are the only allowed (but optional) form of interactivity. There
+   are no other gameplay elements (including stats-based gameplay in
+   dating/raising sims). Mini-games and simple mechanics, such as map-movenent,
+   are only allowed when they play a very minimal role – at least 99% of the
+   title should be made of pure reading.</li>
+  <li>The story is told employing one of the known Visual Novel presentation
+   methods such as <a href="http://s.vndb.org/sf/40/3440.jpg">ADV</a>, <a
+   href="http://s.vndb.org/sf/52/3152.jpg">NVL</a> and their <a
+   href="http://s.vndb.org/sf/39/339.jpg">variations</a>.</li>
+ </ul>
+</li>
+<li>Visual Novel / Game hybrids that have the following characteristics:
+ <ul>
+  <li>The game consistently uses the novel narrative for telling its story.
+   Examples include describing <a
+   href="http://s.vndb.org/sf/58/258.jpg">visuals</a>, <a
+   href="http://s.vndb.org/sf/63/2663.jpg">events</a>, <a
+   href="http://s.vndb.org/sf/74/274.jpg">character actions</a> or <a
+   href="http://s.vndb.org/sf/49/449.jpg">thoughts</a>.<br />
+   This point is ESSENTIAL - dialogues, no matter how extensive, are a
+   characteristic of such game genres as RPGs, adventure games, dating
+   simulations, etc., NOT of visual novels.</li>
+  <li>The story is told employing one of the known Visual Novel presentation
+   methods such as <a href="http://s.vndb.org/sf/40/3440.jpg">ADV</a>, <a
+   href="http://s.vndb.org/sf/52/3152.jpg">NVL</a> and their <a
+   href="http://s.vndb.org/sf/39/339.jpg">variations</a>, consistently and for
+   a significant length - at least 50% of the game should be made of pure,
+   VN-style reading.</li>
+ </ul>
+</li>
+</ol>
+
+<p>
  <br />
- This storytelling needs to be uninterrupted* for a significant length and
- employing one of the known Visual Novel presentation methods such as <a
- href="http://s.vndb.org/sf/40/3440.jpg">ADV</a>, <a
- href="http://s.vndb.org/sf/52/3152.jpg">NVL</a> and their <a
- href="http://s.vndb.org/sf/39/339.jpg">variations</a>.<br />
- *Uninterrupted by gameplay sequences, not by choices or simple map
- movement.<br />
+ Note: In some special cases, a game may be added even if it does not strictly
+ adhere to the above points. However, this is the decision of the moderators. Do
+ not add a game yourself expecting it to be an exception to the above rules.
  <br />
- Note: In some special cases, a game may be added even if it does not adhere to
- the above points. However, this is the decision of the moderators. Do not add
- a game yourself expecting it to be an exception to the above rules.<br />
  See also the <a href="/d15">list of special games</a>.
 </p>
+
 
 :SUB:General info
 <dl>
