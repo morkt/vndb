@@ -464,6 +464,24 @@ my %GET_VN = (
         },
       ]],
     },
+    screens => {
+      fetch => [[ 'id', 'SELECT vs.id AS vid, vs.scr AS image, vs.rid, vs.nsfw, s.width, s.height
+                      FROM vn_screenshots vs JOIN screenshots s ON s.id = vs.scr WHERE vs.id IN(%s)',
+        sub { my($r, $n) = @_;
+          for my $i (@$r) {
+            $i->{screens} = [ grep $i->{id} == $_->{vid}, @$n ];
+          }
+          for (@$n) {
+            $_->{image} = sprintf '%s/sf/%02d/%d.jpg', $VNDB::S{url_static}, $_->{image}%100, $_->{image};
+            $_->{rid} *= 1;
+            $_->{nsfw} = $_->{nsfw} =~ /t/ ? TRUE : FALSE;
+            $_->{width} *= 1;
+            $_->{height} *= 1;
+            delete $_->{vid};
+          }
+        },
+      ]]
+    },
   },
   filters => {
     id => [

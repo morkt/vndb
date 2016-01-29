@@ -513,6 +513,19 @@ however still required.<br />
   <td>no</td>
   <td>Number of votes.</td>
  </tr>
+ <tr>
+  <td>screens</td>
+  <td>screens</td>
+  <td>array of objects</td>
+  <td>no</td>
+  <td>
+   (Possibly empty) list of screenshots, each object has the following members:<br />
+   "image", string, URL of the full-size screenshot<br />
+   "rid", integer, release ID<br />
+   "nsfw", boolean<br />
+   "height", integer, height of the full-size screenshot<br />
+   "width", integer, width of the full-size screenshot<br />
+ </tr>
 </table>
 <p>Sorting is possible on the 'id', 'title' and 'released' fields.</p><br />
 
@@ -1470,6 +1483,7 @@ however still required.<br />
 <b>2.25</b>
 <ul>
  <li>Added support for TLS</li>
+ <li>Added "screens" flag and member to "get vn"</li>
 </ul>
 <b>2.23</b>
 <ul>
