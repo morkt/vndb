@@ -219,10 +219,10 @@ our %S;
   blood_types     => ordhash(qw{unknown Unknown o O a A b B ab AB}),
   genders         => ordhash(unknown => 'Unknown or N/A', qw{m Male  f Female  b Both}),
   char_roles      => ordhash(
-    main    => 'Protagonist',
-    primary => 'Main character',
-    side    => 'Side character',
-    appears => 'Makes an appearance'
+    main    => [ 'Protagonist',         'Protagonists' ],
+    primary => [ 'Main character',      'Main characters' ],
+    side    => [ 'Side character',      'Side characters' ],
+    appears => [ 'Makes an appearance', 'Make an appearance' ],
   ),
   atom_feeds => { # num_entries, title, id
     announcements => [ 10, 'VNDB Site Announcements', '/t/an' ],

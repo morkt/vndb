@@ -172,7 +172,7 @@ sub homepage {
          lit fmtdatestr $_->{released};
          txt ' ';
          cssicon $_, $self->{platforms}{$_} for (@{$_->{platforms}});
-         cssicon "lang $_", $self->{languages} for (@{$_->{languages}});
+         cssicon "lang $_", $self->{languages}{$_} for (@{$_->{languages}});
          txt ' ';
          a href => "/r$_->{id}", title => $_->{original}||$_->{title}, shorten $_->{title}, 30;
         end;

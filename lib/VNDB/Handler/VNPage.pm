@@ -891,7 +891,7 @@ sub _chars {
     next if !@{$rol{$r}};
     div class => 'mainbox';
      $self->charOps(1) if !$first++;
-     h1 $self->{char_roles}{$r};
+     h1 $self->{char_roles}{$r}[ @{$rol{$r}} > 1 ? 1 : 0 ];
      $self->charTable($_, 1, $_ != $rol{$r}[0], 1, _charspoillvl $v->{id}, $_) for (@{$rol{$r}});
     end;
   }
@@ -919,7 +919,7 @@ sub _charsum {
     for my $c (@l) {
       div class => 'charsum_bubble'.($has_spoilers ? ' '.charspoil(_charspoillvl $v->{id}, $c) : '');
        div class => 'name';
-        i $self->{char_roles}{$c->{role}};
+        i $self->{char_roles}{$c->{role}}[0];
         a href => "/c$c->{id}", title => $c->{original}||$c->{name}, $c->{name};
        end;
        if(@{$c->{seiyuu}}) {

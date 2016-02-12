@@ -381,7 +381,7 @@ sub _form {
   $self->htmlForm({ frm => $frm, action => $r ? "/r$r->{id}/".($copy ? 'copy' : 'edit') : "/v$v->{id}/add", editsum => 1 },
   rel_geninfo => [ 'General info',
     [ select => short => 'type',      name => 'Type',
-      options => [ map [ $_, $_ ], @{$self->{release_types}} ] ],
+      options => [ map [ $_, ucfirst $_ ], @{$self->{release_types}} ] ],
     [ check  => short => 'patch',     name => 'This release is a patch to another release.' ],
     [ check  => short => 'freeware',  name => 'Freeware (i.e. available at no cost)' ],
     [ check  => short => 'doujin',    name => 'Doujin (self-published, not by a company)' ],
