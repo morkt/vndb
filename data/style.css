@@ -334,14 +334,14 @@ h1.boxtitle, h1.boxtitle a {
 
 /***** VN page *******/
 
-div.vndetails                 { margin: 0 auto; width: 800px; }
+div.vndetails                 { margin: 0 auto; max-width: 770px; }
 div.vnimg                     { float: left; width: 250px; margin: 0 10px; }
 div.vnimg i                   { display: block; width: 100%; text-align: center; font-size: 10px; }
 div.vnimg p                   { text-align: center; padding: 0px; margin: 0; }
 .vndesc h2                    { margin: 5px 0 0 0; }
 .vndesc p                     { padding: 0 0 0 5px; }
 p#nsfw_hid                    { display: block; cursor: pointer; }
-div.vndetails table           { float: left; width: 530px; }
+div.vndetails table           { float: left; width: 500px; }
 div.vndetails table td.key    { width: 80px; }
 div.vndetails table dt        { float: left; font-style: italic; }
 div.vndetails table dd        { margin-left: 90px; }

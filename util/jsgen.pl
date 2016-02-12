@@ -38,7 +38,7 @@ sub vars {
     age_ratings   => [ map [ $_, $_ == -1 ? 'Unknown' : $_ == 0 ? 'All ages' : "$_+" ], @{$S{age_ratings}} ],
     languages     => [ map [ $_, $S{languages}{$_} ], keys %{$S{languages}} ],
     platforms     => [ map [ $_, $S{platforms}{$_} ], keys %{$S{platforms}} ],
-    char_roles    => [ map [ $_, $S{char_roles}{$_} ], keys %{$S{char_roles}} ],
+    char_roles    => [ map [ $_, $S{char_roles}{$_}[0] ], keys %{$S{char_roles}} ],
     media         => [ map [ $_, $S{media}{$_}[1], $S{media}{$_}[0] ], keys %{$S{media}} ],
     release_types => [ map [ $_, ucfirst $_ ], @{$S{release_types}} ],
     animated      => [ map [ $_, $S{animated}[$_] ], 0..$#{$S{animated}} ],
