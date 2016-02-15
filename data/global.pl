@@ -71,6 +71,7 @@ our %S;
     ru Russian
     sk Slovak
     sv Swedish
+    ta Tagalog
     tr Turkish
     uk Ukrainian
     vi Vietnamese

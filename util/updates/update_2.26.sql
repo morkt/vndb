@@ -29,3 +29,7 @@ ALTER TABLE threads_poll_options     ADD CONSTRAINT threads_poll_options_tid_fke
 ALTER TABLE threads_poll_votes       ADD CONSTRAINT threads_poll_votes_tid_fkey        FOREIGN KEY (tid)       REFERENCES threads       (id) ON DELETE CASCADE;
 ALTER TABLE threads_poll_votes       ADD CONSTRAINT threads_poll_votes_uid_fkey        FOREIGN KEY (uid)       REFERENCES users         (id) ON DELETE CASCADE;
 ALTER TABLE threads_poll_votes       ADD CONSTRAINT threads_poll_votes_optid_fkey      FOREIGN KEY (optid)     REFERENCES threads_poll_options (id) ON DELETE CASCADE;
+
+
+-- Tagalog language
+ALTER TYPE language ADD VALUE 'ta' BEFORE 'tr';
