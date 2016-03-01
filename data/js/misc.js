@@ -143,7 +143,7 @@ if(location.hostname != 'vndb.org') {
 
   for(var i=0; i<l.length; i++) {
     var h = Math.floor(l[i].getAttribute('data-summarize-height') || 150);
-    if(l[i].offsetHeight > h+30)
+    if(l[i].offsetHeight > h+100)
       set(l[i], h);
   }
 })();
