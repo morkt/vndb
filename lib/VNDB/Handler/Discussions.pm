@@ -171,7 +171,7 @@ sub edit {
     $frm = $self->formValidate(
       !$tid || $num == 1 ? (
         { post => 'title', maxlength => 50 },
-        { post => 'boards', maxlength => 50 },
+        { post => 'boards', maxlength => 100 },
         $haspoll ? (
           { post => 'poll', required => 0 },
           { post => 'poll_question', required => 1, maxlength => 100 },
