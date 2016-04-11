@@ -1104,6 +1104,16 @@ however still required.<br />
     spoiler level (integer, 0-2). General information for each trait is
     available in the <a href="/d14.3">traits dump</a>.</td>
  </tr>
+ <tr>
+  <td>vns</td>
+  <td>vns</td>
+  <td>array of arrays</td>
+  <td>no</td>
+  <td>List of VNs linked to this character. Each VN is an array of 4 elements:
+    VN id, release ID (0 = "all releases"), spoiler level (0-2) and the role
+    (string).<br />
+    Available roles: "main", "primary", "side" and "appears".</td>
+ </tr>
 </table>
 <p>Sorting is possible on the 'id' and 'name' fields.</p><br />
 
@@ -1484,6 +1494,7 @@ however still required.<br />
 <ul>
  <li>Added support for TLS</li>
  <li>Added "screens" flag and member to "get vn"</li>
+ <li>Added "vns" flag and member to "get character"</li>
 </ul>
 <b>2.23</b>
 <ul>

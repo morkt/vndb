@@ -781,6 +781,15 @@ my %GET_CHARACTER = (
         },
       ]],
     },
+    vns => {
+      fetch => [[ 'id', 'SELECT id, vid, rid, spoil, role FROM chars_vns WHERE id IN(%s)',
+        sub { my($n, $r) = @_;
+          for my $i (@$n) {
+            $i->{vns} = [ map [ $_->{vid}*1, $_->{rid}*1, $_->{spoil}*1, $_->{role} ], grep $i->{id} == $_->{id}, @$r ];
+          }
+        },
+      ]],
+    },
   },
   filters => {
     id => [
