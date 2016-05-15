@@ -527,7 +527,7 @@ however still required.<br />
    "width", integer, width of the full-size screenshot<br />
  </tr>
 </table>
-<p>Sorting is possible on the 'id', 'title' and 'released' fields.</p><br />
+<p>Sorting is possible on the following fields: id, title, released, popularity, rating, votecount.</p><br />
 
 <p>'get vn' accepts the following filter expressions:</p>
 <table style="margin: 5px 2%; width: 95%">
@@ -1495,6 +1495,7 @@ however still required.<br />
  <li>Added support for TLS</li>
  <li>Added "screens" flag and member to "get vn"</li>
  <li>Added "vns" flag and member to "get character"</li>
+ <li>Allow sorting "get vn" on popularity, rating and votecount</li>
 </ul>
 <b>2.23</b>
 <ul>

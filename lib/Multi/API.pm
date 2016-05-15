@@ -381,6 +381,9 @@ my %GET_VN = (
     id => 'v.id %s',
     title => 'v.title %s',
     released => 'v.c_released %s',
+    popularity => 'v.c_popularity %s NULLS LAST',
+    rating => 'v.c_rating %s NULLS LAST',
+    votecount => 'v.c_votecount %s',
   },
   flags  => {
     basic => {
@@ -785,7 +788,7 @@ my %GET_CHARACTER = (
       fetch => [[ 'id', 'SELECT id, vid, rid, spoil, role FROM chars_vns WHERE id IN(%s)',
         sub { my($n, $r) = @_;
           for my $i (@$n) {
-            $i->{vns} = [ map [ $_->{vid}*1, $_->{rid}*1, $_->{spoil}*1, $_->{role} ], grep $i->{id} == $_->{id}, @$r ];
+            $i->{vns} = [ map [ $_->{vid}*1, ($_->{rid}||0)*1, $_->{spoil}*1, $_->{role} ], grep $i->{id} == $_->{id}, @$r ];
           }
         },
       ]],
