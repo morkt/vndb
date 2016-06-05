@@ -140,7 +140,7 @@ sub _infotable {
 
    if(@{$r->{platforms}}) {
      Tr;
-      td 'Platorm'.(@{$r->{platforms}} == 1 ? '' : 's');
+      td 'Platform'.(@{$r->{platforms}} == 1 ? '' : 's');
       td;
        for(@{$r->{platforms}}) {
          cssicon $_, $self->{platforms}{$_};
