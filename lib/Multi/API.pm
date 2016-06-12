@@ -8,6 +8,7 @@ package Multi::API;
 use strict;
 use warnings;
 use Multi::Core;
+use Socket 'SO_KEEPALIVE', 'SOL_SOCKET', 'IPPROTO_TCP';
 use AnyEvent::Socket;
 use AnyEvent::Handle;
 use POE::Filter::VNDBAPI 'encode_filters';
@@ -16,6 +17,10 @@ use Crypt::ScryptKDF 'scrypt_raw';;
 use VNDBUtil 'normalize_query', 'norm_ip';
 use JSON::XS;
 
+# Linux-specific, not exported by the Socket module.
+sub TCP_KEEPIDLE  () { 4 }
+sub TCP_KEEPINTVL () { 5 }
+sub TCP_KEEPCNT   () { 6 }
 
 # what our JSON encoder considers 'true' or 'false'
 sub TRUE  () { JSON::XS::true }
@@ -25,11 +30,11 @@ my %O = (
   port => 19534,
   tls_port => 19535,  # Only used when tls_options is set
   logfile => "$VNDB::M{log_dir}/api.log",
-  conn_per_ip => 5,
+  conn_per_ip => 10,
   max_results => 25, # For get vn/release/producer/character
   max_results_lists => 100, # For get votelist/vnlist/wishlist
   default_results => 10,
-  throttle_cmd => [ 6, 100 ], # interval between each command, allowed burst
+  throttle_cmd => [ 3, 200 ], # interval between each command, allowed burst
   throttle_sql => [ 60, 1 ],  # sql time multiplier, allowed burst (in sql time)
   throttle_thr => [ 2, 10 ],  # interval between "throttled" replies, allowed burst
   tls_options => undef, # Set to AnyEvent::TLS options to enable TLS
@@ -96,6 +101,13 @@ sub newconn {
     return;
   }
 
+  eval {
+    setsockopt($c->{fh}, SOL_SOCKET,  SO_KEEPALIVE,   1);
+    setsockopt($c->{fh}, IPPROTO_TCP, TCP_KEEPIDLE, 120);
+    setsockopt($c->{fh}, IPPROTO_TCP, TCP_KEEPINTVL, 30);
+    setsockopt($c->{fh}, IPPROTO_TCP, TCP_KEEPCNT,   10);
+  };
+
   writelog $c, 'Connected';
   $C{$connid} = $c;
 
@@ -103,7 +115,7 @@ sub newconn {
     rbuf_max =>     50*1024, # Commands aren't very huge, a 50k read buffer should suffice.
     wbuf_max => 5*1024*1024,
     fh       => $c->{fh},
-    keepalive=> 1,
+    keepalive=> 1, # Kinda redundant with setsockopt(), but w/e
     on_error => sub {
       writelog $c, 'IO error: %s', $_[2];
       $c->{h}->destroy;

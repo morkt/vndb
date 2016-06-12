@@ -42,8 +42,8 @@
 <p>The following limits are enforced by the server, in order to limit the
 server resources and prevent abuse of this service.</p>
 <ul>
- <li>5 connections per IP. All connections that are opened after reaching this limit will be immediately closed.</li>
- <li>100 commands per 10 minutes per ip. Server will reply with a 'throttled' error (type="cmd") when reaching this limit.</li>
+ <li>10 connections per IP. All connections that are opened after reaching this limit will be immediately closed.</li>
+ <li>200 commands per 10 minutes per ip. Server will reply with a 'throttled' error (type="cmd") when reaching this limit.</li>
  <li>
   1 second of SQL time per minute per ip. SQL time is the total time taken to
   run the database queries for each command.  This depends on both the command
@@ -1492,6 +1492,8 @@ however still required.<br />
 </p>
 <b>2.25</b>
 <ul>
+ <li>Increased connection limit per IP from 5 to 10</li>
+ <li>Increased command limit from 100 to 200 commands per 10 minutes</li>
  <li>Added support for TLS</li>
  <li>Added "screens" flag and member to "get vn"</li>
  <li>Added "vns" flag and member to "get character"</li>
